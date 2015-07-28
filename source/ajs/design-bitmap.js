@@ -6,7 +6,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapCanvasToolBar = function FDsBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._canvasModeCd      = EDsCanvasMode.Drop;
       o._controlSize1      = null;
       o._controlSize2      = null;
@@ -22,7 +22,7 @@ with(MO){
    }
    MO.FDsBitmapCanvasToolBar_onBuilded = function FDsBitmapCanvasToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
    }
    MO.FDsBitmapCanvasToolBar_onSizeClick = function FDsBitmapCanvasToolBar_onSizeClick(event){
       var o = this;
@@ -42,11 +42,11 @@ with(MO){
    }
    MO.FDsBitmapCanvasToolBar_construct = function FDsBitmapCanvasToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsBitmapCanvasToolBar_dispose = function FDsBitmapCanvasToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
@@ -112,7 +112,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapImportDialog = function FDsBitmapImportDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.bitmap.ImportDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -129,7 +129,7 @@ with(MO){
    }
    MO.FDsBitmapImportDialog_onBuilded = function FDsBitmapImportDialog_onBuilded(event){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, event);
+      o.__base.FDuiDialog.onBuilded.call(o, event);
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
       o._controlCancelButton.addClickListener(o, o.onCancelClick);
    }
@@ -163,16 +163,16 @@ with(MO){
    }
    MO.FDsBitmapImportDialog_construct = function FDsBitmapImportDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsBitmapImportDialog_dispose = function FDsBitmapImportDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsBitmapMenuBar = function FDsBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       o._controlBack    = null;
       o._controlSave    = null;
       o._controlCapture = null;
@@ -186,7 +186,7 @@ with(MO){
    }
    MO.FDsBitmapMenuBar_onBuilded = function FDsBitmapMenuBar_onBuilded(event){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, event);
+      o.__base.FDuiMenuBar.onBuilded.call(o, event);
    }
    MO.FDsBitmapMenuBar_onSaveLoad = function FDsBitmapMenuBar_onSaveLoad(event){
       RConsole.find(FUiDesktopConsole).hide();
@@ -201,23 +201,23 @@ with(MO){
    MO.FDsBitmapMenuBar_onImportClick = function FDsBitmapMenuBar_onImportClick(event){
       var o = this;
       var resource = o._frameSet._activeResource;
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsBitmapImportDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
       dialog._resource = resource;
       dialog._frameSet = o._frameSet;
       dialog.showPosition(EUiPosition.Center);
    }
    MO.FDsBitmapMenuBar_construct = function FDsBitmapMenuBar_construct(){
       var o = this;
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
    MO.FDsBitmapMenuBar_dispose = function FDsBitmapMenuBar_dispose(){
       var o = this;
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsBitmapPropertyFrame = function FDsBitmapPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._activeBitmap      = null;
       o._controlGuid       = null;
       o._controlCode       = null;
@@ -233,11 +233,11 @@ with(MO){
    }
    MO.FDsBitmapPropertyFrame_construct = function FDsBitmapPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsBitmapPropertyFrame_onBuilded = function FDsBitmapPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlCode.addDataChangedListener(o, o.onDataChanged);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
    }
@@ -258,12 +258,12 @@ with(MO){
    }
    MO.FDsBitmapPropertyFrame_dispose = function FDsBitmapPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsBitmapPropertyToolBar = function FDsBitmapPropertyToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.bitmap.PropertyToolBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsBitmapPropertyToolBar_onBuilded;
@@ -274,7 +274,7 @@ with(MO){
    }
    MO.FDsBitmapPropertyToolBar_onBuilded = function FDsBitmapPropertyToolBar_onBuilded(event){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, event);
+      o.__base.FDuiToolBar.onBuilded.call(o, event);
       o._controlRefresh.addClickListener(o, o.onRefreshClick);
    }
    MO.FDsBitmapPropertyToolBar_onRefreshClick = function FDsBitmapPropertyToolBar_onRefreshClick(event){
@@ -282,11 +282,11 @@ with(MO){
    }
    MO.FDsBitmapPropertyToolBar_construct = function FDsBitmapPropertyToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsBitmapPropertyToolBar_dispose = function FDsBitmapPropertyToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){

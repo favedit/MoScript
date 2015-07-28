@@ -6,9 +6,9 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiNumber4 = function FUiNumber4(o){
-      //o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit);
-      o = RClass.inherits(this, o, FUiEditControl);
+   MO.FDuiNumber4 = function FDuiNumber4(o){
+      //o = RClass.inherits(this, o, FDuiEditControl, MPropertyEdit);
+      o = RClass.inherits(this, o, FDuiEditControl);
       //..........................................................
       // @property
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -21,17 +21,17 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiNumber4_onBuildEditValue;
+      o.onBuildEditValue = FDuiNumber4_onBuildEditValue;
       //..........................................................
       // @process
-      //o.oeDataLoad       = FUiNumber4_oeDataLoad;
-      //o.oeDataSave       = FUiNumber4_oeDataSave;
+      //o.oeDataLoad       = FDuiNumber4_oeDataLoad;
+      //o.oeDataSave       = FDuiNumber4_oeDataSave;
       //..........................................................
       // @method
-      o.construct        = FUiNumber4_construct;
+      o.construct        = FDuiNumber4_construct;
       // @method
-      o.get              = FUiNumber4_get;
-      o.set              = FUiNumber4_set;
+      o.get              = FDuiNumber4_get;
+      o.set              = FDuiNumber4_set;
 
 
 
@@ -52,16 +52,16 @@ with(MO){
       //o.hUnit         = null;
       //..........................................................
       // @event
-      //o.onDataKeyDown = FUiNumber4_onDataKeyDown;
+      //o.onDataKeyDown = FDuiNumber4_onDataKeyDown;
       //..........................................................
       // @method
-      //o.formatValue   = FUiNumber4_formatValue;
-      //o.setText       = FUiNumber4_setText;
-      //o.validText     = FUiNumber4_validText;
-      //o.findEditor    = FUiNumber4_findEditor;
-      //o.drop          = FUiNumber4_drop;
-      //o.link          = FUiNumber4_link;
-      //o.clone         = FUiNumber4_clone;
+      //o.formatValue   = FDuiNumber4_formatValue;
+      //o.setText       = FDuiNumber4_setText;
+      //o.validText     = FDuiNumber4_validText;
+      //o.findEditor    = FDuiNumber4_findEditor;
+      //o.drop          = FDuiNumber4_drop;
+      //o.link          = FDuiNumber4_link;
+      //o.clone         = FDuiNumber4_clone;
       return o;
    }
 
@@ -71,7 +71,7 @@ with(MO){
    // @method
    // @param p:dataSource:FDataSource 数据源
    //==========================================================
-   MO.FUiNumber4_oeDataLoad = function FUiNumber4_oeDataLoad(p){
+   MO.FDuiNumber4_oeDataLoad = function FDuiNumber4_oeDataLoad(p){
       var o = this;
       alert(p);
       return EEventStatus.Stop;
@@ -83,7 +83,7 @@ with(MO){
    // @method
    // @param p:dataSource:FDataSource 数据源
    //==========================================================
-   MO.FUiNumber4_oeDataSave = function FUiNumber4_oeDataSave(p){
+   MO.FDuiNumber4_oeDataSave = function FDuiNumber4_oeDataSave(p){
       var o = this;
       return EEventStatus.Stop;
    }
@@ -94,7 +94,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiNumber4_onBuildEditValue = function FUiNumber4_onBuildEditValue(p){
+   MO.FDuiNumber4_onBuildEditValue = function FDuiNumber4_onBuildEditValue(p){
       var o = this;
       var h = o._hValuePanel;
       h.className = o.styleName('InputPanel');
@@ -126,9 +126,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiNumber4_construct = function FUiNumber4_construct(){
+   MO.FDuiNumber4_construct = function FDuiNumber4_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
    }
 
@@ -138,9 +138,9 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiNumber4_get = function FUiNumber4_get(p){
+   MO.FDuiNumber4_get = function FDuiNumber4_get(p){
       var o = this;
-      var r = o.__base.FUiEditControl.get.call(o, p);
+      var r = o.__base.FDuiEditControl.get.call(o, p);
       // 获得显示
       var h = o._hInput;
       if(h){
@@ -155,9 +155,9 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiNumber4_set = function FUiNumber4_set(p){
+   MO.FDuiNumber4_set = function FDuiNumber4_set(p){
       var o = this;
-      o.__base.FUiEditControl.set.call(o, p);
+      o.__base.FDuiEditControl.set.call(o, p);
       // 设置显示
       var h = o._hInput;
       if(h){
@@ -188,9 +188,9 @@ with(MO){
    // @param s:sender:FControl 控件对象
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiNumber4_onDataKeyDown = function FUiNumber4_onDataKeyDown(s, e){
+   MO.FDuiNumber4_onDataKeyDown = function FDuiNumber4_onDataKeyDown(s, e){
       var o = this;
-      o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
+      o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
       // 大小写限制
       if(o.editCase){
          RKey.fixCase(e, o.editCase);
@@ -215,7 +215,7 @@ with(MO){
    // @method
    // @param v:value:String 显示内容
    //==========================================================
-   MO.FUiNumber4_formatValue = function FUiNumber4_formatValue(v){
+   MO.FDuiNumber4_formatValue = function FDuiNumber4_formatValue(v){
       var o = this;
       var r = RString.nvl(v);
       if(ECase.Upper == o.editCase){
@@ -232,7 +232,7 @@ with(MO){
    // @method
    // @param t:text:String 内容
    //==========================================================
-   MO.FUiNumber4_setText = function FUiNumber4_setText(t){
+   MO.FDuiNumber4_setText = function FDuiNumber4_setText(t){
       var o = this;
       if(!o.hEdit){
          return;
@@ -260,9 +260,9 @@ with(MO){
    // @param t:text:String 内容
    // @return 校验结果
    //==========================================================
-   MO.FUiNumber4_validText = function FUiNumber4_validText(t){
+   MO.FDuiNumber4_validText = function FDuiNumber4_validText(t){
       var o = this;
-      var r = o.__base.FUiEditControl.validText.call(o, t);
+      var r = o.__base.FDuiEditControl.validText.call(o, t);
       if(!r){
          // 最小长度的校验
          if(o.validLenmin){
@@ -286,14 +286,14 @@ with(MO){
    // @method
    // @return 编辑器
    //==========================================================
-   MO.FUiNumber4_findEditor = function FUiNumber4_findEditor(){
+   MO.FDuiNumber4_findEditor = function FDuiNumber4_findEditor(){
       var o = this;
       if(o.editComplete){
          var de = o.editor;
          if(!de){
             o.dsControl = o.topControl(MDataset);
             if(o.dsControl){
-               de = o.editor = RConsole.find(FUiNumber4Console).focus(o, FUiNumber4Editor);
+               de = o.editor = RConsole.find(FDuiNumber4Console).focus(o, FDuiNumber4Editor);
             }
          }
          if(de){
@@ -308,7 +308,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiNumber4_drop = function FUiNumber4_drop(){
+   MO.FDuiNumber4_drop = function FDuiNumber4_drop(){
       var o = this;
       var de = o.findEditor();
       if(de){
@@ -330,7 +330,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiNumber4_clone = function FUiNumber4_clone(){
+   MO.FDuiNumber4_clone = function FDuiNumber4_clone(){
       var o = this;
       var r = o._class.newInstance();
       GHtml_clone(r, o.hPanel);
@@ -342,7 +342,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiNumber4_link = function FUiNumber4_link(){
+   MO.FDuiNumber4_link = function FDuiNumber4_link(){
       var o = this;
       
    }

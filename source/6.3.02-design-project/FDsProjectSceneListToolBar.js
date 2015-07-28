@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsProjectSceneListToolBar = function FDsProjectSceneListToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName           = 'resource.project.SceneListToolBar';
@@ -39,7 +39,7 @@ with(MO){
    //==========================================================
    MO.FDsProjectSceneListToolBar_onBuilded = function FDsProjectSceneListToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       //..........................................................
       // 关联事件
       o._controlSceneCreate.addClickListener(o, o.onSceneCreateClick);
@@ -60,7 +60,7 @@ with(MO){
          throw new TError(o, 'Project guid is empty.');
       }
       // 显示窗口
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsProjectSceneDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsProjectSceneDialog);
       dialog._frameSet = o._frameSet;
       dialog._projectGuid = projectGuid;
       dialog.setDataCode('');
@@ -133,7 +133,7 @@ with(MO){
    MO.FDsProjectSceneListToolBar_construct = function FDsProjectSceneListToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -144,6 +144,6 @@ with(MO){
    MO.FDsProjectSceneListToolBar_dispose = function FDsProjectSceneListToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

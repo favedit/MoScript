@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsShareTabBar = function FDsShareTabBar(o){
-      o = RClass.inherits(this, o, FUiTabBar);
+      o = RClass.inherits(this, o, FDuiTabBar);
       o._frameName            = 'resource.share.TabBar';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -14,7 +14,7 @@ with(MO){
    }
    MO.FDsShareTabBar_onBuilded = function FDsShareTabBar_onBuilded(p){
       var o = this;
-      o.__base.FUiTabBar.onBuilded.call(o, p);
+      o.__base.FDuiTabBar.onBuilded.call(o, p);
       o._controlResource.addClickListener(o, o.onButtonClick);
    }
    MO.FDsShareTabBar_onButtonClick = function FDsShareTabBar_onButtonClick(event){
@@ -29,11 +29,11 @@ with(MO){
    }
    MO.FDsShareTabBar_construct = function FDsShareTabBar_construct(){
       var o = this;
-      o.__base.FUiTabBar.construct.call(o);
+      o.__base.FDuiTabBar.construct.call(o);
    }
    MO.FDsShareTabBar_dispose = function FDsShareTabBar_dispose(){
       var o = this;
-      o.__base.FUiTabBar.dispose.call(o);
+      o.__base.FDuiTabBar.dispose.call(o);
    }
 }
 with(MO){
@@ -90,7 +90,7 @@ with(MO){
             var menuBar = RClass.create(FDsShareResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -98,7 +98,7 @@ with(MO){
             var menuBar = RClass.create(FDsShareBitmapMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -106,7 +106,7 @@ with(MO){
             var menuBar = RClass.create(FDsShareMaterialMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -114,7 +114,7 @@ with(MO){
             var menuBar = RClass.create(FDsShareModelMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareModelFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -122,7 +122,7 @@ with(MO){
             var menuBar = RClass.create(FDsShareTemplateMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -130,7 +130,7 @@ with(MO){
             var menuBar = RClass.create(FDsShareSceneMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;

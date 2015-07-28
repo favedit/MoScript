@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsProjectSceneCatalogToolBar = function FDsProjectSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName       = 'resource.project.SceneCatalogToolBar';
@@ -47,7 +47,7 @@ with(MO){
    //==========================================================
    MO.FDsProjectSceneCatalogToolBar_onBuilded = function FDsProjectSceneCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       //..........................................................
       // 建立拖拽按键
       //var b = o._dropButton = o.searchControl('dropButton');
@@ -92,7 +92,7 @@ with(MO){
    MO.FDsProjectSceneCatalogToolBar_construct = function FDsProjectSceneCatalogToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -103,6 +103,6 @@ with(MO){
    MO.FDsProjectSceneCatalogToolBar_dispose = function FDsProjectSceneCatalogToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

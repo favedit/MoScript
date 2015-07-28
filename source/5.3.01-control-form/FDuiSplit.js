@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiSplit = function FUiSplit(o){
+   MO.FDuiSplit = function FDuiSplit(o){
       //o = RClass.inherits(this, o, FDuiControl, MDesign, MDisplay, MUiHorizontal);
       o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
@@ -28,20 +28,20 @@ with(MO){
       //o.hText             = null;
       //..........................................................
       // @event
-      //o.onSplitMouseEnter = RClass.register(o, new HMouseEnter('onSplitMouseEnter'), FUiSplit_onSplitMouseEnter); 
-      //o.onSplitMouseLeave = RClass.register(o, new HMouseLeave('onSplitMouseLeave'), FUiSplit_onSplitMouseLeave); 
-      //o.onMouseDown       = FUiSplit_onMouseDown;
-      //o.onBuildPanel      = FUiSplit_onBuildPanel;
+      //o.onSplitMouseEnter = RClass.register(o, new HMouseEnter('onSplitMouseEnter'), FDuiSplit_onSplitMouseEnter); 
+      //o.onSplitMouseLeave = RClass.register(o, new HMouseLeave('onSplitMouseLeave'), FDuiSplit_onSplitMouseLeave); 
+      //o.onMouseDown       = FDuiSplit_onMouseDown;
+      //o.onBuildPanel      = FDuiSplit_onBuildPanel;
       //..........................................................
       // @process
-      //o.oeBuild           = FUiSplit_oeBuild;
-      //o.oeMode            = FUiSplit_oeMode;
+      //o.oeBuild           = FDuiSplit_oeBuild;
+      //o.oeMode            = FDuiSplit_oeMode;
       //..........................................................
       // @method
-      //o.construct         = FUiSplit_construct;
-      //o.extend            = FUiSplit_extend;
-      //o.pushLine          = FUiSplit_pushLine;
-      //o.dispose           = FUiSplit_dispose;
+      //o.construct         = FDuiSplit_construct;
+      //o.extend            = FDuiSplit_extend;
+      //o.pushLine          = FDuiSplit_pushLine;
+      //o.dispose           = FDuiSplit_dispose;
       return o;
    }
 
@@ -51,7 +51,7 @@ with(MO){
    // @method
    // @param e:event:TEvent �¼�����
    //==========================================================
-   MO.FUiSplit_onSplitMouseEnter = function FUiSplit_onSplitMouseEnter(e){
+   MO.FDuiSplit_onSplitMouseEnter = function FDuiSplit_onSplitMouseEnter(e){
       var o = this;
       if(o.hImage){
          o.hImage.src = RRes._iconPath(o.extended ? 'ctl.collapse_hvr' : 'ctl.expand_hvr');
@@ -64,7 +64,7 @@ with(MO){
    // @method
    // @param e:event:TEvent �¼�����
    //==========================================================
-   MO.FUiSplit_onSplitMouseLeave = function FUiSplit_onSplitMouseLeave(e){
+   MO.FDuiSplit_onSplitMouseLeave = function FDuiSplit_onSplitMouseLeave(e){
       var o = this;
       if(o.hImage){
          o.hImage.src = RRes._iconPath(o.extended ? 'ctl.collapse_nor' : 'ctl.expand_nor');
@@ -77,7 +77,7 @@ with(MO){
    // @method
    // @param e:event:TEvent �¼�����
    //==========================================================
-   MO.FUiSplit_onMouseDown = function FUiSplit_onMouseDown(){
+   MO.FDuiSplit_onMouseDown = function FDuiSplit_onMouseDown(){
       var o = this;
       if(ESplitStyle.Normal == o._dispStyle){
          o.extend(!o.extended);
@@ -89,7 +89,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSplit_onBuildPanel = function FUiSplit_onBuildPanel(){
+   MO.FDuiSplit_onBuildPanel = function FDuiSplit_onBuildPanel(){
       var o = this;
       o.hPanel = RBuilder.create(null, 'DIV');
       o.hForm = RBuilder.appendTable(o.hPanel);
@@ -102,7 +102,7 @@ with(MO){
    // @method
    // @param e:event:TEvent �¼�����
    //==========================================================
-   MO.FUiSplit_oeBuild = function FUiSplit_oeBuild(e){
+   MO.FDuiSplit_oeBuild = function FDuiSplit_oeBuild(e){
       var o = this;
       o.base.FDuiControl.oeBuild.call(o, e);
       o.height = 2;
@@ -117,7 +117,7 @@ with(MO){
          hc.width = '100%';
          hc.height = 25;
          hc.style.padding = '0 0';
-         hc.style.background = 'url(' + RRes._iconPath('ctl.FUiSplit_Panel') + ')';
+         hc.style.background = 'url(' + RRes._iconPath('ctl.FDuiSplit_Panel') + ')';
          RBuilder.appendEmpty(hc, 4);
          o.hImage = RBuilder.appendIcon(hc, o._iconMinus);
          if(o._icon){
@@ -146,7 +146,7 @@ with(MO){
    // @method
    // @param e:event:TEvent �¼�����
    //==========================================================
-   MO.FUiSplit_oeMode = function FUiSplit_oeMode(e){
+   MO.FDuiSplit_oeMode = function FDuiSplit_oeMode(e){
       var o = this;
       var r = o.base.FDuiControl.oeMode.call(o, e);
       o.base.MDisplay.oeMode.call(o, e);
@@ -159,7 +159,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSplit_construct = function FUiSplit_construct(){
+   MO.FDuiSplit_construct = function FDuiSplit_construct(){
       var o = this;
       o.__lines = new TList();
    }
@@ -170,7 +170,7 @@ with(MO){
    // @method
    // @param v:visible:Boolean �Ƿ�չ��
    //==========================================================
-   MO.FUiSplit_extend = function FUiSplit_extend(v){
+   MO.FDuiSplit_extend = function FDuiSplit_extend(v){
       var o = this;
       // ���ģʽ
       if(EMode.Design == o._emode){
@@ -200,7 +200,7 @@ with(MO){
    // @method
    // @param hr:htmlRow:<TR> �ж���
    //==========================================================
-   MO.FUiSplit_pushLine = function FUiSplit_pushLine(hr){
+   MO.FDuiSplit_pushLine = function FDuiSplit_pushLine(hr){
       this.__lines.push(hr);
    }
 
@@ -209,7 +209,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSplit_dispose = function FUiSplit_dispose(){
+   MO.FDuiSplit_dispose = function FDuiSplit_dispose(){
       var o = this;
       o.base.FDuiControl.dispose.call(o);
       if(o.__lines){

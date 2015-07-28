@@ -2,11 +2,11 @@ with(MO){
    //==========================================================
    // <T>日期选取控件。</T>
    //
-   // @class FUiEditControl, MEditBorder, MUiDropable
+   // @class FDuiEditControl, MEditBorder, MUiDropable
    // @history 091124 MAOCY 创建
    //==========================================================
-   MO.FUiDateTime = function FUiDateTime(o){
-      o = RClass.inherits(this, o, FUiEditControl, MUiDropable);
+   MO.FDuiDateTime = function FDuiDateTime(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MUiDropable);
       //..........................................................
       // @property
       o.editDispMode = RClass.register(o, new APtySet('editDisplay', 'editDate', EDateTimeMode.Display));
@@ -29,23 +29,23 @@ with(MO){
       o.hDay         = null;
       //..........................................................
       // @event
-      o.onKeyPress   = FUiDateTime_onKeyPress;
-      o.onEditEnd    = FUiDateTime_onEditEnd;
-      o.onBuildEdit  = FUiDateTime_onBuildEdit;
+      o.onKeyPress   = FDuiDateTime_onKeyPress;
+      o.onEditEnd    = FDuiDateTime_onEditEnd;
+      o.onBuildEdit  = FDuiDateTime_onBuildEdit;
       //..........................................................
       // @process
-      o.oeSaveValue  = FUiDateTime_oeSaveValue;
+      o.oeSaveValue  = FDuiDateTime_oeSaveValue;
       //..........................................................
       // @method
-      o.construct    = FUiDateTime_construct;
-      o.formatValue  = FUiDateTime_formatValue;
-      o.text         = FUiDateTime_text;
-      o.setText      = FUiDateTime_setText;
-      o.validText    = FUiDateTime_validText;
-      o.setEditable  = FUiDateTime_setEditable;
-      o.refreshStyle = FUiDateTime_refreshStyle;
-      o.drop         = FUiDateTime_drop;
-      o.dispose      = FUiDateTime_dispose;
+      o.construct    = FDuiDateTime_construct;
+      o.formatValue  = FDuiDateTime_formatValue;
+      o.text         = FDuiDateTime_text;
+      o.setText      = FDuiDateTime_setText;
+      o.validText    = FDuiDateTime_validText;
+      o.setEditable  = FDuiDateTime_setEditable;
+      o.refreshStyle = FDuiDateTime_refreshStyle;
+      o.drop         = FDuiDateTime_drop;
+      o.dispose      = FDuiDateTime_dispose;
       return o;
    }
 
@@ -55,7 +55,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiDateTime_onKeyPress = function FUiDateTime_onKeyPress(e){
+   MO.FDuiDateTime_onKeyPress = function FDuiDateTime_onKeyPress(e){
       if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
          RKey.eventClear(e);
       }
@@ -67,7 +67,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiDateTime_onEditEnd = function FUiDateTime_onEditEnd(e){
+   MO.FDuiDateTime_onEditEnd = function FDuiDateTime_onEditEnd(e){
       var o = this;
       if(e){
          o.set(e.get());
@@ -80,7 +80,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiDateTime_onBuildEdit = function FUiDateTime_onBuildEdit(b){
+   MO.FDuiDateTime_onBuildEdit = function FDuiDateTime_onBuildEdit(b){
       var o = this;
       // 建立编辑控件
       var htb = RBuilder.appendTable(b.hPanel);
@@ -138,7 +138,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiDateTime_oeSaveValue = function FUiDateTime_oeSaveValue(e){
+   MO.FDuiDateTime_oeSaveValue = function FDuiDateTime_oeSaveValue(e){
       var o = this;
       // 设置数据内容
       var dn = RString.nvl(o.dataCode, o.dataName);
@@ -159,9 +159,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiDateTime_construct = function FUiDateTime_construct(){
+   MO.FDuiDateTime_construct = function FDuiDateTime_construct(){
       var o = this;
-      o.base.FUiEditControl.construct.call(o);
+      o.base.FDuiEditControl.construct.call(o);
       o._date = new TDate();
       o.lsnEditEnd = new TListener(o, o.onEditEnd);
    }
@@ -172,7 +172,7 @@ with(MO){
    // @method
    // @param t:text:String 文本内容
    //==========================================================
-   MO.FUiDateTime_formatValue = function FUiDateTime_formatValue(t){
+   MO.FDuiDateTime_formatValue = function FDuiDateTime_formatValue(t){
       if(t){
          var o = this;
          if(t.toLowerCase() == '@now'){
@@ -192,7 +192,7 @@ with(MO){
    // @method
    // @return String 文本内容
    //==========================================================
-   MO.FUiDateTime_text = function FUiDateTime_text(){
+   MO.FDuiDateTime_text = function FDuiDateTime_text(){
       var o = this;
       o._date.setYear(o._date.year);
       o._date.setMonth(o._date.month);
@@ -206,7 +206,7 @@ with(MO){
    // @method
    // @param t:text:String 文本内容
    //==========================================================
-   MO.FUiDateTime_setText = function FUiDateTime_setText(t){
+   MO.FDuiDateTime_setText = function FDuiDateTime_setText(t){
       var o = this;
       if(t){
          RDate.autoParse(o._date, t);
@@ -226,7 +226,7 @@ with(MO){
    // @method
    // @param t:text:String 文本内容
    //==========================================================
-   MO.FUiDateTime_validText = function FUiDateTime_validText(t){
+   MO.FDuiDateTime_validText = function FDuiDateTime_validText(t){
       return null;
    }
 
@@ -236,9 +236,9 @@ with(MO){
    // @method
    // @param v:value:Boolean 可编辑性
    //==========================================================
-   MO.FUiDateTime_setEditable = function FUiDateTime_setEditable(v){
+   MO.FDuiDateTime_setEditable = function FDuiDateTime_setEditable(v){
       var o = this;
-      o.base.FUiEditControl.setEditable.call(o, v);
+      o.base.FDuiEditControl.setEditable.call(o, v);
       o.hYear.readOnly = !v;
       o.hMonth.readOnly = !v;
       o.hDay.readOnly = !v;
@@ -249,9 +249,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiDateTime_refreshStyle = function FUiDateTime_refreshStyle(){
+   MO.FDuiDateTime_refreshStyle = function FDuiDateTime_refreshStyle(){
       var o = this;
-      o.base.FUiEditControl.refreshStyle.call(o);
+      o.base.FDuiEditControl.refreshStyle.call(o);
       o.hYear.style.color = o._textColor;
       o.hYear.style.backgroundColor = o._backColor;
       o.hMonth.style.color = o._textColor;
@@ -265,10 +265,10 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiDateTime_drop = function FUiDateTime_drop(){
+   MO.FDuiDateTime_drop = function FDuiDateTime_drop(){
       var o = this;
       if(o.canDrop() && o._editable){
-         var e = o.editor = RConsole.find(FEditConsole).focus(o, FUiDateTimeEditor, o.editRefer);
+         var e = o.editor = RConsole.find(FEditConsole).focus(o, FDuiDateTimeEditor, o.editRefer);
          e.set(RDate.formatDate(o._date));
          e.setYearVisible(o.editYear);
          e.setMonthVisible(o.editMonth);
@@ -283,9 +283,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiDateTime_dispose = function FUiDateTime_dispose(){
+   MO.FDuiDateTime_dispose = function FDuiDateTime_dispose(){
       var o = this;
-      o.base.FUiEditControl.dispose.call(o);
+      o.base.FDuiEditControl.dispose.call(o);
       o._date = null;
    }
 }

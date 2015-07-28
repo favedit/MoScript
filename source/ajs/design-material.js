@@ -106,7 +106,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCanvasToolBar = function FDsMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._controlSize1      = null;
       o._controlSize2      = null;
       o._controlSize3      = null;
@@ -121,7 +121,7 @@ with(MO){
    }
    MO.FDsMaterialCanvasToolBar_onBuilded = function FDsMaterialCanvasToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlSize1.addClickListener(o, o.onSizeClick);
       o._controlSize2.addClickListener(o, o.onSizeClick);
       o._controlSize3.addClickListener(o, o.onSizeClick);
@@ -149,16 +149,16 @@ with(MO){
    }
    MO.FDsMaterialCanvasToolBar_construct = function FDsMaterialCanvasToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsMaterialCanvasToolBar_dispose = function FDsMaterialCanvasToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMaterialCatalogContent = function FDsMaterialCatalogContent(o){
-      o = RClass.inherits(this, o, FUiListView);
+      o = RClass.inherits(this, o, FDuiListView);
       o._activeItem       = null;
       o._activeGuid       = null;
       o._refreshButton    = null;
@@ -175,7 +175,7 @@ with(MO){
    }
    MO.FDsMaterialCatalogContent_onBuilded = function FDsMaterialCatalogContent_onBuilded(p){
       var o = this;
-      o.__base.FUiListView.onBuilded.call(o, p);
+      o.__base.FDuiListView.onBuilded.call(o, p);
    }
    MO.FDsMaterialCatalogContent_onServiceLoad = function FDsMaterialCatalogContent_onServiceLoad(event){
       var o = this;
@@ -203,15 +203,15 @@ with(MO){
    }
    MO.FDsMaterialCatalogContent_construct = function FDsMaterialCatalogContent_construct(){
       var o = this;
-      o.__base.FUiListView.construct.call(o);
+      o.__base.FDuiListView.construct.call(o);
    }
    MO.FDsMaterialCatalogContent_doClickItem = function FDsMaterialCatalogContent_doClickItem(control){
       var o = this;
-      o.__base.FUiListView.doClickItem.call(o, control);
+      o.__base.FDuiListView.doClickItem.call(o, control);
    }
    MO.FDsMaterialCatalogContent_doDoubleClickItem = function FDsMaterialCatalogContent_doDoubleClickItem(control){
       var o = this;
-      o.__base.FUiListView.doDoubleClickItem.call(o, control)
+      o.__base.FDuiListView.doDoubleClickItem.call(o, control)
       var guid = control._guid;
       o._activeItem = control;
       o._activeGuid = guid;
@@ -226,12 +226,12 @@ with(MO){
    }
    MO.FDsMaterialCatalogContent_dispose = function FDsMaterialCatalogContent_dispose(){
       var o = this;
-      o.__base.FUiListView.dispose.call(o);
+      o.__base.FDuiListView.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMaterialCatalogItem = function FDsMaterialCatalogItem(o){
-      o = RClass.inherits(this, o, FUiListViewItem);
+      o = RClass.inherits(this, o, FDuiListViewItem);
       o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
       o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
       o.onBuild         = FDsMaterialCatalogItem_onBuild;
@@ -241,7 +241,7 @@ with(MO){
    }
    MO.FDsMaterialCatalogItem_onBuild = function FDsMaterialCatalogItem_onBuild(p){
       var o = this;
-      o.__base.FUiListViewItem.onBuild.call(o, p);
+      o.__base.FDuiListViewItem.onBuild.call(o, p);
       var h = o._hPanel;
       h.style.width = '200px';
       h.style.height = '150px';
@@ -260,7 +260,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCatalogToolBar = function FDsMaterialCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._controlCreate   = null;
       o._controlDelete   = null;
       o._controlMoveUp   = null;
@@ -275,7 +275,7 @@ with(MO){
    }
    MO.FDsMaterialCatalogToolBar_onBuilded = function FDsMaterialCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlCreate.addClickListener(o, o.onCreateClick);
       o._controlDelete.addClickListener(o, o.onDeleteClick);
       o._controlMoveUp.addClickListener(o, o.onMoveClick);
@@ -292,11 +292,11 @@ with(MO){
    }
    MO.FDsMaterialCatalogToolBar_construct = function FDsMaterialCatalogToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsMaterialCatalogToolBar_dispose = function FDsMaterialCatalogToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
@@ -430,7 +430,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialImportDialog = function FDsMaterialImportDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.material.ImportDialog';
       o._modeCd               = null;
       o._nodeGuid             = null;
@@ -449,7 +449,7 @@ with(MO){
    }
    MO.FDsMaterialImportDialog_onBuilded = function FDsMaterialImportDialog_onBuilded(event){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, event);
+      o.__base.FDuiDialog.onBuilded.call(o, event);
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
       o._controlCancelButton.addClickListener(o, o.onCancelClick);
    }
@@ -501,7 +501,7 @@ with(MO){
    }
    MO.FDsMaterialImportDialog_construct = function FDsMaterialImportDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsMaterialImportDialog_switchModeCd = function FDsMaterialImportDialog_switchModeCd(modeCd){
       var o = this;
@@ -521,12 +521,12 @@ with(MO){
    }
    MO.FDsMaterialImportDialog_dispose = function FDsMaterialImportDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMaterialMenuBar = function FDsMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       o._controlBack     = null;
       o._controlSave     = null;
       o._controlProperty = null;
@@ -553,7 +553,7 @@ with(MO){
    }
    MO.FDsMaterialMenuBar_onBuilded = function FDsMaterialMenuBar_onBuilded(p){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, p);
+      o.__base.FDuiMenuBar.onBuilded.call(o, p);
       o._controlBack.addClickListener(o, o.onBackClick);
       o._controlSave.addClickListener(o, o.onSaveClick);
       o._controlProperty.addClickListener(o, o.onPropertyClick);
@@ -591,7 +591,7 @@ with(MO){
       if(!item){
          return alert('请选中位图');
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._activeItem = item;
       dialog.switchModeCd('select');
@@ -602,7 +602,7 @@ with(MO){
    }
    MO.FDsMaterialMenuBar_onImportClick = function FDsMaterialMenuBar_onImportClick(event){
       var o = this;
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsMaterialImportDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
       dialog._frameSet = o._frameSet;
       dialog.switchModeCd('import');
       dialog._controlCode.set('');
@@ -640,16 +640,16 @@ with(MO){
    }
    MO.FDsMaterialMenuBar_construct = function FDsMaterialMenuBar_construct(){
       var o = this;
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
    MO.FDsMaterialMenuBar_dispose = function FDsMaterialMenuBar_dispose(){
       var o = this;
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMaterialPropertyFrame = function FDsMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._activeResource = null;
       o._controlGuid    = null;
       o._controlCode    = null;
@@ -663,11 +663,11 @@ with(MO){
    }
    MO.FDsMaterialPropertyFrame_construct = function FDsMaterialPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsMaterialPropertyFrame_onBuilded = function FDsMaterialPropertyFrame_onBuilded(event){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, event);
+      o.__base.FDuiForm.onBuilded.call(o, event);
       o._controlCode.addDataChangedListener(o, o.onDataChanged);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
    }
@@ -686,12 +686,12 @@ with(MO){
    }
    MO.FDsMaterialPropertyFrame_dispose = function FDsMaterialPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMaterialPropertyToolBar = function FDsMaterialPropertyToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.material.PropertyToolBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsMaterialPropertyToolBar_onBuilded;
@@ -702,7 +702,7 @@ with(MO){
    }
    MO.FDsMaterialPropertyToolBar_onBuilded = function FDsMaterialPropertyToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlRefresh.addClickListener(o, o.onRefreshClick);
    }
    MO.FDsMaterialPropertyToolBar_onRefreshClick = function FDsMaterialPropertyToolBar_onRefreshClick(p){
@@ -776,16 +776,16 @@ with(MO){
    }
    MO.FDsMaterialPropertyToolBar_construct = function FDsMaterialPropertyToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsMaterialPropertyToolBar_dispose = function FDsMaterialPropertyToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMaterialSelectDialog = function FDsMaterialSelectDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.material.SelectDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -802,7 +802,7 @@ with(MO){
    }
    MO.FDsMaterialSelectDialog_onBuilded = function FDsMaterialSelectDialog_onBuilded(event){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, event);
+      o.__base.FDuiDialog.onBuilded.call(o, event);
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
       o._controlCancelButton.addClickListener(o, o.onCancelClick);
    }
@@ -836,11 +836,11 @@ with(MO){
    }
    MO.FDsMaterialSelectDialog_construct = function FDsMaterialSelectDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsMaterialSelectDialog_dispose = function FDsMaterialSelectDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){

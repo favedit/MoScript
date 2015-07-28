@@ -19,16 +19,16 @@ with(MO){
    //==========================================================
    MO.FDsShareTemplateToolBar_onBuild = function FDsShareTemplateToolBar_onBuild(p){
       var o = this;
-      o.__base.FUiToolBar.onBuild.call(o, p);
+      o.__base.FDuiToolBar.onBuild.call(o, p);
       // 建立按键
-      var b = o._refreshButton  = RClass.create(FUiToolButton);
+      var b = o._refreshButton  = RClass.create(FDuiToolButton);
       b.setLabel('刷新');
       b.setIcon('design3d.tools.refresh');
       b.build(p);
       b.addClickListener(o, o.onRefreshClick);
       o.push(b);
       // 建立按键
-      var b = o._saveButton = RClass.create(FUiToolButton);
+      var b = o._saveButton = RClass.create(FDuiToolButton);
       b.setLabel('保存');
       b.setIcon('design3d.tools.save');
       b.build(p);
@@ -81,7 +81,7 @@ with(MO){
    MO.FDsShareTemplateToolBar_construct = function FDsShareTemplateToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -92,6 +92,6 @@ with(MO){
    MO.FDsShareTemplateToolBar_dispose = function FDsShareTemplateToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

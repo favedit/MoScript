@@ -192,7 +192,7 @@ with(MO){
    // <T>根据名称获得属性页面。</T>
    //
    // @method
-   // @return FUiFrame 页面
+   // @return FDuiFrame 页面
    //==========================================================
    MO.FDsResourceWorkspace_findPropertyFrame = function FDsResourceWorkspace_findPropertyFrame(p){
       var o = this;

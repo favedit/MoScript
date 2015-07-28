@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @history 150402
    //==========================================================
-   MO.FUiPopupMenu = function FUiPopupMenu(o){
+   MO.FDuiPopupMenu = function FDuiPopupMenu(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiPopup);
       //..........................................................
       // @style
@@ -30,16 +30,16 @@ with(MO){
       o._hText          = null;
       //..........................................................
       // @event
-      o.onBuild         = FUiPopupMenu_onBuild;
+      o.onBuild         = FDuiPopupMenu_onBuild;
       //..........................................................
       // @method
-      o.appendChild     = FUiPopupMenu_appendChild;
-      o.show            = FUiPopupMenu_show;
-      o.setVisible      = FUiPopupMenu_setVisible;
-      o.testInRange     = FUiPopupMenu_testInRange;
-      o.doBlur          = FUiPopupMenu_doBlur;
+      o.appendChild     = FDuiPopupMenu_appendChild;
+      o.show            = FDuiPopupMenu_show;
+      o.setVisible      = FDuiPopupMenu_setVisible;
+      o.testInRange     = FDuiPopupMenu_testInRange;
+      o.doBlur          = FDuiPopupMenu_doBlur;
       // @method
-      o.dispose         = FUiPopupMenu_dispose;
+      o.dispose         = FDuiPopupMenu_dispose;
       return o;
    }
 
@@ -49,7 +49,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiPopupMenu_onBuild = function FUiPopupMenu_onBuild(event){
+   MO.FDuiPopupMenu_onBuild = function FDuiPopupMenu_onBuild(event){
       var o = this;
       o.__base.FDuiContainer.onBuild.call(o, event);
       var hPanel = o._hPanel;
@@ -87,7 +87,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPopupMenu_doBlur = function FUiPopupMenu_doBlur(){
+   MO.FDuiPopupMenu_doBlur = function FDuiPopupMenu_doBlur(){
       var o = this;
       //if(o._opener){
       //   o._opener.onBlur();
@@ -102,7 +102,7 @@ with(MO){
    // @method
    // @param control:FDuiControl 控件
    //==========================================================
-   MO.FUiPopupMenu_appendChild = function FUiPopupMenu_appendChild(control){
+   MO.FDuiPopupMenu_appendChild = function FDuiPopupMenu_appendChild(control){
       var o = this;
       var hButtonPanel = RBuilder.appendTableRowCell(o._hContainer);
       hButtonPanel.className = o.styleName('Button');
@@ -115,7 +115,7 @@ with(MO){
    // @method
    // @param visible:Boolean 是否显示
    //==========================================================
-   MO.FUiPopupMenu_show = function FUiPopupMenu_show(h, positionCd, v){
+   MO.FDuiPopupMenu_show = function FDuiPopupMenu_show(h, positionCd, v){
       var o = this;
       var hPanel = o._hPanel;
       var opener = o._opener;
@@ -141,7 +141,7 @@ with(MO){
       style.left = '3px';
       style.top = (openerHeight + 1) + 'px';
       style.width = width + 'px';
-      style.zIndex = RUiLayer.next();
+      style.zIndex = RDuiLayer.next();
       //o.focus();
    }
 
@@ -151,7 +151,7 @@ with(MO){
    // @method
    // @param visible:Boolean 是否显示
    //==========================================================
-   MO.FUiPopupMenu_setVisible = function FUiPopupMenu_setVisible(visible){
+   MO.FDuiPopupMenu_setVisible = function FDuiPopupMenu_setVisible(visible){
       var o = this;
       var opener = o._opener;
       o._statusVisible = visible;
@@ -167,12 +167,12 @@ with(MO){
 
 
    // ------------------------------------------------------------
-   MO.FUiPopupMenu_testInRange = function FUiPopupMenu_testInRange(e){
-      return this == RControl.htmlControl(e.srcElement, FUiPopupMenu);
+   MO.FDuiPopupMenu_testInRange = function FDuiPopupMenu_testInRange(e){
+      return this == RControl.htmlControl(e.srcElement, FDuiPopupMenu);
    }
 
    // ------------------------------------------------------------
-   MO.FUiPopupMenu_dispose = function FUiPopupMenu_dispose(e){
+   MO.FDuiPopupMenu_dispose = function FDuiPopupMenu_dispose(e){
       var o = this;
       o._hContainer = RMemory.free(o._hContainer);
       o._hPanel = RMemory.free(o._hPanel);

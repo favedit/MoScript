@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150225
 //==========================================================
-MO.RUiLayer = function RUiLayer(){
+MO.RDuiLayer = function RDuiLayer(){
    var o = this;
    //..........................................................
    // @attribute
@@ -20,7 +20,7 @@ MO.RUiLayer = function RUiLayer(){
 // @param p:typeCd:EUiLayer 层类型
 // @return Integer 层数
 //==========================================================
-MO.RUiLayer.prototype.next = function RUiLayer_next(p){
+MO.RDuiLayer.prototype.next = function RDuiLayer_next(p){
    var o = this;
    var n = MO.Lang.Integer.nvl(p, EUiLayer.Default);
    var c = MO.Lang.Integer.nvl(o._layers[n], n);
@@ -36,7 +36,7 @@ MO.RUiLayer.prototype.next = function RUiLayer_next(p){
 // @param l:layer:Integer 层数据
 // @return Integer 层数
 //==========================================================
-MO.RUiLayer.prototype.free = function RUiLayer_free(p, l){
+MO.RDuiLayer.prototype.free = function RDuiLayer_free(p, l){
    var o = this;
    var n = MO.Lang.Integer.nvl(p, EUiLayer.Default);
    var c = MO.Lang.Integer.nvl(o._layers[n], n);
@@ -48,4 +48,4 @@ MO.RUiLayer.prototype.free = function RUiLayer_free(p, l){
 }
 //..........................................................
 // 实例化内容
-MO.RUiLayer = new MO.RUiLayer();
+MO.RDuiLayer = new MO.RDuiLayer();

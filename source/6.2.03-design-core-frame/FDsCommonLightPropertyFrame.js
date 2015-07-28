@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsCommonLightPropertyFrame = function FDsCommonLightPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible      = false;
@@ -37,7 +37,7 @@ with(MO){
    MO.FDsCommonLightPropertyFrame_construct = function FDsCommonLightPropertyFrame_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
 
    //==========================================================
@@ -70,6 +70,6 @@ with(MO){
    MO.FDsCommonLightPropertyFrame_dispose = function FDsCommonLightPropertyFrame_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }

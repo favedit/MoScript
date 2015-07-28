@@ -18,7 +18,7 @@ with(MO){
    // @author maocy
    // @history 150224
    //==========================================================
-   MO.FUiListBox = function FUiListBox(o){
+   MO.FDuiListBox = function FDuiListBox(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiHorizontal, MListenerClick);
       //..........................................................
       // @property
@@ -31,14 +31,14 @@ with(MO){
       o._hForm       = null;
       //..........................................................
       // @event
-      o.onBuildPanel = FUiListBox_onBuildPanel;
+      o.onBuildPanel = FDuiListBox_onBuildPanel;
       //..........................................................
       // @method
-      o.createItem   = FUiListBox_createItem;
-      o.appendChild  = FUiListBox_appendChild;
-      o.clickItem    = FUiListBox_clickItem;
-      o.clear        = FUiListBox_clear;
-      o.dispose      = FUiListBox_dispose;
+      o.createItem   = FDuiListBox_createItem;
+      o.appendChild  = FDuiListBox_appendChild;
+      o.clickItem    = FDuiListBox_clickItem;
+      o.clear        = FDuiListBox_clear;
+      o.dispose      = FDuiListBox_dispose;
       return o;
    }
 
@@ -48,7 +48,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiListBox_onBuildPanel = function FUiListBox_onBuildPanel(p){
+   MO.FDuiListBox_onBuildPanel = function FDuiListBox_onBuildPanel(p){
       var o = this;
       // 建立编辑控件
       o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
@@ -60,11 +60,11 @@ with(MO){
    // @method
    // @param icon:String 图标
    // @param label:String 标签
-   // @return FUiListItem 列表项目
+   // @return FDuiListItem 列表项目
    //==========================================================
-   MO.FUiListBox_createItem = function FUiListBox_createItem(icon, label){
+   MO.FDuiListBox_createItem = function FDuiListBox_createItem(icon, label){
       var o = this;
-      var item = RClass.create(FUiListItem);
+      var item = RClass.create(FDuiListItem);
       item.build(o._hPanel);
       item.setLabel(label);
       return item;
@@ -76,7 +76,7 @@ with(MO){
    // @method
    // @return control:FControl 控件
    //==========================================================
-   MO.FUiListBox_appendChild = function FUiListBox_appendChild(control){
+   MO.FDuiListBox_appendChild = function FDuiListBox_appendChild(control){
       var o = this;
       o._hPanel.appendChild(control._hPanel);
    }
@@ -85,9 +85,9 @@ with(MO){
    // <T>点击一个列表项目。</T>
    //
    // @method
-   // @param item:FUiListItem 列表项目
+   // @param item:FDuiListItem 列表项目
    //==========================================================
-   MO.FUiListBox_clickItem = function FUiListBox_clickItem(item){
+   MO.FDuiListBox_clickItem = function FDuiListBox_clickItem(item){
       var o = this;
       // 选中项目
       var components = o._components;
@@ -95,7 +95,7 @@ with(MO){
          var count = components.count();
          for(var i = 0; i < count; i++){
             var component = components.at(i);
-            if(RClass.isClass(component, FUiListItem)){
+            if(RClass.isClass(component, FDuiListItem)){
                component.setChecked(component == item);
             }
          }
@@ -112,14 +112,14 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiListBox_clear = function FUiListBox_clear(){
+   MO.FDuiListBox_clear = function FDuiListBox_clear(){
       var o = this;
       var components = o._components;
       if(components){
          var count = components.count();
          for(var i = 0; i < count; i++){
             var component = components.at(i);
-            if(RClass.isClass(component, FUiListItem)){
+            if(RClass.isClass(component, FDuiListItem)){
                o._hPanel.removeChild(component._hPanel);
             }
             component.dispose();
@@ -134,7 +134,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiListBox_dispose = function FUiListBox_dispose(){
+   MO.FDuiListBox_dispose = function FDuiListBox_dispose(){
       var o = this;
       o.__base.FContainer.dispose.call(o);
    }

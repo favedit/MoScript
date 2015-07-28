@@ -1,8 +1,8 @@
 with(MO){
    // ============================================================
-   // FCheckPickerEditor
+   // FDuiCheckPickerEditor
    // ============================================================
-   MO.FCheckPickerEditor = function FCheckPickerEditor(o){
+   MO.FDuiCheckPickerEditor = function FDuiCheckPickerEditor(o){
       o = RClass.inherits(this, o, FDropEditor, MShadow);
       // Constant
       o.MinWidth         = 120;
@@ -23,28 +23,28 @@ with(MO){
       // Html
       o.hBtnTextSpan     = null;
       // Event
-      o.onBuildDrop      = FCheckPickerEditor_onBuildDrop;
-      o.onBuildButton    = FCheckPickerEditor_onBuildButton;
-      o.onItemClick      = FCheckPickerEditor_onItemClick;
-      o.onEditKeyDown    = FCheckPickerEditor_onEditKeyDown;
+      o.onBuildDrop      = FDuiCheckPickerEditor_onBuildDrop;
+      o.onBuildButton    = FDuiCheckPickerEditor_onBuildButton;
+      o.onItemClick      = FDuiCheckPickerEditor_onItemClick;
+      o.onEditKeyDown    = FDuiCheckPickerEditor_onEditKeyDown;
       // Method
-      o.construct        = FCheckPickerEditor_construct;
-      o.set              = FCheckPickerEditor_set;
-      o.setItems         = FCheckPickerEditor_setItems;
-      o.select           = FCheckPickerEditor_select;
-      o.linkControl      = FCheckPickerEditor_linkControl;
-      o.show             = FCheckPickerEditor_show;
-      o.hide             = FCheckPickerEditor_hide;
-      o.dispose          = FCheckPickerEditor_dispose;
+      o.construct        = FDuiCheckPickerEditor_construct;
+      o.set              = FDuiCheckPickerEditor_set;
+      o.setItems         = FDuiCheckPickerEditor_setItems;
+      o.select           = FDuiCheckPickerEditor_select;
+      o.linkControl      = FDuiCheckPickerEditor_linkControl;
+      o.show             = FDuiCheckPickerEditor_show;
+      o.hide             = FDuiCheckPickerEditor_hide;
+      o.dispose          = FDuiCheckPickerEditor_dispose;
       return o;
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_construct = function FCheckPickerEditor_construct(){
+   MO.FDuiCheckPickerEditor_construct = function FDuiCheckPickerEditor_construct(){
       var o = this;
       o.itemClickListener = new TListener(o, o.onItemClick);
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_onBuildDrop = function FCheckPickerEditor_onBuildDrop(){
+   MO.FDuiCheckPickerEditor_onBuildDrop = function FDuiCheckPickerEditor_onBuildDrop(){
       var o = this;
       o.hItemsForm = RBuilder.appendTable(o.hDropPanel);
       o.hItemsForm.width = '100%';
@@ -52,14 +52,14 @@ with(MO){
       o.onBuildButton();
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_onBuildButton = function FCheckPickerEditor_onBuildButton(){
+   MO.FDuiCheckPickerEditor_onBuildButton = function FDuiCheckPickerEditor_onBuildButton(){
       var o = this;
       o.base.FDropEditor.onBuildButton.call(o);
       var h = o.hBtnTextSpan = RBuilder.newSpan(o.hButtonPanel, null);
       h.innerText = 'colse';
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_onItemClick = function FCheckPickerEditor_onItemClick(s){
+   MO.FDuiCheckPickerEditor_onItemClick = function FDuiCheckPickerEditor_onItemClick(s){
       var o = this;
       s.setChecked(!s.checked);
       var ts = o.items.items;
@@ -76,7 +76,7 @@ with(MO){
       //o.hide();
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_select = function FCheckPickerEditor_select(p){
+   MO.FDuiCheckPickerEditor_select = function FDuiCheckPickerEditor_select(p){
       var o = this;
       var cs = o.components;
       p = Math.min(Math.max(0, p), cs.count-1)
@@ -86,12 +86,12 @@ with(MO){
       o.position = p;
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_onEditKeyDown = function FCheckPickerEditor_onEditKeyDown(s, e){
+   MO.FDuiCheckPickerEditor_onEditKeyDown = function FDuiCheckPickerEditor_onEditKeyDown(s, e){
       var o = this;
       return;
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_set = function FCheckPickerEditor_set(v){
+   MO.FDuiCheckPickerEditor_set = function FDuiCheckPickerEditor_set(v){
       var o = this;
       var cs = o.components;
       var cl = cs.count;
@@ -110,7 +110,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_setItems = function FCheckPickerEditor_setItems(items){
+   MO.FDuiCheckPickerEditor_setItems = function FDuiCheckPickerEditor_setItems(items){
       var o = this;
       if(o.components){
          return;
@@ -140,7 +140,7 @@ with(MO){
       o.position = 0;
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_linkControl = function FCheckPickerEditor_linkControl(c){
+   MO.FDuiCheckPickerEditor_linkControl = function FDuiCheckPickerEditor_linkControl(c){
       var o = this;
       if(o.source == c){
          return false;
@@ -156,7 +156,7 @@ with(MO){
       return true;
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_show = function FCheckPickerEditor_show(v){
+   MO.FDuiCheckPickerEditor_show = function FDuiCheckPickerEditor_show(v){
       var o = this;
       o.base.FDropEditor.show.call(o, v);
       RConsole.find(FFocusConsole).focus(o);
@@ -167,14 +167,14 @@ with(MO){
       o.isSkipBlur = false;
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_hide = function FCheckPickerEditor_hide(){
+   MO.FDuiCheckPickerEditor_hide = function FDuiCheckPickerEditor_hide(){
       var o = this;
       o.source = null;
       o.base.FDropEditor.hide.call(o);
       o.base.MShadow.hide.call(o);
    }
    // ------------------------------------------------------------
-   MO.FCheckPickerEditor_dispose = function FCheckPickerEditor_dispose(){
+   MO.FDuiCheckPickerEditor_dispose = function FDuiCheckPickerEditor_dispose(){
       var o = this;
       o.base.FDropEditor.dispose.call(o);
       RMemory.freeHtml(o.hPanel);

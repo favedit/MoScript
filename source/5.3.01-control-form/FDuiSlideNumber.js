@@ -20,8 +20,8 @@ with(MO){
    // @author maocy
    // @version 150131
    //==========================================================
-   MO.FUiSlideNumber = function FUiSlideNumber(o){
-      o = RClass.inherits(this, o, FUiEditControl, MPropertyNumber, MListenerDataChanged, MMouseCapture);
+   MO.FDuiSlideNumber = function FDuiSlideNumber(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MPropertyNumber, MListenerDataChanged, MMouseCapture);
       //..........................................................
       // @property
       o._inputSize          = RClass.register(o, new APtySize2('_inputSize'));
@@ -46,23 +46,23 @@ with(MO){
       o._iconDown           = null;
       //..........................................................
       // @event
-      o.onBuildEditValue    = FUiSlideNumber_onBuildEditValue;
+      o.onBuildEditValue    = FDuiSlideNumber_onBuildEditValue;
       // @event
-      o.onMouseCaptureStart = FUiSlideNumber_onMouseCaptureStart;
-      o.onMouseCapture      = FUiSlideNumber_onMouseCapture;
-      o.onMouseCaptureStop  = FUiSlideNumber_onMouseCaptureStop;
-      o.onSlideChange       = FUiSlideNumber_onSlideChange;
-      o.onInputKeyPress     = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiSlideNumber_onInputKeyPress);
-      o.onInputEdit         = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiSlideNumber_onInputEdit);
-      o.onInputChange       = RClass.register(o, new AEventChange('onInputChange'), FUiSlideNumber_onInputChange);
+      o.onMouseCaptureStart = FDuiSlideNumber_onMouseCaptureStart;
+      o.onMouseCapture      = FDuiSlideNumber_onMouseCapture;
+      o.onMouseCaptureStop  = FDuiSlideNumber_onMouseCaptureStop;
+      o.onSlideChange       = FDuiSlideNumber_onSlideChange;
+      o.onInputKeyPress     = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiSlideNumber_onInputKeyPress);
+      o.onInputEdit         = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiSlideNumber_onInputEdit);
+      o.onInputChange       = RClass.register(o, new AEventChange('onInputChange'), FDuiSlideNumber_onInputChange);
       //..........................................................
       // @method
-      o.construct           = FUiSlideNumber_construct;
+      o.construct           = FDuiSlideNumber_construct;
       // @method
-      o.get                 = FUiSlideNumber_get;
-      o.set                 = FUiSlideNumber_set;
-      o.setInputValue       = FUiSlideNumber_setInputValue;
-      o.refreshValue        = FUiSlideNumber_refreshValue;
+      o.get                 = FDuiSlideNumber_get;
+      o.set                 = FDuiSlideNumber_set;
+      o.setInputValue       = FDuiSlideNumber_setInputValue;
+      o.refreshValue        = FDuiSlideNumber_refreshValue;
       return o;
    }
 
@@ -72,7 +72,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiSlideNumber_onBuildEditValue = function FUiSlideNumber_onBuildEditValue(p){
+   MO.FDuiSlideNumber_onBuildEditValue = function FDuiSlideNumber_onBuildEditValue(p){
       var o = this;
       var hp = o._hValuePanel;
       hp.className = o.styleName('ValuePanel');
@@ -87,7 +87,7 @@ with(MO){
       //..........................................................
       // 建立滑动栏
       var hsp = o._hSlidePanel = RBuilder.appendTableCell(hl, o.styleName('SlidePanel'));
-      var b = o._slide = new SUiSlide();
+      var b = o._slide = new SDuiSlide();
       b.control = o;
       b.hPanel = hsp;
       b.setRange(o._valueMin, o._valueMax);
@@ -130,7 +130,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiSlideNumber_onMouseCaptureStart = function FUiSlideNumber_onMouseCaptureStart(p){
+   MO.FDuiSlideNumber_onMouseCaptureStart = function FDuiSlideNumber_onMouseCaptureStart(p){
       var o = this;
       var c = RHtml.searchObject(p.hSource, '__pcapture');
       if(c){
@@ -143,7 +143,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiSlideNumber_onMouseCapture = function FUiSlideNumber_onMouseCapture(p){
+   MO.FDuiSlideNumber_onMouseCapture = function FDuiSlideNumber_onMouseCapture(p){
       var o = this;
       var c = RHtml.searchObject(p.hSource, '__pcapture');
       if(c){
@@ -156,7 +156,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiSlideNumber_onMouseCaptureStop = function FUiSlideNumber_onMouseCaptureStop(p){
+   MO.FDuiSlideNumber_onMouseCaptureStop = function FDuiSlideNumber_onMouseCaptureStop(p){
       var o = this;
       var c = RHtml.searchObject(p.hSource, '__pcapture');
       if(c){
@@ -169,7 +169,7 @@ with(MO){
    //
    // @param p:value:Number 内容
    //==========================================================
-   MO.FUiSlideNumber_onSlideChange = function FUiSlideNumber_onSlideChange(p){
+   MO.FDuiSlideNumber_onSlideChange = function FDuiSlideNumber_onSlideChange(p){
       var o = this;
       // 设置输入内容
       o.setInputValue(p);
@@ -182,7 +182,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiSlideNumber_onInputKeyPress = function FUiSlideNumber_onInputKeyPress(p){
+   MO.FDuiSlideNumber_onInputKeyPress = function FDuiSlideNumber_onInputKeyPress(p){
       var o = this;
       var c = p.keyCode;
       // 检查输入字符是否为浮点数，否则给清除输入内容
@@ -196,7 +196,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiSlideNumber_onInputEdit = function FUiSlideNumber_onInputEdit(p){
+   MO.FDuiSlideNumber_onInputEdit = function FDuiSlideNumber_onInputEdit(p){
       var o = this;
       // 设置滑动栏
       var v = o._hInput.value;
@@ -210,7 +210,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiSlideNumber_onInputChange = function FUiSlideNumber_onInputChange(p){
+   MO.FDuiSlideNumber_onInputChange = function FDuiSlideNumber_onInputChange(p){
       var o = this;
       // 设置数据内容
       var v = o._hInput.value;
@@ -225,9 +225,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSlideNumber_construct = function FUiSlideNumber_construct(){
+   MO.FDuiSlideNumber_construct = function FDuiSlideNumber_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
    }
 
@@ -237,7 +237,7 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiSlideNumber_get = function FUiSlideNumber_get(p){
+   MO.FDuiSlideNumber_get = function FDuiSlideNumber_get(p){
       var o = this;
       // 获得显示
       var v = o._hInput.value;
@@ -251,9 +251,9 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiSlideNumber_set = function FUiSlideNumber_set(p){
+   MO.FDuiSlideNumber_set = function FDuiSlideNumber_set(p){
       var o = this;
-      o.__base.FUiEditControl.set.call(o, p);
+      o.__base.FDuiEditControl.set.call(o, p);
       // 获得内容
       var v = RString.nvl(p, '0');
       o._innerOriginValue = v;
@@ -271,7 +271,7 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiSlideNumber_setInputValue = function FUiSlideNumber_setInputValue(p){
+   MO.FDuiSlideNumber_setInputValue = function FDuiSlideNumber_setInputValue(p){
       var o = this;
       // 设置显示
       var v = RFloat.parse(p);
@@ -288,7 +288,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSlideNumber_refreshValue = function FUiSlideNumber_refreshValue(){
+   MO.FDuiSlideNumber_refreshValue = function FDuiSlideNumber_refreshValue(){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);

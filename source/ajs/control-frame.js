@@ -1,41 +1,41 @@
-MO.FUiDialog = function FUiDialog(o){
-   o = MO.Class.inherits(this, o, MO.FUiWindow, MO.MUiDescribeFrame);
-   o.construct = MO.FUiDialog_construct;
+MO.FDuiDialog = function FDuiDialog(o){
+   o = MO.Class.inherits(this, o, MO.FDuiWindow, MO.MUiDescribeFrame);
+   o.construct = MO.FDuiDialog_construct;
    return o;
 }
-MO.FUiDialog_construct = function FUiDialog_construct(){
+MO.FDuiDialog_construct = function FDuiDialog_construct(){
    var o = this;
-   o.__base.FUiWindow.construct.call(o);
+   o.__base.FDuiWindow.construct.call(o);
 }
-MO.FUiFramePage = function FUiFramePage(o){
+MO.FDuiFramePage = function FDuiFramePage(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer);
    o._styleContainer = MO.Class.register(o, new MO.AStyle('_styleContainer'));
    o._hContainer     = null;
-   o.onBuildPanel    = MO.FUiFramePage_onBuildPanel;
-   o.onBuild         = MO.FUiFramePage_onBuild;
-   o.oeResize        = MO.FUiFramePage_oeResize;
-   o.appendChild     = MO.FUiFramePage_appendChild;
-   o.removeChild     = MO.FUiFramePage_removeChild;
+   o.onBuildPanel    = MO.FDuiFramePage_onBuildPanel;
+   o.onBuild         = MO.FDuiFramePage_onBuild;
+   o.oeResize        = MO.FDuiFramePage_oeResize;
+   o.appendChild     = MO.FDuiFramePage_appendChild;
+   o.removeChild     = MO.FDuiFramePage_removeChild;
    return o;
 }
-MO.FUiFramePage_onBuildPanel = function FUiFramePage_onBuildPanel(p){
+MO.FDuiFramePage_onBuildPanel = function FDuiFramePage_onBuildPanel(p){
    var o = this;
    var hPanel = o._hPanel = MO.Window.Builder.createTableCell(p, o.styleName('Panel'));
    hPanel.vAlign = 'top';
    hPanel.height = '100%';
 }
-MO.FUiFramePage_onBuild = function FUiFramePage_onBuild(p){
+MO.FDuiFramePage_onBuild = function FDuiFramePage_onBuild(p){
    var o = this;
    o.__base.FDuiContainer.onBuild.call(o, p);
    var h = o._hPanel;
    if(o._scrollCd != MO.EUiScroll.None){
       var hc = o._hContainer = MO.Window.Builder.appendDiv(h, o.styleName('Container'));
-      MO.RUiControl.setStyleScroll(hc, o._scrollCd);
+      MO.RDuiControl.setStyleScroll(hc, o._scrollCd);
    }else{
       o._hContainer = h;
    }
 }
-MO.FUiFramePage_oeResize = function FUiFramePage_oeResize(p){
+MO.FDuiFramePage_oeResize = function FDuiFramePage_oeResize(p){
    var o = this;
    var p = o._parent;
    if(p._directionCd == MO.EUiDirection.Horizontal){
@@ -45,41 +45,41 @@ MO.FUiFramePage_oeResize = function FUiFramePage_oeResize(p){
    }
    return MO.EEventStatus.Continue;
 }
-MO.FUiFramePage_appendChild = function FUiFramePage_appendChild(control){
+MO.FDuiFramePage_appendChild = function FDuiFramePage_appendChild(control){
    var o = this;
    if(control._hPanel){
       o._hContainer.appendChild(control._hPanel);
    }
 }
-MO.FUiFramePage_removeChild = function FUiFramePage_removeChild(control){
+MO.FDuiFramePage_removeChild = function FDuiFramePage_removeChild(control){
    var o = this;
    o._hContainer.removeChild(control._hPanel);
 }
-MO.FUiFrameSet = function FUiFrameSet(o){
+MO.FDuiFrameSet = function FDuiFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDescribeFrame);
    o._sizeCd       = MO.EUiSize.Fill;
    o._directionCd  = MO.Class.register(o, new MO.APtyEnum('_directionCd', null, MO.EUiDirection), MO.EUiDirection.Vertical);
    o._stylePanel   = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    o._frames       = null;
    o._hLine        = null;
-   o.onBuildPanel  = MO.FUiFrameSet_onBuildPanel;
-   o.construct     = MO.FUiFrameSet_construct;
-   o.appendFrame   = MO.FUiFrameSet_appendFrame;
-   o.appendSpliter = MO.FUiFrameSet_appendSpliter;
-   o.appendChild   = MO.FUiFrameSet_appendChild;
-   o.dispose       = MO.FUiFrameSet_dispose;
+   o.onBuildPanel  = MO.FDuiFrameSet_onBuildPanel;
+   o.construct     = MO.FDuiFrameSet_construct;
+   o.appendFrame   = MO.FDuiFrameSet_appendFrame;
+   o.appendSpliter = MO.FDuiFrameSet_appendSpliter;
+   o.appendChild   = MO.FDuiFrameSet_appendChild;
+   o.dispose       = MO.FDuiFrameSet_dispose;
    return o;
 }
-MO.FUiFrameSet_onBuildPanel = function FUiFrameSet_onBuildPanel(p){
+MO.FDuiFrameSet_onBuildPanel = function FDuiFrameSet_onBuildPanel(p){
    var o = this;
    o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
 }
-MO.FUiFrameSet_construct = function FUiFrameSet_construct(){
+MO.FDuiFrameSet_construct = function FDuiFrameSet_construct(){
    var o = this;
    o.__base.FDuiContainer.construct.call(o);
    o._frames = new MO.TObjects();
 }
-MO.FUiFrameSet_appendFrame = function FUiFrameSet_appendFrame(frame){
+MO.FDuiFrameSet_appendFrame = function FDuiFrameSet_appendFrame(frame){
    var o = this;
    if(o._directionCd == MO.EUiDirection.Horizontal){
       var hLine = o._hLine;
@@ -103,13 +103,13 @@ MO.FUiFrameSet_appendFrame = function FUiFrameSet_appendFrame(frame){
    }
    o._frames.push(frame);
 }
-MO.FUiFrameSet_appendSpliter = function FUiFrameSet_appendSpliter(p){
+MO.FDuiFrameSet_appendSpliter = function FDuiFrameSet_appendSpliter(p){
    var o = this;
    var sp = null;
    if(p){
       sp = p;
    }else{
-      sp = MO.Class.create(MO.FUiFrameSpliter);
+      sp = MO.Class.create(MO.FDuiFrameSpliter);
       sp.build(o._hPanel);
    }
    if(o._directionCd == MO.EUiDirection.Horizontal){
@@ -125,23 +125,23 @@ MO.FUiFrameSet_appendSpliter = function FUiFrameSet_appendSpliter(p){
    o._frames.push(sp);
    return sp;
 }
-MO.FUiFrameSet_appendChild = function FUiFrameSet_appendChild(p){
+MO.FDuiFrameSet_appendChild = function FDuiFrameSet_appendChild(p){
    var o = this;
    p._frameset = o;
-   if(MO.Class.isClass(p, MO.FUiFramePage)){
+   if(MO.Class.isClass(p, MO.FDuiFramePage)){
       o.appendFrame(p);
       return;
-   }else if(MO.Class.isClass(p, MO.FUiFrameSpliter)){
+   }else if(MO.Class.isClass(p, MO.FDuiFrameSpliter)){
       o.appendSpliter(p);
       return;
    }
    o.__base.FDuiContainer.appendChild.call(o, p);
 }
-MO.FUiFrameSet_dispose = function FUiFrameSet_dispose(){
+MO.FDuiFrameSet_dispose = function FDuiFrameSet_dispose(){
    var o = this;
    o.__base.FDuiContainer.dispose.call(o);
 }
-MO.FUiFrameSpliter = function FUiFrameSpliter(o){
+MO.FDuiFrameSpliter = function FDuiFrameSpliter(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDragable);
    o._styleNormal  = MO.Class.register(o, new MO.AStyle('_styleNormal', 'Normal'));
    o._styleHover   = MO.Class.register(o, new MO.AStyle('_styleHover', 'Hover'));
@@ -158,28 +158,28 @@ MO.FUiFrameSpliter = function FUiFrameSpliter(o){
    o._hDrag        = null;
    o._hSize        = null;
    o._hIcon        = null;
-   o.onBuildPanel  = MO.FUiFrameSpliter_onBuildPanel
-   o.onBuild       = MO.FUiFrameSpliter_onBuild;
-   o.onMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onMouseEnter'), MO.FUiFrameSpliter_onMouseEnter);
-   o.onMouseLeave  = MO.Class.register(o, new MO.AEventMouseLeave('onMouseLeave'), MO.FUiFrameSpliter_onMouseLeave);
-   o.onDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDoubleClick'), MO.FUiFrameSpliter_onDoubleClick);
-   o.onDragStart   = MO.FUiFrameSpliter_onDragStart;
-   o.onDragMove    = MO.FUiFrameSpliter_onDragMove;
-   o.onDragStop    = MO.FUiFrameSpliter_onDragStop;
-   o.construct     = MO.FUiFrameSpliter_construct;
-   o.alignCd       = MO.FUiFrameSpliter_alignCd;
-   o.setAlignCd    = MO.FUiFrameSpliter_setAlignCd;
-   o.sizeHtml      = MO.FUiFrameSpliter_sizeHtml;
-   o.setSizeHtml   = MO.FUiFrameSpliter_setSizeHtml;
-   o.changeVisible = MO.FUiFrameSpliter_changeVisible;
-   o.dispose       = MO.FUiFrameSpliter_dispose;
+   o.onBuildPanel  = MO.FDuiFrameSpliter_onBuildPanel
+   o.onBuild       = MO.FDuiFrameSpliter_onBuild;
+   o.onMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onMouseEnter'), MO.FDuiFrameSpliter_onMouseEnter);
+   o.onMouseLeave  = MO.Class.register(o, new MO.AEventMouseLeave('onMouseLeave'), MO.FDuiFrameSpliter_onMouseLeave);
+   o.onDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDoubleClick'), MO.FDuiFrameSpliter_onDoubleClick);
+   o.onDragStart   = MO.FDuiFrameSpliter_onDragStart;
+   o.onDragMove    = MO.FDuiFrameSpliter_onDragMove;
+   o.onDragStop    = MO.FDuiFrameSpliter_onDragStop;
+   o.construct     = MO.FDuiFrameSpliter_construct;
+   o.alignCd       = MO.FDuiFrameSpliter_alignCd;
+   o.setAlignCd    = MO.FDuiFrameSpliter_setAlignCd;
+   o.sizeHtml      = MO.FDuiFrameSpliter_sizeHtml;
+   o.setSizeHtml   = MO.FDuiFrameSpliter_setSizeHtml;
+   o.changeVisible = MO.FDuiFrameSpliter_changeVisible;
+   o.dispose       = MO.FDuiFrameSpliter_dispose;
    return o;
 }
-MO.FUiFrameSpliter_onBuildPanel = function FUiFrameSpliter_onBuildPanel(p){
+MO.FDuiFrameSpliter_onBuildPanel = function FDuiFrameSpliter_onBuildPanel(p){
    var o = this;
    o._hPanel = MO.Window.Builder.createTableCell(p, o.styleName('Normal'));
 }
-MO.FUiFrameSpliter_onBuild = function FUiFrameSpliter_onBuild(p){
+MO.FDuiFrameSpliter_onBuild = function FDuiFrameSpliter_onBuild(p){
    var o = this;
    o.__base.FDuiControl.onBuild.call(o, p)
    var fs = o._frameset;
@@ -199,20 +199,20 @@ MO.FUiFrameSpliter_onBuild = function FUiFrameSpliter_onBuild(p){
    o._hIcon = MO.Window.Builder.appendIcon(h, null, 'control.FSpliter_Left');
    MO.Console.find(MO.FDragConsole).register(o);
 }
-MO.FUiFrameSpliter_onMouseEnter = function FUiFrameSpliter_onMouseEnter(p){
+MO.FDuiFrameSpliter_onMouseEnter = function FDuiFrameSpliter_onMouseEnter(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Hover');
 }
-MO.FUiFrameSpliter_onMouseLeave = function FUiFrameSpliter_onMouseLeave(p){
+MO.FDuiFrameSpliter_onMouseLeave = function FDuiFrameSpliter_onMouseLeave(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Normal');
 }
-MO.FUiFrameSpliter_onDoubleClick = function FUiFrameSpliter_onDoubleClick(p){
+MO.FDuiFrameSpliter_onDoubleClick = function FDuiFrameSpliter_onDoubleClick(p){
    this.changeVisible();
 }
-MO.FUiFrameSpliter_onDragStart = function FUiFrameSpliter_onDragStart(e){
+MO.FDuiFrameSpliter_onDragStart = function FDuiFrameSpliter_onDragStart(e){
    var o = this;
    var hc = o._hPanel;
    var hd = o._hDrag;
@@ -238,7 +238,7 @@ MO.FUiFrameSpliter_onDragStart = function FUiFrameSpliter_onDragStart(e){
    MO.Window.setOptionSelect(false);
    MO.Window.disable();
 }
-MO.FUiFrameSpliter_onDragMove = function FUiFrameSpliter_onDragMove(e){
+MO.FDuiFrameSpliter_onDragMove = function FDuiFrameSpliter_onDragMove(e){
    var o = this;
    var hd = o._hDrag;
    if(o._directionCd == MO.EUiDirection.Horizontal){
@@ -257,7 +257,7 @@ MO.FUiFrameSpliter_onDragMove = function FUiFrameSpliter_onDragMove(e){
       throw new MO.TError(o, 'Unknown direction type. (direction_cd={1})', o._directionCd);
    }
 }
-MO.FUiFrameSpliter_onDragStop = function FUiFrameSpliter_onDragStop(e){
+MO.FDuiFrameSpliter_onDragStop = function FDuiFrameSpliter_onDragStop(e){
    var o = this;
    var hd = o._hDrag;
    if(o._directionCd == MO.EUiDirection.Horizontal){
@@ -293,14 +293,14 @@ MO.FUiFrameSpliter_onDragStop = function FUiFrameSpliter_onDragStop(e){
    MO.Window.enable();
    MO.Window.setOptionSelect(true);
 }
-MO.FUiFrameSpliter_construct = function FUiFrameSpliter_construct(){
+MO.FDuiFrameSpliter_construct = function FDuiFrameSpliter_construct(){
    var o = this;
    o.__base.FDuiControl.construct.call(o);
 }
-MO.FUiFrameSpliter_alignCd = function FUiFrameSpliter_alignCd(){
+MO.FDuiFrameSpliter_alignCd = function FDuiFrameSpliter_alignCd(){
    return this._alignCd;
 }
-MO.FUiFrameSpliter_setAlignCd = function FUiFrameSpliter_setAlignCd(alignCd){
+MO.FDuiFrameSpliter_setAlignCd = function FDuiFrameSpliter_setAlignCd(alignCd){
    var o = this;
    if(alignCd == MO.EUiAlign.Left){
       o._hIcon.src = MO.RResource.iconPath('control.FSpliter_Left');
@@ -311,13 +311,13 @@ MO.FUiFrameSpliter_setAlignCd = function FUiFrameSpliter_setAlignCd(alignCd){
    }
    o._alignCd = alignCd;
 }
-MO.FUiFrameSpliter_sizeHtml = function FUiFrameSpliter_sizeHtml(){
+MO.FDuiFrameSpliter_sizeHtml = function FDuiFrameSpliter_sizeHtml(){
    return this._hSize;
 }
-MO.FUiFrameSpliter_setSizeHtml = function FUiFrameSpliter_setSizeHtml(p){
+MO.FDuiFrameSpliter_setSizeHtml = function FDuiFrameSpliter_setSizeHtml(p){
    this._hSize = p;
 }
-MO.FUiFrameSpliter_changeVisible = function FUiFrameSpliter_changeVisible(){
+MO.FDuiFrameSpliter_changeVisible = function FDuiFrameSpliter_changeVisible(){
    var o = this;
    var hs = o._hSize;
    if(!hs){
@@ -347,14 +347,14 @@ MO.FUiFrameSpliter_changeVisible = function FUiFrameSpliter_changeVisible(){
    }
    MO.Console.find(MO.FDuiWorkspaceConsole).resize();
 }
-MO.FUiFrameSpliter_dispose = function FUiFrameSpliter_dispose(){
+MO.FDuiFrameSpliter_dispose = function FDuiFrameSpliter_dispose(){
    var o = this;
    o._hDrag = MO.Window.Html.free(o._hDrag);
    o._hSize = MO.Window.Html.free(o._hSize);
    o.__base.FDuiControl.dispose.call(o);
 }
-MO.FUiWindow = function FUiWindow(o){
-   o = MO.Class.inherits(this, o, MO.FUiLayout, MO.MMouseCapture);
+MO.FDuiWindow = function FDuiWindow(o){
+   o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MMouseCapture);
    o._statusVisible      = false;
    o._stylePanel         = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    o._styleBodyForm      = MO.Class.register(o, new MO.AStyle('_styleBodyForm'));
@@ -364,27 +364,27 @@ MO.FUiWindow = function FUiWindow(o){
    o._styleStatusPanel   = MO.Class.register(o, new MO.AStyle('_styleStatusPanel'));
    o._mousePosition      = null;
    o._mouseControl       = null;
-   o.onBuildPanel        = MO.FUiWindow_onBuildPanel;
-   o.onBuild             = MO.FUiWindow_onBuild;
-   o.onMouseCaptureStart = MO.FUiWindow_onMouseCaptureStart;
-   o.onMouseCapture      = MO.FUiWindow_onMouseCapture;
-   o.onMouseCaptureStop  = MO.FUiWindow_onMouseCaptureStop;
-   o.construct      = MO.FUiWindow_construct;
-   o.setVisible     = MO.FUiWindow_setVisible;
-   o.setLabel       = MO.FUiWindow_setLabel;
-   o.showPosition   = MO.FUiWindow_showPosition;
+   o.onBuildPanel        = MO.FDuiWindow_onBuildPanel;
+   o.onBuild             = MO.FDuiWindow_onBuild;
+   o.onMouseCaptureStart = MO.FDuiWindow_onMouseCaptureStart;
+   o.onMouseCapture      = MO.FDuiWindow_onMouseCapture;
+   o.onMouseCaptureStop  = MO.FDuiWindow_onMouseCaptureStop;
+   o.construct      = MO.FDuiWindow_construct;
+   o.setVisible     = MO.FDuiWindow_setVisible;
+   o.setLabel       = MO.FDuiWindow_setLabel;
+   o.showPosition   = MO.FDuiWindow_showPosition;
    return o;
 }
-MO.FUiWindow_onBuildPanel = function FUiWindow_onBuildPanel(event){
+MO.FDuiWindow_onBuildPanel = function FDuiWindow_onBuildPanel(event){
    var o = this;
    o._hPanel = MO.Window.Builder.createDiv(event, o.styleName('Panel'));
    var hForm = o._hPanelForm = MO.Window.Builder.createTable(event, o.styleName('Form'), null, 0, 1);
    hForm.style.width = '100%';
    hForm.style.height = '100%';
 }
-MO.FUiWindow_onBuild = function FUiWindow_onBuild(event){
+MO.FDuiWindow_onBuild = function FDuiWindow_onBuild(event){
    var o = this;
-   o.__base.FUiLayout.onBuild.call(o, event);
+   o.__base.FDuiLayout.onBuild.call(o, event);
    var hPanel = o._hPanel;
    var hBodyForm = o._hBodyForm = MO.Window.Builder.appendTable(hPanel, o.styleName('BodyForm'));
    var hTitlePanel = o._hTitlePanel = MO.Window.Builder.appendTableRowCell(hBodyForm, o.styleName('TitlePanel'));
@@ -402,14 +402,14 @@ MO.FUiWindow_onBuild = function FUiWindow_onBuild(event){
    hBodyPanel.appendChild(o._hPanelForm);
    o.refreshSize();
 }
-MO.FUiWindow_onMouseCaptureStart = function FUiWindow_onMouseCaptureStart(event){
+MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(event){
    var o = this;
    o._mouseDraging = true;
    o._mousePosition.set(event.x, event.y);
    o._mouseControl.set(o._hPanel.offsetLeft, o._hPanel.offsetTop);
    MO.Window.Html.cursorSet(o._hPanel, EUiCursor.Move);
 }
-MO.FUiWindow_onMouseCapture = function FUiWindow_onMouseCapture(event){
+MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
    var o = this;
    if(o._mouseDraging){
       var cx = event.x - o._mousePosition.x;
@@ -418,19 +418,19 @@ MO.FUiWindow_onMouseCapture = function FUiWindow_onMouseCapture(event){
       o._hPanel.style.top = (o._mouseControl.y + cy) + 'px';
    }
 }
-MO.FUiWindow_onMouseCaptureStop = function FUiWindow_onMouseCaptureStop(event){
+MO.FDuiWindow_onMouseCaptureStop = function FDuiWindow_onMouseCaptureStop(event){
    var o = this;
    o._mouseDraging = false;
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
 }
-MO.FUiWindow_construct = function FUiWindow_construct(){
+MO.FDuiWindow_construct = function FDuiWindow_construct(){
    var o = this;
-   o.__base.FUiLayout.construct.call(o);
+   o.__base.FDuiLayout.construct.call(o);
    o._mousePosition = new MO.SPoint2();
    o._mouseControl = new MO.SPoint2();
    MO.Console.find(MO.FMouseConsole).register(o);
 }
-MO.FUiWindow_setVisible = function FUiWindow_setVisible(visible){
+MO.FDuiWindow_setVisible = function FDuiWindow_setVisible(visible){
    var o = this;
    o._statusVisible = visible;
    var hPanel = o.panel(MO.EPanel.Container);
@@ -440,12 +440,12 @@ MO.FUiWindow_setVisible = function FUiWindow_setVisible(visible){
       MO.Window._hContainer.removeChild(hPanel);
    }
 }
-MO.FUiWindow_setLabel = function FUiWindow_setLabel(label){
+MO.FDuiWindow_setLabel = function FDuiWindow_setLabel(label){
    var o = this;
-   o.__base.FUiLayout.setLabel.call(o, label)
+   o.__base.FDuiLayout.setLabel.call(o, label)
    MO.RHtml.textSet(o._hTitle, o._label);
 }
-MO.FUiWindow_showPosition = function FUiWindow_showPosition(positionCd){
+MO.FDuiWindow_showPosition = function FDuiWindow_showPosition(positionCd){
    var o = this;
    o.show();
    if(positionCd == MO.EUiPosition.Center){
@@ -457,7 +457,7 @@ MO.FUiWindow_showPosition = function FUiWindow_showPosition(positionCd){
       o._hPanel.style.top = top + 'px';
    }
 }
-MO.FUiWindow_doFocus = function FUiWindow_doFocus(){
+MO.FDuiWindow_doFocus = function FDuiWindow_doFocus(){
    var o = this;
    if(o.searchControls && o.searchControls.count > 0){
       var cs = o.searchControls;
@@ -469,24 +469,24 @@ MO.FUiWindow_doFocus = function FUiWindow_doFocus(){
       }
    }
 }
-MO.FUiWindow_oeVisible = function FUiWindow_oeVisible(e){
+MO.FDuiWindow_oeVisible = function FDuiWindow_oeVisible(e){
    var o = this;
-   o.__base.FUiLayout.oeVisible.call(o, e);
+   o.__base.FDuiLayout.oeVisible.call(o, e);
    if(e.isAfter()){
       o.hPanel.style.zIndex = RLayer.next(ELayer.Window);
       o.hPanel.style.display = 'block';
    }
 }
-MO.FUiWindow_panel = function FUiWindow_panel(t){
+MO.FDuiWindow_panel = function FDuiWindow_panel(t){
    var o = this;
    if(EPanel.Display == t || EPanel._border == t || EPanel.Size == t){
       return o.hPanel;
    }else if(EPanel.Move == t){
       return o.hTitleForm;
    }
-   return o.__base.FUiLayout.panel.call(o, t);
+   return o.__base.FDuiLayout.panel.call(o, t);
 }
-MO.FUiWindow_dump = function FUiWindow_dump(oCtl, sLeft){
+MO.FDuiWindow_dump = function FDuiWindow_dump(oCtl, sLeft){
    var sDump = '';
    if(!oCtl){
       oCtl = this;
@@ -503,11 +503,11 @@ MO.FUiWindow_dump = function FUiWindow_dump(oCtl, sLeft){
    }
    return sDump;
 }
-MO.FUiWindow_pushAllControl = function FUiWindow_pushAllControl(oCtl){
+MO.FDuiWindow_pushAllControl = function FDuiWindow_pushAllControl(oCtl){
    if(!this.allControls){this.allControls = new Array();}
    this.allControls.push(oCtl);
 }
-MO.FUiWindow_control = function FUiWindow_control(sName){
+MO.FDuiWindow_control = function FDuiWindow_control(sName){
    if(this.allControls){
       for(var n=0; n<this.allControls.length; n++){
          if(this.allControls[n].name == sName){
@@ -517,10 +517,10 @@ MO.FUiWindow_control = function FUiWindow_control(sName){
    }
    return null;
 }
-MO.FUiWindow_restore = function FUiWindow_restore(){
+MO.FDuiWindow_restore = function FDuiWindow_restore(){
    this.max(true);
 }
-MO.FUiWindow_processResize = function FUiWindow_processResize(){
+MO.FDuiWindow_processResize = function FDuiWindow_processResize(){
    if(!SystemManager.runMode){
       var oRect = this.rect()
       this.width = oRect.width();
@@ -528,7 +528,7 @@ MO.FUiWindow_processResize = function FUiWindow_processResize(){
    }
    this.processEvent(this, IWindowEvent.RESIZE);
 }
-MO.FUiWindow_fillAllControl = function FUiWindow_fillAllControl(){
+MO.FDuiWindow_fillAllControl = function FDuiWindow_fillAllControl(){
    var oControl = null;
    var nCount = this.controls.size();
    for(var n=0; n<nCount; n++){
@@ -538,7 +538,7 @@ MO.FUiWindow_fillAllControl = function FUiWindow_fillAllControl(){
       }
    }
 }
-MO.FUiWindow_refresh = function FUiWindow_refresh(bConfig){
+MO.FDuiWindow_refresh = function FDuiWindow_refresh(bConfig){
    if(this.loadConfig){this.loadConfig();}
    this.setCaption(this.label);
    this.setWidth(this.width);
@@ -555,7 +555,7 @@ MO.FUiWindow_refresh = function FUiWindow_refresh(bConfig){
       }
    }
 }
-MO.FUiWindow_initialize = function FUiWindow_initialize(){
+MO.FDuiWindow_initialize = function FDuiWindow_initialize(){
    if(this.allControls){
       for(var n=0; n<this.allControls.length; n++){
          var oCtl = this.allControls[n];
@@ -564,7 +564,7 @@ MO.FUiWindow_initialize = function FUiWindow_initialize(){
       }
    }
 }
-MO.FUiWindow_release = function FUiWindow_release(){
+MO.FDuiWindow_release = function FDuiWindow_release(){
    if(this.allControls){
       for(var n=0; n<this.allControls.length; n++){
          var oCtl = this.allControls[n];
@@ -576,7 +576,7 @@ MO.FUiWindow_release = function FUiWindow_release(){
    DatasetManager.focus(null, true);
    WindowManager.releaseWindow(this);
 }
-MO.FUiWindow_stopDropExecute = function FUiWindow_stopDropExecute(oSource){
+MO.FDuiWindow_stopDropExecute = function FDuiWindow_stopDropExecute(oSource){
    if(oSource.config && oSource.rect){
       var oRect = oSource.rect();
       oSource.config.setAttribute('left', oRect.left);
@@ -588,7 +588,7 @@ MO.FUiWindow_stopDropExecute = function FUiWindow_stopDropExecute(oSource){
       this.owner.onStopDrop(oSource);
    }
 }
-MO.FUiWindow_selectDsExecute = function FUiWindow_selectDsExecute(oSource){
+MO.FDuiWindow_selectDsExecute = function FDuiWindow_selectDsExecute(oSource){
    if(oSource && oSource.constructor == FDatasetCtl){
       var bRefresh = (DatasetManager.activeDsCtl != oSource);
       DatasetManager.activeDsCtl = oSource;
@@ -597,9 +597,9 @@ MO.FUiWindow_selectDsExecute = function FUiWindow_selectDsExecute(oSource){
       }
    }
 }
-MO.FUiWindow_dispose = function FUiWindow_dispose(){
+MO.FDuiWindow_dispose = function FDuiWindow_dispose(){
    var o = this;
-   o.__base.FUiLayout.dispose.call(o);
+   o.__base.FDuiLayout.dispose.call(o);
    o.__base.MWinBorder.dispose.call(o);
    o.hBorderForm = null;
 }

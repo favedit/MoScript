@@ -6,8 +6,8 @@ with(MO){
    // @author maocy
    // @version 150216
    //==========================================================
-   MO.FUiCheck = function FUiCheck(o){
-      o = RClass.inherits(this, o, FUiEditControl, MPropertyCheck, MListenerDataChanged);
+   MO.FDuiCheck = function FDuiCheck(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MPropertyCheck, MListenerDataChanged);
       //..........................................................
       // @style
       o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
@@ -16,23 +16,23 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiCheck_onBuildEditValue;
-      o.onInputClick     = RClass.register(o, new AEventClick('onInputClick'), FUiCheck_onInputClick);
+      o.onBuildEditValue = FDuiCheck_onBuildEditValue;
+      o.onInputClick     = RClass.register(o, new AEventClick('onInputClick'), FDuiCheck_onInputClick);
       //..........................................................
       // @process
-      o.oeSaveValue      = FUiCheck_oeSaveValue;
+      o.oeSaveValue      = FDuiCheck_oeSaveValue;
       //..........................................................
       // @method
-      o.construct        = FUiCheck_construct;
+      o.construct        = FDuiCheck_construct;
       // @method
-      o.formatLoad       = FUiCheck_formatLoad;
-      o.formatSave       = FUiCheck_formatSave;
+      o.formatLoad       = FDuiCheck_formatLoad;
+      o.formatSave       = FDuiCheck_formatSave;
       // @method
-      o.get              = FUiCheck_get;
-      o.set              = FUiCheck_set;
+      o.get              = FDuiCheck_get;
+      o.set              = FDuiCheck_set;
       // @method
-      o.refreshValue     = FUiCheck_refreshValue;
-      o.refreshStyle     = FUiCheck_refreshStyle;
+      o.refreshValue     = FDuiCheck_refreshValue;
+      o.refreshStyle     = FDuiCheck_refreshStyle;
       return o;
    }
 
@@ -42,7 +42,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiCheck_onBuildEditValue = function FUiCheck_onBuildEditValue(p){
+   MO.FDuiCheck_onBuildEditValue = function FDuiCheck_onBuildEditValue(p){
       var o = this;
       // 建立编辑控件
       var h = o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));
@@ -55,7 +55,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiCheck_onInputClick = function FUiCheck_onInputClick(p){
+   MO.FDuiCheck_onInputClick = function FDuiCheck_onInputClick(p){
       this.refreshValue();
    }
 
@@ -65,7 +65,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiCheck_oeSaveValue = function FUiCheck_oeSaveValue(e){
+   MO.FDuiCheck_oeSaveValue = function FDuiCheck_oeSaveValue(e){
       var o = this;
       // 数据准备模式
       if(EStore.Prepare == e.store){
@@ -74,7 +74,7 @@ with(MO){
          }
          return EEventStatus.Stop;
       }
-      return o.base.FUiEditControl.oeSaveValue.call(o, e);
+      return o.base.FDuiEditControl.oeSaveValue.call(o, e);
    }
 
    //==========================================================
@@ -82,10 +82,10 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCheck_construct = function FUiCheck_construct(){
+   MO.FDuiCheck_construct = function FDuiCheck_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       // 设置属性
       o._editSize.set(60, 20);
    }
@@ -97,7 +97,7 @@ with(MO){
    // @param value:String 控件数据
    // @return Object 存储内容
    //==========================================================
-   MO.FUiCheck_formatLoad = function FUiCheck_formatLoad(value){
+   MO.FDuiCheck_formatLoad = function FDuiCheck_formatLoad(value){
       var o = this;
       return (value == o._valueTrue);
    }
@@ -109,7 +109,7 @@ with(MO){
    // @param value:Object 控件数据
    // @return String 存储内容
    //==========================================================
-   MO.FUiCheck_formatSave = function FUiCheck_formatSave(value){
+   MO.FDuiCheck_formatSave = function FDuiCheck_formatSave(value){
       var o = this;
       return RBoolean.toString(value, o._valueTrue, o._valueFalse);
    }
@@ -120,7 +120,7 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiCheck_get = function FUiCheck_get(){
+   MO.FDuiCheck_get = function FDuiCheck_get(){
       return this._hInput.checked;
    }
 
@@ -130,7 +130,7 @@ with(MO){
    // @method
    // @param value:String 数据
    //==========================================================
-   MO.FUiCheck_set = function FUiCheck_set(value){
+   MO.FDuiCheck_set = function FDuiCheck_set(value){
       this._hInput.checked = value;
    }
 
@@ -139,7 +139,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCheck_refreshValue = function FUiCheck_refreshValue(){
+   MO.FDuiCheck_refreshValue = function FDuiCheck_refreshValue(){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);
@@ -150,7 +150,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCheck_refreshStyle = function FUiCheck_refreshStyle(){
+   MO.FDuiCheck_refreshStyle = function FDuiCheck_refreshStyle(){
       var o = this;
       var h = o.panel(EPanel.Edit);
       h.disabled = !o._editable;

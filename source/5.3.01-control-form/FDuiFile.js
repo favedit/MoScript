@@ -16,8 +16,8 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiFile = function FUiFile(o){
-      o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   MO.FDuiFile = function FDuiFile(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged);
       //..........................................................
       // @property
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -37,18 +37,18 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiFile_onBuildEditValue;
-      o.onFileChange     = RClass.register(o, new AEventChange('onFileChange'), FUiFile_onFileChange);
+      o.onBuildEditValue = FDuiFile_onBuildEditValue;
+      o.onFileChange     = RClass.register(o, new AEventChange('onFileChange'), FDuiFile_onFileChange);
       //..........................................................
       // @method
-      o.construct        = FUiFile_construct;
+      o.construct        = FDuiFile_construct;
       // @method
-      o.formatDisplay    = FUiFile_formatDisplay;
-      o.formatValue      = FUiFile_formatValue;
+      o.formatDisplay    = FDuiFile_formatDisplay;
+      o.formatValue      = FDuiFile_formatValue;
       // @method
-      o.get              = FUiFile_get;
-      o.set              = FUiFile_set;
-      o.refreshValue     = FUiFile_refreshValue;
+      o.get              = FDuiFile_get;
+      o.set              = FDuiFile_set;
+      o.refreshValue     = FDuiFile_refreshValue;
       return o;
    }
 
@@ -58,7 +58,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiFile_onBuildEditValue = function FUiFile_onBuildEditValue(p){
+   MO.FDuiFile_onBuildEditValue = function FDuiFile_onBuildEditValue(p){
       var o = this;
       var hp = o._hValuePanel;
       hp.className = o.styleName('ValuePanel');
@@ -96,7 +96,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件信息
    //==========================================================
-   MO.FUiFile_onFileChange = function FUiFile_onFileChange(event){
+   MO.FDuiFile_onFileChange = function FDuiFile_onFileChange(event){
       var o = this;
       var hFile = o._hInput;
       if(hFile.files){
@@ -116,9 +116,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiFile_construct = function FUiFile_construct(){
+   MO.FDuiFile_construct = function FDuiFile_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
    }
 
@@ -129,7 +129,7 @@ with(MO){
    // @param p:value:String 数据
    // @return 内容
    //==========================================================
-   MO.FUiFile_formatDisplay = function FUiFile_formatDisplay(p){
+   MO.FDuiFile_formatDisplay = function FDuiFile_formatDisplay(p){
       var o = this;
       var r = RString.nvl(p);
       //if(ECase.Upper == o.editCase){
@@ -148,7 +148,7 @@ with(MO){
    // @param p:value:String 内容
    // @return 数据
    //==========================================================
-   MO.FUiFile_formatValue = function FUiFile_formatValue(p){
+   MO.FDuiFile_formatValue = function FDuiFile_formatValue(p){
       return p;
    }
 
@@ -158,9 +158,9 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiFile_get = function FUiFile_get(){
+   MO.FDuiFile_get = function FDuiFile_get(){
       var o = this;
-      var r = o.__base.FUiEditControl.get.call(o);
+      var r = o.__base.FDuiEditControl.get.call(o);
       // 获得显示
       var r = o._hInput.value;
       return r;
@@ -172,9 +172,9 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiFile_set = function FUiFile_set(p){
+   MO.FDuiFile_set = function FDuiFile_set(p){
       var o = this;
-      o.__base.FUiEditControl.set.call(o, p);
+      o.__base.FDuiEditControl.set.call(o, p);
       // 设置显示
       o._hInput.value = RString.nvl(p);
       //o.finded = v;
@@ -188,7 +188,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiFile_refreshValue = function FUiFile_refreshValue(){
+   MO.FDuiFile_refreshValue = function FDuiFile_refreshValue(){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);

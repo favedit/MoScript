@@ -1,51 +1,51 @@
 with(MO){
    // ============================================================
-   // FUiColorPicker
+   // FDuiColorPicker
    // ============================================================
-   MO.FUiColorPicker = function FUiColorPicker(o){
+   MO.FDuiColorPicker = function FDuiColorPicker(o){
       o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescColor, MDropable);
       // Html
       o.borderStyle = EUiBorder.RoundDrop;
       // Event
-      o.onBuildEdit = FUiColorPicker_onBuildEdit;
-      o.onEditEnd   = FUiColorPicker_onEditEnd;
-      o.onDataKeyDown   = FUiColorPicker_onDataKeyDown;
-      o.checkColor = FUiColorPicker_checkColor;
+      o.onBuildEdit = FDuiColorPicker_onBuildEdit;
+      o.onEditEnd   = FDuiColorPicker_onEditEnd;
+      o.onDataKeyDown   = FDuiColorPicker_onDataKeyDown;
+      o.checkColor = FDuiColorPicker_checkColor;
       // Method
-      o.setText     = FUiColorPicker_setText;
-      o.drop        = FUiColorPicker_drop;
-      o.dispose     = FUiColorPicker_dispose;
+      o.setText     = FDuiColorPicker_setText;
+      o.drop        = FDuiColorPicker_drop;
+      o.dispose     = FDuiColorPicker_dispose;
       return o;
    }
    // ------------------------------------------------------------
-   MO.FUiColorPicker_onBuildEdit = function FUiColorPicker_onBuildEdit(b){
+   MO.FDuiColorPicker_onBuildEdit = function FDuiColorPicker_onBuildEdit(b){
       var o = this;
       // 建立编辑控件
       var h = o.hEdit = RBuilder.appendEdit(b.hPanel, o.style('Edit'));
       h.maxLength = 20;
    }
    // ------------------------------------------------------------
-   MO.FUiColorPicker_onEditEnd = function FUiColorPicker_onEditEnd(editor){
+   MO.FDuiColorPicker_onEditEnd = function FDuiColorPicker_onEditEnd(editor){
       var o = this;
       RLog.debug(o, 'Begin (editor={0}:{1} value={2})', editor, editor?editor.color:'', o.dataValue);
       if(editor){
          o.set(editor.color);
          o.hDrop.style.backgroundColor = editor.color;
       }
-      //alert(FUiColorPicker_onEditEnd);
+      //alert(FDuiColorPicker_onEditEnd);
       o.onDataEditEnd(o);
       //o.base.FEditControl.onEditEnd.call(o);
       RLog.debug(o, 'End (editor={0} value={1})', editor, o.dataValue);
    }
    // ------------------------------------------------------------
    // text
-   MO.FUiColorPicker_setText = function FUiColorPicker_setText(t){
+   MO.FDuiColorPicker_setText = function FDuiColorPicker_setText(t){
       var o = this;
       o.base.FEditControl.setText.call(o, RString.toUpper(t));
       o.hDrop.style.backgroundColor = t;
    }
    //------------------------------------------------------------
-   MO.FUiColorPicker_checkColor = function FUiColorPicker_checkColor(c)
+   MO.FDuiColorPicker_checkColor = function FDuiColorPicker_checkColor(c)
    {
       var oSpan = document.createElement("<span style='color:"+c+";'></span>");
       if(oSpan.style.color != ""){
@@ -57,7 +57,7 @@ with(MO){
    }
 
    //------------------------------------------------------------
-   MO.FUiColorPicker_onDataKeyDown = function FUiColorPicker_onDataKeyDown(e){
+   MO.FDuiColorPicker_onDataKeyDown = function FDuiColorPicker_onDataKeyDown(e){
          var o = this;
          o.base.FEditControl.onDataKeyDown.call(o, o, e);
          if(o.checkColor(o.text())){
@@ -67,10 +67,10 @@ with(MO){
          }
    }
    // ------------------------------------------------------------
-   MO.FUiColorPicker_drop = function FUiColorPicker_drop(){
+   MO.FDuiColorPicker_drop = function FDuiColorPicker_drop(){
       var o = this;
       if(o.canDrop() && o.canEdit){
-         var ed = o.editor = RConsole.find(FEditConsole).focus(o, FUiColorPickerEditor, o.name);
+         var ed = o.editor = RConsole.find(FEditConsole).focus(o, FDuiColorPickerEditor, o.name);
          if(ed.linkControl(o)){
             //ed.setItems(o.items);
             ed.set(o.reget());
@@ -79,14 +79,14 @@ with(MO){
       }
    //   var o = this;
    //   if(o.canDrop() && o.canEdit){
-   //      var editor = RConsole.find(FEditConsole).focus(o, FUiColorPickerEditor, o.name);
+   //      var editor = RConsole.find(FEditConsole).focus(o, FDuiColorPickerEditor, o.name);
    //      editor.linkPanel(o.hEditCell, o.editBorder, o.hEdit);
    //      editor.setValue(o.formatValue(o.text()));
    //      editor.show();
    //   }
    }
    //------------------------------------------------------------
-   MO.FUiColorPicker_dispose = function FUiColorPicker_dispose(){
+   MO.FDuiColorPicker_dispose = function FDuiColorPicker_dispose(){
       var o = this;
       o.base.FEditControl.dispose.call(o);
       RMemory.freeHtml(o.hEdit);

@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsBitmapPropertyToolBar = function FDsBitmapPropertyToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName      = 'resource.bitmap.PropertyToolBar';
@@ -35,7 +35,7 @@ with(MO){
    //==========================================================
    MO.FDsBitmapPropertyToolBar_onBuilded = function FDsBitmapPropertyToolBar_onBuilded(event){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, event);
+      o.__base.FDuiToolBar.onBuilded.call(o, event);
       //..........................................................
       // 关联按键事件
       o._controlRefresh.addClickListener(o, o.onRefreshClick);
@@ -61,7 +61,7 @@ with(MO){
    MO.FDsBitmapPropertyToolBar_construct = function FDsBitmapPropertyToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -72,6 +72,6 @@ with(MO){
    MO.FDsBitmapPropertyToolBar_dispose = function FDsBitmapPropertyToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

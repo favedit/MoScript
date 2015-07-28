@@ -6,16 +6,16 @@ with(MO){
    // @author maocy
    // @version 150224
    //==========================================================
-   MO.MUiShadow = function MUiShadow(o){
+   MO.MDuiShadow = function MDuiShadow(o){
       o = RClass.inherits(this, o);
       //..........................................................
       // @html
       o._hShadow   = null;
       //..........................................................
       // @method
-      o.show       = MUiShadow_show;
-      o.hide       = MUiShadow_hide;
-      o.setVisible = MUiShadow_setVisible;
+      o.show       = MDuiShadow_show;
+      o.hide       = MDuiShadow_hide;
+      o.setVisible = MDuiShadow_setVisible;
       return o;
    }
 
@@ -24,12 +24,12 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.MUiShadow_show = function MUiShadow_show(v){
+   MO.MDuiShadow_show = function MDuiShadow_show(v){
       var o = this;
       if(!o._hShadow){
          o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
       }
-      o._hShadow.style.zIndex = RUiLayer.next();
+      o._hShadow.style.zIndex = RDuiLayer.next();
       if(v == false){
          o.hide();
       }else{
@@ -44,7 +44,7 @@ with(MO){
          }
          var hp = o.panel(EPanel.Panel);
          if(hp){
-            hp.style.zIndex = RUiLayer.next();
+            hp.style.zIndex = RDuiLayer.next();
          }
       }
    }
@@ -54,7 +54,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.MUiShadow_hide = function MUiShadow_hide(){
+   MO.MDuiShadow_hide = function MDuiShadow_hide(){
       var o = this;
       if(o._hShadow){
          o._hShadow.style.display = 'none';
@@ -67,13 +67,13 @@ with(MO){
    // @method
    // @param p:value:Boolean 可见
    //==========================================================
-   MO.MUiShadow_setVisible = function MUiShadow_setVisible(p){
+   MO.MDuiShadow_setVisible = function MDuiShadow_setVisible(p){
       var o = this;
       if(p){
          if(!o._hShadow){
             o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
          }
-         o._hShadow.style.zIndex = RUiLayer.next();
+         o._hShadow.style.zIndex = RDuiLayer.next();
          var hs = o.panel(EPanel.Shadow);
          if(hs){
             var r = RHtml.rect(hs);
@@ -86,7 +86,7 @@ with(MO){
          }
          var hp = o.panel(EPanel.Panel);
          if(hp){
-            hp.style.zIndex = RUiLayer.next();
+            hp.style.zIndex = RDuiLayer.next();
          }
       }else{
          if(o._hShadow){

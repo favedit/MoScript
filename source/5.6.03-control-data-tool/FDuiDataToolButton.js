@@ -7,7 +7,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FUiDataToolButton = function FUiDataToolButton(o){
-      o = RClass.inherits(this, o, FUiToolButton);
+      o = RClass.inherits(this, o, FDuiToolButton);
       //..........................................................
       // @property
       o._serviceName     = RClass.register(o, new APtyString('_serviceName'));

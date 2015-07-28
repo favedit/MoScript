@@ -24,8 +24,8 @@ with(MO){
    // @author maocy
    // @history 150202
    //==========================================================
-   MO.FUiPageSheet = function FUiPageSheet(o){
-      o = RClass.inherits(this, o, FUiLayout);
+   MO.FDuiPageSheet = function FDuiPageSheet(o){
+      o = RClass.inherits(this, o, FDuiLayout);
       //..........................................................
       // @property
       o._icon              = RClass.register(o, new APtyString('_icon'));
@@ -75,22 +75,22 @@ with(MO){
       o._hRight            = null;
       //..........................................................
       // @event
-      o.onBuildPanel       = FUiPageSheet_onBuildPanel;
+      o.onBuildPanel       = FDuiPageSheet_onBuildPanel;
       // @event
-      o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiPageSheet_onButtonEnter);
-      o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiPageSheet_onButtonLeave);
-      o.onHeadMouseDown    = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FUiPageSheet_onHeadMouseDown);
+      o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiPageSheet_onButtonEnter);
+      o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiPageSheet_onButtonLeave);
+      o.onHeadMouseDown    = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FDuiPageSheet_onHeadMouseDown);
       //..........................................................
       // @method
-      o.construct          = FUiPageSheet_construct;
+      o.construct          = FDuiPageSheet_construct;
       // @method
-      o.innerSelect        = FUiPageSheet_innerSelect;
-      o.select             = FUiPageSheet_select;
-      o.setVisible         = FUiPageSheet_setVisible;
+      o.innerSelect        = FDuiPageSheet_innerSelect;
+      o.select             = FDuiPageSheet_select;
+      o.setVisible         = FDuiPageSheet_setVisible;
       // @method
-      o.dispose            = FUiPageSheet_dispose
+      o.dispose            = FDuiPageSheet_dispose
       // @method
-      o.innerDump          = FUiPageSheet_innerDump;
+      o.innerDump          = FDuiPageSheet_innerDump;
       return o;
    }
 
@@ -100,7 +100,7 @@ with(MO){
    // @method
    // @param event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiPageSheet_onBuildPanel = function FUiPageSheet_onBuildPanel(event){
+   MO.FDuiPageSheet_onBuildPanel = function FDuiPageSheet_onBuildPanel(event){
       var o = this;
       var hPanel = o._hPanel = o._hContainer = RBuilder.createDiv(event, o.styleName('Panel'));
       hPanel.style.width = '100%';
@@ -116,7 +116,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件
    //==========================================================
-   MO.FUiPageSheet_onButtonEnter = function FUiPageSheet_onButtonEnter(event){
+   MO.FDuiPageSheet_onButtonEnter = function FDuiPageSheet_onButtonEnter(event){
       var o = this;
       if(!o._selected){
          o._hButton.className = o.styleName('ButtonHover');
@@ -129,7 +129,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件
    //==========================================================
-   MO.FUiPageSheet_onButtonLeave = function FUiPageSheet_onButtonLeave(event){
+   MO.FDuiPageSheet_onButtonLeave = function FDuiPageSheet_onButtonLeave(event){
       var o = this;
       if(!o._selected){
          o._hButton.className = o.styleName('Button');
@@ -142,7 +142,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件
    //==========================================================
-   MO.FUiPageSheet_onHeadMouseDown = function FUiPageSheet_onHeadMouseDown(event){
+   MO.FDuiPageSheet_onHeadMouseDown = function FDuiPageSheet_onHeadMouseDown(event){
       var o = this;
       o._parent.select(o);
    }
@@ -152,10 +152,10 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPageSheet_construct = function FUiPageSheet_construct(){
+   MO.FDuiPageSheet_construct = function FDuiPageSheet_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiLayout.construct.call(o);
+      o.__base.FDuiLayout.construct.call(o);
       // 设置属性
       o.lsnsSelect = new TListeners();
    }
@@ -166,7 +166,7 @@ with(MO){
    // @method
    // @param flag:Boolean 选中标志
    //==========================================================
-   MO.FUiPageSheet_innerSelect = function FUiPageSheet_innerSelect(flag){
+   MO.FDuiPageSheet_innerSelect = function FDuiPageSheet_innerSelect(flag){
       var o = this;
       var b = o._parent;
       if(flag && !o._hasBuilded){
@@ -200,7 +200,7 @@ with(MO){
    // @method
    // @param flag:Boolean 选中标志
    //==========================================================
-   MO.FUiPageSheet_select = function FUiPageSheet_select(flag){
+   MO.FDuiPageSheet_select = function FDuiPageSheet_select(flag){
       var o = this;
       o.innerSelect(flag);
       if(flag){
@@ -215,7 +215,7 @@ with(MO){
    // @method
    // @param flag:Boolean 可见标志
    //==========================================================
-   MO.FUiPageSheet_setVisible = function FUiPageSheet_setVisible(flag){
+   MO.FDuiPageSheet_setVisible = function FDuiPageSheet_setVisible(flag){
       var o = this;
       RHtml.displaySet(o._hPanel, flag);
    }
@@ -225,7 +225,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPageSheet_dispose = function FUiPageSheet_dispose(){
+   MO.FDuiPageSheet_dispose = function FDuiPageSheet_dispose(){
       var o = this;
       o._hButton = RMemory.free(o._hButton);
       o._hTop = RMemory.free(o._hTop);
@@ -235,7 +235,7 @@ with(MO){
       o._hBottomR = RMemory.free(o._hBottomR);
       o._hRight = RMemory.free(o._hRight);
       // 父处理
-      o.__base.FUiLayout.dispose.call(o);
+      o.__base.FDuiLayout.dispose.call(o);
    }
 
    //==========================================================
@@ -243,7 +243,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPageSheet_innerDump = function FUiPageSheet_innerDump(s, l){
+   MO.FDuiPageSheet_innerDump = function FDuiPageSheet_innerDump(s, l){
       var o = this;
       s.append(l, RClass.dump(o), ' [');
       s.append('name=', o._name, ', ');

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150224
 //==========================================================
-MO.FUiEditorConsole = function FUiEditorConsole(o){
+MO.FDuiEditorConsole = function FDuiEditorConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -16,14 +16,14 @@ MO.FUiEditorConsole = function FUiEditorConsole(o){
    o._editors     = null;
    //..........................................................
    // @method
-   o.construct    = MO.FUiEditorConsole_construct;
+   o.construct    = MO.FDuiEditorConsole_construct;
    // @method
-   o.makeName     = MO.FUiEditorConsole_makeName;
-   o.enter        = MO.FUiEditorConsole_enter;
-   o.leave        = MO.FUiEditorConsole_leave;
-   o.focus        = MO.FUiEditorConsole_focus;
-   o.blur         = MO.FUiEditorConsole_blur;
-   o.lost         = MO.FUiEditorConsole_lost;
+   o.makeName     = MO.FDuiEditorConsole_makeName;
+   o.enter        = MO.FDuiEditorConsole_enter;
+   o.leave        = MO.FDuiEditorConsole_leave;
+   o.focus        = MO.FDuiEditorConsole_focus;
+   o.blur         = MO.FDuiEditorConsole_blur;
+   o.lost         = MO.FDuiEditorConsole_lost;
    return o;
 }
 
@@ -32,7 +32,7 @@ MO.FUiEditorConsole = function FUiEditorConsole(o){
 //
 // @method
 //==========================================================
-MO.FUiEditorConsole_construct = function FUiEditorConsole_construct(){
+MO.FDuiEditorConsole_construct = function FDuiEditorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 初始化属性
@@ -44,7 +44,7 @@ MO.FUiEditorConsole_construct = function FUiEditorConsole_construct(){
 //
 // @method
 //==========================================================
-MO.FUiEditorConsole_makeName = function FUiEditorConsole_makeName(cls, name){
+MO.FDuiEditorConsole_makeName = function FDuiEditorConsole_makeName(cls, name){
    return name ? name + '@' + MO.Class.name(cls) : MO.Class.name(cls);
 }
 
@@ -53,7 +53,7 @@ MO.FUiEditorConsole_makeName = function FUiEditorConsole_makeName(cls, name){
 //
 // @method
 //==========================================================
-MO.FUiEditorConsole_enter = function FUiEditorConsole_enter(editable, cls){
+MO.FDuiEditorConsole_enter = function FDuiEditorConsole_enter(editable, cls){
    var name = MO.Class.name(cls);
    var editor = this._hoverEditors.get(name);
    if(!editor){
@@ -72,7 +72,7 @@ MO.FUiEditorConsole_enter = function FUiEditorConsole_enter(editable, cls){
 //
 // @method
 //==========================================================
-MO.FUiEditorConsole_leave = function FUiEditorConsole_leave(editor){
+MO.FDuiEditorConsole_leave = function FDuiEditorConsole_leave(editor){
    var o = this;
    if(o._hoverEditor != o._focusEditor){
       editor = MO.Lang.Object.nvl(editor, o._hoverEditor);
@@ -86,7 +86,7 @@ MO.FUiEditorConsole_leave = function FUiEditorConsole_leave(editor){
 //
 // @method
 //==========================================================
-MO.FUiEditorConsole_focus = function FUiEditorConsole_focus(c, n, l){
+MO.FDuiEditorConsole_focus = function FDuiEditorConsole_focus(c, n, l){
    var o = this;
    // Focus Editor
    var name = o.makeName(n, l);
@@ -98,7 +98,7 @@ MO.FUiEditorConsole_focus = function FUiEditorConsole_focus(c, n, l){
    }
    MO.Logger.debug(o, 'Focus editor {1} (editable={2}, name={3})', MO.Class.dump(e), MO.Class.dump(c), l);
    e.reset();
-   if(MO.Class.isClass(e, MO.FUiDropEditor)){
+   if(MO.Class.isClass(e, MO.FDuiDropEditor)){
       e.linkControl(c);
       o._focusEditor = e;
    }
@@ -110,7 +110,7 @@ MO.FUiEditorConsole_focus = function FUiEditorConsole_focus(c, n, l){
 //
 // @method
 //==========================================================
-MO.FUiEditorConsole_blur = function FUiEditorConsole_blur(editor){
+MO.FDuiEditorConsole_blur = function FDuiEditorConsole_blur(editor){
    var o = this;
    if(o._focusEditor){
       MO.Logger.debug(o, 'Blur editor {1}', MO.Class.dump(editor));
@@ -127,7 +127,7 @@ MO.FUiEditorConsole_blur = function FUiEditorConsole_blur(editor){
 //
 // @method
 //==========================================================
-MO.FUiEditorConsole_lost = function FUiEditorConsole_lost(e){
+MO.FDuiEditorConsole_lost = function FDuiEditorConsole_lost(e){
    var o = this;
    o.leave(e);
    o.blur(e);

@@ -4,7 +4,7 @@
 // @console
 // @history 091120 MAOCY 创建
 //==========================================================
-MO.FUiFrameConsole = function FUiFrameConsole(o){
+MO.FDuiFrameConsole = function FDuiFrameConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -20,21 +20,21 @@ MO.FUiFrameConsole = function FUiFrameConsole(o){
    //o.events           = null;
    //..........................................................
    // @event
-   //o.onProcessLoaded  = FUiFrameConsole_onProcessLoaded;
+   //o.onProcessLoaded  = FDuiFrameConsole_onProcessLoaded;
    //..........................................................
    // @method
-   o.construct        = MO.FUiFrameConsole_construct;
+   o.construct        = MO.FDuiFrameConsole_construct;
    // @method
-   o.create           = MO.FUiFrameConsole_create;
-   o.find             = MO.FUiFrameConsole_find;
-   o.findByClass      = MO.FUiFrameConsole_findByClass;
-   o.get              = MO.FUiFrameConsole_get;
-   //o.hiddenAll        = FUiFrameConsole_hiddenAll;
-   //o.process          = FUiFrameConsole_process;
-   //o.loadEvents       = FUiFrameConsole_loadEvents;
-   //o.processEvent     = FUiFrameConsole_processEvent;
-   //o.free             = FUiFrameConsole_free;
-   //o.dispose          = FUiFrameConsole_dispose;
+   o.create           = MO.FDuiFrameConsole_create;
+   o.find             = MO.FDuiFrameConsole_find;
+   o.findByClass      = MO.FDuiFrameConsole_findByClass;
+   o.get              = MO.FDuiFrameConsole_get;
+   //o.hiddenAll        = FDuiFrameConsole_hiddenAll;
+   //o.process          = FDuiFrameConsole_process;
+   //o.loadEvents       = FDuiFrameConsole_loadEvents;
+   //o.processEvent     = FDuiFrameConsole_processEvent;
+   //o.free             = FDuiFrameConsole_free;
+   //o.dispose          = FDuiFrameConsole_dispose;
    return o;
 }
 
@@ -43,7 +43,7 @@ MO.FUiFrameConsole = function FUiFrameConsole(o){
 //
 // @method
 //==========================================================
-MO.FUiFrameConsole_construct = function FUiFrameConsole_construct(){
+MO.FDuiFrameConsole_construct = function FDuiFrameConsole_construct(){
    var o = this;
    o._frames = new MO.TMap();
    //o._formIds = new TMap();
@@ -59,9 +59,9 @@ MO.FUiFrameConsole_construct = function FUiFrameConsole_construct(){
 // @method
 // @param c:control:FDuiControl 控件
 // @param n:name:String 名称
-// @return FUiFrame 页面控件
+// @return FDuiFrame 页面控件
 //==========================================================
-MO.FUiFrameConsole_create = function FUiFrameConsole_create(c, n){
+MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    var o = this;
    // 检查是否有未使用的表单
    //var fs = o._freeFrames;
@@ -80,7 +80,7 @@ MO.FUiFrameConsole_create = function FUiFrameConsole_create(c, n){
    var dc = MO.Console.find(MO.FUiDescribeFrameConsole);
    var x = dc.load(n);
    // 构建处理
-   var f = MO.RUiControl.build(null, x, null, c._hPanel);
+   var f = MO.RDuiControl.build(null, x, null, c._hPanel);
    //var fx = fdc.find(n, t);
    //var fd = t + ':' + n;
    //if(!o._framesLoaded.contains(fd)){
@@ -92,7 +92,7 @@ MO.FUiFrameConsole_create = function FUiFrameConsole_create(c, n){
    //}
    // 创建表单实例
    //var c = RClass.create('F' + fx.name);
-   //RUiControl.innerCreate(c, fx);
+   //RDuiControl.innerCreate(c, fx);
    //c.psInitialize();
    //if(!b){
    //   b = RWindow.builder();
@@ -112,9 +112,9 @@ MO.FUiFrameConsole_create = function FUiFrameConsole_create(c, n){
 //
 // @method
 // @param n:name:String 名称
-// @return FUiFrame 页面控件
+// @return FDuiFrame 页面控件
 //==========================================================
-MO.FUiFrameConsole_find = function FUiFrameConsole_find(n){
+MO.FDuiFrameConsole_find = function FDuiFrameConsole_find(n){
    return this._frames.get(n); 
 }
 
@@ -126,7 +126,7 @@ MO.FUiFrameConsole_find = function FUiFrameConsole_find(n){
 // @param clazz:Function 类对象
 // @return FDuiControl 页面控件
 //==========================================================
-MO.FUiFrameConsole_findByClass = function FUiFrameConsole_findByClass(control, clazz){
+MO.FDuiFrameConsole_findByClass = function FDuiFrameConsole_findByClass(control, clazz){
    var o = this;
    var className = MO.Class.name(clazz);
    var frames = o._frames;
@@ -146,9 +146,9 @@ MO.FUiFrameConsole_findByClass = function FUiFrameConsole_findByClass(control, c
 // @param c:control:FDuiControl 控件
 // @param n:name:String 名称
 // @param h:html:HtmlTag 页面元素
-// @return FUiFrame 页面控件
+// @return FDuiFrame 页面控件
 //==========================================================
-MO.FUiFrameConsole_get = function FUiFrameConsole_get(c, n, h){
+MO.FDuiFrameConsole_get = function FDuiFrameConsole_get(c, n, h){
    var o = this;
    var fs = o._frames;
    var f = fs.get(n);
@@ -163,7 +163,7 @@ MO.FUiFrameConsole_get = function FUiFrameConsole_get(c, n, h){
 }
 
 //==========================================================
-MO.FUiFrameConsole_hiddenAll = function FUiFrameConsole_hiddenAll(){
+MO.FDuiFrameConsole_hiddenAll = function FDuiFrameConsole_hiddenAll(){
    var o = this;
    var fs = o._frames;
    var fc = fs.count;
@@ -181,7 +181,7 @@ MO.FUiFrameConsole_hiddenAll = function FUiFrameConsole_hiddenAll(){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-MO.FUiFrameConsole_onProcessLoaded = function FUiFrameConsole_onProcessLoaded(e){
+MO.FDuiFrameConsole_onProcessLoaded = function FDuiFrameConsole_onProcessLoaded(e){
    var o = this;
    var r = e.document.root();
    var g = e.argument;
@@ -221,7 +221,7 @@ MO.FUiFrameConsole_onProcessLoaded = function FUiFrameConsole_onProcessLoaded(e)
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-MO.FUiFrameConsole_process = function FUiFrameConsole_process(g){
+MO.FDuiFrameConsole_process = function FDuiFrameConsole_process(g){
    var o = this;
    // 构建XML结构对象
    var doc = new MO.TXmlDocument();
@@ -246,7 +246,7 @@ MO.FUiFrameConsole_process = function FUiFrameConsole_process(g){
 // @method
 // @param x:config:TNode 事件定义
 //==========================================================
-MO.FUiFrameConsole_loadEvents = function FUiFrameConsole_loadEvents(cfg){
+MO.FDuiFrameConsole_loadEvents = function FDuiFrameConsole_loadEvents(cfg){
    //var o = this;
    //if(!(cfg && cfg.nodes)){
    //   return;
@@ -274,7 +274,7 @@ MO.FUiFrameConsole_loadEvents = function FUiFrameConsole_loadEvents(cfg){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.FUiFrameConsole_processEvent = function FUiFrameConsole_processEvent(e){
+MO.FDuiFrameConsole_processEvent = function FDuiFrameConsole_processEvent(e){
    var o = this;
    var es = o.events;
    if(es.isEmpty()){
@@ -310,7 +310,7 @@ MO.FUiFrameConsole_processEvent = function FUiFrameConsole_processEvent(e){
 // @method
 // @param f:form:FControl 表单对象
 //==========================================================
-MO.FUiFrameConsole_free = function FUiFrameConsole_free(f){
+MO.FDuiFrameConsole_free = function FDuiFrameConsole_free(f){
    f.setVisible(false);
    this._freeFrames.push(f);
 }
@@ -324,7 +324,7 @@ MO.FUiFrameConsole_free = function FUiFrameConsole_free(f){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-MO.FUiFrameConsole_dispose = function FUiFrameConsole_dispose(){
+MO.FDuiFrameConsole_dispose = function FDuiFrameConsole_dispose(){
    var o = this;
    MO.Memory.free(o._frames);
    MO.Memory.free(o._formIds);

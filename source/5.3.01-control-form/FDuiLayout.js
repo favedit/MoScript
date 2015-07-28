@@ -19,7 +19,7 @@ with(MO){
    // @author maocy
    // @version 150122
    //==========================================================
-   MO.FUiLayout = function FUiLayout(o){
+   MO.FDuiLayout = function FDuiLayout(o){
       o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @style
@@ -36,25 +36,25 @@ with(MO){
       o._hPanelLine     = null;
       //..........................................................
       // @event
-      o.onBuildPanel    = FUiLayout_onBuildPanel;
-      o.onDesignBegin   = FUiLayout_onDesignBegin;
-      o.onDesignEnd     = FUiLayout_onDesignEnd;
+      o.onBuildPanel    = FDuiLayout_onBuildPanel;
+      o.onDesignBegin   = FDuiLayout_onDesignBegin;
+      o.onDesignEnd     = FDuiLayout_onDesignEnd;
       //..........................................................
       // @process
-      o.oeDesign        = FUiLayout_oeDesign;
-      o.oeResize        = FUiLayout_oeResize;
-      o.oeRefresh       = FUiLayout_oeRefresh;
+      o.oeDesign        = FDuiLayout_oeDesign;
+      o.oeResize        = FDuiLayout_oeResize;
+      o.oeRefresh       = FDuiLayout_oeRefresh;
       //..........................................................
       // @method
-      o.insertPosition  = FUiLayout_insertPosition;
-      o.moveChild       = FUiLayout_moveChild;
+      o.insertPosition  = FDuiLayout_insertPosition;
+      o.moveChild       = FDuiLayout_moveChild;
       // @method
-      o.innerAppendLine = FUiLayout_innerAppendLine;
-      o.appendChild     = FUiLayout_appendChild;
+      o.innerAppendLine = FDuiLayout_innerAppendLine;
+      o.appendChild     = FDuiLayout_appendChild;
       // @method
-      o.resize          = FUiLayout_resize;
+      o.resize          = FDuiLayout_resize;
       // @method
-      o.dispose         = FUiLayout_dispose;
+      o.dispose         = FDuiLayout_dispose;
       return o;
    }
 
@@ -64,7 +64,7 @@ with(MO){
    // @method
    // @return event:TProcessEvent 处理事件
    //==========================================================
-   MO.FUiLayout_onBuildPanel = function FUiLayout_onBuildPanel(event){
+   MO.FDuiLayout_onBuildPanel = function FDuiLayout_onBuildPanel(event){
       var o = this;
       var h = o._hPanel = o._hPanelForm = RBuilder.createTable(event, o.styleName('Form'), null, 0, 1);
       // 设计模式
@@ -80,7 +80,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiLayout_onDesignBegin = function FUiLayout_onDesignBegin(){
+   MO.FDuiLayout_onDesignBegin = function FDuiLayout_onDesignBegin(){
       var o = this;
       o.__base.MDesign.onDesignBegin.call(o);
    }
@@ -90,7 +90,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiLayout_onDesignEnd = function FUiLayout_onDesignEnd(){
+   MO.FDuiLayout_onDesignEnd = function FDuiLayout_onDesignEnd(){
       var o = this;
       o.__base.MDesign.onDesignEnd.call(o);
    }
@@ -101,7 +101,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.FUiLayout_oeDesign = function FUiLayout_oeDesign(p){
+   MO.FDuiLayout_oeDesign = function FDuiLayout_oeDesign(p){
       var o = this;
       o.__base.FDuiContainer.oeDesign.call(o, p);
       if(p.isAfter()){
@@ -127,7 +127,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.FUiLayout_oeResize = function FUiLayout_oeResize(p){
+   MO.FDuiLayout_oeResize = function FDuiLayout_oeResize(p){
       var o = this;
       o.__base.FDuiContainer.oeResize.call(o, p);
       if(p.isAfter()){
@@ -141,7 +141,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.FUiLayout_oeRefresh = function FUiLayout_oeRefresh(p){
+   MO.FDuiLayout_oeRefresh = function FDuiLayout_oeRefresh(p){
       var o = this;
       o.__base.FDuiContainer.oeDesign.call(o, p);
       if(p.isAfter()){
@@ -155,7 +155,7 @@ with(MO){
    // @method
    // @return HtmlTag 页面元素
    //==========================================================
-   MO.FUiLayout_insertPosition = function FUiLayout_insertPosition(cf, ct, idx, copy){
+   MO.FDuiLayout_insertPosition = function FDuiLayout_insertPosition(cf, ct, idx, copy){
       var o = this;
       var ms = o._components;
       var cs = o.controls;
@@ -181,7 +181,7 @@ with(MO){
    // @param pos:Position
    // @param copy:copy
    //==========================================================
-   MO.FUiLayout_moveChild = function FUiLayout_moveChild(cf, ct, pos, copy){
+   MO.FDuiLayout_moveChild = function FDuiLayout_moveChild(cf, ct, pos, copy){
       if(!(cf && ct && pos) || (cf == ct)){
          return;
       }
@@ -287,7 +287,7 @@ with(MO){
    // @method
    // @return HtmlTag 布局行
    //==========================================================
-   MO.FUiLayout_innerAppendLine = function FUiLayout_innerAppendLine(){
+   MO.FDuiLayout_innerAppendLine = function FDuiLayout_innerAppendLine(){
       var o = this;
       var h = null;
       if(o._layoutCd == EUiLayout.Design){
@@ -307,7 +307,7 @@ with(MO){
    // @method
    // @return control:FControl 控件
    //==========================================================
-   MO.FUiLayout_appendChild = function FUiLayout_appendChild(control){
+   MO.FDuiLayout_appendChild = function FDuiLayout_appendChild(control){
       var o = this;
       // 设计模式时
       if(o._layoutCd == EUiLayout.Design){
@@ -327,7 +327,7 @@ with(MO){
          }
          // 增加控件
          var hCell = RBuilder.appendTableCell(o._hPanelLine);
-         if(!RClass.isClass(control, FUiLayout)){
+         if(!RClass.isClass(control, FDuiLayout)){
             control._hPanelLine = o._hPanelTable;
          }
          hCell.appendChild(control._hPanel);
@@ -347,7 +347,7 @@ with(MO){
             var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
             hCell.appendChild(control._hPanel);
          }else if(RSet.contains(control._sizeCd, EUiSize.Horizontal) || '100%' == control.width){
-            if(RClass.isClass(control, FUiSplit)){
+            if(RClass.isClass(control, FDuiSplit)){
                o._lastSplit = control;
             }
             // 追加一个新行
@@ -398,7 +398,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiLayout_resize = function FUiLayout_resize(){
+   MO.FDuiLayout_resize = function FDuiLayout_resize(){
       var o = this;
       var cs = o._components;
       if(cs){
@@ -407,7 +407,7 @@ with(MO){
          var c = cs.count();
          for(var n = 0; n < c; n++){
             var p = o._components.at(n);
-            if(RClass.isClass(p, FUiTable) || RClass.isClass(p, FUiPageControl)){
+            if(RClass.isClass(p, FDuiTable) || RClass.isClass(p, FDuiPageControl)){
                ha = true;
                break;
             }
@@ -421,7 +421,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiLayout_dispose = function FUiLayout_dispose(){
+   MO.FDuiLayout_dispose = function FDuiLayout_dispose(){
       var o = this;
       o._hPanelCurrent = null;
       o._hPanelTable = null;

@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMaterialCatalogItem = function FDsMaterialCatalogItem(o){
-      o = RClass.inherits(this, o, FUiListViewItem);
+      o = RClass.inherits(this, o, FDuiListViewItem);
       //..........................................................
       o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
       o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
@@ -29,7 +29,7 @@ with(MO){
    MO.FDsMaterialCatalogItem_onBuild = function FDsMaterialCatalogItem_onBuild(p){
       var o = this;
       // 建立控件
-      o.__base.FUiListViewItem.onBuild.call(o, p);
+      o.__base.FDuiListViewItem.onBuild.call(o, p);
       var h = o._hPanel;
       h.style.width = '200px';
       h.style.height = '150px';

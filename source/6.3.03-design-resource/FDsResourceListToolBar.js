@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsResourceListToolBar = function FDsResourceListToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
+      o = RClass.inherits(this, o, FDuiToolBar, MUiStorage);
       //..........................................................
       // @attribute
       o._dropButton       = null;
@@ -48,7 +48,7 @@ with(MO){
    //==========================================================
    MO.FDsResourceListToolBar_onBuilded = function FDsResourceListToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       //..........................................................
       // 关联查询事件
       o._controlSearchEdit.addClickListener(o, o.onSearchClick);
@@ -175,7 +175,7 @@ with(MO){
    MO.FDsResourceListToolBar_construct = function FDsResourceListToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -275,6 +275,6 @@ with(MO){
    MO.FDsResourceListToolBar_dispose = function FDsResourceListToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

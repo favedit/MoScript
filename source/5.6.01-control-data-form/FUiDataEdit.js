@@ -7,7 +7,7 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FUiDataEdit = function FUiDataEdit(o){
-      o = RClass.inherits(this, o, FUiEdit, MUiDataField);
+      o = RClass.inherits(this, o, FDuiEdit, MUiDataField);
       //..........................................................
       //o.onKeyDown    = RClass.register(o, new AEventKeyDown('onKeyDown'));
       //o.onKeyPress   = RClass.register(o, new AEventKeyPress('onKeyPress'));
@@ -53,7 +53,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEdit_onDataKeyDown = function FUiDataEdit_onDataKeyDown(s, e){
       var o = this;
-      o.__base.FUiEdit.onDataKeyDown.call(o, s, e);
+      o.__base.FDuiEdit.onDataKeyDown.call(o, s, e);
       // 大小写限制
       if(o.editCase){
          RKey.fixCase(e, o.editCase);
@@ -125,7 +125,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEdit_validText = function FUiDataEdit_validText(t){
       var o = this;
-      var r = o.__base.FUiEdit.validText.call(o, t);
+      var r = o.__base.FDuiEdit.validText.call(o, t);
       if(!r){
          // 最小长度的校验
          if(o.validLenmin){

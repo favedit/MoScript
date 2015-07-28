@@ -18,7 +18,7 @@ with(MO){
    // @author maocy
    // @version 150224
    //==========================================================
-   MO.SUiSlide = function SUiSlide(){
+   MO.SDuiSlide = function SDuiSlide(){
       var o = this;
       //..........................................................
       // @attribute
@@ -50,21 +50,21 @@ with(MO){
       o.hSlideBR      = null;
       //..........................................................
       // @event
-      o.onMouseDown   = SUiSlide_onMouseDown;
-      o.onMouseMove   = SUiSlide_onMouseMove;
-      o.onMouseUp     = SUiSlide_onMouseUp;
+      o.onMouseDown   = SDuiSlide_onMouseDown;
+      o.onMouseMove   = SDuiSlide_onMouseMove;
+      o.onMouseUp     = SDuiSlide_onMouseUp;
       o.onSlideChange = RMethod.empty;
       //..........................................................
       // @method
-      o.build          = SUiSlide_build;
+      o.build          = SDuiSlide_build;
       // @method
-      o.setRange       = SUiSlide_setRange;
-      o.setSlideValue  = SUiSlide_setSlideValue;
+      o.setRange       = SDuiSlide_setRange;
+      o.setSlideValue  = SDuiSlide_setSlideValue;
       // @method
-      o.get            = SUiSlide_get;
-      o.set            = SUiSlide_set;
+      o.get            = SDuiSlide_get;
+      o.set            = SDuiSlide_set;
       // @method
-      o.changeSlide    = SUiSlide_changeSlide;
+      o.changeSlide    = SDuiSlide_changeSlide;
       return o;
    }
 
@@ -73,7 +73,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.SUiSlide_onMouseDown = function SUiSlide_onMouseDown(p){
+   MO.SDuiSlide_onMouseDown = function SDuiSlide_onMouseDown(p){
       var o = this;
       var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
       o._draging = true;
@@ -86,7 +86,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.SUiSlide_onMouseMove = function SUiSlide_onMouseMove(p){
+   MO.SDuiSlide_onMouseMove = function SDuiSlide_onMouseMove(p){
       var o = this;
       if(o._draging){
          var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
@@ -99,7 +99,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.SUiSlide_onMouseUp = function SUiSlide_onMouseUp(p){
+   MO.SDuiSlide_onMouseUp = function SDuiSlide_onMouseUp(p){
       var o = this;
       o._draging = false;
       RWindow.setOptionSelect(true);
@@ -111,7 +111,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.SUiSlide_build = function SUiSlide_build(p){
+   MO.SDuiSlide_build = function SDuiSlide_build(p){
       var o = this;
       var c = o.control;
       //..........................................................
@@ -156,7 +156,7 @@ with(MO){
    // @param i:min:Number 最小值
    // @param a:max:Number 最大值
    //==========================================================
-   MO.SUiSlide_setRange = function SUiSlide_setRange(i, a){
+   MO.SDuiSlide_setRange = function SDuiSlide_setRange(i, a){
       var o = this;
       if(i != null){
          o.minValue = RFloat.parse(i);
@@ -173,7 +173,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiSlide_setSlideValue = function SUiSlide_setSlideValue(p){
+   MO.SDuiSlide_setSlideValue = function SDuiSlide_setSlideValue(p){
       var o = this;
       var w = o.hSlideForm.offsetWidth;
       if(w > 0){
@@ -188,7 +188,7 @@ with(MO){
    // @method
    // @return Number 内容
    //==========================================================
-   MO.SUiSlide_get = function SUiSlide_get(){
+   MO.SDuiSlide_get = function SDuiSlide_get(){
       var o = this;
       var w = o.hSlideForm.offsetWidth - 3;
       var v = (p / w) * o.range + o.minValue;
@@ -201,7 +201,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiSlide_set = function SUiSlide_set(p){
+   MO.SDuiSlide_set = function SDuiSlide_set(p){
       var o = this;
       // 设置宽度
       o.setSlideValue(p);
@@ -213,7 +213,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiSlide_changeSlide = function SUiSlide_changeSlide(p){
+   MO.SDuiSlide_changeSlide = function SDuiSlide_changeSlide(p){
       var o = this;
       var c = o.control;
       // 设置滑动

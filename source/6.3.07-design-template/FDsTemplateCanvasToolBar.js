@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsTemplateCanvasToolBar = function FDsTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @attribute
       o._refreshButton  = null;
@@ -36,7 +36,7 @@ with(MO){
    //==========================================================
    MO.FDsTemplateCanvasToolBar_onBuilded = function FDsTemplateCanvasToolBar_onBuilded(event){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, event);
+      o.__base.FDuiToolBar.onBuilded.call(o, event);
       // 设置按键事件
       o._controlModeDrop.addClickListener(o, o.onModeClick);
       o._controlModeSelect.addClickListener(o, o.onModeClick);
@@ -105,7 +105,7 @@ with(MO){
    MO.FDsTemplateCanvasToolBar_construct = function FDsTemplateCanvasToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -116,6 +116,6 @@ with(MO){
    MO.FDsTemplateCanvasToolBar_dispose = function FDsTemplateCanvasToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

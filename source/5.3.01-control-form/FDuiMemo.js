@@ -15,8 +15,8 @@ with(MO){
    // @author maocy
    // @version 150318
    //==========================================================
-   MO.FUiMemo = function FUiMemo(o){
-      o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit, MListenerDataChanged);
+   MO.FDuiMemo = function FDuiMemo(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MPropertyEdit, MListenerDataChanged);
       //..........................................................
       // @property
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -33,18 +33,18 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiMemo_onBuildEditValue;
-      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiMemo_onInputEdit);
+      o.onBuildEditValue = FDuiMemo_onBuildEditValue;
+      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiMemo_onInputEdit);
       //..........................................................
       // @method
-      o.construct        = FUiMemo_construct;
+      o.construct        = FDuiMemo_construct;
       // @method
-      o.formatDisplay    = FUiMemo_formatDisplay;
-      o.formatValue      = FUiMemo_formatValue;
+      o.formatDisplay    = FDuiMemo_formatDisplay;
+      o.formatValue      = FDuiMemo_formatValue;
       // @method
-      o.get              = FUiMemo_get;
-      o.set              = FUiMemo_set;
-      o.refreshValue     = FUiMemo_refreshValue;
+      o.get              = FDuiMemo_get;
+      o.set              = FDuiMemo_set;
+      o.refreshValue     = FDuiMemo_refreshValue;
       return o;
    }
 
@@ -54,7 +54,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiMemo_onBuildEditValue = function FUiMemo_onBuildEditValue(p){
+   MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(p){
       var o = this;
       var hp = o._hValuePanel;
       hp.className = o.styleName('ValuePanel');
@@ -84,7 +84,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiMemo_onInputEdit = function FUiMemo_onInputEdit(p){
+   MO.FDuiMemo_onInputEdit = function FDuiMemo_onInputEdit(p){
       var o = this;
       // 设置滑动栏
       var v = o._hInput.value;
@@ -97,9 +97,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiMemo_construct = function FUiMemo_construct(){
+   MO.FDuiMemo_construct = function FDuiMemo_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
    }
 
@@ -110,7 +110,7 @@ with(MO){
    // @param value:String 数据
    // @return 内容
    //==========================================================
-   MO.FUiMemo_formatDisplay = function FUiMemo_formatDisplay(value){
+   MO.FDuiMemo_formatDisplay = function FDuiMemo_formatDisplay(value){
       var o = this;
       var text = RString.nvl(value);
       //if(ECase.Upper == o.editCase){
@@ -129,7 +129,7 @@ with(MO){
    // @param value:String 内容
    // @return 数据
    //==========================================================
-   MO.FUiMemo_formatValue = function FUiMemo_formatValue(value){
+   MO.FDuiMemo_formatValue = function FDuiMemo_formatValue(value){
       return value;
    }
 
@@ -139,9 +139,9 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiMemo_get = function FUiMemo_get(){
+   MO.FDuiMemo_get = function FDuiMemo_get(){
       var o = this;
-      o.__base.FUiEditControl.get.call(o);
+      o.__base.FDuiEditControl.get.call(o);
       // 获得显示
       var value = o._hInput.value;
       return value;
@@ -153,9 +153,9 @@ with(MO){
    // @method
    // @param value:String 数据
    //==========================================================
-   MO.FUiMemo_set = function FUiMemo_set(value){
+   MO.FDuiMemo_set = function FDuiMemo_set(value){
       var o = this;
-      o.__base.FUiEditControl.set.call(o, value);
+      o.__base.FDuiEditControl.set.call(o, value);
       // 设置显示
       o._hInput.value = RString.nvl(value);
       //o.finded = v;
@@ -169,7 +169,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiMemo_refreshValue = function FUiMemo_refreshValue(){
+   MO.FDuiMemo_refreshValue = function FDuiMemo_refreshValue(){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);

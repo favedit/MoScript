@@ -6,8 +6,8 @@ with(MO){
    // @author maocy
    // @history 150326
    //==========================================================
-   MO.FUiToolButtonEdit = function FUiToolButtonEdit(o){
-      o = RClass.inherits(this, o, FUiToolButton, MListenerDataChanged);
+   MO.FDuiToolButtonEdit = function FDuiToolButtonEdit(o){
+      o = RClass.inherits(this, o, FDuiToolButton, MListenerDataChanged);
       //..........................................................
       // @property
       o._editSize      = RClass.register(o, new APtySize2('_editSize'));
@@ -16,17 +16,17 @@ with(MO){
       o._hEdit         = null;
       //..........................................................
       // @event
-      o.onBuildButton  = FUiToolButtonEdit_onBuildButton;
+      o.onBuildButton  = FDuiToolButtonEdit_onBuildButton;
       o.onEnter        = RMethod.empty;
       o.onLeave        = RMethod.empty;
-      o.onInputEdit    = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiToolButtonEdit_onInputEdit);
-      o.onInputKeyDown = RClass.register(o, new AEventKeyDown('onInputKeyDown'), FUiToolButtonEdit_onInputKeyDown);
+      o.onInputEdit    = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiToolButtonEdit_onInputEdit);
+      o.onInputKeyDown = RClass.register(o, new AEventKeyDown('onInputKeyDown'), FDuiToolButtonEdit_onInputKeyDown);
       //..........................................................
       // @method
-      o.construct      = FUiToolButtonEdit_construct;
+      o.construct      = FDuiToolButtonEdit_construct;
       // @method
-      o.text           = FUiToolButtonEdit_text;
-      o.setText        = FUiToolButtonEdit_setText;
+      o.text           = FDuiToolButtonEdit_text;
+      o.setText        = FDuiToolButtonEdit_setText;
       return o;
    }
 
@@ -36,7 +36,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiToolButtonEdit_onBuildButton = function FUiToolButtonEdit_onBuildButton(p){
+   MO.FDuiToolButtonEdit_onBuildButton = function FDuiToolButtonEdit_onBuildButton(p){
       var o = this;
       // 设置面板
       var hPanel = o._hPanel;
@@ -83,7 +83,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件
    //==========================================================
-   MO.FUiToolButtonEdit_onInputEdit = function FUiToolButtonEdit_onInputEdit(event){
+   MO.FDuiToolButtonEdit_onInputEdit = function FDuiToolButtonEdit_onInputEdit(event){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);
@@ -95,7 +95,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件
    //==========================================================
-   MO.FUiToolButtonEdit_onInputKeyDown = function FUiToolButtonEdit_onInputKeyDown(event){
+   MO.FDuiToolButtonEdit_onInputKeyDown = function FDuiToolButtonEdit_onInputKeyDown(event){
       var o = this;
       if(event.keyCode == EKeyCode.Enter){
          o.doClick();
@@ -108,9 +108,9 @@ with(MO){
    // @method
    // @return String 分组名称
    //==========================================================
-   MO.FUiToolButtonEdit_construct = function FUiToolButtonEdit_construct(){
+   MO.FDuiToolButtonEdit_construct = function FDuiToolButtonEdit_construct(){
       var o = this;
-      o.__base.FUiToolButton.construct.call(o);
+      o.__base.FDuiToolButton.construct.call(o);
       o._editSize = new SSize2();
    }
 
@@ -120,7 +120,7 @@ with(MO){
    // @method
    // @return String 文本内容
    //==========================================================
-   MO.FUiToolButtonEdit_text = function FUiToolButtonEdit_text(){
+   MO.FDuiToolButtonEdit_text = function FDuiToolButtonEdit_text(){
       return this._hEdit.value;
    }
 
@@ -130,7 +130,7 @@ with(MO){
    // @method
    // @param text:String 文本内容
    //==========================================================
-   MO.FUiToolButtonEdit_setText = function FUiToolButtonEdit_setText(text){
+   MO.FDuiToolButtonEdit_setText = function FDuiToolButtonEdit_setText(text){
       this._hEdit.value = text;
    }
 }

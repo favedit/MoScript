@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiRadio = function FUiRadio(o){
+   MO.FDuiRadio = function FDuiRadio(o){
       o = RClass.inherits(this, o, FEditControl);
       //..........................................................
       // @property
@@ -19,7 +19,7 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiRadio_onBuildEditValue;
+      o.onBuildEditValue = FDuiRadio_onBuildEditValue;
       //..........................................................
       // @attribute
       //o._editChecked = RClass.register(o, new APtyBoolean('_editChecked'), false);
@@ -29,12 +29,12 @@ with(MO){
       //o.onDataClick  = RMethod.emptyCall;
       //..........................................................
       // @method
-      //o.clearValue   = FUiRadio_clearValue;
-      //o.resetValue   = FUiRadio_resetValue;
-      //o.saveValue    = FUiRadio_saveValue;
-      //o.text         = FUiRadio_text;
-      //o.setText      = FUiRadio_setText;
-      //o.refreshStyle = FUiRadio_refreshStyle;
+      //o.clearValue   = FDuiRadio_clearValue;
+      //o.resetValue   = FDuiRadio_resetValue;
+      //o.saveValue    = FDuiRadio_saveValue;
+      //o.text         = FDuiRadio_text;
+      //o.setText      = FDuiRadio_setText;
+      //o.refreshStyle = FDuiRadio_refreshStyle;
       return o;
    }
 
@@ -44,7 +44,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiRadio_onBuildEditValue = function FUiRadio_onBuildEditValue(p){
+   MO.FDuiRadio_onBuildEditValue = function FDuiRadio_onBuildEditValue(p){
       var o = this;
       // 建立编辑控件
       o._hInput = RBuilder.appendRadio(o._hValuePanel, o.styleName('Input'));
@@ -63,7 +63,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiRadio_clearValue = function FUiRadio_clearValue(){
+   MO.FDuiRadio_clearValue = function FDuiRadio_clearValue(){
       this.hEdit.checked = false;
    }
 
@@ -72,7 +72,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiRadio_resetValue = function FUiRadio_resetValue(){
+   MO.FDuiRadio_resetValue = function FDuiRadio_resetValue(){
       this.hEdit.checked = this._editChecked;
    }
 
@@ -82,7 +82,7 @@ with(MO){
    // @method
    // @param vs:values:TAttributes 数据集合
    //==========================================================
-   MO.FUiRadio_saveValue = function FUiRadio_saveValue(vs){
+   MO.FDuiRadio_saveValue = function FDuiRadio_saveValue(vs){
       var o = this;
       if(o.hEdit.checked){
          vs.set(o.dataName, o.dataDefault);
@@ -95,7 +95,7 @@ with(MO){
    // @method
    // @return 文本内容
    //==========================================================
-   MO.FUiRadio_text = function FUiRadio_text(){
+   MO.FDuiRadio_text = function FDuiRadio_text(){
       return this.hEdit.checked ? this.dataDefault : '';
    }
 
@@ -105,7 +105,7 @@ with(MO){
    // @method
    // @param t:text:String 文本内容
    //==========================================================
-   MO.FUiRadio_setText = function FUiRadio_setText(t){
+   MO.FDuiRadio_setText = function FDuiRadio_setText(t){
       this.hEdit.checked = (this.dataDefault == t);
    }
 
@@ -114,7 +114,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiRadio_refreshStyle = function FUiRadio_refreshStyle(){
+   MO.FDuiRadio_refreshStyle = function FDuiRadio_refreshStyle(){
       var o = this;
       var h = o.panel(EPanel.Edit);
       h.disabled = !o._editable;

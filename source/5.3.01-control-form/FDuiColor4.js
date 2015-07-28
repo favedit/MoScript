@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiColor4 = function FUiColor4(o){
+   MO.FDuiColor4 = function FDuiColor4(o){
       //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
       o = RClass.inherits(this, o, FEditControl);
       //..........................................................
@@ -21,17 +21,17 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiColor4_onBuildEditValue;
+      o.onBuildEditValue = FDuiColor4_onBuildEditValue;
       //..........................................................
       // @process
-      //o.oeDataLoad       = FUiColor4_oeDataLoad;
-      //o.oeDataSave       = FUiColor4_oeDataSave;
+      //o.oeDataLoad       = FDuiColor4_oeDataLoad;
+      //o.oeDataSave       = FDuiColor4_oeDataSave;
       //..........................................................
       // @method
-      o.construct        = FUiColor4_construct;
+      o.construct        = FDuiColor4_construct;
       // @method
-      o.get              = FUiColor4_get;
-      o.set              = FUiColor4_set;
+      o.get              = FDuiColor4_get;
+      o.set              = FDuiColor4_set;
 
 
 
@@ -52,16 +52,16 @@ with(MO){
       //o.hUnit         = null;
       //..........................................................
       // @event
-      //o.onDataKeyDown = FUiColor4_onDataKeyDown;
+      //o.onDataKeyDown = FDuiColor4_onDataKeyDown;
       //..........................................................
       // @method
-      //o.formatValue   = FUiColor4_formatValue;
-      //o.setText       = FUiColor4_setText;
-      //o.validText     = FUiColor4_validText;
-      //o.findEditor    = FUiColor4_findEditor;
-      //o.drop          = FUiColor4_drop;
-      //o.link          = FUiColor4_link;
-      //o.clone         = FUiColor4_clone;
+      //o.formatValue   = FDuiColor4_formatValue;
+      //o.setText       = FDuiColor4_setText;
+      //o.validText     = FDuiColor4_validText;
+      //o.findEditor    = FDuiColor4_findEditor;
+      //o.drop          = FDuiColor4_drop;
+      //o.link          = FDuiColor4_link;
+      //o.clone         = FDuiColor4_clone;
       return o;
    }
 
@@ -71,7 +71,7 @@ with(MO){
    // @method
    // @param p:dataSource:FDataSource 数据源
    //==========================================================
-   MO.FUiColor4_oeDataLoad = function FUiColor4_oeDataLoad(p){
+   MO.FDuiColor4_oeDataLoad = function FDuiColor4_oeDataLoad(p){
       var o = this;
       alert(p);
       return EEventStatus.Stop;
@@ -83,7 +83,7 @@ with(MO){
    // @method
    // @param p:dataSource:FDataSource 数据源
    //==========================================================
-   MO.FUiColor4_oeDataSave = function FUiColor4_oeDataSave(p){
+   MO.FDuiColor4_oeDataSave = function FDuiColor4_oeDataSave(p){
       var o = this;
       return EEventStatus.Stop;
    }
@@ -94,7 +94,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiColor4_onBuildEditValue = function FUiColor4_onBuildEditValue(p){
+   MO.FDuiColor4_onBuildEditValue = function FDuiColor4_onBuildEditValue(p){
       var o = this;
       var h = o._hValuePanel;
       h.className = o.styleName('InputPanel');
@@ -119,7 +119,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColor4_construct = function FUiColor4_construct(){
+   MO.FDuiColor4_construct = function FDuiColor4_construct(){
       var o = this;
       o.__base.FEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
@@ -131,7 +131,7 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiColor4_get = function FUiColor4_get(p){
+   MO.FDuiColor4_get = function FDuiColor4_get(p){
       var o = this;
       var r = o.__base.FEditControl.get.call(o, p);
       // 获得显示
@@ -148,7 +148,7 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiColor4_set = function FUiColor4_set(p){
+   MO.FDuiColor4_set = function FDuiColor4_set(p){
       var o = this;
       o.__base.FEditControl.set.call(o, p);
       // 设置显示
@@ -189,7 +189,7 @@ with(MO){
    // @param s:sender:FControl 控件对象
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiColor4_onDataKeyDown = function FUiColor4_onDataKeyDown(s, e){
+   MO.FDuiColor4_onDataKeyDown = function FDuiColor4_onDataKeyDown(s, e){
       var o = this;
       o.__base.FEditControl.onDataKeyDown.call(o, s, e);
       // 大小写限制
@@ -216,7 +216,7 @@ with(MO){
    // @method
    // @param v:value:String 显示内容
    //==========================================================
-   MO.FUiColor4_formatValue = function FUiColor4_formatValue(v){
+   MO.FDuiColor4_formatValue = function FDuiColor4_formatValue(v){
       var o = this;
       var r = RString.nvl(v);
       if(ECase.Upper == o.editCase){
@@ -233,7 +233,7 @@ with(MO){
    // @method
    // @param t:text:String 内容
    //==========================================================
-   MO.FUiColor4_setText = function FUiColor4_setText(t){
+   MO.FDuiColor4_setText = function FDuiColor4_setText(t){
       var o = this;
       if(!o.hEdit){
          return;
@@ -261,7 +261,7 @@ with(MO){
    // @param t:text:String 内容
    // @return 校验结果
    //==========================================================
-   MO.FUiColor4_validText = function FUiColor4_validText(t){
+   MO.FDuiColor4_validText = function FDuiColor4_validText(t){
       var o = this;
       var r = o.__base.FEditControl.validText.call(o, t);
       if(!r){
@@ -287,14 +287,14 @@ with(MO){
    // @method
    // @return 编辑器
    //==========================================================
-   MO.FUiColor4_findEditor = function FUiColor4_findEditor(){
+   MO.FDuiColor4_findEditor = function FDuiColor4_findEditor(){
       var o = this;
       if(o.editComplete){
          var de = o.editor;
          if(!de){
             o.dsControl = o.topControl(MDataset);
             if(o.dsControl){
-               de = o.editor = RConsole.find(FUiColor4Console).focus(o, FUiColor4Editor);
+               de = o.editor = RConsole.find(FDuiColor4Console).focus(o, FDuiColor4Editor);
             }
          }
          if(de){
@@ -309,7 +309,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColor4_drop = function FUiColor4_drop(){
+   MO.FDuiColor4_drop = function FDuiColor4_drop(){
       var o = this;
       var de = o.findEditor();
       if(de){
@@ -331,7 +331,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiColor4_clone = function FUiColor4_clone(){
+   MO.FDuiColor4_clone = function FDuiColor4_clone(){
       var o = this;
       var r = o._class.newInstance();
       GHtml_clone(r, o.hPanel);
@@ -343,7 +343,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiColor4_link = function FUiColor4_link(){
+   MO.FDuiColor4_link = function FDuiColor4_link(){
       var o = this;
       
    }

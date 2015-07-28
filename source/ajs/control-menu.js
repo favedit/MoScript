@@ -1,42 +1,40 @@
-with(MO){
-   MO.MUiMenuButton = function MUiMenuButton(o){
-      o = RClass.inherits(this, o);
-      return o;
-   }
+MO.MDuiMenuButton = function MDuiMenuButton(o){
+   o = MO.Class.inherits(this, o);
+   return o;
 }
 with(MO){
-   MO.FUiMenuBar = function FUiMenuBar(o){
+   MO.FDuiMenuBar = function FDuiMenuBar(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
       o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
       o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
       o._hLine            = null;
-      o.onBuildPanel      = FUiMenuBar_onBuildPanel;
+      o.onBuildPanel      = FDuiMenuBar_onBuildPanel;
       o.onEnter           = RMethod.empty;
       o.onLeave           = RMethod.empty;
-      o.appendChild       = FUiMenuBar_appendChild;
-      o.removeChild       = FUiMenuBar_removeChild;
-      o.dispose           = FUiMenuBar_dispose;
+      o.appendChild       = FDuiMenuBar_appendChild;
+      o.removeChild       = FDuiMenuBar_removeChild;
+      o.dispose           = FDuiMenuBar_dispose;
       return o;
    }
-   MO.FUiMenuBar_onBuildPanel = function FUiMenuBar_onBuildPanel(p){
+   MO.FDuiMenuBar_onBuildPanel = function FDuiMenuBar_onBuildPanel(p){
       var o = this;
       var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
       o._hLine = RBuilder.appendTableRow(h);
    }
-   MO.FUiMenuBar_appendChild = function FUiMenuBar_appendChild(control){
+   MO.FDuiMenuBar_appendChild = function FDuiMenuBar_appendChild(control){
       var o = this;
       o.__base.FDuiContainer.appendChild.call(o, control);
-      if(RClass.isClass(control, MUiMenuButton)){
+      if(RClass.isClass(control, MDuiMenuButton)){
          var hLine = o._hLine;
          var hCell = RBuilder.appendTableCell(hLine, o.styleName('ButtonPanel'));
          hCell._hParentLine = hLine;
          control.setPanel(hCell);
       }
    }
-   MO.FUiMenuBar_removeChild = function FUiMenuBar_removeChild(p){
+   MO.FDuiMenuBar_removeChild = function FDuiMenuBar_removeChild(p){
       var o = this;
-      if(RClass.isClass(p, FUiMenuButton)){
+      if(RClass.isClass(p, FDuiMenuButton)){
          var hp = p._hParent;
          var hl = p._hParentLine;
          hl.removeChild(hp);
@@ -45,15 +43,15 @@ with(MO){
       }
       o.__base.FDuiContainer.removeChild.call(o, p);
    }
-   MO.FUiMenuBar_dispose = function FUiMenuBar_dispose(){
+   MO.FDuiMenuBar_dispose = function FDuiMenuBar_dispose(){
       var o = this;
       o._hLine = RHtml.free(o._hLine);
       o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
-   MO.FUiMenuButton = function FUiMenuButton(o){
-      o = RClass.inherits(this, o, FDuiControl, MUiMenuButton, MListenerClick);
+   MO.FDuiMenuButton = function FDuiMenuButton(o){
+      o = RClass.inherits(this, o, FDuiControl, MDuiMenuButton, MListenerClick);
       o._icon            = RClass.register(o, new APtyString('_icon'));
       o._iconDisable     = RClass.register(o, new APtyString('_iconDisable'));
       o._hotkey          = RClass.register(o, new APtyString('_hotkey'));
@@ -72,26 +70,26 @@ with(MO){
       o._hIcon           = null;
       o._hSpacePanel     = null;
       o._hLabelPanel     = null;
-      o.onBuildPanel     = FUiMenuButton_onBuildPanel
-      o.onBuild          = FUiMenuButton_onBuild;
-      o.onEnter          = FUiMenuButton_onEnter;
-      o.onLeave          = FUiMenuButton_onLeave;
-      o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
-      o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
-      o.icon             = FUiMenuButton_icon;
-      o.setIcon          = FUiMenuButton_setIcon;
-      o.setLabel         = FUiMenuButton_setLabel;
-      o.setHint          = FUiMenuButton_setHint;
-      o.setEnable        = FUiMenuButton_setEnable;
-      o.click            = FUiMenuButton_click;
-      o.dispose          = FUiMenuButton_dispose;
+      o.onBuildPanel     = FDuiMenuButton_onBuildPanel
+      o.onBuild          = FDuiMenuButton_onBuild;
+      o.onEnter          = FDuiMenuButton_onEnter;
+      o.onLeave          = FDuiMenuButton_onLeave;
+      o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FDuiMenuButton_onMouseDown);
+      o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FDuiMenuButton_onMouseUp);
+      o.icon             = FDuiMenuButton_icon;
+      o.setIcon          = FDuiMenuButton_setIcon;
+      o.setLabel         = FDuiMenuButton_setLabel;
+      o.setHint          = FDuiMenuButton_setHint;
+      o.setEnable        = FDuiMenuButton_setEnable;
+      o.click            = FDuiMenuButton_click;
+      o.dispose          = FDuiMenuButton_dispose;
       return o;
    }
-   MO.FUiMenuButton_onBuildPanel = function FUiMenuButton_onBuildPanel(p){
+   MO.FDuiMenuButton_onBuildPanel = function FDuiMenuButton_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
    }
-   MO.FUiMenuButton_onBuild = function FUiMenuButton_onBuild(p){
+   MO.FDuiMenuButton_onBuild = function FDuiMenuButton_onBuild(p){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, p);
       var h = o._hPanel;
@@ -118,48 +116,48 @@ with(MO){
          o.setHint(o._hint);
       }
    }
-   MO.FUiMenuButton_onEnter = function FUiMenuButton_onEnter(p){
+   MO.FDuiMenuButton_onEnter = function FDuiMenuButton_onEnter(p){
       var o = this;
       if(!o._disabled){
          o._hPanel.className = o.styleName('Hover');
       }
    }
-   MO.FUiMenuButton_onLeave = function FUiMenuButton_onLeave(){
+   MO.FDuiMenuButton_onLeave = function FDuiMenuButton_onLeave(){
       var o = this;
       if(!o._disabled){
          o._hPanel.className = o.styleName('Normal');
       }
    }
-   MO.FUiMenuButton_onMouseDown = function FUiMenuButton_onMouseDown(){
+   MO.FDuiMenuButton_onMouseDown = function FDuiMenuButton_onMouseDown(){
       var o = this;
       if(!o._disabled){
          o._hPanel.className = o.styleName('Press');
          o.click();
       }
    }
-   MO.FUiMenuButton_onMouseUp = function FUiMenuButton_onMouseUp(){
+   MO.FDuiMenuButton_onMouseUp = function FDuiMenuButton_onMouseUp(){
       var o = this;
       if(!o._disabled){
          o._hPanel.className = o.styleName('Hover');
       }
    }
-   MO.FUiMenuButton_icon = function FUiMenuButton_icon(){
+   MO.FDuiMenuButton_icon = function FDuiMenuButton_icon(){
       return this._icon;
    }
-   MO.FUiMenuButton_setIcon = function FUiMenuButton_setIcon(p){
+   MO.FDuiMenuButton_setIcon = function FDuiMenuButton_setIcon(p){
       var o = this;
       o._icon = p;
       if(o._hIcon){
          o._hIcon.src = o.styleIconPath(o._icon);
       }
    }
-   MO.FUiMenuButton_setLabel = function FUiMenuButton_setLabel(p){
+   MO.FDuiMenuButton_setLabel = function FDuiMenuButton_setLabel(p){
       var o = this;
       var s = RString.nvl(p);
       o._label = s;
       RHtml.textSet(o._hLabelPanel, s);
    }
-   MO.FUiMenuButton_setHint = function FUiMenuButton_setHint(p){
+   MO.FDuiMenuButton_setHint = function FDuiMenuButton_setHint(p){
       var o = this;
       o._hint = p;
       var s = RString.nvl(p);
@@ -170,7 +168,7 @@ with(MO){
       }
       o._hPanel.title = o._hint;
    }
-   MO.FUiMenuButton_setEnable = function FUiMenuButton_setEnable(p){
+   MO.FDuiMenuButton_setEnable = function FDuiMenuButton_setEnable(p){
       var o = this;
       o.__base.FDuiControl.setEnable.call(o, p);
       if(p){
@@ -185,7 +183,7 @@ with(MO){
          }
       }
    }
-   MO.FUiMenuButton_click = function FUiMenuButton_click(){
+   MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
@@ -198,7 +196,7 @@ with(MO){
          }
       }
    }
-   MO.FUiMenuButton_dispose = function FUiMenuButton_dispose(){
+   MO.FDuiMenuButton_dispose = function FDuiMenuButton_dispose(){
       var o = this;
       o._hForm = RHtml.free(o._hForm);
       o._hLine = RHtml.free(o._hLine);
@@ -210,7 +208,7 @@ with(MO){
    }
 }
 with(MO){
-   MO.FUiMenuButtonMenu = function FUiMenuButtonMenu(o){
+   MO.FDuiMenuButtonMenu = function FDuiMenuButtonMenu(o){
       o = RClass.inherits(this, o, FDuiControl);
       o._action       = RClass.register(o, new APtyString('action', null));
       o._target       = RClass.register(o, new APtyString('target', null));
@@ -226,20 +224,20 @@ with(MO){
       o.hButtonPanel = null;
       o.hIcon        = null;
       o.hText        = null;
-      o.oeBuild      = FUiMenuButtonMenu_oeBuild;
-      o.oeEnable     = FUiMenuButtonMenu_oeEnable;
-      o.oeDisable    = FUiMenuButtonMenu_oeDisable;
-      o.onBuildPanel = FUiMenuButtonMenu_onBuildPanel;
-      o.onEnter      = FUiMenuButtonMenu_onEnter;
-      o.onLeave      = FUiMenuButtonMenu_onLeave;
-      o.onMouseDown  = FUiMenuButtonMenu_onMouseDown;
-      o.onMouseUp    = FUiMenuButtonMenu_onMouseUp;
-      o.onClick      = FUiMenuButtonMenu_onClick;
-      o.construct    = FUiMenuButtonMenu_construct;
-      o.dispose      = FUiMenuButtonMenu_dispose;
+      o.oeBuild      = FDuiMenuButtonMenu_oeBuild;
+      o.oeEnable     = FDuiMenuButtonMenu_oeEnable;
+      o.oeDisable    = FDuiMenuButtonMenu_oeDisable;
+      o.onBuildPanel = FDuiMenuButtonMenu_onBuildPanel;
+      o.onEnter      = FDuiMenuButtonMenu_onEnter;
+      o.onLeave      = FDuiMenuButtonMenu_onLeave;
+      o.onMouseDown  = FDuiMenuButtonMenu_onMouseDown;
+      o.onMouseUp    = FDuiMenuButtonMenu_onMouseUp;
+      o.onClick      = FDuiMenuButtonMenu_onClick;
+      o.construct    = FDuiMenuButtonMenu_construct;
+      o.dispose      = FDuiMenuButtonMenu_dispose;
       return o;
    }
-   MO.FUiMenuButtonMenu_oeBuild = function FUiMenuButtonMenu_oeBuild(event){
+   MO.FDuiMenuButtonMenu_oeBuild = function FDuiMenuButtonMenu_oeBuild(event){
       var o = this;
       o.base.FDuiControl.oeBuild.call(o, event);
       var h = o.hPanel;
@@ -256,10 +254,10 @@ with(MO){
       }
       return EEventStatus.Stop;
    }
-   MO.FUiMenuButtonMenu_onBuildPanel = function FUiMenuButtonMenu_onBuildPanel(){
+   MO.FDuiMenuButtonMenu_onBuildPanel = function FDuiMenuButtonMenu_onBuildPanel(){
       this.hPanel = RBuilder.create(null, 'DIV');
    }
-   MO.FUiMenuButtonMenu_oeEnable = function FUiMenuButtonMenu_oeEnable(event){
+   MO.FDuiMenuButtonMenu_oeEnable = function FDuiMenuButtonMenu_oeEnable(event){
       var o = this;
       o.base.FDuiControl.oeEnable.call(o, event);
       o.hPanel.className = o.style('Button');
@@ -268,7 +266,7 @@ with(MO){
       }
       return EEventStatus.Stop;
    }
-   MO.FUiMenuButtonMenu_oeDisable = function FUiMenuButtonMenu_oeDisable(event){
+   MO.FDuiMenuButtonMenu_oeDisable = function FDuiMenuButtonMenu_oeDisable(event){
       var o = this;
       o.base.FDuiControl.oeDisable.call(o, event);
       o.hPanel.className = o.style('Disable');
@@ -277,31 +275,31 @@ with(MO){
       }
       return EEventStatus.Stop;
    }
-   MO.FUiMenuButtonMenu_onEnter = function FUiMenuButtonMenu_onEnter(){
+   MO.FDuiMenuButtonMenu_onEnter = function FDuiMenuButtonMenu_onEnter(){
       var o = this;
       if(!o._disabled){
          o.hPanel.className = o.style('Hover');
       }
    }
-   MO.FUiMenuButtonMenu_onLeave = function FUiMenuButtonMenu_onLeave(){
+   MO.FDuiMenuButtonMenu_onLeave = function FDuiMenuButtonMenu_onLeave(){
       var o = this;
       if(!o._disabled){
          o.hPanel.className = o.style('Panel');
       }
    }
-   MO.FUiMenuButtonMenu_onMouseDown = function FUiMenuButtonMenu_onMouseDown(){
+   MO.FDuiMenuButtonMenu_onMouseDown = function FDuiMenuButtonMenu_onMouseDown(){
       var o = this;
       if(!o._disabled){
          o.hPanel.className = o.style('Press');
       }
    }
-   MO.FUiMenuButtonMenu_onMouseUp = function FUiMenuButtonMenu_onMouseUp(){
+   MO.FDuiMenuButtonMenu_onMouseUp = function FDuiMenuButtonMenu_onMouseUp(){
       var o = this;
       if(!o._disabled){
          o.hPanel.className = o.style('Hover');
       }
    }
-   MO.FUiMenuButtonMenu_onClick = function FUiMenuButtonMenu_onClick(){
+   MO.FDuiMenuButtonMenu_onClick = function FDuiMenuButtonMenu_onClick(){
       var o = this;
       if(!o._disabled){
          RConsole.find(FFocusConsole).focus(o);
@@ -320,11 +318,11 @@ with(MO){
          o.processClick();
       }
    }
-   MO.FUiMenuButtonMenu_construct = function FUiMenuButtonMenu_construct(){
+   MO.FDuiMenuButtonMenu_construct = function FDuiMenuButtonMenu_construct(){
       var o = this;
       o.base.FDuiControl.construct.call(o);
    }
-   MO.FUiMenuButtonMenu_dispose = function FUiMenuButtonMenu_dispose(){
+   MO.FDuiMenuButtonMenu_dispose = function FDuiMenuButtonMenu_dispose(){
       var o = this;
       o.base.FDuiControl.dispose.call(o);
       RMemory.freeHtml(o.hPanel);
@@ -337,18 +335,18 @@ with(MO){
    }
 }
 with(MO){
-   MO.FUiMenuButtonSplit = function FUiMenuButtonSplit(o){
-      o = RClass.inherits(this, o, FDuiControl, MUiMenuButton);
+   MO.FDuiMenuButtonSplit = function FDuiMenuButtonSplit(o){
+      o = RClass.inherits(this, o, FDuiControl, MDuiMenuButton);
       o._stylePanelHorizontal = RClass.register(o, new AStyle('_stylePanelHorizontal'));
       o._stylePanelVertical   = RClass.register(o, new AStyle('_stylePanelVertical'));
-      o.onBuild               = FUiMenuButtonSplit_onBuild;
+      o.onBuild               = FDuiMenuButtonSplit_onBuild;
       return o;
    }
-   MO.FUiMenuButtonSplit_onBuild = function FUiMenuButtonSplit_onBuild(event){
+   MO.FDuiMenuButtonSplit_onBuild = function FDuiMenuButtonSplit_onBuild(event){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, event);
       var hPanel = o._hPanel;
-      if(RClass.isClass(o._parent, FUiMenuBar)){
+      if(RClass.isClass(o._parent, FDuiMenuBar)){
          hPanel.className = o.styleName('PanelVertical');
       }else{
          hPanel.className = o.styleName('PanelHorizontal');
@@ -356,7 +354,7 @@ with(MO){
    }
 }
 with(MO){
-   MO.FUiPopupMenu = function FUiPopupMenu(o){
+   MO.FDuiPopupMenu = function FDuiPopupMenu(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiPopup);
       o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
       o._styleForm      = RClass.register(o, new AStyle('_styleForm'));
@@ -371,16 +369,16 @@ with(MO){
       o._hButtonPanel   = null;
       o._hIcon          = null;
       o._hText          = null;
-      o.onBuild         = FUiPopupMenu_onBuild;
-      o.appendChild     = FUiPopupMenu_appendChild;
-      o.show            = FUiPopupMenu_show;
-      o.setVisible      = FUiPopupMenu_setVisible;
-      o.testInRange     = FUiPopupMenu_testInRange;
-      o.doBlur          = FUiPopupMenu_doBlur;
-      o.dispose         = FUiPopupMenu_dispose;
+      o.onBuild         = FDuiPopupMenu_onBuild;
+      o.appendChild     = FDuiPopupMenu_appendChild;
+      o.show            = FDuiPopupMenu_show;
+      o.setVisible      = FDuiPopupMenu_setVisible;
+      o.testInRange     = FDuiPopupMenu_testInRange;
+      o.doBlur          = FDuiPopupMenu_doBlur;
+      o.dispose         = FDuiPopupMenu_dispose;
       return o;
    }
-   MO.FUiPopupMenu_onBuild = function FUiPopupMenu_onBuild(event){
+   MO.FDuiPopupMenu_onBuild = function FDuiPopupMenu_onBuild(event){
       var o = this;
       o.__base.FDuiContainer.onBuild.call(o, event);
       var hPanel = o._hPanel;
@@ -394,16 +392,16 @@ with(MO){
       hLineBottom.height = '2px';
       var hContainer = o._hContainer = RBuilder.appendTable(hContainerPanel, o.styleName('Container'));
    }
-   MO.FUiPopupMenu_doBlur = function FUiPopupMenu_doBlur(){
+   MO.FDuiPopupMenu_doBlur = function FDuiPopupMenu_doBlur(){
       var o = this;
    }
-   MO.FUiPopupMenu_appendChild = function FUiPopupMenu_appendChild(control){
+   MO.FDuiPopupMenu_appendChild = function FDuiPopupMenu_appendChild(control){
       var o = this;
       var hButtonPanel = RBuilder.appendTableRowCell(o._hContainer);
       hButtonPanel.className = o.styleName('Button');
       hButtonPanel.appendChild(control._hPanel);
    }
-   MO.FUiPopupMenu_show = function FUiPopupMenu_show(h, positionCd, v){
+   MO.FDuiPopupMenu_show = function FDuiPopupMenu_show(h, positionCd, v){
       var o = this;
       var hPanel = o._hPanel;
       var opener = o._opener;
@@ -424,9 +422,9 @@ with(MO){
       style.left = '3px';
       style.top = (openerHeight + 1) + 'px';
       style.width = width + 'px';
-      style.zIndex = RUiLayer.next();
+      style.zIndex = RDuiLayer.next();
    }
-   MO.FUiPopupMenu_setVisible = function FUiPopupMenu_setVisible(visible){
+   MO.FDuiPopupMenu_setVisible = function FDuiPopupMenu_setVisible(visible){
       var o = this;
       var opener = o._opener;
       o._statusVisible = visible;
@@ -438,10 +436,10 @@ with(MO){
          hOpener.removeChild(hPanel);
       }
    }
-   MO.FUiPopupMenu_testInRange = function FUiPopupMenu_testInRange(e){
-      return this == RControl.htmlControl(e.srcElement, FUiPopupMenu);
+   MO.FDuiPopupMenu_testInRange = function FDuiPopupMenu_testInRange(e){
+      return this == RControl.htmlControl(e.srcElement, FDuiPopupMenu);
    }
-   MO.FUiPopupMenu_dispose = function FUiPopupMenu_dispose(e){
+   MO.FDuiPopupMenu_dispose = function FDuiPopupMenu_dispose(e){
       var o = this;
       o._hContainer = RMemory.free(o._hContainer);
       o._hPanel = RMemory.free(o._hPanel);

@@ -7,7 +7,7 @@ with(MO){
    // @history 150428
    //==========================================================
    MO.FDsMaterialSelectDialog = function FDsMaterialSelectDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.material.SelectDialog';
@@ -42,7 +42,7 @@ with(MO){
    //==========================================================
    MO.FDsMaterialSelectDialog_onBuilded = function FDsMaterialSelectDialog_onBuilded(event){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, event);
+      o.__base.FDuiDialog.onBuilded.call(o, event);
       //..........................................................
       // 注册事件
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
@@ -122,7 +122,7 @@ with(MO){
    MO.FDsMaterialSelectDialog_construct = function FDsMaterialSelectDialog_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
 
    //==========================================================
@@ -133,6 +133,6 @@ with(MO){
    MO.FDsMaterialSelectDialog_dispose = function FDsMaterialSelectDialog_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

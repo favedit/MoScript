@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsProjectSceneListItem = function FDsProjectSceneListItem(o){
-      o = RClass.inherits(this, o, FUiListViewItem);
+      o = RClass.inherits(this, o, FDuiListViewItem);
       //..........................................................
       // @event
       o.onBuild      = FDsProjectSceneListItem_onBuild;
@@ -25,7 +25,7 @@ with(MO){
    MO.FDsProjectSceneListItem_onBuild = function FDsProjectSceneListItem_onBuild(p){
       var o = this;
       // 建立控件
-      o.__base.FUiListViewItem.onBuild.call(o, p);
+      o.__base.FDuiListViewItem.onBuild.call(o, p);
       var h = o._hPanel;
       h.style.width = '260px';
       h.style.height = '150px';

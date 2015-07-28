@@ -24,7 +24,7 @@ with(MO){
    // @author maocy
    // @history 150202
    //==========================================================
-   MO.FUiTabBar = function FUiTabBar(o){
+   MO.FDuiTabBar = function FDuiTabBar(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       //..........................................................
       // @property
@@ -54,24 +54,24 @@ with(MO){
       o._hSheets          = null;
       //..........................................................
       // @event
-      o.onBuildPanel     = FUiTabBar_onBuildPanel;
-      o.onBuild          = FUiTabBar_onBuild;
+      o.onBuildPanel     = FDuiTabBar_onBuildPanel;
+      o.onBuild          = FDuiTabBar_onBuild;
       //..........................................................
       // @process
-      o.oeRefresh        = FUiTabBar_oeRefresh;
+      o.oeRefresh        = FDuiTabBar_oeRefresh;
       //..........................................................
       // @method
-      o.construct        = FUiTabBar_construct;
+      o.construct        = FDuiTabBar_construct;
       // @method
-      o.activeButton      = FUiTabBar_activeButton;
-      o.appendChild      = FUiTabBar_appendChild;
-      o.select           = FUiTabBar_select;
-      o.selectByIndex    = FUiTabBar_selectByIndex;
-      o.selectByName     = FUiTabBar_selectByName;
-      o.sheet            = FUiTabBar_sheet;
-      o.push             = FUiTabBar_push;
+      o.activeButton      = FDuiTabBar_activeButton;
+      o.appendChild      = FDuiTabBar_appendChild;
+      o.select           = FDuiTabBar_select;
+      o.selectByIndex    = FDuiTabBar_selectByIndex;
+      o.selectByName     = FDuiTabBar_selectByName;
+      o.sheet            = FDuiTabBar_sheet;
+      o.push             = FDuiTabBar_push;
       // @method
-      o.dispose          = FUiTabBar_dispose;
+      o.dispose          = FDuiTabBar_dispose;
       return o;
    }
 
@@ -81,7 +81,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiTabBar_onBuildPanel = function FUiTabBar_onBuildPanel(p){
+   MO.FDuiTabBar_onBuildPanel = function FDuiTabBar_onBuildPanel(p){
       var o = this;
       var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
       h.width = '100%';
@@ -93,7 +93,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiTabBar_onBuild = function FUiTabBar_onBuild(p){
+   MO.FDuiTabBar_onBuild = function FDuiTabBar_onBuild(p){
       var o = this;
       o.__base.FDuiContainer.onBuild.call(o, p);
       // 获得底板
@@ -115,14 +115,14 @@ with(MO){
       //RBuilder.appendEmpty(hc);
       o._hFirst = RBuilder.appendTableCell(o._hLine);
       var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
-      hbc.className = o.styleName('Bottom', FUiTabButton);
+      hbc.className = o.styleName('Bottom', FDuiTabButton);
       // 建立标题区右边第一列
       var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
-      //hc.className = o.styleName('Top', FUiTabButton);
+      //hc.className = o.styleName('Top', FDuiTabButton);
       //RBuilder.appendEmpty(hc);
       o._hLast = RBuilder.appendTableCell(o._hLine);
       var hc = o._hLastBottom = RBuilder.appendTableCell(o._hBottom);
-      hc.className = o.styleName('Bottom', FUiTabButton);
+      hc.className = o.styleName('Bottom', FDuiTabButton);
    }
 
    //==========================================================
@@ -131,7 +131,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiTabBar_oeRefresh = function FUiTabBar_oeRefresh(p){
+   MO.FDuiTabBar_oeRefresh = function FDuiTabBar_oeRefresh(p){
       var o = this;
       var r = o.__base.FDuiContainer.oeRefresh.call(o, p);
       if(p.isBefore()){
@@ -160,7 +160,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTabBar_construct = function FUiTabBar_construct(){
+   MO.FDuiTabBar_construct = function FDuiTabBar_construct(){
       var o = this;
       // 父处理
       o.__base.FDuiContainer.construct.call(o);
@@ -172,9 +172,9 @@ with(MO){
    // <T>获得选中的按键。</T>
    //
    // @method
-   // @return FUiTabButton 按键
+   // @return FDuiTabButton 按键
    //==========================================================
-   MO.FUiTabBar_activeButton = function FUiTabBar_activeButton(){
+   MO.FDuiTabBar_activeButton = function FDuiTabBar_activeButton(){
       return this._activeButton;
    }
 
@@ -184,10 +184,10 @@ with(MO){
    // @method
    // @param p:control:FControl 控件
    //==========================================================
-   MO.FUiTabBar_appendChild = function FUiTabBar_appendChild(p){
+   MO.FDuiTabBar_appendChild = function FDuiTabBar_appendChild(p){
       var o = this;
       // 追加子页面
-      if(RClass.isClass(p, FUiTabButton)){
+      if(RClass.isClass(p, FDuiTabButton)){
          var ci = o._hLast.cellIndex;
          // 追加标题顶边线
          var hc = p._hTopL = RBuilder.appendTableCell(o._hTop, null, ci);
@@ -243,9 +243,9 @@ with(MO){
    //
    // @method
    // @param p:name:String 名称
-   // @return FUiTabButton 页面
+   // @return FDuiTabButton 页面
    //==========================================================
-   MO.FUiTabBar_sheet = function FUiTabBar_sheet(p){
+   MO.FDuiTabBar_sheet = function FDuiTabBar_sheet(p){
       return this._buttons.get(p);
    }
 
@@ -253,9 +253,9 @@ with(MO){
    // <T>选中活动页面。</T>
    //
    // @method
-   // @param p:sheet:FUiTabButton 页面
+   // @param p:sheet:FDuiTabButton 页面
    //==========================================================
-   MO.FUiTabBar_select = function FUiTabBar_select(p){
+   MO.FDuiTabBar_select = function FDuiTabBar_select(p){
       var o = this;
       var ss = o._buttons;
       var c = ss.count();
@@ -275,7 +275,7 @@ with(MO){
    // @method
    // @param index:Integer 索引
    //==========================================================
-   MO.FUiTabBar_selectByIndex = function FUiTabBar_selectByIndex(index){
+   MO.FDuiTabBar_selectByIndex = function FDuiTabBar_selectByIndex(index){
       var o = this;
       var sheet = o._buttons.value(index);
       if(sheet){
@@ -289,7 +289,7 @@ with(MO){
    // @method
    // @param name:String 名称
    //==========================================================
-   MO.FUiTabBar_selectByName = function FUiTabBar_selectByName(name){
+   MO.FDuiTabBar_selectByName = function FDuiTabBar_selectByName(name){
       var o = this;
       var sheet = o.findControl(name);
       if(sheet){
@@ -303,10 +303,10 @@ with(MO){
    // @method
    // @param p:component:FComponent 组件对象
    //==========================================================
-   MO.FUiTabBar_push = function FUiTabBar_push(component){
+   MO.FDuiTabBar_push = function FDuiTabBar_push(component){
       var o = this;
       // 增加处理
-      if(RClass.isClass(component, FUiTabButton)){
+      if(RClass.isClass(component, FDuiTabButton)){
          var buttons = o._buttons;
          component._index = buttons.count();
          buttons.set(component.name(), component);
@@ -320,7 +320,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTabBar_dispose = function FUiTabBar_dispose(){
+   MO.FDuiTabBar_dispose = function FDuiTabBar_dispose(){
       var o = this;
       o.__base.FDuiContainer.dispose.call(o);
    }

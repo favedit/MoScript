@@ -18,7 +18,7 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiEditControl = function FUiEditControl(o){
+   MO.FDuiEditControl = function FDuiEditControl(o){
       o = RClass.inherits(this, o, FDuiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
       //..........................................................
       // @property
@@ -60,27 +60,27 @@ with(MO){
       //o.hHintIcon       = null;
       //..........................................................
       // @event
-      o.onBuildLabelIcon  = FUiEditControl_onBuildLabelIcon;
-      o.onBuildLabelText  = FUiEditControl_onBuildLabelText;
-      o.onBuildLabel      = FUiEditControl_onBuildLabel;
+      o.onBuildLabelIcon  = FDuiEditControl_onBuildLabelIcon;
+      o.onBuildLabelText  = FDuiEditControl_onBuildLabelText;
+      o.onBuildLabel      = FDuiEditControl_onBuildLabel;
       o.onBuildEditValue  = RMethod.virtual(o, 'onBuildEditValue');
-      o.onBuildEdit       = FUiEditControl_onBuildEdit;
-      o.onBuildPanel      = FUiEditControl_onBuildPanel;
-      o.onBuild           = FUiEditControl_onBuild;
+      o.onBuildEdit       = FDuiEditControl_onBuildEdit;
+      o.onBuildPanel      = FDuiEditControl_onBuildPanel;
+      o.onBuild           = FDuiEditControl_onBuild;
       //..........................................................
       // @process
-      o.oeMode            = FUiEditControl_oeMode;
-      o.oeProgress        = FUiEditControl_oeProgress;
+      o.oeMode            = FDuiEditControl_oeMode;
+      o.oeProgress        = FDuiEditControl_oeProgress;
       //..........................................................
       // @method
-      o.construct         = FUiEditControl_construct;
+      o.construct         = FDuiEditControl_construct;
       // @method
-      o.panel             = FUiEditControl_panel;
-      o.label             = FUiEditControl_label;
-      o.setLabel          = FUiEditControl_setLabel;
-      o.getValueRectangle = FUiEditControl_getValueRectangle;
+      o.panel             = FDuiEditControl_panel;
+      o.label             = FDuiEditControl_label;
+      o.setLabel          = FDuiEditControl_setLabel;
+      o.getValueRectangle = FDuiEditControl_getValueRectangle;
       // @method
-      o.dispose           = FUiEditControl_dispose;
+      o.dispose           = FDuiEditControl_dispose;
       return o;
    }
 
@@ -90,7 +90,7 @@ with(MO){
    // @method
    // @param p:arguments:SArguments 参数集合
    //==========================================================
-   MO.FUiEditControl_onBuildLabelIcon = function FUiEditControl_onBuildLabelIcon(p){
+   MO.FDuiEditControl_onBuildLabelIcon = function FDuiEditControl_onBuildLabelIcon(p){
       var o = this;
       if(o._labelIcon){
          o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, o._labelIcon);
@@ -105,7 +105,7 @@ with(MO){
    // @method
    // @param p:arguments:SArguments 参数集合
    //==========================================================
-   MO.FUiEditControl_onBuildLabelText = function FUiEditControl_onBuildLabelText(p){
+   MO.FDuiEditControl_onBuildLabelText = function FDuiEditControl_onBuildLabelText(p){
       var o = this;
       o._hText = RBuilder.appendSpan(o._hTextPanel, null, o._label);
    }
@@ -116,7 +116,7 @@ with(MO){
    // @method
    // @param p:arguments:SArguments 参数集合
    //==========================================================
-   MO.FUiEditControl_onBuildLabel = function FUiEditControl_onBuildLabel(p){
+   MO.FDuiEditControl_onBuildLabel = function FDuiEditControl_onBuildLabel(p){
       var o = this;
       var h = o._hLabelForm = RBuilder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
       var hr = RBuilder.appendTableRow(h);
@@ -147,7 +147,7 @@ with(MO){
    // @method
    // @param p:arguments:SArguments 参数集合
    //==========================================================
-   MO.FUiEditControl_onBuildEdit = function FUiEditControl_onBuildEdit(p){
+   MO.FDuiEditControl_onBuildEdit = function FDuiEditControl_onBuildEdit(p){
       var o = this;
       /// 建立控件表格
       var h = o._hEditForm = RBuilder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
@@ -167,8 +167,8 @@ with(MO){
       //hccc.align = 'center';
       //var hCk1 = o.hRight = document.createElement('IMG');
       //var hCk2 = o.hError = document.createElement('IMG');
-      //hCk1.src = o.styleIconPath('Right', FUiEditControl);
-      //hCk2.src = o.styleIconPath('Error', FUiEditControl);
+      //hCk1.src = o.styleIconPath('Right', FDuiEditControl);
+      //hCk2.src = o.styleIconPath('Error', FDuiEditControl);
       //hccc.appendChild(hCk1);
       //hccc.appendChild(hCk2);
       //hCk2.style.padding = 10;
@@ -216,7 +216,7 @@ with(MO){
    // @method
    // @param p:arguments:SArguments 参数集合
    //==========================================================
-   MO.FUiEditControl_onBuildPanel = function FUiEditControl_onBuildPanel(p){
+   MO.FDuiEditControl_onBuildPanel = function FDuiEditControl_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
    }
@@ -227,7 +227,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiEditControl_onBuild = function FUiEditControl_onBuild(p){
+   MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(p){
       var o = this;
       // 处理宽度小于标签宽度和编辑框宽度的情况，将宽度值设置为空
       //if(o.labelWidth && o.editWidth && o.width){
@@ -304,7 +304,7 @@ with(MO){
    // @param p:event:TEventProcess 处理事件
    // @return EEventStatus 处理状态
    //==========================================================
-   MO.FUiEditControl_oeMode = function FUiEditControl_oeMode(e){
+   MO.FDuiEditControl_oeMode = function FDuiEditControl_oeMode(e){
       var o = this;
       o.__base.FDuiControl.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
@@ -326,7 +326,7 @@ with(MO){
    // @param p:event:TEventProcess 处理事件
    // @return EEventStatus 处理状态
    //==========================================================
-   MO.FUiEditControl_oeProgress = function FUiEditControl_oeProgress(e){
+   MO.FDuiEditControl_oeProgress = function FDuiEditControl_oeProgress(e){
       var o = this;
       // 加载中不做处理
       if(o._progressing && e.enable){
@@ -349,7 +349,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditControl_construct = function FUiEditControl_construct(){
+   MO.FDuiEditControl_construct = function FDuiEditControl_construct(){
       var o = this;
       // 父处理
       o.__base.FDuiControl.construct.call(o);
@@ -367,7 +367,7 @@ with(MO){
    // @param t:type:EPanel 类型
    // @return HtmlTag 页面元素
    //==========================================================
-   MO.FUiEditControl_panel = function FUiEditControl_panel(t){
+   MO.FDuiEditControl_panel = function FDuiEditControl_panel(t){
       var o = this;
       if(EPanel.Edit == t){
          return o.hEdit;
@@ -383,7 +383,7 @@ with(MO){
    // @method
    // @return String 标签内容
    //==========================================================
-   MO.FUiEditControl_label = function FUiEditControl_label(p){
+   MO.FDuiEditControl_label = function FDuiEditControl_label(p){
       return this._label;
    }
 
@@ -393,7 +393,7 @@ with(MO){
    // @method
    // @param p:value:String 标签内容
    //==========================================================
-   MO.FUiEditControl_setLabel = function FUiEditControl_setLabel(p){
+   MO.FDuiEditControl_setLabel = function FDuiEditControl_setLabel(p){
       var o = this;
       o._label = p;
       if(o._hText){
@@ -408,7 +408,7 @@ with(MO){
    // @param r:rectangle:SRectangle 矩形
    // @return SRectangle 矩形
    //==========================================================
-   MO.FUiEditControl_getValueRectangle = function FUiEditControl_getValueRectangle(r){
+   MO.FDuiEditControl_getValueRectangle = function FDuiEditControl_getValueRectangle(r){
       var o = this;
       if(!r){
          r = new SRectangle();
@@ -425,7 +425,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditControl_dispose = function FUiEditControl_dispose(){
+   MO.FDuiEditControl_dispose = function FDuiEditControl_dispose(){
       var o = this;
       // 释放属性
       o._labelModeCd = null;

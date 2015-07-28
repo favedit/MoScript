@@ -13,7 +13,7 @@ with(MO){
    // @author maocy
    // @version 150224
    //==========================================================
-   MO.FUiSelectItem = function FUiSelectItem(o){
+   MO.FDuiSelectItem = function FDuiSelectItem(o){
       o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       //..........................................................
       // @property
@@ -39,17 +39,17 @@ with(MO){
       o._hNotePanel       = null;
       //..........................................................
       // @event
-      o.onBuildPanel      = FUiSelectItem_onBuildPanel;
-      o.onBuild           = FUiSelectItem_onBuild;
-      o.onEnter           = FUiSelectItem_onEnter;
-      o.onLeave           = FUiSelectItem_onLeave;
-      o.onMouseDown       = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiSelectItem_onMouseDown);
+      o.onBuildPanel      = FDuiSelectItem_onBuildPanel;
+      o.onBuild           = FDuiSelectItem_onBuild;
+      o.onEnter           = FDuiSelectItem_onEnter;
+      o.onLeave           = FDuiSelectItem_onLeave;
+      o.onMouseDown       = RClass.register(o, new AEventMouseDown('onMouseDown'), FDuiSelectItem_onMouseDown);
       //..........................................................
       // @method
-      o.setChecked        = FUiSelectItem_setChecked;
-      o.set               = FUiSelectItem_set;
+      o.setChecked        = FDuiSelectItem_setChecked;
+      o.set               = FDuiSelectItem_set;
       // @method
-      o.dispose           = FUiSelectItem_dispose;
+      o.dispose           = FDuiSelectItem_dispose;
       return o;
    }
 
@@ -59,7 +59,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiSelectItem_onBuildPanel = function FUiSelectItem_onBuildPanel(p){
+   MO.FDuiSelectItem_onBuildPanel = function FDuiSelectItem_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createTableRow(p, o.styleName("Normal"));
    }
@@ -70,7 +70,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiSelectItem_onBuild = function FUiSelectItem_onBuild(p){
+   MO.FDuiSelectItem_onBuild = function FDuiSelectItem_onBuild(p){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, p);
       // 设置面板
@@ -98,7 +98,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelectItem_onEnter = function FUiSelectItem_onEnter(){
+   MO.FDuiSelectItem_onEnter = function FDuiSelectItem_onEnter(){
       var o = this;
       o.__base.FDuiControl.onEnter.call(o);
       o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
@@ -109,7 +109,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelectItem_onLeave = function FUiSelectItem_onLeave(){
+   MO.FDuiSelectItem_onLeave = function FDuiSelectItem_onLeave(){
       var o = this;
       o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
       o.__base.FDuiControl.onLeave.call(o);
@@ -120,7 +120,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelectItem_onMouseDown = function FUiSelectItem_onMouseDown(){
+   MO.FDuiSelectItem_onMouseDown = function FDuiSelectItem_onMouseDown(){
       var o = this;
       o.processClickListener(o);
       /*var o = this;
@@ -139,7 +139,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelectItem_setChecked = function FUiSelectItem_setChecked(p){
+   MO.FDuiSelectItem_setChecked = function FDuiSelectItem_setChecked(p){
       var o = this;
       o._checked = p;
       if(o._hIcon){
@@ -155,7 +155,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelectItem_set = function FUiSelectItem_set(icon, label, value, note){
+   MO.FDuiSelectItem_set = function FDuiSelectItem_set(icon, label, value, note){
       var o = this;
       o._icon = RString.nvl(icon);
       if(!RString.isEmpty(o._icon)){
@@ -173,7 +173,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelectItem_dispose = function FUiSelectItem_dispose(){
+   MO.FDuiSelectItem_dispose = function FDuiSelectItem_dispose(){
       var o = this;
       o._hIconPanel = RHtml.free(o._hIconPanel);
       o._hLabelPanel = RHtml.free(o._hLabelPanel);

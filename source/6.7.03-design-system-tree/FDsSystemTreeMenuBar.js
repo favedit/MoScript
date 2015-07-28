@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSystemTreeMenuBar = function FDsSystemTreeMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @property
       o._frameName      = 'system.design.frame.MenuBar';
@@ -31,7 +31,7 @@ with(MO){
    //==========================================================
    MO.FDsSystemTreeMenuBar_onBuilded = function FDsSystemTreeMenuBar_onBuilded(p){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, p);
+      o.__base.FDuiMenuBar.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       o._controlCreate.addClickListener(o, o.onCreateClick);

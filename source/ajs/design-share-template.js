@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsShareTemplateCanvasToolBar = function FDsShareTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.share.template.CanvasToolBar';
       o._refreshButton  = null;
       o._saveButton     = null;
@@ -16,7 +16,7 @@ with(MO){
    }
    MO.FDsShareTemplateCanvasToolBar_onBuilded = function FDsShareTemplateCanvasToolBar_onBuilded(event){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, event);
+      o.__base.FDuiToolBar.onBuilded.call(o, event);
       o._controlModeDrop.addClickListener(o, o.onModeClick);
       o._controlModeSelect.addClickListener(o, o.onModeClick);
       o._controlTranslate.addClickListener(o, o.onModeClick);
@@ -48,11 +48,11 @@ with(MO){
    }
    MO.FDsShareTemplateCanvasToolBar_construct = function FDsShareTemplateCanvasToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsShareTemplateCanvasToolBar_dispose = function FDsShareTemplateCanvasToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
@@ -116,14 +116,14 @@ with(MO){
    }
    MO.FDsShareTemplateToolBar_onBuild = function FDsShareTemplateToolBar_onBuild(p){
       var o = this;
-      o.__base.FUiToolBar.onBuild.call(o, p);
-      var b = o._refreshButton  = RClass.create(FUiToolButton);
+      o.__base.FDuiToolBar.onBuild.call(o, p);
+      var b = o._refreshButton  = RClass.create(FDuiToolButton);
       b.setLabel('刷新');
       b.setIcon('design3d.tools.refresh');
       b.build(p);
       b.addClickListener(o, o.onRefreshClick);
       o.push(b);
-      var b = o._saveButton = RClass.create(FUiToolButton);
+      var b = o._saveButton = RClass.create(FDuiToolButton);
       b.setLabel('保存');
       b.setIcon('design3d.tools.save');
       b.build(p);
@@ -153,10 +153,10 @@ with(MO){
    }
    MO.FDsShareTemplateToolBar_construct = function FDsShareTemplateToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsShareTemplateToolBar_dispose = function FDsShareTemplateToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

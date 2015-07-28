@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsCommonCameraFrame = function FDsCommonCameraFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._workspace        = null;
@@ -33,7 +33,7 @@ with(MO){
    MO.FDsCommonCameraFrame_construct = function FDsCommonCameraFrame_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
 
    //==========================================================
@@ -61,6 +61,6 @@ with(MO){
    MO.FDsCommonCameraFrame_dispose = function FDsCommonCameraFrame_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }

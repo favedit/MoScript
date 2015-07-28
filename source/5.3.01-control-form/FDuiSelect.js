@@ -15,9 +15,9 @@ with(MO){
    // @author maocy
    // @version 150224
    //==========================================================
-   MO.FUiSelect = function FUiSelect(o){
-      //o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MUiDropable, MListenerDataChanged);
-      o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MListenerDataChanged);
+   MO.FDuiSelect = function FDuiSelect(o){
+      //o = RClass.inherits(this, o, FDuiEditControl, MUiContainer, MPropertySelect, MUiDropable, MListenerDataChanged);
+      o = RClass.inherits(this, o, FDuiEditControl, MUiContainer, MPropertySelect, MListenerDataChanged);
       //..........................................................
       // @style
       o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
@@ -30,33 +30,33 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiSelect_onBuildEditValue;
-      o.onDoubleClick    = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiSelect_onDropClick);
-      o.onDropClick      = FUiSelect_onDropClick;
-      o.onKeyDown        = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiSelect_onKeyDown);
+      o.onBuildEditValue = FDuiSelect_onBuildEditValue;
+      o.onDoubleClick    = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FDuiSelect_onDropClick);
+      o.onDropClick      = FDuiSelect_onDropClick;
+      o.onKeyDown        = RClass.register(o, new AEventKeyDown('onKeyDown'), FDuiSelect_onKeyDown);
       //..........................................................
       // @method
-      o.construct        = FUiSelect_construct;
+      o.construct        = FDuiSelect_construct;
       // @method
-      o.findItemByLabel  = FUiSelect_findItemByLabel;
-      o.findItemByData   = FUiSelect_findItemByData;
-      o.formatValue      = FUiSelect_formatValue;
-      o.formatDisplay    = FUiSelect_formatDisplay;
-      o.get              = FUiSelect_get;
-      o.set              = FUiSelect_set;
-      o.selectItem       = FUiSelect_selectItem;
-      o.refreshValue     = FUiSelect_refreshValue;
+      o.findItemByLabel  = FDuiSelect_findItemByLabel;
+      o.findItemByData   = FDuiSelect_findItemByData;
+      o.formatValue      = FDuiSelect_formatValue;
+      o.formatDisplay    = FDuiSelect_formatDisplay;
+      o.get              = FDuiSelect_get;
+      o.set              = FDuiSelect_set;
+      o.selectItem       = FDuiSelect_selectItem;
+      o.refreshValue     = FDuiSelect_refreshValue;
       // @method
-      o.drop             = FUiSelect_drop;
+      o.drop             = FDuiSelect_drop;
       // @method
-      o.dispose          = FUiSelect_dispose;
+      o.dispose          = FDuiSelect_dispose;
 
       //..........................................................
       // @event
-      //o.onEditEnd     = FUiSelect_onEditEnd;
-      //o.loadConfig    = FUiSelect_loadConfig;
-      //o.refreshStyle  = FUiSelect_refreshStyle;
-      //o.doBlur        = FUiSelect_doBlur;
+      //o.onEditEnd     = FDuiSelect_onEditEnd;
+      //o.loadConfig    = FDuiSelect_loadConfig;
+      //o.refreshStyle  = FDuiSelect_refreshStyle;
+      //o.doBlur        = FDuiSelect_doBlur;
       return o;
    }
 
@@ -66,7 +66,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiSelect_onBuildEditValue = function FUiSelect_onBuildEditValue(p){
+   MO.FDuiSelect_onBuildEditValue = function FDuiSelect_onBuildEditValue(p){
       var o = this;
       var hp = o._hValuePanel;
       hp.className = o.styleName('ValuePanel');
@@ -97,7 +97,7 @@ with(MO){
       o.onBuildEditDrop(p);
       //..........................................................
       // 创建空行
-      var c = o._emptyItem = RClass.create(FUiSelectItem);
+      var c = o._emptyItem = RClass.create(FDuiSelectItem);
       c.build(p);
       o.push(c);
    }
@@ -108,7 +108,7 @@ with(MO){
    // @method
    // @param p:event:TEvent 事件对象
    //==========================================================
-   MO.FUiSelect_onDropClick = function FUiSelect_onDropClick(p){
+   MO.FDuiSelect_onDropClick = function FDuiSelect_onDropClick(p){
       this.drop();
    }
 
@@ -118,7 +118,7 @@ with(MO){
    // @method
    // @param e:editor:FEditor 编辑器
    //==========================================================
-   MO.FUiSelect_onKeyDown = function FUiSelect_onKeyDown(p){
+   MO.FDuiSelect_onKeyDown = function FDuiSelect_onKeyDown(p){
       var o = this;
       // 获得编辑中
       var e = o._editor;
@@ -137,9 +137,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelect_construct = function FUiSelect_construct(){
+   MO.FDuiSelect_construct = function FDuiSelect_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
    }
 
    //==========================================================
@@ -147,9 +147,9 @@ with(MO){
    //
    // @method
    // @param p:label:String 项目名称
-   // @return FUiSelectItem 项目
+   // @return FDuiSelectItem 项目
    //==========================================================
-   MO.FUiSelect_findItemByLabel = function FUiSelect_findItemByLabel(p){
+   MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(p){
       var o = this;
       var s = o._components;
       if(s){
@@ -168,9 +168,9 @@ with(MO){
    //
    // @method
    // @param p:dataValue:String 项目数据
-   // @return FUiSelectItem 项目
+   // @return FDuiSelectItem 项目
    //==========================================================
-   MO.FUiSelect_findItemByData = function FUiSelect_findItemByData(p){
+   MO.FDuiSelect_findItemByData = function FDuiSelect_findItemByData(p){
       var o = this;
       var s = o._components;
       if(s){
@@ -191,7 +191,7 @@ with(MO){
    // @param p:label:String 标签
    // @return String 数据
    //==========================================================
-   MO.FUiSelect_formatValue = function FUiSelect_formatValue(p){
+   MO.FDuiSelect_formatValue = function FDuiSelect_formatValue(p){
       var o = this;
       var c = o.findItemByLabel(p);
       if(c){
@@ -207,7 +207,7 @@ with(MO){
    // @param p:value:String 数据
    // @return String 标签
    //==========================================================
-   MO.FUiSelect_formatDisplay = function FUiSelect_formatDisplay(p){
+   MO.FDuiSelect_formatDisplay = function FDuiSelect_formatDisplay(p){
       var o = this;
       var c = o.findItemByData(p);
       if(c){
@@ -222,7 +222,7 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiSelect_get = function FUiSelect_get(){
+   MO.FDuiSelect_get = function FDuiSelect_get(){
       var o = this;
       // 获得文本
       var s = o._hInput.value;
@@ -237,7 +237,7 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiSelect_set = function FUiSelect_set(p){
+   MO.FDuiSelect_set = function FDuiSelect_set(p){
       var o = this;
       // 获得显示
       var t = o.formatDisplay(p);
@@ -255,7 +255,7 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiSelect_selectItem = function FUiSelect_selectItem(p){
+   MO.FDuiSelect_selectItem = function FDuiSelect_selectItem(p){
       var o = this;
       // 设置显示
       o._hInput.value = RString.nvl(p.label());
@@ -268,7 +268,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelect_refreshValue = function FUiSelect_refreshValue(){
+   MO.FDuiSelect_refreshValue = function FDuiSelect_refreshValue(){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);
@@ -279,14 +279,14 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelect_drop = function FUiSelect_drop(){
+   MO.FDuiSelect_drop = function FDuiSelect_drop(){
       var o = this;
       //if(o.canDrop() && o.canEdit && o.items.count() > 0 && o._editable){
       if(o.hasComponent()){
          //if(!o._editRefer){
          //   return RMessage.fatal(o, null, 'Edit refer is null.');
          //}
-         var e = o._editor = RConsole.find(FUiEditorConsole).focus(o, FUiSelectEditor, o._name);
+         var e = o._editor = RConsole.find(FDuiEditorConsole).focus(o, FDuiSelectEditor, o._name);
          e.buildItems(o);
          e.set(o.get());
          e.show();
@@ -298,9 +298,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelect_dispose = function FUiSelect_dispose(){
+   MO.FDuiSelect_dispose = function FDuiSelect_dispose(){
       var o = this;
-      o.__base.FUiEditControl.dispose.call(o);
+      o.__base.FDuiEditControl.dispose.call(o);
    }
 
 
@@ -318,7 +318,7 @@ with(MO){
    // @method
    // @param e:editor:FEditor 编辑器
    //==========================================================
-   MO.FUiSelect_onEditEnd = function FUiSelect_onEditEnd(e){
+   MO.FDuiSelect_onEditEnd = function FDuiSelect_onEditEnd(e){
       var o = this;
       if(e){
          o.set(e.get());
@@ -334,9 +334,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelect_loadConfig = function FUiSelect_loadConfig(c){
+   MO.FDuiSelect_loadConfig = function FDuiSelect_loadConfig(c){
       var o = this;
-      o.__base.FUiEditControl.loadConfig.call(o, c);
+      o.__base.FDuiEditControl.loadConfig.call(o, c);
       if(o.dataEmpty){
          o.items.create();
       }
@@ -365,9 +365,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelect_refreshStyle = function FUiSelect_refreshStyle(){
+   MO.FDuiSelect_refreshStyle = function FDuiSelect_refreshStyle(){
       var o = this;
-      o.__base.FUiEditControl.refreshStyle.call(o);
+      o.__base.FDuiEditControl.refreshStyle.call(o);
       //o.hDrop.src = o.styleIconPath(o.isEditHover(t) ? 'DropSelect' : 'Drop');
       if(!o.editCheck){
         //o.hEdit.style.cursor = 'hand';
@@ -381,9 +381,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiSelect_doBlur = function FUiSelect_doBlur(){
+   MO.FDuiSelect_doBlur = function FDuiSelect_doBlur(){
       var o = this;
-      o.__base.FUiEditControl.doBlur.call(o);
+      o.__base.FDuiEditControl.doBlur.call(o);
       if(o._editor){
          o._editor.hide();
       }

@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSystemTabBar = function FDsSystemTabBar(o){
-      o = RClass.inherits(this, o, FUiTabBar);
+      o = RClass.inherits(this, o, FDuiTabBar);
       //..........................................................
       // @property
       o._frameName            = 'system.design.TabBar';
@@ -38,7 +38,7 @@ with(MO){
    //==========================================================
    MO.FDsSystemTabBar_onBuilded = function FDsSystemTabBar_onBuilded(p){
       var o = this;
-      o.__base.FUiTabBar.onBuilded.call(o, p);
+      o.__base.FDuiTabBar.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       o._controlPersistence.addClickListener(o, o.onButtonClick);
@@ -79,7 +79,7 @@ with(MO){
    MO.FDsSystemTabBar_construct = function FDsSystemTabBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiTabBar.construct.call(o);
+      o.__base.FDuiTabBar.construct.call(o);
    }
 
    //==========================================================
@@ -90,6 +90,6 @@ with(MO){
    MO.FDsSystemTabBar_dispose = function FDsSystemTabBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiTabBar.dispose.call(o);
+      o.__base.FDuiTabBar.dispose.call(o);
    }
 }

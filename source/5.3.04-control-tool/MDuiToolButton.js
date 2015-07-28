@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @history 150228
    //==========================================================
-   MO.MUiToolButton = function MUiToolButton(o){
+   MO.MDuiToolButton = function MDuiToolButton(o){
       o = RClass.inherits(this, o);
       return o;
    }

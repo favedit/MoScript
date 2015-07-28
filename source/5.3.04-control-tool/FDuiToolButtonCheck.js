@@ -6,8 +6,8 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FUiToolButtonCheck = function FUiToolButtonCheck(o){
-      o = RClass.inherits(this, o, FUiToolButton);
+   MO.FDuiToolButtonCheck = function FDuiToolButtonCheck(o){
+      o = RClass.inherits(this, o, FDuiToolButton);
       //..........................................................
       // @property
       o._optionChecked  = RClass.register(o, new APtyBoolean('_optionChecked', 'check'));
@@ -18,20 +18,20 @@ with(MO){
       o._statusChecked  = false;
       //..........................................................
       // @event
-      o.onEnter         = FUiToolButtonCheck_onEnter;
-      o.onLeave         = FUiToolButtonCheck_onLeave;
-      o.onMouseDown     = FUiToolButtonCheck_onMouseDown;
-      o.onMouseUp       = FUiToolButtonCheck_onMouseUp;
+      o.onEnter         = FDuiToolButtonCheck_onEnter;
+      o.onLeave         = FDuiToolButtonCheck_onLeave;
+      o.onMouseDown     = FDuiToolButtonCheck_onMouseDown;
+      o.onMouseUp       = FDuiToolButtonCheck_onMouseUp;
       //..........................................................
       // @method
-      o.groupName       = FUiToolButtonCheck_groupName;
-      o.setGroupName    = FUiToolButtonCheck_setGroupName;
-      o.groupDefault    = FUiToolButtonCheck_groupDefault;
-      o.setGroupDefault = FUiToolButtonCheck_setGroupDefault;
-      o.innerCheck      = FUiToolButtonCheck_innerCheck;
-      o.isCheck         = FUiToolButtonCheck_isCheck;
-      o.check           = FUiToolButtonCheck_check;
-      o.dispose         = FUiToolButtonCheck_dispose;
+      o.groupName       = FDuiToolButtonCheck_groupName;
+      o.setGroupName    = FDuiToolButtonCheck_setGroupName;
+      o.groupDefault    = FDuiToolButtonCheck_groupDefault;
+      o.setGroupDefault = FDuiToolButtonCheck_setGroupDefault;
+      o.innerCheck      = FDuiToolButtonCheck_innerCheck;
+      o.isCheck         = FDuiToolButtonCheck_isCheck;
+      o.check           = FDuiToolButtonCheck_check;
+      o.dispose         = FDuiToolButtonCheck_dispose;
       return o;
    }
 
@@ -41,7 +41,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButtonCheck_onEnter = function FUiToolButtonCheck_onEnter(p){
+   MO.FDuiToolButtonCheck_onEnter = function FDuiToolButtonCheck_onEnter(p){
       var o = this;
       if(!o._statusChecked){
          o._hForm.className = this.styleName('Hover');
@@ -54,7 +54,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButtonCheck_onLeave = function FUiToolButtonCheck_onLeave(p){
+   MO.FDuiToolButtonCheck_onLeave = function FDuiToolButtonCheck_onLeave(p){
       var o = this;
       if(!o._statusChecked){
          o._hForm.className = this.styleName('Normal');
@@ -67,7 +67,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButtonCheck_onMouseDown = function FUiToolButtonCheck_onMouseDown(p){
+   MO.FDuiToolButtonCheck_onMouseDown = function FDuiToolButtonCheck_onMouseDown(p){
       var o = this;
       o.check(!o._statusChecked);
       var event = new SClickEvent(o);
@@ -82,7 +82,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButtonCheck_onMouseUp = function FUiToolButtonCheck_onMouseUp(){
+   MO.FDuiToolButtonCheck_onMouseUp = function FDuiToolButtonCheck_onMouseUp(){
       var o = this;
       //o._hForm.className = o.styleName('Hover');
       //o.check(!o._statusChecked)
@@ -97,7 +97,7 @@ with(MO){
    // @method
    // @return String 分组名称
    //==========================================================
-   MO.FUiToolButtonCheck_groupName = function FUiToolButtonCheck_groupName(){
+   MO.FDuiToolButtonCheck_groupName = function FDuiToolButtonCheck_groupName(){
       return this._groupName;
    }
 
@@ -107,7 +107,7 @@ with(MO){
    // @method
    // @param p:groupName:String 分组名称
    //==========================================================
-   MO.FUiToolButtonCheck_setGroupName = function FUiToolButtonCheck_setGroupName(p){
+   MO.FDuiToolButtonCheck_setGroupName = function FDuiToolButtonCheck_setGroupName(p){
       this._groupName = p;
    }
 
@@ -117,7 +117,7 @@ with(MO){
    // @method
    // @return String 分组默认
    //==========================================================
-   MO.FUiToolButtonCheck_groupDefault = function FUiToolButtonCheck_groupDefault(){
+   MO.FDuiToolButtonCheck_groupDefault = function FDuiToolButtonCheck_groupDefault(){
       return this._groupDefault;
    }
 
@@ -127,7 +127,7 @@ with(MO){
    // @method
    // @param p:groupDefault:String 分组默认
    //==========================================================
-   MO.FUiToolButtonCheck_setGroupDefault = function FUiToolButtonCheck_setGroupDefault(p){
+   MO.FDuiToolButtonCheck_setGroupDefault = function FDuiToolButtonCheck_setGroupDefault(p){
       this._groupDefault = p;
    }
 
@@ -137,7 +137,7 @@ with(MO){
    // @method
    // @param p:check:Boolean 选中
    //==========================================================
-   MO.FUiToolButtonCheck_innerCheck = function FUiToolButtonCheck_innerCheck(p){
+   MO.FDuiToolButtonCheck_innerCheck = function FDuiToolButtonCheck_innerCheck(p){
       var o = this;
       // 设置状态
       if(o._statusChecked != p){
@@ -156,7 +156,7 @@ with(MO){
    // @method
    // @return Boolean 选中状态
    //==========================================================
-   MO.FUiToolButtonCheck_isCheck = function FUiToolButtonCheck_isCheck(){
+   MO.FDuiToolButtonCheck_isCheck = function FDuiToolButtonCheck_isCheck(){
       return this._statusChecked;
    }
 
@@ -166,7 +166,7 @@ with(MO){
    // @method
    // @param p:check:Boolean 选中
    //==========================================================
-   MO.FUiToolButtonCheck_check = function FUiToolButtonCheck_check(p){
+   MO.FDuiToolButtonCheck_check = function FDuiToolButtonCheck_check(p){
       var o = this;
       // 禁止取消默认按键
       if(!p){
@@ -187,7 +187,7 @@ with(MO){
             for(var i = cs.count() - 1; i >= 0; i--){
                var c = cs.value(i);
                if(c != o){
-                  if(RClass.isClass(c, FUiToolButtonCheck)){
+                  if(RClass.isClass(c, FDuiToolButtonCheck)){
                      c.innerCheck(false);
                   }
                }
@@ -212,10 +212,10 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiToolButtonCheck_dispose = function FUiToolButtonCheck_dispose(){
+   MO.FDuiToolButtonCheck_dispose = function FDuiToolButtonCheck_dispose(){
       var o = this;
       o._statusChecked = null;
       o._groupName = null;
-      o.__base.FUiToolButton.dispose.call(o);
+      o.__base.FDuiToolButton.dispose.call(o);
    }
 }

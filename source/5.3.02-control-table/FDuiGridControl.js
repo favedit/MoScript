@@ -26,7 +26,7 @@ with(MO){
    // @class FDuiContainer, MForm, MDataset, MValue, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
    // @history 090922 MAOCY 创建
    //==========================================================
-   MO.FUiGridControl = function FUiGridControl(o) {
+   MO.FDuiGridControl = function FDuiGridControl(o) {
       //o = RClass.inherits(this, o, FDuiContainer, MValue, MDataset, MDisplay, MUiFocus, MForm, MProgress, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
       o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
@@ -76,32 +76,32 @@ with(MO){
       o.lsnsRowDblClick      = null;
       //..........................................................
       // @event
-      o.onBuildTitle         = FUiGridControl_onBuildTitle;
+      o.onBuildTitle         = FDuiGridControl_onBuildTitle;
       o.onBuildContent       = RMethod.virtual(o, 'onBuildContent');
-      o.onBuildHint          = FUiGridControl_onBuildHint;
-      o.onBuildPanel         = FUiGridControl_onBuildPanel;
-      o.onBuild              = FUiGridControl_onBuild;
+      o.onBuildHint          = FDuiGridControl_onBuildHint;
+      o.onBuildPanel         = FDuiGridControl_onBuildPanel;
+      o.onBuild              = FDuiGridControl_onBuild;
       // @event
-      o.onDatasetLoadDelay   = FUiGridControl_onDatasetLoadDelay;
-      o.onDatasetLoad        = FUiGridControl_onDatasetLoad;
+      o.onDatasetLoadDelay   = FDuiGridControl_onDatasetLoadDelay;
+      o.onDatasetLoad        = FDuiGridControl_onDatasetLoad;
       //..........................................................
       // @method
-      o.construct            = FUiGridControl_construct;
+      o.construct            = FDuiGridControl_construct;
       // @method
-      o.buildNavigatorButton = FUiGridControl_buildNavigatorButton;
+      o.buildNavigatorButton = FDuiGridControl_buildNavigatorButton;
       // @method
       o.appendColumn         = RMethod.virtual(o, 'appendColumn');
-      o.appendChild          = FUiGridControl_appendChild;
-      o.push                 = FUiGridControl_push;
+      o.appendChild          = FDuiGridControl_appendChild;
+      o.push                 = FDuiGridControl_push;
       // @method
-      o.createRow            = FUiGridControl_createRow;
-      o.insertRow            = FUiGridControl_insertRow;
-      o.syncRow              = FUiGridControl_syncRow;
-      o.hideRows             = FUiGridControl_hideRows;
+      o.createRow            = FDuiGridControl_createRow;
+      o.insertRow            = FDuiGridControl_insertRow;
+      o.syncRow              = FDuiGridControl_syncRow;
+      o.hideRows             = FDuiGridControl_hideRows;
       // @method
-      o.clickCell            = FUiGridControl_clickCell;
-      o.clickRow             = FUiGridControl_clickRow;
-      o.doubleClickRow       = FUiGridControl_doubleClickRow;
+      o.clickCell            = FDuiGridControl_clickCell;
+      o.clickRow             = FDuiGridControl_clickRow;
+      o.doubleClickRow       = FDuiGridControl_doubleClickRow;
 
 
 
@@ -159,89 +159,89 @@ with(MO){
       //o._hFottor               = null;
       //o._hButtons              = null;
       //..........................................................
-      //o.onMouseDown            = FUiGridControl_onMouseDown;
-      //o.onHeadMouseDown        = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FUiGridControl_onHeadMouseDown);
-      //o.onHeadMouseMove        = RClass.register(o, new AEventMouseMove('onHeadMouseMove'), FUiGridControl_onHeadMouseMove);
-      //o.onHeadMouseUp          = RClass.register(o, new AEventMouseUp('onHeadMouseUp'), FUiGridControl_onHeadMouseUp);
-      //o.onDataScroll           = RClass.register(o, new AEventScroll('onDataScroll'), FUiGridControl_onDataScroll);
+      //o.onMouseDown            = FDuiGridControl_onMouseDown;
+      //o.onHeadMouseDown        = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FDuiGridControl_onHeadMouseDown);
+      //o.onHeadMouseMove        = RClass.register(o, new AEventMouseMove('onHeadMouseMove'), FDuiGridControl_onHeadMouseMove);
+      //o.onHeadMouseUp          = RClass.register(o, new AEventMouseUp('onHeadMouseUp'), FDuiGridControl_onHeadMouseUp);
+      //o.onDataScroll           = RClass.register(o, new AEventScroll('onDataScroll'), FDuiGridControl_onDataScroll);
       // @event 单元格内按键按下
-      //o.onCellKeyDown          = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FUiGridControl_onCellKeyDown);
-      //o.onRowMouseEnter        = RClass.register(o, new AEventMouseEnter('onRowMouseEnter'), FUiGridControl_onRowMouseEnter);
-      //o.onRowMouseLeave        = RClass.register(o, new AEventMouseLeave('onRowMouseLeave'), FUiGridControl_onRowMouseLeave);
+      //o.onCellKeyDown          = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FDuiGridControl_onCellKeyDown);
+      //o.onRowMouseEnter        = RClass.register(o, new AEventMouseEnter('onRowMouseEnter'), FDuiGridControl_onRowMouseEnter);
+      //o.onRowMouseLeave        = RClass.register(o, new AEventMouseLeave('onRowMouseLeave'), FDuiGridControl_onRowMouseLeave);
       // @event 行控件单击事件
-      //o.onRowClick             = RClass.register(o, new AEventClick('onRowClick'), FUiGridControl_onRowClick);
+      //o.onRowClick             = RClass.register(o, new AEventClick('onRowClick'), FDuiGridControl_onRowClick);
       // @event 行控件双击事件
-      //o.onColumnSearchKeyDown  = RClass.register(o, new AEventKeyDown('onColumnSearchKeyDown'), FUiGridControl_onColumnSearchKeyDown);
-      //o.onButtonMouseDown      = RClass.register(o, new AEventMouseDown('onButtonMouseDown'), FUiGridControl_onButtonMouseDown);
-      //o.onPageCountDown        = RClass.register(o, new AEventKeyDown('onPageCountDown'), FUiGridControl_onPageCountDown);
-      //o.onInsertButtonClick    = FUiGridControl_onInsertButtonClick;
-      //o.onExtendButtonClick    = FUiGridControl_onExtendButtonClick;
+      //o.onColumnSearchKeyDown  = RClass.register(o, new AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
+      //o.onButtonMouseDown      = RClass.register(o, new AEventMouseDown('onButtonMouseDown'), FDuiGridControl_onButtonMouseDown);
+      //o.onPageCountDown        = RClass.register(o, new AEventKeyDown('onPageCountDown'), FDuiGridControl_onPageCountDown);
+      //o.onInsertButtonClick    = FDuiGridControl_onInsertButtonClick;
+      //o.onExtendButtonClick    = FDuiGridControl_onExtendButtonClick;
       // @event
       //o.onDsPrepare            = RMethod.empty;
       // @event
       //o.onResizeAfter          = RMethod.virtual(o, 'onResizeAfter');
-      //o.clearSelectAll         = FUiGridControl_clearSelectAll;
+      //o.clearSelectAll         = FDuiGridControl_clearSelectAll;
       //o.onDatasetLoadEnd       = RMethod.empty;
       //..........................................................
       // @event
       //..........................................................
       // @process
-      //o.oeMode                 = FUiGridControl_oeMode;
-      //o.oeProgress             = FUiGridControl_oeProgress;
+      //o.oeMode                 = FDuiGridControl_oeMode;
+      //o.oeProgress             = FDuiGridControl_oeProgress;
       //..........................................................
       // @method
-      //o.isFormLinked           = FUiGridControl_isFormLinked;
-      //o.isDataSelected         = FUiGridControl_isDataSelected;
-      //o.isDataChanged          = FUiGridControl_isDataChanged;
-      //o.hasAction              = FUiGridControl_hasAction;
+      //o.isFormLinked           = FDuiGridControl_isFormLinked;
+      //o.isDataSelected         = FDuiGridControl_isDataSelected;
+      //o.isDataChanged          = FDuiGridControl_isDataChanged;
+      //o.hasAction              = FDuiGridControl_hasAction;
       //o.loadValue              = RMethod.empty;
       //o.saveValue              = RMethod.empty;
-      //o.getFormLink            = FUiGridControl_getFormLink;
-      //o.getHeadMode            = FUiGridControl_getHeadMode;
-      //o.getRowBar              = FUiGridControl_getRowBar;
-      //o.calculateDataSize      = FUiGridControl_calculateDataSize;
+      //o.getFormLink            = FDuiGridControl_getFormLink;
+      //o.getHeadMode            = FDuiGridControl_getHeadMode;
+      //o.getRowBar              = FDuiGridControl_getRowBar;
+      //o.calculateDataSize      = FDuiGridControl_calculateDataSize;
       //o.getDataCodes           = RMethod.empty;
-      //o.getCurrentRow          = FUiGridControl_getCurrentRow;
-      //o.getSelectedRow         = FUiGridControl_getSelectedRow;
-      //o.getSelectedRows        = FUiGridControl_getSelectedRows;
-      //o.getCurrentRows         = FUiGridControl_getChangedRows;
-      //o.getChangedRows         = FUiGridControl_getChangedRows;
-      //o.getRows                = FUiGridControl_getRows;
-      //o.refreshHint            = FUiGridControl_refreshHint;
-      //o.refreshSelected        = FUiGridControl_refreshSelected;
-      //o.hoverRow               = FUiGridControl_hoverRow;
-      //o.selectRow              = FUiGridControl_selectRow;
-      //o.clearSelectRow         = FUiGridControl_clearSelectRow;
-      //o.clearSelectRows        = FUiGridControl_clearSelectRows;
-      //o.setDataStatus          = FUiGridControl_setDataStatus;
-      //o.dsInsert               = FUiGridControl_dsInsert;
-      //o.dsUpdate               = FUiGridControl_dsUpdate;
-      //o.dsDelete               = FUiGridControl_dsDelete;
+      //o.getCurrentRow          = FDuiGridControl_getCurrentRow;
+      //o.getSelectedRow         = FDuiGridControl_getSelectedRow;
+      //o.getSelectedRows        = FDuiGridControl_getSelectedRows;
+      //o.getCurrentRows         = FDuiGridControl_getChangedRows;
+      //o.getChangedRows         = FDuiGridControl_getChangedRows;
+      //o.getRows                = FDuiGridControl_getRows;
+      //o.refreshHint            = FDuiGridControl_refreshHint;
+      //o.refreshSelected        = FDuiGridControl_refreshSelected;
+      //o.hoverRow               = FDuiGridControl_hoverRow;
+      //o.selectRow              = FDuiGridControl_selectRow;
+      //o.clearSelectRow         = FDuiGridControl_clearSelectRow;
+      //o.clearSelectRows        = FDuiGridControl_clearSelectRows;
+      //o.setDataStatus          = FDuiGridControl_setDataStatus;
+      //o.dsInsert               = FDuiGridControl_dsInsert;
+      //o.dsUpdate               = FDuiGridControl_dsUpdate;
+      //o.dsDelete               = FDuiGridControl_dsDelete;
       //o.doPrepare              = RMethod.empty;
       //o.doDelete               = RMethod.empty;
-      //o.doSearch               = FUiGridControl_doSearch;
-      //o.pushButton             = FUiGridControl_pushButton;
-      //o.focus                  = FUiGridControl_focus;
-      //o.pack                   = FUiGridControl_pack;
-      //o.setVisible             = FUiGridControl_setVisible;
-      //o.setButtonVisible       = FUiGridControl_setButtonVisible;
-      //o.hasVisibleRow          = FUiGridControl_hasVisibleRow
-      //o.refreshStyle           = FUiGridControl_refreshStyle;
-      //o.dispose                = FUiGridControl_dispose;
-      //o.dump                   = FUiGridControl_dump;
+      //o.doSearch               = FDuiGridControl_doSearch;
+      //o.pushButton             = FDuiGridControl_pushButton;
+      //o.focus                  = FDuiGridControl_focus;
+      //o.pack                   = FDuiGridControl_pack;
+      //o.setVisible             = FDuiGridControl_setVisible;
+      //o.setButtonVisible       = FDuiGridControl_setButtonVisible;
+      //o.hasVisibleRow          = FDuiGridControl_hasVisibleRow
+      //o.refreshStyle           = FDuiGridControl_refreshStyle;
+      //o.dispose                = FDuiGridControl_dispose;
+      //o.dump                   = FDuiGridControl_dump;
       // ---------------------------------------------------------
-      //o.onColumnTreeClick      = RClass.register(o, new AEventClick('onColumnTreeClick'), FUiGridControl_onColumnTreeClick);
-      //o.onColumnTreeService    = FUiGridControl_onColumnTreeService;
+      //o.onColumnTreeClick      = RClass.register(o, new AEventClick('onColumnTreeClick'), FDuiGridControl_onColumnTreeClick);
+      //o.onColumnTreeService    = FDuiGridControl_onColumnTreeService;
       //o.hoverMode              = EGridColumn.None;
       //o._searchKeyDownEvent    = new TEvent();
-      //o.createChild            = FUiGridControl_createChild;
-      //o.buildRow               = FUiGridControl_buildRow;
-      //o.buildRows              = FUiGridControl_buildRows;
-      //o.appendRow              = FUiGridControl_appendRow;
-      //o.deleteRow              = FUiGridControl_deleteRow;
-      //o.clearRows              = FUiGridControl_clearRows;
-      //o.getRowType             = FUiGridControl_getRowType;
-      //o.setStyleStatus         = FUiGridControl_setStyleStatus;
+      //o.createChild            = FDuiGridControl_createChild;
+      //o.buildRow               = FDuiGridControl_buildRow;
+      //o.buildRows              = FDuiGridControl_buildRows;
+      //o.appendRow              = FDuiGridControl_appendRow;
+      //o.deleteRow              = FDuiGridControl_deleteRow;
+      //o.clearRows              = FDuiGridControl_clearRows;
+      //o.getRowType             = FDuiGridControl_getRowType;
+      //o.setStyleStatus         = FDuiGridControl_setStyleStatus;
       return o;
    }
 
@@ -251,7 +251,7 @@ with(MO){
    // @method
    // @param p:event:SEventProcess 事件
    //==========================================================
-   MO.FUiGridControl_onBuildPanel = function FUiGridControl_onBuildPanel(p){
+   MO.FDuiGridControl_onBuildPanel = function FDuiGridControl_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
    }
@@ -262,7 +262,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 构建事件
    //==========================================================
-   MO.FUiGridControl_onBuildTitle = function FUiGridControl_onBuildTitle(e){
+   MO.FDuiGridControl_onBuildTitle = function FDuiGridControl_onBuildTitle(e){
       var o = this;
       var hf = o._hTitleForm = RBuilder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
       var hr = o._hTitleLine = RBuilder.appendTableRow(hf);
@@ -287,7 +287,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 构建事件
    //==========================================================
-   MO.FUiGridControl_onBuildHint = function FUiGridControl_onBuildHint(e) {
+   MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(e) {
       var o = this;
       // 建立提示行
       var hr = RBuilder.appendTableRow(o._hHintForm);
@@ -311,14 +311,14 @@ with(MO){
       var hc = RBuilder.appendTableCell(hr);
       hc.noWrap = true;
       hc.align = 'right';
-      o.hNavFirst = o.buildNavigatorButton(hc, 'control.grid.first', '&nbsp;' + RContext.get('FUiGridControl:First'));
-      o.hNavPrior = o.buildNavigatorButton(hc, 'control.grid.prior', '&nbsp;' + RContext.get('FUiGridControl:Prior'));
+      o.hNavFirst = o.buildNavigatorButton(hc, 'control.grid.first', '&nbsp;' + RContext.get('FDuiGridControl:First'));
+      o.hNavPrior = o.buildNavigatorButton(hc, 'control.grid.prior', '&nbsp;' + RContext.get('FDuiGridControl:Prior'));
       o.hNavPrior.style.paddingRight = '20';
       o.hPage = RBuilder.appendEdit(hc)
       o.hPage.style.width = 40;
       //o.attachEvent('onPageCountDown', o.hPage);
-      o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FUiGridControl:Next')+'&nbsp;', 'control.grid.next');
-      o.hNavLast = o.buildNavigatorButton(hc, null, RContext.get('FUiGridControl:Last')+'&nbsp;', 'control.grid.last');
+      o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
+      o.hNavLast = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
       // 设置可见性
       //o._hHintForm.style.display = o._panelNavigator ? 'block' : 'none';
    }
@@ -329,7 +329,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiGridControl_onBuild = function FUiGridControl_onBuild(p){
+   MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(p){
       var o = this;
       // 高度修正
       if(!o._size.height || o._size.height < 160){
@@ -407,7 +407,7 @@ with(MO){
    // @method
    // @param a:active:TActive 活动对象
    //==========================================================
-   MO.FUiGridControl_onDatasetLoadDelay = function FUiGridControl_onDatasetLoadDelay(p){
+   MO.FDuiGridControl_onDatasetLoadDelay = function FDuiGridControl_onDatasetLoadDelay(p){
       var o = this;
       //o.psProgress(true);
       //var v = o.dsViewer;
@@ -477,7 +477,7 @@ with(MO){
    // @method
    // @param p:dataset:TDataset 数据集
    //==========================================================
-   MO.FUiGridControl_onDatasetLoad = function FUiGridControl_onDatasetLoad(p){
+   MO.FDuiGridControl_onDatasetLoad = function FDuiGridControl_onDatasetLoad(p){
       var o = this;
       // 设置滑动位置
       if(o._hColumnPanel){
@@ -529,7 +529,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiGridControl_construct = function FUiGridControl_construct() {
+   MO.FDuiGridControl_construct = function FDuiGridControl_construct() {
       var o = this;
       o.__base.FDuiContainer.construct.call(o);
       //o.__base.MDataset.construct.call(o);
@@ -561,7 +561,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiGridControl_buildNavigatorButton = function FUiGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name){
+   MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name){
       var o = this;
       var h = RBuilder.append(hParent, 'SPAN', o.styleName('Button'));
       h.style.cursor = 'hand';
@@ -589,7 +589,7 @@ with(MO){
    // @method
    // @param p:control:FControl 控件
    //==========================================================
-   MO.FUiGridControl_appendChild = function FUiGridControl_appendChild(p){
+   MO.FDuiGridControl_appendChild = function FDuiGridControl_appendChild(p){
       var o = this;
       o.__base.FDuiContainer.appendChild.call(o, p);
       // 类型处理
@@ -604,7 +604,7 @@ with(MO){
    // @method
    // @param p:component:FComponent 组件
    //==========================================================
-   MO.FUiGridControl_push = function FUiGridControl_push(p){
+   MO.FDuiGridControl_push = function FDuiGridControl_push(p){
       var o = this;
       // 类型处理
       if(RClass.isClass(p, FColumn)){
@@ -625,7 +625,7 @@ with(MO){
    // @method
    // @return FGridRowControl 行控件
    //==========================================================
-   MO.FUiGridControl_createRow = function FUiGridControl_createRow() {
+   MO.FDuiGridControl_createRow = function FDuiGridControl_createRow() {
       var o = this;
       var r = RClass.create(o._rowClass);
       r._table = r._parent = o;
@@ -639,7 +639,7 @@ with(MO){
    // @param i:index:Integer 索引位置
    // @param r:row:FGridRowControl 行对象
    //==========================================================
-   MO.FUiGridControl_insertRow = function FUiGridControl_insertRow(i, r){
+   MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(i, r){
       var o = this;
       r.index = i;
       r.build();
@@ -661,7 +661,7 @@ with(MO){
    // @param p:index:Integer 行号
    // @return FGridRowControl 行控件
    //==========================================================
-   MO.FUiGridControl_syncRow = function FUiGridControl_syncRow(p){
+   MO.FDuiGridControl_syncRow = function FDuiGridControl_syncRow(p){
       var o = this;
       var rs = o._rows;
       var r = rs.get(p);
@@ -695,7 +695,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiGridControl_hideRows = function FUiGridControl_hideRows(){
+   MO.FDuiGridControl_hideRows = function FDuiGridControl_hideRows(){
       var o = this;
       var rs = o._rows;
       var c = rs.count();
@@ -710,7 +710,7 @@ with(MO){
    // @method
    // @param p:cell:FCell 单元格
    //==========================================================
-   MO.FUiGridControl_clickCell = function FUiGridControl_clickCell(p){
+   MO.FDuiGridControl_clickCell = function FDuiGridControl_clickCell(p){
       this._focusCell = p;
    }
 
@@ -720,7 +720,7 @@ with(MO){
    // @method
    // @param p:row:FGridRow 单元格
    //==========================================================
-   MO.FUiGridControl_clickRow = function FUiGridControl_clickRow(p){
+   MO.FDuiGridControl_clickRow = function FDuiGridControl_clickRow(p){
       var o = this;
       // 响应监听
       o.lsnsRowClick.process(p);
@@ -746,7 +746,7 @@ with(MO){
    // @method
    // @param p:row:FGridRow 单元格
    //==========================================================
-   MO.FUiGridControl_doubleClickRow = function FUiGridControl_doubleClickRow(p){
+   MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(p){
       var o = this;
       // 处理监听
       o.lsnsRowDblClick.process(p);
@@ -761,7 +761,7 @@ with(MO){
       //e.caller = r;
       //e.handle = 'onTableRowDoubleClick';
       //RConsole.find(FFormConsole).processEvent(e);
-      //RConsole.find(FListenerConsole).process(FUiGridControl, EGridAction.RowDblClick, r, r)
+      //RConsole.find(FListenerConsole).process(FDuiGridControl, EGridAction.RowDblClick, r, r)
    }
 
 
@@ -792,7 +792,7 @@ with(MO){
 
 
    //------------------------------------------------------------
-   MO.FUiGridControl_pushButton = function FUiGridControl_pushButton(b){
+   MO.FDuiGridControl_pushButton = function FDuiGridControl_pushButton(b){
       var o = this;
       var hc  = o._hButtons.insertCell();
       hc.style.border = '0 solid #C6D7FF';
@@ -806,7 +806,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 按键事件
    //==========================================================
-   MO.FUiGridControl_onMouseDown = function FUiGridControl_onMouseDown(e, he){
+   MO.FDuiGridControl_onMouseDown = function FDuiGridControl_onMouseDown(e, he){
       var o = this;
       //var fc = RConsole.find(FFocusConsole);
       //fc.focusClass(MDataset, o);
@@ -822,7 +822,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 按键事件
    //==========================================================
-   MO.FUiGridControl_onHeadMouseDown = function FUiGridControl_onHeadMouseDown(e){
+   MO.FDuiGridControl_onHeadMouseDown = function FDuiGridControl_onHeadMouseDown(e){
       var o = this;
       var m = o.getHeadMode(e);
       if(EGridColumn.Size == m){
@@ -843,7 +843,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 按键事件
    //==========================================================
-   MO.FUiGridControl_onHeadMouseMove = function FUiGridControl_onHeadMouseMove(e){
+   MO.FDuiGridControl_onHeadMouseMove = function FDuiGridControl_onHeadMouseMove(e){
       var o = this;
       if(EGridColumn.Size == o.hoverMode){
          var bl = o.hoverCellLength;
@@ -871,7 +871,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 按键事件
    //==========================================================
-   MO.FUiGridControl_onHeadMouseUp = function FUiGridControl_onHeadMouseUp(e){
+   MO.FDuiGridControl_onHeadMouseUp = function FDuiGridControl_onHeadMouseUp(e){
       var o = this;
       if(EGridColumn.Size == o.hoverMode){
          o._hHeadForm.releaseCapture();
@@ -885,7 +885,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 按键事件
    //==========================================================
-   MO.FUiGridControl_onDataScroll = function FUiGridControl_onDataScroll(){
+   MO.FDuiGridControl_onDataScroll = function FDuiGridControl_onDataScroll(){
       var o = this;
       o._hHeadPanel.scrollLeft = o._hContentPanel.scrollLeft;
       o._hColumnPanel.scrollTop = o._hContentPanel.scrollTop;
@@ -899,7 +899,7 @@ with(MO){
    // @param e:event:TEvent 按键事件
    // @param he:htmlEvent:Event 页面事件
    //==========================================================
-   MO.FUiGridControl_onCellKeyDown = function FUiGridControl_onCellKeyDown(c, e, he){
+   MO.FDuiGridControl_onCellKeyDown = function FDuiGridControl_onCellKeyDown(c, e, he){
       var o = this;
       var k = e.keyCode;
       var l = c.column;
@@ -929,12 +929,12 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiGridControl_onRowMouseEnter = function FUiGridControl_onRowMouseEnter(s, e){
+   MO.FDuiGridControl_onRowMouseEnter = function FDuiGridControl_onRowMouseEnter(s, e){
       this.hoverRow(s, true);
    }
 
    //==========================================================
-   MO.FUiGridControl_onRowMouseLeave = function FUiGridControl_onRowMouseLeave(s, e){
+   MO.FDuiGridControl_onRowMouseLeave = function FDuiGridControl_onRowMouseLeave(s, e){
       this.hoverRow(s, false);
    }
 
@@ -945,7 +945,7 @@ with(MO){
    // @param s:sender:Object 发出事件对象
    // @param e:event:TEvent 构建事件
    //==========================================================
-   MO.FUiGridControl_onRowClick = function FUiGridControl_onRowClick(s, e){
+   MO.FDuiGridControl_onRowClick = function FDuiGridControl_onRowClick(s, e){
       var o = this;
       o.selectRow(s, !e.ctrlKey, true);
       o.lsnsRowClick.process(s);
@@ -966,7 +966,7 @@ with(MO){
    // @param s:sender:Object 发出事件对象
    // @param e:event:TEvent 构建事件
    //==========================================================
-   MO.FUiGridControl_onColumnSearchKeyDown = function FUiGridControl_onColumnSearchKeyDown(s, e){
+   MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(s, e){
       var o = this;
       if(EKey.Enter == e.keyCode){
          if(!o._isSearching || !o.table._isSearching){
@@ -987,7 +987,7 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiGridControl_onButtonMouseDown = function FUiGridControl_onButtonMouseDown(e){
+   MO.FDuiGridControl_onButtonMouseDown = function FDuiGridControl_onButtonMouseDown(e){
       var o = this;
       var ds = o.dsViewer;
       if(!ds || 0 == ds.dataset.pageCount){
@@ -1011,7 +1011,7 @@ with(MO){
 
    // ------------------------------------------------------------
    // sender, event
-   MO.FUiGridControl_onPageCountDown = function FUiGridControl_onPageCountDown(e){
+   MO.FDuiGridControl_onPageCountDown = function FDuiGridControl_onPageCountDown(e){
       var o = this;
       var ds = o.dsViewer;
       if(RString.isEmpty(o.hPage.value) || !ds || 0 == ds.dataset.pageCount){
@@ -1030,11 +1030,11 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiGridControl_onInsertButtonClick = function FUiGridControl_onInsertButtonClick(){
+   MO.FDuiGridControl_onInsertButtonClick = function FDuiGridControl_onInsertButtonClick(){
       RFormSpace.doPrepare(this);
    }
    // ------------------------------------------------------------
-   MO.FUiGridControl_onExtendButtonClick = function FUiGridControl_onExtendButtonClick(){
+   MO.FDuiGridControl_onExtendButtonClick = function FDuiGridControl_onExtendButtonClick(){
       var o = this;
       if(400 == o.dsPageSize){
          o.dsPageSize = o.dsPageSizeStore;
@@ -1054,7 +1054,7 @@ with(MO){
    // @param e:event:TEvent 事件对象
    // @return EEventStatus 处理状态
    //==========================================================
-   MO.FUiGridControl_oeMode = function FUiGridControl_oeMode(e){
+   MO.FDuiGridControl_oeMode = function FDuiGridControl_oeMode(e){
       var o = this;
       o.dispUpdate = true;
       o.dispDelete = true;
@@ -1072,7 +1072,7 @@ with(MO){
    // @method
    // @param e:visible 可见性
    //==========================================================
-   MO.FUiGridControl_oeProgress = function FUiGridControl_oeProgress(e){
+   MO.FDuiGridControl_oeProgress = function FDuiGridControl_oeProgress(e){
       var o = this;
       if('none' == o._hPanel.currentStyle.display){
          return;
@@ -1098,9 +1098,9 @@ with(MO){
          var hc = hdf.insertRow().insertCell();
          hc.align = 'center';
          hc.vAlign = 'middle';
-         RBuilder.appendIcon(hc, 'ctl.FUiGridControl_Loading')
+         RBuilder.appendIcon(hc, 'ctl.FDuiGridControl_Loading')
          var t = o._hDelayText = RBuilder.append(hc, 'SPAN');
-         t.innerHTML = "<BR><BR><FONT color='red'><B>" + RContext.get('FUiGridControl:Loading') + "</B></FONT>";
+         t.innerHTML = "<BR><BR><FONT color='red'><B>" + RContext.get('FDuiGridControl:Loading') + "</B></FONT>";
       }
       // 根据可见性设置底板
       if(e.enable){
@@ -1126,7 +1126,7 @@ with(MO){
    //    <L value='true'>是</L>
    //    <L value='false'>否</L>
    //==========================================================
-   MO.FUiGridControl_isFormLinked = function FUiGridControl_isFormLinked(){
+   MO.FDuiGridControl_isFormLinked = function FDuiGridControl_isFormLinked(){
       return this._formLinked || this._formName;
    }
 
@@ -1138,7 +1138,7 @@ with(MO){
    //    <L value='true'>有</L>
    //    <L value='false'>无</L>
    //==========================================================
-   MO.FUiGridControl_isDataSelected = function FUiGridControl_isDataSelected(){
+   MO.FDuiGridControl_isDataSelected = function FDuiGridControl_isDataSelected(){
       var rs = this._rows;
       for(var n=rs.count-1; n>=0; n--){
          if(rs.get(n).isSelect){
@@ -1154,7 +1154,7 @@ with(MO){
    //    <L value='true'>变化过</L>
    //    <L value='false'>未变化</L>
    //==========================================================
-   MO.FUiGridControl_isDataChanged = function FUiGridControl_isDataChanged(){
+   MO.FDuiGridControl_isDataChanged = function FDuiGridControl_isDataChanged(){
       var rs = this._rows;
       for(var n=rs.count-1; n>=0; n--){
          if(rs.get(n).isDataChanged()){
@@ -1164,7 +1164,7 @@ with(MO){
    }
 
    //------------------------------------------------------------
-   MO.FUiGridControl_hasAction = function FUiGridControl_hasAction(){
+   MO.FDuiGridControl_hasAction = function FDuiGridControl_hasAction(){
       var o = this;
       var cs = o.components;
       var ct = cs.count;
@@ -1184,7 +1184,7 @@ with(MO){
    //    <L value='true'>是</L>
    //    <L value='false'>否</L>
    //==========================================================
-   MO.FUiGridControl_getFormLink = function FUiGridControl_getFormLink(t){
+   MO.FDuiGridControl_getFormLink = function FDuiGridControl_getFormLink(t){
       var o = this;
       if(EFormLink.Form == t){
          return this._formName;
@@ -1195,7 +1195,7 @@ with(MO){
    }
 
    //------------------------------------------------------------
-   MO.FUiGridControl_getHeadMode = function FUiGridControl_getHeadMode(e){
+   MO.FDuiGridControl_getHeadMode = function FDuiGridControl_getHeadMode(e){
       var o = this;
       var p = RHtml.point(o._hHeadForm);
       var x = e.srcElement.offsetLeft + e.x - p.x;
@@ -1221,7 +1221,7 @@ with(MO){
    // @method
    // @return TRowBar 行操作栏
    //==========================================================
-   MO.FUiGridControl_getRowBar = function FUiGridControl_getRowBar(){
+   MO.FDuiGridControl_getRowBar = function FDuiGridControl_getRowBar(){
       var o = this;
       var rb = o._rowBar;
       if(!rb){
@@ -1238,7 +1238,7 @@ with(MO){
    // @method
    // @return TRect 数据区范围
    //==========================================================
-   MO.FUiGridControl_calculateDataSize = function FUiGridControl_calculateDataSize(){
+   MO.FDuiGridControl_calculateDataSize = function FDuiGridControl_calculateDataSize(){
       var o = this;
       // 获得数据结构
       var r = o._dataRect;
@@ -1262,7 +1262,7 @@ with(MO){
    //@method
    //@return FGridRowControl 行控件
    //==========================================================
-   MO.FUiGridControl_hasVisibleRow = function FUiGridControl_hasVisibleRow() {
+   MO.FDuiGridControl_hasVisibleRow = function FDuiGridControl_hasVisibleRow() {
       var o = this;
       var rs = o._rows;
       for(var n = 0; n<rs.count; n++){
@@ -1280,7 +1280,7 @@ with(MO){
    // @method
    // @return TRow 数据行
    //==========================================================
-   MO.FUiGridControl_getCurrentRow = function FUiGridControl_getCurrentRow(){
+   MO.FDuiGridControl_getCurrentRow = function FDuiGridControl_getCurrentRow(){
       var c = this._focusCell;
       if(c){
          return c.row.saveRow();
@@ -1293,7 +1293,7 @@ with(MO){
    // @method
    // @return TRow 数据行
    //==========================================================
-   MO.FUiGridControl_getSelectedRow = function FUiGridControl_getSelectedRow(){
+   MO.FDuiGridControl_getSelectedRow = function FDuiGridControl_getSelectedRow(){
       var rs = this._rows;
       var c = rs.count;
       for(var n=0; n<c; n++){
@@ -1310,7 +1310,7 @@ with(MO){
    // @method
    // @return TList<TRow> 数据行集合
    //==========================================================
-   MO.FUiGridControl_getSelectedRows = function FUiGridControl_getSelectedRows(){
+   MO.FDuiGridControl_getSelectedRows = function FDuiGridControl_getSelectedRows(){
       var ls = new TList();
       var rs = this._rows;
       var c = rs.count;
@@ -1329,7 +1329,7 @@ with(MO){
    // @method
    // @return TList<TRow> 数据行集合
    //==========================================================
-   MO.FUiGridControl_getChangedRows = function FUiGridControl_getChangedRows(){
+   MO.FDuiGridControl_getChangedRows = function FDuiGridControl_getChangedRows(){
       var ls = new TList();
       var rs = this._rows;
       var c = rs.count;
@@ -1350,7 +1350,7 @@ with(MO){
    // @method
    // @return TList<TRow> 数据行集合
    //==========================================================
-   MO.FUiGridControl_getRows = function FUiGridControl_getRows(){
+   MO.FDuiGridControl_getRows = function FDuiGridControl_getRows(){
       var ls = new TList();
       var rs = this._rows;
       var c = rs.count;
@@ -1369,7 +1369,7 @@ with(MO){
    // @method
    // @return TList 选中的行组成的链表
    //==========================================================
-   MO.FUiGridControl_refreshHint = function FUiGridControl_refreshHint(){
+   MO.FDuiGridControl_refreshHint = function FDuiGridControl_refreshHint(){
       var o = this;
       var h = o._hHint;
       var ds = o._dataset;
@@ -1379,7 +1379,7 @@ with(MO){
          if(r){
             ci = o._rows.indexOf(r)+1;
          }
-         //h.innerText = '[' + RContext.get('FUiGridControl:Row') + ci + '/' + o.dsViewer.count + '/' + ds.total +" "+ RContext.get('FUiGridControl:Page') + (ds.pageIndex + 1) + '/' + ds.pageCount + ']';
+         //h.innerText = '[' + RContext.get('FDuiGridControl:Row') + ci + '/' + o.dsViewer.count + '/' + ds.total +" "+ RContext.get('FDuiGridControl:Page') + (ds.pageIndex + 1) + '/' + ds.pageCount + ']';
          h.innerHTML ='共' +"<FONT color='red' style='font-weight:BOLD '>"+ds.pageCount +"</FONT>" + '页' + "<FONT color='red' style='font-weight:BOLD '>"+ds.total +"</FONT>" + '条记录，' + '当前选中第'+"<FONT color='red' style='font-weight:BOLD '>"+(ds.pageIndex + 1)+"</FONT>" +'页第'+ "<FONT color='red' style='font-weight:BOLD '>"+ci+"</FONT>" + '条记录';
          //h.innerText = '';
          o.hPage.value = ds.pageIndex + 1;
@@ -1392,7 +1392,7 @@ with(MO){
    //@method
    //@return TList 选中的行组成的链表
    //==========================================================
-   MO.FUiGridControl_refreshSelected = function FUiGridControl_refreshSelected(){
+   MO.FDuiGridControl_refreshSelected = function FDuiGridControl_refreshSelected(){
       var o = this;
       var cs = o._columns;
       var sc = cs.get('_select');
@@ -1414,7 +1414,7 @@ with(MO){
    // @param r:row:FGridRowControl 热点行
    // @param f:flag:Boolean 是否给与热点
    //==========================================================
-   MO.FUiGridControl_hoverRow = function FUiGridControl_hoverRow(r, f){
+   MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
       var o = this;
       if(f){
          o._hoverRow = r;
@@ -1437,7 +1437,7 @@ with(MO){
    // @param reset 是否清除以前选中行
    // @param force 是否强制总是选取
    //==========================================================
-   MO.FUiGridControl_selectRow = function FUiGridControl_selectRow(row, reset, force) {
+   MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, force) {
       var o = this;
       var has = false;
       if(reset){
@@ -1466,7 +1466,7 @@ with(MO){
    //@param reset 是否清除以前选中行
    //@param force 是否强制总是选取
    //==========================================================
-   MO.FUiGridControl_clearSelectRow = function FUiGridControl_clearSelectRow(row) {
+   MO.FDuiGridControl_clearSelectRow = function FDuiGridControl_clearSelectRow(row) {
       var o = this;
       row.select(false);
       // 刷新选中行的提示信息
@@ -1483,7 +1483,7 @@ with(MO){
    //@param reset 是否清除以前选中行
    //@param force 是否强制总是选取
    //==========================================================
-   MO.FUiGridControl_clearSelectRows = function FUiGridControl_clearSelectRows() {
+   MO.FDuiGridControl_clearSelectRows = function FDuiGridControl_clearSelectRows() {
        var o = this;
        var rs = o._rows;
        for(var n = 0; n < rs.count; n++){
@@ -1499,17 +1499,17 @@ with(MO){
    // @param r:row:FGridRowControl 数据行对象
    // @param s:status:EDataStatus 数据状态
    //==========================================================
-   MO.FUiGridControl_setDataStatus = function FUiGridControl_setDataStatus(r, s) {
+   MO.FDuiGridControl_setDataStatus = function FDuiGridControl_setDataStatus(r, s) {
       var o = this;
       r.dataStatus = s;
       o._statusColumn.setDataStatus(r, s);
    }
 
    // ------------------------------------------------------------
-   MO.FUiGridControl_dsInsert = function FUiGridControl_dsInsert() {
+   MO.FDuiGridControl_dsInsert = function FDuiGridControl_dsInsert() {
    }
    // ------------------------------------------------------------
-   MO.FUiGridControl_dsUpdate = function FUiGridControl_dsUpdate(r){
+   MO.FDuiGridControl_dsUpdate = function FDuiGridControl_dsUpdate(r){
       var o = this;
       // 设置工作模式
       o.psMode(EMode.Update);
@@ -1517,7 +1517,7 @@ with(MO){
       o.dsFetch(true);
    }
    // ------------------------------------------------------------
-   MO.FUiGridControl_dsDelete = function FUiGridControl_dsDelete() {
+   MO.FDuiGridControl_dsDelete = function FDuiGridControl_dsDelete() {
       //this.deleteRow();
    }
 
@@ -1526,7 +1526,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiGridControl_doSearch = function FUiGridControl_doSearch(){
+   MO.FDuiGridControl_doSearch = function FDuiGridControl_doSearch(){
       var o = this;
       o.dsSearchs.clear();
       // 建立查询信息
@@ -1557,7 +1557,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiGridControl_focus = function FUiGridControl_focus(){
+   MO.FDuiGridControl_focus = function FDuiGridControl_focus(){
       var o = this;
       RConsole.find(FFocusConsole).focusClass(MDataset, o);
    }
@@ -1568,7 +1568,7 @@ with(MO){
    // @method
    // @return String 打包字符串
    //==========================================================
-   MO.FUiGridControl_pack = function FUiGridControl_pack(){
+   MO.FDuiGridControl_pack = function FDuiGridControl_pack(){
       var o = this;
       var rfs = o._rows;
       var ct = rfs.count;
@@ -1590,7 +1590,7 @@ with(MO){
    // @method
    // @param v:visible:Boolean 是否可见
    //==========================================================
-   MO.FUiGridControl_setVisible = function FUiGridControl_setVisible(v){
+   MO.FDuiGridControl_setVisible = function FDuiGridControl_setVisible(v){
       var o = this;
       o.__base.FDuiContainer.setVisible.call(o, v);
       o.__base.MUiHorizontal.setVisible.call(o, v);
@@ -1602,7 +1602,7 @@ with(MO){
    //@method
    //@param v:visible:Boolean 是否可见
    //==========================================================
-   MO.FUiGridControl_setButtonVisible = function FUiGridControl_setButtonVisible(n, v){
+   MO.FDuiGridControl_setButtonVisible = function FDuiGridControl_setButtonVisible(n, v){
       var o = this;
       var b = o._buttons.get(n);
       if(b){
@@ -1615,7 +1615,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiGridControl_refreshStyle = function FUiGridControl_refreshStyle(){
+   MO.FDuiGridControl_refreshStyle = function FDuiGridControl_refreshStyle(){
       var o = this;
       var rs = o._rows;
       var c = rs.count;
@@ -1629,7 +1629,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiGridControl_dispose = function FUiGridControl_dispose(){
+   MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
       var o = this;
       o.__base.FDuiContainer.dispose.call(o);
       o.hBorderPanel = null;
@@ -1662,7 +1662,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiGridControl_dump = function FUiGridControl_dump(s) {
+   MO.FDuiGridControl_dump = function FDuiGridControl_dump(s) {
       var o = this;
       s = RString.nvlStr(s);
       s.appendLine(RClass.name(o));
@@ -1675,7 +1675,7 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiGridControl_storeValues = function FUiGridControl_storeValues(a){
+   MO.FDuiGridControl_storeValues = function FDuiGridControl_storeValues(a){
       var o = this;
       if(!a){
          a = new TAttributes();
@@ -1691,7 +1691,7 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiGridControl_buildRows = function FUiGridControl_buildRows(){
+   MO.FDuiGridControl_buildRows = function FDuiGridControl_buildRows(){
       var o = this;
       // 如果行还没有建立的话，则建立行记录
       var rs = o._rows;
@@ -1711,7 +1711,7 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiGridControl_createChild = function FUiGridControl_createChild(config) {
+   MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(config) {
       var o = this;
       var c = o.__base.FDuiContainer.createChild.call(o, config);
       if(RClass.isClass(c, FGridRow)){
@@ -1728,7 +1728,7 @@ with(MO){
       return c;
    }
    // ------------------------------------------------------------
-   MO.FUiGridControl_setStyleStatus = function FUiGridControl_setStyleStatus(row, status) {
+   MO.FDuiGridControl_setStyleStatus = function FDuiGridControl_setStyleStatus(row, status) {
       var hRow = row._hPanel;
       if (hRow) {
          switch (status) {
@@ -1742,7 +1742,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FUiGridControl_buildRow = function FUiGridControl_buildRow(row) {
+   MO.FDuiGridControl_buildRow = function FDuiGridControl_buildRow(row) {
       var o = this;
       // Column
       var cs = o._columns;
@@ -1758,7 +1758,7 @@ with(MO){
    }
 
    //------------------------------------------------------------
-   MO.FUiGridControl_clearSelectAll = function FUiGridControl_clearSelectAll() {
+   MO.FDuiGridControl_clearSelectAll = function FDuiGridControl_clearSelectAll() {
       var o = this;
       // Column
       var cs = o._columns;
@@ -1767,13 +1767,13 @@ with(MO){
    }
 
    //------------------------------------------------------------
-   MO.FUiGridControl_appendRow = function FUiGridControl_appendRow(row) {
+   MO.FDuiGridControl_appendRow = function FDuiGridControl_appendRow(row) {
       this._hRows.appendChild(row._hRow);
       this._rows.push(row);
    }
    // ------------------------------------------------------------
    // row
-   MO.FUiGridControl_deleteRow = function FUiGridControl_deleteRow(r) {
+   MO.FDuiGridControl_deleteRow = function FDuiGridControl_deleteRow(r) {
       var o = this;
       r = RObject.nvl(r, o.selectedRow);
       if (!r) {
@@ -1794,7 +1794,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FUiGridControl_clearRows = function FUiGridControl_clearRows() {
+   MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows() {
       var o = this;
       var c = o._rows.count;
       for(var n=0; n<c; n++){
@@ -1807,7 +1807,7 @@ with(MO){
       RHtml.clear(o._hRows);
    }
    // ------------------------------------------------------------
-   MO.FUiGridControl_onColumnTreeService = function FUiGridControl_onColumnTreeService(g){
+   MO.FDuiGridControl_onColumnTreeService = function FDuiGridControl_onColumnTreeService(g){
       var o = this;
       var d = g.resultDatasets.get(g.path);
       var rs = d._rows;
@@ -1828,7 +1828,7 @@ with(MO){
       }
    }
    //------------------------------------------------------------
-   MO.FUiGridControl_getRowType = function FUiGridControl_getRowType(){
+   MO.FDuiGridControl_getRowType = function FDuiGridControl_getRowType(){
       var o = this;
       var cs = o.components;
       var ct = cs.count;
@@ -1840,7 +1840,7 @@ with(MO){
       }
    }
    //------------------------------------------------------------
-   MO.FUiGridControl_onColumnTreeClick = function FUiGridControl_onColumnTreeClick(s, e){
+   MO.FDuiGridControl_onColumnTreeClick = function FDuiGridControl_onColumnTreeClick(s, e){
       var o = this;
       var c = o.getRowType();
       if(!c){

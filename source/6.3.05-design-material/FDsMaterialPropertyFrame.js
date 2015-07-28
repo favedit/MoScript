@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsMaterialPropertyFrame = function FDsMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._activeResource = null;
@@ -37,7 +37,7 @@ with(MO){
    MO.FDsMaterialPropertyFrame_construct = function FDsMaterialPropertyFrame_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
 
    //==========================================================
@@ -48,7 +48,7 @@ with(MO){
    //==========================================================
    MO.FDsMaterialPropertyFrame_onBuilded = function FDsMaterialPropertyFrame_onBuilded(event){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, event);
+      o.__base.FDuiForm.onBuilded.call(o, event);
       // 关联对象
       o._controlCode.addDataChangedListener(o, o.onDataChanged);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
@@ -92,6 +92,6 @@ with(MO){
    MO.FDsMaterialPropertyFrame_dispose = function FDsMaterialPropertyFrame_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }

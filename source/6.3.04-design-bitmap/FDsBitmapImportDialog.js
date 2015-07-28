@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsBitmapImportDialog = function FDsBitmapImportDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.bitmap.ImportDialog';
@@ -41,7 +41,7 @@ with(MO){
    //==========================================================
    MO.FDsBitmapImportDialog_onBuilded = function FDsBitmapImportDialog_onBuilded(event){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, event);
+      o.__base.FDuiDialog.onBuilded.call(o, event);
       //..........................................................
       // 注册事件
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
@@ -121,7 +121,7 @@ with(MO){
    MO.FDsBitmapImportDialog_construct = function FDsBitmapImportDialog_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
 
    //==========================================================
@@ -132,6 +132,6 @@ with(MO){
    MO.FDsBitmapImportDialog_dispose = function FDsBitmapImportDialog_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsCommonAnimationPropertyFrame = function FDsCommonAnimationPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible         = false;
       o._activeSpace     = null;
       o._activeAnimation = null;
@@ -16,11 +16,11 @@ with(MO){
    }
    MO.FDsCommonAnimationPropertyFrame_construct = function FDsCommonAnimationPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonAnimationPropertyFrame_onBuilded = function FDsCommonAnimationPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlCode.addDataChangedListener(o, o.onDataChanged);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
       o._controlPlayRate.addDataChangedListener(o, o.onDataChanged);
@@ -46,12 +46,12 @@ with(MO){
    }
    MO.FDsCommonAnimationPropertyFrame_dispose = function FDsCommonAnimationPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonCameraFrame = function FDsCommonCameraFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._workspace        = null;
       o._camera           = null;
       o._controlPosition  = null;
@@ -63,7 +63,7 @@ with(MO){
    }
    MO.FDsCommonCameraFrame_construct = function FDsCommonCameraFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonCameraFrame_loadObject = function FDsCommonCameraFrame_loadObject(s, c){
       var o = this;
@@ -74,12 +74,12 @@ with(MO){
    }
    MO.FDsCommonCameraFrame_dispose = function FDsCommonCameraFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonCameraPropertyFrame = function FDsCommonCameraPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._workspace        = null;
       o._activeSpace      = null;
@@ -98,7 +98,7 @@ with(MO){
    }
    MO.FDsCommonCameraPropertyFrame_onBuilded = function FDsCommonCameraPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlPosition.addDataChangedListener(o, o.onDataChanged);
       o._controlDirection.addDataChangedListener(o, o.onDataChanged);
    }
@@ -114,7 +114,7 @@ with(MO){
    }
    MO.FDsCommonCameraPropertyFrame_construct = function FDsCommonCameraPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonCameraPropertyFrame_loadObject = function FDsCommonCameraPropertyFrame_loadObject(space, camera){
       var o = this;
@@ -131,12 +131,12 @@ with(MO){
    }
    MO.FDsCommonCameraPropertyFrame_dispose = function FDsCommonCameraPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonDisplayDialog = function FDsCommonDisplayDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.DisplayDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -160,7 +160,7 @@ with(MO){
    }
    MO.FDsCommonDisplayDialog_onBuilded = function FDsCommonDisplayDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlSpaceGuid.setEditAble(false);
       o._controlSpaceLabel.setEditAble(false);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
@@ -189,7 +189,7 @@ with(MO){
    }
    MO.FDsCommonDisplayDialog_construct = function FDsCommonDisplayDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonDisplayDialog_setSpace = function FDsCommonDisplayDialog_setSpace(space){
       var o = this;
@@ -208,12 +208,12 @@ with(MO){
    }
    MO.FDsCommonDisplayDialog_dispose = function FDsCommonDisplayDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonDisplayFrame = function FDsCommonDisplayFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._activeSpace   = null;
       o._activeDisplay = null;
       o.onBuilded      = FDsCommonDisplayFrame_onBuilded;
@@ -225,7 +225,7 @@ with(MO){
    }
    MO.FDsCommonDisplayFrame_onBuilded = function FDsCommonDisplayFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
       o._controlRotation.addDataChangedListener(o, o.onDataChanged);
       o._controlScale.addDataChangedListener(o, o.onDataChanged);
@@ -246,7 +246,7 @@ with(MO){
    }
    MO.FDsCommonDisplayFrame_construct = function FDsCommonDisplayFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonDisplayFrame_loadObject = function FDsCommonDisplayFrame_loadObject(space, display){
       var o = this;
@@ -260,12 +260,12 @@ with(MO){
    }
    MO.FDsCommonDisplayFrame_dispose = function FDsCommonDisplayFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonDisplayPropertyFrame = function FDsCommonDisplayPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible        = false;
       o._workspace      = null;
       o._activeDisplay  = null;
@@ -284,7 +284,7 @@ with(MO){
    }
    MO.FDsCommonDisplayPropertyFrame_onBuilded = function FDsCommonDisplayPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlCode.addDataChangedListener(o, o.onDataChanged);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
    }
@@ -296,7 +296,7 @@ with(MO){
    }
    MO.FDsCommonDisplayPropertyFrame_construct = function FDsCommonDisplayPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonDisplayPropertyFrame_loadObject = function FDsCommonDisplayPropertyFrame_loadObject(space, display){
       var o = this;
@@ -310,12 +310,12 @@ with(MO){
    }
    MO.FDsCommonDisplayPropertyFrame_dispose = function FDsCommonDisplayPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonLayerDialog = function FDsCommonLayerDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.LayerDialog';
       o._displayModeCd        = null;
       o._controlSpaceGuid     = null;
@@ -338,7 +338,7 @@ with(MO){
    }
    MO.FDsCommonLayerDialog_onBuilded = function FDsCommonLayerDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlSpaceGuid.setEditAble(false);
       o._controlSpaceLabel.setEditAble(false);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
@@ -365,7 +365,7 @@ with(MO){
    }
    MO.FDsCommonLayerDialog_construct = function FDsCommonLayerDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonLayerDialog_setSpace = function FDsCommonLayerDialog_setSpace(space){
       var o = this;
@@ -384,12 +384,12 @@ with(MO){
    }
    MO.FDsCommonLayerDialog_dispose = function FDsCommonLayerDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonLayerPropertyFrame = function FDsCommonLayerPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible       = false;
       o._workspace     = null;
       o._layer         = null;
@@ -406,11 +406,11 @@ with(MO){
    }
    MO.FDsCommonLayerPropertyFrame_construct = function FDsCommonLayerPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonLayerPropertyFrame_onBuilded = function FDsCommonLayerPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlCode.addDataChangedListener(o, o.onDataChanged);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
       o._controlTypeCd.addDataChangedListener(o, o.onDataChanged);
@@ -437,12 +437,12 @@ with(MO){
    }
    MO.FDsCommonLayerPropertyFrame_dispose = function FDsCommonLayerPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonLightPropertyFrame = function FDsCommonLightPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible      = false;
       o._workspace    = null;
       o._activeSpace  = null;
@@ -457,7 +457,7 @@ with(MO){
    }
    MO.FDsCommonLightPropertyFrame_construct = function FDsCommonLightPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonLightPropertyFrame_loadObject = function FDsCommonLightPropertyFrame_loadObject(space, light){
       var o = this;
@@ -470,12 +470,12 @@ with(MO){
    }
    MO.FDsCommonLightPropertyFrame_dispose = function FDsCommonLightPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonMaterial1Frame = function FDsCommonMaterial1Frame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._activeSpace           = null;
       o._activeMaterial        = null;
       o._controlOptionDouble   = null;
@@ -513,7 +513,7 @@ with(MO){
    }
    MO.FDsCommonMaterial1Frame_onBuilded = function FDsCommonMaterial1Frame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
       o._controlEffectCode.addDataChangedListener(o, o.onDataChanged);
       o._controlOptionAlpha.addDataChangedListener(o, o.onDataChanged);
@@ -573,7 +573,7 @@ with(MO){
    }
    MO.FDsCommonMaterial1Frame_construct = function FDsCommonMaterial1Frame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonMaterial1Frame_loadObject = function FDsCommonMaterial1Frame_loadObject(space, material){
       var o = this;
@@ -612,12 +612,12 @@ with(MO){
    }
    MO.FDsCommonMaterial1Frame_dispose = function FDsCommonMaterial1Frame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonMaterial2Frame = function FDsCommonMaterial2Frame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._activeSpace              = null;
       o._activeMaterial           = null;
       o._controlDiffuseViewColor  = null;
@@ -633,7 +633,7 @@ with(MO){
    }
    MO.FDsCommonMaterial2Frame_onBuilded = function FDsCommonMaterial2Frame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlOptionView.addDataChangedListener(o, o.onDataChanged);
       o._controlOptionNormalInvert.addDataChangedListener(o, o.onDataChanged);
       o._controlOptionShadow.addDataChangedListener(o, o.onDataChanged);
@@ -663,7 +663,7 @@ with(MO){
    }
    MO.FDsCommonMaterial2Frame_construct = function FDsCommonMaterial2Frame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonMaterial2Frame_loadObject = function FDsCommonMaterial2Frame_loadObject(space, material){
       var o = this;
@@ -685,12 +685,12 @@ with(MO){
    }
    MO.FDsCommonMaterial2Frame_dispose = function FDsCommonMaterial2Frame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonMaterialDialog = function FDsCommonMaterialDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.MaterialDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -714,7 +714,7 @@ with(MO){
    }
    MO.FDsCommonMaterialDialog_onBuilded = function FDsCommonMaterialDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlSpaceGuid.setEditAble(false);
       o._controlSpaceLabel.setEditAble(false);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
@@ -743,7 +743,7 @@ with(MO){
    }
    MO.FDsCommonMaterialDialog_construct = function FDsCommonMaterialDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonMaterialDialog_setSpace = function FDsCommonMaterialDialog_setSpace(space){
       var o = this;
@@ -762,12 +762,12 @@ with(MO){
    }
    MO.FDsCommonMaterialDialog_dispose = function FDsCommonMaterialDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonMaterialPropertyFrame = function FDsCommonMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible        = false;
       o._workspace      = null;
       o._activeMaterial       = null;
@@ -785,7 +785,7 @@ with(MO){
    }
    MO.FDsCommonMaterialPropertyFrame_onBuilded = function FDsCommonMaterialPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
    }
    MO.FDsCommonMaterialPropertyFrame_onDataChanged = function FDsCommonMaterialPropertyFrame_onDataChanged(p){
@@ -796,7 +796,7 @@ with(MO){
    }
    MO.FDsCommonMaterialPropertyFrame_construct = function FDsCommonMaterialPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonMaterialPropertyFrame_loadObject = function FDsCommonMaterialPropertyFrame_loadObject(space, material){
       var o = this;
@@ -811,12 +811,12 @@ with(MO){
    }
    MO.FDsCommonMaterialPropertyFrame_dispose = function FDsCommonMaterialPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonMaterialReferDialog = function FDsCommonMaterialReferDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName      = 'resource.common.dialog.MaterialReferDialog';
       o._displayModeCd  = null;
       o._controlGuid    = null;
@@ -837,7 +837,7 @@ with(MO){
    }
    MO.FDsCommonMaterialReferDialog_onBuilded = function FDsCommonMaterialReferDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
       o._controlCancel.addClickListener(o, o.onCancelClick);
    }
@@ -856,7 +856,7 @@ with(MO){
    }
    MO.FDsCommonMaterialReferDialog_construct = function FDsCommonMaterialReferDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonMaterialReferDialog_setContentGuid = function FDsCommonMaterialReferDialog_setContentGuid(guid){
       this._controlGuid.set(guid);
@@ -869,12 +869,12 @@ with(MO){
    }
    MO.FDsCommonMaterialReferDialog_dispose = function FDsCommonMaterialReferDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonMovieDialog = function FDsCommonMovieDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.MovieDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -898,7 +898,7 @@ with(MO){
    }
    MO.FDsCommonMovieDialog_onBuilded = function FDsCommonMovieDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlLayerLabel.setEditAble(false);
       o._controlDisplayLabel.setEditAble(false);
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
@@ -931,7 +931,7 @@ with(MO){
    }
    MO.FDsCommonMovieDialog_construct = function FDsCommonMovieDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonMovieDialog_setLayerLabel = function FDsCommonMovieDialog_setLayerLabel(label){
       this._controlLayerLabel.set(label);
@@ -947,12 +947,12 @@ with(MO){
    }
    MO.FDsCommonMovieDialog_dispose = function FDsCommonMovieDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonMoviePropertyFrame = function FDsCommonMoviePropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible         = false;
       o._activeSpace     = null;
       o._activeMovie = null;
@@ -968,11 +968,11 @@ with(MO){
    }
    MO.FDsCommonMoviePropertyFrame_construct = function FDsCommonMoviePropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonMoviePropertyFrame_onBuilded = function FDsCommonMoviePropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlCode.addDataChangedListener(o, o.onDataChanged);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
       o._controlInterval.addDataChangedListener(o, o.onDataChanged);
@@ -1001,12 +1001,12 @@ with(MO){
    }
    MO.FDsCommonMoviePropertyFrame_dispose = function FDsCommonMoviePropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonProgramDialog = function FDsCommonProgramDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.ProgramDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -1027,7 +1027,7 @@ with(MO){
    }
    MO.FDsCommonProgramDialog_onBuilded = function FDsCommonProgramDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
    }
    MO.FDsCommonProgramDialog_onConfirmClick = function FDsCommonProgramDialog_onConfirmClick(event){
@@ -1036,7 +1036,7 @@ with(MO){
    }
    MO.FDsCommonProgramDialog_construct = function FDsCommonProgramDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonProgramDialog_setProgramCode = function FDsCommonProgramDialog_setProgramCode(value){
       this._controlCode.set(value);
@@ -1053,12 +1053,12 @@ with(MO){
    }
    MO.FDsCommonProgramDialog_dispose = function FDsCommonProgramDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonRegionPropertyFrame = function FDsCommonRegionPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible                   = false;
       o._workspace                 = null;
       o._activeSpace               = null;
@@ -1077,7 +1077,7 @@ with(MO){
    }
    MO.FDsCommonRegionPropertyFrame_onBuilded = function FDsCommonRegionPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlMoveSpeed.addDataChangedListener(o, o.onDataChanged);
       o._controlRotationKeySpeed.addDataChangedListener(o, o.onDataChanged);
       o._controlRotationMouseSpeed.addDataChangedListener(o, o.onDataChanged);
@@ -1099,7 +1099,7 @@ with(MO){
    }
    MO.FDsCommonRegionPropertyFrame_construct = function FDsCommonRegionPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonRegionPropertyFrame_loadObject = function FDsCommonRegionPropertyFrame_loadObject(space, region){
       var o = this;
@@ -1114,12 +1114,12 @@ with(MO){
    }
    MO.FDsCommonRegionPropertyFrame_dispose = function FDsCommonRegionPropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonRenderableFrame = function FDsCommonRenderableFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._activeSpace      = null;
       o._activeRenderable = null;
       o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
@@ -1133,7 +1133,7 @@ with(MO){
    }
    MO.FDsCommonRenderableFrame_onBuilded = function FDsCommonRenderableFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
       o._controlRotation.addDataChangedListener(o, o.onDataChanged);
       o._controlScale.addDataChangedListener(o, o.onDataChanged);
@@ -1156,7 +1156,7 @@ with(MO){
       var o = this;
       var item = event.item;
       var materialRefer = item.tag();
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialReferDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
       dialog._frame = o;
       dialog._materialRefer = materialRefer;
       dialog.setContentCode('');
@@ -1170,7 +1170,7 @@ with(MO){
       var program = effect._program;
       var vertexShader = program.vertexShader();
       var fragmentShader = program.fragmentShader();
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonProgramDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
       dialog._frameSet = o._frameSet;
       dialog.setProgramCode(effect._code);
       dialog.setVertexSource(vertexShader.source(), vertexShader.targetSource());
@@ -1179,7 +1179,7 @@ with(MO){
    }
    MO.FDsCommonRenderableFrame_construct = function FDsCommonRenderableFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonRenderableFrame_loadObject = function FDsCommonRenderableFrame_loadObject(space, renderable){
       var o = this;
@@ -1217,12 +1217,12 @@ with(MO){
    }
    MO.FDsCommonRenderableFrame_dispose = function FDsCommonRenderableFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonRenderablePropertyFrame = function FDsCommonRenderablePropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._activeRenderable = null;
       o._activeMaterial   = null;
@@ -1239,7 +1239,7 @@ with(MO){
    }
    MO.FDsCommonRenderablePropertyFrame_construct = function FDsCommonRenderablePropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonRenderablePropertyFrame_loadObject = function FDsCommonRenderablePropertyFrame_loadObject(space, renderable){
       var o = this;
@@ -1256,12 +1256,12 @@ with(MO){
    }
    MO.FDsCommonRenderablePropertyFrame_dispose = function FDsCommonRenderablePropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonShaderDialog = function FDsCommonShaderDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.ShaderDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -1285,7 +1285,7 @@ with(MO){
    }
    MO.FDsCommonShaderDialog_onBuilded = function FDsCommonShaderDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
    }
    MO.FDsCommonShaderDialog_onConfirmClick = function FDsCommonShaderDialog_onConfirmClick(event){
@@ -1294,7 +1294,7 @@ with(MO){
    }
    MO.FDsCommonShaderDialog_construct = function FDsCommonShaderDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonShaderDialog_setSpace = function FDsCommonShaderDialog_setSpace(space){
       var o = this;
@@ -1307,12 +1307,12 @@ with(MO){
    }
    MO.FDsCommonShaderDialog_dispose = function FDsCommonShaderDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonSpacePropertyFrame = function FDsCommonSpacePropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible      = false;
       o._workspace    = null;
       o._activeSpace  = null;
@@ -1328,7 +1328,7 @@ with(MO){
    }
    MO.FDsCommonSpacePropertyFrame_onBuilded = function FDsCommonSpacePropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
    }
    MO.FDsCommonSpacePropertyFrame_onDataChanged = function FDsCommonSpacePropertyFrame_onDataChanged(p){
@@ -1339,7 +1339,7 @@ with(MO){
    }
    MO.FDsCommonSpacePropertyFrame_construct = function FDsCommonSpacePropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsCommonSpacePropertyFrame_loadObject = function FDsCommonSpacePropertyFrame_loadObject(space){
       var o = this;
@@ -1351,12 +1351,12 @@ with(MO){
    }
    MO.FDsCommonSpacePropertyFrame_dispose = function FDsCommonSpacePropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonSpriteDialog = function FDsCommonSpriteDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.SpriteDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -1380,7 +1380,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onBuilded = function FDsCommonSpriteDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlLayerLabel.setEditAble(false);
       o._controlDisplayLabel.setEditAble(false);
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
@@ -1426,7 +1426,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_construct = function FDsCommonSpriteDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonSpriteDialog_setLayerLabel = function FDsCommonSpriteDialog_setLayerLabel(label){
       this._controlLayerLabel.set(label);
@@ -1442,12 +1442,12 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_dispose = function FDsCommonSpriteDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonTechniquePropertyFrame = function FDsCommonTechniquePropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible              = false;
       o._workspace            = null;
       o._activeSpace          = null;
@@ -1467,7 +1467,7 @@ with(MO){
    }
    MO.FDsCommonTechniquePropertyFrame_onBuilded = function FDsCommonTechniquePropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       o._controlRenderModes.addClickListener(o, o.onModeClick);
    }
    MO.FDsCommonTechniquePropertyFrame_onDataChanged = function FDsCommonTechniquePropertyFrame_onDataChanged(p){
@@ -1514,7 +1514,7 @@ with(MO){
    }
    MO.FDsCommonTechniquePropertyFrame_construct = function FDsCommonTechniquePropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
       var t = o._thread = RClass.create(FThread);
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onRefresh);
@@ -1538,12 +1538,12 @@ with(MO){
    }
    MO.FDsCommonTechniquePropertyFrame_dispose = function FDsCommonTechniquePropertyFrame_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsCommonTemplateDialog = function FDsCommonTemplateDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.TemplateDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -1567,7 +1567,7 @@ with(MO){
    }
    MO.FDsCommonTemplateDialog_onBuilded = function FDsCommonTemplateDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
       o._controlCancel.addClickListener(o, o.onCancelClick);
    }
@@ -1594,7 +1594,7 @@ with(MO){
    }
    MO.FDsCommonTemplateDialog_construct = function FDsCommonTemplateDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsCommonTemplateDialog_setSpace = function FDsCommonTemplateDialog_setSpace(space){
       var o = this;
@@ -1613,6 +1613,6 @@ with(MO){
    }
    MO.FDsCommonTemplateDialog_dispose = function FDsCommonTemplateDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsCommonLayerPropertyFrame = function FDsCommonLayerPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible       = false;
@@ -41,7 +41,7 @@ with(MO){
    MO.FDsCommonLayerPropertyFrame_construct = function FDsCommonLayerPropertyFrame_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
 
    //==========================================================
@@ -52,7 +52,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonLayerPropertyFrame_onBuilded = function FDsCommonLayerPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       // 关联对象
       o._controlCode.addDataChangedListener(o, o.onDataChanged);
       o._controlLabel.addDataChangedListener(o, o.onDataChanged);
@@ -109,6 +109,6 @@ with(MO){
    MO.FDsCommonLayerPropertyFrame_dispose = function FDsCommonLayerPropertyFrame_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }

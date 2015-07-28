@@ -26,7 +26,7 @@ with(MO){
    // @author maocy
    // @version 150125
    //==========================================================
-   MO.FUiTable = function FUiTable(o) {
+   MO.FDuiTable = function FDuiTable(o) {
       o = RClass.inherits(this, o, FGridControl, MDataset);
       //..........................................................
       // @property
@@ -53,20 +53,20 @@ with(MO){
       o._hDataForm        = null;
       //..........................................................
       // @event
-      o.onBuildContent       = FUiTable_onBuildContent;
+      o.onBuildContent       = FDuiTable_onBuildContent;
       //..........................................................
       // @process
-      o.oeRefresh         = FUiTable_oeRefresh;
+      o.oeRefresh         = FDuiTable_oeRefresh;
       //..........................................................
       // @method
-      o.appendColumn      = FUiTable_appendColumn;
+      o.appendColumn      = FDuiTable_appendColumn;
 
       //..........................................................
       // @event
-      //o.onResizeAfter = FUiTable_onResizeAfter;
+      //o.onResizeAfter = FDuiTable_onResizeAfter;
       //..........................................................
       // @process
-      //o.oeResize      = FUiTable_oeResize;
+      //o.oeResize      = FDuiTable_oeResize;
       return o;
    }
 
@@ -76,7 +76,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 构建事件
    //==========================================================
-   MO.FUiTable_onBuildContent = function FUiTable_onBuildContent(p){
+   MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(p){
       var o = this;
       var hbp = o._hContentPanel;
       // 建立固定区(Layer:2)
@@ -145,7 +145,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 构建事件
    //==========================================================
-   MO.FUiTable_oeRefresh = function FUiTable_oeRefresh(e){
+   MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(e){
       var o = this;
       o.__base.FGridControl.oeRefresh.call(o, e);
       if(e.isAfter()){
@@ -215,7 +215,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 构建事件
    //==========================================================
-   MO.FUiTable_appendColumn = function FUiTable_appendColumn(p){
+   MO.FDuiTable_appendColumn = function FDuiTable_appendColumn(p){
       var o = this;
       // 为固定列的情况
       if(p._optionFixed){
@@ -246,7 +246,7 @@ with(MO){
 
 
    // ------------------------------------------------------------
-   MO.FUiTable_onResizeAfter = function FUiTable_onResizeAfter(){
+   MO.FDuiTable_onResizeAfter = function FDuiTable_onResizeAfter(){
       var o = this;
       var hdp = o._hDataPanel;
       var hfp = o._hFixPanel;
@@ -260,7 +260,7 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiTable_oeResize = function FUiTable_oeResize(e){
+   MO.FDuiTable_oeResize = function FDuiTable_oeResize(e){
       var o = this;
       // 检查是否尺寸改变
       var h = o._hPanel;

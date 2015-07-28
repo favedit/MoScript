@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-MO.FUiFrameEventConsole = function FUiFrameEventConsole(o){
+MO.FDuiFrameEventConsole = function FDuiFrameEventConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -20,23 +20,23 @@ MO.FUiFrameEventConsole = function FUiFrameEventConsole(o){
    o._listeners = new MO.TAttributes();
    //..........................................................
    // @event
-   o.onProcess  = MO.FUiFrameEventConsole_onProcess;
+   o.onProcess  = MO.FDuiFrameEventConsole_onProcess;
    //..........................................................
    // @method
-   o.construct  = MO.FUiFrameEventConsole_construct;
+   o.construct  = MO.FDuiFrameEventConsole_construct;
    // method
-   o.register   = MO.FUiFrameEventConsole_register;
-   o.push       = MO.FUiFrameEventConsole_push;
-   o.clear      = MO.FUiFrameEventConsole_clear;
+   o.register   = MO.FDuiFrameEventConsole_register;
+   o.push       = MO.FDuiFrameEventConsole_push;
+   o.clear      = MO.FDuiFrameEventConsole_clear;
 
 
 
-   //o.add        = FUiFrameEventConsole_add;
-   //o.allowEvent = FUiFrameEventConsole_allowEvent;
-   //o.skipEvent  = FUiFrameEventConsole_skipEvent;
-   //o.allowAll   = FUiFrameEventConsole_allowAll;
-   //o.skipAll    = FUiFrameEventConsole_skipAll;
-   //o.onlyCall   = FUiFrameEventConsole_onlyCall;
+   //o.add        = FDuiFrameEventConsole_add;
+   //o.allowEvent = FDuiFrameEventConsole_allowEvent;
+   //o.skipEvent  = FDuiFrameEventConsole_skipEvent;
+   //o.allowAll   = FDuiFrameEventConsole_allowAll;
+   //o.skipAll    = FDuiFrameEventConsole_skipAll;
+   //o.onlyCall   = FDuiFrameEventConsole_onlyCall;
    // method
    return o;
 }
@@ -49,7 +49,7 @@ MO.FUiFrameEventConsole = function FUiFrameEventConsole(o){
 //
 // @method
 //==========================================================
-MO.FUiFrameEventConsole_onProcess = function FUiFrameEventConsole_onProcess(){
+MO.FDuiFrameEventConsole_onProcess = function FDuiFrameEventConsole_onProcess(){
    var o = this;
    var es = o._events;
    var ec = es.count();
@@ -89,7 +89,7 @@ MO.FUiFrameEventConsole_onProcess = function FUiFrameEventConsole_onProcess(){
 //
 // @method
 //==========================================================
-MO.FUiFrameEventConsole_construct = function FUiFrameEventConsole_construct(){
+MO.FDuiFrameEventConsole_construct = function FDuiFrameEventConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 创建线程
@@ -107,7 +107,7 @@ MO.FUiFrameEventConsole_construct = function FUiFrameEventConsole_construct(){
 // @param po:owner:Object 对象
 // @param pc:process:Function 处理
 //==========================================================
-MO.FUiFrameEventConsole_register = function FUiFrameEventConsole_register(po, pc){
+MO.FDuiFrameEventConsole_register = function FDuiFrameEventConsole_register(po, pc){
    this._events.push(new MO.TEvent(po, null, pc));
 }
 
@@ -117,7 +117,7 @@ MO.FUiFrameEventConsole_register = function FUiFrameEventConsole_register(po, pc
 // @method
 // @param e:event:SEvent 事件对象
 //==========================================================
-MO.FUiFrameEventConsole_push = function FUiFrameEventConsole_push(e){
+MO.FDuiFrameEventConsole_push = function FDuiFrameEventConsole_push(e){
    var o = this;
    var n = MO.Class.name(e)
    if(o._allow){
@@ -143,34 +143,34 @@ MO.FUiFrameEventConsole_push = function FUiFrameEventConsole_push(e){
 //
 // @method
 //==========================================================
-MO.FUiFrameEventConsole_clear = function FUiFrameEventConsole_clear(){
+MO.FDuiFrameEventConsole_clear = function FDuiFrameEventConsole_clear(){
    this._events.clear();
 }
 
 
 
 
-MO.FUiFrameEventConsole_add = function FUiFrameEventConsole_add(owner, proc){
+MO.FDuiFrameEventConsole_add = function FDuiFrameEventConsole_add(owner, proc){
    this._events.push(new MO.TEvent(owner, null, proc));
 }
-MO.FUiFrameEventConsole_allowEvent = function FUiFrameEventConsole_allowEvent(c){
+MO.FDuiFrameEventConsole_allowEvent = function FDuiFrameEventConsole_allowEvent(c){
    this._allows.set(MO.Method.name(c), EBool.True);
 }
 // ------------------------------------------------------------
-MO.FUiFrameEventConsole_skipEvent = function FUiFrameEventConsole_skipEvent(c){
+MO.FDuiFrameEventConsole_skipEvent = function FDuiFrameEventConsole_skipEvent(c){
    this._allows.set(MO.Method.name(c), EBool.False);
 }
 // ------------------------------------------------------------
-MO.FUiFrameEventConsole_allowAll = function FUiFrameEventConsole_allowAll(){
+MO.FDuiFrameEventConsole_allowAll = function FDuiFrameEventConsole_allowAll(){
    this._allow = true;
 }
 // ------------------------------------------------------------
-MO.FUiFrameEventConsole_skipAll = function FUiFrameEventConsole_skipAll(){
+MO.FDuiFrameEventConsole_skipAll = function FDuiFrameEventConsole_skipAll(){
    this._allow = false;
 }
 // ------------------------------------------------------------
 // control, method
-MO.FUiFrameEventConsole_onlyCall = function FUiFrameEventConsole_onlyCall(c, m){
+MO.FDuiFrameEventConsole_onlyCall = function FDuiFrameEventConsole_onlyCall(c, m){
    var o = this;
    o._allow = false;
    m.call(c);

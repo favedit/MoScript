@@ -6,7 +6,7 @@
 // @version 150409
 //==========================================================
 MO.FUiMessageDialog = function FUiMessageDialog(o){
-   o = MO.Class.inherits(this, o, MO.FUiWindow);
+   o = MO.Class.inherits(this, o, MO.FDuiWindow);
    //..........................................................
    // @style
    o._styleMsgPanel     = MO.Class.register(o, new MO.AStyle('_styleMsgPanel'));
@@ -61,7 +61,7 @@ MO.FUiMessageDialog = function FUiMessageDialog(o){
 //==========================================================
 MO.FUiMessageDialog_onBuild = function FUiMessageDialog_onBuild(event){
    var o = this;
-   o.__base.FUiWindow.oeBuild.call(o, e);
+   o.__base.FDuiWindow.oeBuild.call(o, e);
    o.setIcon('Icon');
    // Form (1colx2row)
    //o.hBodyPanel.style.height = 400;
@@ -345,7 +345,7 @@ MO.FUiMessageDialog_loadMessages = function FUiMessageDialog_loadMessages(g){
 // ------------------------------------------------------------
 MO.FUiMessageDialog_show = function FUiMessageDialog_show(){
    var o = this;
-   o.__base.FUiWindow.show.call(o);
+   o.__base.FDuiWindow.show.call(o);
    //o.hDescBody.style.display = 'none';
    o.panel().style.zIndex = RLayer.next(ELayer.Message);
    RWindow.moveCenter(o.panel());
@@ -357,7 +357,7 @@ MO.FUiMessageDialog_show = function FUiMessageDialog_show(){
 // ------------------------------------------------------------
 MO.FUiMessageDialog_hide = function FUiMessageDialog_hide(){
    var o = this;
-   o.__base.FUiWindow.hide.call(o);
+   o.__base.FDuiWindow.hide.call(o);
    // 关闭加载状态
    var f = o._messageArg.argument.form;
    if(RClass.isClass(f, MDataset)){
@@ -369,7 +369,7 @@ MO.FUiMessageDialog_hide = function FUiMessageDialog_hide(){
 // ------------------------------------------------------------
 MO.FUiMessageDialog_dispose = function FUiMessageDialog_dispose(){
    var o = this;
-   o.__base.FUiWindow.dispose.call(o);
+   o.__base.FDuiWindow.dispose.call(o);
    o.hItmeForm = null;
    o.hDescBody = null;
    o.hDescDiv = null;

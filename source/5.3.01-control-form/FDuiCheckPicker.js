@@ -1,8 +1,8 @@
 with(MO){
    // ============================================================
-   // FCheckPicker
+   // FDuiCheckPicker
    // ============================================================
-   MO.FCheckPicker = function FCheckPicker(o){
+   MO.FDuiCheckPicker = function FDuiCheckPicker(o){
       o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescCheckPicker, MDropable);
       /// @style
       o.stIconDropSelect = RClass.register(o, new TStyleIcon('DropSelect'));
@@ -10,21 +10,21 @@ with(MO){
       o.items            = new TItems();
       o.borderStyle      = EUiBorder.RoundDrop;
       // Event
-      o.onBuildEdit      = FCheckPicker_onBuildEdit;
-      o.onEditEnd        = FCheckPicker_onEditEnd;
-      o.onDataKeyDown    = FCheckPicker_onDataKeyDown;
+      o.onBuildEdit      = FDuiCheckPicker_onBuildEdit;
+      o.onEditEnd        = FDuiCheckPicker_onEditEnd;
+      o.onDataKeyDown    = FDuiCheckPicker_onDataKeyDown;
       // Method
-      o.loadConfig       = FCheckPicker_loadConfig;
-      o.formatValue      = FCheckPicker_formatValue;
-      o.validText        = FCheckPicker_validText;
-      o.formatText       = FCheckPicker_formatText;
-      o.refreshStyle     = FCheckPicker_refreshStyle;
-      o.drop             = FCheckPicker_drop;
-      o.dispose          = FCheckPicker_dispose;
+      o.loadConfig       = FDuiCheckPicker_loadConfig;
+      o.formatValue      = FDuiCheckPicker_formatValue;
+      o.validText        = FDuiCheckPicker_validText;
+      o.formatText       = FDuiCheckPicker_formatText;
+      o.refreshStyle     = FDuiCheckPicker_refreshStyle;
+      o.drop             = FDuiCheckPicker_drop;
+      o.dispose          = FDuiCheckPicker_dispose;
       return o;
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_onBuildEdit = function FCheckPicker_onBuildEdit(b){
+   MO.FDuiCheckPicker_onBuildEdit = function FDuiCheckPicker_onBuildEdit(b){
       var o = this;
       // 建立编辑控件
       var h = o.hEdit = RBuilder.appendEdit(b.hPanel, o.style('Edit'));
@@ -34,7 +34,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_onEditEnd = function FCheckPicker_onEditEnd(editor){
+   MO.FDuiCheckPicker_onEditEnd = function FDuiCheckPicker_onEditEnd(editor){
       var o = this;
       RLog.debug(o, 'Begin (editor={1}:{2} value={3})', editor, editor?editor.value():'', o.dataValue);
       if(editor){
@@ -45,7 +45,7 @@ with(MO){
    }
    // ------------------------------------------------------------
    // config
-   MO.FCheckPicker_loadConfig = function FCheckPicker_loadConfig(c){
+   MO.FDuiCheckPicker_loadConfig = function FDuiCheckPicker_loadConfig(c){
       var o = this;
       o.base.FEditControl.loadConfig.call(o, c);
       // Load items
@@ -56,15 +56,15 @@ with(MO){
       return EStatus.Stop;
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_text = function FCheckPicker_text(){
+   MO.FDuiCheckPicker_text = function FDuiCheckPicker_text(){
       return this.hEdit.value;
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_setText = function FCheckPicker_setText(text){
+   MO.FDuiCheckPicker_setText = function FDuiCheckPicker_setText(text){
       this.hEdit.value = text;
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_formatValue = function FCheckPicker_formatValue(text){
+   MO.FDuiCheckPicker_formatValue = function FDuiCheckPicker_formatValue(text){
       var o = this;
       if(!RString.isEmpty(text)){
          ta = RString.split(text, ',');
@@ -89,7 +89,7 @@ with(MO){
    //   return this.items.value(text);
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_validText = function FCheckPicker_validText(text){
+   MO.FDuiCheckPicker_validText = function FDuiCheckPicker_validText(text){
       var o = this;
       if(RString.isEmpty(text)){
          return true;
@@ -97,7 +97,7 @@ with(MO){
       return !RString.isEmpty(o.formatValue(text));
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_formatText = function FCheckPicker_formatText(v){
+   MO.FDuiCheckPicker_formatText = function FDuiCheckPicker_formatText(v){
       var o = this;
       if(!RString.isEmpty(v)){
          va = RString.split(v, ',');
@@ -119,16 +119,16 @@ with(MO){
       //return this.items.label(value);
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_refreshStyle = function FCheckPicker_refreshStyle(){
+   MO.FDuiCheckPicker_refreshStyle = function FDuiCheckPicker_refreshStyle(){
       var o = this;
       o.base.FEditControl.refreshStyle.call(o);
       o.hDrop.src = o.styleIconPath(o._hover ? 'DropSelect' : 'Drop');
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_drop = function FCheckPicker_drop(){
+   MO.FDuiCheckPicker_drop = function FDuiCheckPicker_drop(){
       var o = this;
       if(o.canDrop() && o.canEdit && o.items.count() > 0){
-         var ed = o.editor = RConsole.find(FEditConsole).focus(o, FCheckPickerEditor, o.editRefer);
+         var ed = o.editor = RConsole.find(FEditConsole).focus(o, FDuiCheckPickerEditor, o.editRefer);
          if(ed.linkControl(o)){
             ed.setItems(o.items);
             ed.set(o.reget());
@@ -137,7 +137,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_onDataKeyDown = function FCheckPicker_onDataKeyDown(s, e){
+   MO.FDuiCheckPicker_onDataKeyDown = function FDuiCheckPicker_onDataKeyDown(s, e){
       var o = this;
       o.base.FEditControl.onDataKeyDown.call(o, s, e);
       // 处理按键按下时，自动提示数据的处理
@@ -148,7 +148,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FCheckPicker_dispose = function FCheckPicker_dispose(){
+   MO.FDuiCheckPicker_dispose = function FDuiCheckPicker_dispose(){
       var o = this;
       o.base.FEditControl.dispose.call(o);
       RMemory.freeHtml(o.hEdit);

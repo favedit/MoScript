@@ -6,9 +6,9 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiCellEdit = function FUiCellEdit(o){
-      //o = RClass.inherits(this, o, FUiCellEditControl, MUiFocus);
-      o = RClass.inherits(this, o, FUiCellEditControl);
+   MO.FDuiCellEdit = function FDuiCellEdit(o){
+      //o = RClass.inherits(this, o, FDuiCellEditControl, MUiFocus);
+      o = RClass.inherits(this, o, FDuiCellEditControl);
       //..........................................................
       // @style
       o._styleInput = RClass.register(o, new AStyle('_styleInput'));
@@ -17,17 +17,17 @@ with(MO){
       o._hInput     = null;
       //..........................................................
       // @event
-      o.onBuildEdit = FUiCellEdit_onBuildEdit;
+      o.onBuildEdit = FDuiCellEdit_onBuildEdit;
       //..........................................................
       // @method
-      o.get         = FUiCellEdit_get;
-      o.set         = FUiCellEdit_set;
+      o.get         = FDuiCellEdit_get;
+      o.set         = FDuiCellEdit_set;
       //..........................................................
       // @method
-      //o.buildDrop = FUiCellEdit_buildDrop;
-      //o.setInfo   = FUiCellEdit_setInfo;
-      //o.text      = FUiCellEdit_text;
-      //o.setText   = FUiCellEdit_setText;
+      //o.buildDrop = FDuiCellEdit_buildDrop;
+      //o.setInfo   = FDuiCellEdit_setInfo;
+      //o.text      = FDuiCellEdit_text;
+      //o.setText   = FDuiCellEdit_setText;
       return o;
    }
 
@@ -37,7 +37,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiCellEdit_onBuildEdit = function FUiCellEdit_onBuildEdit(p){
+   MO.FDuiCellEdit_onBuildEdit = function FDuiCellEdit_onBuildEdit(p){
       var o = this;
       var c = o._column;
       // 建立文本输入框
@@ -62,7 +62,7 @@ with(MO){
       //   }
       //}else{
          //if(c._absEdit){
-         //   o.base.FUiCellEditControl.buildEdit.call(o);
+         //   o.base.FDuiCellEditControl.buildEdit.call(o);
          //}else{
          //   var he = o.hEditPanel;
          //   c.linkEvent(o, 'onCellMouseDown', he, c.onCellMouseDown);
@@ -78,8 +78,8 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiCellEdit_get = function FUiCellEdit_get(){
-      var r = o.__base.FUiCellEditControl.get.call(o, p);
+   MO.FDuiCellEdit_get = function FDuiCellEdit_get(){
+      var r = o.__base.FDuiCellEditControl.get.call(o, p);
       // 获得显示
       var h = o._hInput;
       if(h){
@@ -94,9 +94,9 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiCellEdit_set = function FUiCellEdit_set(p){
+   MO.FDuiCellEdit_set = function FDuiCellEdit_set(p){
       var o = this;
-      o.__base.FUiCellEditControl.set.call(o, p);
+      o.__base.FDuiCellEditControl.set.call(o, p);
       // 设置显示
       var h = o._hInput;
       if(h){
@@ -112,14 +112,14 @@ with(MO){
 
 
    //==========================================================
-   MO.FUiCellEdit_buildDrop = function FUiCellEdit_buildDrop(){
+   MO.FDuiCellEdit_buildDrop = function FDuiCellEdit_buildDrop(){
       var o = this;
       var c = o.column;
       if(!RString.isEmpty(c.lovRefer)){
          var hdp = o.hDropPanel;
          hdp.align = 'right';
          hdp.style.paddingRight = 2;
-         var hli = o.hLovImage = RBuilder.appendIcon(hdp, 'ctl.FUiCellEdit_Lov', null, 16, 16);
+         var hli = o.hLovImage = RBuilder.appendIcon(hdp, 'ctl.FDuiCellEdit_Lov', null, 16, 16);
          hli.style.borderLeft='1 solid #CCCCCC';
          hli.style.cursor = 'hand';
          c.linkEvent(o, 'onListClick', hli);
@@ -132,9 +132,9 @@ with(MO){
    // @method
    // @param f:info:TControlInfo 控件信息
    //==========================================================
-   MO.FUiCellEdit_setInfo = function FUiCellEdit_setInfo(f){
+   MO.FDuiCellEdit_setInfo = function FDuiCellEdit_setInfo(f){
       var o = this;
-      o.base.FUiCellEditControl.setInfo.call(o, f);
+      o.base.FDuiCellEditControl.setInfo.call(o, f);
       var d = o.column;
       var m = d.iconMap;
       var hi = o.hIcon;
@@ -155,7 +155,7 @@ with(MO){
    // @method
    // @return String 文本内容
    //==========================================================
-   MO.FUiCellEdit_text = function FUiCellEdit_text(){
+   MO.FDuiCellEdit_text = function FDuiCellEdit_text(){
       var o = this;
       var c = o.column;
       if(c.canZoom()){
@@ -174,7 +174,7 @@ with(MO){
    // @method
    // @param t:text:String 文本内容
    //==========================================================
-   MO.FUiCellEdit_setText = function FUiCellEdit_setText(t){
+   MO.FDuiCellEdit_setText = function FDuiCellEdit_setText(t){
       var o = this;
       var c = o.column;
       if(c.canZoom()){

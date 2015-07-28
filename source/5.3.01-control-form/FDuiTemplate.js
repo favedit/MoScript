@@ -15,8 +15,8 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiTemplate = function FUiTemplate(o){
-      o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit, MListenerDataChanged);
+   MO.FDuiTemplate = function FDuiTemplate(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MPropertyEdit, MListenerDataChanged);
       //..........................................................
       // @property
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -34,18 +34,18 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiTemplate_onBuildEditValue;
-      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiTemplate_onInputEdit);
+      o.onBuildEditValue = FDuiTemplate_onBuildEditValue;
+      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiTemplate_onInputEdit);
       //..........................................................
       // @method
-      o.construct        = FUiTemplate_construct;
+      o.construct        = FDuiTemplate_construct;
       // @method
-      o.formatDisplay    = FUiTemplate_formatDisplay;
-      o.formatValue      = FUiTemplate_formatValue;
+      o.formatDisplay    = FDuiTemplate_formatDisplay;
+      o.formatValue      = FDuiTemplate_formatValue;
       // @method
-      o.get              = FUiTemplate_get;
-      o.set              = FUiTemplate_set;
-      o.refreshValue     = FUiTemplate_refreshValue;
+      o.get              = FDuiTemplate_get;
+      o.set              = FDuiTemplate_set;
+      o.refreshValue     = FDuiTemplate_refreshValue;
       return o;
    }
 
@@ -55,7 +55,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiTemplate_onBuildEditValue = function FUiTemplate_onBuildEditValue(p){
+   MO.FDuiTemplate_onBuildEditValue = function FDuiTemplate_onBuildEditValue(p){
       var o = this;
       var hp = o._hValuePanel;
       hp.className = o.styleName('ValuePanel');
@@ -84,7 +84,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiTemplate_onInputEdit = function FUiTemplate_onInputEdit(p){
+   MO.FDuiTemplate_onInputEdit = function FDuiTemplate_onInputEdit(p){
       var o = this;
       // 设置滑动栏
       var v = o._hInput.value;
@@ -97,9 +97,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTemplate_construct = function FUiTemplate_construct(){
+   MO.FDuiTemplate_construct = function FDuiTemplate_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
    }
 
@@ -110,7 +110,7 @@ with(MO){
    // @param p:value:String 数据
    // @return 内容
    //==========================================================
-   MO.FUiTemplate_formatDisplay = function FUiTemplate_formatDisplay(p){
+   MO.FDuiTemplate_formatDisplay = function FDuiTemplate_formatDisplay(p){
       var o = this;
       var r = RString.nvl(p);
       //if(ECase.Upper == o.editCase){
@@ -129,7 +129,7 @@ with(MO){
    // @param p:value:String 内容
    // @return 数据
    //==========================================================
-   MO.FUiTemplate_formatValue = function FUiTemplate_formatValue(p){
+   MO.FDuiTemplate_formatValue = function FDuiTemplate_formatValue(p){
       return p;
    }
 
@@ -139,9 +139,9 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiTemplate_get = function FUiTemplate_get(){
+   MO.FDuiTemplate_get = function FDuiTemplate_get(){
       var o = this;
-      var r = o.__base.FUiEditControl.get.call(o);
+      var r = o.__base.FDuiEditControl.get.call(o);
       // 获得显示
       var r = o._hInput.value;
       return r;
@@ -153,9 +153,9 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiTemplate_set = function FUiTemplate_set(p){
+   MO.FDuiTemplate_set = function FDuiTemplate_set(p){
       var o = this;
-      o.__base.FUiEditControl.set.call(o, p);
+      o.__base.FDuiEditControl.set.call(o, p);
       // 设置显示
       o._hInput.value = RString.nvl(p);
       //o.finded = v;
@@ -169,7 +169,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTemplate_refreshValue = function FUiTemplate_refreshValue(){
+   MO.FDuiTemplate_refreshValue = function FDuiTemplate_refreshValue(){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);

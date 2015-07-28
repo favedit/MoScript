@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSolutionMenuBar = function FDsSolutionMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @property
       o._frameName      = 'resource.private.solution.MenuBar';
@@ -39,7 +39,7 @@ with(MO){
    //==========================================================
    MO.FDsSolutionMenuBar_onBuilded = function FDsSolutionMenuBar_onBuilded(p){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, p);
+      o.__base.FDuiMenuBar.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       o._controlCreateButton.addClickListener(o, o.onCreateClick);
@@ -54,7 +54,7 @@ with(MO){
    //==========================================================
    MO.FDsSolutionMenuBar_onCreateClick = function FDsSolutionMenuBar_onCreateClick(event){
       var o = this;
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsSolutionProjectDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsSolutionProjectDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog.showPosition(EUiPosition.Center);
@@ -124,7 +124,7 @@ with(MO){
    MO.FDsSolutionMenuBar_construct = function FDsSolutionMenuBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
 
    //==========================================================
@@ -135,6 +135,6 @@ with(MO){
    MO.FDsSolutionMenuBar_dispose = function FDsSolutionMenuBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }

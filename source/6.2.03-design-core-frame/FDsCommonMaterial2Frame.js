@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsCommonMaterial2Frame = function FDsCommonMaterial2Frame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._activeSpace              = null;
@@ -38,7 +38,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonMaterial2Frame_onBuilded = function FDsCommonMaterial2Frame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       // 关联对象
       o._controlOptionView.addDataChangedListener(o, o.onDataChanged);
       o._controlOptionNormalInvert.addDataChangedListener(o, o.onDataChanged);
@@ -88,7 +88,7 @@ with(MO){
    MO.FDsCommonMaterial2Frame_construct = function FDsCommonMaterial2Frame_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
 
    //==========================================================
@@ -128,6 +128,6 @@ with(MO){
    MO.FDsCommonMaterial2Frame_dispose = function FDsCommonMaterial2Frame_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }

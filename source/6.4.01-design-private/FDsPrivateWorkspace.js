@@ -89,7 +89,7 @@ with(MO){
    // <T>根据名称获得属性页面。</T>
    //
    // @method
-   // @return FUiFrame 页面
+   // @return FDuiFrame 页面
    //==========================================================
    MO.FDsPrivateWorkspace_selectFrameSet = function FDsPrivateWorkspace_selectFrameSet(name, guid){
       var o = this;
@@ -102,7 +102,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSolutionFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -112,7 +112,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -122,7 +122,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -132,7 +132,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -142,7 +142,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -152,7 +152,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -162,7 +162,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -172,7 +172,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;

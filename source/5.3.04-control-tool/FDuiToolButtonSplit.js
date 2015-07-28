@@ -6,14 +6,14 @@ with(MO){
    // @author maocy
    // @history 150203
    //==========================================================
-   MO.FUiToolButtonSplit = function FUiToolButtonSplit(o){
-      o = RClass.inherits(this, o, FUiToolButton, MUiToolButton);
+   MO.FDuiToolButtonSplit = function FDuiToolButtonSplit(o){
+      o = RClass.inherits(this, o, FDuiToolButton, MDuiToolButton);
       //..........................................................
       // @style
       o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));
       //..........................................................
       // @event
-      o.onBuild     = FUiToolButtonSplit_onBuild;
+      o.onBuild     = FDuiToolButtonSplit_onBuild;
       return o;
    }
 
@@ -23,7 +23,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiToolButtonSplit_onBuild = function FUiToolButtonSplit_onBuild(p){
+   MO.FDuiToolButtonSplit_onBuild = function FDuiToolButtonSplit_onBuild(p){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, p);
       o._hPanel.className = o.styleName('Panel');

@@ -5,8 +5,8 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FUiToolButtonText = function FUiToolButtonText(o){
-      o = RClass.inherits(this, o, FUiToolButton);
+   MO.FDuiToolButtonText = function FDuiToolButtonText(o){
+      o = RClass.inherits(this, o, FDuiToolButton);
       return o;
    }
 }

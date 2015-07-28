@@ -13,7 +13,7 @@ with(MO){
    // @author maocy
    // @history 150224
    //==========================================================
-   MO.FUiListViewItem = function FUiListViewItem(o){
+   MO.FDuiListViewItem = function FDuiListViewItem(o){
       o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @style
@@ -42,19 +42,19 @@ with(MO){
       o._hLabel         = null;
       //..........................................................
       // @event
-      o.onBuildPanel    = FUiListViewItem_onBuildPanel;
-      o.onBuild         = FUiListViewItem_onBuild;
-      o.onEnter         = FUiListViewItem_onEnter;
-      o.onLeave         = FUiListViewItem_onLeave;
-      o.onClick         = RClass.register(o, new AEventClick('onClick'), FUiListViewItem_onClick);
-      o.onDoubleClick   = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiListViewItem_onDoubleClick);
+      o.onBuildPanel    = FDuiListViewItem_onBuildPanel;
+      o.onBuild         = FDuiListViewItem_onBuild;
+      o.onEnter         = FDuiListViewItem_onEnter;
+      o.onLeave         = FDuiListViewItem_onLeave;
+      o.onClick         = RClass.register(o, new AEventClick('onClick'), FDuiListViewItem_onClick);
+      o.onDoubleClick   = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FDuiListViewItem_onDoubleClick);
       //..........................................................
       // @method
-      o.label           = FUiListViewItem_label;
-      o.setLabel        = FUiListViewItem_setLabel;
-      o.setChecked      = FUiListViewItem_setChecked;
+      o.label           = FDuiListViewItem_label;
+      o.setLabel        = FDuiListViewItem_setLabel;
+      o.setChecked      = FDuiListViewItem_setChecked;
       // @method
-      o.dispose         = FUiListViewItem_dispose;
+      o.dispose         = FDuiListViewItem_dispose;
       return o;
    }
 
@@ -64,7 +64,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiListViewItem_onBuildPanel = function FUiListViewItem_onBuildPanel(p){
+   MO.FDuiListViewItem_onBuildPanel = function FDuiListViewItem_onBuildPanel(p){
       var o = this;
       // 建立编辑控件
       o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
@@ -76,7 +76,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiListViewItem_onBuild = function FUiListViewItem_onBuild(p){
+   MO.FDuiListViewItem_onBuild = function FDuiListViewItem_onBuild(p){
       var o = this;
       // 建立控件
       o.__base.FDuiControl.onBuild.call(o, p);
@@ -110,7 +110,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiListViewItem_onEnter = function FUiListViewItem_onEnter(){
+   MO.FDuiListViewItem_onEnter = function FDuiListViewItem_onEnter(){
       var o = this;
       o.__base.FDuiControl.onEnter.call(o);
       o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
@@ -121,7 +121,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiListViewItem_onLeave = function FUiListViewItem_onLeave(){
+   MO.FDuiListViewItem_onLeave = function FDuiListViewItem_onLeave(){
       var o = this;
       o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
       o.__base.FDuiControl.onLeave.call(o);
@@ -133,7 +133,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件信息
    //==========================================================
-   MO.FUiListViewItem_onClick = function FUiListViewItem_onClick(event){
+   MO.FDuiListViewItem_onClick = function FDuiListViewItem_onClick(event){
       var o = this;
       if(o._checked){
          o._parent.doDoubleClickItem(o);
@@ -148,7 +148,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件信息
    //==========================================================
-   MO.FUiListViewItem_onDoubleClick = function FUiListViewItem_onDoubleClick(event){
+   MO.FDuiListViewItem_onDoubleClick = function FDuiListViewItem_onDoubleClick(event){
       var o = this;
       o._parent.doDoubleClickItem(o);
    }
@@ -159,7 +159,7 @@ with(MO){
    // @method
    // @return String 标签内容
    //==========================================================
-   MO.FUiListViewItem_label = function FUiListViewItem_label(p){
+   MO.FDuiListViewItem_label = function FDuiListViewItem_label(p){
       return this._label;
    }
 
@@ -169,7 +169,7 @@ with(MO){
    // @method
    // @param p:value:String 标签内容
    //==========================================================
-   MO.FUiListViewItem_setLabel = function FUiListViewItem_setLabel(p){
+   MO.FDuiListViewItem_setLabel = function FDuiListViewItem_setLabel(p){
       var o = this;
       o._label = p;
       o._hLabel.innerHTML = RString.nvl(p);
@@ -181,7 +181,7 @@ with(MO){
    // @method
    // @param checked:Boolean 是否选中
    //==========================================================
-   MO.FUiListViewItem_setChecked = function FUiListViewItem_setChecked(checked){
+   MO.FDuiListViewItem_setChecked = function FDuiListViewItem_setChecked(checked){
       var o = this;
       o._checked = checked;
       if(o._hIcon){
@@ -197,7 +197,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiListViewItem_dispose = function FUiListViewItem_dispose(){
+   MO.FDuiListViewItem_dispose = function FDuiListViewItem_dispose(){
       var o = this;
       o._hPanel = RHtml.free(o._hPanel);
       o._hBorder = RHtml.free(o._hBorder);

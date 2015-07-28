@@ -7,7 +7,7 @@ with(MO){
    // @history 150416
    //==========================================================
    MO.FDsTemplateMenuBar = function FDsTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @attribute
       o._controlSave           = null;
@@ -101,7 +101,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -121,7 +121,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonDisplayDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -141,7 +141,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonDisplayDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setContentCode('');
@@ -157,7 +157,7 @@ with(MO){
    MO.FDsTemplateMenuBar_construct = function FDsTemplateMenuBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
 
    //==========================================================
@@ -168,6 +168,6 @@ with(MO){
    MO.FDsTemplateMenuBar_dispose = function FDsTemplateMenuBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }

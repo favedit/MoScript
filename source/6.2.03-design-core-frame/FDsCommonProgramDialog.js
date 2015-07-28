@@ -7,7 +7,7 @@ with(MO){
    // @history 150508
    //==========================================================
    MO.FDsCommonProgramDialog = function FDsCommonProgramDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.ProgramDialog';
@@ -47,7 +47,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonProgramDialog_onBuilded = function FDsCommonProgramDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
@@ -73,7 +73,7 @@ with(MO){
    MO.FDsCommonProgramDialog_construct = function FDsCommonProgramDialog_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
 
    //==========================================================
@@ -120,6 +120,6 @@ with(MO){
    MO.FDsCommonProgramDialog_dispose = function FDsCommonProgramDialog_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

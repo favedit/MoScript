@@ -45,7 +45,7 @@ MO.FDuiWorkspace_onBuildPanel = function FDuiWorkspace_onBuildPanel(event){
 //==========================================================
 MO.FDuiWorkspace_appendChild = function FDuiWorkspace_appendChild(control){
    var o = this;
-   if(MO.Class.isClass(control, MO.FUiFrameSet)){
+   if(MO.Class.isClass(control, MO.FDuiFrameSet)){
       o._hPanel.appendChild(control._hPanel);
    }else{
       throw new MO.TError(o, 'Unknown child type.');

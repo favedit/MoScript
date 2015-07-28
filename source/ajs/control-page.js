@@ -1,5 +1,5 @@
 with(MO){
-   MO.FUiPageControl = function FUiPageControl(o){
+   MO.FDuiPageControl = function FDuiPageControl(o){
       o = RClass.inherits(this, o, FDuiContainer);
       o._sizeCd          = EUiSize.Horizontal;
       o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
@@ -17,24 +17,24 @@ with(MO){
       o._hLine           = null;
       o._hBottom         = null;
       o._hSheets         = null;
-      o.onBuildPanel     = FUiPageControl_onBuildPanel;
-      o.onBuild          = FUiPageControl_onBuild;
-      o.oeRefresh        = FUiPageControl_oeRefresh;
-      o.construct        = FUiPageControl_construct;
-      o.appendChild      = FUiPageControl_appendChild;
-      o.select           = FUiPageControl_select;
-      o.selectByIndex    = FUiPageControl_selectByIndex;
-      o.sheet            = FUiPageControl_sheet;
-      o.push             = FUiPageControl_push;
-      o.dispose          = FUiPageControl_dispose;
+      o.onBuildPanel     = FDuiPageControl_onBuildPanel;
+      o.onBuild          = FDuiPageControl_onBuild;
+      o.oeRefresh        = FDuiPageControl_oeRefresh;
+      o.construct        = FDuiPageControl_construct;
+      o.appendChild      = FDuiPageControl_appendChild;
+      o.select           = FDuiPageControl_select;
+      o.selectByIndex    = FDuiPageControl_selectByIndex;
+      o.sheet            = FDuiPageControl_sheet;
+      o.push             = FDuiPageControl_push;
+      o.dispose          = FDuiPageControl_dispose;
       return o;
    }
-   MO.FUiPageControl_onBuildPanel = function FUiPageControl_onBuildPanel(event){
+   MO.FDuiPageControl_onBuildPanel = function FDuiPageControl_onBuildPanel(event){
       var o = this;
       var h = o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
       h.width = '100%';
    }
-   MO.FUiPageControl_onBuild = function FUiPageControl_onBuild(event){
+   MO.FDuiPageControl_onBuild = function FDuiPageControl_onBuild(event){
       var o = this;
       o.__base.FDuiContainer.onBuild.call(o, event);
       var h = o._hPanel;
@@ -50,13 +50,13 @@ with(MO){
       hc.width = 12;
       o._hFirst = RBuilder.appendTableCell(o._hLine);
       var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
-      hbc.className = o.styleName('Bottom', FUiPageSheet);
+      hbc.className = o.styleName('Bottom', FDuiPageSheet);
       var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
       o._hLast = RBuilder.appendTableCell(o._hLine);
       var hc = o._hLastBottom = RBuilder.appendTableCell(o._hBottom);
-      hc.className = o.styleName('Bottom', FUiPageSheet);
+      hc.className = o.styleName('Bottom', FDuiPageSheet);
    }
-   MO.FUiPageControl_oeRefresh = function FUiPageControl_oeRefresh(event){
+   MO.FDuiPageControl_oeRefresh = function FDuiPageControl_oeRefresh(event){
       var o = this;
       var r = o.__base.FDuiContainer.oeRefresh.call(o, event);
       if(event.isBefore()){
@@ -73,14 +73,14 @@ with(MO){
       }
       return r;
    }
-   MO.FUiPageControl_construct = function FUiPageControl_construct(){
+   MO.FDuiPageControl_construct = function FDuiPageControl_construct(){
       var o = this;
       o.__base.FDuiContainer.construct.call(o);
       o._sheets = new TDictionary();
    }
-   MO.FUiPageControl_appendChild = function FUiPageControl_appendChild(control){
+   MO.FDuiPageControl_appendChild = function FDuiPageControl_appendChild(control){
       var o = this;
-      if(RClass.isClass(control, FUiPageSheet)){
+      if(RClass.isClass(control, FDuiPageSheet)){
          var ci = o._hLast.cellIndex;
          var hc = control._hTopL = RBuilder.appendTableCell(o._hTop, null, ci);
          hc.width = 1;
@@ -128,10 +128,10 @@ with(MO){
          o.selectByIndex(0);
       }
    }
-   MO.FUiPageControl_sheet = function FUiPageControl_sheet(name){
+   MO.FDuiPageControl_sheet = function FDuiPageControl_sheet(name){
       return this._sheets.get(name);
    }
-   MO.FUiPageControl_select = function FUiPageControl_select(sheet){
+   MO.FDuiPageControl_select = function FDuiPageControl_select(sheet){
       var o = this;
       o._activeSheet = sheet;
       var sheets = o._sheets;
@@ -144,16 +144,16 @@ with(MO){
       }
       sheet.select(true);
    }
-   MO.FUiPageControl_selectByIndex = function FUiPageControl_selectByIndex(n){
+   MO.FDuiPageControl_selectByIndex = function FDuiPageControl_selectByIndex(n){
       var o = this;
       var sheet = o._sheets.value(n);
       if(sheet){
          o.select(sheet);
       }
    }
-   MO.FUiPageControl_push = function FUiPageControl_push(component){
+   MO.FDuiPageControl_push = function FDuiPageControl_push(component){
       var o = this;
-      if(RClass.isClass(component, FUiPageSheet)){
+      if(RClass.isClass(component, FDuiPageSheet)){
          var sheets = o._sheets;
          component._pageControl = o;
          component._index = sheets.count();
@@ -161,14 +161,14 @@ with(MO){
       }
       o.__base.FDuiContainer.push.call(o, component);
    }
-   MO.FUiPageControl_dispose = function FUiPageControl_dispose(){
+   MO.FDuiPageControl_dispose = function FDuiPageControl_dispose(){
       var o = this;
       o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
-   MO.FUiPageSheet = function FUiPageSheet(o){
-      o = RClass.inherits(this, o, FUiLayout);
+   MO.FDuiPageSheet = function FDuiPageSheet(o){
+      o = RClass.inherits(this, o, FDuiLayout);
       o._icon              = RClass.register(o, new APtyString('_icon'));
       o._formName          = RClass.register(o, new APtyString('_formName'));
       o._formLink          = RClass.register(o, new APtyString('_formLink'));
@@ -206,19 +206,19 @@ with(MO){
       o._hBottom           = null;
       o._hBottomR          = null;
       o._hRight            = null;
-      o.onBuildPanel       = FUiPageSheet_onBuildPanel;
-      o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiPageSheet_onButtonEnter);
-      o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiPageSheet_onButtonLeave);
-      o.onHeadMouseDown    = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FUiPageSheet_onHeadMouseDown);
-      o.construct          = FUiPageSheet_construct;
-      o.innerSelect        = FUiPageSheet_innerSelect;
-      o.select             = FUiPageSheet_select;
-      o.setVisible         = FUiPageSheet_setVisible;
-      o.dispose            = FUiPageSheet_dispose
-      o.innerDump          = FUiPageSheet_innerDump;
+      o.onBuildPanel       = FDuiPageSheet_onBuildPanel;
+      o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiPageSheet_onButtonEnter);
+      o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiPageSheet_onButtonLeave);
+      o.onHeadMouseDown    = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FDuiPageSheet_onHeadMouseDown);
+      o.construct          = FDuiPageSheet_construct;
+      o.innerSelect        = FDuiPageSheet_innerSelect;
+      o.select             = FDuiPageSheet_select;
+      o.setVisible         = FDuiPageSheet_setVisible;
+      o.dispose            = FDuiPageSheet_dispose
+      o.innerDump          = FDuiPageSheet_innerDump;
       return o;
    }
-   MO.FUiPageSheet_onBuildPanel = function FUiPageSheet_onBuildPanel(event){
+   MO.FDuiPageSheet_onBuildPanel = function FDuiPageSheet_onBuildPanel(event){
       var o = this;
       var hPanel = o._hPanel = o._hContainer = RBuilder.createDiv(event, o.styleName('Panel'));
       hPanel.style.width = '100%';
@@ -227,28 +227,28 @@ with(MO){
       hForm.style.width = '100%';
       hForm.style.height = '100%';
    }
-   MO.FUiPageSheet_onButtonEnter = function FUiPageSheet_onButtonEnter(event){
+   MO.FDuiPageSheet_onButtonEnter = function FDuiPageSheet_onButtonEnter(event){
       var o = this;
       if(!o._selected){
          o._hButton.className = o.styleName('ButtonHover');
       }
    }
-   MO.FUiPageSheet_onButtonLeave = function FUiPageSheet_onButtonLeave(event){
+   MO.FDuiPageSheet_onButtonLeave = function FDuiPageSheet_onButtonLeave(event){
       var o = this;
       if(!o._selected){
          o._hButton.className = o.styleName('Button');
       }
    }
-   MO.FUiPageSheet_onHeadMouseDown = function FUiPageSheet_onHeadMouseDown(event){
+   MO.FDuiPageSheet_onHeadMouseDown = function FDuiPageSheet_onHeadMouseDown(event){
       var o = this;
       o._parent.select(o);
    }
-   MO.FUiPageSheet_construct = function FUiPageSheet_construct(){
+   MO.FDuiPageSheet_construct = function FDuiPageSheet_construct(){
       var o = this;
-      o.__base.FUiLayout.construct.call(o);
+      o.__base.FDuiLayout.construct.call(o);
       o.lsnsSelect = new TListeners();
    }
-   MO.FUiPageSheet_innerSelect = function FUiPageSheet_innerSelect(flag){
+   MO.FDuiPageSheet_innerSelect = function FDuiPageSheet_innerSelect(flag){
       var o = this;
       var b = o._parent;
       if(flag && !o._hasBuilded){
@@ -271,7 +271,7 @@ with(MO){
       o._hRight.className = flag ? o.styleName('RightSelect') : (prior ? o.styleName('RightPrior') : o.styleName('Right'));
       RHtml.visibleSet(o._hForm, flag);
    }
-   MO.FUiPageSheet_select = function FUiPageSheet_select(flag){
+   MO.FDuiPageSheet_select = function FDuiPageSheet_select(flag){
       var o = this;
       o.innerSelect(flag);
       if(flag){
@@ -279,11 +279,11 @@ with(MO){
          o.psResize();
       }
    }
-   MO.FUiPageSheet_setVisible = function FUiPageSheet_setVisible(flag){
+   MO.FDuiPageSheet_setVisible = function FDuiPageSheet_setVisible(flag){
       var o = this;
       RHtml.displaySet(o._hPanel, flag);
    }
-   MO.FUiPageSheet_dispose = function FUiPageSheet_dispose(){
+   MO.FDuiPageSheet_dispose = function FDuiPageSheet_dispose(){
       var o = this;
       o._hButton = RMemory.free(o._hButton);
       o._hTop = RMemory.free(o._hTop);
@@ -292,9 +292,9 @@ with(MO){
       o._hBottom = RMemory.free(o._hBottom);
       o._hBottomR = RMemory.free(o._hBottomR);
       o._hRight = RMemory.free(o._hRight);
-      o.__base.FUiLayout.dispose.call(o);
+      o.__base.FDuiLayout.dispose.call(o);
    }
-   MO.FUiPageSheet_innerDump = function FUiPageSheet_innerDump(s, l){
+   MO.FDuiPageSheet_innerDump = function FDuiPageSheet_innerDump(s, l){
       var o = this;
       s.append(l, RClass.dump(o), ' [');
       s.append('name=', o._name, ', ');
@@ -304,7 +304,7 @@ with(MO){
    }
 }
 with(MO){
-   MO.FUiTabBar = function FUiTabBar(o){
+   MO.FDuiTabBar = function FDuiTabBar(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       o._sizeCd          = EUiSize.Horizontal;
       o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
@@ -322,26 +322,26 @@ with(MO){
       o._hLine            = null;
       o._hBottom          = null;
       o._hSheets          = null;
-      o.onBuildPanel     = FUiTabBar_onBuildPanel;
-      o.onBuild          = FUiTabBar_onBuild;
-      o.oeRefresh        = FUiTabBar_oeRefresh;
-      o.construct        = FUiTabBar_construct;
-      o.activeButton      = FUiTabBar_activeButton;
-      o.appendChild      = FUiTabBar_appendChild;
-      o.select           = FUiTabBar_select;
-      o.selectByIndex    = FUiTabBar_selectByIndex;
-      o.selectByName     = FUiTabBar_selectByName;
-      o.sheet            = FUiTabBar_sheet;
-      o.push             = FUiTabBar_push;
-      o.dispose          = FUiTabBar_dispose;
+      o.onBuildPanel     = FDuiTabBar_onBuildPanel;
+      o.onBuild          = FDuiTabBar_onBuild;
+      o.oeRefresh        = FDuiTabBar_oeRefresh;
+      o.construct        = FDuiTabBar_construct;
+      o.activeButton      = FDuiTabBar_activeButton;
+      o.appendChild      = FDuiTabBar_appendChild;
+      o.select           = FDuiTabBar_select;
+      o.selectByIndex    = FDuiTabBar_selectByIndex;
+      o.selectByName     = FDuiTabBar_selectByName;
+      o.sheet            = FDuiTabBar_sheet;
+      o.push             = FDuiTabBar_push;
+      o.dispose          = FDuiTabBar_dispose;
       return o;
    }
-   MO.FUiTabBar_onBuildPanel = function FUiTabBar_onBuildPanel(p){
+   MO.FDuiTabBar_onBuildPanel = function FDuiTabBar_onBuildPanel(p){
       var o = this;
       var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
       h.width = '100%';
    }
-   MO.FUiTabBar_onBuild = function FUiTabBar_onBuild(p){
+   MO.FDuiTabBar_onBuild = function FDuiTabBar_onBuild(p){
       var o = this;
       o.__base.FDuiContainer.onBuild.call(o, p);
       var h = o._hPanel;
@@ -358,13 +358,13 @@ with(MO){
       hc.width = 20;
       o._hFirst = RBuilder.appendTableCell(o._hLine);
       var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
-      hbc.className = o.styleName('Bottom', FUiTabButton);
+      hbc.className = o.styleName('Bottom', FDuiTabButton);
       var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
       o._hLast = RBuilder.appendTableCell(o._hLine);
       var hc = o._hLastBottom = RBuilder.appendTableCell(o._hBottom);
-      hc.className = o.styleName('Bottom', FUiTabButton);
+      hc.className = o.styleName('Bottom', FDuiTabButton);
    }
-   MO.FUiTabBar_oeRefresh = function FUiTabBar_oeRefresh(p){
+   MO.FDuiTabBar_oeRefresh = function FDuiTabBar_oeRefresh(p){
       var o = this;
       var r = o.__base.FDuiContainer.oeRefresh.call(o, p);
       if(p.isBefore()){
@@ -381,17 +381,17 @@ with(MO){
       }
       return r;
    }
-   MO.FUiTabBar_construct = function FUiTabBar_construct(){
+   MO.FDuiTabBar_construct = function FDuiTabBar_construct(){
       var o = this;
       o.__base.FDuiContainer.construct.call(o);
       o._buttons = new TDictionary();
    }
-   MO.FUiTabBar_activeButton = function FUiTabBar_activeButton(){
+   MO.FDuiTabBar_activeButton = function FDuiTabBar_activeButton(){
       return this._activeButton;
    }
-   MO.FUiTabBar_appendChild = function FUiTabBar_appendChild(p){
+   MO.FDuiTabBar_appendChild = function FDuiTabBar_appendChild(p){
       var o = this;
-      if(RClass.isClass(p, FUiTabButton)){
+      if(RClass.isClass(p, FDuiTabButton)){
          var ci = o._hLast.cellIndex;
          var hc = p._hTopL = RBuilder.appendTableCell(o._hTop, null, ci);
          hc.width = 1;
@@ -431,10 +431,10 @@ with(MO){
          o.selectByIndex(0);
       }
    }
-   MO.FUiTabBar_sheet = function FUiTabBar_sheet(p){
+   MO.FDuiTabBar_sheet = function FDuiTabBar_sheet(p){
       return this._buttons.get(p);
    }
-   MO.FUiTabBar_select = function FUiTabBar_select(p){
+   MO.FDuiTabBar_select = function FDuiTabBar_select(p){
       var o = this;
       var ss = o._buttons;
       var c = ss.count();
@@ -447,36 +447,36 @@ with(MO){
       }
       p.select(true);
    }
-   MO.FUiTabBar_selectByIndex = function FUiTabBar_selectByIndex(index){
+   MO.FDuiTabBar_selectByIndex = function FDuiTabBar_selectByIndex(index){
       var o = this;
       var sheet = o._buttons.value(index);
       if(sheet){
          o.select(sheet);
       }
    }
-   MO.FUiTabBar_selectByName = function FUiTabBar_selectByName(name){
+   MO.FDuiTabBar_selectByName = function FDuiTabBar_selectByName(name){
       var o = this;
       var sheet = o.findControl(name);
       if(sheet){
          o.select(sheet);
       }
    }
-   MO.FUiTabBar_push = function FUiTabBar_push(component){
+   MO.FDuiTabBar_push = function FDuiTabBar_push(component){
       var o = this;
-      if(RClass.isClass(component, FUiTabButton)){
+      if(RClass.isClass(component, FDuiTabButton)){
          var buttons = o._buttons;
          component._index = buttons.count();
          buttons.set(component.name(), component);
       }
       o.__base.FDuiContainer.push.call(o, component);
    }
-   MO.FUiTabBar_dispose = function FUiTabBar_dispose(){
+   MO.FDuiTabBar_dispose = function FDuiTabBar_dispose(){
       var o = this;
       o.__base.FDuiContainer.dispose.call(o);
    }
 }
 with(MO){
-   MO.FUiTabButton = function FUiTabButton(o){
+   MO.FDuiTabButton = function FDuiTabButton(o){
       o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       o._icon              = RClass.register(o, new APtyString('_icon'));
       o._formName          = RClass.register(o, new APtyString('_formName'));
@@ -514,46 +514,46 @@ with(MO){
       o._hBottom           = null;
       o._hBottomR          = null;
       o._hRight            = null;
-      o.onBuildPanel       = FUiTabButton_onBuildPanel;
-      o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiTabButton_onButtonEnter);
-      o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiTabButton_onButtonLeave);
-      o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FUiTabButton_onButtonClick);
-      o.construct          = FUiTabButton_construct;
-      o.innerSelect        = FUiTabButton_innerSelect;
-      o.select             = FUiTabButton_select;
-      o.setVisible         = FUiTabButton_setVisible;
-      o.doClick            = FUiTabButton_doClick;
-      o.dispose            = FUiTabButton_dispose
-      o.innerDump          = FUiTabButton_innerDump;
+      o.onBuildPanel       = FDuiTabButton_onBuildPanel;
+      o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiTabButton_onButtonEnter);
+      o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiTabButton_onButtonLeave);
+      o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FDuiTabButton_onButtonClick);
+      o.construct          = FDuiTabButton_construct;
+      o.innerSelect        = FDuiTabButton_innerSelect;
+      o.select             = FDuiTabButton_select;
+      o.setVisible         = FDuiTabButton_setVisible;
+      o.doClick            = FDuiTabButton_doClick;
+      o.dispose            = FDuiTabButton_dispose
+      o.innerDump          = FDuiTabButton_innerDump;
       return o;
    }
-   MO.FUiTabButton_onBuildPanel = function FUiTabButton_onBuildPanel(p){
+   MO.FDuiTabButton_onBuildPanel = function FDuiTabButton_onBuildPanel(p){
       var o = this;
       var hp = o._hContainer = o._hPanel = RBuilder.createDiv(p);
       hp.width = '100%';
       hp.height = '100%';
    }
-   MO.FUiTabButton_onButtonEnter = function FUiTabButton_onButtonEnter(p){
+   MO.FDuiTabButton_onButtonEnter = function FDuiTabButton_onButtonEnter(p){
       var o = this;
       if(!o._selected){
          o._hButton.className = o.styleName('ButtonHover');
       }
    }
-   MO.FUiTabButton_onButtonLeave = function FUiTabButton_onButtonLeave(p){
+   MO.FDuiTabButton_onButtonLeave = function FDuiTabButton_onButtonLeave(p){
       var o = this;
       if(!o._selected){
          o._hButton.className = o.styleName('Button');
       }
    }
-   MO.FUiTabButton_onButtonClick = function FUiTabButton_onButtonClick(p){
+   MO.FDuiTabButton_onButtonClick = function FDuiTabButton_onButtonClick(p){
       this.doClick();
    }
-   MO.FUiTabButton_construct = function FUiTabButton_construct(){
+   MO.FDuiTabButton_construct = function FDuiTabButton_construct(){
       var o = this;
       o.__base.FDuiControl.construct.call(o);
       o.lsnsSelect = new TListeners();
    }
-   MO.FUiTabButton_innerSelect = function FUiTabButton_innerSelect(p){
+   MO.FDuiTabButton_innerSelect = function FDuiTabButton_innerSelect(p){
       var o = this;
       var b = o._parent;
       if(p && !o._hasBuilded){
@@ -575,7 +575,7 @@ with(MO){
       o._hBottomR.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
       o._hRight.className = p ? o.styleName('RightSelect') : (prior ? o.styleName('RightPrior') : o.styleName('Right'));
    }
-   MO.FUiTabButton_select = function FUiTabButton_select(p){
+   MO.FDuiTabButton_select = function FDuiTabButton_select(p){
       var o = this;
       o.innerSelect(p);
       if(p){
@@ -583,18 +583,18 @@ with(MO){
          o.psResize();
       }
    }
-   MO.FUiTabButton_setVisible = function FUiTabButton_setVisible(p){
+   MO.FDuiTabButton_setVisible = function FDuiTabButton_setVisible(p){
       var o = this;
       RHtml.displaySet(o._hPanel, p);
    }
-   MO.FUiTabButton_doClick = function FUiTabButton_doClick(){
+   MO.FDuiTabButton_doClick = function FDuiTabButton_doClick(){
       var o = this;
       o._parent.select(o);
       var e = new SClickEvent(o);
       o.processClickListener(e);
       e.dispose();
    }
-   MO.FUiTabButton_dispose = function FUiTabButton_dispose(){
+   MO.FDuiTabButton_dispose = function FDuiTabButton_dispose(){
       var o = this;
       o._hButton = RMemory.free(o._hButton);
       o._hTop = RMemory.free(o._hTop);
@@ -605,7 +605,7 @@ with(MO){
       o._hRight = RMemory.free(o._hRight);
       o.__base.FDuiControl.dispose.call(o);
    }
-   MO.FUiTabButton_innerDump = function FUiTabButton_innerDump(s, l){
+   MO.FDuiTabButton_innerDump = function FDuiTabButton_innerDump(s, l){
       var o = this;
       s.append(l, RClass.dump(o), ' [');
       s.append('name=', o._name, ', ');

@@ -7,7 +7,7 @@ with(MO){
    // @history 150202
    //==========================================================
    MO.FDsCommonTechniquePropertyFrame = function FDsCommonTechniquePropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible              = false;
@@ -45,7 +45,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonTechniquePropertyFrame_onBuilded = function FDsCommonTechniquePropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       // 增加对象
       o._controlRenderModes.addClickListener(o, o.onModeClick);
    }
@@ -127,7 +127,7 @@ with(MO){
    MO.FDsCommonTechniquePropertyFrame_construct = function FDsCommonTechniquePropertyFrame_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
       // 创建线程
       var t = o._thread = RClass.create(FThread);
       t.setInterval(o._interval);
@@ -170,6 +170,6 @@ with(MO){
    MO.FDsCommonTechniquePropertyFrame_dispose = function FDsCommonTechniquePropertyFrame_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }

@@ -28,26 +28,26 @@ with(MO){
    // │└------------┴------------------------------------┘│
    // └------------------------------------------------------┘
    //
-   // @class FUiGridControl
+   // @class FDuiGridControl
    // @history 091022 MAOCY 创建
    //==========================================================
-   MO.FUiGrid = function FUiGrid(o) {
-      o = RClass.inherits(this, o, FUiGridControl);
+   MO.FDuiGrid = function FDuiGrid(o) {
+      o = RClass.inherits(this, o, FDuiGridControl);
       //..........................................................
       // @event
-      o.onResizeAfter = FUiGrid_onResizeAfter;
-      o.onBuildData   = FUiGrid_onBuildData;
+      o.onResizeAfter = FDuiGrid_onResizeAfter;
+      o.onBuildData   = FDuiGrid_onBuildData;
       //..........................................................
       // @process
-      o.oeResize      = FUiGrid_oeResize;
-      o.oeRefresh     = FUiGrid_oeRefresh;
+      o.oeResize      = FDuiGrid_oeResize;
+      o.oeRefresh     = FDuiGrid_oeRefresh;
       //..........................................................
       // @method
-      o.pushColumn    = FUiGrid_pushColumn;
+      o.pushColumn    = FDuiGrid_pushColumn;
       return o;
    }
    // ------------------------------------------------------------
-   MO.FUiGrid_onResizeAfter = function FUiGrid_onResizeAfter(){
+   MO.FDuiGrid_onResizeAfter = function FDuiGrid_onResizeAfter(){
       var o = this;
       var hdp = o.hDataPanel;
       var hfp = o.hFixPanel;
@@ -60,7 +60,7 @@ with(MO){
       o.hColumnPanel.style.pixelHeight = hdp.offsetHeight - hfp.offsetHeight - sh + 1;
    }
    //==========================================================
-   MO.FUiGrid_onBuildData = function FUiGrid_onBuildData(){
+   MO.FDuiGrid_onBuildData = function FDuiGrid_onBuildData(){
       // 建立固定区(Layer:2)
       var hfp = o.hFixPanel = RBuilder.appendDiv(hbp);
       hfp.style.zIndex = 2;
@@ -106,7 +106,7 @@ with(MO){
       o.attachEvent('onDataScroll', o.hDataPanel, o.onDataScroll);
    }
    // ------------------------------------------------------------
-   MO.FUiGrid_oeResize = function FUiGrid_oeResize(e){
+   MO.FDuiGrid_oeResize = function FDuiGrid_oeResize(e){
       var o = this;
       // 检查是否尺寸改变
       var h = o.hPanel;
@@ -143,9 +143,9 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiGrid_oeRefresh = function FUiGrid_oeRefresh(e){
+   MO.FDuiGrid_oeRefresh = function FDuiGrid_oeRefresh(e){
       var o = this;
-      o.base.FUiGridControl.oeRefresh.call(o, e);
+      o.base.FDuiGridControl.oeRefresh.call(o, e);
       if(e.isAfter()){
          // 计算初始化宽度
          var hcf = o.hTitleForm;
@@ -202,7 +202,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FUiGrid_pushColumn = function FUiGrid_pushColumn(c){
+   MO.FDuiGrid_pushColumn = function FDuiGrid_pushColumn(c){
       var o = this;
       // 为固定列的情况
       if(c.dispFixed){

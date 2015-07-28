@@ -2,12 +2,12 @@ with(MO){
    //==========================================================
    // <T>数字输入框。</T>
    //
-   // @class FUiNumber2, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel
+   // @class FDuiNumber2, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel
    // @history 091106 MAOCY 创建
    //==========================================================
    MO.FUiDataNumber2 = function FUiDataNumber2(o){
-      //o = RClass.inherits(this, o, FUiNumber2, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
-      o = RClass.inherits(this, o, FUiNumber2);
+      //o = RClass.inherits(this, o, FDuiNumber2, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
+      o = RClass.inherits(this, o, FDuiNumber2);
       //..........................................................
       // @property
       //o.editAlign         = EAlign.Right;
@@ -131,7 +131,7 @@ with(MO){
             o.adjustValue(false);
          }
       }
-      o.base.FUiNumber2.onDataKeyDown.call(o, s, e);
+      o.base.FDuiNumber2.onDataKeyDown.call(o, s, e);
    }
 
    //==========================================================
@@ -217,7 +217,7 @@ with(MO){
    //------------------------------------------------------------
    MO.FUiDataNumber2_refreshStyle = function FUiDataNumber2_refreshStyle(){
       var o = this;
-      o.base.FUiNumber2.refreshStyle.call(o);
+      o.base.FDuiNumber2.refreshStyle.call(o);
       o.hUpIcon.src = o.styleIconPath(o._hover ? 'UpSelect' : 'Up');
       o.hDownIcon.src = o.styleIconPath(o._hover ? 'DownSelect' : 'Down');
    }
@@ -344,7 +344,7 @@ with(MO){
    //------------------------------------------------------------
    MO.FUiDataNumber2_dispose = function FUiDataNumber2_dispose(){
       var o = this;
-      o.base.FUiNumber2.dispose.call(o);
+      o.base.FDuiNumber2.dispose.call(o);
       o.hLabel = null;
       o.hUpIcon = null;
       o.hDownIcon = null;

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-MO.FUiFrameSet = function FUiFrameSet(o){
+MO.FDuiFrameSet = function FDuiFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDescribeFrame);
    //..........................................................
    // @property String 提示信息
@@ -22,17 +22,17 @@ MO.FUiFrameSet = function FUiFrameSet(o){
    o._hLine        = null;
    //..........................................................
    // @event
-   o.onBuildPanel  = MO.FUiFrameSet_onBuildPanel;
+   o.onBuildPanel  = MO.FDuiFrameSet_onBuildPanel;
    //..........................................................
    // @method
-   o.construct     = MO.FUiFrameSet_construct;
+   o.construct     = MO.FDuiFrameSet_construct;
    // @method
-   o.appendFrame   = MO.FUiFrameSet_appendFrame;
-   o.appendSpliter = MO.FUiFrameSet_appendSpliter;
+   o.appendFrame   = MO.FDuiFrameSet_appendFrame;
+   o.appendSpliter = MO.FDuiFrameSet_appendSpliter;
    // @method
-   o.appendChild   = MO.FUiFrameSet_appendChild;
+   o.appendChild   = MO.FDuiFrameSet_appendChild;
    // @method
-   o.dispose       = MO.FUiFrameSet_dispose;
+   o.dispose       = MO.FDuiFrameSet_dispose;
    return o;
 }
 
@@ -42,7 +42,7 @@ MO.FUiFrameSet = function FUiFrameSet(o){
 // @method
 // @param p:event:TEventProcess 事件
 //==========================================================
-MO.FUiFrameSet_onBuildPanel = function FUiFrameSet_onBuildPanel(p){
+MO.FDuiFrameSet_onBuildPanel = function FDuiFrameSet_onBuildPanel(p){
    var o = this;
    o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
 }
@@ -52,7 +52,7 @@ MO.FUiFrameSet_onBuildPanel = function FUiFrameSet_onBuildPanel(p){
 //
 // @method
 //==========================================================
-MO.FUiFrameSet_construct = function FUiFrameSet_construct(){
+MO.FDuiFrameSet_construct = function FDuiFrameSet_construct(){
    var o = this;
    o.__base.FDuiContainer.construct.call(o);
    o._frames = new MO.TObjects();
@@ -62,9 +62,9 @@ MO.FUiFrameSet_construct = function FUiFrameSet_construct(){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @param frame:FUiFrame 页面
+// @param frame:FDuiFrame 页面
 //==========================================================
-MO.FUiFrameSet_appendFrame = function FUiFrameSet_appendFrame(frame){
+MO.FDuiFrameSet_appendFrame = function FDuiFrameSet_appendFrame(frame){
    var o = this;
    if(o._directionCd == MO.EUiDirection.Horizontal){
       // 横向排布
@@ -98,13 +98,13 @@ MO.FUiFrameSet_appendFrame = function FUiFrameSet_appendFrame(frame){
 //
 // @method
 //==========================================================
-MO.FUiFrameSet_appendSpliter = function FUiFrameSet_appendSpliter(p){
+MO.FDuiFrameSet_appendSpliter = function FDuiFrameSet_appendSpliter(p){
    var o = this;
    var sp = null;
    if(p){
       sp = p;
    }else{
-      sp = MO.Class.create(MO.FUiFrameSpliter);
+      sp = MO.Class.create(MO.FDuiFrameSpliter);
       sp.build(o._hPanel);
    }
    if(o._directionCd == MO.EUiDirection.Horizontal){
@@ -129,13 +129,13 @@ MO.FUiFrameSet_appendSpliter = function FUiFrameSet_appendSpliter(p){
 // @method
 // @param p:control:FDuiControl 控件
 //==========================================================
-MO.FUiFrameSet_appendChild = function FUiFrameSet_appendChild(p){
+MO.FDuiFrameSet_appendChild = function FDuiFrameSet_appendChild(p){
    var o = this;
    p._frameset = o;
-   if(MO.Class.isClass(p, MO.FUiFramePage)){
+   if(MO.Class.isClass(p, MO.FDuiFramePage)){
       o.appendFrame(p);
       return;
-   }else if(MO.Class.isClass(p, MO.FUiFrameSpliter)){
+   }else if(MO.Class.isClass(p, MO.FDuiFrameSpliter)){
       o.appendSpliter(p);
       return;
    }
@@ -147,7 +147,7 @@ MO.FUiFrameSet_appendChild = function FUiFrameSet_appendChild(p){
 //
 // @method
 //==========================================================
-MO.FUiFrameSet_dispose = function FUiFrameSet_dispose(){
+MO.FDuiFrameSet_dispose = function FDuiFrameSet_dispose(){
    var o = this;
    // 父处理
    o.__base.FDuiContainer.dispose.call(o);

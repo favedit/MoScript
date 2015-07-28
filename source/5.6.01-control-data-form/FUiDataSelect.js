@@ -7,7 +7,7 @@ with(MO){
    // @version 150319
    //==========================================================
    MO.FUiDataSelect = function FUiDataSelect(o){
-      o = RClass.inherits(this, o, FUiSelect, MUiDataField);
+      o = RClass.inherits(this, o, FDuiSelect, MUiDataField);
       return o;
    }
 }

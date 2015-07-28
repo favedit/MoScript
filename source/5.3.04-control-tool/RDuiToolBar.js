@@ -6,11 +6,11 @@ with(MO){
    // @author maocy
    // @version 150318
    //==========================================================
-   MO.RUiToolBar = function RUiToolBar(){
+   MO.RDuiToolBar = function RDuiToolBar(){
       var o = this;
       // Member
-      //o.mergeNode    = RUiToolBar_mergeNode;
-      o.fromNode = RUiToolBar_fromNode;
+      //o.mergeNode    = RDuiToolBar_mergeNode;
+      o.fromNode = RDuiToolBar_fromNode;
       return o;
    }
 
@@ -19,7 +19,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.RUiToolBar_mergeNode = function RUiToolBar_mergeNode(xtb, xNode, r){
+   MO.RDuiToolBar_mergeNode = function RDuiToolBar_mergeNode(xtb, xNode, r){
       var ns = xNode.nodes;
       // 建立工具栏的XML节点
       for(var j=0; j<ns.count; j++){
@@ -54,7 +54,7 @@ with(MO){
    // @param r:remove:Boolean 是否要移出webform中的toolbar 的xml
    // @return Object 返回这个工具条控件
    //==========================================================
-   MO.RUiToolBar_fromNode = function RUiToolBar_fromNode(control, config, panel, r){
+   MO.RDuiToolBar_fromNode = function RDuiToolBar_fromNode(control, config, panel, r){
       if(config && config._nodes){
          var xtb = null;
          var ns = config._nodes;
@@ -89,5 +89,5 @@ with(MO){
    }
    //..........................................................
    // 实例化内容
-   MO.RUiToolBar = new RUiToolBar();
+   MO.RDuiToolBar = new RDuiToolBar();
 }

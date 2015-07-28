@@ -16,8 +16,8 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FUiToolButton = function FUiToolButton(o){
-      o = RClass.inherits(this, o, FDuiControl, MUiToolButton, MListenerClick);
+   MO.FDuiToolButton = function FDuiToolButton(o){
+      o = RClass.inherits(this, o, FDuiControl, MDuiToolButton, MListenerClick);
       //..........................................................
       // @property
       o._icon            = RClass.register(o, new APtyString('_icon'));
@@ -47,25 +47,25 @@ with(MO){
       o._hLabelPanel     = null;
       //..........................................................
       // @event
-      o.onBuildPanel     = FUiToolButton_onBuildPanel;
-      o.onBuildButton    = FUiToolButton_onBuildButton;
-      o.onBuild          = FUiToolButton_onBuild;
+      o.onBuildPanel     = FDuiToolButton_onBuildPanel;
+      o.onBuildButton    = FDuiToolButton_onBuildButton;
+      o.onBuild          = FDuiToolButton_onBuild;
       // @event
-      o.onEnter          = FUiToolButton_onEnter;
-      o.onLeave          = FUiToolButton_onLeave;
-      o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiToolButton_onMouseDown);
-      o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiToolButton_onMouseUp);
+      o.onEnter          = FDuiToolButton_onEnter;
+      o.onLeave          = FDuiToolButton_onLeave;
+      o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FDuiToolButton_onMouseDown);
+      o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FDuiToolButton_onMouseUp);
       //..........................................................
       // @method
-      o.icon             = FUiToolButton_icon;
-      o.setIcon          = FUiToolButton_setIcon;
-      o.setLabel         = FUiToolButton_setLabel;
-      o.setHint          = FUiToolButton_setHint;
-      o.setEnable        = FUiToolButton_setEnable;
+      o.icon             = FDuiToolButton_icon;
+      o.setIcon          = FDuiToolButton_setIcon;
+      o.setLabel         = FDuiToolButton_setLabel;
+      o.setHint          = FDuiToolButton_setHint;
+      o.setEnable        = FDuiToolButton_setEnable;
       // @method
-      o.doClick          = FUiToolButton_doClick;
+      o.doClick          = FDuiToolButton_doClick;
       // @method
-      o.dispose          = FUiToolButton_dispose;
+      o.dispose          = FDuiToolButton_dispose;
       return o;
    }
 
@@ -75,7 +75,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiToolButton_onBuildPanel = function FUiToolButton_onBuildPanel(p){
+   MO.FDuiToolButton_onBuildPanel = function FDuiToolButton_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
    }
@@ -86,7 +86,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiToolButton_onBuildButton = function FUiToolButton_onBuildButton(p){
+   MO.FDuiToolButton_onBuildButton = function FDuiToolButton_onBuildButton(p){
       var o = this;
       // 设置面板
       var hPanel = o._hPanel;
@@ -127,7 +127,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiToolButton_onBuild = function FUiToolButton_onBuild(p){
+   MO.FDuiToolButton_onBuild = function FDuiToolButton_onBuild(p){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, p);
       // 建立面板
@@ -140,7 +140,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButton_onEnter = function FUiToolButton_onEnter(e){
+   MO.FDuiToolButton_onEnter = function FDuiToolButton_onEnter(e){
       var o = this;
       //if(o._hotkey || o.hint){
       //   if(!o.hintBox){
@@ -155,7 +155,7 @@ with(MO){
       if(!o._disabled){
          // 消息提示
          o._hForm.className = o.styleName('Hover');
-         //o._hButton.background = o.styleIconPath('ButtonHover', FUiToolButton);
+         //o._hButton.background = o.styleIconPath('ButtonHover', FDuiToolButton);
       }
    }
 
@@ -165,7 +165,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButton_onLeave = function FUiToolButton_onLeave(e){
+   MO.FDuiToolButton_onLeave = function FDuiToolButton_onLeave(e){
       var o = this;
       //if(o.hintBox){
       //   o.hintBox.hide();
@@ -173,7 +173,7 @@ with(MO){
       //}
       if(!o._disabled){
          o._hForm.className = o.styleName('Normal');
-         //o._hButton.background = o.styleIconPath('Button', FUiToolButton);
+         //o._hButton.background = o.styleIconPath('Button', FDuiToolButton);
       }
    }
 
@@ -183,7 +183,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButton_onMouseDown = function FUiToolButton_onMouseDown(){
+   MO.FDuiToolButton_onMouseDown = function FDuiToolButton_onMouseDown(){
       var o = this;
       //if(o.hintBox){
       //   o.hintBox.hide();
@@ -200,7 +200,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButton_onMouseUp = function FUiToolButton_onMouseUp(h){
+   MO.FDuiToolButton_onMouseUp = function FDuiToolButton_onMouseUp(h){
       var o = this;
       if(!o._disabled){
          o._hForm.className = o.styleName('Hover');
@@ -213,7 +213,7 @@ with(MO){
    // @method
    // @return String 图标
    //==========================================================
-   MO.FUiToolButton_icon = function FUiToolButton_icon(){
+   MO.FDuiToolButton_icon = function FDuiToolButton_icon(){
       return this._icon;
    }
 
@@ -223,7 +223,7 @@ with(MO){
    // @method
    // @param p:icon:String 图标
    //==========================================================
-   MO.FUiToolButton_setIcon = function FUiToolButton_setIcon(p){
+   MO.FDuiToolButton_setIcon = function FDuiToolButton_setIcon(p){
       var o = this;
       o._icon = p;
       if(o._hIcon){
@@ -237,7 +237,7 @@ with(MO){
    // @method
    // @param p:label:String 标签
    //==========================================================
-   MO.FUiToolButton_setLabel = function FUiToolButton_setLabel(p){
+   MO.FDuiToolButton_setLabel = function FDuiToolButton_setLabel(p){
       var o = this;
       var s = RString.nvl(p);
       // 设置属性
@@ -255,7 +255,7 @@ with(MO){
    // @method
    // @param p:hint:String 提示
    //==========================================================
-   MO.FUiToolButton_setHint = function FUiToolButton_setHint(p){
+   MO.FDuiToolButton_setHint = function FDuiToolButton_setHint(p){
       var o = this;
       o._hint = p;
       var s = RString.nvl(p);
@@ -273,7 +273,7 @@ with(MO){
    // @method
    // @param p:enable:Boolean 是否可操作
    //==========================================================
-   MO.FUiToolButton_setEnable = function FUiToolButton_setEnable(p){
+   MO.FDuiToolButton_setEnable = function FDuiToolButton_setEnable(p){
       var o = this;
       o.__base.FDuiControl.oeEnable.call(o, e);
       o._disabled = !e.enable;
@@ -313,7 +313,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButton_doClick = function FUiToolButton_doClick(){
+   MO.FDuiToolButton_doClick = function FDuiToolButton_doClick(){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
@@ -334,7 +334,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiToolButton_dispose = function FUiToolButton_dispose(){
+   MO.FDuiToolButton_dispose = function FDuiToolButton_dispose(){
       var o = this;
       // 释放属性
       o._hForm = RHtml.free(o._hForm);

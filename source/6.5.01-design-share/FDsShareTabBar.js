@@ -6,7 +6,7 @@ with(MO){
    // @history 150422
    //==========================================================
    MO.FDsShareTabBar = function FDsShareTabBar(o){
-      o = RClass.inherits(this, o, FUiTabBar);
+      o = RClass.inherits(this, o, FDuiTabBar);
       //..........................................................
       // @property
       o._frameName            = 'resource.share.TabBar';
@@ -38,7 +38,7 @@ with(MO){
    //==========================================================
    MO.FDsShareTabBar_onBuilded = function FDsShareTabBar_onBuilded(p){
       var o = this;
-      o.__base.FUiTabBar.onBuilded.call(o, p);
+      o.__base.FDuiTabBar.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       o._controlResource.addClickListener(o, o.onButtonClick);
@@ -69,7 +69,7 @@ with(MO){
    MO.FDsShareTabBar_construct = function FDsShareTabBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiTabBar.construct.call(o);
+      o.__base.FDuiTabBar.construct.call(o);
    }
 
    //==========================================================
@@ -80,6 +80,6 @@ with(MO){
    MO.FDsShareTabBar_dispose = function FDsShareTabBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiTabBar.dispose.call(o);
+      o.__base.FDuiTabBar.dispose.call(o);
    }
 }

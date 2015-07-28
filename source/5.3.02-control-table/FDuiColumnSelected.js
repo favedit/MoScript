@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiColumnSelected = function FUiColumnSelected(o){
+   MO.FDuiColumnSelected = function FDuiColumnSelected(o){
       o = RClass.inherits(this, o, FColumnEditControl);
       //..........................................................
       // @property
@@ -21,13 +21,13 @@ with(MO){
       o._cellClass        = FCellSelected;
       //..........................................................
       // @event
-      o.onBuildSearchForm = FUiColumnSelected_onBuildSearchForm;
-      o.onBuild           = FUiColumnSelected_onBuild;
+      o.onBuildSearchForm = FDuiColumnSelected_onBuildSearchForm;
+      o.onBuild           = FDuiColumnSelected_onBuild;
       //..........................................................
       // @method
-      o.createCell        = FUiColumnSelected_createCell;
+      o.createCell        = FDuiColumnSelected_createCell;
       // @methos
-      o.dispose           = FUiColumnSelected_dispose;
+      o.dispose           = FDuiColumnSelected_dispose;
 
 
 
@@ -37,8 +37,8 @@ with(MO){
 
       //..........................................................
       // @event
-      //o.onCellClick      = FUiColumnSelected_onCellClick;
-      //o.onSelectedClick  = FUiColumnSelected_onSelectedClick;
+      //o.onCellClick      = FDuiColumnSelected_onCellClick;
+      //o.onSelectedClick  = FDuiColumnSelected_onSelectedClick;
       //..........................................................
       /// @property
       //o._dispList            = true;
@@ -47,7 +47,7 @@ with(MO){
       //o.width               = 20;
       //o.dispSize            = false;
       //o.dispDrag            = false;
-      //o.setVisible          = FUiColumnSelected_setVisible;
+      //o.setVisible          = FDuiColumnSelected_setVisible;
       // Listener
       //o.lsnsHeadClick       = new TListeners();
       //o.lsnsRowDblClick     = new TListeners();
@@ -60,7 +60,7 @@ with(MO){
    // @method
    // @param p:param:TEventProcess 事件
    //==========================================================
-   MO.FUiColumnSelected_onBuildSearchForm = function FUiColumnSelected_onBuildSearchForm(p){
+   MO.FDuiColumnSelected_onBuildSearchForm = function FDuiColumnSelected_onBuildSearchForm(p){
       var o = this;
       var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
       hf.width = '100%';
@@ -78,7 +78,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiColumnSelected_onBuild = function FUiColumnSelected_onBuild(e){
+   MO.FDuiColumnSelected_onBuild = function FDuiColumnSelected_onBuild(e){
       var o = this;
       var r = o.__base.FColumnEditControl.onBuild.call(o, e);
       var h = o._hPanel;
@@ -96,7 +96,7 @@ with(MO){
    // @param p:row:FRow 表格行
    // @return FCell 单元格
    //==========================================================
-   MO.FUiColumnSelected_createCell = function FUiColumnSelected_createCell(p){
+   MO.FDuiColumnSelected_createCell = function FDuiColumnSelected_createCell(p){
       var o = this;
       var c = o.__base.FColumnEditControl.createCell.call(o, p);
       if(p){
@@ -110,7 +110,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColumnSelected_dispose = function FUiColumnSelected_dispose(){
+   MO.FDuiColumnSelected_dispose = function FDuiColumnSelected_dispose(){
       var o = this;
       o._hSelect = null;
       // 父处理
@@ -132,7 +132,7 @@ with(MO){
    // @param s:sender:FControl �ؼ�����
    // @param e:event:TEvent �¼�����
    //==========================================================
-   MO.FUiColumnSelected_setVisible = function FUiColumnSelected_setVisible(){
+   MO.FDuiColumnSelected_setVisible = function FDuiColumnSelected_setVisible(){
       var o = this;
       var v = o._table._displayColumnSelect ? 'block' : 'none';
       o._hPanel.style.display = v
@@ -149,14 +149,14 @@ with(MO){
    //@param s:sender:FControl �ؼ�����
    //@param e:event:TEvent �¼�����
    //==========================================================
-   MO.FUiColumnSelected_onCellClick = function FUiColumnSelected_onCellClick(s, e){
+   MO.FDuiColumnSelected_onCellClick = function FDuiColumnSelected_onCellClick(s, e){
       return;   
    }
 
    //==========================================================
    //<T>全选或反选</T>
    //==========================================================
-   MO.FUiColumnSelected_onSelectedClick = function FUiColumnSelected_onSelectedClick(s, e){
+   MO.FDuiColumnSelected_onSelectedClick = function FDuiColumnSelected_onSelectedClick(s, e){
       var o = this;
       var c = o.column;
       var rs = c.table.rows;

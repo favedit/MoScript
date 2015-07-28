@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150123
 //==========================================================
-MO.EUiGridColumn = new function EUiGridColumn(){
+MO.EDuiGridColumn = new function EDuiGridColumn(){
    var o = this;
    // Attribute
    o.None = 0;

@@ -11,7 +11,7 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FUiMenuBar = function FUiMenuBar(o){
+   MO.FDuiMenuBar = function FDuiMenuBar(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       //..........................................................
       // @property EUiMerge 合并枚举
@@ -25,15 +25,15 @@ with(MO){
       o._hLine            = null;
       //..........................................................
       // @event
-      o.onBuildPanel      = FUiMenuBar_onBuildPanel;
+      o.onBuildPanel      = FDuiMenuBar_onBuildPanel;
       o.onEnter           = RMethod.empty;
       o.onLeave           = RMethod.empty;
       //..........................................................
       // @method
-      o.appendChild       = FUiMenuBar_appendChild;
-      o.removeChild       = FUiMenuBar_removeChild;
+      o.appendChild       = FDuiMenuBar_appendChild;
+      o.removeChild       = FDuiMenuBar_removeChild;
       // @method
-      o.dispose           = FUiMenuBar_dispose;
+      o.dispose           = FDuiMenuBar_dispose;
       return o;
    }
 
@@ -43,7 +43,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiMenuBar_onBuildPanel = function FUiMenuBar_onBuildPanel(p){
+   MO.FDuiMenuBar_onBuildPanel = function FDuiMenuBar_onBuildPanel(p){
       var o = this;
       var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
       o._hLine = RBuilder.appendTableRow(h);
@@ -55,11 +55,11 @@ with(MO){
    // @method
    // @param control:FDuiControl 子控件
    //==========================================================
-   MO.FUiMenuBar_appendChild = function FUiMenuBar_appendChild(control){
+   MO.FDuiMenuBar_appendChild = function FDuiMenuBar_appendChild(control){
       var o = this;
       o.__base.FDuiContainer.appendChild.call(o, control);
       // 按键处理
-      if(RClass.isClass(control, MUiMenuButton)){
+      if(RClass.isClass(control, MDuiMenuButton)){
          var hLine = o._hLine;
          // 建立按键
          var hCell = RBuilder.appendTableCell(hLine, o.styleName('ButtonPanel'));
@@ -74,10 +74,10 @@ with(MO){
    // @method
    // @param p:control:FDuiControl 子控件
    //==========================================================
-   MO.FUiMenuBar_removeChild = function FUiMenuBar_removeChild(p){
+   MO.FDuiMenuBar_removeChild = function FDuiMenuBar_removeChild(p){
       var o = this;
       // 按键处理
-      if(RClass.isClass(p, FUiMenuButton)){
+      if(RClass.isClass(p, FDuiMenuButton)){
          var hp = p._hParent;
          var hl = p._hParentLine;
          hl.removeChild(hp);
@@ -93,7 +93,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiMenuBar_dispose = function FUiMenuBar_dispose(){
+   MO.FDuiMenuBar_dispose = function FDuiMenuBar_dispose(){
       var o = this;
       o._hLine = RHtml.free(o._hLine);
       o.__base.FDuiContainer.dispose.call(o);

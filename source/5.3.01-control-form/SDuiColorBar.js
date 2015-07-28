@@ -18,7 +18,7 @@ with(MO){
    // @author maocy
    // @version 150201
    //==========================================================
-   MO.SUiColorBar = function SUiColorBar(){
+   MO.SDuiColorBar = function SDuiColorBar(){
       var o = this;
       //..........................................................
       // @attribute
@@ -52,27 +52,27 @@ with(MO){
       o.hInput            = null;
       //..........................................................
       // @event
-      o.onMouseDown       = SUiColorBar_onMouseDown;
-      o.onMouseMove       = SUiColorBar_onMouseMove;
-      o.onMouseUp         = SUiColorBar_onMouseUp;
+      o.onMouseDown       = SDuiColorBar_onMouseDown;
+      o.onMouseMove       = SDuiColorBar_onMouseMove;
+      o.onMouseUp         = SDuiColorBar_onMouseUp;
       //..........................................................
       // @method
-      o.build             = SUiColorBar_build;
+      o.build             = SDuiColorBar_build;
       // @method
-      o.setRange          = SUiColorBar_setRange;
-      o.setColorValue     = SUiColorBar_setColorValue;
-      o.setSlideValue     = SUiColorBar_setSlideValue;
-      o.setInputValue     = SUiColorBar_setInputValue;
+      o.setRange          = SDuiColorBar_setRange;
+      o.setColorValue     = SDuiColorBar_setColorValue;
+      o.setSlideValue     = SDuiColorBar_setSlideValue;
+      o.setInputValue     = SDuiColorBar_setInputValue;
       // @method
-      o.convertSlide      = SUiColorBar_convertSlide;
-      o.convertGet        = SUiColorBar_convertGet;
-      o.convertSet        = SUiColorBar_convertSet;
-      o.get               = SUiColorBar_get;
-      o.set               = SUiColorBar_set;
+      o.convertSlide      = SDuiColorBar_convertSlide;
+      o.convertGet        = SDuiColorBar_convertGet;
+      o.convertSet        = SDuiColorBar_convertSet;
+      o.get               = SDuiColorBar_get;
+      o.set               = SDuiColorBar_set;
       // @method
-      o.changeSlide       = SUiColorBar_changeSlide;
-      o.changeInputEdit   = SUiColorBar_changeInputEdit;
-      o.changeInputChange = SUiColorBar_changeInputChange;
+      o.changeSlide       = SDuiColorBar_changeSlide;
+      o.changeInputEdit   = SDuiColorBar_changeInputEdit;
+      o.changeInputChange = SDuiColorBar_changeInputChange;
       return o;
    }
 
@@ -81,7 +81,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.SUiColorBar_onMouseDown = function SUiColorBar_onMouseDown(p){
+   MO.SDuiColorBar_onMouseDown = function SDuiColorBar_onMouseDown(p){
       var o = this;
       var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
       o._draging = true;
@@ -94,7 +94,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.SUiColorBar_onMouseMove = function SUiColorBar_onMouseMove(p){
+   MO.SDuiColorBar_onMouseMove = function SDuiColorBar_onMouseMove(p){
       var o = this;
       if(o._draging){
          var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
@@ -107,7 +107,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.SUiColorBar_onMouseUp = function SUiColorBar_onMouseUp(p){
+   MO.SDuiColorBar_onMouseUp = function SDuiColorBar_onMouseUp(p){
       var o = this;
       o._draging = false;
       RWindow.setOptionSelect(true);
@@ -119,7 +119,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.SUiColorBar_build = function SUiColorBar_build(p){
+   MO.SDuiColorBar_build = function SDuiColorBar_build(p){
       var o = this;
       var c = o.control;
       var hcf = o.hPanel;
@@ -184,7 +184,7 @@ with(MO){
    // @param i:min:Number 最小值
    // @param a:max:Number 最大值
    //==========================================================
-   MO.SUiColorBar_setRange = function SUiColorBar_setRange(i, a){
+   MO.SDuiColorBar_setRange = function SDuiColorBar_setRange(i, a){
       var o = this;
       if(i != null){
          o.minValue = i;
@@ -200,7 +200,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容 (0~255)
    //==========================================================
-   MO.SUiColorBar_setColorValue = function SUiColorBar_setColorValue(p){
+   MO.SDuiColorBar_setColorValue = function SDuiColorBar_setColorValue(p){
       var o = this;
       // 计算内容
       var v = RHex.format(p, 2);
@@ -228,7 +228,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorBar_setSlideValue = function SUiColorBar_setSlideValue(p){
+   MO.SDuiColorBar_setSlideValue = function SDuiColorBar_setSlideValue(p){
       var o = this;
       var w = o.hSlideForm.offsetWidth;
       if(w > 0){
@@ -243,7 +243,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorBar_setInputValue = function SUiColorBar_setInputValue(p){
+   MO.SDuiColorBar_setInputValue = function SDuiColorBar_setInputValue(p){
       this.hInput.value = p;
    }
 
@@ -253,7 +253,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorBar_convertGet = function SUiColorBar_convertGet(p){
+   MO.SDuiColorBar_convertGet = function SDuiColorBar_convertGet(p){
       return p;
    }
 
@@ -263,7 +263,7 @@ with(MO){
    // @method
    // @return Number 内容
    //==========================================================
-   MO.SUiColorBar_get = function SUiColorBar_get(){
+   MO.SDuiColorBar_get = function SDuiColorBar_get(){
       var o = this;
       return o.convertGet(o.hInput.value);
    }
@@ -274,7 +274,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorBar_convertSet = function SUiColorBar_convertSet(p){
+   MO.SDuiColorBar_convertSet = function SDuiColorBar_convertSet(p){
       return p;
    }
 
@@ -284,7 +284,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorBar_set = function SUiColorBar_set(p){
+   MO.SDuiColorBar_set = function SDuiColorBar_set(p){
       var o = this;
       // 转换内容
       var v = o.convertSet(p);
@@ -302,7 +302,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorBar_convertSlide = function SUiColorBar_convertSlide(p){
+   MO.SDuiColorBar_convertSlide = function SDuiColorBar_convertSlide(p){
       return p;
    }
 
@@ -312,7 +312,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorBar_changeSlide = function SUiColorBar_changeSlide(p){
+   MO.SDuiColorBar_changeSlide = function SDuiColorBar_changeSlide(p){
       var o = this;
       // 获得数值
       var w = o.hSlideForm.offsetWidth - 3;
@@ -328,7 +328,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.SUiColorBar_changeInputEdit = function SUiColorBar_changeInputEdit(){
+   MO.SDuiColorBar_changeInputEdit = function SDuiColorBar_changeInputEdit(){
       var o = this;
       // 获得数值
       var v = o.convertGet(o.hInput.value);
@@ -345,7 +345,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.SUiColorBar_changeInputChange = function SUiColorBar_changeInputChange(){
+   MO.SDuiColorBar_changeInputChange = function SDuiColorBar_changeInputChange(){
       var o = this;
       // 获得数值
       var v = o.convertGet(o.hInput.value);

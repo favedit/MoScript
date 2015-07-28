@@ -15,7 +15,7 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiColor3Tpl = function FUiColor3Tpl(o){
+   MO.FDuiColor3Tpl = function FDuiColor3Tpl(o){
       //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
       o = RClass.inherits(this, o, FEditControl, MListenerDataChanged);
       //..........................................................
@@ -36,16 +36,16 @@ with(MO){
       o._hInputBlue       = null;
       //..........................................................
       // @event
-      o.onBuildEditValue  = FUiColor3Tpl_onBuildEditValue;
+      o.onBuildEditValue  = FDuiColor3Tpl_onBuildEditValue;
       // @event
-      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiColor3Tpl_onInputKeyPress);
-      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FUiColor3Tpl_onInputChanged);
+      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiColor3Tpl_onInputKeyPress);
+      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FDuiColor3Tpl_onInputChanged);
       //..........................................................
       // @method
-      o.construct         = FUiColor3Tpl_construct;
+      o.construct         = FDuiColor3Tpl_construct;
       // @method
-      o.get               = FUiColor3Tpl_get;
-      o.set               = FUiColor3Tpl_set;
+      o.get               = FDuiColor3Tpl_get;
+      o.set               = FDuiColor3Tpl_set;
 
 
       //o.onKeyDown    = RClass.register(o, new AEventKeyDown('onKeyDown'));
@@ -60,16 +60,16 @@ with(MO){
       //o.hUnit         = null;
       //..........................................................
       // @event
-      //o.onDataKeyDown = FUiColor3Tpl_onDataKeyDown;
+      //o.onDataKeyDown = FDuiColor3Tpl_onDataKeyDown;
       //..........................................................
       // @method
-      //o.formatValue   = FUiColor3Tpl_formatValue;
-      //o.setText       = FUiColor3Tpl_setText;
-      //o.validText     = FUiColor3Tpl_validText;
-      //o.findEditor    = FUiColor3Tpl_findEditor;
-      //o.drop          = FUiColor3Tpl_drop;
-      //o.link          = FUiColor3Tpl_link;
-      //o.clone         = FUiColor3Tpl_clone;
+      //o.formatValue   = FDuiColor3Tpl_formatValue;
+      //o.setText       = FDuiColor3Tpl_setText;
+      //o.validText     = FDuiColor3Tpl_validText;
+      //o.findEditor    = FDuiColor3Tpl_findEditor;
+      //o.drop          = FDuiColor3Tpl_drop;
+      //o.link          = FDuiColor3Tpl_link;
+      //o.clone         = FDuiColor3Tpl_clone;
       return o;
    }
 
@@ -79,7 +79,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiColor3Tpl_onBuildEditValue = function FUiColor3Tpl_onBuildEditValue(p){
+   MO.FDuiColor3Tpl_onBuildEditValue = function FDuiColor3Tpl_onBuildEditValue(p){
       var o = this;
       var h = o._hValuePanel;
       h.className = o.styleName('ValuePanel');
@@ -122,7 +122,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiColor3Tpl_onInputKeyPress = function FUiColor3Tpl_onInputKeyPress(p){
+   MO.FDuiColor3Tpl_onInputKeyPress = function FDuiColor3Tpl_onInputKeyPress(p){
       var o = this;
       var c = p.keyCode;
       // 允许输入百分号(%)
@@ -140,7 +140,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiColor3Tpl_onInputChanged = function FUiColor3Tpl_onInputChanged(p){
+   MO.FDuiColor3Tpl_onInputChanged = function FDuiColor3Tpl_onInputChanged(p){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);
@@ -156,7 +156,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColor3Tpl_construct = function FUiColor3Tpl_construct(){
+   MO.FDuiColor3Tpl_construct = function FDuiColor3Tpl_construct(){
       var o = this;
       o.__base.FEditControl.construct.call(o);
       // 设置属性
@@ -171,7 +171,7 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiColor3Tpl_get = function FUiColor3Tpl_get(p){
+   MO.FDuiColor3Tpl_get = function FDuiColor3Tpl_get(p){
       var o = this;
       var v = o._innerDataValue;
       // 获得数据
@@ -196,7 +196,7 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiColor3Tpl_set = function FUiColor3Tpl_set(p){
+   MO.FDuiColor3Tpl_set = function FDuiColor3Tpl_set(p){
       var o = this;
       o.__base.FEditControl.set.call(o, p);
       // 设置显示
@@ -244,7 +244,7 @@ with(MO){
    // @param s:sender:FControl 控件对象
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiColor3Tpl_onDataKeyDown = function FUiColor3Tpl_onDataKeyDown(s, e){
+   MO.FDuiColor3Tpl_onDataKeyDown = function FDuiColor3Tpl_onDataKeyDown(s, e){
       var o = this;
       o.__base.FEditControl.onDataKeyDown.call(o, s, e);
       // 大小写限制
@@ -271,7 +271,7 @@ with(MO){
    // @method
    // @param v:value:String 显示内容
    //==========================================================
-   MO.FUiColor3Tpl_formatValue = function FUiColor3Tpl_formatValue(v){
+   MO.FDuiColor3Tpl_formatValue = function FDuiColor3Tpl_formatValue(v){
       var o = this;
       var r = RString.nvl(v);
       if(ECase.Upper == o.editCase){
@@ -288,7 +288,7 @@ with(MO){
    // @method
    // @param t:text:String 内容
    //==========================================================
-   MO.FUiColor3Tpl_setText = function FUiColor3Tpl_setText(t){
+   MO.FDuiColor3Tpl_setText = function FDuiColor3Tpl_setText(t){
       var o = this;
       if(!o.hEdit){
          return;
@@ -316,7 +316,7 @@ with(MO){
    // @param t:text:String 内容
    // @return 校验结果
    //==========================================================
-   MO.FUiColor3Tpl_validText = function FUiColor3Tpl_validText(t){
+   MO.FDuiColor3Tpl_validText = function FDuiColor3Tpl_validText(t){
       var o = this;
       var r = o.__base.FEditControl.validText.call(o, t);
       if(!r){
@@ -342,14 +342,14 @@ with(MO){
    // @method
    // @return 编辑器
    //==========================================================
-   MO.FUiColor3Tpl_findEditor = function FUiColor3Tpl_findEditor(){
+   MO.FDuiColor3Tpl_findEditor = function FDuiColor3Tpl_findEditor(){
       var o = this;
       if(o.editComplete){
          var de = o.editor;
          if(!de){
             o.dsControl = o.topControl(MDataset);
             if(o.dsControl){
-               de = o.editor = RConsole.find(FUiColor3TplConsole).focus(o, FUiColor3TplEditor);
+               de = o.editor = RConsole.find(FDuiColor3TplConsole).focus(o, FDuiColor3TplEditor);
             }
          }
          if(de){
@@ -364,7 +364,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColor3Tpl_drop = function FUiColor3Tpl_drop(){
+   MO.FDuiColor3Tpl_drop = function FDuiColor3Tpl_drop(){
       var o = this;
       var de = o.findEditor();
       if(de){
@@ -386,7 +386,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiColor3Tpl_clone = function FUiColor3Tpl_clone(){
+   MO.FDuiColor3Tpl_clone = function FDuiColor3Tpl_clone(){
       var o = this;
       var r = o._class.newInstance();
       GHtml_clone(r, o.hPanel);
@@ -398,7 +398,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiColor3Tpl_link = function FUiColor3Tpl_link(){
+   MO.FDuiColor3Tpl_link = function FDuiColor3Tpl_link(){
       var o = this;
       
    }

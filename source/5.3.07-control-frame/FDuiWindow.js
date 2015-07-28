@@ -2,13 +2,13 @@
 // <T>窗口。</T>
 //
 // @class 
-// @face FUiLayout, MDisplayAble, MUiSizeable, MMoveable, MWinBorder
+// @face FDuiLayout, MDisplayAble, MUiSizeable, MMoveable, MWinBorder
 // @author maochunyang
 // @version 1.0.1
 //==========================================================
-MO.FUiWindow = function FUiWindow(o){
-   //o = RClass.inherits(this, o, FUiLayout, MUiFocus, MDisplayAble, MUiSizeable, MMoveable, MWinBorder);
-   o = MO.Class.inherits(this, o, MO.FUiLayout, MO.MMouseCapture);
+MO.FDuiWindow = function FDuiWindow(o){
+   //o = RClass.inherits(this, o, FDuiLayout, MUiFocus, MDisplayAble, MUiSizeable, MMoveable, MWinBorder);
+   o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MMouseCapture);
    //..........................................................
    // @property
    o._statusVisible      = false;
@@ -27,26 +27,26 @@ MO.FUiWindow = function FUiWindow(o){
    o._mouseControl       = null;
    //..........................................................
    // @event
-   o.onBuildPanel        = MO.FUiWindow_onBuildPanel;
-   o.onBuild             = MO.FUiWindow_onBuild;
+   o.onBuildPanel        = MO.FDuiWindow_onBuildPanel;
+   o.onBuild             = MO.FDuiWindow_onBuild;
    // @event
-   o.onMouseCaptureStart = MO.FUiWindow_onMouseCaptureStart;
-   o.onMouseCapture      = MO.FUiWindow_onMouseCapture;
-   o.onMouseCaptureStop  = MO.FUiWindow_onMouseCaptureStop;
+   o.onMouseCaptureStart = MO.FDuiWindow_onMouseCaptureStart;
+   o.onMouseCapture      = MO.FDuiWindow_onMouseCapture;
+   o.onMouseCaptureStop  = MO.FDuiWindow_onMouseCaptureStop;
    //..........................................................
    // @process
-   //o.oeVisible    = FUiWindow_oeVisible;
+   //o.oeVisible    = FDuiWindow_oeVisible;
    //..........................................................
    // @method
-   o.construct      = MO.FUiWindow_construct;
+   o.construct      = MO.FDuiWindow_construct;
    // @method
-   o.setVisible     = MO.FUiWindow_setVisible;
-   o.setLabel       = MO.FUiWindow_setLabel;
-   o.showPosition   = MO.FUiWindow_showPosition;
-   //o.panel        = FUiWindow_panel;
-   //o.doFocus      = FUiWindow_doFocus;
-   //o.dispose      = FUiWindow_dispose;
-   //o.dump         = FUiWindow_dump;
+   o.setVisible     = MO.FDuiWindow_setVisible;
+   o.setLabel       = MO.FDuiWindow_setLabel;
+   o.showPosition   = MO.FDuiWindow_showPosition;
+   //o.panel        = FDuiWindow_panel;
+   //o.doFocus      = FDuiWindow_doFocus;
+   //o.dispose      = FDuiWindow_dispose;
+   //o.dump         = FDuiWindow_dump;
    return o;
 }
 
@@ -56,7 +56,7 @@ MO.FUiWindow = function FUiWindow(o){
 // @method
 // @param event:TEventProcess 事件处理
 //==========================================================
-MO.FUiWindow_onBuildPanel = function FUiWindow_onBuildPanel(event){
+MO.FDuiWindow_onBuildPanel = function FDuiWindow_onBuildPanel(event){
    var o = this;
    o._hPanel = MO.Window.Builder.createDiv(event, o.styleName('Panel'));
    var hForm = o._hPanelForm = MO.Window.Builder.createTable(event, o.styleName('Form'), null, 0, 1);
@@ -69,12 +69,12 @@ MO.FUiWindow_onBuildPanel = function FUiWindow_onBuildPanel(event){
 //
 // @method
 // @param e:event:EEvent 构建事件
-// @see FUiLayout.oeBuild
+// @see FDuiLayout.oeBuild
 // @see MWinBorder.oeBuild
 //==========================================================
-MO.FUiWindow_onBuild = function FUiWindow_onBuild(event){
+MO.FDuiWindow_onBuild = function FDuiWindow_onBuild(event){
    var o = this;
-   o.__base.FUiLayout.onBuild.call(o, event);
+   o.__base.FDuiLayout.onBuild.call(o, event);
    // 设置面板
    var hPanel = o._hPanel;
    // 建立表格
@@ -110,7 +110,7 @@ MO.FUiWindow_onBuild = function FUiWindow_onBuild(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FUiWindow_onMouseCaptureStart = function FUiWindow_onMouseCaptureStart(event){
+MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(event){
    var o = this;
    o._mouseDraging = true;
    o._mousePosition.set(event.x, event.y);
@@ -124,7 +124,7 @@ MO.FUiWindow_onMouseCaptureStart = function FUiWindow_onMouseCaptureStart(event)
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FUiWindow_onMouseCapture = function FUiWindow_onMouseCapture(event){
+MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
    var o = this;
    if(o._mouseDraging){
       var cx = event.x - o._mousePosition.x;
@@ -140,7 +140,7 @@ MO.FUiWindow_onMouseCapture = function FUiWindow_onMouseCapture(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FUiWindow_onMouseCaptureStop = function FUiWindow_onMouseCaptureStop(event){
+MO.FDuiWindow_onMouseCaptureStop = function FDuiWindow_onMouseCaptureStop(event){
    var o = this;
    o._mouseDraging = false;
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
@@ -151,9 +151,9 @@ MO.FUiWindow_onMouseCaptureStop = function FUiWindow_onMouseCaptureStop(event){
 //
 // @method
 //==========================================================
-MO.FUiWindow_construct = function FUiWindow_construct(){
+MO.FDuiWindow_construct = function FDuiWindow_construct(){
    var o = this;
-   o.__base.FUiLayout.construct.call(o);
+   o.__base.FDuiLayout.construct.call(o);
    // 设置属性
    o._mousePosition = new MO.SPoint2();
    o._mouseControl = new MO.SPoint2();
@@ -167,7 +167,7 @@ MO.FUiWindow_construct = function FUiWindow_construct(){
 // @method
 // @param visible:Boolean 是否显示
 //==========================================================
-MO.FUiWindow_setVisible = function FUiWindow_setVisible(visible){
+MO.FDuiWindow_setVisible = function FDuiWindow_setVisible(visible){
    var o = this;
    o._statusVisible = visible;
    // 设置控件底板的可见性
@@ -185,9 +185,9 @@ MO.FUiWindow_setVisible = function FUiWindow_setVisible(visible){
 // @method
 // @param label:String 标签
 //==========================================================
-MO.FUiWindow_setLabel = function FUiWindow_setLabel(label){
+MO.FDuiWindow_setLabel = function FDuiWindow_setLabel(label){
    var o = this;
-   o.__base.FUiLayout.setLabel.call(o, label)
+   o.__base.FDuiLayout.setLabel.call(o, label)
    // 设置内容
    MO.RHtml.textSet(o._hTitle, o._label);
 }
@@ -197,10 +197,10 @@ MO.FUiWindow_setLabel = function FUiWindow_setLabel(label){
 //
 // @method
 // @param e:event:EEvent 构建事件
-// @see FUiLayout.oeBuild
+// @see FDuiLayout.oeBuild
 // @see MWinBorder.oeBuild
 //==========================================================
-MO.FUiWindow_showPosition = function FUiWindow_showPosition(positionCd){
+MO.FDuiWindow_showPosition = function FDuiWindow_showPosition(positionCd){
    var o = this;
    // 显示处理
    o.show();
@@ -229,10 +229,10 @@ MO.FUiWindow_showPosition = function FUiWindow_showPosition(positionCd){
 //
 // @method
 // @param e:event:EEvent 构建事件
-// @see FUiLayout.oeBuild
+// @see FDuiLayout.oeBuild
 // @see MWinBorder.oeBuild
 //==========================================================
-MO.FUiWindow_doFocus = function FUiWindow_doFocus(){
+MO.FDuiWindow_doFocus = function FDuiWindow_doFocus(){
    var o = this;
    if(o.searchControls && o.searchControls.count > 0){
       var cs = o.searchControls;
@@ -251,9 +251,9 @@ MO.FUiWindow_doFocus = function FUiWindow_doFocus(){
 // @method
 // @param event:event:EEvent 显示事件 
 //==========================================================
-MO.FUiWindow_oeVisible = function FUiWindow_oeVisible(e){
+MO.FDuiWindow_oeVisible = function FDuiWindow_oeVisible(e){
    var o = this;
-   o.__base.FUiLayout.oeVisible.call(o, e);
+   o.__base.FDuiLayout.oeVisible.call(o, e);
    if(e.isAfter()){
       o.hPanel.style.zIndex = RLayer.next(ELayer.Window);
       o.hPanel.style.display = 'block';
@@ -267,14 +267,14 @@ MO.FUiWindow_oeVisible = function FUiWindow_oeVisible(e){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_panel = function FUiWindow_panel(t){
+MO.FDuiWindow_panel = function FDuiWindow_panel(t){
    var o = this;
    if(EPanel.Display == t || EPanel._border == t || EPanel.Size == t){
       return o.hPanel;
    }else if(EPanel.Move == t){
       return o.hTitleForm;
    }
-   return o.__base.FUiLayout.panel.call(o, t);
+   return o.__base.FDuiLayout.panel.call(o, t);
 }
 
 //==========================================================
@@ -283,7 +283,7 @@ MO.FUiWindow_panel = function FUiWindow_panel(t){
 // @method
 // @see MWinBorder.onBuildPanel
 //==========================================================
-MO.FUiWindow_dump = function FUiWindow_dump(oCtl, sLeft){
+MO.FDuiWindow_dump = function FDuiWindow_dump(oCtl, sLeft){
    var sDump = '';
    if(!oCtl){
       oCtl = this;
@@ -307,7 +307,7 @@ MO.FUiWindow_dump = function FUiWindow_dump(oCtl, sLeft){
 // @method
 // @param oCtl:Control:Control 控件对象 
 //==========================================================
-MO.FUiWindow_pushAllControl = function FUiWindow_pushAllControl(oCtl){
+MO.FDuiWindow_pushAllControl = function FDuiWindow_pushAllControl(oCtl){
    if(!this.allControls){this.allControls = new Array();}
    this.allControls.push(oCtl);
 }
@@ -318,7 +318,7 @@ MO.FUiWindow_pushAllControl = function FUiWindow_pushAllControl(oCtl){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_control = function FUiWindow_control(sName){
+MO.FDuiWindow_control = function FDuiWindow_control(sName){
    if(this.allControls){
       for(var n=0; n<this.allControls.length; n++){
          if(this.allControls[n].name == sName){
@@ -335,7 +335,7 @@ MO.FUiWindow_control = function FUiWindow_control(sName){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_restore = function FUiWindow_restore(){
+MO.FDuiWindow_restore = function FDuiWindow_restore(){
    this.max(true);
 }
 
@@ -345,7 +345,7 @@ MO.FUiWindow_restore = function FUiWindow_restore(){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_processResize = function FUiWindow_processResize(){
+MO.FDuiWindow_processResize = function FDuiWindow_processResize(){
    if(!SystemManager.runMode){
       var oRect = this.rect()
       this.width = oRect.width();
@@ -360,7 +360,7 @@ MO.FUiWindow_processResize = function FUiWindow_processResize(){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_fillAllControl = function FUiWindow_fillAllControl(){
+MO.FDuiWindow_fillAllControl = function FDuiWindow_fillAllControl(){
    var oControl = null;
    var nCount = this.controls.size();
    for(var n=0; n<nCount; n++){
@@ -377,7 +377,7 @@ MO.FUiWindow_fillAllControl = function FUiWindow_fillAllControl(){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_refresh = function FUiWindow_refresh(bConfig){
+MO.FDuiWindow_refresh = function FDuiWindow_refresh(bConfig){
    // Window refresh
    if(this.loadConfig){this.loadConfig();}
    this.setCaption(this.label);
@@ -403,7 +403,7 @@ MO.FUiWindow_refresh = function FUiWindow_refresh(bConfig){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_initialize = function FUiWindow_initialize(){
+MO.FDuiWindow_initialize = function FDuiWindow_initialize(){
    if(this.allControls){
       for(var n=0; n<this.allControls.length; n++){
          var oCtl = this.allControls[n];
@@ -419,7 +419,7 @@ MO.FUiWindow_initialize = function FUiWindow_initialize(){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_release = function FUiWindow_release(){
+MO.FDuiWindow_release = function FDuiWindow_release(){
    if(this.allControls){
       for(var n=0; n<this.allControls.length; n++){
          var oCtl = this.allControls[n];
@@ -438,7 +438,7 @@ MO.FUiWindow_release = function FUiWindow_release(){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_stopDropExecute = function FUiWindow_stopDropExecute(oSource){
+MO.FDuiWindow_stopDropExecute = function FDuiWindow_stopDropExecute(oSource){
    if(oSource.config && oSource.rect){
       var oRect = oSource.rect();
       oSource.config.setAttribute('left', oRect.left);
@@ -457,7 +457,7 @@ MO.FUiWindow_stopDropExecute = function FUiWindow_stopDropExecute(oSource){
 // @method
 // @param event:event:TEvent 构建事件 
 //==========================================================
-MO.FUiWindow_selectDsExecute = function FUiWindow_selectDsExecute(oSource){
+MO.FDuiWindow_selectDsExecute = function FDuiWindow_selectDsExecute(oSource){
    if(oSource && oSource.constructor == FDatasetCtl){
       var bRefresh = (DatasetManager.activeDsCtl != oSource);
       DatasetManager.activeDsCtl = oSource;
@@ -467,9 +467,9 @@ MO.FUiWindow_selectDsExecute = function FUiWindow_selectDsExecute(oSource){
    }
 }
 // =========================================================
-MO.FUiWindow_dispose = function FUiWindow_dispose(){
+MO.FDuiWindow_dispose = function FDuiWindow_dispose(){
    var o = this;
-   o.__base.FUiLayout.dispose.call(o);
+   o.__base.FDuiLayout.dispose.call(o);
    o.__base.MWinBorder.dispose.call(o);
    o.hBorderForm = null;
 }

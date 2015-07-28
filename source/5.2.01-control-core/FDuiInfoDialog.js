@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 MO.FUiInfoDialog = function FUiInfoDialog(o){
-   o = MO.Class.inherits(this, o, MO.FUiDialog, MO.MListenerResult);
+   o = MO.Class.inherits(this, o, MO.FDuiDialog, MO.MListenerResult);
    //..........................................................
    // @style
    o._styleText            = MO.Class.register(o, new MO.AStyle('_styleText'));
@@ -40,7 +40,7 @@ MO.FUiInfoDialog = function FUiInfoDialog(o){
 //==========================================================
 MO.FUiInfoDialog_onBuilded = function FUiInfoDialog_onBuilded(p){
    var o = this;
-   o.__base.FUiDialog.onBuilded.call(o, p);
+   o.__base.FDuiDialog.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
    o._controlText._hPanel.className = o.styleName('Text');
@@ -73,7 +73,7 @@ MO.FUiInfoDialog_onConfirmClick = function FUiInfoDialog_onConfirmClick(event){
 MO.FUiInfoDialog_construct = function FUiInfoDialog_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiDialog.construct.call(o);
+   o.__base.FDuiDialog.construct.call(o);
 }
 
 //==========================================================
@@ -94,5 +94,5 @@ MO.FUiInfoDialog_setText = function FUiInfoDialog_setText(value){
 MO.FUiInfoDialog_dispose = function FUiInfoDialog_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiDialog.dispose.call(o);
+   o.__base.FDuiDialog.dispose.call(o);
 }

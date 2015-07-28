@@ -84,9 +84,9 @@ MO.AEvent_create = function AEvent_create(){
 MO.AEvent_bind = function AEvent_bind(h, u){
    var o = this;
    if(u){
-      h.addEventListener(o._linker, MO.RUiEvent.ohEvent, true);
+      h.addEventListener(o._linker, MO.RDuiEvent.ohEvent, true);
    }else{
-      h[o._handle] = MO.RUiEvent.ohEvent;
+      h[o._handle] = MO.RDuiEvent.ohEvent;
    }
 }
 

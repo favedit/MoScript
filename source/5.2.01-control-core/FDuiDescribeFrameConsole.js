@@ -73,7 +73,7 @@ MO.FUiDescribeFrameConsole_load = function FUiDescribeFrameConsole_load(name){
    var xframe = xroot.create('Frame');
    xframe.set('name', name);
    // 发送内容
-   var url = MO.RUiService.url(o._service);
+   var url = MO.RDuiService.url(o._service);
    var xresult = MO.Console.find(MO.FXmlConsole).sendSync(url, xdocument);
    // 检查数据结果
    //if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(r))){
@@ -181,7 +181,7 @@ MO.FUiDescribeFrameConsole_loadService = function FUiDescribeFrameConsole_loadSe
    var f = root.create('WebForm');
    f.set('name', n);
    f.set('type', t);
-   var url = MO.RUiService.url('logic.webform');
+   var url = MO.RDuiService.url('logic.webform');
    var doc = MO.Console.find(MO.FXmlConsole).send(url, doc);
    var r = doc.root();
    // 检查数据结果

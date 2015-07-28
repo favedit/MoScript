@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiCellButton = function FUiCellButton(o){
+   MO.FDuiCellButton = function FDuiCellButton(o){
       o = RClass.inherits(this, o, FCell);
       //..........................................................
       // @attribute
@@ -14,21 +14,21 @@ with(MO){
       o.attributes        = null;
       //..........................................................
       // @event
-      o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiCellButton_onButtonEnter);
-      o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiCellButton_onButtonLeave);
-      o.onCellLeave       = RClass.register(o, new AEventMouseLeave('onCellLeave'), FUiCellButton_onCellLeave);
-      o.onHintEnter       = RClass.register(o, new AEventMouseEnter('onHintEnter'), FUiCellButton_onHintEnter);
-      o.onHintLeave       = RClass.register(o, new AEventMouseLeave('onHintLeave'), FUiCellButton_onHintLeave);
-      o.onButtonClick     = RClass.register(o, new AEventClick('onButtonClick'), FUiCellButton_onButtonClick);
+      o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiCellButton_onButtonEnter);
+      o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiCellButton_onButtonLeave);
+      o.onCellLeave       = RClass.register(o, new AEventMouseLeave('onCellLeave'), FDuiCellButton_onCellLeave);
+      o.onHintEnter       = RClass.register(o, new AEventMouseEnter('onHintEnter'), FDuiCellButton_onHintEnter);
+      o.onHintLeave       = RClass.register(o, new AEventMouseLeave('onHintLeave'), FDuiCellButton_onHintLeave);
+      o.onButtonClick     = RClass.register(o, new AEventClick('onButtonClick'), FDuiCellButton_onButtonClick);
       //..........................................................
       // @method
-      o.construct         = FUiCellButton_construct;
+      o.construct         = FDuiCellButton_construct;
       o.isDataChanged     = RMethod.emptyFalse;
-      o.findButtonByPanel = FUiCellButton_findButtonByPanel;
-      o.buildForm         = FUiCellButton_buildForm;
-      o.set               = FUiCellButton_set;
-      o.modifyButton      = FUiCellButton_modifyButton;
-      o.refreshStyle      = FUiCellButton_refreshStyle;
+      o.findButtonByPanel = FDuiCellButton_findButtonByPanel;
+      o.buildForm         = FDuiCellButton_buildForm;
+      o.set               = FDuiCellButton_set;
+      o.modifyButton      = FDuiCellButton_modifyButton;
+      o.refreshStyle      = FDuiCellButton_refreshStyle;
       return o;
    }
 
@@ -38,7 +38,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiCellButton_onButtonEnter = function FUiCellButton_onButtonEnter(e){
+   MO.FDuiCellButton_onButtonEnter = function FDuiCellButton_onButtonEnter(e){
       var o = this;
       var b = o.findButtonByPanel(e.hSource);
       if(b){
@@ -60,7 +60,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiCellButton_onButtonLeave = function FUiCellButton_onButtonLeave(e){
+   MO.FDuiCellButton_onButtonLeave = function FDuiCellButton_onButtonLeave(e){
       var o = this;
       var b = o.findButtonByPanel(e.hSource);
       if(b){
@@ -70,13 +70,13 @@ with(MO){
       }
    }
 
-   MO.FUiCellButton_onHintEnter = function FUiCellButton_onHintEnter(e){
+   MO.FDuiCellButton_onHintEnter = function FDuiCellButton_onHintEnter(e){
       var o = this;
       e.hSource.style.backgroundColor = "#eeeeee";
       //e.hSource.style.cursor = "hand";
    }
    //------------------------------------------------------------
-   MO.FUiCellButton_onCellLeave = function FUiCellButton_onCellLeave(e){
+   MO.FDuiCellButton_onCellLeave = function FDuiCellButton_onCellLeave(e){
       var bs = this.buttons;
       var c = bs.count;
       for(var n = 0; n<c; n++){
@@ -88,7 +88,7 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiCellButton_onHintLeave = function FUiCellButton_onHintLeave(e){
+   MO.FDuiCellButton_onHintLeave = function FDuiCellButton_onHintLeave(e){
       e.hSource.style.backgroundColor = "#ffffff";
        e.hSource.style.display = "none";
    }
@@ -99,7 +99,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiCellButton_onButtonClick = function FUiCellButton_onButtonClick(e){
+   MO.FDuiCellButton_onButtonClick = function FDuiCellButton_onButtonClick(e){
       var o = this;
       // 单击单元格
       var t = o.table;
@@ -118,7 +118,7 @@ with(MO){
    // @param h:html:<HTML> 页面对象
    // @return 按键对象
    //==========================================================
-   MO.FUiCellButton_construct = function FUiCellButton_construct(){
+   MO.FDuiCellButton_construct = function FDuiCellButton_construct(){
       var o = this;
       o.base.FCell.construct.call(o);
       o.attributes = new TAttributes();
@@ -131,7 +131,7 @@ with(MO){
    // @param h:html:<HTML> 页面对象
    // @return 按键对象
    //==========================================================
-   MO.FUiCellButton_findButtonByPanel = function FUiCellButton_findButtonByPanel(h){
+   MO.FDuiCellButton_findButtonByPanel = function FDuiCellButton_findButtonByPanel(h){
       var o = this;
       var bs = o.buttons;
       for(var n=0; n<bs.count; n++){
@@ -147,7 +147,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCellButton_buildForm = function FUiCellButton_buildForm(){
+   MO.FDuiCellButton_buildForm = function FDuiCellButton_buildForm(){
       var o = this;
       var c = o.column;
       var hp = o.hPanel;
@@ -216,7 +216,7 @@ with(MO){
    // @method
    // @param v:value:String 文本内容
    //==========================================================
-   MO.FUiCellButton_set = function FUiCellButton_set(v){
+   MO.FDuiCellButton_set = function FDuiCellButton_set(v){
       var o = this;
       if(!RString.isEmpty(v)){
          var pbs = new TAttributes();
@@ -241,7 +241,7 @@ with(MO){
    // @param b:button:TCellButton 按键对象
    // @param as:attributes:TAttributes 属性对象
    //==========================================================
-   MO.FUiCellButton_modifyButton = function FUiCellButton_modifyButton(b, as){
+   MO.FDuiCellButton_modifyButton = function FDuiCellButton_modifyButton(b, as){
       var o = this;
       // 设置可见性
       var bv = true;
@@ -305,7 +305,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCellButton_refreshStyle = function FUiCellButton_refreshStyle(){
+   MO.FDuiCellButton_refreshStyle = function FDuiCellButton_refreshStyle(){
       var o = this;
       var r = o.row;
       // 设置背景颜色

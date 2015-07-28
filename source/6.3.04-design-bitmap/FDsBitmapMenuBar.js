@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsBitmapMenuBar = function FDsBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @attribute
       o._controlBack    = null;
@@ -36,7 +36,7 @@ with(MO){
    //==========================================================
    MO.FDsBitmapMenuBar_onBuilded = function FDsBitmapMenuBar_onBuilded(event){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, event);
+      o.__base.FDuiMenuBar.onBuilded.call(o, event);
    }
 
    //==========================================================
@@ -77,7 +77,7 @@ with(MO){
       // 获得资源
       var resource = o._frameSet._activeResource;
       // 弹出界面
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsBitmapImportDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
       dialog._resource = resource;
       dialog._frameSet = o._frameSet;
       dialog.showPosition(EUiPosition.Center);
@@ -91,7 +91,7 @@ with(MO){
    MO.FDsBitmapMenuBar_construct = function FDsBitmapMenuBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
 
    //==========================================================
@@ -102,6 +102,6 @@ with(MO){
    MO.FDsBitmapMenuBar_dispose = function FDsBitmapMenuBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }

@@ -80,7 +80,7 @@ MO.FGuiFrameConsole_create = function FGuiFrameConsole_create(context, name){
 //
 // @method
 // @param name:String 名称
-// @return FUiFrame 页面控件
+// @return FDuiFrame 页面控件
 //==========================================================
 MO.FGuiFrameConsole_find = function FGuiFrameConsole_find(name){
    return this._frames.get(name); 

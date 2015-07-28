@@ -6,10 +6,10 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiColumnEditControl = function FUiColumnEditControl(o){
+   MO.FDuiColumnEditControl = function FDuiColumnEditControl(o){
       o = RClass.inherits(this, o, FColumn);
       // @method
-      o.isEditAble = FUiColumnEditControl_isEditAble;
+      o.isEditAble = FDuiColumnEditControl_isEditAble;
       return o;
    }
 
@@ -18,7 +18,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColumnEditControl_isEditAble = function FUiColumnEditControl_isEditAble(r){
+   MO.FDuiColumnEditControl_isEditAble = function FDuiColumnEditControl_isEditAble(r){
       var o = this;
       if(r){
          return (ERowStatus.Insert == r.status) ? o.editInsert : o.editUpdate;

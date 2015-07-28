@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @history 150329
    //==========================================================
-   MO.FUiButton = function FUiButton(o){
+   MO.FDuiButton = function FDuiButton(o){
       o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       //..........................................................
       // @attribute
@@ -46,25 +46,25 @@ with(MO){
       o._hLabel            = null;
       //..........................................................
       // @event
-      o.onBuild            = FUiButton_onBuild;
+      o.onBuild            = FDuiButton_onBuild;
       // @event
-      o.onClick            = RClass.register(o, new AEventClick('onClick'), FUiButton_onClick);
-      //o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiButton_onButtonEnter);
-      //o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiButton_onButtonLeave);
-      //o.onButtonDown       = RClass.register(o, new AEventMouseDown('onButtonDown'), FUiButton_onButtonDown);
-      //o.onButtonUp         = RClass.register(o, new AEventMouseUp('onButtonUp'), FUiButton_onButtonUp);
-      //o.onButtonClickDelay = FUiButton_onButtonClickDelay;
-      //o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FUiButton_onButtonClick);
+      o.onClick            = RClass.register(o, new AEventClick('onClick'), FDuiButton_onClick);
+      //o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiButton_onButtonEnter);
+      //o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiButton_onButtonLeave);
+      //o.onButtonDown       = RClass.register(o, new AEventMouseDown('onButtonDown'), FDuiButton_onButtonDown);
+      //o.onButtonUp         = RClass.register(o, new AEventMouseUp('onButtonUp'), FDuiButton_onButtonUp);
+      //o.onButtonClickDelay = FDuiButton_onButtonClickDelay;
+      //o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FDuiButton_onButtonClick);
       //..........................................................
       // @process
-      //o.oeMode             = FUiButton_oeMode;
+      //o.oeMode             = FDuiButton_oeMode;
       //..........................................................
       // @method
-      //o.setLabel           = FUiButton_setLabel;
-      //o.setLabelColor      = FUiButton_setLabelColor;
-      //o.setLabelStyle      = FUiButton_setLabelStyle;
-      o.doClick            = FUiButton_doClick;
-      //o.dispose            = FUiButton_dispose;
+      //o.setLabel           = FDuiButton_setLabel;
+      //o.setLabelColor      = FDuiButton_setLabelColor;
+      //o.setLabelStyle      = FDuiButton_setLabelStyle;
+      o.doClick            = FDuiButton_doClick;
+      //o.dispose            = FDuiButton_dispose;
       return o;
    }
 
@@ -75,7 +75,7 @@ with(MO){
    // @param e:event:TEvent 事件对象
    // @return EEventStatus 处理状态
    //==========================================================
-   MO.FUiButton_onBuild = function FUiButton_onBuild(e){
+   MO.FDuiButton_onBuild = function FDuiButton_onBuild(e){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, e);
       // 设置底板
@@ -117,7 +117,7 @@ with(MO){
    // @param event:event:TEvent
    // @return EEventStatus.Stop
    //==========================================================
-   MO.FUiButton_onButtonEnter = function FUiButton_onButtonEnter(e){
+   MO.FDuiButton_onButtonEnter = function FDuiButton_onButtonEnter(e){
       var o = this;
       if(!o._disabled){
         o._hLeftButton.background = o.styleIconPath('HoverLeft');
@@ -133,7 +133,7 @@ with(MO){
    // @param event:event:TEvent
    // @return EEventStatus.Stop
    //==========================================================
-   MO.FUiButton_onButtonLeave = function FUiButton_onButtonLeave(e){
+   MO.FDuiButton_onButtonLeave = function FDuiButton_onButtonLeave(e){
       var o = this;
       if(!o._disabled){
         o._hLeftButton.background = o.styleIconPath('ButtonLeft');
@@ -150,7 +150,7 @@ with(MO){
    //@param event:event:TEvent
    //@return EEventStatus.Stop
    //==========================================================
-   MO.FUiButton_onButtonDown = function FUiButton_onButtonDown(e){
+   MO.FDuiButton_onButtonDown = function FDuiButton_onButtonDown(e){
       var o = this;
       if(!o._disabled){
         o._hLeftButton.background = o.styleIconPath('PressLeft');
@@ -166,7 +166,7 @@ with(MO){
    //@param event:event:TEvent
    //@return EEventStatus.Stop
    //==========================================================
-   MO.FUiButton_onButtonUp = function FUiButton_onButtonUp(e){
+   MO.FDuiButton_onButtonUp = function FDuiButton_onButtonUp(e){
       var o = this;
       if(!o._disabled){
         o._hLeftButton.background = o.styleIconPath('ButtonLeft');
@@ -181,7 +181,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiButton_onButtonClickDelay = function FUiButton_onButtonClickDelay(e){
+   MO.FDuiButton_onButtonClickDelay = function FDuiButton_onButtonClickDelay(e){
       var o = this;
       o.__process = false;
       o.clickActive.status = EActive.Sleep;
@@ -193,7 +193,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiButton_onClick = function FUiButton_onClick(e){
+   MO.FDuiButton_onClick = function FDuiButton_onClick(e){
       this.doClick();
    }
 
@@ -203,7 +203,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiButton_onButtonClick = function FUiButton_onButtonClick(e){
+   MO.FDuiButton_onButtonClick = function FDuiButton_onButtonClick(e){
       this.doClick();
    }
 
@@ -214,7 +214,7 @@ with(MO){
    // @param e:event:TEvent 事件对象
    // @return EEventStatus 处理状态
    //==========================================================
-   MO.FUiButton_oeMode = function FUiButton_oeMode(e){
+   MO.FDuiButton_oeMode = function FDuiButton_oeMode(e){
       var o = this;
       o.__base.FDuiControl.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
@@ -227,7 +227,7 @@ with(MO){
    // @method
    // @param label:label:label
    //==========================================================
-   MO.FUiButton_setLabel = function FUiButton_setLabel(v){
+   MO.FDuiButton_setLabel = function FDuiButton_setLabel(v){
       var o = this;
       o.label = v;
       o._hLabel.innerText = v;
@@ -240,7 +240,7 @@ with(MO){
    //@method
    //@param label:label:label
    //==========================================================
-   MO.FUiButton_setLabelColor = function FUiButton_setLabelColor(c){
+   MO.FDuiButton_setLabelColor = function FDuiButton_setLabelColor(c){
       var o = this;
       o._hLabel.style.color = '#FF0000';
    }
@@ -251,7 +251,7 @@ with(MO){
    //@method
    //@param label:label:label
    //==========================================================
-   MO.FUiButton_setLabelStyle = function FUiButton_setLabelStyle(c, w, s){
+   MO.FDuiButton_setLabelStyle = function FDuiButton_setLabelStyle(c, w, s){
       var o = this;
       o._hLabel.style.color = '#FF0000';
       o._hLabel.style.fontWeight = 'bold';
@@ -263,7 +263,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiButton_doClick = function FUiButton_doClick(){
+   MO.FDuiButton_doClick = function FDuiButton_doClick(){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
@@ -280,7 +280,7 @@ with(MO){
       // 检查执行状态
       //if(o.__process){
       //   return;
-         //return alert(RContext.get('FUiButton:process'));
+         //return alert(RContext.get('FDuiButton:process'));
       //}
       // 开始执行
       //o.__process = true;
@@ -310,13 +310,13 @@ with(MO){
       //}
       // 执行编辑地址
       //if(o._editUrl){
-      //   var w = RConsole.find(FUiButtonConsole).find();
+      //   var w = RConsole.find(FDuiButtonConsole).find();
       //   w.linkUrl(o._editUrl);
       //   w.show();
       //}
       // 弹出指定表单
       //if(o._editForm){
-      //   var w = RConsole.find(FUiButtonFormConsole).find();
+      //   var w = RConsole.find(FDuiButtonFormConsole).find();
       //   w.linkForm(o);
       //   w.show();
       //}
@@ -327,7 +327,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiButton_dispose = function FUiButton_dispose(){
+   MO.FDuiButton_dispose = function FDuiButton_dispose(){
       var o = this;
       o.__base.FDuiControl.dispose.call(o);
       o._hForm = null;

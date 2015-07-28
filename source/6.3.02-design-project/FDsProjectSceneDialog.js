@@ -6,7 +6,7 @@ with(MO){
    // @history 150411
    //==========================================================
    MO.FDsProjectSceneDialog = function FDsProjectSceneDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'design3d.project.SceneDialog';
@@ -46,7 +46,7 @@ with(MO){
    //==========================================================
    MO.FDsProjectSceneDialog_onBuilded = function FDsProjectSceneDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
@@ -117,7 +117,7 @@ with(MO){
    MO.FDsProjectSceneDialog_construct = function FDsProjectSceneDialog_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
 
    //==========================================================
@@ -164,6 +164,6 @@ with(MO){
    MO.FDsProjectSceneDialog_dispose = function FDsProjectSceneDialog_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

@@ -1,8 +1,8 @@
 with(MO){
    // ============================================================
-   // FColorPickerEditor
+   // FDuiColorPickerEditor
    // ============================================================
-   MO.FColorPickerEditor = function FColorPickerEditor(o){
+   MO.FDuiColorPickerEditor = function FDuiColorPickerEditor(o){
       o = RClass.inherits(this, o, FDropEditor, MShadow);
       // Constant
       //o.MinWidth     = 120;
@@ -10,8 +10,8 @@ with(MO){
       o.ColorHex     = new Array('00', '33', '66', '99', 'CC', 'FF');
       o.SpColorHex   = new Array('FF0000', '00FF00', '0000FF', 'FFFF00', '00FFFF','FF00FF');
       // Event
-      o.onCellEnter  = RClass.register(o, new HMouseOver('onCellEnter'),  FColorPickerEditor_onCellEnter);
-      o.onCellSelect = RClass.register(o, new HMouseDown('onCellSelect'), FColorPickerEditor_onCellSelect);
+      o.onCellEnter  = RClass.register(o, new HMouseOver('onCellEnter'),  FDuiColorPickerEditor_onCellEnter);
+      o.onCellSelect = RClass.register(o, new HMouseDown('onCellSelect'), FDuiColorPickerEditor_onCellSelect);
       // Attribute
       o.color        = null;
       o.hTable       = null;
@@ -20,21 +20,21 @@ with(MO){
    //   o.cellWidth    = 10;
    //   o.cellHeight   = 8;
       // Event
-      o.onBuildDrop  = FColorPickerEditor_onBuildDrop;
-      o.onKeyDown    = FColorPickerEditor_onKeyDown;
-      o.onCellSelect = FColorPickerEditor_onCellSelect;
-       o.onEditEnd = FColorPickerEditor_onEditEnd;
+      o.onBuildDrop  = FDuiColorPickerEditor_onBuildDrop;
+      o.onKeyDown    = FDuiColorPickerEditor_onKeyDown;
+      o.onCellSelect = FDuiColorPickerEditor_onCellSelect;
+       o.onEditEnd = FDuiColorPickerEditor_onEditEnd;
       // Method
-      o.makeCell     = FColorPickerEditor_makeCell;
-      o.set          = FColorPickerEditor_set;
-      o.show         = FColorPickerEditor_show;
-      o.hide         = FColorPickerEditor_hide;
-      o.linkControl  = FColorPickerEditor_linkControl;
-      o.dispose      = FColorPickerEditor_dispose;
+      o.makeCell     = FDuiColorPickerEditor_makeCell;
+      o.set          = FDuiColorPickerEditor_set;
+      o.show         = FDuiColorPickerEditor_show;
+      o.hide         = FDuiColorPickerEditor_hide;
+      o.linkControl  = FDuiColorPickerEditor_linkControl;
+      o.dispose      = FDuiColorPickerEditor_dispose;
       return o;
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_onBuildDrop = function FColorPickerEditor_onBuildDrop(){
+   MO.FDuiColorPickerEditor_onBuildDrop = function FDuiColorPickerEditor_onBuildDrop(){
       var o = this;
       o.hTable = RBuilder.appendTable(o.hDropPanel);
       for(var i = 0; i < 2; i++){
@@ -56,7 +56,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_linkControl = function FColorPickerEditor_linkControl(c){
+   MO.FDuiColorPickerEditor_linkControl = function FDuiColorPickerEditor_linkControl(c){
       var o = this;
       if(o.source == c){
          return false;
@@ -72,19 +72,19 @@ with(MO){
       return true;
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_onCellEnter = function FColorPickerEditor_onCellEnter(e){
+   MO.FDuiColorPickerEditor_onCellEnter = function FDuiColorPickerEditor_onCellEnter(e){
       var o = this;
       o.editable.hDrop.style.backgroundColor = e.hSource.style.backgroundColor;
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_onCellSelect = function FColorPickerEditor_onCellSelect(e){
+   MO.FDuiColorPickerEditor_onCellSelect = function FDuiColorPickerEditor_onCellSelect(e){
       var o = this;
       o.color = e.srcElement.style.backgroundColor;
       o.editStatus = EEditStatus.Ok
       o.blur();
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_makeCell = function FColorPickerEditor_makeCell(hRow, color) {
+   MO.FDuiColorPickerEditor_makeCell = function FDuiColorPickerEditor_makeCell(hRow, color) {
       var o = this;
       var h = hRow.insertCell();
       h.link = o;
@@ -97,8 +97,8 @@ with(MO){
       return h;
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_onKeyDown = function FColorPickerEditor_onKeyDown(e){
-      alert(FColorPickerEditor_onKeyDown);
+   MO.FDuiColorPickerEditor_onKeyDown = function FDuiColorPickerEditor_onKeyDown(e){
+      alert(FDuiColorPickerEditor_onKeyDown);
       var o = this;
       var kc = e.keyCode;
       if(EKey.Up == kc){
@@ -119,12 +119,12 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_set = function FColorPickerEditor_set(v){
+   MO.FDuiColorPickerEditor_set = function FDuiColorPickerEditor_set(v){
       var o = this;
       o.color = v;
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_show = function FColorPickerEditor_show(v){
+   MO.FDuiColorPickerEditor_show = function FDuiColorPickerEditor_show(v){
       var o = this;
       o.base.FDropEditor.show.call(o, v);
       RConsole.find(FFocusConsole).focus(o);
@@ -135,7 +135,7 @@ with(MO){
       o.isSkipBlur = false;
    }
    //------------------------------------------------------------
-   MO.FColorPickerEditor_onEditEnd = function FColorPickerEditor_onEditEnd(){
+   MO.FDuiColorPickerEditor_onEditEnd = function FDuiColorPickerEditor_onEditEnd(){
       var o = this;
       var t = o.editable;
       RLog.debug(o, 'Edit end (editable={0}, status={1})', RClass.dump(t), REnum.decode(EEditStatus, o.editStatus));
@@ -153,14 +153,14 @@ with(MO){
       o.inEdit = false;
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_hide = function FColorPickerEditor_hide(){
+   MO.FDuiColorPickerEditor_hide = function FDuiColorPickerEditor_hide(){
       var o = this;
       o.source = null;
       o.base.FDropEditor.hide.call(o);
       o.base.MShadow.hide.call(o);
    }
    // ------------------------------------------------------------
-   MO.FColorPickerEditor_dispose = function FColorPickerEditor_dispose(){
+   MO.FDuiColorPickerEditor_dispose = function FDuiColorPickerEditor_dispose(){
       var o = this;
       o.base.FDropEditor.dispose.call(o);
       RMemory.freeHtml(o.hTable);

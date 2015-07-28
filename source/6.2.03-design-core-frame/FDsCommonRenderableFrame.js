@@ -6,7 +6,7 @@ with(MO){
    // @history 150216
    //==========================================================
    MO.FDsCommonRenderableFrame = function FDsCommonRenderableFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._activeSpace      = null;
@@ -35,7 +35,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonRenderableFrame_onBuilded = function FDsCommonRenderableFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       // 关联对象
       o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
       o._controlRotation.addDataChangedListener(o, o.onDataChanged);
@@ -79,7 +79,7 @@ with(MO){
       var item = event.item;
       var materialRefer = item.tag();
       // 显示对话框
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonMaterialReferDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
       dialog._frame = o;
       dialog._materialRefer = materialRefer;
       //dialog.setContentGuid('');
@@ -104,7 +104,7 @@ with(MO){
       // s.targetSource()
       var fragmentShader = program.fragmentShader();
       // 弹出内容
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonProgramDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
       dialog._frameSet = o._frameSet;
       dialog.setProgramCode(effect._code);
       dialog.setVertexSource(vertexShader.source(), vertexShader.targetSource());
@@ -120,7 +120,7 @@ with(MO){
    MO.FDsCommonRenderableFrame_construct = function FDsCommonRenderableFrame_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
 
    //==========================================================
@@ -176,6 +176,6 @@ with(MO){
    MO.FDsCommonRenderableFrame_dispose = function FDsCommonRenderableFrame_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }

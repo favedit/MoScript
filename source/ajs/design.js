@@ -921,7 +921,7 @@ with(MO){
 }
 with(MO){
    MO.FDsFrameSet = function FDsFrameSet(o){
-      o = RClass.inherits(this, o, FUiFrameSet);
+      o = RClass.inherits(this, o, FDuiFrameSet);
       o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
       o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
       o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
@@ -939,14 +939,14 @@ with(MO){
    }
    MO.FDsFrameSet_construct = function FDsFrameSet_construct(){
       var o = this;
-      o.__base.FUiFrameSet.construct.call(o);
+      o.__base.FDuiFrameSet.construct.call(o);
       o._propertyFrames = new TDictionary();
    }
    MO.FDsFrameSet_findPropertyFrame = function FDsFrameSet_findPropertyFrame(code){
       var o = this;
       var frame = o._propertyFrames.get(code);
       if(!frame){
-         frame = RConsole.find(FUiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
+         frame = RConsole.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
          frame._frameSet = o;
          o._propertyFrames.set(code, frame);
       }
@@ -974,7 +974,7 @@ with(MO){
          frame.dispose();
       }
       o._propertyFrames = RObject.dispose(o._propertyFrames);
-      o.__base.FUiFrameSet.dispose.call(o);
+      o.__base.FDuiFrameSet.dispose.call(o);
    }
 }
 with(MO){

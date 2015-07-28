@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsCommonSpriteDialog = function FDsCommonSpriteDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.SpriteDialog';
@@ -49,7 +49,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonSpriteDialog_onBuilded = function FDsCommonSpriteDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       //..........................................................
       // 设置属性
       o._controlLayerLabel.setEditAble(false);
@@ -133,7 +133,7 @@ with(MO){
    MO.FDsCommonSpriteDialog_construct = function FDsCommonSpriteDialog_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
 
    //==========================================================
@@ -184,6 +184,6 @@ with(MO){
    MO.FDsCommonSpriteDialog_dispose = function FDsCommonSpriteDialog_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

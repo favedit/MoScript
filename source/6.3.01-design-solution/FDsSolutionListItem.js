@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSolutionListItem = function FDsSolutionListItem(o){
-      o = RClass.inherits(this, o, FUiListViewItem);
+      o = RClass.inherits(this, o, FDuiListViewItem);
       //..........................................................
       // @event
       o.onBuild      = FDsSolutionListItem_onBuild;
@@ -25,7 +25,7 @@ with(MO){
    MO.FDsSolutionListItem_onBuild = function FDsSolutionListItem_onBuild(p){
       var o = this;
       // 建立控件
-      o.__base.FUiListViewItem.onBuild.call(o, p);
+      o.__base.FDuiListViewItem.onBuild.call(o, p);
       var h = o._hPanel;
       h.style.width = '200px';
       h.style.height = '150px';

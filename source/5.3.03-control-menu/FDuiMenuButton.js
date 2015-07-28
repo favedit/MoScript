@@ -16,8 +16,8 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FUiMenuButton = function FUiMenuButton(o){
-      o = RClass.inherits(this, o, FDuiControl, MUiMenuButton, MListenerClick);
+   MO.FDuiMenuButton = function FDuiMenuButton(o){
+      o = RClass.inherits(this, o, FDuiControl, MDuiMenuButton, MListenerClick);
       //..........................................................
       // @property
       o._icon            = RClass.register(o, new APtyString('_icon'));
@@ -46,22 +46,22 @@ with(MO){
       o._hLabelPanel     = null;
       //..........................................................
       // @event
-      o.onBuildPanel     = FUiMenuButton_onBuildPanel
-      o.onBuild          = FUiMenuButton_onBuild;
+      o.onBuildPanel     = FDuiMenuButton_onBuildPanel
+      o.onBuild          = FDuiMenuButton_onBuild;
       // @event
-      o.onEnter          = FUiMenuButton_onEnter;
-      o.onLeave          = FUiMenuButton_onLeave;
-      o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
-      o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
+      o.onEnter          = FDuiMenuButton_onEnter;
+      o.onLeave          = FDuiMenuButton_onLeave;
+      o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FDuiMenuButton_onMouseDown);
+      o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FDuiMenuButton_onMouseUp);
       //..........................................................
       // @method
-      o.icon             = FUiMenuButton_icon;
-      o.setIcon          = FUiMenuButton_setIcon;
-      o.setLabel         = FUiMenuButton_setLabel;
-      o.setHint          = FUiMenuButton_setHint;
-      o.setEnable        = FUiMenuButton_setEnable;
-      o.click            = FUiMenuButton_click;
-      o.dispose          = FUiMenuButton_dispose;
+      o.icon             = FDuiMenuButton_icon;
+      o.setIcon          = FDuiMenuButton_setIcon;
+      o.setLabel         = FDuiMenuButton_setLabel;
+      o.setHint          = FDuiMenuButton_setHint;
+      o.setEnable        = FDuiMenuButton_setEnable;
+      o.click            = FDuiMenuButton_click;
+      o.dispose          = FDuiMenuButton_dispose;
       return o;
    }
 
@@ -71,7 +71,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiMenuButton_onBuildPanel = function FUiMenuButton_onBuildPanel(p){
+   MO.FDuiMenuButton_onBuildPanel = function FDuiMenuButton_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
    }
@@ -82,7 +82,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiMenuButton_onBuild = function FUiMenuButton_onBuild(p){
+   MO.FDuiMenuButton_onBuild = function FDuiMenuButton_onBuild(p){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, p);
       // 设置面板
@@ -124,7 +124,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiMenuButton_onEnter = function FUiMenuButton_onEnter(p){
+   MO.FDuiMenuButton_onEnter = function FDuiMenuButton_onEnter(p){
       var o = this;
       if(!o._disabled){
          o._hPanel.className = o.styleName('Hover');
@@ -137,7 +137,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiMenuButton_onLeave = function FUiMenuButton_onLeave(){
+   MO.FDuiMenuButton_onLeave = function FDuiMenuButton_onLeave(){
       var o = this;
       if(!o._disabled){
          o._hPanel.className = o.styleName('Normal');
@@ -150,7 +150,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiMenuButton_onMouseDown = function FUiMenuButton_onMouseDown(){
+   MO.FDuiMenuButton_onMouseDown = function FDuiMenuButton_onMouseDown(){
       var o = this;
       if(!o._disabled){
          o._hPanel.className = o.styleName('Press');
@@ -164,7 +164,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiMenuButton_onMouseUp = function FUiMenuButton_onMouseUp(){
+   MO.FDuiMenuButton_onMouseUp = function FDuiMenuButton_onMouseUp(){
       var o = this;
       if(!o._disabled){
          o._hPanel.className = o.styleName('Hover');
@@ -177,7 +177,7 @@ with(MO){
    // @method
    // @return String 图标
    //==========================================================
-   MO.FUiMenuButton_icon = function FUiMenuButton_icon(){
+   MO.FDuiMenuButton_icon = function FDuiMenuButton_icon(){
       return this._icon;
    }
 
@@ -187,7 +187,7 @@ with(MO){
    // @method
    // @param p:icon:String 图标
    //==========================================================
-   MO.FUiMenuButton_setIcon = function FUiMenuButton_setIcon(p){
+   MO.FDuiMenuButton_setIcon = function FDuiMenuButton_setIcon(p){
       var o = this;
       o._icon = p;
       if(o._hIcon){
@@ -201,7 +201,7 @@ with(MO){
    // @method
    // @param p:label:String 标签
    //==========================================================
-   MO.FUiMenuButton_setLabel = function FUiMenuButton_setLabel(p){
+   MO.FDuiMenuButton_setLabel = function FDuiMenuButton_setLabel(p){
       var o = this;
       var s = RString.nvl(p);
       o._label = s;
@@ -214,7 +214,7 @@ with(MO){
    // @method
    // @param p:hint:String 提示
    //==========================================================
-   MO.FUiMenuButton_setHint = function FUiMenuButton_setHint(p){
+   MO.FDuiMenuButton_setHint = function FDuiMenuButton_setHint(p){
       var o = this;
       o._hint = p;
       var s = RString.nvl(p);
@@ -232,7 +232,7 @@ with(MO){
    // @method
    // @param p:enable:Boolean 是否可操作
    //==========================================================
-   MO.FUiMenuButton_setEnable = function FUiMenuButton_setEnable(p){
+   MO.FDuiMenuButton_setEnable = function FDuiMenuButton_setEnable(p){
       var o = this;
       o.__base.FDuiControl.setEnable.call(o, p);
       // 允许处理
@@ -255,7 +255,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiMenuButton_click = function FUiMenuButton_click(){
+   MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
       var o = this;
       if(!o._disabled){
          RConsole.find(FUiFocusConsole).blur();
@@ -276,7 +276,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiMenuButton_dispose = function FUiMenuButton_dispose(){
+   MO.FDuiMenuButton_dispose = function FDuiMenuButton_dispose(){
       var o = this;
       // 释放属性
       o._hForm = RHtml.free(o._hForm);

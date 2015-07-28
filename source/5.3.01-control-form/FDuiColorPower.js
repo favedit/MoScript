@@ -15,8 +15,8 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiColorPower = function FUiColorPower(o){
-      o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged, MMouseCapture);
+   MO.FDuiColorPower = function FDuiColorPower(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged, MMouseCapture);
       //..........................................................
       // @property
       o._inputSize          = RClass.register(o, new APtySize2('_inputSize'));
@@ -45,25 +45,25 @@ with(MO){
       o._hChannelForm       = null;
       //..........................................................
       // @event
-      o.onBuildEditValue    = FUiColorPower_onBuildEditValue;
+      o.onBuildEditValue    = FDuiColorPower_onBuildEditValue;
       // @event
-      o.onMouseCaptureStart = FUiColorPower_onMouseCaptureStart;
-      o.onMouseCapture      = FUiColorPower_onMouseCapture;
-      o.onMouseCaptureStop  = FUiColorPower_onMouseCaptureStop;
-      o.onInputKeyPress     = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiColorPower_onInputKeyPress);
-      o.onInputEdit         = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiColorPower_onInputEdit);
-      o.onInputChange       = RClass.register(o, new AEventChange('onInputChange'), FUiColorPower_onInputChange);
+      o.onMouseCaptureStart = FDuiColorPower_onMouseCaptureStart;
+      o.onMouseCapture      = FDuiColorPower_onMouseCapture;
+      o.onMouseCaptureStop  = FDuiColorPower_onMouseCaptureStop;
+      o.onInputKeyPress     = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiColorPower_onInputKeyPress);
+      o.onInputEdit         = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiColorPower_onInputEdit);
+      o.onInputChange       = RClass.register(o, new AEventChange('onInputChange'), FDuiColorPower_onInputChange);
       //..........................................................
       // @method
-      o.construct           = FUiColorPower_construct;
+      o.construct           = FDuiColorPower_construct;
       // @method
-      o.get                 = FUiColorPower_get;
-      o.set                 = FUiColorPower_set;
-      o.setDisplayColor     = FUiColorPower_setDisplayColor;
-      o.setDisplay          = FUiColorPower_setDisplay;
-      o.refreshValue        = FUiColorPower_refreshValue;
+      o.get                 = FDuiColorPower_get;
+      o.set                 = FDuiColorPower_set;
+      o.setDisplayColor     = FDuiColorPower_setDisplayColor;
+      o.setDisplay          = FDuiColorPower_setDisplay;
+      o.refreshValue        = FDuiColorPower_refreshValue;
       // @method
-      o.dispose             = FUiColorPower_dispose;
+      o.dispose             = FDuiColorPower_dispose;
       return o;
    }
 
@@ -73,7 +73,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiColorPower_onBuildEditValue = function FUiColorPower_onBuildEditValue(p){
+   MO.FDuiColorPower_onBuildEditValue = function FDuiColorPower_onBuildEditValue(p){
       var o = this;
       var h = o._hValuePanel;
       h.className = o.styleName('ValuePanel');
@@ -96,25 +96,25 @@ with(MO){
       hcf.__linker = o;
       hcf.width = '100%';
       // 建立红色输入栏
-      var b = o._barRed = new SUiColorChannel();
+      var b = o._barRed = new SDuiColorChannel();
       b.control = o;
       b.typeCd = 'red';
       b.hPanel = hcf;
       b.build();
       // 建立绿色输入栏
-      var b = o._barGreen = new SUiColorChannel();
+      var b = o._barGreen = new SDuiColorChannel();
       b.control = o;
       b.typeCd = 'green';
       b.hPanel = hcf;
       b.build();
       // 建立蓝色输入栏
-      var b = o._barBlue = new SUiColorChannel();
+      var b = o._barBlue = new SDuiColorChannel();
       b.control = o;
       b.typeCd = 'blue';
       b.hPanel = hcf;
       b.build();
       // 建立强度输入栏
-      var b = o._barPower = new SUiColorPower();
+      var b = o._barPower = new SDuiColorPower();
       b.control = o;
       b.typeCd = 'power';
       b.setRange(o._valueMin, o._valueMax);
@@ -127,7 +127,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiColorPower_onMouseCaptureStart = function FUiColorPower_onMouseCaptureStart(p){
+   MO.FDuiColorPower_onMouseCaptureStart = function FDuiColorPower_onMouseCaptureStart(p){
       var o = this;
       var b = RHtml.searchObject(p.hSource, '__pbar');
       if(b){
@@ -140,7 +140,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiColorPower_onMouseCapture = function FUiColorPower_onMouseCapture(p){
+   MO.FDuiColorPower_onMouseCapture = function FDuiColorPower_onMouseCapture(p){
       var o = this;
       var b = RHtml.searchObject(p.hSource, '__pbar');
       if(b){
@@ -153,7 +153,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiColorPower_onMouseCaptureStop = function FUiColorPower_onMouseCaptureStop(p){
+   MO.FDuiColorPower_onMouseCaptureStop = function FDuiColorPower_onMouseCaptureStop(p){
       var o = this;
       var b = RHtml.searchObject(p.hSource, '__pbar');
       if(b){
@@ -166,7 +166,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiColorPower_onInputKeyPress = function FUiColorPower_onInputKeyPress(p){
+   MO.FDuiColorPower_onInputKeyPress = function FDuiColorPower_onInputKeyPress(p){
       var o = this;
       var c = p.keyCode;
       // 检查输入字符是否控制按键
@@ -184,7 +184,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiColorPower_onInputEdit = function FUiColorPower_onInputEdit(p){
+   MO.FDuiColorPower_onInputEdit = function FDuiColorPower_onInputEdit(p){
       var o = this;
       var hs = p.hSender;
       var b = hs._pbar;
@@ -200,7 +200,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiColorPower_onInputChange = function FUiColorPower_onInputChange(p){
+   MO.FDuiColorPower_onInputChange = function FDuiColorPower_onInputChange(p){
       var o = this;
       var hs = p.hSender;
       var b = hs._pbar;
@@ -216,9 +216,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColorPower_construct = function FUiColorPower_construct(){
+   MO.FDuiColorPower_construct = function FDuiColorPower_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       // 设置属性
       o._inputSize = new SSize2(120, 0);
       o._innerOriginValue = new SColor4();
@@ -231,7 +231,7 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiColorPower_get = function FUiColorPower_get(p){
+   MO.FDuiColorPower_get = function FDuiColorPower_get(p){
       var o = this;
       var v = o._innerDataValue;
       // 获得数据
@@ -248,9 +248,9 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiColorPower_set = function FUiColorPower_set(p){
+   MO.FDuiColorPower_set = function FDuiColorPower_set(p){
       var o = this;
-      o.__base.FUiEditControl.set.call(o, p);
+      o.__base.FDuiEditControl.set.call(o, p);
       // 设置显示
       if(p.constructor == SColor4){
          o._innerOriginValue.assign(p);
@@ -276,7 +276,7 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiColorPower_setDisplayColor = function FUiColorPower_setDisplayColor(){
+   MO.FDuiColorPower_setDisplayColor = function FDuiColorPower_setDisplayColor(){
       var o = this;
       var v = o._innerDataValue;
       // 设置颜色
@@ -293,7 +293,7 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiColorPower_setDisplay = function FUiColorPower_setDisplay(){
+   MO.FDuiColorPower_setDisplay = function FDuiColorPower_setDisplay(){
       var o = this;
       // 设置颜色
       o.setDisplayColor();
@@ -310,7 +310,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColorPower_refreshValue = function FUiColorPower_refreshValue(){
+   MO.FDuiColorPower_refreshValue = function FDuiColorPower_refreshValue(){
       var o = this;
       o.get();
       o.setDisplayColor();
@@ -323,8 +323,8 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColorPower_dispose = function FUiColorPower_dispose(t){
+   MO.FDuiColorPower_dispose = function FDuiColorPower_dispose(t){
       var o = this;
-      o.__base.FUiEditControl.dispose.call(o, t);
+      o.__base.FDuiEditControl.dispose.call(o, t);
    }
 }

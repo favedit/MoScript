@@ -7,7 +7,7 @@ with(MO){
    // @version 150319
    //==========================================================
    MO.FUiDataCheck = function FUiDataCheck(o){
-      o = RClass.inherits(this, o, FUiCheck, MUiDataField);
+      o = RClass.inherits(this, o, FDuiCheck, MUiDataField);
       return o;
    }
 }

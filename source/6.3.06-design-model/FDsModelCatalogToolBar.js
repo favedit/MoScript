@@ -7,7 +7,7 @@ with(MO){
    // @history 150420
    //==========================================================
    MO.FDsModelCatalogToolBar = function FDsModelCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName             = 'resource.model.CatalogToolBar';
@@ -52,7 +52,7 @@ with(MO){
    //==========================================================
    MO.FDsModelCatalogToolBar_onBuilded = function FDsModelCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       //o._controlCreateCamera.addClickListener(o, o.onCreateCameraClick);
@@ -82,7 +82,7 @@ with(MO){
       //   parentLabel = node.label();
       //}
       // 显示窗口
-      //var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+      //var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       //dialog._workspace = o._workspace;
       //dialog._frameSet = o._frameSet;
       //dialog._parentGuid = parentGuid;
@@ -110,7 +110,7 @@ with(MO){
       //   parentLabel = node.label();
       //}
       // 显示窗口
-      //var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+      //var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       //dialog._workspace = o._workspace;
       //dialog._frameSet = o._frameSet;
       //dialog._parentGuid = parentGuid;
@@ -148,7 +148,7 @@ with(MO){
       }
       // 显示对话框
       var frameSet = o._frameSet;
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = frameSet._activeSpace.resource().guid();
       dialog._layerGuid = layer.resource().guid();
@@ -345,7 +345,7 @@ with(MO){
    MO.FDsModelCatalogToolBar_construct = function FDsModelCatalogToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -356,6 +356,6 @@ with(MO){
    MO.FDsModelCatalogToolBar_dispose = function FDsModelCatalogToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

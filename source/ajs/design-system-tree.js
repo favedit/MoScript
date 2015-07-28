@@ -57,7 +57,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemTreeCatalogToolBar = function FDsSystemTreeCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName = 'system.design.frame.CatalogToolBar';
       o._controlFolderCreateButton   = null;
       o._controlFolderDeleteButton   = null;
@@ -79,7 +79,7 @@ with(MO){
    }
    MO.FDsSystemTreeCatalogToolBar_onBuilded = function FDsSystemTreeCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
    }
    MO.FDsSystemTreeCatalogToolBar_onFolderCreateClick = function FDsSystemTreeCatalogToolBar_onFolderCreateClick(event){
       var o = this;
@@ -91,7 +91,7 @@ with(MO){
          parentGuid = node.guid();
          parentLabel = node.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._parentGuid = parentGuid;
@@ -144,7 +144,7 @@ with(MO){
       if(node._parent){
          parentLabel = node._parent.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._nodeGuid = node._guid;
@@ -159,11 +159,11 @@ with(MO){
    }
    MO.FDsSystemTreeCatalogToolBar_construct = function FDsSystemTreeCatalogToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsSystemTreeCatalogToolBar_dispose = function FDsSystemTreeCatalogToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
@@ -239,7 +239,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemTreeMenuBar = function FDsSystemTreeMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       o._frameName      = 'system.design.frame.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsSystemTreeMenuBar_onBuilded;
@@ -250,7 +250,7 @@ with(MO){
    }
    MO.FDsSystemTreeMenuBar_onBuilded = function FDsSystemTreeMenuBar_onBuilded(p){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, p);
+      o.__base.FDuiMenuBar.onBuilded.call(o, p);
       o._controlCreate.addClickListener(o, o.onCreateClick);
       o._controlUpdate.addClickListener(o, o.onUpdateClick);
       o._controlDelete.addClickListener(o, o.onDeleteClick);
@@ -401,7 +401,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemTreePropertyToolBar = function FDsSystemTreePropertyToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName           = 'system.design.frame.PropertyToolBar';
       o._controlInsertButton = null;
       o._controlUpdateButton = null;
@@ -414,7 +414,7 @@ with(MO){
    }
    MO.FDsSystemTreePropertyToolBar_onBuilded = function FDsSystemTreePropertyToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
    }
    MO.FDsSystemTreePropertyToolBar_onUpdateClick = function FDsSystemTreePropertyToolBar_onUpdateClick(event){
       var o = this;
@@ -423,10 +423,10 @@ with(MO){
    }
    MO.FDsSystemTreePropertyToolBar_construct = function FDsSystemTreePropertyToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsSystemTreePropertyToolBar_dispose = function FDsSystemTreePropertyToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

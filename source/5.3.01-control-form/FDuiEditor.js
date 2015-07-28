@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150224
    //==========================================================
-   MO.FUiEditor = function FUiEditor(o){
+   MO.FDuiEditor = function FDuiEditor(o){
       o = RClass.inherits(this, o, FDuiControl, MUiFocus);
       //..........................................................
       // @property
@@ -31,26 +31,26 @@ with(MO){
       o.onEditKeyPress = RClass.register(o, new AEventKeyPress('onEditKeyPress'));
       o.onEditKeyUp    = RClass.register(o, new AEventKeyUp('onEditKeyUp'));
       o.onEditChange   = RClass.register(o, new AEventChange('onEditChange'));
-      o.onEditBegin    = FUiEditor_onEditBegin;
-      o.onEditChanged  = FUiEditor_onEditChanged;
-      o.onEditEnd      = FUiEditor_onEditEnd;
-      o.onBuildPanel   = FUiEditor_onBuildPanel;
+      o.onEditBegin    = FDuiEditor_onEditBegin;
+      o.onEditChanged  = FDuiEditor_onEditChanged;
+      o.onEditEnd      = FDuiEditor_onEditEnd;
+      o.onBuildPanel   = FDuiEditor_onBuildPanel;
       //..........................................................
       // @process
-      o.onBuild        = FUiEditor_onBuild;
+      o.onBuild        = FDuiEditor_onBuild;
       //..........................................................
       // @method
       o.get            = RMethod.virtual(o, 'get');
       o.set            = RMethod.virtual(o, 'set');
-      o.doBlur         = FUiEditor_doBlur;
-      o.panel          = FUiEditor_panel;
-      o.linkControl    = FUiEditor_linkControl;
-      o.editBegin      = FUiEditor_editBegin;
-      o.editCancel     = FUiEditor_editCancel;
-      o.editEnd        = FUiEditor_editEnd;
-      o.reset          = FUiEditor_reset;
-      o.setVisible     = FUiEditor_setVisible;
-      o.dispose        = FUiEditor_dispose;
+      o.doBlur         = FDuiEditor_doBlur;
+      o.panel          = FDuiEditor_panel;
+      o.linkControl    = FDuiEditor_linkControl;
+      o.editBegin      = FDuiEditor_editBegin;
+      o.editCancel     = FDuiEditor_editCancel;
+      o.editEnd        = FDuiEditor_editEnd;
+      o.reset          = FDuiEditor_reset;
+      o.setVisible     = FDuiEditor_setVisible;
+      o.dispose        = FDuiEditor_dispose;
       return o;
    }
 
@@ -59,7 +59,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_onEditBegin = function FUiEditor_onEditBegin(){
+   MO.FDuiEditor_onEditBegin = function FDuiEditor_onEditBegin(){
       this.editBegin();
    }
 
@@ -68,7 +68,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_onEditChanged = function FUiEditor_onEditChanged(){
+   MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
       var o = this;
       MO.Logger.debug(o, 'Edit changed');
       var g = o.storage = RObject.nvlObj(o.storage);
@@ -90,7 +90,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_onEditEnd = function FUiEditor_onEditEnd(){
+   MO.FDuiEditor_onEditEnd = function FDuiEditor_onEditEnd(){
       var o = this;
       var s = o._source;
       // 编辑完成
@@ -112,7 +112,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.FUiEditor_onBuildPanel = function FUiEditor_onBuildPanel(p){
+   MO.FDuiEditor_onBuildPanel = function FDuiEditor_onBuildPanel(p){
       var o = this;
       var h = o._hPanel = RBuilder.createSpan(p);
       h.__linker = o;
@@ -124,7 +124,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiEditor_onBuild = function FUiEditor_onBuild(p){
+   MO.FDuiEditor_onBuild = function FDuiEditor_onBuild(p){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, p);
       o._hPanel.style.zIndex = EUiLayer.Editor;
@@ -135,7 +135,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_get = function FUiEditor_get(name){
+   MO.FDuiEditor_get = function FDuiEditor_get(name){
    }
 
    //==========================================================
@@ -143,7 +143,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_set = function FUiEditor_set(name, value){
+   MO.FDuiEditor_set = function FDuiEditor_set(name, value){
    }
 
    //==========================================================
@@ -151,7 +151,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_doBlur = function FUiEditor_doBlur(){
+   MO.FDuiEditor_doBlur = function FDuiEditor_doBlur(){
       var o = this;
       var s = o._source;
       if(s){
@@ -167,7 +167,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_panel = function FUiEditor_panel(p){
+   MO.FDuiEditor_panel = function FDuiEditor_panel(p){
       var o = this;
       if(p == EPanel.Edit){
          return o._hEdit;
@@ -182,7 +182,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_linkControl = function FUiEditor_linkControl(c){
+   MO.FDuiEditor_linkControl = function FDuiEditor_linkControl(c){
       var o = this;
       o._source = c;
    }
@@ -192,7 +192,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_editBegin = function FUiEditor_editBegin(){
+   MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
       var o = this;
       var s = o._source;
       // 编辑开始
@@ -211,7 +211,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_editCancel = function FUiEditor_editCancel(){
+   MO.FDuiEditor_editCancel = function FDuiEditor_editCancel(){
       var o = this;
       var s = o._source;
       // 编辑完成
@@ -232,7 +232,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_editEnd = function FUiEditor_editEnd(){
+   MO.FDuiEditor_editEnd = function FDuiEditor_editEnd(){
       this.onEditEnd();
    }
 
@@ -241,7 +241,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_reset = function FUiEditor_reset(){
+   MO.FDuiEditor_reset = function FDuiEditor_reset(){
       var o = this;
       o.lsnEditBegin = null;
       o.lsnEditCancel = null;
@@ -254,7 +254,7 @@ with(MO){
    // @method
    // @param p:visible:Boolean 是否显示
    //==========================================================
-   MO.FUiEditor_setVisible = function FUiEditor_setVisible(p){
+   MO.FDuiEditor_setVisible = function FDuiEditor_setVisible(p){
       var o = this;
       o.__base.FDuiControl.setVisible.call(o, p);
       if(p){
@@ -268,7 +268,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEditor_dispose = function FUiEditor_dispose(){
+   MO.FDuiEditor_dispose = function FDuiEditor_dispose(){
       var o = this;
       o.__base.FDuiControl.dispose.call(o);
       o._hEdit = null;

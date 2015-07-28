@@ -5,7 +5,7 @@ with(MO){
    // @class FEditControl, MEditBorder, MDescEdit
    // @history 09112 MAOCY 创建
    //==========================================================
-   MO.FUiPicture = function FUiPicture(o){
+   MO.FDuiPicture = function FDuiPicture(o){
       o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescEdit);
       //..........................................................
       // @property
@@ -23,16 +23,16 @@ with(MO){
       o.borderStyle       = EUiBorder.Round;
       //..........................................................
       // @event
-      o.onUploadMouseDown = RClass.register(o, new HMouseDown('onUploadMouseDown'), FUiPicture_onUploadMouseDown);
-      o.onFileUploaded    = FUiPicture_onFileUploaded;
-      o.onBuildEdit       = FUiPicture_onBuildEdit;
+      o.onUploadMouseDown = RClass.register(o, new HMouseDown('onUploadMouseDown'), FDuiPicture_onUploadMouseDown);
+      o.onFileUploaded    = FDuiPicture_onFileUploaded;
+      o.onBuildEdit       = FDuiPicture_onBuildEdit;
       //..........................................................
       // @method
-      o.construct         = FUiPicture_construct;
-      o.makeIconPath      = FUiPicture_makeIconPath;
-      o.setText           = FUiPicture_setText;
-      o.setEditable       = FUiPicture_setEditable;
-      o.dispose           = FUiPicture_dispose;
+      o.construct         = FDuiPicture_construct;
+      o.makeIconPath      = FDuiPicture_makeIconPath;
+      o.setText           = FDuiPicture_setText;
+      o.setEditable       = FDuiPicture_setEditable;
+      o.dispose           = FDuiPicture_dispose;
       return o;
    }
 
@@ -42,7 +42,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiPicture_onUploadMouseDown = function FUiPicture_onUploadMouseDown(e){
+   MO.FDuiPicture_onUploadMouseDown = function FDuiPicture_onUploadMouseDown(e){
       var o = this;
       if(o._editable && !o._disbaled){
          // 生成上传文件的窗口
@@ -66,7 +66,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiPicture_onFileUploaded = function FUiPicture_onFileUploaded(s, g){
+   MO.FDuiPicture_onFileUploaded = function FDuiPicture_onFileUploaded(s, g){
       var o = this;
       var as = g.attributes;
       o.guid = as.get('GUID');
@@ -81,7 +81,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPicture_onBuildEdit = function FUiPicture_onBuildEdit(b){
+   MO.FDuiPicture_onBuildEdit = function FDuiPicture_onBuildEdit(b){
       var o = this;
       var hif = o.hImageForm = o.hEdit = RBuilder.appendTable(b.hPanel);
       hif.width = '100%';
@@ -107,7 +107,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPicture_construct = function FUiPicture_construct(){
+   MO.FDuiPicture_construct = function FDuiPicture_construct(){
       var o = this;
       o.base.FEditControl.construct.call(o);
       o.attributes = new TAttributes();
@@ -118,14 +118,14 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPicture_makeIconPath = function FUiPicture_makeIconPath(g, m, sc){
+   MO.FDuiPicture_makeIconPath = function FDuiPicture_makeIconPath(g, m, sc){
       var o = this;
       var s = o.recordCode + '/' + o.recordGuid + '/' + g + '.icon.' + m;
       return top.RContext.context('/svr/' + sc.toLowerCase() + '/sys/' + RString.toLower(s));
    }
 
    // ------------------------------------------------------------
-   MO.FUiPicture_setText = function FUiPicture_setText(t){
+   MO.FDuiPicture_setText = function FDuiPicture_setText(t){
       var o = this;
       var as = o.attributes;
       as.clear();
@@ -147,7 +147,7 @@ with(MO){
       o.hImage.style.display = v ? 'block' : 'none';
    }
    // ------------------------------------------------------------
-   MO.FUiPicture_setEditable = function FUiPicture_setEditable(v){
+   MO.FDuiPicture_setEditable = function FDuiPicture_setEditable(v){
       var o = this;
       o.base.FEditControl.setEditable.call(o, v);
       if(v){
@@ -157,7 +157,7 @@ with(MO){
       }
    }
    //------------------------------------------------------------
-   MO.FUiPicture_dispose = function FUiPicture_dispose(){
+   MO.FDuiPicture_dispose = function FDuiPicture_dispose(){
       var o = this;
       o.base.FEditControl.dispose.call(o);
       o.hImage = null;

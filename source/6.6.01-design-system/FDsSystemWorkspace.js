@@ -89,7 +89,7 @@ with(MO){
    // <T>根据名称获得属性页面。</T>
    //
    // @method
-   // @return FUiFrame 页面
+   // @return FDuiFrame 页面
    //==========================================================
    MO.FDsSystemWorkspace_selectFrameSet = function FDsSystemWorkspace_selectFrameSet(name, guid){
       var o = this;
@@ -102,7 +102,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemPersistenceFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSystemPersistenceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -112,7 +112,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemListFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSystemListFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -122,7 +122,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemTreeFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSystemTreeFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -132,7 +132,7 @@ with(MO){
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemFrameFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSystemFrameFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;

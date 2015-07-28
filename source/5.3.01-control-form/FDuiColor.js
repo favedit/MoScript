@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiColor = function FUiColor(o){
+   MO.FDuiColor = function FDuiColor(o){
       //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
       o = RClass.inherits(this, o, FEditControl);
       //..........................................................
@@ -21,17 +21,17 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiColor_onBuildEditValue;
+      o.onBuildEditValue = FDuiColor_onBuildEditValue;
       //..........................................................
       // @process
-      //o.oeDataLoad       = FUiColor_oeDataLoad;
-      //o.oeDataSave       = FUiColor_oeDataSave;
+      //o.oeDataLoad       = FDuiColor_oeDataLoad;
+      //o.oeDataSave       = FDuiColor_oeDataSave;
       //..........................................................
       // @method
-      o.construct        = FUiColor_construct;
+      o.construct        = FDuiColor_construct;
       // @method
-      o.get              = FUiColor_get;
-      o.set              = FUiColor_set;
+      o.get              = FDuiColor_get;
+      o.set              = FDuiColor_set;
 
 
 
@@ -52,16 +52,16 @@ with(MO){
       //o.hUnit         = null;
       //..........................................................
       // @event
-      //o.onDataKeyDown = FUiColor_onDataKeyDown;
+      //o.onDataKeyDown = FDuiColor_onDataKeyDown;
       //..........................................................
       // @method
-      //o.formatValue   = FUiColor_formatValue;
-      //o.setText       = FUiColor_setText;
-      //o.validText     = FUiColor_validText;
-      //o.findEditor    = FUiColor_findEditor;
-      //o.drop          = FUiColor_drop;
-      //o.link          = FUiColor_link;
-      //o.clone         = FUiColor_clone;
+      //o.formatValue   = FDuiColor_formatValue;
+      //o.setText       = FDuiColor_setText;
+      //o.validText     = FDuiColor_validText;
+      //o.findEditor    = FDuiColor_findEditor;
+      //o.drop          = FDuiColor_drop;
+      //o.link          = FDuiColor_link;
+      //o.clone         = FDuiColor_clone;
       return o;
    }
 
@@ -71,7 +71,7 @@ with(MO){
    // @method
    // @param p:dataSource:FDataSource 数据源
    //==========================================================
-   MO.FUiColor_oeDataLoad = function FUiColor_oeDataLoad(p){
+   MO.FDuiColor_oeDataLoad = function FDuiColor_oeDataLoad(p){
       var o = this;
       alert(p);
       return EEventStatus.Stop;
@@ -83,7 +83,7 @@ with(MO){
    // @method
    // @param p:dataSource:FDataSource 数据源
    //==========================================================
-   MO.FUiColor_oeDataSave = function FUiColor_oeDataSave(p){
+   MO.FDuiColor_oeDataSave = function FDuiColor_oeDataSave(p){
       var o = this;
       return EEventStatus.Stop;
    }
@@ -94,7 +94,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiColor_onBuildEditValue = function FUiColor_onBuildEditValue(p){
+   MO.FDuiColor_onBuildEditValue = function FDuiColor_onBuildEditValue(p){
       var o = this;
       var h = o._hValuePanel;
       h.className = o.styleName('InputPanel');
@@ -119,7 +119,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColor_construct = function FUiColor_construct(){
+   MO.FDuiColor_construct = function FDuiColor_construct(){
       var o = this;
       o.__base.FEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
@@ -131,7 +131,7 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiColor_get = function FUiColor_get(p){
+   MO.FDuiColor_get = function FDuiColor_get(p){
       var o = this;
       var r = o.__base.FEditControl.get.call(o, p);
       // 获得显示
@@ -148,7 +148,7 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiColor_set = function FUiColor_set(p){
+   MO.FDuiColor_set = function FDuiColor_set(p){
       var o = this;
       o.__base.FEditControl.set.call(o, p);
       // 设置显示
@@ -181,7 +181,7 @@ with(MO){
    // @param s:sender:FControl 控件对象
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiColor_onDataKeyDown = function FUiColor_onDataKeyDown(s, e){
+   MO.FDuiColor_onDataKeyDown = function FDuiColor_onDataKeyDown(s, e){
       var o = this;
       o.__base.FEditControl.onDataKeyDown.call(o, s, e);
       // 大小写限制
@@ -208,7 +208,7 @@ with(MO){
    // @method
    // @param v:value:String 显示内容
    //==========================================================
-   MO.FUiColor_formatValue = function FUiColor_formatValue(v){
+   MO.FDuiColor_formatValue = function FDuiColor_formatValue(v){
       var o = this;
       var r = RString.nvl(v);
       if(ECase.Upper == o.editCase){
@@ -225,7 +225,7 @@ with(MO){
    // @method
    // @param t:text:String 内容
    //==========================================================
-   MO.FUiColor_setText = function FUiColor_setText(t){
+   MO.FDuiColor_setText = function FDuiColor_setText(t){
       var o = this;
       if(!o.hEdit){
          return;
@@ -253,7 +253,7 @@ with(MO){
    // @param t:text:String 内容
    // @return 校验结果
    //==========================================================
-   MO.FUiColor_validText = function FUiColor_validText(t){
+   MO.FDuiColor_validText = function FDuiColor_validText(t){
       var o = this;
       var r = o.__base.FEditControl.validText.call(o, t);
       if(!r){
@@ -279,14 +279,14 @@ with(MO){
    // @method
    // @return 编辑器
    //==========================================================
-   MO.FUiColor_findEditor = function FUiColor_findEditor(){
+   MO.FDuiColor_findEditor = function FDuiColor_findEditor(){
       var o = this;
       if(o.editComplete){
          var de = o.editor;
          if(!de){
             o.dsControl = o.topControl(MDataset);
             if(o.dsControl){
-               de = o.editor = RConsole.find(FUiColorConsole).focus(o, FUiColorEditor);
+               de = o.editor = RConsole.find(FDuiColorConsole).focus(o, FDuiColorEditor);
             }
          }
          if(de){
@@ -301,7 +301,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiColor_drop = function FUiColor_drop(){
+   MO.FDuiColor_drop = function FDuiColor_drop(){
       var o = this;
       var de = o.findEditor();
       if(de){
@@ -323,7 +323,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiColor_clone = function FUiColor_clone(){
+   MO.FDuiColor_clone = function FDuiColor_clone(){
       var o = this;
       var r = o._class.newInstance();
       GHtml_clone(r, o.hPanel);
@@ -335,7 +335,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiColor_link = function FUiColor_link(){
+   MO.FDuiColor_link = function FDuiColor_link(){
       var o = this;
       
    }

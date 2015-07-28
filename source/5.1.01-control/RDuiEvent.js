@@ -13,7 +13,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-MO.RUiEvent = function RUiEvent(){
+MO.RDuiEvent = function RDuiEvent(){
    var o = this;
    //..........................................................
    // @attribute 存储所有关联过事件的控件
@@ -32,8 +32,8 @@ MO.RUiEvent = function RUiEvent(){
 // @method
 // @param e:event:Event 事件对象
 //==========================================================
-MO.RUiEvent.prototype.ohEvent = function RUiEvent_ohEvent(e){
-   MO.RUiEvent.process(this, e ? e : window.event);
+MO.RDuiEvent.prototype.ohEvent = function RDuiEvent_ohEvent(e){
+   MO.RDuiEvent.process(this, e ? e : window.event);
 }
 
 //==========================================================
@@ -42,7 +42,7 @@ MO.RUiEvent.prototype.ohEvent = function RUiEvent_ohEvent(e){
 // @method
 // @param e:event:Event 事件对象
 //==========================================================
-MO.RUiEvent.prototype.onProcess = function RUiEvent_onProcess(e){
+MO.RDuiEvent.prototype.onProcess = function RDuiEvent_onProcess(e){
    // 当前this指向EventHandle对象
    var e = this;
    var ea = e.annotation;
@@ -63,7 +63,7 @@ MO.RUiEvent.prototype.onProcess = function RUiEvent_onProcess(e){
 // @method
 // @param p:html:HtmlTag 页面元素
 // =========================================================
-MO.RUiEvent.prototype.find = function RUiEvent_find(p){
+MO.RDuiEvent.prototype.find = function RDuiEvent_find(p){
    var u = MO.RHtml.uid(p);
    var es = this._objects;
    var e = es[u];
@@ -81,7 +81,7 @@ MO.RUiEvent.prototype.find = function RUiEvent_find(p){
 // @param hs:htmlSource:<Html> 发出者对象
 // @param he:htmlEvent:<Event> 事件对象
 // =========================================================
-MO.RUiEvent.prototype.process = function RUiEvent_process(hs, he){
+MO.RDuiEvent.prototype.process = function RDuiEvent_process(hs, he){
    var o = this;
    // 检查参数
    if(!hs || !he){
@@ -122,7 +122,7 @@ MO.RUiEvent.prototype.process = function RUiEvent_process(hs, he){
                e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
                // 如果没有立即事件，则处理队列内响应事件
-               MO.Console.find(MO.FUiFrameEventConsole).push(e);
+               MO.Console.find(MO.FDuiFrameEventConsole).push(e);
             }
          }
          return true;
@@ -138,7 +138,7 @@ MO.RUiEvent.prototype.process = function RUiEvent_process(hs, he){
 // @param hs:htmlSource:<Html> 发出者对象
 // @param he:htmlEvent:<Event> 事件对象
 // =========================================================
-MO.RUiEvent.prototype.release = function RUiEvent_release(){
+MO.RDuiEvent.prototype.release = function RDuiEvent_release(){
    var o = this;
    // 释放对象集合
    var v = o._objects;
@@ -161,7 +161,7 @@ MO.RUiEvent.prototype.release = function RUiEvent_release(){
 
 
 // ------------------------------------------------------------
-MO.RUiEvent.prototype.nvl = function RUiEvent_nvl(event, sender, code){
+MO.RDuiEvent.prototype.nvl = function RDuiEvent_nvl(event, sender, code){
    if(!event){
       event = new MO.TEvent();
    }
@@ -171,7 +171,7 @@ MO.RUiEvent.prototype.nvl = function RUiEvent_nvl(event, sender, code){
 }
 // ------------------------------------------------------------
 // sender, code
-MO.RUiEvent.prototype.alloc = function RUiEvent_alloc(s, c){
+MO.RDuiEvent.prototype.alloc = function RDuiEvent_alloc(s, c){
    var e = null;
    var es = this.events;
    // 查找一个未被使用的事件对象
@@ -192,9 +192,9 @@ MO.RUiEvent.prototype.alloc = function RUiEvent_alloc(s, c){
    return e;
 }
 // ------------------------------------------------------------
-MO.RUiEvent.prototype.free = function RUiEvent_free(e){
+MO.RDuiEvent.prototype.free = function RDuiEvent_free(e){
    e.inUsing = false;
 }
 //..........................................................
 // 实例化内容
-MO.RUiEvent = new MO.RUiEvent();
+MO.RDuiEvent = new MO.RDuiEvent();

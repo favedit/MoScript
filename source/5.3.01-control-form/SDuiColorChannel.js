@@ -6,19 +6,19 @@ with(MO){
    // @author maocy
    // @version 150213
    //==========================================================
-   MO.SUiColorChannel = function SUiColorChannel(){
+   MO.SDuiColorChannel = function SDuiColorChannel(){
       var o = this;
-      SUiColorBar.call(o);
+      SDuiColorBar.call(o);
       //..........................................................
       // @attribute
       o.minValue      = 0;
       o.maxValue      = 255;
       //..........................................................
       // @method
-      o.setInputValue = SUiColorChannel_setInputValue;
+      o.setInputValue = SDuiColorChannel_setInputValue;
       // @method
-      o.convertGet    = SUiColorChannel_convertGet;
-      o.convertSet    = SUiColorChannel_convertSet;
+      o.convertGet    = SDuiColorChannel_convertGet;
+      o.convertSet    = SDuiColorChannel_convertSet;
       return o;
    }
 
@@ -28,7 +28,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorChannel_setInputValue = function SUiColorChannel_setInputValue(p){
+   MO.SDuiColorChannel_setInputValue = function SDuiColorChannel_setInputValue(p){
       var o = this;
       var v = RInteger.toRange(p, o.minValue, o.maxValue);
       var t = RInteger.format(v);
@@ -44,7 +44,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorChannel_convertGet = function SUiColorChannel_convertGet(p){
+   MO.SDuiColorChannel_convertGet = function SDuiColorChannel_convertGet(p){
       var o = this;
       var v = RInteger.parse(RString.nvl(p, '0'));
       return RInteger.toRange(v, o.minValue, o.maxValue) / 255;
@@ -56,7 +56,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorChannel_convertSet = function SUiColorChannel_convertSet(p){
+   MO.SDuiColorChannel_convertSet = function SDuiColorChannel_convertSet(p){
       return parseInt(p * 255);
    }
 }

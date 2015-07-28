@@ -24,7 +24,7 @@ with(MO){
    // @author maocy
    // @history 150202
    //==========================================================
-   MO.FUiPageControl = function FUiPageControl(o){
+   MO.FDuiPageControl = function FDuiPageControl(o){
       o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @property
@@ -54,22 +54,22 @@ with(MO){
       o._hSheets         = null;
       //..........................................................
       // @event
-      o.onBuildPanel     = FUiPageControl_onBuildPanel;
-      o.onBuild          = FUiPageControl_onBuild;
+      o.onBuildPanel     = FDuiPageControl_onBuildPanel;
+      o.onBuild          = FDuiPageControl_onBuild;
       //..........................................................
       // @process
-      o.oeRefresh        = FUiPageControl_oeRefresh;
+      o.oeRefresh        = FDuiPageControl_oeRefresh;
       //..........................................................
       // @method
-      o.construct        = FUiPageControl_construct;
+      o.construct        = FDuiPageControl_construct;
       // @method
-      o.appendChild      = FUiPageControl_appendChild;
-      o.select           = FUiPageControl_select;
-      o.selectByIndex    = FUiPageControl_selectByIndex;
-      o.sheet            = FUiPageControl_sheet;
-      o.push             = FUiPageControl_push;
+      o.appendChild      = FDuiPageControl_appendChild;
+      o.select           = FDuiPageControl_select;
+      o.selectByIndex    = FDuiPageControl_selectByIndex;
+      o.sheet            = FDuiPageControl_sheet;
+      o.push             = FDuiPageControl_push;
       // @method
-      o.dispose          = FUiPageControl_dispose;
+      o.dispose          = FDuiPageControl_dispose;
       return o;
    }
 
@@ -79,7 +79,7 @@ with(MO){
    // @method
    // @param event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiPageControl_onBuildPanel = function FUiPageControl_onBuildPanel(event){
+   MO.FDuiPageControl_onBuildPanel = function FDuiPageControl_onBuildPanel(event){
       var o = this;
       var h = o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
       h.width = '100%';
@@ -91,7 +91,7 @@ with(MO){
    // @method
    // @param event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiPageControl_onBuild = function FUiPageControl_onBuild(event){
+   MO.FDuiPageControl_onBuild = function FDuiPageControl_onBuild(event){
       var o = this;
       o.__base.FDuiContainer.onBuild.call(o, event);
       // 获得底板
@@ -112,17 +112,17 @@ with(MO){
       //RBuilder.appendEmpty(hc);
       o._hFirst = RBuilder.appendTableCell(o._hLine);
       var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
-      hbc.className = o.styleName('Bottom', FUiPageSheet);
+      hbc.className = o.styleName('Bottom', FDuiPageSheet);
       // 建立分隔区
       //var hc = RBuilder.appendTableRowCell(h);
       //hc.height = 2;
       // 建立标题区右边第一列
       var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
-      //hc.className = o.styleName('Top', FUiPageSheet);
+      //hc.className = o.styleName('Top', FDuiPageSheet);
       //RBuilder.appendEmpty(hc);
       o._hLast = RBuilder.appendTableCell(o._hLine);
       var hc = o._hLastBottom = RBuilder.appendTableCell(o._hBottom);
-      hc.className = o.styleName('Bottom', FUiPageSheet);
+      hc.className = o.styleName('Bottom', FDuiPageSheet);
    }
 
    //==========================================================
@@ -131,7 +131,7 @@ with(MO){
    // @method
    // @param event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiPageControl_oeRefresh = function FUiPageControl_oeRefresh(event){
+   MO.FDuiPageControl_oeRefresh = function FDuiPageControl_oeRefresh(event){
       var o = this;
       var r = o.__base.FDuiContainer.oeRefresh.call(o, event);
       if(event.isBefore()){
@@ -160,7 +160,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPageControl_construct = function FUiPageControl_construct(){
+   MO.FDuiPageControl_construct = function FDuiPageControl_construct(){
       var o = this;
       // 父处理
       o.__base.FDuiContainer.construct.call(o);
@@ -174,10 +174,10 @@ with(MO){
    // @method
    // @param control:FControl 控件
    //==========================================================
-   MO.FUiPageControl_appendChild = function FUiPageControl_appendChild(control){
+   MO.FDuiPageControl_appendChild = function FDuiPageControl_appendChild(control){
       var o = this;
       // 追加子页面
-      if(RClass.isClass(control, FUiPageSheet)){
+      if(RClass.isClass(control, FDuiPageSheet)){
          var ci = o._hLast.cellIndex;
          // 追加标题顶边线
          var hc = control._hTopL = RBuilder.appendTableCell(o._hTop, null, ci);
@@ -243,9 +243,9 @@ with(MO){
    //
    // @method
    // @param name:String 名称
-   // @return FUiPageSheet 页面
+   // @return FDuiPageSheet 页面
    //==========================================================
-   MO.FUiPageControl_sheet = function FUiPageControl_sheet(name){
+   MO.FDuiPageControl_sheet = function FDuiPageControl_sheet(name){
       return this._sheets.get(name);
    }
 
@@ -253,9 +253,9 @@ with(MO){
    // <T>选中活动页面。</T>
    //
    // @method
-   // @param sheet:FUiPageSheet 页面
+   // @param sheet:FDuiPageSheet 页面
    //==========================================================
-   MO.FUiPageControl_select = function FUiPageControl_select(sheet){
+   MO.FDuiPageControl_select = function FDuiPageControl_select(sheet){
       var o = this;
       o._activeSheet = sheet;
       // 取消其他页选中
@@ -277,7 +277,7 @@ with(MO){
    // @method
    // @param p:index:Integer 索引
    //==========================================================
-   MO.FUiPageControl_selectByIndex = function FUiPageControl_selectByIndex(n){
+   MO.FDuiPageControl_selectByIndex = function FDuiPageControl_selectByIndex(n){
       var o = this;
       var sheet = o._sheets.value(n);
       if(sheet){
@@ -291,10 +291,10 @@ with(MO){
    // @method
    // @param component:FComponent 组件对象
    //==========================================================
-   MO.FUiPageControl_push = function FUiPageControl_push(component){
+   MO.FDuiPageControl_push = function FDuiPageControl_push(component){
       var o = this;
       // 增加处理
-      if(RClass.isClass(component, FUiPageSheet)){
+      if(RClass.isClass(component, FDuiPageSheet)){
          var sheets = o._sheets;
          component._pageControl = o;
          component._index = sheets.count();
@@ -309,7 +309,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiPageControl_dispose = function FUiPageControl_dispose(){
+   MO.FDuiPageControl_dispose = function FDuiPageControl_dispose(){
       var o = this;
       o.__base.FDuiContainer.dispose.call(o);
    }

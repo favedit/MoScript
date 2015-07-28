@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-MO.FUiFramePage = function FUiFramePage(o){
+MO.FDuiFramePage = function FDuiFramePage(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer);
    //..........................................................
    // @style
@@ -15,15 +15,15 @@ MO.FUiFramePage = function FUiFramePage(o){
    o._hContainer     = null;
    //..........................................................
    // @event
-   o.onBuildPanel    = MO.FUiFramePage_onBuildPanel;
-   o.onBuild         = MO.FUiFramePage_onBuild;
+   o.onBuildPanel    = MO.FDuiFramePage_onBuildPanel;
+   o.onBuild         = MO.FDuiFramePage_onBuild;
    //..........................................................
    // @process
-   o.oeResize        = MO.FUiFramePage_oeResize;
+   o.oeResize        = MO.FDuiFramePage_oeResize;
    //..........................................................
    // @method
-   o.appendChild     = MO.FUiFramePage_appendChild;
-   o.removeChild     = MO.FUiFramePage_removeChild;
+   o.appendChild     = MO.FDuiFramePage_appendChild;
+   o.removeChild     = MO.FDuiFramePage_removeChild;
    return o;
 }
 
@@ -33,7 +33,7 @@ MO.FUiFramePage = function FUiFramePage(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-MO.FUiFramePage_onBuildPanel = function FUiFramePage_onBuildPanel(p){
+MO.FDuiFramePage_onBuildPanel = function FDuiFramePage_onBuildPanel(p){
    var o = this;
    var hPanel = o._hPanel = MO.Window.Builder.createTableCell(p, o.styleName('Panel'));
    hPanel.vAlign = 'top';
@@ -46,13 +46,13 @@ MO.FUiFramePage_onBuildPanel = function FUiFramePage_onBuildPanel(p){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-MO.FUiFramePage_onBuild = function FUiFramePage_onBuild(p){
+MO.FDuiFramePage_onBuild = function FDuiFramePage_onBuild(p){
    var o = this;
    o.__base.FDuiContainer.onBuild.call(o, p);
    var h = o._hPanel;
    if(o._scrollCd != MO.EUiScroll.None){
       var hc = o._hContainer = MO.Window.Builder.appendDiv(h, o.styleName('Container'));
-      MO.RUiControl.setStyleScroll(hc, o._scrollCd);
+      MO.RDuiControl.setStyleScroll(hc, o._scrollCd);
    }else{
       o._hContainer = h;
    }
@@ -65,7 +65,7 @@ MO.FUiFramePage_onBuild = function FUiFramePage_onBuild(p){
 // @param e:event:TEventProcess 事件处理
 // @return EEventStatus 处理状态
 //==========================================================
-MO.FUiFramePage_oeResize = function FUiFramePage_oeResize(p){
+MO.FDuiFramePage_oeResize = function FDuiFramePage_oeResize(p){
    var o = this;
    var p = o._parent;
    if(p._directionCd == MO.EUiDirection.Horizontal){
@@ -86,7 +86,7 @@ MO.FUiFramePage_oeResize = function FUiFramePage_oeResize(p){
 // @method
 // @param control:FDuiControl 控件
 //==========================================================
-MO.FUiFramePage_appendChild = function FUiFramePage_appendChild(control){
+MO.FDuiFramePage_appendChild = function FDuiFramePage_appendChild(control){
    var o = this;
    if(control._hPanel){
       o._hContainer.appendChild(control._hPanel);
@@ -99,7 +99,7 @@ MO.FUiFramePage_appendChild = function FUiFramePage_appendChild(control){
 // @method
 // @param control:FDuiControl 控件
 //==========================================================
-MO.FUiFramePage_removeChild = function FUiFramePage_removeChild(control){
+MO.FDuiFramePage_removeChild = function FDuiFramePage_removeChild(control){
    var o = this;
    o._hContainer.removeChild(control._hPanel);
 }

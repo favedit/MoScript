@@ -7,7 +7,7 @@ with(MO){
    // @history 150420
    //==========================================================
    MO.FDsTemplateCatalogToolBar = function FDsTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName             = 'resource.template.CatalogToolBar';
@@ -51,7 +51,7 @@ with(MO){
    //==========================================================
    MO.FDsTemplateCatalogToolBar_onBuilded = function FDsTemplateCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       o._controlCreateCamera.addClickListener(o, o.onCreateCameraClick);
@@ -80,7 +80,7 @@ with(MO){
       //   parentLabel = node.label();
       //}
       // 显示窗口
-      //var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+      //var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       //dialog._workspace = o._workspace;
       //dialog._frameSet = o._frameSet;
       //dialog._parentGuid = parentGuid;
@@ -101,7 +101,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setContentCode('');
@@ -286,7 +286,7 @@ with(MO){
    MO.FDsTemplateCatalogToolBar_construct = function FDsTemplateCatalogToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -297,6 +297,6 @@ with(MO){
    MO.FDsTemplateCatalogToolBar_dispose = function FDsTemplateCatalogToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

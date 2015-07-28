@@ -7,7 +7,7 @@ with(MO){
    // @history 150508
    //==========================================================
    MO.FDsCommonMovieDialog = function FDsCommonMovieDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.MovieDialog';
@@ -50,7 +50,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonMovieDialog_onBuilded = function FDsCommonMovieDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       //..........................................................
       // 设置属性
       o._controlLayerLabel.setEditAble(false);
@@ -120,7 +120,7 @@ with(MO){
    MO.FDsCommonMovieDialog_construct = function FDsCommonMovieDialog_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
 
    //==========================================================
@@ -171,6 +171,6 @@ with(MO){
    MO.FDsCommonMovieDialog_dispose = function FDsCommonMovieDialog_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

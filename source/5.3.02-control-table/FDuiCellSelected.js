@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiCellSelected = function FUiCellSelected(o){
+   MO.FDuiCellSelected = function FDuiCellSelected(o){
       o = RClass.inherits(this, o, FCell);
       //..........................................................
       // @property
@@ -19,19 +19,19 @@ with(MO){
       o._hSelected = null;
       //..........................................................
       // @event
-      o.onBuild    = FUiCellSelected_onBuild;
+      o.onBuild    = FDuiCellSelected_onBuild;
       // @event
-      o.onSelected = FUiCellSelected_onSelected;
+      o.onSelected = FDuiCellSelected_onSelected;
 
 
       // @method
-      //o.buildForm     = FUiCellSelected_buildForm;
-      //o.refreshStyle  = FUiCellSelected_refreshStyle;
+      //o.buildForm     = FDuiCellSelected_buildForm;
+      //o.refreshStyle  = FDuiCellSelected_refreshStyle;
       //o.isDataChanged = RMethod.emptyFalse;
       //o.get           = RMethod.empty;
       //o.reget         = RMethod.empty;
       //o.set           = RMethod.empty;
-      //o.dispose       = FUiCellSelected_dispose;
+      //o.dispose       = FDuiCellSelected_dispose;
       return o;
    }
 
@@ -41,7 +41,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiCellSelected_onBuild = function FUiCellSelected_onBuild(p){
+   MO.FDuiCellSelected_onBuild = function FDuiCellSelected_onBuild(p){
       var o = this;
       o.__base.FCell.onBuild.call(o, p)
       // 创建底板
@@ -58,7 +58,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiCellSelected_onSelected = function FUiCellSelected_onSelected(p){
+   MO.FDuiCellSelected_onSelected = function FDuiCellSelected_onSelected(p){
       var o = this;
       //var r = o.parent.row;
       //var t = o.parent.table;
@@ -81,7 +81,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiCellSelected_refreshStyle = function FUiCellSelected_refreshStyle(){
+   MO.FDuiCellSelected_refreshStyle = function FDuiCellSelected_refreshStyle(){
       var o = this;
       var r = o.row;
       var t = r.table;
@@ -105,7 +105,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCellSelected_dispose = function FUiCellSelected_dispose(){
+   MO.FDuiCellSelected_dispose = function FDuiCellSelected_dispose(){
       var o = this;
       o.base.FCellEditControl.dispose.call(o);
       o._hSelected = null;

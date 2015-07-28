@@ -7,7 +7,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSceneMenuBar = function FDsSceneMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @attribute
       o._refreshButton        = null;
@@ -40,7 +40,7 @@ with(MO){
    //==========================================================
    MO.FDsSceneMenuBar_onBuilded = function FDsSceneMenuBar_onBuilded(p){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, p);
+      o.__base.FDuiMenuBar.onBuilded.call(o, p);
    }
 
    //==========================================================
@@ -113,7 +113,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonLayerDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonLayerDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -133,7 +133,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonTemplateDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonTemplateDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -141,7 +141,7 @@ with(MO){
       dialog.setContentLabel('');
       dialog.showPosition(EUiPosition.Center);
       // 显示对话框
-      //var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceSelectDialog);
+      //var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceSelectDialog);
       //dialog._frameSet = frameSet;
       //dialog.showPosition(EUiPosition.Center);
    }
@@ -166,7 +166,7 @@ with(MO){
    MO.FDsSceneMenuBar_construct = function FDsSceneMenuBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
 
    //==========================================================
@@ -177,6 +177,6 @@ with(MO){
    MO.FDsSceneMenuBar_dispose = function FDsSceneMenuBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }

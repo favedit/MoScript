@@ -1,9 +1,9 @@
 with(MO){
    //==========================================================
-   // FUiDateTimeEditor
+   // FDuiDateTimeEditor
    //==========================================================
-   MO.FUiDateTimeEditor = function FUiDateTimeEditor(o){
-      o = RClass.inherits(this, o, FUiDropEditor);
+   MO.FDuiDateTimeEditor = function FDuiDateTimeEditor(o){
+      o = RClass.inherits(this, o, FDuiDropEditor);
       //..........................................................
       o.date              = null;
       o.years             = null;
@@ -17,34 +17,34 @@ with(MO){
       o.hTitleYear        = null;
       //..........................................................
       // @event
-      o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiDateTimeEditor_onButtonEnter);
-      o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiDateTimeEditor_onButtonLeave);
-      o.onYearClick       = RClass.register(o, new AEventMouseDown('onYearClick'), FUiDateTimeEditor_onYearClick);
-      o.onMonthClick      = RClass.register(o, new AEventMouseDown('onMonthClick'), FUiDateTimeEditor_onMonthClick);
-      o.onDayClick        = RClass.register(o, new AEventMouseDown('onDayClick'), FUiDateTimeEditor_onDayClick);
-      o.onDateDoubleClick = RClass.register(o, new AEventDoubleClick('onDateDoubleClick'), FUiDateTimeEditor_onDateDoubleClick);
-      o.onNowClick        = RClass.register(o, new AEventMouseDown('onNowClick'), FUiDateTimeEditor_onNowClick);
-      o.onConfirmClick    = RClass.register(o, new AEventMouseDown('onConfirmClick'), FUiDateTimeEditor_onConfirmClick);
-      o.onBuildDrop       = FUiDateTimeEditor_onBuildDrop;
-      o.onBuildButton     = FUiDateTimeEditor_onBuildButton;
+      o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiDateTimeEditor_onButtonEnter);
+      o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiDateTimeEditor_onButtonLeave);
+      o.onYearClick       = RClass.register(o, new AEventMouseDown('onYearClick'), FDuiDateTimeEditor_onYearClick);
+      o.onMonthClick      = RClass.register(o, new AEventMouseDown('onMonthClick'), FDuiDateTimeEditor_onMonthClick);
+      o.onDayClick        = RClass.register(o, new AEventMouseDown('onDayClick'), FDuiDateTimeEditor_onDayClick);
+      o.onDateDoubleClick = RClass.register(o, new AEventDoubleClick('onDateDoubleClick'), FDuiDateTimeEditor_onDateDoubleClick);
+      o.onNowClick        = RClass.register(o, new AEventMouseDown('onNowClick'), FDuiDateTimeEditor_onNowClick);
+      o.onConfirmClick    = RClass.register(o, new AEventMouseDown('onConfirmClick'), FDuiDateTimeEditor_onConfirmClick);
+      o.onBuildDrop       = FDuiDateTimeEditor_onBuildDrop;
+      o.onBuildButton     = FDuiDateTimeEditor_onBuildButton;
       //..........................................................
       // @method
-      o.construct         = FUiDateTimeEditor_construct;
-      o.buildTitle        = FUiDateTimeEditor_buildTitle;
-      o.get               = FUiDateTimeEditor_get;
-      o.set               = FUiDateTimeEditor_set;
-      o.resetDay          = FUiDateTimeEditor_resetDay;
-      o.setYearVisible    = FUiDateTimeEditor_setYearVisible;
-      o.setMonthVisible   = FUiDateTimeEditor_setMonthVisible;
-      o.setDayVisible     = FUiDateTimeEditor_setDayVisible;
-      o.selectCell        = FUiDateTimeEditor_selectCell;
-      o.restore           = FUiDateTimeEditor_restore;
-      o.show              = FUiDateTimeEditor_show;
-      o.dispose           = FUiDateTimeEditor_dispose;
+      o.construct         = FDuiDateTimeEditor_construct;
+      o.buildTitle        = FDuiDateTimeEditor_buildTitle;
+      o.get               = FDuiDateTimeEditor_get;
+      o.set               = FDuiDateTimeEditor_set;
+      o.resetDay          = FDuiDateTimeEditor_resetDay;
+      o.setYearVisible    = FDuiDateTimeEditor_setYearVisible;
+      o.setMonthVisible   = FDuiDateTimeEditor_setMonthVisible;
+      o.setDayVisible     = FDuiDateTimeEditor_setDayVisible;
+      o.selectCell        = FDuiDateTimeEditor_selectCell;
+      o.restore           = FDuiDateTimeEditor_restore;
+      o.show              = FDuiDateTimeEditor_show;
+      o.dispose           = FDuiDateTimeEditor_dispose;
       return o;
    }
    //==========================================================
-   MO.FUiDateTimeEditor_onButtonEnter = function FUiDateTimeEditor_onButtonEnter(e){
+   MO.FDuiDateTimeEditor_onButtonEnter = function FDuiDateTimeEditor_onButtonEnter(e){
       if(!e.hSource.isSelect){
         if(RString.isEmpty(e.hSource.innerText)){
             e.hSource.style.backgroundColor = '#CCCCFF';
@@ -53,14 +53,14 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onButtonLeave = function FUiDateTimeEditor_onButtonLeave(e){
+   MO.FDuiDateTimeEditor_onButtonLeave = function FDuiDateTimeEditor_onButtonLeave(e){
       if(!e.hSource.isSelect){
          e.hSource.style.backgroundColor = '#FFFFFF';
       }
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onYearClick = function FUiDateTimeEditor_onYearClick(e){
+   MO.FDuiDateTimeEditor_onYearClick = function FDuiDateTimeEditor_onYearClick(e){
       var o = this;
       o.date.setYear(e.hSource.innerText);
       o.restore();
@@ -68,7 +68,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onMonthClick = function FUiDateTimeEditor_onMonthClick(e){
+   MO.FDuiDateTimeEditor_onMonthClick = function FDuiDateTimeEditor_onMonthClick(e){
       var o = this;
       o.date.setMonth(e.hSource.innerText);
       o.restore();
@@ -76,7 +76,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onDayClick = function FUiDateTimeEditor_onDayClick(e){
+   MO.FDuiDateTimeEditor_onDayClick = function FDuiDateTimeEditor_onDayClick(e){
       var o = this;
       if(!RString.equals(e.hSource.innerText, '.')){
          o.date.setDay(e.hSource.innerText);
@@ -85,19 +85,19 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onDateDoubleClick = function FUiDateTimeEditor_onDateDoubleClick(){
+   MO.FDuiDateTimeEditor_onDateDoubleClick = function FDuiDateTimeEditor_onDateDoubleClick(){
       this.onConfirmClick();
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onNowClick = function FUiDateTimeEditor_onNowClick(){
+   MO.FDuiDateTimeEditor_onNowClick = function FDuiDateTimeEditor_onNowClick(){
       var o = this;
       o.date = new TDate();
       o.editEnd();
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onConfirmClick = function FUiDateTimeEditor_onConfirmClick(){
+   MO.FDuiDateTimeEditor_onConfirmClick = function FDuiDateTimeEditor_onConfirmClick(){
       var o = this;
       o.date.setYear(o.hYear.value);
       o.date.setMonth(o.hMonth.value);
@@ -106,7 +106,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onBuildDrop = function FUiDateTimeEditor_onBuildDrop(){
+   MO.FDuiDateTimeEditor_onBuildDrop = function FDuiDateTimeEditor_onBuildDrop(){
       var o = this;
       var hdp = o.hDropPanel;
       hdp.width = 220;
@@ -186,9 +186,9 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_onBuildButton = function FUiDateTimeEditor_onBuildButton(){
+   MO.FDuiDateTimeEditor_onBuildButton = function FDuiDateTimeEditor_onBuildButton(){
       var o = this;
-      o.base.FUiDropEditor.onBuildButton.call(o);
+      o.base.FDuiDropEditor.onBuildButton.call(o);
       var hf = RBuilder.appendTable(o.hButtonPanel);
       hf.width = '100%';
       hf.height = 20;
@@ -212,9 +212,9 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_construct = function FUiDateTimeEditor_construct(){
+   MO.FDuiDateTimeEditor_construct = function FDuiDateTimeEditor_construct(){
       var o = this;
-      o.base.FUiDropEditor.construct.call(o);
+      o.base.FDuiDropEditor.construct.call(o);
       o.date = new TDate();
       o.years = new TList();
       o.months = new TList();
@@ -222,7 +222,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_buildTitle = function FUiDateTimeEditor_buildTitle(n, ml){
+   MO.FDuiDateTimeEditor_buildTitle = function FDuiDateTimeEditor_buildTitle(n, ml){
       var o = this;
       // 建立底板
       var hf = RBuilder.appendTable(o.hDropPanel);
@@ -247,43 +247,43 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_get = function FUiDateTimeEditor_get(){
+   MO.FDuiDateTimeEditor_get = function FDuiDateTimeEditor_get(){
       return RDate.formatDate(this.date);
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_set = function FUiDateTimeEditor_set(v){
+   MO.FDuiDateTimeEditor_set = function FDuiDateTimeEditor_set(v){
       var o = this;
       RDate.autoParse(o.date, v);
       o.restore();
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_setYearVisible = function FUiDateTimeEditor_setYearVisible(v){
+   MO.FDuiDateTimeEditor_setYearVisible = function FDuiDateTimeEditor_setYearVisible(v){
       var o = this;
       o.hPanelYear.style.display = v? 'block':'none';
       o.hTitleYear.style.display = v? 'block':'none';
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_setMonthVisible = function FUiDateTimeEditor_setMonthVisible(v){
+   MO.FDuiDateTimeEditor_setMonthVisible = function FDuiDateTimeEditor_setMonthVisible(v){
       var o = this;
       o.hPanelMonth.style.display = v? 'block':'none';
       o.hTitleMonth.style.display = v? 'block':'none';
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_setDayVisible = function FUiDateTimeEditor_setDayVisible(v){
+   MO.FDuiDateTimeEditor_setDayVisible = function FDuiDateTimeEditor_setDayVisible(v){
       var o = this;
       o.hPanelDay.style.display = v? 'block':'none';
       o.hTitleDay.style.display = v? 'block':'none';
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_show = function FUiDateTimeEditor_show(v){
+   MO.FDuiDateTimeEditor_show = function FDuiDateTimeEditor_show(v){
       var o = this;
       // 父处理
-      o.base.FUiDropEditor.show.call(o, v);
+      o.base.FDuiDropEditor.show.call(o, v);
       // 获取底板
       var hp = o.hPanel;
       var hbf = o.hBorderForm;
@@ -299,7 +299,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_resetDay = function FUiDateTimeEditor_resetDay(){
+   MO.FDuiDateTimeEditor_resetDay = function FDuiDateTimeEditor_resetDay(){
       var o = this;
       var monthDays = this.date.monthDays();
       for(var n=0; n<o.days.count; n++){
@@ -315,7 +315,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_selectCell = function FUiDateTimeEditor_selectCell(ls, v){
+   MO.FDuiDateTimeEditor_selectCell = function FDuiDateTimeEditor_selectCell(ls, v){
       var c = ls.count;
       for(var n=0; n<c; n++){
          var h = ls.get(n);
@@ -332,7 +332,7 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_restore = function FUiDateTimeEditor_restore(){
+   MO.FDuiDateTimeEditor_restore = function FDuiDateTimeEditor_restore(){
       var o = this;
       // 设置时间显示
       o.hYear.value = o.date.year;
@@ -345,9 +345,9 @@ with(MO){
    }
 
    //==========================================================
-   MO.FUiDateTimeEditor_dispose = function FUiDateTimeEditor_dispose(){
+   MO.FDuiDateTimeEditor_dispose = function FDuiDateTimeEditor_dispose(){
       var o = this;
-      o.base.FUiDropEditor.dispose.call(o);
+      o.base.FDuiDropEditor.dispose.call(o);
       o.hPanel = null;
    } 
 }

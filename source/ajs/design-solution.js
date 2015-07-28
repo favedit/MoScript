@@ -236,7 +236,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionCatalogToolBar = function FDsSolutionCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.private.solution.CatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -258,7 +258,7 @@ with(MO){
    }
    MO.FDsSolutionCatalogToolBar_onBuilded = function FDsSolutionCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
    }
    MO.FDsSolutionCatalogToolBar_onModeClick = function FDsSolutionCatalogToolBar_onModeClick(p){
       var o = this;
@@ -272,16 +272,16 @@ with(MO){
    }
    MO.FDsSolutionCatalogToolBar_construct = function FDsSolutionCatalogToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsSolutionCatalogToolBar_dispose = function FDsSolutionCatalogToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsSolutionFrameSet = function FDsSolutionFrameSet(o){
-      o = RClass.inherits(this, o, FUiFrameSet, MUiStorage);
+      o = RClass.inherits(this, o, FDuiFrameSet, MUiStorage);
       o._frameName            = 'resource.private.solution.FrameSet';
       o._storageCode          = o._frameName;
       o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
@@ -315,7 +315,7 @@ with(MO){
    }
    MO.FDsSolutionFrameSet_onBuilded = function FDsSolutionFrameSet_onBuilded(p){
       var o = this;
-      o.__base.FUiFrameSet.onBuilded.call(o, p);
+      o.__base.FDuiFrameSet.onBuilded.call(o, p);
       var frame = o._frameCatalog = o.searchControl('catalogFrame');
       frame._hPanel.className = o.styleName('Catalog_Ground');
       var frame = o._frameCatalogToolbar = o.searchControl('catalogToolbarFrame');
@@ -349,7 +349,7 @@ with(MO){
    }
    MO.FDsSolutionFrameSet_construct = function FDsSolutionFrameSet_construct(){
       var o = this;
-      o.__base.FUiFrameSet.construct.call(o);
+      o.__base.FDuiFrameSet.construct.call(o);
       o._propertyFrames = new TDictionary();
    }
    MO.FDsSolutionFrameSet_findPropertyFrame = function FDsSolutionFrameSet_findPropertyFrame(p){
@@ -392,14 +392,14 @@ with(MO){
    }
    MO.FDsSolutionFrameSet_dispose = function FDsSolutionFrameSet_dispose(){
       var o = this;
-      o.__base.FUiFrameSet.dispose.call(o);
+      o.__base.FDuiFrameSet.dispose.call(o);
       o._propertyFrames.dispose();
       o._propertyFrames = null;
    }
 }
 with(MO){
    MO.FDsSolutionListContent = function FDsSolutionListContent(o){
-      o = RClass.inherits(this, o, FUiListView);
+      o = RClass.inherits(this, o, FDuiListView);
       o._activeControl    = null;
       o._activeGuid       = null;
       o._refreshButton    = null;
@@ -417,7 +417,7 @@ with(MO){
    }
    MO.FDsSolutionListContent_onBuilded = function FDsSolutionListContent_onBuilded(p){
       var o = this;
-      o.__base.FUiListView.onBuilded.call(o, p);
+      o.__base.FDuiListView.onBuilded.call(o, p);
    }
    MO.FDsSolutionListContent_onServiceLoad = function FDsSolutionListContent_onServiceLoad(p){
       var o = this;
@@ -445,17 +445,17 @@ with(MO){
    }
    MO.FDsSolutionListContent_construct = function FDsSolutionListContent_construct(){
       var o = this;
-      o.__base.FUiListView.construct.call(o);
+      o.__base.FDuiListView.construct.call(o);
    }
    MO.FDsSolutionListContent_doClickItem = function FDsSolutionListContent_doClickItem(control){
       var o = this;
-      o.__base.FUiListView.doClickItem.call(o, control);
+      o.__base.FDuiListView.doClickItem.call(o, control);
       o._activeControl = control;
       o._activeGuid = control._guid;
    }
    MO.FDsSolutionListContent_doDoubleClickItem = function FDsSolutionListContent_doDoubleClickItem(control){
       var o = this;
-      o.__base.FUiListView.doDoubleClickItem.call(o, control);
+      o.__base.FDuiListView.doDoubleClickItem.call(o, control);
       var guid = control._guid;
       o._activeControl = control;
       o._activeGuid = guid;
@@ -478,19 +478,19 @@ with(MO){
    }
    MO.FDsSolutionListContent_dispose = function FDsSolutionListContent_dispose(){
       var o = this;
-      o.__base.FUiListView.dispose.call(o);
+      o.__base.FDuiListView.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsSolutionListItem = function FDsSolutionListItem(o){
-      o = RClass.inherits(this, o, FUiListViewItem);
+      o = RClass.inherits(this, o, FDuiListViewItem);
       o.onBuild      = FDsSolutionListItem_onBuild;
       o.refreshStyle = FDsSolutionListItem_refreshStyle;
       return o;
    }
    MO.FDsSolutionListItem_onBuild = function FDsSolutionListItem_onBuild(p){
       var o = this;
-      o.__base.FUiListViewItem.onBuild.call(o, p);
+      o.__base.FDuiListViewItem.onBuild.call(o, p);
       var h = o._hPanel;
       h.style.width = '200px';
       h.style.height = '150px';
@@ -503,7 +503,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionListToolBar = function FDsSolutionListToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.private.solution.ListToolBar';
       o._pageCount       = 0;
       o._page            = 0;
@@ -530,7 +530,7 @@ with(MO){
    }
    MO.FDsSolutionListToolBar_onBuilded = function FDsSolutionListToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlSearchEdit.addClickListener(o, o.onSearchClick);
       o._controlFirstButton.addClickListener(o, o.onNavigatorClick);
       o._controlPriorButton.addClickListener(o, o.onNavigatorClick);
@@ -563,7 +563,7 @@ with(MO){
    }
    MO.FDsSolutionListToolBar_construct = function FDsSolutionListToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsSolutionListToolBar_setNavigator = function FDsSolutionListToolBar_setNavigator(pageSize, pageCount, page){
       var o = this;
@@ -585,12 +585,12 @@ with(MO){
    }
    MO.FDsSolutionListToolBar_dispose = function FDsSolutionListToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsSolutionMenuBar = function FDsSolutionMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       o._frameName      = 'resource.private.solution.MenuBar';
       o._refreshButton  = null;
       o._saveButton     = null;
@@ -606,13 +606,13 @@ with(MO){
    }
    MO.FDsSolutionMenuBar_onBuilded = function FDsSolutionMenuBar_onBuilded(p){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, p);
+      o.__base.FDuiMenuBar.onBuilded.call(o, p);
       o._controlCreateButton.addClickListener(o, o.onCreateClick);
       o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
    }
    MO.FDsSolutionMenuBar_onCreateClick = function FDsSolutionMenuBar_onCreateClick(event){
       var o = this;
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsSolutionProjectDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsSolutionProjectDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog.showPosition(EUiPosition.Center);
@@ -646,16 +646,16 @@ with(MO){
    }
    MO.FDsSolutionMenuBar_construct = function FDsSolutionMenuBar_construct(){
       var o = this;
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
    MO.FDsSolutionMenuBar_dispose = function FDsSolutionMenuBar_dispose(){
       var o = this;
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsSolutionProjectDialog = function FDsSolutionProjectDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.private.solution.ProjectDialog';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -671,7 +671,7 @@ with(MO){
    }
    MO.FDsSolutionProjectDialog_onBuilded = function FDsSolutionProjectDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
       o._controlCancelButton.addClickListener(o, o.onCancelClick);
    }
@@ -698,16 +698,16 @@ with(MO){
    }
    MO.FDsSolutionProjectDialog_construct = function FDsSolutionProjectDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsSolutionProjectDialog_dispose = function FDsSolutionProjectDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsSolutionProjectProperty = function FDsSolutionProjectProperty(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._workspace        = null;
       o._activeSpace      = null;
@@ -727,7 +727,7 @@ with(MO){
    }
    MO.FDsSolutionProjectProperty_onBuilded = function FDsSolutionProjectProperty_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
    }
    MO.FDsSolutionProjectProperty_onDataChanged = function FDsSolutionProjectProperty_onDataChanged(p){
       var o = this;
@@ -747,7 +747,7 @@ with(MO){
    }
    MO.FDsSolutionProjectProperty_construct = function FDsSolutionProjectProperty_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
    MO.FDsSolutionProjectProperty_loadObject = function FDsSolutionProjectProperty_loadObject(control){
       var o = this;
@@ -758,7 +758,7 @@ with(MO){
    }
    MO.FDsSolutionProjectProperty_dispose = function FDsSolutionProjectProperty_dispose(){
       var o = this;
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }
 with(MO){
@@ -1079,7 +1079,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionPropertyToolBar = function FDsSolutionPropertyToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName           = 'resource.solution.PropertyToolBar';
       o._controlInsertButton = null;
       o._controlUpdateButton = null;
@@ -1092,7 +1092,7 @@ with(MO){
    }
    MO.FDsSolutionPropertyToolBar_onBuilded = function FDsSolutionPropertyToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlUpdateButton.addClickListener(o, o.onUpdateClick);
    }
    MO.FDsSolutionPropertyToolBar_onUpdateClick = function FDsSolutionPropertyToolBar_onUpdateClick(event){
@@ -1102,10 +1102,10 @@ with(MO){
    }
    MO.FDsSolutionPropertyToolBar_construct = function FDsSolutionPropertyToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsSolutionPropertyToolBar_dispose = function FDsSolutionPropertyToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

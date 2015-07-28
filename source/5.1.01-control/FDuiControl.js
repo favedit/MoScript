@@ -497,7 +497,7 @@ MO.FDuiControl_refreshPadding = function FDuiControl_refreshPadding(){
 // @see RControl.attachEvent
 //==========================================================
 MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(n, h, m, u){
-   return MO.RUiControl.attachEvent(this, n, h, m, u);
+   return MO.RDuiControl.attachEvent(this, n, h, m, u);
 }
 
 //==========================================================
@@ -518,7 +518,7 @@ MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(n, h, m, u){
 // @see RControl.linkEvent
 //==========================================================
 MO.FDuiControl_linkEvent = function FDuiControl_linkEvent(t, n, h, m){
-   return MO.RUiControl.linkEvent(this, t, n, h, m);
+   return MO.RDuiControl.linkEvent(this, t, n, h, m);
 }
 
 //==========================================================

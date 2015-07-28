@@ -1,8 +1,8 @@
 with(MO){
    // ============================================================
-   // FUiCalendar
+   // FDuiCalendar
    // ============================================================
-   MO.FUiCalendar = function FUiCalendar(o){
+   MO.FDuiCalendar = function FDuiCalendar(o){
       o = RClass.inherits(this, o, FEditControl, MEditBorder, MDropable, MDescCalendar);
       //..........................................................
       // @property
@@ -22,18 +22,18 @@ with(MO){
       o.hForm       = null;
       //..........................................................
       // @event
-      o.onKeyPress  = FUiCalendar_onKeyPress;
-      o.onDataClick   = FUiCalendar_onDataClick;
-      o.refreshStyle  = FUiCalendar_refreshStyle;
-      o.onEditEnd   = FUiCalendar_onEditEnd;
-      o.onBuildEdit = FUiCalendar_onBuildEdit;
+      o.onKeyPress  = FDuiCalendar_onKeyPress;
+      o.onDataClick   = FDuiCalendar_onDataClick;
+      o.refreshStyle  = FDuiCalendar_refreshStyle;
+      o.onEditEnd   = FDuiCalendar_onEditEnd;
+      o.onBuildEdit = FDuiCalendar_onBuildEdit;
       //..........................................................
       // method
-      o.construct   = FUiCalendar_construct;
-      o.formatValue = FUiCalendar_formatValue;
-      o.formatText  = FUiCalendar_formatText;
-      o.drop        = FUiCalendar_drop;
-      o.doBlur      = FUiCalendar_doBlur;
+      o.construct   = FDuiCalendar_construct;
+      o.formatValue = FDuiCalendar_formatValue;
+      o.formatText  = FDuiCalendar_formatText;
+      o.drop        = FDuiCalendar_drop;
+      o.doBlur      = FDuiCalendar_doBlur;
       return o;
    }
 
@@ -43,7 +43,7 @@ with(MO){
    //@method
    //@param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiCalendar_onDataClick = function FUiCalendar_onDataClick(){
+   MO.FDuiCalendar_onDataClick = function FDuiCalendar_onDataClick(){
       var o = this;
       // 展开下拉菜单
       if(!o.editCheck){
@@ -52,7 +52,7 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiCalendar_onBuildEdit = function FUiCalendar_onBuildEdit(b){
+   MO.FDuiCalendar_onBuildEdit = function FDuiCalendar_onBuildEdit(b){
       var o = this;
       // 建立编辑控件
       var htb = RBuilder.appendTable(b.hPanel);
@@ -70,7 +70,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FUiCalendar_onEditEnd = function FUiCalendar_onEditEnd(e){
+   MO.FDuiCalendar_onEditEnd = function FDuiCalendar_onEditEnd(e){
       var o = this;
       if(e){
          o.set(e.get());
@@ -81,7 +81,7 @@ with(MO){
       o.onDataEditEnd(o);
    }
    // ------------------------------------------------------------
-   MO.FUiCalendar_onKeyPress = function FUiCalendar_onKeyPress(e){
+   MO.FDuiCalendar_onKeyPress = function FDuiCalendar_onKeyPress(e){
       if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
          RKey.eventClear(e);
       }
@@ -92,7 +92,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCalendar_construct = function FUiCalendar_construct(){
+   MO.FDuiCalendar_construct = function FDuiCalendar_construct(){
       var o = this;
       o.base.FEditControl.construct.call(o);
       o.date = new TDate();
@@ -101,7 +101,7 @@ with(MO){
 
    // ------------------------------------------------------------
    // text
-   MO.FUiCalendar_formatValue = function FUiCalendar_formatValue(t){
+   MO.FDuiCalendar_formatValue = function FDuiCalendar_formatValue(t){
       if(t){
          var o = this;
          if(t.toLowerCase() == '@now'){
@@ -115,7 +115,7 @@ with(MO){
       return RString.nvl(t);
    }
    // ------------------------------------------------------------
-   MO.FUiCalendar_formatText = function FUiCalendar_formatText(value){
+   MO.FDuiCalendar_formatText = function FDuiCalendar_formatText(value){
       if(value){
          var o = this;
          RDate.autoParse(o.date, value);
@@ -129,7 +129,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiCalendar_refreshStyle = function FUiCalendar_refreshStyle(){
+   MO.FDuiCalendar_refreshStyle = function FDuiCalendar_refreshStyle(){
       var o = this;
       o.base.FEditControl.refreshStyle.call(o);
       //o.hDrop.src = o.styleIconPath(o.isEditHover(t) ? 'DropSelect' : 'Drop');
@@ -140,10 +140,10 @@ with(MO){
    }
 
    // ------------------------------------------------------------
-   MO.FUiCalendar_drop = function FUiCalendar_drop(){
+   MO.FDuiCalendar_drop = function FDuiCalendar_drop(){
       var o = this;
       if(o.canDrop() && o._editable){
-         var e = o.editor = RConsole.find(FEditConsole).focus(o, FUiCalendarEditor, o.name);
+         var e = o.editor = RConsole.find(FEditConsole).focus(o, FDuiCalendarEditor, o.name);
          e.set(o.reget(), o.editFormat);
          e.setHourEditable(o.editHour);
          e.setMinuteEditable(o.editMinute);
@@ -153,7 +153,7 @@ with(MO){
       }
    }
    // ------------------------------------------------------------
-   MO.FUiCalendar_doBlur = function FUiCalendar_doBlur(){
+   MO.FDuiCalendar_doBlur = function FDuiCalendar_doBlur(){
       var o = this;
       o.base.FEditControl.doBlur.call(o);
       if(o.editor){

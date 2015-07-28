@@ -7,7 +7,7 @@ with(MO){
    // @history 150505
    //==========================================================
    MO.FDsCommonTemplateDialog = function FDsCommonTemplateDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.TemplateDialog';
@@ -50,7 +50,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonTemplateDialog_onBuilded = function FDsCommonTemplateDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       //..........................................................
       // 设置属性
       //o._controlSpaceGuid.setEditAble(false);
@@ -130,7 +130,7 @@ with(MO){
    MO.FDsCommonTemplateDialog_construct = function FDsCommonTemplateDialog_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
 
    //==========================================================
@@ -184,6 +184,6 @@ with(MO){
    MO.FDsCommonTemplateDialog_dispose = function FDsCommonTemplateDialog_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

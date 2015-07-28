@@ -170,7 +170,7 @@ MO.FDssGuiManage_dispose = function FDssGuiManage_dispose(){
 }
 with(MO){
    MO.FDsSystemTabBar = function FDsSystemTabBar(o){
-      o = RClass.inherits(this, o, FUiTabBar);
+      o = RClass.inherits(this, o, FDuiTabBar);
       o._frameName            = 'system.design.TabBar';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -184,7 +184,7 @@ with(MO){
    }
    MO.FDsSystemTabBar_onBuilded = function FDsSystemTabBar_onBuilded(p){
       var o = this;
-      o.__base.FUiTabBar.onBuilded.call(o, p);
+      o.__base.FDuiTabBar.onBuilded.call(o, p);
       o._controlPersistence.addClickListener(o, o.onButtonClick);
       o._controlList.addClickListener(o, o.onButtonClick);
       o._controlTree.addClickListener(o, o.onButtonClick);
@@ -209,11 +209,11 @@ with(MO){
    }
    MO.FDsSystemTabBar_construct = function FDsSystemTabBar_construct(){
       var o = this;
-      o.__base.FUiTabBar.construct.call(o);
+      o.__base.FDuiTabBar.construct.call(o);
    }
    MO.FDsSystemTabBar_dispose = function FDsSystemTabBar_dispose(){
       var o = this;
-      o.__base.FUiTabBar.dispose.call(o);
+      o.__base.FDuiTabBar.dispose.call(o);
    }
 }
 with(MO){
@@ -270,7 +270,7 @@ with(MO){
             var menuBar = RClass.create(FDsSystemPersistenceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemPersistenceFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSystemPersistenceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -278,7 +278,7 @@ with(MO){
             var menuBar = RClass.create(FDsSystemListMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemListFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSystemListFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -286,7 +286,7 @@ with(MO){
             var menuBar = RClass.create(FDsSystemTreeMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemTreeFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSystemTreeFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -294,7 +294,7 @@ with(MO){
             var menuBar = RClass.create(FDsSystemFrameMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSystemFrameFrameSet);
+            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSystemFrameFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;

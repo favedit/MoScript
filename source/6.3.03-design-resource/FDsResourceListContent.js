@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceListContent = function FDsResourceListContent(o){
-      o = RClass.inherits(this, o, FUiListView);
+      o = RClass.inherits(this, o, FDuiListView);
       //..........................................................
       // @attribute
       o._contentFlag      = null;
@@ -85,18 +85,18 @@ with(MO){
    MO.FDsResourceListContent_construct = function FDsResourceListContent_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiListView.construct.call(o);
+      o.__base.FDuiListView.construct.call(o);
    }
 
    //==========================================================
    // <T>点击一个列表项目。</T>
    //
    // @method
-   // @param control:FUiListViewItem 列表项目
+   // @param control:FDuiListViewItem 列表项目
    //==========================================================
    MO.FDsResourceListContent_doClickItem = function FDsResourceListContent_doClickItem(control){
       var o = this;
-      o.__base.FUiListView.doClickItem.call(o, control);
+      o.__base.FDuiListView.doClickItem.call(o, control);
       // 选中项目
       //var frame = o._frameSet._previewContent;
       //frame._activeItem = p;
@@ -107,11 +107,11 @@ with(MO){
    // <T>双击一个列表项目。</T>
    //
    // @method
-   // @param control:FUiListViewItem 列表项目
+   // @param control:FDuiListViewItem 列表项目
    //==========================================================
    MO.FDsResourceListContent_doDoubleClickItem = function FDsResourceListContent_doDoubleClickItem(control){
       var o = this;
-      o.__base.FUiListView.doDoubleClickItem.call(o, control)
+      o.__base.FDuiListView.doDoubleClickItem.call(o, control)
       // 设置属性
       var guid = control._guid;
       o._activeItem = control;
@@ -204,6 +204,6 @@ with(MO){
    MO.FDsResourceListContent_dispose = function FDsResourceListContent_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiListView.dispose.call(o);
+      o.__base.FDuiListView.dispose.call(o);
    }
 }

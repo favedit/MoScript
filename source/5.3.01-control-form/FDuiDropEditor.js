@@ -16,8 +16,8 @@ with(MO){
    // @author maocy
    // @version 150224
    //==========================================================
-   MO.FUiDropEditor = function FUiDropEditor(o){
-      o = RClass.inherits(this, o, FUiEditor, MUiShadow);
+   MO.FDuiDropEditor = function FDuiDropEditor(o){
+      o = RClass.inherits(this, o, FDuiEditor, MDuiShadow);
       //..........................................................
       // @style
       o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
@@ -37,15 +37,15 @@ with(MO){
       // @event
       o.onBuildDrop       = RMethod.virtual(o, 'onBuildDrop');
       o.onBuildButton     = RMethod.empty;
-      o.onBuild           = FUiDropEditor_onBuild;
+      o.onBuild           = FDuiDropEditor_onBuild;
       o.onDropMouseDown   = RClass.register(o, new AEventMouseDown('onDropMouseDown'));
       o.onDropMouseUp     = RClass.register(o, new AEventMouseUp('onDropMouseUp'));
       //..........................................................
       // @method
-      o.panel             = FUiDropEditor_panel;
-      o.setVisible        = FUiDropEditor_setVisible;
+      o.panel             = FDuiDropEditor_panel;
+      o.setVisible        = FDuiDropEditor_setVisible;
       // @method
-      o.dispose           = FUiDropEditor_dispose;
+      o.dispose           = FDuiDropEditor_dispose;
       return o;
    }
 
@@ -55,9 +55,9 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiDropEditor_onBuild = function FUiDropEditor_onBuild(p){
+   MO.FDuiDropEditor_onBuild = function FDuiDropEditor_onBuild(p){
       var o = this;
-      o.__base.FUiEditor.onBuild.call(o, p);
+      o.__base.FDuiEditor.onBuild.call(o, p);
       // 设置样式
       var h = o._hPanel;
       h.className = o.styleName('Panel');
@@ -76,12 +76,12 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiDropEditor_panel = function FUiDropEditor_panel(p){
+   MO.FDuiDropEditor_panel = function FDuiDropEditor_panel(p){
       var o = this;
       if(p == EPanel.Shadow){
          return o.hPanel;
       }
-      return o.__base.FUiEditor.panel.call(o, p);
+      return o.__base.FDuiEditor.panel.call(o, p);
    }
 
    //==========================================================
@@ -90,7 +90,7 @@ with(MO){
    // @method
    // @param p:visible:Boolean 是否显示
    //==========================================================
-   MO.FUiDropEditor_setVisible = function FUiDropEditor_setVisible(p){
+   MO.FDuiDropEditor_setVisible = function FDuiDropEditor_setVisible(p){
       var o = this;
       // 页面元素显示和隐藏
       var h = o._hPanel;
@@ -100,8 +100,8 @@ with(MO){
       }else{
          hd.body.removeChild(h);
       }
-      o.__base.FUiEditor.setVisible.call(o, p);
-      //o.__base.MUiShadow.setVisible.call(o, p);
+      o.__base.FDuiEditor.setVisible.call(o, p);
+      //o.__base.MDuiShadow.setVisible.call(o, p);
    }
 
    //==========================================================
@@ -109,7 +109,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiDropEditor_dispose = function FUiDropEditor_dispose(){
+   MO.FDuiDropEditor_dispose = function FDuiDropEditor_dispose(){
       var o = this;
       o._hButtonPanel = RHtml.free(o._hButtonPanel);
       o._hDropPanel = RHtml.free(o._hDropPanel);

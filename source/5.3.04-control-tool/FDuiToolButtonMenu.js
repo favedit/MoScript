@@ -5,8 +5,8 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FUiToolButtonMenu = function FUiToolButtonMenu(o){
-      o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MUiDropable, MUiFocus);
+   MO.FDuiToolButtonMenu = function FDuiToolButtonMenu(o){
+      o = RClass.inherits(this, o, FDuiToolButton, MUiContainer, MUiDropable, MUiFocus);
       //..........................................................
       // @attribute
       o._menu           = null;
@@ -20,21 +20,21 @@ with(MO){
       o._styleDropHover = RClass.register(o, new AStyleIcon('_styleDropHover'));
       //..........................................................
       // @event
-      o.onBuild         = FUiToolButtonMenu_onBuild;
+      o.onBuild         = FDuiToolButtonMenu_onBuild;
       // @event
-      o.onEnter         = FUiToolButtonMenu_onEnter;
-      o.onLeave         = FUiToolButtonMenu_onLeave;
-      o.onMouseDown     = FUiToolButtonMenu_onMouseDown;
-      o.onBlur          = FUiToolButtonMenu_onBlur;
+      o.onEnter         = FDuiToolButtonMenu_onEnter;
+      o.onLeave         = FDuiToolButtonMenu_onLeave;
+      o.onMouseDown     = FDuiToolButtonMenu_onMouseDown;
+      o.onBlur          = FDuiToolButtonMenu_onBlur;
       o.onMouseUp       = RMethod.empty;
       //..........................................................
       // @method
-      o.construct       = FUiToolButtonMenu_construct;
+      o.construct       = FDuiToolButtonMenu_construct;
       // @method
-      o.push            = FUiToolButtonMenu_push;
-      o.drop            = FUiToolButtonMenu_drop;
-      o.doClick         = FUiToolButtonMenu_doClick;
-      o.dispose         = FUiToolButtonMenu_dispose;
+      o.push            = FDuiToolButtonMenu_push;
+      o.drop            = FDuiToolButtonMenu_drop;
+      o.doClick         = FDuiToolButtonMenu_doClick;
+      o.dispose         = FDuiToolButtonMenu_dispose;
       return o;
    }
 
@@ -44,9 +44,9 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiToolButtonMenu_onBuild = function FUiToolButtonMenu_onBuild(event){
+   MO.FDuiToolButtonMenu_onBuild = function FDuiToolButtonMenu_onBuild(event){
       var o = this;
-      o.__base.FUiToolButton.onBuild.call(o, event);
+      o.__base.FDuiToolButton.onBuild.call(o, event);
       // 建立下拉按键
       var hDropPanel = o._hDropPanel = RBuilder.appendTableCell(o._hLine);
       o.onBuildDrop(hDropPanel);
@@ -62,10 +62,10 @@ with(MO){
    // @method
    // @param event:SEvent 事件对象
    //==========================================================
-   MO.FUiToolButtonMenu_onEnter = function FUiToolButtonMenu_onEnter(event){
+   MO.FDuiToolButtonMenu_onEnter = function FDuiToolButtonMenu_onEnter(event){
       var o = this;
       if(!o._statusDrop){
-         o.__base.FUiToolButton.onEnter.call(o, event);
+         o.__base.FDuiToolButton.onEnter.call(o, event);
          //if(!o._disabled){
          //   o._hDropIcon.src = o.styleIconPath('DropHover');
          //}
@@ -78,10 +78,10 @@ with(MO){
    // @method
    // @param event:SEvent 事件对象
    //==========================================================
-   MO.FUiToolButtonMenu_onLeave = function FUiToolButtonMenu_onLeave(event){
+   MO.FDuiToolButtonMenu_onLeave = function FDuiToolButtonMenu_onLeave(event){
       var o = this;
       if(!o._statusDrop){
-         o.__base.FUiToolButton.onLeave.call(o, event);
+         o.__base.FDuiToolButton.onLeave.call(o, event);
          //if(!o._disabled){
             //o._hDropIcon.src = o.styleIconPath('Drop');
          //}
@@ -94,7 +94,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButtonMenu_onMouseDown = function FUiToolButtonMenu_onMouseDown(){
+   MO.FDuiToolButtonMenu_onMouseDown = function FDuiToolButtonMenu_onMouseDown(){
       var o = this;
       //if(o.hintBox){
       //   o.hintBox.hide();
@@ -113,7 +113,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiToolButtonMenu_onBlur = function FUiToolButtonMenu_onBlur(e){
+   MO.FDuiToolButtonMenu_onBlur = function FDuiToolButtonMenu_onBlur(e){
       var o = this;
       //if(e){
       //   if(o._menu.testInRange(e)){
@@ -129,11 +129,11 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiToolButtonMenu_construct = function FUiToolButtonMenu_construct(){
+   MO.FDuiToolButtonMenu_construct = function FDuiToolButtonMenu_construct(){
       var o = this;
-      o.__base.FUiToolButton.construct.call(o);
+      o.__base.FDuiToolButton.construct.call(o);
       // 创建弹出窗口
-      var menu = o._menu = RClass.create(FUiPopupMenu);
+      var menu = o._menu = RClass.create(FDuiPopupMenu);
       menu._opener = o;
    }
 
@@ -143,12 +143,12 @@ with(MO){
    // @method
    // @param p:component:FComponent 组件
    //==========================================================
-   MO.FUiToolButtonMenu_push = function FUiToolButtonMenu_push(c){
+   MO.FDuiToolButtonMenu_push = function FDuiToolButtonMenu_push(c){
       var o = this;
-      if(RClass.isClass(c, MUiMenuButton)){
+      if(RClass.isClass(c, MDuiMenuButton)){
          return o._menu.push(c);
       }
-      o.__base.FUiToolButton.push.call(o, c);
+      o.__base.FDuiToolButton.push.call(o, c);
    }
 
    //==========================================================
@@ -156,7 +156,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiToolButtonMenu_drop = function FUiToolButtonMenu_drop(flag){
+   MO.FDuiToolButtonMenu_drop = function FDuiToolButtonMenu_drop(flag){
       var o = this;
       if(!o._disabled){
          o._statusDrop = !o._statusDrop;
@@ -177,9 +177,9 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiToolButtonMenu_doClick = function FUiToolButtonMenu_doClick(){
+   MO.FDuiToolButtonMenu_doClick = function FDuiToolButtonMenu_doClick(){
       var o = this;
-      o.__base.FUiToolButton.doClick.call(o);
+      o.__base.FDuiToolButton.doClick.call(o);
       o.drop(!o._statusDrop);
    }
 
@@ -188,7 +188,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiToolButtonMenu_dispose = function FUiToolButtonMenu_dispose(){
+   MO.FDuiToolButtonMenu_dispose = function FDuiToolButtonMenu_dispose(){
       var o = this;
       o._hDropIcon = RHtml.free(o._hDropIcon);
       o._hDropPanel = RHtml.free(o._hDropPanel);

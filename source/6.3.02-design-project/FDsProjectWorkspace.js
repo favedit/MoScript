@@ -256,7 +256,7 @@ with(MO){
    // <T>根据名称获得属性页面。</T>
    //
    // @method
-   // @return FUiFrame 页面
+   // @return FDuiFrame 页面
    //==========================================================
    MO.FDsProjectWorkspace_selectFrameSet = function FDsProjectWorkspace_selectFrameSet(name, guid){
       var o = this;
@@ -325,7 +325,7 @@ with(MO){
    // <T>根据名称获得属性页面。</T>
    //
    // @method
-   // @return FUiFrame 页面
+   // @return FDuiFrame 页面
    //==========================================================
    MO.FDsProjectWorkspace_findPropertyFrame = function FDsProjectWorkspace_findPropertyFrame(p){
       var o = this;

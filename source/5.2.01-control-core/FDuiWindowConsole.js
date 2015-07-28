@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150329
 //==========================================================
-MO.FUiWindowConsole = function FUiWindowConsole(o){
+MO.FDuiWindowConsole = function FDuiWindowConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -16,11 +16,11 @@ MO.FUiWindowConsole = function FUiWindowConsole(o){
    o._windows      = null;
    //..........................................................
    // @method
-   o.construct    = MO.FUiWindowConsole_construct;
+   o.construct    = MO.FDuiWindowConsole_construct;
    // @method
-   o.create       = MO.FUiWindowConsole_create;
-   o.find         = MO.FUiWindowConsole_find;
-   //o.loadDefine   = FUiWindowConsole_loadDefine;
+   o.create       = MO.FDuiWindowConsole_create;
+   o.find         = MO.FDuiWindowConsole_find;
+   //o.loadDefine   = FDuiWindowConsole_loadDefine;
    //o.focusWinCtl = null;
    //o.activeForm = null;
    //o.activeControl = null;
@@ -32,22 +32,22 @@ MO.FUiWindowConsole = function FUiWindowConsole(o){
    //o.EVENT_CLOSE = 102;
    //o.EVENT_CLOSEALL = 103;
    // Event
-   //o.onEventMousedown = FUiWindowConsole_onEventMousedown;
-   //o.onSaveDefineAfter = FUiWindowConsole_onSaveDefineAfter;
-   //o.onEventRelease = FUiWindowConsole_onEventRelease;
-   //o.initialize = FUiWindowConsole_initialize;
-   //o.hasWindow = FUiWindowConsole_hasWindow;
-   //o.focus = FUiWindowConsole_focus;
-   //o.saveDefine = FUiWindowConsole_saveDefine;
-   //o.releaseWindowName = FUiWindowConsole_releaseWindowName;
-   //o.releaseWindow = FUiWindowConsole_releaseWindow;
-   //o.doFrameAction = FUiWindowConsole_doFrameAction;
-   //o.setMaxWindow = FUiWindowConsole_setMaxWindow;
-   //o.restore = FUiWindowConsole_restore;
-   //o.doProperties = FUiWindowConsole_doProperties;
-   //o.clear = FUiWindowConsole_clear;
-   //o.hideAll = FUiWindowConsole_hideAll;
-   //o.dump = FUiWindowConsole_dump;
+   //o.onEventMousedown = FDuiWindowConsole_onEventMousedown;
+   //o.onSaveDefineAfter = FDuiWindowConsole_onSaveDefineAfter;
+   //o.onEventRelease = FDuiWindowConsole_onEventRelease;
+   //o.initialize = FDuiWindowConsole_initialize;
+   //o.hasWindow = FDuiWindowConsole_hasWindow;
+   //o.focus = FDuiWindowConsole_focus;
+   //o.saveDefine = FDuiWindowConsole_saveDefine;
+   //o.releaseWindowName = FDuiWindowConsole_releaseWindowName;
+   //o.releaseWindow = FDuiWindowConsole_releaseWindow;
+   //o.doFrameAction = FDuiWindowConsole_doFrameAction;
+   //o.setMaxWindow = FDuiWindowConsole_setMaxWindow;
+   //o.restore = FDuiWindowConsole_restore;
+   //o.doProperties = FDuiWindowConsole_doProperties;
+   //o.clear = FDuiWindowConsole_clear;
+   //o.hideAll = FDuiWindowConsole_hideAll;
+   //o.dump = FDuiWindowConsole_dump;
    return this;
 }
 
@@ -56,7 +56,7 @@ MO.FUiWindowConsole = function FUiWindowConsole(o){
 //
 // @method
 //==========================================================
-MO.FUiWindowConsole_construct = function FUiWindowConsole_construct(){
+MO.FDuiWindowConsole_construct = function FDuiWindowConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置属性
@@ -68,7 +68,7 @@ MO.FUiWindowConsole_construct = function FUiWindowConsole_construct(){
 //
 // @method
 //==========================================================
-MO.FUiWindowConsole_create = function FUiWindowConsole_create(clazz){
+MO.FDuiWindowConsole_create = function FDuiWindowConsole_create(clazz){
    var o = this;
    var instance = MO.Class.create(clazz);
    instance.buildDefine(MO.Window._hDocument);
@@ -80,7 +80,7 @@ MO.FUiWindowConsole_create = function FUiWindowConsole_create(clazz){
 //
 // @method
 //==========================================================
-MO.FUiWindowConsole_find = function FUiWindowConsole_find(clazz){
+MO.FDuiWindowConsole_find = function FDuiWindowConsole_find(clazz){
    var o = this;
    var name = MO.Class.name(clazz);
    var find = o._windows.get(name);
@@ -96,7 +96,7 @@ MO.FUiWindowConsole_find = function FUiWindowConsole_find(clazz){
 
 
 // ------------------------------------------------------------
-MO.FUiWindowConsole_loadDefine = function FUiWindowConsole_loadDefine(name){
+MO.FDuiWindowConsole_loadDefine = function FDuiWindowConsole_loadDefine(name){
    if(name == null){
       return null;
    }
@@ -140,14 +140,14 @@ MO.FUiWindowConsole_loadDefine = function FUiWindowConsole_loadDefine(name){
 
 
 // ------------------------------------------------------------
-MO.FUiWindowConsole_dump = function FUiWindowConsole_dump(){
+MO.FDuiWindowConsole_dump = function FDuiWindowConsole_dump(){
    var sDump = this.className;
    sDump += '\n\nDefine:\n' + this.m_oDefinePool.dump();
    sDump += '\n\nWindow:\n' + this.windowList.dump();
    return sDump;
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_clear = function FUiWindowConsole_clear(){
+MO.FDuiWindowConsole_clear = function FDuiWindowConsole_clear(){
    this.focusWinCtl = null;
    this._activeWindow = null;
    this.activeForm = null;
@@ -161,7 +161,7 @@ MO.FUiWindowConsole_clear = function FUiWindowConsole_clear(){
    IEngine.process(this, this.EVENT_CLOSEALL);
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_hideAll = function FUiWindowConsole_hideAll(oExpWin, bDisplay){
+MO.FDuiWindowConsole_hideAll = function FDuiWindowConsole_hideAll(oExpWin, bDisplay){
    var nSize = this.windowList.size();
    for(var n=nSize-1; n>=0; n--){
       var oWin = this.windowList.value(n);
@@ -171,12 +171,12 @@ MO.FUiWindowConsole_hideAll = function FUiWindowConsole_hideAll(oExpWin, bDispla
    }
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_setMaxWindow = function FUiWindowConsole_setMaxWindow(oWin){
+MO.FDuiWindowConsole_setMaxWindow = function FDuiWindowConsole_setMaxWindow(oWin){
    this.maxFlag = true;
    this.hideAll(oWin);
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_restore = function FUiWindowConsole_restore(){
+MO.FDuiWindowConsole_restore = function FDuiWindowConsole_restore(){
    var nSize = this.windowList.size();
    this.hideAll(null, true);
    for(var n=0; n<nSize; n++){
@@ -188,15 +188,15 @@ MO.FUiWindowConsole_restore = function FUiWindowConsole_restore(){
    this.maxFlag = false;
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_initialize = function FUiWindowConsole_initialize(oCtWin){
+MO.FDuiWindowConsole_initialize = function FDuiWindowConsole_initialize(oCtWin){
    this.clientWindow = oCtWin;
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_hasWindow = function FUiWindowConsole_hasWindow(){
+MO.FDuiWindowConsole_hasWindow = function FDuiWindowConsole_hasWindow(){
    return !this.windowList.isEmpty();
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_focus = function FUiWindowConsole_focus(oWinCtl){
+MO.FDuiWindowConsole_focus = function FDuiWindowConsole_focus(oWinCtl){
    this.focusWinCtl = oWinCtl;
    if(this.maxFlag){
       oWinCtl.show();
@@ -205,7 +205,7 @@ MO.FUiWindowConsole_focus = function FUiWindowConsole_focus(oWinCtl){
    }
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_saveDefine = function FUiWindowConsole_saveDefine(oWinNode, oClientWindow){
+MO.FDuiWindowConsole_saveDefine = function FDuiWindowConsole_saveDefine(oWinNode, oClientWindow){
    if(oClientWindow){this.clientWindow.document.body.disabled = true;}
    if(!oWinNode){
       return LoggerUtil.fatal(this, 'saveDefine', 'Window node is null.');
@@ -225,32 +225,32 @@ MO.FUiWindowConsole_saveDefine = function FUiWindowConsole_saveDefine(oWinNode, 
    oConnect.send();
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_onEventMousedown = function FUiWindowConsole_onEventMousedown(oCWin){
+MO.FDuiWindowConsole_onEventMousedown = function FDuiWindowConsole_onEventMousedown(oCWin){
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_onSaveDefineAfter = function FUiWindowConsole_onSaveDefineAfter(){
+MO.FDuiWindowConsole_onSaveDefineAfter = function FDuiWindowConsole_onSaveDefineAfter(){
    ILogger.info(this, 'saveDefine', 'Save Ok.');
    if(this.clientWindow){this.clientWindow.document.body.disabled = false;}
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_releaseWindowName = function FUiWindowConsole_releaseWindowName(sWinName){
+MO.FDuiWindowConsole_releaseWindowName = function FDuiWindowConsole_releaseWindowName(sWinName){
    var oWin = this.windowList.removeName(sWinName);
    IEngine.process(this, this.EVENT_CLOSE, oWin);
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_releaseWindow = function FUiWindowConsole_releaseWindow(oWin){
+MO.FDuiWindowConsole_releaseWindow = function FDuiWindowConsole_releaseWindow(oWin){
    this.windowList.removeValue(oWin);
    IEngine.process(this, this.EVENT_CLOSE, oWin);
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_doFrameAction = function FUiWindowConsole_doFrameAction(sAction){
+MO.FDuiWindowConsole_doFrameAction = function FDuiWindowConsole_doFrameAction(sAction){
    if(!this.activeForm){
       return ILogger.fatal(this, 'doFrameAction', 'Not active form!');
    }
    this.activeForm.doAction(sAction);
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_doProperties = function FUiWindowConsole_doProperties(){
+MO.FDuiWindowConsole_doProperties = function FDuiWindowConsole_doProperties(){
    TrackManager.push(this, 'Do properties.');
    if(!WindowManager.focusWinCtl){return;}
    var arParams = new Array();
@@ -258,7 +258,7 @@ MO.FUiWindowConsole_doProperties = function FUiWindowConsole_doProperties(){
    window.showModalDialog(SystemManager.actionURL('window'), arParams, 'dialogWidth:500px;dialogHeight:360px;resizable:no;scroll:no;edge:sunken');
 }
 // ------------------------------------------------------------
-MO.FUiWindowConsole_onEventRelease = function FUiWindowConsole_onEventRelease(oCWin){
+MO.FDuiWindowConsole_onEventRelease = function FDuiWindowConsole_onEventRelease(oCWin){
    if(oCWin){
       var oSubWin = null;
       var oRemoves = new Array();

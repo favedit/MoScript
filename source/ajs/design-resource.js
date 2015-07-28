@@ -57,7 +57,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceCatalogToolBar = function FDsResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName                   = 'resource.resource.CatalogToolBar';
       o._controlFolderCreateButton   = null;
       o._controlFolderDeleteButton   = null;
@@ -79,7 +79,7 @@ with(MO){
    }
    MO.FDsResourceCatalogToolBar_onBuilded = function FDsResourceCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlFolderCreateButton.addClickListener(o, o.onFolderCreateClick);
       o._controlFolderDeleteButton.addClickListener(o, o.onFolderDeleteClick);
       o._controlFolderPropertyButton.addClickListener(o, o.onFolderPropertyClick);
@@ -96,7 +96,7 @@ with(MO){
          parentGuid = node.guid();
          parentLabel = node.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._parentGuid = parentGuid;
@@ -149,7 +149,7 @@ with(MO){
       if(node._parent){
          parentLabel = node._parent.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._nodeGuid = node._guid;
@@ -164,16 +164,16 @@ with(MO){
    }
    MO.FDsResourceCatalogToolBar_construct = function FDsResourceCatalogToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsResourceCatalogToolBar_dispose = function FDsResourceCatalogToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceCreateDialog = function FDsResourceCreateDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName        = 'resource.resource.CreateDialog';
       o._nodeGuid         = null;
       o._controlNodeLabel = null;
@@ -193,7 +193,7 @@ with(MO){
    }
    MO.FDsResourceCreateDialog_onBuilded = function FDsResourceCreateDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlNodeLabel.setEditAble(false);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
       o._controlCancel.addClickListener(o, o.onCancelClick);
@@ -242,7 +242,7 @@ with(MO){
    }
    MO.FDsResourceCreateDialog_construct = function FDsResourceCreateDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsResourceCreateDialog_setNodeLabel = function FDsResourceCreateDialog_setNodeLabel(label){
       var o = this;
@@ -269,12 +269,12 @@ with(MO){
    }
    MO.FDsResourceCreateDialog_dispose = function FDsResourceCreateDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceFolderDialog = function FDsResourceFolderDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.FolderDialog';
       o._dataModeCd           = null;
       o._controlParentLabel   = null;
@@ -294,7 +294,7 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_onBuilded = function FDsResourceFolderDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlParentLabel.setEditAble(false);
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
       o._controlCancelButton.addClickListener(o, o.onCancelClick);
@@ -335,7 +335,7 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_construct = function FDsResourceFolderDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsResourceFolderDialog_setNodeParentLabel = function FDsResourceFolderDialog_setNodeParentLabel(label){
       this._controlParentLabel.set(label);
@@ -354,7 +354,7 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_dispose = function FDsResourceFolderDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
@@ -449,7 +449,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceImportDialog = function FDsResourceImportDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.ImportDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -469,7 +469,7 @@ with(MO){
    }
    MO.FDsResourceImportDialog_onBuilded = function FDsResourceImportDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       o._controlNodeLabel.setEditAble(false);
       o._controlFile.addDataChangedListener(o, o.onFileChange);
       o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
@@ -528,7 +528,7 @@ with(MO){
    }
    MO.FDsResourceImportDialog_construct = function FDsResourceImportDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsResourceImportDialog_setNodeLabel = function FDsResourceImportDialog_setNodeLabel(label){
       var o = this;
@@ -552,12 +552,12 @@ with(MO){
    }
    MO.FDsResourceImportDialog_dispose = function FDsResourceImportDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceListContent = function FDsResourceListContent(o){
-      o = RClass.inherits(this, o, FUiListView);
+      o = RClass.inherits(this, o, FDuiListView);
       o._contentFlag      = null;
       o._contentTypeCd    = EE3sResource.All;
       o._contentSerach    = '';
@@ -609,15 +609,15 @@ with(MO){
    }
    MO.FDsResourceListContent_construct = function FDsResourceListContent_construct(){
       var o = this;
-      o.__base.FUiListView.construct.call(o);
+      o.__base.FDuiListView.construct.call(o);
    }
    MO.FDsResourceListContent_doClickItem = function FDsResourceListContent_doClickItem(control){
       var o = this;
-      o.__base.FUiListView.doClickItem.call(o, control);
+      o.__base.FDuiListView.doClickItem.call(o, control);
    }
    MO.FDsResourceListContent_doDoubleClickItem = function FDsResourceListContent_doDoubleClickItem(control){
       var o = this;
-      o.__base.FUiListView.doDoubleClickItem.call(o, control)
+      o.__base.FDuiListView.doDoubleClickItem.call(o, control)
       var guid = control._guid;
       o._activeItem = control;
       o._activeGuid = control._guid;
@@ -676,12 +676,12 @@ with(MO){
    }
    MO.FDsResourceListContent_dispose = function FDsResourceListContent_dispose(){
       var o = this;
-      o.__base.FUiListView.dispose.call(o);
+      o.__base.FDuiListView.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceListItem = function FDsResourceListItem(o){
-      o = RClass.inherits(this, o, FUiListViewItem);
+      o = RClass.inherits(this, o, FDuiListViewItem);
       o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
       o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
       o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
@@ -692,7 +692,7 @@ with(MO){
    }
    MO.FDsResourceListItem_onBuild = function FDsResourceListItem_onBuild(p){
       var o = this;
-      o.__base.FUiListViewItem.onBuild.call(o, p);
+      o.__base.FDuiListViewItem.onBuild.call(o, p);
       var h = o._hPanel;
       h.style.width = '200px';
       h.style.height = '150px';
@@ -716,7 +716,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceListToolBar = function FDsResourceListToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
+      o = RClass.inherits(this, o, FDuiToolBar, MUiStorage);
       o._dropButton       = null;
       o._selectButton     = null;
       o._translateButton  = null;
@@ -741,7 +741,7 @@ with(MO){
    }
    MO.FDsResourceListToolBar_onBuilded = function FDsResourceListToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlSearchEdit.addClickListener(o, o.onSearchClick);
       o._controlFirstButton.addClickListener(o, o.onNavigatorClick);
       o._controlPriorButton.addClickListener(o, o.onNavigatorClick);
@@ -833,7 +833,7 @@ with(MO){
    }
    MO.FDsResourceListToolBar_construct = function FDsResourceListToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsResourceListToolBar_makeTypeCd = function FDsResourceListToolBar_makeTypeCd(){
       var o = this;
@@ -893,12 +893,12 @@ with(MO){
    }
    MO.FDsResourceListToolBar_dispose = function FDsResourceListToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceMenuBar = function FDsResourceMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       o._controlImportPicture  = null;
       o._controlImportModel    = null;
       o._controlCreateMaterial = null;
@@ -932,7 +932,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceImportDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -951,7 +951,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceImportDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -970,7 +970,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -989,7 +989,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -1008,7 +1008,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -1069,11 +1069,11 @@ with(MO){
    }
    MO.FDsResourceMenuBar_construct = function FDsResourceMenuBar_construct(){
       var o = this;
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
    MO.FDsResourceMenuBar_dispose = function FDsResourceMenuBar_dispose(){
       var o = this;
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }
 with(MO){
@@ -1527,7 +1527,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourcePropertyToolBar = function FDsResourcePropertyToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.resource.PropertyToolBar';
       o._controlInsertButton   = null;
       o._controlUpdateButton   = null;
@@ -1542,7 +1542,7 @@ with(MO){
    }
    MO.FDsResourcePropertyToolBar_onBuilded = function FDsResourcePropertyToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlUpdateButton.addClickListener(o, o.onUpdateClick);
       o._controlRotationButton.addClickListener(o, o.onRotationClick);
    }
@@ -1556,16 +1556,16 @@ with(MO){
    }
    MO.FDsResourcePropertyToolBar_construct = function FDsResourcePropertyToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsResourcePropertyToolBar_dispose = function FDsResourcePropertyToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceSelectCatalogToolBar = function FDsResourceSelectCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName          = 'resource.resource.SelectCatalogToolBar';
       o._controlFolderOpen  = null;
       o._controlFolderClose = null;
@@ -1579,7 +1579,7 @@ with(MO){
    }
    MO.FDsResourceSelectCatalogToolBar_onBuilded = function FDsResourceSelectCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlFolderOpen.addClickListener(o, o.onFolderOpenClick);
       o._controlFolderClose.addClickListener(o, o.onFolderCloseClick);
    }
@@ -1589,16 +1589,16 @@ with(MO){
    }
    MO.FDsResourceSelectCatalogToolBar_construct = function FDsResourceSelectCatalogToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsResourceSelectCatalogToolBar_dispose = function FDsResourceSelectCatalogToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceSelectDialog = function FDsResourceSelectDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.SelectDialog';
       o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
       o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
@@ -1621,7 +1621,7 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_onBuilded = function FDsResourceSelectDialog_onBuilded(event){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, event);
+      o.__base.FDuiDialog.onBuilded.call(o, event);
       o._controlConfirm.addClickListener(o, o.onConfirmClick);
       o._controlCancel.addClickListener(o, o.onCancelClick);
       o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
@@ -1689,7 +1689,7 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_construct = function FDsResourceSelectDialog_construct(){
       var o = this;
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
    MO.FDsResourceSelectDialog_setNodeParentLabel = function FDsResourceSelectDialog_setNodeParentLabel(label){
       this._controlParentLabel.set(label);
@@ -1708,12 +1708,12 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_dispose = function FDsResourceSelectDialog_dispose(){
       var o = this;
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceSelectListToolBar = function FDsResourceSelectListToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
+      o = RClass.inherits(this, o, FDuiToolBar, MUiStorage);
       o._frameName        = 'resource.resource.SelectListToolBar';
       o._storageCode      = o._frameName;
       o._dropButton       = null;
@@ -1740,7 +1740,7 @@ with(MO){
    }
    MO.FDsResourceSelectListToolBar_onBuilded = function FDsResourceSelectListToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlSearchEdit.addClickListener(o, o.onSearchClick);
       o._controlFirstButton.addClickListener(o, o.onNavigatorClick);
       o._controlPriorButton.addClickListener(o, o.onNavigatorClick);
@@ -1818,7 +1818,7 @@ with(MO){
    }
    MO.FDsResourceSelectListToolBar_construct = function FDsResourceSelectListToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsResourceSelectListToolBar_makeTypeCd = function FDsResourceSelectListToolBar_makeTypeCd(){
       var o = this;
@@ -1878,12 +1878,12 @@ with(MO){
    }
    MO.FDsResourceSelectListToolBar_dispose = function FDsResourceSelectListToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsResourceTabBar = function FDsResourceTabBar(o){
-      o = RClass.inherits(this, o, FUiTabBar);
+      o = RClass.inherits(this, o, FDuiTabBar);
       o._frameName             = 'design3d.resource.TabBar';
       o._resourceTypeCd        = 'mesh';
       o._controlPictureButton  = null;
@@ -1903,7 +1903,7 @@ with(MO){
    }
    MO.FDsResourceTabBar_onBuilded = function FDsResourceTabBar_onBuilded(p){
       var o = this;
-      o.__base.FUiTabBar.onBuilded.call(o, p);
+      o.__base.FDuiTabBar.onBuilded.call(o, p);
       o._controlPictureButton.addClickListener(o, o.onButtonClick);
       o._controlSoundButton.addClickListener(o, o.onButtonClick);
       o._controlVidioButton.addClickListener(o, o.onButtonClick);
@@ -1922,11 +1922,11 @@ with(MO){
    }
    MO.FDsResourceTabBar_construct = function FDsResourceTabBar_construct(){
       var o = this;
-      o.__base.FUiTabBar.construct.call(o);
+      o.__base.FDuiTabBar.construct.call(o);
    }
    MO.FDsResourceTabBar_dispose = function FDsResourceTabBar_dispose(){
       var o = this;
-      o.__base.FUiTabBar.dispose.call(o);
+      o.__base.FDuiTabBar.dispose.call(o);
    }
 }
 with(MO){

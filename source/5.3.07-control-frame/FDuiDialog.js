@@ -5,11 +5,11 @@
 // @author maocy
 // @version 150122
 //==========================================================
-MO.FUiDialog = function FUiDialog(o){
-   o = MO.Class.inherits(this, o, MO.FUiWindow, MO.MUiDescribeFrame);
+MO.FDuiDialog = function FDuiDialog(o){
+   o = MO.Class.inherits(this, o, MO.FDuiWindow, MO.MUiDescribeFrame);
    //..........................................................
    // @method
-   o.construct = MO.FUiDialog_construct;
+   o.construct = MO.FDuiDialog_construct;
    //..........................................................
    return o;
 }
@@ -19,7 +19,7 @@ MO.FUiDialog = function FUiDialog(o){
 //
 // @method
 //==========================================================
-MO.FUiDialog_construct = function FUiDialog_construct(){
+MO.FDuiDialog_construct = function FDuiDialog_construct(){
    var o = this;
-   o.__base.FUiWindow.construct.call(o);
+   o.__base.FDuiWindow.construct.call(o);
 }

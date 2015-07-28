@@ -1,12 +1,12 @@
 with(MO){
    MO.FUiDataToolBar = function FUiDataToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       return o;
    }
 }
 with(MO){
    MO.FUiDataToolButton = function FUiDataToolButton(o){
-      o = RClass.inherits(this, o, FUiToolButton);
+      o = RClass.inherits(this, o, FDuiToolButton);
       o._serviceName     = RClass.register(o, new APtyString('_serviceName'));
       return o;
    }

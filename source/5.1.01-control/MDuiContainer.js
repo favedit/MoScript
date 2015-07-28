@@ -24,7 +24,7 @@ MO.MUiContainer = function MUiContainer(o){
 //==========================================================
 MO.MUiContainer_createChild = function MUiContainer_createChild(p){
    // 创建实例
-   var c = MO.RUiControl.newInstance(p);
+   var c = MO.RDuiControl.newInstance(p);
    c._parent = this;
    return c;
 }

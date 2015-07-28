@@ -7,7 +7,7 @@ with(MO){
    // @history 150404
    //==========================================================
    MO.FDsMaterialCanvasToolBar = function FDsMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @attribute
       o._controlSize1      = null;
@@ -37,7 +37,7 @@ with(MO){
    //==========================================================
    MO.FDsMaterialCanvasToolBar_onBuilded = function FDsMaterialCanvasToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       //..........................................................
       // 关联按键事件
       o._controlSize1.addClickListener(o, o.onSizeClick);
@@ -93,7 +93,7 @@ with(MO){
    MO.FDsMaterialCanvasToolBar_construct = function FDsMaterialCanvasToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -104,6 +104,6 @@ with(MO){
    MO.FDsMaterialCanvasToolBar_dispose = function FDsMaterialCanvasToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-MO.FUiFrameSpliter = function FUiFrameSpliter(o){
+MO.FDuiFrameSpliter = function FDuiFrameSpliter(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDragable);
    //..........................................................
    // @style
@@ -31,26 +31,26 @@ MO.FUiFrameSpliter = function FUiFrameSpliter(o){
    o._hIcon        = null;
    //..........................................................
    // @event
-   o.onBuildPanel  = MO.FUiFrameSpliter_onBuildPanel
-   o.onBuild       = MO.FUiFrameSpliter_onBuild;
+   o.onBuildPanel  = MO.FDuiFrameSpliter_onBuildPanel
+   o.onBuild       = MO.FDuiFrameSpliter_onBuild;
    // @event
-   o.onMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onMouseEnter'), MO.FUiFrameSpliter_onMouseEnter);
-   o.onMouseLeave  = MO.Class.register(o, new MO.AEventMouseLeave('onMouseLeave'), MO.FUiFrameSpliter_onMouseLeave);
-   o.onDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDoubleClick'), MO.FUiFrameSpliter_onDoubleClick);
-   o.onDragStart   = MO.FUiFrameSpliter_onDragStart;
-   o.onDragMove    = MO.FUiFrameSpliter_onDragMove;
-   o.onDragStop    = MO.FUiFrameSpliter_onDragStop;
+   o.onMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onMouseEnter'), MO.FDuiFrameSpliter_onMouseEnter);
+   o.onMouseLeave  = MO.Class.register(o, new MO.AEventMouseLeave('onMouseLeave'), MO.FDuiFrameSpliter_onMouseLeave);
+   o.onDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDoubleClick'), MO.FDuiFrameSpliter_onDoubleClick);
+   o.onDragStart   = MO.FDuiFrameSpliter_onDragStart;
+   o.onDragMove    = MO.FDuiFrameSpliter_onDragMove;
+   o.onDragStop    = MO.FDuiFrameSpliter_onDragStop;
    //..........................................................
    // @method
-   o.construct     = MO.FUiFrameSpliter_construct;
+   o.construct     = MO.FDuiFrameSpliter_construct;
    // @method
-   o.alignCd       = MO.FUiFrameSpliter_alignCd;
-   o.setAlignCd    = MO.FUiFrameSpliter_setAlignCd;
-   o.sizeHtml      = MO.FUiFrameSpliter_sizeHtml;
-   o.setSizeHtml   = MO.FUiFrameSpliter_setSizeHtml;
-   o.changeVisible = MO.FUiFrameSpliter_changeVisible;
+   o.alignCd       = MO.FDuiFrameSpliter_alignCd;
+   o.setAlignCd    = MO.FDuiFrameSpliter_setAlignCd;
+   o.sizeHtml      = MO.FDuiFrameSpliter_sizeHtml;
+   o.setSizeHtml   = MO.FDuiFrameSpliter_setSizeHtml;
+   o.changeVisible = MO.FDuiFrameSpliter_changeVisible;
    // @method
-   o.dispose       = MO.FUiFrameSpliter_dispose;
+   o.dispose       = MO.FDuiFrameSpliter_dispose;
    return o;
 }
 
@@ -60,7 +60,7 @@ MO.FUiFrameSpliter = function FUiFrameSpliter(o){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-MO.FUiFrameSpliter_onBuildPanel = function FUiFrameSpliter_onBuildPanel(p){
+MO.FDuiFrameSpliter_onBuildPanel = function FDuiFrameSpliter_onBuildPanel(p){
    var o = this;
    o._hPanel = MO.Window.Builder.createTableCell(p, o.styleName('Normal'));
 }
@@ -72,7 +72,7 @@ MO.FUiFrameSpliter_onBuildPanel = function FUiFrameSpliter_onBuildPanel(p){
 // @param p:event:TEventProcess 事件处理
 // @return EEventStatus 处理状态
 //==========================================================
-MO.FUiFrameSpliter_onBuild = function FUiFrameSpliter_onBuild(p){
+MO.FDuiFrameSpliter_onBuild = function FDuiFrameSpliter_onBuild(p){
    var o = this;
    o.__base.FDuiControl.onBuild.call(o, p)
    var fs = o._frameset;
@@ -103,7 +103,7 @@ MO.FUiFrameSpliter_onBuild = function FUiFrameSpliter_onBuild(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-MO.FUiFrameSpliter_onMouseEnter = function FUiFrameSpliter_onMouseEnter(p){
+MO.FDuiFrameSpliter_onMouseEnter = function FDuiFrameSpliter_onMouseEnter(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Hover');
@@ -115,7 +115,7 @@ MO.FUiFrameSpliter_onMouseEnter = function FUiFrameSpliter_onMouseEnter(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-MO.FUiFrameSpliter_onMouseLeave = function FUiFrameSpliter_onMouseLeave(p){
+MO.FDuiFrameSpliter_onMouseLeave = function FDuiFrameSpliter_onMouseLeave(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Normal');
@@ -127,7 +127,7 @@ MO.FUiFrameSpliter_onMouseLeave = function FUiFrameSpliter_onMouseLeave(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-MO.FUiFrameSpliter_onDoubleClick = function FUiFrameSpliter_onDoubleClick(p){
+MO.FDuiFrameSpliter_onDoubleClick = function FDuiFrameSpliter_onDoubleClick(p){
    this.changeVisible();
 }
 
@@ -137,7 +137,7 @@ MO.FUiFrameSpliter_onDoubleClick = function FUiFrameSpliter_onDoubleClick(p){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-MO.FUiFrameSpliter_onDragStart = function FUiFrameSpliter_onDragStart(e){
+MO.FDuiFrameSpliter_onDragStart = function FDuiFrameSpliter_onDragStart(e){
    var o = this;
    // 获得属性
    var hc = o._hPanel;
@@ -174,7 +174,7 @@ MO.FUiFrameSpliter_onDragStart = function FUiFrameSpliter_onDragStart(e){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-MO.FUiFrameSpliter_onDragMove = function FUiFrameSpliter_onDragMove(e){
+MO.FDuiFrameSpliter_onDragMove = function FDuiFrameSpliter_onDragMove(e){
    var o = this;
    var hd = o._hDrag;
    // 计算数据
@@ -201,7 +201,7 @@ MO.FUiFrameSpliter_onDragMove = function FUiFrameSpliter_onDragMove(e){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-MO.FUiFrameSpliter_onDragStop = function FUiFrameSpliter_onDragStop(e){
+MO.FDuiFrameSpliter_onDragStop = function FDuiFrameSpliter_onDragStop(e){
    var o = this;
    var hd = o._hDrag;
    // 计算数据
@@ -246,7 +246,7 @@ MO.FUiFrameSpliter_onDragStop = function FUiFrameSpliter_onDragStop(e){
 //
 // @method
 //==========================================================
-MO.FUiFrameSpliter_construct = function FUiFrameSpliter_construct(){
+MO.FDuiFrameSpliter_construct = function FDuiFrameSpliter_construct(){
    var o = this;
    o.__base.FDuiControl.construct.call(o);
 }
@@ -257,7 +257,7 @@ MO.FUiFrameSpliter_construct = function FUiFrameSpliter_construct(){
 // @method
 // @return EUiAlign 对齐类型
 //==========================================================
-MO.FUiFrameSpliter_alignCd = function FUiFrameSpliter_alignCd(){
+MO.FDuiFrameSpliter_alignCd = function FDuiFrameSpliter_alignCd(){
    return this._alignCd;
 }
 
@@ -267,7 +267,7 @@ MO.FUiFrameSpliter_alignCd = function FUiFrameSpliter_alignCd(){
 // @method
 // @param alignCd:EUiAlign 对齐类型
 //==========================================================
-MO.FUiFrameSpliter_setAlignCd = function FUiFrameSpliter_setAlignCd(alignCd){
+MO.FDuiFrameSpliter_setAlignCd = function FDuiFrameSpliter_setAlignCd(alignCd){
    var o = this;
    if(alignCd == MO.EUiAlign.Left){
       o._hIcon.src = MO.RResource.iconPath('control.FSpliter_Left');
@@ -285,7 +285,7 @@ MO.FUiFrameSpliter_setAlignCd = function FUiFrameSpliter_setAlignCd(alignCd){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-MO.FUiFrameSpliter_sizeHtml = function FUiFrameSpliter_sizeHtml(){
+MO.FDuiFrameSpliter_sizeHtml = function FDuiFrameSpliter_sizeHtml(){
    return this._hSize;
 }
 
@@ -295,7 +295,7 @@ MO.FUiFrameSpliter_sizeHtml = function FUiFrameSpliter_sizeHtml(){
 // @method
 // @param p:html:HtmlTag 页面元素
 //==========================================================
-MO.FUiFrameSpliter_setSizeHtml = function FUiFrameSpliter_setSizeHtml(p){
+MO.FDuiFrameSpliter_setSizeHtml = function FDuiFrameSpliter_setSizeHtml(p){
    this._hSize = p;
 }
 
@@ -304,7 +304,7 @@ MO.FUiFrameSpliter_setSizeHtml = function FUiFrameSpliter_setSizeHtml(p){
 //
 // @method
 //==========================================================
-MO.FUiFrameSpliter_changeVisible = function FUiFrameSpliter_changeVisible(){
+MO.FDuiFrameSpliter_changeVisible = function FDuiFrameSpliter_changeVisible(){
    var o = this;
    // 检查变量
    var hs = o._hSize;
@@ -344,7 +344,7 @@ MO.FUiFrameSpliter_changeVisible = function FUiFrameSpliter_changeVisible(){
 //
 // @method
 //==========================================================
-MO.FUiFrameSpliter_dispose = function FUiFrameSpliter_dispose(){
+MO.FDuiFrameSpliter_dispose = function FDuiFrameSpliter_dispose(){
    var o = this;
    // 释放页面元素
    o._hDrag = MO.Window.Html.free(o._hDrag);

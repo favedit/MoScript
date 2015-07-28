@@ -35,7 +35,7 @@ MO.FUiMessageConsole = function FUiMessageConsole(o){
 // @param text:String 文本内容
 //==========================================================
 MO.FUiMessageConsole_showInfo = function FUiMessageConsole_showInfo(text){
-   var dialog = MO.Console.find(MO.FUiWindowConsole).find(MO.FUiInfoDialog);
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiInfoDialog);
    dialog.clearResultListeners();
    dialog.setText(text);
    dialog.showPosition(MO.EUiPosition.Center);
@@ -49,7 +49,7 @@ MO.FUiMessageConsole_showInfo = function FUiMessageConsole_showInfo(text){
 // @param text:String 文本内容
 //==========================================================
 MO.FUiMessageConsole_showConfirm = function FUiMessageConsole_showConfirm(text){
-   var dialog = MO.Console.find(MO.FUiWindowConsole).find(MO.FUiConfirmDialog);
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiConfirmDialog);
    dialog.clearResultListeners();
    dialog.setText(text);
    dialog.showPosition(MO.EUiPosition.Center);
@@ -63,7 +63,7 @@ MO.FUiMessageConsole_showConfirm = function FUiMessageConsole_showConfirm(text){
 // @param text:String 文本内容
 //==========================================================
 MO.FUiMessageConsole_showError = function FUiMessageConsole_showError(code, message, description){
-   var dialog = MO.Console.find(MO.FUiWindowConsole).find(MO.FUiErrorDialog);
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiErrorDialog);
    dialog.clearResultListeners();
    dialog.setCode(message);
    dialog.setDescription(description);

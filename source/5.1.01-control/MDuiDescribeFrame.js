@@ -32,5 +32,5 @@ MO.MUiDescribeFrame_buildDefine = function MUiDescribeFrame_buildDefine(hDocumen
    var frameConsole = MO.Console.find(MO.FUiDescribeFrameConsole);
    var xconfig = frameConsole.load(frameName);
    // 构建处理
-   MO.RUiControl.build(o, xconfig, null, hDocument);
+   MO.RDuiControl.build(o, xconfig, null, hDocument);
 }

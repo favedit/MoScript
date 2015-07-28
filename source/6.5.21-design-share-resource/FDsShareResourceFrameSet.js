@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsShareResourceFrameSet = function FDsShareResourceFrameSet(o){
-      o = RClass.inherits(this, o, FUiFrameSet);
+      o = RClass.inherits(this, o, FDuiFrameSet);
       //..........................................................
       // @property
       o._frameName            = 'resource.share.resource.FrameSet';
@@ -56,7 +56,7 @@ with(MO){
    //==========================================================
    MO.FDsShareResourceFrameSet_onBuilded = function FDsShareResourceFrameSet_onBuilded(event){
       var o = this;
-      o.__base.FUiFrameSet.onBuilded.call(o, event);
+      o.__base.FDuiFrameSet.onBuilded.call(o, event);
       // 设置样式
       o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
       o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
@@ -178,7 +178,7 @@ with(MO){
    MO.FDsShareResourceFrameSet_construct = function FDsShareResourceFrameSet_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiFrameSet.construct.call(o);
+      o.__base.FDuiFrameSet.construct.call(o);
       // 设置属性
       o._propertyFrames = new TDictionary();
    }
@@ -187,7 +187,7 @@ with(MO){
    // <T>根据名称获得属性页面。</T>
    //
    // @method
-   // @return FUiFrame 页面
+   // @return FDuiFrame 页面
    //==========================================================
    MO.FDsShareResourceFrameSet_findPropertyFrame = function FDsShareResourceFrameSet_findPropertyFrame(p){
       var o = this;
@@ -233,7 +233,7 @@ with(MO){
    MO.FDsShareResourceFrameSet_dispose = function FDsShareResourceFrameSet_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiFrameSet.dispose.call(o);
+      o.__base.FDuiFrameSet.dispose.call(o);
       // 设置属性
       o._propertyFrames.dispose();
       o._propertyFrames = null;

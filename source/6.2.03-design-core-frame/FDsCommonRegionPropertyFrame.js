@@ -7,7 +7,7 @@ with(MO){
    // @history 150415
    //==========================================================
    MO.FDsCommonRegionPropertyFrame = function FDsCommonRegionPropertyFrame(o){
-      o = RClass.inherits(this, o, FUiForm);
+      o = RClass.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible                   = false;
@@ -43,7 +43,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonRegionPropertyFrame_onBuilded = function FDsCommonRegionPropertyFrame_onBuilded(p){
       var o = this;
-      o.__base.FUiForm.onBuilded.call(o, p);
+      o.__base.FDuiForm.onBuilded.call(o, p);
       // 关联对象
       o._controlMoveSpeed.addDataChangedListener(o, o.onDataChanged);
       o._controlRotationKeySpeed.addDataChangedListener(o, o.onDataChanged);
@@ -82,7 +82,7 @@ with(MO){
    //==========================================================
    MO.FDsCommonRegionPropertyFrame_construct = function FDsCommonRegionPropertyFrame_construct(){
       var o = this;
-      o.__base.FUiForm.construct.call(o);
+      o.__base.FDuiForm.construct.call(o);
    }
 
    //==========================================================
@@ -115,6 +115,6 @@ with(MO){
    MO.FDsCommonRegionPropertyFrame_dispose = function FDsCommonRegionPropertyFrame_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiForm.dispose.call(o);
+      o.__base.FDuiForm.dispose.call(o);
    }
 }

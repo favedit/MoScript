@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceImportDialog = function FDsResourceImportDialog(o){
-      o = RClass.inherits(this, o, FUiDialog);
+      o = RClass.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.resource.ImportDialog';
@@ -45,7 +45,7 @@ with(MO){
    //==========================================================
    MO.FDsResourceImportDialog_onBuilded = function FDsResourceImportDialog_onBuilded(p){
       var o = this;
-      o.__base.FUiDialog.onBuilded.call(o, p);
+      o.__base.FDuiDialog.onBuilded.call(o, p);
       //..........................................................
       // 设置属性
       o._controlNodeLabel.setEditAble(false);
@@ -160,7 +160,7 @@ with(MO){
    MO.FDsResourceImportDialog_construct = function FDsResourceImportDialog_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.construct.call(o);
+      o.__base.FDuiDialog.construct.call(o);
    }
 
    //==========================================================
@@ -205,6 +205,6 @@ with(MO){
    MO.FDsResourceImportDialog_dispose = function FDsResourceImportDialog_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDialog.dispose.call(o);
+      o.__base.FDuiDialog.dispose.call(o);
    }
 }

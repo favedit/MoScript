@@ -7,7 +7,7 @@ with(MO){
    // @history 150404
    //==========================================================
    MO.FDsModelCanvasToolBar = function FDsModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName                 = 'resource.model.CanvasToolBar';
@@ -61,7 +61,7 @@ with(MO){
    //==========================================================
    MO.FDsModelCanvasToolBar_onBuilded = function FDsModelCanvasToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       //..........................................................
       // 关联拖拽事件
       var control = o._controlDrop;
@@ -212,7 +212,7 @@ with(MO){
    MO.FDsModelCanvasToolBar_construct = function FDsModelCanvasToolBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
 
    //==========================================================
@@ -223,6 +223,6 @@ with(MO){
    MO.FDsModelCanvasToolBar_dispose = function FDsModelCanvasToolBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }

@@ -91,7 +91,7 @@ MO.FUiDesktopConsole_getMaskPanel = function FUiDesktopConsole_getMaskPanel(){
 // <T>获得进度条控件。</T>
 //
 // @method
-// @return FUiProgressBar 进度条控件
+// @return FDuiProgressBar 进度条控件
 //==========================================================
 MO.FUiDesktopConsole_getLoadingPanel = function FUiDesktopConsole_getLoadingPanel(){
    var o = this;
@@ -114,14 +114,14 @@ MO.FUiDesktopConsole_getLoadingPanel = function FUiDesktopConsole_getLoadingPane
 // <T>获得进度条控件。</T>
 //
 // @method
-// @return FUiProgressBar 进度条控件
+// @return FDuiProgressBar 进度条控件
 //==========================================================
 MO.FUiDesktopConsole_getProgressBar = function FUiDesktopConsole_getProgressBar(){
    var o = this;
    var progressBar = o._progressBar;
    // 创建进度条
    if(!progressBar){
-      progressBar = o._progressBar = MO.Class.create(FUiProgressBar);
+      progressBar = o._progressBar = MO.Class.create(FDuiProgressBar);
       progressBar.build(top.MO.Window._hDocument);
    }
    return progressBar;
@@ -201,7 +201,7 @@ MO.FUiDesktopConsole_showLoading = function FUiDesktopConsole_showLoading(){
    // 显示加载中
    if(!o._loadingVisible){
       var hLoadingPanel = o.getLoadingPanel();
-      RHtml.textSet(o._hLoadingLabel, '正在努力加载中，请稍等 ...');
+      MO.Window.Html.textSet(o._hLoadingLabel, '正在努力加载中，请稍等 ...');
       o._hMaskInnerPanel.appendChild(hLoadingPanel);
       o._loadingVisible = true;
    }
@@ -219,7 +219,7 @@ MO.FUiDesktopConsole_showUploading = function FUiDesktopConsole_showUploading(){
    // 显示加载中
    if(!o._loadingVisible){
       var hLoadingPanel = o.getLoadingPanel();
-      RHtml.textSet(o._hLoadingLabel, '正在努力上传中，请稍等 ...');
+      MO.Window.Html.textSet(o._hLoadingLabel, '正在努力上传中，请稍等 ...');
       o._hMaskInnerPanel.appendChild(hLoadingPanel);
       o._loadingVisible = true;
    }

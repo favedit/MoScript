@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSolutionListContent = function FDsSolutionListContent(o){
-      o = RClass.inherits(this, o, FUiListView);
+      o = RClass.inherits(this, o, FDuiListView);
       //..........................................................
       // @attribute
       o._activeControl    = null;
@@ -41,7 +41,7 @@ with(MO){
    //==========================================================
    MO.FDsSolutionListContent_onBuilded = function FDsSolutionListContent_onBuilded(p){
       var o = this;
-      o.__base.FUiListView.onBuilded.call(o, p);
+      o.__base.FDuiListView.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       //o._saveButton.addClickListener(o, o.onSaveClick);
@@ -89,18 +89,18 @@ with(MO){
    MO.FDsSolutionListContent_construct = function FDsSolutionListContent_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiListView.construct.call(o);
+      o.__base.FDuiListView.construct.call(o);
    }
 
    //==========================================================
    // <T>点击一个列表项目。</T>
    //
    // @method
-   // @param control:FUiListViewItem 列表项目
+   // @param control:FDuiListViewItem 列表项目
    //==========================================================
    MO.FDsSolutionListContent_doClickItem = function FDsSolutionListContent_doClickItem(control){
       var o = this;
-      o.__base.FUiListView.doClickItem.call(o, control);
+      o.__base.FDuiListView.doClickItem.call(o, control);
       o._activeControl = control;
       o._activeGuid = control._guid;
       //o._frameSet.selectObject(control);
@@ -110,11 +110,11 @@ with(MO){
    // <T>双击一个列表项目。</T>
    //
    // @method
-   // @param control:FUiListViewItem 列表项目
+   // @param control:FDuiListViewItem 列表项目
    //==========================================================
    MO.FDsSolutionListContent_doDoubleClickItem = function FDsSolutionListContent_doDoubleClickItem(control){
       var o = this;
-      o.__base.FUiListView.doDoubleClickItem.call(o, control);
+      o.__base.FDuiListView.doDoubleClickItem.call(o, control);
       var guid = control._guid;
       o._activeControl = control;
       o._activeGuid = guid;
@@ -162,6 +162,6 @@ with(MO){
    MO.FDsSolutionListContent_dispose = function FDsSolutionListContent_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiListView.dispose.call(o);
+      o.__base.FDuiListView.dispose.call(o);
    }
 }

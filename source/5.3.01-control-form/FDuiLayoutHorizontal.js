@@ -11,7 +11,7 @@ with(MO){
    // @author maocy
    // @version 150420
    //==========================================================
-   MO.FUiLayoutHorizontal = function FUiLayoutHorizontal(o){
+   MO.FDuiLayoutHorizontal = function FDuiLayoutHorizontal(o){
       o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @style
@@ -21,13 +21,13 @@ with(MO){
       o._hLine       = null;
       //..........................................................
       // @event
-      o.onBuildPanel = FUiLayoutHorizontal_onBuildPanel;
-      o.onBuild      = FUiLayoutHorizontal_onBuild;
+      o.onBuildPanel = FDuiLayoutHorizontal_onBuildPanel;
+      o.onBuild      = FDuiLayoutHorizontal_onBuild;
       //..........................................................
       // @method
-      o.appendChild  = FUiLayoutHorizontal_appendChild;
+      o.appendChild  = FDuiLayoutHorizontal_appendChild;
       // @method
-      o.dispose      = FUiLayoutHorizontal_dispose;
+      o.dispose      = FDuiLayoutHorizontal_dispose;
       return o;
    }
 
@@ -37,7 +37,7 @@ with(MO){
    // @method
    // @return event:TProcessEvent 处理事件
    //==========================================================
-   MO.FUiLayoutHorizontal_onBuildPanel = function FUiLayoutHorizontal_onBuildPanel(event){
+   MO.FDuiLayoutHorizontal_onBuildPanel = function FDuiLayoutHorizontal_onBuildPanel(event){
       var o = this;
       o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
    }
@@ -48,7 +48,7 @@ with(MO){
    // @method
    // @return event:TProcessEvent 处理事件
    //==========================================================
-   MO.FUiLayoutHorizontal_onBuild = function FUiLayoutHorizontal_onBuild(event){
+   MO.FDuiLayoutHorizontal_onBuild = function FDuiLayoutHorizontal_onBuild(event){
       var o = this;
       o.__base.FDuiContainer.onBuild.call(o, event)
       // 创建横向容器
@@ -61,7 +61,7 @@ with(MO){
    // @method
    // @return control:FControl 控件
    //==========================================================
-   MO.FUiLayoutHorizontal_appendChild = function FUiLayoutHorizontal_appendChild(control){
+   MO.FDuiLayoutHorizontal_appendChild = function FDuiLayoutHorizontal_appendChild(control){
       var o = this;
       // 追加子控件
       var hCell = RBuilder.appendTableCell(o._hLine);
@@ -82,7 +82,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiLayoutHorizontal_dispose = function FUiLayoutHorizontal_dispose(){
+   MO.FDuiLayoutHorizontal_dispose = function FDuiLayoutHorizontal_dispose(){
       var o = this;
       o._hLine = RHtml.free(o._hLine);
       // 父处理

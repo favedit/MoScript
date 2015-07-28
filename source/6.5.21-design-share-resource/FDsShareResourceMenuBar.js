@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsShareResourceMenuBar = function FDsShareResourceMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @property
       o._frameName      = 'resource.share.resource.MenuBar';
@@ -34,7 +34,7 @@ with(MO){
    //==========================================================
    MO.FDsShareResourceMenuBar_onBuilded = function FDsShareResourceMenuBar_onBuilded(p){
       var o = this;
-      o.__base.FUiMenuBar.onBuilded.call(o, p);
+      o.__base.FDuiMenuBar.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       o._controlRefresh.addClickListener(o, o.onRefreshClick);
@@ -57,7 +57,7 @@ with(MO){
    MO.FDsShareResourceMenuBar_construct = function FDsShareResourceMenuBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
 
    //==========================================================
@@ -68,6 +68,6 @@ with(MO){
    MO.FDsShareResourceMenuBar_dispose = function FDsShareResourceMenuBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }

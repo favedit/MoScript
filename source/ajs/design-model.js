@@ -448,7 +448,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCanvasToolBar = function FDsModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName                 = 'resource.model.CanvasToolBar';
       o._canvasModeCd              = EDsCanvasMode.Drop;
       o._controlDrop               = null;
@@ -481,7 +481,7 @@ with(MO){
    }
    MO.FDsModelCanvasToolBar_onBuilded = function FDsModelCanvasToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       var control = o._controlDrop;
       control._canvasModeCd = EDsCanvasMode.Drop;
       control.addClickListener(o, o.onModeClick);
@@ -578,11 +578,11 @@ with(MO){
    }
    MO.FDsModelCanvasToolBar_construct = function FDsModelCanvasToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsModelCanvasToolBar_dispose = function FDsModelCanvasToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
@@ -762,7 +762,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCatalogToolBar = function FDsModelCatalogToolBar(o){
-      o = RClass.inherits(this, o, FUiToolBar);
+      o = RClass.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.model.CatalogToolBar';
       o._activeNodeGuid        = null;
       o._controlCreateCamera   = null;
@@ -789,7 +789,7 @@ with(MO){
    }
    MO.FDsModelCatalogToolBar_onBuilded = function FDsModelCatalogToolBar_onBuilded(p){
       var o = this;
-      o.__base.FUiToolBar.onBuilded.call(o, p);
+      o.__base.FDuiToolBar.onBuilded.call(o, p);
       o._controlFolderOpen.addClickListener(o, o.onFolderOpenClick);
       o._controlFolderClose.addClickListener(o, o.onFolderCloseClick);
    }
@@ -818,7 +818,7 @@ with(MO){
          return alert('请选中显示层或者精灵节点。');
       }
       var frameSet = o._frameSet;
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = frameSet._activeSpace.resource().guid();
       dialog._layerGuid = layer.resource().guid();
@@ -924,11 +924,11 @@ with(MO){
    }
    MO.FDsModelCatalogToolBar_construct = function FDsModelCatalogToolBar_construct(){
       var o = this;
-      o.__base.FUiToolBar.construct.call(o);
+      o.__base.FDuiToolBar.construct.call(o);
    }
    MO.FDsModelCatalogToolBar_dispose = function FDsModelCatalogToolBar_dispose(){
       var o = this;
-      o.__base.FUiToolBar.dispose.call(o);
+      o.__base.FDuiToolBar.dispose.call(o);
    }
 }
 with(MO){
@@ -1038,7 +1038,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelMenuBar = function FDsModelMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       o._controlSaveButton    = null;
       o._controlCaptureButton = null;
       o.onSaveLoad            = FDsModelMenuBar_onSaveLoad;
@@ -1073,11 +1073,11 @@ with(MO){
    }
    MO.FDsModelMenuBar_construct = function FDsModelMenuBar_construct(){
       var o = this;
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
    MO.FDsModelMenuBar_dispose = function FDsModelMenuBar_dispose(){
       var o = this;
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }
 with(MO){

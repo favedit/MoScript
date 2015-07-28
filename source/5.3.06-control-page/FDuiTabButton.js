@@ -20,7 +20,7 @@ with(MO){
    // @author maocy
    // @history 150202
    //==========================================================
-   MO.FUiTabButton = function FUiTabButton(o){
+   MO.FDuiTabButton = function FDuiTabButton(o){
       o = RClass.inherits(this, o, FDuiControl, MListenerClick);
       //..........................................................
       // @property
@@ -70,24 +70,24 @@ with(MO){
       o._hRight            = null;
       //..........................................................
       // @event
-      o.onBuildPanel       = FUiTabButton_onBuildPanel;
+      o.onBuildPanel       = FDuiTabButton_onBuildPanel;
       // @event
-      o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiTabButton_onButtonEnter);
-      o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiTabButton_onButtonLeave);
-      o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FUiTabButton_onButtonClick);
+      o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiTabButton_onButtonEnter);
+      o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiTabButton_onButtonLeave);
+      o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FDuiTabButton_onButtonClick);
       //..........................................................
       // @method
-      o.construct          = FUiTabButton_construct;
+      o.construct          = FDuiTabButton_construct;
       // @method
-      o.innerSelect        = FUiTabButton_innerSelect;
-      o.select             = FUiTabButton_select;
-      o.setVisible         = FUiTabButton_setVisible;
+      o.innerSelect        = FDuiTabButton_innerSelect;
+      o.select             = FDuiTabButton_select;
+      o.setVisible         = FDuiTabButton_setVisible;
       // @method
-      o.doClick            = FUiTabButton_doClick;
+      o.doClick            = FDuiTabButton_doClick;
       // @method
-      o.dispose            = FUiTabButton_dispose
+      o.dispose            = FDuiTabButton_dispose
       // @method
-      o.innerDump          = FUiTabButton_innerDump;
+      o.innerDump          = FDuiTabButton_innerDump;
       return o;
    }
 
@@ -97,7 +97,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiTabButton_onBuildPanel = function FUiTabButton_onBuildPanel(p){
+   MO.FDuiTabButton_onBuildPanel = function FDuiTabButton_onBuildPanel(p){
       var o = this;
       var hp = o._hContainer = o._hPanel = RBuilder.createDiv(p);
       hp.width = '100%';
@@ -110,7 +110,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiTabButton_onButtonEnter = function FUiTabButton_onButtonEnter(p){
+   MO.FDuiTabButton_onButtonEnter = function FDuiTabButton_onButtonEnter(p){
       var o = this;
       if(!o._selected){
          o._hButton.className = o.styleName('ButtonHover');
@@ -123,7 +123,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiTabButton_onButtonLeave = function FUiTabButton_onButtonLeave(p){
+   MO.FDuiTabButton_onButtonLeave = function FDuiTabButton_onButtonLeave(p){
       var o = this;
       if(!o._selected){
          o._hButton.className = o.styleName('Button');
@@ -136,7 +136,7 @@ with(MO){
    // @method
    // @param p:event:SEvent 事件
    //==========================================================
-   MO.FUiTabButton_onButtonClick = function FUiTabButton_onButtonClick(p){
+   MO.FDuiTabButton_onButtonClick = function FDuiTabButton_onButtonClick(p){
       this.doClick();
    }
 
@@ -145,7 +145,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTabButton_construct = function FUiTabButton_construct(){
+   MO.FDuiTabButton_construct = function FDuiTabButton_construct(){
       var o = this;
       // 父处理
       o.__base.FDuiControl.construct.call(o);
@@ -159,7 +159,7 @@ with(MO){
    // @method
    // @param p:flag:Boolean 选中标志
    //==========================================================
-   MO.FUiTabButton_innerSelect = function FUiTabButton_innerSelect(p){
+   MO.FDuiTabButton_innerSelect = function FDuiTabButton_innerSelect(p){
       var o = this;
       var b = o._parent;
       if(p && !o._hasBuilded){
@@ -191,7 +191,7 @@ with(MO){
    // @method
    // @param p:flag:Boolean 选中标志
    //==========================================================
-   MO.FUiTabButton_select = function FUiTabButton_select(p){
+   MO.FDuiTabButton_select = function FDuiTabButton_select(p){
       var o = this;
       o.innerSelect(p);
       if(p){
@@ -206,7 +206,7 @@ with(MO){
    // @method
    // @param p:flag:Boolean 可见标志
    //==========================================================
-   MO.FUiTabButton_setVisible = function FUiTabButton_setVisible(p){
+   MO.FDuiTabButton_setVisible = function FDuiTabButton_setVisible(p){
       var o = this;
       RHtml.displaySet(o._hPanel, p);
    }
@@ -216,7 +216,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTabButton_doClick = function FUiTabButton_doClick(){
+   MO.FDuiTabButton_doClick = function FDuiTabButton_doClick(){
       var o = this;
       // 选中当前按键
       o._parent.select(o);
@@ -231,7 +231,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTabButton_dispose = function FUiTabButton_dispose(){
+   MO.FDuiTabButton_dispose = function FDuiTabButton_dispose(){
       var o = this;
       o._hButton = RMemory.free(o._hButton);
       o._hTop = RMemory.free(o._hTop);
@@ -249,7 +249,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTabButton_innerDump = function FUiTabButton_innerDump(s, l){
+   MO.FDuiTabButton_innerDump = function FDuiTabButton_innerDump(s, l){
       var o = this;
       s.append(l, RClass.dump(o), ' [');
       s.append('name=', o._name, ', ');

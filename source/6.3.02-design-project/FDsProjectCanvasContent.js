@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsProjectCanvasContent = function FDsProjectCanvasContent(o){
-      o = RClass.inherits(this, o, FUiListView);
+      o = RClass.inherits(this, o, FDuiListView);
       //..........................................................
       // @attribute
       o._refreshButton = null;
@@ -36,7 +36,7 @@ with(MO){
    //==========================================================
    MO.FDsProjectCanvasContent_onBuilded = function FDsProjectCanvasContent_onBuilded(p){
       var o = this;
-      o.__base.FUiListView.onBuilded.call(o, p);
+      o.__base.FDuiListView.onBuilded.call(o, p);
       //..........................................................
       // 注册事件
       //o._saveButton.addClickListener(o, o.onSaveClick);
@@ -84,14 +84,14 @@ with(MO){
    MO.FDsProjectCanvasContent_construct = function FDsProjectCanvasContent_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiListView.construct.call(o);
+      o.__base.FDuiListView.construct.call(o);
    }
 
    //==========================================================
    // <T>点击一个列表项目。</T>
    //
    // @method
-   // @param p:item:FUiListItem 列表项目
+   // @param p:item:FDuiListItem 列表项目
    //==========================================================
    MO.FDsProjectCanvasContent_clickItem = function FDsProjectCanvasContent_clickItem(p){
       var o = this;
@@ -125,6 +125,6 @@ with(MO){
    MO.FDsProjectCanvasContent_dispose = function FDsProjectCanvasContent_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiListView.dispose.call(o);
+      o.__base.FDuiListView.dispose.call(o);
    }
 }

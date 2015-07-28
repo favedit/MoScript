@@ -15,7 +15,7 @@ with(MO){
    // @author maocy
    // @version 150420
    //==========================================================
-   MO.FUiLayoutVertical = function FUiLayoutVertical(o){
+   MO.FDuiLayoutVertical = function FDuiLayoutVertical(o){
       o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @style
@@ -25,12 +25,12 @@ with(MO){
       o._hLine       = null;
       //..........................................................
       // @event
-      o.onBuildPanel = FUiLayoutVertical_onBuildPanel;
+      o.onBuildPanel = FDuiLayoutVertical_onBuildPanel;
       //..........................................................
       // @method
-      o.appendChild  = FUiLayoutVertical_appendChild;
+      o.appendChild  = FDuiLayoutVertical_appendChild;
       // @method
-      o.dispose      = FUiLayoutVertical_dispose;
+      o.dispose      = FDuiLayoutVertical_dispose;
       return o;
    }
 
@@ -40,7 +40,7 @@ with(MO){
    // @method
    // @return event:TProcessEvent 处理事件
    //==========================================================
-   MO.FUiLayoutVertical_onBuildPanel = function FUiLayoutVertical_onBuildPanel(event){
+   MO.FDuiLayoutVertical_onBuildPanel = function FDuiLayoutVertical_onBuildPanel(event){
       var o = this;
       o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
    }
@@ -51,7 +51,7 @@ with(MO){
    // @method
    // @return control:FControl 控件
    //==========================================================
-   MO.FUiLayoutVertical_appendChild = function FUiLayoutVertical_appendChild(control){
+   MO.FDuiLayoutVertical_appendChild = function FDuiLayoutVertical_appendChild(control){
       var o = this;
       // 追加子控件
       var hCell = RBuilder.appendTableRowCell(o._hPanel);
@@ -68,7 +68,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiLayoutVertical_dispose = function FUiLayoutVertical_dispose(){
+   MO.FDuiLayoutVertical_dispose = function FDuiLayoutVertical_dispose(){
       var o = this;
       // 父处理
       o.__base.FDuiContainer.dispose.call(o);

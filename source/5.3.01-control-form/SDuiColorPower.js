@@ -6,22 +6,22 @@ with(MO){
    // @author maocy
    // @version 150213
    //==========================================================
-   MO.SUiColorPower = function SUiColorPower(){
+   MO.SDuiColorPower = function SDuiColorPower(){
       var o = this;
-      SUiColorBar.call(o);
+      SDuiColorBar.call(o);
       //..........................................................
       // @attribute
       o.minValue      = 0;
       o.maxValue      = 4;
       //..........................................................
       // @method
-      o.setColorValue = SUiColorPower_setColorValue;
-      o.setSlideValue = SUiColorPower_setSlideValue;
-      o.setInputValue = SUiColorPower_setInputValue;
+      o.setColorValue = SDuiColorPower_setColorValue;
+      o.setSlideValue = SDuiColorPower_setSlideValue;
+      o.setInputValue = SDuiColorPower_setInputValue;
       // @method
-      o.convertGet    = SUiColorPower_convertGet;
-      o.convertSet    = SUiColorPower_convertSet;
-      o.convertSlide  = SUiColorPower_convertSlide;
+      o.convertGet    = SDuiColorPower_convertGet;
+      o.convertSet    = SDuiColorPower_convertSet;
+      o.convertSlide  = SDuiColorPower_convertSlide;
       return o;
    }
 
@@ -31,7 +31,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorPower_setColorValue = function SUiColorPower_setColorValue(p){
+   MO.SDuiColorPower_setColorValue = function SDuiColorPower_setColorValue(p){
       var o = this;
       var v = RInteger.toRange(parseInt(p * 255), 0, 255);
       var s = RHex.format(v, 2);
@@ -44,7 +44,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorPower_setSlideValue = function SUiColorPower_setSlideValue(p){
+   MO.SDuiColorPower_setSlideValue = function SDuiColorPower_setSlideValue(p){
       var o = this;
       var w = o.hSlideForm.offsetWidth;
       if(w > 0){
@@ -59,7 +59,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorPower_setInputValue = function SUiColorPower_setInputValue(p){
+   MO.SDuiColorPower_setInputValue = function SDuiColorPower_setInputValue(p){
       var o = this;
       var h = o.hInput;
       var v = RFloat.toRange(p, o.minValue, o.maxValue);
@@ -75,7 +75,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorPower_convertGet = function SUiColorPower_convertGet(p){
+   MO.SDuiColorPower_convertGet = function SDuiColorPower_convertGet(p){
       return RFloat.parse(p);
    }
 
@@ -85,7 +85,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorPower_convertSet = function SUiColorPower_convertSet(p){
+   MO.SDuiColorPower_convertSet = function SDuiColorPower_convertSet(p){
       return p;
    }
 
@@ -95,7 +95,7 @@ with(MO){
    // @method
    // @param p:value:Number 内容
    //==========================================================
-   MO.SUiColorPower_convertSlide = function SUiColorPower_convertSlide(p){
+   MO.SDuiColorPower_convertSlide = function SDuiColorPower_convertSlide(p){
       return p * this.maxValue;
    }
 }

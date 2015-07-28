@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceListItem = function FDsResourceListItem(o){
-      o = RClass.inherits(this, o, FUiListViewItem);
+      o = RClass.inherits(this, o, FDuiListViewItem);
       //..........................................................
       o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
       o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
@@ -30,7 +30,7 @@ with(MO){
    MO.FDsResourceListItem_onBuild = function FDsResourceListItem_onBuild(p){
       var o = this;
       // 建立控件
-      o.__base.FUiListViewItem.onBuild.call(o, p);
+      o.__base.FDuiListViewItem.onBuild.call(o, p);
       var h = o._hPanel;
       h.style.width = '200px';
       h.style.height = '150px';

@@ -6,8 +6,8 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiPanel = function FUiPanel(o){
-      o = RClass.inherits(this, o, FUiLayout, MUiDesign, MUiFocus);
+   MO.FDuiPanel = function FDuiPanel(o){
+      o = RClass.inherits(this, o, FDuiLayout, MUiDesign, MUiFocus);
       //..........................................................
       // @style
       o._sizeCd      = EUiSize.Horizontal;
@@ -22,8 +22,8 @@ with(MO){
       o._statusBody  = true;
       //..........................................................
       // @event
-      o.onBuildPanel = FUiPanel_onBuildPanel;
-      o.onTitleClick = RClass.register(o, new AEventClick('onTitleClick'), FUiPanel_onTitleClick);
+      o.onBuildPanel = FDuiPanel_onBuildPanel;
+      o.onTitleClick = RClass.register(o, new AEventClick('onTitleClick'), FDuiPanel_onTitleClick);
       return o;
    }
 
@@ -33,7 +33,7 @@ with(MO){
    // @method
    // @return HtmlTag 页面元素
    //==========================================================
-   MO.FUiPanel_onBuildPanel = function FUiPanel_onBuildPanel(p){
+   MO.FDuiPanel_onBuildPanel = function FDuiPanel_onBuildPanel(p){
       var o = this;
       var h = o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
       // 创建名称栏
@@ -60,7 +60,7 @@ with(MO){
    // @method
    // @return HtmlTag 页面元素
    //==========================================================
-   MO.FUiPanel_onTitleClick = function FUiPanel_onTitleClick(p){
+   MO.FDuiPanel_onTitleClick = function FDuiPanel_onTitleClick(p){
       var o = this;
       var s = !o._statusBody;
       o._statusBody = s;

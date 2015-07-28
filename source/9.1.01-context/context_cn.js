@@ -23,11 +23,11 @@ MO.RContext.initialize({
       'order.asc'     : '升序',
       'order.desc'    : '降序'
       },
-   'FUiButton' :
+   'FDuiButton' :
       {
       'process' : '正在处理中，请稍候再点击按键。'
       },
-   'FUiEditControl' :
+   'FDuiEditControl' :
       {
       'change.restore' : '单击恢复为原始数据[{0}]。',
       'change.empty'   : '单击清空数据。'
@@ -37,7 +37,7 @@ MO.RContext.initialize({
       'loading' : '正在加载中，请稍候...',
       'waiting' : '当前树目录正在加载节点中，请稍候。'
       },
-   'FUiCalendarEditor' :
+   'FDuiCalendarEditor' :
       {
       'year'     : '年',
       'month'    : '月',
@@ -51,13 +51,13 @@ MO.RContext.initialize({
       {
       'caption' : '数据选取'
       },
-   'FUiCalendarBox' :
+   'FDuiCalendarBox' :
       {
       'month.prior': '<< 上一个月',
       'month.next' : '下一个月 >>',
       'now'        : '现在'
       },
-   'FUiToolButton' :
+   'FDuiToolButton' :
       {
       'ok'      : '确定',
       'cancel'  : '取消',
@@ -68,7 +68,7 @@ MO.RContext.initialize({
       'clear'   : '清除',
       'reset'   : '重置'
       },
-   'FUiGridControl' :
+   'FDuiGridControl' :
       {
       'Loading'  : '正在加载数据中,请等候...',
       'Row'      : '行号: ',
@@ -78,12 +78,12 @@ MO.RContext.initialize({
       'Prior'    : '前一页',
       'Next'     : '后一页'
       },
-   'FUiCellStatus' :
+   'FDuiCellStatus' :
       {
       'Code'     : '编号：{0}',
       'Detail'   : '编号：{0}，单击察看详细。'
       },
-   'FUiColumnStatus' :
+   'FDuiColumnStatus' :
       {
       'Search'     : '在搜索栏内输入要搜索的内容，回车后搜索相关数据。'
       },
@@ -178,11 +178,11 @@ MO.RContext.initialize({
       {
       'caption'    : '导航栏:'
       },
-   'FUiFormSheet' :
+   'FDuiFormSheet' :
       {
       'history'     : '导航栏：'
       },
-   'FUiCheckWindow' :
+   'FDuiCheckWindow' :
       {
       'Title'           : '下面的控件内容值不合法，请重新填写.'
       },

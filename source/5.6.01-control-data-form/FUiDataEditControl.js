@@ -19,7 +19,7 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FUiDataEditControl = function FUiDataEditControl(o){
-      o = RClass.inherits(this, o, FUiEditControl, MUiEditValue, MUiEditChange, MUiEditDrop);
+      o = RClass.inherits(this, o, FDuiEditControl, MUiEditValue, MUiEditChange, MUiEditDrop);
       //..........................................................
       // @property
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
@@ -262,7 +262,7 @@ with(MO){
       //   }
       //}
       // 建立控件
-      o.__base.FUiEditControl.onBuild.call(o, p);
+      o.__base.FDuiEditControl.onBuild.call(o, p);
       var hc = o._hPanel;
       //..........................................................
       // 建立标签和控件区域
@@ -332,7 +332,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_oeMode = function FUiDataEditControl_oeMode(e){
       var o = this;
-      o.__base.FUiEditControl.oeMode.call(o, e);
+      o.__base.FDuiEditControl.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
       // 根据工作模式获得设置信息
       o._editable = o.canEdit(e.mode);
@@ -378,7 +378,7 @@ with(MO){
    MO.FUiDataEditControl_construct = function FUiDataEditControl_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o.__base.MUiEditChange.construct.call(o);
       o.__base.MUiEditDrop.construct.call(o);
       // 设置属性
@@ -400,7 +400,7 @@ with(MO){
       }else if(EPanel.Focus == t){
          return o.hEdit;
       }
-      return o.__base.FUiEditControl.panel.call(o, t);
+      return o.__base.FDuiEditControl.panel.call(o, t);
    }
 
    //==========================================================
@@ -495,7 +495,7 @@ with(MO){
       // 父处理
       o.__base.MUiEditDrop.dispose.call(o);
       o.__base.MUiEditChange.dispose.call(o);
-      o.__base.FUiEditControl.dispose.call(o);
+      o.__base.FDuiEditControl.dispose.call(o);
    }
 
 
@@ -531,7 +531,7 @@ with(MO){
    //==========================================================
    //<T>响应焦点失去的操作。</T>
    //
-   //@param s:sender:FUiEditControl 源控件
+   //@param s:sender:FDuiEditControl 源控件
    //@param e:event:HBlur 事件对象
    //==========================================================
    MO.FUiDataEditControl_scalar = function FUiDataEditControl_scalar(a){
@@ -797,7 +797,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_setVisible = function FUiDataEditControl_setVisible(v){
       var o = this;
-      o.__base.FUiEditControl.setVisible.call(o, v);
+      o.__base.FDuiEditControl.setVisible.call(o, v);
       o.refreshStyle();
    }
 

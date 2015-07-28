@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceMenuBar = function FDsResourceMenuBar(o){
-      o = RClass.inherits(this, o, FUiMenuBar);
+      o = RClass.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @attribute
       o._controlImportPicture  = null;
@@ -56,7 +56,7 @@ with(MO){
          nodeLabel = node.label();
       }
       // 弹出内容
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceImportDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -84,7 +84,7 @@ with(MO){
          nodeLabel = node.label();
       }
       // 弹出内容
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceImportDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -112,7 +112,7 @@ with(MO){
          nodeLabel = node.label();
       }
       // 弹出内容
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -140,7 +140,7 @@ with(MO){
          nodeLabel = node.label();
       }
       // 弹出内容
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -168,7 +168,7 @@ with(MO){
          nodeLabel = node.label();
       }
       // 弹出内容
-      var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -282,7 +282,7 @@ with(MO){
    MO.FDsResourceMenuBar_construct = function FDsResourceMenuBar_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.construct.call(o);
+      o.__base.FDuiMenuBar.construct.call(o);
    }
 
    //==========================================================
@@ -293,6 +293,6 @@ with(MO){
    MO.FDsResourceMenuBar_dispose = function FDsResourceMenuBar_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiMenuBar.dispose.call(o);
+      o.__base.FDuiMenuBar.dispose.call(o);
    }
 }

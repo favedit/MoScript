@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 MO.FUiConfirmDialog = function FUiConfirmDialog(o){
-   o = MO.Class.inherits(this, o, MO.FUiDialog, MO.MListenerResult);
+   o = MO.Class.inherits(this, o, MO.FDuiDialog, MO.MListenerResult);
    //..........................................................
    // @style
    o._styleText            = MO.Class.register(o, new MO.AStyle('_styleText'));
@@ -41,7 +41,7 @@ MO.FUiConfirmDialog = function FUiConfirmDialog(o){
 //==========================================================
 MO.FUiConfirmDialog_onBuilded = function FUiConfirmDialog_onBuilded(p){
    var o = this;
-   o.__base.FUiDialog.onBuilded.call(o, p);
+   o.__base.FDuiDialog.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
    o._controlText._hPanel.className = o.styleName('Text');
@@ -93,7 +93,7 @@ MO.FUiConfirmDialog_onCancelClick = function FUiConfirmDialog_onCancelClick(even
 MO.FUiConfirmDialog_construct = function FUiConfirmDialog_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiDialog.construct.call(o);
+   o.__base.FDuiDialog.construct.call(o);
 }
 
 //==========================================================
@@ -114,5 +114,5 @@ MO.FUiConfirmDialog_setText = function FUiConfirmDialog_setText(value){
 MO.FUiConfirmDialog_dispose = function FUiConfirmDialog_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiDialog.dispose.call(o);
+   o.__base.FDuiDialog.dispose.call(o);
 }

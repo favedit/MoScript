@@ -11,7 +11,7 @@ with(MO){
    // @author maocy
    // @history 150121
    //==========================================================
-   MO.FUiToolBar = function FUiToolBar(o){
+   MO.FDuiToolBar = function FDuiToolBar(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
       //..........................................................
       // @property EUiAlign 对齐枚举
@@ -29,15 +29,15 @@ with(MO){
       o._hLine            = null;
       //..........................................................
       // @event
-      o.onBuildPanel      = FUiToolBar_onBuildPanel;
+      o.onBuildPanel      = FDuiToolBar_onBuildPanel;
       o.onEnter           = RMethod.empty;
       o.onLeave           = RMethod.empty;
       //..........................................................
       // @method
-      o.appendChild       = FUiToolBar_appendChild;
-      o.removeChild       = FUiToolBar_removeChild;
+      o.appendChild       = FDuiToolBar_appendChild;
+      o.removeChild       = FDuiToolBar_removeChild;
       // @method
-      o.dispose           = FUiToolBar_dispose;
+      o.dispose           = FDuiToolBar_dispose;
       return o;
    }
 
@@ -47,7 +47,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiToolBar_onBuildPanel = function FUiToolBar_onBuildPanel(p){
+   MO.FDuiToolBar_onBuildPanel = function FDuiToolBar_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
    }
@@ -58,12 +58,12 @@ with(MO){
    // @method
    // @param control:FDuiControl 子控件
    //==========================================================
-   MO.FUiToolBar_appendChild = function FUiToolBar_appendChild(control){
+   MO.FDuiToolBar_appendChild = function FDuiToolBar_appendChild(control){
       var o = this;
       // 父处理
       o.__base.FDuiContainer.appendChild.call(o, control);
       // 按键处理
-      if(RClass.isClass(control, MUiToolButton)){
+      if(RClass.isClass(control, MDuiToolButton)){
          var h = o._hPanel;
          var hl = o._hLine;
          // 横向排布
@@ -90,10 +90,10 @@ with(MO){
    // @method
    // @param p:control:FDuiControl 子控件
    //==========================================================
-   MO.FUiToolBar_removeChild = function FUiToolBar_removeChild(p){
+   MO.FDuiToolBar_removeChild = function FDuiToolBar_removeChild(p){
       var o = this;
       // 按键处理
-      if(RClass.isClass(p, MUiToolButton)){
+      if(RClass.isClass(p, MDuiToolButton)){
          var hp = p._hParent;
          var hl = p._hParentLine;
          hl.removeChild(hp);
@@ -109,7 +109,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiToolBar_dispose = function FUiToolBar_dispose(){
+   MO.FDuiToolBar_dispose = function FDuiToolBar_dispose(){
       var o = this;
       o._hLine = RHtml.free(o._hLine);
       o.__base.FDuiContainer.dispose.call(o);

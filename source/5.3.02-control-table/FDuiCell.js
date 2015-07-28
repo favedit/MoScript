@@ -11,7 +11,7 @@ with(MO){
    // @author maocy
    // @version 150123
    //==========================================================
-   MO.FUiCell = function FUiCell(o){
+   MO.FDuiCell = function FDuiCell(o){
       o = RClass.inherits(this, o, FControl, MEditValue, MDataValue);
       //..........................................................
       // @style
@@ -26,12 +26,12 @@ with(MO){
       //o._hEditPanel  = null;
       //..........................................................
       // @event
-      o.onBuildPanel = FUiCell_onBuildPanel;
-      o.onBuild      = FUiCell_onBuild;
+      o.onBuildPanel = FDuiCell_onBuildPanel;
+      o.onBuild      = FDuiCell_onBuild;
       //..........................................................
       // @process
-      o.oeDataLoad   = FUiCell_oeDataLoad;
-      o.oeDataSave   = FUiCell_oeDataSave;
+      o.oeDataLoad   = FDuiCell_oeDataLoad;
+      o.oeDataSave   = FDuiCell_oeDataSave;
 
 
 
@@ -44,19 +44,19 @@ with(MO){
       //o.hDrop        = null;
       //..........................................................
       // @method
-      //o.doFocus      = FUiCell_doFocus;
-      //o.doBlur       = FUiCell_doBlur;
+      //o.doFocus      = FDuiCell_doFocus;
+      //o.doBlur       = FDuiCell_doBlur;
       //..........................................................
       // @method
-      //o.descriptor   = FUiCell_descriptor;
-      //o.text         = FUiCell_text;
-      //o.setText      = FUiCell_setText;
-      //o.focus        = FUiCell_focus;
-      //o.setVisible   = FUiCell_setVisible;
+      //o.descriptor   = FDuiCell_descriptor;
+      //o.text         = FDuiCell_text;
+      //o.setText      = FDuiCell_setText;
+      //o.focus        = FDuiCell_focus;
+      //o.setVisible   = FDuiCell_setVisible;
       //o.setEditStyle = RMethod.empty;
-      //o.refreshStyle = FUiCell_refreshStyle;
-      //o.dispose      = FUiCell_dispose;
-      //o.dump         = FUiCell_dump;
+      //o.refreshStyle = FDuiCell_refreshStyle;
+      //o.dispose      = FDuiCell_dispose;
+      //o.dump         = FDuiCell_dump;
       return o;
    }
 
@@ -66,7 +66,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件处理
    //==========================================================
-   MO.FUiCell_onBuildPanel = function FUiCell_onBuildPanel(p){
+   MO.FDuiCell_onBuildPanel = function FDuiCell_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.create(p, 'TD', o.styleName('Panel'));
    }
@@ -77,7 +77,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiCell_onBuild = function FUiCell_onBuild(p){
+   MO.FDuiCell_onBuild = function FDuiCell_onBuild(p){
       var o = this;
       o.__base.FControl.onBuild.call(o, p)
       // 创建底板
@@ -110,7 +110,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 处理事件
    //==========================================================
-   MO.FUiCell_oeDataLoad = function FUiCell_oeDataLoad(p){
+   MO.FDuiCell_oeDataLoad = function FDuiCell_oeDataLoad(p){
       var o = this;
       var c = o._column;
       var ds = p.source;
@@ -126,7 +126,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 处理事件
    //==========================================================
-   MO.FUiCell_oeDataSave = function FUiCell_oeDataSave(p){
+   MO.FDuiCell_oeDataSave = function FDuiCell_oeDataSave(p){
       var o = this;
       var c = o._column;
       var ds = p.source;
@@ -157,7 +157,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCell_doFocus = function FUiCell_doFocus(){
+   MO.FDuiCell_doFocus = function FDuiCell_doFocus(){
       var o = this;
       o._table.__focusCell = o;
       if(o._column.isEditAble(o)){
@@ -176,7 +176,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCell_doBlur = function FUiCell_doBlur(){
+   MO.FDuiCell_doBlur = function FDuiCell_doBlur(){
       var o = this;
       if(o._column.isEditAble(o)){
          var hs = o._hPanel.style;
@@ -194,7 +194,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCell_descriptor = function FUiCell_descriptor(){
+   MO.FDuiCell_descriptor = function FDuiCell_descriptor(){
       return this._column;
    }
 
@@ -204,7 +204,7 @@ with(MO){
    // @method
    // @return 数据内容
    //==========================================================
-   MO.FUiCell_text = function FUiCell_text(){
+   MO.FDuiCell_text = function FDuiCell_text(){
       var o = this;
       var c = o._column;
       if(EEditFormat.Html == c.editFormat){
@@ -223,7 +223,7 @@ with(MO){
    // @method
    // @param t:text:String 数据内容
    //==========================================================
-   MO.FUiCell_setText = function FUiCell_setText(t){
+   MO.FDuiCell_setText = function FDuiCell_setText(t){
       // 判断显示方式
       var o = this;
       var c = o._column;
@@ -242,7 +242,7 @@ with(MO){
    // @method
    // @param s:select:Boolean 是否选中数据内容
    //==========================================================
-   MO.FUiCell_focus = function FUiCell_focus(s){
+   MO.FDuiCell_focus = function FDuiCell_focus(s){
       var o = this;
       var h = o._hEdit;
       if(h){
@@ -260,7 +260,7 @@ with(MO){
    // @method
    // @param v:visible:Boolean 可见性
    //==========================================================
-   MO.FUiCell_setVisible = function FUiCell_setVisible(v){
+   MO.FDuiCell_setVisible = function FDuiCell_setVisible(v){
       this._hPanel.style.display = v ? 'block' : 'none';
    }
 
@@ -269,7 +269,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCell_refreshStyle = function FUiCell_refreshStyle(){
+   MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
       var o = this;
       var t = o._table;
       var r = o._row;
@@ -304,7 +304,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiCell_dispose = function FUiCell_dispose(){
+   MO.FDuiCell_dispose = function FDuiCell_dispose(){
       var o = this;
       o.base.FControl.dispose.call(o);
       RMemory.freeHtml(o._hPanel);
@@ -325,7 +325,7 @@ with(MO){
    // @method
    // @return TString 调试信息
    //==========================================================
-   MO.FUiCell_dump = function FUiCell_dump(s){
+   MO.FDuiCell_dump = function FDuiCell_dump(s){
       var o = this;
       s = RString.nvlStr(s);
       s.append(RClass.dump(o), '[');

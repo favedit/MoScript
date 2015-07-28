@@ -11,7 +11,7 @@ with(MO){
    // @author maocy
    // @history 150405
    //==========================================================
-   MO.FUiProgressBar = function FUiProgressBar(o){
+   MO.FDuiProgressBar = function FDuiProgressBar(o){
       o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @style
@@ -25,16 +25,16 @@ with(MO){
       //o._hUnit       = null;
       //..........................................................
       // @event
-      o.onBuildPanel = FUiProgressBar_onBuildPanel;
-      o.onBuild      = FUiProgressBar_onBuild;
+      o.onBuildPanel = FDuiProgressBar_onBuildPanel;
+      o.onBuild      = FDuiProgressBar_onBuild;
       //..........................................................
       // @method
-      //o.formatValue  = FUiProgressBar_formatValue;
-      //o.text         = FUiProgressBar_text;
-      o.get          = FUiProgressBar_get;
-      o.set          = FUiProgressBar_set;
+      //o.formatValue  = FDuiProgressBar_formatValue;
+      //o.text         = FDuiProgressBar_text;
+      o.get          = FDuiProgressBar_get;
+      o.set          = FDuiProgressBar_set;
       // @method
-      o.dispose      = FUiProgressBar_dispose;
+      o.dispose      = FDuiProgressBar_dispose;
       return o;
    }
 
@@ -44,7 +44,7 @@ with(MO){
    // @method
    // @param event:TProcessEvent 事件
    //==========================================================
-   MO.FUiProgressBar_onBuildPanel = function FUiProgressBar_onBuildPanel(event){
+   MO.FDuiProgressBar_onBuildPanel = function FDuiProgressBar_onBuildPanel(event){
       var o = this;
       o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
    }
@@ -55,7 +55,7 @@ with(MO){
    // @method
    // @param event:TProcessEvent 事件
    //==========================================================
-   MO.FUiProgressBar_onBuild = function FUiProgressBar_onBuild(event){
+   MO.FDuiProgressBar_onBuild = function FDuiProgressBar_onBuild(event){
       var o = this;
       o.__base.FDuiControl.onBuild.call(o, event);
       // 建立进度
@@ -88,7 +88,7 @@ with(MO){
    // @method
    // @return Number 数据
    //==========================================================
-   MO.FUiProgressBar_get = function FUiProgressBar_get(){
+   MO.FDuiProgressBar_get = function FDuiProgressBar_get(){
       return this._rate;
    }
 
@@ -98,7 +98,7 @@ with(MO){
    // @method
    // @param value:Number 数据
    //==========================================================
-   MO.FUiProgressBar_set = function FUiProgressBar_set(value){
+   MO.FDuiProgressBar_set = function FDuiProgressBar_set(value){
       var o = this;
       o._rate = value;
       //var htb = o.hPanelForm;
@@ -123,18 +123,18 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiProgressBar_dispose = function FUiProgressBar_dispose(){
+   MO.FDuiProgressBar_dispose = function FDuiProgressBar_dispose(){
       var o = this;
       o._hForm = RHtml.free(o._hForm);
       // 父处理
       o.__base.FDuiControl.dispose.call(o);
    }
    // ------------------------------------------------------------
-   //function FUiProgressBar_formatValue(text){
+   //function FDuiProgressBar_formatValue(text){
    //   this.hEdit.value = text;
    //}
    // ------------------------------------------------------------
-   //function FUiProgressBar_text(t){
+   //function FDuiProgressBar_text(t){
    //   var o = this;
    //   // 数据必须的校验
    //   if(RString.isEmpty(t)){

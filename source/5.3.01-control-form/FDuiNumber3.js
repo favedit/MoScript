@@ -6,8 +6,8 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiNumber3 = function FUiNumber3(o){
-      o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   MO.FDuiNumber3 = function FDuiNumber3(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged);
       //..........................................................
       // @property
       o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
@@ -25,17 +25,17 @@ with(MO){
       o._hInput           = null;
       //..........................................................
       // @event
-      o.onBuildEditInput  = FUiNumber3_onBuildEditInput;
-      o.onBuildEditValue  = FUiNumber3_onBuildEditValue;
+      o.onBuildEditInput  = FDuiNumber3_onBuildEditInput;
+      o.onBuildEditValue  = FDuiNumber3_onBuildEditValue;
       // @event
-      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiNumber3_onInputKeyPress);
-      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FUiNumber3_onInputChanged);
+      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiNumber3_onInputKeyPress);
+      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FDuiNumber3_onInputChanged);
       //..........................................................
       // @method
-      o.construct         = FUiNumber3_construct;
+      o.construct         = FDuiNumber3_construct;
       // @method
-      o.get               = FUiNumber3_get;
-      o.set               = FUiNumber3_set;
+      o.get               = FDuiNumber3_get;
+      o.set               = FDuiNumber3_set;
 
 
 
@@ -51,16 +51,16 @@ with(MO){
       //o.hUnit         = null;
       //..........................................................
       // @event
-      //o.onDataKeyDown = FUiNumber3_onDataKeyDown;
+      //o.onDataKeyDown = FDuiNumber3_onDataKeyDown;
       //..........................................................
       // @method
-      //o.formatValue   = FUiNumber3_formatValue;
-      //o.setText       = FUiNumber3_setText;
-      //o.validText     = FUiNumber3_validText;
-      //o.findEditor    = FUiNumber3_findEditor;
-      //o.drop          = FUiNumber3_drop;
-      //o.link          = FUiNumber3_link;
-      //o.clone         = FUiNumber3_clone;
+      //o.formatValue   = FDuiNumber3_formatValue;
+      //o.setText       = FDuiNumber3_setText;
+      //o.validText     = FDuiNumber3_validText;
+      //o.findEditor    = FDuiNumber3_findEditor;
+      //o.drop          = FDuiNumber3_drop;
+      //o.link          = FDuiNumber3_link;
+      //o.clone         = FDuiNumber3_clone;
       return o;
    }
 
@@ -71,7 +71,7 @@ with(MO){
    // @param p:argements:SArgements 参数集合
    // @param h:html:HtmlTag 页面元素
    //==========================================================
-   MO.FUiNumber3_onBuildEditInput = function FUiNumber3_onBuildEditInput(p, h){
+   MO.FDuiNumber3_onBuildEditInput = function FDuiNumber3_onBuildEditInput(p, h){
       var o = this;
       o.attachEvent('onInputKeyPress', h, o.onInputKeyPress);
       o.attachEvent('onInputChanged', h, o.onInputChanged);
@@ -83,7 +83,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiNumber3_onBuildEditValue = function FUiNumber3_onBuildEditValue(p){
+   MO.FDuiNumber3_onBuildEditValue = function FDuiNumber3_onBuildEditValue(p){
       var o = this;
       var h = o._hValuePanel;
       h.className = o.styleName('ValuePanel');
@@ -117,7 +117,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiNumber3_onInputKeyPress = function FUiNumber3_onInputKeyPress(p){
+   MO.FDuiNumber3_onInputKeyPress = function FDuiNumber3_onInputKeyPress(p){
       var o = this;
       var c = p.keyCode;
       // 允许输入百分号(%)
@@ -135,7 +135,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiNumber3_onInputChanged = function FUiNumber3_onInputChanged(p){
+   MO.FDuiNumber3_onInputChanged = function FDuiNumber3_onInputChanged(p){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);
@@ -151,9 +151,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiNumber3_construct = function FUiNumber3_construct(){
+   MO.FDuiNumber3_construct = function FDuiNumber3_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
       o._innerOriginValue = new SPoint3();
       o._innerDataValue = new SPoint3();
@@ -165,9 +165,9 @@ with(MO){
    // @method
    // @return String 数据
    //==========================================================
-   MO.FUiNumber3_get = function FUiNumber3_get(p){
+   MO.FDuiNumber3_get = function FDuiNumber3_get(p){
       var o = this;
-      o.__base.FUiEditControl.get.call(o, p);
+      o.__base.FDuiEditControl.get.call(o, p);
       var v = o._innerDataValue;
       // 获得数据1
       var h = o._hInput1;
@@ -193,9 +193,9 @@ with(MO){
    // @method
    // @param p:value:String 数据
    //==========================================================
-   MO.FUiNumber3_set = function FUiNumber3_set(p){
+   MO.FDuiNumber3_set = function FDuiNumber3_set(p){
       var o = this;
-      o.__base.FUiEditControl.set.call(o, p);
+      o.__base.FDuiEditControl.set.call(o, p);
       var a = arguments;
       // 设置数据
       var vo = o._innerOriginValue
@@ -251,9 +251,9 @@ with(MO){
    // @param s:sender:FControl 控件对象
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiNumber3_onDataKeyDown = function FUiNumber3_onDataKeyDown(s, e){
+   MO.FDuiNumber3_onDataKeyDown = function FDuiNumber3_onDataKeyDown(s, e){
       var o = this;
-      o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
+      o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
       // 大小写限制
       if(o.editCase){
          RKey.fixCase(e, o.editCase);
@@ -278,7 +278,7 @@ with(MO){
    // @method
    // @param v:value:String 显示内容
    //==========================================================
-   MO.FUiNumber3_formatValue = function FUiNumber3_formatValue(v){
+   MO.FDuiNumber3_formatValue = function FDuiNumber3_formatValue(v){
       var o = this;
       var r = RString.nvl(v);
       if(ECase.Upper == o.editCase){
@@ -295,7 +295,7 @@ with(MO){
    // @method
    // @param t:text:String 内容
    //==========================================================
-   MO.FUiNumber3_setText = function FUiNumber3_setText(t){
+   MO.FDuiNumber3_setText = function FDuiNumber3_setText(t){
       var o = this;
       if(!o.hEdit){
          return;
@@ -323,9 +323,9 @@ with(MO){
    // @param t:text:String 内容
    // @return 校验结果
    //==========================================================
-   MO.FUiNumber3_validText = function FUiNumber3_validText(t){
+   MO.FDuiNumber3_validText = function FDuiNumber3_validText(t){
       var o = this;
-      var r = o.__base.FUiEditControl.validText.call(o, t);
+      var r = o.__base.FDuiEditControl.validText.call(o, t);
       if(!r){
          // 最小长度的校验
          if(o.validLenmin){
@@ -349,14 +349,14 @@ with(MO){
    // @method
    // @return 编辑器
    //==========================================================
-   MO.FUiNumber3_findEditor = function FUiNumber3_findEditor(){
+   MO.FDuiNumber3_findEditor = function FDuiNumber3_findEditor(){
       var o = this;
       if(o.editComplete){
          var de = o.editor;
          if(!de){
             o.dsControl = o.topControl(MDataset);
             if(o.dsControl){
-               de = o.editor = RConsole.find(FUiNumber3Console).focus(o, FUiNumber3Editor);
+               de = o.editor = RConsole.find(FDuiNumber3Console).focus(o, FDuiNumber3Editor);
             }
          }
          if(de){
@@ -371,7 +371,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiNumber3_drop = function FUiNumber3_drop(){
+   MO.FDuiNumber3_drop = function FDuiNumber3_drop(){
       var o = this;
       var de = o.findEditor();
       if(de){
@@ -393,7 +393,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiNumber3_clone = function FUiNumber3_clone(){
+   MO.FDuiNumber3_clone = function FDuiNumber3_clone(){
       var o = this;
       var r = o._class.newInstance();
       GHtml_clone(r, o.hPanel);
@@ -405,7 +405,7 @@ with(MO){
    //
    //@method
    //==========================================================
-   MO.FUiNumber3_link = function FUiNumber3_link(){
+   MO.FDuiNumber3_link = function FDuiNumber3_link(){
       var o = this;
       
    }

@@ -15,8 +15,8 @@ with(MO){
    // @author maocy
    // @version 150102
    //==========================================================
-   MO.FUiEdit = function FUiEdit(o){
-      o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit, MListenerDataChanged);
+   MO.FDuiEdit = function FDuiEdit(o){
+      o = RClass.inherits(this, o, FDuiEditControl, MPropertyEdit, MListenerDataChanged);
       //..........................................................
       // @property
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -34,19 +34,19 @@ with(MO){
       o._hInput          = null;
       //..........................................................
       // @event
-      o.onBuildEditValue = FUiEdit_onBuildEditValue;
-      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiEdit_onInputEdit);
+      o.onBuildEditValue = FDuiEdit_onBuildEditValue;
+      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiEdit_onInputEdit);
       //..........................................................
       // @method
-      o.construct        = FUiEdit_construct;
+      o.construct        = FDuiEdit_construct;
       // @method
-      o.formatText       = FUiEdit_formatText;
-      o.formatValue      = FUiEdit_formatValue;
+      o.formatText       = FDuiEdit_formatText;
+      o.formatValue      = FDuiEdit_formatValue;
       // @method
-      o.text             = FUiEdit_text;
-      o.setText          = FUiEdit_setText;
-      o.setEditAble      = FUiEdit_setEditAble;
-      o.refreshValue     = FUiEdit_refreshValue;
+      o.text             = FDuiEdit_text;
+      o.setText          = FDuiEdit_setText;
+      o.setEditAble      = FDuiEdit_setEditAble;
+      o.refreshValue     = FDuiEdit_refreshValue;
       return o;
    }
 
@@ -56,7 +56,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiEdit_onBuildEditValue = function FUiEdit_onBuildEditValue(p){
+   MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(p){
       var o = this;
       var hp = o._hValuePanel;
       hp.className = o.styleName('ValuePanel');
@@ -85,7 +85,7 @@ with(MO){
    //
    // @param p:event:SEvent 事件对象
    //==========================================================
-   MO.FUiEdit_onInputEdit = function FUiEdit_onInputEdit(p){
+   MO.FDuiEdit_onInputEdit = function FDuiEdit_onInputEdit(p){
       var o = this;
       // 设置滑动栏
       var v = o._hInput.value;
@@ -98,9 +98,9 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEdit_construct = function FUiEdit_construct(){
+   MO.FDuiEdit_construct = function FDuiEdit_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o._inputSize = new SSize2(120, 0);
    }
 
@@ -111,7 +111,7 @@ with(MO){
    // @param p:value:String 数据
    // @return 内容
    //==========================================================
-   MO.FUiEdit_formatText = function FUiEdit_formatText(p){
+   MO.FDuiEdit_formatText = function FDuiEdit_formatText(p){
       var o = this;
       var r = RString.nvl(p);
       //if(ECase.Upper == o.editCase){
@@ -130,7 +130,7 @@ with(MO){
    // @param value:String 内容
    // @return 数据
    //==========================================================
-   MO.FUiEdit_formatValue = function FUiEdit_formatValue(value){
+   MO.FDuiEdit_formatValue = function FDuiEdit_formatValue(value){
       return value;
    }
 
@@ -140,7 +140,7 @@ with(MO){
    // @method
    // @return String 显示内容
    //==========================================================
-   MO.FUiEdit_text = function FUiEdit_text(){
+   MO.FDuiEdit_text = function FDuiEdit_text(){
       return this._hInput.value;
    }
 
@@ -150,7 +150,7 @@ with(MO){
    // @method
    // @param text:String 文本内容
    //==========================================================
-   MO.FUiEdit_setText = function FUiEdit_setText(text){
+   MO.FDuiEdit_setText = function FDuiEdit_setText(text){
       this._hInput.value = text;
    }
 
@@ -160,9 +160,9 @@ with(MO){
    // @method
    // @param flag:Boolean 可编辑性
    //==========================================================
-   MO.FUiEdit_setEditAble = function FUiEdit_setEditAble(flag){
+   MO.FDuiEdit_setEditAble = function FDuiEdit_setEditAble(flag){
       var o = this;
-      o.__base.FUiEditControl.setEditAble.call(o, flag);
+      o.__base.FDuiEditControl.setEditAble.call(o, flag);
       o._hInput.readOnly = !flag;
       //if(flag){
       //}else{
@@ -176,7 +176,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiEdit_refreshValue = function FUiEdit_refreshValue(){
+   MO.FDuiEdit_refreshValue = function FDuiEdit_refreshValue(){
       var o = this;
       // 内容改变通知
       o.processDataChangedListener(o);

@@ -37,18 +37,18 @@ with(MO){
 }
 with(MO){
    MO.FUiDataCheck = function FUiDataCheck(o){
-      o = RClass.inherits(this, o, FUiCheck, MUiDataField);
+      o = RClass.inherits(this, o, FDuiCheck, MUiDataField);
       return o;
    }
 }
 with(MO){
    MO.FUiDataColorPicker = function FUiDataColorPicker(o){
-      o = RClass.inherits(this, o, FUiEdit, MUiDataField);
+      o = RClass.inherits(this, o, FDuiEdit, MUiDataField);
       return o;
    }
    MO.FUiDataColorPicker_onDataKeyDown = function FUiDataColorPicker_onDataKeyDown(s, e){
       var o = this;
-      o.__base.FUiEdit.onDataKeyDown.call(o, s, e);
+      o.__base.FDuiEdit.onDataKeyDown.call(o, s, e);
       if(o.editCase){
          RKey.fixCase(e, o.editCase);
       }
@@ -95,7 +95,7 @@ with(MO){
    }
    MO.FUiDataColorPicker_validText = function FUiDataColorPicker_validText(t){
       var o = this;
-      var r = o.__base.FUiEdit.validText.call(o, t);
+      var r = o.__base.FDuiEdit.validText.call(o, t);
       if(!r){
          if(o.validLenmin){
             if(o.validLenmin > t.length){
@@ -145,12 +145,12 @@ with(MO){
 }
 with(MO){
    MO.FUiDataEdit = function FUiDataEdit(o){
-      o = RClass.inherits(this, o, FUiEdit, MUiDataField);
+      o = RClass.inherits(this, o, FDuiEdit, MUiDataField);
       return o;
    }
    MO.FUiDataEdit_onDataKeyDown = function FUiDataEdit_onDataKeyDown(s, e){
       var o = this;
-      o.__base.FUiEdit.onDataKeyDown.call(o, s, e);
+      o.__base.FDuiEdit.onDataKeyDown.call(o, s, e);
       if(o.editCase){
          RKey.fixCase(e, o.editCase);
       }
@@ -187,7 +187,7 @@ with(MO){
    }
    MO.FUiDataEdit_validText = function FUiDataEdit_validText(t){
       var o = this;
-      var r = o.__base.FUiEdit.validText.call(o, t);
+      var r = o.__base.FDuiEdit.validText.call(o, t);
       if(!r){
          if(o.validLenmin){
             if(o.validLenmin > t.length){
@@ -237,7 +237,7 @@ with(MO){
 }
 with(MO){
    MO.FUiDataEditControl = function FUiDataEditControl(o){
-      o = RClass.inherits(this, o, FUiEditControl, MUiEditValue, MUiEditChange, MUiEditDrop);
+      o = RClass.inherits(this, o, FDuiEditControl, MUiEditValue, MUiEditChange, MUiEditDrop);
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
       o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
       o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
@@ -321,7 +321,7 @@ with(MO){
    }
    MO.FUiDataEditControl_onBuild = function FUiDataEditControl_onBuild(p){
       var o = this;
-      o.__base.FUiEditControl.onBuild.call(o, p);
+      o.__base.FDuiEditControl.onBuild.call(o, p);
       var hc = o._hPanel;
       var hlp = null;
       var hep = null;
@@ -361,7 +361,7 @@ with(MO){
    }
    MO.FUiDataEditControl_oeMode = function FUiDataEditControl_oeMode(e){
       var o = this;
-      o.__base.FUiEditControl.oeMode.call(o, e);
+      o.__base.FDuiEditControl.oeMode.call(o, e);
       o.__base.MDisplay.oeMode.call(o, e);
       o._editable = o.canEdit(e.mode);
       o._validable = o.canValid(e.mode);
@@ -387,7 +387,7 @@ with(MO){
    }
    MO.FUiDataEditControl_construct = function FUiDataEditControl_construct(){
       var o = this;
-      o.__base.FUiEditControl.construct.call(o);
+      o.__base.FDuiEditControl.construct.call(o);
       o.__base.MUiEditChange.construct.call(o);
       o.__base.MUiEditDrop.construct.call(o);
       o._labelSize = new SSize2(100, 20);
@@ -400,7 +400,7 @@ with(MO){
       }else if(EPanel.Focus == t){
          return o.hEdit;
       }
-      return o.__base.FUiEditControl.panel.call(o, t);
+      return o.__base.FDuiEditControl.panel.call(o, t);
    }
    MO.FUiDataEditControl_label = function FUiDataEditControl_label(p){
       return this._label;
@@ -449,7 +449,7 @@ with(MO){
       o._hDropPanel = RHtml.free(o._hDropPanel);
       o.__base.MUiEditDrop.dispose.call(o);
       o.__base.MUiEditChange.dispose.call(o);
-      o.__base.FUiEditControl.dispose.call(o);
+      o.__base.FDuiEditControl.dispose.call(o);
    }
    MO.FUiDataEditControl_onScalar = function FUiDataEditControl_onScalar(g){
       var o = this;
@@ -606,7 +606,7 @@ with(MO){
    }
    MO.FUiDataEditControl_setVisible = function FUiDataEditControl_setVisible(v){
       var o = this;
-      o.__base.FUiEditControl.setVisible.call(o, v);
+      o.__base.FDuiEditControl.setVisible.call(o, v);
       o.refreshStyle();
    }
    MO.FUiDataEditControl_focus = function FUiDataEditControl_focus(){
@@ -669,18 +669,18 @@ with(MO){
 }
 with(MO){
    MO.FUiDataFrame = function FUiDataFrame(o){
-      o = RClass.inherits(this, o, FUiFrame, MUiDataset, MUiDataContainer, MUiDataAction);
+      o = RClass.inherits(this, o, FDuiFrame, MUiDataset, MUiDataContainer, MUiDataAction);
       return o;
    }
 }
 with(MO){
    MO.FUiDataIconPicker = function FUiDataIconPicker(o){
-      o = RClass.inherits(this, o, FUiEdit, MUiDataField);
+      o = RClass.inherits(this, o, FDuiEdit, MUiDataField);
       return o;
    }
    MO.FUiDataIconPicker_onDataKeyDown = function FUiDataIconPicker_onDataKeyDown(s, e){
       var o = this;
-      o.__base.FUiEdit.onDataKeyDown.call(o, s, e);
+      o.__base.FDuiEdit.onDataKeyDown.call(o, s, e);
       if(o.editCase){
          RKey.fixCase(e, o.editCase);
       }
@@ -717,7 +717,7 @@ with(MO){
    }
    MO.FUiDataIconPicker_validText = function FUiDataIconPicker_validText(t){
       var o = this;
-      var r = o.__base.FUiEdit.validText.call(o, t);
+      var r = o.__base.FDuiEdit.validText.call(o, t);
       if(!r){
          if(o.validLenmin){
             if(o.validLenmin > t.length){
@@ -767,13 +767,13 @@ with(MO){
 }
 with(MO){
    MO.FUiDataMemo = function FUiDataMemo(o){
-      o = RClass.inherits(this, o, FUiMemo, MUiDataField);
+      o = RClass.inherits(this, o, FDuiMemo, MUiDataField);
       return o;
    }
 }
 with(MO){
    MO.FUiDataNumber = function FUiDataNumber(o){
-      o = RClass.inherits(this, o, FUiNumber);
+      o = RClass.inherits(this, o, FDuiNumber);
       return o;
    }
    MO.FUiDataNumber_onEditFocus = function FUiDataNumber_onEditFocus(e){
@@ -821,7 +821,7 @@ with(MO){
             o.adjustValue(false);
          }
       }
-      o.base.FUiNumber.onDataKeyDown.call(o, s, e);
+      o.base.FDuiNumber.onDataKeyDown.call(o, s, e);
    }
    MO.FUiDataNumber_ohEditKeyUp = function FUiDataNumber_ohEditKeyUp(s, e){
       var o = this;
@@ -886,7 +886,7 @@ with(MO){
    }
    MO.FUiDataNumber_refreshStyle = function FUiDataNumber_refreshStyle(){
       var o = this;
-      o.base.FUiNumber.refreshStyle.call(o);
+      o.base.FDuiNumber.refreshStyle.call(o);
       o.hUpIcon.src = o.styleIconPath(o._hover ? 'UpSelect' : 'Up');
       o.hDownIcon.src = o.styleIconPath(o._hover ? 'DownSelect' : 'Down');
    }
@@ -988,7 +988,7 @@ with(MO){
    }
    MO.FUiDataNumber_dispose = function FUiDataNumber_dispose(){
       var o = this;
-      o.base.FUiNumber.dispose.call(o);
+      o.base.FDuiNumber.dispose.call(o);
       o.hLabel = null;
       o.hUpIcon = null;
       o.hDownIcon = null;
@@ -997,7 +997,7 @@ with(MO){
 }
 with(MO){
    MO.FUiDataNumber2 = function FUiDataNumber2(o){
-      o = RClass.inherits(this, o, FUiNumber2);
+      o = RClass.inherits(this, o, FDuiNumber2);
       return o;
    }
    MO.FUiDataNumber2_onEditFocus = function FUiDataNumber2_onEditFocus(e){
@@ -1045,7 +1045,7 @@ with(MO){
             o.adjustValue(false);
          }
       }
-      o.base.FUiNumber2.onDataKeyDown.call(o, s, e);
+      o.base.FDuiNumber2.onDataKeyDown.call(o, s, e);
    }
    MO.FUiDataNumber2_ohEditKeyUp = function FUiDataNumber2_ohEditKeyUp(s, e){
       var o = this;
@@ -1110,7 +1110,7 @@ with(MO){
    }
    MO.FUiDataNumber2_refreshStyle = function FUiDataNumber2_refreshStyle(){
       var o = this;
-      o.base.FUiNumber2.refreshStyle.call(o);
+      o.base.FDuiNumber2.refreshStyle.call(o);
       o.hUpIcon.src = o.styleIconPath(o._hover ? 'UpSelect' : 'Up');
       o.hDownIcon.src = o.styleIconPath(o._hover ? 'DownSelect' : 'Down');
    }
@@ -1212,7 +1212,7 @@ with(MO){
    }
    MO.FUiDataNumber2_dispose = function FUiDataNumber2_dispose(){
       var o = this;
-      o.base.FUiNumber2.dispose.call(o);
+      o.base.FDuiNumber2.dispose.call(o);
       o.hLabel = null;
       o.hUpIcon = null;
       o.hDownIcon = null;
@@ -1221,7 +1221,7 @@ with(MO){
 }
 with(MO){
    MO.FUiDataNumber3 = function FUiDataNumber3(o){
-      o = RClass.inherits(this, o, FUiNumber3);
+      o = RClass.inherits(this, o, FDuiNumber3);
       return o;
    }
    MO.FUiDataNumber3_onEditFocus = function FUiDataNumber3_onEditFocus(e){
@@ -1269,7 +1269,7 @@ with(MO){
             o.adjustValue(false);
          }
       }
-      o.base.FUiNumber3.onDataKeyDown.call(o, s, e);
+      o.base.FDuiNumber3.onDataKeyDown.call(o, s, e);
    }
    MO.FUiDataNumber3_ohEditKeyUp = function FUiDataNumber3_ohEditKeyUp(s, e){
       var o = this;
@@ -1334,7 +1334,7 @@ with(MO){
    }
    MO.FUiDataNumber3_refreshStyle = function FUiDataNumber3_refreshStyle(){
       var o = this;
-      o.base.FUiNumber3.refreshStyle.call(o);
+      o.base.FDuiNumber3.refreshStyle.call(o);
       o.hUpIcon.src = o.styleIconPath(o._hover ? 'UpSelect' : 'Up');
       o.hDownIcon.src = o.styleIconPath(o._hover ? 'DownSelect' : 'Down');
    }
@@ -1436,7 +1436,7 @@ with(MO){
    }
    MO.FUiDataNumber3_dispose = function FUiDataNumber3_dispose(){
       var o = this;
-      o.base.FUiNumber3.dispose.call(o);
+      o.base.FDuiNumber3.dispose.call(o);
       o.hLabel = null;
       o.hUpIcon = null;
       o.hDownIcon = null;
@@ -1445,7 +1445,7 @@ with(MO){
 }
 with(MO){
    MO.FUiDataNumber4 = function FUiDataNumber4(o){
-      o = RClass.inherits(this, o, FUiNumber4);
+      o = RClass.inherits(this, o, FDuiNumber4);
       return o;
    }
    MO.FUiDataNumber4_onEditFocus = function FUiDataNumber4_onEditFocus(e){
@@ -1493,7 +1493,7 @@ with(MO){
             o.adjustValue(false);
          }
       }
-      o.base.FUiNumber4.onDataKeyDown.call(o, s, e);
+      o.base.FDuiNumber4.onDataKeyDown.call(o, s, e);
    }
    MO.FUiDataNumber4_ohEditKeyUp = function FUiDataNumber4_ohEditKeyUp(s, e){
       var o = this;
@@ -1558,7 +1558,7 @@ with(MO){
    }
    MO.FUiDataNumber4_refreshStyle = function FUiDataNumber4_refreshStyle(){
       var o = this;
-      o.base.FUiNumber4.refreshStyle.call(o);
+      o.base.FDuiNumber4.refreshStyle.call(o);
       o.hUpIcon.src = o.styleIconPath(o._hover ? 'UpSelect' : 'Up');
       o.hDownIcon.src = o.styleIconPath(o._hover ? 'DownSelect' : 'Down');
    }
@@ -1660,7 +1660,7 @@ with(MO){
    }
    MO.FUiDataNumber4_dispose = function FUiDataNumber4_dispose(){
       var o = this;
-      o.base.FUiNumber4.dispose.call(o);
+      o.base.FDuiNumber4.dispose.call(o);
       o.hLabel = null;
       o.hUpIcon = null;
       o.hDownIcon = null;
@@ -1669,7 +1669,7 @@ with(MO){
 }
 with(MO){
    MO.FUiDataSelect = function FUiDataSelect(o){
-      o = RClass.inherits(this, o, FUiSelect, MUiDataField);
+      o = RClass.inherits(this, o, FDuiSelect, MUiDataField);
       return o;
    }
 }

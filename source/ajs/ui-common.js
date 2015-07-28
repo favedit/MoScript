@@ -31,9 +31,9 @@ MO.AEvent_create = function AEvent_create(){
 MO.AEvent_bind = function AEvent_bind(h, u){
    var o = this;
    if(u){
-      h.addEventListener(o._linker, MO.RUiEvent.ohEvent, true);
+      h.addEventListener(o._linker, MO.RDuiEvent.ohEvent, true);
    }else{
-      h[o._handle] = MO.RUiEvent.ohEvent;
+      h[o._handle] = MO.RDuiEvent.ohEvent;
    }
 }
 MO.AEvent_toString = function AEvent_toString(){
@@ -98,9 +98,9 @@ MO.AEventInputChanged_attach = function AEventInputChanged_attach(e, h){
 MO.AEventInputChanged_bind = function AEventInputChanged_bind(h, u){
    var o = this;
    if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
-      h.onpropertychange = MO.RUiEvent.ohEvent;
+      h.onpropertychange = MO.RDuiEvent.ohEvent;
    }else{
-      h.addEventListener('input', MO.RUiEvent.ohEvent);
+      h.addEventListener('input', MO.RDuiEvent.ohEvent);
    }
 }
 MO.AEventKeyDown = function AEventKeyDown(n){

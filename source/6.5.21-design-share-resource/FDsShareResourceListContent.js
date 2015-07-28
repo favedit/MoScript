@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsShareResourceListContent = function FDsShareResourceListContent(o){
-      o = RClass.inherits(this, o, FUiListView);
+      o = RClass.inherits(this, o, FDuiListView);
       //..........................................................
       // @attribute
       o._contentFlag      = null;
@@ -85,18 +85,18 @@ with(MO){
    MO.FDsShareResourceListContent_construct = function FDsShareResourceListContent_construct(){
       var o = this;
       // 父处理
-      o.__base.FUiListView.construct.call(o);
+      o.__base.FDuiListView.construct.call(o);
    }
 
    //==========================================================
    // <T>点击一个列表项目。</T>
    //
    // @method
-   // @param control:FUiListViewItem 列表项目
+   // @param control:FDuiListViewItem 列表项目
    //==========================================================
    MO.FDsShareResourceListContent_doClickItem = function FDsShareResourceListContent_doClickItem(control){
       var o = this;
-      o.__base.FUiListView.doClickItem.call(o, control);
+      o.__base.FDuiListView.doClickItem.call(o, control);
       // 选中项目
       //var frame = o._frameSet._previewContent;
       //frame._activeItem = p;
@@ -107,11 +107,11 @@ with(MO){
    // <T>双击一个列表项目。</T>
    //
    // @method
-   // @param control:FUiListViewItem 列表项目
+   // @param control:FDuiListViewItem 列表项目
    //==========================================================
    MO.FDsShareResourceListContent_doDoubleClickItem = function FDsShareResourceListContent_doDoubleClickItem(control){
       var o = this;
-      o.__base.FUiListView.doDoubleClickItem.call(o, control)
+      o.__base.FDuiListView.doDoubleClickItem.call(o, control)
       // 设置属性
       var guid = control._guid;
       o._activeItem = control;
@@ -198,6 +198,6 @@ with(MO){
    MO.FDsShareResourceListContent_dispose = function FDsShareResourceListContent_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiListView.dispose.call(o);
+      o.__base.FDuiListView.dispose.call(o);
    }
 }

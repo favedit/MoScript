@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150119
 //===========================================================
-MO.RUiService = function RUiService(){
+MO.RDuiService = function RDuiService(){
    var o = this;
    //..........................................................
    // @attribute
@@ -20,7 +20,7 @@ MO.RUiService = function RUiService(){
 // @param p:name:String 名称
 // @return String 服务地址
 //===========================================================
-MO.RUiService.prototype.url = function RUiService_url(p){
+MO.RDuiService.prototype.url = function RDuiService_url(p){
    if(MO.Lang.String.startsWith(p, 'http://')){
       return p;
    }
@@ -41,7 +41,7 @@ MO.RUiService.prototype.url = function RUiService_url(p){
 // @param p:source:String 来源
 // @return SServiceInfo 服务信息
 //===========================================================
-MO.RUiService.prototype.makeUrl = function RUiService_makeUrl(s, a){
+MO.RDuiService.prototype.makeUrl = function RDuiService_makeUrl(s, a){
    return this.url(s) + '?action=' + a;
 }
 
@@ -52,7 +52,7 @@ MO.RUiService.prototype.makeUrl = function RUiService_makeUrl(s, a){
 // @param p:source:String 来源
 // @return SServiceInfo 服务信息
 //===========================================================
-MO.RUiService.prototype.parse = function RUiService_parse(p){
+MO.RDuiService.prototype.parse = function RDuiService_parse(p){
    var o = this;
    var s = null;
    var ss = o._services;
@@ -85,4 +85,4 @@ MO.RUiService.prototype.parse = function RUiService_parse(p){
 }
 //..........................................................
 // 实例化内容
-MO.RUiService = new MO.RUiService();
+MO.RDuiService = new MO.RDuiService();
