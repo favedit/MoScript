@@ -28,8 +28,15 @@ with(MO){
    MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
       var o = this;
       var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
-      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method,
-          time = new Date().getTime();
+      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
+      var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
+      var currentDate = systemLogic.currentDate();
+      var time = Date.parse(currentDate.date);  
+      console.log(time);
+
+     
+
+        var   time = new Date().getTime();
 
          function addKey ( start, times ){
             var arr = [start];
@@ -44,16 +51,31 @@ with(MO){
          }
 
          if(parameters){
-            var arr=parameters.split("&"),
+            var timeString=String(time),
+                le=timeString.length-3;
+            var href = parameters+"&tick="+timeString.substr(0,10);
+            var arr=href.split("&"),
                 ginsengs='',
-                key="";
+                key="",
+                keyArr=[],
+                nd=[],
+                tmp_arr, key, value,
+                keys='';
             for(var i=0;i<arr.length;i++){
-               ginsengs += arr[i].split("=")[1];
+               tmp_arr = arr[i].split("=");
+               key = tmp_arr[0];
+               value = tmp_arr[1]; 
+               keyArr.push(key);
+               nd[key] = value;
+            }
+            keyArr.sort();
+            for(var i=0;i<keyArr.length;i++){
+                 ginsengs += nd[keyArr[i]];
             }
             for(var i=0; i < addKey(5,3).length; i++){
-               key+=addKey(5,3)[i];
+               keys+=addKey(5,3)[i];
             }
-            url += '?' + parameters+"&tick="+time+"&sign="+hex_md5(ginsengs+key);
+            url += '?' + href+"&sign="+hex_md5(ginsengs+keys);
          }
       return url;
    } 
