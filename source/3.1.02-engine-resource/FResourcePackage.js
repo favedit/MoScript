@@ -15,7 +15,7 @@ MO.FResourcePackage = function FResourcePackage(o){
    o._statusReady = false;
    //..........................................................
    // @event
-   o.onLoaded     = MO.FResourcePackage_onLoaded;
+   o.onLoad       = MO.FResourcePackage_onLoad;
    //..........................................................
    // @method
    o.testReady    = MO.FResourcePackage_testReady;
@@ -29,7 +29,7 @@ MO.FResourcePackage = function FResourcePackage(o){
 //
 // @method
 //==========================================================
-MO.FResourcePackage_onLoaded = function FResourcePackage_onLoaded(event){
+MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    var o = this;
    // 反序列化数据
    var view = MO.Class.create(MO.FDataView);
@@ -65,6 +65,6 @@ MO.FResourcePackage_load = function FResourcePackage_load(){
    }
    // 加载数据
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
-   connection.addLoadedListener(o, o.onLoaded);
+   connection.addLoadListener(o, o.onLoad);
    return connection;
 }

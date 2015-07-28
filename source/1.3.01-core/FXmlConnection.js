@@ -31,25 +31,25 @@ MO.FXmlConnection = function FXmlConnection(o){
 //==========================================================
 MO.FXmlConnection_onConnectionSend = function FXmlConnection_onConnectionSend(){
    var o = this;
-   var d = o._input;
-   if(d){
-      var s = null;
-      if(d.constructor == String){
-         s = d;
+   var data = o._input;
+   if(data){
+      var xml = null;
+      if(data.constructor == String){
+         xml = data;
          o._inputNode = null;
-      }else if(d.constructor == MO.TXmlNode){
-         var x = new MO.TXmlDocument();
-         x.setRoot(d);
-         s = x.xml();
-         o._inputNode = d;
-      }else if(d.constructor == MO.TXmlDocument){
-         s = d.xml();
-         o._inputNode = d.root();
+      }else if(data.constructor == MO.TXmlNode){
+         var document = new MO.TXmlDocument();
+         document.setRoot(data);
+         xml = document.xml();
+         o._inputNode = data;
+      }else if(data.constructor == MO.TXmlDocument){
+         xml = data.xml();
+         o._inputNode = data.root();
       }else{
          throw new MO.TError('Unknown send data type.');
       }
-      o._inputData = s;
-      o._contentLength = s.length;
+      o._inputData = xml;
+      o._contentLength = xml.length;
    }
 }
 
@@ -60,33 +60,33 @@ MO.FXmlConnection_onConnectionSend = function FXmlConnection_onConnectionSend(){
 //==========================================================
 MO.FXmlConnection_onConnectionComplete = function FXmlConnection_onConnectionComplete(){
    var o = this;
-   var c = o._connection;
+   var handle = o._handle;
    // 获得返回的文档对象
-   var e = null;
-   if(c.responseXML){
-      e = c.responseXML.documentElement;
-   }else if(c.responseXml){
-      e = c.responseXml.documentElement;
+   var element = null;
+   if(handle.responseXML){
+      element = handle.responseXML.documentElement;
+   }else if(handle.responseXml){
+      element = handle.responseXml.documentElement;
    }else{
       throw new MO.TError(o, "Fetch xml data failure.");
    }
-   if(!e){
-      return MO.RMessage.fatal(o, null, 'Read xml error. (url={1})\n{2}', o._url, c._outputText)
+   if(!element){
+      return MO.Logger.fatal(o, 'Read xml error. (url={1})\n{2}', o._url, c._outputText)
    }
    // 建立文档对象
-   var d = new MO.TXmlDocument();
-   MO.RXml.buildNode(d, null, e);
-   var r = o._outputNode = d.root();
+   var document = new MO.TXmlDocument();
+   MO.Lang.Xml.buildNode(document, null, element);
+   var root = o._outputNode = document.root();
    // 完成处理
    o._statusFree = true;
    // 完成处理
-   var e = new MO.SXmlEvent();
-   e.connection = o;
-   e.document = d;
-   e.root = r;
-   e.parameters = o._parameters;
-   o.processLoadListener(e);
-   e.dispose();
+   var event = o._event;
+   event.connection = o;
+   event.document = document;
+   event.root = root;
+   event.parameters = o._parameters;
+   o.processLoadListener(event);
+   event.dispose();
    // 异步处理后清空属性
    if(o._asynchronous){
       o._input = null;

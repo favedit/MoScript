@@ -31,11 +31,11 @@ MO.RLogger.prototype.output = function RLogger_output(s, p){
 //<T>显示一个调试信息。</T>
 //
 // @method
-// @param sf:self:Object 消息对象
-// @param ms:message:String 消息内容
-// @param pm:params:Object... 消息参数列表
+// @param owner:Object 消息对象
+// @param message:String 消息内容
+// @param params:Object... 消息参数列表
 //==========================================================
-MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
+MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    var o = this;
    // 获得函数名称
    var name = null;
@@ -50,10 +50,13 @@ MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
    }else{
       name = name.replace('_', '.');
    }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
    //..........................................................
-   var r = new MO.TString();
-   r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   r.append('|D [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|D [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
    // 格式化参数
    var as = arguments;
    var c = as.length;
@@ -67,11 +70,11 @@ MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
             s = a.toString();
          }
       }
-      ms = ms.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', s);
    }
-   r.append(ms);
+   result.append(message);
    //..........................................................
-   o.output(sf, r.flush());
+   o.output(owner, result.flush());
 }
 
 //==========================================================
@@ -96,6 +99,9 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
       name = 'unknown';
    }else{
       name = name.replace('_', '.');
+   }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
    }
    //..........................................................
    var result = new MO.TString();
@@ -144,6 +150,9 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
    //..........................................................
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
@@ -190,6 +199,9 @@ MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
       name = 'unknown';
    }else{
       name = name.replace('_', '.');
+   }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
    }
    //..........................................................
    var r = new MO.TString();
@@ -300,6 +312,9 @@ MO.RLogger.prototype.show = function RLogger_show(sf, message, params){
       name = 'unknown';
    }else{
       name = name.replace('_', '.');
+   }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
    }
    //..........................................................
    var result = new MO.TString();

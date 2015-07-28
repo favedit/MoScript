@@ -398,6 +398,29 @@ MO.FEaiMapCountryData_dispose = function FEaiMapCountryData_dispose(){
    o._provinces = MO.Lang.Object.dispose(o._provinces);
    o.__base.FObject.dispose.call(o);
 }
+MO.FEaiMapCountryResource = function FEaiMapCountryResource(o){
+   o = MO.Class.inherits(this, o, MO.FResourcePackage);
+   o._uri        = '{eai.resource}/data/country.dat';
+   o._data       = MO.Class.register(o, new MO.AGetter('_data'));
+   o.construct   = MO.FEaiMapCountryResource_construct;
+   o.unserialize = MO.FEaiMapCountryResource_unserialize;
+   o.load        = MO.FEaiMapCountryResource_load;
+   o.dispose     = MO.FEaiMapCountryResource_dispose;
+   return o;
+}
+MO.FEaiMapCountryResource_construct = function FEaiMapCountryResource_construct(){
+   var o = this;
+   o.__base.FResourcePackage.construct.call(o);
+   o._data = MO.Class.create(MO.FEaiMapWorldData);
+}
+MO.FEaiMapCountryResource_unserialize = function FEaiMapCountryResource_unserialize(input){
+   this._data.unserialize(input);
+}
+MO.FEaiMapCountryResource_dispose = function FEaiMapCountryResource_dispose(){
+   var o = this;
+   o._data = MO.Lang.Object.dispose(o._data);
+   o.__base.FResourcePackage.dispose.call(o);
+}
 MO.FEaiMapProvinceData = function FEaiMapProvinceData(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._code       = MO.Class.register(o, new MO.AGetSet('_code'));
@@ -432,15 +455,13 @@ MO.FEaiMapProvinceData_dispose = function FEaiMapProvinceData_dispose(){
 }
 MO.FEaiMapResourceConsole = function FEaiMapResourceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._world      = MO.Class.register(o, new MO.AGetter('_world'));
-   o._countries  = MO.Class.register(o, new MO.AGetter('_countries'));
-   o.construct   = MO.FEaiMapResourceConsole_construct;
-   o.findByCode  = MO.FEaiMapResourceConsole_findByCode;
-   o.findByName  = MO.FEaiMapResourceConsole_findByName;
-   o.unserialize = MO.FEaiMapResourceConsole_unserialize;
-   o.loadCountry = MO.FEaiMapResourceConsole_loadCountry;
-   o.loadWorld   = MO.FEaiMapResourceConsole_loadWorld;
-   o.dispose     = MO.FEaiMapResourceConsole_dispose;
+   o._world            = MO.Class.register(o, new MO.AGetter('_world'));
+   o._countries        = MO.Class.register(o, new MO.AGetter('_countries'));
+   o.construct         = MO.FEaiMapResourceConsole_construct;
+   o.findCountryByCode = MO.FEaiMapResourceConsole_findCountryByCode;
+   o.loadCountry       = MO.FEaiMapResourceConsole_loadCountry;
+   o.loadWorld         = MO.FEaiMapResourceConsole_loadWorld;
+   o.dispose           = MO.FEaiMapResourceConsole_dispose;
    return o;
 }
 MO.FEaiMapResourceConsole_construct = function FEaiMapResourceConsole_construct(){
@@ -448,23 +469,8 @@ MO.FEaiMapResourceConsole_construct = function FEaiMapResourceConsole_construct(
    o.__base.FConsole.construct.call(o);
    o._countries = new MO.TDictionary();
 }
-MO.FEaiMapResourceConsole_findByCode = function FEaiMapResourceConsole_findByCode(code){
+MO.FEaiMapResourceConsole_findCountryByCode = function FEaiMapResourceConsole_findCountryByCode(code){
    return this._countries.get(code);
-}
-MO.FEaiMapResourceConsole_findByName = function FEaiMapResourceConsole_findByName(name){
-   return this._world.get(name);
-}
-MO.FEaiMapResourceConsole_unserialize = function FEaiMapResourceConsole_unserialize(input){
-   var o = this;
-   var provinceCodes = o._countries;
-   var provinceNames = o._world;
-   var count = input.readInt32();
-   for(var i = 0; i < count; i++){
-      var province = MO.Class.create(FEaiProvinceResource);
-      province.unserialize(input);
-      provinceCodes.set(province.code(), province);
-      provinceNames.set(province.name(), province);
-   }
 }
 MO.FEaiMapResourceConsole_loadCountry = function FEaiMapResourceConsole_loadCountry(code){
    var o = this;
@@ -490,7 +496,7 @@ MO.FEaiMapResourceConsole_loadWorld = function FEaiMapResourceConsole_loadWorld(
 MO.FEaiMapResourceConsole_dispose = function FEaiMapResourceConsole_dispose(){
    var o = this;
    o._world = MO.Lang.Object.dispose(o._world);
-   o._countries = MO.Lang.Object.dispose(o._countries);
+   o._countries = MO.Lang.Object.dispose(o._countries, true);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEaiMapWorldData = function FEaiMapWorldData(o){
@@ -737,7 +743,7 @@ MO.FEaiResourceConsole_onProcess = function FEaiResourceConsole_onProcess(){
 }
 MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
    var o = this;
-   var data = event.outputData();
+   var data = event.content;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
    view.link(data);

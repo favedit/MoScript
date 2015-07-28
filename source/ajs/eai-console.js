@@ -1,48 +1,44 @@
-with(MO){
-   MO.FEaiLogic = function FEaiLogic(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code   = null;
-      o.makeUrl = FEaiLogic_makeUrl;
-      o.send    = FEaiLogic_send;
-      return o;
-   }
-   MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
-      var o = this;
-      var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
-      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method,
-          time = new Date().getTime();
-         function addKey ( start, times ){
-            var arr = [start];
-               for( var i = 0; i < times; i++ ){
-                  if( i == 0 ){
-                     arr.push( arr[0] );
-                  }else{
-                     arr.push( arr[i] + arr[i-1] );
-                  }
-               }
-               return arr;
+MO.FEaiLogic = function FEaiLogic(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code   = null;
+   o.makeUrl = MO.FEaiLogic_makeUrl;
+   o.send    = MO.FEaiLogic_send;
+   return o;
+}
+MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
+   var o = this;
+   var serviceHost = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
+   var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method,
+   time = MO.Timer.current();
+   function addKey(start, times){
+      var arr = [start];
+      for( var i = 0; i < times; i++ ){
+         if(i == 0){
+            arr.push(arr[0]);
+         }else{
+            arr.push(arr[i] + arr[i-1]);
          }
-         if(parameters){
-            var arr=parameters.split("&"),
-                ginsengs='',
-                key="";
-            for(var i=0;i<arr.length;i++){
-               ginsengs += arr[i].split("=")[1];
-            }
-            for(var i=0; i < addKey(5,3).length; i++){
-               key+=addKey(5,3)[i];
-            }
-            url += '?' + parameters+"&requesttime="+time+"&sign="+hex_md5(ginsengs+key);
-         }
-      return url;
+      }
+      return arr;
    }
-   MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
-      var o = this;
-      var url = o.makeUrl(method, parameters);
-      var connection = RConsole.find(FJsonConsole).sendAsync(url);
-      connection.addProcessListener(owner, callback);
-      return connection;
+   if(parameters){
+      var arr = parameters.split("&"), ginsengs = '', key = '';
+      for(var i = 0; i < arr.length; i++){
+         ginsengs += arr[i].split("=")[1];
+      }
+      for(var i = 0; i < addKey(5, 3).length; i++){
+         key += addKey(5,3)[i];
+      }
+      url += '?' + parameters + "&tick=" + time + "&sign=" + hex_md5(ginsengs + key);
    }
+   return url;
+}
+MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
+   var o = this;
+   var url = o.makeUrl(method, parameters);
+   var connection = MO.Console.find(MO.FJsonConsole).sendAsync(url);
+   connection.addLoadListener(owner, callback);
+   return connection;
 }
 with(MO){
    MO.FEaiLogicAchievement = function FEaiLogicAchievement(o){

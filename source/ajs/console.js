@@ -333,20 +333,25 @@ MO.FEventConsole_clear = function FEventConsole_clear(){
 }
 MO.FHttpConsole = function FHttpConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._scopeCd  = MO.EScope.Local;
-   o._pool     = null;
-   o.onLoad    = MO.FHttpConsole_onLoad;
-   o.construct = MO.FHttpConsole_construct;
-   o.alloc     = MO.FHttpConsole_alloc;
-   o.free      = MO.FHttpConsole_free;
-   o.send      = MO.FHttpConsole_send;
-   o.sendAsync = MO.FHttpConsole_sendAsync;
-   o.fetch     = MO.FHttpConsole_fetch;
-   o.dispose   = MO.FHttpConsole_dispose;
+   o._scopeCd   = MO.EScope.Local;
+   o._pool      = null;
+   o.onComplete = MO.FHttpConsole_onComplete;
+   o.construct  = MO.FHttpConsole_construct;
+   o.create     = MO.FHttpConsole_create;
+   o.alloc      = MO.FHttpConsole_alloc;
+   o.free       = MO.FHttpConsole_free;
+   o.send       = MO.FHttpConsole_sendAsync;
+   o.sendSync   = MO.FHttpConsole_sendSync;
+   o.sendAsync  = MO.FHttpConsole_sendAsync;
+   o.fetch      = MO.FHttpConsole_fetchAsync;
+   o.fetchSync  = MO.FHttpConsole_fetchSync;
+   o.fetchAsync = MO.FHttpConsole_fetchAsync;
+   o.dispose    = MO.FHttpConsole_dispose;
    return o;
 }
-MO.FHttpConsole_onLoad = function FHttpConsole_onLoad(connection){
+MO.FHttpConsole_onComplete = function FHttpConsole_onComplete(event){
    var o = this;
+   var connection = event.connection;
    o._pool.free(connection);
 }
 MO.FHttpConsole_construct = function FHttpConsole_construct(){
@@ -354,28 +359,29 @@ MO.FHttpConsole_construct = function FHttpConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._pool = MO.Class.create(MO.FObjectPool);
 }
-MO.FHttpConsole_alloc = function FHttpConsole_alloc(){
+MO.FHttpConsole_create = function FHttpConsole_create(){
+   return MO.Class.create(MO.FHttpConnection);
+}
+MO.FHttpConsole_alloc = function FHttpConsole_alloc(clazz){
    var o = this;
    var pool = o._pool;
    if(!pool.hasFree()){
-      var connection = MO.Class.create(MO.FHttpConnection);
-      connection._asynchronous = true;
-      o._pool.push(connection);
+      o._pool.push(o.create());
    }
    var connection = pool.alloc();
-   connection.clearLoadListeners();
-   connection.clearProcessListeners();
-   connection.addLoadListener(o, o.onLoad);
+   connection.reset();
+   connection.addCompleteListener(o, o.onComplete);
    return connection;
 }
 MO.FHttpConsole_free = function FHttpConsole_free(connection){
    this._pool.free(connection);
 }
-MO.FHttpConsole_send = function FHttpConsole_send(url, data){
+MO.FHttpConsole_sendSync = function FHttpConsole_sendSync(url, data){
    var o = this;
    var connection = o.alloc();
+   connection._asynchronous = false;
    connection.send(url, data);
-   return connection;
+   return connection.content();
 }
 MO.FHttpConsole_sendAsync = function FHttpConsole_sendAsync(url, data){
    var o = this;
@@ -384,9 +390,18 @@ MO.FHttpConsole_sendAsync = function FHttpConsole_sendAsync(url, data){
    connection.send(url, data);
    return connection;
 }
-MO.FHttpConsole_fetch = function FHttpConsole_fetch(url, data){
+MO.FHttpConsole_fetchSync = function FHttpConsole_fetchSync(url, data){
    var o = this;
    var connection = o.alloc();
+   connection._asynchronous = false;
+   connection._contentCd = MO.EHttpContent.Text;
+   connection.send(url, data);
+   return connection.content();
+}
+MO.FHttpConsole_fetchAsync = function FHttpConsole_fetchAsync(url, data){
+   var o = this;
+   var connection = o.alloc();
+   connection._asynchronous = true;
    connection._contentCd = MO.EHttpContent.Text;
    connection.send(url, data);
    return connection;
@@ -412,39 +427,11 @@ MO.FIdleConsole_construct = function FIdleConsole_construct(){
 }
 MO.FJsonConsole = function FJsonConsole(o){
    o = MO.Class.inherits(this, o, MO.FHttpConsole);
-   o._scopeCd  = MO.EScope.Local;
-   o.onLoad    = MO.FJsonConsole_onLoad;
-   o.send      = MO.FJsonConsole_send;
-   o.sendAsync = MO.FJsonConsole_sendAsync;
+   o.create = MO.FJsonConsole_create;
    return o;
 }
-MO.FJsonConsole_onLoad = function FJsonConsole_onLoad(connection){
-   var o = this;
-   o.__base.FHttpConsole.onLoad.call(o, connection)
-   var source = connection.outputData();
-   var content = JSON.parse(source);
-   var event = MO.Memory.alloc(MO.SEvent);
-   event.connection = connection;
-   event.content = content;
-   connection.processProcessListener(event);
-   MO.Memory.free(event);
-}
-MO.FJsonConsole_send = function FJsonConsole_send(url, d){
-   var o = this;
-   var connection = o.alloc();
-   connection._asynchronous = false;
-   connection._contentCd = MO.EHttpContent.Text;
-   var result = connection.send(url, data);
-   console.free(connection);
-   return result;
-}
-MO.FJsonConsole_sendAsync = function FJsonConsole_sendAsync(url, data){
-   var o = this;
-   var connection = o.alloc();
-   connection._asynchronous = true;
-   connection._contentCd = MO.EHttpContent.Text;
-   connection.send(url, data);
-   return connection;
+MO.FJsonConsole_create = function FJsonConsole_create(){
+   return MO.Class.create(MO.FJsonConnection);
 }
 MO.FLoggerConsole = function FLoggerConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -1082,86 +1069,10 @@ MO.FTimeConsole_dispose = function FTimeConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
 }
 MO.FXmlConsole = function FXmlConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole);
-   o._scopeCd     = MO.EScope.Local;
-   o._connections = null;
-   o._caches      = null;
-   o.onLoad       = MO.FXmlConsole_onLoad;
-   o.construct    = MO.FXmlConsole_construct;
-   o.alloc        = MO.FXmlConsole_alloc;
-   o.send         = MO.FXmlConsole_send;
-   o.sendAsync    = MO.FXmlConsole_sendAsync;
-   o.load         = MO.FXmlConsole_load;
-   o.process      = MO.FXmlConsole_process;
+   o = MO.Class.inherits(this, o, MO.FHttpConsole);
+   o.create = MO.FXmlConsole_create;
    return o;
 }
-MO.FXmlConsole_construct = function FXmlConsole_construct(){
-   var o = this;
-   o._connections = new MO.TObjects();
-   o._caches = new MO.TDictionary();
-}
-MO.FXmlConsole_onLoad = function FXmlConsole_onLoad(p){
-   var o = this;
-   debugger
-}
-MO.FXmlConsole_alloc = function FXmlConsole_alloc(){
-   var o = this;
-   var alloc = null;
-   var connections = o._connections;
-   for(var n = connections.count - 1; n >= 0; n--){
-      var connection = connections.get(n);
-      if(connection._statusFree){
-         alloc = connection;
-         break;
-      }
-   }
-   if(!alloc){
-      alloc = MO.Class.create(MO.FXmlConnection);
-      connections.push(alloc);
-      alloc.onLoad = o.onLoad;
-   }
-   alloc._statusFree = false;
-   alloc.clearLoadListeners();
-   return alloc;
-}
-MO.FXmlConsole_send = function FXmlConsole_send(url, document){
-   var o = this;
-   var connection = o.alloc();
-   connection._asynchronous = false;
-   var result = connection.send(url, document);
-   connection._statusFree = true;
-   return result;
-}
-MO.FXmlConsole_sendAsync = function FXmlConsole_sendAsync(url, document, parameters){
-   var o = this;
-   var connection = o.alloc();
-   connection._asynchronous = true;
-   connection._parameters = parameters;
-   connection.send(url, document);
-   return connection;
-}
-MO.FXmlConsole_load = function FXmlConsole_load(u, d, p){
-   var o = this;
-   var v = o._caches.get(u);
-   if(v){
-      return v;
-   }
-   var connection = o.alloc();
-   connection._asynchronous = true;
-   connection._parameters = p;
-   v = connection._cache = MO.Class.create(FXmlData);
-   connection.send(u, d);
-   o._caches.set(u, v);
-   return v;
-}
-MO.FXmlConsole_process = function FXmlConsole_process(p){
-   var o = this;
-   if(p.constructor != MO.SXmlEvent){
-      throw new MO.TError('Parameter type is invalid.');
-   }
-   var connection = o.alloc();
-   connection._asynchronous = true;
-   connection.send(p.url, p.inputDocument);
-   connection.addLoadListener(p, p.process);
-   return connection;
+MO.FXmlConsole_create = function FXmlConsole_create(){
+   return MO.Class.create(MO.FXmlConnection);
 }

@@ -35,28 +35,54 @@ MO.FEaiMapEntityConsole_construct = function FEaiMapEntityConsole_construct(){
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>加载国家实体。</T>
 //
 // @method
+// @param code:String 代码
+// @return 国家实体
 //==========================================================
-MO.FEaiMapEntityConsole_loadCountry = function FEaiMapEntityConsole_loadCountry(code){
+MO.FEaiMapEntityConsole_loadCountry = function FEaiMapEntityConsole_loadCountry(context, code){
    var o = this;
+   // 查找对象
+  var entities = o._countryEntities;
+   var entity = entities.find(code);
+   if(entity){
+      return entity;
+   }
+   // 查找资源
+   var resource = MO.Console.find(MO.FEaiResourceConsole).mapConsole().loadCountry(code);
+   // 创建实体
+   entity = MO.Class.create(MO.FEaiCountryEntity);
+   entity.linkGraphicContext(context);
+   entity.setResource(resource);
+   entity.setup();
+   MO.Console.find(MO.FEaiEntityConsole).loadEntity(entity);
+   entities.set(code, entity);
+   return entity;
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>加载世界实体。</T>
 //
 // @method
+// @return 世界实体
 //==========================================================
 MO.FEaiMapEntityConsole_loadWorld = function FEaiMapEntityConsole_loadWorld(context){
    var o = this;
-   // 获得资源
-   var worldResource = MO.Console.find(MO.FEaiResourceConsole).mapConsole().loadWorld();
-   // 创建世界实体
-   var worldEntity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
-   worldEntity.linkGraphicContext(context);
-   worldEntity.setResource(worldResource);
-   worldEntity.setup();
+   // 查找对象
+   var entity = o._worldEntity;
+   if(entity){
+      return entity;
+   }
+   // 查找资源
+   var resource = MO.Console.find(MO.FEaiResourceConsole).mapConsole().loadWorld();
+   // 创建实体
+   entity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
+   entity.linkGraphicContext(context);
+   entity.setResource(resource);
+   entity.setup();
+   MO.Console.find(MO.FEaiEntityConsole).loadEntity(entity);
+   return entity;
 }
 
 //==========================================================

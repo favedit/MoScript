@@ -1511,6 +1511,7 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    projection.update();
    var region = o._activeStage.region();
    region.selectCamera(camera);
+   o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
    MO.Console.find(MO.FEaiEntityConsole).loadWorldData();
    MO.Console.find(MO.FEaiEntityConsole).addLoadWorldListener(o, o.onLoadWorld);
 }

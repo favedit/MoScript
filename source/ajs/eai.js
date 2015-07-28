@@ -474,6 +474,29 @@ MO.FEaiMapCountryData_dispose = function FEaiMapCountryData_dispose(){
    o._provinces = MO.Lang.Object.dispose(o._provinces);
    o.__base.FObject.dispose.call(o);
 }
+MO.FEaiMapCountryResource = function FEaiMapCountryResource(o){
+   o = MO.Class.inherits(this, o, MO.FResourcePackage);
+   o._uri        = '{eai.resource}/data/country.dat';
+   o._data       = MO.Class.register(o, new MO.AGetter('_data'));
+   o.construct   = MO.FEaiMapCountryResource_construct;
+   o.unserialize = MO.FEaiMapCountryResource_unserialize;
+   o.load        = MO.FEaiMapCountryResource_load;
+   o.dispose     = MO.FEaiMapCountryResource_dispose;
+   return o;
+}
+MO.FEaiMapCountryResource_construct = function FEaiMapCountryResource_construct(){
+   var o = this;
+   o.__base.FResourcePackage.construct.call(o);
+   o._data = MO.Class.create(MO.FEaiMapWorldData);
+}
+MO.FEaiMapCountryResource_unserialize = function FEaiMapCountryResource_unserialize(input){
+   this._data.unserialize(input);
+}
+MO.FEaiMapCountryResource_dispose = function FEaiMapCountryResource_dispose(){
+   var o = this;
+   o._data = MO.Lang.Object.dispose(o._data);
+   o.__base.FResourcePackage.dispose.call(o);
+}
 MO.FEaiMapProvinceData = function FEaiMapProvinceData(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._code       = MO.Class.register(o, new MO.AGetSet('_code'));
@@ -508,15 +531,13 @@ MO.FEaiMapProvinceData_dispose = function FEaiMapProvinceData_dispose(){
 }
 MO.FEaiMapResourceConsole = function FEaiMapResourceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._world      = MO.Class.register(o, new MO.AGetter('_world'));
-   o._countries  = MO.Class.register(o, new MO.AGetter('_countries'));
-   o.construct   = MO.FEaiMapResourceConsole_construct;
-   o.findByCode  = MO.FEaiMapResourceConsole_findByCode;
-   o.findByName  = MO.FEaiMapResourceConsole_findByName;
-   o.unserialize = MO.FEaiMapResourceConsole_unserialize;
-   o.loadCountry = MO.FEaiMapResourceConsole_loadCountry;
-   o.loadWorld   = MO.FEaiMapResourceConsole_loadWorld;
-   o.dispose     = MO.FEaiMapResourceConsole_dispose;
+   o._world            = MO.Class.register(o, new MO.AGetter('_world'));
+   o._countries        = MO.Class.register(o, new MO.AGetter('_countries'));
+   o.construct         = MO.FEaiMapResourceConsole_construct;
+   o.findCountryByCode = MO.FEaiMapResourceConsole_findCountryByCode;
+   o.loadCountry       = MO.FEaiMapResourceConsole_loadCountry;
+   o.loadWorld         = MO.FEaiMapResourceConsole_loadWorld;
+   o.dispose           = MO.FEaiMapResourceConsole_dispose;
    return o;
 }
 MO.FEaiMapResourceConsole_construct = function FEaiMapResourceConsole_construct(){
@@ -524,23 +545,8 @@ MO.FEaiMapResourceConsole_construct = function FEaiMapResourceConsole_construct(
    o.__base.FConsole.construct.call(o);
    o._countries = new MO.TDictionary();
 }
-MO.FEaiMapResourceConsole_findByCode = function FEaiMapResourceConsole_findByCode(code){
+MO.FEaiMapResourceConsole_findCountryByCode = function FEaiMapResourceConsole_findCountryByCode(code){
    return this._countries.get(code);
-}
-MO.FEaiMapResourceConsole_findByName = function FEaiMapResourceConsole_findByName(name){
-   return this._world.get(name);
-}
-MO.FEaiMapResourceConsole_unserialize = function FEaiMapResourceConsole_unserialize(input){
-   var o = this;
-   var provinceCodes = o._countries;
-   var provinceNames = o._world;
-   var count = input.readInt32();
-   for(var i = 0; i < count; i++){
-      var province = MO.Class.create(FEaiProvinceResource);
-      province.unserialize(input);
-      provinceCodes.set(province.code(), province);
-      provinceNames.set(province.name(), province);
-   }
 }
 MO.FEaiMapResourceConsole_loadCountry = function FEaiMapResourceConsole_loadCountry(code){
    var o = this;
@@ -566,7 +572,7 @@ MO.FEaiMapResourceConsole_loadWorld = function FEaiMapResourceConsole_loadWorld(
 MO.FEaiMapResourceConsole_dispose = function FEaiMapResourceConsole_dispose(){
    var o = this;
    o._world = MO.Lang.Object.dispose(o._world);
-   o._countries = MO.Lang.Object.dispose(o._countries);
+   o._countries = MO.Lang.Object.dispose(o._countries, true);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEaiMapWorldData = function FEaiMapWorldData(o){
@@ -813,7 +819,7 @@ MO.FEaiResourceConsole_onProcess = function FEaiResourceConsole_onProcess(){
 }
 MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
    var o = this;
-   var data = event.outputData();
+   var data = event.content;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
    view.link(data);
@@ -878,51 +884,47 @@ MO.FEaiResourcePackage_processLoad = function FEaiResourcePackage_processLoad(){
    o._code = input.readUint16();
    o._cityCode = input.readUint16();
 }
-with(MO){
-   MO.FEaiLogic = function FEaiLogic(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code   = null;
-      o.makeUrl = FEaiLogic_makeUrl;
-      o.send    = FEaiLogic_send;
-      return o;
-   }
-   MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
-      var o = this;
-      var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
-      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method,
-          time = new Date().getTime();
-         function addKey ( start, times ){
-            var arr = [start];
-               for( var i = 0; i < times; i++ ){
-                  if( i == 0 ){
-                     arr.push( arr[0] );
-                  }else{
-                     arr.push( arr[i] + arr[i-1] );
-                  }
-               }
-               return arr;
+MO.FEaiLogic = function FEaiLogic(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code   = null;
+   o.makeUrl = MO.FEaiLogic_makeUrl;
+   o.send    = MO.FEaiLogic_send;
+   return o;
+}
+MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
+   var o = this;
+   var serviceHost = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
+   var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method,
+   time = MO.Timer.current();
+   function addKey(start, times){
+      var arr = [start];
+      for( var i = 0; i < times; i++ ){
+         if(i == 0){
+            arr.push(arr[0]);
+         }else{
+            arr.push(arr[i] + arr[i-1]);
          }
-         if(parameters){
-            var arr=parameters.split("&"),
-                ginsengs='',
-                key="";
-            for(var i=0;i<arr.length;i++){
-               ginsengs += arr[i].split("=")[1];
-            }
-            for(var i=0; i < addKey(5,3).length; i++){
-               key+=addKey(5,3)[i];
-            }
-            url += '?' + parameters+"&requesttime="+time+"&sign="+hex_md5(ginsengs+key);
-         }
-      return url;
+      }
+      return arr;
    }
-   MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
-      var o = this;
-      var url = o.makeUrl(method, parameters);
-      var connection = RConsole.find(FJsonConsole).sendAsync(url);
-      connection.addProcessListener(owner, callback);
-      return connection;
+   if(parameters){
+      var arr = parameters.split("&"), ginsengs = '', key = '';
+      for(var i = 0; i < arr.length; i++){
+         ginsengs += arr[i].split("=")[1];
+      }
+      for(var i = 0; i < addKey(5, 3).length; i++){
+         key += addKey(5,3)[i];
+      }
+      url += '?' + parameters + "&tick=" + time + "&sign=" + hex_md5(ginsengs + key);
    }
+   return url;
+}
+MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
+   var o = this;
+   var url = o.makeUrl(method, parameters);
+   var connection = MO.Console.find(MO.FJsonConsole).sendAsync(url);
+   connection.addLoadListener(owner, callback);
+   return connection;
 }
 with(MO){
    MO.FEaiLogicAchievement = function FEaiLogicAchievement(o){
@@ -1167,6 +1169,160 @@ MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose() {
    o._localDate = MO.Lang.Object.dispose(o._localDate);
    o._systemDate = MO.Lang.Object.dispose(o._systemDate);
    o.__base.FEaiLogic.consturct.call(o);
+}
+MO.FEaiEntity = function FEaiEntity(o){
+   o = MO.Class.inherits(this, o, MO.FEntity, MO.MGraphicObject, MO.MLinkerResource);
+   return o;
+}
+MO.FEaiEntityConsole = function FEaiEntityConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener, MO.MGraphicObject);
+   o._scopeCd              = MO.EScope.Local;
+   o._mapConsole           = MO.Class.register(o, new MO.AGetter('_mapConsole'));
+   o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
+   o._worldData            = null;
+   o._worldReady           = false;
+   o._countryData          = null;
+   o._countryReady         = false;
+   o._worldEntity          = MO.Class.register(o, new MO.AGetter('_worldEntity'));
+   o._provinceConsole      = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
+   o._cityConsole          = MO.Class.register(o, new MO.AGetter('_cityConsole'));
+   o._listenersLoadWorld   = MO.Class.register(o, new MO.AListener('_listenersLoadWorld', 'LoadWorld'));
+   o._listenersLoadCountry = MO.Class.register(o, new MO.AListener('_listenersLoadCountry', 'LoadCountry'));
+   o._looper               = null;
+   o._thread               = null;
+   o._interval             = 100;
+   o.onSetup               = MO.FEaiEntityConsole_onSetup;
+   o.onLoadWorld           = MO.FEaiEntityConsole_onLoadWorld;
+   o.onLoadCountry         = MO.FEaiEntityConsole_onLoadCountry;
+   o.onProcess             = MO.FEaiEntityConsole_onProcess;
+   o.construct             = MO.FEaiEntityConsole_construct;
+   o.testWorldReady        = MO.FEaiEntityConsole_testWorldReady;
+   o.loadWorldData         = MO.FEaiEntityConsole_loadWorldData;
+   o.testCountryReady      = MO.FEaiEntityConsole_testCountryReady;
+   o.loadCountryData       = MO.FEaiEntityConsole_loadCountryData;
+   o.loadEntity            = MO.FEaiEntityConsole_loadEntity;
+   o.dispose               = MO.FEaiEntityConsole_dispose;
+   return o;
+}
+MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
+   var o = this;
+   var looper = o._looper;
+   looper.record();
+   while(looper.next()){
+      var entity = looper.current();
+      if(entity.processLoad()){
+         looper.removeCurrent();
+      }
+   }
+}
+MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
+   var o = this;
+   o.__base.FConsole.onSetup.call(o);
+   var worldEntity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
+   worldEntity.linkGraphicContext(o);
+   worldEntity.setup();
+   var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
+   mapEntity.linkGraphicContext(o);
+   mapEntity.setup();
+}
+MO.FEaiEntityConsole_onLoadWorld = function FEaiEntityConsole_onLoadWorld(event){
+   var o = this;
+   var worldData = event.sender;
+   var worldEntity = o._worldEntity;
+   worldEntity.load(worldData);
+   o._worldReady = true;
+   var event = new MO.SEvent();
+   o.processLoadWorldListener(event);
+   event.dispose();
+}
+MO.FEaiEntityConsole_onLoadCountry = function FEaiEntityConsole_onLoadCountry(event){
+   var o = this;
+   var data = event.sender;
+   var mapEntity = o._mapEntity;
+   var countryEntity = mapEntity.countryEntity();
+   var countryDisplay = mapEntity.countryDisplay();
+   var countryBorderDisplay = mapEntity.countryBorderDisplay();
+   var citysRangeRenderable = mapEntity.citysRangeRenderable();
+   var citysRenderable = mapEntity.citysRenderable();
+   countryEntity.loadProvinceData(data);
+   var provinceEntities = countryEntity.provinceEntities();
+   var count = provinceEntities.count();
+   for(var i = 0; i < count; i++){
+      var provinceEntity = provinceEntities.at(i);
+      mapEntity.pushProvince(provinceEntity);
+   }
+   var cityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
+   var cityEntityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
+   var cityEntities = mapEntity.cityEntities();
+   var citys = cityConsole.citys();
+   var cityCount = citys.count();
+   for(var i = 0; i < cityCount; i++){
+      var city = citys.at(i);
+      var level = city.level();
+      var cityLocation = city.location();
+      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      cityEntity.setRenderable(citysRenderable);
+      cityEntity.setData(city);
+      cityEntity.build(o);
+      cityEntities.set(city.code(), cityEntity);
+      citysRenderable.citys().push(cityEntity);
+      citysRangeRenderable.citys().push(cityEntity);
+      cityEntityConsole.push(cityEntity);
+   }
+   citysRenderable.setup();
+   citysRenderable.upload();
+   citysRangeRenderable.setup();
+   citysRangeRenderable.upload();
+   mapEntity.setupCityEntities();
+   o._countryReady = true;
+   var event = new MO.SEvent();
+   o.processLoadCountryListener(event);
+}
+MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._mapConsole = MO.Class.create(MO.FEaiMapEntityConsole);
+   o._looper = new MO.TLooper();
+   o._provinceConsole = MO.Class.create(MO.FEaiProvinceEntityConsole);
+   o._cityConsole = MO.Class.create(MO.FEaiCityEntityConsole);
+   var thread = o._thread = MO.Class.create(MO.FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   MO.Console.find(MO.FThreadConsole).start(thread);
+}
+MO.FEaiEntityConsole_testWorldReady = function FEaiEntityConsole_testWorldReady(){
+   return this._countryReady && this._mapEntity.countryEntity().isReady();
+}
+MO.FEaiEntityConsole_loadWorldData = function FEaiEntityConsole_loadWorldData(){
+   var o = this;
+   var world = o._worldData;
+   if(!world){
+      world = o._worldData = MO.Class.create(MO.FEaiWorldData);
+      world.addLoadListener(o, o.onLoadWorld);
+      world.load();
+   }
+}
+MO.FEaiEntityConsole_testCountryReady = function FEaiEntityConsole_testCountryReady(){
+   return this._countryReady && this._mapEntity.countryEntity().isReady();
+}
+MO.FEaiEntityConsole_loadCountryData = function FEaiEntityConsole_loadCountryData(){
+   var o = this;
+   var country = o._countryData;
+   if(!country){
+      country = o._countryData = MO.Class.create(MO.FEaiCountryData);
+      country.addLoadListener(o, o.onLoadCountry);
+      country.load();
+   }
+}
+MO.FEaiEntityConsole_loadEntity = function FEaiEntityConsole_loadEntity(entity){
+   this._looper.push(entity);
+}
+MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
+   var o = this;
+   o._mapEntity = RObject.dispose(o._mapEntity);
+   o._provinceConsole = RObject.dispose(o._provinceConsole);
+   o._cityConsole = RObject.dispose(o._cityConsole);
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FEaiBoundaryData = function FEaiBoundaryData(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity, MO.ME3dBoundaryPolygon);
@@ -1801,7 +1957,7 @@ MO.FEaiCountryData_construct = function FEaiCountryData_construct(){
 }
 MO.FEaiCountryData_onLoaded = function FEaiCountryData_onLoaded(event){
    var o = this;
-   var data = event.outputData();
+   var data = event.content;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
    view.link(data);
@@ -2082,156 +2238,6 @@ MO.FEaiCountryEntity_onMouseDown = function FEaiCountryEntity_onMouseDown(event)
 MO.FEaiCountryEntity_cameraMoveAnime = function FEaiCountryEntity_cameraMoveAnime() {
    var o = this;
 }
-MO.FEaiEntity = function FEaiEntity(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MLinkerResource);
-   return o;
-}
-MO.FEaiEntityConsole = function FEaiEntityConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener, MO.MGraphicObject);
-   o._scopeCd              = MO.EScope.Local;
-   o._mapConsole           = MO.Class.register(o, new MO.AGetter('_mapConsole'));
-   o._mapEntity            = MO.Class.register(o, new MO.AGetter('_mapEntity'));
-   o._worldData            = null;
-   o._worldReady           = false;
-   o._countryData          = null;
-   o._countryReady         = false;
-   o._worldEntity          = MO.Class.register(o, new MO.AGetter('_worldEntity'));
-   o._provinceConsole      = MO.Class.register(o, new MO.AGetter('_provinceConsole'));
-   o._cityConsole          = MO.Class.register(o, new MO.AGetter('_cityConsole'));
-   o._listenersLoadWorld   = MO.Class.register(o, new MO.AListener('_listenersLoadWorld', 'LoadWorld'));
-   o._listenersLoadCountry = MO.Class.register(o, new MO.AListener('_listenersLoadCountry', 'LoadCountry'));
-   o._looper               = null;
-   o._thread               = null;
-   o._interval             = 100;
-   o.onSetup               = MO.FEaiEntityConsole_onSetup;
-   o.onLoadWorld           = MO.FEaiEntityConsole_onLoadWorld;
-   o.onLoadCountry         = MO.FEaiEntityConsole_onLoadCountry;
-   o.onProcess             = MO.FEaiEntityConsole_onProcess;
-   o.construct             = MO.FEaiEntityConsole_construct;
-   o.testWorldReady        = MO.FEaiEntityConsole_testWorldReady;
-   o.loadWorldData         = MO.FEaiEntityConsole_loadWorldData;
-   o.testCountryReady      = MO.FEaiEntityConsole_testCountryReady;
-   o.loadCountryData       = MO.FEaiEntityConsole_loadCountryData;
-   o.dispose               = MO.FEaiEntityConsole_dispose;
-   return o;
-}
-MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
-   var o = this;
-   var looper = o._looper;
-   looper.record();
-   while(looper.next()){
-      var item = looper.current();
-      if(item.processLoad()){
-         looper.removeCurrent();
-      }
-   }
-}
-MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
-   var o = this;
-   o.__base.FConsole.onSetup.call(o);
-   var worldEntity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
-   worldEntity.linkGraphicContext(o);
-   worldEntity.setup();
-   var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
-   mapEntity.linkGraphicContext(o);
-   mapEntity.setup();
-}
-MO.FEaiEntityConsole_onLoadWorld = function FEaiEntityConsole_onLoadWorld(event){
-   var o = this;
-   var worldData = event.sender;
-   var worldEntity = o._worldEntity;
-   worldEntity.load(worldData);
-   o._worldReady = true;
-   var event = new MO.SEvent();
-   o.processLoadWorldListener(event);
-   event.dispose();
-}
-MO.FEaiEntityConsole_onLoadCountry = function FEaiEntityConsole_onLoadCountry(event){
-   var o = this;
-   var data = event.sender;
-   var mapEntity = o._mapEntity;
-   var countryEntity = mapEntity.countryEntity();
-   var countryDisplay = mapEntity.countryDisplay();
-   var countryBorderDisplay = mapEntity.countryBorderDisplay();
-   var citysRangeRenderable = mapEntity.citysRangeRenderable();
-   var citysRenderable = mapEntity.citysRenderable();
-   countryEntity.loadProvinceData(data);
-   var provinceEntities = countryEntity.provinceEntities();
-   var count = provinceEntities.count();
-   for(var i = 0; i < count; i++){
-      var provinceEntity = provinceEntities.at(i);
-      mapEntity.pushProvince(provinceEntity);
-   }
-   var cityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
-   var cityEntityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
-   var cityEntities = mapEntity.cityEntities();
-   var citys = cityConsole.citys();
-   var cityCount = citys.count();
-   for(var i = 0; i < cityCount; i++){
-      var city = citys.at(i);
-      var level = city.level();
-      var cityLocation = city.location();
-      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
-      cityEntity.setRenderable(citysRenderable);
-      cityEntity.setData(city);
-      cityEntity.build(o);
-      cityEntities.set(city.code(), cityEntity);
-      citysRenderable.citys().push(cityEntity);
-      citysRangeRenderable.citys().push(cityEntity);
-      cityEntityConsole.push(cityEntity);
-   }
-   citysRenderable.setup();
-   citysRenderable.upload();
-   citysRangeRenderable.setup();
-   citysRangeRenderable.upload();
-   mapEntity.setupCityEntities();
-   o._countryReady = true;
-   var event = new MO.SEvent();
-   o.processLoadCountryListener(event);
-}
-MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
-   var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._mapConsole = MO.Class.create(MO.FEaiMapEntityConsole);
-   o._looper = new MO.TLooper();
-   o._provinceConsole = MO.Class.create(MO.FEaiProvinceEntityConsole);
-   o._cityConsole = MO.Class.create(MO.FEaiCityEntityConsole);
-   var thread = o._thread = MO.Class.create(MO.FThread);
-   thread.setInterval(o._interval);
-   thread.addProcessListener(o, o.onProcess);
-   MO.Console.find(MO.FThreadConsole).start(thread);
-}
-MO.FEaiEntityConsole_testWorldReady = function FEaiEntityConsole_testWorldReady(){
-   return this._countryReady && this._mapEntity.countryEntity().isReady();
-}
-MO.FEaiEntityConsole_loadWorldData = function FEaiEntityConsole_loadWorldData(){
-   var o = this;
-   var world = o._worldData;
-   if(!world){
-      world = o._worldData = MO.Class.create(MO.FEaiWorldData);
-      world.addLoadListener(o, o.onLoadWorld);
-      world.load();
-   }
-}
-MO.FEaiEntityConsole_testCountryReady = function FEaiEntityConsole_testCountryReady(){
-   return this._countryReady && this._mapEntity.countryEntity().isReady();
-}
-MO.FEaiEntityConsole_loadCountryData = function FEaiEntityConsole_loadCountryData(){
-   var o = this;
-   var country = o._countryData;
-   if(!country){
-      country = o._countryData = MO.Class.create(MO.FEaiCountryData);
-      country.addLoadListener(o, o.onLoadCountry);
-      country.load();
-   }
-}
-MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
-   var o = this;
-   o._mapEntity = RObject.dispose(o._mapEntity);
-   o._provinceConsole = RObject.dispose(o._provinceConsole);
-   o._cityConsole = RObject.dispose(o._cityConsole);
-   o.__base.FConsole.dispose.call(o);
-}
 MO.FEaiMapEntity = function FEaiMapEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    o._worldEntity          = MO.Class.register(o, new MO.AGetter('_worldEntity'));
@@ -2394,16 +2400,35 @@ MO.FEaiMapEntityConsole_construct = function FEaiMapEntityConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._countryEntities = new MO.TDictionary();
 }
-MO.FEaiMapEntityConsole_loadCountry = function FEaiMapEntityConsole_loadCountry(code){
+MO.FEaiMapEntityConsole_loadCountry = function FEaiMapEntityConsole_loadCountry(context, code){
    var o = this;
+  var entities = o._countryEntities;
+   var entity = entities.find(code);
+   if(entity){
+      return entity;
+   }
+   var resource = MO.Console.find(MO.FEaiResourceConsole).mapConsole().loadCountry(code);
+   entity = MO.Class.create(MO.FEaiCountryEntity);
+   entity.linkGraphicContext(context);
+   entity.setResource(resource);
+   entity.setup();
+   MO.Console.find(MO.FEaiEntityConsole).loadEntity(entity);
+   entities.set(code, entity);
+   return entity;
 }
 MO.FEaiMapEntityConsole_loadWorld = function FEaiMapEntityConsole_loadWorld(context){
    var o = this;
-   var worldResource = MO.Console.find(MO.FEaiResourceConsole).mapConsole().loadWorld();
-   var worldEntity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
-   worldEntity.linkGraphicContext(context);
-   worldEntity.setResource(worldResource);
-   worldEntity.setup();
+   var entity = o._worldEntity;
+   if(entity){
+      return entity;
+   }
+   var resource = MO.Console.find(MO.FEaiResourceConsole).mapConsole().loadWorld();
+   entity = o._worldEntity = MO.Class.create(MO.FEaiWorldEntity);
+   entity.linkGraphicContext(context);
+   entity.setResource(resource);
+   entity.setup();
+   MO.Console.find(MO.FEaiEntityConsole).loadEntity(entity);
+   return entity;
 }
 MO.FEaiMapEntityConsole_dispose = function FEaiMapEntityConsole_dispose(){
    var o = this;
@@ -2788,7 +2813,7 @@ MO.FEaiWorldData = function FEaiWorldData(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
    o._countries     = MO.Class.register(o, new MO.AGetter('_countries'));
-   o.onLoaded       = MO.FEaiWorldData_onLoaded;
+   o.onLoad         = MO.FEaiWorldData_onLoad;
    o.construct      = MO.FEaiWorldData_construct;
    o.unserialize    = MO.FEaiWorldData_unserialize;
    o.load           = MO.FEaiWorldData_load;
@@ -2800,9 +2825,9 @@ MO.FEaiWorldData_construct = function FEaiWorldData_construct(){
    o.__base.FObject.construct.call(o);
    o._countries = new MO.TObjects();
 }
-MO.FEaiWorldData_onLoaded = function FEaiWorldData_onLoaded(event){
+MO.FEaiWorldData_onLoad = function FEaiWorldData_onLoad(event){
    var o = this;
-   var data = event.outputData();
+   var data = event.content;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
    view.link(data);
@@ -2825,7 +2850,7 @@ MO.FEaiWorldData_load = function FEaiWorldData_load(){
    var o = this;
    var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}/data/world.dat');
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
-   connection.addLoadListener(o, o.onLoaded);
+   connection.addLoadListener(o, o.onLoad);
 }
 MO.FEaiWorldData_dispose = function FEaiWorldData_dispose(){
    var o = this;
@@ -2848,6 +2873,7 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    o.unserialize    = MO.FEaiWorldEntity_unserialize;
    o.load           = MO.FEaiWorldEntity_load;
    o.loadData       = MO.FEaiWorldEntity_loadData;
+   o.processLoad    = MO.FEaiWorldEntity_processLoad;
    o.dispose        = MO.FEaiWorldEntity_dispose;
    return o;
 }
@@ -2986,6 +3012,9 @@ MO.FEaiWorldEntity_loadData = function FEaiWorldEntity_loadData(){
    var data = o._data = MO.Class.create(MO.FEaiWorldData);
    data.addLoadListener(o, o.onLoadData);
    data.load();
+}
+MO.FEaiWorldEntity_processLoad = function FEaiWorldEntity_processLoad(){
+   var o = this;
 }
 MO.FEaiWorldEntity_dispose = function FEaiWorldEntity_dispose(){
    var o = this;
@@ -6146,6 +6175,7 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    projection.update();
    var region = o._activeStage.region();
    region.selectCamera(camera);
+   o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
    MO.Console.find(MO.FEaiEntityConsole).loadWorldData();
    MO.Console.find(MO.FEaiEntityConsole).addLoadWorldListener(o, o.onLoadWorld);
 }

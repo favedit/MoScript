@@ -34,27 +34,27 @@ MO.TListeners = function TListeners(){
 // @return Boolean 是否为空
 //==========================================================
 MO.TListeners_isEmpty = function TListeners_isEmpty(){
-   var s = this._listeners;
-   return s ? s.isEmpty() : true;
+   var listeners = this._listeners;
+   return listeners ? listeners.isEmpty() : true;
 }
 
 //==========================================================
 // <T>查找一个监听器。</T>
 //
 // @method
-// @param w:owner:Object 处理对象
-// @param p:process:Function 处理函数
+// @param owner:Object 处理对象
+// @param callback:Function 处理函数
 // @return TListener 监听器
 //==========================================================
-MO.TListeners_find = function TListeners_find(w, p){
-   var s = this._listeners;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var l = s.getAt(i);
-         if(l._owner == w){
-            if(l._callback == p){
-               return l;
+MO.TListeners_find = function TListeners_find(owner, callback){
+   var listeners = this._listeners;
+   if(listeners){
+      var count = listeners.count();
+      for(var i = 0; i < count; i++){
+         var listener = listeners.at(i);
+         if(listener._owner == owner){
+            if(listener._callback == callback){
+               return listener;
             }
          }
       }
@@ -66,83 +66,83 @@ MO.TListeners_find = function TListeners_find(w, p){
 // <T>注册一个监听器。</T>
 //
 // @method
-// @param w:owner:Object 处理对象
-// @param p:process:Function 处理函数
+// @param owner:Object 处理对象
+// @param callback:Function 处理函数
 // @return TListener 监听器
 //==========================================================
-MO.TListeners_register = function TListeners_register(w, p){
+MO.TListeners_register = function TListeners_register(owner, callback){
    var o = this;
    // 检查是否已经注册
-   var l = o.find(w, p);
-   if(l){
-      throw new MO.TError(o, 'Listener is already register. (owner={1}, process={2})', w, p);
+   var listener = o.find(owner, callback);
+   if(listener){
+      throw new MO.TError(o, 'Listener is already register. (owner={1}, process={2})', owner, callback);
    }
    // 注册监听器
-   l = new MO.TListener();
-   l._owner = w;
-   l._callback = p;
-   o.push(l);
+   listener = new MO.TListener();
+   listener._owner = owner;
+   listener._callback = callback;
+   o.push(listener);
    // 返回监听器
-   return l;
+   return listener;
 }
 
 //==========================================================
 // <T>注销一个监听器。</T>
 //
 // @method
-// @param w:owner:Object 处理对象
-// @param p:process:Function 处理函数
+// @param owner:Object 处理对象
+// @param callback:Function 处理函数
 //==========================================================
-MO.TListeners_unregister = function TListeners_unregister(w, p){
+MO.TListeners_unregister = function TListeners_unregister(owner, callback){
    var o = this;
    // 检查是否已经注册
-   var l = o.find(w, p);
-   if(!l){
-      throw new MO.TError(o, 'Listener is not register. (owner={1}, process={2})', w, p);
+   var listener = o.find(owner, callback);
+   if(!listener){
+      throw new MO.TError(o, 'Listener is not register. (owner={1}, process={2})', owner, callback);
    }
    // 注销监听器
-   o.remove(l);
+   o.remove(listener);
    // 返回监听器
-   l.dispose();
+   listener.dispose();
 }
 
 //==========================================================
 // <T>添加一个监听器对象到当前管理器内。</T>
 //
 // @method
-// @param l:listener:TListener 监听器对象
+// @param listener:TListener 监听器对象
 //==========================================================
-MO.TListeners_push = function TListeners_push(l){
+MO.TListeners_push = function TListeners_push(listener){
    var o = this;
    // 检查参数
-   if(!l){
+   if(!listener){
       throw new MO.TError(o, 'Listener is null.');
    }
-   if(!l._callback){
+   if(!listener._callback){
       throw new MO.TError(o, 'Listener process is null.');
    }
    // 增加监听器
-   var s = o._listeners;
-   if(!s){
-      s = o._listeners = new MO.TObjects();
+   var listeners = o._listeners;
+   if(!listeners){
+      listeners = o._listeners = new MO.TObjects();
    }
-   s.push(l);
+   listeners.push(listener);
 }
 
 //==========================================================
 // <T>移除一个监听器对象到当前管理器内。</T>
 //
 // @method
-// @param l:listener:TListener 监听器对象
+// @param listener:TListener 监听器对象
 //==========================================================
-MO.TListeners_remove = function TListeners_remove(l){
+MO.TListeners_remove = function TListeners_remove(listener){
    var o = this;
    // 检查参数
-   if(!l){
+   if(!listener){
       throw new MO.TError(o, 'Listener is null.');
    }
    // 移除监听器
-   o._listeners.remove(l);
+   o._listeners.remove(listener);
 }
 
 //==========================================================
@@ -157,11 +157,11 @@ MO.TListeners_remove = function TListeners_remove(l){
 // @param p5:parameter5:Object 参数5
 //==========================================================
 MO.TListeners_process = function TListeners_process(ps, p1, p2, p3, p4, p5){
-   var s = this._listeners;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(ps, p1, p2, p3, p4, p5);
+   var listeners = this._listeners;
+   if(listeners){
+      var count = listeners.count();
+      for(var i = 0; i < count; i++){
+         listeners.at(i).process(ps, p1, p2, p3, p4, p5);
       }
    }
 }
@@ -170,9 +170,9 @@ MO.TListeners_process = function TListeners_process(ps, p1, p2, p3, p4, p5){
 // <T>清空处理。</T>
 //==========================================================
 MO.TListeners_clear = function TListeners_clear(){
-   var s = this._listeners;
-   if(s){
-      s.clear();
+   var listeners = this._listeners;
+   if(listeners){
+      listeners.clear();
    }
 }
 
@@ -183,12 +183,12 @@ MO.TListeners_clear = function TListeners_clear(){
 //============================================================
 MO.TListeners_dispose = function TListeners_dispose(){
    var o = this;
-   var s = o._listeners;
-   if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
-         s.getAt(i).dispose();
+   var listeners = o._listeners;
+   if(listeners){
+      for(var i = listeners.count() - 1; i >= 0; i--){
+         listeners.at(i).dispose();
       }
-      o._listeners = MO.Lang.Object.dispose(s);
+      o._listeners = MO.Lang.Object.dispose(listeners);
    }
    MO.Lang.Object.free(o);
 }
@@ -201,12 +201,12 @@ MO.TListeners_dispose = function TListeners_dispose(){
 //==========================================================
 MO.TListeners_dump = function TListeners_dump(){
    var o = this;
-   var r = new MO.TString();
-   r.append(MO.Class.name(o));
-   var s = o._listeners;
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      r.append('\n   ' + s.getAt(i));
+   var result = new MO.TString();
+   result.append(MO.Class.name(o));
+   var listeners = o._listeners;
+   var count = listeners.count();
+   for(var i = 0; i < count; i++){
+      result.append('\n   ' + listeners.at(i));
    }
-   return r.flush();
+   return result.flush();
 }

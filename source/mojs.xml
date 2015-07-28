@@ -22,6 +22,7 @@
 
       <PathMerger source='/3.1.01-engine'                    target='/ajs/engine.js'/>
       <PathMerger source='/3.1.02-engine-resource'           target='/ajs/engine-resource.js'/>
+      <PathMerger source='/3.1.03-engine-entity'             target='/ajs/engine-entity.js'/>
       <PathMerger source='/3.2.01-engine-2d'                 target='/ajs/engine-2d.js'/>
       <PathMerger source='/3.3.01-engine-3d'                 target='/ajs/engine-3d.js'/>
       <PathMerger source='/3.3.02-engine-3d-resource'        target='/ajs/engine-3d-resource.js'/>
@@ -117,7 +118,9 @@
       <PathMerger source='/7.1.02-eai-resource'              target='/ajs/eai-resource.js'/>
       <PathMerger source='/7.1.03-eai-console'               target='/ajs/eai-console.js'/>
 
-      <PathMerger source='/7.2.01-eai-entity-country'        target='/ajs/eai-entity-country.js'/>
+      <PathMerger source='/7.2.01-eai-entity'                target='/ajs/eai-entity.js'/>
+      <PathMerger source='/7.2.02-eai-entity-map'            target='/ajs/eai-entity-map.js'/>
+      <PathMerger source='/7.2.03-eai-control'               target='/ajs/eai-control.js'/>
 
       <PathMerger source='/7.3.01-eai-logic-history'         target='/ajs/eai-logic-history.js'/>
       <PathMerger source='/7.3.02-eai-logic-statistics'      target='/ajs/eai-logic-statistics.js'/>
@@ -161,6 +164,7 @@
       <FileMerger target='/ajs/mo-engine.js'>
          <File source='/ajs/engine.js'/>
          <File source='/ajs/engine-resource.js'/>
+         <File source='/ajs/engine-entity.js'/>
          <File source='/ajs/engine-2d.js'/>
          <File source='/ajs/engine-3d.js'/>
          <File source='/ajs/engine-3d-resource.js'/>
@@ -306,7 +310,9 @@
          <File source='/ajs/eai-common.js'/>
          <File source='/ajs/eai-resource.js'/>
          <File source='/ajs/eai-console.js'/>
-         <File source='/ajs/eai-entity-country.js'/>
+         <File source='/ajs/eai-entity.js'/>
+         <File source='/ajs/eai-entity-map.js'/>
+         <File source='/ajs/eai-control.js'/>
          <File source='/ajs/eai-logic-history.js'/>
          <File source='/ajs/eai-logic-statistics.js'/>
          <File source='/ajs/eai-company-report.js'/>

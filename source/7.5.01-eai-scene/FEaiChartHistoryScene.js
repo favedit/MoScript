@@ -48,6 +48,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay           = MO.FEaiChartHistoryScene_onOperationPlay;
    o.onOperationPause          = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onProcessReady            = MO.FEaiChartHistoryScene_onProcessReady;
    o.onProcess                 = MO.FEaiChartHistoryScene_onProcess;
    o.onSwitchLiveComplete      = MO.FEaiChartHistoryScene_onSwitchLiveComplete;
    //..........................................................
@@ -73,16 +74,16 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
 MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event) {
    var o = this;
    // 设置历史数据
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var startDate = historyConsole.dates().first();
-   var endDate = historyConsole.dates().last();
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   var startDate = historyModule.dates().first();
+   var endDate = historyModule.dates().last();
    //o._currentDate.parseAuto('20150510');
    o._currentDate.parseAuto(startDate.code());
    o._startDate.parseAuto(startDate.code());
    o._endDate.parseAuto(endDate.code());
    //..........................................................
    // 创建右侧里程碑条
-   var milestones = historyConsole.milestones();
+   var milestones = historyModule.milestones();
    var milestoneBars = o._milestoneBars = new MO.TObjects();
    var count = milestones.count();
    for (var i = count - 1; i >= 0; i--) {
@@ -166,16 +167,27 @@ MO.FEaiChartHistoryScene_onOperationPause = function FEaiChartHistoryScene_onOpe
 }
 
 //==========================================================
+// <T>准备好处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartHistoryScene_onProcessReady = function FEaiChartHistoryScene_onProcessReady() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcessReady.call(o);
+   // 显示城市
+   o._mapEntity.showCity();
+}
+
+//==========================================================
 // <T>激活处理。</T>
 //
 // @method
 //==========================================================
-MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() {
+MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess(){
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
+   var countryEntity = o._countryEntity;
    var mapEntity = o._mapEntity;
-   var countryDisplay = mapEntity.countryDisplay();
-   var countryBorderDisplay = mapEntity.countryBorderDisplay();
    // 检测首次播放
    if (!o._statusStart) {
       if (o.testReady()) {
@@ -189,7 +201,8 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
             if (hLoading) {
                document.body.removeChild(hLoading);
             }
-            o._mapEntity.showCountry();
+            countryEntity.start();
+            o._mapEntity.showCountry(countryEntity);
             o.switchPlay(true);
             o.processLoaded();
             o._statusStart = true;
@@ -200,10 +213,9 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
    // 重复播放
    if (o._playing) {
       // 播放地图
-      var countryEntity = mapEntity.countryEntity();
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         return;
+         //return;
       }
       //播放背景音乐
       //if (!o._bgmPlaying) {
@@ -213,8 +225,8 @@ MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess() 
       // 显示界面
       if (!o._mapReady) {
          // 设置显示
-         mapEntity.citysRangeRenderable().setVisible(true);
-         mapEntity.citysRenderable().setVisible(true);
+         mapEntity.cityRangeRenderable().setVisible(true);
+         mapEntity.cityCenterRenderable().setVisible(true);
          o._guiManager.show();
          o._milestoneFrame.setVisible(false);
          // 淡出隐藏界面
@@ -296,9 +308,6 @@ MO.FEaiChartHistoryScene_onSwitchLiveComplete = function FEaiChartHistoryScene_o
 MO.FEaiChartHistoryScene_testReady = function FEaiChartHistoryScene_testReady(){
    var o = this;
    if(!o._ready){
-      if(!o._countryReady){
-         return false;
-      }
       if(!o._dataReady){
          return false;
       }
@@ -330,8 +339,8 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    audio.play();
    //..........................................................
    var mapEntity = o._mapEntity;
-   mapEntity.citysRangeRenderable().setVisible(false);
-   mapEntity.citysRenderable().setVisible(false);
+   mapEntity.cityRangeRenderable().setVisible(false);
+   mapEntity.cityCenterRenderable().setVisible(false);
    //..........................................................
    // 显示LOGO页面
    var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
@@ -434,10 +443,17 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    // 隐藏全部界面
    o._guiManager.hide();
    //..........................................................
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   // 建立城市实体
+   entityConsole.cityModule().build(o);
+   // 加载世界数据
+   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
+   o._readyLoader.push(countryEntity);
+   //..........................................................
    // 加载历史数据
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   historyConsole.addLoadListener(o, o.onLoadData);
-   historyConsole.load();
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   historyModule.addLoadListener(o, o.onLoadData);
+   historyModule.load();
 }
 
 //==========================================================
@@ -448,7 +464,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
 MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
    var o = this;
    // 设置城市数据
-   var cityEntities = o._mapEntity.cityEntities();
+   var cityEntities = MO.Console.find(MO.FEaiEntityConsole).cityModule().citys();
    var count = cityEntities.count();
    for(var i = 0; i < count; i++){
       var cityEntity = cityEntities.at(i);
@@ -465,10 +481,9 @@ MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
 MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code) {
    var o = this;
    // 构建画面
-   var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-   var provinceConsole = MO.Console.find(MO.FEaiResourceConsole).provinceConsole();
-   var dateData = historyConsole.dates().get(code);
-   var milestone = historyConsole.milestones().get(code);
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   var dateData = historyModule.dates().get(code);
+   var milestone = historyModule.milestones().get(code);
    if (milestone) {
       o._milestoneFrame.setData(milestone);
       o._milestoneFrame.show();
@@ -481,7 +496,7 @@ MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(
       o._timeline.dirty();
       // 设置城市数据
       var cityDatas = dateData.citys();
-      var cityEntities = o._mapEntity.cityEntities();
+      var cityEntities = MO.Console.find(MO.FEaiEntityConsole).cityModule().citys();
       var count = cityEntities.count();
       for (var i = 0; i < count; i++) {
          var cityEntity = cityEntities.at(i);

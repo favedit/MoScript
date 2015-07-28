@@ -65,7 +65,7 @@ MO.FEaiResourceConsole_onProcess = function FEaiResourceConsole_onProcess(){
 //==========================================================
 MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
    var o = this;
-   var data = event.outputData();
+   var data = event.content;
    // 创建读取流
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);

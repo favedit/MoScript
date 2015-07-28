@@ -25,18 +25,17 @@ MO.TListener = function TListener(){
 // <P>响应处理时最多可以带5个参数。</P>
 //
 // @method
-// @param s:sender:发出对象
-// @param p1:parameter1:Object 参数1
-// @param p2:parameter2:Object 参数2
-// @param p3:parameter3:Object 参数3
-// @param p4:parameter4:Object 参数4
-// @param p5:parameter5:Object 参数5
+// @param sender:发出对象
+// @param parameter1:Object 参数1
+// @param parameter2:Object 参数2
+// @param parameter3:Object 参数3
+// @param parameter4:Object 参数4
+// @param parameter5:Object 参数5
 //==========================================================
-MO.TListener_process = function TListener_process(s, p1, p2, p3, p4, p5){
+MO.TListener_process = function TListener_process(sender, parameter1, parameter2, parameter3, parameter4, parameter5){
    var o = this;
-   var c = o._callback;
-   var w = o._owner ? o._owner : o;
-   o._callback.call(w, s, p1, p2, p3, p4, p5);
+   var owner = o._owner ? o._owner : o;
+   o._callback.call(owner, sender, parameter1, parameter2, parameter3, parameter4, parameter5);
 }
 
 //==========================================================

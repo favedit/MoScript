@@ -743,13 +743,13 @@ MO.FResourcePackage = function FResourcePackage(o){
    o._uri         = MO.Class.register(o, new MO.AGetSet('_uri'));
    o._url         = MO.Class.register(o, new MO.AGetSet('_url'));
    o._statusReady = false;
-   o.onLoaded     = MO.FResourcePackage_onLoaded;
+   o.onLoad       = MO.FResourcePackage_onLoad;
    o.testReady    = MO.FResourcePackage_testReady;
    o.unserialize  = MO.Method.empty;
    o.load         = MO.FResourcePackage_load;
    return o;
 }
-MO.FResourcePackage_onLoaded = function FResourcePackage_onLoaded(event){
+MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
@@ -768,7 +768,7 @@ MO.FResourcePackage_load = function FResourcePackage_load(){
       url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(o._uri);
    }
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
-   connection.addLoadedListener(o, o.onLoaded);
+   connection.addLoadListener(o, o.onLoad);
    return connection;
 }
 MO.FResourcePipeline = function FResourcePipeline(o){

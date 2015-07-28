@@ -280,7 +280,7 @@ MO.FGuiFrameDescribeConsole_load = function FGuiFrameDescribeConsole_load(name){
    var xframe = xroot.create('Frame');
    xframe.set('name', name);
    var url = MO.Window.Browser.hostPath('/' + o._serviceCode + '.ws');
-   var xresult = MO.Console.find(MO.FXmlConsole).send(url, xdocument);
+   var xresult = MO.Console.find(MO.FXmlConsole).sendSync(url, xdocument);
    var xframes = xresult.nodes();
    var count = xframes.count();
    for(var i = 0; i < count; i++){

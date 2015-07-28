@@ -1128,11 +1128,10 @@ MO.TListener = function TListener(){
    o.dispose   = MO.TListener_dispose;
    return o;
 }
-MO.TListener_process = function TListener_process(s, p1, p2, p3, p4, p5){
+MO.TListener_process = function TListener_process(sender, parameter1, parameter2, parameter3, parameter4, parameter5){
    var o = this;
-   var c = o._callback;
-   var w = o._owner ? o._owner : o;
-   o._callback.call(w, s, p1, p2, p3, p4, p5);
+   var owner = o._owner ? o._owner : o;
+   o._callback.call(owner, sender, parameter1, parameter2, parameter3, parameter4, parameter5);
 }
 MO.TListener_toString = function TListener_toString(){
    var o = this;
@@ -1160,102 +1159,102 @@ MO.TListeners = function TListeners(){
    return o;
 }
 MO.TListeners_isEmpty = function TListeners_isEmpty(){
-   var s = this._listeners;
-   return s ? s.isEmpty() : true;
+   var listeners = this._listeners;
+   return listeners ? listeners.isEmpty() : true;
 }
-MO.TListeners_find = function TListeners_find(w, p){
-   var s = this._listeners;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var l = s.getAt(i);
-         if(l._owner == w){
-            if(l._callback == p){
-               return l;
+MO.TListeners_find = function TListeners_find(owner, callback){
+   var listeners = this._listeners;
+   if(listeners){
+      var count = listeners.count();
+      for(var i = 0; i < count; i++){
+         var listener = listeners.at(i);
+         if(listener._owner == owner){
+            if(listener._callback == callback){
+               return listener;
             }
          }
       }
    }
    return null;
 }
-MO.TListeners_register = function TListeners_register(w, p){
+MO.TListeners_register = function TListeners_register(owner, callback){
    var o = this;
-   var l = o.find(w, p);
-   if(l){
-      throw new MO.TError(o, 'Listener is already register. (owner={1}, process={2})', w, p);
+   var listener = o.find(owner, callback);
+   if(listener){
+      throw new MO.TError(o, 'Listener is already register. (owner={1}, process={2})', owner, callback);
    }
-   l = new MO.TListener();
-   l._owner = w;
-   l._callback = p;
-   o.push(l);
-   return l;
+   listener = new MO.TListener();
+   listener._owner = owner;
+   listener._callback = callback;
+   o.push(listener);
+   return listener;
 }
-MO.TListeners_unregister = function TListeners_unregister(w, p){
+MO.TListeners_unregister = function TListeners_unregister(owner, callback){
    var o = this;
-   var l = o.find(w, p);
-   if(!l){
-      throw new MO.TError(o, 'Listener is not register. (owner={1}, process={2})', w, p);
+   var listener = o.find(owner, callback);
+   if(!listener){
+      throw new MO.TError(o, 'Listener is not register. (owner={1}, process={2})', owner, callback);
    }
-   o.remove(l);
-   l.dispose();
+   o.remove(listener);
+   listener.dispose();
 }
-MO.TListeners_push = function TListeners_push(l){
+MO.TListeners_push = function TListeners_push(listener){
    var o = this;
-   if(!l){
+   if(!listener){
       throw new MO.TError(o, 'Listener is null.');
    }
-   if(!l._callback){
+   if(!listener._callback){
       throw new MO.TError(o, 'Listener process is null.');
    }
-   var s = o._listeners;
-   if(!s){
-      s = o._listeners = new MO.TObjects();
+   var listeners = o._listeners;
+   if(!listeners){
+      listeners = o._listeners = new MO.TObjects();
    }
-   s.push(l);
+   listeners.push(listener);
 }
-MO.TListeners_remove = function TListeners_remove(l){
+MO.TListeners_remove = function TListeners_remove(listener){
    var o = this;
-   if(!l){
+   if(!listener){
       throw new MO.TError(o, 'Listener is null.');
    }
-   o._listeners.remove(l);
+   o._listeners.remove(listener);
 }
 MO.TListeners_process = function TListeners_process(ps, p1, p2, p3, p4, p5){
-   var s = this._listeners;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(ps, p1, p2, p3, p4, p5);
+   var listeners = this._listeners;
+   if(listeners){
+      var count = listeners.count();
+      for(var i = 0; i < count; i++){
+         listeners.at(i).process(ps, p1, p2, p3, p4, p5);
       }
    }
 }
 MO.TListeners_clear = function TListeners_clear(){
-   var s = this._listeners;
-   if(s){
-      s.clear();
+   var listeners = this._listeners;
+   if(listeners){
+      listeners.clear();
    }
 }
 MO.TListeners_dispose = function TListeners_dispose(){
    var o = this;
-   var s = o._listeners;
-   if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
-         s.getAt(i).dispose();
+   var listeners = o._listeners;
+   if(listeners){
+      for(var i = listeners.count() - 1; i >= 0; i--){
+         listeners.at(i).dispose();
       }
-      o._listeners = MO.Lang.Object.dispose(s);
+      o._listeners = MO.Lang.Object.dispose(listeners);
    }
    MO.Lang.Object.free(o);
 }
 MO.TListeners_dump = function TListeners_dump(){
    var o = this;
-   var r = new MO.TString();
-   r.append(MO.Class.name(o));
-   var s = o._listeners;
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      r.append('\n   ' + s.getAt(i));
+   var result = new MO.TString();
+   result.append(MO.Class.name(o));
+   var listeners = o._listeners;
+   var count = listeners.count();
+   for(var i = 0; i < count; i++){
+      result.append('\n   ' + listeners.at(i));
    }
-   return r.flush();
+   return result.flush();
 }
 MO.TLoaderListener = function TLoaderListener(){
    var o = this;
@@ -3475,7 +3474,7 @@ MO.RLogger = function RLogger(){
 MO.RLogger.prototype.output = function RLogger_output(s, p){
    this.lsnsOutput.process(s, p);
 }
-MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
+MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    var o = this;
    var name = null;
    var caller = MO.Logger.debug.caller;
@@ -3489,9 +3488,12 @@ MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
    }else{
       name = name.replace('_', '.');
    }
-   var r = new MO.TString();
-   r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   r.append('|D [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|D [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -3504,10 +3506,10 @@ MO.RLogger.prototype.debug = function RLogger_debug(sf, ms, pm){
             s = a.toString();
          }
       }
-      ms = ms.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', s);
    }
-   r.append(ms);
-   o.output(sf, r.flush());
+   result.append(message);
+   o.output(owner, result.flush());
 }
 MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
    var o = this;
@@ -3522,6 +3524,9 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
       name = 'unknown';
    }else{
       name = name.replace('_', '.');
+   }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
    }
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
@@ -3557,6 +3562,9 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|W [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
@@ -3590,6 +3598,9 @@ MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
       name = 'unknown';
    }else{
       name = name.replace('_', '.');
+   }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
    }
    var r = new MO.TString();
    r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
@@ -3673,6 +3684,9 @@ MO.RLogger.prototype.show = function RLogger_show(sf, message, params){
       name = 'unknown';
    }else{
       name = name.replace('_', '.');
+   }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
    }
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));

@@ -31,6 +31,7 @@ MO.FEaiWorldEntity = function FEaiWorldEntity(o){
    o.unserialize    = MO.FEaiWorldEntity_unserialize;
    o.load           = MO.FEaiWorldEntity_load;
    o.loadData       = MO.FEaiWorldEntity_loadData;
+   o.processLoad    = MO.FEaiWorldEntity_processLoad;
    // @method
    o.dispose        = MO.FEaiWorldEntity_dispose;
    return o;
@@ -233,6 +234,15 @@ MO.FEaiWorldEntity_loadData = function FEaiWorldEntity_loadData(){
    var data = o._data = MO.Class.create(MO.FEaiWorldData);
    data.addLoadListener(o, o.onLoadData);
    data.load();
+}
+
+//==========================================================
+// <T>加载国家数据。</T>
+//
+// @method
+//==========================================================
+MO.FEaiWorldEntity_processLoad = function FEaiWorldEntity_processLoad(){
+   var o = this;
 }
 
 //==========================================================

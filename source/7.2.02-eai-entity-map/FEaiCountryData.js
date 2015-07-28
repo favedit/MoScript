@@ -5,23 +5,27 @@
 // @author sunpeng
 // @history 150606
 //==========================================================
-MO.FEaiWorldData = function FEaiWorldData(o){
+MO.FEaiCountryData = function FEaiCountryData(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    //..........................................................
    // @attribute
+   o._code          = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._label         = MO.Class.register(o, new MO.AGetSet('_label'));
+   o._boundaries    = MO.Class.register(o, new MO.AGetter('_boundaries'));
+   o._provinces     = MO.Class.register(o, new MO.AGetter('_provinces'));
+   // @attribute
    o._listenersLoad = MO.Class.register(o, new MO.AListener('_listenersLoad', MO.EEvent.Load));
-   o._countries     = MO.Class.register(o, new MO.AGetter('_countries'));
    //..........................................................
    // @event
-   o.onLoaded       = MO.FEaiWorldData_onLoaded;
+   o.onLoaded       = MO.FEaiCountryData_onLoaded;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiWorldData_construct;
+   o.construct      = MO.FEaiCountryData_construct;
    // @method
-   o.unserialize    = MO.FEaiWorldData_unserialize;
-   o.load           = MO.FEaiWorldData_load;
+   o.unserialize    = MO.FEaiCountryData_unserialize;
+   o.load           = MO.FEaiCountryData_load;
    // @method
-   o.dispose        = MO.FEaiWorldData_dispose;
+   o.dispose        = MO.FEaiCountryData_dispose;
    return o;
 }
 
@@ -30,11 +34,12 @@ MO.FEaiWorldData = function FEaiWorldData(o){
 //
 // @method
 //==========================================================
-MO.FEaiWorldData_construct = function FEaiWorldData_construct(){
+MO.FEaiCountryData_construct = function FEaiCountryData_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 创建属性
-   o._countries = new MO.TObjects();
+   o._boundaries = new MO.TObjects();
+   o._provinces = new MO.TDictionary();
 }
 
 //==========================================================
@@ -42,9 +47,9 @@ MO.FEaiWorldData_construct = function FEaiWorldData_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiWorldData_onLoaded = function FEaiWorldData_onLoaded(event){
+MO.FEaiCountryData_onLoaded = function FEaiCountryData_onLoaded(event){
    var o = this;
-   var data = event.outputData();
+   var data = event.content;
    // 创建读取流
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
@@ -61,13 +66,26 @@ MO.FEaiWorldData_onLoaded = function FEaiWorldData_onLoaded(event){
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiWorldData_unserialize = function FEaiWorldData_unserialize(input){
+MO.FEaiCountryData_unserialize = function FEaiCountryData_unserialize(input){
    var o = this;
+   // 读取属性
+   o._code = input.readString();
+   o._label = input.readString();
+   // 读取边界集合
+   var boundaries = o._boundaries;
    var count = input.readInt32();
    for(var i = 0; i < count; i++){
-      var country = MO.Class.create(MO.FEaiCountryData);
-      country.unserialize(input);
-      o._countries.push(country);
+      var boundary = MO.Class.create(MO.FEaiBoundaryData);
+      boundary.unserialize(input);
+      boundaries.push(boundary);
+   }
+   // 读取省份集合
+   var provinces = o._provinces;
+   var count = input.readInt32();
+   for(var i = 0; i < count; i++){
+      var province = MO.Class.create(MO.FEaiProvinceData);
+      province.unserialize(input);
+      provinces.set(province.code(), province);
    }
    // 分发事件
    var event = new MO.SEvent(o);
@@ -80,9 +98,9 @@ MO.FEaiWorldData_unserialize = function FEaiWorldData_unserialize(input){
 //
 // @method
 //==========================================================
-MO.FEaiWorldData_load = function FEaiWorldData_load(){
+MO.FEaiCountryData_load = function FEaiCountryData_load(){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}/data/world.dat');
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{eai.resource}/country.dat');
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoaded);
 }
@@ -92,9 +110,10 @@ MO.FEaiWorldData_load = function FEaiWorldData_load(){
 //
 // @method
 //==========================================================
-MO.FEaiWorldData_dispose = function FEaiWorldData_dispose(){
+MO.FEaiCountryData_dispose = function FEaiCountryData_dispose(){
    var o = this;
-   o._countries = MO.Lang.Object.dispose(o._countries);
+   o._boundaries = MO.Lang.Object.dispose(o._boundaries);
+   o._provinces = MO.Lang.Object.dispose(o._provinces);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

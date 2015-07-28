@@ -9,20 +9,18 @@ MO.FEaiMapResourceConsole = function FEaiMapResourceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
-   o._world      = MO.Class.register(o, new MO.AGetter('_world'));
-   o._countries  = MO.Class.register(o, new MO.AGetter('_countries'));
+   o._world            = MO.Class.register(o, new MO.AGetter('_world'));
+   o._countries        = MO.Class.register(o, new MO.AGetter('_countries'));
    //..........................................................
    // @method
-   o.construct   = MO.FEaiMapResourceConsole_construct;
+   o.construct         = MO.FEaiMapResourceConsole_construct;
    // @method
-   o.findByCode  = MO.FEaiMapResourceConsole_findByCode;
-   o.findByName  = MO.FEaiMapResourceConsole_findByName;
-   o.unserialize = MO.FEaiMapResourceConsole_unserialize;
+   o.findCountryByCode = MO.FEaiMapResourceConsole_findCountryByCode;
    // @method
-   o.loadCountry = MO.FEaiMapResourceConsole_loadCountry;
-   o.loadWorld   = MO.FEaiMapResourceConsole_loadWorld;
+   o.loadCountry       = MO.FEaiMapResourceConsole_loadCountry;
+   o.loadWorld         = MO.FEaiMapResourceConsole_loadWorld;
    // @method
-   o.dispose     = MO.FEaiMapResourceConsole_dispose;
+   o.dispose           = MO.FEaiMapResourceConsole_dispose;
    return o;
 }
 
@@ -39,44 +37,14 @@ MO.FEaiMapResourceConsole_construct = function FEaiMapResourceConsole_construct(
 }
 
 //==========================================================
-// <T>根据代码获得省份资源。</T>
+// <T>根据代码获得国家资源。</T>
 //
 // @method
 // @param code:String 代码
-// @return FEaiProvinceResource 省份资源
+// @return FEaiMapCountryResource 国家资源
 //==========================================================
-MO.FEaiMapResourceConsole_findByCode = function FEaiMapResourceConsole_findByCode(code){
+MO.FEaiMapResourceConsole_findCountryByCode = function FEaiMapResourceConsole_findCountryByCode(code){
    return this._countries.get(code);
-}
-
-//==========================================================
-// <T>根据名称获得省份资源。</T>
-//
-// @method
-// @param name:String 名称
-// @return FEaiProvinceResource 省份资源
-//==========================================================
-MO.FEaiMapResourceConsole_findByName = function FEaiMapResourceConsole_findByName(name){
-   return this._world.get(name);
-}
-
-//==========================================================
-// <T>从输入流反序列化数据。</T>
-//
-// @method
-// @param input:MStream 输入流
-//==========================================================
-MO.FEaiMapResourceConsole_unserialize = function FEaiMapResourceConsole_unserialize(input){
-   var o = this;
-   var provinceCodes = o._countries;
-   var provinceNames = o._world;
-   var count = input.readInt32();
-   for(var i = 0; i < count; i++){
-      var province = MO.Class.create(FEaiProvinceResource);
-      province.unserialize(input);
-      provinceCodes.set(province.code(), province);
-      provinceNames.set(province.name(), province);
-   }
 }
 
 //==========================================================
@@ -90,9 +58,11 @@ MO.FEaiMapResourceConsole_loadCountry = function FEaiMapResourceConsole_loadCoun
    var countries = o._countries;
    var country = countries.get(name);
    if(!country){
+      // 创建国家资源
       country = MO.Class.create(MO.FEaiMapCountryResource);
       country.setCode(code);
       country.load();
+      // 存储列表
       countries.set(code, country);
    }
    return country;
@@ -108,6 +78,7 @@ MO.FEaiMapResourceConsole_loadWorld = function FEaiMapResourceConsole_loadWorld(
    var o = this;
    var world = o._world;
    if(!world){
+      // 创建世界资源
       world = o._world = MO.Class.create(MO.FEaiMapWorldResource);
       world.load();
    }
@@ -123,7 +94,7 @@ MO.FEaiMapResourceConsole_dispose = function FEaiMapResourceConsole_dispose(){
    var o = this;
    // 释放属性
    o._world = MO.Lang.Object.dispose(o._world);
-   o._countries = MO.Lang.Object.dispose(o._countries);
+   o._countries = MO.Lang.Object.dispose(o._countries, true);
    // 父处理
    o.__base.FConsole.dispose.call(o);
 }
