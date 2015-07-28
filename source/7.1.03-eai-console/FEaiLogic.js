@@ -53,7 +53,7 @@ with(MO){
             for(var i=0; i < addKey(5,3).length; i++){
                key+=addKey(5,3)[i];
             }
-            url += '?' + parameters+"&requesttime="+time+"&sign="+hex_md5(ginsengs+key);
+            url += '?' + parameters+"&tick="+time+"&sign="+hex_md5(ginsengs+key);
          }
       return url;
    } 
