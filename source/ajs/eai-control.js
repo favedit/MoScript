@@ -673,7 +673,7 @@ MO.FGuiLivePop_onPaintBegin = function FGuiLivePop_onPaintBegin(event) {
    var graphic = event.graphic;
    var rectangle = o._clientRectangle;
    var entity = o._data;
-   var cityConsole = MO.Console.find(MO.FEaiEntityConsole).cityConsole();
+   var cityConsole = MO.Console.find(MO.FEaiEntityConsole).cityModule();
    var cityEntity = cityConsole.findByCard(entity.card());
    var popText = '';
    o._date.parse(entity.date());

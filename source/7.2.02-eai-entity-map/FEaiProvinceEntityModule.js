@@ -3,21 +3,21 @@
 //
 // @class
 // @author maocy
-// @history 150703
+// @history 150728
 //==========================================================
-MO.FEaiProvinceEntityConsole = function FEaiProvinceEntityConsole(o){
-   o = MO.RClass.inherits(this, o, MO.FObject);
+MO.FEaiProvinceEntityModule = function FEaiProvinceEntityModule(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiEntityModule);
    //..........................................................
    // @attribute
    o._provinces     = MO.Class.register(o, new MO.AGetter('_provinces'));
    //..........................................................
    // @method
-   o.construct  = MO.FEaiProvinceEntityConsole_construct;
+   o.construct  = MO.FEaiProvinceEntityModule_construct;
    // @method
-   o.findByCode = MO.FEaiProvinceEntityConsole_findByCode;
-   o.push       = MO.FEaiProvinceEntityConsole_push;
+   o.findByCode = MO.FEaiProvinceEntityModule_findByCode;
+   o.push       = MO.FEaiProvinceEntityModule_push;
    // @method
-   o.dispose    = MO.FEaiProvinceEntityConsole_dispose;
+   o.dispose    = MO.FEaiProvinceEntityModule_dispose;
    return o;
 }
 
@@ -26,9 +26,9 @@ MO.FEaiProvinceEntityConsole = function FEaiProvinceEntityConsole(o){
 //
 // @method
 //==========================================================
-MO.FEaiProvinceEntityConsole_construct = function FEaiProvinceEntityConsole_construct(){
+MO.FEaiProvinceEntityModule_construct = function FEaiProvinceEntityModule_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FEaiEntityModule.construct.call(o);
    // 设置属性
    o._provinces = MO.TDictionary();
 }
@@ -40,7 +40,7 @@ MO.FEaiProvinceEntityConsole_construct = function FEaiProvinceEntityConsole_cons
 // @param code:String 代码
 // @return FEaiProvinceEntity 省份实体
 //==========================================================
-MO.FEaiProvinceEntityConsole_findByCode = function FEaiProvinceEntityConsole_findByCode(code){
+MO.FEaiProvinceEntityModule_findByCode = function FEaiProvinceEntityModule_findByCode(code){
    return this._provinces.get(code);
 }
 
@@ -50,7 +50,7 @@ MO.FEaiProvinceEntityConsole_findByCode = function FEaiProvinceEntityConsole_fin
 // @method
 // @param entity:FEaiProvinceEntity 省份实体
 //==========================================================
-MO.FEaiProvinceEntityConsole_push = function FEaiProvinceEntityConsole_push(entity){
+MO.FEaiProvinceEntityModule_push = function FEaiProvinceEntityModule_push(entity){
    var code = entity.data().code();
    this._provinces.set(code, entity);
 }
@@ -60,9 +60,9 @@ MO.FEaiProvinceEntityConsole_push = function FEaiProvinceEntityConsole_push(enti
 //
 // @method
 //==========================================================
-MO.FEaiProvinceEntityConsole_dispose = function FEaiProvinceEntityConsole_dispose(monitor){
+MO.FEaiProvinceEntityModule_dispose = function FEaiProvinceEntityModule_dispose(monitor){
    var o = this;
-   o._provinces = RObject.dispose(o._provinces);
+   o._provinces = MO.Lang.Object.dispose(o._provinces);
    // 父处理
-   o.__base.FObject.dispose.call(o);
+   o.__base.FEaiEntityModule.dispose.call(o);
 }

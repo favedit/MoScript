@@ -143,6 +143,8 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    o.__base.FEaiScene.setup.call(o);
    // 获得实体控制台
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   entityConsole.linkGraphicContext(o);
+   entityConsole.setup();
    var mapEntity = o._mapEntity = entityConsole.mapEntity();
    // 创建舞台
    var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);

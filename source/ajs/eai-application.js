@@ -92,38 +92,21 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    o._chapterLoading = MO.Class.register(o, new MO.AGetter('_chapterLoading'));
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
    o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
-   o._thread         = null;
-   o._interval       = 10;
-   o.onLoadCountry   = MO.FEaiChartApplication_onLoadCountry;
    o.onLoadResource  = MO.FEaiChartApplication_onLoadResource;
    o.construct       = MO.FEaiChartApplication_construct;
-   o.createCanvas    = MO.FEaiChartApplication_createCanvas;
    o.setup           = MO.FEaiChartApplication_setup;
    o.dispose         = MO.FEaiChartApplication_dispose;
    return o;
 }
-MO.FEaiChartApplication_onLoadCountry = function FEaiChartApplication_onLoadCountry(event){
+MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
    var o = this;
    var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
    chapter.selectSceneByCode(o._sceneCode);
    o.processResize();
 }
-MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
-   var o = this;
-   var canvas = o._desktop.canvas3d();
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   entityConsole.linkGraphicContext(canvas);
-   entityConsole.setup();
-   entityConsole.addLoadCountryListener(o, o.onLoadCountry);
-   entityConsole.loadCountryData();
-   o.processResize();
-}
 MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
    var o = this;
    o.__base.FEaiApplication.construct.call(o);
-}
-MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanvas(){
-   return MO.Class.create(FEaiChartCanvas);
 }
 MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var o = this;

@@ -11468,19 +11468,19 @@ MO.FEntity = function FEntity(o){
 MO.FEntity_testReady = function FEntity_testReady(){
    return this._statusReady;
 }
-MO.FEaiEntityConsole = function FEaiEntityConsole(o){
+MO.FEntityConsole = function FEntityConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd    = MO.EScope.Global;
    o._looperLoad = null;
    o._thread     = null;
    o._interval   = 100;
-   o.onProcess   = MO.FEaiEntityConsole_onProcess;
-   o.construct   = MO.FEaiEntityConsole_construct;
-   o.loadEntity  = MO.FEaiEntityConsole_loadEntity;
-   o.dispose     = MO.FEaiEntityConsole_dispose;
+   o.onProcess   = MO.FEntityConsole_onProcess;
+   o.construct   = MO.FEntityConsole_construct;
+   o.loadEntity  = MO.FEntityConsole_loadEntity;
+   o.dispose     = MO.FEntityConsole_dispose;
    return o;
 }
-MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
+MO.FEntityConsole_onProcess = function FEntityConsole_onProcess(){
    var o = this;
    var looper = o._looperLoad;
    looper.record();
@@ -11491,7 +11491,7 @@ MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
       }
    }
 }
-MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
+MO.FEntityConsole_construct = function FEntityConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._looperLoad = new MO.TLooper();
@@ -11500,10 +11500,10 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    thread.addProcessListener(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
 }
-MO.FEaiEntityConsole_loadEntity = function FEaiEntityConsole_loadEntity(entity){
+MO.FEntityConsole_loadEntity = function FEntityConsole_loadEntity(entity){
    this._looperLoad.push(entity);
 }
-MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
+MO.FEntityConsole_dispose = function FEntityConsole_dispose(){
    var o = this;
    o._looperLoad = RObject.dispose(o._looperLoad);
    o.__base.FConsole.dispose.call(o);

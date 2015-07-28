@@ -14,36 +14,17 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
    // @attribute
    o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
-   // @attribute
-   o._thread         = null;
-   o._interval       = 10;
    //..........................................................
    // @method
-   o.onLoadCountry   = MO.FEaiChartApplication_onLoadCountry;
    o.onLoadResource  = MO.FEaiChartApplication_onLoadResource;
    //..........................................................
    // @method
    o.construct       = MO.FEaiChartApplication_construct;
    // @method
-   o.createCanvas    = MO.FEaiChartApplication_createCanvas;
    o.setup           = MO.FEaiChartApplication_setup;
    // @method
    o.dispose         = MO.FEaiChartApplication_dispose;
    return o;
-}
-
-//==========================================================
-// <T>加载国家处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartApplication_onLoadCountry = function FEaiChartApplication_onLoadCountry(event){
-   var o = this;
-   // 选择舞台和章节
-   var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
-   chapter.selectSceneByCode(o._sceneCode);
-   // 修正画面大小
-   o.processResize();
 }
 
 //==========================================================
@@ -53,15 +34,9 @@ MO.FEaiChartApplication_onLoadCountry = function FEaiChartApplication_onLoadCoun
 //==========================================================
 MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
    var o = this;
-   var canvas = o._desktop.canvas3d();
-   //..........................................................
-   // 加载国家数据
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   entityConsole.linkGraphicContext(canvas);
-   entityConsole.setup();
-   entityConsole.addLoadCountryListener(o, o.onLoadCountry);
-   entityConsole.loadCountryData();
-   //..........................................................
+   // 选择舞台和章节
+   var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
+   chapter.selectSceneByCode(o._sceneCode);
    // 修正画面大小
    o.processResize();
 }
@@ -74,16 +49,6 @@ MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadRes
 MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
    var o = this;
    o.__base.FEaiApplication.construct.call(o);
-}
-
-//==========================================================
-// <T>创建画板。</T>
-//
-// @method
-// @return FEaiCanvas 画板
-//==========================================================
-MO.FEaiChartApplication_createCanvas = function FEaiChartApplication_createCanvas(){
-   return MO.Class.create(FEaiChartCanvas);
 }
 
 //==========================================================
@@ -140,6 +105,7 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
 //==========================================================
 MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
    var o = this;
+   // 释放属性
    o._chapterLoading = MO.Lang.Object.dispose(o._chapterLoading);
    o._chapterChart = MO.Lang.Object.dispose(o._chapterChart);
    o._dynamicInfo = MO.Lang.Object.dispose(o._dynamicInfo);

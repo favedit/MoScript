@@ -6,22 +6,19 @@
 // @history 150606
 //==========================================================
 MO.FApplication = function FApplication(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    //..........................................................
    // @attribute
    o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
    o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
-   // @attribute
-   o._eventEnterFrame     = null;
-   o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
-   o._eventLeaveFrame     = null;
-   o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
    //..........................................................
    // @event
+   o.onProcessReady       = MO.Method.empty;
    o.onProcess            = MO.FApplication_onProcess;
    //..........................................................
    // @method
    o.construct            = MO.FApplication_construct;
+   o.setup                = MO.Method.empty;
    // @method
    o.registerChapter      = MO.FApplication_registerChapter;
    o.unregisterChapter    = MO.FApplication_unregisterChapter;
@@ -59,10 +56,9 @@ MO.FApplication_onProcess = function FApplication_onProcess(event){
 MO.FApplication_construct = function FApplication_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o.__base.MFrameProcessor.construct.call(o);
    // 设置变量
    o._chapters = new MO.TDictionary();
-   o._eventEnterFrame = new MO.SEvent();
-   o._eventLeaveFrame = new MO.SEvent();
 }
 
 //==========================================================
@@ -161,6 +157,12 @@ MO.FApplication_processEvent = function FApplication_processEvent(event){
 //==========================================================
 MO.FApplication_process = function FApplication_process(){
    var o = this;
+   // 测试状态
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
+   }
+   //..........................................................
    // 前处理
    o.processEnterFrameListener(o._eventEnterFrame);
    // 场景处理
@@ -176,11 +178,11 @@ MO.FApplication_process = function FApplication_process(){
 //==========================================================
 MO.FApplication_dispose = function FApplication_dispose(){
    var o = this;
+   // 释放变量
    o._activeChapter = null;
    o._chapters = MO.Lang.Object.dispose(o._chapters, true);
-   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
-   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
    // 父处理
+   o.__base.MFrameProcessor.dispose.call(o);
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

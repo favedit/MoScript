@@ -44,7 +44,9 @@ MO.FImageConsole_construct = function FImageConsole_construct(){
 //==========================================================
 MO.FImageConsole_create = function FImageConsole_create(uri){
    var o = this;
+   // 获得地址
    var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   // 加载地址
    var image = MO.Class.create(MO.FImageResource);
    image.loadUrl(url);
    return image;

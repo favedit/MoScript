@@ -5,20 +5,22 @@
 // @author maocy
 // @history 150703
 //==========================================================
-MO.FEaiMapEntityConsole = function FEaiMapEntityConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener, MO.MGraphicObject);
+MO.FEaiMapEntityModule = function FEaiMapEntityModule(o){
+   o = MO.Class.inherits(this, o, MO.FEaiEntityModule);
    //..........................................................
    // @attribute
-   o._worldEntity     = MO.Class.register(o, new MO.AGetter('_worldEntity'));
-   o._countryEntities = MO.Class.register(o, new MO.AGetter('_countryEntities'));
+   o._worldEntity      = MO.Class.register(o, new MO.AGetter('_worldEntity'));
+   o._countryEntities  = MO.Class.register(o, new MO.AGetter('_countryEntities'));
+   o._provinceEntities = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+   o._cityEntities     = MO.Class.register(o, new MO.AGetter('_cityEntities'));
    //..........................................................
    // @method
-   o.construct        = MO.FEaiMapEntityConsole_construct;
+   o.construct         = MO.FEaiMapEntityModule_construct;
    // @method
-   o.loadCountry      = MO.FEaiMapEntityConsole_loadCountry;
-   o.loadWorld        = MO.FEaiMapEntityConsole_loadWorld;
+   o.loadCountry       = MO.FEaiMapEntityModule_loadCountry;
+   o.loadWorld         = MO.FEaiMapEntityModule_loadWorld;
    // @method
-   o.dispose          = MO.FEaiMapEntityConsole_dispose;
+   o.dispose           = MO.FEaiMapEntityModule_dispose;
    return o;
 }
 
@@ -27,11 +29,13 @@ MO.FEaiMapEntityConsole = function FEaiMapEntityConsole(o){
 //
 // @method
 //==========================================================
-MO.FEaiMapEntityConsole_construct = function FEaiMapEntityConsole_construct(){
+MO.FEaiMapEntityModule_construct = function FEaiMapEntityModule_construct(){
    var o = this;
-   o.__base.FConsole.construct.call(o);
+   o.__base.FEaiEntityModule.construct.call(o);
    // 设置属性
    o._countryEntities = new MO.TDictionary();
+   o._provinceEntities = new MO.TDictionary();
+   o._cityEntities = new MO.TDictionary();
 }
 
 //==========================================================
@@ -41,11 +45,11 @@ MO.FEaiMapEntityConsole_construct = function FEaiMapEntityConsole_construct(){
 // @param code:String 代码
 // @return 国家实体
 //==========================================================
-MO.FEaiMapEntityConsole_loadCountry = function FEaiMapEntityConsole_loadCountry(context, code){
+MO.FEaiMapEntityModule_loadCountry = function FEaiMapEntityModule_loadCountry(context, code){
    var o = this;
    // 查找对象
   var entities = o._countryEntities;
-   var entity = entities.find(code);
+   var entity = entities.get(code);
    if(entity){
       return entity;
    }
@@ -56,7 +60,8 @@ MO.FEaiMapEntityConsole_loadCountry = function FEaiMapEntityConsole_loadCountry(
    entity.linkGraphicContext(context);
    entity.setResource(resource);
    entity.setup();
-   MO.Console.find(MO.FEaiEntityConsole).loadEntity(entity);
+   entity.build();
+   MO.Console.find(MO.FEntityConsole).loadEntity(entity);
    entities.set(code, entity);
    return entity;
 }
@@ -67,7 +72,7 @@ MO.FEaiMapEntityConsole_loadCountry = function FEaiMapEntityConsole_loadCountry(
 // @method
 // @return 世界实体
 //==========================================================
-MO.FEaiMapEntityConsole_loadWorld = function FEaiMapEntityConsole_loadWorld(context){
+MO.FEaiMapEntityModule_loadWorld = function FEaiMapEntityModule_loadWorld(context){
    var o = this;
    // 查找对象
    var entity = o._worldEntity;
@@ -81,7 +86,7 @@ MO.FEaiMapEntityConsole_loadWorld = function FEaiMapEntityConsole_loadWorld(cont
    entity.linkGraphicContext(context);
    entity.setResource(resource);
    entity.setup();
-   MO.Console.find(MO.FEaiEntityConsole).loadEntity(entity);
+   MO.Console.find(MO.FEntityConsole).loadEntity(entity);
    return entity;
 }
 
@@ -90,10 +95,12 @@ MO.FEaiMapEntityConsole_loadWorld = function FEaiMapEntityConsole_loadWorld(cont
 //
 // @method
 //==========================================================
-MO.FEaiMapEntityConsole_dispose = function FEaiMapEntityConsole_dispose(){
+MO.FEaiMapEntityModule_dispose = function FEaiMapEntityModule_dispose(){
    var o = this;
    // 释放属性
    o._countryEntities = MO.Lang.Object.dispose(o._countryEntities);
+   o._provinceEntities = MO.Lang.Object.dispose(o._provinceEntities);
+   o._cityEntities = MO.Lang.Object.dispose(o._cityEntities);
    // 父处理
-   o.__base.FConsole.dispose.call(o);
+   o.__base.FEaiEntityModule.dispose.call(o);
 }

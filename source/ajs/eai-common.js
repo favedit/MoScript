@@ -8,8 +8,9 @@ MO.EEaiChapter = new function EEaiChapter(){
 }
 MO.EEaiConstant = new function EEaiConstant(){
    var o = this;
-   o.ServiceHost = "eai.logic.service";
-   o.Resource    = "eai.resource";
+   o.DefaultCountry = "china";
+   o.ServiceHost    = "eai.logic.service";
+   o.Resource       = "eai.resource";
    return o;
 }
 MO.EEaiRate = new function EEaiRate(){

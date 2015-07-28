@@ -824,8 +824,9 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
             if (hLoading) {
                document.body.removeChild(hLoading);
             }
-            o._mapEntity.showCountry();
-            o._mapEntity.countryEntity().start();
+            var countryEntity = o._countryEntity;
+            countryEntity.start();
+            o._mapEntity.showCountry(countryEntity);
             o.processLoaded();
             o._playing = true;
             o._statusStart = true;
@@ -833,7 +834,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       }
    }
    if (o._playing) {
-      var countryEntity = o._mapEntity.countryEntity();
+      var countryEntity = o._countryEntity;
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
          return;
@@ -882,6 +883,7 @@ MO.FEaiChartLiveScene_onSwitchComplete = function FEaiChartLiveScene_onSwitchCom
    var o = this;
 }
 MO.FEaiChartLiveScene_testReady = function FEaiChartLiveScene_testReady(){
+   return true;
    var o = this;
    if(!o._ready){
       if(!o._countryReady){
@@ -927,6 +929,8 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    livePop.build();
    o._guiManager.register(livePop);
    o._guiManager.hide();
+   var countryEntity = o._countryEntity = MO.Console.find(MO.FEaiEntityConsole).mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
+   o._readyLoader.push(countryEntity);
 }
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
    return;
@@ -1102,6 +1106,8 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var o = this;
    o.__base.FEaiScene.setup.call(o);
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   entityConsole.linkGraphicContext(o);
+   entityConsole.setup();
    var mapEntity = o._mapEntity = entityConsole.mapEntity();
    var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
    stage.linkGraphicContext(o);
@@ -1316,7 +1322,6 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o._rotationY              = 0;
    o._worldScale             = 500;
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
-   o.onLoadWorld             = MO.FEaiChartWorldScene_onLoadWorld;
    o.onInvestmentDataChanged = MO.FEaiChartWorldScene_onInvestmentDataChanged;
    o.onProcessReady          = MO.FEaiChartWorldScene_onProcessReady;
    o.onProcess               = MO.FEaiChartWorldScene_onProcess;
@@ -1334,9 +1339,6 @@ MO.FEaiChartWorldScene = function FEaiChartWorldScene(o){
    o.fixMatrix               = MO.FEaiChartWorldScene_fixMatrix;
    o.processResize           = MO.FEaiChartWorldScene_processResize;
    return o;
-}
-MO.FEaiChartWorldScene_onLoadWorld = function FEaiChartWorldScene_onLoadWorld(event) {
-   var o = this;
 }
 MO.FEaiChartWorldScene_onInvestmentDataChanged = function FEaiChartWorldScene_onInvestmentDataChanged(event) {
    var o = this;
@@ -1377,7 +1379,6 @@ MO.FEaiChartWorldScene_onProcess = function FEaiChartWorldScene_onProcess() {
             if(hLoading){
                document.body.removeChild(hLoading);
             }
-            o._mapEntity.countryEntity().start();
             o.processLoaded();
             o._playing = true;
             o._statusStart = true;
@@ -1385,10 +1386,6 @@ MO.FEaiChartWorldScene_onProcess = function FEaiChartWorldScene_onProcess() {
       }
    }
    if (o._playing) {
-      var countryEntity = o._mapEntity.countryEntity();
-      if(!countryEntity.introAnimeDone()){
-         countryEntity.process();
-      }
       if (!o._mapReady) {
          o._guiManager.show();
          o._southSea.setVisible(false);
@@ -1516,18 +1513,11 @@ MO.FEaiChartWorldScene_setup = function FEaiChartWorldScene_setup() {
    projection.update();
    var region = o._activeStage.region();
    region.selectCamera(camera);
-   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().loadWorld(o);
+   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapModule().loadWorld(o);
    o._readyLoader.push(worldEntity);
 }
 MO.FEaiChartWorldScene_testReady = function FEaiChartWorldScene_testReady(){
-   var o = this;
-   if(!o._ready){
-      if(!o._countryReady){
-         return false;
-      }
-      o._ready = true;
-   }
-   return o._ready;
+   return true;
 }
 MO.FEaiChartWorldScene_showParticle = function FEaiChartWorldScene_showParticle(provinceEntity, cityResource){
    return;

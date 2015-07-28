@@ -5,20 +5,20 @@
 // @author maocy
 // @history 150703
 //==========================================================
-MO.FEaiCityEntityConsole = function FEaiCityEntityConsole(o){
-   o = MO.RClass.inherits(this, o, MO.FObject);
+MO.FEaiCityEntityModule = function FEaiCityEntityModule(o){
+   o = MO.Class.inherits(this, o, MO.FEaiEntityModule);
    //..........................................................
    // @attribute
    o._citys     = MO.Class.register(o, new MO.AGetter('_citys'));
    //..........................................................
    // @method
-   o.construct  = MO.FEaiCityEntityConsole_construct;
+   o.construct  = MO.FEaiCityEntityModule_construct;
    // @method
-   o.findByCode = MO.FEaiCityEntityConsole_findByCode;
-   o.findByCard = MO.FEaiCityEntityConsole_findByCard;
-   o.push       = MO.FEaiCityEntityConsole_push;
+   o.findByCode = MO.FEaiCityEntityModule_findByCode;
+   o.findByCard = MO.FEaiCityEntityModule_findByCard;
+   o.push       = MO.FEaiCityEntityModule_push;
    // @method
-   o.dispose    = MO.FEaiCityEntityConsole_dispose;
+   o.dispose    = MO.FEaiCityEntityModule_dispose;
    return o;
 }
 
@@ -29,9 +29,9 @@ MO.FEaiCityEntityConsole = function FEaiCityEntityConsole(o){
 // @param owner:Object 拥有者
 // @param callback:Function 回调函数
 //==========================================================
-MO.FEaiCityEntityConsole_construct = function FEaiCityEntityConsole_construct(){
+MO.FEaiCityEntityModule_construct = function FEaiCityEntityModule_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FEaiEntityModule.construct.call(o);
    // 设置属性
    o._citys = new MO.TDictionary();
 }
@@ -43,7 +43,7 @@ MO.FEaiCityEntityConsole_construct = function FEaiCityEntityConsole_construct(){
 // @param code:String 代码
 // @return FEaiCityEntity 城市实体
 //==========================================================
-MO.FEaiCityEntityConsole_findByCode = function FEaiCityEntityConsole_findByCode(code){
+MO.FEaiCityEntityModule_findByCode = function FEaiCityEntityModule_findByCode(code){
    return this._citys.get(code);
 }
 
@@ -54,7 +54,7 @@ MO.FEaiCityEntityConsole_findByCode = function FEaiCityEntityConsole_findByCode(
 // @param card:String 代码
 // @return FEaiCityEntity 城市实体
 //==========================================================
-MO.FEaiCityEntityConsole_findByCard = function FEaiCityEntityConsole_findByCard(card){
+MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(card){
    var o = this;
    // 检查参数
    if (card.length != 4) {
@@ -81,7 +81,7 @@ MO.FEaiCityEntityConsole_findByCard = function FEaiCityEntityConsole_findByCard(
 // @method
 // @param entity:FEaiCityEntity 城市实体
 //==========================================================
-MO.FEaiCityEntityConsole_push = function FEaiCityEntityConsole_push(entity){
+MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
    this._citys.set(entity.data().code(), entity);
 }
 
@@ -90,9 +90,9 @@ MO.FEaiCityEntityConsole_push = function FEaiCityEntityConsole_push(entity){
 //
 // @method
 //==========================================================
-MO.FEaiCityEntityConsole_dispose = function FEaiCityEntityConsole_dispose(monitor){
+MO.FEaiCityEntityModule_dispose = function FEaiCityEntityModule_dispose(monitor){
    var o = this;
-   o._citys = RObject.dispose(o._citys);
+   o._citys = MO.Lang.Object.dispose(o._citys);
    // 父处理
-   o.__base.FObject.dispose.call(o);
+   o.__base.FEaiEntityModule.dispose.call(o);
 }

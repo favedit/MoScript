@@ -22334,19 +22334,19 @@ MO.FEntity = function FEntity(o){
 MO.FEntity_testReady = function FEntity_testReady(){
    return this._statusReady;
 }
-MO.FEaiEntityConsole = function FEaiEntityConsole(o){
+MO.FEntityConsole = function FEntityConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd    = MO.EScope.Global;
    o._looperLoad = null;
    o._thread     = null;
    o._interval   = 100;
-   o.onProcess   = MO.FEaiEntityConsole_onProcess;
-   o.construct   = MO.FEaiEntityConsole_construct;
-   o.loadEntity  = MO.FEaiEntityConsole_loadEntity;
-   o.dispose     = MO.FEaiEntityConsole_dispose;
+   o.onProcess   = MO.FEntityConsole_onProcess;
+   o.construct   = MO.FEntityConsole_construct;
+   o.loadEntity  = MO.FEntityConsole_loadEntity;
+   o.dispose     = MO.FEntityConsole_dispose;
    return o;
 }
-MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
+MO.FEntityConsole_onProcess = function FEntityConsole_onProcess(){
    var o = this;
    var looper = o._looperLoad;
    looper.record();
@@ -22357,7 +22357,7 @@ MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
       }
    }
 }
-MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
+MO.FEntityConsole_construct = function FEntityConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._looperLoad = new MO.TLooper();
@@ -22366,10 +22366,10 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
    thread.addProcessListener(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
 }
-MO.FEaiEntityConsole_loadEntity = function FEaiEntityConsole_loadEntity(entity){
+MO.FEntityConsole_loadEntity = function FEntityConsole_loadEntity(entity){
    this._looperLoad.push(entity);
 }
-MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
+MO.FEntityConsole_dispose = function FEntityConsole_dispose(){
    var o = this;
    o._looperLoad = RObject.dispose(o._looperLoad);
    o.__base.FConsole.dispose.call(o);
@@ -35211,16 +35211,39 @@ MO.EApplicationConstant = new function EApplicationConstant(){
    o.Resource = "resource";
    return o;
 }
-MO.FApplication = function FApplication(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
-   o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
-   o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
+MO.MFrameProcessor = function MFrameProcessor(o){
+   o = MO.Class.inherits(this, o);
+   o._readyLoader         = MO.Class.register(o, new MO.AGetter('_readyLoader'));
    o._eventEnterFrame     = null;
    o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
    o._eventLeaveFrame     = null;
    o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   o.onProcessReady       = MO.Method.empty;
+   o.construct            = MO.MFrameProcessor_construct;
+   o.dispose              = MO.MFrameProcessor_dispose;
+   return o;
+}
+MO.MFrameProcessor_construct = function MFrameProcessor_construct(){
+   var o = this;
+   var loader = o._readyLoader = MO.Class.create(MO.FReadyLoader);
+   loader.addChangeListener(o, o.onProcessReady);
+   o._eventEnterFrame = new MO.SEvent();
+   o._eventLeaveFrame = new MO.SEvent();
+}
+MO.MFrameProcessor_dispose = function MFrameProcessor_dispose(){
+   var o = this;
+   o._readyLoader = MO.Lang.Object.dispose(o._readyLoader);
+   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
+   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
+}
+MO.FApplication = function FApplication(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
+   o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
+   o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
+   o.onProcessReady       = MO.Method.empty;
    o.onProcess            = MO.FApplication_onProcess;
    o.construct            = MO.FApplication_construct;
+   o.setup                = MO.Method.empty;
    o.registerChapter      = MO.FApplication_registerChapter;
    o.unregisterChapter    = MO.FApplication_unregisterChapter;
    o.selectChapter        = MO.FApplication_selectChapter;
@@ -35241,9 +35264,8 @@ MO.FApplication_onProcess = function FApplication_onProcess(event){
 MO.FApplication_construct = function FApplication_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o.__base.MFrameProcessor.construct.call(o);
    o._chapters = new MO.TDictionary();
-   o._eventEnterFrame = new MO.SEvent();
-   o._eventLeaveFrame = new MO.SEvent();
 }
 MO.FApplication_registerChapter = function FApplication_registerChapter(chapter){
    var o = this;
@@ -35289,6 +35311,10 @@ MO.FApplication_processEvent = function FApplication_processEvent(event){
 }
 MO.FApplication_process = function FApplication_process(){
    var o = this;
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
+   }
    o.processEnterFrameListener(o._eventEnterFrame);
    o.onProcess();
    o.processLeaveFrameListener(o._eventLeaveFrame);
@@ -35297,23 +35323,19 @@ MO.FApplication_dispose = function FApplication_dispose(){
    var o = this;
    o._activeChapter = null;
    o._chapters = MO.Lang.Object.dispose(o._chapters, true);
-   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
-   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
+   o.__base.MFrameProcessor.dispose.call(o);
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 MO.FChapter = function FChapter(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
    o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
    o._scenes              = MO.Class.register(o, new MO.AGetter('_scenes'));
    o._activeScene         = MO.Class.register(o, new MO.AGetter('_activeScene'));
    o._statusSetup         = false;
    o._statusActive        = false;
-   o._eventEnterFrame     = null;
-   o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
-   o._eventLeaveFrame     = null;
-   o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   o.onProcessReady       = MO.Method.empty;
    o.construct            = MO.FChapter_construct;
    o.registerScene        = MO.FChapter_registerScene;
    o.unregisterScene      = MO.FChapter_unregisterScene;
@@ -35330,9 +35352,8 @@ MO.FChapter = function FChapter(o){
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o.__base.MFrameProcessor.construct.call(o);
    o._scenes = new MO.TDictionary();
-   o._eventEnterFrame = new MO.SEvent();
-   o._eventLeaveFrame = new MO.SEvent();
 }
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
@@ -35389,20 +35410,25 @@ MO.FChapter_processEvent = function FChapter_processEvent(event){
 }
 MO.FChapter_process = function FChapter_process(){
    var o = this;
-   o.processEnterFrameListener(o._eventEnterFrame);
-   var scene = o._activeScene;
-   if(scene){
-      if(scene.visible()){
-         scene.process();
-      }
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
    }
-   o.processLeaveFrameListener(o._eventLeaveFrame);
+   if(o._statusActive){
+      o.processEnterFrameListener(o._eventEnterFrame);
+      var scene = o._activeScene;
+      if(scene){
+         if(scene.visible()){
+            scene.process();
+         }
+      }
+      o.processLeaveFrameListener(o._eventLeaveFrame);
+   }
 }
 MO.FChapter_dispose = function FChapter_dispose(){
    var o = this;
    o._scenes = MO.Lang.Object.dispose(o._scenes);
-   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
-   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
+   o.__base.MFrameProcessor.dispose.call(o);
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
@@ -35526,26 +35552,19 @@ MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
    o.__base.FDesktop.dispose.call(o);
 }
 MO.FScene = function FScene(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    o._visible             = MO.Class.register(o, new MO.AGetSet('_visible'), true);
    o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
    o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
    o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
    o._activeStage         = MO.Class.register(o, new MO.AGetSet('_activeStage'));
-   o._readyLoader         = MO.Class.register(o, new MO.AGetter('_readyLoader'));
-   o._statusReady         = false;
    o._statusSetup         = false;
    o._statusActive        = false;
-   o._eventEnterFrame     = null;
-   o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
-   o._eventLeaveFrame     = null;
-   o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
-   o.onProcessReady       = MO.Method.empty;
    o.onProcessBefore      = MO.Method.empty;
    o.onProcess            = MO.FScene_onProcess;
    o.onProcessAfter       = MO.Method.empty;
    o.construct            = MO.FScene_construct;
-   o.setup                = MO.FScene_setup;
+   o.setup                = MO.Method.empty;
    o.active               = MO.FScene_active;
    o.deactive             = MO.FScene_deactive;
    o.processEvent         = MO.FScene_processEvent;
@@ -35564,13 +35583,7 @@ MO.FScene_onProcess = function FScene_onProcess(){
 MO.FScene_construct = function FScene_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   var loader = o._readyLoader = MO.Class.create(MO.FReadyLoader);
-   loader.addChangeListener(o, o.onProcessReady);
-   o._eventEnterFrame = new MO.SEvent();
-   o._eventLeaveFrame = new MO.SEvent();
-}
-MO.FScene_setup = function FScene_setup(){
-   var o = this;
+   o.__base.MFrameProcessor.construct.call(o);
 }
 MO.FScene_active = function FScene_active(){
    var o = this;
@@ -35579,6 +35592,7 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
+   o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
@@ -35607,9 +35621,7 @@ MO.FScene_processEvent = function FScene_processEvent(event){
 }
 MO.FScene_dispose = function FScene_dispose(){
    var o = this;
-   o._readyLoader = MO.Lang.Object.dispose(o._readyLoader);
-   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
-   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
+   o.__base.MFrameProcessor.dispose.call(o);
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

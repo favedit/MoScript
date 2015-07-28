@@ -6,7 +6,7 @@
 // @history 150106
 //==========================================================
 MO.FChapter = function FChapter(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    //..........................................................
    // @attribute
    o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
@@ -14,13 +14,12 @@ MO.FChapter = function FChapter(o){
    o._scenes              = MO.Class.register(o, new MO.AGetter('_scenes'));
    // @attribute
    o._activeScene         = MO.Class.register(o, new MO.AGetter('_activeScene'));
+   // @attribute
    o._statusSetup         = false;
    o._statusActive        = false;
-   // @attribute
-   o._eventEnterFrame     = null;
-   o._enterFrameListeners = MO.Class.register(o, new MO.AListener('_enterFrameListeners', MO.EEvent.EnterFrame));
-   o._eventLeaveFrame     = null;
-   o._leaveFrameListeners = MO.Class.register(o, new MO.AListener('_leaveFrameListeners', MO.EEvent.LeaveFrame));
+   //..........................................................
+   // @event
+   o.onProcessReady       = MO.Method.empty;
    //..........................................................
    // @method
    o.construct            = MO.FChapter_construct;
@@ -49,10 +48,9 @@ MO.FChapter = function FChapter(o){
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o.__base.MFrameProcessor.construct.call(o);
    // 设置变量
    o._scenes = new MO.TDictionary();
-   o._eventEnterFrame = new MO.SEvent();
-   o._eventLeaveFrame = new MO.SEvent();
 }
 
 //==========================================================
@@ -169,17 +167,26 @@ MO.FChapter_processEvent = function FChapter_processEvent(event){
 //==========================================================
 MO.FChapter_process = function FChapter_process(){
    var o = this;
-   // 前处理
-   o.processEnterFrameListener(o._eventEnterFrame);
-   // 场景处理
-   var scene = o._activeScene;
-   if(scene){
-      if(scene.visible()){
-         scene.process();
-      }
+   // 测试状态
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
    }
-   // 后处理
-   o.processLeaveFrameListener(o._eventLeaveFrame);
+   //..........................................................
+   // 检查激活状态
+   if(o._statusActive){
+      // 前处理
+      o.processEnterFrameListener(o._eventEnterFrame);
+      // 场景处理
+      var scene = o._activeScene;
+      if(scene){
+         if(scene.visible()){
+            scene.process();
+         }
+      }
+      // 后处理
+      o.processLeaveFrameListener(o._eventLeaveFrame);
+   }
 }
 
 //==========================================================
@@ -189,10 +196,10 @@ MO.FChapter_process = function FChapter_process(){
 //==========================================================
 MO.FChapter_dispose = function FChapter_dispose(){
    var o = this;
+   // 释放变量
    o._scenes = MO.Lang.Object.dispose(o._scenes);
-   o._eventEnterFrame = MO.Lang.Object.dispose(o._eventEnterFrame);
-   o._eventLeaveFrame = MO.Lang.Object.dispose(o._eventLeaveFrame);
    // 父处理
+   o.__base.MFrameProcessor.dispose.call(o);
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

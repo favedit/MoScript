@@ -10,7 +10,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    //..........................................................
    // @attribute
    o._worldEntity          = MO.Class.register(o, new MO.AGetter('_worldEntity'));
-   o._countryEntity        = MO.Class.register(o, new MO.AGetter('_countryEntity'));
+   o._countryEntities      = MO.Class.register(o, new MO.AGetter('_countryEntities'));
    o._provinceEntities     = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities         = MO.Class.register(o, new MO.AGetter('_cityEntities'));
    // @attribute
@@ -58,7 +58,7 @@ MO.FEaiMapEntity_construct = function FEaiMapEntity_construct(){
 MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    var o = this;
    // 创建国家实体
-   var countryEntity = o._countryEntity = MO.Class.create(MO.FEaiCountryEntity);
+   var countryEntity = o._countryEntities = MO.Class.create(MO.FEaiCountryEntity);
    countryEntity.linkGraphicContext(o);
    countryEntity.setup();
    // 创建城市渲染对象
@@ -94,7 +94,7 @@ MO.FEaiMapEntity_setupCityEntities = function FEaiMapEntity_setupCityEntities(){
       cityEntity.setProvinceEntity(provinceEntity);
    }
    // 国家配置处理
-   o._countryEntity.setupProvinces(provinceEntities);
+   o._countryEntities.setupProvinces(provinceEntities);
 }
 
 //==========================================================
@@ -186,9 +186,8 @@ MO.FEaiMapEntity_process = function FEaiMapEntity_process(card){
 //
 // @method
 //==========================================================
-MO.FEaiMapEntity_showCountry = function FEaiMapEntity_showCountry(){
+MO.FEaiMapEntity_showCountry = function FEaiMapEntity_showCountry(countryEntity){
    var o = this;
-   var countryEntity = o._countryEntity;
    o._countryDisplay.push(countryEntity.faceShape());
    o._countryBorderDisplay.push(countryEntity.borderShape());
 }
@@ -200,8 +199,7 @@ MO.FEaiMapEntity_showCountry = function FEaiMapEntity_showCountry(){
 //==========================================================
 MO.FEaiMapEntity_showWorld = function FEaiMapEntity_showWorld(){
    var o = this;
-   //var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).worldEntity();
-   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapConsole().worldEntity();
+   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapModule().worldEntity();
    o._countryDisplay.push(worldEntity.sphere());
    o._countryDisplay.push(worldEntity._sphere2);
    o._countryDisplay.push(worldEntity._sphere3);
@@ -240,7 +238,7 @@ MO.FEaiMapEntity_reset = function FEaiMapEntity_reset(){
 //==========================================================
 MO.FEaiMapEntity_dispose = function FEaiMapEntity_dispose(){
    var o = this;
-   o._countryEntity = MO.Lang.Object.dispose(o._countryEntity);
+   o._countryEntities = MO.Lang.Object.dispose(o._countryEntities);
    o._provinceEntities = MO.Lang.Object.dispose(o._provinceEntities);
    o._cityEntities = MO.Lang.Object.dispose(o._cityEntities);
    o._citysRenderable = MO.Lang.Object.dispose(o._citysRenderable);

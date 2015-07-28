@@ -1,5 +1,5 @@
 //==========================================================
-// <T>世界地图数据。</T>
+// <T>国家地图数据。</T>
 //
 // @class
 // @author maocy
@@ -16,7 +16,6 @@ MO.FEaiMapCountryResource = function FEaiMapCountryResource(o){
    o.construct   = MO.FEaiMapCountryResource_construct;
    // @method
    o.unserialize = MO.FEaiMapCountryResource_unserialize;
-   o.load        = MO.FEaiMapCountryResource_load;
    // @method
    o.dispose     = MO.FEaiMapCountryResource_dispose;
    return o;
@@ -31,7 +30,7 @@ MO.FEaiMapCountryResource_construct = function FEaiMapCountryResource_construct(
    var o = this;
    o.__base.FResourcePackage.construct.call(o);
    // 配置属性
-   o._data = MO.Class.create(MO.FEaiMapWorldData);
+   o._data = MO.Class.create(MO.FEaiMapCountryData);
 }
 
 //==========================================================

@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150728
 //==========================================================
-MO.FEaiEntityConsole = function FEaiEntityConsole(o){
+MO.FEntityConsole = function FEntityConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -17,14 +17,14 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    o._interval   = 100;
    //..........................................................
    // @event
-   o.onProcess   = MO.FEaiEntityConsole_onProcess;
+   o.onProcess   = MO.FEntityConsole_onProcess;
    //..........................................................
    // @method
-   o.construct   = MO.FEaiEntityConsole_construct;
+   o.construct   = MO.FEntityConsole_construct;
    // @method
-   o.loadEntity  = MO.FEaiEntityConsole_loadEntity;
+   o.loadEntity  = MO.FEntityConsole_loadEntity;
    // @method
-   o.dispose     = MO.FEaiEntityConsole_dispose;
+   o.dispose     = MO.FEntityConsole_dispose;
    return o;
 }
 
@@ -33,7 +33,7 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
 //
 // @method
 //==========================================================
-MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
+MO.FEntityConsole_onProcess = function FEntityConsole_onProcess(){
    var o = this;
    var looper = o._looperLoad;
    looper.record();
@@ -50,7 +50,7 @@ MO.FEaiEntityConsole_onProcess = function FEaiEntityConsole_onProcess(){
 //
 // @method
 //==========================================================
-MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
+MO.FEntityConsole_construct = function FEntityConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置属性
@@ -68,7 +68,7 @@ MO.FEaiEntityConsole_construct = function FEaiEntityConsole_construct(){
 // @method
 // @param entity:FEaiEntity 实体
 //==========================================================
-MO.FEaiEntityConsole_loadEntity = function FEaiEntityConsole_loadEntity(entity){
+MO.FEntityConsole_loadEntity = function FEntityConsole_loadEntity(entity){
    this._looperLoad.push(entity);
 }
 
@@ -77,7 +77,7 @@ MO.FEaiEntityConsole_loadEntity = function FEaiEntityConsole_loadEntity(entity){
 //
 // @method
 //==========================================================
-MO.FEaiEntityConsole_dispose = function FEaiEntityConsole_dispose(){
+MO.FEntityConsole_dispose = function FEntityConsole_dispose(){
    var o = this;
    // 释放属性
    o._looperLoad = RObject.dispose(o._looperLoad);

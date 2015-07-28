@@ -16,7 +16,6 @@ MO.FEaiMapWorldResource = function FEaiMapWorldResource(o){
    o.construct   = MO.FEaiMapWorldResource_construct;
    // @method
    o.unserialize = MO.FEaiMapWorldResource_unserialize;
-   o.load        = MO.FEaiMapWorldResource_load;
    // @method
    o.dispose     = MO.FEaiMapWorldResource_dispose;
    return o;

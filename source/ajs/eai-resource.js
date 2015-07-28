@@ -404,14 +404,13 @@ MO.FEaiMapCountryResource = function FEaiMapCountryResource(o){
    o._data       = MO.Class.register(o, new MO.AGetter('_data'));
    o.construct   = MO.FEaiMapCountryResource_construct;
    o.unserialize = MO.FEaiMapCountryResource_unserialize;
-   o.load        = MO.FEaiMapCountryResource_load;
    o.dispose     = MO.FEaiMapCountryResource_dispose;
    return o;
 }
 MO.FEaiMapCountryResource_construct = function FEaiMapCountryResource_construct(){
    var o = this;
    o.__base.FResourcePackage.construct.call(o);
-   o._data = MO.Class.create(MO.FEaiMapWorldData);
+   o._data = MO.Class.create(MO.FEaiMapCountryData);
 }
 MO.FEaiMapCountryResource_unserialize = function FEaiMapCountryResource_unserialize(input){
    this._data.unserialize(input);
@@ -479,6 +478,7 @@ MO.FEaiMapResourceConsole_loadCountry = function FEaiMapResourceConsole_loadCoun
    if(!country){
       country = MO.Class.create(MO.FEaiMapCountryResource);
       country.setCode(code);
+      country.setUri('{eai.resource}/data/country/' + code + '.dat');
       country.load();
       countries.set(code, country);
    }
@@ -535,7 +535,6 @@ MO.FEaiMapWorldResource = function FEaiMapWorldResource(o){
    o._data       = MO.Class.register(o, new MO.AGetter('_data'));
    o.construct   = MO.FEaiMapWorldResource_construct;
    o.unserialize = MO.FEaiMapWorldResource_unserialize;
-   o.load        = MO.FEaiMapWorldResource_load;
    o.dispose     = MO.FEaiMapWorldResource_dispose;
    return o;
 }
