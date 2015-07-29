@@ -161,13 +161,15 @@ MO.FGuiLiveTable_oeUpdate = function FGuiLiveTable_oeUpdate(event){
    if(event.isBefore()){
       // 是否要刷新
       if(o._lineScroll < 0){
-         o._lineScroll++;
+         var scrollStep = Math.max(parseInt(o._lineScroll / o._rowHeight), 1)
+         o._lineScroll += scrollStep;
          // 删除多余的数据
-         if(o._lineScroll == 0){
+         if(o._lineScroll >= 0){
             var entities = o._entities;
             if(entities.count() > o._tableCount){
                entities.pop();
             }
+            o._lineScroll = 0;
          }
          o.dirty();
       }

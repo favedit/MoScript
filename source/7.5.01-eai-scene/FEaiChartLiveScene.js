@@ -121,7 +121,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    o.__base.FEaiChartScene.onProcess.call(o);
    // 检测首次播放
    if(!o._statusStart){
-      if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+      if(MO.Window.Browser.capability().soundConfirm){
          var iosPlay = document.getElementById('id_ios_play');
          if (iosPlay) {
             MO.Window.Html.visibleSet(iosPlay, true);

@@ -19,7 +19,7 @@ MO.FChapter = function FChapter(o){
    o._statusActive        = false;
    //..........................................................
    // @event
-   o.onProcessReady       = MO.Method.empty;
+   o.onProcessReady       = MO.FChapter_onProcessReady;
    //..........................................................
    // @method
    o.construct            = MO.FChapter_construct;
@@ -38,6 +38,16 @@ MO.FChapter = function FChapter(o){
    // @method
    o.dispose              = MO.FChapter_dispose;
    return o;
+}
+
+//==========================================================
+// <T>响应开始处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
+   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 
 //==========================================================
@@ -130,6 +140,7 @@ MO.FChapter_active = function FChapter_active(){
    }
    // 设置状态
    o._statusActive = true;
+   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 
 //==========================================================
@@ -141,6 +152,7 @@ MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    // 设置状态
    o._statusActive = false;
+   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 
 //==========================================================

@@ -1223,6 +1223,63 @@ MO.TXmlNode_xml = function TXmlNode_xml(){
 MO.TXmlNode_toString = function TXmlNode_toString(){
    return this.xml().toString();
 }
+MO.FBufferedSocket = function FBufferedSocket(o){
+   o = MO.Class.inherits(this, o, MO.FSocket);
+   o._bufferSends    = MO.Class.register(o, new MO.AGetter('_bufferSends'));
+   o._bufferReceives = MO.Class.register(o, new MO.AGetter('_bufferReceives'));
+   o.onOpen          = MO.FBufferedSocket_onOpen;
+   o.construct       = MO.FBufferedSocket_construct;
+   o.push            = MO.FBufferedSocket_push;
+   o.process         = MO.FBufferedSocket_process;
+   o.dispose         = MO.FBufferedSocket_dispose;
+   return o;
+}
+MO.FBufferedSocket_onOpen = function FBufferedSocket_onOpen(event){
+   var o = this;
+   o.__base.FSocket.onOpen.call(o, event);
+   o.process();
+}
+MO.FBufferedSocket_ohError = function FBufferedSocket_ohError(event){
+   var o = this._linker;
+}
+MO.FBufferedSocket_ohMessage = function FBufferedSocket_ohMessage(event){
+   var o = this._linker;
+}
+MO.FBufferedSocket_ohClose = function FBufferedSocket_ohClose(event){
+   var o = this._linker;
+   o._connected = false;
+}
+MO.FBufferedSocket_construct = function FBufferedSocket_construct(){
+   var o = this;
+   o.__base.FSocket.construct.call(o);
+   o._bufferSends = new MO.TObjects();
+   o._bufferReceives = new MO.TObjects();
+}
+MO.FBufferedSocket_push = function FBufferedSocket_push(message){
+   this._bufferSends.push(message);
+}
+MO.FBufferedSocket_process = function FBufferedSocket_process(){
+   var o = this;
+   if(!o._connected){
+      return false;
+   }
+   var sends = o._bufferSends;
+   if(!sends.isEmpty()){
+      var count = sends.count();
+      for(var i = 0; i < count; i++){
+         var message = sends.at(i);
+         o.send(message);
+      }
+      sends.clear();
+   }
+   return true;
+}
+MO.FBufferedSocket_dispose = function FBufferedSocket_dispose(){
+   var o = this;
+   o._bufferSends = MO.Lang.Object.dispose(o._bufferSends);
+   o._bufferReceives = MO.Lang.Object.dispose(o._bufferReceives);
+   o.__base.FSocket.dispose.call(o);
+}
 MO.FBytes = function FBytes(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MDataView);
    o._memory   = MO.Class.register(o, new MO.AGetter('_memory'));
@@ -1593,6 +1650,65 @@ MO.FJsonConnection_onConnectionComplete = function FJsonConnection_onConnectionC
 }
 MO.FJsonConnection_content = function FJsonConnection_content(){
    return this._content;
+}
+MO.FSocket = function FSocket(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._connected = MO.Class.register(o, new MO.AGetter('_connected'), false);
+   o._handle    = MO.Class.register(o, new MO.AGetter('_handle'));
+   o.onOpen     = MO.FSocket_onOpen;
+   o.ohOpen     = MO.FSocket_ohOpen;
+   o.ohError    = MO.FSocket_ohError;
+   o.ohMessage  = MO.FSocket_ohMessage;
+   o.ohClose    = MO.FSocket_ohClose;
+   o.construct  = MO.FSocket_construct;
+   o.connect    = MO.FSocket_connect;
+   o.send       = MO.FSocket_send;
+   o.disconnect = MO.FSocket_disconnect;
+   o.dispose    = MO.FSocket_dispose;
+   return o;
+}
+MO.FSocket_onOpen = function FSocket_onOpen(event){
+   var o = this;
+   o._connected = true;
+}
+MO.FSocket_ohOpen = function FSocket_ohOpen(event){
+   this._linker.onOpen(event);
+}
+MO.FSocket_ohError = function FSocket_ohError(event){
+   var o = this._linker;
+}
+MO.FSocket_ohMessage = function FSocket_ohMessage(event){
+   var o = this._linker;
+}
+MO.FSocket_ohClose = function FSocket_ohClose(event){
+   var o = this._linker;
+   o._connected = false;
+}
+MO.FSocket_construct = function FSocket_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FSocket_connect = function FSocket_connect(url){
+   var o = this;
+   var handle = o._handle = new WebSocket(url);
+   handle._linker = o;
+   handle.onopen = o.ohOpen;
+   handle.onerror = o.ohError
+   handle.onmessage = o.ohMessage;
+   handle.onclose = o.ohClose;
+}
+MO.FSocket_send = function FSocket_send(message){
+   var o = this;
+   o._handle.send(message);
+}
+MO.FSocket_disconnect = function FSocket_disconnect(){
+   var o = this;
+   o._handle.close();
+}
+MO.FSocket_dispose = function FSocket_dispose(){
+   var o = this;
+   o._handle = null;
+   o.__base.FObject.dispose.call(o);
 }
 MO.FXmlConnection = function FXmlConnection(o){
    o = MO.Class.inherits(this, o, MO.FHttpConnection);
@@ -3230,54 +3346,48 @@ MO.FJsonConsole_create = function FJsonConsole_create(){
 }
 MO.FLoggerConsole = function FLoggerConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._scopeCd   = MO.EScope.Page;
-   o.iLogger    = null;
-   o.onKeyDown  = MO.FLoggerConsole_onKeyDown;
+   o._scopeCd   = MO.EScope.Global;
+   o._socket    = null;
+   o.onOutput   = MO.FLoggerConsole_onOutput;
    o.construct  = MO.FLoggerConsole_construct;
    o.connect    = MO.FLoggerConsole_connect;
-   o.disconnect = MO.FLoggerConsole_disconnect;
    o.output     = MO.FLoggerConsole_output;
+   o.disconnect = MO.FLoggerConsole_disconnect;
+   o.dispose    = MO.FLoggerConsole_dispose;
    return o;
 }
-MO.FLoggerConsole_onKeyDown = function FLoggerConsole_onKeyDown(e){
-   if(e.shiftKey && e.ctrlKey && EKey.L == e.keyCode){
-      this.connect();
-   }
+MO.FLoggerConsole_onOutput = function FLoggerConsole_onOutput(event){
+   var message = event.message;
+   this.output(message);
 }
 MO.FLoggerConsole_construct = function FLoggerConsole_construct(){
    var o = this;
-   o.base.FConsole.construct.call(o);
-   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   o.__base.FConsole.construct.call(o);
+   MO.Logger.lsnsOutput.register(o, o.onOutput);
 }
-MO.FLoggerConsole_connect = function FLoggerConsole_connect(){
+MO.FLoggerConsole_connect = function FLoggerConsole_connect(url){
+   var o = this;
+   var socket = o._socket = MO.Class.create(MO.FBufferedSocket);
+   socket.connect(url);
+}
+MO.FLoggerConsole_output = function FLoggerConsole_output(message){
+   var socket = this._socket;
+   if(socket){
+      var url = window.location.toString();
+      socket.push('[' + url + '] - ' + message);
+      socket.process();
+   }
 }
 MO.FLoggerConsole_disconnect = function FLoggerConsole_disconnect(){
-   this.iLogger = null;
+   var socket = this._socket;
+   if(socket){
+      socket.close();
+   }
 }
-MO.FLoggerConsole_output = function FLoggerConsole_output(level, obj, method, ms, msg, stack){
+MO.FLoggerConsole_dispose = function FLoggerConsole_dispose(){
    var o = this;
-   if(o.iLogger){
-      var m = MO.Class.dump(obj);
-      if(ms){
-         m += ' (' + ms + 'ms)';
-      }
-      var s = level + ' [' + MO.Lang.String.rpad(m, 36) + '] ';
-      if(stack){
-         s += MO.Lang.String.rpad(msg, 120) + ' [' + stack + ']';
-      }else{
-         s += msg;
-      }
-      o.iLogger.Output(s);
-   }
-}
-MO.FLoggerConsole_xml = function FLoggerConsole_xml(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      return this.environment.xml();
-   }
-   return null;
+   o._socket = MO.Lang.Object.dispose(o._socket);
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FMonitorConsole = function FMonitorConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);

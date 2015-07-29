@@ -20,6 +20,7 @@ MO.FScene = function FScene(o){
    //..........................................................
    // @event
    o.onOperationVisibility = MO.FScene_onOperationVisibility;
+   o.onProcessReady        = MO.FScene_onProcessReady;
    o.onProcessBefore       = MO.Method.empty;
    o.onProcess             = MO.FScene_onProcess;
    o.onProcessAfter        = MO.Method.empty;
@@ -49,6 +50,16 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    o.__base.MEventDispatcher.onOperationVisibility.call(o, event);
    // 设置可见性
    o._visible = event.visibility;
+}
+
+//==========================================================
+// <T>响应开始处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FScene_onProcessReady = function FScene_onProcessReady(event){
+   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 
 //==========================================================
@@ -93,6 +104,7 @@ MO.FScene_active = function FScene_active(){
    }
    // 设置状态
    o._statusActive = true;
+   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    // 大小处理
    o.processResize();
 }
@@ -106,6 +118,7 @@ MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    // 设置状态
    o._statusActive = false;
+   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 
 //==========================================================

@@ -39,6 +39,7 @@ MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    view.dispose();
    // 设置标志
    o._statusReady = true;
+   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 
 //==========================================================

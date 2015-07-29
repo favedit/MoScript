@@ -277,6 +277,11 @@ MO.SEnumItem = function SEnumItem(){
    o.value = 0;
    return o;
 }
+MO.SLogger = function SLogger(){
+   var o = this;
+   o.message = null;
+   return o;
+}
 MO.TClass = function TClass(){
    var o = this;
    o.__disposed     = true;
@@ -3530,11 +3535,16 @@ MO.RLogger = function RLogger(){
    var o = this;
    o._statusError = false;
    o._labelLength = 40;
+   o._logger       = new MO.SLogger();
    o.lsnsOutput   = new MO.TListeners();
    return o;
 }
-MO.RLogger.prototype.output = function RLogger_output(s, p){
-   this.lsnsOutput.process(s, p);
+MO.RLogger.prototype.output = function RLogger_output(sender, message){
+   var o = this;
+   var logger = o._logger;
+   logger.sender = sender
+   logger.message = message;
+   o.lsnsOutput.process(logger);
 }
 MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    var o = this;
@@ -3550,7 +3560,7 @@ MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    var result = new MO.TString();
@@ -3587,7 +3597,7 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    var result = new MO.TString();
@@ -3624,7 +3634,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    var result = new MO.TString();
@@ -3647,7 +3657,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    result.append(message);
    o.output(owner, result.flush());
 }
-MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
+MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
    var o = this;
    var name = null;
    var caller = MO.Logger.error.caller;
@@ -3661,12 +3671,12 @@ MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
-   var r = new MO.TString();
-   r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   r.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -3679,10 +3689,10 @@ MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
             s = a.toString();
          }
       }
-      ms = ms.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', s);
    }
-   r.append(ms);
-   o.output(sf, r.flush());
+   result.append(message);
+   o.output(owner, result.flush());
 }
 MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    var o = this;

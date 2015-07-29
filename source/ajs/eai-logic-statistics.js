@@ -82,6 +82,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._dataTicker              = null;
    o._entityPool              = null;
    o._autios                  = null;
+   o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o.onInvestment             = MO.FEaiStatisticsInvestment_onInvestment;
    o.construct                = MO.FEaiStatisticsInvestment_construct;
@@ -129,13 +130,11 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
       }
    }
    o.calculateCurrent();
-   var dsEvent = MO.Memory.alloc(MO.SEvent);
-   dsEvent.sender = o;
+   var dsEvent = o._eventDataChanged;
    dsEvent.entity = null;
    dsEvent.rank = o._rankEntities;
    dsEvent.data = o._tableEntities;
    o.processDataChangedListener(dsEvent);
-   MO.Memory.free(dsEvent);
    var entityCount = entities.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
    o._tableTick = 0;
@@ -152,6 +151,7 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);
+   o._eventDataChanged = new MO.SEvent(o);
 }
 MO.FEaiStatisticsInvestment_allocEntity = function FEaiStatisticsInvestment_allocEntity(){
    var o = this;
@@ -220,13 +220,11 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
          autio.play(0);
       }
    }
-   var dsEvent = MO.Memory.alloc(MO.SEvent);
-   dsEvent.sender = o;
+   var dsEvent = o._eventDataChanged;
    dsEvent.entity = entity;
    dsEvent.rank = o._rankEntities;
    dsEvent.data = o._tableEntities;
    o.processDataChangedListener(dsEvent);
-   MO.Memory.free(dsEvent);
 }
 MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(){
    var o = this;
@@ -274,8 +272,9 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
 }
 MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
    var o = this;
-   o._entities = MO.RObject.dispose(o._entities);
-   o._dataTicker = MO.RObject.dispose(o._dataTicker);
+   o._entities = MO.Lang.Object.dispose(o._entities);
+   o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);
+   o._eventDataChanged = MO.Lang.Object.dispose(o._eventDataChanged);
    o.__base.FObject.dispose.call(o);
 }
 with(MO){

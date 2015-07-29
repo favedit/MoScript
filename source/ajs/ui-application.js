@@ -32,7 +32,7 @@ MO.FApplication = function FApplication(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
    o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
-   o.onProcessReady       = MO.Method.empty;
+   o.onProcessReady       = MO.FApplication_onProcessReady;
    o.onProcess            = MO.FApplication_onProcess;
    o.construct            = MO.FApplication_construct;
    o.setup                = MO.Method.empty;
@@ -45,6 +45,9 @@ MO.FApplication = function FApplication(o){
    o.process              = MO.FApplication_process;
    o.dispose              = MO.FApplication_dispose;
    return o;
+}
+MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
+   MO.Logger.debug(this, 'Application process ready.');
 }
 MO.FApplication_onProcess = function FApplication_onProcess(event){
    var o = this;
@@ -127,7 +130,7 @@ MO.FChapter = function FChapter(o){
    o._activeScene         = MO.Class.register(o, new MO.AGetter('_activeScene'));
    o._statusSetup         = false;
    o._statusActive        = false;
-   o.onProcessReady       = MO.Method.empty;
+   o.onProcessReady       = MO.FChapter_onProcessReady;
    o.construct            = MO.FChapter_construct;
    o.registerScene        = MO.FChapter_registerScene;
    o.unregisterScene      = MO.FChapter_unregisterScene;
@@ -140,6 +143,9 @@ MO.FChapter = function FChapter(o){
    o.process              = MO.FChapter_process;
    o.dispose              = MO.FChapter_dispose;
    return o;
+}
+MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
+   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
@@ -187,10 +193,12 @@ MO.FChapter_active = function FChapter_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
+   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    o._statusActive = false;
+   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 MO.FChapter_processEvent = function FChapter_processEvent(event){
    var o = this;
@@ -353,6 +361,7 @@ MO.FScene = function FScene(o){
    o._statusSetup          = false;
    o._statusActive         = false;
    o.onOperationVisibility = MO.FScene_onOperationVisibility;
+   o.onProcessReady        = MO.FScene_onProcessReady;
    o.onProcessBefore       = MO.Method.empty;
    o.onProcess             = MO.FScene_onProcess;
    o.onProcessAfter        = MO.Method.empty;
@@ -369,6 +378,9 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    var o = this;
    o.__base.MEventDispatcher.onOperationVisibility.call(o, event);
    o._visible = event.visibility;
+}
+MO.FScene_onProcessReady = function FScene_onProcessReady(event){
+   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 MO.FScene_onProcess = function FScene_onProcess(){
    var o = this;
@@ -390,11 +402,13 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
+   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    o._statusActive = false;
+   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 MO.FScene_process = function FScene_process(){
    var o = this;

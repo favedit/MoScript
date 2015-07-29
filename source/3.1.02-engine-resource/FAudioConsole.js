@@ -18,6 +18,7 @@ MO.FAudioConsole = function FAudioConsole(o){
    // @method
    o.create    = MO.FAudioConsole_create;
    o.load      = MO.FAudioConsole_load;
+   o.select    = MO.FAudioConsole_select;
    // @method
    o.dispose   = MO.FAudioConsole_dispose;
    return o;
@@ -66,6 +67,21 @@ MO.FAudioConsole_load = function FAudioConsole_load(uri){
       audios.set(uri, audio);
    }
    return audio;
+}
+
+//==========================================================
+// <T>选择处理。</T>
+//
+// @method
+//==========================================================
+MO.FAudioConsole_select = function FAudioConsole_select(){
+   var o = this;
+   var audios = o._audios;
+   var count = audios.count();
+   for(var i = 0; i < count; i++){
+      var audio = audios.at(i);
+      audio.select();
+   }
 }
 
 //==========================================================

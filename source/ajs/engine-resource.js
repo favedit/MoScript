@@ -59,9 +59,9 @@ MO.FAudio = function FAudio(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MAudio);
    o._url      = MO.Class.register(o, new MO.AGetter('_url'));
    o._hAudio   = null;
-   o.onLoad    = MO.FAudio_onLoad;
-   o.onLoaded  = MO.FAudio_onLoaded;
-   o.onError   = MO.FAudio_onError;
+   o.ohLoad    = MO.FAudio_ohLoad;
+   o.ohLoaded  = MO.FAudio_ohLoaded;
+   o.ohError   = MO.FAudio_ohError;
    o.construct = MO.FAudio_construct;
    o.volume    = MO.FAudio_volume;
    o.setVolume = MO.FAudio_setVolume;
@@ -70,25 +70,28 @@ MO.FAudio = function FAudio(o){
    o.play      = MO.FAudio_play;
    o.pause     = MO.FAudio_pause;
    o.loadUrl   = MO.FAudio_loadUrl;
+   o.select    = MO.FAudio_select;
    o.dispose   = MO.FAudio_dispose;
    return o;
 }
-MO.FAudio_onLoad = function FAudio_onLoad(){
-   var o = this;
+MO.FAudio_ohLoad = function FAudio_ohLoad(){
+   var o = this.__linker;
    o._ready = true;
+   o._hAudio.oncanplay = null;
    MO.Logger.info(o, 'Audio load success. (url={1})', o._url);
 }
-MO.FAudio_onLoaded = function FAudio_onLoaded(event){
-   var o = this;
+MO.FAudio_ohLoaded = function FAudio_ohLoaded(event){
+   var o = this.__linker;
    o._ready = true;
    o._loaded = true;
    o._finish = true;
+   o._hAudio.oncanplaythrough = null;
    MO.Logger.info(o, 'Audio loaded success. (url={1})', o._url);
 }
-MO.FAudio_onError = function FAudio_onError(event){
-   var o = this;
+MO.FAudio_ohError = function FAudio_ohError(event){
+   var o = this.__linker;
    o._finish = true;
-   MO.Logger.error(o, 'Load image failure. (url={1})', o._url);
+   MO.Logger.error(o, 'Audio load failure. (url={1})', o._url);
 }
 MO.FAudio_construct = function FAudio_construct(){
    var o = this;
@@ -108,16 +111,20 @@ MO.FAudio_setLoop = function FAudio_setLoop(value){
    this._hAudio.loop = value;
 }
 MO.FAudio_play = function FAudio_play(position){
-   var hAudio = this._hAudio;
+   var o = this;
+   var hAudio = o._hAudio;
    if(position != null){
       if(hAudio.currentTime != position){
          hAudio.currentTime = position;
       }
    }
    hAudio.play();
+   MO.Logger.debug(o, 'Audio play. (url={1}, position={2})', o._url, position);
 }
 MO.FAudio_pause = function FAudio_pause(){
-   this._hAudio.pause();
+   var o = this;
+   o._hAudio.pause();
+   MO.Logger.debug(o, 'Audio pause. (url={1})', o._url);
 }
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
@@ -125,10 +132,11 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
+      hAudio.__linker = o;
+      hAudio.oncanplay = o.ohLoad;
+      hAudio.oncanplaythrough = o.ohLoaded;
+      hAudio.onerror = o.ohError;
       hAudio.loop = false;
-      hAudio.oncanplay = o.onLoad.bind(o);
-      hAudio.oncanplaythrough = o.onLoaded.bind(o);
-      hAudio.onerror = o.onError.bind(o);
    }
    if(!MO.Window.Browser.capability.soundFinish){
       o._ready = true;
@@ -137,6 +145,11 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    }
    o._url = url;
    hAudio.src = url;
+}
+MO.FAudio_select = function FAudio_select(){
+   var o = this;
+   o._hAudio.play();
+   o._hAudio.pause();
 }
 MO.FAudio_dispose = function FAudio_dispose(){
    var o = this;
@@ -214,6 +227,7 @@ MO.FAudioConsole = function FAudioConsole(o){
    o.construct = MO.FAudioConsole_construct;
    o.create    = MO.FAudioConsole_create;
    o.load      = MO.FAudioConsole_load;
+   o.select    = MO.FAudioConsole_select;
    o.dispose   = MO.FAudioConsole_dispose;
    return o;
 }
@@ -238,6 +252,15 @@ MO.FAudioConsole_load = function FAudioConsole_load(uri){
       audios.set(uri, audio);
    }
    return audio;
+}
+MO.FAudioConsole_select = function FAudioConsole_select(){
+   var o = this;
+   var audios = o._audios;
+   var count = audios.count();
+   for(var i = 0; i < count; i++){
+      var audio = audios.at(i);
+      audio.select();
+   }
 }
 MO.FAudioConsole_dispose = function FAudioConsole_dispose(){
    var o = this;
@@ -748,6 +771,7 @@ MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    o.unserialize(view);
    view.dispose();
    o._statusReady = true;
+   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
    return this._statusReady;

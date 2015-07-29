@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='/script/acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='/script/ajs/mo.js'></SCRIPT>
+
+</HEAD>
+
+<SCRIPT>
+function _load(){
+   MO.initialize();
+   MO.Window.Browser.construct();
+   MO.Window.connect(window);
+
+   var socket = new WebSocket('ws://localhost:8080/echo');
+   socket.onopen = function(event){
+      //debugger;
+      socket.send('Hello say:test');
+   }
+   socket.onerror = function(event){
+      debugger;
+      //socket.send('Hello.');
+   }
+   socket.onmessage = function(event){
+      var rs = JSON.parse(event.data);
+      console.log(rs);
+      //debugger;
+      //socket.send('Hello.');
+   }
+   socket.onclose = function(event){
+      //debugger;
+   }
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

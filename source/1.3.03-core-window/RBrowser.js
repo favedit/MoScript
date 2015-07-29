@@ -29,11 +29,10 @@ MO.RBrowser = function RBrowser(){
 // <T>日志输出处理。</T>
 //
 // @method
-// @param sender:Object 来源
-// @param message:String 内容
+// @param event:Object 事件信息
 //===========================================================
-MO.RBrowser.prototype.onLog = function RBrowser_onLog(sender, message){
-   console.log(message);
+MO.RBrowser.prototype.onLog = function RBrowser_onLog(event){
+   console.log(event.message);
 }
 
 //===========================================================
@@ -45,10 +44,10 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
    var code = o._agent = window.navigator.userAgent.toString();
    var agent = code.toLowerCase();
-   var capability = o._capability = new MO.SBrowserCapability();
    var properties = o._defineProperties = new Object();
    var events = o._defineEvents = new Object();
    var methods = o._defineMethods = new Object();
+   var capability = o._capability = new MO.SBrowserCapability();
    // 判断设备类型
    if(agent.indexOf("android") != -1){
       o._typeCd = MO.EDevice.Mobile;
@@ -67,6 +66,10 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    }else{
       alert('Unknown browser.\n' + agent);
       return;
+   }
+   // 判断浏览器版本
+   if((agent.indexOf("android 5.1") != -1) || (agent.indexOf("iphone") != -1) || agent.indexOf("ipad") != -1){
+      capability.soundConfirm = true;
    }
    // 是否移动或PC模式
    var bIsIpad = agent.match(/ipad/i) == "ipad";
@@ -143,6 +146,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    }
    // 计算方向
    o.refreshOrientation();
+   MO.Logger.debug(o, 'Browser connect. (agent={1})', o._agent);
 }
 
 //==========================================================

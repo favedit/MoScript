@@ -435,54 +435,48 @@ MO.FJsonConsole_create = function FJsonConsole_create(){
 }
 MO.FLoggerConsole = function FLoggerConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._scopeCd   = MO.EScope.Page;
-   o.iLogger    = null;
-   o.onKeyDown  = MO.FLoggerConsole_onKeyDown;
+   o._scopeCd   = MO.EScope.Global;
+   o._socket    = null;
+   o.onOutput   = MO.FLoggerConsole_onOutput;
    o.construct  = MO.FLoggerConsole_construct;
    o.connect    = MO.FLoggerConsole_connect;
-   o.disconnect = MO.FLoggerConsole_disconnect;
    o.output     = MO.FLoggerConsole_output;
+   o.disconnect = MO.FLoggerConsole_disconnect;
+   o.dispose    = MO.FLoggerConsole_dispose;
    return o;
 }
-MO.FLoggerConsole_onKeyDown = function FLoggerConsole_onKeyDown(e){
-   if(e.shiftKey && e.ctrlKey && EKey.L == e.keyCode){
-      this.connect();
-   }
+MO.FLoggerConsole_onOutput = function FLoggerConsole_onOutput(event){
+   var message = event.message;
+   this.output(message);
 }
 MO.FLoggerConsole_construct = function FLoggerConsole_construct(){
    var o = this;
-   o.base.FConsole.construct.call(o);
-   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   o.__base.FConsole.construct.call(o);
+   MO.Logger.lsnsOutput.register(o, o.onOutput);
 }
-MO.FLoggerConsole_connect = function FLoggerConsole_connect(){
+MO.FLoggerConsole_connect = function FLoggerConsole_connect(url){
+   var o = this;
+   var socket = o._socket = MO.Class.create(MO.FBufferedSocket);
+   socket.connect(url);
+}
+MO.FLoggerConsole_output = function FLoggerConsole_output(message){
+   var socket = this._socket;
+   if(socket){
+      var url = window.location.toString();
+      socket.push('[' + url + '] - ' + message);
+      socket.process();
+   }
 }
 MO.FLoggerConsole_disconnect = function FLoggerConsole_disconnect(){
-   this.iLogger = null;
+   var socket = this._socket;
+   if(socket){
+      socket.close();
+   }
 }
-MO.FLoggerConsole_output = function FLoggerConsole_output(level, obj, method, ms, msg, stack){
+MO.FLoggerConsole_dispose = function FLoggerConsole_dispose(){
    var o = this;
-   if(o.iLogger){
-      var m = MO.Class.dump(obj);
-      if(ms){
-         m += ' (' + ms + 'ms)';
-      }
-      var s = level + ' [' + MO.Lang.String.rpad(m, 36) + '] ';
-      if(stack){
-         s += MO.Lang.String.rpad(msg, 120) + ' [' + stack + ']';
-      }else{
-         s += msg;
-      }
-      o.iLogger.Output(s);
-   }
-}
-MO.FLoggerConsole_xml = function FLoggerConsole_xml(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      return this.environment.xml();
-   }
-   return null;
+   o._socket = MO.Lang.Object.dispose(o._socket);
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FMonitorConsole = function FMonitorConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);

@@ -1685,6 +1685,11 @@ MO.SEnumItem = function SEnumItem(){
    o.value = 0;
    return o;
 }
+MO.SLogger = function SLogger(){
+   var o = this;
+   o.message = null;
+   return o;
+}
 MO.TClass = function TClass(){
    var o = this;
    o.__disposed     = true;
@@ -4938,11 +4943,16 @@ MO.RLogger = function RLogger(){
    var o = this;
    o._statusError = false;
    o._labelLength = 40;
+   o._logger       = new MO.SLogger();
    o.lsnsOutput   = new MO.TListeners();
    return o;
 }
-MO.RLogger.prototype.output = function RLogger_output(s, p){
-   this.lsnsOutput.process(s, p);
+MO.RLogger.prototype.output = function RLogger_output(sender, message){
+   var o = this;
+   var logger = o._logger;
+   logger.sender = sender
+   logger.message = message;
+   o.lsnsOutput.process(logger);
 }
 MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    var o = this;
@@ -4958,7 +4968,7 @@ MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    var result = new MO.TString();
@@ -4995,7 +5005,7 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    var result = new MO.TString();
@@ -5032,7 +5042,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    var result = new MO.TString();
@@ -5055,7 +5065,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    result.append(message);
    o.output(owner, result.flush());
 }
-MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
+MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
    var o = this;
    var name = null;
    var caller = MO.Logger.error.caller;
@@ -5069,12 +5079,12 @@ MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
-   var r = new MO.TString();
-   r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   r.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -5087,10 +5097,10 @@ MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
             s = a.toString();
          }
       }
-      ms = ms.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', s);
    }
-   r.append(ms);
-   o.output(sf, r.flush());
+   result.append(message);
+   o.output(owner, result.flush());
 }
 MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
    var o = this;
@@ -10137,6 +10147,63 @@ MO.TXmlNode_xml = function TXmlNode_xml(){
 MO.TXmlNode_toString = function TXmlNode_toString(){
    return this.xml().toString();
 }
+MO.FBufferedSocket = function FBufferedSocket(o){
+   o = MO.Class.inherits(this, o, MO.FSocket);
+   o._bufferSends    = MO.Class.register(o, new MO.AGetter('_bufferSends'));
+   o._bufferReceives = MO.Class.register(o, new MO.AGetter('_bufferReceives'));
+   o.onOpen          = MO.FBufferedSocket_onOpen;
+   o.construct       = MO.FBufferedSocket_construct;
+   o.push            = MO.FBufferedSocket_push;
+   o.process         = MO.FBufferedSocket_process;
+   o.dispose         = MO.FBufferedSocket_dispose;
+   return o;
+}
+MO.FBufferedSocket_onOpen = function FBufferedSocket_onOpen(event){
+   var o = this;
+   o.__base.FSocket.onOpen.call(o, event);
+   o.process();
+}
+MO.FBufferedSocket_ohError = function FBufferedSocket_ohError(event){
+   var o = this._linker;
+}
+MO.FBufferedSocket_ohMessage = function FBufferedSocket_ohMessage(event){
+   var o = this._linker;
+}
+MO.FBufferedSocket_ohClose = function FBufferedSocket_ohClose(event){
+   var o = this._linker;
+   o._connected = false;
+}
+MO.FBufferedSocket_construct = function FBufferedSocket_construct(){
+   var o = this;
+   o.__base.FSocket.construct.call(o);
+   o._bufferSends = new MO.TObjects();
+   o._bufferReceives = new MO.TObjects();
+}
+MO.FBufferedSocket_push = function FBufferedSocket_push(message){
+   this._bufferSends.push(message);
+}
+MO.FBufferedSocket_process = function FBufferedSocket_process(){
+   var o = this;
+   if(!o._connected){
+      return false;
+   }
+   var sends = o._bufferSends;
+   if(!sends.isEmpty()){
+      var count = sends.count();
+      for(var i = 0; i < count; i++){
+         var message = sends.at(i);
+         o.send(message);
+      }
+      sends.clear();
+   }
+   return true;
+}
+MO.FBufferedSocket_dispose = function FBufferedSocket_dispose(){
+   var o = this;
+   o._bufferSends = MO.Lang.Object.dispose(o._bufferSends);
+   o._bufferReceives = MO.Lang.Object.dispose(o._bufferReceives);
+   o.__base.FSocket.dispose.call(o);
+}
 MO.FBytes = function FBytes(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MDataView);
    o._memory   = MO.Class.register(o, new MO.AGetter('_memory'));
@@ -10507,6 +10574,65 @@ MO.FJsonConnection_onConnectionComplete = function FJsonConnection_onConnectionC
 }
 MO.FJsonConnection_content = function FJsonConnection_content(){
    return this._content;
+}
+MO.FSocket = function FSocket(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._connected = MO.Class.register(o, new MO.AGetter('_connected'), false);
+   o._handle    = MO.Class.register(o, new MO.AGetter('_handle'));
+   o.onOpen     = MO.FSocket_onOpen;
+   o.ohOpen     = MO.FSocket_ohOpen;
+   o.ohError    = MO.FSocket_ohError;
+   o.ohMessage  = MO.FSocket_ohMessage;
+   o.ohClose    = MO.FSocket_ohClose;
+   o.construct  = MO.FSocket_construct;
+   o.connect    = MO.FSocket_connect;
+   o.send       = MO.FSocket_send;
+   o.disconnect = MO.FSocket_disconnect;
+   o.dispose    = MO.FSocket_dispose;
+   return o;
+}
+MO.FSocket_onOpen = function FSocket_onOpen(event){
+   var o = this;
+   o._connected = true;
+}
+MO.FSocket_ohOpen = function FSocket_ohOpen(event){
+   this._linker.onOpen(event);
+}
+MO.FSocket_ohError = function FSocket_ohError(event){
+   var o = this._linker;
+}
+MO.FSocket_ohMessage = function FSocket_ohMessage(event){
+   var o = this._linker;
+}
+MO.FSocket_ohClose = function FSocket_ohClose(event){
+   var o = this._linker;
+   o._connected = false;
+}
+MO.FSocket_construct = function FSocket_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FSocket_connect = function FSocket_connect(url){
+   var o = this;
+   var handle = o._handle = new WebSocket(url);
+   handle._linker = o;
+   handle.onopen = o.ohOpen;
+   handle.onerror = o.ohError
+   handle.onmessage = o.ohMessage;
+   handle.onclose = o.ohClose;
+}
+MO.FSocket_send = function FSocket_send(message){
+   var o = this;
+   o._handle.send(message);
+}
+MO.FSocket_disconnect = function FSocket_disconnect(){
+   var o = this;
+   o._handle.close();
+}
+MO.FSocket_dispose = function FSocket_dispose(){
+   var o = this;
+   o._handle = null;
+   o.__base.FObject.dispose.call(o);
 }
 MO.FXmlConnection = function FXmlConnection(o){
    o = MO.Class.inherits(this, o, MO.FHttpConnection);
@@ -12144,54 +12270,48 @@ MO.FJsonConsole_create = function FJsonConsole_create(){
 }
 MO.FLoggerConsole = function FLoggerConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._scopeCd   = MO.EScope.Page;
-   o.iLogger    = null;
-   o.onKeyDown  = MO.FLoggerConsole_onKeyDown;
+   o._scopeCd   = MO.EScope.Global;
+   o._socket    = null;
+   o.onOutput   = MO.FLoggerConsole_onOutput;
    o.construct  = MO.FLoggerConsole_construct;
    o.connect    = MO.FLoggerConsole_connect;
-   o.disconnect = MO.FLoggerConsole_disconnect;
    o.output     = MO.FLoggerConsole_output;
+   o.disconnect = MO.FLoggerConsole_disconnect;
+   o.dispose    = MO.FLoggerConsole_dispose;
    return o;
 }
-MO.FLoggerConsole_onKeyDown = function FLoggerConsole_onKeyDown(e){
-   if(e.shiftKey && e.ctrlKey && EKey.L == e.keyCode){
-      this.connect();
-   }
+MO.FLoggerConsole_onOutput = function FLoggerConsole_onOutput(event){
+   var message = event.message;
+   this.output(message);
 }
 MO.FLoggerConsole_construct = function FLoggerConsole_construct(){
    var o = this;
-   o.base.FConsole.construct.call(o);
-   MO.RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   o.__base.FConsole.construct.call(o);
+   MO.Logger.lsnsOutput.register(o, o.onOutput);
 }
-MO.FLoggerConsole_connect = function FLoggerConsole_connect(){
+MO.FLoggerConsole_connect = function FLoggerConsole_connect(url){
+   var o = this;
+   var socket = o._socket = MO.Class.create(MO.FBufferedSocket);
+   socket.connect(url);
+}
+MO.FLoggerConsole_output = function FLoggerConsole_output(message){
+   var socket = this._socket;
+   if(socket){
+      var url = window.location.toString();
+      socket.push('[' + url + '] - ' + message);
+      socket.process();
+   }
 }
 MO.FLoggerConsole_disconnect = function FLoggerConsole_disconnect(){
-   this.iLogger = null;
+   var socket = this._socket;
+   if(socket){
+      socket.close();
+   }
 }
-MO.FLoggerConsole_output = function FLoggerConsole_output(level, obj, method, ms, msg, stack){
+MO.FLoggerConsole_dispose = function FLoggerConsole_dispose(){
    var o = this;
-   if(o.iLogger){
-      var m = MO.Class.dump(obj);
-      if(ms){
-         m += ' (' + ms + 'ms)';
-      }
-      var s = level + ' [' + MO.Lang.String.rpad(m, 36) + '] ';
-      if(stack){
-         s += MO.Lang.String.rpad(msg, 120) + ' [' + stack + ']';
-      }else{
-         s += msg;
-      }
-      o.iLogger.Output(s);
-   }
-}
-MO.FLoggerConsole_xml = function FLoggerConsole_xml(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      return this.environment.xml();
-   }
-   return null;
+   o._socket = MO.Lang.Object.dispose(o._socket);
+   o.__base.FConsole.dispose.call(o);
 }
 MO.FMonitorConsole = function FMonitorConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -13170,6 +13290,7 @@ MO.SBrowserCapability = function SBrowserCapability(){
    o.optionProcess    = false;
    o.optionStorage    = false;
    o.canvasAutoScale  = false;
+   o.soundConfirm     = false;
    o.soundFinish      = true;
    o.blobCreate       = false;
    o.pixelRatio       = 1;
@@ -13446,17 +13567,17 @@ MO.RBrowser = function RBrowser(){
    o._contentPath      = '';
    return o;
 }
-MO.RBrowser.prototype.onLog = function RBrowser_onLog(sender, message){
-   console.log(message);
+MO.RBrowser.prototype.onLog = function RBrowser_onLog(event){
+   console.log(event.message);
 }
 MO.RBrowser.prototype.construct = function RBrowser_construct(){
    var o = this;
    var code = o._agent = window.navigator.userAgent.toString();
    var agent = code.toLowerCase();
-   var capability = o._capability = new MO.SBrowserCapability();
    var properties = o._defineProperties = new Object();
    var events = o._defineEvents = new Object();
    var methods = o._defineMethods = new Object();
+   var capability = o._capability = new MO.SBrowserCapability();
    if(agent.indexOf("android") != -1){
       o._typeCd = MO.EDevice.Mobile;
       o._softwareCd = MO.ESoftware.Android;
@@ -13473,6 +13594,9 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    }else{
       alert('Unknown browser.\n' + agent);
       return;
+   }
+   if((agent.indexOf("android 5.1") != -1) || (agent.indexOf("iphone") != -1) || agent.indexOf("ipad") != -1){
+      capability.soundConfirm = true;
    }
    var bIsIpad = agent.match(/ipad/i) == "ipad";
    var bIsIphoneOs = agent.match(/iphone os/i) == "iphone os";
@@ -13539,6 +13663,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       events['visibilitychange'] = 'webkitvisibilitychange';
    }
    o.refreshOrientation();
+   MO.Logger.debug(o, 'Browser connect. (agent={1})', o._agent);
 }
 MO.RBrowser.prototype.agent = function RBrowser_agent(){
    return this._agent;
@@ -18768,10 +18893,12 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
+            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
       if(!handle){
+         MO.Logger.error(o, 'Create context3d failure.');
          var event = new MO.SEvent(o);
          event.code = MO.EGraphicError.UnsupportWebGL;
          event.message = "Current browser can't support WebGL technique.";
@@ -21494,9 +21621,9 @@ MO.FAudio = function FAudio(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MAudio);
    o._url      = MO.Class.register(o, new MO.AGetter('_url'));
    o._hAudio   = null;
-   o.onLoad    = MO.FAudio_onLoad;
-   o.onLoaded  = MO.FAudio_onLoaded;
-   o.onError   = MO.FAudio_onError;
+   o.ohLoad    = MO.FAudio_ohLoad;
+   o.ohLoaded  = MO.FAudio_ohLoaded;
+   o.ohError   = MO.FAudio_ohError;
    o.construct = MO.FAudio_construct;
    o.volume    = MO.FAudio_volume;
    o.setVolume = MO.FAudio_setVolume;
@@ -21505,25 +21632,28 @@ MO.FAudio = function FAudio(o){
    o.play      = MO.FAudio_play;
    o.pause     = MO.FAudio_pause;
    o.loadUrl   = MO.FAudio_loadUrl;
+   o.select    = MO.FAudio_select;
    o.dispose   = MO.FAudio_dispose;
    return o;
 }
-MO.FAudio_onLoad = function FAudio_onLoad(){
-   var o = this;
+MO.FAudio_ohLoad = function FAudio_ohLoad(){
+   var o = this.__linker;
    o._ready = true;
+   o._hAudio.oncanplay = null;
    MO.Logger.info(o, 'Audio load success. (url={1})', o._url);
 }
-MO.FAudio_onLoaded = function FAudio_onLoaded(event){
-   var o = this;
+MO.FAudio_ohLoaded = function FAudio_ohLoaded(event){
+   var o = this.__linker;
    o._ready = true;
    o._loaded = true;
    o._finish = true;
+   o._hAudio.oncanplaythrough = null;
    MO.Logger.info(o, 'Audio loaded success. (url={1})', o._url);
 }
-MO.FAudio_onError = function FAudio_onError(event){
-   var o = this;
+MO.FAudio_ohError = function FAudio_ohError(event){
+   var o = this.__linker;
    o._finish = true;
-   MO.Logger.error(o, 'Load image failure. (url={1})', o._url);
+   MO.Logger.error(o, 'Audio load failure. (url={1})', o._url);
 }
 MO.FAudio_construct = function FAudio_construct(){
    var o = this;
@@ -21543,16 +21673,20 @@ MO.FAudio_setLoop = function FAudio_setLoop(value){
    this._hAudio.loop = value;
 }
 MO.FAudio_play = function FAudio_play(position){
-   var hAudio = this._hAudio;
+   var o = this;
+   var hAudio = o._hAudio;
    if(position != null){
       if(hAudio.currentTime != position){
          hAudio.currentTime = position;
       }
    }
    hAudio.play();
+   MO.Logger.debug(o, 'Audio play. (url={1}, position={2})', o._url, position);
 }
 MO.FAudio_pause = function FAudio_pause(){
-   this._hAudio.pause();
+   var o = this;
+   o._hAudio.pause();
+   MO.Logger.debug(o, 'Audio pause. (url={1})', o._url);
 }
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
@@ -21560,10 +21694,11 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
+      hAudio.__linker = o;
+      hAudio.oncanplay = o.ohLoad;
+      hAudio.oncanplaythrough = o.ohLoaded;
+      hAudio.onerror = o.ohError;
       hAudio.loop = false;
-      hAudio.oncanplay = o.onLoad.bind(o);
-      hAudio.oncanplaythrough = o.onLoaded.bind(o);
-      hAudio.onerror = o.onError.bind(o);
    }
    if(!MO.Window.Browser.capability.soundFinish){
       o._ready = true;
@@ -21572,6 +21707,11 @@ MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    }
    o._url = url;
    hAudio.src = url;
+}
+MO.FAudio_select = function FAudio_select(){
+   var o = this;
+   o._hAudio.play();
+   o._hAudio.pause();
 }
 MO.FAudio_dispose = function FAudio_dispose(){
    var o = this;
@@ -21649,6 +21789,7 @@ MO.FAudioConsole = function FAudioConsole(o){
    o.construct = MO.FAudioConsole_construct;
    o.create    = MO.FAudioConsole_create;
    o.load      = MO.FAudioConsole_load;
+   o.select    = MO.FAudioConsole_select;
    o.dispose   = MO.FAudioConsole_dispose;
    return o;
 }
@@ -21673,6 +21814,15 @@ MO.FAudioConsole_load = function FAudioConsole_load(uri){
       audios.set(uri, audio);
    }
    return audio;
+}
+MO.FAudioConsole_select = function FAudioConsole_select(){
+   var o = this;
+   var audios = o._audios;
+   var count = audios.count();
+   for(var i = 0; i < count; i++){
+      var audio = audios.at(i);
+      audio.select();
+   }
 }
 MO.FAudioConsole_dispose = function FAudioConsole_dispose(){
    var o = this;
@@ -22183,6 +22333,7 @@ MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    o.unserialize(view);
    view.dispose();
    o._statusReady = true;
+   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
    return this._statusReady;
@@ -35324,7 +35475,7 @@ MO.FApplication = function FApplication(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
    o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
-   o.onProcessReady       = MO.Method.empty;
+   o.onProcessReady       = MO.FApplication_onProcessReady;
    o.onProcess            = MO.FApplication_onProcess;
    o.construct            = MO.FApplication_construct;
    o.setup                = MO.Method.empty;
@@ -35337,6 +35488,9 @@ MO.FApplication = function FApplication(o){
    o.process              = MO.FApplication_process;
    o.dispose              = MO.FApplication_dispose;
    return o;
+}
+MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
+   MO.Logger.debug(this, 'Application process ready.');
 }
 MO.FApplication_onProcess = function FApplication_onProcess(event){
    var o = this;
@@ -35419,7 +35573,7 @@ MO.FChapter = function FChapter(o){
    o._activeScene         = MO.Class.register(o, new MO.AGetter('_activeScene'));
    o._statusSetup         = false;
    o._statusActive        = false;
-   o.onProcessReady       = MO.Method.empty;
+   o.onProcessReady       = MO.FChapter_onProcessReady;
    o.construct            = MO.FChapter_construct;
    o.registerScene        = MO.FChapter_registerScene;
    o.unregisterScene      = MO.FChapter_unregisterScene;
@@ -35432,6 +35586,9 @@ MO.FChapter = function FChapter(o){
    o.process              = MO.FChapter_process;
    o.dispose              = MO.FChapter_dispose;
    return o;
+}
+MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
+   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
@@ -35479,10 +35636,12 @@ MO.FChapter_active = function FChapter_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
+   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    o._statusActive = false;
+   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 MO.FChapter_processEvent = function FChapter_processEvent(event){
    var o = this;
@@ -35645,6 +35804,7 @@ MO.FScene = function FScene(o){
    o._statusSetup          = false;
    o._statusActive         = false;
    o.onOperationVisibility = MO.FScene_onOperationVisibility;
+   o.onProcessReady        = MO.FScene_onProcessReady;
    o.onProcessBefore       = MO.Method.empty;
    o.onProcess             = MO.FScene_onProcess;
    o.onProcessAfter        = MO.Method.empty;
@@ -35661,6 +35821,9 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    var o = this;
    o.__base.MEventDispatcher.onOperationVisibility.call(o, event);
    o._visible = event.visibility;
+}
+MO.FScene_onProcessReady = function FScene_onProcessReady(event){
+   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 MO.FScene_onProcess = function FScene_onProcess(){
    var o = this;
@@ -35682,11 +35845,13 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
+   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    o._statusActive = false;
+   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 MO.FScene_process = function FScene_process(){
    var o = this;
@@ -81359,12 +81524,14 @@ MO.FGuiLiveTable_oeUpdate = function FGuiLiveTable_oeUpdate(event){
    o.__base.FGuiControl.oeUpdate.call(o, event);
    if(event.isBefore()){
       if(o._lineScroll < 0){
-         o._lineScroll++;
-         if(o._lineScroll == 0){
+         var scrollStep = Math.max(parseInt(o._lineScroll / o._rowHeight), 1)
+         o._lineScroll += scrollStep;
+         if(o._lineScroll >= 0){
             var entities = o._entities;
             if(entities.count() > o._tableCount){
                entities.pop();
             }
+            o._lineScroll = 0;
          }
          o.dirty();
       }
@@ -81605,6 +81772,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    o._dataTicker              = null;
    o._entityPool              = null;
    o._autios                  = null;
+   o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o.onInvestment             = MO.FEaiStatisticsInvestment_onInvestment;
    o.construct                = MO.FEaiStatisticsInvestment_construct;
@@ -81652,13 +81820,11 @@ MO.FEaiStatisticsInvestment_onInvestment = function FEaiStatisticsInvestment_onI
       }
    }
    o.calculateCurrent();
-   var dsEvent = MO.Memory.alloc(MO.SEvent);
-   dsEvent.sender = o;
+   var dsEvent = o._eventDataChanged;
    dsEvent.entity = null;
    dsEvent.rank = o._rankEntities;
    dsEvent.data = o._tableEntities;
    o.processDataChangedListener(dsEvent);
-   MO.Memory.free(dsEvent);
    var entityCount = entities.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / entityCount;
    o._tableTick = 0;
@@ -81675,6 +81841,7 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);
+   o._eventDataChanged = new MO.SEvent(o);
 }
 MO.FEaiStatisticsInvestment_allocEntity = function FEaiStatisticsInvestment_allocEntity(){
    var o = this;
@@ -81743,13 +81910,11 @@ MO.FEaiStatisticsInvestment_focusEntity = function FEaiStatisticsInvestment_focu
          autio.play(0);
       }
    }
-   var dsEvent = MO.Memory.alloc(MO.SEvent);
-   dsEvent.sender = o;
+   var dsEvent = o._eventDataChanged;
    dsEvent.entity = entity;
    dsEvent.rank = o._rankEntities;
    dsEvent.data = o._tableEntities;
    o.processDataChangedListener(dsEvent);
-   MO.Memory.free(dsEvent);
 }
 MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(){
    var o = this;
@@ -81797,8 +81962,9 @@ MO.FEaiStatisticsInvestment_process = function FEaiStatisticsInvestment_process(
 }
 MO.FEaiStatisticsInvestment_dispose = function FEaiStatisticsInvestment_dispose(){
    var o = this;
-   o._entities = MO.RObject.dispose(o._entities);
-   o._dataTicker = MO.RObject.dispose(o._dataTicker);
+   o._entities = MO.Lang.Object.dispose(o._entities);
+   o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);
+   o._eventDataChanged = MO.Lang.Object.dispose(o._eventDataChanged);
    o.__base.FObject.dispose.call(o);
 }
 with(MO){
@@ -82921,7 +83087,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    if(!o._statusStart){
-      if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+      if(MO.Window.Browser.capability().soundConfirm){
          var iosPlay = document.getElementById('id_ios_play');
          if (iosPlay) {
             MO.Window.Html.visibleSet(iosPlay, true);

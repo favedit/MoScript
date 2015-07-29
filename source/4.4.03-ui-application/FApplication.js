@@ -13,7 +13,7 @@ MO.FApplication = function FApplication(o){
    o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
    //..........................................................
    // @event
-   o.onProcessReady       = MO.Method.empty;
+   o.onProcessReady       = MO.FApplication_onProcessReady;
    o.onProcess            = MO.FApplication_onProcess;
    //..........................................................
    // @method
@@ -31,6 +31,16 @@ MO.FApplication = function FApplication(o){
    // @method
    o.dispose              = MO.FApplication_dispose;
    return o;
+}
+
+//==========================================================
+// <T>响应开始处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
+   MO.Logger.debug(this, 'Application process ready.');
 }
 
 //==========================================================

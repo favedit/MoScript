@@ -14,6 +14,8 @@ MO.SBrowserCapability = function SBrowserCapability(){
    o.optionStorage    = false;
    // @attribute Boolean 支持自动画板缩放
    o.canvasAutoScale  = false;
+   // @attribute Boolean 支持声音确认
+   o.soundConfirm     = false;
    // @attribute Boolean 支持声音完成检测
    o.soundFinish      = true;
    // @attribute Boolean 支持创建二进制

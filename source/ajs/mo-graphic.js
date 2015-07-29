@@ -3934,10 +3934,12 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
+            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
       if(!handle){
+         MO.Logger.error(o, 'Create context3d failure.');
          var event = new MO.SEvent(o);
          event.code = MO.EGraphicError.UnsupportWebGL;
          event.message = "Current browser can't support WebGL technique.";

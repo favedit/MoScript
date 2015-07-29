@@ -827,7 +827,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    if(!o._statusStart){
-      if (MO.Window.Browser.isBrowser(MO.EBrowser.Safari)) {
+      if(MO.Window.Browser.capability().soundConfirm){
          var iosPlay = document.getElementById('id_ios_play');
          if (iosPlay) {
             MO.Window.Html.visibleSet(iosPlay, true);

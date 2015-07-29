@@ -46,18 +46,19 @@
       function oniOSStart(event) {
           var hLoading = document.getElementById("id_ios_play")
           document.body.removeChild(hLoading);
+          MO.Console.find(MO.FAudioConsole).select();
           var liveScene = MO.Desktop.application().activeChapter().activeScene();
           liveScene._statusLayerLevel = -1;
-          liveScene._groundAutio.play();
-          liveScene._mapEntity._countryEntity._audioMapEnter._hAudio.play();
-          liveScene._investment._autios[1].play();
-          liveScene._investment._autios[1].pause();
-          liveScene._investment._autios[2].play();
-          liveScene._investment._autios[2].pause();
-          liveScene._investment._autios[3].play();
-          liveScene._investment._autios[3].pause();
-          liveScene._investment._autios[4].play();
-          liveScene._investment._autios[4].pause();
+          liveScene._groundAutio.play(0);
+          liveScene._countryEntity._audioMapEnter.play(0);
+          //liveScene._investment._autios[1].play();
+          //liveScene._investment._autios[1].pause();
+          //liveScene._investment._autios[2].play();
+          //liveScene._investment._autios[2].pause();
+          //liveScene._investment._autios[3].play();
+          //liveScene._investment._autios[3].pause();
+          //liveScene._investment._autios[4].play();
+          //liveScene._investment._autios[4].pause();
       }
 
       function onLoad() {
@@ -75,14 +76,12 @@
          //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.201.170');
          MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, '115.28.136.134');
          MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
+         // 设置日志
+         MO.Console.find(MO.FLoggerConsole).connect('ws://192.168.1.107:8080/logger');
          // 设置应用
-   try{
          var application = MO.Desktop.initialize(MO.FEaiChartApplication);
          application.setSceneCode(MO.EEaiScene.ChartLive);
          application.setup(document.body);
-   }catch(e){
-         alert(e.message);
-   }
       }
    </script>
 </head>

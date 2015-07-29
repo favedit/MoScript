@@ -13,6 +13,7 @@ MO.RLogger = function RLogger(){
    o._labelLength = 40;
    //..........................................................
    // @listener
+   o._logger       = new MO.SLogger();
    o.lsnsOutput   = new MO.TListeners();
    return o;
 }
@@ -21,10 +22,15 @@ MO.RLogger = function RLogger(){
 // <T>输出日志信息。</T>
 //
 // @method
-// @param p:value:Object 消息内容
+// @param sender:Object 发送者
+// @param message:String 消息
 //==========================================================
-MO.RLogger.prototype.output = function RLogger_output(s, p){
-   this.lsnsOutput.process(s, p);
+MO.RLogger.prototype.output = function RLogger_output(sender, message){
+   var o = this;
+   var logger = o._logger;
+   logger.sender = sender
+   logger.message = message;
+   o.lsnsOutput.process(logger);
 }
 
 //==========================================================
@@ -50,7 +56,7 @@ MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    //..........................................................
@@ -100,7 +106,7 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    //..........................................................
@@ -150,7 +156,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    //..........................................................
@@ -185,7 +191,7 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
 // @param message:String 消息内容
 // @param params:Object... 消息参数列表
 //==========================================================
-MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
+MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
    var o = this;
    // 获得函数名称
    var name = null;
@@ -200,13 +206,13 @@ MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
    }else{
       name = name.replace('_', '.');
    }
-   if(owner.hashCode){
+   if(owner && owner.hashCode){
       name += '@' + owner.hashCode();
    }
    //..........................................................
-   var r = new MO.TString();
-   r.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   r.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
    // 格式化参数
    var as = arguments;
    var c = as.length;
@@ -220,11 +226,11 @@ MO.RLogger.prototype.error = function RLogger_error(sf, ms, params){
             s = a.toString();
          }
       }
-      ms = ms.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', s);
    }
-   r.append(ms);
+   result.append(message);
    //..........................................................
-   o.output(sf, r.flush());
+   o.output(owner, result.flush());
 }
 
 //==========================================================
