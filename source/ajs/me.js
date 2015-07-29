@@ -22042,29 +22042,20 @@ MO.FResourceConsole_load = function FResourceConsole_load(resource){
    o._loadResources.push(resource);
    resource._dataLoad = true;
 }
-MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(package){
+MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(resourcePackage){
    var o = this;
-   var packages = o._packages;
-   var package = packages.get(uri);
-   if(!package){
-      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-      package = MO.Class.create(MO.FResourcePackage);
-      package.loadUrl(url);
-      packages.set(uri, package);
-   }
-   return package;
 }
 MO.FResourceConsole_loadPackageByUrl = function FResourceConsole_loadPackageByUrl(uri){
    var o = this;
-   var packages = o._packages;
-   var package = packages.get(uri);
-   if(!package){
+   var resourcePackages = o._packages;
+   var resourcePackage = resourcePackages.get(uri);
+   if(!resourcePackage){
       var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-      package = MO.Class.create(MO.FResourcePackage);
-      package.loadUrl(url);
-      packages.set(uri, package);
+      resourcePackage = MO.Class.create(MO.FResourcePackage);
+      resourcePackage.loadUrl(url);
+      resourcePackages.set(uri, resourcePackage);
    }
-   return package;
+   return resourcePackage;
 }
 MO.FResourceConsole_dispose = function FResourceConsole_dispose(){
    var o = this;
@@ -33460,8 +33451,6 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
       }
       o._statusInRange = inRange;
    }
-   if(inRange){
-   }
    var speed = o._currentSpeed;
    var distanceX = speed.x * second;
    var distanceY = speed.y * second;
@@ -35648,24 +35637,30 @@ MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
 }
 MO.FScene = function FScene(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
-   o._visible             = MO.Class.register(o, new MO.AGetSet('_visible'), true);
-   o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
-   o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
-   o._activeStage         = MO.Class.register(o, new MO.AGetSet('_activeStage'));
-   o._statusSetup         = false;
-   o._statusActive        = false;
-   o.onProcessBefore      = MO.Method.empty;
-   o.onProcess            = MO.FScene_onProcess;
-   o.onProcessAfter       = MO.Method.empty;
-   o.construct            = MO.FScene_construct;
-   o.setup                = MO.Method.empty;
-   o.active               = MO.FScene_active;
-   o.deactive             = MO.FScene_deactive;
-   o.processEvent         = MO.FScene_processEvent;
-   o.process              = MO.FScene_process;
-   o.dispose              = MO.FScene_dispose;
+   o._visible              = MO.Class.register(o, new MO.AGetSet('_visible'), true);
+   o._code                 = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._application          = MO.Class.register(o, new MO.AGetSet('_application'));
+   o._chapter              = MO.Class.register(o, new MO.AGetSet('_chapter'));
+   o._activeStage          = MO.Class.register(o, new MO.AGetSet('_activeStage'));
+   o._statusSetup          = false;
+   o._statusActive         = false;
+   o.onOperationVisibility = MO.FScene_onOperationVisibility;
+   o.onProcessBefore       = MO.Method.empty;
+   o.onProcess             = MO.FScene_onProcess;
+   o.onProcessAfter        = MO.Method.empty;
+   o.construct             = MO.FScene_construct;
+   o.setup                 = MO.Method.empty;
+   o.active                = MO.FScene_active;
+   o.deactive              = MO.FScene_deactive;
+   o.processEvent          = MO.FScene_processEvent;
+   o.process               = MO.FScene_process;
+   o.dispose               = MO.FScene_dispose;
    return o;
+}
+MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.MEventDispatcher.onOperationVisibility.call(o, event);
+   o._visible = event.visibility;
 }
 MO.FScene_onProcess = function FScene_onProcess(){
    var o = this;
@@ -37274,31 +37269,6 @@ MO.FGuiManager_processResize = function FGuiManager_processResize(event){
 MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
    var o = this;
    o.dispatcherEvent(event);
-   return;
-   if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
-      var context = o._graphicContext;
-      var ratio = context.ratio();
-      var locationX = event.clientX * ratio;
-      var locationY = event.clientY * ratio;
-      var visibleControls = o._visibleControls;
-      visibleControls.clear();
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         if(control.visible()){
-            visibleControls.push(control);
-         }
-      }
-      var count = visibleControls.count();
-      for(var i = 0; i < count; i++){
-         var control = visibleControls.at(i);
-         var location = control.location();
-         event.locationX = locationX - location.x;
-         event.locationY = locationY - location.y;
-         control.processEvent(event);
-      }
-   }
 }
 MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
    var o = this;

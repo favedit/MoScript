@@ -179,35 +179,34 @@ MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
    var o = this;
    // 处理事件
    o.dispatcherEvent(event);
-   return;
    // 处理鼠标
-   if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
-      // 计算屏幕点击
-      var context = o._graphicContext;
-      var ratio = context.ratio();
-      var locationX = event.clientX * ratio;
-      var locationY = event.clientY * ratio;
-      // 获得可见控件
-      var visibleControls = o._visibleControls;
-      visibleControls.clear();
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         if(control.visible()){
-            visibleControls.push(control);
-         }
-      }
-      // 事件处理
-      var count = visibleControls.count();
-      for(var i = 0; i < count; i++){
-         var control = visibleControls.at(i);
-         var location = control.location();
-         event.locationX = locationX - location.x;
-         event.locationY = locationY - location.y;
-         control.processEvent(event);
-      }
-   }
+   //if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
+   //   // 计算屏幕点击
+   //   var context = o._graphicContext;
+   //   var ratio = context.ratio();
+   //   var locationX = event.clientX * ratio;
+   //   var locationY = event.clientY * ratio;
+   //   // 获得可见控件
+   //   var visibleControls = o._visibleControls;
+   //   visibleControls.clear();
+   //   var controls = o._controls;
+   //   var count = controls.count();
+   //   for(var i = 0; i < count; i++){
+   //      var control = controls.at(i);
+   //      if(control.visible()){
+   //         visibleControls.push(control);
+   //      }
+   //   }
+   //   // 事件处理
+   //   var count = visibleControls.count();
+   //   for(var i = 0; i < count; i++){
+   //      var control = visibleControls.at(i);
+   //      var location = control.location();
+   //      event.locationX = locationX - location.x;
+   //      event.locationY = locationY - location.y;
+   //      control.processEvent(event);
+   //   }
+   //}
 }
 
 //==========================================================

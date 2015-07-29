@@ -136,6 +136,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay           = MO.FEaiChartHistoryScene_onOperationPlay;
    o.onOperationPause          = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onOperationVisibility     = MO.FEaiChartHistoryScene_onOperationVisibility;
    o.onProcessReady            = MO.FEaiChartHistoryScene_onProcessReady;
    o.onProcess                 = MO.FEaiChartHistoryScene_onProcess;
    o.onSwitchLiveComplete      = MO.FEaiChartHistoryScene_onSwitchLiveComplete;
@@ -207,6 +208,17 @@ MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOper
 MO.FEaiChartHistoryScene_onOperationPause = function FEaiChartHistoryScene_onOperationPause(event){
    var o = this;
    o.switchPlay(false);
+}
+MO.FEaiChartHistoryScene_onOperationVisibility = function FEaiChartHistoryScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
+   if(event.visibility){
+      o._groundAutio.play();
+      o._countryEntity._audioMapEnter._hAudio.muted = false;
+   }else{
+      o._groundAutio.pause();
+      o._countryEntity._audioMapEnter._hAudio.muted = true;
+   }
 }
 MO.FEaiChartHistoryScene_onProcessReady = function FEaiChartHistoryScene_onProcessReady() {
    var o = this;
@@ -771,6 +783,7 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    o._statusLayerLevel       = 100;
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
    o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
+   o.onOperationVisibility   = MO.FEaiChartLiveScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartLiveScene_onProcessReady;
    o.onProcess               = MO.FEaiChartLiveScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartLiveScene_onSwitchProcess;
@@ -792,6 +805,17 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
    if(entity){
       var pop = o._livePop;
       pop.setData(entity);
+   }
+}
+MO.FEaiChartLiveScene_onOperationVisibility = function FEaiChartLiveScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
+   if(event.visibility){
+      o._groundAutio.play();
+      o._countryEntity._audioMapEnter._hAudio.muted = false;
+   }else{
+      o._groundAutio.pause();
+      o._countryEntity._audioMapEnter._hAudio.muted = true;
    }
 }
 MO.FEaiChartLiveScene_onProcessReady = function FEaiChartLiveScene_onProcessReady() {
@@ -836,6 +860,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._countryEntity;
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -920,7 +945,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
    o._readyLoader.push(countryEntity);
 }
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
-   return;
    var o = this;
    var particle = o._particle;
    var location = cityResource.location();
@@ -1035,7 +1059,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o._flagSprite           = null;
    o._southSea             = null;
    o._groundAutio          = null;
-   o.onOperationVisibility = MO.FEaiChartScene_onOperationVisibility;
    o.onLoadTemplate        = MO.FEaiChartScene_onLoadTemplate;
    o.onProcess             = MO.FEaiChartScene_onProcess;
    o.construct             = MO.FEaiChartScene_construct;
@@ -1047,18 +1070,6 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.deactive              = MO.FEaiChartScene_deactive;
    o.dispose               = MO.FEaiChartScene_dispose;
    return o;
-}
-MO.FEaiChartScene_onOperationVisibility = function FEaiChartScene_onOperationVisibility(event) {
-   var o = this;
-   o.__base.FEaiScene.onOperationVisibility.call(o, event);
-   if (event.visibility) {
-      o._groundAutio.play();
-      o._mapEntity._countryEntity._audioMapEnter._hAudio.muted = false;
-   }
-   else {
-      o._groundAutio.pause();
-      o._mapEntity._countryEntity._audioMapEnter._hAudio.muted = true;
-   }
 }
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;
@@ -1498,7 +1509,6 @@ MO.FEaiChartWorldScene_testReady = function FEaiChartWorldScene_testReady(){
    return true;
 }
 MO.FEaiChartWorldScene_showParticle = function FEaiChartWorldScene_showParticle(provinceEntity, cityResource){
-   return;
    var o = this;
    var particle = o._particle;
    var location = cityResource.location();
@@ -1759,7 +1769,6 @@ MO.FEaiScene = function FEaiScene(o){
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    o.onOperationKeyDown     = MO.FEaiScene_onOperationKeyDown;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
-   o.onOperationVisibility  = MO.FEaiScene_onOperationVisibility;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
    o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
    o.construct              = MO.FEaiScene_construct;
@@ -1784,11 +1793,6 @@ MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
    var o = this;
    o.__base.FScene.onOperationResize.call(o, event);
    o.processResize();
-}
-MO.FEaiScene_onOperationVisibility = function FEaiScene_onOperationVisibility(event){
-   var o = this;
-   o.__base.FScene.onOperationVisibility.call(o, event);
-   o._visible = event.visibility;
 }
 MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(event){
    var o = this;

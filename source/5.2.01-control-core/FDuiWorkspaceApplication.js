@@ -68,12 +68,11 @@ MO.FDuiWorkspaceApplication_processResize = function FDuiWorkspaceApplication_pr
 //==========================================================
 MO.FDuiWorkspaceApplication_processEvent = function FDuiWorkspaceApplication_processEvent(event){
    var o = this;
-   return;
    // 处理事件
-   o.dispatcherEvent(event);
+   //o.dispatcherEvent(event);
    // 激活章节处理事件
-   var chapter = o._activeWorkspace;
-   if(chapter){
-      chapter.processEvent(event);
-   }
+   //var chapter = o._activeWorkspace;
+   //if(chapter){
+   //   chapter.processEvent(event);
+   //}
 }

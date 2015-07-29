@@ -4505,16 +4505,6 @@ MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_on
 MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(event){
    var o = this;
    o.__base.FDuiControl.oeResize.call(o, event);
-   return;
-   var hp = o._hPanel;
-   var w = hp.offsetWidth;
-   var h = hp.offsetHeight;
-   var s = o._activeSpace;
-   if(s){
-      var cp = s.camera().projection();
-      cp.size().set(w, h);
-      cp.update();
-   }
    return MO.EEventStatus.Stop;
 }
 MO.FDsSystemFrameSpaceContent_oeFrame = function FDsSystemFrameSpaceContent_oeFrame(event){
@@ -4542,24 +4532,6 @@ MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(
    guiManager.setDesktop(desktop);
    guiManager.setCanvas(desktop.canvas2d());
    guiManager.setup();
-   return;
-   o.__base.FDuiControl.build.call(o, hPanel);
-   o.setPanel(hPanel);
-   var stage = o._activeStage = MO.Class.create(MO.FDsStage);
-   stage.linkGraphicContext(o);
-   var region = stage.region();
-   region.linkGraphicContext(o);
-   region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
-   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
-   var camera = region.camera();
-   var projection = camera.projection();
-   projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
-   projection.update();
-   camera.position().set(0, 0, -10);
-   camera.lookAt(0, 0, 0);
-   camera.update();
-   stage.addEnterFrameListener(o, o.onProcess);
-   MO.RStage.register('design.frame.stage', stage);
 }
 MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
    var o = this;

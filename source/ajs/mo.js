@@ -22042,29 +22042,20 @@ MO.FResourceConsole_load = function FResourceConsole_load(resource){
    o._loadResources.push(resource);
    resource._dataLoad = true;
 }
-MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(package){
+MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(resourcePackage){
    var o = this;
-   var packages = o._packages;
-   var package = packages.get(uri);
-   if(!package){
-      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-      package = MO.Class.create(MO.FResourcePackage);
-      package.loadUrl(url);
-      packages.set(uri, package);
-   }
-   return package;
 }
 MO.FResourceConsole_loadPackageByUrl = function FResourceConsole_loadPackageByUrl(uri){
    var o = this;
-   var packages = o._packages;
-   var package = packages.get(uri);
-   if(!package){
+   var resourcePackages = o._packages;
+   var resourcePackage = resourcePackages.get(uri);
+   if(!resourcePackage){
       var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-      package = MO.Class.create(MO.FResourcePackage);
-      package.loadUrl(url);
-      packages.set(uri, package);
+      resourcePackage = MO.Class.create(MO.FResourcePackage);
+      resourcePackage.loadUrl(url);
+      resourcePackages.set(uri, resourcePackage);
    }
-   return package;
+   return resourcePackage;
 }
 MO.FResourceConsole_dispose = function FResourceConsole_dispose(){
    var o = this;
@@ -33460,8 +33451,6 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
       }
       o._statusInRange = inRange;
    }
-   if(inRange){
-   }
    var speed = o._currentSpeed;
    var distanceX = speed.x * second;
    var distanceY = speed.y * second;
@@ -35648,24 +35637,30 @@ MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
 }
 MO.FScene = function FScene(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
-   o._visible             = MO.Class.register(o, new MO.AGetSet('_visible'), true);
-   o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
-   o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
-   o._activeStage         = MO.Class.register(o, new MO.AGetSet('_activeStage'));
-   o._statusSetup         = false;
-   o._statusActive        = false;
-   o.onProcessBefore      = MO.Method.empty;
-   o.onProcess            = MO.FScene_onProcess;
-   o.onProcessAfter       = MO.Method.empty;
-   o.construct            = MO.FScene_construct;
-   o.setup                = MO.Method.empty;
-   o.active               = MO.FScene_active;
-   o.deactive             = MO.FScene_deactive;
-   o.processEvent         = MO.FScene_processEvent;
-   o.process              = MO.FScene_process;
-   o.dispose              = MO.FScene_dispose;
+   o._visible              = MO.Class.register(o, new MO.AGetSet('_visible'), true);
+   o._code                 = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._application          = MO.Class.register(o, new MO.AGetSet('_application'));
+   o._chapter              = MO.Class.register(o, new MO.AGetSet('_chapter'));
+   o._activeStage          = MO.Class.register(o, new MO.AGetSet('_activeStage'));
+   o._statusSetup          = false;
+   o._statusActive         = false;
+   o.onOperationVisibility = MO.FScene_onOperationVisibility;
+   o.onProcessBefore       = MO.Method.empty;
+   o.onProcess             = MO.FScene_onProcess;
+   o.onProcessAfter        = MO.Method.empty;
+   o.construct             = MO.FScene_construct;
+   o.setup                 = MO.Method.empty;
+   o.active                = MO.FScene_active;
+   o.deactive              = MO.FScene_deactive;
+   o.processEvent          = MO.FScene_processEvent;
+   o.process               = MO.FScene_process;
+   o.dispose               = MO.FScene_dispose;
    return o;
+}
+MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.MEventDispatcher.onOperationVisibility.call(o, event);
+   o._visible = event.visibility;
 }
 MO.FScene_onProcess = function FScene_onProcess(){
    var o = this;
@@ -37274,31 +37269,6 @@ MO.FGuiManager_processResize = function FGuiManager_processResize(event){
 MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
    var o = this;
    o.dispatcherEvent(event);
-   return;
-   if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
-      var context = o._graphicContext;
-      var ratio = context.ratio();
-      var locationX = event.clientX * ratio;
-      var locationY = event.clientY * ratio;
-      var visibleControls = o._visibleControls;
-      visibleControls.clear();
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         if(control.visible()){
-            visibleControls.push(control);
-         }
-      }
-      var count = visibleControls.count();
-      for(var i = 0; i < count; i++){
-         var control = visibleControls.at(i);
-         var location = control.location();
-         event.locationX = locationX - location.x;
-         event.locationY = locationY - location.y;
-         control.processEvent(event);
-      }
-   }
 }
 MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
    var o = this;
@@ -40309,10 +40279,6 @@ MO.RDuiEvent.prototype.ohEvent = function RDuiEvent_ohEvent(e){
 }
 MO.RDuiEvent.prototype.onProcess = function RDuiEvent_onProcess(e){
    var e = this;
-   var ea = e.annotation;
-   if(ea._logger){
-      MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, MO.Class.dump(e.source), MO.Class.dump(e.hSource), MO.Method.name(e.onProcess));
-   }
    if(e.sender){
       e.onProcess.call(e.source, e.sender, e);
    }else{
@@ -40348,9 +40314,6 @@ MO.RDuiEvent.prototype.process = function RDuiEvent_process(hs, he){
             e.hSource = hs;
             ea.attach(e, he);
             if(e.ohProcess){
-               if(ea._logger){
-                  MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, MO.Class.dump(e.source), MO.Class.dump(e.hSource), MO.Method.name(e.ohProcess));
-               }
                e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
                MO.Console.find(MO.FDuiFrameEventConsole).push(e);
@@ -42185,12 +42148,6 @@ MO.FDuiWorkspaceApplication_processResize = function FDuiWorkspaceApplication_pr
 }
 MO.FDuiWorkspaceApplication_processEvent = function FDuiWorkspaceApplication_processEvent(event){
    var o = this;
-   return;
-   o.dispatcherEvent(event);
-   var chapter = o._activeWorkspace;
-   if(chapter){
-      chapter.processEvent(event);
-   }
 }
 MO.FDuiWorkspaceConsole = function FDuiWorkspaceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -77598,16 +77555,6 @@ MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_on
 MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(event){
    var o = this;
    o.__base.FDuiControl.oeResize.call(o, event);
-   return;
-   var hp = o._hPanel;
-   var w = hp.offsetWidth;
-   var h = hp.offsetHeight;
-   var s = o._activeSpace;
-   if(s){
-      var cp = s.camera().projection();
-      cp.size().set(w, h);
-      cp.update();
-   }
    return MO.EEventStatus.Stop;
 }
 MO.FDsSystemFrameSpaceContent_oeFrame = function FDsSystemFrameSpaceContent_oeFrame(event){
@@ -77635,24 +77582,6 @@ MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(
    guiManager.setDesktop(desktop);
    guiManager.setCanvas(desktop.canvas2d());
    guiManager.setup();
-   return;
-   o.__base.FDuiControl.build.call(o, hPanel);
-   o.setPanel(hPanel);
-   var stage = o._activeStage = MO.Class.create(MO.FDsStage);
-   stage.linkGraphicContext(o);
-   var region = stage.region();
-   region.linkGraphicContext(o);
-   region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
-   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
-   var camera = region.camera();
-   var projection = camera.projection();
-   projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
-   projection.update();
-   camera.position().set(0, 0, -10);
-   camera.lookAt(0, 0, 0);
-   camera.update();
-   stage.addEnterFrameListener(o, o.onProcess);
-   MO.RStage.register('design.frame.stage', stage);
 }
 MO.FDsSystemFrameSpaceContent_selectControl = function FDsSystemFrameSpaceContent_selectControl(control){
    var o = this;

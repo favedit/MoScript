@@ -11081,29 +11081,20 @@ MO.FResourceConsole_load = function FResourceConsole_load(resource){
    o._loadResources.push(resource);
    resource._dataLoad = true;
 }
-MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(package){
+MO.FResourceConsole_loadPackage = function FResourceConsole_loadPackage(resourcePackage){
    var o = this;
-   var packages = o._packages;
-   var package = packages.get(uri);
-   if(!package){
-      var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-      package = MO.Class.create(MO.FResourcePackage);
-      package.loadUrl(url);
-      packages.set(uri, package);
-   }
-   return package;
 }
 MO.FResourceConsole_loadPackageByUrl = function FResourceConsole_loadPackageByUrl(uri){
    var o = this;
-   var packages = o._packages;
-   var package = packages.get(uri);
-   if(!package){
+   var resourcePackages = o._packages;
+   var resourcePackage = resourcePackages.get(uri);
+   if(!resourcePackage){
       var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-      package = MO.Class.create(MO.FResourcePackage);
-      package.loadUrl(url);
-      packages.set(uri, package);
+      resourcePackage = MO.Class.create(MO.FResourcePackage);
+      resourcePackage.loadUrl(url);
+      resourcePackages.set(uri, resourcePackage);
    }
-   return package;
+   return resourcePackage;
 }
 MO.FResourceConsole_dispose = function FResourceConsole_dispose(){
    var o = this;
@@ -22498,8 +22489,6 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
          o._currentSpeed.assign(o._storeSpeed);
       }
       o._statusInRange = inRange;
-   }
-   if(inRange){
    }
    var speed = o._currentSpeed;
    var distanceX = speed.x * second;

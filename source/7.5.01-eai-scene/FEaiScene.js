@@ -14,7 +14,6 @@ MO.FEaiScene = function FEaiScene(o){
    // @event
    o.onOperationKeyDown     = MO.FEaiScene_onOperationKeyDown;
    o.onOperationResize      = MO.FEaiScene_onOperationResize;
-   o.onOperationVisibility  = MO.FEaiScene_onOperationVisibility;
    o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
    o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
    //..........................................................
@@ -60,18 +59,6 @@ MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
    o.__base.FScene.onOperationResize.call(o, event);
    // 改变大小处理
    o.processResize();
-}
-
-//==========================================================
-// <T>操作可见处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiScene_onOperationVisibility = function FEaiScene_onOperationVisibility(event){
-   var o = this;
-   o.__base.FScene.onOperationVisibility.call(o, event);
-   o._visible = event.visibility;
 }
 
 //==========================================================

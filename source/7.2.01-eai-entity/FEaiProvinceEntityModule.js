@@ -30,7 +30,7 @@ MO.FEaiProvinceEntityModule_construct = function FEaiProvinceEntityModule_constr
    var o = this;
    o.__base.FEaiEntityModule.construct.call(o);
    // 设置属性
-   o._provinces = MO.TDictionary();
+   o._provinces = new MO.TDictionary();
 }
 
 //==========================================================

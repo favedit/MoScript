@@ -83,7 +83,6 @@ MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback)
    return connection;
 }
 
-
 //==========================================================
 // <T>释放处理。</T>
 //

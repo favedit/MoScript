@@ -166,8 +166,6 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
       }
       o._statusInRange = inRange;
    }
-   if(inRange){
-   }
    var speed = o._currentSpeed;
    var distanceX = speed.x * second;
    var distanceY = speed.y * second;

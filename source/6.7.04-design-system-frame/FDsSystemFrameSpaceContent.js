@@ -277,18 +277,17 @@ MO.FDsSystemFrameSpaceContent_onKeyDown = function FDsSystemFrameSpaceContent_on
 MO.FDsSystemFrameSpaceContent_oeResize = function FDsSystemFrameSpaceContent_oeResize(event){
    var o = this;
    o.__base.FDuiControl.oeResize.call(o, event);
-   return;
    // 获得大小
-   var hp = o._hPanel;
-   var w = hp.offsetWidth;
-   var h = hp.offsetHeight;
+   //var hp = o._hPanel;
+   //var w = hp.offsetWidth;
+   //var h = hp.offsetHeight;
    // 设置投影
-   var s = o._activeSpace;
-   if(s){
-      var cp = s.camera().projection();
-      cp.size().set(w, h);
-      cp.update();
-   }
+   //var s = o._activeSpace;
+   //if(s){
+   //   var cp = s.camera().projection();
+   //   cp.size().set(w, h);
+   //   cp.update();
+   //}
    // 设置范围
    return MO.EEventStatus.Stop;
 }
@@ -341,27 +340,26 @@ MO.FDsSystemFrameSpaceContent_build = function FDsSystemFrameSpaceContent_build(
    guiManager.setDesktop(desktop);
    guiManager.setCanvas(desktop.canvas2d());
    guiManager.setup();
-   return;
-   o.__base.FDuiControl.build.call(o, hPanel);
+   //o.__base.FDuiControl.build.call(o, hPanel);
    // 设置显示
-   o.setPanel(hPanel);
+   //o.setPanel(hPanel);
    // 创建舞台
-   var stage = o._activeStage = MO.Class.create(MO.FDsStage);
-   stage.linkGraphicContext(o);
-   var region = stage.region();
-   region.linkGraphicContext(o);
-   region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
-   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
-   var camera = region.camera();
-   var projection = camera.projection();
-   projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
-   projection.update();
-   camera.position().set(0, 0, -10);
-   camera.lookAt(0, 0, 0);
-   camera.update();
-   stage.addEnterFrameListener(o, o.onProcess);
+   //var stage = o._activeStage = MO.Class.create(MO.FDsStage);
+   //stage.linkGraphicContext(o);
+   //var region = stage.region();
+   //region.linkGraphicContext(o);
+   //region.backgroundColor().set(0.5, 0.5, 0.5, 1.0);
+   //stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+   //var camera = region.camera();
+   //var projection = camera.projection();
+   //projection.size().set(hPanel.offsetWidth, hPanel.offsetHeight);
+   //projection.update();
+   //camera.position().set(0, 0, -10);
+   //camera.lookAt(0, 0, 0);
+   //camera.update();
+   //stage.addEnterFrameListener(o, o.onProcess);
    // 注册舞台
-   MO.RStage.register('design.frame.stage', stage);
+   //MO.RStage.register('design.frame.stage', stage);
 }
 
 //==========================================================

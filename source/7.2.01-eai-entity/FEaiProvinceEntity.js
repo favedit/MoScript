@@ -154,33 +154,32 @@ MO.FEaiProvinceEntity_buildFace = function FEaiProvinceEntity_buildFace(context)
       //vertexStart += positionCount;
    }
    // 建立边缘数据
-   var vertexStart = 0;
-   for(var n = 0; n < count; n++){
-      continue;
-      var boundary = boundaries.at(n);
-      // 填充顶点
-      var positionCount = boundary.positionCount();
-      // 填充三角索引
-      for(var i = 0; i < positionCount; i++){
-         if(i == positionCount - 1){
-            faceData[faceIndex++] = vertexStart + i;
-            faceData[faceIndex++] = vertexStart + 0;
-            faceData[faceIndex++] = vertexStart + i + layerStart;
-            faceData[faceIndex++] = vertexStart + 0;
-            faceData[faceIndex++] = vertexStart + layerStart;
-            faceData[faceIndex++] = vertexStart + i + layerStart;
-         }else{
-            faceData[faceIndex++] = vertexStart + i;
-            faceData[faceIndex++] = vertexStart + i + 1;
-            faceData[faceIndex++] = vertexStart + i + layerStart;
-            faceData[faceIndex++] = vertexStart + i + 1;
-            faceData[faceIndex++] = vertexStart + i + layerStart + 1;
-            faceData[faceIndex++] = vertexStart + i + layerStart;
-         }
-      }
-      // 修正位置
-      vertexStart += positionCount;
-   }
+   //var vertexStart = 0;
+   //for(var n = 0; n < count; n++){
+   //   var boundary = boundaries.at(n);
+   //   // 填充顶点
+   //   var positionCount = boundary.positionCount();
+   //   // 填充三角索引
+   //   for(var i = 0; i < positionCount; i++){
+   //      if(i == positionCount - 1){
+   //         faceData[faceIndex++] = vertexStart + i;
+   //         faceData[faceIndex++] = vertexStart + 0;
+   //         faceData[faceIndex++] = vertexStart + i + layerStart;
+   //         faceData[faceIndex++] = vertexStart + 0;
+   //         faceData[faceIndex++] = vertexStart + layerStart;
+   //         faceData[faceIndex++] = vertexStart + i + layerStart;
+   //      }else{
+   //         faceData[faceIndex++] = vertexStart + i;
+   //         faceData[faceIndex++] = vertexStart + i + 1;
+   //         faceData[faceIndex++] = vertexStart + i + layerStart;
+   //         faceData[faceIndex++] = vertexStart + i + 1;
+   //         faceData[faceIndex++] = vertexStart + i + layerStart + 1;
+   //         faceData[faceIndex++] = vertexStart + i + layerStart;
+   //      }
+   //   }
+   //   // 修正位置
+   //   vertexStart += positionCount;
+   //}
    var colorIndex = 0;
    var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
    var positionTotal = vertexTotal * 2;

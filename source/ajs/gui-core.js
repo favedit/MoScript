@@ -445,31 +445,6 @@ MO.FGuiManager_processResize = function FGuiManager_processResize(event){
 MO.FGuiManager_processEvent = function FGuiManager_processEvent(event){
    var o = this;
    o.dispatcherEvent(event);
-   return;
-   if((event.code == MO.EEvent.MouseDown) || (event.code == MO.EEvent.MouseMove) || (event.code == MO.EEvent.MouseUp)){
-      var context = o._graphicContext;
-      var ratio = context.ratio();
-      var locationX = event.clientX * ratio;
-      var locationY = event.clientY * ratio;
-      var visibleControls = o._visibleControls;
-      visibleControls.clear();
-      var controls = o._controls;
-      var count = controls.count();
-      for(var i = 0; i < count; i++){
-         var control = controls.at(i);
-         if(control.visible()){
-            visibleControls.push(control);
-         }
-      }
-      var count = visibleControls.count();
-      for(var i = 0; i < count; i++){
-         var control = visibleControls.at(i);
-         var location = control.location();
-         event.locationX = locationX - location.x;
-         event.locationY = locationY - location.y;
-         control.processEvent(event);
-      }
-   }
 }
 MO.FGuiManager_processTransforms = function FGuiManager_processTransforms(){
    var o = this;

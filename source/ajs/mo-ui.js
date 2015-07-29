@@ -1686,24 +1686,30 @@ MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
 }
 MO.FScene = function FScene(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
-   o._visible             = MO.Class.register(o, new MO.AGetSet('_visible'), true);
-   o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
-   o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
-   o._activeStage         = MO.Class.register(o, new MO.AGetSet('_activeStage'));
-   o._statusSetup         = false;
-   o._statusActive        = false;
-   o.onProcessBefore      = MO.Method.empty;
-   o.onProcess            = MO.FScene_onProcess;
-   o.onProcessAfter       = MO.Method.empty;
-   o.construct            = MO.FScene_construct;
-   o.setup                = MO.Method.empty;
-   o.active               = MO.FScene_active;
-   o.deactive             = MO.FScene_deactive;
-   o.processEvent         = MO.FScene_processEvent;
-   o.process              = MO.FScene_process;
-   o.dispose              = MO.FScene_dispose;
+   o._visible              = MO.Class.register(o, new MO.AGetSet('_visible'), true);
+   o._code                 = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._application          = MO.Class.register(o, new MO.AGetSet('_application'));
+   o._chapter              = MO.Class.register(o, new MO.AGetSet('_chapter'));
+   o._activeStage          = MO.Class.register(o, new MO.AGetSet('_activeStage'));
+   o._statusSetup          = false;
+   o._statusActive         = false;
+   o.onOperationVisibility = MO.FScene_onOperationVisibility;
+   o.onProcessBefore       = MO.Method.empty;
+   o.onProcess             = MO.FScene_onProcess;
+   o.onProcessAfter        = MO.Method.empty;
+   o.construct             = MO.FScene_construct;
+   o.setup                 = MO.Method.empty;
+   o.active                = MO.FScene_active;
+   o.deactive              = MO.FScene_deactive;
+   o.processEvent          = MO.FScene_processEvent;
+   o.process               = MO.FScene_process;
+   o.dispose               = MO.FScene_dispose;
    return o;
+}
+MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.MEventDispatcher.onOperationVisibility.call(o, event);
+   o._visible = event.visibility;
 }
 MO.FScene_onProcess = function FScene_onProcess(){
    var o = this;

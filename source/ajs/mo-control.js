@@ -2411,10 +2411,6 @@ MO.RDuiEvent.prototype.ohEvent = function RDuiEvent_ohEvent(e){
 }
 MO.RDuiEvent.prototype.onProcess = function RDuiEvent_onProcess(e){
    var e = this;
-   var ea = e.annotation;
-   if(ea._logger){
-      MO.Logger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, MO.Class.dump(e.source), MO.Class.dump(e.hSource), MO.Method.name(e.onProcess));
-   }
    if(e.sender){
       e.onProcess.call(e.source, e.sender, e);
    }else{
@@ -2450,9 +2446,6 @@ MO.RDuiEvent.prototype.process = function RDuiEvent_process(hs, he){
             e.hSource = hs;
             ea.attach(e, he);
             if(e.ohProcess){
-               if(ea._logger){
-                  MO.Logger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, MO.Class.dump(e.source), MO.Class.dump(e.hSource), MO.Method.name(e.ohProcess));
-               }
                e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
                MO.Console.find(MO.FDuiFrameEventConsole).push(e);
@@ -4287,12 +4280,6 @@ MO.FDuiWorkspaceApplication_processResize = function FDuiWorkspaceApplication_pr
 }
 MO.FDuiWorkspaceApplication_processEvent = function FDuiWorkspaceApplication_processEvent(event){
    var o = this;
-   return;
-   o.dispatcherEvent(event);
-   var chapter = o._activeWorkspace;
-   if(chapter){
-      chapter.processEvent(event);
-   }
 }
 MO.FDuiWorkspaceConsole = function FDuiWorkspaceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);

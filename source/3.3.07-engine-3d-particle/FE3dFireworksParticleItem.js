@@ -132,9 +132,8 @@ MO.FE3dFireworksParticleItem_processFrame = function FE3dFireworksParticleItem_p
       }
       o._statusInRange = inRange;
    }
-   if(inRange){
-   }
-
+   //if(inRange){
+   //}
    // 计算距离
    var speed = o._currentSpeed;
    var distanceX = speed.x * second;

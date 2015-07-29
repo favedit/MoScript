@@ -1710,12 +1710,6 @@ MO.FDuiWorkspaceApplication_processResize = function FDuiWorkspaceApplication_pr
 }
 MO.FDuiWorkspaceApplication_processEvent = function FDuiWorkspaceApplication_processEvent(event){
    var o = this;
-   return;
-   o.dispatcherEvent(event);
-   var chapter = o._activeWorkspace;
-   if(chapter){
-      chapter.processEvent(event);
-   }
 }
 MO.FDuiWorkspaceConsole = function FDuiWorkspaceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);

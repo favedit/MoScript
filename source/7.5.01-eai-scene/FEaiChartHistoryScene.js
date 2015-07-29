@@ -48,6 +48,7 @@ MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
    o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
    o.onOperationPlay           = MO.FEaiChartHistoryScene_onOperationPlay;
    o.onOperationPause          = MO.FEaiChartHistoryScene_onOperationPause;
+   o.onOperationVisibility     = MO.FEaiChartHistoryScene_onOperationVisibility;
    o.onProcessReady            = MO.FEaiChartHistoryScene_onProcessReady;
    o.onProcess                 = MO.FEaiChartHistoryScene_onProcess;
    o.onSwitchLiveComplete      = MO.FEaiChartHistoryScene_onSwitchLiveComplete;
@@ -164,6 +165,24 @@ MO.FEaiChartHistoryScene_onOperationPause = function FEaiChartHistoryScene_onOpe
    var o = this;
    // 停止播放
    o.switchPlay(false);
+}
+
+//==========================================================
+// <T>操作可见处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartHistoryScene_onOperationVisibility = function FEaiChartHistoryScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
+   if(event.visibility){
+      o._groundAutio.play();
+      o._countryEntity._audioMapEnter._hAudio.muted = false;
+   }else{
+      o._groundAutio.pause();
+      o._countryEntity._audioMapEnter._hAudio.muted = true;
+   }
 }
 
 //==========================================================

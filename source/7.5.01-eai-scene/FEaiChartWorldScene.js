@@ -388,7 +388,6 @@ MO.FEaiChartWorldScene_testReady = function FEaiChartWorldScene_testReady(){
 // @method
 //==========================================================
 MO.FEaiChartWorldScene_showParticle = function FEaiChartWorldScene_showParticle(provinceEntity, cityResource){
-   return;
    var o = this;
    var particle = o._particle;
    var location = cityResource.location();

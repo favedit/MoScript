@@ -35,6 +35,7 @@ MO.FEaiChartLiveScene = function FEaiChartLiveScene(o){
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartLiveScene_onInvestmentDataChanged;
+   o.onOperationVisibility   = MO.FEaiChartLiveScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartLiveScene_onProcessReady;
    o.onProcess               = MO.FEaiChartLiveScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartLiveScene_onSwitchProcess;
@@ -77,6 +78,24 @@ MO.FEaiChartLiveScene_onInvestmentDataChanged = function FEaiChartLiveScene_onIn
       //   var cityResource = cityEntity.data();
       //   o.showParticle(provinceEntity, cityResource);
       //}
+   }
+}
+
+//==========================================================
+// <T>操作可见处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartLiveScene_onOperationVisibility = function FEaiChartLiveScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
+   if(event.visibility){
+      o._groundAutio.play();
+      o._countryEntity._audioMapEnter._hAudio.muted = false;
+   }else{
+      o._groundAutio.pause();
+      o._countryEntity._audioMapEnter._hAudio.muted = true;
    }
 }
 
@@ -137,7 +156,7 @@ MO.FEaiChartLiveScene_onProcess = function FEaiChartLiveScene_onProcess() {
       var countryEntity = o._countryEntity;
       if(!countryEntity.introAnimeDone()){
          countryEntity.process();
-         //return;
+         return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -282,7 +301,6 @@ MO.FEaiChartLiveScene_setup = function FEaiChartLiveScene_setup() {
 // @method
 //==========================================================
 MO.FEaiChartLiveScene_showParticle = function FEaiChartLiveScene_showParticle(provinceEntity, cityResource){
-   return;
    var o = this;
    var particle = o._particle;
    var location = cityResource.location();

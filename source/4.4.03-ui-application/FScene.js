@@ -9,32 +9,46 @@ MO.FScene = function FScene(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    //..........................................................
    // @attribute
-   o._visible             = MO.Class.register(o, new MO.AGetSet('_visible'), true);
-   o._code                = MO.Class.register(o, new MO.AGetSet('_code'));
-   o._application         = MO.Class.register(o, new MO.AGetSet('_application'));
-   o._chapter             = MO.Class.register(o, new MO.AGetSet('_chapter'));
-   o._activeStage         = MO.Class.register(o, new MO.AGetSet('_activeStage'));
+   o._visible              = MO.Class.register(o, new MO.AGetSet('_visible'), true);
+   o._code                 = MO.Class.register(o, new MO.AGetSet('_code'));
+   o._application          = MO.Class.register(o, new MO.AGetSet('_application'));
+   o._chapter              = MO.Class.register(o, new MO.AGetSet('_chapter'));
+   o._activeStage          = MO.Class.register(o, new MO.AGetSet('_activeStage'));
    // @attribute
-   o._statusSetup         = false;
-   o._statusActive        = false;
+   o._statusSetup          = false;
+   o._statusActive         = false;
    //..........................................................
    // @event
-   o.onProcessBefore      = MO.Method.empty;
-   o.onProcess            = MO.FScene_onProcess;
-   o.onProcessAfter       = MO.Method.empty;
+   o.onOperationVisibility = MO.FScene_onOperationVisibility;
+   o.onProcessBefore       = MO.Method.empty;
+   o.onProcess             = MO.FScene_onProcess;
+   o.onProcessAfter        = MO.Method.empty;
    //..........................................................
    // @method
-   o.construct            = MO.FScene_construct;
-   o.setup                = MO.Method.empty;
+   o.construct             = MO.FScene_construct;
+   o.setup                 = MO.Method.empty;
    // @method
-   o.active               = MO.FScene_active;
-   o.deactive             = MO.FScene_deactive;
+   o.active                = MO.FScene_active;
+   o.deactive              = MO.FScene_deactive;
    // @method
-   o.processEvent         = MO.FScene_processEvent;
-   o.process              = MO.FScene_process;
+   o.processEvent          = MO.FScene_processEvent;
+   o.process               = MO.FScene_process;
    // @method
-   o.dispose              = MO.FScene_dispose;
+   o.dispose               = MO.FScene_dispose;
    return o;
+}
+
+//==========================================================
+// <T>操作可见处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.MEventDispatcher.onOperationVisibility.call(o, event);
+   // 设置可见性
+   o._visible = event.visibility;
 }
 
 //==========================================================

@@ -12,14 +12,15 @@ MO.FEaiCityEntityModule = function FEaiCityEntityModule(o){
    o._citys     = MO.Class.register(o, new MO.AGetter('_citys'));
    //..........................................................
    // @method
-   o.construct  = MO.FEaiCityEntityModule_construct;
+   o.construct     = MO.FEaiCityEntityModule_construct;
    // @method
-   o.findByCode = MO.FEaiCityEntityModule_findByCode;
-   o.findByCard = MO.FEaiCityEntityModule_findByCard;
-   o.push       = MO.FEaiCityEntityModule_push;
-   o.build      = MO.FEaiCityEntityModule_build;
+   o.findByCode    = MO.FEaiCityEntityModule_findByCode;
+   o.findByCard    = MO.FEaiCityEntityModule_findByCard;
+   o.push          = MO.FEaiCityEntityModule_push;
+   o.build         = MO.FEaiCityEntityModule_build;
+   o.linkProvinces = MO.FEaiCityEntityModule_linkProvinces;
    // @method
-   o.dispose    = MO.FEaiCityEntityModule_dispose;
+   o.dispose       = MO.FEaiCityEntityModule_dispose;
    return o;
 }
 
@@ -97,6 +98,27 @@ MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context){
       cityEntity.setData(city);
       cityEntity.build(o);
       cityEntities.set(code, cityEntity);
+   }
+}
+
+//==========================================================
+// <T>建立城市实体。</T>
+//
+// @method
+// @param entity:FEaiCityEntity 城市实体
+//==========================================================
+MO.FEaiCityEntityModule_linkProvinces = function FEaiCityEntityModule_linkProvinces(){
+   var o = this;
+   var provinceModule = MO.Console.find(MO.FEaiEntityConsole).provinceModule();
+   // 创建城市实体
+   var cityEntities = o._citys;
+   var cityCount = cityEntities.count();
+   for(var i = 0; i < cityCount; i++){
+      var cityEntity = cityEntities.at(i);
+      var provinceCode = cityEntity.data().provinceCode();
+      var provinceEntity = provinceModule.findByCode(provinceCode);
+      //MO.Assert.debugNotNull(provinceEntity);
+      cityEntity.setProvinceEntity(provinceEntity);
    }
 }
 

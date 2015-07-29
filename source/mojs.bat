@@ -13,8 +13,7 @@
 @REM ============================================================
 @COPY /Y %JS_HOME%\9.1.01-context\*.js %JS_HOME%\ajs\
 
-@COPY /Y %JS_HOME%\ajs\lzma.js        %PJ_EAI%\ajs\lzma.js
-@COPY /Y %JS_HOME%\ajs\lzma_worker.js %PJ_EAI%\ajs\lzma_worker.js
+@COPY /Y %JS_HOME%\ajs\extension.js   %PJ_EAI%\ajs\extension.js
 @COPY /Y %JS_HOME%\ajs\me.js          %PJ_EAI%\ajs\me.js
 @COPY /Y %JS_HOME%\ajs\mo.js          %PJ_EAI%\ajs\mo.js
 @COPY /Y %JS_HOME%\ajs\eai.js         %PJ_EAI%\ajs\eai.js

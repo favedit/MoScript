@@ -331,10 +331,13 @@
       <FileMerger target='/ajs/mo-demo.js'>
          <File source='/ajs/demo.js'/>
       </FileMerger>
-      <!-- MoPlatform -->
-      <FileMerger target='/ajs/mp.js'>
+      <FileMerger target='/ajs/extension.js'>
          <File source='/ajs/lzma-d.js'/>
          <File source='/ajs/lzma.js'/>
+         <File source='/ajs/md5.js'/>
+      </FileMerger>
+      <!-- MoPlatform -->
+      <FileMerger target='/ajs/mp.js'>
          <File source='/ajs/mo.js'/>
          <File source='/ajs/eai.js'/>
          <File source='/ajs/context_cn.js'/>
