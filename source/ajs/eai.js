@@ -836,51 +836,52 @@ MO.FEaiResourceModule_dispose = function FEaiResourceModule_dispose(){
    var o = this;
    o.__base.FObject.dispose.call(o);
 }
-with(MO){
-   MO.FEaiLogic = function FEaiLogic(o){
-      o = RClass.inherits(this, o, FObject);
-      o._code   = null;
-      o.makeUrl = FEaiLogic_makeUrl;
-      o.send    = FEaiLogic_send;
-      return o;
+MO.FEaiLogic = function FEaiLogic(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._code          = null;
+   o._urlParameters = null;
+   o.construct      = MO.FEaiLogic_construct;
+   o.makeUrl        = MO.FEaiLogic_makeUrl;
+   o.send           = MO.FEaiLogic_send;
+   o.dispose        = MO.FEaiLogic_dispose;
+   return o;
+}
+MO.FEaiLogic_construct = function FEaiLogic_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._urlParameters = new MO.TAttributes();
+}
+MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
+   var o = this;
+   var serviceHost = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
+   var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
+   if(parameters){
+      var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
+      var signCode = systemLogic.sign();
+      var currentDate = systemLogic.currentDate();
+      var tick = currentDate.format();
+      var pack = o._urlParameters;
+      pack.clear();
+      pack.set('tick', currentDate.format());
+      pack.split(parameters, '=', '&');
+      pack.sortByName();
+      var signSource = pack.joinValue();
+      var sign = hex_md5(signSource + signCode);
+      url += '?' + parameters + '&tick=' + tick + '&sign=' + sign;
    }
-   MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
-      var o = this;
-      var serviceHost = MO.RConsole.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
-      var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method,
-          time = new Date().getTime();
-         function addKey ( start, times ){
-            var arr = [start];
-               for( var i = 0; i < times; i++ ){
-                  if( i == 0 ){
-                     arr.push( arr[0] );
-                  }else{
-                     arr.push( arr[i] + arr[i-1] );
-                  }
-               }
-               return arr;
-         }
-         if(parameters){
-            var arr=parameters.split("&"),
-                ginsengs='',
-                key="";
-            for(var i=0;i<arr.length;i++){
-               ginsengs += arr[i].split("=")[1];
-            }
-            for(var i=0; i < addKey(5,3).length; i++){
-               key+=addKey(5,3)[i];
-            }
-            url += '?' + parameters+"&tick="+time+"&sign="+hex_md5(ginsengs+key);
-         }
-      return url;
-   }
-   MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
-      var o = this;
-      var url = o.makeUrl(method, parameters);
-      var connection = RConsole.find(FJsonConsole).sendAsync(url);
-      connection.addProcessListener(owner, callback);
-      return connection;
-   }
+   return url;
+}
+MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback){
+   var o = this;
+   var url = o.makeUrl(method, parameters);
+   var connection = MO.Console.find(MO.FJsonConsole).sendAsync(url);
+   connection.addLoadListener(owner, callback);
+   return connection;
+}
+MO.FEaiLogic_dispose = function FEaiLogic_dispose(){
+   var o = this;
+   o._urlParameters = MO.Lang.Object.dispose(o._urlParameters);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FEaiLogicAchievement = function FEaiLogicAchievement(o){
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
@@ -1036,6 +1037,7 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
    o._code          = 'system';
    o._ready         = false;
+   o._sign          = MO.Class.register(o, new MO.AGetter('_sign'), '')
    o._currentDate   = null;
    o._localDate     = null;
    o._systemDate    = MO.Class.register(o, new MO.AGetter('_systemDate'))
@@ -1052,6 +1054,7 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
 MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    var o = this;
    var content = event.content;
+   o._sign = content.sign;
    o._localDate.setNow();
    o._systemDate.parse(content.date);
    o._ready = true;
@@ -3960,9 +3963,6 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
-   var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
-   table._hTable = document.getElementById('id_investment');
-   table._headLineCount = 1;
    o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);
 }
@@ -4381,30 +4381,6 @@ MO.FEaiStatisticsLabel_dispose = function FEaiStatisticsLabel_dispose(){
    var o = this;
    o._ticker = MO.RObject.dispose(o._ticker);
    o.__base.FGuiLabel.dispose.call(o);
-}
-with(MO){
-   MO.FEaiStatisticsTable = function FEaiStatisticsTable(o){
-      o = RClass.inherits(this, o, FEaiTable);
-      o.createRow      = FEaiCityEntity_createRow;
-      return o;
-   }
-   MO.FEaiCityEntity_createRow = function FEaiCityEntity_createRow(){
-      var o = this;
-      var hRow = RBuilder.appendTableRow(o._hTable);
-      hRow.className = 'Investment_DataGrid_Row';
-      var hCell = RBuilder.appendTableCell(hRow);
-      hCell.className = 'Investment_DataGrid_Cell';
-      hCell.align = 'center';
-      var hCell = RBuilder.appendTableCell(hRow);
-      hCell.className = 'Investment_DataGrid_Cell';
-      hCell.align = 'center';
-      var hCell = RBuilder.appendTableCell(hRow);
-      hCell.className = 'Investment_DataGrid_Cell';
-      hCell.align = 'center';
-      var hCell = RBuilder.appendTableCell(hRow);
-      hCell.className = 'Investment_DataGrid_Cell';
-      hCell.align = 'right';
-   }
 }
 MO.FEaiChartCustomerScene = function FEaiChartCustomerScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);

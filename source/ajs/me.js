@@ -276,11 +276,14 @@ MO.TArray_dump = function TArray_dump(){
 MO.TAttributes = function TAttributes(){
    var o = this;
    MO.TDictionary.call(o);
-   o.join   = MO.TAttributes_join;
-   o.split  = MO.TAttributes_split;
-   o.pack   = MO.TAttributes_pack;
-   o.unpack = MO.TAttributes_unpack;
-   o.dump   = MO.TAttributes_dump;
+   o.sortByName = MO.TAttributes_sortByName;
+   o.join       = MO.TAttributes_join;
+   o.joinName   = MO.TAttributes_joinName;
+   o.joinValue  = MO.TAttributes_joinValue;
+   o.split      = MO.TAttributes_split;
+   o.pack       = MO.TAttributes_pack;
+   o.unpack     = MO.TAttributes_unpack;
+   o.dump       = MO.TAttributes_dump;
    return o;
 }
 MO.TAttributes_join = function TAttributes_join(name, value){
@@ -297,9 +300,33 @@ MO.TAttributes_join = function TAttributes_join(name, value){
       if(i > 0){
          source.append(value);
       }
-      source.append(o.names[i]);
+      source.append(o._names[i]);
       source.append(name);
-      source.append(o.values[i]);
+      source.append(o._values[i]);
+   }
+   return source.flush();
+}
+MO.TAttributes_joinName = function TAttributes_joinName(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
+      }
+      source.append(o._names[i]);
+   }
+   return source.flush();
+}
+MO.TAttributes_joinValue = function TAttributes_joinValue(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
+      }
+      source.append(o._values[i]);
    }
    return source.flush();
 }
@@ -341,7 +368,8 @@ MO.TAttributes_pack = function TAttributes_pack(){
    return source.flush();
 }
 MO.TAttributes_unpack = function TAttributes_unpack(source){
-   this.count = 0;
+   var o = this;
+   o.count = 0;
    var position = 0;
    var sourceLength = source.length;
    while(position < sourceLength){
@@ -356,8 +384,13 @@ MO.TAttributes_unpack = function TAttributes_unpack(source){
          value = source.substr(position + lengthLength, length);
          position += lengthLength + length;
       }
-      this.set(name, value);
+      o.set(name, value);
    }
+}
+MO.TAttributes_sortByName = function TAttributes_sortByName(comparer, parameters){
+   var o = this;
+   MO.Lang.Array.pairSort(o._names, o._values, 0, o._count, comparer, parameters);
+   o.rebuild();
 }
 MO.TAttributes_dump = function TAttributes_dump(){
    var o = this;
@@ -3492,6 +3525,68 @@ MO.RArray.prototype.nameMaxLength = function RArray_nameMaxLength(a){
       }
    }
    return r;
+}
+MO.RArray.prototype.sortComparerAsc = function RArray_sortComparerAsc(source, target, parameters){
+   if(source > target){
+      return 1;
+   }else if(source < target){
+      return -1;
+   }else{
+      return 0;
+   }
+}
+MO.RArray.prototype.sortComparerDesc = function RArray_sortComparerDesc(source, target, parameters){
+   if(source > target){
+      return -1;
+   }else if(source < target){
+      return 1;
+   }else{
+      return 0;
+   }
+}
+MO.RArray.prototype.pairSortMid = function RArray_pairSortMid(names, values, begin, end, comparer, parameters){
+   var name = names[begin];
+   if(values){
+      var value = values[begin];
+   }
+   while(begin < end){
+      while((begin < end) && (comparer(names[end], name, parameters) >= 0)){
+         end--;
+      }
+      names[begin] = names[end];
+      if(values){
+         values[begin] = values[end];
+      }
+      while((begin < end) && (comparer(names[begin], name, parameters) <= 0)){
+         begin++;
+      }
+      names[end] = names[begin];
+      if(values){
+         values[end] = values[begin];
+      }
+   }
+   names[begin] = name;
+   if(values){
+      values[begin] = value;
+   }
+   return begin;
+}
+MO.RArray.prototype.pairSortSub = function RArray_pairSortSub(names, values, begin, end, comparer, parameters){
+   var o = this;
+   if(begin < end){
+      var mid = o.pairSortMid(names, values, begin, end, comparer, parameters);
+      o.pairSortSub(names, values, begin, mid - 1, comparer, parameters);
+      o.pairSortSub(names, values, mid + 1, end, comparer, parameters);
+   }
+}
+MO.RArray.prototype.pairSort = function RArray_pairSort(names, values, offset, count, comparer, parameters){
+   var o = this;
+   var begin = offset;
+   var end = offset + count - 1;
+   o.pairSortSub(names, values, begin, end, MO.Runtime.nvl(comparer, o.sortComparerAsc), parameters);
+}
+MO.RArray.prototype.quickSort = function RArray_quickSort(items, offset, count, comparer, parameters){
+   this.pairSort(items, null, offset, count, comparer, parameters);
 }
 MO.RArray = new MO.RArray();
 MO.Lang.Array = MO.RArray;

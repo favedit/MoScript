@@ -150,9 +150,6 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
-   var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
-   table._hTable = document.getElementById('id_investment');
-   table._headLineCount = 1;
    o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);
 }
@@ -571,28 +568,4 @@ MO.FEaiStatisticsLabel_dispose = function FEaiStatisticsLabel_dispose(){
    var o = this;
    o._ticker = MO.RObject.dispose(o._ticker);
    o.__base.FGuiLabel.dispose.call(o);
-}
-with(MO){
-   MO.FEaiStatisticsTable = function FEaiStatisticsTable(o){
-      o = RClass.inherits(this, o, FEaiTable);
-      o.createRow      = FEaiCityEntity_createRow;
-      return o;
-   }
-   MO.FEaiCityEntity_createRow = function FEaiCityEntity_createRow(){
-      var o = this;
-      var hRow = RBuilder.appendTableRow(o._hTable);
-      hRow.className = 'Investment_DataGrid_Row';
-      var hCell = RBuilder.appendTableCell(hRow);
-      hCell.className = 'Investment_DataGrid_Cell';
-      hCell.align = 'center';
-      var hCell = RBuilder.appendTableCell(hRow);
-      hCell.className = 'Investment_DataGrid_Cell';
-      hCell.align = 'center';
-      var hCell = RBuilder.appendTableCell(hRow);
-      hCell.className = 'Investment_DataGrid_Cell';
-      hCell.align = 'center';
-      var hCell = RBuilder.appendTableCell(hRow);
-      hCell.className = 'Investment_DataGrid_Cell';
-      hCell.align = 'right';
-   }
 }

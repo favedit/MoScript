@@ -2118,6 +2118,68 @@ MO.RArray.prototype.nameMaxLength = function RArray_nameMaxLength(a){
    }
    return r;
 }
+MO.RArray.prototype.sortComparerAsc = function RArray_sortComparerAsc(source, target, parameters){
+   if(source > target){
+      return 1;
+   }else if(source < target){
+      return -1;
+   }else{
+      return 0;
+   }
+}
+MO.RArray.prototype.sortComparerDesc = function RArray_sortComparerDesc(source, target, parameters){
+   if(source > target){
+      return -1;
+   }else if(source < target){
+      return 1;
+   }else{
+      return 0;
+   }
+}
+MO.RArray.prototype.pairSortMid = function RArray_pairSortMid(names, values, begin, end, comparer, parameters){
+   var name = names[begin];
+   if(values){
+      var value = values[begin];
+   }
+   while(begin < end){
+      while((begin < end) && (comparer(names[end], name, parameters) >= 0)){
+         end--;
+      }
+      names[begin] = names[end];
+      if(values){
+         values[begin] = values[end];
+      }
+      while((begin < end) && (comparer(names[begin], name, parameters) <= 0)){
+         begin++;
+      }
+      names[end] = names[begin];
+      if(values){
+         values[end] = values[begin];
+      }
+   }
+   names[begin] = name;
+   if(values){
+      values[begin] = value;
+   }
+   return begin;
+}
+MO.RArray.prototype.pairSortSub = function RArray_pairSortSub(names, values, begin, end, comparer, parameters){
+   var o = this;
+   if(begin < end){
+      var mid = o.pairSortMid(names, values, begin, end, comparer, parameters);
+      o.pairSortSub(names, values, begin, mid - 1, comparer, parameters);
+      o.pairSortSub(names, values, mid + 1, end, comparer, parameters);
+   }
+}
+MO.RArray.prototype.pairSort = function RArray_pairSort(names, values, offset, count, comparer, parameters){
+   var o = this;
+   var begin = offset;
+   var end = offset + count - 1;
+   o.pairSortSub(names, values, begin, end, MO.Runtime.nvl(comparer, o.sortComparerAsc), parameters);
+}
+MO.RArray.prototype.quickSort = function RArray_quickSort(items, offset, count, comparer, parameters){
+   this.pairSort(items, null, offset, count, comparer, parameters);
+}
 MO.RArray = new MO.RArray();
 MO.Lang.Array = MO.RArray;
 MO.RBlob = function RBlob(){

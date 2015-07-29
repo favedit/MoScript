@@ -41,6 +41,7 @@ MO.FEaiStatisticsInvestment = function FEaiStatisticsInvestment(o){
    //..........................................................
    // @method
    o.construct                = MO.FEaiStatisticsInvestment_construct;
+   // @method
    o.allocEntity              = MO.FEaiStatisticsInvestment_allocEntity;
    o.allocShape               = MO.FEaiStatisticsInvestment_allocShape;
    o.setup                    = MO.FEaiStatisticsInvestment_setup;
@@ -132,10 +133,6 @@ MO.FEaiStatisticsInvestment_construct = function FEaiStatisticsInvestment_constr
    o._autios = new Object();
    // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
-   // 创建表格
-   var table = o._dataTable = MO.Class.create(MO.FEaiStatisticsTable);
-   table._hTable = document.getElementById('id_investment');
-   table._headLineCount = 1;
    // 创建缓冲
    o._rankEntities = new MO.TObjects();
    o._entityPool = MO.Class.create(MO.FObjectPool);

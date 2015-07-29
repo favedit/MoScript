@@ -10,12 +10,16 @@ MO.TAttributes = function TAttributes(){
    MO.TDictionary.call(o);
    //..........................................................
    // @method
-   o.join   = MO.TAttributes_join;
-   o.split  = MO.TAttributes_split;
-   o.pack   = MO.TAttributes_pack;
-   o.unpack = MO.TAttributes_unpack;
+   o.sortByName = MO.TAttributes_sortByName;
    // @method
-   o.dump   = MO.TAttributes_dump;
+   o.join       = MO.TAttributes_join;
+   o.joinName   = MO.TAttributes_joinName;
+   o.joinValue  = MO.TAttributes_joinValue;
+   o.split      = MO.TAttributes_split;
+   o.pack       = MO.TAttributes_pack;
+   o.unpack     = MO.TAttributes_unpack;
+   // @method
+   o.dump       = MO.TAttributes_dump;
    return o;
 }
 
@@ -41,9 +45,49 @@ MO.TAttributes_join = function TAttributes_join(name, value){
       if(i > 0){
          source.append(value);
       }
-      source.append(o.names[i]);
+      source.append(o._names[i]);
       source.append(name);
-      source.append(o.values[i]);
+      source.append(o._values[i]);
+   }
+   return source.flush();
+}
+
+//==========================================================
+// <T>将内部所有名称关联成一个字符串。</T>
+//
+// @method
+// @param split:String 分隔符
+// @return String 字符串
+//==========================================================
+MO.TAttributes_joinName = function TAttributes_joinName(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
+      }
+      source.append(o._names[i]);
+   }
+   return source.flush();
+}
+
+//==========================================================
+// <T>将内部所有内容目关联成一个字符串。</T>
+//
+// @method
+// @param split:String 分隔符
+// @return String 字符串
+//==========================================================
+MO.TAttributes_joinValue = function TAttributes_joinValue(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
+      }
+      source.append(o._values[i]);
    }
    return source.flush();
 }
@@ -109,7 +153,8 @@ MO.TAttributes_pack = function TAttributes_pack(){
 // @param source:String 打包字符串
 //==========================================================
 MO.TAttributes_unpack = function TAttributes_unpack(source){
-   this.count = 0;
+   var o = this;
+   o.count = 0;
    var position = 0;
    var sourceLength = source.length;
    while(position < sourceLength){
@@ -127,8 +172,19 @@ MO.TAttributes_unpack = function TAttributes_unpack(source){
          position += lengthLength + length;
       }
       // 设置分解后的内容
-      this.set(name, value);
+      o.set(name, value);
    }
+}
+
+//==========================================================
+// <T>按照名称排序。</T>
+//
+// @method
+//==========================================================
+MO.TAttributes_sortByName = function TAttributes_sortByName(comparer, parameters){
+   var o = this;
+   MO.Lang.Array.pairSort(o._names, o._values, 0, o._count, comparer, parameters);
+   o.rebuild();
 }
 
 //==========================================================

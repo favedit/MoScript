@@ -12,6 +12,7 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o._code          = 'system';
    // @attribute
    o._ready         = false;
+   o._sign          = MO.Class.register(o, new MO.AGetter('_sign'), '')
    o._currentDate   = null;
    o._localDate     = null;
    o._systemDate    = MO.Class.register(o, new MO.AGetter('_systemDate'))
@@ -44,6 +45,7 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
 MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    var o = this;
    var content = event.content;
+   o._sign = content.sign;
    o._localDate.setNow();
    o._systemDate.parse(content.date);
    o._ready = true;
