@@ -61,7 +61,7 @@ MO.FEaiMapResourceModule_loadCountry = function FEaiMapResourceModule_loadCountr
       // 创建国家资源
       country = MO.Class.create(MO.FEaiMapCountryResource);
       country.setCode(code);
-      country.setUri('{eai.resource}/data/country/' + code + '.dat');
+      country.setUri('{eai.resource}-{device.type}/map/country/' + code + '.dat');
       country.load();
       // 存储列表
       countries.set(code, country);

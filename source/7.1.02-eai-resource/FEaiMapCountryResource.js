@@ -9,7 +9,6 @@ MO.FEaiMapCountryResource = function FEaiMapCountryResource(o){
    o = MO.Class.inherits(this, o, MO.FResourcePackage);
    //..........................................................
    // @attribute
-   o._uri        = '{eai.resource}/data/country.dat';
    o._data       = MO.Class.register(o, new MO.AGetter('_data'));
    //..........................................................
    // @method

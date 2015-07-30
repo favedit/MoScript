@@ -68,7 +68,7 @@ MO.FEaiCountryEntityModule_push = function FEaiCountryEntityModule_push(country)
 MO.FEaiCountryEntityModule_load = function FEaiCountryEntityModule_load(context, code){
    var o = this;
    // 查找对象
-  var entities = o._countries;
+   var entities = o._countries;
    var entity = entities.get(code);
    if(entity){
       return entity;

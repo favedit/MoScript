@@ -67,9 +67,16 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       return;
    }
    // 是否移动或PC模式
+   var platformCd = MO.EPlatform.Mobile;
+   var environmentConsole = MO.Console.find(MO.FEnvironmentConsole);
    if(MO.Lang.String.contains(agent, 'android', 'ipad', 'iphone', 'midp', 'rv:1.2.3.4', 'windows ce', 'windows mobile')){
-      MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+      platformCd = MO.EPlatform.Mobile;
+      environmentConsole.registerValue(MO.EConstant.DeviceType, 'mb');
+   }else{
+      platformCd = MO.EPlatform.Pc;
+      environmentConsole.registerValue(MO.EConstant.DeviceType, 'pc');
    }
+   MO.Runtime.setPlatformCd(platformCd);
    // 判断浏览器是否需要声音确认
    if(MO.Lang.String.contains(agent, 'android 5.1', 'iphone', 'ipad')){
       capability.soundConfirm = true;
@@ -83,7 +90,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
    // 输出日志
-   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, MO.Runtime.platformCd()), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
+   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, platformCd), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    // 是否支持HTML5
    if(window.applicationCache){
       o._supportHtml5 = true;

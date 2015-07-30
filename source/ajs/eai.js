@@ -436,7 +436,6 @@ MO.FEaiMapCountryData_dispose = function FEaiMapCountryData_dispose(){
 }
 MO.FEaiMapCountryResource = function FEaiMapCountryResource(o){
    o = MO.Class.inherits(this, o, MO.FResourcePackage);
-   o._uri        = '{eai.resource}/data/country.dat';
    o._data       = MO.Class.register(o, new MO.AGetter('_data'));
    o.construct   = MO.FEaiMapCountryResource_construct;
    o.unserialize = MO.FEaiMapCountryResource_unserialize;
@@ -514,7 +513,7 @@ MO.FEaiMapResourceModule_loadCountry = function FEaiMapResourceModule_loadCountr
    if(!country){
       country = MO.Class.create(MO.FEaiMapCountryResource);
       country.setCode(code);
-      country.setUri('{eai.resource}/data/country/' + code + '.dat');
+      country.setUri('{eai.resource}-{device.type}/map/country/' + code + '.dat');
       country.load();
       countries.set(code, country);
    }
@@ -567,7 +566,7 @@ MO.FEaiMapWorldData_dispose = function FEaiMapWorldData_dispose(){
 }
 MO.FEaiMapWorldResource = function FEaiMapWorldResource(o){
    o = MO.Class.inherits(this, o, MO.FResourcePackage);
-   o._uri        = '{eai.resource}/data/world.dat';
+   o._uri        = '{eai.resource}-{device.type}/map/world.dat';
    o._data       = MO.Class.register(o, new MO.AGetter('_data'));
    o.construct   = MO.FEaiMapWorldResource_construct;
    o.unserialize = MO.FEaiMapWorldResource_unserialize;
@@ -1598,7 +1597,7 @@ MO.FEaiCountryEntityModule_push = function FEaiCountryEntityModule_push(country)
 }
 MO.FEaiCountryEntityModule_load = function FEaiCountryEntityModule_load(context, code){
    var o = this;
-  var entities = o._countries;
+   var entities = o._countries;
    var entity = entities.get(code);
    if(entity){
       return entity;
@@ -2854,7 +2853,7 @@ MO.FEaiDynamicInfo_onPaintBegin = function FEaiDynamicInfo_onPaintBegin(event){
    locationY += line;
    var camera = o._stage.camera();
    var projection = camera.projection();
-   graphic.drawText(MO.Lang.String.format('Stage         : ={1}, size={2}x{3}', camera.position()), locationX, locationY, '#FFFFFF');
+   graphic.drawText(MO.Lang.String.format('Stage         :'), locationX, locationY, '#FFFFFF');
    locationY += line;
    graphic.drawText(MO.Lang.String.format(' - Camera     : position={1}', camera.position()), locationX, locationY, '#FFFFFF');
    locationY += line;
@@ -2873,12 +2872,6 @@ MO.FEaiDynamicInfo_onPaintBegin = function FEaiDynamicInfo_onPaintBegin(event){
    graphic.drawText(MO.Lang.String.format(' - Alloc      : buffer={1}, texture={2}', statistics.frameBufferCount(), statistics.frameTextureCount()), locationX, locationY, '#FFFFFF');
    locationY += line;
    graphic.drawText(MO.Lang.String.format(' - Total      : program={1}, layout={2}, vertex={3}, index={4}', statistics.programTotal(), statistics.layoutTotal(), statistics.vertexBufferTotal(), statistics.indexBufferTotal()), locationX, locationY, '#FFFFFF');
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   var mapEntity = entityConsole.mapEntity();
-   var provinceEntities = mapEntity.provinceEntities();
-   var cityEntities = mapEntity.cityEntities();
-   locationY += line;
-   graphic.drawText(MO.Lang.String.format('Entity        : province={1} city={2}', provinceEntities.count(), cityEntities.count()), locationX, locationY, '#FFFFFF');
    locationY += line;
    graphic.drawText(MO.Lang.String.format('Investment    : entity={1}, table={2}, pool_item={3}, pool_free={4}', o._investmentEntityCount, o._investmentTableEntityCount, o._investmentPoolItemCount, o._investmentPoolFreeCount), locationX, locationY, '#FFFFFF');
    desktop.resize();

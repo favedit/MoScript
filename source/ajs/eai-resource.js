@@ -392,7 +392,6 @@ MO.FEaiMapCountryData_dispose = function FEaiMapCountryData_dispose(){
 }
 MO.FEaiMapCountryResource = function FEaiMapCountryResource(o){
    o = MO.Class.inherits(this, o, MO.FResourcePackage);
-   o._uri        = '{eai.resource}/data/country.dat';
    o._data       = MO.Class.register(o, new MO.AGetter('_data'));
    o.construct   = MO.FEaiMapCountryResource_construct;
    o.unserialize = MO.FEaiMapCountryResource_unserialize;
@@ -470,7 +469,7 @@ MO.FEaiMapResourceModule_loadCountry = function FEaiMapResourceModule_loadCountr
    if(!country){
       country = MO.Class.create(MO.FEaiMapCountryResource);
       country.setCode(code);
-      country.setUri('{eai.resource}/data/country/' + code + '.dat');
+      country.setUri('{eai.resource}-{device.type}/map/country/' + code + '.dat');
       country.load();
       countries.set(code, country);
    }
@@ -523,7 +522,7 @@ MO.FEaiMapWorldData_dispose = function FEaiMapWorldData_dispose(){
 }
 MO.FEaiMapWorldResource = function FEaiMapWorldResource(o){
    o = MO.Class.inherits(this, o, MO.FResourcePackage);
-   o._uri        = '{eai.resource}/data/world.dat';
+   o._uri        = '{eai.resource}-{device.type}/map/world.dat';
    o._data       = MO.Class.register(o, new MO.AGetter('_data'));
    o.construct   = MO.FEaiMapWorldResource_construct;
    o.unserialize = MO.FEaiMapWorldResource_unserialize;

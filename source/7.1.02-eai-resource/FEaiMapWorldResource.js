@@ -9,7 +9,7 @@ MO.FEaiMapWorldResource = function FEaiMapWorldResource(o){
    o = MO.Class.inherits(this, o, MO.FResourcePackage);
    //..........................................................
    // @attribute
-   o._uri        = '{eai.resource}/data/world.dat';
+   o._uri        = '{eai.resource}-{device.type}/map/world.dat';
    o._data       = MO.Class.register(o, new MO.AGetter('_data'));
    //..........................................................
    // @method

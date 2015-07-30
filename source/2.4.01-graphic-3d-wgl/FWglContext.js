@@ -118,7 +118,6 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var parameters = new Object();
       parameters.alpha = o._optionAlpha;
       parameters.antialias = o._optionAntialias;
-      //parameters.antialias = false;
       parameters.depth = true;
       parameters.stencil = false;
       parameters.premultipliedAlpha = false;

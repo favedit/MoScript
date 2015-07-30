@@ -78,7 +78,7 @@ MO.FEaiDynamicInfo_onPaintBegin = function FEaiDynamicInfo_onPaintBegin(event){
    // 舞台数据
    var camera = o._stage.camera();
    var projection = camera.projection();
-   graphic.drawText(MO.Lang.String.format('Stage         : ={1}, size={2}x{3}', camera.position()), locationX, locationY, '#FFFFFF');
+   graphic.drawText(MO.Lang.String.format('Stage         :'), locationX, locationY, '#FFFFFF');
    locationY += line;
    graphic.drawText(MO.Lang.String.format(' - Camera     : position={1}', camera.position()), locationX, locationY, '#FFFFFF');
    locationY += line;
@@ -99,12 +99,12 @@ MO.FEaiDynamicInfo_onPaintBegin = function FEaiDynamicInfo_onPaintBegin(event){
    locationY += line;
    graphic.drawText(MO.Lang.String.format(' - Total      : program={1}, layout={2}, vertex={3}, index={4}', statistics.programTotal(), statistics.layoutTotal(), statistics.vertexBufferTotal(), statistics.indexBufferTotal()), locationX, locationY, '#FFFFFF');
    // 实体数据
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   var mapEntity = entityConsole.mapEntity();
-   var provinceEntities = mapEntity.provinceEntities();
-   var cityEntities = mapEntity.cityEntities();
-   locationY += line;
-   graphic.drawText(MO.Lang.String.format('Entity        : province={1} city={2}', provinceEntities.count(), cityEntities.count()), locationX, locationY, '#FFFFFF');
+   //var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   //var mapEntity = entityConsole.mapEntity();
+   //var provinceEntities = mapEntity.provinceEntities();
+   //var cityEntities = mapEntity.cityEntities();
+   //locationY += line;
+   //graphic.drawText(MO.Lang.String.format('Entity        : province={1} city={2}', provinceEntities.count(), cityEntities.count()), locationX, locationY, '#FFFFFF');
    locationY += line;
    graphic.drawText(MO.Lang.String.format('Investment    : entity={1}, table={2}, pool_item={3}, pool_free={4}', o._investmentEntityCount, o._investmentTableEntityCount, o._investmentPoolItemCount, o._investmentPoolFreeCount), locationX, locationY, '#FFFFFF');
    desktop.resize();
