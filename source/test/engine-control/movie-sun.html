@@ -1,0 +1,44 @@
+<HTML>
+
+<HEAD>
+   <TITLE>Stage3d Example</TITLE>
+   <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+   <LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all" />
+   <SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+   <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+      <SCRIPT language='javascript' src='../../ajs/eai.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+   var sprite = null;
+
+   function onEnterFrame(event) {
+      sprite.dirty();
+   }
+   //----------------------------------------------------------
+   function _load() {
+       var htmlBody = document.body;
+         htmlBody.style.backgroundImage = 'url(../../ars/eai/background.jpg)';
+      // 环境设置
+      MO.initialize();
+      MO.Runtime.setProcessCd(MO.EProcess.Debug);
+      MO.Window.Browser.setContentPath('../..');
+      // 创建应用
+      var application = MO.Desktop.initialize(MO.FGuiApplication);
+      application.setup(document.body);
+      application.addEnterFrameListener(null, onEnterFrame);
+
+      var guiManager = application.manager();
+      sprite = MO.RClass.create(MO.FGuiFPCCTable);
+      sprite.setup();
+      sprite.setLocation(0, 0);
+      sprite.setSize(400, 700);
+      sprite.build();
+      guiManager.register(sprite);
+   }
+</SCRIPT>
+
+<BODY scroll='auto' style='position:relative;overflow:hidden;background-color:#000000;background-size:100% 100%;' onload='_load()'>
+</BODY>
+
+</HTML>
