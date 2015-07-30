@@ -285,7 +285,7 @@ MO.FGuiLiveTable_pushEntity = function FGuiLiveTable_pushEntity(entity){
    entities.unshift(entity);
    o._lineScroll -= o._rowHeight;
    // 大于个数从尾部弹出
-   if(entities.count() >= o._tableCount){
+   if(entities.count() > o._tableCount){
       entities.pop();
    }
 }

@@ -931,7 +931,7 @@ MO.FGuiLiveTable_pushEntity = function FGuiLiveTable_pushEntity(entity){
    var entities = o._entities;
    entities.unshift(entity);
    o._lineScroll -= o._rowHeight;
-   if(entities.count() >= o._tableCount){
+   if(entities.count() > o._tableCount){
       entities.pop();
    }
 }

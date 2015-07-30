@@ -79,8 +79,6 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    // 创建画板
    var hCanvas = o._hCanvas = MO.Window.Builder.create(hDocument, 'CANVAS');
    hCanvas.__linker = o;
-   hCanvas.width = width;
-   hCanvas.height = height;
    var hStyle = hCanvas.style;
    hStyle.left = '0px';
    hStyle.top = '0px';
@@ -89,6 +87,8 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    // 创建渲染环境
    var context = o._graphicContext = MO.Class.create(MO.FG2dCanvasContext);
    context.linkCanvas(hCanvas);
+   // 设置大小
+   o.resize(width, height);
 }
 
 //==========================================================
@@ -110,6 +110,8 @@ MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
 // <T>改变大小。</T>
 //
 // @method
+// @param width:Integer 宽度
+// @param height:Integer 高度
 //==========================================================
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
@@ -168,10 +170,10 @@ MO.FE2dCanvas_reset = function FE2dCanvas_reset(){
 MO.FE2dCanvas_dispose = function FE2dCanvas_dispose(){
    var o = this;
    // 释放属性
-   o._size = MO.RObject.dispose(o._size);
-   o._graphicContext = MO.RObject.dispose(o._graphicContext);
-   o._hPanel = MO.RHtml.free(o._hPanel);
-   o._hCanvas = MO.RHtml.free(o._hCanvas);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._graphicContext = MO.Lang.Object.dispose(o._graphicContext);
+   o._hPanel = MO.Window.Html.free(o._hPanel);
+   o._hCanvas = MO.Window.Html.free(o._hCanvas);
    // 父处理
    o.__base.FCanvas.dispose.call(o);
 }

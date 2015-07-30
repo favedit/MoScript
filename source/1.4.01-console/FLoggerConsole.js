@@ -64,6 +64,7 @@ MO.FLoggerConsole_connect = function FLoggerConsole_connect(url){
 // <T>输出内容。</T>
 //
 // @method
+// @param message:String 消息内容
 //==========================================================
 MO.FLoggerConsole_output = function FLoggerConsole_output(message){
    var socket = this._socket;
