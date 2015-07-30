@@ -81036,6 +81036,35 @@ with (MO) {
       startTime.refresh();
    }
 }
+MO.FGui2DMap = function FGui2DMap(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._bgImage       = null;
+   o._countryRes    = MO.Class.register(o, new MO.AGetSet('_countryRes'));
+   o.construct      = MO.FGui2DMap_construct;
+   o.onPaintBegin   = MO.FGui2DMap_onPaintBegin;
+   o.dispose        = MO.FGui2DMap_dispose;
+   return o;
+}
+MO.FGui2DMap_construct = function FGui2DMap_construct() {
+   var o = this;
+   o.__base.FGuiControl.construct.call(o);
+}
+MO.FGui2DMap_onPaintBegin = function FGui2DMap_onPaintBegin(event) {
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   if (!o._countryRes) {
+      return;
+   }
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var countryRes = o._countryRes;
+   graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 2);
+}
+MO.FGui2DMap_dispose = function FGui2DMap_dispose(){
+   var o = this;
+   o._date = MO.Lang.Object.dispose(o._date);
+   o.__base.FGuiControl.dispose.call(o);
+}
 with (MO) {
    MO.FGuiHistoryMilestoneBar = function FGuiHistoryMilestoneBar(o) {
       o = RClass.inherits(this, o, FGuiControl);
