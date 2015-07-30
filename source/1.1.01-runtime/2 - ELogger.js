@@ -7,6 +7,7 @@
 //==========================================================
 MO.ELogger = new function ELogger(){
    var o = this;
+   MO.TEnum.call(o);
    // @member 未知
    o.Unknown = 0;
    // @member 调试模式

@@ -47,7 +47,7 @@ MO.REnum.prototype.encode = function REnum_encode(instance, value){
    var o = this;
    var result = o.tryEncode(instance, value);
    if(result == null){
-      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value); 
+      throw new MO.TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value); 
    }
    return result;
 }

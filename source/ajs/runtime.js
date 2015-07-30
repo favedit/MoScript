@@ -27,8 +27,45 @@ MO.initialize = function MO_initialize(){
 MO.release = function MO_release(){
    var o = this;
 }
+MO.RSingleton = function RSingleton(){
+   var o = this;
+   o._singleton = true;
+   return o;
+}
+MO.TEnum = function TEnum(){
+   var o = this;
+   o.toDisplay = MO.TEnum_toDisplay;
+   o.toValue   = MO.TEnum_toValue;
+   return o;
+}
+MO.TEnum_toDisplay = function TEnum_toDisplay(value, defaultValue){
+   var o = this;
+   for(var name in o){
+      var nameValue = o[name];
+      if(nameValue.constructor != Function){
+         if(nameValue == value){
+            return name;
+         }
+      }
+   }
+   return defaultValue;
+}
+MO.TEnum_toValue = function TEnum_toValue(value, defaultValue){
+   var o = this;
+   var lowerValue = value.toLowerCase();
+   for(var name in o){
+      var nameValue = o[name];
+      if(nameValue.constructor != Function){
+         if(name.toLowerCase() == lowerValue){
+            return o[name];
+         }
+      }
+   }
+   return defaultValue;
+}
 MO.ELogger = new function ELogger(){
    var o = this;
+   MO.TEnum.call(o);
    o.Unknown = 0;
    o.Debug   = 1;
    o.Info    = 2;
@@ -39,6 +76,7 @@ MO.ELogger = new function ELogger(){
 }
 MO.EPlatform = new function EPlatform(){
    var o = this;
+   MO.TEnum.call(o);
    o.Unknown = 0;
    o.Pc      = 1;
    o.Mobile  = 2;
@@ -46,6 +84,7 @@ MO.EPlatform = new function EPlatform(){
 }
 MO.EProcess = new function EProcess(){
    var o = this;
+   MO.TEnum.call(o);
    o.Unknown = 0;
    o.Release = 1;
    o.Process = 2;
@@ -54,15 +93,11 @@ MO.EProcess = new function EProcess(){
 }
 MO.EScope = new function EScope(){
    var o = this;
+   MO.TEnum.call(o);
    o.Unknown = 0;
    o.Local   = 1;
    o.Session = 2;
    o.Global  = 3;
-   return o;
-}
-MO.RSingleton = function RSingleton(){
-   var o = this;
-   o._singleton = true;
    return o;
 }
 MO.RRuntime = function RRuntime(){

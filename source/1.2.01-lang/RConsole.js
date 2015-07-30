@@ -25,12 +25,12 @@ MO.RConsole = function RConsole(){
 //==========================================================
 MO.RConsole.prototype.initialize = function RConsole_initialize(){
    var o = this;
-   var rs = o._registers;
-   var c = rs.count;
-   for(var n = 0; n < rs; n++){
-      var r = rs.get(n);
-      if(r.force){
-         o.find(r.clazz);
+   var registers = o._registers;
+   var count = registers.count();
+   for(var n = 0; n < count; n++){
+      var register = registers.get(n);
+      if(register.force){
+         o.find(register.clazz);
       }
    }
 }
@@ -75,6 +75,7 @@ MO.RConsole.prototype.create = function RConsole_create(n){
    }
    return r;
 }
+
 //==========================================================
 // <T>根据名称创建对象。</T>
 //
@@ -130,6 +131,7 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 //==========================================================
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
+   MO.Assert.debugNotNull(value);
    // 获得名称
    var name = null;
    if(value.constructor == String){
@@ -169,7 +171,7 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.info(o, 'Create console. (name={1}, scope={2})', name, MO.Lang.Enum.decode(MO.EScope, scopeCd));
+   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 

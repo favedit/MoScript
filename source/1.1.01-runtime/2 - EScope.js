@@ -7,6 +7,7 @@
 //==========================================================
 MO.EScope = new function EScope(){
    var o = this;
+   MO.TEnum.call(o);
    // @member 未知
    o.Unknown = 0;
    // @member 本地范围

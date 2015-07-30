@@ -9,7 +9,6 @@ MO.RLogger = function RLogger(){
    var o = this;
    //..........................................................
    // @attribute
-   o._statusError = false;
    o._labelLength = 40;
    //..........................................................
    // @listener
@@ -237,61 +236,55 @@ MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
 // <T>显示一个例外信息。</T>
 //
 // @method
-// @param sf:self:Object 消息对象
-// @param er:error:Object 例外对象
-// @param ms:message:String 消息内容
-// @param pm:params:Object... 消息参数列表
+// @param owner:Object 消息对象
+// @param error:Object 例外对象
+// @param message:String 消息内容
+// @param params:Object... 消息参数列表
 //==========================================================
-MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
+MO.RLogger.prototype.fatal = function RLogger_fatal(owner, error, message, params){
    var o = this;
-   // 检查是否已经弹出过错误
-   if(o._statusError){
-      return;
-   }
-   o._statusError = true;
    // 建立函数调用关系的堆栈
-   var s = new MO.TString();
-   var t = new Array();
-   var f = MO.Logger.fatal.caller;
-   while(f){
-      if(MO.Lang.Array.contains(t, f)){
+   var stack = new MO.TString();
+   var stacks = new Array();
+   var caller = MO.Logger.fatal.caller;
+   while(caller){
+      if(MO.Lang.Array.contains(stacks, caller)){
          break;
       }
-      t.push(f);
-      f = f.caller;
+      stacks.push(caller);
+      caller = caller.caller;
    }
-   var c = t.length;
-   for(var n = 0; n < c; n++){
-      f = t[n];
-      if(n > 0){
-         s.appendLine();
+   var count = stacks.length;
+   for(var i = 0; i < count; i++){
+      caller = stacks[i];
+      if(i > 0){
+         stack.appendLine();
       }
-      s.append('   ' + (c - n) + ': ' + MO.Method.name(f));
+      stack.append('   ' + (count - i) + ': ' + MO.Method.name(caller));
    }
    // 建立消息信息
-   var message = new MO.TString();
-   message.appendLine(MO.RContext.get('RMessage:fatal'));
-   message.appendLine(MO.Lang.String.repeat('-', 60));
-   message.append(MO.Class.dump(sf), ': ');
-   if(ms){
-      var ag = arguments;
-      c = ag.length;
-      for(var n = 3; n < c; n++){
-         var p = ag[n];
-         if('function' == typeof(p)){
-            p = MO.Method.name(p);
+   var result = new MO.TString();
+   result.appendLine(MO.RContext.get('RMessage:fatal'));
+   result.appendLine(MO.Lang.String.repeat('-', 60));
+   result.append(MO.Class.dump(owner), ': ');
+   if(message){
+      var count = arguments.length;
+      for(var i = 3; i < count; i++){
+         var parameter = arguments[i];
+         if('function' == typeof(parameter)){
+            parameter = MO.Method.name(parameter);
          }
-         var pi = n - 2;
-         ms = ms.replace('{' + pi + '}', p);
+         message = message.replace('{' + (i - 2) + '}', parameter);
       }
    }
-   message.appendLine(ms);
-   message.appendLine(MO.Lang.String.repeat('-', 60));
-   message.appendLine('Stack:');
-   message.append(s);
-   var text = message.toString();
+   result.appendLine(message);
+   result.appendLine(MO.Lang.String.repeat('-', 60));
+   result.appendLine('Stack:');
+   result.append(stack.flush());
+   var text = result.flush();
+   o.output(owner, text);
    // 显示信息
-   if(!MO.Runtime.isRelease()){
+   if(MO.Runtime.isPlatformPc() && !MO.Runtime.isRelease()){
       throw new Error(text);
    }
 }

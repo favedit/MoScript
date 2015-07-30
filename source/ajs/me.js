@@ -27,8 +27,45 @@ MO.initialize = function MO_initialize(){
 MO.release = function MO_release(){
    var o = this;
 }
+MO.RSingleton = function RSingleton(){
+   var o = this;
+   o._singleton = true;
+   return o;
+}
+MO.TEnum = function TEnum(){
+   var o = this;
+   o.toDisplay = MO.TEnum_toDisplay;
+   o.toValue   = MO.TEnum_toValue;
+   return o;
+}
+MO.TEnum_toDisplay = function TEnum_toDisplay(value, defaultValue){
+   var o = this;
+   for(var name in o){
+      var nameValue = o[name];
+      if(nameValue.constructor != Function){
+         if(nameValue == value){
+            return name;
+         }
+      }
+   }
+   return defaultValue;
+}
+MO.TEnum_toValue = function TEnum_toValue(value, defaultValue){
+   var o = this;
+   var lowerValue = value.toLowerCase();
+   for(var name in o){
+      var nameValue = o[name];
+      if(nameValue.constructor != Function){
+         if(name.toLowerCase() == lowerValue){
+            return o[name];
+         }
+      }
+   }
+   return defaultValue;
+}
 MO.ELogger = new function ELogger(){
    var o = this;
+   MO.TEnum.call(o);
    o.Unknown = 0;
    o.Debug   = 1;
    o.Info    = 2;
@@ -39,6 +76,7 @@ MO.ELogger = new function ELogger(){
 }
 MO.EPlatform = new function EPlatform(){
    var o = this;
+   MO.TEnum.call(o);
    o.Unknown = 0;
    o.Pc      = 1;
    o.Mobile  = 2;
@@ -46,6 +84,7 @@ MO.EPlatform = new function EPlatform(){
 }
 MO.EProcess = new function EProcess(){
    var o = this;
+   MO.TEnum.call(o);
    o.Unknown = 0;
    o.Release = 1;
    o.Process = 2;
@@ -54,15 +93,11 @@ MO.EProcess = new function EProcess(){
 }
 MO.EScope = new function EScope(){
    var o = this;
+   MO.TEnum.call(o);
    o.Unknown = 0;
    o.Local   = 1;
    o.Session = 2;
    o.Global  = 3;
-   return o;
-}
-MO.RSingleton = function RSingleton(){
-   var o = this;
-   o._singleton = true;
    return o;
 }
 MO.RRuntime = function RRuntime(){
@@ -2544,7 +2579,11 @@ MO.TListener = function TListener(){
 MO.TListener_process = function TListener_process(sender, parameter1, parameter2, parameter3, parameter4, parameter5){
    var o = this;
    var owner = o._owner ? o._owner : o;
-   o._callback.call(owner, sender, parameter1, parameter2, parameter3, parameter4, parameter5);
+   try{
+      o._callback.call(owner, sender, parameter1, parameter2, parameter3, parameter4, parameter5);
+   }catch(error){
+      MO.Logger.fatal(o, error, 'Listener process failure. (owner={1})', owner);
+   }
 }
 MO.TListener_toString = function TListener_toString(){
    var o = this;
@@ -4068,12 +4107,12 @@ MO.RConsole = function RConsole(){
 }
 MO.RConsole.prototype.initialize = function RConsole_initialize(){
    var o = this;
-   var rs = o._registers;
-   var c = rs.count;
-   for(var n = 0; n < rs; n++){
-      var r = rs.get(n);
-      if(r.force){
-         o.find(r.clazz);
+   var registers = o._registers;
+   var count = registers.count();
+   for(var n = 0; n < count; n++){
+      var register = registers.get(n);
+      if(register.force){
+         o.find(register.clazz);
       }
    }
 }
@@ -4128,6 +4167,7 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 }
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
+   MO.Assert.debugNotNull(value);
    var name = null;
    if(value.constructor == String){
       name = value;
@@ -4160,7 +4200,7 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.info(o, 'Create console. (name={1}, scope={2})', name, MO.Lang.Enum.decode(MO.EScope, scopeCd));
+   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){
@@ -4483,7 +4523,7 @@ MO.REnum.prototype.encode = function REnum_encode(instance, value){
    var o = this;
    var result = o.tryEncode(instance, value);
    if(result == null){
-      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value);
+      throw new MO.TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(instance), value);
    }
    return result;
 }
@@ -4941,7 +4981,6 @@ MO.RJson.prototype.toString = function RJson_toString(value){
 MO.Json = new MO.RJson();
 MO.RLogger = function RLogger(){
    var o = this;
-   o._statusError = false;
    o._labelLength = 40;
    o._logger       = new MO.SLogger();
    o.lsnsOutput   = new MO.TListeners();
@@ -5102,52 +5141,47 @@ MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
    result.append(message);
    o.output(owner, result.flush());
 }
-MO.RLogger.prototype.fatal = function RLogger_fatal(sf, er, ms, params){
+MO.RLogger.prototype.fatal = function RLogger_fatal(owner, error, message, params){
    var o = this;
-   if(o._statusError){
-      return;
-   }
-   o._statusError = true;
-   var s = new MO.TString();
-   var t = new Array();
-   var f = MO.Logger.fatal.caller;
-   while(f){
-      if(MO.Lang.Array.contains(t, f)){
+   var stack = new MO.TString();
+   var stacks = new Array();
+   var caller = MO.Logger.fatal.caller;
+   while(caller){
+      if(MO.Lang.Array.contains(stacks, caller)){
          break;
       }
-      t.push(f);
-      f = f.caller;
+      stacks.push(caller);
+      caller = caller.caller;
    }
-   var c = t.length;
-   for(var n = 0; n < c; n++){
-      f = t[n];
-      if(n > 0){
-         s.appendLine();
+   var count = stacks.length;
+   for(var i = 0; i < count; i++){
+      caller = stacks[i];
+      if(i > 0){
+         stack.appendLine();
       }
-      s.append('   ' + (c - n) + ': ' + MO.Method.name(f));
+      stack.append('   ' + (count - i) + ': ' + MO.Method.name(caller));
    }
-   var message = new MO.TString();
-   message.appendLine(MO.RContext.get('RMessage:fatal'));
-   message.appendLine(MO.Lang.String.repeat('-', 60));
-   message.append(MO.Class.dump(sf), ': ');
-   if(ms){
-      var ag = arguments;
-      c = ag.length;
-      for(var n = 3; n < c; n++){
-         var p = ag[n];
-         if('function' == typeof(p)){
-            p = MO.Method.name(p);
+   var result = new MO.TString();
+   result.appendLine(MO.RContext.get('RMessage:fatal'));
+   result.appendLine(MO.Lang.String.repeat('-', 60));
+   result.append(MO.Class.dump(owner), ': ');
+   if(message){
+      var count = arguments.length;
+      for(var i = 3; i < count; i++){
+         var parameter = arguments[i];
+         if('function' == typeof(parameter)){
+            parameter = MO.Method.name(parameter);
          }
-         var pi = n - 2;
-         ms = ms.replace('{' + pi + '}', p);
+         message = message.replace('{' + (i - 2) + '}', parameter);
       }
    }
-   message.appendLine(ms);
-   message.appendLine(MO.Lang.String.repeat('-', 60));
-   message.appendLine('Stack:');
-   message.append(s);
-   var text = message.toString();
-   if(!MO.Runtime.isRelease()){
+   result.appendLine(message);
+   result.appendLine(MO.Lang.String.repeat('-', 60));
+   result.appendLine('Stack:');
+   result.append(stack.flush());
+   var text = result.flush();
+   o.output(owner, text);
+   if(MO.Runtime.isPlatformPc() && !MO.Runtime.isRelease()){
       throw new Error(text);
    }
 }
@@ -12860,9 +12894,13 @@ MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
    if(o._active){
       var threads = o._threads;
       var count = threads.count();
-      for(var i = 0; i < count; i++){
-         var thread = threads.at(i);
-         o.process(thread);
+      try{
+         for(var i = 0; i < count; i++){
+            var thread = threads.at(i);
+            o.process(thread);
+         }
+      }catch(error){
+         MO.Logger.fatal(o, error, 'Thread process failure. (thread_count={1})', count);
       }
    }
    if(o._requestFlag){

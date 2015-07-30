@@ -117,9 +117,13 @@ MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
    if(o._active){
       var threads = o._threads;
       var count = threads.count();
-      for(var i = 0; i < count; i++){
-         var thread = threads.at(i);
-         o.process(thread);
+      try{
+         for(var i = 0; i < count; i++){
+            var thread = threads.at(i);
+            o.process(thread);
+         }
+      }catch(error){
+         MO.Logger.fatal(o, error, 'Thread process failure. (thread_count={1})', count);
       }
    }
    // 安装下一帧处理

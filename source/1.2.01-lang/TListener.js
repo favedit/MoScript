@@ -35,7 +35,11 @@ MO.TListener = function TListener(){
 MO.TListener_process = function TListener_process(sender, parameter1, parameter2, parameter3, parameter4, parameter5){
    var o = this;
    var owner = o._owner ? o._owner : o;
-   o._callback.call(owner, sender, parameter1, parameter2, parameter3, parameter4, parameter5);
+   try{
+      o._callback.call(owner, sender, parameter1, parameter2, parameter3, parameter4, parameter5);
+   }catch(error){
+      MO.Logger.fatal(o, error, 'Listener process failure. (owner={1})', owner);
+   }
 }
 
 //==========================================================
