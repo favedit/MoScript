@@ -5547,6 +5547,16 @@ MO.RString.prototype.equals = function RString_equals(s, t, f){
       return (s.toLowerCase() == t.toLowerCase());
    }
 }
+MO.RString.prototype.contains = function RString_contains(source, values){
+   var count = arguments.length;
+   for(var i = 1; i < count; i++){
+      var value = arguments[i];
+      if(source.indexOf(value) != -1){
+         return true;
+      }
+   }
+   return false;
+}
 MO.RString.prototype.startsWith = function RString_startsWith(v, s){
    if(s == null){
       return true;

@@ -213,6 +213,25 @@ MO.RString.prototype.equals = function RString_equals(s, t, f){
 }
 
 //==========================================================
+// <T>判断是否包含指定字符串。</T>
+//
+// @method
+// @param source:String 字符串
+// @param values:String 内容集合
+// @return Boolean 是否包含
+//==========================================================
+MO.RString.prototype.contains = function RString_contains(source, values){
+   var count = arguments.length;
+   for(var i = 1; i < count; i++){
+      var value = arguments[i];
+      if(source.indexOf(value) != -1){
+         return true;
+      }
+   }
+   return false;
+}
+
+//==========================================================
 // <T>判断字符串是否以特定字符串开始。</T>
 //
 // @method

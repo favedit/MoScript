@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150119
    //==========================================================
-   MO.FUiTreeLevel = function FUiTreeLevel(o){
+   MO.FDuiTreeLevel = function FDuiTreeLevel(o){
       o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @property

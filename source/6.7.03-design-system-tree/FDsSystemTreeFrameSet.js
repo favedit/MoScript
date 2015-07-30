@@ -81,7 +81,7 @@ with(MO){
    // <T>目录对象选择处理。</T>
    //
    // @method
-   // @param typeGroup:EUiTreeNodeGroup 类型分组枚举
+   // @param typeGroup:EDuiTreeNodeGroup 类型分组枚举
    // @param propertyFrame:String 属性名称
    // @param controlName:String 控件名称
    //==========================================================
@@ -98,7 +98,7 @@ with(MO){
       // 显示控件信息
       var frame = o.findPropertyFrame(propertyFrame);
       frame.show();
-      if(typeGroup == EUiTreeNodeGroup.Container){
+      if(typeGroup == EDuiTreeNodeGroup.Container){
          frame.loadObject(activeFrame, activeFrame);
       }else{
          var activeControl = activeFrame.findComponent(controlName);

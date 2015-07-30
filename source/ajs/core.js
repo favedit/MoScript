@@ -1394,7 +1394,7 @@ MO.FDataView_dispose = function FDataView_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FFileReader = function FFileReader(o){
-   o = RClass.inherits(this, o, MO.FObject, MO.MListenerLoad);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
    o._reader        = null;
    o._fileName      = MO.Class.register(o, new MO.AGetter('_fileName'));
    o._length        = MO.Class.register(o, new MO.AGetter('_length'), 0);
@@ -1451,7 +1451,7 @@ MO.FFileReader_loadFile = function FFileReader_loadFile(file){
 }
 MO.FFileReader_dispose = function FFileReader_dispose(){
    var o = this;
-   var reader = o._reader = new FileReader();
+   var reader = o._reader;
    reader.__linker = null;
    reader.onloadstart = null;
    reader.onload = null;

@@ -38,7 +38,7 @@ with(MO){
    MO.FDsSceneCatalogContent_onBuild = function FDsSceneCatalogContent_onBuild(event){
       var o = this;
       // 建立查看列
-      var column = RClass.create(FUiTreeColumn);
+      var column = RClass.create(FDuiTreeColumn);
       column.setName('view');
       o.push(column);
       // 父处理

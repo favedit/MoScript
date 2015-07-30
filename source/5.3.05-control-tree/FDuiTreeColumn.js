@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150119
    //==========================================================
-   MO.FUiTreeColumn = function FUiTreeColumn(o){
+   MO.FDuiTreeColumn = function FDuiTreeColumn(o){
       o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @property
@@ -16,10 +16,10 @@ with(MO){
       o._config      = RClass.register(o, new APtyConfig('_config'));
       //..........................................................
       // @process
-      o.oeBuild      = FUiTreeColumn_oeBuild;
+      o.oeBuild      = FDuiTreeColumn_oeBuild;
       //..........................................................
       // @event
-      o.onBuildPanel = FUiTreeColumn_onBuildPanel;
+      o.onBuildPanel = FDuiTreeColumn_onBuildPanel;
       return o;
    }
 
@@ -30,7 +30,7 @@ with(MO){
    // @param event:event:TEvent 构建事件
    // @return EEventStatus 枚举类型
    //==========================================================
-   MO.FUiTreeColumn_oeBuild = function FUiTreeColumn_oeBuild(event){
+   MO.FDuiTreeColumn_oeBuild = function FDuiTreeColumn_oeBuild(event){
       var o = this;
       var r = o.__base.FDuiControl.oeBuild.call(o, event);
       var h = o.hPanel;
@@ -51,7 +51,7 @@ with(MO){
    // @method
    // @see RBuilder.create
    //==========================================================
-   MO.FUiTreeColumn_onBuildPanel = function FUiTreeColumn_onBuildPanel(){
+   MO.FDuiTreeColumn_onBuildPanel = function FDuiTreeColumn_onBuildPanel(){
       this.hPanel = RBuilder.create(null, 'TD');
    }
 }

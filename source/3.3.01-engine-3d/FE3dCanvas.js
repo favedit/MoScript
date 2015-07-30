@@ -15,7 +15,6 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o._optionMouseCapture = true;
    // @attribute
    o._listenerLoad       = MO.Class.register(o, new MO.AListener('_listenerLoad', MO.EEvent.Load));
-   o._scaleRate          = 1;
    o._size               = MO.Class.register(o, new MO.AGetter('_size'));
    o._logicSize          = MO.Class.register(o, new MO.AGetter('_logicSize'));
    o._screenSize         = MO.Class.register(o, new MO.AGetter('_screenSize'));
@@ -176,8 +175,8 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    }
    o._screenSize.set(sourceWidth, sourceHeight);
    // 设置尺寸
-   var width = parseInt(sourceWidth * o._scaleRate);
-   var height = parseInt(sourceHeight * o._scaleRate);
+   var width = parseInt(sourceWidth);
+   var height = parseInt(sourceHeight);
    // 设置画板
    var hCanvas = o._hCanvas;
    hCanvas.width = width;

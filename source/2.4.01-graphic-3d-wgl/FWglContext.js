@@ -118,7 +118,10 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var parameters = new Object();
       parameters.alpha = o._optionAlpha;
       parameters.antialias = o._optionAntialias;
-      //parameters.premultipliedAlpha = false;
+      //parameters.antialias = false;
+      parameters.depth = true;
+      parameters.stencil = false;
+      parameters.premultipliedAlpha = false;
       // 初始化对象
       var handle = null;
       var codes = ['experimental-webgl2', 'experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl']
@@ -525,6 +528,7 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    o._size.set(width, height);
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
+   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 
 //==========================================================

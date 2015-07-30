@@ -1,6 +1,6 @@
 with(MO){
    MO.FUiDataTreeView = function FUiDataTreeView(o){
-      o = RClass.inherits(this, o, FUiTreeView);
+      o = RClass.inherits(this, o, FDuiTreeView);
       o._serviceCode     = RClass.register(o, new APtyString('_serviceCode', 'service'));
       o._statusLoading   = false;
       o.lsnsLoaded       = new TListeners();
@@ -47,7 +47,7 @@ with(MO){
    }
    MO.FUiDataTreeView_construct = function FUiDataTreeView_construct(){
       var o = this;
-      o.__base.FUiTreeView.construct.call(o);
+      o.__base.FDuiTreeView.construct.call(o);
    }
    MO.FUiDataTreeView_innerBuildNode = function FUiDataTreeView_innerBuildNode(parent, xconfig){
       var o = this;
@@ -83,7 +83,7 @@ with(MO){
       var type = null;
       var findNode = node;
       var serviceCode = o._serviceCode;
-      while(RClass.isClass(findNode, FUiTreeNode)){
+      while(RClass.isClass(findNode, FDuiTreeNode)){
          type = findNode.type();
          if(type && type._service){
             serviceCode = type._service;
@@ -99,7 +99,7 @@ with(MO){
          throw new TError(o, 'Unknown service.');
       }
       var findNode = node;
-      while(RClass.isClass(fn, FUiTreeNode)){
+      while(RClass.isClass(fn, FDuiTreeNode)){
          type = findNode.type();
          if(type && type._action){
             break;
@@ -117,7 +117,7 @@ with(MO){
       x.set('type', type._linker);
       x.create('Attributes', o._attributes);
       var fn = node;
-      while(RClass.isClass(fn, FUiTreeNode)){
+      while(RClass.isClass(fn, FDuiTreeNode)){
          x = x.create('TreeNode');
          fn.propertySave(x);
          fn = fn._parent;
@@ -174,7 +174,7 @@ with(MO){
    }
    MO.FUiDataTreeView_dispose = function FUiDataTreeView_dispose(){
       var o = this;
-      o.__base.FUiTreeView.dispose.call(o);
+      o.__base.FDuiTreeView.dispose.call(o);
    }
    MO.FUiDataTreeView_load = function FUiDataTreeView_load(p){
       var o = this;
@@ -266,7 +266,7 @@ with(MO){
    }
    MO.FUiDataTreeView_fetchExtendsAll = function FUiDataTreeView_fetchExtendsAll(s){
       var o = this;
-      if(s && RClass.isClass(s, FUiTreeNode)){
+      if(s && RClass.isClass(s, FDuiTreeNode)){
          fmMain.target = 'frmMain';
          fmMain.form_search.value = '';
          fmMain.form_order.value = '';

@@ -13,7 +13,7 @@ with(MO){
    // @author maocy
    // @version 150307
    //==========================================================
-   MO.FUiTreeNodeCell = function FUiTreeNodeCell(o){
+   MO.FDuiTreeNodeCell = function FDuiTreeNodeCell(o){
       o = RClass.inherits(this, o, FDuiControl, MListenerClick, MListenerDoubleClick);
       //..........................................................
       // @style
@@ -32,18 +32,18 @@ with(MO){
       o._hLabel           = null;
       //..........................................................
       // @event
-      o.onBuildPanel      = FUiTreeNodeCell_onBuildPanel;
-      o.onBuild           = FUiTreeNodeCell_onBuild;
-      o.onClick           = RClass.register(o, new AEventClick('onClick'), FUiTreeNodeCell_onClick);
-      o.onDoubleClick     = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiTreeNodeCell_onDoubleClick);
+      o.onBuildPanel      = FDuiTreeNodeCell_onBuildPanel;
+      o.onBuild           = FDuiTreeNodeCell_onBuild;
+      o.onClick           = RClass.register(o, new AEventClick('onClick'), FDuiTreeNodeCell_onClick);
+      o.onDoubleClick     = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FDuiTreeNodeCell_onDoubleClick);
       //..........................................................
       // @method
-      o.construct         = FUiTreeNodeCell_construct;
+      o.construct         = FDuiTreeNodeCell_construct;
       // @method
-      o.icon              = FUiTreeNodeCell_icon;
-      o.setIcon           = FUiTreeNodeCell_setIcon;
-      o.get               = FUiTreeNodeCell_get;
-      o.set               = FUiTreeNodeCell_set;
+      o.icon              = FDuiTreeNodeCell_icon;
+      o.setIcon           = FDuiTreeNodeCell_setIcon;
+      o.get               = FDuiTreeNodeCell_get;
+      o.set               = FDuiTreeNodeCell_set;
       return o;
    }
 
@@ -53,7 +53,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiTreeNodeCell_onBuildPanel = function FUiTreeNodeCell_onBuildPanel(p){
+   MO.FDuiTreeNodeCell_onBuildPanel = function FDuiTreeNodeCell_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
    }
@@ -64,7 +64,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.FUiTreeNodeCell_onBuild = function FUiTreeNodeCell_onBuild(p){
+   MO.FDuiTreeNodeCell_onBuild = function FDuiTreeNodeCell_onBuild(p){
       var o = this;
       var t = o._tree;
       var r = o.__base.FDuiControl.onBuild.call(o, p);
@@ -80,7 +80,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.FUiTreeNodeCell_onClick = function FUiTreeNodeCell_onClick(p){
+   MO.FDuiTreeNodeCell_onClick = function FDuiTreeNodeCell_onClick(p){
       var o = this;
       p.treeNode = o._node;
       p.treeColumn = o._column;
@@ -94,7 +94,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.FUiTreeNodeCell_onDoubleClick = function FUiTreeNodeCell_onDoubleClick(p){
+   MO.FDuiTreeNodeCell_onDoubleClick = function FDuiTreeNodeCell_onDoubleClick(p){
       var o = this;
       p.treeNode = o._node;
       p.treeColumn = o._column;
@@ -107,7 +107,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNodeCell_construct = function FUiTreeNodeCell_construct(){
+   MO.FDuiTreeNodeCell_construct = function FDuiTreeNodeCell_construct(){
       var o = this;
       o.__base.FDuiControl.construct.call(o);
       // 初始化变量
@@ -120,7 +120,7 @@ with(MO){
    // @method
    // @return String 图标
    //==========================================================
-   MO.FUiTreeNodeCell_icon = function FUiTreeNodeCell_icon(){
+   MO.FDuiTreeNodeCell_icon = function FDuiTreeNodeCell_icon(){
       return o._icon;
    }
 
@@ -130,7 +130,7 @@ with(MO){
    // @method
    // @param String 类型名称
    //==========================================================
-   MO.FUiTreeNodeCell_setIcon = function FUiTreeNodeCell_setIcon(p){
+   MO.FDuiTreeNodeCell_setIcon = function FDuiTreeNodeCell_setIcon(p){
       var o = this;
       var h = o._hIcon;
       if(!h){
@@ -147,7 +147,7 @@ with(MO){
    // @method
    // @return String 内容
    //==========================================================
-   MO.FUiTreeNodeCell_get = function FUiTreeNodeCell_get(){
+   MO.FDuiTreeNodeCell_get = function FDuiTreeNodeCell_get(){
    }
 
    //==========================================================
@@ -156,7 +156,7 @@ with(MO){
    // @method
    // @param p:value:String 内容
    //==========================================================
-   MO.FUiTreeNodeCell_set = function FUiTreeNodeCell_set(p){
+   MO.FDuiTreeNodeCell_set = function FDuiTreeNodeCell_set(p){
       // 建立显示文本
       //o._hLabel = RBuilder.appendText(hnp, o.styleName('Label'));
       //o.setLabel(o._label);

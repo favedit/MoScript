@@ -62,26 +62,21 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       o._typeCd = MO.EBrowser.Explorer;
    }else if((agent.indexOf("safari") != -1) || (agent.indexOf("applewebkit") != -1)){
       o._typeCd = MO.EBrowser.Safari;
-      capability.canvasAutoScale = true;
    }else{
       alert('Unknown browser.\n' + agent);
       return;
    }
-   // 判断浏览器版本
-   if((agent.indexOf("android 5.1") != -1) || (agent.indexOf("iphone") != -1) || agent.indexOf("ipad") != -1){
+   // 是否移动或PC模式
+   if(MO.Lang.String.contains(agent, 'android', 'ipad', 'iphone', 'midp', 'rv:1.2.3.4', 'windows ce', 'windows mobile')){
+      MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   }
+   // 判断浏览器是否需要声音确认
+   if(MO.Lang.String.contains(agent, 'android 5.1', 'iphone', 'ipad')){
       capability.soundConfirm = true;
    }
-   // 是否移动或PC模式
-   var bIsIpad = agent.match(/ipad/i) == "ipad";
-   var bIsIphoneOs = agent.match(/iphone os/i) == "iphone os";
-   var bIsMidp = agent.match(/midp/i) == "midp";
-   var bIsUc7 = agent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
-   var bIsUc = agent.match(/ucweb/i) == "ucweb";
-   var bIsAndroid = agent.match(/android/i) == "android";
-   var bIsCE = agent.match(/windows ce/i) == "windows ce";
-   var bIsWM = agent.match(/windows mobile/i) == "windows mobile";
-   if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM){
-      MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   // 判断浏览器是否支持画面缩放
+   if(MO.Lang.String.contains(agent, 'mqqbrowser')){
+      capability.canvasScale = false;
    }
    // 注册输出接口
    if(o._typeCd == MO.EBrowser.Chrome){

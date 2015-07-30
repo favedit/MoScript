@@ -19,7 +19,7 @@ with(MO){
    // @version 150119
    //==========================================================
    MO.FUiDataTreeView = function FUiDataTreeView(o){
-      o = RClass.inherits(this, o, FUiTreeView);
+      o = RClass.inherits(this, o, FDuiTreeView);
       //..........................................................
       // @property
       o._serviceCode     = RClass.register(o, new APtyString('_serviceCode', 'service'));
@@ -129,14 +129,14 @@ with(MO){
    //==========================================================
    MO.FUiDataTreeView_construct = function FUiDataTreeView_construct(){
       var o = this;
-      o.__base.FUiTreeView.construct.call(o);
+      o.__base.FDuiTreeView.construct.call(o);
    }
 
    //==========================================================
    // <T>从配置信息建立节点处理。</T>
    //
    // @method
-   // @param parent:FUiTreeNode 目录节点
+   // @param parent:FDuiTreeNode 目录节点
    // @param xconfig:FXmlNode 配置节点
    //==========================================================
    MO.FUiDataTreeView_innerBuildNode = function FUiDataTreeView_innerBuildNode(parent, xconfig){
@@ -174,7 +174,7 @@ with(MO){
    // <T>加载指定节点的子节点信息。</T>
    //
    // @method
-   // @param node:FUiTreeNode 指定节点
+   // @param node:FDuiTreeNode 指定节点
    // @param refresh:Boolean 是否刷新
    //==========================================================
    MO.FUiDataTreeView_loadNode = function FUiDataTreeView_loadNode(node, refresh){
@@ -186,7 +186,7 @@ with(MO){
       var type = null;
       var findNode = node;
       var serviceCode = o._serviceCode;
-      while(RClass.isClass(findNode, FUiTreeNode)){
+      while(RClass.isClass(findNode, FDuiTreeNode)){
          type = findNode.type();
          if(type && type._service){
             serviceCode = type._service;
@@ -203,7 +203,7 @@ with(MO){
       }
       // 查找当前节点向上的第一个命令
       var findNode = node;
-      while(RClass.isClass(fn, FUiTreeNode)){
+      while(RClass.isClass(fn, FDuiTreeNode)){
          type = findNode.type();
          if(type && type._action){
             break;
@@ -223,7 +223,7 @@ with(MO){
       x.set('type', type._linker);
       x.create('Attributes', o._attributes);
       var fn = node;
-      while(RClass.isClass(fn, FUiTreeNode)){
+      while(RClass.isClass(fn, FDuiTreeNode)){
          x = x.create('TreeNode');
          fn.propertySave(x);
          fn = fn._parent;
@@ -253,7 +253,7 @@ with(MO){
    //
    // @method
    // @param url:String 网络地址
-   // @param node:FUiTreeNode 目录节点
+   // @param node:FDuiTreeNode 目录节点
    //==========================================================
    MO.FUiDataTreeView_loadUrl = function FUiDataTreeView_loadUrl(url, node){
       var o = this;
@@ -317,7 +317,7 @@ with(MO){
    //==========================================================
    MO.FUiDataTreeView_dispose = function FUiDataTreeView_dispose(){
       var o = this;
-      o.__base.FUiTreeView.dispose.call(o);
+      o.__base.FDuiTreeView.dispose.call(o);
    }
 
 
@@ -358,7 +358,7 @@ with(MO){
    //
    // @method
    // @param p:url:String 网络地址
-   // @param n:node:FUiTreeNode 目录节点
+   // @param n:node:FDuiTreeNode 目录节点
    //==========================================================
    MO.FUiDataTreeView_loadNodeUrl = function FUiDataTreeView_loadNodeUrl(p, n){
       var o = this;
@@ -429,7 +429,7 @@ with(MO){
    // <T>重新加载节点。</T>
    //
    // @method
-   // @param n:node:FUiTreeNode 节点对象
+   // @param n:node:FDuiTreeNode 节点对象
    //==========================================================
    MO.FUiDataTreeView_reloadNode = function FUiDataTreeView_reloadNode(n){
       var o = this;
@@ -502,7 +502,7 @@ with(MO){
    //==========================================================
    MO.FUiDataTreeView_fetchExtendsAll = function FUiDataTreeView_fetchExtendsAll(s){
       var o = this;
-      if(s && RClass.isClass(s, FUiTreeNode)){
+      if(s && RClass.isClass(s, FDuiTreeNode)){
          fmMain.target = 'frmMain';
          fmMain.form_search.value = '';
          fmMain.form_order.value = '';

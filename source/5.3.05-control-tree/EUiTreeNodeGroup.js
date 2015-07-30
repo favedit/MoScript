@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150616
 //==========================================================
-MO.EUiTreeNodeGroup = new function EUiTreeNodeGroup(){
+MO.EDuiTreeNodeGroup = new function EDuiTreeNodeGroup(){
    var o = this;
    // @member 容器
    o.Container = 'container';

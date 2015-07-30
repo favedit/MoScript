@@ -17,10 +17,10 @@ with(MO){
       var typeCode = node.typeCode();
       var frameName = nodeType.get('property_frame');
       var label = node.label();
-      if(typeGroup == EUiTreeNodeGroup.Container){
+      if(typeGroup == EDuiTreeNodeGroup.Container){
          o._frameSet.load(label);
          o._frameSet.selectObject(typeGroup, frameName, null);
-      }else if(typeGroup == EUiTreeNodeGroup.Item){
+      }else if(typeGroup == EDuiTreeNodeGroup.Item){
          o._frameSet.selectObject(typeGroup, frameName, label);
       }
    }
@@ -218,7 +218,7 @@ with(MO){
       }
       var frame = o.findPropertyFrame(propertyFrame);
       frame.show();
-      if(typeGroup == EUiTreeNodeGroup.Container){
+      if(typeGroup == EDuiTreeNodeGroup.Container){
          frame.loadObject(activeFrame, activeFrame);
       }else{
          var activeControl = activeFrame.findComponent(controlName);

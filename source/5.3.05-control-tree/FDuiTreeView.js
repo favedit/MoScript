@@ -18,7 +18,7 @@ with(MO){
    // @author maocy
    // @version 150119
    //==========================================================
-   MO.FUiTreeView = function FUiTreeView(o){
+   MO.FDuiTreeView = function FDuiTreeView(o){
       o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @property
@@ -62,54 +62,54 @@ with(MO){
       o._listenersNodeClick = RClass.register(o, new AListener('_listenersNodeClick', EEvent.NodeClick));
       //..........................................................
       // @event
-      o.onBuildPanel        = FUiTreeView_onBuildPanel;
-      o.onBuild             = FUiTreeView_onBuild;
-      o.onNodeClick         = FUiTreeView_onNodeClick;
-      o.onClick             = RClass.register(o, new AEventClick('onClick'), FUiTreeView_onClick);
-      o.onNodeCheckClick    = RClass.register(o, new AEventClick('onNodeCheckClick'), FUiTreeView_onNodeCheckClick);
+      o.onBuildPanel        = FDuiTreeView_onBuildPanel;
+      o.onBuild             = FDuiTreeView_onBuild;
+      o.onNodeClick         = FDuiTreeView_onNodeClick;
+      o.onClick             = RClass.register(o, new AEventClick('onClick'), FDuiTreeView_onClick);
+      o.onNodeCheckClick    = RClass.register(o, new AEventClick('onNodeCheckClick'), FDuiTreeView_onNodeCheckClick);
       //..........................................................
       // @method
-      o.construct           = FUiTreeView_construct;
+      o.construct           = FDuiTreeView_construct;
       // @method
-      o.attributes          = FUiTreeView_attributes;
-      o.nodeTypes           = FUiTreeView_nodeTypes;
-      o.nodeColumns         = FUiTreeView_nodeColumns;
-      o.nodeLevels          = FUiTreeView_nodeLevels;
-      o.hasNode             = FUiTreeView_hasNode;
-      o.focusNode           = FUiTreeView_focusNode;
-      o.nodes               = FUiTreeView_nodes;
+      o.attributes          = FDuiTreeView_attributes;
+      o.nodeTypes           = FDuiTreeView_nodeTypes;
+      o.nodeColumns         = FDuiTreeView_nodeColumns;
+      o.nodeLevels          = FDuiTreeView_nodeLevels;
+      o.hasNode             = FDuiTreeView_hasNode;
+      o.focusNode           = FDuiTreeView_focusNode;
+      o.nodes               = FDuiTreeView_nodes;
       // @method
-      o.findType            = FUiTreeView_findType;
-      o.findByName          = FUiTreeView_findByName;
-      o.findByGuid          = FUiTreeView_findByGuid;
+      o.findType            = FDuiTreeView_findType;
+      o.findByName          = FDuiTreeView_findByName;
+      o.findByGuid          = FDuiTreeView_findByGuid;
       // @method
-      o.createChild         = FUiTreeView_createChild;
-      o.createNode          = FUiTreeView_createNode;
-      o.appendChild         = FUiTreeView_appendChild;
-      o.appendNode          = FUiTreeView_appendNode;
-      o.appendNodes         = FUiTreeView_appendNodes;
-      o.selectNode          = FUiTreeView_selectNode;
-      o.push                = FUiTreeView_push;
-      o.removeNode          = FUiTreeView_removeNode;
-      o.removeNodes         = FUiTreeView_removeNodes;
-      o.freeNode            = FUiTreeView_freeNode;
-      o.clearNodes          = FUiTreeView_clearNodes;
+      o.createChild         = FDuiTreeView_createChild;
+      o.createNode          = FDuiTreeView_createNode;
+      o.appendChild         = FDuiTreeView_appendChild;
+      o.appendNode          = FDuiTreeView_appendNode;
+      o.appendNodes         = FDuiTreeView_appendNodes;
+      o.selectNode          = FDuiTreeView_selectNode;
+      o.push                = FDuiTreeView_push;
+      o.removeNode          = FDuiTreeView_removeNode;
+      o.removeNodes         = FDuiTreeView_removeNodes;
+      o.freeNode            = FDuiTreeView_freeNode;
+      o.clearNodes          = FDuiTreeView_clearNodes;
       // @method
-      o.nodeClick           = FUiTreeView_nodeClick;
+      o.nodeClick           = FDuiTreeView_nodeClick;
       // @method
-      o.calculateHeight     = FUiTreeView_calculateHeight;
-      o.fetchChangedChecks  = FUiTreeView_fetchChangedChecks;
-      o.extendAuto          = FUiTreeView_extendAuto;
-      o.extendAll           = FUiTreeView_extendAll;
+      o.calculateHeight     = FDuiTreeView_calculateHeight;
+      o.fetchChangedChecks  = FDuiTreeView_fetchChangedChecks;
+      o.extendAuto          = FDuiTreeView_extendAuto;
+      o.extendAll           = FDuiTreeView_extendAll;
       // @method
       o.loadNode            = RMethod.empty;
-      o.refresh             = FUiTreeView_refresh;
-      o.filterNode          = FUiTreeView_filterNode;
+      o.refresh             = FDuiTreeView_refresh;
+      o.filterNode          = FDuiTreeView_filterNode;
       // @method
-      o.clearAllNodes       = FUiTreeView_clearAllNodes;
-      o.clear               = FUiTreeView_clear;
+      o.clearAllNodes       = FDuiTreeView_clearAllNodes;
+      o.clear               = FDuiTreeView_clear;
       // @method
-      o.dispose             = FUiTreeView_dispose;
+      o.dispose             = FDuiTreeView_dispose;
       return o;
    }
 
@@ -119,7 +119,7 @@ with(MO){
    // @method
    // @return HtmlTag 页面元素
    //==========================================================
-   MO.FUiTreeView_onBuildPanel = function FUiTreeView_onBuildPanel(e){
+   MO.FDuiTreeView_onBuildPanel = function FDuiTreeView_onBuildPanel(e){
       var o = this;
       o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
    }
@@ -130,7 +130,7 @@ with(MO){
    // @method
    // @param event:TEventProcess 处理事件
    //==========================================================
-   MO.FUiTreeView_onBuild = function FUiTreeView_onBuild(event){
+   MO.FDuiTreeView_onBuild = function FDuiTreeView_onBuild(event){
       var o = this;
       o.__base.FDuiContainer.onBuild.call(o, event);
       // 关联事件
@@ -148,9 +148,9 @@ with(MO){
       o._hHeadLine = RBuilder.appendTableRow(hnf);
       o._hNodeRows = hnf.children[0];
       // 构建加载中节点
-      var node = o._loadingNode = RClass.create(FUiTreeNode);
+      var node = o._loadingNode = RClass.create(FDuiTreeNode);
       node._tree = o;
-      node._label = RContext.get('FUiTreeView:loading');
+      node._label = RContext.get('FDuiTreeView:loading');
       node._icon = o._iconLoading;
       node.build(event);
       //o.appendNode(node);
@@ -173,7 +173,7 @@ with(MO){
    // @method
    // @param event:SEvent 事件信息
    //==========================================================
-   MO.FUiTreeView_onNodeClick = function FUiTreeView_onNodeClick(event){
+   MO.FDuiTreeView_onNodeClick = function FDuiTreeView_onNodeClick(event){
       var o = this;
    }
 
@@ -184,7 +184,7 @@ with(MO){
    // @param s:source:FControl 源控件
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiTreeView_onClick = function FUiTreeView_onClick(s, e){
+   MO.FDuiTreeView_onClick = function FDuiTreeView_onClick(s, e){
       var o = this;
       if(s.hSender == o._hNodePanel){
          var node = o._focusNode;
@@ -202,15 +202,15 @@ with(MO){
    // @param s:source:FControl 源控件
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiTreeView_onNodeCheckClick = function FUiTreeView_onNodeCheckClick(s, e){
+   MO.FDuiTreeView_onNodeCheckClick = function FDuiTreeView_onNodeCheckClick(s, e){
       var o = this;
-      if(s && RClass.isClass(s, FUiTreeNode)){
+      if(s && RClass.isClass(s, FDuiTreeNode)){
          var f = s.check();
          var cs = s.controls;
          if(cs){
             for(var n = 0; n < cs.count; n++){
                var nd = cs.value(n);
-               if(nd && RClass.isClass(nd, FUiTreeNode)){
+               if(nd && RClass.isClass(nd, FDuiTreeNode)){
                   nd.setCheck(f);
                }
             }
@@ -225,7 +225,7 @@ with(MO){
                var pcc = pcs.count;
                for(var n = 0; n < pcc; n++){
                  var pnd = pcs.value(n);
-                  if(pnd && RClass.isClass(pnd, FUiTreeNode)){
+                  if(pnd && RClass.isClass(pnd, FDuiTreeNode)){
                      if(pnd.check()){
                         return;
                      }
@@ -243,7 +243,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeView_construct = function FUiTreeView_construct(){
+   MO.FDuiTreeView_construct = function FDuiTreeView_construct(){
       var o = this;
       o.__base.FDuiContainer.construct.call(o);
       // 初始化变量
@@ -256,7 +256,7 @@ with(MO){
       // 初始化变量
       o._freeNodes = new TObjects();
       // 创建默认类型
-      o._defaultNodeType = RClass.create(FUiTreeNodeType);
+      o._defaultNodeType = RClass.create(FDuiTreeNodeType);
    }
 
    //==========================================================
@@ -265,7 +265,7 @@ with(MO){
    // @method
    // @return TAttributes 属性表
    //==========================================================
-   MO.FUiTreeView_attributes = function FUiTreeView_attributes(){
+   MO.FDuiTreeView_attributes = function FDuiTreeView_attributes(){
       return this._attributes;
    }
 
@@ -275,7 +275,7 @@ with(MO){
    // @method
    // @return TDictionary 类型字典
    //==========================================================
-   MO.FUiTreeView_nodeTypes = function FUiTreeView_nodeTypes(){
+   MO.FDuiTreeView_nodeTypes = function FDuiTreeView_nodeTypes(){
       return this._nodeTypes;
    }
 
@@ -285,7 +285,7 @@ with(MO){
    // @method
    // @return TDictionary 分列字典
    //==========================================================
-   MO.FUiTreeView_nodeColumns = function FUiTreeView_nodeColumns(){
+   MO.FDuiTreeView_nodeColumns = function FDuiTreeView_nodeColumns(){
       return this._nodeColumns;
    }
 
@@ -295,7 +295,7 @@ with(MO){
    // @method
    // @return TDictionary 层级字典
    //==========================================================
-   MO.FUiTreeView_nodeLevels = function FUiTreeView_nodeLevels(){
+   MO.FDuiTreeView_nodeLevels = function FDuiTreeView_nodeLevels(){
       return this._nodeLevels;
    }
 
@@ -305,7 +305,7 @@ with(MO){
    // @method
    // @return Boolean 是否含有
    //==========================================================
-   MO.FUiTreeView_hasNode = function FUiTreeView_hasNode(){
+   MO.FDuiTreeView_hasNode = function FDuiTreeView_hasNode(){
       return this._rootNode.hasChild();
    }
 
@@ -315,7 +315,7 @@ with(MO){
    // @method
    // @return FTreeNode 焦点节点
    //==========================================================
-   MO.FUiTreeView_focusNode = function FUiTreeView_focusNode(){
+   MO.FDuiTreeView_focusNode = function FDuiTreeView_focusNode(){
       return this._focusNode;
    }
 
@@ -325,7 +325,7 @@ with(MO){
    // @method
    // @return TObjects 节点集合
    //==========================================================
-   MO.FUiTreeView_nodes = function FUiTreeView_nodes(){
+   MO.FDuiTreeView_nodes = function FDuiTreeView_nodes(){
       return this._nodes;
    }
 
@@ -334,9 +334,9 @@ with(MO){
    //
    // @method
    // @param p:name:String 类型名称
-   // @return FUiTreeNodeType 类型信息
+   // @return FDuiTreeNodeType 类型信息
    //==========================================================
-   MO.FUiTreeView_findType = function FUiTreeView_findType(p){
+   MO.FDuiTreeView_findType = function FDuiTreeView_findType(p){
       return this._nodeTypes.get(p);
    }
 
@@ -345,9 +345,9 @@ with(MO){
    //
    // @method
    // @param p:name:String 节点名称
-   // @return FUiTreeNode 节点对象
+   // @return FDuiTreeNode 节点对象
    //==========================================================
-   MO.FUiTreeView_findByName = function FUiTreeView_findByName(p){
+   MO.FDuiTreeView_findByName = function FDuiTreeView_findByName(p){
       var o = this;
       var ns = o._allNodes;
       var c = ns.count();
@@ -366,9 +366,9 @@ with(MO){
    //
    // @method
    // @param guid:String 节点标识
-   // @return FUiTreeNode 节点对象
+   // @return FDuiTreeNode 节点对象
    //==========================================================
-   MO.FUiTreeView_findByGuid = function FUiTreeView_findByGuid(guid){
+   MO.FDuiTreeView_findByGuid = function FDuiTreeView_findByGuid(guid){
       var o = this;
       var nodes = o._allNodes;
       var count = nodes.count();
@@ -389,22 +389,22 @@ with(MO){
    // @param x:config:TNode 数据节点
    // @return 子对象
    //==========================================================
-   MO.FUiTreeView_createChild = function FUiTreeView_createChild(x){
+   MO.FDuiTreeView_createChild = function FDuiTreeView_createChild(x){
       var o = this;
       var r = null;
       var n = x.name();
       switch(n){
          case 'TreeColumn':
-            r = RClass.create(FUiTreeColumn);
+            r = RClass.create(FDuiTreeColumn);
             break;
          case 'TreeLevel':
-            r = RClass.create(FUiTreeLevel);
+            r = RClass.create(FDuiTreeLevel);
             break;
          case 'TreeNodeType':
-            r = RClass.create(FUiTreeNodeType);
+            r = RClass.create(FDuiTreeNodeType);
             break;
          case 'TreeNode':
-            r = RClass.create(FUiTreeNode);
+            r = RClass.create(FDuiTreeNode);
             break;
          default:
             throw new TError(o, 'Unknown child type. (config={1})', x.xml());
@@ -419,7 +419,7 @@ with(MO){
    // @method
    // @param p:child:FDuiControl 子控件
    //==========================================================
-   MO.FUiTreeView_appendChild = function FUiTreeView_appendChild(child){
+   MO.FDuiTreeView_appendChild = function FDuiTreeView_appendChild(child){
       var o = this;
       //var hc = o._hHeadLine.insertCell();
       //hc.height = '100%';
@@ -433,14 +433,14 @@ with(MO){
    // <P>如果有删除的节点，则优先复用已删除的节点。</P>
    //
    // @method
-   // @return FUiTreeNode 树节点
+   // @return FDuiTreeNode 树节点
    //==========================================================
-   MO.FUiTreeView_createNode = function FUiTreeView_createNode(){
+   MO.FDuiTreeView_createNode = function FDuiTreeView_createNode(){
       var o = this;
       // 创建节点
       var node = o._freeNodes.pop();
       if(!node){
-         node = RClass.create(FUiTreeNode);
+         node = RClass.create(FDuiTreeNode);
          node._tree = o;
          node.build(o._hPanel);
       }
@@ -455,10 +455,10 @@ with(MO){
    // <P>如果父节点为空，则追加到跟节点下。</P>
    //
    // @method
-   // @param node:FUiTreeNode 节点对象
-   // @param parent:FUiTreeNode 父节点
+   // @param node:FDuiTreeNode 节点对象
+   // @param parent:FDuiTreeNode 父节点
    //==========================================================
-   MO.FUiTreeView_appendNode = function FUiTreeView_appendNode(node, parent){
+   MO.FDuiTreeView_appendNode = function FDuiTreeView_appendNode(node, parent){
       var o = this;
       if(node._statusLinked){
          return;
@@ -492,10 +492,10 @@ with(MO){
    //
    // @method
    // @todo: 未修复
-   // @param parent:parent:FUiTreeNode 树节点
+   // @param parent:parent:FDuiTreeNode 树节点
    // @param config:config:TXmlDco XML文件
    //==========================================================
-   MO.FUiTreeView_appendNodes = function FUiTreeView_appendNodes(parent, config){
+   MO.FDuiTreeView_appendNodes = function FDuiTreeView_appendNodes(parent, config){
       parent = RObject.nvl(parent, this.workNode, this.rootNode);
       if(config && config._nodes){
          var count = config._nodes.count;
@@ -505,7 +505,7 @@ with(MO){
             for(var n = 0; n < count; n++){
                var nc = config._nodes.get(n);
                if(nc && (nc.isName('Node') || nc.isName('TreeNode'))){
-                  var tn = RClass.create(FUiTreeNode);
+                  var tn = RClass.create(FDuiTreeNode);
                   tn.parent = parent;
                   tn._tree = this;
                   tn.loadConfig(nc);
@@ -532,10 +532,10 @@ with(MO){
    // <T>设置当前树获得焦点的节点。</T>
    //
    // @method
-   // @param n:node:FUiTreeNode 获得焦点的树节点
+   // @param n:node:FDuiTreeNode 获得焦点的树节点
    // @param s:select:Boolean 是否选中
    //==========================================================
-   MO.FUiTreeView_selectNode = function FUiTreeView_selectNode(n, s){
+   MO.FDuiTreeView_selectNode = function FDuiTreeView_selectNode(n, s){
       var o = this;
       var fn = o._focusNode;
       if(s){
@@ -575,18 +575,18 @@ with(MO){
    // @method
    // @param control:FControl 控件
    //==========================================================
-   MO.FUiTreeView_push = function FUiTreeView_push(control){
+   MO.FDuiTreeView_push = function FDuiTreeView_push(control){
       var o = this;
       o.__base.FDuiContainer.push.call(o, control);
       // 增加节点
       control._tree = o;
-      if(RClass.isClass(control, FUiTreeColumn)){
+      if(RClass.isClass(control, FDuiTreeColumn)){
          o._nodeColumns.set(control.name(), control);
-      }else if(RClass.isClass(control, FUiTreeLevel)){
+      }else if(RClass.isClass(control, FDuiTreeLevel)){
          o._nodeLevels.set(control.id(), control);
-      }else if(RClass.isClass(control, FUiTreeNodeType)){
+      }else if(RClass.isClass(control, FDuiTreeNodeType)){
          o._nodeTypes.set(control.code(), control);
-      }else if(RClass.isClass(control, FUiTreeNode)){
+      }else if(RClass.isClass(control, FDuiTreeNode)){
          // 追加节点
          o._nodes.push(control);
          o._allNodes.push(control);
@@ -602,7 +602,7 @@ with(MO){
    // @todo: 未修复
    // @param p:node:FTreeNode 目录节点
    //==========================================================
-   MO.FUiTreeView_removeNode = function FUiTreeView_removeNode(oNode){
+   MO.FDuiTreeView_removeNode = function FDuiTreeView_removeNode(oNode){
       var o = this;
       if(oNode){
          var nodes = new Array();
@@ -642,9 +642,9 @@ with(MO){
    // @method
    // @todo: 未修复
    // @param u:uuid:String 节点的XML表示字符串
-   // @return FUiTreeNode 节点对象
+   // @return FDuiTreeNode 节点对象
    //==========================================================
-   MO.FUiTreeView_removeNodes = function FUiTreeView_removeNodes(node){
+   MO.FDuiTreeView_removeNodes = function FDuiTreeView_removeNodes(node){
       node = RObject.nvl(node, this.workNode, this.rootNode);
       if(node.hasChild()){
          node.removeChildren();
@@ -657,9 +657,9 @@ with(MO){
    // <P>从节点表格移出，但是不释放，用来再创建节点时使用。</P>
    //
    // @method
-   // @param node:FUiTreeNode 树节点
+   // @param node:FDuiTreeNode 树节点
    //==========================================================
-   MO.FUiTreeView_freeNode = function FUiTreeView_freeNode(node){
+   MO.FDuiTreeView_freeNode = function FDuiTreeView_freeNode(node){
       var o = this;
       if(node._statusLinked){
          node._statusLinked = false;
@@ -685,9 +685,9 @@ with(MO){
    //
    // @method
    // @todo: 未修复
-   // @param p:node:FUiTreeNode 树节点
+   // @param p:node:FDuiTreeNode 树节点
    //==========================================================
-   MO.FUiTreeView_clearNodes = function FUiTreeView_clearNodes(node){
+   MO.FDuiTreeView_clearNodes = function FDuiTreeView_clearNodes(node){
       if(node){
          node.removeChildren();
       }
@@ -711,9 +711,9 @@ with(MO){
    // <T>点击目录节点处理。</T>
    //
    // @method
-   // @param node:FUiTreeNode 树节点
+   // @param node:FDuiTreeNode 树节点
    //==========================================================
-   MO.FUiTreeView_nodeClick = function FUiTreeView_nodeClick(node){
+   MO.FDuiTreeView_nodeClick = function FDuiTreeView_nodeClick(node){
       var o = this;
       //o.lsnsClick.process(o, node);
       // 分发事件
@@ -730,7 +730,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeView_calculateHeight = function FUiTreeView_calculateHeight(){
+   MO.FDuiTreeView_calculateHeight = function FDuiTreeView_calculateHeight(){
       var o = this;
       var ns = o._allNodes;
       var c = ns.count();
@@ -748,9 +748,9 @@ with(MO){
    //
    // @method
    // @param u:uuid:String 节点的XML表示字符串
-   // @return FUiTreeNode 节点对象
+   // @return FDuiTreeNode 节点对象
    //==========================================================
-   MO.FUiTreeView_fetchChangedChecks = function FUiTreeView_fetchChangedChecks(){
+   MO.FDuiTreeView_fetchChangedChecks = function FDuiTreeView_fetchChangedChecks(){
       var o = this;
       // TreeView
       var treeView = new TNode('TreeView');
@@ -772,9 +772,9 @@ with(MO){
    // <T>展开所有设置过展开的节点。</T>
    //
    // @method
-   // @param n:node:FUiTreeNode 要展开的节点，如果为空，则展开根节点
+   // @param n:node:FDuiTreeNode 要展开的节点，如果为空，则展开根节点
    //==========================================================
-   MO.FUiTreeView_extendAuto = function FUiTreeView_extendAuto(n){
+   MO.FDuiTreeView_extendAuto = function FDuiTreeView_extendAuto(n){
       var o = this;
       var ns = n ? n._nodes : o._nodes;
       if(ns){
@@ -795,10 +795,10 @@ with(MO){
    // <T>展开所有的节点。</T>
    //
    // @method
-   // @param n:node:FUiTreeNode 树的根节点
+   // @param n:node:FDuiTreeNode 树的根节点
    // @param f:flag:Boolean 是否展开
    //==========================================================
-   MO.FUiTreeView_extendAll = function FUiTreeView_extendAll(n, f){
+   MO.FDuiTreeView_extendAll = function FDuiTreeView_extendAll(n, f){
       var o = this;
       var ns = n ? n._nodes : o._nodes;
       if(ns){
@@ -818,7 +818,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeView_refresh = function FUiTreeView_refresh(){
+   MO.FDuiTreeView_refresh = function FDuiTreeView_refresh(){
       var o = this;
       if(o.parentObj){
          o.parentObj.style.height = o.calculateHeight();
@@ -832,7 +832,7 @@ with(MO){
    // @param pl:label:String 标签
    // @param pa:String:String 属性集合
    //==========================================================
-   MO.FUiTreeView_filterNode = function FUiTreeView_filterNode(pl, pa){
+   MO.FDuiTreeView_filterNode = function FDuiTreeView_filterNode(pl, pa){
       var o = this;
       var nc = o._allNodes.count();
       var nl = null;
@@ -878,7 +878,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeView_clearAllNodes = function FUiTreeView_clearAllNodes(){
+   MO.FDuiTreeView_clearAllNodes = function FDuiTreeView_clearAllNodes(){
       var o = this;
       var nodes = o._nodes;
       if(nodes){
@@ -896,7 +896,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeView_clear = function FUiTreeView_clear(){
+   MO.FDuiTreeView_clear = function FDuiTreeView_clear(){
       var o = this;
       o.clearAllNodes();
    }
@@ -906,7 +906,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeView_dispose = function FUiTreeView_dispose(){
+   MO.FDuiTreeView_dispose = function FDuiTreeView_dispose(){
       var o = this;
       o.__base.FDuiContainer.dispose.call(o);
       // 清空属性

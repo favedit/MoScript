@@ -112,7 +112,6 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    if(o._screenSize.equalsData(sourceWidth, sourceHeight) && (o._orientationCd == orientationCd)){
       return;
    }
-   //alert('Test screen size changed. (source=' + o._screenSize.width + 'x' + o._screenSize.height + ',target=' + sourceWidth + 'x' + sourceHeight + ')');
    o._screenSize.set(sourceWidth, sourceHeight);
    o._orientationCd = orientationCd;
    //..........................................................
@@ -144,29 +143,21 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }else{
       o._calculateRate.set(1, 1);
    }
-   MO.Logger.info(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
-   //alert(MO.Lang.String.format('Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay()));
+   MO.Logger.debug(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    //..........................................................
    // 设置3D画板
-   var isMobile = MO.Runtime.isPlatformMobile();
    var canvas3d = o._canvas3d;
-   canvas3d.resize(width, height);
-   var context3d = canvas3d.graphicContext();
-   if(isMobile){
-      var hCanvas3d = canvas3d._hCanvas;
-      hCanvas3d.style.width = sourceWidth + 'px';
-      hCanvas3d.style.height = sourceHeight + 'px';
+   if(browser.capability().canvasScale){
+      canvas3d.resize(width, height);
+   }else{
+      canvas3d.resize(sourceWidth, sourceHeight);
    }
+   var context3d = canvas3d.graphicContext();
    context3d.setViewport(0, 0, width, height)
    // 设置2D画板
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);
    canvas2d.graphicContext().setGlobalScale(sizeRate, sizeRate);
-   if(isMobile){
-      var hCanvas2d = canvas2d._hCanvas;
-      hCanvas2d.style.width = sourceWidth + 'px';
-      hCanvas2d.style.height = sourceHeight + 'px';
-   }
    //..........................................................
    // 计算舞台
    var stage = o._canvas3d.activeStage();

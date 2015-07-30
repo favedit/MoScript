@@ -6,7 +6,7 @@
  * @version 1.0.1
  **************************************************************/
 MO.EEditStatus = new function EEditStatus(){
-   var o = this}
+   var o = this;
    // Attribute
    o.Blur   = 0;
    o.Cancel = 1;

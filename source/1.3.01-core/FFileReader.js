@@ -6,7 +6,7 @@
 // @version 150401
 //==========================================================
 MO.FFileReader = function FFileReader(o){
-   o = RClass.inherits(this, o, MO.FObject, MO.MListenerLoad);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
    //..........................................................
    // @attribute
    o._reader        = null;
@@ -120,7 +120,7 @@ MO.FFileReader_loadFile = function FFileReader_loadFile(file){
 MO.FFileReader_dispose = function FFileReader_dispose(){
    var o = this;
    // 释放属性
-   var reader = o._reader = new FileReader(); 
+   var reader = o._reader;
    reader.__linker = null;
    reader.onloadstart = null;
    reader.onload = null;

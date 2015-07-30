@@ -1394,7 +1394,7 @@ MO.FDataView_dispose = function FDataView_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FFileReader = function FFileReader(o){
-   o = RClass.inherits(this, o, MO.FObject, MO.MListenerLoad);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListenerLoad);
    o._reader        = null;
    o._fileName      = MO.Class.register(o, new MO.AGetter('_fileName'));
    o._length        = MO.Class.register(o, new MO.AGetter('_length'), 0);
@@ -1451,7 +1451,7 @@ MO.FFileReader_loadFile = function FFileReader_loadFile(file){
 }
 MO.FFileReader_dispose = function FFileReader_dispose(){
    var o = this;
-   var reader = o._reader = new FileReader();
+   var reader = o._reader;
    reader.__linker = null;
    reader.onloadstart = null;
    reader.onload = null;
@@ -7902,6 +7902,9 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
       var parameters = new Object();
       parameters.alpha = o._optionAlpha;
       parameters.antialias = o._optionAntialias;
+      parameters.depth = true;
+      parameters.stencil = false;
+      parameters.premultipliedAlpha = false;
       var handle = null;
       var codes = ['experimental-webgl2', 'experimental-webgl', 'webgl', 'webkit-3d', 'moz-webgl']
       var count = codes.length;
@@ -8188,6 +8191,7 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    o._size.set(width, height);
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
+   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;
@@ -11757,7 +11761,6 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o._optionResize       = true;
    o._optionMouseCapture = true;
    o._listenerLoad       = MO.Class.register(o, new MO.AListener('_listenerLoad', MO.EEvent.Load));
-   o._scaleRate          = 1;
    o._size               = MO.Class.register(o, new MO.AGetter('_size'));
    o._logicSize          = MO.Class.register(o, new MO.AGetter('_logicSize'));
    o._screenSize         = MO.Class.register(o, new MO.AGetter('_screenSize'));
@@ -11849,8 +11852,8 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
       throw new MO.TError(o, 'Invalid canvas size.');
    }
    o._screenSize.set(sourceWidth, sourceHeight);
-   var width = parseInt(sourceWidth * o._scaleRate);
-   var height = parseInt(sourceHeight * o._scaleRate);
+   var width = parseInt(sourceWidth);
+   var height = parseInt(sourceHeight);
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;

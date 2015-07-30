@@ -5,7 +5,7 @@ MO.EEditConfig = new function EEditConfig(){
    return o;
 }
 MO.EEditStatus = new function EEditStatus(){
-   var o = this}
+   var o = this;
    o.Blur   = 0;
    o.Cancel = 1;
    o.Ok     = 2;

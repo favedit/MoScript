@@ -98,7 +98,7 @@ MO.FDsSystemFrameFrameSet_construct = function FDsSystemFrameFrameSet_construct(
 // <T>目录对象选择处理。</T>
 //
 // @method
-// @param typeGroup:EUiTreeNodeGroup 类型分组枚举
+// @param typeGroup:EDuiTreeNodeGroup 类型分组枚举
 // @param propertyFrame:String 属性名称
 // @param controlName:String 控件名称
 //==========================================================
@@ -115,7 +115,7 @@ MO.FDsSystemFrameFrameSet_selectObject = function FDsSystemFrameFrameSet_selectO
    // 显示控件信息
    var frame = o.findPropertyFrame(propertyFrame);
    frame.show();
-   if(typeGroup == MO.EUiTreeNodeGroup.Container){
+   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
       frame.loadObject(activeFrame, activeFrame);
    }else{
       var activeControl = activeFrame.findComponent(controlName);

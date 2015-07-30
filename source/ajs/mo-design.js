@@ -12807,7 +12807,7 @@ with(MO){
    }
    MO.FDsSceneCatalogContent_onBuild = function FDsSceneCatalogContent_onBuild(event){
       var o = this;
-      var column = RClass.create(FUiTreeColumn);
+      var column = RClass.create(FDuiTreeColumn);
       column.setName('view');
       o.push(column);
       o.__base.FDsCatalog.onBuild.call(o, event);

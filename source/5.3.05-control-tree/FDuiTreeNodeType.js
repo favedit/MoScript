@@ -6,7 +6,7 @@ with(MO){
    // @author maocy
    // @version 150119
    //==========================================================
-   MO.FUiTreeNodeType = function FUiTreeNodeType(o){
+   MO.FDuiTreeNodeType = function FDuiTreeNodeType(o){
       o = RClass.inherits(this, o, FDuiComponent);
       //..........................................................
       // @oroperty
@@ -18,12 +18,12 @@ with(MO){
       o._attributes = RClass.register(o, [new APtyAttributes('_attributes'), AGetter('_attributes')]);
       //..........................................................
       // @method
-      o.construct   = FUiTreeNodeType_construct;
+      o.construct   = FDuiTreeNodeType_construct;
       // @method
-      o.get         = FUiTreeNodeType_get;
-      o.set         = FUiTreeNodeType_set;
+      o.get         = FDuiTreeNodeType_get;
+      o.set         = FDuiTreeNodeType_set;
       // @method
-      o.innerDump   = FUiTreeNodeType_innerDump;
+      o.innerDump   = FDuiTreeNodeType_innerDump;
       return o;
    }
 
@@ -32,7 +32,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNodeType_construct = function FUiTreeNodeType_construct(){
+   MO.FDuiTreeNodeType_construct = function FDuiTreeNodeType_construct(){
       var o = this;
       o.__base.FDuiComponent.construct.call(o);
    }
@@ -44,7 +44,7 @@ with(MO){
    // @param name:String 名称
    // @return String 内容
    //==========================================================
-   MO.FUiTreeNodeType_get = function FUiTreeNodeType_get(name){
+   MO.FDuiTreeNodeType_get = function FDuiTreeNodeType_get(name){
       var attributes = this._attributes;
       return attributes ? attributes.get(name) : null;
    }
@@ -56,7 +56,7 @@ with(MO){
    // @param name:String 名称
    // @param value:String 内容
    //==========================================================
-   MO.FUiTreeNodeType_set = function FUiTreeNodeType_set(name, value){
+   MO.FDuiTreeNodeType_set = function FDuiTreeNodeType_set(name, value){
       var attributes = this._attributes;
       if(attributes){
          attributes.set(name, value)
@@ -70,7 +70,7 @@ with(MO){
    // @param event:event:TEvent 构建事件
    // @return EEventStatus 枚举类型
    //==========================================================
-   MO.FUiTreeNodeType_innerDump = function FUiTreeNodeType_innerDump(s){
+   MO.FDuiTreeNodeType_innerDump = function FDuiTreeNodeType_innerDump(s){
       var o = this;
       s.append(RClass.dump(o));
       s.append('[code=',  o._code);

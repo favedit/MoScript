@@ -32,7 +32,7 @@ MO.RContext.initialize({
       'change.restore' : '单击恢复为原始数据[{0}]。',
       'change.empty'   : '单击清空数据。'
       },
-   'FUiTreeView' :
+   'FDuiTreeView' :
       {
       'loading' : '正在加载中，请稍候...',
       'waiting' : '当前树目录正在加载节点中，请稍候。'

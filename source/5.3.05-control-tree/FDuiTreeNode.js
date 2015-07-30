@@ -15,7 +15,7 @@ with(MO){
    // @author maocy
    // @version 150119
    //==========================================================
-   MO.FUiTreeNode = function FUiTreeNode(o){
+   MO.FDuiTreeNode = function FDuiTreeNode(o){
       o = RClass.inherits(this, o, FDuiContainer, MUiDataProperties);
       //..........................................................
       // @property
@@ -60,76 +60,76 @@ with(MO){
       o._hLabel           = null;
       //..........................................................
       // @event
-      o.onBuildPanel      = FUiTreeNode_onBuildPanel;
-      o.onBuild           = FUiTreeNode_onBuild;
+      o.onBuildPanel      = FDuiTreeNode_onBuildPanel;
+      o.onBuild           = FDuiTreeNode_onBuild;
       // @event
-      o.onNodeEnter       = RClass.register(o, new AEventMouseEnter('onNodeEnter'), FUiTreeNode_onNodeEnter);
-      o.onNodeLeave       = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FUiTreeNode_onNodeLeave);
-      o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FUiTreeNode_onNodeClick);
+      o.onNodeEnter       = RClass.register(o, new AEventMouseEnter('onNodeEnter'), FDuiTreeNode_onNodeEnter);
+      o.onNodeLeave       = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FDuiTreeNode_onNodeLeave);
+      o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FDuiTreeNode_onNodeClick);
       //..........................................................
       // @method
-      o.construct         = FUiTreeNode_construct;
+      o.construct         = FDuiTreeNode_construct;
       // @method
-      o.type              = FUiTreeNode_type;
-      o.setTypeCode       = FUiTreeNode_setTypeCode;
-      o.setLabel          = FUiTreeNode_setLabel;
-      o.setNote           = FUiTreeNode_setNote;
-      o.setLevel          = FUiTreeNode_setLevel;
-      o.cell              = FUiTreeNode_cell;
-      o.check             = FUiTreeNode_check;
-      o.setCheck          = FUiTreeNode_setCheck;
-      o.setImage          = FUiTreeNode_setImage;
-      o.calculateImage    = FUiTreeNode_calculateImage;
-      o.setIcon           = FUiTreeNode_setIcon;
-      o.get               = FUiTreeNode_get;
-      o.set               = FUiTreeNode_set;
+      o.type              = FDuiTreeNode_type;
+      o.setTypeCode       = FDuiTreeNode_setTypeCode;
+      o.setLabel          = FDuiTreeNode_setLabel;
+      o.setNote           = FDuiTreeNode_setNote;
+      o.setLevel          = FDuiTreeNode_setLevel;
+      o.cell              = FDuiTreeNode_cell;
+      o.check             = FDuiTreeNode_check;
+      o.setCheck          = FDuiTreeNode_setCheck;
+      o.setImage          = FDuiTreeNode_setImage;
+      o.calculateImage    = FDuiTreeNode_calculateImage;
+      o.setIcon           = FDuiTreeNode_setIcon;
+      o.get               = FDuiTreeNode_get;
+      o.set               = FDuiTreeNode_set;
       // @method
-      o.isFolder          = FUiTreeNode_isFolder;
-      o.hasChild          = FUiTreeNode_hasChild;
-      o.topNode           = FUiTreeNode_topNode;
-      o.topNodeByType     = FUiTreeNode_topNodeByType;
-      o.nodeCount         = FUiTreeNode_nodeCount;
-      o.show              = FUiTreeNode_show;
-      o.hide              = FUiTreeNode_hide;
-      o.select            = FUiTreeNode_select;
-      o.extend            = FUiTreeNode_extend;
-      o.extendAll         = FUiTreeNode_extendAll;
-      o.searchLast        = FUiTreeNode_searchLast;
-      o.createChild       = FUiTreeNode_createChild;
-      o.appendChild       = FUiTreeNode_appendChild;
-      o.appendNode        = FUiTreeNode_appendNode;
-      o.push              = FUiTreeNode_push;
-      o.remove            = FUiTreeNode_remove;
-      o.removeSelf        = FUiTreeNode_removeSelf;
-      o.removeChildren    = FUiTreeNode_removeChildren;
-      o.reset             = FUiTreeNode_reset;
+      o.isFolder          = FDuiTreeNode_isFolder;
+      o.hasChild          = FDuiTreeNode_hasChild;
+      o.topNode           = FDuiTreeNode_topNode;
+      o.topNodeByType     = FDuiTreeNode_topNodeByType;
+      o.nodeCount         = FDuiTreeNode_nodeCount;
+      o.show              = FDuiTreeNode_show;
+      o.hide              = FDuiTreeNode_hide;
+      o.select            = FDuiTreeNode_select;
+      o.extend            = FDuiTreeNode_extend;
+      o.extendAll         = FDuiTreeNode_extendAll;
+      o.searchLast        = FDuiTreeNode_searchLast;
+      o.createChild       = FDuiTreeNode_createChild;
+      o.appendChild       = FDuiTreeNode_appendChild;
+      o.appendNode        = FDuiTreeNode_appendNode;
+      o.push              = FDuiTreeNode_push;
+      o.remove            = FDuiTreeNode_remove;
+      o.removeSelf        = FDuiTreeNode_removeSelf;
+      o.removeChildren    = FDuiTreeNode_removeChildren;
+      o.reset             = FDuiTreeNode_reset;
       // @method
-      o.click             = FUiTreeNode_click;
+      o.click             = FDuiTreeNode_click;
       // @method
-      o.refreshStyle      = FUiTreeNode_refreshStyle;
+      o.refreshStyle      = FDuiTreeNode_refreshStyle;
       // @method
-      o.propertyLoad      = FUiTreeNode_propertyLoad;
-      o.propertySave      = FUiTreeNode_propertySave;
-      o.loadConfig        = FUiTreeNode_loadConfig;
+      o.propertyLoad      = FDuiTreeNode_propertyLoad;
+      o.propertySave      = FDuiTreeNode_propertySave;
+      o.loadConfig        = FDuiTreeNode_loadConfig;
       // @method
-      o.dispose           = FUiTreeNode_dispose;
-      o.innerDump         = FUiTreeNode_innerDump;
+      o.dispose           = FDuiTreeNode_dispose;
+      o.innerDump         = FDuiTreeNode_innerDump;
 
 
 
 
       //..........................................................
       // @method
-      //o.reload           = FUiTreeNode_reload;
-      //o.reloadParent     = FUiTreeNode_reloadParent;
-      //o.loadQuery        = FUiTreeNode_loadQuery;
+      //o.reload           = FDuiTreeNode_reload;
+      //o.reloadParent     = FDuiTreeNode_reloadParent;
+      //o.loadQuery        = FDuiTreeNode_loadQuery;
       //..........................................................
       // @method
-      //o.findByName       = FUiTreeNode_findByName;
-      //o.findByUuid       = FUiTreeNode_findByUuid;
-      //o.checkChanged     = FUiTreeNode_checkChanged;
-      //o.pushChanged      = FUiTreeNode_pushChanged;
-      //o.getFullPath      = FUiTreeNode_getFullPath;
+      //o.findByName       = FDuiTreeNode_findByName;
+      //o.findByUuid       = FDuiTreeNode_findByUuid;
+      //o.checkChanged     = FDuiTreeNode_checkChanged;
+      //o.pushChanged      = FDuiTreeNode_pushChanged;
+      //o.getFullPath      = FDuiTreeNode_getFullPath;
       return o;
    }
 
@@ -139,7 +139,7 @@ with(MO){
    // @method
    // @param p:argements:SArgements 参数集合
    //==========================================================
-   MO.FUiTreeNode_onBuildPanel = function FUiTreeNode_onBuildPanel(p){
+   MO.FDuiTreeNode_onBuildPanel = function FDuiTreeNode_onBuildPanel(p){
       var o = this;
       o._hPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
    }
@@ -150,7 +150,7 @@ with(MO){
    // @method
    // @param p:event:TEventProcess 事件
    //==========================================================
-   MO.FUiTreeNode_onBuild = function FUiTreeNode_onBuild(p){
+   MO.FDuiTreeNode_onBuild = function FDuiTreeNode_onBuild(p){
       var o = this;
       var t = o._tree;
       var r = o.__base.FDuiContainer.onBuild.call(o, p);
@@ -188,7 +188,7 @@ with(MO){
          var cc = cs.count();
          for(var n = 0; n < cc; n++){
             var c = cs.value(n);
-            var nc = RClass.create(FUiTreeNodeCell);
+            var nc = RClass.create(FDuiTreeNodeCell);
             nc._column = c;
             nc.build(p);
             o.push(nc);
@@ -202,7 +202,7 @@ with(MO){
    // @method
    // @param e:event:TEvent 事件对象
    //==========================================================
-   MO.FUiTreeNode_onNodeEnter = function FUiTreeNode_onNodeEnter(e){
+   MO.FDuiTreeNode_onNodeEnter = function FDuiTreeNode_onNodeEnter(e){
       var o = this;
       var t = o._tree;
       if(!t._focusNode || (t._focusNode && (t._focusNode != o))){
@@ -218,7 +218,7 @@ with(MO){
    // @method
    // @param event:TEvent 事件对象
    //==========================================================
-   MO.FUiTreeNode_onNodeLeave = function FUiTreeNode_onNodeLeave(event){
+   MO.FDuiTreeNode_onNodeLeave = function FDuiTreeNode_onNodeLeave(event){
       var o = this;
       var tree = o._tree;
       if(!tree._focusNode || (tree._focusNode && (tree._focusNode != o))){
@@ -234,7 +234,7 @@ with(MO){
    // @method
    // @param event:TEvent 事件对象
    //==========================================================
-   MO.FUiTreeNode_onNodeClick = function FUiTreeNode_onNodeClick(event){
+   MO.FDuiTreeNode_onNodeClick = function FDuiTreeNode_onNodeClick(event){
       var o = this;
       var tree = o._tree;
       var esn = event.hSender.tagName;
@@ -291,7 +291,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_construct = function FUiTreeNode_construct(){
+   MO.FDuiTreeNode_construct = function FDuiTreeNode_construct(){
       var o = this;
       o.__base.FDuiContainer.construct.call(o);
    }
@@ -302,7 +302,7 @@ with(MO){
    // @method
    // @return String 类型
    //==========================================================
-   MO.FUiTreeNode_type = function FUiTreeNode_type(){
+   MO.FDuiTreeNode_type = function FDuiTreeNode_type(){
       var o = this;
       var t = o._tree;
       if(RString.isEmpty(o._typeCode)){
@@ -317,7 +317,7 @@ with(MO){
    // @method
    // @param value:String 类型代码
    //==========================================================
-   MO.FUiTreeNode_setTypeCode = function FUiTreeNode_setTypeCode(value){
+   MO.FDuiTreeNode_setTypeCode = function FDuiTreeNode_setTypeCode(value){
       var o = this;
       o._typeCode = value;
       o.setIcon();
@@ -329,7 +329,7 @@ with(MO){
    // @method
    // @param p:label:String 标签
    //==========================================================
-   MO.FUiTreeNode_setLabel = function FUiTreeNode_setLabel(p){
+   MO.FDuiTreeNode_setLabel = function FDuiTreeNode_setLabel(p){
       var o = this;
       o.__base.FDuiContainer.setLabel.call(o, p)
       // 设置显示内容
@@ -355,7 +355,7 @@ with(MO){
    // @method
    // @param p:note:String 标签
    //==========================================================
-   MO.FUiTreeNode_setNote = function FUiTreeNode_setNote(p){
+   MO.FDuiTreeNode_setNote = function FDuiTreeNode_setNote(p){
       var o = this;
       o._note = RString.empty(p);
       o.setLabel(o._label);
@@ -367,7 +367,7 @@ with(MO){
    // @method
    // @param level:Integer 层次
    //==========================================================
-   MO.FUiTreeNode_setLevel = function FUiTreeNode_setLevel(level){
+   MO.FDuiTreeNode_setLevel = function FDuiTreeNode_setLevel(level){
       var o = this;
       // 设置属性
       o._level = level;
@@ -383,9 +383,9 @@ with(MO){
    //
    // @method
    // @param p:name:String 名称
-   // @return FUiTreeNodeCell 格子
+   // @return FDuiTreeNodeCell 格子
    //==========================================================
-   MO.FUiTreeNode_cell = function FUiTreeNode_cell(p){
+   MO.FDuiTreeNode_cell = function FDuiTreeNode_cell(p){
       return this._cells.get(p);
    }
 
@@ -395,7 +395,7 @@ with(MO){
    // @method
    // @return Boolean 是否选取
    //==========================================================
-   MO.FUiTreeNode_check = function FUiTreeNode_check(){
+   MO.FDuiTreeNode_check = function FDuiTreeNode_check(){
       return this._checked;
    }
 
@@ -405,7 +405,7 @@ with(MO){
    // @method
    // @param p:check:Boolean 选中
    //==========================================================
-   MO.FUiTreeNode_setCheck = function FUiTreeNode_setCheck(p){
+   MO.FDuiTreeNode_setCheck = function FDuiTreeNode_setCheck(p){
       var o = this;
       o._checked = p;
       // 属性集合控制
@@ -426,7 +426,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_setImage = function FUiTreeNode_setImage(){
+   MO.FDuiTreeNode_setImage = function FDuiTreeNode_setImage(){
       var o = this;
       var tree = o._tree;
       var hImage = o._hImage;
@@ -439,7 +439,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_calculateImage = function FUiTreeNode_calculateImage(){
+   MO.FDuiTreeNode_calculateImage = function FDuiTreeNode_calculateImage(){
       var o = this;
       var tree = o._tree;
       var hImage = o._hImage;
@@ -459,7 +459,7 @@ with(MO){
    // @method
    // @param p:icon:String 图标
    //==========================================================
-   MO.FUiTreeNode_setIcon = function FUiTreeNode_setIcon(p){
+   MO.FDuiTreeNode_setIcon = function FDuiTreeNode_setIcon(p){
       var o = this;
       // 设置属性
       o._icon = p;
@@ -494,7 +494,7 @@ with(MO){
    // @param n:name:String 属性名称
    // @return String 属性内容
    //==========================================================
-   MO.FUiTreeNode_get = function FUiTreeNode_get(n){
+   MO.FDuiTreeNode_get = function FDuiTreeNode_get(n){
       return this._attributes.get(n);
    }
 
@@ -505,7 +505,7 @@ with(MO){
    // @param n:name:String 属性名称
    // @param v:value:String 属性内容
    //==========================================================
-   MO.FUiTreeNode_set = function FUiTreeNode_set(n, v){
+   MO.FDuiTreeNode_set = function FDuiTreeNode_set(n, v){
       this._attributes.set(n, v);
    }
 
@@ -515,7 +515,7 @@ with(MO){
    // @method
    // @return Boolean 是否有子节点
    //==========================================================
-   MO.FUiTreeNode_isFolder = function FUiTreeNode_isFolder(){
+   MO.FDuiTreeNode_isFolder = function FDuiTreeNode_isFolder(){
       var o = this;
       var t = o.type();
       return t.storage() == 'collections';
@@ -528,7 +528,7 @@ with(MO){
    // @method
    // @return Boolean 是否有子节点
    //==========================================================
-   MO.FUiTreeNode_hasChild = function FUiTreeNode_hasChild(){
+   MO.FDuiTreeNode_hasChild = function FDuiTreeNode_hasChild(){
       var o = this;
       if(o._child){
          var ns = o._nodes;
@@ -545,10 +545,10 @@ with(MO){
    // @method
    // @param x:config:TNode 数据节点
    //==========================================================
-   MO.FUiTreeNode_topNode = function FUiTreeNode_topNode(){
+   MO.FDuiTreeNode_topNode = function FDuiTreeNode_topNode(){
       var r = this;
       while(r._parent){
-         if(RClass.isClass(r._parent, FUiTreeNode)){
+         if(RClass.isClass(r._parent, FDuiTreeNode)){
             r = r._parent;
          }else{
             break;
@@ -563,7 +563,7 @@ with(MO){
    // @method
    // @param t:type:String 类型名称
    //==========================================================
-   MO.FUiTreeNode_topNodeByType = function FUiTreeNode_topNodeByType(t){
+   MO.FDuiTreeNode_topNodeByType = function FDuiTreeNode_topNodeByType(t){
       var r = this;
       while(r){
          if(r._typeCode == t){
@@ -580,7 +580,7 @@ with(MO){
    // @method
    // @return Integer 节点数量
    //==========================================================
-   MO.FUiTreeNode_nodeCount = function FUiTreeNode_nodeCount(){
+   MO.FDuiTreeNode_nodeCount = function FDuiTreeNode_nodeCount(){
       var o = this;
       var nodes = o._nodes
       if(nodes){
@@ -594,7 +594,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_show = function FUiTreeNode_show(){
+   MO.FDuiTreeNode_show = function FDuiTreeNode_show(){
       var o = this;
       var tree = o._tree;
       // 显示自己
@@ -625,7 +625,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_hide = function FUiTreeNode_hide(){
+   MO.FDuiTreeNode_hide = function FDuiTreeNode_hide(){
       var o = this;
       var t = o._tree;
       if(o._hPanel){
@@ -649,7 +649,7 @@ with(MO){
    // @method
    // @param v:value:Boolean 是否选中
    //==========================================================
-   MO.FUiTreeNode_select = function FUiTreeNode_select(v){
+   MO.FDuiTreeNode_select = function FDuiTreeNode_select(v){
       var o = this;
       o._statusSelected = v;
       if(v){
@@ -664,7 +664,7 @@ with(MO){
    // @method
    // @param p:flag:Boolean 标志
    //==========================================================
-   MO.FUiTreeNode_extend = function FUiTreeNode_extend(p){
+   MO.FDuiTreeNode_extend = function FDuiTreeNode_extend(p){
       var o = this;
       var t = o._tree;
       if(!o._statusLoaded && o._child){
@@ -706,7 +706,7 @@ with(MO){
    // @method
    // @param p:flag:Boolean 标志
    //==========================================================
-   MO.FUiTreeNode_extendAll = function FUiTreeNode_extendAll(p){
+   MO.FDuiTreeNode_extendAll = function FDuiTreeNode_extendAll(p){
       var o = this;
       // 当前节点
       o.extend(p);
@@ -725,9 +725,9 @@ with(MO){
    // <T>搜索当前节点下最后一个子节点。</T>
    //
    // @method
-   // @return FUiTreeNode 子节点
+   // @return FDuiTreeNode 子节点
    //==========================================================
-   MO.FUiTreeNode_searchLast = function FUiTreeNode_searchLast(){
+   MO.FDuiTreeNode_searchLast = function FDuiTreeNode_searchLast(){
       var o = this;
       var s = o._nodes;
       if(s){
@@ -747,10 +747,10 @@ with(MO){
    // @method
    // @param x:config:TNode 配置节点
    //==========================================================
-   MO.FUiTreeNode_createChild = function FUiTreeNode_createChild(x){
+   MO.FDuiTreeNode_createChild = function FDuiTreeNode_createChild(x){
       var r = null;
       if(x.isName('Node') || x.isName('TreeNode')){
-         r = RClass.create(FUiTreeNode);
+         r = RClass.create(FDuiTreeNode);
          r._tree = this._tree;
       }
       return r;
@@ -762,9 +762,9 @@ with(MO){
    // @method
    // @param p:control:FDuiControl 控件
    //==========================================================
-   MO.FUiTreeNode_appendChild = function FUiTreeNode_appendChild(p){
+   MO.FDuiTreeNode_appendChild = function FDuiTreeNode_appendChild(p){
       var o = this;
-      if(RClass.isClass(p, FUiTreeNodeCell)){
+      if(RClass.isClass(p, FDuiTreeNodeCell)){
          o._hPanel.appendChild(p._hPanel);
       }
    }
@@ -775,7 +775,7 @@ with(MO){
    // @method
    // @param p:ndoe:TTreeNode 目录节点
    //==========================================================
-   MO.FUiTreeNode_appendNode = function FUiTreeNode_appendNode(p){
+   MO.FDuiTreeNode_appendNode = function FDuiTreeNode_appendNode(p){
       var o = this;
       var t = o._tree;
       o.push(p);
@@ -789,12 +789,12 @@ with(MO){
    // @method
    // @param component:FComponent 组件对象
    //==========================================================
-   MO.FUiTreeNode_push = function FUiTreeNode_push(component){
+   MO.FDuiTreeNode_push = function FDuiTreeNode_push(component){
       var o = this;
       var tree = o._tree;
       o.__base.FDuiContainer.push.call(o, component);
       // 增加一个树节点
-      if(RClass.isClass(component, FUiTreeNode)){
+      if(RClass.isClass(component, FDuiTreeNode)){
          o._child = true;
          o._statusLoaded = true;
          // 增加子节点
@@ -808,7 +808,7 @@ with(MO){
          tree._allNodes.pushUnique(component);
       }
       // 增加一个节点格子
-      if(RClass.isClass(component, FUiTreeNodeCell)){
+      if(RClass.isClass(component, FDuiTreeNodeCell)){
          var cells = o._cells;
          if(!cells){
             cells = o._cells = new TDictionary();
@@ -827,10 +827,10 @@ with(MO){
    // @method
    // @param component:FComponent 组件对象
    //==========================================================
-   MO.FUiTreeNode_remove = function FUiTreeNode_remove(component){
+   MO.FDuiTreeNode_remove = function FDuiTreeNode_remove(component){
       var o = this;
       // 检查类型
-      if(RClass.isClass(component, FUiTreeNode)){
+      if(RClass.isClass(component, FDuiTreeNode)){
          o._nodes.remove(component);
       }
       // 父处理
@@ -842,7 +842,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_removeSelf = function FUiTreeNode_removeSelf(){
+   MO.FDuiTreeNode_removeSelf = function FDuiTreeNode_removeSelf(){
       var o = this;
       var tree = o._tree;
       if(o._statusLinked){
@@ -850,7 +850,7 @@ with(MO){
          o.removeChildren();
          // 父节点刷新
          var parent = o._parent;
-         if(RClass.isClass(parent, FUiTreeNode)){
+         if(RClass.isClass(parent, FDuiTreeNode)){
             parent.remove(o);
             parent.calculateImage();
          }
@@ -864,7 +864,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_removeChildren = function FUiTreeNode_removeChildren(){
+   MO.FDuiTreeNode_removeChildren = function FDuiTreeNode_removeChildren(){
       var nodes = this._nodes;
       if(nodes){
          var count = nodes.count();
@@ -883,7 +883,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_reset = function FUiTreeNode_reset(){
+   MO.FDuiTreeNode_reset = function FDuiTreeNode_reset(){
       var o = this;
       // 获取属性
       o._typeCode = null;
@@ -910,7 +910,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_click = function FUiTreeNode_click(){
+   MO.FDuiTreeNode_click = function FDuiTreeNode_click(){
       var o = this;
       var tree = o._tree;
       tree.selectNode(o, true);
@@ -922,7 +922,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_refreshStyle = function FUiTreeNode_refreshStyle(){
+   MO.FDuiTreeNode_refreshStyle = function FDuiTreeNode_refreshStyle(){
       var o = this;
       var cs = o._hPanel.cells;
       var c = cs.length;
@@ -949,7 +949,7 @@ with(MO){
    // @method
    // @param x:config:TNode 数据节点
    //==========================================================
-   MO.FUiTreeNode_propertyLoad = function FUiTreeNode_propertyLoad(x){
+   MO.FDuiTreeNode_propertyLoad = function FDuiTreeNode_propertyLoad(x){
       var o = this;
       var t = o._tree;
       o.__base.FDuiContainer.propertyLoad.call(o, x);
@@ -970,7 +970,7 @@ with(MO){
    // @method
    // @param x:config:TNode 数据节点
    //==========================================================
-   MO.FUiTreeNode_propertySave = function FUiTreeNode_propertySave(x){
+   MO.FDuiTreeNode_propertySave = function FDuiTreeNode_propertySave(x){
       var o = this;
       o.__base.FDuiContainer.propertySave.call(o, x);
       // Property
@@ -986,7 +986,7 @@ with(MO){
    // @method
    // @param x:config:TXmlNode 数据节点
    //==========================================================
-   MO.FUiTreeNode_loadConfig = function FUiTreeNode_loadConfig(x){
+   MO.FDuiTreeNode_loadConfig = function FDuiTreeNode_loadConfig(x){
       var o = this;
       // 重置数据
       o.reset();
@@ -1004,7 +1004,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_dispose = function FUiTreeNode_dispose(){
+   MO.FDuiTreeNode_dispose = function FDuiTreeNode_dispose(){
       var o = this;
       o._hNodePanel = null;
       o._hImage = null;
@@ -1020,7 +1020,7 @@ with(MO){
    // @method
    // @param s:dump:TString 调试内容
    //==========================================================
-   MO.FUiTreeNode_innerDump = function FUiTreeNode_innerDump(s){
+   MO.FDuiTreeNode_innerDump = function FDuiTreeNode_innerDump(s){
       var o = this;
       s.append(RClass.name(o));
       s.append('[level=',  o._level);
@@ -1066,7 +1066,7 @@ with(MO){
    // @method
    // @param t:top:Boolean 是否顶层节点
    //==========================================================
-   MO.FUiTreeNode_reload = function FUiTreeNode_reload(t){
+   MO.FDuiTreeNode_reload = function FDuiTreeNode_reload(t){
       var o = this;
       if(t){
          o._tree.reload();
@@ -1080,7 +1080,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_reloadParent = function FUiTreeNode_reloadParent(){
+   MO.FDuiTreeNode_reloadParent = function FDuiTreeNode_reloadParent(){
       var o = this;
       if(o.parentNode){
          o._tree.reloadNode(o.parentNode);
@@ -1095,7 +1095,7 @@ with(MO){
    // @method
    // @param x:node:TNode 设置节点
    //==========================================================
-   MO.FUiTreeNode_loadQuery = function FUiTreeNode_loadQuery(x){
+   MO.FDuiTreeNode_loadQuery = function FDuiTreeNode_loadQuery(x){
       var o = this;
       var sl = RString.nvl(x.get('label'), o._label);
       var sn = RString.nvl(x.get('note'), o._note);
@@ -1110,7 +1110,7 @@ with(MO){
       }
    }
 
-   MO.FUiTreeNode_findByName = function FUiTreeNode_findByName(n){
+   MO.FDuiTreeNode_findByName = function FDuiTreeNode_findByName(n){
       var o = this;
       if(o.name == n){
          return o;
@@ -1141,9 +1141,9 @@ with(MO){
    //
    // @method
    // @param u:uuid:String 节点的XML表示字符串
-   // @return FUiTreeNode 节点对象
+   // @return FDuiTreeNode 节点对象
    //==========================================================
-   MO.FUiTreeNode_findByUuid = function FUiTreeNode_findByUuid(u){
+   MO.FDuiTreeNode_findByUuid = function FDuiTreeNode_findByUuid(u){
       var o = this;
       if(o._guid == u){
          return o;
@@ -1173,7 +1173,7 @@ with(MO){
    //
    // @method
    //==========================================================
-   MO.FUiTreeNode_pushChanged = function FUiTreeNode_pushChanged(trd){
+   MO.FDuiTreeNode_pushChanged = function FDuiTreeNode_pushChanged(trd){
       var o = this;
       //if(o.checkChanged()){
        var d = new TNode();
@@ -1187,7 +1187,7 @@ with(MO){
          var cc = o.components.count;
          for(var n = 0; n < cc; n++){
             var c = o.components.value(n);
-            if(RClass.isClass(c, FUiTreeNode)){
+            if(RClass.isClass(c, FDuiTreeNode)){
                c.pushChanged(trd);
             }
          }
@@ -1199,9 +1199,9 @@ with(MO){
    //
    // @method
    // @param u:uuid:String 节点的XML表示字符串
-   // @return FUiTreeNode 节点对象
+   // @return FDuiTreeNode 节点对象
    //==========================================================
-   MO.FUiTreeNode_checkChanged = function FUiTreeNode_checkChanged(){
+   MO.FDuiTreeNode_checkChanged = function FDuiTreeNode_checkChanged(){
       var o = this;
       if(o._checked != o.check()){
          return true;
@@ -1210,7 +1210,7 @@ with(MO){
    }
 
    //---------------------------------------------------
-   MO.FUiTreeNode_getFullPath = function FUiTreeNode_getFullPath(){
+   MO.FDuiTreeNode_getFullPath = function FDuiTreeNode_getFullPath(){
       var o = this;
       var path = '';
       if(o._label){
