@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150124
 //==========================================================
-MO.FUiDescribeFrameConsole = function FUiDescribeFrameConsole(o){
+MO.FDuiDescribeFrameConsole = function FDuiDescribeFrameConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -18,23 +18,23 @@ MO.FUiDescribeFrameConsole = function FUiDescribeFrameConsole(o){
    o.lsnsLoaded     = null;
    //..........................................................
    // @method
-   o.construct      = MO.FUiDescribeFrameConsole_construct;
+   o.construct      = MO.FDuiDescribeFrameConsole_construct;
    // @method
-   o.load           = MO.FUiDescribeFrameConsole_load;
+   o.load           = MO.FDuiDescribeFrameConsole_load;
 
 
    o.events         = null;
    o.formId         = 0;
    // Method
-   o.createFromName = MO.FUiDescribeFrameConsole_createFromName;
-   o.loadNode       = MO.FUiDescribeFrameConsole_loadNode;
-   o.loadService    = MO.FUiDescribeFrameConsole_loadService;
-   o.nextFormId     = MO.FUiDescribeFrameConsole_nextFormId;
-   o.get            = MO.FUiDescribeFrameConsole_get;
-   o.find           = MO.FUiDescribeFrameConsole_find;
-   o.getLov         = MO.FUiDescribeFrameConsole_getLov;
-   o.findLov        = MO.FUiDescribeFrameConsole_findLov;
-   o.getEvents      = MO.FUiDescribeFrameConsole_getEvents;
+   o.createFromName = MO.FDuiDescribeFrameConsole_createFromName;
+   o.loadNode       = MO.FDuiDescribeFrameConsole_loadNode;
+   o.loadService    = MO.FDuiDescribeFrameConsole_loadService;
+   o.nextFormId     = MO.FDuiDescribeFrameConsole_nextFormId;
+   o.get            = MO.FDuiDescribeFrameConsole_get;
+   o.find           = MO.FDuiDescribeFrameConsole_find;
+   o.getLov         = MO.FDuiDescribeFrameConsole_getLov;
+   o.findLov        = MO.FDuiDescribeFrameConsole_findLov;
+   o.getEvents      = MO.FDuiDescribeFrameConsole_getEvents;
    return o;
 }
 
@@ -43,7 +43,7 @@ MO.FUiDescribeFrameConsole = function FUiDescribeFrameConsole(o){
 //
 // @method
 //==========================================================
-MO.FUiDescribeFrameConsole_construct = function FUiDescribeFrameConsole_construct(){
+MO.FDuiDescribeFrameConsole_construct = function FDuiDescribeFrameConsole_construct(){
    var o = this;
    o._defines = new MO.TDictionary();
    o.lsnsLoaded = new MO.TListeners();
@@ -57,7 +57,7 @@ MO.FUiDescribeFrameConsole_construct = function FUiDescribeFrameConsole_construc
 // @param name:String 名称
 // @return TXmlDocument 节点对象
 //==========================================================
-MO.FUiDescribeFrameConsole_load = function FUiDescribeFrameConsole_load(name){
+MO.FDuiDescribeFrameConsole_load = function FDuiDescribeFrameConsole_load(name){
    var o = this;
    var defines = o._defines;
    // 查找页面
@@ -112,7 +112,7 @@ MO.FUiDescribeFrameConsole_load = function FUiDescribeFrameConsole_load(name){
 // @param name:FormName:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-MO.FUiDescribeFrameConsole_createFromName = function FUiDescribeFrameConsole_createFromName(name, type){
+MO.FDuiDescribeFrameConsole_createFromName = function FDuiDescribeFrameConsole_createFromName(name, type){
    var o = this;
    var doc = o.loadService(name, type);
    o.loadNode(doc);
@@ -129,7 +129,7 @@ MO.FUiDescribeFrameConsole_createFromName = function FUiDescribeFrameConsole_cre
 // @method
 // @param x:XML:TXmlDocument XML节点
 //==========================================================
-MO.FUiDescribeFrameConsole_loadNode = function FUiDescribeFrameConsole_loadNode(x){
+MO.FDuiDescribeFrameConsole_loadNode = function FDuiDescribeFrameConsole_loadNode(x){
    var o = this;
    var nns = x.root();
    if(nns.hasNode()){
@@ -170,7 +170,7 @@ MO.FUiDescribeFrameConsole_loadNode = function FUiDescribeFrameConsole_loadNode(
 // @param t:type:String 表单类型
 // @return TXmlDocument 节点对象
 //==========================================================
-MO.FUiDescribeFrameConsole_loadService = function FUiDescribeFrameConsole_loadService(n, t){
+MO.FDuiDescribeFrameConsole_loadService = function FDuiDescribeFrameConsole_loadService(n, t){
    var o = this;
    if(!t){
       t = MO.EForm.Form;
@@ -197,7 +197,7 @@ MO.FUiDescribeFrameConsole_loadService = function FUiDescribeFrameConsole_loadSe
 // @method
 // @return Integer 获得的表单ID
 //==========================================================
-MO.FUiDescribeFrameConsole_nextFormId = function FUiDescribeFrameConsole_nextFormId(){
+MO.FDuiDescribeFrameConsole_nextFormId = function FDuiDescribeFrameConsole_nextFormId(){
    return ++this.formId;
 }
 
@@ -208,7 +208,7 @@ MO.FUiDescribeFrameConsole_nextFormId = function FUiDescribeFrameConsole_nextFor
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-MO.FUiDescribeFrameConsole_get = function FUiDescribeFrameConsole_get(n){
+MO.FDuiDescribeFrameConsole_get = function FDuiDescribeFrameConsole_get(n){
    return this._defines.get(EForm.Form).get(n);
 }
 
@@ -219,7 +219,7 @@ MO.FUiDescribeFrameConsole_get = function FUiDescribeFrameConsole_get(n){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-MO.FUiDescribeFrameConsole_find = function FUiDescribeFrameConsole_find(n, t){
+MO.FDuiDescribeFrameConsole_find = function FDuiDescribeFrameConsole_find(n, t){
    var o = this;
    if(EForm.Lov == t){
       return o.findLov(n);
@@ -243,7 +243,7 @@ MO.FUiDescribeFrameConsole_find = function FUiDescribeFrameConsole_find(n, t){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-MO.FUiDescribeFrameConsole_getLov = function FUiDescribeFrameConsole_getLov(n){
+MO.FDuiDescribeFrameConsole_getLov = function FDuiDescribeFrameConsole_getLov(n){
    return this._defines.get(EForm.Lov).get(n);
 }
 
@@ -254,7 +254,7 @@ MO.FUiDescribeFrameConsole_getLov = function FUiDescribeFrameConsole_getLov(n){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-MO.FUiDescribeFrameConsole_findLov = function FUiDescribeFrameConsole_findLov(n){
+MO.FDuiDescribeFrameConsole_findLov = function FDuiDescribeFrameConsole_findLov(n){
    var o = this;
    var fc = o.getLov(n);
    if(!fc){
@@ -270,6 +270,6 @@ MO.FUiDescribeFrameConsole_findLov = function FUiDescribeFrameConsole_findLov(n)
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-MO.FUiDescribeFrameConsole_getEvents = function FUiDescribeFrameConsole_getEvents(n){
+MO.FDuiDescribeFrameConsole_getEvents = function FDuiDescribeFrameConsole_getEvents(n){
    return this.events.get(n);
 }

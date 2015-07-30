@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-MO.MUiEditValidator = function MUiEditValidator(o){
+MO.MDuiEditValidator = function MDuiEditValidator(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute

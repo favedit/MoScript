@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiCellEdit = function FDuiCellEdit(o){
-      //o = RClass.inherits(this, o, FDuiCellEditControl, MUiFocus);
+      //o = RClass.inherits(this, o, FDuiCellEditControl, MDuiFocus);
       o = RClass.inherits(this, o, FDuiCellEditControl);
       //..........................................................
       // @style

@@ -15,7 +15,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-MO.MUiEditChange = function MUiEditChange(o){
+MO.MDuiEditChange = function MDuiEditChange(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @style
@@ -28,18 +28,18 @@ MO.MUiEditChange = function MUiEditChange(o){
    o._hChangeIcon      = null;
    //..........................................................
    // @event
-   o.onBuildEditChange = MO.MUiEditChange_onBuildEditChange;
+   o.onBuildEditChange = MO.MDuiEditChange_onBuildEditChange;
    // @event
-   o.onChangeEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onChangeEnter'), MO.MUiEditChange_onChangeEnter);
-   o.onChangeLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onChangeLeave'), MO.MUiEditChange_onChangeLeave);
-   o.onChangeClick     = MO.Class.register(o, new MO.AEventClick('onChangeClick'), MO.MUiEditChange_onChangeClick);
+   o.onChangeEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onChangeEnter'), MO.MDuiEditChange_onChangeEnter);
+   o.onChangeLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onChangeLeave'), MO.MDuiEditChange_onChangeLeave);
+   o.onChangeClick     = MO.Class.register(o, new MO.AEventClick('onChangeClick'), MO.MDuiEditChange_onChangeClick);
    //..........................................................
    // @method
-   o.construct         = MO.MUiEditChange_construct;
+   o.construct         = MO.MDuiEditChange_construct;
    // @method
-   o.changeSet         = MO.MUiEditChange_changeSet;
+   o.changeSet         = MO.MDuiEditChange_changeSet;
    // @method
-   o.dispose           = MO.MUiEditChange_dispose;
+   o.dispose           = MO.MDuiEditChange_dispose;
    return o;
 }
 
@@ -49,11 +49,11 @@ MO.MUiEditChange = function MUiEditChange(o){
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
-MO.MUiEditChange_onBuildEditChange = function MUiEditChange_onBuildEditChange(p){
+MO.MDuiEditChange_onBuildEditChange = function MDuiEditChange_onBuildEditChange(p){
    var o = this;
    // 设置底板
    var h = o._hChangePanel;
-   h.className = o.styleName('ChangePanel', MO.MUiEditChange);
+   h.className = o.styleName('ChangePanel', MO.MDuiEditChange);
    //h.vAlign = 'top';
    h.style.verticalAlign = 'top';
    h.width = 5;
@@ -61,7 +61,7 @@ MO.MUiEditChange_onBuildEditChange = function MUiEditChange_onBuildEditChange(p)
    o.attachEvent('onChangeLeave', h, o.onChangeLeave);
    o.attachEvent('onChangeClick', h, o.onChangeClick);
    // 建立图标
-   var hi = o._hChangeIcon = MO.RBuilder.appendIcon(h, o.styleName('ChangeIcon', MO.MUiEditChange), 'control.change');
+   var hi = o._hChangeIcon = MO.RBuilder.appendIcon(h, o.styleName('ChangeIcon', MO.MDuiEditChange), 'control.change');
    hi._pname = 'change.icon';
 }
 
@@ -71,13 +71,13 @@ MO.MUiEditChange_onBuildEditChange = function MUiEditChange_onBuildEditChange(p)
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiEditChange_onChangeEnter = function MUiEditChange_onChangeEnter(e){
+MO.MDuiEditChange_onChangeEnter = function MDuiEditChange_onChangeEnter(e){
    var o = this;
    //var t = null;
    //if(RString.isEmpty(o.dataValue)){
-   //   t = RContext.get('MUiEditChange:change.empty');
+   //   t = RContext.get('MDuiEditChange:change.empty');
    //}else{
-   //   t = RContext.get('MUiEditChange:change.restore', o.dataValue);
+   //   t = RContext.get('MDuiEditChange:change.restore', o.dataValue);
    //}
    //o.hChangeIcon.title = t;
 }
@@ -88,13 +88,13 @@ MO.MUiEditChange_onChangeEnter = function MUiEditChange_onChangeEnter(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiEditChange_onChangeLeave = function MUiEditChange_onChangeLeave(e){
+MO.MDuiEditChange_onChangeLeave = function MDuiEditChange_onChangeLeave(e){
    var o = this;
    //var t = null;
    //if(RString.isEmpty(o.dataValue)){
-   //   t = RContext.get('MUiEditChange:change.empty');
+   //   t = RContext.get('MDuiEditChange:change.empty');
    //}else{
-   //   t = RContext.get('MUiEditChange:change.restore', o.dataValue);
+   //   t = RContext.get('MDuiEditChange:change.restore', o.dataValue);
    //}
    //o.hChangeIcon.title = t;
 }
@@ -105,7 +105,7 @@ MO.MUiEditChange_onChangeLeave = function MUiEditChange_onChangeLeave(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiEditChange_onChangeClick = function MUiEditChange_onChangeClick(e){
+MO.MDuiEditChange_onChangeClick = function MDuiEditChange_onChangeClick(e){
    //this.set(this.dataValue);
 }
 
@@ -114,7 +114,7 @@ MO.MUiEditChange_onChangeClick = function MUiEditChange_onChangeClick(e){
 //
 // @method
 //==========================================================
-MO.MUiEditChange_construct = function MUiEditChange_construct(){
+MO.MDuiEditChange_construct = function MDuiEditChange_construct(){
 }
 
 //==========================================================
@@ -123,7 +123,7 @@ MO.MUiEditChange_construct = function MUiEditChange_construct(){
 // @method
 // @param p:flag:Boolean 内容
 //==========================================================
-MO.MUiEditChange_changeSet = function MUiEditChange_changeSet(p){
+MO.MDuiEditChange_changeSet = function MDuiEditChange_changeSet(p){
 }
 
 //==========================================================
@@ -131,7 +131,7 @@ MO.MUiEditChange_changeSet = function MUiEditChange_changeSet(p){
 //
 // @method
 //==========================================================
-MO.MUiEditChange_dispose = function MUiEditChange_dispose(){
+MO.MDuiEditChange_dispose = function MDuiEditChange_dispose(){
    var o = this;
    // 释放属性
    o._hChangeIcon = MO.Window.Html.free(o._hChangeIcon);

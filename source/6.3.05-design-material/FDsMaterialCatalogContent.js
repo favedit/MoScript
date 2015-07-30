@@ -78,7 +78,7 @@ with(MO){
          }
       }
       // 画面允许操作
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -137,7 +137,7 @@ with(MO){
    MO.FDsMaterialCatalogContent_serviceList = function FDsMaterialCatalogContent_serviceList(guid){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       // 发送数据请求
       var url = '/cloud.resource.material.ws?action=listBitmap&guid=' + guid;
       var connection = RConsole.find(FXmlConsole).sendAsync(url);

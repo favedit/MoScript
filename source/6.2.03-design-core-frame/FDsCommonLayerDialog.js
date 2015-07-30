@@ -69,7 +69,7 @@ with(MO){
    MO.FDsCommonLayerDialog_onConfirmLoad = function FDsCommonLayerDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新目录
@@ -97,7 +97,7 @@ with(MO){
    MO.FDsCommonLayerDialog_onConfirmClick = function FDsCommonLayerDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Layer');

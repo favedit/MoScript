@@ -15,7 +15,7 @@
 // @version 141231
 //==========================================================
 MO.FDuiControl = function FDuiControl(o){
-   o = MO.Class.inherits(this, o, MO.FDuiComponent, MO.MUiControl, MO.MListener, MO.MUiSize, MO.MUiMargin, MO.MUiPadding, MO.MUiStyle);
+   o = MO.Class.inherits(this, o, MO.FDuiComponent, MO.MUiControl, MO.MListener, MO.MDuiSize, MO.MUiMargin, MO.MUiPadding, MO.MDuiStyle);
    //..........................................................
    // @property Boolean 是否回行
    o._wrapCd        = MO.Class.register(o, [new MO.APtyEnum('_wrapCd', null, MO.EUiWrap, MO.EUiWrap.NextLine), new MO.AGetSet('_wrapCd')]);
@@ -111,7 +111,7 @@ MO.FDuiControl = function FDuiControl(o){
 //==========================================================
 MO.FDuiControl_onEnter = function FDuiControl_onEnter(e){
    var o = this;
-   MO.Console.find(MO.FUiFocusConsole).enter(o);
+   MO.Console.find(MO.FDuiFocusConsole).enter(o);
    if(o._hint){
       MO.RWindow.setStatus(o._hint);
    }
@@ -125,7 +125,7 @@ MO.FDuiControl_onEnter = function FDuiControl_onEnter(e){
 //==========================================================
 MO.FDuiControl_onLeave = function FDuiControl_onLeave(e){
    var o = this;
-   MO.Console.find(MO.FUiFocusConsole).leave(o);
+   MO.Console.find(MO.FDuiFocusConsole).leave(o);
    if(o._hint){
       MO.RWindow.setStatus();
    }
@@ -204,10 +204,10 @@ MO.FDuiControl_oeMode = function FDuiControl_oeMode(e){
 MO.FDuiControl_construct = function FDuiControl_construct(){
    var o = this;
    o.__base.FDuiComponent.construct.call(o);
-   o.__base.MUiSize.construct.call(o);
+   o.__base.MDuiSize.construct.call(o);
    o.__base.MUiMargin.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
-   o.__base.MUiStyle.construct.call(o);
+   o.__base.MDuiStyle.construct.call(o);
 }
 
 //==========================================================
@@ -690,10 +690,10 @@ MO.FDuiControl_dispose = function FDuiControl_dispose(){
    o._hParent = null;
    o._hPanel = MO.RHtml.free(o._hPanel);
    // 释放处理
-   o.__base.MUiStyle.dispose.call(o);
+   o.__base.MDuiStyle.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiMargin.dispose.call(o);
-   o.__base.MUiSize.dispose.call(o);
+   o.__base.MDuiSize.dispose.call(o);
    o.__base.MUiControl.dispose.call(o);
    o.__base.FDuiComponent.dispose.call(o);
 }

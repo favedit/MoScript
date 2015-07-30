@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-MO.MUiEditReference = function MUiEditReference(o){
+MO.MDuiEditReference = function MDuiEditReference(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
@@ -19,13 +19,13 @@ MO.MUiEditReference = function MUiEditReference(o){
    o._listView      = null;
    //..........................................................
    // @event
-   //o.onListClick    = RClass.register(o, new HClick('onListClick'), MUiEditReference_onListClick);
+   //o.onListClick    = RClass.register(o, new HClick('onListClick'), MDuiEditReference_onListClick);
    o.onListSelected = MO.Method.empty;
    //..........................................................
    // @method
-   o.canListView    = MO.MUiEditReference_canListView;
-   o.setLabelStyle  = MO.MUiEditReference_setLabelStyle;
-   o.doListView     = MO.MUiEditReference_doListView;
+   o.canListView    = MO.MDuiEditReference_canListView;
+   o.setLabelStyle  = MO.MDuiEditReference_setLabelStyle;
+   o.doListView     = MO.MDuiEditReference_doListView;
    return o;
 }
 
@@ -34,7 +34,7 @@ MO.MUiEditReference = function MUiEditReference(o){
 //
 // @method
 //==========================================================
-MO.MUiEditReference_onListClick = function MUiEditReference_onListClick(e){
+MO.MDuiEditReference_onListClick = function MDuiEditReference_onListClick(e){
    var o = this;
    if(o.canListView()){
       o.doListView();
@@ -48,7 +48,7 @@ MO.MUiEditReference_onListClick = function MUiEditReference_onListClick(e){
 //    <L value='true'>允许</L>
 //    <L value='false'>不允许</L>
 //==========================================================
-MO.MUiEditReference_canListView = function MUiEditReference_canListView(){
+MO.MDuiEditReference_canListView = function MDuiEditReference_canListView(){
    return !MO.Lang.String.isEmpty(this._lovReference) && this._editable;
 }
 
@@ -57,7 +57,7 @@ MO.MUiEditReference_canListView = function MUiEditReference_canListView(){
 //
 // @method
 //==========================================================
-MO.MUiEditReference_setLabelStyle = function MUiEditReference_setLabelStyle(){
+MO.MDuiEditReference_setLabelStyle = function MDuiEditReference_setLabelStyle(){
    var o = this;
    if(!MO.Lang.String.isEmpty(o.lovRefer)){
       o.hLabel.style.cursor = 'hand';
@@ -71,7 +71,7 @@ MO.MUiEditReference_setLabelStyle = function MUiEditReference_setLabelStyle(){
 //
 // @method
 //==========================================================
-MO.MUiEditReference_doListView = function MUiEditReference_doListView(cvs){
+MO.MDuiEditReference_doListView = function MDuiEditReference_doListView(cvs){
    var o = this;
    // 获取关联的选取窗口
    var v = o._listView;

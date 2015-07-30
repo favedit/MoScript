@@ -156,7 +156,7 @@ with(MO){
       var xdocument = new TXmlDocument();
       var xroot = xdocument.root();
       xroot.set('action', service.action);
-      RConsole.find(FUiEnvironmentConsole).build(xroot);
+      RConsole.find(FDuiEnvironmentConsole).build(xroot);
       if(!attributes.isEmpty()){
          if(RClass.isClass(attributes, TNode)){
             xr.push(attributes);

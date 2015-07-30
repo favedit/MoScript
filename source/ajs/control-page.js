@@ -305,7 +305,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiTabBar = function FDuiTabBar(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       o._sizeCd          = EUiSize.Horizontal;
       o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
       o._styleTitlePanel = RClass.register(o, new AStyle('_styleTitlePanel'));

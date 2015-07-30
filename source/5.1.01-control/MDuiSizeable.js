@@ -1,7 +1,7 @@
 // ============================================================
-// MUiSizeable
+// MDuiSizeable
 // ============================================================
-MO.MUiSizeable = function MUiSizeable(o){
+MO.MDuiSizeable = function MDuiSizeable(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
@@ -12,16 +12,16 @@ MO.MUiSizeable = function MUiSizeable(o){
    //..........................................................
    // @method
    o.inSizeRange = MO.Method.virtual(o, 'inSizeRange');
-   o.cursor      = MO.MUiSizeable_cursor;
-   o.setCursor   = MO.MUiSizeable_setCursor;
-   o.resize      = MO.MUiSizeable_resize;
-   o.setBounds   = MO.MUiSizeable_setBounds;
-   o.startDrag   = MO.MUiSizeable_startDrag;
-   o.stopDrag    = MO.MUiSizeable_stopDrag;
+   o.cursor      = MO.MDuiSizeable_cursor;
+   o.setCursor   = MO.MDuiSizeable_setCursor;
+   o.resize      = MO.MDuiSizeable_resize;
+   o.setBounds   = MO.MDuiSizeable_setBounds;
+   o.startDrag   = MO.MDuiSizeable_startDrag;
+   o.stopDrag    = MO.MDuiSizeable_stopDrag;
    return o;
 }
 // ------------------------------------------------------------
-MO.MUiSizeable_cursor = function MUiSizeable_cursor(){
+MO.MDuiSizeable_cursor = function MDuiSizeable_cursor(){
    var o = this;
    var src = MO.Window.source();
    if(!o.inSizeRange(src)){
@@ -67,7 +67,7 @@ MO.MUiSizeable_cursor = function MUiSizeable_cursor(){
    return ECursor.Default;
 }
 // ------------------------------------------------------------
-MO.MUiSizeable_setCursor = function MUiSizeable_setCursor(cursor){
+MO.MDuiSizeable_setCursor = function MDuiSizeable_setCursor(cursor){
    if(!cursor){
       cursor = this.cursor();
    }
@@ -77,7 +77,7 @@ MO.MUiSizeable_setCursor = function MUiSizeable_setCursor(cursor){
    }
 }
 // ------------------------------------------------------------
-MO.MUiSizeable_resize = function MUiSizeable_resize(width, height){
+MO.MDuiSizeable_resize = function MDuiSizeable_resize(width, height){
    var sizeable = false;
    var hStyle = this.htmlPanel(EPanel.Border).style;
    if(width != null){
@@ -101,7 +101,7 @@ MO.MUiSizeable_resize = function MUiSizeable_resize(width, height){
    }
 }
 // ------------------------------------------------------------
-MO.MUiSizeable_setBounds = function MUiSizeable_setBounds(left, top, right, bottom, force){
+MO.MDuiSizeable_setBounds = function MDuiSizeable_setBounds(left, top, right, bottom, force){
    var sizeable = false;
    var st = this.htmlPanel(EPanel.Border).style;
    if(left != null){
@@ -149,8 +149,8 @@ MO.MUiSizeable_setBounds = function MUiSizeable_setBounds(left, top, right, bott
    }
 }
 // ------------------------------------------------------------
-MO.MUiSizeable_startDrag = function MUiSizeable_startDrag(){
+MO.MDuiSizeable_startDrag = function MDuiSizeable_startDrag(){
 }
 // ------------------------------------------------------------
-MO.MUiSizeable_stopDrag = function MUiSizeable_stopDrag(){
+MO.MDuiSizeable_stopDrag = function MDuiSizeable_stopDrag(){
 }

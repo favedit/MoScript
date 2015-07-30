@@ -327,7 +327,7 @@ with(MO){
    }
    MO.FDsBitmapCanvas_onLoaded = function FDsBitmapCanvas_onLoaded(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsBitmapCanvas_oeResize = function FDsBitmapCanvas_oeResize(event){
       var o = this;
@@ -345,7 +345,7 @@ with(MO){
    MO.FDsBitmapCanvas_loadByGuid = function FDsBitmapCanvas_loadByGuid(guid){
       var o = this;
       var size = o._graphicContext.size();
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
       var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
       var bitmap = o._activeBitmap = RConsole.find(FE3dBitmapConsole).loadByGuid(o, guid);
@@ -1661,7 +1661,7 @@ with(MO){
       space.registerLayer('ui', layer);
       o.reloadRegion()
       o.processLoadListener(o);
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSpaceDesignCanvas_onMouseCaptureStart = function FDsSpaceDesignCanvas_onMouseCaptureStart(event){
       var o = this;

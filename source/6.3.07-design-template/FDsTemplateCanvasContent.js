@@ -183,7 +183,7 @@ with(MO){
       o.processLoadListener(event);
       event.dispose();
       // 隐藏处理
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -244,7 +244,7 @@ with(MO){
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
          // 显示加载进度
-         RConsole.find(FUiDesktopConsole).showLoading();
+         RConsole.find(FDuiDesktopConsole).showLoading();
          // 设置事件
          space._layer.pushRenderable(o._dimensional);
          space._linked = true;
@@ -272,7 +272,7 @@ with(MO){
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
          // 显示加载进度
-         RConsole.find(FUiDesktopConsole).showLoading();
+         RConsole.find(FDuiDesktopConsole).showLoading();
          // 设置事件
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);

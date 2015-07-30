@@ -168,12 +168,12 @@ with(MO){
    }
    MO.FDsCommonDisplayDialog_onConfirmLoad = function FDsCommonDisplayDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonDisplayDialog_onConfirmClick = function FDsCommonDisplayDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
       xsprite.set('space_guid', o._spaceGuid);
@@ -346,12 +346,12 @@ with(MO){
    }
    MO.FDsCommonLayerDialog_onConfirmLoad = function FDsCommonLayerDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonLayerDialog_onConfirmClick = function FDsCommonLayerDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Layer');
       xsprite.set('space_guid', o._spaceGuid);
@@ -722,12 +722,12 @@ with(MO){
    }
    MO.FDsCommonMaterialDialog_onConfirmLoad = function FDsCommonMaterialDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMaterialDialog_onConfirmClick = function FDsCommonMaterialDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Material');
       xsprite.set('space_guid', o._spaceGuid);
@@ -843,7 +843,7 @@ with(MO){
    }
    MO.FDsCommonMaterialReferDialog_onConfirmLoad = function FDsCommonMaterialReferDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMaterialReferDialog_onConfirmClick = function FDsCommonMaterialReferDialog_onConfirmClick(event){
@@ -906,12 +906,12 @@ with(MO){
    }
    MO.FDsCommonMovieDialog_onConfirmLoad = function FDsCommonMovieDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMovieDialog_onConfirmClick = function FDsCommonMovieDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xmovie = xaction.create('Movie');
       xmovie.set('space_guid', o._spaceGuid);
@@ -1388,7 +1388,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onConfirmLoad = function FDsCommonSpriteDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._displayModeCd == EUiDataMode.Insert){
@@ -1406,7 +1406,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onConfirmClick = function FDsCommonSpriteDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Sprite');
       xsprite.set('space_guid', o._spaceGuid);
@@ -1573,12 +1573,12 @@ with(MO){
    }
    MO.FDsCommonTemplateDialog_onConfirmLoad = function FDsCommonTemplateDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonTemplateDialog_onConfirmClick = function FDsCommonTemplateDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
       xsprite.set('space_guid', o._spaceGuid);

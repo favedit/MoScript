@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-MO.MUiEditZoom = function MUiEditZoom(o){
+MO.MDuiEditZoom = function MDuiEditZoom(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
@@ -13,8 +13,8 @@ MO.MUiEditZoom = function MUiEditZoom(o){
    o._zoomField     = MO.Class.register(o, new MO.APtyString('_zoomField'));
    //..........................................................
    // @method
-   o.testZoom       = MO.MUiEditZoom_testZoom;
-   o.doZoom         = MO.MUiEditZoom_doZoom;
+   o.testZoom       = MO.MDuiEditZoom_testZoom;
+   o.doZoom         = MO.MDuiEditZoom_doZoom;
    return o;
 }
 
@@ -24,7 +24,7 @@ MO.MUiEditZoom = function MUiEditZoom(o){
 // @method
 // @return Boolean 是否允许
 //==========================================================
-MO.MUiEditZoom_testZoom = function MUiEditZoom_testZoom(){
+MO.MDuiEditZoom_testZoom = function MDuiEditZoom_testZoom(){
    return !MO.Lang.String.isEmpty(this._zoomReference);
 }
 
@@ -34,6 +34,6 @@ MO.MUiEditZoom_testZoom = function MUiEditZoom_testZoom(){
 // @method
 // @param p:value:String 数据
 //==========================================================
-MO.MUiEditZoom_doZoom = function MUiEditZoom_doZoom(p){
+MO.MDuiEditZoom_doZoom = function MDuiEditZoom_doZoom(p){
    MO.RFormSpace.doZoom(this, p);
 }

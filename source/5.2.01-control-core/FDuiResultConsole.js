@@ -5,18 +5,18 @@
 // @author maocy
 // @version 150507
 //==========================================================
-MO.FUiResultConsole = function FUiResultConsole(o){
+MO.FDuiResultConsole = function FDuiResultConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    // Attribute
    o.scope          = MO.EScope.Page;
    // Method
-   o.executeCommand = MO.FUiResultConsole_executeCommand;
-   o.checkService   = MO.FUiResultConsole_checkService;
-   o.checkEvent     = MO.FUiResultConsole_checkEvent;
+   o.executeCommand = MO.FDuiResultConsole_executeCommand;
+   o.checkService   = MO.FDuiResultConsole_checkService;
+   o.checkEvent     = MO.FDuiResultConsole_checkEvent;
    return o;
 }
 // ------------------------------------------------------------
-MO.FUiResultConsole_executeCommand = function FUiResultConsole_executeCommand(command){
+MO.FDuiResultConsole_executeCommand = function FDuiResultConsole_executeCommand(command){
    var name = command.get('name');
    if(EResultCommand.TreeReload == name){
       var tv = MO.RGlobal.get('catalog.tree');
@@ -66,7 +66,7 @@ MO.FUiResultConsole_executeCommand = function FUiResultConsole_executeCommand(co
 // @author maocy
 // @version 150507
 //==========================================================
-MO.FUiResultConsole_checkService = function FUiResultConsole_checkService(config){
+MO.FDuiResultConsole_checkService = function FDuiResultConsole_checkService(config){
    var o = this;
    if(config){
       // 检查消息
@@ -95,7 +95,7 @@ MO.FUiResultConsole_checkService = function FUiResultConsole_checkService(config
 // @method
 // @param event:SEvent 事件
 //==========================================================
-MO.FUiResultConsole_checkEvent = function FUiResultConsole_checkEvent(event){
+MO.FDuiResultConsole_checkEvent = function FDuiResultConsole_checkEvent(event){
    var o = this;
    var xconfig = event.root;
    if(xconfig){
@@ -119,7 +119,7 @@ MO.FUiResultConsole_checkEvent = function FUiResultConsole_checkEvent(event){
                var code = xmessage.get('code');
                var message = xmessage.get('message');
                var description = xmessage.get('description');
-               MO.Console.find(MO.FUiMessageConsole).showError(code, message, description);
+               MO.Console.find(MO.FDuiMessageConsole).showError(code, message, description);
                return false;
             }
          }

@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiSplit = function FDuiSplit(o){
-      //o = RClass.inherits(this, o, FDuiControl, MDesign, MDisplay, MUiHorizontal);
+      //o = RClass.inherits(this, o, FDuiControl, MDesign, MDisplay, MDuiHorizontal);
       o = RClass.inherits(this, o, FDuiControl);
       //..........................................................
       // @property

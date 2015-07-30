@@ -12,7 +12,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDuiToolBar = function FDuiToolBar(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       //..........................................................
       // @property EUiAlign 对齐枚举
       o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));

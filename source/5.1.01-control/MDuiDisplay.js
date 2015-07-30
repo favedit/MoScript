@@ -4,7 +4,7 @@
 // @manger
 // @history 090805 MAOCY 创建
 //==========================================================
-MO.MUiDisplay = function MUiDisplay(o){
+MO.MDuiDisplay = function MDuiDisplay(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
@@ -21,10 +21,10 @@ MO.MUiDisplay = function MUiDisplay(o){
    o._visible    = true;
    //..........................................................
    // @process
-   o.oeMode      = MO.MUiDisplay_oeMode;
+   o.oeMode      = MO.MDuiDisplay_oeMode;
    //..........................................................
    // @method
-   o.canVisible  = MO.MUiDisplay_canVisible;
+   o.canVisible  = MO.MDuiDisplay_canVisible;
    return o;
 }
 
@@ -34,11 +34,11 @@ MO.MUiDisplay = function MUiDisplay(o){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiDisplay_oeMode = function MUiDisplay_oeMode(e){
+MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(e){
    var o = this;
    if(e.isBefore()){
       var v = true;
-      if(!o.base.MUiDisplayAble){
+      if(!o.base.MDuiDisplayAble){
          v = o.canVisible(e.mode);
       }
       o.setVisible(v);
@@ -52,7 +52,7 @@ MO.MUiDisplay_oeMode = function MUiDisplay_oeMode(e){
 // @param m:mode:EMode 模式
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiDisplay_canVisible = function MUiDisplay_canVisible(m){
+MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(m){
    var o = this;
    switch(RString.nvl(m, o._emode)){
       case MO.EMode.Display:

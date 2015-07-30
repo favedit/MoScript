@@ -1233,7 +1233,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsShareResourceListContent_construct = function FDsShareResourceListContent_construct(){
       var o = this;
@@ -1292,7 +1292,7 @@ with(MO){
       o._contentOrder = order;
       o._contentPageSize = pageSize;
       o._contentPage = page;
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       var connection = RConsole.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
       connection.addLoadListener(o, o.onServiceLoad);
    }
@@ -2496,7 +2496,7 @@ with(MO){
    }
    MO.FDsSystemPersistenceCatalogToolBar_onFolderDeleteLoad = function FDsSystemPersistenceCatalogToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -2512,7 +2512,7 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
       var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
@@ -2522,9 +2522,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsSystemPersistenceCatalogToolBar_onFolderPropertyClick = function FDsSystemPersistenceCatalogToolBar_onFolderPropertyClick(event){
@@ -2532,7 +2532,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
@@ -2928,7 +2928,7 @@ with(MO){
    }
    MO.FDsSystemListCatalogToolBar_onFolderDeleteLoad = function FDsSystemListCatalogToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -2944,7 +2944,7 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
       var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
@@ -2954,9 +2954,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsSystemListCatalogToolBar_onFolderPropertyClick = function FDsSystemListCatalogToolBar_onFolderPropertyClick(event){
@@ -2964,7 +2964,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
@@ -3360,7 +3360,7 @@ with(MO){
    }
    MO.FDsSystemTreeCatalogToolBar_onFolderDeleteLoad = function FDsSystemTreeCatalogToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -3376,7 +3376,7 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
       var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
@@ -3386,9 +3386,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsSystemTreeCatalogToolBar_onFolderPropertyClick = function FDsSystemTreeCatalogToolBar_onFolderPropertyClick(event){
@@ -3396,7 +3396,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
@@ -3858,7 +3858,7 @@ with(MO){
    }
    MO.FDsSystemFrameCatalogToolBar_onFolderDeleteLoad = function FDsSystemFrameCatalogToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -3874,7 +3874,7 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
       var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
@@ -3884,9 +3884,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsSystemFrameCatalogToolBar_onFolderPropertyClick = function FDsSystemFrameCatalogToolBar_onFolderPropertyClick(event){
@@ -3894,7 +3894,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
@@ -4604,7 +4604,7 @@ with(MO){
    }
    MO.FDsSystemFrameSpaceToolBar_onFolderDeleteLoad = function FDsSystemFrameSpaceToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -4620,7 +4620,7 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
       var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
@@ -4630,9 +4630,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsSystemFrameSpaceToolBar_onFolderPropertyClick = function FDsSystemFrameSpaceToolBar_onFolderPropertyClick(event){
@@ -4640,7 +4640,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){

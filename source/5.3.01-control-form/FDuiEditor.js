@@ -7,7 +7,7 @@ with(MO){
    // @version 150224
    //==========================================================
    MO.FDuiEditor = function FDuiEditor(o){
-      o = RClass.inherits(this, o, FDuiControl, MUiFocus);
+      o = RClass.inherits(this, o, FDuiControl, MDuiFocus);
       //..........................................................
       // @property
       o._visible       = false;
@@ -156,7 +156,7 @@ with(MO){
       var s = o._source;
       if(s){
          o.editCancel();
-         if(RClass.isClass(s, MUiFocus)){
+         if(RClass.isClass(s, MDuiFocus)){
             s.doBlur();
          }
       }

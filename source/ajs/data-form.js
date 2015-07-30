@@ -237,7 +237,7 @@ with(MO){
 }
 with(MO){
    MO.FUiDataEditControl = function FUiDataEditControl(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MUiEditValue, MUiEditChange, MUiEditDrop);
+      o = RClass.inherits(this, o, FDuiEditControl, MDuiEditValue, MDuiEditChange, MDuiEditDrop);
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
       o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
       o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
@@ -388,8 +388,8 @@ with(MO){
    MO.FUiDataEditControl_construct = function FUiDataEditControl_construct(){
       var o = this;
       o.__base.FDuiEditControl.construct.call(o);
-      o.__base.MUiEditChange.construct.call(o);
-      o.__base.MUiEditDrop.construct.call(o);
+      o.__base.MDuiEditChange.construct.call(o);
+      o.__base.MDuiEditDrop.construct.call(o);
       o._labelSize = new SSize2(100, 20);
       o._editSize = new SSize2(200, 20);
    }
@@ -447,8 +447,8 @@ with(MO){
       o._hEditForm = RHtml.free(o._hEditForm);
       o._hValuePanel = RHtml.free(o._hValuePanel);
       o._hDropPanel = RHtml.free(o._hDropPanel);
-      o.__base.MUiEditDrop.dispose.call(o);
-      o.__base.MUiEditChange.dispose.call(o);
+      o.__base.MDuiEditDrop.dispose.call(o);
+      o.__base.MDuiEditChange.dispose.call(o);
       o.__base.FDuiEditControl.dispose.call(o);
    }
    MO.FUiDataEditControl_onScalar = function FUiDataEditControl_onScalar(g){
@@ -567,7 +567,7 @@ with(MO){
    }
    MO.FUiDataEditControl_oeLoadValue = function FUiDataEditControl_oeLoadValue(e){
       var o = this;
-      var r = o.__base.MUiEditValue.oeLoadValue.call(o, e);
+      var r = o.__base.MDuiEditValue.oeLoadValue.call(o, e);
       var hci = o.hChangeIcon;
       if(hci){
          hci.style.display = 'none';
@@ -576,20 +576,20 @@ with(MO){
    }
    MO.FUiDataEditControl_doFocus = function FUiDataEditControl_doFocus(e){
       var o = this;
-      o.__base.MUiFocus.doFocus.call(o, e);
-      o.__base.MUiEditValue.doFocus.call(o, e);
+      o.__base.MDuiFocus.doFocus.call(o, e);
+      o.__base.MDuiEditValue.doFocus.call(o, e);
    }
    MO.FUiDataEditControl_doBlur = function FUiDataEditControl_doBlur(e){
       var o = this;
-      o.__base.MUiFocus.doBlur.call(o, e);
-      o.__base.MUiEditValue.doBlur.call(o, e);
+      o.__base.MDuiFocus.doBlur.call(o, e);
+      o.__base.MDuiEditValue.doBlur.call(o, e);
    }
    MO.FUiDataEditControl_testFocus = function FUiDataEditControl_testFocus(){
       return this._visible && this._editable && !this._disbaled;
    }
    MO.FUiDataEditControl_setEditable = function FUiDataEditControl_setEditable(v){
       var o = this;
-      o.__base.MUiEditValue.setEditable.call(o, v);
+      o.__base.MDuiEditValue.setEditable.call(o, v);
       if(o.hEdit){
          o.hEdit.readOnly = !v;
       }
@@ -611,7 +611,7 @@ with(MO){
    }
    MO.FUiDataEditControl_focus = function FUiDataEditControl_focus(){
       var o = this;
-      o.__base.MUiFocus.focus.call(o);
+      o.__base.MDuiFocus.focus.call(o);
       if(o.hEdit){
          try{
             o.hEdit.focus();

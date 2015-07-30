@@ -274,7 +274,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsShareResourceListContent_construct = function FDsShareResourceListContent_construct(){
       var o = this;
@@ -333,7 +333,7 @@ with(MO){
       o._contentOrder = order;
       o._contentPageSize = pageSize;
       o._contentPage = page;
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       var connection = RConsole.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
       connection.addLoadListener(o, o.onServiceLoad);
    }

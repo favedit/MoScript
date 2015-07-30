@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-MO.FUiInfoDialog = function FUiInfoDialog(o){
+MO.FDuiInfoDialog = function FDuiInfoDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiDialog, MO.MListenerResult);
    //..........................................................
    // @style
@@ -19,16 +19,16 @@ MO.FUiInfoDialog = function FUiInfoDialog(o){
    o._controlCancelButton  = null;
    //..........................................................
    // @event
-   o.onBuilded             = MO.FUiInfoDialog_onBuilded;
+   o.onBuilded             = MO.FDuiInfoDialog_onBuilded;
    // @event
-   o.onConfirmClick        = MO.FUiInfoDialog_onConfirmClick;
+   o.onConfirmClick        = MO.FDuiInfoDialog_onConfirmClick;
    //..........................................................
    // @method
-   o.construct             = MO.FUiInfoDialog_construct;
+   o.construct             = MO.FDuiInfoDialog_construct;
    // @method
-   o.setText               = MO.FUiInfoDialog_setText;
+   o.setText               = MO.FDuiInfoDialog_setText;
    // @method
-   o.dispose               = MO.FUiInfoDialog_dispose;
+   o.dispose               = MO.FDuiInfoDialog_dispose;
    return o;
 }
 
@@ -38,7 +38,7 @@ MO.FUiInfoDialog = function FUiInfoDialog(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-MO.FUiInfoDialog_onBuilded = function FUiInfoDialog_onBuilded(p){
+MO.FDuiInfoDialog_onBuilded = function FDuiInfoDialog_onBuilded(p){
    var o = this;
    o.__base.FDuiDialog.onBuilded.call(o, p);
    //..........................................................
@@ -53,7 +53,7 @@ MO.FUiInfoDialog_onBuilded = function FUiInfoDialog_onBuilded(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-MO.FUiInfoDialog_onConfirmClick = function FUiInfoDialog_onConfirmClick(event){
+MO.FDuiInfoDialog_onConfirmClick = function FDuiInfoDialog_onConfirmClick(event){
    var o = this;
    // 事件处理
    var event = new MO.SEvent();
@@ -70,7 +70,7 @@ MO.FUiInfoDialog_onConfirmClick = function FUiInfoDialog_onConfirmClick(event){
 //
 // @method
 //==========================================================
-MO.FUiInfoDialog_construct = function FUiInfoDialog_construct(){
+MO.FDuiInfoDialog_construct = function FDuiInfoDialog_construct(){
    var o = this;
    // 父处理
    o.__base.FDuiDialog.construct.call(o);
@@ -82,7 +82,7 @@ MO.FUiInfoDialog_construct = function FUiInfoDialog_construct(){
 // @method
 // @param value:String 内容
 //==========================================================
-MO.FUiInfoDialog_setText = function FUiInfoDialog_setText(value){
+MO.FDuiInfoDialog_setText = function FDuiInfoDialog_setText(value){
    this._controlText.set(value);
 }
 
@@ -91,7 +91,7 @@ MO.FUiInfoDialog_setText = function FUiInfoDialog_setText(value){
 //
 // @method
 //==========================================================
-MO.FUiInfoDialog_dispose = function FUiInfoDialog_dispose(){
+MO.FDuiInfoDialog_dispose = function FDuiInfoDialog_dispose(){
    var o = this;
    // 父处理
    o.__base.FDuiDialog.dispose.call(o);

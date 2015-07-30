@@ -6,7 +6,7 @@
 // @version 150120
 //==========================================================
 MO.FDuiWorkspace = function FDuiWorkspace(o){
-   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDescribeFrame);
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiDescribeFrame);
    //..........................................................
    // @style
    o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));

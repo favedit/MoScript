@@ -571,7 +571,7 @@ with(MO){
    MO.FDuiButton_doClick = function FDuiButton_doClick(){
       var o = this;
       if(!o._disabled){
-         RConsole.find(FUiFocusConsole).blur();
+         RConsole.find(FDuiFocusConsole).blur();
          MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
@@ -703,7 +703,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiCalendarEditor = function FDuiCalendarEditor(o){
-      o = RClass.inherits(this, o, FDropEditor, MUiFocusLooper);
+      o = RClass.inherits(this, o, FDropEditor, MDuiFocusLooper);
       o.editFormat       = null;
       o.dataValue        = null;
       o.date             = new TDate();
@@ -2648,7 +2648,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiDateTime = function FDuiDateTime(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MUiDropable);
+      o = RClass.inherits(this, o, FDuiEditControl, MDuiDropable);
       o.editDispMode = RClass.register(o, new APtySet('editDisplay', 'editDate', EDateTimeMode.Display));
       o.editYear     = RClass.register(o, new APtySet('editYear', 'editDate', EDateTimeMode.Year));
       o.editMonth    = RClass.register(o, new APtySet('editMonth', 'editDate', EDateTimeMode.Month));
@@ -3240,7 +3240,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiEditControl = function FDuiEditControl(o){
-      o = RClass.inherits(this, o, FDuiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
+      o = RClass.inherits(this, o, FDuiControl, MDuiEditValue, MDuiEditChange, MDuiEditDrop);
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
       o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
       o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
@@ -3389,8 +3389,8 @@ with(MO){
    MO.FDuiEditControl_construct = function FDuiEditControl_construct(){
       var o = this;
       o.__base.FDuiControl.construct.call(o);
-      o.__base.MUiEditChange.construct.call(o);
-      o.__base.MUiEditDrop.construct.call(o);
+      o.__base.MDuiEditChange.construct.call(o);
+      o.__base.MDuiEditDrop.construct.call(o);
       o._labelSize = new SSize2(100, 20);
       o._editSize = new SSize2(200, 20);
    }
@@ -3442,14 +3442,14 @@ with(MO){
       o._hEditForm = RHtml.free(o._hEditForm);
       o._hValuePanel = RHtml.free(o._hValuePanel);
       o._hDropPanel = RHtml.free(o._hDropPanel);
-      o.__base.MUiEditDrop.dispose.call(o);
-      o.__base.MUiEditChange.dispose.call(o);
+      o.__base.MDuiEditDrop.dispose.call(o);
+      o.__base.MDuiEditChange.dispose.call(o);
       o.__base.FDuiControl.dispose.call(o);
    }
 }
 with(MO){
    MO.FDuiEditor = function FDuiEditor(o){
-      o = RClass.inherits(this, o, FDuiControl, MUiFocus);
+      o = RClass.inherits(this, o, FDuiControl, MDuiFocus);
       o._visible       = false;
       o._statusVisible = false;
       o._styleEdit     = RClass.register(o, new AStyle('_styleEdit'));
@@ -3529,7 +3529,7 @@ with(MO){
       var s = o._source;
       if(s){
          o.editCancel();
-         if(RClass.isClass(s, MUiFocus)){
+         if(RClass.isClass(s, MDuiFocus)){
             s.doBlur();
          }
       }
@@ -3683,7 +3683,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiForm = function FDuiForm(o){
-      o = RClass.inherits(this, o, FDuiLayout, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiLayout, MDuiDescribeFrame);
       o.onMouseDown        = FDuiForm_onMouseDown;
       o.construct          = FDuiForm_construct;
       o._dataStatusCd      = ERowStatus.Update;
@@ -3882,7 +3882,7 @@ with(MO){
    }
    MO.FDuiForm_focus = function FDuiForm_focus(){
       var o = this;
-      o.__base.MUiFocus.focus.call(o);
+      o.__base.MDuiFocus.focus.call(o);
       o.focusControl();
       RConsole.find(FFocusConsole).focusClass(MDataset, o);
    }
@@ -4236,10 +4236,10 @@ with(MO){
       var o = this;
       var hPanel = o._hPanel;
       var moved = false;
-      var cfh = RClass.isClass(cf, MUiHorizontal);
+      var cfh = RClass.isClass(cf, MDuiHorizontal);
       var hCfTd = RHtml.parent(cf._hPanel, 'TD');
       var hCfTab = RHtml.parent(cf._hPanel, 'TABLE');
-      var cth = RClass.isClass(ct, MUiHorizontal);
+      var cth = RClass.isClass(ct, MDuiHorizontal);
       var hTd = RHtml.parent(ct._hPanel, 'TD');
       var hTable = RHtml.parent(hTd, 'TABLE');
       switch(pos){
@@ -4347,7 +4347,7 @@ with(MO){
          if(!o._hPanelLine){
             o.innerAppendLine();
          }
-         if(RClass.isClass(control, MUiHorizontal)){
+         if(RClass.isClass(control, MDuiHorizontal)){
             if(o._hPanelTable.rows[0].cells.length == 0){
                o._hContainer.insertBefore(control._hPanel, o._hPanelTable);
             }else{
@@ -4506,7 +4506,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiListBox = function FDuiListBox(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiHorizontal, MListenerClick);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiHorizontal, MListenerClick);
       o._sizeCd      = EUiSize.Horizontal
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
       o._hForm       = null;
@@ -4657,7 +4657,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiListView = function FDuiListView(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiHorizontal, MListenerClick, MListenerDoubleClick);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiHorizontal, MListenerClick, MListenerDoubleClick);
       o._sizeCd           = EUiSize.Horizontal
       o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
       o._focusItem        = null;
@@ -5719,7 +5719,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiPanel = function FDuiPanel(o){
-      o = RClass.inherits(this, o, FDuiLayout, MUiDesign, MUiFocus);
+      o = RClass.inherits(this, o, FDuiLayout, MDuiDesign, MDuiFocus);
       o._sizeCd      = EUiSize.Horizontal;
       o._stylePanel  = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
       o._styleLabel  = RClass.register(o, new AStyle('_styleLabel', 'Label'));
@@ -5952,7 +5952,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiSelect = function FDuiSelect(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MUiContainer, MPropertySelect, MListenerDataChanged);
+      o = RClass.inherits(this, o, FDuiEditControl, MDuiContainer, MPropertySelect, MListenerDataChanged);
       o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
       o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
       o._hValueForm      = null;

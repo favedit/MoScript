@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150225
 //==========================================================
-MO.MUiDropable = function MUiDropable(o){
+MO.MDuiDropable = function MDuiDropable(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @style
@@ -18,16 +18,16 @@ MO.MUiDropable = function MUiDropable(o){
    o._hDrop             = null;
    //..........................................................
    // @event
-   o.onBuildDrop       = MO.MUiDropable_onBuildDrop;
+   o.onBuildDrop       = MO.MDuiDropable_onBuildDrop;
    // @event
    o.onDropEnter       = MO.Class.register(o, new MO.AEventMouseEnter('onDropEnter'));
    o.onDropLeave       = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'));
    // @event
-   o.onDropClick       = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MUiDropable_onDropClick);
-   o.onDropDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDropDoubleClick'), MO.MUiDropable_onDropDoubleClick);
+   o.onDropClick       = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MDuiDropable_onDropClick);
+   o.onDropDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDropDoubleClick'), MO.MDuiDropable_onDropDoubleClick);
    //..........................................................
    // Method
-   o.canDrop           = MO.MUiDropable_canDrop;
+   o.canDrop           = MO.MDuiDropable_canDrop;
    //o.drop              = RMethod.virtual(o, 'drop');
    return o;
 }
@@ -38,10 +38,10 @@ MO.MUiDropable = function MUiDropable(o){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiDropable_onBuildDrop = function MUiDropable_onBuildDrop(hPanel){
+MO.MDuiDropable_onBuildDrop = function MDuiDropable_onBuildDrop(hPanel){
    var o = this;
    o._hDropPanel = hPanel;
-   hPanel.className = o.styleName('Drop', MO.MUiDropable);
+   hPanel.className = o.styleName('Drop', MO.MDuiDropable);
    var hDrop = o.hDrop = MO.RBuilder.appendIcon(hPanel, null, 'control.drop');
    hDrop.style.width =16;
    hDrop.style.borderLeft = '1 solid #CCCCCC';
@@ -57,7 +57,7 @@ MO.MUiDropable_onBuildDrop = function MUiDropable_onBuildDrop(hPanel){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiDropable_onDropClick = function MUiDropable_onDropClick(){
+MO.MDuiDropable_onDropClick = function MDuiDropable_onDropClick(){
    var o = this;
    if(o._editable){
       o.drop();
@@ -70,7 +70,7 @@ MO.MUiDropable_onDropClick = function MUiDropable_onDropClick(){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiDropable_onDropDoubleClick = function MUiDropable_onDropDoubleClick(){
+MO.MDuiDropable_onDropDoubleClick = function MDuiDropable_onDropDoubleClick(){
    var o = this;
    if(o._editable){
       o.drop();
@@ -83,9 +83,9 @@ MO.MUiDropable_onDropDoubleClick = function MUiDropable_onDropDoubleClick(){
 // @method
 // @return Boolean 是否可以下拉
 //==========================================================
-MO.MUiDropable_canDrop = function MUiDropable_canDrop(){
+MO.MDuiDropable_canDrop = function MDuiDropable_canDrop(){
    var o = this;
-   if(MO.Class.isClass(o, MO.MUiDesign)){
+   if(MO.Class.isClass(o, MO.MDuiDesign)){
       return !MO.Console.find(MO.FUiDesignConsole).canDesignMove;
    }
    return true;

@@ -4,8 +4,8 @@ MO.EEditConfig = new function EEditConfig(){
    o.Copy   = 'C';
    return o;
 }
-MO.EEditStatus = new function EEditStatus(o){
-   if(!o){o=this;}
+MO.EEditStatus = new function EEditStatus(){
+   var o = this}
    o.Blur   = 0;
    o.Cancel = 1;
    o.Ok     = 2;
@@ -39,69 +39,45 @@ MO.ERowStatus = new function ERowStatusFace(){
    o.Delete  = 'D';
    return o;
 }
-MO.MUiContainer = function MUiContainer(o){
+MO.MDuiContainer = function MDuiContainer(o){
    o = MO.Class.inherits(this, o);
-   o.createChild = MO.MUiContainer_createChild;
+   o.createChild = MO.MDuiContainer_createChild;
    o.appendChild = MO.Method.empty;
    o.removeChild = MO.Method.empty;
    return o;
 }
-MO.MUiContainer_createChild = function MUiContainer_createChild(p){
+MO.MDuiContainer_createChild = function MDuiContainer_createChild(p){
    var c = MO.RDuiControl.newInstance(p);
    c._parent = this;
    return c;
 }
-MO.MUiDataProperties = function MUiDataProperties(o){
-   o = MO.Class.inherits(this, o);
-   o._dataProperties = null;
-   o.dataProperties  = MO.MUiDataProperties_dataProperties;
-   o.dataPropertyGet = MO.MUiDataProperties_dataPropertyGet;
-   o.dataPropertySet = MO.MUiDataProperties_dataPropertySet;
-   return o;
-}
-MO.MUiDataProperties_dataProperties = function MUiDataProperties_dataProperties(n, c){
-   var o = this;
-   var d = o._dataProperties;
-   if(d == null){
-      d = o._dataProperties = new MO.TDictionary();
-   }
-   return d;
-}
-MO.MUiDataProperties_dataPropertyGet = function MUiDataProperties_dataPropertyGet(n){
-   var o = this;
-   var d = o._dataProperties;
-   return d ? d.get(n) : null;
-}
-MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySet(n, v){
-   this.dataProperties().set(n, v);
-}
-MO.MUiDescribeFrame = function MUiDescribeFrame(o){
+MO.MDuiDescribeFrame = function MDuiDescribeFrame(o){
    o = MO.Class.inherits(this, o);
    o._frameName  = null;
-   o.buildDefine = MO.MUiDescribeFrame_buildDefine;
+   o.buildDefine = MO.MDuiDescribeFrame_buildDefine;
    return o;
 }
-MO.MUiDescribeFrame_buildDefine = function MUiDescribeFrame_buildDefine(hDocument, frameName){
+MO.MDuiDescribeFrame_buildDefine = function MDuiDescribeFrame_buildDefine(hDocument, frameName){
    var o = this;
    if(MO.Lang.String.isEmpty(frameName)){
       frameName = o._frameName;
    }
-   var frameConsole = MO.Console.find(MO.FUiDescribeFrameConsole);
+   var frameConsole = MO.Console.find(MO.FDuiDescribeFrameConsole);
    var xconfig = frameConsole.load(frameName);
    MO.RDuiControl.build(o, xconfig, null, hDocument);
 }
-MO.MUiDesign = function MUiDesign(o){
+MO.MDuiDesign = function MDuiDesign(o){
    o = MO.Class.inherits(this, o);
    o._statusDesign      = false;
    o._storage       = null;
-   o.oeDesign      = MO.MUiDesign_oeDesign;
-   o.onDesignEnter = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnter'), MO.MUiDesign_onDesignEnter);
-   o.onDesignLeave = MO.Class.register(o, new MO.AEventMouseEnter('onDesignLeave'), MO.MUiDesign_onDesignLeave);
-   o.onDesignBegin = MO.Class.register(o, new MO.AEventMouseEnter('onDesignBegin'), MO.MUiDesign_onDesignBegin);
-   o.onDesignEnd   = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnd'), MO.MUiDesign_onDesignEnd);
+   o.oeDesign      = MO.MDuiDesign_oeDesign;
+   o.onDesignEnter = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnter'), MO.MDuiDesign_onDesignEnter);
+   o.onDesignLeave = MO.Class.register(o, new MO.AEventMouseEnter('onDesignLeave'), MO.MDuiDesign_onDesignLeave);
+   o.onDesignBegin = MO.Class.register(o, new MO.AEventMouseEnter('onDesignBegin'), MO.MDuiDesign_onDesignBegin);
+   o.onDesignEnd   = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnd'), MO.MDuiDesign_onDesignEnd);
    return o;
 }
-MO.MUiDesign_oeDesign = function MUiDesign_oeDesign(e){
+MO.MDuiDesign_oeDesign = function MDuiDesign_oeDesign(e){
    if(e.isBefore()){
       switch(e.mode){
          case MO.EDesign.Move:
@@ -135,13 +111,13 @@ MO.MUiDesign_oeDesign = function MUiDesign_oeDesign(e){
       }
    }
 }
-MO.MUiDesign_onDesignEnter = function MUiDesign_onDesignEnter(p){
+MO.MDuiDesign_onDesignEnter = function MDuiDesign_onDesignEnter(p){
    var o = this;
    o._hPanel.className = o.style('Design');
 }
-MO.MUiDesign_onDesignLeave = function MUiDesign_onDesignLeave(p){
+MO.MDuiDesign_onDesignLeave = function MDuiDesign_onDesignLeave(p){
 }
-MO.MUiDesign_onDesignBegin = function MUiDesign_onDesignBegin(p){
+MO.MDuiDesign_onDesignBegin = function MDuiDesign_onDesignBegin(p){
    var o = this;
    var g = o._storage = MO.Lang.Object.nvlObj(o._storage);
    g.designStyle = o._hPanel.className;
@@ -149,14 +125,14 @@ MO.MUiDesign_onDesignBegin = function MUiDesign_onDesignBegin(p){
    o._hPanel.className = o.style('DesignDrag');
    o._statusDesign = true;
 }
-MO.MUiDesign_onDesignEnd = function MUiDesign_onDesignEnd(p){
+MO.MDuiDesign_onDesignEnd = function MDuiDesign_onDesignEnd(p){
    var o = this;
    var g = o._storage = MO.Lang.Object.nvlObj(o._storage);
    o._hPanel.className = g.designStyle;
    o._hPanel.zIndex = g.designLayer;
    o._statusDesign = false;
 }
-MO.MUiDisplay = function MUiDisplay(o){
+MO.MDuiDisplay = function MDuiDisplay(o){
    o = MO.Class.inherits(this, o);
    o._dispDisplay = MO.Class.register(o, new MO.APtySet(null, '_dispDisplay', 'disp_mode', MO.EDisplayMode.Display, false));
    o._dispSearch  = MO.Class.register(o, new MO.APtySet(null, '_dispSearch', 'disp_mode', MO.EDisplayMode.Search, false));
@@ -166,21 +142,21 @@ MO.MUiDisplay = function MUiDisplay(o){
    o._dispZoom    = MO.Class.register(o, new MO.APtySet(null, '_dispZoom', 'disp_mode', MO.EDisplayMode.Zoom, false));
    o._dispAlign   = MO.Class.register(o, new MO.APtyString(null, '_dispAlign', null, MO.EAlign.Left));
    o._visible    = true;
-   o.oeMode      = MO.MUiDisplay_oeMode;
-   o.canVisible  = MO.MUiDisplay_canVisible;
+   o.oeMode      = MO.MDuiDisplay_oeMode;
+   o.canVisible  = MO.MDuiDisplay_canVisible;
    return o;
 }
-MO.MUiDisplay_oeMode = function MUiDisplay_oeMode(e){
+MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(e){
    var o = this;
    if(e.isBefore()){
       var v = true;
-      if(!o.base.MUiDisplayAble){
+      if(!o.base.MDuiDisplayAble){
          v = o.canVisible(e.mode);
       }
       o.setVisible(v);
    }
 }
-MO.MUiDisplay_canVisible = function MUiDisplay_canVisible(m){
+MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(m){
    var o = this;
    switch(RString.nvl(m, o._emode)){
       case MO.EMode.Display:
@@ -197,60 +173,53 @@ MO.MUiDisplay_canVisible = function MUiDisplay_canVisible(m){
          return o.dispZoom;
    }
 }
-MO.MUiDragable = function MUiDragable(o){
-   o = MO.Class.inherits(this, o);
-   o.onDragStart = MO.Method.virtual(o, 'onDragStart');
-   o.onDragMove  = MO.Method.virtual(o, 'onDragMove');
-   o.onDragStop  = MO.Method.virtual(o, 'onDragStop');
-   return o;
-}
-MO.MUiDropable = function MUiDropable(o){
+MO.MDuiDropable = function MDuiDropable(o){
    o = MO.Class.inherits(this, o);
    o._styleDrop         = MO.Class.register(o, new MO.AStyle('_styleDrop'));
    o._styleIconDrop     = MO.Class.register(o, new MO.AStyleIcon('_styleIconDrop'));
    o._hDropPanel        = null;
    o._hDrop             = null;
-   o.onBuildDrop       = MO.MUiDropable_onBuildDrop;
+   o.onBuildDrop       = MO.MDuiDropable_onBuildDrop;
    o.onDropEnter       = MO.Class.register(o, new MO.AEventMouseEnter('onDropEnter'));
    o.onDropLeave       = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'));
-   o.onDropClick       = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MUiDropable_onDropClick);
-   o.onDropDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDropDoubleClick'), MO.MUiDropable_onDropDoubleClick);
-   o.canDrop           = MO.MUiDropable_canDrop;
+   o.onDropClick       = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MDuiDropable_onDropClick);
+   o.onDropDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDropDoubleClick'), MO.MDuiDropable_onDropDoubleClick);
+   o.canDrop           = MO.MDuiDropable_canDrop;
    return o;
 }
-MO.MUiDropable_onBuildDrop = function MUiDropable_onBuildDrop(hPanel){
+MO.MDuiDropable_onBuildDrop = function MDuiDropable_onBuildDrop(hPanel){
    var o = this;
    o._hDropPanel = hPanel;
-   hPanel.className = o.styleName('Drop', MO.MUiDropable);
+   hPanel.className = o.styleName('Drop', MO.MDuiDropable);
    var hDrop = o.hDrop = MO.RBuilder.appendIcon(hPanel, null, 'control.drop');
    hDrop.style.width =16;
    hDrop.style.borderLeft = '1 solid #CCCCCC';
    hDrop.style.cursor = 'hand';
 }
-MO.MUiDropable_onDropClick = function MUiDropable_onDropClick(){
+MO.MDuiDropable_onDropClick = function MDuiDropable_onDropClick(){
    var o = this;
    if(o._editable){
       o.drop();
    }
 }
-MO.MUiDropable_onDropDoubleClick = function MUiDropable_onDropDoubleClick(){
+MO.MDuiDropable_onDropDoubleClick = function MDuiDropable_onDropDoubleClick(){
    var o = this;
    if(o._editable){
       o.drop();
    }
 }
-MO.MUiDropable_canDrop = function MUiDropable_canDrop(){
+MO.MDuiDropable_canDrop = function MDuiDropable_canDrop(){
    var o = this;
-   if(MO.Class.isClass(o, MO.MUiDesign)){
+   if(MO.Class.isClass(o, MO.MDuiDesign)){
       return !MO.Console.find(MO.FUiDesignConsole).canDesignMove;
    }
    return true;
 }
-MO.MUiEditable = function MUiEditable(o){
+MO.MDuiEditable = function MDuiEditable(o){
    o = MO.Class.inherits(this, o);
    return o;
 }
-MO.MUiEditable_testEdit = function MUiEditable_testEdit(m){
+MO.MDuiEditable_testEdit = function MDuiEditable_testEdit(m){
    var o = this;
    switch(MO.Lang.String.nvl(m, o._emode)){
       case MO.EMode.Insert:
@@ -263,51 +232,51 @@ MO.MUiEditable_testEdit = function MUiEditable_testEdit(m){
          return o.editZoom;
    }
 }
-MO.MUiEditChange = function MUiEditChange(o){
+MO.MDuiEditChange = function MDuiEditChange(o){
    o = MO.Class.inherits(this, o);
    o._styleChangePanel = MO.Class.register(o, new MO.AStyle('_styleChangePanel'));
    o._styleChangeIcon  = MO.Class.register(o, new MO.AStyle('_styleChangeIcon'));
    o._hChangePanel     = null;
    o._hChangeIcon      = null;
-   o.onBuildEditChange = MO.MUiEditChange_onBuildEditChange;
-   o.onChangeEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onChangeEnter'), MO.MUiEditChange_onChangeEnter);
-   o.onChangeLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onChangeLeave'), MO.MUiEditChange_onChangeLeave);
-   o.onChangeClick     = MO.Class.register(o, new MO.AEventClick('onChangeClick'), MO.MUiEditChange_onChangeClick);
-   o.construct         = MO.MUiEditChange_construct;
-   o.changeSet         = MO.MUiEditChange_changeSet;
-   o.dispose           = MO.MUiEditChange_dispose;
+   o.onBuildEditChange = MO.MDuiEditChange_onBuildEditChange;
+   o.onChangeEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onChangeEnter'), MO.MDuiEditChange_onChangeEnter);
+   o.onChangeLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onChangeLeave'), MO.MDuiEditChange_onChangeLeave);
+   o.onChangeClick     = MO.Class.register(o, new MO.AEventClick('onChangeClick'), MO.MDuiEditChange_onChangeClick);
+   o.construct         = MO.MDuiEditChange_construct;
+   o.changeSet         = MO.MDuiEditChange_changeSet;
+   o.dispose           = MO.MDuiEditChange_dispose;
    return o;
 }
-MO.MUiEditChange_onBuildEditChange = function MUiEditChange_onBuildEditChange(p){
+MO.MDuiEditChange_onBuildEditChange = function MDuiEditChange_onBuildEditChange(p){
    var o = this;
    var h = o._hChangePanel;
-   h.className = o.styleName('ChangePanel', MO.MUiEditChange);
+   h.className = o.styleName('ChangePanel', MO.MDuiEditChange);
    h.style.verticalAlign = 'top';
    h.width = 5;
    o.attachEvent('onChangeEnter', h, o.onChangeEnter);
    o.attachEvent('onChangeLeave', h, o.onChangeLeave);
    o.attachEvent('onChangeClick', h, o.onChangeClick);
-   var hi = o._hChangeIcon = MO.RBuilder.appendIcon(h, o.styleName('ChangeIcon', MO.MUiEditChange), 'control.change');
+   var hi = o._hChangeIcon = MO.RBuilder.appendIcon(h, o.styleName('ChangeIcon', MO.MDuiEditChange), 'control.change');
    hi._pname = 'change.icon';
 }
-MO.MUiEditChange_onChangeEnter = function MUiEditChange_onChangeEnter(e){
+MO.MDuiEditChange_onChangeEnter = function MDuiEditChange_onChangeEnter(e){
    var o = this;
 }
-MO.MUiEditChange_onChangeLeave = function MUiEditChange_onChangeLeave(e){
+MO.MDuiEditChange_onChangeLeave = function MDuiEditChange_onChangeLeave(e){
    var o = this;
 }
-MO.MUiEditChange_onChangeClick = function MUiEditChange_onChangeClick(e){
+MO.MDuiEditChange_onChangeClick = function MDuiEditChange_onChangeClick(e){
 }
-MO.MUiEditChange_construct = function MUiEditChange_construct(){
+MO.MDuiEditChange_construct = function MDuiEditChange_construct(){
 }
-MO.MUiEditChange_changeSet = function MUiEditChange_changeSet(p){
+MO.MDuiEditChange_changeSet = function MDuiEditChange_changeSet(p){
 }
-MO.MUiEditChange_dispose = function MUiEditChange_dispose(){
+MO.MDuiEditChange_dispose = function MDuiEditChange_dispose(){
    var o = this;
    o._hChangeIcon = MO.Window.Html.free(o._hChangeIcon);
    o._hChangePanel = MO.Window.Html.free(o._hChangePanel);
 }
-MO.MUiEditDescriptor = function MUiEditDescriptor(o){
+MO.MDuiEditDescriptor = function MDuiEditDescriptor(o){
    o = MO.Class.inherits(this, o, MO.MEditable);
    o._dataName          = MO.Class.register(o, new MO.APtyString(null, '_dataName'));
    o._dataCode          = MO.Class.register(o, new MO.APtyString(null, '_dataCode'));
@@ -330,7 +299,7 @@ MO.MUiEditDescriptor = function MUiEditDescriptor(o){
    o._validRequire      = MO.Class.register(o, new MO.APtyBoolean(null, '_validRequire', null, false));
    return o;
 }
-MO.MUiEditDescriptor_onDataEnter = function MUiEditDescriptor_onDataEnter(s, e){
+MO.MDuiEditDescriptor_onDataEnter = function MDuiEditDescriptor_onDataEnter(s, e){
    var o = this;
    if(s.__progress){
       return;
@@ -343,7 +312,7 @@ MO.MUiEditDescriptor_onDataEnter = function MUiEditDescriptor_onDataEnter(s, e){
       o.__tip = window.status;
    }
 }
-MO.MUiEditDescriptor_onDataLeave = function MUiEditDescriptor_onDataLeave(s, e){
+MO.MDuiEditDescriptor_onDataLeave = function MDuiEditDescriptor_onDataLeave(s, e){
    var o = this;
    if(s.__progress){
       return;
@@ -356,14 +325,14 @@ MO.MUiEditDescriptor_onDataLeave = function MUiEditDescriptor_onDataLeave(s, e){
       window.status = o.__tip;
    }
 }
-MO.MUiEditDescriptor_onDataKeyDown = function MUiEditDescriptor_onDataKeyDown(s, e){
+MO.MDuiEditDescriptor_onDataKeyDown = function MDuiEditDescriptor_onDataKeyDown(s, e){
    var o = this;
    if(s._editable && !s._disabled){
       s._invalidText = o.validText(s.text());
       s.refreshStyle();
    }
 }
-MO.MUiEditDescriptor_onDataChange = function MUiEditDescriptor_onDataChange(s, e){
+MO.MDuiEditDescriptor_onDataChange = function MDuiEditDescriptor_onDataChange(s, e){
    var o = this;
    if(s._editable && !s._disabled){
       if(s.isTextChanged()){
@@ -377,7 +346,7 @@ MO.MUiEditDescriptor_onDataChange = function MUiEditDescriptor_onDataChange(s, e
       }
    }
 }
-MO.MUiEditDescriptor_onDataEditEnd = function MUiEditDescriptor_onDataEditEnd(s, e){
+MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(s, e){
    var o = this;
    var vt = s._invalidText = o.validText(s.text());
    if(vt){
@@ -390,14 +359,14 @@ MO.MUiEditDescriptor_onDataEditEnd = function MUiEditDescriptor_onDataEditEnd(s,
    }
    s.refreshStyle();
 }
-MO.MUiEditDescriptor_oeSaveCode = function MUiEditDescriptor_oeSaveCode(e){
+MO.MDuiEditDescriptor_oeSaveCode = function MDuiEditDescriptor_oeSaveCode(e){
    var o = this;
    if(!RString.isEmpty(o.dataName) && !RString.isEmpty(o.dataCode)){
       e.values.set(o.dataName, o.dataCode);
    }
    return EEventStatus.Stop;
 }
-MO.MUiEditDescriptor_canValid = function MUiEditDescriptor_canValid(m){
+MO.MDuiEditDescriptor_canValid = function MDuiEditDescriptor_canValid(m){
    var o = this;
    switch(MO.Lang.String.nvl(m, o._emode)){
       case MO.EMode.Insert:
@@ -408,68 +377,68 @@ MO.MUiEditDescriptor_canValid = function MUiEditDescriptor_canValid(m){
          return o.validDelete;
    }
 }
-MO.MUiEditDescriptor_formatValue = function MUiEditDescriptor_formatValue(v){
+MO.MDuiEditDescriptor_formatValue = function MDuiEditDescriptor_formatValue(v){
    return MO.Lang.String.nvl(v);
 }
-MO.MUiEditDescriptor_formatText = function MUiEditDescriptor_formatText(t){
+MO.MDuiEditDescriptor_formatText = function MDuiEditDescriptor_formatText(t){
    return MO.Lang.String.nvl(t);
 }
-MO.MUiEditDescriptor_validText = function MUiEditDescriptor_validText(t){
+MO.MDuiEditDescriptor_validText = function MDuiEditDescriptor_validText(t){
    var o = this;
 }
-MO.MUiEditDrop = function MUiEditDrop(o){
+MO.MDuiEditDrop = function MDuiEditDrop(o){
    o = MO.Class.inherits(this, o);
    o._styleDropPanel = MO.Class.register(o, new MO.AStyle('_styleDropPanel'));
    o._styleDropIcon  = MO.Class.register(o, new MO.AStyle('_styleDropIcon'));
    o._hDropPanel     = null;
    o._hDropIcon      = null;
-   o.onBuildEditDrop = MO.MUiEditDrop_onBuildEditDrop;
-   o.onDropEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onDropEnter'), MO.MUiEditDrop_onDropEnter);
-   o.onDropLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'), MO.MUiEditDrop_onDropLeave);
-   o.onDropClick     = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MUiEditDrop_onDropClick);
-   o.construct       = MO.MUiEditDrop_construct;
-   o.dispose         = MO.MUiEditDrop_dispose;
+   o.onBuildEditDrop = MO.MDuiEditDrop_onBuildEditDrop;
+   o.onDropEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onDropEnter'), MO.MDuiEditDrop_onDropEnter);
+   o.onDropLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'), MO.MDuiEditDrop_onDropLeave);
+   o.onDropClick     = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MDuiEditDrop_onDropClick);
+   o.construct       = MO.MDuiEditDrop_construct;
+   o.dispose         = MO.MDuiEditDrop_dispose;
    return o;
 }
-MO.MUiEditDrop_onBuildEditDrop = function MUiEditDrop_onBuildEditDrop(p){
+MO.MDuiEditDrop_onBuildEditDrop = function MDuiEditDrop_onBuildEditDrop(p){
    var o = this;
    var h = o._hDropPanel;
-   h.className = o.styleName('DropPanel', MUiEditDrop);
+   h.className = o.styleName('DropPanel', MDuiEditDrop);
    h.width = 11;
    o.attachEvent('onDropEnter', h);
    o.attachEvent('onDropLeave', h);
    o.attachEvent('onDropClick', h);
-   var hi = o._hDropIcon = MO.RBuilder.appendIcon(h, o.styleName('DropIcon', MO.MUiEditDrop), 'control.drop');
+   var hi = o._hDropIcon = MO.RBuilder.appendIcon(h, o.styleName('DropIcon', MO.MDuiEditDrop), 'control.drop');
    hi.align = 'center';
 }
-MO.MUiEditDrop_onDropEnter = function MUiEditDrop_onDropEnter(e){
+MO.MDuiEditDrop_onDropEnter = function MDuiEditDrop_onDropEnter(e){
    var o = this;
 }
-MO.MUiEditDrop_onDropLeave = function MUiEditDrop_onDropLeave(e){
+MO.MDuiEditDrop_onDropLeave = function MDuiEditDrop_onDropLeave(e){
    var o = this;
 }
-MO.MUiEditDrop_onDropClick = function MUiEditDrop_onDropClick(e){
+MO.MDuiEditDrop_onDropClick = function MDuiEditDrop_onDropClick(e){
 }
-MO.MUiEditDrop_construct = function MUiEditDrop_construct(){
+MO.MDuiEditDrop_construct = function MDuiEditDrop_construct(){
 }
-MO.MUiEditDrop_dispose = function MUiEditDrop_dispose(){
+MO.MDuiEditDrop_dispose = function MDuiEditDrop_dispose(){
    var o = this;
    o._hDropIcon = MO.Window.Html.free(o._hDropIcon);
    o._hDropPanel = MO.Window.Html.free(o._hDropPanel);
 }
-MO.MUiEditFormator = function MUiEditFormator(o){
+MO.MDuiEditFormator = function MDuiEditFormator(o){
    o = MO.Class.inherits(this, o);
-   o.formatText  = MO.MUiEditFormator_formatText;
-   o.formatValue = MO.MUiEditFormator_formatValue;
+   o.formatText  = MO.MDuiEditFormator_formatText;
+   o.formatValue = MO.MDuiEditFormator_formatValue;
    return o;
 }
-MO.MUiEditFormator_formatText = function MUiEditFormator_formatText(value){
+MO.MDuiEditFormator_formatText = function MDuiEditFormator_formatText(value){
    return value;
 }
-MO.MUiEditFormator_formatValue = function MUiEditFormator_formatValue(text){
+MO.MDuiEditFormator_formatValue = function MDuiEditFormator_formatValue(text){
    return text;
 }
-MO.MUiEditReference = function MUiEditReference(o){
+MO.MDuiEditReference = function MDuiEditReference(o){
    o = MO.Class.inherits(this, o);
    o._lovService    = MO.Class.register(o, new MO.APtyString('_lovService'));
    o._lovReference  = MO.Class.register(o, new MO.APtyString('_lovReference'));
@@ -478,21 +447,21 @@ MO.MUiEditReference = function MUiEditReference(o){
    o._lovOrder      = MO.Class.register(o, new MO.APtyString('_lovOrder'));
    o._listView      = null;
    o.onListSelected = MO.Method.empty;
-   o.canListView    = MO.MUiEditReference_canListView;
-   o.setLabelStyle  = MO.MUiEditReference_setLabelStyle;
-   o.doListView     = MO.MUiEditReference_doListView;
+   o.canListView    = MO.MDuiEditReference_canListView;
+   o.setLabelStyle  = MO.MDuiEditReference_setLabelStyle;
+   o.doListView     = MO.MDuiEditReference_doListView;
    return o;
 }
-MO.MUiEditReference_onListClick = function MUiEditReference_onListClick(e){
+MO.MDuiEditReference_onListClick = function MDuiEditReference_onListClick(e){
    var o = this;
    if(o.canListView()){
       o.doListView();
    }
 }
-MO.MUiEditReference_canListView = function MUiEditReference_canListView(){
+MO.MDuiEditReference_canListView = function MDuiEditReference_canListView(){
    return !MO.Lang.String.isEmpty(this._lovReference) && this._editable;
 }
-MO.MUiEditReference_setLabelStyle = function MUiEditReference_setLabelStyle(){
+MO.MDuiEditReference_setLabelStyle = function MDuiEditReference_setLabelStyle(){
    var o = this;
    if(!MO.Lang.String.isEmpty(o.lovRefer)){
       o.hLabel.style.cursor = 'hand';
@@ -500,7 +469,7 @@ MO.MUiEditReference_setLabelStyle = function MUiEditReference_setLabelStyle(){
       o.hLabel.className = 'RLine_Underline';
    }
 }
-MO.MUiEditReference_doListView = function MUiEditReference_doListView(cvs){
+MO.MDuiEditReference_doListView = function MDuiEditReference_doListView(cvs){
    var o = this;
    var v = o._listView;
    if(!v){
@@ -511,7 +480,7 @@ MO.MUiEditReference_doListView = function MUiEditReference_doListView(cvs){
    v.show();
    v.fetch(cvs);
 }
-MO.MUiEditValidator = function MUiEditValidator(o){
+MO.MDuiEditValidator = function MDuiEditValidator(o){
    o = MO.Class.inherits(this, o);
    o._validable = false;
    o._valid     = true;
@@ -519,99 +488,99 @@ MO.MUiEditValidator = function MUiEditValidator(o){
    o.oeValid    = MO.Method.empty;
    return o;
 }
-MO.MUiEditValue = function MUiEditValue(o){
-   o = MO.Class.inherits(this, o, MO.MUiEditFormator);
+MO.MDuiEditValue = function MDuiEditValue(o){
+   o = MO.Class.inherits(this, o, MO.MDuiEditFormator);
    o._dataValue      = MO.Class.register(o, new MO.APtyString('_dataValue'));
    o._statusEditable = true;
    o._statusEditing  = false;
    o._statusInvalid  = true;
    o._recordText     = null;
    o._recordValue    = null;
-   o.isTextChanged   = MO.MUiEditValue_isTextChanged;
-   o.isValueChanged  = MO.MUiEditValue_isValueChanged;
-   o.formator        = MO.MUiEditValue_formator;
-   o.text            = MO.MUiEditValue_text;
-   o.setText         = MO.MUiEditValue_setText;
-   o.get             = MO.MUiEditValue_get;
-   o.set             = MO.MUiEditValue_set;
-   o.clearValue      = MO.MUiEditValue_clearValue;
-   o.resetValue      = MO.MUiEditValue_resetValue;
-   o.loadValue       = MO.MUiEditValue_loadValue;
-   o.saveValue       = MO.MUiEditValue_saveValue;
-   o.recordValue     = MO.MUiEditValue_recordValue;
+   o.isTextChanged   = MO.MDuiEditValue_isTextChanged;
+   o.isValueChanged  = MO.MDuiEditValue_isValueChanged;
+   o.formator        = MO.MDuiEditValue_formator;
+   o.text            = MO.MDuiEditValue_text;
+   o.setText         = MO.MDuiEditValue_setText;
+   o.get             = MO.MDuiEditValue_get;
+   o.set             = MO.MDuiEditValue_set;
+   o.clearValue      = MO.MDuiEditValue_clearValue;
+   o.resetValue      = MO.MDuiEditValue_resetValue;
+   o.loadValue       = MO.MDuiEditValue_loadValue;
+   o.saveValue       = MO.MDuiEditValue_saveValue;
+   o.recordValue     = MO.MDuiEditValue_recordValue;
    o.validValue      = MO.Method.empty;
-   o.setEditAble     = MO.MUiEditValue_setEditAble;
-   o.doFocus         = MO.MUiEditValue_doFocus;
-   o.doBlur          = MO.MUiEditValue_doBlur;
+   o.setEditAble     = MO.MDuiEditValue_setEditAble;
+   o.doFocus         = MO.MDuiEditValue_doFocus;
+   o.doBlur          = MO.MDuiEditValue_doBlur;
    return o;
 }
-MO.MUiEditValue_isTextChanged = function MUiEditValue_isTextChanged(){
+MO.MDuiEditValue_isTextChanged = function MDuiEditValue_isTextChanged(){
    var o = this;
    var text = o.text();
    return MO.Lang.String.equals(o._recordText, text);
 }
-MO.MUiEditValue_isValueChanged = function MUiEditValue_isValueChanged(){
+MO.MDuiEditValue_isValueChanged = function MDuiEditValue_isValueChanged(){
    var o = this;
    var value = o.get();
    return MO.Lang.String.equals(o._recordValue, value);
 }
-MO.MUiEditValue_formator = function MUiEditValue_formator(){
+MO.MDuiEditValue_formator = function MDuiEditValue_formator(){
    return this;
 }
-MO.MUiEditValue_text = function MUiEditValue_text(){
+MO.MDuiEditValue_text = function MDuiEditValue_text(){
 }
-MO.MUiEditValue_setText = function MUiEditValue_setText(text){
+MO.MDuiEditValue_setText = function MDuiEditValue_setText(text){
 }
-MO.MUiEditValue_get = function MUiEditValue_get(){
+MO.MDuiEditValue_get = function MDuiEditValue_get(){
    var o = this;
    var text = o.text();
    var value = o._dataValue = o.formator().formatValue(text)
    return value;
 }
-MO.MUiEditValue_set = function MUiEditValue_set(value){
+MO.MDuiEditValue_set = function MDuiEditValue_set(value){
    var o = this;
    o._dataValue = MO.Lang.String.nvl(value);
    var text = o.formator().formatText(value)
    o.setText(text);
 }
-MO.MUiEditValue_clearValue = function MUiEditValue_clearValue(){
+MO.MDuiEditValue_clearValue = function MDuiEditValue_clearValue(){
    var o = this;
    o._dataValue = MO.Lang.String.EMPTY;
    o.set(MO.Lang.String.EMPTY);
 }
-MO.MUiEditValue_resetValue = function MUiEditValue_resetValue(){
+MO.MDuiEditValue_resetValue = function MDuiEditValue_resetValue(){
    var o = this;
    o._dataValue = value;
    o.set(value);
 }
-MO.MUiEditValue_loadValue = function MUiEditValue_loadValue(c, t){
+MO.MDuiEditValue_loadValue = function MDuiEditValue_loadValue(c, t){
    var o = this;
 }
-MO.MUiEditValue_saveValue = function MUiEditValue_saveValue(c, t){
+MO.MDuiEditValue_saveValue = function MDuiEditValue_saveValue(c, t){
    var o = this;
 }
-MO.MUiEditValue_recordValue = function MUiEditValue_recordValue(){
+MO.MDuiEditValue_recordValue = function MDuiEditValue_recordValue(){
    var o = this;
    o._recordText = o.text();
    o._recordValue = o.get();
 }
-MO.MUiEditValue_setEditAble = function MUiEditValue_setEditAble(flag){
+MO.MDuiEditValue_setEditAble = function MDuiEditValue_setEditAble(flag){
    var o = this;
    o._statusEditable = flag;
 }
-MO.MUiEditValue_doFocus = function MUiEditValue_doFocus(){
+MO.MDuiEditValue_doFocus = function MDuiEditValue_doFocus(){
    var o = this;
    if(o._statusEditable){
       o._statusEditing = true;
    }
 }
-MO.MUiEditValue_doBlur = function MUiEditValue_doBlur(){
+MO.MDuiEditValue_doBlur = function MDuiEditValue_doBlur(){
    var o = this;
    if(o._statusEditable && o._statusEditing){
       o._statusEditing = false;
    }
 }
-MO.MUiEditValue_oeClearValue = function MUiEditValue_oeClearValue(e){
+MO.MDuiEditValue_oeClearValue = function MDuiEditValue_oeClearValue(e){
    var o = this;
    var d = o.descriptor();
    if(!MO.Lang.String.isEmpty(d.dataName)){
@@ -620,7 +589,7 @@ MO.MUiEditValue_oeClearValue = function MUiEditValue_oeClearValue(e){
    }
    return EEventStatus.Stop;
 }
-MO.MUiEditValue_oeResetValue = function MUiEditValue_oeResetValue(e){
+MO.MDuiEditValue_oeResetValue = function MDuiEditValue_oeResetValue(e){
    var o = this;
    var d = o.descriptor();
    if(!MO.Lang.String.isEmpty(d.dataName)){
@@ -629,7 +598,7 @@ MO.MUiEditValue_oeResetValue = function MUiEditValue_oeResetValue(e){
    }
    return EEventStatus.Stop;
 }
-MO.MUiEditValue_oeLoadValue = function MUiEditValue_oeLoadValue(e){
+MO.MDuiEditValue_oeLoadValue = function MDuiEditValue_oeLoadValue(e){
    var o = this;
    var d = o.descriptor();
    var vs = e.values;
@@ -652,7 +621,7 @@ MO.MUiEditValue_oeLoadValue = function MUiEditValue_oeLoadValue(e){
    }
    return EEventStatus.Stop;
 }
-MO.MUiEditValue_oeSaveValue = function MUiEditValue_oeSaveValue(e){
+MO.MDuiEditValue_oeSaveValue = function MDuiEditValue_oeSaveValue(e){
    var o = this;
    var d = o.descriptor();
    if(!MO.Lang.String.isEmpty(d.dataName)){
@@ -660,7 +629,7 @@ MO.MUiEditValue_oeSaveValue = function MUiEditValue_oeSaveValue(e){
    }
    return EEventStatus.Stop;
 }
-MO.MUiEditValue_oeRecordValue = function MUiEditValue_oeRecordValue(){
+MO.MDuiEditValue_oeRecordValue = function MDuiEditValue_oeRecordValue(){
    var o = this;
    var d = o.descriptor();
    if(!MO.Lang.String.isEmpty(d.dataName)){
@@ -668,13 +637,13 @@ MO.MUiEditValue_oeRecordValue = function MUiEditValue_oeRecordValue(){
    }
    return EEventStatus.Stop;
 }
-MO.MUiEditValue_commitValue = function MUiEditValue_commitValue(){
+MO.MDuiEditValue_commitValue = function MDuiEditValue_commitValue(){
    this.__commitValue = MO.Lang.String.nvl(this.reget());
 }
-MO.MUiEditValue_reget = function MUiEditValue_reget(){
+MO.MDuiEditValue_reget = function MDuiEditValue_reget(){
    return this.descriptor().formatValue(this.text());
 }
-MO.MUiEditValue_setInfoPack = function MUiEditValue_setInfoPack(v){
+MO.MDuiEditValue_setInfoPack = function MDuiEditValue_setInfoPack(v){
    var o = this;
    var f = o._info;
    if(!f){
@@ -687,123 +656,118 @@ MO.MUiEditValue_setInfoPack = function MUiEditValue_setInfoPack(v){
       o.setInfo(f);
    }
 }
-MO.MUiEditValue_setInfo = function MUiEditValue_setInfo(f){
+MO.MDuiEditValue_setInfo = function MDuiEditValue_setInfo(f){
    this.set(f.value);
 }
-MO.MUiEditZoom = function MUiEditZoom(o){
+MO.MDuiEditZoom = function MDuiEditZoom(o){
    o = MO.Class.inherits(this, o);
    o._zoomReference = MO.Class.register(o, new MO.APtyString('_zoomReference'));
    o._zoomField     = MO.Class.register(o, new MO.APtyString('_zoomField'));
-   o.testZoom       = MO.MUiEditZoom_testZoom;
-   o.doZoom         = MO.MUiEditZoom_doZoom;
+   o.testZoom       = MO.MDuiEditZoom_testZoom;
+   o.doZoom         = MO.MDuiEditZoom_doZoom;
    return o;
 }
-MO.MUiEditZoom_testZoom = function MUiEditZoom_testZoom(){
+MO.MDuiEditZoom_testZoom = function MDuiEditZoom_testZoom(){
    return !MO.Lang.String.isEmpty(this._zoomReference);
 }
-MO.MUiEditZoom_doZoom = function MUiEditZoom_doZoom(p){
+MO.MDuiEditZoom_doZoom = function MDuiEditZoom_doZoom(p){
    MO.RFormSpace.doZoom(this, p);
 }
-MO.MUiFocus = function MUiFocus(o){
+MO.MDuiFocus = function MDuiFocus(o){
    o = MO.Class.inherits(this, o);
-   o.onFocus   = MO.Class.register(o, new MO.AEventFocus('onFocus'), MO.MUiFocus_onFocus);
+   o.onFocus   = MO.Class.register(o, new MO.AEventFocus('onFocus'), MO.MDuiFocus_onFocus);
    o.onBlur    = MO.Class.register(o, new MO.AEventBlur('onBlur'));
    o.testFocus = MO.Method.emptyTrue;
    o.testBlur  = MO.Method.emptyTrue;
    o.doFocus   = MO.Method.empty;
    o.doBlur    = MO.Method.empty;
-   o.focus     = MO.MUiFocus_focus;
-   o.blur      = MO.MUiFocus_blur;
+   o.focus     = MO.MDuiFocus_focus;
+   o.blur      = MO.MDuiFocus_blur;
    return o;
 }
-MO.MUiFocus_onFocus = function MUiFocus_onFocus(e){
-   MO.Console.find(MO.FUiFocusConsole).focus(this, e);
+MO.MDuiFocus_onFocus = function MDuiFocus_onFocus(e){
+   MO.Console.find(MO.FDuiFocusConsole).focus(this, e);
 }
-MO.MUiFocus_focus = function MUiFocus_focus(){
-   MO.Console.find(MO.FUiFocusConsole).focus(this);
+MO.MDuiFocus_focus = function MDuiFocus_focus(){
+   MO.Console.find(MO.FDuiFocusConsole).focus(this);
 }
-MO.MUiFocus_blur = function MUiFocus_blur(){
-   MO.Console.find(MO.FUiFocusConsole).blur(this);
+MO.MDuiFocus_blur = function MDuiFocus_blur(){
+   MO.Console.find(MO.FDuiFocusConsole).blur(this);
 }
-MO.MUiHorizontal = function MUiHorizontal(o){
+MO.MDuiHorizontal = function MDuiHorizontal(o){
    o = MO.Class.inherits(this, o);
-   o.setVisible = MO.MUiHorizontal_setVisible;
+   o.setVisible = MO.MDuiHorizontal_setVisible;
    return o;
 }
-MO.MUiHorizontal_setVisible = function MUiHorizontal_setVisible(p){
+MO.MDuiHorizontal_setVisible = function MDuiHorizontal_setVisible(p){
    var o = this;
    var h = o.hPanelLine;
    if(h){
       MO.RHtml.displaySet(h, p);
    }
 }
-MO.MUiPopup = function MUiPopup(o){
+MO.MDuiPopup = function MDuiPopup(o){
    o = MO.Class.inherits(this, o);
    o._opener = null;
-   o.opener  = MO.MUiPopup_opener;
+   o.opener  = MO.MDuiPopup_opener;
 }
-MO.MUiPopup_opener = function MUiPopup_opener(){
+MO.MDuiPopup_opener = function MDuiPopup_opener(){
    return this._opener;
 }
-MO.MUiProgress = function MUiProgress(o){
-   o = MO.Class.inherits(this, o);
-   o.oeProgress = MO.Method.virtual(o, 'oeProgress');
-   return o;
-}
-MO.MUiSize = function MUiSize(o){
+MO.MDuiSize = function MDuiSize(o){
    o = MO.Class.inherits(this, o);
    o._location       = MO.Class.register(o, new MO.APtyPoint2('_location'));
    o._size           = MO.Class.register(o, new MO.APtySize2('_size'));
-   o.construct       = MO.MUiSize_construct;
-   o.dockCd          = MO.MUiSize_dockCd;
-   o.setDockCd       = MO.MUiSize_setDockCd;
-   o.left            = MO.MUiSize_left;
-   o.setLeft         = MO.MUiSize_setLeft;
-   o.top             = MO.MUiSize_top;
-   o.setTop          = MO.MUiSize_setTop;
-   o.location        = MO.MUiSize_location;
-   o.setLocation     = MO.MUiSize_setLocation;
-   o.refreshLocation = MO.MUiSize_refreshLocation;
-   o.width           = MO.MUiSize_width;
-   o.setWidth        = MO.MUiSize_setWidth;
-   o.height          = MO.MUiSize_height;
-   o.setHeight       = MO.MUiSize_setHeight;
-   o.size            = MO.MUiSize_size;
-   o.setSize         = MO.MUiSize_setSize;
-   o.refreshSize     = MO.MUiSize_refreshSize;
-   o.setBounds       = MO.MUiSize_setBounds;
-   o.refreshBounds   = MO.MUiSize_refreshBounds;
-   o.dispose         = MO.MUiSize_dispose;
-   o.innerDump       = MO.MUiSize_innerDump;
+   o.construct       = MO.MDuiSize_construct;
+   o.dockCd          = MO.MDuiSize_dockCd;
+   o.setDockCd       = MO.MDuiSize_setDockCd;
+   o.left            = MO.MDuiSize_left;
+   o.setLeft         = MO.MDuiSize_setLeft;
+   o.top             = MO.MDuiSize_top;
+   o.setTop          = MO.MDuiSize_setTop;
+   o.location        = MO.MDuiSize_location;
+   o.setLocation     = MO.MDuiSize_setLocation;
+   o.refreshLocation = MO.MDuiSize_refreshLocation;
+   o.width           = MO.MDuiSize_width;
+   o.setWidth        = MO.MDuiSize_setWidth;
+   o.height          = MO.MDuiSize_height;
+   o.setHeight       = MO.MDuiSize_setHeight;
+   o.size            = MO.MDuiSize_size;
+   o.setSize         = MO.MDuiSize_setSize;
+   o.refreshSize     = MO.MDuiSize_refreshSize;
+   o.setBounds       = MO.MDuiSize_setBounds;
+   o.refreshBounds   = MO.MDuiSize_refreshBounds;
+   o.dispose         = MO.MDuiSize_dispose;
+   o.innerDump       = MO.MDuiSize_innerDump;
    return o;
 }
-MO.MUiSize_construct = function MUiSize_construct(){
+MO.MDuiSize_construct = function MDuiSize_construct(){
    var o = this;
    o._location = new MO.SPoint2();
    o._size = new MO.SUiSize2();
 }
-MO.MUiSize_dockCd = function MUiSize_dockCd(){
+MO.MDuiSize_dockCd = function MDuiSize_dockCd(){
    return this._dockCd;
 }
-MO.MUiSize_setDockCd = function MUiSize_setDockCd(dockCd){
+MO.MDuiSize_setDockCd = function MDuiSize_setDockCd(dockCd){
    this._dockCd = dockCd;
 }
-MO.MUiSize_left = function MUiSize_left(){
+MO.MDuiSize_left = function MDuiSize_left(){
    return this._location.x;
 }
-MO.MUiSize_setLeft = function MUiSize_setLeft(p){
+MO.MDuiSize_setLeft = function MDuiSize_setLeft(p){
    this.setLocation(p, null);
 }
-MO.MUiSize_top = function MUiSize_top(){
+MO.MDuiSize_top = function MDuiSize_top(){
    return this._location.y;
 }
-MO.MUiSize_setTop = function MUiSize_setTop(p){
+MO.MDuiSize_setTop = function MDuiSize_setTop(p){
    this.setLocation(null, p);
 }
-MO.MUiSize_location = function MUiSize_location(){
+MO.MDuiSize_location = function MDuiSize_location(){
    return this._location;
 }
-MO.MUiSize_setLocation = function MUiSize_setLocation(x, y){
+MO.MDuiSize_setLocation = function MDuiSize_setLocation(x, y){
    var o = this;
    var hPanel = o.panel(MO.EPanel.Size);
    if(x != null){
@@ -819,26 +783,26 @@ MO.MUiSize_setLocation = function MUiSize_setLocation(x, y){
       }
    }
 }
-MO.MUiSize_refreshLocation = function MUiSize_refreshLocation(){
+MO.MDuiSize_refreshLocation = function MDuiSize_refreshLocation(){
    var o = this;
    o.setLocation(o._location.x, o._location.y);
 }
-MO.MUiSize_width = function MUiSize_width(){
+MO.MDuiSize_width = function MDuiSize_width(){
    return this._size.width;
 }
-MO.MUiSize_setWidth = function MUiSize_setWidth(p){
+MO.MDuiSize_setWidth = function MDuiSize_setWidth(p){
    this.setSize(p, null);
 }
-MO.MUiSize_height = function MUiSize_height(){
+MO.MDuiSize_height = function MDuiSize_height(){
    return this._size.width;
 }
-MO.MUiSize_setHeight = function MUiSize_setHeight(p){
+MO.MDuiSize_setHeight = function MDuiSize_setHeight(p){
    this.setSize(null, p);
 }
-MO.MUiSize_size = function MUiSize_size(){
+MO.MDuiSize_size = function MDuiSize_size(){
    return this._size;
 }
-MO.MUiSize_setSize = function MUiSize_setSize(width, height){
+MO.MDuiSize_setSize = function MDuiSize_setSize(width, height){
    var o = this;
    var hPanel = o.panel(MO.EPanel.Size);
    if(width != null){
@@ -874,21 +838,21 @@ MO.MUiSize_setSize = function MUiSize_setSize(width, height){
       }
    }
 }
-MO.MUiSize_refreshSize = function MUiSize_refreshSize(){
+MO.MDuiSize_refreshSize = function MDuiSize_refreshSize(){
    var o = this;
    o.setSize(o._size.width, o._size.height);
 }
-MO.MUiSize_setBounds = function MUiSize_setBounds(l, t, w, h){
+MO.MDuiSize_setBounds = function MDuiSize_setBounds(l, t, w, h){
    var o = this;
    o.setLocation(l, t);
    o.setSize(w, h);
 }
-MO.MUiSize_refreshBounds = function MUiSize_refreshBounds(){
+MO.MDuiSize_refreshBounds = function MDuiSize_refreshBounds(){
    var o = this;
    o.refreshLocation();
    o.refreshSize();
 }
-MO.MUiSize_dispose = function MUiSize_dispose(){
+MO.MDuiSize_dispose = function MDuiSize_dispose(){
    var o = this;
    var v = o._location;
    if(v){
@@ -901,25 +865,25 @@ MO.MUiSize_dispose = function MUiSize_dispose(){
       o._size = null;
    }
 }
-MO.MUiSize_innerDump = function MUiSize_innerDump(s, l){
+MO.MDuiSize_innerDump = function MDuiSize_innerDump(s, l){
    var o = this;
-   s.append('MUiSize:');
+   s.append('MDuiSize:');
    s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
 }
-MO.MUiSizeable = function MUiSizeable(o){
+MO.MDuiSizeable = function MDuiSizeable(o){
    o = MO.Class.inherits(this, o);
    o.isSizeable  = true;
    o.onSize      = null;
    o.inSizeRange = MO.Method.virtual(o, 'inSizeRange');
-   o.cursor      = MO.MUiSizeable_cursor;
-   o.setCursor   = MO.MUiSizeable_setCursor;
-   o.resize      = MO.MUiSizeable_resize;
-   o.setBounds   = MO.MUiSizeable_setBounds;
-   o.startDrag   = MO.MUiSizeable_startDrag;
-   o.stopDrag    = MO.MUiSizeable_stopDrag;
+   o.cursor      = MO.MDuiSizeable_cursor;
+   o.setCursor   = MO.MDuiSizeable_setCursor;
+   o.resize      = MO.MDuiSizeable_resize;
+   o.setBounds   = MO.MDuiSizeable_setBounds;
+   o.startDrag   = MO.MDuiSizeable_startDrag;
+   o.stopDrag    = MO.MDuiSizeable_stopDrag;
    return o;
 }
-MO.MUiSizeable_cursor = function MUiSizeable_cursor(){
+MO.MDuiSizeable_cursor = function MDuiSizeable_cursor(){
    var o = this;
    var src = MO.Window.source();
    if(!o.inSizeRange(src)){
@@ -962,7 +926,7 @@ MO.MUiSizeable_cursor = function MUiSizeable_cursor(){
    }
    return ECursor.Default;
 }
-MO.MUiSizeable_setCursor = function MUiSizeable_setCursor(cursor){
+MO.MDuiSizeable_setCursor = function MDuiSizeable_setCursor(cursor){
    if(!cursor){
       cursor = this.cursor();
    }
@@ -971,7 +935,7 @@ MO.MUiSizeable_setCursor = function MUiSizeable_setCursor(cursor){
       h.style.cursor = (cursor == null || cursor == 'default') ? 'default' : cursor + '-resize';
    }
 }
-MO.MUiSizeable_resize = function MUiSizeable_resize(width, height){
+MO.MDuiSizeable_resize = function MDuiSizeable_resize(width, height){
    var sizeable = false;
    var hStyle = this.htmlPanel(EPanel.Border).style;
    if(width != null){
@@ -994,7 +958,7 @@ MO.MUiSizeable_resize = function MUiSizeable_resize(width, height){
       this.onSize();
    }
 }
-MO.MUiSizeable_setBounds = function MUiSizeable_setBounds(left, top, right, bottom, force){
+MO.MDuiSizeable_setBounds = function MDuiSizeable_setBounds(left, top, right, bottom, force){
    var sizeable = false;
    var st = this.htmlPanel(EPanel.Border).style;
    if(left != null){
@@ -1041,38 +1005,38 @@ MO.MUiSizeable_setBounds = function MUiSizeable_setBounds(left, top, right, bott
       this.onSize();
    }
 }
-MO.MUiSizeable_startDrag = function MUiSizeable_startDrag(){
+MO.MDuiSizeable_startDrag = function MDuiSizeable_startDrag(){
 }
-MO.MUiSizeable_stopDrag = function MUiSizeable_stopDrag(){
+MO.MDuiSizeable_stopDrag = function MDuiSizeable_stopDrag(){
 }
-MO.MUiStyle = function MUiStyle(o){
+MO.MDuiStyle = function MDuiStyle(o){
    o = MO.Class.inherits(this, o);
    o.construct     = MO.Method.empty;
-   o.styleName     = MO.MUiStyle_styleName;
-   o.styleIcon     = MO.MUiStyle_styleIcon;
-   o.styleIconPath = MO.MUiStyle_styleIconPath;
+   o.styleName     = MO.MDuiStyle_styleName;
+   o.styleIcon     = MO.MDuiStyle_styleIcon;
+   o.styleIconPath = MO.MDuiStyle_styleIconPath;
    o.dispose       = MO.Method.empty;
    return o;
 }
-MO.MUiStyle_styleName = function MUiStyle_styleName(n, c){
+MO.MDuiStyle_styleName = function MDuiStyle_styleName(n, c){
    var o = this;
    var f = c ? c : o;
    var tn = MO.Class.name(f);
    var t = MO.Class.forName(tn);
    return t.style(n);
 }
-MO.MUiStyle_styleIcon = function MUiStyle_styleIcon(n, c){
+MO.MDuiStyle_styleIcon = function MDuiStyle_styleIcon(n, c){
    return MO.Class.name(c ? c : this, true) + '_' + n;
 }
-MO.MUiStyle_styleIconPath = function MUiStyle_styleIconPath(n, c){
+MO.MDuiStyle_styleIconPath = function MDuiStyle_styleIconPath(n, c){
    return MO.RResource.iconPath(MO.Class.name(c ? c : this, true) + '_' + n);
 }
-MO.MUiVertical = function MUiVertical(o){
+MO.MDuiVertical = function MDuiVertical(o){
    o = MO.Class.inherits(this, o);
-   o.setVisible = MO.MUiHorizontal_setVisible;
+   o.setVisible = MO.MDuiVertical_setVisible;
    return o;
 }
-MO.MUiHorizontal_setVisible = function MUiHorizontal_setVisible(p){
+MO.MDuiVertical_setVisible = function MDuiVertical_setVisible(p){
    var o = this;
    var h = o.hPanelLine;
    if(h){
@@ -1588,7 +1552,7 @@ MO.FDuiComponent_dispose = function FDuiComponent_dispose(){
    o.__base.FComponent.dispose.call(o);
 }
 MO.FDuiContainer = function FDuiContainer(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiContainer);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiContainer);
    o._scrollCd           = MO.Class.register(o, new MO.APtyEnum('_scrollCd', null, MO.EUiScroll, MO.EUiScroll.None));
    o._controls           = null;
    o.oeDesign            = MO.Method.empty;
@@ -1672,7 +1636,7 @@ MO.FDuiContainer_focusFirstControl = function FDuiContainer_focusFirstControl(){
       var c = cs.count();
       for(var i = 0; i < c; i++){
          var p = cs.valueAt(i);
-         if(MO.Class.isClass(c, MO.MUiFocus) && c.testFocus()){
+         if(MO.Class.isClass(c, MO.MDuiFocus) && c.testFocus()){
             if(!MO.Class.isClass(c, MO.FCalendar) && !MO.Class.isClass(c, MO.FSelect)  && !MO.Class.isClass(c, MO.FNumber)){
                 return c.focus();
             }
@@ -1750,7 +1714,7 @@ MO.FDuiContainer_dispose = function FDuiContainer_dispose(){
    o.__base.FDuiControl.dispose.call(o);
 }
 MO.FDuiControl = function FDuiControl(o){
-   o = MO.Class.inherits(this, o, MO.FDuiComponent, MO.MUiControl, MO.MListener, MO.MUiSize, MO.MUiMargin, MO.MUiPadding, MO.MUiStyle);
+   o = MO.Class.inherits(this, o, MO.FDuiComponent, MO.MUiControl, MO.MListener, MO.MDuiSize, MO.MUiMargin, MO.MUiPadding, MO.MDuiStyle);
    o._wrapCd        = MO.Class.register(o, [new MO.APtyEnum('_wrapCd', null, MO.EUiWrap, MO.EUiWrap.NextLine), new MO.AGetSet('_wrapCd')]);
    o._stylePanel    = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    o._layoutCd      = MO.EUiLayout.Display;
@@ -1798,14 +1762,14 @@ MO.FDuiControl = function FDuiControl(o){
 }
 MO.FDuiControl_onEnter = function FDuiControl_onEnter(e){
    var o = this;
-   MO.Console.find(MO.FUiFocusConsole).enter(o);
+   MO.Console.find(MO.FDuiFocusConsole).enter(o);
    if(o._hint){
       MO.RWindow.setStatus(o._hint);
    }
 }
 MO.FDuiControl_onLeave = function FDuiControl_onLeave(e){
    var o = this;
-   MO.Console.find(MO.FUiFocusConsole).leave(o);
+   MO.Console.find(MO.FDuiFocusConsole).leave(o);
    if(o._hint){
       MO.RWindow.setStatus();
    }
@@ -1836,10 +1800,10 @@ MO.FDuiControl_oeMode = function FDuiControl_oeMode(e){
 MO.FDuiControl_construct = function FDuiControl_construct(){
    var o = this;
    o.__base.FDuiComponent.construct.call(o);
-   o.__base.MUiSize.construct.call(o);
+   o.__base.MDuiSize.construct.call(o);
    o.__base.MUiMargin.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
-   o.__base.MUiStyle.construct.call(o);
+   o.__base.MDuiStyle.construct.call(o);
 }
 MO.FDuiControl_topControl = function FDuiControl_topControl(c){
    var r = this;
@@ -2088,15 +2052,15 @@ MO.FDuiControl_dispose = function FDuiControl_dispose(){
    o._statusBuild = null;
    o._hParent = null;
    o._hPanel = MO.RHtml.free(o._hPanel);
-   o.__base.MUiStyle.dispose.call(o);
+   o.__base.MDuiStyle.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiMargin.dispose.call(o);
-   o.__base.MUiSize.dispose.call(o);
+   o.__base.MDuiSize.dispose.call(o);
    o.__base.MUiControl.dispose.call(o);
    o.__base.FDuiComponent.dispose.call(o);
 }
 MO.FDuiWorkspace = function FDuiWorkspace(o){
-   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDescribeFrame);
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiDescribeFrame);
    o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    o._frames      = null;
    o._hContainer  = null;
@@ -2188,7 +2152,7 @@ MO.RDuiControl.prototype.innerCreate = function RDuiControl_innerCreate(pc, px, 
    if(MO.Class.isClass(pc, MO.MProperty)){
       pc.propertyLoad(px)
    }
-   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -2234,7 +2198,7 @@ MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px
    if(pc.__typed){
       pr = pc;
    }
-   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){

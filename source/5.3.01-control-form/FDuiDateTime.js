@@ -2,11 +2,11 @@ with(MO){
    //==========================================================
    // <T>日期选取控件。</T>
    //
-   // @class FDuiEditControl, MEditBorder, MUiDropable
+   // @class FDuiEditControl, MEditBorder, MDuiDropable
    // @history 091124 MAOCY 创建
    //==========================================================
    MO.FDuiDateTime = function FDuiDateTime(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MUiDropable);
+      o = RClass.inherits(this, o, FDuiEditControl, MDuiDropable);
       //..........................................................
       // @property
       o.editDispMode = RClass.register(o, new APtySet('editDisplay', 'editDate', EDateTimeMode.Display));

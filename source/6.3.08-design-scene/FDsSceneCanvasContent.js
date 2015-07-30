@@ -44,7 +44,7 @@ with(MO){
       // 加载完成
       o.processLoadListener(o);
       // 隐藏处理
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -66,7 +66,7 @@ with(MO){
       space = o._activeSpace = sceneConsole.allocByGuid(o, guid);
       if(!space._linked){
          // 显示加载进度
-         RConsole.find(FUiDesktopConsole).showLoading();
+         RConsole.find(FDuiDesktopConsole).showLoading();
          // 设置事件
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;

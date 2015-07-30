@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150409
 //==========================================================
-MO.FUiMessageConsole = function FUiMessageConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole, MO.MUiStyle);
+MO.FDuiMessageConsole = function FDuiMessageConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole, MO.MDuiStyle);
    //..........................................................
    // @attribute
    o._scopeCd       = MO.EScope.Global;
@@ -17,14 +17,14 @@ MO.FUiMessageConsole = function FUiMessageConsole(o){
    o._messageWindow = null;
    //..........................................................
    // @method
-   o.showInfo       = MO.FUiMessageConsole_showInfo;
-   o.showConfirm    = MO.FUiMessageConsole_showConfirm;
-   o.showError      = MO.FUiMessageConsole_showError;
-   o.popup          = MO.FUiMessageConsole_popup;
-   o.close          = MO.FUiMessageConsole_close;
+   o.showInfo       = MO.FDuiMessageConsole_showInfo;
+   o.showConfirm    = MO.FDuiMessageConsole_showConfirm;
+   o.showError      = MO.FDuiMessageConsole_showError;
+   o.popup          = MO.FDuiMessageConsole_popup;
+   o.close          = MO.FDuiMessageConsole_close;
    // @method
-   o.parse          = MO.FUiMessageConsole_parse;
-   o.check          = MO.FUiMessageConsole_check;
+   o.parse          = MO.FDuiMessageConsole_parse;
+   o.check          = MO.FDuiMessageConsole_check;
    return o;
 }
 
@@ -34,8 +34,8 @@ MO.FUiMessageConsole = function FUiMessageConsole(o){
 // @method
 // @param text:String 文本内容
 //==========================================================
-MO.FUiMessageConsole_showInfo = function FUiMessageConsole_showInfo(text){
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiInfoDialog);
+MO.FDuiMessageConsole_showInfo = function FDuiMessageConsole_showInfo(text){
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDuiInfoDialog);
    dialog.clearResultListeners();
    dialog.setText(text);
    dialog.showPosition(MO.EUiPosition.Center);
@@ -48,8 +48,8 @@ MO.FUiMessageConsole_showInfo = function FUiMessageConsole_showInfo(text){
 // @method
 // @param text:String 文本内容
 //==========================================================
-MO.FUiMessageConsole_showConfirm = function FUiMessageConsole_showConfirm(text){
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiConfirmDialog);
+MO.FDuiMessageConsole_showConfirm = function FDuiMessageConsole_showConfirm(text){
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDuiConfirmDialog);
    dialog.clearResultListeners();
    dialog.setText(text);
    dialog.showPosition(MO.EUiPosition.Center);
@@ -62,8 +62,8 @@ MO.FUiMessageConsole_showConfirm = function FUiMessageConsole_showConfirm(text){
 // @method
 // @param text:String 文本内容
 //==========================================================
-MO.FUiMessageConsole_showError = function FUiMessageConsole_showError(code, message, description){
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiErrorDialog);
+MO.FDuiMessageConsole_showError = function FDuiMessageConsole_showError(code, message, description){
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDuiErrorDialog);
    dialog.clearResultListeners();
    dialog.setCode(message);
    dialog.setDescription(description);
@@ -79,7 +79,7 @@ MO.FUiMessageConsole_showError = function FUiMessageConsole_showError(code, mess
 // @version 150409
 //==========================================================
 // g:argument:TMessageArg
-MO.FUiMessageConsole_popup = function FUiMessageConsole_popup(g){
+MO.FDuiMessageConsole_popup = function FDuiMessageConsole_popup(g){
    var o = this;
    var w = o._messageWindow;
    if(!w){
@@ -96,7 +96,7 @@ MO.FUiMessageConsole_popup = function FUiMessageConsole_popup(g){
 // @author maocy
 // @version 150409
 //==========================================================
-MO.FUiMessageConsole_close = function FUiMessageConsole_close(){
+MO.FDuiMessageConsole_close = function FDuiMessageConsole_close(){
    RWindow.setEnable(true);
 }
 
@@ -107,7 +107,7 @@ MO.FUiMessageConsole_close = function FUiMessageConsole_close(){
 // @author maocy
 // @version 150409
 //==========================================================
-MO.FUiMessageConsole_parse = function FUiMessageConsole_parse(config){
+MO.FDuiMessageConsole_parse = function FDuiMessageConsole_parse(config){
    var msgs = null;
    var msgsNode = config.find('Messages');
    if(msgsNode && msgsNode.nodes && msgsNode.nodes.count){
@@ -129,7 +129,7 @@ MO.FUiMessageConsole_parse = function FUiMessageConsole_parse(config){
 // @author maocy
 // @version 150409
 //==========================================================
-MO.FUiMessageConsole_check = function FUiMessageConsole_check(g){
+MO.FDuiMessageConsole_check = function FDuiMessageConsole_check(g){
    var o = this;
    var ms = g.messages = o.parse(g.config);
    if(ms){

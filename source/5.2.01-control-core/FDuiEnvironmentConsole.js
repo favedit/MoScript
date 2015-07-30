@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150319
 //==========================================================
-MO.FUiEnvironmentConsole = function FUiEnvironmentConsole(o){
+MO.FDuiEnvironmentConsole = function FDuiEnvironmentConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -13,11 +13,11 @@ MO.FUiEnvironmentConsole = function FUiEnvironmentConsole(o){
    o.environment = null;
    //..........................................................
    // @method
-   o.connect     = MO.FUiEnvironmentConsole_connect;
-   o.build       = MO.FUiEnvironmentConsole_build;
-   o.buildValue  = MO.FUiEnvironmentConsole_buildValue;
-   o.load        = MO.FUiEnvironmentConsole_load;
-   o.xml         = MO.FUiEnvironmentConsole_xml;
+   o.connect     = MO.FDuiEnvironmentConsole_connect;
+   o.build       = MO.FDuiEnvironmentConsole_build;
+   o.buildValue  = MO.FDuiEnvironmentConsole_buildValue;
+   o.load        = MO.FDuiEnvironmentConsole_load;
+   o.xml         = MO.FDuiEnvironmentConsole_xml;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FUiEnvironmentConsole = function FUiEnvironmentConsole(o){
 //
 // @method
 //==========================================================
-MO.FUiEnvironmentConsole_connect = function FUiEnvironmentConsole_connect(){
+MO.FDuiEnvironmentConsole_connect = function FDuiEnvironmentConsole_connect(){
    //var xData = window.xEnvironment;
    //if(xData){
    //   this.environment = RXml.makeNode(xData);
@@ -34,7 +34,7 @@ MO.FUiEnvironmentConsole_connect = function FUiEnvironmentConsole_connect(){
 }
 
 // ------------------------------------------------------------
-MO.FUiEnvironmentConsole_build = function FUiEnvironmentConsole_build(config){
+MO.FDuiEnvironmentConsole_build = function FDuiEnvironmentConsole_build(config){
    var o = this;
    if(!o.environment){
       o.connect()
@@ -46,7 +46,7 @@ MO.FUiEnvironmentConsole_build = function FUiEnvironmentConsole_build(config){
 }
 
 // ------------------------------------------------------------
-MO.FUiEnvironmentConsole_buildValue = function FUiEnvironmentConsole_buildValue(){
+MO.FDuiEnvironmentConsole_buildValue = function FDuiEnvironmentConsole_buildValue(){
    if(!this.environment){
       this.connect()
    }
@@ -65,12 +65,12 @@ MO.FUiEnvironmentConsole_buildValue = function FUiEnvironmentConsole_buildValue(
 // @author maocy
 // @version 150319
 //==========================================================
-MO.FUiEnvironmentConsole_load = function FUiEnvironmentConsole_load(p){
+MO.FDuiEnvironmentConsole_load = function FDuiEnvironmentConsole_load(p){
    this.environment = RXml.makeNode(p);
 }
 
 // ------------------------------------------------------------
-MO.FUiEnvironmentConsole_xml = function FUiEnvironmentConsole_xml(){
+MO.FDuiEnvironmentConsole_xml = function FDuiEnvironmentConsole_xml(){
    if(!this.environment){
       this.connect()
    }

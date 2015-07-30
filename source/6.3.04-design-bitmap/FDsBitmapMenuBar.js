@@ -47,7 +47,7 @@ with(MO){
    //==========================================================
    MO.FDsBitmapMenuBar_onSaveLoad = function FDsBitmapMenuBar_onSaveLoad(event){
       // 解除画面锁定
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -60,7 +60,7 @@ with(MO){
       var o = this;
       var bitmap = o._frameSet._activeResource;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 更新处理
       var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
       connection.addLoadListener(o, o.onSaveLoad);

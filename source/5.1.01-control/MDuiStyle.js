@@ -5,15 +5,15 @@
 // @author maocy
 // @version 150101
 //==========================================================
-MO.MUiStyle = function MUiStyle(o){
+MO.MDuiStyle = function MDuiStyle(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @method
    o.construct     = MO.Method.empty;
    // @method
-   o.styleName     = MO.MUiStyle_styleName;
-   o.styleIcon     = MO.MUiStyle_styleIcon;
-   o.styleIconPath = MO.MUiStyle_styleIconPath;
+   o.styleName     = MO.MDuiStyle_styleName;
+   o.styleIcon     = MO.MDuiStyle_styleIcon;
+   o.styleIconPath = MO.MDuiStyle_styleIconPath;
    // @method
    o.dispose       = MO.Method.empty;
    return o;
@@ -27,7 +27,7 @@ MO.MUiStyle = function MUiStyle(o){
 // @param c:class:TClass 类对象
 // @return String 样式名称
 //==========================================================
-MO.MUiStyle_styleName = function MUiStyle_styleName(n, c){
+MO.MDuiStyle_styleName = function MDuiStyle_styleName(n, c){
    var o = this;
    var f = c ? c : o;
    var tn = MO.Class.name(f);
@@ -42,7 +42,7 @@ MO.MUiStyle_styleName = function MUiStyle_styleName(n, c){
 // @param c:class:TClass 类对象
 // @return String 图标名称
 //==========================================================
-MO.MUiStyle_styleIcon = function MUiStyle_styleIcon(n, c){
+MO.MDuiStyle_styleIcon = function MDuiStyle_styleIcon(n, c){
    return MO.Class.name(c ? c : this, true) + '_' + n;
 }
 
@@ -53,6 +53,6 @@ MO.MUiStyle_styleIcon = function MUiStyle_styleIcon(n, c){
 // @param c:class:TClass 类对象
 // @return String 图标路径
 //==========================================================
-MO.MUiStyle_styleIconPath = function MUiStyle_styleIconPath(n, c){
+MO.MDuiStyle_styleIconPath = function MDuiStyle_styleIconPath(n, c){
    return MO.RResource.iconPath(MO.Class.name(c ? c : this, true) + '_' + n);
 }

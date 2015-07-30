@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150402
 //==========================================================
-MO.FUiPopupConsole = function FUiPopupConsole(o){
+MO.FDuiPopupConsole = function FDuiPopupConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -14,16 +14,16 @@ MO.FUiPopupConsole = function FUiPopupConsole(o){
    o._activeControl = null;
    //..........................................................
    // @event
-   o.onMouseDown    = MO.FUiPopupConsole_onMouseDown;
-   o.onMouseWheel   = MO.FUiPopupConsole_onMouseWheel;
+   o.onMouseDown    = MO.FDuiPopupConsole_onMouseDown;
+   o.onMouseWheel   = MO.FDuiPopupConsole_onMouseWheel;
    //..........................................................
    // @method
-   o.construct      = MO.FUiPopupConsole_construct;
+   o.construct      = MO.FDuiPopupConsole_construct;
    // @method
-   o.show           = MO.FUiPopupConsole_show;
-   o.hide           = MO.FUiPopupConsole_hide;
+   o.show           = MO.FDuiPopupConsole_show;
+   o.hide           = MO.FDuiPopupConsole_hide;
    // @method
-   o.dispose        = MO.FUiPopupConsole_dispose;
+   o.dispose        = MO.FDuiPopupConsole_dispose;
    return o;
 }
 
@@ -33,7 +33,7 @@ MO.FUiPopupConsole = function FUiPopupConsole(o){
 // @method
 // @param p:event:SEvent 事件对象
 //==========================================================
-MO.FUiPopupConsole_onMouseDown = function FUiPopupConsole_onMouseDown(p){
+MO.FDuiPopupConsole_onMouseDown = function FDuiPopupConsole_onMouseDown(p){
    this.hide();
 }
 
@@ -43,7 +43,7 @@ MO.FUiPopupConsole_onMouseDown = function FUiPopupConsole_onMouseDown(p){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.FUiPopupConsole_onMouseWheel = function FUiPopupConsole_onMouseWheel(s, e){
+MO.FDuiPopupConsole_onMouseWheel = function FDuiPopupConsole_onMouseWheel(s, e){
    this.hide();
 }
 
@@ -52,7 +52,7 @@ MO.FUiPopupConsole_onMouseWheel = function FUiPopupConsole_onMouseWheel(s, e){
 //
 // @method
 //==========================================================
-MO.FUiPopupConsole_construct = function FUiPopupConsole_construct(){
+MO.FDuiPopupConsole_construct = function FDuiPopupConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 增加监听器
@@ -67,12 +67,12 @@ MO.FUiPopupConsole_construct = function FUiPopupConsole_construct(){
 // @method
 // @param control:FDuiControl 控件
 //==========================================================
-MO.FUiPopupConsole_show = function FUiPopupConsole_show(control){
+MO.FDuiPopupConsole_show = function FDuiPopupConsole_show(control){
    var o = this;
    // 隐藏控件
    o.hide();
    // 显示当前控件
-   if(MO.Class.isClass(control, MO.MUiPopup)){
+   if(MO.Class.isClass(control, MO.MDuiPopup)){
       o._activeControl = control;
    }
 }
@@ -83,7 +83,7 @@ MO.FUiPopupConsole_show = function FUiPopupConsole_show(control){
 // @method
 // @param control:FDuiControl 控件
 //==========================================================
-MO.FUiPopupConsole_hide = function FUiPopupConsole_hide(control){
+MO.FDuiPopupConsole_hide = function FDuiPopupConsole_hide(control){
    var o = this;
    // 隐藏控件
    if(o._activeControl){
@@ -98,7 +98,7 @@ MO.FUiPopupConsole_hide = function FUiPopupConsole_hide(control){
 //
 // @method
 //==========================================================
-MO.FUiPopupConsole_dispose = function FUiPopupConsole_dispose(){
+MO.FDuiPopupConsole_dispose = function FDuiPopupConsole_dispose(){
    var o = this;
    o._activeControl = null;
    o.__base.FConsole.dispose.call(o);

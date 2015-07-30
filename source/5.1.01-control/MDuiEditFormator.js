@@ -5,12 +5,12 @@
 // @author maocy
 // @version 150410
 //==========================================================
-MO.MUiEditFormator = function MUiEditFormator(o){
+MO.MDuiEditFormator = function MDuiEditFormator(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @method
-   o.formatText  = MO.MUiEditFormator_formatText;
-   o.formatValue = MO.MUiEditFormator_formatValue;
+   o.formatText  = MO.MDuiEditFormator_formatText;
+   o.formatValue = MO.MDuiEditFormator_formatValue;
    return o;
 }
 
@@ -21,7 +21,7 @@ MO.MUiEditFormator = function MUiEditFormator(o){
 // @param value:String 数据
 // @return 文本
 //==========================================================
-MO.MUiEditFormator_formatText = function MUiEditFormator_formatText(value){
+MO.MDuiEditFormator_formatText = function MDuiEditFormator_formatText(value){
    return value;
 }
 
@@ -32,6 +32,6 @@ MO.MUiEditFormator_formatText = function MUiEditFormator_formatText(value){
 // @param text:String 文本
 // @return 数据
 //==========================================================
-MO.MUiEditFormator_formatValue = function MUiEditFormator_formatValue(text){
+MO.MDuiEditFormator_formatValue = function MDuiEditFormator_formatValue(text){
    return text;
 }

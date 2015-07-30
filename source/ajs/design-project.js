@@ -1524,14 +1524,14 @@ with(MO){
    }
    MO.FDsProjectSceneDialog_onConfirmLoad = function FDsProjectSceneDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
       var listContent = o._frameSet._sceneListContent;
       listContent.serviceRelist();
    }
    MO.FDsProjectSceneDialog_onConfirmClick = function FDsProjectSceneDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
       var sceneConsole = RConsole.find(FDrSceneConsole);
@@ -1616,7 +1616,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsProjectSceneListContent_construct = function FDsProjectSceneListContent_construct(){
       var o = this;
@@ -1638,7 +1638,7 @@ with(MO){
    MO.FDsProjectSceneListContent_serviceList = function FDsProjectSceneListContent_serviceList(guid){
       var o = this;
       o._activeGuid = guid;
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       var url = '/cloud.solution.project.ws?action=listProject&project_guid=' + guid;
       var connection = RConsole.find(FXmlConsole).sendAsync(url);
       connection.addLoadListener(o, o.onServiceLoad);
@@ -1710,7 +1710,7 @@ with(MO){
    }
    MO.FDsProjectSceneListToolBar_onSceneDeleteLoad = function FDsProjectSceneListToolBar_onSceneDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var listContent = o._frameSet._sceneListContent;
       listContent.serviceRelist();
    }
@@ -1721,7 +1721,7 @@ with(MO){
       }
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrSceneConsole).doDelete(item._guid);
       connection.addLoadListener(o, o.onSceneDeleteLoad);
    }
@@ -1730,9 +1730,9 @@ with(MO){
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
       if(!item){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中场景后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中场景后，再点击操作。');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前场景？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前场景？');
       dialog.addResultListener(o, o.onSceneDeleteExecute);
    }
    MO.FDsProjectSceneListToolBar_construct = function FDsProjectSceneListToolBar_construct(){

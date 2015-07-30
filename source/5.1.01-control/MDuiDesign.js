@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150123
 //==========================================================
-MO.MUiDesign = function MUiDesign(o){
+MO.MDuiDesign = function MDuiDesign(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
@@ -13,13 +13,13 @@ MO.MUiDesign = function MUiDesign(o){
    o._storage       = null;
    //..........................................................
    // @process
-   o.oeDesign      = MO.MUiDesign_oeDesign;
+   o.oeDesign      = MO.MDuiDesign_oeDesign;
    //..........................................................
    // @event
-   o.onDesignEnter = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnter'), MO.MUiDesign_onDesignEnter);
-   o.onDesignLeave = MO.Class.register(o, new MO.AEventMouseEnter('onDesignLeave'), MO.MUiDesign_onDesignLeave);
-   o.onDesignBegin = MO.Class.register(o, new MO.AEventMouseEnter('onDesignBegin'), MO.MUiDesign_onDesignBegin);
-   o.onDesignEnd   = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnd'), MO.MUiDesign_onDesignEnd);
+   o.onDesignEnter = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnter'), MO.MDuiDesign_onDesignEnter);
+   o.onDesignLeave = MO.Class.register(o, new MO.AEventMouseEnter('onDesignLeave'), MO.MDuiDesign_onDesignLeave);
+   o.onDesignBegin = MO.Class.register(o, new MO.AEventMouseEnter('onDesignBegin'), MO.MDuiDesign_onDesignBegin);
+   o.onDesignEnd   = MO.Class.register(o, new MO.AEventMouseEnter('onDesignEnd'), MO.MDuiDesign_onDesignEnd);
    return o;
 }
 
@@ -29,7 +29,7 @@ MO.MUiDesign = function MUiDesign(o){
 // @method
 // @param p:process:TEventProcess 事件处理
 //==========================================================
-MO.MUiDesign_oeDesign = function MUiDesign_oeDesign(e){
+MO.MDuiDesign_oeDesign = function MDuiDesign_oeDesign(e){
    if(e.isBefore()){
       switch(e.mode){
          case MO.EDesign.Move:
@@ -72,7 +72,7 @@ MO.MUiDesign_oeDesign = function MUiDesign_oeDesign(e){
 // @method
 // @param p:process:SEvent 事件
 //==========================================================
-MO.MUiDesign_onDesignEnter = function MUiDesign_onDesignEnter(p){
+MO.MDuiDesign_onDesignEnter = function MDuiDesign_onDesignEnter(p){
    var o = this;
    o._hPanel.className = o.style('Design');
 }
@@ -83,7 +83,7 @@ MO.MUiDesign_onDesignEnter = function MUiDesign_onDesignEnter(p){
 // @method
 // @param p:process:SEvent 事件
 //==========================================================
-MO.MUiDesign_onDesignLeave = function MUiDesign_onDesignLeave(p){
+MO.MDuiDesign_onDesignLeave = function MDuiDesign_onDesignLeave(p){
 }
 
 //==========================================================
@@ -92,7 +92,7 @@ MO.MUiDesign_onDesignLeave = function MUiDesign_onDesignLeave(p){
 // @method
 // @param p:process:SEvent 事件
 //==========================================================
-MO.MUiDesign_onDesignBegin = function MUiDesign_onDesignBegin(p){
+MO.MDuiDesign_onDesignBegin = function MDuiDesign_onDesignBegin(p){
    var o = this;
    var g = o._storage = MO.Lang.Object.nvlObj(o._storage);
    g.designStyle = o._hPanel.className;
@@ -107,7 +107,7 @@ MO.MUiDesign_onDesignBegin = function MUiDesign_onDesignBegin(p){
 // @method
 // @param p:process:SEvent 事件
 //==========================================================
-MO.MUiDesign_onDesignEnd = function MUiDesign_onDesignEnd(p){
+MO.MDuiDesign_onDesignEnd = function MDuiDesign_onDesignEnd(p){
    var o = this;
    var g = o._storage = MO.Lang.Object.nvlObj(o._storage);
    o._hPanel.className = g.designStyle;

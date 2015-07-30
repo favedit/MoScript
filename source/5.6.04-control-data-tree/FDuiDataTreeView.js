@@ -286,7 +286,7 @@ with(MO){
       var xdocument = new TXmlDocument();
       var xroot = xdocument.root();
       xroot.set('action', service.action);
-      RConsole.find(FUiEnvironmentConsole).build(xroot);
+      RConsole.find(FDuiEnvironmentConsole).build(xroot);
       if(!attributes.isEmpty()){
          if(RClass.isClass(attributes, TNode)){
             xr.push(attributes);
@@ -401,7 +401,7 @@ with(MO){
       var xd = new TXmlDocument();
       var xr = xd.root();
       xr.set('action', svc.action);
-      //RConsole.find(FUiEnvironmentConsole).build(xr);
+      //RConsole.find(FDuiEnvironmentConsole).build(xr);
       if(!as.isEmpty()){
          if(RClass.isClass(as, TNode)){
             xr.push(attrs);

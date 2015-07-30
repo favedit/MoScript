@@ -2296,7 +2296,7 @@ with(MO){
    MO.FDuiGridControl_setVisible = function FDuiGridControl_setVisible(v){
       var o = this;
       o.__base.FDuiContainer.setVisible.call(o, v);
-      o.__base.MUiHorizontal.setVisible.call(o, v);
+      o.__base.MDuiHorizontal.setVisible.call(o, v);
    }
    MO.FDuiGridControl_setButtonVisible = function FDuiGridControl_setButtonVisible(n, v){
       var o = this;

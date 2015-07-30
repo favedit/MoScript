@@ -3872,7 +3872,7 @@ MO.FThread_process = function FThread_process(interval){
 }
 MO.FThreadConsole = function FThreadConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._scopeCd     = MO.EScope.Local;
+   o._scopeCd     = MO.EScope.Global;
    o._active      = true;
    o._requestFlag = false;
    o._interval    = 8;
@@ -3926,8 +3926,8 @@ MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
    if(o._active){
       var threads = o._threads;
       var count = threads.count();
-      for(var n = 0; n < count; n++){
-         var thread = threads.at(n);
+      for(var i = 0; i < count; i++){
+         var thread = threads.at(i);
          o.process(thread);
       }
    }

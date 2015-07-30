@@ -19,7 +19,7 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FDuiEditControl = function FDuiEditControl(o){
-      o = RClass.inherits(this, o, FDuiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
+      o = RClass.inherits(this, o, FDuiControl, MDuiEditValue, MDuiEditChange, MDuiEditDrop);
       //..........................................................
       // @property
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
@@ -353,8 +353,8 @@ with(MO){
       var o = this;
       // 父处理
       o.__base.FDuiControl.construct.call(o);
-      o.__base.MUiEditChange.construct.call(o);
-      o.__base.MUiEditDrop.construct.call(o);
+      o.__base.MDuiEditChange.construct.call(o);
+      o.__base.MDuiEditDrop.construct.call(o);
       // 设置属性
       o._labelSize = new SSize2(100, 20);
       o._editSize = new SSize2(200, 20);
@@ -447,8 +447,8 @@ with(MO){
       o._hValuePanel = RHtml.free(o._hValuePanel);
       o._hDropPanel = RHtml.free(o._hDropPanel);
       // 父处理
-      o.__base.MUiEditDrop.dispose.call(o);
-      o.__base.MUiEditChange.dispose.call(o);
+      o.__base.MDuiEditDrop.dispose.call(o);
+      o.__base.MDuiEditChange.dispose.call(o);
       o.__base.FDuiControl.dispose.call(o);
    }
 }

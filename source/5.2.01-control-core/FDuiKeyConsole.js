@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150228
 //==========================================================
-MO.FUiKeyConsole = function FUiKeyConsole(o){
+MO.FDuiKeyConsole = function FDuiKeyConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -16,15 +16,15 @@ MO.FUiKeyConsole = function FUiKeyConsole(o){
    o._listeners      = new Object();
    o._disableKeys    = new Object();
    // @attribute
-   o.onKeyDown       = MO.FUiKeyConsole_onKeyDown;
+   o.onKeyDown       = MO.FDuiKeyConsole_onKeyDown;
    //..........................................................
    // @method
-   o.construct       = MO.FUiKeyConsole_construct;
-   o.enable          = MO.FUiKeyConsole_enable;
-   o.disable         = MO.FUiKeyConsole_disable;
-   o.enableRegister  = MO.FUiKeyConsole_enableRegister;
-   o.disableRegister = MO.FUiKeyConsole_disableRegister;
-   o.register        = MO.FUiKeyConsole_register;
+   o.construct       = MO.FDuiKeyConsole_construct;
+   o.enable          = MO.FDuiKeyConsole_enable;
+   o.disable         = MO.FDuiKeyConsole_disable;
+   o.enableRegister  = MO.FDuiKeyConsole_enableRegister;
+   o.disableRegister = MO.FDuiKeyConsole_disableRegister;
+   o.register        = MO.FDuiKeyConsole_register;
    return o;
 }
 
@@ -34,7 +34,7 @@ MO.FUiKeyConsole = function FUiKeyConsole(o){
 // @method
 // @param e:event:SEvent 事件对象
 //==========================================================
-MO.FUiKeyConsole_onKeyDown = function FUiKeyConsole_onKeyDown(e){
+MO.FDuiKeyConsole_onKeyDown = function FDuiKeyConsole_onKeyDown(e){
    var o = this;
    var k = MO.REnum.tryDecode(MO.EKeyCode, e.keyCode);
    if(k && o._enable){
@@ -57,7 +57,7 @@ MO.FUiKeyConsole_onKeyDown = function FUiKeyConsole_onKeyDown(e){
 //
 // @method
 //==========================================================
-MO.FUiKeyConsole_construct = function FUiKeyConsole_construct(){
+MO.FDuiKeyConsole_construct = function FDuiKeyConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 禁止一些操作键
@@ -72,7 +72,7 @@ MO.FUiKeyConsole_construct = function FUiKeyConsole_construct(){
 //
 // @method
 //==========================================================
-MO.FUiKeyConsole_enable = function FUiKeyConsole_enable(){
+MO.FDuiKeyConsole_enable = function FDuiKeyConsole_enable(){
    this._enable = true;
 }
 
@@ -81,7 +81,7 @@ MO.FUiKeyConsole_enable = function FUiKeyConsole_enable(){
 //
 // @method
 //==========================================================
-MO.FUiKeyConsole_disable = function FUiKeyConsole_disable(){
+MO.FDuiKeyConsole_disable = function FDuiKeyConsole_disable(){
    this._enable = false;
 }
 
@@ -90,7 +90,7 @@ MO.FUiKeyConsole_disable = function FUiKeyConsole_disable(){
 //
 // @method
 //==========================================================
-MO.FUiKeyConsole_enableRegister = function FUiKeyConsole_enableRegister(){
+MO.FDuiKeyConsole_enableRegister = function FDuiKeyConsole_enableRegister(){
    this._enableRegister = true;
 }
 
@@ -99,7 +99,7 @@ MO.FUiKeyConsole_enableRegister = function FUiKeyConsole_enableRegister(){
 //
 // @method
 //==========================================================
-MO.FUiKeyConsole_disableRegister = function FUiKeyConsole_disableRegister(){
+MO.FDuiKeyConsole_disableRegister = function FDuiKeyConsole_disableRegister(){
    this._enableRegister = false;
 }
 
@@ -111,7 +111,7 @@ MO.FUiKeyConsole_disableRegister = function FUiKeyConsole_disableRegister(){
 // @param w:owner:Object 监听对象
 // @param p:process:Function 监听处理
 //==========================================================
-MO.FUiKeyConsole_register = function FUiKeyConsole_register(k, w, p){
+MO.FDuiKeyConsole_register = function FDuiKeyConsole_register(k, w, p){
    var o = this;
    if(o._enableRegister){
       // 如果是数字，则对换成键码

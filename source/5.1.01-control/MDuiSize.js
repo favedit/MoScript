@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-MO.MUiSize = function MUiSize(o){
+MO.MDuiSize = function MDuiSize(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
@@ -13,32 +13,32 @@ MO.MUiSize = function MUiSize(o){
    o._size           = MO.Class.register(o, new MO.APtySize2('_size'));
    //..........................................................
    // @method
-   o.construct       = MO.MUiSize_construct;
+   o.construct       = MO.MDuiSize_construct;
    // @method
-   o.dockCd          = MO.MUiSize_dockCd;
-   o.setDockCd       = MO.MUiSize_setDockCd;
-   o.left            = MO.MUiSize_left;
-   o.setLeft         = MO.MUiSize_setLeft;
-   o.top             = MO.MUiSize_top;
-   o.setTop          = MO.MUiSize_setTop;
-   o.location        = MO.MUiSize_location;
-   o.setLocation     = MO.MUiSize_setLocation;
-   o.refreshLocation = MO.MUiSize_refreshLocation;
+   o.dockCd          = MO.MDuiSize_dockCd;
+   o.setDockCd       = MO.MDuiSize_setDockCd;
+   o.left            = MO.MDuiSize_left;
+   o.setLeft         = MO.MDuiSize_setLeft;
+   o.top             = MO.MDuiSize_top;
+   o.setTop          = MO.MDuiSize_setTop;
+   o.location        = MO.MDuiSize_location;
+   o.setLocation     = MO.MDuiSize_setLocation;
+   o.refreshLocation = MO.MDuiSize_refreshLocation;
    // @method
-   o.width           = MO.MUiSize_width;
-   o.setWidth        = MO.MUiSize_setWidth;
-   o.height          = MO.MUiSize_height;
-   o.setHeight       = MO.MUiSize_setHeight;
-   o.size            = MO.MUiSize_size;
-   o.setSize         = MO.MUiSize_setSize;
-   o.refreshSize     = MO.MUiSize_refreshSize;
+   o.width           = MO.MDuiSize_width;
+   o.setWidth        = MO.MDuiSize_setWidth;
+   o.height          = MO.MDuiSize_height;
+   o.setHeight       = MO.MDuiSize_setHeight;
+   o.size            = MO.MDuiSize_size;
+   o.setSize         = MO.MDuiSize_setSize;
+   o.refreshSize     = MO.MDuiSize_refreshSize;
    // @method
-   o.setBounds       = MO.MUiSize_setBounds;
-   o.refreshBounds   = MO.MUiSize_refreshBounds;
+   o.setBounds       = MO.MDuiSize_setBounds;
+   o.refreshBounds   = MO.MDuiSize_refreshBounds;
    // @method
-   o.dispose         = MO.MUiSize_dispose;
+   o.dispose         = MO.MDuiSize_dispose;
    // @method
-   o.innerDump       = MO.MUiSize_innerDump;
+   o.innerDump       = MO.MDuiSize_innerDump;
    return o;
 }
 
@@ -47,7 +47,7 @@ MO.MUiSize = function MUiSize(o){
 //
 // @method
 //==========================================================
-MO.MUiSize_construct = function MUiSize_construct(){
+MO.MDuiSize_construct = function MDuiSize_construct(){
    var o = this;
    o._location = new MO.SPoint2();
    o._size = new MO.SUiSize2();
@@ -59,7 +59,7 @@ MO.MUiSize_construct = function MUiSize_construct(){
 // @method
 // @return EUiDock 停靠类型
 //==========================================================
-MO.MUiSize_dockCd = function MUiSize_dockCd(){
+MO.MDuiSize_dockCd = function MDuiSize_dockCd(){
    return this._dockCd;
 }
 
@@ -69,7 +69,7 @@ MO.MUiSize_dockCd = function MUiSize_dockCd(){
 // @method
 // @param dockCd:EUiDock 停靠类型
 //==========================================================
-MO.MUiSize_setDockCd = function MUiSize_setDockCd(dockCd){
+MO.MDuiSize_setDockCd = function MDuiSize_setDockCd(dockCd){
    this._dockCd = dockCd;
 }
 
@@ -79,7 +79,7 @@ MO.MUiSize_setDockCd = function MUiSize_setDockCd(dockCd){
 // @method
 // @return Number 左距离
 //==========================================================
-MO.MUiSize_left = function MUiSize_left(){
+MO.MDuiSize_left = function MDuiSize_left(){
    return this._location.x;
 }
 
@@ -89,7 +89,7 @@ MO.MUiSize_left = function MUiSize_left(){
 // @method
 // @param p:width:Number 左距离
 //==========================================================
-MO.MUiSize_setLeft = function MUiSize_setLeft(p){
+MO.MDuiSize_setLeft = function MDuiSize_setLeft(p){
    this.setLocation(p, null);
 }
 
@@ -99,7 +99,7 @@ MO.MUiSize_setLeft = function MUiSize_setLeft(p){
 // @method
 // @return Number 上距离
 //==========================================================
-MO.MUiSize_top = function MUiSize_top(){
+MO.MDuiSize_top = function MDuiSize_top(){
    return this._location.y;
 }
 
@@ -109,7 +109,7 @@ MO.MUiSize_top = function MUiSize_top(){
 // @method
 // @param p:height:Number 上距离
 //==========================================================
-MO.MUiSize_setTop = function MUiSize_setTop(p){
+MO.MDuiSize_setTop = function MDuiSize_setTop(p){
    this.setLocation(null, p);
 }
 
@@ -119,7 +119,7 @@ MO.MUiSize_setTop = function MUiSize_setTop(p){
 // @method
 // @return SPoint2 坐标
 //==========================================================
-MO.MUiSize_location = function MUiSize_location(){
+MO.MDuiSize_location = function MDuiSize_location(){
    return this._location;
 }
 
@@ -130,7 +130,7 @@ MO.MUiSize_location = function MUiSize_location(){
 // @param x:Number 左距离
 // @param y:Number 上距离
 //==========================================================
-MO.MUiSize_setLocation = function MUiSize_setLocation(x, y){
+MO.MDuiSize_setLocation = function MDuiSize_setLocation(x, y){
    var o = this;
    var hPanel = o.panel(MO.EPanel.Size);
    // 设置左距离
@@ -154,7 +154,7 @@ MO.MUiSize_setLocation = function MUiSize_setLocation(x, y){
 //
 // @method
 //==========================================================
-MO.MUiSize_refreshLocation = function MUiSize_refreshLocation(){
+MO.MDuiSize_refreshLocation = function MDuiSize_refreshLocation(){
    var o = this;
    o.setLocation(o._location.x, o._location.y);
 }
@@ -165,7 +165,7 @@ MO.MUiSize_refreshLocation = function MUiSize_refreshLocation(){
 // @method
 // @return Number 宽度
 //==========================================================
-MO.MUiSize_width = function MUiSize_width(){
+MO.MDuiSize_width = function MDuiSize_width(){
    return this._size.width;
 }
 
@@ -175,7 +175,7 @@ MO.MUiSize_width = function MUiSize_width(){
 // @method
 // @param p:width:Number 宽度
 //==========================================================
-MO.MUiSize_setWidth = function MUiSize_setWidth(p){
+MO.MDuiSize_setWidth = function MDuiSize_setWidth(p){
    this.setSize(p, null);
 }
 
@@ -185,7 +185,7 @@ MO.MUiSize_setWidth = function MUiSize_setWidth(p){
 // @method
 // @return Number 高度
 //==========================================================
-MO.MUiSize_height = function MUiSize_height(){
+MO.MDuiSize_height = function MDuiSize_height(){
    return this._size.width;
 }
 
@@ -195,7 +195,7 @@ MO.MUiSize_height = function MUiSize_height(){
 // @method
 // @param p:height:Number 高度
 //==========================================================
-MO.MUiSize_setHeight = function MUiSize_setHeight(p){
+MO.MDuiSize_setHeight = function MDuiSize_setHeight(p){
    this.setSize(null, p);
 }
 
@@ -205,7 +205,7 @@ MO.MUiSize_setHeight = function MUiSize_setHeight(p){
 // @method
 // @return SSize2 大小
 //==========================================================
-MO.MUiSize_size = function MUiSize_size(){
+MO.MDuiSize_size = function MDuiSize_size(){
    return this._size;
 }
 
@@ -216,7 +216,7 @@ MO.MUiSize_size = function MUiSize_size(){
 // @param width:Number 宽度
 // @param height:Number 高度
 //==========================================================
-MO.MUiSize_setSize = function MUiSize_setSize(width, height){
+MO.MDuiSize_setSize = function MDuiSize_setSize(width, height){
    var o = this;
    var hPanel = o.panel(MO.EPanel.Size);
    // 设置宽度
@@ -260,7 +260,7 @@ MO.MUiSize_setSize = function MUiSize_setSize(width, height){
 //
 // @method
 //==========================================================
-MO.MUiSize_refreshSize = function MUiSize_refreshSize(){
+MO.MDuiSize_refreshSize = function MDuiSize_refreshSize(){
    var o = this;
    o.setSize(o._size.width, o._size.height);
 }
@@ -274,7 +274,7 @@ MO.MUiSize_refreshSize = function MUiSize_refreshSize(){
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
-MO.MUiSize_setBounds = function MUiSize_setBounds(l, t, w, h){
+MO.MDuiSize_setBounds = function MDuiSize_setBounds(l, t, w, h){
    var o = this;
    o.setLocation(l, t);
    o.setSize(w, h);
@@ -285,7 +285,7 @@ MO.MUiSize_setBounds = function MUiSize_setBounds(l, t, w, h){
 //
 // @method
 //==========================================================
-MO.MUiSize_refreshBounds = function MUiSize_refreshBounds(){
+MO.MDuiSize_refreshBounds = function MDuiSize_refreshBounds(){
    var o = this;
    o.refreshLocation();
    o.refreshSize();
@@ -296,7 +296,7 @@ MO.MUiSize_refreshBounds = function MUiSize_refreshBounds(){
 //
 // @method
 //==========================================================
-MO.MUiSize_dispose = function MUiSize_dispose(){
+MO.MDuiSize_dispose = function MDuiSize_dispose(){
    var o = this;
    // 释放位置
    var v = o._location;
@@ -319,8 +319,8 @@ MO.MUiSize_dispose = function MUiSize_dispose(){
 // @param s:source:TString 内容
 // @param l:level:Integer 层级
 //==========================================================
-MO.MUiSize_innerDump = function MUiSize_innerDump(s, l){
+MO.MDuiSize_innerDump = function MDuiSize_innerDump(s, l){
    var o = this;
-   s.append('MUiSize:');
+   s.append('MDuiSize:');
    s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
 }

@@ -1,5 +1,5 @@
 MO.FDuiDialog = function FDuiDialog(o){
-   o = MO.Class.inherits(this, o, MO.FDuiWindow, MO.MUiDescribeFrame);
+   o = MO.Class.inherits(this, o, MO.FDuiWindow, MO.MDuiDescribeFrame);
    o.construct = MO.FDuiDialog_construct;
    return o;
 }
@@ -56,7 +56,7 @@ MO.FDuiFramePage_removeChild = function FDuiFramePage_removeChild(control){
    o._hContainer.removeChild(control._hPanel);
 }
 MO.FDuiFrameSet = function FDuiFrameSet(o){
-   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDescribeFrame);
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiDescribeFrame);
    o._sizeCd       = MO.EUiSize.Fill;
    o._directionCd  = MO.Class.register(o, new MO.APtyEnum('_directionCd', null, MO.EUiDirection), MO.EUiDirection.Vertical);
    o._stylePanel   = MO.Class.register(o, new MO.AStyle('_stylePanel'));

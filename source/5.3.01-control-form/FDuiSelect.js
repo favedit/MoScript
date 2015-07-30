@@ -16,8 +16,8 @@ with(MO){
    // @version 150224
    //==========================================================
    MO.FDuiSelect = function FDuiSelect(o){
-      //o = RClass.inherits(this, o, FDuiEditControl, MUiContainer, MPropertySelect, MUiDropable, MListenerDataChanged);
-      o = RClass.inherits(this, o, FDuiEditControl, MUiContainer, MPropertySelect, MListenerDataChanged);
+      //o = RClass.inherits(this, o, FDuiEditControl, MDuiContainer, MPropertySelect, MDuiDropable, MListenerDataChanged);
+      o = RClass.inherits(this, o, FDuiEditControl, MDuiContainer, MPropertySelect, MListenerDataChanged);
       //..........................................................
       // @style
       o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));

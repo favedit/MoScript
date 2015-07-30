@@ -117,7 +117,7 @@ with(MO){
    MO.FDsResourceImportDialog_onConfirmLoad = function FDsResourceImportDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新搜索内容
@@ -134,7 +134,7 @@ with(MO){
    MO.FDsResourceImportDialog_onConfirmClick = function FDsResourceImportDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 加载文件数据
       var file = o._controlFile._hInput.files[0];
       var reader = o._fileReader = RClass.create(FFileReader);

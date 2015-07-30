@@ -78,7 +78,7 @@ with(MO){
    //==========================================================
    MO.FDsMaterialMenuBar_onSaveLoad = function FDsMaterialMenuBar_onSaveLoad(event){
       // 解除画面锁定
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -92,7 +92,7 @@ with(MO){
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 存储配置
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
@@ -179,7 +179,7 @@ with(MO){
    MO.FDsMaterialMenuBar_onDeleteLoad = function FDsMaterialMenuBar_onDeleteLoad(event){
       var o = this;
       // 画面允许操作
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 刷新列表
       //var frame = o._frameSet._listContent;
       //frame.serviceResearch();
@@ -195,7 +195,7 @@ with(MO){
       var o = this;
       var item = o._frameSet._catalogContent.focusItem();
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 发送数据请求
       var connection = RConsole.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
@@ -214,7 +214,7 @@ with(MO){
          return alert('请选中后再点击删除');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
 
@@ -226,7 +226,7 @@ with(MO){
    //==========================================================
    MO.FDsMaterialMenuBar_onCaptureLoad = function FDsMaterialMenuBar_onCaptureLoad(event){
       // 解除画面锁定
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -238,7 +238,7 @@ with(MO){
    MO.FDsMaterialMenuBar_onCaptureClick = function FDsMaterialMenuBar_onCaptureClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 上传数据
       var connection = o._frameSet._canvas.capture();
       connection.addLoadListener(o, o.onCaptureLoad);

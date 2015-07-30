@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDuiToolButtonMenu = function FDuiToolButtonMenu(o){
-      o = RClass.inherits(this, o, FDuiToolButton, MUiContainer, MUiDropable, MUiFocus);
+      o = RClass.inherits(this, o, FDuiToolButton, MDuiContainer, MDuiDropable, MDuiFocus);
       //..........................................................
       // @attribute
       o._menu           = null;
@@ -163,7 +163,7 @@ with(MO){
          if(o._statusDrop){
             o._hForm.className = o.styleName('Press');
             o._menu.show(this._hDropPanel, EUiAlign.BottomRight);
-            RConsole.find(FUiPopupConsole).show(o._menu);
+            RConsole.find(FDuiPopupConsole).show(o._menu);
          }else{
             o._hForm.className = o.styleName('Normal');
             o._menu.hide();

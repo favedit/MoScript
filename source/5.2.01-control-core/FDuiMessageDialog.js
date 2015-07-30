@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150409
 //==========================================================
-MO.FUiMessageDialog = function FUiMessageDialog(o){
+MO.FDuiMessageDialog = function FDuiMessageDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiWindow);
    //..........................................................
    // @style
@@ -33,23 +33,23 @@ MO.FUiMessageDialog = function FUiMessageDialog(o){
    o._hBlank            = null;
    //..........................................................
    // @event
-   o.onBuild            = MO.FUiMessageDialog_onBuild;
+   o.onBuild            = MO.FDuiMessageDialog_onBuild;
    // @event
-   o.onItemOver         = MO.Class.register(o, new MO.AEventMouseOver('onItemOver'), MO.FUiMessageDialog_onItemOver);
-   o.onItemClick        = MO.Class.register(o, new MO.AEventClick('onItemClick'), MO.FUiMessageDialog_onItemClick);
-   o.onDescClick        = MO.Class.register(o, new MO.AEventClick('onDescClick'), MO.FUiMessageDialog_onDescClick);
+   o.onItemOver         = MO.Class.register(o, new MO.AEventMouseOver('onItemOver'), MO.FDuiMessageDialog_onItemOver);
+   o.onItemClick        = MO.Class.register(o, new MO.AEventClick('onItemClick'), MO.FDuiMessageDialog_onItemClick);
+   o.onDescClick        = MO.Class.register(o, new MO.AEventClick('onDescClick'), MO.FDuiMessageDialog_onDescClick);
    // @event
-   o.onBuildMessages    = MO.FUiMessageDialog_onBuildMessages;
-   o.onBuildButtons     = MO.FUiMessageDialog_onBuildButtons;
-   o.onOk               = MO.FUiMessageDialog_onOk;
-   o.onCancel           = MO.FUiMessageDialog_onCancel;
-   o.onClose            = MO.FUiMessageDialog_onClose;
+   o.onBuildMessages    = MO.FDuiMessageDialog_onBuildMessages;
+   o.onBuildButtons     = MO.FDuiMessageDialog_onBuildButtons;
+   o.onOk               = MO.FDuiMessageDialog_onOk;
+   o.onCancel           = MO.FDuiMessageDialog_onCancel;
+   o.onClose            = MO.FDuiMessageDialog_onClose;
    //..........................................................
    // @method
-   o.loadMessages       = MO.FUiMessageDialog_loadMessages;
-   o.show               = MO.FUiMessageDialog_show;
-   o.hide               = MO.FUiMessageDialog_hide;
-   o.dispose            = MO.FUiMessageDialog_dispose;
+   o.loadMessages       = MO.FDuiMessageDialog_loadMessages;
+   o.show               = MO.FDuiMessageDialog_show;
+   o.hide               = MO.FDuiMessageDialog_hide;
+   o.dispose            = MO.FDuiMessageDialog_dispose;
    return o;
 }
 
@@ -59,7 +59,7 @@ MO.FUiMessageDialog = function FUiMessageDialog(o){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-MO.FUiMessageDialog_onBuild = function FUiMessageDialog_onBuild(event){
+MO.FDuiMessageDialog_onBuild = function FDuiMessageDialog_onBuild(event){
    var o = this;
    o.__base.FDuiWindow.oeBuild.call(o, e);
    o.setIcon('Icon');
@@ -93,7 +93,7 @@ MO.FUiMessageDialog_onBuild = function FUiMessageDialog_onBuild(event){
    return r;
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_onItemOver = function FUiMessageDialog_onItemOver(e){
+MO.FDuiMessageDialog_onItemOver = function FDuiMessageDialog_onItemOver(e){
    var o = this;
    var hf = o.hItemBodyForm;
    var h = e.hSource;
@@ -101,7 +101,7 @@ MO.FUiMessageDialog_onItemOver = function FUiMessageDialog_onItemOver(e){
    //h.style.cousor = "hand";
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_onItemClick = function FUiMessageDialog_onItemClick(e){
+MO.FDuiMessageDialog_onItemClick = function FDuiMessageDialog_onItemClick(e){
    var o = this;
    var hf = o.hItemBodyForm;
    for(var n = 0; n < hf.rows.count; n++){
@@ -111,7 +111,7 @@ MO.FUiMessageDialog_onItemClick = function FUiMessageDialog_onItemClick(e){
    //o.hDescDiv.innerText = o.msgs.get(idx).description; 
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_onDescClick = function FUiMessageDialog_onDescClick(e){
+MO.FDuiMessageDialog_onDescClick = function FDuiMessageDialog_onDescClick(e){
    var o = this;
    //var st = o.hDescBody.style.display;
    //if('none' == st){
@@ -121,7 +121,7 @@ MO.FUiMessageDialog_onDescClick = function FUiMessageDialog_onDescClick(e){
    //}
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_onBuildMessages = function FUiMessageDialog_onBuildMessages(){
+MO.FDuiMessageDialog_onBuildMessages = function FDuiMessageDialog_onBuildMessages(){
    var o = this;
    if(!o._type){
       // 消息条目<table>
@@ -143,7 +143,7 @@ MO.FUiMessageDialog_onBuildMessages = function FUiMessageDialog_onBuildMessages(
       hTitleIcon.style.paddingLeft = 20;
       hTitleIcon.src = o.styleIconPath('TitleIcon');
       var hc2 = hr.insertCell();
-      hc2.innerText = ' '+ MO.Context.get('FUiMessageDialog:MessageContext');
+      hc2.innerText = ' '+ MO.Context.get('FDuiMessageDialog:MessageContext');
       var hItemBody  = o.hItemBody = hTab1.insertRow().insertCell();
       hItemBody.height = 100;
       o.hItemBody.style.borderBottom = '2 solid #F5F5F5';
@@ -175,7 +175,7 @@ MO.FUiMessageDialog_onBuildMessages = function FUiMessageDialog_onBuildMessages(
       var hDescIcon = MO.Window.Builder.appendIcon(hc1, null, null, 16, 14);
       hDescIcon.src = o.styleIconPath('DescIcon');
       var hc2 = hr.insertCell();
-      hc2.innerText = ' '+RContext.get('FUiMessageDialog:MessageDetail');
+      hc2.innerText = ' '+RContext.get('FDuiMessageDialog:MessageDetail');
       hc2.style.cursor = 'hand';
       o.attachEvent('onDescClick', hc2);
       var hDescBody = o.hDescBody = hTab2.insertRow().insertCell();
@@ -201,7 +201,7 @@ MO.FUiMessageDialog_onBuildMessages = function FUiMessageDialog_onBuildMessages(
    //o.hItemTitle.innerText = '标题列表:' + o._type;
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_onBuildButtons = function FUiMessageDialog_onBuildButtons(t){
+MO.FDuiMessageDialog_onBuildButtons = function FDuiMessageDialog_onBuildButtons(t){
    var o = this;
    if(!o._type){
       var hBtnTab = MO.Window.Builder.appendTable(o._hButtonPanel, null, 0, 0, 2);
@@ -241,7 +241,7 @@ MO.FUiMessageDialog_onBuildButtons = function FUiMessageDialog_onBuildButtons(t)
    }
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_onOk = function FUiMessageDialog_onOk(){
+MO.FDuiMessageDialog_onOk = function FDuiMessageDialog_onOk(){
    var o = this;
    var g = o._messageArg;
    var cg = g.argument;
@@ -269,16 +269,16 @@ MO.FUiMessageDialog_onOk = function FUiMessageDialog_onOk(){
    o.hide();
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_onCancel = function FUiMessageDialog_onCancel(){
+MO.FDuiMessageDialog_onCancel = function FDuiMessageDialog_onCancel(){
    this.hide();
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_onClose = function FUiMessageDialog_onClose(){
+MO.FDuiMessageDialog_onClose = function FDuiMessageDialog_onClose(){
    this.hide();
 }
 // ------------------------------------------------------------
 // g:argument:TMessageArg
-MO.FUiMessageDialog_loadMessages = function FUiMessageDialog_loadMessages(g){
+MO.FDuiMessageDialog_loadMessages = function FDuiMessageDialog_loadMessages(g){
    var o = this;
    o._messageArg = g;
    var ms = g.messages;
@@ -333,17 +333,17 @@ MO.FUiMessageDialog_loadMessages = function FUiMessageDialog_loadMessages(g){
    }
    // 设置标题
    if(EMessage.Error == msgType){
-      o.setCaption(' ' + RContext.get('FUiMessageDialog:Error'));
+      o.setCaption(' ' + RContext.get('FDuiMessageDialog:Error'));
    }else if(EMessage.Warn == msgType){
-      o.setCaption(' ' + RContext.get('FUiMessageDialog:Warn'));
+      o.setCaption(' ' + RContext.get('FDuiMessageDialog:Warn'));
    }else if(EMessage.Info == msgType){
-      o.setCaption(' ' + RContext.get('FUiMessageDialog:Info'));
+      o.setCaption(' ' + RContext.get('FDuiMessageDialog:Info'));
    }else if(EMessage.Fatal == msgType){
-      o.setCaption(' ' + RContext.get('FUiMessageDialog:Fatal'));
+      o.setCaption(' ' + RContext.get('FDuiMessageDialog:Fatal'));
    }
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_show = function FUiMessageDialog_show(){
+MO.FDuiMessageDialog_show = function FDuiMessageDialog_show(){
    var o = this;
    o.__base.FDuiWindow.show.call(o);
    //o.hDescBody.style.display = 'none';
@@ -355,7 +355,7 @@ MO.FUiMessageDialog_show = function FUiMessageDialog_show(){
    o.focus();
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_hide = function FUiMessageDialog_hide(){
+MO.FDuiMessageDialog_hide = function FDuiMessageDialog_hide(){
    var o = this;
    o.__base.FDuiWindow.hide.call(o);
    // 关闭加载状态
@@ -367,7 +367,7 @@ MO.FUiMessageDialog_hide = function FUiMessageDialog_hide(){
    RWindow.setEnable(true);
 }
 // ------------------------------------------------------------
-MO.FUiMessageDialog_dispose = function FUiMessageDialog_dispose(){
+MO.FDuiMessageDialog_dispose = function FDuiMessageDialog_dispose(){
    var o = this;
    o.__base.FDuiWindow.dispose.call(o);
    o.hItmeForm = null;

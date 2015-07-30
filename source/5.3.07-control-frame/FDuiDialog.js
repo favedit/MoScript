@@ -6,7 +6,7 @@
 // @version 150122
 //==========================================================
 MO.FDuiDialog = function FDuiDialog(o){
-   o = MO.Class.inherits(this, o, MO.FDuiWindow, MO.MUiDescribeFrame);
+   o = MO.Class.inherits(this, o, MO.FDuiWindow, MO.MDuiDescribeFrame);
    //..........................................................
    // @method
    o.construct = MO.FDuiDialog_construct;

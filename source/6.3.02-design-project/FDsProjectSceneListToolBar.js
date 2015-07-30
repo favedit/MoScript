@@ -78,7 +78,7 @@ with(MO){
    MO.FDsProjectSceneListToolBar_onSceneDeleteLoad = function FDsProjectSceneListToolBar_onSceneDeleteLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 刷新目录
       var listContent = o._frameSet._sceneListContent;
       listContent.serviceRelist();
@@ -100,7 +100,7 @@ with(MO){
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 删除数据处理
       var connection = RConsole.find(FDrSceneConsole).doDelete(item._guid);
       connection.addLoadListener(o, o.onSceneDeleteLoad);
@@ -118,10 +118,10 @@ with(MO){
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
       if(!item){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中场景后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中场景后，再点击操作。');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前场景？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前场景？');
       dialog.addResultListener(o, o.onSceneDeleteExecute);
    }
 

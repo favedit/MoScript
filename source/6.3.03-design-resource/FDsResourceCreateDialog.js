@@ -66,9 +66,9 @@ with(MO){
       // 隐藏窗口
       o.hide();
       // 隐藏窗口
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 检查结果
-      if(RConsole.find(FUiResultConsole).checkEvent(event)){
+      if(RConsole.find(FDuiResultConsole).checkEvent(event)){
          // 刷新搜索内容
          var frame = o._frameSet._listContent;
          frame.serviceResearch();
@@ -84,7 +84,7 @@ with(MO){
    MO.FDsResourceCreateDialog_onConfirmClick = function FDsResourceCreateDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var code = o._controlCode.get();
       var label = o._controlLabel.get();

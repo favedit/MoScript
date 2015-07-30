@@ -23,11 +23,11 @@ with(MO){
    // │└------------┴--------------------------------------┘              │
    // └----------------------------------------------------------------------┘
    //
-   // @class FDuiContainer, MForm, MDataset, MValue, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
+   // @class FDuiContainer, MForm, MDataset, MValue, MDuiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
    // @history 090922 MAOCY 创建
    //==========================================================
    MO.FDuiGridControl = function FDuiGridControl(o) {
-      //o = RClass.inherits(this, o, FDuiContainer, MValue, MDataset, MDisplay, MUiFocus, MForm, MProgress, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
+      //o = RClass.inherits(this, o, FDuiContainer, MValue, MDataset, MDisplay, MDuiFocus, MForm, MProgress, MDuiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
       o = RClass.inherits(this, o, FDuiContainer);
       //..........................................................
       // @property
@@ -1593,7 +1593,7 @@ with(MO){
    MO.FDuiGridControl_setVisible = function FDuiGridControl_setVisible(v){
       var o = this;
       o.__base.FDuiContainer.setVisible.call(o, v);
-      o.__base.MUiHorizontal.setVisible.call(o, v);
+      o.__base.MDuiHorizontal.setVisible.call(o, v);
    }
 
    //==========================================================

@@ -19,7 +19,7 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FUiDataEditControl = function FUiDataEditControl(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MUiEditValue, MUiEditChange, MUiEditDrop);
+      o = RClass.inherits(this, o, FDuiEditControl, MDuiEditValue, MDuiEditChange, MDuiEditDrop);
       //..........................................................
       // @property
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
@@ -379,8 +379,8 @@ with(MO){
       var o = this;
       // 父处理
       o.__base.FDuiEditControl.construct.call(o);
-      o.__base.MUiEditChange.construct.call(o);
-      o.__base.MUiEditDrop.construct.call(o);
+      o.__base.MDuiEditChange.construct.call(o);
+      o.__base.MDuiEditDrop.construct.call(o);
       // 设置属性
       o._labelSize = new SSize2(100, 20);
       o._editSize = new SSize2(200, 20);
@@ -493,8 +493,8 @@ with(MO){
       o._hValuePanel = RHtml.free(o._hValuePanel);
       o._hDropPanel = RHtml.free(o._hDropPanel);
       // 父处理
-      o.__base.MUiEditDrop.dispose.call(o);
-      o.__base.MUiEditChange.dispose.call(o);
+      o.__base.MDuiEditDrop.dispose.call(o);
+      o.__base.MDuiEditChange.dispose.call(o);
       o.__base.FDuiEditControl.dispose.call(o);
    }
 
@@ -719,7 +719,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_oeLoadValue = function FUiDataEditControl_oeLoadValue(e){
       var o = this;
-      var r = o.__base.MUiEditValue.oeLoadValue.call(o, e);
+      var r = o.__base.MDuiEditValue.oeLoadValue.call(o, e);
       // 设置修改标志为不显示
       var hci = o.hChangeIcon;
       if(hci){
@@ -736,8 +736,8 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_doFocus = function FUiDataEditControl_doFocus(e){
       var o = this;
-      o.__base.MUiFocus.doFocus.call(o, e);
-      o.__base.MUiEditValue.doFocus.call(o, e);
+      o.__base.MDuiFocus.doFocus.call(o, e);
+      o.__base.MDuiEditValue.doFocus.call(o, e);
    }
 
    //==========================================================
@@ -748,8 +748,8 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_doBlur = function FUiDataEditControl_doBlur(e){
       var o = this;
-      o.__base.MUiFocus.doBlur.call(o, e);
-      o.__base.MUiEditValue.doBlur.call(o, e);
+      o.__base.MDuiFocus.doBlur.call(o, e);
+      o.__base.MDuiEditValue.doBlur.call(o, e);
    }
 
    //==========================================================
@@ -770,7 +770,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_setEditable = function FUiDataEditControl_setEditable(v){
       var o = this;
-      o.__base.MUiEditValue.setEditable.call(o, v);
+      o.__base.MDuiEditValue.setEditable.call(o, v);
       if(o.hEdit){
          o.hEdit.readOnly = !v;
       }
@@ -808,7 +808,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_focus = function FUiDataEditControl_focus(){
       var o = this;
-      o.__base.MUiFocus.focus.call(o);
+      o.__base.MDuiFocus.focus.call(o);
       if(o.hEdit){
          // 获得焦点，忽略错误
          try{

@@ -3,7 +3,7 @@ with(MO){
    // FDuiCalendarEditor
    //==========================================================
    MO.FDuiCalendarEditor = function FDuiCalendarEditor(o){
-      o = RClass.inherits(this, o, FDropEditor, MUiFocusLooper);
+      o = RClass.inherits(this, o, FDropEditor, MDuiFocusLooper);
       //..........................................................
       // @attribute
       o.editFormat       = null;

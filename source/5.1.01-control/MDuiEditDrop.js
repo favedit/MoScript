@@ -13,7 +13,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-MO.MUiEditDrop = function MUiEditDrop(o){
+MO.MDuiEditDrop = function MDuiEditDrop(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @style
@@ -26,16 +26,16 @@ MO.MUiEditDrop = function MUiEditDrop(o){
    o._hDropIcon      = null;
    //..........................................................
    // @event
-   o.onBuildEditDrop = MO.MUiEditDrop_onBuildEditDrop;
+   o.onBuildEditDrop = MO.MDuiEditDrop_onBuildEditDrop;
    // @event
-   o.onDropEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onDropEnter'), MO.MUiEditDrop_onDropEnter);
-   o.onDropLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'), MO.MUiEditDrop_onDropLeave);
-   o.onDropClick     = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MUiEditDrop_onDropClick);
+   o.onDropEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onDropEnter'), MO.MDuiEditDrop_onDropEnter);
+   o.onDropLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'), MO.MDuiEditDrop_onDropLeave);
+   o.onDropClick     = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MDuiEditDrop_onDropClick);
    //..........................................................
    // @method
-   o.construct       = MO.MUiEditDrop_construct;
+   o.construct       = MO.MDuiEditDrop_construct;
    // @method
-   o.dispose         = MO.MUiEditDrop_dispose;
+   o.dispose         = MO.MDuiEditDrop_dispose;
    return o;
 }
 
@@ -45,17 +45,17 @@ MO.MUiEditDrop = function MUiEditDrop(o){
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
-MO.MUiEditDrop_onBuildEditDrop = function MUiEditDrop_onBuildEditDrop(p){
+MO.MDuiEditDrop_onBuildEditDrop = function MDuiEditDrop_onBuildEditDrop(p){
    var o = this;
    // 设置底板
    var h = o._hDropPanel;
-   h.className = o.styleName('DropPanel', MUiEditDrop);
+   h.className = o.styleName('DropPanel', MDuiEditDrop);
    h.width = 11;
    o.attachEvent('onDropEnter', h);
    o.attachEvent('onDropLeave', h);
    o.attachEvent('onDropClick', h);
    // 设置图标
-   var hi = o._hDropIcon = MO.RBuilder.appendIcon(h, o.styleName('DropIcon', MO.MUiEditDrop), 'control.drop');
+   var hi = o._hDropIcon = MO.RBuilder.appendIcon(h, o.styleName('DropIcon', MO.MDuiEditDrop), 'control.drop');
    hi.align = 'center';
 }
 
@@ -65,13 +65,13 @@ MO.MUiEditDrop_onBuildEditDrop = function MUiEditDrop_onBuildEditDrop(p){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiEditDrop_onDropEnter = function MUiEditDrop_onDropEnter(e){
+MO.MDuiEditDrop_onDropEnter = function MDuiEditDrop_onDropEnter(e){
    var o = this;
    //var t = null;
    //if(RString.isEmpty(o.dataValue)){
-   //   t = RContext.get('MUiEditDrop:Drop.empty');
+   //   t = RContext.get('MDuiEditDrop:Drop.empty');
    //}else{
-   //   t = RContext.get('MUiEditDrop:Drop.restore', o.dataValue);
+   //   t = RContext.get('MDuiEditDrop:Drop.restore', o.dataValue);
    //}
    //o.hDropIcon.title = t;
 }
@@ -82,13 +82,13 @@ MO.MUiEditDrop_onDropEnter = function MUiEditDrop_onDropEnter(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiEditDrop_onDropLeave = function MUiEditDrop_onDropLeave(e){
+MO.MDuiEditDrop_onDropLeave = function MDuiEditDrop_onDropLeave(e){
    var o = this;
    //var t = null;
    //if(RString.isEmpty(o.dataValue)){
-   //   t = RContext.get('MUiEditDrop:Drop.empty');
+   //   t = RContext.get('MDuiEditDrop:Drop.empty');
    //}else{
-   //   t = RContext.get('MUiEditDrop:Drop.restore', o.dataValue);
+   //   t = RContext.get('MDuiEditDrop:Drop.restore', o.dataValue);
    //}
    //o.hDropIcon.title = t;
 }
@@ -99,7 +99,7 @@ MO.MUiEditDrop_onDropLeave = function MUiEditDrop_onDropLeave(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiEditDrop_onDropClick = function MUiEditDrop_onDropClick(e){
+MO.MDuiEditDrop_onDropClick = function MDuiEditDrop_onDropClick(e){
    //this.set(this.dataValue);
 }
 
@@ -108,7 +108,7 @@ MO.MUiEditDrop_onDropClick = function MUiEditDrop_onDropClick(e){
 //
 // @method
 //==========================================================
-MO.MUiEditDrop_construct = function MUiEditDrop_construct(){
+MO.MDuiEditDrop_construct = function MDuiEditDrop_construct(){
 }
 
 //==========================================================
@@ -116,7 +116,7 @@ MO.MUiEditDrop_construct = function MUiEditDrop_construct(){
 //
 // @method
 //==========================================================
-MO.MUiEditDrop_dispose = function MUiEditDrop_dispose(){
+MO.MDuiEditDrop_dispose = function MDuiEditDrop_dispose(){
    var o = this;
    // 释放属性
    o._hDropIcon = MO.Window.Html.free(o._hDropIcon);

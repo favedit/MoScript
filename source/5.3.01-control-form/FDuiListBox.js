@@ -19,7 +19,7 @@ with(MO){
    // @history 150224
    //==========================================================
    MO.FDuiListBox = function FDuiListBox(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiHorizontal, MListenerClick);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiHorizontal, MListenerClick);
       //..........................................................
       // @property
       o._sizeCd      = EUiSize.Horizontal

@@ -69,7 +69,7 @@ with(MO){
    MO.FDsSolutionMenuBar_onDeleteLoad = function FDsSolutionMenuBar_onDeleteLoad(event){
       var o = this;
       // 画面允许操作
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 刷新列表
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
@@ -86,14 +86,14 @@ with(MO){
       // 检查结果
       if(event.resultCd != EResult.Success){
          // 画面允许操作
-         RConsole.find(FUiDesktopConsole).hide();
+         RConsole.find(FDuiDesktopConsole).hide();
          return
       }
       // 删除处理
       var listContent = o._frameSet._listContent;
       var guid = listContent._activeGuid;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 发送数据请求
       var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
       connection.addLoadListener(o, o.onDeleteLoad);
@@ -112,7 +112,7 @@ with(MO){
          return alert('请选中后再点击删除');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前项目？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前项目？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
 

@@ -7,7 +7,7 @@ with(MO){
    // @version 150122
    //==========================================================
    MO.FDuiForm = function FDuiForm(o){
-      o = RClass.inherits(this, o, FDuiLayout, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiLayout, MDuiDescribeFrame);
       //..........................................................
       // @event
       o.onMouseDown        = FDuiForm_onMouseDown;
@@ -438,7 +438,7 @@ with(MO){
    //==========================================================
    MO.FDuiForm_focus = function FDuiForm_focus(){
       var o = this;
-      o.__base.MUiFocus.focus.call(o);
+      o.__base.MDuiFocus.focus.call(o);
       o.focusControl();
       RConsole.find(FFocusConsole).focusClass(MDataset, o);
    }

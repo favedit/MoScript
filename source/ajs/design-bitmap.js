@@ -146,13 +146,13 @@ with(MO){
    }
    MO.FDsBitmapImportDialog_onConfirmLoad = function FDsBitmapImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
       o._frameSet.reload();
    }
    MO.FDsBitmapImportDialog_onConfirmClick = function FDsBitmapImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
       var reader = o._fileReader = RClass.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
@@ -189,12 +189,12 @@ with(MO){
       o.__base.FDuiMenuBar.onBuilded.call(o, event);
    }
    MO.FDsBitmapMenuBar_onSaveLoad = function FDsBitmapMenuBar_onSaveLoad(event){
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsBitmapMenuBar_onSaveClick = function FDsBitmapMenuBar_onSaveClick(event){
       var o = this;
       var bitmap = o._frameSet._activeResource;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
       connection.addLoadListener(o, o.onSaveLoad);
    }

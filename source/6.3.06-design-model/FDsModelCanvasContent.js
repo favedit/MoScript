@@ -288,7 +288,7 @@ with(MO){
       o.processLoadListener(event);
       event.dispose();
       // 隐藏处理
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -676,7 +676,7 @@ with(MO){
       space = o._activeSpace = modelConsole.allocByGuid(o, guid);
       if(!space._linked){
          // 显示加载进度
-         RConsole.find(FUiDesktopConsole).showLoading();
+         RConsole.find(FDuiDesktopConsole).showLoading();
          // 设置坐标系
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);
@@ -695,7 +695,7 @@ with(MO){
    MO.FDsModelCanvasContent_loadByCode = function FDsModelCanvasContent_loadByCode(code){
       var o = this;
       // 显示加载进度
-      //RConsole.find(FUiDesktopConsole).showLoading();
+      //RConsole.find(FDuiDesktopConsole).showLoading();
       // 释放网格
       //var rmc = RConsole.find(FE3dModelConsole);
       //if(o._activeSpace != null){

@@ -5,11 +5,11 @@
 // @author maocy
 // @version 150122
 //==========================================================
-MO.MUiFocus = function MUiFocus(o){
+MO.MDuiFocus = function MDuiFocus(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @event
-   o.onFocus   = MO.Class.register(o, new MO.AEventFocus('onFocus'), MO.MUiFocus_onFocus);
+   o.onFocus   = MO.Class.register(o, new MO.AEventFocus('onFocus'), MO.MDuiFocus_onFocus);
    o.onBlur    = MO.Class.register(o, new MO.AEventBlur('onBlur'));
    //..........................................................
    // @method
@@ -17,8 +17,8 @@ MO.MUiFocus = function MUiFocus(o){
    o.testBlur  = MO.Method.emptyTrue;
    o.doFocus   = MO.Method.empty;
    o.doBlur    = MO.Method.empty;
-   o.focus     = MO.MUiFocus_focus;
-   o.blur      = MO.MUiFocus_blur;
+   o.focus     = MO.MDuiFocus_focus;
+   o.blur      = MO.MDuiFocus_blur;
    return o;
 }
 
@@ -28,8 +28,8 @@ MO.MUiFocus = function MUiFocus(o){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MUiFocus_onFocus = function MUiFocus_onFocus(e){
-   MO.Console.find(MO.FUiFocusConsole).focus(this, e);
+MO.MDuiFocus_onFocus = function MDuiFocus_onFocus(e){
+   MO.Console.find(MO.FDuiFocusConsole).focus(this, e);
 }
 
 //==========================================================
@@ -37,8 +37,8 @@ MO.MUiFocus_onFocus = function MUiFocus_onFocus(e){
 //
 // @method
 //==========================================================
-MO.MUiFocus_focus = function MUiFocus_focus(){
-   MO.Console.find(MO.FUiFocusConsole).focus(this);
+MO.MDuiFocus_focus = function MDuiFocus_focus(){
+   MO.Console.find(MO.FDuiFocusConsole).focus(this);
 }
 
 //==========================================================
@@ -46,6 +46,6 @@ MO.MUiFocus_focus = function MUiFocus_focus(){
 //
 // @method
 //==========================================================
-MO.MUiFocus_blur = function MUiFocus_blur(){
-   MO.Console.find(MO.FUiFocusConsole).blur(this);
+MO.MDuiFocus_blur = function MDuiFocus_blur(){
+   MO.Console.find(MO.FDuiFocusConsole).blur(this);
 }

@@ -5,7 +5,7 @@
 // @version 141231
 //==========================================================
 MO.FDuiContainer = function FDuiContainer(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiContainer);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiContainer);
    //..........................................................
    // @property Boolean 是否禁止
    o._scrollCd           = MO.Class.register(o, new MO.APtyEnum('_scrollCd', null, MO.EUiScroll, MO.EUiScroll.None));
@@ -144,7 +144,7 @@ MO.FDuiContainer_panel = function FDuiContainer_panel(t){
 // <P>若有能获得焦点的控件，则返回第一个获得焦点的控件，若没有，则或什么都不返回。。</P>
 //
 // @method
-// @return MUiFocus 获得焦点的控件
+// @return MDuiFocus 获得焦点的控件
 //==========================================================
 MO.FDuiContainer_focusFirstControl = function FDuiContainer_focusFirstControl(){
    var o = this;
@@ -154,7 +154,7 @@ MO.FDuiContainer_focusFirstControl = function FDuiContainer_focusFirstControl(){
       var c = cs.count();
       for(var i = 0; i < c; i++){
          var p = cs.valueAt(i);
-         if(MO.Class.isClass(c, MO.MUiFocus) && c.testFocus()){
+         if(MO.Class.isClass(c, MO.MDuiFocus) && c.testFocus()){
             // 不允许下拉控件获得第一个焦点
             if(!MO.Class.isClass(c, MO.FCalendar) && !MO.Class.isClass(c, MO.FSelect)  && !MO.Class.isClass(c, MO.FNumber)){
                 return c.focus();

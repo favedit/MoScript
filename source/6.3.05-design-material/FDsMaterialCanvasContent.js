@@ -137,7 +137,7 @@ with(MO){
       // 加载完成
       //o.processLoadListener(o);
       // 隐藏处理
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -233,7 +233,7 @@ with(MO){
    MO.FDsMaterialCanvasContent_loadByGuid = function FDsMaterialCanvasContent_loadByGuid(guid){
       var o = this;
       // 显示加载进度
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       // 释放网格
       var resource = o._activeResource = RConsole.find(FE3sMaterialConsole).loadByGuid(guid);
       resource.clearLoadListeners();

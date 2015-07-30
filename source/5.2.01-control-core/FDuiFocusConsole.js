@@ -6,7 +6,7 @@
 // @author maocy
 // @version 150122
 //==========================================================
-MO.FUiFocusConsole = function FUiFocusConsole(o){
+MO.FDuiFocusConsole = function FDuiFocusConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -20,11 +20,11 @@ MO.FUiFocusConsole = function FUiFocusConsole(o){
    o._hoverContainer    = null;
    // @attribute FControl 获得热点的对象
    o._hoverControl      = null;
-   // @attribute MUiFocus 获得焦点的对象
+   // @attribute MDuiFocus 获得焦点的对象
    o._focusControl      = null;
-   // @attribute MUiFocus 失去焦点的对象
+   // @attribute MDuiFocus 失去焦点的对象
    o._blurControl       = null;
-   // @attribute MUiFocus 被激活的对象
+   // @attribute MDuiFocus 被激活的对象
    o._activeControl     = null;
    //..........................................................
    // @listeners
@@ -33,29 +33,29 @@ MO.FUiFocusConsole = function FUiFocusConsole(o){
    o.lsnsFocusClass     = null;
    //..........................................................
    // @event
-   o.onMouseDown        = MO.FUiFocusConsole_onMouseDown;
-   o.onMouseWheel       = MO.FUiFocusConsole_onMouseWheel;
+   o.onMouseDown        = MO.FDuiFocusConsole_onMouseDown;
+   o.onMouseWheel       = MO.FDuiFocusConsole_onMouseWheel;
    //..........................................................
    // @method
-   o.construct          = MO.FUiFocusConsole_construct;
+   o.construct          = MO.FDuiFocusConsole_construct;
    // @method
-   o.enter              = MO.FUiFocusConsole_enter;
-   o.leave              = MO.FUiFocusConsole_leave;
+   o.enter              = MO.FDuiFocusConsole_enter;
+   o.leave              = MO.FDuiFocusConsole_leave;
    // @method
-   o.isFocus            = MO.FUiFocusConsole_isFocus;
-   o.focus              = MO.FUiFocusConsole_focus;
-   o.blur               = MO.FUiFocusConsole_blur;
+   o.isFocus            = MO.FDuiFocusConsole_isFocus;
+   o.focus              = MO.FDuiFocusConsole_focus;
+   o.blur               = MO.FDuiFocusConsole_blur;
    // @method
-   o.findClass          = MO.FUiFocusConsole_findClass;
-   o.focusClass         = MO.FUiFocusConsole_focusClass;
-   o.focusHtml          = MO.FUiFocusConsole_focusHtml;
-   o.lockBlur           = MO.FUiFocusConsole_lockBlur;
-   o.unlockBlur         = MO.FUiFocusConsole_unlockBlur;
+   o.findClass          = MO.FDuiFocusConsole_findClass;
+   o.focusClass         = MO.FDuiFocusConsole_focusClass;
+   o.focusHtml          = MO.FDuiFocusConsole_focusHtml;
+   o.lockBlur           = MO.FDuiFocusConsole_lockBlur;
+   o.unlockBlur         = MO.FDuiFocusConsole_unlockBlur;
    // @method
-   o.storeFocus         = MO.FUiFocusConsole_storeFocus;
-   o.restoreFocus       = MO.FUiFocusConsole_restoreFocus;
+   o.storeFocus         = MO.FDuiFocusConsole_storeFocus;
+   o.restoreFocus       = MO.FDuiFocusConsole_restoreFocus;
    // @method
-   o.dispose            = MO.FUiFocusConsole_dispose;
+   o.dispose            = MO.FDuiFocusConsole_dispose;
    return o;
 }
 
@@ -65,7 +65,7 @@ MO.FUiFocusConsole = function FUiFocusConsole(o){
 // @method
 // @param p:event:SEvent 事件对象
 //==========================================================
-MO.FUiFocusConsole_onMouseDown = function FUiFocusConsole_onMouseDown(p){
+MO.FDuiFocusConsole_onMouseDown = function FDuiFocusConsole_onMouseDown(p){
    this.focusHtml(p.hSource);
 }
 
@@ -75,7 +75,7 @@ MO.FUiFocusConsole_onMouseDown = function FUiFocusConsole_onMouseDown(p){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.FUiFocusConsole_onMouseWheel = function FUiFocusConsole_onMouseWheel(s, e){
+MO.FDuiFocusConsole_onMouseWheel = function FDuiFocusConsole_onMouseWheel(s, e){
    var o = this;
    //var c = this._focusControl;
    //if(RClass.isClass(c, MMouseWheel)){
@@ -88,7 +88,7 @@ MO.FUiFocusConsole_onMouseWheel = function FUiFocusConsole_onMouseWheel(s, e){
 //
 // @method
 //==========================================================
-MO.FUiFocusConsole_construct = function FUiFocusConsole_construct(){
+MO.FDuiFocusConsole_construct = function FDuiFocusConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 构建内部对象
@@ -108,9 +108,9 @@ MO.FUiFocusConsole_construct = function FUiFocusConsole_construct(){
 // @method
 // @param c:control:FControl 对象
 //==========================================================
-MO.FUiFocusConsole_enter = function FUiFocusConsole_enter(c){
+MO.FDuiFocusConsole_enter = function FDuiFocusConsole_enter(c){
    var o = this;
-   if(MO.Class.isClass(c, MO.MUiContainer)){
+   if(MO.Class.isClass(c, MO.MDuiContainer)){
       o._hoverContainer = c;
    }else{
       o._hoverControl = c;
@@ -123,7 +123,7 @@ MO.FUiFocusConsole_enter = function FUiFocusConsole_enter(c){
 // @method
 // @param c:control:FControl 对象
 //==========================================================
-MO.FUiFocusConsole_leave = function FUiFocusConsole_leave(c){
+MO.FDuiFocusConsole_leave = function FDuiFocusConsole_leave(c){
    var o = this;
    if(o._hoverContainer == c){
       o._hoverContainer = null;
@@ -140,13 +140,13 @@ MO.FUiFocusConsole_leave = function FUiFocusConsole_leave(c){
 // @param c:control:FControl 控件
 // @return true:是<B/>false:否
 //==========================================================
-MO.FUiFocusConsole_isFocus = function FUiFocusConsole_isFocus(c){
+MO.FDuiFocusConsole_isFocus = function FDuiFocusConsole_isFocus(c){
    return (this._focusControl == c);
 }
 
 //==========================================================
 // <T>指定的焦点对象获得焦点。</T>
-// <P>1. 只有焦点接口(MUiFocus)可以获得焦点。</P>
+// <P>1. 只有焦点接口(MDuiFocus)可以获得焦点。</P>
 // <P>2. 同一焦点对象只能获得一次焦点。</P>
 // <P>3. 焦点对象能获得焦点的时候，上一个焦点对象失去焦点。</P>
 //
@@ -154,10 +154,10 @@ MO.FUiFocusConsole_isFocus = function FUiFocusConsole_isFocus(c){
 // @param c:control:FControl 焦点对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.FUiFocusConsole_focus = function FUiFocusConsole_focus(c, e){
+MO.FDuiFocusConsole_focus = function FDuiFocusConsole_focus(c, e){
    var o = this;
    // 检查传入对象是否可拥有焦点的对象
-   if(!MO.Class.isClass(c, MO.MUiFocus)){
+   if(!MO.Class.isClass(c, MO.MDuiFocus)){
       return;
    }
    // 禁止获得两次焦点
@@ -189,7 +189,7 @@ MO.FUiFocusConsole_focus = function FUiFocusConsole_focus(c, e){
 
 //==========================================================
 // <T>指定的焦点对象失去焦点。</T>
-// <P>1. 只有焦点接口(MUiFocus)可以失去焦点。</P>
+// <P>1. 只有焦点接口(MDuiFocus)可以失去焦点。</P>
 // <P>2. 上个焦点对象和焦点对象相同则失去一次焦点。</P>
 // <P>3. 上个焦点对象和焦点对象不相同则都失去焦点。</P>
 //
@@ -197,7 +197,7 @@ MO.FUiFocusConsole_focus = function FUiFocusConsole_focus(c, e){
 // @param c:control:FControl 焦点对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.FUiFocusConsole_blur = function FUiFocusConsole_blur(c, e){
+MO.FDuiFocusConsole_blur = function FDuiFocusConsole_blur(c, e){
    var o = this;
    var fc = o._focusControl;
    var bc = o._blurControl;
@@ -206,7 +206,7 @@ MO.FUiFocusConsole_blur = function FUiFocusConsole_blur(c, e){
       return;
    }
    // 检查传入对象是否焦点对象
-   if(bc != c && MO.Class.isClass(c, MO.MUiFocus)){
+   if(bc != c && MO.Class.isClass(c, MO.MDuiFocus)){
       // 不存在时直接失去焦点
       MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, MO.Class.dump(c));
       o._blurControl = c;
@@ -226,7 +226,7 @@ MO.FUiFocusConsole_blur = function FUiFocusConsole_blur(c, e){
 // @method
 // @param c:class:Function 类对象
 //==========================================================
-MO.FUiFocusConsole_findClass = function FUiFocusConsole_findClass(c){
+MO.FDuiFocusConsole_findClass = function FDuiFocusConsole_findClass(c){
    var o = this;
    // 从类对象列表中获得
    var n = MO.Class.name(c);
@@ -250,7 +250,7 @@ MO.FUiFocusConsole_findClass = function FUiFocusConsole_findClass(c){
 // @param c:class:Function 类对象
 // @param p:component:FComponent 组件对象
 //==========================================================
-MO.FUiFocusConsole_focusClass = function FUiFocusConsole_focusClass(c, p){
+MO.FDuiFocusConsole_focusClass = function FDuiFocusConsole_focusClass(c, p){
    var o = this;
    var n = MO.Class.name(c);
    if(o._focusClasses[n] != p){
@@ -268,7 +268,7 @@ MO.FUiFocusConsole_focusClass = function FUiFocusConsole_focusClass(c, p){
 // @method
 // @param p:element:HtmlTag 页面元素
 //==========================================================
-MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
+MO.FDuiFocusConsole_focusHtml = function FDuiFocusConsole_focusHtml(p){
    var o = this;
    var c = MO.Window.Html.searchLinker(p, MO.FDuiControl);
    MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', MO.Class.dump(c), p.tagName);
@@ -286,7 +286,7 @@ MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
 //
 // @method
 //==========================================================
-MO.FUiFocusConsole_lockBlur = function FUiFocusConsole_lockBlur(){
+MO.FDuiFocusConsole_lockBlur = function FDuiFocusConsole_lockBlur(){
    this._blurAble = false;
 }
 
@@ -295,7 +295,7 @@ MO.FUiFocusConsole_lockBlur = function FUiFocusConsole_lockBlur(){
 //
 // @method
 //==========================================================
-MO.FUiFocusConsole_unlockBlur = function FUiFocusConsole_unlockBlur(){
+MO.FDuiFocusConsole_unlockBlur = function FDuiFocusConsole_unlockBlur(){
    this._blurAble = true;
 }
 
@@ -304,7 +304,7 @@ MO.FUiFocusConsole_unlockBlur = function FUiFocusConsole_unlockBlur(){
 //
 // @method
 //==========================================================
-MO.FUiFocusConsole_storeFocus = function FUiFocusConsole_storeFocus(){
+MO.FDuiFocusConsole_storeFocus = function FDuiFocusConsole_storeFocus(){
    var o = this;
    o._storeControl = o._focusControl;
 }
@@ -314,7 +314,7 @@ MO.FUiFocusConsole_storeFocus = function FUiFocusConsole_storeFocus(){
 //
 // @method
 //==========================================================
-MO.FUiFocusConsole_restoreFocus = function FUiFocusConsole_restoreFocus(){
+MO.FDuiFocusConsole_restoreFocus = function FDuiFocusConsole_restoreFocus(){
    var o = this;
    if(o._storeControl){
       o._storeControl.focus();
@@ -327,7 +327,7 @@ MO.FUiFocusConsole_restoreFocus = function FUiFocusConsole_restoreFocus(){
 //
 // @method
 //==========================================================
-MO.FUiFocusConsole_dispose = function FUiFocusConsole_dispose(){
+MO.FDuiFocusConsole_dispose = function FDuiFocusConsole_dispose(){
    var o = this;
    o.__base.FConsole.dispose.call(o);
    o._focusClasses = null;

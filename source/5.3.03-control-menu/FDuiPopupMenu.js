@@ -7,7 +7,7 @@ with(MO){
    // @history 150402
    //==========================================================
    MO.FDuiPopupMenu = function FDuiPopupMenu(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiPopup);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiPopup);
       //..........................................................
       // @style
       o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));

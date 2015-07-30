@@ -70,7 +70,7 @@ with(MO){
    MO.FDsCommonMovieDialog_onConfirmLoad = function FDsCommonMovieDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
    }
@@ -84,7 +84,7 @@ with(MO){
    MO.FDsCommonMovieDialog_onConfirmClick = function FDsCommonMovieDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var xaction = new TXmlNode('Action');
       var xmovie = xaction.create('Movie');

@@ -77,7 +77,7 @@ MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    //   }
    //}
    // 获得表单定义
-   var dc = MO.Console.find(MO.FUiDescribeFrameConsole);
+   var dc = MO.Console.find(MO.FDuiDescribeFrameConsole);
    var x = dc.load(n);
    // 构建处理
    var f = MO.RDuiControl.build(null, x, null, c._hPanel);

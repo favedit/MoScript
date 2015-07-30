@@ -5,14 +5,14 @@
 // @author maocy
 // @history 150402
 //==========================================================
-MO.MUiPopup = function MUiPopup(o){
+MO.MDuiPopup = function MDuiPopup(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
    o._opener = null;
    //..........................................................
    // @method
-   o.opener  = MO.MUiPopup_opener;
+   o.opener  = MO.MDuiPopup_opener;
 }
 
 //==========================================================
@@ -21,6 +21,6 @@ MO.MUiPopup = function MUiPopup(o){
 // @method
 // @return FDuiControl 控件
 //==========================================================
-MO.MUiPopup_opener = function MUiPopup_opener(){
+MO.MDuiPopup_opener = function MDuiPopup_opener(){
    return this._opener;
 }

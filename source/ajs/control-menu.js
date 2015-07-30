@@ -4,7 +4,7 @@ MO.MDuiMenuButton = function MDuiMenuButton(o){
 }
 with(MO){
    MO.FDuiMenuBar = function FDuiMenuBar(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
       o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
       o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
@@ -186,7 +186,7 @@ with(MO){
    MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
       var o = this;
       if(!o._disabled){
-         RConsole.find(FUiFocusConsole).blur();
+         RConsole.find(FDuiFocusConsole).blur();
          MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
@@ -355,7 +355,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiPopupMenu = function FDuiPopupMenu(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiPopup);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiPopup);
       o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
       o._styleForm      = RClass.register(o, new AStyle('_styleForm'));
       o._styleContainer = RClass.register(o, new AStyle('_styleContainer'));

@@ -50,7 +50,7 @@ with(MO){
    MO.FDsMaterialCanvasContent_onLoaded = function FDsMaterialCanvasContent_onLoaded(event){
       var o = this;
       var material = o._activeMaterial = o._activeResource.material();
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialCanvasContent_oeResize = function FDsMaterialCanvasContent_oeResize(p){
       var o = this;
@@ -94,7 +94,7 @@ with(MO){
    }
    MO.FDsMaterialCanvasContent_loadByGuid = function FDsMaterialCanvasContent_loadByGuid(guid){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       var resource = o._activeResource = RConsole.find(FE3sMaterialConsole).loadByGuid(guid);
       resource.clearLoadListeners();
       resource.addLoadListener(o, o.onLoaded);
@@ -199,7 +199,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialCatalogContent_construct = function FDsMaterialCatalogContent_construct(){
       var o = this;
@@ -219,7 +219,7 @@ with(MO){
    }
    MO.FDsMaterialCatalogContent_serviceList = function FDsMaterialCatalogContent_serviceList(guid){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       var url = '/cloud.resource.material.ws?action=listBitmap&guid=' + guid;
       var connection = RConsole.find(FXmlConsole).sendAsync(url);
       connection.addLoadListener(o, o.onServiceLoad);
@@ -485,12 +485,12 @@ with(MO){
    }
    MO.FDsMaterialImportDialog_onConfirmLoad = function FDsMaterialImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsMaterialImportDialog_onConfirmClick = function FDsMaterialImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
       var reader = o._fileReader = RClass.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
@@ -566,13 +566,13 @@ with(MO){
       var o = this;
    }
    MO.FDsMaterialMenuBar_onSaveLoad = function FDsMaterialMenuBar_onSaveLoad(event){
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onSaveClick = function FDsMaterialMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
       var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
@@ -611,12 +611,12 @@ with(MO){
    }
    MO.FDsMaterialMenuBar_onDeleteLoad = function FDsMaterialMenuBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onDeleteExecute = function FDsMaterialMenuBar_onDeleteExecute(event){
       var o = this;
       var item = o._frameSet._catalogContent.focusItem();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
@@ -626,15 +626,15 @@ with(MO){
       if(!item){
          return alert('请选中后再点击删除');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsMaterialMenuBar_onCaptureLoad = function FDsMaterialMenuBar_onCaptureLoad(event){
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onCaptureClick = function FDsMaterialMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = o._frameSet._canvas.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
    }
@@ -819,13 +819,13 @@ with(MO){
    }
    MO.FDsMaterialSelectDialog_onConfirmLoad = function FDsMaterialSelectDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
       o._frameSet.reload();
    }
    MO.FDsMaterialSelectDialog_onConfirmClick = function FDsMaterialSelectDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
       var reader = o._fileReader = RClass.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);

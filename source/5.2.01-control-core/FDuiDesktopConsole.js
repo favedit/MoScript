@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150329
 //==========================================================
-MO.FUiDesktopConsole = function FUiDesktopConsole(o){
+MO.FDuiDesktopConsole = function FDuiDesktopConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
@@ -27,21 +27,21 @@ MO.FUiDesktopConsole = function FUiDesktopConsole(o){
    o._hLoadingLabel   = null;
    //..........................................................
    // @method
-   o.construct        = MO.FUiDesktopConsole_construct;
+   o.construct        = MO.FDuiDesktopConsole_construct;
    // @method
-   o.getMaskPanel     = MO.FUiDesktopConsole_getMaskPanel;
-   o.getProgressBar   = MO.FUiDesktopConsole_getProgressBar;
-   o.getLoadingPanel  = MO.FUiDesktopConsole_getLoadingPanel;
-   o.setMaskVisible   = MO.FUiDesktopConsole_setMaskVisible;
+   o.getMaskPanel     = MO.FDuiDesktopConsole_getMaskPanel;
+   o.getProgressBar   = MO.FDuiDesktopConsole_getProgressBar;
+   o.getLoadingPanel  = MO.FDuiDesktopConsole_getLoadingPanel;
+   o.setMaskVisible   = MO.FDuiDesktopConsole_setMaskVisible;
    // @method
-   o.isEnable         = MO.FUiDesktopConsole_isEnable;
-   o.enable           = MO.FUiDesktopConsole_enable;
-   o.disable          = MO.FUiDesktopConsole_disable;
+   o.isEnable         = MO.FDuiDesktopConsole_isEnable;
+   o.enable           = MO.FDuiDesktopConsole_enable;
+   o.disable          = MO.FDuiDesktopConsole_disable;
    // @method
-   o.showLoading      = MO.FUiDesktopConsole_showLoading;
-   o.showUploading    = MO.FUiDesktopConsole_showUploading;
-   o.showProgress     = MO.FUiDesktopConsole_showProgress;
-   o.hide             = MO.FUiDesktopConsole_hide;
+   o.showLoading      = MO.FDuiDesktopConsole_showLoading;
+   o.showUploading    = MO.FDuiDesktopConsole_showUploading;
+   o.showProgress     = MO.FDuiDesktopConsole_showProgress;
+   o.hide             = MO.FDuiDesktopConsole_hide;
    return o;
 }
 
@@ -50,7 +50,7 @@ MO.FUiDesktopConsole = function FUiDesktopConsole(o){
 //
 // @method
 //==========================================================
-MO.FUiDesktopConsole_construct = function FUiDesktopConsole_construct(){
+MO.FDuiDesktopConsole_construct = function FDuiDesktopConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置属性
@@ -64,13 +64,13 @@ MO.FUiDesktopConsole_construct = function FUiDesktopConsole_construct(){
 // @param f:flag:Boolean 是否显示图片层 true : 不显示图片
 // @return <DIV> 页面层
 //==========================================================
-MO.FUiDesktopConsole_getMaskPanel = function FUiDesktopConsole_getMaskPanel(){
+MO.FDuiDesktopConsole_getMaskPanel = function FDuiDesktopConsole_getMaskPanel(){
    var o = this;
    var hDocument = top.MO.RWindow._hDocument;
    // 创建面板
    var hPanel = o._hMaskPanel;
    if(!hPanel){
-      hPanel = o._hMaskPanel = MO.Window.Builder.createTable(hDocument, 'FUiDesktopConsole_MaskPanel');
+      hPanel = o._hMaskPanel = MO.Window.Builder.createTable(hDocument, 'FDuiDesktopConsole_MaskPanel');
       hPanel.style.zIndex = 5000;
       var hInnerPanel = o._hMaskInnerPanel = MO.Window.Builder.appendTableRowCell(hPanel);
       hInnerPanel.align = 'center';
@@ -93,7 +93,7 @@ MO.FUiDesktopConsole_getMaskPanel = function FUiDesktopConsole_getMaskPanel(){
 // @method
 // @return FDuiProgressBar 进度条控件
 //==========================================================
-MO.FUiDesktopConsole_getLoadingPanel = function FUiDesktopConsole_getLoadingPanel(){
+MO.FDuiDesktopConsole_getLoadingPanel = function FDuiDesktopConsole_getLoadingPanel(){
    var o = this;
    var hDocument = top.MO.RWindow._hDocument;
    var hPanel = o._hLoadingPanel;
@@ -116,7 +116,7 @@ MO.FUiDesktopConsole_getLoadingPanel = function FUiDesktopConsole_getLoadingPane
 // @method
 // @return FDuiProgressBar 进度条控件
 //==========================================================
-MO.FUiDesktopConsole_getProgressBar = function FUiDesktopConsole_getProgressBar(){
+MO.FDuiDesktopConsole_getProgressBar = function FDuiDesktopConsole_getProgressBar(){
    var o = this;
    var progressBar = o._progressBar;
    // 创建进度条
@@ -133,7 +133,7 @@ MO.FUiDesktopConsole_getProgressBar = function FUiDesktopConsole_getProgressBar(
 // @method
 // @param v:value:Boolean 是否允许操作
 //==========================================================
-MO.FUiDesktopConsole_setMaskVisible = function FUiDesktopConsole_setMaskVisible(visible){
+MO.FDuiDesktopConsole_setMaskVisible = function FDuiDesktopConsole_setMaskVisible(visible){
    var o = this;
    if(o._maskVisible != visible){
       var hDocument = top.MO.Window._hDocument;
@@ -159,7 +159,7 @@ MO.FUiDesktopConsole_setMaskVisible = function FUiDesktopConsole_setMaskVisible(
 // @method
 // @return 是否允许
 //==========================================================
-MO.FUiDesktopConsole_isEnable = function FUiDesktopConsole_isEnable(){
+MO.FDuiDesktopConsole_isEnable = function FDuiDesktopConsole_isEnable(){
    return this._statusEnable;
 }
 
@@ -168,7 +168,7 @@ MO.FUiDesktopConsole_isEnable = function FUiDesktopConsole_isEnable(){
 //
 // @method
 //==========================================================
-MO.FUiDesktopConsole_enable = function FUiDesktopConsole_enable(){
+MO.FDuiDesktopConsole_enable = function FDuiDesktopConsole_enable(){
    var o = this;
    o._disableDeep--;
    if(o._disableDeep == 0){
@@ -181,7 +181,7 @@ MO.FUiDesktopConsole_enable = function FUiDesktopConsole_enable(){
 //
 // @method
 //==========================================================
-MO.FUiDesktopConsole_disable = function FUiDesktopConsole_disable(){
+MO.FDuiDesktopConsole_disable = function FDuiDesktopConsole_disable(){
    var o = this;
    if(o._disableDeep == 0){
       o.setEnable(false);
@@ -194,7 +194,7 @@ MO.FUiDesktopConsole_disable = function FUiDesktopConsole_disable(){
 //
 // @method
 //==========================================================
-MO.FUiDesktopConsole_showLoading = function FUiDesktopConsole_showLoading(){
+MO.FDuiDesktopConsole_showLoading = function FDuiDesktopConsole_showLoading(){
    var o = this;
    // 显示遮挡层
    o.setMaskVisible(true);
@@ -212,7 +212,7 @@ MO.FUiDesktopConsole_showLoading = function FUiDesktopConsole_showLoading(){
 //
 // @method
 //==========================================================
-MO.FUiDesktopConsole_showUploading = function FUiDesktopConsole_showUploading(){
+MO.FDuiDesktopConsole_showUploading = function FDuiDesktopConsole_showUploading(){
    var o = this;
    // 显示遮挡层
    o.setMaskVisible(true);
@@ -231,7 +231,7 @@ MO.FUiDesktopConsole_showUploading = function FUiDesktopConsole_showUploading(){
 // @method
 // @param rate:Number 比率(0~1)
 //==========================================================
-MO.FUiDesktopConsole_showProgress = function FUiDesktopConsole_showProgress(rate){
+MO.FDuiDesktopConsole_showProgress = function FDuiDesktopConsole_showProgress(rate){
    var o = this;
    // 显示遮挡层
    o.setMaskVisible(true);
@@ -249,7 +249,7 @@ MO.FUiDesktopConsole_showProgress = function FUiDesktopConsole_showProgress(rate
 //
 // @method
 //==========================================================
-MO.FUiDesktopConsole_hide = function FUiDesktopConsole_hide(){
+MO.FDuiDesktopConsole_hide = function FDuiDesktopConsole_hide(){
    var o = this;
    // 隐藏进度条
    if(o._loadingVisible){

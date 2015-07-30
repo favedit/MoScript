@@ -258,7 +258,7 @@ with(MO){
    MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
       var o = this;
       if(!o._disabled){
-         RConsole.find(FUiFocusConsole).blur();
+         RConsole.find(FDuiFocusConsole).blur();
          MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
          // 执行监听信息
          var event = new SClickEvent(o);

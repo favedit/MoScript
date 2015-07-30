@@ -93,7 +93,7 @@ with(MO){
       var event = new SEvent(o);
       o.processLoadListener(event);
       event.dispose();
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateCanvasContent_oeRefresh = function FDsTemplateCanvasContent_oeRefresh(p){
       var o = this;
@@ -128,7 +128,7 @@ with(MO){
       }
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FUiDesktopConsole).showLoading();
+         RConsole.find(FDuiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
          space._linked = true;
          space.addLoadListener(o, o.onDataLoaded);
@@ -145,7 +145,7 @@ with(MO){
       }
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FUiDesktopConsole).showLoading();
+         RConsole.find(FDuiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
@@ -395,7 +395,7 @@ with(MO){
    }
    MO.FDsTemplateCatalogToolBar_onCopyLoad = function FDsTemplateCatalogToolBar_onCopyLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateCatalogToolBar_onCopyExecute = function FDsTemplateCatalogToolBar_onCopyExecute(event){
       var o = this;
@@ -404,7 +404,7 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
@@ -413,7 +413,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var sprite = null;
@@ -437,7 +437,7 @@ with(MO){
    }
    MO.FDsTemplateCatalogToolBar_onDeleteLoad = function FDsTemplateCatalogToolBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -453,7 +453,7 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
@@ -462,7 +462,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var linker = node.dataPropertyGet('linker');
@@ -471,7 +471,7 @@ with(MO){
       }else{
          return alert('不能删除当前选中的节点.');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsTemplateCatalogToolBar_onFolderOpenClick = function FDsTemplateCatalogToolBar_onFolderOpenClick(event){
@@ -612,24 +612,24 @@ with(MO){
       return o;
    }
    MO.FDsTemplateMenuBar_onSaveLoad = function FDsTemplateMenuBar_onSaveLoad(event){
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateMenuBar_onSaveClick = function FDsTemplateMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
       var connection = RConsole.find(FDrTemplateConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsTemplateMenuBar_onCaptureLoad = function FDsTemplateMenuBar_onCaptureLoad(event){
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateMenuBar_onCaptureClick = function FDsTemplateMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var canvas = o._frameSet._canvasContent;
       var connection = canvas.capture();
       connection.addLoadListener(o, o.onCaptureLoad);

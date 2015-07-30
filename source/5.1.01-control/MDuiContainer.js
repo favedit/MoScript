@@ -4,11 +4,11 @@
 // @author maocy
 // @version 141231
 //==========================================================
-MO.MUiContainer = function MUiContainer(o){
+MO.MDuiContainer = function MDuiContainer(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @method
-   o.createChild = MO.MUiContainer_createChild;
+   o.createChild = MO.MDuiContainer_createChild;
    /// @method
    o.appendChild = MO.Method.empty;
    o.removeChild = MO.Method.empty;
@@ -22,7 +22,7 @@ MO.MUiContainer = function MUiContainer(o){
 // @param p:config:TXmlNode 配置节点
 // @return FDuiControl 控件
 //==========================================================
-MO.MUiContainer_createChild = function MUiContainer_createChild(p){
+MO.MDuiContainer_createChild = function MDuiContainer_createChild(p){
    // 创建实例
    var c = MO.RDuiControl.newInstance(p);
    c._parent = this;

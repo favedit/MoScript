@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiPanel = function FDuiPanel(o){
-      o = RClass.inherits(this, o, FDuiLayout, MUiDesign, MUiFocus);
+      o = RClass.inherits(this, o, FDuiLayout, MDuiDesign, MDuiFocus);
       //..........................................................
       // @style
       o._sizeCd      = EUiSize.Horizontal;

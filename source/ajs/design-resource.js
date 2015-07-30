@@ -107,7 +107,7 @@ with(MO){
    }
    MO.FDsResourceCatalogToolBar_onFolderDeleteLoad = function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -123,7 +123,7 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
       var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
@@ -133,9 +133,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsResourceCatalogToolBar_onFolderPropertyClick = function FDsResourceCatalogToolBar_onFolderPropertyClick(event){
@@ -143,7 +143,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
@@ -201,15 +201,15 @@ with(MO){
    MO.FDsResourceCreateDialog_onConfirmLoad = function FDsResourceCreateDialog_onConfirmLoad(event){
       var o = this;
       o.hide();
-      RConsole.find(FUiDesktopConsole).hide();
-      if(RConsole.find(FUiResultConsole).checkEvent(event)){
+      RConsole.find(FDuiDesktopConsole).hide();
+      if(RConsole.find(FDuiResultConsole).checkEvent(event)){
          var frame = o._frameSet._listContent;
          frame.serviceResearch();
       }
    }
    MO.FDsResourceCreateDialog_onConfirmClick = function FDsResourceCreateDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
       var connection = null;
@@ -301,7 +301,7 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_onConfirmLoad = function FDsResourceFolderDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._dataModeCd == EUiDataMode.Insert){
@@ -319,7 +319,7 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_onConfirmClick = function FDsResourceFolderDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var label = o._controlLabel.get();
       var resourceConsole = RConsole.find(FDrResourceConsole);
       var connection = null;
@@ -510,14 +510,14 @@ with(MO){
    }
    MO.FDsResourceImportDialog_onConfirmLoad = function FDsResourceImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
    }
    MO.FDsResourceImportDialog_onConfirmClick = function FDsResourceImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
       var reader = o._fileReader = RClass.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
@@ -605,7 +605,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsResourceListContent_construct = function FDsResourceListContent_construct(){
       var o = this;
@@ -666,7 +666,7 @@ with(MO){
       o._contentOrder = order;
       o._contentPageSize = pageSize;
       o._contentPage = page;
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       var connection = RConsole.find(FDrResourceConsole).doList(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
       connection.addLoadListener(o, o.onServiceLoad);
    }
@@ -1018,20 +1018,20 @@ with(MO){
    }
    MO.FDsResourceMenuBar_onDeleteLoad = function FDsResourceMenuBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
    }
    MO.FDsResourceMenuBar_onDeleteExecute = function FDsResourceMenuBar_onDeleteExecute(event){
       var o = this;
       if(event.resultCd != EResult.Success){
-         RConsole.find(FUiDesktopConsole).hide();
+         RConsole.find(FDuiDesktopConsole).hide();
          return
       }
       var item = o._frameSet._listContent.focusItem();
       var typeCd = item._typeCd;
       var guid = item._guid;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrResourceConsole).doDelete(typeCd, guid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
@@ -1041,12 +1041,12 @@ with(MO){
       if(!item){
          return alert('请选中后再点击删除');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsResourceMenuBar_onShareLoad = function FDsResourceMenuBar_onShareLoad(){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsResourceMenuBar_onShareClick = function FDsResourceMenuBar_onShareClick(event){
       var o = this;
@@ -1063,7 +1063,7 @@ with(MO){
          shareCd = 'Private';
       }
       var guid = item._guid;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrResourceConsole).doShare(guid, shareCd);
       connection.addLoadListener(o, o.onShareLoad);
    }
@@ -1655,7 +1655,7 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_onConfirmLoad = function FDsResourceSelectDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._dataModeCd == EUiDataMode.Insert){
@@ -1673,7 +1673,7 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_onConfirmClick = function FDsResourceSelectDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var label = o._controlLabel.get();
       var resourceConsole = RConsole.find(FDrResourceConsole);
       var connection = null;

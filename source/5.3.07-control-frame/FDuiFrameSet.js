@@ -6,7 +6,7 @@
 // @version 150120
 //==========================================================
 MO.FDuiFrameSet = function FDuiFrameSet(o){
-   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDescribeFrame);
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiDescribeFrame);
    //..........................................................
    // @property String 提示信息
    o._sizeCd       = MO.EUiSize.Fill;

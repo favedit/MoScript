@@ -219,7 +219,7 @@ with(MO){
    MO.FDsSceneCatalogToolBar_onCopyLoad = function FDsSceneCatalogToolBar_onCopyLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 刷新目录
       //var catalog = o._frameSet._catalogContent;
       //var guid = o._activeNodeGuid;
@@ -245,7 +245,7 @@ with(MO){
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 删除数据处理
       var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
@@ -263,7 +263,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       // 检查对象
@@ -289,7 +289,7 @@ with(MO){
       var parent = sprite.parent();
       parent.pushDisplay(display);
       // 删除确认窗口
-      //var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否复制当前节点？');
+      //var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否复制当前节点？');
       //dialog.addResultListener(o, o.onCopyExecute);
    }
 
@@ -302,7 +302,7 @@ with(MO){
    MO.FDsSceneCatalogToolBar_onDeleteLoad = function FDsSceneCatalogToolBar_onDeleteLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 刷新目录
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
@@ -328,7 +328,7 @@ with(MO){
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 删除数据处理
       var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
@@ -346,7 +346,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       // 检查对象
@@ -357,7 +357,7 @@ with(MO){
          return alert('不能删除当前选中的节点.');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
 

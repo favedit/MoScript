@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-MO.FUiConfirmDialog = function FUiConfirmDialog(o){
+MO.FDuiConfirmDialog = function FDuiConfirmDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiDialog, MO.MListenerResult);
    //..........................................................
    // @style
@@ -19,17 +19,17 @@ MO.FUiConfirmDialog = function FUiConfirmDialog(o){
    o._controlCancelButton  = null;
    //..........................................................
    // @event
-   o.onBuilded             = MO.FUiConfirmDialog_onBuilded;
+   o.onBuilded             = MO.FDuiConfirmDialog_onBuilded;
    // @event
-   o.onConfirmClick        = MO.FUiConfirmDialog_onConfirmClick;
-   o.onCancelClick         = MO.FUiConfirmDialog_onCancelClick;
+   o.onConfirmClick        = MO.FDuiConfirmDialog_onConfirmClick;
+   o.onCancelClick         = MO.FDuiConfirmDialog_onCancelClick;
    //..........................................................
    // @method
-   o.construct             = MO.FUiConfirmDialog_construct;
+   o.construct             = MO.FDuiConfirmDialog_construct;
    // @method
-   o.setText               = MO.FUiConfirmDialog_setText;
+   o.setText               = MO.FDuiConfirmDialog_setText;
    // @method
-   o.dispose               = MO.FUiConfirmDialog_dispose;
+   o.dispose               = MO.FDuiConfirmDialog_dispose;
    return o;
 }
 
@@ -39,7 +39,7 @@ MO.FUiConfirmDialog = function FUiConfirmDialog(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-MO.FUiConfirmDialog_onBuilded = function FUiConfirmDialog_onBuilded(p){
+MO.FDuiConfirmDialog_onBuilded = function FDuiConfirmDialog_onBuilded(p){
    var o = this;
    o.__base.FDuiDialog.onBuilded.call(o, p);
    //..........................................................
@@ -55,7 +55,7 @@ MO.FUiConfirmDialog_onBuilded = function FUiConfirmDialog_onBuilded(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-MO.FUiConfirmDialog_onConfirmClick = function FUiConfirmDialog_onConfirmClick(event){
+MO.FDuiConfirmDialog_onConfirmClick = function FDuiConfirmDialog_onConfirmClick(event){
    var o = this;
    // 事件处理
    var event = new MO.SEvent();
@@ -73,7 +73,7 @@ MO.FUiConfirmDialog_onConfirmClick = function FUiConfirmDialog_onConfirmClick(ev
 // @method
 // @param event:SEvent 事件
 //==========================================================
-MO.FUiConfirmDialog_onCancelClick = function FUiConfirmDialog_onCancelClick(event){
+MO.FDuiConfirmDialog_onCancelClick = function FDuiConfirmDialog_onCancelClick(event){
    var o = this;
    // 事件处理
    var event = new MO.SEvent();
@@ -90,7 +90,7 @@ MO.FUiConfirmDialog_onCancelClick = function FUiConfirmDialog_onCancelClick(even
 //
 // @method
 //==========================================================
-MO.FUiConfirmDialog_construct = function FUiConfirmDialog_construct(){
+MO.FDuiConfirmDialog_construct = function FDuiConfirmDialog_construct(){
    var o = this;
    // 父处理
    o.__base.FDuiDialog.construct.call(o);
@@ -102,7 +102,7 @@ MO.FUiConfirmDialog_construct = function FUiConfirmDialog_construct(){
 // @method
 // @param value:String 内容
 //==========================================================
-MO.FUiConfirmDialog_setText = function FUiConfirmDialog_setText(value){
+MO.FDuiConfirmDialog_setText = function FDuiConfirmDialog_setText(value){
    this._controlText.set(value);
 }
 
@@ -111,7 +111,7 @@ MO.FUiConfirmDialog_setText = function FUiConfirmDialog_setText(value){
 //
 // @method
 //==========================================================
-MO.FUiConfirmDialog_dispose = function FUiConfirmDialog_dispose(){
+MO.FDuiConfirmDialog_dispose = function FDuiConfirmDialog_dispose(){
    var o = this;
    // 父处理
    o.__base.FDuiDialog.dispose.call(o);

@@ -172,7 +172,7 @@ with(MO){
    MO.FDsBitmapCanvas_onLoaded = function FDsBitmapCanvas_onLoaded(event){
       var o = this;
       // 隐藏处理
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -217,7 +217,7 @@ with(MO){
       var o = this;
       var size = o._graphicContext.size();
       // 显示加载进度
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       // 加载资源
       var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
       // 释放网格

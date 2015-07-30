@@ -74,7 +74,7 @@ with(MO){
          }
       }
       // 画面允许操作
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -142,7 +142,7 @@ with(MO){
       var o = this;
       o._activeGuid = guid;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showLoading();
+      RConsole.find(FDuiDesktopConsole).showLoading();
       // 发送数据请求
       var url = '/cloud.solution.project.ws?action=listProject&project_guid=' + guid;
       var connection = RConsole.find(FXmlConsole).sendAsync(url);

@@ -33,7 +33,7 @@ with(MO){
    //==========================================================
    MO.FDsModelMenuBar_onSaveLoad = function FDsModelMenuBar_onSaveLoad(event){
       // 解除画面锁定
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -47,7 +47,7 @@ with(MO){
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 存储配置
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
@@ -64,7 +64,7 @@ with(MO){
    //==========================================================
    MO.FDsModelMenuBar_onCaptureLoad = function FDsModelMenuBar_onCaptureLoad(event){
       // 解除画面锁定
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -76,7 +76,7 @@ with(MO){
    MO.FDsModelMenuBar_onCaptureClick = function FDsModelMenuBar_onCaptureClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 上传数据
       var connection = o._frameSet._canvasContent.capture();
       connection.addLoadListener(o, o.onCaptureLoad);

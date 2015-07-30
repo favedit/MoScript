@@ -186,7 +186,7 @@ with(MO){
    MO.FDsResourceMenuBar_onDeleteLoad = function FDsResourceMenuBar_onDeleteLoad(event){
       var o = this;
       // 画面允许操作
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       // 刷新列表
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
@@ -203,7 +203,7 @@ with(MO){
       // 检查结果
       if(event.resultCd != EResult.Success){
          // 画面允许操作
-         RConsole.find(FUiDesktopConsole).hide();
+         RConsole.find(FDuiDesktopConsole).hide();
          return
       }
       // 删除处理
@@ -211,7 +211,7 @@ with(MO){
       var typeCd = item._typeCd;
       var guid = item._guid;
       // 画面禁止操作
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 发送数据请求
       var connection = RConsole.find(FDrResourceConsole).doDelete(typeCd, guid);
       connection.addLoadListener(o, o.onDeleteLoad);
@@ -230,7 +230,7 @@ with(MO){
          return alert('请选中后再点击删除');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
 
@@ -243,7 +243,7 @@ with(MO){
    MO.FDsResourceMenuBar_onShareLoad = function FDsResourceMenuBar_onShareLoad(){
       var o = this;
       // 隐藏窗口处理
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -268,7 +268,7 @@ with(MO){
       }
       var guid = item._guid;
       // 禁止窗口处理
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       // 发送数据请求
       var connection = RConsole.find(FDrResourceConsole).doShare(guid, shareCd);
       connection.addLoadListener(o, o.onShareLoad);

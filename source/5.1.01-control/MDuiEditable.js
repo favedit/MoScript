@@ -5,7 +5,7 @@
 // @param o:object:Object 拥有对象
 // @history 091201 MAOCY 创建
 //==========================================================
-MO.MUiEditable = function MUiEditable(o){
+MO.MDuiEditable = function MDuiEditable(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
@@ -19,7 +19,7 @@ MO.MUiEditable = function MUiEditable(o){
    //o._editable  = false;
    //..........................................................
    // @method
-   //o.testEdit    = MUiEditable_testEdit;
+   //o.testEdit    = MDuiEditable_testEdit;
    return o;
 }
 
@@ -30,7 +30,7 @@ MO.MUiEditable = function MUiEditable(o){
 // @param m:mode:EMode 模式
 // @return Boolean 可否编辑
 //==========================================================
-MO.MUiEditable_testEdit = function MUiEditable_testEdit(m){
+MO.MDuiEditable_testEdit = function MDuiEditable_testEdit(m){
    var o = this;
    switch(MO.Lang.String.nvl(m, o._emode)){
       case MO.EMode.Insert:

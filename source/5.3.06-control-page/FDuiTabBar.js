@@ -25,7 +25,7 @@ with(MO){
    // @history 150202
    //==========================================================
    MO.FDuiTabBar = function FDuiTabBar(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       //..........................................................
       // @property
       o._sizeCd          = EUiSize.Horizontal;

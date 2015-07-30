@@ -6,7 +6,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiToolBar = function FDuiToolBar(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
       o._directionCd      = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection, EUiDirection.Horizontal));
       o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
@@ -221,7 +221,7 @@ with(MO){
    MO.FDuiToolButton_doClick = function FDuiToolButton_doClick(){
       var o = this;
       if(!o._disabled){
-         RConsole.find(FUiFocusConsole).blur();
+         RConsole.find(FDuiFocusConsole).blur();
          MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
          var event = new SClickEvent(o);
          o.processClickListener(event);
@@ -425,7 +425,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiToolButtonMenu = function FDuiToolButtonMenu(o){
-      o = RClass.inherits(this, o, FDuiToolButton, MUiContainer, MUiDropable, MUiFocus);
+      o = RClass.inherits(this, o, FDuiToolButton, MDuiContainer, MDuiDropable, MDuiFocus);
       o._menu           = null;
       o._statusDrop     = false;
       o._hDropPanel     = null;
@@ -493,7 +493,7 @@ with(MO){
          if(o._statusDrop){
             o._hForm.className = o.styleName('Press');
             o._menu.show(this._hDropPanel, EUiAlign.BottomRight);
-            RConsole.find(FUiPopupConsole).show(o._menu);
+            RConsole.find(FDuiPopupConsole).show(o._menu);
          }else{
             o._hForm.className = o.styleName('Normal');
             o._menu.hide();

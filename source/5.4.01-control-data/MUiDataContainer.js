@@ -7,7 +7,7 @@ with(MO){
    // @version 150124
    //==========================================================
    MO.MUiDataContainer = function MUiDataContainer(o){
-      o = RClass.inherits(this, o, MUiContainer);
+      o = RClass.inherits(this, o, MDuiContainer);
       //..........................................................
       // @method
       o.dsDataLoad = MUiDataContainer_dsDataLoad;

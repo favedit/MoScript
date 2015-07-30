@@ -27,31 +27,31 @@ MO.MUiDataProperties = function MUiDataProperties(o){
 //==========================================================
 MO.MUiDataProperties_dataProperties = function MUiDataProperties_dataProperties(n, c){
    var o = this;
-   var d = o._dataProperties;
-   if(d == null){
-      d = o._dataProperties = new MO.TDictionary();
+   var properties = o._dataProperties;
+   if(properties == null){
+      properties = o._dataProperties = new MO.TDictionary();
    }
-   return d;
+   return properties;
 }
 
 //==========================================================
 // <T>获得数据属性。</T>
 //
-// @param n:name:String 名称
+// @param name:String 名称
 // @return Object 内容
 //==========================================================
-MO.MUiDataProperties_dataPropertyGet = function MUiDataProperties_dataPropertyGet(n){
+MO.MUiDataProperties_dataPropertyGet = function MUiDataProperties_dataPropertyGet(name){
    var o = this;
-   var d = o._dataProperties;
-   return d ? d.get(n) : null;
+   var properties = o._dataProperties;
+   return properties ? properties.get(n) : null;
 }
 
 //==========================================================
 // <T>设置数据属性。</T>
 //
-// @param n:name:String 名称
-// @param v:value:Object 内容
+// @param name:String 名称
+// @param value:Object 内容
 //==========================================================
-MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySet(n, v){
-   this.dataProperties().set(n, v);
+MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySet(name, value){
+   this.dataProperties().set(name, value);
 }

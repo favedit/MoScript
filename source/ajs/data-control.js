@@ -69,7 +69,7 @@ with(MO){
 }
 with(MO){
    MO.MUiDataContainer = function MUiDataContainer(o){
-      o = RClass.inherits(this, o, MUiContainer);
+      o = RClass.inherits(this, o, MDuiContainer);
       o.dsDataLoad = MUiDataContainer_dsDataLoad;
       o.dsDataSave = MUiDataContainer_dsDataSave;
       o.dsLoadValue = MUiDataContainer_dsLoadValue;

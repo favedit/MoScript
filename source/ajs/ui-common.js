@@ -871,7 +871,7 @@ MO.MPropertyCheck = function MPropertyCheck(o){
    return o;
 }
 MO.MPropertyEdit = function MPropertyEdit(o){
-   o = MO.Class.inherits(this, o, MO.MUiEditValidator, MO.MUiEditReference, MO.MUiEditZoom);
+   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
    o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
    o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
    o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
@@ -905,7 +905,7 @@ MO.MPropertyNumber = function MPropertyNumber(o){
    return o;
 }
 MO.MPropertySelect = function MPropertySelect(o){
-   o = MO.Class.inherits(this, o, MO.MUiEditValidator, MO.MUiEditReference, MO.MUiEditZoom);
+   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
    o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
    o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
    o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
@@ -1202,6 +1202,37 @@ MO.MUiControl_dispose = function MUiControl_dispose(){
    o._eventRefresh = MO.Lang.Object.dispose(o._eventRefresh);
    o._eventFrame = MO.Lang.Object.dispose(o._eventFrame);
 }
+MO.MUiDataProperties = function MUiDataProperties(o){
+   o = MO.Class.inherits(this, o);
+   o._dataProperties = null;
+   o.dataProperties  = MO.MUiDataProperties_dataProperties;
+   o.dataPropertyGet = MO.MUiDataProperties_dataPropertyGet;
+   o.dataPropertySet = MO.MUiDataProperties_dataPropertySet;
+   return o;
+}
+MO.MUiDataProperties_dataProperties = function MUiDataProperties_dataProperties(n, c){
+   var o = this;
+   var properties = o._dataProperties;
+   if(properties == null){
+      properties = o._dataProperties = new MO.TDictionary();
+   }
+   return properties;
+}
+MO.MUiDataProperties_dataPropertyGet = function MUiDataProperties_dataPropertyGet(name){
+   var o = this;
+   var properties = o._dataProperties;
+   return properties ? properties.get(n) : null;
+}
+MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySet(name, value){
+   this.dataProperties().set(name, value);
+}
+MO.MUiDragable = function MUiDragable(o){
+   o = MO.Class.inherits(this, o);
+   o.onDragStart = MO.Method.virtual(o, 'onDragStart');
+   o.onDragMove  = MO.Method.virtual(o, 'onDragMove');
+   o.onDragStop  = MO.Method.virtual(o, 'onDragStop');
+   return o;
+}
 MO.MUiMargin = function MUiMargin(o){
    o = MO.RClass.inherits(this, o);
    o._margin   = MO.RClass.register(o, [new MO.APtyPadding('_margin'), new MO.AGetter('_margin')]);
@@ -1239,6 +1270,11 @@ MO.MUiPadding_setPadding = function MUiPadding_setPadding(left, top, right, bott
 MO.MUiPadding_dispose = function MUiPadding_dispose(){
    var o = this;
    o._padding = MO.Lang.Object.dispose(o._padding);
+}
+MO.MUiProgress = function MUiProgress(o){
+   o = MO.Class.inherits(this, o);
+   o.oeProgress = MO.Method.virtual(o, 'oeProgress');
+   return o;
 }
 MO.MUiStorage = function MUiStorage(o){
    o = MO.Class.inherits(this, o);

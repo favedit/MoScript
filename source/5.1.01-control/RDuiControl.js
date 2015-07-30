@@ -125,7 +125,7 @@ MO.RDuiControl.prototype.innerCreate = function RDuiControl_innerCreate(pc, px, 
       pc.propertyLoad(px)
    }
    // 构建子节点
-   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -234,7 +234,7 @@ MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px
       pr = pc;
    }
    // 建立子节点
-   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){

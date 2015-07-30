@@ -1,26 +1,26 @@
-MO.FUiConfirmDialog = function FUiConfirmDialog(o){
+MO.FDuiConfirmDialog = function FDuiConfirmDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiDialog, MO.MListenerResult);
    o._styleText            = MO.Class.register(o, new MO.AStyle('_styleText'));
    o._frameName            = 'system.dialog.ConfirmDialog';
    o._controlText          = null;
    o._controlConfirmButton = null;
    o._controlCancelButton  = null;
-   o.onBuilded             = MO.FUiConfirmDialog_onBuilded;
-   o.onConfirmClick        = MO.FUiConfirmDialog_onConfirmClick;
-   o.onCancelClick         = MO.FUiConfirmDialog_onCancelClick;
-   o.construct             = MO.FUiConfirmDialog_construct;
-   o.setText               = MO.FUiConfirmDialog_setText;
-   o.dispose               = MO.FUiConfirmDialog_dispose;
+   o.onBuilded             = MO.FDuiConfirmDialog_onBuilded;
+   o.onConfirmClick        = MO.FDuiConfirmDialog_onConfirmClick;
+   o.onCancelClick         = MO.FDuiConfirmDialog_onCancelClick;
+   o.construct             = MO.FDuiConfirmDialog_construct;
+   o.setText               = MO.FDuiConfirmDialog_setText;
+   o.dispose               = MO.FDuiConfirmDialog_dispose;
    return o;
 }
-MO.FUiConfirmDialog_onBuilded = function FUiConfirmDialog_onBuilded(p){
+MO.FDuiConfirmDialog_onBuilded = function FDuiConfirmDialog_onBuilded(p){
    var o = this;
    o.__base.FDuiDialog.onBuilded.call(o, p);
    o._controlText._hPanel.className = o.styleName('Text');
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
    o._controlCancelButton.addClickListener(o, o.onCancelClick);
 }
-MO.FUiConfirmDialog_onConfirmClick = function FUiConfirmDialog_onConfirmClick(event){
+MO.FDuiConfirmDialog_onConfirmClick = function FDuiConfirmDialog_onConfirmClick(event){
    var o = this;
    var event = new MO.SEvent();
    event.sender = o;
@@ -29,7 +29,7 @@ MO.FUiConfirmDialog_onConfirmClick = function FUiConfirmDialog_onConfirmClick(ev
    event.dispose();
    o.hide();
 }
-MO.FUiConfirmDialog_onCancelClick = function FUiConfirmDialog_onCancelClick(event){
+MO.FDuiConfirmDialog_onCancelClick = function FDuiConfirmDialog_onCancelClick(event){
    var o = this;
    var event = new MO.SEvent();
    event.sender = o;
@@ -38,44 +38,44 @@ MO.FUiConfirmDialog_onCancelClick = function FUiConfirmDialog_onCancelClick(even
    event.dispose();
    o.hide();
 }
-MO.FUiConfirmDialog_construct = function FUiConfirmDialog_construct(){
+MO.FDuiConfirmDialog_construct = function FDuiConfirmDialog_construct(){
    var o = this;
    o.__base.FDuiDialog.construct.call(o);
 }
-MO.FUiConfirmDialog_setText = function FUiConfirmDialog_setText(value){
+MO.FDuiConfirmDialog_setText = function FDuiConfirmDialog_setText(value){
    this._controlText.set(value);
 }
-MO.FUiConfirmDialog_dispose = function FUiConfirmDialog_dispose(){
+MO.FDuiConfirmDialog_dispose = function FDuiConfirmDialog_dispose(){
    var o = this;
    o.__base.FDuiDialog.dispose.call(o);
 }
-MO.FUiDescribeFrameConsole = function FUiDescribeFrameConsole(o){
+MO.FDuiDescribeFrameConsole = function FDuiDescribeFrameConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd       = MO.EScope.Global;
    o._service       = 'cloud.describe.frame';
    o._defines       = null;
    o.lsnsLoaded     = null;
-   o.construct      = MO.FUiDescribeFrameConsole_construct;
-   o.load           = MO.FUiDescribeFrameConsole_load;
+   o.construct      = MO.FDuiDescribeFrameConsole_construct;
+   o.load           = MO.FDuiDescribeFrameConsole_load;
    o.events         = null;
    o.formId         = 0;
-   o.createFromName = MO.FUiDescribeFrameConsole_createFromName;
-   o.loadNode       = MO.FUiDescribeFrameConsole_loadNode;
-   o.loadService    = MO.FUiDescribeFrameConsole_loadService;
-   o.nextFormId     = MO.FUiDescribeFrameConsole_nextFormId;
-   o.get            = MO.FUiDescribeFrameConsole_get;
-   o.find           = MO.FUiDescribeFrameConsole_find;
-   o.getLov         = MO.FUiDescribeFrameConsole_getLov;
-   o.findLov        = MO.FUiDescribeFrameConsole_findLov;
-   o.getEvents      = MO.FUiDescribeFrameConsole_getEvents;
+   o.createFromName = MO.FDuiDescribeFrameConsole_createFromName;
+   o.loadNode       = MO.FDuiDescribeFrameConsole_loadNode;
+   o.loadService    = MO.FDuiDescribeFrameConsole_loadService;
+   o.nextFormId     = MO.FDuiDescribeFrameConsole_nextFormId;
+   o.get            = MO.FDuiDescribeFrameConsole_get;
+   o.find           = MO.FDuiDescribeFrameConsole_find;
+   o.getLov         = MO.FDuiDescribeFrameConsole_getLov;
+   o.findLov        = MO.FDuiDescribeFrameConsole_findLov;
+   o.getEvents      = MO.FDuiDescribeFrameConsole_getEvents;
    return o;
 }
-MO.FUiDescribeFrameConsole_construct = function FUiDescribeFrameConsole_construct(){
+MO.FDuiDescribeFrameConsole_construct = function FDuiDescribeFrameConsole_construct(){
    var o = this;
    o._defines = new MO.TDictionary();
    o.lsnsLoaded = new MO.TListeners();
 }
-MO.FUiDescribeFrameConsole_load = function FUiDescribeFrameConsole_load(name){
+MO.FDuiDescribeFrameConsole_load = function FDuiDescribeFrameConsole_load(name){
    var o = this;
    var defines = o._defines;
    var xconfig = defines.get(name);
@@ -102,7 +102,7 @@ MO.FUiDescribeFrameConsole_load = function FUiDescribeFrameConsole_load(name){
    }
    return xframe;
 }
-MO.FUiDescribeFrameConsole_createFromName = function FUiDescribeFrameConsole_createFromName(name, type){
+MO.FDuiDescribeFrameConsole_createFromName = function FDuiDescribeFrameConsole_createFromName(name, type){
    var o = this;
    var doc = o.loadService(name, type);
    o.loadNode(doc);
@@ -112,7 +112,7 @@ MO.FUiDescribeFrameConsole_createFromName = function FUiDescribeFrameConsole_cre
       return o.get(name);
    }
 }
-MO.FUiDescribeFrameConsole_loadNode = function FUiDescribeFrameConsole_loadNode(x){
+MO.FDuiDescribeFrameConsole_loadNode = function FDuiDescribeFrameConsole_loadNode(x){
    var o = this;
    var nns = x.root();
    if(nns.hasNode()){
@@ -143,7 +143,7 @@ MO.FUiDescribeFrameConsole_loadNode = function FUiDescribeFrameConsole_loadNode(
       }
    }
 }
-MO.FUiDescribeFrameConsole_loadService = function FUiDescribeFrameConsole_loadService(n, t){
+MO.FDuiDescribeFrameConsole_loadService = function FDuiDescribeFrameConsole_loadService(n, t){
    var o = this;
    if(!t){
       t = MO.EForm.Form;
@@ -162,13 +162,13 @@ MO.FUiDescribeFrameConsole_loadService = function FUiDescribeFrameConsole_loadSe
    }
    return doc;
 }
-MO.FUiDescribeFrameConsole_nextFormId = function FUiDescribeFrameConsole_nextFormId(){
+MO.FDuiDescribeFrameConsole_nextFormId = function FDuiDescribeFrameConsole_nextFormId(){
    return ++this.formId;
 }
-MO.FUiDescribeFrameConsole_get = function FUiDescribeFrameConsole_get(n){
+MO.FDuiDescribeFrameConsole_get = function FDuiDescribeFrameConsole_get(n){
    return this._defines.get(EForm.Form).get(n);
 }
-MO.FUiDescribeFrameConsole_find = function FUiDescribeFrameConsole_find(n, t){
+MO.FDuiDescribeFrameConsole_find = function FDuiDescribeFrameConsole_find(n, t){
    var o = this;
    if(EForm.Lov == t){
       return o.findLov(n);
@@ -184,10 +184,10 @@ MO.FUiDescribeFrameConsole_find = function FUiDescribeFrameConsole_find(n, t){
    }
    return fc;
 }
-MO.FUiDescribeFrameConsole_getLov = function FUiDescribeFrameConsole_getLov(n){
+MO.FDuiDescribeFrameConsole_getLov = function FDuiDescribeFrameConsole_getLov(n){
    return this._defines.get(EForm.Lov).get(n);
 }
-MO.FUiDescribeFrameConsole_findLov = function FUiDescribeFrameConsole_findLov(n){
+MO.FDuiDescribeFrameConsole_findLov = function FDuiDescribeFrameConsole_findLov(n){
    var o = this;
    var fc = o.getLov(n);
    if(!fc){
@@ -195,10 +195,10 @@ MO.FUiDescribeFrameConsole_findLov = function FUiDescribeFrameConsole_findLov(n)
    }
    return fc;
 }
-MO.FUiDescribeFrameConsole_getEvents = function FUiDescribeFrameConsole_getEvents(n){
+MO.FDuiDescribeFrameConsole_getEvents = function FDuiDescribeFrameConsole_getEvents(n){
    return this.events.get(n);
 }
-MO.FUiDesktopConsole = function FUiDesktopConsole(o){
+MO.FDuiDesktopConsole = function FDuiDesktopConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd         = MO.EScope.Local;
    o._maskVisible     = false;
@@ -209,30 +209,30 @@ MO.FUiDesktopConsole = function FUiDesktopConsole(o){
    o._hMaskPanel      = null;
    o._hLoadingPanel   = null;
    o._hLoadingLabel   = null;
-   o.construct        = MO.FUiDesktopConsole_construct;
-   o.getMaskPanel     = MO.FUiDesktopConsole_getMaskPanel;
-   o.getProgressBar   = MO.FUiDesktopConsole_getProgressBar;
-   o.getLoadingPanel  = MO.FUiDesktopConsole_getLoadingPanel;
-   o.setMaskVisible   = MO.FUiDesktopConsole_setMaskVisible;
-   o.isEnable         = MO.FUiDesktopConsole_isEnable;
-   o.enable           = MO.FUiDesktopConsole_enable;
-   o.disable          = MO.FUiDesktopConsole_disable;
-   o.showLoading      = MO.FUiDesktopConsole_showLoading;
-   o.showUploading    = MO.FUiDesktopConsole_showUploading;
-   o.showProgress     = MO.FUiDesktopConsole_showProgress;
-   o.hide             = MO.FUiDesktopConsole_hide;
+   o.construct        = MO.FDuiDesktopConsole_construct;
+   o.getMaskPanel     = MO.FDuiDesktopConsole_getMaskPanel;
+   o.getProgressBar   = MO.FDuiDesktopConsole_getProgressBar;
+   o.getLoadingPanel  = MO.FDuiDesktopConsole_getLoadingPanel;
+   o.setMaskVisible   = MO.FDuiDesktopConsole_setMaskVisible;
+   o.isEnable         = MO.FDuiDesktopConsole_isEnable;
+   o.enable           = MO.FDuiDesktopConsole_enable;
+   o.disable          = MO.FDuiDesktopConsole_disable;
+   o.showLoading      = MO.FDuiDesktopConsole_showLoading;
+   o.showUploading    = MO.FDuiDesktopConsole_showUploading;
+   o.showProgress     = MO.FDuiDesktopConsole_showProgress;
+   o.hide             = MO.FDuiDesktopConsole_hide;
    return o;
 }
-MO.FUiDesktopConsole_construct = function FUiDesktopConsole_construct(){
+MO.FDuiDesktopConsole_construct = function FDuiDesktopConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
 }
-MO.FUiDesktopConsole_getMaskPanel = function FUiDesktopConsole_getMaskPanel(){
+MO.FDuiDesktopConsole_getMaskPanel = function FDuiDesktopConsole_getMaskPanel(){
    var o = this;
    var hDocument = top.MO.RWindow._hDocument;
    var hPanel = o._hMaskPanel;
    if(!hPanel){
-      hPanel = o._hMaskPanel = MO.Window.Builder.createTable(hDocument, 'FUiDesktopConsole_MaskPanel');
+      hPanel = o._hMaskPanel = MO.Window.Builder.createTable(hDocument, 'FDuiDesktopConsole_MaskPanel');
       hPanel.style.zIndex = 5000;
       var hInnerPanel = o._hMaskInnerPanel = MO.Window.Builder.appendTableRowCell(hPanel);
       hInnerPanel.align = 'center';
@@ -240,7 +240,7 @@ MO.FUiDesktopConsole_getMaskPanel = function FUiDesktopConsole_getMaskPanel(){
    }
    return hPanel;
 }
-MO.FUiDesktopConsole_getLoadingPanel = function FUiDesktopConsole_getLoadingPanel(){
+MO.FDuiDesktopConsole_getLoadingPanel = function FDuiDesktopConsole_getLoadingPanel(){
    var o = this;
    var hDocument = top.MO.RWindow._hDocument;
    var hPanel = o._hLoadingPanel;
@@ -255,7 +255,7 @@ MO.FUiDesktopConsole_getLoadingPanel = function FUiDesktopConsole_getLoadingPane
    }
    return hPanel;
 }
-MO.FUiDesktopConsole_getProgressBar = function FUiDesktopConsole_getProgressBar(){
+MO.FDuiDesktopConsole_getProgressBar = function FDuiDesktopConsole_getProgressBar(){
    var o = this;
    var progressBar = o._progressBar;
    if(!progressBar){
@@ -264,7 +264,7 @@ MO.FUiDesktopConsole_getProgressBar = function FUiDesktopConsole_getProgressBar(
    }
    return progressBar;
 }
-MO.FUiDesktopConsole_setMaskVisible = function FUiDesktopConsole_setMaskVisible(visible){
+MO.FDuiDesktopConsole_setMaskVisible = function FDuiDesktopConsole_setMaskVisible(visible){
    var o = this;
    if(o._maskVisible != visible){
       var hDocument = top.MO.Window._hDocument;
@@ -281,24 +281,24 @@ MO.FUiDesktopConsole_setMaskVisible = function FUiDesktopConsole_setMaskVisible(
    }
    o._maskVisible = visible;
 }
-MO.FUiDesktopConsole_isEnable = function FUiDesktopConsole_isEnable(){
+MO.FDuiDesktopConsole_isEnable = function FDuiDesktopConsole_isEnable(){
    return this._statusEnable;
 }
-MO.FUiDesktopConsole_enable = function FUiDesktopConsole_enable(){
+MO.FDuiDesktopConsole_enable = function FDuiDesktopConsole_enable(){
    var o = this;
    o._disableDeep--;
    if(o._disableDeep == 0){
       o.setEnable(true);
    }
 }
-MO.FUiDesktopConsole_disable = function FUiDesktopConsole_disable(){
+MO.FDuiDesktopConsole_disable = function FDuiDesktopConsole_disable(){
    var o = this;
    if(o._disableDeep == 0){
       o.setEnable(false);
    }
    o._disableDeep++;
 }
-MO.FUiDesktopConsole_showLoading = function FUiDesktopConsole_showLoading(){
+MO.FDuiDesktopConsole_showLoading = function FDuiDesktopConsole_showLoading(){
    var o = this;
    o.setMaskVisible(true);
    if(!o._loadingVisible){
@@ -308,7 +308,7 @@ MO.FUiDesktopConsole_showLoading = function FUiDesktopConsole_showLoading(){
       o._loadingVisible = true;
    }
 }
-MO.FUiDesktopConsole_showUploading = function FUiDesktopConsole_showUploading(){
+MO.FDuiDesktopConsole_showUploading = function FDuiDesktopConsole_showUploading(){
    var o = this;
    o.setMaskVisible(true);
    if(!o._loadingVisible){
@@ -318,7 +318,7 @@ MO.FUiDesktopConsole_showUploading = function FUiDesktopConsole_showUploading(){
       o._loadingVisible = true;
    }
 }
-MO.FUiDesktopConsole_showProgress = function FUiDesktopConsole_showProgress(rate){
+MO.FDuiDesktopConsole_showProgress = function FDuiDesktopConsole_showProgress(rate){
    var o = this;
    o.setMaskVisible(true);
    if(!o._progressVisible){
@@ -328,7 +328,7 @@ MO.FUiDesktopConsole_showProgress = function FUiDesktopConsole_showProgress(rate
       o._progressVisible = true;
    }
 }
-MO.FUiDesktopConsole_hide = function FUiDesktopConsole_hide(){
+MO.FDuiDesktopConsole_hide = function FDuiDesktopConsole_hide(){
    var o = this;
    if(o._loadingVisible){
       var hLoadingPanel = o.getLoadingPanel();
@@ -414,20 +414,20 @@ MO.FDuiEditorConsole_lost = function FDuiEditorConsole_lost(e){
    o.leave(e);
    o.blur(e);
 }
-MO.FUiEnvironmentConsole = function FUiEnvironmentConsole(o){
+MO.FDuiEnvironmentConsole = function FDuiEnvironmentConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o.scope       = MO.EScope.Local;
    o.environment = null;
-   o.connect     = MO.FUiEnvironmentConsole_connect;
-   o.build       = MO.FUiEnvironmentConsole_build;
-   o.buildValue  = MO.FUiEnvironmentConsole_buildValue;
-   o.load        = MO.FUiEnvironmentConsole_load;
-   o.xml         = MO.FUiEnvironmentConsole_xml;
+   o.connect     = MO.FDuiEnvironmentConsole_connect;
+   o.build       = MO.FDuiEnvironmentConsole_build;
+   o.buildValue  = MO.FDuiEnvironmentConsole_buildValue;
+   o.load        = MO.FDuiEnvironmentConsole_load;
+   o.xml         = MO.FDuiEnvironmentConsole_xml;
    return o;
 }
-MO.FUiEnvironmentConsole_connect = function FUiEnvironmentConsole_connect(){
+MO.FDuiEnvironmentConsole_connect = function FDuiEnvironmentConsole_connect(){
 }
-MO.FUiEnvironmentConsole_build = function FUiEnvironmentConsole_build(config){
+MO.FDuiEnvironmentConsole_build = function FDuiEnvironmentConsole_build(config){
    var o = this;
    if(!o.environment){
       o.connect()
@@ -437,7 +437,7 @@ MO.FUiEnvironmentConsole_build = function FUiEnvironmentConsole_build(config){
       node.attributes().append(this.environment.attributes());
    }
 }
-MO.FUiEnvironmentConsole_buildValue = function FUiEnvironmentConsole_buildValue(){
+MO.FDuiEnvironmentConsole_buildValue = function FDuiEnvironmentConsole_buildValue(){
    if(!this.environment){
       this.connect()
    }
@@ -448,10 +448,10 @@ MO.FUiEnvironmentConsole_buildValue = function FUiEnvironmentConsole_buildValue(
       }
    }
 }
-MO.FUiEnvironmentConsole_load = function FUiEnvironmentConsole_load(p){
+MO.FDuiEnvironmentConsole_load = function FDuiEnvironmentConsole_load(p){
    this.environment = RXml.makeNode(p);
 }
-MO.FUiEnvironmentConsole_xml = function FUiEnvironmentConsole_xml(){
+MO.FDuiEnvironmentConsole_xml = function FDuiEnvironmentConsole_xml(){
    if(!this.environment){
       this.connect()
    }
@@ -460,27 +460,27 @@ MO.FUiEnvironmentConsole_xml = function FUiEnvironmentConsole_xml(){
    }
    return null;
 }
-MO.FUiErrorDialog = function FUiErrorDialog(o){
+MO.FDuiErrorDialog = function FDuiErrorDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiDialog, MO.MListenerResult);
    o._styleText            = MO.Class.register(o, new MO.AStyle('_styleText'));
    o._frameName            = 'system.dialog.ErrorDialog';
    o._controlText          = null;
    o._controlConfirmButton = null;
    o._controlCancelButton  = null;
-   o.onBuilded             = MO.FUiErrorDialog_onBuilded;
-   o.onConfirmClick        = MO.FUiErrorDialog_onConfirmClick;
-   o.construct             = MO.FUiErrorDialog_construct;
-   o.setCode               = MO.FUiErrorDialog_setCode;
-   o.setDescription        = MO.FUiErrorDialog_setDescription;
-   o.dispose               = MO.FUiErrorDialog_dispose;
+   o.onBuilded             = MO.FDuiErrorDialog_onBuilded;
+   o.onConfirmClick        = MO.FDuiErrorDialog_onConfirmClick;
+   o.construct             = MO.FDuiErrorDialog_construct;
+   o.setCode               = MO.FDuiErrorDialog_setCode;
+   o.setDescription        = MO.FDuiErrorDialog_setDescription;
+   o.dispose               = MO.FDuiErrorDialog_dispose;
    return o;
 }
-MO.FUiErrorDialog_onBuilded = function FUiErrorDialog_onBuilded(p){
+MO.FDuiErrorDialog_onBuilded = function FDuiErrorDialog_onBuilded(p){
    var o = this;
    o.__base.FDuiDialog.onBuilded.call(o, p);
    o._controlConfirm.addClickListener(o, o.onConfirmClick);
 }
-MO.FUiErrorDialog_onConfirmClick = function FUiErrorDialog_onConfirmClick(event){
+MO.FDuiErrorDialog_onConfirmClick = function FDuiErrorDialog_onConfirmClick(event){
    var o = this;
    var event = new MO.SEvent();
    event.sender = o;
@@ -489,21 +489,21 @@ MO.FUiErrorDialog_onConfirmClick = function FUiErrorDialog_onConfirmClick(event)
    event.dispose();
    o.hide();
 }
-MO.FUiErrorDialog_construct = function FUiErrorDialog_construct(){
+MO.FDuiErrorDialog_construct = function FDuiErrorDialog_construct(){
    var o = this;
    o.__base.FDuiDialog.construct.call(o);
 }
-MO.FUiErrorDialog_setCode = function FUiErrorDialog_setCode(value){
+MO.FDuiErrorDialog_setCode = function FDuiErrorDialog_setCode(value){
    this._controlCode.set(value);
 }
-MO.FUiErrorDialog_setDescription = function FUiErrorDialog_setDescription(value){
+MO.FDuiErrorDialog_setDescription = function FDuiErrorDialog_setDescription(value){
    this._controlDescription.set(value);
 }
-MO.FUiErrorDialog_dispose = function FUiErrorDialog_dispose(){
+MO.FDuiErrorDialog_dispose = function FDuiErrorDialog_dispose(){
    var o = this;
    o.__base.FDuiDialog.dispose.call(o);
 }
-MO.FUiFocusConsole = function FUiFocusConsole(o){
+MO.FDuiFocusConsole = function FDuiFocusConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o.scope              = MO.EScope.Page;
    o._blurAble          = true;
@@ -518,31 +518,31 @@ MO.FUiFocusConsole = function FUiFocusConsole(o){
    o.lsnsFocus          = null;
    o.lsnsBlur           = null;
    o.lsnsFocusClass     = null;
-   o.onMouseDown        = MO.FUiFocusConsole_onMouseDown;
-   o.onMouseWheel       = MO.FUiFocusConsole_onMouseWheel;
-   o.construct          = MO.FUiFocusConsole_construct;
-   o.enter              = MO.FUiFocusConsole_enter;
-   o.leave              = MO.FUiFocusConsole_leave;
-   o.isFocus            = MO.FUiFocusConsole_isFocus;
-   o.focus              = MO.FUiFocusConsole_focus;
-   o.blur               = MO.FUiFocusConsole_blur;
-   o.findClass          = MO.FUiFocusConsole_findClass;
-   o.focusClass         = MO.FUiFocusConsole_focusClass;
-   o.focusHtml          = MO.FUiFocusConsole_focusHtml;
-   o.lockBlur           = MO.FUiFocusConsole_lockBlur;
-   o.unlockBlur         = MO.FUiFocusConsole_unlockBlur;
-   o.storeFocus         = MO.FUiFocusConsole_storeFocus;
-   o.restoreFocus       = MO.FUiFocusConsole_restoreFocus;
-   o.dispose            = MO.FUiFocusConsole_dispose;
+   o.onMouseDown        = MO.FDuiFocusConsole_onMouseDown;
+   o.onMouseWheel       = MO.FDuiFocusConsole_onMouseWheel;
+   o.construct          = MO.FDuiFocusConsole_construct;
+   o.enter              = MO.FDuiFocusConsole_enter;
+   o.leave              = MO.FDuiFocusConsole_leave;
+   o.isFocus            = MO.FDuiFocusConsole_isFocus;
+   o.focus              = MO.FDuiFocusConsole_focus;
+   o.blur               = MO.FDuiFocusConsole_blur;
+   o.findClass          = MO.FDuiFocusConsole_findClass;
+   o.focusClass         = MO.FDuiFocusConsole_focusClass;
+   o.focusHtml          = MO.FDuiFocusConsole_focusHtml;
+   o.lockBlur           = MO.FDuiFocusConsole_lockBlur;
+   o.unlockBlur         = MO.FDuiFocusConsole_unlockBlur;
+   o.storeFocus         = MO.FDuiFocusConsole_storeFocus;
+   o.restoreFocus       = MO.FDuiFocusConsole_restoreFocus;
+   o.dispose            = MO.FDuiFocusConsole_dispose;
    return o;
 }
-MO.FUiFocusConsole_onMouseDown = function FUiFocusConsole_onMouseDown(p){
+MO.FDuiFocusConsole_onMouseDown = function FDuiFocusConsole_onMouseDown(p){
    this.focusHtml(p.hSource);
 }
-MO.FUiFocusConsole_onMouseWheel = function FUiFocusConsole_onMouseWheel(s, e){
+MO.FDuiFocusConsole_onMouseWheel = function FDuiFocusConsole_onMouseWheel(s, e){
    var o = this;
 }
-MO.FUiFocusConsole_construct = function FUiFocusConsole_construct(){
+MO.FDuiFocusConsole_construct = function FDuiFocusConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._focusClasses = new Object();
@@ -553,15 +553,15 @@ MO.FUiFocusConsole_construct = function FUiFocusConsole_construct(){
    MO.Window.lsnsMouseDown.register(o, o.onMouseDown);
    MO.Window.lsnsMouseWheel.register(o, o.onMouseWheel);
 }
-MO.FUiFocusConsole_enter = function FUiFocusConsole_enter(c){
+MO.FDuiFocusConsole_enter = function FDuiFocusConsole_enter(c){
    var o = this;
-   if(MO.Class.isClass(c, MO.MUiContainer)){
+   if(MO.Class.isClass(c, MO.MDuiContainer)){
       o._hoverContainer = c;
    }else{
       o._hoverControl = c;
    }
 }
-MO.FUiFocusConsole_leave = function FUiFocusConsole_leave(c){
+MO.FDuiFocusConsole_leave = function FDuiFocusConsole_leave(c){
    var o = this;
    if(o._hoverContainer == c){
       o._hoverContainer = null;
@@ -570,12 +570,12 @@ MO.FUiFocusConsole_leave = function FUiFocusConsole_leave(c){
       o._hoverControl = null;
    }
 }
-MO.FUiFocusConsole_isFocus = function FUiFocusConsole_isFocus(c){
+MO.FDuiFocusConsole_isFocus = function FDuiFocusConsole_isFocus(c){
    return (this._focusControl == c);
 }
-MO.FUiFocusConsole_focus = function FUiFocusConsole_focus(c, e){
+MO.FDuiFocusConsole_focus = function FDuiFocusConsole_focus(c, e){
    var o = this;
-   if(!MO.Class.isClass(c, MO.MUiFocus)){
+   if(!MO.Class.isClass(c, MO.MDuiFocus)){
       return;
    }
    var f = o._focusControl;
@@ -598,14 +598,14 @@ MO.FUiFocusConsole_focus = function FUiFocusConsole_focus(c, e){
       o.lsnsFocus.process(c);
    }
 }
-MO.FUiFocusConsole_blur = function FUiFocusConsole_blur(c, e){
+MO.FDuiFocusConsole_blur = function FDuiFocusConsole_blur(c, e){
    var o = this;
    var fc = o._focusControl;
    var bc = o._blurControl;
    if(fc && c && !fc.testBlur(c)){
       return;
    }
-   if(bc != c && MO.Class.isClass(c, MO.MUiFocus)){
+   if(bc != c && MO.Class.isClass(c, MO.MDuiFocus)){
       MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, MO.Class.dump(c));
       o._blurControl = c;
       c.doBlur(e);
@@ -616,7 +616,7 @@ MO.FUiFocusConsole_blur = function FUiFocusConsole_blur(c, e){
       o._focusControl = null;
    }
 }
-MO.FUiFocusConsole_findClass = function FUiFocusConsole_findClass(c){
+MO.FDuiFocusConsole_findClass = function FDuiFocusConsole_findClass(c){
    var o = this;
    var n = MO.Class.name(c);
    if(o._focusClasses[n]){
@@ -630,7 +630,7 @@ MO.FUiFocusConsole_findClass = function FUiFocusConsole_findClass(c){
       return p.topControl(c);
    }
 }
-MO.FUiFocusConsole_focusClass = function FUiFocusConsole_focusClass(c, p){
+MO.FDuiFocusConsole_focusClass = function FDuiFocusConsole_focusClass(c, p){
    var o = this;
    var n = MO.Class.name(c);
    if(o._focusClasses[n] != p){
@@ -639,7 +639,7 @@ MO.FUiFocusConsole_focusClass = function FUiFocusConsole_focusClass(c, p){
       o.lsnsFocusClass.process(p, c);
    }
 }
-MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
+MO.FDuiFocusConsole_focusHtml = function FDuiFocusConsole_focusHtml(p){
    var o = this;
    var c = MO.Window.Html.searchLinker(p, MO.FDuiControl);
    MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', MO.Class.dump(c), p.tagName);
@@ -651,24 +651,24 @@ MO.FUiFocusConsole_focusHtml = function FUiFocusConsole_focusHtml(p){
       o.blur(null, p);
    }
 }
-MO.FUiFocusConsole_lockBlur = function FUiFocusConsole_lockBlur(){
+MO.FDuiFocusConsole_lockBlur = function FDuiFocusConsole_lockBlur(){
    this._blurAble = false;
 }
-MO.FUiFocusConsole_unlockBlur = function FUiFocusConsole_unlockBlur(){
+MO.FDuiFocusConsole_unlockBlur = function FDuiFocusConsole_unlockBlur(){
    this._blurAble = true;
 }
-MO.FUiFocusConsole_storeFocus = function FUiFocusConsole_storeFocus(){
+MO.FDuiFocusConsole_storeFocus = function FDuiFocusConsole_storeFocus(){
    var o = this;
    o._storeControl = o._focusControl;
 }
-MO.FUiFocusConsole_restoreFocus = function FUiFocusConsole_restoreFocus(){
+MO.FDuiFocusConsole_restoreFocus = function FDuiFocusConsole_restoreFocus(){
    var o = this;
    if(o._storeControl){
       o._storeControl.focus();
       o._storeControl = null;
    }
 }
-MO.FUiFocusConsole_dispose = function FUiFocusConsole_dispose(){
+MO.FDuiFocusConsole_dispose = function FDuiFocusConsole_dispose(){
    var o = this;
    o.__base.FConsole.dispose.call(o);
    o._focusClasses = null;
@@ -690,7 +690,7 @@ MO.FDuiFrameConsole_construct = function FDuiFrameConsole_construct(){
 }
 MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    var o = this;
-   var dc = MO.Console.find(MO.FUiDescribeFrameConsole);
+   var dc = MO.Console.find(MO.FDuiDescribeFrameConsole);
    var x = dc.load(n);
    var f = MO.RDuiControl.build(null, x, null, c._hPanel);
    return f;
@@ -909,27 +909,27 @@ MO.FDuiFrameEventConsole_onlyCall = function FDuiFrameEventConsole_onlyCall(c, m
    m.call(c);
    o._allow = true;
 }
-MO.FUiInfoDialog = function FUiInfoDialog(o){
+MO.FDuiInfoDialog = function FDuiInfoDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiDialog, MO.MListenerResult);
    o._styleText            = MO.Class.register(o, new MO.AStyle('_styleText'));
    o._frameName            = 'system.dialog.InfoDialog';
    o._controlText          = null;
    o._controlConfirmButton = null;
    o._controlCancelButton  = null;
-   o.onBuilded             = MO.FUiInfoDialog_onBuilded;
-   o.onConfirmClick        = MO.FUiInfoDialog_onConfirmClick;
-   o.construct             = MO.FUiInfoDialog_construct;
-   o.setText               = MO.FUiInfoDialog_setText;
-   o.dispose               = MO.FUiInfoDialog_dispose;
+   o.onBuilded             = MO.FDuiInfoDialog_onBuilded;
+   o.onConfirmClick        = MO.FDuiInfoDialog_onConfirmClick;
+   o.construct             = MO.FDuiInfoDialog_construct;
+   o.setText               = MO.FDuiInfoDialog_setText;
+   o.dispose               = MO.FDuiInfoDialog_dispose;
    return o;
 }
-MO.FUiInfoDialog_onBuilded = function FUiInfoDialog_onBuilded(p){
+MO.FDuiInfoDialog_onBuilded = function FDuiInfoDialog_onBuilded(p){
    var o = this;
    o.__base.FDuiDialog.onBuilded.call(o, p);
    o._controlText._hPanel.className = o.styleName('Text');
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
 }
-MO.FUiInfoDialog_onConfirmClick = function FUiInfoDialog_onConfirmClick(event){
+MO.FDuiInfoDialog_onConfirmClick = function FDuiInfoDialog_onConfirmClick(event){
    var o = this;
    var event = new MO.SEvent();
    event.sender = o;
@@ -938,34 +938,34 @@ MO.FUiInfoDialog_onConfirmClick = function FUiInfoDialog_onConfirmClick(event){
    event.dispose();
    o.hide();
 }
-MO.FUiInfoDialog_construct = function FUiInfoDialog_construct(){
+MO.FDuiInfoDialog_construct = function FDuiInfoDialog_construct(){
    var o = this;
    o.__base.FDuiDialog.construct.call(o);
 }
-MO.FUiInfoDialog_setText = function FUiInfoDialog_setText(value){
+MO.FDuiInfoDialog_setText = function FDuiInfoDialog_setText(value){
    this._controlText.set(value);
 }
-MO.FUiInfoDialog_dispose = function FUiInfoDialog_dispose(){
+MO.FDuiInfoDialog_dispose = function FDuiInfoDialog_dispose(){
    var o = this;
    o.__base.FDuiDialog.dispose.call(o);
 }
-MO.FUiKeyConsole = function FUiKeyConsole(o){
+MO.FDuiKeyConsole = function FDuiKeyConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd        = EScope.Local;
    o._enable         = true;
    o._enableRegister = true;
    o._listeners      = new Object();
    o._disableKeys    = new Object();
-   o.onKeyDown       = MO.FUiKeyConsole_onKeyDown;
-   o.construct       = MO.FUiKeyConsole_construct;
-   o.enable          = MO.FUiKeyConsole_enable;
-   o.disable         = MO.FUiKeyConsole_disable;
-   o.enableRegister  = MO.FUiKeyConsole_enableRegister;
-   o.disableRegister = MO.FUiKeyConsole_disableRegister;
-   o.register        = MO.FUiKeyConsole_register;
+   o.onKeyDown       = MO.FDuiKeyConsole_onKeyDown;
+   o.construct       = MO.FDuiKeyConsole_construct;
+   o.enable          = MO.FDuiKeyConsole_enable;
+   o.disable         = MO.FDuiKeyConsole_disable;
+   o.enableRegister  = MO.FDuiKeyConsole_enableRegister;
+   o.disableRegister = MO.FDuiKeyConsole_disableRegister;
+   o.register        = MO.FDuiKeyConsole_register;
    return o;
 }
-MO.FUiKeyConsole_onKeyDown = function FUiKeyConsole_onKeyDown(e){
+MO.FDuiKeyConsole_onKeyDown = function FDuiKeyConsole_onKeyDown(e){
    var o = this;
    var k = MO.REnum.tryDecode(MO.EKeyCode, e.keyCode);
    if(k && o._enable){
@@ -981,24 +981,24 @@ MO.FUiKeyConsole_onKeyDown = function FUiKeyConsole_onKeyDown(e){
       e.returnValue = false;
    }
 }
-MO.FUiKeyConsole_construct = function FUiKeyConsole_construct(){
+MO.FDuiKeyConsole_construct = function FDuiKeyConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    MO.Window.lsnsKeyDown.register(o, o.onKeyDown);
 }
-MO.FUiKeyConsole_enable = function FUiKeyConsole_enable(){
+MO.FDuiKeyConsole_enable = function FDuiKeyConsole_enable(){
    this._enable = true;
 }
-MO.FUiKeyConsole_disable = function FUiKeyConsole_disable(){
+MO.FDuiKeyConsole_disable = function FDuiKeyConsole_disable(){
    this._enable = false;
 }
-MO.FUiKeyConsole_enableRegister = function FUiKeyConsole_enableRegister(){
+MO.FDuiKeyConsole_enableRegister = function FDuiKeyConsole_enableRegister(){
    this._enableRegister = true;
 }
-MO.FUiKeyConsole_disableRegister = function FUiKeyConsole_disableRegister(){
+MO.FDuiKeyConsole_disableRegister = function FDuiKeyConsole_disableRegister(){
    this._enableRegister = false;
 }
-MO.FUiKeyConsole_register = function FUiKeyConsole_register(k, w, p){
+MO.FDuiKeyConsole_register = function FDuiKeyConsole_register(k, w, p){
    var o = this;
    if(o._enableRegister){
       if(MO.Lang.Integer.isInteger(k)){
@@ -1013,45 +1013,45 @@ MO.FUiKeyConsole_register = function FUiKeyConsole_register(k, w, p){
       s.register(w, p);
    }
 }
-MO.FUiMessageConsole = function FUiMessageConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole, MO.MUiStyle);
+MO.FDuiMessageConsole = function FDuiMessageConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole, MO.MDuiStyle);
    o._scopeCd       = MO.EScope.Global;
    o._result        = new Array();
    o._attributes    = new Array();
    o._messageBox    = null;
    o._messageWindow = null;
-   o.showInfo       = MO.FUiMessageConsole_showInfo;
-   o.showConfirm    = MO.FUiMessageConsole_showConfirm;
-   o.showError      = MO.FUiMessageConsole_showError;
-   o.popup          = MO.FUiMessageConsole_popup;
-   o.close          = MO.FUiMessageConsole_close;
-   o.parse          = MO.FUiMessageConsole_parse;
-   o.check          = MO.FUiMessageConsole_check;
+   o.showInfo       = MO.FDuiMessageConsole_showInfo;
+   o.showConfirm    = MO.FDuiMessageConsole_showConfirm;
+   o.showError      = MO.FDuiMessageConsole_showError;
+   o.popup          = MO.FDuiMessageConsole_popup;
+   o.close          = MO.FDuiMessageConsole_close;
+   o.parse          = MO.FDuiMessageConsole_parse;
+   o.check          = MO.FDuiMessageConsole_check;
    return o;
 }
-MO.FUiMessageConsole_showInfo = function FUiMessageConsole_showInfo(text){
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiInfoDialog);
+MO.FDuiMessageConsole_showInfo = function FDuiMessageConsole_showInfo(text){
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDuiInfoDialog);
    dialog.clearResultListeners();
    dialog.setText(text);
    dialog.showPosition(MO.EUiPosition.Center);
    return dialog;
 }
-MO.FUiMessageConsole_showConfirm = function FUiMessageConsole_showConfirm(text){
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiConfirmDialog);
+MO.FDuiMessageConsole_showConfirm = function FDuiMessageConsole_showConfirm(text){
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDuiConfirmDialog);
    dialog.clearResultListeners();
    dialog.setText(text);
    dialog.showPosition(MO.EUiPosition.Center);
    return dialog;
 }
-MO.FUiMessageConsole_showError = function FUiMessageConsole_showError(code, message, description){
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FUiErrorDialog);
+MO.FDuiMessageConsole_showError = function FDuiMessageConsole_showError(code, message, description){
+   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDuiErrorDialog);
    dialog.clearResultListeners();
    dialog.setCode(message);
    dialog.setDescription(description);
    dialog.showPosition(MO.EUiPosition.Center);
    return dialog;
 }
-MO.FUiMessageConsole_popup = function FUiMessageConsole_popup(g){
+MO.FDuiMessageConsole_popup = function FDuiMessageConsole_popup(g){
    var o = this;
    var w = o._messageWindow;
    if(!w){
@@ -1060,10 +1060,10 @@ MO.FUiMessageConsole_popup = function FUiMessageConsole_popup(g){
    w.loadMessages(g);
    w.show();
 }
-MO.FUiMessageConsole_close = function FUiMessageConsole_close(){
+MO.FDuiMessageConsole_close = function FDuiMessageConsole_close(){
    RWindow.setEnable(true);
 }
-MO.FUiMessageConsole_parse = function FUiMessageConsole_parse(config){
+MO.FDuiMessageConsole_parse = function FDuiMessageConsole_parse(config){
    var msgs = null;
    var msgsNode = config.find('Messages');
    if(msgsNode && msgsNode.nodes && msgsNode.nodes.count){
@@ -1077,7 +1077,7 @@ MO.FUiMessageConsole_parse = function FUiMessageConsole_parse(config){
    }
    return msgs;
 }
-MO.FUiMessageConsole_check = function FUiMessageConsole_check(g){
+MO.FDuiMessageConsole_check = function FDuiMessageConsole_check(g){
    var o = this;
    var ms = g.messages = o.parse(g.config);
    if(ms){
@@ -1095,7 +1095,7 @@ MO.FUiMessageConsole_check = function FUiMessageConsole_check(g){
    }
    return true;
 }
-MO.FUiMessageDialog = function FUiMessageDialog(o){
+MO.FDuiMessageDialog = function FDuiMessageDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiWindow);
    o._styleMsgPanel     = MO.Class.register(o, new MO.AStyle('_styleMsgPanel'));
    o._styleButtonPanel  = MO.Class.register(o, new MO.AStyle('_styleButtonPanel'));
@@ -1115,22 +1115,22 @@ MO.FUiMessageDialog = function FUiMessageDialog(o){
    o._hDescription      = null;
    o._hButtonPanel      = null;
    o._hBlank            = null;
-   o.onBuild            = MO.FUiMessageDialog_onBuild;
-   o.onItemOver         = MO.Class.register(o, new MO.AEventMouseOver('onItemOver'), MO.FUiMessageDialog_onItemOver);
-   o.onItemClick        = MO.Class.register(o, new MO.AEventClick('onItemClick'), MO.FUiMessageDialog_onItemClick);
-   o.onDescClick        = MO.Class.register(o, new MO.AEventClick('onDescClick'), MO.FUiMessageDialog_onDescClick);
-   o.onBuildMessages    = MO.FUiMessageDialog_onBuildMessages;
-   o.onBuildButtons     = MO.FUiMessageDialog_onBuildButtons;
-   o.onOk               = MO.FUiMessageDialog_onOk;
-   o.onCancel           = MO.FUiMessageDialog_onCancel;
-   o.onClose            = MO.FUiMessageDialog_onClose;
-   o.loadMessages       = MO.FUiMessageDialog_loadMessages;
-   o.show               = MO.FUiMessageDialog_show;
-   o.hide               = MO.FUiMessageDialog_hide;
-   o.dispose            = MO.FUiMessageDialog_dispose;
+   o.onBuild            = MO.FDuiMessageDialog_onBuild;
+   o.onItemOver         = MO.Class.register(o, new MO.AEventMouseOver('onItemOver'), MO.FDuiMessageDialog_onItemOver);
+   o.onItemClick        = MO.Class.register(o, new MO.AEventClick('onItemClick'), MO.FDuiMessageDialog_onItemClick);
+   o.onDescClick        = MO.Class.register(o, new MO.AEventClick('onDescClick'), MO.FDuiMessageDialog_onDescClick);
+   o.onBuildMessages    = MO.FDuiMessageDialog_onBuildMessages;
+   o.onBuildButtons     = MO.FDuiMessageDialog_onBuildButtons;
+   o.onOk               = MO.FDuiMessageDialog_onOk;
+   o.onCancel           = MO.FDuiMessageDialog_onCancel;
+   o.onClose            = MO.FDuiMessageDialog_onClose;
+   o.loadMessages       = MO.FDuiMessageDialog_loadMessages;
+   o.show               = MO.FDuiMessageDialog_show;
+   o.hide               = MO.FDuiMessageDialog_hide;
+   o.dispose            = MO.FDuiMessageDialog_dispose;
    return o;
 }
-MO.FUiMessageDialog_onBuild = function FUiMessageDialog_onBuild(event){
+MO.FDuiMessageDialog_onBuild = function FDuiMessageDialog_onBuild(event){
    var o = this;
    o.__base.FDuiWindow.oeBuild.call(o, e);
    o.setIcon('Icon');
@@ -1151,12 +1151,12 @@ MO.FUiMessageDialog_onBuild = function FUiMessageDialog_onBuild(event){
    MO.Console.find(FKeyConsole).register(MO.EKey.Esc, new MO.TListener(o, o.onClose));
    return r;
 }
-MO.FUiMessageDialog_onItemOver = function FUiMessageDialog_onItemOver(e){
+MO.FDuiMessageDialog_onItemOver = function FDuiMessageDialog_onItemOver(e){
    var o = this;
    var hf = o.hItemBodyForm;
    var h = e.hSource;
 }
-MO.FUiMessageDialog_onItemClick = function FUiMessageDialog_onItemClick(e){
+MO.FDuiMessageDialog_onItemClick = function FDuiMessageDialog_onItemClick(e){
    var o = this;
    var hf = o.hItemBodyForm;
    for(var n = 0; n < hf.rows.count; n++){
@@ -1164,10 +1164,10 @@ MO.FUiMessageDialog_onItemClick = function FUiMessageDialog_onItemClick(e){
    var h = e.hSource;
    var idx = h.rowIndex;
 }
-MO.FUiMessageDialog_onDescClick = function FUiMessageDialog_onDescClick(e){
+MO.FDuiMessageDialog_onDescClick = function FDuiMessageDialog_onDescClick(e){
    var o = this;
 }
-MO.FUiMessageDialog_onBuildMessages = function FUiMessageDialog_onBuildMessages(){
+MO.FDuiMessageDialog_onBuildMessages = function FDuiMessageDialog_onBuildMessages(){
    var o = this;
    if(!o._type){
       var hTab1 = o.hItmeForm = MO.RBuilder.appendTable(o.hTitlePanel);
@@ -1187,7 +1187,7 @@ MO.FUiMessageDialog_onBuildMessages = function FUiMessageDialog_onBuildMessages(
       hTitleIcon.style.paddingLeft = 20;
       hTitleIcon.src = o.styleIconPath('TitleIcon');
       var hc2 = hr.insertCell();
-      hc2.innerText = ' '+ MO.Context.get('FUiMessageDialog:MessageContext');
+      hc2.innerText = ' '+ MO.Context.get('FDuiMessageDialog:MessageContext');
       var hItemBody  = o.hItemBody = hTab1.insertRow().insertCell();
       hItemBody.height = 100;
       o.hItemBody.style.borderBottom = '2 solid #F5F5F5';
@@ -1215,7 +1215,7 @@ MO.FUiMessageDialog_onBuildMessages = function FUiMessageDialog_onBuildMessages(
       o.hItmeForm.style.display = 'block';
    }
 }
-MO.FUiMessageDialog_onBuildButtons = function FUiMessageDialog_onBuildButtons(t){
+MO.FDuiMessageDialog_onBuildButtons = function FDuiMessageDialog_onBuildButtons(t){
    var o = this;
    if(!o._type){
       var hBtnTab = MO.Window.Builder.appendTable(o._hButtonPanel, null, 0, 0, 2);
@@ -1251,7 +1251,7 @@ MO.FUiMessageDialog_onBuildButtons = function FUiMessageDialog_onBuildButtons(t)
       o._hBlank.width = '87%';
    }
 }
-MO.FUiMessageDialog_onOk = function FUiMessageDialog_onOk(){
+MO.FDuiMessageDialog_onOk = function FDuiMessageDialog_onOk(){
    var o = this;
    var g = o._messageArg;
    var cg = g.argument;
@@ -1274,13 +1274,13 @@ MO.FUiMessageDialog_onOk = function FUiMessageDialog_onOk(){
    }
    o.hide();
 }
-MO.FUiMessageDialog_onCancel = function FUiMessageDialog_onCancel(){
+MO.FDuiMessageDialog_onCancel = function FDuiMessageDialog_onCancel(){
    this.hide();
 }
-MO.FUiMessageDialog_onClose = function FUiMessageDialog_onClose(){
+MO.FDuiMessageDialog_onClose = function FDuiMessageDialog_onClose(){
    this.hide();
 }
-MO.FUiMessageDialog_loadMessages = function FUiMessageDialog_loadMessages(g){
+MO.FDuiMessageDialog_loadMessages = function FDuiMessageDialog_loadMessages(g){
    var o = this;
    o._messageArg = g;
    var ms = g.messages;
@@ -1330,16 +1330,16 @@ MO.FUiMessageDialog_loadMessages = function FUiMessageDialog_loadMessages(g){
       }
    }
    if(EMessage.Error == msgType){
-      o.setCaption(' ' + RContext.get('FUiMessageDialog:Error'));
+      o.setCaption(' ' + RContext.get('FDuiMessageDialog:Error'));
    }else if(EMessage.Warn == msgType){
-      o.setCaption(' ' + RContext.get('FUiMessageDialog:Warn'));
+      o.setCaption(' ' + RContext.get('FDuiMessageDialog:Warn'));
    }else if(EMessage.Info == msgType){
-      o.setCaption(' ' + RContext.get('FUiMessageDialog:Info'));
+      o.setCaption(' ' + RContext.get('FDuiMessageDialog:Info'));
    }else if(EMessage.Fatal == msgType){
-      o.setCaption(' ' + RContext.get('FUiMessageDialog:Fatal'));
+      o.setCaption(' ' + RContext.get('FDuiMessageDialog:Fatal'));
    }
 }
-MO.FUiMessageDialog_show = function FUiMessageDialog_show(){
+MO.FDuiMessageDialog_show = function FDuiMessageDialog_show(){
    var o = this;
    o.__base.FDuiWindow.show.call(o);
    o.panel().style.zIndex = RLayer.next(ELayer.Message);
@@ -1349,7 +1349,7 @@ MO.FUiMessageDialog_show = function FUiMessageDialog_show(){
    RWindow.setEnable(false, true);
    o.focus();
 }
-MO.FUiMessageDialog_hide = function FUiMessageDialog_hide(){
+MO.FDuiMessageDialog_hide = function FDuiMessageDialog_hide(){
    var o = this;
    o.__base.FDuiWindow.hide.call(o);
    var f = o._messageArg.argument.form;
@@ -1358,7 +1358,7 @@ MO.FUiMessageDialog_hide = function FUiMessageDialog_hide(){
    }
    RWindow.setEnable(true);
 }
-MO.FUiMessageDialog_dispose = function FUiMessageDialog_dispose(){
+MO.FDuiMessageDialog_dispose = function FDuiMessageDialog_dispose(){
    var o = this;
    o.__base.FDuiWindow.dispose.call(o);
    o.hItmeForm = null;
@@ -1368,39 +1368,39 @@ MO.FUiMessageDialog_dispose = function FUiMessageDialog_dispose(){
    o.hItemBodyForm = null;
    o._hButtonPanel = null;
 }
-MO.FUiPopupConsole = function FUiPopupConsole(o){
+MO.FDuiPopupConsole = function FDuiPopupConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd       = MO.EScope.Local;
    o._activeControl = null;
-   o.onMouseDown    = MO.FUiPopupConsole_onMouseDown;
-   o.onMouseWheel   = MO.FUiPopupConsole_onMouseWheel;
-   o.construct      = MO.FUiPopupConsole_construct;
-   o.show           = MO.FUiPopupConsole_show;
-   o.hide           = MO.FUiPopupConsole_hide;
-   o.dispose        = MO.FUiPopupConsole_dispose;
+   o.onMouseDown    = MO.FDuiPopupConsole_onMouseDown;
+   o.onMouseWheel   = MO.FDuiPopupConsole_onMouseWheel;
+   o.construct      = MO.FDuiPopupConsole_construct;
+   o.show           = MO.FDuiPopupConsole_show;
+   o.hide           = MO.FDuiPopupConsole_hide;
+   o.dispose        = MO.FDuiPopupConsole_dispose;
    return o;
 }
-MO.FUiPopupConsole_onMouseDown = function FUiPopupConsole_onMouseDown(p){
+MO.FDuiPopupConsole_onMouseDown = function FDuiPopupConsole_onMouseDown(p){
    this.hide();
 }
-MO.FUiPopupConsole_onMouseWheel = function FUiPopupConsole_onMouseWheel(s, e){
+MO.FDuiPopupConsole_onMouseWheel = function FDuiPopupConsole_onMouseWheel(s, e){
    this.hide();
 }
-MO.FUiPopupConsole_construct = function FUiPopupConsole_construct(){
+MO.FDuiPopupConsole_construct = function FDuiPopupConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    MO.Logger.info(o, 'Add listener for control popup.');
    MO.Window.lsnsMouseDown.register(o, o.onMouseDown);
    MO.Window.lsnsMouseWheel.register(o, o.onMouseWheel);
 }
-MO.FUiPopupConsole_show = function FUiPopupConsole_show(control){
+MO.FDuiPopupConsole_show = function FDuiPopupConsole_show(control){
    var o = this;
    o.hide();
-   if(MO.Class.isClass(control, MO.MUiPopup)){
+   if(MO.Class.isClass(control, MO.MDuiPopup)){
       o._activeControl = control;
    }
 }
-MO.FUiPopupConsole_hide = function FUiPopupConsole_hide(control){
+MO.FDuiPopupConsole_hide = function FDuiPopupConsole_hide(control){
    var o = this;
    if(o._activeControl){
       var opener = o._activeControl.opener();
@@ -1408,20 +1408,20 @@ MO.FUiPopupConsole_hide = function FUiPopupConsole_hide(control){
    }
    o._activeControl = null;
 }
-MO.FUiPopupConsole_dispose = function FUiPopupConsole_dispose(){
+MO.FDuiPopupConsole_dispose = function FDuiPopupConsole_dispose(){
    var o = this;
    o._activeControl = null;
    o.__base.FConsole.dispose.call(o);
 }
-MO.FUiResultConsole = function FUiResultConsole(o){
+MO.FDuiResultConsole = function FDuiResultConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o.scope          = MO.EScope.Page;
-   o.executeCommand = MO.FUiResultConsole_executeCommand;
-   o.checkService   = MO.FUiResultConsole_checkService;
-   o.checkEvent     = MO.FUiResultConsole_checkEvent;
+   o.executeCommand = MO.FDuiResultConsole_executeCommand;
+   o.checkService   = MO.FDuiResultConsole_checkService;
+   o.checkEvent     = MO.FDuiResultConsole_checkEvent;
    return o;
 }
-MO.FUiResultConsole_executeCommand = function FUiResultConsole_executeCommand(command){
+MO.FDuiResultConsole_executeCommand = function FDuiResultConsole_executeCommand(command){
    var name = command.get('name');
    if(EResultCommand.TreeReload == name){
       var tv = MO.RGlobal.get('catalog.tree');
@@ -1462,7 +1462,7 @@ MO.FUiResultConsole_executeCommand = function FUiResultConsole_executeCommand(co
       fmMain.submit();
    }
 }
-MO.FUiResultConsole_checkService = function FUiResultConsole_checkService(config){
+MO.FDuiResultConsole_checkService = function FDuiResultConsole_checkService(config){
    var o = this;
    if(config){
       if(!MO.Console.find(MO.FMessageConsole).checkResult(new MO.TMessageArg(config))){
@@ -1481,7 +1481,7 @@ MO.FUiResultConsole_checkService = function FUiResultConsole_checkService(config
    }
    return true;
 }
-MO.FUiResultConsole_checkEvent = function FUiResultConsole_checkEvent(event){
+MO.FDuiResultConsole_checkEvent = function FDuiResultConsole_checkEvent(event){
    var o = this;
    var xconfig = event.root;
    if(xconfig){
@@ -1499,7 +1499,7 @@ MO.FUiResultConsole_checkEvent = function FUiResultConsole_checkEvent(event){
                var code = xmessage.get('code');
                var message = xmessage.get('message');
                var description = xmessage.get('description');
-               MO.Console.find(MO.FUiMessageConsole).showError(code, message, description);
+               MO.Console.find(MO.FDuiMessageConsole).showError(code, message, description);
                return false;
             }
          }

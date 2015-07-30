@@ -10,7 +10,7 @@ with(MO){
       var o = this;
       o.reloadRegion()
       o.processLoadListener(o);
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneCanvasContent_loadByGuid = function FDsSceneCanvasContent_loadByGuid(guid){
       var o = this;
@@ -22,7 +22,7 @@ with(MO){
       }
       space = o._activeSpace = sceneConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FUiDesktopConsole).showLoading();
+         RConsole.find(FDuiDesktopConsole).showLoading();
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
       }
@@ -390,7 +390,7 @@ with(MO){
    }
    MO.FDsSceneCatalogToolBar_onCopyLoad = function FDsSceneCatalogToolBar_onCopyLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneCatalogToolBar_onCopyExecute = function FDsSceneCatalogToolBar_onCopyExecute(event){
       var o = this;
@@ -399,7 +399,7 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
@@ -408,7 +408,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var sprite = null;
@@ -432,7 +432,7 @@ with(MO){
    }
    MO.FDsSceneCatalogToolBar_onDeleteLoad = function FDsSceneCatalogToolBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -448,7 +448,7 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
@@ -457,7 +457,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var linker = node.dataPropertyGet('linker');
@@ -466,7 +466,7 @@ with(MO){
       }else{
          return alert('不能删除当前选中的节点.');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsSceneCatalogToolBar_onFolderOpenClick = function FDsSceneCatalogToolBar_onFolderOpenClick(event){
@@ -643,25 +643,25 @@ with(MO){
       o.__base.FDuiMenuBar.onBuilded.call(o, p);
    }
    MO.FDsSceneMenuBar_onSaveLoad = function FDsSceneMenuBar_onSaveLoad(event){
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneMenuBar_onSaveClick = function FDsSceneMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       space.commitResource();
       var resource = space.resource();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
       var connection = RConsole.find(FDrSceneConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsSceneMenuBar_onCaptureLoad = function FDsSceneMenuBar_onCaptureLoad(event){
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneMenuBar_onCaptureClick = function FDsSceneMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       var canvasContent = o._frameSet._canvasContent;
       var connection = canvasContent.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
@@ -747,7 +747,7 @@ with(MO){
    }
    MO.FDsScenePropertyToolBar_onFolderDeleteLoad = function FDsScenePropertyToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FUiDesktopConsole).hide();
+      RConsole.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -763,7 +763,7 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FUiDesktopConsole).showUploading();
+      RConsole.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
       var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
@@ -773,9 +773,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsScenePropertyToolBar_onFolderPropertyClick = function FDsScenePropertyToolBar_onFolderPropertyClick(event){
@@ -783,7 +783,7 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){

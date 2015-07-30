@@ -12,7 +12,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDuiMenuBar = function FDuiMenuBar(o){
-      o = RClass.inherits(this, o, FDuiContainer, MUiDescribeFrame);
+      o = RClass.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       //..........................................................
       // @property EUiMerge 合并枚举
       o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));

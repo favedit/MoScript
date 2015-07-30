@@ -5,11 +5,11 @@
 // @author maocy
 // @version 150123
 //==========================================================
-MO.MUiVertical = function MUiVertical(o){
+MO.MDuiVertical = function MDuiVertical(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @method
-   o.setVisible = MO.MUiHorizontal_setVisible;
+   o.setVisible = MO.MDuiVertical_setVisible;
    return o;
 }
 
@@ -19,7 +19,7 @@ MO.MUiVertical = function MUiVertical(o){
 // @method
 // @param p:visible:Boolean 是否可见
 //==========================================================
-MO.MUiHorizontal_setVisible = function MUiHorizontal_setVisible(p){
+MO.MDuiVertical_setVisible = function MDuiVertical_setVisible(p){
    var o = this;
    // 布局行
    var h = o.hPanelLine;

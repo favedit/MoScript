@@ -2,12 +2,12 @@
 // <T>窗口。</T>
 //
 // @class 
-// @face FDuiLayout, MDisplayAble, MUiSizeable, MMoveable, MWinBorder
+// @face FDuiLayout, MDisplayAble, MDuiSizeable, MMoveable, MWinBorder
 // @author maochunyang
 // @version 1.0.1
 //==========================================================
 MO.FDuiWindow = function FDuiWindow(o){
-   //o = RClass.inherits(this, o, FDuiLayout, MUiFocus, MDisplayAble, MUiSizeable, MMoveable, MWinBorder);
+   //o = RClass.inherits(this, o, FDuiLayout, MDuiFocus, MDisplayAble, MDuiSizeable, MMoveable, MWinBorder);
    o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MMouseCapture);
    //..........................................................
    // @property

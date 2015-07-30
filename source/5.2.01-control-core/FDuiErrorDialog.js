@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150507
 //==========================================================
-MO.FUiErrorDialog = function FUiErrorDialog(o){
+MO.FDuiErrorDialog = function FDuiErrorDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiDialog, MO.MListenerResult);
    //..........................................................
    // @style
@@ -20,17 +20,17 @@ MO.FUiErrorDialog = function FUiErrorDialog(o){
    o._controlCancelButton  = null;
    //..........................................................
    // @event
-   o.onBuilded             = MO.FUiErrorDialog_onBuilded;
+   o.onBuilded             = MO.FDuiErrorDialog_onBuilded;
    // @event
-   o.onConfirmClick        = MO.FUiErrorDialog_onConfirmClick;
+   o.onConfirmClick        = MO.FDuiErrorDialog_onConfirmClick;
    //..........................................................
    // @method
-   o.construct             = MO.FUiErrorDialog_construct;
+   o.construct             = MO.FDuiErrorDialog_construct;
    // @method
-   o.setCode               = MO.FUiErrorDialog_setCode;
-   o.setDescription        = MO.FUiErrorDialog_setDescription;
+   o.setCode               = MO.FDuiErrorDialog_setCode;
+   o.setDescription        = MO.FDuiErrorDialog_setDescription;
    // @method
-   o.dispose               = MO.FUiErrorDialog_dispose;
+   o.dispose               = MO.FDuiErrorDialog_dispose;
    return o;
 }
 
@@ -40,7 +40,7 @@ MO.FUiErrorDialog = function FUiErrorDialog(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-MO.FUiErrorDialog_onBuilded = function FUiErrorDialog_onBuilded(p){
+MO.FDuiErrorDialog_onBuilded = function FDuiErrorDialog_onBuilded(p){
    var o = this;
    o.__base.FDuiDialog.onBuilded.call(o, p);
    //..........................................................
@@ -56,7 +56,7 @@ MO.FUiErrorDialog_onBuilded = function FUiErrorDialog_onBuilded(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-MO.FUiErrorDialog_onConfirmClick = function FUiErrorDialog_onConfirmClick(event){
+MO.FDuiErrorDialog_onConfirmClick = function FDuiErrorDialog_onConfirmClick(event){
    var o = this;
    // 事件处理
    var event = new MO.SEvent();
@@ -73,7 +73,7 @@ MO.FUiErrorDialog_onConfirmClick = function FUiErrorDialog_onConfirmClick(event)
 //
 // @method
 //==========================================================
-MO.FUiErrorDialog_construct = function FUiErrorDialog_construct(){
+MO.FDuiErrorDialog_construct = function FDuiErrorDialog_construct(){
    var o = this;
    // 父处理
    o.__base.FDuiDialog.construct.call(o);
@@ -85,7 +85,7 @@ MO.FUiErrorDialog_construct = function FUiErrorDialog_construct(){
 // @method
 // @param value:String 内容
 //==========================================================
-MO.FUiErrorDialog_setCode = function FUiErrorDialog_setCode(value){
+MO.FDuiErrorDialog_setCode = function FDuiErrorDialog_setCode(value){
    this._controlCode.set(value);
 }
 
@@ -95,7 +95,7 @@ MO.FUiErrorDialog_setCode = function FUiErrorDialog_setCode(value){
 // @method
 // @param value:String 内容
 //==========================================================
-MO.FUiErrorDialog_setDescription = function FUiErrorDialog_setDescription(value){
+MO.FDuiErrorDialog_setDescription = function FDuiErrorDialog_setDescription(value){
    this._controlDescription.set(value);
 }
 
@@ -104,7 +104,7 @@ MO.FUiErrorDialog_setDescription = function FUiErrorDialog_setDescription(value)
 //
 // @method
 //==========================================================
-MO.FUiErrorDialog_dispose = function FUiErrorDialog_dispose(){
+MO.FDuiErrorDialog_dispose = function FDuiErrorDialog_dispose(){
    var o = this;
    // 父处理
    o.__base.FDuiDialog.dispose.call(o);

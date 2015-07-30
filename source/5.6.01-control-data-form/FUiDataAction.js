@@ -37,7 +37,7 @@ with(MO){
       //var r = RConsole.find(FResultConsole).checkService(e.document.root());
       //if(r){
       //   var v = o._dataContainer;
-      //   if(RClass.isClass(v, MUiFocus)){
+      //   if(RClass.isClass(v, MDuiFocus)){
       //      v.focus();
       //   }
       //}
