@@ -1,0 +1,56 @@
+﻿<html>
+<head>
+    <title>Stage3d Example</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all" />
+    <script language='javascript' src='../../ajs/me.js'></script>
+    <script language='javascript' src='../../ajs/context_cn.js'></script>
+    <script language='javascript' src='../../ajs/eai.js'></script>
+</head>
+
+<script>
+    var countryRes = null;
+    var map2d = null;
+
+    function onEnterFrame(event) {
+        if (countryRes.testReady()) {
+            if (!map2d.countryRes()) {
+                map2d.setCountryRes(countryRes);
+            }
+            _drawMap();
+        }
+    }
+    //----------------------------------------------------------
+    function _load() {
+        // 环境设置
+        MO.initialize();
+        MO.Runtime.setProcessCd(MO.EProcess.Debug);
+        MO.Window.Browser.setContentPath('../..');
+        MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
+        // 创建应用
+        var application = MO.Desktop.initialize(MO.FGuiApplication);
+        application.setup(document.body);
+        application.addEnterFrameListener(null, onEnterFrame);
+
+        var guiManager = application.manager();
+
+        countryRes = MO.Console.find(MO.FEaiResourceConsole).mapModule().loadCountry('china');
+
+        map2d = MO.RClass.create(MO.FGui2DMap);
+        map2d.setLocation(0, 0);
+        map2d.setSize(1280, 720);
+        //map2d.setSize(MO.Application.desktop().logicSize().width, MO.Application.desktop().logicSize().height);
+        map2d.build();
+        guiManager.register(map2d);
+
+    }
+
+    function _drawMap() {
+        map2d.dirty();
+    }
+</script>
+
+<body scroll='auto' onload='_load()'>
+</body>
+
+</html>
