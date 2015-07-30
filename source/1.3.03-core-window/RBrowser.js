@@ -88,7 +88,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
    // 输出日志
-   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
+   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, MO.Runtime.platformCd()), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    // 是否支持HTML5
    if(window.applicationCache){
       o._supportHtml5 = true;
@@ -113,7 +113,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       if(MO.Runtime.isPlatformMobile()){
          // 强制不要超过3倍
          capability.pixelRatio = Math.min(pixelRatio, 3);
-         //capability.pixelRatio = pixelRatio;
+         MO.Logger.debug(o, 'Parse browser agent. (pixel_ratio={1}, capability_ratio={2})', pixelRatio, capability.pixelRatio);
       }
    }
    if(window.Worker){

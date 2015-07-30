@@ -84,14 +84,14 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    var parameters = new Object();
    parameters.alpha = o._optionAlpha;
    parameters.antialias = o._optionAntialias;
-   o._graphicContext = MO.REngine3d.createContext(MO.FWglContext, hCanvas, parameters);
+   o._graphicContext = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas, parameters);
    if(o._optionStageProcess){
       RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
       RStage.start(o._interval);
    }
    if(o._optionResize){
-      MO.RWindow.lsnsResize.register(o, o.onResize);
-      MO.RWindow.lsnsOrientation.register(o, o.onResize);
+      MO.Window.lsnsResize.register(o, o.onResize);
+      MO.Window.lsnsOrientation.register(o, o.onResize);
    }
    if(o._optionMouseCapture){
       MO.Console.find(MO.FMouseConsole).register(o);
@@ -111,6 +111,7 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
+   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);

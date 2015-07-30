@@ -10,18 +10,17 @@ MO.FThreadConsole = function FThreadConsole(o){
    //..........................................................
    // @attribute
    o._scopeCd     = MO.EScope.Local;
+   // @attribute
    o._active      = true;
-   o._interval    = 5;
+   o._requestFlag = false;
+   o._interval    = 8;
    o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    //..........................................................
    // @html
-   o._hWindow     = null;
-   o._requestFlag = false;
    o._hIntervalId = null;
-   o._intervalHandle = MO.FThreadConsole_onInterval;
    //..........................................................
    // @event
-   o.onInterval   = MO.FThreadConsole_onInterval;
+   o.ohInterval   = MO.FThreadConsole_ohInterval;
    //..........................................................
    // @method
    o.construct    = MO.FThreadConsole_construct;
@@ -40,12 +39,9 @@ MO.FThreadConsole = function FThreadConsole(o){
 //
 // @method
 //==========================================================
-MO.FThreadConsole_onInterval = function FThreadConsole_onInterval(){
-   var o = this;
-   o.processAll();
-   if(o._requestFlag){
-      MO.Window.requestAnimationFrame(o._intervalHandle);
-   }
+MO.FThreadConsole_ohInterval = function FThreadConsole_ohInterval(){
+   var threadConsole = MO.Console.find(MO.FThreadConsole);
+   threadConsole.processAll();
 }
 
 //==========================================================
@@ -79,12 +75,10 @@ MO.FThreadConsole_construct = function FThreadConsole_construct(){
    o.__base.FConsole.construct.call(o);
    // 设置属性
    o._threads = new MO.TObjects();
-   o._hWindow = window;
    // 设置回调
-   var handle = o._intervalHandle = o.onInterval.bind(o);
-   //var flag = o._requestFlag = MO.Window.requestAnimationFrame(handle);
+   //var flag = o._requestFlag = MO.Window.requestAnimationFrame(o.ohInterval);
    //if(!flag){
-      o._hIntervalId = o._hWindow.setInterval(handle, o._interval);
+      o._hIntervalId = MO.Window.htmlWindow().setInterval(o.ohInterval, o._interval);
    //}
 }
 
@@ -119,6 +113,7 @@ MO.FThreadConsole_process = function FThreadConsole_process(thread){
 //==========================================================
 MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
    var o = this;
+   // 激活处理
    if(o._active){
       var threads = o._threads;
       var count = threads.count();
@@ -126,6 +121,10 @@ MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
          var thread = threads.at(n);
          o.process(thread);
       }
+   }
+   // 安装下一帧处理
+   if(o._requestFlag){
+      MO.Window.requestAnimationFrame(o.ohInterval);
    }
 }
 
@@ -138,16 +137,12 @@ MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
    var o = this;
    // 释放属性
    if(o._requestFlag){
-      MO.Window.cancelRequestAnimationFrame(o._intervalHandle);
+      MO.Window.cancelRequestAnimationFrame(o.ohInterval);
    }else{
-      var hWindow = o._hWindow;
-      if(hWindow){
-         var hIntervalId = o._hIntervalId;
-         if(hIntervalId){
-            hWindow.clearInterval(hIntervalId);
-            o._hIntervalId = null;
-         }
-         o._hWindow = null;
+      var hIntervalId = o._hIntervalId;
+      if(hIntervalId){
+         MO.Window.htmlWindow().clearInterval(hIntervalId);
+         o._hIntervalId = null;
       }
    }
    o._threads = MO.Lang.Object.dispose(o._threads);

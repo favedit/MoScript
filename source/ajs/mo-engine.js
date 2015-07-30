@@ -2164,7 +2164,7 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    var size = o._size;
    var width = size.width;
    var height = size.height;
-   var hCanvas = o._hCanvas = MO.RBuilder.create(hDocument, 'CANVAS');
+   var hCanvas = o._hCanvas = MO.Window.Builder.create(hDocument, 'CANVAS');
    hCanvas.__linker = o;
    hCanvas.width = width;
    hCanvas.height = height;
@@ -2178,19 +2178,18 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
 }
 MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
    var o = this;
-   var context = o._graphicContext;
-   var hCanvas = o._hCanvas;
    o._hPanel = hPanel;
-   hPanel.appendChild(hCanvas);
+   hPanel.appendChild(o._hCanvas);
    o.onResize();
 }
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
-   o._size.set(width, height);
-   o._graphicContext.size().set(width, height);
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;
+   o._size.set(width, height);
+   o._graphicContext.size().set(width, height);
+   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);
@@ -2336,14 +2335,14 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    var parameters = new Object();
    parameters.alpha = o._optionAlpha;
    parameters.antialias = o._optionAntialias;
-   o._graphicContext = MO.REngine3d.createContext(MO.FWglContext, hCanvas, parameters);
+   o._graphicContext = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas, parameters);
    if(o._optionStageProcess){
       RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
       RStage.start(o._interval);
    }
    if(o._optionResize){
-      MO.RWindow.lsnsResize.register(o, o.onResize);
-      MO.RWindow.lsnsOrientation.register(o, o.onResize);
+      MO.Window.lsnsResize.register(o, o.onResize);
+      MO.Window.lsnsOrientation.register(o, o.onResize);
    }
    if(o._optionMouseCapture){
       MO.Console.find(MO.FMouseConsole).register(o);
@@ -2363,6 +2362,7 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
+   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -12202,7 +12202,7 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
-   MO.Logger.debug(o, 'Merge mesh. (vertex={1}, index={2})', vertexTotal, indexTotal);
+   MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
    var o = this;

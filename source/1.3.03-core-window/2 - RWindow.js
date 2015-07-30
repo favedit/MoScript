@@ -18,10 +18,6 @@ MO.RWindow = function RWindow(){
    o._localStorage     = null;
    o._sessionStorage   = null;
    // @attribute
-   o._hWindow          = null;
-   o._hDocument        = null;
-   o._hContainer       = null;
-   // @attribute
    o._eventMouse       = new MO.SMouseEvent();
    o._eventKey         = new MO.SKeyboardEvent();
    o._eventResize      = new MO.SResizeEvent();
@@ -305,15 +301,15 @@ MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
 // <P>接管当前窗口对象的各种加载，鼠标，键盘的处理事件。</P>
 //
 // @method
-// @param hHtml:<Window> 窗口对象
+// @param hWindow:<Window> 窗口对象
 //==========================================================
-MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
+MO.RWindow.prototype.connect = function RWindow_connect(hWindow){
    var o = this;
    // 设置事件
    o._eventVisibility.code = MO.EEvent.Visibility;
    o._eventOrientation.code = MO.EEvent.Orientation;
    // 设置属性
-   var hWindow = o._hWindow = hHtml;
+   var hWindow = o._hWindow = hWindow;
    var hDocument = o._hDocument = hWindow.document;
    var hContainer = o._hContainer = hDocument.body;
    // 关联鼠标事件
@@ -344,6 +340,16 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    // 检测事件
    o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
    o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
+}
+
+//==========================================================
+// <T>获得窗口对象。</T>
+//
+// @method
+// @return HtmlTag 窗口对象
+//==========================================================
+MO.RWindow.prototype.htmlWindow = function RWindow_htmlWindow(){
+   return this._hWindow;
 }
 
 //==========================================================

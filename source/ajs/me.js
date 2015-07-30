@@ -12798,13 +12798,11 @@ MO.FThreadConsole = function FThreadConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd     = MO.EScope.Local;
    o._active      = true;
-   o._interval    = 5;
-   o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
-   o._hWindow     = null;
    o._requestFlag = false;
+   o._interval    = 8;
+   o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    o._hIntervalId = null;
-   o._intervalHandle = MO.FThreadConsole_onInterval;
-   o.onInterval   = MO.FThreadConsole_onInterval;
+   o.ohInterval   = MO.FThreadConsole_ohInterval;
    o.construct    = MO.FThreadConsole_construct;
    o.push         = MO.FThreadConsole_push;
    o.start        = MO.FThreadConsole_start;
@@ -12813,12 +12811,9 @@ MO.FThreadConsole = function FThreadConsole(o){
    o.dispose      = MO.FThreadConsole_dispose;
    return o;
 }
-MO.FThreadConsole_onInterval = function FThreadConsole_onInterval(){
-   var o = this;
-   o.processAll();
-   if(o._requestFlag){
-      MO.Window.requestAnimationFrame(o._intervalHandle);
-   }
+MO.FThreadConsole_ohInterval = function FThreadConsole_ohInterval(){
+   var threadConsole = MO.Console.find(MO.FThreadConsole);
+   threadConsole.processAll();
 }
 MO.FThreadConsole_push = function FThreadConsole_push(thread){
    this._threads.push(thread);
@@ -12831,9 +12826,7 @@ MO.FThreadConsole_construct = function FThreadConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._threads = new MO.TObjects();
-   o._hWindow = window;
-   var handle = o._intervalHandle = o.onInterval.bind(o);
-      o._hIntervalId = o._hWindow.setInterval(handle, o._interval);
+      o._hIntervalId = MO.Window.htmlWindow().setInterval(o.ohInterval, o._interval);
 }
 MO.FThreadConsole_process = function FThreadConsole_process(thread){
    var o = this;
@@ -12862,20 +12855,19 @@ MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
          o.process(thread);
       }
    }
+   if(o._requestFlag){
+      MO.Window.requestAnimationFrame(o.ohInterval);
+   }
 }
 MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
    var o = this;
    if(o._requestFlag){
-      MO.Window.cancelRequestAnimationFrame(o._intervalHandle);
+      MO.Window.cancelRequestAnimationFrame(o.ohInterval);
    }else{
-      var hWindow = o._hWindow;
-      if(hWindow){
-         var hIntervalId = o._hIntervalId;
-         if(hIntervalId){
-            hWindow.clearInterval(hIntervalId);
-            o._hIntervalId = null;
-         }
-         o._hWindow = null;
+      var hIntervalId = o._hIntervalId;
+      if(hIntervalId){
+         MO.Window.htmlWindow().clearInterval(hIntervalId);
+         o._hIntervalId = null;
       }
    }
    o._threads = MO.Lang.Object.dispose(o._threads);
@@ -12938,9 +12930,6 @@ MO.RWindow = function RWindow(){
    o._disableDeep      = 0;
    o._localStorage     = null;
    o._sessionStorage   = null;
-   o._hWindow          = null;
-   o._hDocument        = null;
-   o._hContainer       = null;
    o._eventMouse       = new MO.SMouseEvent();
    o._eventKey         = new MO.SKeyboardEvent();
    o._eventResize      = new MO.SResizeEvent();
@@ -13074,11 +13063,11 @@ MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    o.lsnsUnload.process(event);
    o.dispose();
 }
-MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
+MO.RWindow.prototype.connect = function RWindow_connect(hWindow){
    var o = this;
    o._eventVisibility.code = MO.EEvent.Visibility;
    o._eventOrientation.code = MO.EEvent.Orientation;
-   var hWindow = o._hWindow = hHtml;
+   var hWindow = o._hWindow = hWindow;
    var hDocument = o._hDocument = hWindow.document;
    var hContainer = o._hContainer = hDocument.body;
    var visibilitychange = MO.Window.Browser.defineEventGet('visibilitychange');
@@ -13107,6 +13096,9 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    hContainer.onunload = o.ohUnload;
    o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
    o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
+}
+MO.RWindow.prototype.htmlWindow = function RWindow_htmlWindow(){
+   return this._hWindow;
 }
 MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
    return this._optionSelect;
@@ -13612,7 +13604,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(o._typeCd == MO.EBrowser.Chrome){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
-   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
+   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, MO.Runtime.platformCd()), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -13633,6 +13625,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
          capability.pixelRatio = Math.min(pixelRatio, 3);
+         MO.Logger.debug(o, 'Parse browser agent. (pixel_ratio={1}, capability_ratio={2})', pixelRatio, capability.pixelRatio);
       }
    }
    if(window.Worker){
@@ -22644,7 +22637,7 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    var size = o._size;
    var width = size.width;
    var height = size.height;
-   var hCanvas = o._hCanvas = MO.RBuilder.create(hDocument, 'CANVAS');
+   var hCanvas = o._hCanvas = MO.Window.Builder.create(hDocument, 'CANVAS');
    hCanvas.__linker = o;
    hCanvas.width = width;
    hCanvas.height = height;
@@ -22658,19 +22651,18 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
 }
 MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
    var o = this;
-   var context = o._graphicContext;
-   var hCanvas = o._hCanvas;
    o._hPanel = hPanel;
-   hPanel.appendChild(hCanvas);
+   hPanel.appendChild(o._hCanvas);
    o.onResize();
 }
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
-   o._size.set(width, height);
-   o._graphicContext.size().set(width, height);
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;
+   o._size.set(width, height);
+   o._graphicContext.size().set(width, height);
+   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);
@@ -22816,14 +22808,14 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    var parameters = new Object();
    parameters.alpha = o._optionAlpha;
    parameters.antialias = o._optionAntialias;
-   o._graphicContext = MO.REngine3d.createContext(MO.FWglContext, hCanvas, parameters);
+   o._graphicContext = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas, parameters);
    if(o._optionStageProcess){
       RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
       RStage.start(o._interval);
    }
    if(o._optionResize){
-      MO.RWindow.lsnsResize.register(o, o.onResize);
-      MO.RWindow.lsnsOrientation.register(o, o.onResize);
+      MO.Window.lsnsResize.register(o, o.onResize);
+      MO.Window.lsnsOrientation.register(o, o.onResize);
    }
    if(o._optionMouseCapture){
       MO.Console.find(MO.FMouseConsole).register(o);
@@ -22843,6 +22835,7 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
+   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -32682,7 +32675,7 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
-   MO.Logger.debug(o, 'Merge mesh. (vertex={1}, index={2})', vertexTotal, indexTotal);
+   MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
    var o = this;

@@ -161,8 +161,11 @@ MO.FGuiLiveTable_oeUpdate = function FGuiLiveTable_oeUpdate(event){
    if(event.isBefore()){
       // 是否要刷新
       if(o._lineScroll < 0){
-         var scrollStep = Math.max(parseInt(o._lineScroll / o._rowHeight), 1)
-         o._lineScroll += scrollStep;
+         o._lineScroll += 1;
+         // 小于一行，直接显示
+         if(o._lineScroll < -o._rowHeight){
+            o._lineScroll = 0;
+         }
          // 删除多余的数据
          if(o._lineScroll >= 0){
             var entities = o._entities;

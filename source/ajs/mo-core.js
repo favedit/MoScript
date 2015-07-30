@@ -3874,13 +3874,11 @@ MO.FThreadConsole = function FThreadConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    o._scopeCd     = MO.EScope.Local;
    o._active      = true;
-   o._interval    = 5;
-   o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
-   o._hWindow     = null;
    o._requestFlag = false;
+   o._interval    = 8;
+   o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    o._hIntervalId = null;
-   o._intervalHandle = MO.FThreadConsole_onInterval;
-   o.onInterval   = MO.FThreadConsole_onInterval;
+   o.ohInterval   = MO.FThreadConsole_ohInterval;
    o.construct    = MO.FThreadConsole_construct;
    o.push         = MO.FThreadConsole_push;
    o.start        = MO.FThreadConsole_start;
@@ -3889,12 +3887,9 @@ MO.FThreadConsole = function FThreadConsole(o){
    o.dispose      = MO.FThreadConsole_dispose;
    return o;
 }
-MO.FThreadConsole_onInterval = function FThreadConsole_onInterval(){
-   var o = this;
-   o.processAll();
-   if(o._requestFlag){
-      MO.Window.requestAnimationFrame(o._intervalHandle);
-   }
+MO.FThreadConsole_ohInterval = function FThreadConsole_ohInterval(){
+   var threadConsole = MO.Console.find(MO.FThreadConsole);
+   threadConsole.processAll();
 }
 MO.FThreadConsole_push = function FThreadConsole_push(thread){
    this._threads.push(thread);
@@ -3907,9 +3902,7 @@ MO.FThreadConsole_construct = function FThreadConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._threads = new MO.TObjects();
-   o._hWindow = window;
-   var handle = o._intervalHandle = o.onInterval.bind(o);
-      o._hIntervalId = o._hWindow.setInterval(handle, o._interval);
+      o._hIntervalId = MO.Window.htmlWindow().setInterval(o.ohInterval, o._interval);
 }
 MO.FThreadConsole_process = function FThreadConsole_process(thread){
    var o = this;
@@ -3938,20 +3931,19 @@ MO.FThreadConsole_processAll = function FThreadConsole_processAll(){
          o.process(thread);
       }
    }
+   if(o._requestFlag){
+      MO.Window.requestAnimationFrame(o.ohInterval);
+   }
 }
 MO.FThreadConsole_dispose = function FThreadConsole_dispose(){
    var o = this;
    if(o._requestFlag){
-      MO.Window.cancelRequestAnimationFrame(o._intervalHandle);
+      MO.Window.cancelRequestAnimationFrame(o.ohInterval);
    }else{
-      var hWindow = o._hWindow;
-      if(hWindow){
-         var hIntervalId = o._hIntervalId;
-         if(hIntervalId){
-            hWindow.clearInterval(hIntervalId);
-            o._hIntervalId = null;
-         }
-         o._hWindow = null;
+      var hIntervalId = o._hIntervalId;
+      if(hIntervalId){
+         MO.Window.htmlWindow().clearInterval(hIntervalId);
+         o._hIntervalId = null;
       }
    }
    o._threads = MO.Lang.Object.dispose(o._threads);

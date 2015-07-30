@@ -3639,8 +3639,10 @@ MO.FGuiLiveTable_oeUpdate = function FGuiLiveTable_oeUpdate(event){
    o.__base.FGuiControl.oeUpdate.call(o, event);
    if(event.isBefore()){
       if(o._lineScroll < 0){
-         var scrollStep = Math.max(parseInt(o._lineScroll / o._rowHeight), 1)
-         o._lineScroll += scrollStep;
+         o._lineScroll += 1;
+         if(o._lineScroll < -o._rowHeight){
+            o._lineScroll = 0;
+         }
          if(o._lineScroll >= 0){
             var entities = o._entities;
             if(entities.count() > o._tableCount){

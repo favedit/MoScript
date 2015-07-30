@@ -31,7 +31,7 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    var size = o._size;
    var width = size.width;
    var height = size.height;
-   var hCanvas = o._hCanvas = MO.RBuilder.create(hDocument, 'CANVAS');
+   var hCanvas = o._hCanvas = MO.Window.Builder.create(hDocument, 'CANVAS');
    hCanvas.__linker = o;
    hCanvas.width = width;
    hCanvas.height = height;
@@ -45,19 +45,18 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
 }
 MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
    var o = this;
-   var context = o._graphicContext;
-   var hCanvas = o._hCanvas;
    o._hPanel = hPanel;
-   hPanel.appendChild(hCanvas);
+   hPanel.appendChild(o._hCanvas);
    o.onResize();
 }
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
-   o._size.set(width, height);
-   o._graphicContext.size().set(width, height);
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;
+   o._size.set(width, height);
+   o._graphicContext.size().set(width, height);
+   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);

@@ -77,7 +77,7 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    var width = size.width;
    var height = size.height;
    // 创建画板
-   var hCanvas = o._hCanvas = MO.RBuilder.create(hDocument, 'CANVAS');
+   var hCanvas = o._hCanvas = MO.Window.Builder.create(hDocument, 'CANVAS');
    hCanvas.__linker = o;
    hCanvas.width = width;
    hCanvas.height = height;
@@ -99,11 +99,9 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
 //==========================================================
 MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
    var o = this;
-   var context = o._graphicContext;
-   var hCanvas = o._hCanvas;
    // 放入父容器
    o._hPanel = hPanel;
-   hPanel.appendChild(hCanvas);
+   hPanel.appendChild(o._hCanvas);
    // 改变大小
    o.onResize();
 }
@@ -115,12 +113,14 @@ MO.FE2dCanvas_setPanel = function FE2dCanvas_setPanel(hPanel){
 //==========================================================
 MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    var o = this;
-   o._size.set(width, height);
-   o._graphicContext.size().set(width, height);
-   // 设置窗口大小
+   // 设置画板
    var hCanvas = o._hCanvas;
    hCanvas.width = width;
    hCanvas.height = height;
+   // 设置尺寸
+   o._size.set(width, height);
+   o._graphicContext.size().set(width, height);
+   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 
 //==========================================================

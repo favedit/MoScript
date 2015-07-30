@@ -31,9 +31,6 @@ MO.RWindow = function RWindow(){
    o._disableDeep      = 0;
    o._localStorage     = null;
    o._sessionStorage   = null;
-   o._hWindow          = null;
-   o._hDocument        = null;
-   o._hContainer       = null;
    o._eventMouse       = new MO.SMouseEvent();
    o._eventKey         = new MO.SKeyboardEvent();
    o._eventResize      = new MO.SResizeEvent();
@@ -167,11 +164,11 @@ MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    o.lsnsUnload.process(event);
    o.dispose();
 }
-MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
+MO.RWindow.prototype.connect = function RWindow_connect(hWindow){
    var o = this;
    o._eventVisibility.code = MO.EEvent.Visibility;
    o._eventOrientation.code = MO.EEvent.Orientation;
-   var hWindow = o._hWindow = hHtml;
+   var hWindow = o._hWindow = hWindow;
    var hDocument = o._hDocument = hWindow.document;
    var hContainer = o._hContainer = hDocument.body;
    var visibilitychange = MO.Window.Browser.defineEventGet('visibilitychange');
@@ -200,6 +197,9 @@ MO.RWindow.prototype.connect = function RWindow_connect(hHtml){
    hContainer.onunload = o.ohUnload;
    o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
    o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
+}
+MO.RWindow.prototype.htmlWindow = function RWindow_htmlWindow(){
+   return this._hWindow;
 }
 MO.RWindow.prototype.optionSelect = function RWindow_optionSelect(){
    return this._optionSelect;
@@ -705,7 +705,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(o._typeCd == MO.EBrowser.Chrome){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
-   MO.Logger.info(o, 'Parse browser agent. (type_cd={1})', MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
+   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, MO.Runtime.platformCd()), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -726,6 +726,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
          capability.pixelRatio = Math.min(pixelRatio, 3);
+         MO.Logger.debug(o, 'Parse browser agent. (pixel_ratio={1}, capability_ratio={2})', pixelRatio, capability.pixelRatio);
       }
    }
    if(window.Worker){

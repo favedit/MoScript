@@ -146,7 +146,7 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    var parameters = new Object();
    parameters.alpha = o._optionAlpha;
    parameters.antialias = o._optionAntialias;
-   o._graphicContext = MO.REngine3d.createContext(MO.FWglContext, hCanvas, parameters);
+   o._graphicContext = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas, parameters);
    // 启动处理
    if(o._optionStageProcess){
       RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
@@ -154,8 +154,8 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    }
    // 监听大小改变
    if(o._optionResize){
-      MO.RWindow.lsnsResize.register(o, o.onResize);
-      MO.RWindow.lsnsOrientation.register(o, o.onResize);
+      MO.Window.lsnsResize.register(o, o.onResize);
+      MO.Window.lsnsOrientation.register(o, o.onResize);
    }
    // 注册鼠标捕捉监听
    if(o._optionMouseCapture){
@@ -174,9 +174,6 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    if(!sourceWidth || !sourceHeight){
       throw new MO.TError(o, 'Invalid canvas size.');
    }
-   //if(o._screenSize.equalsData(sourceWidth, sourceHeight)){
-      //return;
-   //}
    o._screenSize.set(sourceWidth, sourceHeight);
    // 设置尺寸
    var width = parseInt(sourceWidth * o._scaleRate);
@@ -189,6 +186,7 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    // 设置范围
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
+   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 
 //==========================================================
