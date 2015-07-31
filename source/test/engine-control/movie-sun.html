@@ -6,7 +6,7 @@
    <LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all" />
    <SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
    <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
-      <SCRIPT language='javascript' src='../../ajs/eai.js'></SCRIPT>
+   <SCRIPT language='javascript' src='../../ajs/eai.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
@@ -17,8 +17,8 @@
    }
    //----------------------------------------------------------
    function _load() {
-       var htmlBody = document.body;
-         htmlBody.style.backgroundImage = 'url(../../ars/eai/background.jpg)';
+      var htmlBody = document.body;
+      htmlBody.style.backgroundImage = 'url(../../ars/eai/background.jpg)';
       // 环境设置
       MO.initialize();
       MO.Runtime.setProcessCd(MO.EProcess.Debug);
@@ -31,7 +31,7 @@
       var guiManager = application.manager();
       sprite = MO.RClass.create(MO.FGuiFPCCTable);
       sprite.setup();
-      sprite.setLocation(0, 0);
+      sprite.setLocation(20, 5);
       sprite.setSize(400, 700);
       sprite.build();
       guiManager.register(sprite);
