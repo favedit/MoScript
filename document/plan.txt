@@ -14,3 +14,18 @@
 
 暂时废弃中
 ------------------------------------------------------------
+
+
+3D 数据重新整合
+
+1 - 3DS - MAX 导出 ASE 文件
+
+1 - 位图:Bitmap
+2 - 模型:Mesh
+3 - 材质:Material
+4 - 蒙皮:Skin
+5 - 动画:Animation
+6 - 模板:Template 将这些元素组合起来的一个定义。
+7 - 地形:Terrain
+8 - 实体:Entity / Still / Sprite / Effect / Character / Role
+8 - 场景:Scene
