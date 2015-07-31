@@ -167,23 +167,6 @@ MO.RString.prototype.inChars = function RString_inChars(v, p){
 }
 
 //==========================================================
-// <T>检查字符串内是否包含特定字符串。</T>
-//
-// @method
-// @param v:value:String 字符串
-// @param s:search:String 特定字符串
-// @return Boolean
-//    <L value='true'>包含</L>
-//    <L value='false'>不包含</L>
-//==========================================================
-MO.RString.prototype.contains = function RString_contains(v, s){
-   if((v != null) && (s != null)){
-      return (v.toString().indexOf(s) != -1);
-   }
-   return false;
-}
-
-//==========================================================
 // <T>判断两个字符串是否相等。</T>
 //
 // @method
@@ -221,11 +204,18 @@ MO.RString.prototype.equals = function RString_equals(s, t, f){
 // @return Boolean 是否包含
 //==========================================================
 MO.RString.prototype.contains = function RString_contains(source, values){
-   var count = arguments.length;
-   for(var i = 1; i < count; i++){
-      var value = arguments[i];
-      if(source.indexOf(value) != -1){
-         return true;
+   if(source != null){
+      // 转换成字符串
+      if(source.constructor != String){
+         source = source.toString();
+      }
+      // 判断内容包含
+      var count = arguments.length;
+      for(var i = 1; i < count; i++){
+         var value = arguments[i];
+         if(source.indexOf(value) != -1){
+            return true;
+         }
       }
    }
    return false;

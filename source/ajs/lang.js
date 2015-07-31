@@ -4115,12 +4115,6 @@ MO.RString.prototype.inChars = function RString_inChars(v, p){
    }
    return false;
 }
-MO.RString.prototype.contains = function RString_contains(v, s){
-   if((v != null) && (s != null)){
-      return (v.toString().indexOf(s) != -1);
-   }
-   return false;
-}
 MO.RString.prototype.equals = function RString_equals(s, t, f){
    if(s == null){
       s = '';
@@ -4139,11 +4133,16 @@ MO.RString.prototype.equals = function RString_equals(s, t, f){
    }
 }
 MO.RString.prototype.contains = function RString_contains(source, values){
-   var count = arguments.length;
-   for(var i = 1; i < count; i++){
-      var value = arguments[i];
-      if(source.indexOf(value) != -1){
-         return true;
+   if(source != null){
+      if(source.constructor != String){
+         source = source.toString();
+      }
+      var count = arguments.length;
+      for(var i = 1; i < count; i++){
+         var value = arguments[i];
+         if(source.indexOf(value) != -1){
+            return true;
+         }
       }
    }
    return false;

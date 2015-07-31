@@ -1,224 +1,222 @@
-with(MO){
-   //==========================================================
-   // <T>分割控件。</T>
-   //
-   // @class
-   // @author maocy
-   // @version 150123
-   //==========================================================
-   MO.FDuiSplit = function FDuiSplit(o){
-      //o = RClass.inherits(this, o, FDuiControl, MDesign, MDisplay, MDuiHorizontal);
-      o = RClass.inherits(this, o, FDuiControl);
-      //..........................................................
-      // @property
-      //o._dispStyle        = RClass.register(o, new APtyString('_dispStyle', ESplitStyle.Normal));
-      //o._icon             = RClass.register(o, new APtyString('_icon'));
-      //o._editExtend       = RClass.register(o, new APtyBoolean('_editExtend'), true);
-      // @style
-      //o._styleTitle       = RClass.register(o, new AStyle('Title'));
-      //o._iconMinus        = 'ctl.collapse_nor';
-      //o._iconPlus         = 'ctl.expand_nor';
-      // @attribute
-      //o.__lines           = null;
-      //o._esize            = ESize.Horizontal;
-      //o.extended          = true;
-      // @html
-      //o.hImage            = null;
-      //o.hIcon             = null;
-      //o.hText             = null;
-      //..........................................................
-      // @event
-      //o.onSplitMouseEnter = RClass.register(o, new HMouseEnter('onSplitMouseEnter'), FDuiSplit_onSplitMouseEnter); 
-      //o.onSplitMouseLeave = RClass.register(o, new HMouseLeave('onSplitMouseLeave'), FDuiSplit_onSplitMouseLeave); 
-      //o.onMouseDown       = FDuiSplit_onMouseDown;
-      //o.onBuildPanel      = FDuiSplit_onBuildPanel;
-      //..........................................................
-      // @process
-      //o.oeBuild           = FDuiSplit_oeBuild;
-      //o.oeMode            = FDuiSplit_oeMode;
-      //..........................................................
-      // @method
-      //o.construct         = FDuiSplit_construct;
-      //o.extend            = FDuiSplit_extend;
-      //o.pushLine          = FDuiSplit_pushLine;
-      //o.dispose           = FDuiSplit_dispose;
-      return o;
-   }
-
-   //==========================================================
-   // <T>�������¼���</T>
-   //
+//==========================================================
+// <T>分割控件。</T>
+//
+// @class
+// @author maocy
+// @version 150123
+//==========================================================
+MO.FDuiSplit = function FDuiSplit(o){
+   //o = RClass.inherits(this, o, FDuiControl, MDesign, MDisplay, MDuiHorizontal);
+   o = MO.Class.inherits(this, o, MO.FDuiControl);
+   //..........................................................
+   // @property
+   //o._dispStyle        = RClass.register(o, new APtyString('_dispStyle', ESplitStyle.Normal));
+   //o._icon             = RClass.register(o, new APtyString('_icon'));
+   //o._editExtend       = RClass.register(o, new APtyBoolean('_editExtend'), true);
+   // @style
+   //o._styleTitle       = RClass.register(o, new AStyle('Title'));
+   //o._iconMinus        = 'ctl.collapse_nor';
+   //o._iconPlus         = 'ctl.expand_nor';
+   // @attribute
+   //o.__lines           = null;
+   //o._esize            = ESize.Horizontal;
+   //o.extended          = true;
+   // @html
+   //o.hImage            = null;
+   //o.hIcon             = null;
+   //o.hText             = null;
+   //..........................................................
+   // @event
+   //o.onSplitMouseEnter = RClass.register(o, new HMouseEnter('onSplitMouseEnter'), FDuiSplit_onSplitMouseEnter); 
+   //o.onSplitMouseLeave = RClass.register(o, new HMouseLeave('onSplitMouseLeave'), FDuiSplit_onSplitMouseLeave); 
+   //o.onMouseDown       = FDuiSplit_onMouseDown;
+   //o.onBuildPanel      = FDuiSplit_onBuildPanel;
+   //..........................................................
+   // @process
+   //o.oeBuild           = FDuiSplit_oeBuild;
+   //o.oeMode            = FDuiSplit_oeMode;
+   //..........................................................
    // @method
-   // @param e:event:TEvent �¼�����
-   //==========================================================
-   MO.FDuiSplit_onSplitMouseEnter = function FDuiSplit_onSplitMouseEnter(e){
-      var o = this;
-      if(o.hImage){
-         o.hImage.src = RRes._iconPath(o.extended ? 'ctl.collapse_hvr' : 'ctl.expand_hvr');
+   //o.construct         = FDuiSplit_construct;
+   //o.extend            = FDuiSplit_extend;
+   //o.pushLine          = FDuiSplit_pushLine;
+   //o.dispose           = FDuiSplit_dispose;
+   return o;
+}
+
+//==========================================================
+// <T>�������¼���</T>
+//
+// @method
+// @param e:event:TEvent �¼�����
+//==========================================================
+MO.FDuiSplit_onSplitMouseEnter = function FDuiSplit_onSplitMouseEnter(e){
+   var o = this;
+   if(o.hImage){
+      o.hImage.src = RRes._iconPath(o.extended ? 'ctl.collapse_hvr' : 'ctl.expand_hvr');
+   }
+}
+
+//==========================================================
+// <T>����뿪�¼���</T>
+//
+// @method
+// @param e:event:TEvent �¼�����
+//==========================================================
+MO.FDuiSplit_onSplitMouseLeave = function FDuiSplit_onSplitMouseLeave(e){
+   var o = this;
+   if(o.hImage){
+      o.hImage.src = RRes._iconPath(o.extended ? 'ctl.collapse_nor' : 'ctl.expand_nor');
+   }
+}
+
+//==========================================================
+// <T>��갴���¼���</T>
+//
+// @method
+// @param e:event:TEvent �¼�����
+//==========================================================
+MO.FDuiSplit_onMouseDown = function FDuiSplit_onMouseDown(){
+   var o = this;
+   if(ESplitStyle.Normal == o._dispStyle){
+      o.extend(!o.extended);
+   }
+}
+
+//==========================================================
+// <T>�����װ塣</T>
+//
+// @method
+//==========================================================
+MO.FDuiSplit_onBuildPanel = function FDuiSplit_onBuildPanel(){
+   var o = this;
+   o.hPanel = RBuilder.create(null, 'DIV');
+   o.hForm = RBuilder.appendTable(o.hPanel);
+   o.hForm.width = '100%';
+}
+
+//==========================================================
+// <T>�����ؼ���</T>
+//
+// @method
+// @param e:event:TEvent �¼�����
+//==========================================================
+MO.FDuiSplit_oeBuild = function FDuiSplit_oeBuild(e){
+   var o = this;
+   o.base.FDuiControl.oeBuild.call(o, e);
+   o.height = 2;
+   // Text
+   if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
+      var hf = o.hForm;
+      var hr = hf.insertRow()
+      o.attachEvent('onSplitMouseEnter', hf);
+      o.attachEvent('onSplitMouseLeave', hf);
+      // ��������
+      var hc = hr.insertCell();
+      hc.width = '100%';
+      hc.height = 25;
+      hc.style.padding = '0 0';
+      hc.style.background = 'url(' + RRes._iconPath('ctl.FDuiSplit_Panel') + ')';
+      RBuilder.appendEmpty(hc, 4);
+      o.hImage = RBuilder.appendIcon(hc, o._iconMinus);
+      if(o._icon){
+         o.hIcon = RBuilder.appendIcon(hc, o._icon);
       }
+      o.hText = RBuilder.appendText(hc, '&nbsp;&nbsp;' + o.label);
+      o.hText.style.fontWeight='BOLD';
+   }else if(RString.equals(o._dispStyle, ESplitStyle.BulgeLine)){
+      var h = this.hForm.insertRow().insertCell();
+      h.style.borderBottom  = '1px solid #666666';
+      h.style.borderTop  = '1px solid #DDDDDD';
+      h.height = 2;
+   }else if(RString.equals(o._dispStyle, ESplitStyle.HollowLine)){
+      var h = this.hForm.insertRow().insertCell();
+      h.style.borderBottom  = '1px solid #DDDDDD';
+      h.style.borderTop  = '1px solid #666666';
+      h.height = 2;
    }
+   // Event
+   return EEventStatus.Stop;
+}
 
-   //==========================================================
-   // <T>����뿪�¼���</T>
-   //
-   // @method
-   // @param e:event:TEvent �¼�����
-   //==========================================================
-   MO.FDuiSplit_onSplitMouseLeave = function FDuiSplit_onSplitMouseLeave(e){
-      var o = this;
-      if(o.hImage){
-         o.hImage.src = RRes._iconPath(o.extended ? 'ctl.collapse_nor' : 'ctl.expand_nor');
-      }
-   }
+//==========================================================
+// <T>�����ؼ���</T>
+//
+// @method
+// @param e:event:TEvent �¼�����
+//==========================================================
+MO.FDuiSplit_oeMode = function FDuiSplit_oeMode(e){
+   var o = this;
+   var r = o.base.FDuiControl.oeMode.call(o, e);
+   o.base.MDisplay.oeMode.call(o, e);
+   o.extend(o._editExtend);
+   return r;
+}
 
-   //==========================================================
-   // <T>��갴���¼���</T>
-   //
-   // @method
-   // @param e:event:TEvent �¼�����
-   //==========================================================
-   MO.FDuiSplit_onMouseDown = function FDuiSplit_onMouseDown(){
-      var o = this;
-      if(ESplitStyle.Normal == o._dispStyle){
-         o.extend(!o.extended);
-      }
-   }
+//==========================================================
+// <T>��������</T>
+//
+// @method
+//==========================================================
+MO.FDuiSplit_construct = function FDuiSplit_construct(){
+   var o = this;
+   o.__lines = new TList();
+}
 
-   //==========================================================
-   // <T>�����װ塣</T>
-   //
-   // @method
-   //==========================================================
-   MO.FDuiSplit_onBuildPanel = function FDuiSplit_onBuildPanel(){
-      var o = this;
-      o.hPanel = RBuilder.create(null, 'DIV');
-      o.hForm = RBuilder.appendTable(o.hPanel);
-      o.hForm.width = '100%';
+//==========================================================
+// <T>չ������������ؼ���</T>
+//
+// @method
+// @param v:visible:Boolean �Ƿ�չ��
+//==========================================================
+MO.FDuiSplit_extend = function FDuiSplit_extend(v){
+   var o = this;
+   // ���ģʽ
+   if(EMode.Design == o._emode){
+      return;
    }
+   // ����Ƿ����
+   if(o.extended == v){
+      return;
+   }
+   // ����չ��״̬
+   o.extended = v;
+   if(o.hImage){
+      o.hImage.src = v ? RResource._iconPath(o._iconMinus) : RRes._iconPath(o._iconPlus);
+   }
+   // �������еĿɼ���
+   var c = o.__lines.count;
+   for(var n=0; n<c; n++){
+      o.__lines.get(n).style.display = v ? 'block' : 'none';
+   }
+   // �����ı��С�¼�
+   o.topControl().topResize(o);
+}
 
-   //==========================================================
-   // <T>�����ؼ���</T>
-   //
-   // @method
-   // @param e:event:TEvent �¼�����
-   //==========================================================
-   MO.FDuiSplit_oeBuild = function FDuiSplit_oeBuild(e){
-      var o = this;
-      o.base.FDuiControl.oeBuild.call(o, e);
-      o.height = 2;
-      // Text
-      if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
-         var hf = o.hForm;
-         var hr = hf.insertRow()
-         o.attachEvent('onSplitMouseEnter', hf);
-         o.attachEvent('onSplitMouseLeave', hf);
-         // ��������
-         var hc = hr.insertCell();
-         hc.width = '100%';
-         hc.height = 25;
-         hc.style.padding = '0 0';
-         hc.style.background = 'url(' + RRes._iconPath('ctl.FDuiSplit_Panel') + ')';
-         RBuilder.appendEmpty(hc, 4);
-         o.hImage = RBuilder.appendIcon(hc, o._iconMinus);
-         if(o._icon){
-            o.hIcon = RBuilder.appendIcon(hc, o._icon);
-         }
-         o.hText = RBuilder.appendText(hc, '&nbsp;&nbsp;' + o.label);
-         o.hText.style.fontWeight='BOLD';
-      }else if(RString.equals(o._dispStyle, ESplitStyle.BulgeLine)){
-         var h = this.hForm.insertRow().insertCell();
-         h.style.borderBottom  = '1px solid #666666';
-         h.style.borderTop  = '1px solid #DDDDDD';
-         h.height = 2;
-      }else if(RString.equals(o._dispStyle, ESplitStyle.HollowLine)){
-         var h = this.hForm.insertRow().insertCell();
-         h.style.borderBottom  = '1px solid #DDDDDD';
-         h.style.borderTop  = '1px solid #666666';
-         h.height = 2;
-      }
-      // Event
-      return EEventStatus.Stop;
-   }
+//==========================================================
+// <T>����һ�������С�</T>
+//
+// @method
+// @param hr:htmlRow:<TR> �ж���
+//==========================================================
+MO.FDuiSplit_pushLine = function FDuiSplit_pushLine(hr){
+   this.__lines.push(hr);
+}
 
-   //==========================================================
-   // <T>�����ؼ���</T>
-   //
-   // @method
-   // @param e:event:TEvent �¼�����
-   //==========================================================
-   MO.FDuiSplit_oeMode = function FDuiSplit_oeMode(e){
-      var o = this;
-      var r = o.base.FDuiControl.oeMode.call(o, e);
-      o.base.MDisplay.oeMode.call(o, e);
-      o.extend(o._editExtend);
-      return r;
+//==========================================================
+// <T>�ͷŶ���</T>
+//
+// @method
+//==========================================================
+MO.FDuiSplit_dispose = function FDuiSplit_dispose(){
+   var o = this;
+   o.base.FDuiControl.dispose.call(o);
+   if(o.__lines){
+      o.__lines.release();
+      o.__lines = null;
    }
-
-   //==========================================================
-   // <T>��������</T>
-   //
-   // @method
-   //==========================================================
-   MO.FDuiSplit_construct = function FDuiSplit_construct(){
-      var o = this;
-      o.__lines = new TList();
-   }
-
-   //==========================================================
-   // <T>չ������������ؼ���</T>
-   //
-   // @method
-   // @param v:visible:Boolean �Ƿ�չ��
-   //==========================================================
-   MO.FDuiSplit_extend = function FDuiSplit_extend(v){
-      var o = this;
-      // ���ģʽ
-      if(EMode.Design == o._emode){
-         return;
-      }
-      // ����Ƿ����
-      if(o.extended == v){
-         return;
-      }
-      // ����չ��״̬
-      o.extended = v;
-      if(o.hImage){
-         o.hImage.src = v ? RResource._iconPath(o._iconMinus) : RRes._iconPath(o._iconPlus);
-      }
-      // �������еĿɼ���
-      var c = o.__lines.count;
-      for(var n=0; n<c; n++){
-         o.__lines.get(n).style.display = v ? 'block' : 'none';
-      }
-      // �����ı��С�¼�
-      o.topControl().topResize(o);
-   }
-
-   //==========================================================
-   // <T>����һ�������С�</T>
-   //
-   // @method
-   // @param hr:htmlRow:<TR> �ж���
-   //==========================================================
-   MO.FDuiSplit_pushLine = function FDuiSplit_pushLine(hr){
-      this.__lines.push(hr);
-   }
-
-   //==========================================================
-   // <T>�ͷŶ���</T>
-   //
-   // @method
-   //==========================================================
-   MO.FDuiSplit_dispose = function FDuiSplit_dispose(){
-      var o = this;
-      o.base.FDuiControl.dispose.call(o);
-      if(o.__lines){
-         o.__lines.release();
-         o.__lines = null;
-      }
-      o.hForm = null;
-      o.hText = null;
-      o.hIcon = null;
-      o.hImage = null;
-   }
+   o.hForm = null;
+   o.hText = null;
+   o.hIcon = null;
+   o.hImage = null;
 }
