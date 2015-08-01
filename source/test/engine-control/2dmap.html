@@ -2,6 +2,7 @@
 <head>
     <title>Stage3d Example</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <link rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all" />
     <script language='javascript' src='../../ajs/me.js'></script>
     <script language='javascript' src='../../ajs/context_cn.js'></script>
@@ -10,14 +11,20 @@
 
 <script>
     var countryRes = null;
+    var cityRes = null;
     var map2d = null;
 
     function onEnterFrame(event) {
-        if (countryRes.testReady()) {
+        if(!cityRes){
+            cityRes = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard('1410');
+            return;
+        }
+        if (countryRes.testReady() && cityRes) {
             if (!map2d.countryRes()) {
                 map2d.setCountryRes(countryRes);
+                _drawMap();
             }
-            _drawMap();
+            
         }
     }
     //----------------------------------------------------------
@@ -35,10 +42,14 @@
         var guiManager = application.manager();
 
         countryRes = MO.Console.find(MO.FEaiResourceConsole).mapModule().loadCountry('china');
+        var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
+        //resourceConsole.addLoadListener(o, o.onLoadResource);
+        resourceConsole.load('{eai.resource}/resource.dat');
 
         map2d = MO.RClass.create(MO.FGui2DMap);
         map2d.setLocation(0, 0);
         map2d.setSize(1280, 720);
+        // map2d.onPaintCity();
         //map2d.setSize(MO.Application.desktop().logicSize().width, MO.Application.desktop().logicSize().height);
         map2d.build();
         guiManager.register(map2d);
@@ -46,6 +57,7 @@
     }
 
     function _drawMap() {
+        map2d.onPaintCity();
         map2d.dirty();
     }
 </script>
