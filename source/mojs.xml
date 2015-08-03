@@ -129,6 +129,11 @@
       <PathMerger source='/7.4.02-eai-company-task'          target='/ajs/eai-company-task.js'/>
 
       <PathMerger source='/7.5.01-eai-scene'                 target='/ajs/eai-scene.js'/>
+      <PathMerger source='/7.5.02-eai-scene-history'         target='/ajs/eai-scene-history.js'/>
+      <PathMerger source='/7.5.03-eai-scene-customer'        target='/ajs/eai-scene-customer.js'/>
+      <PathMerger source='/7.5.04-eai-scene-marketer'        target='/ajs/eai-scene-marketer.js'/>
+      <PathMerger source='/7.5.05-eai-scene-department'      target='/ajs/eai-scene-department.js'/>
+
       <PathMerger source='/7.6.01-eai-chapter'               target='/ajs/eai-chapter.js'/>
       <PathMerger source='/7.7.01-eai-application'           target='/ajs/eai-application.js'/>
       <PathMerger source='/7.8.01-eai-space'                 target='/ajs/eai-space.js'/>
@@ -318,6 +323,10 @@
          <File source='/ajs/eai-company-report.js'/>
          <File source='/ajs/eai-company-task.js'/>
          <File source='/ajs/eai-scene.js'/>
+         <File source='/ajs/eai-scene-history.js'/>
+         <File source='/ajs/eai-scene-customer.js'/>
+         <File source='/ajs/eai-scene-marketer.js'/>
+         <File source='/ajs/eai-scene-department.js'/>
          <File source='/ajs/eai-chapter.js'/>
          <File source='/ajs/eai-application.js'/>
          <File source='/ajs/eai-space.js'/>

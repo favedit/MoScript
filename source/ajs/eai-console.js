@@ -1,3 +1,93 @@
+MO.FEaiFinancialData = function FEaiFinancialData(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._provinceCode  = MO.Class.register(o, new MO.AGetter('_provinceCode'));
+   o._code          = MO.Class.register(o, new MO.AGetter('_code'));
+   o._label         = MO.Class.register(o, new MO.AGetter('_label'));
+   o._level         = MO.Class.register(o, new MO.AGetter('_level'));
+   o._location      = MO.Class.register(o, new MO.AGetter('_location'));
+   o.construct      = MO.FEaiFinancialData_construct;
+   o.unserialize    = MO.FEaiFinancialData_unserialize;
+   o.dispose        = MO.FEaiFinancialData_dispose;
+   return o;
+}
+MO.FEaiFinancialData_construct = function FEaiFinancialData_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._location = new MO.SPoint3();
+}
+MO.FEaiFinancialData_unserialize = function FEaiFinancialData_unserialize(input){
+   var o = this;
+   o._provinceCode = input.readUint16();
+   o._code = input.readUint16();
+   o._label = input.readString();
+   o._level = input.readUint16();
+   o._location.unserialize2(input);
+}
+MO.FEaiFinancialData_dispose = function FEaiFinancialData_dispose(){
+   var o = this;
+   o._location = RObject.dispose(o._location);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FEaiFinancialData = function FEaiFinancialData(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._provinceCode  = MO.Class.register(o, new MO.AGetter('_provinceCode'));
+   o._code          = MO.Class.register(o, new MO.AGetter('_code'));
+   o._label         = MO.Class.register(o, new MO.AGetter('_label'));
+   o._level         = MO.Class.register(o, new MO.AGetter('_level'));
+   o._location      = MO.Class.register(o, new MO.AGetter('_location'));
+   o.construct      = MO.FEaiFinancialData_construct;
+   o.unserialize    = MO.FEaiFinancialData_unserialize;
+   o.dispose        = MO.FEaiFinancialData_dispose;
+   return o;
+}
+MO.FEaiFinancialData_construct = function FEaiFinancialData_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._location = new MO.SPoint3();
+}
+MO.FEaiFinancialData_unserialize = function FEaiFinancialData_unserialize(input){
+   var o = this;
+   o._provinceCode = input.readUint16();
+   o._code = input.readUint16();
+   o._label = input.readString();
+   o._level = input.readUint16();
+   o._location.unserialize2(input);
+}
+MO.FEaiFinancialData_dispose = function FEaiFinancialData_dispose(){
+   var o = this;
+   o._location = RObject.dispose(o._location);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FEaiFinancialMarketerDynamic = function FEaiFinancialMarketerDynamic(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._provinceCode  = MO.Class.register(o, new MO.AGetter('_provinceCode'));
+   o._code          = MO.Class.register(o, new MO.AGetter('_code'));
+   o._label         = MO.Class.register(o, new MO.AGetter('_label'));
+   o._level         = MO.Class.register(o, new MO.AGetter('_level'));
+   o._location      = MO.Class.register(o, new MO.AGetter('_location'));
+   o.construct      = MO.FEaiFinancialMarketerDynamic_construct;
+   o.unserialize    = MO.FEaiFinancialMarketerDynamic_unserialize;
+   o.dispose        = MO.FEaiFinancialMarketerDynamic_dispose;
+   return o;
+}
+MO.FEaiFinancialMarketerDynamic_construct = function FEaiFinancialMarketerDynamic_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._location = new MO.SPoint3();
+}
+MO.FEaiFinancialMarketerDynamic_unserialize = function FEaiFinancialMarketerDynamic_unserialize(input){
+   var o = this;
+   o._provinceCode = input.readUint16();
+   o._code = input.readUint16();
+   o._label = input.readString();
+   o._level = input.readUint16();
+   o._location.unserialize2(input);
+}
+MO.FEaiFinancialMarketerDynamic_dispose = function FEaiFinancialMarketerDynamic_dispose(){
+   var o = this;
+   o._location = RObject.dispose(o._location);
+   o.__base.FObject.dispose.call(o);
+}
 MO.FEaiLogic = function FEaiLogic(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._code          = null;
@@ -182,6 +272,8 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o._code               = 'statistics';
    o.doInvestmentDynamic = MO.FEaiLogicStatistics_doInvestmentDynamic;
    o.doInvestmentTrend   = MO.FEaiLogicStatistics_doInvestmentTrend;
+   o.doMarketerDynamic   = MO.FEaiLogicStatistics_doMarketerDynamic;
+   o.doMarketerTrend     = MO.FEaiLogicStatistics_doMarketerTrend;
    return o;
 }
 MO.FEaiLogicStatistics_doInvestmentDynamic = function FEaiLogicStatistics_doInvestmentDynamic(owner, callback, startDate, endDate){
@@ -194,6 +286,20 @@ MO.FEaiLogicStatistics_doInvestmentTrend = function FEaiLogicStatistics_doInvest
    }
    var parameters = 'begin=' + startDate + '&end=' + endDate + '&interval=' + interval;
    return this.send('investment_trend', parameters, owner, callback);
+}
+MO.FEaiLogicStatistics_doMarketerDynamic = function FEaiLogicStatistics_doMarketerDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var url = 'http://localhost:8099/eai.financial.marketer.wv?do=dynamic&begin=' + startDate + '&end=' + endDate;
+   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
+   connection.addLoadListener(owner, callback);
+   return connection;
+}
+MO.FEaiLogicStatistics_doMarketerTrend = function FEaiLogicStatistics_doMarketerTrend(owner, callback, startDate, endDate, interval){
+   var o = this;
+   var url = 'http://localhost:8099/eai.financial.marketer.wv?do=trend&begin=' + startDate + '&end=' + endDate + '&interval=' + interval;
+   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
+   connection.addLoadListener(owner, callback);
+   return connection;
 }
 MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o = MO.Class.inherits(this, o, MO.FEaiLogic);

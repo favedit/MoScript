@@ -621,9 +621,7 @@ MO.MDataStream_writeBytes = function MDataStream_writeBytes(data, offset, length
 MO.MDataView = function MDataView(o){
    o = MO.Class.inherits(this, o);
    o._viewer     = null;
-   o._endianCd   = 0;
-   o.endianCd    = MO.MDataView_endianCd;
-   o.setEndianCd = MO.MDataView_setEndianCd;
+   o._endianCd   = MO.Class.register(o, new MO.AGetSet('_endianCd'), false);
    o.getInt8     = MO.MDataView_getInt8;
    o.getInt16    = MO.MDataView_getInt16;
    o.getInt32    = MO.MDataView_getInt32;
@@ -645,12 +643,6 @@ MO.MDataView = function MDataView(o){
    o.setFloat    = MO.MDataView_setFloat;
    o.setDouble   = MO.MDataView_setDouble;
    return o;
-}
-MO.MDataView_endianCd = function MDataView_endianCd(p){
-   return this._endianCd;
-}
-MO.MDataView_setEndianCd = function MDataView_setEndianCd(p){
-   this._endianCd = p;
 }
 MO.MDataView_getInt8 = function MDataView_getInt8(p){
    var o = this;

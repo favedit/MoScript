@@ -309,6 +309,7 @@ MO.FGui2DMap = function FGui2DMap(o) {
    o._countryRes    = MO.Class.register(o, new MO.AGetSet('_countryRes'));
    o.construct      = MO.FGui2DMap_construct;
    o.onPaintBegin   = MO.FGui2DMap_onPaintBegin;
+   o.onPaintCity    = MO.FGui2DMap_onPaintCity;
    o.dispose        = MO.FGui2DMap_dispose;
    return o;
 }
@@ -326,11 +327,134 @@ MO.FGui2DMap_onPaintBegin = function FGui2DMap_onPaintBegin(event) {
    var rectangle = event.rectangle;
    var countryRes = o._countryRes;
    graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 2);
+   var ctx = graphic._handle;
+       ctx.lineCap = 'round';
+   var provinces = countryRes.data().provinces(),
+      count = provinces.count(),
+      province,boundaries,boundary,positions,items,panX,panY,x,y,scale;
+   for(var n = 0 ;  n < count ; n++){
+      province = provinces.at(n);
+      boundaries = province.boundaries();
+     for(var i = 0 ; i < boundaries._count ; i++){
+        items         = boundaries.items()[i];
+        positionCount = items._positionCount;
+        position      = items._positions;
+        panX          = -1000;
+        panY          = -400;
+        scale         = 14;
+        ctx.moveTo(position[0] * scale + panX,(90-position[1])*scale + panY);
+        for(var j=0; j < positionCount; j++){
+              x = position [0+j*2] * scale + panX;
+              y = (90-position[1+j*2]) * scale + panY;
+              ctx.lineTo( x , y );
+        }
+     }
+   }
+   ctx.strokeStyle = "rgb(1, 127, 156)";
+   ctx.lineWidth = 1;
+   ctx.stroke();
+}
+MO.FGui2DMap_onPaintCity = function FGui2DMap_onPaintCity(card){
+   var o = this;
+   var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityModule();
+   var cityData =  cityConsole.findByCard("1410"),
+       x=cityData._location.x,
+       y=cityData._location.y;
+   console.log(x+"..."+y);
 }
 MO.FGui2DMap_dispose = function FGui2DMap_dispose(){
    var o = this;
    o._date = MO.Lang.Object.dispose(o._date);
    o.__base.FGuiControl.dispose.call(o);
+}
+MO.FGuiFPCCTable = function FGuiFPCCTable(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._frameTime = MO.Class.register(o, new MO.AGetSet('_frameTime'));
+   o._ready = MO.Class.register(o, new MO.AGetSet('_ready'), false);
+   o.setup = MO.FGuiFPCCTable_setup;
+   o.onPaintBegin = MO.FGuiFPCCTable_onPaintBegin;
+   o.onImageLoad = MO.FGuiFPCCTable_onImageLoad;
+   o.drawRectangleByText = MO.FGuiFPCCTable_drawRectangleByText;
+   return o;
+}
+MO.FGuiFPCCTable_setup = function FGuiFPCCTable_setup() {
+   var o = this;
+   o._headFontStyle = 'bold 32px Microsoft YaHei';
+   o._tableTitleFontStyle = '16px Microsoft songti';
+}
+MO.FGuiFPCCTable_onImageLoad = function FGuiFPCCTable_onImageLoad() {
+   var o = this;
+   if (--o._imageToLoad == 0) {
+      o._ready = true;
+      o._lastTick = MO.Timer.current();
+      o.dirty();
+   }
+}
+MO.FGuiFPCCTable_onPaintBegin = function FGuiFPCCTable_onPaintBegin(event) {
+   var o = this;
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   var height = rectangle.height;
+   var width = rectangle.width;
+   var padding = 6;
+   graphic.drawRectangle(left, top, width, height, "#fff", 1);
+   var titleText = "理财师业绩展示中心";
+   var titleHeight = 30;
+   graphic.setFont(o._headFontStyle);
+   var titleWidth = graphic.textWidth(titleText);
+   var titleLeft = left + (width - titleWidth) * 0.5;
+   var titleTop = top + padding + titleHeight;
+   graphic.setFont(o._headFontStyle);
+   graphic.drawText(titleText, titleLeft, titleTop, '#55FFED');
+   var rankLeft = left + padding;
+   var rankTop = titleTop + padding * 2;
+   var rankWidth = width - padding * 2;
+   var rankHeight = 40;
+   var rankCount = 3;
+   var rankLastTop = 0;
+   for (var i = 1; i <= rankCount; i++) {
+      if (i == 1)
+         graphic.drawRectangle(rankLeft, rankTop, rankWidth, rankHeight, "#fff", 1);
+      else
+         graphic.drawRectangle(rankLeft, rankTop + rankHeight * (i - 1), rankWidth, rankHeight, "#fff", 1);
+      if (i == 3) {
+         rankLastTop = rankTop + rankHeight * (i - 1) + rankHeight;
+      }
+   }
+   var realtimeListTop = rankLastTop + padding;
+   var realtimeListHeight = height - rankLastTop - padding;
+   graphic.drawRectangle(rankLeft, realtimeListTop, rankWidth, realtimeListHeight, "#fff", 1);
+   var tableTitleTexts = new Array('时间', '公司', '理财师', '理财师业绩', '注册/投资', '投资/赎回');
+   var tableTitleTextLeft = rankLeft + padding;
+   var tableTitleTextHeight = 16;
+   var tableTextMargin = 2;
+   var tableTextPadding = 7;
+   graphic.setFont(o._tableTitleFontStyle);
+   for (var j = 0; j < tableTitleTexts.length; j++) {
+      var tableText = tableTitleTexts[j];
+      var tableTextWidth = graphic.textWidth(tableText);
+      var tableTextTop = realtimeListTop + tableTitleTextHeight + tableTextPadding;
+      if (j == 0) {
+         graphic.drawText(tableText, tableTitleTextLeft, tableTextTop, "#fff");
+         o.drawRectangleByText(graphic, tableText, 16, "#7798f2", 1, tableTitleTextLeft, tableTextTop, 1);
+      } else {
+         var tableTextWidthBefore = graphic.textWidth(tableTitleTexts[j - 1]);
+         tableTitleTextLeft = tableTitleTextLeft + tableTextWidthBefore + tableTextPadding;
+         graphic.drawText(tableText, tableTitleTextLeft, tableTextTop, "#fff");
+         o.drawRectangleByText(graphic, tableText, 16, "#ff6d4b", 1, tableTitleTextLeft, tableTextTop, 1);
+      }
+   }
+}
+MO.FGuiFPCCTable_drawRectangleByText = function FGuiFPCCTable_drawRectangleByText(graphic, text, textHeight, color, lineWidth, x, y, padding) {
+   padding = padding * 1.5;
+   var left = x - padding;
+   var top = y - padding - textHeight;
+   var textWidth = graphic.textWidth(text);
+   var width = padding + textWidth;
+   var height = textHeight + padding * 4;
+   graphic.drawRectangle(left, top, width, height, color, lineWidth);
 }
 with (MO) {
    MO.FGuiHistoryMilestoneBar = function FGuiHistoryMilestoneBar(o) {

@@ -15,6 +15,9 @@ MO.EEaiScene = new function EEaiScene(){
    // 图表
    o.ChartTotal      = 'chart.total';
    o.ChartHistory    = 'chart.history';
+   o.ChartCustomer   = 'chart.customer';
+   o.ChartMarketer   = 'chart.marketer';
+   o.ChartDepartment = 'chart.department';
    o.ChartLive       = 'chart.live';
    o.ChartWorld      = 'chart.world';
    o.ChartSales      = 'chart.sales';

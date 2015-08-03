@@ -9,10 +9,8 @@ MO.MDataView = function MDataView(o){
    //..........................................................
    // @attribute
    o._viewer     = null;
-   o._endianCd   = 0;
+   o._endianCd   = MO.Class.register(o, new MO.AGetSet('_endianCd'), false);
    //..........................................................
-   o.endianCd    = MO.MDataView_endianCd;
-   o.setEndianCd = MO.MDataView_setEndianCd;
    // @method
    o.getInt8     = MO.MDataView_getInt8;
    o.getInt16    = MO.MDataView_getInt16;
@@ -36,26 +34,6 @@ MO.MDataView = function MDataView(o){
    o.setFloat    = MO.MDataView_setFloat;
    o.setDouble   = MO.MDataView_setDouble;
    return o;
-}
-
-//==========================================================
-// <T>获得字节序。</T>
-//
-// @method
-// @return Boolean 字节序
-//==========================================================
-MO.MDataView_endianCd = function MDataView_endianCd(p){
-   return this._endianCd;
-}
-
-//==========================================================
-// <T>设置字节序。</T>
-//
-// @method
-// @param p:endian:Boolean 字节序
-//==========================================================
-MO.MDataView_setEndianCd = function MDataView_setEndianCd(p){
-   this._endianCd = p;
 }
 
 //==========================================================

@@ -105,364 +105,6 @@ MO.FEaiChartCustomerScene_deactive = function FEaiChartCustomerScene_deactive(){
    var o = this;
    o.__base.FEaiChartScene.deactive.call(o);
 }
-MO.FEaiChartHistoryScene = function FEaiChartHistoryScene(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code                     = MO.EEaiScene.ChartHistory;
-   o._ready                    = false;
-   o._mapReady                 = false;
-   o._dataReady                = false;
-   o._playing                  = false;
-   o._lastTick                 = 0;
-   o._interval                 = 10;
-   o._lastDateTick             = 0;
-   o._dateInterval             = 120;
-   o._startDate                = null;
-   o._endDate                  = null;
-   o._currentDate              = null;
-   o._logoBar                  = null;
-   o._buttonTransform          = null;
-   o._timeline                 = null;
-   o._milestoneFrame           = null;
-   o._statusStart              = false;
-   o._statusLayerCount         = 100;
-   o._statusLayerLevel         = 100;
-   o._milestoneBars            = null;
-   o._milestoneShowed          = 0;
-   o._milestoneBarShowDuration = 1000;
-   o._milestoneBarShowTick     = 0;
-   o._milestoneBarShowing      = false;
-   o.onLoadData                = MO.FEaiChartHistoryScene_onLoadData;
-   o.onDateSelect              = MO.FEaiChartHistoryScene_onDateSelect;
-   o.onMilestoneDone           = MO.FEaiChartHistoryScene_onMilestoneDone;
-   o.onOperationPlay           = MO.FEaiChartHistoryScene_onOperationPlay;
-   o.onOperationPause          = MO.FEaiChartHistoryScene_onOperationPause;
-   o.onOperationVisibility     = MO.FEaiChartHistoryScene_onOperationVisibility;
-   o.onProcessReady            = MO.FEaiChartHistoryScene_onProcessReady;
-   o.onProcess                 = MO.FEaiChartHistoryScene_onProcess;
-   o.onSwitchLiveComplete      = MO.FEaiChartHistoryScene_onSwitchLiveComplete;
-   o.testReady                 = MO.FEaiChartHistoryScene_testReady;
-   o.setup                     = MO.FEaiChartHistoryScene_setup;
-   o.resetDate                 = MO.FEaiChartHistoryScene_resetDate;
-   o.selectDate                = MO.FEaiChartHistoryScene_selectDate;
-   o.switchPlay                = MO.FEaiChartHistoryScene_switchPlay;
-   o.switchLive                = MO.FEaiChartHistoryScene_switchLive;
-   o.processResize             = MO.FEaiChartHistoryScene_processResize;
-   return o;
-}
-MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(event) {
-   var o = this;
-   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
-   var startDate = historyModule.dates().first();
-   var endDate = historyModule.dates().last();
-   o._currentDate.parseAuto(startDate.code());
-   o._startDate.parseAuto(startDate.code());
-   o._endDate.parseAuto(endDate.code());
-   var milestones = historyModule.milestones();
-   var milestoneBars = o._milestoneBars = new MO.TObjects();
-   var count = milestones.count();
-   for (var i = count - 1; i >= 0; i--) {
-      var milestone = milestones.at(count - i - 1);
-      var bar = MO.RClass.create(MO.FGuiHistoryMilestoneBar);
-      bar.linkGraphicContext(o);
-      bar.setName('MilestoneBar_' + i);
-      bar.setVisible(false);
-      bar.setDockCd(MO.EUiDock.Right)
-      bar.setTop(90 + 100 * i);
-      var milestoneInvestmentTotal = milestone.investmentTotal();
-      if (milestoneInvestmentTotal >= 10000) {
-         bar.setRight(-371);
-      } else {
-         bar.setRight(-341);
-      }
-      bar.setup(milestone);
-      bar.build();
-      o._guiManager.register(bar);
-      milestoneBars.push(bar);
-   }
-   o._dataReady = true;
-}
-MO.FEaiChartHistoryScene_onDateSelect = function FEaiChartHistoryScene_onDateSelect(event) {
-   var o = this;
-   o._currentDate.date.setTime(event.date.date.getTime());
-   o._currentDate.refresh();
-   o.selectDate(o._currentDate.format('YYYYMMDD'));
-}
-MO.FEaiChartHistoryScene_onMilestoneDone = function FEaiChartHistoryScene_onMilestoneDone(event) {
-   var o = this;
-   o.switchPlay(true);
-   o._milestoneShowed++;
-   o._milestoneBarShowTick = MO.Timer.current();
-   o._milestoneBarShowing = true;
-}
-MO.FEaiChartHistoryScene_onOperationPlay = function FEaiChartHistoryScene_onOperationPlay(event){
-   var o = this;
-   var code = o._currentDate.format('YYYYMMDD')
-   var endCode = o._endDate.format('YYYYMMDD')
-   if (code == endCode) {
-      var historyConsole = MO.Console.find(MO.FEaiResourceConsole).historyConsole();
-      var startDate = historyConsole.dates().first();
-      MO.Lang.Date.autoParse(o._currentDate, startDate.code());
-   }
-   o.switchPlay(true);
-}
-MO.FEaiChartHistoryScene_onOperationPause = function FEaiChartHistoryScene_onOperationPause(event){
-   var o = this;
-   o.switchPlay(false);
-}
-MO.FEaiChartHistoryScene_onOperationVisibility = function FEaiChartHistoryScene_onOperationVisibility(event){
-   var o = this;
-   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
-   if(event.visibility){
-      o._groundAutio.play();
-      o._countryEntity._audioMapEnter._hAudio.muted = false;
-   }else{
-      o._groundAutio.pause();
-      o._countryEntity._audioMapEnter._hAudio.muted = true;
-   }
-}
-MO.FEaiChartHistoryScene_onProcessReady = function FEaiChartHistoryScene_onProcessReady() {
-   var o = this;
-   o.__base.FEaiChartScene.onProcessReady.call(o);
-   o._mapEntity.showCity();
-}
-MO.FEaiChartHistoryScene_onProcess = function FEaiChartHistoryScene_onProcess(){
-   var o = this;
-   o.__base.FEaiChartScene.onProcess.call(o);
-   var countryEntity = o._countryEntity;
-   var mapEntity = o._mapEntity;
-   if (!o._statusStart) {
-      if (o.testReady()) {
-         var hLoading = document.getElementById('id_loading');
-         if (hLoading) {
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
-            o._statusLayerLevel--;
-         }
-         o._statusLayerLevel--;
-         if (o._statusLayerLevel == 0) {
-            if (hLoading) {
-               document.body.removeChild(hLoading);
-            }
-            countryEntity.start();
-            o._mapEntity.showCountry(countryEntity);
-            o.switchPlay(true);
-            o.processLoaded();
-            o._statusStart = true;
-         }
-      }
-   }
-   var currentTick = MO.Timer.current();
-   if (o._playing) {
-      if(!countryEntity.introAnimeDone()){
-         countryEntity.process();
-      }
-      if (!o._mapReady) {
-         mapEntity.cityRangeRenderable().setVisible(true);
-         mapEntity.cityCenterRenderable().setVisible(true);
-         o._guiManager.show();
-         o._milestoneFrame.setVisible(false);
-         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
-         alphaAction.setAlphaBegin(0);
-         alphaAction.setAlphaEnd(1);
-         alphaAction.setAlphaInterval(0.005);
-         alphaAction.push(o._guiManager);
-         o._guiManager.mainTimeline().pushAction(alphaAction);
-         o._mapReady = true;
-      }
-      if (currentTick - o._lastTick > o._interval) {
-         if (currentTick - o._lastDateTick > o._dateInterval) {
-            o._currentDate.addDay(1);
-            var code = o._currentDate.format('YYYYMMDD')
-            var endCode = o._endDate.format('YYYYMMDD')
-            o.selectDate(code);
-            if(code == endCode){
-               o.switchPlay(false);
-               o.switchLive();
-            }
-            o._lastDateTick = currentTick;
-            o._mapEntity.upload();
-         }
-         o._timeline.setProgress((currentTick - o._lastDateTick) / o._dateInterval);
-         o._timeline.dirty();
-         o._lastTick = currentTick;
-      }
-   }
-   if (o._milestoneBarShowing) {
-      var mbPassedTick = currentTick - o._milestoneBarShowTick;
-      var p = mbPassedTick / o._milestoneBarShowDuration;
-      if (p > 1) {
-         p = 1;
-         o._milestoneBarShowing = false;
-      }
-      p = (1 - p) * (1 - p);
-      var mBar = o._milestoneBars.at(o._milestoneShowed - 1);
-      if (mBar.data().investmentTotal() >= 10000) {
-         mBar.setRight(20 + (-371 * p));
-      }
-      else {
-         mBar.setRight(20 + (-341 * p));
-      }
-      mBar.dirty();
-   }
-   if (o._milestoneFrame.visible()) {
-      o._milestoneFrame.dirty();
-   }
-}
-MO.FEaiChartHistoryScene_onSwitchLiveComplete = function FEaiChartHistoryScene_onSwitchLiveComplete(event){
-   var o = this;
-   var scene = o._chapter.selectSceneByCode(MO.EEaiScene.ChartLive);
-   scene.showFace();
-}
-MO.FEaiChartHistoryScene_testReady = function FEaiChartHistoryScene_testReady(){
-   var o = this;
-   if(!o._ready){
-      if(!o._dataReady){
-         return false;
-      }
-      o._ready = true;
-   }
-   return o._ready;
-}
-MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
-   var o = this;
-   o.__base.FEaiChartScene.setup.call(o);
-   o._currentDate = new MO.TDate();
-   o._startDate = new MO.TDate();
-   o._endDate = new MO.TDate();
-   var audio = o._groundAutio;
-   audio.pause();
-   audio = null;
-   var audioConsole = MO.Console.find(MO.FAudioConsole);
-   var audio = o._groundAutio = audioConsole.load('{eai.resource}/historyBGM.mp3');
-   audio.setLoop(true);
-   audio.setVolume(0.2);
-   audio.play();
-   var mapEntity = o._mapEntity;
-   mapEntity.cityRangeRenderable().setVisible(false);
-   mapEntity.cityCenterRenderable().setVisible(false);
-   var frame = o._logoBar = MO.RConsole.find(MO.FGuiFrameConsole).get(o, 'eai.history.LogoBar');
-   frame.setLocation(5, 5);
-   o._guiManager.register(frame);
-   var controlInvestment = o._logoBar.findComponent('investment');
-   controlInvestment.setNoRolling(true);
-   var transform = o._buttonTransform = MO.Class.create(MO.FGuiChangeTransform);
-   transform.setInterval(10);
-   transform.setScale(0.1);
-   var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
-   timeline.linkGraphicContext(o);
-   timeline.setName('Timeline');
-   timeline.setDockCd(MO.EUiDock.Bottom);
-   timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-   timeline.setLeft(50);
-   timeline.setRight(450);
-   timeline.setBottom(5);
-   timeline.setHeight(600);
-   timeline.setTimeUnit(MO.EUiTimeUnit.Month);
-   timeline.setStartTime(o._startDate);
-   timeline.setEndTime(o._endDate);
-   timeline.setDegreeTime(o._currentDate);
-   timeline.addDataChangedListener(o, o.onDateSelect);
-   timeline.build();
-   o._guiManager.register(timeline);
-   var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
-   milestoneFrame.linkGraphicContext(o);
-   milestoneFrame.setName('MilestoneFrame');
-   milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
-   milestoneFrame.setup();
-   milestoneFrame.build();
-   o._guiManager.register(milestoneFrame);
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var milestoneBG = MO.RClass.create(MO.FGuiPicture);
-   milestoneBG.linkGraphicContext(o);
-   milestoneBG.setName('MilestoneBG_Top');
-   milestoneBG.setDockCd(MO.EUiDock.RightTop);
-   milestoneBG.setWidth(468);
-   milestoneBG.setHeight(464);
-   milestoneBG._displayOrder = -1;
-   milestoneBG._backResource = 'url:/script/ars/eai/milestone/bar_bg_top.png';
-   milestoneBG.psInitialize();
-   milestoneBG.build();
-   o._guiManager.register(milestoneBG);
-   milestoneBG = MO.RClass.create(MO.FGuiPicture);
-   milestoneBG.linkGraphicContext(o);
-   milestoneBG.setName('MilestoneBG_Bottom');
-   milestoneBG.setDockCd(MO.EUiDock.RightBottom);
-   milestoneBG.setWidth(468);
-   milestoneBG.setHeight(464);
-   milestoneBG._displayOrder = -1;
-   milestoneBG._backResource = 'url:/script/ars/eai/milestone/bar_bg_bottom.png';
-   milestoneBG.psInitialize();
-   milestoneBG.build();
-   o._guiManager.register(milestoneBG);
-   o._guiManager.hide();
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   entityConsole.cityModule().build(o);
-   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
-   o._readyLoader.push(countryEntity);
-   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
-   historyModule.addLoadListener(o, o.onLoadData);
-   historyModule.load();
-}
-MO.FEaiChartHistoryScene_resetDate = function FEaiChartHistoryScene_resetDate(){
-   var o = this;
-   var cityEntities = MO.Console.find(MO.FEaiEntityConsole).cityModule().citys();
-   var count = cityEntities.count();
-   for(var i = 0; i < count; i++){
-      var cityEntity = cityEntities.at(i);
-      cityEntity.reset();
-   }
-}
-MO.FEaiChartHistoryScene_selectDate = function FEaiChartHistoryScene_selectDate(code) {
-   var o = this;
-   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
-   var dateData = historyModule.dates().get(code);
-   var milestone = historyModule.milestones().get(code);
-   if (milestone) {
-      o._milestoneFrame.setData(milestone);
-      o._milestoneFrame.show();
-      o._milestoneFrame.dirty();
-      o.switchPlay(false);
-   }
-   if(dateData){
-      o._timeline.setDegreeTime(o._currentDate);
-      o._timeline.dirty();
-      var cityDatas = dateData.citys();
-      var cityEntities = MO.Console.find(MO.FEaiEntityConsole).cityModule().citys();
-      var count = cityEntities.count();
-      for (var i = 0; i < count; i++) {
-         var cityEntity = cityEntities.at(i);
-         var cityCode = cityEntity.data().code();
-         var data = cityDatas.get(cityCode);
-         cityEntity.update(data);
-      }
-      var controlDate = o._logoBar.findComponent('date');
-      controlDate.setValue(code);
-      var controlInvestment = o._logoBar.findComponent('investment');
-      controlInvestment.setValue(parseInt(dateData.investmentTotal()).toString());
-   }
-}
-MO.FEaiChartHistoryScene_switchPlay = function FEaiChartHistoryScene_switchPlay(flag){
-   var o = this;
-   o._playing = flag;
-}
-MO.FEaiChartHistoryScene_switchLive = function FEaiChartHistoryScene_switchLive(){
-   var o = this;
-   var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
-   alphaAction.setAlphaBegin(1);
-   alphaAction.setAlphaEnd(0);
-   alphaAction.setAlphaInterval(-0.005);
-   alphaAction.addCompleteListener(o, o.onSwitchLiveComplete);
-   alphaAction.push(o._guiManager);
-   o._guiManager.mainTimeline().pushAction(alphaAction);
-}
-MO.FEaiChartHistoryScene_processResize = function FEaiChartHistoryScene_processResize(){
-   var o = this;
-   o.__base.FEaiChartScene.processResize.call(o);
-   var control = o._southSea;
-   control.setDockCd(MO.EUiDock.RightBottom);
-   control.setRight(520);
-   control.setBottom(180);
-}
 MO.FEaiChartIndustryScene = function FEaiChartIndustryScene(o){
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    o._code        = MO.EEaiScene.ChartIndustry;
@@ -990,6 +632,290 @@ MO.FEaiChartLiveScene_fixMatrix = function FEaiChartLiveScene_fixMatrix(matrix){
    matrix.update();
 }
 MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(){
+   var o = this;
+   o.__base.FEaiChartScene.processResize.call(o);
+   var isVertical = MO.Window.Browser.isOrientationVertical()
+   o.fixMatrix(o._investment.display().matrix());
+   var logoBar = o._logoBar;
+   if(isVertical){
+      logoBar.setLocation(8, 8);
+      logoBar.setScale(0.85, 0.85);
+   }else{
+      logoBar.setLocation(5, 5);
+      logoBar.setScale(1, 1);
+   }
+   var control = o._southSea;
+   if(isVertical){
+      control.setDockCd(MO.EUiDock.RightTop);
+      control.setTop(570);
+      control.setRight(100);
+   }else{
+      control.setDockCd(MO.EUiDock.RightBottom);
+      control.setRight(710);
+      control.setBottom(260);
+   }
+   var timeline = o._timeline;
+   if(isVertical){
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(10);
+      timeline.setRight(10);
+      timeline.setBottom(920);
+      timeline.setHeight(250);
+   }else{
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setBottom(30);
+      timeline.setRight(680);
+      timeline.setHeight(250);
+   }
+   var liveTable = o._liveTable;
+   if(isVertical){
+      liveTable.setDockCd(MO.EUiDock.Bottom);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      liveTable.setLeft(10);
+      liveTable.setRight(10);
+      liveTable.setBottom(10);
+      liveTable.setWidth(1060);
+      liveTable.setHeight(900);
+   }else{
+      liveTable.setDockCd(MO.EUiDock.Right);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      liveTable.setTop(10);
+      liveTable.setRight(0);
+      liveTable.setBottom(10);
+      liveTable.setWidth(650);
+   }
+}
+MO.FEaiChartSalesScene = function FEaiChartSalesScene(o){
+   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
+   o._code                   = MO.EEaiScene.ChartSales;
+   o._investment             = MO.Class.register(o, new MO.AGetter('_investment'));
+   o._investmentCurrent      = 0;
+   o._ready                  = false;
+   o._mapReady               = false;
+   o._playing                = false;
+   o._lastTick               = 0;
+   o._interval               = 10;
+   o._24HLastTick            = 0;
+   o._24HTrendInterval       = 1000 * 60 * 5;
+   o._logoBar                = null;
+   o._timeline               = null;
+   o._liveTable              = null;
+   o._livePop                = null;
+   o._statusStart            = false;
+   o._statusLayerCount       = 100;
+   o._statusLayerLevel       = 100;
+   o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
+   o.onInvestmentDataChanged = MO.FEaiChartSalesScene_onInvestmentDataChanged;
+   o.onOperationVisibility   = MO.FEaiChartSalesScene_onOperationVisibility;
+   o.onProcessReady          = MO.FEaiChartSalesScene_onProcessReady;
+   o.onProcess               = MO.FEaiChartSalesScene_onProcess;
+   o.onSwitchProcess         = MO.FEaiChartSalesScene_onSwitchProcess;
+   o.onSwitchComplete        = MO.FEaiChartSalesScene_onSwitchComplete;
+   o.setup                   = MO.FEaiChartSalesScene_setup;
+   o.showParticle            = MO.FEaiChartSalesScene_showParticle;
+   o.showFace                = MO.FEaiChartSalesScene_showFace;
+   o.fixMatrix               = MO.FEaiChartSalesScene_fixMatrix;
+   o.processResize           = MO.FEaiChartSalesScene_processResize;
+   return o;
+}
+MO.FEaiChartSalesScene_onInvestmentDataChanged = function FEaiChartSalesScene_onInvestmentDataChanged(event) {
+   var o = this;
+   var entity = event.entity;
+   var table = o._liveTable;
+   table.setRank(event.rank);
+   table.pushEntity(entity);
+   table.dirty();
+   if(entity){
+      var pop = o._livePop;
+      pop.setData(entity);
+   }
+}
+MO.FEaiChartSalesScene_onOperationVisibility = function FEaiChartSalesScene_onOperationVisibility(event){
+   var o = this;
+   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
+   if(event.visibility){
+      o._groundAutio.play();
+      o._countryEntity._audioMapEnter._hAudio.muted = false;
+   }else{
+      o._groundAutio.pause();
+      o._countryEntity._audioMapEnter._hAudio.muted = true;
+   }
+}
+MO.FEaiChartSalesScene_onProcessReady = function FEaiChartSalesScene_onProcessReady() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcessReady.call(o);
+   o._mapEntity.showCity();
+}
+MO.FEaiChartSalesScene_onProcess = function FEaiChartSalesScene_onProcess() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcess.call(o);
+   if(!o._statusStart){
+      if(MO.Window.Browser.capability().soundConfirm){
+         var iosPlay = document.getElementById('id_ios_play');
+         if (iosPlay) {
+            MO.Window.Html.visibleSet(iosPlay, true);
+         }
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            document.body.removeChild(hLoading);
+         }
+      }else{
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            o._statusLayerLevel--;
+         }
+         o._statusLayerLevel--;
+      }
+      if (o._statusLayerLevel <= 0) {
+         if (hLoading) {
+            document.body.removeChild(hLoading);
+         }
+         var countryEntity = o._countryEntity;
+         countryEntity.start();
+         o._mapEntity.showCountry(countryEntity);
+         o.processLoaded();
+         o._playing = true;
+         o._statusStart = true;
+      }
+   }
+   if (o._playing) {
+      var countryEntity = o._countryEntity;
+      if(!countryEntity.introAnimeDone()){
+         countryEntity.process();
+         return;
+      }
+      if (!o._mapReady) {
+         o._guiManager.show();
+         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+         alphaAction.setAlphaBegin(0);
+         alphaAction.setAlphaEnd(1);
+         alphaAction.setAlphaInterval(0.01);
+         alphaAction.push(o._guiManager);
+         o._guiManager.mainTimeline().pushAction(alphaAction);
+         o._mapReady = true;
+      }
+      var currentTick = MO.Timer.current();
+      if (currentTick - o._24HLastTick > o._24HTrendInterval) {
+         o._timeline.sync();
+         o._24HLastTick = currentTick;
+      }
+      o._investment.process();
+      var logoBar = o._logoBar;
+      var investmentTotal = logoBar.findComponent('investmentTotal');
+      var invementTotalCurrent = o._investment.invementTotalCurrent();
+      investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
+      var investmentDay = logoBar.findComponent('investmentDay');
+      var invementDayCurrent = o._investment.invementDayCurrent();
+      investmentDay.setValue(parseInt(invementDayCurrent).toString());
+      if(o._nowTicker.process()){
+         var bar = o._logoBar;
+         var date = o._nowDate;
+         date.setNow();
+         var dateControl = bar.findComponent('date');
+         dateControl.setLabel(date.format('YYYY/MM/DD'));
+         var timeControl = bar.findComponent('time');
+         timeControl.setLabel(date.format('HH24:MI'));
+      }
+   }
+   if (o._livePop.visible()) {
+      o._livePop.dirty();
+   }
+}
+MO.FEaiChartSalesScene_onSwitchProcess = function FEaiChartSalesScene_onSwitchProcess(event){
+   var o = this;
+}
+MO.FEaiChartSalesScene_onSwitchComplete = function FEaiChartSalesScene_onSwitchComplete(event){
+   var o = this;
+}
+MO.FEaiChartSalesScene_setup = function FEaiChartSalesScene_setup() {
+   var o = this;
+   o.__base.FEaiChartScene.setup.call(o);
+   var dataLayer = o._activeStage.dataLayer();
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   o._guiManager.register(frame);
+   var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
+   invement.linkGraphicContext(o);
+   invement.setMapEntity(o._mapEntity);
+   invement.setup();
+   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
+   var display = invement.display();
+   o.fixMatrix(display.matrix());
+   dataLayer.push(display);
+   var stage = o.activeStage();
+   var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
+   timeline.setName('Timeline');
+   timeline.linkGraphicContext(o);
+   timeline.sync();
+   timeline.build();
+   o._guiManager.register(timeline);
+   var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
+   liveTable.setName('LiveTable');
+   liveTable.linkGraphicContext(o);
+   liveTable.setup();
+   liveTable.build();
+   o._guiManager.register(liveTable);
+   var livePop = o._livePop = MO.Class.create(MO.FGuiLivePop);
+   livePop.setName('LivePop');
+   livePop.linkGraphicContext(o);
+   livePop.setup();
+   livePop.build();
+   o._guiManager.register(livePop);
+   o._guiManager.hide();
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   entityConsole.cityModule().build(o);
+   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
+   o._readyLoader.push(countryEntity);
+}
+MO.FEaiChartSalesScene_showParticle = function FEaiChartSalesScene_showParticle(provinceEntity, cityResource){
+   var o = this;
+   var particle = o._particle;
+   var location = cityResource.location();
+   var count = 4;
+   particle.color().set(1, 1, 0, 1);
+   for(var i = 0; i < count; i++){
+      var itemCount = parseInt(Math.random() * 100);
+      var attenuation = Math.random();
+      particle.setItemCount(itemCount);
+      particle.position().assign(location);
+      particle.position().z = provinceEntity.currentZ();
+      particle.setDelay(10 * i);
+      particle.setSpeed(4 + 0.4 * i);
+      particle.setAcceleration(0);
+      particle.setAttenuation(0.8);
+      particle.start();
+   }
+}
+MO.FEaiChartSalesScene_showFace = function FEaiChartSalesScene_showFace(){
+   var o = this;
+   o._statusStart = true;
+   o._playing = true;
+   o._mapReady = false;
+   o._mapEntity.reset();
+   var desktop = o._application.desktop();
+   desktop.show();
+   o.processResize();
+}
+MO.FEaiChartSalesScene_fixMatrix = function FEaiChartSalesScene_fixMatrix(matrix){
+   var o = this;
+   var isVertical = MO.Window.Browser.isOrientationVertical()
+   if(isVertical){
+      matrix.tx = -14.58;
+      matrix.ty = -1.9;
+      matrix.tz = 0;
+      matrix.setScale(0.14, 0.16, 0.14);
+   }else{
+      matrix.tx = -38.6;
+      matrix.ty = -12.8;
+      matrix.tz = 0;
+      matrix.setScale(0.32, 0.36, 0.32);
+   }
+   matrix.update();
+}
+MO.FEaiChartSalesScene_processResize = function FEaiChartSalesScene_processResize(){
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
