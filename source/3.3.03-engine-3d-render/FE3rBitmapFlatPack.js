@@ -8,31 +8,28 @@ MO.FE3rBitmapFlatPack = function FE3rBitmapFlatPack(o){
    o = MO.Class.inherits(this, o, MO.FE3rBitmapPack);
    //..........................................................
    // @attribute
-   o._resource    = null;
-   o._image       = null;
+   o._image    = MO.Class.register(o, new MO.AGetter('_image'));
    //..........................................................
-   o.onLoad       = MO.FE3rBitmapFlatPack_onLoad;
+   o.onLoad    = MO.FE3rBitmapFlatPack_onLoad;
    //..........................................................
    // @method
-   o.construct    = MO.FE3rBitmapFlatPack_construct;
+   o.construct = MO.FE3rBitmapFlatPack_construct;
    // @method
-   o.loadUrl      = MO.FE3rBitmapFlatPack_loadUrl;
+   o.loadUrl   = MO.FE3rBitmapFlatPack_loadUrl;
    // @method
-   o.dispose      = MO.FE3rBitmapFlatPack_dispose;
+   o.dispose   = MO.FE3rBitmapFlatPack_dispose;
    return o;
 }
 
 //==========================================================
 // <T>数据加载处理。</T>
 //
-// @param p:region:FRegion 区域
-// @return Boolean 是否可见
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FE3rBitmapFlatPack_onLoad = function FE3rBitmapFlatPack_onLoad(event){
    var o = this;
-   var context = o._graphicContext;
    // 创建纹理
-   var texture = o._texture = context.createFlatTexture();
+   var texture = o._texture = o._graphicContext.createFlatTexture();
    texture.upload(o._image);
    texture.makeMipmap();
    // 释放位图
@@ -71,6 +68,8 @@ MO.FE3rBitmapFlatPack_loadUrl = function FE3rBitmapFlatPack_loadUrl(url){
 //==========================================================
 MO.FE3rBitmapFlatPack_dispose = function FE3rBitmapFlatPack_dispose(){
    var o = this;
+   // 释放属性
    o._image = MO.Lang.Object.dispose(o._image);
+   // 父处理
    o.__base.FE3rBitmapPack.dispose.call(o);
 }

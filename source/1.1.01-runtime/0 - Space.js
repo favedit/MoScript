@@ -26,10 +26,10 @@ var MO = new function MoSpace(){
 //==========================================================
 MO.initialize = function MO_initialize(){
    var o = this;
-   var info = o.info;
+   // 初始化名称
    var count = 0;
-   for(var name in this){
-      var value = this[name];
+   for(var name in o){
+      var value = o[name];
       if(value){
          // 设置函数名称
          if(value.constructor == Function){
@@ -38,7 +38,8 @@ MO.initialize = function MO_initialize(){
       }
       count++;
    }
-   info.count = count;
+   // 设置信息
+   o.info.count = count;
 }
 
 //==========================================================

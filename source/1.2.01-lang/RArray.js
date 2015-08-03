@@ -9,13 +9,20 @@ MO.RArray = function RArray(){
    var o = this;
    //..........................................................
    // @attribute
-   o.array1  = new Array(1);
-   o.array2  = new Array(2);
-   o.array3  = new Array(3);
-   o.array4  = new Array(4);
-   o.array9  = new Array(9);
-   o.array12 = new Array(12);
-   o.array16 = new Array(16);
+   o.array1           = new Array(1);
+   o.array2           = new Array(2);
+   o.array3           = new Array(3);
+   o.array4           = new Array(4);
+   o.array9           = new Array(9);
+   o.array12          = new Array(12);
+   o.array16          = new Array(16);
+   //..........................................................
+   // @method
+   o.sortComparerAsc  = MO.Runtime.sortComparerAsc;
+   o.sortComparerDesc = MO.Runtime.sortComparerDesc;
+   o.pairSortMid      = MO.Runtime.pairSortMid;
+   o.pairSortSub      = MO.Runtime.pairSortSub;
+   o.pairSort         = MO.Runtime.pairSort;
    return o;
 }
 
@@ -268,119 +275,6 @@ MO.RArray.prototype.nameMaxLength = function RArray_nameMaxLength(a){
       }
    }
    return r;
-}
-
-//==========================================================
-// <T>正序排列比较器。</T>
-//
-// @method
-// @param source:Object 来源对象
-// @param target:Object 目标对象
-// @param parameters:Obejct 参数对象
-//==========================================================
-MO.RArray.prototype.sortComparerAsc = function RArray_sortComparerAsc(source, target, parameters){
-   if(source > target){
-      return 1;
-   }else if(source < target){
-      return -1;
-   }else{
-      return 0;
-   }
-}
-
-//==========================================================
-// <T>倒序排列比较器。</T>
-//
-// @method
-// @param source:Object 来源对象
-// @param target:Object 目标对象
-// @param parameters:Obejct 参数对象
-//==========================================================
-MO.RArray.prototype.sortComparerDesc = function RArray_sortComparerDesc(source, target, parameters){
-   if(source > target){
-      return -1;
-   }else if(source < target){
-      return 1;
-   }else{
-      return 0;
-   }
-}
-
-//==========================================================
-// <T>对值对快速排序。</T>
-//
-// @method
-// @param names:Array 名称数组
-// @param values:Array 内容数组
-// @param begin:Integer 开始位置
-// @param end:Integer 结束位置
-// @param comparer:Function 比较器
-// @param parameters:Object 参数
-//==========================================================
-MO.RArray.prototype.pairSortMid = function RArray_pairSortMid(names, values, begin, end, comparer, parameters){
-   var name = names[begin];
-   if(values){
-      var value = values[begin];
-   }
-   while(begin < end){
-      while((begin < end) && (comparer(names[end], name, parameters) >= 0)){
-         end--;
-      }
-      names[begin] = names[end];
-      if(values){
-         values[begin] = values[end];
-      }
-      while((begin < end) && (comparer(names[begin], name, parameters) <= 0)){
-         begin++;
-      }
-      names[end] = names[begin];
-      if(values){
-         values[end] = values[begin];
-      }
-   }
-   names[begin] = name;
-   if(values){
-      values[begin] = value;
-   }
-   return begin;
-}
-
-//==========================================================
-// <T>对值对快速排序。</T>
-//
-// @method
-// @param names:Array 名称数组
-// @param values:Array 内容数组
-// @param begin:Integer 开始位置
-// @param end:Integer 结束位置
-// @param comparer:Function 比较器
-// @param parameters:Object 参数
-//==========================================================
-MO.RArray.prototype.pairSortSub = function RArray_pairSortSub(names, values, begin, end, comparer, parameters){
-   var o = this;
-   if(begin < end){
-      var mid = o.pairSortMid(names, values, begin, end, comparer, parameters);
-      o.pairSortSub(names, values, begin, mid - 1, comparer, parameters);
-      o.pairSortSub(names, values, mid + 1, end, comparer, parameters);
-   }
-}
-
-//==========================================================
-// <T>对值对快速排序。</T>
-//
-// @method
-// @param names:Array 名称数组
-// @param values:Array 内容数组
-// @param offset:Integer 位置
-// @param count:Integer 总数
-// @param comparer:Function 比较器
-// @param parameters:Object 参数
-//==========================================================
-MO.RArray.prototype.pairSort = function RArray_pairSort(names, values, offset, count, comparer, parameters){
-   var o = this;
-   var begin = offset;
-   var end = offset + count - 1;
-   o.pairSortSub(names, values, begin, end, MO.Runtime.nvl(comparer, o.sortComparerAsc), parameters);
 }
 
 //==========================================================

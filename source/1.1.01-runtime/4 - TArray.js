@@ -150,10 +150,12 @@ MO.TArray_push = function TArray_push(){
 //==========================================================
 MO.TArray_swap = function TArray_swap(left, right){
    var o = this;
-   if((left >= 0) && (left < o._length) && (right >= 0) && (right < o._length) && (left != right)){
-      var value = o._memory[left];
-      o._memory[left] = this._memory[right];
-      o._memory[right] = value;
+   var count = o._length;
+   if((left >= 0) && (left < count) && (right >= 0) && (right < count) && (left != right)){
+      var memory = o._memory;
+      var value = memory[left];
+      memory[left] = memory[right];
+      memory[right] = value;
    }
 }
 

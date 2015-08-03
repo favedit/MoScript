@@ -94,7 +94,6 @@ MO.RMemory.prototype.free = function RMemory_free(value){
 MO.RMemory.prototype.refresh = function RMemory_refresh(){
    CollectGarbage();
 }
-
 //..........................................................
 // 实例化内容
 MO.Memory = new MO.RMemory();

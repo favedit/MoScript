@@ -449,16 +449,7 @@ MO.TMap_toString = function TMap_toString(){
 //==========================================================
 MO.TMap_dispose = function TMap_dispose(flag){
    var o = this;
-   // 释放所有数据
-   if(flag){
-      var count = o._count;
-      var values = o._values;
-      for(var i = 0; i < count; i++){
-         var value = values[i];
-         values[i] = MO.Lang.Object.dispose(value);
-      }
-   }
-   //..........................................................
+   var count = o._count;
    // 清除对照表数据
    var table = o._table;
    if(table){
@@ -470,7 +461,7 @@ MO.TMap_dispose = function TMap_dispose(flag){
    // 清空名称集合
    var names = o._names;
    if(names){
-      for(var i = names.length - 1; i >= 0; i--){
+      for(var i = 0; i < count; i++){
          names[i] = null;
       }
       o._names = null;
@@ -478,7 +469,10 @@ MO.TMap_dispose = function TMap_dispose(flag){
    // 清空数据集合
    var values = o._values;
    if(values){
-      for(var i = values.length - 1; i >= 0; i--){
+      for(var i = 0; i < count; i++){
+         if(flag){
+            MO.Lang.Object.dispose(values[i]);
+         }
          values[i] = null;
       }
       o._values = null;
@@ -497,10 +491,10 @@ MO.TMap_dump = function TMap_dump(){
    var o = this;
    var result = new MO.TString();
    var count = o._count;
-   var names = o._names;
-   var values = o._values;
    result.appendLine(MO.Runtime.className(o), ': ', count);
    if(count > 0){
+      var names = o._names;
+      var values = o._values;
       result.append(' {');
       for(var i = 0; i < count; i++){
          result.appendLine(names[i], '=[', values[i], ']');

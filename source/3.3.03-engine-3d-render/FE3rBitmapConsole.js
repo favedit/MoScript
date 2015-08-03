@@ -29,6 +29,7 @@ MO.FE3rBitmapConsole = function FE3rBitmapConsole(o){
 MO.FE3rBitmapConsole_construct = function FE3rBitmapConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   // 设置属性
    o._bitmaps = new MO.TDictionary();
 }
 
@@ -54,12 +55,10 @@ MO.FE3rBitmapConsole_load = function FE3rBitmapConsole_load(context, guid, code)
    MO.Logger.info(o, 'Load bitmap. (url={1})', url);
    // 加载模型
    if(code == 'environment'){
-      bitmap = MO.Class.create(MO.FE3rBitmapCubePack);
+      bitmap = context.createObject(MO.FE3rBitmapCubePack);
    }else{
-      bitmap = MO.Class.create(MO.FE3rBitmapFlatPack);
+      bitmap = context.createObject(MO.FE3rBitmapFlatPack);
    }
-   bitmap.linkGraphicContext(context);
-   bitmap.loadUrl(url);
    o._bitmaps.set(flag, bitmap);
    return bitmap;
 }
@@ -83,9 +82,7 @@ MO.FE3rBitmapConsole_loadUrl = function FE3rBitmapConsole_loadUrl(context, url){
    var loadUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
    // 创建渲染位图
-   var bitmap = MO.Window.Class.create(MO.FE3rBitmap);
-   bitmap.linkGraphicContext(context);
-   bitmap.setup();
+   var bitmap = context.createObject(MO.FE3rBitmap);
    bitmap.loadUrl(url);
    o._bitmaps.set(url, bitmap);
    return bitmap;

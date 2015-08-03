@@ -10,11 +10,9 @@ MO.EProcess = new function EProcess(){
    MO.TEnum.call(o);
    // @member 未知
    o.Unknown = 0;
-   // @member 优化模式
-   o.Release = 1;
-   // @member 运行模式
-   o.Process = 2;
    // @member 调试模式
-   o.Debug   = 3;
+   o.Debug   = 1;
+   // @member 运行模式
+   o.Release = 2;
    return o;
 }

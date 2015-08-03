@@ -112,7 +112,8 @@ MO.TObjects_indexOf = function TObjects_indexOf(value){
 // @return 第一个对象
 //===========================================================
 MO.TObjects_first = function TObjects_first(){
-   return this._count ? this._items[0] : null;
+   var o = this;
+   return o._count ? o._items[0] : null;
 }
 
 //===========================================================
@@ -122,7 +123,8 @@ MO.TObjects_first = function TObjects_first(){
 // @return 最后一个对象
 //===========================================================
 MO.TObjects_last = function TObjects_last(){
-   return this._count ? this._items[this._count - 1] : null;
+   var o = this;
+   return o._count ? o._items[o._count - 1] : null;
 }
 
 //===========================================================
@@ -144,7 +146,8 @@ MO.TObjects_getAt = function TObjects_getAt(index){
 // @return 当前位置上的对象
 //===========================================================
 MO.TObjects_get = function TObjects_get(index){
-   return ((index >= 0) && (index < this._count)) ? this._items[index] : null;
+   var o = this;
+   return ((index >= 0) && (index < o._count)) ? o._items[index] : null;
 }
 
 //===========================================================
@@ -251,9 +254,11 @@ MO.TObjects_unshift = function TObjects_unshift(value){
 //===========================================================
 MO.TObjects_pop = function TObjects_pop(){
    var o = this;
+   var value = null;
    if(o._count){
-      return o._items[--o._count];
+      value = o._items[--o._count];
    }
+   return value;
 }
 
 //===========================================================
@@ -279,17 +284,10 @@ MO.TObjects_push = function TObjects_push(value){
 //===========================================================
 MO.TObjects_pushUnique = function TObjects_pushUnique(value){
    var o = this;
-   var items = o._items;
-   // 查询存在性
-   for(var i = o._count - 1; i >= 0; i--){
-      if(items[i] == value){
-         return i;
-      }
+   var index = o.indexOf(value);
+   if(value == -1){
+      o.push(value);
    }
-   // 追加到尾部
-   var index = o._count++;
-   items[index] = value;
-   return index;
 }
 
 //===========================================================
@@ -301,7 +299,8 @@ MO.TObjects_pushUnique = function TObjects_pushUnique(value){
 //===========================================================
 MO.TObjects_swap = function TObjects_swap(left, right){
    var o = this;
-   if((left >= 0) && (left < o._count) && (right >= 0) && (right < o._count) && (left != right)){
+   var count = o._count;
+   if((left >= 0) && (left < count) && (right >= 0) && (right < count) && (left != right)){
       var items = o._items;
       var value = items[left];
       items[left] = items[right];

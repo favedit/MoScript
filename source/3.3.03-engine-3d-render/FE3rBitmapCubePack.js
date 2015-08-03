@@ -7,19 +7,17 @@
 MO.FE3rBitmapCubePack = function FE3rBitmapCubePack(o){
    o = MO.Class.inherits(this, o, MO.FE3rBitmapPack);
    //..........................................................
-   // @attribute
-   o._resource    = null;
-   o._images      = null;
+   o._images   = MO.Class.register(o, new MO.AGetter('_images'));
    //..........................................................
    // @event
-   o.onLoad       = MO.FE3rBitmapCubePack_onLoad;
+   o.onLoad    = MO.FE3rBitmapCubePack_onLoad;
    //..........................................................
    // @method
-   o.construct    = MO.FE3rBitmapCubePack_construct;
+   o.construct = MO.FE3rBitmapCubePack_construct;
    // @method
-   o.loadUrl      = MO.FE3rBitmapCubePack_loadUrl;
+   o.loadUrl   = MO.FE3rBitmapCubePack_loadUrl;
    // @method
-   o.dispose      = MO.FE3rBitmapCubePack_dispose;
+   o.dispose   = MO.FE3rBitmapCubePack_dispose;
    return o;
 }
 
@@ -80,14 +78,13 @@ MO.FE3rBitmapCubePack_construct = function FE3rBitmapCubePack_construct(){
 //==========================================================
 MO.FE3rBitmapCubePack_loadUrl = function FE3rBitmapCubePack_loadUrl(url){
    var o = this;
-   //o._resource = p;
    //var texture = p._texture;
    // 获得浏览器描述
    //var capability = RBrowser.capability();
    // 加载二进制数据
    //var d = p.data();
    //var t = p._formatName;
-   o._images = new MO.TObjects();
+   var images = o._images = new MO.TObjects();
    for(var i = 0; i < 6; i++){
       var image = MO.Class.create(MO.FImage);
       image._index = i;
@@ -98,10 +95,10 @@ MO.FE3rBitmapCubePack_loadUrl = function FE3rBitmapCubePack_loadUrl(url){
       //   g.loadUrl(url);
       //}else{
       //var url = RBrowser.hostPath('/cloud.resource.material.wv') + '?guid=' + texture._guid + '&code=' + p._code + "&index=" + i;
+      image.addLoadListener(o, o.onLoad);
       image.loadUrl(url + "&index=" + i);
       //}
-      image.addLoadListener(o, o.onLoad);
-      o._images.push(image);
+      images.push(image);
    }
 }
 
@@ -112,7 +109,8 @@ MO.FE3rBitmapCubePack_loadUrl = function FE3rBitmapCubePack_loadUrl(url){
 //==========================================================
 MO.FE3rBitmapCubePack_dispose = function FE3rBitmapCubePack_dispose(){
    var o = this;
-   o._images = MO.Lang.Object.dispose(o._images);
+   // 释放属性
+   o._images = MO.Lang.Object.dispose(o._images, true);
    // 父处理
    o.__base.FE3rBitmapPack.dispose.call(o);
 }

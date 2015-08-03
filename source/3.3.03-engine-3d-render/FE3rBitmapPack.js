@@ -5,25 +5,23 @@
 // @history 150106
 //==========================================================
 MO.FE3rBitmapPack = function FE3rBitmapPack(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MLinkerResource);
    //..........................................................
    // @attribute
-   o._resource    = null;
-   o._image       = null;
-   o._texture     = MO.Class.register(o, new AGetter('_texture'));
+   o._texture   = MO.Class.register(o, new MO.AGetter('_texture'));
    // @attribute
-   o._ready       = false;
-   o._dataReady   = false;
+   o._dataReady = false;
+   o._ready     = false;
    //..........................................................
-   o.onLoad       = MO.Method.virtual(o, 'onLoad');
+   o.onLoad     = MO.Method.virtual(o, 'onLoad');
    //..........................................................
    // @method
-   o.construct    = MO.FE3rBitmapPack_construct;
+   o.construct  = MO.FE3rBitmapPack_construct;
    // @method
-   o.testReady    = MO.FE3rBitmapPack_testReady;
-   o.loadUrl      = MO.Method.virtual(o, 'loadUrl');
+   o.testReady  = MO.FE3rBitmapPack_testReady;
+   o.loadUrl    = MO.Method.virtual(o, 'loadUrl');
    // @method
-   o.dispose      = MO.FE3rBitmapPack_dispose;
+   o.dispose    = MO.FE3rBitmapPack_dispose;
    return o;
 }
 

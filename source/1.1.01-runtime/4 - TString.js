@@ -43,7 +43,6 @@ MO.TString_isEmpty = function TString_isEmpty(){
 // <T>接收字符串集合。</T>
 //
 // @method
-// @param values:String... 字符串集合
 //==========================================================
 MO.TString_assign = function TString_assign(){
    var o = this;
@@ -55,9 +54,8 @@ MO.TString_assign = function TString_assign(){
 // <T>追加字符串集合。</T>
 //
 // @method
-// @param values:String... 字符串集合
 //==========================================================
-MO.TString_append = function TString_append(v){
+MO.TString_append = function TString_append(){
    this.appendArray(arguments, 0, arguments.length);
 }
 
@@ -66,7 +64,6 @@ MO.TString_append = function TString_append(v){
 //
 // @method
 // @param flag:Boolean 条件标识
-// @param values:String... 字符串集合
 //==========================================================
 MO.TString_appendIf = function TString_appendIf(flag){
    if(flag){
@@ -180,7 +177,8 @@ MO.TString_dispose = function TString_dispose(){
    // 清空内存
    var memory = o._memory;
    if(memory){
-      for(var i = memory.length - 1; i >= 0; i--){
+      var count = memory.length;
+      for(var i = 0; i < count; i++){
          memory[i] = null;
       }
       o._memory = null;
