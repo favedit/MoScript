@@ -15,6 +15,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneHistory = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
    o._sceneLive    = MO.Class.register(o, new MO.AGetter('_sceneLive'));
    o._sceneWorld   = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
+   o._sceneSales   = MO.Class.register(o, new MO.AGetter('_sceneSales'));
    //..........................................................
    // @method
    o.construct     = MO.FEaiChartChapter_construct;
@@ -57,6 +58,10 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    o.registerScene(scene);
    // 创建图表世界
    var scene = o._sceneWorld = MO.Class.create(MO.FEaiChartWorldScene);
+   scene.linkGraphicContext(o);
+   o.registerScene(scene);
+   // 创建图表理财师
+   var scene = o._sceneSales = MO.Class.create(MO.FEaiChartSalesScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
 }
