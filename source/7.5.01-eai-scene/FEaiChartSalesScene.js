@@ -261,7 +261,7 @@ MO.FEaiChartSalesScene_setup = function FEaiChartSalesScene_setup() {
    o._guiManager.register(timeline);
    //..........................................................
    // 创建表格
-   var liveTable = o._liveTable = MO.Class.create(MO.FGuiLiveTable);
+   var liveTable = o._liveTable = MO.Class.create(MO.FGuiFPCCTable);
    liveTable.setName('LiveTable');
    liveTable.linkGraphicContext(o);
    liveTable.setup();
