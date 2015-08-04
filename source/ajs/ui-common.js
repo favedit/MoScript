@@ -1336,6 +1336,18 @@ MO.MUiStorage_dispose = function MUiStorage_dispose(){
    o._storageCode = null;
    o._storageObject = null;
 }
+MO.MUiTextFormator = function MUiTextFormator(o){
+   o = MO.Class.inherits(this, o);
+   o.formatText  = MO.MUiTextFormator_formatText;
+   o.formatValue = MO.MUiTextFormator_formatValue;
+   return o;
+}
+MO.MUiTextFormator_formatText = function MUiTextFormator_formatText(value){
+   return value;
+}
+MO.MUiTextFormator_formatValue = function MUiTextFormator_formatValue(text){
+   return text;
+}
 MO.MUiValue = function MUiValue(o){
    o = MO.Class.inherits(this, o);
    o.get = MO.Method.empty;

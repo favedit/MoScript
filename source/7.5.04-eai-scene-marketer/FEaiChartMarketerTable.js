@@ -70,7 +70,6 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var calculateRate = event.calculateRate;
    var left = rectangle.left;
    var top = rectangle.top;
    var width = rectangle.width;
@@ -230,6 +229,11 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
+   //..........................................................
+   var control = o._gridControl = MO.Class.create(MO.FGuiGridControl);
+   control.setLocation(100, 100);
+   control.setSize(600, 500);
+   o.push(control);
    //..........................................................
    // 设置数据
    o._headFontStyle = 'bold 32px Microsoft YaHei';

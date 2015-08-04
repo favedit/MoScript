@@ -1,29 +1,30 @@
 //==========================================================
-// <T>引擎服务进程。</T>
+// <T>界面控件。</T>
 //
 // @class
 // @author maocy
-// @version 150305
+// @version 150804
 //==========================================================
 MO.FGuiGridControl = function FGuiGridControl(o){
-   o = MO.Class.inherits(this, o, MO.FProcessServer);
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._typeName  = null;
-   o._groupName = null;
-   o._name      = null;
    //..........................................................
    // @method
-   o.name  = MO.FGuiGridControl_name;
+   o.onPaintBegin  = MO.FGuiGridControl_onPaintBegin;
    return o;
 }
 
 //==========================================================
-// <T>获得名称。</T>
+// <T>前绘制处理。</T>
 //
 // @method
-// @return 名称
 //==========================================================
-MO.FGuiGridControl_name = function FGuiGridControl_name(){
-   return this._name;
+MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
+   var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   // 绘制边框
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 1);
 }

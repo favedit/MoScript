@@ -547,7 +547,6 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var calculateRate = event.calculateRate;
    var left = rectangle.left;
    var top = rectangle.top;
    var width = rectangle.width;
@@ -664,6 +663,10 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
+   var control = o._gridControl = MO.Class.create(MO.FGuiGridControl);
+   control.setLocation(100, 100);
+   control.setSize(600, 500);
+   o.push(control);
    o._headFontStyle = 'bold 32px Microsoft YaHei';
    var isVertical = MO.Window.Browser.isOrientationVertical()
    if(isVertical){
