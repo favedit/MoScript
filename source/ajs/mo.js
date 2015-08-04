@@ -1146,13 +1146,16 @@ MO.RAssert.prototype.debugNotNull = function RAssert_debugNotNull(value){
    }
 }
 MO.RAssert.prototype.debugEmpty = function RAssert_debugEmpty(value){
-   if(value.length == 0){
+   if((value != null) && (value.length != 0)){
       throw new Error('Assert empty failure.');
    }
 }
 MO.RAssert.prototype.debugNotEmpty = function RAssert_debugNotEmpty(value){
-   if(value.length > 0){
-      throw new Error('Assert not empty failure.');
+   if(value == null){
+      throw new Error('Assert not empty failure, value is null.');
+   }
+   if(value.length == 0){
+      throw new Error('Assert not empty failure, value length is empty.');
    }
 }
 MO.Assert = new MO.RAssert();
