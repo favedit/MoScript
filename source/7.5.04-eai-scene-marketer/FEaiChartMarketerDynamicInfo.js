@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150804
 //==========================================================
-MO.FEaiChartMarketerDynamic = function FEaiChartMarketerDynamic(o){
+MO.FEaiChartMarketerDynamicInfo = function FEaiChartMarketerDynamicInfo(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
@@ -16,11 +16,11 @@ MO.FEaiChartMarketerDynamic = function FEaiChartMarketerDynamic(o){
    o._performanceTotal   = MO.Class.register(o, new MO.AGetter('_performanceTotal'));
    //..........................................................
    // @method
-   o.construct           = MO.FEaiChartMarketerDynamic_construct;
+   o.construct           = MO.FEaiChartMarketerDynamicInfo_construct;
    // @method
-   o.unserialize         = MO.FEaiChartMarketerDynamic_unserialize;
+   o.unserialize         = MO.FEaiChartMarketerDynamicInfo_unserialize;
    // @method
-   o.dispose             = MO.FEaiChartMarketerDynamic_dispose;
+   o.dispose             = MO.FEaiChartMarketerDynamicInfo_dispose;
    return o;
 }
 
@@ -29,7 +29,7 @@ MO.FEaiChartMarketerDynamic = function FEaiChartMarketerDynamic(o){
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerDynamic_construct = function FEaiChartMarketerDynamic_construct(){
+MO.FEaiChartMarketerDynamicInfo_construct = function FEaiChartMarketerDynamicInfo_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
 }
@@ -40,7 +40,7 @@ MO.FEaiChartMarketerDynamic_construct = function FEaiChartMarketerDynamic_constr
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiChartMarketerDynamic_unserialize = function FEaiChartMarketerDynamic_unserialize(input){
+MO.FEaiChartMarketerDynamicInfo_unserialize = function FEaiChartMarketerDynamicInfo_unserialize(input){
    var o = this;
    o._investmentTotal = input.readDouble();
    o._redemptionTotal = input.readDouble();
@@ -54,7 +54,7 @@ MO.FEaiChartMarketerDynamic_unserialize = function FEaiChartMarketerDynamic_unse
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerDynamic_dispose = function FEaiChartMarketerDynamic_dispose(){
+MO.FEaiChartMarketerDynamicInfo_dispose = function FEaiChartMarketerDynamicInfo_dispose(){
    var o = this;
    // 父处理
    o.__base.FObject.dispose.call(o);

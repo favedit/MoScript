@@ -113,7 +113,7 @@ MO.FEaiChartMarketerProcessor_construct = function FEaiChartMarketerProcessor_co
    // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建缓冲
-   o._dynamicInfo = MO.Class.create(MO.FEaiChartMarketerDynamic);
+   o._dynamicInfo = MO.Class.create(MO.FEaiChartMarketerDynamicInfo);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
@@ -129,7 +129,7 @@ MO.FEaiChartMarketerProcessor_allocUnit = function FEaiChartMarketerProcessor_al
    var o = this;
    var unit = o._unitPool.alloc();
    if(!unit){
-      unit = MO.Class.create(MO.FEaiChartMarketerUnit);
+      unit = MO.Class.create(MO.FEaiChartMarketerDynamicUnit);
    }
    return unit;
 }
