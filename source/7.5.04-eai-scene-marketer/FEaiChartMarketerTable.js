@@ -84,11 +84,12 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    var drawWidth = right - left;
    //..........................................................
    // 计算宽度
+   var columnCount = o._columnCount;
    var widthDefine = 0;
-   for(var i = 0; i < 4; i++){
+   for(var i = 0; i < columnCount; i++){
       widthDefine += o._columnDefines[i];
    }
-   for(var i = 0; i < 4; i++){
+   for(var i = 0; i < columnCount; i++){
       o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 7;
    }
    //..........................................................
@@ -126,7 +127,7 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    var headLeft = drawLeft;
    var headTop = top + o._headStart;
    var headTextTop = headTop + o._headTextTop;
-   for(var i = 0; i < 4; i++){
+   for(var i = 0; i < columnCount; i++){
       var headText = o._columnLabels[i];
       var headTextWidth = graphic.textWidth(headText);
       graphic.fillRectangle(headLeft, headTop, o._columnWidths[i] - 4, o._headHeight, '#122A46');
@@ -192,13 +193,14 @@ MO.FEaiChartMarketerTable_construct = function FEaiChartMarketerTable_construct(
    o._currentDate = new MO.TDate();
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
    o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
-   o._columnLabels = new Array('时间', '城市', '用户-手机', '投资额(元)');
-   if(MO.Runtime.isPlatformMobile()){
-      o._columnDefines = new Array(130, 130, 180, 186);
-   }else{
-      o._columnDefines = new Array(110, 110, 160, 166);
-   }
+   o._columnLabels = new Array('时间', '公司', '理财师', '城市', '用户-手机', '投资额(元)');
+   //if(MO.Runtime.isPlatformMobile()){
+      //o._columnDefines = new Array(130, 130, 180, 186);
+   //}else{
+      o._columnDefines = new Array(110, 120, 120, 100, 160, 120);
+   //}
    o._columnWidths = new Array();
+   o._columnCount = o._columnLabels.length;
 }
 
 //==========================================================
@@ -230,7 +232,7 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    //..........................................................
    // 设置数据
-   o._headFontStyle = 'bold 36px Microsoft YaHei';
+   o._headFontStyle = 'bold 32px Microsoft YaHei';
    var isVertical = MO.Window.Browser.isOrientationVertical()
    if(isVertical){
       o._tableCount = 11;
@@ -262,7 +264,7 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
       o._headStart = 336;
       o._headTextTop = 27;
       o._headHeight = 40;
-      o._rowFontStyle = '24px Microsoft YaHei';
+      o._rowFontStyle = '22px Microsoft YaHei';
       o._rowStart = 384;
       o._rowHeight = 36;
    }
@@ -328,40 +330,58 @@ MO.FEaiChartMarketerTable_drawRow = function FEaiChartMarketerTable_drawRow(grap
       textWidth = graphic.textWidth(text);
       graphic.drawText(text, x + widths[0] * 0.5 - textWidth * 0.5, y, fontColor);
    }
-   // 绘制城市
+   // 绘制公司
    x += widths[0];
+   text = unit.departmentLabel();
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, x + widths[1] * 0.5 - textWidth * 0.5, y, fontColor);
+   // 绘制理财师
+   x += widths[1];
+   text = unit.marketerLabel();
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, x + widths[2] * 0.5 - textWidth * 0.5, y, fontColor);
+   // 绘制城市
+   x += widths[2];
    var cityResource = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(unit.customerCard());
    text = '';
    if(cityResource){
       text = cityResource.label();
    }
    textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[1] * 0.5 - textWidth * 0.5, y, fontColor);
-   // 绘制人员
-   x += widths[1];
-   text = unit.departmentLabel() + ' - ' + unit.marketerLabel() + ' - ' + unit.customerLabel() + ' - ' + unit.customerPhone();
+   graphic.drawText(text, x + widths[3] * 0.5 - textWidth * 0.5, y, fontColor);
+   // 绘制客户
+   x += widths[3];
+   text = unit.customerLabel() + ' - ' + unit.customerPhone();
    textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[2] * 0.5 - textWidth * 0.5, y, fontColor);
+   graphic.drawText(text, x + widths[4] * 0.5 - textWidth * 0.5, y, fontColor);
    // 绘制颜色
-   x += widths[2];
-   var investment = MO.Lang.Float.format(unit.customerActionAmount(), null, null, 2, '0');
-   var investmentRight = x + widths[3] - 15;
-   if (investment.length > 7) {
-      var highColor = null;
-      if(investment.length > 9){
-         highColor = '#FDEF01';
+   x += widths[4];
+   var amount = MO.Lang.Float.format(unit.customerActionAmount(), null, null, 2, '0');
+   var amountRight = x + widths[5] - 15;
+   if(unit.customerActionCd() == 1){
+      if (amount.length > 7) {
+         var highColor = null;
+         if(amount.length > 9){
+            highColor = '#FDEF01';
+         }else{
+            highColor = '#EB6C03';
+         }
+         var high = amount.substring(0, amount.length - 7);
+         var low = amount.substring(amount.length - 7, amount.length);
+         var highWidth = graphic.textWidth(high);
+         var lowWidth = graphic.textWidth(low);
+         graphic.drawText(high, amountRight - lowWidth - highWidth, y, highColor);
+         graphic.drawText(low, amountRight - lowWidth, y, '#59FDE9');
       }else{
-         highColor = '#EB6C03';
+         textWidth = graphic.textWidth(amount);
+         graphic.drawText(amount, amountRight - textWidth, y, fontColor);
       }
-      var high = investment.substring(0, investment.length - 7);
-      var low = investment.substring(investment.length - 7, investment.length);
-      var highWidth = graphic.textWidth(high);
-      var lowWidth = graphic.textWidth(low);
-      graphic.drawText(high, investmentRight - lowWidth - highWidth, y, highColor);
-      graphic.drawText(low, investmentRight - lowWidth, y, '#59FDE9');
-   } else {
-      textWidth = graphic.textWidth(investment);
-      graphic.drawText(investment, investmentRight - textWidth, y, fontColor);
+   }else if(unit.customerActionCd() == 2){
+      var text = '-' + amount;
+      textWidth = graphic.textWidth(text);
+      graphic.drawText(text, amountRight - textWidth, y, '#FF0000');
+   }else{
+      throw new TError('Invalid action code.');
    }
 }
 

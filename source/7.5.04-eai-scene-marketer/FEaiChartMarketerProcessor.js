@@ -69,6 +69,9 @@ MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcesso
    view.setEndianCd(true);
    view.link(event.content);
    // 读取数据
+   var dynamicInfo = o._dynamicInfo;
+   dynamicInfo.unserialize(view);
+   // 读取数据
    var units = o._units;
    var count = view.readInt32();
    for(var i = 0; i < count; i++){
@@ -110,6 +113,7 @@ MO.FEaiChartMarketerProcessor_construct = function FEaiChartMarketerProcessor_co
    // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建缓冲
+   o._dynamicInfo = MO.Class.create(MO.FEaiChartMarketerDynamic);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
@@ -272,7 +276,7 @@ MO.FEaiChartMarketerProcessor_process = function FEaiChartMarketerProcessor_proc
    }
    //..........................................................
    // 设置表格刷新
-   var currentTick = MO.RTimer.current();
+   var currentTick = MO.Timer.current();
    if(currentTick - o._tableTick > o._tableInterval){
       // 大于个数从尾部弹出
       if(o._tableUnits.count() >= o._tableCount){

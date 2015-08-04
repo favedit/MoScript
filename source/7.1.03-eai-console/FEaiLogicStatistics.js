@@ -82,10 +82,10 @@ MO.FEaiLogicStatistics_doMarketerDynamic = function FEaiLogicStatistics_doMarket
 // @param endDate:String 结束时间
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicStatistics_doMarketerTrend = function FEaiLogicStatistics_doMarketerTrend(owner, callback, startDate, endDate, interval){
+MO.FEaiLogicStatistics_doMarketerTrend = function FEaiLogicStatistics_doMarketerTrend(owner, callback, startDate, endDate){
    var o = this;
    // 获得地址
-   var url = 'http://localhost:8099/eai.financial.marketer.wv?do=trend&begin=' + startDate + '&end=' + endDate + '&interval=' + interval;
+   var url = 'http://localhost:8099/eai.financial.marketer.wv?do=trend&begin=' + startDate + '&end=' + endDate;
    // 发送请求
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(owner, callback);

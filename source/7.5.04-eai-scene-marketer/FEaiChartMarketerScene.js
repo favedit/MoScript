@@ -235,7 +235,7 @@ MO.FEaiChartMarketerScene_setup = function FEaiChartMarketerScene_setup() {
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FEaiChartMarketerTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
    timeline.sync();
@@ -337,10 +337,10 @@ MO.FEaiChartMarketerScene_fixMatrix = function FEaiChartMarketerScene_fixMatrix(
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    }else{
-      matrix.tx = -38.6;
-      matrix.ty = -12.8;
+      matrix.tx = -34.8;
+      matrix.ty = -11.0;
       matrix.tz = 0;
-      matrix.setScale(0.32, 0.36, 0.32);
+      matrix.setScale(0.28, 0.31, 0.28);
    }
    matrix.update();
 }
@@ -365,7 +365,7 @@ MO.FEaiChartMarketerScene_processResize = function FEaiChartMarketerScene_proces
       logoBar.setScale(0.85, 0.85);
    }else{
       logoBar.setLocation(5, 5);
-      logoBar.setScale(1, 1);
+      logoBar.setScale(0.9, 0.9);
    }
    //..........................................................
    // 设置南海
@@ -376,7 +376,7 @@ MO.FEaiChartMarketerScene_processResize = function FEaiChartMarketerScene_proces
       control.setRight(100);
    }else{
       control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(710);
+      control.setRight(780);
       control.setBottom(260);
    }
    //..........................................................
@@ -394,7 +394,7 @@ MO.FEaiChartMarketerScene_processResize = function FEaiChartMarketerScene_proces
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
-      timeline.setRight(680);
+      timeline.setRight(780);
       timeline.setHeight(250);
    }
    //..........................................................
@@ -414,6 +414,6 @@ MO.FEaiChartMarketerScene_processResize = function FEaiChartMarketerScene_proces
       liveTable.setTop(10);
       liveTable.setRight(0);
       liveTable.setBottom(10);
-      liveTable.setWidth(650);
+      liveTable.setWidth(750);
    }
 }
