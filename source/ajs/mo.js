@@ -11,10 +11,9 @@ var MO = new function MoSpace(){
 }
 MO.initialize = function MO_initialize(){
    var o = this;
-   var info = o.info;
    var count = 0;
-   for(var name in this){
-      var value = this[name];
+   for(var name in o){
+      var value = o[name];
       if(value){
          if(value.constructor == Function){
             value.__name = name;
@@ -22,7 +21,7 @@ MO.initialize = function MO_initialize(){
       }
       count++;
    }
-   info.count = count;
+   o.info.count = count;
 }
 MO.release = function MO_release(){
    var o = this;
@@ -86,9 +85,8 @@ MO.EProcess = new function EProcess(){
    var o = this;
    MO.TEnum.call(o);
    o.Unknown = 0;
-   o.Release = 1;
-   o.Process = 2;
-   o.Debug   = 3;
+   o.Debug   = 1;
+   o.Release = 2;
    return o;
 }
 MO.EScope = new function EScope(){
@@ -108,9 +106,6 @@ MO.RRuntime = function RRuntime(){
 }
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
    return this._processCd == MO.EProcess.Debug;
-}
-MO.RRuntime.prototype.isProcess = function RRuntime_isProcess(){
-   return this._processCd == MO.EProcess.Process;
 }
 MO.RRuntime.prototype.isRelease = function RRuntime_isRelease(){
    return this._processCd == MO.EProcess.Release;
@@ -172,6 +167,65 @@ MO.RRuntime.prototype.className = function RRuntime_className(value){
       }
    }
    return null;
+}
+MO.RRuntime.prototype.sortComparerAsc = function RArray_sortComparerAsc(source, target, parameters){
+   if(source > target){
+      return 1;
+   }else if(source < target){
+      return -1;
+   }else{
+      return 0;
+   }
+}
+MO.RRuntime.prototype.sortComparerDesc = function RArray_sortComparerDesc(source, target, parameters){
+   if(source > target){
+      return -1;
+   }else if(source < target){
+      return 1;
+   }else{
+      return 0;
+   }
+}
+MO.RRuntime.prototype.pairSortMid = function RArray_pairSortMid(names, values, begin, end, comparer, parameters){
+   var name = names[begin];
+   if(values){
+      var value = values[begin];
+   }
+   while(begin < end){
+      while((begin < end) && (comparer(names[end], name, parameters) >= 0)){
+         end--;
+      }
+      names[begin] = names[end];
+      if(values){
+         values[begin] = values[end];
+      }
+      while((begin < end) && (comparer(names[begin], name, parameters) <= 0)){
+         begin++;
+      }
+      names[end] = names[begin];
+      if(values){
+         values[end] = values[begin];
+      }
+   }
+   names[begin] = name;
+   if(values){
+      values[begin] = value;
+   }
+   return begin;
+}
+MO.RRuntime.prototype.pairSortSub = function RArray_pairSortSub(names, values, begin, end, comparer, parameters){
+   var o = this;
+   if(begin < end){
+      var mid = o.pairSortMid(names, values, begin, end, comparer, parameters);
+      o.pairSortSub(names, values, begin, mid - 1, comparer, parameters);
+      o.pairSortSub(names, values, mid + 1, end, comparer, parameters);
+   }
+}
+MO.RRuntime.prototype.pairSort = function RArray_pairSort(names, values, offset, count, comparer, parameters){
+   var o = this;
+   var begin = offset;
+   var end = offset + count - 1;
+   o.pairSortSub(names, values, begin, end, MO.Runtime.nvl(comparer, o.sortComparerAsc), parameters);
 }
 MO.Runtime = new MO.RRuntime();
 MO.TArray = function TArray(length){
@@ -240,10 +294,12 @@ MO.TArray_push = function TArray_push(){
 }
 MO.TArray_swap = function TArray_swap(left, right){
    var o = this;
-   if((left >= 0) && (left < o._length) && (right >= 0) && (right < o._length) && (left != right)){
-      var value = o._memory[left];
-      o._memory[left] = this._memory[right];
-      o._memory[right] = value;
+   var count = o._length;
+   if((left >= 0) && (left < count) && (right >= 0) && (right < count) && (left != right)){
+      var memory = o._memory;
+      var value = memory[left];
+      memory[left] = memory[right];
+      memory[right] = value;
    }
 }
 MO.TArray_sort = function TArray_sort(){
@@ -311,15 +367,25 @@ MO.TArray_dump = function TArray_dump(){
 MO.TAttributes = function TAttributes(){
    var o = this;
    MO.TDictionary.call(o);
-   o.sortByName = MO.TAttributes_sortByName;
-   o.join       = MO.TAttributes_join;
-   o.joinName   = MO.TAttributes_joinName;
    o.joinValue  = MO.TAttributes_joinValue;
+   o.join       = MO.TAttributes_join;
    o.split      = MO.TAttributes_split;
    o.pack       = MO.TAttributes_pack;
    o.unpack     = MO.TAttributes_unpack;
    o.dump       = MO.TAttributes_dump;
    return o;
+}
+MO.TAttributes_joinValue = function TAttributes_joinValue(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
+      }
+      source.append(o._values[i]);
+   }
+   return source.flush();
 }
 MO.TAttributes_join = function TAttributes_join(name, value){
    var o = this;
@@ -337,30 +403,6 @@ MO.TAttributes_join = function TAttributes_join(name, value){
       }
       source.append(o._names[i]);
       source.append(name);
-      source.append(o._values[i]);
-   }
-   return source.flush();
-}
-MO.TAttributes_joinName = function TAttributes_joinName(split){
-   var o = this;
-   var source = new MO.TString();
-   var count = o._count;
-   for(var i = 0; i < count; i++){
-      if(i > 0){
-         source.append(split);
-      }
-      source.append(o._names[i]);
-   }
-   return source.flush();
-}
-MO.TAttributes_joinValue = function TAttributes_joinValue(split){
-   var o = this;
-   var source = new MO.TString();
-   var count = o._count;
-   for(var i = 0; i < count; i++){
-      if(i > 0){
-         source.append(split);
-      }
       source.append(o._values[i]);
    }
    return source.flush();
@@ -422,11 +464,6 @@ MO.TAttributes_unpack = function TAttributes_unpack(source){
       o.set(name, value);
    }
 }
-MO.TAttributes_sortByName = function TAttributes_sortByName(comparer, parameters){
-   var o = this;
-   MO.Lang.Array.pairSort(o._names, o._values, 0, o._count, comparer, parameters);
-   o.rebuild();
-}
 MO.TAttributes_dump = function TAttributes_dump(){
    var o = this;
    var result = new MO.TString();
@@ -449,21 +486,43 @@ MO.TAttributes_dump = function TAttributes_dump(){
 MO.TDictionary = function TDictionary(){
    var o = this;
    MO.TMap.call(o);
-   o.dump = MO.TDictionary_dump;
+   o.sortByName = MO.TDictionary_sortByName;
+   o.joinName   = MO.TDictionary_joinName;
+   o.dump       = MO.TDictionary_dump;
    return o;
 }
-MO.TDictionary_dump = function TDictionary_dump(){
-   var info = new MO.TString();
-   var count = this._count;
-   info.append(MO.Runtime.className(o), ': ', count);
-   if(count > 0){
-      info.append(' {\n');
-      for(var i = 0; i < count; i++){
-         info.append('   ', this._names[i], '=[', this._values[i], ']\n');
+MO.TDictionary_sortByName = function TDictionary_sortByName(comparer, parameters){
+   var o = this;
+   MO.Runtime.pairSort(o._names, o._values, 0, o._count, comparer, parameters);
+   o.rebuild();
+}
+MO.TDictionary_joinName = function TDictionary_joinName(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
       }
-      info.append('}');
+      source.append(o._names[i]);
    }
-   return info.flush();
+   return source.flush();
+}
+MO.TDictionary_dump = function TDictionary_dump(){
+   var o = this;
+   var result = new MO.TString();
+   var count = o._count;
+   result.append(MO.Runtime.className(o), ': ', count);
+   if(count > 0){
+      var names = o._names;
+      var values = o._values;
+      result.append(' {\n');
+      for(var i = 0; i < count; i++){
+         result.append('   ', names[i], '=[', values[i], ']\n');
+      }
+      result.append('}');
+   }
+   return result.flush();
 }
 MO.TMap = function TMap(){
    var o = this;
@@ -703,14 +762,7 @@ MO.TMap_toString = function TMap_toString(){
 }
 MO.TMap_dispose = function TMap_dispose(flag){
    var o = this;
-   if(flag){
-      var count = o._count;
-      var values = o._values;
-      for(var i = 0; i < count; i++){
-         var value = values[i];
-         values[i] = MO.Lang.Object.dispose(value);
-      }
-   }
+   var count = o._count;
    var table = o._table;
    if(table){
       for(var name in table){
@@ -720,14 +772,17 @@ MO.TMap_dispose = function TMap_dispose(flag){
    }
    var names = o._names;
    if(names){
-      for(var i = names.length - 1; i >= 0; i--){
+      for(var i = 0; i < count; i++){
          names[i] = null;
       }
       o._names = null;
    }
    var values = o._values;
    if(values){
-      for(var i = values.length - 1; i >= 0; i--){
+      for(var i = 0; i < count; i++){
+         if(flag){
+            MO.Lang.Object.dispose(values[i]);
+         }
          values[i] = null;
       }
       o._values = null;
@@ -738,10 +793,10 @@ MO.TMap_dump = function TMap_dump(){
    var o = this;
    var result = new MO.TString();
    var count = o._count;
-   var names = o._names;
-   var values = o._values;
    result.appendLine(MO.Runtime.className(o), ': ', count);
    if(count > 0){
+      var names = o._names;
+      var values = o._values;
       result.append(' {');
       for(var i = 0; i < count; i++){
          result.appendLine(names[i], '=[', values[i], ']');
@@ -807,16 +862,19 @@ MO.TObjects_indexOf = function TObjects_indexOf(value){
    return -1;
 }
 MO.TObjects_first = function TObjects_first(){
-   return this._count ? this._items[0] : null;
+   var o = this;
+   return o._count ? o._items[0] : null;
 }
 MO.TObjects_last = function TObjects_last(){
-   return this._count ? this._items[this._count - 1] : null;
+   var o = this;
+   return o._count ? o._items[o._count - 1] : null;
 }
 MO.TObjects_getAt = function TObjects_getAt(index){
    return this._items[index];
 }
 MO.TObjects_get = function TObjects_get(index){
-   return ((index >= 0) && (index < this._count)) ? this._items[index] : null;
+   var o = this;
+   return ((index >= 0) && (index < o._count)) ? o._items[index] : null;
 }
 MO.TObjects_setAt = function TObjects_setAt(index, value){
    this._items[index] = value;
@@ -864,9 +922,11 @@ MO.TObjects_unshift = function TObjects_unshift(value){
 }
 MO.TObjects_pop = function TObjects_pop(){
    var o = this;
+   var value = null;
    if(o._count){
-      return o._items[--o._count];
+      value = o._items[--o._count];
    }
+   return value;
 }
 MO.TObjects_push = function TObjects_push(value){
    var o = this;
@@ -876,19 +936,15 @@ MO.TObjects_push = function TObjects_push(value){
 }
 MO.TObjects_pushUnique = function TObjects_pushUnique(value){
    var o = this;
-   var items = o._items;
-   for(var i = o._count - 1; i >= 0; i--){
-      if(items[i] == value){
-         return i;
-      }
+   var index = o.indexOf(value);
+   if(value == -1){
+      o.push(value);
    }
-   var index = o._count++;
-   items[index] = value;
-   return index;
 }
 MO.TObjects_swap = function TObjects_swap(left, right){
    var o = this;
-   if((left >= 0) && (left < o._count) && (right >= 0) && (right < o._count) && (left != right)){
+   var count = o._count;
+   if((left >= 0) && (left < count) && (right >= 0) && (right < count) && (left != right)){
       var items = o._items;
       var value = items[left];
       items[left] = items[right];
@@ -986,7 +1042,7 @@ MO.TString_assign = function TString_assign(){
    o.clear();
    o.appendArray(arguments, 0, arguments.length);
 }
-MO.TString_append = function TString_append(v){
+MO.TString_append = function TString_append(){
    this.appendArray(arguments, 0, arguments.length);
 }
 MO.TString_appendIf = function TString_appendIf(flag){
@@ -1041,7 +1097,8 @@ MO.TString_dispose = function TString_dispose(){
    o._count = 0;
    var memory = o._memory;
    if(memory){
-      for(var i = memory.length - 1; i >= 0; i--){
+      var count = memory.length;
+      for(var i = 0; i < count; i++){
          memory[i] = null;
       }
       o._memory = null;
@@ -1089,12 +1146,12 @@ MO.RAssert.prototype.debugNotNull = function RAssert_debugNotNull(value){
    }
 }
 MO.RAssert.prototype.debugEmpty = function RAssert_debugEmpty(value){
-   if(value != null){
+   if(value.length == 0){
       throw new Error('Assert empty failure.');
    }
 }
 MO.RAssert.prototype.debugNotEmpty = function RAssert_debugNotEmpty(value){
-   if(value == null){
+   if(value.length > 0){
       throw new Error('Assert not empty failure.');
    }
 }
@@ -1419,26 +1476,22 @@ MO.RGlobal = function RGlobal(){
    return o;
 }
 MO.RGlobal.prototype.get = function RGlobal_get(name){
-   return this._instances.get(name);
+   var global = this;
+   if(top.MO){
+      if(top.MO.Global){
+         global = top.MO.Global;
+      }
+   }
+   return global._instances.get(name);
 }
 MO.RGlobal.prototype.set = function RGlobal_set(name, value){
-   this._instances.set(name, value);
-}
-MO.RGlobal.prototype.globalGet = function RGlobal_globalGet(name){
-   var value = null;
-   if(top.MO.Global){
-      value = top.MO.Global.get(name);
-   }else{
-      value = this._instances.get(name);
+   var global = this;
+   if(top.MO){
+      if(top.MO.Global){
+         global = top.MO.Global;
+      }
    }
-   return value;
-}
-MO.RGlobal.prototype.globalSet = function RGlobal_globalSet(name, value){
-   if(top.MO.Global){
-      top.MO.Global.set(name, value);
-   }else{
-      this._instances.set(name, value);
-   }
+   return global._instances.set(name, value);
 }
 MO.Global = new MO.RGlobal();
 MO.AAnnotation = function AAnnotation(name){
@@ -3434,13 +3487,18 @@ MO.FTimer_update = function FTimer_update(){
 }
 MO.RArray = function RArray(){
    var o = this;
-   o.array1  = new Array(1);
-   o.array2  = new Array(2);
-   o.array3  = new Array(3);
-   o.array4  = new Array(4);
-   o.array9  = new Array(9);
-   o.array12 = new Array(12);
-   o.array16 = new Array(16);
+   o.array1           = new Array(1);
+   o.array2           = new Array(2);
+   o.array3           = new Array(3);
+   o.array4           = new Array(4);
+   o.array9           = new Array(9);
+   o.array12          = new Array(12);
+   o.array16          = new Array(16);
+   o.sortComparerAsc  = MO.Runtime.sortComparerAsc;
+   o.sortComparerDesc = MO.Runtime.sortComparerDesc;
+   o.pairSortMid      = MO.Runtime.pairSortMid;
+   o.pairSortSub      = MO.Runtime.pairSortSub;
+   o.pairSort         = MO.Runtime.pairSort;
    return o;
 }
 MO.RArray.prototype.equals = function RArray_equals(s, t){
@@ -3569,65 +3627,6 @@ MO.RArray.prototype.nameMaxLength = function RArray_nameMaxLength(a){
       }
    }
    return r;
-}
-MO.RArray.prototype.sortComparerAsc = function RArray_sortComparerAsc(source, target, parameters){
-   if(source > target){
-      return 1;
-   }else if(source < target){
-      return -1;
-   }else{
-      return 0;
-   }
-}
-MO.RArray.prototype.sortComparerDesc = function RArray_sortComparerDesc(source, target, parameters){
-   if(source > target){
-      return -1;
-   }else if(source < target){
-      return 1;
-   }else{
-      return 0;
-   }
-}
-MO.RArray.prototype.pairSortMid = function RArray_pairSortMid(names, values, begin, end, comparer, parameters){
-   var name = names[begin];
-   if(values){
-      var value = values[begin];
-   }
-   while(begin < end){
-      while((begin < end) && (comparer(names[end], name, parameters) >= 0)){
-         end--;
-      }
-      names[begin] = names[end];
-      if(values){
-         values[begin] = values[end];
-      }
-      while((begin < end) && (comparer(names[begin], name, parameters) <= 0)){
-         begin++;
-      }
-      names[end] = names[begin];
-      if(values){
-         values[end] = values[begin];
-      }
-   }
-   names[begin] = name;
-   if(values){
-      values[begin] = value;
-   }
-   return begin;
-}
-MO.RArray.prototype.pairSortSub = function RArray_pairSortSub(names, values, begin, end, comparer, parameters){
-   var o = this;
-   if(begin < end){
-      var mid = o.pairSortMid(names, values, begin, end, comparer, parameters);
-      o.pairSortSub(names, values, begin, mid - 1, comparer, parameters);
-      o.pairSortSub(names, values, mid + 1, end, comparer, parameters);
-   }
-}
-MO.RArray.prototype.pairSort = function RArray_pairSort(names, values, offset, count, comparer, parameters){
-   var o = this;
-   var begin = offset;
-   var end = offset + count - 1;
-   o.pairSortSub(names, values, begin, end, MO.Runtime.nvl(comparer, o.sortComparerAsc), parameters);
 }
 MO.RArray.prototype.quickSort = function RArray_quickSort(items, offset, count, comparer, parameters){
    this.pairSort(items, null, offset, count, comparer, parameters);
@@ -26149,12 +26148,10 @@ MO.FE3rBitmapConsole_load = function FE3rBitmapConsole_load(context, guid, code)
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
    MO.Logger.info(o, 'Load bitmap. (url={1})', url);
    if(code == 'environment'){
-      bitmap = MO.Class.create(MO.FE3rBitmapCubePack);
+      bitmap = context.createObject(MO.FE3rBitmapCubePack);
    }else{
-      bitmap = MO.Class.create(MO.FE3rBitmapFlatPack);
+      bitmap = context.createObject(MO.FE3rBitmapFlatPack);
    }
-   bitmap.linkGraphicContext(context);
-   bitmap.loadUrl(url);
    o._bitmaps.set(flag, bitmap);
    return bitmap;
 }
@@ -26166,21 +26163,18 @@ MO.FE3rBitmapConsole_loadUrl = function FE3rBitmapConsole_loadUrl(context, url){
    }
    var loadUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
-   var bitmap = MO.Window.Class.create(MO.FE3rBitmap);
-   bitmap.linkGraphicContext(context);
-   bitmap.setup();
+   var bitmap = context.createObject(MO.FE3rBitmap);
    bitmap.loadUrl(url);
    o._bitmaps.set(url, bitmap);
    return bitmap;
 }
 MO.FE3rBitmapCubePack = function FE3rBitmapCubePack(o){
    o = MO.Class.inherits(this, o, MO.FE3rBitmapPack);
-   o._resource    = null;
-   o._images      = null;
-   o.onLoad       = MO.FE3rBitmapCubePack_onLoad;
-   o.construct    = MO.FE3rBitmapCubePack_construct;
-   o.loadUrl      = MO.FE3rBitmapCubePack_loadUrl;
-   o.dispose      = MO.FE3rBitmapCubePack_dispose;
+   o._images   = MO.Class.register(o, new MO.AGetter('_images'));
+   o.onLoad    = MO.FE3rBitmapCubePack_onLoad;
+   o.construct = MO.FE3rBitmapCubePack_construct;
+   o.loadUrl   = MO.FE3rBitmapCubePack_loadUrl;
+   o.dispose   = MO.FE3rBitmapCubePack_dispose;
    return o;
 }
 MO.FE3rBitmapCubePack_onLoad = function FE3rBitmapCubePack_onLoad(p){
@@ -26209,35 +26203,33 @@ MO.FE3rBitmapCubePack_construct = function FE3rBitmapCubePack_construct(){
 }
 MO.FE3rBitmapCubePack_loadUrl = function FE3rBitmapCubePack_loadUrl(url){
    var o = this;
-   o._images = new MO.TObjects();
+   var images = o._images = new MO.TObjects();
    for(var i = 0; i < 6; i++){
       var image = MO.Class.create(MO.FImage);
       image._index = i;
       image.setOptionAlpha(false);
-      image.loadUrl(url + "&index=" + i);
       image.addLoadListener(o, o.onLoad);
-      o._images.push(image);
+      image.loadUrl(url + "&index=" + i);
+      images.push(image);
    }
 }
 MO.FE3rBitmapCubePack_dispose = function FE3rBitmapCubePack_dispose(){
    var o = this;
-   o._images = MO.Lang.Object.dispose(o._images);
+   o._images = MO.Lang.Object.dispose(o._images, true);
    o.__base.FE3rBitmapPack.dispose.call(o);
 }
 MO.FE3rBitmapFlatPack = function FE3rBitmapFlatPack(o){
    o = MO.Class.inherits(this, o, MO.FE3rBitmapPack);
-   o._resource    = null;
-   o._image       = null;
-   o.onLoad       = MO.FE3rBitmapFlatPack_onLoad;
-   o.construct    = MO.FE3rBitmapFlatPack_construct;
-   o.loadUrl      = MO.FE3rBitmapFlatPack_loadUrl;
-   o.dispose      = MO.FE3rBitmapFlatPack_dispose;
+   o._image    = MO.Class.register(o, new MO.AGetter('_image'));
+   o.onLoad    = MO.FE3rBitmapFlatPack_onLoad;
+   o.construct = MO.FE3rBitmapFlatPack_construct;
+   o.loadUrl   = MO.FE3rBitmapFlatPack_loadUrl;
+   o.dispose   = MO.FE3rBitmapFlatPack_dispose;
    return o;
 }
 MO.FE3rBitmapFlatPack_onLoad = function FE3rBitmapFlatPack_onLoad(event){
    var o = this;
-   var context = o._graphicContext;
-   var texture = o._texture = context.createFlatTexture();
+   var texture = o._texture = o._graphicContext.createFlatTexture();
    texture.upload(o._image);
    texture.makeMipmap();
    o._image = MO.Lang.Object.dispose(o._image);
@@ -26259,17 +26251,15 @@ MO.FE3rBitmapFlatPack_dispose = function FE3rBitmapFlatPack_dispose(){
    o.__base.FE3rBitmapPack.dispose.call(o);
 }
 MO.FE3rBitmapPack = function FE3rBitmapPack(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
-   o._resource    = null;
-   o._image       = null;
-   o._texture     = MO.Class.register(o, new AGetter('_texture'));
-   o._ready       = false;
-   o._dataReady   = false;
-   o.onLoad       = MO.Method.virtual(o, 'onLoad');
-   o.construct    = MO.FE3rBitmapPack_construct;
-   o.testReady    = MO.FE3rBitmapPack_testReady;
-   o.loadUrl      = MO.Method.virtual(o, 'loadUrl');
-   o.dispose      = MO.FE3rBitmapPack_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MLinkerResource);
+   o._texture   = MO.Class.register(o, new MO.AGetter('_texture'));
+   o._dataReady = false;
+   o._ready     = false;
+   o.onLoad     = MO.Method.virtual(o, 'onLoad');
+   o.construct  = MO.FE3rBitmapPack_construct;
+   o.testReady  = MO.FE3rBitmapPack_testReady;
+   o.loadUrl    = MO.Method.virtual(o, 'loadUrl');
+   o.dispose    = MO.FE3rBitmapPack_dispose;
    return o;
 }
 MO.FE3rBitmapPack_construct = function FE3rBitmapPack_construct(){

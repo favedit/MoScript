@@ -169,12 +169,10 @@ MO.FE3rBitmapConsole_load = function FE3rBitmapConsole_load(context, guid, code)
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
    MO.Logger.info(o, 'Load bitmap. (url={1})', url);
    if(code == 'environment'){
-      bitmap = MO.Class.create(MO.FE3rBitmapCubePack);
+      bitmap = context.createObject(MO.FE3rBitmapCubePack);
    }else{
-      bitmap = MO.Class.create(MO.FE3rBitmapFlatPack);
+      bitmap = context.createObject(MO.FE3rBitmapFlatPack);
    }
-   bitmap.linkGraphicContext(context);
-   bitmap.loadUrl(url);
    o._bitmaps.set(flag, bitmap);
    return bitmap;
 }
@@ -186,21 +184,18 @@ MO.FE3rBitmapConsole_loadUrl = function FE3rBitmapConsole_loadUrl(context, url){
    }
    var loadUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
-   var bitmap = MO.Window.Class.create(MO.FE3rBitmap);
-   bitmap.linkGraphicContext(context);
-   bitmap.setup();
+   var bitmap = context.createObject(MO.FE3rBitmap);
    bitmap.loadUrl(url);
    o._bitmaps.set(url, bitmap);
    return bitmap;
 }
 MO.FE3rBitmapCubePack = function FE3rBitmapCubePack(o){
    o = MO.Class.inherits(this, o, MO.FE3rBitmapPack);
-   o._resource    = null;
-   o._images      = null;
-   o.onLoad       = MO.FE3rBitmapCubePack_onLoad;
-   o.construct    = MO.FE3rBitmapCubePack_construct;
-   o.loadUrl      = MO.FE3rBitmapCubePack_loadUrl;
-   o.dispose      = MO.FE3rBitmapCubePack_dispose;
+   o._images   = MO.Class.register(o, new MO.AGetter('_images'));
+   o.onLoad    = MO.FE3rBitmapCubePack_onLoad;
+   o.construct = MO.FE3rBitmapCubePack_construct;
+   o.loadUrl   = MO.FE3rBitmapCubePack_loadUrl;
+   o.dispose   = MO.FE3rBitmapCubePack_dispose;
    return o;
 }
 MO.FE3rBitmapCubePack_onLoad = function FE3rBitmapCubePack_onLoad(p){
@@ -229,35 +224,33 @@ MO.FE3rBitmapCubePack_construct = function FE3rBitmapCubePack_construct(){
 }
 MO.FE3rBitmapCubePack_loadUrl = function FE3rBitmapCubePack_loadUrl(url){
    var o = this;
-   o._images = new MO.TObjects();
+   var images = o._images = new MO.TObjects();
    for(var i = 0; i < 6; i++){
       var image = MO.Class.create(MO.FImage);
       image._index = i;
       image.setOptionAlpha(false);
-      image.loadUrl(url + "&index=" + i);
       image.addLoadListener(o, o.onLoad);
-      o._images.push(image);
+      image.loadUrl(url + "&index=" + i);
+      images.push(image);
    }
 }
 MO.FE3rBitmapCubePack_dispose = function FE3rBitmapCubePack_dispose(){
    var o = this;
-   o._images = MO.Lang.Object.dispose(o._images);
+   o._images = MO.Lang.Object.dispose(o._images, true);
    o.__base.FE3rBitmapPack.dispose.call(o);
 }
 MO.FE3rBitmapFlatPack = function FE3rBitmapFlatPack(o){
    o = MO.Class.inherits(this, o, MO.FE3rBitmapPack);
-   o._resource    = null;
-   o._image       = null;
-   o.onLoad       = MO.FE3rBitmapFlatPack_onLoad;
-   o.construct    = MO.FE3rBitmapFlatPack_construct;
-   o.loadUrl      = MO.FE3rBitmapFlatPack_loadUrl;
-   o.dispose      = MO.FE3rBitmapFlatPack_dispose;
+   o._image    = MO.Class.register(o, new MO.AGetter('_image'));
+   o.onLoad    = MO.FE3rBitmapFlatPack_onLoad;
+   o.construct = MO.FE3rBitmapFlatPack_construct;
+   o.loadUrl   = MO.FE3rBitmapFlatPack_loadUrl;
+   o.dispose   = MO.FE3rBitmapFlatPack_dispose;
    return o;
 }
 MO.FE3rBitmapFlatPack_onLoad = function FE3rBitmapFlatPack_onLoad(event){
    var o = this;
-   var context = o._graphicContext;
-   var texture = o._texture = context.createFlatTexture();
+   var texture = o._texture = o._graphicContext.createFlatTexture();
    texture.upload(o._image);
    texture.makeMipmap();
    o._image = MO.Lang.Object.dispose(o._image);
@@ -279,17 +272,15 @@ MO.FE3rBitmapFlatPack_dispose = function FE3rBitmapFlatPack_dispose(){
    o.__base.FE3rBitmapPack.dispose.call(o);
 }
 MO.FE3rBitmapPack = function FE3rBitmapPack(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
-   o._resource    = null;
-   o._image       = null;
-   o._texture     = MO.Class.register(o, new AGetter('_texture'));
-   o._ready       = false;
-   o._dataReady   = false;
-   o.onLoad       = MO.Method.virtual(o, 'onLoad');
-   o.construct    = MO.FE3rBitmapPack_construct;
-   o.testReady    = MO.FE3rBitmapPack_testReady;
-   o.loadUrl      = MO.Method.virtual(o, 'loadUrl');
-   o.dispose      = MO.FE3rBitmapPack_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MLinkerResource);
+   o._texture   = MO.Class.register(o, new MO.AGetter('_texture'));
+   o._dataReady = false;
+   o._ready     = false;
+   o.onLoad     = MO.Method.virtual(o, 'onLoad');
+   o.construct  = MO.FE3rBitmapPack_construct;
+   o.testReady  = MO.FE3rBitmapPack_testReady;
+   o.loadUrl    = MO.Method.virtual(o, 'loadUrl');
+   o.dispose    = MO.FE3rBitmapPack_dispose;
    return o;
 }
 MO.FE3rBitmapPack_construct = function FE3rBitmapPack_construct(){
