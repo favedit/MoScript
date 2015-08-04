@@ -5,29 +5,30 @@
 // @author maocy
 // @version 150804
 //==========================================================
-MO.FUiGridControl = function FUiGridControl(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+MO.MUiGridControl = function MUiGridControl(o){
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
    o._displayCount = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
+   o._headHeight   = MO.Class.register(o, new MO.APtyInteger('_headHeight'), 48);
    o._rowHeight    = MO.Class.register(o, new MO.APtyInteger('rowHeight'), 0);
    //..........................................................
    // @attribute
-   o._columns      = MO.Class.register(o, new AGetter('_columns'));
+   o._columns      = MO.Class.register(o, new MO.AGetter('_columns'));
    o._rowClass     = MO.FUiGridRow;
-   o._rows         = MO.Class.register(o, new AGetter('_rows'));
+   o._rows         = MO.Class.register(o, new MO.AGetter('_rows'));
    // @attribute
    o._focusRow     = null;
    o._focusCell    = null;
    //..........................................................
    // @method
-   o.construct    = FUiGridControl_construct;
+   o.construct     = MO.MUiGridControl_construct;
    // @method
-   o.createRow    = FUiGridControl_createRow;
-   o.pushColumn   = FUiGridControl_pushColumn;
-   o.pushRow      = FUiGridControl_pushRow;
+   o.createRow     = MO.MUiGridControl_createRow;
+   o.pushColumn    = MO.MUiGridControl_pushColumn;
+   o.pushRow       = MO.MUiGridControl_pushRow;
    // @method
-   o.dispose      = FUiGridControl_dispose;
+   o.dispose       = MO.MUiGridControl_dispose;
    return o;
 }
 
@@ -36,10 +37,8 @@ MO.FUiGridControl = function FUiGridControl(o){
 //
 // @method
 //==========================================================
-MO.FUiGridControl_construct = function FUiGridControl_construct(){
+MO.MUiGridControl_construct = function MUiGridControl_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
-   // 初始化
    o._columns = new MO.TDictionary();
    o._rows = new MO.TObjects();
 }
@@ -50,7 +49,7 @@ MO.FUiGridControl_construct = function FUiGridControl_construct(){
 // @method
 // @return FUiGridRow 行控件
 //==========================================================
-MO.FUiGridControl_createRow = function FUiGridControl_createRow(clazz){
+MO.MUiGridControl_createRow = function MUiGridControl_createRow(clazz){
    var o = this;
    var row = MO.Class.create(MO.Runtime.nvl(clazz, o._rowClass));
    row.setTable(o);
@@ -63,10 +62,13 @@ MO.FUiGridControl_createRow = function FUiGridControl_createRow(clazz){
 // @method
 // @return FUiGridRow 行控件
 //==========================================================
-MO.FUiGridControl_pushColumn = function FUiGridControl_pushColumn(column){
+MO.MUiGridControl_pushColumn = function MUiGridControl_pushColumn(column){
    var o = this;
+   var columns = o._columns;
    var name = column.name();
-   o._columns.set(name, column);
+   column.setGrid(o);
+   column.setIndex(columns.count());
+   columns.set(name, column);
 }
 
 //==========================================================
@@ -75,8 +77,9 @@ MO.FUiGridControl_pushColumn = function FUiGridControl_pushColumn(column){
 // @method
 // @return FUiGridRow 行控件
 //==========================================================
-MO.FUiGridControl_pushRow = function FUiGridControl_pushRow(row){
+MO.MUiGridControl_pushRow = function MUiGridControl_pushRow(row){
    var o = this;
+   row.setGrid(o);
    o._rows.push(row);
 }
 
@@ -85,7 +88,7 @@ MO.FUiGridControl_pushRow = function FUiGridControl_pushRow(row){
 //
 // @method
 //==========================================================
-MO.FUiGridControl_dispose = function FUiGridControl_dispose(){
+MO.MUiGridControl_dispose = function MUiGridControl_dispose(){
    var o = this;
    // 释放属性
    o._columns = MO.Lang.Object.dispose(o._columns);
@@ -93,6 +96,4 @@ MO.FUiGridControl_dispose = function FUiGridControl_dispose(){
    o._rows = MO.Lang.Object.dispose(o._rows);
    o._focusRow = null;
    o._focusCell = null;
-   // 父处理
-   o.__base.FObject.dispose.call(o);
 }

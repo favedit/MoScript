@@ -47,6 +47,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawTriangle         = MO.FG2dCanvasContext_drawTriangle;
    o.drawCircle           = MO.FG2dCanvasContext_drawCircle;
    o.drawText             = MO.FG2dCanvasContext_drawText;
+   o.drawFontText    = MO.FG2dCanvasContext_drawFontText;
    o.drawImage            = MO.FG2dCanvasContext_drawImage;
    o.drawGridImage        = MO.FG2dCanvasContext_drawGridImage;
    o.drawQuadrilateral    = MO.FG2dCanvasContext_drawQuadrilateral;
@@ -303,6 +304,18 @@ MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, 
    var handle = o._handle;
    handle.fillStyle = color;
    handle.fillText(text, x, y);
+}
+
+//==========================================================
+// <T>绘制文字。</T>
+//
+// @method
+// @param text:String 文本
+// @param x:Integer 横坐标
+// @param y:Integer 纵坐标
+//==========================================================
+MO.FG2dCanvasContext_drawFontText = function FG2dCanvasContext_drawFontText(text, font, x, y, width, height, dockCd){
+   var o = this;
 }
 
 //==========================================================

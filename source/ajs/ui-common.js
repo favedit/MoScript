@@ -1387,3 +1387,52 @@ MO.SUiDispatchEvent_dump = function SUiDispatchEvent_dump(){
    var o = this;
    return MO.Class.dump(o) + ':owner=' + o.owner + ',type=' + o.type + '.invoke=' + MO.Method.name(o.invoke);
 }
+MO.SUiFont = function SUiFont(){
+   var o = this;
+   o.font     = null;
+   o.size     = 16;
+   o.bold     = false;
+   o.color    = '#FFFFFF';
+   o.assign   = MO.SUiFont_assign;
+   o.parse    = MO.SUiFont_parse;
+   o.toString = MO.SUiFont_toString;
+   o.dispose  = MO.SUiFont_dispose;
+   return o;
+}
+MO.SUiFont_assign = function SUiFont_assign(value){
+   var o = this;
+   o.font = value.font;
+   o.size = value.size;
+   o.bold = value.bold;
+   o.color = value.color;
+}
+MO.SUiFont_parse = function SUiFont_parse(source){
+   var o = this;
+   throw new MO.TError('Unsupport.');
+}
+MO.SUiFont_toString = function SUiFont_toString(){
+   var o = this;
+   var result = '';
+   if(o.bold){
+      result += 'bold';
+   }
+   if(o.size){
+      if(result != ''){
+         result += ' ';
+      }
+      result += o.size + 'px';
+   }
+   if(o.font){
+      if(result != ''){
+         result += ' ';
+      }
+      result += o.font;
+   }
+   return result;
+}
+MO.SUiFont_dispose = function SUiFont_dispose(){
+   var o = this;
+   o.font = null;
+   o.size = null;
+   o.bold = null;
+}

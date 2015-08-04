@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150804
 //==========================================================
-MO.FUiGridRow = function FUiGridRow(o){
+MO.MUiGridRow = function MUiGridRow(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
@@ -13,8 +13,8 @@ MO.FUiGridRow = function FUiGridRow(o){
    o._cells    = MO.Class.register(o, new AGetter('_cells'));
    //..........................................................
    // @method
-   o.construct = FUiGridRow_construct;
-   o.dispose   = FUiGridRow_dispose;
+   o.construct = MUiGridRow_construct;
+   o.dispose   = MUiGridRow_dispose;
 }
 
 //==========================================================
@@ -22,7 +22,7 @@ MO.FUiGridRow = function FUiGridRow(o){
 //
 // @method
 //==========================================================
-MO.FUiGridRow_construct = function FUiGridRow_construct(){
+MO.MUiGridRow_construct = function MUiGridRow_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置属性
@@ -34,7 +34,7 @@ MO.FUiGridRow_construct = function FUiGridRow_construct(){
 //
 // @method
 //==========================================================
-MO.FUiGridRow_dispose = function FUiGridRow_dispose(){
+MO.MUiGridRow_dispose = function MUiGridRow_dispose(){
    var o = this;
    // 释放属性
    o._grid = null;

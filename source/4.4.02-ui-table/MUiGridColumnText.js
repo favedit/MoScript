@@ -5,13 +5,13 @@
 // @author maocy
 // @version 150804
 //==========================================================
-MO.FUiGridColumnText = function FUiGridColumnText(o){
-   o = MO.Class.inherits(this, o, MO.FUiGridColumn);
+MO.MUiGridColumnText = function MUiGridColumnText(o){
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
    //..........................................................
    // @method
-   o.dispose = MO.FUiGridColumnText_dispose;
+   o.dispose = MO.MUiGridColumnText_dispose;
    return o;
 }
 
@@ -20,9 +20,6 @@ MO.FUiGridColumnText = function FUiGridColumnText(o){
 //
 // @method
 //==========================================================
-MO.FUiGridColumnText_dispose = function FUiGridColumnText_dispose(){
+MO.MUiGridColumnText_dispose = function MUiGridColumnText_dispose(){
    var o = this;
-   // 释放属性
-   // 父处理
-   o.__base.FUiGridColumn.dispose.call(o);
 }

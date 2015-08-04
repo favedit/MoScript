@@ -7609,7 +7609,7 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
    o.oeUpdate              = MO.FEaiChartMarketerTable_oeUpdate;
    o.construct             = MO.FEaiChartMarketerTable_construct;
    o.setup                 = MO.FEaiChartMarketerTable_setup;
-   o.pushUnit            = MO.FEaiChartMarketerTable_pushUnit;
+   o.pushUnit              = MO.FEaiChartMarketerTable_pushUnit;
    o.drawRow               = MO.FEaiChartMarketerTable_drawRow;
    o.dispose               = MO.FEaiChartMarketerTable_dispose;
    return o;
@@ -7705,6 +7705,7 @@ MO.FEaiChartMarketerTable_oeUpdate = function FEaiChartMarketerTable_oeUpdate(ev
             }
             o._lineScroll = 0;
          }
+         o._gridControl.dirty();
          o.dirty();
       }
    }
@@ -7738,10 +7739,56 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
-   var control = o._gridControl = MO.Class.create(MO.FGuiGridControl);
-   control.setLocation(100, 100);
-   control.setSize(600, 500);
-   o.push(control);
+   var font = new MO.SUiFont();
+   font.font = 'Microsoft YaHei';
+   font.size = 25;
+   font.color = '#54F0FF';
+   var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
+   grid.setLocation(50, 450);
+   grid.setSize(800, 500);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('recordDate');
+   column.setLabel('时间');
+   column.setDataName('record_date');
+   column.font().assign(font);
+   column.setWidth(110);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('departmentLabel');
+   column.setLabel('公司');
+   column.setDataName('department_label');
+   column.font().assign(font);
+   column.setWidth(120);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('marketerLabel');
+   column.setLabel('理财师');
+   column.setDataName('marketer_label');
+   column.font().assign(font);
+   column.setWidth(120);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('customerCard');
+   column.setLabel('城市');
+   column.setDataName('customer_card');
+   column.font().assign(font);
+   column.setWidth(100);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('customerInfo');
+   column.setLabel('用户-手机');
+   column.setDataName('customer_phone');
+   column.font().assign(font);
+   column.setWidth(160);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('customerAmount');
+   column.setLabel('投资额(元)');
+   column.setDataName('customer_amount');
+   column.font().assign(font);
+   column.setWidth(120);
+   grid.pushColumn(column);
+   o.push(grid);
    o._headFontStyle = 'bold 32px Microsoft YaHei';
    var isVertical = MO.Window.Browser.isOrientationVertical()
    if(isVertical){
