@@ -1,16 +1,16 @@
 //==========================================================
-// <T>表格单元格。</T>
+// <T>表格货币单元格。</T>
 //
 // @class
 // @author maocy
-// @version 150804
+// @version 150805
 //==========================================================
-MO.MUiGridCellText = function MUiGridCellText(o){
+MO.MUiGridCellCurrency = function MUiGridCellCurrency(o){
    o = MO.Class.inherits(this, o, MO.MUiGridCell);
    //..........................................................
    // @method
-   o.construct = MO.MUiGridCellText_construct;
-   o.dispose   = MO.MUiGridCellText_dispose;
+   o.construct = MO.MUiGridCellCurrency_construct;
+   o.dispose   = MO.MUiGridCellCurrency_dispose;
    return o;
 }
 
@@ -19,7 +19,7 @@ MO.MUiGridCellText = function MUiGridCellText(o){
 //
 // @method
 //==========================================================
-MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
+MO.MUiGridCellCurrency_construct = function MUiGridCellCurrency_construct(){
    var o = this;
    o.__base.MUiGridCell.construct.call(o);
 }
@@ -29,7 +29,7 @@ MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
 //
 // @method
 //==========================================================
-MO.MUiGridCellText_dispose = function MUiGridCellText_dispose(){
+MO.MUiGridCellCurrency_dispose = function MUiGridCellCurrency_dispose(){
    var o = this;
    // 释放属性
    // 父处理

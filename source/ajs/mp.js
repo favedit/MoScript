@@ -3795,12 +3795,12 @@ MO.RClass.prototype.typeOf = function RClass_typeOf(o){
    }
    return 'Null';
 }
-MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
-   if(v == null){
+MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(value, safe){
+   if(value == null){
       return 'Null';
    }
    try{
-      var c = v.constructor;
+      var c = value.constructor;
       if(c == Boolean){
          return 'Boolean';
       }
@@ -3816,13 +3816,13 @@ MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
       if(c.constructor == Function){
          return MO.Lang.String.mid(c.toString(), 'function ', '(');
       }
-      if(v.__class){
-         return v.__class.name;
+      if(value.__class){
+         return value.__class.name;
       }
-      if(v.tagName){
+      if(value.tagName){
          return 'Html';
       }
-      for(var n in v){
+      for(var name in value){
          return 'Object';
       }
    }catch(e){
@@ -3845,20 +3845,20 @@ MO.RClass.prototype.code = function RClass_code(v){
    c[l] = v;
    return l;
 }
-MO.RClass.prototype.name = function RClass_name(v){
-   if(v){
-      if(v.__name){
-         return v.__name;
+MO.RClass.prototype.name = function RClass_name(value){
+   if(value){
+      if(value.__name){
+         return value.__name;
       }
-      if(v.__class){
-         return v.__class.name;
+      if(value.__class){
+         return value.__class.name;
       }
-      if(typeof(v) == 'function'){
-         return MO.Method.name(v);
+      if(typeof(value) == 'function'){
+         return MO.Method.name(value);
       }
-      var c = v.constructor;
-      if(c){
-         return MO.Lang.String.mid(c.toString(), 'function ', '(');
+      var method = value.constructor;
+      if(method){
+         return MO.Lang.String.mid(method.toString(), 'function ', '(');
       }
    }
    return null;
@@ -3954,44 +3954,44 @@ MO.RClass.prototype.createByName = function RClass_createByName(className){
    }
    return clazz.newInstance();
 }
-MO.RClass.prototype.innerCopy = function RClass_innerCopy(s, t){
-   if((s != null) && (t != null)){
-      for(var n in s){
-         var v = s[n];
-         if(v != null){
-            var p = typeof(v)
-            if(p == 'function'){
-               var f = t[n];
-               if(f == null){
-                  t[n] = v;
-               }else if(MO.Method.isVirtual(f)){
-                  t[n] = v;
-               }else if(!MO.Method.isVirtual(v) && MO.Method.isEmpty(f)){
-                  t[n] = v;
-               }else if(!MO.Method.isVirtual(v) && !MO.Method.isEmpty(v)){
-                  t[n] = v;
+MO.RClass.prototype.innerCopy = function RClass_innerCopy(source, target){
+   if((source != null) && (target != null)){
+      for(var n in source){
+         var value = source[n];
+         if(value != null){
+            var typeName = typeof(value)
+            if(typeName == 'function'){
+               var targetValue = target[n];
+               if(targetValue == null){
+                  target[n] = value;
+               }else if(MO.Method.isVirtual(targetValue)){
+                  target[n] = value;
+               }else if(!MO.Method.isVirtual(value) && MO.Method.isEmpty(targetValue)){
+                  target[n] = value;
+               }else if(!MO.Method.isVirtual(value) && !MO.Method.isEmpty(value)){
+                  target[n] = value;
                }
                continue;
-            }else if(!MO.Class.isBaseName(p)){
-               if(t[n] == null){
-                  t[n] = new v.constructor();
+            }else if(!MO.Class.isBaseName(typeName)){
+               if(target[n] == null){
+                  target[n] = new value.constructor();
                }
-               this.innerCopy(v, t[n]);
+               this.innerCopy(value, target[n]);
                continue;
             }
          }
-         t[n] = v;
+         target[n] = value;
       }
    }
 }
 MO.RClass.prototype.build = function RClass_build(clazz){
    var o = this;
-   var sbs = clazz.clazz.__inherits;
-   if(sbs && (sbs.constructor == Array)){
+   var inherits = clazz.clazz.__inherits;
+   if(inherits && (inherits.constructor == Array)){
       var finded = false;
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
          if(MO.Lang.String.startsWith(name, 'F')){
             if(finded){
                MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
@@ -4002,17 +4002,17 @@ MO.RClass.prototype.build = function RClass_build(clazz){
       }
    }
    var instance = clazz.instance = new clazz.base.constructor();
-   if(sbs && (sbs.constructor == Array)){
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
+   if(inherits && (inherits.constructor == Array)){
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
          if(!MO.Lang.String.startsWith(name, 'F')){
-            var m = MO.Class.forName(name);
-            if(m == null){
+            var findClass = MO.Class.forName(name);
+            if(findClass == null){
                MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
             }
-            MO.Class.innerCopy(m.instance, instance);
-            clazz.assign(m);
+            MO.Class.innerCopy(findClass.instance, instance);
+            clazz.assign(findClass);
          }
       }
    }
@@ -4036,20 +4036,20 @@ MO.RClass.prototype.build = function RClass_build(clazz){
          }
       }
    }
-   if(sbs && (sbs.constructor == Array)){
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
-         var bcls = MO.Class.forName(name);
-         var base = instance.__base[name] = new bcls.base.constructor();
-         var cf = bcls.instance;
-         for(var name in cf){
+   if(inherits && (inherits.constructor == Array)){
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
+         var baseClass = MO.Class.forName(name);
+         var base = instance.__base[name] = new baseClass.base.constructor();
+         var baseInstance = baseClass.instance;
+         for(var name in baseInstance){
             if(name != '__base'){
-               var cfn = cf[name];
+               var cfn = baseInstance[name];
                var ofn = instance[name];
                if((cfn != null) && (ofn != null) && (cfn != ofn)){
                   if((cfn.constructor == Function) && (ofn.constructor == Function)){
-                     base[name] = cf[name];
+                     base[name] = baseInstance[name];
                   }
                }
             }
@@ -15236,7 +15236,6 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawTriangle         = MO.FG2dCanvasContext_drawTriangle;
    o.drawCircle           = MO.FG2dCanvasContext_drawCircle;
    o.drawText             = MO.FG2dCanvasContext_drawText;
-   o.drawFontText    = MO.FG2dCanvasContext_drawFontText;
    o.drawImage            = MO.FG2dCanvasContext_drawImage;
    o.drawGridImage        = MO.FG2dCanvasContext_drawGridImage;
    o.drawQuadrilateral    = MO.FG2dCanvasContext_drawQuadrilateral;
@@ -15352,9 +15351,6 @@ MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, 
    var handle = o._handle;
    handle.fillStyle = color;
    handle.fillText(text, x, y);
-}
-MO.FG2dCanvasContext_drawFontText = function FG2dCanvasContext_drawFontText(text, font, x, y, width, height, dockCd){
-   var o = this;
 }
 MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height){
    var o = this;
@@ -22661,19 +22657,20 @@ MO.FEntityConsole_dispose = function FEntityConsole_dispose(){
 }
 MO.FE2dCanvas = function FE2dCanvas(o){
    o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject, MO.MGraphicObject);
-   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
-   o._hCanvas   = null;
-   o.onResize   = MO.FE2dCanvas_onResize;
-   o.construct  = MO.FE2dCanvas_construct;
-   o.htmlCanvas = MO.FE2dCanvas_htmlCanvas;
-   o.build      = MO.FE2dCanvas_build;
-   o.setPanel   = MO.FE2dCanvas_setPanel;
-   o.resize     = MO.FE2dCanvas_resize;
-   o.show       = MO.FE2dCanvas_show;
-   o.hide       = MO.FE2dCanvas_hide;
-   o.setVisible = MO.FE2dCanvas_setVisible;
-   o.reset      = MO.FE2dCanvas_reset;
-   o.dispose    = MO.FE2dCanvas_dispose;
+   o._size         = MO.Class.register(o, new MO.AGetter('_size'));
+   o._hCanvas      = null;
+   o.onResize      = MO.FE2dCanvas_onResize;
+   o.construct     = MO.FE2dCanvas_construct;
+   o.createContext = MO.FE2dCanvas_createContext;
+   o.htmlCanvas    = MO.FE2dCanvas_htmlCanvas;
+   o.build         = MO.FE2dCanvas_build;
+   o.setPanel      = MO.FE2dCanvas_setPanel;
+   o.resize        = MO.FE2dCanvas_resize;
+   o.show          = MO.FE2dCanvas_show;
+   o.hide          = MO.FE2dCanvas_hide;
+   o.setVisible    = MO.FE2dCanvas_setVisible;
+   o.reset         = MO.FE2dCanvas_reset;
+   o.dispose       = MO.FE2dCanvas_dispose;
    return o;
 }
 MO.FE2dCanvas_onResize = function FE2dCanvas_onResize(p){
@@ -22683,6 +22680,9 @@ MO.FE2dCanvas_construct = function FE2dCanvas_construct(){
    var o = this;
    o.__base.FCanvas.construct.call(o);
    o._size = new MO.SSize2(1280, 720);
+}
+MO.FE2dCanvas_createContext = function FE2dCanvas_createContext(){
+   return MO.Class.create(MO.FG2dCanvasContext);
 }
 MO.FE2dCanvas_htmlCanvas = function FE2dCanvas_htmlCanvas(){
    return this._hCanvas;
@@ -22699,7 +22699,7 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    hStyle.top = '0px';
    hStyle.width = '100%';
    hStyle.height = '100%';
-   var context = o._graphicContext = MO.Class.create(MO.FG2dCanvasContext);
+   var context = o._graphicContext = o.createContext();
    context.linkCanvas(hCanvas);
    o.resize(width, height);
 }
@@ -35575,16 +35575,76 @@ MO.SUiFont_dispose = function SUiFont_dispose(){
    o.size = null;
    o.bold = null;
 }
+MO.FUiCanvas = function FUiCanvas(o){
+   o = MO.Class.inherits(this, o, MO.FE2dCanvas);
+   o.createContext = MO.FUiCanvas_createContext;
+   return o;
+}
+MO.FUiCanvas_createContext = function FUiCanvas_createContext(){
+   return MO.Class.create(MO.FUiCanvasContext);
+}
+MO.FUiCanvasContext = function FUiCanvasContext(o) {
+   o = MO.Class.inherits(this, o, MO.FG2dCanvasContext);
+   o.construct    = MO.FUiCanvasContext_construct;
+   o.drawFontText = MO.FUiCanvasContext_drawFontText;
+   o.dispose      = MO.FUiCanvasContext_dispose;
+   return o;
+}
+MO.FUiCanvasContext_construct = function FUiCanvasContext_construct() {
+   var o = this;
+   o.__base.FG2dCanvasContext.construct.call(o);
+}
+MO.FUiCanvasContext_drawFontText = function FUiCanvasContext_drawFontText(text, font, x, y, width, height, alignCd){
+   var o = this;
+   if(MO.Lang.String.isEmpty(text)){
+      return;
+   }
+   var handle = o._handle;
+   handle.font = font.toString();
+   handle.fillStyle = font.color;
+   var textWidth = o.textWidth(text);
+   var cx = x + (width - textWidth) / 2;
+   var cy = y + (height - font.size) / 2 + font.size;
+   if(alignCd == MO.EUiAlign.Left){
+      handle.fillText(text, x, cy);
+   }else if(alignCd == MO.EUiAlign.Right){
+      handle.fillText(text, x + (width - textWidth), cy);
+   }else if(alignCd == MO.EUiAlign.Center){
+      handle.fillText(text, cx, cy);
+   }else{
+      throw new MO.TError('Invalid align type.');
+   }
+}
+MO.FUiCanvasContext_dispose = function FUiCanvasContext_dispose() {
+   var o = this;
+   o.__base.FG2dCanvasContext.dispose.call(o);
+}
 MO.MUiGridCell = function MUiGridCell(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._grid      = MO.Class.register(o, new AGetSet('_grid'));
-   o._column    = MO.Class.register(o, new AGetSet('_column'));
-   o._row       = MO.Class.register(o, new AGetSet('_row'));
-   o._value     = MO.Class.register(o, new AGetSet('_value'));
+   o._grid      = MO.Class.register(o, new MO.AGetSet('_grid'));
+   o._column    = MO.Class.register(o, new MO.AGetSet('_column'));
+   o._row       = MO.Class.register(o, new MO.AGetSet('_row'));
+   o._font      = MO.Class.register(o, new MO.AGetSet('_font'));
+   o._value     = MO.Class.register(o, new MO.AGetSet('_value'));
+   o.findFont   = MO.MUiGridCell_findFont;
    o.text       = MO.MUiGridCell_text;
    o.setText    = MO.MUiGridCell_setText;
    o.dispose    = MO.MUiGridCell_dispose;
    return o;
+}
+MO.MUiGridCell_findFont = function MUiGridCell_findFont(){
+   var o = this;
+   var font = o._font;
+   if(font){
+      font = o._row.font();
+   }
+   if(!font){
+      font = o._column.font();
+   }
+   if(!font){
+      font = o._grid.rowFont();
+   }
+   return font;
 }
 MO.MUiGridCell_text = function MUiGridCell_text(){
    var o = this;
@@ -35603,73 +35663,212 @@ MO.MUiGridCell_dispose = function MUiGridCell_dispose(){
    o._row = null;
    o.__base.FObject.dispose.call(o);
 }
+MO.MUiGridCellCurrency = function MUiGridCellCurrency(o){
+   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o.construct = MO.MUiGridCellCurrency_construct;
+   o.dispose   = MO.MUiGridCellCurrency_dispose;
+   return o;
+}
+MO.MUiGridCellCurrency_construct = function MUiGridCellCurrency_construct(){
+   var o = this;
+   o.__base.MUiGridCell.construct.call(o);
+}
+MO.MUiGridCellCurrency_dispose = function MUiGridCellCurrency_dispose(){
+   var o = this;
+   o.__base.MUiGridCell.dispose.call(o);
+}
+MO.MUiGridCellDate = function MUiGridCellDate(o){
+   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o.construct = MO.MUiGridCellDate_construct;
+   o.dispose   = MO.MUiGridCellDate_dispose;
+   return o;
+}
+MO.MUiGridCellDate_construct = function MUiGridCellDate_construct(){
+   var o = this;
+   o.__base.MUiGridCell.construct.call(o);
+}
+MO.MUiGridCellDate_dispose = function MUiGridCellDate_dispose(){
+   var o = this;
+   o.__base.MUiGridCell.dispose.call(o);
+}
 MO.MUiGridCellText = function MUiGridCellText(o){
    o = MO.Class.inherits(this, o, MO.MUiGridCell);
-   o.dispose    = MO.MUiGridCellText_dispose;
+   o.construct = MO.MUiGridCellText_construct;
+   o.dispose   = MO.MUiGridCellText_dispose;
    return o;
+}
+MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
+   var o = this;
+   o.__base.MUiGridCell.construct.call(o);
 }
 MO.MUiGridCellText_dispose = function MUiGridCellText_dispose(){
    var o = this;
    o.__base.MUiGridCell.dispose.call(o);
 }
 MO.MUiGridColumn = function MUiGridColumn(o){
-   o = MO.Class.inherits(this, o);
-   o._grid      = MO.Class.register(o, new MO.AGetSet('_grid'));
-   o._index     = MO.Class.register(o, new MO.AGetSet('_index'), -1);
-   o._name      = MO.Class.register(o, new MO.AGetSet('_name'));
-   o._label     = MO.Class.register(o, new MO.AGetSet('_label'));
-   o._dataName  = MO.Class.register(o, new MO.AGetSet('_dataName'));
-   o._font      = MO.Class.register(o, new MO.AGetter('_font'));
-   o._width     = MO.Class.register(o, new MO.AGetSet('_width'), 100);
-   o.construct  = MO.MUiGridColumn_construct;
-   o.createCell = MO.Method.virtual(o, 'createCell');
-   o.dispose    = MO.MUiGridColumn_dispose;
+   o = MO.Class.inherits(this, o, MO.MUiPadding, MO.MUiMargin, MO.MUiTextFormator);
+   o._grid        = MO.Class.register(o, new MO.AGetSet('_grid'));
+   o._index       = MO.Class.register(o, new MO.AGetSet('_index'), -1);
+   o._name        = MO.Class.register(o, new MO.AGetSet('_name'));
+   o._label       = MO.Class.register(o, new MO.AGetSet('_label'));
+   o._dataName    = MO.Class.register(o, new MO.AGetSet('_dataName'));
+   o._backColor   = MO.Class.register(o, new MO.AGetSet('_backColor'));
+   o._font        = MO.Class.register(o, new MO.AGetter('_font'));
+   o._width       = MO.Class.register(o, new MO.AGetSet('_width'), 100);
+   o._realWidth   = MO.Class.register(o, new MO.AGetSet('_realWidth'), 100);
+   o._alignCd     = MO.Class.register(o, new MO.AGetSet('_alignCd'), MO.EUiAlign.Left);
+   o._cellPadding = MO.Class.register(o, new MO.AGetter('_cellPadding'));
+   o._cellClass   = null;
+   o.construct    = MO.MUiGridColumn_construct;
+   o.createCell   = MO.MUiGridColumn_createCell;
+   o.findFont     = MO.MUiGridColumn_findFont;
+   o.dispose      = MO.MUiGridColumn_dispose;
    return o;
 }
 MO.MUiGridColumn_construct = function MUiGridColumn_construct(){
    var o = this;
-   o._font = new MO.SUiFont();
+   o.__base.MUiPadding.construct.call(o);
+   o.__base.MUiMargin.construct.call(o);
+   o._cellPadding = new MO.SPadding();
+}
+MO.MUiGridColumn_createCell = function MUiGridColumn_createCell(clazz){
+   var o = this;
+   var cell = MO.Class.create(MO.Runtime.nvl(clazz, o._cellClass));
+   cell.setGrid(o._grid);
+   cell.setColumn(o);
+   return cell;
+}
+MO.MUiGridColumn_findFont = function MUiGridColumn_findFont(){
+   var o = this;
+   var font = o._font;
+   if(!font){
+      font = o._grid.headFont();
+   }
+   return font;
 }
 MO.MUiGridColumn_dispose = function MUiGridColumn_dispose(){
    var o = this;
    o._grid = null;
-   o._font = MO.Lang.Object.dispose(o._font);
+   o._cellPadding = MO.Lang.Object.dispose(o._cellPadding);
+   o.__base.MUiMargin.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+}
+MO.MUiGridColumnCurrency = function MUiGridColumnCurrency(o){
+   o = MO.Class.inherits(this, o);
+   o._currencyPercent = MO.Class.register(o, new MO.AGetSet('_currencyPercent'), 2);
+   o._normalColor     = MO.Class.register(o, new MO.AGetSet('_normalColor'), '#000000');
+   o._highColor       = MO.Class.register(o, new MO.AGetSet('_highColor'), '#000000');
+   o._lowerColor      = MO.Class.register(o, new MO.AGetSet('_lowerColor'), '#000000');
+   o._negativeColor   = MO.Class.register(o, new MO.AGetSet('_negativeColor'), '#000000');
+   o.construct        = MO.MUiGridColumnCurrency_construct;
+   o.formatText       = MO.MUiGridColumnCurrency_formatText;
+   o.dispose          = MO.MUiGridColumnCurrency_dispose;
+   return o;
+}
+MO.MUiGridColumnCurrency_construct = function MUiGridColumnCurrency_construct(){
+   var o = this;
+}
+MO.MUiGridColumnCurrency_formatText = function MUiGridColumnCurrency_formatText(value){
+   var o = this;
+   var text = MO.Lang.Float.format(value, null, null, o._currencyPercent, '0');
+   return text;
+}
+MO.MUiGridColumnCurrency_dispose = function MUiGridColumnCurrency_dispose(){
+   var o = this;
+}
+MO.MUiGridColumnDate = function MUiGridColumnDate(o){
+   o = MO.Class.inherits(this, o);
+   o._dateFormat = MO.Class.register(o, new MO.AGetSet('_dateFormat'), 'YYYY/MM/DD HH24:MI:SS');
+   o._dateValue  = null;
+   o.construct   = MO.MUiGridColumnDate_construct;
+   o.formatText  = MO.MUiGridColumnDate_formatText;
+   o.dispose     = MO.MUiGridColumnDate_dispose;
+   return o;
+}
+MO.MUiGridColumnDate_construct = function MUiGridColumnDate_construct(){
+   var o = this;
+   o._dateValue = new MO.TDate();
+}
+MO.MUiGridColumnDate_formatText = function MUiGridColumnDate_formatText(value){
+   var o = this;
+   var date = o._dateValue;
+   date.parse(value);
+   return date.format(o._dateFormat);
+}
+MO.MUiGridColumnDate_dispose = function MUiGridColumnDate_dispose(){
+   var o = this;
+   o._dateValue = MO.Lang.Object.dispose(o._dateValue);
 }
 MO.MUiGridColumnText = function MUiGridColumnText(o){
    o = MO.Class.inherits(this, o);
-   o.dispose = MO.MUiGridColumnText_dispose;
+   o.construct = MO.MUiGridColumnText_construct;
+   o.dispose   = MO.MUiGridColumnText_dispose;
    return o;
+}
+MO.MUiGridColumnText_construct = function MUiGridColumnText_construct(){
+   var o = this;
 }
 MO.MUiGridColumnText_dispose = function MUiGridColumnText_dispose(){
    var o = this;
 }
 MO.MUiGridControl = function MUiGridControl(o){
    o = MO.Class.inherits(this, o);
-   o._displayCount = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
-   o._headHeight   = MO.Class.register(o, new MO.APtyInteger('_headHeight'), 48);
-   o._rowHeight    = MO.Class.register(o, new MO.APtyInteger('rowHeight'), 0);
-   o._columns      = MO.Class.register(o, new MO.AGetter('_columns'));
-   o._rowClass     = MO.FUiGridRow;
-   o._rows         = MO.Class.register(o, new MO.AGetter('_rows'));
-   o._focusRow     = null;
-   o._focusCell    = null;
-   o.construct     = MO.MUiGridControl_construct;
-   o.createRow     = MO.MUiGridControl_createRow;
-   o.pushColumn    = MO.MUiGridControl_pushColumn;
-   o.pushRow       = MO.MUiGridControl_pushRow;
-   o.dispose       = MO.MUiGridControl_dispose;
+   o._displayCount  = MO.Class.register(o, new MO.AGetSet('_displayCount'), 20);
+   o._columns       = MO.Class.register(o, new MO.AGetter('_columns'));
+   o._headFont      = MO.Class.register(o, new MO.AGetter('_headFont'));
+   o._headBackColor = MO.Class.register(o, new MO.AGetSet('_headBackColor'), '#000000');
+   o._headHeight    = MO.Class.register(o, new MO.AGetSet('_headHeight'), 32);
+   o._rowClass      = MO.FUiGridRow;
+   o._rowFont       = MO.Class.register(o, new MO.AGetter('_rowFont'));
+   o._rowHeight     = MO.Class.register(o, new MO.AGetSet('_rowHeight'), 28);
+   o._rowLimitCount = MO.Class.register(o, new MO.AGetter('_rowLimitCount'), 0);
+   o._rows          = MO.Class.register(o, new MO.AGetter('_rows'));
+   o._rowPool       = null;
+   o._focusRow      = null;
+   o._focusCell     = null;
+   o.construct      = MO.MUiGridControl_construct;
+   o.createRow      = MO.MUiGridControl_createRow;
+   o.allocRow       = MO.MUiGridControl_allocRow;
+   o.freeRow        = MO.MUiGridControl_freeRow;
+   o.pushColumn     = MO.MUiGridControl_pushColumn;
+   o.pushRow        = MO.MUiGridControl_pushRow;
+   o.dispose        = MO.MUiGridControl_dispose;
    return o;
 }
 MO.MUiGridControl_construct = function MUiGridControl_construct(){
    var o = this;
    o._columns = new MO.TDictionary();
+   o._headFont = new MO.SUiFont();
    o._rows = new MO.TObjects();
+   o._rowFont = new MO.SUiFont();
+   o._rowPool = MO.Class.create(MO.FObjectPool);
 }
 MO.MUiGridControl_createRow = function MUiGridControl_createRow(clazz){
    var o = this;
    var row = MO.Class.create(MO.Runtime.nvl(clazz, o._rowClass));
-   row.setTable(o);
+   row.setGrid(o);
+   var columns = o._columns;
+   var count = columns.count();
+   for(var i = 0; i < count; i++){
+      var column = columns.at(i);
+      var cell = column.createCell();
+      row.pushCell(cell);
+   }
    return row;
+}
+MO.MUiGridControl_allocRow = function MUiGridControl_allocRow(clazz){
+   var o = this;
+   var row = null;
+   var pool = o._rowPool;
+   if(pool.hasFree()){
+      row = pool.alloc();
+   }else{
+      row = o.createRow(clazz);
+   }
+   return row;
+}
+MO.MUiGridControl_freeRow = function MUiGridControl_freeRow(row){
+   this._rowPool.free(row);
 }
 MO.MUiGridControl_pushColumn = function MUiGridControl_pushColumn(column){
    var o = this;
@@ -35688,21 +35887,45 @@ MO.MUiGridControl_dispose = function MUiGridControl_dispose(){
    var o = this;
    o._columns = MO.Lang.Object.dispose(o._columns);
    o._rowClass = null;
+   o._rowPool = MO.Lang.Object.dispose(o._rowPool);
    o._rows = MO.Lang.Object.dispose(o._rows);
    o._focusRow = null;
    o._focusCell = null;
+   o._rowFont = null;
 }
 MO.MUiGridRow = function MUiGridRow(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._grid    = MO.Class.register(o, new AGetSet('_grid'));
-   o._cells    = MO.Class.register(o, new AGetter('_cells'));
-   o.construct = MUiGridRow_construct;
-   o.dispose   = MUiGridRow_dispose;
+   o._grid     = MO.Class.register(o, new MO.AGetSet('_grid'));
+   o._cells    = MO.Class.register(o, new MO.AGetter('_cells'));
+   o._font     = MO.Class.register(o, new MO.AGetSet('_font'));
+   o._height   = MO.Class.register(o, new MO.AGetSet('_height'), 28);
+   o.construct = MO.MUiGridRow_construct;
+   o.pushCell  = MO.MUiGridRow_pushCell;
+   o.get       = MO.MUiGridRow_get;
+   o.set       = MO.MUiGridRow_set;
+   o.dispose   = MO.MUiGridRow_dispose;
 }
 MO.MUiGridRow_construct = function MUiGridRow_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._cells = new MO.TObjects();
+   o._cells = new MO.TDictionary();
+}
+MO.MUiGridRow_pushCell = function MUiGridRow_pushCell(cell){
+   var o = this;
+   cell.setRow(o)
+   var column = cell.column();
+   var dataName = column.dataName();
+   o._cells.set(dataName, cell);
+}
+MO.MUiGridRow_get = function MUiGridRow_get(name, value){
+   var o = this;
+   var cell = o._cells.get(name);
+   return cell.value(value);
+}
+MO.MUiGridRow_set = function MUiGridRow_set(name, value){
+   var o = this;
+   var cell = o._cells.get(name);
+   return cell.setValue(value);
 }
 MO.MUiGridRow_dispose = function MUiGridRow_dispose(){
    var o = this;
@@ -36664,6 +36887,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._backImage              = null;
    o._backHoverResource      = null;
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
+   o._parentRectangle        = MO.Class.register(o, new MO.AGetter('_parentRectangle'));
    o._eventRectangle         = null;
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
@@ -36813,6 +37037,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MUiMargin.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
+   o._parentRectangle = new MO.SRectangle();
    o._clientRectangle = new MO.SRectangle();
    o._eventRectangle = new MO.SRectangle();
 }
@@ -36883,6 +37108,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var parentRectangle = event.parentRectangle;
    var calculateRate = event.calculateRate;
    var rectangle = event.rectangle;
+   o._parentRectangle.assign(parentRectangle);
    o._eventRectangle.assign(rectangle);
    var dockCd = o._dockCd;
    var anchorCd = o._anchorCd;
@@ -36923,6 +37149,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    event.optionContainer = false;
    graphic.store();
    rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
+   parentRectangle.assign(rectangle);
    var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
    graphic.setScale(o._scale.width, o._scale.height);
@@ -36940,6 +37167,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    o.onPaintEnd(event);
    graphic.restore();
    rectangle.assign(o._eventRectangle);
+   parentRectangle.assign(o._parentRectangle);
    o._statusDirty = false;
 }
 MO.FGuiControl_update = function FGuiControl_update(){
@@ -38027,48 +38255,212 @@ MO.FGuiTimeline_onOperationDown = function FGuiTimeline_onOperationDown(event) {
       }
    }
 }
+MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellDate);
+   o._fontColor  = null;
+   o._numberFont = null;
+   o.construct   = MO.FGuiGridCellCurrency_construct;
+   o.formatText  = MO.FGuiGridCellCurrency_formatText;
+   o.draw        = MO.FGuiGridCellCurrency_draw;
+   o.dispose     = MO.FGuiGridCellCurrency_dispose;
+   return o;
+}
+MO.FGuiGridCellCurrency_construct = function FGuiGridCellCurrency_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridCellDate.construct.call(o);
+   o._numberFont = new MO.SUiFont();
+}
+MO.FGuiGridCellCurrency_formatText = function FGuiGridCellCurrency_formatText(value){
+   return this.__base.MUiGridColumnDate.formatText.call(this, value)
+}
+MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(graphic, x, y, width, height){
+   var o = this;
+   var column = o._column;
+   var cellPadding = column.cellPadding();
+   var value = o.value();
+   var text = o.text();
+   var textLength = text.length;
+   var font = o.findFont();
+   var numberFont = o._numberFont;
+   numberFont.assign(font);
+   var contentWidth = width - cellPadding.right;
+   if(value >= 0){
+      if(textLength > 7){
+         var fontColor = null;
+         if(textLength > 9){
+            fontColor = column.highColor();
+         }else{
+            fontColor = column.lowerColor();
+         }
+         var high = text.substring(0, text.length - 7);
+         var low = text.substring(text.length - 7, text.length);
+         var highWidth = graphic.textWidth(high);
+         var lowWidth = graphic.textWidth(low);
+         numberFont.color = fontColor;
+         graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+         numberFont.color = column.normalColor();
+         graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }else{
+         numberFont.color = column.normalColor();
+         graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }
+   }else if(value < 0){
+      numberFont.color = column.negativeColor();
+      graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+   }
+}
+MO.FGuiGridCellCurrency_dispose = function FGuiGridCellCurrency_dispose(){
+   var o = this;
+   o._numberFont = MO.Lang.Object.dispose(o._numberFont);
+   o.__base.MUiGridCellDate.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FGuiGridCellDate = function FGuiGridCellDate(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellDate);
+   o.construct = MO.FGuiGridCellDate_construct;
+   o.draw      = MO.FGuiGridCellDate_draw;
+   o.dispose   = MO.FGuiGridCellDate_dispose;
+   return o;
+}
+MO.FGuiGridCellDate_construct = function FGuiGridCellDate_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridCellDate.construct.call(o);
+}
+MO.FGuiGridCellDate_draw = function FGuiGridCellDate_draw(graphic, x, y, width, height){
+   var o = this;
+   var text = o.text();
+   var font = o.findFont();
+   graphic.drawFontText(text, font, x, y, width, height, MO.EUiAlign.Center);
+}
+MO.FGuiGridCellDate_dispose = function FGuiGridCellDate_dispose(){
+   var o = this;
+   o.__base.MUiGridCellDate.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
 MO.FGuiGridCellText = function FGuiGridCellText(o){
-   o = MO.Class.inherits(this, o, MO.FUiGridCellText);
-   o.onPaint = MO.FGuiGridCellText_onPaint;
-   o.paint   = MO.FGuiGridCellText_paint;
-   o.dispose = MO.FGuiGridCellText_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellText);
+   o.onPaint   = MO.FGuiGridCellText_onPaint;
+   o.construct = MO.FGuiGridCellText_construct;
+   o.draw      = MO.FGuiGridCellText_draw;
+   o.dispose   = MO.FGuiGridCellText_dispose;
    return o;
 }
 MO.FGuiGridCellText_onPaint = function FGuiGridCellText_onPaint(event){
    var o = this;
 }
-MO.FGuiGridCellText_paint = function FGuiGridCellText_paint(){
+MO.FGuiGridCellText_construct = function FGuiGridCellText_construct(){
    var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridCellText.construct.call(o);
+}
+MO.FGuiGridCellText_draw = function FGuiGridCellText_draw(graphic, x, y, width, height){
+   var o = this;
+   var text = o.text();
+   var font = o.findFont();
+   graphic.drawFontText(text, font, x, y, width, height, MO.EUiAlign.Center);
 }
 MO.FGuiGridCellText_dispose = function FGuiGridCellText_dispose(){
    var o = this;
-   o._grid = null;
-   o._column = null;
-   o._row = null;
-   o.__base.FUiGridCellText.dispose.call(o);
+   o.__base.MUiGridCellText.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
-MO.FGuiGridColumnText = function FGuiGridColumnText(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridColumn, MO.MUiGridColumnText);
-   o.construct  = MO.FGuiGridColumnText_construct;
-   o.createCell = MO.FGuiGridColumnText_createCell;
-   o.dispose    = MO.FGuiGridColumnText_dispose;
+MO.FGuiGridColumn = function FGuiGridColumn(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridColumn);
+   o.construct = MO.FGuiGridColumn_construct;
+   o.draw      = MO.FGuiGridColumn_draw;
+   o.dispose   = MO.FGuiGridColumn_dispose;
    return o;
 }
-MO.FGuiGridColumnText_construct = function FGuiGridColumnText_construct(){
+MO.FGuiGridColumn_construct = function FGuiGridColumn_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.__base.MUiGridColumn.construct.call(o);
 }
-MO.FGuiGridColumnText_createCell = function FGuiGridColumnText_createCell(){
-   return MO.Class.create(MO.FGuiGridCellText);
+MO.FGuiGridColumn_draw = function FGuiGridColumn_draw(graphic, x, y, width, height){
+   var o = this;
+   var padding = o._padding;
+   var contentX = x + padding.left;
+   var contentY = y + padding.top;
+   var contentWidth = width - padding.left - padding.right;
+   var contentHeight = height - padding.top - padding.bottom;
+   var backColor = o._backColor;
+   if(!backColor){
+      backColor = o._grid.headBackColor();
+   }
+   graphic.fillRectangle(contentX, contentY, contentWidth, contentHeight, backColor);
+   var font = o.findFont();
+   graphic.drawFontText(o._label, font, contentX, contentY, contentWidth, contentHeight, MO.EUiAlign.Center);
 }
-MO.FGuiGridColumnText_dispose = function FGuiGridColumnText_dispose(){
+MO.FGuiGridColumn_dispose = function FGuiGridColumn_dispose(){
    var o = this;
    o.__base.MUiGridColumn.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
+MO.FGuiGridColumnCurrency = function FGuiGridColumnCurrency(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnCurrency);
+   o.construct  = MO.FGuiGridColumnCurrency_construct;
+   o.formatText = MO.FGuiGridColumnCurrency_formatText;
+   o.dispose    = MO.FGuiGridColumnCurrency_dispose;
+   return o;
+}
+MO.FGuiGridColumnCurrency_construct = function FGuiGridColumnCurrency_construct(){
+   var o = this;
+   o.__base.FGuiGridColumn.construct.call(o);
+   o.__base.MUiGridColumnCurrency.construct.call(o);
+   o._cellClass = MO.FGuiGridCellCurrency;
+}
+MO.FGuiGridColumnCurrency_formatText = function FGuiGridColumnCurrency_formatText(value){
+   return this.__base.MUiGridColumnCurrency.formatText.call(this, value)
+}
+MO.FGuiGridColumnCurrency_dispose = function FGuiGridColumnCurrency_dispose(){
+   var o = this;
+   o.__base.MUiGridColumnCurrency.dispose.call(o);
+   o.__base.FGuiGridColumn.dispose.call(o);
+}
+MO.FGuiGridColumnDate = function FGuiGridColumnDate(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnDate);
+   o.construct  = MO.FGuiGridColumnDate_construct;
+   o.formatText = MO.FGuiGridColumnDate_formatText;
+   o.dispose    = MO.FGuiGridColumnDate_dispose;
+   return o;
+}
+MO.FGuiGridColumnDate_construct = function FGuiGridColumnDate_construct(){
+   var o = this;
+   o.__base.FGuiGridColumn.construct.call(o);
+   o.__base.MUiGridColumnDate.construct.call(o);
+   o._cellClass = MO.FGuiGridCellDate;
+}
+MO.FGuiGridColumnDate_formatText = function FGuiGridColumnDate_formatText(value){
+   return this.__base.MUiGridColumnDate.formatText.call(this, value)
+}
+MO.FGuiGridColumnDate_dispose = function FGuiGridColumnDate_dispose(){
+   var o = this;
+   o.__base.MUiGridColumnDate.dispose.call(o);
+   o.__base.FGuiGridColumn.dispose.call(o);
+}
+MO.FGuiGridColumnText = function FGuiGridColumnText(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
+   o.construct = MO.FGuiGridColumnText_construct;
+   o.dispose   = MO.FGuiGridColumnText_dispose;
+   return o;
+}
+MO.FGuiGridColumnText_construct = function FGuiGridColumnText_construct(){
+   var o = this;
+   o.__base.FGuiGridColumn.construct.call(o);
+   o.__base.MUiGridColumnText.construct.call(o);
+   o._cellClass = MO.FGuiGridCellText;
+}
+MO.FGuiGridColumnText_dispose = function FGuiGridColumnText_dispose(){
+   var o = this;
+   o.__base.MUiGridColumnText.dispose.call(o);
+   o.__base.FGuiGridColumn.dispose.call(o);
+}
 MO.FGuiGridControl = function FGuiGridControl(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiGridControl);
+   o._rowScroll      = 0;
+   o._rowScrollSpeed = 1;
    o.onPaintBegin = MO.FGuiGridControl_onPaintBegin;
    o.construct    = MO.FGuiGridControl_construct;
    o.dispose      = MO.FGuiGridControl_dispose;
@@ -38076,15 +38468,17 @@ MO.FGuiGridControl = function FGuiGridControl(o){
 }
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    var o = this;
+   var padding = o._padding;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   graphic.drawRectangle(left, top, width, height, '#FF0000', 1);
-   var drawLeft = left + 12;
-   var gridWidth = width - 24;
+   var left = rectangle.left + padding.left;
+   var top = rectangle.top + padding.top;
+   var bottom = rectangle.bottom() - padding.bottom;
+   var width = rectangle.width - padding.left - padding.right;
+   var height = rectangle.height - padding.top - padding.bottom;
+   var drawX = left;
+   var drawY = top;
+   var gridWidth = width;
    var columnWidthTotal = 0;
    var columns = o._columns;
    var columnCount = columns.count();
@@ -38092,29 +38486,116 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       var column = columns.at(i);
       columnWidthTotal += column.width();
    }
-   var columnX = drawLeft;
-   var columnY = top + 12;
+   var columnX = drawX;
+   var columnY = top;
    var headTextTop = columnY + 0;
    var headHeight = o._headHeight;
    for(var i = 0; i < columnCount; i++){
       var column = columns.at(i);
-      var columnLabel = column.label();
       var columnWidth = gridWidth * column.width() / columnWidthTotal;
-      var columnFont = column.font();
-      graphic.fillRectangle(columnX, columnY, columnWidth - 4, o._headHeight, '#122A46');
-      graphic.drawFontText(columnLabel, columnFont, columnX, columnY, columnWidth, headHeight, MO.EUiDock.Center);
+      column.draw(graphic, columnX, columnY, columnWidth, headHeight);
       columnX += columnWidth;
+   }
+   drawY += headHeight;
+   var rowsHeight = bottom - drawY;
+   var rowHeight = o._rowHeight;
+   graphic.clip(drawX, drawY, gridWidth, rowsHeight);
+   var rows = o._rows;
+   var rowCount = rows.count();
+   drawY += o._rowScroll;
+   for(var rowIndex = 0; rowIndex < rowCount; rowIndex++){
+      var columnX = drawX;
+      if(drawY > -rowHeight){
+         var row = rows.at(rowIndex);
+         for(var i = 0; i < columnCount; i++){
+            var column = columns.at(i);
+            var dataName = column.dataName();
+            var columnWidth = gridWidth * column.width() / columnWidthTotal;
+            var cell = row.cells().get(dataName);
+            cell.draw(graphic, columnX, drawY, columnWidth, rowHeight);
+            columnX += columnWidth;
+         }
+      }
+      drawY += rowHeight;
+      if(drawY > bottom){
+         break;
+      }
    }
 }
 MO.FGuiGridControl_construct = function FGuiGridControl_construct(){
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o.__base.MUiGridControl.construct.call(o);
+   o._rowClass = MO.FGuiGridRow;
 }
 MO.FGuiGridControl_dispose = function FGuiGridControl_dispose(){
    var o = this;
    o.__base.MUiGridControl.dispose.call(o);
    o.__base.FGuiControl.dispose.call(o);
+}
+MO.FGuiGridRow = function FGuiGridRow(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridRow);
+   o.construct = MO.FGuiGridRow_construct;
+   o.dispose   = MO.FGuiGridRow_dispose;
+   return o;
+}
+MO.FGuiGridRow_construct = function FGuiGridRow_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridRow.construct.call(o);
+}
+MO.FGuiGridRow_dispose = function FGuiGridRow_dispose(){
+   var o = this;
+   o.__base.MUiGridRow.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FGuiTable = function FGuiTable(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridControl);
+   o.oeUpdate        = MO.FGuiTable_oeUpdate;
+   o.construct       = MO.FGuiTable_construct;
+   o.insertRow       = MO.FGuiTable_insertRow;
+   o.dispose         = MO.FGuiTable_dispose;
+   return o;
+}
+MO.FGuiTable_oeUpdate = function FGuiTable_oeUpdate(event){
+   var o = this;
+   o.__base.FGuiGridControl.oeUpdate.call(o, event);
+   if(event.isBefore()){
+      if(o._rowScroll < 0){
+         var rows = o._rows;
+         var scrollSpeed = Math.max(parseInt(-o._rowScroll / o._rowHeight), o._rowScrollSpeed);
+         o._rowScroll += scrollSpeed;
+         if(o._rowScroll >= 0){
+            var limitCount = o._rowLimitCount;
+            if(limitCount != 0){
+               if(rows.count() > limitCount){
+                  var row = rows.pop();
+                  o.freeRow(row);
+               }
+            }
+            o._rowScroll = 0;
+         }
+         o.dirty();
+      }
+   }
+}
+MO.FGuiTable_construct = function FGuiTable_construct(){
+   var o = this;
+   o.__base.FGuiGridControl.construct.call(o);
+   o.__base.MUiGridControl.construct.call(o);
+   o._rowClass = MO.FGuiGridRow;
+}
+MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
+   var o = this;
+   MO.Assert.debugNotNull(row);
+   o._rows.unshift(row);
+   o._rowScroll -= o._rowHeight;
+   o.dirty();
+}
+MO.FGuiTable_dispose = function FGuiTable_dispose(){
+   var o = this;
+   o.__base.MUiGridControl.dispose.call(o);
+   o.__base.FGuiGridControl.dispose.call(o);
 }
 MO.FGuiBar = function FGuiBar(o){
    o = MO.Class.inherits(this, o, MO.FGuiFrame);
@@ -85744,16 +86225,12 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
    o._rank3Image           = null;
    o._backgroundImage      = null;
    o._backgroundPadding    = null;
-   o._columnLabels         = null;
-   o._columnDefines        = null;
-   o._columnWidths         = null;
    o._tableCount           = 0;
    o._units                = null;
    o._lineScroll           = 0;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o.onImageLoad           = MO.FEaiChartMarketerTable_onImageLoad;
    o.onPaintBegin          = MO.FEaiChartMarketerTable_onPaintBegin;
-   o.oeUpdate              = MO.FEaiChartMarketerTable_oeUpdate;
    o.construct             = MO.FEaiChartMarketerTable_construct;
    o.setup                 = MO.FEaiChartMarketerTable_setup;
    o.pushUnit              = MO.FEaiChartMarketerTable_pushUnit;
@@ -85761,10 +86238,10 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
    o.dispose               = MO.FEaiChartMarketerTable_dispose;
    return o;
 }
-MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageLoad() {
+MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageLoad(){
    this.dirty();
 }
-MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaintBegin(event) {
+MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaintBegin(event){
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
@@ -85780,14 +86257,6 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    var drawLeft = left + 12;
    var drawRight = right - 12;
    var drawWidth = right - left;
-   var columnCount = o._columnCount;
-   var widthDefine = 0;
-   for(var i = 0; i < columnCount; i++){
-      widthDefine += o._columnDefines[i];
-   }
-   for(var i = 0; i < columnCount; i++){
-      o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 7;
-   }
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
    var titleText = '全球实时投资数据展示中心(中国)';
    graphic.setFont(o._headFontStyle);
@@ -85810,52 +86279,6 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
          o.drawRow(graphic, unit, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
       }
    }
-   var headText = '';
-   var headTextWidth = 0;
-   var headLeft = drawLeft;
-   var headTop = top + o._headStart;
-   var headTextTop = headTop + o._headTextTop;
-   for(var i = 0; i < columnCount; i++){
-      var headText = o._columnLabels[i];
-      var headTextWidth = graphic.textWidth(headText);
-      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i] - 4, o._headHeight, '#122A46');
-      graphic.drawText(headText, headLeft + (o._columnWidths[i] - headTextWidth - 4) * 0.5, headTextTop, '#00B2F2');
-      headLeft += o._columnWidths[i];
-   }
-   var entities = o._units;
-   if(!entities.isEmpty()){
-      var tableTop = top + o._rowStart;
-      var tableText = '';
-      var tableTextWidth = 0;
-      graphic.clip(drawLeft, tableTop, drawWidth - 38, o._rowHeight * (o._tableCount - 1));
-      tableTop += 24;
-      var count = entities.count();
-      for(var i = 0; i < count; i++) {
-         var unit = entities.at(i);
-         o.drawRow(graphic, unit, false, i, drawLeft, tableTop + o._rowHeight * i + o._lineScroll, drawWidth);
-      }
-   }
-}
-MO.FEaiChartMarketerTable_oeUpdate = function FEaiChartMarketerTable_oeUpdate(event){
-   var o = this;
-   o.__base.FGuiControl.oeUpdate.call(o, event);
-   if(event.isBefore()){
-      if(o._lineScroll < 0){
-         o._lineScroll += 1;
-         if(o._lineScroll < -o._rowHeight){
-            o._lineScroll = 0;
-         }
-         if(o._lineScroll >= 0){
-            var entities = o._units;
-            if(entities.count() > o._tableCount){
-               entities.pop();
-            }
-            o._lineScroll = 0;
-         }
-         o._gridControl.dirty();
-         o.dirty();
-      }
-   }
 }
 MO.FEaiChartMarketerTable_construct = function FEaiChartMarketerTable_construct() {
    var o = this;
@@ -85864,10 +86287,6 @@ MO.FEaiChartMarketerTable_construct = function FEaiChartMarketerTable_construct(
    o._currentDate = new MO.TDate();
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
    o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
-   o._columnLabels = new Array('时间', '公司', '理财师', '城市', '用户-手机', '投资额(元)');
-      o._columnDefines = new Array(110, 120, 120, 100, 160, 120);
-   o._columnWidths = new Array();
-   o._columnCount = o._columnLabels.length;
 }
 MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    var o = this;
@@ -85886,54 +86305,68 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
-   var font = new MO.SUiFont();
-   font.font = 'Microsoft YaHei';
-   font.size = 25;
-   font.color = '#54F0FF';
-   var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
-   grid.setLocation(50, 450);
-   grid.setSize(800, 500);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
+   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
+   grid.setLocation(50, 332);
+   grid.setSize(800, 700);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setLeft(9);
+   grid.setRight(19);
+   grid.setHeadHeight(32);
+   grid.setHeadBackColor('#122A46');
+   grid.headFont().font = 'Microsoft YaHei';
+   grid.headFont().size = 22;
+   grid.headFont().color = '#00B2F2';
+   grid.setRowHeight(30);
+   grid.rowFont().font = 'Microsoft YaHei';
+   grid.rowFont().size = 20;
+   grid.rowFont().color = '#59FDE9';
+   var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
    column.setLabel('时间');
    column.setDataName('record_date');
-   column.font().assign(font);
+   column.setDateFormat('HH24:MI:SS');
    column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('departmentLabel');
    column.setLabel('公司');
    column.setDataName('department_label');
-   column.font().assign(font);
-   column.setWidth(120);
+   column.setWidth(140);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('marketerLabel');
    column.setLabel('理财师');
    column.setDataName('marketer_label');
-   column.font().assign(font);
-   column.setWidth(120);
+   column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerCard');
    column.setLabel('城市');
-   column.setDataName('customer_card');
-   column.font().assign(font);
+   column.setDataName('customer_city');
    column.setWidth(100);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerInfo');
    column.setLabel('用户-手机');
-   column.setDataName('customer_phone');
-   column.font().assign(font);
-   column.setWidth(160);
+   column.setDataName('customer_info');
+   column.setWidth(140);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
+   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
    column.setName('customerAmount');
    column.setLabel('投资额(元)');
    column.setDataName('customer_amount');
-   column.font().assign(font);
+   column.setNormalColor('#59FDE9');
+   column.setHighColor('#FDEF01');
+   column.setLowerColor('#EB6C03');
+   column.setNegativeColor('#FF0000');
+   column.cellPadding().right = 10;
    column.setWidth(120);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);
    o._headFontStyle = 'bold 32px Microsoft YaHei';
@@ -85954,7 +86387,6 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
       o._rowStart = 418;
       o._rowTextTop = 0;
       o._rowFontStyle = '36px Microsoft YaHei';
-      o._rowHeight = 46;
    }else{
       o._tableCount = 19;
       o._rankStart = 110;
@@ -85970,7 +86402,6 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
       o._headHeight = 40;
       o._rowFontStyle = '22px Microsoft YaHei';
       o._rowStart = 384;
-      o._rowHeight = 36;
    }
 }
 MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(unit){
@@ -85978,91 +86409,24 @@ MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(un
    if(!unit){
       return null;
    }
+   var grid = o._gridControl;
+   var row = grid.allocRow();
+   row.set('record_date', unit.recordDate());
+   row.set('department_label', unit.departmentLabel());
+   row.set('marketer_label', unit.marketerLabel());
+   row.set('customer_city', unit.customerCard());
+   row.set('customer_info', unit.customerLabel() + ' - ' + unit.customerPhone());
+   if(unit.customerActionCd() == 1){
+      row.set('customer_amount', unit.customerActionAmount());
+   }else{
+      row.set('customer_amount', -unit.customerActionAmount());
+   }
+   grid.insertRow(row);
    var entities = o._units;
    entities.unshift(unit);
    o._lineScroll -= o._rowHeight;
    if(entities.count() > o._tableCount){
       entities.pop();
-   }
-}
-MO.FEaiChartMarketerTable_drawRow = function FEaiChartMarketerTable_drawRow(graphic, unit, flag, index, x, y, width){
-   var o = this;
-   var widths = o._columnWidths;
-   var fontColor = null;
-   if(flag){
-      fontColor = '#E5BD1D';
-   }else{
-      fontColor = '#59FDE9';
-   }
-   if(flag){
-      var columnWidth = widths[0];
-      var imageX = x + (columnWidth * 0.5) - 23;
-      var imageY = y - o._rankIconStart;
-      if((index == 0) && o._rank1Image.testReady()){
-         graphic.drawImage(o._rank1Image, imageX - 6, imageY - 28, 58, 65);
-      }
-      if((index == 1) && o._rank2Image.testReady()){
-         graphic.drawImage(o._rank2Image, imageX, imageY, 46, 37);
-      }
-      if((index == 2) && o._rank3Image.testReady()){
-         graphic.drawImage(o._rank3Image, imageX, imageY, 46, 37);
-      }
-   }
-   y += o._rankTextStart;
-   var textWidth = 0;
-   if(!flag){
-      o._currentDate.parse(unit.recordDate());
-      var text = o._currentDate.format('HH24:MI:SS');
-      textWidth = graphic.textWidth(text);
-      graphic.drawText(text, x + widths[0] * 0.5 - textWidth * 0.5, y, fontColor);
-   }
-   x += widths[0];
-   text = unit.departmentLabel();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[1] * 0.5 - textWidth * 0.5, y, fontColor);
-   x += widths[1];
-   text = unit.marketerLabel();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[2] * 0.5 - textWidth * 0.5, y, fontColor);
-   x += widths[2];
-   var cityResource = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(unit.customerCard());
-   text = '';
-   if(cityResource){
-      text = cityResource.label();
-   }
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[3] * 0.5 - textWidth * 0.5, y, fontColor);
-   x += widths[3];
-   text = unit.customerLabel() + ' - ' + unit.customerPhone();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[4] * 0.5 - textWidth * 0.5, y, fontColor);
-   x += widths[4];
-   var amount = MO.Lang.Float.format(unit.customerActionAmount(), null, null, 2, '0');
-   var amountRight = x + widths[5] - 15;
-   if(unit.customerActionCd() == 1){
-      if (amount.length > 7) {
-         var highColor = null;
-         if(amount.length > 9){
-            highColor = '#FDEF01';
-         }else{
-            highColor = '#EB6C03';
-         }
-         var high = amount.substring(0, amount.length - 7);
-         var low = amount.substring(amount.length - 7, amount.length);
-         var highWidth = graphic.textWidth(high);
-         var lowWidth = graphic.textWidth(low);
-         graphic.drawText(high, amountRight - lowWidth - highWidth, y, highColor);
-         graphic.drawText(low, amountRight - lowWidth, y, '#59FDE9');
-      }else{
-         textWidth = graphic.textWidth(amount);
-         graphic.drawText(amount, amountRight - textWidth, y, fontColor);
-      }
-   }else if(unit.customerActionCd() == 2){
-      var text = '-' + amount;
-      textWidth = graphic.textWidth(text);
-      graphic.drawText(text, amountRight - textWidth, y, '#FF0000');
-   }else{
-      throw new TError('Invalid action code.');
    }
 }
 MO.FEaiChartMarketerTable_dispose = function FEaiChartMarketerTable_dispose(){
@@ -86964,7 +87328,7 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
    o.canvasRegister(canvas3d);
-   var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   var canvas2d = o._canvas2d = MO.RClass.create(MO.FUiCanvas);
    canvas2d.setDesktop(o);
    canvas2d.build(hPanel);
    canvas2d.setPanel(hPanel);

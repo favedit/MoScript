@@ -9,12 +9,20 @@ MO.MUiGridRow = function MUiGridRow(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._grid    = MO.Class.register(o, new AGetSet('_grid'));
-   o._cells    = MO.Class.register(o, new AGetter('_cells'));
+   o._grid     = MO.Class.register(o, new MO.AGetSet('_grid'));
+   o._cells    = MO.Class.register(o, new MO.AGetter('_cells'));
+   // @attribute
+   o._font     = MO.Class.register(o, new MO.AGetSet('_font'));
+   o._height   = MO.Class.register(o, new MO.AGetSet('_height'), 28);
    //..........................................................
    // @method
-   o.construct = MUiGridRow_construct;
-   o.dispose   = MUiGridRow_dispose;
+   o.construct = MO.MUiGridRow_construct;
+   // @method
+   o.pushCell  = MO.MUiGridRow_pushCell;
+   o.get       = MO.MUiGridRow_get;
+   o.set       = MO.MUiGridRow_set;
+   // @method
+   o.dispose   = MO.MUiGridRow_dispose;
 }
 
 //==========================================================
@@ -26,7 +34,47 @@ MO.MUiGridRow_construct = function MUiGridRow_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置属性
-   o._cells = new MO.TObjects();
+   o._cells = new MO.TDictionary();
+}
+
+//==========================================================
+// <T>增加一个单元格。</T>
+//
+// @method
+// @param cell 单元格
+//==========================================================
+MO.MUiGridRow_pushCell = function MUiGridRow_pushCell(cell){
+   var o = this;
+   cell.setRow(o)
+   var column = cell.column();
+   var dataName = column.dataName();
+   o._cells.set(dataName, cell);
+}
+
+//==========================================================
+// <T>获得一个数据内容。</T>
+//
+// @method
+// @param name:String 名称
+// @param value:Object 内容
+//==========================================================
+MO.MUiGridRow_get = function MUiGridRow_get(name, value){
+   var o = this;
+   var cell = o._cells.get(name);
+   return cell.value(value);
+}
+
+//==========================================================
+// <T>设置一个数据内容。</T>
+//
+// @method
+// @param name:String 名称
+// @param value:Object 内容
+//==========================================================
+MO.MUiGridRow_set = function MUiGridRow_set(name, value){
+   var o = this;
+   var cell = o._cells.get(name);
+   return cell.setValue(value);
 }
 
 //==========================================================

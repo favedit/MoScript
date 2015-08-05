@@ -21,10 +21,6 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
    o._rank3Image           = null;
    o._backgroundImage      = null;
    o._backgroundPadding    = null;
-   // @attribute
-   o._columnLabels         = null;
-   o._columnDefines        = null;
-   o._columnWidths         = null;
    // @attibute
    o._tableCount           = 0;
    o._units                = null;
@@ -35,9 +31,6 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
    // @event
    o.onImageLoad           = MO.FEaiChartMarketerTable_onImageLoad;
    o.onPaintBegin          = MO.FEaiChartMarketerTable_onPaintBegin;
-   //..........................................................
-   // @process
-   o.oeUpdate              = MO.FEaiChartMarketerTable_oeUpdate;
    //..........................................................
    // @method
    o.construct             = MO.FEaiChartMarketerTable_construct;
@@ -55,7 +48,7 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageLoad() {
+MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageLoad(){
    this.dirty();
 }
 
@@ -64,7 +57,7 @@ MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageL
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaintBegin(event) {
+MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaintBegin(event){
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -81,16 +74,6 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    var drawLeft = left + 12;
    var drawRight = right - 12;
    var drawWidth = right - left;
-   //..........................................................
-   // 计算宽度
-   var columnCount = o._columnCount;
-   var widthDefine = 0;
-   for(var i = 0; i < columnCount; i++){
-      widthDefine += o._columnDefines[i];
-   }
-   for(var i = 0; i < columnCount; i++){
-      o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 7;
-   }
    //..........................................................
    // 绘制背景
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
@@ -119,65 +102,6 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
          o.drawRow(graphic, unit, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
       }
    }
-   //..........................................................
-   // 绘制表头
-   var headText = '';
-   var headTextWidth = 0;
-   var headLeft = drawLeft;
-   var headTop = top + o._headStart;
-   var headTextTop = headTop + o._headTextTop;
-   for(var i = 0; i < columnCount; i++){
-      var headText = o._columnLabels[i];
-      var headTextWidth = graphic.textWidth(headText);
-      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i] - 4, o._headHeight, '#122A46');
-      graphic.drawText(headText, headLeft + (o._columnWidths[i] - headTextWidth - 4) * 0.5, headTextTop, '#00B2F2');
-      headLeft += o._columnWidths[i];
-   }
-   //..........................................................
-   // 绘制即时列表
-   var entities = o._units;
-   if(!entities.isEmpty()){
-      var tableTop = top + o._rowStart;
-      var tableText = '';
-      var tableTextWidth = 0;
-      graphic.clip(drawLeft, tableTop, drawWidth - 38, o._rowHeight * (o._tableCount - 1));
-      tableTop += 24;
-      var count = entities.count();
-      for(var i = 0; i < count; i++) {
-         var unit = entities.at(i);
-         o.drawRow(graphic, unit, false, i, drawLeft, tableTop + o._rowHeight * i + o._lineScroll, drawWidth);
-      }
-   }
-}
-
-//==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMarketerTable_oeUpdate = function FEaiChartMarketerTable_oeUpdate(event){
-   var o = this;
-   o.__base.FGuiControl.oeUpdate.call(o, event);
-   if(event.isBefore()){
-      // 是否要刷新
-      if(o._lineScroll < 0){
-         o._lineScroll += 1;
-         // 小于一行，直接显示
-         if(o._lineScroll < -o._rowHeight){
-            o._lineScroll = 0;
-         }
-         // 删除多余的数据
-         if(o._lineScroll >= 0){
-            var entities = o._units;
-            if(entities.count() > o._tableCount){
-               entities.pop();
-            }
-            o._lineScroll = 0;
-         }
-         o._gridControl.dirty();
-         o.dirty();
-      }
-   }
 }
 
 //==========================================================
@@ -193,14 +117,6 @@ MO.FEaiChartMarketerTable_construct = function FEaiChartMarketerTable_construct(
    o._currentDate = new MO.TDate();
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
    o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
-   o._columnLabels = new Array('时间', '公司', '理财师', '城市', '用户-手机', '投资额(元)');
-   //if(MO.Runtime.isPlatformMobile()){
-      //o._columnDefines = new Array(130, 130, 180, 186);
-   //}else{
-      o._columnDefines = new Array(110, 120, 120, 100, 160, 120);
-   //}
-   o._columnWidths = new Array();
-   o._columnCount = o._columnLabels.length;
 }
 
 //==========================================================
@@ -231,54 +147,68 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
    //..........................................................
-   var font = new MO.SUiFont();
-   font.font = 'Microsoft YaHei';
-   font.size = 25;
-   font.color = '#54F0FF';
-   var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
-   grid.setLocation(50, 450);
-   grid.setSize(800, 500);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
+   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
+   grid.setLocation(50, 332);
+   grid.setSize(800, 700);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setLeft(9);
+   grid.setRight(19);
+   grid.setHeadHeight(32);
+   grid.setHeadBackColor('#122A46');
+   grid.headFont().font = 'Microsoft YaHei';
+   grid.headFont().size = 22;
+   grid.headFont().color = '#00B2F2';
+   grid.setRowHeight(30);
+   grid.rowFont().font = 'Microsoft YaHei';
+   grid.rowFont().size = 20;
+   grid.rowFont().color = '#59FDE9';
+   var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
    column.setLabel('时间');
    column.setDataName('record_date');
-   column.font().assign(font);
+   column.setDateFormat('HH24:MI:SS');
    column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('departmentLabel');
    column.setLabel('公司');
    column.setDataName('department_label');
-   column.font().assign(font);
-   column.setWidth(120);
+   column.setWidth(140);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('marketerLabel');
    column.setLabel('理财师');
    column.setDataName('marketer_label');
-   column.font().assign(font);
-   column.setWidth(120);
+   column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerCard');
    column.setLabel('城市');
-   column.setDataName('customer_card');
-   column.font().assign(font);
+   column.setDataName('customer_city');
    column.setWidth(100);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerInfo');
    column.setLabel('用户-手机');
-   column.setDataName('customer_phone');
-   column.font().assign(font);
-   column.setWidth(160);
+   column.setDataName('customer_info');
+   column.setWidth(140);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
+   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
    column.setName('customerAmount');
    column.setLabel('投资额(元)');
    column.setDataName('customer_amount');
-   column.font().assign(font);
+   column.setNormalColor('#59FDE9');
+   column.setHighColor('#FDEF01');
+   column.setLowerColor('#EB6C03');
+   column.setNegativeColor('#FF0000');
+   column.cellPadding().right = 10;
    column.setWidth(120);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);
    //..........................................................
@@ -301,7 +231,6 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
       o._rowStart = 418;
       o._rowTextTop = 0;
       o._rowFontStyle = '36px Microsoft YaHei';
-      o._rowHeight = 46;
    }else{
       o._tableCount = 19;
       o._rankStart = 110;
@@ -317,7 +246,6 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
       o._headHeight = 40;
       o._rowFontStyle = '22px Microsoft YaHei';
       o._rowStart = 384;
-      o._rowHeight = 36;
    }
 }
 
@@ -333,6 +261,19 @@ MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(un
    if(!unit){
       return null;
    }
+   var grid = o._gridControl;
+   var row = grid.allocRow();
+   row.set('record_date', unit.recordDate());
+   row.set('department_label', unit.departmentLabel());
+   row.set('marketer_label', unit.marketerLabel());
+   row.set('customer_city', unit.customerCard());
+   row.set('customer_info', unit.customerLabel() + ' - ' + unit.customerPhone());
+   if(unit.customerActionCd() == 1){
+      row.set('customer_amount', unit.customerActionAmount());
+   }else{
+      row.set('customer_amount', -unit.customerActionAmount());
+   }
+   grid.insertRow(row);
    // 放入队列
    var entities = o._units;
    entities.unshift(unit);
@@ -340,99 +281,6 @@ MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(un
    // 大于个数从尾部弹出
    if(entities.count() > o._tableCount){
       entities.pop();
-   }
-}
-
-//==========================================================
-// <T>初始化处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMarketerTable_drawRow = function FEaiChartMarketerTable_drawRow(graphic, unit, flag, index, x, y, width){
-   var o = this;
-   var widths = o._columnWidths;
-   var fontColor = null;
-   if(flag){
-      fontColor = '#E5BD1D';
-   }else{
-      fontColor = '#59FDE9';
-   }
-   // 绘制底框
-   if(flag){
-      var columnWidth = widths[0];
-      var imageX = x + (columnWidth * 0.5) - 23;
-      var imageY = y - o._rankIconStart;
-      if((index == 0) && o._rank1Image.testReady()){
-         graphic.drawImage(o._rank1Image, imageX - 6, imageY - 28, 58, 65);
-      }
-      if((index == 1) && o._rank2Image.testReady()){
-         graphic.drawImage(o._rank2Image, imageX, imageY, 46, 37);
-      }
-      if((index == 2) && o._rank3Image.testReady()){
-         graphic.drawImage(o._rank3Image, imageX, imageY, 46, 37);
-      }
-   }
-   y += o._rankTextStart;
-   // 绘制时间
-   var textWidth = 0;
-   if(!flag){
-      o._currentDate.parse(unit.recordDate());
-      var text = o._currentDate.format('HH24:MI:SS');
-      textWidth = graphic.textWidth(text);
-      graphic.drawText(text, x + widths[0] * 0.5 - textWidth * 0.5, y, fontColor);
-   }
-   // 绘制公司
-   x += widths[0];
-   text = unit.departmentLabel();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[1] * 0.5 - textWidth * 0.5, y, fontColor);
-   // 绘制理财师
-   x += widths[1];
-   text = unit.marketerLabel();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[2] * 0.5 - textWidth * 0.5, y, fontColor);
-   // 绘制城市
-   x += widths[2];
-   var cityResource = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(unit.customerCard());
-   text = '';
-   if(cityResource){
-      text = cityResource.label();
-   }
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[3] * 0.5 - textWidth * 0.5, y, fontColor);
-   // 绘制客户
-   x += widths[3];
-   text = unit.customerLabel() + ' - ' + unit.customerPhone();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[4] * 0.5 - textWidth * 0.5, y, fontColor);
-   // 绘制颜色
-   x += widths[4];
-   var amount = MO.Lang.Float.format(unit.customerActionAmount(), null, null, 2, '0');
-   var amountRight = x + widths[5] - 15;
-   if(unit.customerActionCd() == 1){
-      if (amount.length > 7) {
-         var highColor = null;
-         if(amount.length > 9){
-            highColor = '#FDEF01';
-         }else{
-            highColor = '#EB6C03';
-         }
-         var high = amount.substring(0, amount.length - 7);
-         var low = amount.substring(amount.length - 7, amount.length);
-         var highWidth = graphic.textWidth(high);
-         var lowWidth = graphic.textWidth(low);
-         graphic.drawText(high, amountRight - lowWidth - highWidth, y, highColor);
-         graphic.drawText(low, amountRight - lowWidth, y, '#59FDE9');
-      }else{
-         textWidth = graphic.textWidth(amount);
-         graphic.drawText(amount, amountRight - textWidth, y, fontColor);
-      }
-   }else if(unit.customerActionCd() == 2){
-      var text = '-' + amount;
-      textWidth = graphic.textWidth(text);
-      graphic.drawText(text, amountRight - textWidth, y, '#FF0000');
-   }else{
-      throw new TError('Invalid action code.');
    }
 }
 

@@ -9,12 +9,15 @@ MO.FGuiGridControl = function FGuiGridControl(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiGridControl);
    //..........................................................
    // @attribute
+   o._rowScroll      = 0;
+   o._rowScrollSpeed = 1;
    //..........................................................
    // @event
    o.onPaintBegin = MO.FGuiGridControl_onPaintBegin;
    //..........................................................
    // @method
    o.construct    = MO.FGuiGridControl_construct;
+   // @method
    o.dispose      = MO.FGuiGridControl_dispose;
    return o;
 }
@@ -26,17 +29,20 @@ MO.FGuiGridControl = function FGuiGridControl(o){
 //==========================================================
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    var o = this;
+   var padding = o._padding;
    // 绘制边框
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   graphic.drawRectangle(left, top, width, height, '#FF0000', 1);
-   var drawLeft = left + 12;
+   var left = rectangle.left + padding.left;
+   var top = rectangle.top + padding.top;
+   var bottom = rectangle.bottom() - padding.bottom;
+   var width = rectangle.width - padding.left - padding.right;
+   var height = rectangle.height - padding.top - padding.bottom;
+   //graphic.drawRectangle(left, top, width, height, '#FF0000', 1);
+   var drawX = left;
+   var drawY = top;
    // 计算列总长
-   var gridWidth = width - 24;
+   var gridWidth = width;
    var columnWidthTotal = 0;
    var columns = o._columns;
    var columnCount = columns.count();
@@ -46,23 +52,44 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    }
    //..........................................................
    // 绘制表头
-   var columnX = drawLeft;
-   var columnY = top + 12;
+   var columnX = drawX;
+   var columnY = top;
    var headTextTop = columnY + 0;
    var headHeight = o._headHeight;
    for(var i = 0; i < columnCount; i++){
       var column = columns.at(i);
-      var columnLabel = column.label();
       var columnWidth = gridWidth * column.width() / columnWidthTotal;
-      var columnFont = column.font();
-      // 绘制底框
-      graphic.fillRectangle(columnX, columnY, columnWidth - 4, o._headHeight, '#122A46');
-      // 绘制文字
-      graphic.drawFontText(columnLabel, columnFont, columnX, columnY, columnWidth, headHeight, MO.EUiDock.Center);
-      //graphic.setFont(columnFont);
-      //var columnTextWidth = graphic.textWidth(columnLabel);
-      //graphic.drawText(columnLabel, columnX + (columnWidth - columnTextWidth - 4) * 0.5, headTextTop, '#00B2F2');
+      column.draw(graphic, columnX, columnY, columnWidth, headHeight);
       columnX += columnWidth;
+   }
+   drawY += headHeight;
+   //..........................................................
+   // 计算可绘制行数
+   var rowsHeight = bottom - drawY;
+   var rowHeight = o._rowHeight;
+   graphic.clip(drawX, drawY, gridWidth, rowsHeight);
+   //..........................................................
+   // 绘制数据
+   var rows = o._rows;
+   var rowCount = rows.count();
+   drawY += o._rowScroll;
+   for(var rowIndex = 0; rowIndex < rowCount; rowIndex++){
+      var columnX = drawX;
+      if(drawY > -rowHeight){
+         var row = rows.at(rowIndex);
+         for(var i = 0; i < columnCount; i++){
+            var column = columns.at(i);
+            var dataName = column.dataName();
+            var columnWidth = gridWidth * column.width() / columnWidthTotal;
+            var cell = row.cells().get(dataName);
+            cell.draw(graphic, columnX, drawY, columnWidth, rowHeight);
+            columnX += columnWidth;
+         }
+      }
+      drawY += rowHeight;
+      if(drawY > bottom){
+         break;
+      }
    }
 }
 
@@ -75,6 +102,8 @@ MO.FGuiGridControl_construct = function FGuiGridControl_construct(){
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o.__base.MUiGridControl.construct.call(o);
+   // 设置变量
+   o._rowClass = MO.FGuiGridRow;
 }
 
 //==========================================================

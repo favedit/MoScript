@@ -377,6 +377,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._backImage              = null;
    o._backHoverResource      = null;
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
+   o._parentRectangle        = MO.Class.register(o, new MO.AGetter('_parentRectangle'));
    o._eventRectangle         = null;
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
@@ -526,6 +527,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MUiMargin.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
+   o._parentRectangle = new MO.SRectangle();
    o._clientRectangle = new MO.SRectangle();
    o._eventRectangle = new MO.SRectangle();
 }
@@ -596,6 +598,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var parentRectangle = event.parentRectangle;
    var calculateRate = event.calculateRate;
    var rectangle = event.rectangle;
+   o._parentRectangle.assign(parentRectangle);
    o._eventRectangle.assign(rectangle);
    var dockCd = o._dockCd;
    var anchorCd = o._anchorCd;
@@ -636,6 +639,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    event.optionContainer = false;
    graphic.store();
    rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
+   parentRectangle.assign(rectangle);
    var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
    graphic.setScale(o._scale.width, o._scale.height);
@@ -653,6 +657,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    o.onPaintEnd(event);
    graphic.restore();
    rectangle.assign(o._eventRectangle);
+   parentRectangle.assign(o._parentRectangle);
    o._statusDirty = false;
 }
 MO.FGuiControl_update = function FGuiControl_update(){

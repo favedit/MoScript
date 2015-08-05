@@ -2296,12 +2296,12 @@ MO.RClass.prototype.typeOf = function RClass_typeOf(o){
    }
    return 'Null';
 }
-MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
-   if(v == null){
+MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(value, safe){
+   if(value == null){
       return 'Null';
    }
    try{
-      var c = v.constructor;
+      var c = value.constructor;
       if(c == Boolean){
          return 'Boolean';
       }
@@ -2317,13 +2317,13 @@ MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
       if(c.constructor == Function){
          return MO.Lang.String.mid(c.toString(), 'function ', '(');
       }
-      if(v.__class){
-         return v.__class.name;
+      if(value.__class){
+         return value.__class.name;
       }
-      if(v.tagName){
+      if(value.tagName){
          return 'Html';
       }
-      for(var n in v){
+      for(var name in value){
          return 'Object';
       }
    }catch(e){
@@ -2346,20 +2346,20 @@ MO.RClass.prototype.code = function RClass_code(v){
    c[l] = v;
    return l;
 }
-MO.RClass.prototype.name = function RClass_name(v){
-   if(v){
-      if(v.__name){
-         return v.__name;
+MO.RClass.prototype.name = function RClass_name(value){
+   if(value){
+      if(value.__name){
+         return value.__name;
       }
-      if(v.__class){
-         return v.__class.name;
+      if(value.__class){
+         return value.__class.name;
       }
-      if(typeof(v) == 'function'){
-         return MO.Method.name(v);
+      if(typeof(value) == 'function'){
+         return MO.Method.name(value);
       }
-      var c = v.constructor;
-      if(c){
-         return MO.Lang.String.mid(c.toString(), 'function ', '(');
+      var method = value.constructor;
+      if(method){
+         return MO.Lang.String.mid(method.toString(), 'function ', '(');
       }
    }
    return null;
@@ -2455,44 +2455,44 @@ MO.RClass.prototype.createByName = function RClass_createByName(className){
    }
    return clazz.newInstance();
 }
-MO.RClass.prototype.innerCopy = function RClass_innerCopy(s, t){
-   if((s != null) && (t != null)){
-      for(var n in s){
-         var v = s[n];
-         if(v != null){
-            var p = typeof(v)
-            if(p == 'function'){
-               var f = t[n];
-               if(f == null){
-                  t[n] = v;
-               }else if(MO.Method.isVirtual(f)){
-                  t[n] = v;
-               }else if(!MO.Method.isVirtual(v) && MO.Method.isEmpty(f)){
-                  t[n] = v;
-               }else if(!MO.Method.isVirtual(v) && !MO.Method.isEmpty(v)){
-                  t[n] = v;
+MO.RClass.prototype.innerCopy = function RClass_innerCopy(source, target){
+   if((source != null) && (target != null)){
+      for(var n in source){
+         var value = source[n];
+         if(value != null){
+            var typeName = typeof(value)
+            if(typeName == 'function'){
+               var targetValue = target[n];
+               if(targetValue == null){
+                  target[n] = value;
+               }else if(MO.Method.isVirtual(targetValue)){
+                  target[n] = value;
+               }else if(!MO.Method.isVirtual(value) && MO.Method.isEmpty(targetValue)){
+                  target[n] = value;
+               }else if(!MO.Method.isVirtual(value) && !MO.Method.isEmpty(value)){
+                  target[n] = value;
                }
                continue;
-            }else if(!MO.Class.isBaseName(p)){
-               if(t[n] == null){
-                  t[n] = new v.constructor();
+            }else if(!MO.Class.isBaseName(typeName)){
+               if(target[n] == null){
+                  target[n] = new value.constructor();
                }
-               this.innerCopy(v, t[n]);
+               this.innerCopy(value, target[n]);
                continue;
             }
          }
-         t[n] = v;
+         target[n] = value;
       }
    }
 }
 MO.RClass.prototype.build = function RClass_build(clazz){
    var o = this;
-   var sbs = clazz.clazz.__inherits;
-   if(sbs && (sbs.constructor == Array)){
+   var inherits = clazz.clazz.__inherits;
+   if(inherits && (inherits.constructor == Array)){
       var finded = false;
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
          if(MO.Lang.String.startsWith(name, 'F')){
             if(finded){
                MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
@@ -2503,17 +2503,17 @@ MO.RClass.prototype.build = function RClass_build(clazz){
       }
    }
    var instance = clazz.instance = new clazz.base.constructor();
-   if(sbs && (sbs.constructor == Array)){
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
+   if(inherits && (inherits.constructor == Array)){
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
          if(!MO.Lang.String.startsWith(name, 'F')){
-            var m = MO.Class.forName(name);
-            if(m == null){
+            var findClass = MO.Class.forName(name);
+            if(findClass == null){
                MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
             }
-            MO.Class.innerCopy(m.instance, instance);
-            clazz.assign(m);
+            MO.Class.innerCopy(findClass.instance, instance);
+            clazz.assign(findClass);
          }
       }
    }
@@ -2537,20 +2537,20 @@ MO.RClass.prototype.build = function RClass_build(clazz){
          }
       }
    }
-   if(sbs && (sbs.constructor == Array)){
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
-         var bcls = MO.Class.forName(name);
-         var base = instance.__base[name] = new bcls.base.constructor();
-         var cf = bcls.instance;
-         for(var name in cf){
+   if(inherits && (inherits.constructor == Array)){
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
+         var baseClass = MO.Class.forName(name);
+         var base = instance.__base[name] = new baseClass.base.constructor();
+         var baseInstance = baseClass.instance;
+         for(var name in baseInstance){
             if(name != '__base'){
-               var cfn = cf[name];
+               var cfn = baseInstance[name];
                var ofn = instance[name];
                if((cfn != null) && (ofn != null) && (cfn != ofn)){
                   if((cfn.constructor == Function) && (ofn.constructor == Function)){
-                     base[name] = cf[name];
+                     base[name] = baseInstance[name];
                   }
                }
             }

@@ -11,8 +11,18 @@ MO.MUiGridColumnText = function MUiGridColumnText(o){
    // @attribute
    //..........................................................
    // @method
-   o.dispose = MO.MUiGridColumnText_dispose;
+   o.construct = MO.MUiGridColumnText_construct;
+   o.dispose   = MO.MUiGridColumnText_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.MUiGridColumnText_construct = function MUiGridColumnText_construct(){
+   var o = this;
 }
 
 //==========================================================

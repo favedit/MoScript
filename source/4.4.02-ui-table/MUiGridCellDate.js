@@ -5,12 +5,12 @@
 // @author maocy
 // @version 150804
 //==========================================================
-MO.MUiGridCellText = function MUiGridCellText(o){
+MO.MUiGridCellDate = function MUiGridCellDate(o){
    o = MO.Class.inherits(this, o, MO.MUiGridCell);
    //..........................................................
    // @method
-   o.construct = MO.MUiGridCellText_construct;
-   o.dispose   = MO.MUiGridCellText_dispose;
+   o.construct = MO.MUiGridCellDate_construct;
+   o.dispose   = MO.MUiGridCellDate_dispose;
    return o;
 }
 
@@ -19,7 +19,7 @@ MO.MUiGridCellText = function MUiGridCellText(o){
 //
 // @method
 //==========================================================
-MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
+MO.MUiGridCellDate_construct = function MUiGridCellDate_construct(){
    var o = this;
    o.__base.MUiGridCell.construct.call(o);
 }
@@ -29,7 +29,7 @@ MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
 //
 // @method
 //==========================================================
-MO.MUiGridCellText_dispose = function MUiGridCellText_dispose(){
+MO.MUiGridCellDate_dispose = function MUiGridCellDate_dispose(){
    var o = this;
    // 释放属性
    // 父处理

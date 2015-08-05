@@ -1,16 +1,16 @@
 //==========================================================
-// <T>表格单元格。</T>
+// <T>界面控件。</T>
 //
 // @class
 // @author maocy
 // @version 150804
 //==========================================================
-MO.MUiGridCellText = function MUiGridCellText(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+MO.FGuiGridRow = function FGuiGridRow(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridRow);
    //..........................................................
    // @method
-   o.construct = MO.MUiGridCellText_construct;
-   o.dispose   = MO.MUiGridCellText_dispose;
+   o.construct = MO.FGuiGridRow_construct;
+   o.dispose   = MO.FGuiGridRow_dispose;
    return o;
 }
 
@@ -19,9 +19,10 @@ MO.MUiGridCellText = function MUiGridCellText(o){
 //
 // @method
 //==========================================================
-MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
+MO.FGuiGridRow_construct = function FGuiGridRow_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridRow.construct.call(o);
 }
 
 //==========================================================
@@ -29,9 +30,9 @@ MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
 //
 // @method
 //==========================================================
-MO.MUiGridCellText_dispose = function MUiGridCellText_dispose(){
+MO.FGuiGridRow_dispose = function FGuiGridRow_dispose(){
    var o = this;
-   // 释放属性
    // 父处理
-   o.__base.MUiGridCell.dispose.call(o);
+   o.__base.MUiGridRow.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }

@@ -8,27 +8,29 @@ MO.FE2dCanvas = function FE2dCanvas(o){
    o = MO.Class.inherits(this, o, MO.FCanvas, MO.MCanvasObject, MO.MGraphicObject);
    //..........................................................
    // @attribute
-   o._size      = MO.Class.register(o, new MO.AGetter('_size'));
+   o._size         = MO.Class.register(o, new MO.AGetter('_size'));
    //..........................................................
    // @html
-   o._hCanvas   = null;
+   o._hCanvas      = null;
    //..........................................................
    // @event
-   o.onResize   = MO.FE2dCanvas_onResize;
+   o.onResize      = MO.FE2dCanvas_onResize;
    //..........................................................
    // @method
-   o.construct  = MO.FE2dCanvas_construct;
+   o.construct     = MO.FE2dCanvas_construct;
    // @method
-   o.htmlCanvas = MO.FE2dCanvas_htmlCanvas;
-   o.build      = MO.FE2dCanvas_build;
-   o.setPanel   = MO.FE2dCanvas_setPanel;
-   o.resize     = MO.FE2dCanvas_resize;
-   o.show       = MO.FE2dCanvas_show;
-   o.hide       = MO.FE2dCanvas_hide;
-   o.setVisible = MO.FE2dCanvas_setVisible;
-   o.reset      = MO.FE2dCanvas_reset;
+   o.createContext = MO.FE2dCanvas_createContext;
    // @method
-   o.dispose    = MO.FE2dCanvas_dispose;
+   o.htmlCanvas    = MO.FE2dCanvas_htmlCanvas;
+   o.build         = MO.FE2dCanvas_build;
+   o.setPanel      = MO.FE2dCanvas_setPanel;
+   o.resize        = MO.FE2dCanvas_resize;
+   o.show          = MO.FE2dCanvas_show;
+   o.hide          = MO.FE2dCanvas_hide;
+   o.setVisible    = MO.FE2dCanvas_setVisible;
+   o.reset         = MO.FE2dCanvas_reset;
+   // @method
+   o.dispose       = MO.FE2dCanvas_dispose;
    return o;
 }
 
@@ -52,6 +54,16 @@ MO.FE2dCanvas_construct = function FE2dCanvas_construct(){
    o.__base.FCanvas.construct.call(o);
    // 设置属性
    o._size = new MO.SSize2(1280, 720);
+}
+
+//==========================================================
+// <T>创建绘制环境。</T>
+//
+// @method
+// @return FG2dCanvasContext 绘制环境
+//==========================================================
+MO.FE2dCanvas_createContext = function FE2dCanvas_createContext(){
+   return MO.Class.create(MO.FG2dCanvasContext);
 }
 
 //==========================================================
@@ -85,7 +97,7 @@ MO.FE2dCanvas_build = function FE2dCanvas_build(hDocument){
    hStyle.width = '100%';
    hStyle.height = '100%';
    // 创建渲染环境
-   var context = o._graphicContext = MO.Class.create(MO.FG2dCanvasContext);
+   var context = o._graphicContext = o.createContext();
    context.linkCanvas(hCanvas);
    // 设置大小
    o.resize(width, height);

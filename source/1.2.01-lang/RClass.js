@@ -176,18 +176,18 @@ MO.RClass.prototype.typeOf = function RClass_typeOf(o){
 // <T>安全获得对象实例的类型名称，不产生任何例外。</T>
 //
 // @method
-// @param v:value:Object 对象实例
+// @param value:Object 对象实例
 // @param safe:safe:String 安全类型
 // @return String 类型名称字符串
 //==========================================================
-MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
+MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(value, safe){
    // 空对象的情况
-   if(v == null){
+   if(value == null){
       return 'Null';
    }
    try{
       // 普通数据类型
-      var c = v.constructor;
+      var c = value.constructor;
       if(c == Boolean){
          return 'Boolean';
       }
@@ -204,15 +204,15 @@ MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(v, safe){
          return MO.Lang.String.mid(c.toString(), 'function ', '(');
       }
       // 一般类实例对象
-      if(v.__class){
-         return v.__class.name;
+      if(value.__class){
+         return value.__class.name;
       }
       // 页面对象的情况
-      if(v.tagName){
+      if(value.tagName){
          return 'Html';
       }
       // 普通对象的情况
-      for(var n in v){
+      for(var name in value){
          return 'Object';
       }
    }catch(e){
@@ -259,26 +259,26 @@ MO.RClass.prototype.code = function RClass_code(v){
 // <T>获得对象实例的类名称。</T>
 //
 // @method
-// @param v:value:Object 函数对象
+// @param value:Object 函数对象
 // @return String 类名称
 //==========================================================
-MO.RClass.prototype.name = function RClass_name(v){
-   if(v){
+MO.RClass.prototype.name = function RClass_name(value){
+   if(value){
       // 如果对象是标准类的情况
-      if(v.__name){
-         return v.__name;
+      if(value.__name){
+         return value.__name;
       }
-      if(v.__class){
-         return v.__class.name;
+      if(value.__class){
+         return value.__class.name;
       }
       // 如果对象是函数的情况
-      if(typeof(v) == 'function'){
-         return MO.Method.name(v);
+      if(typeof(value) == 'function'){
+         return MO.Method.name(value);
       }
       // 如果对象是普通对象的情况
-      var c = v.constructor;
-      if(c){
-         return MO.Lang.String.mid(c.toString(), 'function ', '(');
+      var method = value.constructor;
+      if(method){
+         return MO.Lang.String.mid(method.toString(), 'function ', '(');
       }
    }
    return null;
@@ -455,38 +455,38 @@ MO.RClass.prototype.createByName = function RClass_createByName(className){
 // <T>递归复制一个类实例到一个指定实例中。</T>
 //
 // @method
-// @param s:source:Object 类实例
-// @param t:target:Object 指定实例
+// @param source:Object 类实例
+// @param target:Object 指定实例
 //==========================================================
-MO.RClass.prototype.innerCopy = function RClass_innerCopy(s, t){
-   if((s != null) && (t != null)){
-      for(var n in s){
-         var v = s[n];
-         if(v != null){
-            var p = typeof(v)
-            if(p == 'function'){
-               var f = t[n];
+MO.RClass.prototype.innerCopy = function RClass_innerCopy(source, target){
+   if((source != null) && (target != null)){
+      for(var n in source){
+         var value = source[n];
+         if(value != null){
+            var typeName = typeof(value)
+            if(typeName == 'function'){
+               var targetValue = target[n];
                // Over order: method > empty > virtual > null
-               if(f == null){
-                  t[n] = v;
-               }else if(MO.Method.isVirtual(f)){
-                  t[n] = v;
-               }else if(!MO.Method.isVirtual(v) && MO.Method.isEmpty(f)){
-                  t[n] = v;
-               }else if(!MO.Method.isVirtual(v) && !MO.Method.isEmpty(v)){
-                  t[n] = v;
+               if(targetValue == null){
+                  target[n] = value;
+               }else if(MO.Method.isVirtual(targetValue)){
+                  target[n] = value;
+               }else if(!MO.Method.isVirtual(value) && MO.Method.isEmpty(targetValue)){
+                  target[n] = value;
+               }else if(!MO.Method.isVirtual(value) && !MO.Method.isEmpty(value)){
+                  target[n] = value;
                }
                continue;
-            }else if(!MO.Class.isBaseName(p)){
+            }else if(!MO.Class.isBaseName(typeName)){
                // Create child object
-               if(t[n] == null){
-                  t[n] = new v.constructor();
+               if(target[n] == null){
+                  target[n] = new value.constructor();
                }
-               this.innerCopy(v, t[n]);
+               this.innerCopy(value, target[n]);
                continue;
             }
          }
-         t[n] = v;
+         target[n] = value;
       }
    }
 }
@@ -500,12 +500,12 @@ MO.RClass.prototype.innerCopy = function RClass_innerCopy(s, t){
 MO.RClass.prototype.build = function RClass_build(clazz){
    var o = this;
    // 找到当前类的父名称，即以字母(F)开头的类
-   var sbs = clazz.clazz.__inherits;
-   if(sbs && (sbs.constructor == Array)){
+   var inherits = clazz.clazz.__inherits;
+   if(inherits && (inherits.constructor == Array)){
       var finded = false;
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
          if(MO.Lang.String.startsWith(name, 'F')){
             if(finded){
                MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
@@ -519,17 +519,17 @@ MO.RClass.prototype.build = function RClass_build(clazz){
    // 用基类创建一个实例，当前实例只有当前类里声明的函数，没有任何继承关系
    var instance = clazz.instance = new clazz.base.constructor();
    // 复制除了以(F)开头的实类以外，所有基类信息到当前实例中
-   if(sbs && (sbs.constructor == Array)){
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
+   if(inherits && (inherits.constructor == Array)){
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
          if(!MO.Lang.String.startsWith(name, 'F')){
-            var m = MO.Class.forName(name);
-            if(m == null){
+            var findClass = MO.Class.forName(name);
+            if(findClass == null){
                MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
             }
-            MO.Class.innerCopy(m.instance, instance);
-            clazz.assign(m);
+            MO.Class.innerCopy(findClass.instance, instance);
+            clazz.assign(findClass);
          }
       }
    }
@@ -558,20 +558,20 @@ MO.RClass.prototype.build = function RClass_build(clazz){
    }
    //..........................................................
    // 建立类的基容器对象(base)
-   if(sbs && (sbs.constructor == Array)){
-      var sbl = sbs.length;
-      for(var i = 0; i < sbl; i++){
-         var name = sbs[i];
-         var bcls = MO.Class.forName(name);
-         var base = instance.__base[name] = new bcls.base.constructor();
-         var cf = bcls.instance;
-         for(var name in cf){
+   if(inherits && (inherits.constructor == Array)){
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
+         var baseClass = MO.Class.forName(name);
+         var base = instance.__base[name] = new baseClass.base.constructor();
+         var baseInstance = baseClass.instance;
+         for(var name in baseInstance){
             if(name != '__base'){
-               var cfn = cf[name];
+               var cfn = baseInstance[name];
                var ofn = instance[name];
                if((cfn != null) && (ofn != null) && (cfn != ofn)){
                   if((cfn.constructor == Function) && (ofn.constructor == Function)){
-                     base[name] = cf[name];
+                     base[name] = baseInstance[name];
                   }
                }
             }

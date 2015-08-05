@@ -33,6 +33,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._backHoverResource      = null;
    // @attribute
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
+   o._parentRectangle        = MO.Class.register(o, new MO.AGetter('_parentRectangle'));
    o._eventRectangle         = null;
    // @attribute
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
@@ -282,6 +283,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MUiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
    // 创建属性
+   o._parentRectangle = new MO.SRectangle();
    o._clientRectangle = new MO.SRectangle();
    o._eventRectangle = new MO.SRectangle();
    //o._backColor = '#CCCCCC';
@@ -424,6 +426,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var parentRectangle = event.parentRectangle;
    var calculateRate = event.calculateRate;
    var rectangle = event.rectangle;
+   o._parentRectangle.assign(parentRectangle);
    o._eventRectangle.assign(rectangle);
    //..........................................................
    // 设置范围
@@ -470,6 +473,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    //..........................................................
    // 计算范围
    rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
+   parentRectangle.assign(rectangle);
    var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
    graphic.setScale(o._scale.width, o._scale.height);
@@ -492,6 +496,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    graphic.restore();
    //..........................................................
    rectangle.assign(o._eventRectangle);
+   parentRectangle.assign(o._parentRectangle);
    o._statusDirty = false;
 }
 

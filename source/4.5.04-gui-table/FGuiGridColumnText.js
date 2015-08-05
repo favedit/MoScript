@@ -1,19 +1,17 @@
 //==========================================================
-// <T>表格列。</T>
+// <T>界面表格文本列。</T>
 //
 // @class
 // @author maocy
-// @version 150804
+// @version 150805
 //==========================================================
 MO.FGuiGridColumnText = function FGuiGridColumnText(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridColumn, MO.MUiGridColumnText);
+   o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
    //..........................................................
    // @method
-   o.construct  = MO.FGuiGridColumnText_construct;
+   o.construct = MO.FGuiGridColumnText_construct;
    // @method
-   o.createCell = MO.FGuiGridColumnText_createCell;
-   // @method
-   o.dispose    = MO.FGuiGridColumnText_dispose;
+   o.dispose   = MO.FGuiGridColumnText_dispose;
    return o;
 }
 
@@ -24,18 +22,10 @@ MO.FGuiGridColumnText = function FGuiGridColumnText(o){
 //==========================================================
 MO.FGuiGridColumnText_construct = function FGuiGridColumnText_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
-   o.__base.MUiGridColumn.construct.call(o);
-}
-
-//==========================================================
-// <T>创建单元格。</T>
-//
-// @method
-// @return FGuiGridCellText 单元格
-//==========================================================
-MO.FGuiGridColumnText_createCell = function FGuiGridColumnText_createCell(){
-   return MO.Class.create(MO.FGuiGridCellText);
+   o.__base.FGuiGridColumn.construct.call(o);
+   o.__base.MUiGridColumnText.construct.call(o);
+   // 设置属性
+   o._cellClass = MO.FGuiGridCellText;
 }
 
 //==========================================================
@@ -46,6 +36,6 @@ MO.FGuiGridColumnText_createCell = function FGuiGridColumnText_createCell(){
 MO.FGuiGridColumnText_dispose = function FGuiGridColumnText_dispose(){
    var o = this;
    // 父处理
-   o.__base.MUiGridColumn.dispose.call(o);
-   o.__base.FObject.dispose.call(o);
+   o.__base.MUiGridColumnText.dispose.call(o);
+   o.__base.FGuiGridColumn.dispose.call(o);
 }

@@ -522,16 +522,12 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
    o._rank3Image           = null;
    o._backgroundImage      = null;
    o._backgroundPadding    = null;
-   o._columnLabels         = null;
-   o._columnDefines        = null;
-   o._columnWidths         = null;
    o._tableCount           = 0;
    o._units                = null;
    o._lineScroll           = 0;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o.onImageLoad           = MO.FEaiChartMarketerTable_onImageLoad;
    o.onPaintBegin          = MO.FEaiChartMarketerTable_onPaintBegin;
-   o.oeUpdate              = MO.FEaiChartMarketerTable_oeUpdate;
    o.construct             = MO.FEaiChartMarketerTable_construct;
    o.setup                 = MO.FEaiChartMarketerTable_setup;
    o.pushUnit              = MO.FEaiChartMarketerTable_pushUnit;
@@ -539,10 +535,10 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
    o.dispose               = MO.FEaiChartMarketerTable_dispose;
    return o;
 }
-MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageLoad() {
+MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageLoad(){
    this.dirty();
 }
-MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaintBegin(event) {
+MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaintBegin(event){
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
@@ -558,14 +554,6 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    var drawLeft = left + 12;
    var drawRight = right - 12;
    var drawWidth = right - left;
-   var columnCount = o._columnCount;
-   var widthDefine = 0;
-   for(var i = 0; i < columnCount; i++){
-      widthDefine += o._columnDefines[i];
-   }
-   for(var i = 0; i < columnCount; i++){
-      o._columnWidths[i] = (o._columnDefines[i] / widthDefine * drawWidth) - 7;
-   }
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
    var titleText = '全球实时投资数据展示中心(中国)';
    graphic.setFont(o._headFontStyle);
@@ -588,52 +576,6 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
          o.drawRow(graphic, unit, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
       }
    }
-   var headText = '';
-   var headTextWidth = 0;
-   var headLeft = drawLeft;
-   var headTop = top + o._headStart;
-   var headTextTop = headTop + o._headTextTop;
-   for(var i = 0; i < columnCount; i++){
-      var headText = o._columnLabels[i];
-      var headTextWidth = graphic.textWidth(headText);
-      graphic.fillRectangle(headLeft, headTop, o._columnWidths[i] - 4, o._headHeight, '#122A46');
-      graphic.drawText(headText, headLeft + (o._columnWidths[i] - headTextWidth - 4) * 0.5, headTextTop, '#00B2F2');
-      headLeft += o._columnWidths[i];
-   }
-   var entities = o._units;
-   if(!entities.isEmpty()){
-      var tableTop = top + o._rowStart;
-      var tableText = '';
-      var tableTextWidth = 0;
-      graphic.clip(drawLeft, tableTop, drawWidth - 38, o._rowHeight * (o._tableCount - 1));
-      tableTop += 24;
-      var count = entities.count();
-      for(var i = 0; i < count; i++) {
-         var unit = entities.at(i);
-         o.drawRow(graphic, unit, false, i, drawLeft, tableTop + o._rowHeight * i + o._lineScroll, drawWidth);
-      }
-   }
-}
-MO.FEaiChartMarketerTable_oeUpdate = function FEaiChartMarketerTable_oeUpdate(event){
-   var o = this;
-   o.__base.FGuiControl.oeUpdate.call(o, event);
-   if(event.isBefore()){
-      if(o._lineScroll < 0){
-         o._lineScroll += 1;
-         if(o._lineScroll < -o._rowHeight){
-            o._lineScroll = 0;
-         }
-         if(o._lineScroll >= 0){
-            var entities = o._units;
-            if(entities.count() > o._tableCount){
-               entities.pop();
-            }
-            o._lineScroll = 0;
-         }
-         o._gridControl.dirty();
-         o.dirty();
-      }
-   }
 }
 MO.FEaiChartMarketerTable_construct = function FEaiChartMarketerTable_construct() {
    var o = this;
@@ -642,10 +584,6 @@ MO.FEaiChartMarketerTable_construct = function FEaiChartMarketerTable_construct(
    o._currentDate = new MO.TDate();
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
    o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
-   o._columnLabels = new Array('时间', '公司', '理财师', '城市', '用户-手机', '投资额(元)');
-      o._columnDefines = new Array(110, 120, 120, 100, 160, 120);
-   o._columnWidths = new Array();
-   o._columnCount = o._columnLabels.length;
 }
 MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    var o = this;
@@ -664,54 +602,68 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
    image.addLoadListener(o, o.onImageLoad);
-   var font = new MO.SUiFont();
-   font.font = 'Microsoft YaHei';
-   font.size = 25;
-   font.color = '#54F0FF';
-   var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
-   grid.setLocation(50, 450);
-   grid.setSize(800, 500);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
+   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
+   grid.setLocation(50, 332);
+   grid.setSize(800, 700);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setLeft(9);
+   grid.setRight(19);
+   grid.setHeadHeight(32);
+   grid.setHeadBackColor('#122A46');
+   grid.headFont().font = 'Microsoft YaHei';
+   grid.headFont().size = 22;
+   grid.headFont().color = '#00B2F2';
+   grid.setRowHeight(30);
+   grid.rowFont().font = 'Microsoft YaHei';
+   grid.rowFont().size = 20;
+   grid.rowFont().color = '#59FDE9';
+   var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
    column.setLabel('时间');
    column.setDataName('record_date');
-   column.font().assign(font);
+   column.setDateFormat('HH24:MI:SS');
    column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('departmentLabel');
    column.setLabel('公司');
    column.setDataName('department_label');
-   column.font().assign(font);
-   column.setWidth(120);
+   column.setWidth(140);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('marketerLabel');
    column.setLabel('理财师');
    column.setDataName('marketer_label');
-   column.font().assign(font);
-   column.setWidth(120);
+   column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerCard');
    column.setLabel('城市');
-   column.setDataName('customer_card');
-   column.font().assign(font);
+   column.setDataName('customer_city');
    column.setWidth(100);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerInfo');
    column.setLabel('用户-手机');
-   column.setDataName('customer_phone');
-   column.font().assign(font);
-   column.setWidth(160);
+   column.setDataName('customer_info');
+   column.setWidth(140);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
+   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
    column.setName('customerAmount');
    column.setLabel('投资额(元)');
    column.setDataName('customer_amount');
-   column.font().assign(font);
+   column.setNormalColor('#59FDE9');
+   column.setHighColor('#FDEF01');
+   column.setLowerColor('#EB6C03');
+   column.setNegativeColor('#FF0000');
+   column.cellPadding().right = 10;
    column.setWidth(120);
+   column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);
    o._headFontStyle = 'bold 32px Microsoft YaHei';
@@ -732,7 +684,6 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
       o._rowStart = 418;
       o._rowTextTop = 0;
       o._rowFontStyle = '36px Microsoft YaHei';
-      o._rowHeight = 46;
    }else{
       o._tableCount = 19;
       o._rankStart = 110;
@@ -748,7 +699,6 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
       o._headHeight = 40;
       o._rowFontStyle = '22px Microsoft YaHei';
       o._rowStart = 384;
-      o._rowHeight = 36;
    }
 }
 MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(unit){
@@ -756,91 +706,24 @@ MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(un
    if(!unit){
       return null;
    }
+   var grid = o._gridControl;
+   var row = grid.allocRow();
+   row.set('record_date', unit.recordDate());
+   row.set('department_label', unit.departmentLabel());
+   row.set('marketer_label', unit.marketerLabel());
+   row.set('customer_city', unit.customerCard());
+   row.set('customer_info', unit.customerLabel() + ' - ' + unit.customerPhone());
+   if(unit.customerActionCd() == 1){
+      row.set('customer_amount', unit.customerActionAmount());
+   }else{
+      row.set('customer_amount', -unit.customerActionAmount());
+   }
+   grid.insertRow(row);
    var entities = o._units;
    entities.unshift(unit);
    o._lineScroll -= o._rowHeight;
    if(entities.count() > o._tableCount){
       entities.pop();
-   }
-}
-MO.FEaiChartMarketerTable_drawRow = function FEaiChartMarketerTable_drawRow(graphic, unit, flag, index, x, y, width){
-   var o = this;
-   var widths = o._columnWidths;
-   var fontColor = null;
-   if(flag){
-      fontColor = '#E5BD1D';
-   }else{
-      fontColor = '#59FDE9';
-   }
-   if(flag){
-      var columnWidth = widths[0];
-      var imageX = x + (columnWidth * 0.5) - 23;
-      var imageY = y - o._rankIconStart;
-      if((index == 0) && o._rank1Image.testReady()){
-         graphic.drawImage(o._rank1Image, imageX - 6, imageY - 28, 58, 65);
-      }
-      if((index == 1) && o._rank2Image.testReady()){
-         graphic.drawImage(o._rank2Image, imageX, imageY, 46, 37);
-      }
-      if((index == 2) && o._rank3Image.testReady()){
-         graphic.drawImage(o._rank3Image, imageX, imageY, 46, 37);
-      }
-   }
-   y += o._rankTextStart;
-   var textWidth = 0;
-   if(!flag){
-      o._currentDate.parse(unit.recordDate());
-      var text = o._currentDate.format('HH24:MI:SS');
-      textWidth = graphic.textWidth(text);
-      graphic.drawText(text, x + widths[0] * 0.5 - textWidth * 0.5, y, fontColor);
-   }
-   x += widths[0];
-   text = unit.departmentLabel();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[1] * 0.5 - textWidth * 0.5, y, fontColor);
-   x += widths[1];
-   text = unit.marketerLabel();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[2] * 0.5 - textWidth * 0.5, y, fontColor);
-   x += widths[2];
-   var cityResource = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(unit.customerCard());
-   text = '';
-   if(cityResource){
-      text = cityResource.label();
-   }
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[3] * 0.5 - textWidth * 0.5, y, fontColor);
-   x += widths[3];
-   text = unit.customerLabel() + ' - ' + unit.customerPhone();
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, x + widths[4] * 0.5 - textWidth * 0.5, y, fontColor);
-   x += widths[4];
-   var amount = MO.Lang.Float.format(unit.customerActionAmount(), null, null, 2, '0');
-   var amountRight = x + widths[5] - 15;
-   if(unit.customerActionCd() == 1){
-      if (amount.length > 7) {
-         var highColor = null;
-         if(amount.length > 9){
-            highColor = '#FDEF01';
-         }else{
-            highColor = '#EB6C03';
-         }
-         var high = amount.substring(0, amount.length - 7);
-         var low = amount.substring(amount.length - 7, amount.length);
-         var highWidth = graphic.textWidth(high);
-         var lowWidth = graphic.textWidth(low);
-         graphic.drawText(high, amountRight - lowWidth - highWidth, y, highColor);
-         graphic.drawText(low, amountRight - lowWidth, y, '#59FDE9');
-      }else{
-         textWidth = graphic.textWidth(amount);
-         graphic.drawText(amount, amountRight - textWidth, y, fontColor);
-      }
-   }else if(unit.customerActionCd() == 2){
-      var text = '-' + amount;
-      textWidth = graphic.textWidth(text);
-      graphic.drawText(text, amountRight - textWidth, y, '#FF0000');
-   }else{
-      throw new TError('Invalid action code.');
    }
 }
 MO.FEaiChartMarketerTable_dispose = function FEaiChartMarketerTable_dispose(){

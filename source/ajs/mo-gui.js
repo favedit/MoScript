@@ -377,6 +377,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._backImage              = null;
    o._backHoverResource      = null;
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
+   o._parentRectangle        = MO.Class.register(o, new MO.AGetter('_parentRectangle'));
    o._eventRectangle         = null;
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
@@ -526,6 +527,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MUiMargin.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
    o.__base.MGuiBorder.construct.call(o);
+   o._parentRectangle = new MO.SRectangle();
    o._clientRectangle = new MO.SRectangle();
    o._eventRectangle = new MO.SRectangle();
 }
@@ -596,6 +598,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var parentRectangle = event.parentRectangle;
    var calculateRate = event.calculateRate;
    var rectangle = event.rectangle;
+   o._parentRectangle.assign(parentRectangle);
    o._eventRectangle.assign(rectangle);
    var dockCd = o._dockCd;
    var anchorCd = o._anchorCd;
@@ -636,6 +639,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    event.optionContainer = false;
    graphic.store();
    rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
+   parentRectangle.assign(rectangle);
    var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
    graphic.setScale(o._scale.width, o._scale.height);
@@ -653,6 +657,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    o.onPaintEnd(event);
    graphic.restore();
    rectangle.assign(o._eventRectangle);
+   parentRectangle.assign(o._parentRectangle);
    o._statusDirty = false;
 }
 MO.FGuiControl_update = function FGuiControl_update(){
@@ -1740,48 +1745,212 @@ MO.FGuiTimeline_onOperationDown = function FGuiTimeline_onOperationDown(event) {
       }
    }
 }
+MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellDate);
+   o._fontColor  = null;
+   o._numberFont = null;
+   o.construct   = MO.FGuiGridCellCurrency_construct;
+   o.formatText  = MO.FGuiGridCellCurrency_formatText;
+   o.draw        = MO.FGuiGridCellCurrency_draw;
+   o.dispose     = MO.FGuiGridCellCurrency_dispose;
+   return o;
+}
+MO.FGuiGridCellCurrency_construct = function FGuiGridCellCurrency_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridCellDate.construct.call(o);
+   o._numberFont = new MO.SUiFont();
+}
+MO.FGuiGridCellCurrency_formatText = function FGuiGridCellCurrency_formatText(value){
+   return this.__base.MUiGridColumnDate.formatText.call(this, value)
+}
+MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(graphic, x, y, width, height){
+   var o = this;
+   var column = o._column;
+   var cellPadding = column.cellPadding();
+   var value = o.value();
+   var text = o.text();
+   var textLength = text.length;
+   var font = o.findFont();
+   var numberFont = o._numberFont;
+   numberFont.assign(font);
+   var contentWidth = width - cellPadding.right;
+   if(value >= 0){
+      if(textLength > 7){
+         var fontColor = null;
+         if(textLength > 9){
+            fontColor = column.highColor();
+         }else{
+            fontColor = column.lowerColor();
+         }
+         var high = text.substring(0, text.length - 7);
+         var low = text.substring(text.length - 7, text.length);
+         var highWidth = graphic.textWidth(high);
+         var lowWidth = graphic.textWidth(low);
+         numberFont.color = fontColor;
+         graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+         numberFont.color = column.normalColor();
+         graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }else{
+         numberFont.color = column.normalColor();
+         graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }
+   }else if(value < 0){
+      numberFont.color = column.negativeColor();
+      graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+   }
+}
+MO.FGuiGridCellCurrency_dispose = function FGuiGridCellCurrency_dispose(){
+   var o = this;
+   o._numberFont = MO.Lang.Object.dispose(o._numberFont);
+   o.__base.MUiGridCellDate.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FGuiGridCellDate = function FGuiGridCellDate(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellDate);
+   o.construct = MO.FGuiGridCellDate_construct;
+   o.draw      = MO.FGuiGridCellDate_draw;
+   o.dispose   = MO.FGuiGridCellDate_dispose;
+   return o;
+}
+MO.FGuiGridCellDate_construct = function FGuiGridCellDate_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridCellDate.construct.call(o);
+}
+MO.FGuiGridCellDate_draw = function FGuiGridCellDate_draw(graphic, x, y, width, height){
+   var o = this;
+   var text = o.text();
+   var font = o.findFont();
+   graphic.drawFontText(text, font, x, y, width, height, MO.EUiAlign.Center);
+}
+MO.FGuiGridCellDate_dispose = function FGuiGridCellDate_dispose(){
+   var o = this;
+   o.__base.MUiGridCellDate.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
 MO.FGuiGridCellText = function FGuiGridCellText(o){
-   o = MO.Class.inherits(this, o, MO.FUiGridCellText);
-   o.onPaint = MO.FGuiGridCellText_onPaint;
-   o.paint   = MO.FGuiGridCellText_paint;
-   o.dispose = MO.FGuiGridCellText_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellText);
+   o.onPaint   = MO.FGuiGridCellText_onPaint;
+   o.construct = MO.FGuiGridCellText_construct;
+   o.draw      = MO.FGuiGridCellText_draw;
+   o.dispose   = MO.FGuiGridCellText_dispose;
    return o;
 }
 MO.FGuiGridCellText_onPaint = function FGuiGridCellText_onPaint(event){
    var o = this;
 }
-MO.FGuiGridCellText_paint = function FGuiGridCellText_paint(){
+MO.FGuiGridCellText_construct = function FGuiGridCellText_construct(){
    var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridCellText.construct.call(o);
+}
+MO.FGuiGridCellText_draw = function FGuiGridCellText_draw(graphic, x, y, width, height){
+   var o = this;
+   var text = o.text();
+   var font = o.findFont();
+   graphic.drawFontText(text, font, x, y, width, height, MO.EUiAlign.Center);
 }
 MO.FGuiGridCellText_dispose = function FGuiGridCellText_dispose(){
    var o = this;
-   o._grid = null;
-   o._column = null;
-   o._row = null;
-   o.__base.FUiGridCellText.dispose.call(o);
+   o.__base.MUiGridCellText.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
-MO.FGuiGridColumnText = function FGuiGridColumnText(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridColumn, MO.MUiGridColumnText);
-   o.construct  = MO.FGuiGridColumnText_construct;
-   o.createCell = MO.FGuiGridColumnText_createCell;
-   o.dispose    = MO.FGuiGridColumnText_dispose;
+MO.FGuiGridColumn = function FGuiGridColumn(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridColumn);
+   o.construct = MO.FGuiGridColumn_construct;
+   o.draw      = MO.FGuiGridColumn_draw;
+   o.dispose   = MO.FGuiGridColumn_dispose;
    return o;
 }
-MO.FGuiGridColumnText_construct = function FGuiGridColumnText_construct(){
+MO.FGuiGridColumn_construct = function FGuiGridColumn_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.__base.MUiGridColumn.construct.call(o);
 }
-MO.FGuiGridColumnText_createCell = function FGuiGridColumnText_createCell(){
-   return MO.Class.create(MO.FGuiGridCellText);
+MO.FGuiGridColumn_draw = function FGuiGridColumn_draw(graphic, x, y, width, height){
+   var o = this;
+   var padding = o._padding;
+   var contentX = x + padding.left;
+   var contentY = y + padding.top;
+   var contentWidth = width - padding.left - padding.right;
+   var contentHeight = height - padding.top - padding.bottom;
+   var backColor = o._backColor;
+   if(!backColor){
+      backColor = o._grid.headBackColor();
+   }
+   graphic.fillRectangle(contentX, contentY, contentWidth, contentHeight, backColor);
+   var font = o.findFont();
+   graphic.drawFontText(o._label, font, contentX, contentY, contentWidth, contentHeight, MO.EUiAlign.Center);
 }
-MO.FGuiGridColumnText_dispose = function FGuiGridColumnText_dispose(){
+MO.FGuiGridColumn_dispose = function FGuiGridColumn_dispose(){
    var o = this;
    o.__base.MUiGridColumn.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
+MO.FGuiGridColumnCurrency = function FGuiGridColumnCurrency(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnCurrency);
+   o.construct  = MO.FGuiGridColumnCurrency_construct;
+   o.formatText = MO.FGuiGridColumnCurrency_formatText;
+   o.dispose    = MO.FGuiGridColumnCurrency_dispose;
+   return o;
+}
+MO.FGuiGridColumnCurrency_construct = function FGuiGridColumnCurrency_construct(){
+   var o = this;
+   o.__base.FGuiGridColumn.construct.call(o);
+   o.__base.MUiGridColumnCurrency.construct.call(o);
+   o._cellClass = MO.FGuiGridCellCurrency;
+}
+MO.FGuiGridColumnCurrency_formatText = function FGuiGridColumnCurrency_formatText(value){
+   return this.__base.MUiGridColumnCurrency.formatText.call(this, value)
+}
+MO.FGuiGridColumnCurrency_dispose = function FGuiGridColumnCurrency_dispose(){
+   var o = this;
+   o.__base.MUiGridColumnCurrency.dispose.call(o);
+   o.__base.FGuiGridColumn.dispose.call(o);
+}
+MO.FGuiGridColumnDate = function FGuiGridColumnDate(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnDate);
+   o.construct  = MO.FGuiGridColumnDate_construct;
+   o.formatText = MO.FGuiGridColumnDate_formatText;
+   o.dispose    = MO.FGuiGridColumnDate_dispose;
+   return o;
+}
+MO.FGuiGridColumnDate_construct = function FGuiGridColumnDate_construct(){
+   var o = this;
+   o.__base.FGuiGridColumn.construct.call(o);
+   o.__base.MUiGridColumnDate.construct.call(o);
+   o._cellClass = MO.FGuiGridCellDate;
+}
+MO.FGuiGridColumnDate_formatText = function FGuiGridColumnDate_formatText(value){
+   return this.__base.MUiGridColumnDate.formatText.call(this, value)
+}
+MO.FGuiGridColumnDate_dispose = function FGuiGridColumnDate_dispose(){
+   var o = this;
+   o.__base.MUiGridColumnDate.dispose.call(o);
+   o.__base.FGuiGridColumn.dispose.call(o);
+}
+MO.FGuiGridColumnText = function FGuiGridColumnText(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
+   o.construct = MO.FGuiGridColumnText_construct;
+   o.dispose   = MO.FGuiGridColumnText_dispose;
+   return o;
+}
+MO.FGuiGridColumnText_construct = function FGuiGridColumnText_construct(){
+   var o = this;
+   o.__base.FGuiGridColumn.construct.call(o);
+   o.__base.MUiGridColumnText.construct.call(o);
+   o._cellClass = MO.FGuiGridCellText;
+}
+MO.FGuiGridColumnText_dispose = function FGuiGridColumnText_dispose(){
+   var o = this;
+   o.__base.MUiGridColumnText.dispose.call(o);
+   o.__base.FGuiGridColumn.dispose.call(o);
+}
 MO.FGuiGridControl = function FGuiGridControl(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiGridControl);
+   o._rowScroll      = 0;
+   o._rowScrollSpeed = 1;
    o.onPaintBegin = MO.FGuiGridControl_onPaintBegin;
    o.construct    = MO.FGuiGridControl_construct;
    o.dispose      = MO.FGuiGridControl_dispose;
@@ -1789,15 +1958,17 @@ MO.FGuiGridControl = function FGuiGridControl(o){
 }
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    var o = this;
+   var padding = o._padding;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   graphic.drawRectangle(left, top, width, height, '#FF0000', 1);
-   var drawLeft = left + 12;
-   var gridWidth = width - 24;
+   var left = rectangle.left + padding.left;
+   var top = rectangle.top + padding.top;
+   var bottom = rectangle.bottom() - padding.bottom;
+   var width = rectangle.width - padding.left - padding.right;
+   var height = rectangle.height - padding.top - padding.bottom;
+   var drawX = left;
+   var drawY = top;
+   var gridWidth = width;
    var columnWidthTotal = 0;
    var columns = o._columns;
    var columnCount = columns.count();
@@ -1805,29 +1976,116 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       var column = columns.at(i);
       columnWidthTotal += column.width();
    }
-   var columnX = drawLeft;
-   var columnY = top + 12;
+   var columnX = drawX;
+   var columnY = top;
    var headTextTop = columnY + 0;
    var headHeight = o._headHeight;
    for(var i = 0; i < columnCount; i++){
       var column = columns.at(i);
-      var columnLabel = column.label();
       var columnWidth = gridWidth * column.width() / columnWidthTotal;
-      var columnFont = column.font();
-      graphic.fillRectangle(columnX, columnY, columnWidth - 4, o._headHeight, '#122A46');
-      graphic.drawFontText(columnLabel, columnFont, columnX, columnY, columnWidth, headHeight, MO.EUiDock.Center);
+      column.draw(graphic, columnX, columnY, columnWidth, headHeight);
       columnX += columnWidth;
+   }
+   drawY += headHeight;
+   var rowsHeight = bottom - drawY;
+   var rowHeight = o._rowHeight;
+   graphic.clip(drawX, drawY, gridWidth, rowsHeight);
+   var rows = o._rows;
+   var rowCount = rows.count();
+   drawY += o._rowScroll;
+   for(var rowIndex = 0; rowIndex < rowCount; rowIndex++){
+      var columnX = drawX;
+      if(drawY > -rowHeight){
+         var row = rows.at(rowIndex);
+         for(var i = 0; i < columnCount; i++){
+            var column = columns.at(i);
+            var dataName = column.dataName();
+            var columnWidth = gridWidth * column.width() / columnWidthTotal;
+            var cell = row.cells().get(dataName);
+            cell.draw(graphic, columnX, drawY, columnWidth, rowHeight);
+            columnX += columnWidth;
+         }
+      }
+      drawY += rowHeight;
+      if(drawY > bottom){
+         break;
+      }
    }
 }
 MO.FGuiGridControl_construct = function FGuiGridControl_construct(){
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o.__base.MUiGridControl.construct.call(o);
+   o._rowClass = MO.FGuiGridRow;
 }
 MO.FGuiGridControl_dispose = function FGuiGridControl_dispose(){
    var o = this;
    o.__base.MUiGridControl.dispose.call(o);
    o.__base.FGuiControl.dispose.call(o);
+}
+MO.FGuiGridRow = function FGuiGridRow(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridRow);
+   o.construct = MO.FGuiGridRow_construct;
+   o.dispose   = MO.FGuiGridRow_dispose;
+   return o;
+}
+MO.FGuiGridRow_construct = function FGuiGridRow_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.__base.MUiGridRow.construct.call(o);
+}
+MO.FGuiGridRow_dispose = function FGuiGridRow_dispose(){
+   var o = this;
+   o.__base.MUiGridRow.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FGuiTable = function FGuiTable(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridControl);
+   o.oeUpdate        = MO.FGuiTable_oeUpdate;
+   o.construct       = MO.FGuiTable_construct;
+   o.insertRow       = MO.FGuiTable_insertRow;
+   o.dispose         = MO.FGuiTable_dispose;
+   return o;
+}
+MO.FGuiTable_oeUpdate = function FGuiTable_oeUpdate(event){
+   var o = this;
+   o.__base.FGuiGridControl.oeUpdate.call(o, event);
+   if(event.isBefore()){
+      if(o._rowScroll < 0){
+         var rows = o._rows;
+         var scrollSpeed = Math.max(parseInt(-o._rowScroll / o._rowHeight), o._rowScrollSpeed);
+         o._rowScroll += scrollSpeed;
+         if(o._rowScroll >= 0){
+            var limitCount = o._rowLimitCount;
+            if(limitCount != 0){
+               if(rows.count() > limitCount){
+                  var row = rows.pop();
+                  o.freeRow(row);
+               }
+            }
+            o._rowScroll = 0;
+         }
+         o.dirty();
+      }
+   }
+}
+MO.FGuiTable_construct = function FGuiTable_construct(){
+   var o = this;
+   o.__base.FGuiGridControl.construct.call(o);
+   o.__base.MUiGridControl.construct.call(o);
+   o._rowClass = MO.FGuiGridRow;
+}
+MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
+   var o = this;
+   MO.Assert.debugNotNull(row);
+   o._rows.unshift(row);
+   o._rowScroll -= o._rowHeight;
+   o.dirty();
+}
+MO.FGuiTable_dispose = function FGuiTable_dispose(){
+   var o = this;
+   o.__base.MUiGridControl.dispose.call(o);
+   o.__base.FGuiGridControl.dispose.call(o);
 }
 MO.FGuiBar = function FGuiBar(o){
    o = MO.Class.inherits(this, o, MO.FGuiFrame);
