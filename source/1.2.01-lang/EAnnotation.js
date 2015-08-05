@@ -11,6 +11,8 @@ MO.EAnnotation = new function EAnnotation(){
    o.Source    = 'source';
    // @attribute 属性
    o.Property  = 'property';
+   // @attribute 持久化属性
+   o.Persistence  = 'persistence';
    // @attribute 枚举v
    o.Event     = 'enum';
    // @attribute 事件

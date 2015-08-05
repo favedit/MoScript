@@ -6,7 +6,7 @@
 
 @SET JAVA_PATH=%JS_HOME%\..\library\jdom-2.0.5.jar;%JS_HOME%\..\library\mo-common.jar;%JS_HOME%\..\library\mo-utility.jar
 
-@REM ============================================================
+@REM ============================================================ 119.80.86.186
 @SET JAVA_BUILDER=org.mo.util.javascript.FJsFileBuilder
 @"%JAVA_HOME%\bin\java.exe" -Xms256m -Xmx512m -cp %JAVA_PATH% %JAVA_BUILDER% %JS_HOME% debug
 

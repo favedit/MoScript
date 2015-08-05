@@ -43,31 +43,41 @@ MO.TClass = function TClass(){
 // <T>向当前类对象注册一个属性。</T>
 //
 // @method
-// @param p:annotation:AAnnotation 描述对象
+// @param annotation:AAnnotation 描述对象
 //==========================================================
-MO.TClass_register = function TClass_register(p){
+MO.TClass_register = function TClass_register(annotation){
    var o = this;
    // 检查类型和名称的合法性
-   var a = p.annotationCd();
-   var n = p.name();
-   var c = p.code();
-   if(!a || !c){
-      throw new MO.TError(o, "Unknown annotation. (class={1},annotation={2},name={3},code={4})", MO.Class.dump(o), a, n, c);
+   var annotationCd = annotation.annotationCd();
+   var ordered = annotation.isOrdered();
+   var name = annotation.name();
+   var code = annotation.code();
+   if(!annotationCd || !code){
+      throw new MO.TError(o, "Unknown annotation. (class={1}, annotation={2}, name={3}, code={4})", MO.Class.dump(o), annotation, name, code);
    }
    // 获得一个Annotation的类型容器
-   var as = o._annotations[a];
-   if(!as){
-      as = o._annotations[a] = new Object();
+   var annotations = o._annotations[annotationCd];
+   if(!annotations){
+      if(ordered){
+         annotations = new MO.TObjects();
+      }else{
+         annotations = new Object();
+      }
+      o._annotations[annotationCd] = annotations;
    }
    // 检查重复
-   if(!p._duplicate){
-      if(as[c]){
-         throw new MO.TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", MO.Class.dump(o), a, n, c, p.toString());
+   if(!annotation._duplicate){
+      if(annotations[code]){
+         throw new MO.TError(o, "Duplicate annotation. (class={1}, annotation={2}, name={3}, code={4}, value={5})", MO.Class.dump(o), annotation, name, code, annotation.toString());
       }
    }
    // 设置内容
-   as[c] = p;
-   o._attributes[n] = p;
+   if(ordered){
+      annotations.push(annotation);
+   }else{
+      annotations[code] = annotation;
+   }
+   o._attributes[name] = annotation;
 }
 
 //==========================================================
@@ -81,24 +91,28 @@ MO.TClass_assign = function TClass_assign(clazz){
    //..........................................................
    // 复制描述器
    for(var annotationName in clazz._annotations){
+      var clazzAnnotations = clazz._annotations[annotationName];
       // 在自己当前对象内查找描述的类型容器
       var annotations = o._annotations[annotationName];
       if(!annotations){
-         annotations = o._annotations[annotationName] = new Object();
+         annotations = o._annotations[annotationName] = new clazzAnnotations.constructor();
       }
       // 复制指定对象内的类型到自己对象内
-      var clazzAnnotations = clazz._annotations[annotationName];
-      for(var name in clazzAnnotations){
-         var annotation = clazzAnnotations[name];
-         // 检查重复
-         if(!annotation._duplicate){
-            if(annotations[name]){
-               throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
+      if(clazzAnnotations.constructor == MO.TObjects){
+         annotations.append(clazzAnnotations);
+      }else{
+         for(var name in clazzAnnotations){
+            var annotation = clazzAnnotations[name];
+            // 检查重复
+            if(!annotation.isDuplicate()){
+               if(annotations[name]){
+                  throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
+               }
             }
-         }
-         // 复制描述器
-         if(annotation._inherit){
-            annotations[name] = annotation;
+            // 复制描述器
+            if(annotation._inherit){
+               annotations[name] = annotation;
+            }
          }
       }
    }

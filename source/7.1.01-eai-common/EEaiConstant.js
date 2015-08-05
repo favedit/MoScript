@@ -8,7 +8,8 @@
 MO.EEaiConstant = new function EEaiConstant(){
    var o = this;
    o.DefaultCountry = "china";
-   o.ServiceHost    = "eai.logic.service";
+   o.LogicService   = "eai.logic.service";
+   o.ServiceHost    = "eai.host.service";
    o.Resource       = "eai.resource";
    return o;
 }

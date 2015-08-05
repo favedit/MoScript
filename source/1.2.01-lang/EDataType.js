@@ -29,10 +29,18 @@ MO.EDataType = new function EDataType(){
    // @member 16位浮点数
    o.Float16 = 9;
    // @member 32位浮点数
-   o.Float32 = 10;
+   o.Float32 = o.Float = 10;
    // @member 64位浮点数
-   o.Float64 = 11;
+   o.Float64 = o.Double = 11;
    // @member 字符串
    o.String = 12;
+   // @member 对象
+   o.Object = 13;
+   // @member 数组集合
+   o.Array = 14;
+   // @member 对象集合
+   o.Objects = 15;
+   // @member 字典集合
+   o.Dictionary = 16;
    return o;
 }

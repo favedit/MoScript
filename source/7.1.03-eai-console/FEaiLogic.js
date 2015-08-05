@@ -10,13 +10,16 @@ MO.FEaiLogic = function FEaiLogic(o){
    //..........................................................
    // @attribute
    o._code          = null;
+   o._parameters    = null;
    o._urlParameters = null;
    //..........................................................
    // @method
    o.construct      = MO.FEaiLogic_construct;
    // @method
    o.makeUrl        = MO.FEaiLogic_makeUrl;
+   o.prepareParemeters = MO.FEaiLogic_prepareParemeters;
    o.send           = MO.FEaiLogic_send;
+   o.sendService    = MO.FEaiLogic_sendService;
    // @method
    o.dispose        = MO.FEaiLogic_dispose;
    return o;
@@ -31,7 +34,20 @@ MO.FEaiLogic_construct = function FEaiLogic_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置变量
+   o._parameters    = new MO.TAttributes();
    o._urlParameters = new MO.TAttributes();
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiLogic_prepareParemeters = function FEaiLogic_prepareParemeters(){
+   var o = this;
+   var parameters = o._parameters;
+   parameters.clear();
+   return parameters;
 }
 
 //==========================================================
@@ -79,6 +95,33 @@ MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback)
    var url = o.makeUrl(method, parameters);
    // 发送请求
    var connection = MO.Console.find(MO.FJsonConsole).sendAsync(url);
+   connection.addLoadListener(owner, callback);
+   return connection;
+}
+
+//==========================================================
+// <T>发送服务数据请求。</T>
+//
+// @method
+// @param method:String 函数
+// @param parameters:Object 拥有者
+// @param owner:Object 拥有者
+// @param callback:Function 回调函数
+//==========================================================
+MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner, callback){
+   var o = this;
+   // 获得地址
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var count = parameters.count();
+   for(var i = 0; i < count; i++){
+      var name = parameters.name(i);
+      var value = parameters.value(i);
+      url += '&' + name + '=' + value;
+   }
+   url = '&tick=' + MO.Timer.current();
+   url = '&token=' + MO.Timer.current();
+   // 发送请求
+   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(owner, callback);
    return connection;
 }

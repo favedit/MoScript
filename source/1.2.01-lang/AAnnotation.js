@@ -13,11 +13,16 @@ MO.AAnnotation = function AAnnotation(name){
    o._annotationCd = null;
    o._inherit      = false;
    o._duplicate    = false;
+   o._ordered      = false;
    // @attribute
    o._name         = name;
    //..........................................................
    // @method
    o.annotationCd  = MO.AAnnotation_annotationCd;
+   o.isInherit     = MO.AAnnotation_isInherit;
+   o.isDuplicate   = MO.AAnnotation_isDuplicate;
+   o.isOrdered     = MO.AAnnotation_isOrdered;
+   // @method
    o.name          = MO.AAnnotation_name;
    o.code          = MO.AAnnotation_code;
    o.value         = MO.AAnnotation_value;
@@ -32,6 +37,36 @@ MO.AAnnotation = function AAnnotation(name){
 //============================================================
 MO.AAnnotation_annotationCd = function AAnnotation_annotationCd(){
    return this._annotationCd;
+}
+
+//============================================================
+// <T>判断是否允许继承。</T>
+//
+// @method
+// @return boolean 是否允许继承
+//============================================================
+MO.AAnnotation_isInherit = function AAnnotation_isInherit(){
+   return this._inherit;
+}
+
+//============================================================
+// <T>判断是否允许重复。</T>
+//
+// @method
+// @return boolean 是否允许重复
+//============================================================
+MO.AAnnotation_isDuplicate = function AAnnotation_isDuplicate(){
+   return this._duplicate;
+}
+
+//============================================================
+// <T>判断是否允许有序。</T>
+//
+// @method
+// @return boolean 是否允许有序
+//============================================================
+MO.AAnnotation_isOrdered = function AAnnotation_isOrdered(){
+   return this._ordered;
 }
 
 //============================================================
