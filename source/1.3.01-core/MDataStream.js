@@ -306,27 +306,27 @@ MO.MDataStream_readBytes = function MDataStream_readBytes(data, offset, length){
 MO.MDataStream_readData = function MDataStream_readData(dataCd){
    var o = this;
    switch(dataCd){
-      case EDataType.Int8:
+      case MO.EDataType.Int8:
          return o.readInt8();
-      case EDataType.Int16:
+      case MO.EDataType.Int16:
          return o.readInt16();
-      case EDataType.Int32:
+      case MO.EDataType.Int32:
          return o.readInt32();
-      case EDataType.Int64:
+      case MO.EDataType.Int64:
          return o.readInt64();
-      case EDataType.Uint8:
+      case MO.EDataType.Uint8:
          return o.readUint8();
-      case EDataType.Uint16:
+      case MO.EDataType.Uint16:
          return o.readUint16();
-      case EDataType.Uint32:
+      case MO.EDataType.Uint32:
          return o.readUint32();
-      case EDataType.Uint64:
+      case MO.EDataType.Uint64:
          return o.readUint64();
-      case EDataType.Float32:
+      case MO.EDataType.Float32:
          return o.readFloat();
-      case EDataType.Float64:
+      case MO.EDataType.Float64:
          return o.readDouble();
-      case EDataType.String:
+      case MO.EDataType.String:
          return o.readString();
    }
    throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
@@ -555,30 +555,30 @@ MO.MDataStream_writeBytes = function MDataStream_writeBytes(data, offset, length
 // @param dataCd:EDataType 数据类型
 // @param value:Object 数据
 //==========================================================
-MO.MDataStream_readData = function MDataStream_readData(dataCd, value){
+MO.MDataStream_writeData = function MDataStream_writeData(dataCd, value){
    var o = this;
    switch(dataCd){
-      case EDataType.Int8:
+      case MO.EDataType.Int8:
          return o.writeInt8(value);
-      case EDataType.Int16:
+      case MO.EDataType.Int16:
          return o.writeInt16(value);
-      case EDataType.Int32:
+      case MO.EDataType.Int32:
          return o.writeInt32(value);
-      case EDataType.Int64:
+      case MO.EDataType.Int64:
          return o.writeInt64(value);
-      case EDataType.Uint8:
+      case MO.EDataType.Uint8:
          return o.writeUint8(value);
-      case EDataType.Uint16:
+      case MO.EDataType.Uint16:
          return o.writeUint16(value);
-      case EDataType.Uint32:
+      case MO.EDataType.Uint32:
          return o.writeUint32(value);
-      case EDataType.Uint64:
+      case MO.EDataType.Uint64:
          return o.writeUint64(value);
-      case EDataType.Float32:
+      case MO.EDataType.Float32:
          return o.writeFloat(value);
-      case EDataType.Float64:
+      case MO.EDataType.Float64:
          return o.writeDouble(value);
-      case EDataType.String:
+      case MO.EDataType.String:
          return o.writeString(value);
    }
    throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);

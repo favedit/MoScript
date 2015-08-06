@@ -3,8 +3,12 @@ MO.AAnnotation = function AAnnotation(name){
    o._annotationCd = null;
    o._inherit      = false;
    o._duplicate    = false;
+   o._ordered      = false;
    o._name         = name;
    o.annotationCd  = MO.AAnnotation_annotationCd;
+   o.isInherit     = MO.AAnnotation_isInherit;
+   o.isDuplicate   = MO.AAnnotation_isDuplicate;
+   o.isOrdered     = MO.AAnnotation_isOrdered;
    o.name          = MO.AAnnotation_name;
    o.code          = MO.AAnnotation_code;
    o.value         = MO.AAnnotation_value;
@@ -12,6 +16,15 @@ MO.AAnnotation = function AAnnotation(name){
 }
 MO.AAnnotation_annotationCd = function AAnnotation_annotationCd(){
    return this._annotationCd;
+}
+MO.AAnnotation_isInherit = function AAnnotation_isInherit(){
+   return this._inherit;
+}
+MO.AAnnotation_isDuplicate = function AAnnotation_isDuplicate(){
+   return this._duplicate;
+}
+MO.AAnnotation_isOrdered = function AAnnotation_isOrdered(){
+   return this._ordered;
 }
 MO.AAnnotation_name = function AAnnotation_name(){
    return this._name;
@@ -157,6 +170,7 @@ MO.EAnnotation = new function EAnnotation(){
    var o = this;
    o.Source    = 'source';
    o.Property  = 'property';
+   o.Persistence  = 'persistence';
    o.Event     = 'enum';
    o.Event     = 'event';
    o.Linker    = 'linker';
@@ -189,9 +203,13 @@ MO.EDataType = new function EDataType(){
    o.Uint32 = 7;
    o.Uint64 = 8;
    o.Float16 = 9;
-   o.Float32 = 10;
-   o.Float64 = 11;
+   o.Float32 = o.Float = 10;
+   o.Float64 = o.Double = 11;
    o.String = 12;
+   o.Object = 13;
+   o.Array = 14;
+   o.Objects = 15;
+   o.Dictionary = 16;
    return o;
 }
 MO.EEndian = new function EEndian(){
@@ -309,43 +327,57 @@ MO.TClass = function TClass(){
    o.alloc          = MO.TClass_alloc;
    return o;
 }
-MO.TClass_register = function TClass_register(p){
+MO.TClass_register = function TClass_register(annotation){
    var o = this;
-   var a = p.annotationCd();
-   var n = p.name();
-   var c = p.code();
-   if(!a || !c){
-      throw new MO.TError(o, "Unknown annotation. (class={1},annotation={2},name={3},code={4})", MO.Class.dump(o), a, n, c);
+   var annotationCd = annotation.annotationCd();
+   var ordered = annotation.isOrdered();
+   var name = annotation.name();
+   var code = annotation.code();
+   if(!annotationCd || !code){
+      throw new MO.TError(o, "Unknown annotation. (class={1}, annotation={2}, name={3}, code={4})", MO.Class.dump(o), annotation, name, code);
    }
-   var as = o._annotations[a];
-   if(!as){
-      as = o._annotations[a] = new Object();
+   var annotations = o._annotations[annotationCd];
+   if(!annotations){
+      if(ordered){
+         annotations = new MO.TObjects();
+      }else{
+         annotations = new Object();
+      }
+      o._annotations[annotationCd] = annotations;
    }
-   if(!p._duplicate){
-      if(as[c]){
-         throw new MO.TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", MO.Class.dump(o), a, n, c, p.toString());
+   if(!annotation._duplicate){
+      if(annotations[code]){
+         throw new MO.TError(o, "Duplicate annotation. (class={1}, annotation={2}, name={3}, code={4}, value={5})", MO.Class.dump(o), annotation, name, code, annotation.toString());
       }
    }
-   as[c] = p;
-   o._attributes[n] = p;
+   if(ordered){
+      annotations.push(annotation);
+   }else{
+      annotations[code] = annotation;
+   }
+   o._attributes[name] = annotation;
 }
 MO.TClass_assign = function TClass_assign(clazz){
    var o = this;
    for(var annotationName in clazz._annotations){
+      var clazzAnnotations = clazz._annotations[annotationName];
       var annotations = o._annotations[annotationName];
       if(!annotations){
-         annotations = o._annotations[annotationName] = new Object();
+         annotations = o._annotations[annotationName] = new clazzAnnotations.constructor();
       }
-      var clazzAnnotations = clazz._annotations[annotationName];
-      for(var name in clazzAnnotations){
-         var annotation = clazzAnnotations[name];
-         if(!annotation._duplicate){
-            if(annotations[name]){
-               throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
+      if(clazzAnnotations.constructor == MO.TObjects){
+         annotations.append(clazzAnnotations);
+      }else{
+         for(var name in clazzAnnotations){
+            var annotation = clazzAnnotations[name];
+            if(!annotation.isDuplicate()){
+               if(annotations[name]){
+                  throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
+               }
             }
-         }
-         if(annotation._inherit){
-            annotations[name] = annotation;
+            if(annotation._inherit){
+               annotations[name] = annotation;
+            }
          }
       }
    }

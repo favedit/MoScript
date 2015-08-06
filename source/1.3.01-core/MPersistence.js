@@ -42,6 +42,7 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
          if(!items){
             items = o[name] = new MO.TObjects();
          }
+         items.clear();
          var itemCount = input.readInt32();
          for(var i = 0; i < itemCount; i++){
             var item = annotation.newInstance();
@@ -54,6 +55,7 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
          if(!items){
             items = o[name] = new MO.TDictionary();
          }
+         items.clear();
          var itemCount = input.readInt32();
          for(var i = 0; i < itemCount; i++){
             var item = annotation.newInstance();

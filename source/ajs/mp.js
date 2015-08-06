@@ -1502,8 +1502,12 @@ MO.AAnnotation = function AAnnotation(name){
    o._annotationCd = null;
    o._inherit      = false;
    o._duplicate    = false;
+   o._ordered      = false;
    o._name         = name;
    o.annotationCd  = MO.AAnnotation_annotationCd;
+   o.isInherit     = MO.AAnnotation_isInherit;
+   o.isDuplicate   = MO.AAnnotation_isDuplicate;
+   o.isOrdered     = MO.AAnnotation_isOrdered;
    o.name          = MO.AAnnotation_name;
    o.code          = MO.AAnnotation_code;
    o.value         = MO.AAnnotation_value;
@@ -1511,6 +1515,15 @@ MO.AAnnotation = function AAnnotation(name){
 }
 MO.AAnnotation_annotationCd = function AAnnotation_annotationCd(){
    return this._annotationCd;
+}
+MO.AAnnotation_isInherit = function AAnnotation_isInherit(){
+   return this._inherit;
+}
+MO.AAnnotation_isDuplicate = function AAnnotation_isDuplicate(){
+   return this._duplicate;
+}
+MO.AAnnotation_isOrdered = function AAnnotation_isOrdered(){
+   return this._ordered;
 }
 MO.AAnnotation_name = function AAnnotation_name(){
    return this._name;
@@ -1656,6 +1669,7 @@ MO.EAnnotation = new function EAnnotation(){
    var o = this;
    o.Source    = 'source';
    o.Property  = 'property';
+   o.Persistence  = 'persistence';
    o.Event     = 'enum';
    o.Event     = 'event';
    o.Linker    = 'linker';
@@ -1688,9 +1702,13 @@ MO.EDataType = new function EDataType(){
    o.Uint32 = 7;
    o.Uint64 = 8;
    o.Float16 = 9;
-   o.Float32 = 10;
-   o.Float64 = 11;
+   o.Float32 = o.Float = 10;
+   o.Float64 = o.Double = 11;
    o.String = 12;
+   o.Object = 13;
+   o.Array = 14;
+   o.Objects = 15;
+   o.Dictionary = 16;
    return o;
 }
 MO.EEndian = new function EEndian(){
@@ -1808,43 +1826,57 @@ MO.TClass = function TClass(){
    o.alloc          = MO.TClass_alloc;
    return o;
 }
-MO.TClass_register = function TClass_register(p){
+MO.TClass_register = function TClass_register(annotation){
    var o = this;
-   var a = p.annotationCd();
-   var n = p.name();
-   var c = p.code();
-   if(!a || !c){
-      throw new MO.TError(o, "Unknown annotation. (class={1},annotation={2},name={3},code={4})", MO.Class.dump(o), a, n, c);
+   var annotationCd = annotation.annotationCd();
+   var ordered = annotation.isOrdered();
+   var name = annotation.name();
+   var code = annotation.code();
+   if(!annotationCd || !code){
+      throw new MO.TError(o, "Unknown annotation. (class={1}, annotation={2}, name={3}, code={4})", MO.Class.dump(o), annotation, name, code);
    }
-   var as = o._annotations[a];
-   if(!as){
-      as = o._annotations[a] = new Object();
+   var annotations = o._annotations[annotationCd];
+   if(!annotations){
+      if(ordered){
+         annotations = new MO.TObjects();
+      }else{
+         annotations = new Object();
+      }
+      o._annotations[annotationCd] = annotations;
    }
-   if(!p._duplicate){
-      if(as[c]){
-         throw new MO.TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", MO.Class.dump(o), a, n, c, p.toString());
+   if(!annotation._duplicate){
+      if(annotations[code]){
+         throw new MO.TError(o, "Duplicate annotation. (class={1}, annotation={2}, name={3}, code={4}, value={5})", MO.Class.dump(o), annotation, name, code, annotation.toString());
       }
    }
-   as[c] = p;
-   o._attributes[n] = p;
+   if(ordered){
+      annotations.push(annotation);
+   }else{
+      annotations[code] = annotation;
+   }
+   o._attributes[name] = annotation;
 }
 MO.TClass_assign = function TClass_assign(clazz){
    var o = this;
    for(var annotationName in clazz._annotations){
+      var clazzAnnotations = clazz._annotations[annotationName];
       var annotations = o._annotations[annotationName];
       if(!annotations){
-         annotations = o._annotations[annotationName] = new Object();
+         annotations = o._annotations[annotationName] = new clazzAnnotations.constructor();
       }
-      var clazzAnnotations = clazz._annotations[annotationName];
-      for(var name in clazzAnnotations){
-         var annotation = clazzAnnotations[name];
-         if(!annotation._duplicate){
-            if(annotations[name]){
-               throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
+      if(clazzAnnotations.constructor == MO.TObjects){
+         annotations.append(clazzAnnotations);
+      }else{
+         for(var name in clazzAnnotations){
+            var annotation = clazzAnnotations[name];
+            if(!annotation.isDuplicate()){
+               if(annotations[name]){
+                  throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
+               }
             }
-         }
-         if(annotation._inherit){
-            annotations[name] = annotation;
+            if(annotation._inherit){
+               annotations[name] = annotation;
+            }
          }
       }
    }
@@ -8986,6 +9018,32 @@ MO.AListener_build = function AListener_build(clazz, instance){
    var processListener = 'process' + o._linker + 'Listener';
    instance[processListener] = MO.RListener.makeProcessListener(processListener, o._linker);
 }
+MO.APersistence = function APersistence(name, dataCd, dataClass){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Persistence;
+   o._inherit      = true;
+   o._ordered      = true;
+   o._dataCd       = dataCd;
+   o._dataClass    = dataClass;
+   o.dataCd        = MO.APersistence_dataCd;
+   o.dataClass     = MO.APersistence_dataClass;
+   o.newInstance   = MO.APersistence_newInstance;
+   o.toString      = MO.APersistence_toString;
+   return o;
+}
+MO.APersistence_dataCd = function APersistence_dataCd(){
+   return this._dataCd;
+}
+MO.APersistence_dataClass = function APersistence_dataClass(){
+   return this._dataClass;
+}
+MO.APersistence_newInstance = function APersistence_newInstance(){
+   return MO.Class.create(this._dataClass);
+}
+MO.APersistence_toString = function APersistence_toString(){
+   return '<' + this._annotationCd + ',name=' + this._name + '>';
+}
 MO.AStyle = function AStyle(name, style){
    var o = this;
    MO.AAnnotation.call(o, name);
@@ -9284,8 +9342,8 @@ MO.MDataStream = function MDataStream(o){
    o.readFloat    = MO.MDataStream_readFloat;
    o.readDouble   = MO.MDataStream_readDouble;
    o.readString   = MO.MDataStream_readString;
-   o.readData     = MO.MDataStream_readData;
    o.readBytes    = MO.MDataStream_readBytes;
+   o.readData     = MO.MDataStream_readData;
    o.writeBoolean = MO.MDataStream_writeBoolean;
    o.writeInt8    = MO.MDataStream_writeInt8;
    o.writeInt16   = MO.MDataStream_writeInt16;
@@ -9299,6 +9357,7 @@ MO.MDataStream = function MDataStream(o){
    o.writeDouble  = MO.MDataStream_writeDouble;
    o.writeString  = MO.MDataStream_writeString;
    o.writeBytes   = MO.MDataStream_writeBytes;
+   o.writeData    = MO.MDataStream_writeData;
    return o;
 }
 MO.MDataStream_testString = function MDataStream_testString(){
@@ -9396,34 +9455,6 @@ MO.MDataStream_readString = function MDataStream_readString(){
    o._position = position;
    return value.flush();
 }
-MO.MDataStream_readData = function MDataStream_readData(dataCd){
-   var o = this;
-   switch(dataCd){
-      case EDataType.Int8:
-         return o.readInt8();
-      case EDataType.Int16:
-         return o.readInt16();
-      case EDataType.Int32:
-         return o.readInt32();
-      case EDataType.Int64:
-         return o.readInt64();
-      case EDataType.Uint8:
-         return o.readUint8();
-      case EDataType.Uint16:
-         return o.readUint16();
-      case EDataType.Uint32:
-         return o.readUint32();
-      case EDataType.Uint64:
-         return o.readUint64();
-      case EDataType.Float32:
-         return o.readFloat();
-      case EDataType.Float64:
-         return o.readDouble();
-      case EDataType.String:
-         return o.readString();
-   }
-   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
-}
 MO.MDataStream_readBytes = function MDataStream_readBytes(data, offset, length){
    var o = this;
    var viewer = o._viewer;
@@ -9470,6 +9501,34 @@ MO.MDataStream_readBytes = function MDataStream_readBytes(data, offset, length){
       array[i] = viewer.getUint8(position++, endianCd);
    }
    o._position = position;
+}
+MO.MDataStream_readData = function MDataStream_readData(dataCd){
+   var o = this;
+   switch(dataCd){
+      case MO.EDataType.Int8:
+         return o.readInt8();
+      case MO.EDataType.Int16:
+         return o.readInt16();
+      case MO.EDataType.Int32:
+         return o.readInt32();
+      case MO.EDataType.Int64:
+         return o.readInt64();
+      case MO.EDataType.Uint8:
+         return o.readUint8();
+      case MO.EDataType.Uint16:
+         return o.readUint16();
+      case MO.EDataType.Uint32:
+         return o.readUint32();
+      case MO.EDataType.Uint64:
+         return o.readUint64();
+      case MO.EDataType.Float32:
+         return o.readFloat();
+      case MO.EDataType.Float64:
+         return o.readDouble();
+      case MO.EDataType.String:
+         return o.readString();
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
 }
 MO.MDataStream_writeBoolean = function MDataStream_writeBoolean(value){
    var o = this;
@@ -9586,6 +9645,34 @@ MO.MDataStream_writeBytes = function MDataStream_writeBytes(data, offset, length
       viewer.setUint8(position++, array[i], endianCd);
    }
    o._position = position;
+}
+MO.MDataStream_writeData = function MDataStream_writeData(dataCd, value){
+   var o = this;
+   switch(dataCd){
+      case MO.EDataType.Int8:
+         return o.writeInt8(value);
+      case MO.EDataType.Int16:
+         return o.writeInt16(value);
+      case MO.EDataType.Int32:
+         return o.writeInt32(value);
+      case MO.EDataType.Int64:
+         return o.writeInt64(value);
+      case MO.EDataType.Uint8:
+         return o.writeUint8(value);
+      case MO.EDataType.Uint16:
+         return o.writeUint16(value);
+      case MO.EDataType.Uint32:
+         return o.writeUint32(value);
+      case MO.EDataType.Uint64:
+         return o.writeUint64(value);
+      case MO.EDataType.Float32:
+         return o.writeFloat(value);
+      case MO.EDataType.Float64:
+         return o.writeDouble(value);
+      case MO.EDataType.String:
+         return o.writeString(value);
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
 }
 MO.MDataView = function MDataView(o){
    o = MO.Class.inherits(this, o);
@@ -9884,6 +9971,88 @@ MO.MParent_findParent = function MParent_findParent(clazz){
 MO.MParent_dispose = function MParent_dispose(){
    var o = this;
    o._parent = null;
+}
+MO.MPersistence = function MPersistence(o){
+   o = MO.Class.inherits(this, o);
+   o.unserialize = MO.MPersistence_unserialize;
+   o.serialize   = MO.MPersistence_serialize;
+   return o;
+}
+MO.MPersistence_unserialize = function MPersistence_unserialize(input){
+   var o = this;
+   var clazz = MO.Class.find(o.constructor);
+   var annotations = clazz.annotations(MO.EAnnotation.Persistence);
+   var count = annotations.count();
+   for(var n = 0; n < count; n++){
+      var annotation = annotations.at(n);
+      var dateCd = annotation.dataCd();
+      var name = annotation.name();
+      if(dateCd == MO.EDataType.Object){
+         var items = o[name];
+         if(!items){
+            items = o[name] = annotation.newInstance();
+         }
+         item.unserialize(input);
+      }else if(dateCd == MO.EDataType.Objects){
+         var items = o[name];
+         if(!items){
+            items = o[name] = new MO.TObjects();
+         }
+         items.clear();
+         var itemCount = input.readInt32();
+         for(var i = 0; i < itemCount; i++){
+            var item = annotation.newInstance();
+            item.unserialize(input);
+            items.push(item);
+         }
+      }else if(dateCd == MO.EDataType.Dictionary){
+         var items = o[name];
+         if(!items){
+            items = o[name] = new MO.TDictionary();
+         }
+         items.clear();
+         var itemCount = input.readInt32();
+         for(var i = 0; i < itemCount; i++){
+            var item = annotation.newInstance();
+            item.unserialize(input);
+            items.set(item.code(), item);
+         }
+      }else{
+         o[name] = input.readData(dateCd);
+      }
+   }
+}
+MO.MPersistence_serialize = function MPersistence_serialize(output){
+   var o = this;
+   var clazz = MO.Class.find(o.constructor);
+   var annotations = clazz.annotations(MO.EAnnotation.Persistence);
+   var count = annotations.count();
+   for(var i = 0; i < count; i++){
+      var annotation = annotations.at(i);
+      var dateCd = annotation.dataCd();
+      var name = annotation.name();
+      var value = o[name];
+      if(dateCd == MO.EDataType.Object){
+         value.unserialize(input);
+      }else if(dateCd == MO.EDataType.Objects){
+         var itemCount = value.count();
+         input.writeInt32(itemCount);
+         for(var i = 0; i < itemCount; i++){
+            var item = value.at(i);
+            item.serialize(input);
+         }
+      }else if(dateCd == MO.EDataType.Dictionary){
+         var items = o[name];
+         var itemCount = value.count();
+         input.writeInt32(itemCount);
+         for(var i = 0; i < itemCount; i++){
+            var item = value.at(i);
+            item.serialize(input);
+         }
+      }else{
+         input.writeData(dateCd, value);
+      }
+   }
 }
 MO.MProperty = function MProperty(o){
    o = MO.Class.inherits(this, o);
@@ -78637,7 +78806,8 @@ MO.EEaiChapter = new function EEaiChapter(){
 MO.EEaiConstant = new function EEaiConstant(){
    var o = this;
    o.DefaultCountry = "china";
-   o.ServiceHost    = "eai.logic.service";
+   o.LogicService   = "eai.logic.service";
+   o.ServiceHost    = "eai.host.service";
    o.Resource       = "eai.resource";
    return o;
 }
@@ -79560,17 +79730,27 @@ MO.FEaiFinancialMarketerDynamic_dispose = function FEaiFinancialMarketerDynamic_
 MO.FEaiLogic = function FEaiLogic(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._code          = null;
+   o._parameters    = null;
    o._urlParameters = null;
    o.construct      = MO.FEaiLogic_construct;
    o.makeUrl        = MO.FEaiLogic_makeUrl;
+   o.prepareParemeters = MO.FEaiLogic_prepareParemeters;
    o.send           = MO.FEaiLogic_send;
+   o.sendService    = MO.FEaiLogic_sendService;
    o.dispose        = MO.FEaiLogic_dispose;
    return o;
 }
 MO.FEaiLogic_construct = function FEaiLogic_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._parameters    = new MO.TAttributes();
    o._urlParameters = new MO.TAttributes();
+}
+MO.FEaiLogic_prepareParemeters = function FEaiLogic_prepareParemeters(){
+   var o = this;
+   var parameters = o._parameters;
+   parameters.clear();
+   return parameters;
 }
 MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
    var o = this;
@@ -79596,6 +79776,21 @@ MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback)
    var o = this;
    var url = o.makeUrl(method, parameters);
    var connection = MO.Console.find(MO.FJsonConsole).sendAsync(url);
+   connection.addLoadListener(owner, callback);
+   return connection;
+}
+MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner, callback){
+   var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var count = parameters.count();
+   for(var i = 0; i < count; i++){
+      var name = parameters.name(i);
+      var value = parameters.value(i);
+      url += '&' + name + '=' + value;
+   }
+   url = '&tick=' + MO.Timer.current();
+   url = '&token=' + MO.Timer.current();
+   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(owner, callback);
    return connection;
 }
@@ -79741,8 +79936,12 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o._code               = 'statistics';
    o.doInvestmentDynamic = MO.FEaiLogicStatistics_doInvestmentDynamic;
    o.doInvestmentTrend   = MO.FEaiLogicStatistics_doInvestmentTrend;
+   o.doCustomerDynamic   = MO.FEaiLogicStatistics_doCustomerDynamic;
+   o.doCustomerTrend     = MO.FEaiLogicStatistics_doCustomerTrend;
    o.doMarketerDynamic   = MO.FEaiLogicStatistics_doMarketerDynamic;
    o.doMarketerTrend     = MO.FEaiLogicStatistics_doMarketerTrend;
+   o.doDepartmentDynamic = MO.FEaiLogicStatistics_doDepartmentDynamic;
+   o.doDepartmentTrend   = MO.FEaiLogicStatistics_doDepartmentTrend;
    return o;
 }
 MO.FEaiLogicStatistics_doInvestmentDynamic = function FEaiLogicStatistics_doInvestmentDynamic(owner, callback, startDate, endDate){
@@ -79756,19 +79955,49 @@ MO.FEaiLogicStatistics_doInvestmentTrend = function FEaiLogicStatistics_doInvest
    var parameters = 'begin=' + startDate + '&end=' + endDate + '&interval=' + interval;
    return this.send('investment_trend', parameters, owner, callback);
 }
+MO.FEaiLogicStatistics_doCustomerDynamic = function FEaiLogicStatistics_doCustomerDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.customer.wv?do=dynamic', parameters, owner, callback);
+}
+MO.FEaiLogicStatistics_doCustomerTrend = function FEaiLogicStatistics_doCustomerTrend(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.customer.wv?do=trend', parameters, owner, callback);
+}
 MO.FEaiLogicStatistics_doMarketerDynamic = function FEaiLogicStatistics_doMarketerDynamic(owner, callback, startDate, endDate){
    var o = this;
-   var url = 'http://localhost:8099/eai.financial.marketer.wv?do=dynamic&begin=' + startDate + '&end=' + endDate;
+   var uri = '{eai.logic.service}/eai.financial.marketer.wv?do=dynamic&begin=' + startDate + '&end=' + endDate;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(owner, callback);
    return connection;
 }
 MO.FEaiLogicStatistics_doMarketerTrend = function FEaiLogicStatistics_doMarketerTrend(owner, callback, startDate, endDate){
    var o = this;
-   var url = 'http://localhost:8099/eai.financial.marketer.wv?do=trend&begin=' + startDate + '&end=' + endDate;
+   var uri = '{eai.logic.service}/eai.financial.marketer.wv?do=trend&begin=' + startDate + '&end=' + endDate;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(owner, callback);
    return connection;
+}
+MO.FEaiLogicStatistics_doDepartmentDynamic = function FEaiLogicStatistics_doDepartmentDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=dynamic', parameters, owner, callback);
+}
+MO.FEaiLogicStatistics_doDepartmentTrend = function FEaiLogicStatistics_doDepartmentTrend(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=trend', parameters, owner, callback);
 }
 MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
@@ -84055,290 +84284,6 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
       liveTable.setWidth(650);
    }
 }
-MO.FEaiChartSalesScene = function FEaiChartSalesScene(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code                   = MO.EEaiScene.ChartSales;
-   o._investment             = MO.Class.register(o, new MO.AGetter('_investment'));
-   o._investmentCurrent      = 0;
-   o._ready                  = false;
-   o._mapReady               = false;
-   o._playing                = false;
-   o._lastTick               = 0;
-   o._interval               = 10;
-   o._24HLastTick            = 0;
-   o._24HTrendInterval       = 1000 * 60 * 5;
-   o._logoBar                = null;
-   o._timeline               = null;
-   o._liveTable              = null;
-   o._livePop                = null;
-   o._statusStart            = false;
-   o._statusLayerCount       = 100;
-   o._statusLayerLevel       = 100;
-   o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
-   o.onInvestmentDataChanged = MO.FEaiChartSalesScene_onInvestmentDataChanged;
-   o.onOperationVisibility   = MO.FEaiChartSalesScene_onOperationVisibility;
-   o.onProcessReady          = MO.FEaiChartSalesScene_onProcessReady;
-   o.onProcess               = MO.FEaiChartSalesScene_onProcess;
-   o.onSwitchProcess         = MO.FEaiChartSalesScene_onSwitchProcess;
-   o.onSwitchComplete        = MO.FEaiChartSalesScene_onSwitchComplete;
-   o.setup                   = MO.FEaiChartSalesScene_setup;
-   o.showParticle            = MO.FEaiChartSalesScene_showParticle;
-   o.showFace                = MO.FEaiChartSalesScene_showFace;
-   o.fixMatrix               = MO.FEaiChartSalesScene_fixMatrix;
-   o.processResize           = MO.FEaiChartSalesScene_processResize;
-   return o;
-}
-MO.FEaiChartSalesScene_onInvestmentDataChanged = function FEaiChartSalesScene_onInvestmentDataChanged(event) {
-   var o = this;
-   var entity = event.entity;
-   var table = o._liveTable;
-   table.setRank(event.rank);
-   table.pushEntity(entity);
-   table.dirty();
-   if(entity){
-      var pop = o._livePop;
-      pop.setData(entity);
-   }
-}
-MO.FEaiChartSalesScene_onOperationVisibility = function FEaiChartSalesScene_onOperationVisibility(event){
-   var o = this;
-   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
-   if(event.visibility){
-      o._groundAutio.play();
-      o._countryEntity._audioMapEnter._hAudio.muted = false;
-   }else{
-      o._groundAutio.pause();
-      o._countryEntity._audioMapEnter._hAudio.muted = true;
-   }
-}
-MO.FEaiChartSalesScene_onProcessReady = function FEaiChartSalesScene_onProcessReady() {
-   var o = this;
-   o.__base.FEaiChartScene.onProcessReady.call(o);
-   o._mapEntity.showCity();
-}
-MO.FEaiChartSalesScene_onProcess = function FEaiChartSalesScene_onProcess() {
-   var o = this;
-   o.__base.FEaiChartScene.onProcess.call(o);
-   if(!o._statusStart){
-      if(MO.Window.Browser.capability().soundConfirm){
-         var iosPlay = document.getElementById('id_ios_play');
-         if (iosPlay) {
-            MO.Window.Html.visibleSet(iosPlay, true);
-         }
-         var hLoading = document.getElementById('id_loading');
-         if (hLoading) {
-            document.body.removeChild(hLoading);
-         }
-      }else{
-         var hLoading = document.getElementById('id_loading');
-         if (hLoading) {
-            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
-            o._statusLayerLevel--;
-         }
-         o._statusLayerLevel--;
-      }
-      if (o._statusLayerLevel <= 0) {
-         if (hLoading) {
-            document.body.removeChild(hLoading);
-         }
-         var countryEntity = o._countryEntity;
-         countryEntity.start();
-         o._mapEntity.showCountry(countryEntity);
-         o.processLoaded();
-         o._playing = true;
-         o._statusStart = true;
-      }
-   }
-   if (o._playing) {
-      var countryEntity = o._countryEntity;
-      if(!countryEntity.introAnimeDone()){
-         countryEntity.process();
-         return;
-      }
-      if (!o._mapReady) {
-         o._guiManager.show();
-         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
-         alphaAction.setAlphaBegin(0);
-         alphaAction.setAlphaEnd(1);
-         alphaAction.setAlphaInterval(0.01);
-         alphaAction.push(o._guiManager);
-         o._guiManager.mainTimeline().pushAction(alphaAction);
-         o._mapReady = true;
-      }
-      var currentTick = MO.Timer.current();
-      if (currentTick - o._24HLastTick > o._24HTrendInterval) {
-         o._timeline.sync();
-         o._24HLastTick = currentTick;
-      }
-      o._investment.process();
-      var logoBar = o._logoBar;
-      var investmentTotal = logoBar.findComponent('investmentTotal');
-      var invementTotalCurrent = o._investment.invementTotalCurrent();
-      investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
-      var investmentDay = logoBar.findComponent('investmentDay');
-      var invementDayCurrent = o._investment.invementDayCurrent();
-      investmentDay.setValue(parseInt(invementDayCurrent).toString());
-      if(o._nowTicker.process()){
-         var bar = o._logoBar;
-         var date = o._nowDate;
-         date.setNow();
-         var dateControl = bar.findComponent('date');
-         dateControl.setLabel(date.format('YYYY/MM/DD'));
-         var timeControl = bar.findComponent('time');
-         timeControl.setLabel(date.format('HH24:MI'));
-      }
-   }
-   if (o._livePop.visible()) {
-      o._livePop.dirty();
-   }
-}
-MO.FEaiChartSalesScene_onSwitchProcess = function FEaiChartSalesScene_onSwitchProcess(event){
-   var o = this;
-}
-MO.FEaiChartSalesScene_onSwitchComplete = function FEaiChartSalesScene_onSwitchComplete(event){
-   var o = this;
-}
-MO.FEaiChartSalesScene_setup = function FEaiChartSalesScene_setup() {
-   var o = this;
-   o.__base.FEaiChartScene.setup.call(o);
-   var dataLayer = o._activeStage.dataLayer();
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
-   o._guiManager.register(frame);
-   var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
-   invement.linkGraphicContext(o);
-   invement.setMapEntity(o._mapEntity);
-   invement.setup();
-   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
-   var display = invement.display();
-   o.fixMatrix(display.matrix());
-   dataLayer.push(display);
-   var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FGui24HTimeline);
-   timeline.setName('Timeline');
-   timeline.linkGraphicContext(o);
-   timeline.sync();
-   timeline.build();
-   o._guiManager.register(timeline);
-   var liveTable = o._liveTable = MO.Class.create(MO.FGuiFPCCTable);
-   liveTable.setName('LiveTable');
-   liveTable.linkGraphicContext(o);
-   liveTable.setup();
-   liveTable.build();
-   o._guiManager.register(liveTable);
-   var livePop = o._livePop = MO.Class.create(MO.FGuiLivePop);
-   livePop.setName('LivePop');
-   livePop.linkGraphicContext(o);
-   livePop.setup();
-   livePop.build();
-   o._guiManager.register(livePop);
-   o._guiManager.hide();
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   entityConsole.cityModule().build(o);
-   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
-   o._readyLoader.push(countryEntity);
-}
-MO.FEaiChartSalesScene_showParticle = function FEaiChartSalesScene_showParticle(provinceEntity, cityResource){
-   var o = this;
-   var particle = o._particle;
-   var location = cityResource.location();
-   var count = 4;
-   particle.color().set(1, 1, 0, 1);
-   for(var i = 0; i < count; i++){
-      var itemCount = parseInt(Math.random() * 100);
-      var attenuation = Math.random();
-      particle.setItemCount(itemCount);
-      particle.position().assign(location);
-      particle.position().z = provinceEntity.currentZ();
-      particle.setDelay(10 * i);
-      particle.setSpeed(4 + 0.4 * i);
-      particle.setAcceleration(0);
-      particle.setAttenuation(0.8);
-      particle.start();
-   }
-}
-MO.FEaiChartSalesScene_showFace = function FEaiChartSalesScene_showFace(){
-   var o = this;
-   o._statusStart = true;
-   o._playing = true;
-   o._mapReady = false;
-   o._mapEntity.reset();
-   var desktop = o._application.desktop();
-   desktop.show();
-   o.processResize();
-}
-MO.FEaiChartSalesScene_fixMatrix = function FEaiChartSalesScene_fixMatrix(matrix){
-   var o = this;
-   var isVertical = MO.Window.Browser.isOrientationVertical()
-   if(isVertical){
-      matrix.tx = -14.58;
-      matrix.ty = -1.9;
-      matrix.tz = 0;
-      matrix.setScale(0.14, 0.16, 0.14);
-   }else{
-      matrix.tx = -38.6;
-      matrix.ty = -12.8;
-      matrix.tz = 0;
-      matrix.setScale(0.32, 0.36, 0.32);
-   }
-   matrix.update();
-}
-MO.FEaiChartSalesScene_processResize = function FEaiChartSalesScene_processResize(){
-   var o = this;
-   o.__base.FEaiChartScene.processResize.call(o);
-   var isVertical = MO.Window.Browser.isOrientationVertical()
-   o.fixMatrix(o._investment.display().matrix());
-   var logoBar = o._logoBar;
-   if(isVertical){
-      logoBar.setLocation(8, 8);
-      logoBar.setScale(0.85, 0.85);
-   }else{
-      logoBar.setLocation(5, 5);
-      logoBar.setScale(1, 1);
-   }
-   var control = o._southSea;
-   if(isVertical){
-      control.setDockCd(MO.EUiDock.RightTop);
-      control.setTop(570);
-      control.setRight(100);
-   }else{
-      control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(710);
-      control.setBottom(260);
-   }
-   var timeline = o._timeline;
-   if(isVertical){
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(10);
-      timeline.setRight(10);
-      timeline.setBottom(920);
-      timeline.setHeight(250);
-   }else{
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(30);
-      timeline.setRight(680);
-      timeline.setHeight(250);
-   }
-   var liveTable = o._liveTable;
-   if(isVertical){
-      liveTable.setDockCd(MO.EUiDock.Bottom);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      liveTable.setLeft(10);
-      liveTable.setRight(10);
-      liveTable.setBottom(10);
-      liveTable.setWidth(1060);
-      liveTable.setHeight(900);
-   }else{
-      liveTable.setDockCd(MO.EUiDock.Right);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-      liveTable.setTop(10);
-      liveTable.setRight(0);
-      liveTable.setBottom(10);
-      liveTable.setWidth(650);
-   }
-}
 MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.Class.inherits(this, o, MO.FEaiScene);
    o._optionMapCountry     = true;
@@ -85702,66 +85647,26 @@ MO.FEaiChartCustomerScene_processResize = function FEaiChartCustomerScene_proces
    }
 }
 MO.FEaiChartMarketerDynamicInfo = function FEaiChartMarketerDynamicInfo(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._investmentTotal    = MO.Class.register(o, new MO.AGetter('_investmentTotal'));
-   o._redemptionTotal    = MO.Class.register(o, new MO.AGetter('_redemptionTotal'));
-   o._netinvestmentTotal = MO.Class.register(o, new MO.AGetter('_netinvestmentTotal'));
-   o._interestTotal      = MO.Class.register(o, new MO.AGetter('_interestTotal'));
-   o._performanceTotal   = MO.Class.register(o, new MO.AGetter('_performanceTotal'));
-   o.construct           = MO.FEaiChartMarketerDynamicInfo_construct;
-   o.unserialize         = MO.FEaiChartMarketerDynamicInfo_unserialize;
-   o.dispose             = MO.FEaiChartMarketerDynamicInfo_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._investmentTotal    = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Double)]);
+   o._redemptionTotal    = MO.Class.register(o, [new MO.AGetter('_redemptionTotal'), new MO.APersistence('_redemptionTotal', MO.EDataType.Double)]);
+   o._netinvestmentTotal = MO.Class.register(o, [new MO.AGetter('_netinvestmentTotal'), new MO.APersistence('_netinvestmentTotal', MO.EDataType.Double)]);
+   o._interestTotal      = MO.Class.register(o, [new MO.AGetter('_interestTotal'), new MO.APersistence('_interestTotal', MO.EDataType.Double)]);
+   o._performanceTotal   = MO.Class.register(o, [new MO.AGetter('_performanceTotal'), new MO.APersistence('_interestTotal', MO.EDataType.Double)]);
+   o._units              = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartMarketerDynamicUnit)]);
    return o;
-}
-MO.FEaiChartMarketerDynamicInfo_construct = function FEaiChartMarketerDynamicInfo_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
-MO.FEaiChartMarketerDynamicInfo_unserialize = function FEaiChartMarketerDynamicInfo_unserialize(input){
-   var o = this;
-   o._investmentTotal = input.readDouble();
-   o._redemptionTotal = input.readDouble();
-   o._netinvestmentTotal = input.readDouble();
-   o._interestTotal = input.readDouble();
-   o._performanceTotal = input.readDouble();
-}
-MO.FEaiChartMarketerDynamicInfo_dispose = function FEaiChartMarketerDynamicInfo_dispose(){
-   var o = this;
-   o.__base.FObject.dispose.call(o);
 }
 MO.FEaiChartMarketerDynamicUnit = function FEaiChartMarketerDynamicUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._recordDate           = MO.Class.register(o, new MO.AGetter('_recordDate'));
-   o._departmentLabel      = MO.Class.register(o, new MO.AGetter('_departmentLabel'));
-   o._marketerLabel        = MO.Class.register(o, new MO.AGetter('_marketerLabel'));
-   o._customerLabel        = MO.Class.register(o, new MO.AGetter('_customerLabel'));
-   o._customerCard         = MO.Class.register(o, new MO.AGetter('_customerCard'));
-   o._customerPhone        = MO.Class.register(o, new MO.AGetter('_customerPhone'));
-   o._customerActionCd     = MO.Class.register(o, new MO.AGetter('_customerActionCd'));
-   o._customerActionAmount = MO.Class.register(o, new MO.AGetter('_customerActionAmount'));
-   o.construct             = MO.FEaiChartMarketerDynamicUnit_construct;
-   o.unserialize           = MO.FEaiChartMarketerDynamicUnit_unserialize;
-   o.dispose               = MO.FEaiChartMarketerDynamicUnit_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._recordDate           = MO.Class.register(o, [new MO.AGetter('_recordDate'), new MO.APersistence('_recordDate', MO.EDataType.String)]);
+   o._departmentLabel      = MO.Class.register(o, [new MO.AGetter('_departmentLabel'), new MO.APersistence('_departmentLabel', MO.EDataType.String)]);
+   o._marketerLabel        = MO.Class.register(o, [new MO.AGetter('_marketerLabel'), new MO.APersistence('_marketerLabel', MO.EDataType.String)]);
+   o._customerLabel        = MO.Class.register(o, [new MO.AGetter('_customerLabel'), new MO.APersistence('_customerLabel', MO.EDataType.String)]);
+   o._customerCard         = MO.Class.register(o, [new MO.AGetter('_customerCard'), new MO.APersistence('_customerCard', MO.EDataType.String)]);
+   o._customerPhone        = MO.Class.register(o, [new MO.AGetter('_customerPhone'), new MO.APersistence('_customerPhone', MO.EDataType.String)]);
+   o._customerActionCd     = MO.Class.register(o, [new MO.AGetter('_customerActionCd'), new MO.APersistence('_customerActionCd', MO.EDataType.Uint8)]);
+   o._customerActionAmount = MO.Class.register(o, [new MO.AGetter('_customerActionAmount'), new MO.APersistence('_customerActionAmount', MO.EDataType.Double)]);
    return o;
-}
-MO.FEaiChartMarketerDynamicUnit_construct = function FEaiChartMarketerDynamicUnit_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
-MO.FEaiChartMarketerDynamicUnit_unserialize = function FEaiChartMarketerDynamicUnit_unserialize(input){
-   var o = this;
-   o._recordDate = input.readString();
-   o._departmentLabel = input.readString();
-   o._marketerLabel = input.readString();
-   o._customerLabel = input.readString();
-   o._customerCard = input.readString();
-   o._customerPhone = input.readString();
-   o._customerActionCd = input.readUint8();
-   o._customerActionAmount = input.readDouble();
-}
-MO.FEaiChartMarketerDynamicUnit_dispose = function FEaiChartMarketerDynamicUnit_dispose(){
-   var o = this;
-   o.__base.FObject.dispose.call(o);
 }
 MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
@@ -85786,7 +85691,7 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o._autios                  = null;
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o.onDynamicData             = MO.FEaiChartMarketerProcessor_onDynamicData;
+   o.onDynamicData            = MO.FEaiChartMarketerProcessor_onDynamicData;
    o.construct                = MO.FEaiChartMarketerProcessor_construct;
    o.allocUnit                = MO.FEaiChartMarketerProcessor_allocUnit;
    o.allocShape               = MO.FEaiChartMarketerProcessor_allocShape;
@@ -85801,18 +85706,13 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
 MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcessor_onDynamicData(event){
    var o = this;
    var content = event.content;
+   var units = o._units;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
    view.link(event.content);
    var dynamicInfo = o._dynamicInfo;
    dynamicInfo.unserialize(view);
-   var units = o._units;
-   var count = view.readInt32();
-   for(var i = 0; i < count; i++){
-      var unit = o.allocUnit();
-      unit.unserialize(view);
-      units.push(unit);
-   }
+   units.append(dynamicInfo.units());
    view.dispose();
    var unitCount = units.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
@@ -87047,9 +86947,6 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    var scene = o._sceneWorld = MO.Class.create(MO.FEaiChartWorldScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
-   var scene = o._sceneSales = MO.Class.create(MO.FEaiChartSalesScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
 }

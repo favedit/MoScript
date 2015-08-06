@@ -38,7 +38,7 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @method
-   o.onDynamicData             = MO.FEaiChartMarketerProcessor_onDynamicData;
+   o.onDynamicData            = MO.FEaiChartMarketerProcessor_onDynamicData;
    //..........................................................
    // @method
    o.construct                = MO.FEaiChartMarketerProcessor_construct;
@@ -64,6 +64,7 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
 MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcessor_onDynamicData(event){
    var o = this;
    var content = event.content;
+   var units = o._units;
    // 反序列化数据
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
@@ -71,14 +72,7 @@ MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcesso
    // 读取数据
    var dynamicInfo = o._dynamicInfo;
    dynamicInfo.unserialize(view);
-   // 读取数据
-   var units = o._units;
-   var count = view.readInt32();
-   for(var i = 0; i < count; i++){
-      var unit = o.allocUnit();
-      unit.unserialize(view);
-      units.push(unit);
-   }
+   units.append(dynamicInfo.units());
    // 释放数据
    view.dispose();
    //..........................................................

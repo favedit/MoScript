@@ -17,6 +17,32 @@ MO.AListener_build = function AListener_build(clazz, instance){
    var processListener = 'process' + o._linker + 'Listener';
    instance[processListener] = MO.RListener.makeProcessListener(processListener, o._linker);
 }
+MO.APersistence = function APersistence(name, dataCd, dataClass){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Persistence;
+   o._inherit      = true;
+   o._ordered      = true;
+   o._dataCd       = dataCd;
+   o._dataClass    = dataClass;
+   o.dataCd        = MO.APersistence_dataCd;
+   o.dataClass     = MO.APersistence_dataClass;
+   o.newInstance   = MO.APersistence_newInstance;
+   o.toString      = MO.APersistence_toString;
+   return o;
+}
+MO.APersistence_dataCd = function APersistence_dataCd(){
+   return this._dataCd;
+}
+MO.APersistence_dataClass = function APersistence_dataClass(){
+   return this._dataClass;
+}
+MO.APersistence_newInstance = function APersistence_newInstance(){
+   return MO.Class.create(this._dataClass);
+}
+MO.APersistence_toString = function APersistence_toString(){
+   return '<' + this._annotationCd + ',name=' + this._name + '>';
+}
 MO.AStyle = function AStyle(name, style){
    var o = this;
    MO.AAnnotation.call(o, name);
@@ -315,8 +341,8 @@ MO.MDataStream = function MDataStream(o){
    o.readFloat    = MO.MDataStream_readFloat;
    o.readDouble   = MO.MDataStream_readDouble;
    o.readString   = MO.MDataStream_readString;
-   o.readData     = MO.MDataStream_readData;
    o.readBytes    = MO.MDataStream_readBytes;
+   o.readData     = MO.MDataStream_readData;
    o.writeBoolean = MO.MDataStream_writeBoolean;
    o.writeInt8    = MO.MDataStream_writeInt8;
    o.writeInt16   = MO.MDataStream_writeInt16;
@@ -330,6 +356,7 @@ MO.MDataStream = function MDataStream(o){
    o.writeDouble  = MO.MDataStream_writeDouble;
    o.writeString  = MO.MDataStream_writeString;
    o.writeBytes   = MO.MDataStream_writeBytes;
+   o.writeData    = MO.MDataStream_writeData;
    return o;
 }
 MO.MDataStream_testString = function MDataStream_testString(){
@@ -427,34 +454,6 @@ MO.MDataStream_readString = function MDataStream_readString(){
    o._position = position;
    return value.flush();
 }
-MO.MDataStream_readData = function MDataStream_readData(dataCd){
-   var o = this;
-   switch(dataCd){
-      case EDataType.Int8:
-         return o.readInt8();
-      case EDataType.Int16:
-         return o.readInt16();
-      case EDataType.Int32:
-         return o.readInt32();
-      case EDataType.Int64:
-         return o.readInt64();
-      case EDataType.Uint8:
-         return o.readUint8();
-      case EDataType.Uint16:
-         return o.readUint16();
-      case EDataType.Uint32:
-         return o.readUint32();
-      case EDataType.Uint64:
-         return o.readUint64();
-      case EDataType.Float32:
-         return o.readFloat();
-      case EDataType.Float64:
-         return o.readDouble();
-      case EDataType.String:
-         return o.readString();
-   }
-   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
-}
 MO.MDataStream_readBytes = function MDataStream_readBytes(data, offset, length){
    var o = this;
    var viewer = o._viewer;
@@ -501,6 +500,34 @@ MO.MDataStream_readBytes = function MDataStream_readBytes(data, offset, length){
       array[i] = viewer.getUint8(position++, endianCd);
    }
    o._position = position;
+}
+MO.MDataStream_readData = function MDataStream_readData(dataCd){
+   var o = this;
+   switch(dataCd){
+      case MO.EDataType.Int8:
+         return o.readInt8();
+      case MO.EDataType.Int16:
+         return o.readInt16();
+      case MO.EDataType.Int32:
+         return o.readInt32();
+      case MO.EDataType.Int64:
+         return o.readInt64();
+      case MO.EDataType.Uint8:
+         return o.readUint8();
+      case MO.EDataType.Uint16:
+         return o.readUint16();
+      case MO.EDataType.Uint32:
+         return o.readUint32();
+      case MO.EDataType.Uint64:
+         return o.readUint64();
+      case MO.EDataType.Float32:
+         return o.readFloat();
+      case MO.EDataType.Float64:
+         return o.readDouble();
+      case MO.EDataType.String:
+         return o.readString();
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
 }
 MO.MDataStream_writeBoolean = function MDataStream_writeBoolean(value){
    var o = this;
@@ -617,6 +644,34 @@ MO.MDataStream_writeBytes = function MDataStream_writeBytes(data, offset, length
       viewer.setUint8(position++, array[i], endianCd);
    }
    o._position = position;
+}
+MO.MDataStream_writeData = function MDataStream_writeData(dataCd, value){
+   var o = this;
+   switch(dataCd){
+      case MO.EDataType.Int8:
+         return o.writeInt8(value);
+      case MO.EDataType.Int16:
+         return o.writeInt16(value);
+      case MO.EDataType.Int32:
+         return o.writeInt32(value);
+      case MO.EDataType.Int64:
+         return o.writeInt64(value);
+      case MO.EDataType.Uint8:
+         return o.writeUint8(value);
+      case MO.EDataType.Uint16:
+         return o.writeUint16(value);
+      case MO.EDataType.Uint32:
+         return o.writeUint32(value);
+      case MO.EDataType.Uint64:
+         return o.writeUint64(value);
+      case MO.EDataType.Float32:
+         return o.writeFloat(value);
+      case MO.EDataType.Float64:
+         return o.writeDouble(value);
+      case MO.EDataType.String:
+         return o.writeString(value);
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
 }
 MO.MDataView = function MDataView(o){
    o = MO.Class.inherits(this, o);
@@ -915,6 +970,88 @@ MO.MParent_findParent = function MParent_findParent(clazz){
 MO.MParent_dispose = function MParent_dispose(){
    var o = this;
    o._parent = null;
+}
+MO.MPersistence = function MPersistence(o){
+   o = MO.Class.inherits(this, o);
+   o.unserialize = MO.MPersistence_unserialize;
+   o.serialize   = MO.MPersistence_serialize;
+   return o;
+}
+MO.MPersistence_unserialize = function MPersistence_unserialize(input){
+   var o = this;
+   var clazz = MO.Class.find(o.constructor);
+   var annotations = clazz.annotations(MO.EAnnotation.Persistence);
+   var count = annotations.count();
+   for(var n = 0; n < count; n++){
+      var annotation = annotations.at(n);
+      var dateCd = annotation.dataCd();
+      var name = annotation.name();
+      if(dateCd == MO.EDataType.Object){
+         var items = o[name];
+         if(!items){
+            items = o[name] = annotation.newInstance();
+         }
+         item.unserialize(input);
+      }else if(dateCd == MO.EDataType.Objects){
+         var items = o[name];
+         if(!items){
+            items = o[name] = new MO.TObjects();
+         }
+         items.clear();
+         var itemCount = input.readInt32();
+         for(var i = 0; i < itemCount; i++){
+            var item = annotation.newInstance();
+            item.unserialize(input);
+            items.push(item);
+         }
+      }else if(dateCd == MO.EDataType.Dictionary){
+         var items = o[name];
+         if(!items){
+            items = o[name] = new MO.TDictionary();
+         }
+         items.clear();
+         var itemCount = input.readInt32();
+         for(var i = 0; i < itemCount; i++){
+            var item = annotation.newInstance();
+            item.unserialize(input);
+            items.set(item.code(), item);
+         }
+      }else{
+         o[name] = input.readData(dateCd);
+      }
+   }
+}
+MO.MPersistence_serialize = function MPersistence_serialize(output){
+   var o = this;
+   var clazz = MO.Class.find(o.constructor);
+   var annotations = clazz.annotations(MO.EAnnotation.Persistence);
+   var count = annotations.count();
+   for(var i = 0; i < count; i++){
+      var annotation = annotations.at(i);
+      var dateCd = annotation.dataCd();
+      var name = annotation.name();
+      var value = o[name];
+      if(dateCd == MO.EDataType.Object){
+         value.unserialize(input);
+      }else if(dateCd == MO.EDataType.Objects){
+         var itemCount = value.count();
+         input.writeInt32(itemCount);
+         for(var i = 0; i < itemCount; i++){
+            var item = value.at(i);
+            item.serialize(input);
+         }
+      }else if(dateCd == MO.EDataType.Dictionary){
+         var items = o[name];
+         var itemCount = value.count();
+         input.writeInt32(itemCount);
+         for(var i = 0; i < itemCount; i++){
+            var item = value.at(i);
+            item.serialize(input);
+         }
+      }else{
+         input.writeData(dateCd, value);
+      }
+   }
 }
 MO.MProperty = function MProperty(o){
    o = MO.Class.inherits(this, o);

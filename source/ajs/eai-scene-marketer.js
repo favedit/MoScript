@@ -1,64 +1,24 @@
 MO.FEaiChartMarketerDynamicInfo = function FEaiChartMarketerDynamicInfo(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._investmentTotal    = MO.Class.register(o, new MO.AGetter('_investmentTotal'));
-   o._redemptionTotal    = MO.Class.register(o, new MO.AGetter('_redemptionTotal'));
-   o._netinvestmentTotal = MO.Class.register(o, new MO.AGetter('_netinvestmentTotal'));
-   o._interestTotal      = MO.Class.register(o, new MO.AGetter('_interestTotal'));
-   o._performanceTotal   = MO.Class.register(o, new MO.AGetter('_performanceTotal'));
-   o.construct           = MO.FEaiChartMarketerDynamicInfo_construct;
-   o.unserialize         = MO.FEaiChartMarketerDynamicInfo_unserialize;
-   o.dispose             = MO.FEaiChartMarketerDynamicInfo_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._investmentTotal    = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Double)]);
+   o._redemptionTotal    = MO.Class.register(o, [new MO.AGetter('_redemptionTotal'), new MO.APersistence('_redemptionTotal', MO.EDataType.Double)]);
+   o._netinvestmentTotal = MO.Class.register(o, [new MO.AGetter('_netinvestmentTotal'), new MO.APersistence('_netinvestmentTotal', MO.EDataType.Double)]);
+   o._interestTotal      = MO.Class.register(o, [new MO.AGetter('_interestTotal'), new MO.APersistence('_interestTotal', MO.EDataType.Double)]);
+   o._performanceTotal   = MO.Class.register(o, [new MO.AGetter('_performanceTotal'), new MO.APersistence('_interestTotal', MO.EDataType.Double)]);
+   o._units              = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartMarketerDynamicUnit)]);
    return o;
-}
-MO.FEaiChartMarketerDynamicInfo_construct = function FEaiChartMarketerDynamicInfo_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
-MO.FEaiChartMarketerDynamicInfo_unserialize = function FEaiChartMarketerDynamicInfo_unserialize(input){
-   var o = this;
-   o._investmentTotal = input.readDouble();
-   o._redemptionTotal = input.readDouble();
-   o._netinvestmentTotal = input.readDouble();
-   o._interestTotal = input.readDouble();
-   o._performanceTotal = input.readDouble();
-}
-MO.FEaiChartMarketerDynamicInfo_dispose = function FEaiChartMarketerDynamicInfo_dispose(){
-   var o = this;
-   o.__base.FObject.dispose.call(o);
 }
 MO.FEaiChartMarketerDynamicUnit = function FEaiChartMarketerDynamicUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._recordDate           = MO.Class.register(o, new MO.AGetter('_recordDate'));
-   o._departmentLabel      = MO.Class.register(o, new MO.AGetter('_departmentLabel'));
-   o._marketerLabel        = MO.Class.register(o, new MO.AGetter('_marketerLabel'));
-   o._customerLabel        = MO.Class.register(o, new MO.AGetter('_customerLabel'));
-   o._customerCard         = MO.Class.register(o, new MO.AGetter('_customerCard'));
-   o._customerPhone        = MO.Class.register(o, new MO.AGetter('_customerPhone'));
-   o._customerActionCd     = MO.Class.register(o, new MO.AGetter('_customerActionCd'));
-   o._customerActionAmount = MO.Class.register(o, new MO.AGetter('_customerActionAmount'));
-   o.construct             = MO.FEaiChartMarketerDynamicUnit_construct;
-   o.unserialize           = MO.FEaiChartMarketerDynamicUnit_unserialize;
-   o.dispose               = MO.FEaiChartMarketerDynamicUnit_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._recordDate           = MO.Class.register(o, [new MO.AGetter('_recordDate'), new MO.APersistence('_recordDate', MO.EDataType.String)]);
+   o._departmentLabel      = MO.Class.register(o, [new MO.AGetter('_departmentLabel'), new MO.APersistence('_departmentLabel', MO.EDataType.String)]);
+   o._marketerLabel        = MO.Class.register(o, [new MO.AGetter('_marketerLabel'), new MO.APersistence('_marketerLabel', MO.EDataType.String)]);
+   o._customerLabel        = MO.Class.register(o, [new MO.AGetter('_customerLabel'), new MO.APersistence('_customerLabel', MO.EDataType.String)]);
+   o._customerCard         = MO.Class.register(o, [new MO.AGetter('_customerCard'), new MO.APersistence('_customerCard', MO.EDataType.String)]);
+   o._customerPhone        = MO.Class.register(o, [new MO.AGetter('_customerPhone'), new MO.APersistence('_customerPhone', MO.EDataType.String)]);
+   o._customerActionCd     = MO.Class.register(o, [new MO.AGetter('_customerActionCd'), new MO.APersistence('_customerActionCd', MO.EDataType.Uint8)]);
+   o._customerActionAmount = MO.Class.register(o, [new MO.AGetter('_customerActionAmount'), new MO.APersistence('_customerActionAmount', MO.EDataType.Double)]);
    return o;
-}
-MO.FEaiChartMarketerDynamicUnit_construct = function FEaiChartMarketerDynamicUnit_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
-MO.FEaiChartMarketerDynamicUnit_unserialize = function FEaiChartMarketerDynamicUnit_unserialize(input){
-   var o = this;
-   o._recordDate = input.readString();
-   o._departmentLabel = input.readString();
-   o._marketerLabel = input.readString();
-   o._customerLabel = input.readString();
-   o._customerCard = input.readString();
-   o._customerPhone = input.readString();
-   o._customerActionCd = input.readUint8();
-   o._customerActionAmount = input.readDouble();
-}
-MO.FEaiChartMarketerDynamicUnit_dispose = function FEaiChartMarketerDynamicUnit_dispose(){
-   var o = this;
-   o.__base.FObject.dispose.call(o);
 }
 MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
@@ -83,7 +43,7 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o._autios                  = null;
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o.onDynamicData             = MO.FEaiChartMarketerProcessor_onDynamicData;
+   o.onDynamicData            = MO.FEaiChartMarketerProcessor_onDynamicData;
    o.construct                = MO.FEaiChartMarketerProcessor_construct;
    o.allocUnit                = MO.FEaiChartMarketerProcessor_allocUnit;
    o.allocShape               = MO.FEaiChartMarketerProcessor_allocShape;
@@ -98,18 +58,13 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
 MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcessor_onDynamicData(event){
    var o = this;
    var content = event.content;
+   var units = o._units;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(true);
    view.link(event.content);
    var dynamicInfo = o._dynamicInfo;
    dynamicInfo.unserialize(view);
-   var units = o._units;
-   var count = view.readInt32();
-   for(var i = 0; i < count; i++){
-      var unit = o.allocUnit();
-      unit.unserialize(view);
-      units.push(unit);
-   }
+   units.append(dynamicInfo.units());
    view.dispose();
    var unitCount = units.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;

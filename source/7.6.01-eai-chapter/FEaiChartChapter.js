@@ -75,10 +75,6 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var scene = o._sceneWorld = MO.Class.create(MO.FEaiChartWorldScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
-   // 创建理财师图表
-   var scene = o._sceneSales = MO.Class.create(MO.FEaiChartSalesScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
 }
 
 //==========================================================
