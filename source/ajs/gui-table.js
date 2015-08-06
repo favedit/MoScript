@@ -134,7 +134,7 @@ MO.FGuiGridColumn_draw = function FGuiGridColumn_draw(graphic, x, y, width, heig
    }
    graphic.fillRectangle(contentX, contentY, contentWidth, contentHeight, backColor);
    var font = o.findFont();
-   graphic.drawFontText(o._label, font, contentX, contentY, contentWidth, contentHeight, MO.EUiAlign.Center);
+   graphic.drawFontText(o._label, font, contentX, contentY - 3, contentWidth, contentHeight, MO.EUiAlign.Center);
 }
 MO.FGuiGridColumn_dispose = function FGuiGridColumn_dispose(){
    var o = this;

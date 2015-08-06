@@ -35790,8 +35790,8 @@ MO.FUiCanvasContext_drawFontText = function FUiCanvasContext_drawFontText(text, 
    handle.font = font.toString();
    handle.fillStyle = font.color;
    var textWidth = o.textWidth(text);
-   var cx = x + (width - textWidth) / 2;
-   var cy = y + (height - font.size) / 2 + font.size;
+   var cx = x + (width - textWidth) * 0.5;
+   var cy = y + (height - font.size) * 0.5 + font.size;
    if(alignCd == MO.EUiAlign.Left){
       handle.fillText(text, x, cy);
    }else if(alignCd == MO.EUiAlign.Right){
@@ -38591,7 +38591,7 @@ MO.FGuiGridColumn_draw = function FGuiGridColumn_draw(graphic, x, y, width, heig
    }
    graphic.fillRectangle(contentX, contentY, contentWidth, contentHeight, backColor);
    var font = o.findFont();
-   graphic.drawFontText(o._label, font, contentX, contentY, contentWidth, contentHeight, MO.EUiAlign.Center);
+   graphic.drawFontText(o._label, font, contentX, contentY - 3, contentWidth, contentHeight, MO.EUiAlign.Center);
 }
 MO.FGuiGridColumn_dispose = function FGuiGridColumn_dispose(){
    var o = this;

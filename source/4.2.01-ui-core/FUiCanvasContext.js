@@ -48,10 +48,11 @@ MO.FUiCanvasContext_drawFontText = function FUiCanvasContext_drawFontText(text, 
    // 计算位置
    var handle = o._handle;
    handle.font = font.toString();
+   //handle.textBaseline = 'top';
    handle.fillStyle = font.color;
    var textWidth = o.textWidth(text);
-   var cx = x + (width - textWidth) / 2;
-   var cy = y + (height - font.size) / 2 + font.size;
+   var cx = x + (width - textWidth) * 0.5;
+   var cy = y + (height - font.size) * 0.5 + font.size;
    // 绘制文字
    if(alignCd == MO.EUiAlign.Left){
       handle.fillText(text, x, cy);

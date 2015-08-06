@@ -46,9 +46,9 @@ MO.FGuiGridColumn_draw = function FGuiGridColumn_draw(graphic, x, y, width, heig
       backColor = o._grid.headBackColor();
    }
    graphic.fillRectangle(contentX, contentY, contentWidth, contentHeight, backColor);
-   // 绘制文字
+   // 绘制文字（TODO: Y-3位置修正，未来解决）
    var font = o.findFont();
-   graphic.drawFontText(o._label, font, contentX, contentY, contentWidth, contentHeight, MO.EUiAlign.Center);
+   graphic.drawFontText(o._label, font, contentX, contentY - 3, contentWidth, contentHeight, MO.EUiAlign.Center);
 }
 
 //==========================================================

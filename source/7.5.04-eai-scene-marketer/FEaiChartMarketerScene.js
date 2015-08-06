@@ -220,7 +220,7 @@ MO.FEaiChartMarketerScene_setup = function FEaiChartMarketerScene_setup() {
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
    // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.marketer.LogoBar');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据

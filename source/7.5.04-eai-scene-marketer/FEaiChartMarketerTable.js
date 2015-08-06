@@ -91,7 +91,7 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    // 绘制前3名
    var tableTop = top + o._rankStart;
    graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
-   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 167, 40);
+   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 198, 40);
    var rankUnits = o._rank;
    if(rankUnits){
       var tableText = '';
@@ -135,7 +135,7 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
    image.addLoadListener(o, o.onImageLoad);
    // 创建图片
-   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/live/tank-title.png');
+   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/marketer/title.png');
    image.addLoadListener(o, o.onImageLoad);
    // 创建图片
    var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');

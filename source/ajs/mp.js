@@ -35790,8 +35790,8 @@ MO.FUiCanvasContext_drawFontText = function FUiCanvasContext_drawFontText(text, 
    handle.font = font.toString();
    handle.fillStyle = font.color;
    var textWidth = o.textWidth(text);
-   var cx = x + (width - textWidth) / 2;
-   var cy = y + (height - font.size) / 2 + font.size;
+   var cx = x + (width - textWidth) * 0.5;
+   var cy = y + (height - font.size) * 0.5 + font.size;
    if(alignCd == MO.EUiAlign.Left){
       handle.fillText(text, x, cy);
    }else if(alignCd == MO.EUiAlign.Right){
@@ -38591,7 +38591,7 @@ MO.FGuiGridColumn_draw = function FGuiGridColumn_draw(graphic, x, y, width, heig
    }
    graphic.fillRectangle(contentX, contentY, contentWidth, contentHeight, backColor);
    var font = o.findFont();
-   graphic.drawFontText(o._label, font, contentX, contentY, contentWidth, contentHeight, MO.EUiAlign.Center);
+   graphic.drawFontText(o._label, font, contentX, contentY - 3, contentWidth, contentHeight, MO.EUiAlign.Center);
 }
 MO.FGuiGridColumn_dispose = function FGuiGridColumn_dispose(){
    var o = this;
@@ -86032,7 +86032,7 @@ MO.FEaiChartMarketerScene_setup = function FEaiChartMarketerScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.marketer.LogoBar');
    o._guiManager.register(frame);
    var invement = o._processor = MO.Class.create(MO.FEaiChartMarketerProcessor);
    invement.linkGraphicContext(o);
@@ -86219,7 +86219,7 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
    graphic.setFont(o._rowFontStyle);
    var tableTop = top + o._rankStart;
    graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
-   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 167, 40);
+   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 198, 40);
    var rankUnits = o._rank;
    if(rankUnits){
       var tableText = '';
@@ -86247,7 +86247,7 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    image.addLoadListener(o, o.onImageLoad);
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
    image.addLoadListener(o, o.onImageLoad);
-   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/live/tank-title.png');
+   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/marketer/title.png');
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');
    image.addLoadListener(o, o.onImageLoad);
