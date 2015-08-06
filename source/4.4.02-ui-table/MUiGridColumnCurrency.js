@@ -43,7 +43,7 @@ MO.MUiGridColumnCurrency_construct = function MUiGridColumnCurrency_construct(){
 //==========================================================
 MO.MUiGridColumnCurrency_formatText = function MUiGridColumnCurrency_formatText(value){
    var o = this;
-   var text = MO.Lang.Float.format(value, null, null, o._currencyPercent, '0');
+   var text = MO.Lang.Float.format(MO.Runtime.nvl(value, 0), null, null, o._currencyPercent, '0');
    return text;
 }
 

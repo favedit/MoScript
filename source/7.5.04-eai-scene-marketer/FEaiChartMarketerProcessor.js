@@ -9,50 +9,48 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._dateSetup               = false;
-   o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
-   o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
-   o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
-   o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
-   o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
-   o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   o._intervalMinute          = 1;
+   o._dateSetup            = false;
+   o._beginDate            = MO.Class.register(o, new MO.AGetter('_beginDate'));
+   o._endDate              = MO.Class.register(o, new MO.AGetter('_endDate'));
+   o._invementDayCurrent   = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
+   o._invementDay          = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
+   o._invementTotalCurrent = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
+   o._invementTotal        = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
+   o._intervalMinute       = 1;
    // @attribute
-   o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
-   o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
+   o._mapEntity            = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
+   o._display              = MO.Class.register(o, new MO.AGetter('_display'));
    // @attribute
-   o._rankUnits               = MO.Class.register(o, new MO.AGetter('_rankUnits'));
-   o._units                   = MO.Class.register(o, new MO.AGetter('_units'));
-   o._tableUnits              = MO.Class.register(o, new MO.AGetter('_tableUnits'));
+   o._rankUnits            = MO.Class.register(o, new MO.AGetter('_rankUnits'));
+   o._units                = MO.Class.register(o, new MO.AGetter('_units'));
    // @attribute
-   o._tableCount              = 40;
-   o._tableInterval           = 1000;
-   o._tableTick               = 1;
-   o._dataTicker              = null;
+   o._tableCount           = 40;
+   o._tableInterval        = 1000;
+   o._tableTick            = 1;
+   o._dataTicker           = null;
    // @attribute
-   o._unitPool                = null;
+   o._unitPool             = null;
    // @attribute
-   o._autios                  = null;
+   o._autios               = null;
    // @event
-   o._eventDataChanged        = null;
-   o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._eventDataChanged     = null;
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @method
-   o.onDynamicData            = MO.FEaiChartMarketerProcessor_onDynamicData;
+   o.onDynamicData         = MO.FEaiChartMarketerProcessor_onDynamicData;
    //..........................................................
    // @method
-   o.construct                = MO.FEaiChartMarketerProcessor_construct;
+   o.construct             = MO.FEaiChartMarketerProcessor_construct;
    // @method
-   o.allocUnit                = MO.FEaiChartMarketerProcessor_allocUnit;
-   o.allocShape               = MO.FEaiChartMarketerProcessor_allocShape;
-   o.setup                    = MO.FEaiChartMarketerProcessor_setup;
+   o.allocUnit             = MO.FEaiChartMarketerProcessor_allocUnit;
+   o.allocShape            = MO.FEaiChartMarketerProcessor_allocShape;
+   o.setup                 = MO.FEaiChartMarketerProcessor_setup;
    // @method
-   o.calculateInvestmentLevel = MO.FEaiChartMarketerProcessor_calculateInvestmentLevel;
-   o.calculateCurrent         = MO.FEaiChartMarketerProcessor_calculateCurrent;
-   o.focusEntity              = MO.FEaiChartMarketerProcessor_focusEntity;
-   o.process                  = MO.FEaiChartMarketerProcessor_process;
+   o.calculateCurrent      = MO.FEaiChartMarketerProcessor_calculateCurrent;
+   o.focusEntity           = MO.FEaiChartMarketerProcessor_focusEntity;
+   o.process               = MO.FEaiChartMarketerProcessor_process;
    // @method
-   o.dispose                  = MO.FEaiChartMarketerProcessor_dispose;
+   o.dispose               = MO.FEaiChartMarketerProcessor_dispose;
    return o;
 }
 
@@ -64,28 +62,21 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
 MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcessor_onDynamicData(event){
    var o = this;
    var content = event.content;
-   var units = o._units;
-   // 反序列化数据
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(event.content);
    // 读取数据
    var dynamicInfo = o._dynamicInfo;
-   dynamicInfo.unserialize(view);
-   units.append(dynamicInfo.units());
-   // 释放数据
-   view.dispose();
-   //..........................................................
+   dynamicInfo.unserializeBuffer(event.content, true);
    // 计算刷新间隔
+   var rankUnits = o._rankUnits;
+   rankUnits.assign(dynamicInfo.rankUnits());
+   var units = o._units;
+   units.append(dynamicInfo.units());
    var unitCount = units.count();
    o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
    o._tableTick = 0;
-   //..........................................................
    // 触发数据事件
    var changeEvent = o._eventDataChanged;
+   changeEvent.rankUnits = rankUnits;
    changeEvent.unit = null;
-   changeEvent.rank = o._rankUnits;
-   changeEvent.data = o._tableUnits;
    o.processDataChangedListener(changeEvent);
 }
 
@@ -101,7 +92,6 @@ MO.FEaiChartMarketerProcessor_construct = function FEaiChartMarketerProcessor_co
    o._beginDate = new MO.TDate();
    o._endDate = new MO.TDate();
    o._units = new MO.TObjects();
-   o._tableUnits = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
    // 定时获取数据
@@ -146,27 +136,6 @@ MO.FEaiChartMarketerProcessor_setup = function FEaiChartMarketerProcessor_setup(
 }
 
 //==========================================================
-// <T>计算投资级别。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMarketerProcessor_calculateInvestmentLevel = function FEaiChartMarketerProcessor_calculateInvestmentLevel(investment){
-   var o = this;
-   if(investment >= 5000000){
-      return 5;
-   }else if(investment >= 1000000){
-      return 4;
-   }else if(investment >= 100000){
-      return 3;
-   }else if(investment >= 10000){
-      return 2;
-   }else if(investment >= 1000){
-      return 1;
-   }
-   return 0;
-}
-
-//==========================================================
 // <T>计算当前数值。</T>
 //
 // @method
@@ -202,33 +171,35 @@ MO.FEaiChartMarketerProcessor_focusEntity = function FEaiChartMarketerProcessor_
    var o = this;
    var mapEntity = o._mapEntity;
    // 显示实体
-   var card = unit.customerCard();
-   var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
-   if(cityEntity){
-      // 计算级别
-      //var investment = unit.investment();
-      //var level = o.calculateInvestmentLevel(investment);
-      // 更新省份数据
-      //var provinceCode = cityEntity.data().provinceCode();
-      //var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
-      //if(provinceEntity){
-      //   provinceEntity.doInvestment(level, investment);
-      //}
-      // 更新城市数据
-      //cityEntity.addInvestmentTotal(level, investment);
-      //o._mapEntity.upload();
-      // 播放声音
-      //var autio = o._autios[level];
-      //if(autio){
-      //   autio.play(0);
-      //}
+   var actionCd = unit.customerActionCd();
+   if(actionCd == 1){
+      var card = unit.customerCard();
+      var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
+      if(cityEntity){
+         // 计算级别
+         var amount = unit.customerActionAmount();
+         var level = MO.Console.find(MO.FEaiLogicConsole).statistics().calculateAmountLevel(amount);
+         // 更新省份数据
+         var provinceCode = cityEntity.data().provinceCode();
+         var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
+         if(provinceEntity){
+            provinceEntity.doInvestment(level, amount);
+         }
+         // 更新城市数据
+         cityEntity.addInvestmentTotal(level, amount);
+         o._mapEntity.upload();
+         // 播放声音
+         var autio = o._autios[level];
+         if(autio){
+            autio.play(0);
+         }
+      }
    }
    //..........................................................
    // 触发事件
    var changedEvent = o._eventDataChanged;
+   changedEvent.rankUnits = o._rankUnits;
    changedEvent.unit = unit;
-   changedEvent.rank = o._rankUnits;
-   changedEvent.data = o._tableUnits;
    o.processDataChangedListener(changedEvent);
 }
 
@@ -272,16 +243,10 @@ MO.FEaiChartMarketerProcessor_process = function FEaiChartMarketerProcessor_proc
    // 设置表格刷新
    var currentTick = MO.Timer.current();
    if(currentTick - o._tableTick > o._tableInterval){
-      // 大于个数从尾部弹出
-      if(o._tableUnits.count() >= o._tableCount){
-         var unit = o._tableUnits.pop();
-         o._unitPool.free(unit);
-      }
       // 从开始位置压入
       var units = o._units;
       if(!units.isEmpty()){
          var unit = units.shift();
-         o._tableUnits.unshift(unit);
          // 设置实体焦点
          o.focusEntity(unit);
       }
@@ -297,7 +262,6 @@ MO.FEaiChartMarketerProcessor_process = function FEaiChartMarketerProcessor_proc
    // 设置信息
    var dynamicInfo = MO.Desktop.application().dynamicInfo();
    dynamicInfo._investmentEntityCount = o._units.count();
-   dynamicInfo._investmentTableEntityCount = o._tableUnits.count();
    dynamicInfo._investmentPoolItemCount = o._unitPool.items().count();
    dynamicInfo._investmentPoolFreeCount = o._unitPool.frees().count();
 }

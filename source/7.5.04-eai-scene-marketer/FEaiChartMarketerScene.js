@@ -61,7 +61,7 @@ MO.FEaiChartMarketerScene_onInvestmentDataChanged = function FEaiChartMarketerSc
    var unit = event.unit;
    // 设置表格数据
    var table = o._liveTable;
-   table.setRank(event.rank);
+   table.setRankUnits(event.rankUnits);
    table.pushUnit(unit);
    table.dirty();
 }

@@ -9,6 +9,8 @@ MO.MUiGridControl = function MUiGridControl(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
+   o._displayHead   = MO.Class.register(o, new MO.AGetSet('_displayHead'), true);
+   o._displayFooter = MO.Class.register(o, new MO.AGetSet('_displayFooter'), true);
    o._displayCount  = MO.Class.register(o, new MO.AGetSet('_displayCount'), 20);
    // @attribute
    o._columns       = MO.Class.register(o, new MO.AGetter('_columns'));
@@ -35,6 +37,7 @@ MO.MUiGridControl = function MUiGridControl(o){
    o.freeRow        = MO.MUiGridControl_freeRow;
    o.pushColumn     = MO.MUiGridControl_pushColumn;
    o.pushRow        = MO.MUiGridControl_pushRow;
+   o.clearRows      = MO.MUiGridControl_clearRows;
    // @method
    o.dispose        = MO.MUiGridControl_dispose;
    return o;
@@ -131,6 +134,22 @@ MO.MUiGridControl_pushRow = function MUiGridControl_pushRow(row){
    var o = this;
    row.setGrid(o);
    o._rows.push(row);
+}
+
+//==========================================================
+// <T>清空行对象集合。</T>
+//
+// @method
+//==========================================================
+MO.MUiGridControl_clearRows = function MUiGridControl_clearRows(){
+   var o = this;
+   var rows = o._rows;
+   var count = rows.count();
+   for(var i = 0; i < count; i++){
+      var row = rows.at(i);
+      o.freeRow(row);
+   }
+   rows.clear();
 }
 
 //==========================================================

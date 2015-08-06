@@ -973,8 +973,10 @@ MO.MParent_dispose = function MParent_dispose(){
 }
 MO.MPersistence = function MPersistence(o){
    o = MO.Class.inherits(this, o);
-   o.unserialize = MO.MPersistence_unserialize;
-   o.serialize   = MO.MPersistence_serialize;
+   o.unserialize       = MO.MPersistence_unserialize;
+   o.unserializeBuffer = MO.MPersistence_unserializeBuffer;
+   o.serialize         = MO.MPersistence_serialize;
+   o.serializeBuffer   = MO.MPersistence_serializeBuffer;
    return o;
 }
 MO.MPersistence_unserialize = function MPersistence_unserialize(input){
@@ -1021,6 +1023,14 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       }
    }
 }
+MO.MPersistence_unserializeBuffer = function MPersistence_unserializeBuffer(buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
 MO.MPersistence_serialize = function MPersistence_serialize(output){
    var o = this;
    var clazz = MO.Class.find(o.constructor);
@@ -1052,6 +1062,14 @@ MO.MPersistence_serialize = function MPersistence_serialize(output){
          input.writeData(dateCd, value);
       }
    }
+}
+MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.serialize(view);
+   view.dispose();
 }
 MO.MProperty = function MProperty(o){
    o = MO.Class.inherits(this, o);

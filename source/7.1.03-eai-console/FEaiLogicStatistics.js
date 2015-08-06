@@ -9,18 +9,41 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
    //..........................................................
    // @attribute
-   o._code               = 'statistics';
+   o._code                = 'statistics';
    //..........................................................
    // @method
-   o.doInvestmentDynamic = MO.FEaiLogicStatistics_doInvestmentDynamic;
-   o.doInvestmentTrend   = MO.FEaiLogicStatistics_doInvestmentTrend;
-   o.doCustomerDynamic   = MO.FEaiLogicStatistics_doCustomerDynamic;
-   o.doCustomerTrend     = MO.FEaiLogicStatistics_doCustomerTrend;
-   o.doMarketerDynamic   = MO.FEaiLogicStatistics_doMarketerDynamic;
-   o.doMarketerTrend     = MO.FEaiLogicStatistics_doMarketerTrend;
-   o.doDepartmentDynamic = MO.FEaiLogicStatistics_doDepartmentDynamic;
-   o.doDepartmentTrend   = MO.FEaiLogicStatistics_doDepartmentTrend;
+   o.calculateAmountLevel = MO.FEaiLogicStatistics_calculateAmountLevel;
+   // @method
+   o.doInvestmentDynamic  = MO.FEaiLogicStatistics_doInvestmentDynamic;
+   o.doInvestmentTrend    = MO.FEaiLogicStatistics_doInvestmentTrend;
+   o.doCustomerDynamic    = MO.FEaiLogicStatistics_doCustomerDynamic;
+   o.doCustomerTrend      = MO.FEaiLogicStatistics_doCustomerTrend;
+   o.doMarketerDynamic    = MO.FEaiLogicStatistics_doMarketerDynamic;
+   o.doMarketerTrend      = MO.FEaiLogicStatistics_doMarketerTrend;
+   o.doDepartmentDynamic  = MO.FEaiLogicStatistics_doDepartmentDynamic;
+   o.doDepartmentTrend    = MO.FEaiLogicStatistics_doDepartmentTrend;
    return o;
+}
+
+//==========================================================
+// <T>计算资金级别。</T>
+//
+// @method
+//==========================================================
+MO.FEaiLogicStatistics_calculateAmountLevel = function FEaiLogicStatistics_calculateAmountLevel(amount){
+   var o = this;
+   if(amount >= 5000000){
+      return 5;
+   }else if(amount >= 1000000){
+      return 4;
+   }else if(amount >= 100000){
+      return 3;
+   }else if(amount >= 10000){
+      return 2;
+   }else if(amount >= 1000){
+      return 1;
+   }
+   return 0;
 }
 
 //==========================================================

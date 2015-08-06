@@ -6,58 +6,14 @@
 // @history 150803
 //==========================================================
 MO.FEaiChartMarketerTrendUnit = function FEaiChartMarketerTrendUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
-   o._recordDate    = MO.Class.register(o, new MO.AGetter('_recordDate'));
-   o._investment    = MO.Class.register(o, new MO.AGetter('_investment'));
-   o._redemption    = MO.Class.register(o, new MO.AGetter('_redemption'));
-   o._netinvestment = MO.Class.register(o, new MO.AGetter('_netinvestment'));
-   o._interest      = MO.Class.register(o, new MO.AGetter('_interest'));
-   o._performance   = MO.Class.register(o, new MO.AGetter('_performance'));
-   //..........................................................
-   // @method
-   o.construct      = MO.FEaiChartMarketerTrendUnit_construct;
-   // @method
-   o.unserialize    = MO.FEaiChartMarketerTrendUnit_unserialize;
-   // @method
-   o.dispose        = MO.FEaiChartMarketerTrendUnit_dispose;
+   o._recordDate    = MO.Class.register(o, [new MO.AGetter('_recordDate'), new MO.APersistence('_recordDate', MO.EDataType.String)]);
+   o._investment    = MO.Class.register(o, [new MO.AGetter('_investment'), new MO.APersistence('_investment', MO.EDataType.Double)]);
+   o._redemption    = MO.Class.register(o, [new MO.AGetter('_redemption'), new MO.APersistence('_redemption', MO.EDataType.Double)]);
+   o._netinvestment = MO.Class.register(o, [new MO.AGetter('_netinvestment'), new MO.APersistence('_netinvestment', MO.EDataType.Double)]);
+   o._interest      = MO.Class.register(o, [new MO.AGetter('_interest'), new MO.APersistence('_interest', MO.EDataType.Double)]);
+   o._performance   = MO.Class.register(o, [new MO.AGetter('_performance'), new MO.APersistence('_performance', MO.EDataType.Double)]);
    return o;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMarketerTrendUnit_construct = function FEaiChartMarketerTrendUnit_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
-
-//==========================================================
-// <T>从输入流反序列化数据。</T>
-//
-// @method
-// @param input:MStream 输入流
-//==========================================================
-MO.FEaiChartMarketerTrendUnit_unserialize = function FEaiChartMarketerTrendUnit_unserialize(input){
-   var o = this;
-   o._recordDate = input.readString();
-   o._investment = input.readDouble();
-   o._redemption = input.readDouble();
-   o._netinvestment = input.readDouble();
-   o._interest = input.readDouble();
-   o._performance = input.readDouble();
-}
-
-//==========================================================
-// <T>释放处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMarketerTrendUnit_dispose = function FEaiChartMarketerTrendUnit_dispose(){
-   var o = this;
-   // 父处理
-   o.__base.FObject.dispose.call(o);
 }

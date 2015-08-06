@@ -81,16 +81,10 @@ MO.FEaiChartMarketerTimeline_sync = function FEaiChartMarketerTimeline_sync() {
 // @method
 //==========================================================
 MO.FEaiChartMarketerTimeline_on24HDataFetch = function FEaiChartMarketerTimeline_on24HDataFetch(event) {
-   var o = this;   var content = event.content;
-   // 反序列化数据
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(event.content);
+   var o = this;
    // 读取数据
-   var trendInfo = o._trendInfo;
-   trendInfo.unserialize(view);
-   // 释放数据
-   view.dispose();
+   o._trendInfo.unserializeBuffer(event.content, true);
+   // 脏处理
    o.dirty();
 }
 
@@ -123,8 +117,7 @@ MO.FEaiChartMarketerTimeline_oeUpdate = function FEaiChartMarketerTimeline_oeUpd
 MO.FEaiChartMarketerTimeline_drawTrend = function FEaiChartMarketerTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, lineColor){
    var o = this;
    var startTime = o._startTime;
-   var trendInfo = o._trendInfo;
-   var units = trendInfo.trendUints();
+   var units = o._trendInfo.units();
    var count = units.count();
    var unitFirst = units.first();
    var handle = graphic._handle;
@@ -231,8 +224,11 @@ MO.FEaiChartMarketerTimeline_onPaintBegin = function FEaiChartMarketerTimeline_o
    startTime.refresh();
    // 曲线
    var trendInfo = o._trendInfo;
-   var units = trendInfo.trendUints();
-   if (units.isEmpty()){
+   var units = trendInfo.units();
+   if(!units){
+      return;
+   }
+   if(units.isEmpty()){
       return;
    }
    var unitFirst = units.first();
@@ -278,26 +274,32 @@ MO.FEaiChartMarketerTimeline_onPaintBegin = function FEaiChartMarketerTimeline_o
       }
    }
    // 输出数据文本
-   graphic.setFont('bold 24px Microsoft YaHei');
-   graphic.drawText("24小时投资曲线", decoLeft, top, '#54F0FF');
+   graphic.setFont('24px Microsoft YaHei');
+   graphic.drawText("24H数据曲线", decoLeft, top, '#54F0FF');
    // 输出数据文本
    graphic.setFont('22px Microsoft YaHei');
    var rowStart = top + 30;
    var rowHeight = 22;
-   var textWidth = graphic.textWidth('小时峰值：');
-   var textHourPeakValue = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
-   var textHourPeakWidth = graphic.textWidth(textHourPeakValue);
-   var textDayTotalValue = MO.Lang.Float.unitFormat(o._investmentTotal, 0, 0, 2, 0, 10000, '万');
-   var textDayTotalWidth = graphic.textWidth(textDayTotalValue);
-   var textHourAvrgValue = MO.Lang.Float.unitFormat(o._investmentTotal / 24, 0, 0, 2, 0, 10000, '万');
-   var textHourAvrgWidth = graphic.textWidth(textHourAvrgValue);
-   var textValueWidth = Math.max(Math.max(textHourPeakWidth, textDayTotalWidth), textHourAvrgWidth);
-   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
-   graphic.drawText(textDayTotalValue, decoLeft + textWidth + textValueWidth - textDayTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
-   graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   graphic.drawText(textHourPeakValue, decoLeft + textWidth + textValueWidth - textHourPeakWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
-   graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
-   graphic.drawText(textHourAvrgValue, decoLeft + textWidth + textValueWidth - textHourAvrgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
+   // 计算宽度
+   var textWidth = graphic.textWidth('投资总计：');
+   var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
+   var investmentTotalWidth = graphic.textWidth(investmentTotalText);
+   var redemptionTotalText = MO.Lang.Float.unitFormat(trendInfo.redemptionTotal(), 0, 0, 2, 0, 10000, '万');
+   var redemptionTotalWidth = graphic.textWidth(redemptionTotalText);
+   var netinvestmentTotalText = MO.Lang.Float.unitFormat(trendInfo.netinvestmentTotal(), 0, 0, 2, 0, 10000, '万');
+   var netinvestmentTotalWidth = graphic.textWidth(netinvestmentTotalText);
+   var interestTotalText = MO.Lang.Float.unitFormat(trendInfo.interestTotal(), 0, 0, 2, 0, 10000, '万');
+   var interestTotalWidth = graphic.textWidth(interestTotalText);
+   var maxWidth = Math.max(Math.max(Math.max(investmentTotalWidth, redemptionTotalWidth), netinvestmentTotalWidth), interestTotalWidth);
+   // 绘制文字
+   graphic.drawText('投资总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
+   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
+   graphic.drawText('赎回总额：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
+   graphic.drawText(redemptionTotalText, decoLeft + textWidth + maxWidth - redemptionTotalWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
+   graphic.drawText('净投总额：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
+   graphic.drawText(netinvestmentTotalText, decoLeft + textWidth + maxWidth - netinvestmentTotalWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
+   graphic.drawText('利息总额：', decoLeft, rowStart + rowHeight * 3 + 15, '#00CFFF');
+   graphic.drawText(interestTotalText, decoLeft + textWidth + maxWidth - interestTotalWidth, rowStart + rowHeight * 3 + 15, '#00B5F6');
    // 设置时间
    startTime.date.setTime(bakTime);
    startTime.refresh();

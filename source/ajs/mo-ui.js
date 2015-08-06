@@ -1631,7 +1631,7 @@ MO.MUiGridColumnCurrency_construct = function MUiGridColumnCurrency_construct(){
 }
 MO.MUiGridColumnCurrency_formatText = function MUiGridColumnCurrency_formatText(value){
    var o = this;
-   var text = MO.Lang.Float.format(value, null, null, o._currencyPercent, '0');
+   var text = MO.Lang.Float.format(MO.Runtime.nvl(value, 0), null, null, o._currencyPercent, '0');
    return text;
 }
 MO.MUiGridColumnCurrency_dispose = function MUiGridColumnCurrency_dispose(){
@@ -1674,6 +1674,8 @@ MO.MUiGridColumnText_dispose = function MUiGridColumnText_dispose(){
 }
 MO.MUiGridControl = function MUiGridControl(o){
    o = MO.Class.inherits(this, o);
+   o._displayHead   = MO.Class.register(o, new MO.AGetSet('_displayHead'), true);
+   o._displayFooter = MO.Class.register(o, new MO.AGetSet('_displayFooter'), true);
    o._displayCount  = MO.Class.register(o, new MO.AGetSet('_displayCount'), 20);
    o._columns       = MO.Class.register(o, new MO.AGetter('_columns'));
    o._headFont      = MO.Class.register(o, new MO.AGetter('_headFont'));
@@ -1693,6 +1695,7 @@ MO.MUiGridControl = function MUiGridControl(o){
    o.freeRow        = MO.MUiGridControl_freeRow;
    o.pushColumn     = MO.MUiGridControl_pushColumn;
    o.pushRow        = MO.MUiGridControl_pushRow;
+   o.clearRows      = MO.MUiGridControl_clearRows;
    o.dispose        = MO.MUiGridControl_dispose;
    return o;
 }
@@ -1743,6 +1746,16 @@ MO.MUiGridControl_pushRow = function MUiGridControl_pushRow(row){
    var o = this;
    row.setGrid(o);
    o._rows.push(row);
+}
+MO.MUiGridControl_clearRows = function MUiGridControl_clearRows(){
+   var o = this;
+   var rows = o._rows;
+   var count = rows.count();
+   for(var i = 0; i < count; i++){
+      var row = rows.at(i);
+      o.freeRow(row);
+   }
+   rows.clear();
 }
 MO.MUiGridControl_dispose = function MUiGridControl_dispose(){
    var o = this;

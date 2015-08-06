@@ -1976,17 +1976,19 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       var column = columns.at(i);
       columnWidthTotal += column.width();
    }
-   var columnX = drawX;
-   var columnY = top;
-   var headTextTop = columnY + 0;
-   var headHeight = o._headHeight;
-   for(var i = 0; i < columnCount; i++){
-      var column = columns.at(i);
-      var columnWidth = gridWidth * column.width() / columnWidthTotal;
-      column.draw(graphic, columnX, columnY, columnWidth, headHeight);
-      columnX += columnWidth;
+   if(o._displayHead){
+      var columnX = drawX;
+      var columnY = top;
+      var headTextTop = columnY + 0;
+      var headHeight = o._headHeight;
+      for(var i = 0; i < columnCount; i++){
+         var column = columns.at(i);
+         var columnWidth = gridWidth * column.width() / columnWidthTotal;
+         column.draw(graphic, columnX, columnY, columnWidth, headHeight);
+         columnX += columnWidth;
+      }
+      drawY += headHeight;
    }
-   drawY += headHeight;
    var rowsHeight = bottom - drawY;
    var rowHeight = o._rowHeight;
    graphic.clip(drawX, drawY, gridWidth, rowsHeight);

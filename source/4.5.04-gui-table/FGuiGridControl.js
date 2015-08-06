@@ -52,17 +52,19 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    }
    //..........................................................
    // 绘制表头
-   var columnX = drawX;
-   var columnY = top;
-   var headTextTop = columnY + 0;
-   var headHeight = o._headHeight;
-   for(var i = 0; i < columnCount; i++){
-      var column = columns.at(i);
-      var columnWidth = gridWidth * column.width() / columnWidthTotal;
-      column.draw(graphic, columnX, columnY, columnWidth, headHeight);
-      columnX += columnWidth;
+   if(o._displayHead){
+      var columnX = drawX;
+      var columnY = top;
+      var headTextTop = columnY + 0;
+      var headHeight = o._headHeight;
+      for(var i = 0; i < columnCount; i++){
+         var column = columns.at(i);
+         var columnWidth = gridWidth * column.width() / columnWidthTotal;
+         column.draw(graphic, columnX, columnY, columnWidth, headHeight);
+         columnX += columnWidth;
+      }
+      drawY += headHeight;
    }
-   drawY += headHeight;
    //..........................................................
    // 计算可绘制行数
    var rowsHeight = bottom - drawY;
