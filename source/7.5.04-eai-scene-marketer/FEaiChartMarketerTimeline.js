@@ -248,6 +248,8 @@ MO.FEaiChartMarketerTimeline_onPaintBegin = function FEaiChartMarketerTimeline_o
    }
    o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF0000');
    o.drawTrend(graphic, '_redemption', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#0000FF');
+   //o.drawTrend(graphic, '_netinvestment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#00FF00');
+   //o.drawTrend(graphic, '_interest', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FFFFFF');
    // 完成
    startTime.date.setTime(bakTime);
    startTime.refresh();

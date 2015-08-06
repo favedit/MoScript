@@ -86451,12 +86451,18 @@ MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(un
    if(!unit){
       return null;
    }
+   var card = unit.customerCard();
+   var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
+   var cityLabel = '';
+   if(city){
+      cityLabel = city.label();
+   }
    var grid = o._gridControl;
    var row = grid.allocRow();
    row.set('record_date', unit.recordDate());
    row.set('department_label', unit.departmentLabel());
    row.set('marketer_label', unit.marketerLabel());
-   row.set('customer_city', unit.customerCard());
+   row.set('customer_city', cityLabel);
    row.set('customer_info', unit.customerLabel() + ' - ' + unit.customerPhone());
    if(unit.customerActionCd() == 1){
       row.set('customer_amount', unit.customerActionAmount());
