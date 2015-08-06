@@ -59,8 +59,8 @@ MO.FEaiLogic_prepareParemeters = function FEaiLogic_prepareParemeters(){
 //==========================================================
 MO.FEaiLogic_makeUrl = function FEaiLogic_makeUrl(method, parameters){
    var o = this;
-   var serviceHost = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiConstant.ServiceHost);
-   var url = 'http://' + serviceHost + '/eai/' + o._code + '/' + method;
+   var uri = '{eai.host.service}/eai/' + o._code + '/' + method;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    if(parameters){
       // 获得系统时间
       var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
