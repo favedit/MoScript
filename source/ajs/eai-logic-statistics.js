@@ -466,8 +466,8 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    graphic.clip(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
-   var textFont = 'bold 38px Microsoft YaHei';
-   var unitFont = 'bold 24px Microsoft YaHei';
+   var textFont = o._foreFont;
+   var unitFont = 'bold 18px Microsoft YaHei';
    graphic.setFont(textFont);
    var baseX = rectangle.left;
    var baseY = rectangle.top + rectangle.height;

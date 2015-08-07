@@ -491,9 +491,9 @@
 }
 
 /* ------------------------------------------------------ */
-/* FDsPrivateWorkspace                                    */
+/* FEditorDsWorkspace                                     */
 /* ------------------------------------------------------ */
-.FDsSystemWorkspace_MenuBar_Ground{
+.FEditorDsWorkspace_MenuBar_Ground{
    padding-top: 2px;
    border-top: 1px solid #DDDDDD;
    border-bottom: 1px solid #999999;
@@ -504,7 +504,7 @@
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#EEEEEE, endColorStr=#CCCCCC);
 }
 
-.FDsSystemWorkspace_StatusBar_Ground{
+.FEditorDsWorkspace_StatusBar_Ground{
    background: #AEAEAE;
    border-top: 1px solid #999999;
    background: -ms-linear-gradient(top, #555555, #AEAEAE);
@@ -514,9 +514,9 @@
 }
 
 /* ------------------------------------------------------ */
-/* FDsSystemDesignFrameSet                                */
+/* FEditorDsFrameSet                                */
 /* ------------------------------------------------------ */
-.FDsSystemDesignFrameSet_Toolbar_Ground{
+.FEditorDsFrameSet_Toolbar_Ground{
    padding-left: 4px;
    padding-top: 1px;
    padding-bottom: 1px;
@@ -529,15 +529,15 @@
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
 }
 
-.FDsSystemDesignFrameSet_Catalog_Content{
+.FEditorDsFrameSet_Catalog_Content{
    background: #EEEEEE;
 }
 
-.FDsSystemDesignFrameSet_Space_Content{
+.FEditorDsFrameSet_Space_Content{
    position: relative;
    background: #EEEEEE;
 }
 
-.FDsSystemDesignFrameSet_Property_Content{
+.FEditorDsFrameSet_Property_Content{
    background-color: #777777;
 }

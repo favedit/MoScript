@@ -4719,8 +4719,8 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    graphic.clip(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
-   var textFont = 'bold 38px Microsoft YaHei';
-   var unitFont = 'bold 24px Microsoft YaHei';
+   var textFont = o._foreFont;
+   var unitFont = 'bold 18px Microsoft YaHei';
    graphic.setFont(textFont);
    var baseX = rectangle.left;
    var baseY = rectangle.top + rectangle.height;
@@ -6918,6 +6918,7 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o._invementDay          = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
    o._invementTotalCurrent = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal        = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
+   o._dynamicInfo          = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
    o._intervalMinute       = 1;
    o._mapEntity            = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
    o._display              = MO.Class.register(o, new MO.AGetter('_display'));
@@ -7072,36 +7073,36 @@ MO.FEaiChartMarketerProcessor_dispose = function FEaiChartMarketerProcessor_disp
    o._eventDataChanged = MO.Lang.Object.dispose(o._eventDataChanged);
    o.__base.FObject.dispose.call(o);
 }
-MO.FEaiChartMarketerScene = function FEaiChartMarketerScene(o){
+MO.FEaiChartMarketerScene = function FEaiChartMarketerScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code                   = MO.EEaiScene.ChartMarketer;
-   o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
-   o._processorCurrent       = 0;
-   o._ready                  = false;
-   o._mapReady               = false;
-   o._playing                = false;
-   o._lastTick               = 0;
-   o._interval               = 10;
-   o._24HLastTick            = 0;
-   o._24HTrendInterval       = 1000 * 60 * 5;
-   o._logoBar                = null;
-   o._timeline               = null;
-   o._liveTable              = null;
-   o._statusStart            = false;
-   o._statusLayerCount       = 100;
-   o._statusLayerLevel       = 100;
-   o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
+   o._code = MO.EEaiScene.ChartMarketer;
+   o._processor = MO.Class.register(o, new MO.AGetter('_processor'));
+   o._processorCurrent = 0;
+   o._ready = false;
+   o._mapReady = false;
+   o._playing = false;
+   o._lastTick = 0;
+   o._interval = 10;
+   o._24HLastTick = 0;
+   o._24HTrendInterval = 1000 * 60 * 5;
+   o._logoBar = null;
+   o._timeline = null;
+   o._liveTable = null;
+   o._statusStart = false;
+   o._statusLayerCount = 100;
+   o._statusLayerLevel = 100;
+   o._groundAutioUrl = '{eai.resource}/music/statistics.mp3';
    o.onInvestmentDataChanged = MO.FEaiChartMarketerScene_onInvestmentDataChanged;
-   o.onOperationVisibility   = MO.FEaiChartMarketerScene_onOperationVisibility;
-   o.onProcessReady          = MO.FEaiChartMarketerScene_onProcessReady;
-   o.onProcess               = MO.FEaiChartMarketerScene_onProcess;
-   o.onSwitchProcess         = MO.FEaiChartMarketerScene_onSwitchProcess;
-   o.onSwitchComplete        = MO.FEaiChartMarketerScene_onSwitchComplete;
-   o.setup                   = MO.FEaiChartMarketerScene_setup;
-   o.showParticle            = MO.FEaiChartMarketerScene_showParticle;
-   o.showFace                = MO.FEaiChartMarketerScene_showFace;
-   o.fixMatrix               = MO.FEaiChartMarketerScene_fixMatrix;
-   o.processResize           = MO.FEaiChartMarketerScene_processResize;
+   o.onOperationVisibility = MO.FEaiChartMarketerScene_onOperationVisibility;
+   o.onProcessReady = MO.FEaiChartMarketerScene_onProcessReady;
+   o.onProcess = MO.FEaiChartMarketerScene_onProcess;
+   o.onSwitchProcess = MO.FEaiChartMarketerScene_onSwitchProcess;
+   o.onSwitchComplete = MO.FEaiChartMarketerScene_onSwitchComplete;
+   o.setup = MO.FEaiChartMarketerScene_setup;
+   o.showParticle = MO.FEaiChartMarketerScene_showParticle;
+   o.showFace = MO.FEaiChartMarketerScene_showFace;
+   o.fixMatrix = MO.FEaiChartMarketerScene_fixMatrix;
+   o.processResize = MO.FEaiChartMarketerScene_processResize;
    return o;
 }
 MO.FEaiChartMarketerScene_onInvestmentDataChanged = function FEaiChartMarketerScene_onInvestmentDataChanged(event) {
@@ -7112,13 +7113,13 @@ MO.FEaiChartMarketerScene_onInvestmentDataChanged = function FEaiChartMarketerSc
    table.pushUnit(unit);
    table.dirty();
 }
-MO.FEaiChartMarketerScene_onOperationVisibility = function FEaiChartMarketerScene_onOperationVisibility(event){
+MO.FEaiChartMarketerScene_onOperationVisibility = function FEaiChartMarketerScene_onOperationVisibility(event) {
    var o = this;
    o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
-   if(event.visibility){
+   if (event.visibility) {
       o._groundAutio.play();
       o._countryEntity._audioMapEnter._hAudio.muted = false;
-   }else{
+   } else {
       o._groundAutio.pause();
       o._countryEntity._audioMapEnter._hAudio.muted = true;
    }
@@ -7131,8 +7132,8 @@ MO.FEaiChartMarketerScene_onProcessReady = function FEaiChartMarketerScene_onPro
 MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
-   if(!o._statusStart){
-      if(MO.Window.Browser.capability().soundConfirm){
+   if (!o._statusStart) {
+      if (MO.Window.Browser.capability().soundConfirm) {
          var iosPlay = document.getElementById('id_ios_play');
          if (iosPlay) {
             MO.Window.Html.visibleSet(iosPlay, true);
@@ -7141,7 +7142,7 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
          if (hLoading) {
             document.body.removeChild(hLoading);
          }
-      }else{
+      } else {
          var hLoading = document.getElementById('id_loading');
          if (hLoading) {
             hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
@@ -7163,7 +7164,7 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
    }
    if (o._playing) {
       var countryEntity = o._countryEntity;
-      if(!countryEntity.introAnimeDone()){
+      if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
       }
       if (!o._mapReady) {
@@ -7183,11 +7184,22 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       }
       o._processor.process();
       var logoBar = o._logoBar;
-      var investmentTotal = logoBar.findComponent('investmentTotal');
-      var invementTotalCurrent = o._processor.invementTotalCurrent();
-      var investmentDay = logoBar.findComponent('investmentDay');
-      var invementDayCurrent = o._processor.invementDayCurrent();
-      if(o._nowTicker.process()){
+      var dynamicInfo = o._processor.dynamicInfo();
+      if (dynamicInfo.investmentTotal() > 0) {
+         var investmentTotal = logoBar.findComponent('investmentTotal');
+         var investmentTotalCurrent = dynamicInfo.investmentTotal();
+         investmentTotal.setValue(parseInt(investmentTotalCurrent).toString());
+         var redemptionTotal = logoBar.findComponent('redemptionTotal');
+         var redemptionTotalCurrent = dynamicInfo.redemptionTotal();
+         redemptionTotal.setValue(parseInt(redemptionTotalCurrent).toString());
+         var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
+         var netinvestmentTotalCurrent = dynamicInfo.netinvestmentTotal();
+         netinvestmentTotal.setValue(parseInt(netinvestmentTotalCurrent).toString());
+         var interestTotal = logoBar.findComponent('interestTotal');
+         var interestTotalCurrent = dynamicInfo.interestTotal();
+         interestTotal.setValue(parseInt(interestTotalCurrent).toString());
+      }
+      if (o._nowTicker.process()) {
          var bar = o._logoBar;
          var date = o._nowDate;
          date.setNow();
@@ -7198,10 +7210,10 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       }
    }
 }
-MO.FEaiChartMarketerScene_onSwitchProcess = function FEaiChartMarketerScene_onSwitchProcess(event){
+MO.FEaiChartMarketerScene_onSwitchProcess = function FEaiChartMarketerScene_onSwitchProcess(event) {
    var o = this;
 }
-MO.FEaiChartMarketerScene_onSwitchComplete = function FEaiChartMarketerScene_onSwitchComplete(event){
+MO.FEaiChartMarketerScene_onSwitchComplete = function FEaiChartMarketerScene_onSwitchComplete(event) {
    var o = this;
 }
 MO.FEaiChartMarketerScene_setup = function FEaiChartMarketerScene_setup() {
@@ -7237,13 +7249,13 @@ MO.FEaiChartMarketerScene_setup = function FEaiChartMarketerScene_setup() {
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
 }
-MO.FEaiChartMarketerScene_showParticle = function FEaiChartMarketerScene_showParticle(provinceEntity, cityResource){
+MO.FEaiChartMarketerScene_showParticle = function FEaiChartMarketerScene_showParticle(provinceEntity, cityResource) {
    var o = this;
    var particle = o._particle;
    var location = cityResource.location();
    var count = 4;
    particle.color().set(1, 1, 0, 1);
-   for(var i = 0; i < count; i++){
+   for (var i = 0; i < count; i++) {
       var itemCount = parseInt(Math.random() * 100);
       var attenuation = Math.random();
       particle.setItemCount(itemCount);
@@ -7256,7 +7268,7 @@ MO.FEaiChartMarketerScene_showParticle = function FEaiChartMarketerScene_showPar
       particle.start();
    }
 }
-MO.FEaiChartMarketerScene_showFace = function FEaiChartMarketerScene_showFace(){
+MO.FEaiChartMarketerScene_showFace = function FEaiChartMarketerScene_showFace() {
    var o = this;
    o._statusStart = true;
    o._playing = true;
@@ -7266,15 +7278,15 @@ MO.FEaiChartMarketerScene_showFace = function FEaiChartMarketerScene_showFace(){
    desktop.show();
    o.processResize();
 }
-MO.FEaiChartMarketerScene_fixMatrix = function FEaiChartMarketerScene_fixMatrix(matrix){
+MO.FEaiChartMarketerScene_fixMatrix = function FEaiChartMarketerScene_fixMatrix(matrix) {
    var o = this;
    var isVertical = MO.Window.Browser.isOrientationVertical()
-   if(isVertical){
+   if (isVertical) {
       matrix.tx = -14.58;
       matrix.ty = -1.9;
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
-   }else{
+   } else {
       matrix.tx = -34.8;
       matrix.ty = -11.0;
       matrix.tz = 0;
@@ -7282,38 +7294,38 @@ MO.FEaiChartMarketerScene_fixMatrix = function FEaiChartMarketerScene_fixMatrix(
    }
    matrix.update();
 }
-MO.FEaiChartMarketerScene_processResize = function FEaiChartMarketerScene_processResize(){
+MO.FEaiChartMarketerScene_processResize = function FEaiChartMarketerScene_processResize() {
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
    o.fixMatrix(o._processor.display().matrix());
    var logoBar = o._logoBar;
-   if(isVertical){
+   if (isVertical) {
       logoBar.setLocation(8, 8);
       logoBar.setScale(0.85, 0.85);
-   }else{
+   } else {
       logoBar.setLocation(5, 5);
       logoBar.setScale(0.9, 0.9);
    }
    var control = o._southSea;
-   if(isVertical){
+   if (isVertical) {
       control.setDockCd(MO.EUiDock.RightTop);
       control.setTop(570);
       control.setRight(100);
-   }else{
+   } else {
       control.setDockCd(MO.EUiDock.RightBottom);
       control.setRight(780);
       control.setBottom(260);
    }
    var timeline = o._timeline;
-   if(isVertical){
+   if (isVertical) {
       timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(10);
       timeline.setRight(10);
       timeline.setBottom(920);
       timeline.setHeight(250);
-   }else{
+   } else {
       timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(20);
@@ -7322,7 +7334,7 @@ MO.FEaiChartMarketerScene_processResize = function FEaiChartMarketerScene_proces
       timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
-   if(isVertical){
+   if (isVertical) {
       liveTable.setDockCd(MO.EUiDock.Bottom);
       liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
       liveTable.setLeft(10);
@@ -7330,7 +7342,7 @@ MO.FEaiChartMarketerScene_processResize = function FEaiChartMarketerScene_proces
       liveTable.setBottom(10);
       liveTable.setWidth(1060);
       liveTable.setHeight(900);
-   }else{
+   } else {
       liveTable.setDockCd(MO.EUiDock.Right);
       liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
       liveTable.setTop(10);
