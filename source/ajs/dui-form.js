@@ -564,6 +564,7 @@ MO.FDuiButton_doClick = function FDuiButton_doClick(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
+      MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -1453,10 +1454,12 @@ MO.FDuiCheckPicker_onBuildEdit = function FDuiCheckPicker_onBuildEdit(b){
 }
 MO.FDuiCheckPicker_onEditEnd = function FDuiCheckPicker_onEditEnd(editor){
    var o = this;
+   MO.Logger.debug(o, 'Begin (editor={1}:{2} value={3})', editor, editor?editor.value():'', o.dataValue);
    if(editor){
       o.set(editor.values);
    }
    o.onDataEditEnd(o);
+   MO.Logger.debug(o, 'End (editor={1} value={2})', editor, o.dataValue);
 }
 MO.FDuiCheckPicker_loadConfig = function FDuiCheckPicker_loadConfig(c){
    var o = this;
@@ -3467,6 +3470,7 @@ with(MO){
    }
    MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
       var o = this;
+      MO.Logger.debug(o, 'Edit changed');
       var g = o.storage = RObject.nvlObj(o.storage);
       if(g.value == o.value()){
          if(o.changed){
@@ -3481,6 +3485,7 @@ with(MO){
    MO.FDuiEditor_onEditEnd = function FDuiEditor_onEditEnd(){
       var o = this;
       var s = o._source;
+      MO.Logger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
       o.hide();
       if(o.lsnEditEnd){
          o.lsnEditEnd.process(o);
@@ -3529,6 +3534,7 @@ with(MO){
    MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
       var o = this;
       var s = o._source;
+      MO.Logger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);
       }
@@ -3538,6 +3544,7 @@ with(MO){
    MO.FDuiEditor_editCancel = function FDuiEditor_editCancel(){
       var o = this;
       var s = o._source;
+      MO.Logger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
       o.hide();
       if(o.lsnEditCancel){
          o.lsnEditCancel.process(o);

@@ -47,6 +47,23 @@
       <PathMerger source='/4.5.05-gui-frame'                 target='/ajs/gui-frame.js'/>
       <PathMerger source='/4.5.06-gui-extension'             target='/ajs/gui-extension.js'/>
 
+      <PathMerger source='/4.6.01-dui-common'                target='/ajs/dui-common.js'/>
+      <PathMerger source='/4.6.11-dui-core'                  target='/ajs/dui-core.js'/>
+      <PathMerger source='/4.6.21-dui-form'                  target='/ajs/dui-form.js'/>
+      <PathMerger source='/4.6.22-dui-table'                 target='/ajs/dui-table.js'/>
+      <PathMerger source='/4.6.23-dui-menu'                  target='/ajs/dui-menu.js'/>
+      <PathMerger source='/4.6.24-dui-tool'                  target='/ajs/dui-tool.js'/>
+      <PathMerger source='/4.6.25-dui-tree'                  target='/ajs/dui-tree.js'/>
+      <PathMerger source='/4.6.26-dui-page'                  target='/ajs/dui-page.js'/>
+      <PathMerger source='/4.6.27-dui-frame'                 target='/ajs/dui-frame.js'/>
+
+      <PathMerger source='/4.7.01-dui-data-common'           target='/ajs/dui-data-control.js'/>
+      <PathMerger source='/4.7.11-dui-data-core'             target='/ajs/dui-data-core.js'/>
+      <PathMerger source='/4.7.21-dui-data-form'             target='/ajs/dui-data-form.js'/>
+      <PathMerger source='/4.7.22-dui-data-table'            target='/ajs/dui-data-table.js'/>
+      <PathMerger source='/4.7.23-dui-data-tool'             target='/ajs/dui-data-tool.js'/>
+      <PathMerger source='/4.7.24-dui-data-tree'             target='/ajs/dui-data-tree.js'/>
+
       <!--
       <PathMerger source='/4.1.01-game'                      target='/ajs/game.js'/>
       <PathMerger source='/4.2.01-game-core'                 target='/ajs/game-core.js'/>
@@ -56,22 +73,13 @@
       <PathMerger source='/4.6.01-game-stage'                target='/ajs/game-stage.js'/>
       -->
 
-      <PathMerger source='/5.1.01-control'                   target='/ajs/control.js'/>
-      <PathMerger source='/5.2.01-control-core'              target='/ajs/control-core.js'/>
-      <PathMerger source='/5.3.01-control-form'              target='/ajs/control-form.js'/>
-      <PathMerger source='/5.3.02-control-table'             target='/ajs/control-table.js'/>
-      <PathMerger source='/5.3.03-control-menu'              target='/ajs/control-menu.js'/>
-      <PathMerger source='/5.3.04-control-tool'              target='/ajs/control-tool.js'/>
-      <PathMerger source='/5.3.05-control-tree'              target='/ajs/control-tree.js'/>
-      <PathMerger source='/5.3.06-control-page'              target='/ajs/control-page.js'/>
-      <PathMerger source='/5.3.07-control-frame'             target='/ajs/control-frame.js'/>
-
-      <PathMerger source='/5.4.01-control-data'              target='/ajs/data-control.js'/>
-      <PathMerger source='/5.5.01-control-data-core'         target='/ajs/data-core.js'/>
-      <PathMerger source='/5.6.01-control-data-form'         target='/ajs/data-form.js'/>
-      <PathMerger source='/5.6.02-control-data-table'        target='/ajs/data-table.js'/>
-      <PathMerger source='/5.6.03-control-data-tool'         target='/ajs/data-tool.js'/>
-      <PathMerger source='/5.6.04-control-data-tree'         target='/ajs/data-tree.js'/>
+      <PathMerger source='/5.1.01-editor-common'             target='/ajs/editor-common.js'/>
+      <PathMerger source='/5.2.01-editor-core'               target='/ajs/editor-core.js'/>
+      <PathMerger source='/5.3.01-editor-console'            target='/ajs/editor-console.js'/>
+      <PathMerger source='/5.4.01-editor-persistence'        target='/ajs/editor-persistence.js'/>
+      <PathMerger source='/5.4.02-editor-list'               target='/ajs/editor-list.js'/>
+      <PathMerger source='/5.4.03-editor-tree'               target='/ajs/editor-tree.js'/>
+      <PathMerger source='/5.4.04-editor-frame'              target='/ajs/editor-frame.js'/>
 
       <PathMerger source='/6.1.01-design'                    target='/ajs/design.js'/>
       <PathMerger source='/6.2.01-design-core'               target='/ajs/design-core.js'/>
@@ -105,14 +113,6 @@
       <PathMerger source='/6.5.24-design-share-model'        target='/ajs/design-share-model.js'/>
       <PathMerger source='/6.5.25-design-share-template'     target='/ajs/design-share-template.js'/>
       <PathMerger source='/6.5.26-design-share-scene'        target='/ajs/design-share-scene.js'/>
-
-      <PathMerger source='/6.6.01-design-system'             target='/ajs/design-system.js'/>
-      <PathMerger source='/6.6.02-design-system-core'        target='/ajs/design-system-core.js'/>
-      <PathMerger source='/6.6.03-design-system-console'     target='/ajs/design-system-console.js'/>
-      <PathMerger source='/6.7.01-design-system-persistence' target='/ajs/design-system-persistence.js'/>
-      <PathMerger source='/6.7.02-design-system-list'        target='/ajs/design-system-list.js'/>
-      <PathMerger source='/6.7.03-design-system-tree'        target='/ajs/design-system-tree.js'/>
-      <PathMerger source='/6.7.04-design-system-frame'       target='/ajs/design-system-frame.js'/>
 
       <PathMerger source='/7.1.01-eai-common'                target='/ajs/eai-common.js'/>
       <PathMerger source='/7.1.02-eai-resource'              target='/ajs/eai-resource.js'/>
@@ -216,28 +216,37 @@
          <File source='/ajs/game-stage.js'/>
       </FileMerger>
       -->
-      <FileMerger target='/ajs/mo-base-control.js'>
-         <File source='/ajs/control.js'/>
-         <File source='/ajs/control-core.js'/>
-         <File source='/ajs/control-form.js'/>
-         <File source='/ajs/control-table.js'/>
-         <File source='/ajs/control-menu.js'/>
-         <File source='/ajs/control-tool.js'/>
-         <File source='/ajs/control-page.js'/>
-         <File source='/ajs/control-tree.js'/>
-         <File source='/ajs/control-frame.js'/>
+      <FileMerger target='/ajs/mo-dui-control.js'>
+         <File source='/ajs/dui-common.js'/>
+         <File source='/ajs/dui-core.js'/>
+         <File source='/ajs/dui-form.js'/>
+         <File source='/ajs/dui-table.js'/>
+         <File source='/ajs/dui-menu.js'/>
+         <File source='/ajs/dui-tool.js'/>
+         <File source='/ajs/dui-page.js'/>
+         <File source='/ajs/dui-tree.js'/>
+         <File source='/ajs/dui-frame.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/mo-data-control.js'>
-         <File source='/ajs/data-control.js'/>
-         <File source='/ajs/data-core.js'/>
-         <File source='/ajs/data-form.js'/>
-         <File source='/ajs/data-table.js'/>
-         <File source='/ajs/data-tool.js'/>
-         <File source='/ajs/data-tree.js'/>
+      <FileMerger target='/ajs/mo-dui-data.js'>
+         <File source='/ajs/dui-data-control.js'/>
+         <File source='/ajs/dui-data-core.js'/>
+         <File source='/ajs/dui-data-form.js'/>
+         <File source='/ajs/dui-data-table.js'/>
+         <File source='/ajs/dui-data-tool.js'/>
+         <File source='/ajs/dui-data-tree.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/mo-control.js'>
-         <File source='/ajs/mo-base-control.js'/>
-         <File source='/ajs/mo-data-control.js'/>
+      <FileMerger target='/ajs/mo-dui.js'>
+         <File source='/ajs/mo-dui-control.js'/>
+         <File source='/ajs/mo-dui-data.js'/>
+      </FileMerger>
+      <FileMerger target='/ajs/mo-editor.js'>
+         <File source='/ajs/editor-common.js'/>
+         <File source='/ajs/editor-core.js'/>
+         <File source='/ajs/editor-console.js'/>
+         <File source='/ajs/editor-persistence.js'/>
+         <File source='/ajs/editor-list.js'/>
+         <File source='/ajs/editor-tree.js'/>
+         <File source='/ajs/editor-frame.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-design.js'>
          <File source='/ajs/design.js'/>
@@ -275,19 +284,10 @@
          <File source='/ajs/design-share-template.js'/>
          <File source='/ajs/design-share-scene.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/mo-design-system.js'>
-         <File source='/ajs/design-system.js'/>
-         <File source='/ajs/design-system-core.js'/>
-         <File source='/ajs/design-system-console.js'/>
-         <File source='/ajs/design-system-persistence.js'/>
-         <File source='/ajs/design-system-list.js'/>
-         <File source='/ajs/design-system-tree.js'/>
-         <File source='/ajs/design-system-frame.js'/>
-      </FileMerger>
       <FileMerger target='/ajs/mo-design-logic.js'>
+         <File source='/ajs/mo-editor.js'/>
          <File source='/ajs/mo-design-private.js'/>
          <File source='/ajs/mo-design-share.js'/>
-         <File source='/ajs/mo-design-system.js'/>
       </FileMerger>
       <FileMerger target='/ajs/me.js'>
          <File source='/ajs/mo-lang.js'/>
@@ -307,7 +307,7 @@
          <File source='/ajs/mo-engine.js'/>
          <File source='/ajs/mo-ui.js'/>
          <File source='/ajs/mo-gui.js'/>
-         <File source='/ajs/mo-control.js'/>
+         <File source='/ajs/mo-dui.js'/>
          <File source='/ajs/mo-design.js'/>
          <File source='/ajs/mo-design-logic.js'/>
       </FileMerger>
