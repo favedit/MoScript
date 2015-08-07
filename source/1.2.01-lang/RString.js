@@ -891,6 +891,56 @@ MO.RString.prototype.removeChars = function RString_removeChars(v, s){
    }
    return v;
 }
+//==========================================================
+// <T>格式化</T>
+//
+// @method
+// @param formats:value:String 显示字符格式
+// @param v:value:String 字符串
+// @return String 删除后的字符串
+//==========================================================
+MO.RString.prototype.format = function RString_format(formats, value){
+    // 判断是否为数字
+     var floatVal = parseFloat(value);
+  if (!isNaN(floatVal) && isFinite(value)) {
+      var formatStr = formats.toString();
+      var formatsLe = formatStr.length;
+      var indexOf = formatStr.indexOf(".");
+      var after = formatsLe - indexOf - 1;
+      var str = "";
+      var string = null;
+      var round = Math.round(floatVal * Math.pow(10, after)) / Math.pow(10, after);
+      var roundStr = round.toString();
+      var roundLe = roundStr.length;
+      var roundIndex = roundStr.indexOf(".");
+      var roundAfter = roundLe - roundIndex - 1;
+      var poor = after-roundAfter;
+
+      if( indexOf != -1){
+        if(  roundIndex == -1){
+          for(var i = 0;i < after; i++){
+            str += "0";
+          }
+          string = round + "." + str;
+        }else{
+          if( after == roundAfter  ){
+            string = round;
+          }else {
+
+          for(var i=0;i < poor ;i++){
+            str+="0";
+          }
+            string = round + str;
+          }
+        }
+
+      }else{
+        string = Math.round(round);
+      }
+      return string;
+    }
+}
+
 //..........................................................
 // 实例化内容
 MO.RString = new MO.RString();
