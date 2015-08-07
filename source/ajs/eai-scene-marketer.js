@@ -310,10 +310,8 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       var logoBar = o._logoBar;
       var investmentTotal = logoBar.findComponent('investmentTotal');
       var invementTotalCurrent = o._processor.invementTotalCurrent();
-      investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
       var investmentDay = logoBar.findComponent('investmentDay');
       var invementDayCurrent = o._processor.invementDayCurrent();
-      investmentDay.setValue(parseInt(invementDayCurrent).toString());
       if(o._nowTicker.process()){
          var bar = o._logoBar;
          var date = o._nowDate;

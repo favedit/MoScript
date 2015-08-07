@@ -7183,10 +7183,8 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       var logoBar = o._logoBar;
       var investmentTotal = logoBar.findComponent('investmentTotal');
       var invementTotalCurrent = o._processor.invementTotalCurrent();
-      investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
       var investmentDay = logoBar.findComponent('investmentDay');
       var invementDayCurrent = o._processor.invementDayCurrent();
-      investmentDay.setValue(parseInt(invementDayCurrent).toString());
       if(o._nowTicker.process()){
          var bar = o._logoBar;
          var date = o._nowDate;
@@ -8517,12 +8515,12 @@ MO.FEaiChartDesktop_construct = function FEaiChartDesktop_construct(){
 MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    var o = this;
    o.__base.FEaiDesktop.build.call(o, hPanel);
-   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   var canvas3d = o._canvas3d = MO.Class.create(MO.FEaiChartCanvas);
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
    o.canvasRegister(canvas3d);
-   var canvas2d = o._canvas2d = MO.RClass.create(MO.FUiCanvas);
+   var canvas2d = o._canvas2d = MO.Class.create(MO.FGuiCanvas);
    canvas2d.setDesktop(o);
    canvas2d.build(hPanel);
    canvas2d.setPanel(hPanel);

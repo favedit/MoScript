@@ -78,13 +78,13 @@ MO.FEaiChartDesktop_build = function FEaiChartDesktop_build(hPanel){
    var o = this;
    o.__base.FEaiDesktop.build.call(o, hPanel);
    // 创建3D画板
-   var canvas3d = o._canvas3d = MO.RClass.create(MO.FEaiChartCanvas);
+   var canvas3d = o._canvas3d = MO.Class.create(MO.FEaiChartCanvas);
    canvas3d.setDesktop(o);
    canvas3d.build(hPanel);
    canvas3d.setPanel(hPanel);
    o.canvasRegister(canvas3d);
    // 创建2D画板
-   var canvas2d = o._canvas2d = MO.RClass.create(MO.FUiCanvas);
+   var canvas2d = o._canvas2d = MO.Class.create(MO.FGuiCanvas);
    canvas2d.setDesktop(o);
    canvas2d.build(hPanel);
    canvas2d.setPanel(hPanel);

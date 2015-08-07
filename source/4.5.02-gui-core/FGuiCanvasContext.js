@@ -5,15 +5,15 @@
 // @author maocy
 // @history 150805
 //==========================================================
-MO.FUiCanvasContext = function FUiCanvasContext(o) {
+MO.FGuiCanvasContext = function FGuiCanvasContext(o) {
    o = MO.Class.inherits(this, o, MO.FG2dCanvasContext);
    //..........................................................
    // @method
-   o.construct    = MO.FUiCanvasContext_construct;
+   o.construct    = MO.FGuiCanvasContext_construct;
    // @method
-   o.drawFontText = MO.FUiCanvasContext_drawFontText;
+   o.drawFontText = MO.FGuiCanvasContext_drawFontText;
    // @method
-   o.dispose      = MO.FUiCanvasContext_dispose;
+   o.dispose      = MO.FGuiCanvasContext_dispose;
    return o;
 }
 
@@ -22,7 +22,7 @@ MO.FUiCanvasContext = function FUiCanvasContext(o) {
 //
 // @method
 //==========================================================
-MO.FUiCanvasContext_construct = function FUiCanvasContext_construct() {
+MO.FGuiCanvasContext_construct = function FGuiCanvasContext_construct() {
    var o = this;
    o.__base.FG2dCanvasContext.construct.call(o);
 }
@@ -39,7 +39,7 @@ MO.FUiCanvasContext_construct = function FUiCanvasContext_construct() {
 // @param height:Integer 宽度
 // @param alignCd:EUiAlign 对齐方式
 //==========================================================
-MO.FUiCanvasContext_drawFontText = function FUiCanvasContext_drawFontText(text, font, x, y, width, height, alignCd){
+MO.FGuiCanvasContext_drawFontText = function FGuiCanvasContext_drawFontText(text, font, x, y, width, height, alignCd){
    var o = this;
    // 检查参数
    if(MO.Lang.String.isEmpty(text)){
@@ -70,7 +70,7 @@ MO.FUiCanvasContext_drawFontText = function FUiCanvasContext_drawFontText(text, 
 //
 // @method
 //==========================================================
-MO.FUiCanvasContext_dispose = function FUiCanvasContext_dispose() {
+MO.FGuiCanvasContext_dispose = function FGuiCanvasContext_dispose() {
    var o = this;
    o.__base.FG2dCanvasContext.dispose.call(o);
 }

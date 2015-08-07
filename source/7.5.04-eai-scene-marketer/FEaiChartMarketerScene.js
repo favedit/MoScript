@@ -170,11 +170,11 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       // 设置全部金额
       var investmentTotal = logoBar.findComponent('investmentTotal');
       var invementTotalCurrent = o._processor.invementTotalCurrent();
-      investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
+      //investmentTotal.setValue(parseInt(invementTotalCurrent).toString());
       // 设置当日金额
       var investmentDay = logoBar.findComponent('investmentDay');
       var invementDayCurrent = o._processor.invementDayCurrent();
-      investmentDay.setValue(parseInt(invementDayCurrent).toString());
+      //investmentDay.setValue(parseInt(invementDayCurrent).toString());
       //..........................................................
       // 更新时间
       if(o._nowTicker.process()){

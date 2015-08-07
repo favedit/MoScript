@@ -5,11 +5,11 @@
 // @author maocy
 // @history 150805
 //==========================================================
-MO.FUiCanvas = function FUiCanvas(o){
+MO.FGuiCanvas = function FGuiCanvas(o){
    o = MO.Class.inherits(this, o, MO.FE2dCanvas);
    //..........................................................
    // @method
-   o.createContext = MO.FUiCanvas_createContext;
+   o.createContext = MO.FGuiCanvas_createContext;
    return o;
 }
 
@@ -19,6 +19,6 @@ MO.FUiCanvas = function FUiCanvas(o){
 // @method
 // @return FG2dCanvasContext 绘制环境
 //==========================================================
-MO.FUiCanvas_createContext = function FUiCanvas_createContext(){
-   return MO.Class.create(MO.FUiCanvasContext);
+MO.FGuiCanvas_createContext = function FGuiCanvas_createContext(){
+   return MO.Class.create(MO.FGuiCanvasContext);
 }
