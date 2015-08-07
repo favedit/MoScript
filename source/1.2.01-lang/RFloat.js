@@ -103,6 +103,53 @@ MO.RFloat.prototype.format = function RFloat_format(v, l, lp, r, rp){
    return fl + '.' + fr;
 }
 
+//==========================================================
+// <T>格式化浮点数为指定格式字符串。</T>
+//
+// @method
+// @param parttern:value:String 显示字符格式
+// @param value:String 字符串
+// @return String 字符串
+//==========================================================
+MO.RFloat.prototype.formatParttern = function RFloat_formatParttern(value, parttern){
+    // 判断是否为数字
+   var floatVal = parseFloat(value);
+   if (!isNaN(floatVal) && isFinite(value)) {
+      var partternStr = parttern.toString();
+      var partternLe = partternStr.length;
+      var indexOf = partternStr.indexOf(".");
+      var after = partternLe - indexOf - 1;
+      var str = '';
+      var string = null;
+      var round = Math.round(floatVal * Math.pow(10, after)) / Math.pow(10, after);
+      var roundStr = round.toString();
+      var roundLe = roundStr.length;
+      var roundIndex = roundStr.indexOf(".");
+      var roundAfter = roundLe - roundIndex - 1;
+      var poor = after - roundAfter;
+      if(indexOf != -1){
+         if(roundIndex == -1){
+            for(var i = 0; i < after; i++){
+               str += '0';
+            }
+            string = round + '.' + str;
+         }else{
+            if(after == roundAfter){
+               string = round;
+            }else{
+               for(var i = 0; i < poor; i++){
+                  str += '0';
+               }
+               string = round + str;
+            }
+         }
+      }else{
+         string = Math.round(round);
+      }
+      return string;
+   }
+}
+
 //===========================================================
 // <T>格式化浮点数为指定格式。</T>
 //

@@ -1179,13 +1179,11 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
-   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1198,9 +1196,7 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
-   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
-   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1258,7 +1254,6 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -3292,7 +3287,6 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
-   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -3633,11 +3627,6 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
-   MO.Assert.debugNotNull(source);
-   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
-   MO.Assert.debugTrue(sourceCount <= source.length);
-   MO.Assert.debugNotNull(target);
-   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }
@@ -4242,7 +4231,6 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 }
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var name = null;
    if(value.constructor == String){
       name = value;
@@ -4275,7 +4263,6 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){
@@ -4744,6 +4731,43 @@ MO.RFloat.prototype.format = function RFloat_format(v, l, lp, r, rp){
    var fl = MO.Lang.String.lpad(sl, l, lp);
    var fr = MO.Lang.String.rpad(sr, r, rp);
    return fl + '.' + fr;
+}
+MO.RFloat.prototype.formatParttern = function RFloat_formatParttern(value, parttern){
+   var floatVal = parseFloat(value);
+   if (!isNaN(floatVal) && isFinite(value)) {
+      var partternStr = parttern.toString();
+      var partternLe = partternStr.length;
+      var indexOf = partternStr.indexOf(".");
+      var after = partternLe - indexOf - 1;
+      var str = '';
+      var string = null;
+      var round = Math.round(floatVal * Math.pow(10, after)) / Math.pow(10, after);
+      var roundStr = round.toString();
+      var roundLe = roundStr.length;
+      var roundIndex = roundStr.indexOf(".");
+      var roundAfter = roundLe - roundIndex - 1;
+      var poor = after - roundAfter;
+      if(indexOf != -1){
+         if(roundIndex == -1){
+            for(var i = 0; i < after; i++){
+               str += '0';
+            }
+            string = round + '.' + str;
+         }else{
+            if(after == roundAfter){
+               string = round;
+            }else{
+               for(var i = 0; i < poor; i++){
+                  str += '0';
+               }
+               string = round + str;
+            }
+         }
+      }else{
+         string = Math.round(round);
+      }
+      return string;
+   }
 }
 MO.RFloat.prototype.unitFormat = function RFloat_unitFormat(v, l, lp, r, rp, divide, unit) {
    var o = this;
@@ -5569,23 +5593,23 @@ MO.RString = function RString(){
    o.CodeUpperZ = 'Z'.charCodeAt(0);
    return o;
 }
-MO.RString.prototype.isEmpty = function RString_isEmpty(v){
-   if(v != null){
-      return (v.length == 0);
+MO.RString.prototype.isEmpty = function RString_isEmpty(value){
+   if(value != null){
+      return (value.length == 0);
    }
    return true;
 }
-MO.RString.prototype.isBlank = function RString_isBlank(v){
-   if(v != null){
-      return (v.trim().length == 0);
+MO.RString.prototype.isBlank = function RString_isBlank(value){
+   if(value != null){
+      return (value.trim().length == 0);
    }
    return true;
 }
-MO.RString.prototype.isAnsi = function RString_isAnsi(v){
-   if(v != null){
-      var c = v.length;
-      for(var n = 0; n < c; n++){
-         if(v.charCodeAt(n) > 255){
+MO.RString.prototype.isAnsi = function RString_isAnsi(value){
+   if(value != null){
+      var count = value.length;
+      for(var i = 0; i < count; i++){
+         if(value.charCodeAt(i) > 255){
             return false;
          }
       }
@@ -5593,11 +5617,11 @@ MO.RString.prototype.isAnsi = function RString_isAnsi(v){
    }
    return false;
 }
-MO.RString.prototype.isDbcs = function RString_isDbcs(v){
-   if(v == null){
-      var c = v.length;
-      for(var n = 0; n < c; n++){
-         if(value.charCodeAt(n) < 256){
+MO.RString.prototype.isDbcs = function RString_isDbcs(value){
+   if(value == null){
+      var count = value.length;
+      for(var i = 0; i < count; i++){
+         if(value.charCodeAt(i) < 256){
             return false;
          }
       }
@@ -5605,19 +5629,17 @@ MO.RString.prototype.isDbcs = function RString_isDbcs(v){
    }
    return false;
 }
-MO.RString.prototype.isPattern = function RString_isPattern(v, p){
-   if(v != null){
+MO.RString.prototype.isPattern = function RString_isPattern(value, parttern){
+   if(value != null){
       var o = this;
-      if(p == null){
-         p = '$a$A$f';
-      }
-      p = p.replace(/\a/g, o.LOWER);
-      p = p.replace(/\A/g, o.UPPER);
-      p = p.replace(/\f/g, MO.Lang.Float.NUMBER);
-      p = p.replace(/\n/g, MO.Lang.Integer.NUMBER);
-      var c = v.length;
-      for(var n = 0; n < c; n++){
-         if(p.indexOf(v.charAt(n)) == -1){
+      var source = (parttern == null) ? '$a$A$f' : parttern;
+      source = source.replace(/\a/g, o.LOWER);
+      source = source.replace(/\A/g, o.UPPER);
+      source = source.replace(/\f/g, MO.Lang.Float.NUMBER);
+      source = source.replace(/\n/g, MO.Lang.Integer.NUMBER);
+      var count = value.length;
+      for(var i = 0; i < count; i++){
+         if(source.indexOf(value.charAt(i)) == -1){
             return false;
          }
       }
@@ -5625,9 +5647,9 @@ MO.RString.prototype.isPattern = function RString_isPattern(v, p){
    }
    return false;
 }
-MO.RString.prototype.inChars = function RString_inChars(v, p){
+MO.RString.prototype.inChars = function RString_inChars(value, parttern){
    var o = this;
-   var b = o.findChars(p, v);
+   var b = o.findChars(parttern, value);
    if(b != -1){
       return true;
    }
