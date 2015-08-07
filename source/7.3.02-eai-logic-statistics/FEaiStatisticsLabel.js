@@ -45,8 +45,8 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    //设置剪裁范围
    graphic.clip(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
    // 设置字体
-   var textFont = 'bold 38px Microsoft YaHei';
-   var unitFont = 'bold 24px Microsoft YaHei';
+   var textFont = o._foreFont;
+   var unitFont = 'bold 18px Microsoft YaHei';
    graphic.setFont(textFont);
    //graphic._handle.textBaseline = 'bottom';
 
@@ -60,7 +60,6 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       passedTick = o._rollingDuration;
       o._rolling = false;
    }
-
    for (var i = 0; i < o._value.length; i++) {
       var passedValue = o._rollingPages.get(i) * (passedTick / o._rollingDuration);
       var numString = (parseInt(o._originValue.charAt(i)) + parseInt(passedValue)).toString();

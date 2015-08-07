@@ -16,6 +16,9 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o._invementDay          = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
    o._invementTotalCurrent = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal        = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
+   
+   o._dynamicInfo          = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+   
    o._intervalMinute       = 1;
    // @attribute
    o._mapEntity            = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
@@ -32,6 +35,7 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o._unitPool             = null;
    // @attribute
    o._autios               = null;
+   
    // @event
    o._eventDataChanged     = null;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
@@ -142,8 +146,8 @@ MO.FEaiChartMarketerProcessor_setup = function FEaiChartMarketerProcessor_setup(
 //==========================================================
 MO.FEaiChartMarketerProcessor_calculateCurrent = function FEaiChartMarketerProcessor_calculateCurrent(){
    var o = this;
-   //var invementDay = o._invementDay;
-   //var invementTotal = o._invementTotal;
+//   var invementDay = o._invementDay;
+//   var invementTotal = o._invementTotal;
    var units = o._units;
    var count = units.count();
    for(var i = 0; i < count; i++){
