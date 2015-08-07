@@ -34,13 +34,15 @@ MO.EDataType = new function EDataType(){
    o.Float64 = o.Double = 11;
    // @member 字符串
    o.String = 12;
+   // @member 结构
+   o.Struct = 13;
    // @member 对象
-   o.Object = 13;
+   o.Object = 14;
    // @member 数组集合
-   o.Array = 14;
+   o.Array = 15;
    // @member 对象集合
-   o.Objects = 15;
+   o.Objects = 16;
    // @member 字典集合
-   o.Dictionary = 16;
+   o.Dictionary = 17;
    return o;
 }

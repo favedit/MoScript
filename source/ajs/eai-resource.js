@@ -1,14 +1,8 @@
 MO.FEaiCardResource = function FEaiCardResource(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._code       = MO.Class.register(o, new MO.AGetter('_code'));
-   o._cityCode   = MO.Class.register(o, new MO.AGetter('_cityCode'));
-   o.unserialize = MO.FEaiCardResource_unserialize;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._code     = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.Uint16)]);
+   o._cityCode = MO.Class.register(o, [new MO.AGetter('_cityCode'), new MO.APersistence('_cityCode', MO.EDataType.Uint16)]);
    return o;
-}
-MO.FEaiCardResource_unserialize = function FEaiCardResource_unserialize(input){
-   var o = this;
-   o._code = input.readUint16();
-   o._cityCode = input.readUint16();
 }
 MO.FEaiCardResourceModule = function FEaiCardResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule);
@@ -52,34 +46,13 @@ MO.FEaiCardResourceModule_dispose = function FEaiCardResourceModule_dispose(){
    o.__base.FEaiResourceModule.dispose.call(o);
 }
 MO.FEaiCityResource = function FEaiCityResource(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._provinceCode  = MO.Class.register(o, new MO.AGetter('_provinceCode'));
-   o._code          = MO.Class.register(o, new MO.AGetter('_code'));
-   o._label         = MO.Class.register(o, new MO.AGetter('_label'));
-   o._level         = MO.Class.register(o, new MO.AGetter('_level'));
-   o._location      = MO.Class.register(o, new MO.AGetter('_location'));
-   o.construct      = MO.FEaiCityResource_construct;
-   o.unserialize    = MO.FEaiCityResource_unserialize;
-   o.dispose        = MO.FEaiCityResource_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._provinceCode = MO.Class.register(o, [new MO.AGetter('_provinceCode'), new MO.APersistence('_provinceCode', MO.EDataType.Uint16)]);
+   o._code         = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.Uint16)]);
+   o._label        = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
+   o._level        = MO.Class.register(o, [new MO.AGetter('_level'), new MO.APersistence('_level', MO.EDataType.Uint16)]);
+   o._location     = MO.Class.register(o, [new MO.AGetter('_location'), new MO.APersistence('_location', MO.EDataType.Struct, MO.SPoint2)]);
    return o;
-}
-MO.FEaiCityResource_construct = function FEaiCityResource_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._location = new MO.SPoint3();
-}
-MO.FEaiCityResource_unserialize = function FEaiCityResource_unserialize(input){
-   var o = this;
-   o._provinceCode = input.readUint16();
-   o._code = input.readUint16();
-   o._label = input.readString();
-   o._level = input.readUint16();
-   o._location.unserialize2(input);
-}
-MO.FEaiCityResource_dispose = function FEaiCityResource_dispose(){
-   var o = this;
-   o._location = RObject.dispose(o._location);
-   o.__base.FObject.dispose.call(o);
 }
 MO.FEaiCityResourceModule = function FEaiCityResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule);
@@ -124,6 +97,47 @@ MO.FEaiCityResourceModule_unserialize = function FEaiCityResourceModule_unserial
 MO.FEaiCityResourceModule_dispose = function FEaiCityResourceModule_dispose(){
    var o = this;
    o._citys = MO.Lang.Object.dispose(o._citys);
+   o.__base.FEaiResourceModule.dispose.call(o);
+}
+MO.FEaiDepartmentResource = function FEaiDepartmentResource(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._code      = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.String)]);
+   o._label     = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
+   o._fullLabel = MO.Class.register(o, [new MO.AGetter('_fullLabel'), new MO.APersistence('_fullLabel', MO.EDataType.String)]);
+   return o;
+}
+MO.FEaiDepartmentResourceModule = function FEaiDepartmentResourceModule(o){
+   o = MO.Class.inherits(this, o, MO.FEaiResourceModule, MO.MPersistence);
+   o._departments     = MO.Class.register(o, [new MO.AGetter('_departments'), new MO.APersistence('_departments', MO.EDataType.Objects, MO.FEaiDepartmentResource)]);
+   o.construct        = MO.FEaiDepartmentResourceModule_construct;
+   o.find             = MO.FEaiDepartmentResourceModule_find;
+   o.findByFullLabel  = MO.FEaiDepartmentResourceModule_findByFullLabel;
+   o.dispose          = MO.FEaiDepartmentResourceModule_dispose;
+   return o;
+}
+MO.FEaiDepartmentResourceModule_construct = function FEaiDepartmentResourceModule_construct(){
+   var o = this;
+   o.__base.FEaiResourceModule.construct.call(o);
+   o._departments = new MO.TObjects();
+}
+MO.FEaiDepartmentResourceModule_find = function FEaiDepartmentResourceModule_find(code){
+   return this._departments.get(code);
+}
+MO.FEaiDepartmentResourceModule_findByFullLabel = function FEaiDepartmentResourceModule_findByFullLabel(fullLabel) {
+   var o = this;
+   var departments = o._departments;
+   var count = departments.count();
+   for(var i = 0; i < count; i++){
+      var department = departments.at(i);
+      if(department.fullLabel() == fullLabel){
+         return department;
+      }
+   }
+   return null;
+}
+MO.FEaiDepartmentResourceModule_dispose = function FEaiDepartmentResourceModule_dispose(){
+   var o = this;
+   o._departments = MO.Lang.Object.dispose(o._departments);
    o.__base.FEaiResourceModule.dispose.call(o);
 }
 MO.FEaiHistoryCityResource = function FEaiHistoryCityResource(o){
@@ -543,22 +557,13 @@ MO.FEaiMapWorldResource_dispose = function FEaiMapWorldResource_dispose(){
    o.__base.FResourcePackage.dispose.call(o);
 }
 MO.FEaiProvinceResource = function FEaiProvinceResource(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._code         = MO.Class.register(o, new MO.AGetter('_code'));
-   o._name         = MO.Class.register(o, new MO.AGetter('_name'));
-   o._label        = MO.Class.register(o, new MO.AGetter('_label'));
-   o._typeCd       = MO.Class.register(o, new MO.AGetter('_typeCd'));
-   o._displayOrder = MO.Class.register(o, new MO.AGetter('_displayOrder'));
-   o.unserialize   = MO.FEaiProvinceResource_unserialize;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._code         = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.Uint16)]);
+   o._name         = MO.Class.register(o, [new MO.AGetter('_name'), new MO.APersistence('_name', MO.EDataType.String)]);
+   o._label        = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
+   o._typeCd       = MO.Class.register(o, [new MO.AGetter('_typeCd'), new MO.APersistence('_typeCd', MO.EDataType.String)]);
+   o._displayOrder = MO.Class.register(o, [new MO.AGetter('_displayOrder'), new MO.APersistence('_displayOrder', MO.EDataType.Uint16)]);
    return o;
-}
-MO.FEaiProvinceResource_unserialize = function FEaiProvinceResource_unserialize(input){
-   var o = this;
-   o._code = input.readUint16();
-   o._name = input.readString();
-   o._label = input.readString();
-   o._typeCd = input.readString();
-   o._displayOrder = input.readUint16();
 }
 MO.FEaiProvinceResourceModule = function FEaiProvinceResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule);
@@ -695,23 +700,24 @@ MO.FEaiResource_processLoad = function FEaiResource_processLoad(){
 }
 MO.FEaiResourceConsole = function FEaiResourceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener);
-   o._scopeCd        = MO.EScope.Local;
-   o._rateModule     = MO.Class.register(o, new MO.AGetter('_rateModule'));
-   o._provinceModule = MO.Class.register(o, new MO.AGetter('_provinceModule'));
-   o._cityModule     = MO.Class.register(o, new MO.AGetter('_cityModule'));
-   o._cardModule     = MO.Class.register(o, new MO.AGetter('_cardModule'));
-   o._historyModule  = MO.Class.register(o, new MO.AGetter('_historyModule'));
-   o._mapModule      = MO.Class.register(o, new MO.AGetter('_mapModule'));
-   o._loadListeners  = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
-   o._looper         = null;
-   o._thread         = null;
-   o._interval       = 100;
-   o.onLoad          = MO.FEaiResourceConsole_onLoad;
-   o.onProcess       = MO.FEaiResourceConsole_onProcess;
-   o.construct       = MO.FEaiResourceConsole_construct;
-   o.unserialize     = MO.FEaiResourceConsole_unserialize;
-   o.load            = MO.FEaiResourceConsole_load;
-   o.dispose         = MO.FEaiResourceConsole_dispose;
+   o._scopeCd          = MO.EScope.Local;
+   o._rateModule       = MO.Class.register(o, new MO.AGetter('_rateModule'));
+   o._provinceModule   = MO.Class.register(o, new MO.AGetter('_provinceModule'));
+   o._cityModule       = MO.Class.register(o, new MO.AGetter('_cityModule'));
+   o._cardModule       = MO.Class.register(o, new MO.AGetter('_cardModule'));
+   o._departmentModule = MO.Class.register(o, new MO.AGetter('_departmentModule'));
+   o._historyModule    = MO.Class.register(o, new MO.AGetter('_historyModule'));
+   o._mapModule        = MO.Class.register(o, new MO.AGetter('_mapModule'));
+   o._loadListeners    = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
+   o._looper           = null;
+   o._thread           = null;
+   o._interval         = 100;
+   o.onLoad            = MO.FEaiResourceConsole_onLoad;
+   o.onProcess         = MO.FEaiResourceConsole_onProcess;
+   o.construct         = MO.FEaiResourceConsole_construct;
+   o.unserialize       = MO.FEaiResourceConsole_unserialize;
+   o.load              = MO.FEaiResourceConsole_load;
+   o.dispose           = MO.FEaiResourceConsole_dispose;
    return o;
 }
 MO.FEaiResourceConsole_onProcess = function FEaiResourceConsole_onProcess(){
@@ -745,6 +751,7 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    o._provinceModule = MO.Class.create(MO.FEaiProvinceResourceModule);
    var cityConsole = o._cityModule = MO.Class.create(MO.FEaiCityResourceModule);
    o._cardModule = MO.Class.create(MO.FEaiCardResourceModule);
+   o._departmentModule = MO.Class.create(MO.FEaiDepartmentResourceModule);
    o._historyModule = MO.Class.create(MO.FEaiHistoryResourceModule);
    o._mapModule = MO.Class.create(MO.FEaiMapResourceModule);
    cityConsole.setResourceConsole(o);
@@ -759,6 +766,7 @@ MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(in
    o._provinceModule.unserialize(input);
    o._cityModule.unserialize(input);
    o._cardModule.unserialize(input);
+   o._departmentModule.unserialize(input);
 }
 MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(uri){
    var o = this;

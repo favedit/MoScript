@@ -25,6 +25,7 @@ MO.APersistence = function APersistence(name, dataCd, dataClass){
    o.dataCd        = MO.APersistence_dataCd;
    o.dataClass     = MO.APersistence_dataClass;
    // @method
+   o.newStruct     = MO.APersistence_newStruct;
    o.newInstance   = MO.APersistence_newInstance;
    // @method
    o.toString      = MO.APersistence_toString;
@@ -49,6 +50,16 @@ MO.APersistence_dataCd = function APersistence_dataCd(){
 //============================================================
 MO.APersistence_dataClass = function APersistence_dataClass(){
    return this._dataClass;
+}
+
+//============================================================
+// <T>创建结构。</T>
+//
+// @method
+// @return Object 结构
+//============================================================
+MO.APersistence_newStruct = function APersistence_newStruct(){
+   return new this._dataClass();
 }
 
 //============================================================

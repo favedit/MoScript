@@ -31,11 +31,18 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       var annotation = annotations.at(n);
       var dateCd = annotation.dataCd();
       var name = annotation.name();
-      if(dateCd == MO.EDataType.Object){
+      if(dateCd == MO.EDataType.Struct){
+         // 读取结构
+         var item = o[name];
+         if(!item){
+            item = o[name] = annotation.newStruct();
+         }
+         item.unserialize(input);
+      }else if(dateCd == MO.EDataType.Object){
          // 读取对象
-         var items = o[name];
-         if(!items){
-            items = o[name] = annotation.newInstance();
+         var item = o[name];
+         if(!item){
+            item = o[name] = annotation.newInstance();
          }
          item.unserialize(input);
       }else if(dateCd == MO.EDataType.Objects){

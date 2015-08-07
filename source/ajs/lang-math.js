@@ -1743,15 +1743,15 @@ MO.SPoint2_set = function SPoint2_set(x, y){
    o.x = x;
    o.y = y;
 }
-MO.SPoint2_serialize = function SPoint2_serialize(p){
+MO.SPoint2_serialize = function SPoint2_serialize(output){
    var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
+   output.writeFloat(o.x);
+   output.writeFloat(o.y);
 }
-MO.SPoint2_unserialize = function SPoint2_unserialize(p){
+MO.SPoint2_unserialize = function SPoint2_unserialize(input){
    var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
+   o.x = input.readFloat();
+   o.y = input.readFloat();
 }
 MO.SPoint2_parse = function SPoint2_parse(source){
    var o = this;

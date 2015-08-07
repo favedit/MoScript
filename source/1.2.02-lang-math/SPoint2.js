@@ -80,24 +80,24 @@ MO.SPoint2_set = function SPoint2_set(x, y){
 // <T>序列化数据到输出流里。</T>
 //
 // @method
-// @param p:input:FByteStream 数据流
+// @param output:MStream 数据流
 //==========================================================
-MO.SPoint2_serialize = function SPoint2_serialize(p){
+MO.SPoint2_serialize = function SPoint2_serialize(output){
    var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
+   output.writeFloat(o.x);
+   output.writeFloat(o.y);
 }
 
 //==========================================================
 // <T>从输入流里反序列化数据。</T>
 //
 // @method
-// @param p:input:FByteStream 数据流
+// @param input:MStream 数据流
 //==========================================================
-MO.SPoint2_unserialize = function SPoint2_unserialize(p){
+MO.SPoint2_unserialize = function SPoint2_unserialize(input){
    var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
+   o.x = input.readFloat();
+   o.y = input.readFloat();
 }
 
 //============================================================

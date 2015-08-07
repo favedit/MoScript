@@ -1534,6 +1534,37 @@ MO.AAnnotation_code = function AAnnotation_code(){
 MO.AAnnotation_value = function AAnnotation_value(){
    return null;
 }
+MO.AConstructor = function AConstructor(name, dataCd, dataClass){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Constructor;
+   o._inherit      = true;
+   o._ordered      = true;
+   o._dataCd       = dataCd;
+   o._dataClass    = dataClass;
+   o.dataCd        = MO.AConstructor_dataCd;
+   o.dataClass     = MO.AConstructor_dataClass;
+   return o;
+}
+MO.AConstructor_dataCd = function AConstructor_dataCd(){
+   return this._dataCd;
+}
+MO.AConstructor_dataClass = function AConstructor_dataClass(){
+   return this._dataClass;
+}
+MO.ADispose = function ADispose(name, disposeCd){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Dispose;
+   o._inherit      = true;
+   o._ordered      = true;
+   o._disposeCd    = disposeCd;
+   o.disposeCd     = MO.ADispose_disposeCd;
+   return o;
+}
+MO.ADispose_disposeCd = function ADispose_disposeCd(){
+   return this._disposeCd;
+}
 MO.AEnum = function AEnum(name, linker){
    var o = this;
    o.inherit    = true;
@@ -1667,14 +1698,16 @@ MO.ASource_toString = function ASource_toString(){
 }
 MO.EAnnotation = new function EAnnotation(){
    var o = this;
-   o.Source    = 'source';
-   o.Property  = 'property';
-   o.Persistence  = 'persistence';
-   o.Event     = 'enum';
-   o.Event     = 'event';
-   o.Linker    = 'linker';
-   o.Style     = 'style';
-   o.StyleIcon = 'icon';
+   o.Constructor = 'constructor';
+   o.Dispose     = 'dispose';
+   o.Source      = 'source';
+   o.Property    = 'property';
+   o.Persistence = 'persistence';
+   o.Event       = 'enum';
+   o.Event       = 'event';
+   o.Linker      = 'linker';
+   o.Style       = 'style';
+   o.StyleIcon   = 'icon';
    return o;
 }
 MO.EBoolean = new function EBoolean(){
@@ -1705,10 +1738,18 @@ MO.EDataType = new function EDataType(){
    o.Float32 = o.Float = 10;
    o.Float64 = o.Double = 11;
    o.String = 12;
-   o.Object = 13;
-   o.Array = 14;
-   o.Objects = 15;
-   o.Dictionary = 16;
+   o.Struct = 13;
+   o.Object = 14;
+   o.Array = 15;
+   o.Objects = 16;
+   o.Dictionary = 17;
+   return o;
+}
+MO.EDispose = new function EDispose(){
+   var o = this;
+   o.Null    = 0;
+   o.Dispose = 1;
+   o.Release = 2;
    return o;
 }
 MO.EEndian = new function EEndian(){
@@ -7784,15 +7825,15 @@ MO.SPoint2_set = function SPoint2_set(x, y){
    o.x = x;
    o.y = y;
 }
-MO.SPoint2_serialize = function SPoint2_serialize(p){
+MO.SPoint2_serialize = function SPoint2_serialize(output){
    var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
+   output.writeFloat(o.x);
+   output.writeFloat(o.y);
 }
-MO.SPoint2_unserialize = function SPoint2_unserialize(p){
+MO.SPoint2_unserialize = function SPoint2_unserialize(input){
    var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
+   o.x = input.readFloat();
+   o.y = input.readFloat();
 }
 MO.SPoint2_parse = function SPoint2_parse(source){
    var o = this;
@@ -9028,6 +9069,7 @@ MO.APersistence = function APersistence(name, dataCd, dataClass){
    o._dataClass    = dataClass;
    o.dataCd        = MO.APersistence_dataCd;
    o.dataClass     = MO.APersistence_dataClass;
+   o.newStruct     = MO.APersistence_newStruct;
    o.newInstance   = MO.APersistence_newInstance;
    o.toString      = MO.APersistence_toString;
    return o;
@@ -9037,6 +9079,9 @@ MO.APersistence_dataCd = function APersistence_dataCd(){
 }
 MO.APersistence_dataClass = function APersistence_dataClass(){
    return this._dataClass;
+}
+MO.APersistence_newStruct = function APersistence_newStruct(){
+   return new this._dataClass();
 }
 MO.APersistence_newInstance = function APersistence_newInstance(){
    return MO.Class.create(this._dataClass);
@@ -9989,10 +10034,16 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       var annotation = annotations.at(n);
       var dateCd = annotation.dataCd();
       var name = annotation.name();
-      if(dateCd == MO.EDataType.Object){
-         var items = o[name];
-         if(!items){
-            items = o[name] = annotation.newInstance();
+      if(dateCd == MO.EDataType.Struct){
+         var item = o[name];
+         if(!item){
+            item = o[name] = annotation.newStruct();
+         }
+         item.unserialize(input);
+      }else if(dateCd == MO.EDataType.Object){
+         var item = o[name];
+         if(!item){
+            item = o[name] = annotation.newInstance();
          }
          item.unserialize(input);
       }else if(dateCd == MO.EDataType.Objects){

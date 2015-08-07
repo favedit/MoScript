@@ -740,7 +740,12 @@ MO.FEaiChartMarketerTable_setRankUnits = function FEaiChartMarketerTable_setRank
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
       var row = grid.allocRow();
-      row.set('department_label', unit.departmentLabel());
+      var departmentLabel = unit.departmentLabel();
+      var department = MO.Console.find(MO.FEaiResourceConsole).departmentModule().findByFullLabel(departmentLabel);
+      if(department){
+         departmentLabel = department.label();
+      }
+      row.set('department_label', departmentLabel);
       row.set('marketer_label', unit.marketerLabel());
       row.set('investment_total', unit.investmentTotal());
       row.set('redemption_total', unit.redemptionTotal());
@@ -754,6 +759,11 @@ MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(un
    if(!unit){
       return null;
    }
+   var departmentLabel = unit.departmentLabel();
+   var department = MO.Console.find(MO.FEaiResourceConsole).departmentModule().findByFullLabel(departmentLabel);
+   if(department){
+      departmentLabel = department.label();
+   }
    var card = unit.customerCard();
    var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
    var cityLabel = '';
@@ -763,7 +773,7 @@ MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(un
    var grid = o._gridControl;
    var row = grid.allocRow();
    row.set('record_date', unit.recordDate());
-   row.set('department_label', unit.departmentLabel());
+   row.set('department_label', departmentLabel);
    row.set('marketer_label', unit.marketerLabel());
    row.set('customer_city', cityLabel);
    row.set('customer_info', unit.customerLabel() + ' - ' + unit.customerPhone());

@@ -6,60 +6,13 @@
 // @history 150618
 //==========================================================
 MO.FEaiCityResource = function FEaiCityResource(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
-   o._provinceCode  = MO.Class.register(o, new MO.AGetter('_provinceCode'));
-   o._code          = MO.Class.register(o, new MO.AGetter('_code'));
-   o._label         = MO.Class.register(o, new MO.AGetter('_label'));
-   o._level         = MO.Class.register(o, new MO.AGetter('_level'));
-   o._location      = MO.Class.register(o, new MO.AGetter('_location'));
-   //..........................................................
-   // @method
-   o.construct      = MO.FEaiCityResource_construct;
-   // @method
-   o.unserialize    = MO.FEaiCityResource_unserialize;
-   // @method
-   o.dispose        = MO.FEaiCityResource_dispose;
+   o._provinceCode = MO.Class.register(o, [new MO.AGetter('_provinceCode'), new MO.APersistence('_provinceCode', MO.EDataType.Uint16)]);
+   o._code         = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.Uint16)]);
+   o._label        = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
+   o._level        = MO.Class.register(o, [new MO.AGetter('_level'), new MO.APersistence('_level', MO.EDataType.Uint16)]);
+   o._location     = MO.Class.register(o, [new MO.AGetter('_location'), new MO.APersistence('_location', MO.EDataType.Struct, MO.SPoint2)]);
    return o;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCityResource_construct = function FEaiCityResource_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   // 设置属性
-   o._location = new MO.SPoint3();
-}
-
-//==========================================================
-// <T>从输入流反序列化数据。</T>
-//
-// @method
-// @param input:MStream 输入流
-//==========================================================
-MO.FEaiCityResource_unserialize = function FEaiCityResource_unserialize(input){
-   var o = this;
-   o._provinceCode = input.readUint16();
-   o._code = input.readUint16();
-   o._label = input.readString();
-   o._level = input.readUint16();
-   o._location.unserialize2(input);
-}
-
-//==========================================================
-// <T>释放处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCityResource_dispose = function FEaiCityResource_dispose(){
-   var o = this;
-   // 清空属性
-   o._location = RObject.dispose(o._location);
-   // 父处理
-   o.__base.FObject.dispose.call(o);
 }

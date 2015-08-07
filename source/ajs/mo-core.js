@@ -27,6 +27,7 @@ MO.APersistence = function APersistence(name, dataCd, dataClass){
    o._dataClass    = dataClass;
    o.dataCd        = MO.APersistence_dataCd;
    o.dataClass     = MO.APersistence_dataClass;
+   o.newStruct     = MO.APersistence_newStruct;
    o.newInstance   = MO.APersistence_newInstance;
    o.toString      = MO.APersistence_toString;
    return o;
@@ -36,6 +37,9 @@ MO.APersistence_dataCd = function APersistence_dataCd(){
 }
 MO.APersistence_dataClass = function APersistence_dataClass(){
    return this._dataClass;
+}
+MO.APersistence_newStruct = function APersistence_newStruct(){
+   return new this._dataClass();
 }
 MO.APersistence_newInstance = function APersistence_newInstance(){
    return MO.Class.create(this._dataClass);
@@ -988,10 +992,16 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       var annotation = annotations.at(n);
       var dateCd = annotation.dataCd();
       var name = annotation.name();
-      if(dateCd == MO.EDataType.Object){
-         var items = o[name];
-         if(!items){
-            items = o[name] = annotation.newInstance();
+      if(dateCd == MO.EDataType.Struct){
+         var item = o[name];
+         if(!item){
+            item = o[name] = annotation.newStruct();
+         }
+         item.unserialize(input);
+      }else if(dateCd == MO.EDataType.Object){
+         var item = o[name];
+         if(!item){
+            item = o[name] = annotation.newInstance();
          }
          item.unserialize(input);
       }else if(dateCd == MO.EDataType.Objects){

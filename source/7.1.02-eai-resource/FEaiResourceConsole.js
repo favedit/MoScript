@@ -9,34 +9,35 @@ MO.FEaiResourceConsole = function FEaiResourceConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener);
    //..........................................................
    // @attribute
-   o._scopeCd        = MO.EScope.Local;
+   o._scopeCd          = MO.EScope.Local;
    // @attribute
-   o._rateModule     = MO.Class.register(o, new MO.AGetter('_rateModule'));
-   o._provinceModule = MO.Class.register(o, new MO.AGetter('_provinceModule'));
-   o._cityModule     = MO.Class.register(o, new MO.AGetter('_cityModule'));
-   o._cardModule     = MO.Class.register(o, new MO.AGetter('_cardModule'));
-   o._historyModule  = MO.Class.register(o, new MO.AGetter('_historyModule'));
-   o._mapModule      = MO.Class.register(o, new MO.AGetter('_mapModule'));
+   o._rateModule       = MO.Class.register(o, new MO.AGetter('_rateModule'));
+   o._provinceModule   = MO.Class.register(o, new MO.AGetter('_provinceModule'));
+   o._cityModule       = MO.Class.register(o, new MO.AGetter('_cityModule'));
+   o._cardModule       = MO.Class.register(o, new MO.AGetter('_cardModule'));
+   o._departmentModule = MO.Class.register(o, new MO.AGetter('_departmentModule'));
+   o._historyModule    = MO.Class.register(o, new MO.AGetter('_historyModule'));
+   o._mapModule        = MO.Class.register(o, new MO.AGetter('_mapModule'));
    // @attribute
-   o._loadListeners  = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
+   o._loadListeners    = MO.Class.register(o, new MO.AListener('_loadListeners', MO.EEvent.Load));
    // @attribute
-   o._looper         = null;
+   o._looper           = null;
    // @attribute
-   o._thread         = null;
-   o._interval       = 100;
+   o._thread           = null;
+   o._interval         = 100;
    //..........................................................
    // @event
-   o.onLoad          = MO.FEaiResourceConsole_onLoad;
+   o.onLoad            = MO.FEaiResourceConsole_onLoad;
    // @event
-   o.onProcess       = MO.FEaiResourceConsole_onProcess;
+   o.onProcess         = MO.FEaiResourceConsole_onProcess;
    //..........................................................
    // @method
-   o.construct       = MO.FEaiResourceConsole_construct;
+   o.construct         = MO.FEaiResourceConsole_construct;
    // @method
-   o.unserialize     = MO.FEaiResourceConsole_unserialize;
-   o.load            = MO.FEaiResourceConsole_load;
+   o.unserialize       = MO.FEaiResourceConsole_unserialize;
+   o.load              = MO.FEaiResourceConsole_load;
    // @method
-   o.dispose         = MO.FEaiResourceConsole_dispose;
+   o.dispose           = MO.FEaiResourceConsole_dispose;
    return o;
 }
 
@@ -97,6 +98,7 @@ MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    o._provinceModule = MO.Class.create(MO.FEaiProvinceResourceModule);
    var cityConsole = o._cityModule = MO.Class.create(MO.FEaiCityResourceModule);
    o._cardModule = MO.Class.create(MO.FEaiCardResourceModule);
+   o._departmentModule = MO.Class.create(MO.FEaiDepartmentResourceModule);
    o._historyModule = MO.Class.create(MO.FEaiHistoryResourceModule);
    o._mapModule = MO.Class.create(MO.FEaiMapResourceModule);
    // 设置属性
@@ -120,6 +122,7 @@ MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(in
    o._provinceModule.unserialize(input);
    o._cityModule.unserialize(input);
    o._cardModule.unserialize(input);
+   o._departmentModule.unserialize(input);
 }
 
 //==========================================================

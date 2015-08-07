@@ -35,6 +35,37 @@ MO.AAnnotation_code = function AAnnotation_code(){
 MO.AAnnotation_value = function AAnnotation_value(){
    return null;
 }
+MO.AConstructor = function AConstructor(name, dataCd, dataClass){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Constructor;
+   o._inherit      = true;
+   o._ordered      = true;
+   o._dataCd       = dataCd;
+   o._dataClass    = dataClass;
+   o.dataCd        = MO.AConstructor_dataCd;
+   o.dataClass     = MO.AConstructor_dataClass;
+   return o;
+}
+MO.AConstructor_dataCd = function AConstructor_dataCd(){
+   return this._dataCd;
+}
+MO.AConstructor_dataClass = function AConstructor_dataClass(){
+   return this._dataClass;
+}
+MO.ADispose = function ADispose(name, disposeCd){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Dispose;
+   o._inherit      = true;
+   o._ordered      = true;
+   o._disposeCd    = disposeCd;
+   o.disposeCd     = MO.ADispose_disposeCd;
+   return o;
+}
+MO.ADispose_disposeCd = function ADispose_disposeCd(){
+   return this._disposeCd;
+}
 MO.AEnum = function AEnum(name, linker){
    var o = this;
    o.inherit    = true;
@@ -168,14 +199,16 @@ MO.ASource_toString = function ASource_toString(){
 }
 MO.EAnnotation = new function EAnnotation(){
    var o = this;
-   o.Source    = 'source';
-   o.Property  = 'property';
-   o.Persistence  = 'persistence';
-   o.Event     = 'enum';
-   o.Event     = 'event';
-   o.Linker    = 'linker';
-   o.Style     = 'style';
-   o.StyleIcon = 'icon';
+   o.Constructor = 'constructor';
+   o.Dispose     = 'dispose';
+   o.Source      = 'source';
+   o.Property    = 'property';
+   o.Persistence = 'persistence';
+   o.Event       = 'enum';
+   o.Event       = 'event';
+   o.Linker      = 'linker';
+   o.Style       = 'style';
+   o.StyleIcon   = 'icon';
    return o;
 }
 MO.EBoolean = new function EBoolean(){
@@ -206,10 +239,18 @@ MO.EDataType = new function EDataType(){
    o.Float32 = o.Float = 10;
    o.Float64 = o.Double = 11;
    o.String = 12;
-   o.Object = 13;
-   o.Array = 14;
-   o.Objects = 15;
-   o.Dictionary = 16;
+   o.Struct = 13;
+   o.Object = 14;
+   o.Array = 15;
+   o.Objects = 16;
+   o.Dictionary = 17;
+   return o;
+}
+MO.EDispose = new function EDispose(){
+   var o = this;
+   o.Null    = 0;
+   o.Dispose = 1;
+   o.Release = 2;
    return o;
 }
 MO.EEndian = new function EEndian(){
