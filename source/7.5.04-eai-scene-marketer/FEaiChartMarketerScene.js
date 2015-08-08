@@ -179,9 +179,9 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
          // 净投总金额     
          var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
          netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
-         // 利息总金额
-         var interestTotal = logoBar.findComponent('interestTotal');
-         interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
+//         // 利息总金额
+//         var interestTotal = logoBar.findComponent('interestTotal');
+//         interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
       }
       //..........................................................
       // 更新时间
