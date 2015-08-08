@@ -16074,8 +16074,12 @@ MO.FDuiTreeNode_set = function FDuiTreeNode_set(n, v){
 }
 MO.FDuiTreeNode_isFolder = function FDuiTreeNode_isFolder(){
    var o = this;
-   var t = o.type();
-   return t.storage() == 'collections';
+   var type = o.type();
+   if(type){
+      var storage = type.storage()
+      return storage == 'collections';
+   }
+   return false;
 }
 MO.FDuiTreeNode_hasChild = function FDuiTreeNode_hasChild(){
    var o = this;

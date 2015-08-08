@@ -168,24 +168,20 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       // 设置数据
       var logoBar = o._logoBar;
       // 获取所有信息
-      var dynamicInfo = o._processor.dynamicInfo();
-      if (dynamicInfo.investmentTotal() > 0) {
+      var processor = o._processor;
+      if(processor.invementDayCurrent() > 0){
          // 投资总金额
          var investmentTotal = logoBar.findComponent('investmentTotal');
-         var investmentTotalCurrent = dynamicInfo.investmentTotal();
-         investmentTotal.setValue(parseInt(investmentTotalCurrent).toString());
+         investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
          // 赎回总金额
          var redemptionTotal = logoBar.findComponent('redemptionTotal');
-         var redemptionTotalCurrent = dynamicInfo.redemptionTotal();
-         redemptionTotal.setValue(parseInt(redemptionTotalCurrent).toString());
+         redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
          // 净投总金额     
          var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
-         var netinvestmentTotalCurrent = dynamicInfo.netinvestmentTotal();
-         netinvestmentTotal.setValue(parseInt(netinvestmentTotalCurrent).toString());
+         netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
          // 利息总金额
          var interestTotal = logoBar.findComponent('interestTotal');
-         var interestTotalCurrent = dynamicInfo.interestTotal();
-         interestTotal.setValue(parseInt(interestTotalCurrent).toString());
+         interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
       }
       //..........................................................
       // 更新时间

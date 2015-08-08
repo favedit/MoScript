@@ -37117,6 +37117,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._foreColor              = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
    o._foreFont               = MO.Class.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
    o._backColor              = MO.Class.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
+   o._backFont               = MO.Class.register(o, [new MO.APtyString('_backFont'), new MO.AGetSet('_backFont')]);
    o._backResource           = MO.Class.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
    o._backGrid               = MO.Class.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
    o._backHoverColor         = MO.Class.register(o, [new MO.APtyString('_backHoverColor'), new MO.AGetSet('_backHoverColor')]);
@@ -55223,8 +55224,12 @@ MO.FDuiTreeNode_set = function FDuiTreeNode_set(n, v){
 }
 MO.FDuiTreeNode_isFolder = function FDuiTreeNode_isFolder(){
    var o = this;
-   var t = o.type();
-   return t.storage() == 'collections';
+   var type = o.type();
+   if(type){
+      var storage = type.storage()
+      return storage == 'collections';
+   }
+   return false;
 }
 MO.FDuiTreeNode_hasChild = function FDuiTreeNode_hasChild(){
    var o = this;

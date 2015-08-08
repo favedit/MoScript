@@ -9,52 +9,60 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._dateSetup            = false;
-   o._beginDate            = MO.Class.register(o, new MO.AGetter('_beginDate'));
-   o._endDate              = MO.Class.register(o, new MO.AGetter('_endDate'));
-   o._invementDayCurrent   = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
-   o._invementDay          = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
-   o._invementTotalCurrent = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
-   o._invementTotal        = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
+   o._dateSetup               = false;
+   // @attribute
+   o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
+   o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
+   // @attribute
+   o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
+   o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
+   o._netinvestmentDayCurrent = MO.Class.register(o, new MO.AGetter('_netinvestmentDayCurrent'), 0);
+   o._interestDayCurrent      = MO.Class.register(o, new MO.AGetter('_interestDayCurrent'), 0);
+   o._performanceDayCurrent   = MO.Class.register(o, new MO.AGetter('_performanceDayCurrent'), 0);
+   o._customerDayCurrent      = MO.Class.register(o, new MO.AGetter('_customerDayCurrent'), 0);
+
+   o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
+   o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
+   o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
    
-   o._dynamicInfo          = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+   o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
    
-   o._intervalMinute       = 1;
+   o._intervalMinute          = 1;
    // @attribute
-   o._mapEntity            = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
-   o._display              = MO.Class.register(o, new MO.AGetter('_display'));
+   o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
+   o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
    // @attribute
-   o._rankUnits            = MO.Class.register(o, new MO.AGetter('_rankUnits'));
-   o._units                = MO.Class.register(o, new MO.AGetter('_units'));
+   o._rankUnits               = MO.Class.register(o, new MO.AGetter('_rankUnits'));
+   o._units                   = MO.Class.register(o, new MO.AGetter('_units'));
    // @attribute
-   o._tableCount           = 40;
-   o._tableInterval        = 1000;
-   o._tableTick            = 1;
-   o._dataTicker           = null;
+   o._tableCount              = 40;
+   o._tableInterval           = 1000;
+   o._tableTick               = 1;
+   o._dataTicker              = null;
    // @attribute
-   o._unitPool             = null;
+   o._unitPool                = null;
    // @attribute
-   o._autios               = null;
+   o._autios                  = null;
    
    // @event
-   o._eventDataChanged     = null;
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._eventDataChanged        = null;
+   o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @method
-   o.onDynamicData         = MO.FEaiChartMarketerProcessor_onDynamicData;
+   o.onDynamicData            = MO.FEaiChartMarketerProcessor_onDynamicData;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiChartMarketerProcessor_construct;
+   o.construct                = MO.FEaiChartMarketerProcessor_construct;
    // @method
-   o.allocUnit             = MO.FEaiChartMarketerProcessor_allocUnit;
-   o.allocShape            = MO.FEaiChartMarketerProcessor_allocShape;
-   o.setup                 = MO.FEaiChartMarketerProcessor_setup;
+   o.allocUnit                = MO.FEaiChartMarketerProcessor_allocUnit;
+   o.allocShape               = MO.FEaiChartMarketerProcessor_allocShape;
+   o.setup                    = MO.FEaiChartMarketerProcessor_setup;
    // @method
-   o.calculateCurrent      = MO.FEaiChartMarketerProcessor_calculateCurrent;
-   o.focusEntity           = MO.FEaiChartMarketerProcessor_focusEntity;
-   o.process               = MO.FEaiChartMarketerProcessor_process;
+   o.calculateCurrent         = MO.FEaiChartMarketerProcessor_calculateCurrent;
+   o.focusEntity              = MO.FEaiChartMarketerProcessor_focusEntity;
+   o.process                  = MO.FEaiChartMarketerProcessor_process;
    // @method
-   o.dispose               = MO.FEaiChartMarketerProcessor_dispose;
+   o.dispose                  = MO.FEaiChartMarketerProcessor_dispose;
    return o;
 }
 
@@ -146,24 +154,31 @@ MO.FEaiChartMarketerProcessor_setup = function FEaiChartMarketerProcessor_setup(
 //==========================================================
 MO.FEaiChartMarketerProcessor_calculateCurrent = function FEaiChartMarketerProcessor_calculateCurrent(){
    var o = this;
-//   var invementDay = o._invementDay;
-//   var invementTotal = o._invementTotal;
+   var info = o._dynamicInfo;
+   var investmentCurrent = info.investmentCount();
+   var redemptionCurrent = info.redemptionCount();
+   var interestCount = info.interestCount();
+   var performanceCurrent = info.performanceCount();
    var units = o._units;
    var count = units.count();
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
+      var actionCd = unit.customerActionCd();
       var amount = unit.customerActionAmount();
-      //invementDay -= amount;
-      //invementTotal -= amount;
+      var interest = unit.customerActionInterest();
+      if(actionCd == 1){
+         investmentCurrent -= amount;
+         performanceCurrent -= amount;
+      }else if(actionCd == 2){
+         redemptionCurrent -= amount;
+         interestCount -= interest;
+      }
    }
-   //o._invementDayCurrent = Math.max(invementDay, 0);
-   //o._invementTotalCurrent = Math.max(invementTotal, 0);
-   //if(invementDay > o._invementDayCurrent){
-   //   o._invementDayCurrent = invementDay;
-   //}
-   //if(invementTotal > o._invementTotalCurrent){
-   //   o._invementTotalCurrent = invementTotal;
-   //}
+   o._invementDayCurrent = investmentCurrent;
+   o._redemptionDayCurrent = redemptionCurrent;
+   o._netinvestmentDayCurrent = investmentCurrent - redemptionCurrent;
+   o._interestDayCurrent = interestCount;
+   o._performanceDayCurrent = performanceCurrent;
 }
 
 //==========================================================

@@ -65,7 +65,8 @@
       // 设置环境
       MO.Console.find(MO.FE3sVendorConsole).setup('net');
       MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.ServiceHost, 'http://115.28.201.170');
-      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://eai.ezubo.com:8089');
+      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://eai.ezubo.com:8089');
+      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://localhost:8099');
       MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
       // 设置日志
       // MO.Console.find(MO.FLoggerConsole).connect('ws://10.21.0.128:8080/logger');
