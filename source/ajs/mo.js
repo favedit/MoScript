@@ -74483,6 +74483,93 @@ MO.FEditorDsTabBar_dispose = function FEditorDsTabBar_dispose(){
    var o = this;
    o.__base.FDuiTabBar.dispose.call(o);
 }
+MO.FEditorFrameSet = function FEditorFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FDuiFrameSet);
+   o._styleToolBarGround   = MO.Class.register(o, new MO.AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+   o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
+   o._styleCanvasContent   = MO.Class.register(o, new MO.AStyle('_styleCanvasContent', 'Canvas_Content'));
+   o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
+   o._activeGuid           = null;
+   o._activeCode           = null;
+   o._activeSpace          = null;
+   o._propertyFrames       = MO.Class.register(o, new MO.AGetter('_propertyFrames'));
+   o.construct             = MO.FEditorFrameSet_construct;
+   o.findPropertyFrame     = MO.FEditorFrameSet_findPropertyFrame;
+   o.hidePropertyFrames    = MO.FEditorFrameSet_hidePropertyFrames;
+   o.dispose               = MO.FEditorFrameSet_dispose;
+   return o;
+}
+MO.FEditorFrameSet_construct = function FEditorFrameSet_construct(){
+   var o = this;
+   o.__base.FDuiFrameSet.construct.call(o);
+   o._propertyFrames = new MO.TDictionary();
+}
+MO.FEditorFrameSet_findPropertyFrame = function FEditorFrameSet_findPropertyFrame(code){
+   var o = this;
+   var frame = o._propertyFrames.get(code);
+   if(!frame){
+      frame = MO.Console.find(MO.FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
+      frame._frameSet = o;
+      o._propertyFrames.set(code, frame);
+   }
+   return frame;
+}
+MO.FEditorFrameSet_hidePropertyFrames = function FEditorFrameSet_hidePropertyFrames(){
+   var o = this;
+   var frames = o._propertyFrames;
+   var count = frames.count();
+   for(var i = 0; i < count; i++){
+      var frame = frames.at(i);
+      frame.hide();
+   }
+}
+MO.FEditorFrameSet_dispose = function FEditorFrameSet_dispose(){
+   var o = this;
+   o._activeSpace = null;
+   o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames, true);
+   o.__base.FDuiFrameSet.dispose.call(o);
+}
+MO.FEditorGuiManage = function FEditorGuiManage(o){
+   o = MO.Class.inherits(this, o, MO.FGuiCanvasManage);
+   o.construct = MO.FEditorGuiManage_construct;
+   o.dispose   = MO.FEditorGuiManage_dispose;
+   return o;
+}
+MO.FEditorGuiManage_construct = function FEditorGuiManage_construct(){
+   var o = this;
+   o.__base.FGuiCanvasManage.construct.call(o);
+}
+MO.FEditorGuiManage_dispose = function FEditorGuiManage_dispose(){
+   var o = this;
+   o.__base.FGuiCanvasManage.dispose.call(o);
+}
+MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FEditorFrameSet);
+   o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
+   o._styleSpaceContent    = MO.Class.register(o, new MO.AStyle('_styleSpaceContent', 'Space_Content'));
+   o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
+   o._frameCatalog         = null;
+   o._frameCatalogToolbar  = null;
+   o._frameCatalogContent  = null;
+   o._frameSpace           = null;
+   o._frameSpaceToolbar    = null;
+   o._frameSpaceContent    = null;
+   o._frameProperty        = null;
+   o._framePropertyToolbar = null;
+   o._framePropertyContent = null;
+   o.construct             = MO.FEditorDsFrameSet_construct;
+   o.dispose               = MO.FEditorDsFrameSet_dispose;
+   return o;
+}
+MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
+   var o = this;
+   o.__base.FEditorFrameSet.construct.call(o);
+}
+MO.FEditorDsFrameSet_dispose = function FEditorDsFrameSet_dispose(){
+   var o = this;
+   o.__base.FEditorFrameSet.dispose.call(o);
+}
 MO.FEditorDsWorkspace = function FEditorDsWorkspace(o){
    o = MO.Class.inherits(this, o, MO.FDuiWorkspace, MO.MUiStorage);
    o._frameName            = 'editor.design.Workspace';
@@ -74629,93 +74716,6 @@ MO.FEditorDsWorkspace_dispose = function FEditorDsWorkspace_dispose(){
    var o = this;
    o._frameSets = RObject.dispose(o._frameSets, true);
    o.__base.FDuiWorkspace.dispose.call(o);
-}
-MO.FEditorFrameSet = function FEditorFrameSet(o){
-   o = MO.Class.inherits(this, o, MO.FDuiFrameSet);
-   o._styleToolBarGround   = MO.Class.register(o, new MO.AStyle('_styleToolBarGround', 'ToolBar_Ground'));
-   o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
-   o._styleCanvasContent   = MO.Class.register(o, new MO.AStyle('_styleCanvasContent', 'Canvas_Content'));
-   o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
-   o._activeGuid           = null;
-   o._activeCode           = null;
-   o._activeSpace          = null;
-   o._propertyFrames       = MO.Class.register(o, new MO.AGetter('_propertyFrames'));
-   o.construct             = MO.FEditorFrameSet_construct;
-   o.findPropertyFrame     = MO.FEditorFrameSet_findPropertyFrame;
-   o.hidePropertyFrames    = MO.FEditorFrameSet_hidePropertyFrames;
-   o.dispose               = MO.FEditorFrameSet_dispose;
-   return o;
-}
-MO.FEditorFrameSet_construct = function FEditorFrameSet_construct(){
-   var o = this;
-   o.__base.FDuiFrameSet.construct.call(o);
-   o._propertyFrames = new MO.TDictionary();
-}
-MO.FEditorFrameSet_findPropertyFrame = function FEditorFrameSet_findPropertyFrame(code){
-   var o = this;
-   var frame = o._propertyFrames.get(code);
-   if(!frame){
-      frame = MO.Console.find(MO.FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
-      frame._frameSet = o;
-      o._propertyFrames.set(code, frame);
-   }
-   return frame;
-}
-MO.FEditorFrameSet_hidePropertyFrames = function FEditorFrameSet_hidePropertyFrames(){
-   var o = this;
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.hide();
-   }
-}
-MO.FEditorFrameSet_dispose = function FEditorFrameSet_dispose(){
-   var o = this;
-   o._activeSpace = null;
-   o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames, true);
-   o.__base.FDuiFrameSet.dispose.call(o);
-}
-MO.FEditorGuiManage = function FEditorGuiManage(o){
-   o = MO.Class.inherits(this, o, MO.FGuiCanvasManage);
-   o.construct = MO.FEditorGuiManage_construct;
-   o.dispose   = MO.FEditorGuiManage_dispose;
-   return o;
-}
-MO.FEditorGuiManage_construct = function FEditorGuiManage_construct(){
-   var o = this;
-   o.__base.FGuiCanvasManage.construct.call(o);
-}
-MO.FEditorGuiManage_dispose = function FEditorGuiManage_dispose(){
-   var o = this;
-   o.__base.FGuiCanvasManage.dispose.call(o);
-}
-MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
-   o = MO.Class.inherits(this, o, MO.FEditorFrameSet);
-   o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
-   o._styleSpaceContent    = MO.Class.register(o, new MO.AStyle('_styleSpaceContent', 'Space_Content'));
-   o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
-   o._frameCatalog         = null;
-   o._frameCatalogToolbar  = null;
-   o._frameCatalogContent  = null;
-   o._frameSpace           = null;
-   o._frameSpaceToolbar    = null;
-   o._frameSpaceContent    = null;
-   o._frameProperty        = null;
-   o._framePropertyToolbar = null;
-   o._framePropertyContent = null;
-   o.construct             = MO.FEditorDsFrameSet_construct;
-   o.dispose               = MO.FEditorDsFrameSet_dispose;
-   return o;
-}
-MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
-   var o = this;
-   o.__base.FEditorFrameSet.construct.call(o);
-}
-MO.FEditorDsFrameSet_dispose = function FEditorDsFrameSet_dispose(){
-   var o = this;
-   o.__base.FEditorFrameSet.dispose.call(o);
 }
 MO.FEditorFrameDefineConsole = function FEditorFrameDefineConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);

@@ -91,7 +91,11 @@ MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcesso
    var units = o._units;
    units.append(dynamicInfo.units());
    var unitCount = units.count();
-   o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
+   if(unitCount){
+      o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
+   }else{
+      o._tableInterval = 1000 * 60 * o._intervalMinute;
+   }
    o._tableTick = 0;
    var changeEvent = o._eventDataChanged;
    changeEvent.rankUnits = rankUnits;
@@ -323,6 +327,7 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -349,8 +354,6 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
          redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
          var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
          netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
-         var interestTotal = logoBar.findComponent('interestTotal');
-         interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
       }
       if (o._nowTicker.process()) {
          var bar = o._logoBar;

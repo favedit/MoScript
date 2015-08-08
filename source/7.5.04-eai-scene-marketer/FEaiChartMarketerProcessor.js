@@ -83,7 +83,11 @@ MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcesso
    var units = o._units;
    units.append(dynamicInfo.units());
    var unitCount = units.count();
-   o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
+   if(unitCount){
+      o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
+   }else{
+      o._tableInterval = 1000 * 60 * o._intervalMinute;
+   }
    o._tableTick = 0;
    // 触发数据事件
    var changeEvent = o._eventDataChanged;

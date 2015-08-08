@@ -472,7 +472,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var baseX = rectangle.left;
    var baseY = rectangle.top + rectangle.height;
    var unitTextX = baseX + 6;
-   var unitTextY = baseY - 4;
+   var unitTextY = baseY - 2;
    var drawedText = '';
    var passedTick = MO.Timer.current() - o._startTick;
    if (passedTick > o._rollingDuration || o._noRolling) {
