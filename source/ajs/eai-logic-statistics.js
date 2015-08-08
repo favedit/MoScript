@@ -471,7 +471,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    graphic.setFont(textFont);
    var baseX = rectangle.left;
    var baseY = rectangle.top + rectangle.height;
-   var unitTextX = baseX + 6;
+   var unitTextX = baseX + 4;
    var unitTextY = baseY - 2;
    var drawedText = '';
    var passedTick = MO.Timer.current() - o._startTick;
@@ -490,11 +490,9 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       var textColor = '';
       if (i < o._originValue.length - 8) {
          textColor = '#FFD926';
-      }
-      else if (i < o._originValue.length - 4) {
+      }else if (i < o._originValue.length - 4) {
          textColor = '#FF7200';
-      }
-      else if (i < o._originValue.length) {
+      }else if (i < o._originValue.length) {
          textColor = '#FD0000';
       }
       graphic.drawText(currentNum, baseX + drawedTextWidth, baseY - 38 * rate, textColor);
@@ -505,14 +503,12 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
          graphic.setFont(unitFont);
          graphic.drawText('亿', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
          drawedText += '亿';
-      }
-      else if (i == o._originValue.length - 5) {
+      }else if (i == o._originValue.length - 5) {
          drawedTextWidth = graphic.textWidth(drawedText);
          graphic.setFont(unitFont);
          graphic.drawText('万', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
          drawedText += '万';
-      }
-      else if (i == o._originValue.length -1) {
+      }else if (i == o._originValue.length -1) {
          drawedTextWidth = graphic.textWidth(drawedText);
          graphic.setFont(unitFont);
          graphic.drawText('元', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
