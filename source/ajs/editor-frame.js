@@ -88,7 +88,7 @@ MO.FEditorDsFrameCatalogContent_onNodeClick = function FEditorDsFrameCatalogCont
 MO.FEditorDsFrameCatalogContent_construct = function FEditorDsFrameCatalogContent_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.frame');
+   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.frame');
 }
 MO.FEditorDsFrameCatalogContent_selectObject = function FEditorDsFrameCatalogContent_selectObject(item){
    var o = this;
@@ -800,6 +800,7 @@ MO.FEditorDsFrameSpaceContent_oeResize = function FEditorDsFrameSpaceContent_oeR
 MO.FEditorDsFrameSpaceContent_oeFrame = function FEditorDsFrameSpaceContent_oeFrame(event){
    var o = this;
    o.__base.FDuiControl.oeFrame.call(o, event);
+   return;
    o._guiManager.process();
    return MO.EEventStatus.Stop;
 }
@@ -814,7 +815,8 @@ MO.FEditorDsFrameSpaceContent_construct = function FEditorDsFrameSpaceContent_co
 }
 MO.FEditorDsFrameSpaceContent_build = function FEditorDsFrameSpaceContent_build(hPanel){
    var o = this;
-   var desktop = o._desktop = MO.Class.create(MO.FDssDesktop);
+   return;
+   var desktop = o._desktop = MO.Class.create(MO.FEditorDesktop);
    desktop.build(hPanel);
    o.linkGraphicContext(desktop.canvas3d());
    var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);

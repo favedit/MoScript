@@ -26,7 +26,7 @@ MO.FEditorDsPersistenceCatalogContent_onNodeClick = function FEditorDsPersistenc
 MO.FEditorDsPersistenceCatalogContent_construct = function FEditorDsPersistenceCatalogContent_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.persistence');
+   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.persistence');
 }
 MO.FEditorDsPersistenceCatalogContent_selectObject = function FEditorDsPersistenceCatalogContent_selectObject(item){
    var o = this;

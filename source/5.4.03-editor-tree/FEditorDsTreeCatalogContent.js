@@ -54,7 +54,7 @@ MO.FEditorDsTreeCatalogContent_construct = function FEditorDsTreeCatalogContent_
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
    // 加载定义
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.tree');
+   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.tree');
 }
 
 //==========================================================

@@ -302,6 +302,7 @@ MO.FEditorDsFrameSpaceContent_oeResize = function FEditorDsFrameSpaceContent_oeR
 MO.FEditorDsFrameSpaceContent_oeFrame = function FEditorDsFrameSpaceContent_oeFrame(event){
    var o = this;
    o.__base.FDuiControl.oeFrame.call(o, event);
+   return;
    // 界面处理
    o._guiManager.process();
    // 设置范围
@@ -330,8 +331,9 @@ MO.FEditorDsFrameSpaceContent_construct = function FEditorDsFrameSpaceContent_co
 //==========================================================
 MO.FEditorDsFrameSpaceContent_build = function FEditorDsFrameSpaceContent_build(hPanel){
    var o = this;
+   return;
    // 创建桌面
-   var desktop = o._desktop = MO.Class.create(MO.FDssDesktop);
+   var desktop = o._desktop = MO.Class.create(MO.FEditorDesktop);
    desktop.build(hPanel);
    o.linkGraphicContext(desktop.canvas3d());
    // 创建界面桌面

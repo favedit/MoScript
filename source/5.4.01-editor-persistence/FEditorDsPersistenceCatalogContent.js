@@ -54,7 +54,7 @@ MO.FEditorDsPersistenceCatalogContent_construct = function FEditorDsPersistenceC
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
    // 加载定义
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.persistence');
+   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.persistence');
 }
 
 //==========================================================

@@ -26,7 +26,7 @@ MO.FEditorDsTreeCatalogContent_onNodeClick = function FEditorDsTreeCatalogConten
 MO.FEditorDsTreeCatalogContent_construct = function FEditorDsTreeCatalogContent_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.tree');
+   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.tree');
 }
 MO.FEditorDsTreeCatalogContent_selectObject = function FEditorDsTreeCatalogContent_selectObject(item){
    var o = this;
