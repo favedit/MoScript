@@ -26,7 +26,7 @@ MO.FEditorDsListCatalogContent_onNodeClick = function FEditorDsListCatalogConten
 MO.FEditorDsListCatalogContent_construct = function FEditorDsListCatalogContent_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.list');
+   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.list');
 }
 MO.FEditorDsListCatalogContent_selectObject = function FEditorDsListCatalogContent_selectObject(item){
    var o = this;
@@ -204,32 +204,101 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
 }
 MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, controlName){
    var o = this;
-   var activeFrame = o._spaceContent._activeFrame;
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.hide();
-   }
+   o.hidePropertyFrames();
    var frame = o.findPropertyFrame(propertyFrame);
    frame.show();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      frame.loadObject(activeFrame, activeFrame);
-   }else{
-      var activeControl = activeFrame.findComponent(controlName);
-      frame.loadObject(activeFrame, activeControl);
-      o._spaceContent.selectControl(activeControl);
-   }
 }
 MO.FEditorDsListFrameSet_load = function FEditorDsListFrameSet_load(name){
    var o = this;
-   if(name){
-      o._spaceContent.loadFrame(name);
-   }
 }
 MO.FEditorDsListFrameSet_dispose = function FEditorDsListFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
+}
+MO.FEditorDsListItemProperty = function FEditorDsListItemProperty(o){
+   o = MO.Class.inherits(this, o, MO.FDuiForm);
+   o._activeFrame     = null;
+   o._activeComponent = null;
+   o.onBuilded        = MO.FEditorDsListItemProperty_onBuilded;
+   o.onDataChanged    = MO.FEditorDsListItemProperty_onDataChanged;
+   o.construct        = MO.FEditorDsListItemProperty_construct;
+   o.loadObject       = MO.FEditorDsListItemProperty_loadObject;
+   o.dispose          = MO.FEditorDsListItemProperty_dispose;
+   return o;
+}
+MO.FEditorDsListItemProperty_onBuilded = function FEditorDsListItemProperty_onBuilded(p){
+   var o = this;
+   o.__base.FDuiForm.onBuilded.call(o, p);
+}
+MO.FEditorDsListItemProperty_onDataChanged = function FEditorDsListItemProperty_onDataChanged(event){
+   var o  = this;
+   var frame = o._activeFrame;
+   var control = o._activeControl;
+   var size = o._controlSize.get();
+   control.size().set(size.x, size.y);
+   frame.build();
+}
+MO.FEditorDsListItemProperty_construct = function FEditorDsListItemProperty_construct(){
+   var o = this;
+   o.__base.FDuiForm.construct.call(o);
+}
+MO.FEditorDsListItemProperty_loadObject = function FEditorDsListItemProperty_loadObject(frame, component){
+   var o = this;
+   o._activeFrame = frame;
+   o._activeComponent = component;
+   o._controlType.set(RClass.name(component));
+   o._controlName.set(component.name());
+   o._controlLabel.set(component.label());
+}
+MO.FEditorDsListItemProperty_dispose = function FEditorDsListItemProperty_dispose(){
+   var o = this;
+   o.__base.FDuiForm.dispose.call(o);
+}
+MO.FEditorDsListListProperty = function FEditorDsListListProperty(o){
+   o = MO.Class.inherits(this, o, MO.FDuiForm);
+   o._activeFrame   = null;
+   o._activeControl = null;
+   o.onBuilded      = MO.FEditorDsListListProperty_onBuilded;
+   o.onDataChanged  = MO.FEditorDsListListProperty_onDataChanged;
+   o.construct      = MO.FEditorDsListListProperty_construct;
+   o.loadObject     = MO.FEditorDsListListProperty_loadObject;
+   o.dispose        = MO.FEditorDsListListProperty_dispose;
+   return o;
+}
+MO.FEditorDsListListProperty_onBuilded = function FEditorDsListListProperty_onBuilded(event){
+   var o = this;
+   o.__base.FDuiForm.onBuilded.call(o, event);
+}
+MO.FEditorDsListListProperty_onDataChanged = function FEditorDsListListProperty_onDataChanged(event){
+   var o  = this;
+   o.__base.FDuiForm.onDataChanged.call(o, event);
+   var frame = o._activeFrame;
+   var control = o._activeControl;
+   var size = o._controlSize.get();
+   control.size().set(size.x, size.y);
+   frame.build();
+}
+MO.FEditorDsListListProperty_construct = function FEditorDsListListProperty_construct(){
+   var o = this;
+   o.__base.FDuiForm.construct.call(o);
+}
+MO.FEditorDsListListProperty_loadObject = function FEditorDsListListProperty_loadObject(frame, control){
+   var o = this;
+   o.__base.FDuiForm.loadObject.call(o, frame, control);
+   o._activeFrame = frame;
+   o._activeControl = control;
+   var location = control.location();
+   o._controlLocation.set(location);
+   var size = control.size();
+   o._controlSize.set(size);
+   o._controlForeColor.set(control.foreColor());
+   o._controlBackColor.set(control.backColor());
+   o._controlBackResource.set(control.backResource());
+   o._controlBackGrid.set(control.backGrid());
+}
+MO.FEditorDsListListProperty_dispose = function FEditorDsListListProperty_dispose(){
+   var o = this;
+   o.__base.FDuiForm.dispose.call(o);
 }
 MO.FEditorDsListMenuBar = function FEditorDsListMenuBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiMenuBar);
@@ -280,7 +349,7 @@ MO.FEditorDsListPropertyContent = function FEditorDsListPropertyContent(o){
 MO.FEditorDsListPropertyContent_onBuild = function FEditorDsListPropertyContent_onBuild(p){
    var o = this;
    o.__base.FDsCatalog.onBuild.call(o, p);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=editor.design.list');
 }
 MO.FEditorDsListPropertyContent_onNodeClick = function FEditorDsListPropertyContent_onNodeClick(t, n){
    var o = this;

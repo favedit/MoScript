@@ -63,6 +63,7 @@ MO.FEditorDsListFrameSet_onBuilded = function FEditorDsListFrameSet_onBuilded(ev
    control._frameSet = o;
    control.buildDefine(event);
    o._framePropertyToolBar.push(control);
+   //_framePropertyContent
 }
 
 //==========================================================
@@ -86,24 +87,19 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
 //==========================================================
 MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, controlName){
    var o = this;
-   var activeFrame = o._spaceContent._activeFrame;
+   //var activeFrame = o._spaceContent._activeFrame;
    // 隐藏所有属性面板
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.hide();
-   }
+   o.hidePropertyFrames();
    // 显示控件信息
    var frame = o.findPropertyFrame(propertyFrame);
    frame.show();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      frame.loadObject(activeFrame, activeFrame);
-   }else{
-      var activeControl = activeFrame.findComponent(controlName);
-      frame.loadObject(activeFrame, activeControl);
-      o._spaceContent.selectControl(activeControl);
-   }
+   //if(typeGroup == MO.EDuiTreeNodeGroup.Container){
+   //   frame.loadObject(activeFrame, activeFrame);
+   //}else{
+   //   var activeControl = activeFrame.findComponent(controlName);
+   //   frame.loadObject(activeFrame, activeControl);
+   //   o._spaceContent.selectControl(activeControl);
+   //}
 }
 
 //==========================================================
@@ -113,9 +109,9 @@ MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObj
 //==========================================================
 MO.FEditorDsListFrameSet_load = function FEditorDsListFrameSet_load(name){
    var o = this;
-   if(name){
-      o._spaceContent.loadFrame(name);
-   }
+   //if(name){
+      //o._spaceContent.loadFrame(name);
+   //}
 }
 
 //==========================================================

@@ -62,9 +62,9 @@ MO.MDuiDescribeFrame_buildDefine = function MDuiDescribeFrame_buildDefine(hDocum
    if(MO.Lang.String.isEmpty(frameName)){
       frameName = o._frameName;
    }
-   var frameConsole = MO.Console.find(MO.FDuiDescribeFrameConsole);
+   var frameConsole = MO.Console.find(MO.FUiFrameDefineConsole);
    var xconfig = frameConsole.load(frameName);
-   MO.RDuiControl.build(o, xconfig, null, hDocument);
+   MO.Dui.Control.build(o, xconfig, null, hDocument);
 }
 MO.MDuiDesign = function MDuiDesign(o){
    o = MO.Class.inherits(this, o);
@@ -3224,7 +3224,7 @@ MO.FDuiFrameConsole_construct = function FDuiFrameConsole_construct(){
 }
 MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    var o = this;
-   var dc = MO.Console.find(MO.FDuiDescribeFrameConsole);
+   var dc = MO.Console.find(MO.FUiFrameDefineConsole);
    var x = dc.load(n);
    var f = MO.RDuiControl.build(null, x, null, c._hPanel);
    return f;
@@ -3244,18 +3244,18 @@ MO.FDuiFrameConsole_findByClass = function FDuiFrameConsole_findByClass(control,
    }
    return instance;
 }
-MO.FDuiFrameConsole_get = function FDuiFrameConsole_get(c, n, h){
+MO.FDuiFrameConsole_get = function FDuiFrameConsole_get(control, name, hPanel){
    var o = this;
-   var fs = o._frames;
-   var f = fs.get(n);
-   if(!f){
-      f = o.create(c, n);
-      if(h){
-         f.setPanel(h);
+   var frames = o._frames;
+   var frame = frames.get(name);
+   if(!frame){
+      frame = o.create(control, name);
+      if(hPanel){
+         frame.setPanel(hPanel);
       }
-      fs.set(n, f);
+      frames.set(name, frame);
    }
-   return f;
+   return frame;
 }
 MO.FDuiFrameConsole_hiddenAll = function FDuiFrameConsole_hiddenAll(){
    var o = this;
@@ -15959,11 +15959,13 @@ MO.FDuiTreeNode_construct = function FDuiTreeNode_construct(){
 }
 MO.FDuiTreeNode_type = function FDuiTreeNode_type(){
    var o = this;
-   var t = o._tree;
-   if(MO.Lang.String.isEmpty(o._typeCode)){
-      return null;
+   var tree = o._tree;
+   var typeCode = o._typeCode;
+   var type = null;
+   if(!MO.Lang.String.isEmpty(typeCode)){
+      type = tree.findType(typeCode);
    }
-   return t.findType(o._typeCode);
+   return type;
 }
 MO.FDuiTreeNode_setTypeCode = function FDuiTreeNode_setTypeCode(value){
    var o = this;
@@ -16041,28 +16043,28 @@ MO.FDuiTreeNode_calculateImage = function FDuiTreeNode_calculateImage(){
    }
    hImage.src = MO.RResource.iconPath(icon);
 }
-MO.FDuiTreeNode_setIcon = function FDuiTreeNode_setIcon(p){
+MO.FDuiTreeNode_setIcon = function FDuiTreeNode_setIcon(icon){
    var o = this;
-   o._icon = p;
-   var h = o._hIcon;
-   if(h){
-      var ni = null;
+   o._icon = icon;
+   var hIcon = o._hIcon;
+   if(hIcon){
+      var iconPath = null;
       if(o._icon){
-         ni = p;
+         iconPath = icon;
       }else{
-         var t = o.type();
-         if(t){
-            ni = t.icon();
+         var type = o.type();
+         if(type){
+            iconPath = type.icon();
          }
       }
-      if(ni){
-         MO.Window.Html.displaySet(h, true);
-         h.style.width = 16;
-         h.style.height = 16;
-         h.className = o._valid ? o.styleName('Icon') : o.styleName('IconDisable');
-         h.src = MO.RResource.iconPath(ni);
+      if(iconPath){
+         MO.Window.Html.displaySet(hIcon, true);
+         hIcon.style.width = 16;
+         hIcon.style.height = 16;
+         hIcon.className = o._valid ? o.styleName('Icon') : o.styleName('IconDisable');
+         hIcon.src = MO.RResource.iconPath(iconPath);
       }else{
-         MO.Window.Html.displaySet(h, false);
+         MO.Window.Html.displaySet(hIcon, false);
       }
    }
 }
@@ -16628,14 +16630,14 @@ MO.FDuiTreeView = function FDuiTreeView(o){
    o._stylePanel         = MO.Class.register(o, new MO.AStyle('_stylePanel', 'Panel'));
    o._styleNodePanel     = MO.Class.register(o, new MO.AStyle('_styleNodePanel', 'NodePanel'));
    o._styleNodeForm      = MO.Class.register(o, new MO.AStyle('_styleNodeForm', 'NodeForm'));
-   o._attributes         = null;
-   o._nodeTypes          = null;
-   o._nodeColumns        = null;
-   o._nodeLevels         = null;
-   o._nodes              = null;
+   o._attributes         = MO.Class.register(o, new MO.AGetter('_attributes'));
+   o._nodeTypes          = MO.Class.register(o, new MO.AGetter('_nodeTypes'));
+   o._nodeColumns        = MO.Class.register(o, new MO.AGetter('_nodeColumns'));
+   o._nodeLevels         = MO.Class.register(o, new MO.AGetter('_nodeLevels'));
+   o._nodes              = MO.Class.register(o, new MO.AGetter('_nodes'));
    o._allNodes           = null;
    o._defaultNodeType    = null;
-   o._focusNode          = null;
+   o._focusNode          = MO.Class.register(o, new MO.AGetter('_focusNode'));
    o._loadingNode        = null;
    o._freeNodes          = null;
    o._iconPlus           = 'control.treeview.plus';
@@ -16655,13 +16657,7 @@ MO.FDuiTreeView = function FDuiTreeView(o){
    o.onClick             = MO.Class.register(o, new MO.AEventClick('onClick'), MO.FDuiTreeView_onClick);
    o.onNodeCheckClick    = MO.Class.register(o, new MO.AEventClick('onNodeCheckClick'), MO.FDuiTreeView_onNodeCheckClick);
    o.construct           = MO.FDuiTreeView_construct;
-   o.attributes          = MO.FDuiTreeView_attributes;
-   o.nodeTypes           = MO.FDuiTreeView_nodeTypes;
-   o.nodeColumns         = MO.FDuiTreeView_nodeColumns;
-   o.nodeLevels          = MO.FDuiTreeView_nodeLevels;
    o.hasNode             = MO.FDuiTreeView_hasNode;
-   o.focusNode           = MO.FDuiTreeView_focusNode;
-   o.nodes               = MO.FDuiTreeView_nodes;
    o.findType            = MO.FDuiTreeView_findType;
    o.findByName          = MO.FDuiTreeView_findByName;
    o.findByGuid          = MO.FDuiTreeView_findByGuid;
@@ -16779,26 +16775,8 @@ MO.FDuiTreeView_construct = function FDuiTreeView_construct(){
    o._freeNodes = new MO.TObjects();
    o._defaultNodeType = MO.Class.create(MO.FDuiTreeNodeType);
 }
-MO.FDuiTreeView_attributes = function FDuiTreeView_attributes(){
-   return this._attributes;
-}
-MO.FDuiTreeView_nodeTypes = function FDuiTreeView_nodeTypes(){
-   return this._nodeTypes;
-}
-MO.FDuiTreeView_nodeColumns = function FDuiTreeView_nodeColumns(){
-   return this._nodeColumns;
-}
-MO.FDuiTreeView_nodeLevels = function FDuiTreeView_nodeLevels(){
-   return this._nodeLevels;
-}
 MO.FDuiTreeView_hasNode = function FDuiTreeView_hasNode(){
    return this._rootNode.hasChild();
-}
-MO.FDuiTreeView_focusNode = function FDuiTreeView_focusNode(){
-   return this._focusNode;
-}
-MO.FDuiTreeView_nodes = function FDuiTreeView_nodes(){
-   return this._nodes;
 }
 MO.FDuiTreeView_findType = function FDuiTreeView_findType(p){
    return this._nodeTypes.get(p);
@@ -16958,11 +16936,17 @@ MO.FDuiTreeView_push = function FDuiTreeView_push(control){
    o.__base.FDuiContainer.push.call(o, control);
    control._tree = o;
    if(MO.Class.isClass(control, MO.FDuiTreeColumn)){
-      o._nodeColumns.set(control.name(), control);
+      var columnName = control.name();
+      MO.Assert.debugNotEmpty(columnName);
+      o._nodeColumns.set(columnName, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeLevel)){
-      o._nodeLevels.set(control.id(), control);
+      var levelId = control.id();
+      MO.Assert.debugNotEmpty(levelId);
+      o._nodeLevels.set(levelId, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNodeType)){
-      o._nodeTypes.set(control.code(), control);
+      var typeCode = control.code();
+      MO.Assert.debugNotEmpty(typeCode);
+      o._nodeTypes.set(typeCode, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNode)){
       o._nodes.push(control);
       o._allNodes.push(control);

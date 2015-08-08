@@ -62,9 +62,9 @@ MO.MDuiDescribeFrame_buildDefine = function MDuiDescribeFrame_buildDefine(hDocum
    if(MO.Lang.String.isEmpty(frameName)){
       frameName = o._frameName;
    }
-   var frameConsole = MO.Console.find(MO.FDuiDescribeFrameConsole);
+   var frameConsole = MO.Console.find(MO.FUiFrameDefineConsole);
    var xconfig = frameConsole.load(frameName);
-   MO.RDuiControl.build(o, xconfig, null, hDocument);
+   MO.Dui.Control.build(o, xconfig, null, hDocument);
 }
 MO.MDuiDesign = function MDuiDesign(o){
    o = MO.Class.inherits(this, o);

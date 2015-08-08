@@ -18,13 +18,12 @@ MO.FEditorFrameSet = function FEditorFrameSet(o){
    o._activeCode           = null;
    o._activeSpace          = null;
    // @attribute
-   o._propertyFrames       = null;
+   o._propertyFrames       = MO.Class.register(o, new MO.AGetter('_propertyFrames'));
    //..........................................................
    // @method
    o.construct             = MO.FEditorFrameSet_construct;
    // @method
    o.findPropertyFrame     = MO.FEditorFrameSet_findPropertyFrame;
-   o.propertyFrames        = MO.FEditorFrameSet_propertyFrames;
    o.hidePropertyFrames    = MO.FEditorFrameSet_hidePropertyFrames;
    // @method
    o.dispose               = MO.FEditorFrameSet_dispose;
@@ -63,17 +62,6 @@ MO.FEditorFrameSet_findPropertyFrame = function FEditorFrameSet_findPropertyFram
 }
 
 //==========================================================
-// <T>获得属性页面集合。</T>
-//
-// @method
-// @param code:String 代码
-// @return TDictionary 页面集合
-//==========================================================
-MO.FEditorFrameSet_propertyFrames = function FEditorFrameSet_propertyFrames(){
-   return this._propertyFrames;
-}
-
-//==========================================================
 // <T>隐藏属性界面集合。</T>
 //
 // @method
@@ -98,13 +86,7 @@ MO.FEditorFrameSet_dispose = function FEditorFrameSet_dispose(){
    // 清空属性
    o._activeSpace = null;
    // 释放属性集合
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.dispose();
-   }
-   o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames);
+   o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames, true);
    // 父处理
    o.__base.FDuiFrameSet.dispose.call(o);
 }

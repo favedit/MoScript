@@ -1,40 +1,31 @@
-MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
-   o = MO.Class.inherits(this, o, MO.FEditorFrameSet);
-   o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
-   o._styleSpaceContent    = MO.Class.register(o, new MO.AStyle('_styleSpaceContent', 'Space_Content'));
-   o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
-   o._frameCatalog         = null;
-   o._frameCatalogToolbar  = null;
-   o._frameCatalogContent  = null;
-   o._frameSpace           = null;
-   o._frameSpaceToolbar    = null;
-   o._frameSpaceContent    = null;
-   o._frameProperty        = null;
-   o._framePropertyToolbar = null;
-   o._framePropertyContent = null;
-   o.construct             = MO.FEditorDsFrameSet_construct;
-   o.dispose               = MO.FEditorDsFrameSet_dispose;
-   return o;
-}
-MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
-   var o = this;
-   o.__base.FEditorFrameSet.construct.call(o);
-}
-MO.FEditorDsFrameSet_dispose = function FEditorDsFrameSet_dispose(){
-   var o = this;
-   o.__base.FEditorFrameSet.dispose.call(o);
-}
+//==========================================================
+// <T>页面定义控制台。</T>
+//
+// @console
+// @author maocy
+// @version 150124
+//==========================================================
 MO.FEditorFrameDefineConsole = function FEditorFrameDefineConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
+   //..........................................................
+   // @attribute
    o._scopeCd       = MO.EScope.Global;
+   // @attribute
    o._service       = 'editor.design.frame';
    o._defines       = null;
+   //..........................................................
+   // @listeners
    o.lsnsLoaded     = null;
+   //..........................................................
+   // @method
    o.construct      = MO.FEditorFrameDefineConsole_construct;
+   // @method
    o.load           = MO.FEditorFrameDefineConsole_load;
+
+
    o.events         = null;
    o.formId         = 0;
+   // Method
    o.createFromName = MO.FEditorFrameDefineConsole_createFromName;
    o.loadNode       = MO.FEditorFrameDefineConsole_loadNode;
    o.loadService    = MO.FEditorFrameDefineConsole_loadService;
@@ -46,25 +37,50 @@ MO.FEditorFrameDefineConsole = function FEditorFrameDefineConsole(o){
    o.getEvents      = MO.FEditorFrameDefineConsole_getEvents;
    return o;
 }
+
+//==========================================================
+// <T>构造函数。</T>
+//
+// @method
+//==========================================================
 MO.FEditorFrameDefineConsole_construct = function FEditorFrameDefineConsole_construct(){
    var o = this;
    o._defines = new MO.TDictionary();
    o.lsnsLoaded = new MO.TListeners();
+   //o.events = new TMap();
 }
+
+//==========================================================
+// <T>根据名称加载一个表单定义。</T>
+//
+// @method
+// @param name:String 名称
+// @return TXmlDocument 节点对象
+//==========================================================
 MO.FEditorFrameDefineConsole_load = function FEditorFrameDefineConsole_load(name){
    var o = this;
    var defines = o._defines;
+   // 查找页面
    var xconfig = defines.get(name);
    if(xconfig){
       return xconfig;
    }
+   //..........................................................
+   // 创建数据
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
    xroot.set('action', 'query');
    var xframe = xroot.create('Frame');
    xframe.set('name', name);
+   // 发送内容
    var url = MO.RDuiService.url(o._service);
    var xresult = MO.Console.find(MO.FXmlConsole).sendSync(url, xdocument);
+   // 检查数据结果
+   //if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(r))){
+   //   return null;
+   //}
+   //..........................................................
+   // 读取结果
    var xframes = xresult.nodes();
    var count = xframes.count();
    for(var i = 0; i < count; i++){
@@ -72,12 +88,30 @@ MO.FEditorFrameDefineConsole_load = function FEditorFrameDefineConsole_load(name
       var frameName = xframe.get('name');
       defines.set(frameName, xframe);
    }
+   //..........................................................
+   // 查找结果
    var xframe = defines.get(name);
    if(!xframe){
       throw new MO.TError(o, 'Unknown frame. (name={1])', name);
    }
    return xframe;
 }
+
+
+
+
+
+
+
+
+
+//==========================================================
+// <T>根据表单名称创建一个表单XML对象，并添加到XML管理容器中。</T>
+//
+// @method
+// @param name:FormName:String 表单名称
+// @return TXmlDocument 节点对象
+//==========================================================
 MO.FEditorFrameDefineConsole_createFromName = function FEditorFrameDefineConsole_createFromName(name, type){
    var o = this;
    var doc = o.loadService(name, type);
@@ -88,6 +122,13 @@ MO.FEditorFrameDefineConsole_createFromName = function FEditorFrameDefineConsole
       return o.get(name);
    }
 }
+
+//==========================================================
+// <T>加载指定的xml节点，</T>
+//
+// @method
+// @param x:XML:TXmlDocument XML节点
+//==========================================================
 MO.FEditorFrameDefineConsole_loadNode = function FEditorFrameDefineConsole_loadNode(x){
    var o = this;
    var nns = x.root();
@@ -113,12 +154,22 @@ MO.FEditorFrameDefineConsole_loadNode = function FEditorFrameDefineConsole_loadN
                   }
                }else if(dd.isName('Events')){
                   o.events.set(fn, dd);
+                  //RConsole.find(FEventEngineConsole).loadConfig(dd);
                }
             }
          }
       }
    }
 }
+
+//==========================================================
+// <T>从服务器取得指定名称的表单XML结构。</T>
+//
+// @method
+// @param n:name:String 表单名称
+// @param t:type:String 表单类型
+// @return TXmlDocument 节点对象
+//==========================================================
 MO.FEditorFrameDefineConsole_loadService = function FEditorFrameDefineConsole_loadService(n, t){
    var o = this;
    if(!t){
@@ -133,17 +184,41 @@ MO.FEditorFrameDefineConsole_loadService = function FEditorFrameDefineConsole_lo
    var url = MO.RDuiService.url('logic.webform');
    var doc = MO.Console.find(MO.FXmlConsole).send(url, doc);
    var r = doc.root();
+   // 检查数据结果
    if(!MO.Console.find(MO.FMessageConsole).checkResult(new TMessageArg(r))){
       return null;
    }
    return doc;
 }
+
+//==========================================================
+// <T>获得一个新的表单ID。</T>
+//
+// @method
+// @return Integer 获得的表单ID
+//==========================================================
 MO.FEditorFrameDefineConsole_nextFormId = function FEditorFrameDefineConsole_nextFormId(){
    return ++this.formId;
 }
+
+//==========================================================
+// <T>获得指定表单名称的表单xml结构对象。</T>
+//
+// @method
+// @param n:name:String 表单名称
+// @return TXmlDocument 节点对象
+//==========================================================
 MO.FEditorFrameDefineConsole_get = function FEditorFrameDefineConsole_get(n){
    return this._defines.get(EForm.Form).get(n);
 }
+
+//==========================================================
+// <T>必定获得指定名称的表单结构xml对象。</T>
+//
+// @method
+// @param n:name:String 表单名称
+// @return TXmlDocument 节点对象
+//==========================================================
 MO.FEditorFrameDefineConsole_find = function FEditorFrameDefineConsole_find(n, t){
    var o = this;
    if(EForm.Lov == t){
@@ -160,9 +235,25 @@ MO.FEditorFrameDefineConsole_find = function FEditorFrameDefineConsole_find(n, t
    }
    return fc;
 }
+
+//==========================================================
+// <T>必定获得指定名称的表单结构xml对象。</T>
+//
+// @method
+// @param n:name:String 表单名称
+// @return TXmlDocument 节点对象
+//==========================================================
 MO.FEditorFrameDefineConsole_getLov = function FEditorFrameDefineConsole_getLov(n){
    return this._defines.get(EForm.Lov).get(n);
 }
+
+//==========================================================
+// <T>必定获得指定名称的表单结构xml对象。</T>
+//
+// @method
+// @param n:name:String 表单名称
+// @return TXmlDocument 节点对象
+//==========================================================
 MO.FEditorFrameDefineConsole_findLov = function FEditorFrameDefineConsole_findLov(n){
    var o = this;
    var fc = o.getLov(n);
@@ -171,6 +262,14 @@ MO.FEditorFrameDefineConsole_findLov = function FEditorFrameDefineConsole_findLo
    }
    return fc;
 }
+
+//==========================================================
+// <T>必定获得指定名称的表单结构xml对象。</T>
+//
+// @method
+// @param n:name:String 表单名称
+// @return TXmlDocument 节点对象
+//==========================================================
 MO.FEditorFrameDefineConsole_getEvents = function FEditorFrameDefineConsole_getEvents(n){
    return this.events.get(n);
 }

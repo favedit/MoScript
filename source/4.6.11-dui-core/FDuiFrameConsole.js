@@ -77,7 +77,7 @@ MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    //   }
    //}
    // 获得表单定义
-   var dc = MO.Console.find(MO.FDuiDescribeFrameConsole);
+   var dc = MO.Console.find(MO.FUiFrameDefineConsole);
    var x = dc.load(n);
    // 构建处理
    var f = MO.RDuiControl.build(null, x, null, c._hPanel);
@@ -143,23 +143,23 @@ MO.FDuiFrameConsole_findByClass = function FDuiFrameConsole_findByClass(control,
 // <T>根据名称查找表单实例，如果不存在则创建一个。</T>
 //
 // @method
-// @param c:control:FDuiControl 控件
-// @param n:name:String 名称
-// @param h:html:HtmlTag 页面元素
+// @param control:FDuiControl 控件
+// @param name:String 名称
+// @param hPanel:HtmlTag 页面元素
 // @return FDuiFrame 页面控件
 //==========================================================
-MO.FDuiFrameConsole_get = function FDuiFrameConsole_get(c, n, h){
+MO.FDuiFrameConsole_get = function FDuiFrameConsole_get(control, name, hPanel){
    var o = this;
-   var fs = o._frames;
-   var f = fs.get(n);
-   if(!f){
-      f = o.create(c, n);
-      if(h){
-         f.setPanel(h);
+   var frames = o._frames;
+   var frame = frames.get(name);
+   if(!frame){
+      frame = o.create(control, name);
+      if(hPanel){
+         frame.setPanel(hPanel);
       }
-      fs.set(n, f);
+      frames.set(name, frame);
    }
-   return f;
+   return frame;
 }
 
 //==========================================================

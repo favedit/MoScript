@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150130
 //==========================================================
-MO.FDssCanvas = function FDssCanvas(o){
+MO.FEditorCanvas = function FEditorCanvas(o){
    o = MO.Class.inherits(this, o, MO.FE3dCanvas);
    //..........................................................
    // @attribute
@@ -24,13 +24,13 @@ MO.FDssCanvas = function FDssCanvas(o){
    o._captureRotation    = null;
    //..........................................................
    // @method
-   o.construct           = MO.FDssCanvas_construct;
+   o.construct           = MO.FEditorCanvas_construct;
    // @method
-   o.setPanel            = MO.FDssCanvas_setPanel;
-   o.resize              = MO.FDssCanvas_resize;
-   o.selectStage         = MO.FDssCanvas_selectStage;
+   o.setPanel            = MO.FEditorCanvas_setPanel;
+   o.resize              = MO.FEditorCanvas_resize;
+   o.selectStage         = MO.FEditorCanvas_selectStage;
    // @method
-   o.dispose             = MO.FDssCanvas_dispose;
+   o.dispose             = MO.FEditorCanvas_dispose;
    return o;
 }
 
@@ -39,7 +39,7 @@ MO.FDssCanvas = function FDssCanvas(o){
 //
 // @method
 //==========================================================
-MO.FDssCanvas_construct = function FDssCanvas_construct(){
+MO.FEditorCanvas_construct = function FEditorCanvas_construct(){
    var o = this;
    o.__base.FE3dCanvas.construct.call(o);
    // 设置属性
@@ -56,7 +56,7 @@ MO.FDssCanvas_construct = function FDssCanvas_construct(){
 // @method
 // @param hPanel:HtmlTag 页面元素
 //==========================================================
-MO.FDssCanvas_setPanel = function FDssCanvas_setPanel(hPanel){
+MO.FEditorCanvas_setPanel = function FEditorCanvas_setPanel(hPanel){
    var o = this;
    o._hPanel = hPanel;
    hPanel.appendChild(o._hCanvas);
@@ -69,7 +69,7 @@ MO.FDssCanvas_setPanel = function FDssCanvas_setPanel(hPanel){
 // @param width:Integer 宽度
 // @param height:Integer 高度
 //==========================================================
-MO.FDssCanvas_resize = function FDssCanvas_resize(width, height){
+MO.FEditorCanvas_resize = function FEditorCanvas_resize(width, height){
    var o = this;
    o.__base.FE3dCanvas.resize.call(o, width, height);
    // 获得相机信息
@@ -90,7 +90,7 @@ MO.FDssCanvas_resize = function FDssCanvas_resize(width, height){
 // @param code:String 代码
 // @return FStage 舞台
 //==========================================================
-MO.FDssCanvas_selectStage = function FDssCanvas_selectStage(stage){
+MO.FEditorCanvas_selectStage = function FEditorCanvas_selectStage(stage){
    var o = this;
    if(stage){
       // 设置舞台
@@ -115,7 +115,7 @@ MO.FDssCanvas_selectStage = function FDssCanvas_selectStage(stage){
 //
 // @method
 //==========================================================
-MO.FDssCanvas_dispose = function FDssCanvas_dispose(){
+MO.FEditorCanvas_dispose = function FEditorCanvas_dispose(){
    var o = this;
    // 释放属性
    o._rotation = MO.Lang.Object.dispose(o._rotation);

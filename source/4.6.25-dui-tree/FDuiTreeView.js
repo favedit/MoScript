@@ -30,15 +30,15 @@ MO.FDuiTreeView = function FDuiTreeView(o){
    o._styleNodeForm      = MO.Class.register(o, new MO.AStyle('_styleNodeForm', 'NodeForm'));
    //..........................................................
    // @attribute
-   o._attributes         = null;
-   o._nodeTypes          = null;
-   o._nodeColumns        = null;
-   o._nodeLevels         = null;
-   o._nodes              = null;
+   o._attributes         = MO.Class.register(o, new MO.AGetter('_attributes'));
+   o._nodeTypes          = MO.Class.register(o, new MO.AGetter('_nodeTypes'));
+   o._nodeColumns        = MO.Class.register(o, new MO.AGetter('_nodeColumns'));
+   o._nodeLevels         = MO.Class.register(o, new MO.AGetter('_nodeLevels'));
+   o._nodes              = MO.Class.register(o, new MO.AGetter('_nodes'));
    o._allNodes           = null;
    // @attribute
    o._defaultNodeType    = null;
-   o._focusNode          = null;
+   o._focusNode          = MO.Class.register(o, new MO.AGetter('_focusNode'));
    o._loadingNode        = null;
    o._freeNodes          = null;
    //..........................................................
@@ -70,13 +70,7 @@ MO.FDuiTreeView = function FDuiTreeView(o){
    // @method
    o.construct           = MO.FDuiTreeView_construct;
    // @method
-   o.attributes          = MO.FDuiTreeView_attributes;
-   o.nodeTypes           = MO.FDuiTreeView_nodeTypes;
-   o.nodeColumns         = MO.FDuiTreeView_nodeColumns;
-   o.nodeLevels          = MO.FDuiTreeView_nodeLevels;
    o.hasNode             = MO.FDuiTreeView_hasNode;
-   o.focusNode           = MO.FDuiTreeView_focusNode;
-   o.nodes               = MO.FDuiTreeView_nodes;
    // @method
    o.findType            = MO.FDuiTreeView_findType;
    o.findByName          = MO.FDuiTreeView_findByName;
@@ -259,46 +253,6 @@ MO.FDuiTreeView_construct = function FDuiTreeView_construct(){
 }
 
 //==========================================================
-// <T>获得属性表。</T>
-//
-// @method
-// @return TAttributes 属性表
-//==========================================================
-MO.FDuiTreeView_attributes = function FDuiTreeView_attributes(){
-   return this._attributes;
-}
-
-//==========================================================
-// <T>获得类型字典。</T>
-//
-// @method
-// @return TDictionary 类型字典
-//==========================================================
-MO.FDuiTreeView_nodeTypes = function FDuiTreeView_nodeTypes(){
-   return this._nodeTypes;
-}
-
-//==========================================================
-// <T>获得分列字典。</T>
-//
-// @method
-// @return TDictionary 分列字典
-//==========================================================
-MO.FDuiTreeView_nodeColumns = function FDuiTreeView_nodeColumns(){
-   return this._nodeColumns;
-}
-
-//==========================================================
-// <T>获得层级字典。</T>
-//
-// @method
-// @return TDictionary 层级字典
-//==========================================================
-MO.FDuiTreeView_nodeLevels = function FDuiTreeView_nodeLevels(){
-   return this._nodeLevels;
-}
-
-//==========================================================
 // <T>是否含有子节点。</T>
 //
 // @method
@@ -306,26 +260,6 @@ MO.FDuiTreeView_nodeLevels = function FDuiTreeView_nodeLevels(){
 //==========================================================
 MO.FDuiTreeView_hasNode = function FDuiTreeView_hasNode(){
    return this._rootNode.hasChild();
-}
-
-//==========================================================
-// <T>获得焦点节点。</T>
-//
-// @method
-// @return FTreeNode 焦点节点
-//==========================================================
-MO.FDuiTreeView_focusNode = function FDuiTreeView_focusNode(){
-   return this._focusNode;
-}
-
-//==========================================================
-// <T>获得节点集合。</T>
-//
-// @method
-// @return TObjects 节点集合
-//==========================================================
-MO.FDuiTreeView_nodes = function FDuiTreeView_nodes(){
-   return this._nodes;
 }
 
 //==========================================================
@@ -580,11 +514,17 @@ MO.FDuiTreeView_push = function FDuiTreeView_push(control){
    // 增加节点
    control._tree = o;
    if(MO.Class.isClass(control, MO.FDuiTreeColumn)){
-      o._nodeColumns.set(control.name(), control);
+      var columnName = control.name();
+      MO.Assert.debugNotEmpty(columnName);
+      o._nodeColumns.set(columnName, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeLevel)){
-      o._nodeLevels.set(control.id(), control);
+      var levelId = control.id();
+      MO.Assert.debugNotEmpty(levelId);
+      o._nodeLevels.set(levelId, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNodeType)){
-      o._nodeTypes.set(control.code(), control);
+      var typeCode = control.code();
+      MO.Assert.debugNotEmpty(typeCode);
+      o._nodeTypes.set(typeCode, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNode)){
       // 追加节点
       o._nodes.push(control);

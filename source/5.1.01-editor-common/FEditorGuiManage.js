@@ -5,13 +5,13 @@
 // @author maocy
 // @version 150714
 //==========================================================
-MO.FDssGuiManage = function FDssGuiManage(o){
+MO.FEditorGuiManage = function FEditorGuiManage(o){
    o = MO.Class.inherits(this, o, MO.FGuiCanvasManage);
    //..........................................................
    // @method
-   o.construct = MO.FDssGuiManage_construct;
+   o.construct = MO.FEditorGuiManage_construct;
    // @method
-   o.dispose   = MO.FDssGuiManage_dispose;
+   o.dispose   = MO.FEditorGuiManage_dispose;
    return o;
 }
 
@@ -20,7 +20,7 @@ MO.FDssGuiManage = function FDssGuiManage(o){
 //
 // @method
 //==========================================================
-MO.FDssGuiManage_construct = function FDssGuiManage_construct(){
+MO.FEditorGuiManage_construct = function FEditorGuiManage_construct(){
    var o = this;
    o.__base.FGuiCanvasManage.construct.call(o);
 }
@@ -30,7 +30,7 @@ MO.FDssGuiManage_construct = function FDssGuiManage_construct(){
 //
 // @method
 //==========================================================
-MO.FDssGuiManage_dispose = function FDssGuiManage_dispose(){
+MO.FEditorGuiManage_dispose = function FEditorGuiManage_dispose(){
    var o = this;
    // 父处理
    o.__base.FGuiCanvasManage.dispose.call(o);

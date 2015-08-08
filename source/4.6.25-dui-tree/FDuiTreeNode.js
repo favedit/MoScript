@@ -303,11 +303,13 @@ MO.FDuiTreeNode_construct = function FDuiTreeNode_construct(){
 //==========================================================
 MO.FDuiTreeNode_type = function FDuiTreeNode_type(){
    var o = this;
-   var t = o._tree;
-   if(MO.Lang.String.isEmpty(o._typeCode)){
-      return null;
+   var tree = o._tree;
+   var typeCode = o._typeCode;
+   var type = null;
+   if(!MO.Lang.String.isEmpty(typeCode)){
+      type = tree.findType(typeCode);
    }
-   return t.findType(o._typeCode);
+   return type;
 }
 
 //==========================================================
@@ -456,32 +458,32 @@ MO.FDuiTreeNode_calculateImage = function FDuiTreeNode_calculateImage(){
 // <T>设置图标。</T>
 //
 // @method
-// @param p:icon:String 图标
+// @param icon:String 图标
 //==========================================================
-MO.FDuiTreeNode_setIcon = function FDuiTreeNode_setIcon(p){
+MO.FDuiTreeNode_setIcon = function FDuiTreeNode_setIcon(icon){
    var o = this;
    // 设置属性
-   o._icon = p;
+   o._icon = icon;
    // 设置图标
-   var h = o._hIcon;
-   if(h){
-      var ni = null;
+   var hIcon = o._hIcon;
+   if(hIcon){
+      var iconPath = null;
       if(o._icon){
-         ni = p;
+         iconPath = icon;
       }else{
-         var t = o.type();
-         if(t){
-            ni = t.icon();
+         var type = o.type();
+         if(type){
+            iconPath = type.icon();
          }
       }
-      if(ni){
-         MO.Window.Html.displaySet(h, true);
-         h.style.width = 16;
-         h.style.height = 16;
-         h.className = o._valid ? o.styleName('Icon') : o.styleName('IconDisable');
-         h.src = MO.RResource.iconPath(ni);
+      if(iconPath){
+         MO.Window.Html.displaySet(hIcon, true);
+         hIcon.style.width = 16;
+         hIcon.style.height = 16;
+         hIcon.className = o._valid ? o.styleName('Icon') : o.styleName('IconDisable');
+         hIcon.src = MO.RResource.iconPath(iconPath);
       }else{
-         MO.Window.Html.displaySet(h, false);
+         MO.Window.Html.displaySet(hIcon, false);
       }
    }
 }

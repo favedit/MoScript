@@ -11,7 +11,7 @@ MO.EEditorFrameSet = new function EEditorFrameSet(){
    o.FrameFrameSet       = 'editor.design.frame.FrameSet';
    return o;
 }
-MO.FDssCanvas = function FDssCanvas(o){
+MO.FEditorCanvas = function FEditorCanvas(o){
    o = MO.Class.inherits(this, o, MO.FE3dCanvas);
    o._optionStageProcess = false;
    o._optionResize       = false;
@@ -24,14 +24,14 @@ MO.FDssCanvas = function FDssCanvas(o){
    o._activeStage        = MO.Class.register(o, new MO.AGetter('_activeStage'));
    o._capturePosition    = null;
    o._captureRotation    = null;
-   o.construct           = MO.FDssCanvas_construct;
-   o.setPanel            = MO.FDssCanvas_setPanel;
-   o.resize              = MO.FDssCanvas_resize;
-   o.selectStage         = MO.FDssCanvas_selectStage;
-   o.dispose             = MO.FDssCanvas_dispose;
+   o.construct           = MO.FEditorCanvas_construct;
+   o.setPanel            = MO.FEditorCanvas_setPanel;
+   o.resize              = MO.FEditorCanvas_resize;
+   o.selectStage         = MO.FEditorCanvas_selectStage;
+   o.dispose             = MO.FEditorCanvas_dispose;
    return o;
 }
-MO.FDssCanvas_construct = function FDssCanvas_construct(){
+MO.FEditorCanvas_construct = function FEditorCanvas_construct(){
    var o = this;
    o.__base.FE3dCanvas.construct.call(o);
    o._rotation = new MO.SVector3();
@@ -40,12 +40,12 @@ MO.FDssCanvas_construct = function FDssCanvas_construct(){
    o._logicSize = new MO.SSize2(1920, 1080);
    o._cameraPosition = new MO.SPoint3();
 }
-MO.FDssCanvas_setPanel = function FDssCanvas_setPanel(hPanel){
+MO.FEditorCanvas_setPanel = function FEditorCanvas_setPanel(hPanel){
    var o = this;
    o._hPanel = hPanel;
    hPanel.appendChild(o._hCanvas);
 }
-MO.FDssCanvas_resize = function FDssCanvas_resize(width, height){
+MO.FEditorCanvas_resize = function FEditorCanvas_resize(width, height){
    var o = this;
    o.__base.FE3dCanvas.resize.call(o, width, height);
    var context = o._graphicContext;
@@ -57,7 +57,7 @@ MO.FDssCanvas_resize = function FDssCanvas_resize(width, height){
       projection.update();
    }
 }
-MO.FDssCanvas_selectStage = function FDssCanvas_selectStage(stage){
+MO.FEditorCanvas_selectStage = function FEditorCanvas_selectStage(stage){
    var o = this;
    if(stage){
       stage.linkGraphicContext(o);
@@ -74,40 +74,40 @@ MO.FDssCanvas_selectStage = function FDssCanvas_selectStage(stage){
    }
    o._activeStage = stage;
 }
-MO.FDssCanvas_dispose = function FDssCanvas_dispose(){
+MO.FEditorCanvas_dispose = function FEditorCanvas_dispose(){
    var o = this;
    o._rotation = MO.Lang.Object.dispose(o._rotation);
    o._capturePosition = MO.Lang.Object.dispose(o._capturePosition);
    o._captureRotation = MO.Lang.Object.dispose(o._captureRotation);
    o.__base.FE3dCanvas.dispose.call(o);
 }
-MO.FDssDesktop = function FDssDesktop(o){
+MO.FEditorDesktop = function FEditorDesktop(o){
    o = MO.Class.inherits(this, o, MO.FDesktop);
    o._canvas3d              = MO.Class.register(o, new MO.AGetter('_canvas3d'));
    o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
-   o.onOperationResize      = MO.FDssDesktop_onOperationResize;
-   o.onOperationOrientation = MO.FDssDesktop_onOperationOrientation;
-   o.construct              = MO.FDssDesktop_construct;
-   o.build                  = MO.FDssDesktop_build;
-   o.resize                 = MO.FDssDesktop_resize;
-   o.dispose                = MO.FDssDesktop_dispose;
+   o.onOperationResize      = MO.FEditorDesktop_onOperationResize;
+   o.onOperationOrientation = MO.FEditorDesktop_onOperationOrientation;
+   o.construct              = MO.FEditorDesktop_construct;
+   o.build                  = MO.FEditorDesktop_build;
+   o.resize                 = MO.FEditorDesktop_resize;
+   o.dispose                = MO.FEditorDesktop_dispose;
    return o;
 }
-MO.FDssDesktop_onOperationResize = function FDssDesktop_onOperationResize(event){
+MO.FEditorDesktop_onOperationResize = function FEditorDesktop_onOperationResize(event){
    var o = this;
    o.__base.FDesktop.onOperationResize.call(o, event);
    o.resize();
 }
-MO.FDssDesktop_onOperationOrientation = function FDssDesktop_onOperationOrientation(){
+MO.FEditorDesktop_onOperationOrientation = function FEditorDesktop_onOperationOrientation(){
    var o = this;
    o.__base.FDesktop.onOperationOrientation.call(o, event);
    o.resize();
 }
-MO.FDssDesktop_construct = function FDssDesktop_construct(){
+MO.FEditorDesktop_construct = function FEditorDesktop_construct(){
    var o = this;
    o.__base.FDesktop.construct.call(o);
 }
-MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
+MO.FEditorDesktop_build = function FEditorDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
    var canvas3d = o._canvas3d = MO.RClass.create(MO.FDssCanvas);
@@ -123,7 +123,7 @@ MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
    o.canvasRegister(canvas2d);
    MO.RE3dEngine.setup();
 }
-MO.FDssDesktop_resize = function FDssDesktop_resize(targetWidth, targetHeight){
+MO.FEditorDesktop_resize = function FEditorDesktop_resize(targetWidth, targetHeight){
    var o = this;
    var width = (targetWidth != null) ? targetWidth : window.innerWidth;
    var height = (targetHeight != null) ? targetHeight : window.innerHeight;
@@ -161,25 +161,11 @@ MO.FDssDesktop_resize = function FDssDesktop_resize(targetWidth, targetHeight){
    canvas2d.resize(width, height);
    canvas2d.graphicContext().setScale(sizeRate, sizeRate);
 }
-MO.FDssDesktop_dispose = function FDssDesktop_dispose(){
+MO.FEditorDesktop_dispose = function FEditorDesktop_dispose(){
    var o = this;
    o._canvas3d = MO.RObject.dispose(o._canvas3d);
    o._canvas2d = MO.RObject.dispose(o._canvas2d);
    o.__base.FDesktop.dispose.call(o);
-}
-MO.FDssGuiManage = function FDssGuiManage(o){
-   o = MO.Class.inherits(this, o, MO.FGuiCanvasManage);
-   o.construct = MO.FDssGuiManage_construct;
-   o.dispose   = MO.FDssGuiManage_dispose;
-   return o;
-}
-MO.FDssGuiManage_construct = function FDssGuiManage_construct(){
-   var o = this;
-   o.__base.FGuiCanvasManage.construct.call(o);
-}
-MO.FDssGuiManage_dispose = function FDssGuiManage_dispose(){
-   var o = this;
-   o.__base.FGuiCanvasManage.dispose.call(o);
 }
 MO.FEditorDsTabBar = function FEditorDsTabBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiTabBar);
@@ -383,10 +369,9 @@ MO.FEditorFrameSet = function FEditorFrameSet(o){
    o._activeGuid           = null;
    o._activeCode           = null;
    o._activeSpace          = null;
-   o._propertyFrames       = null;
+   o._propertyFrames       = MO.Class.register(o, new MO.AGetter('_propertyFrames'));
    o.construct             = MO.FEditorFrameSet_construct;
    o.findPropertyFrame     = MO.FEditorFrameSet_findPropertyFrame;
-   o.propertyFrames        = MO.FEditorFrameSet_propertyFrames;
    o.hidePropertyFrames    = MO.FEditorFrameSet_hidePropertyFrames;
    o.dispose               = MO.FEditorFrameSet_dispose;
    return o;
@@ -406,9 +391,6 @@ MO.FEditorFrameSet_findPropertyFrame = function FEditorFrameSet_findPropertyFram
    }
    return frame;
 }
-MO.FEditorFrameSet_propertyFrames = function FEditorFrameSet_propertyFrames(){
-   return this._propertyFrames;
-}
 MO.FEditorFrameSet_hidePropertyFrames = function FEditorFrameSet_hidePropertyFrames(){
    var o = this;
    var frames = o._propertyFrames;
@@ -421,14 +403,22 @@ MO.FEditorFrameSet_hidePropertyFrames = function FEditorFrameSet_hidePropertyFra
 MO.FEditorFrameSet_dispose = function FEditorFrameSet_dispose(){
    var o = this;
    o._activeSpace = null;
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.dispose();
-   }
-   o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames);
+   o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames, true);
    o.__base.FDuiFrameSet.dispose.call(o);
+}
+MO.FEditorGuiManage = function FEditorGuiManage(o){
+   o = MO.Class.inherits(this, o, MO.FGuiCanvasManage);
+   o.construct = MO.FEditorGuiManage_construct;
+   o.dispose   = MO.FEditorGuiManage_dispose;
+   return o;
+}
+MO.FEditorGuiManage_construct = function FEditorGuiManage_construct(){
+   var o = this;
+   o.__base.FGuiCanvasManage.construct.call(o);
+}
+MO.FEditorGuiManage_dispose = function FEditorGuiManage_dispose(){
+   var o = this;
+   o.__base.FGuiCanvasManage.dispose.call(o);
 }
 MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorFrameSet);
@@ -456,6 +446,155 @@ MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
 MO.FEditorDsFrameSet_dispose = function FEditorDsFrameSet_dispose(){
    var o = this;
    o.__base.FEditorFrameSet.dispose.call(o);
+}
+MO.FEditorFrameDefineConsole = function FEditorFrameDefineConsole(o){
+   o = MO.Class.inherits(this, o, MO.FConsole);
+   o._scopeCd       = MO.EScope.Global;
+   o._service       = 'editor.design.frame';
+   o._defines       = null;
+   o.lsnsLoaded     = null;
+   o.construct      = MO.FEditorFrameDefineConsole_construct;
+   o.load           = MO.FEditorFrameDefineConsole_load;
+   o.events         = null;
+   o.formId         = 0;
+   o.createFromName = MO.FEditorFrameDefineConsole_createFromName;
+   o.loadNode       = MO.FEditorFrameDefineConsole_loadNode;
+   o.loadService    = MO.FEditorFrameDefineConsole_loadService;
+   o.nextFormId     = MO.FEditorFrameDefineConsole_nextFormId;
+   o.get            = MO.FEditorFrameDefineConsole_get;
+   o.find           = MO.FEditorFrameDefineConsole_find;
+   o.getLov         = MO.FEditorFrameDefineConsole_getLov;
+   o.findLov        = MO.FEditorFrameDefineConsole_findLov;
+   o.getEvents      = MO.FEditorFrameDefineConsole_getEvents;
+   return o;
+}
+MO.FEditorFrameDefineConsole_construct = function FEditorFrameDefineConsole_construct(){
+   var o = this;
+   o._defines = new MO.TDictionary();
+   o.lsnsLoaded = new MO.TListeners();
+}
+MO.FEditorFrameDefineConsole_load = function FEditorFrameDefineConsole_load(name){
+   var o = this;
+   var defines = o._defines;
+   var xconfig = defines.get(name);
+   if(xconfig){
+      return xconfig;
+   }
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'query');
+   var xframe = xroot.create('Frame');
+   xframe.set('name', name);
+   var url = MO.RDuiService.url(o._service);
+   var xresult = MO.Console.find(MO.FXmlConsole).sendSync(url, xdocument);
+   var xframes = xresult.nodes();
+   var count = xframes.count();
+   for(var i = 0; i < count; i++){
+      var xframe = xframes.at(i);
+      var frameName = xframe.get('name');
+      defines.set(frameName, xframe);
+   }
+   var xframe = defines.get(name);
+   if(!xframe){
+      throw new MO.TError(o, 'Unknown frame. (name={1])', name);
+   }
+   return xframe;
+}
+MO.FEditorFrameDefineConsole_createFromName = function FEditorFrameDefineConsole_createFromName(name, type){
+   var o = this;
+   var doc = o.loadService(name, type);
+   o.loadNode(doc);
+   if(MO.EForm.Lov == type){
+      return o.getLov(name);
+   }else{
+      return o.get(name);
+   }
+}
+MO.FEditorFrameDefineConsole_loadNode = function FEditorFrameDefineConsole_loadNode(x){
+   var o = this;
+   var nns = x.root();
+   if(nns.hasNode()){
+      var nodes = nns.nodes;
+      var ct = nodes.count;
+      for(var n = 0; n < ct; n++){
+         var node = nodes.get(n);
+         var fn = node.get('name');
+         var tp = node.get('type');
+         if(node.hasNode()){
+            var nfds = node.nodes;
+            for(var k = 0; k < nfds.count; k++){
+               var dd = nfds.get(k);
+               if(dd.isName('Define')){
+                  if(dd.hasNode()){
+                     var fds = dd.nodes;
+                     for(var m = 0; m < fds.count; m++){
+                        var nd = fds.get(m);
+                        var mp = o._defines.get(tp);
+                        mp.set(fn, nd);
+                     }
+                  }
+               }else if(dd.isName('Events')){
+                  o.events.set(fn, dd);
+               }
+            }
+         }
+      }
+   }
+}
+MO.FEditorFrameDefineConsole_loadService = function FEditorFrameDefineConsole_loadService(n, t){
+   var o = this;
+   if(!t){
+      t = MO.EForm.Form;
+   }
+   var doc = new MO.TXmlDocument();
+   var root = doc.root();
+   root.set('action', 'loadDefine');
+   var f = root.create('WebForm');
+   f.set('name', n);
+   f.set('type', t);
+   var url = MO.RDuiService.url('logic.webform');
+   var doc = MO.Console.find(MO.FXmlConsole).send(url, doc);
+   var r = doc.root();
+   if(!MO.Console.find(MO.FMessageConsole).checkResult(new TMessageArg(r))){
+      return null;
+   }
+   return doc;
+}
+MO.FEditorFrameDefineConsole_nextFormId = function FEditorFrameDefineConsole_nextFormId(){
+   return ++this.formId;
+}
+MO.FEditorFrameDefineConsole_get = function FEditorFrameDefineConsole_get(n){
+   return this._defines.get(EForm.Form).get(n);
+}
+MO.FEditorFrameDefineConsole_find = function FEditorFrameDefineConsole_find(n, t){
+   var o = this;
+   if(EForm.Lov == t){
+      return o.findLov(n);
+   }
+   var fc = o.get(n);
+   if(MO.Class.isMode(MO.ERun.Debug)){
+      MO.Memory.free(fc);
+      fc = null;
+      o._defines.get(EForm.Form).set(n, null);
+   }
+   if(!fc){
+      fc = o.createFromName(n);
+   }
+   return fc;
+}
+MO.FEditorFrameDefineConsole_getLov = function FEditorFrameDefineConsole_getLov(n){
+   return this._defines.get(EForm.Lov).get(n);
+}
+MO.FEditorFrameDefineConsole_findLov = function FEditorFrameDefineConsole_findLov(n){
+   var o = this;
+   var fc = o.getLov(n);
+   if(!fc){
+      fc = o.createFromName(n, EForm.Lov);
+   }
+   return fc;
+}
+MO.FEditorFrameDefineConsole_getEvents = function FEditorFrameDefineConsole_getEvents(n){
+   return this.events.get(n);
 }
 MO.FEditorDsPersistenceCatalogContent = function FEditorDsPersistenceCatalogContent(o){
    o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
@@ -905,7 +1044,7 @@ MO.FEditorDsListCatalogContent_onNodeClick = function FEditorDsListCatalogConten
 MO.FEditorDsListCatalogContent_construct = function FEditorDsListCatalogContent_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.list');
+   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.list');
 }
 MO.FEditorDsListCatalogContent_selectObject = function FEditorDsListCatalogContent_selectObject(item){
    var o = this;
@@ -1083,32 +1222,101 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
 }
 MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, controlName){
    var o = this;
-   var activeFrame = o._spaceContent._activeFrame;
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.hide();
-   }
+   o.hidePropertyFrames();
    var frame = o.findPropertyFrame(propertyFrame);
    frame.show();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      frame.loadObject(activeFrame, activeFrame);
-   }else{
-      var activeControl = activeFrame.findComponent(controlName);
-      frame.loadObject(activeFrame, activeControl);
-      o._spaceContent.selectControl(activeControl);
-   }
 }
 MO.FEditorDsListFrameSet_load = function FEditorDsListFrameSet_load(name){
    var o = this;
-   if(name){
-      o._spaceContent.loadFrame(name);
-   }
 }
 MO.FEditorDsListFrameSet_dispose = function FEditorDsListFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
+}
+MO.FEditorDsListItemProperty = function FEditorDsListItemProperty(o){
+   o = MO.Class.inherits(this, o, MO.FDuiForm);
+   o._activeFrame     = null;
+   o._activeComponent = null;
+   o.onBuilded        = MO.FEditorDsListItemProperty_onBuilded;
+   o.onDataChanged    = MO.FEditorDsListItemProperty_onDataChanged;
+   o.construct        = MO.FEditorDsListItemProperty_construct;
+   o.loadObject       = MO.FEditorDsListItemProperty_loadObject;
+   o.dispose          = MO.FEditorDsListItemProperty_dispose;
+   return o;
+}
+MO.FEditorDsListItemProperty_onBuilded = function FEditorDsListItemProperty_onBuilded(p){
+   var o = this;
+   o.__base.FDuiForm.onBuilded.call(o, p);
+}
+MO.FEditorDsListItemProperty_onDataChanged = function FEditorDsListItemProperty_onDataChanged(event){
+   var o  = this;
+   var frame = o._activeFrame;
+   var control = o._activeControl;
+   var size = o._controlSize.get();
+   control.size().set(size.x, size.y);
+   frame.build();
+}
+MO.FEditorDsListItemProperty_construct = function FEditorDsListItemProperty_construct(){
+   var o = this;
+   o.__base.FDuiForm.construct.call(o);
+}
+MO.FEditorDsListItemProperty_loadObject = function FEditorDsListItemProperty_loadObject(frame, component){
+   var o = this;
+   o._activeFrame = frame;
+   o._activeComponent = component;
+   o._controlType.set(RClass.name(component));
+   o._controlName.set(component.name());
+   o._controlLabel.set(component.label());
+}
+MO.FEditorDsListItemProperty_dispose = function FEditorDsListItemProperty_dispose(){
+   var o = this;
+   o.__base.FDuiForm.dispose.call(o);
+}
+MO.FEditorDsListListProperty = function FEditorDsListListProperty(o){
+   o = MO.Class.inherits(this, o, MO.FDuiForm);
+   o._activeFrame   = null;
+   o._activeControl = null;
+   o.onBuilded      = MO.FEditorDsListListProperty_onBuilded;
+   o.onDataChanged  = MO.FEditorDsListListProperty_onDataChanged;
+   o.construct      = MO.FEditorDsListListProperty_construct;
+   o.loadObject     = MO.FEditorDsListListProperty_loadObject;
+   o.dispose        = MO.FEditorDsListListProperty_dispose;
+   return o;
+}
+MO.FEditorDsListListProperty_onBuilded = function FEditorDsListListProperty_onBuilded(event){
+   var o = this;
+   o.__base.FDuiForm.onBuilded.call(o, event);
+}
+MO.FEditorDsListListProperty_onDataChanged = function FEditorDsListListProperty_onDataChanged(event){
+   var o  = this;
+   o.__base.FDuiForm.onDataChanged.call(o, event);
+   var frame = o._activeFrame;
+   var control = o._activeControl;
+   var size = o._controlSize.get();
+   control.size().set(size.x, size.y);
+   frame.build();
+}
+MO.FEditorDsListListProperty_construct = function FEditorDsListListProperty_construct(){
+   var o = this;
+   o.__base.FDuiForm.construct.call(o);
+}
+MO.FEditorDsListListProperty_loadObject = function FEditorDsListListProperty_loadObject(frame, control){
+   var o = this;
+   o.__base.FDuiForm.loadObject.call(o, frame, control);
+   o._activeFrame = frame;
+   o._activeControl = control;
+   var location = control.location();
+   o._controlLocation.set(location);
+   var size = control.size();
+   o._controlSize.set(size);
+   o._controlForeColor.set(control.foreColor());
+   o._controlBackColor.set(control.backColor());
+   o._controlBackResource.set(control.backResource());
+   o._controlBackGrid.set(control.backGrid());
+}
+MO.FEditorDsListListProperty_dispose = function FEditorDsListListProperty_dispose(){
+   var o = this;
+   o.__base.FDuiForm.dispose.call(o);
 }
 MO.FEditorDsListMenuBar = function FEditorDsListMenuBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiMenuBar);
@@ -1159,7 +1367,7 @@ MO.FEditorDsListPropertyContent = function FEditorDsListPropertyContent(o){
 MO.FEditorDsListPropertyContent_onBuild = function FEditorDsListPropertyContent_onBuild(p){
    var o = this;
    o.__base.FDsCatalog.onBuild.call(o, p);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=editor.design.list');
 }
 MO.FEditorDsListPropertyContent_onNodeClick = function FEditorDsListPropertyContent_onNodeClick(t, n){
    var o = this;
@@ -3287,81 +3495,79 @@ with(MO){
       return o;
    }
 }
-with(MO){
-   MO.FDsPrivateTemplateFrameSet = function FDsPrivateTemplateFrameSet(o){
-      o = RClass.inherits(this, o, FDsTemplateFrameSet);
-      o._frameName        = 'resource.private.template.FrameSet';
-      o.onBuilded         = FDsPrivateTemplateFrameSet_onBuilded;
-      o.onCatalogSelected = FDsPrivateTemplateFrameSet_onCatalogSelected;
-      return o;
+MO.FDsPrivateTemplateFrameSet = function FDsPrivateTemplateFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FDsTemplateFrameSet);
+   o._frameName        = 'resource.private.template.FrameSet';
+   o.onBuilded         = MO.FDsPrivateTemplateFrameSet_onBuilded;
+   o.onCatalogSelected = MO.FDsPrivateTemplateFrameSet_onCatalogSelected;
+   return o;
+}
+MO.FDsPrivateTemplateFrameSet_onBuilded = function FDsPrivateTemplateFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FDsTemplateFrameSet.onBuilded.call(o, event);
+   var toolbar = o._catalogToolBar = MO.Class.create(MO.FDsPrivateTemplateCatalogToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._frameCatalogToolBar.push(toolbar);
+   var catalog = o._catalogContent = MO.Class.create(MO.FDsTemplateCatalogContent);
+   catalog._frameSet = o;
+   catalog.build(event);
+   catalog.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalogContent.push(catalog);
+   var toolbar = o._canvasToolBar = MO.Class.create(MO.FDsPrivateTemplateCanvasToolBar);
+   toolbar._frameSet = o;
+   toolbar.buildDefine(event);
+   o._frameCanvasToolBar.push(toolbar);
+   var canvas = o._canvasContent = MO.Class.create(MO.FDsTemplateCanvasContent);
+   canvas._frameSet = o;
+   canvas._toolbar = o._canvasToolbar;
+   canvas._hParent = o._frameCanvasContent._hPanel;
+   canvas._hParent.style.scroll = 'auto';
+   canvas.addLoadListener(o, o.onDataLoaded);
+   canvas.build(event);
+   o._frameCanvasContent.push(canvas);
+}
+MO.FDsPrivateTemplateFrameSet_onCatalogSelected = function FDsPrivateTemplateFrameSet_onCatalogSelected(select, flag){
+   var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
    }
-   MO.FDsPrivateTemplateFrameSet_onBuilded = function FDsPrivateTemplateFrameSet_onBuilded(event){
-      var o = this;
-      o.__base.FDsTemplateFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolBar = RClass.create(FDsPrivateTemplateCatalogToolBar);
-      toolbar._frameSet = o;
-      toolbar.buildDefine(event);
-      o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsTemplateCatalogContent);
-      catalog._frameSet = o;
-      catalog.build(event);
-      catalog.addSelectedListener(o, o.onCatalogSelected);
-      o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateTemplateCanvasToolBar);
-      toolbar._frameSet = o;
-      toolbar.buildDefine(event);
-      o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsTemplateCanvasContent);
-      canvas._frameSet = o;
-      canvas._toolbar = o._canvasToolbar;
-      canvas._hParent = o._frameCanvasContent._hPanel;
-      canvas._hParent.style.scroll = 'auto';
-      canvas.addLoadListener(o, o.onDataLoaded);
-      canvas.build(event);
-      o._frameCanvasContent.push(canvas);
-   }
-   MO.FDsPrivateTemplateFrameSet_onCatalogSelected = function FDsPrivateTemplateFrameSet_onCatalogSelected(select, flag){
-      var o = this;
-      var space = o._activeSpace;
-      if(!space){
-         return;
-      }
-      o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dSpace)){
-         var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
-         frame.show();
-         frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
-         var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
-         frame.show();
-         frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
-         var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
-         frame.show();
-         frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
-         var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
-         frame.show();
-         frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
-         var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
-         frame.show();
-         frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dTemplateDisplay)){
-         var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
-         frame.show();
-         frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
-         var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
-         frame.show();
-         frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRenderable)){
-         var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
-         frame.show();
-         frame.loadObject(space, select);
-      }else{
-         throw new TError('Unknown select object type. (select={1})', select);
-      }
+   o.hidePropertyFrames();
+   if(MO.Class.isClass(select, MO.FE3dSpace)){
+      var frame = o.findPropertyFrame(MO.EDsFrame.CommonSpacePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(MO.Class.isClass(select, MO.FG3dTechnique)){
+      var frame = o.findPropertyFrame(MO.EDsFrame.CommonTechniquePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(MO.Class.isClass(select, MO.FE3dRegion)){
+      var frame = o.findPropertyFrame(MO.EDsFrame.CommonRegionPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(MO.Class.isClass(select, MO.FE3dCamera)){
+      var frame = o.findPropertyFrame(MO.EDsFrame.CommonCameraPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(MO.Class.isClass(select, MO.FG3dDirectionalLight)){
+      var frame = o.findPropertyFrame(MO.EDsFrame.CommonLightPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(MO.Class.isClass(select, MO.FE3dTemplateDisplay)){
+      var frame = o.findPropertyFrame(MO.EDsFrame.CommonDisplayPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(MO.Class.isClass(select, MO.FG3dMaterial)){
+      var frame = o.findPropertyFrame(MO.EDsFrame.CommonMaterialPropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else if(MO.Class.isClass(select, MO.FE3dRenderable)){
+      var frame = o.findPropertyFrame(MO.EDsFrame.CommonRenderablePropertyFrame);
+      frame.show();
+      frame.loadObject(space, select);
+   }else{
+      throw new TError('Unknown select object type. (select={1})', select);
    }
 }
 with(MO){

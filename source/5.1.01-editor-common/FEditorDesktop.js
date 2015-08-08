@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150701
 //==========================================================
-MO.FDssDesktop = function FDssDesktop(o){
+MO.FEditorDesktop = function FEditorDesktop(o){
    o = MO.Class.inherits(this, o, MO.FDesktop);
    //..........................................................
    // @attribute
@@ -13,17 +13,17 @@ MO.FDssDesktop = function FDssDesktop(o){
    o._canvas2d              = MO.Class.register(o, new MO.AGetter('_canvas2d'));
    //..........................................................
    // @event
-   o.onOperationResize      = MO.FDssDesktop_onOperationResize;
-   o.onOperationOrientation = MO.FDssDesktop_onOperationOrientation;
+   o.onOperationResize      = MO.FEditorDesktop_onOperationResize;
+   o.onOperationOrientation = MO.FEditorDesktop_onOperationOrientation;
    //..........................................................
    // @method
-   o.construct              = MO.FDssDesktop_construct;
+   o.construct              = MO.FEditorDesktop_construct;
    // @method
-   o.build                  = MO.FDssDesktop_build;
+   o.build                  = MO.FEditorDesktop_build;
    // @method
-   o.resize                 = MO.FDssDesktop_resize;
+   o.resize                 = MO.FEditorDesktop_resize;
    // @method
-   o.dispose                = MO.FDssDesktop_dispose;
+   o.dispose                = MO.FEditorDesktop_dispose;
    return o;
 }
 
@@ -33,7 +33,7 @@ MO.FDssDesktop = function FDssDesktop(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FDssDesktop_onOperationResize = function FDssDesktop_onOperationResize(event){
+MO.FEditorDesktop_onOperationResize = function FEditorDesktop_onOperationResize(event){
    var o = this;
    o.__base.FDesktop.onOperationResize.call(o, event);
    // 改变大小
@@ -46,7 +46,7 @@ MO.FDssDesktop_onOperationResize = function FDssDesktop_onOperationResize(event)
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FDssDesktop_onOperationOrientation = function FDssDesktop_onOperationOrientation(){
+MO.FEditorDesktop_onOperationOrientation = function FEditorDesktop_onOperationOrientation(){
    var o = this;
    o.__base.FDesktop.onOperationOrientation.call(o, event);
    // 改变大小
@@ -58,7 +58,7 @@ MO.FDssDesktop_onOperationOrientation = function FDssDesktop_onOperationOrientat
 //
 // @method
 //==========================================================
-MO.FDssDesktop_construct = function FDssDesktop_construct(){
+MO.FEditorDesktop_construct = function FEditorDesktop_construct(){
    var o = this;
    o.__base.FDesktop.construct.call(o);
 }
@@ -69,7 +69,7 @@ MO.FDssDesktop_construct = function FDssDesktop_construct(){
 // @method
 // @param hPanel:HtmlTag 页面元素
 //==========================================================
-MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
+MO.FEditorDesktop_build = function FEditorDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
    // 创建3D画板
@@ -96,7 +96,7 @@ MO.FDssDesktop_build = function FDssDesktop_build(hPanel){
 // @param targetWidth:Integer 宽度
 // @param targetHeight:Integer 高度
 //==========================================================
-MO.FDssDesktop_resize = function FDssDesktop_resize(targetWidth, targetHeight){
+MO.FEditorDesktop_resize = function FEditorDesktop_resize(targetWidth, targetHeight){
    var o = this;
    // 检查大小
    var width = (targetWidth != null) ? targetWidth : window.innerWidth;
@@ -148,7 +148,7 @@ MO.FDssDesktop_resize = function FDssDesktop_resize(targetWidth, targetHeight){
 //
 // @method
 //==========================================================
-MO.FDssDesktop_dispose = function FDssDesktop_dispose(){
+MO.FEditorDesktop_dispose = function FEditorDesktop_dispose(){
    var o = this;
    o._canvas3d = MO.RObject.dispose(o._canvas3d);
    o._canvas2d = MO.RObject.dispose(o._canvas2d);

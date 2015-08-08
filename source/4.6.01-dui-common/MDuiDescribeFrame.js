@@ -29,8 +29,8 @@ MO.MDuiDescribeFrame_buildDefine = function MDuiDescribeFrame_buildDefine(hDocum
       frameName = o._frameName;
    }
    // 获取页面定义
-   var frameConsole = MO.Console.find(MO.FDuiDescribeFrameConsole);
+   var frameConsole = MO.Console.find(MO.FUiFrameDefineConsole);
    var xconfig = frameConsole.load(frameName);
    // 构建处理
-   MO.RDuiControl.build(o, xconfig, null, hDocument);
+   MO.Dui.Control.build(o, xconfig, null, hDocument);
 }

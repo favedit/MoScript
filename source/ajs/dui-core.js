@@ -690,7 +690,7 @@ MO.FDuiFrameConsole_construct = function FDuiFrameConsole_construct(){
 }
 MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    var o = this;
-   var dc = MO.Console.find(MO.FDuiDescribeFrameConsole);
+   var dc = MO.Console.find(MO.FUiFrameDefineConsole);
    var x = dc.load(n);
    var f = MO.RDuiControl.build(null, x, null, c._hPanel);
    return f;
@@ -710,18 +710,18 @@ MO.FDuiFrameConsole_findByClass = function FDuiFrameConsole_findByClass(control,
    }
    return instance;
 }
-MO.FDuiFrameConsole_get = function FDuiFrameConsole_get(c, n, h){
+MO.FDuiFrameConsole_get = function FDuiFrameConsole_get(control, name, hPanel){
    var o = this;
-   var fs = o._frames;
-   var f = fs.get(n);
-   if(!f){
-      f = o.create(c, n);
-      if(h){
-         f.setPanel(h);
+   var frames = o._frames;
+   var frame = frames.get(name);
+   if(!frame){
+      frame = o.create(control, name);
+      if(hPanel){
+         frame.setPanel(hPanel);
       }
-      fs.set(n, f);
+      frames.set(name, frame);
    }
-   return f;
+   return frame;
 }
 MO.FDuiFrameConsole_hiddenAll = function FDuiFrameConsole_hiddenAll(){
    var o = this;
