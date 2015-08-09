@@ -78,7 +78,7 @@ if (typeof Worker === "undefined" || (typeof location !== "undefined" && locatio
     /// Let's use Web Workers.
     ///NOTE: The "this" keyword is the global context ("window" variable) if loaded via a <script> tag
     ///      or the function context if loaded as a module (e.g., in Node.js).
-    this.LZMA = function (lzma_path) {
+    this.LZMA_WORKER = function (lzma_path) {
         var action_compress   = 1,
             action_decompress = 2,
             action_progress   = 3,
@@ -125,7 +125,7 @@ if (typeof Worker === "undefined" || (typeof location !== "undefined" && locatio
                 lzma_worker.postMessage({
                     action: action, /// action_compress = 1, action_decompress = 2, action_progress = 3
                     cbn:    cbn,    /// callback number
-                    data:   data,
+                    data:   new Uint8Array(data),
                     mode:   mode
                 });
             }

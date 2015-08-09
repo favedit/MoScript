@@ -3,11 +3,19 @@
    <!-- 路径合并 -->
    <PathMergerCollection comment='N'>
       <PathMerger source='/1.1.01-runtime'                   target='/ajs/runtime.js'/>
+      <PathMerger source='/1.1.02-runtime-common'            target='/ajs/runtime-common.js'/>
+
       <PathMerger source='/1.2.01-lang'                      target='/ajs/lang.js'/>
-      <PathMerger source='/1.2.02-lang-math'                 target='/ajs/lang-math.js'/>
+      <PathMerger source='/1.2.02-lang-common'               target='/ajs/lang-common.js'/>
+      <PathMerger source='/1.2.03-lang-math'                 target='/ajs/lang-math.js'/>
+
       <PathMerger source='/1.3.01-core'                      target='/ajs/core.js'/>
-      <PathMerger source='/1.3.02-core-template'             target='/ajs/core-template.js'/>
-      <PathMerger source='/1.3.03-core-window'               target='/ajs/core-window.js'/>
+      <PathMerger source='/1.3.02-core-common'               target='/ajs/core-common.js'/>
+      <PathMerger source='/1.3.03-core-template'             target='/ajs/core-template.js'/>
+      <PathMerger source='/1.3.04-core-window'               target='/ajs/core-window.js'/>
+      <PathMerger source='/1.3.05-core-window-extension'     target='/ajs/core-window-extension.js'/>
+      <PathMerger source='/1.3.06-core-loader'               target='/ajs/core-loader.js'/>
+
       <PathMerger source='/1.4.01-console'                   target='/ajs/console.js'/>
 
       <PathMerger source='/2.1.01-graphic'                   target='/ajs/graphic.js'/>
@@ -144,16 +152,28 @@
    <FileMergerCollection>
       <FileMerger target='/ajs/mo-lang.js'>
          <File source='/ajs/runtime.js'/>
+         <File source='/ajs/runtime-common.js'/>
          <File source='/ajs/lang.js'/>
+         <File source='/ajs/lang-common.js'/>
          <File source='/ajs/lang-math.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-core.js'>
          <File source='/ajs/core.js'/>
+         <File source='/ajs/core-common.js'/>
          <File source='/ajs/core-template.js'/>
          <File source='/ajs/console.js'/>
       </FileMerger>
+      <FileMerger target='/ajs/mc.js'>
+         <File source='/ajs/lzma.js'/>
+         <File source='/ajs/runtime.js'/>
+         <File source='/ajs/lang.js'/>
+         <File source='/ajs/core.js'/>
+         <File source='/ajs/core-window.js'/>
+         <File source='/ajs/core-loader.js'/>
+      </FileMerger>
       <FileMerger target='/ajs/mo-window.js'>
          <File source='/ajs/core-window.js'/>
+         <File source='/ajs/core-window-extension.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-graphic.js'>
          <File source='/ajs/graphic.js'/>
@@ -341,7 +361,6 @@
          <File source='/ajs/demo.js'/>
       </FileMerger>
       <FileMerger target='/ajs/extension.js'>
-         <File source='/ajs/lzma-d.js'/>
          <File source='/ajs/lzma.js'/>
          <File source='/ajs/md5.js'/>
       </FileMerger>

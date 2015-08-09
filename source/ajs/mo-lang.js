@@ -89,15 +89,6 @@ MO.EProcess = new function EProcess(){
    o.Release = 2;
    return o;
 }
-MO.EScope = new function EScope(){
-   var o = this;
-   MO.TEnum.call(o);
-   o.Unknown = 0;
-   o.Local   = 1;
-   o.Session = 2;
-   o.Global  = 3;
-   return o;
-}
 MO.RRuntime = function RRuntime(){
    var o = MO.RSingleton.call(this);
    o._processCd  = MO.EProcess.Release;
@@ -228,261 +219,6 @@ MO.RRuntime.prototype.pairSort = function RArray_pairSort(names, values, offset,
    o.pairSortSub(names, values, begin, end, MO.Runtime.nvl(comparer, o.sortComparerAsc), parameters);
 }
 MO.Runtime = new MO.RRuntime();
-MO.TArray = function TArray(length){
-   var o = this;
-   o._length   = MO.Runtime.nvl(length, 0);
-   o._memory   = new Array();
-   o.isEmpty   = MO.TArray_isEmpty;
-   o.length    = MO.TArray_length;
-   o.setLength = MO.TArray_setLength;
-   o.memory    = MO.TArray_memory;
-   o.contains  = MO.TArray_contains;
-   o.indexOf   = MO.TArray_indexOf;
-   o.get       = MO.TArray_get;
-   o.set       = MO.TArray_set;
-   o.push      = MO.TArray_push;
-   o.swap      = MO.TArray_swap;
-   o.sort      = MO.TArray_sort;
-   o.erase     = MO.TArray_erase;
-   o.remove    = MO.TArray_remove;
-   o.compress  = MO.TArray_compress;
-   o.clear     = MO.TArray_clear;
-   o.dispose   = MO.TArray_dispose;
-   o.dump      = MO.TArray_dump;
-   return o;
-}
-MO.TArray_isEmpty = function TArray_isEmpty(){
-   return this._length == 0;
-}
-MO.TArray_length = function TArray_length(){
-   return this._length;
-}
-MO.TArray_setLength = function TArray_setLength(length){
-   this._length = length;
-}
-MO.TArray_memory = function TArray_memory(){
-   return this._memory;
-}
-MO.TArray_contains = function TArray_contains(value){
-   return this.indexOf(value) != -1;
-}
-MO.TArray_indexOf = function TArray_indexOf(value){
-   var o = this;
-   var count = o._length;
-   for(var i = 0; i < count; i++){
-      if(o._memory[i] == value){
-         return i;
-      }
-   }
-   return -1;
-}
-MO.TArray_get = function TArray_get(index){
-   return ((index >= 0) && (index < this._length)) ? this._memory[index] : null;
-}
-MO.TArray_set = function TArray_set(index, value){
-   var o = this;
-   if ((index >= 0) && (index < o._length)) {
-      o._memory[index] = value;
-   }
-}
-MO.TArray_push = function TArray_push(){
-   var o = this;
-   var count = arguments.length;
-   for(var i = 0; i < count; i++){
-      o._memory[o._length++] = arguments[i];
-   }
-}
-MO.TArray_swap = function TArray_swap(left, right){
-   var o = this;
-   var count = o._length;
-   if((left >= 0) && (left < count) && (right >= 0) && (right < count) && (left != right)){
-      var memory = o._memory;
-      var value = memory[left];
-      memory[left] = memory[right];
-      memory[right] = value;
-   }
-}
-MO.TArray_sort = function TArray_sort(){
-   this._memory.sort();
-}
-MO.TArray_erase = function TArray_erase(index){
-   var o = this;
-   var value = null;
-   var count = o._count;
-   if((index >= 0) && (index < count)){
-      value = o._memory[index];
-      for(var i = index; i < count; i++){
-         o._memory[i] = o._memory[i + 1];
-      }
-      o._length--;
-   }
-   return value;
-}
-MO.TArray_remove = function TArray_remove(value){
-   var o = this;
-   var index = 0;
-   var memory = o._memory;
-   var count = o._length;
-   for(var i = 0; i < count; i++){
-      if(memory[i] != value){
-         memory[index++] = memory[i];
-      }
-   }
-   o._length = index;
-}
-MO.TArray_compress = function TArray_compress(){
-   var o = this;
-   var index = 0;
-   var count = o._length;
-   var memory = o._memory;
-   for(var i = 0; i < count; i++){
-      var value = memory[i];
-      if(value != null){
-         memory[index++] = value;
-      }
-   }
-   o._length = index;
-}
-MO.TArray_clear = function TArray_clear(){
-   this._length = 0;
-}
-MO.TArray_dispose = function TArray_dispose(){
-   var o = this;
-   o._length = 0;
-   o._memory = null;
-}
-MO.TArray_dump = function TArray_dump(){
-   var o = this;
-   var result = new MO.TString();
-   var count = o._length;
-   result.append(MO.Runtime.className(o), ':', count);
-   if(count > 0){
-      var memory = o._memory;
-      for(var i = 0; i < count; i++){
-         result.append(' [', memory[i], ']');
-      }
-   }
-   return result.flush();
-}
-MO.TAttributes = function TAttributes(){
-   var o = this;
-   MO.TDictionary.call(o);
-   o.joinValue  = MO.TAttributes_joinValue;
-   o.join       = MO.TAttributes_join;
-   o.split      = MO.TAttributes_split;
-   o.pack       = MO.TAttributes_pack;
-   o.unpack     = MO.TAttributes_unpack;
-   o.dump       = MO.TAttributes_dump;
-   return o;
-}
-MO.TAttributes_joinValue = function TAttributes_joinValue(split){
-   var o = this;
-   var source = new MO.TString();
-   var count = o._count;
-   for(var i = 0; i < count; i++){
-      if(i > 0){
-         source.append(split);
-      }
-      source.append(o._values[i]);
-   }
-   return source.flush();
-}
-MO.TAttributes_join = function TAttributes_join(name, value){
-   var o = this;
-   var source = new MO.TString();
-   if(!name){
-      name = '=';
-   }
-   if(!value){
-      value = ',';
-   }
-   var count = o._count;
-   for(var i = 0; i < count; i++){
-      if(i > 0){
-         source.append(value);
-      }
-      source.append(o._names[i]);
-      source.append(name);
-      source.append(o._values[i]);
-   }
-   return source.flush();
-}
-MO.TAttributes_split = function TAttributes_split(source, name, value){
-   var o = this;
-   var items = source.split(value);
-   var count = items.length;
-   for(var i = 0; i < count; i++){
-      var item = items[i];
-      if(item.length){
-         var codes = item.split(name);
-         if(codes.length == 2){
-            o.set(MO.Lang.String.trim(codes[0]), MO.Lang.String.trim(codes[1]));
-         }else{
-            o.set(MO.Lang.String.trim(item), '');
-         }
-      }
-   }
-}
-MO.TAttributes_pack = function TAttributes_pack(){
-   var o = this;
-   var source = new MO.TString();
-   var count = o._count;
-   var names = o._names;
-   var values = o._values;
-   for(var i = 0; i < count; i++){
-      var name = names[i];
-      var value = values[i];
-      var nameLength = name.length;
-      source.append(nameLength.toString().length, nameLength, name);
-      if(value != null){
-         var value = value + '';
-         var valueLength = value.length;
-         source.append(valueLength.toString().length, valueLength, value);
-      }else{
-         source.append('0');
-      }
-   }
-   return source.flush();
-}
-MO.TAttributes_unpack = function TAttributes_unpack(source){
-   var o = this;
-   o.count = 0;
-   var position = 0;
-   var sourceLength = source.length;
-   while(position < sourceLength){
-      var lengthLength = parseInt(source.substr(position++, 1));
-      var length = parseInt(source.substr(position, lengthLength));
-      var name = source.substr(position + lengthLength, length);
-      position += lengthLength + length;
-      lengthLength = parseInt(source.substr(position++, 1));
-      var value = null;
-      if(lengthLength > 0){
-         length = parseInt(source.substr(position, lengthLength));
-         value = source.substr(position + lengthLength, length);
-         position += lengthLength + length;
-      }
-      o.set(name, value);
-   }
-}
-MO.TAttributes_dump = function TAttributes_dump(){
-   var o = this;
-   var result = new MO.TString();
-   var count = o._count;
-   result.append(MO.Runtime.className(o), ' : ', count);
-   if(count > 0){
-      var names = o._names;
-      var values = o._values;
-      result.append(' (');
-      for(var i = 0; i < count; i++){
-         if(i > 0){
-            result.append(', ');
-         }
-         result.append(names[i], '=', values[i]);
-      }
-      result.append(')');
-   }
-   return result.flush();
-}
 MO.TDictionary = function TDictionary(){
    var o = this;
    MO.TMap.call(o);
@@ -1159,6 +895,270 @@ MO.RAssert.prototype.debugNotEmpty = function RAssert_debugNotEmpty(value){
    }
 }
 MO.Assert = new MO.RAssert();
+MO.EScope = new function EScope(){
+   var o = this;
+   MO.TEnum.call(o);
+   o.Unknown = 0;
+   o.Local   = 1;
+   o.Session = 2;
+   o.Global  = 3;
+   return o;
+}
+MO.TArray = function TArray(length){
+   var o = this;
+   o._length   = MO.Runtime.nvl(length, 0);
+   o._memory   = new Array();
+   o.isEmpty   = MO.TArray_isEmpty;
+   o.length    = MO.TArray_length;
+   o.setLength = MO.TArray_setLength;
+   o.memory    = MO.TArray_memory;
+   o.contains  = MO.TArray_contains;
+   o.indexOf   = MO.TArray_indexOf;
+   o.get       = MO.TArray_get;
+   o.set       = MO.TArray_set;
+   o.push      = MO.TArray_push;
+   o.swap      = MO.TArray_swap;
+   o.sort      = MO.TArray_sort;
+   o.erase     = MO.TArray_erase;
+   o.remove    = MO.TArray_remove;
+   o.compress  = MO.TArray_compress;
+   o.clear     = MO.TArray_clear;
+   o.dispose   = MO.TArray_dispose;
+   o.dump      = MO.TArray_dump;
+   return o;
+}
+MO.TArray_isEmpty = function TArray_isEmpty(){
+   return this._length == 0;
+}
+MO.TArray_length = function TArray_length(){
+   return this._length;
+}
+MO.TArray_setLength = function TArray_setLength(length){
+   this._length = length;
+}
+MO.TArray_memory = function TArray_memory(){
+   return this._memory;
+}
+MO.TArray_contains = function TArray_contains(value){
+   return this.indexOf(value) != -1;
+}
+MO.TArray_indexOf = function TArray_indexOf(value){
+   var o = this;
+   var count = o._length;
+   for(var i = 0; i < count; i++){
+      if(o._memory[i] == value){
+         return i;
+      }
+   }
+   return -1;
+}
+MO.TArray_get = function TArray_get(index){
+   return ((index >= 0) && (index < this._length)) ? this._memory[index] : null;
+}
+MO.TArray_set = function TArray_set(index, value){
+   var o = this;
+   if ((index >= 0) && (index < o._length)) {
+      o._memory[index] = value;
+   }
+}
+MO.TArray_push = function TArray_push(){
+   var o = this;
+   var count = arguments.length;
+   for(var i = 0; i < count; i++){
+      o._memory[o._length++] = arguments[i];
+   }
+}
+MO.TArray_swap = function TArray_swap(left, right){
+   var o = this;
+   var count = o._length;
+   if((left >= 0) && (left < count) && (right >= 0) && (right < count) && (left != right)){
+      var memory = o._memory;
+      var value = memory[left];
+      memory[left] = memory[right];
+      memory[right] = value;
+   }
+}
+MO.TArray_sort = function TArray_sort(){
+   this._memory.sort();
+}
+MO.TArray_erase = function TArray_erase(index){
+   var o = this;
+   var value = null;
+   var count = o._count;
+   if((index >= 0) && (index < count)){
+      value = o._memory[index];
+      for(var i = index; i < count; i++){
+         o._memory[i] = o._memory[i + 1];
+      }
+      o._length--;
+   }
+   return value;
+}
+MO.TArray_remove = function TArray_remove(value){
+   var o = this;
+   var index = 0;
+   var memory = o._memory;
+   var count = o._length;
+   for(var i = 0; i < count; i++){
+      if(memory[i] != value){
+         memory[index++] = memory[i];
+      }
+   }
+   o._length = index;
+}
+MO.TArray_compress = function TArray_compress(){
+   var o = this;
+   var index = 0;
+   var count = o._length;
+   var memory = o._memory;
+   for(var i = 0; i < count; i++){
+      var value = memory[i];
+      if(value != null){
+         memory[index++] = value;
+      }
+   }
+   o._length = index;
+}
+MO.TArray_clear = function TArray_clear(){
+   this._length = 0;
+}
+MO.TArray_dispose = function TArray_dispose(){
+   var o = this;
+   o._length = 0;
+   o._memory = null;
+}
+MO.TArray_dump = function TArray_dump(){
+   var o = this;
+   var result = new MO.TString();
+   var count = o._length;
+   result.append(MO.Runtime.className(o), ':', count);
+   if(count > 0){
+      var memory = o._memory;
+      for(var i = 0; i < count; i++){
+         result.append(' [', memory[i], ']');
+      }
+   }
+   return result.flush();
+}
+MO.TAttributes = function TAttributes(){
+   var o = this;
+   MO.TDictionary.call(o);
+   o.joinValue  = MO.TAttributes_joinValue;
+   o.join       = MO.TAttributes_join;
+   o.split      = MO.TAttributes_split;
+   o.pack       = MO.TAttributes_pack;
+   o.unpack     = MO.TAttributes_unpack;
+   o.dump       = MO.TAttributes_dump;
+   return o;
+}
+MO.TAttributes_joinValue = function TAttributes_joinValue(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
+      }
+      source.append(o._values[i]);
+   }
+   return source.flush();
+}
+MO.TAttributes_join = function TAttributes_join(name, value){
+   var o = this;
+   var source = new MO.TString();
+   if(!name){
+      name = '=';
+   }
+   if(!value){
+      value = ',';
+   }
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(value);
+      }
+      source.append(o._names[i]);
+      source.append(name);
+      source.append(o._values[i]);
+   }
+   return source.flush();
+}
+MO.TAttributes_split = function TAttributes_split(source, name, value){
+   var o = this;
+   var items = source.split(value);
+   var count = items.length;
+   for(var i = 0; i < count; i++){
+      var item = items[i];
+      if(item.length){
+         var codes = item.split(name);
+         if(codes.length == 2){
+            o.set(MO.Lang.String.trim(codes[0]), MO.Lang.String.trim(codes[1]));
+         }else{
+            o.set(MO.Lang.String.trim(item), '');
+         }
+      }
+   }
+}
+MO.TAttributes_pack = function TAttributes_pack(){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   var names = o._names;
+   var values = o._values;
+   for(var i = 0; i < count; i++){
+      var name = names[i];
+      var value = values[i];
+      var nameLength = name.length;
+      source.append(nameLength.toString().length, nameLength, name);
+      if(value != null){
+         var value = value + '';
+         var valueLength = value.length;
+         source.append(valueLength.toString().length, valueLength, value);
+      }else{
+         source.append('0');
+      }
+   }
+   return source.flush();
+}
+MO.TAttributes_unpack = function TAttributes_unpack(source){
+   var o = this;
+   o.count = 0;
+   var position = 0;
+   var sourceLength = source.length;
+   while(position < sourceLength){
+      var lengthLength = parseInt(source.substr(position++, 1));
+      var length = parseInt(source.substr(position, lengthLength));
+      var name = source.substr(position + lengthLength, length);
+      position += lengthLength + length;
+      lengthLength = parseInt(source.substr(position++, 1));
+      var value = null;
+      if(lengthLength > 0){
+         length = parseInt(source.substr(position, lengthLength));
+         value = source.substr(position + lengthLength, length);
+         position += lengthLength + length;
+      }
+      o.set(name, value);
+   }
+}
+MO.TAttributes_dump = function TAttributes_dump(){
+   var o = this;
+   var result = new MO.TString();
+   var count = o._count;
+   result.append(MO.Runtime.className(o), ' : ', count);
+   if(count > 0){
+      var names = o._names;
+      var values = o._values;
+      result.append(' (');
+      for(var i = 0; i < count; i++){
+         if(i > 0){
+            result.append(', ');
+         }
+         result.append(names[i], '=', values[i]);
+      }
+      result.append(')');
+   }
+   return result.flush();
+}
 MO.RMemory = function RMemory(){
    var o = MO.RSingleton.call(this);
    o._entryUnused = null;;
@@ -1534,45 +1534,6 @@ MO.AAnnotation_code = function AAnnotation_code(){
 MO.AAnnotation_value = function AAnnotation_value(){
    return null;
 }
-MO.AConstructor = function AConstructor(name, dataCd, dataClass){
-   var o = this;
-   MO.AAnnotation.call(o, name);
-   o._annotationCd = MO.EAnnotation.Constructor;
-   o._inherit      = true;
-   o._ordered      = true;
-   o._dataCd       = dataCd;
-   o._dataClass    = dataClass;
-   o.dataCd        = MO.AConstructor_dataCd;
-   o.dataClass     = MO.AConstructor_dataClass;
-   return o;
-}
-MO.AConstructor_dataCd = function AConstructor_dataCd(){
-   return this._dataCd;
-}
-MO.AConstructor_dataClass = function AConstructor_dataClass(){
-   return this._dataClass;
-}
-MO.ADispose = function ADispose(name, disposeCd){
-   var o = this;
-   MO.AAnnotation.call(o, name);
-   o._annotationCd = MO.EAnnotation.Dispose;
-   o._inherit      = true;
-   o._ordered      = true;
-   o._disposeCd    = disposeCd;
-   o.disposeCd     = MO.ADispose_disposeCd;
-   return o;
-}
-MO.ADispose_disposeCd = function ADispose_disposeCd(){
-   return this._disposeCd;
-}
-MO.AEnum = function AEnum(name, linker){
-   var o = this;
-   o.inherit    = true;
-   o.annotation = MO.EAnnotation.Enum;
-   o.name       = name;
-   o.linker     = linker;
-   return o;
-}
 MO.AGetSet = function AGetSet(name, linker){
    var o = this;
    MO.ASource.call(o, name, MO.ESource.GetSet, linker);
@@ -1597,66 +1558,6 @@ MO.AGetter_build = function AGetter_build(clazz, instance){
    var o = this;
    var getName = o._linker ? o._linker : o._code;
    instance[getName] = MO.Method.makePropertyGet(o._name, getName);
-}
-MO.AGetterSource = function AGetterSource(name, linker){
-   var o = this;
-   MO.ASource.call(o, name, MO.ESource.Get, linker);
-   o._linker = linker;
-   o.build   = MO.AGetterSource_build;
-   return o;
-}
-MO.AGetterSource_build = function AGetterSource_build(clazz, instance){
-   var o = this;
-   var getName = o._linker ? o._linker : o._code;
-   instance[getName] = MO.Method.makePropertyGetSource(o._name, getName);
-}
-MO.ALinker = function ALinker(name, linker){
-   var o = this;
-   o.inherit    = true;
-   o.annotation = MO.EAnnotation.Linker;
-   o.name       = name;
-   o.linker     = linker;
-   return o;
-}
-MO.AProperty = function AProperty(name, linker){
-   var o = this;
-   MO.AAnnotation.call(o, name);
-   o._inherit      = true;
-   o._annotationCd = MO.EAnnotation.Property;
-   o._linker       = null;
-   o._force        = false;
-   o.code          = MO.AProperty_code;
-   o.build         = MO.AProperty_build;
-   o.load          = MO.AProperty_load;
-   o.save          = MO.AProperty_save;
-   o.toString      = MO.AProperty_toString;
-   var code = null;
-   if(linker == null){
-      if(MO.Lang.String.startsWith(name, '_')){
-         code = name.substring(1);
-      }else{
-         code = name;
-      }
-      code = MO.Lang.String.toUnderline(code);
-   }else{
-      code = linker;
-   }
-   o._linker = code;
-   return o;
-}
-MO.AProperty_code = function AProperty_code(){
-   return this._linker;
-}
-MO.AProperty_build = function AProperty_build(){
-}
-MO.AProperty_load = function AProperty_load(v, x){
-   v[this._name] = x.get(this._linker);
-}
-MO.AProperty_save = function AProperty_save(v, x){
-   x.set(this._linker, v[this._name]);
-}
-MO.AProperty_toString = function AProperty_toString(){
-   return '<' + this._annotationCd + ',linker=' + this._linker + '>';
 }
 MO.ASetter = function ASetter(name, linker){
    var o = this;
@@ -1710,19 +1611,6 @@ MO.EAnnotation = new function EAnnotation(){
    o.StyleIcon   = 'icon';
    return o;
 }
-MO.EBoolean = new function EBoolean(){
-   var o = this;
-   o.True   = 'Y';
-   o.False  = 'N';
-   return o;
-}
-MO.ECharCase = new function ECharCase(){
-   var o = this;
-   o.Upper = 'U';
-   o.Lower = 'L';
-   o.Word  = 'W';
-   return o;
-}
 MO.EDataType = new function EDataType(){
    var o = this;
    o.Unknown = 0;
@@ -1745,56 +1633,10 @@ MO.EDataType = new function EDataType(){
    o.Dictionary = 17;
    return o;
 }
-MO.EDispose = new function EDispose(){
-   var o = this;
-   o.Null    = 0;
-   o.Dispose = 1;
-   o.Release = 2;
-   return o;
-}
 MO.EEndian = new function EEndian(){
    var o = this;
    o.Big    = 0;
    o.Little = 1;
-   return o;
-}
-MO.ENodeType = new function ENodeType(){
-   var o = this;
-   o.Node = 1;
-   o.Text = 3;
-   o.Data = 4;
-   return o;
-}
-MO.ENumber = new function ENumber(){
-   var o = this;
-   o.Integer         = 'I';
-   o.PositiveInteger = 'PI';
-   o.NegativeInteger = 'NI';
-   o.Float           = 'F';
-   o.PositiveFloat   = 'PF';
-   o.NegativeFloat   = 'NF';
-   return o;
-}
-MO.ERegExp = new function ERegExp(){
-   var o = this;
-   o.I  = /^-?[1-9]\d*|0$/;
-   o.PI = /^[1-9]\d*$/;
-   o.NI = /^-[1-9]\d*$/;
-   o.F  = /^-?([1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0)$/;
-   o.PF = /^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$/;
-   o.NF = /^-([1-9]\d*\.\d*|0\.\d*[1-9]\d*)$/;
-   o.U  = /[1-9]{1}[0-9]/;
-   o.E  = /^\w{1,}[@]{1}[a-zA-Z]{1,}[.]{1}[a-zA-Z]{1,}$/;
-   return o;
-}
-MO.EResult = new function EResult(){
-   var o = this;
-   o.Success  = 0;
-   o.Continue = 1;
-   o.Skip     = 2;
-   o.Finish   = 3;
-   o.Failure  = -1;
-   o.Cancel   = -2;
    return o;
 }
 MO.ESource = new function ESource(){
@@ -1803,36 +1645,6 @@ MO.ESource = new function ESource(){
    o.Set    = 'set';
    o.GetSet = 'getset';
    o.Listener = 'listener';
-   return o;
-}
-MO.MInstance = function MInstance(o){
-   o = MO.Class.inherits(this, o);
-   o.__free          = false;
-   o.instanceCreate  = MO.Method.empty;
-   o.instanceAlloc   = MO.Method.empty;
-   o.instanceFree    = MO.Method.empty;
-   o.instanceRelease = MO.Method.empty;
-   return o;
-}
-MO.MInvoke = function MInvoke(o){
-   o = MO.Class.inherits(this, o);
-   o.invoke = MO.Method.virtual(o, 'invoke');
-   return o;
-}
-MO.MPoolAble = function MPoolAble(o){
-   o = MO.Class.inherits(this, o);
-   o._poolCode = MO.Class.register(o, new MO.AGetSet('_poolCode'));
-   return o;
-}
-MO.SArguments = function SArguments(){
-   var o = this;
-   o.owner = null;
-   return o;
-}
-MO.SEnumItem = function SEnumItem(){
-   var o = this;
-   o.name  = null;
-   o.value = 0;
    return o;
 }
 MO.SLogger = function SLogger(){
@@ -2107,234 +1919,6 @@ MO.TClassBase = function TClassBase(){
    o.__disposed = true;
    return o;
 }
-MO.TContext = function TContext(n, c, t){
-   var o = this;
-   o.name = n;
-   o.code = c;
-   o.text = t;
-   return o;
-}
-MO.TDataset = function TDataset(){
-   var o = this;
-   o._code      = null;
-   o._pageSize  = 20;
-   o._pageIndex = 0;
-   o._pageCount = 0;
-   o._total     = 0;
-   o._rows      = new MO.TObjects();
-   o.isEmpty    = MO.TDataset_isEmpty;
-   o.createRow  = MO.TDataset_createRow;
-   o.count      = MO.TDataset_count;
-   o.row        = MO.TDataset_row;
-   o.rows       = MO.TDataset_rows;
-   o.find       = MO.TDataset_find;
-   o.push       = MO.TDataset_push;
-   o.loadConfig = MO.TDataset_loadConfig;
-   o.clear      = MO.TDataset_clear;
-   return o;
-}
-MO.TDataset_isEmpty = function TDataset_isEmpty(){
-   var o = this;
-   return o._rows.isEmpty();
-}
-MO.TDataset_createRow = function TDataset_createRow(){
-   var o = this;
-   var r = new MO.TRow();
-   r._dataset = o;
-   o._rows.push(r);
-   return r;
-}
-MO.TDataset_count = function TDataset_count(){
-   return this._rows.count();
-}
-MO.TDataset_row = function TDataset_row(p){
-   return this._rows.get(p);
-}
-MO.TDataset_rows = function TDataset_rows(){
-   return this._rows;
-}
-MO.TDataset_find = function TDataset_find(p){
-   var o = this;
-   var a = arguments;
-   var l = a.length;
-   if((l % 2) != 0){
-      throw new MO.TError(o, 'Parameters must is pairs (length={1})', l);
-   }
-   var rs = o._rows;
-   var c = rs.count();
-   for(var n = 0; n < c; n++){
-      var r = rs.get(n);
-      var f = true;
-      for(var i = 0; i < l; i += 2){
-         if(r.get(a[n]) != a[n + 1]){
-            f = false;
-            break;
-         }
-      }
-      if(f){
-         return r;
-      }
-   }
-   return null;
-}
-MO.TDataset_push = function TDataset_push(r){
-   this._rows.push(r);
-}
-MO.TDataset_loadConfig = function TDataset_loadConfig(x){
-   var o = this;
-   o._code = x.get('name');
-   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
-   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
-   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
-   o._total = MO.Lang.Integer.parse(x.get('total'));
-   var xns = x.nodes();
-   if(xns){
-      var rs = o._rows;
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         if(xn.isName('Row')){
-            var r = o.createRow();
-            r.loadConfig(xn);
-         }
-      }
-   }
-}
-MO.TDataset_clear = function TDataset_clear(){
-   var o = this;
-   o._pageSize = 20;
-   o._pageIndex = 0;
-   o._pageCount = 0;
-   o._total = 0;
-   o._rows.clear();
-}
-MO.TDataset_findIndex = function TDataset_findIndex(p){
-   var o = this;
-   var rs = o._rows;
-   var c = rs.count();
-   for(var n = 0; n < c; n++){
-      var r = rs.get(n);
-      if(r._index = p){
-         return r;
-      }
-   }
-   return null;
-}
-MO.TDataset_remove = function TDataset_remove(i){
-   return this._rows.remove(i);
-}
-MO.TDataset_removeRow = function TDataset_removeRow(r){
-   var o = this;
-   var i = o.indexOf(r);
-   if(-1 != i){
-      o._rows.remove(i);
-   }
-}
-MO.TDataset_saveViewer = function TDataset_saveViewer(v){
-   var o = this;
-   v.datasetName = o._code;
-   v.datasetId = o.id;
-   v.position = 0;
-   v.start = 0;
-   v._count = o._rows._count;
-   v._rows = o._rows;
-   v.dataset = o;
-}
-MO.TDataset_pack = function TDataset_pack(){
-   var o = this;
-   var rs = o._rows;
-   var ss = new MO.TStrings();
-   for(var n = 0; n < rs._count; n++){
-      ss.push(rs.get(n).pack());
-   }
-   return ss.pack();
-}
-MO.TDataset_dump = function TDataset_dump(){
-   var o = this;
-   var r = new MO.TString();
-   r.append(MO.Class._code(o));
-   r.append(' count=', o._count);
-   r.append(' fields=', o.fieldCount);
-   r.appendLine();
-   if(o._rows){
-      var c = o._count;
-      for(var n = 0; n < c; n++){
-         r.append('- ');
-         o._rows.get(n).dump(s);
-         if(n != o._count-1){
-            r.appendLine();
-         }
-      }
-   }
-   return r.toString();
-}
-MO.TDatasetViewer = function TDatasetViewer(){
-   var o = this;
-   o._datasetId = null;
-   o._position  = 0;
-   o._start     = 0;
-   o._count     = 0;
-   e._values   = null;
-   o._rows      = null;
-   o._ouids     = null;
-   o.isEmpty   = MO.TDatasetViewer_isEmpty;
-   o.count     = MO.TDatasetViewer_count;
-   o.current   = MO.TDatasetViewer_current;
-   o.reset     = MO.TDatasetViewer_reset;
-   o.move      = MO.TDatasetViewer_move;
-   o.moveToRow = MO.TDatasetViewer_moveToRow;
-   o.first     = MO.TDatasetViewer_first;
-   o.prior     = MO.TDatasetViewer_prior;
-   o.next      = MO.TDatasetViewer_next;
-   o.last      = MO.TDatasetViewer_last;
-   return o;
-}
-MO.TDatasetViewer_isEmpty = function TDatasetViewer_isEmpty(){
-   return (this._count == null);
-}
-MO.TDatasetViewer_count = function TDatasetViewer_count(){
-   return this._count;
-}
-MO.TDatasetViewer_current = function TDatasetViewer_current(){
-   var o = this;
-   var s = o._rows;
-   return s ? s.get(o._position - o._start) : null;
-}
-MO.TDatasetViewer_reset = function TDatasetViewer_reset(){
-   this._position = -1;
-}
-MO.TDatasetViewer_move = function TDatasetViewer_move(p){
-   this._position = p;
-}
-MO.TDatasetViewer_moveToRow = function TDatasetViewer_moveToRow(r){
-   var o = this;
-   var p = o._rows.indexOf(r);
-   if(p != -1){
-      o._position = p - o._start;
-   }
-}
-MO.TDatasetViewer_first = function TDatasetViewer_first(r){
-   this._position = r ? -1 : 0;
-}
-MO.TDatasetViewer_prior = function TDatasetViewer_prior(){
-   var o = this;
-   if(o._position > 0){
-      o._position--;
-      return true;
-   }
-   return false;
-}
-MO.TDatasetViewer_next = function TDatasetViewer_next(){
-   var o = this;
-   if(o._position < o._count-1){
-      o._position++;
-      return true;
-   }
-   return false;
-}
-MO.TDatasetViewer_last = function TDatasetViewer_last(){
-   this._position = this._count-1;
-}
 MO.TDate = function TDate(date){
    var o = this;
    o.date         = date ? date : new Date();
@@ -2605,97 +2189,6 @@ MO.TError = function TError(po, pm, pp){
    var info = r.flush();
    alert(info);
 }
-MO.TFatalError = function TFatalError(po, pe, pm, pp){
-   var o = this;
-   var r = new MO.TString();
-   var f = TFatalError.caller;
-   var s = new MO.TString();
-   var t = new Array();
-   while(f){
-      if(MO.Lang.Array.contains(t, f)){
-         break;
-      }
-      t.push(f);
-      f = f.caller;
-   }
-   var c = t.length;
-   for(var n = 0; n < c; n++){
-      f = t[n];
-      if(n > 0){
-         s.appendLine();
-      }
-      s.append('   ' + (c - n) + ': ' + MO.Method.name(f));
-   }
-   var a = arguments;
-   var c = a.length;
-   for(var n = 2; n < c; n++){
-      var v = a[n];
-      var vs = null;
-      if(typeof(v) == 'function'){
-         vs = MO.Method.name(v);
-      }else{
-         vs = v;
-      }
-      pm = pm.replace('{' + (n - 1) + '}', vs);
-   }
-   r.appendLine(pm);
-   r.appendLine('------------------------------------------------------------');
-   r.append(s);
-   throw new Error(r);
-}
-MO.TInstancePool = function TInstancePool(){
-   var o = this;
-   MO.TObjects.call(o);
-   o._instance = null;
-   o.instance  = MO.TInstancePool_instance;
-   o.alloc     = MO.TInstancePool_alloc;
-   o.free      = MO.TInstancePool_free;
-   return o;
-}
-MO.TInstancePool_instance = function TInstancePool_instance(p){
-   var o = this;
-   var r = o._instance;
-   if(r == null){
-      r = o._instance = MO.Class.create(p);
-      r.instanceCreate();
-   }
-   r.instanceAlloc();
-   return r;
-}
-MO.TInstancePool_alloc = function TInstancePool_alloc(p){
-   var o = this;
-   var r = null;
-   if(o._count == 0){
-      r = MO.Class.create(p);
-      r.instanceCreate();
-   }else{
-      r = o.pop();
-   }
-   r.instanceAlloc();
-   return r;
-}
-MO.TInstancePool_free = function TInstancePool_free(p){
-   p.instanceFree();
-   return this.push(p);
-}
-MO.TInvoke = function TInvoke(){
-   var o = this;
-   o.owner    = null;
-   o.callback = null;
-   o.invoke   = MO.TInvoke_invoke;
-   return o;
-}
-MO.TInvoke_invoke = function TInvoke_invoke(p1, p2, p3, p4, p5, p6){
-   var o = this;
-   if(o.callback){
-      var c = o.owner ? o.owner : o;
-      try{
-         o.callback.call(c, p1, p2, p3, p4, p5, p6);
-      }catch(e){
-         MO.Logger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
-      }
-   }
-}
 MO.TListener = function TListener(){
    var o = this;
    o._owner    = null;
@@ -2708,11 +2201,7 @@ MO.TListener = function TListener(){
 MO.TListener_process = function TListener_process(sender, parameter1, parameter2, parameter3, parameter4, parameter5){
    var o = this;
    var owner = o._owner ? o._owner : o;
-   try{
       o._callback.call(owner, sender, parameter1, parameter2, parameter3, parameter4, parameter5);
-   }catch(error){
-      MO.Logger.fatal(o, error, 'Listener process failure. (owner={1})', owner);
-   }
 }
 MO.TListener_toString = function TListener_toString(){
    var o = this;
@@ -2836,6 +2325,2294 @@ MO.TListeners_dump = function TListeners_dump(){
       result.append('\n   ' + listeners.at(i));
    }
    return result.flush();
+}
+MO.FObject = function FObject(o){
+   if(!o){o = this;}
+   o.__class   = null;
+   o.__dispose = false;
+   o.__hash    = 0;
+   o.construct = MO.FObject_construct;
+   o.hashCode  = MO.FObject_hashCode;
+   o.toString  = MO.FObject_toString;
+   o.dispose   = MO.FObject_dispose;
+   o.innerDump = MO.FObject_innerDump;
+   o.dump      = MO.FObject_dump;
+   return o;
+}
+MO.FObject_construct = function FObject_construct(){
+   this.__dispose = false;
+}
+MO.FObject_hashCode = function FObject_hashCode(){
+   var o = this;
+   var hash = o.__hash;
+   if(!hash){
+      hash = o.__hash = MO.RObject.nextId();
+   }
+   return hash;
+}
+MO.FObject_toString = function FObject_toString(){
+   return MO.Class.dump(this);
+}
+MO.FObject_dispose = function FObject_dispose(){
+   var o = this;
+   MO.RObject.free(o);
+   o.__dispose = true;
+}
+MO.FObject_innerDump = function FObject_innerDump(dump, level){
+   dump.append(MO.Class.dump(this));
+}
+MO.FObject_dump = function FObject_dump(){
+   var result = new MO.TString();
+   this.innerDump(result, 0);
+   return result.flush();
+}
+MO.RClass = function RClass(){
+   var o = this;
+   o._codes   = new Array();
+   o._classes = new Object();
+   return o;
+}
+MO.RClass.prototype.isBase = function RClass_isBase(value){
+   if(value != null){
+      var typeName = typeof(value);
+      return MO.Class.isBaseName(typeName);
+   }
+   return false;
+}
+MO.RClass.prototype.isBaseName = function RClass_isBaseName(typeName){
+   if(typeName != null){
+      if(typeName == 'boolean'){
+         return true;
+      }else if(typeName == 'number'){
+         return true;
+      }else if(typeName == 'date'){
+         return true;
+      }else if(typeName == 'string'){
+         return true;
+      }else if(typeName == 'function'){
+         return true;
+      }
+   }
+   return false;
+}
+MO.RClass.prototype.isBaseDataName = function RClass_isBaseDataName(typeName){
+   if(typeName != null){
+      if(typeName == 'boolean'){
+         return true;
+      }else if(typeName == 'number'){
+         return true;
+      }else if(typeName == 'date'){
+         return true;
+      }else if(typeName == 'string'){
+         return true;
+      }
+   }
+   return false;
+}
+MO.RClass.prototype.isBaseType = function RClass_isBaseType(clazz){
+   if(clazz != null){
+      if(clazz == Boolean){
+         return true;
+      }else if(clazz == Number){
+         return true;
+      }else if(clazz == Date){
+         return true;
+      }else if(clazz == String){
+         return true;
+      }else if(clazz == Function){
+         return true;
+      }
+   }
+   return false;
+}
+MO.RClass.prototype.isBaseDataType = function RClass_isBaseDataType(clazz){
+   if(clazz != null){
+      if(clazz == Boolean){
+         return true;
+      }else if(clazz == Number){
+         return true;
+      }else if(clazz == Date){
+         return true;
+      }else if(clazz == String){
+         return true;
+      }
+   }
+   return false;
+}
+MO.RClass.prototype.isName = function RClass_isName(value, name){
+   return (this.name(value) == name);
+}
+MO.RClass.prototype.isClass = function RClass_isClass(v, c){
+   if(v && c){
+      var o = this;
+      var n = o.name(c);
+      if(v.__base){
+         return (v.__base[n] != null);
+      }else{
+         return (o.name(v) == n);
+      }
+   }
+   return false;
+}
+MO.RClass.prototype.typeOf = function RClass_typeOf(o){
+   if(o && o.constructor){
+      return MO.Lang.String.mid(o.constructor.toString(), 'function ', '(');
+   }
+   return 'Null';
+}
+MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(value, safe){
+   if(value == null){
+      return 'Null';
+   }
+   try{
+      var c = value.constructor;
+      if(c == Boolean){
+         return 'Boolean';
+      }
+      if(c == Number){
+         return 'Number';
+      }
+      if(c == String){
+         return 'String';
+      }
+      if(c == Function){
+         return MO.Lang.String.mid(c.toString(), 'function ', '(');
+      }
+      if(c.constructor == Function){
+         return MO.Lang.String.mid(c.toString(), 'function ', '(');
+      }
+      if(value.__class){
+         return value.__class.name;
+      }
+      if(value.tagName){
+         return 'Html';
+      }
+      for(var name in value){
+         return 'Object';
+      }
+   }catch(e){
+   }
+   return 'Unknown';
+}
+MO.RClass.prototype.checkClass = function RClass_checkClass(v, c){
+   if(!this.isClass(v, c)){
+      throw new Error('Invalid class ' + o.name(o) + '<>' + o.name(c));
+   }
+}
+MO.RClass.prototype.code = function RClass_code(v){
+   var c = this._codes;
+   var l = c.length;
+   for(var n = 0; n < l; n++){
+      if(c[n] == v){
+         return n;
+      }
+   }
+   c[l] = v;
+   return l;
+}
+MO.RClass.prototype.name = function RClass_name(value){
+   if(value){
+      if(value.__name){
+         return value.__name;
+      }
+      if(value.__class){
+         return value.__class.name;
+      }
+      if(typeof(value) == 'function'){
+         return MO.Method.name(value);
+      }
+      var method = value.constructor;
+      if(method){
+         return MO.Lang.String.mid(method.toString(), 'function ', '(');
+      }
+   }
+   return null;
+}
+MO.RClass.prototype.inherits = function RClass_inherits(s, p){
+   var base = MO.Runtime.nvl(p, s);
+   base.__inherits = new Array();
+   var count = arguments.length;
+   for(var i = 2; i < count; i++){
+      base.__inherits.push(MO.Method.name(arguments[i]));
+   }
+   return base;
+}
+MO.RClass.prototype.forName = function RClass_forName(name){
+   var o = this;
+   var clazz = null;
+   if(name){
+      clazz = o._classes[name];
+      if(!clazz){
+         clazz = o.createClass(name);
+         o.build(clazz);
+      }
+   }
+   return clazz;
+}
+MO.RClass.prototype.find = function RClass_find(v){
+   var o = this;
+   var n = null;
+   if(v != null){
+      if(v.__class){
+         n = v.__class.name;
+      }else if(v.constructor == Function){
+         n = MO.Method.name(v);
+      }else if(v.constructor != String){
+         MO.Logger.fatal(o, null, 'Find class failure. (value={1})', v);
+      }
+   }
+   return o._classes[n];
+}
+MO.RClass.prototype.register = function RClass_register(instance, annotations, defaultValue){
+   var o = this;
+   var name = MO.Method.name(instance.constructor);
+   var clazz = o._classes[name];
+   var annotation = null;
+   if(annotations.constructor == Array){
+      var count = annotations.length;
+      for(var i = 0; i < count; i++){
+         annotation = annotations[i];
+         clazz.register(annotation);
+      }
+   }else{
+      annotation = annotations;
+      clazz.register(annotation);
+   }
+   var value = annotation.value();
+   return (defaultValue != null) ? defaultValue : value;
+}
+MO.RClass.prototype.createBase = function RClass_createBase(name){
+   var base = null;
+   if(name){
+      var source = 'function ' + name + '(){return this;} new ' + name + '();';
+      base = eval(source);
+   }
+   return base;
+}
+MO.RClass.prototype.createClass = function RClass_createClass(className){
+   var o = this;
+   var clazz = o._classes[className] = new MO.TClass();
+   clazz.name = className;
+   clazz.base = o.createBase(className);
+   clazz.clazz = new clazz.base.constructor();
+   eval('MO.' + className)(clazz.clazz);
+   return clazz;
+}
+MO.RClass.prototype.create = function RClass_create(clazz){
+   var o = this;
+   var className = null;
+   var typeName = typeof(clazz);
+   if(typeName == 'function'){
+      className = MO.Method.name(clazz);
+   }else if(typeName == 'string'){
+      className = clazz;
+   }else{
+      throw new MO.TError(o, 'Param is invlid (clazz={1})', clazz);
+   }
+   return o.createByName(className);
+}
+MO.RClass.prototype.createByName = function RClass_createByName(className){
+   var o = this;
+   var clazz = o.forName(className);
+   if(!clazz){
+      throw new MO.TError(o, 'Cant find class. (name={1})', clazz);
+   }
+   return clazz.newInstance();
+}
+MO.RClass.prototype.innerCopy = function RClass_innerCopy(source, target){
+   if((source != null) && (target != null)){
+      for(var n in source){
+         var value = source[n];
+         if(value != null){
+            var typeName = typeof(value)
+            if(typeName == 'function'){
+               var targetValue = target[n];
+               if(targetValue == null){
+                  target[n] = value;
+               }else if(MO.Method.isVirtual(targetValue)){
+                  target[n] = value;
+               }else if(!MO.Method.isVirtual(value) && MO.Method.isEmpty(targetValue)){
+                  target[n] = value;
+               }else if(!MO.Method.isVirtual(value) && !MO.Method.isEmpty(value)){
+                  target[n] = value;
+               }
+               continue;
+            }else if(!MO.Class.isBaseName(typeName)){
+               if(target[n] == null){
+                  target[n] = new value.constructor();
+               }
+               this.innerCopy(value, target[n]);
+               continue;
+            }
+         }
+         target[n] = value;
+      }
+   }
+}
+MO.RClass.prototype.build = function RClass_build(clazz){
+   var o = this;
+   var inherits = clazz.clazz.__inherits;
+   if(inherits && (inherits.constructor == Array)){
+      var finded = false;
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
+         if(MO.Lang.String.startsWith(name, 'F')){
+            if(finded){
+               MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
+            }
+            clazz.parent = MO.Class.forName(name);
+            finded = true;
+         }
+      }
+   }
+   var instance = clazz.instance = new clazz.base.constructor();
+   if(inherits && (inherits.constructor == Array)){
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
+         if(!MO.Lang.String.startsWith(name, 'F')){
+            var findClass = MO.Class.forName(name);
+            if(findClass == null){
+               MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
+            }
+            MO.Class.innerCopy(findClass.instance, instance);
+            clazz.assign(findClass);
+         }
+      }
+   }
+   if(clazz.parent){
+      o.innerCopy(clazz.parent.instance, instance);
+      clazz.assign(clazz.parent);
+   }
+   if(!instance.__base){
+      instance.__base = new MO.TClassBase();
+   }
+   instance.__base[clazz.name] = new clazz.base.constructor();
+   var cf = clazz.clazz;
+   for(var name in cf){
+      if(name != '__base'){
+         if((cf[name] == null) && (instance[name] == null)){
+            instance[name] = null;
+         }else if(cf[name] != null){
+            if((instance[name] == null) || ((instance[name] != null) && cf[name] != instance[name])){
+               instance[name] = cf[name];
+            }
+         }
+      }
+   }
+   if(inherits && (inherits.constructor == Array)){
+      var inheritCount = inherits.length;
+      for(var i = 0; i < inheritCount; i++){
+         var name = inherits[i];
+         var baseClass = MO.Class.forName(name);
+         var base = instance.__base[name] = new baseClass.base.constructor();
+         var baseInstance = baseClass.instance;
+         for(var name in baseInstance){
+            if(name != '__base'){
+               var cfn = baseInstance[name];
+               var ofn = instance[name];
+               if((cfn != null) && (ofn != null) && (cfn != ofn)){
+                  if((cfn.constructor == Function) && (ofn.constructor == Function)){
+                     base[name] = baseInstance[name];
+                  }
+               }
+            }
+         }
+      }
+   }
+   clazz.build();
+   if(MO.Runtime.isRelease()){
+      var instance = clazz.instance;
+      for(var name in instance){
+         var value = instance[name];
+         if(value == null){
+            delete clazz.instance[name];
+         }
+      }
+   }
+}
+MO.RClass.prototype.free = function RClass_free(o){
+   var c = o.__class;
+   if(c){
+      c.free(o);
+   }
+}
+MO.RClass.prototype.dump = function RClass_dump(v){
+   var o = this;
+   if(v == null){
+      return '@null';
+   }
+   var t = o.safeTypeOf(v);
+   switch(t){
+      case 'Boolean':
+         return 'Boolean:' + v;
+      case 'Number':
+         return 'Number:' + v;
+      case 'String':
+         return t + '<' + v.length + '>:' + v;
+      case 'Function':
+         return t + '<' + MO.Method.name(v) + '>@' + o.code(v);
+      case 'Html':
+         return t + '<' + v.tagName + '>@' + o.code(v);
+      default:
+         if(v.__name){
+            return t + '<' + v.__name + '>@' + o.code(v);
+         }
+   }
+   return t + '@' + o.code(v);
+}
+MO.RClass = new MO.RClass();
+MO.Class = MO.RClass;
+MO.RDate = function RDate(){
+   var o = this;
+   o.MinYear       = 1800;
+   o.MaxYear       = 2400;
+   o.Pattern       = 'n-: /';
+   o.Chars         = '0123456789-:/';
+   o.DisplayFormat = 'yyyy-mm-dd hh24:mi:ss';
+   o.DataFormat    = 'yyyymmddhh24miss';
+   o.MonthDays     = new Array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+   o.Parts         = new Array('YYYY','MM','DD','HH24','MI','SS');
+   o.PartsDefine   = {'YYYY':['Year',4],'MM':['Month',2],'DD':['Day',2],'HH24':['Hour',2],'MI':['Minute',2],'SS':['Second',2]};
+   return o;
+}
+MO.RDate.prototype.nvl = function RDate_nvl(value){
+   return value ? value : new MO.TDate();
+}
+MO.RDate.prototype.format = function RDate_format(format){
+   return this.formatDate(new MO.TDate(), format);
+}
+MO.RDate.prototype.formatText = function RDate_formatText(date, format){
+   if(!date){
+      return false;
+   }
+   var value = format.toLowerCase();
+   value = value.replace(/yyyy/g, date.substring(0, 4));
+   date = date.substring(4);
+   value = value.replace(/mm/g, date.substring(0, 2));
+   date = date.substring(2);
+   value = value.replace(/dd/g, date.substring(0, 2));
+   date = date.substring(2);
+   value = value.replace(/hh24/g, date.substring(0, 4));
+   date = date.substring(4);
+   value = value.replace(/mi/g, date.substring(0, 2));
+   date = date.substring(2);
+   value = value.replace(/ss/g, date.substring(0, 2));
+   date = date.substring(2);
+   return value;
+}
+MO.RDate.prototype.formatDate = function RDate_formatDate(date, format){
+   if(!date){
+      return '';
+   }
+   var value = format ? format.toLowerCase() : this.DataFormat;
+   value = value.replace(/yyyy/g, MO.Lang.Integer.format(date.year, 4));
+   value = value.replace(/yy/g, MO.Lang.Integer.format(date.year % 100, 2));
+   value = value.replace(/mm/g, MO.Lang.Integer.format(date.month, 2));
+   value = value.replace(/dd/g, MO.Lang.Integer.format(date.day, 2));
+   value = value.replace(/hh24/g, MO.Lang.Integer.format(date.hour, 2));
+   value = value.replace(/mi/g, MO.Lang.Integer.format(date.minute, 2));
+   value = value.replace(/ss/g, MO.Lang.Integer.format(date.second, 2));
+   value = value.replace(/ms/g, MO.Lang.Integer.format(date.ms, 3));
+   return value;
+}
+MO.RDate.prototype.monthDays = function RDate_monthDays(year, month){
+   if(!year || !month){
+      return 0;
+   }
+   year = parseInt(year);
+   month = parseInt(month);
+   this.MonthDays[2] = (((year % 4 == 0) || (year % 400 == 0)) && (year % 100 != 0)) ? 29 : 28 ;
+   return this.MonthDays[month];
+}
+MO.RDate.prototype.splitFormat = function RDate_splitFormat(value, format){
+   if(!value){
+      return false;
+   }
+   format = format.toLowerCase();
+   var items = new Array();
+   while(format.length > 0){
+      if(format.indexOf('yyyy') == 0){
+         items['year'] = value.substring(0, 4);
+         format = format.substring(4);
+         value = value.substring(4);
+      }else if(format.indexOf('mm') == 0){
+         items['month'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(2);
+      }else if(format.indexOf('dd') == 0){
+         items['day'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(2);
+      }else if(format.indexOf('hh24') == 0){
+         items['hour'] = value.substring(0, 2);
+         format = format.substring(4);
+         value = value.substring(2);
+      }else if(format.indexOf('mi') == 0){
+         items['minute'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(2);
+      }else if(format.indexOf('ss') == 0){
+         items['second'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(2);
+      }else if(format.indexOf('ms') == 0){
+         items['ms'] = value.substring(0, 2);
+         format = format.substring(2);
+         value = value.substring(3);
+      }else{
+         format = format.substring(1);
+         value = value.substring(1);
+      }
+   }
+   return items;
+}
+MO.RDate.prototype.splitTime = function RDate_splitTime(date, value){
+   if(!value){
+      return;
+   }
+   if(value.indexOf(':') != -1){
+      var items = value.split(':');
+      if(items.length >= 1){
+         date.hour = MO.Lang.Integer.parse(items[0]);
+      }
+      if(items.length >= 2){
+         date.minute = MO.Lang.Integer.parse(items[1]);
+      }
+      if(items.length >= 3){
+         date.second = MO.Lang.Integer.parse(items[2]);
+      }
+   }else if(value.length == 6){
+      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
+      date.minute = MO.Lang.Integer.parse(value.substr(2, 2));
+      date.second = MO.Lang.Integer.parse(value.substr(4, 2));
+   }else if(value.length == 4){
+      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
+      date.minute = MO.Lang.Integer.parse(value.substr(2, 2));
+   }else if(value.length == 2){
+      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
+   }
+}
+MO.RDate.prototype.splitDate = function RDate_splitDate(date, value){
+   if(!value){
+      return;
+   }
+   if(value.indexOf('-') != -1 || value.indexOf('/') != -1){
+      var items = null;
+      if(value.indexOf('-') != -1){
+         items = value.split('-');
+      }else if(value.indexOf('/') != -1){
+         items = value.split('/');
+      }
+      if(items.length >= 1){
+         date.year = MO.Lang.Integer.parse(items[0]);
+      }
+      if(items.length >= 2){
+         date.month = MO.Lang.Integer.parse(items[1]);
+      }
+      if(items.length >= 3){
+         date.day = MO.Lang.Integer.parse(items[2]);
+      }
+   }else if(value.indexOf(':') != -1){
+      this.splitTime(date, value);
+   }else if(value.length == 14){
+      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
+      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
+      date.day = MO.Lang.Integer.parse(value.substr(6, 2));
+      date.hour = MO.Lang.Integer.parse(value.substr(8, 2));
+      date.minute = MO.Lang.Integer.parse(value.substr(10, 2));
+      date.second = MO.Lang.Integer.parse(value.substr(12, 2));
+   }else if(value.length == 8){
+      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
+      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
+      date.day = MO.Lang.Integer.parse(value.substr(6, 2));
+   }else if(value.length == 6){
+      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
+      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
+   }else if(value.length == 4){
+      date.year = MO.Lang.Integer.parse(value);
+   }
+}
+MO.RDate.prototype.checkItems = function RDate_checkItems(items){
+   var o = this;
+   if(!items){
+      return false;
+   }
+   var year = MO.Lang.Integer.parse(items["year"]);
+   if(year < o.MinYear || year > o.MaxYear){
+      return false;
+   }
+   var month = MO.Lang.Integer.parse(items["month"]);
+   if(month < 1 || month > 12){
+      return false;
+   }
+   var day = MO.Lang.Integer.parse(items["day"]);
+   if(day < 1 || day > o.monthDays(year, month)){
+      return false;
+   }
+   var hour = MO.Lang.Integer.parse(items["hour"]);
+   if(hour < 0 || hour > 23){
+      return false;
+   }
+   var second = MO.Lang.Integer.parse(items["second"]);
+   if(second < 0 || second > 59){
+      return false;
+   }
+   var ms = MO.Lang.Integer.parse(items["ms"]);
+   if(ms < 0 || ms > 99){
+      return false;
+   }
+   return true;
+}
+MO.RDate.prototype.check = function RDate_check(value, format){
+   return this.checkItems(this.splitFormat(value, format));
+}
+MO.RDate.prototype.make = function RDate_make(yyyy, mm, dd, hh, mi, ss){
+   return new MO.TDate(new Date(yyyy, mm, dd));
+}
+MO.RDate.prototype.makeDate = function RDate_makeDate(value, items){
+   var year = MO.Lang.Integer.parse(items.year);
+   var month = MO.Lang.Integer.parse(items.month) - 1;
+   var day = MO.Lang.Integer.parse(items.day);
+   var hour = MO.Lang.Integer.parse(items.hour);
+   var minute = MO.Lang.Integer.parse(items.minute);
+   var second = MO.Lang.Integer.parse(items.second);
+   var ms = MO.Lang.Integer.parse(items.ms);
+   var date = new Date(year, month, day, hour, minute, second, ms);
+   if(value){
+      value.setDate(date);
+      return value;
+   }
+   return new MO.TDate(date);
+}
+MO.RDate.prototype.parse = function RDate_parse(date, value, format){
+   if(!format){
+      format = this.DataFormat;
+   }
+   var items = this.splitFormat(value, format);
+   if(this.checkItems(items)){
+      return this.makeDate(date, items);
+   }
+   return null;
+}
+MO.RDate.prototype.autoParse = function RDate_autoParse(date, value){
+   if(!value){
+      return null;
+   }
+   var o = this;
+   date = o.nvl(date);
+   var items = new Array();
+   items['year'] = 2000;
+   items['month'] = 1;
+   items['day'] = 1;
+   items['hour'] = 0;
+   items['minute'] = 0;
+   items['second'] = 0;
+   value = MO.Lang.String.trim(value);
+   if(value.indexOf(' ') == -1){
+      o.splitDate(items, value);
+   }else{
+      var valueItems = value.split(' ');
+      if(valueItems.length == 2){
+         o.splitDate(items, valueItems[0]);
+         o.splitTime(items, valueItems[1]);
+      }
+   }
+   if(o.checkItems(items)){
+      return o.makeDate(date, items);
+   }
+   return null;
+}
+MO.RDate = new MO.RDate();
+MO.Lang.Date = MO.RDate;
+MO.RInteger = function RInteger(){
+   var o = this;
+   o.Chars      = '0123456789-%';
+   o.NUMBER     = '0123456789-%';
+   o.LEFT_CHAR  = '0';
+   o.MAX_UINT16 = 65535;
+   o.MAX_UINT32 = 4294967295;
+   return o;
+}
+MO.RInteger.prototype.isInt = function RInteger_isInt(v){
+   return MO.Lang.String.isPattern(v, 'n');
+}
+MO.RInteger.prototype.nvl = function RInteger_nvl(value, defaultValue){
+   if(value != null){
+      return parseInt(value);
+   }
+   if(defaultValue != null){
+      return defaultValue;
+   }
+   return 0;
+}
+MO.RInteger.prototype.strideByte = function RInteger_strideByte(value){
+   if(value > 65535){
+      return 4;
+   }else if(value > 255){
+      return 2;
+   }else{
+      return 1;
+   }
+}
+MO.RInteger.prototype.strideBit = function RInteger_strideBit(value){
+   if(value > 65535){
+      return 32;
+   }else if(value > 255){
+      return 16;
+   }else{
+      return 8;
+   }
+}
+MO.RInteger.prototype.parse = function RInteger_parse(v, d){
+   if(d == null){
+      d = 0;
+   }
+   if(v == null){
+      return d;
+   }
+   if(v == ''){
+      return d;
+   }
+   v = MO.Lang.String.trim(v.toString());
+   while(true){
+      if(v.charAt(0) != '0'){
+         break;
+      }
+      v = v.substr(1);
+   }
+   var r = (v.length > 0) ? parseInt(v) : d;
+   return isNaN(r) ? d : r;
+}
+MO.RInteger.prototype.format = function RInteger_format(v, l, p){
+   if(!p){
+      p = this.LEFT_CHAR;
+   }
+   var v = v.toString();
+   for(var i = parseInt(l) - v.length - 1; i >= 0; i--){
+      v = p + v;
+   }
+   return v;
+}
+MO.RInteger.prototype.toRange = function RInteger_toRange(value, min, max){
+   if(value == null){
+      value = 0;
+   }
+   if(isNaN(value)){
+      value = 0;
+   }
+   if(value < min){
+      value = min;
+   }
+   if(value > max){
+      value = max;
+   }
+   return value;
+}
+MO.RInteger.prototype.pow2 = function RInteger_pow2(value){
+   if(value > 4096){
+      return 8192;
+   }else if(value > 2048){
+      return 4096;
+   }else if(value > 1024){
+      return 2048;
+   }else if(value > 512){
+      return 1024;
+   }else if(value > 256){
+      return 512;
+   }else if(value > 128){
+      return 256;
+   }else if(value > 64){
+      return 128;
+   }else if(value > 32){
+      return 64;
+   }else if(value > 16){
+      return 32;
+   }else if(value > 8){
+      return 16;
+   }else if(value > 4){
+      return 8;
+   }else if(value > 2){
+      return 4;
+   }else if(value > 1){
+      return 2;
+   }
+   return 1;
+}
+MO.RInteger.prototype.sum = function RInteger_sum(){
+   var r = 0;
+   var a = arguments;
+   var c = a.length;
+   for(var n = 0; n < c; n++){
+      if(a[n] != null){
+         r += parseInt(a[n]);
+      }
+   }
+   return r;
+}
+MO.RInteger.prototype.calculate = function RInteger_calculate(f, a, b){
+   var a = RInteger.parse(a);
+   var b = RInteger.parse(b);
+   var r = '';
+   if(f == '+'){
+      r = a + b;
+   }else if(f == '-'){
+      r = a - b;
+   }else if(f == 'x'){
+      r = a * b;
+   }else if(f == '/'){
+     r = a / b;
+   }
+   return r.toString();
+}
+MO.RInteger.prototype.copy = function RInteger_copy(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
+}
+MO.RInteger.prototype.toString = function RInteger_toString(p){
+   return (p == null) ? '0' : p.toString();
+}
+MO.RInteger = new MO.RInteger();
+MO.Lang.Integer = MO.RInteger;
+MO.RLogger = function RLogger(){
+   var o = this;
+   o._labelLength = 40;
+   o._logger       = new MO.SLogger();
+   o.lsnsOutput   = new MO.TListeners();
+   return o;
+}
+MO.RLogger.prototype.output = function RLogger_output(sender, message){
+   var o = this;
+   var logger = o._logger;
+   logger.sender = sender
+   logger.message = message;
+   o.lsnsOutput.process(logger);
+}
+MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
+   var o = this;
+   var name = null;
+   var caller = MO.Logger.debug.caller;
+   if(caller){
+      name = MO.Method.name(caller);
+   }else if(arguments.caller){
+      name = MO.Method.name(arguments.caller[0]);
+   }
+   if(name == null){
+      name = 'unknown';
+   }else{
+      name = name.replace('_', '.');
+   }
+   if(owner && owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|D [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a != null){
+         if(typeof(a) == 'function'){
+            s = MO.Method.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      message = message.replace('{' + (n - 1) + '}', s);
+   }
+   result.append(message);
+   o.output(owner, result.flush());
+}
+MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
+   var o = this;
+   var name = null;
+   var caller = MO.Logger.info.caller;
+   if(caller){
+      name = MO.Method.name(caller);
+   }else if(arguments.caller){
+      name = MO.Method.name(arguments.caller[0]);
+   }
+   if(name == null){
+      name = 'unknown';
+   }else{
+      name = name.replace('_', '.');
+   }
+   if(owner && owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a != null){
+         if(typeof(a) == 'function'){
+            s = MO.Method.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      message = message.replace('{' + (n - 1) + '}', s);
+   }
+   result.append(message);
+   o.output(owner, result.flush());
+}
+MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
+   var o = this;
+   var name = null;
+   var caller = MO.Logger.warn.caller;
+   if(caller){
+      name = MO.Method.name(caller);
+   }else if(arguments.caller){
+      name = MO.Method.name(arguments.caller[0]);
+   }
+   if(name == null){
+      name = 'unknown';
+   }else{
+      name = name.replace('_', '.');
+   }
+   if(owner && owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|W [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a != null){
+         if(typeof(a) == 'function'){
+            s = MO.Method.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      message = message.replace('{' + (n - 1) + '}', s);
+   }
+   result.append(message);
+   o.output(owner, result.flush());
+}
+MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
+   var o = this;
+   var name = null;
+   var caller = MO.Logger.error.caller;
+   if(caller){
+      name = MO.Method.name(caller);
+   }else if(arguments.caller){
+      name = MO.Method.name(arguments.caller[0]);
+   }
+   if(name == null){
+      name = 'unknown';
+   }else{
+      name = name.replace('_', '.');
+   }
+   if(owner && owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a != null){
+         if(typeof(a) == 'function'){
+            s = MO.Method.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      message = message.replace('{' + (n - 1) + '}', s);
+   }
+   result.append(message);
+   o.output(owner, result.flush());
+}
+MO.RLogger.prototype.fatal = function RLogger_fatal(owner, error, message, params){
+   var o = this;
+   var stack = new MO.TString();
+   var stacks = new Array();
+   var caller = MO.Logger.fatal.caller;
+   while(caller){
+      if(MO.Lang.Array.contains(stacks, caller)){
+         break;
+      }
+      stacks.push(caller);
+      caller = caller.caller;
+   }
+   var count = stacks.length;
+   for(var i = 0; i < count; i++){
+      caller = stacks[i];
+      if(i > 0){
+         stack.appendLine();
+      }
+      stack.append('   ' + (count - i) + ': ' + MO.Method.name(caller));
+   }
+   var result = new MO.TString();
+   result.appendLine(MO.RContext.get('RMessage:fatal'));
+   result.appendLine(MO.Lang.String.repeat('-', 60));
+   result.append(MO.Class.dump(owner), ': ');
+   if(message){
+      var count = arguments.length;
+      for(var i = 3; i < count; i++){
+         var parameter = arguments[i];
+         if('function' == typeof(parameter)){
+            parameter = MO.Method.name(parameter);
+         }
+         message = message.replace('{' + (i - 2) + '}', parameter);
+      }
+   }
+   result.appendLine(message);
+   result.appendLine(MO.Lang.String.repeat('-', 60));
+   result.appendLine('Stack:');
+   result.append(stack.flush());
+   var text = result.flush();
+   o.output(owner, text);
+   if(MO.Runtime.isPlatformPc() && !MO.Runtime.isRelease()){
+      throw new Error(text);
+   }
+}
+MO.RLogger.prototype.show = function RLogger_show(sf, message, params){
+   var o = this;
+   var name = null;
+   var caller = MO.Logger.show.caller;
+   if(caller){
+      name = MO.Method.name(caller);
+   }else if(arguments.caller){
+      name = MO.Method.name(arguments.caller[0]);
+   }
+   if(name == null){
+      name = 'unknown';
+   }else{
+      name = name.replace('_', '.');
+   }
+   if(owner.hashCode){
+      name += '@' + owner.hashCode();
+   }
+   var result = new MO.TString();
+   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
+   result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
+   var count = arguments.length;
+   for(var n = 2; n < count; n++){
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
+         }else{
+            value = parameter.toString();
+         }
+      }
+      message = message.replace('{' + (n - 1) + '}', value);
+   }
+   result.append(message);
+   alert(result.flush());
+}
+MO.Logger = new MO.RLogger();
+MO.RMethod = function RMethod(){
+   var o = this;
+   o._virtuals   = new Object();
+   o._properties = new Object();
+   return o;
+}
+MO.RMethod.prototype.construct = function RMethod_construct(){
+   var o = this;
+   o.empty.__empty = true;
+   o.emptyTrue.__empty = true;
+   o.emptyFalse.__empty = true;
+}
+MO.RMethod.prototype.isFunction = function RMethod_isFunction(value){
+   return typeof(value) == 'function';
+}
+MO.RMethod.prototype.isEmpty = function RMethod_isEmpty(value){
+   return (value && value.__empty);
+}
+MO.RMethod.prototype.isVirtual = function RMethod_isVirtual(value){
+   return (value && value.__virtual);
+}
+MO.RMethod.prototype.name = function RMethod_name(value){
+   if(value){
+      if(typeof(value) == 'function'){
+         if(value.__name){
+            return value.__name;
+         }
+         var source = value.toString();
+         var name = value.__name = MO.Lang.String.mid(source, 'function ', '(');
+         return name;
+      }
+   }
+   return null;
+}
+MO.RMethod.prototype.fullName = function RMethod_fullName(value){
+   if(value && (value.constructor == Function)){
+      if(value.__fullname){
+         return value.__fullname;
+      }
+      var source = value.toString();
+      var name = value.__fullname = MO.Lang.String.mid(source, 'function ', ')') + ')';
+      return name;
+   }
+   return null;
+}
+MO.RMethod.prototype.empty = function RMethod_empty(){
+}
+MO.RMethod.prototype.emptyTrue = function RMethod_emptyTrue(){
+   return true;
+}
+MO.RMethod.prototype.emptyFalse = function RMethod_emptyFalse(){
+   return false;
+}
+MO.RMethod.prototype.emptyCall = function RMethod_emptyCall(){
+}
+MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
+   var o = this;
+   var method = null;
+   var code = MO.Class.name(value) + '.' + name;
+   if(o._virtuals[code]){
+      method = o._virtuals[code];
+   }else{
+      var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
+      method = new Function(source);
+      method.__virtual = true;
+      method.__name = code;
+      o._virtuals[code] = method;
+   }
+   return method;
+}
+MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
+   var o = this;
+   var code = name + '|' + methodName;
+   var method = null;
+   if(o._properties[code]){
+      method = o._properties[code];
+   }else{
+      var source = 'return this.' + name + ';';
+      method = new Function(source);
+      o._properties[code] = method;
+   }
+   return method;
+}
+MO.RMethod.prototype.makePropertyGetSource = function RMethod_makePropertyGet(name, methodName){
+   var o = this;
+   var source = 'return this.' + name + ';';
+   var method = new Function(source);
+   return method;
+}
+MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
+   var o = this;
+   var code = name + '|' + methodName;
+   var method = null;
+   if(o._properties[code]){
+      method = o._properties[code];
+   }else{
+      var source = 'this.' + name + '=value;';
+      method = new Function('value', source);
+      o._properties[code] = method;
+   }
+   return method;
+}
+MO.RMethod = new MO.RMethod();
+MO.Method = MO.RMethod;
+MO.Method.construct();
+MO.RObject = function RObject(){
+   var o = this;
+   o._hash = 1;
+   return o;
+}
+MO.RObject.prototype.nextId = function RObject_nextId(v){
+   return this._hash++;
+}
+MO.RObject.prototype.nvl = function RObject_nvl(v){
+   var a = arguments;
+   var c = a.length;
+   for(var n = 0; n < c; n++){
+      if(a[n] != null){
+         return a[n];
+      }
+   }
+   return null;
+}
+MO.RObject.prototype.clone = function RObject_clone(o){
+   var r = new o.constructor();
+   for(var n in o){
+      var v = o[n];
+      if(v != null){
+         if(!MO.Class.isBaseType(v.constructor)){
+            v = MO.Lang.Object.clone(v);
+         }
+      }
+      r[n] = v;
+   }
+   return r;
+}
+MO.RObject.prototype.copy = function RObject_copy(s, t){
+   if((s != null) && (t != null)){
+      for(var n in s){
+         var v = s[n];
+         if(v != null){
+            if(!MO.Class.isBaseType(v.constructor)){
+               if(t[n] == null){
+                  t[n] = new c();
+               }
+               MO.Lang.Object.copy(v, t[n]);
+            }
+         }
+         t[n] = v;
+      }
+   }
+}
+MO.RObject.prototype.free = function RObject_free(item){
+   if(item){
+      if(MO.Runtime.isDebug()){
+         for(var name in item){
+            if((name == '__base') || (name == '__inherits') || (name == '__class')){
+               item[name] = null;
+               continue;
+            }
+            var value = item[name];
+            if(value != null){
+               if(!MO.Class.isBaseType(value.constructor)){
+                  throw new MO.TError(MO.Lang.Object, 'Free object is not base object.');
+               }
+               item[name] = null;
+            }
+         }
+      }else{
+         for(var name in item){
+            item[name] = null;
+         }
+      }
+   }
+}
+MO.RObject.prototype.dispose = function RObject_dispose(item, flag){
+   if(item){
+      if(!item.__dispose){
+         item.dispose(flag);
+         item.__dispose = true;
+      }else{
+         throw new MO.TError(MO.Lang.Object, 'Object has disposed.');
+      }
+   }
+   return null;
+}
+MO.RObject.prototype.release = function RObject_release(item){
+   if(item){
+      for(var name in item){
+         var value = item[name];
+         if(typeof(value) == 'Object'){
+            this.release(value)
+         }
+         item[n] = null;
+      }
+   }
+   return null;
+}
+MO.RObject = new MO.RObject();
+MO.Lang.Object = MO.RObject;
+MO.RString = function RString(){
+   var o = this;
+   o.EMPTY      = '';
+   o.SPACE      = '   ';
+   o.PAD        = ' ';
+   o.TRIM       = ' \t\r\n';
+   o.LOWER      = 'abcdefghijklmnopqrstuvwxyz';
+   o.UPPER      = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+   o.CodeLowerA = 'a'.charCodeAt(0);
+   o.CodeLowerZ = 'z'.charCodeAt(0);
+   o.CodeUpperA = 'A'.charCodeAt(0);
+   o.CodeUpperZ = 'Z'.charCodeAt(0);
+   return o;
+}
+MO.RString.prototype.isEmpty = function RString_isEmpty(value){
+   if(value != null){
+      return (value.length == 0);
+   }
+   return true;
+}
+MO.RString.prototype.isBlank = function RString_isBlank(value){
+   if(value != null){
+      return (value.trim().length == 0);
+   }
+   return true;
+}
+MO.RString.prototype.isAnsi = function RString_isAnsi(value){
+   if(value != null){
+      var count = value.length;
+      for(var i = 0; i < count; i++){
+         if(value.charCodeAt(i) > 255){
+            return false;
+         }
+      }
+      return true;
+   }
+   return false;
+}
+MO.RString.prototype.isDbcs = function RString_isDbcs(value){
+   if(value == null){
+      var count = value.length;
+      for(var i = 0; i < count; i++){
+         if(value.charCodeAt(i) < 256){
+            return false;
+         }
+      }
+      return true;
+   }
+   return false;
+}
+MO.RString.prototype.isPattern = function RString_isPattern(value, parttern){
+   if(value != null){
+      var o = this;
+      var source = (parttern == null) ? '$a$A$f' : parttern;
+      source = source.replace(/\a/g, o.LOWER);
+      source = source.replace(/\A/g, o.UPPER);
+      source = source.replace(/\f/g, MO.Lang.Float.NUMBER);
+      source = source.replace(/\n/g, MO.Lang.Integer.NUMBER);
+      var count = value.length;
+      for(var i = 0; i < count; i++){
+         if(source.indexOf(value.charAt(i)) == -1){
+            return false;
+         }
+      }
+      return true;
+   }
+   return false;
+}
+MO.RString.prototype.inChars = function RString_inChars(value, parttern){
+   var o = this;
+   var b = o.findChars(parttern, value);
+   if(b != -1){
+      return true;
+   }
+   return false;
+}
+MO.RString.prototype.equals = function RString_equals(s, t, f){
+   if(s == null){
+      s = '';
+   }else if(s.constructor != String){
+      s = s.toString();
+   }
+   if(t == null){
+      t = '';
+   }else if(t.constructor != String){
+      t = t.toString();
+   }
+   if(f){
+      return (s == t);
+   }else{
+      return (s.toLowerCase() == t.toLowerCase());
+   }
+}
+MO.RString.prototype.contains = function RString_contains(source, values){
+   if(source != null){
+      if(source.constructor != String){
+         source = source.toString();
+      }
+      var count = arguments.length;
+      for(var i = 1; i < count; i++){
+         var value = arguments[i];
+         if(source.indexOf(value) != -1){
+            return true;
+         }
+      }
+   }
+   return false;
+}
+MO.RString.prototype.startsWith = function RString_startsWith(v, s){
+   if(s == null){
+      return true;
+   }
+   return (v != null) ? (v.indexOf(s) == 0) : false;
+}
+MO.RString.prototype.endsWith = function RString_endsWith(v, s){
+   if(s == null){
+      return true;
+   }
+   var n = (v != null) ? v.indexOf(s) : -1;
+   return (n != -1) ? (n == (v.length - s.length)) : false;
+}
+MO.RString.prototype.findChars = function RString_findChars(v, s){
+   if((v != null) && (s != null)){
+      var c = v.length;
+      for(var n = 0; n < c; n++){
+         if(s.indexOf(v.charAt(n)) != -1){
+            return n;
+         }
+      }
+   }
+   return -1;
+}
+MO.RString.prototype.inRange = function RString_inRange(v, rs, f){
+   if(v && rs){
+      if(!f){
+         v = v.toLowerCase();
+      }
+      var c = rs.length;
+      for(var n = 0; n < c; n++){
+         var r = rs[n];
+         if(r != null){
+            if(f){
+               if(v == r){
+                  return true;
+               }
+            }else{
+               if(v == r.toLowerCase()){
+                  return true;
+               }
+            }
+         }
+      }
+   }
+   return false;
+}
+MO.RString.prototype.nvl = function RString_nvl(v, d){
+   if(v != null){
+      var s = null;
+      if(v.constructor != String){
+         s = v.toString();
+      }else{
+         s = v;
+      }
+      if(s.length > 0){
+         return s;
+      }
+   }
+   if(d != null){
+      return d;
+   }
+   return this.EMPTY;
+}
+MO.RString.prototype.nvlString = function RString_nvlString(p){
+   if(p == null){
+      p = new MO.TString();
+   }
+   return p;
+}
+MO.RString.prototype.empty = function RString_empty(v){
+   if(v != null){
+      var s = null;
+      if(v.constructor != String){
+         s = v.toString();
+      }else{
+         s = v;
+      }
+      if(s.length > 0){
+         return s;
+      }
+   }
+   return null;
+}
+MO.RString.prototype.firstUpper = function RString_firstUpper(v){
+   return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
+}
+MO.RString.prototype.firstLower = function RString_firstLower(){
+   return (v != null) ? v.charAt(0).toLowerCase() + v.substr(1) : v;
+}
+MO.RString.prototype.firstLine = function RString_firstLine(v){
+   if(v){
+      var n = Math.min(v.indexOf('\r'), v.indexOf('\n'));
+      if(-1 != n){
+         return v.substr(0, n);
+      }
+      return v;
+   }
+   return '';
+}
+MO.RString.prototype.format = function RString_format(value, parameters){
+   var count = arguments.length;
+   for(var i = 1; i < count; i++){
+      var parameter = arguments[i];
+      if(typeof(parameter) == 'function'){
+         parameter = MO.Method.name(parameter);
+      }else if(parameter == null){
+         parameter = '';
+      }
+      value = value.replace('{' + i + '}', parameter);
+   }
+   return value;
+}
+MO.RString.prototype.formatLines = function RString_formatLines(p){
+   var o = this;
+   p = p.replace(/\\r/g, '');
+   var ls = p.split('\n');
+   var c = ls.length;
+   var r = new MO.TString();
+   for(var i = 0; i < c; i++){
+      var l = ls[i]
+      l = o.trim(l);
+      if(o.isEmpty(l)){
+         continue;
+      }
+      if(o.startsWith(l, '//')){
+         continue;
+      }
+      r.appendLine(l);
+   }
+   return r.flush();
+}
+MO.RString.prototype.repeat = function RString_repeat(v, c){
+   return new Array(c + 1).join(v);
+}
+MO.RString.prototype.pad = function RString_pad(v, l, p){
+   v = (v != null) ? v.toString() : this.EMPTY;
+   var n = l - v.length;
+   if(n > 0){
+      if(p == null){
+         p = this.PAD;
+      }
+      var r = (n % 2 == 0) ? n / 2 : (n - 1) / 2;
+      return new Array(r + 1).join(p) + v + new Array(n - r + 1).join(p);
+   }
+   return v;
+}
+MO.RString.prototype.lpad = function RString_lpad(v, l, p){
+   var o = this;
+   v = (v != null) ? v.toString() : o.EMPTY;
+   var n = l - v.length;
+   if(n > 0){
+      if(p == null){
+         p = o.PAD;
+      }
+      var a = new Array(n);
+      a[a.length] = v;
+      return a.join(p);
+   }
+   return v;
+}
+MO.RString.prototype.rpad = function RString_rpad(v, l, p){
+   var o = this;
+   v = (v != null) ? v.toString() : o.EMPTY;
+   var n = l - v.length;
+   if(n > 0){
+      if(p == null){
+         p = o.PAD;
+      }
+      return v + new Array(n + 1).join(p);
+   }
+   return v;
+}
+MO.RString.prototype.trim = function RString_trim(v, ts){
+   var o = this;
+   v = o.nvl(v);
+   ts = o.nvl(ts, o.TRIM);
+   var l = 0;
+   var r = v.length - 1;
+   for(; l < r; l++){
+      if(-1 == ts.indexOf(v.charAt(l))){
+         break;
+      }
+   }
+   for(; r >= l; r--){
+      if(-1 == ts.indexOf(v.charAt(r))){
+         break;
+      }
+   }
+   if(l == r + 1){
+      return null;
+   }
+   if((l != 0) || (r != v.length-1)){
+      return v.substring(l, r + 1);
+   }
+   return v;
+}
+MO.RString.prototype.ltrim = function RString_ltrim(v, ts){
+   var o = this;
+   v = o.nvl(value);
+   ts = o.nvl(trims, o.TRIM);
+   var l = 0;
+   var r = v.length - 1;
+   for(; l < r; l++){
+      if(-1 == ts.indexOf(v.charAt(l))){
+         break;
+      }
+   }
+   if(0 != l){
+      return v.substring(l, r + 1);
+   }
+   return v;
+}
+MO.RString.prototype.rtrim = function RString_rtrim(v, ts){
+   var o = this;
+   v = o.nvl(v);
+   ts = o.nvl(ts, o.TRIM);
+   var r = v.length - 1;
+   for(; r >= 0; r--){
+      if(-1 == ts.indexOf(v.charAt(r))){
+         break;
+      }
+   }
+   if(r != v.length-1){
+      return v.substring(0, r + 1);
+   }
+   return v;
+}
+MO.RString.prototype.mid = function RString_mid(v, b, e){
+   if(v == null){
+      return v;
+   }
+   var l = 0;
+   if(b != null){
+      var f = v.indexOf(b);
+      if(f != -1){
+         l = f + b.length;
+      }
+   }
+   var r = v.length;
+   if(e != null){
+      var f = v.indexOf(e, l);
+      if(f != -1){
+         r = f;
+      }
+   }
+   return v.substring(l, r);
+}
+MO.RString.prototype.toLine = function RString_toLine(v){
+   return v.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
+}
+MO.RString.prototype.toUnderline = function RString_toUnderline(v){
+   var r = null;
+   if(v){
+      var s = new MO.TString();
+      var c = v.length;
+      for(var i = 0; i < c; i++){
+         var h = v.charAt(i);
+         if(h.toUpperCase() == h){
+            if(i > 0){
+               s.append('_');
+            }
+            s.append(h.toLowerCase());
+         }else{
+            s.append(h);
+         }
+      }
+      r = s.flush();
+   }
+   return r;
+}
+MO.RString.prototype.toLower = function RString_toLower(v){
+   return (v != null) ? v.toLowerCase() : this.EMPTY;
+}
+MO.RString.prototype.toUpper = function RString_toUpper(v){
+   return (v != null) ? v.toUpperCase() : this.EMPTY;
+}
+MO.RString.prototype.split = function RString_split(s, p){
+   return (s && p) ? s.split(p) : null;
+}
+MO.RString.prototype.splitTwo = function RString_splitTwo(s, p){
+   if(s && p){
+      var r = new Array();
+      var n = s.indexOf(p);
+      if(n == -1){
+         r.push(s);
+      }else{
+         r.push(s.substring(0, n));
+         r.push(s.substring(n+p.length));
+      }
+      return r;
+   }
+   return null;
+}
+MO.RString.prototype.splitParts = function RString_splitParts(s, p){
+   var o = this;
+   var b = new Array();
+   var k = 0;
+   var l = s.length;
+   for(var i = 0; i < l; i++){
+      for(var j in p){
+         if(o.startsWith(p[j], s.charAt(i))){
+            if(o.equals(s.substr(i, p[j].length), p[j])){
+               b[k++] = p[j];
+               i = i + p[j].length - 1;
+               break;
+            }
+         }
+      }
+   }
+   return b;
+}
+MO.RString.prototype.splitPattern = function RString_splitPattern(s, p){
+   var r = new Array();
+   if(s){
+      var sl = s.length;
+      var pl = p.length;
+      var t = '';
+      for(var n = 0; n < sl; n++){
+         var v = false;
+         for(var i = 0; i < pl; i++){
+            var f = p[i];
+            if(s.indexOf(f) == -1){
+               if(t.length){
+                  r[r.length] = t;
+                  t = '';
+               }
+               r[r.length] = f;
+               s = s.substring(f.length);
+               v = true;
+               break;
+            }
+         }
+         if(!v){
+            t += s.charAt(0);
+            s = s.substring(1);
+         }
+      }
+   }
+   return r;
+}
+MO.RString.prototype.replace = function RString_replace(value, source, target){
+   return value.replace(new RegExp(source, 'g'), target);
+}
+MO.RString.prototype.replaceChar = function RString_replaceChar(v, s, t){
+   if(v != null){
+      var c = v.length;
+      var r = new Array();
+      for(var n = 0; n < c; n++){
+         var a = v.charAt(n);
+         if(a == s){
+            r[r.length] = t;
+         }else{
+            r[r.length] = a;
+         }
+      }
+      return r.join('');
+   }
+   return v;
+}
+MO.RString.prototype.remove = function RString_remove(s, t){
+   return s.replace(t, '');
+}
+MO.RString.prototype.removeChars = function RString_removeChars(v, s){
+   if(v != null){
+      var c = v.length;
+      var r = new Array();
+      for(var n = 0; n < c; n++){
+         var a = v.charAt(n);
+         if(s.indexOf(a) != -1){
+            continue;
+         }
+         r[r.length] = a;
+      }
+      return r.join('');
+   }
+   return v;
+}
+MO.RString = new MO.RString();
+MO.Lang.String = MO.RString;
+MO.AConstructor = function AConstructor(name, dataCd, dataClass){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Constructor;
+   o._inherit      = true;
+   o._ordered      = true;
+   o._dataCd       = dataCd;
+   o._dataClass    = dataClass;
+   o.dataCd        = MO.AConstructor_dataCd;
+   o.dataClass     = MO.AConstructor_dataClass;
+   return o;
+}
+MO.AConstructor_dataCd = function AConstructor_dataCd(){
+   return this._dataCd;
+}
+MO.AConstructor_dataClass = function AConstructor_dataClass(){
+   return this._dataClass;
+}
+MO.ADispose = function ADispose(name, disposeCd){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._annotationCd = MO.EAnnotation.Dispose;
+   o._inherit      = true;
+   o._ordered      = true;
+   o._disposeCd    = disposeCd;
+   o.disposeCd     = MO.ADispose_disposeCd;
+   return o;
+}
+MO.ADispose_disposeCd = function ADispose_disposeCd(){
+   return this._disposeCd;
+}
+MO.AEnum = function AEnum(name, linker){
+   var o = this;
+   o.inherit    = true;
+   o.annotation = MO.EAnnotation.Enum;
+   o.name       = name;
+   o.linker     = linker;
+   return o;
+}
+MO.AGetterSource = function AGetterSource(name, linker){
+   var o = this;
+   MO.ASource.call(o, name, MO.ESource.Get, linker);
+   o._linker = linker;
+   o.build   = MO.AGetterSource_build;
+   return o;
+}
+MO.AGetterSource_build = function AGetterSource_build(clazz, instance){
+   var o = this;
+   var getName = o._linker ? o._linker : o._code;
+   instance[getName] = MO.Method.makePropertyGetSource(o._name, getName);
+}
+MO.ALinker = function ALinker(name, linker){
+   var o = this;
+   o.inherit    = true;
+   o.annotation = MO.EAnnotation.Linker;
+   o.name       = name;
+   o.linker     = linker;
+   return o;
+}
+MO.AProperty = function AProperty(name, linker){
+   var o = this;
+   MO.AAnnotation.call(o, name);
+   o._inherit      = true;
+   o._annotationCd = MO.EAnnotation.Property;
+   o._linker       = null;
+   o._force        = false;
+   o.code          = MO.AProperty_code;
+   o.build         = MO.AProperty_build;
+   o.load          = MO.AProperty_load;
+   o.save          = MO.AProperty_save;
+   o.toString      = MO.AProperty_toString;
+   var code = null;
+   if(linker == null){
+      if(MO.Lang.String.startsWith(name, '_')){
+         code = name.substring(1);
+      }else{
+         code = name;
+      }
+      code = MO.Lang.String.toUnderline(code);
+   }else{
+      code = linker;
+   }
+   o._linker = code;
+   return o;
+}
+MO.AProperty_code = function AProperty_code(){
+   return this._linker;
+}
+MO.AProperty_build = function AProperty_build(){
+}
+MO.AProperty_load = function AProperty_load(v, x){
+   v[this._name] = x.get(this._linker);
+}
+MO.AProperty_save = function AProperty_save(v, x){
+   x.set(this._linker, v[this._name]);
+}
+MO.AProperty_toString = function AProperty_toString(){
+   return '<' + this._annotationCd + ',linker=' + this._linker + '>';
+}
+MO.EBoolean = new function EBoolean(){
+   var o = this;
+   o.True   = 'Y';
+   o.False  = 'N';
+   return o;
+}
+MO.ECharCase = new function ECharCase(){
+   var o = this;
+   o.Upper = 'U';
+   o.Lower = 'L';
+   o.Word  = 'W';
+   return o;
+}
+MO.EDispose = new function EDispose(){
+   var o = this;
+   o.Null    = 0;
+   o.Dispose = 1;
+   o.Release = 2;
+   return o;
+}
+MO.ENodeType = new function ENodeType(){
+   var o = this;
+   o.Node = 1;
+   o.Text = 3;
+   o.Data = 4;
+   return o;
+}
+MO.ENumber = new function ENumber(){
+   var o = this;
+   o.Integer         = 'I';
+   o.PositiveInteger = 'PI';
+   o.NegativeInteger = 'NI';
+   o.Float           = 'F';
+   o.PositiveFloat   = 'PF';
+   o.NegativeFloat   = 'NF';
+   return o;
+}
+MO.ERegExp = new function ERegExp(){
+   var o = this;
+   o.I  = /^-?[1-9]\d*|0$/;
+   o.PI = /^[1-9]\d*$/;
+   o.NI = /^-[1-9]\d*$/;
+   o.F  = /^-?([1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0)$/;
+   o.PF = /^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$/;
+   o.NF = /^-([1-9]\d*\.\d*|0\.\d*[1-9]\d*)$/;
+   o.U  = /[1-9]{1}[0-9]/;
+   o.E  = /^\w{1,}[@]{1}[a-zA-Z]{1,}[.]{1}[a-zA-Z]{1,}$/;
+   return o;
+}
+MO.EResult = new function EResult(){
+   var o = this;
+   o.Success  = 0;
+   o.Continue = 1;
+   o.Skip     = 2;
+   o.Finish   = 3;
+   o.Failure  = -1;
+   o.Cancel   = -2;
+   return o;
+}
+MO.MInstance = function MInstance(o){
+   o = MO.Class.inherits(this, o);
+   o.__free          = false;
+   o.instanceCreate  = MO.Method.empty;
+   o.instanceAlloc   = MO.Method.empty;
+   o.instanceFree    = MO.Method.empty;
+   o.instanceRelease = MO.Method.empty;
+   return o;
+}
+MO.MInvoke = function MInvoke(o){
+   o = MO.Class.inherits(this, o);
+   o.invoke = MO.Method.virtual(o, 'invoke');
+   return o;
+}
+MO.MPoolAble = function MPoolAble(o){
+   o = MO.Class.inherits(this, o);
+   o._poolCode = MO.Class.register(o, new MO.AGetSet('_poolCode'));
+   return o;
+}
+MO.SArguments = function SArguments(){
+   var o = this;
+   o.owner = null;
+   return o;
+}
+MO.SEnumItem = function SEnumItem(){
+   var o = this;
+   o.name  = null;
+   o.value = 0;
+   return o;
+}
+MO.TContext = function TContext(n, c, t){
+   var o = this;
+   o.name = n;
+   o.code = c;
+   o.text = t;
+   return o;
+}
+MO.TDataset = function TDataset(){
+   var o = this;
+   o._code      = null;
+   o._pageSize  = 20;
+   o._pageIndex = 0;
+   o._pageCount = 0;
+   o._total     = 0;
+   o._rows      = new MO.TObjects();
+   o.isEmpty    = MO.TDataset_isEmpty;
+   o.createRow  = MO.TDataset_createRow;
+   o.count      = MO.TDataset_count;
+   o.row        = MO.TDataset_row;
+   o.rows       = MO.TDataset_rows;
+   o.find       = MO.TDataset_find;
+   o.push       = MO.TDataset_push;
+   o.loadConfig = MO.TDataset_loadConfig;
+   o.clear      = MO.TDataset_clear;
+   return o;
+}
+MO.TDataset_isEmpty = function TDataset_isEmpty(){
+   var o = this;
+   return o._rows.isEmpty();
+}
+MO.TDataset_createRow = function TDataset_createRow(){
+   var o = this;
+   var r = new MO.TRow();
+   r._dataset = o;
+   o._rows.push(r);
+   return r;
+}
+MO.TDataset_count = function TDataset_count(){
+   return this._rows.count();
+}
+MO.TDataset_row = function TDataset_row(p){
+   return this._rows.get(p);
+}
+MO.TDataset_rows = function TDataset_rows(){
+   return this._rows;
+}
+MO.TDataset_find = function TDataset_find(p){
+   var o = this;
+   var a = arguments;
+   var l = a.length;
+   if((l % 2) != 0){
+      throw new MO.TError(o, 'Parameters must is pairs (length={1})', l);
+   }
+   var rs = o._rows;
+   var c = rs.count();
+   for(var n = 0; n < c; n++){
+      var r = rs.get(n);
+      var f = true;
+      for(var i = 0; i < l; i += 2){
+         if(r.get(a[n]) != a[n + 1]){
+            f = false;
+            break;
+         }
+      }
+      if(f){
+         return r;
+      }
+   }
+   return null;
+}
+MO.TDataset_push = function TDataset_push(r){
+   this._rows.push(r);
+}
+MO.TDataset_loadConfig = function TDataset_loadConfig(x){
+   var o = this;
+   o._code = x.get('name');
+   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
+   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
+   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
+   o._total = MO.Lang.Integer.parse(x.get('total'));
+   var xns = x.nodes();
+   if(xns){
+      var rs = o._rows;
+      var xnc = xns.count();
+      for(var i = 0; i < xnc; i++){
+         var xn = xns.get(i);
+         if(xn.isName('Row')){
+            var r = o.createRow();
+            r.loadConfig(xn);
+         }
+      }
+   }
+}
+MO.TDataset_clear = function TDataset_clear(){
+   var o = this;
+   o._pageSize = 20;
+   o._pageIndex = 0;
+   o._pageCount = 0;
+   o._total = 0;
+   o._rows.clear();
+}
+MO.TDataset_findIndex = function TDataset_findIndex(p){
+   var o = this;
+   var rs = o._rows;
+   var c = rs.count();
+   for(var n = 0; n < c; n++){
+      var r = rs.get(n);
+      if(r._index = p){
+         return r;
+      }
+   }
+   return null;
+}
+MO.TDataset_remove = function TDataset_remove(i){
+   return this._rows.remove(i);
+}
+MO.TDataset_removeRow = function TDataset_removeRow(r){
+   var o = this;
+   var i = o.indexOf(r);
+   if(-1 != i){
+      o._rows.remove(i);
+   }
+}
+MO.TDataset_saveViewer = function TDataset_saveViewer(v){
+   var o = this;
+   v.datasetName = o._code;
+   v.datasetId = o.id;
+   v.position = 0;
+   v.start = 0;
+   v._count = o._rows._count;
+   v._rows = o._rows;
+   v.dataset = o;
+}
+MO.TDataset_pack = function TDataset_pack(){
+   var o = this;
+   var rs = o._rows;
+   var ss = new MO.TStrings();
+   for(var n = 0; n < rs._count; n++){
+      ss.push(rs.get(n).pack());
+   }
+   return ss.pack();
+}
+MO.TDataset_dump = function TDataset_dump(){
+   var o = this;
+   var r = new MO.TString();
+   r.append(MO.Class._code(o));
+   r.append(' count=', o._count);
+   r.append(' fields=', o.fieldCount);
+   r.appendLine();
+   if(o._rows){
+      var c = o._count;
+      for(var n = 0; n < c; n++){
+         r.append('- ');
+         o._rows.get(n).dump(s);
+         if(n != o._count-1){
+            r.appendLine();
+         }
+      }
+   }
+   return r.toString();
+}
+MO.TDatasetViewer = function TDatasetViewer(){
+   var o = this;
+   o._datasetId = null;
+   o._position  = 0;
+   o._start     = 0;
+   o._count     = 0;
+   e._values   = null;
+   o._rows      = null;
+   o._ouids     = null;
+   o.isEmpty   = MO.TDatasetViewer_isEmpty;
+   o.count     = MO.TDatasetViewer_count;
+   o.current   = MO.TDatasetViewer_current;
+   o.reset     = MO.TDatasetViewer_reset;
+   o.move      = MO.TDatasetViewer_move;
+   o.moveToRow = MO.TDatasetViewer_moveToRow;
+   o.first     = MO.TDatasetViewer_first;
+   o.prior     = MO.TDatasetViewer_prior;
+   o.next      = MO.TDatasetViewer_next;
+   o.last      = MO.TDatasetViewer_last;
+   return o;
+}
+MO.TDatasetViewer_isEmpty = function TDatasetViewer_isEmpty(){
+   return (this._count == null);
+}
+MO.TDatasetViewer_count = function TDatasetViewer_count(){
+   return this._count;
+}
+MO.TDatasetViewer_current = function TDatasetViewer_current(){
+   var o = this;
+   var s = o._rows;
+   return s ? s.get(o._position - o._start) : null;
+}
+MO.TDatasetViewer_reset = function TDatasetViewer_reset(){
+   this._position = -1;
+}
+MO.TDatasetViewer_move = function TDatasetViewer_move(p){
+   this._position = p;
+}
+MO.TDatasetViewer_moveToRow = function TDatasetViewer_moveToRow(r){
+   var o = this;
+   var p = o._rows.indexOf(r);
+   if(p != -1){
+      o._position = p - o._start;
+   }
+}
+MO.TDatasetViewer_first = function TDatasetViewer_first(r){
+   this._position = r ? -1 : 0;
+}
+MO.TDatasetViewer_prior = function TDatasetViewer_prior(){
+   var o = this;
+   if(o._position > 0){
+      o._position--;
+      return true;
+   }
+   return false;
+}
+MO.TDatasetViewer_next = function TDatasetViewer_next(){
+   var o = this;
+   if(o._position < o._count-1){
+      o._position++;
+      return true;
+   }
+   return false;
+}
+MO.TDatasetViewer_last = function TDatasetViewer_last(){
+   this._position = this._count-1;
+}
+MO.TFatalError = function TFatalError(po, pe, pm, pp){
+   var o = this;
+   var r = new MO.TString();
+   var f = TFatalError.caller;
+   var s = new MO.TString();
+   var t = new Array();
+   while(f){
+      if(MO.Lang.Array.contains(t, f)){
+         break;
+      }
+      t.push(f);
+      f = f.caller;
+   }
+   var c = t.length;
+   for(var n = 0; n < c; n++){
+      f = t[n];
+      if(n > 0){
+         s.appendLine();
+      }
+      s.append('   ' + (c - n) + ': ' + MO.Method.name(f));
+   }
+   var a = arguments;
+   var c = a.length;
+   for(var n = 2; n < c; n++){
+      var v = a[n];
+      var vs = null;
+      if(typeof(v) == 'function'){
+         vs = MO.Method.name(v);
+      }else{
+         vs = v;
+      }
+      pm = pm.replace('{' + (n - 1) + '}', vs);
+   }
+   r.appendLine(pm);
+   r.appendLine('------------------------------------------------------------');
+   r.append(s);
+   throw new Error(r);
+}
+MO.TInstancePool = function TInstancePool(){
+   var o = this;
+   MO.TObjects.call(o);
+   o._instance = null;
+   o.instance  = MO.TInstancePool_instance;
+   o.alloc     = MO.TInstancePool_alloc;
+   o.free      = MO.TInstancePool_free;
+   return o;
+}
+MO.TInstancePool_instance = function TInstancePool_instance(p){
+   var o = this;
+   var r = o._instance;
+   if(r == null){
+      r = o._instance = MO.Class.create(p);
+      r.instanceCreate();
+   }
+   r.instanceAlloc();
+   return r;
+}
+MO.TInstancePool_alloc = function TInstancePool_alloc(p){
+   var o = this;
+   var r = null;
+   if(o._count == 0){
+      r = MO.Class.create(p);
+      r.instanceCreate();
+   }else{
+      r = o.pop();
+   }
+   r.instanceAlloc();
+   return r;
+}
+MO.TInstancePool_free = function TInstancePool_free(p){
+   p.instanceFree();
+   return this.push(p);
+}
+MO.TInvoke = function TInvoke(){
+   var o = this;
+   o.owner    = null;
+   o.callback = null;
+   o.invoke   = MO.TInvoke_invoke;
+   return o;
+}
+MO.TInvoke_invoke = function TInvoke_invoke(p1, p2, p3, p4, p5, p6){
+   var o = this;
+   if(o.callback){
+      var c = o.owner ? o.owner : o;
+      try{
+         o.callback.call(c, p1, p2, p3, p4, p5, p6);
+      }catch(e){
+         MO.Logger.fatal(o, e, 'Call method failure. (owner={1}, callback={2})', c, o.callback);
+      }
+   }
 }
 MO.TLoaderListener = function TLoaderListener(){
    var o = this;
@@ -3372,46 +5149,6 @@ MO.FConsole_setup = function FConsole_setup(){
       o._statusSetup = true;
    }
 }
-MO.FObject = function FObject(o){
-   if(!o){o = this;}
-   o.__class   = null;
-   o.__dispose = false;
-   o.__hash    = 0;
-   o.construct = MO.FObject_construct;
-   o.hashCode  = MO.FObject_hashCode;
-   o.toString  = MO.FObject_toString;
-   o.dispose   = MO.FObject_dispose;
-   o.innerDump = MO.FObject_innerDump;
-   o.dump      = MO.FObject_dump;
-   return o;
-}
-MO.FObject_construct = function FObject_construct(){
-   this.__dispose = false;
-}
-MO.FObject_hashCode = function FObject_hashCode(){
-   var o = this;
-   var hash = o.__hash;
-   if(!hash){
-      hash = o.__hash = MO.RObject.nextId();
-   }
-   return hash;
-}
-MO.FObject_toString = function FObject_toString(){
-   return MO.Class.dump(this);
-}
-MO.FObject_dispose = function FObject_dispose(){
-   var o = this;
-   MO.RObject.free(o);
-   o.__dispose = true;
-}
-MO.FObject_innerDump = function FObject_innerDump(dump, level){
-   dump.append(MO.Class.dump(this));
-}
-MO.FObject_dump = function FObject_dump(){
-   var result = new MO.TString();
-   this.innerDump(result, 0);
-   return result.flush();
-}
 MO.FObjectPool = function FObjectPool(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._items      = MO.Class.register(o, new MO.AGetter('_items'));
@@ -3774,404 +5511,6 @@ MO.RChar.prototype.toString = function RChar_toString(value){
 }
 MO.RChar = new MO.RChar();
 MO.Lang.Char = MO.RChar;
-MO.RClass = function RClass(){
-   var o = this;
-   o._codes   = new Array();
-   o._classes = new Object();
-   return o;
-}
-MO.RClass.prototype.isBase = function RClass_isBase(value){
-   if(value != null){
-      var typeName = typeof(value);
-      return MO.Class.isBaseName(typeName);
-   }
-   return false;
-}
-MO.RClass.prototype.isBaseName = function RClass_isBaseName(typeName){
-   if(typeName != null){
-      if(typeName == 'boolean'){
-         return true;
-      }else if(typeName == 'number'){
-         return true;
-      }else if(typeName == 'date'){
-         return true;
-      }else if(typeName == 'string'){
-         return true;
-      }else if(typeName == 'function'){
-         return true;
-      }
-   }
-   return false;
-}
-MO.RClass.prototype.isBaseDataName = function RClass_isBaseDataName(typeName){
-   if(typeName != null){
-      if(typeName == 'boolean'){
-         return true;
-      }else if(typeName == 'number'){
-         return true;
-      }else if(typeName == 'date'){
-         return true;
-      }else if(typeName == 'string'){
-         return true;
-      }
-   }
-   return false;
-}
-MO.RClass.prototype.isBaseType = function RClass_isBaseType(clazz){
-   if(clazz != null){
-      if(clazz == Boolean){
-         return true;
-      }else if(clazz == Number){
-         return true;
-      }else if(clazz == Date){
-         return true;
-      }else if(clazz == String){
-         return true;
-      }else if(clazz == Function){
-         return true;
-      }
-   }
-   return false;
-}
-MO.RClass.prototype.isBaseDataType = function RClass_isBaseDataType(clazz){
-   if(clazz != null){
-      if(clazz == Boolean){
-         return true;
-      }else if(clazz == Number){
-         return true;
-      }else if(clazz == Date){
-         return true;
-      }else if(clazz == String){
-         return true;
-      }
-   }
-   return false;
-}
-MO.RClass.prototype.isName = function RClass_isName(value, name){
-   return (this.name(value) == name);
-}
-MO.RClass.prototype.isClass = function RClass_isClass(v, c){
-   if(v && c){
-      var o = this;
-      var n = o.name(c);
-      if(v.__base){
-         return (v.__base[n] != null);
-      }else{
-         return (o.name(v) == n);
-      }
-   }
-   return false;
-}
-MO.RClass.prototype.typeOf = function RClass_typeOf(o){
-   if(o && o.constructor){
-      return MO.Lang.String.mid(o.constructor.toString(), 'function ', '(');
-   }
-   return 'Null';
-}
-MO.RClass.prototype.safeTypeOf = function RClass_safeTypeOf(value, safe){
-   if(value == null){
-      return 'Null';
-   }
-   try{
-      var c = value.constructor;
-      if(c == Boolean){
-         return 'Boolean';
-      }
-      if(c == Number){
-         return 'Number';
-      }
-      if(c == String){
-         return 'String';
-      }
-      if(c == Function){
-         return MO.Lang.String.mid(c.toString(), 'function ', '(');
-      }
-      if(c.constructor == Function){
-         return MO.Lang.String.mid(c.toString(), 'function ', '(');
-      }
-      if(value.__class){
-         return value.__class.name;
-      }
-      if(value.tagName){
-         return 'Html';
-      }
-      for(var name in value){
-         return 'Object';
-      }
-   }catch(e){
-   }
-   return 'Unknown';
-}
-MO.RClass.prototype.checkClass = function RClass_checkClass(v, c){
-   if(!this.isClass(v, c)){
-      throw new Error('Invalid class ' + o.name(o) + '<>' + o.name(c));
-   }
-}
-MO.RClass.prototype.code = function RClass_code(v){
-   var c = this._codes;
-   var l = c.length;
-   for(var n = 0; n < l; n++){
-      if(c[n] == v){
-         return n;
-      }
-   }
-   c[l] = v;
-   return l;
-}
-MO.RClass.prototype.name = function RClass_name(value){
-   if(value){
-      if(value.__name){
-         return value.__name;
-      }
-      if(value.__class){
-         return value.__class.name;
-      }
-      if(typeof(value) == 'function'){
-         return MO.Method.name(value);
-      }
-      var method = value.constructor;
-      if(method){
-         return MO.Lang.String.mid(method.toString(), 'function ', '(');
-      }
-   }
-   return null;
-}
-MO.RClass.prototype.inherits = function RClass_inherits(s, p){
-   var base = MO.Runtime.nvl(p, s);
-   base.__inherits = new Array();
-   var count = arguments.length;
-   for(var i = 2; i < count; i++){
-      base.__inherits.push(MO.Method.name(arguments[i]));
-   }
-   return base;
-}
-MO.RClass.prototype.forName = function RClass_forName(name){
-   var o = this;
-   var clazz = null;
-   if(name){
-      clazz = o._classes[name];
-      if(!clazz){
-         clazz = o.createClass(name);
-         o.build(clazz);
-      }
-   }
-   return clazz;
-}
-MO.RClass.prototype.find = function RClass_find(v){
-   var o = this;
-   var n = null;
-   if(v != null){
-      if(v.__class){
-         n = v.__class.name;
-      }else if(v.constructor == Function){
-         n = MO.Method.name(v);
-      }else if(v.constructor != String){
-         MO.Logger.fatal(o, null, 'Find class failure. (value={1})', v);
-      }
-   }
-   return o._classes[n];
-}
-MO.RClass.prototype.register = function RClass_register(instance, annotations, defaultValue){
-   var o = this;
-   var name = MO.Method.name(instance.constructor);
-   var clazz = o._classes[name];
-   var annotation = null;
-   if(annotations.constructor == Array){
-      var count = annotations.length;
-      for(var i = 0; i < count; i++){
-         annotation = annotations[i];
-         clazz.register(annotation);
-      }
-   }else{
-      annotation = annotations;
-      clazz.register(annotation);
-   }
-   var value = annotation.value();
-   return (defaultValue != null) ? defaultValue : value;
-}
-MO.RClass.prototype.createBase = function RClass_createBase(name){
-   var base = null;
-   if(name){
-      var source = 'function ' + name + '(){return this;} new ' + name + '();';
-      base = eval(source);
-   }
-   return base;
-}
-MO.RClass.prototype.createClass = function RClass_createClass(className){
-   var o = this;
-   var clazz = o._classes[className] = new MO.TClass();
-   clazz.name = className;
-   clazz.base = o.createBase(className);
-   clazz.clazz = new clazz.base.constructor();
-   eval('MO.' + className)(clazz.clazz);
-   return clazz;
-}
-MO.RClass.prototype.create = function RClass_create(clazz){
-   var o = this;
-   var className = null;
-   var typeName = typeof(clazz);
-   if(typeName == 'function'){
-      className = MO.Method.name(clazz);
-   }else if(typeName == 'string'){
-      className = clazz;
-   }else{
-      throw new MO.TError(o, 'Param is invlid (clazz={1})', clazz);
-   }
-   return o.createByName(className);
-}
-MO.RClass.prototype.createByName = function RClass_createByName(className){
-   var o = this;
-   var clazz = o.forName(className);
-   if(!clazz){
-      throw new MO.TError(o, 'Cant find class. (name={1})', clazz);
-   }
-   return clazz.newInstance();
-}
-MO.RClass.prototype.innerCopy = function RClass_innerCopy(source, target){
-   if((source != null) && (target != null)){
-      for(var n in source){
-         var value = source[n];
-         if(value != null){
-            var typeName = typeof(value)
-            if(typeName == 'function'){
-               var targetValue = target[n];
-               if(targetValue == null){
-                  target[n] = value;
-               }else if(MO.Method.isVirtual(targetValue)){
-                  target[n] = value;
-               }else if(!MO.Method.isVirtual(value) && MO.Method.isEmpty(targetValue)){
-                  target[n] = value;
-               }else if(!MO.Method.isVirtual(value) && !MO.Method.isEmpty(value)){
-                  target[n] = value;
-               }
-               continue;
-            }else if(!MO.Class.isBaseName(typeName)){
-               if(target[n] == null){
-                  target[n] = new value.constructor();
-               }
-               this.innerCopy(value, target[n]);
-               continue;
-            }
-         }
-         target[n] = value;
-      }
-   }
-}
-MO.RClass.prototype.build = function RClass_build(clazz){
-   var o = this;
-   var inherits = clazz.clazz.__inherits;
-   if(inherits && (inherits.constructor == Array)){
-      var finded = false;
-      var inheritCount = inherits.length;
-      for(var i = 0; i < inheritCount; i++){
-         var name = inherits[i];
-         if(MO.Lang.String.startsWith(name, 'F')){
-            if(finded){
-               MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
-            }
-            clazz.parent = MO.Class.forName(name);
-            finded = true;
-         }
-      }
-   }
-   var instance = clazz.instance = new clazz.base.constructor();
-   if(inherits && (inherits.constructor == Array)){
-      var inheritCount = inherits.length;
-      for(var i = 0; i < inheritCount; i++){
-         var name = inherits[i];
-         if(!MO.Lang.String.startsWith(name, 'F')){
-            var findClass = MO.Class.forName(name);
-            if(findClass == null){
-               MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
-            }
-            MO.Class.innerCopy(findClass.instance, instance);
-            clazz.assign(findClass);
-         }
-      }
-   }
-   if(clazz.parent){
-      o.innerCopy(clazz.parent.instance, instance);
-      clazz.assign(clazz.parent);
-   }
-   if(!instance.__base){
-      instance.__base = new MO.TClassBase();
-   }
-   instance.__base[clazz.name] = new clazz.base.constructor();
-   var cf = clazz.clazz;
-   for(var name in cf){
-      if(name != '__base'){
-         if((cf[name] == null) && (instance[name] == null)){
-            instance[name] = null;
-         }else if(cf[name] != null){
-            if((instance[name] == null) || ((instance[name] != null) && cf[name] != instance[name])){
-               instance[name] = cf[name];
-            }
-         }
-      }
-   }
-   if(inherits && (inherits.constructor == Array)){
-      var inheritCount = inherits.length;
-      for(var i = 0; i < inheritCount; i++){
-         var name = inherits[i];
-         var baseClass = MO.Class.forName(name);
-         var base = instance.__base[name] = new baseClass.base.constructor();
-         var baseInstance = baseClass.instance;
-         for(var name in baseInstance){
-            if(name != '__base'){
-               var cfn = baseInstance[name];
-               var ofn = instance[name];
-               if((cfn != null) && (ofn != null) && (cfn != ofn)){
-                  if((cfn.constructor == Function) && (ofn.constructor == Function)){
-                     base[name] = baseInstance[name];
-                  }
-               }
-            }
-         }
-      }
-   }
-   clazz.build();
-   if(MO.Runtime.isRelease()){
-      var instance = clazz.instance;
-      for(var name in instance){
-         var value = instance[name];
-         if(value == null){
-            delete clazz.instance[name];
-         }
-      }
-   }
-}
-MO.RClass.prototype.free = function RClass_free(o){
-   var c = o.__class;
-   if(c){
-      c.free(o);
-   }
-}
-MO.RClass.prototype.dump = function RClass_dump(v){
-   var o = this;
-   if(v == null){
-      return '@null';
-   }
-   var t = o.safeTypeOf(v);
-   switch(t){
-      case 'Boolean':
-         return 'Boolean:' + v;
-      case 'Number':
-         return 'Number:' + v;
-      case 'String':
-         return t + '<' + v.length + '>:' + v;
-      case 'Function':
-         return t + '<' + MO.Method.name(v) + '>@' + o.code(v);
-      case 'Html':
-         return t + '<' + v.tagName + '>@' + o.code(v);
-      default:
-         if(v.__name){
-            return t + '<' + v.__name + '>@' + o.code(v);
-         }
-   }
-   return t + '@' + o.code(v);
-}
-MO.RClass = new MO.RClass();
-MO.Class = MO.RClass;
 MO.RConsole = function RConsole(){
    var o = this;
    o.ConsolePreFix = 'console:';
@@ -4317,268 +5656,6 @@ MO.RConst = function RConst(){
 MO.RConst = new MO.RConst();
 MO.Const = MO.RConst;
 MO.Lang.Const = MO.RConst;
-MO.RDate = function RDate(){
-   var o = this;
-   o.MinYear       = 1800;
-   o.MaxYear       = 2400;
-   o.Pattern       = 'n-: /';
-   o.Chars         = '0123456789-:/';
-   o.DisplayFormat = 'yyyy-mm-dd hh24:mi:ss';
-   o.DataFormat    = 'yyyymmddhh24miss';
-   o.MonthDays     = new Array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-   o.Parts         = new Array('YYYY','MM','DD','HH24','MI','SS');
-   o.PartsDefine   = {'YYYY':['Year',4],'MM':['Month',2],'DD':['Day',2],'HH24':['Hour',2],'MI':['Minute',2],'SS':['Second',2]};
-   return o;
-}
-MO.RDate.prototype.nvl = function RDate_nvl(value){
-   return value ? value : new MO.TDate();
-}
-MO.RDate.prototype.format = function RDate_format(format){
-   return this.formatDate(new MO.TDate(), format);
-}
-MO.RDate.prototype.formatText = function RDate_formatText(date, format){
-   if(!date){
-      return false;
-   }
-   var value = format.toLowerCase();
-   value = value.replace(/yyyy/g, date.substring(0, 4));
-   date = date.substring(4);
-   value = value.replace(/mm/g, date.substring(0, 2));
-   date = date.substring(2);
-   value = value.replace(/dd/g, date.substring(0, 2));
-   date = date.substring(2);
-   value = value.replace(/hh24/g, date.substring(0, 4));
-   date = date.substring(4);
-   value = value.replace(/mi/g, date.substring(0, 2));
-   date = date.substring(2);
-   value = value.replace(/ss/g, date.substring(0, 2));
-   date = date.substring(2);
-   return value;
-}
-MO.RDate.prototype.formatDate = function RDate_formatDate(date, format){
-   if(!date){
-      return '';
-   }
-   var value = format ? format.toLowerCase() : this.DataFormat;
-   value = value.replace(/yyyy/g, MO.Lang.Integer.format(date.year, 4));
-   value = value.replace(/yy/g, MO.Lang.Integer.format(date.year % 100, 2));
-   value = value.replace(/mm/g, MO.Lang.Integer.format(date.month, 2));
-   value = value.replace(/dd/g, MO.Lang.Integer.format(date.day, 2));
-   value = value.replace(/hh24/g, MO.Lang.Integer.format(date.hour, 2));
-   value = value.replace(/mi/g, MO.Lang.Integer.format(date.minute, 2));
-   value = value.replace(/ss/g, MO.Lang.Integer.format(date.second, 2));
-   value = value.replace(/ms/g, MO.Lang.Integer.format(date.ms, 3));
-   return value;
-}
-MO.RDate.prototype.monthDays = function RDate_monthDays(year, month){
-   if(!year || !month){
-      return 0;
-   }
-   year = parseInt(year);
-   month = parseInt(month);
-   this.MonthDays[2] = (((year % 4 == 0) || (year % 400 == 0)) && (year % 100 != 0)) ? 29 : 28 ;
-   return this.MonthDays[month];
-}
-MO.RDate.prototype.splitFormat = function RDate_splitFormat(value, format){
-   if(!value){
-      return false;
-   }
-   format = format.toLowerCase();
-   var items = new Array();
-   while(format.length > 0){
-      if(format.indexOf('yyyy') == 0){
-         items['year'] = value.substring(0, 4);
-         format = format.substring(4);
-         value = value.substring(4);
-      }else if(format.indexOf('mm') == 0){
-         items['month'] = value.substring(0, 2);
-         format = format.substring(2);
-         value = value.substring(2);
-      }else if(format.indexOf('dd') == 0){
-         items['day'] = value.substring(0, 2);
-         format = format.substring(2);
-         value = value.substring(2);
-      }else if(format.indexOf('hh24') == 0){
-         items['hour'] = value.substring(0, 2);
-         format = format.substring(4);
-         value = value.substring(2);
-      }else if(format.indexOf('mi') == 0){
-         items['minute'] = value.substring(0, 2);
-         format = format.substring(2);
-         value = value.substring(2);
-      }else if(format.indexOf('ss') == 0){
-         items['second'] = value.substring(0, 2);
-         format = format.substring(2);
-         value = value.substring(2);
-      }else if(format.indexOf('ms') == 0){
-         items['ms'] = value.substring(0, 2);
-         format = format.substring(2);
-         value = value.substring(3);
-      }else{
-         format = format.substring(1);
-         value = value.substring(1);
-      }
-   }
-   return items;
-}
-MO.RDate.prototype.splitTime = function RDate_splitTime(date, value){
-   if(!value){
-      return;
-   }
-   if(value.indexOf(':') != -1){
-      var items = value.split(':');
-      if(items.length >= 1){
-         date.hour = MO.Lang.Integer.parse(items[0]);
-      }
-      if(items.length >= 2){
-         date.minute = MO.Lang.Integer.parse(items[1]);
-      }
-      if(items.length >= 3){
-         date.second = MO.Lang.Integer.parse(items[2]);
-      }
-   }else if(value.length == 6){
-      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
-      date.minute = MO.Lang.Integer.parse(value.substr(2, 2));
-      date.second = MO.Lang.Integer.parse(value.substr(4, 2));
-   }else if(value.length == 4){
-      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
-      date.minute = MO.Lang.Integer.parse(value.substr(2, 2));
-   }else if(value.length == 2){
-      date.hour = MO.Lang.Integer.parse(value.substr(0, 2));
-   }
-}
-MO.RDate.prototype.splitDate = function RDate_splitDate(date, value){
-   if(!value){
-      return;
-   }
-   if(value.indexOf('-') != -1 || value.indexOf('/') != -1){
-      var items = null;
-      if(value.indexOf('-') != -1){
-         items = value.split('-');
-      }else if(value.indexOf('/') != -1){
-         items = value.split('/');
-      }
-      if(items.length >= 1){
-         date.year = MO.Lang.Integer.parse(items[0]);
-      }
-      if(items.length >= 2){
-         date.month = MO.Lang.Integer.parse(items[1]);
-      }
-      if(items.length >= 3){
-         date.day = MO.Lang.Integer.parse(items[2]);
-      }
-   }else if(value.indexOf(':') != -1){
-      this.splitTime(date, value);
-   }else if(value.length == 14){
-      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
-      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
-      date.day = MO.Lang.Integer.parse(value.substr(6, 2));
-      date.hour = MO.Lang.Integer.parse(value.substr(8, 2));
-      date.minute = MO.Lang.Integer.parse(value.substr(10, 2));
-      date.second = MO.Lang.Integer.parse(value.substr(12, 2));
-   }else if(value.length == 8){
-      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
-      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
-      date.day = MO.Lang.Integer.parse(value.substr(6, 2));
-   }else if(value.length == 6){
-      date.year = MO.Lang.Integer.parse(value.substr(0, 4));
-      date.month = MO.Lang.Integer.parse(value.substr(4, 2));
-   }else if(value.length == 4){
-      date.year = MO.Lang.Integer.parse(value);
-   }
-}
-MO.RDate.prototype.checkItems = function RDate_checkItems(items){
-   var o = this;
-   if(!items){
-      return false;
-   }
-   var year = MO.Lang.Integer.parse(items["year"]);
-   if(year < o.MinYear || year > o.MaxYear){
-      return false;
-   }
-   var month = MO.Lang.Integer.parse(items["month"]);
-   if(month < 1 || month > 12){
-      return false;
-   }
-   var day = MO.Lang.Integer.parse(items["day"]);
-   if(day < 1 || day > o.monthDays(year, month)){
-      return false;
-   }
-   var hour = MO.Lang.Integer.parse(items["hour"]);
-   if(hour < 0 || hour > 23){
-      return false;
-   }
-   var second = MO.Lang.Integer.parse(items["second"]);
-   if(second < 0 || second > 59){
-      return false;
-   }
-   var ms = MO.Lang.Integer.parse(items["ms"]);
-   if(ms < 0 || ms > 99){
-      return false;
-   }
-   return true;
-}
-MO.RDate.prototype.check = function RDate_check(value, format){
-   return this.checkItems(this.splitFormat(value, format));
-}
-MO.RDate.prototype.make = function RDate_make(yyyy, mm, dd, hh, mi, ss){
-   return new MO.TDate(new Date(yyyy, mm, dd));
-}
-MO.RDate.prototype.makeDate = function RDate_makeDate(value, items){
-   var year = MO.Lang.Integer.parse(items.year);
-   var month = MO.Lang.Integer.parse(items.month) - 1;
-   var day = MO.Lang.Integer.parse(items.day);
-   var hour = MO.Lang.Integer.parse(items.hour);
-   var minute = MO.Lang.Integer.parse(items.minute);
-   var second = MO.Lang.Integer.parse(items.second);
-   var ms = MO.Lang.Integer.parse(items.ms);
-   var date = new Date(year, month, day, hour, minute, second, ms);
-   if(value){
-      value.setDate(date);
-      return value;
-   }
-   return new MO.TDate(date);
-}
-MO.RDate.prototype.parse = function RDate_parse(date, value, format){
-   if(!format){
-      format = this.DataFormat;
-   }
-   var items = this.splitFormat(value, format);
-   if(this.checkItems(items)){
-      return this.makeDate(date, items);
-   }
-   return null;
-}
-MO.RDate.prototype.autoParse = function RDate_autoParse(date, value){
-   if(!value){
-      return null;
-   }
-   var o = this;
-   date = o.nvl(date);
-   var items = new Array();
-   items['year'] = 2000;
-   items['month'] = 1;
-   items['day'] = 1;
-   items['hour'] = 0;
-   items['minute'] = 0;
-   items['second'] = 0;
-   value = MO.Lang.String.trim(value);
-   if(value.indexOf(' ') == -1){
-      o.splitDate(items, value);
-   }else{
-      var valueItems = value.split(' ');
-      if(valueItems.length == 2){
-         o.splitDate(items, valueItems[0]);
-         o.splitTime(items, valueItems[1]);
-      }
-   }
-   if(o.checkItems(items)){
-      return o.makeDate(date, items);
-   }
-   return null;
-}
-MO.RDate = new MO.RDate();
-MO.Lang.Date = MO.RDate;
 MO.REnum = function REnum(){
    return this;
 }
@@ -4923,156 +6000,6 @@ MO.RInstance.prototype.free = function RInstance_free(n){
 }
 MO.RInstance = new MO.RInstance();
 MO.Instance = MO.RInstance;
-MO.RInteger = function RInteger(){
-   var o = this;
-   o.Chars      = '0123456789-%';
-   o.NUMBER     = '0123456789-%';
-   o.LEFT_CHAR  = '0';
-   o.MAX_UINT16 = 65535;
-   o.MAX_UINT32 = 4294967295;
-   return o;
-}
-MO.RInteger.prototype.isInt = function RInteger_isInt(v){
-   return MO.Lang.String.isPattern(v, 'n');
-}
-MO.RInteger.prototype.nvl = function RInteger_nvl(value, defaultValue){
-   if(value != null){
-      return parseInt(value);
-   }
-   if(defaultValue != null){
-      return defaultValue;
-   }
-   return 0;
-}
-MO.RInteger.prototype.strideByte = function RInteger_strideByte(value){
-   if(value > 65535){
-      return 4;
-   }else if(value > 255){
-      return 2;
-   }else{
-      return 1;
-   }
-}
-MO.RInteger.prototype.strideBit = function RInteger_strideBit(value){
-   if(value > 65535){
-      return 32;
-   }else if(value > 255){
-      return 16;
-   }else{
-      return 8;
-   }
-}
-MO.RInteger.prototype.parse = function RInteger_parse(v, d){
-   if(d == null){
-      d = 0;
-   }
-   if(v == null){
-      return d;
-   }
-   if(v == ''){
-      return d;
-   }
-   v = MO.Lang.String.trim(v.toString());
-   while(true){
-      if(v.charAt(0) != '0'){
-         break;
-      }
-      v = v.substr(1);
-   }
-   var r = (v.length > 0) ? parseInt(v) : d;
-   return isNaN(r) ? d : r;
-}
-MO.RInteger.prototype.format = function RInteger_format(v, l, p){
-   if(!p){
-      p = this.LEFT_CHAR;
-   }
-   var v = v.toString();
-   for(var i = parseInt(l) - v.length - 1; i >= 0; i--){
-      v = p + v;
-   }
-   return v;
-}
-MO.RInteger.prototype.toRange = function RInteger_toRange(value, min, max){
-   if(value == null){
-      value = 0;
-   }
-   if(isNaN(value)){
-      value = 0;
-   }
-   if(value < min){
-      value = min;
-   }
-   if(value > max){
-      value = max;
-   }
-   return value;
-}
-MO.RInteger.prototype.pow2 = function RInteger_pow2(value){
-   if(value > 4096){
-      return 8192;
-   }else if(value > 2048){
-      return 4096;
-   }else if(value > 1024){
-      return 2048;
-   }else if(value > 512){
-      return 1024;
-   }else if(value > 256){
-      return 512;
-   }else if(value > 128){
-      return 256;
-   }else if(value > 64){
-      return 128;
-   }else if(value > 32){
-      return 64;
-   }else if(value > 16){
-      return 32;
-   }else if(value > 8){
-      return 16;
-   }else if(value > 4){
-      return 8;
-   }else if(value > 2){
-      return 4;
-   }else if(value > 1){
-      return 2;
-   }
-   return 1;
-}
-MO.RInteger.prototype.sum = function RInteger_sum(){
-   var r = 0;
-   var a = arguments;
-   var c = a.length;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         r += parseInt(a[n]);
-      }
-   }
-   return r;
-}
-MO.RInteger.prototype.calculate = function RInteger_calculate(f, a, b){
-   var a = RInteger.parse(a);
-   var b = RInteger.parse(b);
-   var r = '';
-   if(f == '+'){
-      r = a + b;
-   }else if(f == '-'){
-      r = a - b;
-   }else if(f == 'x'){
-      r = a * b;
-   }else if(f == '/'){
-     r = a / b;
-   }
-   return r.toString();
-}
-MO.RInteger.prototype.copy = function RInteger_copy(po, poi, pi, pii, pc){
-   for(var i = 0; i < pc; i++){
-      po[poi++] = pi[pii++];
-   }
-}
-MO.RInteger.prototype.toString = function RInteger_toString(p){
-   return (p == null) ? '0' : p.toString();
-}
-MO.RInteger = new MO.RInteger();
-MO.Lang.Integer = MO.RInteger;
 MO.RJson = function RJson(){
    return this;
 }
@@ -5091,449 +6018,6 @@ MO.RJson.prototype.toString = function RJson_toString(value){
    return JSON.stringify(value);
 }
 MO.Json = new MO.RJson();
-MO.RLogger = function RLogger(){
-   var o = this;
-   o._labelLength = 40;
-   o._logger       = new MO.SLogger();
-   o.lsnsOutput   = new MO.TListeners();
-   return o;
-}
-MO.RLogger.prototype.output = function RLogger_output(sender, message){
-   var o = this;
-   var logger = o._logger;
-   logger.sender = sender
-   logger.message = message;
-   o.lsnsOutput.process(logger);
-}
-MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
-   var o = this;
-   var name = null;
-   var caller = MO.Logger.debug.caller;
-   if(caller){
-      name = MO.Method.name(caller);
-   }else if(arguments.caller){
-      name = MO.Method.name(arguments.caller[0]);
-   }
-   if(name == null){
-      name = 'unknown';
-   }else{
-      name = name.replace('_', '.');
-   }
-   if(owner && owner.hashCode){
-      name += '@' + owner.hashCode();
-   }
-   var result = new MO.TString();
-   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   result.append('|D [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
-         }else{
-            s = a.toString();
-         }
-      }
-      message = message.replace('{' + (n - 1) + '}', s);
-   }
-   result.append(message);
-   o.output(owner, result.flush());
-}
-MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
-   var o = this;
-   var name = null;
-   var caller = MO.Logger.info.caller;
-   if(caller){
-      name = MO.Method.name(caller);
-   }else if(arguments.caller){
-      name = MO.Method.name(arguments.caller[0]);
-   }
-   if(name == null){
-      name = 'unknown';
-   }else{
-      name = name.replace('_', '.');
-   }
-   if(owner && owner.hashCode){
-      name += '@' + owner.hashCode();
-   }
-   var result = new MO.TString();
-   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
-         }else{
-            s = a.toString();
-         }
-      }
-      message = message.replace('{' + (n - 1) + '}', s);
-   }
-   result.append(message);
-   o.output(owner, result.flush());
-}
-MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
-   var o = this;
-   var name = null;
-   var caller = MO.Logger.warn.caller;
-   if(caller){
-      name = MO.Method.name(caller);
-   }else if(arguments.caller){
-      name = MO.Method.name(arguments.caller[0]);
-   }
-   if(name == null){
-      name = 'unknown';
-   }else{
-      name = name.replace('_', '.');
-   }
-   if(owner && owner.hashCode){
-      name += '@' + owner.hashCode();
-   }
-   var result = new MO.TString();
-   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   result.append('|W [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
-         }else{
-            s = a.toString();
-         }
-      }
-      message = message.replace('{' + (n - 1) + '}', s);
-   }
-   result.append(message);
-   o.output(owner, result.flush());
-}
-MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
-   var o = this;
-   var name = null;
-   var caller = MO.Logger.error.caller;
-   if(caller){
-      name = MO.Method.name(caller);
-   }else if(arguments.caller){
-      name = MO.Method.name(arguments.caller[0]);
-   }
-   if(name == null){
-      name = 'unknown';
-   }else{
-      name = name.replace('_', '.');
-   }
-   if(owner && owner.hashCode){
-      name += '@' + owner.hashCode();
-   }
-   var result = new MO.TString();
-   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   result.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
-         }else{
-            s = a.toString();
-         }
-      }
-      message = message.replace('{' + (n - 1) + '}', s);
-   }
-   result.append(message);
-   o.output(owner, result.flush());
-}
-MO.RLogger.prototype.fatal = function RLogger_fatal(owner, error, message, params){
-   var o = this;
-   var stack = new MO.TString();
-   var stacks = new Array();
-   var caller = MO.Logger.fatal.caller;
-   while(caller){
-      if(MO.Lang.Array.contains(stacks, caller)){
-         break;
-      }
-      stacks.push(caller);
-      caller = caller.caller;
-   }
-   var count = stacks.length;
-   for(var i = 0; i < count; i++){
-      caller = stacks[i];
-      if(i > 0){
-         stack.appendLine();
-      }
-      stack.append('   ' + (count - i) + ': ' + MO.Method.name(caller));
-   }
-   var result = new MO.TString();
-   result.appendLine(MO.RContext.get('RMessage:fatal'));
-   result.appendLine(MO.Lang.String.repeat('-', 60));
-   result.append(MO.Class.dump(owner), ': ');
-   if(message){
-      var count = arguments.length;
-      for(var i = 3; i < count; i++){
-         var parameter = arguments[i];
-         if('function' == typeof(parameter)){
-            parameter = MO.Method.name(parameter);
-         }
-         message = message.replace('{' + (i - 2) + '}', parameter);
-      }
-   }
-   result.appendLine(message);
-   result.appendLine(MO.Lang.String.repeat('-', 60));
-   result.appendLine('Stack:');
-   result.append(stack.flush());
-   var text = result.flush();
-   o.output(owner, text);
-   if(MO.Runtime.isPlatformPc() && !MO.Runtime.isRelease()){
-      throw new Error(text);
-   }
-}
-MO.RLogger.prototype.show = function RLogger_show(sf, message, params){
-   var o = this;
-   var name = null;
-   var caller = MO.Logger.show.caller;
-   if(caller){
-      name = MO.Method.name(caller);
-   }else if(arguments.caller){
-      name = MO.Method.name(arguments.caller[0]);
-   }
-   if(name == null){
-      name = 'unknown';
-   }else{
-      name = name.replace('_', '.');
-   }
-   if(owner.hashCode){
-      name += '@' + owner.hashCode();
-   }
-   var result = new MO.TString();
-   result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
-   result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var count = arguments.length;
-   for(var n = 2; n < count; n++){
-      var parameter = arguments[n];
-      var value = '';
-      if(parameter != null){
-         if(typeof(parameter) == 'function'){
-            value = MO.Method.name(parameter);
-         }else{
-            value = parameter.toString();
-         }
-      }
-      message = message.replace('{' + (n - 1) + '}', value);
-   }
-   result.append(message);
-   alert(result.flush());
-}
-MO.Logger = new MO.RLogger();
-MO.RMethod = function RMethod(){
-   var o = this;
-   o._virtuals   = new Object();
-   o._properties = new Object();
-   return o;
-}
-MO.RMethod.prototype.construct = function RMethod_construct(){
-   var o = this;
-   o.empty.__empty = true;
-   o.emptyTrue.__empty = true;
-   o.emptyFalse.__empty = true;
-}
-MO.RMethod.prototype.isFunction = function RMethod_isFunction(value){
-   return typeof(value) == 'function';
-}
-MO.RMethod.prototype.isEmpty = function RMethod_isEmpty(value){
-   return (value && value.__empty);
-}
-MO.RMethod.prototype.isVirtual = function RMethod_isVirtual(value){
-   return (value && value.__virtual);
-}
-MO.RMethod.prototype.name = function RMethod_name(value){
-   if(value){
-      if(typeof(value) == 'function'){
-         if(value.__name){
-            return value.__name;
-         }
-         var source = value.toString();
-         var name = value.__name = MO.Lang.String.mid(source, 'function ', '(');
-         return name;
-      }
-   }
-   return null;
-}
-MO.RMethod.prototype.fullName = function RMethod_fullName(value){
-   if(value && (value.constructor == Function)){
-      if(value.__fullname){
-         return value.__fullname;
-      }
-      var source = value.toString();
-      var name = value.__fullname = MO.Lang.String.mid(source, 'function ', ')') + ')';
-      return name;
-   }
-   return null;
-}
-MO.RMethod.prototype.empty = function RMethod_empty(){
-}
-MO.RMethod.prototype.emptyTrue = function RMethod_emptyTrue(){
-   return true;
-}
-MO.RMethod.prototype.emptyFalse = function RMethod_emptyFalse(){
-   return false;
-}
-MO.RMethod.prototype.emptyCall = function RMethod_emptyCall(){
-}
-MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
-   var o = this;
-   var method = null;
-   var code = MO.Class.name(value) + '.' + name;
-   if(o._virtuals[code]){
-      method = o._virtuals[code];
-   }else{
-      var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
-      method = new Function(source);
-      method.__virtual = true;
-      method.__name = code;
-      o._virtuals[code] = method;
-   }
-   return method;
-}
-MO.RMethod.prototype.makePropertyGet = function RMethod_makePropertyGet(name, methodName){
-   var o = this;
-   var code = name + '|' + methodName;
-   var method = null;
-   if(o._properties[code]){
-      method = o._properties[code];
-   }else{
-      var source = 'return this.' + name + ';';
-      method = new Function(source);
-      o._properties[code] = method;
-   }
-   return method;
-}
-MO.RMethod.prototype.makePropertyGetSource = function RMethod_makePropertyGet(name, methodName){
-   var o = this;
-   var source = 'return this.' + name + ';';
-   var method = new Function(source);
-   return method;
-}
-MO.RMethod.prototype.makePropertySet = function RMethod_makePropertySet(name, methodName){
-   var o = this;
-   var code = name + '|' + methodName;
-   var method = null;
-   if(o._properties[code]){
-      method = o._properties[code];
-   }else{
-      var source = 'this.' + name + '=value;';
-      method = new Function('value', source);
-      o._properties[code] = method;
-   }
-   return method;
-}
-MO.RMethod = new MO.RMethod();
-MO.Method = MO.RMethod;
-MO.Method.construct();
-MO.RObject = function RObject(){
-   var o = this;
-   o._hash = 1;
-   return o;
-}
-MO.RObject.prototype.nextId = function RObject_nextId(v){
-   return this._hash++;
-}
-MO.RObject.prototype.nvl = function RObject_nvl(v){
-   var a = arguments;
-   var c = a.length;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         return a[n];
-      }
-   }
-   return null;
-}
-MO.RObject.prototype.clone = function RObject_clone(o){
-   var r = new o.constructor();
-   for(var n in o){
-      var v = o[n];
-      if(v != null){
-         if(!MO.Class.isBaseType(v.constructor)){
-            v = MO.Lang.Object.clone(v);
-         }
-      }
-      r[n] = v;
-   }
-   return r;
-}
-MO.RObject.prototype.copy = function RObject_copy(s, t){
-   if((s != null) && (t != null)){
-      for(var n in s){
-         var v = s[n];
-         if(v != null){
-            if(!MO.Class.isBaseType(v.constructor)){
-               if(t[n] == null){
-                  t[n] = new c();
-               }
-               MO.Lang.Object.copy(v, t[n]);
-            }
-         }
-         t[n] = v;
-      }
-   }
-}
-MO.RObject.prototype.free = function RObject_free(item){
-   if(item){
-      if(MO.Runtime.isDebug()){
-         for(var name in item){
-            if((name == '__base') || (name == '__inherits') || (name == '__class')){
-               item[name] = null;
-               continue;
-            }
-            var value = item[name];
-            if(value != null){
-               if(!MO.Class.isBaseType(value.constructor)){
-                  throw new MO.TError(MO.Lang.Object, 'Free object is not base object.');
-               }
-               item[name] = null;
-            }
-         }
-      }else{
-         for(var name in item){
-            item[name] = null;
-         }
-      }
-   }
-}
-MO.RObject.prototype.dispose = function RObject_dispose(item, flag){
-   if(item){
-      if(!item.__dispose){
-         item.dispose(flag);
-         item.__dispose = true;
-      }else{
-         throw new MO.TError(MO.Lang.Object, 'Object has disposed.');
-      }
-   }
-   return null;
-}
-MO.RObject.prototype.release = function RObject_release(item){
-   if(item){
-      for(var name in item){
-         var value = item[name];
-         if(typeof(value) == 'Object'){
-            this.release(value)
-         }
-         item[n] = null;
-      }
-   }
-   return null;
-}
-MO.RObject = new MO.RObject();
-MO.Lang.Object = MO.RObject;
 MO.RRect = function RRect(){
    return this;
 }
@@ -5592,494 +6076,6 @@ MO.RSet.prototype.containsString = function RSet_containsString(v, d){
 }
 MO.RSet = new MO.RSet();
 MO.Lang.Set = MO.RSet;
-MO.RString = function RString(){
-   var o = this;
-   o.EMPTY      = '';
-   o.SPACE      = '   ';
-   o.PAD        = ' ';
-   o.TRIM       = ' \t\r\n';
-   o.LOWER      = 'abcdefghijklmnopqrstuvwxyz';
-   o.UPPER      = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-   o.CodeLowerA = 'a'.charCodeAt(0);
-   o.CodeLowerZ = 'z'.charCodeAt(0);
-   o.CodeUpperA = 'A'.charCodeAt(0);
-   o.CodeUpperZ = 'Z'.charCodeAt(0);
-   return o;
-}
-MO.RString.prototype.isEmpty = function RString_isEmpty(value){
-   if(value != null){
-      return (value.length == 0);
-   }
-   return true;
-}
-MO.RString.prototype.isBlank = function RString_isBlank(value){
-   if(value != null){
-      return (value.trim().length == 0);
-   }
-   return true;
-}
-MO.RString.prototype.isAnsi = function RString_isAnsi(value){
-   if(value != null){
-      var count = value.length;
-      for(var i = 0; i < count; i++){
-         if(value.charCodeAt(i) > 255){
-            return false;
-         }
-      }
-      return true;
-   }
-   return false;
-}
-MO.RString.prototype.isDbcs = function RString_isDbcs(value){
-   if(value == null){
-      var count = value.length;
-      for(var i = 0; i < count; i++){
-         if(value.charCodeAt(i) < 256){
-            return false;
-         }
-      }
-      return true;
-   }
-   return false;
-}
-MO.RString.prototype.isPattern = function RString_isPattern(value, parttern){
-   if(value != null){
-      var o = this;
-      var source = (parttern == null) ? '$a$A$f' : parttern;
-      source = source.replace(/\a/g, o.LOWER);
-      source = source.replace(/\A/g, o.UPPER);
-      source = source.replace(/\f/g, MO.Lang.Float.NUMBER);
-      source = source.replace(/\n/g, MO.Lang.Integer.NUMBER);
-      var count = value.length;
-      for(var i = 0; i < count; i++){
-         if(source.indexOf(value.charAt(i)) == -1){
-            return false;
-         }
-      }
-      return true;
-   }
-   return false;
-}
-MO.RString.prototype.inChars = function RString_inChars(value, parttern){
-   var o = this;
-   var b = o.findChars(parttern, value);
-   if(b != -1){
-      return true;
-   }
-   return false;
-}
-MO.RString.prototype.equals = function RString_equals(s, t, f){
-   if(s == null){
-      s = '';
-   }else if(s.constructor != String){
-      s = s.toString();
-   }
-   if(t == null){
-      t = '';
-   }else if(t.constructor != String){
-      t = t.toString();
-   }
-   if(f){
-      return (s == t);
-   }else{
-      return (s.toLowerCase() == t.toLowerCase());
-   }
-}
-MO.RString.prototype.contains = function RString_contains(source, values){
-   if(source != null){
-      if(source.constructor != String){
-         source = source.toString();
-      }
-      var count = arguments.length;
-      for(var i = 1; i < count; i++){
-         var value = arguments[i];
-         if(source.indexOf(value) != -1){
-            return true;
-         }
-      }
-   }
-   return false;
-}
-MO.RString.prototype.startsWith = function RString_startsWith(v, s){
-   if(s == null){
-      return true;
-   }
-   return (v != null) ? (v.indexOf(s) == 0) : false;
-}
-MO.RString.prototype.endsWith = function RString_endsWith(v, s){
-   if(s == null){
-      return true;
-   }
-   var n = (v != null) ? v.indexOf(s) : -1;
-   return (n != -1) ? (n == (v.length - s.length)) : false;
-}
-MO.RString.prototype.findChars = function RString_findChars(v, s){
-   if((v != null) && (s != null)){
-      var c = v.length;
-      for(var n = 0; n < c; n++){
-         if(s.indexOf(v.charAt(n)) != -1){
-            return n;
-         }
-      }
-   }
-   return -1;
-}
-MO.RString.prototype.inRange = function RString_inRange(v, rs, f){
-   if(v && rs){
-      if(!f){
-         v = v.toLowerCase();
-      }
-      var c = rs.length;
-      for(var n = 0; n < c; n++){
-         var r = rs[n];
-         if(r != null){
-            if(f){
-               if(v == r){
-                  return true;
-               }
-            }else{
-               if(v == r.toLowerCase()){
-                  return true;
-               }
-            }
-         }
-      }
-   }
-   return false;
-}
-MO.RString.prototype.nvl = function RString_nvl(v, d){
-   if(v != null){
-      var s = null;
-      if(v.constructor != String){
-         s = v.toString();
-      }else{
-         s = v;
-      }
-      if(s.length > 0){
-         return s;
-      }
-   }
-   if(d != null){
-      return d;
-   }
-   return this.EMPTY;
-}
-MO.RString.prototype.nvlString = function RString_nvlString(p){
-   if(p == null){
-      p = new MO.TString();
-   }
-   return p;
-}
-MO.RString.prototype.empty = function RString_empty(v){
-   if(v != null){
-      var s = null;
-      if(v.constructor != String){
-         s = v.toString();
-      }else{
-         s = v;
-      }
-      if(s.length > 0){
-         return s;
-      }
-   }
-   return null;
-}
-MO.RString.prototype.firstUpper = function RString_firstUpper(v){
-   return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
-}
-MO.RString.prototype.firstLower = function RString_firstLower(){
-   return (v != null) ? v.charAt(0).toLowerCase() + v.substr(1) : v;
-}
-MO.RString.prototype.firstLine = function RString_firstLine(v){
-   if(v){
-      var n = Math.min(v.indexOf('\r'), v.indexOf('\n'));
-      if(-1 != n){
-         return v.substr(0, n);
-      }
-      return v;
-   }
-   return '';
-}
-MO.RString.prototype.format = function RString_format(value, parameters){
-   var count = arguments.length;
-   for(var i = 1; i < count; i++){
-      var parameter = arguments[i];
-      if(typeof(parameter) == 'function'){
-         parameter = MO.Method.name(parameter);
-      }else if(parameter == null){
-         parameter = '';
-      }
-      value = value.replace('{' + i + '}', parameter);
-   }
-   return value;
-}
-MO.RString.prototype.formatLines = function RString_formatLines(p){
-   var o = this;
-   p = p.replace(/\\r/g, '');
-   var ls = p.split('\n');
-   var c = ls.length;
-   var r = new MO.TString();
-   for(var i = 0; i < c; i++){
-      var l = ls[i]
-      l = o.trim(l);
-      if(o.isEmpty(l)){
-         continue;
-      }
-      if(o.startsWith(l, '//')){
-         continue;
-      }
-      r.appendLine(l);
-   }
-   return r.flush();
-}
-MO.RString.prototype.repeat = function RString_repeat(v, c){
-   return new Array(c + 1).join(v);
-}
-MO.RString.prototype.pad = function RString_pad(v, l, p){
-   v = (v != null) ? v.toString() : this.EMPTY;
-   var n = l - v.length;
-   if(n > 0){
-      if(p == null){
-         p = this.PAD;
-      }
-      var r = (n % 2 == 0) ? n / 2 : (n - 1) / 2;
-      return new Array(r + 1).join(p) + v + new Array(n - r + 1).join(p);
-   }
-   return v;
-}
-MO.RString.prototype.lpad = function RString_lpad(v, l, p){
-   var o = this;
-   v = (v != null) ? v.toString() : o.EMPTY;
-   var n = l - v.length;
-   if(n > 0){
-      if(p == null){
-         p = o.PAD;
-      }
-      var a = new Array(n);
-      a[a.length] = v;
-      return a.join(p);
-   }
-   return v;
-}
-MO.RString.prototype.rpad = function RString_rpad(v, l, p){
-   var o = this;
-   v = (v != null) ? v.toString() : o.EMPTY;
-   var n = l - v.length;
-   if(n > 0){
-      if(p == null){
-         p = o.PAD;
-      }
-      return v + new Array(n + 1).join(p);
-   }
-   return v;
-}
-MO.RString.prototype.trim = function RString_trim(v, ts){
-   var o = this;
-   v = o.nvl(v);
-   ts = o.nvl(ts, o.TRIM);
-   var l = 0;
-   var r = v.length - 1;
-   for(; l < r; l++){
-      if(-1 == ts.indexOf(v.charAt(l))){
-         break;
-      }
-   }
-   for(; r >= l; r--){
-      if(-1 == ts.indexOf(v.charAt(r))){
-         break;
-      }
-   }
-   if(l == r + 1){
-      return null;
-   }
-   if((l != 0) || (r != v.length-1)){
-      return v.substring(l, r + 1);
-   }
-   return v;
-}
-MO.RString.prototype.ltrim = function RString_ltrim(v, ts){
-   var o = this;
-   v = o.nvl(value);
-   ts = o.nvl(trims, o.TRIM);
-   var l = 0;
-   var r = v.length - 1;
-   for(; l < r; l++){
-      if(-1 == ts.indexOf(v.charAt(l))){
-         break;
-      }
-   }
-   if(0 != l){
-      return v.substring(l, r + 1);
-   }
-   return v;
-}
-MO.RString.prototype.rtrim = function RString_rtrim(v, ts){
-   var o = this;
-   v = o.nvl(v);
-   ts = o.nvl(ts, o.TRIM);
-   var r = v.length - 1;
-   for(; r >= 0; r--){
-      if(-1 == ts.indexOf(v.charAt(r))){
-         break;
-      }
-   }
-   if(r != v.length-1){
-      return v.substring(0, r + 1);
-   }
-   return v;
-}
-MO.RString.prototype.mid = function RString_mid(v, b, e){
-   if(v == null){
-      return v;
-   }
-   var l = 0;
-   if(b != null){
-      var f = v.indexOf(b);
-      if(f != -1){
-         l = f + b.length;
-      }
-   }
-   var r = v.length;
-   if(e != null){
-      var f = v.indexOf(e, l);
-      if(f != -1){
-         r = f;
-      }
-   }
-   return v.substring(l, r);
-}
-MO.RString.prototype.toLine = function RString_toLine(v){
-   return v.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
-}
-MO.RString.prototype.toUnderline = function RString_toUnderline(v){
-   var r = null;
-   if(v){
-      var s = new MO.TString();
-      var c = v.length;
-      for(var i = 0; i < c; i++){
-         var h = v.charAt(i);
-         if(h.toUpperCase() == h){
-            if(i > 0){
-               s.append('_');
-            }
-            s.append(h.toLowerCase());
-         }else{
-            s.append(h);
-         }
-      }
-      r = s.flush();
-   }
-   return r;
-}
-MO.RString.prototype.toLower = function RString_toLower(v){
-   return (v != null) ? v.toLowerCase() : this.EMPTY;
-}
-MO.RString.prototype.toUpper = function RString_toUpper(v){
-   return (v != null) ? v.toUpperCase() : this.EMPTY;
-}
-MO.RString.prototype.split = function RString_split(s, p){
-   return (s && p) ? s.split(p) : null;
-}
-MO.RString.prototype.splitTwo = function RString_splitTwo(s, p){
-   if(s && p){
-      var r = new Array();
-      var n = s.indexOf(p);
-      if(n == -1){
-         r.push(s);
-      }else{
-         r.push(s.substring(0, n));
-         r.push(s.substring(n+p.length));
-      }
-      return r;
-   }
-   return null;
-}
-MO.RString.prototype.splitParts = function RString_splitParts(s, p){
-   var o = this;
-   var b = new Array();
-   var k = 0;
-   var l = s.length;
-   for(var i = 0; i < l; i++){
-      for(var j in p){
-         if(o.startsWith(p[j], s.charAt(i))){
-            if(o.equals(s.substr(i, p[j].length), p[j])){
-               b[k++] = p[j];
-               i = i + p[j].length - 1;
-               break;
-            }
-         }
-      }
-   }
-   return b;
-}
-MO.RString.prototype.splitPattern = function RString_splitPattern(s, p){
-   var r = new Array();
-   if(s){
-      var sl = s.length;
-      var pl = p.length;
-      var t = '';
-      for(var n = 0; n < sl; n++){
-         var v = false;
-         for(var i = 0; i < pl; i++){
-            var f = p[i];
-            if(s.indexOf(f) == -1){
-               if(t.length){
-                  r[r.length] = t;
-                  t = '';
-               }
-               r[r.length] = f;
-               s = s.substring(f.length);
-               v = true;
-               break;
-            }
-         }
-         if(!v){
-            t += s.charAt(0);
-            s = s.substring(1);
-         }
-      }
-   }
-   return r;
-}
-MO.RString.prototype.replace = function RString_replace(value, source, target){
-   return value.replace(new RegExp(source, 'g'), target);
-}
-MO.RString.prototype.replaceChar = function RString_replaceChar(v, s, t){
-   if(v != null){
-      var c = v.length;
-      var r = new Array();
-      for(var n = 0; n < c; n++){
-         var a = v.charAt(n);
-         if(a == s){
-            r[r.length] = t;
-         }else{
-            r[r.length] = a;
-         }
-      }
-      return r.join('');
-   }
-   return v;
-}
-MO.RString.prototype.remove = function RString_remove(s, t){
-   return s.replace(t, '');
-}
-MO.RString.prototype.removeChars = function RString_removeChars(v, s){
-   if(v != null){
-      var c = v.length;
-      var r = new Array();
-      for(var n = 0; n < c; n++){
-         var a = v.charAt(n);
-         if(s.indexOf(a) != -1){
-            continue;
-         }
-         r[r.length] = a;
-      }
-      return r.join('');
-   }
-   return v;
-}
-MO.RString = new MO.RString();
-MO.Lang.String = MO.RString;
 MO.RTimer = function RTimer(){
    var o = this;
    o._startTime = 0;

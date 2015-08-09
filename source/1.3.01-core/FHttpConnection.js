@@ -9,7 +9,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._asynchronous        = false;
+   o._asynchronous        = MO.Class.register(o, new MO.AGetSet('_asynchronous'), false);
    o._methodCd            = MO.EHttpMethod.Get;
    o._contentCd           = MO.EHttpContent.Binary;
    o._url                 = null;

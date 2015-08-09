@@ -11,7 +11,7 @@ MO.RHtml = function RHtml(){
    // @attribute
    o._nextUid        = 1;
    o._links          = new Object();
-   o._clientPosition = new MO.SPoint2();
+   o._clientPosition = null;
    return o;
 }
 
@@ -20,15 +20,15 @@ MO.RHtml = function RHtml(){
 // <P>外部会引用这个函数，不要在内部使用this对象。</P>
 //
 // @method
-// @param v:value:Object 对象
+// @param value:Object 对象
 // @return Integer 编号
 //==========================================================
-MO.RHtml.prototype.uid = function RHtml_uid(v){
-   var r = v.__puuid;
-   if(r == null){
-      r = v.__puuid = this._nextUid++;
+MO.RHtml.prototype.uid = function RHtml_uid(value){
+   var uuid = value.__puuid;
+   if(uuid == null){
+      uuid = value.__puuid = this._nextUid++;
    }
-   return r;
+   return uuid;
 }
 
 //==========================================================
@@ -258,6 +258,9 @@ MO.RHtml.prototype.linkSet = function RHtml_linkSet(h, n, v){
 MO.RHtml.prototype.clientPosition = function RHtml_clientPosition(hTag, hTop){
    var o = this;
    var position = o._clientPosition;
+   if(!position){
+      position = o._clientPosition = new MO.SPoint2();
+   }
    position.set(0, 0);
    while(hTag != hTop){
       position.x += hTag.offsetLeft + hTag.clientLeft - hTag.scrollLeft;
