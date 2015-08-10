@@ -372,6 +372,25 @@ MO.RString.prototype.empty = function RString_empty(v){
 }
 
 //==========================================================
+//<T>计算字符串的哈希值。</T>
+//
+//@method
+//@param source:String 字符串
+//@param code:Integer 参照码
+//@return Integer 哈希值
+//==========================================================
+MO.RString.prototype.calculateHash = function RString_calculateHash(source, code){
+   var o = this;
+   var hash = MO.Runtime.nvl(code, 0);
+   var length = source.length;
+   for(var i = 0; i < length; i++){
+      var value = source.charAt(i);
+      hash = 31 * hash + value;
+   }
+   return hash;
+}
+
+//==========================================================
 // <T>将字符串的首字符变为大写。</T>
 //
 // @method

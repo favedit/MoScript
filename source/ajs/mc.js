@@ -3352,6 +3352,16 @@ MO.RString.prototype.empty = function RString_empty(v){
    }
    return null;
 }
+MO.RString.prototype.calculateHash = function RString_calculateHash(source, code){
+   var o = this;
+   var hash = MO.Runtime.nvl(code, 0);
+   var length = source.length;
+   for(var i = 0; i < length; i++){
+      var value = source.charAt(i);
+      hash = 31 * hash + value;
+   }
+   return hash;
+}
 MO.RString.prototype.firstUpper = function RString_firstUpper(v){
    return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
 }
