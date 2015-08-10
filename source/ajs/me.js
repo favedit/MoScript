@@ -1935,6 +1935,8 @@ MO.TDate = function TDate(date){
    o.monthDays    = MO.TDate_monthDays;
    o.monthWeekDay = MO.TDate_monthWeekDay;
    o.weekDay      = MO.TDate_weekDay;
+   o.totalSecond  = MO.TDate_totalSecond;
+   o.daySecond    = MO.TDate_daySecond;
    o.assign       = MO.TDate_assign;
    o.refresh      = MO.TDate_refresh;
    o.setYear      = MO.TDate_setYear;
@@ -2002,6 +2004,13 @@ MO.TDate_refresh = function TDate_refresh(){
 }
 MO.TDate_weekDay = function TDate_weekDay(){
    return this.date.getDay();
+}
+MO.TDate_totalSecond = function TDate_totalSecond(){
+   return parseInt(this.date.getTime() / 1000);
+}
+MO.TDate_daySecond = function TDate_daySecond(){
+   var o = this;
+   return o.hour * 3600 + o.minute * 60 + o.second;
 }
 MO.TDate_setYear = function TDate_setYear(value){
    var o = this;
@@ -3816,24 +3825,24 @@ MO.RString.prototype.calculateHash = function RString_calculateHash(source, code
    var hash = MO.Runtime.nvl(code, 0);
    var length = source.length;
    for(var i = 0; i < length; i++){
-      var value = source.charAt(i);
-      hash = 31 * hash + value;
+      var value = source.charCodeAt(i);
+      hash = (31 * hash + value) & 0xFFFFFFFF;
    }
    return hash;
 }
-MO.RString.prototype.firstUpper = function RString_firstUpper(v){
-   return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
+MO.RString.prototype.firstUpper = function RString_firstUpper(value){
+   return (value != null) ? value.charAt(0).toUpperCase() + value.substr(1) : value;
 }
 MO.RString.prototype.firstLower = function RString_firstLower(){
-   return (v != null) ? v.charAt(0).toLowerCase() + v.substr(1) : v;
+   return (value != null) ? value.charAt(0).toLowerCase() + value.substr(1) : value;
 }
-MO.RString.prototype.firstLine = function RString_firstLine(v){
-   if(v){
-      var n = Math.min(v.indexOf('\r'), v.indexOf('\n'));
+MO.RString.prototype.firstLine = function RString_firstLine(value){
+   if(value){
+      var n = Math.min(value.indexOf('\r'), value.indexOf('\n'));
       if(-1 != n){
-         return v.substr(0, n);
+         return value.substr(0, n);
       }
-      return v;
+      return value;
    }
    return '';
 }
@@ -9363,6 +9372,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o._methodCd            = MO.EHttpMethod.Get;
    o._contentCd           = MO.EHttpContent.Binary;
    o._url                 = null;
+   o._heads               = MO.Class.register(o, new MO.AGetter('_heads'));
    o._input               = null;
    o._inputData           = MO.Class.register(o, new MO.AGetSet('_inputData'));
    o._output              = null;
@@ -9377,6 +9387,8 @@ MO.FHttpConnection = function FHttpConnection(o){
    o.onConnectionReady    = MO.FHttpConnection_onConnectionReady;
    o.onConnectionComplete = MO.FHttpConnection_onConnectionComplete;
    o.construct            = MO.FHttpConnection_construct;
+   o.header               = MO.FHttpConnection_header;
+   o.setHeader            = MO.FHttpConnection_setHeader;
    o.setHeaders           = MO.FHttpConnection_setHeaders;
    o.setOutputData        = MO.FHttpConnection_setOutputData;
    o.content              = MO.FHttpConnection_content;
@@ -9428,14 +9440,30 @@ MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionC
 MO.FHttpConnection_construct = function FHttpConnection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._heads = new MO.TAttributes();
    o._event = new MO.SEvent();
    var handle = o._handle = MO.Window.Xml.createConnection();
    handle._linker = o;
    handle.onreadystatechange = o.onConnectionReady;
 }
+MO.FHttpConnection_header = function FHttpConnection_header(name){
+   return this._heads.get(name);
+}
+MO.FHttpConnection_setHeader = function FHttpConnection_setHeader(name, value){
+   this._heads.set(name, value);
+}
 MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    var o = this;
    var handle = o._handle;
+   var heads = o._heads;
+   var count = heads.count();
+   for(var i = 0; i < count; i++){
+      var headValue = heads.value(i);
+      if(!MO.Lang.String.isEmpty(headValue)){
+         var headName = heads.name(i);
+         handle.setRequestHeader(headName, headValue);
+      }
+   }
    if(o._contentCd == MO.EHttpContent.Binary){
       if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
          handle.setRequestHeader('Accept-Charset', 'x-user-defined');
@@ -9506,6 +9534,7 @@ MO.FHttpConnection_send = function FHttpConnection_send(url, data){
 }
 MO.FHttpConnection_dispose = function FHttpConnection_dispose(){
    var o = this;
+   o._heads = MO.Lang.Object.dispose(o._heads);
    o._event = MO.Lang.Object.dispose(o._event);
    o._input = null;
    o._inputData = null;

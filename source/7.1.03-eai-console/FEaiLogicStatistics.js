@@ -127,13 +127,10 @@ MO.FEaiLogicStatistics_doCustomerTrend = function FEaiLogicStatistics_doCustomer
 //==========================================================
 MO.FEaiLogicStatistics_doMarketerDynamic = function FEaiLogicStatistics_doMarketerDynamic(owner, callback, startDate, endDate){
    var o = this;
-   // 获得地址
-   var uri = '{eai.logic.service}/eai.financial.marketer.wv?do=dynamic&begin=' + startDate + '&end=' + endDate;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   // 发送请求
-   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
-   connection.addLoadListener(owner, callback);
-   return connection;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=dynamic', parameters, owner, callback);
 }
 
 //==========================================================
@@ -148,15 +145,11 @@ MO.FEaiLogicStatistics_doMarketerDynamic = function FEaiLogicStatistics_doMarket
 //==========================================================
 MO.FEaiLogicStatistics_doMarketerTrend = function FEaiLogicStatistics_doMarketerTrend(owner, callback, startDate, endDate){
    var o = this;
-   // 获得地址
-   var uri = '{eai.logic.service}/eai.financial.marketer.wv?do=trend&begin=' + startDate + '&end=' + endDate;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   // 发送请求
-   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
-   connection.addLoadListener(owner, callback);
-   return connection;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=trend', parameters, owner, callback);
 }
-
 
 //==========================================================
 // <T>获取部门动态数据。</T>

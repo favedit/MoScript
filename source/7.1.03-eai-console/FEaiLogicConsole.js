@@ -9,6 +9,8 @@ MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
+   o._sessionId    = MO.Class.register(o, new MO.AGetSet('_sessionId'), '')
+   // @attribute
    o._system       = MO.Class.register(o, new MO.AGetter('_system'));
    o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
    o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));
@@ -67,11 +69,11 @@ MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(){
 //==========================================================
 MO.FEaiLogicConsole_dispose = function FEaiLogicConsole_dispose(){
    var o = this;
-   o._system = MO.RObject.dispose(o._system);
-   o._organization = MO.RObject.dispose(o._organization);
-   o._achievement = MO.RObject.dispose(o._achievement);
-   o._schedule = MO.RObject.dispose(o._schedule);
-   o._statistics = MO.RObject.dispose(o._statistics);
+   o._system = MO.Lang.Object.dispose(o._system);
+   o._organization = MO.Lang.Object.dispose(o._organization);
+   o._achievement = MO.Lang.Object.dispose(o._achievement);
+   o._schedule = MO.Lang.Object.dispose(o._schedule);
+   o._statistics = MO.Lang.Object.dispose(o._statistics);
    // 父处理
    o.__base.FConsole.dispose.call(o);
 }

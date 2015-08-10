@@ -110,7 +110,7 @@ MO.FEaiLogic_send = function FEaiLogic_send(method, parameters, owner, callback)
 //==========================================================
 MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner, callback){
    var o = this;
-   // 获得地址
+   // 解析地址
    var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var count = parameters.count();
    for(var i = 0; i < count; i++){
@@ -118,12 +118,26 @@ MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner
       var value = parameters.value(i);
       url += '&' + name + '=' + value;
    }
-   url = '&tick=' + MO.Timer.current();
-   url = '&token=' + MO.Timer.current();
+   // 获得时间
+   var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
+   var token = systemLogic.token();
+   var tick = systemLogic.currentDate().daySecond();
+   parameters.set('tick', tick);
+   url += '&tick=' + tick;
+   // 计算签名
+   parameters.sortByName();
+   var signSource = parameters.joinValue();
+   var sign = MO.Lang.String.calculateHash(signSource, token);
+   url += '&sign=' + sign;
+   // 获得会话编号
+   var logicConsole = MO.Console.find(MO.FEaiLogicConsole);
+   var sessionId = logicConsole.sessionId();
    // 发送请求
-   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
+   var connection = MO.Console.find(MO.FHttpConsole).alloc();
+   connection.setAsynchronous(true);
+   connection.setHeader('mo-session-id', sessionId);
    connection.addLoadListener(owner, callback);
-   return connection;
+   connection.send(url);
 }
 
 //==========================================================

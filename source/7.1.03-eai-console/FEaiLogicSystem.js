@@ -12,10 +12,11 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o._code          = 'system';
    // @attribute
    o._ready         = false;
-   o._sign          = MO.Class.register(o, new MO.AGetter('_sign'), '')
+   o._info          = null;
+   o._token          = MO.Class.register(o, new MO.AGetter('_token'), 0);
    o._currentDate   = null;
    o._localDate     = null;
-   o._systemDate    = MO.Class.register(o, new MO.AGetter('_systemDate'))
+   o._systemDate    = MO.Class.register(o, new MO.AGetter('_systemDate'));
    //..........................................................
    // @event
    o.onInfo         = MO.FEaiLogicSystem_onInfo;
@@ -44,10 +45,18 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
 //==========================================================
 MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    var o = this;
-   var content = event.content;
-   o._sign = content.sign;
+   // 获得信息
+   var info = o._info;
+   info.unserializeBuffer(event.content, true);
+   // 设置内容
+   o._token = info.token();
    o._localDate.setNow();
-   o._systemDate.parse(content.date);
+   o._systemDate.parse(info.date());
+   // 设置会话编号
+   var sessionId = info.sessionId();
+   var logicConsole = MO.Console.find(MO.FEaiLogicConsole);
+   logicConsole.setSessionId(sessionId);
+   // 准备好
    o._ready = true;
 }
 
@@ -63,6 +72,7 @@ MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
    var o = this;
    o.__base.FEaiLogic.construct.call(o);
    // 设置属性
+   o._info = MO.Class.create(MO.FEaiLogicSystemInfo);
    o._currentDate = new MO.TDate();
    o._localDate = new MO.TDate();
    o._systemDate = new MO.TDate();
@@ -77,7 +87,9 @@ MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
 // @return FListener 监听
 //==========================================================
 MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
-   return this.send('info', null, owner, callback);
+   var o = this;
+   var parameters = o.prepareParemeters();
+   this.sendService('{eai.logic.service}/eai.system.wv?do=info', parameters, owner, callback);
 }
 
 //==========================================================
@@ -146,9 +158,10 @@ MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady(){
 //==========================================================
 MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
    var o = this;
+   var date = o._currentDate;
    var span = o._systemDate.get() - o._localDate.get();
-   o._currentDate.set(MO.Timer.current() + span);
-   return o._currentDate;
+   date.set(MO.Timer.current() + span);
+   return date;
 }
 
 //==========================================================
@@ -169,6 +182,7 @@ MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
 MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose() {
    var o = this;
    // 设置属性
+   o._info = MO.Lang.Object.dispose(o._info);
    o._localDate = MO.Lang.Object.dispose(o._localDate);
    o._systemDate = MO.Lang.Object.dispose(o._systemDate);
    // 父处理

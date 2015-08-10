@@ -384,8 +384,8 @@ MO.RString.prototype.calculateHash = function RString_calculateHash(source, code
    var hash = MO.Runtime.nvl(code, 0);
    var length = source.length;
    for(var i = 0; i < length; i++){
-      var value = source.charAt(i);
-      hash = 31 * hash + value;
+      var value = source.charCodeAt(i);
+      hash = (31 * hash + value) & 0xFFFFFFFF;
    }
    return hash;
 }
@@ -394,38 +394,38 @@ MO.RString.prototype.calculateHash = function RString_calculateHash(source, code
 // <T>将字符串的首字符变为大写。</T>
 //
 // @method
-// @param v:value:String 字符串
+// @param value:String 字符串
 // @return String 首字母是大写的字符串
 //==========================================================
-MO.RString.prototype.firstUpper = function RString_firstUpper(v){
-   return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
+MO.RString.prototype.firstUpper = function RString_firstUpper(value){
+   return (value != null) ? value.charAt(0).toUpperCase() + value.substr(1) : value;
 }
 
 //==========================================================
 // <T>将字符串的首字符变为小写。</T>
 //
 // @method
-// @param v:value:String 字符串
+// @param value:String 字符串
 // @return String 首字母是小写的字符串
 //==========================================================
 MO.RString.prototype.firstLower = function RString_firstLower(){
-   return (v != null) ? v.charAt(0).toLowerCase() + v.substr(1) : v;
+   return (value != null) ? value.charAt(0).toLowerCase() + value.substr(1) : value;
 }
 
 //==========================================================
 // <T>获得字符串中第一行字符串。</T>
 //
 // @method
-// @param v:value:String 字符串
+// @param value:String 字符串
 // @return String 第一行字符串
 //==========================================================
-MO.RString.prototype.firstLine = function RString_firstLine(v){
-   if(v){
-      var n = Math.min(v.indexOf('\r'), v.indexOf('\n'));
+MO.RString.prototype.firstLine = function RString_firstLine(value){
+   if(value){
+      var n = Math.min(value.indexOf('\r'), value.indexOf('\n'));
       if(-1 != n){
-         return v.substr(0, n);
+         return value.substr(0, n);
       }
-      return v;
+      return value;
    }
    return '';
 }

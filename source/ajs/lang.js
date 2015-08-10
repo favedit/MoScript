@@ -436,6 +436,8 @@ MO.TDate = function TDate(date){
    o.monthDays    = MO.TDate_monthDays;
    o.monthWeekDay = MO.TDate_monthWeekDay;
    o.weekDay      = MO.TDate_weekDay;
+   o.totalSecond  = MO.TDate_totalSecond;
+   o.daySecond    = MO.TDate_daySecond;
    o.assign       = MO.TDate_assign;
    o.refresh      = MO.TDate_refresh;
    o.setYear      = MO.TDate_setYear;
@@ -503,6 +505,13 @@ MO.TDate_refresh = function TDate_refresh(){
 }
 MO.TDate_weekDay = function TDate_weekDay(){
    return this.date.getDay();
+}
+MO.TDate_totalSecond = function TDate_totalSecond(){
+   return parseInt(this.date.getTime() / 1000);
+}
+MO.TDate_daySecond = function TDate_daySecond(){
+   var o = this;
+   return o.hour * 3600 + o.minute * 60 + o.second;
 }
 MO.TDate_setYear = function TDate_setYear(value){
    var o = this;
@@ -2317,24 +2326,24 @@ MO.RString.prototype.calculateHash = function RString_calculateHash(source, code
    var hash = MO.Runtime.nvl(code, 0);
    var length = source.length;
    for(var i = 0; i < length; i++){
-      var value = source.charAt(i);
-      hash = 31 * hash + value;
+      var value = source.charCodeAt(i);
+      hash = (31 * hash + value) & 0xFFFFFFFF;
    }
    return hash;
 }
-MO.RString.prototype.firstUpper = function RString_firstUpper(v){
-   return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
+MO.RString.prototype.firstUpper = function RString_firstUpper(value){
+   return (value != null) ? value.charAt(0).toUpperCase() + value.substr(1) : value;
 }
 MO.RString.prototype.firstLower = function RString_firstLower(){
-   return (v != null) ? v.charAt(0).toLowerCase() + v.substr(1) : v;
+   return (value != null) ? value.charAt(0).toLowerCase() + value.substr(1) : value;
 }
-MO.RString.prototype.firstLine = function RString_firstLine(v){
-   if(v){
-      var n = Math.min(v.indexOf('\r'), v.indexOf('\n'));
+MO.RString.prototype.firstLine = function RString_firstLine(value){
+   if(value){
+      var n = Math.min(value.indexOf('\r'), value.indexOf('\n'));
       if(-1 != n){
-         return v.substr(0, n);
+         return value.substr(0, n);
       }
-      return v;
+      return value;
    }
    return '';
 }

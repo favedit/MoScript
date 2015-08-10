@@ -14,6 +14,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o._contentCd           = MO.EHttpContent.Binary;
    o._url                 = null;
    // @attribute
+   o._heads               = MO.Class.register(o, new MO.AGetter('_heads'));
    o._input               = null;
    o._inputData           = MO.Class.register(o, new MO.AGetSet('_inputData'));
    o._output              = null;
@@ -35,6 +36,8 @@ MO.FHttpConnection = function FHttpConnection(o){
    // @method
    o.construct            = MO.FHttpConnection_construct;
    // @method
+   o.header               = MO.FHttpConnection_header;
+   o.setHeader            = MO.FHttpConnection_setHeader;
    o.setHeaders           = MO.FHttpConnection_setHeaders;
    o.setOutputData        = MO.FHttpConnection_setOutputData;
    o.content              = MO.FHttpConnection_content;
@@ -115,11 +118,34 @@ MO.FHttpConnection_construct = function FHttpConnection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置属性
+   o._heads = new MO.TAttributes();
    o._event = new MO.SEvent();
    // 创建链接
    var handle = o._handle = MO.Window.Xml.createConnection();
    handle._linker = o;
    handle.onreadystatechange = o.onConnectionReady;
+}
+
+//==========================================================
+// <T>获得头信息。</T>
+//
+// @method
+// @param name:String 名称
+// @return String 内容
+//==========================================================
+MO.FHttpConnection_header = function FHttpConnection_header(name){
+   return this._heads.get(name);
+}
+
+//==========================================================
+// <T>设置头信息。</T>
+//
+// @method
+// @param name:String 名称
+// @param value:String 内容
+//==========================================================
+MO.FHttpConnection_setHeader = function FHttpConnection_setHeader(name, value){
+   this._heads.set(name, value);
 }
 
 //==========================================================
@@ -130,6 +156,16 @@ MO.FHttpConnection_construct = function FHttpConnection_construct(){
 MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    var o = this;
    var handle = o._handle;
+   // 设置头信息
+   var heads = o._heads;
+   var count = heads.count();
+   for(var i = 0; i < count; i++){
+      var headValue = heads.value(i);
+      if(!MO.Lang.String.isEmpty(headValue)){
+         var headName = heads.name(i);
+         handle.setRequestHeader(headName, headValue);
+      }
+   }
    // 传输格式
    if(o._contentCd == MO.EHttpContent.Binary){
       // 二进制内容
@@ -258,6 +294,7 @@ MO.FHttpConnection_send = function FHttpConnection_send(url, data){
 MO.FHttpConnection_dispose = function FHttpConnection_dispose(){
    var o = this;
    // 释放属性
+   o._heads = MO.Lang.Object.dispose(o._heads);
    o._event = MO.Lang.Object.dispose(o._event);
    o._input = null;
    o._inputData = null;

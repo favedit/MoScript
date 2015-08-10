@@ -1935,6 +1935,8 @@ MO.TDate = function TDate(date){
    o.monthDays    = MO.TDate_monthDays;
    o.monthWeekDay = MO.TDate_monthWeekDay;
    o.weekDay      = MO.TDate_weekDay;
+   o.totalSecond  = MO.TDate_totalSecond;
+   o.daySecond    = MO.TDate_daySecond;
    o.assign       = MO.TDate_assign;
    o.refresh      = MO.TDate_refresh;
    o.setYear      = MO.TDate_setYear;
@@ -2002,6 +2004,13 @@ MO.TDate_refresh = function TDate_refresh(){
 }
 MO.TDate_weekDay = function TDate_weekDay(){
    return this.date.getDay();
+}
+MO.TDate_totalSecond = function TDate_totalSecond(){
+   return parseInt(this.date.getTime() / 1000);
+}
+MO.TDate_daySecond = function TDate_daySecond(){
+   var o = this;
+   return o.hour * 3600 + o.minute * 60 + o.second;
 }
 MO.TDate_setYear = function TDate_setYear(value){
    var o = this;
@@ -3816,24 +3825,24 @@ MO.RString.prototype.calculateHash = function RString_calculateHash(source, code
    var hash = MO.Runtime.nvl(code, 0);
    var length = source.length;
    for(var i = 0; i < length; i++){
-      var value = source.charAt(i);
-      hash = 31 * hash + value;
+      var value = source.charCodeAt(i);
+      hash = (31 * hash + value) & 0xFFFFFFFF;
    }
    return hash;
 }
-MO.RString.prototype.firstUpper = function RString_firstUpper(v){
-   return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
+MO.RString.prototype.firstUpper = function RString_firstUpper(value){
+   return (value != null) ? value.charAt(0).toUpperCase() + value.substr(1) : value;
 }
 MO.RString.prototype.firstLower = function RString_firstLower(){
-   return (v != null) ? v.charAt(0).toLowerCase() + v.substr(1) : v;
+   return (value != null) ? value.charAt(0).toLowerCase() + value.substr(1) : value;
 }
-MO.RString.prototype.firstLine = function RString_firstLine(v){
-   if(v){
-      var n = Math.min(v.indexOf('\r'), v.indexOf('\n'));
+MO.RString.prototype.firstLine = function RString_firstLine(value){
+   if(value){
+      var n = Math.min(value.indexOf('\r'), value.indexOf('\n'));
       if(-1 != n){
-         return v.substr(0, n);
+         return value.substr(0, n);
       }
-      return v;
+      return value;
    }
    return '';
 }
@@ -9363,6 +9372,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o._methodCd            = MO.EHttpMethod.Get;
    o._contentCd           = MO.EHttpContent.Binary;
    o._url                 = null;
+   o._heads               = MO.Class.register(o, new MO.AGetter('_heads'));
    o._input               = null;
    o._inputData           = MO.Class.register(o, new MO.AGetSet('_inputData'));
    o._output              = null;
@@ -9377,6 +9387,8 @@ MO.FHttpConnection = function FHttpConnection(o){
    o.onConnectionReady    = MO.FHttpConnection_onConnectionReady;
    o.onConnectionComplete = MO.FHttpConnection_onConnectionComplete;
    o.construct            = MO.FHttpConnection_construct;
+   o.header               = MO.FHttpConnection_header;
+   o.setHeader            = MO.FHttpConnection_setHeader;
    o.setHeaders           = MO.FHttpConnection_setHeaders;
    o.setOutputData        = MO.FHttpConnection_setOutputData;
    o.content              = MO.FHttpConnection_content;
@@ -9428,14 +9440,30 @@ MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionC
 MO.FHttpConnection_construct = function FHttpConnection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._heads = new MO.TAttributes();
    o._event = new MO.SEvent();
    var handle = o._handle = MO.Window.Xml.createConnection();
    handle._linker = o;
    handle.onreadystatechange = o.onConnectionReady;
 }
+MO.FHttpConnection_header = function FHttpConnection_header(name){
+   return this._heads.get(name);
+}
+MO.FHttpConnection_setHeader = function FHttpConnection_setHeader(name, value){
+   this._heads.set(name, value);
+}
 MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    var o = this;
    var handle = o._handle;
+   var heads = o._heads;
+   var count = heads.count();
+   for(var i = 0; i < count; i++){
+      var headValue = heads.value(i);
+      if(!MO.Lang.String.isEmpty(headValue)){
+         var headName = heads.name(i);
+         handle.setRequestHeader(headName, headValue);
+      }
+   }
    if(o._contentCd == MO.EHttpContent.Binary){
       if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
          handle.setRequestHeader('Accept-Charset', 'x-user-defined');
@@ -9506,6 +9534,7 @@ MO.FHttpConnection_send = function FHttpConnection_send(url, data){
 }
 MO.FHttpConnection_dispose = function FHttpConnection_dispose(){
    var o = this;
+   o._heads = MO.Lang.Object.dispose(o._heads);
    o._event = MO.Lang.Object.dispose(o._event);
    o._input = null;
    o._inputData = null;
@@ -80161,11 +80190,22 @@ MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner
       var value = parameters.value(i);
       url += '&' + name + '=' + value;
    }
-   url = '&tick=' + MO.Timer.current();
-   url = '&token=' + MO.Timer.current();
-   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
+   var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
+   var token = systemLogic.token();
+   var tick = systemLogic.currentDate().daySecond();
+   parameters.set('tick', tick);
+   url += '&tick=' + tick;
+   parameters.sortByName();
+   var signSource = parameters.joinValue();
+   var sign = MO.Lang.String.calculateHash(signSource, token);
+   url += '&sign=' + sign;
+   var logicConsole = MO.Console.find(MO.FEaiLogicConsole);
+   var sessionId = logicConsole.sessionId();
+   var connection = MO.Console.find(MO.FHttpConsole).alloc();
+   connection.setAsynchronous(true);
+   connection.setHeader('mo-session-id', sessionId);
    connection.addLoadListener(owner, callback);
-   return connection;
+   connection.send(url);
 }
 MO.FEaiLogic_dispose = function FEaiLogic_dispose(){
    var o = this;
@@ -80191,6 +80231,7 @@ MO.FEaiLogicAchievement_doQuery = function FEaiLogicAchievement_doQuery(owner, c
 }
 MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
+   o._sessionId    = MO.Class.register(o, new MO.AGetSet('_sessionId'), '')
    o._system       = MO.Class.register(o, new MO.AGetter('_system'));
    o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
    o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));
@@ -80222,11 +80263,11 @@ MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(){
 }
 MO.FEaiLogicConsole_dispose = function FEaiLogicConsole_dispose(){
    var o = this;
-   o._system = MO.RObject.dispose(o._system);
-   o._organization = MO.RObject.dispose(o._organization);
-   o._achievement = MO.RObject.dispose(o._achievement);
-   o._schedule = MO.RObject.dispose(o._schedule);
-   o._statistics = MO.RObject.dispose(o._statistics);
+   o._system = MO.Lang.Object.dispose(o._system);
+   o._organization = MO.Lang.Object.dispose(o._organization);
+   o._achievement = MO.Lang.Object.dispose(o._achievement);
+   o._schedule = MO.Lang.Object.dispose(o._schedule);
+   o._statistics = MO.Lang.Object.dispose(o._statistics);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEaiLogicOrganization = function FEaiLogicOrganization(o){
@@ -80360,19 +80401,17 @@ MO.FEaiLogicStatistics_doCustomerTrend = function FEaiLogicStatistics_doCustomer
 }
 MO.FEaiLogicStatistics_doMarketerDynamic = function FEaiLogicStatistics_doMarketerDynamic(owner, callback, startDate, endDate){
    var o = this;
-   var uri = '{eai.logic.service}/eai.financial.marketer.wv?do=dynamic&begin=' + startDate + '&end=' + endDate;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
-   connection.addLoadListener(owner, callback);
-   return connection;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=dynamic', parameters, owner, callback);
 }
 MO.FEaiLogicStatistics_doMarketerTrend = function FEaiLogicStatistics_doMarketerTrend(owner, callback, startDate, endDate){
    var o = this;
-   var uri = '{eai.logic.service}/eai.financial.marketer.wv?do=trend&begin=' + startDate + '&end=' + endDate;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
-   var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
-   connection.addLoadListener(owner, callback);
-   return connection;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=trend', parameters, owner, callback);
 }
 MO.FEaiLogicStatistics_doDepartmentDynamic = function FEaiLogicStatistics_doDepartmentDynamic(owner, callback, startDate, endDate){
    var o = this;
@@ -80392,10 +80431,11 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
    o._code          = 'system';
    o._ready         = false;
-   o._sign          = MO.Class.register(o, new MO.AGetter('_sign'), '')
+   o._info          = null;
+   o._token          = MO.Class.register(o, new MO.AGetter('_token'), 0);
    o._currentDate   = null;
    o._localDate     = null;
-   o._systemDate    = MO.Class.register(o, new MO.AGetter('_systemDate'))
+   o._systemDate    = MO.Class.register(o, new MO.AGetter('_systemDate'));
    o.onInfo         = MO.FEaiLogicSystem_onInfo;
    o.construct      = MO.FEaiLogicSystem_construct;
    o.doInfo         = MO.FEaiLogicSystem_doInfo;
@@ -80408,21 +80448,28 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
 }
 MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    var o = this;
-   var content = event.content;
-   o._sign = content.sign;
+   var info = o._info;
+   info.unserializeBuffer(event.content, true);
+   o._token = info.token();
    o._localDate.setNow();
-   o._systemDate.parse(content.date);
+   o._systemDate.parse(info.date());
+   var sessionId = info.sessionId();
+   var logicConsole = MO.Console.find(MO.FEaiLogicConsole);
+   logicConsole.setSessionId(sessionId);
    o._ready = true;
 }
 MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
    var o = this;
    o.__base.FEaiLogic.construct.call(o);
+   o._info = MO.Class.create(MO.FEaiLogicSystemInfo);
    o._currentDate = new MO.TDate();
    o._localDate = new MO.TDate();
    o._systemDate = new MO.TDate();
 }
 MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
-   return this.send('info', null, owner, callback);
+   var o = this;
+   var parameters = o.prepareParemeters();
+   this.sendService('{eai.logic.service}/eai.system.wv?do=info', parameters, owner, callback);
 }
 MO.FEailogicSystem_doDeviceAccess = function FEailogicSystem_doDeviceAccess(){
    var xroot = new MO.TXmlNode('Configuration');
@@ -80464,9 +80511,10 @@ MO.FEaiLogicSystem_testReady = function FEaiLogicSystem_testReady(){
 }
 MO.FEaiLogicSystem_currentDate = function FEaiLogicSystem_currentDate(){
    var o = this;
+   var date = o._currentDate;
    var span = o._systemDate.get() - o._localDate.get();
-   o._currentDate.set(MO.Timer.current() + span);
-   return o._currentDate;
+   date.set(MO.Timer.current() + span);
+   return date;
 }
 MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
    var o = this;
@@ -80474,9 +80522,17 @@ MO.FEaiLogicSystem_refresh = function FEaiLogicSystem_refresh(){
 }
 MO.FEaiLogicSystem_dispose = function FEaiLogicSystem_dispose() {
    var o = this;
+   o._info = MO.Lang.Object.dispose(o._info);
    o._localDate = MO.Lang.Object.dispose(o._localDate);
    o._systemDate = MO.Lang.Object.dispose(o._systemDate);
    o.__base.FEaiLogic.consturct.call(o);
+}
+MO.FEaiLogicSystemInfo = function FEaiLogicSystemInfo(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._sessionId = MO.Class.register(o, [new MO.AGetter('_sessionId'), new MO.APersistence('_sessionId', MO.EDataType.String)]);
+   o._date      = MO.Class.register(o, [new MO.AGetter('_date'), new MO.APersistence('_date', MO.EDataType.String)]);
+   o._token     = MO.Class.register(o, [new MO.AGetter('_token'), new MO.APersistence('_token', MO.EDataType.Uint32)]);
+   return o;
 }
 MO.FEaiCityEntity = function FEaiCityEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
@@ -87638,8 +87694,6 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    var chapter = o._chapterChart = MO.Class.create(MO.FEaiChartChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
-   var system = MO.Console.find(MO.FEaiLogicConsole).system();
-   system.doDeviceAccess();
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
    resourceConsole.addLoadListener(o, o.onLoadResource);
    resourceConsole.load('{eai.resource}/resource.dat');

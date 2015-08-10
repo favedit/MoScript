@@ -88,8 +88,8 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    o.registerChapter(chapter);
    //..........................................................
    // 向服务器发送浏览器信息
-   var system = MO.Console.find(MO.FEaiLogicConsole).system();
-   system.doDeviceAccess();
+   // var system = MO.Console.find(MO.FEaiLogicConsole).system();
+   // system.doDeviceAccess();
    //..........................................................
    // 加载资源
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);

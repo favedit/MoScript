@@ -27,6 +27,8 @@ MO.TDate = function TDate(date){
    o.monthDays    = MO.TDate_monthDays;
    o.monthWeekDay = MO.TDate_monthWeekDay;
    o.weekDay      = MO.TDate_weekDay;
+   o.totalSecond  = MO.TDate_totalSecond;
+   o.daySecond    = MO.TDate_daySecond;
    // @method
    o.assign       = MO.TDate_assign;
    o.refresh      = MO.TDate_refresh;
@@ -158,6 +160,27 @@ MO.TDate_refresh = function TDate_refresh(){
 //===========================================================
 MO.TDate_weekDay = function TDate_weekDay(){
    return this.date.getDay();
+}
+
+//===========================================================
+// <T>取得总秒数。</T>
+//
+// @method
+// @return Integer 总秒数
+//===========================================================
+MO.TDate_totalSecond = function TDate_totalSecond(){
+   return parseInt(this.date.getTime() / 1000);
+}
+
+//===========================================================
+// <T>取得当日秒数。</T>
+//
+// @method
+// @return Integer 秒数
+//===========================================================
+MO.TDate_daySecond = function TDate_daySecond(){
+   var o = this;
+   return o.hour * 3600 + o.minute * 60 + o.second;
 }
 
 //===========================================================
