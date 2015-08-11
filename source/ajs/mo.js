@@ -3640,6 +3640,7 @@ MO.RString = function RString(){
    o.CodeLowerZ = 'z'.charCodeAt(0);
    o.CodeUpperA = 'A'.charCodeAt(0);
    o.CodeUpperZ = 'Z'.charCodeAt(0);
+   o._hashData  = null;
    return o;
 }
 MO.RString.prototype.isEmpty = function RString_isEmpty(value){
@@ -3822,13 +3823,17 @@ MO.RString.prototype.empty = function RString_empty(v){
 }
 MO.RString.prototype.calculateHash = function RString_calculateHash(source, code){
    var o = this;
-   var hash = MO.Runtime.nvl(code, 0);
+   var data = o._hashData;
+   if(!data){
+      data = o._hashData = new Int32Array(1);
+   }
+   data[0] = MO.Runtime.nvl(code, 0);
    var length = source.length;
    for(var i = 0; i < length; i++){
       var value = source.charCodeAt(i);
-      hash = (31 * hash + value) & 0xFFFFFFFF;
+      data[0] = 31 * data[0] + value;
    }
-   return hash;
+   return Math.abs(data[0]);
 }
 MO.RString.prototype.firstUpper = function RString_firstUpper(value){
    return (value != null) ? value.charAt(0).toUpperCase() + value.substr(1) : value;
@@ -38415,6 +38420,7 @@ MO.FGuiButton_onPaintBegin = function FGuiButton_onPaintBegin(event){
 }
 MO.FGuiLabel = function FGuiLabel(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._alignCd     = MO.Class.register(o, new MO.AGetter('_alignCd'), MO.EUiAlign.Left);
    o.onPaintLabel = MO.FGuiLabel_onPaintLabel;
    o.onPaintBegin = MO.FGuiLabel_onPaintBegin;
    o.setLabel     = MO.FGuiLabel_setLabel;
