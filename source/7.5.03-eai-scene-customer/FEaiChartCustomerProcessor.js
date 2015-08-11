@@ -25,6 +25,8 @@ MO.FEaiChartCustomerProcessor = function FEaiChartCustomerProcessor(o){
    o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
    
+   
+   
    o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
    
    o._intervalMinute          = 1;
@@ -166,6 +168,7 @@ MO.FEaiChartCustomerProcessor_calculateCurrent = function FEaiChartCustomerProce
       var unit = units.at(i);
       investmentCurrent -= unit.customerInvestment();
    }
+   o._invementTotalCurrent = info.investmentTotal();
    o._invementDayCurrent = investmentCurrent;
 }
 
