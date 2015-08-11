@@ -45,25 +45,20 @@ MO.FEditorDsListFrameSet_onBuilded = function FEditorDsListFrameSet_onBuilded(ev
    //..........................................................
    // 设置目录工具栏
    var control = o._catalogToolbar = MO.Class.create(MO.FEditorDsListCatalogToolBar);
-   control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    o._frameCatalogToolBar.push(control);
    // 设置目录内容
    var control = o._catalogContent = MO.Class.create(MO.FEditorDsListCatalogContent);
-   control._workspace = o._workspace;
    control._frameSet = o;
    control.build(event);
-   //control.addSelectedListener(o, o.selectObject);
    o._frameCatalogContent.push(control);
    //..........................................................
    // 设置属性工具栏
    var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsListPropertyToolBar);
-   control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    o._framePropertyToolBar.push(control);
-   //_framePropertyContent
 }
 
 //==========================================================
@@ -83,23 +78,18 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
 // @method
 // @param typeGroup:EDuiTreeNodeGroup 类型分组枚举
 // @param propertyFrame:String 属性名称
+// @param containerName:String 容器名称
 // @param controlName:String 控件名称
 //==========================================================
-MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, controlName){
+MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
    var o = this;
-   //var activeFrame = o._spaceContent._activeFrame;
    // 隐藏所有属性面板
    o.hidePropertyFrames();
    // 显示控件信息
    var frame = o.findPropertyFrame(propertyFrame);
    frame.show();
-   //if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-   //   frame.loadObject(activeFrame, activeFrame);
-   //}else{
-   //   var activeControl = activeFrame.findComponent(controlName);
-   //   frame.loadObject(activeFrame, activeControl);
-   //   o._spaceContent.selectControl(activeControl);
-   //}
+   // 显示容器
+   frame.load(containerName, controlName);
 }
 
 //==========================================================
@@ -109,9 +99,6 @@ MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObj
 //==========================================================
 MO.FEditorDsListFrameSet_load = function FEditorDsListFrameSet_load(name){
    var o = this;
-   //if(name){
-      //o._spaceContent.loadFrame(name);
-   //}
 }
 
 //==========================================================

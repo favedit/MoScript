@@ -8,17 +8,18 @@ MO.FEditorDsListListProperty = function FEditorDsListListProperty(o){
    o = MO.Class.inherits(this, o, MO.FDuiForm);
    //..........................................................
    // @attribute
-   o._activeFrame   = null;
-   o._activeControl = null;
+   o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
+   o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
    //..........................................................
    // @event
    o.onBuilded      = MO.FEditorDsListListProperty_onBuilded;
+   o.onLoad         = MO.FEditorDsListListProperty_onLoad;
    o.onDataChanged  = MO.FEditorDsListListProperty_onDataChanged;
    //..........................................................
    // @method
    o.construct      = MO.FEditorDsListListProperty_construct;
    // @method
-   o.loadObject     = MO.FEditorDsListListProperty_loadObject;
+   o.load           = MO.FEditorDsListListProperty_load;
    // @method
    o.dispose        = MO.FEditorDsListListProperty_dispose;
    return o;
@@ -43,15 +44,26 @@ MO.FEditorDsListListProperty_onBuilded = function FEditorDsListListProperty_onBu
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
+MO.FEditorDsListListProperty_onLoad = function FEditorDsListListProperty_onLoad(event){
+   var o = this;
+   var xcontent = event.content;
+   var xconfig = xcontent.nodes().first();
+   var isValid = xconfig.get('is_valid');
+   var name = xconfig.get('name');
+   var label = xconfig.get('label');
+   o._controlName.set(name);
+   o._controlLabel.set(label);
+}
+
+//==========================================================
+// <T>数据改变处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
 MO.FEditorDsListListProperty_onDataChanged = function FEditorDsListListProperty_onDataChanged(event){
    var o  = this;
    o.__base.FDuiForm.onDataChanged.call(o, event);
-   var frame = o._activeFrame;
-   var control = o._activeControl;
-   // 设置组件属性
-   var size = o._controlSize.get();
-   control.size().set(size.x, size.y);
-   frame.build();
 }
 
 //==========================================================
@@ -66,28 +78,16 @@ MO.FEditorDsListListProperty_construct = function FEditorDsListListProperty_cons
 }
 
 //==========================================================
-// <T>加载页面控件信息。</T>
+// <T>加载配置信息。</T>
 //
 // @method
-// @param frame:FGuiFrame 界面
-// @param control:FGuiControl 控件
+// @param containerName:String 容器名称
 //==========================================================
-MO.FEditorDsListListProperty_loadObject = function FEditorDsListListProperty_loadObject(frame, control){
+MO.FEditorDsListListProperty_load = function FEditorDsListListProperty_load(containerName){
    var o = this;
-   o.__base.FDuiForm.loadObject.call(o, frame, control);
-   // 设置属性
-   o._activeFrame = frame;
-   o._activeControl = control;
-   // 设置控件属性
-   var location = control.location();
-   o._controlLocation.set(location);
-   var size = control.size();
-   o._controlSize.set(size);
-   // 设置背景属性
-   o._controlForeColor.set(control.foreColor());
-   o._controlBackColor.set(control.backColor());
-   o._controlBackResource.set(control.backResource());
-   o._controlBackGrid.set(control.backGrid());
+   var url = '/editor.design.list.ws?action=queryContainer&container=' + containerName;
+   var connection = MO.Console.find(MO.FXmlConsole).send(url);
+   connection.addLoadListener(o, o.onLoad);
 }
 
 //==========================================================

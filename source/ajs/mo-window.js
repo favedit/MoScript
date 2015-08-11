@@ -258,20 +258,20 @@ MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
 }
 MO.RWindow.prototype.makeDisablePanel = function RWindow_makeDisablePanel(f){
    var o = this;
-   var h = o._hDisablePanel;
-   if(!h){
-      h = o._hDisablePanel = MO.RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
-      h.style.zIndex = 5000;
+   var hPanel = o._hDisablePanel;
+   if(!hPanel){
+      hPanel = o._hDisablePanel = MO.Window.Builder.createDiv(o._hDocument, 'RWindow_Disable');
+      hPanel.style.zIndex = 5000;
    }
-   var hi = o._hDisableImage;
-   if(!hi){
-      hi = o._hDisableImage = MO.RBuilder.appendIcon(h);
-      hi.src = MO.RResource.iconPath('control.RWindow_Loading');
-      hi.style.margin = o._hContainer.offsetHeight / 2;
-      hi.style.display = 'none';
+   var hImage = o._hDisableImage;
+   if(!hImage){
+      hImage = o._hDisableImage = MO.Window.Builder.appendIcon(hPanel);
+      hImage.src = MO.RResource.iconPath('control.RWindow_Loading');
+      hImage.style.margin = o._hContainer.offsetHeight / 2;
+      hImage.style.display = 'none';
    }
-   MO.RHtml.visibleSet(hi, f);
-   return h;
+   MO.Window.Html.visibleSet(hImage, f);
+   return hPanel;
 }
 MO.RWindow.prototype.windowDisable = function RWindow_windowDisable(){
    this._hContainer.disabled = true;

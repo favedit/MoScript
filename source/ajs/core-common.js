@@ -1484,6 +1484,7 @@ MO.FXmlConnection_onConnectionComplete = function FXmlConnection_onConnectionCom
    event.connection = o;
    event.document = document;
    event.root = root;
+   event.content = root;
    event.parameters = o._parameters;
    o.processLoadListener(event);
    event.dispose();

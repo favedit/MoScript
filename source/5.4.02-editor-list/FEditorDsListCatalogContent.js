@@ -32,16 +32,23 @@ MO.FEditorDsListCatalogContent = function FEditorDsListCatalogContent(o){
 MO.FEditorDsListCatalogContent_onNodeClick = function FEditorDsListCatalogContent_onNodeClick(event){
    var o = this;
    var node = event.node;
+   // 查找父容器
+   var parent = node;
+   while(MO.Class.isClass(parent, MO.FDuiTreeNode)){
+      if(parent.typeGroup() == MO.EDuiTreeNodeGroup.Container){
+         break;
+      }
+      parent = parent.parent();
+   }
+   var containerName = parent.label();
+   // 显示画面
    var typeGroup = node.typeGroup();
    var nodeType = node.type();
-   var typeCode = node.typeCode();
    var frameName = nodeType.get('property_frame');
-   var label = node.label();
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.load(label);
-      o._frameSet.selectObject(typeGroup, frameName, null);
+      o._frameSet.selectObject(typeGroup, frameName, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, label);
+      o._frameSet.selectObject(typeGroup, frameName, containerName, node.guid());
    }
 }
 
