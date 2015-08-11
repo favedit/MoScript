@@ -75611,11 +75611,6 @@ MO.FEditorDsListItemProperty_onLoad = function FEditorDsListItemProperty_onLoad(
 }
 MO.FEditorDsListItemProperty_onDataChanged = function FEditorDsListItemProperty_onDataChanged(event){
    var o  = this;
-   var frame = o._activeFrame;
-   var control = o._activeControl;
-   var size = o._controlSize.get();
-   control.size().set(size.x, size.y);
-   frame.build();
 }
 MO.FEditorDsListItemProperty_construct = function FEditorDsListItemProperty_construct(){
    var o = this;
@@ -75660,11 +75655,6 @@ MO.FEditorDsListListProperty_onLoad = function FEditorDsListListProperty_onLoad(
 MO.FEditorDsListListProperty_onDataChanged = function FEditorDsListListProperty_onDataChanged(event){
    var o  = this;
    o.__base.FDuiForm.onDataChanged.call(o, event);
-   var frame = o._activeFrame;
-   var control = o._activeControl;
-   var size = o._controlSize.get();
-   control.size().set(size.x, size.y);
-   frame.build();
 }
 MO.FEditorDsListListProperty_construct = function FEditorDsListListProperty_construct(){
    var o = this;

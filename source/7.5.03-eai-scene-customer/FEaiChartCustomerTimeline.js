@@ -72,7 +72,7 @@ MO.FEaiChartCustomerTimeline_sync = function FEaiChartCustomerTimeline_sync() {
    endTime.assign(currentDate);
    // 发送数据
    var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-   statisticsLogic.doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
+   statisticsLogic.doCustomerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
 }
 
 //==========================================================
@@ -240,15 +240,8 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
       if (investment > maxAmount) {
          maxAmount = investment;
       }
-      var redemption = unit.redemption();
-      if (redemption > maxAmount) {
-         maxAmount = redemption;
-      }
    }
    o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
-   o.drawTrend(graphic, '_redemption', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#0088FF', '#0000FF');
-   //o.drawTrend(graphic, '_netinvestment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#00FF00');
-   //o.drawTrend(graphic, '_interest', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FFFFFF');
    // 完成
    startTime.date.setTime(bakTime);
    startTime.refresh();
@@ -265,7 +258,7 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
       startTime.refresh();
       var hour = startTime.date.getHours();
       if (lastHour == hour) {
-         hourInves += unit.redemption();
+         hourInves += unit.investment();
       }else{
          if(hourInves > maxHourInves){
             maxHourInves = hourInves;
@@ -285,22 +278,16 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
    var textWidth = graphic.textWidth('投资总计：');
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
    var investmentTotalWidth = graphic.textWidth(investmentTotalText);
-   var redemptionTotalText = MO.Lang.Float.unitFormat(trendInfo.redemptionTotal(), 0, 0, 2, 0, 10000, '万');
-   var redemptionTotalWidth = graphic.textWidth(redemptionTotalText);
-   var netinvestmentTotalText = MO.Lang.Float.unitFormat(trendInfo.netinvestmentTotal(), 0, 0, 2, 0, 10000, '万');
-   var netinvestmentTotalWidth = graphic.textWidth(netinvestmentTotalText);
-   var interestTotalText = MO.Lang.Float.unitFormat(trendInfo.interestTotal(), 0, 0, 2, 0, 10000, '万');
-   var interestTotalWidth = graphic.textWidth(interestTotalText);
-   var maxWidth = Math.max(Math.max(Math.max(investmentTotalWidth, redemptionTotalWidth), netinvestmentTotalWidth), interestTotalWidth);
+   var maxWidth = investmentTotalWidth;
    // 绘制文字
    graphic.drawText('投资总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
    graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
-   graphic.drawText('赎回总额：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   graphic.drawText(redemptionTotalText, decoLeft + textWidth + maxWidth - redemptionTotalWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
-   graphic.drawText('净投总额：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
-   graphic.drawText(netinvestmentTotalText, decoLeft + textWidth + maxWidth - netinvestmentTotalWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
-   graphic.drawText('利息总额：', decoLeft, rowStart + rowHeight * 3 + 15, '#00CFFF');
-   graphic.drawText(interestTotalText, decoLeft + textWidth + maxWidth - interestTotalWidth, rowStart + rowHeight * 3 + 15, '#00B5F6');
+   //graphic.drawText('赎回总额：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
+   //graphic.drawText(redemptionTotalText, decoLeft + textWidth + maxWidth - redemptionTotalWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
+   //graphic.drawText('净投总额：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
+   //graphic.drawText(netinvestmentTotalText, decoLeft + textWidth + maxWidth - netinvestmentTotalWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
+   //graphic.drawText('利息总额：', decoLeft, rowStart + rowHeight * 3 + 15, '#00CFFF');
+   //graphic.drawText(interestTotalText, decoLeft + textWidth + maxWidth - interestTotalWidth, rowStart + rowHeight * 3 + 15, '#00B5F6');
    // 设置时间
    startTime.date.setTime(bakTime);
    startTime.refresh();

@@ -340,18 +340,8 @@ MO.FEaiChartCustomerTable_setRankUnits = function FEaiChartCustomerTable_setRank
       var unit = units.at(i);
       var row = grid.allocRow();
       // 获得部门名称
-      var departmentLabel = unit.departmentLabel();
-      var department = MO.Console.find(MO.FEaiResourceConsole).departmentModule().findByFullLabel(departmentLabel);
-      if(department){
-         departmentLabel = department.label();
-      }
-      row.set('department_label', departmentLabel);
-      row.set('marketer_label', unit.marketerLabel());
-      row.set('investment_total', unit.investmentTotal());
-      row.set('redemption_total', unit.redemptionTotal());
-      row.set('netinvestment_total', unit.netinvestmentTotal());
-      //row.set('customer_count', unit.customerRegister() + '/' + unit.customerTotal());
-      row.set('customer_count', unit.customerTotal());
+      row.set('department_label', unit.label());
+      row.set('investment_total', unit.investment());
       grid.pushRow(row);
    }
 }
@@ -368,12 +358,6 @@ MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(un
    if(!unit){
       return null;
    }
-   // 获得部门名称
-   var departmentLabel = unit.departmentLabel();
-   var department = MO.Console.find(MO.FEaiResourceConsole).departmentModule().findByFullLabel(departmentLabel);
-   if(department){
-      departmentLabel = department.label();
-   }
    // 获得客户城市
    var card = unit.customerCard();
    var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
@@ -385,15 +369,11 @@ MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(un
    var grid = o._gridControl;
    var row = grid.allocRow();
    row.set('record_date', unit.recordDate());
-   row.set('department_label', departmentLabel);
-   row.set('marketer_label', unit.marketerLabel());
+   row.set('department_label', unit.label());
+   row.set('marketer_label', unit.label());
    row.set('customer_city', cityLabel);
-   row.set('customer_info', unit.customerLabel() + ' - ' + unit.customerPhone());
-   if(unit.customerActionCd() == 1){
-      row.set('customer_amount', unit.customerActionAmount());
-   }else{
-      row.set('customer_amount', -unit.customerActionAmount());
-   }
+   row.set('customer_info', unit.label() + ' - ' + unit.phone());
+   row.set('customer_amount', unit.investment());
    grid.insertRow(row);
    // 放入队列
    var entities = o._units;

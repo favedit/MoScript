@@ -141,7 +141,7 @@ MO.FEaiChartCustomerScene_onProcess = function FEaiChartCustomerScene_onProcess(
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         return;
+         //return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -174,11 +174,11 @@ MO.FEaiChartCustomerScene_onProcess = function FEaiChartCustomerScene_onProcess(
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
          // 赎回总金额
-         var redemptionTotal = logoBar.findComponent('redemptionTotal');
-         redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
+         //var redemptionTotal = logoBar.findComponent('redemptionTotal');
+         //redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
          // 净投总金额     
-         var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
-         netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
+         //var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
+         //netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
          // 利息总金额
          //var interestTotal = logoBar.findComponent('interestTotal');
          //interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
