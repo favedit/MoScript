@@ -1807,7 +1807,8 @@ MO.MUiGridRow_dispose = function MUiGridRow_dispose(){
 }
 MO.EApplicationConstant = new function EApplicationConstant(){
    var o = this;
-   o.Resource = "resource";
+   o.SessionCode = "mo-session-id";
+   o.Resource    = "resource";
    return o;
 }
 MO.MFrameProcessor = function MFrameProcessor(o){
@@ -1837,12 +1838,14 @@ MO.MFrameProcessor_dispose = function MFrameProcessor_dispose(){
 }
 MO.FApplication = function FApplication(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
+   o._sessionId           = MO.Class.register(o, new MO.AGetSet('_sessionId'));
    o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
    o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
    o.onProcessReady       = MO.FApplication_onProcessReady;
    o.onProcess            = MO.FApplication_onProcess;
    o.construct            = MO.FApplication_construct;
    o.setup                = MO.Method.empty;
+   o.findSessionId        = MO.FApplication_findSessionId;
    o.registerChapter      = MO.FApplication_registerChapter;
    o.unregisterChapter    = MO.FApplication_unregisterChapter;
    o.selectChapter        = MO.FApplication_selectChapter;
@@ -1867,7 +1870,12 @@ MO.FApplication_construct = function FApplication_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.__base.MFrameProcessor.construct.call(o);
+   o._sessionId = MO.Window.cookie(MO.EApplicationConstant.SessionCode);
    o._chapters = new MO.TDictionary();
+}
+MO.FApplication_findSessionId = function FApplication_findSessionId(){
+   var o = this;
+   return o._sessionId;
 }
 MO.FApplication_registerChapter = function FApplication_registerChapter(chapter){
    var o = this;

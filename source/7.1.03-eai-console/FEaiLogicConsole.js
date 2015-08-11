@@ -9,8 +9,6 @@ MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
-   o._sessionId    = MO.Class.register(o, new MO.AGetSet('_sessionId'), '')
-   // @attribute
    o._system       = MO.Class.register(o, new MO.AGetter('_system'));
    o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
    o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));

@@ -9396,6 +9396,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o.sendSync             = MO.FHttpConnection_sendSync;
    o.sendAsync            = MO.FHttpConnection_sendAsync;
    o.send                 = MO.FHttpConnection_send;
+   o.post                 = MO.FHttpConnection_post;
    o.dispose              = MO.FHttpConnection_dispose;
    return o;
 }
@@ -9455,15 +9456,6 @@ MO.FHttpConnection_setHeader = function FHttpConnection_setHeader(name, value){
 MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    var o = this;
    var handle = o._handle;
-   var heads = o._heads;
-   var count = heads.count();
-   for(var i = 0; i < count; i++){
-      var headValue = heads.value(i);
-      if(!MO.Lang.String.isEmpty(headValue)){
-         var headName = heads.name(i);
-         handle.setRequestHeader(headName, headValue);
-      }
-   }
    if(o._contentCd == MO.EHttpContent.Binary){
       if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
          handle.setRequestHeader('Accept-Charset', 'x-user-defined');
@@ -9477,9 +9469,19 @@ MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    }else{
       handle.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
+   var heads = o._heads;
+   var count = heads.count();
+   if(count > 0){
+      for(var i = 0; i < count; i++){
+         var headName = heads.name(i);
+         var headValue = heads.value(i);
+         handle.setRequestHeader(headName, headValue);
+      }
+   }
    if(!MO.Window.Browser.isBrowser(MO.EBrowser.Chrome)){
-      if(o._contentLength > 0){
-         handle.setRequestHeader('content-length', o._contentLength);
+      var contentLength = o._contentLength;
+      if(contentLength > 0){
+         handle.setRequestHeader('content-length', contentLength);
       }
    }
 }
@@ -9523,6 +9525,20 @@ MO.FHttpConnection_send = function FHttpConnection_send(url, data){
    o._url = url;
    o._input = data;
    o._methodCd = (data != null) ? MO.EHttpMethod.Post : MO.EHttpMethod.Get;
+   o._statusFree = false;
+   o.onConnectionSend();
+   if(o._asynchronous){
+      o.sendAsync();
+   }else{
+      o.sendSync();
+   }
+   return o.content();
+}
+MO.FHttpConnection_post = function FHttpConnection_send(url, data){
+   var o = this;
+   o._url = url;
+   o._input = data;
+   o._methodCd = MO.EHttpMethod.Post;
    o._statusFree = false;
    o.onConnectionSend();
    if(o._asynchronous){
@@ -13277,6 +13293,7 @@ MO.RWindow = function RWindow(){
    o._statusError      = false;
    o._statusEnable     = true;
    o._disableDeep      = 0;
+   o._cookies          = new MO.TAttributes();
    o._localStorage     = null;
    o._sessionStorage   = null;
    o._eventMouse       = new MO.SMouseEvent();
@@ -13443,6 +13460,7 @@ MO.RWindow.prototype.connect = function RWindow_connect(hWindow){
    hContainer.onresize = o.ohResize;
    hContainer.onselectstart = o.ohSelect;
    hContainer.onunload = o.ohUnload;
+   o._cookies.split(hDocument.cookie, '=', ';');
    o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
    o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
 }
@@ -13475,6 +13493,12 @@ MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
 }
 MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
    window.status = MO.Lang.String.nvl(value);
+}
+MO.RWindow.prototype.cookies = function RWindow_cookies(){
+   return this._cookies;
+}
+MO.RWindow.prototype.cookie = function RWindow_cookie(name){
+   return this._cookies.get(name);
 }
 MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
    var o = this;
@@ -36257,7 +36281,8 @@ MO.MUiGridRow_dispose = function MUiGridRow_dispose(){
 }
 MO.EApplicationConstant = new function EApplicationConstant(){
    var o = this;
-   o.Resource = "resource";
+   o.SessionCode = "mo-session-id";
+   o.Resource    = "resource";
    return o;
 }
 MO.MFrameProcessor = function MFrameProcessor(o){
@@ -36287,12 +36312,14 @@ MO.MFrameProcessor_dispose = function MFrameProcessor_dispose(){
 }
 MO.FApplication = function FApplication(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
+   o._sessionId           = MO.Class.register(o, new MO.AGetSet('_sessionId'));
    o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
    o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
    o.onProcessReady       = MO.FApplication_onProcessReady;
    o.onProcess            = MO.FApplication_onProcess;
    o.construct            = MO.FApplication_construct;
    o.setup                = MO.Method.empty;
+   o.findSessionId        = MO.FApplication_findSessionId;
    o.registerChapter      = MO.FApplication_registerChapter;
    o.unregisterChapter    = MO.FApplication_unregisterChapter;
    o.selectChapter        = MO.FApplication_selectChapter;
@@ -36317,7 +36344,12 @@ MO.FApplication_construct = function FApplication_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.__base.MFrameProcessor.construct.call(o);
+   o._sessionId = MO.Window.cookie(MO.EApplicationConstant.SessionCode);
    o._chapters = new MO.TDictionary();
+}
+MO.FApplication_findSessionId = function FApplication_findSessionId(){
+   var o = this;
+   return o._sessionId;
 }
 MO.FApplication_registerChapter = function FApplication_registerChapter(chapter){
    var o = this;

@@ -7,6 +7,7 @@
 //==========================================================
 MO.EApplicationConstant = new function EApplicationConstant(){
    var o = this;
-   o.Resource = "resource";
+   o.SessionCode = "mo-session-id";
+   o.Resource    = "resource";
    return o;
 }

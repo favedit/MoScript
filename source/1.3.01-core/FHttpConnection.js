@@ -46,6 +46,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o.sendSync             = MO.FHttpConnection_sendSync;
    o.sendAsync            = MO.FHttpConnection_sendAsync;
    o.send                 = MO.FHttpConnection_send;
+   o.post                 = MO.FHttpConnection_post;
    // @method
    o.dispose              = MO.FHttpConnection_dispose;
    return o;
@@ -156,16 +157,6 @@ MO.FHttpConnection_setHeader = function FHttpConnection_setHeader(name, value){
 MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    var o = this;
    var handle = o._handle;
-   // 设置头信息
-   var heads = o._heads;
-   var count = heads.count();
-   for(var i = 0; i < count; i++){
-      var headValue = heads.value(i);
-      if(!MO.Lang.String.isEmpty(headValue)){
-         var headName = heads.name(i);
-         handle.setRequestHeader(headName, headValue);
-      }
-   }
    // 传输格式
    if(o._contentCd == MO.EHttpContent.Binary){
       // 二进制内容
@@ -182,10 +173,22 @@ MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
       // 文本内容
       handle.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
+   // 设置自定义头信息
+   var heads = o._heads;
+   var count = heads.count();
+   if(count > 0){
+      // 设置头信息
+      for(var i = 0; i < count; i++){
+         var headName = heads.name(i);
+         var headValue = heads.value(i);
+         handle.setRequestHeader(headName, headValue);
+      }
+   }
    // 数据长度
    if(!MO.Window.Browser.isBrowser(MO.EBrowser.Chrome)){
-      if(o._contentLength > 0){
-         handle.setRequestHeader('content-length', o._contentLength);
+      var contentLength = o._contentLength;
+      if(contentLength > 0){
+         handle.setRequestHeader('content-length', contentLength);
       }
    }
 }
@@ -273,6 +276,31 @@ MO.FHttpConnection_send = function FHttpConnection_send(url, data){
    o._input = data;
    // 设置状态
    o._methodCd = (data != null) ? MO.EHttpMethod.Post : MO.EHttpMethod.Get;
+   o._statusFree = false;
+   // 发送信息
+   o.onConnectionSend();
+   if(o._asynchronous){
+      o.sendAsync();
+   }else{
+      o.sendSync();
+   }
+   return o.content();
+}
+
+//==========================================================
+// <T>发送页面请求。</T>
+//
+// @method
+// @param url:String 发送地址
+// @param data:Object 发送数据
+//==========================================================
+MO.FHttpConnection_post = function FHttpConnection_send(url, data){
+   var o = this;
+   // 设置参数
+   o._url = url;
+   o._input = data;
+   // 设置状态
+   o._methodCd = MO.EHttpMethod.Post;
    o._statusFree = false;
    // 发送信息
    o.onConnectionSend();

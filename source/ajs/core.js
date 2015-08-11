@@ -304,6 +304,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o.sendSync             = MO.FHttpConnection_sendSync;
    o.sendAsync            = MO.FHttpConnection_sendAsync;
    o.send                 = MO.FHttpConnection_send;
+   o.post                 = MO.FHttpConnection_post;
    o.dispose              = MO.FHttpConnection_dispose;
    return o;
 }
@@ -363,15 +364,6 @@ MO.FHttpConnection_setHeader = function FHttpConnection_setHeader(name, value){
 MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    var o = this;
    var handle = o._handle;
-   var heads = o._heads;
-   var count = heads.count();
-   for(var i = 0; i < count; i++){
-      var headValue = heads.value(i);
-      if(!MO.Lang.String.isEmpty(headValue)){
-         var headName = heads.name(i);
-         handle.setRequestHeader(headName, headValue);
-      }
-   }
    if(o._contentCd == MO.EHttpContent.Binary){
       if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
          handle.setRequestHeader('Accept-Charset', 'x-user-defined');
@@ -385,9 +377,19 @@ MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    }else{
       handle.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
+   var heads = o._heads;
+   var count = heads.count();
+   if(count > 0){
+      for(var i = 0; i < count; i++){
+         var headName = heads.name(i);
+         var headValue = heads.value(i);
+         handle.setRequestHeader(headName, headValue);
+      }
+   }
    if(!MO.Window.Browser.isBrowser(MO.EBrowser.Chrome)){
-      if(o._contentLength > 0){
-         handle.setRequestHeader('content-length', o._contentLength);
+      var contentLength = o._contentLength;
+      if(contentLength > 0){
+         handle.setRequestHeader('content-length', contentLength);
       }
    }
 }
@@ -431,6 +433,20 @@ MO.FHttpConnection_send = function FHttpConnection_send(url, data){
    o._url = url;
    o._input = data;
    o._methodCd = (data != null) ? MO.EHttpMethod.Post : MO.EHttpMethod.Get;
+   o._statusFree = false;
+   o.onConnectionSend();
+   if(o._asynchronous){
+      o.sendAsync();
+   }else{
+      o.sendSync();
+   }
+   return o.content();
+}
+MO.FHttpConnection_post = function FHttpConnection_send(url, data){
+   var o = this;
+   o._url = url;
+   o._input = data;
+   o._methodCd = MO.EHttpMethod.Post;
    o._statusFree = false;
    o.onConnectionSend();
    if(o._asynchronous){

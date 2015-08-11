@@ -3973,6 +3973,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o.sendSync             = MO.FHttpConnection_sendSync;
    o.sendAsync            = MO.FHttpConnection_sendAsync;
    o.send                 = MO.FHttpConnection_send;
+   o.post                 = MO.FHttpConnection_post;
    o.dispose              = MO.FHttpConnection_dispose;
    return o;
 }
@@ -4032,15 +4033,6 @@ MO.FHttpConnection_setHeader = function FHttpConnection_setHeader(name, value){
 MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    var o = this;
    var handle = o._handle;
-   var heads = o._heads;
-   var count = heads.count();
-   for(var i = 0; i < count; i++){
-      var headValue = heads.value(i);
-      if(!MO.Lang.String.isEmpty(headValue)){
-         var headName = heads.name(i);
-         handle.setRequestHeader(headName, headValue);
-      }
-   }
    if(o._contentCd == MO.EHttpContent.Binary){
       if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
          handle.setRequestHeader('Accept-Charset', 'x-user-defined');
@@ -4054,9 +4046,19 @@ MO.FHttpConnection_setHeaders = function FHttpConnection_setHeaders(){
    }else{
       handle.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
+   var heads = o._heads;
+   var count = heads.count();
+   if(count > 0){
+      for(var i = 0; i < count; i++){
+         var headName = heads.name(i);
+         var headValue = heads.value(i);
+         handle.setRequestHeader(headName, headValue);
+      }
+   }
    if(!MO.Window.Browser.isBrowser(MO.EBrowser.Chrome)){
-      if(o._contentLength > 0){
-         handle.setRequestHeader('content-length', o._contentLength);
+      var contentLength = o._contentLength;
+      if(contentLength > 0){
+         handle.setRequestHeader('content-length', contentLength);
       }
    }
 }
@@ -4100,6 +4102,20 @@ MO.FHttpConnection_send = function FHttpConnection_send(url, data){
    o._url = url;
    o._input = data;
    o._methodCd = (data != null) ? MO.EHttpMethod.Post : MO.EHttpMethod.Get;
+   o._statusFree = false;
+   o.onConnectionSend();
+   if(o._asynchronous){
+      o.sendAsync();
+   }else{
+      o.sendSync();
+   }
+   return o.content();
+}
+MO.FHttpConnection_post = function FHttpConnection_send(url, data){
+   var o = this;
+   o._url = url;
+   o._input = data;
+   o._methodCd = MO.EHttpMethod.Post;
    o._statusFree = false;
    o.onConnectionSend();
    if(o._asynchronous){
@@ -4222,6 +4238,7 @@ MO.RWindow = function RWindow(){
    o._statusError      = false;
    o._statusEnable     = true;
    o._disableDeep      = 0;
+   o._cookies          = new MO.TAttributes();
    o._localStorage     = null;
    o._sessionStorage   = null;
    o._eventMouse       = new MO.SMouseEvent();
@@ -4388,6 +4405,7 @@ MO.RWindow.prototype.connect = function RWindow_connect(hWindow){
    hContainer.onresize = o.ohResize;
    hContainer.onselectstart = o.ohSelect;
    hContainer.onunload = o.ohUnload;
+   o._cookies.split(hDocument.cookie, '=', ';');
    o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
    o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
 }
@@ -4420,6 +4438,12 @@ MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
 }
 MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
    window.status = MO.Lang.String.nvl(value);
+}
+MO.RWindow.prototype.cookies = function RWindow_cookies(){
+   return this._cookies;
+}
+MO.RWindow.prototype.cookie = function RWindow_cookie(name){
+   return this._cookies.get(name);
 }
 MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
    var o = this;

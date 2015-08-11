@@ -130,12 +130,14 @@ MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner
    var sign = MO.Lang.String.calculateHash(signSource, token);
    url += '&sign=' + sign;
    // 获得会话编号
-   var logicConsole = MO.Console.find(MO.FEaiLogicConsole);
-   var sessionId = logicConsole.sessionId();
+   var application = MO.Desktop.application();
+   var sessionId = application.findSessionId();
+   if(!MO.Lang.String.isEmpty(sessionId)){
+      url += '&sid=' + sessionId;
+   }
    // 发送请求
    var connection = MO.Console.find(MO.FHttpConsole).alloc();
    connection.setAsynchronous(true);
-   connection.setHeader('mo-session-id', sessionId);
    connection.addLoadListener(owner, callback);
    connection.send(url);
 }

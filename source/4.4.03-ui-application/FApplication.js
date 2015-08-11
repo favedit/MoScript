@@ -9,6 +9,7 @@ MO.FApplication = function FApplication(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    //..........................................................
    // @attribute
+   o._sessionId           = MO.Class.register(o, new MO.AGetSet('_sessionId'));
    o._activeChapter       = MO.Class.register(o, new MO.AGetter('_activeChapter'));
    o._chapters            = MO.Class.register(o, new MO.AGetter('_chapters'));
    //..........................................................
@@ -20,6 +21,7 @@ MO.FApplication = function FApplication(o){
    o.construct            = MO.FApplication_construct;
    o.setup                = MO.Method.empty;
    // @method
+   o.findSessionId        = MO.FApplication_findSessionId;
    o.registerChapter      = MO.FApplication_registerChapter;
    o.unregisterChapter    = MO.FApplication_unregisterChapter;
    o.selectChapter        = MO.FApplication_selectChapter;
@@ -67,8 +69,21 @@ MO.FApplication_construct = function FApplication_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.__base.MFrameProcessor.construct.call(o);
+   // 获得会话编号
+   o._sessionId = MO.Window.cookie(MO.EApplicationConstant.SessionCode);
    // 设置变量
    o._chapters = new MO.TDictionary();
+}
+
+//==========================================================
+// <T>查找一个会话编号。</T>
+//
+// @method
+// @return String 会话编号
+//==========================================================
+MO.FApplication_findSessionId = function FApplication_findSessionId(){
+   var o = this;
+   return o._sessionId;
 }
 
 //==========================================================

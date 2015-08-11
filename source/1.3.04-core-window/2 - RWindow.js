@@ -15,6 +15,7 @@ MO.RWindow = function RWindow(){
    o._statusEnable     = true;
    o._disableDeep      = 0;
    // @attribute
+   o._cookies          = new MO.TAttributes();
    o._localStorage     = null;
    o._sessionStorage   = null;
    // @attribute
@@ -337,6 +338,8 @@ MO.RWindow.prototype.connect = function RWindow_connect(hWindow){
    hContainer.onresize = o.ohResize;
    hContainer.onselectstart = o.ohSelect;
    hContainer.onunload = o.ohUnload;
+   // 读取COOKIES
+   o._cookies.split(hDocument.cookie, '=', ';');
    // 检测事件
    o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
    o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
@@ -426,6 +429,27 @@ MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
 //==========================================================
 MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
    window.status = MO.Lang.String.nvl(value);
+}
+
+//==========================================================
+// <T>获得COOKIE集合。</T>
+//
+// @method
+// @param value:String 标题
+//==========================================================
+MO.RWindow.prototype.cookies = function RWindow_cookies(){
+   return this._cookies;
+}
+
+//==========================================================
+// <T>获得COOKIE内容。</T>
+//
+// @method
+// @param name:String 名称
+// @return String 内容
+//==========================================================
+MO.RWindow.prototype.cookie = function RWindow_cookie(name){
+   return this._cookies.get(name);
 }
 
 //==========================================================

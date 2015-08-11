@@ -1008,11 +1008,13 @@ MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner
    var signSource = parameters.joinValue();
    var sign = MO.Lang.String.calculateHash(signSource, token);
    url += '&sign=' + sign;
-   var logicConsole = MO.Console.find(MO.FEaiLogicConsole);
-   var sessionId = logicConsole.sessionId();
+   var application = MO.Desktop.application();
+   var sessionId = application.findSessionId();
+   if(!MO.Lang.String.isEmpty(sessionId)){
+      url += '&sid=' + sessionId;
+   }
    var connection = MO.Console.find(MO.FHttpConsole).alloc();
    connection.setAsynchronous(true);
-   connection.setHeader('mo-session-id', sessionId);
    connection.addLoadListener(owner, callback);
    connection.send(url);
 }
@@ -1040,7 +1042,6 @@ MO.FEaiLogicAchievement_doQuery = function FEaiLogicAchievement_doQuery(owner, c
 }
 MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._sessionId    = MO.Class.register(o, new MO.AGetSet('_sessionId'), '')
    o._system       = MO.Class.register(o, new MO.AGetter('_system'));
    o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
    o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));
@@ -1262,9 +1263,6 @@ MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    o._token = info.token();
    o._localDate.setNow();
    o._systemDate.parse(info.date());
-   var sessionId = info.sessionId();
-   var logicConsole = MO.Console.find(MO.FEaiLogicConsole);
-   logicConsole.setSessionId(sessionId);
    o._ready = true;
 }
 MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){

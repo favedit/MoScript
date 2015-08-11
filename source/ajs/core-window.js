@@ -29,6 +29,7 @@ MO.RWindow = function RWindow(){
    o._statusError      = false;
    o._statusEnable     = true;
    o._disableDeep      = 0;
+   o._cookies          = new MO.TAttributes();
    o._localStorage     = null;
    o._sessionStorage   = null;
    o._eventMouse       = new MO.SMouseEvent();
@@ -195,6 +196,7 @@ MO.RWindow.prototype.connect = function RWindow_connect(hWindow){
    hContainer.onresize = o.ohResize;
    hContainer.onselectstart = o.ohSelect;
    hContainer.onunload = o.ohUnload;
+   o._cookies.split(hDocument.cookie, '=', ';');
    o._requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
    o._cancelAnimationFrame = window.cancelRequestAnimationFrame || window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame || window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;
 }
@@ -227,6 +229,12 @@ MO.RWindow.prototype.setCaption = function RWindow_setCaption(value){
 }
 MO.RWindow.prototype.setStatus = function RWindow_setStatus(value){
    window.status = MO.Lang.String.nvl(value);
+}
+MO.RWindow.prototype.cookies = function RWindow_cookies(){
+   return this._cookies;
+}
+MO.RWindow.prototype.cookie = function RWindow_cookie(name){
+   return this._cookies.get(name);
 }
 MO.RWindow.prototype.storage = function RWindow_storage(scopeCd){
    var o = this;

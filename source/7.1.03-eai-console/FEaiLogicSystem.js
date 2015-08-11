@@ -53,9 +53,9 @@ MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    o._localDate.setNow();
    o._systemDate.parse(info.date());
    // 设置会话编号
-   var sessionId = info.sessionId();
-   var logicConsole = MO.Console.find(MO.FEaiLogicConsole);
-   logicConsole.setSessionId(sessionId);
+   //var sessionId = info.sessionId();
+   //var application = MO.Desktop.application();
+   //application.setSessionId(sessionId);
    // 准备好
    o._ready = true;
 }
