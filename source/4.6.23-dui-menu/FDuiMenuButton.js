@@ -262,7 +262,7 @@ MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
       MO.Console.find(MO.FDuiFocusConsole).blur();
       MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       // 执行监听信息
-      var event = new SClickEvent(o);
+      var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
       // 执行脚本

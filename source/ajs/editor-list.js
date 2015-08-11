@@ -206,9 +206,7 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
 }
 MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
    var o = this;
-   o.hidePropertyFrames();
-   var frame = o.findPropertyFrame(propertyFrame);
-   frame.show();
+   var frame = o.selectPropertyFrame(propertyFrame);
    frame.load(containerName, controlName);
 }
 MO.FEditorDsListFrameSet_load = function FEditorDsListFrameSet_load(name){
@@ -227,6 +225,7 @@ MO.FEditorDsListItemProperty = function FEditorDsListItemProperty(o){
    o.onDataChanged  = MO.FEditorDsListItemProperty_onDataChanged;
    o.construct      = MO.FEditorDsListItemProperty_construct;
    o.load           = MO.FEditorDsListItemProperty_load;
+   o.save           = MO.FEditorDsListItemProperty_save;
    o.dispose        = MO.FEditorDsListItemProperty_dispose;
    return o;
 }
@@ -257,6 +256,17 @@ MO.FEditorDsListItemProperty_load = function FEditorDsListItemProperty_load(cont
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }
+MO.FEditorDsListItemProperty_save = function FEditorDsListItemProperty_save(containerName, itemName){
+   var o = this;
+   return;
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'update');
+   var xframe = xroot.create('Frame');
+   MO.RGuiControl.saveConfig(frame, xframe);
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync('/editor.design.list.ws?action=updateContainer&container=' + containerName, xdocument);
+   connection.addLoadListener(o, o.onLoad);
+}
 MO.FEditorDsListItemProperty_dispose = function FEditorDsListItemProperty_dispose(){
    var o = this;
    o.__base.FDuiForm.dispose.call(o);
@@ -266,10 +276,12 @@ MO.FEditorDsListListProperty = function FEditorDsListListProperty(o){
    o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
    o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
    o.onBuilded      = MO.FEditorDsListListProperty_onBuilded;
-   o.onLoad         = MO.FEditorDsListListProperty_onLoad;
+   o.onDataLoad     = MO.FEditorDsListListProperty_onDataLoad;
+   o.onDataSave     = MO.FEditorDsListListProperty_onDataSave;
    o.onDataChanged  = MO.FEditorDsListListProperty_onDataChanged;
    o.construct      = MO.FEditorDsListListProperty_construct;
    o.load           = MO.FEditorDsListListProperty_load;
+   o.save           = MO.FEditorDsListListProperty_save;
    o.dispose        = MO.FEditorDsListListProperty_dispose;
    return o;
 }
@@ -277,8 +289,19 @@ MO.FEditorDsListListProperty_onBuilded = function FEditorDsListListProperty_onBu
    var o = this;
    o.__base.FDuiForm.onBuilded.call(o, event);
 }
-MO.FEditorDsListListProperty_onLoad = function FEditorDsListListProperty_onLoad(event){
+MO.FEditorDsListListProperty_onDataLoad = function FEditorDsListListProperty_onDataLoad(event){
    var o = this;
+   var xcontent = event.content;
+   var xconfig = xcontent.nodes().first();
+   var isValid = xconfig.get('is_valid');
+   var name = xconfig.get('name');
+   var label = xconfig.get('label');
+   o._controlName.set(name);
+   o._controlLabel.set(label);
+}
+MO.FEditorDsListListProperty_onDataSave = function FEditorDsListListProperty_onDataSave(event){
+   var o = this;
+   return;
    var xcontent = event.content;
    var xconfig = xcontent.nodes().first();
    var isValid = xconfig.get('is_valid');
@@ -297,9 +320,21 @@ MO.FEditorDsListListProperty_construct = function FEditorDsListListProperty_cons
 }
 MO.FEditorDsListListProperty_load = function FEditorDsListListProperty_load(containerName){
    var o = this;
+   o._containerName = containerName;
    var url = '/editor.design.list.ws?action=queryContainer&container=' + containerName;
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
-   connection.addLoadListener(o, o.onLoad);
+   connection.addLoadListener(o, o.onDataLoad);
+}
+MO.FEditorDsListListProperty_save = function FEditorDsListListProperty_save(){
+   var o = this;
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'update');
+   var xcontent = xroot.create('Content');
+   xcontent.set('name', o._controlName.get());
+   xcontent.set('label', o._controlLabel.get());
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync('/editor.design.list.ws?action=update&group=container&container=' + o._containerName, xdocument);
+   connection.addLoadListener(o, o.onDataSave);
 }
 MO.FEditorDsListListProperty_dispose = function FEditorDsListListProperty_dispose(){
    var o = this;
@@ -327,13 +362,10 @@ MO.FEditorDsListMenuBar_onCreateClick = function FEditorDsListMenuBar_onCreateCl
 }
 MO.FEditorDsListMenuBar_onUpdateClick = function FEditorDsListMenuBar_onUpdateClick(event){
    var o = this;
-   var frame = o._frameSet._spaceContent._activeFrame;
-   var xdocument = new MO.TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'update');
-   var xframe = xroot.create('Frame');
-   MO.RGuiControl.saveConfig(frame, xframe);
-   return MO.Console.find(MO.FXmlConsole).sendAsync('/cloud.describe.frame.ws?do=update', xdocument);
+   var frame = o._frameSet.activePropertyFrame();
+   if(frame){
+      frame.save();
+   }
 }
 MO.FEditorDsListMenuBar_onDeleteClick = function FEditorDsListMenuBar_onDeleteClick(event){
    var o = this;

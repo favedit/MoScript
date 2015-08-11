@@ -19,12 +19,14 @@ MO.FEditorFrameSet = function FEditorFrameSet(o){
    o._activeSpace          = null;
    // @attribute
    o._propertyFrames       = MO.Class.register(o, new MO.AGetter('_propertyFrames'));
+   o._activePropertyFrame  = MO.Class.register(o, new MO.AGetter('_activePropertyFrame'));
    //..........................................................
    // @method
    o.construct             = MO.FEditorFrameSet_construct;
    // @method
    o.findPropertyFrame     = MO.FEditorFrameSet_findPropertyFrame;
    o.hidePropertyFrames    = MO.FEditorFrameSet_hidePropertyFrames;
+   o.selectPropertyFrame   = MO.FEditorFrameSet_selectPropertyFrame;
    // @method
    o.dispose               = MO.FEditorFrameSet_dispose;
    return o;
@@ -74,6 +76,27 @@ MO.FEditorFrameSet_hidePropertyFrames = function FEditorFrameSet_hidePropertyFra
       var frame = frames.at(i);
       frame.hide();
    }
+}
+
+//==========================================================
+// <T>选中属性界面。</T>
+//
+// @method
+// @param frameName:String 属性页面名称
+//==========================================================
+MO.FEditorFrameSet_selectPropertyFrame = function FEditorFrameSet_selectPropertyFrame(frameName){
+   var o = this;
+   // 隐藏所有属性面板
+   o.hidePropertyFrames();
+   // 显示控件信息
+   var frame = null;
+   if(frameName){
+      frame = o.findPropertyFrame(frameName);
+      frame.show();
+   }
+   // 激活页面
+   o._activePropertyFrame = frame;
+   return frame;
 }
 
 //==========================================================

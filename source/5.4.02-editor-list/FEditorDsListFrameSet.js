@@ -83,11 +83,8 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
 //==========================================================
 MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
    var o = this;
-   // 隐藏所有属性面板
-   o.hidePropertyFrames();
-   // 显示控件信息
-   var frame = o.findPropertyFrame(propertyFrame);
-   frame.show();
+   // 选中
+   var frame = o.selectPropertyFrame(propertyFrame);
    // 显示容器
    frame.load(containerName, controlName);
 }

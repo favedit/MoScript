@@ -218,9 +218,11 @@ MO.FEditorFrameSet = function FEditorFrameSet(o){
    o._activeCode           = null;
    o._activeSpace          = null;
    o._propertyFrames       = MO.Class.register(o, new MO.AGetter('_propertyFrames'));
+   o._activePropertyFrame  = MO.Class.register(o, new MO.AGetter('_activePropertyFrame'));
    o.construct             = MO.FEditorFrameSet_construct;
    o.findPropertyFrame     = MO.FEditorFrameSet_findPropertyFrame;
    o.hidePropertyFrames    = MO.FEditorFrameSet_hidePropertyFrames;
+   o.selectPropertyFrame   = MO.FEditorFrameSet_selectPropertyFrame;
    o.dispose               = MO.FEditorFrameSet_dispose;
    return o;
 }
@@ -247,6 +249,17 @@ MO.FEditorFrameSet_hidePropertyFrames = function FEditorFrameSet_hidePropertyFra
       var frame = frames.at(i);
       frame.hide();
    }
+}
+MO.FEditorFrameSet_selectPropertyFrame = function FEditorFrameSet_selectPropertyFrame(frameName){
+   var o = this;
+   o.hidePropertyFrames();
+   var frame = null;
+   if(frameName){
+      frame = o.findPropertyFrame(frameName);
+      frame.show();
+   }
+   o._activePropertyFrame = frame;
+   return frame;
 }
 MO.FEditorFrameSet_dispose = function FEditorFrameSet_dispose(){
    var o = this;

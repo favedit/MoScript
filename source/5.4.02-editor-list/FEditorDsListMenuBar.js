@@ -56,16 +56,10 @@ MO.FEditorDsListMenuBar_onCreateClick = function FEditorDsListMenuBar_onCreateCl
 //==========================================================
 MO.FEditorDsListMenuBar_onUpdateClick = function FEditorDsListMenuBar_onUpdateClick(event){
    var o = this;
-   var frame = o._frameSet._spaceContent._activeFrame;
-   // 设置数据
-   var xdocument = new MO.TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'update');
-   // 设置资源数据
-   var xframe = xroot.create('Frame');
-   MO.RGuiControl.saveConfig(frame, xframe);
-   // 发送数据
-   return MO.Console.find(MO.FXmlConsole).sendAsync('/cloud.describe.frame.ws?do=update', xdocument);
+   var frame = o._frameSet.activePropertyFrame();
+   if(frame){
+      frame.save();
+   }
 }
 
 //==========================================================

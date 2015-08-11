@@ -20,6 +20,7 @@ MO.FEditorDsListItemProperty = function FEditorDsListItemProperty(o){
    o.construct      = MO.FEditorDsListItemProperty_construct;
    // @method
    o.load           = MO.FEditorDsListItemProperty_load;
+   o.save           = MO.FEditorDsListItemProperty_save;
    // @method
    o.dispose        = MO.FEditorDsListItemProperty_dispose;
    return o;
@@ -85,6 +86,28 @@ MO.FEditorDsListItemProperty_load = function FEditorDsListItemProperty_load(cont
    var o = this;
    var url = '/editor.design.list.ws?action=queryItem&container=' + containerName + '&item=' + itemName;
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
+   connection.addLoadListener(o, o.onLoad);
+}
+
+//==========================================================
+// <T>加载配置信息。</T>
+//
+// @method
+// @param containerName:String 容器名称
+// @param itemName:String 项目名称
+//==========================================================
+MO.FEditorDsListItemProperty_save = function FEditorDsListItemProperty_save(containerName, itemName){
+   var o = this;
+   return;
+   // 设置数据
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'update');
+   // 设置资源数据
+   var xframe = xroot.create('Frame');
+   MO.RGuiControl.saveConfig(frame, xframe);
+   // 发送数据
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync('/editor.design.list.ws?action=updateContainer&container=' + containerName, xdocument);
    connection.addLoadListener(o, o.onLoad);
 }
 
