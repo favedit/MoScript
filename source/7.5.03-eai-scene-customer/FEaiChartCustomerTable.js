@@ -167,38 +167,33 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('label');
    column.setLabel('姓名');
-   column.setDataName('_label');
+   column.setDataName('label');
    column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('card');
    column.setLabel('身份证');
-   column.setDataName('_card');
+   column.setDataName('card');
    column.setWidth(110);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('phone');
-   column.setLabel('手机尾号');
-   column.setDataName('_phone');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('label_phone');
+   column.setLabel('用户 － 手机');
+   column.setDataName('label_phone');
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
    column.setName('investment');
    column.setLabel('投资额');
-   column.setDataName('_investment');
+   column.setDataName('investment');
    column.setNormalColor('#59FDE9');
    column.setHighColor('#FDEF01');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
+   column.cellPadding().right = 20;
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
@@ -228,21 +223,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('departmentLabel');
-   column.setLabel('公司');
-   column.setDataName('department_label');
-   column.setWidth(140);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('marketerLabel');
-   column.setLabel('理财师');
-   column.setDataName('marketer_label');
-   column.setWidth(110);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customerCard');
+   column.setName('customerCity');
    column.setLabel('城市');
    column.setDataName('customer_city');
    column.setWidth(100);
@@ -263,7 +244,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setHighColor('#FDEF01');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
+   column.cellPadding().right = 20;
    column.setWidth(120);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
@@ -321,8 +302,10 @@ MO.FEaiChartCustomerTable_setRankUnits = function FEaiChartCustomerTable_setRank
       var unit = units.at(i);
       var row = grid.allocRow();
       // 获得部门名称
-      row.set('department_label', unit.label());
-      row.set('investment_total', unit.investment());
+      row.set('label', unit.label());
+      row.set('card', unit.card());
+      row.set('label_phone',unit.label() +" - "+ unit.phone());
+      row.set('investment', unit.investment());
       grid.pushRow(row);
    }
 }
@@ -340,7 +323,7 @@ MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(un
       return null;
    }
    // 获得客户城市
-   var card = unit.customerCard();
+   var card = unit.card();
    var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
    var cityLabel = '';
    if(city){
@@ -350,8 +333,6 @@ MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(un
    var grid = o._gridControl;
    var row = grid.allocRow();
    row.set('record_date', unit.recordDate());
-   row.set('department_label', unit.label());
-   row.set('marketer_label', unit.label());
    row.set('customer_city', cityLabel);
    row.set('customer_info', unit.label() + ' - ' + unit.phone());
    row.set('customer_amount', unit.investment());

@@ -166,7 +166,7 @@ MO.FEaiChartCustomerProcessor_calculateCurrent = function FEaiChartCustomerProce
    var count = units.count();
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
-      investmentCurrent -= unit.customerInvestment();
+      investmentCurrent -= unit.investment();
    }
    o._invementTotalCurrent = info.investmentTotal();
    o._invementDayCurrent = investmentCurrent;
@@ -181,7 +181,7 @@ MO.FEaiChartCustomerProcessor_focusEntity = function FEaiChartCustomerProcessor_
    var o = this;
    var mapEntity = o._mapEntity;
    // 显示实体
-   var card = unit.customerCard();
+   var card = unit.card();
    var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
    if(cityEntity){
       // 计算级别
