@@ -3855,10 +3855,10 @@ MO.RString.prototype.format = function RString_format(value, parameters){
    var count = arguments.length;
    for(var i = 1; i < count; i++){
       var parameter = arguments[i];
-      if(typeof(parameter) == 'function'){
-         parameter = MO.Method.name(parameter);
-      }else if(parameter == null){
+      if(parameter == null){
          parameter = '';
+      }else if(typeof(parameter) == 'function'){
+         parameter = MO.Method.name(parameter);
       }
       value = value.replace('{' + i + '}', parameter);
    }

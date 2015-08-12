@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150224
 //==========================================================
-MO.MPropertyNumber = function MPropertyNumber(o){
+MO.MUiPropertyNumber = function MUiPropertyNumber(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property

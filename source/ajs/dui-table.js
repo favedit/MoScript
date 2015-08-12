@@ -1172,7 +1172,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiColumnEdit = function FDuiColumnEdit(o){
-      o = RClass.inherits(this, o, FDuiColumnEditControl, MPropertyEdit);
+      o = RClass.inherits(this, o, FDuiColumnEditControl, MUiPropertyEdit);
       o._cellClass     = FCellEdit;
       return o;
    }

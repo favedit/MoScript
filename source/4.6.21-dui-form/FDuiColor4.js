@@ -7,7 +7,7 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FDuiColor4 = function FDuiColor4(o){
-      //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
+      //o = RClass.inherits(this, o, FEditControl, MUiPropertyEdit);
       o = RClass.inherits(this, o, FEditControl);
       //..........................................................
       // @property

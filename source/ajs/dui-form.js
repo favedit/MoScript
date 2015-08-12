@@ -1364,7 +1364,7 @@ MO.FDuiCalendarEditor_dispose = function FDuiCalendarEditor_dispose(){
    o.hTimePanel = null;
 }
 MO.FDuiCheck = function FDuiCheck(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MPropertyCheck, MO.MListenerDataChanged);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyCheck, MO.MListenerDataChanged);
    o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
    o._hInput          = null;
    o.onBuildEditValue = MO.FDuiCheck_onBuildEditValue;
@@ -3147,289 +3147,299 @@ with(MO){
       o.__base.FControl.dispose.call(o);
    }
 }
-with(MO){
-   MO.FDuiEdit = function FDuiEdit(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MPropertyEdit, MListenerDataChanged);
-      o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-      o._unit            = RClass.register(o, new APtyString('_unit'));
-      o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-      o._hValueForm      = null;
-      o._hValueLine      = null;
-      o._hInputPanel     = null;
-      o._hInput          = null;
-      o.onBuildEditValue = FDuiEdit_onBuildEditValue;
-      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiEdit_onInputEdit);
-      o.construct        = FDuiEdit_construct;
-      o.formatText       = FDuiEdit_formatText;
-      o.formatValue      = FDuiEdit_formatValue;
-      o.text             = FDuiEdit_text;
-      o.setText          = FDuiEdit_setText;
-      o.setEditAble      = FDuiEdit_setEditAble;
-      o.refreshValue     = FDuiEdit_refreshValue;
-      return o;
-   }
-   MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(p){
-      var o = this;
-      var hp = o._hValuePanel;
-      hp.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(hp);
-      hf.width = '100%';
-      var hl = o._hValueLine = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hl);
-      o.onBuildEditChange(p);
-      var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-      var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
-      o.attachEvent('onInputEdit', he, o.onInputEdit);
-      RHtml.setSize(hep, o._inputSize);
-      if(o._editLength){
-         he.maxLength = o._editLength;
-      }
-   }
-   MO.FDuiEdit_onInputEdit = function FDuiEdit_onInputEdit(p){
-      var o = this;
-      var v = o._hInput.value;
-      o.refreshValue();
-   }
-   MO.FDuiEdit_construct = function FDuiEdit_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-   }
-   MO.FDuiEdit_formatText = function FDuiEdit_formatText(p){
-      var o = this;
-      var r = RString.nvl(p);
-      o._dataDisplay = r;
-      return r;
-   }
-   MO.FDuiEdit_formatValue = function FDuiEdit_formatValue(value){
-      return value;
-   }
-   MO.FDuiEdit_text = function FDuiEdit_text(){
-      return this._hInput.value;
-   }
-   MO.FDuiEdit_setText = function FDuiEdit_setText(text){
-      this._hInput.value = text;
-   }
-   MO.FDuiEdit_setEditAble = function FDuiEdit_setEditAble(flag){
-      var o = this;
-      o.__base.FDuiEditControl.setEditAble.call(o, flag);
-      o._hInput.readOnly = !flag;
-   }
-   MO.FDuiEdit_refreshValue = function FDuiEdit_refreshValue(){
-      var o = this;
-      o.processDataChangedListener(o);
+MO.FDuiEdit = function FDuiEdit(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit);
+   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._unit                 = MO.Class.register(o, new MO.APtyString('_unit'));
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._styleValuePanel      = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInputPanel      = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput           = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._hValueForm           = null;
+   o._hValueLine           = null;
+   o._hInputPanel          = null;
+   o._hInput               = null;
+   o.onBuildEditValue      = MO.FDuiEdit_onBuildEditValue;
+   o.onInputEdit           = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), MO.FDuiEdit_onInputEdit);
+   o.construct             = MO.FDuiEdit_construct;
+   o.formatText            = MO.FDuiEdit_formatText;
+   o.formatValue           = MO.FDuiEdit_formatValue;
+   o.text                  = MO.FDuiEdit_text;
+   o.setText               = MO.FDuiEdit_setText;
+   o.setEditAble           = MO.FDuiEdit_setEditAble;
+   o.refreshValue          = MO.FDuiEdit_refreshValue;
+   return o;
+}
+MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(p){
+   var o = this;
+   var hValuePanel = o._hValuePanel;
+   hValuePanel.className = o.styleName('ValuePanel');
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
+   hValueForm.width = '100%';
+   var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
+   o.onBuildEditChange(p);
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
+   var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel, o.styleName('Input'));
+   o.attachEvent('onInputEdit', hInput, o.onInputEdit);
+   MO.Window.Html.setSize(hInputPanel, o._inputSize);
+   if(o._editLength){
+      hInput.maxLength = o._editLength;
    }
 }
-with(MO){
-   MO.FDuiEditControl = function FDuiEditControl(o){
-      o = RClass.inherits(this, o, FDuiControl, MDuiEditValue, MDuiEditChange, MDuiEditDrop);
-      o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
-      o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
-      o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
-      o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EUiAlign.Left);
-      o._labelColor       = RClass.register(o, new APtyString('_labelColor'));
-      o._editSize         = RClass.register(o, new APtySize2('_editSize'));
-      o._editColor        = RClass.register(o, new APtyString('_editColor'));
-      o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
-      o._styleEditPanel   = RClass.register(o, new AStyle('_styleEditPanel'));
-      o._progressing      = false;
-      o._hLabelPanel      = null;
-      o._hLabelForm       = null;
-      o._hIconPanel       = null;
-      o._hIcon            = null;
-      o._hTextPanel       = null;
-      o._hText            = null;
-      o._hEditPanel       = null;
-      o._hEditForm        = null;
-      o._hValuePanel      = null;
-      o.onBuildLabelIcon  = FDuiEditControl_onBuildLabelIcon;
-      o.onBuildLabelText  = FDuiEditControl_onBuildLabelText;
-      o.onBuildLabel      = FDuiEditControl_onBuildLabel;
-      o.onBuildEditValue  = RMethod.virtual(o, 'onBuildEditValue');
-      o.onBuildEdit       = FDuiEditControl_onBuildEdit;
-      o.onBuildPanel      = FDuiEditControl_onBuildPanel;
-      o.onBuild           = FDuiEditControl_onBuild;
-      o.oeMode            = FDuiEditControl_oeMode;
-      o.oeProgress        = FDuiEditControl_oeProgress;
-      o.construct         = FDuiEditControl_construct;
-      o.panel             = FDuiEditControl_panel;
-      o.label             = FDuiEditControl_label;
-      o.setLabel          = FDuiEditControl_setLabel;
-      o.getValueRectangle = FDuiEditControl_getValueRectangle;
-      o.dispose           = FDuiEditControl_dispose;
-      return o;
+MO.FDuiEdit_onInputEdit = function FDuiEdit_onInputEdit(p){
+   var o = this;
+   o.refreshValue();
+}
+MO.FDuiEdit_construct = function FDuiEdit_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+}
+MO.FDuiEdit_formatText = function FDuiEdit_formatText(value){
+   var o = this;
+   var result = MO.Lang.String.nvl(value);
+   o._dataDisplay = result;
+   return result;
+}
+MO.FDuiEdit_formatValue = function FDuiEdit_formatValue(value){
+   return value;
+}
+MO.FDuiEdit_text = function FDuiEdit_text(){
+   return this._hInput.value;
+}
+MO.FDuiEdit_setText = function FDuiEdit_setText(text){
+   this._hInput.value = text;
+}
+MO.FDuiEdit_setEditAble = function FDuiEdit_setEditAble(flag){
+   var o = this;
+   o.__base.FDuiEditControl.setEditAble.call(o, flag);
+   o._hInput.readOnly = !flag;
+}
+MO.FDuiEdit_refreshValue = function FDuiEdit_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+MO.FDuiEditControl = function FDuiEditControl(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDataValue, MO.MUiDataField, MO.MUiEditValue, MO.MDuiEditChange, MO.MDuiEditDrop);
+   o._labelModeCd      = MO.Class.register(o, new MO.APtyString('_labelModeCd'), MO.EUiLabelMode.All);
+   o._labelPositionCd  = MO.Class.register(o, new MO.APtyString('_labelPositionCd'), MO.EUiLabelPosition.Left);
+   o._labelSize        = MO.Class.register(o, new MO.APtySize2('_labelSize'));
+   o._labelAlignCd     = MO.Class.register(o, new MO.APtyString('_labelAlignCd'), MO.EUiAlign.Left);
+   o._labelColor       = MO.Class.register(o, new MO.APtyString('_labelColor'));
+   o._editSize         = MO.Class.register(o, new MO.APtySize2('_editSize'));
+   o._editColor        = MO.Class.register(o, new MO.APtyString('_editColor'));
+   o._styleLabelPanel  = MO.Class.register(o, new MO.AStyle('_styleLabelPanel'));
+   o._styleEditPanel   = MO.Class.register(o, new MO.AStyle('_styleEditPanel'));
+   o._progressing      = false;
+   o._hLabelPanel      = null;
+   o._hLabelForm       = null;
+   o._hIconPanel       = null;
+   o._hIcon            = null;
+   o._hTextPanel       = null;
+   o._hText            = null;
+   o._hEditPanel       = null;
+   o._hEditForm        = null;
+   o._hValuePanel      = null;
+   o.onBuildLabelIcon  = MO.FDuiEditControl_onBuildLabelIcon;
+   o.onBuildLabelText  = MO.FDuiEditControl_onBuildLabelText;
+   o.onBuildLabel      = MO.FDuiEditControl_onBuildLabel;
+   o.onBuildEditValue  = MO.Method.virtual(o, 'onBuildEditValue');
+   o.onBuildEdit       = MO.FDuiEditControl_onBuildEdit;
+   o.onBuildPanel      = MO.FDuiEditControl_onBuildPanel;
+   o.onBuild           = MO.FDuiEditControl_onBuild;
+   o.oeMode            = MO.FDuiEditControl_oeMode;
+   o.oeProgress        = MO.FDuiEditControl_oeProgress;
+   o.oeLoadUnit        = MO.FDuiEditControl_oeLoadUnit;
+   o.oeSaveUnit        = MO.FDuiEditControl_oeSaveUnit;
+   o.construct         = MO.FDuiEditControl_construct;
+   o.panel             = MO.FDuiEditControl_panel;
+   o.setLabel          = MO.FDuiEditControl_setLabel;
+   o.getValueRectangle = MO.FDuiEditControl_getValueRectangle;
+   o.dispose           = MO.FDuiEditControl_dispose;
+   return o;
+}
+MO.FDuiEditControl_onBuildLabelIcon = function FDuiEditControl_onBuildLabelIcon(event){
+   var o = this;
+   if(o._labelIcon){
+      o._hIcon = MO.Window.Builder.appendIcon(o._hIconPanel, null, o._labelIcon);
+   }else{
+      o._hIcon = MO.Window.Builder.appendIcon(o._hIconPanel, null, 'n', 16, 16);
    }
-   MO.FDuiEditControl_onBuildLabelIcon = function FDuiEditControl_onBuildLabelIcon(p){
-      var o = this;
-      if(o._labelIcon){
-         o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, o._labelIcon);
+}
+MO.FDuiEditControl_onBuildLabelText = function FDuiEditControl_onBuildLabelText(event){
+   var o = this;
+   o._hText = MO.Window.Builder.appendSpan(o._hTextPanel, null, o._label);
+}
+MO.FDuiEditControl_onBuildLabel = function FDuiEditControl_onBuildLabel(event){
+   var o = this;
+   var hLabelForm = o._hLabelForm = MO.Window.Builder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
+   var hLabelLine = MO.Window.Builder.appendTableRow(hLabelForm);
+   var hIconPanel = o._hIconPanel = MO.Window.Builder.appendTableCell(hLabelLine);
+   hIconPanel.width = '20px';
+   o.onBuildLabelIcon(event);
+   var hTextPanel = o._hTextPanel = MO.Window.Builder.appendTableCell(hLabelLine);
+   hTextPanel.noWrap = true;
+   o.onBuildLabelText(event);
+   MO.Window.Html.setSize(hLabelForm, o._labelSize);
+   if(o._labelAlignCd){
+      hTextPanel.align = o._labelAlignCd;
+      hTextPanel.style.paddingRight = 4;
+   }
+   if(o._labelColor){
+      o._hLabel.style.color = o._labelColor;
+   }
+}
+MO.FDuiEditControl_onBuildEdit = function FDuiEditControl_onBuildEdit(event){
+   var o = this;
+   var hEditForm = o._hEditForm = MO.Window.Builder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
+   var hEditLine = o._hEditLine = MO.Window.Builder.appendTableRow(hEditForm);
+   o._hValuePanel = MO.Window.Builder.appendTableCell(hEditLine);
+   o.onBuildEditValue(event);
+   MO.Window.Html.setSize(hEditForm, o._editSize);
+}
+MO.FDuiEditControl_onBuildPanel = function FDuiEditControl_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTable(event, o.styleName('Panel'));
+}
+MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
+   var o = this;
+   o.__base.FDuiControl.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   var labelModeCd = o._labelModeCd;
+   var hLabelPanel = null;
+   var hEditPanel = null;
+   if(labelModeCd == MO.EUiLabelMode.Label){
+      hLabelPanel = MO.Window.Builder.appendTableCell(MO.Window.Builder.appendTableRow(hPanel));
+   }else if(labelModeCd == MO.EUiLabelMode.Hidden){
+      hEditPanel = MO.Window.Builder.appendTableCell(MO.Window.Builder.appendTableRow(hPanel));
+   }else{
+      var labelPositionCd = o._labelPositionCd;
+      if(labelPositionCd == MO.EUiLabelPosition.Top){
+         hLabelPanel = MO.Window.Builder.appendTableRowCell(hPanel);
+         hEditPanel = MO.Window.Builder.appendTableRowCell(hPanel);
+      }else if(labelPositionCd == MO.EUiLabelPosition.Right){
+         var hRow = MO.Window.Builder.appendTableRow(hPanel);
+         hEditPanel = MO.Window.Builder.appendTableCell(hRow);
+         hLabelPanel = MO.Window.Builder.appendTableCell(hRow);
+      }else if(labelPositionCd == MO.EUiLabelPosition.Bottom){
+         hEditPanel = MO.Window.Builder.appendTableRowCell(hPanel);
+         hLabelPanel = MO.Window.Builder.appendTableRowCell(hPanel);
       }else{
-         o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, 'n', 16, 16);
+         var hRow = MO.Window.Builder.appendTableRow(hPanel);
+         hLabelPanel = MO.Window.Builder.appendTableCell(hRow);
+         hEditPanel = MO.Window.Builder.appendTableCell(hRow);
       }
    }
-   MO.FDuiEditControl_onBuildLabelText = function FDuiEditControl_onBuildLabelText(p){
-      var o = this;
-      o._hText = RBuilder.appendSpan(o._hTextPanel, null, o._label);
+   o._hLabelPanel = hLabelPanel;
+   o._hEditPanel = hEditPanel;
+   if(hLabelPanel){
+      o.onBuildLabel(event);
+      hLabelPanel.appendChild(o._hLabelForm);
+      o.setLabel(o._label);
    }
-   MO.FDuiEditControl_onBuildLabel = function FDuiEditControl_onBuildLabel(p){
-      var o = this;
-      var h = o._hLabelForm = RBuilder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
-      var hr = RBuilder.appendTableRow(h);
-      var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
-      hip.width = '20px';
-      o.onBuildLabelIcon(p);
-      var htp = o._hTextPanel = RBuilder.appendTableCell(hr);
-      htp.noWrap = true;
-      o.onBuildLabelText(p);
-      RHtml.setSize(h, o._labelSize);
-      if(o._labelAlignCd){
-         htp.align = o._labelAlignCd;
-         htp.style.paddingRight = 4;
-      }
-      if(o._labelColor){
-         o._hLabel.style.color = o._labelColor;
-      }
+   if(hep){
+      o.onBuildEdit(event);
    }
-   MO.FDuiEditControl_onBuildEdit = function FDuiEditControl_onBuildEdit(p){
-      var o = this;
-      var h = o._hEditForm = RBuilder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
-      var hr = o._hEditLine = RBuilder.appendTableRow(h);
-      o._hValuePanel = RBuilder.appendTableCell(hr);
-      o.onBuildEditValue(p);
-      RHtml.setSize(h, o._editSize);
+}
+MO.FDuiEditControl_oeMode = function FDuiEditControl_oeMode(event){
+   var o = this;
+   o.__base.FDuiControl.oeMode.call(o, event);
+   o.__base.MDisplay.oeMode.call(o, event);
+   o._editable = o.canEdit(event.mode);
+   o._validable = o.canValid(event.mode);
+   if(!o._progressing){
+      o.setEditable(o._editable);
    }
-   MO.FDuiEditControl_onBuildPanel = function FDuiEditControl_onBuildPanel(p){
-      var o = this;
-      o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+   return MO.EEventStatus.Stop;
+}
+MO.FDuiEditControl_oeProgress = function FDuiEditControl_oeProgress(event){
+   var o = this;
+   if(o._progressing && event.enable){
+      return MO.EEventStatus.Stop;
    }
-   MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(p){
-      var o = this;
-      o.__base.FDuiControl.onBuild.call(o, p);
-      var hc = o._hPanel;
-      var hlp = null;
-      var hep = null;
-      var lmc = o._labelModeCd;
-      if(lmc == EUiLabelMode.Label){
-         hlp = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
-      }else if(lmc == EUiLabelMode.Hidden){
-         hep = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
-      }else{
-         var lpc = o._labelPositionCd;
-         if(lpc == EUiLabelPosition.Top){
-            hlp = RBuilder.appendTableRowCell(hc);
-            hep = RBuilder.appendTableRowCell(hc);
-         }else if(lpc == EUiLabelPosition.Right){
-            var hr = RBuilder.appendTableRow(hc);
-            hep = RBuilder.appendTableCell(hr);
-            hlp = RBuilder.appendTableCell(hr);
-         }else if(lpc == EUiLabelPosition.Bottom){
-            hep = RBuilder.appendTableRowCell(hc);
-            hlp = RBuilder.appendTableRowCell(hc);
-         }else{
-            var hr = RBuilder.appendTableRow(hc);
-            hlp = RBuilder.appendTableCell(hr);
-            hep = RBuilder.appendTableCell(hr);
-         }
-      }
-      o._hLabelPanel = hlp;
-      o._hEditPanel = hep;
-      if(hlp){
-         o.onBuildLabel(p);
-         hlp.appendChild(o._hLabelForm);
-         o.setLabel(o._label);
-      }
-      if(hep){
-         o.onBuildEdit(p);
-      }
+   o._progressing = event.enable;
+   if(event.enable){
+      var ea = o._editable;
+      o.setEditable(false);
+      o._editable = ea;
+   }else{
+      o.setEditable(o._editable);
    }
-   MO.FDuiEditControl_oeMode = function FDuiEditControl_oeMode(e){
-      var o = this;
-      o.__base.FDuiControl.oeMode.call(o, e);
-      o.__base.MDisplay.oeMode.call(o, e);
-      o._editable = o.canEdit(e.mode);
-      o._validable = o.canValid(e.mode);
-      if(!o._progressing){
-         o.setEditable(o._editable);
-      }
-      return EEventStatus.Stop;
+   return MO.EEventStatus.Stop;
+}
+MO.FDuiEditControl_oeLoadUnit = function FDuiEditControl_oeLoadUnit(event){
+   var o = this;
+   var unit = event.unit;
+   var dataName = o._dataName;
+   if(!MO.Lang.String.isEmpty(dataName)){
+      var value = unit.get(o._dataName);
+      o.set(value);
    }
-   MO.FDuiEditControl_oeProgress = function FDuiEditControl_oeProgress(e){
-      var o = this;
-      if(o._progressing && e.enable){
-         return EEventStatus.Stop;
-      }
-      o._progressing = e.enable;
-      if(e.enable){
-         var ea = o._editable;
-         o.setEditable(false);
-         o._editable = ea;
-      }else{
-         o.setEditable(o._editable);
-      }
-      return EEventStatus.Stop;
+   return MO.EEventStatus.Stop;
+}
+MO.FDuiEditControl_oeSaveUnit = function FDuiEditControl_oeSaveUnit(event){
+   var o = this;
+   var unit = event.unit;
+   var dataName = o._dataName;
+   if(!MO.Lang.String.isEmpty(dataName)){
+      var value = o.get();
+      unit.set(o._dataName, value)
    }
-   MO.FDuiEditControl_construct = function FDuiEditControl_construct(){
-      var o = this;
-      o.__base.FDuiControl.construct.call(o);
-      o.__base.MDuiEditChange.construct.call(o);
-      o.__base.MDuiEditDrop.construct.call(o);
-      o._labelSize = new SSize2(100, 20);
-      o._editSize = new SSize2(200, 20);
+   return MO.EEventStatus.Stop;
+}
+MO.FDuiEditControl_construct = function FDuiEditControl_construct(){
+   var o = this;
+   o.__base.FDuiControl.construct.call(o);
+   o.__base.MDuiEditChange.construct.call(o);
+   o.__base.MDuiEditDrop.construct.call(o);
+   o._labelSize = new MO.SSize2(100, 20);
+   o._editSize = new MO.SSize2(200, 20);
+}
+MO.FDuiEditControl_panel = function FDuiEditControl_panel(panelCd){
+   var o = this;
+   if(MO.EPanel.Edit == panelCd){
+      return o._hEdit;
+   }else if(MO.EPanel.Focus == panelCd){
+      return o._hEdit;
    }
-   MO.FDuiEditControl_panel = function FDuiEditControl_panel(t){
-      var o = this;
-      if(EPanel.Edit == t){
-         return o.hEdit;
-      }else if(EPanel.Focus == t){
-         return o.hEdit;
-      }
-      return o.__base.FDuiControl.panel.call(o, t);
+   return o.__base.FDuiControl.panel.call(o, panelCd);
+}
+MO.FDuiEditControl_setLabel = function FDuiEditControl_setLabel(value){
+   var o = this;
+   o._label = value;
+   if(o._hText){
+      o._hText.innerHTML = MO.Lang.String.nvl(value);
    }
-   MO.FDuiEditControl_label = function FDuiEditControl_label(p){
-      return this._label;
+}
+MO.FDuiEditControl_getValueRectangle = function FDuiEditControl_getValueRectangle(rectangle){
+   var o = this;
+   if(!rectangle){
+      rectangle = new MO.SRectangle();
    }
-   MO.FDuiEditControl_setLabel = function FDuiEditControl_setLabel(p){
-      var o = this;
-      o._label = p;
-      if(o._hText){
-         o._hText.innerHTML = RString.nvl(p);
-      }
-   }
-   MO.FDuiEditControl_getValueRectangle = function FDuiEditControl_getValueRectangle(r){
-      var o = this;
-      if(!r){
-         r = new SRectangle();
-      }
-      var h = o._hValuePanel;
-      var p = RHtml.clientPosition(h);
-      r.position.assign(p);
-      r.setSize(h.offsetWidth, h.offsetHeight);
-      return r;
-   }
-   MO.FDuiEditControl_dispose = function FDuiEditControl_dispose(){
-      var o = this;
-      o._labelModeCd = null;
-      o._labelPositionCd = null;
-      o._labelAlignCd = null;
-      o._dataTypeCd = null;
-      o._labelSize = RObject.dispose(o._labelSize);
-      o._editSize = RObject.dispose(o._editSize);
-      o._hLabelPanel = RHtml.free(o._hLabelPanel);
-      o._hLabelForm = RHtml.free(o._hLabelForm);
-      o._hIconPanel = RHtml.free(o._hIconPanel);
-      o._hIcon = RHtml.free(o._hIcon);
-      o._hTextPanel = RHtml.free(o._hTextPanel);
-      o._hText = RHtml.free(o._hText);
-      o._hEditPanel = RHtml.free(o._hEditPanel);
-      o._hEditForm = RHtml.free(o._hEditForm);
-      o._hValuePanel = RHtml.free(o._hValuePanel);
-      o._hDropPanel = RHtml.free(o._hDropPanel);
-      o.__base.MDuiEditDrop.dispose.call(o);
-      o.__base.MDuiEditChange.dispose.call(o);
-      o.__base.FDuiControl.dispose.call(o);
-   }
+   var hPanel = o._hValuePanel;
+   var position = MO.Window.Html.clientPosition(hPanel);
+   rectangle.position.assign(position);
+   rectangle.setSize(hPanel.offsetWidth, hPanel.offsetHeight);
+   return rectangle;
+}
+MO.FDuiEditControl_dispose = function FDuiEditControl_dispose(){
+   var o = this;
+   o._labelSize = MO.Lang.Object.dispose(o._labelSize);
+   o._editSize = MO.Lang.Object.dispose(o._editSize);
+   o._hLabelPanel = MO.Window.Html.free(o._hLabelPanel);
+   o._hLabelForm = MO.Window.Html.free(o._hLabelForm);
+   o._hIconPanel = MO.Window.Html.free(o._hIconPanel);
+   o._hIcon = MO.Window.Html.free(o._hIcon);
+   o._hTextPanel = MO.Window.Html.free(o._hTextPanel);
+   o._hText = MO.Window.Html.free(o._hText);
+   o._hEditPanel = MO.Window.Html.free(o._hEditPanel);
+   o._hEditForm = MO.Window.Html.free(o._hEditForm);
+   o._hValuePanel = MO.Window.Html.free(o._hValuePanel);
+   o._hDropPanel = MO.Window.Html.free(o._hDropPanel);
+   o.__base.MDuiEditDrop.dispose.call(o);
+   o.__base.MDuiEditChange.dispose.call(o);
+   o.__base.FDuiControl.dispose.call(o);
 }
 with(MO){
    MO.FDuiEditor = function FDuiEditor(o){
@@ -3665,400 +3675,367 @@ with(MO){
       o.processDataChangedListener(o);
    }
 }
-with(MO){
-   MO.FDuiForm = function FDuiForm(o){
-      o = RClass.inherits(this, o, FDuiLayout, MDuiDescribeFrame);
-      o.onMouseDown        = FDuiForm_onMouseDown;
-      o.construct          = FDuiForm_construct;
-      o._dataStatusCd      = ERowStatus.Update;
-      o._dataComponents    = null;
-      o.lsnsLoaded         = null;
-      o.lsnsClick          = null;
-      o.onLoadDataset      = FDuiForm_onLoadDataset;
-      o.onLoadDatasetEnd   = FDuiForm_onLoadDatasetEnd;
-      o.isDataChanged      = FDuiForm_isDataChanged;
-      o.getFormLink        = FDuiForm_getFormLink;
-      o.allDataComponents  = FDuiForm_allDataComponents;
-      o.get                = FDuiForm_get;
-      o.set                = FDuiForm_set;
-      o.getDataCodes       = FDuiForm_getDataCodes;
-      o.getCurrentRow      = FDuiForm_getCurrentRow;
-      o.getSelectedRows    = FDuiForm_getSelectedRows;
-      o.getCurrentRows     = FDuiForm_getCurrentRows;
-      o.getChangedRows     = FDuiForm_getChangedRows;
-      o.getRows            = FDuiForm_getRows;
-      o.clearValue         = FDuiForm_clearValue;
-      o.resetValue         = FDuiForm_resetValue;
-      o.loadValue          = FDuiForm_loadValue;
-      o.saveValue          = FDuiForm_saveValue;
-      o.recordValue        = FDuiForm_recordValue;
-      o.toAttributes       = FDuiForm_toAttributes;
-      o.focus              = FDuiForm_focus;
-      o.dsUpdate           = FDuiForm_dsUpdate;
-      o.doPrepare          = FDuiForm_doPrepare;
-      o.doUpdate           = FDuiForm_doUpdate;
-      o.doDelete           = FDuiForm_doDelete;
-      o.dispose            = FDuiForm_dispose;
-      return o;
+MO.FDuiForm = function FDuiForm(o){
+   o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MUiDataContainer, MO.MDuiDescribeFrame);
+   o.construct          = MO.FDuiForm_construct;
+   o.dispose            = MO.FDuiForm_dispose;
+   return o;
+}
+MO.FDuiForm_construct = function FDuiForm_construct(){
+   var o = this;
+   o.__base.FDuiLayout.construct.call(o);
+}
+MO.FDuiForm_dispose = function FDuiForm_dispose(){
+   var o = this;
+   o._hEdit = MO.Window.Html.free(o._hEdit);
+   o._hDrop = MO.Window.Html.free(o._hDrop);
+   o.__base.FDuiLayout.dispose.call(o);
+}
+MO.FDuiForm_onMouseDown = function FDuiForm_onMouseDown(p){
+   var o = this;
+}
+MO.FDuiForm_onLoadDataset = function FDuiForm_onLoadDataset(ds){
+   var o = this;
+   o.doUpdate(o.dsViewer.current());
+}
+MO.FDuiForm_onLoadDatasetEnd = function FDuiForm_onLoadDatasetEnd(){
+   var o = this;
+   o.topControl().topResize();
+   o.psProgress(false);
+}
+MO.FDuiForm_isDataChanged = function FDuiForm_isDataChanged(){
+   var o = this;
+   var ps = o.allDataComponents();
+   if(!ps.isEmpty()){
+      var pc = ps.count;
+      for(var n=0; n<pc; n++){
+         var p = ps.value(n);
+         if(p.isDataChanged()){
+            return true;
+         }
+      }
    }
-   MO.FDuiForm_onMouseDown = function FDuiForm_onMouseDown(p){
-      var o = this;
+}
+MO.FDuiForm_getFormLink = function FDuiForm_getFormLink(t){
+   var o = this;
+   if(EFormLink.Form == t){
+      return o.name;
+   }else if(EFormLink.Table == t){
+      return o.formName;
    }
-   MO.FDuiForm_construct = function FDuiForm_construct(){
-      var o = this;
-      o.__base.FDuiLayout.construct.call(o);
+   RMessage.fatal(o, null, 'Form link is invalid. (type={0})', t);
+}
+MO.FDuiForm_allDataComponents = function FDuiForm_allDataComponents(p, m){
+   var o = this;
+   if(!p){
+      p = o;
    }
-   MO.FDuiForm_onLoadDataset = function FDuiForm_onLoadDataset(ds){
-      var o = this;
-      o.doUpdate(o.dsViewer.current());
+   if(!m){
+      m = o._dataComponents;
    }
-   MO.FDuiForm_onLoadDatasetEnd = function FDuiForm_onLoadDatasetEnd(){
-      var o = this;
-      o.topControl().topResize();
-      o.psProgress(false);
-   }
-   MO.FDuiForm_isDataChanged = function FDuiForm_isDataChanged(){
-      var o = this;
-      var ps = o.allDataComponents();
-      if(!ps.isEmpty()){
-         var pc = ps.count;
-         for(var n=0; n<pc; n++){
-            var p = ps.value(n);
-            if(p.isDataChanged()){
-               return true;
+   var cs = p.components;
+   if(cs){
+      var cc = cs.count;
+      for(var n = 0; n<cc; n++){
+         var c = cs.value(n);
+         if(!RClass.isClass(c, MDataset)){
+            if(RClass.isClass(c, MValue)){
+               m.set(c.dataName, c);
             }
+            o.allDataComponents(c, m);
          }
       }
    }
-   MO.FDuiForm_getFormLink = function FDuiForm_getFormLink(t){
-      var o = this;
-      if(EFormLink.Form == t){
-         return o.name;
-      }else if(EFormLink.Table == t){
-         return o.formName;
-      }
-      RMessage.fatal(o, null, 'Form link is invalid. (type={0})', t);
-   }
-   MO.FDuiForm_allDataComponents = function FDuiForm_allDataComponents(p, m){
-      var o = this;
-      if(!p){
-         p = o;
-      }
-      if(!m){
-         m = o._dataComponents;
-      }
-      var cs = p.components;
-      if(cs){
-         var cc = cs.count;
-         for(var n = 0; n<cc; n++){
-            var c = cs.value(n);
-            if(!RClass.isClass(c, MDataset)){
-               if(RClass.isClass(c, MValue)){
-                  m.set(c.dataName, c);
-               }
-               o.allDataComponents(c, m);
-            }
-         }
-      }
-      return m;
-   }
-   MO.FDuiForm_get = function FDuiForm_get(n){
-      var ps = this.allDataComponents();
-      if(ps){
-         var p = ps.get(n);
-         if(p){
-            return p.get();
-         }
+   return m;
+}
+MO.FDuiForm_get = function FDuiForm_get(n){
+   var ps = this.allDataComponents();
+   if(ps){
+      var p = ps.get(n);
+      if(p){
+         return p.get();
       }
    }
-   MO.FDuiForm_set = function FDuiForm_set(n){
-      var ps = this.allDataComponents();
-      if(ps){
-         var p = ps.get(n);
-         if(p){
-            return p.reget();
-         }
+}
+MO.FDuiForm_set = function FDuiForm_set(n){
+   var ps = this.allDataComponents();
+   if(ps){
+      var p = ps.get(n);
+      if(p){
+         return p.reget();
       }
    }
-   MO.FDuiForm_set = function FDuiForm_set(n, v){
-      var ps = this.allDataComponents();
-      if(ps){
-         var p = ps.get(n);
-         if(p){
-            p.set(v);
-         }
+}
+MO.FDuiForm_set = function FDuiForm_set(n, v){
+   var ps = this.allDataComponents();
+   if(ps){
+      var p = ps.get(n);
+      if(p){
+         p.set(v);
       }
    }
-   MO.FDuiForm_getDataCodes = function FDuiForm_getDataCodes(){
-      var o = this;
-      var e = o._codeEvent;
-      e.values = new TAttributes();
-      o.process(e);
-      return e.values;
-   }
-   MO.FDuiForm_getCurrentRow = function FDuiForm_getCurrentRow(){
-      return this.saveValue();
-   }
-   MO.FDuiForm_getSelectedRows = function FDuiForm_getSelectedRows(){
-      var ls = new TList();
-      ls.push(this.saveValue());
-      return ls;
-   }
-   MO.FDuiForm_getCurrentRows = function FDuiForm_getCurrentRows(){
-      var o = this;
-      var ls = new TList();
+}
+MO.FDuiForm_getDataCodes = function FDuiForm_getDataCodes(){
+   var o = this;
+   var e = o._codeEvent;
+   e.values = new TAttributes();
+   o.process(e);
+   return e.values;
+}
+MO.FDuiForm_getCurrentRow = function FDuiForm_getCurrentRow(){
+   return this.saveValue();
+}
+MO.FDuiForm_getSelectedRows = function FDuiForm_getSelectedRows(){
+   var ls = new TList();
+   ls.push(this.saveValue());
+   return ls;
+}
+MO.FDuiForm_getCurrentRows = function FDuiForm_getCurrentRows(){
+   var o = this;
+   var ls = new TList();
+   var r = new TRow();
+   o.toDeepAttributes(r);
+   o.saveValue(r);
+   ls.push(r);
+   return ls;
+}
+MO.FDuiForm_getChangedRows = function FDuiForm_getChangedRows(){
+   var o = this;
+   var ls = new TList();
+   if(o.isDataChanged()){
       var r = new TRow();
       o.toDeepAttributes(r);
       o.saveValue(r);
       ls.push(r);
-      return ls;
    }
-   MO.FDuiForm_getChangedRows = function FDuiForm_getChangedRows(){
+   return ls;
+}
+MO.FDuiForm_getRows = function FDuiForm_getRows(){
+   var ls = new TList();
+   ls.push(this.saveValue());
+   return ls;
+}
+MO.FDuiForm_clearValue = function FDuiForm_clearValue(){
+   this.process(this._clearEvent);
+}
+MO.FDuiForm_resetValue = function FDuiForm_resetValue(){
+   this.process(this._resetEvent);
+}
+MO.FDuiForm_loadValue = function FDuiForm_loadValue(r, m){
+   if(r){
       var o = this;
-      var ls = new TList();
-      if(o.isDataChanged()){
-         var r = new TRow();
-         o.toDeepAttributes(r);
-         o.saveValue(r);
-         ls.push(r);
-      }
-      return ls;
-   }
-   MO.FDuiForm_getRows = function FDuiForm_getRows(){
-      var ls = new TList();
-      ls.push(this.saveValue());
-      return ls;
-   }
-   MO.FDuiForm_clearValue = function FDuiForm_clearValue(){
-      this.process(this._clearEvent);
-   }
-   MO.FDuiForm_resetValue = function FDuiForm_resetValue(){
-      this.process(this._resetEvent);
-   }
-   MO.FDuiForm_loadValue = function FDuiForm_loadValue(r, m){
-      if(r){
-         var o = this;
-         var e = o._loadEvent;
-         e.viewer = o.dsViewer;
-         e.store = m;
-         e.values = r;
-         o.process(e);
-      }
-   }
-   MO.FDuiForm_saveValue = function FDuiForm_saveValue(r, m){
-      var o = this;
-      if(!r){
-         r = new TRow();
-      }
-      var e = o._saveEvent;
+      var e = o._loadEvent;
       e.viewer = o.dsViewer;
       e.store = m;
       e.values = r;
       o.process(e);
-      r.set('_status', o._dataStatusCd);
-      return r;
    }
-   MO.FDuiForm_recordValue = function FDuiForm_recordValue(){
-      this.process(this._recordEvent);
+}
+MO.FDuiForm_saveValue = function FDuiForm_saveValue(r, m){
+   var o = this;
+   if(!r){
+      r = new TRow();
    }
-   MO.FDuiForm_toAttributes = function FDuiForm_toAttributes(r, m){
-      return this.saveValue(r, m);
-   }
-   MO.FDuiForm_focus = function FDuiForm_focus(){
-      var o = this;
-      o.__base.MDuiFocus.focus.call(o);
-      o.focusControl();
-      RConsole.find(FFocusConsole).focusClass(MDataset, o);
-   }
-   MO.FDuiForm_dsUpdate = function FDuiForm_dsUpdate(u, v){
-      var o = this;
+   var e = o._saveEvent;
+   e.viewer = o.dsViewer;
+   e.store = m;
+   e.values = r;
+   o.process(e);
+   r.set('_status', o._dataStatusCd);
+   return r;
+}
+MO.FDuiForm_recordValue = function FDuiForm_recordValue(){
+   this.process(this._recordEvent);
+}
+MO.FDuiForm_toAttributes = function FDuiForm_toAttributes(r, m){
+   return this.saveValue(r, m);
+}
+MO.FDuiForm_focus = function FDuiForm_focus(){
+   var o = this;
+   o.__base.MDuiFocus.focus.call(o);
+   o.focusControl();
+   RConsole.find(FFocusConsole).focusClass(MDataset, o);
+}
+MO.FDuiForm_dsUpdate = function FDuiForm_dsUpdate(u, v){
+   var o = this;
+   if(u){
+      o.psProgress(true);
+      o.psMode(EMode.Update);
+      var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0);
+      g.form = o;
+      g.reset = true;
+      o.dsSearchs.clear();
       if(u){
-         o.psProgress(true);
-         o.psMode(EMode.Update);
-         var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0);
-         g.form = o;
-         g.reset = true;
-         o.dsSearchs.clear();
-         if(u){
-            o.dsSearchs.push(new TSearchItem('OUID', u));
-         }
-         if(v){
-            o.dsSearchs.push(new TSearchItem('OVER', v));
-         }
-         g.searchs = o.dsSearchs;
-         g.values.append(o.dsValues);
-         g.callback = new TInvoke(o, o.onDsUpdate);
-         if(o.onDsUpdateCheck(g)){
-            RConsole.find(FDatasetConsole).fetch(g);
-         }
-         return;
+         o.dsSearchs.push(new TSearchItem('OUID', u));
       }
-      return o.__base.MDataset.dsUpdate.call(o, u, v)
+      if(v){
+         o.dsSearchs.push(new TSearchItem('OVER', v));
+      }
+      g.searchs = o.dsSearchs;
+      g.values.append(o.dsValues);
+      g.callback = new TInvoke(o, o.onDsUpdate);
+      if(o.onDsUpdateCheck(g)){
+         RConsole.find(FDatasetConsole).fetch(g);
+      }
+      return;
    }
-   MO.FDuiForm_setEditable = function FDuiForm_setEditable(v){
-      var ps = this.allDataComponents();
-      if(ps){
-         var pc = ps.count;
-         for(var n = 0; n < pc; n++){
-            var p = ps.value(n);
-            p.setEditable(v);
-         }
+   return o.__base.MDataset.dsUpdate.call(o, u, v)
+}
+MO.FDuiForm_setEditable = function FDuiForm_setEditable(v){
+   var ps = this.allDataComponents();
+   if(ps){
+      var pc = ps.count;
+      for(var n = 0; n < pc; n++){
+         var p = ps.value(n);
+         p.setEditable(v);
       }
    }
-   MO.FDuiForm_doPrepare = function FDuiForm_doPrepare(v){
-      var o = this;
-      o._dataStatusCd = ERowStatus.Insert;
-      o.resetValue();
-      o.loadValue(v);
-      o.recordValue();
-      o.dsLoaded();
-   }
-   MO.FDuiForm_doUpdate = function FDuiForm_doUpdate(v){
-      var o = this;
-      o._dataStatusCd = ERowStatus.Update;
-      o.clearValue();
-      o.loadValue(v);
-      o.recordValue();
-      o.dsLoaded();
-   }
-   MO.FDuiForm_doDelete = function FDuiForm_doDelete(v){
-      var o = this;
-      o._dataStatusCd = ERowStatus.Delete;
-      o.clearValue();
-      o.loadValue(v);
-      o.recordValue();
-      o.dsLoaded();
-   }
-   MO.FDuiForm_dispose = function FDuiForm_dispose(){
-      var o = this;
-      o.__base.FDuiLayout.dispose.call(o);
-      RMemory.freeHtml(o.hEdit);
-      RMemory.freeHtml(o.hDrop);
-      o.hEdit = null;
-      o.hDrop = null;
-   }
-   MO.FDuiForm_allNameComponents = function FDuiForm_allNameComponents(f, p, m){
-      var o = this;
-      var vs = o._nameComponents;
-      if(!f && vs){
-         return vs;
-      }
-      if(!vs){
-         vs = o._nameComponents = new TMap();
-      }
-      if(f){
-         vs.clear();
-      }
-      if(!p){
-         p = this;
-      }
-      if(!m){
-         m = vs;
-      }
-      var cs = p.components;
-      if(cs){
-         var cc = cs.count;
-         for(var n = 0; n<cc; n++){
-            var c = cs.value(n);
-            if(!RClass.isClass(c, MDataset)){
-               if(RClass.isClass(c, MValue)){
-                  m.set(c.name, c);
-               }
-               o.allNameComponents(false, c, m);
-            }
-         }
-      }
+}
+MO.FDuiForm_doPrepare = function FDuiForm_doPrepare(v){
+   var o = this;
+   o._dataStatusCd = ERowStatus.Insert;
+   o.resetValue();
+   o.loadValue(v);
+   o.recordValue();
+   o.dsLoaded();
+}
+MO.FDuiForm_doUpdate = function FDuiForm_doUpdate(v){
+   var o = this;
+   o._dataStatusCd = ERowStatus.Update;
+   o.clearValue();
+   o.loadValue(v);
+   o.recordValue();
+   o.dsLoaded();
+}
+MO.FDuiForm_doDelete = function FDuiForm_doDelete(v){
+   var o = this;
+   o._dataStatusCd = ERowStatus.Delete;
+   o.clearValue();
+   o.loadValue(v);
+   o.recordValue();
+   o.dsLoaded();
+}
+MO.FDuiForm_allNameComponents = function FDuiForm_allNameComponents(f, p, m){
+   var o = this;
+   var vs = o._nameComponents;
+   if(!f && vs){
       return vs;
    }
-   MO.FDuiForm_onLoaded = function FDuiForm_onLoaded(){
-      var o = this.form;
-      var doc = this.document;
-      if(o && doc){
-         RControl.build(o, doc.root());
-         o.isLoading = false;
-         o.lsnsLoaded.process(o);
-      }
+   if(!vs){
+      vs = o._nameComponents = new TMap();
    }
-   MO.FDuiForm_onDsFetchEnd = function FDuiForm_onDsFetchEnd(){
-      var o = this;
-      var v = o.dsCurrent();
-      if(v){
-         o.loadValue(v);
-      }
+   if(f){
+      vs.clear();
    }
-   MO.FDuiForm_onDsUpdateBegin = function FDuiForm_onDsUpdateBegin(){
-      var o = this;
-      var v = o.dsCurrent();
-      if(v){
-         o.saveValue(v);
-      }
+   if(!p){
+      p = this;
    }
-   MO.FDuiForm_onDsUpdateEnd = function FDuiForm_onDsUpdateEnd(){
-      var o = this;
-      var v = o.dsCurrent();
-      if(v){
-         o.loadValue(v);
-      }
+   if(!m){
+      m = vs;
    }
-   MO.FDuiForm_connect = function FDuiForm_connect(service, type, action, attrs){
-      var doc = new TXmlDocument();
-      var root = doc.root();
-      root.set('type', type);
-      root.set('name', this.name);
-      root.set('action', action);
-      root.create('Attributes').value = attrs;
-      var event = new TEvent(this, EXmlEvent.Send);
-      event.url = service;
-      event.document = doc;
-      event.form = this;
-      event.onLoad = this.onLoaded;
-      RConsole.find(FXmlConsole).process(event);
-   }
-   MO.FDuiForm_loadDocument = function FDuiForm_loadDocument(doc){
-      if(doc){
-         var root = doc.root();
-         if(root.isName('Table')){
-            var o = this;
-            o.loadConfig(root);
-            o.buildColumns(root);
-            o.buildRows(root);
-         }
-      }
-   }
-   MO.FDuiForm_testStatus = function FDuiForm_testStatus(t){
-      var o = this;
-      var r = o.__base.MDataset.testStatus.call(o, t);
-      if(EDataAction.Fetch == t){
-         return true;
-      }else if(EDataAction.Fetch == t){
-         return true;
-      }else if(EDataAction.Search== t){
-         return true;
-      }else if(EDataAction.First == t){
-         return false;
-      }else if(EDataAction.Prior == t){
-         return false;
-      }else if(EDataAction.Next == t){
-         return false;
-      }else if(EDataAction.Last == t){
-         return false;
-      }else if(EDataAction.Action == t){
-         return true;
-      }
-      return r;
-   }
-   MO.FDuiForm_hasAction = function FDuiForm_hasAction(){
-      var o = this;
-      var cs = o.components;
-      var ct = cs.count;
-      for(var n = 0; n < ct; n++){
+   var cs = p.components;
+   if(cs){
+      var cc = cs.count;
+      for(var n = 0; n<cc; n++){
          var c = cs.value(n);
-         if(RClass.isClass(c, FDataAction)){
-            return true;
+         if(!RClass.isClass(c, MDataset)){
+            if(RClass.isClass(c, MValue)){
+               m.set(c.name, c);
+            }
+            o.allNameComponents(false, c, m);
          }
       }
-      return false;
    }
+   return vs;
+}
+MO.FDuiForm_onLoaded = function FDuiForm_onLoaded(){
+   var o = this.form;
+   var doc = this.document;
+   if(o && doc){
+      RControl.build(o, doc.root());
+      o.isLoading = false;
+      o.lsnsLoaded.process(o);
+   }
+}
+MO.FDuiForm_onDsFetchEnd = function FDuiForm_onDsFetchEnd(){
+   var o = this;
+   var v = o.dsCurrent();
+   if(v){
+      o.loadValue(v);
+   }
+}
+MO.FDuiForm_onDsUpdateBegin = function FDuiForm_onDsUpdateBegin(){
+   var o = this;
+   var v = o.dsCurrent();
+   if(v){
+      o.saveValue(v);
+   }
+}
+MO.FDuiForm_onDsUpdateEnd = function FDuiForm_onDsUpdateEnd(){
+   var o = this;
+   var v = o.dsCurrent();
+   if(v){
+      o.loadValue(v);
+   }
+}
+MO.FDuiForm_connect = function FDuiForm_connect(service, type, action, attrs){
+   var doc = new TXmlDocument();
+   var root = doc.root();
+   root.set('type', type);
+   root.set('name', this.name);
+   root.set('action', action);
+   root.create('Attributes').value = attrs;
+   var event = new TEvent(this, EXmlEvent.Send);
+   event.url = service;
+   event.document = doc;
+   event.form = this;
+   event.onLoad = this.onLoaded;
+   RConsole.find(FXmlConsole).process(event);
+}
+MO.FDuiForm_loadDocument = function FDuiForm_loadDocument(doc){
+   if(doc){
+      var root = doc.root();
+      if(root.isName('Table')){
+         var o = this;
+         o.loadConfig(root);
+         o.buildColumns(root);
+         o.buildRows(root);
+      }
+   }
+}
+MO.FDuiForm_testStatus = function FDuiForm_testStatus(t){
+   var o = this;
+   var r = o.__base.MDataset.testStatus.call(o, t);
+   if(EDataAction.Fetch == t){
+      return true;
+   }else if(EDataAction.Fetch == t){
+      return true;
+   }else if(EDataAction.Search== t){
+      return true;
+   }else if(EDataAction.First == t){
+      return false;
+   }else if(EDataAction.Prior == t){
+      return false;
+   }else if(EDataAction.Next == t){
+      return false;
+   }else if(EDataAction.Last == t){
+      return false;
+   }else if(EDataAction.Action == t){
+      return true;
+   }
+   return r;
+}
+MO.FDuiForm_hasAction = function FDuiForm_hasAction(){
+   var o = this;
+   var cs = o.components;
+   var ct = cs.count;
+   for(var n = 0; n < ct; n++){
+      var c = cs.value(n);
+      if(RClass.isClass(c, FDataAction)){
+         return true;
+      }
+   }
+   return false;
 }
 MO.FDuiFrame = function FDuiFrame(o){
    o = MO.Class.inherits(this, o, MO.FDuiLayout);
@@ -4875,7 +4852,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiMemo = function FDuiMemo(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MPropertyEdit, MListenerDataChanged);
+      o = RClass.inherits(this, o, FDuiEditControl, MUiPropertyEdit, MListenerDataChanged);
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
       o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
       o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
@@ -4949,7 +4926,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiNumber = function FDuiNumber(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged, MPropertyNumber);
+      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged, MUiPropertyNumber);
       o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
       o._styleValuePanel  = RClass.register(o, new AStyle('_styleValuePanel'));
       o._styleInput       = RClass.register(o, new AStyle('_styleInput'));
@@ -5934,7 +5911,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiSelect = function FDuiSelect(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MDuiContainer, MPropertySelect, MListenerDataChanged);
+      o = RClass.inherits(this, o, FDuiEditControl, MDuiContainer, MUiPropertySelect, MListenerDataChanged);
       o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
       o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
       o._hValueForm      = null;
@@ -6388,7 +6365,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiSlideNumber = function FDuiSlideNumber(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MPropertyNumber, MListenerDataChanged, MMouseCapture);
+      o = RClass.inherits(this, o, FDuiEditControl, MUiPropertyNumber, MListenerDataChanged, MMouseCapture);
       o._inputSize          = RClass.register(o, new APtySize2('_inputSize'));
       o._styleSlidePanel    = RClass.register(o, new AStyle('_styleSlidePanel'));
       o._styleValuePanel    = RClass.register(o, new AStyle('_styleValuePanel'));
@@ -6644,7 +6621,7 @@ MO.FDuiSplit_dispose = function FDuiSplit_dispose(){
    o.hImage = null;
 }
 MO.FDuiTemplate = function FDuiTemplate(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MPropertyEdit, MO.MListenerDataChanged);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit, MO.MListenerDataChanged);
    o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
    o._unit            = MO.Class.register(o, new MO.APtyString('_unit'));
    o._styleValuePanel = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
@@ -6717,7 +6694,7 @@ MO.FDuiTemplate_refreshValue = function FDuiTemplate_refreshValue(){
 }
 with(MO){
    MO.FDuiText = function FDuiText(o){
-      o = RClass.inherits(this, o, FDuiTextControl, MPropertyEdit, MListenerDataChanged);
+      o = RClass.inherits(this, o, FDuiTextControl, MUiPropertyEdit, MListenerDataChanged);
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
       o._unit            = RClass.register(o, new APtyString('_unit'));
       o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));

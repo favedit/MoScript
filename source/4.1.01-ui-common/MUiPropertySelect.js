@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150225
 //==========================================================
-MO.MPropertySelect = function MPropertySelect(o){
+MO.MUiPropertySelect = function MUiPropertySelect(o){
    o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
    //..........................................................
    // @property
@@ -17,7 +17,7 @@ MO.MPropertySelect = function MPropertySelect(o){
    o._validLengthMax = MO.Class.register(o, new MO.APtyInteger('_validLengthMax'));
    //..........................................................
    // @process
-   o.oeValid         = MO.MPropertySelect_oeValid;
+   o.oeValid         = MO.MUiPropertySelect_oeValid;
    return o;
 }
 
@@ -27,7 +27,7 @@ MO.MPropertySelect = function MPropertySelect(o){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MPropertySelect_oeValid = function MPropertySelect_oeValid(e){
+MO.MUiPropertySelect_oeValid = function MUiPropertySelect_oeValid(e){
    var o = this;
    var r = MO.EEventStatus.Stop;
    // 判断是否需要检查

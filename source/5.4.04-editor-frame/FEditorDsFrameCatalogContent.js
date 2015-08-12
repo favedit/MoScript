@@ -1,48 +1,21 @@
 //==========================================================
-// <T>设计目录基类。</T>
+// <T>设计页面目录。</T>
 //
+// @class
 // @author maocy
-// @history 141231
+// @history 150812
 //==========================================================
 MO.FEditorDsFrameCatalogContent = function FEditorDsFrameCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
+   o = MO.Class.inherits(this, o, MO.FEditorDsCatalogContent);
    //..........................................................
    // @attributes
-   o._activeFrame = null;
-   //..........................................................
-   // @event
-   o.onNodeClick  = MO.FEditorDsFrameCatalogContent_onNodeClick;
+   o._defineCode = 'editor.design.frame';
    //..........................................................
    // @method
-   o.construct    = MO.FEditorDsFrameCatalogContent_construct;
+   o.construct   = MO.FEditorDsFrameCatalogContent_construct;
    // @method
-   o.selectObject = MO.FEditorDsFrameCatalogContent_selectObject;
-   o.showObject   = MO.FEditorDsFrameCatalogContent_showObject;
-   // @method
-   o.dispose      = MO.FEditorDsFrameCatalogContent_dispose;
+   o.dispose     = MO.FEditorDsFrameCatalogContent_dispose;
    return o;
-}
-
-//==========================================================
-// <T>节点点击处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 处理事件
-//==========================================================
-MO.FEditorDsFrameCatalogContent_onNodeClick = function FEditorDsFrameCatalogContent_onNodeClick(event){
-   var o = this;
-   var node = event.node;
-   var typeGroup = node.typeGroup();
-   var nodeType = node.type();
-   var typeCode = node.typeCode();
-   var frameName = nodeType.get('property_frame');
-   var label = node.label();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.load(label);
-      o._frameSet.selectObject(typeGroup, frameName, null);
-   }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, label);
-   }
 }
 
 //==========================================================
@@ -52,43 +25,7 @@ MO.FEditorDsFrameCatalogContent_onNodeClick = function FEditorDsFrameCatalogCont
 //==========================================================
 MO.FEditorDsFrameCatalogContent_construct = function FEditorDsFrameCatalogContent_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
-   // 加载定义
-   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.frame');
-}
-
-//==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param item:Object 对象
-//==========================================================
-MO.FEditorDsFrameCatalogContent_selectObject = function FEditorDsFrameCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-
-//==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param item:Object 对象
-//==========================================================
-MO.FEditorDsFrameCatalogContent_showObject = function FEditorDsFrameCatalogContent_showObject(item){
-   var o = this;
-   if(MO.Class.isClass(item, MO.FDsSceneRenderable)){
-      var renderableNodes = o._renderableNodes;
-      var renderableCount = renderableNodes.count();
-      for(var i = 0; i < renderableCount; i++){
-         var renderableNode = renderableNodes.at(i);
-         var renderable = renderableNode.dataPropertyGet('linker');
-         if(renderable == item){
-            o.processSelectedListener(item, false);
-         }
-      }
-   }
+   o.__base.FEditorDsCatalogContent.construct.call(o);
 }
 
 //==========================================================
@@ -98,7 +35,5 @@ MO.FEditorDsFrameCatalogContent_showObject = function FEditorDsFrameCatalogConte
 //==========================================================
 MO.FEditorDsFrameCatalogContent_dispose = function FEditorDsFrameCatalogContent_dispose(){
    var o = this;
-   o._activeFrame = null;
-   // 父处理
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FEditorDsCatalogContent.dispose.call(o);
 }

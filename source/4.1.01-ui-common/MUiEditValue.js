@@ -6,8 +6,8 @@
 // @author maocy
 // @version 150102
 //==========================================================
-MO.MDuiEditValue = function MDuiEditValue(o){
-   o = MO.Class.inherits(this, o, MO.MDuiEditFormator);
+MO.MUiEditValue = function MUiEditValue(o){
+   o = MO.Class.inherits(this, o, MO.MUiTextFormator);
    //..........................................................
    // @property
    o._dataValue      = MO.Class.register(o, new MO.APtyString('_dataValue'));
@@ -21,25 +21,25 @@ MO.MDuiEditValue = function MDuiEditValue(o){
    o._recordValue    = null;
    //..........................................................
    // @method
-   o.isTextChanged   = MO.MDuiEditValue_isTextChanged;
-   o.isValueChanged  = MO.MDuiEditValue_isValueChanged;
+   o.isTextChanged   = MO.MUiEditValue_isTextChanged;
+   o.isValueChanged  = MO.MUiEditValue_isValueChanged;
    // @method
-   o.formator        = MO.MDuiEditValue_formator;
-   o.text            = MO.MDuiEditValue_text;
-   o.setText         = MO.MDuiEditValue_setText;
-   o.get             = MO.MDuiEditValue_get;
-   o.set             = MO.MDuiEditValue_set;
+   o.formator        = MO.MUiEditValue_formator;
+   o.text            = MO.MUiEditValue_text;
+   o.setText         = MO.MUiEditValue_setText;
+   o.get             = MO.MUiEditValue_get;
+   o.set             = MO.MUiEditValue_set;
    // @method
-   o.clearValue      = MO.MDuiEditValue_clearValue;
-   o.resetValue      = MO.MDuiEditValue_resetValue;
-   o.loadValue       = MO.MDuiEditValue_loadValue;
-   o.saveValue       = MO.MDuiEditValue_saveValue;
-   o.recordValue     = MO.MDuiEditValue_recordValue;
+   o.clearValue      = MO.MUiEditValue_clearValue;
+   o.resetValue      = MO.MUiEditValue_resetValue;
+   o.loadValue       = MO.MUiEditValue_loadValue;
+   o.saveValue       = MO.MUiEditValue_saveValue;
+   o.recordValue     = MO.MUiEditValue_recordValue;
    o.validValue      = MO.Method.empty;
    // @method
-   o.setEditAble     = MO.MDuiEditValue_setEditAble;
-   o.doFocus         = MO.MDuiEditValue_doFocus;
-   o.doBlur          = MO.MDuiEditValue_doBlur;
+   o.setEditAble     = MO.MUiEditValue_setEditAble;
+   o.doFocus         = MO.MUiEditValue_doFocus;
+   o.doBlur          = MO.MUiEditValue_doBlur;
 
    //..........................................................
    // @attribute
@@ -48,18 +48,18 @@ MO.MDuiEditValue = function MDuiEditValue(o){
    //o._invalidText  = null;
    //..........................................................
    // @process
-   //o.oeClearValue  = MDuiEditValue_oeClearValue;
-   //o.oeResetValue  = MDuiEditValue_oeResetValue;
-   //o.oeLoadValue   = MDuiEditValue_oeLoadValue;
-   //o.oeSaveValue   = MDuiEditValue_oeSaveValue;
-   //o.oeRecordValue = MDuiEditValue_oeRecordValue;
+   //o.oeClearValue  = MUiEditValue_oeClearValue;
+   //o.oeResetValue  = MUiEditValue_oeResetValue;
+   //o.oeLoadValue   = MUiEditValue_oeLoadValue;
+   //o.oeSaveValue   = MUiEditValue_oeSaveValue;
+   //o.oeRecordValue = MUiEditValue_oeRecordValue;
    //o.oeValidValue  = RMethod.empty;
    //..........................................................
    // @method
-   //o.commitValue   = MDuiEditValue_commitValue;
-   //o.reget         = MDuiEditValue_reget;
-   //o.setInfoPack   = MDuiEditValue_setInfoPack;
-   //o.setInfo       = MDuiEditValue_setInfo;
+   //o.commitValue   = MUiEditValue_commitValue;
+   //o.reget         = MUiEditValue_reget;
+   //o.setInfoPack   = MUiEditValue_setInfoPack;
+   //o.setInfo       = MUiEditValue_setInfo;
    //o.refreshStyle  = RMethod.virtual(o, 'refreshStyle');
    return o;
 }
@@ -70,7 +70,7 @@ MO.MDuiEditValue = function MDuiEditValue(o){
 // @method
 // @return Boolean 是否改变
 //==========================================================
-MO.MDuiEditValue_isTextChanged = function MDuiEditValue_isTextChanged(){
+MO.MUiEditValue_isTextChanged = function MUiEditValue_isTextChanged(){
    var o = this;
    var text = o.text();
    return MO.Lang.String.equals(o._recordText, text);
@@ -82,7 +82,7 @@ MO.MDuiEditValue_isTextChanged = function MDuiEditValue_isTextChanged(){
 // @method
 // @return Boolean 是否改变
 //==========================================================
-MO.MDuiEditValue_isValueChanged = function MDuiEditValue_isValueChanged(){
+MO.MUiEditValue_isValueChanged = function MUiEditValue_isValueChanged(){
    var o = this;
    var value = o.get();
    return MO.Lang.String.equals(o._recordValue, value);
@@ -92,9 +92,9 @@ MO.MDuiEditValue_isValueChanged = function MDuiEditValue_isValueChanged(){
 // <T>获得编辑格式化器。</T>
 //
 // @method
-// @return MDuiEditFormator 编辑格式化器
+// @return MUiTextFormator 编辑格式化器
 //==========================================================
-MO.MDuiEditValue_formator = function MDuiEditValue_formator(){
+MO.MUiEditValue_formator = function MUiEditValue_formator(){
    return this;
 }
 
@@ -104,7 +104,7 @@ MO.MDuiEditValue_formator = function MDuiEditValue_formator(){
 // @method
 // @return String 显示内容
 //==========================================================
-MO.MDuiEditValue_text = function MDuiEditValue_text(){
+MO.MUiEditValue_text = function MUiEditValue_text(){
    //throw new TUnsupportError();
 }
 
@@ -114,7 +114,7 @@ MO.MDuiEditValue_text = function MDuiEditValue_text(){
 // @method
 // @param text:String 文本内容
 //==========================================================
-MO.MDuiEditValue_setText = function MDuiEditValue_setText(text){
+MO.MUiEditValue_setText = function MUiEditValue_setText(text){
    //throw new TUnsupportError();
 }
 
@@ -124,7 +124,7 @@ MO.MDuiEditValue_setText = function MDuiEditValue_setText(text){
 // @method
 // @return String 数据
 //==========================================================
-MO.MDuiEditValue_get = function MDuiEditValue_get(){
+MO.MUiEditValue_get = function MUiEditValue_get(){
    var o = this;
    // 设置数据
    var text = o.text();
@@ -138,7 +138,7 @@ MO.MDuiEditValue_get = function MDuiEditValue_get(){
 // @method
 // @param value:String 数据
 //==========================================================
-MO.MDuiEditValue_set = function MDuiEditValue_set(value){
+MO.MUiEditValue_set = function MUiEditValue_set(value){
    var o = this;
    // 设置数据
    o._dataValue = MO.Lang.String.nvl(value);
@@ -152,7 +152,7 @@ MO.MDuiEditValue_set = function MDuiEditValue_set(value){
 //
 // @method
 //==========================================================
-MO.MDuiEditValue_clearValue = function MDuiEditValue_clearValue(){
+MO.MUiEditValue_clearValue = function MUiEditValue_clearValue(){
    var o = this;
    o._dataValue = MO.Lang.String.EMPTY;
    o.set(MO.Lang.String.EMPTY);
@@ -163,7 +163,7 @@ MO.MDuiEditValue_clearValue = function MDuiEditValue_clearValue(){
 //
 // @method
 //==========================================================
-MO.MDuiEditValue_resetValue = function MDuiEditValue_resetValue(){
+MO.MUiEditValue_resetValue = function MUiEditValue_resetValue(){
    var o = this;
    //var v = RString.nvl(o.descriptor().dataDefault);
    o._dataValue = value;
@@ -175,7 +175,7 @@ MO.MDuiEditValue_resetValue = function MDuiEditValue_resetValue(){
 //
 // @method
 //==========================================================
-MO.MDuiEditValue_loadValue = function MDuiEditValue_loadValue(c, t){
+MO.MUiEditValue_loadValue = function MUiEditValue_loadValue(c, t){
    var o = this;
    //var d = o.descriptor();
    //if(EStore.Name == t){
@@ -196,7 +196,7 @@ MO.MDuiEditValue_loadValue = function MDuiEditValue_loadValue(c, t){
 //
 // @method
 //==========================================================
-MO.MDuiEditValue_saveValue = function MDuiEditValue_saveValue(c, t){
+MO.MUiEditValue_saveValue = function MUiEditValue_saveValue(c, t){
    var o = this;
    //var d = o.descriptor();
    //if(EStore.Name == t){
@@ -211,7 +211,7 @@ MO.MDuiEditValue_saveValue = function MDuiEditValue_saveValue(c, t){
 //
 // @method
 //==========================================================
-MO.MDuiEditValue_recordValue = function MDuiEditValue_recordValue(){
+MO.MUiEditValue_recordValue = function MUiEditValue_recordValue(){
    var o = this;
    o._recordText = o.text();
    o._recordValue = o.get();
@@ -223,7 +223,7 @@ MO.MDuiEditValue_recordValue = function MDuiEditValue_recordValue(){
 // @method
 // @param flag:Boolean 可编辑性
 //==========================================================
-MO.MDuiEditValue_setEditAble = function MDuiEditValue_setEditAble(flag){
+MO.MUiEditValue_setEditAble = function MUiEditValue_setEditAble(flag){
    var o = this;
    o._statusEditable = flag;
    //o.refreshStyle();
@@ -234,7 +234,7 @@ MO.MDuiEditValue_setEditAble = function MDuiEditValue_setEditAble(flag){
 //
 // @method
 //==========================================================
-MO.MDuiEditValue_doFocus = function MDuiEditValue_doFocus(){
+MO.MUiEditValue_doFocus = function MUiEditValue_doFocus(){
    var o = this;
    if(o._statusEditable){
       o._statusEditing = true;
@@ -247,7 +247,7 @@ MO.MDuiEditValue_doFocus = function MDuiEditValue_doFocus(){
 //
 // @method
 //==========================================================
-MO.MDuiEditValue_doBlur = function MDuiEditValue_doBlur(){
+MO.MUiEditValue_doBlur = function MUiEditValue_doBlur(){
    var o = this;
    if(o._statusEditable && o._statusEditing){
       //o.descriptor().onDataEditEnd(o);
@@ -271,7 +271,7 @@ MO.MDuiEditValue_doBlur = function MDuiEditValue_doBlur(){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MDuiEditValue_oeClearValue = function MDuiEditValue_oeClearValue(e){
+MO.MUiEditValue_oeClearValue = function MUiEditValue_oeClearValue(e){
    var o = this;
    var d = o.descriptor();
    if(!MO.Lang.String.isEmpty(d.dataName)){
@@ -287,7 +287,7 @@ MO.MDuiEditValue_oeClearValue = function MDuiEditValue_oeClearValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MDuiEditValue_oeResetValue = function MDuiEditValue_oeResetValue(e){
+MO.MUiEditValue_oeResetValue = function MUiEditValue_oeResetValue(e){
    var o = this;
    var d = o.descriptor();
    if(!MO.Lang.String.isEmpty(d.dataName)){
@@ -303,7 +303,7 @@ MO.MDuiEditValue_oeResetValue = function MDuiEditValue_oeResetValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MDuiEditValue_oeLoadValue = function MDuiEditValue_oeLoadValue(e){
+MO.MUiEditValue_oeLoadValue = function MUiEditValue_oeLoadValue(e){
    var o = this;
    var d = o.descriptor();
    // 加载数据
@@ -336,7 +336,7 @@ MO.MDuiEditValue_oeLoadValue = function MDuiEditValue_oeLoadValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MDuiEditValue_oeSaveValue = function MDuiEditValue_oeSaveValue(e){
+MO.MUiEditValue_oeSaveValue = function MUiEditValue_oeSaveValue(e){
    var o = this;
    var d = o.descriptor();
    // 设置数据内容
@@ -352,7 +352,7 @@ MO.MDuiEditValue_oeSaveValue = function MDuiEditValue_oeSaveValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MDuiEditValue_oeRecordValue = function MDuiEditValue_oeRecordValue(){
+MO.MUiEditValue_oeRecordValue = function MUiEditValue_oeRecordValue(){
    var o = this;
    var d = o.descriptor();
    // 设置数据内容
@@ -367,7 +367,7 @@ MO.MDuiEditValue_oeRecordValue = function MDuiEditValue_oeRecordValue(){
 //
 // @method
 //==========================================================
-MO.MDuiEditValue_commitValue = function MDuiEditValue_commitValue(){
+MO.MUiEditValue_commitValue = function MUiEditValue_commitValue(){
    this.__commitValue = MO.Lang.String.nvl(this.reget());
 }
 
@@ -377,7 +377,7 @@ MO.MDuiEditValue_commitValue = function MDuiEditValue_commitValue(){
 // @method
 // @return String 数据信息
 //==========================================================
-MO.MDuiEditValue_reget = function MDuiEditValue_reget(){
+MO.MUiEditValue_reget = function MUiEditValue_reget(){
    return this.descriptor().formatValue(this.text());
 }
 
@@ -387,7 +387,7 @@ MO.MDuiEditValue_reget = function MDuiEditValue_reget(){
 // @method
 // @param v:value:String 打包字符串
 //==========================================================
-MO.MDuiEditValue_setInfoPack = function MDuiEditValue_setInfoPack(v){
+MO.MUiEditValue_setInfoPack = function MUiEditValue_setInfoPack(v){
    var o = this;
    // 获得数据信息
    var f = o._info;
@@ -409,6 +409,6 @@ MO.MDuiEditValue_setInfoPack = function MDuiEditValue_setInfoPack(v){
 // @method
 // @param f:info:TControlInfo 控件信息对象
 //==========================================================
-MO.MDuiEditValue_setInfo = function MDuiEditValue_setInfo(f){
+MO.MUiEditValue_setInfo = function MUiEditValue_setInfo(f){
    this.set(f.value);
 }

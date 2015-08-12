@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150224
 //==========================================================
-MO.MPropertyCheck = function MPropertyCheck(o){
+MO.MUiPropertyCheck = function MUiPropertyCheck(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property

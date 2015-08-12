@@ -162,52 +162,6 @@ MO.FEditorDesktop_dispose = function FEditorDesktop_dispose(){
    o._canvas2d = MO.RObject.dispose(o._canvas2d);
    o.__base.FDesktop.dispose.call(o);
 }
-MO.FEditorDsTabBar = function FEditorDsTabBar(o){
-   o = MO.Class.inherits(this, o, MO.FDuiTabBar);
-   o._frameName            = 'editor.design.TabBar';
-   o._resourceTypeCd       = 'private';
-   o._controlPrivateButton = null;
-   o._controlTeamButton    = null;
-   o._controlShareButton   = null;
-   o.onBuilded             = MO.FEditorDsTabBar_onBuilded;
-   o.onButtonClick         = MO.FEditorDsTabBar_onButtonClick;
-   o.construct             = MO.FEditorDsTabBar_construct;
-   o.dispose               = MO.FEditorDsTabBar_dispose;
-   return o;
-}
-MO.FEditorDsTabBar_onBuilded = function FEditorDsTabBar_onBuilded(p){
-   var o = this;
-   o.__base.FDuiTabBar.onBuilded.call(o, p);
-   o._controlPersistence.addClickListener(o, o.onButtonClick);
-   o._controlList.addClickListener(o, o.onButtonClick);
-   o._controlTree.addClickListener(o, o.onButtonClick);
-   o._controlFrame.addClickListener(o, o.onButtonClick);
-}
-MO.FEditorDsTabBar_onButtonClick = function FEditorDsTabBar_onButtonClick(event){
-   var o = this;
-   var workspace = o._workspace;
-   var sender = event.sender;
-   var name = sender.name();
-   if(name == 'persistence'){
-      workspace.selectFrameSet(MO.EEditorFrameSet.PersistenceFrameSet);
-   }else if(name == 'list'){
-      workspace.selectFrameSet(MO.EEditorFrameSet.ListFrameSet);
-   }else if(name == 'tree'){
-      workspace.selectFrameSet(MO.EEditorFrameSet.TreeFrameSet);
-   }else if(name == 'frame'){
-      workspace.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
-   }else{
-      alert('功能未开启，请以后关注。');
-   }
-}
-MO.FEditorDsTabBar_construct = function FEditorDsTabBar_construct(){
-   var o = this;
-   o.__base.FDuiTabBar.construct.call(o);
-}
-MO.FEditorDsTabBar_dispose = function FEditorDsTabBar_dispose(){
-   var o = this;
-   o.__base.FDuiTabBar.dispose.call(o);
-}
 MO.FEditorFrameSet = function FEditorFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FDuiFrameSet);
    o._styleToolBarGround   = MO.Class.register(o, new MO.AStyle('_styleToolBarGround', 'ToolBar_Ground'));

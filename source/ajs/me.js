@@ -3855,10 +3855,10 @@ MO.RString.prototype.format = function RString_format(value, parameters){
    var count = arguments.length;
    for(var i = 1; i < count; i++){
       var parameter = arguments[i];
-      if(typeof(parameter) == 'function'){
-         parameter = MO.Method.name(parameter);
-      }else if(parameter == null){
+      if(parameter == null){
          parameter = '';
+      }else if(typeof(parameter) == 'function'){
+         parameter = MO.Method.name(parameter);
       }
       value = value.replace('{' + i + '}', parameter);
    }
@@ -35344,73 +35344,6 @@ MO.EUiWrap = new function EUiWrap(){
    o.SameLine = 1;
    return o;
 }
-MO.MPropertyCheck = function MPropertyCheck(o){
-   o = MO.Class.inherits(this, o);
-   o._valueTrue  = MO.Class.register(o, new MO.APtyString('_valueTrue'), MO.EBoolean.True);
-   o._valueFalse = MO.Class.register(o, new MO.APtyString('_valueFalse'), MO.EBoolean.False);
-   return o;
-}
-MO.MPropertyEdit = function MPropertyEdit(o){
-   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
-   o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
-   o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
-   o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
-   o._editComplete   = MO.Class.register(o, new MO.APtyBoolean('_editComplete'));
-   o._validLengthMin = MO.Class.register(o, new MO.APtyInteger('_validLengthMin'));
-   o._validLengthMax = MO.Class.register(o, new MO.APtyInteger('_validLengthMax'));
-   o.oeValid         = MO.MPropertyEdit_oeValid;
-   return o;
-}
-MO.MPropertyEdit_oeValid = function MPropertyEdit_oeValid(e){
-   var o = this;
-   var r = MO.EEventStatus.Stop;
-   if(o._visible && o._validable){
-      var t = o.text();
-      if(o.validRequire && !MO.RValidator.validRequire(o, t)){
-         e.controls.push(o);
-         return r;
-      }
-      if(o.editLength && !MO.RValidator.validTextLength(o, t, o.editLength)){
-         e.controls.push(o);
-         return r;
-      }
-   }
-   return r;
-}
-MO.MPropertyNumber = function MPropertyNumber(o){
-   o = MO.Class.inherits(this, o);
-   o._valueMin       = MO.Class.register(o, new MO.APtyNumber('_valueMin'));
-   o._valueMax       = MO.Class.register(o, new MO.APtyNumber('_valueMax'));
-   o._valuePrecision = MO.Class.register(o, new MO.APtyInteger('_valuePrecision'), 3);
-   return o;
-}
-MO.MPropertySelect = function MPropertySelect(o){
-   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
-   o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
-   o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
-   o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
-   o._editComplete   = MO.Class.register(o, new MO.APtyBoolean('_editComplete'));
-   o._validLengthMin = MO.Class.register(o, new MO.APtyInteger('_validLengthMin'));
-   o._validLengthMax = MO.Class.register(o, new MO.APtyInteger('_validLengthMax'));
-   o.oeValid         = MO.MPropertySelect_oeValid;
-   return o;
-}
-MO.MPropertySelect_oeValid = function MPropertySelect_oeValid(e){
-   var o = this;
-   var r = MO.EEventStatus.Stop;
-   if(o._visible && o._validable){
-      var t = o.text();
-      if(o.validRequire && !MO.RValidator.validRequire(o, t)){
-         e.controls.push(o);
-         return r;
-      }
-      if(o.editLength && !MO.RValidator.validTextLength(o, t, o.editLength)){
-         e.controls.push(o);
-         return r;
-      }
-   }
-   return r;
-}
 MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
    o._guid         = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
@@ -35682,6 +35615,34 @@ MO.MUiControl_dispose = function MUiControl_dispose(){
    o._eventRefresh = MO.Lang.Object.dispose(o._eventRefresh);
    o._eventFrame = MO.Lang.Object.dispose(o._eventFrame);
 }
+MO.MUiDataContainer = function MUiDataContainer(o){
+   o = MO.Class.inherits(this, o);
+   o.loadUnit    = MO.MUiDataContainer_loadUnit;
+   o.saveUnit    = MO.MUiDataContainer_saveUnit;
+   return o;
+}
+MO.MUiDataContainer_loadUnit = function MUiDataContainer_loadUnit(unit){
+   var o = this;
+   var event = new MO.SUiDispatchEvent(o, 'oeLoadUnit', MO.MUiDataField);
+   event.unit = unit;
+   o.process(event);
+   event.dispose();
+}
+MO.MUiDataContainer_saveUnit = function MUiDataContainer_saveUnit(unit){
+   var o = this;
+   var event = new MO.SUiDispatchEvent(o, 'oeSaveUnit', MO.MUiDataField);
+   event.unit = unit;
+   o.process(event);
+   event.dispose();
+}
+MO.MUiDataField = function MUiDataField(o){
+   o = MO.Class.inherits(this, o);
+   o._dataName    = MO.Class.register(o, [new MO.APtyString('_dataName'), new MO.AGetSet('_dataName')]);
+   o._dataTypeCd  = MO.Class.register(o, [new MO.APtyString('_dataTypeCd'), new MO.AGetSet('_dataTypeCd')], MO.EDataType.String);
+   o._dataRequire = MO.Class.register(o, [new MO.APtyBoolean('_dataRequire'), new MO.AGetSet('_dataRequire')]);
+   o._dataDefault = MO.Class.register(o, [new MO.APtyBoolean('_dataDefault'), new MO.AGetSet('_dataDefault')]);
+   return o;
+}
 MO.MUiDataProperties = function MUiDataProperties(o){
    o = MO.Class.inherits(this, o);
    o._dataProperties = null;
@@ -35706,12 +35667,190 @@ MO.MUiDataProperties_dataPropertyGet = function MUiDataProperties_dataPropertyGe
 MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySet(name, value){
    this.dataProperties().set(name, value);
 }
+MO.MUiDataValue = function MUiDataValue(o){
+   o = MO.Class.inherits(this, o, MUiValue);
+   o._dataValue = MO.Class.register(o, [new MO.APtyString('_dataValue'), new MO.AGetSet('_dataValue')]);
+   o.oeLoadUnit = MO.Method.empty;
+   o.oeSaveUnit = MO.Method.empty;
+   return o;
+}
 MO.MUiDragable = function MUiDragable(o){
    o = MO.Class.inherits(this, o);
    o.onDragStart = MO.Method.virtual(o, 'onDragStart');
    o.onDragMove  = MO.Method.virtual(o, 'onDragMove');
    o.onDragStop  = MO.Method.virtual(o, 'onDragStop');
    return o;
+}
+MO.MUiEditValue = function MUiEditValue(o){
+   o = MO.Class.inherits(this, o, MO.MUiTextFormator);
+   o._dataValue      = MO.Class.register(o, new MO.APtyString('_dataValue'));
+   o._statusEditable = true;
+   o._statusEditing  = false;
+   o._statusInvalid  = true;
+   o._recordText     = null;
+   o._recordValue    = null;
+   o.isTextChanged   = MO.MUiEditValue_isTextChanged;
+   o.isValueChanged  = MO.MUiEditValue_isValueChanged;
+   o.formator        = MO.MUiEditValue_formator;
+   o.text            = MO.MUiEditValue_text;
+   o.setText         = MO.MUiEditValue_setText;
+   o.get             = MO.MUiEditValue_get;
+   o.set             = MO.MUiEditValue_set;
+   o.clearValue      = MO.MUiEditValue_clearValue;
+   o.resetValue      = MO.MUiEditValue_resetValue;
+   o.loadValue       = MO.MUiEditValue_loadValue;
+   o.saveValue       = MO.MUiEditValue_saveValue;
+   o.recordValue     = MO.MUiEditValue_recordValue;
+   o.validValue      = MO.Method.empty;
+   o.setEditAble     = MO.MUiEditValue_setEditAble;
+   o.doFocus         = MO.MUiEditValue_doFocus;
+   o.doBlur          = MO.MUiEditValue_doBlur;
+   return o;
+}
+MO.MUiEditValue_isTextChanged = function MUiEditValue_isTextChanged(){
+   var o = this;
+   var text = o.text();
+   return MO.Lang.String.equals(o._recordText, text);
+}
+MO.MUiEditValue_isValueChanged = function MUiEditValue_isValueChanged(){
+   var o = this;
+   var value = o.get();
+   return MO.Lang.String.equals(o._recordValue, value);
+}
+MO.MUiEditValue_formator = function MUiEditValue_formator(){
+   return this;
+}
+MO.MUiEditValue_text = function MUiEditValue_text(){
+}
+MO.MUiEditValue_setText = function MUiEditValue_setText(text){
+}
+MO.MUiEditValue_get = function MUiEditValue_get(){
+   var o = this;
+   var text = o.text();
+   var value = o._dataValue = o.formator().formatValue(text)
+   return value;
+}
+MO.MUiEditValue_set = function MUiEditValue_set(value){
+   var o = this;
+   o._dataValue = MO.Lang.String.nvl(value);
+   var text = o.formator().formatText(value)
+   o.setText(text);
+}
+MO.MUiEditValue_clearValue = function MUiEditValue_clearValue(){
+   var o = this;
+   o._dataValue = MO.Lang.String.EMPTY;
+   o.set(MO.Lang.String.EMPTY);
+}
+MO.MUiEditValue_resetValue = function MUiEditValue_resetValue(){
+   var o = this;
+   o._dataValue = value;
+   o.set(value);
+}
+MO.MUiEditValue_loadValue = function MUiEditValue_loadValue(c, t){
+   var o = this;
+}
+MO.MUiEditValue_saveValue = function MUiEditValue_saveValue(c, t){
+   var o = this;
+}
+MO.MUiEditValue_recordValue = function MUiEditValue_recordValue(){
+   var o = this;
+   o._recordText = o.text();
+   o._recordValue = o.get();
+}
+MO.MUiEditValue_setEditAble = function MUiEditValue_setEditAble(flag){
+   var o = this;
+   o._statusEditable = flag;
+}
+MO.MUiEditValue_doFocus = function MUiEditValue_doFocus(){
+   var o = this;
+   if(o._statusEditable){
+      o._statusEditing = true;
+   }
+}
+MO.MUiEditValue_doBlur = function MUiEditValue_doBlur(){
+   var o = this;
+   if(o._statusEditable && o._statusEditing){
+      o._statusEditing = false;
+   }
+}
+MO.MUiEditValue_oeClearValue = function MUiEditValue_oeClearValue(e){
+   var o = this;
+   var d = o.descriptor();
+   if(!MO.Lang.String.isEmpty(d.dataName)){
+      o.clearValue();
+      o.dataValue = o.reget();
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_oeResetValue = function MUiEditValue_oeResetValue(e){
+   var o = this;
+   var d = o.descriptor();
+   if(!MO.Lang.String.isEmpty(d.dataName)){
+      o.resetValue();
+      o.dataValue = o.reget();
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_oeLoadValue = function MUiEditValue_oeLoadValue(e){
+   var o = this;
+   var d = o.descriptor();
+   var vs = e.values;
+   var dn = d.dataName;
+   if(!MO.Lang.String.isEmpty(dn)){
+      if(vs.contains(dn)){
+         var v = vs.nvl(dn);
+         if(RControl.isInfo(v)){
+            o.setInfoPack(v);
+         }else{
+        	 if(RControl.isGroup(v)){
+        		 o.setGroupPack(v);
+        	 }else{
+                 o.loadValue(vs);
+        	 }
+         }
+         o.recordValue();
+         o.dataValue = o.reget();
+      }
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_oeSaveValue = function MUiEditValue_oeSaveValue(e){
+   var o = this;
+   var d = o.descriptor();
+   if(!MO.Lang.String.isEmpty(d.dataName)){
+      o.saveValue(e.values);
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_oeRecordValue = function MUiEditValue_oeRecordValue(){
+   var o = this;
+   var d = o.descriptor();
+   if(!MO.Lang.String.isEmpty(d.dataName)){
+      o.recordValue();
+   }
+   return EEventStatus.Stop;
+}
+MO.MUiEditValue_commitValue = function MUiEditValue_commitValue(){
+   this.__commitValue = MO.Lang.String.nvl(this.reget());
+}
+MO.MUiEditValue_reget = function MUiEditValue_reget(){
+   return this.descriptor().formatValue(this.text());
+}
+MO.MUiEditValue_setInfoPack = function MUiEditValue_setInfoPack(v){
+   var o = this;
+   var f = o._info;
+   if(!f){
+      f = o._info = new MO.TControlInfo();
+   }
+   f.unpack(v);
+   var d = o.descriptor();
+   d.setInfo(f);
+   if(d != o){
+      o.setInfo(f);
+   }
+}
+MO.MUiEditValue_setInfo = function MUiEditValue_setInfo(f){
+   this.set(f.value);
 }
 MO.MUiMargin = function MUiMargin(o){
    o = MO.RClass.inherits(this, o);
@@ -35755,6 +35894,73 @@ MO.MUiProgress = function MUiProgress(o){
    o = MO.Class.inherits(this, o);
    o.oeProgress = MO.Method.virtual(o, 'oeProgress');
    return o;
+}
+MO.MUiPropertyCheck = function MUiPropertyCheck(o){
+   o = MO.Class.inherits(this, o);
+   o._valueTrue  = MO.Class.register(o, new MO.APtyString('_valueTrue'), MO.EBoolean.True);
+   o._valueFalse = MO.Class.register(o, new MO.APtyString('_valueFalse'), MO.EBoolean.False);
+   return o;
+}
+MO.MUiPropertyEdit = function MUiPropertyEdit(o){
+   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
+   o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
+   o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
+   o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
+   o._editComplete   = MO.Class.register(o, new MO.APtyBoolean('_editComplete'));
+   o._validLengthMin = MO.Class.register(o, new MO.APtyInteger('_validLengthMin'));
+   o._validLengthMax = MO.Class.register(o, new MO.APtyInteger('_validLengthMax'));
+   o.oeValid         = MO.MUiPropertyEdit_oeValid;
+   return o;
+}
+MO.MUiPropertyEdit_oeValid = function MUiPropertyEdit_oeValid(e){
+   var o = this;
+   var r = MO.EEventStatus.Stop;
+   if(o._visible && o._validable){
+      var t = o.text();
+      if(o.validRequire && !MO.RValidator.validRequire(o, t)){
+         e.controls.push(o);
+         return r;
+      }
+      if(o.editLength && !MO.RValidator.validTextLength(o, t, o.editLength)){
+         e.controls.push(o);
+         return r;
+      }
+   }
+   return r;
+}
+MO.MUiPropertyNumber = function MUiPropertyNumber(o){
+   o = MO.Class.inherits(this, o);
+   o._valueMin       = MO.Class.register(o, new MO.APtyNumber('_valueMin'));
+   o._valueMax       = MO.Class.register(o, new MO.APtyNumber('_valueMax'));
+   o._valuePrecision = MO.Class.register(o, new MO.APtyInteger('_valuePrecision'), 3);
+   return o;
+}
+MO.MUiPropertySelect = function MUiPropertySelect(o){
+   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
+   o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
+   o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
+   o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
+   o._editComplete   = MO.Class.register(o, new MO.APtyBoolean('_editComplete'));
+   o._validLengthMin = MO.Class.register(o, new MO.APtyInteger('_validLengthMin'));
+   o._validLengthMax = MO.Class.register(o, new MO.APtyInteger('_validLengthMax'));
+   o.oeValid         = MO.MUiPropertySelect_oeValid;
+   return o;
+}
+MO.MUiPropertySelect_oeValid = function MUiPropertySelect_oeValid(e){
+   var o = this;
+   var r = MO.EEventStatus.Stop;
+   if(o._visible && o._validable){
+      var t = o.text();
+      if(o.validRequire && !MO.RValidator.validRequire(o, t)){
+         e.controls.push(o);
+         return r;
+      }
+      if(o.editLength && !MO.RValidator.validTextLength(o, t, o.editLength)){
+         e.controls.push(o);
+         return r;
+      }
+   }
+   return r;
 }
 MO.MUiStorage = function MUiStorage(o){
    o = MO.Class.inherits(this, o);

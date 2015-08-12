@@ -21,7 +21,7 @@ with(MO){
    // @version 150131
    //==========================================================
    MO.FDuiSlideNumber = function FDuiSlideNumber(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MPropertyNumber, MListenerDataChanged, MMouseCapture);
+      o = RClass.inherits(this, o, FDuiEditControl, MUiPropertyNumber, MListenerDataChanged, MMouseCapture);
       //..........................................................
       // @property
       o._inputSize          = RClass.register(o, new APtySize2('_inputSize'));

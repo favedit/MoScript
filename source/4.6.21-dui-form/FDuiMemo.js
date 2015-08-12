@@ -16,7 +16,7 @@ with(MO){
    // @version 150318
    //==========================================================
    MO.FDuiMemo = function FDuiMemo(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MPropertyEdit, MListenerDataChanged);
+      o = RClass.inherits(this, o, FDuiEditControl, MUiPropertyEdit, MListenerDataChanged);
       //..........................................................
       // @property
       o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));

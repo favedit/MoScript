@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiColumnEdit = function FDuiColumnEdit(o){
-      o = RClass.inherits(this, o, FDuiColumnEditControl, MPropertyEdit);
+      o = RClass.inherits(this, o, FDuiColumnEditControl, MUiPropertyEdit);
       //..........................................................
       // @attribute
       o._cellClass     = FCellEdit;

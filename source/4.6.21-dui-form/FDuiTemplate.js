@@ -15,7 +15,7 @@
 // @version 150102
 //==========================================================
 MO.FDuiTemplate = function FDuiTemplate(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MPropertyEdit, MO.MListenerDataChanged);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit, MO.MListenerDataChanged);
    //..........................................................
    // @property
    o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));

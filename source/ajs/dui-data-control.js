@@ -68,84 +68,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.MUiDataContainer = function MUiDataContainer(o){
-      o = RClass.inherits(this, o, MDuiContainer);
-      o.dsDataLoad = MUiDataContainer_dsDataLoad;
-      o.dsDataSave = MUiDataContainer_dsDataSave;
-      o.dsLoadValue = MUiDataContainer_dsLoadValue;
-      o.dsSaveValue = MUiDataContainer_dsSaveValue;
-      return o;
-   }
-   MO.MUiDataContainer_dsDataLoad = function MUiDataContainer_dsDataLoad(p){
-      var o = this;
-      var e = new TEventProcess(null, o, 'oeDataLoad', MDataValue);
-      e.source = p;
-      o.process(e);
-      e.dispose();
-   }
-   MO.MUiDataContainer_dsDataSave = function MUiDataContainer_dsDataSave(p){
-      var o = this;
-      var e = new TEventProcess(null, o, 'oeDataSave', MDataValue);
-      e.source = p;
-      o.process(e);
-      e.dispose();
-   }
-   MO.MUiDataContainer_dsLoadValue = function MUiDataContainer_dsLoadValue(r, m){
-      var o = this;
-      var e = new TEventProcess(o, 'oeDataLoadValue', MUiDataValue);
-      e.viewer = o._dataViewer;
-      e.store = m;
-      e.values = r;
-      o.process(e);
-   }
-   MO.MUiDataContainer_dsSaveValue = function MUiDataContainer_dsSaveValue(r, m){
-      var o = this;
-      if(!r){
-         r = new TRow();
-      }
-      var e = new TEventProcess(o, 'oeDataSaveValue', MUiDataValue);
-      e.viewer = o._dataViewer;
-      e.store = m;
-      e.values = r;
-      o.process(e);
-      r.set('_status', o._dataStatusCd);
-      return r;
-   }
-}
-with(MO){
-   MO.MUiDataField = function MUiDataField(o){
-      o = RClass.inherits(this, o, MUiValue, MUiDataValue);
-      o._dataTypeCd     = RClass.register(o, new APtyString('_dataTypeCd'));
-      o._dataRequire    = RClass.register(o, new APtyBoolean('_dataRequire'));
-      o._dataName       = RClass.register(o, new APtyString('_dataName'));
-      o.oeDataLoadValue = MUiDataField_oeDataLoadValue;
-      o.oeDataSaveValue = MUiDataField_oeDataSaveValue;
-      o.formatLoad      = MUiDataField_formatLoad;
-      o.formatSave      = MUiDataField_formatSave;
-      return o;
-   }
-   MO.MUiDataField_oeDataLoadValue = function MUiDataField_oeDataLoadValue(dataSource){
-      var o = this;
-      var values = dataSource.values;
-      var value = values.get(o._dataName);
-      o.set(o.formatLoad(value));
-      return EEventStatus.Stop;
-   }
-   MO.MUiDataField_oeDataSaveValue = function MUiDataField_oeDataSaveValue(p){
-      var o = this;
-      var value = o.get();
-      var values = dataSource.values;
-      values.set(o._dataName, o.formatSave(value));
-      return EEventStatus.Stop;
-   }
-   MO.MUiDataField_formatLoad = function MUiDataField_formatLoad(value){
-      return value;
-   }
-   MO.MUiDataField_formatSave = function MUiDataField_formatSave(value){
-      return value;
-   }
-}
-with(MO){
    MO.MUiDataset = function MUiDataset(o){
       o = RClass.inherits(this, o);
       o._dsDataset         = RClass.register(o, new APtyString('_dsDataset', 'dataset'));
@@ -703,14 +625,6 @@ with(MO){
          sw.linkDsControl(o);
       }
       sw.show();
-   }
-}
-with(MO){
-   MO.MUiDataValue = function MUiDataValue(o){
-      o = RClass.inherits(this, o);
-      o.oeDataLoadValue = RMethod.empty;
-      o.oeDataSaveValue = RMethod.empty;
-      return o;
    }
 }
 with(MO){

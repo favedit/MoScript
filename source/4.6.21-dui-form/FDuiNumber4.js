@@ -7,7 +7,7 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FDuiNumber4 = function FDuiNumber4(o){
-      //o = RClass.inherits(this, o, FDuiEditControl, MPropertyEdit);
+      //o = RClass.inherits(this, o, FDuiEditControl, MUiPropertyEdit);
       o = RClass.inherits(this, o, FDuiEditControl);
       //..........................................................
       // @property

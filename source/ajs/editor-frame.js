@@ -61,59 +61,19 @@ MO.FEditorDsFrameButtonProperty_dispose = function FEditorDsFrameButtonProperty_
    o.__base.FDsSystemFrameControlProperty.dispose.call(o);
 }
 MO.FEditorDsFrameCatalogContent = function FEditorDsFrameCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
-   o._activeFrame = null;
-   o.onNodeClick  = MO.FEditorDsFrameCatalogContent_onNodeClick;
-   o.construct    = MO.FEditorDsFrameCatalogContent_construct;
-   o.selectObject = MO.FEditorDsFrameCatalogContent_selectObject;
-   o.showObject   = MO.FEditorDsFrameCatalogContent_showObject;
-   o.dispose      = MO.FEditorDsFrameCatalogContent_dispose;
+   o = MO.Class.inherits(this, o, MO.FEditorDsCatalogContent);
+   o._defineCode = 'editor.design.frame';
+   o.construct   = MO.FEditorDsFrameCatalogContent_construct;
+   o.dispose     = MO.FEditorDsFrameCatalogContent_dispose;
    return o;
-}
-MO.FEditorDsFrameCatalogContent_onNodeClick = function FEditorDsFrameCatalogContent_onNodeClick(event){
-   var o = this;
-   var node = event.node;
-   var typeGroup = node.typeGroup();
-   var nodeType = node.type();
-   var typeCode = node.typeCode();
-   var frameName = nodeType.get('property_frame');
-   var label = node.label();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.load(label);
-      o._frameSet.selectObject(typeGroup, frameName, null);
-   }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, label);
-   }
 }
 MO.FEditorDsFrameCatalogContent_construct = function FEditorDsFrameCatalogContent_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
-   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.frame');
-}
-MO.FEditorDsFrameCatalogContent_selectObject = function FEditorDsFrameCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-MO.FEditorDsFrameCatalogContent_showObject = function FEditorDsFrameCatalogContent_showObject(item){
-   var o = this;
-   if(MO.Class.isClass(item, MO.FDsSceneRenderable)){
-      var renderableNodes = o._renderableNodes;
-      var renderableCount = renderableNodes.count();
-      for(var i = 0; i < renderableCount; i++){
-         var renderableNode = renderableNodes.at(i);
-         var renderable = renderableNode.dataPropertyGet('linker');
-         if(renderable == item){
-            o.processSelectedListener(item, false);
-         }
-      }
-   }
+   o.__base.FEditorDsCatalogContent.construct.call(o);
 }
 MO.FEditorDsFrameCatalogContent_dispose = function FEditorDsFrameCatalogContent_dispose(){
    var o = this;
-   o._activeFrame = null;
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FEditorDsCatalogContent.dispose.call(o);
 }
 MO.FEditorDsFrameCatalogToolBar = function FEditorDsFrameCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);

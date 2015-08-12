@@ -6,7 +6,7 @@
 // @version 150216
 //==========================================================
 MO.FDuiCheck = function FDuiCheck(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MPropertyCheck, MO.MListenerDataChanged);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyCheck, MO.MListenerDataChanged);
    //..........................................................
    // @style
    o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));

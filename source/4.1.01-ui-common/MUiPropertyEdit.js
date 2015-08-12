@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-MO.MPropertyEdit = function MPropertyEdit(o){
+MO.MUiPropertyEdit = function MUiPropertyEdit(o){
    o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
    //..........................................................
    // @property
@@ -17,7 +17,7 @@ MO.MPropertyEdit = function MPropertyEdit(o){
    o._validLengthMax = MO.Class.register(o, new MO.APtyInteger('_validLengthMax'));
    //..........................................................
    // @process
-   o.oeValid         = MO.MPropertyEdit_oeValid;
+   o.oeValid         = MO.MUiPropertyEdit_oeValid;
    return o;
 }
 
@@ -27,7 +27,7 @@ MO.MPropertyEdit = function MPropertyEdit(o){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-MO.MPropertyEdit_oeValid = function MPropertyEdit_oeValid(e){
+MO.MUiPropertyEdit_oeValid = function MUiPropertyEdit_oeValid(e){
    var o = this;
    var r = MO.EEventStatus.Stop;
    // 判断是否需要检查

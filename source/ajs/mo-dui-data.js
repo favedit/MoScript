@@ -68,84 +68,6 @@ with(MO){
    }
 }
 with(MO){
-   MO.MUiDataContainer = function MUiDataContainer(o){
-      o = RClass.inherits(this, o, MDuiContainer);
-      o.dsDataLoad = MUiDataContainer_dsDataLoad;
-      o.dsDataSave = MUiDataContainer_dsDataSave;
-      o.dsLoadValue = MUiDataContainer_dsLoadValue;
-      o.dsSaveValue = MUiDataContainer_dsSaveValue;
-      return o;
-   }
-   MO.MUiDataContainer_dsDataLoad = function MUiDataContainer_dsDataLoad(p){
-      var o = this;
-      var e = new TEventProcess(null, o, 'oeDataLoad', MDataValue);
-      e.source = p;
-      o.process(e);
-      e.dispose();
-   }
-   MO.MUiDataContainer_dsDataSave = function MUiDataContainer_dsDataSave(p){
-      var o = this;
-      var e = new TEventProcess(null, o, 'oeDataSave', MDataValue);
-      e.source = p;
-      o.process(e);
-      e.dispose();
-   }
-   MO.MUiDataContainer_dsLoadValue = function MUiDataContainer_dsLoadValue(r, m){
-      var o = this;
-      var e = new TEventProcess(o, 'oeDataLoadValue', MUiDataValue);
-      e.viewer = o._dataViewer;
-      e.store = m;
-      e.values = r;
-      o.process(e);
-   }
-   MO.MUiDataContainer_dsSaveValue = function MUiDataContainer_dsSaveValue(r, m){
-      var o = this;
-      if(!r){
-         r = new TRow();
-      }
-      var e = new TEventProcess(o, 'oeDataSaveValue', MUiDataValue);
-      e.viewer = o._dataViewer;
-      e.store = m;
-      e.values = r;
-      o.process(e);
-      r.set('_status', o._dataStatusCd);
-      return r;
-   }
-}
-with(MO){
-   MO.MUiDataField = function MUiDataField(o){
-      o = RClass.inherits(this, o, MUiValue, MUiDataValue);
-      o._dataTypeCd     = RClass.register(o, new APtyString('_dataTypeCd'));
-      o._dataRequire    = RClass.register(o, new APtyBoolean('_dataRequire'));
-      o._dataName       = RClass.register(o, new APtyString('_dataName'));
-      o.oeDataLoadValue = MUiDataField_oeDataLoadValue;
-      o.oeDataSaveValue = MUiDataField_oeDataSaveValue;
-      o.formatLoad      = MUiDataField_formatLoad;
-      o.formatSave      = MUiDataField_formatSave;
-      return o;
-   }
-   MO.MUiDataField_oeDataLoadValue = function MUiDataField_oeDataLoadValue(dataSource){
-      var o = this;
-      var values = dataSource.values;
-      var value = values.get(o._dataName);
-      o.set(o.formatLoad(value));
-      return EEventStatus.Stop;
-   }
-   MO.MUiDataField_oeDataSaveValue = function MUiDataField_oeDataSaveValue(p){
-      var o = this;
-      var value = o.get();
-      var values = dataSource.values;
-      values.set(o._dataName, o.formatSave(value));
-      return EEventStatus.Stop;
-   }
-   MO.MUiDataField_formatLoad = function MUiDataField_formatLoad(value){
-      return value;
-   }
-   MO.MUiDataField_formatSave = function MUiDataField_formatSave(value){
-      return value;
-   }
-}
-with(MO){
    MO.MUiDataset = function MUiDataset(o){
       o = RClass.inherits(this, o);
       o._dsDataset         = RClass.register(o, new APtyString('_dsDataset', 'dataset'));
@@ -703,14 +625,6 @@ with(MO){
          sw.linkDsControl(o);
       }
       sw.show();
-   }
-}
-with(MO){
-   MO.MUiDataValue = function MUiDataValue(o){
-      o = RClass.inherits(this, o);
-      o.oeDataLoadValue = RMethod.empty;
-      o.oeDataSaveValue = RMethod.empty;
-      return o;
    }
 }
 with(MO){
@@ -1329,101 +1243,99 @@ with(MO){
       }
    }
 }
-with(MO){
-   MO.FUiDataEdit = function FUiDataEdit(o){
-      o = RClass.inherits(this, o, FDuiEdit, MUiDataField);
-      return o;
+MO.FUiDataEdit = function FUiDataEdit(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEdit, MO.MUiDataField);
+   return o;
+}
+MO.FUiDataEdit_onDataKeyDown = function FUiDataEdit_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FDuiEdit.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
    }
-   MO.FUiDataEdit_onDataKeyDown = function FUiDataEdit_onDataKeyDown(s, e){
-      var o = this;
-      o.__base.FDuiEdit.onDataKeyDown.call(o, s, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
+}
+MO.FUiDataEdit_formatValue = function FUiDataEdit_formatValue(v){
+   var o = this;
+   var r = RString.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = RString.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = RString.toLower(r);
    }
-   MO.FUiDataEdit_formatValue = function FUiDataEdit_formatValue(v){
-      var o = this;
-      var r = RString.nvl(v);
-      if(ECase.Upper == o.editCase){
-         r = RString.toUpper(r);
-      }else if(ECase.Lower == o.editCase){
-         r = RString.toLower(r);
-      }
-      return r;
+   return r;
+}
+MO.FUiDataEdit_setText = function FUiDataEdit_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
    }
-   MO.FUiDataEdit_setText = function FUiDataEdit_setText(t){
-      var o = this;
-      if(!o.hEdit){
-         return;
-      }
-      if('U'== o.editCase){
-         o.hEdit.value = RString.toUpper(t);
-      }else if('L'== o.editCase){
-            o.hEdit.value = RString.toLower(t);
-      }else{
-         o.hEdit.value = t;
-      }
-      if('right' == o.editAlign){
-         o.hEdit.style.textAlign = 'right';
-      }else if('left' == o.editAlign ){
-         o.hEdit.style.textAlign = 'left';
-      }else{
-         o.hEdit.style.textAlign = 'center';
-      }
+   if('U'== o.editCase){
+      o.hEdit.value = RString.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = RString.toLower(t);
+   }else{
+      o.hEdit.value = t;
    }
-   MO.FUiDataEdit_validText = function FUiDataEdit_validText(t){
-      var o = this;
-      var r = o.__base.FDuiEdit.validText.call(o, t);
-      if(!r){
-         if(o.validLenmin){
-            if(o.validLenmin > t.length){
-               return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
-            }
-         }
-         if(o.validLenmax){
-            if(o.validLenmax < t.length){
-               return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-            }
+   if('right' == o.editAlign){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+MO.FUiDataEdit_validText = function FUiDataEdit_validText(t){
+   var o = this;
+   var r = o.__base.FDuiEdit.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
          }
       }
-      return r;
-   }
-   MO.FUiDataEdit_findEditor = function FUiDataEdit_findEditor(){
-      var o = this;
-      if(o.editComplete){
-         var de = o.editor;
-         if(!de){
-            o.dsControl = o.topControl(MDataset);
-            if(o.dsControl){
-               de = o.editor = RConsole.find(FUiDataEditConsole).focus(o, FUiDataEditEditor);
-            }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
          }
-         if(de){
-            de.linkControl(o);
-         }
-         return o.editor;
       }
    }
-   MO.FUiDataEdit_drop = function FUiDataEdit_drop(){
-      var o = this;
-      var de = o.findEditor();
+   return r;
+}
+MO.FUiDataEdit_findEditor = function FUiDataEdit_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FUiDataEditConsole).focus(o, FUiDataEditEditor);
+         }
+      }
       if(de){
-         var t = o.reget();
-         if(t.length > 0){
-            if(o.finded != t){
-               if(de.source != o){
-                  de.linkControl(o);
-               }
-               de.search(t);
+         de.linkControl(o);
+      }
+      return o.editor;
+   }
+}
+MO.FUiDataEdit_drop = function FUiDataEdit_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
             }
-            o.finded = t;
+            de.search(t);
          }
+         o.finded = t;
       }
    }
 }
 with(MO){
    MO.FUiDataEditControl = function FUiDataEditControl(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MDuiEditValue, MDuiEditChange, MDuiEditDrop);
+      o = RClass.inherits(this, o, FDuiEditControl, MUiEditValue, MDuiEditChange, MDuiEditDrop);
       o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
       o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
       o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
@@ -1753,7 +1665,7 @@ with(MO){
    }
    MO.FUiDataEditControl_oeLoadValue = function FUiDataEditControl_oeLoadValue(e){
       var o = this;
-      var r = o.__base.MDuiEditValue.oeLoadValue.call(o, e);
+      var r = o.__base.MUiEditValue.oeLoadValue.call(o, e);
       var hci = o.hChangeIcon;
       if(hci){
          hci.style.display = 'none';
@@ -1763,19 +1675,19 @@ with(MO){
    MO.FUiDataEditControl_doFocus = function FUiDataEditControl_doFocus(e){
       var o = this;
       o.__base.MDuiFocus.doFocus.call(o, e);
-      o.__base.MDuiEditValue.doFocus.call(o, e);
+      o.__base.MUiEditValue.doFocus.call(o, e);
    }
    MO.FUiDataEditControl_doBlur = function FUiDataEditControl_doBlur(e){
       var o = this;
       o.__base.MDuiFocus.doBlur.call(o, e);
-      o.__base.MDuiEditValue.doBlur.call(o, e);
+      o.__base.MUiEditValue.doBlur.call(o, e);
    }
    MO.FUiDataEditControl_testFocus = function FUiDataEditControl_testFocus(){
       return this._visible && this._editable && !this._disbaled;
    }
    MO.FUiDataEditControl_setEditable = function FUiDataEditControl_setEditable(v){
       var o = this;
-      o.__base.MDuiEditValue.setEditable.call(o, v);
+      o.__base.MUiEditValue.setEditable.call(o, v);
       if(o.hEdit){
          o.hEdit.readOnly = !v;
       }

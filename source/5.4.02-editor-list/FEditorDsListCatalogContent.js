@@ -1,55 +1,21 @@
 //==========================================================
-// <T>设计目录基类。</T>
+// <T>设计列表目录。</T>
 //
+// @class
 // @author maocy
-// @history 141231
+// @history 150812
 //==========================================================
 MO.FEditorDsListCatalogContent = function FEditorDsListCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
+   o = MO.Class.inherits(this, o, MO.FEditorDsCatalogContent);
    //..........................................................
    // @attributes
-   o._activeFrame = null;
-   //..........................................................
-   // @event
-   o.onNodeClick  = MO.FEditorDsListCatalogContent_onNodeClick;
+   o._defineCode = 'editor.design.list';
    //..........................................................
    // @method
-   o.construct    = MO.FEditorDsListCatalogContent_construct;
+   o.construct   = MO.FEditorDsListCatalogContent_construct;
    // @method
-   o.selectObject = MO.FEditorDsListCatalogContent_selectObject;
-   o.showObject   = MO.FEditorDsListCatalogContent_showObject;
-   // @method
-   o.dispose      = MO.FEditorDsListCatalogContent_dispose;
+   o.dispose     = MO.FEditorDsListCatalogContent_dispose;
    return o;
-}
-
-//==========================================================
-// <T>节点点击处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 处理事件
-//==========================================================
-MO.FEditorDsListCatalogContent_onNodeClick = function FEditorDsListCatalogContent_onNodeClick(event){
-   var o = this;
-   var node = event.node;
-   // 查找父容器
-   var parent = node;
-   while(MO.Class.isClass(parent, MO.FDuiTreeNode)){
-      if(parent.typeGroup() == MO.EDuiTreeNodeGroup.Container){
-         break;
-      }
-      parent = parent.parent();
-   }
-   var containerName = parent.label();
-   // 显示画面
-   var typeGroup = node.typeGroup();
-   var nodeType = node.type();
-   var frameName = nodeType.get('property_frame');
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.selectObject(typeGroup, frameName, containerName);
-   }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, containerName, node.guid());
-   }
 }
 
 //==========================================================
@@ -59,43 +25,7 @@ MO.FEditorDsListCatalogContent_onNodeClick = function FEditorDsListCatalogConten
 //==========================================================
 MO.FEditorDsListCatalogContent_construct = function FEditorDsListCatalogContent_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
-   // 加载定义
-   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.list');
-}
-
-//==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param item:Object 对象
-//==========================================================
-MO.FEditorDsListCatalogContent_selectObject = function FEditorDsListCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-
-//==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param item:Object 对象
-//==========================================================
-MO.FEditorDsListCatalogContent_showObject = function FEditorDsListCatalogContent_showObject(item){
-   var o = this;
-   if(MO.Class.isClass(item, MO.FDsSceneRenderable)){
-      var renderableNodes = o._renderableNodes;
-      var renderableCount = renderableNodes.count();
-      for(var i = 0; i < renderableCount; i++){
-         var renderableNode = renderableNodes.at(i);
-         var renderable = renderableNode.dataPropertyGet('linker');
-         if(renderable == item){
-            o.processSelectedListener(item, false);
-         }
-      }
-   }
+   o.__base.FEditorDsCatalogContent.construct.call(o);
 }
 
 //==========================================================
@@ -105,7 +35,6 @@ MO.FEditorDsListCatalogContent_showObject = function FEditorDsListCatalogContent
 //==========================================================
 MO.FEditorDsListCatalogContent_dispose = function FEditorDsListCatalogContent_dispose(){
    var o = this;
-   o._activeFrame = null;
    // 父处理
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FEditorDsCatalogContent.dispose.call(o);
 }
