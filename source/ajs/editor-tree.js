@@ -1,57 +1,7 @@
 MO.FEditorDsTreeCatalogContent = function FEditorDsTreeCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
-   o._activeFrame = null;
-   o.onNodeClick  = MO.FEditorDsTreeCatalogContent_onNodeClick;
-   o.construct    = MO.FEditorDsTreeCatalogContent_construct;
-   o.selectObject = MO.FEditorDsTreeCatalogContent_selectObject;
-   o.showObject   = MO.FEditorDsTreeCatalogContent_showObject;
-   o.dispose      = MO.FEditorDsTreeCatalogContent_dispose;
+   o = MO.Class.inherits(this, o, MO.FEditorDsCatalogContent);
+   o._defineCode = 'editor.design.tree';
    return o;
-}
-MO.FEditorDsTreeCatalogContent_onNodeClick = function FEditorDsTreeCatalogContent_onNodeClick(event){
-   var o = this;
-   var node = event.node;
-   var typeGroup = node.typeGroup();
-   var nodeType = node.type();
-   var typeCode = node.typeCode();
-   var frameName = nodeType.get('property_frame');
-   var label = node.label();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.load(label);
-      o._frameSet.selectObject(typeGroup, frameName, null);
-   }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, label);
-   }
-}
-MO.FEditorDsTreeCatalogContent_construct = function FEditorDsTreeCatalogContent_construct(){
-   var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
-   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.tree');
-}
-MO.FEditorDsTreeCatalogContent_selectObject = function FEditorDsTreeCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-MO.FEditorDsTreeCatalogContent_showObject = function FEditorDsTreeCatalogContent_showObject(item){
-   var o = this;
-   if(MO.Class.isClass(item, MO.FDsSceneRenderable)){
-      var renderableNodes = o._renderableNodes;
-      var renderableCount = renderableNodes.count();
-      for(var i = 0; i < renderableCount; i++){
-         var renderableNode = renderableNodes.at(i);
-         var renderable = renderableNode.dataPropertyGet('linker');
-         if(renderable == item){
-            o.processSelectedListener(item, false);
-         }
-      }
-   }
-}
-MO.FEditorDsTreeCatalogContent_dispose = function FEditorDsTreeCatalogContent_dispose(){
-   var o = this;
-   o._activeFrame = null;
-   o.__base.FUiDataTreeView.dispose.call(o);
 }
 MO.FEditorDsTreeCatalogToolBar = function FEditorDsTreeCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
@@ -164,12 +114,10 @@ MO.FEditorDsTreeCatalogToolBar_dispose = function FEditorDsTreeCatalogToolBar_di
 }
 MO.FEditorDsTreeFrameSet = function FEditorDsTreeFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsFrameSet);
-   o._frameName   = 'editor.design.tree.FrameSet';
-   o.onBuilded    = MO.FEditorDsTreeFrameSet_onBuilded;
-   o.construct    = MO.FEditorDsTreeFrameSet_construct;
-   o.selectObject = MO.FEditorDsTreeFrameSet_selectObject;
-   o.load         = MO.FEditorDsTreeFrameSet_load;
-   o.dispose      = MO.FEditorDsTreeFrameSet_dispose;
+   o._frameName = 'editor.design.tree.FrameSet';
+   o.onBuilded  = MO.FEditorDsTreeFrameSet_onBuilded;
+   o.construct  = MO.FEditorDsTreeFrameSet_construct;
+   o.dispose    = MO.FEditorDsTreeFrameSet_dispose;
    return o;
 }
 MO.FEditorDsTreeFrameSet_onBuilded = function FEditorDsTreeFrameSet_onBuilded(event){
@@ -202,192 +150,22 @@ MO.FEditorDsTreeFrameSet_construct = function FEditorDsTreeFrameSet_construct(){
    var o = this;
    o.__base.FEditorDsFrameSet.construct.call(o);
 }
-MO.FEditorDsTreeFrameSet_selectObject = function FEditorDsTreeFrameSet_selectObject(typeGroup, propertyFrame, controlName){
-   var o = this;
-   var activeFrame = o._spaceContent._activeFrame;
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.hide();
-   }
-   var frame = o.findPropertyFrame(propertyFrame);
-   frame.show();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      frame.loadObject(activeFrame, activeFrame);
-   }else{
-      var activeControl = activeFrame.findComponent(controlName);
-      frame.loadObject(activeFrame, activeControl);
-      o._spaceContent.selectControl(activeControl);
-   }
-}
-MO.FEditorDsTreeFrameSet_load = function FEditorDsTreeFrameSet_load(name){
-   var o = this;
-   if(name){
-      o._spaceContent.loadFrame(name);
-   }
-}
 MO.FEditorDsTreeFrameSet_dispose = function FEditorDsTreeFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
 }
 MO.FEditorDsTreeMenuBar = function FEditorDsTreeMenuBar(o){
-   o = MO.Class.inherits(this, o, MO.FDuiMenuBar);
-   o._frameName      = 'editor.design.frame.MenuBar';
-   o._controlRefresh = null;
-   o.onBuilded       = MO.FEditorDsTreeMenuBar_onBuilded;
-   o.onCreateClick   = MO.FEditorDsTreeMenuBar_onCreateClick;
-   o.onUpdateClick   = MO.FEditorDsTreeMenuBar_onUpdateClick;
-   o.onDeleteClick   = MO.FEditorDsTreeMenuBar_onDeleteClick;
+   o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
+   o._frameName = 'editor.design.tree.MenuBar';
+   o.onBuilded  = MO.FEditorDsTreeMenuBar_onBuilded;
    return o;
 }
-MO.FEditorDsTreeMenuBar_onBuilded = function FEditorDsTreeMenuBar_onBuilded(p){
+MO.FEditorDsTreeMenuBar_onBuilded = function FEditorDsTreeMenuBar_onBuilded(event){
    var o = this;
-   o.__base.FDuiMenuBar.onBuilded.call(o, p);
+   o.__base.FEditorDsMenuBar.onBuilded.call(o, event);
    o._controlCreate.addClickListener(o, o.onCreateClick);
    o._controlUpdate.addClickListener(o, o.onUpdateClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
-}
-MO.FEditorDsTreeMenuBar_onCreateClick = function FEditorDsTreeMenuBar_onCreateClick(event){
-   var o = this;
-}
-MO.FEditorDsTreeMenuBar_onUpdateClick = function FEditorDsTreeMenuBar_onUpdateClick(event){
-   var o = this;
-   var frame = o._frameSet._spaceContent._activeFrame;
-   var xdocument = new MO.TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'update');
-   var xframe = xroot.create('Frame');
-   MO.RGuiControl.saveConfig(frame, xframe);
-   return MO.Console.find(MO.FXmlConsole).sendAsync('/cloud.describe.frame.ws?do=update', xdocument);
-}
-MO.FEditorDsTreeMenuBar_onDeleteClick = function FEditorDsTreeMenuBar_onDeleteClick(event){
-   var o = this;
-}
-MO.FEditorDsTreePropertyContent = function FEditorDsTreePropertyContent(o){
-   o = MO.Class.inherits(this, o, MO.FDsCatalog);
-   o.onBuild        = MO.FEditorDsTreePropertyContent_onBuild;
-   o.onNodeClick    = MO.FEditorDsTreePropertyContent_onNodeClick;
-   o.construct      = MO.FEditorDsTreePropertyContent_construct;
-   o.buildTechnique = MO.FEditorDsTreePropertyContent_buildTechnique;
-   o.buildRegion    = MO.FEditorDsTreePropertyContent_buildRegion;
-   o.buildMaterial  = MO.FEditorDsTreePropertyContent_buildMaterial;
-   o.buildDisplay   = MO.FEditorDsTreePropertyContent_buildDisplay;
-   o.buildSpace     = MO.FEditorDsTreePropertyContent_buildSpace;
-   o.dispose        = MO.FEditorDsTreePropertyContent_dispose;
-   return o;
-}
-MO.FEditorDsTreePropertyContent_onBuild = function FEditorDsTreePropertyContent_onBuild(p){
-   var o = this;
-   o.__base.FDsCatalog.onBuild.call(o, p);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
-}
-MO.FEditorDsTreePropertyContent_onNodeClick = function FEditorDsTreePropertyContent_onNodeClick(t, n){
-   var o = this;
-   var s = n.dataPropertyGet('linker');
-   o.selectObject(s);
-}
-MO.FEditorDsTreePropertyContent_construct = function FEditorDsTreePropertyContent_construct(){
-   var o = this;
-   o.__base.FDsCatalog.construct.call(o);
-}
-MO.FEditorDsTreePropertyContent_buildTechnique = function FEditorDsTreePropertyContent_buildTechnique(n, p){
-   var o = this;
-   var nt = o.createNode();
-   nt.setLabel('Technique');
-   nt.setTypeCode('technique');
-   nt.dataPropertySet('linker', p);
-   n.appendNode(nt);
-}
-MO.FEditorDsTreePropertyContent_buildRegion = function FEditorDsTreePropertyContent_buildRegion(n, p){
-   var o = this;
-   var nr = o.createNode();
-   nr.setLabel('Region');
-   nr.setTypeCode('region');
-   nr.dataPropertySet('linker', p);
-   n.appendNode(nr);
-   var nc = o.createNode();
-   nc.setLabel('Camera');
-   nc.setTypeCode('camera');
-   nc.dataPropertySet('linker', p.camera());
-   nr.appendNode(nc);
-   var nl = o.createNode();
-   nl.setLabel('Light');
-   nl.setTypeCode('light');
-   nl.dataPropertySet('linker', p.directionalLight());
-   nr.appendNode(nl);
-}
-MO.FEditorDsTreePropertyContent_buildMaterial = function FEditorDsTreePropertyContent_buildMaterial(parentNode, material){
-   var o = this;
-   var resource = material.resource();
-   var node = o.createNode();
-   node.setTypeCode('Material');
-   node.setLabel(resource.code());
-   node.setNote(resource.label());
-   node.dataPropertySet('linker', material);
-   parentNode.appendNode(node);
-}
-MO.FEditorDsTreePropertyContent_buildDisplay = function FEditorDsTreePropertyContent_buildDisplay(parentNode, display){
-   var o = this;
-   var resource = display.resource();
-   var node = o.createNode();
-   node.setTypeCode('Display');
-   node.setLabel(MO.Lang.String.nvl(resource.code(), 'Display'));
-   node.setNote(resource.label());
-   node.dataPropertySet('linker', display);
-   parentNode.appendNode(node);
-   var renderables = display.renderables();
-   var renderableCount = renderables.count();
-   if(renderableCount > 0){
-      for(var i = 0; i < renderableCount; i++){
-         var renderable = renderables.at(i);
-         var renderableResource = renderable.resource();
-         var renderableNode = o.createNode();
-         renderableNode.setTypeCode('Renderable');
-         renderableNode.setLabel(renderableResource.code());
-         renderableNode.setNote(renderableResource.label());
-         renderableNode.dataPropertySet('linker', renderable);
-         node.appendNode(renderableNode);
-      }
-   }
-}
-MO.FEditorDsTreePropertyContent_buildSpace = function FEditorDsTreePropertyContent_buildSpace(space){
-   var o = this;
-   o.clearAllNodes();
-   var resource = space.resource();
-   var spaceNode = o.createNode();
-   spaceNode.setTypeCode('Space');
-   spaceNode.setLabel(resource.code());
-   spaceNode.setNote(resource.label());
-   spaceNode.dataPropertySet('linker', space);
-   o.appendNode(spaceNode);
-   o.buildTechnique(spaceNode, space.technique())
-   o.buildRegion(spaceNode, space.region());
-   var materialsNode = o.createNode();
-   materialsNode.setTypeCode('Region');
-   materialsNode.setLabel('Materials');
-   spaceNode.appendNode(materialsNode);
-   var materials = space.materials();
-   var materialCount = materials.count();
-   for(var i = 0; i < materialCount; i++){
-      var material = materials.at(i);
-      o.buildMaterial(materialsNode, material);
-   }
-   var displaysNode = o.createNode();
-   displaysNode.setTypeCode('Region');
-   displaysNode.setLabel('Displays');
-   spaceNode.appendNode(displaysNode);
-   var displays = space._sprites;
-   var displayCount = displays.count();
-   for(var i = 0; i < displayCount; i++){
-      var display = displays.at(i);
-      o.buildDisplay(displaysNode, display);
-   }
-   spaceNode.click();
-}
-MO.FEditorDsTreePropertyContent_dispose = function FEditorDsTreePropertyContent_dispose(){
-   var o = this;
-   o.__base.FDsCatalog.dispose.call(o);
 }
 MO.FEditorDsTreePropertyToolBar = function FEditorDsTreePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
@@ -417,4 +195,22 @@ MO.FEditorDsTreePropertyToolBar_construct = function FEditorDsTreePropertyToolBa
 MO.FEditorDsTreePropertyToolBar_dispose = function FEditorDsTreePropertyToolBar_dispose(){
    var o = this;
    o.__base.FDuiToolBar.dispose.call(o);
+}
+MO.FEditorDsTreePropertyTreeNodeForm = function FEditorDsTreePropertyTreeNodeForm(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
+   o._logicService = 'editor.design.tree';
+   o._logicGroup   = 'item';
+   return o;
+}
+MO.FEditorDsTreePropertyTreeNodeTypeForm = function FEditorDsTreePropertyTreeNodeTypeForm(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
+   o._logicService = 'editor.design.tree';
+   o._logicGroup   = 'item';
+   return o;
+}
+MO.FEditorDsTreePropertyTreeViewForm = function FEditorDsTreePropertyTreeViewForm(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
+   o._logicService = 'editor.design.tree';
+   o._logicGroup   = 'container';
+   return o;
 }

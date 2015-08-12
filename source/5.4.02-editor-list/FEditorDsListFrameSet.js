@@ -8,18 +8,15 @@ MO.FEditorDsListFrameSet = function FEditorDsListFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsFrameSet);
    //..........................................................
    // @property
-   o._frameName   = 'editor.design.list.FrameSet';
+   o._frameName = 'editor.design.list.FrameSet';
    //..........................................................
    // @process
-   o.onBuilded    = MO.FEditorDsListFrameSet_onBuilded;
+   o.onBuilded  = MO.FEditorDsListFrameSet_onBuilded;
    //..........................................................
    // @method
-   o.construct    = MO.FEditorDsListFrameSet_construct;
+   o.construct  = MO.FEditorDsListFrameSet_construct;
    // @method
-   o.selectObject = MO.FEditorDsListFrameSet_selectObject;
-   o.load         = MO.FEditorDsListFrameSet_load;
-   // @method
-   o.dispose      = MO.FEditorDsListFrameSet_dispose;
+   o.dispose    = MO.FEditorDsListFrameSet_dispose;
    return o;
 }
 
@@ -70,32 +67,6 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
    var o = this;
    // 父处理
    o.__base.FEditorDsFrameSet.construct.call(o);
-}
-
-//==========================================================
-// <T>目录对象选择处理。</T>
-//
-// @method
-// @param typeGroup:EDuiTreeNodeGroup 类型分组枚举
-// @param propertyFrame:String 属性名称
-// @param containerName:String 容器名称
-// @param controlName:String 控件名称
-//==========================================================
-MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
-   var o = this;
-   // 选中
-   var frame = o.selectPropertyFrame(propertyFrame);
-   // 显示容器
-   frame.load(containerName, controlName);
-}
-
-//==========================================================
-// <T>加载处理。</T>
-//
-// @method
-//==========================================================
-MO.FEditorDsListFrameSet_load = function FEditorDsListFrameSet_load(name){
-   var o = this;
 }
 
 //==========================================================

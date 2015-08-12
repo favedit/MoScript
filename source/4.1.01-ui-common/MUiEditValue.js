@@ -9,9 +9,6 @@
 MO.MUiEditValue = function MUiEditValue(o){
    o = MO.Class.inherits(this, o, MO.MUiTextFormator);
    //..........................................................
-   // @property
-   o._dataValue      = MO.Class.register(o, new MO.APtyString('_dataValue'));
-   //..........................................................
    // @attribute
    o._statusEditable = true;
    o._statusEditing  = false;

@@ -1188,7 +1188,7 @@ MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySe
    this.dataProperties().set(name, value);
 }
 MO.MUiDataValue = function MUiDataValue(o){
-   o = MO.Class.inherits(this, o, MUiValue);
+   o = MO.Class.inherits(this, o, MO.MUiValue);
    o._dataValue = MO.Class.register(o, [new MO.APtyString('_dataValue'), new MO.AGetSet('_dataValue')]);
    o.oeLoadUnit = MO.Method.empty;
    o.oeSaveUnit = MO.Method.empty;
@@ -1203,7 +1203,6 @@ MO.MUiDragable = function MUiDragable(o){
 }
 MO.MUiEditValue = function MUiEditValue(o){
    o = MO.Class.inherits(this, o, MO.MUiTextFormator);
-   o._dataValue      = MO.Class.register(o, new MO.APtyString('_dataValue'));
    o._statusEditable = true;
    o._statusEditing  = false;
    o._statusInvalid  = true;

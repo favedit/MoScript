@@ -1,17 +1,7 @@
 MO.FEditorDsListCatalogContent = function FEditorDsListCatalogContent(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsCatalogContent);
    o._defineCode = 'editor.design.list';
-   o.construct   = MO.FEditorDsListCatalogContent_construct;
-   o.dispose     = MO.FEditorDsListCatalogContent_dispose;
    return o;
-}
-MO.FEditorDsListCatalogContent_construct = function FEditorDsListCatalogContent_construct(){
-   var o = this;
-   o.__base.FEditorDsCatalogContent.construct.call(o);
-}
-MO.FEditorDsListCatalogContent_dispose = function FEditorDsListCatalogContent_dispose(){
-   var o = this;
-   o.__base.FEditorDsCatalogContent.dispose.call(o);
 }
 MO.FEditorDsListCatalogToolBar = function FEditorDsListCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
@@ -124,12 +114,10 @@ MO.FEditorDsListCatalogToolBar_dispose = function FEditorDsListCatalogToolBar_di
 }
 MO.FEditorDsListFrameSet = function FEditorDsListFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsFrameSet);
-   o._frameName   = 'editor.design.list.FrameSet';
-   o.onBuilded    = MO.FEditorDsListFrameSet_onBuilded;
-   o.construct    = MO.FEditorDsListFrameSet_construct;
-   o.selectObject = MO.FEditorDsListFrameSet_selectObject;
-   o.load         = MO.FEditorDsListFrameSet_load;
-   o.dispose      = MO.FEditorDsListFrameSet_dispose;
+   o._frameName = 'editor.design.list.FrameSet';
+   o.onBuilded  = MO.FEditorDsListFrameSet_onBuilded;
+   o.construct  = MO.FEditorDsListFrameSet_construct;
+   o.dispose    = MO.FEditorDsListFrameSet_dispose;
    return o;
 }
 MO.FEditorDsListFrameSet_onBuilded = function FEditorDsListFrameSet_onBuilded(event){
@@ -159,14 +147,6 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
    var o = this;
    o.__base.FEditorDsFrameSet.construct.call(o);
 }
-MO.FEditorDsListFrameSet_selectObject = function FEditorDsListFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
-   var o = this;
-   var frame = o.selectPropertyFrame(propertyFrame);
-   frame.load(containerName, controlName);
-}
-MO.FEditorDsListFrameSet_load = function FEditorDsListFrameSet_load(name){
-   var o = this;
-}
 MO.FEditorDsListFrameSet_dispose = function FEditorDsListFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
@@ -175,63 +155,26 @@ MO.FEditorDsListItemProperty = function FEditorDsListItemProperty(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
    o._logicService = 'editor.design.list';
    o._logicGroup   = 'item';
-   o.construct     = MO.FEditorDsListItemProperty_construct;
-   o.dispose       = MO.FEditorDsListItemProperty_dispose;
    return o;
-}
-MO.FEditorDsListItemProperty_construct = function FEditorDsListItemProperty_construct(){
-   var o = this;
-   o.__base.FEditorDsPropertyForm.construct.call(o);
-}
-MO.FEditorDsListItemProperty_dispose = function FEditorDsListItemProperty_dispose(){
-   var o = this;
-   o.__base.FEditorDsPropertyForm.dispose.call(o);
 }
 MO.FEditorDsListListProperty = function FEditorDsListListProperty(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
    o._logicService = 'editor.design.list';
    o._logicGroup   = 'container';
-   o.construct     = MO.FEditorDsListListProperty_construct;
-   o.dispose       = MO.FEditorDsListListProperty_dispose;
    return o;
-}
-MO.FEditorDsListListProperty_construct = function FEditorDsListListProperty_construct(){
-   var o = this;
-   o.__base.FEditorDsPropertyForm.construct.call(o);
-}
-MO.FEditorDsListListProperty_dispose = function FEditorDsListListProperty_dispose(){
-   var o = this;
-   o.__base.FEditorDsPropertyForm.dispose.call(o);
 }
 MO.FEditorDsListMenuBar = function FEditorDsListMenuBar(o){
-   o = MO.Class.inherits(this, o, MO.FDuiMenuBar);
-   o._frameName      = 'editor.design.frame.MenuBar';
-   o._controlRefresh = null;
-   o.onBuilded       = MO.FEditorDsListMenuBar_onBuilded;
-   o.onCreateClick   = MO.FEditorDsListMenuBar_onCreateClick;
-   o.onUpdateClick   = MO.FEditorDsListMenuBar_onUpdateClick;
-   o.onDeleteClick   = MO.FEditorDsListMenuBar_onDeleteClick;
+   o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
+   o._frameName = 'editor.design.list.MenuBar';
+   o.onBuilded  = MO.FEditorDsListMenuBar_onBuilded;
    return o;
 }
-MO.FEditorDsListMenuBar_onBuilded = function FEditorDsListMenuBar_onBuilded(p){
+MO.FEditorDsListMenuBar_onBuilded = function FEditorDsListMenuBar_onBuilded(event){
    var o = this;
-   o.__base.FDuiMenuBar.onBuilded.call(o, p);
+   o.__base.FEditorDsMenuBar.onBuilded.call(o, event);
    o._controlCreate.addClickListener(o, o.onCreateClick);
    o._controlUpdate.addClickListener(o, o.onUpdateClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
-}
-MO.FEditorDsListMenuBar_onCreateClick = function FEditorDsListMenuBar_onCreateClick(event){
-   var o = this;
-}
-MO.FEditorDsListMenuBar_onUpdateClick = function FEditorDsListMenuBar_onUpdateClick(event){
-   var o = this;
-   var frame = o._frameSet.activePropertyFrame();
-   if(frame){
-      frame.save();
-   }
-}
-MO.FEditorDsListMenuBar_onDeleteClick = function FEditorDsListMenuBar_onDeleteClick(event){
-   var o = this;
 }
 MO.FEditorDsListPropertyToolBar = function FEditorDsListPropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);

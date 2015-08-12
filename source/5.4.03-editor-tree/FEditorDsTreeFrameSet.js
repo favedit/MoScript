@@ -8,18 +8,15 @@ MO.FEditorDsTreeFrameSet = function FEditorDsTreeFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsFrameSet);
    //..........................................................
    // @property
-   o._frameName   = 'editor.design.tree.FrameSet';
+   o._frameName = 'editor.design.tree.FrameSet';
    //..........................................................
    // @process
-   o.onBuilded    = MO.FEditorDsTreeFrameSet_onBuilded;
+   o.onBuilded  = MO.FEditorDsTreeFrameSet_onBuilded;
    //..........................................................
    // @method
-   o.construct    = MO.FEditorDsTreeFrameSet_construct;
+   o.construct  = MO.FEditorDsTreeFrameSet_construct;
    // @method
-   o.selectObject = MO.FEditorDsTreeFrameSet_selectObject;
-   o.load         = MO.FEditorDsTreeFrameSet_load;
-   // @method
-   o.dispose      = MO.FEditorDsTreeFrameSet_dispose;
+   o.dispose    = MO.FEditorDsTreeFrameSet_dispose;
    return o;
 }
 
@@ -74,48 +71,6 @@ MO.FEditorDsTreeFrameSet_construct = function FEditorDsTreeFrameSet_construct(){
    var o = this;
    // 父处理
    o.__base.FEditorDsFrameSet.construct.call(o);
-}
-
-//==========================================================
-// <T>目录对象选择处理。</T>
-//
-// @method
-// @param typeGroup:EDuiTreeNodeGroup 类型分组枚举
-// @param propertyFrame:String 属性名称
-// @param controlName:String 控件名称
-//==========================================================
-MO.FEditorDsTreeFrameSet_selectObject = function FEditorDsTreeFrameSet_selectObject(typeGroup, propertyFrame, controlName){
-   var o = this;
-   var activeFrame = o._spaceContent._activeFrame;
-   // 隐藏所有属性面板
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.hide();
-   }
-   // 显示控件信息
-   var frame = o.findPropertyFrame(propertyFrame);
-   frame.show();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      frame.loadObject(activeFrame, activeFrame);
-   }else{
-      var activeControl = activeFrame.findComponent(controlName);
-      frame.loadObject(activeFrame, activeControl);
-      o._spaceContent.selectControl(activeControl);
-   }
-}
-
-//==========================================================
-// <T>加载处理。</T>
-//
-// @method
-//==========================================================
-MO.FEditorDsTreeFrameSet_load = function FEditorDsTreeFrameSet_load(name){
-   var o = this;
-   if(name){
-      o._spaceContent.loadFrame(name);
-   }
 }
 
 //==========================================================

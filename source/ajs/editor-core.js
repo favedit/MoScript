@@ -1,11 +1,9 @@
 MO.FEditorDsCatalogContent = function FEditorDsCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
-   o._defineCode  = null;
-   o.onNodeClick  = MO.FEditorDsCatalogContent_onNodeClick;
-   o.construct    = MO.FEditorDsCatalogContent_construct;
-   o.selectObject = MO.FEditorDsCatalogContent_selectObject;
-   o.showObject   = MO.FEditorDsCatalogContent_showObject;
-   o.dispose      = MO.FEditorDsCatalogContent_dispose;
+   o = MO.Class.inherits(this, o, MO.FUiDataTreeView);
+   o._defineCode = null;
+   o.onNodeClick = MO.FEditorDsCatalogContent_onNodeClick;
+   o.construct   = MO.FEditorDsCatalogContent_construct;
+   o.dispose     = MO.FEditorDsCatalogContent_dispose;
    return o;
 }
 MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNodeClick(event){
@@ -34,26 +32,6 @@ MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construc
    var url = MO.Lang.String.format('/content.define.tree.ws?action=query&code={1}', o._defineCode);
    o.loadUrl(url);
 }
-MO.FEditorDsCatalogContent_selectObject = function FEditorDsCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-MO.FEditorDsCatalogContent_showObject = function FEditorDsCatalogContent_showObject(item){
-   var o = this;
-   if(MO.Class.isClass(item, MO.FDsSceneRenderable)){
-      var renderableNodes = o._renderableNodes;
-      var renderableCount = renderableNodes.count();
-      for(var i = 0; i < renderableCount; i++){
-         var renderableNode = renderableNodes.at(i);
-         var renderable = renderableNode.dataPropertyGet('linker');
-         if(renderable == item){
-            o.processSelectedListener(item, false);
-         }
-      }
-   }
-}
 MO.FEditorDsCatalogContent_dispose = function FEditorDsCatalogContent_dispose(){
    var o = this;
    o.__base.FUiDataTreeView.dispose.call(o);
@@ -74,6 +52,8 @@ MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
    o._framePropertyToolbar = null;
    o._framePropertyContent = null;
    o.construct             = MO.FEditorDsFrameSet_construct;
+   o.selectObject          = MO.FEditorDsFrameSet_selectObject;
+   o.load                  = MO.FEditorDsFrameSet_load;
    o.dispose               = MO.FEditorDsFrameSet_dispose;
    return o;
 }
@@ -81,9 +61,37 @@ MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
    var o = this;
    o.__base.FEditorFrameSet.construct.call(o);
 }
+MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
+   var o = this;
+   var frame = o.selectPropertyFrame(propertyFrame);
+   frame.load(typeGroup, containerName, controlName);
+}
+MO.FEditorDsFrameSet_load = function FEditorDsFrameSet_load(){
+   var o = this;
+}
 MO.FEditorDsFrameSet_dispose = function FEditorDsFrameSet_dispose(){
    var o = this;
    o.__base.FEditorFrameSet.dispose.call(o);
+}
+MO.FEditorDsMenuBar = function FEditorDsMenuBar(o){
+   o = MO.Class.inherits(this, o, MO.FDuiMenuBar);
+   o.onCreateClick = MO.FEditorDsMenuBar_onCreateClick;
+   o.onUpdateClick = MO.FEditorDsMenuBar_onUpdateClick;
+   o.onDeleteClick = MO.FEditorDsMenuBar_onDeleteClick;
+   return o;
+}
+MO.FEditorDsMenuBar_onCreateClick = function FEditorDsMenuBar_onCreateClick(event){
+   var o = this;
+}
+MO.FEditorDsMenuBar_onUpdateClick = function FEditorDsMenuBar_onUpdateClick(event){
+   var o = this;
+   var frame = o._frameSet.activePropertyFrame();
+   if(frame){
+      frame.save();
+   }
+}
+MO.FEditorDsMenuBar_onDeleteClick = function FEditorDsMenuBar_onDeleteClick(event){
+   var o = this;
 }
 MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiForm);
@@ -117,21 +125,24 @@ MO.FEditorDsPropertyForm_onDataLoad = function FEditorDsPropertyForm_onDataLoad(
 }
 MO.FEditorDsPropertyForm_onDataSave = function FEditorDsPropertyForm_onDataSave(event){
    var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
 MO.FEditorDsPropertyForm_construct = function FEditorDsPropertyForm_construct(){
    var o = this;
    o.__base.FDuiForm.construct.call(o);
 }
-MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(containerName, itemName){
+MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(typeGroup, containerName, itemName){
    var o = this;
    o._containerName = containerName;
    o._itemName = itemName;
-   var url = MO.Lang.String.format('/{1}.ws?action=query&group={2}&container={3}&item={4}', o._logicService, o._logicGroup, o._containerName, o._itemName);
+   o._logicGroup = typeGroup;
+   var url = MO.Lang.String.format('/{1}.ws?action=query&group={2}&container={3}&item={4}', o._logicService, typeGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
    connection.addLoadListener(o, o.onDataLoad);
 }
 MO.FEditorDsPropertyForm_save = function FEditorDsPropertyForm_save(){
    var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).showProgress();
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
    o.saveUnit(xroot.create('Content'));

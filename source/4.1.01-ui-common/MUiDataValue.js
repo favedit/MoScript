@@ -6,7 +6,7 @@
 // @version 150812
 //==========================================================
 MO.MUiDataValue = function MUiDataValue(o){
-   o = MO.Class.inherits(this, o, MUiValue);
+   o = MO.Class.inherits(this, o, MO.MUiValue);
    //..........................................................
    // @property
    o._dataValue = MO.Class.register(o, [new MO.APtyString('_dataValue'), new MO.AGetSet('_dataValue')]);

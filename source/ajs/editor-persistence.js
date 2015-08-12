@@ -1,57 +1,7 @@
 MO.FEditorDsPersistenceCatalogContent = function FEditorDsPersistenceCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
-   o._activeFrame = null;
-   o.onNodeClick  = MO.FEditorDsPersistenceCatalogContent_onNodeClick;
-   o.construct    = MO.FEditorDsPersistenceCatalogContent_construct;
-   o.selectObject = MO.FEditorDsPersistenceCatalogContent_selectObject;
-   o.showObject   = MO.FEditorDsPersistenceCatalogContent_showObject;
-   o.dispose      = MO.FEditorDsPersistenceCatalogContent_dispose;
+   o = MO.Class.inherits(this, o, MO.FEditorDsCatalogContent);
+   o._defineCode = 'editor.design.persistence';
    return o;
-}
-MO.FEditorDsPersistenceCatalogContent_onNodeClick = function FEditorDsPersistenceCatalogContent_onNodeClick(event){
-   var o = this;
-   var node = event.node;
-   var typeGroup = node.typeGroup();
-   var nodeType = node.type();
-   var typeCode = node.typeCode();
-   var frameName = nodeType.get('property_frame');
-   var label = node.label();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.load(label);
-      o._frameSet.selectObject(typeGroup, frameName, null);
-   }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, label);
-   }
-}
-MO.FEditorDsPersistenceCatalogContent_construct = function FEditorDsPersistenceCatalogContent_construct(){
-   var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
-   o.loadUrl('/content.define.tree.ws?action=query&code=editor.design.persistence');
-}
-MO.FEditorDsPersistenceCatalogContent_selectObject = function FEditorDsPersistenceCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-MO.FEditorDsPersistenceCatalogContent_showObject = function FEditorDsPersistenceCatalogContent_showObject(item){
-   var o = this;
-   if(MO.Class.isClass(item, MO.FDsSceneRenderable)){
-      var renderableNodes = o._renderableNodes;
-      var renderableCount = renderableNodes.count();
-      for(var i = 0; i < renderableCount; i++){
-         var renderableNode = renderableNodes.at(i);
-         var renderable = renderableNode.dataPropertyGet('linker');
-         if(renderable == item){
-            o.processSelectedListener(item, false);
-         }
-      }
-   }
-}
-MO.FEditorDsPersistenceCatalogContent_dispose = function FEditorDsPersistenceCatalogContent_dispose(){
-   var o = this;
-   o._activeFrame = null;
-   o.__base.FUiDataTreeView.dispose.call(o);
 }
 MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
@@ -164,12 +114,10 @@ MO.FEditorDsPersistenceCatalogToolBar_dispose = function FEditorDsPersistenceCat
 }
 MO.FEditorDsPersistenceFrameSet = function FEditorDsPersistenceFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsFrameSet);
-   o._frameName   = 'editor.design.persistence.FrameSet';
-   o.onBuilded    = MO.FEditorDsPersistenceFrameSet_onBuilded;
-   o.construct    = MO.FEditorDsPersistenceFrameSet_construct;
-   o.selectObject = MO.FEditorDsPersistenceFrameSet_selectObject;
-   o.load         = MO.FEditorDsPersistenceFrameSet_load;
-   o.dispose      = MO.FEditorDsPersistenceFrameSet_dispose;
+   o._frameName = 'editor.design.persistence.FrameSet';
+   o.onBuilded  = MO.FEditorDsPersistenceFrameSet_onBuilded;
+   o.construct  = MO.FEditorDsPersistenceFrameSet_construct;
+   o.dispose    = MO.FEditorDsPersistenceFrameSet_dispose;
    return o;
 }
 MO.FEditorDsPersistenceFrameSet_onBuilded = function FEditorDsPersistenceFrameSet_onBuilded(event){
@@ -202,192 +150,46 @@ MO.FEditorDsPersistenceFrameSet_construct = function FEditorDsPersistenceFrameSe
    var o = this;
    o.__base.FEditorDsFrameSet.construct.call(o);
 }
-MO.FEditorDsPersistenceFrameSet_selectObject = function FEditorDsPersistenceFrameSet_selectObject(typeGroup, propertyFrame, controlName){
-   var o = this;
-   var activeFrame = o._spaceContent._activeFrame;
-   var frames = o._propertyFrames;
-   var count = frames.count();
-   for(var i = 0; i < count; i++){
-      var frame = frames.at(i);
-      frame.hide();
-   }
-   var frame = o.findPropertyFrame(propertyFrame);
-   frame.show();
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      frame.loadObject(activeFrame, activeFrame);
-   }else{
-      var activeControl = activeFrame.findComponent(controlName);
-      frame.loadObject(activeFrame, activeControl);
-      o._spaceContent.selectControl(activeControl);
-   }
-}
-MO.FEditorDsPersistenceFrameSet_load = function FEditorDsPersistenceFrameSet_load(name){
-   var o = this;
-   if(name){
-      o._spaceContent.loadFrame(name);
-   }
-}
 MO.FEditorDsPersistenceFrameSet_dispose = function FEditorDsPersistenceFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
 }
 MO.FEditorDsPersistenceMenuBar = function FEditorDsPersistenceMenuBar(o){
-   o = MO.Class.inherits(this, o, MO.FDuiMenuBar);
-   o._frameName      = 'editor.design.frame.MenuBar';
-   o._controlRefresh = null;
-   o.onBuilded       = MO.FEditorDsPersistenceMenuBar_onBuilded;
-   o.onCreateClick   = MO.FEditorDsPersistenceMenuBar_onCreateClick;
-   o.onUpdateClick   = MO.FEditorDsPersistenceMenuBar_onUpdateClick;
-   o.onDeleteClick   = MO.FEditorDsPersistenceMenuBar_onDeleteClick;
+   o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
+   o._frameName = 'editor.design.persistence.MenuBar';
+   o.onBuilded  = MO.FEditorDsPersistenceMenuBar_onBuilded;
    return o;
 }
-MO.FEditorDsPersistenceMenuBar_onBuilded = function FEditorDsPersistenceMenuBar_onBuilded(p){
+MO.FEditorDsPersistenceMenuBar_onBuilded = function FEditorDsPersistenceMenuBar_onBuilded(event){
    var o = this;
-   o.__base.FDuiMenuBar.onBuilded.call(o, p);
+   o.__base.FEditorDsMenuBar.onBuilded.call(o, event);
    o._controlCreate.addClickListener(o, o.onCreateClick);
    o._controlUpdate.addClickListener(o, o.onUpdateClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
 }
-MO.FEditorDsPersistenceMenuBar_onCreateClick = function FEditorDsPersistenceMenuBar_onCreateClick(event){
-   var o = this;
-}
-MO.FEditorDsPersistenceMenuBar_onUpdateClick = function FEditorDsPersistenceMenuBar_onUpdateClick(event){
-   var o = this;
-   var frame = o._frameSet._spaceContent._activeFrame;
-   var xdocument = new MO.TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'update');
-   var xframe = xroot.create('Frame');
-   MO.RGuiControl.saveConfig(frame, xframe);
-   return MO.Console.find(MO.FXmlConsole).sendAsync('/cloud.describe.frame.ws?do=update', xdocument);
-}
-MO.FEditorDsPersistenceMenuBar_onDeleteClick = function FEditorDsPersistenceMenuBar_onDeleteClick(event){
-   var o = this;
-}
-MO.FEditorDsPersistencePropertyContent = function FEditorDsPersistencePropertyContent(o){
-   o = MO.Class.inherits(this, o, MO.FDsCatalog);
-   o.onBuild        = MO.FEditorDsPersistencePropertyContent_onBuild;
-   o.onNodeClick    = MO.FEditorDsPersistencePropertyContent_onNodeClick;
-   o.construct      = MO.FEditorDsPersistencePropertyContent_construct;
-   o.buildTechnique = MO.FEditorDsPersistencePropertyContent_buildTechnique;
-   o.buildRegion    = MO.FEditorDsPersistencePropertyContent_buildRegion;
-   o.buildMaterial  = MO.FEditorDsPersistencePropertyContent_buildMaterial;
-   o.buildDisplay   = MO.FEditorDsPersistencePropertyContent_buildDisplay;
-   o.buildSpace     = MO.FEditorDsPersistencePropertyContent_buildSpace;
-   o.dispose        = MO.FEditorDsPersistencePropertyContent_dispose;
+MO.FEditorDsPersistencePropertyAttributeForm = function FEditorDsPersistencePropertyAttributeForm(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
+   o._logicService = 'editor.design.persistence';
+   o._logicGroup   = 'item';
    return o;
 }
-MO.FEditorDsPersistencePropertyContent_onBuild = function FEditorDsPersistencePropertyContent_onBuild(p){
-   var o = this;
-   o.__base.FDsCatalog.onBuild.call(o, p);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.template');
+MO.FEditorDsPersistencePropertyComponentForm = function FEditorDsPersistencePropertyComponentForm(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
+   o._logicService = 'editor.design.persistence';
+   o._logicGroup   = 'item';
+   return o;
 }
-MO.FEditorDsPersistencePropertyContent_onNodeClick = function FEditorDsPersistencePropertyContent_onNodeClick(t, n){
-   var o = this;
-   var s = n.dataPropertyGet('linker');
-   o.selectObject(s);
+MO.FEditorDsPersistencePropertyInterfaceForm = function FEditorDsPersistencePropertyInterfaceForm(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
+   o._logicService = 'editor.design.persistence';
+   o._logicGroup   = 'item';
+   return o;
 }
-MO.FEditorDsPersistencePropertyContent_construct = function FEditorDsPersistencePropertyContent_construct(){
-   var o = this;
-   o.__base.FDsCatalog.construct.call(o);
-}
-MO.FEditorDsPersistencePropertyContent_buildTechnique = function FEditorDsPersistencePropertyContent_buildTechnique(n, p){
-   var o = this;
-   var nt = o.createNode();
-   nt.setLabel('Technique');
-   nt.setTypeCode('technique');
-   nt.dataPropertySet('linker', p);
-   n.appendNode(nt);
-}
-MO.FEditorDsPersistencePropertyContent_buildRegion = function FEditorDsPersistencePropertyContent_buildRegion(n, p){
-   var o = this;
-   var nr = o.createNode();
-   nr.setLabel('Region');
-   nr.setTypeCode('region');
-   nr.dataPropertySet('linker', p);
-   n.appendNode(nr);
-   var nc = o.createNode();
-   nc.setLabel('Camera');
-   nc.setTypeCode('camera');
-   nc.dataPropertySet('linker', p.camera());
-   nr.appendNode(nc);
-   var nl = o.createNode();
-   nl.setLabel('Light');
-   nl.setTypeCode('light');
-   nl.dataPropertySet('linker', p.directionalLight());
-   nr.appendNode(nl);
-}
-MO.FEditorDsPersistencePropertyContent_buildMaterial = function FEditorDsPersistencePropertyContent_buildMaterial(parentNode, material){
-   var o = this;
-   var resource = material.resource();
-   var node = o.createNode();
-   node.setTypeCode('Material');
-   node.setLabel(resource.code());
-   node.setNote(resource.label());
-   node.dataPropertySet('linker', material);
-   parentNode.appendNode(node);
-}
-MO.FEditorDsPersistencePropertyContent_buildDisplay = function FEditorDsPersistencePropertyContent_buildDisplay(parentNode, display){
-   var o = this;
-   var resource = display.resource();
-   var node = o.createNode();
-   node.setTypeCode('Display');
-   node.setLabel(MO.Lang.String.nvl(resource.code(), 'Display'));
-   node.setNote(resource.label());
-   node.dataPropertySet('linker', display);
-   parentNode.appendNode(node);
-   var renderables = display.renderables();
-   var renderableCount = renderables.count();
-   if(renderableCount > 0){
-      for(var i = 0; i < renderableCount; i++){
-         var renderable = renderables.at(i);
-         var renderableResource = renderable.resource();
-         var renderableNode = o.createNode();
-         renderableNode.setTypeCode('Renderable');
-         renderableNode.setLabel(renderableResource.code());
-         renderableNode.setNote(renderableResource.label());
-         renderableNode.dataPropertySet('linker', renderable);
-         node.appendNode(renderableNode);
-      }
-   }
-}
-MO.FEditorDsPersistencePropertyContent_buildSpace = function FEditorDsPersistencePropertyContent_buildSpace(space){
-   var o = this;
-   o.clearAllNodes();
-   var resource = space.resource();
-   var spaceNode = o.createNode();
-   spaceNode.setTypeCode('Space');
-   spaceNode.setLabel(resource.code());
-   spaceNode.setNote(resource.label());
-   spaceNode.dataPropertySet('linker', space);
-   o.appendNode(spaceNode);
-   o.buildTechnique(spaceNode, space.technique())
-   o.buildRegion(spaceNode, space.region());
-   var materialsNode = o.createNode();
-   materialsNode.setTypeCode('Region');
-   materialsNode.setLabel('Materials');
-   spaceNode.appendNode(materialsNode);
-   var materials = space.materials();
-   var materialCount = materials.count();
-   for(var i = 0; i < materialCount; i++){
-      var material = materials.at(i);
-      o.buildMaterial(materialsNode, material);
-   }
-   var displaysNode = o.createNode();
-   displaysNode.setTypeCode('Region');
-   displaysNode.setLabel('Displays');
-   spaceNode.appendNode(displaysNode);
-   var displays = space._sprites;
-   var displayCount = displays.count();
-   for(var i = 0; i < displayCount; i++){
-      var display = displays.at(i);
-      o.buildDisplay(displaysNode, display);
-   }
-   spaceNode.click();
-}
-MO.FEditorDsPersistencePropertyContent_dispose = function FEditorDsPersistencePropertyContent_dispose(){
-   var o = this;
-   o.__base.FDsCatalog.dispose.call(o);
+MO.FEditorDsPersistencePropertyPersistenceForm = function FEditorDsPersistencePropertyPersistenceForm(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
+   o._logicService = 'editor.design.persistence';
+   o._logicGroup   = 'container';
+   return o;
 }
 MO.FEditorDsPersistencePropertyToolBar = function FEditorDsPersistencePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);

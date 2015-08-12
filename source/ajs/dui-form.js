@@ -3338,7 +3338,7 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
       hLabelPanel.appendChild(o._hLabelForm);
       o.setLabel(o._label);
    }
-   if(hep){
+   if(hEditPanel){
       o.onBuildEdit(event);
    }
 }

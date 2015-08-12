@@ -6,21 +6,18 @@
 // @history 150812
 //==========================================================
 MO.FEditorDsCatalogContent = function FEditorDsCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
+   o = MO.Class.inherits(this, o, MO.FUiDataTreeView);
    //..........................................................
    // @attributes
-   o._defineCode  = null;
+   o._defineCode = null;
    //..........................................................
    // @event
-   o.onNodeClick  = MO.FEditorDsCatalogContent_onNodeClick;
+   o.onNodeClick = MO.FEditorDsCatalogContent_onNodeClick;
    //..........................................................
    // @method
-   o.construct    = MO.FEditorDsCatalogContent_construct;
+   o.construct   = MO.FEditorDsCatalogContent_construct;
    // @method
-   o.selectObject = MO.FEditorDsCatalogContent_selectObject;
-   o.showObject   = MO.FEditorDsCatalogContent_showObject;
-   // @method
-   o.dispose      = MO.FEditorDsCatalogContent_dispose;
+   o.dispose     = MO.FEditorDsCatalogContent_dispose;
    return o;
 }
 
@@ -64,40 +61,6 @@ MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construc
    // 加载定义
    var url = MO.Lang.String.format('/content.define.tree.ws?action=query&code={1}', o._defineCode);
    o.loadUrl(url);
-}
-
-//==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param item:Object 对象
-//==========================================================
-MO.FEditorDsCatalogContent_selectObject = function FEditorDsCatalogContent_selectObject(item){
-   var o = this;
-   if(item){
-      o.processSelectedListener(item, true);
-   }
-}
-
-//==========================================================
-// <T>选中对象。</T>
-//
-// @method
-// @param item:Object 对象
-//==========================================================
-MO.FEditorDsCatalogContent_showObject = function FEditorDsCatalogContent_showObject(item){
-   var o = this;
-   if(MO.Class.isClass(item, MO.FDsSceneRenderable)){
-      var renderableNodes = o._renderableNodes;
-      var renderableCount = renderableNodes.count();
-      for(var i = 0; i < renderableCount; i++){
-         var renderableNode = renderableNodes.at(i);
-         var renderable = renderableNode.dataPropertyGet('linker');
-         if(renderable == item){
-            o.processSelectedListener(item, false);
-         }
-      }
-   }
 }
 
 //==========================================================

@@ -2610,7 +2610,7 @@ MO.FDuiDesktopConsole_getProgressBar = function FDuiDesktopConsole_getProgressBa
    var o = this;
    var progressBar = o._progressBar;
    if(!progressBar){
-      progressBar = o._progressBar = MO.Class.create(FDuiProgressBar);
+      progressBar = o._progressBar = MO.Class.create(MO.FDuiProgressBar);
       progressBar.build(top.MO.Window._hDocument);
    }
    return progressBar;
@@ -7451,7 +7451,7 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
       hLabelPanel.appendChild(o._hLabelForm);
       o.setLabel(o._label);
    }
-   if(hep){
+   if(hEditPanel){
       o.onBuildEdit(event);
    }
 }

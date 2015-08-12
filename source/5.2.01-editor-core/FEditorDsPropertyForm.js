@@ -62,6 +62,7 @@ MO.FEditorDsPropertyForm_onDataChanged = function FEditorDsPropertyForm_onDataCh
 MO.FEditorDsPropertyForm_onDataLoad = function FEditorDsPropertyForm_onDataLoad(event){
    var o = this;
    var xcontent = event.content;
+   // 加载数据
    var xunit = xcontent.nodes().first();
    o.loadUnit(xunit);
 }
@@ -74,6 +75,8 @@ MO.FEditorDsPropertyForm_onDataLoad = function FEditorDsPropertyForm_onDataLoad(
 //==========================================================
 MO.FEditorDsPropertyForm_onDataSave = function FEditorDsPropertyForm_onDataSave(event){
    var o = this;
+   // 允许处理
+   MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -93,13 +96,14 @@ MO.FEditorDsPropertyForm_construct = function FEditorDsPropertyForm_construct(){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
-MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(containerName, itemName){
+MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(typeGroup, containerName, itemName){
    var o = this;
    // 设置属性
    o._containerName = containerName;
    o._itemName = itemName;
+   o._logicGroup = typeGroup;
    // 发送请求
-   var url = MO.Lang.String.format('/{1}.ws?action=query&group={2}&container={3}&item={4}', o._logicService, o._logicGroup, o._containerName, o._itemName);
+   var url = MO.Lang.String.format('/{1}.ws?action=query&group={2}&container={3}&item={4}', o._logicService, typeGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
    connection.addLoadListener(o, o.onDataLoad);
 }
@@ -112,6 +116,8 @@ MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(containerNam
 //==========================================================
 MO.FEditorDsPropertyForm_save = function FEditorDsPropertyForm_save(){
    var o = this;
+   // 禁止处理
+   MO.Console.find(MO.FDuiDesktopConsole).showProgress();
    // 创建命令
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();

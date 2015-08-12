@@ -293,7 +293,7 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
    }
    //..........................................................
    // 建立控件对象
-   if(hep){
+   if(hEditPanel){
       o.onBuildEdit(event);
    }
 }

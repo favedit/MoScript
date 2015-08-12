@@ -121,7 +121,7 @@ MO.FDuiDesktopConsole_getProgressBar = function FDuiDesktopConsole_getProgressBa
    var progressBar = o._progressBar;
    // 创建进度条
    if(!progressBar){
-      progressBar = o._progressBar = MO.Class.create(FDuiProgressBar);
+      progressBar = o._progressBar = MO.Class.create(MO.FDuiProgressBar);
       progressBar.build(top.MO.Window._hDocument);
    }
    return progressBar;
