@@ -140,60 +140,63 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    // 创建图片
    var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');
    image.addLoadListener(o, o.onImageLoad);
-   // 创建图片
-   var image = o._rank1Image = imageConsole.load('{eai.resource}/live/1.png');
-   image.addLoadListener(o, o.onImageLoad);
-   var image = o._rank2Image = imageConsole.load('{eai.resource}/live/2.png');
-   image.addLoadListener(o, o.onImageLoad);
-   var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
-   image.addLoadListener(o, o.onImageLoad);
+//   // 创建图片
+//   var image = o._rank1Image = imageConsole.load('{eai.resource}/live/1.png');
+//   image.addLoadListener(o, o.onImageLoad);
+//   var image = o._rank2Image = imageConsole.load('{eai.resource}/live/2.png');
+//   image.addLoadListener(o, o.onImageLoad);
+//   var image = o._rank3Image = imageConsole.load('{eai.resource}/live/3.png');
+//   image.addLoadListener(o, o.onImageLoad);
    //..........................................................
    var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
-   //grid.setDisplayHead(false);
+   grid.setDisplayHead(false);
    grid.setLocation(50, 170);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
    grid.setLeft(9);
    grid.setRight(19);
-   grid.setHeadHeight(32);
+   grid.setHeadHeight(0);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 22;
-   grid.headFont().color = '#00B2F2';
-   grid.setRowHeight(30);
+   grid.headFont().color = '#00B2F2';   
+   grid.setRowHeight(40);
    grid.rowFont().font = 'Microsoft YaHei';
    grid.rowFont().size = 20;
    grid.rowFont().color = '#59FDE9';
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('label');
-   column.setLabel('姓名');
-   column.setDataName('label');
+   
+   var column = MO.Class.create(MO.FGuiGridColumnImage);
+   column.setName('rank');
+   column.setLabel();
+   column.setDataName('image');
    column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
+   column.setPadding(10, 1, 1, 1);
+   
    grid.pushColumn(column);
+   
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('card');
-   column.setLabel('身份证');
+   column.setLabel('');
    column.setDataName('card');
    column.setWidth(110);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('label_phone');
-   column.setLabel('用户 － 手机');
+   column.setLabel('');
    column.setDataName('label_phone');
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
    column.setName('investment');
-   column.setLabel('投资额');
+   column.setLabel('');
    column.setDataName('investment');
    column.setNormalColor('#59FDE9');
    column.setHighColor('#FDEF01');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 20;
+   column.cellPadding().right = 10;
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
@@ -214,6 +217,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    grid.rowFont().font = 'Microsoft YaHei';
    grid.rowFont().size = 20;
    grid.rowFont().color = '#59FDE9';
+   
    var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
    column.setLabel('时间');
@@ -222,6 +226,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setWidth(110);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
+   
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerCity');
    column.setLabel('城市');
@@ -244,7 +249,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setHighColor('#FDEF01');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 20;
+   column.cellPadding().right = 10;
    column.setWidth(120);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
@@ -302,7 +307,9 @@ MO.FEaiChartCustomerTable_setRankUnits = function FEaiChartCustomerTable_setRank
       var unit = units.at(i);
       var row = grid.allocRow();
       // 获得部门名称
-      row.set('label', unit.label());
+//      var cell = MO.Class.create(MO.FGuiGridCellImage);
+//      row.setImage(o._rank1Image);
+      row.set('image', '{eai.resource}/live/'+(i+1)+'.png');
       row.set('card', unit.card());
       row.set('label_phone',unit.label() +" - "+ unit.phone());
       row.set('investment', unit.investment());

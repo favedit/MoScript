@@ -162,13 +162,15 @@ MO.FEaiChartCustomerProcessor_calculateCurrent = function FEaiChartCustomerProce
    var o = this;
    var info = o._dynamicInfo;
    var investmentCurrent = info.investmentCount();
+   var investmentTotalCurrent = info.investmentTotal();
    var units = o._units;
    var count = units.count();
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
       investmentCurrent -= unit.investment();
+      investmentTotalCurrent += unit.investment();
    }
-   o._invementTotalCurrent = info.investmentTotal();
+   o._invementTotalCurrent = investmentTotalCurrent;
    o._invementDayCurrent = investmentCurrent;
 }
 
