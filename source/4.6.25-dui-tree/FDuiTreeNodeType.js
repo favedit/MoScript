@@ -14,7 +14,6 @@ MO.FDuiTreeNodeType = function FDuiTreeNodeType(o){
    o._icon       = MO.Class.register(o, [new MO.APtyString('_icon'), new MO.AGetSet('_icon')]);
    o._service    = MO.Class.register(o, [new MO.APtyString('_service'), new MO.AGetSet('_service')]);
    o._action     = MO.Class.register(o, [new MO.APtyString('_action'), new MO.AGetSet('_action')]);
-   o._attributes = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), MO.AGetter('_attributes')]);
    //..........................................................
    // @method
    o.construct   = MO.FDuiTreeNodeType_construct;

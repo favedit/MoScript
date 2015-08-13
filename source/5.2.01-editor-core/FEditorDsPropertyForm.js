@@ -123,7 +123,7 @@ MO.FEditorDsPropertyForm_save = function FEditorDsPropertyForm_save(){
    var xroot = xdocument.root();
    o.saveUnit(xroot.create('Content'));
    // 发送请求
-   var url = MO.Lang.String.format('/{1}.ws?action=update&group={2}&container={3}&item={4}', o._logicService, o._logicGroup, o._containerName, o._itemName);
+   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataModeCd, o._logicGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataSave);
 }

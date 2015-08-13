@@ -156,8 +156,10 @@ MO.FEditorDsPersistenceFrameSet_dispose = function FEditorDsPersistenceFrameSet_
 }
 MO.FEditorDsPersistenceMenuBar = function FEditorDsPersistenceMenuBar(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
-   o._frameName = 'editor.design.persistence.MenuBar';
-   o.onBuilded  = MO.FEditorDsPersistenceMenuBar_onBuilded;
+   o._frameName    = 'editor.design.persistence.MenuBar';
+   o.onBuilded     = MO.FEditorDsPersistenceMenuBar_onBuilded;
+   o.onBuildFinish = MO.FEditorDsPersistenceMenuBar_onBuildFinish;
+   o.onBuildClick  = MO.FEditorDsPersistenceMenuBar_onBuildClick;
    return o;
 }
 MO.FEditorDsPersistenceMenuBar_onBuilded = function FEditorDsPersistenceMenuBar_onBuilded(event){
@@ -166,6 +168,18 @@ MO.FEditorDsPersistenceMenuBar_onBuilded = function FEditorDsPersistenceMenuBar_
    o._controlCreate.addClickListener(o, o.onCreateClick);
    o._controlUpdate.addClickListener(o, o.onUpdateClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlBuild.addClickListener(o, o.onBuildClick);
+}
+MO.FEditorDsPersistenceMenuBar_onBuildFinish = function FEditorDsPersistenceMenuBar_onBuildFinish(event){
+   var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).hide();
+}
+MO.FEditorDsPersistenceMenuBar_onBuildClick = function FEditorDsPersistenceMenuBar_onBuildClick(event){
+   var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).showProgress();
+   var url = MO.Lang.String.format('/editor.design.persistence.ws?action=build&type=all');
+   var connection = MO.Console.find(MO.FXmlConsole).send(url);
+   connection.addLoadListener(o, o.onBuildFinish);
 }
 MO.FEditorDsPersistencePropertyAttributeForm = function FEditorDsPersistencePropertyAttributeForm(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);

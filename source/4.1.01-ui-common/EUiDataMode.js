@@ -3,10 +3,11 @@
 //
 // @enum
 // @author maocy
-// @version 141231
+// @version 150813
 //==========================================================
 MO.EUiDataMode = new function EUiDataMode(){
    var o = this;
+   o.View   = 'view';
    o.Insert = 'insert';
    o.Update = 'update';
    o.Delete = 'delete';

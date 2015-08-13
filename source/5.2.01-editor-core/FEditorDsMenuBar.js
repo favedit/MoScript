@@ -22,6 +22,14 @@ MO.FEditorDsMenuBar = function FEditorDsMenuBar(o){
 //==========================================================
 MO.FEditorDsMenuBar_onCreateClick = function FEditorDsMenuBar_onCreateClick(event){
    var o = this;
+   var button = event.sender;
+   // 获得属性
+   var componentType = button.attributeGet('component_type');
+   var propertyFrame = button.attributeGet('property_frame');
+   // 显示表单
+   var frame = o._frameSet.selectPropertyFrame(propertyFrame);
+   frame.dataPrepare();
+   frame.searchComponent('componentType').set(componentType);
 }
 
 //==========================================================
@@ -35,6 +43,8 @@ MO.FEditorDsMenuBar_onUpdateClick = function FEditorDsMenuBar_onUpdateClick(even
    var frame = o._frameSet.activePropertyFrame();
    if(frame){
       frame.save();
+   }else{
+      alert('请选择项目。');
    }
 }
 
@@ -46,4 +56,11 @@ MO.FEditorDsMenuBar_onUpdateClick = function FEditorDsMenuBar_onUpdateClick(even
 //==========================================================
 MO.FEditorDsMenuBar_onDeleteClick = function FEditorDsMenuBar_onDeleteClick(event){
    var o = this;
+   var frame = o._frameSet.activePropertyFrame();
+   if(frame){
+      frame.dataDelete();
+      frame.save();
+   }else{
+      alert('请选择项目。');
+   }
 }

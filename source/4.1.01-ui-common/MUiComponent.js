@@ -8,41 +8,44 @@
 MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
-   // @property String 唯一编号
-   o._guid         = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
-   // @property String 名称
-   o._name         = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
-   // @property String 标签
-   o._label        = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
+   // @property
+   o._guid           = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
+   o._name           = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
+   o._label          = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
+   o._attributes     = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), new MO.AGetter('_attributes')]);
    //..........................................................
    // @attribute TDictionary 组件字典
-   o._components   = null;
+   o._components     = null;
    // @attribute Object 附加数据
-   o._tag          = MO.Class.register(o, new MO.AGetSet('_tag'));
+   o._tag            = MO.Class.register(o, new MO.AGetSet('_tag'));
    //..........................................................
    // @process
-   o.oeInitialize  = MO.MUiComponent_oeInitialize;
-   o.oeRelease     = MO.MUiComponent_oeRelease;
+   o.oeInitialize    = MO.MUiComponent_oeInitialize;
+   o.oeRelease       = MO.MUiComponent_oeRelease;
    //..........................................................
    // @method
-   o.topComponent  = MO.MUiComponent_topComponent;
-   o.hasComponent  = MO.MUiComponent_hasComponent;
-   o.findComponent = MO.MUiComponent_findComponent;
-   o.components    = MO.MUiComponent_components;
-   o.push          = MO.MUiComponent_push;
-   o.remove        = MO.MUiComponent_remove;
-   o.clear         = MO.MUiComponent_clear;
+   o.attributeGet    = MO.MUiComponent_attributeGet;
+   o.attributeSet    = MO.MUiComponent_attributeSet;
    // @method
-   o.process       = MO.MUiComponent_process;
-   o.psInitialize  = MO.MUiComponent_psInitialize;
-   o.psRelease     = MO.MUiComponent_psRelease;
+   o.topComponent    = MO.MUiComponent_topComponent;
+   o.hasComponent    = MO.MUiComponent_hasComponent;
+   o.findComponent   = MO.MUiComponent_findComponent;
+   o.searchComponent = MO.MUiComponent_searchComponent;
+   o.components      = MO.MUiComponent_components;
+   o.push            = MO.MUiComponent_push;
+   o.remove          = MO.MUiComponent_remove;
+   o.clear           = MO.MUiComponent_clear;
    // @method
-   o.toString      = MO.MUiComponent_toString;
+   o.process         = MO.MUiComponent_process;
+   o.psInitialize    = MO.MUiComponent_psInitialize;
+   o.psRelease       = MO.MUiComponent_psRelease;
    // @method
-   o.dispose       = MO.MUiComponent_dispose;
+   o.toString        = MO.MUiComponent_toString;
    // @method
-   o.innerDumpInfo = MO.MUiComponent_innerDumpInfo;
-   o.innerDump     = MO.MUiComponent_innerDump;
+   o.dispose         = MO.MUiComponent_dispose;
+   // @method
+   o.innerDumpInfo   = MO.MUiComponent_innerDumpInfo;
+   o.innerDump       = MO.MUiComponent_innerDump;
    return o;
 }
 
@@ -66,6 +69,38 @@ MO.MUiComponent_oeInitialize = function MUiComponent_oeInitialize(e){
 //==========================================================
 MO.MUiComponent_oeRelease = function MUiComponent_oeRelease(e){
    return MO.EEventStatus.Continue;
+}
+
+//==========================================================
+// <T>获取节点属性。</T>
+//
+// @method
+// @param name:String 属性名称
+// @return String 属性内容
+//==========================================================
+MO.MUiComponent_attributeGet = function MUiComponent_attributeGet(name){
+   var value = null;
+   var attributes = this._attributes;
+   if(attributes){
+      value = attributes.get(name);
+   }
+   return value;
+}
+
+//==========================================================
+// <T>设置节点属性。</T>
+//
+// @method
+// @param name:String 属性名称
+// @param value:String 属性内容
+//==========================================================
+MO.MUiComponent_attributeSet = function MUiComponent_attributeSet(name, value){
+   var o = this;
+   var attributes = o._attributes;
+   if(!attributes){
+      attributes = o._attributes = new MO.TAttributes();
+   }
+   attributes.set(name, value);
 }
 
 //==========================================================
@@ -111,6 +146,34 @@ MO.MUiComponent_hasComponent = function MUiComponent_hasComponent(){
 MO.MUiComponent_findComponent = function MUiComponent_findComponent(name){
    var components = this._components;
    return components ? components.get(name) : null;
+}
+
+//==========================================================
+// <T>根据名称搜索子组件。</T>
+//
+// @method
+// @param name:String 名称
+// @return String 子组件
+//==========================================================
+MO.MUiComponent_searchComponent = function MUiComponent_searchComponent(name){
+   var findComponent = null;
+   // 当前层查找
+   var components = this._components;
+   if(components){
+      findComponent = components.get(name);
+   }
+   // 子组件集合查找
+   if(!findComponent){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         findComponent = component.findComponent(name);
+         if(findComponent){
+            return findComponent;
+         }
+      }
+   }
+   return findComponent;
 }
 
 //==========================================================
@@ -294,6 +357,7 @@ MO.MUiComponent_toString = function MUiComponent_toString(){
 MO.MUiComponent_dispose = function MUiComponent_dispose(){
    var o = this;
    // 清空属性
+   o._attributes = MO.Lang.Object.dispose(o._attributes);
    o._components = MO.Lang.Object.dispose(o._components, true);
    o._tag = null;
 }

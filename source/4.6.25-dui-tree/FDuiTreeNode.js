@@ -27,7 +27,6 @@ MO.FDuiTreeNode = function FDuiTreeNode(o){
    o._checked          = MO.Class.register(o, new MO.APtyBoolean('_checked'), false);
    o._extended         = MO.Class.register(o, new MO.APtyBoolean('_extended'), false);
    o._note             = MO.Class.register(o, new MO.APtyString('_note'));
-   o._attributes       = MO.Class.register(o, new MO.APtyAttributes('_attributes'));
    //..........................................................
    // @style
    o._styleNormal      = MO.Class.register(o, new MO.AStyle('_styleNormal'));

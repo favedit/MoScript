@@ -132,7 +132,9 @@ MO.FGuiGridCellImage_draw = function FGuiGridCellImage_draw(graphic, x, y, width
    var imageurl = o.text();
    var image = o._image = imageConsole.load(imageurl);
    image.testReady();
-   graphic.drawImage(image, x, y,image.size().width,image.size().height);
+    var imageX = (width/2)-(image.size().width/2)+x;
+   var imageY = (height/2)-(image.size().height/2)+y;
+   graphic.drawImage(image, imageX, imageY,image.size().width,image.size().height);
 }
 MO.FGuiGridCellImage_dispose = function FGuiGridCellImage_dispose() {
    var o = this;

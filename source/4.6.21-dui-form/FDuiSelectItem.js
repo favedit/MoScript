@@ -69,29 +69,29 @@ MO.FDuiSelectItem_onBuildPanel = function FDuiSelectItem_onBuildPanel(p){
 // <T>建立显示框架。</T>
 //
 // @method
-// @param p:argements:SArgements 参数集合
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiSelectItem_onBuild = function FDuiSelectItem_onBuild(p){
+MO.FDuiSelectItem_onBuild = function FDuiSelectItem_onBuild(event){
    var o = this;
-   o.__base.FDuiControl.onBuild.call(o, p);
+   o.__base.FDuiControl.onBuild.call(o, event);
    // 设置面板
-   var h = o._hPanel;
-   o.attachEvent('onMouseDown', h);
+   var hPanel = o._hPanel;
+   o.attachEvent('onMouseDown', hPanel);
    // 创建图标
-   var hp = o._hIconPanel = MO.Window.Builder.appendTableCell(h, o.styleName("Icon"));
-   hp.width = 18;
-   hp.align = 'center';
+   var hIconPanel = o._hIconPanel = MO.Window.Builder.appendTableCell(hPanel, o.styleName("Icon"));
+   hIconPanel.width = 18;
+   hIconPanel.align = 'center';
    //if(o._icon){
    //}
    // 创建文本
-   var hp = o._hLabelPanel = MO.Window.Builder.appendTableCell(h, o.styleName("Label"));
+   var hIconPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hPanel, o.styleName("Label"));
    if(o._label){
-      hp.innerHTML = o._label;
+      hIconPanel.innerHTML = o._label;
    }else{
-      hp.innerHTML = '&nbsp;';
+      hIconPanel.innerHTML = '&nbsp;';
    }
    // 创建备注
-   o._hNotePanel = MO.Window.Builder.appendTableCell(h, o.styleName("Note"));
+   o._hNotePanel = MO.Window.Builder.appendTableCell(hPanel, o.styleName("Note"));
 }
 
 //==========================================================
@@ -139,16 +139,17 @@ MO.FDuiSelectItem_onMouseDown = function FDuiSelectItem_onMouseDown(){
 // <T>设置选中状态。</T>
 //
 // @method
+// @param value:Boolean 内容
 //==========================================================
-MO.FDuiSelectItem_setChecked = function FDuiSelectItem_setChecked(p){
+MO.FDuiSelectItem_setChecked = function FDuiSelectItem_setChecked(value){
    var o = this;
-   o._checked = p;
+   o._checked = value;
    if(o._hIcon){
-      o._hIcon.style.display = p ? 'block' : 'none';
+      o._hIcon.style.display = value ? 'block' : 'none';
    }else{
-      o._hIconPanel.innerHTML = p ? 'O' : '';
+      o._hIconPanel.innerHTML = value ? 'O' : '';
    }
-   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
+   o._hPanel.className = value ? o.styleName('Select') : o.styleName('Normal');
 }
 
 //==========================================================

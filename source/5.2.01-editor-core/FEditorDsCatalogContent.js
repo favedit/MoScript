@@ -38,15 +38,15 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
       }
       parent = parent.parent();
    }
-   var containerName = parent.label();
+   var containerName = parent.code();
    // 显示画面
    var typeGroup = node.typeGroup();
-   var nodeType = node.type();
-   var frameName = nodeType.get('property_frame');
+   var frameName = node.type().get('property_frame');
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
       o._frameSet.selectObject(typeGroup, frameName, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, containerName, node.guid());
+      var itemName = node.guid();
+      o._frameSet.selectObject(typeGroup, frameName, containerName, itemName);
    }
 }
 

@@ -253,14 +253,14 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
       }
       parent = parent.parent();
    }
-   var containerName = parent.label();
+   var containerName = parent.code();
    var typeGroup = node.typeGroup();
-   var nodeType = node.type();
-   var frameName = nodeType.get('property_frame');
+   var frameName = node.type().get('property_frame');
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
       o._frameSet.selectObject(typeGroup, frameName, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, containerName, node.guid());
+      var itemName = node.guid();
+      o._frameSet.selectObject(typeGroup, frameName, containerName, itemName);
    }
 }
 MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construct(){
@@ -319,16 +319,31 @@ MO.FEditorDsMenuBar = function FEditorDsMenuBar(o){
 }
 MO.FEditorDsMenuBar_onCreateClick = function FEditorDsMenuBar_onCreateClick(event){
    var o = this;
+   var button = event.sender;
+   var componentType = button.attributeGet('component_type');
+   var propertyFrame = button.attributeGet('property_frame');
+   var frame = o._frameSet.selectPropertyFrame(propertyFrame);
+   frame.dataPrepare();
+   frame.searchComponent('componentType').set(componentType);
 }
 MO.FEditorDsMenuBar_onUpdateClick = function FEditorDsMenuBar_onUpdateClick(event){
    var o = this;
    var frame = o._frameSet.activePropertyFrame();
    if(frame){
       frame.save();
+   }else{
+      alert('请选择项目。');
    }
 }
 MO.FEditorDsMenuBar_onDeleteClick = function FEditorDsMenuBar_onDeleteClick(event){
    var o = this;
+   var frame = o._frameSet.activePropertyFrame();
+   if(frame){
+      frame.dataDelete();
+      frame.save();
+   }else{
+      alert('请选择项目。');
+   }
 }
 MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiForm);
@@ -383,7 +398,7 @@ MO.FEditorDsPropertyForm_save = function FEditorDsPropertyForm_save(){
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
    o.saveUnit(xroot.create('Content'));
-   var url = MO.Lang.String.format('/{1}.ws?action=update&group={2}&container={3}&item={4}', o._logicService, o._logicGroup, o._containerName, o._itemName);
+   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataModeCd, o._logicGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataSave);
 }
@@ -891,8 +906,10 @@ MO.FEditorDsPersistenceFrameSet_dispose = function FEditorDsPersistenceFrameSet_
 }
 MO.FEditorDsPersistenceMenuBar = function FEditorDsPersistenceMenuBar(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
-   o._frameName = 'editor.design.persistence.MenuBar';
-   o.onBuilded  = MO.FEditorDsPersistenceMenuBar_onBuilded;
+   o._frameName    = 'editor.design.persistence.MenuBar';
+   o.onBuilded     = MO.FEditorDsPersistenceMenuBar_onBuilded;
+   o.onBuildFinish = MO.FEditorDsPersistenceMenuBar_onBuildFinish;
+   o.onBuildClick  = MO.FEditorDsPersistenceMenuBar_onBuildClick;
    return o;
 }
 MO.FEditorDsPersistenceMenuBar_onBuilded = function FEditorDsPersistenceMenuBar_onBuilded(event){
@@ -901,6 +918,18 @@ MO.FEditorDsPersistenceMenuBar_onBuilded = function FEditorDsPersistenceMenuBar_
    o._controlCreate.addClickListener(o, o.onCreateClick);
    o._controlUpdate.addClickListener(o, o.onUpdateClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlBuild.addClickListener(o, o.onBuildClick);
+}
+MO.FEditorDsPersistenceMenuBar_onBuildFinish = function FEditorDsPersistenceMenuBar_onBuildFinish(event){
+   var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).hide();
+}
+MO.FEditorDsPersistenceMenuBar_onBuildClick = function FEditorDsPersistenceMenuBar_onBuildClick(event){
+   var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).showProgress();
+   var url = MO.Lang.String.format('/editor.design.persistence.ws?action=build&type=all');
+   var connection = MO.Console.find(MO.FXmlConsole).send(url);
+   connection.addLoadListener(o, o.onBuildFinish);
 }
 MO.FEditorDsPersistencePropertyAttributeForm = function FEditorDsPersistencePropertyAttributeForm(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);

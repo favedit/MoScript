@@ -22,13 +22,6 @@ MO.EUiDataAction = new function EUiDataAction(){
    o.Process   = 'process';
    return o;
 }
-MO.EUiDataMode = new function EUiDataMode(){
-   var o = this;
-   o.Insert = 'insert';
-   o.Update = 'update';
-   o.Delete = 'delete';
-   return o;
-}
 MO.EUiDataService = new function EUiDataService(){
    var o = this;
    o.Dataset    = 'database.dataset';

@@ -35201,6 +35201,14 @@ MO.EUiCursor = new function EUiCursor(){
    o.Move      = 'move';
    return o;
 }
+MO.EUiDataMode = new function EUiDataMode(){
+   var o = this;
+   o.View   = 'view';
+   o.Insert = 'insert';
+   o.Update = 'update';
+   o.Delete = 'delete';
+   return o;
+}
 MO.EUiDialog = new function EUiDialog(){
    var o = this;
    o.Confirm = 1;
@@ -35346,27 +35354,31 @@ MO.EUiWrap = new function EUiWrap(){
 }
 MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
-   o._guid         = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
-   o._name         = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
-   o._label        = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
-   o._components   = null;
-   o._tag          = MO.Class.register(o, new MO.AGetSet('_tag'));
-   o.oeInitialize  = MO.MUiComponent_oeInitialize;
-   o.oeRelease     = MO.MUiComponent_oeRelease;
-   o.topComponent  = MO.MUiComponent_topComponent;
-   o.hasComponent  = MO.MUiComponent_hasComponent;
-   o.findComponent = MO.MUiComponent_findComponent;
-   o.components    = MO.MUiComponent_components;
-   o.push          = MO.MUiComponent_push;
-   o.remove        = MO.MUiComponent_remove;
-   o.clear         = MO.MUiComponent_clear;
-   o.process       = MO.MUiComponent_process;
-   o.psInitialize  = MO.MUiComponent_psInitialize;
-   o.psRelease     = MO.MUiComponent_psRelease;
-   o.toString      = MO.MUiComponent_toString;
-   o.dispose       = MO.MUiComponent_dispose;
-   o.innerDumpInfo = MO.MUiComponent_innerDumpInfo;
-   o.innerDump     = MO.MUiComponent_innerDump;
+   o._guid           = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
+   o._name           = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
+   o._label          = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
+   o._attributes     = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), new MO.AGetter('_attributes')]);
+   o._components     = null;
+   o._tag            = MO.Class.register(o, new MO.AGetSet('_tag'));
+   o.oeInitialize    = MO.MUiComponent_oeInitialize;
+   o.oeRelease       = MO.MUiComponent_oeRelease;
+   o.attributeGet    = MO.MUiComponent_attributeGet;
+   o.attributeSet    = MO.MUiComponent_attributeSet;
+   o.topComponent    = MO.MUiComponent_topComponent;
+   o.hasComponent    = MO.MUiComponent_hasComponent;
+   o.findComponent   = MO.MUiComponent_findComponent;
+   o.searchComponent = MO.MUiComponent_searchComponent;
+   o.components      = MO.MUiComponent_components;
+   o.push            = MO.MUiComponent_push;
+   o.remove          = MO.MUiComponent_remove;
+   o.clear           = MO.MUiComponent_clear;
+   o.process         = MO.MUiComponent_process;
+   o.psInitialize    = MO.MUiComponent_psInitialize;
+   o.psRelease       = MO.MUiComponent_psRelease;
+   o.toString        = MO.MUiComponent_toString;
+   o.dispose         = MO.MUiComponent_dispose;
+   o.innerDumpInfo   = MO.MUiComponent_innerDumpInfo;
+   o.innerDump       = MO.MUiComponent_innerDump;
    return o;
 }
 MO.MUiComponent_oeInitialize = function MUiComponent_oeInitialize(e){
@@ -35374,6 +35386,22 @@ MO.MUiComponent_oeInitialize = function MUiComponent_oeInitialize(e){
 }
 MO.MUiComponent_oeRelease = function MUiComponent_oeRelease(e){
    return MO.EEventStatus.Continue;
+}
+MO.MUiComponent_attributeGet = function MUiComponent_attributeGet(name){
+   var value = null;
+   var attributes = this._attributes;
+   if(attributes){
+      value = attributes.get(name);
+   }
+   return value;
+}
+MO.MUiComponent_attributeSet = function MUiComponent_attributeSet(name, value){
+   var o = this;
+   var attributes = o._attributes;
+   if(!attributes){
+      attributes = o._attributes = new MO.TAttributes();
+   }
+   attributes.set(name, value);
 }
 MO.MUiComponent_topComponent = function MUiComponent_topComponent(clazz){
    var component = this;
@@ -35395,6 +35423,24 @@ MO.MUiComponent_hasComponent = function MUiComponent_hasComponent(){
 MO.MUiComponent_findComponent = function MUiComponent_findComponent(name){
    var components = this._components;
    return components ? components.get(name) : null;
+}
+MO.MUiComponent_searchComponent = function MUiComponent_searchComponent(name){
+   var findComponent = null;
+   var components = this._components;
+   if(components){
+      findComponent = components.get(name);
+   }
+   if(!findComponent){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         findComponent = component.findComponent(name);
+         if(findComponent){
+            return findComponent;
+         }
+      }
+   }
+   return findComponent;
 }
 MO.MUiComponent_components = function MUiComponent_components(){
    var o = this;
@@ -35492,6 +35538,7 @@ MO.MUiComponent_toString = function MUiComponent_toString(){
 }
 MO.MUiComponent_dispose = function MUiComponent_dispose(){
    var o = this;
+   o._attributes = MO.Lang.Object.dispose(o._attributes);
    o._components = MO.Lang.Object.dispose(o._components, true);
    o._tag = null;
 }
@@ -35617,8 +35664,14 @@ MO.MUiControl_dispose = function MUiControl_dispose(){
 }
 MO.MUiDataContainer = function MUiDataContainer(o){
    o = MO.Class.inherits(this, o);
+   o._dataModeCd = MO.Class.register(o, new MO.AGetSet('_dataModeCd'), MO.EUiDataMode.View);
    o.loadUnit    = MO.MUiDataContainer_loadUnit;
    o.saveUnit    = MO.MUiDataContainer_saveUnit;
+   o.dataView    = MO.MUiDataContainer_dataView;
+   o.dataPrepare = MO.MUiDataContainer_dataPrepare;
+   o.dataEdit    = MO.MUiDataContainer_dataEdit;
+   o.dataDelete  = MO.MUiDataContainer_dataDelete;
+   o.dataSave    = MO.MUiDataContainer_dataSave;
    return o;
 }
 MO.MUiDataContainer_loadUnit = function MUiDataContainer_loadUnit(unit){
@@ -35635,13 +35688,56 @@ MO.MUiDataContainer_saveUnit = function MUiDataContainer_saveUnit(unit){
    o.process(event);
    event.dispose();
 }
+MO.MUiDataContainer_dataView = function MUiDataContainer_dataView(){
+   var o = this;
+   o._dataModeCd = MO.EUiDataMode.View;
+   var event = new MO.SUiDispatchEvent(o, 'oeDataView', MO.MUiDataField);
+   o.process(event);
+   event.dispose();
+}
+MO.MUiDataContainer_dataPrepare = function MUiDataContainer_dataPrepare(){
+   var o = this;
+   o._dataModeCd = MO.EUiDataMode.Insert;
+   var event = new MO.SUiDispatchEvent(o, 'oeDataPrepare', MO.MUiDataField);
+   o.process(event);
+   event.dispose();
+}
+MO.MUiDataContainer_dataEdit = function MUiDataContainer_dataEdit(){
+   var o = this;
+   o._dataModeCd = MO.EUiDataMode.Delete;
+   var event = new MO.SUiDispatchEvent(o, 'oeDataEdit', MO.MUiDataField);
+   o.process(event);
+   event.dispose();
+}
+MO.MUiDataContainer_dataDelete = function MUiDataContainer_dataDelete(){
+   var o = this;
+   o._dataModeCd = MO.EUiDataMode.Delete;
+   var event = new MO.SUiDispatchEvent(o, 'oeDataDelete', MO.MUiDataField);
+   o.process(event);
+   event.dispose();
+}
+MO.MUiDataContainer_dataSave = function MUiDataContainer_dataSave(){
+   var o = this;
+   o._dataModeCd = MO.EUiDataMode.View;
+   var event = new MO.SUiDispatchEvent(o, 'oeDataSave', MO.MUiDataField);
+   o.process(event);
+   event.dispose();
+}
 MO.MUiDataField = function MUiDataField(o){
    o = MO.Class.inherits(this, o);
-   o._dataName    = MO.Class.register(o, [new MO.APtyString('_dataName'), new MO.AGetSet('_dataName')]);
-   o._dataTypeCd  = MO.Class.register(o, [new MO.APtyString('_dataTypeCd'), new MO.AGetSet('_dataTypeCd')], MO.EDataType.String);
-   o._dataRequire = MO.Class.register(o, [new MO.APtyBoolean('_dataRequire'), new MO.AGetSet('_dataRequire')]);
-   o._dataDefault = MO.Class.register(o, [new MO.APtyBoolean('_dataDefault'), new MO.AGetSet('_dataDefault')]);
+   o._dataName     = MO.Class.register(o, [new MO.APtyString('_dataName'), new MO.AGetSet('_dataName')]);
+   o._dataTypeCd   = MO.Class.register(o, [new MO.APtyString('_dataTypeCd'), new MO.AGetSet('_dataTypeCd')], MO.EDataType.String);
+   o._dataRequire  = MO.Class.register(o, [new MO.APtyBoolean('_dataRequire'), new MO.AGetSet('_dataRequire')]);
+   o._dataDefault  = MO.Class.register(o, [new MO.APtyString('_dataDefault'), new MO.AGetSet('_dataDefault')]);
+   o.oeDataPrepare = MO.MUiDataField_oeDataPrepare;
    return o;
+}
+MO.MUiDataField_oeDataPrepare = function MUiDataField_oeDataPrepare(event){
+   var o = this;
+   if(event.isAfter()){
+      o.set(o._dataDefault);
+   }
+   return MO.EEventStatus.Continue;
 }
 MO.MUiDataProperties = function MUiDataProperties(o){
    o = MO.Class.inherits(this, o);
@@ -39000,7 +39096,9 @@ MO.FGuiGridCellImage_draw = function FGuiGridCellImage_draw(graphic, x, y, width
    var imageurl = o.text();
    var image = o._image = imageConsole.load(imageurl);
    image.testReady();
-   graphic.drawImage(image, x, y,image.size().width,image.size().height);
+    var imageX = (width/2)-(image.size().width/2)+x;
+   var imageY = (height/2)-(image.size().height/2)+y;
+   graphic.drawImage(image, imageX, imageY,image.size().width,image.size().height);
 }
 MO.FGuiGridCellImage_dispose = function FGuiGridCellImage_dispose() {
    var o = this;
@@ -49967,21 +50065,21 @@ MO.FDuiSelectItem_onBuildPanel = function FDuiSelectItem_onBuildPanel(p){
    var o = this;
    o._hPanel = MO.Window.Builder.createTableRow(p, o.styleName("Normal"));
 }
-MO.FDuiSelectItem_onBuild = function FDuiSelectItem_onBuild(p){
+MO.FDuiSelectItem_onBuild = function FDuiSelectItem_onBuild(event){
    var o = this;
-   o.__base.FDuiControl.onBuild.call(o, p);
-   var h = o._hPanel;
-   o.attachEvent('onMouseDown', h);
-   var hp = o._hIconPanel = MO.Window.Builder.appendTableCell(h, o.styleName("Icon"));
-   hp.width = 18;
-   hp.align = 'center';
-   var hp = o._hLabelPanel = MO.Window.Builder.appendTableCell(h, o.styleName("Label"));
+   o.__base.FDuiControl.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   o.attachEvent('onMouseDown', hPanel);
+   var hIconPanel = o._hIconPanel = MO.Window.Builder.appendTableCell(hPanel, o.styleName("Icon"));
+   hIconPanel.width = 18;
+   hIconPanel.align = 'center';
+   var hIconPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hPanel, o.styleName("Label"));
    if(o._label){
-      hp.innerHTML = o._label;
+      hIconPanel.innerHTML = o._label;
    }else{
-      hp.innerHTML = '&nbsp;';
+      hIconPanel.innerHTML = '&nbsp;';
    }
-   o._hNotePanel = MO.Window.Builder.appendTableCell(h, o.styleName("Note"));
+   o._hNotePanel = MO.Window.Builder.appendTableCell(hPanel, o.styleName("Note"));
 }
 MO.FDuiSelectItem_onEnter = function FDuiSelectItem_onEnter(){
    var o = this;
@@ -49997,15 +50095,15 @@ MO.FDuiSelectItem_onMouseDown = function FDuiSelectItem_onMouseDown(){
    var o = this;
    o.processClickListener(o);
 }
-MO.FDuiSelectItem_setChecked = function FDuiSelectItem_setChecked(p){
+MO.FDuiSelectItem_setChecked = function FDuiSelectItem_setChecked(value){
    var o = this;
-   o._checked = p;
+   o._checked = value;
    if(o._hIcon){
-      o._hIcon.style.display = p ? 'block' : 'none';
+      o._hIcon.style.display = value ? 'block' : 'none';
    }else{
-      o._hIconPanel.innerHTML = p ? 'O' : '';
+      o._hIconPanel.innerHTML = value ? 'O' : '';
    }
-   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
+   o._hPanel.className = value ? o.styleName('Select') : o.styleName('Normal');
 }
 MO.FDuiSelectItem_set = function FDuiSelectItem_set(icon, label, value, note){
    var o = this;
@@ -55122,7 +55220,6 @@ MO.FDuiTreeNode = function FDuiTreeNode(o){
    o._checked          = MO.Class.register(o, new MO.APtyBoolean('_checked'), false);
    o._extended         = MO.Class.register(o, new MO.APtyBoolean('_extended'), false);
    o._note             = MO.Class.register(o, new MO.APtyString('_note'));
-   o._attributes       = MO.Class.register(o, new MO.APtyAttributes('_attributes'));
    o._styleNormal      = MO.Class.register(o, new MO.AStyle('_styleNormal'));
    o._styleHover       = MO.Class.register(o, new MO.AStyle('_styleHover'));
    o._styleSelect      = MO.Class.register(o, new MO.AStyle('_styleSelect'));
@@ -55937,7 +56034,6 @@ MO.FDuiTreeNodeType = function FDuiTreeNodeType(o){
    o._icon       = MO.Class.register(o, [new MO.APtyString('_icon'), new MO.AGetSet('_icon')]);
    o._service    = MO.Class.register(o, [new MO.APtyString('_service'), new MO.AGetSet('_service')]);
    o._action     = MO.Class.register(o, [new MO.APtyString('_action'), new MO.AGetSet('_action')]);
-   o._attributes = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), MO.AGetter('_attributes')]);
    o.construct   = MO.FDuiTreeNodeType_construct;
    o.get         = MO.FDuiTreeNodeType_get;
    o.set         = MO.FDuiTreeNodeType_set;
@@ -57145,13 +57241,6 @@ MO.EUiDataAction = new function EUiDataAction(){
    o.Scalar    = 'scalar';
    o.Complete  = 'complete';
    o.Process   = 'process';
-   return o;
-}
-MO.EUiDataMode = new function EUiDataMode(){
-   var o = this;
-   o.Insert = 'insert';
-   o.Update = 'update';
-   o.Delete = 'delete';
    return o;
 }
 MO.EUiDataService = new function EUiDataService(){
@@ -74592,14 +74681,14 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
       }
       parent = parent.parent();
    }
-   var containerName = parent.label();
+   var containerName = parent.code();
    var typeGroup = node.typeGroup();
-   var nodeType = node.type();
-   var frameName = nodeType.get('property_frame');
+   var frameName = node.type().get('property_frame');
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
       o._frameSet.selectObject(typeGroup, frameName, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      o._frameSet.selectObject(typeGroup, frameName, containerName, node.guid());
+      var itemName = node.guid();
+      o._frameSet.selectObject(typeGroup, frameName, containerName, itemName);
    }
 }
 MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construct(){
@@ -74658,16 +74747,31 @@ MO.FEditorDsMenuBar = function FEditorDsMenuBar(o){
 }
 MO.FEditorDsMenuBar_onCreateClick = function FEditorDsMenuBar_onCreateClick(event){
    var o = this;
+   var button = event.sender;
+   var componentType = button.attributeGet('component_type');
+   var propertyFrame = button.attributeGet('property_frame');
+   var frame = o._frameSet.selectPropertyFrame(propertyFrame);
+   frame.dataPrepare();
+   frame.searchComponent('componentType').set(componentType);
 }
 MO.FEditorDsMenuBar_onUpdateClick = function FEditorDsMenuBar_onUpdateClick(event){
    var o = this;
    var frame = o._frameSet.activePropertyFrame();
    if(frame){
       frame.save();
+   }else{
+      alert('请选择项目。');
    }
 }
 MO.FEditorDsMenuBar_onDeleteClick = function FEditorDsMenuBar_onDeleteClick(event){
    var o = this;
+   var frame = o._frameSet.activePropertyFrame();
+   if(frame){
+      frame.dataDelete();
+      frame.save();
+   }else{
+      alert('请选择项目。');
+   }
 }
 MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiForm);
@@ -74722,7 +74826,7 @@ MO.FEditorDsPropertyForm_save = function FEditorDsPropertyForm_save(){
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
    o.saveUnit(xroot.create('Content'));
-   var url = MO.Lang.String.format('/{1}.ws?action=update&group={2}&container={3}&item={4}', o._logicService, o._logicGroup, o._containerName, o._itemName);
+   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataModeCd, o._logicGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataSave);
 }
@@ -75230,8 +75334,10 @@ MO.FEditorDsPersistenceFrameSet_dispose = function FEditorDsPersistenceFrameSet_
 }
 MO.FEditorDsPersistenceMenuBar = function FEditorDsPersistenceMenuBar(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
-   o._frameName = 'editor.design.persistence.MenuBar';
-   o.onBuilded  = MO.FEditorDsPersistenceMenuBar_onBuilded;
+   o._frameName    = 'editor.design.persistence.MenuBar';
+   o.onBuilded     = MO.FEditorDsPersistenceMenuBar_onBuilded;
+   o.onBuildFinish = MO.FEditorDsPersistenceMenuBar_onBuildFinish;
+   o.onBuildClick  = MO.FEditorDsPersistenceMenuBar_onBuildClick;
    return o;
 }
 MO.FEditorDsPersistenceMenuBar_onBuilded = function FEditorDsPersistenceMenuBar_onBuilded(event){
@@ -75240,6 +75346,18 @@ MO.FEditorDsPersistenceMenuBar_onBuilded = function FEditorDsPersistenceMenuBar_
    o._controlCreate.addClickListener(o, o.onCreateClick);
    o._controlUpdate.addClickListener(o, o.onUpdateClick);
    o._controlDelete.addClickListener(o, o.onDeleteClick);
+   o._controlBuild.addClickListener(o, o.onBuildClick);
+}
+MO.FEditorDsPersistenceMenuBar_onBuildFinish = function FEditorDsPersistenceMenuBar_onBuildFinish(event){
+   var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).hide();
+}
+MO.FEditorDsPersistenceMenuBar_onBuildClick = function FEditorDsPersistenceMenuBar_onBuildClick(event){
+   var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).showProgress();
+   var url = MO.Lang.String.format('/editor.design.persistence.ws?action=build&type=all');
+   var connection = MO.Console.find(MO.FXmlConsole).send(url);
+   connection.addLoadListener(o, o.onBuildFinish);
 }
 MO.FEditorDsPersistencePropertyAttributeForm = function FEditorDsPersistencePropertyAttributeForm(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);

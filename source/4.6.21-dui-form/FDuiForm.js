@@ -13,6 +13,7 @@ MO.FDuiForm = function FDuiForm(o){
    //..........................................................
    // @method
    o.construct          = MO.FDuiForm_construct;
+   // @method
    o.dispose            = MO.FDuiForm_dispose;
 
    //..........................................................
