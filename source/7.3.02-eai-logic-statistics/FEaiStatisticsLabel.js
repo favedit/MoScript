@@ -55,7 +55,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    graphic.setFont(textFont);
    var baseX;
    var unitTextX;
-   if( o._alignCd == "right" ){
+   if( o._alignCd != "right" ){
        baseX =  rectangle.left;
        unitTextX = baseX + 4;
    }else{
