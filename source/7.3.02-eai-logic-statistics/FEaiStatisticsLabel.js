@@ -158,7 +158,6 @@ MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    var value = Math.abs(value).toString();
    o._value = value;
    
-   console.log(o._originValue +"-"+ o._origin +"-"+value);
    //计算实际需要转过的页数
    var originValue = o._originValue;
    var lengthDiff = value.length - originValue.length;
