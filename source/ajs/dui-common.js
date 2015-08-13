@@ -403,7 +403,7 @@ MO.MDuiEditDrop = function MDuiEditDrop(o){
 MO.MDuiEditDrop_onBuildEditDrop = function MDuiEditDrop_onBuildEditDrop(p){
    var o = this;
    var h = o._hDropPanel;
-   h.className = o.styleName('DropPanel', MDuiEditDrop);
+   h.className = o.styleName('DropPanel', MO.MDuiEditDrop);
    h.width = 11;
    o.attachEvent('onDropEnter', h);
    o.attachEvent('onDropLeave', h);

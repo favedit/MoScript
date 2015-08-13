@@ -5,18 +5,18 @@
 // @author maocy
 // @version 150804
 //==========================================================
-MO.FGuiGridCellText = function FGuiGridCellText(o){
-   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellText);
+MO.FGuiGridCell = function FGuiGridCell(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellText);
    //..........................................................
    // @method
-   o.onPaint   = MO.FGuiGridCellText_onPaint;
+   o.onPaint   = MO.FGuiGridCell_onPaint;
    //..........................................................
    // @method
-   o.construct = MO.FGuiGridCellText_construct;
+   o.construct = MO.FGuiGridCell_construct;
    // @method
-   o.draw      = MO.FGuiGridCellText_draw;
+   o.draw      = MO.FGuiGridCell_draw;
    // @method
-   o.dispose   = MO.FGuiGridCellText_dispose;
+   o.dispose   = MO.FGuiGridCell_dispose;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FGuiGridCellText = function FGuiGridCellText(o){
 // @method
 // @return 绘制事件处理
 //==========================================================
-MO.FGuiGridCellText_onPaint = function FGuiGridCellText_onPaint(event){
+MO.FGuiGridCell_onPaint = function FGuiGridCell_onPaint(event){
    var o = this;
 }
 
@@ -35,9 +35,9 @@ MO.FGuiGridCellText_onPaint = function FGuiGridCellText_onPaint(event){
 //
 // @method
 //==========================================================
-MO.FGuiGridCellText_construct = function FGuiGridCellText_construct(){
+MO.FGuiGridCell_construct = function FGuiGridCell_construct(){
    var o = this;
-   o.__base.FGuiGridCell.construct.call(o);
+   o.__base.FObject.construct.call(o);
    o.__base.MUiGridCellText.construct.call(o);
 }
 
@@ -47,7 +47,7 @@ MO.FGuiGridCellText_construct = function FGuiGridCellText_construct(){
 // @method
 // @return 绘制处理
 //==========================================================
-MO.FGuiGridCellText_draw = function FGuiGridCellText_draw(graphic, x, y, width, height){
+MO.FGuiGridCell_draw = function FGuiGridCell_draw(graphic, x, y, width, height){
    var o = this;
    // 获得文本
    var text = o.text();
@@ -63,10 +63,10 @@ MO.FGuiGridCellText_draw = function FGuiGridCellText_draw(graphic, x, y, width, 
 //
 // @method
 //==========================================================
-MO.FGuiGridCellText_dispose = function FGuiGridCellText_dispose(){
+MO.FGuiGridCell_dispose = function FGuiGridCell_dispose(){
    var o = this;
    // 释放属性
    // 父处理
    o.__base.MUiGridCellText.dispose.call(o);
-   o.__base.FGuiGridCell.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }

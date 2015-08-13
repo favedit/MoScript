@@ -21,67 +21,67 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDataValue, MO.MUiDataField, MO.MUiEditValue, MO.MDuiEditChange, MO.MDuiEditDrop);
    //..........................................................
    // @property
-   o._labelModeCd      = MO.Class.register(o, new MO.APtyString('_labelModeCd'), MO.EUiLabelMode.All);
-   o._labelPositionCd  = MO.Class.register(o, new MO.APtyString('_labelPositionCd'), MO.EUiLabelPosition.Left);
-   o._labelSize        = MO.Class.register(o, new MO.APtySize2('_labelSize'));
-   o._labelAlignCd     = MO.Class.register(o, new MO.APtyString('_labelAlignCd'), MO.EUiAlign.Left);
-   o._labelColor       = MO.Class.register(o, new MO.APtyString('_labelColor'));
+   o._labelModeCd            = MO.Class.register(o, new MO.APtyString('_labelModeCd'), MO.EUiLabelMode.All);
+   o._labelPositionCd        = MO.Class.register(o, new MO.APtyString('_labelPositionCd'), MO.EUiLabelPosition.Left);
+   o._labelSize              = MO.Class.register(o, new MO.APtySize2('_labelSize'));
+   o._labelAlignCd           = MO.Class.register(o, new MO.APtyString('_labelAlignCd'), MO.EUiAlign.Left);
+   o._labelColor             = MO.Class.register(o, new MO.APtyString('_labelColor'));
    // @property
-   o._editSize         = MO.Class.register(o, new MO.APtySize2('_editSize'));
-   o._editColor        = MO.Class.register(o, new MO.APtyString('_editColor'));
+   o._editSize               = MO.Class.register(o, new MO.APtySize2('_editSize'));
+   o._editColor              = MO.Class.register(o, new MO.APtyString('_editColor'));
    //..........................................................
    // @style
-   o._styleLabelPanel  = MO.Class.register(o, new MO.AStyle('_styleLabelPanel'));
-   o._styleEditPanel   = MO.Class.register(o, new MO.AStyle('_styleEditPanel'));
+   o._styleLabelPanel        = MO.Class.register(o, new MO.AStyle('_styleLabelPanel'));
+   o._styleEditPanel         = MO.Class.register(o, new MO.AStyle('_styleEditPanel'));
    //..........................................................
    // @attribute
-   o._progressing      = false;
+   o._progressing            = false;
    //..........................................................
    // @html <TD> 标签面板
-   o._hLabelPanel      = null;
+   o._hLabelPanel            = null;
    // @html <TABLE> 标签容器
-   o._hLabelForm       = null;
+   o._hLabelForm             = null;
    // @html <TD> 标签图标面板
-   o._hIconPanel       = null;
+   o._hIconPanel             = null;
    // @html <IMG> 标签图标
-   o._hIcon            = null;
+   o._hIcon                  = null;
    // @html <TD> 标签文字面板
-   o._hTextPanel       = null;
+   o._hTextPanel             = null;
    // @html <SPAN> 标签文字
-   o._hText            = null;
+   o._hText                  = null;
    // @html <TD> 编辑面板
-   o._hEditPanel       = null;
+   o._hEditPanel             = null;
    // @html <TABLE> 编辑容器
-   o._hEditForm        = null;
+   o._hEditForm              = null;
    // @html <TD> 编辑内容面板
-   o._hValuePanel      = null;
-   //o.hHintPanel      = null;
-   //o.hHintIcon       = null;
+   o._hValuePanel            = null;
+   //o.hHintPanel            = null;
+   //o.hHintIcon             = null;
    //..........................................................
    // @event
-   o.onBuildLabelIcon  = MO.FDuiEditControl_onBuildLabelIcon;
-   o.onBuildLabelText  = MO.FDuiEditControl_onBuildLabelText;
-   o.onBuildLabel      = MO.FDuiEditControl_onBuildLabel;
-   o.onBuildEditValue  = MO.Method.virtual(o, 'onBuildEditValue');
-   o.onBuildEdit       = MO.FDuiEditControl_onBuildEdit;
-   o.onBuildPanel      = MO.FDuiEditControl_onBuildPanel;
-   o.onBuild           = MO.FDuiEditControl_onBuild;
+   o.onBuildLabelIcon        = MO.FDuiEditControl_onBuildLabelIcon;
+   o.onBuildLabelText        = MO.FDuiEditControl_onBuildLabelText;
+   o.onBuildLabel            = MO.FDuiEditControl_onBuildLabel;
+   o.onBuildEditValue        = MO.Method.virtual(o, 'onBuildEditValue');
+   o.onBuildEdit             = MO.FDuiEditControl_onBuildEdit;
+   o.onBuildPanel            = MO.FDuiEditControl_onBuildPanel;
+   o.onBuild                 = MO.FDuiEditControl_onBuild;
    //..........................................................
    // @process
-   o.oeMode            = MO.FDuiEditControl_oeMode;
-   o.oeProgress        = MO.FDuiEditControl_oeProgress;
+   o.oeMode                  = MO.FDuiEditControl_oeMode;
+   o.oeProgress              = MO.FDuiEditControl_oeProgress;
    // @process
-   o.oeLoadUnit        = MO.FDuiEditControl_oeLoadUnit;
-   o.oeSaveUnit        = MO.FDuiEditControl_oeSaveUnit;
+   o.oeLoadUnit              = MO.FDuiEditControl_oeLoadUnit;
+   o.oeSaveUnit              = MO.FDuiEditControl_oeSaveUnit;
    //..........................................................
    // @method
-   o.construct         = MO.FDuiEditControl_construct;
+   o.construct               = MO.FDuiEditControl_construct;
    // @method
-   o.panel             = MO.FDuiEditControl_panel;
-   o.setLabel          = MO.FDuiEditControl_setLabel;
-   o.getValueRectangle = MO.FDuiEditControl_getValueRectangle;
+   o.panel                   = MO.FDuiEditControl_panel;
+   o.setLabel                = MO.FDuiEditControl_setLabel;
+   o.calculateValueRectangle = MO.FDuiEditControl_calculateValueRectangle;
    // @method
-   o.dispose           = MO.FDuiEditControl_dispose;
+   o.dispose                 = MO.FDuiEditControl_dispose;
    return o;
 }
 
@@ -435,15 +435,17 @@ MO.FDuiEditControl_setLabel = function FDuiEditControl_setLabel(value){
 // @param rectangle:SRectangle 矩形
 // @return SRectangle 矩形
 //==========================================================
-MO.FDuiEditControl_getValueRectangle = function FDuiEditControl_getValueRectangle(rectangle){
+MO.FDuiEditControl_calculateValueRectangle = function FDuiEditControl_calculateValueRectangle(rectangle){
    var o = this;
    if(!rectangle){
       rectangle = new MO.SRectangle();
    }
    var hPanel = o._hValuePanel;
    var position = MO.Window.Html.clientPosition(hPanel);
-   rectangle.position.assign(position);
-   rectangle.setSize(hPanel.offsetWidth, hPanel.offsetHeight);
+   rectangle.left = position.x;
+   rectangle.top = position.y;
+   rectangle.width = hPanel.offsetWidth;
+   rectangle.height = hPanel.offsetHeight;
    return rectangle;
 }
 
