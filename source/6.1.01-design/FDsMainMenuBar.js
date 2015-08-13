@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMainMenuBar = function FDsMainMenuBar(o){
-      o = RClass.inherits(this, o, FMenuBar);
+      o = MO.Class.inherits(this, o, FMenuBar);
       //..........................................................
       // @attribute
       //..........................................................
@@ -30,19 +30,19 @@ with(MO){
       var o = this;
       o.__base.FMenuBar.onBuild.call(o, p);
       // 建立按键
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('文件');
       b.setIcon('design.menu.build');
       b.build(p);
       o.appendButton(b);
       // 建立按键
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('保存');
       b.setIcon('design.menu.save');
       b.build(p);
       o.appendButton(b);
       // 建立按键
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('帮助');
       b.setIcon('design.menu.help');
       b.build(p);

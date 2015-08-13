@@ -6,16 +6,16 @@ with(MO){
    // @history 150422
    //==========================================================
    MO.FDsShareWorkspace = function FDsShareWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiWorkspace, MUiStorage);
       //..........................................................
       // @property
       o._frameName            = 'resource.share.Workspace';
       o._storageCode          = o._frameName;
       //..........................................................
       // @style
-      o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleMenubarGround   = MO.Class.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       //..........................................................
       // @attribute
       o._activeFrameSetCode   = null;
@@ -61,7 +61,7 @@ with(MO){
       // 设置工具栏
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
       // 设置分页栏
-      var control = o._tabBar = RClass.create(FDsShareTabBar);
+      var control = o._tabBar = MO.Class.create(FDsShareTabBar);
       control._workspace = o;
       control.buildDefine(event);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -98,61 +98,61 @@ with(MO){
       if(!frameSet){
          if(name == EDsFrameSet.ShareResourceFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsShareResourceMenuBar);
+            var menuBar = MO.Class.create(FDsShareResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareBitmapFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsShareBitmapMenuBar);
+            var menuBar = MO.Class.create(FDsShareBitmapMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareMaterialFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsShareMaterialMenuBar);
+            var menuBar = MO.Class.create(FDsShareMaterialMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareModelFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsShareModelMenuBar);
+            var menuBar = MO.Class.create(FDsShareModelMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareModelFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareTemplateFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsShareTemplateMenuBar);
+            var menuBar = MO.Class.create(FDsShareTemplateMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareSceneFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsShareSceneMenuBar);
+            var menuBar = MO.Class.create(FDsShareSceneMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;

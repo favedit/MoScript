@@ -7,7 +7,7 @@ with(MO){
    // @history 150428
    //==========================================================
    MO.FDsMaterialImportDialog = function FDsMaterialImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.material.ImportDialog';
@@ -66,7 +66,7 @@ with(MO){
       var guid = resource.guid();
       var typeCode = o._controlTypeCode.get();
       var code = o._controlCode.get();
-      if(RString.isEmpty(code)){
+      if(MO.Lang.String.isEmpty(code)){
          code = typeCode;
       }
       var label = o._controlLabel.get();
@@ -87,7 +87,7 @@ with(MO){
       }
       url = RBrowser.urlEncode(url);
       // 发送数据
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       // 释放文件
       o._fileReader = RObject.dispose(reader);
@@ -102,7 +102,7 @@ with(MO){
    MO.FDsMaterialImportDialog_onConfirmLoad = function FDsMaterialImportDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新搜索内容
@@ -118,10 +118,10 @@ with(MO){
    MO.FDsMaterialImportDialog_onConfirmClick = function FDsMaterialImportDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 加载文件数据
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }

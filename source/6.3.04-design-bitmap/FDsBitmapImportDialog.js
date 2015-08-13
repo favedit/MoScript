@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsBitmapImportDialog = function FDsBitmapImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.bitmap.ImportDialog';
@@ -64,7 +64,7 @@ with(MO){
       var url = '/cloud.resource.bitmap.wv?do=updateData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
       // 发送数据
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       // 释放文件
       o._fileReader = RObject.dispose(reader);
@@ -79,7 +79,7 @@ with(MO){
    MO.FDsBitmapImportDialog_onConfirmLoad = function FDsBitmapImportDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新搜索内容
@@ -95,10 +95,10 @@ with(MO){
    MO.FDsBitmapImportDialog_onConfirmClick = function FDsBitmapImportDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 加载文件数据
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }

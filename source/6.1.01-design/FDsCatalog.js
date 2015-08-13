@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsCatalog = function FDsCatalog(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
       //..........................................................
       // @const
       o._iconView             = 'resource.scene.view';
@@ -18,28 +18,28 @@ with(MO){
       o._materialNodes        = null;
       //..........................................................
       // @event
-      o.onBuild               = FDsCatalog_onBuild;
+      o.onBuild               = MO.FDsCatalog_onBuild;
       // @event
-      o.onLoadDisplay         = FDsCatalog_onLoadDisplay;
-      o.onNodeClick           = FDsCatalog_onNodeClick;
-      o.onNodeViewClick       = FDsCatalog_onNodeViewClick;
-      o.onNodeViewDoubleClick = FDsCatalog_onNodeViewDoubleClick;
+      o.onLoadDisplay         = MO.FDsCatalog_onLoadDisplay;
+      o.onNodeClick           = MO.FDsCatalog_onNodeClick;
+      o.onNodeViewClick       = MO.FDsCatalog_onNodeViewClick;
+      o.onNodeViewDoubleClick = MO.FDsCatalog_onNodeViewDoubleClick;
       //..........................................................
       // @method
-      o.construct             = FDsCatalog_construct;
+      o.construct             = MO.FDsCatalog_construct;
       // @method
-      o.buildNodeView         = FDsCatalog_buildNodeView;
-      o.buildTechnique        = FDsCatalog_buildTechnique;
-      o.buildRegion           = FDsCatalog_buildRegion;
-      o.buildRenderable       = FDsCatalog_buildRenderable;
-      o.buildDisplay          = FDsCatalog_buildDisplay;
-      o.buildLayer            = FDsCatalog_buildLayer;
-      o.buildSpace            = FDsCatalog_buildSpace;
+      o.buildNodeView         = MO.FDsCatalog_buildNodeView;
+      o.buildTechnique        = MO.FDsCatalog_buildTechnique;
+      o.buildRegion           = MO.FDsCatalog_buildRegion;
+      o.buildRenderable       = MO.FDsCatalog_buildRenderable;
+      o.buildDisplay          = MO.FDsCatalog_buildDisplay;
+      o.buildLayer            = MO.FDsCatalog_buildLayer;
+      o.buildSpace            = MO.FDsCatalog_buildSpace;
       // @method
-      o.selectObject          = FDsCatalog_selectObject;
-      o.showObject            = FDsCatalog_showObject;
+      o.selectObject          = MO.FDsCatalog_selectObject;
+      o.showObject            = MO.FDsCatalog_showObject;
       // @method
-      o.dispose               = FDsCatalog_dispose;
+      o.dispose               = MO.FDsCatalog_dispose;
       return o;
    }
 
@@ -96,7 +96,7 @@ with(MO){
       var cell = event.treeNodeCell;
       var linker = event.treeNode.dataPropertyGet('linker');
       // 测试显示对象
-      if(RClass.isClass(linker, FDisplay)){
+      if(MO.Class.isClass(linker, FDisplay)){
          if(event.ctrlKey){
             var displayNodes = o._displayNodes;
             var displayCount = displayNodes.count()
@@ -114,7 +114,7 @@ with(MO){
          }
       }
       // 测试绘制对象
-      if(RClass.isClass(linker, FDrawable)){
+      if(MO.Class.isClass(linker, FDrawable)){
          if(event.ctrlKey){
             var renderableNodes = o._renderableNodes;
             var renderableCount = renderableNodes.count();
@@ -132,7 +132,7 @@ with(MO){
          }
       }
       // 测试材质对象
-      if(RClass.isClass(linker, FG3dMaterial)){
+      if(MO.Class.isClass(linker, FG3dMaterial)){
          if(event.ctrlKey){
             var materialNodes = o._materialNodes;
             var materialCount = materialNodes.count();
@@ -162,7 +162,7 @@ with(MO){
       var node = event.treeNode;
       var linker = node.dataPropertyGet('linker');
       // 测试显示对象
-      if(RClass.isClass(linker, FDisplay)){
+      if(MO.Class.isClass(linker, FDisplay)){
          var displayNodes = o._displayNodes;
          var displayCount = displayNodes.count()
          for(var i = 0; i < displayCount; i++){
@@ -173,7 +173,7 @@ with(MO){
          }
       }
       // 测试绘制对象
-      if(RClass.isClass(linker, FDrawable)){
+      if(MO.Class.isClass(linker, FDrawable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){
@@ -184,7 +184,7 @@ with(MO){
          }
       }
       // 测试材质对象
-      if(RClass.isClass(linker, FG3dMaterial)){
+      if(MO.Class.isClass(linker, FG3dMaterial)){
          var materialNodes = o._materialNodes;
          var materialCount = materialNodes.count();
          for(var i = 0; i < materialCount; i++){
@@ -205,9 +205,9 @@ with(MO){
       var o = this;
       o.__base.FUiDataTreeView.construct.call(o);
       // 设置属性
-      o._displayNodes = new TObjects();
-      o._renderableNodes = new TObjects();
-      o._materialNodes = new TObjects();
+      o._displayNodes = new MO.TObjects();
+      o._renderableNodes = new MO.TObjects();
+      o._materialNodes = new MO.TObjects();
    }
 
    //==========================================================
@@ -390,7 +390,7 @@ with(MO){
       for(var i = 0; i < c; i++){
          var l = ds.value(i);
          // 忽略界面层
-         if(RClass.isClass(l, FDisplayUiLayer)){
+         if(MO.Class.isClass(l, FDisplayUiLayer)){
             continue;
          }
          var lr = l.resource();
@@ -453,7 +453,7 @@ with(MO){
    //==========================================================
    MO.FDsCatalog_showObject = function FDsCatalog_showObject(item){
       var o = this;
-      if(RClass.isClass(item, FDsSceneRenderable)){
+      if(MO.Class.isClass(item, FDsSceneRenderable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){
@@ -473,9 +473,9 @@ with(MO){
    //==========================================================
    MO.FDsCatalog_dispose = function FDsCatalog_dispose(){
       var o = this;
-      o._displayNodes = RObject.dispose(o._displayNodes);
-      o._renderableNodes = RObject.dispose(o._renderableNodes);
-      o._materialNodes = RObject.dispose(o._materialNodes);
+      o._displayNodes = MO.Lang.Object.dispose(o._displayNodes);
+      o._renderableNodes = MO.Lang.Object.dispose(o._renderableNodes);
+      o._materialNodes = MO.Lang.Object.dispose(o._materialNodes);
       // 父处理
       o.__base.FUiDataTreeView.dispose.call(o);
    }

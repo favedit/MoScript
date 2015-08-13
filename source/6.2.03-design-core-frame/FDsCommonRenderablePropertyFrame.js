@@ -7,7 +7,7 @@ with(MO){
    // @history 150216
    //==========================================================
    MO.FDsCommonRenderablePropertyFrame = function FDsCommonRenderablePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible          = false;

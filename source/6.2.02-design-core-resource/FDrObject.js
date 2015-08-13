@@ -7,7 +7,7 @@ with(MO){
    // @history 150131
    //==========================================================
    MO.FDrObject = function FDrObject(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       //..........................................................
       // @attribute
       o._guid       = null;

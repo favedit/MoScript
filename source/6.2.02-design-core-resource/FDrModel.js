@@ -7,7 +7,7 @@ with(MO){
    // @version 150415
    //==========================================================
    MO.FDrModel = function FDrModel(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       //..........................................................
       // @attribute
       o._classCode = 'Model';

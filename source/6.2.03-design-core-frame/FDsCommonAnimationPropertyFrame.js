@@ -7,7 +7,7 @@ with(MO){
    // @history 150316
    //==========================================================
    MO.FDsCommonAnimationPropertyFrame = function FDsCommonAnimationPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible         = false;

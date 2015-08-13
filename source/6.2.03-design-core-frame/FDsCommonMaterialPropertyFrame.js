@@ -7,7 +7,7 @@ with(MO){
    // @history 150211
    //==========================================================
    MO.FDsCommonMaterialPropertyFrame = function FDsCommonMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible        = false;

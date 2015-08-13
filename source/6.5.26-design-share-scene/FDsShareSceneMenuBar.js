@@ -7,7 +7,7 @@ with(MO){
    // @history 150422
    //==========================================================
    MO.FDsShareSceneMenuBar = function FDsShareSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDsSceneMenuBar);
+      o = MO.Class.inherits(this, o, FDsSceneMenuBar);
       //..........................................................
       // @property
       o._frameName = 'resource.share.scene.MenuBar';

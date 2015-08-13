@@ -7,7 +7,7 @@ with(MO){
    // @history 150423
    //==========================================================
    MO.FDsShareModelCanvasToolBar = function FDsShareModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCanvasToolBar);
       //..........................................................
       // @property
       o._frameName = 'resource.share.model.CanvasToolBar';

@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsTemplateCanvasToolBar = function FDsTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @attribute
       o._refreshButton  = null;

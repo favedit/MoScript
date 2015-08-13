@@ -7,7 +7,7 @@ with(MO){
    // @history 150415
    //==========================================================
    MO.FDsCommonRegionPropertyFrame = function FDsCommonRegionPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible                   = false;

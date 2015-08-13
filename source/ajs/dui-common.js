@@ -860,18 +860,6 @@ MO.MDuiVertical_setVisible = function MDuiVertical_setVisible(p){
       MO.Window.Html.displaySet(h, p);
    }
 }
-MO.MListenerBlur = function MListenerBlur(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addBlurListener     = MO.MListenerBlur_addBlurListener;
-   o.processBlurListener = MO.MListenerBlur_processBlurListener;
-   return o;
-}
-MO.MListenerBlur_addBlurListener = function MListenerBlur_addBlurListener(w, m){
-   return this.addListener(MO.EEvent.Blur, w, m);
-}
-MO.MListenerBlur_processBlurListener = function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.Blur, p1, p2, p3, p4, p5);
-}
 MO.MListenerClick = function MListenerClick(o){
    o = MO.Class.inherits(this, o, MO.MListener);
    o.addClickListener     = MO.MListenerClick_addClickListener;
@@ -903,70 +891,6 @@ MO.MListenerDataChanged_addDataChangedListener = function MListenerDataChanged_a
 }
 MO.MListenerDataChanged_processDataChangedListener = function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
    this.processListener(MO.EEvent.DataChanged, p1, p2, p3, p4, p5);
-}
-MO.MListenerDoubleClick = function MListenerDoubleClick(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addDoubleClickListener     = MO.MListenerDoubleClick_addDoubleClickListener;
-   o.setDoubleClickListener     = MO.MListenerDoubleClick_setDoubleClickListener;
-   o.processDoubleClickListener = MO.MListenerDoubleClick_processDoubleClickListener;
-   return o;
-}
-MO.MListenerDoubleClick_addDoubleClickListener = function MListenerDoubleClick_addDoubleClickListener(owner, method){
-   return this.addListener(MO.EEvent.DoubleClick, owner, method);
-}
-MO.MListenerDoubleClick_setDoubleClickListener = function MListenerDoubleClick_setDoubleClickListener(owner, method){
-   return this.setListener(MO.EEvent.DoubleClick, owner, method);
-}
-MO.MListenerDoubleClick_processDoubleClickListener = function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.DoubleClick, p1, p2, p3, p4, p5);
-}
-MO.MListenerEnter = function MListenerEnter(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addEnterListener     = MO.MListenerEnter_addEnterListener;
-   o.processEnterListener = MO.MListenerEnter_processEnterListener;
-   return o;
-}
-MO.MListenerEnter_addEnterListener = function MListenerEnter_addEnterListener(w, m){
-   return this.addListener(MO.EEvent.Enter, w, m);
-}
-MO.MListenerEnter_processEnterListener = function MListenerEnter_processEnterListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.Enter, p1, p2, p3, p4, p5);
-}
-MO.MListenerFocus = function MListenerFocus(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addFocusListener     = MO.MListenerFocus_addFocusListener;
-   o.processFocusListener = MO.MListenerFocus_processFocusListener;
-   return o;
-}
-MO.MListenerFocus_addFocusListener = function MListenerFocus_addFocusListener(w, m){
-   return this.addListener(MO.EEvent.Focus, w, m);
-}
-MO.MListenerFocus_processFocusListener = function MListenerFocus_processFocusListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.Focus, p1, p2, p3, p4, p5);
-}
-MO.MListenerItemClick = function MListenerItemClick(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addItemClickListener     = MListenerItemClick_addItemClickListener;
-   o.processItemClickListener = MListenerItemClick_processItemClickListener;
-   return o;
-}
-MO.MListenerItemClick_addItemClickListener = function MListenerItemClick_addItemClickListener(w, m){
-   return this.addListener(MO.EEvent.ItemClick, w, m);
-}
-MO.MListenerItemClick_processItemClickListener = function MListenerItemClick_processItemClickListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.ItemClick, p1, p2, p3, p4, p5);
-}
-MO.MListenerLeave = function MListenerLeave(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addLeaveListener     = MO.MListenerLeave_addLeaveListener;
-   o.processLeaveListener = MO.MListenerLeave_processLeaveListener;
-   return o;
-}
-MO.MListenerLeave_addLeaveListener = function MListenerLeave_addLeaveListener(w, m){
-   return this.addListener(MO.EEvent.Leave, w, m);
-}
-MO.MListenerLeave_processLeaveListener = function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.Leave, p1, p2, p3, p4, p5);
 }
 MO.MListenerResult = function MListenerResult(o){
    o = MO.Class.inherits(this, o, MO.MListener);

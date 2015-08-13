@@ -6,7 +6,7 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FDsMaterialCanvasContent = function FDsMaterialCanvasContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       //..........................................................
       // @attribute
       o._activeResource      = null;
@@ -51,7 +51,7 @@ with(MO){
       o.__base.FDsCanvas.onBuild.call(o, p);
       var hPanel = o._hPanel;
       // 创建简单舞台
-      var space = o._activeSpace = RClass.create(FE3dSimpleStage);
+      var space = o._activeSpace = MO.Class.create(FE3dSimpleStage);
       space.linkGraphicContext(o);
       space.selectTechnique(o, FE3dGeneralTechnique);
       space.region().backgroundColor().set(1, 1, 1, 1);
@@ -70,7 +70,7 @@ with(MO){
       projection._angle = 45;
       projection.update();
       // 创建位图
-      //var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
+      //var bitmap = o._activeBitmap = MO.Class.create(FE3dBitmap)
       //bitmap.linkGraphicContext(o);
       //bitmap.setup();
       //space.spriteLayer().pushRenderable(bitmap);
@@ -84,7 +84,7 @@ with(MO){
       //o.__base.FDsCanvas.onBuild.call(o, p);
       // 创建界面控制器
       //var c = o._graphicContext;
-      //var tc = RConsole.find(FE3dTemplateConsole);
+      //var tc = MO.Console.find(FE3dTemplateConsole);
       //var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
       //t._optionFace = true;
       //t.hide();
@@ -137,7 +137,7 @@ with(MO){
       // 加载完成
       //o.processLoadListener(o);
       // 隐藏处理
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -180,8 +180,8 @@ with(MO){
    MO.FDsMaterialCanvasContent_construct = function FDsMaterialCanvasContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureCameraPosition = new SPoint3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureCameraPosition = new MO.SPoint3();
    }
 
    //==========================================================
@@ -233,9 +233,9 @@ with(MO){
    MO.FDsMaterialCanvasContent_loadByGuid = function FDsMaterialCanvasContent_loadByGuid(guid){
       var o = this;
       // 显示加载进度
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       // 释放网格
-      var resource = o._activeResource = RConsole.find(FE3sMaterialConsole).loadByGuid(guid);
+      var resource = o._activeResource = MO.Console.find(FE3sMaterialConsole).loadByGuid(guid);
       resource.clearLoadListeners();
       resource.addLoadListener(o, o.onLoaded);
    }

@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsShareBitmapMenuBar = function FDsShareBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDsBitmapMenuBar);
+      o = MO.Class.inherits(this, o, FDsBitmapMenuBar);
       //..........................................................
       // @property
       o._frameName  = 'resource.share.bitmap.MenuBar';

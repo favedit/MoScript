@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsMaterialCatalogToolBar = function FDsMaterialCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @attribute
       o._controlCreate   = null;

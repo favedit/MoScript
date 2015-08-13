@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsCommonAnimationPropertyFrame = function FDsCommonAnimationPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible         = false;
       o._activeSpace     = null;
       o._activeAnimation = null;
@@ -51,7 +51,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonCameraFrame = function FDsCommonCameraFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._workspace        = null;
       o._camera           = null;
       o._controlPosition  = null;
@@ -79,7 +79,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonCameraPropertyFrame = function FDsCommonCameraPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._workspace        = null;
       o._activeSpace      = null;
@@ -136,7 +136,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayDialog = function FDsCommonDisplayDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.DisplayDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -168,12 +168,12 @@ with(MO){
    }
    MO.FDsCommonDisplayDialog_onConfirmLoad = function FDsCommonDisplayDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonDisplayDialog_onConfirmClick = function FDsCommonDisplayDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
       xsprite.set('space_guid', o._spaceGuid);
@@ -181,7 +181,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('model_guid', o._controlModelGuid.get());
       xsprite.set('model_code', o._controlModelCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).createDisplay(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonDisplayDialog_onCancelClick = function FDsCommonDisplayDialog_onCancelClick(event){
@@ -213,7 +213,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayFrame = function FDsCommonDisplayFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace   = null;
       o._activeDisplay = null;
       o.onBuilded      = FDsCommonDisplayFrame_onBuilded;
@@ -265,7 +265,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayPropertyFrame = function FDsCommonDisplayPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible        = false;
       o._workspace      = null;
       o._activeDisplay  = null;
@@ -315,7 +315,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLayerDialog = function FDsCommonLayerDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.LayerDialog';
       o._displayModeCd        = null;
       o._controlSpaceGuid     = null;
@@ -346,18 +346,18 @@ with(MO){
    }
    MO.FDsCommonLayerDialog_onConfirmLoad = function FDsCommonLayerDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonLayerDialog_onConfirmClick = function FDsCommonLayerDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Layer');
       xsprite.set('space_guid', o._spaceGuid);
       xsprite.set('code', o._controlCode.get());
       xsprite.set('label', o._controlLabel.get());
-      var connection = RConsole.find(FDrSceneConsole).createLayer(xaction);
+      var connection = MO.Console.find(FDrSceneConsole).createLayer(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonLayerDialog_onCancelClick = function FDsCommonLayerDialog_onCancelClick(event){
@@ -389,7 +389,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLayerPropertyFrame = function FDsCommonLayerPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible       = false;
       o._workspace     = null;
       o._layer         = null;
@@ -442,7 +442,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLightPropertyFrame = function FDsCommonLightPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible      = false;
       o._workspace    = null;
       o._activeSpace  = null;
@@ -475,7 +475,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterial1Frame = function FDsCommonMaterial1Frame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace           = null;
       o._activeMaterial        = null;
       o._controlOptionDouble   = null;
@@ -617,7 +617,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterial2Frame = function FDsCommonMaterial2Frame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace              = null;
       o._activeMaterial           = null;
       o._controlDiffuseViewColor  = null;
@@ -690,7 +690,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialDialog = function FDsCommonMaterialDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.MaterialDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -722,12 +722,12 @@ with(MO){
    }
    MO.FDsCommonMaterialDialog_onConfirmLoad = function FDsCommonMaterialDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMaterialDialog_onConfirmClick = function FDsCommonMaterialDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Material');
       xsprite.set('space_guid', o._spaceGuid);
@@ -735,7 +735,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('material_guid', o._controlMaterialGuid.get());
       xsprite.set('material_code', o._controlMaterialCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).selectMaterial(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).selectMaterial(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonMaterialDialog_onCancelClick = function FDsCommonMaterialDialog_onCancelClick(event){
@@ -767,7 +767,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialPropertyFrame = function FDsCommonMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible        = false;
       o._workspace      = null;
       o._activeMaterial       = null;
@@ -816,7 +816,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialReferDialog = function FDsCommonMaterialReferDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName      = 'resource.common.dialog.MaterialReferDialog';
       o._displayModeCd  = null;
       o._controlGuid    = null;
@@ -843,7 +843,7 @@ with(MO){
    }
    MO.FDsCommonMaterialReferDialog_onConfirmLoad = function FDsCommonMaterialReferDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMaterialReferDialog_onConfirmClick = function FDsCommonMaterialReferDialog_onConfirmClick(event){
@@ -874,7 +874,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMovieDialog = function FDsCommonMovieDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.MovieDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -906,12 +906,12 @@ with(MO){
    }
    MO.FDsCommonMovieDialog_onConfirmLoad = function FDsCommonMovieDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMovieDialog_onConfirmClick = function FDsCommonMovieDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xmovie = xaction.create('Movie');
       xmovie.set('space_guid', o._spaceGuid);
@@ -921,7 +921,7 @@ with(MO){
       xmovie.set('label', o._controlLabel.get());
       xmovie.set('interval', o._controlInterval.get());
       xmovie.set('rotation', o._controlRotation.get());
-      var console = RConsole.find(FDrSceneConsole);
+      var console = MO.Console.find(FDrSceneConsole);
       var connection = null;
       connection = console.createMovie(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
@@ -952,7 +952,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMoviePropertyFrame = function FDsCommonMoviePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible         = false;
       o._activeSpace     = null;
       o._activeMovie = null;
@@ -1006,7 +1006,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonProgramDialog = function FDsCommonProgramDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.ProgramDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -1058,7 +1058,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRegionPropertyFrame = function FDsCommonRegionPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible                   = false;
       o._workspace                 = null;
       o._activeSpace               = null;
@@ -1119,7 +1119,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRenderableFrame = function FDsCommonRenderableFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace      = null;
       o._activeRenderable = null;
       o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
@@ -1156,7 +1156,7 @@ with(MO){
       var o = this;
       var item = event.item;
       var materialRefer = item.tag();
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
       dialog._frame = o;
       dialog._materialRefer = materialRefer;
       dialog.setContentCode('');
@@ -1170,7 +1170,7 @@ with(MO){
       var program = effect._program;
       var vertexShader = program.vertexShader();
       var fragmentShader = program.fragmentShader();
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
       dialog._frameSet = o._frameSet;
       dialog.setProgramCode(effect._code);
       dialog.setVertexSource(vertexShader.source(), vertexShader.targetSource());
@@ -1222,7 +1222,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRenderablePropertyFrame = function FDsCommonRenderablePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._activeRenderable = null;
       o._activeMaterial   = null;
@@ -1261,7 +1261,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonShaderDialog = function FDsCommonShaderDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.ShaderDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -1312,7 +1312,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonSpacePropertyFrame = function FDsCommonSpacePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible      = false;
       o._workspace    = null;
       o._activeSpace  = null;
@@ -1356,7 +1356,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonSpriteDialog = function FDsCommonSpriteDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.SpriteDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -1388,7 +1388,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onConfirmLoad = function FDsCommonSpriteDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._displayModeCd == EUiDataMode.Insert){
@@ -1406,7 +1406,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onConfirmClick = function FDsCommonSpriteDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Sprite');
       xsprite.set('space_guid', o._spaceGuid);
@@ -1416,7 +1416,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('template_guid', o._controlTemplateGuid.get());
       xsprite.set('template_code', o._controlTemplateCode.get());
-      var console = RConsole.find(FDrSceneConsole);
+      var console = MO.Console.find(FDrSceneConsole);
       var connection = null;
       connection = console.createSprite(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
@@ -1447,7 +1447,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonTechniquePropertyFrame = function FDsCommonTechniquePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible              = false;
       o._workspace            = null;
       o._activeSpace          = null;
@@ -1515,10 +1515,10 @@ with(MO){
    MO.FDsCommonTechniquePropertyFrame_construct = function FDsCommonTechniquePropertyFrame_construct(){
       var o = this;
       o.__base.FDuiForm.construct.call(o);
-      var t = o._thread = RClass.create(FThread);
+      var t = o._thread = MO.Class.create(FThread);
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onRefresh);
-      RConsole.find(FThreadConsole).start(t);
+      MO.Console.find(FThreadConsole).start(t);
    }
    MO.FDsCommonTechniquePropertyFrame_loadObject = function FDsCommonTechniquePropertyFrame_loadObject(space, technique){
       var o = this;
@@ -1543,7 +1543,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonTemplateDialog = function FDsCommonTemplateDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.TemplateDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -1573,12 +1573,12 @@ with(MO){
    }
    MO.FDsCommonTemplateDialog_onConfirmLoad = function FDsCommonTemplateDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonTemplateDialog_onConfirmClick = function FDsCommonTemplateDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
       xsprite.set('space_guid', o._spaceGuid);
@@ -1586,7 +1586,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('model_guid', o._controlModelGuid.get());
       xsprite.set('model_code', o._controlModelCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).createDisplay(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonTemplateDialog_onCancelClick = function FDsCommonTemplateDialog_onCancelClick(event){

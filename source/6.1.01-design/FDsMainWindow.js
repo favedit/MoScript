@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMainWindow = function FDsMainWindow(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       //..........................................................
       // @attribute
       o._name             = null;
@@ -49,10 +49,10 @@ with(MO){
    MO.FDsMainWindow_construct = function FDsMainWindow_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
-      o._matrix = new SMatrix3d();
-      o._location = new SPoint3();
-      o._rotation = new SVector3();
-      o._scale = new SVector3();
+      o._matrix = new MO.SMatrix3d();
+      o._location = new MO.SPoint3();
+      o._rotation = new MO.SVector3();
+      o._scale = new MO.SVector3();
       o._scale.set(1, 1, 1);
    }
 
@@ -166,7 +166,7 @@ with(MO){
       var o = this;
       var r = o._renderables;
       if(r == null){
-         r = o._renderables = new TObjects();
+         r = o._renderables = new MO.TObjects();
       }
       return r;
    }

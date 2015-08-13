@@ -72,7 +72,7 @@ MO.EDsFrameSet = new function EDsFrameSet(){
 }
 with(MO){
    MO.MDsBoundBox = function MDsBoundBox(o){
-      o = RClass.inherits(this, o);
+      o = MO.Class.inherits(this, o);
       o._boundVisible = false;
       o._boundBox     = null;
       o.boundBox      = MDsBoundBox_boundBox;
@@ -84,7 +84,7 @@ with(MO){
       var o = this;
       var boundBox = o._boundBox;
       if(!boundBox){
-         boundBox = o._boundBox = RClass.create(FE3dBoundBox);
+         boundBox = o._boundBox = MO.Class.create(FE3dBoundBox);
          boundBox.linkGraphicContext(o);
          boundBox._drawable = o;
          boundBox._parent = o;
@@ -110,7 +110,7 @@ with(MO){
 }
 with(MO){
    MO.FDsApplication = function FDsApplication(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._name             = null;
       o._matrix           = null;
       o._location         = null;
@@ -137,10 +137,10 @@ with(MO){
    MO.FDsApplication_construct = function FDsApplication_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
-      o._matrix = new SMatrix3d();
-      o._location = new SPoint3();
-      o._rotation = new SVector3();
-      o._scale = new SVector3();
+      o._matrix = new MO.SMatrix3d();
+      o._location = new MO.SPoint3();
+      o._rotation = new MO.SVector3();
+      o._scale = new MO.SVector3();
       o._scale.set(1, 1, 1);
    }
    MO.FDsApplication_isName = function FDsApplication_isName(p){
@@ -189,7 +189,7 @@ with(MO){
       var o = this;
       var r = o._renderables;
       if(r == null){
-         r = o._renderables = new TObjects();
+         r = o._renderables = new MO.TObjects();
       }
       return r;
    }
@@ -228,7 +228,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapCanvas = function FDsBitmapCanvas(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeBitmap        = null;
       o._capturePosition     = null;
       o._captureMatrix       = null;
@@ -256,7 +256,7 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.onBuild.call(o, p);
       var hPanel = o._hPanel;
-      var space = o._activeSpace = RClass.create(FE3dFlatStage);
+      var space = o._activeSpace = MO.Class.create(FE3dFlatStage);
       space.linkGraphicContext(o);
       space.selectTechnique(o, FE3dGeneralTechnique);
       space.region().backgroundColor().set(1, 1, 1, 1);
@@ -327,7 +327,7 @@ with(MO){
    }
    MO.FDsBitmapCanvas_onLoaded = function FDsBitmapCanvas_onLoaded(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsBitmapCanvas_oeResize = function FDsBitmapCanvas_oeResize(event){
       var o = this;
@@ -340,15 +340,15 @@ with(MO){
    MO.FDsBitmapCanvas_construct = function FDsBitmapCanvas_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._captureMatrix = new SMatrix3d();
+      o._captureMatrix = new MO.SMatrix3d();
    }
    MO.FDsBitmapCanvas_loadByGuid = function FDsBitmapCanvas_loadByGuid(guid){
       var o = this;
       var size = o._graphicContext.size();
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var resource = o._activeResource = MO.Console.find(FDrBitmapConsole).query(guid);
       var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
-      var bitmap = o._activeBitmap = RConsole.find(FE3dBitmapConsole).loadByGuid(o, guid);
+      var bitmap = o._activeBitmap = MO.Console.find(FE3dBitmapConsole).loadByGuid(o, guid);
       bitmap.material().info().effectCode = 'flat';
       bitmap.setLoadListener(o, o.onLoaded);
       bitmap.loadUrl(url);
@@ -607,28 +607,28 @@ MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
 }
 with(MO){
    MO.FDsCatalog = function FDsCatalog(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
       o._iconView             = 'resource.scene.view';
       o._iconViewNot          = 'resource.scene.viewno';
       o._displayNodes         = null;
       o._renderableNodes      = null;
       o._materialNodes        = null;
-      o.onBuild               = FDsCatalog_onBuild;
-      o.onLoadDisplay         = FDsCatalog_onLoadDisplay;
-      o.onNodeClick           = FDsCatalog_onNodeClick;
-      o.onNodeViewClick       = FDsCatalog_onNodeViewClick;
-      o.onNodeViewDoubleClick = FDsCatalog_onNodeViewDoubleClick;
-      o.construct             = FDsCatalog_construct;
-      o.buildNodeView         = FDsCatalog_buildNodeView;
-      o.buildTechnique        = FDsCatalog_buildTechnique;
-      o.buildRegion           = FDsCatalog_buildRegion;
-      o.buildRenderable       = FDsCatalog_buildRenderable;
-      o.buildDisplay          = FDsCatalog_buildDisplay;
-      o.buildLayer            = FDsCatalog_buildLayer;
-      o.buildSpace            = FDsCatalog_buildSpace;
-      o.selectObject          = FDsCatalog_selectObject;
-      o.showObject            = FDsCatalog_showObject;
-      o.dispose               = FDsCatalog_dispose;
+      o.onBuild               = MO.FDsCatalog_onBuild;
+      o.onLoadDisplay         = MO.FDsCatalog_onLoadDisplay;
+      o.onNodeClick           = MO.FDsCatalog_onNodeClick;
+      o.onNodeViewClick       = MO.FDsCatalog_onNodeViewClick;
+      o.onNodeViewDoubleClick = MO.FDsCatalog_onNodeViewDoubleClick;
+      o.construct             = MO.FDsCatalog_construct;
+      o.buildNodeView         = MO.FDsCatalog_buildNodeView;
+      o.buildTechnique        = MO.FDsCatalog_buildTechnique;
+      o.buildRegion           = MO.FDsCatalog_buildRegion;
+      o.buildRenderable       = MO.FDsCatalog_buildRenderable;
+      o.buildDisplay          = MO.FDsCatalog_buildDisplay;
+      o.buildLayer            = MO.FDsCatalog_buildLayer;
+      o.buildSpace            = MO.FDsCatalog_buildSpace;
+      o.selectObject          = MO.FDsCatalog_selectObject;
+      o.showObject            = MO.FDsCatalog_showObject;
+      o.dispose               = MO.FDsCatalog_dispose;
       return o;
    }
    MO.FDsCatalog_onBuild = function FDsCatalog_onBuild(p){
@@ -653,7 +653,7 @@ with(MO){
       var o = this;
       var cell = event.treeNodeCell;
       var linker = event.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FDisplay)){
+      if(MO.Class.isClass(linker, FDisplay)){
          if(event.ctrlKey){
             var displayNodes = o._displayNodes;
             var displayCount = displayNodes.count()
@@ -670,7 +670,7 @@ with(MO){
             cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(linker, FDrawable)){
+      if(MO.Class.isClass(linker, FDrawable)){
          if(event.ctrlKey){
             var renderableNodes = o._renderableNodes;
             var renderableCount = renderableNodes.count();
@@ -687,7 +687,7 @@ with(MO){
             cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(linker, FG3dMaterial)){
+      if(MO.Class.isClass(linker, FG3dMaterial)){
          if(event.ctrlKey){
             var materialNodes = o._materialNodes;
             var materialCount = materialNodes.count();
@@ -709,7 +709,7 @@ with(MO){
       var o = this;
       var node = event.treeNode;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FDisplay)){
+      if(MO.Class.isClass(linker, FDisplay)){
          var displayNodes = o._displayNodes;
          var displayCount = displayNodes.count()
          for(var i = 0; i < displayCount; i++){
@@ -719,7 +719,7 @@ with(MO){
             displayNode.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(linker, FDrawable)){
+      if(MO.Class.isClass(linker, FDrawable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){
@@ -729,7 +729,7 @@ with(MO){
             renderableNode.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(linker, FG3dMaterial)){
+      if(MO.Class.isClass(linker, FG3dMaterial)){
          var materialNodes = o._materialNodes;
          var materialCount = materialNodes.count();
          for(var i = 0; i < materialCount; i++){
@@ -743,9 +743,9 @@ with(MO){
    MO.FDsCatalog_construct = function FDsCatalog_construct(){
       var o = this;
       o.__base.FUiDataTreeView.construct.call(o);
-      o._displayNodes = new TObjects();
-      o._renderableNodes = new TObjects();
-      o._materialNodes = new TObjects();
+      o._displayNodes = new MO.TObjects();
+      o._renderableNodes = new MO.TObjects();
+      o._materialNodes = new MO.TObjects();
    }
    MO.FDsCatalog_buildNodeView = function FDsCatalog_buildNodeView(pn, pv){
       var o = this;
@@ -864,7 +864,7 @@ with(MO){
       var c = ds.count();
       for(var i = 0; i < c; i++){
          var l = ds.value(i);
-         if(RClass.isClass(l, FDisplayUiLayer)){
+         if(MO.Class.isClass(l, FDisplayUiLayer)){
             continue;
          }
          var lr = l.resource();
@@ -899,7 +899,7 @@ with(MO){
    }
    MO.FDsCatalog_showObject = function FDsCatalog_showObject(item){
       var o = this;
-      if(RClass.isClass(item, FDsSceneRenderable)){
+      if(MO.Class.isClass(item, FDsSceneRenderable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){
@@ -913,19 +913,19 @@ with(MO){
    }
    MO.FDsCatalog_dispose = function FDsCatalog_dispose(){
       var o = this;
-      o._displayNodes = RObject.dispose(o._displayNodes);
-      o._renderableNodes = RObject.dispose(o._renderableNodes);
-      o._materialNodes = RObject.dispose(o._materialNodes);
+      o._displayNodes = MO.Lang.Object.dispose(o._displayNodes);
+      o._renderableNodes = MO.Lang.Object.dispose(o._renderableNodes);
+      o._materialNodes = MO.Lang.Object.dispose(o._materialNodes);
       o.__base.FUiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsFrameSet = function FDsFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
-      o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
+      o._styleToolBarGround   = MO.Class.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._activeGuid           = null;
       o._activeCode           = null;
       o._activeSpace          = null;
@@ -940,13 +940,13 @@ with(MO){
    MO.FDsFrameSet_construct = function FDsFrameSet_construct(){
       var o = this;
       o.__base.FDuiFrameSet.construct.call(o);
-      o._propertyFrames = new TDictionary();
+      o._propertyFrames = new MO.TDictionary();
    }
    MO.FDsFrameSet_findPropertyFrame = function FDsFrameSet_findPropertyFrame(code){
       var o = this;
       var frame = o._propertyFrames.get(code);
       if(!frame){
-         frame = RConsole.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
+         frame = MO.Console.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
          frame._frameSet = o;
          o._propertyFrames.set(code, frame);
       }
@@ -973,13 +973,13 @@ with(MO){
          var frame = frames.at(i);
          frame.dispose();
       }
-      o._propertyFrames = RObject.dispose(o._propertyFrames);
+      o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames);
       o.__base.FDuiFrameSet.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMainCanvas = function FDsMainCanvas(o){
-      o = RClass.inherits(this, o, FCanvas);
+      o = MO.Class.inherits(this, o, FCanvas);
       o._context   = null;
       o._stage     = null;
       o._layer     = null;
@@ -1015,7 +1015,7 @@ with(MO){
       hCanvas.width = o._hParent.offsetWidth;
       hCanvas.height = o._hParent.offsetHeight;
       o._context = REngine3d.createContext(FWglContext, hCanvas);
-      var g = o._stage = RClass.create(FSimpleStage3d);
+      var g = o._stage = MO.Class.create(FSimpleStage3d);
       g.backgroundColor().set(0.5, 0.5, 0.5, 1);
       g.selectTechnique(o._context, FG3dGeneralTechnique);
       o._layer = o._stage.spriteLayer();
@@ -1034,7 +1034,7 @@ with(MO){
    MO.FDsMainCanvas_onBuild = function FDsMainCanvas_onBuild(p){
       var o = this;
       o.__base.FCanvas.onBuild.call(o, p);
-      var tc = RConsole.find(FE3sThemeConsole);
+      var tc = MO.Console.find(FE3sThemeConsole);
       var m = tc.select('color');
       m.loadListener().register(o, o.onThemeLoad);
    }
@@ -1049,7 +1049,7 @@ with(MO){
    }
    MO.FDsMainCanvas_selectModel = function FDsMainCanvas_selectModel(p){
       var o = this;
-      var rmc = RConsole.find(FModel3dConsole);
+      var rmc = MO.Console.find(FModel3dConsole);
       if(o._activeModel != null){
          rmc.free(o._activeModel);
       }
@@ -1064,7 +1064,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainCatalog = function FDsMainCatalog(o){
-      o = RClass.inherits(this, o, FDataTreeView);
+      o = MO.Class.inherits(this, o, FDataTreeView);
       o.onBuild     = FDsMainCatalog_onBuild;
       o.onNodeClick = FDsMainCatalog_onNodeClick;
       o.construct   = FDsMainCatalog_construct;
@@ -1092,7 +1092,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainMenuBar = function FDsMainMenuBar(o){
-      o = RClass.inherits(this, o, FMenuBar);
+      o = MO.Class.inherits(this, o, FMenuBar);
       o.onBuild   = FDsMainMenuBar_onBuild;
       o.construct = FDsMainMenuBar_construct;
       o.dispose   = FDsMainMenuBar_dispose;
@@ -1101,17 +1101,17 @@ with(MO){
    MO.FDsMainMenuBar_onBuild = function FDsMainMenuBar_onBuild(p){
       var o = this;
       o.__base.FMenuBar.onBuild.call(o, p);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('文件');
       b.setIcon('design.menu.build');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('保存');
       b.setIcon('design.menu.save');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('帮助');
       b.setIcon('design.menu.help');
       b.build(p);
@@ -1128,7 +1128,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainToolBar = function FDsMainToolBar(o){
-      o = RClass.inherits(this, o, FToolBar);
+      o = MO.Class.inherits(this, o, FToolBar);
       o.onPersistenceClick   = FDsMainToolBar_onPersistenceClick;
       o.onBuild   = FDsMainToolBar_onBuild;
       o.construct = FDsMainToolBar_construct;
@@ -1143,20 +1143,20 @@ with(MO){
    MO.FDsMainToolBar_onBuild = function FDsMainToolBar_onBuild(p){
       var o = this;
       o.__base.FToolBar.onBuild.call(o, p);
-      var b = o._persistenceButton  = RClass.create(FToolButton);
+      var b = o._persistenceButton  = MO.Class.create(FToolButton);
       b.setLabel('模型管理');
       b.build(p);
       b.lsnsClick.register(o, o.onPersistenceClick);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('材质管理');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('模板管理');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('场景管理');
       b.build(p);
       o.appendButton(b);
@@ -1172,7 +1172,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainWindow = function FDsMainWindow(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._name             = null;
       o._matrix           = null;
       o._location         = null;
@@ -1199,10 +1199,10 @@ with(MO){
    MO.FDsMainWindow_construct = function FDsMainWindow_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
-      o._matrix = new SMatrix3d();
-      o._location = new SPoint3();
-      o._rotation = new SVector3();
-      o._scale = new SVector3();
+      o._matrix = new MO.SMatrix3d();
+      o._location = new MO.SPoint3();
+      o._rotation = new MO.SVector3();
+      o._scale = new MO.SVector3();
       o._scale.set(1, 1, 1);
    }
    MO.FDsMainWindow_isName = function FDsMainWindow_isName(p){
@@ -1251,7 +1251,7 @@ with(MO){
       var o = this;
       var r = o._renderables;
       if(r == null){
-         r = o._renderables = new TObjects();
+         r = o._renderables = new MO.TObjects();
       }
       return r;
    }
@@ -1290,12 +1290,12 @@ with(MO){
 }
 with(MO){
    MO.FDsMainWorkspace = function FDsMainWorkspace(o){
-      o = RClass.inherits(this, o, FWorkspace);
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o = MO.Class.inherits(this, o, FWorkspace);
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain         = null;
       o._framesetBody         = null;
       o._frameToolBar         = null;
@@ -1318,37 +1318,37 @@ with(MO){
       o.__base.FWorkspace.onBuild.call(o, p);
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
-      var fs = o._framesetMain = RClass.create(FFrameSet);
+      var fs = o._framesetMain = MO.Class.create(FFrameSet);
       fs.build(p);
-      var f = o._frameToolBar = RClass.create(FFrame);
+      var f = o._frameToolBar = MO.Class.create(FFrame);
       f.setHeight(26);
       f.build(p);
       f._hPanel.className = o.styleName('Toolbar_Ground');
       fs.appendFrame(f);
-      var f = o._frameBody = RClass.create(FFrame);
+      var f = o._frameBody = MO.Class.create(FFrame);
       f.build(p);
       fs.appendFrame(f);
-      var f = o._frameProperty = RClass.create(FFrame);
+      var f = o._frameProperty = MO.Class.create(FFrame);
       f.setHeight(18);
       f.build(p);
       f._hPanel.className = o.styleName('Statusbar_Ground');
       fs.appendFrame(f);
       fs.setPanel(o._hPanel);
-      var fs = RClass.create(FFrameSet);
+      var fs = MO.Class.create(FFrameSet);
       fs._directionCd = EDirection.Horizontal;
       fs.build(p);
-      var f = o._frameCatalog = RClass.create(FFrame);
+      var f = o._frameCatalog = MO.Class.create(FFrame);
       f.setWidth(300);
       f.build(p);
       f._hPanel.className = o.styleName('Catalog_Ground');
       fs.appendFrame(f);
       var sp1 = fs.appendSpliter();
-      var f = o._frameWorkspace = RClass.create(FFrame);
+      var f = o._frameWorkspace = MO.Class.create(FFrame);
       f.build(p);
       f._hPanel.className = o.styleName('Workspace_Ground');
       fs.appendFrame(f);
       var sp2 = fs.appendSpliter();
-      var f = o._frameStatusBar = RClass.create(FFrame);
+      var f = o._frameStatusBar = MO.Class.create(FFrame);
       f.setWidth(360);
       f.build(p);
       f._hPanel.className = o.styleName('Property_Ground');
@@ -1358,18 +1358,18 @@ with(MO){
       sp1._hSize = o._frameCatalog._hPanel;
       sp2._alignCd = EAlign.Right;
       sp2._hSize = o._frameStatusBar._hPanel;
-      var c = o._catalog = RClass.create(FDsMainCatalog);
+      var c = o._catalog = MO.Class.create(FDsMainCatalog);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameCatalog._hPanel);
       o.push(c);
-      var c = o._toolbar = RClass.create(FDsMainToolBar);
+      var c = o._toolbar = MO.Class.create(FDsMainToolBar);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameToolBar._hPanel);
       c._persistenceButton.click();
       o.push(c);
-      var c = o._canvas = RClass.create(FDsMainCanvas);
+      var c = o._canvas = MO.Class.create(FDsMainCanvas);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameWorkspace._hPanel);
@@ -1382,7 +1382,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSpaceCanvas = function FDsSpaceCanvas(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._rotation             = null;
       o._optionRotation       = false;
       o._capturePosition      = null;
@@ -1425,7 +1425,7 @@ with(MO){
          return;
       }
       var region = space.region();
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var selectTechnique = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
       o.selectRenderable(renderable);
       if(renderable){
@@ -1461,18 +1461,18 @@ with(MO){
    MO.FDsSpaceCanvas_construct = function FDsSpaceCanvas_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
-      o._selectRenderables = new TObjects();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
+      o._selectRenderables = new MO.TObjects();
    }
    MO.FDsSpaceCanvas_innerSelectRenderable = function FDsSpaceCanvas_innerSelectRenderable(renderable){
       var o = this;
       renderable._optionSelected = true;
-      if(RClass.isClass(renderable, MDsBoundBox)){
+      if(MO.Class.isClass(renderable, MDsBoundBox)){
          renderable.showBoundBox();
       }
       o._selectRenderables.push(renderable);
@@ -1489,7 +1489,7 @@ with(MO){
       var count = renderables.count();
       for(var i = 0; i < count; i++){
          var renderable = renderables.at(i);
-         if(RClass.isClass(renderable, FDsSceneRenderable)){
+         if(MO.Class.isClass(renderable, FDsSceneRenderable)){
             o.innerSelectRenderable(renderable);
          }
       }
@@ -1510,7 +1510,7 @@ with(MO){
       for(var i = 0; i < count; i++){
          var renderable = renderables.at(i);
          renderable._optionSelected = false;
-         if(RClass.isClass(renderable, MDsBoundBox)){
+         if(MO.Class.isClass(renderable, MDsBoundBox)){
             renderable.hideBoundBox();
          }
       }
@@ -1569,7 +1569,7 @@ with(MO){
       var count = displays.count();
       for(var i = 0; i < count; i++){
          var display = displays.at(i);
-         if(RClass.isClass(display, FE3dSceneDisplay)){
+         if(MO.Class.isClass(display, FE3dSceneDisplay)){
             var sprite = display._sprite;
             sprite._optionPlay = flag;
             display._optionPlay = flag;
@@ -1583,7 +1583,7 @@ with(MO){
       var count = displays.count();
       for(var i = 0; i < count; i++){
          var display = displays.at(i);
-         if(RClass.isClass(display, FE3dSceneDisplay)){
+         if(MO.Class.isClass(display, FE3dSceneDisplay)){
             var sprite = display._sprite;
             if(sprite){
                sprite._optionMovie = flag;
@@ -1594,13 +1594,13 @@ with(MO){
    }
    MO.FDsSpaceCanvas_dispose = function FDsSpaceCanvas_dispose(){
       var o = this;
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsCanvas.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsSpaceDesignCanvas = function FDsSpaceDesignCanvas(o){
-      o = RClass.inherits(this, o, FDsSpaceCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceCanvas);
       o._templateMatrix       = null;
       o._templateRenderable   = null;
       o._templateFace         = null;
@@ -1620,7 +1620,7 @@ with(MO){
    MO.FDsSpaceDesignCanvas_onBuild = function FDsSpaceDesignCanvas_onBuild(p){
       var o = this;
       o.__base.FDsSpaceCanvas.onBuild.call(o, p);
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       var templateTranslation = o._templateTranslation = templateConsole.allocByCode(o, 'com.design.translation');
       templateTranslation.addLoadListener(o, o.onDataLoaded);
       var templateRotation = o._templateRotation = templateConsole.allocByCode(o, 'com.design.rotation');
@@ -1653,7 +1653,7 @@ with(MO){
       rotationSprite.setVisible(false);
       var scaleSprite = o._scaleSprite = o._templateScale.sprite();
       scaleSprite.setVisible(false);
-      var layer = o._uiLayer = RClass.create(FDisplayUiLayer);
+      var layer = o._uiLayer = MO.Class.create(FDisplayUiLayer);
       layer.selectTechnique(context, FE3dControlTechnique);
       layer.pushDisplay(translationSprite);
       layer.pushDisplay(rotationSprite);
@@ -1661,7 +1661,7 @@ with(MO){
       space.registerLayer('ui', layer);
       o.reloadRegion()
       o.processLoadListener(o);
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSpaceDesignCanvas_onMouseCaptureStart = function FDsSpaceDesignCanvas_onMouseCaptureStart(event){
       var o = this;
@@ -1671,7 +1671,7 @@ with(MO){
          return;
       }
       var region = space.region();
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var selectTechnique = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
       o.selectRenderable(renderable);
       if(renderable){
@@ -1707,8 +1707,8 @@ with(MO){
    MO.FDsSpaceDesignCanvas_construct = function FDsSpaceDesignCanvas_construct(){
       var o = this;
       o.__base.FDsSpaceCanvas.construct.call(o);
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
    }
    MO.FDsSpaceDesignCanvas_selectRenderable = function FDsSpaceDesignCanvas_selectRenderable(renderable){
       var o = this;
@@ -1765,16 +1765,16 @@ with(MO){
    }
    MO.FDsSpaceDesignCanvas_dispose = function FDsSpaceDesignCanvas_dispose(){
       var o = this;
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsSpaceCanvas.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsStage = function FDsStage(o){
-      o = RClass.inherits(this, o, FE3dStage);
-      o._mapLayer    = RClass.register(o, new AGetter('_mapLayer'));
-      o._spriteLayer = RClass.register(o, new AGetter('_spriteLayer'));
-      o._faceLayer   = RClass.register(o, new AGetter('_faceLayer'));
+      o = MO.Class.inherits(this, o, FE3dStage);
+      o._mapLayer    = MO.Class.register(o, new AGetter('_mapLayer'));
+      o._spriteLayer = MO.Class.register(o, new AGetter('_spriteLayer'));
+      o._faceLayer   = MO.Class.register(o, new AGetter('_faceLayer'));
       o.construct    = FDsStage_construct;
       o.active       = FDsStage_active;
       o.deactive     = FDsStage_deactive;
@@ -1783,11 +1783,11 @@ with(MO){
    MO.FDsStage_construct = function FDsStage_construct(){
       var o = this;
       o.__base.FE3dStage.construct.call(o);
-      var layer = o._mapLayer = RClass.create(FDisplayLayer);
+      var layer = o._mapLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('MapLayer', layer);
-      var layer = o._spriteLayer = RClass.create(FDisplayLayer);
+      var layer = o._spriteLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('SpriteLayer', layer);
-      var layer = o._faceLayer = RClass.create(FDisplayLayer);
+      var layer = o._faceLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('FaceLayer', layer);
    }
    MO.FDsStage_active = function FDsStage_active(){

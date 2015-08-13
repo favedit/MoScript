@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsResourceListToolBar = function FDsResourceListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiToolBar, MUiStorage);
       //..........................................................
       // @attribute
       o._dropButton       = null;
@@ -205,7 +205,7 @@ with(MO){
       if(types != ''){
          types = types.substring(1);
       }
-      if(RString.isEmpty(types)){
+      if(MO.Lang.String.isEmpty(types)){
          types = 'All';
       }
       return types;

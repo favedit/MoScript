@@ -9,7 +9,7 @@ MO.FEditorDsFrameCatalogToolBar = function FEditorDsFrameCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
    //..........................................................
    // @property
-   o._frameName = 'system.design.frame.CatalogToolBar';
+   o._frameName = 'editor.design.frame.CatalogToolBar';
    //..........................................................
    // @attribute
    o._controlFolderCreateButton   = null;

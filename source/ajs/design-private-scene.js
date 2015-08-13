@@ -1,20 +1,20 @@
 with(MO){
    MO.FDsPrivateSceneCanvasToolBar = function FDsPrivateSceneCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCanvasToolBar);
       o._frameName = 'resource.private.scene.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateSceneCatalogToolBar = function FDsPrivateSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCatalogToolBar);
       o._frameName = 'resource.private.scene.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateSceneFrameSet = function FDsPrivateSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsSceneFrameSet);
+      o = MO.Class.inherits(this, o, FDsSceneFrameSet);
       o._frameName = 'resource.private.scene.FrameSet';
       o.onBuilded  = FDsPrivateSceneFrameSet_onBuilded;
       return o;
@@ -22,20 +22,20 @@ with(MO){
    MO.FDsPrivateSceneFrameSet_onBuilded = function FDsPrivateSceneFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsSceneFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsPrivateSceneCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsPrivateSceneCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsSceneCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateSceneCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateSceneCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsSceneCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -44,7 +44,7 @@ with(MO){
       canvas.addLoadListener(o, o.onDataLoaded);
       canvas.build(event);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
+      var toolbar = o._propertyToolbar = MO.Class.create(FDsScenePropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -52,7 +52,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateSceneMenuBar = function FDsPrivateSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDsSceneMenuBar);
+      o = MO.Class.inherits(this, o, FDsSceneMenuBar);
       o._frameName = 'resource.private.scene.MenuBar';
       o.onBuilded  = FDsPrivateSceneMenuBar_onBuilded;
       return o;

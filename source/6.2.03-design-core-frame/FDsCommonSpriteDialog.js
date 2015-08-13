@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsCommonSpriteDialog = function FDsCommonSpriteDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.SpriteDialog';
@@ -69,7 +69,7 @@ with(MO){
    MO.FDsCommonSpriteDialog_onConfirmLoad = function FDsCommonSpriteDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新目录
@@ -97,7 +97,7 @@ with(MO){
    MO.FDsCommonSpriteDialog_onConfirmClick = function FDsCommonSpriteDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Sprite');
@@ -109,7 +109,7 @@ with(MO){
       xsprite.set('template_guid', o._controlTemplateGuid.get());
       xsprite.set('template_code', o._controlTemplateCode.get());
       // 执行数据处理
-      var console = RConsole.find(FDrSceneConsole);
+      var console = MO.Console.find(FDrSceneConsole);
       var connection = null;
       connection = console.createSprite(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);

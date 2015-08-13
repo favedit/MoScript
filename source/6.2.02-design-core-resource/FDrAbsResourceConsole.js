@@ -7,7 +7,7 @@ with(MO){
    // @version 150331
    //==========================================================
    MO.FDrAbsResourceConsole = function FDrAbsResourceConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = MO.Class.inherits(this, o, FConsole);
       //..........................................................
       // @attribute
       o._scopeCd       = EScope.Local;
@@ -70,7 +70,7 @@ with(MO){
       var guid = xconfig.get('guid');
       var resource = o._resources.get(guid);
       if(!resource){
-         resource = RClass.create(o._classUnit);
+         resource = MO.Class.create(o._classUnit);
          o._resources.set(guid, resource);
       }
       resource.loadConfig(xconfig);
@@ -91,10 +91,10 @@ with(MO){
       var o = this;
       // 生成请求地址
       var url = '/' + o._serviceCode + '.ws?action=list';
-      if(!RString.isEmpty(search)){
+      if(!MO.Lang.String.isEmpty(search)){
          url += '&search=' + search;
       }
-      if(!RString.isEmpty(order)){
+      if(!MO.Lang.String.isEmpty(order)){
          url += '&order=' + order;
       }
       if(pageSize >= 0){
@@ -104,7 +104,7 @@ with(MO){
          url += '&page=' + page;
       }
       // 发送数据请求
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 
    //==========================================================
@@ -117,7 +117,7 @@ with(MO){
       var o = this;
       // 发送数据请求
       var url = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 
    //==========================================================
@@ -136,7 +136,7 @@ with(MO){
       var xdata = xroot.create(resource.classCode());
       resource.saveConfig(xdata);
       // 发送数据
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
    }
 
    //==========================================================
@@ -155,7 +155,7 @@ with(MO){
       var xdata = xroot.create(resource.classCode());
       resource.saveConfig(xdata);
       // 发送数据
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
    }
 
    //==========================================================
@@ -167,6 +167,6 @@ with(MO){
    MO.FDrAbsResourceConsole_doDelete = function FDrAbsResourceConsole_doDelete(guid){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=delete&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 }

@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMainCanvas = function FDsMainCanvas(o){
-      o = RClass.inherits(this, o, FCanvas);
+      o = MO.Class.inherits(this, o, FCanvas);
       //..........................................................
       o._context   = null;
       o._stage     = null;
@@ -60,7 +60,7 @@ with(MO){
       hCanvas.height = o._hParent.offsetHeight;
       o._context = REngine3d.createContext(FWglContext, hCanvas);
 
-      var g = o._stage = RClass.create(FSimpleStage3d);
+      var g = o._stage = MO.Class.create(FSimpleStage3d);
       g.backgroundColor().set(0.5, 0.5, 0.5, 1);
       g.selectTechnique(o._context, FG3dGeneralTechnique);
       //RDump.dump(stage, _dump);
@@ -94,7 +94,7 @@ with(MO){
       var o = this;
       o.__base.FCanvas.onBuild.call(o, p);
       // 加载主题
-      var tc = RConsole.find(FE3sThemeConsole);
+      var tc = MO.Console.find(FE3sThemeConsole);
       var m = tc.select('color');
       m.loadListener().register(o, o.onThemeLoad);
    }
@@ -123,7 +123,7 @@ with(MO){
    //==========================================================
    MO.FDsMainCanvas_selectModel = function FDsMainCanvas_selectModel(p){
       var o = this;
-      var rmc = RConsole.find(FModel3dConsole);
+      var rmc = MO.Console.find(FModel3dConsole);
       if(o._activeModel != null){
          rmc.free(o._activeModel);
       }

@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsProjectSceneListToolBar = function FDsProjectSceneListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName           = 'resource.project.SceneListToolBar';
@@ -56,11 +56,11 @@ with(MO){
       var o = this;
       // 获得项目唯一编号
       var projectGuid = o._frameSet._activeGuid;
-      if(RString.isEmpty(projectGuid)){
+      if(MO.Lang.String.isEmpty(projectGuid)){
          throw new TError(o, 'Project guid is empty.');
       }
       // 显示窗口
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsProjectSceneDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsProjectSceneDialog);
       dialog._frameSet = o._frameSet;
       dialog._projectGuid = projectGuid;
       dialog.setDataCode('');
@@ -78,7 +78,7 @@ with(MO){
    MO.FDsProjectSceneListToolBar_onSceneDeleteLoad = function FDsProjectSceneListToolBar_onSceneDeleteLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 刷新目录
       var listContent = o._frameSet._sceneListContent;
       listContent.serviceRelist();
@@ -100,9 +100,9 @@ with(MO){
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 删除数据处理
-      var connection = RConsole.find(FDrSceneConsole).doDelete(item._guid);
+      var connection = MO.Console.find(FDrSceneConsole).doDelete(item._guid);
       connection.addLoadListener(o, o.onSceneDeleteLoad);
    }
 
@@ -118,10 +118,10 @@ with(MO){
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
       if(!item){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中场景后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中场景后，再点击操作。');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前场景？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前场景？');
       dialog.addResultListener(o, o.onSceneDeleteExecute);
    }
 

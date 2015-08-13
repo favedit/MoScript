@@ -7,7 +7,7 @@ with(MO){
    // @history 150423
    //==========================================================
    MO.FDsPrivateModelMenuBar = function FDsPrivateModelMenuBar(o){
-      o = RClass.inherits(this, o, FDsModelMenuBar);
+      o = MO.Class.inherits(this, o, FDsModelMenuBar);
       //..........................................................
       // @property
       o._frameName = 'resource.private.model.MenuBar';

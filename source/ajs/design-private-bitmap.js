@@ -1,13 +1,13 @@
 with(MO){
    MO.FDsPrivateBitmapCanvasToolBar = function FDsPrivateBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvasToolBar);
       o._frameName = 'resource.private.bitmap.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateBitmapFrameSet = function FDsPrivateBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsBitmapFrameSet);
+      o = MO.Class.inherits(this, o, FDsBitmapFrameSet);
       o._frameName = 'resource.private.bitmap.FrameSet';
       o.onBuilded  = FDsPrivateBitmapFrameSet_onBuilded;
       return o;
@@ -15,18 +15,18 @@ with(MO){
    MO.FDsPrivateBitmapFrameSet_onBuilded = function FDsPrivateBitmapFrameSet_onBuilded(p){
       var o = this;
       o.__base.FDsBitmapFrameSet.onBuilded.call(o, p);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateBitmapCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateBitmapCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(p);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsBitmapCanvasContent);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.backgroundColor = '#333333';
       canvas._hParent.style.scroll = 'auto';
       canvas.build(p);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolBar = RClass.create(FDsBitmapPropertyToolBar);
+      var toolbar = o._propertyToolBar = MO.Class.create(FDsBitmapPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(p);
       o._framePropertyToolBar.push(toolbar);
@@ -36,7 +36,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateBitmapMenuBar = function FDsPrivateBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDsBitmapMenuBar);
+      o = MO.Class.inherits(this, o, FDsBitmapMenuBar);
       o._frameName  = 'resource.private.bitmap.MenuBar';
       o.onBuilded   = FDsPrivateBitmapMenuBar_onBuilded;
       o.onBackClick = FDsPrivateBitmapMenuBar_onBackClick;

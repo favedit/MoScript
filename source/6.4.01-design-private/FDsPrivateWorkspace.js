@@ -6,16 +6,16 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsPrivateWorkspace = function FDsPrivateWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiWorkspace, MUiStorage);
       //..........................................................
       // @property
       o._frameName            = 'resource.private.Workspace';
       o._storageCode          = o._frameName;
       //..........................................................
       // @style
-      o._styleMenuBarGround   = RClass.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusBarGround = RClass.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
+      o._styleMenuBarGround   = MO.Class.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusBarGround = MO.Class.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
       //..........................................................
       // @attribute
       o._activeFrameSetCode   = null;
@@ -61,7 +61,7 @@ with(MO){
       // 设置工具栏
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
       // 设置分页栏
-      var control = o._tabBar = RClass.create(FDsPrivateTabBar);
+      var control = o._tabBar = MO.Class.create(FDsPrivateTabBar);
       control._workspace = o;
       control.buildDefine(event);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -98,81 +98,81 @@ with(MO){
       if(!frameSet){
          if(name == EDsFrameSet.PrivateSolutionFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsSolutionMenuBar);
+            var menuBar = MO.Class.create(FDsSolutionMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateProjectFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsPrivateProjectMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateProjectMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateResourceFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsPrivateResourceMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateBitmapFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsPrivateBitmapMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateBitmapMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateMaterialFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsPrivateMaterialMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateMaterialMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateModelFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsPrivateModelMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateModelMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateTemplateFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsPrivateTemplateMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateTemplateMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateSceneFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsPrivateSceneMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateSceneMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;

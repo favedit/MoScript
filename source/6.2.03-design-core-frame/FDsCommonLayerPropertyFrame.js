@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsCommonLayerPropertyFrame = function FDsCommonLayerPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible       = false;

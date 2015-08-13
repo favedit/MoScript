@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsProjectSceneListContent = function FDsProjectSceneListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       //..........................................................
       // @attribute
       o._activeItem       = null;
@@ -68,13 +68,13 @@ with(MO){
             item._guid = xnode.get('guid');
             item._code = xnode.get('code');
             item._updateDate = xnode.get('update_date');
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
       }
       // 画面允许操作
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -142,10 +142,10 @@ with(MO){
       var o = this;
       o._activeGuid = guid;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       // 发送数据请求
       var url = '/cloud.solution.project.ws?action=listProject&project_guid=' + guid;
-      var connection = RConsole.find(FXmlConsole).sendAsync(url);
+      var connection = MO.Console.find(FXmlConsole).sendAsync(url);
       connection.addLoadListener(o, o.onServiceLoad);
       return connection;
    }

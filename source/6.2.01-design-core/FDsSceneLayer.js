@@ -7,7 +7,7 @@ with(MO){
    // @history 150215
    //==========================================================
    MO.FDsSceneLayer = function FDsSceneLayer(o){
-      o = RClass.inherits(this, o, FE3dSceneLayer);
+      o = MO.Class.inherits(this, o, FE3dSceneLayer);
       return o;
    }
 }

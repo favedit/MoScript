@@ -7,7 +7,7 @@ with(MO){
    // @version 150331
    //==========================================================
    MO.FDrProjectConsole = function FDrProjectConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       // @attribute
       o._serviceCode = 'cloud.solution.project';
       return o;

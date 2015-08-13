@@ -7,7 +7,7 @@ with(MO){
    // @history 150420
    //==========================================================
    MO.FDsTemplateCatalogToolBar = function FDsTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName             = 'resource.template.CatalogToolBar';
@@ -80,7 +80,7 @@ with(MO){
       //   parentLabel = node.label();
       //}
       // 显示窗口
-      //var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      //var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       //dialog._workspace = o._workspace;
       //dialog._frameSet = o._frameSet;
       //dialog._parentGuid = parentGuid;
@@ -101,7 +101,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setContentCode('');
@@ -118,7 +118,7 @@ with(MO){
    MO.FDsTemplateCatalogToolBar_onCopyLoad = function FDsTemplateCatalogToolBar_onCopyLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 刷新目录
       //var catalog = o._frameSet._catalogContent;
       //var guid = o._activeNodeGuid;
@@ -144,9 +144,9 @@ with(MO){
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 删除数据处理
-      var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
+      var connection = MO.Console.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
 
@@ -162,13 +162,13 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       // 检查对象
       var sprite = null;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          sprite = linker;
          o._activeGuid = linker.resource().guid();
       }else{
@@ -180,15 +180,15 @@ with(MO){
       var displayResource = resource.clone();
       parentResource.pushDisplay(displayResource);
       // 加载场景显示资源
-      var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+      var display = MO.Console.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
       display.linkGraphicContext(sprite);
       display.loadResource(displayResource);
-      RConsole.find(FE3dSceneConsole).loadDisplay(display);
+      MO.Console.find(FE3dSceneConsole).loadDisplay(display);
       // 放入集合
       var parent = sprite.parent();
       parent.pushDisplay(display);
       // 删除确认窗口
-      //var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否复制当前节点？');
+      //var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否复制当前节点？');
       //dialog.addResultListener(o, o.onCopyExecute);
    }
 
@@ -201,7 +201,7 @@ with(MO){
    MO.FDsTemplateCatalogToolBar_onDeleteLoad = function FDsTemplateCatalogToolBar_onDeleteLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 刷新目录
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
@@ -227,9 +227,9 @@ with(MO){
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 删除数据处理
-      var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
+      var connection = MO.Console.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
 
@@ -245,18 +245,18 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       // 检查对象
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          o._activeGuid = linker.resource().guid();
       }else{
          return alert('不能删除当前选中的节点.');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
 

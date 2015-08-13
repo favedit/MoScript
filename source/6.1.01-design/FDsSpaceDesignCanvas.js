@@ -7,7 +7,7 @@ with(MO){
    // @history 150505
    //==========================================================
    MO.FDsSpaceDesignCanvas = function FDsSpaceDesignCanvas(o){
-      o = RClass.inherits(this, o, FDsSpaceCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceCanvas);
       //..........................................................
       // @attribute
       o._templateMatrix       = null;
@@ -52,7 +52,7 @@ with(MO){
       var o = this;
       o.__base.FDsSpaceCanvas.onBuild.call(o, p);
       // 创建界面控制器
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       var templateTranslation = o._templateTranslation = templateConsole.allocByCode(o, 'com.design.translation');
       templateTranslation.addLoadListener(o, o.onDataLoaded);
       //templateTranslation._optionFace = true;
@@ -101,7 +101,7 @@ with(MO){
       var scaleSprite = o._scaleSprite = o._templateScale.sprite();
       scaleSprite.setVisible(false);
       // 创建界面层
-      var layer = o._uiLayer = RClass.create(FDisplayUiLayer);
+      var layer = o._uiLayer = MO.Class.create(FDisplayUiLayer);
       layer.selectTechnique(context, FE3dControlTechnique);
       layer.pushDisplay(translationSprite);
       layer.pushDisplay(rotationSprite);
@@ -111,7 +111,7 @@ with(MO){
       // 加载完成
       o.processLoadListener(o);
       // 隐藏处理
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -129,7 +129,7 @@ with(MO){
       }
       var region = space.region();
       // 选取物件
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var selectTechnique = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
       o.selectRenderable(renderable);
       if(renderable){
@@ -145,7 +145,7 @@ with(MO){
       //   for(var i = rs.count() - 1; i >= 0; i--){
       //      var r = rs.getAt(i);
       //      if(!r._dragMatrix){
-      //         r._dragMatrix = new SMatrix3d();
+      //         r._dragMatrix = new MO.SMatrix3d();
       //      }
       //      r._dragMatrix.assign(r.matrix());
       //   }
@@ -290,8 +290,8 @@ with(MO){
    MO.FDsSpaceDesignCanvas_construct = function FDsSpaceDesignCanvas_construct(){
       var o = this;
       o.__base.FDsSpaceCanvas.construct.call(o);
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
    }
 
    //==========================================================
@@ -437,7 +437,7 @@ with(MO){
    MO.FDsSpaceDesignCanvas_dispose = function FDsSpaceDesignCanvas_dispose(){
       var o = this;
       // 释放属性
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       // 父处理
       o.__base.FDsSpaceCanvas.dispose.call(o);
    }

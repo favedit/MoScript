@@ -7,7 +7,7 @@ with(MO){
    // @history 150430
    //==========================================================
    MO.FDsCommonLayerDialog = function FDsCommonLayerDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.LayerDialog';
@@ -69,7 +69,7 @@ with(MO){
    MO.FDsCommonLayerDialog_onConfirmLoad = function FDsCommonLayerDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新目录
@@ -97,7 +97,7 @@ with(MO){
    MO.FDsCommonLayerDialog_onConfirmClick = function FDsCommonLayerDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Layer');
@@ -105,7 +105,7 @@ with(MO){
       xsprite.set('code', o._controlCode.get());
       xsprite.set('label', o._controlLabel.get());
       // 执行数据处理
-      var connection = RConsole.find(FDrSceneConsole).createLayer(xaction);
+      var connection = MO.Console.find(FDrSceneConsole).createLayer(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
 

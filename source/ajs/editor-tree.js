@@ -169,7 +169,7 @@ MO.FEditorDsTreeMenuBar_onBuilded = function FEditorDsTreeMenuBar_onBuilded(even
 }
 MO.FEditorDsTreePropertyToolBar = function FEditorDsTreePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;

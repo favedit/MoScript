@@ -6,22 +6,22 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsProjectFrameSet = function FDsProjectFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
       //..........................................................
       // @property
       o._frameName            = 'resource.project.FrameSet';
       //..........................................................
       // @style
-      o._stylePageControl     = RClass.register(o, new AStyle('_stylePageControl', 'PageControl'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._stylePageControl     = MO.Class.register(o, new AStyle('_stylePageControl', 'PageControl'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       // @style
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasGround    = RClass.register(o, new AStyle('_styleCanvasGround', 'Canvas_Ground'));
-      o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasGround    = MO.Class.register(o, new AStyle('_styleCanvasGround', 'Canvas_Ground'));
+      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       //..........................................................
       // @attribute
       o._activeSpace          = null;
@@ -147,35 +147,35 @@ with(MO){
          f.hide();
       }
       // 显示选中属性面板
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -207,7 +207,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          //f = fc.get(o, p, o._frameProperty._hPanel);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;

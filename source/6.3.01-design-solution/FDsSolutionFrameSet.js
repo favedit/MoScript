@@ -6,20 +6,20 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsSolutionFrameSet = function FDsSolutionFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiFrameSet, MUiStorage);
       //..........................................................
       // @property
       o._frameName            = 'resource.private.solution.FrameSet';
       o._storageCode          = o._frameName;
       //..........................................................
       // @style
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'List_Toolbar'));
-      o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Property_Ground'));
-      o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'List_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Property_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       //..........................................................
       // @attribute
       o._pageSize             = 40;
@@ -95,13 +95,13 @@ with(MO){
       //hTable.width = '100%';
       //var hRow = RBuilder.appendTableRow(hTable);
       // 设置工具栏
-      //var c = o._toolbar = RClass.create(FDsSolutionMenuBar);
+      //var c = o._toolbar = MO.Class.create(FDsSolutionMenuBar);
       //c._workspace = o;
       //c.buildDefine(p);
       //var hCell = RBuilder.appendTableCell(hRow);
       //hCell.appendChild(c._hPanel);
       // 设置分页栏
-      //var c = o._tabBar = RClass.create(FDsSolutionTabBar);
+      //var c = o._tabBar = MO.Class.create(FDsSolutionTabBar);
       //c._workspace = o;
       //c.buildDefine(p);
       //var hCell = RBuilder.appendTableCell(hRow);
@@ -113,35 +113,35 @@ with(MO){
       //o._frameToolBar._hPanel.appendChild(hTable);
       //..........................................................
       // 设置目录工具栏
-      var control = o._catalogToolbar = RClass.create(FDsSolutionCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsSolutionCatalogToolBar);
       control._frameSet = o;
       control.buildDefine(p);
       o._frameCatalogToolbar.push(control);
       // 设置目录栏
-      var control = o._catalogContent = RClass.create(FDsSolutionCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsSolutionCatalogContent);
       control._frameSet = o;
       control.build(p);
       //control.addSelectedListener(o, o.selectObject);
       o._frameCatalogContent.push(control);
       //..........................................................
       // 设置搜索栏
-      var control = o._listToolbar = RClass.create(FDsSolutionListToolBar);
+      var control = o._listToolbar = MO.Class.create(FDsSolutionListToolBar);
       control._frameSet = o;
       control.buildDefine(p);
       o._frameListToolbar.push(control);
       // 设置搜索内容
-      var control = o._listContent = RClass.create(FDsSolutionListContent);
+      var control = o._listContent = MO.Class.create(FDsSolutionListContent);
       control._frameSet = o;
       control.build(p);
       o._frameListContent.push(control);
       //..........................................................
       // 设置画板工具栏
-      //var control = o._propertyToolbar = RClass.create(FDsSolutionPropertyToolBar);
+      //var control = o._propertyToolbar = MO.Class.create(FDsSolutionPropertyToolBar);
       //control._frameSet = o;
       //control.buildDefine(p);
       //o._framePropertyToolbar.push(control);
       // 设置画板
-      //var control = o._propertyProperty = RClass.create(FDsSolutionProjectProperty);
+      //var control = o._propertyProperty = MO.Class.create(FDsSolutionProjectProperty);
       //control._workspace = o;
       //control._toolbar = o._propertyToolbar;
       //control.buildDefine(p);
@@ -175,7 +175,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePropertyProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -200,7 +200,7 @@ with(MO){
          f.hide();
       }
       // 显示选中属性面板
-      if(RClass.isClass(control, FDsSolutionListItem)){
+      if(MO.Class.isClass(control, FDsSolutionListItem)){
          var f = o.findPropertyFrame(EDsFrame.SolutionProjectPropertyFrame);
          f.show();
          f.loadObject(control);

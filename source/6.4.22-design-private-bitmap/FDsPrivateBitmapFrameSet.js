@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsPrivateBitmapFrameSet = function FDsPrivateBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsBitmapFrameSet);
+      o = MO.Class.inherits(this, o, FDsBitmapFrameSet);
       //..........................................................
       // @property
       o._frameName = 'resource.private.bitmap.FrameSet';
@@ -28,12 +28,12 @@ with(MO){
       o.__base.FDsBitmapFrameSet.onBuilded.call(o, p);
       //..........................................................
       // 设置画板工具栏
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateBitmapCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateBitmapCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(p);
       o._frameCanvasToolBar.push(toolbar);
       // 设置画板内容
-      var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsBitmapCanvasContent);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.backgroundColor = '#333333';
@@ -42,7 +42,7 @@ with(MO){
       o._frameCanvasContent.push(canvas);
       //..........................................................
       // 设置属性工具栏
-      var toolbar = o._propertyToolBar = RClass.create(FDsBitmapPropertyToolBar);
+      var toolbar = o._propertyToolBar = MO.Class.create(FDsBitmapPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(p);
       o._framePropertyToolBar.push(toolbar);

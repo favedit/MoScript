@@ -7,7 +7,7 @@ with(MO){
    // @version 150331
    //==========================================================
    MO.FDrMeshConsole = function FDrMeshConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       //..........................................................
       // @attribute
       o._serviceCode = 'cloud.resource.mesh';
@@ -27,6 +27,6 @@ with(MO){
       // 生成地址
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=update&date=' + RDate.format());
       // 发送数据
-      return RConsole.find(FXmlConsole).sendAsync(url, config);
+      return MO.Console.find(FXmlConsole).sendAsync(url, config);
    }
 }

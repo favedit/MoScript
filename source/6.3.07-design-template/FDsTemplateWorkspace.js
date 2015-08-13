@@ -6,14 +6,14 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsTemplateWorkspace = function FDsTemplateWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       //..........................................................
       // @style
-      o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround  = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround    = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround  = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround   = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround    = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround  = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround    = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround  = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround   = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       //..........................................................
       // @attribute
       o._framesetMain          = null;
@@ -63,20 +63,20 @@ with(MO){
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
       // 建立主框架
-      var fs = o._framesetMain = RClass.create(FDuiFrameSet);
+      var fs = o._framesetMain = MO.Class.create(FDuiFrameSet);
       fs.build(p);
       // 建立工具区
-      var f = o._frameToolBar = RClass.create(FDuiFramePage);
+      var f = o._frameToolBar = MO.Class.create(FDuiFramePage);
       f.setHeight(26);
       f.build(p);
       f._hPanel.className = o.styleName('Toolbar_Ground');
       fs.appendFrame(f);
       // 建立内容区
-      var f = o._frameBody = RClass.create(FDuiFramePage);
+      var f = o._frameBody = MO.Class.create(FDuiFramePage);
       f.build(p);
       fs.appendFrame(f);
       // 建立状态区
-      var f = o._frameStatusBar = RClass.create(FDuiFramePage);
+      var f = o._frameStatusBar = MO.Class.create(FDuiFramePage);
       f.setHeight(18);
       f.build(p);
       f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -84,11 +84,11 @@ with(MO){
       fs.setPanel(o._hPanel);
       //..........................................................
       // 建立内容框架
-      var fs = RClass.create(FDuiFrameSet);
+      var fs = MO.Class.create(FDuiFrameSet);
       fs._directionCd = EUiDirection.Horizontal;
       fs.build(p);
       // 建立目录区
-      var f = o._frameCatalog = RClass.create(FDuiFramePage);
+      var f = o._frameCatalog = MO.Class.create(FDuiFramePage);
       f.setWidth(400);
       f.build(p);
       f._hPanel.className = o.styleName('Catalog_Ground');
@@ -96,14 +96,14 @@ with(MO){
       // 建立分割符
       var sp1 = fs.appendSpliter();
       // 建立工作区
-      var f = o._frameWorkspace = RClass.create(FDuiFramePage);
+      var f = o._frameWorkspace = MO.Class.create(FDuiFramePage);
       f.build(p);
       f._hPanel.className = o.styleName('Workspace_Ground');
       fs.appendFrame(f);
       // 建立分割符
       var sp2 = fs.appendSpliter();
       // 建立属性区
-      var f = o._frameProperty = RClass.create(FDuiFramePage);
+      var f = o._frameProperty = MO.Class.create(FDuiFramePage);
       f.setWidth(240);
       f.build(p);
       f._hPanel.className = o.styleName('Property_Ground');
@@ -115,14 +115,14 @@ with(MO){
       sp2._alignCd = EUiAlign.Right;
       sp2._hSize = o._frameStatusBar._hPanel;
       //..........................................................
-      var c = o._catalog = RClass.create(FDsTemplateCatalog);
+      var c = o._catalog = MO.Class.create(FDsTemplateCatalog);
       c._workspace = o;
       c.build(p);
       c.setPanel(o._frameCatalog._hPanel);
       c.addSelectedListener(o, o.onCatalogSelected);
       o.push(c);
       //..........................................................
-      var c = o._toolbar = RClass.create(FDsTemplateToolBar);
+      var c = o._toolbar = MO.Class.create(FDsTemplateToolBar);
       c._workspace = o;
       c.build(p);
       c.setPanel(o._frameToolBar._hPanel);
@@ -134,7 +134,7 @@ with(MO){
       // 建立工具栏
       var hc = RBuilder.appendTableRowCell(hf);
       hc.height = 20;
-      var c = o._canvasToolbar = RClass.create(FDsTemplateCanvasToolBar);
+      var c = o._canvasToolbar = MO.Class.create(FDsTemplateCanvasToolBar);
       c._workspace = o;
       c.build(p);
       c.setPanel(hc);
@@ -142,7 +142,7 @@ with(MO){
       // 建立画板
       var hc = RBuilder.appendTableRowCell(hf);
       hc.vAlign = 'top';
-      var c = o._canvas = RClass.create(FDsTemplateCanvas);
+      var c = o._canvas = MO.Class.create(FDsTemplateCanvas);
       c.addLoadListener(o, o.onTemplateLoad);
       c._workspace = o;
       c._toolbar = o._canvasToolbar;
@@ -194,19 +194,19 @@ with(MO){
          o._displayPropertyFrame.hide();
       }
       // 显示选中面板
-      if(RClass.isClass(p, FE3dTemplate)){
+      if(MO.Class.isClass(p, FE3dTemplate)){
          var f = o.templatePropertyFrame();
          f.show();
          f.loadObject(t);
-      }else if(RClass.isClass(p, FE3sTemplateTheme)){
+      }else if(MO.Class.isClass(p, FE3sTemplateTheme)){
          var f = o.themePropertyFrame();
          f.show();
          f.loadObject(t, p);
-      }else if(RClass.isClass(p, FE3sMaterial)){
+      }else if(MO.Class.isClass(p, FE3sMaterial)){
          var f = o.materialPropertyFrame();
          f.show();
          f.loadObject(t, p);
-      }else if(RClass.isClass(p, MG3dRenderable)){
+      }else if(MO.Class.isClass(p, MG3dRenderable)){
          var f = o.displayPropertyFrame();
          f.show();
          f.loadObject(t, p);
@@ -237,7 +237,7 @@ with(MO){
       var o = this;
       var f = o._templatePropertyFrame;
       if(!f){
-         f = o._templatePropertyFrame = RClass.create(FDsTemplatePropertyFrame);
+         f = o._templatePropertyFrame = MO.Class.create(FDsTemplatePropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -255,7 +255,7 @@ with(MO){
       var o = this;
       var f = o._themePropertyFrame;
       if(!f){
-         var f = o._themePropertyFrame = RClass.create(FDsTemplateThemePropertyFrame);
+         var f = o._themePropertyFrame = MO.Class.create(FDsTemplateThemePropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -273,7 +273,7 @@ with(MO){
       var o = this;
       var f = o._materialPropertyFrame;
       if(!f){
-         f = o._materialPropertyFrame = RClass.create(FDsTemplateMaterialPropertyFrame);
+         f = o._materialPropertyFrame = MO.Class.create(FDsTemplateMaterialPropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -291,7 +291,7 @@ with(MO){
       var o = this;
       var f = o._displayPropertyFrame;
       if(!f){
-         f = o._displayPropertyFrame = RClass.create(FDsTemplateDisplayPropertyFrame);
+         f = o._displayPropertyFrame = MO.Class.create(FDsTemplateDisplayPropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);

@@ -218,8 +218,8 @@ MO.FDuiForm_allDataComponents = function FDuiForm_allDataComponents(p, m){
       var cc = cs.count;
       for(var n = 0; n<cc; n++){
          var c = cs.value(n);
-         if(!RClass.isClass(c, MDataset)){
-            if(RClass.isClass(c, MValue)){
+         if(!MO.Class.isClass(c, MDataset)){
+            if(MO.Class.isClass(c, MValue)){
                m.set(c.dataName, c);
             }
             o.allDataComponents(c, m);
@@ -639,8 +639,8 @@ MO.FDuiForm_allNameComponents = function FDuiForm_allNameComponents(f, p, m){
       var cc = cs.count;
       for(var n = 0; n<cc; n++){
          var c = cs.value(n);
-         if(!RClass.isClass(c, MDataset)){
-            if(RClass.isClass(c, MValue)){
+         if(!MO.Class.isClass(c, MDataset)){
+            if(MO.Class.isClass(c, MValue)){
                m.set(c.name, c);
             }
             o.allNameComponents(false, c, m);
@@ -745,7 +745,7 @@ MO.FDuiForm_hasAction = function FDuiForm_hasAction(){
    var ct = cs.count;
    for(var n = 0; n < ct; n++){
       var c = cs.value(n);
-      if(RClass.isClass(c, FDataAction)){
+      if(MO.Class.isClass(c, FDataAction)){
          return true;
       }
    }

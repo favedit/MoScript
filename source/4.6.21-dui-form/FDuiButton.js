@@ -12,16 +12,16 @@ MO.FDuiButton = function FDuiButton(o){
    o._labelPositionCd   = MO.Class.register(o, new MO.APtyString('_labelPositionCd'), MO.EUiPosition.Left);
    o._icon              = MO.Class.register(o, new MO.APtyString('_icon'));
    o._action            = MO.Class.register(o, new MO.APtyString('_action'));
-   //o._type              = RClass.register(o, new APtyString('_type'));
-   //o._dataAction        = RClass.register(o, new APtyString('_dataAction'));
-   //o._service           = RClass.register(o, new APtyString('_service'));
-   //o._target            = RClass.register(o, new APtyString('_target'));
-   //o._page              = RClass.register(o, new APtyString('_page'));
-   //o._method            = RClass.register(o, new APtyString('_method'));
-   //o._iconDisable       = RClass.register(o, new APtyString('_iconDisable'));
-   //o._attributes        = RClass.register(o, new APtyString('_attributes'));
-   //o._editUrl           = RClass.register(o, new APtyString('_editUrl'));
-   //o._editForm          = RClass.register(o, new APtyString('_editForm'));
+   //o._type              = MO.Class.register(o, new MO.APtyString('_type'));
+   //o._dataAction        = MO.Class.register(o, new MO.APtyString('_dataAction'));
+   //o._service           = MO.Class.register(o, new MO.APtyString('_service'));
+   //o._target            = MO.Class.register(o, new MO.APtyString('_target'));
+   //o._page              = MO.Class.register(o, new MO.APtyString('_page'));
+   //o._method            = MO.Class.register(o, new MO.APtyString('_method'));
+   //o._iconDisable       = MO.Class.register(o, new MO.APtyString('_iconDisable'));
+   //o._attributes        = MO.Class.register(o, new MO.APtyString('_attributes'));
+   //o._editUrl           = MO.Class.register(o, new MO.APtyString('_editUrl'));
+   //o._editForm          = MO.Class.register(o, new MO.APtyString('_editForm'));
    // @attribute
    o._listenersClick    = MO.Class.register(o, new MO.AListener('_listenersClick', MO.EEvent.Click));
    //..........................................................
@@ -50,12 +50,12 @@ MO.FDuiButton = function FDuiButton(o){
    o.onBuild            = MO.FDuiButton_onBuild;
    // @event
    o.onClick            = MO.Class.register(o, new MO.AEventClick('onClick'), MO.FDuiButton_onClick);
-   //o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiButton_onButtonEnter);
-   //o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiButton_onButtonLeave);
-   //o.onButtonDown       = RClass.register(o, new AEventMouseDown('onButtonDown'), FDuiButton_onButtonDown);
-   //o.onButtonUp         = RClass.register(o, new AEventMouseUp('onButtonUp'), FDuiButton_onButtonUp);
+   //o.onButtonEnter      = MO.Class.register(o, new MO.AEventMouseEnter('onButtonEnter'), FDuiButton_onButtonEnter);
+   //o.onButtonLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onButtonLeave'), FDuiButton_onButtonLeave);
+   //o.onButtonDown       = MO.Class.register(o, new MO.AEventMouseDown('onButtonDown'), FDuiButton_onButtonDown);
+   //o.onButtonUp         = MO.Class.register(o, new MO.AEventMouseUp('onButtonUp'), FDuiButton_onButtonUp);
    //o.onButtonClickDelay = FDuiButton_onButtonClickDelay;
-   //o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FDuiButton_onButtonClick);
+   //o.onButtonClick      = MO.Class.register(o, new MO.AEventClick('onButtonClick'), FDuiButton_onButtonClick);
    //..........................................................
    // @process
    //o.oeMode             = FDuiButton_oeMode;
@@ -290,7 +290,7 @@ MO.FDuiButton_doClick = function FDuiButton_doClick(){
    // 执行跳转页面
    //if(o._page){
    //   // 获得关联表单
-   //   var form = RHtml.form(o.hButton);
+   //   var form = MO.Window.Html.form(o.hButton);
    //   // 获得跳转页面信息
    //   var p = RPage.parse(o._page);
    //   if(o._method){
@@ -307,7 +307,7 @@ MO.FDuiButton_doClick = function FDuiButton_doClick(){
    //      }
    //   }
    //   // 提交表单
-   //   p.post(form, RString.nvl(o._target, '_self'));
+   //   p.post(form, MO.Lang.String.nvl(o._target, '_self'));
    //}
    // 执行编辑地址
    //if(o._editUrl){

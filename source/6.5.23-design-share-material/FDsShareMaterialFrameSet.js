@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsShareMaterialFrameSet = function FDsShareMaterialFrameSet(o){
-      o = RClass.inherits(this, o, FDsMaterialFrameSet);
+      o = MO.Class.inherits(this, o, FDsMaterialFrameSet);
       //..........................................................
       // @property
       o._frameName = 'resource.share.material.FrameSet';
@@ -28,24 +28,24 @@ with(MO){
       o.__base.FDsMaterialFrameSet.onBuilded.call(o, event);
       //..........................................................
       // 设置目录工具栏
-      var toolbar = o._toolbar = RClass.create(FDsShareMaterialMenuBar);
+      var toolbar = o._toolbar = MO.Class.create(FDsShareMaterialMenuBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameToolBar.push(toolbar);
       // 设置目录内容
-      var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsMaterialCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
       //..........................................................
       // 设置画板工具栏
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareMaterialCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareMaterialCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
       // 设置画板内容
-      var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsMaterialCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;

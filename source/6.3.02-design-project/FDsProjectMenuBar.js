@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsProjectMenuBar = function FDsProjectMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @attribute
       o._refreshButton = null;
@@ -53,7 +53,7 @@ with(MO){
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
       // 更新处理
-      RConsole.find(FE3sMeshConsole).update(xconfig);
+      MO.Console.find(FE3sMeshConsole).update(xconfig);
    }
 
    //==========================================================

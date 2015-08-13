@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsPrivateProjectMenuBar = function FDsPrivateProjectMenuBar(o){
-      o = RClass.inherits(this, o, FDsProjectMenuBar);
+      o = MO.Class.inherits(this, o, FDsProjectMenuBar);
       //..........................................................
       // @property
       o._frameName = 'resource.private.project.MenuBar';

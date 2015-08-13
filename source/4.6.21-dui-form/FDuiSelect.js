@@ -86,7 +86,7 @@ MO.FDuiSelect_onBuildEditValue = function FDuiSelect_onBuildEditValue(p){
    o.attachEvent('onKeyDown', he);
    //o.attachEvent('onInputEdit', he, o.onInputEdit);
    // 设置大小
-   //RHtml.setSize(hep, o._inputSize);
+   //MO.Window.Html.setSize(hep, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
       he.maxLength = o._editLength;

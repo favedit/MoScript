@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSolutionProjectDialog = function FDsSolutionProjectDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.private.solution.ProjectDialog';
@@ -77,11 +77,11 @@ with(MO){
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
       // 发送数据请求
-      var project = RClass.create(FDrProject);
+      var project = MO.Class.create(FDrProject);
       project.setCode(code);
       project.setLabel(label);
       // 发送请求处理
-      var connection = RConsole.find(FDrProjectConsole).doCreate(project);
+      var connection = MO.Console.find(FDrProjectConsole).doCreate(project);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
 

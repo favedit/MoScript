@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsShareResourceListContent = function FDsShareResourceListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       //..........................................................
       // @attribute
       o._contentFlag      = null;
@@ -74,7 +74,7 @@ with(MO){
          }
       }
       // 画面允许操作
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -172,9 +172,9 @@ with(MO){
       o._contentPageSize = pageSize;
       o._contentPage = page;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       // 发送数据请求
-      var connection = RConsole.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
+      var connection = MO.Console.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
       connection.addLoadListener(o, o.onServiceLoad);
    }
 

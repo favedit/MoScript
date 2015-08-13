@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsShareTemplateCanvasToolBar = function FDsShareTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.share.template.CanvasToolBar';
       o._refreshButton  = null;
       o._saveButton     = null;
@@ -57,14 +57,14 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateCatalogToolBar = function FDsShareTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCatalogToolBar);
       o._frameName = 'resource.share.template.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareTemplateFrameSet = function FDsShareTemplateFrameSet(o){
-      o = RClass.inherits(this, o, FDsTemplateFrameSet);
+      o = MO.Class.inherits(this, o, FDsTemplateFrameSet);
       o._frameName = 'resource.share.template.FrameSet';
       o.onBuilded  = FDsShareTemplateFrameSet_onBuilded;
       return o;
@@ -72,21 +72,21 @@ with(MO){
    MO.FDsShareTemplateFrameSet_onBuilded = function FDsShareTemplateFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsTemplateFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsShareTemplateCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsShareTemplateCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsTemplateCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsTemplateCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareTemplateCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareTemplateCanvasToolBar);
       toolbar._frameSet = o;
       toolbar._workspace = o._worksapce;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsTemplateCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsTemplateCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -99,7 +99,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateMenuBar = function FDsShareTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDsTemplateMenuBar);
+      o = MO.Class.inherits(this, o, FDsTemplateMenuBar);
       o._frameName = 'resource.share.template.MenuBar';
       o.onBuilded  = FDsShareTemplateMenuBar_onBuilded;
       return o;
@@ -111,19 +111,19 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateToolBar = function FDsShareTemplateToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateToolBar);
       return o;
    }
    MO.FDsShareTemplateToolBar_onBuild = function FDsShareTemplateToolBar_onBuild(p){
       var o = this;
       o.__base.FDuiToolBar.onBuild.call(o, p);
-      var b = o._refreshButton  = RClass.create(FDuiToolButton);
+      var b = o._refreshButton  = MO.Class.create(FDuiToolButton);
       b.setLabel('刷新');
       b.setIcon('design3d.tools.refresh');
       b.build(p);
       b.addClickListener(o, o.onRefreshClick);
       o.push(b);
-      var b = o._saveButton = RClass.create(FDuiToolButton);
+      var b = o._saveButton = MO.Class.create(FDuiToolButton);
       b.setLabel('保存');
       b.setIcon('design3d.tools.save');
       b.build(p);
@@ -149,7 +149,7 @@ with(MO){
             m.saveConfig(xr.create('Material'));
          }
       }
-      RConsole.find(FE3sTemplateConsole).update(xr);
+      MO.Console.find(FE3sTemplateConsole).update(xr);
    }
    MO.FDsShareTemplateToolBar_construct = function FDsShareTemplateToolBar_construct(){
       var o = this;

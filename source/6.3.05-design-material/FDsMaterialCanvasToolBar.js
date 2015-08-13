@@ -7,7 +7,7 @@ with(MO){
    // @history 150404
    //==========================================================
    MO.FDsMaterialCanvasToolBar = function FDsMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @attribute
       o._controlSize1      = null;

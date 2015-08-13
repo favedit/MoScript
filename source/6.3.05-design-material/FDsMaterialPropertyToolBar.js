@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsMaterialPropertyToolBar = function FDsMaterialPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName      = 'resource.material.PropertyToolBar';

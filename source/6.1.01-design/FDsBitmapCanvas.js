@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsBitmapCanvas = function FDsBitmapCanvas(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       //..........................................................
       // @attribute
       o._activeBitmap        = null;
@@ -53,7 +53,7 @@ with(MO){
       o.__base.FDsCanvas.onBuild.call(o, p);
       var hPanel = o._hPanel;
       // 创建简单舞台
-      var space = o._activeSpace = RClass.create(FE3dFlatStage);
+      var space = o._activeSpace = MO.Class.create(FE3dFlatStage);
       space.linkGraphicContext(o);
       space.selectTechnique(o, FE3dGeneralTechnique);
       space.region().backgroundColor().set(1, 1, 1, 1);
@@ -172,7 +172,7 @@ with(MO){
    MO.FDsBitmapCanvas_onLoaded = function FDsBitmapCanvas_onLoaded(event){
       var o = this;
       // 隐藏处理
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -205,7 +205,7 @@ with(MO){
    MO.FDsBitmapCanvas_construct = function FDsBitmapCanvas_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._captureMatrix = new SMatrix3d();
+      o._captureMatrix = new MO.SMatrix3d();
    }
 
    //==========================================================
@@ -217,13 +217,13 @@ with(MO){
       var o = this;
       var size = o._graphicContext.size();
       // 显示加载进度
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       // 加载资源
-      var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+      var resource = o._activeResource = MO.Console.find(FDrBitmapConsole).query(guid);
       // 释放网格
       var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
       // 创建位图
-      var bitmap = o._activeBitmap = RConsole.find(FE3dBitmapConsole).loadByGuid(o, guid);
+      var bitmap = o._activeBitmap = MO.Console.find(FE3dBitmapConsole).loadByGuid(o, guid);
       bitmap.material().info().effectCode = 'flat';
       bitmap.setLoadListener(o, o.onLoaded);
       bitmap.loadUrl(url);

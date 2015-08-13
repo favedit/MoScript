@@ -6,7 +6,7 @@ with(MO){
    // @history 150411
    //==========================================================
    MO.FDsProjectSceneDialog = function FDsProjectSceneDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'design3d.project.SceneDialog';
@@ -62,7 +62,7 @@ with(MO){
    MO.FDsProjectSceneDialog_onConfirmLoad = function FDsProjectSceneDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新目录
@@ -79,15 +79,15 @@ with(MO){
    MO.FDsProjectSceneDialog_onConfirmClick = function FDsProjectSceneDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
       // 执行数据处理
-      var sceneConsole = RConsole.find(FDrSceneConsole);
+      var sceneConsole = MO.Console.find(FDrSceneConsole);
       var connection = null;
       if(o._dataModeCd == EUiDataMode.Insert){
-         var scene = RClass.create(FDrScene);
+         var scene = MO.Class.create(FDrScene);
          scene._projectGuid = o._projectGuid;
          scene._code = code;
          scene._label = label;

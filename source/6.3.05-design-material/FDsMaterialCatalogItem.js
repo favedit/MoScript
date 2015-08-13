@@ -6,10 +6,10 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMaterialCatalogItem = function FDsMaterialCatalogItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
       //..........................................................
-      o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
+      o._styleTypePanel = MO.Class.register(o, new AStyle('_styleTypePanel'));
+      o._styleTypeLabel = MO.Class.register(o, new AStyle('_styleTypeLabel'));
       //..........................................................
       // @event
       o.onBuild         = FDsMaterialCatalogItem_onBuild;

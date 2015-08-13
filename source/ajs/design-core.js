@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsModelRenderable = function FDsModelRenderable(o){
-      o = RClass.inherits(this, o, FE3dModelRenderable, MDsBoundBox);
+      o = MO.Class.inherits(this, o, FE3dModelRenderable, MDsBoundBox);
       o._optionSelected = false;
       o.filterDrawables = FDsModelRenderable_filterDrawables;
       return o;
@@ -18,19 +18,19 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneDisplay = function FDsSceneDisplay(o){
-      o = RClass.inherits(this, o, FE3dSceneDisplay);
+      o = MO.Class.inherits(this, o, FE3dSceneDisplay);
       return o;
    }
 }
 with(MO){
    MO.FDsSceneLayer = function FDsSceneLayer(o){
-      o = RClass.inherits(this, o, FE3dSceneLayer);
+      o = MO.Class.inherits(this, o, FE3dSceneLayer);
       return o;
    }
 }
 with(MO){
    MO.FDsSceneRenderable = function FDsSceneRenderable(o){
-      o = RClass.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
+      o = MO.Class.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
       o._optionSelected = false;
       o.filterDrawables = FDsSceneRenderable_filterDrawables;
       return o;

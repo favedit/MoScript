@@ -7,13 +7,13 @@ with(MO){
    // @version 150331
    //==========================================================
    MO.FDrResource = function FDrResource(o){
-      o = RClass.inherits(this, o, FDrObject);
+      o = MO.Class.inherits(this, o, FDrObject);
       //..........................................................
       // @attribute
-      o._classCode = RClass.register(o, new AGetter('_classCode'));
-      o._guid      = RClass.register(o, new AGetSet('_guid'));
-      o._code      = RClass.register(o, new AGetSet('_code'));
-      o._label     = RClass.register(o, new AGetSet('_label'));
+      o._classCode = MO.Class.register(o, new AGetter('_classCode'));
+      o._guid      = MO.Class.register(o, new AGetSet('_guid'));
+      o._code      = MO.Class.register(o, new AGetSet('_code'));
+      o._label     = MO.Class.register(o, new AGetSet('_label'));
       //..........................................................
       // @method
       o.loadConfig = FDrResource_loadConfig;

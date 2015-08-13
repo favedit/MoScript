@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsPrivateTabBar = function FDsPrivateTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName            = 'resource.private.TabBar';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -45,12 +45,12 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateWorkspace = function FDsPrivateWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiWorkspace, MUiStorage);
       o._frameName            = 'resource.private.Workspace';
       o._storageCode          = o._frameName;
-      o._styleMenuBarGround   = RClass.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusBarGround = RClass.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
+      o._styleMenuBarGround   = MO.Class.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusBarGround = MO.Class.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
       o._activeFrameSetCode   = null;
       o._activeProjectGuid    = null;
       o._frameToolBar         = null;
@@ -74,7 +74,7 @@ with(MO){
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
-      var control = o._tabBar = RClass.create(FDsPrivateTabBar);
+      var control = o._tabBar = MO.Class.create(FDsPrivateTabBar);
       control._workspace = o;
       control.buildDefine(event);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -94,66 +94,66 @@ with(MO){
       var frameSet = o._frameSets.get(name);
       if(!frameSet){
          if(name == EDsFrameSet.PrivateSolutionFrameSet){
-            var menuBar = RClass.create(FDsSolutionMenuBar);
+            var menuBar = MO.Class.create(FDsSolutionMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateProjectFrameSet){
-            var menuBar = RClass.create(FDsPrivateProjectMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateProjectMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateResourceFrameSet){
-            var menuBar = RClass.create(FDsPrivateResourceMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateBitmapFrameSet){
-            var menuBar = RClass.create(FDsPrivateBitmapMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateBitmapMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateMaterialFrameSet){
-            var menuBar = RClass.create(FDsPrivateMaterialMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateMaterialMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateModelFrameSet){
-            var menuBar = RClass.create(FDsPrivateModelMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateModelMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateTemplateFrameSet){
-            var menuBar = RClass.create(FDsPrivateTemplateMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateTemplateMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateSceneFrameSet){
-            var menuBar = RClass.create(FDsPrivateSceneMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateSceneMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;

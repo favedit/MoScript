@@ -1,13 +1,13 @@
 with(MO){
    MO.FDsPrivateTemplateCanvasToolBar = function FDsPrivateTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCanvasToolBar);
       o._frameName      = 'resource.private.template.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateTemplateCatalogToolBar = function FDsPrivateTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCatalogToolBar);
       o._frameName = 'resource.private.template.CatalogToolBar';
       return o;
    }
@@ -89,7 +89,7 @@ MO.FDsPrivateTemplateFrameSet_onCatalogSelected = function FDsPrivateTemplateFra
 }
 with(MO){
    MO.FDsPrivateTemplateMenuBar = function FDsPrivateTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDsTemplateMenuBar);
+      o = MO.Class.inherits(this, o, FDsTemplateMenuBar);
       o._frameName = 'resource.private.template.MenuBar';
       o.onBuilded  = FDsPrivateTemplateMenuBar_onBuilded;
       return o;

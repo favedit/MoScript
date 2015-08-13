@@ -6,7 +6,7 @@ with(MO){
    // @history 150422
    //==========================================================
    MO.FDsShareTabBar = function FDsShareTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       //..........................................................
       // @property
       o._frameName            = 'resource.share.TabBar';

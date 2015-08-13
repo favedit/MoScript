@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsPrivateMaterialMenuBar = function FDsPrivateMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FDsMaterialMenuBar);
+      o = MO.Class.inherits(this, o, FDsMaterialMenuBar);
       //..........................................................
       // @property
       o._frameName = 'resource.private.material.MenuBar';

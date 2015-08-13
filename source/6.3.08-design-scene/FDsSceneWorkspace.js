@@ -7,17 +7,17 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsSceneWorkspace = function FDsSceneWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       //..........................................................
       // @property
       o._frameName            = 'resource.share.scene.Workspace';
       //..........................................................
       // @style
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       //..........................................................
       // @attribute
       o._framesetMain         = null;
@@ -83,7 +83,7 @@ with(MO){
       f.setSizeHtml(o._frameProperty._hPanel);
       //..........................................................
       // 设置工具栏
-      var c = o._toolbar = RClass.create(FDsSceneMenuBar);
+      var c = o._toolbar = MO.Class.create(FDsSceneMenuBar);
       c._workspace = o;
       c.buildDefine(p);
       //c.setPanel(o._frameToolBar._hPanel);
@@ -91,7 +91,7 @@ with(MO){
       o._frameToolBar.push(c);
       //..........................................................
       // 设置目录栏
-      var c = o._catalog = RClass.create(FDsSceneCatalog);
+      var c = o._catalog = MO.Class.create(FDsSceneCatalog);
       c._workspace = o;
       c.build(p);
       //c.setPanel(o._frameCatalog._hPanel);
@@ -101,7 +101,7 @@ with(MO){
       //..........................................................
       // 设置画板工具栏
       var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-      var c = o._canvasToolbar = RClass.create(FDsSceneCanvasToolBar);
+      var c = o._canvasToolbar = MO.Class.create(FDsSceneCanvasToolBar);
       c._workspace = o;
       c.buildDefine(p);
       o._canvasToolbarFrame.push(c);
@@ -110,7 +110,7 @@ with(MO){
       //o.push(c);
       // 设置画板
       var f = o._canvasFrame = o.searchControl('canvasFrame');
-      var c = o._canvas = RClass.create(FDsSceneCanvas);
+      var c = o._canvas = MO.Class.create(FDsSceneCanvas);
       c._workspace = o;
       c._toolbar = o._canvasToolbar;
       c.addLoadListener(o, o.onSceneLoad);
@@ -155,23 +155,23 @@ with(MO){
          f.hide();
       }
       // 显示选中属性面板
-      if(RClass.isClass(p, FE3dScene)){
+      if(MO.Class.isClass(p, FE3dScene)){
          var f = o.findPropertyFrame(EDsFrame.SceneSpacePropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.SceneRegionPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
          f.show();
          f.loadObject(s, p);
@@ -180,7 +180,7 @@ with(MO){
          if(pc){
             o._canvas.selectLayers(p);
          }
-      }else if(RClass.isClass(p, FE3dSceneLayer)){
+      }else if(MO.Class.isClass(p, FE3dSceneLayer)){
          // 选中场景层
          if(pc){
             o._canvas.selectLayer(p);
@@ -189,7 +189,7 @@ with(MO){
          var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dSceneDisplay)){
+      }else if(MO.Class.isClass(p, FE3dSceneDisplay)){
          // 选中显示对象
          if(pc){
             o._canvas.selectDisplay(p);
@@ -198,7 +198,7 @@ with(MO){
          var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dSceneMaterial)){
+      }else if(MO.Class.isClass(p, FE3dSceneMaterial)){
          // 选中材质
          if(pc){
             o._canvas.selectMaterial(p);
@@ -207,12 +207,12 @@ with(MO){
          var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3rAnimation)){
+      }else if(MO.Class.isClass(p, FE3rAnimation)){
          // 显示属性栏
          var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dRenderable)){
+      }else if(MO.Class.isClass(p, FE3dRenderable)){
          // 选中渲染对象
          if(pc){
             o._canvas.selectRenderable(p);
@@ -249,7 +249,7 @@ with(MO){
       var o = this;
       var frame = o._propertyFrames.get(p);
       if(!frame){
-         frame = RConsole.find(FDuiFrameConsole).get(o, p, o._frameProperty._hContainer);
+         frame = MO.Console.find(FDuiFrameConsole).get(o, p, o._frameProperty._hContainer);
          frame._workspace = o;
          o._propertyFrames.set(p, frame);
       }

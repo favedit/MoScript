@@ -7,7 +7,7 @@ with(MO){
    // @history 150428
    //==========================================================
    MO.FDsSceneCanvasContent = function FDsSceneCanvasContent(o){
-      o = RClass.inherits(this, o, FDsSpaceDesignCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceDesignCanvas);
       //..........................................................
       // @attribute
       o._resourceTypeCd = EE3sResource.Scene;
@@ -34,7 +34,7 @@ with(MO){
       //var space = o._activeSpace;
       //space._layer.pushRenderable(o._dimensional);
       // 创建界面层
-      //var l = RClass.create(FDisplayUiLayer);
+      //var l = MO.Class.create(FDisplayUiLayer);
       //l.selectTechnique(c, FG3dControlTechnique);
       //l.pushDisplay(o._templateTranslation);
       //l.pushDisplay(o._templateRotation);
@@ -44,7 +44,7 @@ with(MO){
       // 加载完成
       o.processLoadListener(o);
       // 隐藏处理
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -57,7 +57,7 @@ with(MO){
       var o = this;
       // 释放场景
       var space = o._activeSpace;
-      var sceneConsole = RConsole.find(FE3dSceneConsole);
+      var sceneConsole = MO.Console.find(FE3dSceneConsole);
       if(space){
          RStage.unregister(space);
          sceneConsole.free(space);
@@ -66,7 +66,7 @@ with(MO){
       space = o._activeSpace = sceneConsole.allocByGuid(o, guid);
       if(!space._linked){
          // 显示加载进度
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          // 设置事件
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;

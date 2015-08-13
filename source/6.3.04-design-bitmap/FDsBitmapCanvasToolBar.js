@@ -7,7 +7,7 @@ with(MO){
    // @history 150404
    //==========================================================
    MO.FDsBitmapCanvasToolBar = function FDsBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @attribute
       o._canvasModeCd      = EDsCanvasMode.Drop;

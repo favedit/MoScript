@@ -7,7 +7,7 @@ with(MO){
    // @history 150429
    //==========================================================
    MO.FDsCommonMaterialReferDialog = function FDsCommonMaterialReferDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName      = 'resource.common.dialog.MaterialReferDialog';
@@ -63,7 +63,7 @@ with(MO){
    MO.FDsCommonMaterialReferDialog_onConfirmLoad = function FDsCommonMaterialReferDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新目录
@@ -91,12 +91,12 @@ with(MO){
    MO.FDsCommonMaterialReferDialog_onConfirmClick = function FDsCommonMaterialReferDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      //RConsole.find(FDuiDesktopConsole).showUploading();
+      //MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       o._materialRefer._guid = o._controlGuid.get();
       o.hide();
       // 执行数据处理
-      //var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+      //var connection = MO.Console.find(FDrTemplateConsole).createDisplay(xaction);
       //connection.addLoadListener(o, o.onConfirmLoad);
    }
 

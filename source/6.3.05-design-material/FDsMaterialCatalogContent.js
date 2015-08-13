@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMaterialCatalogContent = function FDsMaterialCatalogContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       //..........................................................
       // @attribute
       o._activeItem       = null;
@@ -72,13 +72,13 @@ with(MO){
             item._code = code;
             item._updateDate = xnode.get('update_date');
             item.setTypeLabel(code);
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
       }
       // 画面允许操作
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -137,10 +137,10 @@ with(MO){
    MO.FDsMaterialCatalogContent_serviceList = function FDsMaterialCatalogContent_serviceList(guid){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       // 发送数据请求
       var url = '/cloud.resource.material.ws?action=listBitmap&guid=' + guid;
-      var connection = RConsole.find(FXmlConsole).sendAsync(url);
+      var connection = MO.Console.find(FXmlConsole).sendAsync(url);
       connection.addLoadListener(o, o.onServiceLoad);
    }
 

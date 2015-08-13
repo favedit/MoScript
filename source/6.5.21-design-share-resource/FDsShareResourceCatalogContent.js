@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsShareResourceCatalogContent = function FDsShareResourceCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       //..........................................................
       // @attributes
       o._activeSpace          = null;

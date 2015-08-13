@@ -7,12 +7,12 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsFrameSet = function FDsFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
       // @style
-      o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleToolBarGround   = MO.Class.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       //..........................................................
       // @attribute
       o._activeGuid           = null;
@@ -42,7 +42,7 @@ with(MO){
       // 父处理
       o.__base.FDuiFrameSet.construct.call(o);
       // 设置属性
-      o._propertyFrames = new TDictionary();
+      o._propertyFrames = new MO.TDictionary();
    }
 
    //==========================================================
@@ -56,7 +56,7 @@ with(MO){
       var o = this;
       var frame = o._propertyFrames.get(code);
       if(!frame){
-         frame = RConsole.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
+         frame = MO.Console.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
          frame._frameSet = o;
          o._propertyFrames.set(code, frame);
       }
@@ -105,7 +105,7 @@ with(MO){
          var frame = frames.at(i);
          frame.dispose();
       }
-      o._propertyFrames = RObject.dispose(o._propertyFrames);
+      o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames);
       // 父处理
       o.__base.FDuiFrameSet.dispose.call(o);
    }

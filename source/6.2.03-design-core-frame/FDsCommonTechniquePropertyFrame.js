@@ -7,7 +7,7 @@ with(MO){
    // @history 150202
    //==========================================================
    MO.FDsCommonTechniquePropertyFrame = function FDsCommonTechniquePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible              = false;
@@ -129,10 +129,10 @@ with(MO){
       // 父处理
       o.__base.FDuiForm.construct.call(o);
       // 创建线程
-      var t = o._thread = RClass.create(FThread);
+      var t = o._thread = MO.Class.create(FThread);
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onRefresh);
-      RConsole.find(FThreadConsole).start(t);
+      MO.Console.find(FThreadConsole).start(t);
    }
 
    //==========================================================

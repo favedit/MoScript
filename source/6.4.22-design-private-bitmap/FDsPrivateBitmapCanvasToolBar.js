@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsPrivateBitmapCanvasToolBar = function FDsPrivateBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvasToolBar);
       //..........................................................
       // @property
       o._frameName = 'resource.private.bitmap.CanvasToolBar';

@@ -7,7 +7,7 @@ with(MO){
    // @version 150424
    //==========================================================
    MO.FDrBitmap = function FDrBitmap(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       //..........................................................
       // @attribute
       o._classCode    = 'Bitmap';

@@ -7,7 +7,7 @@ with(MO){
    // @history 150508
    //==========================================================
    MO.FDsCommonShaderDialog = function FDsCommonShaderDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.ShaderDialog';

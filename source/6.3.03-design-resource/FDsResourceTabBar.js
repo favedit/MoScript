@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceTabBar = function FDsResourceTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       //..........................................................
       // @property
       o._frameName             = 'design3d.resource.TabBar';

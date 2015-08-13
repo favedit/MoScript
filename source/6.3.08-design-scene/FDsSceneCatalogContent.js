@@ -7,7 +7,7 @@ with(MO){
    // @history 150505
    //==========================================================
    MO.FDsSceneCatalogContent = function FDsSceneCatalogContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       //..........................................................
       // @property
       o._catalogCode    = 'resource.scene';
@@ -38,7 +38,7 @@ with(MO){
    MO.FDsSceneCatalogContent_onBuild = function FDsSceneCatalogContent_onBuild(event){
       var o = this;
       // 建立查看列
-      var column = RClass.create(FDuiTreeColumn);
+      var column = MO.Class.create(FDuiTreeColumn);
       column.setName('view');
       o.push(column);
       // 父处理
@@ -205,7 +205,7 @@ with(MO){
       for(var i = 0; i < layerCount; i++){
          var layer = layers.at(i);
          // 忽略界面层
-         if(RClass.isClass(layer, FDisplayUiLayer)){
+         if(MO.Class.isClass(layer, FDisplayUiLayer)){
             continue;
          }
          var layerResource = layer.resource();

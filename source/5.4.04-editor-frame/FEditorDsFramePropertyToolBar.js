@@ -9,7 +9,7 @@ MO.FEditorDsFramePropertyToolBar = function FEditorDsFramePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
    //..........................................................
    // @property
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    //..........................................................
    // @attribute
    o._controlInsertButton = null;

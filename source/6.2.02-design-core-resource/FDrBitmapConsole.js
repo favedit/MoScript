@@ -7,7 +7,7 @@ with(MO){
    // @version 150424
    //==========================================================
    MO.FDrBitmapConsole = function FDrBitmapConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       //..........................................................
       // @attribute
       o._serviceCode = 'cloud.resource.bitmap';
@@ -30,7 +30,7 @@ with(MO){
       var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
       var url = RBrowser.hostPath(uri);
       // 发送数据
-      var xroot = RConsole.find(FXmlConsole).send(url);
+      var xroot = MO.Console.find(FXmlConsole).send(url);
       // 加载数据
       var nodeCount = xroot.nodeCount();
       for(var n = 0; n < nodeCount; n++){
@@ -54,6 +54,6 @@ with(MO){
       var uri = '/' + o._serviceCode + '.ws?action=update';
       var url = RBrowser.hostPath(uri);
       // 发送数据
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 }

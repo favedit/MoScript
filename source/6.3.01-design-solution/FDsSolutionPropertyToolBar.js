@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsSolutionPropertyToolBar = function FDsSolutionPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName           = 'resource.solution.PropertyToolBar';

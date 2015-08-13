@@ -7,7 +7,7 @@ with(MO){
    // @history 150505
    //==========================================================
    MO.FDsCommonTemplateDialog = function FDsCommonTemplateDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.TemplateDialog';
@@ -70,7 +70,7 @@ with(MO){
    MO.FDsCommonTemplateDialog_onConfirmLoad = function FDsCommonTemplateDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新目录
@@ -98,7 +98,7 @@ with(MO){
    MO.FDsCommonTemplateDialog_onConfirmClick = function FDsCommonTemplateDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
@@ -108,7 +108,7 @@ with(MO){
       xsprite.set('model_guid', o._controlModelGuid.get());
       xsprite.set('model_code', o._controlModelCode.get());
       // 执行数据处理
-      var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).createDisplay(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
 

@@ -7,7 +7,7 @@ with(MO){
    // @version 150424
    //==========================================================
    MO.FDrMaterial = function FDrMaterial(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       //..........................................................
       // @attribute
       o._classCode = 'Material';

@@ -7,7 +7,7 @@ with(MO){
    // @history 150428
    //==========================================================
    MO.FDsSpaceCanvas = function FDsSpaceCanvas(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       //..........................................................
       // @attribute
       o._rotation             = null;
@@ -75,7 +75,7 @@ with(MO){
       }
       var region = space.region();
       // 选取物件
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var selectTechnique = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
       o.selectRenderable(renderable);
       if(renderable){
@@ -222,13 +222,13 @@ with(MO){
    MO.FDsSpaceCanvas_construct = function FDsSpaceCanvas_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
-      o._selectRenderables = new TObjects();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
+      o._selectRenderables = new MO.TObjects();
    }
 
    //==========================================================
@@ -240,7 +240,7 @@ with(MO){
    MO.FDsSpaceCanvas_innerSelectRenderable = function FDsSpaceCanvas_innerSelectRenderable(renderable){
       var o = this;
       renderable._optionSelected = true;
-      if(RClass.isClass(renderable, MDsBoundBox)){
+      if(MO.Class.isClass(renderable, MDsBoundBox)){
          renderable.showBoundBox();
       }
       o._selectRenderables.push(renderable);
@@ -266,7 +266,7 @@ with(MO){
       var count = renderables.count();
       for(var i = 0; i < count; i++){
          var renderable = renderables.at(i);
-         if(RClass.isClass(renderable, FDsSceneRenderable)){
+         if(MO.Class.isClass(renderable, FDsSceneRenderable)){
             o.innerSelectRenderable(renderable);
          }
       }
@@ -301,7 +301,7 @@ with(MO){
       for(var i = 0; i < count; i++){
          var renderable = renderables.at(i);
          renderable._optionSelected = false;
-         if(RClass.isClass(renderable, MDsBoundBox)){
+         if(MO.Class.isClass(renderable, MDsBoundBox)){
             renderable.hideBoundBox();
          }
       }
@@ -414,7 +414,7 @@ with(MO){
       var count = displays.count();
       for(var i = 0; i < count; i++){
          var display = displays.at(i);
-         if(RClass.isClass(display, FE3dSceneDisplay)){
+         if(MO.Class.isClass(display, FE3dSceneDisplay)){
             var sprite = display._sprite;
             sprite._optionPlay = flag;
             display._optionPlay = flag;
@@ -435,7 +435,7 @@ with(MO){
       var count = displays.count();
       for(var i = 0; i < count; i++){
          var display = displays.at(i);
-         if(RClass.isClass(display, FE3dSceneDisplay)){
+         if(MO.Class.isClass(display, FE3dSceneDisplay)){
             var sprite = display._sprite;
             if(sprite){
                sprite._optionMovie = flag;
@@ -453,7 +453,7 @@ with(MO){
    MO.FDsSpaceCanvas_dispose = function FDsSpaceCanvas_dispose(){
       var o = this;
       // 释放属性
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       // 父处理
       o.__base.FDsCanvas.dispose.call(o);
    }

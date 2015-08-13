@@ -7,7 +7,7 @@ with(MO){
    // @history 150215
    //==========================================================
    MO.FDsSceneDisplay = function FDsSceneDisplay(o){
-      o = RClass.inherits(this, o, FE3dSceneDisplay);
+      o = MO.Class.inherits(this, o, FE3dSceneDisplay);
       return o;
    }
 }

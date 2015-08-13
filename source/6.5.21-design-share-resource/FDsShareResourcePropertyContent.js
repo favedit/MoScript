@@ -7,7 +7,7 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FDsShareResourcePropertyContent = function FDsShareResourcePropertyContent(o){
-      o = RClass.inherits(this, o, FDsResourcePropertyContent);
+      o = MO.Class.inherits(this, o, FDsResourcePropertyContent);
       return o;
    }
 }

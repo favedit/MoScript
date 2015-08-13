@@ -7,7 +7,7 @@ with(MO){
    // @history 150423
    //==========================================================
    MO.FDsShareTemplateToolBar = function FDsShareTemplateToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateToolBar);
       return o;
    }
 
@@ -21,14 +21,14 @@ with(MO){
       var o = this;
       o.__base.FDuiToolBar.onBuild.call(o, p);
       // 建立按键
-      var b = o._refreshButton  = RClass.create(FDuiToolButton);
+      var b = o._refreshButton  = MO.Class.create(FDuiToolButton);
       b.setLabel('刷新');
       b.setIcon('design3d.tools.refresh');
       b.build(p);
       b.addClickListener(o, o.onRefreshClick);
       o.push(b);
       // 建立按键
-      var b = o._saveButton = RClass.create(FDuiToolButton);
+      var b = o._saveButton = MO.Class.create(FDuiToolButton);
       b.setLabel('保存');
       b.setIcon('design3d.tools.save');
       b.build(p);
@@ -70,7 +70,7 @@ with(MO){
             m.saveConfig(xr.create('Material'));
          }
       }
-      RConsole.find(FE3sTemplateConsole).update(xr);
+      MO.Console.find(FE3sTemplateConsole).update(xr);
    }
 
    //==========================================================

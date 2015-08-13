@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMainToolBar = function FDsMainToolBar(o){
-      o = RClass.inherits(this, o, FToolBar);
+      o = MO.Class.inherits(this, o, FToolBar);
       //..........................................................
       // @attribute
       //..........................................................
@@ -46,23 +46,23 @@ with(MO){
       var o = this;
       o.__base.FToolBar.onBuild.call(o, p);
       // 建立按键
-      var b = o._persistenceButton  = RClass.create(FToolButton);
+      var b = o._persistenceButton  = MO.Class.create(FToolButton);
       b.setLabel('模型管理');
       b.build(p);
       b.lsnsClick.register(o, o.onPersistenceClick);
       o.appendButton(b);
       // 建立按键
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('材质管理');
       b.build(p);
       o.appendButton(b);
       // 建立按键
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('模板管理');
       b.build(p);
       o.appendButton(b);
       // 建立按键
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('场景管理');
       b.build(p);
       o.appendButton(b);

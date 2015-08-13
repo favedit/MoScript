@@ -1164,7 +1164,7 @@ MO.FEditorDsListMenuBar_onBuilded = function FEditorDsListMenuBar_onBuilded(even
 }
 MO.FEditorDsListPropertyToolBar = function FEditorDsListPropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;
@@ -1362,7 +1362,7 @@ MO.FEditorDsTreeMenuBar_onBuilded = function FEditorDsTreeMenuBar_onBuilded(even
 }
 MO.FEditorDsTreePropertyToolBar = function FEditorDsTreePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;
@@ -1476,7 +1476,7 @@ MO.FEditorDsFrameCatalogContent = function FEditorDsFrameCatalogContent(o){
 }
 MO.FEditorDsFrameCatalogToolBar = function FEditorDsFrameCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName = 'system.design.frame.CatalogToolBar';
+   o._frameName = 'editor.design.frame.CatalogToolBar';
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;
    o._controlFolderPropertyButton = null;
@@ -1780,7 +1780,7 @@ MO.FEditorDsFramePictureProperty_dispose = function FEditorDsFramePicturePropert
 }
 MO.FEditorDsFramePropertyToolBar = function FEditorDsFramePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;
@@ -2051,7 +2051,7 @@ MO.FEditorDsFrameSpaceContent_dispose = function FEditorDsFrameSpaceContent_disp
 }
 MO.FEditorDsFrameSpaceToolBar = function FEditorDsFrameSpaceToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName   = 'system.design.frame.SpaceToolBar';
+   o._frameName   = 'editor.design.frame.SpaceToolBar';
    o._storageCode = o._frameName;
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;
@@ -2161,7 +2161,7 @@ MO.FEditorDsFrameSpaceToolBar_dispose = function FEditorDsFrameSpaceToolBar_disp
 }
 with(MO){
    MO.FDsPrivateTabBar = function FDsPrivateTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName            = 'resource.private.TabBar';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -2206,12 +2206,12 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateWorkspace = function FDsPrivateWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiWorkspace, MUiStorage);
       o._frameName            = 'resource.private.Workspace';
       o._storageCode          = o._frameName;
-      o._styleMenuBarGround   = RClass.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusBarGround = RClass.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
+      o._styleMenuBarGround   = MO.Class.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusBarGround = MO.Class.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
       o._activeFrameSetCode   = null;
       o._activeProjectGuid    = null;
       o._frameToolBar         = null;
@@ -2235,7 +2235,7 @@ with(MO){
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
-      var control = o._tabBar = RClass.create(FDsPrivateTabBar);
+      var control = o._tabBar = MO.Class.create(FDsPrivateTabBar);
       control._workspace = o;
       control.buildDefine(event);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -2255,66 +2255,66 @@ with(MO){
       var frameSet = o._frameSets.get(name);
       if(!frameSet){
          if(name == EDsFrameSet.PrivateSolutionFrameSet){
-            var menuBar = RClass.create(FDsSolutionMenuBar);
+            var menuBar = MO.Class.create(FDsSolutionMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateProjectFrameSet){
-            var menuBar = RClass.create(FDsPrivateProjectMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateProjectMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateResourceFrameSet){
-            var menuBar = RClass.create(FDsPrivateResourceMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateBitmapFrameSet){
-            var menuBar = RClass.create(FDsPrivateBitmapMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateBitmapMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateMaterialFrameSet){
-            var menuBar = RClass.create(FDsPrivateMaterialMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateMaterialMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateModelFrameSet){
-            var menuBar = RClass.create(FDsPrivateModelMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateModelMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateTemplateFrameSet){
-            var menuBar = RClass.create(FDsPrivateTemplateMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateTemplateMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateSceneFrameSet){
-            var menuBar = RClass.create(FDsPrivateSceneMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateSceneMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -2415,7 +2415,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateProjectFrameSet = function FDsPrivateProjectFrameSet(o){
-      o = RClass.inherits(this, o, FDsProjectFrameSet);
+      o = MO.Class.inherits(this, o, FDsProjectFrameSet);
       o._frameName = 'resource.private.project.FrameSet';
       o.onBuilded  = FDsPrivateProjectFrameSet_onBuilded;
       return o;
@@ -2423,31 +2423,31 @@ with(MO){
    MO.FDsPrivateProjectFrameSet_onBuilded = function FDsPrivateProjectFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsProjectFrameSet.onBuilded.call(o, event);
-      var control = o._sceneListToolbar = RClass.create(FDsProjectSceneListToolBar);
+      var control = o._sceneListToolbar = MO.Class.create(FDsProjectSceneListToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._frameSceneListToolBar.push(control);
-      var control = o._sceneListContent = RClass.create(FDsProjectSceneListContent);
+      var control = o._sceneListContent = MO.Class.create(FDsProjectSceneListContent);
       control._frameSet = o;
       control.build(event);
       o._frameSceneListContent.push(control);
-      var control = o._sceneCatalogToolbar = RClass.create(FDsProjectSceneCatalogToolBar);
+      var control = o._sceneCatalogToolbar = MO.Class.create(FDsProjectSceneCatalogToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._frameSceneCatalogToolBar.push(control);
-      var control = o._sceneCatalogContent = RClass.create(FDsProjectSceneCatalogContent);
+      var control = o._sceneCatalogContent = MO.Class.create(FDsProjectSceneCatalogContent);
       control._frameSet = o;
       control.build(event);
       o._frameSceneCatalogContent.push(control);
-      var control = o._canvasSpaceToolbar = RClass.create(FDsProjectCanvasSpaceToolBar);
+      var control = o._canvasSpaceToolbar = MO.Class.create(FDsProjectCanvasSpaceToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCanvasSpaceToolBar.push(control);
-      var control = o._canvasPreviewToolbar = RClass.create(FDsProjectCanvasPreviewToolBar);
+      var control = o._canvasPreviewToolbar = MO.Class.create(FDsProjectCanvasPreviewToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCanvasPreviewToolBar.push(control);
-      var control = o._propertyToolbar = RClass.create(FDsProjectPropertyToolBar);
+      var control = o._propertyToolbar = MO.Class.create(FDsProjectPropertyToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._framePropertyAttributeToolBar.push(control);
@@ -2455,7 +2455,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateProjectMenuBar = function FDsPrivateProjectMenuBar(o){
-      o = RClass.inherits(this, o, FDsProjectMenuBar);
+      o = MO.Class.inherits(this, o, FDsProjectMenuBar);
       o._frameName = 'resource.private.project.MenuBar';
       o.onBuilded  = FDsPrivateProjectMenuBar_onBuilded;
       return o;
@@ -2467,14 +2467,14 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateResourceCatalogToolBar = function FDsPrivateResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceCatalogToolBar);
       o._frameName = 'resource.private.resource.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateResourceFrameSet = function FDsPrivateResourceFrameSet(o){
-      o = RClass.inherits(this, o, FDsResourceFrameSet);
+      o = MO.Class.inherits(this, o, FDsResourceFrameSet);
       o._frameName        = 'resource.share.resource.FrameSet';
       o.onBuilded         = FDsPrivateResourceFrameSet_onBuilded;
       o.onCatalogSelected = FDsPrivateResourceFrameSet_onCatalogSelected;
@@ -2490,22 +2490,22 @@ with(MO){
       var f = o._catalogSplitter = o.searchControl('catalogSpliter');
       f.setAlignCd(EUiAlign.Left);
       f.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsPrivateResourceCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsPrivateResourceCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsResourceCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameCatalogContent.push(control);
-      var control = o._listToolBar = RClass.create(FDsPrivateResourceListToolBar);
+      var control = o._listToolBar = MO.Class.create(FDsPrivateResourceListToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameListToolBar.push(control);
-      var control = o._listContent = RClass.create(FDsResourceListContent);
+      var control = o._listContent = MO.Class.create(FDsResourceListContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -2520,35 +2520,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -2559,7 +2559,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateResourceListToolBar = function FDsPrivateResourceListToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceListToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceListToolBar);
       o._frameName   = 'resource.private.resource.ListToolBar';
       o._storageCode = o._frameName;
       return o;
@@ -2567,7 +2567,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateResourceMenuBar = function FDsPrivateResourceMenuBar(o){
-      o = RClass.inherits(this, o, FDsResourceMenuBar);
+      o = MO.Class.inherits(this, o, FDsResourceMenuBar);
       o._frameName      = 'resource.private.resource.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsPrivateResourceMenuBar_onBuilded;
@@ -2591,14 +2591,14 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateBitmapCanvasToolBar = function FDsPrivateBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvasToolBar);
       o._frameName = 'resource.private.bitmap.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateBitmapFrameSet = function FDsPrivateBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsBitmapFrameSet);
+      o = MO.Class.inherits(this, o, FDsBitmapFrameSet);
       o._frameName = 'resource.private.bitmap.FrameSet';
       o.onBuilded  = FDsPrivateBitmapFrameSet_onBuilded;
       return o;
@@ -2606,18 +2606,18 @@ with(MO){
    MO.FDsPrivateBitmapFrameSet_onBuilded = function FDsPrivateBitmapFrameSet_onBuilded(p){
       var o = this;
       o.__base.FDsBitmapFrameSet.onBuilded.call(o, p);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateBitmapCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateBitmapCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(p);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsBitmapCanvasContent);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.backgroundColor = '#333333';
       canvas._hParent.style.scroll = 'auto';
       canvas.build(p);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolBar = RClass.create(FDsBitmapPropertyToolBar);
+      var toolbar = o._propertyToolBar = MO.Class.create(FDsBitmapPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(p);
       o._framePropertyToolBar.push(toolbar);
@@ -2627,7 +2627,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateBitmapMenuBar = function FDsPrivateBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDsBitmapMenuBar);
+      o = MO.Class.inherits(this, o, FDsBitmapMenuBar);
       o._frameName  = 'resource.private.bitmap.MenuBar';
       o.onBuilded   = FDsPrivateBitmapMenuBar_onBuilded;
       o.onBackClick = FDsPrivateBitmapMenuBar_onBackClick;
@@ -2648,21 +2648,21 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateMaterialCanvasToolBar = function FDsPrivateMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsMaterialCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsMaterialCanvasToolBar);
       o._frameName = 'resource.private.material.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateMaterialCatalogToolBar = function FDsPrivateMaterialCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsMaterialCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsMaterialCatalogToolBar);
       o._frameName = 'resource.private.material.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateMaterialFrameSet = function FDsPrivateMaterialFrameSet(o){
-      o = RClass.inherits(this, o, FDsMaterialFrameSet);
+      o = MO.Class.inherits(this, o, FDsMaterialFrameSet);
       o._frameName = 'resource.private.material.FrameSet';
       o.onBuilded  = FDsPrivateMaterialFrameSet_onBuilded;
       return o;
@@ -2670,19 +2670,19 @@ with(MO){
    MO.FDsPrivateMaterialFrameSet_onBuilded = function FDsPrivateMaterialFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsMaterialFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolBar = RClass.create(FDsPrivateMaterialCatalogToolBar);
+      var toolbar = o._catalogToolBar = MO.Class.create(FDsPrivateMaterialCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsMaterialCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateMaterialCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateMaterialCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var toolbar = o._propertyToolBar = RClass.create(FDsMaterialPropertyToolBar);
+      var toolbar = o._propertyToolBar = MO.Class.create(FDsMaterialPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -2690,28 +2690,28 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateMaterialMenuBar = function FDsPrivateMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FDsMaterialMenuBar);
+      o = MO.Class.inherits(this, o, FDsMaterialMenuBar);
       o._frameName = 'resource.private.material.MenuBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateModelCanvasToolBar = function FDsPrivateModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCanvasToolBar);
       o._frameName = 'resource.private.model.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateModelCatalogToolBar = function FDsPrivateModelCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCatalogToolBar);
       o._frameName = 'resource.private.model.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateModelFrameSet = function FDsPrivateModelFrameSet(o){
-      o = RClass.inherits(this, o, FDsModelFrameSet);
+      o = MO.Class.inherits(this, o, FDsModelFrameSet);
       o._frameName = 'resource.private.model.FrameSet';
       o.onBuilded  = FDsPrivateModelFrameSet_onBuilded;
       return o;
@@ -2719,20 +2719,20 @@ with(MO){
    MO.FDsPrivateModelFrameSet_onBuilded = function FDsPrivateModelFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsModelFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolBar = RClass.create(FDsPrivateModelCatalogToolBar);
+      var toolbar = o._catalogToolBar = MO.Class.create(FDsPrivateModelCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsModelCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsModelCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateModelCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateModelCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsModelCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsModelCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -2745,7 +2745,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateModelMenuBar = function FDsPrivateModelMenuBar(o){
-      o = RClass.inherits(this, o, FDsModelMenuBar);
+      o = MO.Class.inherits(this, o, FDsModelMenuBar);
       o._frameName = 'resource.private.model.MenuBar';
       o.onBuilded  = FDsPrivateModelMenuBar_onBuilded;
       return o;
@@ -2759,14 +2759,14 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateTemplateCanvasToolBar = function FDsPrivateTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCanvasToolBar);
       o._frameName      = 'resource.private.template.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateTemplateCatalogToolBar = function FDsPrivateTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCatalogToolBar);
       o._frameName = 'resource.private.template.CatalogToolBar';
       return o;
    }
@@ -2848,7 +2848,7 @@ MO.FDsPrivateTemplateFrameSet_onCatalogSelected = function FDsPrivateTemplateFra
 }
 with(MO){
    MO.FDsPrivateTemplateMenuBar = function FDsPrivateTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDsTemplateMenuBar);
+      o = MO.Class.inherits(this, o, FDsTemplateMenuBar);
       o._frameName = 'resource.private.template.MenuBar';
       o.onBuilded  = FDsPrivateTemplateMenuBar_onBuilded;
       return o;
@@ -2865,21 +2865,21 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateSceneCanvasToolBar = function FDsPrivateSceneCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCanvasToolBar);
       o._frameName = 'resource.private.scene.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateSceneCatalogToolBar = function FDsPrivateSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCatalogToolBar);
       o._frameName = 'resource.private.scene.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateSceneFrameSet = function FDsPrivateSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsSceneFrameSet);
+      o = MO.Class.inherits(this, o, FDsSceneFrameSet);
       o._frameName = 'resource.private.scene.FrameSet';
       o.onBuilded  = FDsPrivateSceneFrameSet_onBuilded;
       return o;
@@ -2887,20 +2887,20 @@ with(MO){
    MO.FDsPrivateSceneFrameSet_onBuilded = function FDsPrivateSceneFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsSceneFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsPrivateSceneCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsPrivateSceneCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsSceneCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateSceneCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateSceneCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsSceneCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -2909,7 +2909,7 @@ with(MO){
       canvas.addLoadListener(o, o.onDataLoaded);
       canvas.build(event);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
+      var toolbar = o._propertyToolbar = MO.Class.create(FDsScenePropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -2917,7 +2917,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateSceneMenuBar = function FDsPrivateSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDsSceneMenuBar);
+      o = MO.Class.inherits(this, o, FDsSceneMenuBar);
       o._frameName = 'resource.private.scene.MenuBar';
       o.onBuilded  = FDsPrivateSceneMenuBar_onBuilded;
       return o;
@@ -2934,7 +2934,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTabBar = function FDsShareTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName            = 'resource.share.TabBar';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -2972,12 +2972,12 @@ with(MO){
 }
 with(MO){
    MO.FDsShareWorkspace = function FDsShareWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiWorkspace, MUiStorage);
       o._frameName            = 'resource.share.Workspace';
       o._storageCode          = o._frameName;
-      o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleMenubarGround   = MO.Class.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeFrameSetCode   = null;
       o._activeProjectGuid    = null;
       o._frameToolBar         = null;
@@ -3001,7 +3001,7 @@ with(MO){
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
-      var control = o._tabBar = RClass.create(FDsShareTabBar);
+      var control = o._tabBar = MO.Class.create(FDsShareTabBar);
       control._workspace = o;
       control.buildDefine(event);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -3021,50 +3021,50 @@ with(MO){
       var frameSet = o._frameSets.get(name);
       if(!frameSet){
          if(name == EDsFrameSet.ShareResourceFrameSet){
-            var menuBar = RClass.create(FDsShareResourceMenuBar);
+            var menuBar = MO.Class.create(FDsShareResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareBitmapFrameSet){
-            var menuBar = RClass.create(FDsShareBitmapMenuBar);
+            var menuBar = MO.Class.create(FDsShareBitmapMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareMaterialFrameSet){
-            var menuBar = RClass.create(FDsShareMaterialMenuBar);
+            var menuBar = MO.Class.create(FDsShareMaterialMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareModelFrameSet){
-            var menuBar = RClass.create(FDsShareModelMenuBar);
+            var menuBar = MO.Class.create(FDsShareModelMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareModelFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareTemplateFrameSet){
-            var menuBar = RClass.create(FDsShareTemplateMenuBar);
+            var menuBar = MO.Class.create(FDsShareTemplateMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareSceneFrameSet){
-            var menuBar = RClass.create(FDsShareSceneMenuBar);
+            var menuBar = MO.Class.create(FDsShareSceneMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -3118,7 +3118,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceCatalogContent = function FDsShareResourceCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._activeSpace          = null;
       o._materials            = null;
       o.onBuild               = FDsShareResourceCatalogContent_onBuild;
@@ -3175,7 +3175,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceCatalogToolBar = function FDsShareResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName                = 'resource.share.resource.CatalogToolBar';
       o._controlFolderOpenButton  = null;
       o._controlFolderCloseButton = null;
@@ -3208,12 +3208,12 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceFrameSet = function FDsShareResourceFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
       o._frameName            = 'resource.share.resource.FrameSet';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._resourceTypeCd       = 'picture';
       o._frameCatalog         = null;
       o._frameCatalogToolbar  = null;
@@ -3244,22 +3244,22 @@ with(MO){
       var f = o._catalogSplitter = o.searchControl('catalogSpliter');
       f.setAlignCd(EUiAlign.Left);
       f.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsShareResourceCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsShareResourceCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsShareResourceCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsShareResourceCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameCatalogContent.push(control);
-      var control = o._listToolBar = RClass.create(FDsShareResourceListToolBar);
+      var control = o._listToolBar = MO.Class.create(FDsShareResourceListToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameListToolBar.push(control);
-      var control = o._listContent = RClass.create(FDsShareResourceListContent);
+      var control = o._listContent = MO.Class.create(FDsShareResourceListContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -3274,35 +3274,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -3319,7 +3319,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -3344,7 +3344,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceListContent = function FDsShareResourceListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._contentFlag      = null;
       o._contentTypeCd    = EE3sResource.All;
       o._contentSerach    = '';
@@ -3392,7 +3392,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsShareResourceListContent_construct = function FDsShareResourceListContent_construct(){
       var o = this;
@@ -3451,8 +3451,8 @@ with(MO){
       o._contentOrder = order;
       o._contentPageSize = pageSize;
       o._contentPage = page;
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var connection = RConsole.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var connection = MO.Console.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsShareResourceListContent_serviceResearch = function FDsShareResourceListContent_serviceResearch(){
@@ -3466,13 +3466,13 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceListItem = function FDsShareResourceListItem(o){
-      o = RClass.inherits(this, o, FDsResourceListItem);
+      o = MO.Class.inherits(this, o, FDsResourceListItem);
       return o;
    }
 }
 with(MO){
    MO.FDsShareResourceListToolBar = function FDsShareResourceListToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceListToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceListToolBar);
       o._frameName   = 'resource.share.resource.ListToolBar';
       o._storageCode = o._frameName;
       return o;
@@ -3480,7 +3480,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceMenuBar = function FDsShareResourceMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._frameName      = 'resource.share.resource.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsShareResourceMenuBar_onBuilded;
@@ -3507,13 +3507,13 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourcePropertyContent = function FDsShareResourcePropertyContent(o){
-      o = RClass.inherits(this, o, FDsResourcePropertyContent);
+      o = MO.Class.inherits(this, o, FDsResourcePropertyContent);
       return o;
    }
 }
 with(MO){
    MO.FDsShareResourcePropertyToolBar = function FDsShareResourcePropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.resource.PropertyToolBar';
       o._controlInsertButton   = null;
       o._controlUpdateButton   = null;
@@ -3551,7 +3551,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceTabBar = function FDsShareResourceTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName             = 'design3d.resource.TabBar';
       o._resourceTypeCd        = 'mesh';
       o._controlPictureButton  = null;
@@ -3599,18 +3599,18 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceWorkspace = function FDsShareResourceWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.share.resource.Workspace';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
-      o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._resourceTypeCd       = 'picture';
       o._frameToolBar         = null;
       o._frameStatusBar       = null;
@@ -3646,12 +3646,12 @@ with(MO){
       var hTable = RBuilder.createTable(p);
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
-      var c = o._toolbar = RClass.create(FDsShareResourceMenuBar);
+      var c = o._toolbar = MO.Class.create(FDsShareResourceMenuBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
       hCell.appendChild(c._hPanel);
-      var c = o._tabBar = RClass.create(FDsShareResourceTabBar);
+      var c = o._tabBar = MO.Class.create(FDsShareResourceTabBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -3660,7 +3660,7 @@ with(MO){
       hCell.vAlign = 'bottom';
       hCell.appendChild(c._hPanel);
       o._frameToolBar._hPanel.appendChild(hTable);
-      var frameSet = o._frameSet = RClass.create(FDsShareResourceFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsShareResourceFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -3680,35 +3680,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -3725,7 +3725,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -3747,20 +3747,20 @@ with(MO){
 }
 with(MO){
    MO.FDsShareBitmapCanvasContent = function FDsShareBitmapCanvasContent(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvasContent);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvasContent);
       return o;
    }
 }
 with(MO){
    MO.FDsShareBitmapCanvasToolBar = function FDsShareBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvasToolBar);
       o._frameName = 'resource.share.bitmap.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareBitmapFrameSet = function FDsShareBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsBitmapFrameSet);
+      o = MO.Class.inherits(this, o, FDsBitmapFrameSet);
       o._frameName = 'resource.share.bitmap.FrameSet';
       o.onBuilded  = FDsShareBitmapFrameSet_onBuilded;
       return o;
@@ -3768,18 +3768,18 @@ with(MO){
    MO.FDsShareBitmapFrameSet_onBuilded = function FDsShareBitmapFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsBitmapFrameSet.onBuilded.call(o, event);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareBitmapCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareBitmapCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsBitmapCanvasContent);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.backgroundColor = '#333333';
       canvas._hParent.style.scroll = 'auto';
       canvas.build(event);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolbar = RClass.create(FDsBitmapPropertyToolBar);
+      var toolbar = o._propertyToolbar = MO.Class.create(FDsBitmapPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -3789,7 +3789,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareBitmapMenuBar = function FDsShareBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDsBitmapMenuBar);
+      o = MO.Class.inherits(this, o, FDsBitmapMenuBar);
       o._frameName  = 'resource.share.bitmap.MenuBar';
       o.onBuilded   = FDsShareBitmapMenuBar_onBuilded;
       o.onBackClick = FDsShareBitmapMenuBar_onBackClick;
@@ -3808,28 +3808,28 @@ with(MO){
 }
 with(MO){
    MO.FDsShareBitmapPropertyToolBar = function FDsShareBitmapPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDsBitmapPropertyToolBar);
+      o = MO.Class.inherits(this, o, FDsBitmapPropertyToolBar);
       o._frameName = 'resource.share.bitmap.PropertyToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareBitmapWorkspace = function FDsShareBitmapWorkspace(o){
-      o = RClass.inherits(this, o, FDsBitmapWorkspace);
+      o = MO.Class.inherits(this, o, FDsBitmapWorkspace);
       o._frameName = 'resource.share.bitmap.Workspace';
       return o;
    }
 }
 with(MO){
    MO.FDsShareMaterialCanvasToolBar = function FDsShareMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsMaterialCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsMaterialCanvasToolBar);
       o._frameName = 'resource.share.materail.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareMaterialFrameSet = function FDsShareMaterialFrameSet(o){
-      o = RClass.inherits(this, o, FDsMaterialFrameSet);
+      o = MO.Class.inherits(this, o, FDsMaterialFrameSet);
       o._frameName = 'resource.share.material.FrameSet';
       o.onBuilded  = FDsShareMaterialFrameSet_onBuilded;
       return o;
@@ -3837,20 +3837,20 @@ with(MO){
    MO.FDsShareMaterialFrameSet_onBuilded = function FDsShareMaterialFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsMaterialFrameSet.onBuilded.call(o, event);
-      var toolbar = o._toolbar = RClass.create(FDsShareMaterialMenuBar);
+      var toolbar = o._toolbar = MO.Class.create(FDsShareMaterialMenuBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsMaterialCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareMaterialCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareMaterialCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsMaterialCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -3863,28 +3863,28 @@ with(MO){
 }
 with(MO){
    MO.FDsShareMaterialMenuBar = function FDsShareMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FDsMaterialMenuBar);
+      o = MO.Class.inherits(this, o, FDsMaterialMenuBar);
       o._frameName = 'resource.share.material.MenuBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareModelCanvasToolBar = function FDsShareModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCanvasToolBar);
       o._frameName = 'resource.share.model.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareModelCatalogToolBar = function FDsShareModelCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCatalogToolBar);
       o._frameName = 'resource.share.model.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareModelFrameSet = function FDsShareModelFrameSet(o){
-      o = RClass.inherits(this, o, FDsModelFrameSet);
+      o = MO.Class.inherits(this, o, FDsModelFrameSet);
       o._frameName = 'resource.share.model.FrameSet';
       o.onBuilded  = FDsShareModelFrameSet_onBuilded;
       return o;
@@ -3892,20 +3892,20 @@ with(MO){
    MO.FDsShareModelFrameSet_onBuilded = function FDsShareModelFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsModelFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsShareModelCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsShareModelCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsModelCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsModelCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareModelCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareModelCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsModelCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsModelCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -3918,7 +3918,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareModelMenuBar = function FDsShareModelMenuBar(o){
-      o = RClass.inherits(this, o, FDsModelMenuBar);
+      o = MO.Class.inherits(this, o, FDsModelMenuBar);
       o._frameName = 'resource.share.model.MenuBar';
       o.onBuilded  = FDsShareModelMenuBar_onBuilded;
       return o;
@@ -3930,7 +3930,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateCanvasToolBar = function FDsShareTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.share.template.CanvasToolBar';
       o._refreshButton  = null;
       o._saveButton     = null;
@@ -3987,14 +3987,14 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateCatalogToolBar = function FDsShareTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCatalogToolBar);
       o._frameName = 'resource.share.template.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareTemplateFrameSet = function FDsShareTemplateFrameSet(o){
-      o = RClass.inherits(this, o, FDsTemplateFrameSet);
+      o = MO.Class.inherits(this, o, FDsTemplateFrameSet);
       o._frameName = 'resource.share.template.FrameSet';
       o.onBuilded  = FDsShareTemplateFrameSet_onBuilded;
       return o;
@@ -4002,21 +4002,21 @@ with(MO){
    MO.FDsShareTemplateFrameSet_onBuilded = function FDsShareTemplateFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsTemplateFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsShareTemplateCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsShareTemplateCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsTemplateCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsTemplateCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareTemplateCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareTemplateCanvasToolBar);
       toolbar._frameSet = o;
       toolbar._workspace = o._worksapce;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsTemplateCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsTemplateCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -4029,7 +4029,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateMenuBar = function FDsShareTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDsTemplateMenuBar);
+      o = MO.Class.inherits(this, o, FDsTemplateMenuBar);
       o._frameName = 'resource.share.template.MenuBar';
       o.onBuilded  = FDsShareTemplateMenuBar_onBuilded;
       return o;
@@ -4041,19 +4041,19 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateToolBar = function FDsShareTemplateToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateToolBar);
       return o;
    }
    MO.FDsShareTemplateToolBar_onBuild = function FDsShareTemplateToolBar_onBuild(p){
       var o = this;
       o.__base.FDuiToolBar.onBuild.call(o, p);
-      var b = o._refreshButton  = RClass.create(FDuiToolButton);
+      var b = o._refreshButton  = MO.Class.create(FDuiToolButton);
       b.setLabel('刷新');
       b.setIcon('design3d.tools.refresh');
       b.build(p);
       b.addClickListener(o, o.onRefreshClick);
       o.push(b);
-      var b = o._saveButton = RClass.create(FDuiToolButton);
+      var b = o._saveButton = MO.Class.create(FDuiToolButton);
       b.setLabel('保存');
       b.setIcon('design3d.tools.save');
       b.build(p);
@@ -4079,7 +4079,7 @@ with(MO){
             m.saveConfig(xr.create('Material'));
          }
       }
-      RConsole.find(FE3sTemplateConsole).update(xr);
+      MO.Console.find(FE3sTemplateConsole).update(xr);
    }
    MO.FDsShareTemplateToolBar_construct = function FDsShareTemplateToolBar_construct(){
       var o = this;
@@ -4092,21 +4092,21 @@ with(MO){
 }
 with(MO){
    MO.FDsShareSceneCanvasToolBar = function FDsShareSceneCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCanvasToolBar);
       o._frameName = 'resource.share.scene.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareSceneCatalogToolBar = function FDsShareSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCatalogToolBar);
       o._frameName = 'resource.share.scene.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareSceneFrameSet = function FDsShareSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsSceneFrameSet);
+      o = MO.Class.inherits(this, o, FDsSceneFrameSet);
       o._frameName = 'resource.share.scene.FrameSet';
       o.onBuilded  = FDsShareSceneFrameSet_onBuilded;
       return o;
@@ -4114,20 +4114,20 @@ with(MO){
    MO.FDsShareSceneFrameSet_onBuilded = function FDsShareSceneFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsSceneFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsShareSceneCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsShareSceneCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsSceneCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareSceneCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareSceneCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsSceneCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -4136,7 +4136,7 @@ with(MO){
       canvas.addLoadListener(o, o.onDataLoaded);
       canvas.build(event);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
+      var toolbar = o._propertyToolbar = MO.Class.create(FDsScenePropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -4144,7 +4144,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareSceneMenuBar = function FDsShareSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDsSceneMenuBar);
+      o = MO.Class.inherits(this, o, FDsSceneMenuBar);
       o._frameName = 'resource.share.scene.MenuBar';
       o.onBuilded  = FDsShareSceneMenuBar_onBuilded;
       return o;

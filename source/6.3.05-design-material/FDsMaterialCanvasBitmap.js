@@ -7,7 +7,7 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FDsMaterialCanvasBitmap = function FDsMaterialCanvasBitmap(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvas);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvas);
       return o;
    }
 }

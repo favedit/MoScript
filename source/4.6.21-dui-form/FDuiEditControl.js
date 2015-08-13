@@ -198,7 +198,7 @@ MO.FDuiEditControl_onBuildEdit = function FDuiEditControl_onBuildEdit(event){
       hp.width = 13;
       hp.align = 'right';
       hp.vAlign = 'top';
-      var hi = o.hHintIcon = RBuilder.appendIcon(hp, 'ctl.hint');
+      var hi = o.hHintIcon = MO.Window.Builder.appendIcon(hp, 'ctl.hint');
       hi._pname = 'hHintIcon';
       hi.title = o.hint;
    }
@@ -232,7 +232,7 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
    var o = this;
    // 处理宽度小于标签宽度和编辑框宽度的情况，将宽度值设置为空
    //if(o.labelWidth && o.editWidth && o.width){
-   //   if(RInteger.parse(o.width) < RInteger.parse(o.labelWidth) + RInteger.parse(o.editWidth)){
+   //   if(MO.Lang.Integer.parse(o.width) < MO.Lang.Integer.parse(o.labelWidth) + MO.Lang.Integer.parse(o.editWidth)){
    //      o.width = null;
    //   }
    //}
@@ -286,7 +286,7 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
       //      hl.style.color = EUiColor.Require;
       //   }
       //   // 如果当前控件支持列表接口
-      //   if(RClass.isClass(o, MListView)){
+      //   if(MO.Class.isClass(o, MListView)){
       //      o.setLabelStyle(hl);
       //   }
       //}

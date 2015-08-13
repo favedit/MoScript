@@ -6,11 +6,11 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceListItem = function FDsResourceListItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
       //..........................................................
-      o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
-      o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
+      o._styleTypePanel        = MO.Class.register(o, new AStyle('_styleTypePanel'));
+      o._styleTypePrivateLabel = MO.Class.register(o, new AStyle('_styleTypePublicLabel'));
+      o._styleTypePublicLabel  = MO.Class.register(o, new AStyle('_styleTypePrivateLabel'));
       //..........................................................
       // @event
       o.onBuild         = FDsResourceListItem_onBuild;

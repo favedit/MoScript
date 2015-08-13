@@ -7,7 +7,7 @@ with(MO){
    // @history 150422
    //==========================================================
    MO.FDsPrivateSceneFrameSet = function FDsPrivateSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsSceneFrameSet);
+      o = MO.Class.inherits(this, o, FDsSceneFrameSet);
       //..........................................................
       // @property
       o._frameName = 'resource.private.scene.FrameSet';
@@ -28,24 +28,24 @@ with(MO){
       o.__base.FDsSceneFrameSet.onBuilded.call(o, event);
       //..........................................................
       // 设置目录工具栏
-      var toolbar = o._catalogToolbar = RClass.create(FDsPrivateSceneCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsPrivateSceneCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
       // 设置目录内容栏
-      var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsSceneCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
       //..........................................................
       // 设置画板工具栏
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateSceneCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateSceneCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
       // 设置画板内容区
-      var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsSceneCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -56,7 +56,7 @@ with(MO){
       o._frameCanvasContent.push(canvas);
       //..........................................................
       // 设置属性工具栏
-      var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
+      var toolbar = o._propertyToolbar = MO.Class.create(FDsScenePropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);

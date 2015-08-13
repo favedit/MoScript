@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsPrivateBitmapMenuBar = function FDsPrivateBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDsBitmapMenuBar);
+      o = MO.Class.inherits(this, o, FDsBitmapMenuBar);
       //..........................................................
       // @property
       o._frameName  = 'resource.private.bitmap.MenuBar';

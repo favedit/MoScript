@@ -72,7 +72,7 @@ MO.EDsFrameSet = new function EDsFrameSet(){
 }
 with(MO){
    MO.MDsBoundBox = function MDsBoundBox(o){
-      o = RClass.inherits(this, o);
+      o = MO.Class.inherits(this, o);
       o._boundVisible = false;
       o._boundBox     = null;
       o.boundBox      = MDsBoundBox_boundBox;
@@ -84,7 +84,7 @@ with(MO){
       var o = this;
       var boundBox = o._boundBox;
       if(!boundBox){
-         boundBox = o._boundBox = RClass.create(FE3dBoundBox);
+         boundBox = o._boundBox = MO.Class.create(FE3dBoundBox);
          boundBox.linkGraphicContext(o);
          boundBox._drawable = o;
          boundBox._parent = o;
@@ -110,7 +110,7 @@ with(MO){
 }
 with(MO){
    MO.FDsApplication = function FDsApplication(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._name             = null;
       o._matrix           = null;
       o._location         = null;
@@ -137,10 +137,10 @@ with(MO){
    MO.FDsApplication_construct = function FDsApplication_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
-      o._matrix = new SMatrix3d();
-      o._location = new SPoint3();
-      o._rotation = new SVector3();
-      o._scale = new SVector3();
+      o._matrix = new MO.SMatrix3d();
+      o._location = new MO.SPoint3();
+      o._rotation = new MO.SVector3();
+      o._scale = new MO.SVector3();
       o._scale.set(1, 1, 1);
    }
    MO.FDsApplication_isName = function FDsApplication_isName(p){
@@ -189,7 +189,7 @@ with(MO){
       var o = this;
       var r = o._renderables;
       if(r == null){
-         r = o._renderables = new TObjects();
+         r = o._renderables = new MO.TObjects();
       }
       return r;
    }
@@ -228,7 +228,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapCanvas = function FDsBitmapCanvas(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeBitmap        = null;
       o._capturePosition     = null;
       o._captureMatrix       = null;
@@ -256,7 +256,7 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.onBuild.call(o, p);
       var hPanel = o._hPanel;
-      var space = o._activeSpace = RClass.create(FE3dFlatStage);
+      var space = o._activeSpace = MO.Class.create(FE3dFlatStage);
       space.linkGraphicContext(o);
       space.selectTechnique(o, FE3dGeneralTechnique);
       space.region().backgroundColor().set(1, 1, 1, 1);
@@ -327,7 +327,7 @@ with(MO){
    }
    MO.FDsBitmapCanvas_onLoaded = function FDsBitmapCanvas_onLoaded(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsBitmapCanvas_oeResize = function FDsBitmapCanvas_oeResize(event){
       var o = this;
@@ -340,15 +340,15 @@ with(MO){
    MO.FDsBitmapCanvas_construct = function FDsBitmapCanvas_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._captureMatrix = new SMatrix3d();
+      o._captureMatrix = new MO.SMatrix3d();
    }
    MO.FDsBitmapCanvas_loadByGuid = function FDsBitmapCanvas_loadByGuid(guid){
       var o = this;
       var size = o._graphicContext.size();
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var resource = o._activeResource = MO.Console.find(FDrBitmapConsole).query(guid);
       var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
-      var bitmap = o._activeBitmap = RConsole.find(FE3dBitmapConsole).loadByGuid(o, guid);
+      var bitmap = o._activeBitmap = MO.Console.find(FE3dBitmapConsole).loadByGuid(o, guid);
       bitmap.material().info().effectCode = 'flat';
       bitmap.setLoadListener(o, o.onLoaded);
       bitmap.loadUrl(url);
@@ -607,28 +607,28 @@ MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
 }
 with(MO){
    MO.FDsCatalog = function FDsCatalog(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
       o._iconView             = 'resource.scene.view';
       o._iconViewNot          = 'resource.scene.viewno';
       o._displayNodes         = null;
       o._renderableNodes      = null;
       o._materialNodes        = null;
-      o.onBuild               = FDsCatalog_onBuild;
-      o.onLoadDisplay         = FDsCatalog_onLoadDisplay;
-      o.onNodeClick           = FDsCatalog_onNodeClick;
-      o.onNodeViewClick       = FDsCatalog_onNodeViewClick;
-      o.onNodeViewDoubleClick = FDsCatalog_onNodeViewDoubleClick;
-      o.construct             = FDsCatalog_construct;
-      o.buildNodeView         = FDsCatalog_buildNodeView;
-      o.buildTechnique        = FDsCatalog_buildTechnique;
-      o.buildRegion           = FDsCatalog_buildRegion;
-      o.buildRenderable       = FDsCatalog_buildRenderable;
-      o.buildDisplay          = FDsCatalog_buildDisplay;
-      o.buildLayer            = FDsCatalog_buildLayer;
-      o.buildSpace            = FDsCatalog_buildSpace;
-      o.selectObject          = FDsCatalog_selectObject;
-      o.showObject            = FDsCatalog_showObject;
-      o.dispose               = FDsCatalog_dispose;
+      o.onBuild               = MO.FDsCatalog_onBuild;
+      o.onLoadDisplay         = MO.FDsCatalog_onLoadDisplay;
+      o.onNodeClick           = MO.FDsCatalog_onNodeClick;
+      o.onNodeViewClick       = MO.FDsCatalog_onNodeViewClick;
+      o.onNodeViewDoubleClick = MO.FDsCatalog_onNodeViewDoubleClick;
+      o.construct             = MO.FDsCatalog_construct;
+      o.buildNodeView         = MO.FDsCatalog_buildNodeView;
+      o.buildTechnique        = MO.FDsCatalog_buildTechnique;
+      o.buildRegion           = MO.FDsCatalog_buildRegion;
+      o.buildRenderable       = MO.FDsCatalog_buildRenderable;
+      o.buildDisplay          = MO.FDsCatalog_buildDisplay;
+      o.buildLayer            = MO.FDsCatalog_buildLayer;
+      o.buildSpace            = MO.FDsCatalog_buildSpace;
+      o.selectObject          = MO.FDsCatalog_selectObject;
+      o.showObject            = MO.FDsCatalog_showObject;
+      o.dispose               = MO.FDsCatalog_dispose;
       return o;
    }
    MO.FDsCatalog_onBuild = function FDsCatalog_onBuild(p){
@@ -653,7 +653,7 @@ with(MO){
       var o = this;
       var cell = event.treeNodeCell;
       var linker = event.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FDisplay)){
+      if(MO.Class.isClass(linker, FDisplay)){
          if(event.ctrlKey){
             var displayNodes = o._displayNodes;
             var displayCount = displayNodes.count()
@@ -670,7 +670,7 @@ with(MO){
             cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(linker, FDrawable)){
+      if(MO.Class.isClass(linker, FDrawable)){
          if(event.ctrlKey){
             var renderableNodes = o._renderableNodes;
             var renderableCount = renderableNodes.count();
@@ -687,7 +687,7 @@ with(MO){
             cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(linker, FG3dMaterial)){
+      if(MO.Class.isClass(linker, FG3dMaterial)){
          if(event.ctrlKey){
             var materialNodes = o._materialNodes;
             var materialCount = materialNodes.count();
@@ -709,7 +709,7 @@ with(MO){
       var o = this;
       var node = event.treeNode;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FDisplay)){
+      if(MO.Class.isClass(linker, FDisplay)){
          var displayNodes = o._displayNodes;
          var displayCount = displayNodes.count()
          for(var i = 0; i < displayCount; i++){
@@ -719,7 +719,7 @@ with(MO){
             displayNode.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(linker, FDrawable)){
+      if(MO.Class.isClass(linker, FDrawable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){
@@ -729,7 +729,7 @@ with(MO){
             renderableNode.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(linker, FG3dMaterial)){
+      if(MO.Class.isClass(linker, FG3dMaterial)){
          var materialNodes = o._materialNodes;
          var materialCount = materialNodes.count();
          for(var i = 0; i < materialCount; i++){
@@ -743,9 +743,9 @@ with(MO){
    MO.FDsCatalog_construct = function FDsCatalog_construct(){
       var o = this;
       o.__base.FUiDataTreeView.construct.call(o);
-      o._displayNodes = new TObjects();
-      o._renderableNodes = new TObjects();
-      o._materialNodes = new TObjects();
+      o._displayNodes = new MO.TObjects();
+      o._renderableNodes = new MO.TObjects();
+      o._materialNodes = new MO.TObjects();
    }
    MO.FDsCatalog_buildNodeView = function FDsCatalog_buildNodeView(pn, pv){
       var o = this;
@@ -864,7 +864,7 @@ with(MO){
       var c = ds.count();
       for(var i = 0; i < c; i++){
          var l = ds.value(i);
-         if(RClass.isClass(l, FDisplayUiLayer)){
+         if(MO.Class.isClass(l, FDisplayUiLayer)){
             continue;
          }
          var lr = l.resource();
@@ -899,7 +899,7 @@ with(MO){
    }
    MO.FDsCatalog_showObject = function FDsCatalog_showObject(item){
       var o = this;
-      if(RClass.isClass(item, FDsSceneRenderable)){
+      if(MO.Class.isClass(item, FDsSceneRenderable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){
@@ -913,19 +913,19 @@ with(MO){
    }
    MO.FDsCatalog_dispose = function FDsCatalog_dispose(){
       var o = this;
-      o._displayNodes = RObject.dispose(o._displayNodes);
-      o._renderableNodes = RObject.dispose(o._renderableNodes);
-      o._materialNodes = RObject.dispose(o._materialNodes);
+      o._displayNodes = MO.Lang.Object.dispose(o._displayNodes);
+      o._renderableNodes = MO.Lang.Object.dispose(o._renderableNodes);
+      o._materialNodes = MO.Lang.Object.dispose(o._materialNodes);
       o.__base.FUiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsFrameSet = function FDsFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
-      o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
+      o._styleToolBarGround   = MO.Class.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._activeGuid           = null;
       o._activeCode           = null;
       o._activeSpace          = null;
@@ -940,13 +940,13 @@ with(MO){
    MO.FDsFrameSet_construct = function FDsFrameSet_construct(){
       var o = this;
       o.__base.FDuiFrameSet.construct.call(o);
-      o._propertyFrames = new TDictionary();
+      o._propertyFrames = new MO.TDictionary();
    }
    MO.FDsFrameSet_findPropertyFrame = function FDsFrameSet_findPropertyFrame(code){
       var o = this;
       var frame = o._propertyFrames.get(code);
       if(!frame){
-         frame = RConsole.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
+         frame = MO.Console.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
          frame._frameSet = o;
          o._propertyFrames.set(code, frame);
       }
@@ -973,13 +973,13 @@ with(MO){
          var frame = frames.at(i);
          frame.dispose();
       }
-      o._propertyFrames = RObject.dispose(o._propertyFrames);
+      o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames);
       o.__base.FDuiFrameSet.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMainCanvas = function FDsMainCanvas(o){
-      o = RClass.inherits(this, o, FCanvas);
+      o = MO.Class.inherits(this, o, FCanvas);
       o._context   = null;
       o._stage     = null;
       o._layer     = null;
@@ -1015,7 +1015,7 @@ with(MO){
       hCanvas.width = o._hParent.offsetWidth;
       hCanvas.height = o._hParent.offsetHeight;
       o._context = REngine3d.createContext(FWglContext, hCanvas);
-      var g = o._stage = RClass.create(FSimpleStage3d);
+      var g = o._stage = MO.Class.create(FSimpleStage3d);
       g.backgroundColor().set(0.5, 0.5, 0.5, 1);
       g.selectTechnique(o._context, FG3dGeneralTechnique);
       o._layer = o._stage.spriteLayer();
@@ -1034,7 +1034,7 @@ with(MO){
    MO.FDsMainCanvas_onBuild = function FDsMainCanvas_onBuild(p){
       var o = this;
       o.__base.FCanvas.onBuild.call(o, p);
-      var tc = RConsole.find(FE3sThemeConsole);
+      var tc = MO.Console.find(FE3sThemeConsole);
       var m = tc.select('color');
       m.loadListener().register(o, o.onThemeLoad);
    }
@@ -1049,7 +1049,7 @@ with(MO){
    }
    MO.FDsMainCanvas_selectModel = function FDsMainCanvas_selectModel(p){
       var o = this;
-      var rmc = RConsole.find(FModel3dConsole);
+      var rmc = MO.Console.find(FModel3dConsole);
       if(o._activeModel != null){
          rmc.free(o._activeModel);
       }
@@ -1064,7 +1064,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainCatalog = function FDsMainCatalog(o){
-      o = RClass.inherits(this, o, FDataTreeView);
+      o = MO.Class.inherits(this, o, FDataTreeView);
       o.onBuild     = FDsMainCatalog_onBuild;
       o.onNodeClick = FDsMainCatalog_onNodeClick;
       o.construct   = FDsMainCatalog_construct;
@@ -1092,7 +1092,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainMenuBar = function FDsMainMenuBar(o){
-      o = RClass.inherits(this, o, FMenuBar);
+      o = MO.Class.inherits(this, o, FMenuBar);
       o.onBuild   = FDsMainMenuBar_onBuild;
       o.construct = FDsMainMenuBar_construct;
       o.dispose   = FDsMainMenuBar_dispose;
@@ -1101,17 +1101,17 @@ with(MO){
    MO.FDsMainMenuBar_onBuild = function FDsMainMenuBar_onBuild(p){
       var o = this;
       o.__base.FMenuBar.onBuild.call(o, p);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('文件');
       b.setIcon('design.menu.build');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('保存');
       b.setIcon('design.menu.save');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('帮助');
       b.setIcon('design.menu.help');
       b.build(p);
@@ -1128,7 +1128,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainToolBar = function FDsMainToolBar(o){
-      o = RClass.inherits(this, o, FToolBar);
+      o = MO.Class.inherits(this, o, FToolBar);
       o.onPersistenceClick   = FDsMainToolBar_onPersistenceClick;
       o.onBuild   = FDsMainToolBar_onBuild;
       o.construct = FDsMainToolBar_construct;
@@ -1143,20 +1143,20 @@ with(MO){
    MO.FDsMainToolBar_onBuild = function FDsMainToolBar_onBuild(p){
       var o = this;
       o.__base.FToolBar.onBuild.call(o, p);
-      var b = o._persistenceButton  = RClass.create(FToolButton);
+      var b = o._persistenceButton  = MO.Class.create(FToolButton);
       b.setLabel('模型管理');
       b.build(p);
       b.lsnsClick.register(o, o.onPersistenceClick);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('材质管理');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('模板管理');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('场景管理');
       b.build(p);
       o.appendButton(b);
@@ -1172,7 +1172,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainWindow = function FDsMainWindow(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._name             = null;
       o._matrix           = null;
       o._location         = null;
@@ -1199,10 +1199,10 @@ with(MO){
    MO.FDsMainWindow_construct = function FDsMainWindow_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
-      o._matrix = new SMatrix3d();
-      o._location = new SPoint3();
-      o._rotation = new SVector3();
-      o._scale = new SVector3();
+      o._matrix = new MO.SMatrix3d();
+      o._location = new MO.SPoint3();
+      o._rotation = new MO.SVector3();
+      o._scale = new MO.SVector3();
       o._scale.set(1, 1, 1);
    }
    MO.FDsMainWindow_isName = function FDsMainWindow_isName(p){
@@ -1251,7 +1251,7 @@ with(MO){
       var o = this;
       var r = o._renderables;
       if(r == null){
-         r = o._renderables = new TObjects();
+         r = o._renderables = new MO.TObjects();
       }
       return r;
    }
@@ -1290,12 +1290,12 @@ with(MO){
 }
 with(MO){
    MO.FDsMainWorkspace = function FDsMainWorkspace(o){
-      o = RClass.inherits(this, o, FWorkspace);
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o = MO.Class.inherits(this, o, FWorkspace);
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain         = null;
       o._framesetBody         = null;
       o._frameToolBar         = null;
@@ -1318,37 +1318,37 @@ with(MO){
       o.__base.FWorkspace.onBuild.call(o, p);
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
-      var fs = o._framesetMain = RClass.create(FFrameSet);
+      var fs = o._framesetMain = MO.Class.create(FFrameSet);
       fs.build(p);
-      var f = o._frameToolBar = RClass.create(FFrame);
+      var f = o._frameToolBar = MO.Class.create(FFrame);
       f.setHeight(26);
       f.build(p);
       f._hPanel.className = o.styleName('Toolbar_Ground');
       fs.appendFrame(f);
-      var f = o._frameBody = RClass.create(FFrame);
+      var f = o._frameBody = MO.Class.create(FFrame);
       f.build(p);
       fs.appendFrame(f);
-      var f = o._frameProperty = RClass.create(FFrame);
+      var f = o._frameProperty = MO.Class.create(FFrame);
       f.setHeight(18);
       f.build(p);
       f._hPanel.className = o.styleName('Statusbar_Ground');
       fs.appendFrame(f);
       fs.setPanel(o._hPanel);
-      var fs = RClass.create(FFrameSet);
+      var fs = MO.Class.create(FFrameSet);
       fs._directionCd = EDirection.Horizontal;
       fs.build(p);
-      var f = o._frameCatalog = RClass.create(FFrame);
+      var f = o._frameCatalog = MO.Class.create(FFrame);
       f.setWidth(300);
       f.build(p);
       f._hPanel.className = o.styleName('Catalog_Ground');
       fs.appendFrame(f);
       var sp1 = fs.appendSpliter();
-      var f = o._frameWorkspace = RClass.create(FFrame);
+      var f = o._frameWorkspace = MO.Class.create(FFrame);
       f.build(p);
       f._hPanel.className = o.styleName('Workspace_Ground');
       fs.appendFrame(f);
       var sp2 = fs.appendSpliter();
-      var f = o._frameStatusBar = RClass.create(FFrame);
+      var f = o._frameStatusBar = MO.Class.create(FFrame);
       f.setWidth(360);
       f.build(p);
       f._hPanel.className = o.styleName('Property_Ground');
@@ -1358,18 +1358,18 @@ with(MO){
       sp1._hSize = o._frameCatalog._hPanel;
       sp2._alignCd = EAlign.Right;
       sp2._hSize = o._frameStatusBar._hPanel;
-      var c = o._catalog = RClass.create(FDsMainCatalog);
+      var c = o._catalog = MO.Class.create(FDsMainCatalog);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameCatalog._hPanel);
       o.push(c);
-      var c = o._toolbar = RClass.create(FDsMainToolBar);
+      var c = o._toolbar = MO.Class.create(FDsMainToolBar);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameToolBar._hPanel);
       c._persistenceButton.click();
       o.push(c);
-      var c = o._canvas = RClass.create(FDsMainCanvas);
+      var c = o._canvas = MO.Class.create(FDsMainCanvas);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameWorkspace._hPanel);
@@ -1382,7 +1382,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSpaceCanvas = function FDsSpaceCanvas(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._rotation             = null;
       o._optionRotation       = false;
       o._capturePosition      = null;
@@ -1425,7 +1425,7 @@ with(MO){
          return;
       }
       var region = space.region();
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var selectTechnique = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
       o.selectRenderable(renderable);
       if(renderable){
@@ -1461,18 +1461,18 @@ with(MO){
    MO.FDsSpaceCanvas_construct = function FDsSpaceCanvas_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
-      o._selectRenderables = new TObjects();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
+      o._selectRenderables = new MO.TObjects();
    }
    MO.FDsSpaceCanvas_innerSelectRenderable = function FDsSpaceCanvas_innerSelectRenderable(renderable){
       var o = this;
       renderable._optionSelected = true;
-      if(RClass.isClass(renderable, MDsBoundBox)){
+      if(MO.Class.isClass(renderable, MDsBoundBox)){
          renderable.showBoundBox();
       }
       o._selectRenderables.push(renderable);
@@ -1489,7 +1489,7 @@ with(MO){
       var count = renderables.count();
       for(var i = 0; i < count; i++){
          var renderable = renderables.at(i);
-         if(RClass.isClass(renderable, FDsSceneRenderable)){
+         if(MO.Class.isClass(renderable, FDsSceneRenderable)){
             o.innerSelectRenderable(renderable);
          }
       }
@@ -1510,7 +1510,7 @@ with(MO){
       for(var i = 0; i < count; i++){
          var renderable = renderables.at(i);
          renderable._optionSelected = false;
-         if(RClass.isClass(renderable, MDsBoundBox)){
+         if(MO.Class.isClass(renderable, MDsBoundBox)){
             renderable.hideBoundBox();
          }
       }
@@ -1569,7 +1569,7 @@ with(MO){
       var count = displays.count();
       for(var i = 0; i < count; i++){
          var display = displays.at(i);
-         if(RClass.isClass(display, FE3dSceneDisplay)){
+         if(MO.Class.isClass(display, FE3dSceneDisplay)){
             var sprite = display._sprite;
             sprite._optionPlay = flag;
             display._optionPlay = flag;
@@ -1583,7 +1583,7 @@ with(MO){
       var count = displays.count();
       for(var i = 0; i < count; i++){
          var display = displays.at(i);
-         if(RClass.isClass(display, FE3dSceneDisplay)){
+         if(MO.Class.isClass(display, FE3dSceneDisplay)){
             var sprite = display._sprite;
             if(sprite){
                sprite._optionMovie = flag;
@@ -1594,13 +1594,13 @@ with(MO){
    }
    MO.FDsSpaceCanvas_dispose = function FDsSpaceCanvas_dispose(){
       var o = this;
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsCanvas.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsSpaceDesignCanvas = function FDsSpaceDesignCanvas(o){
-      o = RClass.inherits(this, o, FDsSpaceCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceCanvas);
       o._templateMatrix       = null;
       o._templateRenderable   = null;
       o._templateFace         = null;
@@ -1620,7 +1620,7 @@ with(MO){
    MO.FDsSpaceDesignCanvas_onBuild = function FDsSpaceDesignCanvas_onBuild(p){
       var o = this;
       o.__base.FDsSpaceCanvas.onBuild.call(o, p);
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       var templateTranslation = o._templateTranslation = templateConsole.allocByCode(o, 'com.design.translation');
       templateTranslation.addLoadListener(o, o.onDataLoaded);
       var templateRotation = o._templateRotation = templateConsole.allocByCode(o, 'com.design.rotation');
@@ -1653,7 +1653,7 @@ with(MO){
       rotationSprite.setVisible(false);
       var scaleSprite = o._scaleSprite = o._templateScale.sprite();
       scaleSprite.setVisible(false);
-      var layer = o._uiLayer = RClass.create(FDisplayUiLayer);
+      var layer = o._uiLayer = MO.Class.create(FDisplayUiLayer);
       layer.selectTechnique(context, FE3dControlTechnique);
       layer.pushDisplay(translationSprite);
       layer.pushDisplay(rotationSprite);
@@ -1661,7 +1661,7 @@ with(MO){
       space.registerLayer('ui', layer);
       o.reloadRegion()
       o.processLoadListener(o);
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSpaceDesignCanvas_onMouseCaptureStart = function FDsSpaceDesignCanvas_onMouseCaptureStart(event){
       var o = this;
@@ -1671,7 +1671,7 @@ with(MO){
          return;
       }
       var region = space.region();
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var selectTechnique = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
       o.selectRenderable(renderable);
       if(renderable){
@@ -1707,8 +1707,8 @@ with(MO){
    MO.FDsSpaceDesignCanvas_construct = function FDsSpaceDesignCanvas_construct(){
       var o = this;
       o.__base.FDsSpaceCanvas.construct.call(o);
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
    }
    MO.FDsSpaceDesignCanvas_selectRenderable = function FDsSpaceDesignCanvas_selectRenderable(renderable){
       var o = this;
@@ -1765,16 +1765,16 @@ with(MO){
    }
    MO.FDsSpaceDesignCanvas_dispose = function FDsSpaceDesignCanvas_dispose(){
       var o = this;
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsSpaceCanvas.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsStage = function FDsStage(o){
-      o = RClass.inherits(this, o, FE3dStage);
-      o._mapLayer    = RClass.register(o, new AGetter('_mapLayer'));
-      o._spriteLayer = RClass.register(o, new AGetter('_spriteLayer'));
-      o._faceLayer   = RClass.register(o, new AGetter('_faceLayer'));
+      o = MO.Class.inherits(this, o, FE3dStage);
+      o._mapLayer    = MO.Class.register(o, new AGetter('_mapLayer'));
+      o._spriteLayer = MO.Class.register(o, new AGetter('_spriteLayer'));
+      o._faceLayer   = MO.Class.register(o, new AGetter('_faceLayer'));
       o.construct    = FDsStage_construct;
       o.active       = FDsStage_active;
       o.deactive     = FDsStage_deactive;
@@ -1783,11 +1783,11 @@ with(MO){
    MO.FDsStage_construct = function FDsStage_construct(){
       var o = this;
       o.__base.FE3dStage.construct.call(o);
-      var layer = o._mapLayer = RClass.create(FDisplayLayer);
+      var layer = o._mapLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('MapLayer', layer);
-      var layer = o._spriteLayer = RClass.create(FDisplayLayer);
+      var layer = o._spriteLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('SpriteLayer', layer);
-      var layer = o._faceLayer = RClass.create(FDisplayLayer);
+      var layer = o._faceLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('FaceLayer', layer);
    }
    MO.FDsStage_active = function FDsStage_active(){
@@ -1801,7 +1801,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelRenderable = function FDsModelRenderable(o){
-      o = RClass.inherits(this, o, FE3dModelRenderable, MDsBoundBox);
+      o = MO.Class.inherits(this, o, FE3dModelRenderable, MDsBoundBox);
       o._optionSelected = false;
       o.filterDrawables = FDsModelRenderable_filterDrawables;
       return o;
@@ -1819,19 +1819,19 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneDisplay = function FDsSceneDisplay(o){
-      o = RClass.inherits(this, o, FE3dSceneDisplay);
+      o = MO.Class.inherits(this, o, FE3dSceneDisplay);
       return o;
    }
 }
 with(MO){
    MO.FDsSceneLayer = function FDsSceneLayer(o){
-      o = RClass.inherits(this, o, FE3dSceneLayer);
+      o = MO.Class.inherits(this, o, FE3dSceneLayer);
       return o;
    }
 }
 with(MO){
    MO.FDsSceneRenderable = function FDsSceneRenderable(o){
-      o = RClass.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
+      o = MO.Class.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
       o._optionSelected = false;
       o.filterDrawables = FDsSceneRenderable_filterDrawables;
       return o;
@@ -1849,7 +1849,7 @@ with(MO){
 }
 with(MO){
    MO.FDrAbsResourceConsole = function FDrAbsResourceConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = MO.Class.inherits(this, o, FConsole);
       o._scopeCd       = EScope.Local;
       o._serviceCode   = null;
       o._classUnit     = null;
@@ -1882,7 +1882,7 @@ with(MO){
       var guid = xconfig.get('guid');
       var resource = o._resources.get(guid);
       if(!resource){
-         resource = RClass.create(o._classUnit);
+         resource = MO.Class.create(o._classUnit);
          o._resources.set(guid, resource);
       }
       resource.loadConfig(xconfig);
@@ -1891,10 +1891,10 @@ with(MO){
    MO.FDrAbsResourceConsole_doList = function FDrAbsResourceConsole_doList(search, order, pageSize, page){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=list';
-      if(!RString.isEmpty(search)){
+      if(!MO.Lang.String.isEmpty(search)){
          url += '&search=' + search;
       }
-      if(!RString.isEmpty(order)){
+      if(!MO.Lang.String.isEmpty(order)){
          url += '&order=' + order;
       }
       if(pageSize >= 0){
@@ -1903,12 +1903,12 @@ with(MO){
       if(page >= 0){
          url += '&page=' + page;
       }
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrAbsResourceConsole_doQuery = function FDrAbsResourceConsole_doQuery(guid){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrAbsResourceConsole_doCreate = function FDrAbsResourceConsole_doCreate(resource){
       var o = this;
@@ -1917,7 +1917,7 @@ with(MO){
       xroot.set('action', 'create');
       var xdata = xroot.create(resource.classCode());
       resource.saveConfig(xdata);
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
    }
    MO.FDrAbsResourceConsole_doUpdate = function FDrAbsResourceConsole_doUpdate(resource){
       var o = this;
@@ -1926,17 +1926,17 @@ with(MO){
       xroot.set('action', 'update');
       var xdata = xroot.create(resource.classCode());
       resource.saveConfig(xdata);
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
    }
    MO.FDrAbsResourceConsole_doDelete = function FDrAbsResourceConsole_doDelete(guid){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=delete&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 }
 with(MO){
    MO.FDrBitmap = function FDrBitmap(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode    = 'Bitmap';
       o._sizeWidth    = 0;
       o._sizeHeight   = 0;
@@ -1975,7 +1975,7 @@ with(MO){
 }
 with(MO){
    MO.FDrBitmapConsole = function FDrBitmapConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.bitmap';
       o._classUnit   = FDrBitmap;
       o.query        = FDrBitmapConsole_query;
@@ -1986,7 +1986,7 @@ with(MO){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
       var url = RBrowser.hostPath(uri);
-      var xroot = RConsole.find(FXmlConsole).send(url);
+      var xroot = MO.Console.find(FXmlConsole).send(url);
       var nodeCount = xroot.nodeCount();
       for(var n = 0; n < nodeCount; n++){
          var xbitmap = xroot.node(n);
@@ -2000,12 +2000,12 @@ with(MO){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=update';
       var url = RBrowser.hostPath(uri);
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 }
 with(MO){
    MO.FDrMaterial = function FDrMaterial(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode = 'Material';
       o.loadConfig = FDrMaterial_loadConfig;
       o.saveConfig = FDrMaterial_saveConfig;
@@ -2022,7 +2022,7 @@ with(MO){
 }
 with(MO){
    MO.FDrMaterialConsole = function FDrMaterialConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.material';
       o._classUnit   = FDrMaterial;
       o.query        = FDrMaterialConsole_query;
@@ -2034,7 +2034,7 @@ with(MO){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
       var url = RBrowser.hostPath(uri);
-      var xroot = RConsole.find(FXmlConsole).send(url);
+      var xroot = MO.Console.find(FXmlConsole).send(url);
       var nodeCount = xroot.nodeCount();
       for(var n = 0; n < nodeCount; n++){
          var xbitmap = xroot.node(n);
@@ -2048,25 +2048,25 @@ with(MO){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=update';
       var url = RBrowser.hostPath(uri);
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrMaterialConsole_deleteBitmap = function FDrMaterialConsole_deleteBitmap(guid){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=deleteBitmap&guid=' + guid;
       var url = RBrowser.hostPath(uri);
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 }
 with(MO){
    MO.FDrMesh = function FDrMesh(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode = 'Mesh';
       return o;
    }
 }
 with(MO){
    MO.FDrMeshConsole = function FDrMeshConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.mesh';
       o.update       = FDrMeshConsole_update;
       return o;
@@ -2074,19 +2074,19 @@ with(MO){
    MO.FDrMeshConsole_update = function FDrMeshConsole_update(config){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=update&date=' + RDate.format());
-      return RConsole.find(FXmlConsole).sendAsync(url, config);
+      return MO.Console.find(FXmlConsole).sendAsync(url, config);
    }
 }
 with(MO){
    MO.FDrModel = function FDrModel(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode = 'Model';
       return o;
    }
 }
 with(MO){
    MO.FDrModelConsole = function FDrModelConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.model';
       o.update       = FDrModelConsole_update;
       return o;
@@ -2094,12 +2094,12 @@ with(MO){
    MO.FDrModelConsole_update = function FDrModelConsole_update(config){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
-      return RConsole.find(FXmlConsole).sendAsync(url, config);
+      return MO.Console.find(FXmlConsole).sendAsync(url, config);
    }
 }
 with(MO){
    MO.FDrObject = function FDrObject(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._guid       = null;
       o._code       = null;
       o._label      = null;
@@ -2142,7 +2142,7 @@ with(MO){
 }
 with(MO){
    MO.FDrProject = function FDrProject(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode   = 'Project';
       o._projectGuid = null;
       o.saveConfig   = FDrProject_saveConfig;
@@ -2156,18 +2156,18 @@ with(MO){
 }
 with(MO){
    MO.FDrProjectConsole = function FDrProjectConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.solution.project';
       return o;
    }
 }
 with(MO){
    MO.FDrResource = function FDrResource(o){
-      o = RClass.inherits(this, o, FDrObject);
-      o._classCode = RClass.register(o, new AGetter('_classCode'));
-      o._guid      = RClass.register(o, new AGetSet('_guid'));
-      o._code      = RClass.register(o, new AGetSet('_code'));
-      o._label     = RClass.register(o, new AGetSet('_label'));
+      o = MO.Class.inherits(this, o, FDrObject);
+      o._classCode = MO.Class.register(o, new AGetter('_classCode'));
+      o._guid      = MO.Class.register(o, new AGetSet('_guid'));
+      o._code      = MO.Class.register(o, new AGetSet('_code'));
+      o._label     = MO.Class.register(o, new AGetSet('_label'));
       o.loadConfig = FDrResource_loadConfig;
       o.saveConfig = FDrResource_saveConfig;
       return o;
@@ -2188,7 +2188,7 @@ with(MO){
 }
 with(MO){
    MO.FDrResourceConsole = function FDrResourceConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode   = 'cloud.resource';
       o._catalogCode   = 'cloud.resource.catalog';
       o._resources     = null;
@@ -2210,22 +2210,22 @@ with(MO){
    MO.FDrResourceConsole_doList = function FDrResourceConsole_doList(typeCd, search, order, pageSize, page){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=list&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrResourceConsole_doShare = function FDrResourceConsole_doShare(guid, shareCd){
       var o = this;
       var url = o.makeServiceUrl('share') + '&guid=' + guid + '&share_cd=' + shareCd;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrResourceConsole_doDelete = function FDrResourceConsole_doDelete(typeCd, guid){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrResourceConsole_doListShare = function FDrResourceConsole_doListShare(typeCd, search, order, pageSize, page){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=listShare&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrResourceConsole_doFolderCreate = function FDrResourceConsole_doFolderCreate(parentGuid, code, label){
       var o = this;
@@ -2236,7 +2236,7 @@ with(MO){
       xfolder.set('parent_guid', parentGuid);
       xfolder.set('code', code);
       xfolder.set('label', label);
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
    }
    MO.FDrResourceConsole_doFolderUpdate = function FDrResourceConsole_doFolderUpdate(guid, code, label){
       var o = this;
@@ -2247,17 +2247,17 @@ with(MO){
       xfolder.set('guid', guid);
       xfolder.set('code', code);
       xfolder.set('label', label);
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
    }
    MO.FDrResourceConsole_doFolderDelete = function FDrResourceConsole_doFolderDelete(guid){
       var o = this;
       var url = '/' + o._catalogCode + '.ws?action=delete&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 }
 with(MO){
    MO.FDrScene = function FDrScene(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode   = 'Scene';
       o._projectGuid = null;
       o.saveConfig   = FDrScene_saveConfig;
@@ -2271,7 +2271,7 @@ with(MO){
 }
 with(MO){
    MO.FDrSceneConsole = function FDrSceneConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.scene';
       o.createCamera = FDrSceneConsole_createCamera;
       o.createLayer  = FDrSceneConsole_createLayer;
@@ -2285,49 +2285,49 @@ with(MO){
    MO.FDrSceneConsole_createCamera = function FDrSceneConsole_createCamera(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createCamera');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrSceneConsole_createLayer = function FDrSceneConsole_createLayer(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createLayer');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrSceneConsole_createSprite = function FDrSceneConsole_createSprite(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createSprite');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrSceneConsole_createMovie = function FDrSceneConsole_createMovie(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createMovie');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrSceneConsole_copyNode = function FDrSceneConsole_copyNode(sceneGuid, nodeGuid){
       var o = this;
       var url = o.makeServiceUrl('copyNode') + '&space_guid=' + sceneGuid + '&node_guid=' + nodeGuid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrSceneConsole_deleteNode = function FDrSceneConsole_deleteNode(sceneGuid, nodeGuid){
       var o = this;
       var url = o.makeServiceUrl('deleteNode') + '&space_guid=' + sceneGuid + '&node_guid=' + nodeGuid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrSceneConsole_update = function FDrSceneConsole_update(p){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
-      return RConsole.find(FXmlConsole).sendAsync(url, p);
+      return MO.Console.find(FXmlConsole).sendAsync(url, p);
    }
 }
 with(MO){
    MO.FDrTemplate = function FDrTemplate(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode = 'Template';
       return o;
    }
 }
 with(MO){
    MO.FDrTemplateConsole = function FDrTemplateConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode   = 'cloud.resource.template';
       o.selectMaterial = FDrTemplateConsole_selectMaterial;
       o.createDisplay  = FDrTemplateConsole_createDisplay;
@@ -2337,22 +2337,22 @@ with(MO){
    MO.FDrTemplateConsole_selectMaterial = function FDrTemplateConsole_selectMaterial(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createMaterial');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrTemplateConsole_createDisplay = function FDrTemplateConsole_createDisplay(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createDisplay');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrTemplateConsole_update = function FDrTemplateConsole_update(config){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
-      return RConsole.find(FXmlConsole).sendAsync(url, config);
+      return MO.Console.find(FXmlConsole).sendAsync(url, config);
    }
 }
 with(MO){
    MO.FDsCommonAnimationPropertyFrame = function FDsCommonAnimationPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible         = false;
       o._activeSpace     = null;
       o._activeAnimation = null;
@@ -2403,7 +2403,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonCameraFrame = function FDsCommonCameraFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._workspace        = null;
       o._camera           = null;
       o._controlPosition  = null;
@@ -2431,7 +2431,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonCameraPropertyFrame = function FDsCommonCameraPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._workspace        = null;
       o._activeSpace      = null;
@@ -2488,7 +2488,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayDialog = function FDsCommonDisplayDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.DisplayDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -2520,12 +2520,12 @@ with(MO){
    }
    MO.FDsCommonDisplayDialog_onConfirmLoad = function FDsCommonDisplayDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonDisplayDialog_onConfirmClick = function FDsCommonDisplayDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
       xsprite.set('space_guid', o._spaceGuid);
@@ -2533,7 +2533,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('model_guid', o._controlModelGuid.get());
       xsprite.set('model_code', o._controlModelCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).createDisplay(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonDisplayDialog_onCancelClick = function FDsCommonDisplayDialog_onCancelClick(event){
@@ -2565,7 +2565,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayFrame = function FDsCommonDisplayFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace   = null;
       o._activeDisplay = null;
       o.onBuilded      = FDsCommonDisplayFrame_onBuilded;
@@ -2617,7 +2617,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayPropertyFrame = function FDsCommonDisplayPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible        = false;
       o._workspace      = null;
       o._activeDisplay  = null;
@@ -2667,7 +2667,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLayerDialog = function FDsCommonLayerDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.LayerDialog';
       o._displayModeCd        = null;
       o._controlSpaceGuid     = null;
@@ -2698,18 +2698,18 @@ with(MO){
    }
    MO.FDsCommonLayerDialog_onConfirmLoad = function FDsCommonLayerDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonLayerDialog_onConfirmClick = function FDsCommonLayerDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Layer');
       xsprite.set('space_guid', o._spaceGuid);
       xsprite.set('code', o._controlCode.get());
       xsprite.set('label', o._controlLabel.get());
-      var connection = RConsole.find(FDrSceneConsole).createLayer(xaction);
+      var connection = MO.Console.find(FDrSceneConsole).createLayer(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonLayerDialog_onCancelClick = function FDsCommonLayerDialog_onCancelClick(event){
@@ -2741,7 +2741,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLayerPropertyFrame = function FDsCommonLayerPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible       = false;
       o._workspace     = null;
       o._layer         = null;
@@ -2794,7 +2794,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLightPropertyFrame = function FDsCommonLightPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible      = false;
       o._workspace    = null;
       o._activeSpace  = null;
@@ -2827,7 +2827,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterial1Frame = function FDsCommonMaterial1Frame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace           = null;
       o._activeMaterial        = null;
       o._controlOptionDouble   = null;
@@ -2969,7 +2969,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterial2Frame = function FDsCommonMaterial2Frame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace              = null;
       o._activeMaterial           = null;
       o._controlDiffuseViewColor  = null;
@@ -3042,7 +3042,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialDialog = function FDsCommonMaterialDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.MaterialDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -3074,12 +3074,12 @@ with(MO){
    }
    MO.FDsCommonMaterialDialog_onConfirmLoad = function FDsCommonMaterialDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMaterialDialog_onConfirmClick = function FDsCommonMaterialDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Material');
       xsprite.set('space_guid', o._spaceGuid);
@@ -3087,7 +3087,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('material_guid', o._controlMaterialGuid.get());
       xsprite.set('material_code', o._controlMaterialCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).selectMaterial(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).selectMaterial(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonMaterialDialog_onCancelClick = function FDsCommonMaterialDialog_onCancelClick(event){
@@ -3119,7 +3119,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialPropertyFrame = function FDsCommonMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible        = false;
       o._workspace      = null;
       o._activeMaterial       = null;
@@ -3168,7 +3168,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialReferDialog = function FDsCommonMaterialReferDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName      = 'resource.common.dialog.MaterialReferDialog';
       o._displayModeCd  = null;
       o._controlGuid    = null;
@@ -3195,7 +3195,7 @@ with(MO){
    }
    MO.FDsCommonMaterialReferDialog_onConfirmLoad = function FDsCommonMaterialReferDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMaterialReferDialog_onConfirmClick = function FDsCommonMaterialReferDialog_onConfirmClick(event){
@@ -3226,7 +3226,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMovieDialog = function FDsCommonMovieDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.MovieDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -3258,12 +3258,12 @@ with(MO){
    }
    MO.FDsCommonMovieDialog_onConfirmLoad = function FDsCommonMovieDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMovieDialog_onConfirmClick = function FDsCommonMovieDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xmovie = xaction.create('Movie');
       xmovie.set('space_guid', o._spaceGuid);
@@ -3273,7 +3273,7 @@ with(MO){
       xmovie.set('label', o._controlLabel.get());
       xmovie.set('interval', o._controlInterval.get());
       xmovie.set('rotation', o._controlRotation.get());
-      var console = RConsole.find(FDrSceneConsole);
+      var console = MO.Console.find(FDrSceneConsole);
       var connection = null;
       connection = console.createMovie(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
@@ -3304,7 +3304,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMoviePropertyFrame = function FDsCommonMoviePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible         = false;
       o._activeSpace     = null;
       o._activeMovie = null;
@@ -3358,7 +3358,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonProgramDialog = function FDsCommonProgramDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.ProgramDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -3410,7 +3410,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRegionPropertyFrame = function FDsCommonRegionPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible                   = false;
       o._workspace                 = null;
       o._activeSpace               = null;
@@ -3471,7 +3471,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRenderableFrame = function FDsCommonRenderableFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace      = null;
       o._activeRenderable = null;
       o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
@@ -3508,7 +3508,7 @@ with(MO){
       var o = this;
       var item = event.item;
       var materialRefer = item.tag();
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
       dialog._frame = o;
       dialog._materialRefer = materialRefer;
       dialog.setContentCode('');
@@ -3522,7 +3522,7 @@ with(MO){
       var program = effect._program;
       var vertexShader = program.vertexShader();
       var fragmentShader = program.fragmentShader();
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
       dialog._frameSet = o._frameSet;
       dialog.setProgramCode(effect._code);
       dialog.setVertexSource(vertexShader.source(), vertexShader.targetSource());
@@ -3574,7 +3574,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRenderablePropertyFrame = function FDsCommonRenderablePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._activeRenderable = null;
       o._activeMaterial   = null;
@@ -3613,7 +3613,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonShaderDialog = function FDsCommonShaderDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.ShaderDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -3664,7 +3664,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonSpacePropertyFrame = function FDsCommonSpacePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible      = false;
       o._workspace    = null;
       o._activeSpace  = null;
@@ -3708,7 +3708,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonSpriteDialog = function FDsCommonSpriteDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.SpriteDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -3740,7 +3740,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onConfirmLoad = function FDsCommonSpriteDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._displayModeCd == EUiDataMode.Insert){
@@ -3758,7 +3758,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onConfirmClick = function FDsCommonSpriteDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Sprite');
       xsprite.set('space_guid', o._spaceGuid);
@@ -3768,7 +3768,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('template_guid', o._controlTemplateGuid.get());
       xsprite.set('template_code', o._controlTemplateCode.get());
-      var console = RConsole.find(FDrSceneConsole);
+      var console = MO.Console.find(FDrSceneConsole);
       var connection = null;
       connection = console.createSprite(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
@@ -3799,7 +3799,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonTechniquePropertyFrame = function FDsCommonTechniquePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible              = false;
       o._workspace            = null;
       o._activeSpace          = null;
@@ -3867,10 +3867,10 @@ with(MO){
    MO.FDsCommonTechniquePropertyFrame_construct = function FDsCommonTechniquePropertyFrame_construct(){
       var o = this;
       o.__base.FDuiForm.construct.call(o);
-      var t = o._thread = RClass.create(FThread);
+      var t = o._thread = MO.Class.create(FThread);
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onRefresh);
-      RConsole.find(FThreadConsole).start(t);
+      MO.Console.find(FThreadConsole).start(t);
    }
    MO.FDsCommonTechniquePropertyFrame_loadObject = function FDsCommonTechniquePropertyFrame_loadObject(space, technique){
       var o = this;
@@ -3895,7 +3895,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonTemplateDialog = function FDsCommonTemplateDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.TemplateDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -3925,12 +3925,12 @@ with(MO){
    }
    MO.FDsCommonTemplateDialog_onConfirmLoad = function FDsCommonTemplateDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonTemplateDialog_onConfirmClick = function FDsCommonTemplateDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
       xsprite.set('space_guid', o._spaceGuid);
@@ -3938,7 +3938,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('model_guid', o._controlModelGuid.get());
       xsprite.set('model_code', o._controlModelCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).createDisplay(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonTemplateDialog_onCancelClick = function FDsCommonTemplateDialog_onCancelClick(event){
@@ -3970,7 +3970,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionCatalogContent = function FDsSolutionCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._iconView             = 'resource.solution.view';
       o._iconViewNot          = 'resource.solution.viewno';
       o._activeSpace          = null;
@@ -4017,7 +4017,7 @@ with(MO){
       var o = this;
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -4033,7 +4033,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -4049,7 +4049,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          if(p.ctrlKey){
             var ms = o._materials;
             for(var i = ms.count() - 1; i >= 0; i--){
@@ -4071,7 +4071,7 @@ with(MO){
       var n = p.treeNode;
       var c = p.treeNodeCell;
       var s = n.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -4080,7 +4080,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -4089,7 +4089,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          var s = o._materials;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -4184,7 +4184,7 @@ with(MO){
    }
    MO.FDsSolutionCatalogContent_showObject = function FDsSolutionCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){
@@ -4206,7 +4206,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionCatalogToolBar = function FDsSolutionCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.private.solution.CatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -4251,16 +4251,16 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionFrameSet = function FDsSolutionFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiFrameSet, MUiStorage);
       o._frameName            = 'resource.private.solution.FrameSet';
       o._storageCode          = o._frameName;
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'List_Toolbar'));
-      o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Property_Ground'));
-      o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'List_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Property_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._pageSize             = 40;
       o._activeResourceCd     = 'private';
       o._activeProjectGuid    = null;
@@ -4299,19 +4299,19 @@ with(MO){
       var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
       spliter.setAlignCd(EUiAlign.Left);
       spliter.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsSolutionCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsSolutionCatalogToolBar);
       control._frameSet = o;
       control.buildDefine(p);
       o._frameCatalogToolbar.push(control);
-      var control = o._catalogContent = RClass.create(FDsSolutionCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsSolutionCatalogContent);
       control._frameSet = o;
       control.build(p);
       o._frameCatalogContent.push(control);
-      var control = o._listToolbar = RClass.create(FDsSolutionListToolBar);
+      var control = o._listToolbar = MO.Class.create(FDsSolutionListToolBar);
       control._frameSet = o;
       control.buildDefine(p);
       o._frameListToolbar.push(control);
-      var control = o._listContent = RClass.create(FDsSolutionListContent);
+      var control = o._listContent = MO.Class.create(FDsSolutionListContent);
       control._frameSet = o;
       control.build(p);
       o._frameListContent.push(control);
@@ -4326,7 +4326,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePropertyProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -4342,7 +4342,7 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(control, FDsSolutionListItem)){
+      if(MO.Class.isClass(control, FDsSolutionListItem)){
          var f = o.findPropertyFrame(EDsFrame.SolutionProjectPropertyFrame);
          f.show();
          f.loadObject(control);
@@ -4369,7 +4369,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionListContent = function FDsSolutionListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._activeControl    = null;
       o._activeGuid       = null;
       o._refreshButton    = null;
@@ -4406,7 +4406,7 @@ with(MO){
             item.propertyLoad(xnode);
             item._typeCd = xnode.get('type');
             item._guid = xnode.get('guid');
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
@@ -4439,7 +4439,7 @@ with(MO){
       o._pageSize = pageSize;
       o._page = page;
       RWindow.disable();
-      var connection = RConsole.find(FDrProjectConsole).doList(serach, null, pageSize, page);
+      var connection = MO.Console.find(FDrProjectConsole).doList(serach, null, pageSize, page);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsSolutionListContent_serviceResearch = function FDsSolutionListContent_serviceResearch(){
@@ -4453,7 +4453,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionListItem = function FDsSolutionListItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
       o.onBuild      = FDsSolutionListItem_onBuild;
       o.refreshStyle = FDsSolutionListItem_refreshStyle;
       return o;
@@ -4473,7 +4473,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionListToolBar = function FDsSolutionListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.private.solution.ListToolBar';
       o._pageCount       = 0;
       o._page            = 0;
@@ -4560,7 +4560,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionMenuBar = function FDsSolutionMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._frameName      = 'resource.private.solution.MenuBar';
       o._refreshButton  = null;
       o._saveButton     = null;
@@ -4582,27 +4582,27 @@ with(MO){
    }
    MO.FDsSolutionMenuBar_onCreateClick = function FDsSolutionMenuBar_onCreateClick(event){
       var o = this;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsSolutionProjectDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsSolutionProjectDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog.showPosition(EUiPosition.Center);
    }
    MO.FDsSolutionMenuBar_onDeleteLoad = function FDsSolutionMenuBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
    }
    MO.FDsSolutionMenuBar_onDeleteExecute = function FDsSolutionMenuBar_onDeleteExecute(event){
       var o = this;
       if(event.resultCd != EResult.Success){
-         RConsole.find(FDuiDesktopConsole).hide();
+         MO.Console.find(FDuiDesktopConsole).hide();
          return
       }
       var listContent = o._frameSet._listContent;
       var guid = listContent._activeGuid;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrProjectConsole).doDelete(guid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsSolutionMenuBar_onDeleteClick = function FDsSolutionMenuBar_onDeleteClick(event){
@@ -4611,7 +4611,7 @@ with(MO){
       if(!item){
          return alert('请选中后再点击删除');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前项目？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前项目？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsSolutionMenuBar_construct = function FDsSolutionMenuBar_construct(){
@@ -4625,7 +4625,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionProjectDialog = function FDsSolutionProjectDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.private.solution.ProjectDialog';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -4657,10 +4657,10 @@ with(MO){
       RWindow.disable();
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
-      var project = RClass.create(FDrProject);
+      var project = MO.Class.create(FDrProject);
       project.setCode(code);
       project.setLabel(label);
-      var connection = RConsole.find(FDrProjectConsole).doCreate(project);
+      var connection = MO.Console.find(FDrProjectConsole).doCreate(project);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsSolutionProjectDialog_onCancelClick = function FDsSolutionProjectDialog_onCancelClick(event){
@@ -4677,7 +4677,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionProjectProperty = function FDsSolutionProjectProperty(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._workspace        = null;
       o._activeSpace      = null;
@@ -4723,7 +4723,7 @@ with(MO){
       var o = this;
       var guid = control._guid;
       o._controlGuid.set(guid);
-      var connection = RConsole.find(FDrProjectConsole).doQuery(guid);
+      var connection = MO.Console.find(FDrProjectConsole).doQuery(guid);
       connection.addLoadListener(o, o.onLoadProject);
    }
    MO.FDsSolutionProjectProperty_dispose = function FDsSolutionProjectProperty_dispose(){
@@ -4733,7 +4733,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionPropertyContent = function FDsSolutionPropertyContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeSpace         = null;
       o._canvasModeCd        = EDsCanvasMode.Drop;
       o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -4785,7 +4785,7 @@ with(MO){
          return;
       }
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -4801,7 +4801,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -4976,12 +4976,12 @@ with(MO){
    MO.FDsSolutionPropertyContent_construct = function FDsSolutionPropertyContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
    MO.FDsSolutionPropertyContent_innerSelectDisplay = function FDsSolutionPropertyContent_innerSelectDisplay(p){
@@ -4990,7 +4990,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -5021,7 +5021,7 @@ with(MO){
    }
    MO.FDsSolutionPropertyContent_loadMeshByGuid = function FDsSolutionPropertyContent_loadMeshByGuid(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -5032,7 +5032,7 @@ with(MO){
    }
    MO.FDsSolutionPropertyContent_loadMeshByCode = function FDsSolutionPropertyContent_loadMeshByCode(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -5049,7 +5049,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionPropertyToolBar = function FDsSolutionPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName           = 'resource.solution.PropertyToolBar';
       o._controlInsertButton = null;
       o._controlUpdateButton = null;
@@ -5081,7 +5081,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCanvasContent = function FDsProjectCanvasContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._refreshButton = null;
       o._saveButton    = null;
       o._runButton     = null;
@@ -5114,7 +5114,7 @@ with(MO){
             item.propertyLoad(xnode);
             item._typeCd = xnode.get('type');
             item._guid = xnode.get('guid');
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
@@ -5134,7 +5134,7 @@ with(MO){
    MO.FDsProjectCanvasContent_serviceSearch = function FDsProjectCanvasContent_serviceSearch(typeCd, serach, pageSize, page){
       var o = this;
       RWindow.disable();
-      var connection = RConsole.find(FDrResourceConsole).fetch(typeCd, serach, null, pageSize, page);
+      var connection = MO.Console.find(FDrResourceConsole).fetch(typeCd, serach, null, pageSize, page);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsProjectCanvasContent_dispose = function FDsProjectCanvasContent_dispose(){
@@ -5144,7 +5144,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCanvasPreviewToolBar = function FDsProjectCanvasPreviewToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.CanvasPreviewToolBar';
       o._pageCount       = 0;
       o._page            = 0;
@@ -5226,7 +5226,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCanvasSpaceToolBar = function FDsProjectCanvasSpaceToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.CanvasSpaceToolBar';
       o._pageCount       = 0;
       o._page            = 0;
@@ -5308,7 +5308,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCatalogContent = function FDsProjectCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._iconView             = 'design3d.mesh.view';
       o._iconViewNot          = 'design3d.mesh.viewno';
       o._activeSpace          = null;
@@ -5350,7 +5350,7 @@ with(MO){
       var o = this;
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -5366,7 +5366,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -5382,7 +5382,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          if(p.ctrlKey){
             var ms = o._materials;
             for(var i = ms.count() - 1; i >= 0; i--){
@@ -5404,7 +5404,7 @@ with(MO){
       var n = p.treeNode;
       var c = p.treeNodeCell;
       var s = n.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -5413,7 +5413,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -5422,7 +5422,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          var s = o._materials;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -5513,7 +5513,7 @@ with(MO){
    }
    MO.FDsProjectCatalogContent_showObject = function FDsProjectCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){
@@ -5535,7 +5535,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCatalogToolBar = function FDsProjectCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.CatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -5580,17 +5580,17 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectFrameSet = function FDsProjectFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
       o._frameName            = 'resource.project.FrameSet';
-      o._stylePageControl     = RClass.register(o, new AStyle('_stylePageControl', 'PageControl'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasGround    = RClass.register(o, new AStyle('_styleCanvasGround', 'Canvas_Ground'));
-      o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._stylePageControl     = MO.Class.register(o, new AStyle('_stylePageControl', 'PageControl'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasGround    = MO.Class.register(o, new AStyle('_styleCanvasGround', 'Canvas_Ground'));
+      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -5667,35 +5667,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -5712,7 +5712,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -5733,7 +5733,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectMenuBar = function FDsProjectMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._refreshButton = null;
       o._saveButton    = null;
       o._runButton     = null;
@@ -5754,7 +5754,7 @@ with(MO){
       var resource = space.resource();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      RConsole.find(FE3sMeshConsole).update(xconfig);
+      MO.Console.find(FE3sMeshConsole).update(xconfig);
    }
    MO.FDsProjectMenuBar_construct = function FDsProjectMenuBar_construct(){
       var o = this;
@@ -5767,7 +5767,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectPropertyContent = function FDsProjectPropertyContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeSpace         = null;
       o._canvasModeCd        = EDsCanvasMode.Drop;
       o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -5823,7 +5823,7 @@ with(MO){
          return;
       }
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -5839,7 +5839,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -6014,12 +6014,12 @@ with(MO){
    MO.FDsProjectPropertyContent_construct = function FDsProjectPropertyContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
    MO.FDsProjectPropertyContent_innerSelectDisplay = function FDsProjectPropertyContent_innerSelectDisplay(p){
@@ -6028,7 +6028,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -6188,7 +6188,7 @@ with(MO){
    }
    MO.FDsProjectPropertyContent_loadMeshByGuid = function FDsProjectPropertyContent_loadMeshByGuid(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -6199,7 +6199,7 @@ with(MO){
    }
    MO.FDsProjectPropertyContent_loadMeshByCode = function FDsProjectPropertyContent_loadMeshByCode(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -6216,7 +6216,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectPropertyToolBar = function FDsProjectPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.project.PropertyToolBar';
       o._controlInsertButton   = null;
       o._controlUpdateButton   = null;
@@ -6262,7 +6262,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneCatalogContent = function FDsProjectSceneCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._iconView             = 'design3d.mesh.view';
       o._iconViewNot          = 'design3d.mesh.viewno';
       o._activeSpace          = null;
@@ -6304,7 +6304,7 @@ with(MO){
       var o = this;
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -6320,7 +6320,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -6336,7 +6336,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          if(p.ctrlKey){
             var ms = o._materials;
             for(var i = ms.count() - 1; i >= 0; i--){
@@ -6358,7 +6358,7 @@ with(MO){
       var n = p.treeNode;
       var c = p.treeNodeCell;
       var s = n.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -6367,7 +6367,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -6376,7 +6376,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          var s = o._materials;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -6467,7 +6467,7 @@ with(MO){
    }
    MO.FDsProjectSceneCatalogContent_showObject = function FDsProjectSceneCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){
@@ -6489,7 +6489,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneCatalogToolBar = function FDsProjectSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.SceneCatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -6534,7 +6534,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCatalogToolBar = function FDsProjectCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.CatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -6579,7 +6579,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneDialog = function FDsProjectSceneDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'design3d.project.SceneDialog';
       o._dataModeCd           = null;
       o._controlParentLabel   = null;
@@ -6605,20 +6605,20 @@ with(MO){
    }
    MO.FDsProjectSceneDialog_onConfirmLoad = function FDsProjectSceneDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var listContent = o._frameSet._sceneListContent;
       listContent.serviceRelist();
    }
    MO.FDsProjectSceneDialog_onConfirmClick = function FDsProjectSceneDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
-      var sceneConsole = RConsole.find(FDrSceneConsole);
+      var sceneConsole = MO.Console.find(FDrSceneConsole);
       var connection = null;
       if(o._dataModeCd == EUiDataMode.Insert){
-         var scene = RClass.create(FDrScene);
+         var scene = MO.Class.create(FDrScene);
          scene._projectGuid = o._projectGuid;
          scene._code = code;
          scene._label = label;
@@ -6658,7 +6658,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneListContent = function FDsProjectSceneListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._activeItem       = null;
       o._activeGuid       = null;
       o._refreshButton    = null;
@@ -6692,12 +6692,12 @@ with(MO){
             item._guid = xnode.get('guid');
             item._code = xnode.get('code');
             item._updateDate = xnode.get('update_date');
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
       }
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsProjectSceneListContent_construct = function FDsProjectSceneListContent_construct(){
       var o = this;
@@ -6719,9 +6719,9 @@ with(MO){
    MO.FDsProjectSceneListContent_serviceList = function FDsProjectSceneListContent_serviceList(guid){
       var o = this;
       o._activeGuid = guid;
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       var url = '/cloud.solution.project.ws?action=listProject&project_guid=' + guid;
-      var connection = RConsole.find(FXmlConsole).sendAsync(url);
+      var connection = MO.Console.find(FXmlConsole).sendAsync(url);
       connection.addLoadListener(o, o.onServiceLoad);
       return connection;
    }
@@ -6736,7 +6736,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneListItem = function FDsProjectSceneListItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
       o.onBuild      = FDsProjectSceneListItem_onBuild;
       o.refreshStyle = FDsProjectSceneListItem_refreshStyle;
       return o;
@@ -6756,7 +6756,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneListToolBar = function FDsProjectSceneListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName           = 'resource.project.SceneListToolBar';
       o._controlSceneCreate  = null;
       o._controlSceneDelete  = null;
@@ -6778,10 +6778,10 @@ with(MO){
    MO.FDsProjectSceneListToolBar_onSceneCreateClick = function FDsProjectSceneListToolBar_onSceneCreateClick(event){
       var o = this;
       var projectGuid = o._frameSet._activeGuid;
-      if(RString.isEmpty(projectGuid)){
+      if(MO.Lang.String.isEmpty(projectGuid)){
          throw new TError(o, 'Project guid is empty.');
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsProjectSceneDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsProjectSceneDialog);
       dialog._frameSet = o._frameSet;
       dialog._projectGuid = projectGuid;
       dialog.setDataCode('');
@@ -6791,7 +6791,7 @@ with(MO){
    }
    MO.FDsProjectSceneListToolBar_onSceneDeleteLoad = function FDsProjectSceneListToolBar_onSceneDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var listContent = o._frameSet._sceneListContent;
       listContent.serviceRelist();
    }
@@ -6802,8 +6802,8 @@ with(MO){
       }
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).doDelete(item._guid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).doDelete(item._guid);
       connection.addLoadListener(o, o.onSceneDeleteLoad);
    }
    MO.FDsProjectSceneListToolBar_onSceneDeleteClick = function FDsProjectSceneListToolBar_onSceneDeleteClick(event){
@@ -6811,9 +6811,9 @@ with(MO){
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
       if(!item){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中场景后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中场景后，再点击操作。');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前场景？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前场景？');
       dialog.addResultListener(o, o.onSceneDeleteExecute);
    }
    MO.FDsProjectSceneListToolBar_construct = function FDsProjectSceneListToolBar_construct(){
@@ -6827,7 +6827,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectTabBar = function FDsProjectTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName             = 'design3d.project.TabBar';
       o._resourceTypeCd        = 'mesh';
       o._controlProjectButton  = null;
@@ -6865,18 +6865,18 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectWorkspace = function FDsProjectWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.project.Workspace';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyToolbar = RClass.register(o, new AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyToolbar = MO.Class.register(o, new AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._resourceTypeCd       = 'project';
       o._frameToolBar         = null;
       o._frameStatusBar       = null;
@@ -6915,7 +6915,7 @@ with(MO){
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
-      var c = o._tabBar = RClass.create(FDsProjectTabBar);
+      var c = o._tabBar = MO.Class.create(FDsProjectTabBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -6940,35 +6940,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -6987,26 +6987,26 @@ with(MO){
       var frameSet = o._frameSets.get(name);
       if(!frameSet){
          if(name == EDsFrameSet.ProjectFrameSet){
-            var menuBar = RClass.create(FDsProjectMenuBar);
+            var menuBar = MO.Class.create(FDsProjectMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ResourceFrameSet){
-            var menuBar = RClass.create(FDsResourceMenuBar);
+            var menuBar = MO.Class.create(FDsResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.MeshFrameSet){
-            var menuBar = RClass.create(FDsMeshMenuBar);
+            var menuBar = MO.Class.create(FDsMeshMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -7040,7 +7040,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -7064,7 +7064,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceCatalogContent = function FDsResourceCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._activeSpace          = null;
       o._materials            = null;
       o.onBuild               = FDsResourceCatalogContent_onBuild;
@@ -7121,7 +7121,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceCatalogToolBar = function FDsResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName                   = 'resource.resource.CatalogToolBar';
       o._controlFolderCreateButton   = null;
       o._controlFolderDeleteButton   = null;
@@ -7160,7 +7160,7 @@ with(MO){
          parentGuid = node.guid();
          parentLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._parentGuid = parentGuid;
@@ -7171,7 +7171,7 @@ with(MO){
    }
    MO.FDsResourceCatalogToolBar_onFolderDeleteLoad = function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -7187,9 +7187,9 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
-      var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
+      var connection = MO.Console.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
    }
    MO.FDsResourceCatalogToolBar_onFolderDeleteClick = function FDsResourceCatalogToolBar_onFolderDeleteClick(event){
@@ -7197,9 +7197,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsResourceCatalogToolBar_onFolderPropertyClick = function FDsResourceCatalogToolBar_onFolderPropertyClick(event){
@@ -7207,13 +7207,13 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
          parentLabel = node._parent.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._nodeGuid = node._guid;
@@ -7237,7 +7237,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceCreateDialog = function FDsResourceCreateDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName        = 'resource.resource.CreateDialog';
       o._nodeGuid         = null;
       o._controlNodeLabel = null;
@@ -7265,36 +7265,36 @@ with(MO){
    MO.FDsResourceCreateDialog_onConfirmLoad = function FDsResourceCreateDialog_onConfirmLoad(event){
       var o = this;
       o.hide();
-      RConsole.find(FDuiDesktopConsole).hide();
-      if(RConsole.find(FDuiResultConsole).checkEvent(event)){
+      MO.Console.find(FDuiDesktopConsole).hide();
+      if(MO.Console.find(FDuiResultConsole).checkEvent(event)){
          var frame = o._frameSet._listContent;
          frame.serviceResearch();
       }
    }
    MO.FDsResourceCreateDialog_onConfirmClick = function FDsResourceCreateDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
       var connection = null;
       switch(o._modeCd){
          case EE3sResource.Material:
-            var material = RClass.create(FDrMaterial);
+            var material = MO.Class.create(FDrMaterial);
             material.setCode(code);
             material.setLabel(label);
-            connection = RConsole.find(FDrMaterialConsole).doCreate(material);
+            connection = MO.Console.find(FDrMaterialConsole).doCreate(material);
             break;
          case EE3sResource.Template:
-            var template = RClass.create(FDrTemplate);
+            var template = MO.Class.create(FDrTemplate);
             template.setCode(code);
             template.setLabel(label);
-            connection = RConsole.find(FDrTemplateConsole).doCreate(template);
+            connection = MO.Console.find(FDrTemplateConsole).doCreate(template);
             break;
          case EE3sResource.Scene:
-            var scene = RClass.create(FDrScene);
+            var scene = MO.Class.create(FDrScene);
             scene.setCode(code);
             scene.setLabel(label);
-            connection = RConsole.find(FDrSceneConsole).doCreate(scene);
+            connection = MO.Console.find(FDrSceneConsole).doCreate(scene);
             break;
          default:
             throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
@@ -7338,7 +7338,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceFolderDialog = function FDsResourceFolderDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.FolderDialog';
       o._dataModeCd           = null;
       o._controlParentLabel   = null;
@@ -7365,7 +7365,7 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_onConfirmLoad = function FDsResourceFolderDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._dataModeCd == EUiDataMode.Insert){
@@ -7383,9 +7383,9 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_onConfirmClick = function FDsResourceFolderDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var label = o._controlLabel.get();
-      var resourceConsole = RConsole.find(FDrResourceConsole);
+      var resourceConsole = MO.Console.find(FDrResourceConsole);
       var connection = null;
       if(o._dataModeCd == EUiDataMode.Insert){
          connection = resourceConsole.doFolderCreate(o._parentGuid, null, label);
@@ -7423,11 +7423,11 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceFrameSet = function FDsResourceFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o = MO.Class.inherits(this, o, FDsFrameSet);
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._resourceTypeCd       = 'picture';
       o._frameCatalog         = null;
       o._frameCatalogToolbar  = null;
@@ -7457,35 +7457,35 @@ with(MO){
          return;
       }
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dStage)){
+      if(MO.Class.isClass(select, FE3dStage)){
          var frame = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          var frame = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(select, FE3dMeshDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(select, FE3dMeshRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -7513,7 +7513,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceImportDialog = function FDsResourceImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.ImportDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -7543,10 +7543,10 @@ with(MO){
       var o = this;
       var name = o._controlFile.get();
       var code = RFile.name(name);
-      if(RString.isEmpty(o._controlCode.get())){
+      if(MO.Lang.String.isEmpty(o._controlCode.get())){
          o._controlCode.set(code);
       }
-      if(RString.isEmpty(o._controlLabel.get())){
+      if(MO.Lang.String.isEmpty(o._controlLabel.get())){
          o._controlLabel.set(code);
       }
    }
@@ -7568,22 +7568,22 @@ with(MO){
       }
       url += '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsResourceImportDialog_onConfirmLoad = function FDsResourceImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
    }
    MO.FDsResourceImportDialog_onConfirmClick = function FDsResourceImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -7621,7 +7621,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceListContent = function FDsResourceListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._contentFlag      = null;
       o._contentTypeCd    = EE3sResource.All;
       o._contentSerach    = '';
@@ -7669,7 +7669,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsResourceListContent_construct = function FDsResourceListContent_construct(){
       var o = this;
@@ -7730,8 +7730,8 @@ with(MO){
       o._contentOrder = order;
       o._contentPageSize = pageSize;
       o._contentPage = page;
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var connection = RConsole.find(FDrResourceConsole).doList(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var connection = MO.Console.find(FDrResourceConsole).doList(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsResourceListContent_serviceResearch = function FDsResourceListContent_serviceResearch(){
@@ -7745,10 +7745,10 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceListItem = function FDsResourceListItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
-      o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
-      o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
+      o._styleTypePanel        = MO.Class.register(o, new AStyle('_styleTypePanel'));
+      o._styleTypePrivateLabel = MO.Class.register(o, new AStyle('_styleTypePublicLabel'));
+      o._styleTypePublicLabel  = MO.Class.register(o, new AStyle('_styleTypePrivateLabel'));
       o.onBuild         = FDsResourceListItem_onBuild;
       o.setTypeLabel    = FDsResourceListItem_setTypeLabel;
       o.refreshStyle    = FDsResourceListItem_refreshStyle;
@@ -7780,7 +7780,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceListToolBar = function FDsResourceListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiToolBar, MUiStorage);
       o._dropButton       = null;
       o._selectButton     = null;
       o._translateButton  = null;
@@ -7920,7 +7920,7 @@ with(MO){
       if(types != ''){
          types = types.substring(1);
       }
-      if(RString.isEmpty(types)){
+      if(MO.Lang.String.isEmpty(types)){
          types = 'All';
       }
       return types;
@@ -7962,7 +7962,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceMenuBar = function FDsResourceMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlImportPicture  = null;
       o._controlImportModel    = null;
       o._controlCreateMaterial = null;
@@ -7996,7 +7996,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -8015,7 +8015,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -8034,7 +8034,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -8053,7 +8053,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -8072,7 +8072,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -8082,21 +8082,21 @@ with(MO){
    }
    MO.FDsResourceMenuBar_onDeleteLoad = function FDsResourceMenuBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
    }
    MO.FDsResourceMenuBar_onDeleteExecute = function FDsResourceMenuBar_onDeleteExecute(event){
       var o = this;
       if(event.resultCd != EResult.Success){
-         RConsole.find(FDuiDesktopConsole).hide();
+         MO.Console.find(FDuiDesktopConsole).hide();
          return
       }
       var item = o._frameSet._listContent.focusItem();
       var typeCd = item._typeCd;
       var guid = item._guid;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrResourceConsole).doDelete(typeCd, guid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrResourceConsole).doDelete(typeCd, guid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsResourceMenuBar_onDeleteClick = function FDsResourceMenuBar_onDeleteClick(event){
@@ -8105,12 +8105,12 @@ with(MO){
       if(!item){
          return alert('请选中后再点击删除');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsResourceMenuBar_onShareLoad = function FDsResourceMenuBar_onShareLoad(){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsResourceMenuBar_onShareClick = function FDsResourceMenuBar_onShareClick(event){
       var o = this;
@@ -8127,8 +8127,8 @@ with(MO){
          shareCd = 'Private';
       }
       var guid = item._guid;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrResourceConsole).doShare(guid, shareCd);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrResourceConsole).doShare(guid, shareCd);
       connection.addLoadListener(o, o.onShareLoad);
    }
    MO.FDsResourceMenuBar_construct = function FDsResourceMenuBar_construct(){
@@ -8142,7 +8142,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourcePropertyContent = function FDsResourcePropertyContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeSpace         = null;
       o._canvasModeCd        = EDsCanvasMode.Drop;
       o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -8198,7 +8198,7 @@ with(MO){
          return;
       }
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -8214,7 +8214,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -8389,12 +8389,12 @@ with(MO){
    MO.FDsResourcePropertyContent_construct = function FDsResourcePropertyContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
    MO.FDsResourcePropertyContent_innerSelectDisplay = function FDsResourcePropertyContent_innerSelectDisplay(p){
@@ -8403,7 +8403,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -8563,7 +8563,7 @@ with(MO){
    }
    MO.FDsResourcePropertyContent_loadMeshByGuid = function FDsResourcePropertyContent_loadMeshByGuid(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -8574,7 +8574,7 @@ with(MO){
    }
    MO.FDsResourcePropertyContent_loadMeshByCode = function FDsResourcePropertyContent_loadMeshByCode(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -8591,7 +8591,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourcePropertyToolBar = function FDsResourcePropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.resource.PropertyToolBar';
       o._controlInsertButton   = null;
       o._controlUpdateButton   = null;
@@ -8629,7 +8629,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceSelectCatalogToolBar = function FDsResourceSelectCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName          = 'resource.resource.SelectCatalogToolBar';
       o._controlFolderOpen  = null;
       o._controlFolderClose = null;
@@ -8662,11 +8662,11 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceSelectDialog = function FDsResourceSelectDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.SelectDialog';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
       o._dataModeCd           = null;
       o._controlParentLabel   = null;
       o._controlLabel         = null;
@@ -8695,22 +8695,22 @@ with(MO){
       var splitterCatalog = o._catalogSplitter = o.searchControl('catalogSpliter');
       splitterCatalog.setAlignCd(EUiAlign.Left);
       splitterCatalog.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsResourceSelectCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsResourceSelectCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsResourceCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameCatalogContent.push(control);
-      var control = o._listToolBar = RClass.create(FDsResourceSelectListToolBar);
+      var control = o._listToolBar = MO.Class.create(FDsResourceSelectListToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameListToolBar.push(control);
-      var control = o._listContent = RClass.create(FDsResourceListContent);
+      var control = o._listContent = MO.Class.create(FDsResourceListContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -8719,7 +8719,7 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_onConfirmLoad = function FDsResourceSelectDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._dataModeCd == EUiDataMode.Insert){
@@ -8737,9 +8737,9 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_onConfirmClick = function FDsResourceSelectDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var label = o._controlLabel.get();
-      var resourceConsole = RConsole.find(FDrResourceConsole);
+      var resourceConsole = MO.Console.find(FDrResourceConsole);
       var connection = null;
       if(o._dataModeCd == EUiDataMode.Insert){
          connection = resourceConsole.doFolderCreate(o._parentGuid, null, label);
@@ -8777,7 +8777,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceSelectListToolBar = function FDsResourceSelectListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiToolBar, MUiStorage);
       o._frameName        = 'resource.resource.SelectListToolBar';
       o._storageCode      = o._frameName;
       o._dropButton       = null;
@@ -8905,7 +8905,7 @@ with(MO){
       if(types != ''){
          types = types.substring(1);
       }
-      if(RString.isEmpty(types)){
+      if(MO.Lang.String.isEmpty(types)){
          types = 'All';
       }
       return 'All';
@@ -8947,7 +8947,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceTabBar = function FDsResourceTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName             = 'design3d.resource.TabBar';
       o._resourceTypeCd        = 'mesh';
       o._controlPictureButton  = null;
@@ -8995,18 +8995,18 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceWorkspace = function FDsResourceWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.resource.Workspace';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
-      o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._resourceTypeCd       = 'picture';
       o._frameToolBar         = null;
       o._frameStatusBar       = null;
@@ -9042,12 +9042,12 @@ with(MO){
       var hTable = RBuilder.createTable(p);
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
-      var c = o._toolbar = RClass.create(FDsResourceMenuBar);
+      var c = o._toolbar = MO.Class.create(FDsResourceMenuBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
       hCell.appendChild(c._hPanel);
-      var c = o._tabBar = RClass.create(FDsResourceTabBar);
+      var c = o._tabBar = MO.Class.create(FDsResourceTabBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -9056,7 +9056,7 @@ with(MO){
       hCell.vAlign = 'bottom';
       hCell.appendChild(c._hPanel);
       o._frameToolBar._hPanel.appendChild(hTable);
-      var frameSet = o._frameSet = RClass.create(FDsResourceFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsResourceFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -9076,35 +9076,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -9121,7 +9121,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -9143,13 +9143,13 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapCanvasContent = function FDsBitmapCanvasContent(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvas);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvas);
       return o;
    }
 }
 with(MO){
    MO.FDsBitmapCanvasToolBar = function FDsBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._canvasModeCd      = EDsCanvasMode.Drop;
       o._controlSize1      = null;
       o._controlSize2      = null;
@@ -9194,7 +9194,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapFrameSet = function FDsBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCanvas          = null;
       o._frameCanvasToolBar   = null;
       o._frameCanvasContent   = null;
@@ -9233,7 +9233,7 @@ with(MO){
    MO.FDsBitmapFrameSet_loadByGuid = function FDsBitmapFrameSet_loadByGuid(guid){
       var o = this;
       o._activeGuid = guid;
-      var bitmap = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+      var bitmap = o._activeResource = MO.Console.find(FDrBitmapConsole).query(guid);
       var canvas = o._canvasContent;
       canvas.loadByGuid(guid);
       var frame = o.findPropertyFrame(EDsFrame.BitmapPropertyFrame);
@@ -9242,7 +9242,7 @@ with(MO){
    MO.FDsBitmapFrameSet_loadByCode = function FDsBitmapFrameSet_loadByCode(code){
       var o = this;
       o._activeCode = code;
-      var connection = RConsole.find(FDrBitmapConsole).query(code);
+      var connection = MO.Console.find(FDrBitmapConsole).query(code);
       connection.addLoadListener(o, o.onDataLoaded);
    }
    MO.FDsBitmapFrameSet_reload = function FDsBitmapFrameSet_reload(){
@@ -9255,7 +9255,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapImportDialog = function FDsBitmapImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.bitmap.ImportDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -9283,21 +9283,21 @@ with(MO){
       var guid = resource.guid();
       var url = '/cloud.resource.bitmap.wv?do=updateData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsBitmapImportDialog_onConfirmLoad = function FDsBitmapImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       o._frameSet.reload();
    }
    MO.FDsBitmapImportDialog_onConfirmClick = function FDsBitmapImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -9315,7 +9315,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapMenuBar = function FDsBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlBack    = null;
       o._controlSave    = null;
       o._controlCapture = null;
@@ -9332,19 +9332,19 @@ with(MO){
       o.__base.FDuiMenuBar.onBuilded.call(o, event);
    }
    MO.FDsBitmapMenuBar_onSaveLoad = function FDsBitmapMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsBitmapMenuBar_onSaveClick = function FDsBitmapMenuBar_onSaveClick(event){
       var o = this;
       var bitmap = o._frameSet._activeResource;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrBitmapConsole).doUpdate(bitmap);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsBitmapMenuBar_onImportClick = function FDsBitmapMenuBar_onImportClick(event){
       var o = this;
       var resource = o._frameSet._activeResource;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
       dialog._resource = resource;
       dialog._frameSet = o._frameSet;
       dialog.showPosition(EUiPosition.Center);
@@ -9360,7 +9360,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapPropertyFrame = function FDsBitmapPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeBitmap      = null;
       o._controlGuid       = null;
       o._controlCode       = null;
@@ -9406,7 +9406,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapPropertyToolBar = function FDsBitmapPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.bitmap.PropertyToolBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsBitmapPropertyToolBar_onBuilded;
@@ -9434,12 +9434,12 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapWorkspace = function FDsBitmapWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -9468,11 +9468,11 @@ with(MO){
       frame._hPanel.className = o.styleName('Body_Ground');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var menuBar = o._menuBar = RClass.create(FDsBitmapMenuBar);
+      var menuBar = o._menuBar = MO.Class.create(FDsBitmapMenuBar);
       menuBar._workspace = o;
       menuBar.buildDefine(p);
       o._frameToolBar.push(menuBar);
-      var frameSet = o._frameSet = RClass.create(FDsBitmapFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsBitmapFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -9492,35 +9492,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -9537,7 +9537,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -9559,13 +9559,13 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCanvasBitmap = function FDsMaterialCanvasBitmap(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvas);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvas);
       return o;
    }
 }
 with(MO){
    MO.FDsMaterialCanvasContent = function FDsMaterialCanvasContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeResource      = null;
       o._activeMaterial      = null;
       o._capturePosition     = null;
@@ -9591,7 +9591,7 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.onBuild.call(o, p);
       var hPanel = o._hPanel;
-      var space = o._activeSpace = RClass.create(FE3dSimpleStage);
+      var space = o._activeSpace = MO.Class.create(FE3dSimpleStage);
       space.linkGraphicContext(o);
       space.selectTechnique(o, FE3dGeneralTechnique);
       space.region().backgroundColor().set(1, 1, 1, 1);
@@ -9609,7 +9609,7 @@ with(MO){
    MO.FDsMaterialCanvasContent_onLoaded = function FDsMaterialCanvasContent_onLoaded(event){
       var o = this;
       var material = o._activeMaterial = o._activeResource.material();
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialCanvasContent_oeResize = function FDsMaterialCanvasContent_oeResize(p){
       var o = this;
@@ -9631,8 +9631,8 @@ with(MO){
    MO.FDsMaterialCanvasContent_construct = function FDsMaterialCanvasContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureCameraPosition = new SPoint3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureCameraPosition = new MO.SPoint3();
    }
    MO.FDsMaterialCanvasContent_selectDisplay = function FDsMaterialCanvasContent_selectDisplay(p){
       var o = this;
@@ -9653,8 +9653,8 @@ with(MO){
    }
    MO.FDsMaterialCanvasContent_loadByGuid = function FDsMaterialCanvasContent_loadByGuid(guid){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var resource = o._activeResource = RConsole.find(FE3sMaterialConsole).loadByGuid(guid);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var resource = o._activeResource = MO.Console.find(FE3sMaterialConsole).loadByGuid(guid);
       resource.clearLoadListeners();
       resource.addLoadListener(o, o.onLoaded);
    }
@@ -9665,7 +9665,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCanvasToolBar = function FDsMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._controlSize1      = null;
       o._controlSize2      = null;
       o._controlSize3      = null;
@@ -9717,7 +9717,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCatalogContent = function FDsMaterialCatalogContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._activeItem       = null;
       o._activeGuid       = null;
       o._refreshButton    = null;
@@ -9753,12 +9753,12 @@ with(MO){
             item._code = code;
             item._updateDate = xnode.get('update_date');
             item.setTypeLabel(code);
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
       }
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialCatalogContent_construct = function FDsMaterialCatalogContent_construct(){
       var o = this;
@@ -9778,9 +9778,9 @@ with(MO){
    }
    MO.FDsMaterialCatalogContent_serviceList = function FDsMaterialCatalogContent_serviceList(guid){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       var url = '/cloud.resource.material.ws?action=listBitmap&guid=' + guid;
-      var connection = RConsole.find(FXmlConsole).sendAsync(url);
+      var connection = MO.Console.find(FXmlConsole).sendAsync(url);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsMaterialCatalogContent_dispose = function FDsMaterialCatalogContent_dispose(){
@@ -9790,9 +9790,9 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCatalogItem = function FDsMaterialCatalogItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
-      o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
+      o._styleTypePanel = MO.Class.register(o, new AStyle('_styleTypePanel'));
+      o._styleTypeLabel = MO.Class.register(o, new AStyle('_styleTypeLabel'));
       o.onBuild         = FDsMaterialCatalogItem_onBuild;
       o.setTypeLabel    = FDsMaterialCatalogItem_setTypeLabel;
       o.refreshStyle    = FDsMaterialCatalogItem_refreshStyle;
@@ -9819,7 +9819,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCatalogToolBar = function FDsMaterialCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._controlCreate   = null;
       o._controlDelete   = null;
       o._controlMoveUp   = null;
@@ -9860,7 +9860,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialFrameSet = function FDsMaterialFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCatalog         = null;
       o._frameCatalogToolBar  = null;
       o._frameCatalogContent  = null;
@@ -9895,12 +9895,12 @@ with(MO){
       var spliterProperty = o._spliterProperty;
       spliterProperty.setAlignCd(EUiAlign.Right);
       spliterProperty.setSizeHtml(o._frameProperty._hPanel);
-      var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsMaterialCanvasContent);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.scroll = 'auto';
       canvas.build(event);
-      var canvas = o._canvasBitmap = RClass.create(FDsMaterialCanvasBitmap);
+      var canvas = o._canvasBitmap = MO.Class.create(FDsMaterialCanvasBitmap);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.scroll = 'auto';
@@ -9919,35 +9919,35 @@ with(MO){
          return;
       }
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dStage)){
+      if(MO.Class.isClass(select, FE3dStage)){
          var frame = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          var frame = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(select, FE3dMeshDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(select, FE3dMeshRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -9970,7 +9970,7 @@ with(MO){
    MO.FDsMaterialFrameSet_loadByGuid = function FDsMaterialFrameSet_loadByGuid(guid){
       var o = this;
       o._activeGuid = guid;
-      var resource = o._activeResource = RConsole.find(FDrMaterialConsole).query(guid);
+      var resource = o._activeResource = MO.Console.find(FDrMaterialConsole).query(guid);
       o._catalogContent.serviceList(guid);
       var canvas = o._canvasContent;
       canvas.loadByGuid(guid);
@@ -9989,7 +9989,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialImportDialog = function FDsMaterialImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.material.ImportDialog';
       o._modeCd               = null;
       o._nodeGuid             = null;
@@ -10019,7 +10019,7 @@ with(MO){
       var guid = resource.guid();
       var typeCode = o._controlTypeCode.get();
       var code = o._controlCode.get();
-      if(RString.isEmpty(code)){
+      if(MO.Lang.String.isEmpty(code)){
          code = typeCode;
       }
       var label = o._controlLabel.get();
@@ -10038,20 +10038,20 @@ with(MO){
             throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
       }
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsMaterialImportDialog_onConfirmLoad = function FDsMaterialImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsMaterialImportDialog_onConfirmClick = function FDsMaterialImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -10085,7 +10085,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialMenuBar = function FDsMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlBack     = null;
       o._controlSave     = null;
       o._controlProperty = null;
@@ -10125,16 +10125,16 @@ with(MO){
       var o = this;
    }
    MO.FDsMaterialMenuBar_onSaveLoad = function FDsMaterialMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onSaveClick = function FDsMaterialMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+      var connection = MO.Console.find(FE3sMeshConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsMaterialMenuBar_onPropertyClick = function FDsMaterialMenuBar_onPropertyClick(event){
@@ -10150,7 +10150,7 @@ with(MO){
       if(!item){
          return alert('请选中位图');
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._activeItem = item;
       dialog.switchModeCd('select');
@@ -10161,7 +10161,7 @@ with(MO){
    }
    MO.FDsMaterialMenuBar_onImportClick = function FDsMaterialMenuBar_onImportClick(event){
       var o = this;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
       dialog._frameSet = o._frameSet;
       dialog.switchModeCd('import');
       dialog._controlCode.set('');
@@ -10170,13 +10170,13 @@ with(MO){
    }
    MO.FDsMaterialMenuBar_onDeleteLoad = function FDsMaterialMenuBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onDeleteExecute = function FDsMaterialMenuBar_onDeleteExecute(event){
       var o = this;
       var item = o._frameSet._catalogContent.focusItem();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsMaterialMenuBar_onDeleteClick = function FDsMaterialMenuBar_onDeleteClick(event){
@@ -10185,15 +10185,15 @@ with(MO){
       if(!item){
          return alert('请选中后再点击删除');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsMaterialMenuBar_onCaptureLoad = function FDsMaterialMenuBar_onCaptureLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onCaptureClick = function FDsMaterialMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var connection = o._frameSet._canvas.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
    }
@@ -10208,7 +10208,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialPropertyFrame = function FDsMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeResource = null;
       o._controlGuid    = null;
       o._controlCode    = null;
@@ -10250,7 +10250,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialPropertyToolBar = function FDsMaterialPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.material.PropertyToolBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsMaterialPropertyToolBar_onBuilded;
@@ -10344,7 +10344,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialSelectDialog = function FDsMaterialSelectDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.material.SelectDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -10372,21 +10372,21 @@ with(MO){
       var guid = resource.guid();
       var url = '/cloud.resource.material.wv?do=importData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsMaterialSelectDialog_onConfirmLoad = function FDsMaterialSelectDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       o._frameSet.reload();
    }
    MO.FDsMaterialSelectDialog_onConfirmClick = function FDsMaterialSelectDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -10404,12 +10404,12 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialWorkspace = function FDsMaterialWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -10438,11 +10438,11 @@ with(MO){
       frame._hPanel.className = o.styleName('Body_Ground');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var menuBar = o._menuBar = RClass.create(FDsMaterialMenuBar);
+      var menuBar = o._menuBar = MO.Class.create(FDsMaterialMenuBar);
       menuBar._workspace = o;
       menuBar.buildDefine(p);
       o._frameToolBar.push(menuBar);
-      var frameSet = o._frameSet = RClass.create(FDsMaterialFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsMaterialFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -10462,35 +10462,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -10507,7 +10507,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -10529,7 +10529,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCanvasContent = function FDsModelCanvasContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._resourceTypeCd      = EE3sResource.Model;
       o._autoDistance        = null;
       o._autoOutline         = null;
@@ -10582,7 +10582,7 @@ with(MO){
          return;
       }
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -10598,7 +10598,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -10698,10 +10698,10 @@ with(MO){
       lc.setPosition(10, 10, 0);
       lc.lookAt(0, 0, 0);
       lc.update();
-      var event = new SEvent(o);
+      var event = new MO.SEvent(o);
       o.processLoadListener(event);
       event.dispose();
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsModelCanvasContent_oeResize = function FDsModelCanvasContent_oeResize(p){
       var o = this;
@@ -10723,15 +10723,15 @@ with(MO){
    MO.FDsModelCanvasContent_construct = function FDsModelCanvasContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._autoDistance = new SPoint3(6, 6, 6);
-      o._autoOutline = new SOutline3d();
-      o._autoMatrix = new SMatrix3d();
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._autoDistance = new MO.SPoint3(6, 6, 6);
+      o._autoOutline = new MO.SOutline3d();
+      o._autoMatrix = new MO.SMatrix3d();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
    MO.FDsModelCanvasContent_innerSelectDisplay = function FDsModelCanvasContent_innerSelectDisplay(p){
@@ -10740,7 +10740,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -10952,14 +10952,14 @@ with(MO){
    MO.FDsModelCanvasContent_loadByGuid = function FDsModelCanvasContent_loadByGuid(guid){
       var o = this;
       var space = o._activeSpace;
-      var modelConsole = RConsole.find(FE3dModelConsole);
+      var modelConsole = MO.Console.find(FE3dModelConsole);
       if(space){
          RStage.unregister(space);
          modelConsole.free(space);
       }
       space = o._activeSpace = modelConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
@@ -10977,7 +10977,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCanvasToolBar = function FDsModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName                 = 'resource.model.CanvasToolBar';
       o._canvasModeCd              = EDsCanvasMode.Drop;
       o._controlDrop               = null;
@@ -11116,7 +11116,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCatalogContent = function FDsModelCatalogContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       o._iconView             = 'resource.tools.view';
       o._iconViewNot          = 'resource.tools.viewno';
       o.onBuild               = FDsModelCatalogContent_onBuild;
@@ -11147,7 +11147,7 @@ with(MO){
       var o = this;
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -11163,7 +11163,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -11185,7 +11185,7 @@ with(MO){
       var n = p.treeNode;
       var c = p.treeNodeCell;
       var s = n.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -11194,7 +11194,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -11269,7 +11269,7 @@ with(MO){
    }
    MO.FDsModelCatalogContent_showObject = function FDsModelCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){
@@ -11291,7 +11291,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCatalogToolBar = function FDsModelCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.model.CatalogToolBar';
       o._activeNodeGuid        = null;
       o._controlCreateCamera   = null;
@@ -11338,16 +11338,16 @@ with(MO){
       var linker = node.dataPropertyGet('linker');
       var layer = null;
       var sprite = null;
-      if(RClass.isClass(linker, FDisplayLayer)){
+      if(MO.Class.isClass(linker, FDisplayLayer)){
          layer = linker;
-      }else if(RClass.isClass(linker, FE3dSprite)){
+      }else if(MO.Class.isClass(linker, FE3dSprite)){
          layer = linker.findParent(FDisplayLayer);
          sprite = linker;
       }else{
          return alert('请选中显示层或者精灵节点。');
       }
       var frameSet = o._frameSet;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = frameSet._activeSpace.resource().guid();
       dialog._layerGuid = layer.resource().guid();
@@ -11368,7 +11368,7 @@ with(MO){
    }
    MO.FDsModelCatalogToolBar_onCopyLoad = function FDsModelCatalogToolBar_onCopyLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsModelCatalogToolBar_onCopyExecute = function FDsModelCatalogToolBar_onCopyExecute(event){
       var o = this;
@@ -11377,8 +11377,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsModelCatalogToolBar_onCopyClick = function FDsModelCatalogToolBar_onCopyClick(event){
@@ -11386,12 +11386,12 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var sprite = null;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          sprite = linker;
          o._activeGuid = linker.resource().guid();
       }else{
@@ -11401,16 +11401,16 @@ with(MO){
       var parentResource = resource.parent();
       var displayResource = resource.clone();
       parentResource.pushDisplay(displayResource);
-      var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+      var display = MO.Console.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
       display.linkGraphicContext(sprite);
       display.loadResource(displayResource);
-      RConsole.find(FE3dSceneConsole).loadDisplay(display);
+      MO.Console.find(FE3dSceneConsole).loadDisplay(display);
       var parent = sprite.parent();
       parent.pushDisplay(display);
    }
    MO.FDsModelCatalogToolBar_onDeleteLoad = function FDsModelCatalogToolBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -11426,8 +11426,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsModelCatalogToolBar_onDeleteClick = function FDsModelCatalogToolBar_onDeleteClick(event){
@@ -11435,16 +11435,16 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          o._activeGuid = linker.resource().guid();
       }else{
          return alert('不能删除当前选中的节点.');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsModelCatalogToolBar_onFolderOpenClick = function FDsModelCatalogToolBar_onFolderOpenClick(event){
@@ -11462,7 +11462,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelFrameSet = function FDsModelFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCatalog         = null;
       o._frameCatalogToolBar  = null;
       o._frameCatalogContent  = null;
@@ -11510,35 +11510,35 @@ with(MO){
          return;
       }
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dSpace)){
+      if(MO.Class.isClass(select, FE3dSpace)){
          var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dLight)){
+      }else if(MO.Class.isClass(select, FG3dLight)){
          var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dModelDisplay)){
+      }else if(MO.Class.isClass(select, FE3dModelDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dModelRenderable)){
+      }else if(MO.Class.isClass(select, FE3dModelRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -11567,7 +11567,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelMenuBar = function FDsModelMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlSaveButton    = null;
       o._controlCaptureButton = null;
       o.onSaveLoad            = FDsModelMenuBar_onSaveLoad;
@@ -11579,24 +11579,24 @@ with(MO){
       return o;
    }
    MO.FDsModelMenuBar_onSaveLoad = function FDsModelMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsModelMenuBar_onSaveClick = function FDsModelMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      var connection = RConsole.find(FDrModelConsole).update(xconfig);
+      var connection = MO.Console.find(FDrModelConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsModelMenuBar_onCaptureLoad = function FDsModelMenuBar_onCaptureLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsModelMenuBar_onCaptureClick = function FDsModelMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var connection = o._frameSet._canvasContent.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
    }
@@ -11611,12 +11611,12 @@ with(MO){
 }
 with(MO){
    MO.FDsModelWorkspace = function FDsModelWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.mesh.Workspace';
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -11645,11 +11645,11 @@ with(MO){
       frame._hPanel.className = o.styleName('Body_Ground');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var menuBar = o._menuBar = RClass.create(FDsModelMenuBar);
+      var menuBar = o._menuBar = MO.Class.create(FDsModelMenuBar);
       menuBar._workspace = o;
       menuBar.buildDefine(p);
       o._frameToolBar.push(menuBar);
-      var frameSet = o._frameSet = RClass.create(FDsModelFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsModelFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -11669,35 +11669,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -11714,7 +11714,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -11736,7 +11736,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateCanvasContent = function FDsTemplateCanvasContent(o){
-      o = RClass.inherits(this, o, FDsSpaceCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceCanvas);
       o._resourceTypeCd     = EE3sResource.Template;
       o._context            = null;
       o._stage              = null;
@@ -11826,10 +11826,10 @@ with(MO){
       lc.setPosition(10, 10, 0);
       lc.lookAt(0, 0, 0);
       lc.update();
-      var event = new SEvent(o);
+      var event = new MO.SEvent(o);
       o.processLoadListener(event);
       event.dispose();
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateCanvasContent_oeRefresh = function FDsTemplateCanvasContent_oeRefresh(p){
       var o = this;
@@ -11849,22 +11849,22 @@ with(MO){
    MO.FDsTemplateCanvasContent_construct = function FDsTemplateCanvasContent_construct(){
       var o = this;
       o.__base.FDsSpaceCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
    }
    MO.FDsTemplateCanvasContent_loadByGuid = function FDsTemplateCanvasContent_loadByGuid(guid){
       var o = this;
       var space = o._activeSpace;
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       if(space){
          RStage.unregister(space);
          templateConsole.free(space);
       }
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
          space._linked = true;
          space.addLoadListener(o, o.onDataLoaded);
@@ -11874,14 +11874,14 @@ with(MO){
    MO.FDsTemplateCanvasContent_loadByCode = function FDsTemplateCanvasContent_loadByCode(code){
       var o = this;
       var space = o._activeSpace;
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       if(space){
          RStage.unregister(space);
          templateConsole.free(space);
       }
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
@@ -11896,7 +11896,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateCanvasToolBar = function FDsTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._refreshButton  = null;
       o._saveButton     = null;
       o._canvasModeCd   = EDsCanvasMode.Drop;
@@ -11953,7 +11953,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateCatalogContent = function FDsTemplateCatalogContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       o.onBuild        = FDsTemplateCatalogContent_onBuild;
       o.onNodeClick    = FDsTemplateCatalogContent_onNodeClick;
       o.construct      = FDsTemplateCatalogContent_construct;
@@ -12021,7 +12021,7 @@ with(MO){
       var resource = display.resource();
       var node = o.createNode();
       node.setTypeCode('Display');
-      node.setLabel(RString.nvl(resource.code(), 'Display'));
+      node.setLabel(MO.Lang.String.nvl(resource.code(), 'Display'));
       node.setNote(resource.label());
       node.dataPropertySet('linker', display);
       parentNode.appendNode(node);
@@ -12081,7 +12081,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateCatalogToolBar = function FDsTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.template.CatalogToolBar';
       o._activeNodeGuid        = null;
       o._controlCreateCamera   = null;
@@ -12122,7 +12122,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setContentCode('');
@@ -12131,7 +12131,7 @@ with(MO){
    }
    MO.FDsTemplateCatalogToolBar_onCopyLoad = function FDsTemplateCatalogToolBar_onCopyLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateCatalogToolBar_onCopyExecute = function FDsTemplateCatalogToolBar_onCopyExecute(event){
       var o = this;
@@ -12140,8 +12140,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsTemplateCatalogToolBar_onCopyClick = function FDsTemplateCatalogToolBar_onCopyClick(event){
@@ -12149,12 +12149,12 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var sprite = null;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          sprite = linker;
          o._activeGuid = linker.resource().guid();
       }else{
@@ -12164,16 +12164,16 @@ with(MO){
       var parentResource = resource.parent();
       var displayResource = resource.clone();
       parentResource.pushDisplay(displayResource);
-      var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+      var display = MO.Console.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
       display.linkGraphicContext(sprite);
       display.loadResource(displayResource);
-      RConsole.find(FE3dSceneConsole).loadDisplay(display);
+      MO.Console.find(FE3dSceneConsole).loadDisplay(display);
       var parent = sprite.parent();
       parent.pushDisplay(display);
    }
    MO.FDsTemplateCatalogToolBar_onDeleteLoad = function FDsTemplateCatalogToolBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -12189,8 +12189,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsTemplateCatalogToolBar_onDeleteClick = function FDsTemplateCatalogToolBar_onDeleteClick(event){
@@ -12198,16 +12198,16 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          o._activeGuid = linker.resource().guid();
       }else{
          return alert('不能删除当前选中的节点.');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsTemplateCatalogToolBar_onFolderOpenClick = function FDsTemplateCatalogToolBar_onFolderOpenClick(event){
@@ -12225,7 +12225,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateFrameSet = function FDsTemplateFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCatalog         = null;
       o._frameCatalogToolBar  = null;
       o._frameCatalogContent  = null;
@@ -12273,35 +12273,35 @@ with(MO){
          return;
       }
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dSpace)){
+      if(MO.Class.isClass(select, FE3dSpace)){
          var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dTemplateDisplay)){
+      }else if(MO.Class.isClass(select, FE3dTemplateDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRenderable)){
+      }else if(MO.Class.isClass(select, FE3dRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -12330,7 +12330,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateMenuBar = function FDsTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlSave           = null;
       o._controlCapture        = null;
       o._controlSelectMaterial = null;
@@ -12348,24 +12348,24 @@ with(MO){
       return o;
    }
    MO.FDsTemplateMenuBar_onSaveLoad = function FDsTemplateMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateMenuBar_onSaveClick = function FDsTemplateMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      var connection = RConsole.find(FDrTemplateConsole).update(xconfig);
+      var connection = MO.Console.find(FDrTemplateConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsTemplateMenuBar_onCaptureLoad = function FDsTemplateMenuBar_onCaptureLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateMenuBar_onCaptureClick = function FDsTemplateMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var canvas = o._frameSet._canvasContent;
       var connection = canvas.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
@@ -12374,7 +12374,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonMaterialDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -12386,7 +12386,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -12398,7 +12398,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setContentCode('');
@@ -12416,7 +12416,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateToolBar = function FDsTemplateToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._refreshButton = null;
       o._saveButton    = null;
       o.onBuild        = FDsTemplateToolBar_onBuild;
@@ -12429,13 +12429,13 @@ with(MO){
    MO.FDsTemplateToolBar_onBuild = function FDsTemplateToolBar_onBuild(p){
       var o = this;
       o.__base.FDuiToolBar.onBuild.call(o, p);
-      var b = o._refreshButton  = RClass.create(FDuiToolButton);
+      var b = o._refreshButton  = MO.Class.create(FDuiToolButton);
       b.setLabel('刷新');
       b.setIcon('design3d.tools.refresh');
       b.build(p);
       b.addClickListener(o, o.onRefreshClick);
       o.push(b);
-      var b = o._saveButton = RClass.create(FDuiToolButton);
+      var b = o._saveButton = MO.Class.create(FDuiToolButton);
       b.setLabel('保存');
       b.setIcon('design3d.tools.save');
       b.build(p);
@@ -12461,7 +12461,7 @@ with(MO){
             m.saveConfig(xr.create('Material'));
          }
       }
-      RConsole.find(FE3sTemplateConsole).update(xr);
+      MO.Console.find(FE3sTemplateConsole).update(xr);
    }
    MO.FDsTemplateToolBar_construct = function FDsTemplateToolBar_construct(){
       var o = this;
@@ -12474,12 +12474,12 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateWorkspace = function FDsTemplateWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
-      o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround  = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround    = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround  = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround   = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
+      o._styleToolbarGround    = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround  = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround    = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround  = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround   = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain          = null;
       o._framesetBody          = null;
       o._frameToolBar          = null;
@@ -12509,37 +12509,37 @@ with(MO){
       o.__base.FDuiWorkspace.onBuild.call(o, p);
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
-      var fs = o._framesetMain = RClass.create(FDuiFrameSet);
+      var fs = o._framesetMain = MO.Class.create(FDuiFrameSet);
       fs.build(p);
-      var f = o._frameToolBar = RClass.create(FDuiFramePage);
+      var f = o._frameToolBar = MO.Class.create(FDuiFramePage);
       f.setHeight(26);
       f.build(p);
       f._hPanel.className = o.styleName('Toolbar_Ground');
       fs.appendFrame(f);
-      var f = o._frameBody = RClass.create(FDuiFramePage);
+      var f = o._frameBody = MO.Class.create(FDuiFramePage);
       f.build(p);
       fs.appendFrame(f);
-      var f = o._frameStatusBar = RClass.create(FDuiFramePage);
+      var f = o._frameStatusBar = MO.Class.create(FDuiFramePage);
       f.setHeight(18);
       f.build(p);
       f._hPanel.className = o.styleName('Statusbar_Ground');
       fs.appendFrame(f);
       fs.setPanel(o._hPanel);
-      var fs = RClass.create(FDuiFrameSet);
+      var fs = MO.Class.create(FDuiFrameSet);
       fs._directionCd = EUiDirection.Horizontal;
       fs.build(p);
-      var f = o._frameCatalog = RClass.create(FDuiFramePage);
+      var f = o._frameCatalog = MO.Class.create(FDuiFramePage);
       f.setWidth(400);
       f.build(p);
       f._hPanel.className = o.styleName('Catalog_Ground');
       fs.appendFrame(f);
       var sp1 = fs.appendSpliter();
-      var f = o._frameWorkspace = RClass.create(FDuiFramePage);
+      var f = o._frameWorkspace = MO.Class.create(FDuiFramePage);
       f.build(p);
       f._hPanel.className = o.styleName('Workspace_Ground');
       fs.appendFrame(f);
       var sp2 = fs.appendSpliter();
-      var f = o._frameProperty = RClass.create(FDuiFramePage);
+      var f = o._frameProperty = MO.Class.create(FDuiFramePage);
       f.setWidth(240);
       f.build(p);
       f._hPanel.className = o.styleName('Property_Ground');
@@ -12549,13 +12549,13 @@ with(MO){
       sp1._hSize = o._frameCatalog._hPanel;
       sp2._alignCd = EUiAlign.Right;
       sp2._hSize = o._frameStatusBar._hPanel;
-      var c = o._catalog = RClass.create(FDsTemplateCatalog);
+      var c = o._catalog = MO.Class.create(FDsTemplateCatalog);
       c._workspace = o;
       c.build(p);
       c.setPanel(o._frameCatalog._hPanel);
       c.addSelectedListener(o, o.onCatalogSelected);
       o.push(c);
-      var c = o._toolbar = RClass.create(FDsTemplateToolBar);
+      var c = o._toolbar = MO.Class.create(FDsTemplateToolBar);
       c._workspace = o;
       c.build(p);
       c.setPanel(o._frameToolBar._hPanel);
@@ -12565,14 +12565,14 @@ with(MO){
       hf.style.height = '100%';
       var hc = RBuilder.appendTableRowCell(hf);
       hc.height = 20;
-      var c = o._canvasToolbar = RClass.create(FDsTemplateCanvasToolBar);
+      var c = o._canvasToolbar = MO.Class.create(FDsTemplateCanvasToolBar);
       c._workspace = o;
       c.build(p);
       c.setPanel(hc);
       o.push(c);
       var hc = RBuilder.appendTableRowCell(hf);
       hc.vAlign = 'top';
-      var c = o._canvas = RClass.create(FDsTemplateCanvas);
+      var c = o._canvas = MO.Class.create(FDsTemplateCanvas);
       c.addLoadListener(o, o.onTemplateLoad);
       c._workspace = o;
       c._toolbar = o._canvasToolbar;
@@ -12601,19 +12601,19 @@ with(MO){
       if(o._displayPropertyFrame){
          o._displayPropertyFrame.hide();
       }
-      if(RClass.isClass(p, FE3dTemplate)){
+      if(MO.Class.isClass(p, FE3dTemplate)){
          var f = o.templatePropertyFrame();
          f.show();
          f.loadObject(t);
-      }else if(RClass.isClass(p, FE3sTemplateTheme)){
+      }else if(MO.Class.isClass(p, FE3sTemplateTheme)){
          var f = o.themePropertyFrame();
          f.show();
          f.loadObject(t, p);
-      }else if(RClass.isClass(p, FE3sMaterial)){
+      }else if(MO.Class.isClass(p, FE3sMaterial)){
          var f = o.materialPropertyFrame();
          f.show();
          f.loadObject(t, p);
-      }else if(RClass.isClass(p, MG3dRenderable)){
+      }else if(MO.Class.isClass(p, MG3dRenderable)){
          var f = o.displayPropertyFrame();
          f.show();
          f.loadObject(t, p);
@@ -12630,7 +12630,7 @@ with(MO){
       var o = this;
       var f = o._templatePropertyFrame;
       if(!f){
-         f = o._templatePropertyFrame = RClass.create(FDsTemplatePropertyFrame);
+         f = o._templatePropertyFrame = MO.Class.create(FDsTemplatePropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -12641,7 +12641,7 @@ with(MO){
       var o = this;
       var f = o._themePropertyFrame;
       if(!f){
-         var f = o._themePropertyFrame = RClass.create(FDsTemplateThemePropertyFrame);
+         var f = o._themePropertyFrame = MO.Class.create(FDsTemplateThemePropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -12652,7 +12652,7 @@ with(MO){
       var o = this;
       var f = o._materialPropertyFrame;
       if(!f){
-         f = o._materialPropertyFrame = RClass.create(FDsTemplateMaterialPropertyFrame);
+         f = o._materialPropertyFrame = MO.Class.create(FDsTemplateMaterialPropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -12663,7 +12663,7 @@ with(MO){
       var o = this;
       var f = o._displayPropertyFrame;
       if(!f){
-         f = o._displayPropertyFrame = RClass.create(FDsTemplateDisplayPropertyFrame);
+         f = o._displayPropertyFrame = MO.Class.create(FDsTemplateDisplayPropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -12681,7 +12681,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneCanvasContent = function FDsSceneCanvasContent(o){
-      o = RClass.inherits(this, o, FDsSpaceDesignCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceDesignCanvas);
       o._resourceTypeCd = EE3sResource.Scene;
       o.loadByGuid      = FDsSceneCanvasContent_loadByGuid;
       o.dispose         = FDsSceneCanvasContent_dispose;
@@ -12691,19 +12691,19 @@ with(MO){
       var o = this;
       o.reloadRegion()
       o.processLoadListener(o);
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneCanvasContent_loadByGuid = function FDsSceneCanvasContent_loadByGuid(guid){
       var o = this;
       var space = o._activeSpace;
-      var sceneConsole = RConsole.find(FE3dSceneConsole);
+      var sceneConsole = MO.Console.find(FE3dSceneConsole);
       if(space){
          RStage.unregister(space);
          sceneConsole.free(space);
       }
       space = o._activeSpace = sceneConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
       }
@@ -12716,7 +12716,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneCanvasToolBar = function FDsSceneCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName         = 'resource.scene.CanvasToolBar';
       o._canvasModeCd      = EDsCanvasMode.Drop;
       o._controlModeDrop   = null;
@@ -12793,7 +12793,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneCatalogContent = function FDsSceneCatalogContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       o._catalogCode    = 'resource.scene';
       o.onBuild         = FDsSceneCatalogContent_onBuild;
       o.onLoadDisplay   = FDsSceneCatalogContent_onLoadDisplay;
@@ -12807,7 +12807,7 @@ with(MO){
    }
    MO.FDsSceneCatalogContent_onBuild = function FDsSceneCatalogContent_onBuild(event){
       var o = this;
-      var column = RClass.create(FDuiTreeColumn);
+      var column = MO.Class.create(FDuiTreeColumn);
       column.setName('view');
       o.push(column);
       o.__base.FDsCatalog.onBuild.call(o, event);
@@ -12920,7 +12920,7 @@ with(MO){
       var layerCount = layers.count();
       for(var i = 0; i < layerCount; i++){
          var layer = layers.at(i);
-         if(RClass.isClass(layer, FDisplayUiLayer)){
+         if(MO.Class.isClass(layer, FDisplayUiLayer)){
             continue;
          }
          var layerResource = layer.resource();
@@ -12955,7 +12955,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneCatalogToolBar = function FDsSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._activeNodeGuid        = null;
       o._controlCreateCamera   = null;
       o._controlCreateLayer    = null;
@@ -13009,16 +13009,16 @@ with(MO){
       var linker = node.dataPropertyGet('linker');
       var layer = null;
       var sprite = null;
-      if(RClass.isClass(linker, FDisplayLayer)){
+      if(MO.Class.isClass(linker, FDisplayLayer)){
          layer = linker;
-      }else if(RClass.isClass(linker, FE3dSprite)){
+      }else if(MO.Class.isClass(linker, FE3dSprite)){
          layer = linker.findParent(FDisplayLayer);
          sprite = linker;
       }else{
          return alert('请选中显示层或者精灵节点。');
       }
       var frameSet = o._frameSet;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = frameSet._activeSpace.resource().guid();
       dialog._layerGuid = layer.resource().guid();
@@ -13047,14 +13047,14 @@ with(MO){
       var linker = node.dataPropertyGet('linker');
       var layer = null;
       var sprite = null;
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          layer = linker.findParent(FDisplayLayer);
          sprite = linker;
       }else{
          return alert('请选中精灵节点。');
       }
       var frameSet = o._frameSet;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMovieDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonMovieDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = frameSet._activeSpace.resource().guid();
       dialog._layerGuid = layer.resource().guid();
@@ -13071,7 +13071,7 @@ with(MO){
    }
    MO.FDsSceneCatalogToolBar_onCopyLoad = function FDsSceneCatalogToolBar_onCopyLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneCatalogToolBar_onCopyExecute = function FDsSceneCatalogToolBar_onCopyExecute(event){
       var o = this;
@@ -13080,8 +13080,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsSceneCatalogToolBar_onCopyClick = function FDsSceneCatalogToolBar_onCopyClick(event){
@@ -13089,12 +13089,12 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var sprite = null;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          sprite = linker;
          o._activeGuid = linker.resource().guid();
       }else{
@@ -13104,16 +13104,16 @@ with(MO){
       var parentResource = resource.parent();
       var displayResource = resource.clone();
       parentResource.pushDisplay(displayResource);
-      var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+      var display = MO.Console.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
       display.linkGraphicContext(sprite);
       display.loadResource(displayResource);
-      RConsole.find(FE3dSceneConsole).loadDisplay(display);
+      MO.Console.find(FE3dSceneConsole).loadDisplay(display);
       var parent = sprite.parent();
       parent.pushDisplay(display);
    }
    MO.FDsSceneCatalogToolBar_onDeleteLoad = function FDsSceneCatalogToolBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -13129,8 +13129,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsSceneCatalogToolBar_onDeleteClick = function FDsSceneCatalogToolBar_onDeleteClick(event){
@@ -13138,16 +13138,16 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          o._activeGuid = linker.resource().guid();
       }else{
          return alert('不能删除当前选中的节点.');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsSceneCatalogToolBar_onFolderOpenClick = function FDsSceneCatalogToolBar_onFolderOpenClick(event){
@@ -13165,7 +13165,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneFrameSet = function FDsSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCatalog         = null;
       o._frameCatalogToolBar  = null;
       o._frameCatalogContent  = null;
@@ -13199,7 +13199,7 @@ with(MO){
       var spliter = o._spliterProperty;
       spliter.setAlignCd(EUiAlign.Right);
       spliter.setSizeHtml(o._frameProperty._hPanel);
-      var sceneConsole = RConsole.find(FE3dInstanceConsole);
+      var sceneConsole = MO.Console.find(FE3dInstanceConsole);
       sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
       sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
       sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
@@ -13218,23 +13218,23 @@ with(MO){
       }
       var canvas = o._canvasContent;
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dScene)){
+      if(MO.Class.isClass(select, FE3dScene)){
          var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -13242,36 +13242,36 @@ with(MO){
          if(flag){
             canvas.selectLayers(select);
          }
-      }else if(RClass.isClass(select, FE3dSceneLayer)){
+      }else if(MO.Class.isClass(select, FE3dSceneLayer)){
          if(flag){
             canvas.selectLayer(select);
          }
          var frame = o.findPropertyFrame(EDsFrame.CommonLayerPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dSceneDisplay)){
+      }else if(MO.Class.isClass(select, FE3dSceneDisplay)){
          if(flag){
             canvas.selectDisplay(select);
          }
          var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dSceneMaterial)){
+      }else if(MO.Class.isClass(select, FE3dSceneMaterial)){
          if(flag){
             canvas.selectMaterial(select);
          }
          var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dAnimation)){
+      }else if(MO.Class.isClass(select, FE3dAnimation)){
          var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMovie)){
+      }else if(MO.Class.isClass(select, FE3dMovie)){
          var frame = o.findPropertyFrame(EDsFrame.CommonMoviePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRenderable)){
+      }else if(MO.Class.isClass(select, FE3dRenderable)){
          if(flag){
             canvas.selectRenderable(select);
          }
@@ -13303,7 +13303,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneMenuBar = function FDsSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._refreshButton        = null;
       o._saveButton           = null;
       o._runButton            = null;
@@ -13324,25 +13324,25 @@ with(MO){
       o.__base.FDuiMenuBar.onBuilded.call(o, p);
    }
    MO.FDsSceneMenuBar_onSaveLoad = function FDsSceneMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneMenuBar_onSaveClick = function FDsSceneMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       space.commitResource();
       var resource = space.resource();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      var connection = RConsole.find(FDrSceneConsole).update(xconfig);
+      var connection = MO.Console.find(FDrSceneConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsSceneMenuBar_onCaptureLoad = function FDsSceneMenuBar_onCaptureLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneMenuBar_onCaptureClick = function FDsSceneMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var canvasContent = o._frameSet._canvasContent;
       var connection = canvasContent.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
@@ -13351,7 +13351,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonLayerDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonLayerDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -13363,7 +13363,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonTemplateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonTemplateDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -13387,7 +13387,7 @@ with(MO){
 }
 with(MO){
    MO.FDsScenePropertyToolBar = function FDsScenePropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName                   = 'resource.scene.PropertyToolBar';
       o._controlRefresh   = null;
       o._activeNodeGuid              = null;
@@ -13417,7 +13417,7 @@ with(MO){
          parentGuid = node.guid();
          parentLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._parentGuid = parentGuid;
@@ -13428,7 +13428,7 @@ with(MO){
    }
    MO.FDsScenePropertyToolBar_onFolderDeleteLoad = function FDsScenePropertyToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -13444,9 +13444,9 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
-      var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
+      var connection = MO.Console.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
    }
    MO.FDsScenePropertyToolBar_onFolderDeleteClick = function FDsScenePropertyToolBar_onFolderDeleteClick(event){
@@ -13454,9 +13454,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsScenePropertyToolBar_onFolderPropertyClick = function FDsScenePropertyToolBar_onFolderPropertyClick(event){
@@ -13464,13 +13464,13 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
          parentLabel = node._parent.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._nodeGuid = node._guid;
@@ -13494,13 +13494,13 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneWorkspace = function FDsSceneWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.share.scene.Workspace';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain         = null;
       o._framesetBody         = null;
       o._frameToolBar         = null;
@@ -13538,22 +13538,22 @@ with(MO){
       var f = o._propertySpliter = o.searchControl('propertySpliter');
       f.setAlignCd(EUiAlign.Right);
       f.setSizeHtml(o._frameProperty._hPanel);
-      var c = o._toolbar = RClass.create(FDsSceneMenuBar);
+      var c = o._toolbar = MO.Class.create(FDsSceneMenuBar);
       c._workspace = o;
       c.buildDefine(p);
       o._frameToolBar.push(c);
-      var c = o._catalog = RClass.create(FDsSceneCatalog);
+      var c = o._catalog = MO.Class.create(FDsSceneCatalog);
       c._workspace = o;
       c.build(p);
       c.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalog.push(c);
       var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-      var c = o._canvasToolbar = RClass.create(FDsSceneCanvasToolBar);
+      var c = o._canvasToolbar = MO.Class.create(FDsSceneCanvasToolBar);
       c._workspace = o;
       c.buildDefine(p);
       o._canvasToolbarFrame.push(c);
       var f = o._canvasFrame = o.searchControl('canvasFrame');
-      var c = o._canvas = RClass.create(FDsSceneCanvas);
+      var c = o._canvas = MO.Class.create(FDsSceneCanvas);
       c._workspace = o;
       c._toolbar = o._canvasToolbar;
       c.addLoadListener(o, o.onSceneLoad);
@@ -13576,23 +13576,23 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dScene)){
+      if(MO.Class.isClass(p, FE3dScene)){
          var f = o.findPropertyFrame(EDsFrame.SceneSpacePropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.SceneRegionPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
          f.show();
          f.loadObject(s, p);
@@ -13600,32 +13600,32 @@ with(MO){
          if(pc){
             o._canvas.selectLayers(p);
          }
-      }else if(RClass.isClass(p, FE3dSceneLayer)){
+      }else if(MO.Class.isClass(p, FE3dSceneLayer)){
          if(pc){
             o._canvas.selectLayer(p);
          }
          var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dSceneDisplay)){
+      }else if(MO.Class.isClass(p, FE3dSceneDisplay)){
          if(pc){
             o._canvas.selectDisplay(p);
          }
          var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dSceneMaterial)){
+      }else if(MO.Class.isClass(p, FE3dSceneMaterial)){
          if(pc){
             o._canvas.selectMaterial(p);
          }
          var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3rAnimation)){
+      }else if(MO.Class.isClass(p, FE3rAnimation)){
          var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dRenderable)){
+      }else if(MO.Class.isClass(p, FE3dRenderable)){
          if(pc){
             o._canvas.selectRenderable(p);
          }
@@ -13645,7 +13645,7 @@ with(MO){
       var o = this;
       var frame = o._propertyFrames.get(p);
       if(!frame){
-         frame = RConsole.find(FDuiFrameConsole).get(o, p, o._frameProperty._hContainer);
+         frame = MO.Console.find(FDuiFrameConsole).get(o, p, o._frameProperty._hContainer);
          frame._workspace = o;
          o._propertyFrames.set(p, frame);
       }

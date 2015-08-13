@@ -7,7 +7,7 @@ with(MO){
    // @history 150423
    //==========================================================
    MO.FDsShareResourceListItem = function FDsShareResourceListItem(o){
-      o = RClass.inherits(this, o, FDsResourceListItem);
+      o = MO.Class.inherits(this, o, FDsResourceListItem);
       return o;
    }
 }

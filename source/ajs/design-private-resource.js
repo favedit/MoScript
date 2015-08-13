@@ -1,13 +1,13 @@
 with(MO){
    MO.FDsPrivateResourceCatalogToolBar = function FDsPrivateResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceCatalogToolBar);
       o._frameName = 'resource.private.resource.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateResourceFrameSet = function FDsPrivateResourceFrameSet(o){
-      o = RClass.inherits(this, o, FDsResourceFrameSet);
+      o = MO.Class.inherits(this, o, FDsResourceFrameSet);
       o._frameName        = 'resource.share.resource.FrameSet';
       o.onBuilded         = FDsPrivateResourceFrameSet_onBuilded;
       o.onCatalogSelected = FDsPrivateResourceFrameSet_onCatalogSelected;
@@ -23,22 +23,22 @@ with(MO){
       var f = o._catalogSplitter = o.searchControl('catalogSpliter');
       f.setAlignCd(EUiAlign.Left);
       f.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsPrivateResourceCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsPrivateResourceCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsResourceCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameCatalogContent.push(control);
-      var control = o._listToolBar = RClass.create(FDsPrivateResourceListToolBar);
+      var control = o._listToolBar = MO.Class.create(FDsPrivateResourceListToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameListToolBar.push(control);
-      var control = o._listContent = RClass.create(FDsResourceListContent);
+      var control = o._listContent = MO.Class.create(FDsResourceListContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -53,35 +53,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -92,7 +92,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateResourceListToolBar = function FDsPrivateResourceListToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceListToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceListToolBar);
       o._frameName   = 'resource.private.resource.ListToolBar';
       o._storageCode = o._frameName;
       return o;
@@ -100,7 +100,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateResourceMenuBar = function FDsPrivateResourceMenuBar(o){
-      o = RClass.inherits(this, o, FDsResourceMenuBar);
+      o = MO.Class.inherits(this, o, FDsResourceMenuBar);
       o._frameName      = 'resource.private.resource.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsPrivateResourceMenuBar_onBuilded;

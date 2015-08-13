@@ -67,7 +67,7 @@ MO.FEditorDsFrameCatalogContent = function FEditorDsFrameCatalogContent(o){
 }
 MO.FEditorDsFrameCatalogToolBar = function FEditorDsFrameCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName = 'system.design.frame.CatalogToolBar';
+   o._frameName = 'editor.design.frame.CatalogToolBar';
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;
    o._controlFolderPropertyButton = null;
@@ -371,7 +371,7 @@ MO.FEditorDsFramePictureProperty_dispose = function FEditorDsFramePicturePropert
 }
 MO.FEditorDsFramePropertyToolBar = function FEditorDsFramePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;
@@ -642,7 +642,7 @@ MO.FEditorDsFrameSpaceContent_dispose = function FEditorDsFrameSpaceContent_disp
 }
 MO.FEditorDsFrameSpaceToolBar = function FEditorDsFrameSpaceToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName   = 'system.design.frame.SpaceToolBar';
+   o._frameName   = 'editor.design.frame.SpaceToolBar';
    o._storageCode = o._frameName;
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;

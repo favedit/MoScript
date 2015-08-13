@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsPrivateMaterialFrameSet = function FDsPrivateMaterialFrameSet(o){
-      o = RClass.inherits(this, o, FDsMaterialFrameSet);
+      o = MO.Class.inherits(this, o, FDsMaterialFrameSet);
       //..........................................................
       // @property
       o._frameName = 'resource.private.material.FrameSet';
@@ -28,25 +28,25 @@ with(MO){
       o.__base.FDsMaterialFrameSet.onBuilded.call(o, event);
       //..........................................................
       // 设置目录工具栏
-      var toolbar = o._catalogToolBar = RClass.create(FDsPrivateMaterialCatalogToolBar);
+      var toolbar = o._catalogToolBar = MO.Class.create(FDsPrivateMaterialCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
       // 设置目录内容
-      var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsMaterialCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       //catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
       //..........................................................
       // 设置画板工具栏
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateMaterialCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateMaterialCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
       //..........................................................
       // 设置属性工具栏
-      var toolbar = o._propertyToolBar = RClass.create(FDsMaterialPropertyToolBar);
+      var toolbar = o._propertyToolBar = MO.Class.create(FDsMaterialPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);

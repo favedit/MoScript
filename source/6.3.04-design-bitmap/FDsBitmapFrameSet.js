@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsBitmapFrameSet = function FDsBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       //..........................................................
       // @attribute
       o._frameCanvas          = null;
@@ -88,7 +88,7 @@ with(MO){
       var o = this;
       o._activeGuid = guid;
       // 获得资源信息
-      var bitmap = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+      var bitmap = o._activeResource = MO.Console.find(FDrBitmapConsole).query(guid);
       // 加载画板
       var canvas = o._canvasContent;
       canvas.loadByGuid(guid);
@@ -106,7 +106,7 @@ with(MO){
    MO.FDsBitmapFrameSet_loadByCode = function FDsBitmapFrameSet_loadByCode(code){
       var o = this;
       o._activeCode = code;
-      var connection = RConsole.find(FDrBitmapConsole).query(code);
+      var connection = MO.Console.find(FDrBitmapConsole).query(code);
       connection.addLoadListener(o, o.onDataLoaded);
    }
 

@@ -9,7 +9,7 @@ MO.FEditorDsFrameSpaceToolBar = function FEditorDsFrameSpaceToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
    //..........................................................
    // @property
-   o._frameName   = 'system.design.frame.SpaceToolBar';
+   o._frameName   = 'editor.design.frame.SpaceToolBar';
    o._storageCode = o._frameName;
    //..........................................................
    // @attribute

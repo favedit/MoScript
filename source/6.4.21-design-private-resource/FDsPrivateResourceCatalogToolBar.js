@@ -7,7 +7,7 @@ with(MO){
    // @history 150422
    //==========================================================
    MO.FDsPrivateResourceCatalogToolBar = function FDsPrivateResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceCatalogToolBar);
       //..........................................................
       // @property
       o._frameName = 'resource.private.resource.CatalogToolBar';

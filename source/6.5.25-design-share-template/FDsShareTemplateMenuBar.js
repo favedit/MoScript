@@ -7,7 +7,7 @@ with(MO){
    // @history 150416
    //==========================================================
    MO.FDsShareTemplateMenuBar = function FDsShareTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDsTemplateMenuBar);
+      o = MO.Class.inherits(this, o, FDsTemplateMenuBar);
       //..........................................................
       // @property
       o._frameName = 'resource.share.template.MenuBar';

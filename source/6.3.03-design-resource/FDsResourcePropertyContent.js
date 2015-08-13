@@ -7,7 +7,7 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FDsResourcePropertyContent = function FDsResourcePropertyContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       //..........................................................
       // @attribute
       o._activeSpace         = null;
@@ -75,7 +75,7 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.onBuild.call(o, p);
       // 创建简单舞台
-      //var g = o._activeStage = RClass.create(FE3dSimpleStage);
+      //var g = o._activeStage = MO.Class.create(FE3dSimpleStage);
       //g.linkGraphicContext(o);
       //g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
       //g.selectTechnique(o, FE3dGeneralTechnique);
@@ -105,7 +105,7 @@ with(MO){
       //o.__base.FDsCanvas.onBuild.call(o, p);
       // 创建界面控制器
       //var c = o._graphicContext;
-      //var tc = RConsole.find(FE3dTemplateConsole);
+      //var tc = MO.Console.find(FE3dTemplateConsole);
       //var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
       //t._optionFace = true;
       //t.hide();
@@ -131,7 +131,7 @@ with(MO){
       }
       // 选取物件
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -149,7 +149,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -406,12 +406,12 @@ with(MO){
    MO.FDsResourcePropertyContent_construct = function FDsResourcePropertyContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
 
@@ -428,7 +428,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -662,7 +662,7 @@ with(MO){
    //==========================================================
    MO.FDsResourcePropertyContent_loadMeshByGuid = function FDsResourcePropertyContent_loadMeshByGuid(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -687,7 +687,7 @@ with(MO){
    //==========================================================
    MO.FDsResourcePropertyContent_loadMeshByCode = function FDsResourcePropertyContent_loadMeshByCode(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }

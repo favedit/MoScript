@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsShareBitmapWorkspace = function FDsShareBitmapWorkspace(o){
-      o = RClass.inherits(this, o, FDsBitmapWorkspace);
+      o = MO.Class.inherits(this, o, FDsBitmapWorkspace);
       //..........................................................
       // @property
       o._frameName = 'resource.share.bitmap.Workspace';

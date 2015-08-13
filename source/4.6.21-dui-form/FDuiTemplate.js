@@ -113,9 +113,9 @@ MO.FDuiTemplate_formatDisplay = function FDuiTemplate_formatDisplay(p){
    var o = this;
    var r = MO.Lang.String.nvl(p);
    //if(ECase.Upper == o.editCase){
-   //   r = RString.toUpper(r);
+   //   r = MO.Lang.String.toUpper(r);
    //}else if(ECase.Lower == o.editCase){
-   //   r = RString.toLower(r);
+   //   r = MO.Lang.String.toLower(r);
    //}
    o._dataDisplay = r;
    return r;

@@ -27,7 +27,7 @@ MO.FDuiCalendarEditor = function FDuiCalendarEditor(o){
    o.hMinute          = null;
    o.hSecond          = null;
    o.hSelect          = null;
-   o.editFormat       = MO.RDate.DisplayFormat;
+   o.editFormat       = MO.MO.Lang.Date.DisplayFormat;
    o.dateOrg          = new MO.TDate();
    o.dateOrgValue     = null;
    o.dayCells         = new MO.TList();
@@ -116,11 +116,11 @@ MO.FDuiCalendarEditor_onTimeBlur = function FDuiCalendarEditor_onTimeBlur(e){
    var o = this;
     var h = e.hSource;
     if(h == o.hHour){
-       h.value = Math.min(RInteger.parse(h.value), 23);
+       h.value = Math.min(MO.Lang.Integer.parse(h.value), 23);
     }else if(h == o.hMinute){
-       h.value = Math.min(RInteger.parse(h.value), 59);
+       h.value = Math.min(MO.Lang.Integer.parse(h.value), 59);
     }else if(h == o.hSecond){
-       h.value = Math.min(RInteger.parse(h.value), 59);
+       h.value = Math.min(MO.Lang.Integer.parse(h.value), 59);
     }
     o.storeChange();
     o.setDate(o.date);
@@ -130,9 +130,9 @@ MO.FDuiCalendarEditor_onTimeBlur = function FDuiCalendarEditor_onTimeBlur(e){
 //响应时间按键事件
 MO.FDuiCalendarEditor_onDayDbClick = function FDuiCalendarEditor_onDayDbClick(e){
    var o = e.source
-   if(RClass.isClass(o, FDuiCalendarEditor) && 0 != RInteger.parse(e.hSource.innerText)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor) && 0 != MO.Lang.Integer.parse(e.hSource.innerText)){
       o.date.setDay(e.hSource.innerText);
-      o.dataValue = RDate.formatDate(o.date);
+      o.dataValue = MO.Lang.Date.formatDate(o.date);
       o.editEnd();
    }
 }
@@ -140,7 +140,7 @@ MO.FDuiCalendarEditor_onDayDbClick = function FDuiCalendarEditor_onDayDbClick(e)
 //==========================================================
 MO.FDuiCalendarEditor_onDaySelect = function FDuiCalendarEditor_onDaySelect(e){
    var o = this;
-   if(RClass.isClass(o, FDuiCalendarEditor) && 0 != RInteger.parse(e.hSource.innerText)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor) && 0 != MO.Lang.Integer.parse(e.hSource.innerText)){
      var h = e.hSource;
      if(o.hSelect){
         o.hSelect.style.border = '1 solid #FFFFFF';
@@ -153,8 +153,8 @@ MO.FDuiCalendarEditor_onDaySelect = function FDuiCalendarEditor_onDaySelect(e){
 //==========================================================
 MO.FDuiCalendarEditor_onButtonNow = function FDuiCalendarEditor_onButtonNow(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
-      o.dataValue = RDate.format();
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
+      o.dataValue = MO.Lang.Date.format();
       o.editEnd();
    }
 }
@@ -169,25 +169,25 @@ MO.FDuiCalendarEditor_onDateKeyDown = function FDuiCalendarEditor_onDateKeyDown(
       o.setDate(o.date);
    }else if(EKey.Up == e.keyCode){
       if(h == o.hYear){
-         o.hYear.value = RInteger.parse(o.hYear.value) + 1;
+         o.hYear.value = MO.Lang.Integer.parse(o.hYear.value) + 1;
       }else if(h == o.hMonth){
-         o.hMonth.value = RInteger.parse(o.hMonth.value) + 1;
+         o.hMonth.value = MO.Lang.Integer.parse(o.hMonth.value) + 1;
       }else if(h == o.hHour){
          if(o.hHour.editAble){
            if(v < 23){
-             h.value = RInteger.parse(h.value) + 1;
+             h.value = MO.Lang.Integer.parse(h.value) + 1;
           }
          }
      }else if(h == o.hMinute){
        if(o.hMinute.editAble){
           if(v < 59){
-            h.value = RInteger.parse(h.value) + 1;
+            h.value = MO.Lang.Integer.parse(h.value) + 1;
          }
         }
      }else{
         if(o.hSecond.editAble){
            if(v < 59){
-             h.value = RInteger.parse(h.value) + 1;
+             h.value = MO.Lang.Integer.parse(h.value) + 1;
            }
          }
      }
@@ -195,25 +195,25 @@ MO.FDuiCalendarEditor_onDateKeyDown = function FDuiCalendarEditor_onDateKeyDown(
       o.setDate(o.date);
    }else if(EKey.Down == e.keyCode){
       if(h == o.hYear){
-         o.hYear.value = RInteger.parse(o.hYear.value) - 1;
+         o.hYear.value = MO.Lang.Integer.parse(o.hYear.value) - 1;
       }else if(h == o.hMonth){
-         o.hMonth.value = RInteger.parse(o.hMonth.value) - 1;
+         o.hMonth.value = MO.Lang.Integer.parse(o.hMonth.value) - 1;
       }else if(h == o.hHour){
         if(o.hHour.editAble){
             if(v > 0){
-              h.value = RInteger.parse(h.value) - 1;
+              h.value = MO.Lang.Integer.parse(h.value) - 1;
            }
         }
      }else if(h == o.hMinute){
         if(o.hMinute.editAble){
            if(v > 0){
-               h.value = RInteger.parse(h.value) - 1;
+               h.value = MO.Lang.Integer.parse(h.value) - 1;
             }
         }
      }else{
         if(o.hSecond.editAble){
            if(v > 0){
-              h.value = RInteger.parse(h.value) - 1;
+              h.value = MO.Lang.Integer.parse(h.value) - 1;
            }
         }
      }
@@ -223,13 +223,13 @@ MO.FDuiCalendarEditor_onDateKeyDown = function FDuiCalendarEditor_onDateKeyDown(
    }else{
      if(h == o.hHour || h == o.hMinute || h == o.hSecond){
         if(h.editAble){
-           RKey.fixChars(he, RDate.Chars);
+           RKey.fixChars(he, MO.Lang.Date.Chars);
         }else{
            he.keyCode = 0;
            he.returnValue = false;
         }
      }else{
-        RKey.fixChars(he, RDate.Chars);
+        RKey.fixChars(he, MO.Lang.Date.Chars);
      }
    }
 }
@@ -242,7 +242,7 @@ MO.FDuiCalendarEditor_onDateBlur = function FDuiCalendarEditor_onDateBlur(){
 //==========================================================
 MO.FDuiCalendarEditor_onBuildDrop = function FDuiCalendarEditor_onBuildDrop(){
    var o = this;
-   o.hDatePanel = RBuilder.appendTable(o.hDropPanel);
+   o.hDatePanel = MO.Window.Builder.appendTable(o.hDropPanel);
    //o.hDropPanel.style.border = '2px solid red';
    o.hDropPanel.align = 'center';
    //o.hDropPanel.style.topPadding = '10';
@@ -294,14 +294,14 @@ MO.FDuiCalendarEditor_show = function FDuiCalendarEditor_show(v){
 MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    var o = this;
    // Panel
-   var hTab = RBuilder.appendTable(o.hTitlePanel, null, 0, 5, 1);
+   var hTab = MO.Window.Builder.appendTable(o.hTitlePanel, null, 0, 5, 1);
    hTab.align = 'center';
    hTab.width = '100%';
    hTab.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#E5FAFE', endColorStr='#FFFFFF', gradientType='0')";
    var hRow = hTab.insertRow();
    // Year Prior
    var hCel = hRow.insertCell();
-   var h = o.hYearPrior = RBuilder.append(hCel, 'SPAN', o.style('Button'));
+   var h = o.hYearPrior = MO.Window.Builder.append(hCel, 'SPAN', o.style('Button'));
    h.link = o;
    h.linkAction = o.onDateAction;
    h.innerText = '3';
@@ -315,7 +315,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    o.attachEvent("onMup",h);
    // Year
    var hCel = hRow.insertCell();
-   var h = o.hYear = RBuilder.append(hCel, 'INPUT', o.style('Year'));
+   var h = o.hYear = MO.Window.Builder.append(hCel, 'INPUT', o.style('Year'));
    h.maxLength = '4';
    o.attachEvent('onDateBlur', h, o.onDateBlur);
    o.attachEvent('onDateKeyDown', h, o.onDateKeyDown);
@@ -325,7 +325,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    hCel.className = o.style('YearMonth');
    // Year Next
    var hCel = hRow.insertCell();
-   var h = o.hYearNext = RBuilder.append(hCel, 'SPAN', o.style('Button'));
+   var h = o.hYearNext = MO.Window.Builder.append(hCel, 'SPAN', o.style('Button'));
    h.link = o;
    h.linkAction = o.onDateAction;
    h.innerText = '4';
@@ -342,7 +342,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    hCell.width='10';
    // Month Prior
    var hCel = hRow.insertCell();
-   var h = o.hMonthPrior = RBuilder.append(hCel, 'SPAN', o.style('Button'));
+   var h = o.hMonthPrior = MO.Window.Builder.append(hCel, 'SPAN', o.style('Button'));
    h.link = o;
    h.linkAction = o.onDateAction;
    h.innerText = '3';
@@ -356,7 +356,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    o.attachEvent("onMup",h);
    // Month
    var hCel = hRow.insertCell();
-   var h = o.hMonth = RBuilder.append(hCel, 'INPUT', o.style('Month'));
+   var h = o.hMonth = MO.Window.Builder.append(hCel, 'INPUT', o.style('Month'));
    h.maxLength = '2';
    o.attachEvent('onDateBlur', h, o.onDateBlur);
    o.attachEvent('onDateKeyDown', h, o.onDateKeyDown);
@@ -366,7 +366,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    hCel.className = o.style('YearMonth');
    // Month Next
    var hCel = hRow.insertCell();
-   var h = o.hMonthNext = RBuilder.append(hCel, 'SPAN', o.style('Button'));
+   var h = o.hMonthNext = MO.Window.Builder.append(hCel, 'SPAN', o.style('Button'));
    h.link = o;
    h.linkAction = o.onDateAction;
    h.innerText = '4';
@@ -382,7 +382,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
 //==========================================================
 MO.FDuiCalendarEditor_buildDays = function FDuiCalendarEditor_buildDays(){
    var o = this;
-   var hTab = RBuilder.appendTable(o.hDaysPanel, null, 0, 0, 1);
+   var hTab = MO.Window.Builder.appendTable(o.hDaysPanel, null, 0, 0, 1);
    hTab.width = '100%';
    // Week
    var weekDays = RContext.get('FDuiCalendarEditor:weekdays').split(',');
@@ -416,7 +416,7 @@ MO.FDuiCalendarEditor_buildDays = function FDuiCalendarEditor_buildDays(){
 //==========================================================
 MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    var o = this;
-   var hTab = RBuilder.appendTable(o.hTimePanel, null, 0, 1, 1);
+   var hTab = MO.Window.Builder.appendTable(o.hTimePanel, null, 0, 1, 1);
    var ht = o.hTimePanel;
    ht.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
    var hRow = hTab.insertRow();
@@ -431,13 +431,13 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    hl.innerText='时间:';
    // 建立时间框
    var hc = hRow.insertCell();
-   var hb = RBuilder.appendTable(hc, null, 0, 0, 0);
+   var hb = MO.Window.Builder.appendTable(hc, null, 0, 0, 0);
    hc.style.border = '1 solid #2BD6F0';
    hc.style.backgroundColor = '#FFFFFF';
    var hr = hb.insertRow();
    // 建立小时框
    var hh =hr.insertCell();
-   var hHour = o.hHour = RBuilder.appendEdit(hh, o.style('Hour'));
+   var hHour = o.hHour = MO.Window.Builder.appendEdit(hh, o.style('Hour'));
    hHour.maxLength = 2;
    o.attachEvent("onTimeClick", hHour);
    o.attachEvent("onDateKeyDown", hHour, o.onDateKeyDown);
@@ -447,7 +447,7 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    hs1.innerText = ':';
    // 建立分钟框
    var hm = hr.insertCell();
-   var hMinute = o.hMinute = RBuilder.appendEdit(hm, o.style('Minute'));
+   var hMinute = o.hMinute = MO.Window.Builder.appendEdit(hm, o.style('Minute'));
    hMinute.maxLength = 2;
    o.attachEvent("onTimeClick", hMinute);
    o.attachEvent("onDateKeyDown", hMinute, o.onDateKeyDown);
@@ -457,7 +457,7 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    hs2.innerText = ':';
    // 建立秒数框
    var hs = hr.insertCell();
-   var hSecond = o.hSecond = RBuilder.appendEdit(hs, o.style('Second'));
+   var hSecond = o.hSecond = MO.Window.Builder.appendEdit(hs, o.style('Second'));
    hSecond.maxLength = 2;
    o.attachEvent("onTimeClick", hSecond);
    o.attachEvent("onDateKeyDown", hSecond, o.onDateKeyDown);
@@ -468,7 +468,7 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    // 建立当前时间按钮
    var hn = hRow.insertCell();
    hn.style.display = 'none';
-   var hNow = o.hNow = RBuilder.append(hn, 'SPAN', o.style('Now'));
+   var hNow = o.hNow = MO.Window.Builder.append(hn, 'SPAN', o.style('Now'));
    hNow.style.width = 50;
    hn.style.border='1 solid #2BD6F0';
    hNow.innerText = RContext.get('FDuiCalendarEditor:now');
@@ -477,7 +477,7 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    o.attachEvent("onButtonNow", hNow);
    //建立cancel按键
    var hc = hRow.insertCell();
-   var hCl = o.hCancel = RBuilder.append(hc, 'SPAN', o.style('Ok'));
+   var hCl = o.hCancel = MO.Window.Builder.append(hc, 'SPAN', o.style('Ok'));
    hCl.style.width = 50;
    hc.style.border='1 solid #2BD6F0';
    hCl.link = o;
@@ -485,7 +485,7 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    hCl.innerText = RContext.get('FDuiCalendarEditor:cancel');
    // 建立OK按键
    var ho = hRow.insertCell();
-   var hOk = o.hOk = RBuilder.append(ho, 'SPAN', o.style('Ok'));
+   var hOk = o.hOk = MO.Window.Builder.append(ho, 'SPAN', o.style('Ok'));
    hOk.style.width = 50;
    ho.style.border='1 solid #2BD6F0';
    hOk.link = o;
@@ -508,14 +508,14 @@ MO.FDuiCalendarEditor_set = function FDuiCalendarEditor_set(value, format){
    o.dataValue = value;
    o.dateOrgValue = value;
    o.editFormat = format;
-   RDate.parse(o.date, value);
-   RDate.parse(o.dateOrg, value);
+   MO.Lang.Date.parse(o.date, value);
+   MO.Lang.Date.parse(o.dateOrg, value);
    if(!value){
       o.date.now();
-      RDate.parse(o.date, value);
-      RDate.parse(o.dateOrg, value);
+      MO.Lang.Date.parse(o.date, value);
+      MO.Lang.Date.parse(o.dateOrg, value);
    }
-   //o.hEdit.value = RDate.formatDate(o.date, o.editFormat);
+   //o.hEdit.value = MO.Lang.Date.formatDate(o.date, o.editFormat);
    o.setDate(o.date);
 }
 //==========================================================
@@ -525,9 +525,9 @@ MO.FDuiCalendarEditor_setDate = function FDuiCalendarEditor_setDate(date){
    o.hYear.value = date.year;
    // Set month
    o.hMonth.value = date.month;
-   o.hHour.value = RString.lpad(date.hour, 2, '0');
-   o.hMinute.value = RString.lpad(date.minute, 2, '0');
-   o.hSecond.value = RString.lpad(date.second, 2,'0');
+   o.hHour.value = MO.Lang.String.lpad(date.hour, 2, '0');
+   o.hMinute.value = MO.Lang.String.lpad(date.minute, 2, '0');
+   o.hSecond.value = MO.Lang.String.lpad(date.second, 2,'0');
    // Set day
    var selDay = date.day;
    if(!(o.dateOrg.year == date.year && o.dateOrg.month == date.month)){
@@ -612,15 +612,15 @@ MO.FDuiCalendarEditor_storeChange = function FDuiCalendarEditor_storeChange(){
    var o = this;
    o.date.setYear(o.hYear.value);
    o.date.setMonth(o.hMonth.value);
-   o.date.setHour(Math.min(RInteger.parse(o.hHour.value), 23));
-   o.date.setMinute(Math.min(RInteger.parse(o.hMinute.value), 59));
-   o.date.setSecond(Math.min(RInteger.parse(o.hSecond.value), 59));
+   o.date.setHour(Math.min(MO.Lang.Integer.parse(o.hHour.value), 23));
+   o.date.setMinute(Math.min(MO.Lang.Integer.parse(o.hMinute.value), 59));
+   o.date.setSecond(Math.min(MO.Lang.Integer.parse(o.hSecond.value), 59));
 }
 
 MO.FDuiCalendarEditor_onBuildButton = function FDuiCalendarEditor_onBuildButton(){
    var o = this;
    //o.base.FDropEditor.onBuildButton.call(o);
-   //var h = o.hNow = RBuilder.append(o.hButtonPanel, 'SPAN', o.style('Now'));
+   //var h = o.hNow = MO.Window.Builder.append(o.hButtonPanel, 'SPAN', o.style('Now'));
    //var hp = o.hButtonPanel;
    //hp.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
    //hp.height = 20;
@@ -631,7 +631,7 @@ MO.FDuiCalendarEditor_onBuildButton = function FDuiCalendarEditor_onBuildButton(
 //==========================================================
 MO.FDuiCalendarEditor_onMdown = function FDuiCalendarEditor_onMdown(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       o.isSkipBlur = true;
       if(e.hSource.linkAction){
          e.hSource.linkAction.call(o, e.hSource);
@@ -641,7 +641,7 @@ MO.FDuiCalendarEditor_onMdown = function FDuiCalendarEditor_onMdown(e){
 //==========================================================
 MO.FDuiCalendarEditor_onMup = function FDuiCalendarEditor_onMup(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       var f = o.focusObject;
       if(f && f.focus && f.select){
          f.focus();
@@ -652,7 +652,7 @@ MO.FDuiCalendarEditor_onMup = function FDuiCalendarEditor_onMup(e){
 ////==========================================================
 //function FDuiCalendarEditor_ohMdown(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FDuiCalendarEditor)){
+//   if(MO.Class.isClass(o, FDuiCalendarEditor)){
 //      o.isSkipBlur = true;
 //      if(this.linkAction){
 //         this.linkAction.call(o, this);
@@ -663,7 +663,7 @@ MO.FDuiCalendarEditor_onMup = function FDuiCalendarEditor_onMup(e){
 //function FDuiCalendarEditor_ohMup(){
 //   alert(FDuiCalendarEditor_ohMup);
 //   var o = this.link;
-//   if(RClass.isClass(o, FDuiCalendarEditor)){
+//   if(MO.Class.isClass(o, FDuiCalendarEditor)){
 //      var f = o.focusObject;
 //      if(f && f.focus && f.select){
 //         f.focus();
@@ -674,7 +674,7 @@ MO.FDuiCalendarEditor_onMup = function FDuiCalendarEditor_onMup(e){
 //==========================================================
 MO.FDuiCalendarEditor_ohKdown = function FDuiCalendarEditor_ohKdown(){
    var o = this.link;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       var e = RWindow.event(this);
       if(EKey.Esc == e.keyCode){
          o.dataValue = o.dateOrgValue;
@@ -701,14 +701,14 @@ MO.FDuiCalendarEditor_ohKdown = function FDuiCalendarEditor_ohKdown(){
 //==========================================================
 MO.FDuiCalendarEditor_onButtonOver = function FDuiCalendarEditor_onButtonOver(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       e.hSource.className = o.style('ButtonHover');
    }
 }
 //==========================================================
 MO.FDuiCalendarEditor_onButtonOut = function FDuiCalendarEditor_onButtonOut(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       e.hSource.className = o.style('Button');
    }
 }
@@ -717,30 +717,30 @@ MO.FDuiCalendarEditor_onButtonOut = function FDuiCalendarEditor_onButtonOut(e){
 ////==========================================================
 //function FDuiCalendarEditor_ohButtonOver(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FDuiCalendarEditor)){
+//   if(MO.Class.isClass(o, FDuiCalendarEditor)){
 //      this.className = o.style('ButtonHover');
 //   }
 //}
 ////==========================================================
 //function FDuiCalendarEditor_ohButtonOut(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FDuiCalendarEditor)){
+//   if(MO.Class.isClass(o, FDuiCalendarEditor)){
 //      this.className = o.style('Button');
 //   }
 //}
 //==========================================================
 MO.FDuiCalendarEditor_onButtonOk = function FDuiCalendarEditor_onButtonOk(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       o.editStatus = EEditStatus.Ok;
-      o.dataValue = RDate.formatDate(o.date);
+      o.dataValue = MO.Lang.Date.formatDate(o.date);
       o.editEnd();
    }
 }
 //==========================================================
 MO.FDuiCalendarEditor_onButtonCancel = function FDuiCalendarEditor_onButtonCancel(e) {
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
     o.editStatus = EEditStatus.Cancel;
      o.dataValue = '';
      o.editEnd();
@@ -750,16 +750,16 @@ MO.FDuiCalendarEditor_onButtonCancel = function FDuiCalendarEditor_onButtonCance
 //function FDuiCalendarEditor_ohButtonNow(){
 //   alert(FDuiCalendarEditor_ohButtonNow);
 //   var o = this.link;
-//   if(RClass.isClass(o, FDuiCalendarEditor)){
+//   if(MO.Class.isClass(o, FDuiCalendarEditor)){
 //      o.editStatus = EEditStatus.Ok;
-//      o.dataValue = RDate.format();
+//      o.dataValue = MO.Lang.Date.format();
 //      o.endEdit();
 //   }
 //}
 //==========================================================
 MO.FDuiCalendarEditor_ohDaysChange = function FDuiCalendarEditor_ohDaysChange(){
    var o = this.link;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       o.date.setYear(o.hYear.value);
       o.date.setMonth(o.hMonth.value);
       o.setDate(o.date);
@@ -768,7 +768,7 @@ MO.FDuiCalendarEditor_ohDaysChange = function FDuiCalendarEditor_ohDaysChange(){
 //==========================================================
 MO.FDuiCalendarEditor_ohKeyCheck = function FDuiCalendarEditor_ohKeyCheck(){
    var e = RWindow.event(this)
-   if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
+   if(!MO.Lang.String.inChars(String.fromCharCode(e.keyCode), MO.Lang.Date.Chars)){
       e.keyCode = 0;
    }
 }
@@ -776,7 +776,7 @@ MO.FDuiCalendarEditor_ohKeyCheck = function FDuiCalendarEditor_ohKeyCheck(){
 //==========================================================
 MO.FDuiCalendarEditor_onDayEnter = function FDuiCalendarEditor_onDayEnter(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor) && e.hSource.innerText != '.'){
+   if(MO.Class.isClass(o, FDuiCalendarEditor) && e.hSource.innerText != '.'){
       if(!e.hSource.isCurrent){
          e.hSource.className = o.style('DayHover');
       }
@@ -785,7 +785,7 @@ MO.FDuiCalendarEditor_onDayEnter = function FDuiCalendarEditor_onDayEnter(e){
 //==========================================================
 MO.FDuiCalendarEditor_onDayOut = function FDuiCalendarEditor_onDayOut(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor) && e.hSource.innerText != '.'){
+   if(MO.Class.isClass(o, FDuiCalendarEditor) && e.hSource.innerText != '.'){
       if(!e.hSource.isCurrent){
          e.hSource.className = e.hSource.isFree ? o.style('DayFree') : o.style('Day');
       }
@@ -795,7 +795,7 @@ MO.FDuiCalendarEditor_onDayOut = function FDuiCalendarEditor_onDayOut(e){
 ////==========================================================
 //function FDuiCalendarEditor_ohDayOver(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FDuiCalendarEditor) && this.innerText != '.'){
+//   if(MO.Class.isClass(o, FDuiCalendarEditor) && this.innerText != '.'){
 //      if(!this.isCurrent){
 //         this.className = o.style('DayHover');
 //      }
@@ -805,7 +805,7 @@ MO.FDuiCalendarEditor_onDayOut = function FDuiCalendarEditor_onDayOut(e){
 ////==========================================================
 //function FDuiCalendarEditor_ohDayOut(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FDuiCalendarEditor) && this.innerText != '.'){
+//   if(MO.Class.isClass(o, FDuiCalendarEditor) && this.innerText != '.'){
 //      if(!this.isCurrent){
 //         this.className = this.isFree ? o.style('DayFree') : o.style('Day');
 //      }
@@ -814,9 +814,9 @@ MO.FDuiCalendarEditor_onDayOut = function FDuiCalendarEditor_onDayOut(e){
 ////==========================================================
 //function FDuiCalendarEditor_ohDayClick(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FDuiCalendarEditor)){
+//   if(MO.Class.isClass(o, FDuiCalendarEditor)){
 //      o.date.setDay(this.innerText);
-//      o.dataValue = RDate.formatDate(o.date);
+//      o.dataValue = MO.Lang.Date.formatDate(o.date);
 //      o.editStatus = EEditStatus.Ok;
 //      o.endEdit();
 //   }

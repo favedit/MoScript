@@ -7,15 +7,15 @@ with(MO){
    // @history 150506
    //==========================================================
    MO.FDsResourceSelectDialog = function FDsResourceSelectDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.resource.SelectDialog';
       //..........................................................
       // @style
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
       //..........................................................
       // @attribute
       o._dataModeCd           = null;
@@ -70,13 +70,13 @@ with(MO){
       splitterCatalog.setSizeHtml(o._frameCatalog._hPanel);
       //..........................................................
       // 设置目录工具栏
-      var control = o._catalogToolbar = RClass.create(FDsResourceSelectCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsResourceSelectCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
       // 设置目录栏
-      var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsResourceCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -84,13 +84,13 @@ with(MO){
       o._frameCatalogContent.push(control);
       //..........................................................
       // 设置搜索栏
-      var control = o._listToolBar = RClass.create(FDsResourceSelectListToolBar);
+      var control = o._listToolBar = MO.Class.create(FDsResourceSelectListToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameListToolBar.push(control);
       // 设置搜索内容
-      var control = o._listContent = RClass.create(FDsResourceListContent);
+      var control = o._listContent = MO.Class.create(FDsResourceListContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -109,7 +109,7 @@ with(MO){
    MO.FDsResourceSelectDialog_onConfirmLoad = function FDsResourceSelectDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新目录
@@ -137,11 +137,11 @@ with(MO){
    MO.FDsResourceSelectDialog_onConfirmClick = function FDsResourceSelectDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var label = o._controlLabel.get();
       // 执行数据处理
-      var resourceConsole = RConsole.find(FDrResourceConsole);
+      var resourceConsole = MO.Console.find(FDrResourceConsole);
       var connection = null;
       if(o._dataModeCd == EUiDataMode.Insert){
          connection = resourceConsole.doFolderCreate(o._parentGuid, null, label);

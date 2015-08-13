@@ -186,12 +186,12 @@ MO.FDuiSelectEditor_buildItems = function FDuiSelectEditor_buildItems(p){
       var ci = cs.value(i);
       // 建立分割线
       //if(i > 0){
-      //   var hr = RBuilder.append(hb, 'TR');
+      //   var hr = MO.Window.Builder.append(hb, 'TR');
       //   hr.height = 1;
-      //   var hd = RBuilder.append(hr, 'TD');
+      //   var hd = MO.Window.Builder.append(hr, 'TD');
       //   hd.colSpan = 3;
       //   hd.style.borderTop = '1 dashed #24C2DB';
-      //   //RBuilder.appendEmpty(hd);
+      //   //MO.Window.Builder.appendEmpty(hd);
       //}
       // 建立控件
       ci.addClickListener(o, o.onItemClick);

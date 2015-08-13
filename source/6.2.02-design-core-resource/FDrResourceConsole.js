@@ -7,7 +7,7 @@ with(MO){
    // @version 150331
    //==========================================================
    MO.FDrResourceConsole = function FDrResourceConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       //..........................................................
       // @attribute
       o._serviceCode   = 'cloud.resource';
@@ -55,7 +55,7 @@ with(MO){
       var o = this;
       // 发送数据请求
       var url = '/' + o._serviceCode + '.ws?action=list&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 
    //==========================================================
@@ -68,7 +68,7 @@ with(MO){
    MO.FDrResourceConsole_doShare = function FDrResourceConsole_doShare(guid, shareCd){
       var o = this;
       var url = o.makeServiceUrl('share') + '&guid=' + guid + '&share_cd=' + shareCd;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 
    //==========================================================
@@ -81,7 +81,7 @@ with(MO){
    MO.FDrResourceConsole_doDelete = function FDrResourceConsole_doDelete(typeCd, guid){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 
    //==========================================================
@@ -98,7 +98,7 @@ with(MO){
       var o = this;
       // 发送数据请求
       var url = '/' + o._serviceCode + '.ws?action=listShare&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 
    //==========================================================
@@ -118,7 +118,7 @@ with(MO){
       xfolder.set('code', code);
       xfolder.set('label', label);
       // 发送数据
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
    }
 
    //==========================================================
@@ -138,7 +138,7 @@ with(MO){
       xfolder.set('code', code);
       xfolder.set('label', label);
       // 发送数据
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
    }
 
    //==========================================================
@@ -150,6 +150,6 @@ with(MO){
    MO.FDrResourceConsole_doFolderDelete = function FDrResourceConsole_doFolderDelete(guid){
       var o = this;
       var url = '/' + o._catalogCode + '.ws?action=delete&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 }

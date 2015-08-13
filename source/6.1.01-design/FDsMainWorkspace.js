@@ -6,14 +6,14 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsMainWorkspace = function FDsMainWorkspace(o){
-      o = RClass.inherits(this, o, FWorkspace);
+      o = MO.Class.inherits(this, o, FWorkspace);
       //..........................................................
       // @style
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       //..........................................................
       // @attribute
       o._framesetMain         = null;
@@ -59,20 +59,20 @@ with(MO){
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
       // 建立主框架
-      var fs = o._framesetMain = RClass.create(FFrameSet);
+      var fs = o._framesetMain = MO.Class.create(FFrameSet);
       fs.build(p);
       // 建立工具区
-      var f = o._frameToolBar = RClass.create(FFrame);
+      var f = o._frameToolBar = MO.Class.create(FFrame);
       f.setHeight(26);
       f.build(p);
       f._hPanel.className = o.styleName('Toolbar_Ground');
       fs.appendFrame(f);
       // 建立内容区
-      var f = o._frameBody = RClass.create(FFrame);
+      var f = o._frameBody = MO.Class.create(FFrame);
       f.build(p);
       fs.appendFrame(f);
       // 建立状态区
-      var f = o._frameProperty = RClass.create(FFrame);
+      var f = o._frameProperty = MO.Class.create(FFrame);
       f.setHeight(18);
       f.build(p);
       f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -80,11 +80,11 @@ with(MO){
       fs.setPanel(o._hPanel);
       //..........................................................
       // 建立内容框架
-      var fs = RClass.create(FFrameSet);
+      var fs = MO.Class.create(FFrameSet);
       fs._directionCd = EDirection.Horizontal;
       fs.build(p);
       // 建立目录区
-      var f = o._frameCatalog = RClass.create(FFrame);
+      var f = o._frameCatalog = MO.Class.create(FFrame);
       f.setWidth(300);
       f.build(p);
       f._hPanel.className = o.styleName('Catalog_Ground');
@@ -92,14 +92,14 @@ with(MO){
       // 建立分割符
       var sp1 = fs.appendSpliter();
       // 建立工作区
-      var f = o._frameWorkspace = RClass.create(FFrame);
+      var f = o._frameWorkspace = MO.Class.create(FFrame);
       f.build(p);
       f._hPanel.className = o.styleName('Workspace_Ground');
       fs.appendFrame(f);
       // 建立分割符
       var sp2 = fs.appendSpliter();
       // 建立属性区
-      var f = o._frameStatusBar = RClass.create(FFrame);
+      var f = o._frameStatusBar = MO.Class.create(FFrame);
       f.setWidth(360);
       f.build(p);
       f._hPanel.className = o.styleName('Property_Ground');
@@ -111,24 +111,24 @@ with(MO){
       sp2._alignCd = EAlign.Right;
       sp2._hSize = o._frameStatusBar._hPanel;
       //..........................................................
-      //var c = o._menubar = RClass.create(FDsMainMenuBar);
+      //var c = o._menubar = MO.Class.create(FDsMainMenuBar);
       //c.build(p);
       //c.setPanel(o._frameToolBar._hPanel);
       //..........................................................
-      var c = o._catalog = RClass.create(FDsMainCatalog);
+      var c = o._catalog = MO.Class.create(FDsMainCatalog);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameCatalog._hPanel);
       o.push(c);
       //..........................................................
-      var c = o._toolbar = RClass.create(FDsMainToolBar);
+      var c = o._toolbar = MO.Class.create(FDsMainToolBar);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameToolBar._hPanel);
       c._persistenceButton.click();
       o.push(c);
       //..........................................................
-      var c = o._canvas = RClass.create(FDsMainCanvas);
+      var c = o._canvas = MO.Class.create(FDsMainCanvas);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameWorkspace._hPanel);

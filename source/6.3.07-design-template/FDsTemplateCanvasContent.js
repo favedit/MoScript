@@ -7,7 +7,7 @@ with(MO){
    // @history 150130
    //==========================================================
    MO.FDsTemplateCanvasContent = function FDsTemplateCanvasContent(o){
-      o = RClass.inherits(this, o, FDsSpaceCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceCanvas);
       //..........................................................
       // @property
       o._resourceTypeCd     = EE3sResource.Template;
@@ -52,7 +52,7 @@ with(MO){
       var o = this;
       o.__base.FDsSpaceCanvas.onBuild.call(o, p);
       // 创建简单舞台
-      //var g = o._stage = RClass.create(FE3dSimpleStage);
+      //var g = o._stage = MO.Class.create(FE3dSimpleStage);
       //g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
       //g.selectTechnique(o, FE3dGeneralTechnique);
       //var sl = o._layer = o._stage.spriteLayer();
@@ -179,11 +179,11 @@ with(MO){
       lc.update();
       //space._layers.at(0).pushRenderable(o._dimensional);
       // 加载完成
-      var event = new SEvent(o);
+      var event = new MO.SEvent(o);
       o.processLoadListener(event);
       event.dispose();
       // 隐藏处理
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -219,10 +219,10 @@ with(MO){
    MO.FDsTemplateCanvasContent_construct = function FDsTemplateCanvasContent_construct(){
       var o = this;
       o.__base.FDsSpaceCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
    }
 
    //==========================================================
@@ -235,7 +235,7 @@ with(MO){
       var o = this;
       // 释放模板
       var space = o._activeSpace;
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       if(space){
          RStage.unregister(space);
          templateConsole.free(space);
@@ -244,7 +244,7 @@ with(MO){
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
          // 显示加载进度
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          // 设置事件
          space._layer.pushRenderable(o._dimensional);
          space._linked = true;
@@ -263,7 +263,7 @@ with(MO){
       var o = this;
       // 释放模板
       var space = o._activeSpace;
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       if(space){
          RStage.unregister(space);
          templateConsole.free(space);
@@ -272,7 +272,7 @@ with(MO){
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
          // 显示加载进度
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          // 设置事件
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);

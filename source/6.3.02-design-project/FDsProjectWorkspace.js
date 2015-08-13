@@ -6,22 +6,22 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsProjectWorkspace = function FDsProjectWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       //..........................................................
       // @property
       o._frameName            = 'design3d.project.Workspace';
       //..........................................................
       // @style
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyToolbar = RClass.register(o, new AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyToolbar = MO.Class.register(o, new AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       //..........................................................
       // @attribute
       o._resourceTypeCd       = 'project';
@@ -111,14 +111,14 @@ with(MO){
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
       // 设置工具栏
-      //var c = o._toolbar = RClass.create(FDsProjectMenuBar);
+      //var c = o._toolbar = MO.Class.create(FDsProjectMenuBar);
       //c._workspace = o;
       //c.buildDefine(p);
       //var hCell = o._hMenuPanel = RBuilder.appendTableCell(hRow);
       //hCell.appendChild(c._hPanel);
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
       // 设置分页栏
-      var c = o._tabBar = RClass.create(FDsProjectTabBar);
+      var c = o._tabBar = MO.Class.create(FDsProjectTabBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -130,35 +130,35 @@ with(MO){
       o._frameToolBar._hPanel.appendChild(hTable);
       //..........................................................
       // 设置目录工具栏
-      //var control = o._catalogToolbar = RClass.create(FDsProjectCatalogToolBar);
+      //var control = o._catalogToolbar = MO.Class.create(FDsProjectCatalogToolBar);
       //control._workspace = o;
       //control.buildDefine(p);
       //o._frameCatalogToolbar.push(control);
       // 设置目录栏
-      //var control = o._catalogContent = RClass.create(FDsProjectCatalogContent);
+      //var control = o._catalogContent = MO.Class.create(FDsProjectCatalogContent);
       //control._workspace = o;
       //control.build(p);
       //control.addSelectedListener(o, o.onCatalogSelected);
       //o._frameCatalogContent.push(control);
       //..........................................................
       // 设置搜索栏
-      //var control = o._searchToolbar = RClass.create(FDsProjectSearchToolBar);
+      //var control = o._searchToolbar = MO.Class.create(FDsProjectSearchToolBar);
       //control._workspace = o;
       //control.buildDefine(p);
       //o._frameSearchToolbar.push(control);
       // 设置搜索内容
-      //var control = o._searchContent = RClass.create(FDsProjectSearchContent);
+      //var control = o._searchContent = MO.Class.create(FDsProjectSearchContent);
       //control._workspace = o;
       //control.build(p);
       //o._frameSearchContent.push(control);
       //..........................................................
       // 设置画板工具栏
-      //var control = o._propertyToolbar = RClass.create(FDsProjectPropertyToolBar);
+      //var control = o._propertyToolbar = MO.Class.create(FDsProjectPropertyToolBar);
       //control._workspace = o;
       //control.buildDefine(p);
       //o._framePropertyToolbar.push(control);
       // 设置画板
-      //var control = o._propertyContent = RClass.create(FDsProjectPropertyContent);
+      //var control = o._propertyContent = MO.Class.create(FDsProjectPropertyContent);
       //control._workspace = o;
       //control._toolbar = o._propertyToolbar;
       //control._hParent = f._hPanel;
@@ -201,35 +201,35 @@ with(MO){
          f.hide();
       }
       // 显示选中属性面板
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -265,31 +265,31 @@ with(MO){
       if(!frameSet){
          if(name == EDsFrameSet.ProjectFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsProjectMenuBar);
+            var menuBar = MO.Class.create(FDsProjectMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ResourceFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsResourceMenuBar);
+            var menuBar = MO.Class.create(FDsResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.MeshFrameSet){
             // 创建菜单
-            var menuBar = RClass.create(FDsMeshMenuBar);
+            var menuBar = MO.Class.create(FDsMeshMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
             // 创建框架
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -331,7 +331,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);

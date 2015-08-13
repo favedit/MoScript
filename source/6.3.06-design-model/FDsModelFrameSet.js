@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsModelFrameSet = function FDsModelFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       //..........................................................
       // @attribute
       o._frameCatalog         = null;
@@ -91,35 +91,35 @@ with(MO){
       // 隐藏所有属性面板
       o.hidePropertyFrames();
       // 显示选中属性面板
-      if(RClass.isClass(select, FE3dSpace)){
+      if(MO.Class.isClass(select, FE3dSpace)){
          var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dLight)){
+      }else if(MO.Class.isClass(select, FG3dLight)){
          var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dModelDisplay)){
+      }else if(MO.Class.isClass(select, FE3dModelDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dModelRenderable)){
+      }else if(MO.Class.isClass(select, FE3dModelRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);

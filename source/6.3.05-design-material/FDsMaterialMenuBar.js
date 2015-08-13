@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMaterialMenuBar = function FDsMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @attribute
       o._controlBack     = null;
@@ -78,7 +78,7 @@ with(MO){
    //==========================================================
    MO.FDsMaterialMenuBar_onSaveLoad = function FDsMaterialMenuBar_onSaveLoad(event){
       // 解除画面锁定
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -92,12 +92,12 @@ with(MO){
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 存储配置
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
       // 更新处理
-      var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+      var connection = MO.Console.find(FE3sMeshConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
 
@@ -143,7 +143,7 @@ with(MO){
          return alert('请选中位图');
       }
       // 弹出界面
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._activeItem = item;
       dialog.switchModeCd('select');
@@ -162,7 +162,7 @@ with(MO){
    MO.FDsMaterialMenuBar_onImportClick = function FDsMaterialMenuBar_onImportClick(event){
       var o = this;
       // 弹出界面
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
       dialog._frameSet = o._frameSet;
       dialog.switchModeCd('import');
       dialog._controlCode.set('');
@@ -179,7 +179,7 @@ with(MO){
    MO.FDsMaterialMenuBar_onDeleteLoad = function FDsMaterialMenuBar_onDeleteLoad(event){
       var o = this;
       // 画面允许操作
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 刷新列表
       //var frame = o._frameSet._listContent;
       //frame.serviceResearch();
@@ -195,9 +195,9 @@ with(MO){
       var o = this;
       var item = o._frameSet._catalogContent.focusItem();
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 发送数据请求
-      var connection = RConsole.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
+      var connection = MO.Console.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
 
@@ -214,7 +214,7 @@ with(MO){
          return alert('请选中后再点击删除');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
 
@@ -226,7 +226,7 @@ with(MO){
    //==========================================================
    MO.FDsMaterialMenuBar_onCaptureLoad = function FDsMaterialMenuBar_onCaptureLoad(event){
       // 解除画面锁定
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -238,7 +238,7 @@ with(MO){
    MO.FDsMaterialMenuBar_onCaptureClick = function FDsMaterialMenuBar_onCaptureClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 上传数据
       var connection = o._frameSet._canvas.capture();
       connection.addLoadListener(o, o.onCaptureLoad);

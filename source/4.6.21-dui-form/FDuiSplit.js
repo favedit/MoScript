@@ -6,15 +6,15 @@
 // @version 150123
 //==========================================================
 MO.FDuiSplit = function FDuiSplit(o){
-   //o = RClass.inherits(this, o, FDuiControl, MDesign, MDisplay, MDuiHorizontal);
+   //o = MO.Class.inherits(this, o, FDuiControl, MDesign, MDisplay, MDuiHorizontal);
    o = MO.Class.inherits(this, o, MO.FDuiControl);
    //..........................................................
    // @property
-   //o._dispStyle        = RClass.register(o, new APtyString('_dispStyle', ESplitStyle.Normal));
-   //o._icon             = RClass.register(o, new APtyString('_icon'));
-   //o._editExtend       = RClass.register(o, new APtyBoolean('_editExtend'), true);
+   //o._dispStyle        = MO.Class.register(o, new MO.APtyString('_dispStyle', ESplitStyle.Normal));
+   //o._icon             = MO.Class.register(o, new MO.APtyString('_icon'));
+   //o._editExtend       = MO.Class.register(o, new MO.APtyBoolean('_editExtend'), true);
    // @style
-   //o._styleTitle       = RClass.register(o, new AStyle('Title'));
+   //o._styleTitle       = MO.Class.register(o, new MO.AStyle('Title'));
    //o._iconMinus        = 'ctl.collapse_nor';
    //o._iconPlus         = 'ctl.expand_nor';
    // @attribute
@@ -27,8 +27,8 @@ MO.FDuiSplit = function FDuiSplit(o){
    //o.hText             = null;
    //..........................................................
    // @event
-   //o.onSplitMouseEnter = RClass.register(o, new HMouseEnter('onSplitMouseEnter'), FDuiSplit_onSplitMouseEnter); 
-   //o.onSplitMouseLeave = RClass.register(o, new HMouseLeave('onSplitMouseLeave'), FDuiSplit_onSplitMouseLeave); 
+   //o.onSplitMouseEnter = MO.Class.register(o, new HMouseEnter('onSplitMouseEnter'), FDuiSplit_onSplitMouseEnter); 
+   //o.onSplitMouseLeave = MO.Class.register(o, new HMouseLeave('onSplitMouseLeave'), FDuiSplit_onSplitMouseLeave); 
    //o.onMouseDown       = FDuiSplit_onMouseDown;
    //o.onBuildPanel      = FDuiSplit_onBuildPanel;
    //..........................................................
@@ -90,8 +90,8 @@ MO.FDuiSplit_onMouseDown = function FDuiSplit_onMouseDown(){
 //==========================================================
 MO.FDuiSplit_onBuildPanel = function FDuiSplit_onBuildPanel(){
    var o = this;
-   o.hPanel = RBuilder.create(null, 'DIV');
-   o.hForm = RBuilder.appendTable(o.hPanel);
+   o.hPanel = MO.Window.Builder.create(null, 'DIV');
+   o.hForm = MO.Window.Builder.appendTable(o.hPanel);
    o.hForm.width = '100%';
 }
 
@@ -106,7 +106,7 @@ MO.FDuiSplit_oeBuild = function FDuiSplit_oeBuild(e){
    o.base.FDuiControl.oeBuild.call(o, e);
    o.height = 2;
    // Text
-   if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
+   if(MO.Lang.String.equals(o._dispStyle, ESplitStyle.Normal)){
       var hf = o.hForm;
       var hr = hf.insertRow()
       o.attachEvent('onSplitMouseEnter', hf);
@@ -117,19 +117,19 @@ MO.FDuiSplit_oeBuild = function FDuiSplit_oeBuild(e){
       hc.height = 25;
       hc.style.padding = '0 0';
       hc.style.background = 'url(' + RRes._iconPath('ctl.FDuiSplit_Panel') + ')';
-      RBuilder.appendEmpty(hc, 4);
-      o.hImage = RBuilder.appendIcon(hc, o._iconMinus);
+      MO.Window.Builder.appendEmpty(hc, 4);
+      o.hImage = MO.Window.Builder.appendIcon(hc, o._iconMinus);
       if(o._icon){
-         o.hIcon = RBuilder.appendIcon(hc, o._icon);
+         o.hIcon = MO.Window.Builder.appendIcon(hc, o._icon);
       }
-      o.hText = RBuilder.appendText(hc, '&nbsp;&nbsp;' + o.label);
+      o.hText = MO.Window.Builder.appendText(hc, '&nbsp;&nbsp;' + o.label);
       o.hText.style.fontWeight='BOLD';
-   }else if(RString.equals(o._dispStyle, ESplitStyle.BulgeLine)){
+   }else if(MO.Lang.String.equals(o._dispStyle, ESplitStyle.BulgeLine)){
       var h = this.hForm.insertRow().insertCell();
       h.style.borderBottom  = '1px solid #666666';
       h.style.borderTop  = '1px solid #DDDDDD';
       h.height = 2;
-   }else if(RString.equals(o._dispStyle, ESplitStyle.HollowLine)){
+   }else if(MO.Lang.String.equals(o._dispStyle, ESplitStyle.HollowLine)){
       var h = this.hForm.insertRow().insertCell();
       h.style.borderBottom  = '1px solid #DDDDDD';
       h.style.borderTop  = '1px solid #666666';

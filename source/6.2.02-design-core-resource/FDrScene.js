@@ -7,7 +7,7 @@ with(MO){
    // @version 150411
    //==========================================================
    MO.FDrScene = function FDrScene(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       //..........................................................
       // @attribute
       o._classCode   = 'Scene';

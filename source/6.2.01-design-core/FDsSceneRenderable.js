@@ -7,7 +7,7 @@ with(MO){
    // @history 150215
    //==========================================================
    MO.FDsSceneRenderable = function FDsSceneRenderable(o){
-      o = RClass.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
+      o = MO.Class.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
       //..........................................................
       // @attribute
       o._optionSelected = false;

@@ -7,7 +7,7 @@ with(MO){
    // @history 150316
    //==========================================================
    MO.FDsBitmapPropertyFrame = function FDsBitmapPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._activeBitmap      = null;

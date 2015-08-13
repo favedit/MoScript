@@ -6,7 +6,7 @@ with(MO){
    // @history 150215
    //==========================================================
    MO.MDsBoundBox = function MDsBoundBox(o){
-      o = RClass.inherits(this, o);
+      o = MO.Class.inherits(this, o);
       //..........................................................
       // @attribute
       o._boundVisible = false;
@@ -30,7 +30,7 @@ with(MO){
       var boundBox = o._boundBox;
       if(!boundBox){
          // 创建包围盒
-         boundBox = o._boundBox = RClass.create(FE3dBoundBox);
+         boundBox = o._boundBox = MO.Class.create(FE3dBoundBox);
          boundBox.linkGraphicContext(o);
          //boundBox.setParent(o);
          boundBox._drawable = o;

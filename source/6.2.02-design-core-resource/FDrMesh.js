@@ -7,7 +7,7 @@ with(MO){
    // @version 150331
    //==========================================================
    MO.FDrMesh = function FDrMesh(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       //..........................................................
       // @attribute
       o._classCode = 'Mesh';

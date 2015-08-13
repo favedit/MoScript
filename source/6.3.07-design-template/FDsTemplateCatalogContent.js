@@ -7,7 +7,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsTemplateCatalogContent = function FDsTemplateCatalogContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       //..........................................................
       // @event
       o.onBuild        = FDsTemplateCatalogContent_onBuild;
@@ -144,7 +144,7 @@ with(MO){
       var resource = display.resource();
       var node = o.createNode();
       node.setTypeCode('Display');
-      node.setLabel(RString.nvl(resource.code(), 'Display'));
+      node.setLabel(MO.Lang.String.nvl(resource.code(), 'Display'));
       node.setNote(resource.label());
       node.dataPropertySet('linker', display);
       parentNode.appendNode(node);

@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceCreateDialog = function FDsResourceCreateDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName        = 'resource.resource.CreateDialog';
@@ -66,9 +66,9 @@ with(MO){
       // 隐藏窗口
       o.hide();
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 检查结果
-      if(RConsole.find(FDuiResultConsole).checkEvent(event)){
+      if(MO.Console.find(FDuiResultConsole).checkEvent(event)){
          // 刷新搜索内容
          var frame = o._frameSet._listContent;
          frame.serviceResearch();
@@ -84,7 +84,7 @@ with(MO){
    MO.FDsResourceCreateDialog_onConfirmClick = function FDsResourceCreateDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
@@ -92,22 +92,22 @@ with(MO){
       var connection = null;
       switch(o._modeCd){
          case EE3sResource.Material:
-            var material = RClass.create(FDrMaterial);
+            var material = MO.Class.create(FDrMaterial);
             material.setCode(code);
             material.setLabel(label);
-            connection = RConsole.find(FDrMaterialConsole).doCreate(material);
+            connection = MO.Console.find(FDrMaterialConsole).doCreate(material);
             break;
          case EE3sResource.Template:
-            var template = RClass.create(FDrTemplate);
+            var template = MO.Class.create(FDrTemplate);
             template.setCode(code);
             template.setLabel(label);
-            connection = RConsole.find(FDrTemplateConsole).doCreate(template);
+            connection = MO.Console.find(FDrTemplateConsole).doCreate(template);
             break;
          case EE3sResource.Scene:
-            var scene = RClass.create(FDrScene);
+            var scene = MO.Class.create(FDrScene);
             scene.setCode(code);
             scene.setLabel(label);
-            connection = RConsole.find(FDrSceneConsole).doCreate(scene);
+            connection = MO.Console.find(FDrSceneConsole).doCreate(scene);
             break;
          default:
             throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);

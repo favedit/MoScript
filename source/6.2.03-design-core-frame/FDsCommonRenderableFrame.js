@@ -6,7 +6,7 @@ with(MO){
    // @history 150216
    //==========================================================
    MO.FDsCommonRenderableFrame = function FDsCommonRenderableFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._activeSpace      = null;
@@ -79,7 +79,7 @@ with(MO){
       var item = event.item;
       var materialRefer = item.tag();
       // 显示对话框
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
       dialog._frame = o;
       dialog._materialRefer = materialRefer;
       //dialog.setContentGuid('');
@@ -104,7 +104,7 @@ with(MO){
       // s.targetSource()
       var fragmentShader = program.fragmentShader();
       // 弹出内容
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
       dialog._frameSet = o._frameSet;
       dialog.setProgramCode(effect._code);
       dialog.setVertexSource(vertexShader.source(), vertexShader.targetSource());

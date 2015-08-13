@@ -7,7 +7,7 @@ with(MO){
    // @history 150424
    //==========================================================
    MO.FDsBitmapMenuBar = function FDsBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @attribute
       o._controlBack    = null;
@@ -47,7 +47,7 @@ with(MO){
    //==========================================================
    MO.FDsBitmapMenuBar_onSaveLoad = function FDsBitmapMenuBar_onSaveLoad(event){
       // 解除画面锁定
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -60,9 +60,9 @@ with(MO){
       var o = this;
       var bitmap = o._frameSet._activeResource;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 更新处理
-      var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
+      var connection = MO.Console.find(FDrBitmapConsole).doUpdate(bitmap);
       connection.addLoadListener(o, o.onSaveLoad);
    }
 
@@ -77,7 +77,7 @@ with(MO){
       // 获得资源
       var resource = o._frameSet._activeResource;
       // 弹出界面
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
       dialog._resource = resource;
       dialog._frameSet = o._frameSet;
       dialog.showPosition(EUiPosition.Center);

@@ -82,8 +82,8 @@ MO.FDuiCheckPicker_formatValue = function FDuiCheckPicker_formatValue(text){
       return '';
    }
 //
-//   if(RString.equals('Y',o.editCheck)){
-//      return RString.toUpper(text);
+//   if(MO.Lang.String.equals('Y',o.editCheck)){
+//      return MO.Lang.String.toUpper(text);
 //   }
 //   return this.items.value(text);
 }
@@ -112,7 +112,7 @@ MO.FDuiCheckPicker_formatText = function FDuiCheckPicker_formatText(v){
    }else{
       return '';
    }
-//   if(RString.equals('Y',o.editCheck) && RString.isEmpty(this.items.label(value))){
+//   if(MO.Lang.String.equals('Y',o.editCheck) && MO.Lang.String.isEmpty(this.items.label(value))){
 //      return value;
 //   }
    //return this.items.label(value);

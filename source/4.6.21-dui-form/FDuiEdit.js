@@ -114,9 +114,9 @@ MO.FDuiEdit_formatText = function FDuiEdit_formatText(value){
    var o = this;
    var result = MO.Lang.String.nvl(value);
    //if(ECase.Upper == o.editCase){
-   //   r = RString.toUpper(r);
+   //   r = MO.Lang.String.toUpper(r);
    //}else if(ECase.Lower == o.editCase){
-   //   r = RString.toLower(r);
+   //   r = MO.Lang.String.toLower(r);
    //}
    o._dataDisplay = result;
    return result;

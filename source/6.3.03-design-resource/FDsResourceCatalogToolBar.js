@@ -7,7 +7,7 @@ with(MO){
    // @history 150409
    //==========================================================
    MO.FDsResourceCatalogToolBar = function FDsResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       //..........................................................
       // @property
       o._frameName                   = 'resource.resource.CatalogToolBar';
@@ -75,7 +75,7 @@ with(MO){
          parentLabel = node.label();
       }
       // 显示窗口
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._parentGuid = parentGuid;
@@ -94,7 +94,7 @@ with(MO){
    MO.FDsResourceCatalogToolBar_onFolderDeleteLoad = function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 刷新目录
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
@@ -121,10 +121,10 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 删除数据处理
       o._activeNodeGuid = node._guid;
-      var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
+      var connection = MO.Console.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
    }
 
@@ -140,10 +140,10 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
 
@@ -159,14 +159,14 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
          parentLabel = node._parent.label();
       }
       // 显示属性窗口
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._nodeGuid = node._guid;

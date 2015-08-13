@@ -7,7 +7,7 @@ with(MO){
    // @version 150411
    //==========================================================
    MO.FDrSceneConsole = function FDrSceneConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       //..........................................................
       // @attribute
       o._serviceCode = 'cloud.resource.scene';
@@ -31,7 +31,7 @@ with(MO){
    MO.FDrSceneConsole_createCamera = function FDrSceneConsole_createCamera(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createCamera');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 
    //==========================================================
@@ -42,7 +42,7 @@ with(MO){
    MO.FDrSceneConsole_createLayer = function FDrSceneConsole_createLayer(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createLayer');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 
    //==========================================================
@@ -53,7 +53,7 @@ with(MO){
    MO.FDrSceneConsole_createSprite = function FDrSceneConsole_createSprite(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createSprite');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 
    //==========================================================
@@ -64,7 +64,7 @@ with(MO){
    MO.FDrSceneConsole_createMovie = function FDrSceneConsole_createMovie(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createMovie');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 
    //==========================================================
@@ -76,7 +76,7 @@ with(MO){
    MO.FDrSceneConsole_copyNode = function FDrSceneConsole_copyNode(sceneGuid, nodeGuid){
       var o = this;
       var url = o.makeServiceUrl('copyNode') + '&space_guid=' + sceneGuid + '&node_guid=' + nodeGuid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 
    //==========================================================
@@ -88,7 +88,7 @@ with(MO){
    MO.FDrSceneConsole_deleteNode = function FDrSceneConsole_deleteNode(sceneGuid, nodeGuid){
       var o = this;
       var url = o.makeServiceUrl('deleteNode') + '&space_guid=' + sceneGuid + '&node_guid=' + nodeGuid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 
    //==========================================================
@@ -101,6 +101,6 @@ with(MO){
       // 生成地址
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
       // 发送数据
-      return RConsole.find(FXmlConsole).sendAsync(url, p);
+      return MO.Console.find(FXmlConsole).sendAsync(url, p);
    }
 }

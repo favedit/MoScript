@@ -7,7 +7,7 @@ with(MO){
    // @history 150429
    //==========================================================
    MO.FDsCommonMaterialDialog = function FDsCommonMaterialDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.MaterialDialog';
@@ -70,7 +70,7 @@ with(MO){
    MO.FDsCommonMaterialDialog_onConfirmLoad = function FDsCommonMaterialDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新目录
@@ -98,7 +98,7 @@ with(MO){
    MO.FDsCommonMaterialDialog_onConfirmClick = function FDsCommonMaterialDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Material');
@@ -108,7 +108,7 @@ with(MO){
       xsprite.set('material_guid', o._controlMaterialGuid.get());
       xsprite.set('material_code', o._controlMaterialCode.get());
       // 执行数据处理
-      var connection = RConsole.find(FDrTemplateConsole).selectMaterial(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).selectMaterial(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
 

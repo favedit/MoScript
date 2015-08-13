@@ -7,7 +7,7 @@ with(MO){
    // @history 150508
    //==========================================================
    MO.FDsCommonMovieDialog = function FDsCommonMovieDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.common.dialog.MovieDialog';
@@ -70,7 +70,7 @@ with(MO){
    MO.FDsCommonMovieDialog_onConfirmLoad = function FDsCommonMovieDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
    }
@@ -84,7 +84,7 @@ with(MO){
    MO.FDsCommonMovieDialog_onConfirmClick = function FDsCommonMovieDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 获得属性
       var xaction = new TXmlNode('Action');
       var xmovie = xaction.create('Movie');
@@ -96,7 +96,7 @@ with(MO){
       xmovie.set('interval', o._controlInterval.get());
       xmovie.set('rotation', o._controlRotation.get());
       // 执行数据处理
-      var console = RConsole.find(FDrSceneConsole);
+      var console = MO.Console.find(FDrSceneConsole);
       var connection = null;
       connection = console.createMovie(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);

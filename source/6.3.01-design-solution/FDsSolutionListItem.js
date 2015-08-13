@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSolutionListItem = function FDsSolutionListItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
       //..........................................................
       // @event
       o.onBuild      = FDsSolutionListItem_onBuild;

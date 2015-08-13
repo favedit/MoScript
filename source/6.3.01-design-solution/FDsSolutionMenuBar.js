@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSolutionMenuBar = function FDsSolutionMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @property
       o._frameName      = 'resource.private.solution.MenuBar';
@@ -54,7 +54,7 @@ with(MO){
    //==========================================================
    MO.FDsSolutionMenuBar_onCreateClick = function FDsSolutionMenuBar_onCreateClick(event){
       var o = this;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsSolutionProjectDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsSolutionProjectDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog.showPosition(EUiPosition.Center);
@@ -69,7 +69,7 @@ with(MO){
    MO.FDsSolutionMenuBar_onDeleteLoad = function FDsSolutionMenuBar_onDeleteLoad(event){
       var o = this;
       // 画面允许操作
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 刷新列表
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
@@ -86,16 +86,16 @@ with(MO){
       // 检查结果
       if(event.resultCd != EResult.Success){
          // 画面允许操作
-         RConsole.find(FDuiDesktopConsole).hide();
+         MO.Console.find(FDuiDesktopConsole).hide();
          return
       }
       // 删除处理
       var listContent = o._frameSet._listContent;
       var guid = listContent._activeGuid;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 发送数据请求
-      var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
+      var connection = MO.Console.find(FDrProjectConsole).doDelete(guid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
 
@@ -112,7 +112,7 @@ with(MO){
          return alert('请选中后再点击删除');
       }
       // 删除确认窗口
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前项目？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前项目？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
 

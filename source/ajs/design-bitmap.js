@@ -1,12 +1,12 @@
 with(MO){
    MO.FDsBitmapCanvasContent = function FDsBitmapCanvasContent(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvas);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvas);
       return o;
    }
 }
 with(MO){
    MO.FDsBitmapCanvasToolBar = function FDsBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._canvasModeCd      = EDsCanvasMode.Drop;
       o._controlSize1      = null;
       o._controlSize2      = null;
@@ -51,7 +51,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapFrameSet = function FDsBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCanvas          = null;
       o._frameCanvasToolBar   = null;
       o._frameCanvasContent   = null;
@@ -90,7 +90,7 @@ with(MO){
    MO.FDsBitmapFrameSet_loadByGuid = function FDsBitmapFrameSet_loadByGuid(guid){
       var o = this;
       o._activeGuid = guid;
-      var bitmap = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+      var bitmap = o._activeResource = MO.Console.find(FDrBitmapConsole).query(guid);
       var canvas = o._canvasContent;
       canvas.loadByGuid(guid);
       var frame = o.findPropertyFrame(EDsFrame.BitmapPropertyFrame);
@@ -99,7 +99,7 @@ with(MO){
    MO.FDsBitmapFrameSet_loadByCode = function FDsBitmapFrameSet_loadByCode(code){
       var o = this;
       o._activeCode = code;
-      var connection = RConsole.find(FDrBitmapConsole).query(code);
+      var connection = MO.Console.find(FDrBitmapConsole).query(code);
       connection.addLoadListener(o, o.onDataLoaded);
    }
    MO.FDsBitmapFrameSet_reload = function FDsBitmapFrameSet_reload(){
@@ -112,7 +112,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapImportDialog = function FDsBitmapImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.bitmap.ImportDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -140,21 +140,21 @@ with(MO){
       var guid = resource.guid();
       var url = '/cloud.resource.bitmap.wv?do=updateData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsBitmapImportDialog_onConfirmLoad = function FDsBitmapImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       o._frameSet.reload();
    }
    MO.FDsBitmapImportDialog_onConfirmClick = function FDsBitmapImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -172,7 +172,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapMenuBar = function FDsBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlBack    = null;
       o._controlSave    = null;
       o._controlCapture = null;
@@ -189,19 +189,19 @@ with(MO){
       o.__base.FDuiMenuBar.onBuilded.call(o, event);
    }
    MO.FDsBitmapMenuBar_onSaveLoad = function FDsBitmapMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsBitmapMenuBar_onSaveClick = function FDsBitmapMenuBar_onSaveClick(event){
       var o = this;
       var bitmap = o._frameSet._activeResource;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrBitmapConsole).doUpdate(bitmap);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsBitmapMenuBar_onImportClick = function FDsBitmapMenuBar_onImportClick(event){
       var o = this;
       var resource = o._frameSet._activeResource;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
       dialog._resource = resource;
       dialog._frameSet = o._frameSet;
       dialog.showPosition(EUiPosition.Center);
@@ -217,7 +217,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapPropertyFrame = function FDsBitmapPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeBitmap      = null;
       o._controlGuid       = null;
       o._controlCode       = null;
@@ -263,7 +263,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapPropertyToolBar = function FDsBitmapPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.bitmap.PropertyToolBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsBitmapPropertyToolBar_onBuilded;
@@ -291,12 +291,12 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapWorkspace = function FDsBitmapWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -325,11 +325,11 @@ with(MO){
       frame._hPanel.className = o.styleName('Body_Ground');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var menuBar = o._menuBar = RClass.create(FDsBitmapMenuBar);
+      var menuBar = o._menuBar = MO.Class.create(FDsBitmapMenuBar);
       menuBar._workspace = o;
       menuBar.buildDefine(p);
       o._frameToolBar.push(menuBar);
-      var frameSet = o._frameSet = RClass.create(FDsBitmapFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsBitmapFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -349,35 +349,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -394,7 +394,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);

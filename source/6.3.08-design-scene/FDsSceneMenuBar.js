@@ -7,7 +7,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSceneMenuBar = function FDsSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       //..........................................................
       // @attribute
       o._refreshButton        = null;
@@ -51,7 +51,7 @@ with(MO){
    //==========================================================
    MO.FDsSceneMenuBar_onSaveLoad = function FDsSceneMenuBar_onSaveLoad(event){
       // 解除画面锁定
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -66,12 +66,12 @@ with(MO){
       space.commitResource();
       var resource = space.resource();
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 存储配置
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
       // 更新处理
-      var connection = RConsole.find(FDrSceneConsole).update(xconfig);
+      var connection = MO.Console.find(FDrSceneConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
 
@@ -83,7 +83,7 @@ with(MO){
    //==========================================================
    MO.FDsSceneMenuBar_onCaptureLoad = function FDsSceneMenuBar_onCaptureLoad(event){
       // 解除画面锁定
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -95,7 +95,7 @@ with(MO){
    MO.FDsSceneMenuBar_onCaptureClick = function FDsSceneMenuBar_onCaptureClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 上传数据
       var canvasContent = o._frameSet._canvasContent;
       var connection = canvasContent.capture();
@@ -113,7 +113,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonLayerDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonLayerDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -133,7 +133,7 @@ with(MO){
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
       // 显示对话框
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonTemplateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonTemplateDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -141,7 +141,7 @@ with(MO){
       dialog.setContentLabel('');
       dialog.showPosition(EUiPosition.Center);
       // 显示对话框
-      //var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceSelectDialog);
+      //var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceSelectDialog);
       //dialog._frameSet = frameSet;
       //dialog.showPosition(EUiPosition.Center);
    }

@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsProjectSceneCatalogContent = function FDsProjectSceneCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       //..........................................................
       // @const
       o._iconView             = 'design3d.mesh.view';
@@ -96,7 +96,7 @@ with(MO){
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
       // 测试显示对象
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -113,7 +113,7 @@ with(MO){
          }
       }
       // 测试绘制对象
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -130,7 +130,7 @@ with(MO){
          }
       }
       // 测试材质对象
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          if(p.ctrlKey){
             var ms = o._materials;
             for(var i = ms.count() - 1; i >= 0; i--){
@@ -161,7 +161,7 @@ with(MO){
       // 显示内容
       var s = n.dataPropertyGet('linker');
       // 测试显示对象
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -171,7 +171,7 @@ with(MO){
          }
       }
       // 测试绘制对象
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -181,7 +181,7 @@ with(MO){
          }
       }
       // 测试材质对象
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          var s = o._materials;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -345,7 +345,7 @@ with(MO){
    //==========================================================
    MO.FDsProjectSceneCatalogContent_showObject = function FDsProjectSceneCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){

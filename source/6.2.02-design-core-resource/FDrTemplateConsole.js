@@ -7,7 +7,7 @@ with(MO){
    // @version 150415
    //==========================================================
    MO.FDrTemplateConsole = function FDrTemplateConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       //..........................................................
       // @attribute
       o._serviceCode   = 'cloud.resource.template';
@@ -27,7 +27,7 @@ with(MO){
    MO.FDrTemplateConsole_selectMaterial = function FDrTemplateConsole_selectMaterial(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createMaterial');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 
    //==========================================================
@@ -38,7 +38,7 @@ with(MO){
    MO.FDrTemplateConsole_createDisplay = function FDrTemplateConsole_createDisplay(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createDisplay');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 
    //==========================================================
@@ -51,6 +51,6 @@ with(MO){
       // 生成地址
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
       // 发送数据
-      return RConsole.find(FXmlConsole).sendAsync(url, config);
+      return MO.Console.find(FXmlConsole).sendAsync(url, config);
    }
 }

@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsMainCatalog = function FDsMainCatalog(o){
-      o = RClass.inherits(this, o, FDataTreeView);
+      o = MO.Class.inherits(this, o, FDataTreeView);
       //..........................................................
       // @event
       o.onBuild     = FDsMainCatalog_onBuild;

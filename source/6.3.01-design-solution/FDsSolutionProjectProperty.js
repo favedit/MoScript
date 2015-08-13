@@ -7,7 +7,7 @@ with(MO){
    // @history 150210
    //==========================================================
    MO.FDsSolutionProjectProperty = function FDsSolutionProjectProperty(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._visible          = false;
@@ -104,7 +104,7 @@ with(MO){
       // 设置参数
       o._controlGuid.set(guid);
       // 发送数据请求
-      var connection = RConsole.find(FDrProjectConsole).doQuery(guid);
+      var connection = MO.Console.find(FDrProjectConsole).doQuery(guid);
       connection.addLoadListener(o, o.onLoadProject);
    }
 

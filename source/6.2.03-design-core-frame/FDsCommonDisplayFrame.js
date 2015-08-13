@@ -7,7 +7,7 @@ with(MO){
    // @history 150325
    //==========================================================
    MO.FDsCommonDisplayFrame = function FDsCommonDisplayFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       //..........................................................
       // @attribute
       o._activeSpace   = null;

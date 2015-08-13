@@ -7,7 +7,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDsSceneFrameSet = function FDsSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       //..........................................................
       // @attribute
       o._frameCatalog         = null;
@@ -62,7 +62,7 @@ with(MO){
       spliter.setSizeHtml(o._frameProperty._hPanel);
       //..........................................................
       // 设置实例工厂
-      var sceneConsole = RConsole.find(FE3dInstanceConsole);
+      var sceneConsole = MO.Console.find(FE3dInstanceConsole);
       sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
       sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
       sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
@@ -100,27 +100,27 @@ with(MO){
       // 隐藏所有属性面板
       o.hidePropertyFrames();
       // 显示选中属性面板
-      if(RClass.isClass(select, FE3dScene)){
+      if(MO.Class.isClass(select, FE3dScene)){
          // 选中场景
          var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          // 选中技术
          var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          // 选中区域
          var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          // 选中相机
          var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          // 选中光源
          var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
          frame.show();
@@ -130,7 +130,7 @@ with(MO){
          if(flag){
             canvas.selectLayers(select);
          }
-      }else if(RClass.isClass(select, FE3dSceneLayer)){
+      }else if(MO.Class.isClass(select, FE3dSceneLayer)){
          // 选中显示层
          if(flag){
             canvas.selectLayer(select);
@@ -138,7 +138,7 @@ with(MO){
          var frame = o.findPropertyFrame(EDsFrame.CommonLayerPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dSceneDisplay)){
+      }else if(MO.Class.isClass(select, FE3dSceneDisplay)){
          // 选中显示对象
          if(flag){
             canvas.selectDisplay(select);
@@ -146,7 +146,7 @@ with(MO){
          var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dSceneMaterial)){
+      }else if(MO.Class.isClass(select, FE3dSceneMaterial)){
          // 选中材质
          if(flag){
             canvas.selectMaterial(select);
@@ -154,17 +154,17 @@ with(MO){
          var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dAnimation)){
+      }else if(MO.Class.isClass(select, FE3dAnimation)){
          // 选中动画
          var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMovie)){
+      }else if(MO.Class.isClass(select, FE3dMovie)){
          // 选中动画
          var frame = o.findPropertyFrame(EDsFrame.CommonMoviePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRenderable)){
+      }else if(MO.Class.isClass(select, FE3dRenderable)){
          // 选中渲染对象
          if(flag){
             canvas.selectRenderable(select);

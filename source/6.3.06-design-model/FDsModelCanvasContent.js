@@ -7,7 +7,7 @@ with(MO){
    // @history 150423
    //==========================================================
    MO.FDsModelCanvasContent = function FDsModelCanvasContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       //..........................................................
       // @property
       o._resourceTypeCd      = EE3sResource.Model;
@@ -73,7 +73,7 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.onBuild.call(o, p);
       // 创建简单舞台
-      //var g = o._activeStage = RClass.create(FE3dSimpleStage);
+      //var g = o._activeStage = MO.Class.create(FE3dSimpleStage);
       //g.linkGraphicContext(o);
       //g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
       //g.selectTechnique(o, FE3dGeneralTechnique);
@@ -105,7 +105,7 @@ with(MO){
       //o.__base.FDsCanvas.onBuild.call(o, p);
       // 创建界面控制器
       //var c = o._graphicContext;
-      //var tc = RConsole.find(FE3dTemplateConsole);
+      //var tc = MO.Console.find(FE3dTemplateConsole);
       //var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
       //t._optionFace = true;
       //t.hide();
@@ -131,7 +131,7 @@ with(MO){
       }
       // 选取物件
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -149,7 +149,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -284,11 +284,11 @@ with(MO){
       lc.lookAt(0, 0, 0);
       lc.update();
       // 加载完成
-      var event = new SEvent(o);
+      var event = new MO.SEvent(o);
       o.processLoadListener(event);
       event.dispose();
       // 隐藏处理
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
 
    //==========================================================
@@ -331,15 +331,15 @@ with(MO){
    MO.FDsModelCanvasContent_construct = function FDsModelCanvasContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._autoDistance = new SPoint3(6, 6, 6);
-      o._autoOutline = new SOutline3d();
-      o._autoMatrix = new SMatrix3d();
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._autoDistance = new MO.SPoint3(6, 6, 6);
+      o._autoOutline = new MO.SOutline3d();
+      o._autoMatrix = new MO.SMatrix3d();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
 
@@ -356,7 +356,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -667,7 +667,7 @@ with(MO){
       var o = this;
       // 释放模型
       var space = o._activeSpace;
-      var modelConsole = RConsole.find(FE3dModelConsole);
+      var modelConsole = MO.Console.find(FE3dModelConsole);
       if(space){
          RStage.unregister(space);
          modelConsole.free(space);
@@ -676,7 +676,7 @@ with(MO){
       space = o._activeSpace = modelConsole.allocByGuid(o, guid);
       if(!space._linked){
          // 显示加载进度
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          // 设置坐标系
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);
@@ -695,9 +695,9 @@ with(MO){
    MO.FDsModelCanvasContent_loadByCode = function FDsModelCanvasContent_loadByCode(code){
       var o = this;
       // 显示加载进度
-      //RConsole.find(FDuiDesktopConsole).showLoading();
+      //MO.Console.find(FDuiDesktopConsole).showLoading();
       // 释放网格
-      //var rmc = RConsole.find(FE3dModelConsole);
+      //var rmc = MO.Console.find(FE3dModelConsole);
       //if(o._activeSpace != null){
       //   rmc.free(o._activeSpace);
       //}

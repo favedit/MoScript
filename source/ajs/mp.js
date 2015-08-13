@@ -9097,6 +9097,8 @@ MO.RRandom = new MO.RRandom();
 MO.Lang.Random = MO.RRandom;
 MO.AListener = function AListener(name, linker){
    var o = this;
+   MO.Assert.debugNotEmpty(name);
+   MO.Assert.debugNotEmpty(linker);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    return o;
@@ -40506,18 +40508,6 @@ MO.MDuiVertical_setVisible = function MDuiVertical_setVisible(p){
       MO.Window.Html.displaySet(h, p);
    }
 }
-MO.MListenerBlur = function MListenerBlur(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addBlurListener     = MO.MListenerBlur_addBlurListener;
-   o.processBlurListener = MO.MListenerBlur_processBlurListener;
-   return o;
-}
-MO.MListenerBlur_addBlurListener = function MListenerBlur_addBlurListener(w, m){
-   return this.addListener(MO.EEvent.Blur, w, m);
-}
-MO.MListenerBlur_processBlurListener = function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.Blur, p1, p2, p3, p4, p5);
-}
 MO.MListenerClick = function MListenerClick(o){
    o = MO.Class.inherits(this, o, MO.MListener);
    o.addClickListener     = MO.MListenerClick_addClickListener;
@@ -40549,70 +40539,6 @@ MO.MListenerDataChanged_addDataChangedListener = function MListenerDataChanged_a
 }
 MO.MListenerDataChanged_processDataChangedListener = function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
    this.processListener(MO.EEvent.DataChanged, p1, p2, p3, p4, p5);
-}
-MO.MListenerDoubleClick = function MListenerDoubleClick(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addDoubleClickListener     = MO.MListenerDoubleClick_addDoubleClickListener;
-   o.setDoubleClickListener     = MO.MListenerDoubleClick_setDoubleClickListener;
-   o.processDoubleClickListener = MO.MListenerDoubleClick_processDoubleClickListener;
-   return o;
-}
-MO.MListenerDoubleClick_addDoubleClickListener = function MListenerDoubleClick_addDoubleClickListener(owner, method){
-   return this.addListener(MO.EEvent.DoubleClick, owner, method);
-}
-MO.MListenerDoubleClick_setDoubleClickListener = function MListenerDoubleClick_setDoubleClickListener(owner, method){
-   return this.setListener(MO.EEvent.DoubleClick, owner, method);
-}
-MO.MListenerDoubleClick_processDoubleClickListener = function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.DoubleClick, p1, p2, p3, p4, p5);
-}
-MO.MListenerEnter = function MListenerEnter(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addEnterListener     = MO.MListenerEnter_addEnterListener;
-   o.processEnterListener = MO.MListenerEnter_processEnterListener;
-   return o;
-}
-MO.MListenerEnter_addEnterListener = function MListenerEnter_addEnterListener(w, m){
-   return this.addListener(MO.EEvent.Enter, w, m);
-}
-MO.MListenerEnter_processEnterListener = function MListenerEnter_processEnterListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.Enter, p1, p2, p3, p4, p5);
-}
-MO.MListenerFocus = function MListenerFocus(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addFocusListener     = MO.MListenerFocus_addFocusListener;
-   o.processFocusListener = MO.MListenerFocus_processFocusListener;
-   return o;
-}
-MO.MListenerFocus_addFocusListener = function MListenerFocus_addFocusListener(w, m){
-   return this.addListener(MO.EEvent.Focus, w, m);
-}
-MO.MListenerFocus_processFocusListener = function MListenerFocus_processFocusListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.Focus, p1, p2, p3, p4, p5);
-}
-MO.MListenerItemClick = function MListenerItemClick(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addItemClickListener     = MListenerItemClick_addItemClickListener;
-   o.processItemClickListener = MListenerItemClick_processItemClickListener;
-   return o;
-}
-MO.MListenerItemClick_addItemClickListener = function MListenerItemClick_addItemClickListener(w, m){
-   return this.addListener(MO.EEvent.ItemClick, w, m);
-}
-MO.MListenerItemClick_processItemClickListener = function MListenerItemClick_processItemClickListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.ItemClick, p1, p2, p3, p4, p5);
-}
-MO.MListenerLeave = function MListenerLeave(o){
-   o = MO.Class.inherits(this, o, MO.MListener);
-   o.addLeaveListener     = MO.MListenerLeave_addLeaveListener;
-   o.processLeaveListener = MO.MListenerLeave_processLeaveListener;
-   return o;
-}
-MO.MListenerLeave_addLeaveListener = function MListenerLeave_addLeaveListener(w, m){
-   return this.addListener(MO.EEvent.Leave, w, m);
-}
-MO.MListenerLeave_processLeaveListener = function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
-   this.processListener(MO.EEvent.Leave, p1, p2, p3, p4, p5);
 }
 MO.MListenerResult = function MListenerResult(o){
    o = MO.Class.inherits(this, o, MO.MListener);
@@ -43764,70 +43690,68 @@ MO.EUiSplitStyle = new function EUiSplitStyle(){
    o.HollowLine = 'H';
    return o;
 }
-with(MO){
-   MO.MDuiShadow = function MDuiShadow(o){
-      o = RClass.inherits(this, o);
-      o._hShadow   = null;
-      o.show       = MDuiShadow_show;
-      o.hide       = MDuiShadow_hide;
-      o.setVisible = MDuiShadow_setVisible;
-      return o;
+MO.MDuiShadow = function MDuiShadow(o){
+   o = MO.Class.inherits(this, o);
+   o._hShadow   = null;
+   o.show       = MO.MDuiShadow_show;
+   o.hide       = MO.MDuiShadow_hide;
+   o.setVisible = MO.MDuiShadow_setVisible;
+   return o;
+}
+MO.MDuiShadow_show = function MDuiShadow_show(v){
+   var o = this;
+   if(!o._hShadow){
+      o._hShadow = MO.Window.Builder.createDiv(o._hPanel, 'RWindow_Shadow');
    }
-   MO.MDuiShadow_show = function MDuiShadow_show(v){
-      var o = this;
+   o._hShadow.style.zIndex = MO.RDuiLayer.next();
+   if(v == false){
+      o.hide();
+   }else{
+      var hs = o.panel(MO.EPanel.Shadow);
+      if(hs){
+         var s = o._hShadow.style;
+         s.pixelLeft = hs.offsetLeft + 2;
+         s.pixelTop = hs.offsetTop + 2;
+         s.pixelWidth = hs.offsetWidth;
+         s.pixelHeight = hs.offsetHeight;
+         s.display = 'block';
+      }
+      var hp = o.panel(MO.EPanel.Panel);
+      if(hp){
+         hp.style.zIndex = MO.RDuiLayer.next();
+      }
+   }
+}
+MO.MDuiShadow_hide = function MDuiShadow_hide(){
+   var o = this;
+   if(o._hShadow){
+      o._hShadow.style.display = 'none';
+   }
+}
+MO.MDuiShadow_setVisible = function MDuiShadow_setVisible(p){
+   var o = this;
+   if(p){
       if(!o._hShadow){
-         o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
+         o._hShadow = MO.Window.Builder.createDiv(o._hPanel, 'RWindow_Shadow');
       }
-      o._hShadow.style.zIndex = RDuiLayer.next();
-      if(v == false){
-         o.hide();
-      }else{
-         var hs = o.panel(EPanel.Shadow);
-         if(hs){
-            var s = o._hShadow.style;
-            s.pixelLeft = hs.offsetLeft + 2;
-            s.pixelTop = hs.offsetTop + 2;
-            s.pixelWidth = hs.offsetWidth;
-            s.pixelHeight = hs.offsetHeight;
-            s.display = 'block';
-         }
-         var hp = o.panel(EPanel.Panel);
-         if(hp){
-            hp.style.zIndex = RDuiLayer.next();
-         }
+      o._hShadow.style.zIndex = MO.RDuiLayer.next();
+      var hs = o.panel(MO.EPanel.Shadow);
+      if(hs){
+         var r = MO.Window.Html.rect(hs);
+         var s = o._hShadow.style;
+         s.pixelLeft = r.left + 2;
+         s.pixelTop = r.top + 2;
+         s.pixelWidth = r.width();
+         s.pixelHeight = r.height();
+         s.display = 'block';
       }
-   }
-   MO.MDuiShadow_hide = function MDuiShadow_hide(){
-      var o = this;
+      var hp = o.panel(MO.EPanel.Panel);
+      if(hp){
+         hp.style.zIndex = MO.RDuiLayer.next();
+      }
+   }else{
       if(o._hShadow){
          o._hShadow.style.display = 'none';
-      }
-   }
-   MO.MDuiShadow_setVisible = function MDuiShadow_setVisible(p){
-      var o = this;
-      if(p){
-         if(!o._hShadow){
-            o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
-         }
-         o._hShadow.style.zIndex = RDuiLayer.next();
-         var hs = o.panel(EPanel.Shadow);
-         if(hs){
-            var r = RHtml.rect(hs);
-            var s = o._hShadow.style;
-            s.pixelLeft = r.left + 2;
-            s.pixelTop = r.top + 2;
-            s.pixelWidth = r.width();
-            s.pixelHeight = r.height();
-            s.display = 'block';
-         }
-         var hp = o.panel(EPanel.Panel);
-         if(hp){
-            hp.style.zIndex = RDuiLayer.next();
-         }
-      }else{
-         if(o._hShadow){
-            o._hShadow.style.display = 'none';
-         }
       }
    }
 }
@@ -44339,116 +44263,114 @@ MO.FDuiButton_dispose = function FDuiButton_dispose(){
    o._hLabel = null;
    o.__base.FDuiControl.dispose.call(o);
 }
-with(MO){
-   MO.FDuiCalendar = function FDuiCalendar(o){
-      o = RClass.inherits(this, o, FEditControl, MEditBorder, MDropable, MDescCalendar);
-      o.editFormat  = RDate.DisplayFormat;
-      o.editHour     = RClass.register(o, new TPtyBoolSet('editHour', 'editDate', EDateTimeMode.Hour));
-      o.editMinute   = RClass.register(o, new TPtyBoolSet('editMinute', 'editDate', EDateTimeMode.Minute));
-      o.editSecond   = RClass.register(o, new TPtyBoolSet('editSecond', 'editDate', EDateTimeMode.Second));
-      o.borderStyle = EUiBorder.RoundDrop;
-      o.date        = null;
-      o.lsnEditEnd  = null;
-      o.hForm       = null;
-      o.hDrop       = null;
-      o.hForm       = null;
-      o.onKeyPress  = FDuiCalendar_onKeyPress;
-      o.onDataClick   = FDuiCalendar_onDataClick;
-      o.refreshStyle  = FDuiCalendar_refreshStyle;
-      o.onEditEnd   = FDuiCalendar_onEditEnd;
-      o.onBuildEdit = FDuiCalendar_onBuildEdit;
-      o.construct   = FDuiCalendar_construct;
-      o.formatValue = FDuiCalendar_formatValue;
-      o.formatText  = FDuiCalendar_formatText;
-      o.drop        = FDuiCalendar_drop;
-      o.doBlur      = FDuiCalendar_doBlur;
-      return o;
+MO.FDuiCalendar = function FDuiCalendar(o){
+   o = MO.Class.inherits(this, o, MO.FEditControl, MO.MEditBorder, MO.MDropable, MO.MDescCalendar);
+   o.editFormat  = MO.Lang.Date.DisplayFormat;
+   o.editHour     = MO.Class.register(o, new MO.TPtyBoolSet('editHour', 'editDate', MO.EDateTimeMode.Hour));
+   o.editMinute   = MO.Class.register(o, new MO.TPtyBoolSet('editMinute', 'editDate', MO.EDateTimeMode.Minute));
+   o.editSecond   = MO.Class.register(o, new MO.TPtyBoolSet('editSecond', 'editDate', MO.EDateTimeMode.Second));
+   o.borderStyle = MO.EUiBorder.RoundDrop;
+   o.date        = null;
+   o.lsnEditEnd  = null;
+   o.hForm       = null;
+   o.hDrop       = null;
+   o.hForm       = null;
+   o.onKeyPress  = MO.FDuiCalendar_onKeyPress;
+   o.onDataClick   = MO.FDuiCalendar_onDataClick;
+   o.refreshStyle  = MO.FDuiCalendar_refreshStyle;
+   o.onEditEnd   = MO.FDuiCalendar_onEditEnd;
+   o.onBuildEdit = MO.FDuiCalendar_onBuildEdit;
+   o.construct   = MO.FDuiCalendar_construct;
+   o.formatValue = MO.FDuiCalendar_formatValue;
+   o.formatText  = MO.FDuiCalendar_formatText;
+   o.drop        = MO.FDuiCalendar_drop;
+   o.doBlur      = MO.FDuiCalendar_doBlur;
+   return o;
+}
+MO.FDuiCalendar_onDataClick = function FDuiCalendar_onDataClick(){
+   var o = this;
+   if(!o.editCheck){
+      o.drop();
    }
-   MO.FDuiCalendar_onDataClick = function FDuiCalendar_onDataClick(){
+}
+MO.FDuiCalendar_onBuildEdit = function FDuiCalendar_onBuildEdit(b){
+   var o = this;
+   var htb = MO.Window.Builder.appendTable(b.hPanel);
+    htb.style.tableLayout = 'fixed';
+    var hr = o.hEdit = htb.insertRow();
+   o.onBuildChange(hr.insertCell())
+   var hc = hr.insertCell();
+   var h = o.hEdit = MO.Window.Builder.appendEdit(hc, o.style('Edit'));
+   h.style.disabled = 'true';
+   if(o.editLength){
+      h.maxLength = o.editLength;
+   }
+}
+MO.FDuiCalendar_onEditEnd = function FDuiCalendar_onEditEnd(e){
+   var o = this;
+   if(e){
+      o.set(e.get());
+      o._invalidText = o.validText(o.text());
+      o.refreshStyle();
+   }
+   o.onDataEditEnd(o);
+}
+MO.FDuiCalendar_onKeyPress = function FDuiCalendar_onKeyPress(e){
+   if(!MO.Lang.String.inChars(String.fromCharCode(e.keyCode), MO.Lang.Date.Chars)){
+      RKey.eventClear(e);
+   }
+}
+MO.FDuiCalendar_construct = function FDuiCalendar_construct(){
+   var o = this;
+   o.base.FEditControl.construct.call(o);
+   o.date = new TDate();
+   o.lsnEditEnd = new TListener(o, o.onEditEnd);
+}
+MO.FDuiCalendar_formatValue = function FDuiCalendar_formatValue(t){
+   if(t){
       var o = this;
-      if(!o.editCheck){
-         o.drop();
+      if(t.toLowerCase() == '@now'){
+         o.date.now();
+         return MO.Lang.Date.formatDate(o.date);
+      }else{
+         MO.Lang.Date.autoParse(o.date, t);
+         return MO.Lang.Date.formatDate(o.date);
       }
    }
-   MO.FDuiCalendar_onBuildEdit = function FDuiCalendar_onBuildEdit(b){
+   return MO.Lang.String.nvl(t);
+}
+MO.FDuiCalendar_formatText = function FDuiCalendar_formatText(value){
+   if(value){
       var o = this;
-      var htb = RBuilder.appendTable(b.hPanel);
-       htb.style.tableLayout = 'fixed';
-       var hr = o.hEdit = htb.insertRow();
-      o.onBuildChange(hr.insertCell())
-      var hc = hr.insertCell();
-      var h = o.hEdit = RBuilder.appendEdit(hc, o.style('Edit'));
-      h.style.disabled = 'true';
-      if(o.editLength){
-         h.maxLength = o.editLength;
-      }
+      MO.Lang.Date.autoParse(o.date, value);
+      return MO.Lang.Date.formatDate(o.date, o.editFormat);
    }
-   MO.FDuiCalendar_onEditEnd = function FDuiCalendar_onEditEnd(e){
-      var o = this;
-      if(e){
-         o.set(e.get());
-         o._invalidText = o.validText(o.text());
-         o.refreshStyle();
-      }
-      o.onDataEditEnd(o);
+   return MO.Lang.String.nvl(value);
+}
+MO.FDuiCalendar_refreshStyle = function FDuiCalendar_refreshStyle(){
+   var o = this;
+   o.base.FEditControl.refreshStyle.call(o);
+   if(!o.editCheck){
+      o.hEdit.readOnly = 'true';
    }
-   MO.FDuiCalendar_onKeyPress = function FDuiCalendar_onKeyPress(e){
-      if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
-         RKey.eventClear(e);
-      }
+}
+MO.FDuiCalendar_drop = function FDuiCalendar_drop(){
+   var o = this;
+   if(o.canDrop() && o._editable){
+      var e = o.editor = RConsole.find(FEditConsole).focus(o, FDuiCalendarEditor, o.name);
+      e.set(o.reget(), o.editFormat);
+      e.setHourEditable(o.editHour);
+      e.setMinuteEditable(o.editMinute);
+      e.setSecondEditable(o.editSecond);
+      e.lsnEditEnd = o.lsnEditEnd;
+      e.show();
    }
-   MO.FDuiCalendar_construct = function FDuiCalendar_construct(){
-      var o = this;
-      o.base.FEditControl.construct.call(o);
-      o.date = new TDate();
-      o.lsnEditEnd = new TListener(o, o.onEditEnd);
-   }
-   MO.FDuiCalendar_formatValue = function FDuiCalendar_formatValue(t){
-      if(t){
-         var o = this;
-         if(t.toLowerCase() == '@now'){
-            o.date.now();
-            return RDate.formatDate(o.date);
-         }else{
-            RDate.autoParse(o.date, t);
-            return RDate.formatDate(o.date);
-         }
-      }
-      return RString.nvl(t);
-   }
-   MO.FDuiCalendar_formatText = function FDuiCalendar_formatText(value){
-      if(value){
-         var o = this;
-         RDate.autoParse(o.date, value);
-         return RDate.formatDate(o.date, o.editFormat);
-      }
-      return RString.nvl(value);
-   }
-   MO.FDuiCalendar_refreshStyle = function FDuiCalendar_refreshStyle(){
-      var o = this;
-      o.base.FEditControl.refreshStyle.call(o);
-      if(!o.editCheck){
-         o.hEdit.readOnly = 'true';
-      }
-   }
-   MO.FDuiCalendar_drop = function FDuiCalendar_drop(){
-      var o = this;
-      if(o.canDrop() && o._editable){
-         var e = o.editor = RConsole.find(FEditConsole).focus(o, FDuiCalendarEditor, o.name);
-         e.set(o.reget(), o.editFormat);
-         e.setHourEditable(o.editHour);
-         e.setMinuteEditable(o.editMinute);
-         e.setSecondEditable(o.editSecond);
-         e.lsnEditEnd = o.lsnEditEnd;
-         e.show();
-      }
-   }
-   MO.FDuiCalendar_doBlur = function FDuiCalendar_doBlur(){
-      var o = this;
-      o.base.FEditControl.doBlur.call(o);
-      if(o.editor){
-         o.editor.hide();
-      }
+}
+MO.FDuiCalendar_doBlur = function FDuiCalendar_doBlur(){
+   var o = this;
+   o.base.FEditControl.doBlur.call(o);
+   if(o.editor){
+      o.editor.hide();
    }
 }
 MO.FDuiCalendarEditor = function FDuiCalendarEditor(o){
@@ -44473,7 +44395,7 @@ MO.FDuiCalendarEditor = function FDuiCalendarEditor(o){
    o.hMinute          = null;
    o.hSecond          = null;
    o.hSelect          = null;
-   o.editFormat       = MO.RDate.DisplayFormat;
+   o.editFormat       = MO.MO.Lang.Date.DisplayFormat;
    o.dateOrg          = new MO.TDate();
    o.dateOrgValue     = null;
    o.dayCells         = new MO.TList();
@@ -44549,26 +44471,26 @@ MO.FDuiCalendarEditor_onTimeBlur = function FDuiCalendarEditor_onTimeBlur(e){
    var o = this;
     var h = e.hSource;
     if(h == o.hHour){
-       h.value = Math.min(RInteger.parse(h.value), 23);
+       h.value = Math.min(MO.Lang.Integer.parse(h.value), 23);
     }else if(h == o.hMinute){
-       h.value = Math.min(RInteger.parse(h.value), 59);
+       h.value = Math.min(MO.Lang.Integer.parse(h.value), 59);
     }else if(h == o.hSecond){
-       h.value = Math.min(RInteger.parse(h.value), 59);
+       h.value = Math.min(MO.Lang.Integer.parse(h.value), 59);
     }
     o.storeChange();
     o.setDate(o.date);
 }
 MO.FDuiCalendarEditor_onDayDbClick = function FDuiCalendarEditor_onDayDbClick(e){
    var o = e.source
-   if(RClass.isClass(o, FDuiCalendarEditor) && 0 != RInteger.parse(e.hSource.innerText)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor) && 0 != MO.Lang.Integer.parse(e.hSource.innerText)){
       o.date.setDay(e.hSource.innerText);
-      o.dataValue = RDate.formatDate(o.date);
+      o.dataValue = MO.Lang.Date.formatDate(o.date);
       o.editEnd();
    }
 }
 MO.FDuiCalendarEditor_onDaySelect = function FDuiCalendarEditor_onDaySelect(e){
    var o = this;
-   if(RClass.isClass(o, FDuiCalendarEditor) && 0 != RInteger.parse(e.hSource.innerText)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor) && 0 != MO.Lang.Integer.parse(e.hSource.innerText)){
      var h = e.hSource;
      if(o.hSelect){
         o.hSelect.style.border = '1 solid #FFFFFF';
@@ -44580,8 +44502,8 @@ MO.FDuiCalendarEditor_onDaySelect = function FDuiCalendarEditor_onDaySelect(e){
 }
 MO.FDuiCalendarEditor_onButtonNow = function FDuiCalendarEditor_onButtonNow(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
-      o.dataValue = RDate.format();
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
+      o.dataValue = MO.Lang.Date.format();
       o.editEnd();
    }
 }
@@ -44594,25 +44516,25 @@ MO.FDuiCalendarEditor_onDateKeyDown = function FDuiCalendarEditor_onDateKeyDown(
       o.setDate(o.date);
    }else if(EKey.Up == e.keyCode){
       if(h == o.hYear){
-         o.hYear.value = RInteger.parse(o.hYear.value) + 1;
+         o.hYear.value = MO.Lang.Integer.parse(o.hYear.value) + 1;
       }else if(h == o.hMonth){
-         o.hMonth.value = RInteger.parse(o.hMonth.value) + 1;
+         o.hMonth.value = MO.Lang.Integer.parse(o.hMonth.value) + 1;
       }else if(h == o.hHour){
          if(o.hHour.editAble){
            if(v < 23){
-             h.value = RInteger.parse(h.value) + 1;
+             h.value = MO.Lang.Integer.parse(h.value) + 1;
           }
          }
      }else if(h == o.hMinute){
        if(o.hMinute.editAble){
           if(v < 59){
-            h.value = RInteger.parse(h.value) + 1;
+            h.value = MO.Lang.Integer.parse(h.value) + 1;
          }
         }
      }else{
         if(o.hSecond.editAble){
            if(v < 59){
-             h.value = RInteger.parse(h.value) + 1;
+             h.value = MO.Lang.Integer.parse(h.value) + 1;
            }
          }
      }
@@ -44620,25 +44542,25 @@ MO.FDuiCalendarEditor_onDateKeyDown = function FDuiCalendarEditor_onDateKeyDown(
       o.setDate(o.date);
    }else if(EKey.Down == e.keyCode){
       if(h == o.hYear){
-         o.hYear.value = RInteger.parse(o.hYear.value) - 1;
+         o.hYear.value = MO.Lang.Integer.parse(o.hYear.value) - 1;
       }else if(h == o.hMonth){
-         o.hMonth.value = RInteger.parse(o.hMonth.value) - 1;
+         o.hMonth.value = MO.Lang.Integer.parse(o.hMonth.value) - 1;
       }else if(h == o.hHour){
         if(o.hHour.editAble){
             if(v > 0){
-              h.value = RInteger.parse(h.value) - 1;
+              h.value = MO.Lang.Integer.parse(h.value) - 1;
            }
         }
      }else if(h == o.hMinute){
         if(o.hMinute.editAble){
            if(v > 0){
-               h.value = RInteger.parse(h.value) - 1;
+               h.value = MO.Lang.Integer.parse(h.value) - 1;
             }
         }
      }else{
         if(o.hSecond.editAble){
            if(v > 0){
-              h.value = RInteger.parse(h.value) - 1;
+              h.value = MO.Lang.Integer.parse(h.value) - 1;
            }
         }
      }
@@ -44648,13 +44570,13 @@ MO.FDuiCalendarEditor_onDateKeyDown = function FDuiCalendarEditor_onDateKeyDown(
    }else{
      if(h == o.hHour || h == o.hMinute || h == o.hSecond){
         if(h.editAble){
-           RKey.fixChars(he, RDate.Chars);
+           RKey.fixChars(he, MO.Lang.Date.Chars);
         }else{
            he.keyCode = 0;
            he.returnValue = false;
         }
      }else{
-        RKey.fixChars(he, RDate.Chars);
+        RKey.fixChars(he, MO.Lang.Date.Chars);
      }
    }
 }
@@ -44665,7 +44587,7 @@ MO.FDuiCalendarEditor_onDateBlur = function FDuiCalendarEditor_onDateBlur(){
 }
 MO.FDuiCalendarEditor_onBuildDrop = function FDuiCalendarEditor_onBuildDrop(){
    var o = this;
-   o.hDatePanel = RBuilder.appendTable(o.hDropPanel);
+   o.hDatePanel = MO.Window.Builder.appendTable(o.hDropPanel);
    o.hDropPanel.align = 'center';
    o.hDatePanel.width = '100%';
    var hRow = o.hDatePanel.insertRow();
@@ -44698,13 +44620,13 @@ MO.FDuiCalendarEditor_show = function FDuiCalendarEditor_show(v){
 }
 MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    var o = this;
-   var hTab = RBuilder.appendTable(o.hTitlePanel, null, 0, 5, 1);
+   var hTab = MO.Window.Builder.appendTable(o.hTitlePanel, null, 0, 5, 1);
    hTab.align = 'center';
    hTab.width = '100%';
    hTab.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#E5FAFE', endColorStr='#FFFFFF', gradientType='0')";
    var hRow = hTab.insertRow();
    var hCel = hRow.insertCell();
-   var h = o.hYearPrior = RBuilder.append(hCel, 'SPAN', o.style('Button'));
+   var h = o.hYearPrior = MO.Window.Builder.append(hCel, 'SPAN', o.style('Button'));
    h.link = o;
    h.linkAction = o.onDateAction;
    h.innerText = '3';
@@ -44713,7 +44635,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    o.attachEvent("onMdown",h);
    o.attachEvent("onMup",h);
    var hCel = hRow.insertCell();
-   var h = o.hYear = RBuilder.append(hCel, 'INPUT', o.style('Year'));
+   var h = o.hYear = MO.Window.Builder.append(hCel, 'INPUT', o.style('Year'));
    h.maxLength = '4';
    o.attachEvent('onDateBlur', h, o.onDateBlur);
    o.attachEvent('onDateKeyDown', h, o.onDateKeyDown);
@@ -44721,7 +44643,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    hCel.innerText = RContext.get('FDuiCalendarEditor:year');
    hCel.className = o.style('YearMonth');
    var hCel = hRow.insertCell();
-   var h = o.hYearNext = RBuilder.append(hCel, 'SPAN', o.style('Button'));
+   var h = o.hYearNext = MO.Window.Builder.append(hCel, 'SPAN', o.style('Button'));
    h.link = o;
    h.linkAction = o.onDateAction;
    h.innerText = '4';
@@ -44732,7 +44654,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    var hCell = hRow.insertCell();
    hCell.width='10';
    var hCel = hRow.insertCell();
-   var h = o.hMonthPrior = RBuilder.append(hCel, 'SPAN', o.style('Button'));
+   var h = o.hMonthPrior = MO.Window.Builder.append(hCel, 'SPAN', o.style('Button'));
    h.link = o;
    h.linkAction = o.onDateAction;
    h.innerText = '3';
@@ -44741,7 +44663,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    o.attachEvent("onMdown",h);
    o.attachEvent("onMup",h);
    var hCel = hRow.insertCell();
-   var h = o.hMonth = RBuilder.append(hCel, 'INPUT', o.style('Month'));
+   var h = o.hMonth = MO.Window.Builder.append(hCel, 'INPUT', o.style('Month'));
    h.maxLength = '2';
    o.attachEvent('onDateBlur', h, o.onDateBlur);
    o.attachEvent('onDateKeyDown', h, o.onDateKeyDown);
@@ -44749,7 +44671,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
    hCel.innerText = RContext.get('FDuiCalendarEditor:month');
    hCel.className = o.style('YearMonth');
    var hCel = hRow.insertCell();
-   var h = o.hMonthNext = RBuilder.append(hCel, 'SPAN', o.style('Button'));
+   var h = o.hMonthNext = MO.Window.Builder.append(hCel, 'SPAN', o.style('Button'));
    h.link = o;
    h.linkAction = o.onDateAction;
    h.innerText = '4';
@@ -44760,7 +44682,7 @@ MO.FDuiCalendarEditor_buildTitle = function FDuiCalendarEditor_buildTitle(){
 }
 MO.FDuiCalendarEditor_buildDays = function FDuiCalendarEditor_buildDays(){
    var o = this;
-   var hTab = RBuilder.appendTable(o.hDaysPanel, null, 0, 0, 1);
+   var hTab = MO.Window.Builder.appendTable(o.hDaysPanel, null, 0, 0, 1);
    hTab.width = '100%';
    var weekDays = RContext.get('FDuiCalendarEditor:weekdays').split(',');
    var count = weekDays.length;
@@ -44788,7 +44710,7 @@ MO.FDuiCalendarEditor_buildDays = function FDuiCalendarEditor_buildDays(){
 }
 MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    var o = this;
-   var hTab = RBuilder.appendTable(o.hTimePanel, null, 0, 1, 1);
+   var hTab = MO.Window.Builder.appendTable(o.hTimePanel, null, 0, 1, 1);
    var ht = o.hTimePanel;
    ht.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
    var hRow = hTab.insertRow();
@@ -44800,12 +44722,12 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    hl.style.fontWeight = 'BOLD';
    hl.innerText='时间:';
    var hc = hRow.insertCell();
-   var hb = RBuilder.appendTable(hc, null, 0, 0, 0);
+   var hb = MO.Window.Builder.appendTable(hc, null, 0, 0, 0);
    hc.style.border = '1 solid #2BD6F0';
    hc.style.backgroundColor = '#FFFFFF';
    var hr = hb.insertRow();
    var hh =hr.insertCell();
-   var hHour = o.hHour = RBuilder.appendEdit(hh, o.style('Hour'));
+   var hHour = o.hHour = MO.Window.Builder.appendEdit(hh, o.style('Hour'));
    hHour.maxLength = 2;
    o.attachEvent("onTimeClick", hHour);
    o.attachEvent("onDateKeyDown", hHour, o.onDateKeyDown);
@@ -44813,7 +44735,7 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    var hs1 = hr.insertCell();
    hs1.innerText = ':';
    var hm = hr.insertCell();
-   var hMinute = o.hMinute = RBuilder.appendEdit(hm, o.style('Minute'));
+   var hMinute = o.hMinute = MO.Window.Builder.appendEdit(hm, o.style('Minute'));
    hMinute.maxLength = 2;
    o.attachEvent("onTimeClick", hMinute);
    o.attachEvent("onDateKeyDown", hMinute, o.onDateKeyDown);
@@ -44821,7 +44743,7 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    var hs2 = hr.insertCell();
    hs2.innerText = ':';
    var hs = hr.insertCell();
-   var hSecond = o.hSecond = RBuilder.appendEdit(hs, o.style('Second'));
+   var hSecond = o.hSecond = MO.Window.Builder.appendEdit(hs, o.style('Second'));
    hSecond.maxLength = 2;
    o.attachEvent("onTimeClick", hSecond);
    o.attachEvent("onDateKeyDown", hSecond, o.onDateKeyDown);
@@ -44830,7 +44752,7 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    hb2.width = 50;
    var hn = hRow.insertCell();
    hn.style.display = 'none';
-   var hNow = o.hNow = RBuilder.append(hn, 'SPAN', o.style('Now'));
+   var hNow = o.hNow = MO.Window.Builder.append(hn, 'SPAN', o.style('Now'));
    hNow.style.width = 50;
    hn.style.border='1 solid #2BD6F0';
    hNow.innerText = RContext.get('FDuiCalendarEditor:now');
@@ -44838,14 +44760,14 @@ MO.FDuiCalendarEditor_buildTime = function FDuiCalendarEditor_buildTime(){
    hNow.link = o;
    o.attachEvent("onButtonNow", hNow);
    var hc = hRow.insertCell();
-   var hCl = o.hCancel = RBuilder.append(hc, 'SPAN', o.style('Ok'));
+   var hCl = o.hCancel = MO.Window.Builder.append(hc, 'SPAN', o.style('Ok'));
    hCl.style.width = 50;
    hc.style.border='1 solid #2BD6F0';
    hCl.link = o;
    o.attachEvent("onButtonCancel", hCl);
    hCl.innerText = RContext.get('FDuiCalendarEditor:cancel');
    var ho = hRow.insertCell();
-   var hOk = o.hOk = RBuilder.append(ho, 'SPAN', o.style('Ok'));
+   var hOk = o.hOk = MO.Window.Builder.append(ho, 'SPAN', o.style('Ok'));
    hOk.style.width = 50;
    ho.style.border='1 solid #2BD6F0';
    hOk.link = o;
@@ -44865,12 +44787,12 @@ MO.FDuiCalendarEditor_set = function FDuiCalendarEditor_set(value, format){
    o.dataValue = value;
    o.dateOrgValue = value;
    o.editFormat = format;
-   RDate.parse(o.date, value);
-   RDate.parse(o.dateOrg, value);
+   MO.Lang.Date.parse(o.date, value);
+   MO.Lang.Date.parse(o.dateOrg, value);
    if(!value){
       o.date.now();
-      RDate.parse(o.date, value);
-      RDate.parse(o.dateOrg, value);
+      MO.Lang.Date.parse(o.date, value);
+      MO.Lang.Date.parse(o.dateOrg, value);
    }
    o.setDate(o.date);
 }
@@ -44878,9 +44800,9 @@ MO.FDuiCalendarEditor_setDate = function FDuiCalendarEditor_setDate(date){
    var o = this;
    o.hYear.value = date.year;
    o.hMonth.value = date.month;
-   o.hHour.value = RString.lpad(date.hour, 2, '0');
-   o.hMinute.value = RString.lpad(date.minute, 2, '0');
-   o.hSecond.value = RString.lpad(date.second, 2,'0');
+   o.hHour.value = MO.Lang.String.lpad(date.hour, 2, '0');
+   o.hMinute.value = MO.Lang.String.lpad(date.minute, 2, '0');
+   o.hSecond.value = MO.Lang.String.lpad(date.second, 2,'0');
    var selDay = date.day;
    if(!(o.dateOrg.year == date.year && o.dateOrg.month == date.month)){
       selDay = -1;
@@ -44956,16 +44878,16 @@ MO.FDuiCalendarEditor_storeChange = function FDuiCalendarEditor_storeChange(){
    var o = this;
    o.date.setYear(o.hYear.value);
    o.date.setMonth(o.hMonth.value);
-   o.date.setHour(Math.min(RInteger.parse(o.hHour.value), 23));
-   o.date.setMinute(Math.min(RInteger.parse(o.hMinute.value), 59));
-   o.date.setSecond(Math.min(RInteger.parse(o.hSecond.value), 59));
+   o.date.setHour(Math.min(MO.Lang.Integer.parse(o.hHour.value), 23));
+   o.date.setMinute(Math.min(MO.Lang.Integer.parse(o.hMinute.value), 59));
+   o.date.setSecond(Math.min(MO.Lang.Integer.parse(o.hSecond.value), 59));
 }
 MO.FDuiCalendarEditor_onBuildButton = function FDuiCalendarEditor_onBuildButton(){
    var o = this;
 }
 MO.FDuiCalendarEditor_onMdown = function FDuiCalendarEditor_onMdown(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       o.isSkipBlur = true;
       if(e.hSource.linkAction){
          e.hSource.linkAction.call(o, e.hSource);
@@ -44974,7 +44896,7 @@ MO.FDuiCalendarEditor_onMdown = function FDuiCalendarEditor_onMdown(e){
 }
 MO.FDuiCalendarEditor_onMup = function FDuiCalendarEditor_onMup(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       var f = o.focusObject;
       if(f && f.focus && f.select){
          f.focus();
@@ -44984,7 +44906,7 @@ MO.FDuiCalendarEditor_onMup = function FDuiCalendarEditor_onMup(e){
 }
 MO.FDuiCalendarEditor_ohKdown = function FDuiCalendarEditor_ohKdown(){
    var o = this.link;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       var e = RWindow.event(this);
       if(EKey.Esc == e.keyCode){
          o.dataValue = o.dateOrgValue;
@@ -45010,27 +44932,27 @@ MO.FDuiCalendarEditor_ohKdown = function FDuiCalendarEditor_ohKdown(){
 }
 MO.FDuiCalendarEditor_onButtonOver = function FDuiCalendarEditor_onButtonOver(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       e.hSource.className = o.style('ButtonHover');
    }
 }
 MO.FDuiCalendarEditor_onButtonOut = function FDuiCalendarEditor_onButtonOut(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       e.hSource.className = o.style('Button');
    }
 }
 MO.FDuiCalendarEditor_onButtonOk = function FDuiCalendarEditor_onButtonOk(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       o.editStatus = EEditStatus.Ok;
-      o.dataValue = RDate.formatDate(o.date);
+      o.dataValue = MO.Lang.Date.formatDate(o.date);
       o.editEnd();
    }
 }
 MO.FDuiCalendarEditor_onButtonCancel = function FDuiCalendarEditor_onButtonCancel(e) {
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
     o.editStatus = EEditStatus.Cancel;
      o.dataValue = '';
      o.editEnd();
@@ -45038,7 +44960,7 @@ MO.FDuiCalendarEditor_onButtonCancel = function FDuiCalendarEditor_onButtonCance
 }
 MO.FDuiCalendarEditor_ohDaysChange = function FDuiCalendarEditor_ohDaysChange(){
    var o = this.link;
-   if(RClass.isClass(o, FDuiCalendarEditor)){
+   if(MO.Class.isClass(o, FDuiCalendarEditor)){
       o.date.setYear(o.hYear.value);
       o.date.setMonth(o.hMonth.value);
       o.setDate(o.date);
@@ -45046,13 +44968,13 @@ MO.FDuiCalendarEditor_ohDaysChange = function FDuiCalendarEditor_ohDaysChange(){
 }
 MO.FDuiCalendarEditor_ohKeyCheck = function FDuiCalendarEditor_ohKeyCheck(){
    var e = RWindow.event(this)
-   if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
+   if(!MO.Lang.String.inChars(String.fromCharCode(e.keyCode), MO.Lang.Date.Chars)){
       e.keyCode = 0;
    }
 }
 MO.FDuiCalendarEditor_onDayEnter = function FDuiCalendarEditor_onDayEnter(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor) && e.hSource.innerText != '.'){
+   if(MO.Class.isClass(o, FDuiCalendarEditor) && e.hSource.innerText != '.'){
       if(!e.hSource.isCurrent){
          e.hSource.className = o.style('DayHover');
       }
@@ -45060,7 +44982,7 @@ MO.FDuiCalendarEditor_onDayEnter = function FDuiCalendarEditor_onDayEnter(e){
 }
 MO.FDuiCalendarEditor_onDayOut = function FDuiCalendarEditor_onDayOut(e){
    var o = e.source;
-   if(RClass.isClass(o, FDuiCalendarEditor) && e.hSource.innerText != '.'){
+   if(MO.Class.isClass(o, FDuiCalendarEditor) && e.hSource.innerText != '.'){
       if(!e.hSource.isCurrent){
          e.hSource.className = e.hSource.isFree ? o.style('DayFree') : o.style('Day');
       }
@@ -45308,1603 +45230,1583 @@ MO.FDuiCheckPicker_dispose = function FDuiCheckPicker_dispose(){
    o.base.FEditControl.dispose.call(o);
    o.hEdit = MO.Lang.Html.free(o.hEdit);
 }
-with(MO){
-   MO.FDuiCheckPickerEditor = function FDuiCheckPickerEditor(o){
-      o = RClass.inherits(this, o, FDropEditor, MShadow);
-      o.MinWidth         = 120;
-      o.onEditFocus      = RClass.register(o, new HFocus('onEditFocus'));
-      o.onEditBlur       = RClass.register(o, new HBlur('onEditBlur'));
-      o.stIconDropSelect = RClass.register(o, new TStyleIcon('DropSelect'));
-      o.stFlag           = RClass.register(o, new TStyle('Flag'));
-      o.stEditForm       = RClass.register(o, new TStyle('EditForm'));
-      o.pattern          = null;
-      o.originItem       = null;
-      o.selectItem       = null;
-      o.items            = null;
-      o.itemClickListener = null;
-      o.values           = new Array();
-      o.hBtnTextSpan     = null;
-      o.onBuildDrop      = FDuiCheckPickerEditor_onBuildDrop;
-      o.onBuildButton    = FDuiCheckPickerEditor_onBuildButton;
-      o.onItemClick      = FDuiCheckPickerEditor_onItemClick;
-      o.onEditKeyDown    = FDuiCheckPickerEditor_onEditKeyDown;
-      o.construct        = FDuiCheckPickerEditor_construct;
-      o.set              = FDuiCheckPickerEditor_set;
-      o.setItems         = FDuiCheckPickerEditor_setItems;
-      o.select           = FDuiCheckPickerEditor_select;
-      o.linkControl      = FDuiCheckPickerEditor_linkControl;
-      o.show             = FDuiCheckPickerEditor_show;
-      o.hide             = FDuiCheckPickerEditor_hide;
-      o.dispose          = FDuiCheckPickerEditor_dispose;
-      return o;
+MO.FDuiCheckPickerEditor = function FDuiCheckPickerEditor(o){
+   o = MO.Class.inherits(this, o, MO.FDropEditor, MO.MShadow);
+   o.MinWidth         = 120;
+   o.onEditFocus      = MO.Class.register(o, new MO.HFocus('onEditFocus'));
+   o.onEditBlur       = MO.Class.register(o, new MO.HBlur('onEditBlur'));
+   o.stIconDropSelect = MO.Class.register(o, new MO.TStyleIcon('DropSelect'));
+   o.stFlag           = MO.Class.register(o, new MO.TStyle('Flag'));
+   o.stEditForm       = MO.Class.register(o, new MO.TStyle('EditForm'));
+   o.pattern          = null;
+   o.originItem       = null;
+   o.selectItem       = null;
+   o.items            = null;
+   o.itemClickListener = null;
+   o.values           = new Array();
+   o.hBtnTextSpan     = null;
+   o.onBuildDrop      = MO.FDuiCheckPickerEditor_onBuildDrop;
+   o.onBuildButton    = MO.FDuiCheckPickerEditor_onBuildButton;
+   o.onItemClick      = MO.FDuiCheckPickerEditor_onItemClick;
+   o.onEditKeyDown    = MO.FDuiCheckPickerEditor_onEditKeyDown;
+   o.construct        = MO.FDuiCheckPickerEditor_construct;
+   o.set              = MO.FDuiCheckPickerEditor_set;
+   o.setItems         = MO.FDuiCheckPickerEditor_setItems;
+   o.select           = MO.FDuiCheckPickerEditor_select;
+   o.linkControl      = MO.FDuiCheckPickerEditor_linkControl;
+   o.show             = MO.FDuiCheckPickerEditor_show;
+   o.hide             = MO.FDuiCheckPickerEditor_hide;
+   o.dispose          = MO.FDuiCheckPickerEditor_dispose;
+   return o;
+}
+MO.FDuiCheckPickerEditor_construct = function FDuiCheckPickerEditor_construct(){
+   var o = this;
+   o.itemClickListener = new TListener(o, o.onItemClick);
+}
+MO.FDuiCheckPickerEditor_onBuildDrop = function FDuiCheckPickerEditor_onBuildDrop(){
+   var o = this;
+   o.hItemsForm = MO.Window.Builder.appendTable(o.hDropPanel);
+   o.hItemsForm.width = '100%';
+   o.hItemsPanel = MO.Window.Builder.append(o.hItemsForm, 'TBODY');
+   o.onBuildButton();
+}
+MO.FDuiCheckPickerEditor_onBuildButton = function FDuiCheckPickerEditor_onBuildButton(){
+   var o = this;
+   o.base.FDropEditor.onBuildButton.call(o);
+   var h = o.hBtnTextSpan = MO.Window.Builder.newSpan(o.hButtonPanel, null);
+   h.innerText = 'colse';
+}
+MO.FDuiCheckPickerEditor_onItemClick = function FDuiCheckPickerEditor_onItemClick(s){
+   var o = this;
+   s.setChecked(!s.checked);
+   var ts = o.items.items;
+   var cs = o.components;
+   var vs = new Array();
+   for(var n = 0; n < ts.count; n++){
+      var c = cs.value(n);
+      if(c.checked){
+         vs.push(c.value);
+      }
    }
-   MO.FDuiCheckPickerEditor_construct = function FDuiCheckPickerEditor_construct(){
-      var o = this;
-      o.itemClickListener = new TListener(o, o.onItemClick);
+   var e = o.source;
+   e.set(vs.join());
+}
+MO.FDuiCheckPickerEditor_select = function FDuiCheckPickerEditor_select(p){
+   var o = this;
+   var cs = o.components;
+   p = Math.min(Math.max(0, p), cs.count-1)
+   for(var n=0; n<cs.count; n++){
+      o.components.value(n).setChecked(n == p);
    }
-   MO.FDuiCheckPickerEditor_onBuildDrop = function FDuiCheckPickerEditor_onBuildDrop(){
-      var o = this;
-      o.hItemsForm = RBuilder.appendTable(o.hDropPanel);
-      o.hItemsForm.width = '100%';
-      o.hItemsPanel = RBuilder.append(o.hItemsForm, 'TBODY');
-      o.onBuildButton();
+   o.position = p;
+}
+MO.FDuiCheckPickerEditor_onEditKeyDown = function FDuiCheckPickerEditor_onEditKeyDown(s, e){
+   var o = this;
+   return;
+}
+MO.FDuiCheckPickerEditor_set = function FDuiCheckPickerEditor_set(v){
+   var o = this;
+   var cs = o.components;
+   var cl = cs.count;
+   for(var n = 0;n < cl;n++){
+      cs.value(n).setChecked(false);
    }
-   MO.FDuiCheckPickerEditor_onBuildButton = function FDuiCheckPickerEditor_onBuildButton(){
-      var o = this;
-      o.base.FDropEditor.onBuildButton.call(o);
-      var h = o.hBtnTextSpan = RBuilder.newSpan(o.hButtonPanel, null);
-      h.innerText = 'colse';
-   }
-   MO.FDuiCheckPickerEditor_onItemClick = function FDuiCheckPickerEditor_onItemClick(s){
-      var o = this;
-      s.setChecked(!s.checked);
-      var ts = o.items.items;
-      var cs = o.components;
-      var vs = new Array();
-      for(var n = 0; n < ts.count; n++){
-         var c = cs.value(n);
-         if(c.checked){
-            vs.push(c.value);
+   if(!MO.Lang.String.isEmpty(v)){
+      o.values = v;
+      va = MO.Lang.String.split(v, ',');
+      for(var n = 0; n < va.length; n++){
+         var c = cs.get(va[n]);
+         if(c){
+            c.setChecked(true);
          }
       }
-      var e = o.source;
-      e.set(vs.join());
    }
-   MO.FDuiCheckPickerEditor_select = function FDuiCheckPickerEditor_select(p){
-      var o = this;
-      var cs = o.components;
-      p = Math.min(Math.max(0, p), cs.count-1)
-      for(var n=0; n<cs.count; n++){
-         o.components.value(n).setChecked(n == p);
-      }
-      o.position = p;
-   }
-   MO.FDuiCheckPickerEditor_onEditKeyDown = function FDuiCheckPickerEditor_onEditKeyDown(s, e){
-      var o = this;
+}
+MO.FDuiCheckPickerEditor_setItems = function FDuiCheckPickerEditor_setItems(items){
+   var o = this;
+   if(o.components){
       return;
    }
-   MO.FDuiCheckPickerEditor_set = function FDuiCheckPickerEditor_set(v){
-      var o = this;
-      var cs = o.components;
-      var cl = cs.count;
-      for(var n = 0;n < cl;n++){
-         cs.value(n).setChecked(false);
+   var hip = o.hItemsPanel;
+   o.items = items;
+   var count = items.count();
+   for(var n=0; n<count; n++){
+      if(n > 0){
+         var hr = MO.Window.Builder.append(hip, 'TR');
+         hr.height = 1;
+         var hd = MO.Window.Builder.append(hr, 'TD');
+         hd.colSpan = 3;
+         hd.style.borderTop = '1 dashed #24c2db';
+         MO.Window.Builder.appendEmpty(hd);
       }
-      if(!RString.isEmpty(v)){
-         o.values = v;
-         va = RString.split(v, ',');
-         for(var n = 0; n < va.length; n++){
-            var c = cs.get(va[n]);
-            if(c){
-               c.setChecked(true);
+      var t = items.get(n);
+      var c = RControl.create(FSelectItem);
+      c.name = t.value;
+      c.lsnsClick.push(o.itemClickListener);
+      c.set(t.icon, t.label, t.value);
+      c.setPanel(hip);
+      o.push(c);
+   }
+   o.position = 0;
+}
+MO.FDuiCheckPickerEditor_linkControl = function FDuiCheckPickerEditor_linkControl(c){
+   var o = this;
+   if(o.source == c){
+      return false;
+   }
+   o.source = c;
+   RLog.debug(o, 'link Panel (panel={0}, edit={1})', MO.Class.dump(c.hEditCell), MO.Class.dump(c.hEdit));
+   MO.Window.Html.toRect(o.rect, c.hEditCell);
+   MO.Window.Html.setPixelRect(o.hPanel, o.rect);
+   o.hPanel.style.pixelTop = o.rect.bottom;
+   var hbf = o.border.hForm;
+   hbf.style.pixelWidth = c.editBorder.hForm.width;
+   hbf.style.pixelHeight = c.editBorder.hForm.height;
+   return true;
+}
+MO.FDuiCheckPickerEditor_show = function FDuiCheckPickerEditor_show(v){
+   var o = this;
+   o.base.FDropEditor.show.call(o, v);
+   RConsole.find(FFocusConsole).focus(o);
+   if(o.border.hForm.offsetWidth < o.MinWidth){
+      o.border.hForm.style.pixelWidth = o.MinWidth;
+   }
+   o.base.MShadow.show.call(o, v);
+   o.isSkipBlur = false;
+}
+MO.FDuiCheckPickerEditor_hide = function FDuiCheckPickerEditor_hide(){
+   var o = this;
+   o.source = null;
+   o.base.FDropEditor.hide.call(o);
+   o.base.MShadow.hide.call(o);
+}
+MO.FDuiCheckPickerEditor_dispose = function FDuiCheckPickerEditor_dispose(){
+   var o = this;
+   o.base.FDropEditor.dispose.call(o);
+   RMemory.freeHtml(o.hPanel);
+   RMemory.freeHtml(o.hItemsForm);
+   RMemory.freeHtml(o.hItemsPanel);
+   RMemory.freeHtml(o.hBtnTextSpan);
+   RMemory.freeHtml(o.hDropPanel);
+   RMemory.freeHtml(o.hButtonPanel);
+   o.hPanel = null;
+   o.hItemsForm = null;
+   o.hItemsPanel = null;
+   o.hBtnTextSpan = null;
+   o.hDropPanel = null;
+   o.hButtonPanel = null;
+}
+MO.FDuiColor = function FDuiColor(o){
+   o = MO.Class.inherits(this, o, MO.FEditControl);
+   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._hInput          = null;
+   o.onBuildEditValue = MO.FDuiColor_onBuildEditValue;
+   o.construct        = MO.FDuiColor_construct;
+   o.get              = MO.FDuiColor_get;
+   o.set              = MO.FDuiColor_set;
+   return o;
+}
+MO.FDuiColor_oeDataLoad = function FDuiColor_oeDataLoad(p){
+   var o = this;
+   alert(p);
+   return EEventStatus.Stop;
+}
+MO.FDuiColor_oeDataSave = function FDuiColor_oeDataSave(p){
+   var o = this;
+   return EEventStatus.Stop;
+}
+MO.FDuiColor_onBuildEditValue = function FDuiColor_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('InputPanel');
+   var he = o._hInput = MO.Window.Builder.appendEdit(h, o.styleName('Input'));
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+MO.FDuiColor_construct = function FDuiColor_construct(){
+   var o = this;
+   o.__base.FEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+MO.FDuiColor_get = function FDuiColor_get(p){
+   var o = this;
+   var r = o.__base.FEditControl.get.call(o, p);
+   var h = o._hInput;
+   if(h){
+      r = h.value;
+   }
+   return r;
+}
+MO.FDuiColor_set = function FDuiColor_set(p){
+   var o = this;
+   o.__base.FEditControl.set.call(o, p);
+   var h = o._hInput;
+   if(h){
+      h.value = MO.Lang.String.nvl(p);
+   }
+}
+MO.FDuiColor_onDataKeyDown = function FDuiColor_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
+   }
+}
+MO.FDuiColor_formatValue = function FDuiColor_formatValue(v){
+   var o = this;
+   var r = MO.Lang.String.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = MO.Lang.String.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = MO.Lang.String.toLower(r);
+   }
+   return r;
+}
+MO.FDuiColor_setText = function FDuiColor_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = MO.Lang.String.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = MO.Lang.String.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+MO.FDuiColor_validText = function FDuiColor_validText(t){
+   var o = this;
+   var r = o.__base.FEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+         }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
+         }
+      }
+   }
+   return r;
+}
+MO.FDuiColor_findEditor = function FDuiColor_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FDuiColorConsole).focus(o, FDuiColorEditor);
+         }
+      }
+      if(de){
+         de.linkControl(o);
+      }
+      return o.editor;
+   }
+}
+MO.FDuiColor_drop = function FDuiColor_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
             }
+            de.search(t);
+         }
+         o.finded = t;
+      }
+   }
+}
+MO.FDuiColor_clone = function FDuiColor_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+MO.FDuiColor_link = function FDuiColor_link(){
+   var o = this;
+}
+MO.FDuiColor3Tpl = function FDuiColor3Tpl(o){
+   o = MO.Class.inherits(this, o, MO.FEditControl, MO.MListenerDataChanged);
+   o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._innerOriginValue = null;
+   o._innerDataValue   = null;
+   o._hInputRed        = null;
+   o._hInputGreen      = null;
+   o._hInputBlue       = null;
+   o.onBuildEditValue  = MO.FDuiColor3Tpl_onBuildEditValue;
+   o.onInputKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiColor3Tpl_onInputKeyPress);
+   o.onInputChanged    = MO.Class.register(o, new MO.AEventInputChanged('MO.onInputChanged'), FDuiColor3Tpl_onInputChanged);
+   o.construct         = MO.FDuiColor3Tpl_construct;
+   o.get               = MO.FDuiColor3Tpl_get;
+   o.set               = MO.FDuiColor3Tpl_set;
+   return o;
+}
+MO.FDuiColor3Tpl_onBuildEditValue = function FDuiColor3Tpl_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = MO.Window.Builder.appendTable(h);
+   hf.width = '100%';
+   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hc = MO.Window.Builder.appendTableCell(hl);
+   hc.style.borderRight = '1px solid #666666';
+   var he = o._hInputRed = MO.Window.Builder.appendEdit(hc, o.styleName('Input'));
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', he, o.onInputChanged);
+   var hc = MO.Window.Builder.appendTableCell(hl);
+   hc.style.borderLeft = '1px solid #999999';
+   hc.style.borderRight = '1px solid #666666';
+   var he = o._hInputGreen = MO.Window.Builder.appendEdit(hc, o.styleName('Input'));
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', he, o.onInputChanged);
+   var hc = MO.Window.Builder.appendTableCell(hl);
+   hc.style.borderLeft = '1px solid #999999';
+   var he = o._hInputBlue = MO.Window.Builder.appendEdit(hc, o.styleName('Input'));
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', he, o.onInputChanged);
+   var hdp = o._hDropPanel = MO.Window.Builder.appendTableCell(hl);
+   hdp.style.borderLeft = '1px solid #666666';
+   o.onBuildEditDrop(p);
+}
+MO.FDuiColor3Tpl_onInputKeyPress = function FDuiColor3Tpl_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   if(!EKeyCode.floatCodes[c]){
+      p.cancel();
+   }
+}
+MO.FDuiColor3Tpl_onInputChanged = function FDuiColor3Tpl_onInputChanged(p){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+MO.FDuiColor3Tpl_construct = function FDuiColor3Tpl_construct(){
+   var o = this;
+   o.__base.FEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+   o._innerOriginValue = new SColor4();
+   o._innerDataValue = new SColor4();
+}
+MO.FDuiColor3Tpl_get = function FDuiColor3Tpl_get(p){
+   var o = this;
+   var v = o._innerDataValue;
+   var h = o._hInputRed;
+   if(h){
+      v.red = RFloat.parse(h.value);
+   }
+   var h = o._hInputGreen;
+   if(h){
+      v.green = RFloat.parse(h.value);
+   }
+   var h = o._hInputBlue;
+   if(h){
+      v.blue = RFloat.parse(h.value);
+   }
+   return v;
+}
+MO.FDuiColor3Tpl_set = function FDuiColor3Tpl_set(p){
+   var o = this;
+   o.__base.FEditControl.set.call(o, p);
+   if(p.constructor == SColor4){
+      o._innerOriginValue.assign(p);
+      o._innerDataValue.assign(p);
+   }else{
+      throw new TError('Invalid value format.');
+   }
+   var v = o._innerDataValue;
+   var h = o._hInputRed;
+   if(h){
+      h.value = RFloat.format(v.red, 0, null, 2, null);
+   }
+   var h = o._hInputGreen;
+   if(h){
+      h.value = RFloat.format(v.green, 0, null, 2, null);
+   }
+   var h = o._hInputBlue;
+   if(h){
+      h.value = RFloat.format(v.blue, 0, null, 2, null);
+   }
+   o.changeSet(false);
+}
+MO.FDuiColor3Tpl_onDataKeyDown = function FDuiColor3Tpl_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
+   }
+}
+MO.FDuiColor3Tpl_formatValue = function FDuiColor3Tpl_formatValue(v){
+   var o = this;
+   var r = MO.Lang.String.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = MO.Lang.String.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = MO.Lang.String.toLower(r);
+   }
+   return r;
+}
+MO.FDuiColor3Tpl_setText = function FDuiColor3Tpl_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = MO.Lang.String.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = MO.Lang.String.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+MO.FDuiColor3Tpl_validText = function FDuiColor3Tpl_validText(t){
+   var o = this;
+   var r = o.__base.FEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+         }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
          }
       }
    }
-   MO.FDuiCheckPickerEditor_setItems = function FDuiCheckPickerEditor_setItems(items){
-      var o = this;
-      if(o.components){
-         return;
-      }
-      var hip = o.hItemsPanel;
-      o.items = items;
-      var count = items.count();
-      for(var n=0; n<count; n++){
-         if(n > 0){
-            var hr = RBuilder.append(hip, 'TR');
-            hr.height = 1;
-            var hd = RBuilder.append(hr, 'TD');
-            hd.colSpan = 3;
-            hd.style.borderTop = '1 dashed #24c2db';
-            RBuilder.appendEmpty(hd);
+   return r;
+}
+MO.FDuiColor3Tpl_findEditor = function FDuiColor3Tpl_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FDuiColor3TplConsole).focus(o, FDuiColor3TplEditor);
          }
-         var t = items.get(n);
-         var c = RControl.create(FSelectItem);
-         c.name = t.value;
-         c.lsnsClick.push(o.itemClickListener);
-         c.set(t.icon, t.label, t.value);
-         c.setPanel(hip);
-         o.push(c);
       }
-      o.position = 0;
+      if(de){
+         de.linkControl(o);
+      }
+      return o.editor;
    }
-   MO.FDuiCheckPickerEditor_linkControl = function FDuiCheckPickerEditor_linkControl(c){
-      var o = this;
-      if(o.source == c){
-         return false;
+}
+MO.FDuiColor3Tpl_drop = function FDuiColor3Tpl_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
+            }
+            de.search(t);
+         }
+         o.finded = t;
       }
-      o.source = c;
-      RLog.debug(o, 'link Panel (panel={0}, edit={1})', RClass.dump(c.hEditCell), RClass.dump(c.hEdit));
-      RHtml.toRect(o.rect, c.hEditCell);
-      RHtml.setPixelRect(o.hPanel, o.rect);
-      o.hPanel.style.pixelTop = o.rect.bottom;
-      var hbf = o.border.hForm;
-      hbf.style.pixelWidth = c.editBorder.hForm.width;
-      hbf.style.pixelHeight = c.editBorder.hForm.height;
+   }
+}
+MO.FDuiColor3Tpl_clone = function FDuiColor3Tpl_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+MO.FDuiColor3Tpl_link = function FDuiColor3Tpl_link(){
+   var o = this;
+}
+MO.FDuiColor4 = function FDuiColor4(o){
+   o = MO.Class.inherits(this, o, MO.FEditControl);
+   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._hInput          = null;
+   o.onBuildEditValue = MO.FDuiColor4_onBuildEditValue;
+   o.construct        = MO.FDuiColor4_construct;
+   o.get              = MO.FDuiColor4_get;
+   o.set              = MO.FDuiColor4_set;
+   return o;
+}
+MO.FDuiColor4_oeDataLoad = function FDuiColor4_oeDataLoad(p){
+   var o = this;
+   alert(p);
+   return EEventStatus.Stop;
+}
+MO.FDuiColor4_oeDataSave = function FDuiColor4_oeDataSave(p){
+   var o = this;
+   return EEventStatus.Stop;
+}
+MO.FDuiColor4_onBuildEditValue = function FDuiColor4_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('InputPanel');
+   var he = o._hInput = MO.Window.Builder.appendEdit(h, o.styleName('Input'));
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+MO.FDuiColor4_construct = function FDuiColor4_construct(){
+   var o = this;
+   o.__base.FEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+MO.FDuiColor4_get = function FDuiColor4_get(p){
+   var o = this;
+   var r = o.__base.FEditControl.get.call(o, p);
+   var h = o._hInput;
+   if(h){
+      r = h.value;
+   }
+   return r;
+}
+MO.FDuiColor4_set = function FDuiColor4_set(p){
+   var o = this;
+   o.__base.FEditControl.set.call(o, p);
+   var v = null;
+   if(p.constructor == SColor4){
+      var r = RFloat.format(p.red, 0, null, 3, null);
+      var g = RFloat.format(p.green, 0, null, 3, null);
+      var b = RFloat.format(p.blue, 0, null, 3, null);
+      v = r + ',' + g + ',' + b;
+   }
+   var h = o._hInput;
+   if(h){
+      h.value = v;
+   }
+}
+MO.FDuiColor4_onDataKeyDown = function FDuiColor4_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
+   }
+}
+MO.FDuiColor4_formatValue = function FDuiColor4_formatValue(v){
+   var o = this;
+   var r = MO.Lang.String.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = MO.Lang.String.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = MO.Lang.String.toLower(r);
+   }
+   return r;
+}
+MO.FDuiColor4_setText = function FDuiColor4_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = MO.Lang.String.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = MO.Lang.String.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+MO.FDuiColor4_validText = function FDuiColor4_validText(t){
+   var o = this;
+   var r = o.__base.FEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+         }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
+         }
+      }
+   }
+   return r;
+}
+MO.FDuiColor4_findEditor = function FDuiColor4_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FDuiColor4Console).focus(o, FDuiColor4Editor);
+         }
+      }
+      if(de){
+         de.linkControl(o);
+      }
+      return o.editor;
+   }
+}
+MO.FDuiColor4_drop = function FDuiColor4_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
+            }
+            de.search(t);
+         }
+         o.finded = t;
+      }
+   }
+}
+MO.FDuiColor4_clone = function FDuiColor4_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+MO.FDuiColor4_link = function FDuiColor4_link(){
+   var o = this;
+}
+MO.FDuiColorPicker = function FDuiColorPicker(o){
+   o = MO.Class.inherits(this, o, MO.FEditControl, MO.MEditBorder, MO.MDescColor, MO.MDropable);
+   o.borderStyle   = MO.EUiBorder.RoundDrop;
+   o.onBuildEdit   = MO.FDuiColorPicker_onBuildEdit;
+   o.onEditEnd     = MO.FDuiColorPicker_onEditEnd;
+   o.onDataKeyDown = MO.FDuiColorPicker_onDataKeyDown;
+   o.checkColor    = MO.FDuiColorPicker_checkColor;
+   o.setText       = MO.FDuiColorPicker_setText;
+   o.drop          = MO.FDuiColorPicker_drop;
+   o.dispose       = MO.FDuiColorPicker_dispose;
+   return o;
+}
+MO.FDuiColorPicker_onBuildEdit = function FDuiColorPicker_onBuildEdit(b){
+   var o = this;
+   var h = o.hEdit = MO.Window.Builder.appendEdit(b.hPanel, o.style('Edit'));
+   h.maxLength = 20;
+}
+MO.FDuiColorPicker_onEditEnd = function FDuiColorPicker_onEditEnd(editor){
+   var o = this;
+   RLog.debug(o, 'Begin (editor={0}:{1} value={2})', editor, editor?editor.color:'', o.dataValue);
+   if(editor){
+      o.set(editor.color);
+      o.hDrop.style.backgroundColor = editor.color;
+   }
+   o.onDataEditEnd(o);
+   RLog.debug(o, 'End (editor={0} value={1})', editor, o.dataValue);
+}
+MO.FDuiColorPicker_setText = function FDuiColorPicker_setText(t){
+   var o = this;
+   o.base.FEditControl.setText.call(o, MO.Lang.String.toUpper(t));
+   o.hDrop.style.backgroundColor = t;
+}
+MO.FDuiColorPicker_checkColor = function FDuiColorPicker_checkColor(c)
+{
+   var oSpan = document.createElement("<span style='color:"+c+";'></span>");
+   if(oSpan.style.color != ""){
       return true;
-   }
-   MO.FDuiCheckPickerEditor_show = function FDuiCheckPickerEditor_show(v){
-      var o = this;
-      o.base.FDropEditor.show.call(o, v);
-      RConsole.find(FFocusConsole).focus(o);
-      if(o.border.hForm.offsetWidth < o.MinWidth){
-         o.border.hForm.style.pixelWidth = o.MinWidth;
-      }
-      o.base.MShadow.show.call(o, v);
-      o.isSkipBlur = false;
-   }
-   MO.FDuiCheckPickerEditor_hide = function FDuiCheckPickerEditor_hide(){
-      var o = this;
-      o.source = null;
-      o.base.FDropEditor.hide.call(o);
-      o.base.MShadow.hide.call(o);
-   }
-   MO.FDuiCheckPickerEditor_dispose = function FDuiCheckPickerEditor_dispose(){
-      var o = this;
-      o.base.FDropEditor.dispose.call(o);
-      RMemory.freeHtml(o.hPanel);
-      RMemory.freeHtml(o.hItemsForm);
-      RMemory.freeHtml(o.hItemsPanel);
-      RMemory.freeHtml(o.hBtnTextSpan);
-      RMemory.freeHtml(o.hDropPanel);
-      RMemory.freeHtml(o.hButtonPanel);
-      o.hPanel = null;
-      o.hItemsForm = null;
-      o.hItemsPanel = null;
-      o.hBtnTextSpan = null;
-      o.hDropPanel = null;
-      o.hButtonPanel = null;
+   }else{
+      return false;
    }
 }
-with(MO){
-   MO.FDuiColor = function FDuiColor(o){
-      o = RClass.inherits(this, o, FEditControl);
-      o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-      o._hInput          = null;
-      o.onBuildEditValue = FDuiColor_onBuildEditValue;
-      o.construct        = FDuiColor_construct;
-      o.get              = FDuiColor_get;
-      o.set              = FDuiColor_set;
-      return o;
-   }
-   MO.FDuiColor_oeDataLoad = function FDuiColor_oeDataLoad(p){
+MO.FDuiColorPicker_onDataKeyDown = function FDuiColorPicker_onDataKeyDown(e){
       var o = this;
-      alert(p);
-      return EEventStatus.Stop;
-   }
-   MO.FDuiColor_oeDataSave = function FDuiColor_oeDataSave(p){
-      var o = this;
-      return EEventStatus.Stop;
-   }
-   MO.FDuiColor_onBuildEditValue = function FDuiColor_onBuildEditValue(p){
-      var o = this;
-      var h = o._hValuePanel;
-      h.className = o.styleName('InputPanel');
-      var he = o._hInput = RBuilder.appendEdit(h, o.styleName('Input'));
-      if(o._editLength){
-         he.maxLength = o._editLength;
-      }
-   }
-   MO.FDuiColor_construct = function FDuiColor_construct(){
-      var o = this;
-      o.__base.FEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-   }
-   MO.FDuiColor_get = function FDuiColor_get(p){
-      var o = this;
-      var r = o.__base.FEditControl.get.call(o, p);
-      var h = o._hInput;
-      if(h){
-         r = h.value;
-      }
-      return r;
-   }
-   MO.FDuiColor_set = function FDuiColor_set(p){
-      var o = this;
-      o.__base.FEditControl.set.call(o, p);
-      var h = o._hInput;
-      if(h){
-         h.value = RString.nvl(p);
-      }
-   }
-   MO.FDuiColor_onDataKeyDown = function FDuiColor_onDataKeyDown(s, e){
-      var o = this;
-      o.__base.FEditControl.onDataKeyDown.call(o, s, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
-   }
-   MO.FDuiColor_formatValue = function FDuiColor_formatValue(v){
-      var o = this;
-      var r = RString.nvl(v);
-      if(ECase.Upper == o.editCase){
-         r = RString.toUpper(r);
-      }else if(ECase.Lower == o.editCase){
-         r = RString.toLower(r);
-      }
-      return r;
-   }
-   MO.FDuiColor_setText = function FDuiColor_setText(t){
-      var o = this;
-      if(!o.hEdit){
-         return;
-      }
-      if('U'== o.editCase){
-         o.hEdit.value = RString.toUpper(t);
-      }else if('L'== o.editCase){
-            o.hEdit.value = RString.toLower(t);
+      o.base.FEditControl.onDataKeyDown.call(o, o, e);
+      if(o.checkColor(o.text())){
+         o.hDrop.style.backgroundColor = o.text();
       }else{
-         o.hEdit.value = t;
+         o.hDrop.style.backgroundColor = '';
       }
-      if('right' == o.editAlign ){
-         o.hEdit.style.textAlign = 'right';
-      }else if('left' == o.editAlign ){
-         o.hEdit.style.textAlign = 'left';
-      }else{
-         o.hEdit.style.textAlign = 'center';
+}
+MO.FDuiColorPicker_drop = function FDuiColorPicker_drop(){
+   var o = this;
+   if(o.canDrop() && o.canEdit){
+      var ed = o.editor = RConsole.find(FEditConsole).focus(o, FDuiColorPickerEditor, o.name);
+      if(ed.linkControl(o)){
+         ed.set(o.reget());
       }
-   }
-   MO.FDuiColor_validText = function FDuiColor_validText(t){
-      var o = this;
-      var r = o.__base.FEditControl.validText.call(o, t);
-      if(!r){
-         if(o.validLenmin){
-            if(o.validLenmin > t.length){
-               return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
-            }
-         }
-         if(o.validLenmax){
-            if(o.validLenmax < t.length){
-               return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-            }
-         }
-      }
-      return r;
-   }
-   MO.FDuiColor_findEditor = function FDuiColor_findEditor(){
-      var o = this;
-      if(o.editComplete){
-         var de = o.editor;
-         if(!de){
-            o.dsControl = o.topControl(MDataset);
-            if(o.dsControl){
-               de = o.editor = RConsole.find(FDuiColorConsole).focus(o, FDuiColorEditor);
-            }
-         }
-         if(de){
-            de.linkControl(o);
-         }
-         return o.editor;
-      }
-   }
-   MO.FDuiColor_drop = function FDuiColor_drop(){
-      var o = this;
-      var de = o.findEditor();
-      if(de){
-         var t = o.reget();
-         if(t.length > 0){
-            if(o.finded != t){
-               if(de.source != o){
-                  de.linkControl(o);
-               }
-               de.search(t);
-            }
-            o.finded = t;
-         }
-      }
-   }
-   MO.FDuiColor_clone = function FDuiColor_clone(){
-      var o = this;
-      var r = o._class.newInstance();
-      GHtml_clone(r, o.hPanel);
-      return r;
-   }
-   MO.FDuiColor_link = function FDuiColor_link(){
-      var o = this;
+      ed.show();
    }
 }
-with(MO){
-   MO.FDuiColor3Tpl = function FDuiColor3Tpl(o){
-      o = RClass.inherits(this, o, FEditControl, MListenerDataChanged);
-      o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleValuePanel  = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInput       = RClass.register(o, new AStyle('_styleInput'));
-      o._innerOriginValue = null;
-      o._innerDataValue   = null;
-      o._hInputRed        = null;
-      o._hInputGreen      = null;
-      o._hInputBlue       = null;
-      o.onBuildEditValue  = FDuiColor3Tpl_onBuildEditValue;
-      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiColor3Tpl_onInputKeyPress);
-      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FDuiColor3Tpl_onInputChanged);
-      o.construct         = FDuiColor3Tpl_construct;
-      o.get               = FDuiColor3Tpl_get;
-      o.set               = FDuiColor3Tpl_set;
-      return o;
-   }
-   MO.FDuiColor3Tpl_onBuildEditValue = function FDuiColor3Tpl_onBuildEditValue(p){
-      var o = this;
-      var h = o._hValuePanel;
-      h.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(h);
-      hf.width = '100%';
-      var hl = o._hValueLine = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hl);
-      o.onBuildEditChange(p);
-      var hc = RBuilder.appendTableCell(hl);
-      hc.style.borderRight = '1px solid #666666';
-      var he = o._hInputRed = RBuilder.appendEdit(hc, o.styleName('Input'));
-      o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-      o.attachEvent('onInputChanged', he, o.onInputChanged);
-      var hc = RBuilder.appendTableCell(hl);
-      hc.style.borderLeft = '1px solid #999999';
-      hc.style.borderRight = '1px solid #666666';
-      var he = o._hInputGreen = RBuilder.appendEdit(hc, o.styleName('Input'));
-      o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-      o.attachEvent('onInputChanged', he, o.onInputChanged);
-      var hc = RBuilder.appendTableCell(hl);
-      hc.style.borderLeft = '1px solid #999999';
-      var he = o._hInputBlue = RBuilder.appendEdit(hc, o.styleName('Input'));
-      o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-      o.attachEvent('onInputChanged', he, o.onInputChanged);
-      var hdp = o._hDropPanel = RBuilder.appendTableCell(hl);
-      hdp.style.borderLeft = '1px solid #666666';
-      o.onBuildEditDrop(p);
-   }
-   MO.FDuiColor3Tpl_onInputKeyPress = function FDuiColor3Tpl_onInputKeyPress(p){
-      var o = this;
-      var c = p.keyCode;
-      if(!EKeyCode.floatCodes[c]){
-         p.cancel();
-      }
-   }
-   MO.FDuiColor3Tpl_onInputChanged = function FDuiColor3Tpl_onInputChanged(p){
-      var o = this;
-      o.processDataChangedListener(o);
-   }
-   MO.FDuiColor3Tpl_construct = function FDuiColor3Tpl_construct(){
-      var o = this;
-      o.__base.FEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-      o._innerOriginValue = new SColor4();
-      o._innerDataValue = new SColor4();
-   }
-   MO.FDuiColor3Tpl_get = function FDuiColor3Tpl_get(p){
-      var o = this;
-      var v = o._innerDataValue;
-      var h = o._hInputRed;
-      if(h){
-         v.red = RFloat.parse(h.value);
-      }
-      var h = o._hInputGreen;
-      if(h){
-         v.green = RFloat.parse(h.value);
-      }
-      var h = o._hInputBlue;
-      if(h){
-         v.blue = RFloat.parse(h.value);
-      }
-      return v;
-   }
-   MO.FDuiColor3Tpl_set = function FDuiColor3Tpl_set(p){
-      var o = this;
-      o.__base.FEditControl.set.call(o, p);
-      if(p.constructor == SColor4){
-         o._innerOriginValue.assign(p);
-         o._innerDataValue.assign(p);
-      }else{
-         throw new TError('Invalid value format.');
-      }
-      var v = o._innerDataValue;
-      var h = o._hInputRed;
-      if(h){
-         h.value = RFloat.format(v.red, 0, null, 2, null);
-      }
-      var h = o._hInputGreen;
-      if(h){
-         h.value = RFloat.format(v.green, 0, null, 2, null);
-      }
-      var h = o._hInputBlue;
-      if(h){
-         h.value = RFloat.format(v.blue, 0, null, 2, null);
-      }
-      o.changeSet(false);
-   }
-   MO.FDuiColor3Tpl_onDataKeyDown = function FDuiColor3Tpl_onDataKeyDown(s, e){
-      var o = this;
-      o.__base.FEditControl.onDataKeyDown.call(o, s, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
-   }
-   MO.FDuiColor3Tpl_formatValue = function FDuiColor3Tpl_formatValue(v){
-      var o = this;
-      var r = RString.nvl(v);
-      if(ECase.Upper == o.editCase){
-         r = RString.toUpper(r);
-      }else if(ECase.Lower == o.editCase){
-         r = RString.toLower(r);
-      }
-      return r;
-   }
-   MO.FDuiColor3Tpl_setText = function FDuiColor3Tpl_setText(t){
-      var o = this;
-      if(!o.hEdit){
-         return;
-      }
-      if('U'== o.editCase){
-         o.hEdit.value = RString.toUpper(t);
-      }else if('L'== o.editCase){
-            o.hEdit.value = RString.toLower(t);
-      }else{
-         o.hEdit.value = t;
-      }
-      if('right' == o.editAlign ){
-         o.hEdit.style.textAlign = 'right';
-      }else if('left' == o.editAlign ){
-         o.hEdit.style.textAlign = 'left';
-      }else{
-         o.hEdit.style.textAlign = 'center';
-      }
-   }
-   MO.FDuiColor3Tpl_validText = function FDuiColor3Tpl_validText(t){
-      var o = this;
-      var r = o.__base.FEditControl.validText.call(o, t);
-      if(!r){
-         if(o.validLenmin){
-            if(o.validLenmin > t.length){
-               return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
-            }
+MO.FDuiColorPicker_dispose = function FDuiColorPicker_dispose(){
+   var o = this;
+   o.base.FEditControl.dispose.call(o);
+   RMemory.freeHtml(o.hEdit);
+   RMemory.freeHtml(o.hDrop);
+   o.hEdit = null;
+   o.hDrop = null;
+}
+MO.FDuiColorPickerEditor = function FDuiColorPickerEditor(o){
+   o = MO.Class.inherits(this, o, MO.FDropEditor, MO.MShadow);
+   o.MinWidth     = 240;
+   o.ColorHex     = new Array('00', '33', '66', '99', 'CC', 'FF');
+   o.SpColorHex   = new Array('FF0000', '00FF00', '0000FF', 'FFFF00', '00FFFF','FF00FF');
+   o.onCellEnter  = MO.Class.register(o, new HMouseOver('onCellEnter'),  MO.FDuiColorPickerEditor_onCellEnter);
+   o.onCellSelect = MO.Class.register(o, new HMouseDown('onCellSelect'), MO.FDuiColorPickerEditor_onCellSelect);
+   o.color        = null;
+   o.hTable       = null;
+   o.cellWidth    = 16;
+   o.cellHeight   = 10;
+   o.onBuildDrop  = MO.FDuiColorPickerEditor_onBuildDrop;
+   o.onKeyDown    = MO.FDuiColorPickerEditor_onKeyDown;
+   o.onCellSelect = MO.FDuiColorPickerEditor_onCellSelect;
+    o.onEditEnd   = MO.FDuiColorPickerEditor_onEditEnd;
+   o.makeCell     = MO.FDuiColorPickerEditor_makeCell;
+   o.set          = MO.FDuiColorPickerEditor_set;
+   o.show         = MO.FDuiColorPickerEditor_show;
+   o.hide         = MO.FDuiColorPickerEditor_hide;
+   o.linkControl  = MO.FDuiColorPickerEditor_linkControl;
+   o.dispose      = MO.FDuiColorPickerEditor_dispose;
+   return o;
+}
+MO.FDuiColorPickerEditor_onBuildDrop = function FDuiColorPickerEditor_onBuildDrop(){
+   var o = this;
+   o.hTable = MO.Window.Builder.appendTable(o.hDropPanel);
+   for(var i = 0; i < 2; i++){
+      for(var j = 0; j < 6; j++){
+         var hRow = o.hTable.insertRow();
+         o.makeCell(hRow, "#000000");
+         if (i == 0){
+            o.makeCell(hRow, '#'+o.ColorHex[j] + o.ColorHex[j] + o.ColorHex[j]);
+         }else {
+            o.makeCell(hRow, '#'+o.SpColorHex[j]);
          }
-         if(o.validLenmax){
-            if(o.validLenmax < t.length){
-               return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
+         o.makeCell(hRow, "#000000");
+         for (k = 0; k < 3; k++) {
+            for (l = 0; l < 6; l++) {
+               o.makeCell(hRow, '#'+o.ColorHex[k + i * 3] + o.ColorHex[l] + o.ColorHex[j]);
             }
          }
       }
-      return r;
-   }
-   MO.FDuiColor3Tpl_findEditor = function FDuiColor3Tpl_findEditor(){
-      var o = this;
-      if(o.editComplete){
-         var de = o.editor;
-         if(!de){
-            o.dsControl = o.topControl(MDataset);
-            if(o.dsControl){
-               de = o.editor = RConsole.find(FDuiColor3TplConsole).focus(o, FDuiColor3TplEditor);
-            }
-         }
-         if(de){
-            de.linkControl(o);
-         }
-         return o.editor;
-      }
-   }
-   MO.FDuiColor3Tpl_drop = function FDuiColor3Tpl_drop(){
-      var o = this;
-      var de = o.findEditor();
-      if(de){
-         var t = o.reget();
-         if(t.length > 0){
-            if(o.finded != t){
-               if(de.source != o){
-                  de.linkControl(o);
-               }
-               de.search(t);
-            }
-            o.finded = t;
-         }
-      }
-   }
-   MO.FDuiColor3Tpl_clone = function FDuiColor3Tpl_clone(){
-      var o = this;
-      var r = o._class.newInstance();
-      GHtml_clone(r, o.hPanel);
-      return r;
-   }
-   MO.FDuiColor3Tpl_link = function FDuiColor3Tpl_link(){
-      var o = this;
    }
 }
-with(MO){
-   MO.FDuiColor4 = function FDuiColor4(o){
-      o = RClass.inherits(this, o, FEditControl);
-      o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-      o._hInput          = null;
-      o.onBuildEditValue = FDuiColor4_onBuildEditValue;
-      o.construct        = FDuiColor4_construct;
-      o.get              = FDuiColor4_get;
-      o.set              = FDuiColor4_set;
-      return o;
+MO.FDuiColorPickerEditor_linkControl = function FDuiColorPickerEditor_linkControl(c){
+   var o = this;
+   if(o.source == c){
+      return false;
    }
-   MO.FDuiColor4_oeDataLoad = function FDuiColor4_oeDataLoad(p){
-      var o = this;
-      alert(p);
-      return EEventStatus.Stop;
-   }
-   MO.FDuiColor4_oeDataSave = function FDuiColor4_oeDataSave(p){
-      var o = this;
-      return EEventStatus.Stop;
-   }
-   MO.FDuiColor4_onBuildEditValue = function FDuiColor4_onBuildEditValue(p){
-      var o = this;
-      var h = o._hValuePanel;
-      h.className = o.styleName('InputPanel');
-      var he = o._hInput = RBuilder.appendEdit(h, o.styleName('Input'));
-      if(o._editLength){
-         he.maxLength = o._editLength;
-      }
-   }
-   MO.FDuiColor4_construct = function FDuiColor4_construct(){
-      var o = this;
-      o.__base.FEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-   }
-   MO.FDuiColor4_get = function FDuiColor4_get(p){
-      var o = this;
-      var r = o.__base.FEditControl.get.call(o, p);
-      var h = o._hInput;
-      if(h){
-         r = h.value;
-      }
-      return r;
-   }
-   MO.FDuiColor4_set = function FDuiColor4_set(p){
-      var o = this;
-      o.__base.FEditControl.set.call(o, p);
-      var v = null;
-      if(p.constructor == SColor4){
-         var r = RFloat.format(p.red, 0, null, 3, null);
-         var g = RFloat.format(p.green, 0, null, 3, null);
-         var b = RFloat.format(p.blue, 0, null, 3, null);
-         v = r + ',' + g + ',' + b;
-      }
-      var h = o._hInput;
-      if(h){
-         h.value = v;
-      }
-   }
-   MO.FDuiColor4_onDataKeyDown = function FDuiColor4_onDataKeyDown(s, e){
-      var o = this;
-      o.__base.FEditControl.onDataKeyDown.call(o, s, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
-   }
-   MO.FDuiColor4_formatValue = function FDuiColor4_formatValue(v){
-      var o = this;
-      var r = RString.nvl(v);
-      if(ECase.Upper == o.editCase){
-         r = RString.toUpper(r);
-      }else if(ECase.Lower == o.editCase){
-         r = RString.toLower(r);
-      }
-      return r;
-   }
-   MO.FDuiColor4_setText = function FDuiColor4_setText(t){
-      var o = this;
-      if(!o.hEdit){
-         return;
-      }
-      if('U'== o.editCase){
-         o.hEdit.value = RString.toUpper(t);
-      }else if('L'== o.editCase){
-            o.hEdit.value = RString.toLower(t);
-      }else{
-         o.hEdit.value = t;
-      }
-      if('right' == o.editAlign ){
-         o.hEdit.style.textAlign = 'right';
-      }else if('left' == o.editAlign ){
-         o.hEdit.style.textAlign = 'left';
-      }else{
-         o.hEdit.style.textAlign = 'center';
-      }
-   }
-   MO.FDuiColor4_validText = function FDuiColor4_validText(t){
-      var o = this;
-      var r = o.__base.FEditControl.validText.call(o, t);
-      if(!r){
-         if(o.validLenmin){
-            if(o.validLenmin > t.length){
-               return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
-            }
-         }
-         if(o.validLenmax){
-            if(o.validLenmax < t.length){
-               return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-            }
-         }
-      }
-      return r;
-   }
-   MO.FDuiColor4_findEditor = function FDuiColor4_findEditor(){
-      var o = this;
-      if(o.editComplete){
-         var de = o.editor;
-         if(!de){
-            o.dsControl = o.topControl(MDataset);
-            if(o.dsControl){
-               de = o.editor = RConsole.find(FDuiColor4Console).focus(o, FDuiColor4Editor);
-            }
-         }
-         if(de){
-            de.linkControl(o);
-         }
-         return o.editor;
-      }
-   }
-   MO.FDuiColor4_drop = function FDuiColor4_drop(){
-      var o = this;
-      var de = o.findEditor();
-      if(de){
-         var t = o.reget();
-         if(t.length > 0){
-            if(o.finded != t){
-               if(de.source != o){
-                  de.linkControl(o);
-               }
-               de.search(t);
-            }
-            o.finded = t;
-         }
-      }
-   }
-   MO.FDuiColor4_clone = function FDuiColor4_clone(){
-      var o = this;
-      var r = o._class.newInstance();
-      GHtml_clone(r, o.hPanel);
-      return r;
-   }
-   MO.FDuiColor4_link = function FDuiColor4_link(){
-      var o = this;
-   }
+   o.source = c;
+   RLog.debug(o, 'link Panel (panel={0}, edit={1})', MO.Class.dump(c.hEditCell), MO.Class.dump(c.hEdit));
+   MO.Window.Html.toRect(o.rect, c.hEditCell);
+   MO.Window.Html.setPixelRect(o.hPanel, o.rect);
+   o.hPanel.style.pixelTop = o.rect.bottom;
+   var hbf = o.border.hForm;
+   hbf.style.pixelWidth = c.editBorder.hForm.width;
+   hbf.style.pixelHeight = c.editBorder.hForm.height;
+   return true;
 }
-with(MO){
-   MO.FDuiColorPicker = function FDuiColorPicker(o){
-      o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescColor, MDropable);
-      o.borderStyle = EUiBorder.RoundDrop;
-      o.onBuildEdit = FDuiColorPicker_onBuildEdit;
-      o.onEditEnd   = FDuiColorPicker_onEditEnd;
-      o.onDataKeyDown   = FDuiColorPicker_onDataKeyDown;
-      o.checkColor = FDuiColorPicker_checkColor;
-      o.setText     = FDuiColorPicker_setText;
-      o.drop        = FDuiColorPicker_drop;
-      o.dispose     = FDuiColorPicker_dispose;
-      return o;
-   }
-   MO.FDuiColorPicker_onBuildEdit = function FDuiColorPicker_onBuildEdit(b){
-      var o = this;
-      var h = o.hEdit = RBuilder.appendEdit(b.hPanel, o.style('Edit'));
-      h.maxLength = 20;
-   }
-   MO.FDuiColorPicker_onEditEnd = function FDuiColorPicker_onEditEnd(editor){
-      var o = this;
-      RLog.debug(o, 'Begin (editor={0}:{1} value={2})', editor, editor?editor.color:'', o.dataValue);
-      if(editor){
-         o.set(editor.color);
-         o.hDrop.style.backgroundColor = editor.color;
-      }
-      o.onDataEditEnd(o);
-      RLog.debug(o, 'End (editor={0} value={1})', editor, o.dataValue);
-   }
-   MO.FDuiColorPicker_setText = function FDuiColorPicker_setText(t){
-      var o = this;
-      o.base.FEditControl.setText.call(o, RString.toUpper(t));
-      o.hDrop.style.backgroundColor = t;
-   }
-   MO.FDuiColorPicker_checkColor = function FDuiColorPicker_checkColor(c)
-   {
-      var oSpan = document.createElement("<span style='color:"+c+";'></span>");
-      if(oSpan.style.color != ""){
-         return true;
-      }else{
-         return false;
-      }
-   }
-   MO.FDuiColorPicker_onDataKeyDown = function FDuiColorPicker_onDataKeyDown(e){
-         var o = this;
-         o.base.FEditControl.onDataKeyDown.call(o, o, e);
-         if(o.checkColor(o.text())){
-            o.hDrop.style.backgroundColor = o.text();
-         }else{
-            o.hDrop.style.backgroundColor = '';
-         }
-   }
-   MO.FDuiColorPicker_drop = function FDuiColorPicker_drop(){
-      var o = this;
-      if(o.canDrop() && o.canEdit){
-         var ed = o.editor = RConsole.find(FEditConsole).focus(o, FDuiColorPickerEditor, o.name);
-         if(ed.linkControl(o)){
-            ed.set(o.reget());
-         }
-         ed.show();
-      }
-   }
-   MO.FDuiColorPicker_dispose = function FDuiColorPicker_dispose(){
-      var o = this;
-      o.base.FEditControl.dispose.call(o);
-      RMemory.freeHtml(o.hEdit);
-      RMemory.freeHtml(o.hDrop);
-      o.hEdit = null;
-      o.hDrop = null;
-   }
+MO.FDuiColorPickerEditor_onCellEnter = function FDuiColorPickerEditor_onCellEnter(e){
+   var o = this;
+   o.editable.hDrop.style.backgroundColor = e.hSource.style.backgroundColor;
 }
-with(MO){
-   MO.FDuiColorPickerEditor = function FDuiColorPickerEditor(o){
-      o = RClass.inherits(this, o, FDropEditor, MShadow);
-      o.MinWidth     = 240;
-      o.ColorHex     = new Array('00', '33', '66', '99', 'CC', 'FF');
-      o.SpColorHex   = new Array('FF0000', '00FF00', '0000FF', 'FFFF00', '00FFFF','FF00FF');
-      o.onCellEnter  = RClass.register(o, new HMouseOver('onCellEnter'),  FDuiColorPickerEditor_onCellEnter);
-      o.onCellSelect = RClass.register(o, new HMouseDown('onCellSelect'), FDuiColorPickerEditor_onCellSelect);
-      o.color        = null;
-      o.hTable       = null;
-      o.cellWidth    = 16;
-      o.cellHeight   = 10;
-      o.onBuildDrop  = FDuiColorPickerEditor_onBuildDrop;
-      o.onKeyDown    = FDuiColorPickerEditor_onKeyDown;
-      o.onCellSelect = FDuiColorPickerEditor_onCellSelect;
-       o.onEditEnd = FDuiColorPickerEditor_onEditEnd;
-      o.makeCell     = FDuiColorPickerEditor_makeCell;
-      o.set          = FDuiColorPickerEditor_set;
-      o.show         = FDuiColorPickerEditor_show;
-      o.hide         = FDuiColorPickerEditor_hide;
-      o.linkControl  = FDuiColorPickerEditor_linkControl;
-      o.dispose      = FDuiColorPickerEditor_dispose;
-      return o;
-   }
-   MO.FDuiColorPickerEditor_onBuildDrop = function FDuiColorPickerEditor_onBuildDrop(){
-      var o = this;
-      o.hTable = RBuilder.appendTable(o.hDropPanel);
-      for(var i = 0; i < 2; i++){
-         for(var j = 0; j < 6; j++){
-            var hRow = o.hTable.insertRow();
-            o.makeCell(hRow, "#000000");
-            if (i == 0){
-               o.makeCell(hRow, '#'+o.ColorHex[j] + o.ColorHex[j] + o.ColorHex[j]);
-            }else {
-               o.makeCell(hRow, '#'+o.SpColorHex[j]);
-            }
-            o.makeCell(hRow, "#000000");
-            for (k = 0; k < 3; k++) {
-               for (l = 0; l < 6; l++) {
-                  o.makeCell(hRow, '#'+o.ColorHex[k + i * 3] + o.ColorHex[l] + o.ColorHex[j]);
-               }
-            }
-         }
-      }
-   }
-   MO.FDuiColorPickerEditor_linkControl = function FDuiColorPickerEditor_linkControl(c){
-      var o = this;
-      if(o.source == c){
-         return false;
-      }
-      o.source = c;
-      RLog.debug(o, 'link Panel (panel={0}, edit={1})', RClass.dump(c.hEditCell), RClass.dump(c.hEdit));
-      RHtml.toRect(o.rect, c.hEditCell);
-      RHtml.setPixelRect(o.hPanel, o.rect);
-      o.hPanel.style.pixelTop = o.rect.bottom;
-      var hbf = o.border.hForm;
-      hbf.style.pixelWidth = c.editBorder.hForm.width;
-      hbf.style.pixelHeight = c.editBorder.hForm.height;
-      return true;
-   }
-   MO.FDuiColorPickerEditor_onCellEnter = function FDuiColorPickerEditor_onCellEnter(e){
-      var o = this;
-      o.editable.hDrop.style.backgroundColor = e.hSource.style.backgroundColor;
-   }
-   MO.FDuiColorPickerEditor_onCellSelect = function FDuiColorPickerEditor_onCellSelect(e){
-      var o = this;
-      o.color = e.srcElement.style.backgroundColor;
-      o.editStatus = EEditStatus.Ok
-      o.blur();
-   }
-   MO.FDuiColorPickerEditor_makeCell = function FDuiColorPickerEditor_makeCell(hRow, color) {
-      var o = this;
-      var h = hRow.insertCell();
-      h.link = o;
-      h.width = o.cellWidth;
-      h.height = o.cellHeight;
-      h.style.backgroundColor = color;
-      o.attachEvent('onCellEnter', h);
-      o.attachEvent('onCellSelect', h);
-      return h;
-   }
-   MO.FDuiColorPickerEditor_onKeyDown = function FDuiColorPickerEditor_onKeyDown(e){
-      alert(FDuiColorPickerEditor_onKeyDown);
-      var o = this;
-      var kc = e.keyCode;
-      if(EKey.Up == kc){
-         o.select(o.selectIndex-1);
-      }else if(EKey.Down == kc){
-         o.select(o.selectIndex+1);
-      }else if(EKey.Esc == kc){
-         o.editStatus = EEditStatus.Cancel;
-         o.selectIndex = o.originIndex;
-         RKey.eventClear(e);
-         o.inEdit = false;
-         o.hEdit.blur();
-      }else if(EKey.Enter == kc){
-         o.editStatus = EEditStatus.Ok;
-         RKey.eventClear(e);
-         o.inEdit = false;
-         o.hEdit.blur();
-      }
-   }
-   MO.FDuiColorPickerEditor_set = function FDuiColorPickerEditor_set(v){
-      var o = this;
-      o.color = v;
-   }
-   MO.FDuiColorPickerEditor_show = function FDuiColorPickerEditor_show(v){
-      var o = this;
-      o.base.FDropEditor.show.call(o, v);
-      RConsole.find(FFocusConsole).focus(o);
-      if(o.border.hForm.offsetWidth < o.MinWidth){
-         o.border.hForm.style.pixelWidth = o.MinWidth;
-      }
-      o.base.MShadow.show.call(o, v);
-      o.isSkipBlur = false;
-   }
-   MO.FDuiColorPickerEditor_onEditEnd = function FDuiColorPickerEditor_onEditEnd(){
-      var o = this;
-      var t = o.editable;
-      RLog.debug(o, 'Edit end (editable={0}, status={1})', RClass.dump(t), REnum.decode(EEditStatus, o.editStatus));
-      if(t){
-         t.hDrop.style.backgroundColor = o.color;
-         var ec = RConsole.find(FEventConsole);
-         if(EEditStatus.Cancel == o.editStatus){
-            ec.add(t, t.focus);
-         }else if(EEditStatus.Ok == o.editStatus){
-            t.onEditEnd(o);
-            ec.add(t, t.focus);
-         }
-      }
-      o.editable = null;
+MO.FDuiColorPickerEditor_onCellSelect = function FDuiColorPickerEditor_onCellSelect(e){
+   var o = this;
+   o.color = e.srcElement.style.backgroundColor;
+   o.editStatus = EEditStatus.Ok
+   o.blur();
+}
+MO.FDuiColorPickerEditor_makeCell = function FDuiColorPickerEditor_makeCell(hRow, color) {
+   var o = this;
+   var h = hRow.insertCell();
+   h.link = o;
+   h.width = o.cellWidth;
+   h.height = o.cellHeight;
+   h.style.backgroundColor = color;
+   o.attachEvent('onCellEnter', h);
+   o.attachEvent('onCellSelect', h);
+   return h;
+}
+MO.FDuiColorPickerEditor_onKeyDown = function FDuiColorPickerEditor_onKeyDown(e){
+   alert(FDuiColorPickerEditor_onKeyDown);
+   var o = this;
+   var kc = e.keyCode;
+   if(EKey.Up == kc){
+      o.select(o.selectIndex-1);
+   }else if(EKey.Down == kc){
+      o.select(o.selectIndex+1);
+   }else if(EKey.Esc == kc){
+      o.editStatus = EEditStatus.Cancel;
+      o.selectIndex = o.originIndex;
+      RKey.eventClear(e);
       o.inEdit = false;
-   }
-   MO.FDuiColorPickerEditor_hide = function FDuiColorPickerEditor_hide(){
-      var o = this;
-      o.source = null;
-      o.base.FDropEditor.hide.call(o);
-      o.base.MShadow.hide.call(o);
-   }
-   MO.FDuiColorPickerEditor_dispose = function FDuiColorPickerEditor_dispose(){
-      var o = this;
-      o.base.FDropEditor.dispose.call(o);
-      RMemory.freeHtml(o.hTable);
-      RMemory.freeHtml(o.hDropPanel);
-      RMemory.freeHtml(o.hEdit);
-      o.hTable = null;
-      o.hDropPanel = null;
-      o.hEdit = null;
+      o.hEdit.blur();
+   }else if(EKey.Enter == kc){
+      o.editStatus = EEditStatus.Ok;
+      RKey.eventClear(e);
+      o.inEdit = false;
+      o.hEdit.blur();
    }
 }
-with(MO){
-   MO.FDuiColorPower = function FDuiColorPower(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged, MMouseCapture);
-      o._inputSize          = RClass.register(o, new APtySize2('_inputSize'));
-      o._valueMin           = RClass.register(o, new APtyNumber('_valueMin'));
-      o._valueMax           = RClass.register(o, new APtyNumber('_valueMax'));
-      o._styleValuePanel    = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInputPanel    = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput         = RClass.register(o, new AStyle('_styleInput'));
-      o._innerOriginValue   = null;
-      o._innerDataValue     = null;
-      o._barRed             = null;
-      o._barGreen           = null;
-      o._barBlue            = null;
-      o._barPower           = null;
-      o._hColorPanel        = null;
-      o._hColorImage        = null;
-      o._hChannelPanel      = null;
-      o._hChannelForm       = null;
-      o.onBuildEditValue    = FDuiColorPower_onBuildEditValue;
-      o.onMouseCaptureStart = FDuiColorPower_onMouseCaptureStart;
-      o.onMouseCapture      = FDuiColorPower_onMouseCapture;
-      o.onMouseCaptureStop  = FDuiColorPower_onMouseCaptureStop;
-      o.onInputKeyPress     = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiColorPower_onInputKeyPress);
-      o.onInputEdit         = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiColorPower_onInputEdit);
-      o.onInputChange       = RClass.register(o, new AEventChange('onInputChange'), FDuiColorPower_onInputChange);
-      o.construct           = FDuiColorPower_construct;
-      o.get                 = FDuiColorPower_get;
-      o.set                 = FDuiColorPower_set;
-      o.setDisplayColor     = FDuiColorPower_setDisplayColor;
-      o.setDisplay          = FDuiColorPower_setDisplay;
-      o.refreshValue        = FDuiColorPower_refreshValue;
-      o.dispose             = FDuiColorPower_dispose;
-      return o;
+MO.FDuiColorPickerEditor_set = function FDuiColorPickerEditor_set(v){
+   var o = this;
+   o.color = v;
+}
+MO.FDuiColorPickerEditor_show = function FDuiColorPickerEditor_show(v){
+   var o = this;
+   o.base.FDropEditor.show.call(o, v);
+   RConsole.find(FFocusConsole).focus(o);
+   if(o.border.hForm.offsetWidth < o.MinWidth){
+      o.border.hForm.style.pixelWidth = o.MinWidth;
    }
-   MO.FDuiColorPower_onBuildEditValue = function FDuiColorPower_onBuildEditValue(p){
-      var o = this;
-      var h = o._hValuePanel;
-      h.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(h);
-      hf.width = '100%';
-      var hl = o._hValueLine = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hl);
-      o.onBuildEditChange(p);
-      var hcp = o._hColorPanel = RBuilder.appendTableCell(hl);
-      hcp.width = 16;
-      hcp.style.padding = '2px';
-      o._hColorImage = RBuilder.appendIcon(hcp, null, 'n', 14, 65);
-      var hcp = o._hChannelPanel = RBuilder.appendTableCell(hl);
-      var hcf = o._hChannelForm = RBuilder.appendTable(hcp, null, 0, 1, 0);
-      hcf.__linker = o;
-      hcf.width = '100%';
-      var b = o._barRed = new SDuiColorChannel();
-      b.control = o;
-      b.typeCd = 'red';
-      b.hPanel = hcf;
-      b.build();
-      var b = o._barGreen = new SDuiColorChannel();
-      b.control = o;
-      b.typeCd = 'green';
-      b.hPanel = hcf;
-      b.build();
-      var b = o._barBlue = new SDuiColorChannel();
-      b.control = o;
-      b.typeCd = 'blue';
-      b.hPanel = hcf;
-      b.build();
-      var b = o._barPower = new SDuiColorPower();
-      b.control = o;
-      b.typeCd = 'power';
-      b.setRange(o._valueMin, o._valueMax);
-      b.hPanel = hcf;
-      b.build();
-   }
-   MO.FDuiColorPower_onMouseCaptureStart = function FDuiColorPower_onMouseCaptureStart(p){
-      var o = this;
-      var b = RHtml.searchObject(p.hSource, '__pbar');
-      if(b){
-         b.onMouseDown(p);
+   o.base.MShadow.show.call(o, v);
+   o.isSkipBlur = false;
+}
+MO.FDuiColorPickerEditor_onEditEnd = function FDuiColorPickerEditor_onEditEnd(){
+   var o = this;
+   var t = o.editable;
+   RLog.debug(o, 'Edit end (editable={0}, status={1})', MO.Class.dump(t), REnum.decode(EEditStatus, o.editStatus));
+   if(t){
+      t.hDrop.style.backgroundColor = o.color;
+      var ec = RConsole.find(FEventConsole);
+      if(EEditStatus.Cancel == o.editStatus){
+         ec.add(t, t.focus);
+      }else if(EEditStatus.Ok == o.editStatus){
+         t.onEditEnd(o);
+         ec.add(t, t.focus);
       }
    }
-   MO.FDuiColorPower_onMouseCapture = function FDuiColorPower_onMouseCapture(p){
-      var o = this;
-      var b = RHtml.searchObject(p.hSource, '__pbar');
-      if(b){
-         b.onMouseMove(p);
-      }
+   o.editable = null;
+   o.inEdit = false;
+}
+MO.FDuiColorPickerEditor_hide = function FDuiColorPickerEditor_hide(){
+   var o = this;
+   o.source = null;
+   o.base.FDropEditor.hide.call(o);
+   o.base.MShadow.hide.call(o);
+}
+MO.FDuiColorPickerEditor_dispose = function FDuiColorPickerEditor_dispose(){
+   var o = this;
+   o.base.FDropEditor.dispose.call(o);
+   RMemory.freeHtml(o.hTable);
+   RMemory.freeHtml(o.hDropPanel);
+   RMemory.freeHtml(o.hEdit);
+   o.hTable = null;
+   o.hDropPanel = null;
+   o.hEdit = null;
+}
+MO.FDuiColorPower = function FDuiColorPower(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged, MO.MMouseCapture);
+   o._inputSize          = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._valueMin           = MO.Class.register(o, new MO.APtyNumber('_valueMin'));
+   o._valueMax           = MO.Class.register(o, new MO.APtyNumber('_valueMax'));
+   o._styleValuePanel    = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInputPanel    = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput         = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._innerOriginValue   = null;
+   o._innerDataValue     = null;
+   o._barRed             = null;
+   o._barGreen           = null;
+   o._barBlue            = null;
+   o._barPower           = null;
+   o._hColorPanel        = null;
+   o._hColorImage        = null;
+   o._hChannelPanel      = null;
+   o._hChannelForm       = null;
+   o.onBuildEditValue    = MO.FDuiColorPower_onBuildEditValue;
+   o.onMouseCaptureStart = MO.FDuiColorPower_onMouseCaptureStart;
+   o.onMouseCapture      = MO.FDuiColorPower_onMouseCapture;
+   o.onMouseCaptureStop  = MO.FDuiColorPower_onMouseCaptureStop;
+   o.onInputKeyPress     = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiColorPower_onInputKeyPress);
+   o.onInputEdit         = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), MO.FDuiColorPower_onInputEdit);
+   o.onInputChange       = MO.Class.register(o, new MO.AEventChange('onInputChange'), MO.FDuiColorPower_onInputChange);
+   o.construct           = MO.FDuiColorPower_construct;
+   o.get                 = MO.FDuiColorPower_get;
+   o.set                 = MO.FDuiColorPower_set;
+   o.setDisplayColor     = MO.FDuiColorPower_setDisplayColor;
+   o.setDisplay          = MO.FDuiColorPower_setDisplay;
+   o.refreshValue        = MO.FDuiColorPower_refreshValue;
+   o.dispose             = MO.FDuiColorPower_dispose;
+   return o;
+}
+MO.FDuiColorPower_onBuildEditValue = function FDuiColorPower_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = MO.Window.Builder.appendTable(h);
+   hf.width = '100%';
+   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hcp = o._hColorPanel = MO.Window.Builder.appendTableCell(hl);
+   hcp.width = 16;
+   hcp.style.padding = '2px';
+   o._hColorImage = MO.Window.Builder.appendIcon(hcp, null, 'n', 14, 65);
+   var hcp = o._hChannelPanel = MO.Window.Builder.appendTableCell(hl);
+   var hcf = o._hChannelForm = MO.Window.Builder.appendTable(hcp, null, 0, 1, 0);
+   hcf.__linker = o;
+   hcf.width = '100%';
+   var b = o._barRed = new MO.SDuiColorChannel();
+   b.control = o;
+   b.typeCd = 'red';
+   b.hPanel = hcf;
+   b.build();
+   var b = o._barGreen = new MO.SDuiColorChannel();
+   b.control = o;
+   b.typeCd = 'green';
+   b.hPanel = hcf;
+   b.build();
+   var b = o._barBlue = new MO.SDuiColorChannel();
+   b.control = o;
+   b.typeCd = 'blue';
+   b.hPanel = hcf;
+   b.build();
+   var b = o._barPower = new MO.SDuiColorPower();
+   b.control = o;
+   b.typeCd = 'power';
+   b.setRange(o._valueMin, o._valueMax);
+   b.hPanel = hcf;
+   b.build();
+}
+MO.FDuiColorPower_onMouseCaptureStart = function FDuiColorPower_onMouseCaptureStart(p){
+   var o = this;
+   var b = MO.Window.Html.searchObject(p.hSource, '__pbar');
+   if(b){
+      b.onMouseDown(p);
    }
-   MO.FDuiColorPower_onMouseCaptureStop = function FDuiColorPower_onMouseCaptureStop(p){
-      var o = this;
-      var b = RHtml.searchObject(p.hSource, '__pbar');
-      if(b){
-         b.onMouseUp(p);
-      }
+}
+MO.FDuiColorPower_onMouseCapture = function FDuiColorPower_onMouseCapture(p){
+   var o = this;
+   var b = MO.Window.Html.searchObject(p.hSource, '__pbar');
+   if(b){
+      b.onMouseMove(p);
    }
-   MO.FDuiColorPower_onInputKeyPress = function FDuiColorPower_onInputKeyPress(p){
-      var o = this;
-      var c = p.keyCode;
-      if(RKeyboard.isControlKey(c)){
-         return;
-      }
-      if(!RKeyboard.isFloatKey(c)){
-         p.cancel();
-      }
+}
+MO.FDuiColorPower_onMouseCaptureStop = function FDuiColorPower_onMouseCaptureStop(p){
+   var o = this;
+   var b = MO.Window.Html.searchObject(p.hSource, '__pbar');
+   if(b){
+      b.onMouseUp(p);
    }
-   MO.FDuiColorPower_onInputEdit = function FDuiColorPower_onInputEdit(p){
-      var o = this;
-      var hs = p.hSender;
-      var b = hs._pbar;
-      if(b){
-         b.changeInputEdit();
-      }
-      o.processDataChangedListener(o);
+}
+MO.FDuiColorPower_onInputKeyPress = function FDuiColorPower_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   if(MO.RKeyboard.isControlKey(c)){
+      return;
    }
-   MO.FDuiColorPower_onInputChange = function FDuiColorPower_onInputChange(p){
-      var o = this;
-      var hs = p.hSender;
-      var b = hs._pbar;
-      if(b){
-         b.changeInputChange();
-      }
-      o.processDataChangedListener(o);
+   if(!MO.RKeyboard.isFloatKey(c)){
+      p.cancel();
    }
-   MO.FDuiColorPower_construct = function FDuiColorPower_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-      o._innerOriginValue = new SColor4();
-      o._innerDataValue = new SColor4();
+}
+MO.FDuiColorPower_onInputEdit = function FDuiColorPower_onInputEdit(p){
+   var o = this;
+   var hs = p.hSender;
+   var b = hs._pbar;
+   if(b){
+      b.changeInputEdit();
    }
-   MO.FDuiColorPower_get = function FDuiColorPower_get(p){
-      var o = this;
-      var v = o._innerDataValue;
-      v.red = o._barRed.get();
-      v.green = o._barGreen.get();
-      v.blue = o._barBlue.get();
-      v.alpha = o._barPower.get();
-      return v;
+   o.processDataChangedListener(o);
+}
+MO.FDuiColorPower_onInputChange = function FDuiColorPower_onInputChange(p){
+   var o = this;
+   var hs = p.hSender;
+   var b = hs._pbar;
+   if(b){
+      b.changeInputChange();
    }
-   MO.FDuiColorPower_set = function FDuiColorPower_set(p){
-      var o = this;
-      o.__base.FDuiEditControl.set.call(o, p);
-      if(p.constructor == SColor4){
-         o._innerOriginValue.assign(p);
-         o._innerDataValue.assign(p);
+   o.processDataChangedListener(o);
+}
+MO.FDuiColorPower_construct = function FDuiColorPower_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+   o._innerOriginValue = new MO.SColor4();
+   o._innerDataValue = new MO.SColor4();
+}
+MO.FDuiColorPower_get = function FDuiColorPower_get(p){
+   var o = this;
+   var v = o._innerDataValue;
+   v.red = o._barRed.get();
+   v.green = o._barGreen.get();
+   v.blue = o._barBlue.get();
+   v.alpha = o._barPower.get();
+   return v;
+}
+MO.FDuiColorPower_set = function FDuiColorPower_set(p){
+   var o = this;
+   o.__base.FDuiEditControl.set.call(o, p);
+   if(p.constructor == MO.SColor4){
+      o._innerOriginValue.assign(p);
+      o._innerDataValue.assign(p);
+   }else{
+      throw new MO.TError('Invalid value format.');
+   }
+   o.setDisplayColor();
+   var v = o._innerDataValue;
+   o._barRed.set(v.red);
+   o._barGreen.set(v.green);
+   o._barBlue.set(v.blue);
+   o._barPower.set(v.alpha);
+   o.changeSet(false);
+}
+MO.FDuiColorPower_setDisplayColor = function FDuiColorPower_setDisplayColor(){
+   var o = this;
+   var v = o._innerDataValue;
+   var va = v.alpha;
+   var vr = MO.Lang.Hex.format(MO.Lang.Integer.toRange(parseInt(v.red * va * 255), 0, 255), 2);
+   var vg = MO.Lang.Hex.format(MO.Lang.Integer.toRange(parseInt(v.green * va * 255), 0, 255), 2);
+   var vb = MO.Lang.Hex.format(MO.Lang.Integer.toRange(parseInt(v.blue * va * 255), 0, 255), 2);
+   o._hColorImage.style.backgroundColor = '#' + vr + vg + vb;
+}
+MO.FDuiColorPower_setDisplay = function FDuiColorPower_setDisplay(){
+   var o = this;
+   o.setDisplayColor();
+   var v = o._innerDataValue;
+   o._barRed.set(v.red);
+   o._barGreen.set(v.green);
+   o._barBlue.set(v.blue);
+   o._barPower.set(v.alpha);
+}
+MO.FDuiColorPower_refreshValue = function FDuiColorPower_refreshValue(){
+   var o = this;
+   o.get();
+   o.setDisplayColor();
+   o.processDataChangedListener(o);
+}
+MO.FDuiColorPower_dispose = function FDuiColorPower_dispose(t){
+   var o = this;
+   o.__base.FDuiEditControl.dispose.call(o, t);
+}
+MO.FDuiDateTime = function FDuiDateTime(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MDuiDropable);
+   o.editDispMode = MO.Class.register(o, new MO.APtySet('editDisplay', 'editDate', MO.EDateTimeMode.Display));
+   o.editYear     = MO.Class.register(o, new MO.APtySet('editYear', 'editDate', MO.EDateTimeMode.Year));
+   o.editMonth    = MO.Class.register(o, new MO.APtySet('editMonth', 'editDate', MO.EDateTimeMode.Month));
+   o.editDay      = MO.Class.register(o, new MO.APtySet('editDay', 'editDate', MO.EDateTimeMode.Day));
+   o._date        = null;
+   o.borderStyle  = MO.EUiBorder.RoundDrop;
+   o.lsnEditEnd   = null;
+   o.hYearPanel   = null;
+   o.hYear        = null;
+   o.hMonthPanel  = null;
+   o.hMonth       = null;
+   o.hDayPanel    = null;
+   o.hDay         = null;
+   o.onKeyPress   = MO.FDuiDateTime_onKeyPress;
+   o.onEditEnd    = MO.FDuiDateTime_onEditEnd;
+   o.onBuildEdit  = MO.FDuiDateTime_onBuildEdit;
+   o.oeSaveValue  = MO.FDuiDateTime_oeSaveValue;
+   o.construct    = MO.FDuiDateTime_construct;
+   o.formatValue  = MO.FDuiDateTime_formatValue;
+   o.text         = MO.FDuiDateTime_text;
+   o.setText      = MO.FDuiDateTime_setText;
+   o.validText    = MO.FDuiDateTime_validText;
+   o.setEditable  = MO.FDuiDateTime_setEditable;
+   o.refreshStyle = MO.FDuiDateTime_refreshStyle;
+   o.drop         = MO.FDuiDateTime_drop;
+   o.dispose      = MO.FDuiDateTime_dispose;
+   return o;
+}
+MO.FDuiDateTime_onKeyPress = function FDuiDateTime_onKeyPress(e){
+   if(!MO.Lang.String.inChars(String.fromCharCode(e.keyCode), MO.Lang.Date.Chars)){
+      MO.RKey.eventClear(e);
+   }
+}
+MO.FDuiDateTime_onEditEnd = function FDuiDateTime_onEditEnd(e){
+   var o = this;
+   if(e){
+      o.set(e.get());
+   }
+   o.onDataEditEnd(o);
+}
+MO.FDuiDateTime_onBuildEdit = function FDuiDateTime_onBuildEdit(b){
+   var o = this;
+   var htb = MO.Window.Builder.appendTable(b.hPanel);
+   htb.width = '100%';
+   htb.style.tableLayout = 'fixed';
+   var hr = o.hEdit = htb.insertRow();
+   o.onBuildChange(hr.insertCell())
+   var hc = oonDateDoubleClickPanel = hr.insertCell();
+   hc.width = '40%';
+   hc.style.padding = '0 1';
+   var he = o.hYear = MO.Window.Builder.appendEdit(hc);
+   he.maxLength = 4;
+   he.style.border = 0;
+   he.style.width = '100%';
+   he.style.textAlign = 'right';
+   var hc = o.hYearSplit = hr.insertCell();
+   hc.width = 5;
+   hc.innerText = '-';
+   o.hYear.style.display = o.editYear?'block':'none'
+   o.hYearSplit.style.display = o.editYear?'block':'none'
+   var hc = o.hMonthPanel = hr.insertCell();
+   hc.width = '20%';
+   hc.style.padding = '0 1';
+   var he = o.hMonth = MO.Window.Builder.appendEdit(hc);
+   he.maxLength = 2;
+   he.style.border = 0;
+   he.style.width = '100%';
+   he.style.textAlign = 'right';
+   var hc = o.hMonthSplit = hr.insertCell();
+   hc.width = 5;
+   hc.innerText = '-';
+   o.hMonth.style.display = o.editMonth?'block':'none';
+   o.hMonthSplit.style.display = o.editDay?'block':'none';
+   var hc = o.hDayPanel = hr.insertCell();
+   hc.width = '20%';
+   hc.style.padding = '0 1'
+   var he = o.hDay = MO.Window.Builder.appendEdit(hc);
+   he.maxLength = 2;
+   he.style.border = 0;
+   he.style.width = '100%';
+   he.style.textAlign = 'right';
+   o.hDay.style.display = o.editDay?'block':'none';
+}
+MO.FDuiDateTime_oeSaveValue = function FDuiDateTime_oeSaveValue(e){
+   var o = this;
+   var dn = MO.Lang.String.nvl(o.dataCode, o.dataName);
+   if(!MO.Lang.String.isEmpty(dn)){
+      var vs = e.values;
+      var v = vs.get(dn);
+      if(v){
+         vs.set(dn, o.reget().substring(0, 8) + v.substring(8));
       }else{
-         throw new TError('Invalid value format.');
+         vs.set(dn, o.reget());
       }
-      o.setDisplayColor();
-      var v = o._innerDataValue;
-      o._barRed.set(v.red);
-      o._barGreen.set(v.green);
-      o._barBlue.set(v.blue);
-      o._barPower.set(v.alpha);
-      o.changeSet(false);
    }
-   MO.FDuiColorPower_setDisplayColor = function FDuiColorPower_setDisplayColor(){
-      var o = this;
-      var v = o._innerDataValue;
-      var va = v.alpha;
-      var vr = RHex.format(RInteger.toRange(parseInt(v.red * va * 255), 0, 255), 2);
-      var vg = RHex.format(RInteger.toRange(parseInt(v.green * va * 255), 0, 255), 2);
-      var vb = RHex.format(RInteger.toRange(parseInt(v.blue * va * 255), 0, 255), 2);
-      o._hColorImage.style.backgroundColor = '#' + vr + vg + vb;
-   }
-   MO.FDuiColorPower_setDisplay = function FDuiColorPower_setDisplay(){
-      var o = this;
-      o.setDisplayColor();
-      var v = o._innerDataValue;
-      o._barRed.set(v.red);
-      o._barGreen.set(v.green);
-      o._barBlue.set(v.blue);
-      o._barPower.set(v.alpha);
-   }
-   MO.FDuiColorPower_refreshValue = function FDuiColorPower_refreshValue(){
-      var o = this;
-      o.get();
-      o.setDisplayColor();
-      o.processDataChangedListener(o);
-   }
-   MO.FDuiColorPower_dispose = function FDuiColorPower_dispose(t){
-      var o = this;
-      o.__base.FDuiEditControl.dispose.call(o, t);
-   }
+   return MO.EEventStatus.Stop;
 }
-with(MO){
-   MO.FDuiDateTime = function FDuiDateTime(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MDuiDropable);
-      o.editDispMode = RClass.register(o, new APtySet('editDisplay', 'editDate', EDateTimeMode.Display));
-      o.editYear     = RClass.register(o, new APtySet('editYear', 'editDate', EDateTimeMode.Year));
-      o.editMonth    = RClass.register(o, new APtySet('editMonth', 'editDate', EDateTimeMode.Month));
-      o.editDay      = RClass.register(o, new APtySet('editDay', 'editDate', EDateTimeMode.Day));
-      o._date        = null;
-      o.borderStyle  = EUiBorder.RoundDrop;
-      o.lsnEditEnd   = null;
-      o.hYearPanel   = null;
-      o.hYear        = null;
-      o.hMonthPanel  = null;
-      o.hMonth       = null;
-      o.hDayPanel    = null;
-      o.hDay         = null;
-      o.onKeyPress   = FDuiDateTime_onKeyPress;
-      o.onEditEnd    = FDuiDateTime_onEditEnd;
-      o.onBuildEdit  = FDuiDateTime_onBuildEdit;
-      o.oeSaveValue  = FDuiDateTime_oeSaveValue;
-      o.construct    = FDuiDateTime_construct;
-      o.formatValue  = FDuiDateTime_formatValue;
-      o.text         = FDuiDateTime_text;
-      o.setText      = FDuiDateTime_setText;
-      o.validText    = FDuiDateTime_validText;
-      o.setEditable  = FDuiDateTime_setEditable;
-      o.refreshStyle = FDuiDateTime_refreshStyle;
-      o.drop         = FDuiDateTime_drop;
-      o.dispose      = FDuiDateTime_dispose;
-      return o;
-   }
-   MO.FDuiDateTime_onKeyPress = function FDuiDateTime_onKeyPress(e){
-      if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
-         RKey.eventClear(e);
-      }
-   }
-   MO.FDuiDateTime_onEditEnd = function FDuiDateTime_onEditEnd(e){
+MO.FDuiDateTime_construct = function FDuiDateTime_construct(){
+   var o = this;
+   o.base.FDuiEditControl.construct.call(o);
+   o._date = new MO.TDate();
+   o.lsnEditEnd = new MO.TListener(o, o.onEditEnd);
+}
+MO.FDuiDateTime_formatValue = function FDuiDateTime_formatValue(t){
+   if(t){
       var o = this;
-      if(e){
-         o.set(e.get());
-      }
-      o.onDataEditEnd(o);
-   }
-   MO.FDuiDateTime_onBuildEdit = function FDuiDateTime_onBuildEdit(b){
-      var o = this;
-      var htb = RBuilder.appendTable(b.hPanel);
-      htb.width = '100%';
-      htb.style.tableLayout = 'fixed';
-      var hr = o.hEdit = htb.insertRow();
-      o.onBuildChange(hr.insertCell())
-      var hc = oonDateDoubleClickPanel = hr.insertCell();
-      hc.width = '40%';
-      hc.style.padding = '0 1';
-      var he = o.hYear = RBuilder.appendEdit(hc);
-      he.maxLength = 4;
-      he.style.border = 0;
-      he.style.width = '100%';
-      he.style.textAlign = 'right';
-      var hc = o.hYearSplit = hr.insertCell();
-      hc.width = 5;
-      hc.innerText = '-';
-      o.hYear.style.display = o.editYear?'block':'none'
-      o.hYearSplit.style.display = o.editYear?'block':'none'
-      var hc = o.hMonthPanel = hr.insertCell();
-      hc.width = '20%';
-      hc.style.padding = '0 1';
-      var he = o.hMonth = RBuilder.appendEdit(hc);
-      he.maxLength = 2;
-      he.style.border = 0;
-      he.style.width = '100%';
-      he.style.textAlign = 'right';
-      var hc = o.hMonthSplit = hr.insertCell();
-      hc.width = 5;
-      hc.innerText = '-';
-      o.hMonth.style.display = o.editMonth?'block':'none';
-      o.hMonthSplit.style.display = o.editDay?'block':'none';
-      var hc = o.hDayPanel = hr.insertCell();
-      hc.width = '20%';
-      hc.style.padding = '0 1'
-      var he = o.hDay = RBuilder.appendEdit(hc);
-      he.maxLength = 2;
-      he.style.border = 0;
-      he.style.width = '100%';
-      he.style.textAlign = 'right';
-      o.hDay.style.display = o.editDay?'block':'none';
-   }
-   MO.FDuiDateTime_oeSaveValue = function FDuiDateTime_oeSaveValue(e){
-      var o = this;
-      var dn = RString.nvl(o.dataCode, o.dataName);
-      if(!RString.isEmpty(dn)){
-         var vs = e.values;
-         var v = vs.get(dn);
-         if(v){
-            vs.set(dn, o.reget().substring(0, 8) + v.substring(8));
-         }else{
-            vs.set(dn, o.reget());
-         }
-      }
-      return EEventStatus.Stop;
-   }
-   MO.FDuiDateTime_construct = function FDuiDateTime_construct(){
-      var o = this;
-      o.base.FDuiEditControl.construct.call(o);
-      o._date = new TDate();
-      o.lsnEditEnd = new TListener(o, o.onEditEnd);
-   }
-   MO.FDuiDateTime_formatValue = function FDuiDateTime_formatValue(t){
-      if(t){
-         var o = this;
-         if(t.toLowerCase() == '@now'){
-            o._date.now();
-            return RDate.formatDate(o._date);
-         }else{
-            RDate.autoParse(o._date, t);
-            return RDate.formatDate(o._date);
-         }
-      }
-      return RString.nvl(t);
-   }
-   MO.FDuiDateTime_text = function FDuiDateTime_text(){
-      var o = this;
-      o._date.setYear(o._date.year);
-      o._date.setMonth(o._date.month);
-      o._date.setDay(o._date.day);
-      return RDate.formatDate(o._date);
-   }
-   MO.FDuiDateTime_setText = function FDuiDateTime_setText(t){
-      var o = this;
-      if(t){
-         RDate.autoParse(o._date, t);
-         o.hYear.value = RInteger.format(o._date.year, 4);
-         o.hMonth.value = RInteger.format(o._date.month, 2);
-         o.hDay.value = RInteger.format(o._date.day, 2);
+      if(t.toLowerCase() == '@now'){
+         o._date.now();
+         return MO.Lang.Date.formatDate(o._date);
       }else{
-         o.hYear.value = '';
-         o.hMonth.value = '';
-         o.hDay.value = '';
+         MO.Lang.Date.autoParse(o._date, t);
+         return MO.Lang.Date.formatDate(o._date);
       }
    }
-   MO.FDuiDateTime_validText = function FDuiDateTime_validText(t){
-      return null;
-   }
-   MO.FDuiDateTime_setEditable = function FDuiDateTime_setEditable(v){
-      var o = this;
-      o.base.FDuiEditControl.setEditable.call(o, v);
-      o.hYear.readOnly = !v;
-      o.hMonth.readOnly = !v;
-      o.hDay.readOnly = !v;
-   }
-   MO.FDuiDateTime_refreshStyle = function FDuiDateTime_refreshStyle(){
-      var o = this;
-      o.base.FDuiEditControl.refreshStyle.call(o);
-      o.hYear.style.color = o._textColor;
-      o.hYear.style.backgroundColor = o._backColor;
-      o.hMonth.style.color = o._textColor;
-      o.hMonth.style.backgroundColor = o._backColor;
-      o.hDay.style.color = o._textColor;
-      o.hDay.style.backgroundColor = o._backColor;
-   }
-   MO.FDuiDateTime_drop = function FDuiDateTime_drop(){
-      var o = this;
-      if(o.canDrop() && o._editable){
-         var e = o.editor = RConsole.find(FEditConsole).focus(o, FDuiDateTimeEditor, o.editRefer);
-         e.set(RDate.formatDate(o._date));
-         e.setYearVisible(o.editYear);
-         e.setMonthVisible(o.editMonth);
-         e.setDayVisible(o.editDay);
-         e.lsnEditEnd = o.lsnEditEnd;
-         e.show();
-      }
-   }
-   MO.FDuiDateTime_dispose = function FDuiDateTime_dispose(){
-      var o = this;
-      o.base.FDuiEditControl.dispose.call(o);
-      o._date = null;
+   return MO.Lang.String.nvl(t);
+}
+MO.FDuiDateTime_text = function FDuiDateTime_text(){
+   var o = this;
+   o._date.setYear(o._date.year);
+   o._date.setMonth(o._date.month);
+   o._date.setDay(o._date.day);
+   return MO.Lang.Date.formatDate(o._date);
+}
+MO.FDuiDateTime_setText = function FDuiDateTime_setText(t){
+   var o = this;
+   if(t){
+      MO.Lang.Date.autoParse(o._date, t);
+      o.hYear.value = MO.Lang.Integer.format(o._date.year, 4);
+      o.hMonth.value = MO.Lang.Integer.format(o._date.month, 2);
+      o.hDay.value = MO.Lang.Integer.format(o._date.day, 2);
+   }else{
+      o.hYear.value = '';
+      o.hMonth.value = '';
+      o.hDay.value = '';
    }
 }
-with(MO){
-   MO.FDuiDateTimeEditor = function FDuiDateTimeEditor(o){
-      o = RClass.inherits(this, o, FDuiDropEditor);
-      o.date              = null;
-      o.years             = null;
-      o.months            = null;
-      o.days              = null;
-      o.hPanelDay         = null;
-      o.hPanelMonth       = null;
-      o.hPanelYear        = null;
-      o.hTitleDay         = null;
-      o.hTitleMonth       = null;
-      o.hTitleYear        = null;
-      o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiDateTimeEditor_onButtonEnter);
-      o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiDateTimeEditor_onButtonLeave);
-      o.onYearClick       = RClass.register(o, new AEventMouseDown('onYearClick'), FDuiDateTimeEditor_onYearClick);
-      o.onMonthClick      = RClass.register(o, new AEventMouseDown('onMonthClick'), FDuiDateTimeEditor_onMonthClick);
-      o.onDayClick        = RClass.register(o, new AEventMouseDown('onDayClick'), FDuiDateTimeEditor_onDayClick);
-      o.onDateDoubleClick = RClass.register(o, new AEventDoubleClick('onDateDoubleClick'), FDuiDateTimeEditor_onDateDoubleClick);
-      o.onNowClick        = RClass.register(o, new AEventMouseDown('onNowClick'), FDuiDateTimeEditor_onNowClick);
-      o.onConfirmClick    = RClass.register(o, new AEventMouseDown('onConfirmClick'), FDuiDateTimeEditor_onConfirmClick);
-      o.onBuildDrop       = FDuiDateTimeEditor_onBuildDrop;
-      o.onBuildButton     = FDuiDateTimeEditor_onBuildButton;
-      o.construct         = FDuiDateTimeEditor_construct;
-      o.buildTitle        = FDuiDateTimeEditor_buildTitle;
-      o.get               = FDuiDateTimeEditor_get;
-      o.set               = FDuiDateTimeEditor_set;
-      o.resetDay          = FDuiDateTimeEditor_resetDay;
-      o.setYearVisible    = FDuiDateTimeEditor_setYearVisible;
-      o.setMonthVisible   = FDuiDateTimeEditor_setMonthVisible;
-      o.setDayVisible     = FDuiDateTimeEditor_setDayVisible;
-      o.selectCell        = FDuiDateTimeEditor_selectCell;
-      o.restore           = FDuiDateTimeEditor_restore;
-      o.show              = FDuiDateTimeEditor_show;
-      o.dispose           = FDuiDateTimeEditor_dispose;
-      return o;
+MO.FDuiDateTime_validText = function FDuiDateTime_validText(t){
+   return null;
+}
+MO.FDuiDateTime_setEditable = function FDuiDateTime_setEditable(v){
+   var o = this;
+   o.base.FDuiEditControl.setEditable.call(o, v);
+   o.hYear.readOnly = !v;
+   o.hMonth.readOnly = !v;
+   o.hDay.readOnly = !v;
+}
+MO.FDuiDateTime_refreshStyle = function FDuiDateTime_refreshStyle(){
+   var o = this;
+   o.base.FDuiEditControl.refreshStyle.call(o);
+   o.hYear.style.color = o._textColor;
+   o.hYear.style.backgroundColor = o._backColor;
+   o.hMonth.style.color = o._textColor;
+   o.hMonth.style.backgroundColor = o._backColor;
+   o.hDay.style.color = o._textColor;
+   o.hDay.style.backgroundColor = o._backColor;
+}
+MO.FDuiDateTime_drop = function FDuiDateTime_drop(){
+   var o = this;
+   if(o.canDrop() && o._editable){
+      var e = o.editor = RConsole.find(FEditConsole).focus(o, FDuiDateTimeEditor, o.editRefer);
+      e.set(MO.Lang.Date.formatDate(o._date));
+      e.setYearVisible(o.editYear);
+      e.setMonthVisible(o.editMonth);
+      e.setDayVisible(o.editDay);
+      e.lsnEditEnd = o.lsnEditEnd;
+      e.show();
    }
-   MO.FDuiDateTimeEditor_onButtonEnter = function FDuiDateTimeEditor_onButtonEnter(e){
-      if(!e.hSource.isSelect){
-        if(RString.isEmpty(e.hSource.innerText)){
-            e.hSource.style.backgroundColor = '#CCCCFF';
-        }
-      }
+}
+MO.FDuiDateTime_dispose = function FDuiDateTime_dispose(){
+   var o = this;
+   o.base.FDuiEditControl.dispose.call(o);
+   o._date = null;
+}
+MO.FDuiDateTimeEditor = function FDuiDateTimeEditor(o){
+   o = MO.Class.inherits(this, o, MO.FDuiDropEditor);
+   o.date              = null;
+   o.years             = null;
+   o.months            = null;
+   o.days              = null;
+   o.hPanelDay         = null;
+   o.hPanelMonth       = null;
+   o.hPanelYear        = null;
+   o.hTitleDay         = null;
+   o.hTitleMonth       = null;
+   o.hTitleYear        = null;
+   o.onButtonEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onButtonEnter'), MO.FDuiDateTimeEditor_onButtonEnter);
+   o.onButtonLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onButtonLeave'), MO.FDuiDateTimeEditor_onButtonLeave);
+   o.onYearClick       = MO.Class.register(o, new MO.AEventMouseDown('onYearClick'), MO.FDuiDateTimeEditor_onYearClick);
+   o.onMonthClick      = MO.Class.register(o, new MO.AEventMouseDown('onMonthClick'), MO.FDuiDateTimeEditor_onMonthClick);
+   o.onDayClick        = MO.Class.register(o, new MO.AEventMouseDown('onDayClick'), MO.FDuiDateTimeEditor_onDayClick);
+   o.onDateDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onDateDoubleClick'), MO.FDuiDateTimeEditor_onDateDoubleClick);
+   o.onNowClick        = MO.Class.register(o, new MO.AEventMouseDown('onNowClick'), MO.FDuiDateTimeEditor_onNowClick);
+   o.onConfirmClick    = MO.Class.register(o, new MO.AEventMouseDown('MO.onConfirmClick'), FDuiDateTimeEditor_onConfirmClick);
+   o.onBuildDrop       = MO.FDuiDateTimeEditor_onBuildDrop;
+   o.onBuildButton     = MO.FDuiDateTimeEditor_onBuildButton;
+   o.construct         = MO.FDuiDateTimeEditor_construct;
+   o.buildTitle        = MO.FDuiDateTimeEditor_buildTitle;
+   o.get               = MO.FDuiDateTimeEditor_get;
+   o.set               = MO.FDuiDateTimeEditor_set;
+   o.resetDay          = MO.FDuiDateTimeEditor_resetDay;
+   o.setYearVisible    = MO.FDuiDateTimeEditor_setYearVisible;
+   o.setMonthVisible   = MO.FDuiDateTimeEditor_setMonthVisible;
+   o.setDayVisible     = MO.FDuiDateTimeEditor_setDayVisible;
+   o.selectCell        = MO.FDuiDateTimeEditor_selectCell;
+   o.restore           = MO.FDuiDateTimeEditor_restore;
+   o.show              = MO.FDuiDateTimeEditor_show;
+   o.dispose           = MO.FDuiDateTimeEditor_dispose;
+   return o;
+}
+MO.FDuiDateTimeEditor_onButtonEnter = function FDuiDateTimeEditor_onButtonEnter(e){
+   if(!e.hSource.isSelect){
+     if(MO.Lang.String.isEmpty(e.hSource.innerText)){
+         e.hSource.style.backgroundColor = '#CCCCFF';
+     }
    }
-   MO.FDuiDateTimeEditor_onButtonLeave = function FDuiDateTimeEditor_onButtonLeave(e){
-      if(!e.hSource.isSelect){
-         e.hSource.style.backgroundColor = '#FFFFFF';
-      }
+}
+MO.FDuiDateTimeEditor_onButtonLeave = function FDuiDateTimeEditor_onButtonLeave(e){
+   if(!e.hSource.isSelect){
+      e.hSource.style.backgroundColor = '#FFFFFF';
    }
-   MO.FDuiDateTimeEditor_onYearClick = function FDuiDateTimeEditor_onYearClick(e){
-      var o = this;
-      o.date.setYear(e.hSource.innerText);
-      o.restore();
-      o.resetDay();
-   }
-   MO.FDuiDateTimeEditor_onMonthClick = function FDuiDateTimeEditor_onMonthClick(e){
-      var o = this;
-      o.date.setMonth(e.hSource.innerText);
-      o.restore();
-      o.resetDay();
-   }
-   MO.FDuiDateTimeEditor_onDayClick = function FDuiDateTimeEditor_onDayClick(e){
-      var o = this;
-      if(!RString.equals(e.hSource.innerText, '.')){
-         o.date.setDay(e.hSource.innerText);
-         o.restore();
-      }
-   }
-   MO.FDuiDateTimeEditor_onDateDoubleClick = function FDuiDateTimeEditor_onDateDoubleClick(){
-      this.onConfirmClick();
-   }
-   MO.FDuiDateTimeEditor_onNowClick = function FDuiDateTimeEditor_onNowClick(){
-      var o = this;
-      o.date = new TDate();
-      o.editEnd();
-   }
-   MO.FDuiDateTimeEditor_onConfirmClick = function FDuiDateTimeEditor_onConfirmClick(){
-      var o = this;
-      o.date.setYear(o.hYear.value);
-      o.date.setMonth(o.hMonth.value);
-      o.date.setDay(o.hDay.value);
-      o.editEnd();
-   }
-   MO.FDuiDateTimeEditor_onBuildDrop = function FDuiDateTimeEditor_onBuildDrop(){
-      var o = this;
-      var hdp = o.hDropPanel;
-      hdp.width = 220;
-      o.attachEvent('onDateDoubleClick', hdp);
-      o.hTitleYear = o.buildTitle('Year', 4);
-      var hp = o.hPanelYear = o.hSelectPanel = RBuilder.appendTable(hdp);
-      hp.width = '100%';
-      for(var m=0; m<4; m++){
-         var hr = hp.insertRow();
-         for(var n=0; n<4; n++){
-            var hc = hr.insertCell();
-            hc.innerText = RInteger.format(2000 + 4*m+n, 2);
-            hc.align = 'center';
-            hc.style.padding = '1 6';
-            hc.style.cursor = 'hand';
-            hc.style.borderBottom = '1 solid #EEEEEE';
-            if(n < 5){
-               hc.style.borderRight = '1 solid #EEEEEE';
-            }
-            o.attachEvent('onButtonEnter', hc);
-            o.attachEvent('onButtonLeave', hc);
-            o.attachEvent('onYearClick', hc);
-            o.years.push(hc);
-         }
-      }
-      o.hTitleMonth = o.buildTitle('Month', 2);
-      var hp = o.hPanelMonth = o.hSelectPanel = RBuilder.appendTable(hdp);
-      hp.width = '100%';
-      for(var m=0; m<2; m++){
-         hr = hp.insertRow();
-         for(var n=0; n<6; n++){
-            var hc = hr.insertCell();
-            hc.innerText = RInteger.format(6*m+n+1, 2);
-            hc.align = 'center';
-            hc.style.cursor = 'hand';
-            hc.style.borderBottom = '1 solid #EEEEEE';
-            if(n < 5){
-               hc.style.borderRight = '1 solid #EEEEEE';
-            }
-            o.attachEvent('onButtonEnter', hc);
-            o.attachEvent('onButtonLeave', hc);
-            o.attachEvent('onMonthClick', hc);
-            o.months.push(hc);
-         }
-      }
-      o.hTitleDay = o.buildTitle('Day', 2);
-      var hp = o.hPanelDay = o.hSelectPanel = RBuilder.appendTable(hdp);
-      hp.width = '100%';
-      for(var m=0; m<5; m++){
-         hr = hp.insertRow();
-         for(var n=0; n<7; n++){
-            var day = 7*m+n+1;
-            if(day > 31){
-               continue;
-            }
-            var hc = hr.insertCell();
-            hc.innerText = RInteger.format(day, 2);
-            hc.align = 'center';
-            hc.style.borderBottom = '1 solid #EEEEEE';
-            hc.style.cursor = 'hand';
-            if(n < 5){
-               hc.style.borderRight = '1 solid #EEEEEE';
-            }
-            o.attachEvent('onButtonEnter', hc);
-            o.attachEvent('onButtonLeave', hc);
-            o.attachEvent('onDayClick', hc);
-            o.days.push(hc);
-         }
-      }
-   }
-   MO.FDuiDateTimeEditor_onBuildButton = function FDuiDateTimeEditor_onBuildButton(){
-      var o = this;
-      o.base.FDuiDropEditor.onBuildButton.call(o);
-      var hf = RBuilder.appendTable(o.hButtonPanel);
-      hf.width = '100%';
-      hf.height = 20;
-      hf.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#EEEEEE', endColorStr='#FFFFFF', gradientType='0')";
-      var hr = hf.insertRow();
-      var hc = hr.insertCell();
-      hc.style.padding = '0 6';
-      var h = o.hNow = RBuilder.append(hc, 'SPAN');
-      h.style.cursor = 'hand';
-      o.attachEvent('onNowClick', h);
-      h.innerText = RContext.get('FDate:Now');
-      var hc = hr.insertCell();
-      hc.style.padding = '0 6';
-      hc.align = 'right';
-      var h = o.hNow = RBuilder.append(hc, 'SPAN');
-      h.style.cursor = 'hand';
-      o.attachEvent('onConfirmClick', h);
-      h.innerText = RContext.get('FDate:Confirm');
-   }
-   MO.FDuiDateTimeEditor_construct = function FDuiDateTimeEditor_construct(){
-      var o = this;
-      o.base.FDuiDropEditor.construct.call(o);
-      o.date = new TDate();
-      o.years = new TList();
-      o.months = new TList();
-      o.days = new TList();
-   }
-   MO.FDuiDateTimeEditor_buildTitle = function FDuiDateTimeEditor_buildTitle(n, ml){
-      var o = this;
-      var hf = RBuilder.appendTable(o.hDropPanel);
-      hf.width = '100%';
-      hf.style.borderBottom = '1 solid #999999';
-      hf.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
-      hf.style.backgroundColor = '#F8F8F8';
-      hf.style.padding = '2 6';
-      var hr = hf.insertRow();
-      var hc = hr.insertCell();
-      hc.width = 60;
-      var he = o['h' + n] = RBuilder.appendEdit(hc);
-      he.style.width = '100%';
-      he.style.textAlign = 'right';
-      he.style.border = '1 solid #CCCCCC';
-      he.maxLength = ml;
-      var hc = hr.insertCell();
-      hc.innerText = RContext.get('FDate:' + n);
-      return hf;
-   }
-   MO.FDuiDateTimeEditor_get = function FDuiDateTimeEditor_get(){
-      return RDate.formatDate(this.date);
-   }
-   MO.FDuiDateTimeEditor_set = function FDuiDateTimeEditor_set(v){
-      var o = this;
-      RDate.autoParse(o.date, v);
+}
+MO.FDuiDateTimeEditor_onYearClick = function FDuiDateTimeEditor_onYearClick(e){
+   var o = this;
+   o.date.setYear(e.hSource.innerText);
+   o.restore();
+   o.resetDay();
+}
+MO.FDuiDateTimeEditor_onMonthClick = function FDuiDateTimeEditor_onMonthClick(e){
+   var o = this;
+   o.date.setMonth(e.hSource.innerText);
+   o.restore();
+   o.resetDay();
+}
+MO.FDuiDateTimeEditor_onDayClick = function FDuiDateTimeEditor_onDayClick(e){
+   var o = this;
+   if(!MO.Lang.String.equals(e.hSource.innerText, '.')){
+      o.date.setDay(e.hSource.innerText);
       o.restore();
    }
-   MO.FDuiDateTimeEditor_setYearVisible = function FDuiDateTimeEditor_setYearVisible(v){
-      var o = this;
-      o.hPanelYear.style.display = v? 'block':'none';
-      o.hTitleYear.style.display = v? 'block':'none';
-   }
-   MO.FDuiDateTimeEditor_setMonthVisible = function FDuiDateTimeEditor_setMonthVisible(v){
-      var o = this;
-      o.hPanelMonth.style.display = v? 'block':'none';
-      o.hTitleMonth.style.display = v? 'block':'none';
-   }
-   MO.FDuiDateTimeEditor_setDayVisible = function FDuiDateTimeEditor_setDayVisible(v){
-      var o = this;
-      o.hPanelDay.style.display = v? 'block':'none';
-      o.hTitleDay.style.display = v? 'block':'none';
-   }
-   MO.FDuiDateTimeEditor_show = function FDuiDateTimeEditor_show(v){
-      var o = this;
-      o.base.FDuiDropEditor.show.call(o, v);
-      var hp = o.hPanel;
-      var hbf = o.hBorderForm;
-      var s = o.source;
-      var r = s.getEditRange();
-      hp.style.pixelLeft = r.x;
-      hp.style.pixelTop = r.y + r.height;
-      hp.style.pixelWidth = 220;
-      o.base.MShadow.show.call(o);
-   }
-   MO.FDuiDateTimeEditor_resetDay = function FDuiDateTimeEditor_resetDay(){
-      var o = this;
-      var monthDays = this.date.monthDays();
-      for(var n=0; n<o.days.count; n++){
-         var hd = o.days.get(n);
-         if(n >= monthDays){
-            hd.innerText = '.';
-         }else{
-           hd.innerText = RInteger.format(n+1, 2);
+}
+MO.FDuiDateTimeEditor_onDateDoubleClick = function FDuiDateTimeEditor_onDateDoubleClick(){
+   this.onConfirmClick();
+}
+MO.FDuiDateTimeEditor_onNowClick = function FDuiDateTimeEditor_onNowClick(){
+   var o = this;
+   o.date = new TDate();
+   o.editEnd();
+}
+MO.FDuiDateTimeEditor_onConfirmClick = function FDuiDateTimeEditor_onConfirmClick(){
+   var o = this;
+   o.date.setYear(o.hYear.value);
+   o.date.setMonth(o.hMonth.value);
+   o.date.setDay(o.hDay.value);
+   o.editEnd();
+}
+MO.FDuiDateTimeEditor_onBuildDrop = function FDuiDateTimeEditor_onBuildDrop(){
+   var o = this;
+   var hdp = o.hDropPanel;
+   hdp.width = 220;
+   o.attachEvent('onDateDoubleClick', hdp);
+   o.hTitleYear = o.buildTitle('Year', 4);
+   var hp = o.hPanelYear = o.hSelectPanel = MO.Window.Builder.appendTable(hdp);
+   hp.width = '100%';
+   for(var m=0; m<4; m++){
+      var hr = hp.insertRow();
+      for(var n=0; n<4; n++){
+         var hc = hr.insertCell();
+         hc.innerText = MO.Lang.Integer.format(2000 + 4*m+n, 2);
+         hc.align = 'center';
+         hc.style.padding = '1 6';
+         hc.style.cursor = 'hand';
+         hc.style.borderBottom = '1 solid #EEEEEE';
+         if(n < 5){
+            hc.style.borderRight = '1 solid #EEEEEE';
          }
+         o.attachEvent('onButtonEnter', hc);
+         o.attachEvent('onButtonLeave', hc);
+         o.attachEvent('onYearClick', hc);
+         o.years.push(hc);
       }
    }
-   MO.FDuiDateTimeEditor_selectCell = function FDuiDateTimeEditor_selectCell(ls, v){
-      var c = ls.count;
-      for(var n=0; n<c; n++){
-         var h = ls.get(n);
-         if(h.innerText == v){
-            h.style.color = '#FFFFFF';
-            h.style.backgroundColor = '#9999EE';
-            h.isSelect = true;
-         }else{
-            h.style.color = '#000000';
-            h.style.backgroundColor = '#FFFFFF';
-            h.isSelect = false;
+   o.hTitleMonth = o.buildTitle('Month', 2);
+   var hp = o.hPanelMonth = o.hSelectPanel = MO.Window.Builder.appendTable(hdp);
+   hp.width = '100%';
+   for(var m=0; m<2; m++){
+      hr = hp.insertRow();
+      for(var n=0; n<6; n++){
+         var hc = hr.insertCell();
+         hc.innerText = MO.Lang.Integer.format(6*m+n+1, 2);
+         hc.align = 'center';
+         hc.style.cursor = 'hand';
+         hc.style.borderBottom = '1 solid #EEEEEE';
+         if(n < 5){
+            hc.style.borderRight = '1 solid #EEEEEE';
          }
+         o.attachEvent('onButtonEnter', hc);
+         o.attachEvent('onButtonLeave', hc);
+         o.attachEvent('onMonthClick', hc);
+         o.months.push(hc);
       }
    }
-   MO.FDuiDateTimeEditor_restore = function FDuiDateTimeEditor_restore(){
-      var o = this;
-      o.hYear.value = o.date.year;
-      o.hMonth.value = o.date.month;
-      o.hDay.value = o.date.day;
-      o.selectCell(o.years, o.date.year);
-      o.selectCell(o.months, o.date.month);
-      o.selectCell(o.days, o.date.day);
-   }
-   MO.FDuiDateTimeEditor_dispose = function FDuiDateTimeEditor_dispose(){
-      var o = this;
-      o.base.FDuiDropEditor.dispose.call(o);
-      o.hPanel = null;
+   o.hTitleDay = o.buildTitle('Day', 2);
+   var hp = o.hPanelDay = o.hSelectPanel = MO.Window.Builder.appendTable(hdp);
+   hp.width = '100%';
+   for(var m=0; m<5; m++){
+      hr = hp.insertRow();
+      for(var n=0; n<7; n++){
+         var day = 7*m+n+1;
+         if(day > 31){
+            continue;
+         }
+         var hc = hr.insertCell();
+         hc.innerText = MO.Lang.Integer.format(day, 2);
+         hc.align = 'center';
+         hc.style.borderBottom = '1 solid #EEEEEE';
+         hc.style.cursor = 'hand';
+         if(n < 5){
+            hc.style.borderRight = '1 solid #EEEEEE';
+         }
+         o.attachEvent('onButtonEnter', hc);
+         o.attachEvent('onButtonLeave', hc);
+         o.attachEvent('onDayClick', hc);
+         o.days.push(hc);
+      }
    }
 }
-with(MO){
-   MO.FDuiDropEditor = function FDuiDropEditor(o){
-      o = RClass.inherits(this, o, FDuiEditor, MDuiShadow);
-      o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
-      o._styleDropForm    = RClass.register(o, new AStyle('_styleDropForm'));
-      o._styleDropPanel   = RClass.register(o, new AStyle('_styleDropPanel'));
-      o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
-      o._minWidth         = 160;
-      o._minHeight        = 300;
-      o._hDropForm        = null;
-      o._hDropPanel       = null;
-      o._hButtonPanel     = null;
-      o.onBuildDrop       = RMethod.virtual(o, 'onBuildDrop');
-      o.onBuildButton     = RMethod.empty;
-      o.onBuild           = FDuiDropEditor_onBuild;
-      o.onDropMouseDown   = RClass.register(o, new AEventMouseDown('onDropMouseDown'));
-      o.onDropMouseUp     = RClass.register(o, new AEventMouseUp('onDropMouseUp'));
-      o.panel             = FDuiDropEditor_panel;
-      o.setVisible        = FDuiDropEditor_setVisible;
-      o.dispose           = FDuiDropEditor_dispose;
-      return o;
-   }
-   MO.FDuiDropEditor_onBuild = function FDuiDropEditor_onBuild(p){
-      var o = this;
-      o.__base.FDuiEditor.onBuild.call(o, p);
-      var h = o._hPanel;
-      h.className = o.styleName('Panel');
-      var hf = o._hDropForm = RBuilder.appendTable(h, o.styleName('DropForm'));
-      o._hDropPanel = RBuilder.appendTableRowCell(hf, o.styleName('DropPanel'));
-      o._hButtonPanel = RBuilder.appendTableRowCell(hf, o.styleName('ButtonPanel'));
-      o.onBuildDrop();
-      o.onBuildButton();
-   }
-   MO.FDuiDropEditor_panel = function FDuiDropEditor_panel(p){
-      var o = this;
-      if(p == EPanel.Shadow){
-         return o.hPanel;
-      }
-      return o.__base.FDuiEditor.panel.call(o, p);
-   }
-   MO.FDuiDropEditor_setVisible = function FDuiDropEditor_setVisible(p){
-      var o = this;
-      var h = o._hPanel;
-      var hd = o._hPanel.ownerDocument;
-      if(p){
-         hd.body.appendChild(h);
+MO.FDuiDateTimeEditor_onBuildButton = function FDuiDateTimeEditor_onBuildButton(){
+   var o = this;
+   o.base.FDuiDropEditor.onBuildButton.call(o);
+   var hf = MO.Window.Builder.appendTable(o.hButtonPanel);
+   hf.width = '100%';
+   hf.height = 20;
+   hf.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#EEEEEE', endColorStr='#FFFFFF', gradientType='0')";
+   var hr = hf.insertRow();
+   var hc = hr.insertCell();
+   hc.style.padding = '0 6';
+   var h = o.hNow = MO.Window.Builder.append(hc, 'SPAN');
+   h.style.cursor = 'hand';
+   o.attachEvent('onNowClick', h);
+   h.innerText = MO.RContext.get('FDate:Now');
+   var hc = hr.insertCell();
+   hc.style.padding = '0 6';
+   hc.align = 'right';
+   var h = o.hNow = MO.Window.Builder.append(hc, 'SPAN');
+   h.style.cursor = 'hand';
+   o.attachEvent('onConfirmClick', h);
+   h.innerText = MO.RContext.get('FDate:Confirm');
+}
+MO.FDuiDateTimeEditor_construct = function FDuiDateTimeEditor_construct(){
+   var o = this;
+   o.base.FDuiDropEditor.construct.call(o);
+   o.date = new MO.TDate();
+   o.years = new MO.TList();
+   o.months = new MO.TList();
+   o.days = new MO.TList();
+}
+MO.FDuiDateTimeEditor_buildTitle = function FDuiDateTimeEditor_buildTitle(n, ml){
+   var o = this;
+   var hf = MO.Window.Builder.appendTable(o.hDropPanel);
+   hf.width = '100%';
+   hf.style.borderBottom = '1 solid #999999';
+   hf.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
+   hf.style.backgroundColor = '#F8F8F8';
+   hf.style.padding = '2 6';
+   var hr = hf.insertRow();
+   var hc = hr.insertCell();
+   hc.width = 60;
+   var he = o['h' + n] = MO.Window.Builder.appendEdit(hc);
+   he.style.width = '100%';
+   he.style.textAlign = 'right';
+   he.style.border = '1 solid #CCCCCC';
+   he.maxLength = ml;
+   var hc = hr.insertCell();
+   hc.innerText = MO.RContext.get('FDate:' + n);
+   return hf;
+}
+MO.FDuiDateTimeEditor_get = function FDuiDateTimeEditor_get(){
+   return MO.Lang.Date.formatDate(this.date);
+}
+MO.FDuiDateTimeEditor_set = function FDuiDateTimeEditor_set(v){
+   var o = this;
+   MO.Lang.Date.autoParse(o.date, v);
+   o.restore();
+}
+MO.FDuiDateTimeEditor_setYearVisible = function FDuiDateTimeEditor_setYearVisible(v){
+   var o = this;
+   o.hPanelYear.style.display = v? 'block':'none';
+   o.hTitleYear.style.display = v? 'block':'none';
+}
+MO.FDuiDateTimeEditor_setMonthVisible = function FDuiDateTimeEditor_setMonthVisible(v){
+   var o = this;
+   o.hPanelMonth.style.display = v? 'block':'none';
+   o.hTitleMonth.style.display = v? 'block':'none';
+}
+MO.FDuiDateTimeEditor_setDayVisible = function FDuiDateTimeEditor_setDayVisible(v){
+   var o = this;
+   o.hPanelDay.style.display = v? 'block':'none';
+   o.hTitleDay.style.display = v? 'block':'none';
+}
+MO.FDuiDateTimeEditor_show = function FDuiDateTimeEditor_show(v){
+   var o = this;
+   o.base.FDuiDropEditor.show.call(o, v);
+   var hp = o.hPanel;
+   var hbf = o.hBorderForm;
+   var s = o.source;
+   var r = s.getEditRange();
+   hp.style.pixelLeft = r.x;
+   hp.style.pixelTop = r.y + r.height;
+   hp.style.pixelWidth = 220;
+   o.base.MShadow.show.call(o);
+}
+MO.FDuiDateTimeEditor_resetDay = function FDuiDateTimeEditor_resetDay(){
+   var o = this;
+   var monthDays = this.date.monthDays();
+   for(var n=0; n<o.days.count; n++){
+      var hd = o.days.get(n);
+      if(n >= monthDays){
+         hd.innerText = '.';
       }else{
-         hd.body.removeChild(h);
+        hd.innerText = MO.Lang.Integer.format(n+1, 2);
       }
-      o.__base.FDuiEditor.setVisible.call(o, p);
    }
-   MO.FDuiDropEditor_dispose = function FDuiDropEditor_dispose(){
-      var o = this;
-      o._hButtonPanel = RHtml.free(o._hButtonPanel);
-      o._hDropPanel = RHtml.free(o._hDropPanel);
-      o._hDropForm = RHtml.free(o._hDropForm);
-      o.__base.FControl.dispose.call(o);
+}
+MO.FDuiDateTimeEditor_selectCell = function FDuiDateTimeEditor_selectCell(ls, v){
+   var c = ls.count;
+   for(var n=0; n<c; n++){
+      var h = ls.get(n);
+      if(h.innerText == v){
+         h.style.color = '#FFFFFF';
+         h.style.backgroundColor = '#9999EE';
+         h.isSelect = true;
+      }else{
+         h.style.color = '#000000';
+         h.style.backgroundColor = '#FFFFFF';
+         h.isSelect = false;
+      }
    }
+}
+MO.FDuiDateTimeEditor_restore = function FDuiDateTimeEditor_restore(){
+   var o = this;
+   o.hYear.value = o.date.year;
+   o.hMonth.value = o.date.month;
+   o.hDay.value = o.date.day;
+   o.selectCell(o.years, o.date.year);
+   o.selectCell(o.months, o.date.month);
+   o.selectCell(o.days, o.date.day);
+}
+MO.FDuiDateTimeEditor_dispose = function FDuiDateTimeEditor_dispose(){
+   var o = this;
+   o.base.FDuiDropEditor.dispose.call(o);
+   o.hPanel = null;
+}
+MO.FDuiDropEditor = function FDuiDropEditor(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditor, MO.MDuiShadow);
+   o._stylePanel       = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._styleDropForm    = MO.Class.register(o, new MO.AStyle('_styleDropForm'));
+   o._styleDropPanel   = MO.Class.register(o, new MO.AStyle('_styleDropPanel'));
+   o._styleButtonPanel = MO.Class.register(o, new MO.AStyle('_styleButtonPanel'));
+   o._minWidth         = 160;
+   o._minHeight        = 300;
+   o._hDropForm        = null;
+   o._hDropPanel       = null;
+   o._hButtonPanel     = null;
+   o.onBuildDrop       = MO.Method.virtual(o, 'onBuildDrop');
+   o.onBuildButton     = MO.Method.empty;
+   o.onBuild           = MO.FDuiDropEditor_onBuild;
+   o.onDropMouseDown   = MO.Class.register(o, new MO.AEventMouseDown('onDropMouseDown'));
+   o.onDropMouseUp     = MO.Class.register(o, new MO.AEventMouseUp('onDropMouseUp'));
+   o.panel             = MO.FDuiDropEditor_panel;
+   o.setVisible        = MO.FDuiDropEditor_setVisible;
+   o.dispose           = MO.FDuiDropEditor_dispose;
+   return o;
+}
+MO.FDuiDropEditor_onBuild = function FDuiDropEditor_onBuild(p){
+   var o = this;
+   o.__base.FDuiEditor.onBuild.call(o, p);
+   var h = o._hPanel;
+   h.className = o.styleName('Panel');
+   var hf = o._hDropForm = MO.Window.Builder.appendTable(h, o.styleName('DropForm'));
+   o._hDropPanel = MO.Window.Builder.appendTableRowCell(hf, o.styleName('DropPanel'));
+   o._hButtonPanel = MO.Window.Builder.appendTableRowCell(hf, o.styleName('ButtonPanel'));
+   o.onBuildDrop();
+   o.onBuildButton();
+}
+MO.FDuiDropEditor_panel = function FDuiDropEditor_panel(p){
+   var o = this;
+   if(p == EPanel.Shadow){
+      return o.hPanel;
+   }
+   return o.__base.FDuiEditor.panel.call(o, p);
+}
+MO.FDuiDropEditor_setVisible = function FDuiDropEditor_setVisible(p){
+   var o = this;
+   var h = o._hPanel;
+   var hd = o._hPanel.ownerDocument;
+   if(p){
+      hd.body.appendChild(h);
+   }else{
+      hd.body.removeChild(h);
+   }
+   o.__base.FDuiEditor.setVisible.call(o, p);
+}
+MO.FDuiDropEditor_dispose = function FDuiDropEditor_dispose(){
+   var o = this;
+   o._hButtonPanel = MO.Window.Html.free(o._hButtonPanel);
+   o._hDropPanel = MO.Window.Html.free(o._hDropPanel);
+   o._hDropForm = MO.Window.Html.free(o._hDropForm);
+   o.__base.FControl.dispose.call(o);
 }
 MO.FDuiEdit = function FDuiEdit(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit);
@@ -47202,239 +47104,235 @@ MO.FDuiEditControl_dispose = function FDuiEditControl_dispose(){
    o.__base.MDuiEditChange.dispose.call(o);
    o.__base.FDuiControl.dispose.call(o);
 }
-with(MO){
-   MO.FDuiEditor = function FDuiEditor(o){
-      o = RClass.inherits(this, o, FDuiControl, MDuiFocus);
-      o._visible       = false;
-      o._statusVisible = false;
-      o._styleEdit     = RClass.register(o, new AStyle('_styleEdit'));
-      o._statusEditing = false;
-      o._source        = null;
-      o._hEdit         = null;
-      o.lsnEditBegin   = null;
-      o.lsnEditCancel  = null;
-      o.lsnEditEnd     = null;
-      o.onEditKeyDown  = RClass.register(o, new AEventKeyDown('onEditKeyDown'));
-      o.onEditKeyPress = RClass.register(o, new AEventKeyPress('onEditKeyPress'));
-      o.onEditKeyUp    = RClass.register(o, new AEventKeyUp('onEditKeyUp'));
-      o.onEditChange   = RClass.register(o, new AEventChange('onEditChange'));
-      o.onEditBegin    = FDuiEditor_onEditBegin;
-      o.onEditChanged  = FDuiEditor_onEditChanged;
-      o.onEditEnd      = FDuiEditor_onEditEnd;
-      o.onBuildPanel   = FDuiEditor_onBuildPanel;
-      o.onBuild        = FDuiEditor_onBuild;
-      o.get            = RMethod.virtual(o, 'get');
-      o.set            = RMethod.virtual(o, 'set');
-      o.doBlur         = FDuiEditor_doBlur;
-      o.panel          = FDuiEditor_panel;
-      o.linkControl    = FDuiEditor_linkControl;
-      o.editBegin      = FDuiEditor_editBegin;
-      o.editCancel     = FDuiEditor_editCancel;
-      o.editEnd        = FDuiEditor_editEnd;
-      o.reset          = FDuiEditor_reset;
-      o.setVisible     = FDuiEditor_setVisible;
-      o.dispose        = FDuiEditor_dispose;
-      return o;
-   }
-   MO.FDuiEditor_onEditBegin = function FDuiEditor_onEditBegin(){
-      this.editBegin();
-   }
-   MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
-      var o = this;
-      MO.Logger.debug(o, 'Edit changed');
-      var g = o.storage = RObject.nvlObj(o.storage);
-      if(g.value == o.value()){
-         if(o.changed){
-            o.changed = false;
-         }
-      }else{
-         if(!o.changed){
-            o.changed = true;
-         }
+MO.FDuiEditor = function FDuiEditor(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiFocus);
+   o._visible       = false;
+   o._statusVisible = false;
+   o._styleEdit     = MO.Class.register(o, new MO.AStyle('_styleEdit'));
+   o._statusEditing = false;
+   o._source        = null;
+   o._hEdit         = null;
+   o.lsnEditBegin   = null;
+   o.lsnEditCancel  = null;
+   o.lsnEditEnd     = null;
+   o.onEditKeyDown  = MO.Class.register(o, new MO.AEventKeyDown('onEditKeyDown'));
+   o.onEditKeyPress = MO.Class.register(o, new MO.AEventKeyPress('onEditKeyPress'));
+   o.onEditKeyUp    = MO.Class.register(o, new MO.AEventKeyUp('onEditKeyUp'));
+   o.onEditChange   = MO.Class.register(o, new MO.AEventChange('onEditChange'));
+   o.onEditBegin    = MO.FDuiEditor_onEditBegin;
+   o.onEditChanged  = MO.FDuiEditor_onEditChanged;
+   o.onEditEnd      = MO.FDuiEditor_onEditEnd;
+   o.onBuildPanel   = MO.FDuiEditor_onBuildPanel;
+   o.onBuild        = MO.FDuiEditor_onBuild;
+   o.get            = MO.Method.virtual(o, 'get');
+   o.set            = MO.Method.virtual(o, 'set');
+   o.doBlur         = MO.FDuiEditor_doBlur;
+   o.panel          = MO.FDuiEditor_panel;
+   o.linkControl    = MO.FDuiEditor_linkControl;
+   o.editBegin      = MO.FDuiEditor_editBegin;
+   o.editCancel     = MO.FDuiEditor_editCancel;
+   o.editEnd        = MO.FDuiEditor_editEnd;
+   o.reset          = MO.FDuiEditor_reset;
+   o.setVisible     = MO.FDuiEditor_setVisible;
+   o.dispose        = MO.FDuiEditor_dispose;
+   return o;
+}
+MO.FDuiEditor_onEditBegin = function FDuiEditor_onEditBegin(){
+   this.editBegin();
+}
+MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
+   var o = this;
+   MO.Logger.debug(o, 'Edit changed');
+   var g = o.storage = MO.Lang.Object.nvlObj(o.storage);
+   if(g.value == o.value()){
+      if(o.changed){
+         o.changed = false;
       }
-   }
-   MO.FDuiEditor_onEditEnd = function FDuiEditor_onEditEnd(){
-      var o = this;
-      var s = o._source;
-      MO.Logger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
-      o.hide();
-      if(o.lsnEditEnd){
-         o.lsnEditEnd.process(o);
+   }else{
+      if(!o.changed){
+         o.changed = true;
       }
-      s._editor = null;
-      o._source = null;
-      o._statusEditing = false;
-   }
-   MO.FDuiEditor_onBuildPanel = function FDuiEditor_onBuildPanel(p){
-      var o = this;
-      var h = o._hPanel = RBuilder.createSpan(p);
-      h.__linker = o;
-   }
-   MO.FDuiEditor_onBuild = function FDuiEditor_onBuild(p){
-      var o = this;
-      o.__base.FDuiControl.onBuild.call(o, p);
-      o._hPanel.style.zIndex = EUiLayer.Editor;
-   }
-   MO.FDuiEditor_get = function FDuiEditor_get(name){
-   }
-   MO.FDuiEditor_set = function FDuiEditor_set(name, value){
-   }
-   MO.FDuiEditor_doBlur = function FDuiEditor_doBlur(){
-      var o = this;
-      var s = o._source;
-      if(s){
-         o.editCancel();
-         if(RClass.isClass(s, MDuiFocus)){
-            s.doBlur();
-         }
-      }
-   }
-   MO.FDuiEditor_panel = function FDuiEditor_panel(p){
-      var o = this;
-      if(p == EPanel.Edit){
-         return o._hEdit;
-      }else if(p == EPanel.Focus){
-         return o._hEdit;
-      }
-      return o.__base.FDuiControl.panel.call(o, p);
-   }
-   MO.FDuiEditor_linkControl = function FDuiEditor_linkControl(c){
-      var o = this;
-      o._source = c;
-   }
-   MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
-      var o = this;
-      var s = o._source;
-      MO.Logger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
-      if(o.lsnEditCancel){
-         o.lsnEditCancel.process(o);
-      }
-      s._editor = o;
-      o._statusEditing = true;
-   }
-   MO.FDuiEditor_editCancel = function FDuiEditor_editCancel(){
-      var o = this;
-      var s = o._source;
-      MO.Logger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
-      o.hide();
-      if(o.lsnEditCancel){
-         o.lsnEditCancel.process(o);
-      }
-      s._editor = null;
-      o._source = null;
-      o._statusEditing = false;
-   }
-   MO.FDuiEditor_editEnd = function FDuiEditor_editEnd(){
-      this.onEditEnd();
-   }
-   MO.FDuiEditor_reset = function FDuiEditor_reset(){
-      var o = this;
-      o.lsnEditBegin = null;
-      o.lsnEditCancel = null;
-      o.lsnEditEnd = null;
-   }
-   MO.FDuiEditor_setVisible = function FDuiEditor_setVisible(p){
-      var o = this;
-      o.__base.FDuiControl.setVisible.call(o, p);
-      if(p){
-         o.editBegin();
-         o.focus();
-      }
-   }
-   MO.FDuiEditor_dispose = function FDuiEditor_dispose(){
-      var o = this;
-      o.__base.FDuiControl.dispose.call(o);
-      o._hEdit = null;
    }
 }
-with(MO){
-   MO.FDuiFile = function FDuiFile(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged);
-      o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-      o._unit            = RClass.register(o, new APtyString('_unit'));
-      o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-      o._styleFile       = RClass.register(o, new AStyle('_styleFile'));
-      o._styleBrowser    = RClass.register(o, new AStyle('_styleBrowser'));
-      o._hValueForm      = null;
-      o._hValueLine      = null;
-      o._hInputPanel     = null;
-      o._hInput          = null;
-      o.onBuildEditValue = FDuiFile_onBuildEditValue;
-      o.onFileChange     = RClass.register(o, new AEventChange('onFileChange'), FDuiFile_onFileChange);
-      o.construct        = FDuiFile_construct;
-      o.formatDisplay    = FDuiFile_formatDisplay;
-      o.formatValue      = FDuiFile_formatValue;
-      o.get              = FDuiFile_get;
-      o.set              = FDuiFile_set;
-      o.refreshValue     = FDuiFile_refreshValue;
-      return o;
+MO.FDuiEditor_onEditEnd = function FDuiEditor_onEditEnd(){
+   var o = this;
+   var s = o._source;
+   MO.Logger.debug(o, 'Editor end. (control={1})', MO.Class.dump(s));
+   o.hide();
+   if(o.lsnEditEnd){
+      o.lsnEditEnd.process(o);
    }
-   MO.FDuiFile_onBuildEditValue = function FDuiFile_onBuildEditValue(p){
-      var o = this;
-      var hp = o._hValuePanel;
-      hp.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(hp);
-      hf.width = '100%';
-      var hl = o._hValueLine = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hl);
-      o.onBuildEditChange(p);
-      var hInputPanel = o._hInputPanel = RBuilder.appendTableCell(hl,  o.styleName('InputPanel'));
-      var he = o._hInputEdit = RBuilder.appendEdit(hInputPanel, o.styleName('Input'));
-      var hFile = o._hInput = RBuilder.appendFile(hInputPanel, o.styleName('File'));
-      o.attachEvent('onFileChange', hFile);
-      var hBrowserPanel = o._hBrowserPanel = RBuilder.appendTableCell(o._hEditLine);
-      hBrowserPanel.style.paddingLeft = '4px';
-      var hBrowser = o._hBrowser = RBuilder.appendButton(hBrowserPanel, o.styleName('Browser'));
-      hBrowser.value = '浏览...';
-      RHtml.setSize(hInputPanel, o._inputSize);
-      RHtml.setSize(hFile, o._inputSize);
-      if(o._editLength){
-         he.maxLength = o._editLength;
+   s._editor = null;
+   o._source = null;
+   o._statusEditing = false;
+}
+MO.FDuiEditor_onBuildPanel = function FDuiEditor_onBuildPanel(p){
+   var o = this;
+   var h = o._hPanel = MO.Window.Builder.createSpan(p);
+   h.__linker = o;
+}
+MO.FDuiEditor_onBuild = function FDuiEditor_onBuild(p){
+   var o = this;
+   o.__base.FDuiControl.onBuild.call(o, p);
+   o._hPanel.style.zIndex = MO.EUiLayer.Editor;
+}
+MO.FDuiEditor_get = function FDuiEditor_get(name){
+}
+MO.FDuiEditor_set = function FDuiEditor_set(name, value){
+}
+MO.FDuiEditor_doBlur = function FDuiEditor_doBlur(){
+   var o = this;
+   var s = o._source;
+   if(s){
+      o.editCancel();
+      if(MO.Class.isClass(s, MO.MDuiFocus)){
+         s.doBlur();
       }
    }
-   MO.FDuiFile_onFileChange = function FDuiFile_onFileChange(event){
-      var o = this;
-      var hFile = o._hInput;
-      if(hFile.files){
-         if(hFile.files.length){
-            var file = hFile.files[0];
-            var name = file.name;
-            o._hInputEdit.value = name + ' (' + file.size + 'byte)';
-            o.processDataChangedListener(event);
-         }
+}
+MO.FDuiEditor_panel = function FDuiEditor_panel(p){
+   var o = this;
+   if(p == EPanel.Edit){
+      return o._hEdit;
+   }else if(p == MO.EPanel.Focus){
+      return o._hEdit;
+   }
+   return o.__base.FDuiControl.panel.call(o, p);
+}
+MO.FDuiEditor_linkControl = function FDuiEditor_linkControl(c){
+   var o = this;
+   o._source = c;
+}
+MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
+   var o = this;
+   var s = o._source;
+   MO.Logger.debug(o, 'Editor begin. (control={1})', MO.Class.dump(s));
+   if(o.lsnEditCancel){
+      o.lsnEditCancel.process(o);
+   }
+   s._editor = o;
+   o._statusEditing = true;
+}
+MO.FDuiEditor_editCancel = function FDuiEditor_editCancel(){
+   var o = this;
+   var s = o._source;
+   MO.Logger.debug(o, 'Editor cancel. (control={1})', MO.Class.dump(s));
+   o.hide();
+   if(o.lsnEditCancel){
+      o.lsnEditCancel.process(o);
+   }
+   s._editor = null;
+   o._source = null;
+   o._statusEditing = false;
+}
+MO.FDuiEditor_editEnd = function FDuiEditor_editEnd(){
+   this.onEditEnd();
+}
+MO.FDuiEditor_reset = function FDuiEditor_reset(){
+   var o = this;
+   o.lsnEditBegin = null;
+   o.lsnEditCancel = null;
+   o.lsnEditEnd = null;
+}
+MO.FDuiEditor_setVisible = function FDuiEditor_setVisible(p){
+   var o = this;
+   o.__base.FDuiControl.setVisible.call(o, p);
+   if(p){
+      o.editBegin();
+      o.focus();
+   }
+}
+MO.FDuiEditor_dispose = function FDuiEditor_dispose(){
+   var o = this;
+   o.__base.FDuiControl.dispose.call(o);
+   o._hEdit = null;
+}
+MO.FDuiFile = function FDuiFile(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged);
+   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._unit            = MO.Class.register(o, new MO.APtyString('_unit'));
+   o._styleValuePanel = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._styleFile       = MO.Class.register(o, new MO.AStyle('_styleFile'));
+   o._styleBrowser    = MO.Class.register(o, new MO.AStyle('_styleBrowser'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = MO.FDuiFile_onBuildEditValue;
+   o.onFileChange     = MO.Class.register(o, new MO.AEventChange('onFileChange'), MO.FDuiFile_onFileChange);
+   o.construct        = MO.FDuiFile_construct;
+   o.formatDisplay    = MO.FDuiFile_formatDisplay;
+   o.formatValue      = MO.FDuiFile_formatValue;
+   o.get              = MO.FDuiFile_get;
+   o.set              = MO.FDuiFile_set;
+   o.refreshValue     = MO.FDuiFile_refreshValue;
+   return o;
+}
+MO.FDuiFile_onBuildEditValue = function FDuiFile_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = MO.Window.Builder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hl,  o.styleName('InputPanel'));
+   var he = o._hInputEdit = MO.Window.Builder.appendEdit(hInputPanel, o.styleName('Input'));
+   var hFile = o._hInput = MO.Window.Builder.appendFile(hInputPanel, o.styleName('File'));
+   o.attachEvent('onFileChange', hFile);
+   var hBrowserPanel = o._hBrowserPanel = MO.Window.Builder.appendTableCell(o._hEditLine);
+   hBrowserPanel.style.paddingLeft = '4px';
+   var hBrowser = o._hBrowser = MO.Window.Builder.appendButton(hBrowserPanel, o.styleName('Browser'));
+   hBrowser.value = '浏览...';
+   MO.Window.Html.setSize(hInputPanel, o._inputSize);
+   MO.Window.Html.setSize(hFile, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+MO.FDuiFile_onFileChange = function FDuiFile_onFileChange(event){
+   var o = this;
+   var hFile = o._hInput;
+   if(hFile.files){
+      if(hFile.files.length){
+         var file = hFile.files[0];
+         var name = file.name;
+         o._hInputEdit.value = name + ' (' + file.size + 'byte)';
+         o.processDataChangedListener(event);
       }
    }
-   MO.FDuiFile_construct = function FDuiFile_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-   }
-   MO.FDuiFile_formatDisplay = function FDuiFile_formatDisplay(p){
-      var o = this;
-      var r = RString.nvl(p);
-      o._dataDisplay = r;
-      return r;
-   }
-   MO.FDuiFile_formatValue = function FDuiFile_formatValue(p){
-      return p;
-   }
-   MO.FDuiFile_get = function FDuiFile_get(){
-      var o = this;
-      var r = o.__base.FDuiEditControl.get.call(o);
-      var r = o._hInput.value;
-      return r;
-   }
-   MO.FDuiFile_set = function FDuiFile_set(p){
-      var o = this;
-      o.__base.FDuiEditControl.set.call(o, p);
-      o._hInput.value = RString.nvl(p);
-   }
-   MO.FDuiFile_refreshValue = function FDuiFile_refreshValue(){
-      var o = this;
-      o.processDataChangedListener(o);
-   }
+}
+MO.FDuiFile_construct = function FDuiFile_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+}
+MO.FDuiFile_formatDisplay = function FDuiFile_formatDisplay(p){
+   var o = this;
+   var r = MO.Lang.String.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+MO.FDuiFile_formatValue = function FDuiFile_formatValue(p){
+   return p;
+}
+MO.FDuiFile_get = function FDuiFile_get(){
+   var o = this;
+   var r = o.__base.FDuiEditControl.get.call(o);
+   var r = o._hInput.value;
+   return r;
+}
+MO.FDuiFile_set = function FDuiFile_set(p){
+   var o = this;
+   o.__base.FDuiEditControl.set.call(o, p);
+   o._hInput.value = MO.Lang.String.nvl(p);
+}
+MO.FDuiFile_refreshValue = function FDuiFile_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
 }
 MO.FDuiForm = function FDuiForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MUiDataContainer, MO.MDuiDescribeFrame);
@@ -47499,8 +47397,8 @@ MO.FDuiForm_allDataComponents = function FDuiForm_allDataComponents(p, m){
       var cc = cs.count;
       for(var n = 0; n<cc; n++){
          var c = cs.value(n);
-         if(!RClass.isClass(c, MDataset)){
-            if(RClass.isClass(c, MValue)){
+         if(!MO.Class.isClass(c, MDataset)){
+            if(MO.Class.isClass(c, MValue)){
                m.set(c.dataName, c);
             }
             o.allDataComponents(c, m);
@@ -47699,8 +47597,8 @@ MO.FDuiForm_allNameComponents = function FDuiForm_allNameComponents(f, p, m){
       var cc = cs.count;
       for(var n = 0; n<cc; n++){
          var c = cs.value(n);
-         if(!RClass.isClass(c, MDataset)){
-            if(RClass.isClass(c, MValue)){
+         if(!MO.Class.isClass(c, MDataset)){
+            if(MO.Class.isClass(c, MValue)){
                m.set(c.name, c);
             }
             o.allNameComponents(false, c, m);
@@ -47792,7 +47690,7 @@ MO.FDuiForm_hasAction = function FDuiForm_hasAction(){
    var ct = cs.count;
    for(var n = 0; n < ct; n++){
       var c = cs.value(n);
-      if(RClass.isClass(c, FDataAction)){
+      if(MO.Class.isClass(c, FDataAction)){
          return true;
       }
    }
@@ -47802,48 +47700,46 @@ MO.FDuiFrame = function FDuiFrame(o){
    o = MO.Class.inherits(this, o, MO.FDuiLayout);
    return o;
 }
-with(MO){
-   MO.FDuiIconPicker = function FDuiIconPicker(o){
-      o = RClass.inherits(this, o, FDuiEdit);
-      return o;
+MO.FDuiIconPicker = function FDuiIconPicker(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEdit);
+   return o;
+}
+MO.FDuiIconPicker_onEditKeyDown = function FDuiIconPicker_onEditKeyDown(e){
+   var o = this;
+   o.base.FDuiEditControl.onEditKeyDown.call(o,e);
+   o.hEditIcon.src = RRes.iconPath(MO.Lang.String.nvl(o.text(), o.styleIcon("Default")));
+}
+MO.FDuiIconPicker_onEditKeyPress = function FDuiIconPicker_onEditKeyPress(e){
+   var o = this;
+   o.base.FDuiEditControl.onEditKeyPress.call(o, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
    }
-   MO.FDuiIconPicker_onEditKeyDown = function FDuiIconPicker_onEditKeyDown(e){
-      var o = this;
-      o.base.FDuiEditControl.onEditKeyDown.call(o,e);
-      o.hEditIcon.src = RRes.iconPath(RString.nvl(o.text(), o.styleIcon("Default")));
+}
+MO.FDuiIconPicker_onBuildEdit = function FDuiIconPicker_onBuildEdit(b){
+   var o = this;
+   var h = b.hPanel;
+   b.hIcon.width = 1;
+   h.align = 'center';
+   h.noWrap = 'true';
+   var hi = MO.Lang.String.nvl(o.iconDefault, o.styleIcon("Default"));
+   o.hEditIcon = MO.Window.Builder.appendIcon(h, hi);
+   var h = o.hEdit = MO.Window.Builder.appendEdit(h, o.style('Edit'));
+   h.autocomplete = RBool.isTrue(o.editComplete) ? 'on' : 'off';
+   if(o.editLength){
+      h.maxLength = o.editLength;
    }
-   MO.FDuiIconPicker_onEditKeyPress = function FDuiIconPicker_onEditKeyPress(e){
-      var o = this;
-      o.base.FDuiEditControl.onEditKeyPress.call(o, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
-   }
-   MO.FDuiIconPicker_onBuildEdit = function FDuiIconPicker_onBuildEdit(b){
-      var o = this;
-      var h = b.hPanel;
-      b.hIcon.width = 1;
-      h.align = 'center';
-      h.noWrap = 'true';
-      var hi = RString.nvl(o.iconDefault, o.styleIcon("Default"));
-      o.hEditIcon = RBuilder.appendIcon(h, hi);
-      var h = o.hEdit = RBuilder.appendEdit(h, o.style('Edit'));
-      h.autocomplete = RBool.isTrue(o.editComplete) ? 'on' : 'off';
-      if(o.editLength){
-         h.maxLength = o.editLength;
-      }
-   }
-   MO.FDuiIconPicker_setText = function FDuiIconPicker_setText(t){
-      var o = this;
-      o.base.FDuiEditControl.setText.call(o, t);
-      o.hEditIcon.src = RResource.iconPath(RString.nvl(o.text(), o.styleIcon("Default")));
-   }
-   MO.FDuiIconPicker_dispose = function FDuiIconPicker_dispose(){
-      var o = this;
-      o.base.FDuiEditControl.dispose.call(o);
-      o.hEditIcon = null;
-      o.hEdit = null;
-   }
+}
+MO.FDuiIconPicker_setText = function FDuiIconPicker_setText(t){
+   var o = this;
+   o.base.FDuiEditControl.setText.call(o, t);
+   o.hEditIcon.src = RResource.iconPath(MO.Lang.String.nvl(o.text(), o.styleIcon("Default")));
+}
+MO.FDuiIconPicker_dispose = function FDuiIconPicker_dispose(){
+   var o = this;
+   o.base.FDuiEditControl.dispose.call(o);
+   o.hEditIcon = null;
+   o.hEdit = null;
 }
 MO.FDuiLabel = function FDuiLabel(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl);
@@ -47862,1621 +47758,1597 @@ MO.FDuiLabel_get = function FDuiLabel_get(){
 MO.FDuiLabel_set = function FDuiLabel_set(value){
    this._hPanel.innerHTML = value;
 }
-with(MO){
-   MO.FDuiLayout = function FDuiLayout(o){
-      o = RClass.inherits(this, o, FDuiContainer);
-      o._styleForm      = RClass.register(o, new AStyle('_styleForm', 'Form'));
-      o._lastSplit      = null;
-      o._hPanelForm     = null;
-      o._hContainer     = null;
-      o._hPanelTable    = null;
-      o._hPanelLine     = null;
-      o.onBuildPanel    = FDuiLayout_onBuildPanel;
-      o.onDesignBegin   = FDuiLayout_onDesignBegin;
-      o.onDesignEnd     = FDuiLayout_onDesignEnd;
-      o.oeDesign        = FDuiLayout_oeDesign;
-      o.oeResize        = FDuiLayout_oeResize;
-      o.oeRefresh       = FDuiLayout_oeRefresh;
-      o.insertPosition  = FDuiLayout_insertPosition;
-      o.moveChild       = FDuiLayout_moveChild;
-      o.innerAppendLine = FDuiLayout_innerAppendLine;
-      o.appendChild     = FDuiLayout_appendChild;
-      o.resize          = FDuiLayout_resize;
-      o.dispose         = FDuiLayout_dispose;
-      return o;
+MO.FDuiLayout = function FDuiLayout(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer);
+   o._styleForm      = MO.Class.register(o, new MO.AStyle('_styleForm', 'Form'));
+   o._lastSplit      = null;
+   o._hPanelForm     = null;
+   o._hContainer     = null;
+   o._hPanelTable    = null;
+   o._hPanelLine     = null;
+   o.onBuildPanel    = MO.FDuiLayout_onBuildPanel;
+   o.onDesignBegin   = MO.FDuiLayout_onDesignBegin;
+   o.onDesignEnd     = MO.FDuiLayout_onDesignEnd;
+   o.oeDesign        = MO.FDuiLayout_oeDesign;
+   o.oeResize        = MO.FDuiLayout_oeResize;
+   o.oeRefresh       = MO.FDuiLayout_oeRefresh;
+   o.insertPosition  = MO.FDuiLayout_insertPosition;
+   o.moveChild       = MO.FDuiLayout_moveChild;
+   o.innerAppendLine = MO.FDuiLayout_innerAppendLine;
+   o.appendChild     = MO.FDuiLayout_appendChild;
+   o.resize          = MO.FDuiLayout_resize;
+   o.dispose         = MO.FDuiLayout_dispose;
+   return o;
+}
+MO.FDuiLayout_onBuildPanel = function FDuiLayout_onBuildPanel(event){
+   var o = this;
+   var h = o._hPanel = o._hPanelForm = MO.Window.Builder.createTable(event, o.styleName('Form'), null, 0, 1);
+   if(o._layoutCd == MO.EUiLayout.Design){
+      var hr = MO.Window.Builder.appendTableRow(h);
+      var hc = MO.Window.Builder.appendTableCell(hr);
+      o._hContainer = hc;
    }
-   MO.FDuiLayout_onBuildPanel = function FDuiLayout_onBuildPanel(event){
-      var o = this;
-      var h = o._hPanel = o._hPanelForm = RBuilder.createTable(event, o.styleName('Form'), null, 0, 1);
-      if(o._layoutCd == EUiLayout.Design){
-         var hr = RBuilder.appendTableRow(h);
-         var hc = RBuilder.appendTableCell(hr);
-         o._hContainer = hc;
-      }
-   }
-   MO.FDuiLayout_onDesignBegin = function FDuiLayout_onDesignBegin(){
-      var o = this;
-      o.__base.MDesign.onDesignBegin.call(o);
-   }
-   MO.FDuiLayout_onDesignEnd = function FDuiLayout_onDesignEnd(){
-      var o = this;
-      o.__base.MDesign.onDesignEnd.call(o);
-   }
-   MO.FDuiLayout_oeDesign = function FDuiLayout_oeDesign(p){
-      var o = this;
-      o.__base.FDuiContainer.oeDesign.call(o, p);
-      if(p.isAfter()){
-         switch(p.layoutCd){
-            case EDesign.Move:
-               break;
-            case EDesign.Border:
-               if(event.flag){
-                  o._hPanel.border = 1;
-                  o._hPanel.style.border = '1 solid red';
-               }else{
-                  o._hPanel.border = 0;
-                  o._hPanel.style.border = null;
-               }
-               break;
-         }
-      }
-   }
-   MO.FDuiLayout_oeResize = function FDuiLayout_oeResize(p){
-      var o = this;
-      o.__base.FDuiContainer.oeResize.call(o, p);
-      if(p.isAfter()){
-         o.resize();
-      }
-   }
-   MO.FDuiLayout_oeRefresh = function FDuiLayout_oeRefresh(p){
-      var o = this;
-      o.__base.FDuiContainer.oeDesign.call(o, p);
-      if(p.isAfter()){
-         o.resize();
-      }
-   }
-   MO.FDuiLayout_insertPosition = function FDuiLayout_insertPosition(cf, ct, idx, copy){
-      var o = this;
-      var ms = o._components;
-      var cs = o.controls;
-      ms.removeValue(cf);
-      cs.removeValue(cf);
-      if(ct){
-         var index = ms.indexOfValue(ct);
-         ms.insert(index+idx, cf.name, cf);
-         var index = cs.indexOfValue(ct);
-         cs.insert(index+idx, cf.name, cf);
-      }else{
-         ms.set(cf.name, cf);
-         cs.set(cf.name, cf);
-      }
-   }
-   MO.FDuiLayout_moveChild = function FDuiLayout_moveChild(cf, ct, pos, copy){
-      if(!(cf && ct && pos) || (cf == ct)){
-         return;
-      }
-      var o = this;
-      var hPanel = o._hPanel;
-      var moved = false;
-      var cfh = RClass.isClass(cf, MDuiHorizontal);
-      var hCfTd = RHtml.parent(cf._hPanel, 'TD');
-      var hCfTab = RHtml.parent(cf._hPanel, 'TABLE');
-      var cth = RClass.isClass(ct, MDuiHorizontal);
-      var hTd = RHtml.parent(ct._hPanel, 'TD');
-      var hTable = RHtml.parent(hTd, 'TABLE');
-      switch(pos){
-         case EPosition.Before:
-            var hRow = hTable.rows[0];
-            for(var n = 0; n < hRow.cells.length; n++){
-               if(hRow.cells[n] == hTd){
-                  var hCell = RBuilder.appendTableCell(hRow, null, hTd.cellIndex);
-                  hCell.appendChild(cf._hPanel);
-                  o.insertPosition(cf, ct, 0, copy);
-                  cf.nowrap = true;
-                  cf._hPanelLine = hTable;
-                  moved = true;
-                  break;
-               }
-            }
+}
+MO.FDuiLayout_onDesignBegin = function FDuiLayout_onDesignBegin(){
+   var o = this;
+   o.__base.MDesign.onDesignBegin.call(o);
+}
+MO.FDuiLayout_onDesignEnd = function FDuiLayout_onDesignEnd(){
+   var o = this;
+   o.__base.MDesign.onDesignEnd.call(o);
+}
+MO.FDuiLayout_oeDesign = function FDuiLayout_oeDesign(p){
+   var o = this;
+   o.__base.FDuiContainer.oeDesign.call(o, p);
+   if(p.isAfter()){
+      switch(p.layoutCd){
+         case MO.EDesign.Move:
             break;
-         case EPosition.After:
-            var hRow = hTable.rows[0];
-            for(var n = 0; n < hRow.cells.length; n++){
-               if(hRow.cells[n] == hTd){
-                  var hCfTd = RHtml.parent(cf._hPanel, 'TD');
-                  var hCell = RBuilder.appendTableCell(hRow, null, hTd.cellIndex + 1);
-                  hCell.appendChild(cf._hPanel);
-                  o.insertPosition(cf, ct, 1, copy);
-                  cf.nowrap = false;
-                  cf._hPanelLine = hTable;
-                  ct.nowrap = true;
-                  moved = true;
-                  break;
-               }
-            }
-            break;
-         case EPosition.LineBefore:
-            if(cth){
-               if(cfh){
-                  o._hContainer.insertBefore(cf._hPanel, ct._hPanel);
-               }else{
-                  var hNewTab = o.innerAppendLine();
-                  o._hContainer.insertBefore(hNewTab, ct._hPanel);
-                  var hCell = RBuilder.appendTableCell(o._hPanelLine);
-                  hCell.appendChild(cf._hPanel);
-                  cf._hPanelLine = hNewTab;
-               }
-               o.insertPosition(cf, ct, 0, copy);
+         case MO.EDesign.Border:
+            if(event.flag){
+               o._hPanel.border = 1;
+               o._hPanel.style.border = '1 solid red';
             }else{
-               var count = o._hContainer.children.length;
-               for(var n = 0; n < count; n++){
-                  if(o._hContainer.children[n] == hTable){
-                     if(cfh){
-                        o._hContainer.insertBefore(cf._hPanel, hTable);
-                     }else{
-                        var hNewTab = o.innerAppendLine();
-                        o._hContainer.insertBefore(hNewTab, hTable);
-                        var hCell = RBuilder.appendTableCell(o._hPanelLine);
-                        hCell.appendChild(cf._hPanel);
-                        cf._hPanelLine = hNewTab;
-                        moved = true;
-                     }
-                     o.insertPosition(cf, ct, 0, copy);
-                     cf.nowrap = false;
-                     break;
-                  }
-               }
+               o._hPanel.border = 0;
+               o._hPanel.style.border = null;
             }
             break;
-         case EPosition.LineAfter:
+      }
+   }
+}
+MO.FDuiLayout_oeResize = function FDuiLayout_oeResize(p){
+   var o = this;
+   o.__base.FDuiContainer.oeResize.call(o, p);
+   if(p.isAfter()){
+      o.resize();
+   }
+}
+MO.FDuiLayout_oeRefresh = function FDuiLayout_oeRefresh(p){
+   var o = this;
+   o.__base.FDuiContainer.oeDesign.call(o, p);
+   if(p.isAfter()){
+      o.resize();
+   }
+}
+MO.FDuiLayout_insertPosition = function FDuiLayout_insertPosition(cf, ct, idx, copy){
+   var o = this;
+   var ms = o._components;
+   var cs = o.controls;
+   ms.removeValue(cf);
+   cs.removeValue(cf);
+   if(ct){
+      var index = ms.indexOfValue(ct);
+      ms.insert(index+idx, cf.name, cf);
+      var index = cs.indexOfValue(ct);
+      cs.insert(index+idx, cf.name, cf);
+   }else{
+      ms.set(cf.name, cf);
+      cs.set(cf.name, cf);
+   }
+}
+MO.FDuiLayout_moveChild = function FDuiLayout_moveChild(cf, ct, pos, copy){
+   if(!(cf && ct && pos) || (cf == ct)){
+      return;
+   }
+   var o = this;
+   var hPanel = o._hPanel;
+   var moved = false;
+   var cfh = MO.Class.isClass(cf, MO.MDuiHorizontal);
+   var hCfTd = MO.Window.Html.parent(cf._hPanel, 'TD');
+   var hCfTab = MO.Window.Html.parent(cf._hPanel, 'TABLE');
+   var cth = MO.Class.isClass(ct, MO.MDuiHorizontal);
+   var hTd = MO.Window.Html.parent(ct._hPanel, 'TD');
+   var hTable = MO.Window.Html.parent(hTd, 'TABLE');
+   switch(pos){
+      case EPosition.Before:
+         var hRow = hTable.rows[0];
+         for(var n = 0; n < hRow.cells.length; n++){
+            if(hRow.cells[n] == hTd){
+               var hCell = MO.Window.Builder.appendTableCell(hRow, null, hTd.cellIndex);
+               hCell.appendChild(cf._hPanel);
+               o.insertPosition(cf, ct, 0, copy);
+               cf.nowrap = true;
+               cf._hPanelLine = hTable;
+               moved = true;
+               break;
+            }
+         }
+         break;
+      case EPosition.After:
+         var hRow = hTable.rows[0];
+         for(var n = 0; n < hRow.cells.length; n++){
+            if(hRow.cells[n] == hTd){
+               var hCfTd = MO.Window.Html.parent(cf._hPanel, 'TD');
+               var hCell = MO.Window.Builder.appendTableCell(hRow, null, hTd.cellIndex + 1);
+               hCell.appendChild(cf._hPanel);
+               o.insertPosition(cf, ct, 1, copy);
+               cf.nowrap = false;
+               cf._hPanelLine = hTable;
+               ct.nowrap = true;
+               moved = true;
+               break;
+            }
+         }
+         break;
+      case EPosition.LineBefore:
+         if(cth){
             if(cfh){
-               o._hContainer.appendChild(cf._hPanel);
+               o._hContainer.insertBefore(cf._hPanel, ct._hPanel);
             }else{
                var hNewTab = o.innerAppendLine();
-               var hCell = RBuilder.appendTableCell(o._hPanelLine);
+               o._hContainer.insertBefore(hNewTab, ct._hPanel);
+               var hCell = MO.Window.Builder.appendTableCell(o._hPanelLine);
                hCell.appendChild(cf._hPanel);
-               hCell.appendChild(cf._hPanel);
-               moved = true;
+               cf._hPanelLine = hNewTab;
             }
-            o.insertPosition(cf, null, 0, copy);
-            ct.nowrap = false;
-            cf.nowrap = false;
-            break;
-      }
-      if(moved){
-         hCfTd.removeNode(true);
-         if(hCfTab.rows[0].cells.length == 0){
-            hCfTab.removeNode(true);
-         }
-      }
-   }
-   MO.FDuiLayout_innerAppendLine = function FDuiLayout_innerAppendLine(){
-      var o = this;
-      var h = null;
-      if(o._layoutCd == EUiLayout.Design){
-         h = o._hPanelTable = RBuilder.appendTable(o._hContainer);
-         h.style.paddingBottom = 4;
-         o._hPanelLine = RBuilder.appendTableRow(h);
-      }else{
-         o._hPanelTable = null;
-         o._hPanelLine = null;
-      }
-      return h;
-   }
-   MO.FDuiLayout_appendChild = function FDuiLayout_appendChild(control){
-      var o = this;
-      if(o._layoutCd == EUiLayout.Design){
-         if(!o._hPanelLine){
-            o.innerAppendLine();
-         }
-         if(RClass.isClass(control, MDuiHorizontal)){
-            if(o._hPanelTable.rows[0].cells.length == 0){
-               o._hContainer.insertBefore(control._hPanel, o._hPanelTable);
-            }else{
-               o._hContainer.appendChild(control._hPanel);
-               o.innerAppendLine();
-            }
-            return;
-         }
-         var hCell = RBuilder.appendTableCell(o._hPanelLine);
-         if(!RClass.isClass(control, FDuiLayout)){
-            control._hPanelLine = o._hPanelTable;
-         }
-         hCell.appendChild(control._hPanel);
-         control._hLayoutCell = hCell;
-         if((control.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != control)){
-            o.innerAppendLine();
-         }
-      }else{
-         control._hPanel.style.paddingTop = 2;
-         control._hPanel.style.paddingBottom = 2;
-         if(control.dockCd() == EUiDock.Fill){
-            var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
-            hCell.appendChild(control._hPanel);
-         }else if(control._sizeCd == EUiSize.Fill){
-            var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
-            hCell.appendChild(control._hPanel);
-         }else if(RSet.contains(control._sizeCd, EUiSize.Horizontal) || '100%' == control.width){
-            if(RClass.isClass(control, FDuiSplit)){
-               o._lastSplit = control;
-            }
-            var hr = RBuilder.appendTableRow(o._hPanelForm);
-            var hc = RBuilder.appendTableCell(hr);
-            hc.vAlign = 'top';
-            hc.appendChild(control._hPanel);
-            control._hLayoutRow = hr;
-            o._hPanelLast = hc;
-            if(!RSet.contains(control._sizeCd, EUiSize.Vertical)){
-               hc.height = 1;
-            }else if(control.height){
-               hc.height = control.height;
-            }
-            o._hPanelLine = null;
+            o.insertPosition(cf, ct, 0, copy);
          }else{
-            if(!o._hPanelLine){
-               var hr = RBuilder.appendTableRow(o._hPanelForm);
-               hr.height = 1;
-               if(o._lastSplit){
-                  o._lastSplit.pushLine(hr);
+            var count = o._hContainer.children.length;
+            for(var n = 0; n < count; n++){
+               if(o._hContainer.children[n] == hTable){
+                  if(cfh){
+                     o._hContainer.insertBefore(cf._hPanel, hTable);
+                  }else{
+                     var hNewTab = o.innerAppendLine();
+                     o._hContainer.insertBefore(hNewTab, hTable);
+                     var hCell = MO.Window.Builder.appendTableCell(o._hPanelLine);
+                     hCell.appendChild(cf._hPanel);
+                     cf._hPanelLine = hNewTab;
+                     moved = true;
+                  }
+                  o.insertPosition(cf, ct, 0, copy);
+                  cf.nowrap = false;
+                  break;
                }
-               var hc = RBuilder.appendTableCell(hr);
-               hc.vAlign = 'top';
-               var ht = o._hPanelTable = RBuilder.appendTable(hc);
-               o._hPanelLine = RBuilder.appendTableRow(ht);
-            }
-            var hc = RBuilder.appendTableCell(o._hPanelLine)
-            control._hLayoutRow = o._hPanelLine;
-            o._hPanelLast = hc;
-            hc.appendChild(control._hPanel);
-            control._hLayoutCell = hc;
-            if(control.wrapCd() == EUiWrap.NextLine){
-               o._hPanelLine = null;
             }
          }
-      }
-   }
-   MO.FDuiLayout_resize = function FDuiLayout_resize(){
-      var o = this;
-      var cs = o._components;
-      if(cs){
-         var ha = false;
-         var c = cs.count();
-         for(var n = 0; n < c; n++){
-            var p = o._components.at(n);
-            if(RClass.isClass(p, FDuiTable) || RClass.isClass(p, FDuiPageControl)){
-               ha = true;
-               break;
-            }
+         break;
+      case EPosition.LineAfter:
+         if(cfh){
+            o._hContainer.appendChild(cf._hPanel);
+         }else{
+            var hNewTab = o.innerAppendLine();
+            var hCell = MO.Window.Builder.appendTableCell(o._hPanelLine);
+            hCell.appendChild(cf._hPanel);
+            hCell.appendChild(cf._hPanel);
+            moved = true;
          }
+         o.insertPosition(cf, null, 0, copy);
+         ct.nowrap = false;
+         cf.nowrap = false;
+         break;
+   }
+   if(moved){
+      hCfTd.removeNode(true);
+      if(hCfTab.rows[0].cells.length == 0){
+         hCfTab.removeNode(true);
       }
    }
-   MO.FDuiLayout_dispose = function FDuiLayout_dispose(){
-      var o = this;
-      o._hPanelCurrent = null;
+}
+MO.FDuiLayout_innerAppendLine = function FDuiLayout_innerAppendLine(){
+   var o = this;
+   var h = null;
+   if(o._layoutCd == EUiLayout.Design){
+      h = o._hPanelTable = MO.Window.Builder.appendTable(o._hContainer);
+      h.style.paddingBottom = 4;
+      o._hPanelLine = MO.Window.Builder.appendTableRow(h);
+   }else{
       o._hPanelTable = null;
-      o._hPanel = null;
-      o._hContainer = null;
-      o.__base.FDuiContainer.dispose.call(o);
+      o._hPanelLine = null;
    }
+   return h;
 }
-with(MO){
-   MO.FDuiLayoutHorizontal = function FDuiLayoutHorizontal(o){
-      o = RClass.inherits(this, o, FDuiContainer);
-      o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
-      o._hLine       = null;
-      o.onBuildPanel = FDuiLayoutHorizontal_onBuildPanel;
-      o.onBuild      = FDuiLayoutHorizontal_onBuild;
-      o.appendChild  = FDuiLayoutHorizontal_appendChild;
-      o.dispose      = FDuiLayoutHorizontal_dispose;
-      return o;
-   }
-   MO.FDuiLayoutHorizontal_onBuildPanel = function FDuiLayoutHorizontal_onBuildPanel(event){
-      var o = this;
-      o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
-   }
-   MO.FDuiLayoutHorizontal_onBuild = function FDuiLayoutHorizontal_onBuild(event){
-      var o = this;
-      o.__base.FDuiContainer.onBuild.call(o, event)
-      o._hLine = RBuilder.appendTableRow(o._hPanel);
-   }
-   MO.FDuiLayoutHorizontal_appendChild = function FDuiLayoutHorizontal_appendChild(control){
-      var o = this;
-      var hCell = RBuilder.appendTableCell(o._hLine);
+MO.FDuiLayout_appendChild = function FDuiLayout_appendChild(control){
+   var o = this;
+   if(o._layoutCd == MO.EUiLayout.Design){
+      if(!o._hPanelLine){
+         o.innerAppendLine();
+      }
+      if(MO.Class.isClass(control, MO.MDuiHorizontal)){
+         if(o._hPanelTable.rows[0].cells.length == 0){
+            o._hContainer.insertBefore(control._hPanel, o._hPanelTable);
+         }else{
+            o._hContainer.appendChild(control._hPanel);
+            o.innerAppendLine();
+         }
+         return;
+      }
+      var hCell = MO.Window.Builder.appendTableCell(o._hPanelLine);
+      if(!MO.Class.isClass(control, MO.FDuiLayout)){
+         control._hPanelLine = o._hPanelTable;
+      }
       hCell.appendChild(control._hPanel);
-      var dockCd = control.dockCd();
-      if(dockCd == 'left'){
-         hCell.align = 'left';
-      }else if(dockCd == 'center'){
-         hCell.align = 'center';
-      }else if(dockCd == 'right'){
-         hCell.align = 'right';
+      control._hLayoutCell = hCell;
+      if((control.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != control)){
+         o.innerAppendLine();
+      }
+   }else{
+      control._hPanel.style.paddingTop = 2;
+      control._hPanel.style.paddingBottom = 2;
+      if(control.dockCd() == MO.EUiDock.Fill){
+         var hCell = MO.Window.Builder.appendTableRowCell(o._hPanelForm);
+         hCell.appendChild(control._hPanel);
+      }else if(control._sizeCd == MO.EUiSize.Fill){
+         var hCell = MO.Window.Builder.appendTableRowCell(o._hPanelForm);
+         hCell.appendChild(control._hPanel);
+      }else if(MO.Lang.Set.contains(control._sizeCd, MO.EUiSize.Horizontal) || '100%' == control.width){
+         if(MO.Class.isClass(control, MO.FDuiSplit)){
+            o._lastSplit = control;
+         }
+         var hr = MO.Window.Builder.appendTableRow(o._hPanelForm);
+         var hc = MO.Window.Builder.appendTableCell(hr);
+         hc.vAlign = 'top';
+         hc.appendChild(control._hPanel);
+         control._hLayoutRow = hr;
+         o._hPanelLast = hc;
+         if(!MO.Lang.Set.contains(control._sizeCd, MO.EUiSize.Vertical)){
+            hc.height = 1;
+         }else if(control.height){
+            hc.height = control.height;
+         }
+         o._hPanelLine = null;
+      }else{
+         if(!o._hPanelLine){
+            var hr = MO.Window.Builder.appendTableRow(o._hPanelForm);
+            hr.height = 1;
+            if(o._lastSplit){
+               o._lastSplit.pushLine(hr);
+            }
+            var hc = MO.Window.Builder.appendTableCell(hr);
+            hc.vAlign = 'top';
+            var ht = o._hPanelTable = MO.Window.Builder.appendTable(hc);
+            o._hPanelLine = MO.Window.Builder.appendTableRow(ht);
+         }
+         var hc = MO.Window.Builder.appendTableCell(o._hPanelLine)
+         control._hLayoutRow = o._hPanelLine;
+         o._hPanelLast = hc;
+         hc.appendChild(control._hPanel);
+         control._hLayoutCell = hc;
+         if(control.wrapCd() == MO.EUiWrap.NextLine){
+            o._hPanelLine = null;
+         }
       }
    }
-   MO.FDuiLayoutHorizontal_dispose = function FDuiLayoutHorizontal_dispose(){
-      var o = this;
-      o._hLine = RHtml.free(o._hLine);
-      o.__base.FDuiContainer.dispose.call(o);
-   }
 }
-with(MO){
-   MO.FDuiLayoutVertical = function FDuiLayoutVertical(o){
-      o = RClass.inherits(this, o, FDuiContainer);
-      o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
-      o._hLine       = null;
-      o.onBuildPanel = FDuiLayoutVertical_onBuildPanel;
-      o.appendChild  = FDuiLayoutVertical_appendChild;
-      o.dispose      = FDuiLayoutVertical_dispose;
-      return o;
-   }
-   MO.FDuiLayoutVertical_onBuildPanel = function FDuiLayoutVertical_onBuildPanel(event){
-      var o = this;
-      o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
-   }
-   MO.FDuiLayoutVertical_appendChild = function FDuiLayoutVertical_appendChild(control){
-      var o = this;
-      var hCell = RBuilder.appendTableRowCell(o._hPanel);
-      hCell.appendChild(control._hPanel);
-      var height = control.size().height;
-      if(height){
-         hCell.style.height = height + 'px';
+MO.FDuiLayout_resize = function FDuiLayout_resize(){
+   var o = this;
+   var cs = o._components;
+   if(cs){
+      var ha = false;
+      var c = cs.count();
+      for(var n = 0; n < c; n++){
+         var p = o._components.at(n);
+         if(MO.Class.isClass(p, FDuiTable) || MO.Class.isClass(p, FDuiPageControl)){
+            ha = true;
+            break;
+         }
       }
    }
-   MO.FDuiLayoutVertical_dispose = function FDuiLayoutVertical_dispose(){
-      var o = this;
-      o.__base.FDuiContainer.dispose.call(o);
+}
+MO.FDuiLayout_dispose = function FDuiLayout_dispose(){
+   var o = this;
+   o._hPanelCurrent = null;
+   o._hPanelTable = null;
+   o._hPanel = null;
+   o._hContainer = null;
+   o.__base.FDuiContainer.dispose.call(o);
+}
+MO.FDuiLayoutHorizontal = function FDuiLayoutHorizontal(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer);
+   o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._hLine       = null;
+   o.onBuildPanel = MO.FDuiLayoutHorizontal_onBuildPanel;
+   o.onBuild      = MO.FDuiLayoutHorizontal_onBuild;
+   o.appendChild  = MO.FDuiLayoutHorizontal_appendChild;
+   o.dispose      = MO.FDuiLayoutHorizontal_dispose;
+   return o;
+}
+MO.FDuiLayoutHorizontal_onBuildPanel = function FDuiLayoutHorizontal_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTable(event, o.styleName('Panel'));
+}
+MO.FDuiLayoutHorizontal_onBuild = function FDuiLayoutHorizontal_onBuild(event){
+   var o = this;
+   o.__base.FDuiContainer.onBuild.call(o, event)
+   o._hLine = MO.Window.Builder.appendTableRow(o._hPanel);
+}
+MO.FDuiLayoutHorizontal_appendChild = function FDuiLayoutHorizontal_appendChild(control){
+   var o = this;
+   var hCell = MO.Window.Builder.appendTableCell(o._hLine);
+   hCell.appendChild(control._hPanel);
+   var dockCd = control.dockCd();
+   if(dockCd == 'left'){
+      hCell.align = 'left';
+   }else if(dockCd == 'center'){
+      hCell.align = 'center';
+   }else if(dockCd == 'right'){
+      hCell.align = 'right';
    }
 }
-with(MO){
-   MO.FDuiListBox = function FDuiListBox(o){
-      o = RClass.inherits(this, o, FDuiContainer, MDuiHorizontal, MListenerClick);
-      o._sizeCd      = EUiSize.Horizontal
-      o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
-      o._hForm       = null;
-      o.onBuildPanel = FDuiListBox_onBuildPanel;
-      o.createItem   = FDuiListBox_createItem;
-      o.appendChild  = FDuiListBox_appendChild;
-      o.clickItem    = FDuiListBox_clickItem;
-      o.clear        = FDuiListBox_clear;
-      o.dispose      = FDuiListBox_dispose;
-      return o;
+MO.FDuiLayoutHorizontal_dispose = function FDuiLayoutHorizontal_dispose(){
+   var o = this;
+   o._hLine = MO.Window.Html.free(o._hLine);
+   o.__base.FDuiContainer.dispose.call(o);
+}
+MO.FDuiLayoutVertical = function FDuiLayoutVertical(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer);
+   o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._hLine       = null;
+   o.onBuildPanel = MO.FDuiLayoutVertical_onBuildPanel;
+   o.appendChild  = MO.FDuiLayoutVertical_appendChild;
+   o.dispose      = MO.FDuiLayoutVertical_dispose;
+   return o;
+}
+MO.FDuiLayoutVertical_onBuildPanel = function FDuiLayoutVertical_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTable(event, o.styleName('Panel'));
+}
+MO.FDuiLayoutVertical_appendChild = function FDuiLayoutVertical_appendChild(control){
+   var o = this;
+   var hCell = MO.Window.Builder.appendTableRowCell(o._hPanel);
+   hCell.appendChild(control._hPanel);
+   var height = control.size().height;
+   if(height){
+      hCell.style.height = height + 'px';
    }
-   MO.FDuiListBox_onBuildPanel = function FDuiListBox_onBuildPanel(p){
-      var o = this;
-      o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+}
+MO.FDuiLayoutVertical_dispose = function FDuiLayoutVertical_dispose(){
+   var o = this;
+   o.__base.FDuiContainer.dispose.call(o);
+}
+MO.FDuiListBox = function FDuiListBox(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiHorizontal, MO.MListenerClick);
+   o._sizeCd      = MO.EUiSize.Horizontal
+   o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._hForm       = null;
+   o.onBuildPanel = MO.FDuiListBox_onBuildPanel;
+   o.createItem   = MO.FDuiListBox_createItem;
+   o.appendChild  = MO.FDuiListBox_appendChild;
+   o.clickItem    = MO.FDuiListBox_clickItem;
+   o.clear        = MO.FDuiListBox_clear;
+   o.dispose      = MO.FDuiListBox_dispose;
+   return o;
+}
+MO.FDuiListBox_onBuildPanel = function FDuiListBox_onBuildPanel(p){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
+}
+MO.FDuiListBox_createItem = function FDuiListBox_createItem(icon, label){
+   var o = this;
+   var item = MO.Class.create(MO.FDuiListItem);
+   item.build(o._hPanel);
+   item.setLabel(label);
+   return item;
+}
+MO.FDuiListBox_appendChild = function FDuiListBox_appendChild(control){
+   var o = this;
+   o._hPanel.appendChild(control._hPanel);
+}
+MO.FDuiListBox_clickItem = function FDuiListBox_clickItem(item){
+   var o = this;
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         if(MO.Class.isClass(component, MO.FDuiListItem)){
+            component.setChecked(component == item);
+         }
+      }
    }
-   MO.FDuiListBox_createItem = function FDuiListBox_createItem(icon, label){
-      var o = this;
-      var item = RClass.create(FDuiListItem);
+   var event = new MO.SEvent(o);
+   event.item = item;
+   o.processClickListener(event);
+   event.dispose();
+}
+MO.FDuiListBox_clear = function FDuiListBox_clear(){
+   var o = this;
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         if(MO.Class.isClass(component, MO.FDuiListItem)){
+            o._hPanel.removeChild(component._hPanel);
+         }
+         component.dispose();
+      }
+      components.clear();
+      o._controls.clear();
+   }
+}
+MO.FDuiListBox_dispose = function FDuiListBox_dispose(){
+   var o = this;
+   o.__base.FContainer.dispose.call(o);
+}
+MO.FDuiListItem = function FDuiListItem(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl);
+   o._styleNormal    = MO.Class.register(o, new MO.AStyle('_styleNormal'));
+   o._styleHover     = MO.Class.register(o, new MO.AStyle('_styleHover'));
+   o._styleSelect    = MO.Class.register(o, new MO.AStyle('_styleSelect'));
+   o._styleIconPanel = MO.Class.register(o, new MO.AStyle('_styleIconPanel'));
+   o._styleIcon      = MO.Class.register(o, new MO.AStyle('_styleIcon'));
+   o._styleLabel     = MO.Class.register(o, new MO.AStyle('_styleLabel'));
+   o._checked        = false;
+   o._hPanel         = null;
+   o._hIconPanel     = null;
+   o._hIcon          = null;
+   o._hLabel         = null;
+   o.onBuildPanel    = MO.FDuiListItem_onBuildPanel;
+   o.onBuild         = MO.FDuiListItem_onBuild;
+   o.onEnter         = MO.FDuiListItem_onEnter;
+   o.onLeave         = MO.FDuiListItem_onLeave;
+   o.onClick         = MO.Class.register(o, new MO.AEventClick('onClick'), MO.FDuiListItem_onClick);
+   o.label           = MO.FDuiListItem_label;
+   o.setLabel        = MO.FDuiListItem_setLabel;
+   o.setChecked      = MO.FDuiListItem_setChecked;
+   o.dispose         = MO.FDuiListItem_dispose;
+   return o;
+}
+MO.FDuiListItem_onBuildPanel = function FDuiListItem_onBuildPanel(p){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTableRow(p, o.styleName('Normal'));
+}
+MO.FDuiListItem_onBuild = function FDuiListItem_onBuild(p){
+   var o = this;
+   o.__base.FDuiControl.onBuild.call(o, p);
+   var h = o._hPanel;
+   o._hIconPanel = MO.Window.Builder.appendTableCell(h, o.styleName('IconPanel'))
+   if(o._icon){
+      o._hIcon = MO.Window.Builder.appendIcon(o._hIconPanel, o.styleName('Icon'), o._icon);
+   }
+   o._hLabel = MO.Window.Builder.appendTableCell(h, o.styleName('Label'));
+   if(o._label){
+      o.setLabel(o._label);
+   }
+   o.attachEvent('onClick', h);
+}
+MO.FDuiListItem_onEnter = function FDuiListItem_onEnter(){
+   var o = this;
+   o.__base.FDuiControl.onEnter.call(o);
+   o._hPanel.className = MO.Lang.Boolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
+}
+MO.FDuiListItem_onLeave = function FDuiListItem_onLeave(){
+   var o = this;
+   o._hPanel.className = MO.Lang.Boolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
+   o.__base.FDuiControl.onLeave.call(o);
+}
+MO.FDuiListItem_onClick = function FDuiListItem_onClick(p){
+   var o = this;
+   o._parent.clickItem(o);
+}
+MO.FDuiListItem_label = function FDuiListItem_label(p){
+   return this._label;
+}
+MO.FDuiListItem_setLabel = function FDuiListItem_setLabel(p){
+   var o = this;
+   o._label = p;
+   o._hLabel.innerHTML = MO.Lang.String.nvl(p);
+}
+MO.FDuiListItem_setChecked = function FDuiListItem_setChecked(p){
+   var o = this;
+   o._checked = p;
+   if(o._hIcon){
+      o._hIcon.style.display = p ? 'block' : 'none';
+   }else{
+      o._hIconPanel.innerHTML = p ? 'O' : '';
+   }
+   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
+}
+MO.FDuiListItem_dispose = function FDuiListItem_dispose(){
+   var o = this;
+   o._hPanel = MO.Window.Html.free(o._hPanel);
+   o._hIconPanel = MO.Window.Html.free(o._hIconPanel);
+   o._hIcon = MO.Window.Html.free(o._hIcon);
+   o._hLabel = MO.Window.Html.free(o._hLabel);
+   o.__base.FDuiControl.dispose.call(o);
+}
+MO.FDuiListView = function FDuiListView(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiHorizontal);
+   o._sizeCd           = MO.EUiSize.Horizontal
+   o._stylePanel       = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._focusItem        = null;
+   o._itemPool         = null;
+   o._listenersClick       = MO.Class.register(o, new MO.AListener('_listenersClick', MO.EEvent.Click));
+   o._listenersDoubleClick = MO.Class.register(o, new MO.AListener('_listenersDoubleClick', MO.EEvent.DoubleClick));
+   o._hForm            = null;
+   o.onBuildPanel      = MO.FDuiListView_onBuildPanel;
+   o.onBuild           = MO.FDuiListView_onBuild;
+   o.onClick           = MO.Class.register(o, new MO.AEventClick('onClick'), MO.FDuiListView_onClick);
+   o.construct         = MO.FDuiListView_construct;
+   o.focusItem         = MO.FDuiListView_focusItem;
+   o.createItem        = MO.FDuiListView_createItem;
+   o.appendChild       = MO.FDuiListView_appendChild;
+   o.selectItem        = MO.FDuiListView_selectItem;
+   o.doClickItem       = MO.FDuiListView_doClickItem;
+   o.doDoubleClickItem = MO.FDuiListView_doDoubleClickItem;
+   o.clear             = MO.FDuiListView_clear;
+   o.dispose           = MO.FDuiListView_dispose;
+   return o;
+}
+MO.FDuiListView_onBuildPanel = function FDuiListView_onBuildPanel(p){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createDiv(p, o.styleName('Panel'));
+}
+MO.FDuiListView_onBuild = function FDuiListView_onBuild(event){
+   var o = this;
+   o.__base.FDuiContainer.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   o.attachEvent('onClick', hPanel);
+}
+MO.FDuiListView_onClick = function FDuiListView_onClick(s, e){
+   var o = this;
+   if(s.hSender == o._hNodePanel){
+      var node = o._focusNode;
+      if(node){
+         node.select(false);
+         o._focusNode = null;
+      }
+   }
+}
+MO.FDuiListView_construct = function FDuiListView_construct(){
+   var o = this;
+   o.__base.FDuiContainer.construct.call(o);
+   o._itemPool = MO.Class.create(MO.FObjectPool);
+}
+MO.FDuiListView_focusItem = function FDuiListView_focusItem(){
+   return this._focusItem;
+}
+MO.FDuiListView_createItem = function FDuiListView_createItem(clazz, pi, pl){
+   var o = this;
+   var item = o._itemPool.alloc();
+   if(!item){
+      if(clazz){
+         item = MO.Class.create(clazz);
+      }else{
+         item = MO.Class.create(MO.FDuiListViewItem);
+      }
       item.build(o._hPanel);
-      item.setLabel(label);
-      return item;
    }
-   MO.FDuiListBox_appendChild = function FDuiListBox_appendChild(control){
-      var o = this;
-      o._hPanel.appendChild(control._hPanel);
-   }
-   MO.FDuiListBox_clickItem = function FDuiListBox_clickItem(item){
-      var o = this;
-      var components = o._components;
-      if(components){
-         var count = components.count();
-         for(var i = 0; i < count; i++){
-            var component = components.at(i);
-            if(RClass.isClass(component, FDuiListItem)){
-               component.setChecked(component == item);
-            }
-         }
-      }
-      var event = new SEvent(o);
-      event.item = item;
-      o.processClickListener(event);
-      event.dispose();
-   }
-   MO.FDuiListBox_clear = function FDuiListBox_clear(){
-      var o = this;
-      var components = o._components;
-      if(components){
-         var count = components.count();
-         for(var i = 0; i < count; i++){
-            var component = components.at(i);
-            if(RClass.isClass(component, FDuiListItem)){
-               o._hPanel.removeChild(component._hPanel);
-            }
-            component.dispose();
-         }
-         components.clear();
-         o._controls.clear();
-      }
-   }
-   MO.FDuiListBox_dispose = function FDuiListBox_dispose(){
-      var o = this;
-      o.__base.FContainer.dispose.call(o);
-   }
+   return item;
 }
-with(MO){
-   MO.FDuiListItem = function FDuiListItem(o){
-      o = RClass.inherits(this, o, FDuiControl);
-      o._styleNormal    = RClass.register(o, new AStyle('_styleNormal'));
-      o._styleHover     = RClass.register(o, new AStyle('_styleHover'));
-      o._styleSelect    = RClass.register(o, new AStyle('_styleSelect'));
-      o._styleIconPanel = RClass.register(o, new AStyle('_styleIconPanel'));
-      o._styleIcon      = RClass.register(o, new AStyle('_styleIcon'));
-      o._styleLabel     = RClass.register(o, new AStyle('_styleLabel'));
-      o._checked        = false;
-      o._hPanel         = null;
-      o._hIconPanel     = null;
-      o._hIcon          = null;
-      o._hLabel         = null;
-      o.onBuildPanel    = FDuiListItem_onBuildPanel;
-      o.onBuild         = FDuiListItem_onBuild;
-      o.onEnter         = FDuiListItem_onEnter;
-      o.onLeave         = FDuiListItem_onLeave;
-      o.onClick         = RClass.register(o, new AEventClick('onClick'), FDuiListItem_onClick);
-      o.label           = FDuiListItem_label;
-      o.setLabel        = FDuiListItem_setLabel;
-      o.setChecked      = FDuiListItem_setChecked;
-      o.dispose         = FDuiListItem_dispose;
-      return o;
-   }
-   MO.FDuiListItem_onBuildPanel = function FDuiListItem_onBuildPanel(p){
-      var o = this;
-      o._hPanel = RBuilder.createTableRow(p, o.styleName('Normal'));
-   }
-   MO.FDuiListItem_onBuild = function FDuiListItem_onBuild(p){
-      var o = this;
-      o.__base.FDuiControl.onBuild.call(o, p);
-      var h = o._hPanel;
-      o._hIconPanel = RBuilder.appendTableCell(h, o.styleName('IconPanel'))
-      if(o._icon){
-         o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), o._icon);
-      }
-      o._hLabel = RBuilder.appendTableCell(h, o.styleName('Label'));
-      if(o._label){
-         o.setLabel(o._label);
-      }
-      o.attachEvent('onClick', h);
-   }
-   MO.FDuiListItem_onEnter = function FDuiListItem_onEnter(){
-      var o = this;
-      o.__base.FDuiControl.onEnter.call(o);
-      o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
-   }
-   MO.FDuiListItem_onLeave = function FDuiListItem_onLeave(){
-      var o = this;
-      o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
-      o.__base.FDuiControl.onLeave.call(o);
-   }
-   MO.FDuiListItem_onClick = function FDuiListItem_onClick(p){
-      var o = this;
-      o._parent.clickItem(o);
-   }
-   MO.FDuiListItem_label = function FDuiListItem_label(p){
-      return this._label;
-   }
-   MO.FDuiListItem_setLabel = function FDuiListItem_setLabel(p){
-      var o = this;
-      o._label = p;
-      o._hLabel.innerHTML = RString.nvl(p);
-   }
-   MO.FDuiListItem_setChecked = function FDuiListItem_setChecked(p){
-      var o = this;
-      o._checked = p;
-      if(o._hIcon){
-         o._hIcon.style.display = p ? 'block' : 'none';
-      }else{
-         o._hIconPanel.innerHTML = p ? 'O' : '';
-      }
-      o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
-   }
-   MO.FDuiListItem_dispose = function FDuiListItem_dispose(){
-      var o = this;
-      o._hPanel = RHtml.free(o._hPanel);
-      o._hIconPanel = RHtml.free(o._hIconPanel);
-      o._hIcon = RHtml.free(o._hIcon);
-      o._hLabel = RHtml.free(o._hLabel);
-      o.__base.FDuiControl.dispose.call(o);
-   }
+MO.FDuiListView_appendChild = function FDuiListView_appendChild(p){
+   var o = this;
+   o._hPanel.appendChild(p._hPanel);
 }
-with(MO){
-   MO.FDuiListView = function FDuiListView(o){
-      o = RClass.inherits(this, o, FDuiContainer, MDuiHorizontal, MListenerClick, MListenerDoubleClick);
-      o._sizeCd           = EUiSize.Horizontal
-      o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
-      o._focusItem        = null;
-      o._itemPool         = null;
-      o._hForm            = null;
-      o.onBuildPanel      = FDuiListView_onBuildPanel;
-      o.onBuild           = FDuiListView_onBuild;
-      o.onClick           = RClass.register(o, new AEventClick('onClick'), FDuiListView_onClick);
-      o.construct         = FDuiListView_construct;
-      o.focusItem         = FDuiListView_focusItem;
-      o.createItem        = FDuiListView_createItem;
-      o.appendChild       = FDuiListView_appendChild;
-      o.selectItem        = FDuiListView_selectItem;
-      o.doClickItem       = FDuiListView_doClickItem;
-      o.doDoubleClickItem = FDuiListView_doDoubleClickItem;
-      o.clear             = FDuiListView_clear;
-      o.dispose           = FDuiListView_dispose;
-      return o;
-   }
-   MO.FDuiListView_onBuildPanel = function FDuiListView_onBuildPanel(p){
-      var o = this;
-      o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-   }
-   MO.FDuiListView_onBuild = function FDuiListView_onBuild(event){
-      var o = this;
-      o.__base.FDuiContainer.onBuild.call(o, event);
-      var hPanel = o._hPanel;
-      o.attachEvent('onClick', hPanel);
-   }
-   MO.FDuiListView_onClick = function FDuiListView_onClick(s, e){
-      var o = this;
-      if(s.hSender == o._hNodePanel){
-         var node = o._focusNode;
-         if(node){
-            node.select(false);
-            o._focusNode = null;
+MO.FDuiListView_selectItem = function FDuiListView_selectItem(item){
+   var o = this;
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.valueAt(i);
+         if(MO.Class.isClass(component, FDuiListViewItem)){
+            component.setChecked(component == item);
          }
       }
    }
-   MO.FDuiListView_construct = function FDuiListView_construct(){
-      var o = this;
-      o.__base.FDuiContainer.construct.call(o);
-      o._itemPool = RClass.create(FObjectPool);
-   }
-   MO.FDuiListView_focusItem = function FDuiListView_focusItem(){
-      return this._focusItem;
-   }
-   MO.FDuiListView_createItem = function FDuiListView_createItem(clazz, pi, pl){
-      var o = this;
-      var item = o._itemPool.alloc();
-      if(!item){
-         if(clazz){
-            item = RClass.create(clazz);
+   o._focusItem = item;
+}
+MO.FDuiListView_doClickItem = function FDuiListView_doClickItem(item){
+   var o = this;
+   o.selectItem(item);
+   var event = new MO.SClickEvent(o);
+   event.item = item;
+   o.processClickListener(event);
+   event.dispose();
+}
+MO.FDuiListView_doDoubleClickItem = function FDuiListView_doDoubleClickItem(item){
+   var o = this;
+   o.selectItem(item);
+   var event = new MO.SClickEvent(o);
+   event.item = item;
+   o.processDoubleClickListener(event);
+   event.dispose();
+}
+MO.FDuiListView_clear = function FDuiListView_clear(){
+   var o = this;
+   var cs = o._components;
+   if(cs){
+      var c = cs.count();
+      for(var i = 0; i < c; i++){
+         var m = cs.value(i);
+         if(MO.Class.isClass(m, MO.FDuiListViewItem)){
+            o._hPanel.removeChild(m._hPanel);
+            o._itemPool.free(m)
          }else{
-            item = RClass.create(FDuiListViewItem);
-         }
-         item.build(o._hPanel);
-      }
-      return item;
-   }
-   MO.FDuiListView_appendChild = function FDuiListView_appendChild(p){
-      var o = this;
-      o._hPanel.appendChild(p._hPanel);
-   }
-   MO.FDuiListView_selectItem = function FDuiListView_selectItem(item){
-      var o = this;
-      var components = o._components;
-      if(components){
-         var count = components.count();
-         for(var i = 0; i < count; i++){
-            var component = components.valueAt(i);
-            if(RClass.isClass(component, FDuiListViewItem)){
-               component.setChecked(component == item);
-            }
+            m.dispose();
          }
       }
-      o._focusItem = item;
-   }
-   MO.FDuiListView_doClickItem = function FDuiListView_doClickItem(item){
-      var o = this;
-      o.selectItem(item);
-      var event = new SClickEvent(o);
-      event.item = item;
-      o.processClickListener(event);
-      event.dispose();
-   }
-   MO.FDuiListView_doDoubleClickItem = function FDuiListView_doDoubleClickItem(item){
-      var o = this;
-      o.selectItem(item);
-      var event = new SClickEvent(o);
-      event.item = item;
-      o.processDoubleClickListener(event);
-      event.dispose();
-   }
-   MO.FDuiListView_clear = function FDuiListView_clear(){
-      var o = this;
-      var cs = o._components;
-      if(cs){
-         var c = cs.count();
-         for(var i = 0; i < c; i++){
-            var m = cs.value(i);
-            if(RClass.isClass(m, FDuiListViewItem)){
-               o._hPanel.removeChild(m._hPanel);
-               o._itemPool.free(m)
-            }else{
-               m.dispose();
-            }
-         }
-         cs.clear();
-         o._controls.clear();
-      }
-   }
-   MO.FDuiListView_dispose = function FDuiListView_dispose(){
-      var o = this;
-      o.__base.FContainer.dispose.call(o);
+      cs.clear();
+      o._controls.clear();
    }
 }
-with(MO){
-   MO.FDuiListViewItem = function FDuiListViewItem(o){
-      o = RClass.inherits(this, o, FDuiControl);
-      o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
-      o._styleNormal    = RClass.register(o, new AStyle('_styleNormal'));
-      o._styleHover     = RClass.register(o, new AStyle('_styleHover'));
-      o._styleSelect    = RClass.register(o, new AStyle('_styleSelect'));
-      o._styleForm      = RClass.register(o, new AStyle('_styleForm'));
-      o._styleContent   = RClass.register(o, new AStyle('_styleContent'));
-      o._styleIconPanel = RClass.register(o, new AStyle('_styleIconPanel'));
-      o._styleIcon      = RClass.register(o, new AStyle('_styleIcon'));
-      o._styleLabel     = RClass.register(o, new AStyle('_styleLabel'));
-      o._checked        = false;
-      o._contentHeight  = 28;
-      o._hPanel         = null;
-      o._hBorder        = null;
-      o._hForm          = null;
-      o._hContentForm   = null;
-      o._hContentLine   = null;
-      o._hIconPanel     = null;
-      o._hIcon          = null;
-      o._hLabel         = null;
-      o.onBuildPanel    = FDuiListViewItem_onBuildPanel;
-      o.onBuild         = FDuiListViewItem_onBuild;
-      o.onEnter         = FDuiListViewItem_onEnter;
-      o.onLeave         = FDuiListViewItem_onLeave;
-      o.onClick         = RClass.register(o, new AEventClick('onClick'), FDuiListViewItem_onClick);
-      o.onDoubleClick   = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FDuiListViewItem_onDoubleClick);
-      o.label           = FDuiListViewItem_label;
-      o.setLabel        = FDuiListViewItem_setLabel;
-      o.setChecked      = FDuiListViewItem_setChecked;
-      o.dispose         = FDuiListViewItem_dispose;
-      return o;
+MO.FDuiListView_dispose = function FDuiListView_dispose(){
+   var o = this;
+   o.__base.FContainer.dispose.call(o);
+}
+MO.FDuiListViewItem = function FDuiListViewItem(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl);
+   o._stylePanel     = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._styleNormal    = MO.Class.register(o, new MO.AStyle('_styleNormal'));
+   o._styleHover     = MO.Class.register(o, new MO.AStyle('_styleHover'));
+   o._styleSelect    = MO.Class.register(o, new MO.AStyle('_styleSelect'));
+   o._styleForm      = MO.Class.register(o, new MO.AStyle('_styleForm'));
+   o._styleContent   = MO.Class.register(o, new MO.AStyle('_styleContent'));
+   o._styleIconPanel = MO.Class.register(o, new MO.AStyle('_styleIconPanel'));
+   o._styleIcon      = MO.Class.register(o, new MO.AStyle('_styleIcon'));
+   o._styleLabel     = MO.Class.register(o, new MO.AStyle('_styleLabel'));
+   o._checked        = false;
+   o._contentHeight  = 28;
+   o._hPanel         = null;
+   o._hBorder        = null;
+   o._hForm          = null;
+   o._hContentForm   = null;
+   o._hContentLine   = null;
+   o._hIconPanel     = null;
+   o._hIcon          = null;
+   o._hLabel         = null;
+   o.onBuildPanel    = MO.FDuiListViewItem_onBuildPanel;
+   o.onBuild         = MO.FDuiListViewItem_onBuild;
+   o.onEnter         = MO.FDuiListViewItem_onEnter;
+   o.onLeave         = MO.FDuiListViewItem_onLeave;
+   o.onClick         = MO.Class.register(o, new MO.AEventClick('onClick'), MO.FDuiListViewItem_onClick);
+   o.onDoubleClick   = MO.Class.register(o, new MO.AEventDoubleClick('onDoubleClick'), MO.FDuiListViewItem_onDoubleClick);
+   o.label           = MO.FDuiListViewItem_label;
+   o.setLabel        = MO.FDuiListViewItem_setLabel;
+   o.setChecked      = MO.FDuiListViewItem_setChecked;
+   o.dispose         = MO.FDuiListViewItem_dispose;
+   return o;
+}
+MO.FDuiListViewItem_onBuildPanel = function FDuiListViewItem_onBuildPanel(p){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createDiv(p, o.styleName('Panel'));
+}
+MO.FDuiListViewItem_onBuild = function FDuiListViewItem_onBuild(p){
+   var o = this;
+   o.__base.FDuiControl.onBuild.call(o, p);
+   var hPanel = o._hPanel;
+   var hBorder = o._hBorder = MO.Window.Builder.appendDiv(hPanel, o.styleName('Normal'));
+   var hTable = o._hForm = MO.Window.Builder.appendTable(hBorder, o.styleName('Form'));
+   var hLine1 = o._hLine1 = MO.Window.Builder.appendTableRowCell(hTable)
+   var hLine2 = o._hLine2 = MO.Window.Builder.appendTableRowCell(hTable)
+   hLine2.height = o._contentHeight;
+   var hContentForm = o._hContentForm = MO.Window.Builder.appendTable(hLine2, o.styleName('Content'));
+   var hContentLine = o._hContentLine = MO.Window.Builder.appendTableRow(hContentForm);
+   o._hIconPanel = MO.Window.Builder.appendTableCell(hContentLine, o.styleName('IconPanel'))
+   o._hIcon = MO.Window.Builder.appendIcon(o._hIconPanel, o.styleName('Icon'), MO.Lang.String.nvl(o._icon, 'tools.select'));
+   MO.Window.Html.displaySet(o._hIcon, false);
+   o._hLabel = MO.Window.Builder.appendTableCell(hContentLine, o.styleName('Label'));
+   if(o._label){
+      o.setLabel(o._label);
    }
-   MO.FDuiListViewItem_onBuildPanel = function FDuiListViewItem_onBuildPanel(p){
-      var o = this;
-      o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-   }
-   MO.FDuiListViewItem_onBuild = function FDuiListViewItem_onBuild(p){
-      var o = this;
-      o.__base.FDuiControl.onBuild.call(o, p);
-      var hPanel = o._hPanel;
-      var hBorder = o._hBorder = RBuilder.appendDiv(hPanel, o.styleName('Normal'));
-      var hTable = o._hForm = RBuilder.appendTable(hBorder, o.styleName('Form'));
-      var hLine1 = o._hLine1 = RBuilder.appendTableRowCell(hTable)
-      var hLine2 = o._hLine2 = RBuilder.appendTableRowCell(hTable)
-      hLine2.height = o._contentHeight;
-      var hContentForm = o._hContentForm = RBuilder.appendTable(hLine2, o.styleName('Content'));
-      var hContentLine = o._hContentLine = RBuilder.appendTableRow(hContentForm);
-      o._hIconPanel = RBuilder.appendTableCell(hContentLine, o.styleName('IconPanel'))
-      o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), RString.nvl(o._icon, 'tools.select'));
-      RHtml.displaySet(o._hIcon, false);
-      o._hLabel = RBuilder.appendTableCell(hContentLine, o.styleName('Label'));
-      if(o._label){
-         o.setLabel(o._label);
-      }
-      o.attachEvent('onClick', hPanel);
-      o.attachEvent('onDoubleClick', hPanel);
-   }
-   MO.FDuiListViewItem_onEnter = function FDuiListViewItem_onEnter(){
-      var o = this;
-      o.__base.FDuiControl.onEnter.call(o);
-      o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
-   }
-   MO.FDuiListViewItem_onLeave = function FDuiListViewItem_onLeave(){
-      var o = this;
-      o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
-      o.__base.FDuiControl.onLeave.call(o);
-   }
-   MO.FDuiListViewItem_onClick = function FDuiListViewItem_onClick(event){
-      var o = this;
-      if(o._checked){
-         o._parent.doDoubleClickItem(o);
-      }else{
-         o._parent.doClickItem(o);
-      }
-   }
-   MO.FDuiListViewItem_onDoubleClick = function FDuiListViewItem_onDoubleClick(event){
-      var o = this;
+   o.attachEvent('onClick', hPanel);
+   o.attachEvent('onDoubleClick', hPanel);
+}
+MO.FDuiListViewItem_onEnter = function FDuiListViewItem_onEnter(){
+   var o = this;
+   o.__base.FDuiControl.onEnter.call(o);
+   o._hBorder.className = MO.Lang.Boolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
+}
+MO.FDuiListViewItem_onLeave = function FDuiListViewItem_onLeave(){
+   var o = this;
+   o._hBorder.className = MO.Lang.Boolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
+   o.__base.FDuiControl.onLeave.call(o);
+}
+MO.FDuiListViewItem_onClick = function FDuiListViewItem_onClick(event){
+   var o = this;
+   if(o._checked){
       o._parent.doDoubleClickItem(o);
-   }
-   MO.FDuiListViewItem_label = function FDuiListViewItem_label(p){
-      return this._label;
-   }
-   MO.FDuiListViewItem_setLabel = function FDuiListViewItem_setLabel(p){
-      var o = this;
-      o._label = p;
-      o._hLabel.innerHTML = RString.nvl(p);
-   }
-   MO.FDuiListViewItem_setChecked = function FDuiListViewItem_setChecked(checked){
-      var o = this;
-      o._checked = checked;
-      if(o._hIcon){
-         o._hIcon.style.display = checked ? 'block' : 'none';
-      }else{
-         o._hIconPanel.innerHTML = checked ? 'O' : '';
-      }
-      o._hBorder.className = checked ? o.styleName('Select') : o.styleName('Normal');
-   }
-   MO.FDuiListViewItem_dispose = function FDuiListViewItem_dispose(){
-      var o = this;
-      o._hPanel = RHtml.free(o._hPanel);
-      o._hBorder = RHtml.free(o._hBorder);
-      o._hForm = RHtml.free(o._hForm);
-      o._hLine1 = RHtml.free(o._hLine1);
-      o._hLine2 = RHtml.free(o._hLine2);
-      o._hContentForm = RHtml.free(o._hContentForm);
-      o._hContentLine = RHtml.free(o._hContentLine);
-      o._hIconPanel = RHtml.free(o._hIconPanel);
-      o._hIcon = RHtml.free(o._hIcon);
-      o._hLabel = RHtml.free(o._hLabel);
-      o.__base.FDuiControl.dispose.call(o);
+   }else{
+      o._parent.doClickItem(o);
    }
 }
-with(MO){
-   MO.FDuiMemo = function FDuiMemo(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MUiPropertyEdit, MListenerDataChanged);
-      o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-      o._hValueForm      = null;
-      o._hValueLine      = null;
-      o._hInputPanel     = null;
-      o._hInput          = null;
-      o.onBuildEditValue = FDuiMemo_onBuildEditValue;
-      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiMemo_onInputEdit);
-      o.construct        = FDuiMemo_construct;
-      o.formatDisplay    = FDuiMemo_formatDisplay;
-      o.formatValue      = FDuiMemo_formatValue;
-      o.get              = FDuiMemo_get;
-      o.set              = FDuiMemo_set;
-      o.refreshValue     = FDuiMemo_refreshValue;
-      return o;
+MO.FDuiListViewItem_onDoubleClick = function FDuiListViewItem_onDoubleClick(event){
+   var o = this;
+   o._parent.doDoubleClickItem(o);
+}
+MO.FDuiListViewItem_label = function FDuiListViewItem_label(p){
+   return this._label;
+}
+MO.FDuiListViewItem_setLabel = function FDuiListViewItem_setLabel(p){
+   var o = this;
+   o._label = p;
+   o._hLabel.innerHTML = MO.Lang.String.nvl(p);
+}
+MO.FDuiListViewItem_setChecked = function FDuiListViewItem_setChecked(checked){
+   var o = this;
+   o._checked = checked;
+   if(o._hIcon){
+      o._hIcon.style.display = checked ? 'block' : 'none';
+   }else{
+      o._hIconPanel.innerHTML = checked ? 'O' : '';
    }
-   MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(p){
-      var o = this;
-      var hp = o._hValuePanel;
-      hp.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(hp);
-      hf.width = '100%';
-      var hl = o._hValueLine = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hl);
-      o.onBuildEditChange(p);
-      var hInputPanel = o._hInputPanel = RBuilder.appendTableCell(hl);
-      var hInput = o._hInput = RBuilder.append(hInputPanel, 'TEXTAREA', o.styleName('Input'));
-      hInput.wrap = 'off';
-      o.attachEvent('onInputEdit', hInput, o.onInputEdit);
-      RHtml.setSize(hInputPanel, o._inputSize);
-      if(o._editLength){
-         hInput.maxLength = o._editLength;
-      }
-   }
-   MO.FDuiMemo_onInputEdit = function FDuiMemo_onInputEdit(p){
-      var o = this;
-      var v = o._hInput.value;
-      o.refreshValue();
-   }
-   MO.FDuiMemo_construct = function FDuiMemo_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-   }
-   MO.FDuiMemo_formatDisplay = function FDuiMemo_formatDisplay(value){
-      var o = this;
-      var text = RString.nvl(value);
-      o._dataDisplay = text;
-      return text;
-   }
-   MO.FDuiMemo_formatValue = function FDuiMemo_formatValue(value){
-      return value;
-   }
-   MO.FDuiMemo_get = function FDuiMemo_get(){
-      var o = this;
-      o.__base.FDuiEditControl.get.call(o);
-      var value = o._hInput.value;
-      return value;
-   }
-   MO.FDuiMemo_set = function FDuiMemo_set(value){
-      var o = this;
-      o.__base.FDuiEditControl.set.call(o, value);
-      o._hInput.value = RString.nvl(value);
-   }
-   MO.FDuiMemo_refreshValue = function FDuiMemo_refreshValue(){
-      var o = this;
-      o.processDataChangedListener(o);
+   o._hBorder.className = checked ? o.styleName('Select') : o.styleName('Normal');
+}
+MO.FDuiListViewItem_dispose = function FDuiListViewItem_dispose(){
+   var o = this;
+   o._hPanel = MO.Window.Html.free(o._hPanel);
+   o._hBorder = MO.Window.Html.free(o._hBorder);
+   o._hForm = MO.Window.Html.free(o._hForm);
+   o._hLine1 = MO.Window.Html.free(o._hLine1);
+   o._hLine2 = MO.Window.Html.free(o._hLine2);
+   o._hContentForm = MO.Window.Html.free(o._hContentForm);
+   o._hContentLine = MO.Window.Html.free(o._hContentLine);
+   o._hIconPanel = MO.Window.Html.free(o._hIconPanel);
+   o._hIcon = MO.Window.Html.free(o._hIcon);
+   o._hLabel = MO.Window.Html.free(o._hLabel);
+   o.__base.FDuiControl.dispose.call(o);
+}
+MO.FDuiMemo = function FDuiMemo(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit, MO.MListenerDataChanged);
+   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleValuePanel = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = MO.FDuiMemo_onBuildEditValue;
+   o.onInputEdit      = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), MO.FDuiMemo_onInputEdit);
+   o.construct        = MO.FDuiMemo_construct;
+   o.formatDisplay    = MO.FDuiMemo_formatDisplay;
+   o.formatValue      = MO.FDuiMemo_formatValue;
+   o.get              = MO.FDuiMemo_get;
+   o.set              = MO.FDuiMemo_set;
+   o.refreshValue     = MO.FDuiMemo_refreshValue;
+   return o;
+}
+MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = MO.Window.Builder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hl);
+   var hInput = o._hInput = MO.Window.Builder.append(hInputPanel, 'TEXTAREA', o.styleName('Input'));
+   hInput.wrap = 'off';
+   o.attachEvent('onInputEdit', hInput, o.onInputEdit);
+   MO.Window.Html.setSize(hInputPanel, o._inputSize);
+   if(o._editLength){
+      hInput.maxLength = o._editLength;
    }
 }
-with(MO){
-   MO.FDuiNumber = function FDuiNumber(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged, MUiPropertyNumber);
-      o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleValuePanel  = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInput       = RClass.register(o, new AStyle('_styleInput'));
-      o._styleAdjustForm  = RClass.register(o, new AStyle('_styleAdjustForm'));
-      o._styleUpPanel     = RClass.register(o, new AStyle('_styleUpPanel'));
-      o._styleDownPanel   = RClass.register(o, new AStyle('_styleDownPanel'));
-      o._innerOriginValue = null;
-      o._innerDataValue   = null;
-      o._hInput           = null;
-      o._iconUp           = null;
-      o._iconDown         = null;
-      o.onBuildEditValue  = FDuiNumber_onBuildEditValue;
-      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiNumber_onInputKeyPress);
-      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FDuiNumber_onInputChanged);
-      o.construct         = FDuiNumber_construct;
-      o.formatDisplay     = FDuiNumber_formatDisplay;
-      o.formatValue       = FDuiNumber_formatValue;
-      o.get               = FDuiNumber_get;
-      o.set               = FDuiNumber_set;
-      return o;
+MO.FDuiMemo_onInputEdit = function FDuiMemo_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+MO.FDuiMemo_construct = function FDuiMemo_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+}
+MO.FDuiMemo_formatDisplay = function FDuiMemo_formatDisplay(value){
+   var o = this;
+   var text = MO.Lang.String.nvl(value);
+   o._dataDisplay = text;
+   return text;
+}
+MO.FDuiMemo_formatValue = function FDuiMemo_formatValue(value){
+   return value;
+}
+MO.FDuiMemo_get = function FDuiMemo_get(){
+   var o = this;
+   o.__base.FDuiEditControl.get.call(o);
+   var value = o._hInput.value;
+   return value;
+}
+MO.FDuiMemo_set = function FDuiMemo_set(value){
+   var o = this;
+   o.__base.FDuiEditControl.set.call(o, value);
+   o._hInput.value = MO.Lang.String.nvl(value);
+}
+MO.FDuiMemo_refreshValue = function FDuiMemo_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+MO.FDuiNumber = function FDuiNumber(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged, MO.MUiPropertyNumber);
+   o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._styleAdjustForm  = MO.Class.register(o, new MO.AStyle('_styleAdjustForm'));
+   o._styleUpPanel     = MO.Class.register(o, new MO.AStyle('_styleUpPanel'));
+   o._styleDownPanel   = MO.Class.register(o, new MO.AStyle('_styleDownPanel'));
+   o._innerOriginValue = null;
+   o._innerDataValue   = null;
+   o._hInput           = null;
+   o._iconUp           = null;
+   o._iconDown         = null;
+   o.onBuildEditValue  = FDuiNumber_onBuildEditValue;
+   o.onInputKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber_onInputKeyPress);
+   o.onInputChanged    = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber_onInputChanged);
+   o.construct         = MO.FDuiNumber_construct;
+   o.formatDisplay     = MO.FDuiNumber_formatDisplay;
+   o.formatValue       = MO.FDuiNumber_formatValue;
+   o.get               = MO.FDuiNumber_get;
+   o.set               = MO.FDuiNumber_set;
+   return o;
+}
+MO.FDuiNumber_onBuildEditValue = function FDuiNumber_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = MO.Window.Builder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hip = o._hInputPanel = MO.Window.Builder.appendTableCell(hl);
+   var he = o._hInput = MO.Window.Builder.appendEdit(hip, o.styleName('Input'));
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', he, o.onInputChanged);
+   if(o._editLength){
+      he.maxLength = o._editLength;
    }
-   MO.FDuiNumber_onBuildEditValue = function FDuiNumber_onBuildEditValue(p){
-      var o = this;
-      var hp = o._hValuePanel;
-      hp.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(hp);
-      hf.width = '100%';
-      var hl = o._hValueLine = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hl);
-      o.onBuildEditChange(p);
-      var hip = o._hInputPanel = RBuilder.appendTableCell(hl);
-      var he = o._hInput = RBuilder.appendEdit(hip, o.styleName('Input'));
-      o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-      o.attachEvent('onInputChanged', he, o.onInputChanged);
-      if(o._editLength){
-         he.maxLength = o._editLength;
-      }
-      var hap = o._hAdjustPanel = RBuilder.appendTableCell(hl);
-      hap.style.borderLeft = '1px solid #666666';
-      hap.width = 12;
-      var haf = o.hAdjustForm = RBuilder.appendTable(hap, o.styleName('AdjustForm'));
-      var hc = RBuilder.appendTableRowCell(haf);
-      hc.className = o.styleName('UpPanel');
-      var hi = o._hUpIcon = RBuilder.appendIcon(hc, null, 'control.number.up');
-      hi.align = 'center';
-      var hc = RBuilder.appendTableRowCell(haf);
-      hc.className = o.styleName('DownPanel');
-      var hi = o._hDownIcon = RBuilder.appendIcon(hc, null, 'control.number.down');
+   var hap = o._hAdjustPanel = MO.Window.Builder.appendTableCell(hl);
+   hap.style.borderLeft = '1px solid #666666';
+   hap.width = 12;
+   var haf = o.hAdjustForm = MO.Window.Builder.appendTable(hap, o.styleName('AdjustForm'));
+   var hc = MO.Window.Builder.appendTableRowCell(haf);
+   hc.className = o.styleName('UpPanel');
+   var hi = o._hUpIcon = MO.Window.Builder.appendIcon(hc, null, 'control.number.up');
+   hi.align = 'center';
+   var hc = MO.Window.Builder.appendTableRowCell(haf);
+   hc.className = o.styleName('DownPanel');
+   var hi = o._hDownIcon = MO.Window.Builder.appendIcon(hc, null, 'control.number.down');
+}
+MO.FDuiNumber_onInputKeyPress = function FDuiNumber_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   if(!MO.RKeyboard.isFloatKey(c)){
+      p.cancel();
    }
-   MO.FDuiNumber_onInputKeyPress = function FDuiNumber_onInputKeyPress(p){
-      var o = this;
-      var c = p.keyCode;
-      if(!RKeyboard.isFloatKey(c)){
-         p.cancel();
-      }
+}
+MO.FDuiNumber_onInputChanged = function FDuiNumber_onInputChanged(p){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+MO.FDuiNumber_construct = function FDuiNumber_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._editSize.set(100, 20);
+   o._inputSize = new SSize2(80, 0);
+}
+MO.FDuiNumber_formatDisplay = function FDuiNumber_formatDisplay(p){
+   var o = this;
+   var r = o._dataDisplay = MO.Lang.Float.format(p, 0, null, o._valuePrecision, null);
+   return r;
+}
+MO.FDuiNumber_formatValue = function FDuiNumber_formatValue(p){
+   return p;
+}
+MO.FDuiNumber_get = function FDuiNumber_get(p){
+   var o = this;
+   var r = o.__base.FDuiEditControl.get.call(o, p);
+   var h = o._hInput;
+   if(h){
+      r = o.formatValue(h.value);
    }
-   MO.FDuiNumber_onInputChanged = function FDuiNumber_onInputChanged(p){
-      var o = this;
-      o.processDataChangedListener(o);
+   return r;
+}
+MO.FDuiNumber_set = function FDuiNumber_set(p){
+   var o = this;
+   o.__base.FDuiEditControl.set.call(o, p);
+   var v = MO.Lang.String.nvl(p, '0');
+   o._innerOriginValue = v;
+   o._innerDataValue = v;
+   var h = o._hInput;
+   if(h){
+      h.value = o.formatDisplay(p);
    }
-   MO.FDuiNumber_construct = function FDuiNumber_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._editSize.set(100, 20);
-      o._inputSize = new SSize2(80, 0);
+   o.changeSet(false);
+}
+MO.FDuiNumber_onDataKeyDown = function FDuiNumber_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      MO.RKey.fixCase(e, o.editCase);
    }
-   MO.FDuiNumber_formatDisplay = function FDuiNumber_formatDisplay(p){
-      var o = this;
-      var r = o._dataDisplay = RFloat.format(p, 0, null, o._valuePrecision, null);
-      return r;
+}
+MO.FDuiNumber_setText = function FDuiNumber_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
    }
-   MO.FDuiNumber_formatValue = function FDuiNumber_formatValue(p){
-      return p;
+   if('U'== o.editCase){
+      o.hEdit.value = MO.Lang.String.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = MO.Lang.String.toLower(t);
+   }else{
+      o.hEdit.value = t;
    }
-   MO.FDuiNumber_get = function FDuiNumber_get(p){
-      var o = this;
-      var r = o.__base.FDuiEditControl.get.call(o, p);
-      var h = o._hInput;
-      if(h){
-         r = o.formatValue(h.value);
-      }
-      return r;
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
    }
-   MO.FDuiNumber_set = function FDuiNumber_set(p){
-      var o = this;
-      o.__base.FDuiEditControl.set.call(o, p);
-      var v = RString.nvl(p, '0');
-      o._innerOriginValue = v;
-      o._innerDataValue = v;
-      var h = o._hInput;
-      if(h){
-         h.value = o.formatDisplay(p);
-      }
-      o.changeSet(false);
-   }
-   MO.FDuiNumber_onDataKeyDown = function FDuiNumber_onDataKeyDown(s, e){
-      var o = this;
-      o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
-   }
-   MO.FDuiNumber_setText = function FDuiNumber_setText(t){
-      var o = this;
-      if(!o.hEdit){
-         return;
-      }
-      if('U'== o.editCase){
-         o.hEdit.value = RString.toUpper(t);
-      }else if('L'== o.editCase){
-            o.hEdit.value = RString.toLower(t);
-      }else{
-         o.hEdit.value = t;
-      }
-      if('right' == o.editAlign ){
-         o.hEdit.style.textAlign = 'right';
-      }else if('left' == o.editAlign ){
-         o.hEdit.style.textAlign = 'left';
-      }else{
-         o.hEdit.style.textAlign = 'center';
-      }
-   }
-   MO.FDuiNumber_validText = function FDuiNumber_validText(t){
-      var o = this;
-      var r = o.__base.FDuiEditControl.validText.call(o, t);
-      if(!r){
-         if(o.validLenmin){
-            if(o.validLenmin > t.length){
-               return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
-            }
+}
+MO.FDuiNumber_validText = function FDuiNumber_validText(t){
+   var o = this;
+   var r = o.__base.FDuiEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
          }
-         if(o.validLenmax){
-            if(o.validLenmax < t.length){
-               return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-            }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
          }
       }
-      return r;
    }
-   MO.FDuiNumber_findEditor = function FDuiNumber_findEditor(){
-      var o = this;
-      if(o.editComplete){
-         var de = o.editor;
-         if(!de){
-            o.dsControl = o.topControl(MDataset);
-            if(o.dsControl){
-               de = o.editor = RConsole.find(FDuiNumberConsole).focus(o, FDuiNumberEditor);
-            }
+   return r;
+}
+MO.FDuiNumber_findEditor = function FDuiNumber_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FDuiNumberConsole).focus(o, FDuiNumberEditor);
          }
-         if(de){
-            de.linkControl(o);
-         }
-         return o.editor;
       }
-   }
-   MO.FDuiNumber_drop = function FDuiNumber_drop(){
-      var o = this;
-      var de = o.findEditor();
       if(de){
-         var t = o.reget();
-         if(t.length > 0){
-            if(o.finded != t){
-               if(de.source != o){
-                  de.linkControl(o);
-               }
-               de.search(t);
+         de.linkControl(o);
+      }
+      return o.editor;
+   }
+}
+MO.FDuiNumber_drop = function FDuiNumber_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
             }
-            o.finded = t;
+            de.search(t);
          }
+         o.finded = t;
       }
    }
 }
-with(MO){
-   MO.FDuiNumber2 = function FDuiNumber2(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged);
-      o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-      o._innerOriginValue = null;
-      o._innerDataValue   = null;
-      o._hInput          = null;
-      o.onBuildEditInput  = FDuiNumber3_onBuildEditInput;
-      o.onBuildEditValue = FDuiNumber2_onBuildEditValue;
-      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiNumber2_onInputKeyPress);
-      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FDuiNumber2_onInputChanged);
-      o.construct        = FDuiNumber2_construct;
-      o.get              = FDuiNumber2_get;
-      o.set              = FDuiNumber2_set;
-      return o;
+MO.FDuiNumber2 = function FDuiNumber2(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged);
+   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._innerOriginValue = null;
+   o._innerDataValue   = null;
+   o._hInput          = null;
+   o.onBuildEditInput  = MO.FDuiNumber3_onBuildEditInput;
+   o.onBuildEditValue = MO.FDuiNumber2_onBuildEditValue;
+   o.onInputKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber2_onInputKeyPress);
+   o.onInputChanged    = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber2_onInputChanged);
+   o.construct        = MO.FDuiNumber2_construct;
+   o.get              = MO.FDuiNumber2_get;
+   o.set              = MO.FDuiNumber2_set;
+   return o;
+}
+MO.FDuiNumber2_oeDataLoad = function FDuiNumber2_oeDataLoad(p){
+   var o = this;
+   alert(p);
+   return MO.EEventStatus.Stop;
+}
+MO.FDuiNumber2_oeDataSave = function FDuiNumber2_oeDataSave(p){
+   var o = this;
+   return MO.EEventStatus.Stop;
+}
+MO.FDuiNumber3_onBuildEditInput = function FDuiNumber3_onBuildEditInput(p, h){
+   var o = this;
+   o.attachEvent('onInputKeyPress', h, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', h, o.onInputChanged);
+}
+MO.FDuiNumber2_onBuildEditValue = function FDuiNumber2_onBuildEditValue(event){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('InputPanel');
+   var hf = o._hInputForm = MO.Window.Builder.appendTable(h);
+   var hr = MO.Window.Builder.appendTableRow(hf);
+   var hCell = MO.Window.Builder.appendTableCell(hr);
+   hCell.style.borderRight = '1px solid #666666';
+   var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   o.onBuildEditInput(event, hInput)
+   var hCell = MO.Window.Builder.appendTableCell(hr);
+   hCell.style.borderLeft = '1px solid #999999';
+   var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   o.onBuildEditInput(event, hInput)
+}
+MO.FDuiNumber2_onInputKeyPress = function FDuiNumber2_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   if(!MO.EKeyCode.floatCodes[c]){
+      p.cancel();
    }
-   MO.FDuiNumber2_oeDataLoad = function FDuiNumber2_oeDataLoad(p){
-      var o = this;
-      alert(p);
-      return EEventStatus.Stop;
+}
+MO.FDuiNumber2_onInputChanged = function FDuiNumber2_onInputChanged(p){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+MO.FDuiNumber2_construct = function FDuiNumber2_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+   o._innerOriginValue = new MO.SPoint2();
+   o._innerDataValue = new MO.SPoint2();
+}
+MO.FDuiNumber2_get = function FDuiNumber2_get(value){
+   var o = this;
+   o.__base.FDuiEditControl.get.call(o, value);
+   var dataValue = o._innerDataValue;
+   var hInput = o._hInput1;
+   if(hInput){
+      dataValue.x = MO.Lang.Float.parse(hInput.value);
    }
-   MO.FDuiNumber2_oeDataSave = function FDuiNumber2_oeDataSave(p){
-      var o = this;
-      return EEventStatus.Stop;
+   var hInput = o._hInput2;
+   if(hInput){
+      dataValue.y = MO.Lang.Float.parse(hInput.value);
    }
-   MO.FDuiNumber3_onBuildEditInput = function FDuiNumber3_onBuildEditInput(p, h){
-      var o = this;
-      o.attachEvent('onInputKeyPress', h, o.onInputKeyPress);
-      o.attachEvent('onInputChanged', h, o.onInputChanged);
-   }
-   MO.FDuiNumber2_onBuildEditValue = function FDuiNumber2_onBuildEditValue(event){
-      var o = this;
-      var h = o._hValuePanel;
-      h.className = o.styleName('InputPanel');
-      var hf = o._hInputForm = RBuilder.appendTable(h);
-      var hr = RBuilder.appendTableRow(hf);
-      var hCell = RBuilder.appendTableCell(hr);
-      hCell.style.borderRight = '1px solid #666666';
-      var hInput = o._hInput1 = RBuilder.appendEdit(hCell, o.styleName('Input'));
-      o.onBuildEditInput(event, hInput)
-      var hCell = RBuilder.appendTableCell(hr);
-      hCell.style.borderLeft = '1px solid #999999';
-      var hInput = o._hInput2 = RBuilder.appendEdit(hCell, o.styleName('Input'));
-      o.onBuildEditInput(event, hInput)
-   }
-   MO.FDuiNumber2_onInputKeyPress = function FDuiNumber2_onInputKeyPress(p){
-      var o = this;
-      var c = p.keyCode;
-      if(!EKeyCode.floatCodes[c]){
-         p.cancel();
-      }
-   }
-   MO.FDuiNumber2_onInputChanged = function FDuiNumber2_onInputChanged(p){
-      var o = this;
-      o.processDataChangedListener(o);
-   }
-   MO.FDuiNumber2_construct = function FDuiNumber2_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-      o._innerOriginValue = new SPoint2();
-      o._innerDataValue = new SPoint2();
-   }
-   MO.FDuiNumber2_get = function FDuiNumber2_get(value){
-      var o = this;
-      o.__base.FDuiEditControl.get.call(o, value);
-      var dataValue = o._innerDataValue;
-      var hInput = o._hInput1;
-      if(hInput){
-         dataValue.x = RFloat.parse(hInput.value);
-      }
-      var hInput = o._hInput2;
-      if(hInput){
-         dataValue.y = RFloat.parse(hInput.value);
-      }
-      return dataValue;
-   }
-   MO.FDuiNumber2_set = function FDuiNumber2_set(value){
-      var o = this;
-      o.__base.FDuiEditControl.set.call(o, value);
-      var originValue = o._innerOriginValue;
-      var vd = o._innerDataValue;
-      if(arguments.length == 1){
-         var value = arguments[0];
-         if(value.constructor == SPoint2){
-            originValue.assign(value);
-            vd.assign(value);
-         }else if(value.constructor == SSize2){
-            originValue.set(value.width, value.height);
-            vd.set(value.width, value.height);
-         }else{
-            throw new TError('Invalid value format.');
-         }
-      }else if(arguments.length == 2){
-         originValue.set(arguments[0], arguments[1]);
-         vd.assign(originValue);
+   return dataValue;
+}
+MO.FDuiNumber2_set = function FDuiNumber2_set(value){
+   var o = this;
+   o.__base.FDuiEditControl.set.call(o, value);
+   var originValue = o._innerOriginValue;
+   var vd = o._innerDataValue;
+   if(arguments.length == 1){
+      var value = arguments[0];
+      if(value.constructor == SPoint2){
+         originValue.assign(value);
+         vd.assign(value);
+      }else if(value.constructor == SSize2){
+         originValue.set(value.width, value.height);
+         vd.set(value.width, value.height);
       }else{
-         throw new TError('Invalid value format.');
+         throw new MO.TError('Invalid value format.');
       }
-      var hInput = o._hInput1;
-      if(hInput){
-         hInput.value = RFloat.format(vd.x, 0, null, 2, null);
-      }
-      var hInput = o._hInput2;
-      if(hInput){
-         hInput.value = RFloat.format(vd.y, 0, null, 2, null);
-      }
-      o.changeSet(false);
+   }else if(arguments.length == 2){
+      originValue.set(arguments[0], arguments[1]);
+      vd.assign(originValue);
+   }else{
+      throw new MO.TError('Invalid value format.');
    }
-   MO.FDuiNumber2_onDataKeyDown = function FDuiNumber2_onDataKeyDown(s, e){
-      var o = this;
-      o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
+   var hInput = o._hInput1;
+   if(hInput){
+      hInput.value = MO.Lang.Float.format(vd.x, 0, null, 2, null);
    }
-   MO.FDuiNumber2_formatValue = function FDuiNumber2_formatValue(v){
-      var o = this;
-      var r = RString.nvl(v);
-      if(ECase.Upper == o.editCase){
-         r = RString.toUpper(r);
-      }else if(ECase.Lower == o.editCase){
-         r = RString.toLower(r);
-      }
-      return r;
+   var hInput = o._hInput2;
+   if(hInput){
+      hInput.value = MO.Lang.Float.format(vd.y, 0, null, 2, null);
    }
-   MO.FDuiNumber2_setText = function FDuiNumber2_setText(t){
-      var o = this;
-      if(!o.hEdit){
-         return;
-      }
-      if('U'== o.editCase){
-         o.hEdit.value = RString.toUpper(t);
-      }else if('L'== o.editCase){
-            o.hEdit.value = RString.toLower(t);
-      }else{
-         o.hEdit.value = t;
-      }
-      if('right' == o.editAlign ){
-         o.hEdit.style.textAlign = 'right';
-      }else if('left' == o.editAlign ){
-         o.hEdit.style.textAlign = 'left';
-      }else{
-         o.hEdit.style.textAlign = 'center';
-      }
+   o.changeSet(false);
+}
+MO.FDuiNumber2_onDataKeyDown = function FDuiNumber2_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      MO.RKey.fixCase(e, o.editCase);
    }
-   MO.FDuiNumber2_validText = function FDuiNumber2_validText(t){
-      var o = this;
-      var r = o.__base.FDuiEditControl.validText.call(o, t);
-      if(!r){
-         if(o.validLenmin){
-            if(o.validLenmin > t.length){
-               return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
-            }
+}
+MO.FDuiNumber2_formatValue = function FDuiNumber2_formatValue(v){
+   var o = this;
+   var r = MO.Lang.String.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = MO.Lang.String.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = MO.Lang.String.toLower(r);
+   }
+   return r;
+}
+MO.FDuiNumber2_setText = function FDuiNumber2_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = MO.Lang.String.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = MO.Lang.String.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+MO.FDuiNumber2_validText = function FDuiNumber2_validText(t){
+   var o = this;
+   var r = o.__base.FDuiEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return MO.RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
          }
-         if(o.validLenmax){
-            if(o.validLenmax < t.length){
-               return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-            }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return MO.RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
          }
       }
-      return r;
    }
-   MO.FDuiNumber2_findEditor = function FDuiNumber2_findEditor(){
-      var o = this;
-      if(o.editComplete){
-         var de = o.editor;
-         if(!de){
-            o.dsControl = o.topControl(MDataset);
-            if(o.dsControl){
-               de = o.editor = RConsole.find(FDuiNumber2Console).focus(o, FDuiNumber2Editor);
-            }
+   return r;
+}
+MO.FDuiNumber2_findEditor = function FDuiNumber2_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = MO.Console.find(MO.FDuiNumber2Console).focus(o, MO.FDuiNumber2Editor);
          }
-         if(de){
-            de.linkControl(o);
-         }
-         return o.editor;
       }
-   }
-   MO.FDuiNumber2_drop = function FDuiNumber2_drop(){
-      var o = this;
-      var de = o.findEditor();
       if(de){
-         var t = o.reget();
-         if(t.length > 0){
-            if(o.finded != t){
-               if(de.source != o){
-                  de.linkControl(o);
-               }
-               de.search(t);
-            }
-            o.finded = t;
-         }
+         de.linkControl(o);
       }
-   }
-   MO.FDuiNumber2_clone = function FDuiNumber2_clone(){
-      var o = this;
-      var r = o._class.newInstance();
-      GHtml_clone(r, o.hPanel);
-      return r;
-   }
-   MO.FDuiNumber2_link = function FDuiNumber2_link(){
-      var o = this;
+      return o.editor;
    }
 }
-with(MO){
-   MO.FDuiNumber3 = function FDuiNumber3(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MListenerDataChanged);
-      o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleValuePanel  = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInputPanel  = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput       = RClass.register(o, new AStyle('_styleInput'));
-      o._innerOriginValue = null;
-      o._innerDataValue   = null;
-      o._hInput           = null;
-      o.onBuildEditInput  = FDuiNumber3_onBuildEditInput;
-      o.onBuildEditValue  = FDuiNumber3_onBuildEditValue;
-      o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiNumber3_onInputKeyPress);
-      o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FDuiNumber3_onInputChanged);
-      o.construct         = FDuiNumber3_construct;
-      o.get               = FDuiNumber3_get;
-      o.set               = FDuiNumber3_set;
-      return o;
-   }
-   MO.FDuiNumber3_onBuildEditInput = function FDuiNumber3_onBuildEditInput(p, h){
-      var o = this;
-      o.attachEvent('onInputKeyPress', h, o.onInputKeyPress);
-      o.attachEvent('onInputChanged', h, o.onInputChanged);
-   }
-   MO.FDuiNumber3_onBuildEditValue = function FDuiNumber3_onBuildEditValue(p){
-      var o = this;
-      var h = o._hValuePanel;
-      h.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(h);
-      var hr = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hr);
-      o.onBuildEditChange(p);
-      var hCell = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
-      hCell.style.borderRight = '1px solid #666666';
-      var hInput = o._hInput1 = RBuilder.appendEdit(hCell, o.styleName('Input'));
-      o.onBuildEditInput(p, hInput)
-      var hCell = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
-      hCell.style.borderLeft = '1px solid #999999';
-      hCell.style.borderRight = '1px solid #666666';
-      var hInput = o._hInput2 = RBuilder.appendEdit(hCell, o.styleName('Input'));
-      o.onBuildEditInput(p, hInput)
-      var hCell = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
-      hCell.style.borderLeft = '1px solid #999999';
-      var hInput = o._hInput3 = RBuilder.appendEdit(hCell, o.styleName('Input'));
-      o.onBuildEditInput(p, hInput)
-   }
-   MO.FDuiNumber3_onInputKeyPress = function FDuiNumber3_onInputKeyPress(p){
-      var o = this;
-      var c = p.keyCode;
-      if(!EKeyCode.floatCodes[c]){
-         p.cancel();
-      }
-   }
-   MO.FDuiNumber3_onInputChanged = function FDuiNumber3_onInputChanged(p){
-      var o = this;
-      o.processDataChangedListener(o);
-   }
-   MO.FDuiNumber3_construct = function FDuiNumber3_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-      o._innerOriginValue = new SPoint3();
-      o._innerDataValue = new SPoint3();
-   }
-   MO.FDuiNumber3_get = function FDuiNumber3_get(p){
-      var o = this;
-      o.__base.FDuiEditControl.get.call(o, p);
-      var v = o._innerDataValue;
-      var h = o._hInput1;
-      if(h){
-         v.x = RFloat.parse(h.value);
-      }
-      var h = o._hInput2;
-      if(h){
-         v.y = RFloat.parse(h.value);
-      }
-      var h = o._hInput3;
-      if(h){
-         v.z = RFloat.parse(h.value);
-      }
-      return v;
-   }
-   MO.FDuiNumber3_set = function FDuiNumber3_set(p){
-      var o = this;
-      o.__base.FDuiEditControl.set.call(o, p);
-      var a = arguments;
-      var vo = o._innerOriginValue
-      var vd = o._innerDataValue;
-      if(a.length == 1){
-         if((p.constructor == SPoint3) || (p.constructor == SVector3)){
-            vo.assign(p);
-            vd.assign(p);
-         }else{
-            throw new TError('Invalid value format.');
-         }
-      }else if(a.length == 3){
-         vo.set(a[0], a[1], a[2]);
-         vd.assign(vo);
-      }else{
-         throw new TError('Invalid value format.');
-      }
-      var h = o._hInput1;
-      if(h){
-         h.value = RFloat.format(vd.x, 0, null, 3, null);
-      }
-      var h = o._hInput2;
-      if(h){
-         h.value = RFloat.format(vd.y, 0, null, 3, null);
-      }
-      var h = o._hInput3;
-      if(h){
-         h.value = RFloat.format(vd.z, 0, null, 3, null);
-      }
-      o.changeSet(false);
-   }
-   MO.FDuiNumber3_onDataKeyDown = function FDuiNumber3_onDataKeyDown(s, e){
-      var o = this;
-      o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
-   }
-   MO.FDuiNumber3_formatValue = function FDuiNumber3_formatValue(v){
-      var o = this;
-      var r = RString.nvl(v);
-      if(ECase.Upper == o.editCase){
-         r = RString.toUpper(r);
-      }else if(ECase.Lower == o.editCase){
-         r = RString.toLower(r);
-      }
-      return r;
-   }
-   MO.FDuiNumber3_setText = function FDuiNumber3_setText(t){
-      var o = this;
-      if(!o.hEdit){
-         return;
-      }
-      if('U'== o.editCase){
-         o.hEdit.value = RString.toUpper(t);
-      }else if('L'== o.editCase){
-            o.hEdit.value = RString.toLower(t);
-      }else{
-         o.hEdit.value = t;
-      }
-      if('right' == o.editAlign ){
-         o.hEdit.style.textAlign = 'right';
-      }else if('left' == o.editAlign ){
-         o.hEdit.style.textAlign = 'left';
-      }else{
-         o.hEdit.style.textAlign = 'center';
-      }
-   }
-   MO.FDuiNumber3_validText = function FDuiNumber3_validText(t){
-      var o = this;
-      var r = o.__base.FDuiEditControl.validText.call(o, t);
-      if(!r){
-         if(o.validLenmin){
-            if(o.validLenmin > t.length){
-               return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+MO.FDuiNumber2_drop = function FDuiNumber2_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
             }
+            de.search(t);
          }
-         if(o.validLenmax){
-            if(o.validLenmax < t.length){
-               return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-            }
-         }
-      }
-      return r;
-   }
-   MO.FDuiNumber3_findEditor = function FDuiNumber3_findEditor(){
-      var o = this;
-      if(o.editComplete){
-         var de = o.editor;
-         if(!de){
-            o.dsControl = o.topControl(MDataset);
-            if(o.dsControl){
-               de = o.editor = RConsole.find(FDuiNumber3Console).focus(o, FDuiNumber3Editor);
-            }
-         }
-         if(de){
-            de.linkControl(o);
-         }
-         return o.editor;
+         o.finded = t;
       }
    }
-   MO.FDuiNumber3_drop = function FDuiNumber3_drop(){
-      var o = this;
-      var de = o.findEditor();
+}
+MO.FDuiNumber2_clone = function FDuiNumber2_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+MO.FDuiNumber2_link = function FDuiNumber2_link(){
+   var o = this;
+}
+MO.FDuiNumber3 = function FDuiNumber3(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged);
+   o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInputPanel  = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._innerOriginValue = null;
+   o._innerDataValue   = null;
+   o._hInput           = null;
+   o.onBuildEditInput  = MO.FDuiNumber3_onBuildEditInput;
+   o.onBuildEditValue  = MO.FDuiNumber3_onBuildEditValue;
+   o.onInputKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), FDuiNumber3_onInputKeyPress);
+   o.onInputChanged    = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), FDuiNumber3_onInputChanged);
+   o.construct         = MO.FDuiNumber3_construct;
+   o.get               = MO.FDuiNumber3_get;
+   o.set               = MO.FDuiNumber3_set;
+   return o;
+}
+MO.FDuiNumber3_onBuildEditInput = function FDuiNumber3_onBuildEditInput(p, h){
+   var o = this;
+   o.attachEvent('onInputKeyPress', h, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', h, o.onInputChanged);
+}
+MO.FDuiNumber3_onBuildEditValue = function FDuiNumber3_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = MO.Window.Builder.appendTable(h);
+   var hr = MO.Window.Builder.appendTableRow(hf);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hr);
+   o.onBuildEditChange(p);
+   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   hCell.style.borderRight = '1px solid #666666';
+   var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   o.onBuildEditInput(p, hInput)
+   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   hCell.style.borderLeft = '1px solid #999999';
+   hCell.style.borderRight = '1px solid #666666';
+   var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   o.onBuildEditInput(p, hInput)
+   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   hCell.style.borderLeft = '1px solid #999999';
+   var hInput = o._hInput3 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   o.onBuildEditInput(p, hInput)
+}
+MO.FDuiNumber3_onInputKeyPress = function FDuiNumber3_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   if(!EKeyCode.floatCodes[c]){
+      p.cancel();
+   }
+}
+MO.FDuiNumber3_onInputChanged = function FDuiNumber3_onInputChanged(p){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+MO.FDuiNumber3_construct = function FDuiNumber3_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+   o._innerOriginValue = new MO.SPoint3();
+   o._innerDataValue = new MO.SPoint3();
+}
+MO.FDuiNumber3_get = function FDuiNumber3_get(p){
+   var o = this;
+   o.__base.FDuiEditControl.get.call(o, p);
+   var v = o._innerDataValue;
+   var h = o._hInput1;
+   if(h){
+      v.x = MO.Lang.Float.parse(h.value);
+   }
+   var h = o._hInput2;
+   if(h){
+      v.y = MO.Lang.Float.parse(h.value);
+   }
+   var h = o._hInput3;
+   if(h){
+      v.z = MO.Lang.Float.parse(h.value);
+   }
+   return v;
+}
+MO.FDuiNumber3_set = function FDuiNumber3_set(p){
+   var o = this;
+   o.__base.FDuiEditControl.set.call(o, p);
+   var a = arguments;
+   var vo = o._innerOriginValue
+   var vd = o._innerDataValue;
+   if(a.length == 1){
+      if((p.constructor == MO.SPoint3) || (p.constructor == MO.SVector3)){
+         vo.assign(p);
+         vd.assign(p);
+      }else{
+         throw new MO.TError('Invalid value format.');
+      }
+   }else if(a.length == 3){
+      vo.set(a[0], a[1], a[2]);
+      vd.assign(vo);
+   }else{
+      throw new MO.TError('Invalid value format.');
+   }
+   var h = o._hInput1;
+   if(h){
+      h.value = MO.Lang.Float.format(vd.x, 0, null, 3, null);
+   }
+   var h = o._hInput2;
+   if(h){
+      h.value = MO.Lang.Float.format(vd.y, 0, null, 3, null);
+   }
+   var h = o._hInput3;
+   if(h){
+      h.value = MO.Lang.Float.format(vd.z, 0, null, 3, null);
+   }
+   o.changeSet(false);
+}
+MO.FDuiNumber3_onDataKeyDown = function FDuiNumber3_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
+   }
+}
+MO.FDuiNumber3_formatValue = function FDuiNumber3_formatValue(v){
+   var o = this;
+   var r = MO.Lang.String.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = MO.Lang.String.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = MO.Lang.String.toLower(r);
+   }
+   return r;
+}
+MO.FDuiNumber3_setText = function FDuiNumber3_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = MO.Lang.String.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = MO.Lang.String.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+MO.FDuiNumber3_validText = function FDuiNumber3_validText(t){
+   var o = this;
+   var r = o.__base.FDuiEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+         }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
+         }
+      }
+   }
+   return r;
+}
+MO.FDuiNumber3_findEditor = function FDuiNumber3_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FDuiNumber3Console).focus(o, FDuiNumber3Editor);
+         }
+      }
       if(de){
-         var t = o.reget();
-         if(t.length > 0){
-            if(o.finded != t){
-               if(de.source != o){
-                  de.linkControl(o);
-               }
-               de.search(t);
-            }
-            o.finded = t;
-         }
+         de.linkControl(o);
       }
-   }
-   MO.FDuiNumber3_clone = function FDuiNumber3_clone(){
-      var o = this;
-      var r = o._class.newInstance();
-      GHtml_clone(r, o.hPanel);
-      return r;
-   }
-   MO.FDuiNumber3_link = function FDuiNumber3_link(){
-      var o = this;
+      return o.editor;
    }
 }
-with(MO){
-   MO.FDuiNumber4 = function FDuiNumber4(o){
-      o = RClass.inherits(this, o, FDuiEditControl);
-      o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-      o._hInput          = null;
-      o.onBuildEditValue = FDuiNumber4_onBuildEditValue;
-      o.construct        = FDuiNumber4_construct;
-      o.get              = FDuiNumber4_get;
-      o.set              = FDuiNumber4_set;
-      return o;
-   }
-   MO.FDuiNumber4_oeDataLoad = function FDuiNumber4_oeDataLoad(p){
-      var o = this;
-      alert(p);
-      return EEventStatus.Stop;
-   }
-   MO.FDuiNumber4_oeDataSave = function FDuiNumber4_oeDataSave(p){
-      var o = this;
-      return EEventStatus.Stop;
-   }
-   MO.FDuiNumber4_onBuildEditValue = function FDuiNumber4_onBuildEditValue(p){
-      var o = this;
-      var h = o._hValuePanel;
-      h.className = o.styleName('InputPanel');
-      var hf = o._hInputForm = RBuilder.appendTable(h);
-      var hr = RBuilder.appendTableRow(hf);
-      var hc1 = RBuilder.appendTableCell(hr);
-      hc1.style.borderRight = '1px solid #666666';
-      var he1 = o._hInput1 = RBuilder.appendEdit(hc1, o.styleName('Input'));
-      var hc2 = RBuilder.appendTableCell(hr);
-      hc2.style.borderRight = '1px solid #666666';
-      hc2.style.borderLeft = '1px solid #999999';
-      var he2 = o._hInput2 = RBuilder.appendEdit(hc2, o.styleName('Input'));
-      var hc3 = RBuilder.appendTableCell(hr);
-      hc3.style.borderLeft = '1px solid #999999';
-      hc3.style.borderRight = '1px solid #666666';
-      var he3 = o._hInput3 = RBuilder.appendEdit(hc3, o.styleName('Input'));
-      var hc4 = RBuilder.appendTableCell(hr);
-      hc4.style.borderLeft = '1px solid #999999';
-      var he4 = o._hInput4 = RBuilder.appendEdit(hc4, o.styleName('Input'));
-   }
-   MO.FDuiNumber4_construct = function FDuiNumber4_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-   }
-   MO.FDuiNumber4_get = function FDuiNumber4_get(p){
-      var o = this;
-      var r = o.__base.FDuiEditControl.get.call(o, p);
-      var h = o._hInput;
-      if(h){
-         r = h.value;
-      }
-      return r;
-   }
-   MO.FDuiNumber4_set = function FDuiNumber4_set(p){
-      var o = this;
-      o.__base.FDuiEditControl.set.call(o, p);
-      var h = o._hInput;
-      if(h){
-         h.value = RString.nvl(p);
-      }
-   }
-   MO.FDuiNumber4_onDataKeyDown = function FDuiNumber4_onDataKeyDown(s, e){
-      var o = this;
-      o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
-      if(o.editCase){
-         RKey.fixCase(e, o.editCase);
-      }
-   }
-   MO.FDuiNumber4_formatValue = function FDuiNumber4_formatValue(v){
-      var o = this;
-      var r = RString.nvl(v);
-      if(ECase.Upper == o.editCase){
-         r = RString.toUpper(r);
-      }else if(ECase.Lower == o.editCase){
-         r = RString.toLower(r);
-      }
-      return r;
-   }
-   MO.FDuiNumber4_setText = function FDuiNumber4_setText(t){
-      var o = this;
-      if(!o.hEdit){
-         return;
-      }
-      if('U'== o.editCase){
-         o.hEdit.value = RString.toUpper(t);
-      }else if('L'== o.editCase){
-            o.hEdit.value = RString.toLower(t);
-      }else{
-         o.hEdit.value = t;
-      }
-      if('right' == o.editAlign ){
-         o.hEdit.style.textAlign = 'right';
-      }else if('left' == o.editAlign ){
-         o.hEdit.style.textAlign = 'left';
-      }else{
-         o.hEdit.style.textAlign = 'center';
-      }
-   }
-   MO.FDuiNumber4_validText = function FDuiNumber4_validText(t){
-      var o = this;
-      var r = o.__base.FDuiEditControl.validText.call(o, t);
-      if(!r){
-         if(o.validLenmin){
-            if(o.validLenmin > t.length){
-               return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+MO.FDuiNumber3_drop = function FDuiNumber3_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
             }
+            de.search(t);
          }
-         if(o.validLenmax){
-            if(o.validLenmax < t.length){
-               return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-            }
-         }
-      }
-      return r;
-   }
-   MO.FDuiNumber4_findEditor = function FDuiNumber4_findEditor(){
-      var o = this;
-      if(o.editComplete){
-         var de = o.editor;
-         if(!de){
-            o.dsControl = o.topControl(MDataset);
-            if(o.dsControl){
-               de = o.editor = RConsole.find(FDuiNumber4Console).focus(o, FDuiNumber4Editor);
-            }
-         }
-         if(de){
-            de.linkControl(o);
-         }
-         return o.editor;
+         o.finded = t;
       }
    }
-   MO.FDuiNumber4_drop = function FDuiNumber4_drop(){
-      var o = this;
-      var de = o.findEditor();
+}
+MO.FDuiNumber3_clone = function FDuiNumber3_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+MO.FDuiNumber3_link = function FDuiNumber3_link(){
+   var o = this;
+}
+MO.FDuiNumber4 = function FDuiNumber4(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl);
+   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._hInput          = null;
+   o.onBuildEditValue = MO.FDuiNumber4_onBuildEditValue;
+   o.construct        = MO.FDuiNumber4_construct;
+   o.get              = MO.FDuiNumber4_get;
+   o.set              = MO.FDuiNumber4_set;
+   return o;
+}
+MO.FDuiNumber4_oeDataLoad = function FDuiNumber4_oeDataLoad(p){
+   var o = this;
+   alert(p);
+   return MO.EEventStatus.Stop;
+}
+MO.FDuiNumber4_oeDataSave = function FDuiNumber4_oeDataSave(p){
+   var o = this;
+   return MO.EEventStatus.Stop;
+}
+MO.FDuiNumber4_onBuildEditValue = function FDuiNumber4_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('InputPanel');
+   var hf = o._hInputForm = MO.Window.Builder.appendTable(h);
+   var hr = MO.Window.Builder.appendTableRow(hf);
+   var hc1 = MO.Window.Builder.appendTableCell(hr);
+   hc1.style.borderRight = '1px solid #666666';
+   var he1 = o._hInput1 = MO.Window.Builder.appendEdit(hc1, o.styleName('Input'));
+   var hc2 = MO.Window.Builder.appendTableCell(hr);
+   hc2.style.borderRight = '1px solid #666666';
+   hc2.style.borderLeft = '1px solid #999999';
+   var he2 = o._hInput2 = MO.Window.Builder.appendEdit(hc2, o.styleName('Input'));
+   var hc3 = MO.Window.Builder.appendTableCell(hr);
+   hc3.style.borderLeft = '1px solid #999999';
+   hc3.style.borderRight = '1px solid #666666';
+   var he3 = o._hInput3 = MO.Window.Builder.appendEdit(hc3, o.styleName('Input'));
+   var hc4 = MO.Window.Builder.appendTableCell(hr);
+   hc4.style.borderLeft = '1px solid #999999';
+   var he4 = o._hInput4 = MO.Window.Builder.appendEdit(hc4, o.styleName('Input'));
+}
+MO.FDuiNumber4_construct = function FDuiNumber4_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+}
+MO.FDuiNumber4_get = function FDuiNumber4_get(p){
+   var o = this;
+   var r = o.__base.FDuiEditControl.get.call(o, p);
+   var h = o._hInput;
+   if(h){
+      r = h.value;
+   }
+   return r;
+}
+MO.FDuiNumber4_set = function FDuiNumber4_set(p){
+   var o = this;
+   o.__base.FDuiEditControl.set.call(o, p);
+   var h = o._hInput;
+   if(h){
+      h.value = MO.Lang.String.nvl(p);
+   }
+}
+MO.FDuiNumber4_onDataKeyDown = function FDuiNumber4_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FDuiEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
+   }
+}
+MO.FDuiNumber4_formatValue = function FDuiNumber4_formatValue(v){
+   var o = this;
+   var r = MO.Lang.String.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = MO.Lang.String.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = MO.Lang.String.toLower(r);
+   }
+   return r;
+}
+MO.FDuiNumber4_setText = function FDuiNumber4_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = MO.Lang.String.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = MO.Lang.String.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+MO.FDuiNumber4_validText = function FDuiNumber4_validText(t){
+   var o = this;
+   var r = o.__base.FDuiEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+         }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
+         }
+      }
+   }
+   return r;
+}
+MO.FDuiNumber4_findEditor = function FDuiNumber4_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FDuiNumber4Console).focus(o, FDuiNumber4Editor);
+         }
+      }
       if(de){
-         var t = o.reget();
-         if(t.length > 0){
-            if(o.finded != t){
-               if(de.source != o){
-                  de.linkControl(o);
-               }
-               de.search(t);
-            }
-            o.finded = t;
-         }
+         de.linkControl(o);
       }
-   }
-   MO.FDuiNumber4_clone = function FDuiNumber4_clone(){
-      var o = this;
-      var r = o._class.newInstance();
-      GHtml_clone(r, o.hPanel);
-      return r;
-   }
-   MO.FDuiNumber4_link = function FDuiNumber4_link(){
-      var o = this;
+      return o.editor;
    }
 }
-with(MO){
-   MO.FDuiPanel = function FDuiPanel(o){
-      o = RClass.inherits(this, o, FDuiLayout, MDuiDesign, MDuiFocus);
-      o._sizeCd      = EUiSize.Horizontal;
-      o._stylePanel  = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
-      o._styleLabel  = RClass.register(o, new AStyle('_styleLabel', 'Label'));
-      o._styleBody   = RClass.register(o, new AStyle('_styleBody', 'Body'));
-      o._hImage      = null;
-      o._imagePlus   = 'control.panel.plus';
-      o._imageMinus  = 'control.panel.minus';
-      o._statusBody  = true;
-      o.onBuildPanel = FDuiPanel_onBuildPanel;
-      o.onTitleClick = RClass.register(o, new AEventClick('onTitleClick'), FDuiPanel_onTitleClick);
-      return o;
+MO.FDuiNumber4_drop = function FDuiNumber4_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
+            }
+            de.search(t);
+         }
+         o.finded = t;
+      }
    }
-   MO.FDuiPanel_onBuildPanel = function FDuiPanel_onBuildPanel(p){
-      var o = this;
-      var h = o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-      var hl = RBuilder.appendTable(h, o.styleName('Label'));
-      o.attachEvent('onTitleClick', hl);
-      hl.width = '100%';
-      var hr = RBuilder.appendTableRow(hl);
-      hr.vAlign = 'middle';
-      var hri = RBuilder.appendTableCell(hr);
-      hri.width = 20;
-      o._hImage = RBuilder.appendIcon(hri, null, o._imageMinus);
-      var hrt = RBuilder.appendTableCell(hr);
-      hrt.innerHTML = o._label;
-      var hb = o._hBody = RBuilder.appendDiv(h, o.styleName('Body'))
-      o._hPanelForm = RBuilder.appendTable(hb, o.styleName('Form'));
-   }
-   MO.FDuiPanel_onTitleClick = function FDuiPanel_onTitleClick(p){
-      var o = this;
-      var s = !o._statusBody;
-      o._statusBody = s;
-      o._hImage.src = RResource.iconPath(s ? o._imageMinus : o._imagePlus);
-      RHtml.displaySet(o._hBody, s);
-   }
+}
+MO.FDuiNumber4_clone = function FDuiNumber4_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+MO.FDuiNumber4_link = function FDuiNumber4_link(){
+   var o = this;
+}
+MO.FDuiPanel = function FDuiPanel(o){
+   o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MDuiDesign, MO.MDuiFocus);
+   o._sizeCd      = MO.EUiSize.Horizontal;
+   o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel', 'Panel'));
+   o._styleLabel  = MO.Class.register(o, new MO.AStyle('_styleLabel', 'Label'));
+   o._styleBody   = MO.Class.register(o, new MO.AStyle('_styleBody', 'Body'));
+   o._hImage      = null;
+   o._imagePlus   = 'control.panel.plus';
+   o._imageMinus  = 'control.panel.minus';
+   o._statusBody  = true;
+   o.onBuildPanel = MO.FDuiPanel_onBuildPanel;
+   o.onTitleClick = MO.Class.register(o, new MO.AEventClick('onTitleClick'), MO.FDuiPanel_onTitleClick);
+   return o;
+}
+MO.FDuiPanel_onBuildPanel = function FDuiPanel_onBuildPanel(p){
+   var o = this;
+   var h = o._hPanel = MO.Window.Builder.createDiv(p, o.styleName('Panel'));
+   var hl = MO.Window.Builder.appendTable(h, o.styleName('Label'));
+   o.attachEvent('onTitleClick', hl);
+   hl.width = '100%';
+   var hr = MO.Window.Builder.appendTableRow(hl);
+   hr.vAlign = 'middle';
+   var hri = MO.Window.Builder.appendTableCell(hr);
+   hri.width = 20;
+   o._hImage = MO.Window.Builder.appendIcon(hri, null, o._imageMinus);
+   var hrt = MO.Window.Builder.appendTableCell(hr);
+   hrt.innerHTML = o._label;
+   var hb = o._hBody = MO.Window.Builder.appendDiv(h, o.styleName('Body'))
+   o._hPanelForm = MO.Window.Builder.appendTable(hb, o.styleName('Form'));
+}
+MO.FDuiPanel_onTitleClick = function FDuiPanel_onTitleClick(p){
+   var o = this;
+   var s = !o._statusBody;
+   o._statusBody = s;
+   o._hImage.src = MO.RResource.iconPath(s ? o._imageMinus : o._imagePlus);
+   Html.displaySet(o._hBody, s);
 }
 MO.FDuiPanelHorizontal = function FDuiPanelHorizontal(o){
    o = MO.Class.inherits(this, o, MO.FDuiLayoutHorizontal);
@@ -49531,12 +49403,12 @@ MO.FDuiPicture_onFileUploaded = function FDuiPicture_onFileUploaded(s, g){
    o.guid = as.get('GUID');
    o.mime = as.get('MIME');
    o.networkCode = as.get('NETWORK_CODE')
-   o.hImage.src = o.makeIconPath(o.guid, o.mime, o.networkCode) + '?' + RDate.format() + (++o.__seed);
+   o.hImage.src = o.makeIconPath(o.guid, o.mime, o.networkCode) + '?' + MO.Lang.Date.format() + (++o.__seed);
    o.hImage.style.display = 'block';
 }
 MO.FDuiPicture_onBuildEdit = function FDuiPicture_onBuildEdit(b){
    var o = this;
-   var hif = o.hImageForm = o.hEdit = RBuilder.appendTable(b.hPanel);
+   var hif = o.hImageForm = o.hEdit = MO.Window.Builder.appendTable(b.hPanel);
    hif.width = '100%';
    hif.border = 1;
    hif.height = '100%';
@@ -49544,7 +49416,7 @@ MO.FDuiPicture_onBuildEdit = function FDuiPicture_onBuildEdit(b){
    hc.align = 'center';
    hc.style.cursor = 'hand';
    o.attachEvent('onUploadMouseDown', o.hImagePanel);
-   var h = o.hImage = RBuilder.append(hc, 'IMAGE');
+   var h = o.hImage = MO.Window.Builder.append(hc, 'IMAGE');
    h.style.border = '1 solid #CCCCCC';
    h.style.display = 'none';
    if(o.left>0 && o.top>0){
@@ -49559,7 +49431,7 @@ MO.FDuiPicture_construct = function FDuiPicture_construct(){
 MO.FDuiPicture_makeIconPath = function FDuiPicture_makeIconPath(g, m, sc){
    var o = this;
    var s = o.recordCode + '/' + o.recordGuid + '/' + g + '.icon.' + m;
-   return top.RContext.context('/svr/' + sc.toLowerCase() + '/sys/' + RString.toLower(s));
+   return top.RContext.context('/svr/' + sc.toLowerCase() + '/sys/' + MO.Lang.String.toLower(s));
 }
 MO.FDuiPicture_setText = function FDuiPicture_setText(t){
    var o = this;
@@ -49595,80 +49467,76 @@ MO.FDuiPicture_dispose = function FDuiPicture_dispose(){
    o.base.FEditControl.dispose.call(o);
    o.hImage = null;
 }
-with(MO){
-   MO.FDuiProgressBar = function FDuiProgressBar(o){
-      o = RClass.inherits(this, o, FDuiControl);
-      o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
-      o._rate        = 0;
-      o._hForm       = null;
-      o.onBuildPanel = FDuiProgressBar_onBuildPanel;
-      o.onBuild      = FDuiProgressBar_onBuild;
-      o.get          = FDuiProgressBar_get;
-      o.set          = FDuiProgressBar_set;
-      o.dispose      = FDuiProgressBar_dispose;
-      return o;
-   }
-   MO.FDuiProgressBar_onBuildPanel = function FDuiProgressBar_onBuildPanel(event){
-      var o = this;
-      o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
-   }
-   MO.FDuiProgressBar_onBuild = function FDuiProgressBar_onBuild(event){
-      var o = this;
-      o.__base.FDuiControl.onBuild.call(o, event);
-      var hLine = o._hLine = RBuilder.appendTableRow(o._hPanel);
-      o.hProgress = RBuilder.appendTableCell(hLine);
-      o.hEmpty = RBuilder.appendTableCell(hLine);
-   }
-   MO.FDuiProgressBar_get = function FDuiProgressBar_get(){
-      return this._rate;
-   }
-   MO.FDuiProgressBar_set = function FDuiProgressBar_set(value){
-      var o = this;
-      o._rate = value;
-   }
-   MO.FDuiProgressBar_dispose = function FDuiProgressBar_dispose(){
-      var o = this;
-      o._hForm = RHtml.free(o._hForm);
-      o.__base.FDuiControl.dispose.call(o);
+MO.FDuiProgressBar = function FDuiProgressBar(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl);
+   o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._rate        = 0;
+   o._hForm       = null;
+   o.onBuildPanel = MO.FDuiProgressBar_onBuildPanel;
+   o.onBuild      = MO.FDuiProgressBar_onBuild;
+   o.get          = MO.FDuiProgressBar_get;
+   o.set          = MO.FDuiProgressBar_set;
+   o.dispose      = MO.FDuiProgressBar_dispose;
+   return o;
+}
+MO.FDuiProgressBar_onBuildPanel = function FDuiProgressBar_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTable(event, o.styleName('Panel'));
+}
+MO.FDuiProgressBar_onBuild = function FDuiProgressBar_onBuild(event){
+   var o = this;
+   o.__base.FDuiControl.onBuild.call(o, event);
+   var hLine = o._hLine = MO.Window.Builder.appendTableRow(o._hPanel);
+   o.hProgress = MO.Window.Builder.appendTableCell(hLine);
+   o.hEmpty = MO.Window.Builder.appendTableCell(hLine);
+}
+MO.FDuiProgressBar_get = function FDuiProgressBar_get(){
+   return this._rate;
+}
+MO.FDuiProgressBar_set = function FDuiProgressBar_set(value){
+   var o = this;
+   o._rate = value;
+}
+MO.FDuiProgressBar_dispose = function FDuiProgressBar_dispose(){
+   var o = this;
+   o._hForm = MO.Window.Html.free(o._hForm);
+   o.__base.FDuiControl.dispose.call(o);
+}
+MO.FDuiRadio = function FDuiRadio(o){
+   o = MO.Class.inherits(this, o, MO.FEditControl);
+   o._groupName       = MO.Class.register(o, new MO.APtyString('_groupName'));
+   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput', 'Input'));
+   o._hInput          = null;
+   o.onBuildEditValue = MO.FDuiRadio_onBuildEditValue;
+   return o;
+}
+MO.FDuiRadio_onBuildEditValue = function FDuiRadio_onBuildEditValue(p){
+   var o = this;
+   o._hInput = MO.Window.Builder.appendRadio(o._hValuePanel, o.styleName('Input'));
+}
+MO.FDuiRadio_clearValue = function FDuiRadio_clearValue(){
+   this.hEdit.checked = false;
+}
+MO.FDuiRadio_resetValue = function FDuiRadio_resetValue(){
+   this.hEdit.checked = this._editChecked;
+}
+MO.FDuiRadio_saveValue = function FDuiRadio_saveValue(vs){
+   var o = this;
+   if(o.hEdit.checked){
+      vs.set(o.dataName, o.dataDefault);
    }
 }
-with(MO){
-   MO.FDuiRadio = function FDuiRadio(o){
-      o = RClass.inherits(this, o, FEditControl);
-      o._groupName       = RClass.register(o, new APtyString('_groupName'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
-      o._hInput          = null;
-      o.onBuildEditValue = FDuiRadio_onBuildEditValue;
-      return o;
-   }
-   MO.FDuiRadio_onBuildEditValue = function FDuiRadio_onBuildEditValue(p){
-      var o = this;
-      o._hInput = RBuilder.appendRadio(o._hValuePanel, o.styleName('Input'));
-   }
-   MO.FDuiRadio_clearValue = function FDuiRadio_clearValue(){
-      this.hEdit.checked = false;
-   }
-   MO.FDuiRadio_resetValue = function FDuiRadio_resetValue(){
-      this.hEdit.checked = this._editChecked;
-   }
-   MO.FDuiRadio_saveValue = function FDuiRadio_saveValue(vs){
-      var o = this;
-      if(o.hEdit.checked){
-         vs.set(o.dataName, o.dataDefault);
-      }
-   }
-   MO.FDuiRadio_text = function FDuiRadio_text(){
-      return this.hEdit.checked ? this.dataDefault : '';
-   }
-   MO.FDuiRadio_setText = function FDuiRadio_setText(t){
-      this.hEdit.checked = (this.dataDefault == t);
-   }
-   MO.FDuiRadio_refreshStyle = function FDuiRadio_refreshStyle(){
-      var o = this;
-      var h = o.panel(EPanel.Edit);
-      h.disabled = !o._editable;
-      h.style.cursor = o._editable? 'hand':'normal';
-   }
+MO.FDuiRadio_text = function FDuiRadio_text(){
+   return this.hEdit.checked ? this.dataDefault : '';
+}
+MO.FDuiRadio_setText = function FDuiRadio_setText(t){
+   this.hEdit.checked = (this.dataDefault == t);
+}
+MO.FDuiRadio_refreshStyle = function FDuiRadio_refreshStyle(){
+   var o = this;
+   var h = o.panel(MO.EPanel.Edit);
+   h.disabled = !o._editable;
+   h.style.cursor = o._editable? 'hand':'normal';
 }
 MO.FDuiSelect = function FDuiSelect(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MDuiContainer, MO.MUiPropertySelect);
@@ -50124,156 +49992,154 @@ MO.FDuiSelectItem_dispose = function FDuiSelectItem_dispose(){
    o._hNotePanel = MO.Window.Html.free(o._hNotePanel);
    o.__base.FDuiControl.dispose.call(o);
 }
-with(MO){
-   MO.FDuiSlideNumber = function FDuiSlideNumber(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MUiPropertyNumber, MListenerDataChanged, MMouseCapture);
-      o._inputSize          = RClass.register(o, new APtySize2('_inputSize'));
-      o._styleSlidePanel    = RClass.register(o, new AStyle('_styleSlidePanel'));
-      o._styleValuePanel    = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInput         = RClass.register(o, new AStyle('_styleInput'));
-      o._styleAdjustForm    = RClass.register(o, new AStyle('_styleAdjustForm'));
-      o._styleUpPanel       = RClass.register(o, new AStyle('_styleUpPanel'));
-      o._styleDownPanel     = RClass.register(o, new AStyle('_styleDownPanel'));
-      o._innerOriginValue   = null;
-      o._innerDataValue     = null;
-      o._slide              = null;
-      o._hInput             = null;
-      o._iconUp             = null;
-      o._iconDown           = null;
-      o.onBuildEditValue    = FDuiSlideNumber_onBuildEditValue;
-      o.onMouseCaptureStart = FDuiSlideNumber_onMouseCaptureStart;
-      o.onMouseCapture      = FDuiSlideNumber_onMouseCapture;
-      o.onMouseCaptureStop  = FDuiSlideNumber_onMouseCaptureStop;
-      o.onSlideChange       = FDuiSlideNumber_onSlideChange;
-      o.onInputKeyPress     = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FDuiSlideNumber_onInputKeyPress);
-      o.onInputEdit         = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiSlideNumber_onInputEdit);
-      o.onInputChange       = RClass.register(o, new AEventChange('onInputChange'), FDuiSlideNumber_onInputChange);
-      o.construct           = FDuiSlideNumber_construct;
-      o.get                 = FDuiSlideNumber_get;
-      o.set                 = FDuiSlideNumber_set;
-      o.setInputValue       = FDuiSlideNumber_setInputValue;
-      o.refreshValue        = FDuiSlideNumber_refreshValue;
-      return o;
+MO.FDuiSlideNumber = function FDuiSlideNumber(o){
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyNumber, MO.MListenerDataChanged, MO.MMouseCapture);
+   o._inputSize          = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._styleSlidePanel    = MO.Class.register(o, new MO.AStyle('_styleSlidePanel'));
+   o._styleValuePanel    = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInput         = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._styleAdjustForm    = MO.Class.register(o, new MO.AStyle('_styleAdjustForm'));
+   o._styleUpPanel       = MO.Class.register(o, new MO.AStyle('_styleUpPanel'));
+   o._styleDownPanel     = MO.Class.register(o, new MO.AStyle('_styleDownPanel'));
+   o._innerOriginValue   = null;
+   o._innerDataValue     = null;
+   o._slide              = null;
+   o._hInput             = null;
+   o._iconUp             = null;
+   o._iconDown           = null;
+   o.onBuildEditValue    = MO.FDuiSlideNumber_onBuildEditValue;
+   o.onMouseCaptureStart = MO.FDuiSlideNumber_onMouseCaptureStart;
+   o.onMouseCapture      = MO.FDuiSlideNumber_onMouseCapture;
+   o.onMouseCaptureStop  = MO.FDuiSlideNumber_onMouseCaptureStop;
+   o.onSlideChange       = MO.FDuiSlideNumber_onSlideChange;
+   o.onInputKeyPress     = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiSlideNumber_onInputKeyPress);
+   o.onInputEdit         = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), MO.FDuiSlideNumber_onInputEdit);
+   o.onInputChange       = MO.Class.register(o, new MO.AEventChange('onInputChange'), MO.FDuiSlideNumber_onInputChange);
+   o.construct           = MO.FDuiSlideNumber_construct;
+   o.get                 = MO.FDuiSlideNumber_get;
+   o.set                 = MO.FDuiSlideNumber_set;
+   o.setInputValue       = MO.FDuiSlideNumber_setInputValue;
+   o.refreshValue        = MO.FDuiSlideNumber_refreshValue;
+   return o;
+}
+MO.FDuiSlideNumber_onBuildEditValue = function FDuiSlideNumber_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = MO.Window.Builder.appendTable(hp);
+   hf.__linker = o;
+   hf.width = '100%';
+   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hsp = o._hSlidePanel = MO.Window.Builder.appendTableCell(hl, o.styleName('SlidePanel'));
+   var b = o._slide = new MO.SDuiSlide();
+   b.control = o;
+   b.hPanel = hsp;
+   b.setRange(o._valueMin, o._valueMax);
+   b.onSlideChange = o.onSlideChange;
+   b.build();
+   var hep = o._hInputPanel = MO.Window.Builder.appendTableCell(hl);
+   var he = o._hInput = MO.Window.Builder.appendEdit(hep, o.styleName('Input'));
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputEdit', he, o.onInputEdit);
+   o.attachEvent('onInputChange', he, o.onInputChange);
+   MO.Window.Html.setSize(hep, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
    }
-   MO.FDuiSlideNumber_onBuildEditValue = function FDuiSlideNumber_onBuildEditValue(p){
-      var o = this;
-      var hp = o._hValuePanel;
-      hp.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(hp);
-      hf.__linker = o;
-      hf.width = '100%';
-      var hl = o._hValueLine = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hl);
-      o.onBuildEditChange(p);
-      var hsp = o._hSlidePanel = RBuilder.appendTableCell(hl, o.styleName('SlidePanel'));
-      var b = o._slide = new SDuiSlide();
-      b.control = o;
-      b.hPanel = hsp;
-      b.setRange(o._valueMin, o._valueMax);
-      b.onSlideChange = o.onSlideChange;
-      b.build();
-      var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-      var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
-      o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-      o.attachEvent('onInputEdit', he, o.onInputEdit);
-      o.attachEvent('onInputChange', he, o.onInputChange);
-      RHtml.setSize(hep, o._inputSize);
-      if(o._editLength){
-         he.maxLength = o._editLength;
-      }
-      var hap = o._hAdjustPanel = RBuilder.appendTableCell(hl);
-      hap.style.borderLeft = '1px solid #666666';
-      hap.width = 12;
-      var haf = o.hAdjustForm = RBuilder.appendTable(hap, o.styleName('AdjustForm'));
-      var hc = RBuilder.appendTableRowCell(haf);
-      hc.className = o.styleName('UpPanel');
-      var hi = o._hUpIcon = RBuilder.appendIcon(hc, null, 'control.number.up');
-      hi.align = 'center';
-      var hc = RBuilder.appendTableRowCell(haf);
-      hc.className = o.styleName('DownPanel');
-      var hi = o._hDownIcon = RBuilder.appendIcon(hc, null, 'control.number.down');
+   var hap = o._hAdjustPanel = MO.Window.Builder.appendTableCell(hl);
+   hap.style.borderLeft = '1px solid #666666';
+   hap.width = 12;
+   var haf = o.hAdjustForm = MO.Window.Builder.appendTable(hap, o.styleName('AdjustForm'));
+   var hc = MO.Window.Builder.appendTableRowCell(haf);
+   hc.className = o.styleName('UpPanel');
+   var hi = o._hUpIcon = MO.Window.Builder.appendIcon(hc, null, 'control.number.up');
+   hi.align = 'center';
+   var hc = MO.Window.Builder.appendTableRowCell(haf);
+   hc.className = o.styleName('DownPanel');
+   var hi = o._hDownIcon = MO.Window.Builder.appendIcon(hc, null, 'control.number.down');
+}
+MO.FDuiSlideNumber_onMouseCaptureStart = function FDuiSlideNumber_onMouseCaptureStart(p){
+   var o = this;
+   var c = MO.Window.Html.searchObject(p.hSource, '__pcapture');
+   if(c){
+      c.onMouseDown(p);
    }
-   MO.FDuiSlideNumber_onMouseCaptureStart = function FDuiSlideNumber_onMouseCaptureStart(p){
-      var o = this;
-      var c = RHtml.searchObject(p.hSource, '__pcapture');
-      if(c){
-         c.onMouseDown(p);
-      }
+}
+MO.FDuiSlideNumber_onMouseCapture = function FDuiSlideNumber_onMouseCapture(p){
+   var o = this;
+   var c = MO.Window.Html.searchObject(p.hSource, '__pcapture');
+   if(c){
+      c.onMouseMove(p);
    }
-   MO.FDuiSlideNumber_onMouseCapture = function FDuiSlideNumber_onMouseCapture(p){
-      var o = this;
-      var c = RHtml.searchObject(p.hSource, '__pcapture');
-      if(c){
-         c.onMouseMove(p);
-      }
+}
+MO.FDuiSlideNumber_onMouseCaptureStop = function FDuiSlideNumber_onMouseCaptureStop(p){
+   var o = this;
+   var c = MO.Window.Html.searchObject(p.hSource, '__pcapture');
+   if(c){
+      c.onMouseUp(p);
    }
-   MO.FDuiSlideNumber_onMouseCaptureStop = function FDuiSlideNumber_onMouseCaptureStop(p){
-      var o = this;
-      var c = RHtml.searchObject(p.hSource, '__pcapture');
-      if(c){
-         c.onMouseUp(p);
-      }
+}
+MO.FDuiSlideNumber_onSlideChange = function FDuiSlideNumber_onSlideChange(p){
+   var o = this;
+   o.setInputValue(p);
+   o.refreshValue();
+}
+MO.FDuiSlideNumber_onInputKeyPress = function FDuiSlideNumber_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   if(!MO.RKeyboard.isFloatKey(c)){
+      p.cancel();
    }
-   MO.FDuiSlideNumber_onSlideChange = function FDuiSlideNumber_onSlideChange(p){
-      var o = this;
-      o.setInputValue(p);
-      o.refreshValue();
+}
+MO.FDuiSlideNumber_onInputEdit = function FDuiSlideNumber_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o._slide.set(v);
+   o.refreshValue();
+}
+MO.FDuiSlideNumber_onInputChange = function FDuiSlideNumber_onInputChange(p){
+   var o = this;
+   var v = o._hInput.value;
+   o._slide.set(v);
+   o.setInputValue(v);
+   o.refreshValue();
+}
+MO.FDuiSlideNumber_construct = function FDuiSlideNumber_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+}
+MO.FDuiSlideNumber_get = function FDuiSlideNumber_get(p){
+   var o = this;
+   var v = o._hInput.value;
+   var r = MO.Lang.Float.parse(v);
+   return MO.Lang.Float.toRange(r, o._valueMin, o._valueMax);
+}
+MO.FDuiSlideNumber_set = function FDuiSlideNumber_set(p){
+   var o = this;
+   o.__base.FDuiEditControl.set.call(o, p);
+   var v = MO.Lang.String.nvl(p, '0');
+   o._innerOriginValue = v;
+   o._innerDataValue = v;
+   o._slide.set(v);
+   o.setInputValue(v);
+   o.changeSet(false);
+}
+MO.FDuiSlideNumber_setInputValue = function FDuiSlideNumber_setInputValue(p){
+   var o = this;
+   var v = MO.Lang.Float.parse(p);
+   if(isNaN(v)){
+      return;
    }
-   MO.FDuiSlideNumber_onInputKeyPress = function FDuiSlideNumber_onInputKeyPress(p){
-      var o = this;
-      var c = p.keyCode;
-      if(!RKeyboard.isFloatKey(c)){
-         p.cancel();
-      }
-   }
-   MO.FDuiSlideNumber_onInputEdit = function FDuiSlideNumber_onInputEdit(p){
-      var o = this;
-      var v = o._hInput.value;
-      o._slide.set(v);
-      o.refreshValue();
-   }
-   MO.FDuiSlideNumber_onInputChange = function FDuiSlideNumber_onInputChange(p){
-      var o = this;
-      var v = o._hInput.value;
-      o._slide.set(v);
-      o.setInputValue(v);
-      o.refreshValue();
-   }
-   MO.FDuiSlideNumber_construct = function FDuiSlideNumber_construct(){
-      var o = this;
-      o.__base.FDuiEditControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-   }
-   MO.FDuiSlideNumber_get = function FDuiSlideNumber_get(p){
-      var o = this;
-      var v = o._hInput.value;
-      var r = RFloat.parse(v);
-      return RFloat.toRange(r, o._valueMin, o._valueMax);
-   }
-   MO.FDuiSlideNumber_set = function FDuiSlideNumber_set(p){
-      var o = this;
-      o.__base.FDuiEditControl.set.call(o, p);
-      var v = RString.nvl(p, '0');
-      o._innerOriginValue = v;
-      o._innerDataValue = v;
-      o._slide.set(v);
-      o.setInputValue(v);
-      o.changeSet(false);
-   }
-   MO.FDuiSlideNumber_setInputValue = function FDuiSlideNumber_setInputValue(p){
-      var o = this;
-      var v = RFloat.parse(p);
-      if(isNaN(v)){
-         return;
-      }
-      v = RFloat.toRange(v, o._valueMin, o._valueMax);
-      o._dataDisplay = RFloat.format(v, 0, null, 2, null);
-      o._hInput.value = o._dataDisplay;
-   }
-   MO.FDuiSlideNumber_refreshValue = function FDuiSlideNumber_refreshValue(){
-      var o = this;
-      o.processDataChangedListener(o);
-   }
+   v = MO.Lang.Float.toRange(v, o._valueMin, o._valueMax);
+   o._dataDisplay = MO.Lang.Float.format(v, 0, null, 2, null);
+   o._hInput.value = o._dataDisplay;
+}
+MO.FDuiSlideNumber_refreshValue = function FDuiSlideNumber_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
 }
 MO.FDuiSplit = function FDuiSplit(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl);
@@ -50299,15 +50165,15 @@ MO.FDuiSplit_onMouseDown = function FDuiSplit_onMouseDown(){
 }
 MO.FDuiSplit_onBuildPanel = function FDuiSplit_onBuildPanel(){
    var o = this;
-   o.hPanel = RBuilder.create(null, 'DIV');
-   o.hForm = RBuilder.appendTable(o.hPanel);
+   o.hPanel = MO.Window.Builder.create(null, 'DIV');
+   o.hForm = MO.Window.Builder.appendTable(o.hPanel);
    o.hForm.width = '100%';
 }
 MO.FDuiSplit_oeBuild = function FDuiSplit_oeBuild(e){
    var o = this;
    o.base.FDuiControl.oeBuild.call(o, e);
    o.height = 2;
-   if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
+   if(MO.Lang.String.equals(o._dispStyle, ESplitStyle.Normal)){
       var hf = o.hForm;
       var hr = hf.insertRow()
       o.attachEvent('onSplitMouseEnter', hf);
@@ -50317,19 +50183,19 @@ MO.FDuiSplit_oeBuild = function FDuiSplit_oeBuild(e){
       hc.height = 25;
       hc.style.padding = '0 0';
       hc.style.background = 'url(' + RRes._iconPath('ctl.FDuiSplit_Panel') + ')';
-      RBuilder.appendEmpty(hc, 4);
-      o.hImage = RBuilder.appendIcon(hc, o._iconMinus);
+      MO.Window.Builder.appendEmpty(hc, 4);
+      o.hImage = MO.Window.Builder.appendIcon(hc, o._iconMinus);
       if(o._icon){
-         o.hIcon = RBuilder.appendIcon(hc, o._icon);
+         o.hIcon = MO.Window.Builder.appendIcon(hc, o._icon);
       }
-      o.hText = RBuilder.appendText(hc, '&nbsp;&nbsp;' + o.label);
+      o.hText = MO.Window.Builder.appendText(hc, '&nbsp;&nbsp;' + o.label);
       o.hText.style.fontWeight='BOLD';
-   }else if(RString.equals(o._dispStyle, ESplitStyle.BulgeLine)){
+   }else if(MO.Lang.String.equals(o._dispStyle, ESplitStyle.BulgeLine)){
       var h = this.hForm.insertRow().insertCell();
       h.style.borderBottom  = '1px solid #666666';
       h.style.borderTop  = '1px solid #DDDDDD';
       h.height = 2;
-   }else if(RString.equals(o._dispStyle, ESplitStyle.HollowLine)){
+   }else if(MO.Lang.String.equals(o._dispStyle, ESplitStyle.HollowLine)){
       var h = this.hForm.insertRow().insertCell();
       h.style.borderBottom  = '1px solid #DDDDDD';
       h.style.borderTop  = '1px solid #666666';
@@ -50453,79 +50319,77 @@ MO.FDuiTemplate_refreshValue = function FDuiTemplate_refreshValue(){
    var o = this;
    o.processDataChangedListener(o);
 }
-with(MO){
-   MO.FDuiText = function FDuiText(o){
-      o = RClass.inherits(this, o, FDuiTextControl, MUiPropertyEdit, MListenerDataChanged);
-      o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-      o._unit            = RClass.register(o, new APtyString('_unit'));
-      o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
-      o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-      o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-      o._hValueForm      = null;
-      o._hValueLine      = null;
-      o._hInputPanel     = null;
-      o._hInput          = null;
-      o.onBuildEditValue = FDuiText_onBuildEditValue;
-      o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiText_onInputEdit);
-      o.construct        = FDuiText_construct;
-      o.formatDisplay    = FDuiText_formatDisplay;
-      o.formatValue      = FDuiText_formatValue;
-      o.get              = FDuiText_get;
-      o.set              = FDuiText_set;
-      o.refreshValue     = FDuiText_refreshValue;
-      return o;
+MO.FDuiText = function FDuiText(o){
+   o = MO.Class.inherits(this, o, MO.FDuiTextControl, MO.MUiPropertyEdit, MO.MListenerDataChanged);
+   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._unit            = MO.Class.register(o, new MO.APtyString('_unit'));
+   o._styleValuePanel = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = MO.FDuiText_onBuildEditValue;
+   o.onInputEdit      = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), FDuiText_onInputEdit);
+   o.construct        = MO.FDuiText_construct;
+   o.formatDisplay    = MO.FDuiText_formatDisplay;
+   o.formatValue      = MO.FDuiText_formatValue;
+   o.get              = MO.FDuiText_get;
+   o.set              = MO.FDuiText_set;
+   o.refreshValue     = MO.FDuiText_refreshValue;
+   return o;
+}
+MO.FDuiText_onBuildEditValue = function FDuiText_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = MO.Window.Builder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hep = o._hInputPanel = MO.Window.Builder.appendTableCell(hl);
+   var he = o._hInput = MO.Window.Builder.appendEdit(hep, o.styleName('Input'));
+   o.attachEvent('onInputEdit', he, o.onInputEdit);
+   MO.Window.Html.setSize(hep, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
    }
-   MO.FDuiText_onBuildEditValue = function FDuiText_onBuildEditValue(p){
-      var o = this;
-      var hp = o._hValuePanel;
-      hp.className = o.styleName('ValuePanel');
-      var hf = o._hValueForm = RBuilder.appendTable(hp);
-      hf.width = '100%';
-      var hl = o._hValueLine = RBuilder.appendTableRow(hf);
-      o._hChangePanel = RBuilder.appendTableCell(hl);
-      o.onBuildEditChange(p);
-      var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-      var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
-      o.attachEvent('onInputEdit', he, o.onInputEdit);
-      RHtml.setSize(hep, o._inputSize);
-      if(o._editLength){
-         he.maxLength = o._editLength;
-      }
-   }
-   MO.FDuiText_onInputEdit = function FDuiText_onInputEdit(p){
-      var o = this;
-      var v = o._hInput.value;
-      o.refreshValue();
-   }
-   MO.FDuiText_construct = function FDuiText_construct(){
-      var o = this;
-      o.__base.FDuiTextControl.construct.call(o);
-      o._inputSize = new SSize2(120, 0);
-   }
-   MO.FDuiText_formatDisplay = function FDuiText_formatDisplay(p){
-      var o = this;
-      var r = RString.nvl(p);
-      o._dataDisplay = r;
-      return r;
-   }
-   MO.FDuiText_formatValue = function FDuiText_formatValue(p){
-      return p;
-   }
-   MO.FDuiText_get = function FDuiText_get(){
-      var o = this;
-      var r = o.__base.FDuiTextControl.get.call(o);
-      var r = o._hInput.value;
-      return r;
-   }
-   MO.FDuiText_set = function FDuiText_set(p){
-      var o = this;
-      o.__base.FDuiTextControl.set.call(o, p);
-      o._hInput.value = RString.nvl(p);
-   }
-   MO.FDuiText_refreshValue = function FDuiText_refreshValue(){
-      var o = this;
-      o.processDataChangedListener(o);
-   }
+}
+MO.FDuiText_onInputEdit = function FDuiText_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+MO.FDuiText_construct = function FDuiText_construct(){
+   var o = this;
+   o.__base.FDuiTextControl.construct.call(o);
+   o._inputSize = new MO.SSize2(120, 0);
+}
+MO.FDuiText_formatDisplay = function FDuiText_formatDisplay(p){
+   var o = this;
+   var r = MO.Lang.String.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+MO.FDuiText_formatValue = function FDuiText_formatValue(p){
+   return p;
+}
+MO.FDuiText_get = function FDuiText_get(){
+   var o = this;
+   var r = o.__base.FDuiTextControl.get.call(o);
+   var r = o._hInput.value;
+   return r;
+}
+MO.FDuiText_set = function FDuiText_set(p){
+   var o = this;
+   o.__base.FDuiTextControl.set.call(o, p);
+   o._hInput.value = MO.Lang.String.nvl(p);
+}
+MO.FDuiText_refreshValue = function FDuiText_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
 }
 MO.EDuiGridColumn = new function EDuiGridColumn(){
    var o = this;
@@ -60835,7 +60699,7 @@ MO.EDsFrameSet = new function EDsFrameSet(){
 }
 with(MO){
    MO.MDsBoundBox = function MDsBoundBox(o){
-      o = RClass.inherits(this, o);
+      o = MO.Class.inherits(this, o);
       o._boundVisible = false;
       o._boundBox     = null;
       o.boundBox      = MDsBoundBox_boundBox;
@@ -60847,7 +60711,7 @@ with(MO){
       var o = this;
       var boundBox = o._boundBox;
       if(!boundBox){
-         boundBox = o._boundBox = RClass.create(FE3dBoundBox);
+         boundBox = o._boundBox = MO.Class.create(FE3dBoundBox);
          boundBox.linkGraphicContext(o);
          boundBox._drawable = o;
          boundBox._parent = o;
@@ -60873,7 +60737,7 @@ with(MO){
 }
 with(MO){
    MO.FDsApplication = function FDsApplication(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._name             = null;
       o._matrix           = null;
       o._location         = null;
@@ -60900,10 +60764,10 @@ with(MO){
    MO.FDsApplication_construct = function FDsApplication_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
-      o._matrix = new SMatrix3d();
-      o._location = new SPoint3();
-      o._rotation = new SVector3();
-      o._scale = new SVector3();
+      o._matrix = new MO.SMatrix3d();
+      o._location = new MO.SPoint3();
+      o._rotation = new MO.SVector3();
+      o._scale = new MO.SVector3();
       o._scale.set(1, 1, 1);
    }
    MO.FDsApplication_isName = function FDsApplication_isName(p){
@@ -60952,7 +60816,7 @@ with(MO){
       var o = this;
       var r = o._renderables;
       if(r == null){
-         r = o._renderables = new TObjects();
+         r = o._renderables = new MO.TObjects();
       }
       return r;
    }
@@ -60991,7 +60855,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapCanvas = function FDsBitmapCanvas(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeBitmap        = null;
       o._capturePosition     = null;
       o._captureMatrix       = null;
@@ -61019,7 +60883,7 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.onBuild.call(o, p);
       var hPanel = o._hPanel;
-      var space = o._activeSpace = RClass.create(FE3dFlatStage);
+      var space = o._activeSpace = MO.Class.create(FE3dFlatStage);
       space.linkGraphicContext(o);
       space.selectTechnique(o, FE3dGeneralTechnique);
       space.region().backgroundColor().set(1, 1, 1, 1);
@@ -61090,7 +60954,7 @@ with(MO){
    }
    MO.FDsBitmapCanvas_onLoaded = function FDsBitmapCanvas_onLoaded(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsBitmapCanvas_oeResize = function FDsBitmapCanvas_oeResize(event){
       var o = this;
@@ -61103,15 +60967,15 @@ with(MO){
    MO.FDsBitmapCanvas_construct = function FDsBitmapCanvas_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._captureMatrix = new SMatrix3d();
+      o._captureMatrix = new MO.SMatrix3d();
    }
    MO.FDsBitmapCanvas_loadByGuid = function FDsBitmapCanvas_loadByGuid(guid){
       var o = this;
       var size = o._graphicContext.size();
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var resource = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var resource = o._activeResource = MO.Console.find(FDrBitmapConsole).query(guid);
       var url = '/cloud.resource.bitmap.wv?do=view&guid=' + guid;
-      var bitmap = o._activeBitmap = RConsole.find(FE3dBitmapConsole).loadByGuid(o, guid);
+      var bitmap = o._activeBitmap = MO.Console.find(FE3dBitmapConsole).loadByGuid(o, guid);
       bitmap.material().info().effectCode = 'flat';
       bitmap.setLoadListener(o, o.onLoaded);
       bitmap.loadUrl(url);
@@ -61370,28 +61234,28 @@ MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
 }
 with(MO){
    MO.FDsCatalog = function FDsCatalog(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
       o._iconView             = 'resource.scene.view';
       o._iconViewNot          = 'resource.scene.viewno';
       o._displayNodes         = null;
       o._renderableNodes      = null;
       o._materialNodes        = null;
-      o.onBuild               = FDsCatalog_onBuild;
-      o.onLoadDisplay         = FDsCatalog_onLoadDisplay;
-      o.onNodeClick           = FDsCatalog_onNodeClick;
-      o.onNodeViewClick       = FDsCatalog_onNodeViewClick;
-      o.onNodeViewDoubleClick = FDsCatalog_onNodeViewDoubleClick;
-      o.construct             = FDsCatalog_construct;
-      o.buildNodeView         = FDsCatalog_buildNodeView;
-      o.buildTechnique        = FDsCatalog_buildTechnique;
-      o.buildRegion           = FDsCatalog_buildRegion;
-      o.buildRenderable       = FDsCatalog_buildRenderable;
-      o.buildDisplay          = FDsCatalog_buildDisplay;
-      o.buildLayer            = FDsCatalog_buildLayer;
-      o.buildSpace            = FDsCatalog_buildSpace;
-      o.selectObject          = FDsCatalog_selectObject;
-      o.showObject            = FDsCatalog_showObject;
-      o.dispose               = FDsCatalog_dispose;
+      o.onBuild               = MO.FDsCatalog_onBuild;
+      o.onLoadDisplay         = MO.FDsCatalog_onLoadDisplay;
+      o.onNodeClick           = MO.FDsCatalog_onNodeClick;
+      o.onNodeViewClick       = MO.FDsCatalog_onNodeViewClick;
+      o.onNodeViewDoubleClick = MO.FDsCatalog_onNodeViewDoubleClick;
+      o.construct             = MO.FDsCatalog_construct;
+      o.buildNodeView         = MO.FDsCatalog_buildNodeView;
+      o.buildTechnique        = MO.FDsCatalog_buildTechnique;
+      o.buildRegion           = MO.FDsCatalog_buildRegion;
+      o.buildRenderable       = MO.FDsCatalog_buildRenderable;
+      o.buildDisplay          = MO.FDsCatalog_buildDisplay;
+      o.buildLayer            = MO.FDsCatalog_buildLayer;
+      o.buildSpace            = MO.FDsCatalog_buildSpace;
+      o.selectObject          = MO.FDsCatalog_selectObject;
+      o.showObject            = MO.FDsCatalog_showObject;
+      o.dispose               = MO.FDsCatalog_dispose;
       return o;
    }
    MO.FDsCatalog_onBuild = function FDsCatalog_onBuild(p){
@@ -61416,7 +61280,7 @@ with(MO){
       var o = this;
       var cell = event.treeNodeCell;
       var linker = event.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FDisplay)){
+      if(MO.Class.isClass(linker, FDisplay)){
          if(event.ctrlKey){
             var displayNodes = o._displayNodes;
             var displayCount = displayNodes.count()
@@ -61433,7 +61297,7 @@ with(MO){
             cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(linker, FDrawable)){
+      if(MO.Class.isClass(linker, FDrawable)){
          if(event.ctrlKey){
             var renderableNodes = o._renderableNodes;
             var renderableCount = renderableNodes.count();
@@ -61450,7 +61314,7 @@ with(MO){
             cell.setIcon(linker.visible() ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(linker, FG3dMaterial)){
+      if(MO.Class.isClass(linker, FG3dMaterial)){
          if(event.ctrlKey){
             var materialNodes = o._materialNodes;
             var materialCount = materialNodes.count();
@@ -61472,7 +61336,7 @@ with(MO){
       var o = this;
       var node = event.treeNode;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FDisplay)){
+      if(MO.Class.isClass(linker, FDisplay)){
          var displayNodes = o._displayNodes;
          var displayCount = displayNodes.count()
          for(var i = 0; i < displayCount; i++){
@@ -61482,7 +61346,7 @@ with(MO){
             displayNode.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(linker, FDrawable)){
+      if(MO.Class.isClass(linker, FDrawable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){
@@ -61492,7 +61356,7 @@ with(MO){
             renderableNode.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(linker, FG3dMaterial)){
+      if(MO.Class.isClass(linker, FG3dMaterial)){
          var materialNodes = o._materialNodes;
          var materialCount = materialNodes.count();
          for(var i = 0; i < materialCount; i++){
@@ -61506,9 +61370,9 @@ with(MO){
    MO.FDsCatalog_construct = function FDsCatalog_construct(){
       var o = this;
       o.__base.FUiDataTreeView.construct.call(o);
-      o._displayNodes = new TObjects();
-      o._renderableNodes = new TObjects();
-      o._materialNodes = new TObjects();
+      o._displayNodes = new MO.TObjects();
+      o._renderableNodes = new MO.TObjects();
+      o._materialNodes = new MO.TObjects();
    }
    MO.FDsCatalog_buildNodeView = function FDsCatalog_buildNodeView(pn, pv){
       var o = this;
@@ -61627,7 +61491,7 @@ with(MO){
       var c = ds.count();
       for(var i = 0; i < c; i++){
          var l = ds.value(i);
-         if(RClass.isClass(l, FDisplayUiLayer)){
+         if(MO.Class.isClass(l, FDisplayUiLayer)){
             continue;
          }
          var lr = l.resource();
@@ -61662,7 +61526,7 @@ with(MO){
    }
    MO.FDsCatalog_showObject = function FDsCatalog_showObject(item){
       var o = this;
-      if(RClass.isClass(item, FDsSceneRenderable)){
+      if(MO.Class.isClass(item, FDsSceneRenderable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){
@@ -61676,19 +61540,19 @@ with(MO){
    }
    MO.FDsCatalog_dispose = function FDsCatalog_dispose(){
       var o = this;
-      o._displayNodes = RObject.dispose(o._displayNodes);
-      o._renderableNodes = RObject.dispose(o._renderableNodes);
-      o._materialNodes = RObject.dispose(o._materialNodes);
+      o._displayNodes = MO.Lang.Object.dispose(o._displayNodes);
+      o._renderableNodes = MO.Lang.Object.dispose(o._renderableNodes);
+      o._materialNodes = MO.Lang.Object.dispose(o._materialNodes);
       o.__base.FUiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsFrameSet = function FDsFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
-      o._styleToolBarGround   = RClass.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
+      o._styleToolBarGround   = MO.Class.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._activeGuid           = null;
       o._activeCode           = null;
       o._activeSpace          = null;
@@ -61703,13 +61567,13 @@ with(MO){
    MO.FDsFrameSet_construct = function FDsFrameSet_construct(){
       var o = this;
       o.__base.FDuiFrameSet.construct.call(o);
-      o._propertyFrames = new TDictionary();
+      o._propertyFrames = new MO.TDictionary();
    }
    MO.FDsFrameSet_findPropertyFrame = function FDsFrameSet_findPropertyFrame(code){
       var o = this;
       var frame = o._propertyFrames.get(code);
       if(!frame){
-         frame = RConsole.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
+         frame = MO.Console.find(FDuiFrameConsole).get(o, code, o._framePropertyContent._hContainer);
          frame._frameSet = o;
          o._propertyFrames.set(code, frame);
       }
@@ -61736,13 +61600,13 @@ with(MO){
          var frame = frames.at(i);
          frame.dispose();
       }
-      o._propertyFrames = RObject.dispose(o._propertyFrames);
+      o._propertyFrames = MO.Lang.Object.dispose(o._propertyFrames);
       o.__base.FDuiFrameSet.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsMainCanvas = function FDsMainCanvas(o){
-      o = RClass.inherits(this, o, FCanvas);
+      o = MO.Class.inherits(this, o, FCanvas);
       o._context   = null;
       o._stage     = null;
       o._layer     = null;
@@ -61778,7 +61642,7 @@ with(MO){
       hCanvas.width = o._hParent.offsetWidth;
       hCanvas.height = o._hParent.offsetHeight;
       o._context = REngine3d.createContext(FWglContext, hCanvas);
-      var g = o._stage = RClass.create(FSimpleStage3d);
+      var g = o._stage = MO.Class.create(FSimpleStage3d);
       g.backgroundColor().set(0.5, 0.5, 0.5, 1);
       g.selectTechnique(o._context, FG3dGeneralTechnique);
       o._layer = o._stage.spriteLayer();
@@ -61797,7 +61661,7 @@ with(MO){
    MO.FDsMainCanvas_onBuild = function FDsMainCanvas_onBuild(p){
       var o = this;
       o.__base.FCanvas.onBuild.call(o, p);
-      var tc = RConsole.find(FE3sThemeConsole);
+      var tc = MO.Console.find(FE3sThemeConsole);
       var m = tc.select('color');
       m.loadListener().register(o, o.onThemeLoad);
    }
@@ -61812,7 +61676,7 @@ with(MO){
    }
    MO.FDsMainCanvas_selectModel = function FDsMainCanvas_selectModel(p){
       var o = this;
-      var rmc = RConsole.find(FModel3dConsole);
+      var rmc = MO.Console.find(FModel3dConsole);
       if(o._activeModel != null){
          rmc.free(o._activeModel);
       }
@@ -61827,7 +61691,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainCatalog = function FDsMainCatalog(o){
-      o = RClass.inherits(this, o, FDataTreeView);
+      o = MO.Class.inherits(this, o, FDataTreeView);
       o.onBuild     = FDsMainCatalog_onBuild;
       o.onNodeClick = FDsMainCatalog_onNodeClick;
       o.construct   = FDsMainCatalog_construct;
@@ -61855,7 +61719,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainMenuBar = function FDsMainMenuBar(o){
-      o = RClass.inherits(this, o, FMenuBar);
+      o = MO.Class.inherits(this, o, FMenuBar);
       o.onBuild   = FDsMainMenuBar_onBuild;
       o.construct = FDsMainMenuBar_construct;
       o.dispose   = FDsMainMenuBar_dispose;
@@ -61864,17 +61728,17 @@ with(MO){
    MO.FDsMainMenuBar_onBuild = function FDsMainMenuBar_onBuild(p){
       var o = this;
       o.__base.FMenuBar.onBuild.call(o, p);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('文件');
       b.setIcon('design.menu.build');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('保存');
       b.setIcon('design.menu.save');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FMenuButton);
+      var b = o._framesetMain = MO.Class.create(FMenuButton);
       b.setLabel('帮助');
       b.setIcon('design.menu.help');
       b.build(p);
@@ -61891,7 +61755,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainToolBar = function FDsMainToolBar(o){
-      o = RClass.inherits(this, o, FToolBar);
+      o = MO.Class.inherits(this, o, FToolBar);
       o.onPersistenceClick   = FDsMainToolBar_onPersistenceClick;
       o.onBuild   = FDsMainToolBar_onBuild;
       o.construct = FDsMainToolBar_construct;
@@ -61906,20 +61770,20 @@ with(MO){
    MO.FDsMainToolBar_onBuild = function FDsMainToolBar_onBuild(p){
       var o = this;
       o.__base.FToolBar.onBuild.call(o, p);
-      var b = o._persistenceButton  = RClass.create(FToolButton);
+      var b = o._persistenceButton  = MO.Class.create(FToolButton);
       b.setLabel('模型管理');
       b.build(p);
       b.lsnsClick.register(o, o.onPersistenceClick);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('材质管理');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('模板管理');
       b.build(p);
       o.appendButton(b);
-      var b = o._framesetMain = RClass.create(FToolButton);
+      var b = o._framesetMain = MO.Class.create(FToolButton);
       b.setLabel('场景管理');
       b.build(p);
       o.appendButton(b);
@@ -61935,7 +61799,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMainWindow = function FDsMainWindow(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._name             = null;
       o._matrix           = null;
       o._location         = null;
@@ -61962,10 +61826,10 @@ with(MO){
    MO.FDsMainWindow_construct = function FDsMainWindow_construct(){
       var o = this;
       o.__base.FObject.construct.call(o);
-      o._matrix = new SMatrix3d();
-      o._location = new SPoint3();
-      o._rotation = new SVector3();
-      o._scale = new SVector3();
+      o._matrix = new MO.SMatrix3d();
+      o._location = new MO.SPoint3();
+      o._rotation = new MO.SVector3();
+      o._scale = new MO.SVector3();
       o._scale.set(1, 1, 1);
    }
    MO.FDsMainWindow_isName = function FDsMainWindow_isName(p){
@@ -62014,7 +61878,7 @@ with(MO){
       var o = this;
       var r = o._renderables;
       if(r == null){
-         r = o._renderables = new TObjects();
+         r = o._renderables = new MO.TObjects();
       }
       return r;
    }
@@ -62053,12 +61917,12 @@ with(MO){
 }
 with(MO){
    MO.FDsMainWorkspace = function FDsMainWorkspace(o){
-      o = RClass.inherits(this, o, FWorkspace);
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o = MO.Class.inherits(this, o, FWorkspace);
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain         = null;
       o._framesetBody         = null;
       o._frameToolBar         = null;
@@ -62081,37 +61945,37 @@ with(MO){
       o.__base.FWorkspace.onBuild.call(o, p);
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
-      var fs = o._framesetMain = RClass.create(FFrameSet);
+      var fs = o._framesetMain = MO.Class.create(FFrameSet);
       fs.build(p);
-      var f = o._frameToolBar = RClass.create(FFrame);
+      var f = o._frameToolBar = MO.Class.create(FFrame);
       f.setHeight(26);
       f.build(p);
       f._hPanel.className = o.styleName('Toolbar_Ground');
       fs.appendFrame(f);
-      var f = o._frameBody = RClass.create(FFrame);
+      var f = o._frameBody = MO.Class.create(FFrame);
       f.build(p);
       fs.appendFrame(f);
-      var f = o._frameProperty = RClass.create(FFrame);
+      var f = o._frameProperty = MO.Class.create(FFrame);
       f.setHeight(18);
       f.build(p);
       f._hPanel.className = o.styleName('Statusbar_Ground');
       fs.appendFrame(f);
       fs.setPanel(o._hPanel);
-      var fs = RClass.create(FFrameSet);
+      var fs = MO.Class.create(FFrameSet);
       fs._directionCd = EDirection.Horizontal;
       fs.build(p);
-      var f = o._frameCatalog = RClass.create(FFrame);
+      var f = o._frameCatalog = MO.Class.create(FFrame);
       f.setWidth(300);
       f.build(p);
       f._hPanel.className = o.styleName('Catalog_Ground');
       fs.appendFrame(f);
       var sp1 = fs.appendSpliter();
-      var f = o._frameWorkspace = RClass.create(FFrame);
+      var f = o._frameWorkspace = MO.Class.create(FFrame);
       f.build(p);
       f._hPanel.className = o.styleName('Workspace_Ground');
       fs.appendFrame(f);
       var sp2 = fs.appendSpliter();
-      var f = o._frameStatusBar = RClass.create(FFrame);
+      var f = o._frameStatusBar = MO.Class.create(FFrame);
       f.setWidth(360);
       f.build(p);
       f._hPanel.className = o.styleName('Property_Ground');
@@ -62121,18 +61985,18 @@ with(MO){
       sp1._hSize = o._frameCatalog._hPanel;
       sp2._alignCd = EAlign.Right;
       sp2._hSize = o._frameStatusBar._hPanel;
-      var c = o._catalog = RClass.create(FDsMainCatalog);
+      var c = o._catalog = MO.Class.create(FDsMainCatalog);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameCatalog._hPanel);
       o.push(c);
-      var c = o._toolbar = RClass.create(FDsMainToolBar);
+      var c = o._toolbar = MO.Class.create(FDsMainToolBar);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameToolBar._hPanel);
       c._persistenceButton.click();
       o.push(c);
-      var c = o._canvas = RClass.create(FDsMainCanvas);
+      var c = o._canvas = MO.Class.create(FDsMainCanvas);
       c._worksapce = o;
       c.build(p);
       c.setPanel(o._frameWorkspace._hPanel);
@@ -62145,7 +62009,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSpaceCanvas = function FDsSpaceCanvas(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._rotation             = null;
       o._optionRotation       = false;
       o._capturePosition      = null;
@@ -62188,7 +62052,7 @@ with(MO){
          return;
       }
       var region = space.region();
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var selectTechnique = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
       o.selectRenderable(renderable);
       if(renderable){
@@ -62224,18 +62088,18 @@ with(MO){
    MO.FDsSpaceCanvas_construct = function FDsSpaceCanvas_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
-      o._selectRenderables = new TObjects();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
+      o._selectRenderables = new MO.TObjects();
    }
    MO.FDsSpaceCanvas_innerSelectRenderable = function FDsSpaceCanvas_innerSelectRenderable(renderable){
       var o = this;
       renderable._optionSelected = true;
-      if(RClass.isClass(renderable, MDsBoundBox)){
+      if(MO.Class.isClass(renderable, MDsBoundBox)){
          renderable.showBoundBox();
       }
       o._selectRenderables.push(renderable);
@@ -62252,7 +62116,7 @@ with(MO){
       var count = renderables.count();
       for(var i = 0; i < count; i++){
          var renderable = renderables.at(i);
-         if(RClass.isClass(renderable, FDsSceneRenderable)){
+         if(MO.Class.isClass(renderable, FDsSceneRenderable)){
             o.innerSelectRenderable(renderable);
          }
       }
@@ -62273,7 +62137,7 @@ with(MO){
       for(var i = 0; i < count; i++){
          var renderable = renderables.at(i);
          renderable._optionSelected = false;
-         if(RClass.isClass(renderable, MDsBoundBox)){
+         if(MO.Class.isClass(renderable, MDsBoundBox)){
             renderable.hideBoundBox();
          }
       }
@@ -62332,7 +62196,7 @@ with(MO){
       var count = displays.count();
       for(var i = 0; i < count; i++){
          var display = displays.at(i);
-         if(RClass.isClass(display, FE3dSceneDisplay)){
+         if(MO.Class.isClass(display, FE3dSceneDisplay)){
             var sprite = display._sprite;
             sprite._optionPlay = flag;
             display._optionPlay = flag;
@@ -62346,7 +62210,7 @@ with(MO){
       var count = displays.count();
       for(var i = 0; i < count; i++){
          var display = displays.at(i);
-         if(RClass.isClass(display, FE3dSceneDisplay)){
+         if(MO.Class.isClass(display, FE3dSceneDisplay)){
             var sprite = display._sprite;
             if(sprite){
                sprite._optionMovie = flag;
@@ -62357,13 +62221,13 @@ with(MO){
    }
    MO.FDsSpaceCanvas_dispose = function FDsSpaceCanvas_dispose(){
       var o = this;
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsCanvas.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsSpaceDesignCanvas = function FDsSpaceDesignCanvas(o){
-      o = RClass.inherits(this, o, FDsSpaceCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceCanvas);
       o._templateMatrix       = null;
       o._templateRenderable   = null;
       o._templateFace         = null;
@@ -62383,7 +62247,7 @@ with(MO){
    MO.FDsSpaceDesignCanvas_onBuild = function FDsSpaceDesignCanvas_onBuild(p){
       var o = this;
       o.__base.FDsSpaceCanvas.onBuild.call(o, p);
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       var templateTranslation = o._templateTranslation = templateConsole.allocByCode(o, 'com.design.translation');
       templateTranslation.addLoadListener(o, o.onDataLoaded);
       var templateRotation = o._templateRotation = templateConsole.allocByCode(o, 'com.design.rotation');
@@ -62416,7 +62280,7 @@ with(MO){
       rotationSprite.setVisible(false);
       var scaleSprite = o._scaleSprite = o._templateScale.sprite();
       scaleSprite.setVisible(false);
-      var layer = o._uiLayer = RClass.create(FDisplayUiLayer);
+      var layer = o._uiLayer = MO.Class.create(FDisplayUiLayer);
       layer.selectTechnique(context, FE3dControlTechnique);
       layer.pushDisplay(translationSprite);
       layer.pushDisplay(rotationSprite);
@@ -62424,7 +62288,7 @@ with(MO){
       space.registerLayer('ui', layer);
       o.reloadRegion()
       o.processLoadListener(o);
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSpaceDesignCanvas_onMouseCaptureStart = function FDsSpaceDesignCanvas_onMouseCaptureStart(event){
       var o = this;
@@ -62434,7 +62298,7 @@ with(MO){
          return;
       }
       var region = space.region();
-      var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var selectTechnique = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
       o.selectRenderable(renderable);
       if(renderable){
@@ -62470,8 +62334,8 @@ with(MO){
    MO.FDsSpaceDesignCanvas_construct = function FDsSpaceDesignCanvas_construct(){
       var o = this;
       o.__base.FDsSpaceCanvas.construct.call(o);
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
    }
    MO.FDsSpaceDesignCanvas_selectRenderable = function FDsSpaceDesignCanvas_selectRenderable(renderable){
       var o = this;
@@ -62528,16 +62392,16 @@ with(MO){
    }
    MO.FDsSpaceDesignCanvas_dispose = function FDsSpaceDesignCanvas_dispose(){
       var o = this;
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsSpaceCanvas.dispose.call(o);
    }
 }
 with(MO){
    MO.FDsStage = function FDsStage(o){
-      o = RClass.inherits(this, o, FE3dStage);
-      o._mapLayer    = RClass.register(o, new AGetter('_mapLayer'));
-      o._spriteLayer = RClass.register(o, new AGetter('_spriteLayer'));
-      o._faceLayer   = RClass.register(o, new AGetter('_faceLayer'));
+      o = MO.Class.inherits(this, o, FE3dStage);
+      o._mapLayer    = MO.Class.register(o, new AGetter('_mapLayer'));
+      o._spriteLayer = MO.Class.register(o, new AGetter('_spriteLayer'));
+      o._faceLayer   = MO.Class.register(o, new AGetter('_faceLayer'));
       o.construct    = FDsStage_construct;
       o.active       = FDsStage_active;
       o.deactive     = FDsStage_deactive;
@@ -62546,11 +62410,11 @@ with(MO){
    MO.FDsStage_construct = function FDsStage_construct(){
       var o = this;
       o.__base.FE3dStage.construct.call(o);
-      var layer = o._mapLayer = RClass.create(FDisplayLayer);
+      var layer = o._mapLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('MapLayer', layer);
-      var layer = o._spriteLayer = RClass.create(FDisplayLayer);
+      var layer = o._spriteLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('SpriteLayer', layer);
-      var layer = o._faceLayer = RClass.create(FDisplayLayer);
+      var layer = o._faceLayer = MO.Class.create(FDisplayLayer);
       o.registerLayer('FaceLayer', layer);
    }
    MO.FDsStage_active = function FDsStage_active(){
@@ -62564,7 +62428,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelRenderable = function FDsModelRenderable(o){
-      o = RClass.inherits(this, o, FE3dModelRenderable, MDsBoundBox);
+      o = MO.Class.inherits(this, o, FE3dModelRenderable, MDsBoundBox);
       o._optionSelected = false;
       o.filterDrawables = FDsModelRenderable_filterDrawables;
       return o;
@@ -62582,19 +62446,19 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneDisplay = function FDsSceneDisplay(o){
-      o = RClass.inherits(this, o, FE3dSceneDisplay);
+      o = MO.Class.inherits(this, o, FE3dSceneDisplay);
       return o;
    }
 }
 with(MO){
    MO.FDsSceneLayer = function FDsSceneLayer(o){
-      o = RClass.inherits(this, o, FE3dSceneLayer);
+      o = MO.Class.inherits(this, o, FE3dSceneLayer);
       return o;
    }
 }
 with(MO){
    MO.FDsSceneRenderable = function FDsSceneRenderable(o){
-      o = RClass.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
+      o = MO.Class.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
       o._optionSelected = false;
       o.filterDrawables = FDsSceneRenderable_filterDrawables;
       return o;
@@ -62612,7 +62476,7 @@ with(MO){
 }
 with(MO){
    MO.FDrAbsResourceConsole = function FDrAbsResourceConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = MO.Class.inherits(this, o, FConsole);
       o._scopeCd       = EScope.Local;
       o._serviceCode   = null;
       o._classUnit     = null;
@@ -62645,7 +62509,7 @@ with(MO){
       var guid = xconfig.get('guid');
       var resource = o._resources.get(guid);
       if(!resource){
-         resource = RClass.create(o._classUnit);
+         resource = MO.Class.create(o._classUnit);
          o._resources.set(guid, resource);
       }
       resource.loadConfig(xconfig);
@@ -62654,10 +62518,10 @@ with(MO){
    MO.FDrAbsResourceConsole_doList = function FDrAbsResourceConsole_doList(search, order, pageSize, page){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=list';
-      if(!RString.isEmpty(search)){
+      if(!MO.Lang.String.isEmpty(search)){
          url += '&search=' + search;
       }
-      if(!RString.isEmpty(order)){
+      if(!MO.Lang.String.isEmpty(order)){
          url += '&order=' + order;
       }
       if(pageSize >= 0){
@@ -62666,12 +62530,12 @@ with(MO){
       if(page >= 0){
          url += '&page=' + page;
       }
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrAbsResourceConsole_doQuery = function FDrAbsResourceConsole_doQuery(guid){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrAbsResourceConsole_doCreate = function FDrAbsResourceConsole_doCreate(resource){
       var o = this;
@@ -62680,7 +62544,7 @@ with(MO){
       xroot.set('action', 'create');
       var xdata = xroot.create(resource.classCode());
       resource.saveConfig(xdata);
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
    }
    MO.FDrAbsResourceConsole_doUpdate = function FDrAbsResourceConsole_doUpdate(resource){
       var o = this;
@@ -62689,17 +62553,17 @@ with(MO){
       xroot.set('action', 'update');
       var xdata = xroot.create(resource.classCode());
       resource.saveConfig(xdata);
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
    }
    MO.FDrAbsResourceConsole_doDelete = function FDrAbsResourceConsole_doDelete(guid){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=delete&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 }
 with(MO){
    MO.FDrBitmap = function FDrBitmap(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode    = 'Bitmap';
       o._sizeWidth    = 0;
       o._sizeHeight   = 0;
@@ -62738,7 +62602,7 @@ with(MO){
 }
 with(MO){
    MO.FDrBitmapConsole = function FDrBitmapConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.bitmap';
       o._classUnit   = FDrBitmap;
       o.query        = FDrBitmapConsole_query;
@@ -62749,7 +62613,7 @@ with(MO){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
       var url = RBrowser.hostPath(uri);
-      var xroot = RConsole.find(FXmlConsole).send(url);
+      var xroot = MO.Console.find(FXmlConsole).send(url);
       var nodeCount = xroot.nodeCount();
       for(var n = 0; n < nodeCount; n++){
          var xbitmap = xroot.node(n);
@@ -62763,12 +62627,12 @@ with(MO){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=update';
       var url = RBrowser.hostPath(uri);
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
 }
 with(MO){
    MO.FDrMaterial = function FDrMaterial(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode = 'Material';
       o.loadConfig = FDrMaterial_loadConfig;
       o.saveConfig = FDrMaterial_saveConfig;
@@ -62785,7 +62649,7 @@ with(MO){
 }
 with(MO){
    MO.FDrMaterialConsole = function FDrMaterialConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.material';
       o._classUnit   = FDrMaterial;
       o.query        = FDrMaterialConsole_query;
@@ -62797,7 +62661,7 @@ with(MO){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=query&guid=' + guid;
       var url = RBrowser.hostPath(uri);
-      var xroot = RConsole.find(FXmlConsole).send(url);
+      var xroot = MO.Console.find(FXmlConsole).send(url);
       var nodeCount = xroot.nodeCount();
       for(var n = 0; n < nodeCount; n++){
          var xbitmap = xroot.node(n);
@@ -62811,25 +62675,25 @@ with(MO){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=update';
       var url = RBrowser.hostPath(uri);
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrMaterialConsole_deleteBitmap = function FDrMaterialConsole_deleteBitmap(guid){
       var o = this;
       var uri = '/' + o._serviceCode + '.ws?action=deleteBitmap&guid=' + guid;
       var url = RBrowser.hostPath(uri);
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 }
 with(MO){
    MO.FDrMesh = function FDrMesh(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode = 'Mesh';
       return o;
    }
 }
 with(MO){
    MO.FDrMeshConsole = function FDrMeshConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.mesh';
       o.update       = FDrMeshConsole_update;
       return o;
@@ -62837,19 +62701,19 @@ with(MO){
    MO.FDrMeshConsole_update = function FDrMeshConsole_update(config){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=update&date=' + RDate.format());
-      return RConsole.find(FXmlConsole).sendAsync(url, config);
+      return MO.Console.find(FXmlConsole).sendAsync(url, config);
    }
 }
 with(MO){
    MO.FDrModel = function FDrModel(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode = 'Model';
       return o;
    }
 }
 with(MO){
    MO.FDrModelConsole = function FDrModelConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.model';
       o.update       = FDrModelConsole_update;
       return o;
@@ -62857,12 +62721,12 @@ with(MO){
    MO.FDrModelConsole_update = function FDrModelConsole_update(config){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
-      return RConsole.find(FXmlConsole).sendAsync(url, config);
+      return MO.Console.find(FXmlConsole).sendAsync(url, config);
    }
 }
 with(MO){
    MO.FDrObject = function FDrObject(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._guid       = null;
       o._code       = null;
       o._label      = null;
@@ -62905,7 +62769,7 @@ with(MO){
 }
 with(MO){
    MO.FDrProject = function FDrProject(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode   = 'Project';
       o._projectGuid = null;
       o.saveConfig   = FDrProject_saveConfig;
@@ -62919,18 +62783,18 @@ with(MO){
 }
 with(MO){
    MO.FDrProjectConsole = function FDrProjectConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.solution.project';
       return o;
    }
 }
 with(MO){
    MO.FDrResource = function FDrResource(o){
-      o = RClass.inherits(this, o, FDrObject);
-      o._classCode = RClass.register(o, new AGetter('_classCode'));
-      o._guid      = RClass.register(o, new AGetSet('_guid'));
-      o._code      = RClass.register(o, new AGetSet('_code'));
-      o._label     = RClass.register(o, new AGetSet('_label'));
+      o = MO.Class.inherits(this, o, FDrObject);
+      o._classCode = MO.Class.register(o, new AGetter('_classCode'));
+      o._guid      = MO.Class.register(o, new AGetSet('_guid'));
+      o._code      = MO.Class.register(o, new AGetSet('_code'));
+      o._label     = MO.Class.register(o, new AGetSet('_label'));
       o.loadConfig = FDrResource_loadConfig;
       o.saveConfig = FDrResource_saveConfig;
       return o;
@@ -62951,7 +62815,7 @@ with(MO){
 }
 with(MO){
    MO.FDrResourceConsole = function FDrResourceConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode   = 'cloud.resource';
       o._catalogCode   = 'cloud.resource.catalog';
       o._resources     = null;
@@ -62973,22 +62837,22 @@ with(MO){
    MO.FDrResourceConsole_doList = function FDrResourceConsole_doList(typeCd, search, order, pageSize, page){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=list&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrResourceConsole_doShare = function FDrResourceConsole_doShare(guid, shareCd){
       var o = this;
       var url = o.makeServiceUrl('share') + '&guid=' + guid + '&share_cd=' + shareCd;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrResourceConsole_doDelete = function FDrResourceConsole_doDelete(typeCd, guid){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrResourceConsole_doListShare = function FDrResourceConsole_doListShare(typeCd, search, order, pageSize, page){
       var o = this;
       var url = '/' + o._serviceCode + '.ws?action=listShare&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrResourceConsole_doFolderCreate = function FDrResourceConsole_doFolderCreate(parentGuid, code, label){
       var o = this;
@@ -62999,7 +62863,7 @@ with(MO){
       xfolder.set('parent_guid', parentGuid);
       xfolder.set('code', code);
       xfolder.set('label', label);
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
    }
    MO.FDrResourceConsole_doFolderUpdate = function FDrResourceConsole_doFolderUpdate(guid, code, label){
       var o = this;
@@ -63010,17 +62874,17 @@ with(MO){
       xfolder.set('guid', guid);
       xfolder.set('code', code);
       xfolder.set('label', label);
-      return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
+      return MO.Console.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
    }
    MO.FDrResourceConsole_doFolderDelete = function FDrResourceConsole_doFolderDelete(guid){
       var o = this;
       var url = '/' + o._catalogCode + '.ws?action=delete&guid=' + guid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
 }
 with(MO){
    MO.FDrScene = function FDrScene(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode   = 'Scene';
       o._projectGuid = null;
       o.saveConfig   = FDrScene_saveConfig;
@@ -63034,7 +62898,7 @@ with(MO){
 }
 with(MO){
    MO.FDrSceneConsole = function FDrSceneConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode = 'cloud.resource.scene';
       o.createCamera = FDrSceneConsole_createCamera;
       o.createLayer  = FDrSceneConsole_createLayer;
@@ -63048,49 +62912,49 @@ with(MO){
    MO.FDrSceneConsole_createCamera = function FDrSceneConsole_createCamera(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createCamera');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrSceneConsole_createLayer = function FDrSceneConsole_createLayer(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createLayer');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrSceneConsole_createSprite = function FDrSceneConsole_createSprite(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createSprite');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrSceneConsole_createMovie = function FDrSceneConsole_createMovie(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createMovie');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrSceneConsole_copyNode = function FDrSceneConsole_copyNode(sceneGuid, nodeGuid){
       var o = this;
       var url = o.makeServiceUrl('copyNode') + '&space_guid=' + sceneGuid + '&node_guid=' + nodeGuid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrSceneConsole_deleteNode = function FDrSceneConsole_deleteNode(sceneGuid, nodeGuid){
       var o = this;
       var url = o.makeServiceUrl('deleteNode') + '&space_guid=' + sceneGuid + '&node_guid=' + nodeGuid;
-      return RConsole.find(FXmlConsole).sendAsync(url);
+      return MO.Console.find(FXmlConsole).sendAsync(url);
    }
    MO.FDrSceneConsole_update = function FDrSceneConsole_update(p){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
-      return RConsole.find(FXmlConsole).sendAsync(url, p);
+      return MO.Console.find(FXmlConsole).sendAsync(url, p);
    }
 }
 with(MO){
    MO.FDrTemplate = function FDrTemplate(o){
-      o = RClass.inherits(this, o, FDrResource);
+      o = MO.Class.inherits(this, o, FDrResource);
       o._classCode = 'Template';
       return o;
    }
 }
 with(MO){
    MO.FDrTemplateConsole = function FDrTemplateConsole(o){
-      o = RClass.inherits(this, o, FDrAbsResourceConsole);
+      o = MO.Class.inherits(this, o, FDrAbsResourceConsole);
       o._serviceCode   = 'cloud.resource.template';
       o.selectMaterial = FDrTemplateConsole_selectMaterial;
       o.createDisplay  = FDrTemplateConsole_createDisplay;
@@ -63100,22 +62964,22 @@ with(MO){
    MO.FDrTemplateConsole_selectMaterial = function FDrTemplateConsole_selectMaterial(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createMaterial');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrTemplateConsole_createDisplay = function FDrTemplateConsole_createDisplay(xconfig){
       var o = this;
       var url = o.makeServiceUrl('createDisplay');
-      return RConsole.find(FXmlConsole).sendAsync(url, xconfig);
+      return MO.Console.find(FXmlConsole).sendAsync(url, xconfig);
    }
    MO.FDrTemplateConsole_update = function FDrTemplateConsole_update(config){
       var o = this;
       var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
-      return RConsole.find(FXmlConsole).sendAsync(url, config);
+      return MO.Console.find(FXmlConsole).sendAsync(url, config);
    }
 }
 with(MO){
    MO.FDsCommonAnimationPropertyFrame = function FDsCommonAnimationPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible         = false;
       o._activeSpace     = null;
       o._activeAnimation = null;
@@ -63166,7 +63030,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonCameraFrame = function FDsCommonCameraFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._workspace        = null;
       o._camera           = null;
       o._controlPosition  = null;
@@ -63194,7 +63058,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonCameraPropertyFrame = function FDsCommonCameraPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._workspace        = null;
       o._activeSpace      = null;
@@ -63251,7 +63115,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayDialog = function FDsCommonDisplayDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.DisplayDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -63283,12 +63147,12 @@ with(MO){
    }
    MO.FDsCommonDisplayDialog_onConfirmLoad = function FDsCommonDisplayDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonDisplayDialog_onConfirmClick = function FDsCommonDisplayDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
       xsprite.set('space_guid', o._spaceGuid);
@@ -63296,7 +63160,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('model_guid', o._controlModelGuid.get());
       xsprite.set('model_code', o._controlModelCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).createDisplay(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonDisplayDialog_onCancelClick = function FDsCommonDisplayDialog_onCancelClick(event){
@@ -63328,7 +63192,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayFrame = function FDsCommonDisplayFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace   = null;
       o._activeDisplay = null;
       o.onBuilded      = FDsCommonDisplayFrame_onBuilded;
@@ -63380,7 +63244,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonDisplayPropertyFrame = function FDsCommonDisplayPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible        = false;
       o._workspace      = null;
       o._activeDisplay  = null;
@@ -63430,7 +63294,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLayerDialog = function FDsCommonLayerDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.LayerDialog';
       o._displayModeCd        = null;
       o._controlSpaceGuid     = null;
@@ -63461,18 +63325,18 @@ with(MO){
    }
    MO.FDsCommonLayerDialog_onConfirmLoad = function FDsCommonLayerDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonLayerDialog_onConfirmClick = function FDsCommonLayerDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Layer');
       xsprite.set('space_guid', o._spaceGuid);
       xsprite.set('code', o._controlCode.get());
       xsprite.set('label', o._controlLabel.get());
-      var connection = RConsole.find(FDrSceneConsole).createLayer(xaction);
+      var connection = MO.Console.find(FDrSceneConsole).createLayer(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonLayerDialog_onCancelClick = function FDsCommonLayerDialog_onCancelClick(event){
@@ -63504,7 +63368,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLayerPropertyFrame = function FDsCommonLayerPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible       = false;
       o._workspace     = null;
       o._layer         = null;
@@ -63557,7 +63421,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonLightPropertyFrame = function FDsCommonLightPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible      = false;
       o._workspace    = null;
       o._activeSpace  = null;
@@ -63590,7 +63454,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterial1Frame = function FDsCommonMaterial1Frame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace           = null;
       o._activeMaterial        = null;
       o._controlOptionDouble   = null;
@@ -63732,7 +63596,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterial2Frame = function FDsCommonMaterial2Frame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace              = null;
       o._activeMaterial           = null;
       o._controlDiffuseViewColor  = null;
@@ -63805,7 +63669,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialDialog = function FDsCommonMaterialDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.MaterialDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -63837,12 +63701,12 @@ with(MO){
    }
    MO.FDsCommonMaterialDialog_onConfirmLoad = function FDsCommonMaterialDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMaterialDialog_onConfirmClick = function FDsCommonMaterialDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Material');
       xsprite.set('space_guid', o._spaceGuid);
@@ -63850,7 +63714,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('material_guid', o._controlMaterialGuid.get());
       xsprite.set('material_code', o._controlMaterialCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).selectMaterial(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).selectMaterial(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonMaterialDialog_onCancelClick = function FDsCommonMaterialDialog_onCancelClick(event){
@@ -63882,7 +63746,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialPropertyFrame = function FDsCommonMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible        = false;
       o._workspace      = null;
       o._activeMaterial       = null;
@@ -63931,7 +63795,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMaterialReferDialog = function FDsCommonMaterialReferDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName      = 'resource.common.dialog.MaterialReferDialog';
       o._displayModeCd  = null;
       o._controlGuid    = null;
@@ -63958,7 +63822,7 @@ with(MO){
    }
    MO.FDsCommonMaterialReferDialog_onConfirmLoad = function FDsCommonMaterialReferDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMaterialReferDialog_onConfirmClick = function FDsCommonMaterialReferDialog_onConfirmClick(event){
@@ -63989,7 +63853,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMovieDialog = function FDsCommonMovieDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.MovieDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -64021,12 +63885,12 @@ with(MO){
    }
    MO.FDsCommonMovieDialog_onConfirmLoad = function FDsCommonMovieDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonMovieDialog_onConfirmClick = function FDsCommonMovieDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xmovie = xaction.create('Movie');
       xmovie.set('space_guid', o._spaceGuid);
@@ -64036,7 +63900,7 @@ with(MO){
       xmovie.set('label', o._controlLabel.get());
       xmovie.set('interval', o._controlInterval.get());
       xmovie.set('rotation', o._controlRotation.get());
-      var console = RConsole.find(FDrSceneConsole);
+      var console = MO.Console.find(FDrSceneConsole);
       var connection = null;
       connection = console.createMovie(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
@@ -64067,7 +63931,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonMoviePropertyFrame = function FDsCommonMoviePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible         = false;
       o._activeSpace     = null;
       o._activeMovie = null;
@@ -64121,7 +63985,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonProgramDialog = function FDsCommonProgramDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.ProgramDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -64173,7 +64037,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRegionPropertyFrame = function FDsCommonRegionPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible                   = false;
       o._workspace                 = null;
       o._activeSpace               = null;
@@ -64234,7 +64098,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRenderableFrame = function FDsCommonRenderableFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeSpace      = null;
       o._activeRenderable = null;
       o.onBuilded         = FDsCommonRenderableFrame_onBuilded;
@@ -64271,7 +64135,7 @@ with(MO){
       var o = this;
       var item = event.item;
       var materialRefer = item.tag();
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonMaterialReferDialog);
       dialog._frame = o;
       dialog._materialRefer = materialRefer;
       dialog.setContentCode('');
@@ -64285,7 +64149,7 @@ with(MO){
       var program = effect._program;
       var vertexShader = program.vertexShader();
       var fragmentShader = program.fragmentShader();
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonProgramDialog);
       dialog._frameSet = o._frameSet;
       dialog.setProgramCode(effect._code);
       dialog.setVertexSource(vertexShader.source(), vertexShader.targetSource());
@@ -64337,7 +64201,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonRenderablePropertyFrame = function FDsCommonRenderablePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._activeRenderable = null;
       o._activeMaterial   = null;
@@ -64376,7 +64240,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonShaderDialog = function FDsCommonShaderDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.ShaderDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -64427,7 +64291,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonSpacePropertyFrame = function FDsCommonSpacePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible      = false;
       o._workspace    = null;
       o._activeSpace  = null;
@@ -64471,7 +64335,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonSpriteDialog = function FDsCommonSpriteDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.SpriteDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -64503,7 +64367,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onConfirmLoad = function FDsCommonSpriteDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._displayModeCd == EUiDataMode.Insert){
@@ -64521,7 +64385,7 @@ with(MO){
    }
    MO.FDsCommonSpriteDialog_onConfirmClick = function FDsCommonSpriteDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Sprite');
       xsprite.set('space_guid', o._spaceGuid);
@@ -64531,7 +64395,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('template_guid', o._controlTemplateGuid.get());
       xsprite.set('template_code', o._controlTemplateCode.get());
-      var console = RConsole.find(FDrSceneConsole);
+      var console = MO.Console.find(FDrSceneConsole);
       var connection = null;
       connection = console.createSprite(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
@@ -64562,7 +64426,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonTechniquePropertyFrame = function FDsCommonTechniquePropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible              = false;
       o._workspace            = null;
       o._activeSpace          = null;
@@ -64630,10 +64494,10 @@ with(MO){
    MO.FDsCommonTechniquePropertyFrame_construct = function FDsCommonTechniquePropertyFrame_construct(){
       var o = this;
       o.__base.FDuiForm.construct.call(o);
-      var t = o._thread = RClass.create(FThread);
+      var t = o._thread = MO.Class.create(FThread);
       t.setInterval(o._interval);
       t.addProcessListener(o, o.onRefresh);
-      RConsole.find(FThreadConsole).start(t);
+      MO.Console.find(FThreadConsole).start(t);
    }
    MO.FDsCommonTechniquePropertyFrame_loadObject = function FDsCommonTechniquePropertyFrame_loadObject(space, technique){
       var o = this;
@@ -64658,7 +64522,7 @@ with(MO){
 }
 with(MO){
    MO.FDsCommonTemplateDialog = function FDsCommonTemplateDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.common.dialog.TemplateDialog';
       o._displayModeCd        = null;
       o._controlLayerLabel    = null;
@@ -64688,12 +64552,12 @@ with(MO){
    }
    MO.FDsCommonTemplateDialog_onConfirmLoad = function FDsCommonTemplateDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsCommonTemplateDialog_onConfirmClick = function FDsCommonTemplateDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xaction = new TXmlNode('Action');
       var xsprite = xaction.create('Display');
       xsprite.set('space_guid', o._spaceGuid);
@@ -64701,7 +64565,7 @@ with(MO){
       xsprite.set('label', o._controlLabel.get());
       xsprite.set('model_guid', o._controlModelGuid.get());
       xsprite.set('model_code', o._controlModelCode.get());
-      var connection = RConsole.find(FDrTemplateConsole).createDisplay(xaction);
+      var connection = MO.Console.find(FDrTemplateConsole).createDisplay(xaction);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsCommonTemplateDialog_onCancelClick = function FDsCommonTemplateDialog_onCancelClick(event){
@@ -64733,7 +64597,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionCatalogContent = function FDsSolutionCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._iconView             = 'resource.solution.view';
       o._iconViewNot          = 'resource.solution.viewno';
       o._activeSpace          = null;
@@ -64780,7 +64644,7 @@ with(MO){
       var o = this;
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -64796,7 +64660,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -64812,7 +64676,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          if(p.ctrlKey){
             var ms = o._materials;
             for(var i = ms.count() - 1; i >= 0; i--){
@@ -64834,7 +64698,7 @@ with(MO){
       var n = p.treeNode;
       var c = p.treeNodeCell;
       var s = n.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -64843,7 +64707,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -64852,7 +64716,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          var s = o._materials;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -64947,7 +64811,7 @@ with(MO){
    }
    MO.FDsSolutionCatalogContent_showObject = function FDsSolutionCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){
@@ -64969,7 +64833,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionCatalogToolBar = function FDsSolutionCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.private.solution.CatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -65014,16 +64878,16 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionFrameSet = function FDsSolutionFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiFrameSet, MUiStorage);
       o._frameName            = 'resource.private.solution.FrameSet';
       o._storageCode          = o._frameName;
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'List_Toolbar'));
-      o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Property_Ground'));
-      o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'List_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Property_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._pageSize             = 40;
       o._activeResourceCd     = 'private';
       o._activeProjectGuid    = null;
@@ -65062,19 +64926,19 @@ with(MO){
       var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
       spliter.setAlignCd(EUiAlign.Left);
       spliter.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsSolutionCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsSolutionCatalogToolBar);
       control._frameSet = o;
       control.buildDefine(p);
       o._frameCatalogToolbar.push(control);
-      var control = o._catalogContent = RClass.create(FDsSolutionCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsSolutionCatalogContent);
       control._frameSet = o;
       control.build(p);
       o._frameCatalogContent.push(control);
-      var control = o._listToolbar = RClass.create(FDsSolutionListToolBar);
+      var control = o._listToolbar = MO.Class.create(FDsSolutionListToolBar);
       control._frameSet = o;
       control.buildDefine(p);
       o._frameListToolbar.push(control);
-      var control = o._listContent = RClass.create(FDsSolutionListContent);
+      var control = o._listContent = MO.Class.create(FDsSolutionListContent);
       control._frameSet = o;
       control.build(p);
       o._frameListContent.push(control);
@@ -65089,7 +64953,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePropertyProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -65105,7 +64969,7 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(control, FDsSolutionListItem)){
+      if(MO.Class.isClass(control, FDsSolutionListItem)){
          var f = o.findPropertyFrame(EDsFrame.SolutionProjectPropertyFrame);
          f.show();
          f.loadObject(control);
@@ -65132,7 +64996,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionListContent = function FDsSolutionListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._activeControl    = null;
       o._activeGuid       = null;
       o._refreshButton    = null;
@@ -65169,7 +65033,7 @@ with(MO){
             item.propertyLoad(xnode);
             item._typeCd = xnode.get('type');
             item._guid = xnode.get('guid');
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
@@ -65202,7 +65066,7 @@ with(MO){
       o._pageSize = pageSize;
       o._page = page;
       RWindow.disable();
-      var connection = RConsole.find(FDrProjectConsole).doList(serach, null, pageSize, page);
+      var connection = MO.Console.find(FDrProjectConsole).doList(serach, null, pageSize, page);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsSolutionListContent_serviceResearch = function FDsSolutionListContent_serviceResearch(){
@@ -65216,7 +65080,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionListItem = function FDsSolutionListItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
       o.onBuild      = FDsSolutionListItem_onBuild;
       o.refreshStyle = FDsSolutionListItem_refreshStyle;
       return o;
@@ -65236,7 +65100,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionListToolBar = function FDsSolutionListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.private.solution.ListToolBar';
       o._pageCount       = 0;
       o._page            = 0;
@@ -65323,7 +65187,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionMenuBar = function FDsSolutionMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._frameName      = 'resource.private.solution.MenuBar';
       o._refreshButton  = null;
       o._saveButton     = null;
@@ -65345,27 +65209,27 @@ with(MO){
    }
    MO.FDsSolutionMenuBar_onCreateClick = function FDsSolutionMenuBar_onCreateClick(event){
       var o = this;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsSolutionProjectDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsSolutionProjectDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog.showPosition(EUiPosition.Center);
    }
    MO.FDsSolutionMenuBar_onDeleteLoad = function FDsSolutionMenuBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
    }
    MO.FDsSolutionMenuBar_onDeleteExecute = function FDsSolutionMenuBar_onDeleteExecute(event){
       var o = this;
       if(event.resultCd != EResult.Success){
-         RConsole.find(FDuiDesktopConsole).hide();
+         MO.Console.find(FDuiDesktopConsole).hide();
          return
       }
       var listContent = o._frameSet._listContent;
       var guid = listContent._activeGuid;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrProjectConsole).doDelete(guid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsSolutionMenuBar_onDeleteClick = function FDsSolutionMenuBar_onDeleteClick(event){
@@ -65374,7 +65238,7 @@ with(MO){
       if(!item){
          return alert('请选中后再点击删除');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前项目？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前项目？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsSolutionMenuBar_construct = function FDsSolutionMenuBar_construct(){
@@ -65388,7 +65252,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionProjectDialog = function FDsSolutionProjectDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.private.solution.ProjectDialog';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -65420,10 +65284,10 @@ with(MO){
       RWindow.disable();
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
-      var project = RClass.create(FDrProject);
+      var project = MO.Class.create(FDrProject);
       project.setCode(code);
       project.setLabel(label);
-      var connection = RConsole.find(FDrProjectConsole).doCreate(project);
+      var connection = MO.Console.find(FDrProjectConsole).doCreate(project);
       connection.addLoadListener(o, o.onConfirmLoad);
    }
    MO.FDsSolutionProjectDialog_onCancelClick = function FDsSolutionProjectDialog_onCancelClick(event){
@@ -65440,7 +65304,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionProjectProperty = function FDsSolutionProjectProperty(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._visible          = false;
       o._workspace        = null;
       o._activeSpace      = null;
@@ -65486,7 +65350,7 @@ with(MO){
       var o = this;
       var guid = control._guid;
       o._controlGuid.set(guid);
-      var connection = RConsole.find(FDrProjectConsole).doQuery(guid);
+      var connection = MO.Console.find(FDrProjectConsole).doQuery(guid);
       connection.addLoadListener(o, o.onLoadProject);
    }
    MO.FDsSolutionProjectProperty_dispose = function FDsSolutionProjectProperty_dispose(){
@@ -65496,7 +65360,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionPropertyContent = function FDsSolutionPropertyContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeSpace         = null;
       o._canvasModeCd        = EDsCanvasMode.Drop;
       o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -65548,7 +65412,7 @@ with(MO){
          return;
       }
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -65564,7 +65428,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -65739,12 +65603,12 @@ with(MO){
    MO.FDsSolutionPropertyContent_construct = function FDsSolutionPropertyContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
    MO.FDsSolutionPropertyContent_innerSelectDisplay = function FDsSolutionPropertyContent_innerSelectDisplay(p){
@@ -65753,7 +65617,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -65784,7 +65648,7 @@ with(MO){
    }
    MO.FDsSolutionPropertyContent_loadMeshByGuid = function FDsSolutionPropertyContent_loadMeshByGuid(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -65795,7 +65659,7 @@ with(MO){
    }
    MO.FDsSolutionPropertyContent_loadMeshByCode = function FDsSolutionPropertyContent_loadMeshByCode(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -65812,7 +65676,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionPropertyToolBar = function FDsSolutionPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName           = 'resource.solution.PropertyToolBar';
       o._controlInsertButton = null;
       o._controlUpdateButton = null;
@@ -65844,7 +65708,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCanvasContent = function FDsProjectCanvasContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._refreshButton = null;
       o._saveButton    = null;
       o._runButton     = null;
@@ -65877,7 +65741,7 @@ with(MO){
             item.propertyLoad(xnode);
             item._typeCd = xnode.get('type');
             item._guid = xnode.get('guid');
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
@@ -65897,7 +65761,7 @@ with(MO){
    MO.FDsProjectCanvasContent_serviceSearch = function FDsProjectCanvasContent_serviceSearch(typeCd, serach, pageSize, page){
       var o = this;
       RWindow.disable();
-      var connection = RConsole.find(FDrResourceConsole).fetch(typeCd, serach, null, pageSize, page);
+      var connection = MO.Console.find(FDrResourceConsole).fetch(typeCd, serach, null, pageSize, page);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsProjectCanvasContent_dispose = function FDsProjectCanvasContent_dispose(){
@@ -65907,7 +65771,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCanvasPreviewToolBar = function FDsProjectCanvasPreviewToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.CanvasPreviewToolBar';
       o._pageCount       = 0;
       o._page            = 0;
@@ -65989,7 +65853,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCanvasSpaceToolBar = function FDsProjectCanvasSpaceToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.CanvasSpaceToolBar';
       o._pageCount       = 0;
       o._page            = 0;
@@ -66071,7 +65935,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCatalogContent = function FDsProjectCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._iconView             = 'design3d.mesh.view';
       o._iconViewNot          = 'design3d.mesh.viewno';
       o._activeSpace          = null;
@@ -66113,7 +65977,7 @@ with(MO){
       var o = this;
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -66129,7 +65993,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -66145,7 +66009,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          if(p.ctrlKey){
             var ms = o._materials;
             for(var i = ms.count() - 1; i >= 0; i--){
@@ -66167,7 +66031,7 @@ with(MO){
       var n = p.treeNode;
       var c = p.treeNodeCell;
       var s = n.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -66176,7 +66040,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -66185,7 +66049,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          var s = o._materials;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -66276,7 +66140,7 @@ with(MO){
    }
    MO.FDsProjectCatalogContent_showObject = function FDsProjectCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){
@@ -66298,7 +66162,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCatalogToolBar = function FDsProjectCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.CatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -66343,17 +66207,17 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectFrameSet = function FDsProjectFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
       o._frameName            = 'resource.project.FrameSet';
-      o._stylePageControl     = RClass.register(o, new AStyle('_stylePageControl', 'PageControl'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasGround    = RClass.register(o, new AStyle('_styleCanvasGround', 'Canvas_Ground'));
-      o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._stylePageControl     = MO.Class.register(o, new AStyle('_stylePageControl', 'PageControl'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasGround    = MO.Class.register(o, new AStyle('_styleCanvasGround', 'Canvas_Ground'));
+      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -66430,35 +66294,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -66475,7 +66339,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -66496,7 +66360,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectMenuBar = function FDsProjectMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._refreshButton = null;
       o._saveButton    = null;
       o._runButton     = null;
@@ -66517,7 +66381,7 @@ with(MO){
       var resource = space.resource();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      RConsole.find(FE3sMeshConsole).update(xconfig);
+      MO.Console.find(FE3sMeshConsole).update(xconfig);
    }
    MO.FDsProjectMenuBar_construct = function FDsProjectMenuBar_construct(){
       var o = this;
@@ -66530,7 +66394,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectPropertyContent = function FDsProjectPropertyContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeSpace         = null;
       o._canvasModeCd        = EDsCanvasMode.Drop;
       o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -66586,7 +66450,7 @@ with(MO){
          return;
       }
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -66602,7 +66466,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -66777,12 +66641,12 @@ with(MO){
    MO.FDsProjectPropertyContent_construct = function FDsProjectPropertyContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
    MO.FDsProjectPropertyContent_innerSelectDisplay = function FDsProjectPropertyContent_innerSelectDisplay(p){
@@ -66791,7 +66655,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -66951,7 +66815,7 @@ with(MO){
    }
    MO.FDsProjectPropertyContent_loadMeshByGuid = function FDsProjectPropertyContent_loadMeshByGuid(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -66962,7 +66826,7 @@ with(MO){
    }
    MO.FDsProjectPropertyContent_loadMeshByCode = function FDsProjectPropertyContent_loadMeshByCode(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -66979,7 +66843,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectPropertyToolBar = function FDsProjectPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.project.PropertyToolBar';
       o._controlInsertButton   = null;
       o._controlUpdateButton   = null;
@@ -67025,7 +66889,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneCatalogContent = function FDsProjectSceneCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._iconView             = 'design3d.mesh.view';
       o._iconViewNot          = 'design3d.mesh.viewno';
       o._activeSpace          = null;
@@ -67067,7 +66931,7 @@ with(MO){
       var o = this;
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -67083,7 +66947,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -67099,7 +66963,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          if(p.ctrlKey){
             var ms = o._materials;
             for(var i = ms.count() - 1; i >= 0; i--){
@@ -67121,7 +66985,7 @@ with(MO){
       var n = p.treeNode;
       var c = p.treeNodeCell;
       var s = n.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -67130,7 +66994,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -67139,7 +67003,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FG3dMaterial)){
+      if(MO.Class.isClass(s, FG3dMaterial)){
          var s = o._materials;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -67230,7 +67094,7 @@ with(MO){
    }
    MO.FDsProjectSceneCatalogContent_showObject = function FDsProjectSceneCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){
@@ -67252,7 +67116,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneCatalogToolBar = function FDsProjectSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.SceneCatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -67297,7 +67161,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCatalogToolBar = function FDsProjectCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName       = 'resource.project.CatalogToolBar';
       o._canvasModeCd    = EDsCanvasMode.Drop;
       o._dropButton      = null;
@@ -67342,7 +67206,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneDialog = function FDsProjectSceneDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'design3d.project.SceneDialog';
       o._dataModeCd           = null;
       o._controlParentLabel   = null;
@@ -67368,20 +67232,20 @@ with(MO){
    }
    MO.FDsProjectSceneDialog_onConfirmLoad = function FDsProjectSceneDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var listContent = o._frameSet._sceneListContent;
       listContent.serviceRelist();
    }
    MO.FDsProjectSceneDialog_onConfirmClick = function FDsProjectSceneDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
-      var sceneConsole = RConsole.find(FDrSceneConsole);
+      var sceneConsole = MO.Console.find(FDrSceneConsole);
       var connection = null;
       if(o._dataModeCd == EUiDataMode.Insert){
-         var scene = RClass.create(FDrScene);
+         var scene = MO.Class.create(FDrScene);
          scene._projectGuid = o._projectGuid;
          scene._code = code;
          scene._label = label;
@@ -67421,7 +67285,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneListContent = function FDsProjectSceneListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._activeItem       = null;
       o._activeGuid       = null;
       o._refreshButton    = null;
@@ -67455,12 +67319,12 @@ with(MO){
             item._guid = xnode.get('guid');
             item._code = xnode.get('code');
             item._updateDate = xnode.get('update_date');
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
       }
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsProjectSceneListContent_construct = function FDsProjectSceneListContent_construct(){
       var o = this;
@@ -67482,9 +67346,9 @@ with(MO){
    MO.FDsProjectSceneListContent_serviceList = function FDsProjectSceneListContent_serviceList(guid){
       var o = this;
       o._activeGuid = guid;
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       var url = '/cloud.solution.project.ws?action=listProject&project_guid=' + guid;
-      var connection = RConsole.find(FXmlConsole).sendAsync(url);
+      var connection = MO.Console.find(FXmlConsole).sendAsync(url);
       connection.addLoadListener(o, o.onServiceLoad);
       return connection;
    }
@@ -67499,7 +67363,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneListItem = function FDsProjectSceneListItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
       o.onBuild      = FDsProjectSceneListItem_onBuild;
       o.refreshStyle = FDsProjectSceneListItem_refreshStyle;
       return o;
@@ -67519,7 +67383,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneListToolBar = function FDsProjectSceneListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName           = 'resource.project.SceneListToolBar';
       o._controlSceneCreate  = null;
       o._controlSceneDelete  = null;
@@ -67541,10 +67405,10 @@ with(MO){
    MO.FDsProjectSceneListToolBar_onSceneCreateClick = function FDsProjectSceneListToolBar_onSceneCreateClick(event){
       var o = this;
       var projectGuid = o._frameSet._activeGuid;
-      if(RString.isEmpty(projectGuid)){
+      if(MO.Lang.String.isEmpty(projectGuid)){
          throw new TError(o, 'Project guid is empty.');
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsProjectSceneDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsProjectSceneDialog);
       dialog._frameSet = o._frameSet;
       dialog._projectGuid = projectGuid;
       dialog.setDataCode('');
@@ -67554,7 +67418,7 @@ with(MO){
    }
    MO.FDsProjectSceneListToolBar_onSceneDeleteLoad = function FDsProjectSceneListToolBar_onSceneDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var listContent = o._frameSet._sceneListContent;
       listContent.serviceRelist();
    }
@@ -67565,8 +67429,8 @@ with(MO){
       }
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).doDelete(item._guid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).doDelete(item._guid);
       connection.addLoadListener(o, o.onSceneDeleteLoad);
    }
    MO.FDsProjectSceneListToolBar_onSceneDeleteClick = function FDsProjectSceneListToolBar_onSceneDeleteClick(event){
@@ -67574,9 +67438,9 @@ with(MO){
       var listContent = o._frameSet._sceneListContent;
       var item = listContent.focusItem();
       if(!item){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中场景后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中场景后，再点击操作。');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前场景？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前场景？');
       dialog.addResultListener(o, o.onSceneDeleteExecute);
    }
    MO.FDsProjectSceneListToolBar_construct = function FDsProjectSceneListToolBar_construct(){
@@ -67590,7 +67454,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectTabBar = function FDsProjectTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName             = 'design3d.project.TabBar';
       o._resourceTypeCd        = 'mesh';
       o._controlProjectButton  = null;
@@ -67628,18 +67492,18 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectWorkspace = function FDsProjectWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.project.Workspace';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyToolbar = RClass.register(o, new AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyToolbar = MO.Class.register(o, new AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._resourceTypeCd       = 'project';
       o._frameToolBar         = null;
       o._frameStatusBar       = null;
@@ -67678,7 +67542,7 @@ with(MO){
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
-      var c = o._tabBar = RClass.create(FDsProjectTabBar);
+      var c = o._tabBar = MO.Class.create(FDsProjectTabBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -67703,35 +67567,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -67750,26 +67614,26 @@ with(MO){
       var frameSet = o._frameSets.get(name);
       if(!frameSet){
          if(name == EDsFrameSet.ProjectFrameSet){
-            var menuBar = RClass.create(FDsProjectMenuBar);
+            var menuBar = MO.Class.create(FDsProjectMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ResourceFrameSet){
-            var menuBar = RClass.create(FDsResourceMenuBar);
+            var menuBar = MO.Class.create(FDsResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.MeshFrameSet){
-            var menuBar = RClass.create(FDsMeshMenuBar);
+            var menuBar = MO.Class.create(FDsMeshMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
+            frameSet = MO.Console.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -67803,7 +67667,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -67827,7 +67691,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceCatalogContent = function FDsResourceCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._activeSpace          = null;
       o._materials            = null;
       o.onBuild               = FDsResourceCatalogContent_onBuild;
@@ -67884,7 +67748,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceCatalogToolBar = function FDsResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName                   = 'resource.resource.CatalogToolBar';
       o._controlFolderCreateButton   = null;
       o._controlFolderDeleteButton   = null;
@@ -67923,7 +67787,7 @@ with(MO){
          parentGuid = node.guid();
          parentLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._parentGuid = parentGuid;
@@ -67934,7 +67798,7 @@ with(MO){
    }
    MO.FDsResourceCatalogToolBar_onFolderDeleteLoad = function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -67950,9 +67814,9 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
-      var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
+      var connection = MO.Console.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
    }
    MO.FDsResourceCatalogToolBar_onFolderDeleteClick = function FDsResourceCatalogToolBar_onFolderDeleteClick(event){
@@ -67960,9 +67824,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsResourceCatalogToolBar_onFolderPropertyClick = function FDsResourceCatalogToolBar_onFolderPropertyClick(event){
@@ -67970,13 +67834,13 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
          parentLabel = node._parent.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._nodeGuid = node._guid;
@@ -68000,7 +67864,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceCreateDialog = function FDsResourceCreateDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName        = 'resource.resource.CreateDialog';
       o._nodeGuid         = null;
       o._controlNodeLabel = null;
@@ -68028,36 +67892,36 @@ with(MO){
    MO.FDsResourceCreateDialog_onConfirmLoad = function FDsResourceCreateDialog_onConfirmLoad(event){
       var o = this;
       o.hide();
-      RConsole.find(FDuiDesktopConsole).hide();
-      if(RConsole.find(FDuiResultConsole).checkEvent(event)){
+      MO.Console.find(FDuiDesktopConsole).hide();
+      if(MO.Console.find(FDuiResultConsole).checkEvent(event)){
          var frame = o._frameSet._listContent;
          frame.serviceResearch();
       }
    }
    MO.FDsResourceCreateDialog_onConfirmClick = function FDsResourceCreateDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var code = o._controlCode.get();
       var label = o._controlLabel.get();
       var connection = null;
       switch(o._modeCd){
          case EE3sResource.Material:
-            var material = RClass.create(FDrMaterial);
+            var material = MO.Class.create(FDrMaterial);
             material.setCode(code);
             material.setLabel(label);
-            connection = RConsole.find(FDrMaterialConsole).doCreate(material);
+            connection = MO.Console.find(FDrMaterialConsole).doCreate(material);
             break;
          case EE3sResource.Template:
-            var template = RClass.create(FDrTemplate);
+            var template = MO.Class.create(FDrTemplate);
             template.setCode(code);
             template.setLabel(label);
-            connection = RConsole.find(FDrTemplateConsole).doCreate(template);
+            connection = MO.Console.find(FDrTemplateConsole).doCreate(template);
             break;
          case EE3sResource.Scene:
-            var scene = RClass.create(FDrScene);
+            var scene = MO.Class.create(FDrScene);
             scene.setCode(code);
             scene.setLabel(label);
-            connection = RConsole.find(FDrSceneConsole).doCreate(scene);
+            connection = MO.Console.find(FDrSceneConsole).doCreate(scene);
             break;
          default:
             throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
@@ -68101,7 +67965,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceFolderDialog = function FDsResourceFolderDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.FolderDialog';
       o._dataModeCd           = null;
       o._controlParentLabel   = null;
@@ -68128,7 +67992,7 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_onConfirmLoad = function FDsResourceFolderDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._dataModeCd == EUiDataMode.Insert){
@@ -68146,9 +68010,9 @@ with(MO){
    }
    MO.FDsResourceFolderDialog_onConfirmClick = function FDsResourceFolderDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var label = o._controlLabel.get();
-      var resourceConsole = RConsole.find(FDrResourceConsole);
+      var resourceConsole = MO.Console.find(FDrResourceConsole);
       var connection = null;
       if(o._dataModeCd == EUiDataMode.Insert){
          connection = resourceConsole.doFolderCreate(o._parentGuid, null, label);
@@ -68186,11 +68050,11 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceFrameSet = function FDsResourceFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o = MO.Class.inherits(this, o, FDsFrameSet);
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._resourceTypeCd       = 'picture';
       o._frameCatalog         = null;
       o._frameCatalogToolbar  = null;
@@ -68220,35 +68084,35 @@ with(MO){
          return;
       }
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dStage)){
+      if(MO.Class.isClass(select, FE3dStage)){
          var frame = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          var frame = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(select, FE3dMeshDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(select, FE3dMeshRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -68276,7 +68140,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceImportDialog = function FDsResourceImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.ImportDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -68306,10 +68170,10 @@ with(MO){
       var o = this;
       var name = o._controlFile.get();
       var code = RFile.name(name);
-      if(RString.isEmpty(o._controlCode.get())){
+      if(MO.Lang.String.isEmpty(o._controlCode.get())){
          o._controlCode.set(code);
       }
-      if(RString.isEmpty(o._controlLabel.get())){
+      if(MO.Lang.String.isEmpty(o._controlLabel.get())){
          o._controlLabel.set(code);
       }
    }
@@ -68331,22 +68195,22 @@ with(MO){
       }
       url += '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsResourceImportDialog_onConfirmLoad = function FDsResourceImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
    }
    MO.FDsResourceImportDialog_onConfirmClick = function FDsResourceImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -68384,7 +68248,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceListContent = function FDsResourceListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._contentFlag      = null;
       o._contentTypeCd    = EE3sResource.All;
       o._contentSerach    = '';
@@ -68432,7 +68296,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsResourceListContent_construct = function FDsResourceListContent_construct(){
       var o = this;
@@ -68493,8 +68357,8 @@ with(MO){
       o._contentOrder = order;
       o._contentPageSize = pageSize;
       o._contentPage = page;
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var connection = RConsole.find(FDrResourceConsole).doList(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var connection = MO.Console.find(FDrResourceConsole).doList(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsResourceListContent_serviceResearch = function FDsResourceListContent_serviceResearch(){
@@ -68508,10 +68372,10 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceListItem = function FDsResourceListItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
-      o._styleTypePanel        = RClass.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypePrivateLabel = RClass.register(o, new AStyle('_styleTypePublicLabel'));
-      o._styleTypePublicLabel  = RClass.register(o, new AStyle('_styleTypePrivateLabel'));
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
+      o._styleTypePanel        = MO.Class.register(o, new AStyle('_styleTypePanel'));
+      o._styleTypePrivateLabel = MO.Class.register(o, new AStyle('_styleTypePublicLabel'));
+      o._styleTypePublicLabel  = MO.Class.register(o, new AStyle('_styleTypePrivateLabel'));
       o.onBuild         = FDsResourceListItem_onBuild;
       o.setTypeLabel    = FDsResourceListItem_setTypeLabel;
       o.refreshStyle    = FDsResourceListItem_refreshStyle;
@@ -68543,7 +68407,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceListToolBar = function FDsResourceListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiToolBar, MUiStorage);
       o._dropButton       = null;
       o._selectButton     = null;
       o._translateButton  = null;
@@ -68683,7 +68547,7 @@ with(MO){
       if(types != ''){
          types = types.substring(1);
       }
-      if(RString.isEmpty(types)){
+      if(MO.Lang.String.isEmpty(types)){
          types = 'All';
       }
       return types;
@@ -68725,7 +68589,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceMenuBar = function FDsResourceMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlImportPicture  = null;
       o._controlImportModel    = null;
       o._controlCreateMaterial = null;
@@ -68759,7 +68623,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -68778,7 +68642,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -68797,7 +68661,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -68816,7 +68680,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -68835,7 +68699,7 @@ with(MO){
          nodeGuid = node.guid();
          nodeLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceCreateDialog);
       dialog._frameSet = o._frameSet;
       dialog._workspace = o._workspace;
       dialog._nodeGuid = nodeGuid;
@@ -68845,21 +68709,21 @@ with(MO){
    }
    MO.FDsResourceMenuBar_onDeleteLoad = function FDsResourceMenuBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var frame = o._frameSet._listContent;
       frame.serviceResearch();
    }
    MO.FDsResourceMenuBar_onDeleteExecute = function FDsResourceMenuBar_onDeleteExecute(event){
       var o = this;
       if(event.resultCd != EResult.Success){
-         RConsole.find(FDuiDesktopConsole).hide();
+         MO.Console.find(FDuiDesktopConsole).hide();
          return
       }
       var item = o._frameSet._listContent.focusItem();
       var typeCd = item._typeCd;
       var guid = item._guid;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrResourceConsole).doDelete(typeCd, guid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrResourceConsole).doDelete(typeCd, guid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsResourceMenuBar_onDeleteClick = function FDsResourceMenuBar_onDeleteClick(event){
@@ -68868,12 +68732,12 @@ with(MO){
       if(!item){
          return alert('请选中后再点击删除');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsResourceMenuBar_onShareLoad = function FDsResourceMenuBar_onShareLoad(){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsResourceMenuBar_onShareClick = function FDsResourceMenuBar_onShareClick(event){
       var o = this;
@@ -68890,8 +68754,8 @@ with(MO){
          shareCd = 'Private';
       }
       var guid = item._guid;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrResourceConsole).doShare(guid, shareCd);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrResourceConsole).doShare(guid, shareCd);
       connection.addLoadListener(o, o.onShareLoad);
    }
    MO.FDsResourceMenuBar_construct = function FDsResourceMenuBar_construct(){
@@ -68905,7 +68769,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourcePropertyContent = function FDsResourcePropertyContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeSpace         = null;
       o._canvasModeCd        = EDsCanvasMode.Drop;
       o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -68961,7 +68825,7 @@ with(MO){
          return;
       }
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -68977,7 +68841,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -69152,12 +69016,12 @@ with(MO){
    MO.FDsResourcePropertyContent_construct = function FDsResourcePropertyContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
    MO.FDsResourcePropertyContent_innerSelectDisplay = function FDsResourcePropertyContent_innerSelectDisplay(p){
@@ -69166,7 +69030,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -69326,7 +69190,7 @@ with(MO){
    }
    MO.FDsResourcePropertyContent_loadMeshByGuid = function FDsResourcePropertyContent_loadMeshByGuid(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -69337,7 +69201,7 @@ with(MO){
    }
    MO.FDsResourcePropertyContent_loadMeshByCode = function FDsResourcePropertyContent_loadMeshByCode(p){
       var o = this;
-      var rmc = RConsole.find(FE3dMeshConsole);
+      var rmc = MO.Console.find(FE3dMeshConsole);
       if(o._activeSpace != null){
          rmc.free(o._activeSpace);
       }
@@ -69354,7 +69218,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourcePropertyToolBar = function FDsResourcePropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.resource.PropertyToolBar';
       o._controlInsertButton   = null;
       o._controlUpdateButton   = null;
@@ -69392,7 +69256,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceSelectCatalogToolBar = function FDsResourceSelectCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName          = 'resource.resource.SelectCatalogToolBar';
       o._controlFolderOpen  = null;
       o._controlFolderClose = null;
@@ -69425,11 +69289,11 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceSelectDialog = function FDsResourceSelectDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.SelectDialog';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
       o._dataModeCd           = null;
       o._controlParentLabel   = null;
       o._controlLabel         = null;
@@ -69458,22 +69322,22 @@ with(MO){
       var splitterCatalog = o._catalogSplitter = o.searchControl('catalogSpliter');
       splitterCatalog.setAlignCd(EUiAlign.Left);
       splitterCatalog.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsResourceSelectCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsResourceSelectCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsResourceCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameCatalogContent.push(control);
-      var control = o._listToolBar = RClass.create(FDsResourceSelectListToolBar);
+      var control = o._listToolBar = MO.Class.create(FDsResourceSelectListToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameListToolBar.push(control);
-      var control = o._listContent = RClass.create(FDsResourceListContent);
+      var control = o._listContent = MO.Class.create(FDsResourceListContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -69482,7 +69346,7 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_onConfirmLoad = function FDsResourceSelectDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       var catalog = o._frameSet._catalogContent;
       if(o._dataModeCd == EUiDataMode.Insert){
@@ -69500,9 +69364,9 @@ with(MO){
    }
    MO.FDsResourceSelectDialog_onConfirmClick = function FDsResourceSelectDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var label = o._controlLabel.get();
-      var resourceConsole = RConsole.find(FDrResourceConsole);
+      var resourceConsole = MO.Console.find(FDrResourceConsole);
       var connection = null;
       if(o._dataModeCd == EUiDataMode.Insert){
          connection = resourceConsole.doFolderCreate(o._parentGuid, null, label);
@@ -69540,7 +69404,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceSelectListToolBar = function FDsResourceSelectListToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiToolBar, MUiStorage);
       o._frameName        = 'resource.resource.SelectListToolBar';
       o._storageCode      = o._frameName;
       o._dropButton       = null;
@@ -69668,7 +69532,7 @@ with(MO){
       if(types != ''){
          types = types.substring(1);
       }
-      if(RString.isEmpty(types)){
+      if(MO.Lang.String.isEmpty(types)){
          types = 'All';
       }
       return 'All';
@@ -69710,7 +69574,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceTabBar = function FDsResourceTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName             = 'design3d.resource.TabBar';
       o._resourceTypeCd        = 'mesh';
       o._controlPictureButton  = null;
@@ -69758,18 +69622,18 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceWorkspace = function FDsResourceWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.resource.Workspace';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
-      o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._resourceTypeCd       = 'picture';
       o._frameToolBar         = null;
       o._frameStatusBar       = null;
@@ -69805,12 +69669,12 @@ with(MO){
       var hTable = RBuilder.createTable(p);
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
-      var c = o._toolbar = RClass.create(FDsResourceMenuBar);
+      var c = o._toolbar = MO.Class.create(FDsResourceMenuBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
       hCell.appendChild(c._hPanel);
-      var c = o._tabBar = RClass.create(FDsResourceTabBar);
+      var c = o._tabBar = MO.Class.create(FDsResourceTabBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -69819,7 +69683,7 @@ with(MO){
       hCell.vAlign = 'bottom';
       hCell.appendChild(c._hPanel);
       o._frameToolBar._hPanel.appendChild(hTable);
-      var frameSet = o._frameSet = RClass.create(FDsResourceFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsResourceFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -69839,35 +69703,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -69884,7 +69748,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -69906,13 +69770,13 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapCanvasContent = function FDsBitmapCanvasContent(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvas);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvas);
       return o;
    }
 }
 with(MO){
    MO.FDsBitmapCanvasToolBar = function FDsBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._canvasModeCd      = EDsCanvasMode.Drop;
       o._controlSize1      = null;
       o._controlSize2      = null;
@@ -69957,7 +69821,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapFrameSet = function FDsBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCanvas          = null;
       o._frameCanvasToolBar   = null;
       o._frameCanvasContent   = null;
@@ -69996,7 +69860,7 @@ with(MO){
    MO.FDsBitmapFrameSet_loadByGuid = function FDsBitmapFrameSet_loadByGuid(guid){
       var o = this;
       o._activeGuid = guid;
-      var bitmap = o._activeResource = RConsole.find(FDrBitmapConsole).query(guid);
+      var bitmap = o._activeResource = MO.Console.find(FDrBitmapConsole).query(guid);
       var canvas = o._canvasContent;
       canvas.loadByGuid(guid);
       var frame = o.findPropertyFrame(EDsFrame.BitmapPropertyFrame);
@@ -70005,7 +69869,7 @@ with(MO){
    MO.FDsBitmapFrameSet_loadByCode = function FDsBitmapFrameSet_loadByCode(code){
       var o = this;
       o._activeCode = code;
-      var connection = RConsole.find(FDrBitmapConsole).query(code);
+      var connection = MO.Console.find(FDrBitmapConsole).query(code);
       connection.addLoadListener(o, o.onDataLoaded);
    }
    MO.FDsBitmapFrameSet_reload = function FDsBitmapFrameSet_reload(){
@@ -70018,7 +69882,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapImportDialog = function FDsBitmapImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.bitmap.ImportDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -70046,21 +69910,21 @@ with(MO){
       var guid = resource.guid();
       var url = '/cloud.resource.bitmap.wv?do=updateData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsBitmapImportDialog_onConfirmLoad = function FDsBitmapImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       o._frameSet.reload();
    }
    MO.FDsBitmapImportDialog_onConfirmClick = function FDsBitmapImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -70078,7 +69942,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapMenuBar = function FDsBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlBack    = null;
       o._controlSave    = null;
       o._controlCapture = null;
@@ -70095,19 +69959,19 @@ with(MO){
       o.__base.FDuiMenuBar.onBuilded.call(o, event);
    }
    MO.FDsBitmapMenuBar_onSaveLoad = function FDsBitmapMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsBitmapMenuBar_onSaveClick = function FDsBitmapMenuBar_onSaveClick(event){
       var o = this;
       var bitmap = o._frameSet._activeResource;
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrBitmapConsole).doUpdate(bitmap);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrBitmapConsole).doUpdate(bitmap);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsBitmapMenuBar_onImportClick = function FDsBitmapMenuBar_onImportClick(event){
       var o = this;
       var resource = o._frameSet._activeResource;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsBitmapImportDialog);
       dialog._resource = resource;
       dialog._frameSet = o._frameSet;
       dialog.showPosition(EUiPosition.Center);
@@ -70123,7 +69987,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapPropertyFrame = function FDsBitmapPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeBitmap      = null;
       o._controlGuid       = null;
       o._controlCode       = null;
@@ -70169,7 +70033,7 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapPropertyToolBar = function FDsBitmapPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.bitmap.PropertyToolBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsBitmapPropertyToolBar_onBuilded;
@@ -70197,12 +70061,12 @@ with(MO){
 }
 with(MO){
    MO.FDsBitmapWorkspace = function FDsBitmapWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -70231,11 +70095,11 @@ with(MO){
       frame._hPanel.className = o.styleName('Body_Ground');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var menuBar = o._menuBar = RClass.create(FDsBitmapMenuBar);
+      var menuBar = o._menuBar = MO.Class.create(FDsBitmapMenuBar);
       menuBar._workspace = o;
       menuBar.buildDefine(p);
       o._frameToolBar.push(menuBar);
-      var frameSet = o._frameSet = RClass.create(FDsBitmapFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsBitmapFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -70255,35 +70119,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -70300,7 +70164,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -70322,13 +70186,13 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCanvasBitmap = function FDsMaterialCanvasBitmap(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvas);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvas);
       return o;
    }
 }
 with(MO){
    MO.FDsMaterialCanvasContent = function FDsMaterialCanvasContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._activeResource      = null;
       o._activeMaterial      = null;
       o._capturePosition     = null;
@@ -70354,7 +70218,7 @@ with(MO){
       var o = this;
       o.__base.FDsCanvas.onBuild.call(o, p);
       var hPanel = o._hPanel;
-      var space = o._activeSpace = RClass.create(FE3dSimpleStage);
+      var space = o._activeSpace = MO.Class.create(FE3dSimpleStage);
       space.linkGraphicContext(o);
       space.selectTechnique(o, FE3dGeneralTechnique);
       space.region().backgroundColor().set(1, 1, 1, 1);
@@ -70372,7 +70236,7 @@ with(MO){
    MO.FDsMaterialCanvasContent_onLoaded = function FDsMaterialCanvasContent_onLoaded(event){
       var o = this;
       var material = o._activeMaterial = o._activeResource.material();
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialCanvasContent_oeResize = function FDsMaterialCanvasContent_oeResize(p){
       var o = this;
@@ -70394,8 +70258,8 @@ with(MO){
    MO.FDsMaterialCanvasContent_construct = function FDsMaterialCanvasContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureCameraPosition = new SPoint3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureCameraPosition = new MO.SPoint3();
    }
    MO.FDsMaterialCanvasContent_selectDisplay = function FDsMaterialCanvasContent_selectDisplay(p){
       var o = this;
@@ -70416,8 +70280,8 @@ with(MO){
    }
    MO.FDsMaterialCanvasContent_loadByGuid = function FDsMaterialCanvasContent_loadByGuid(guid){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var resource = o._activeResource = RConsole.find(FE3sMaterialConsole).loadByGuid(guid);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var resource = o._activeResource = MO.Console.find(FE3sMaterialConsole).loadByGuid(guid);
       resource.clearLoadListeners();
       resource.addLoadListener(o, o.onLoaded);
    }
@@ -70428,7 +70292,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCanvasToolBar = function FDsMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._controlSize1      = null;
       o._controlSize2      = null;
       o._controlSize3      = null;
@@ -70480,7 +70344,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCatalogContent = function FDsMaterialCatalogContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._activeItem       = null;
       o._activeGuid       = null;
       o._refreshButton    = null;
@@ -70516,12 +70380,12 @@ with(MO){
             item._code = code;
             item._updateDate = xnode.get('update_date');
             item.setTypeLabel(code);
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
       }
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialCatalogContent_construct = function FDsMaterialCatalogContent_construct(){
       var o = this;
@@ -70541,9 +70405,9 @@ with(MO){
    }
    MO.FDsMaterialCatalogContent_serviceList = function FDsMaterialCatalogContent_serviceList(guid){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showLoading();
+      MO.Console.find(FDuiDesktopConsole).showLoading();
       var url = '/cloud.resource.material.ws?action=listBitmap&guid=' + guid;
-      var connection = RConsole.find(FXmlConsole).sendAsync(url);
+      var connection = MO.Console.find(FXmlConsole).sendAsync(url);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsMaterialCatalogContent_dispose = function FDsMaterialCatalogContent_dispose(){
@@ -70553,9 +70417,9 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCatalogItem = function FDsMaterialCatalogItem(o){
-      o = RClass.inherits(this, o, FDuiListViewItem);
-      o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
+      o = MO.Class.inherits(this, o, FDuiListViewItem);
+      o._styleTypePanel = MO.Class.register(o, new AStyle('_styleTypePanel'));
+      o._styleTypeLabel = MO.Class.register(o, new AStyle('_styleTypeLabel'));
       o.onBuild         = FDsMaterialCatalogItem_onBuild;
       o.setTypeLabel    = FDsMaterialCatalogItem_setTypeLabel;
       o.refreshStyle    = FDsMaterialCatalogItem_refreshStyle;
@@ -70582,7 +70446,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialCatalogToolBar = function FDsMaterialCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._controlCreate   = null;
       o._controlDelete   = null;
       o._controlMoveUp   = null;
@@ -70623,7 +70487,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialFrameSet = function FDsMaterialFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCatalog         = null;
       o._frameCatalogToolBar  = null;
       o._frameCatalogContent  = null;
@@ -70658,12 +70522,12 @@ with(MO){
       var spliterProperty = o._spliterProperty;
       spliterProperty.setAlignCd(EUiAlign.Right);
       spliterProperty.setSizeHtml(o._frameProperty._hPanel);
-      var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsMaterialCanvasContent);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.scroll = 'auto';
       canvas.build(event);
-      var canvas = o._canvasBitmap = RClass.create(FDsMaterialCanvasBitmap);
+      var canvas = o._canvasBitmap = MO.Class.create(FDsMaterialCanvasBitmap);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.scroll = 'auto';
@@ -70682,35 +70546,35 @@ with(MO){
          return;
       }
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dStage)){
+      if(MO.Class.isClass(select, FE3dStage)){
          var frame = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          var frame = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(select, FE3dMeshDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(select, FE3dMeshRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -70733,7 +70597,7 @@ with(MO){
    MO.FDsMaterialFrameSet_loadByGuid = function FDsMaterialFrameSet_loadByGuid(guid){
       var o = this;
       o._activeGuid = guid;
-      var resource = o._activeResource = RConsole.find(FDrMaterialConsole).query(guid);
+      var resource = o._activeResource = MO.Console.find(FDrMaterialConsole).query(guid);
       o._catalogContent.serviceList(guid);
       var canvas = o._canvasContent;
       canvas.loadByGuid(guid);
@@ -70752,7 +70616,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialImportDialog = function FDsMaterialImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.material.ImportDialog';
       o._modeCd               = null;
       o._nodeGuid             = null;
@@ -70782,7 +70646,7 @@ with(MO){
       var guid = resource.guid();
       var typeCode = o._controlTypeCode.get();
       var code = o._controlCode.get();
-      if(RString.isEmpty(code)){
+      if(MO.Lang.String.isEmpty(code)){
          code = typeCode;
       }
       var label = o._controlLabel.get();
@@ -70801,20 +70665,20 @@ with(MO){
             throw new TError(o, 'Unknown mode. (mode_cd={1})', modeCd);
       }
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsMaterialImportDialog_onConfirmLoad = function FDsMaterialImportDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
    }
    MO.FDsMaterialImportDialog_onConfirmClick = function FDsMaterialImportDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -70848,7 +70712,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialMenuBar = function FDsMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlBack     = null;
       o._controlSave     = null;
       o._controlProperty = null;
@@ -70888,16 +70752,16 @@ with(MO){
       var o = this;
    }
    MO.FDsMaterialMenuBar_onSaveLoad = function FDsMaterialMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onSaveClick = function FDsMaterialMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+      var connection = MO.Console.find(FE3sMeshConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsMaterialMenuBar_onPropertyClick = function FDsMaterialMenuBar_onPropertyClick(event){
@@ -70913,7 +70777,7 @@ with(MO){
       if(!item){
          return alert('请选中位图');
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
       dialog._frameSet = o._frameSet;
       dialog._activeItem = item;
       dialog.switchModeCd('select');
@@ -70924,7 +70788,7 @@ with(MO){
    }
    MO.FDsMaterialMenuBar_onImportClick = function FDsMaterialMenuBar_onImportClick(event){
       var o = this;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsMaterialImportDialog);
       dialog._frameSet = o._frameSet;
       dialog.switchModeCd('import');
       dialog._controlCode.set('');
@@ -70933,13 +70797,13 @@ with(MO){
    }
    MO.FDsMaterialMenuBar_onDeleteLoad = function FDsMaterialMenuBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onDeleteExecute = function FDsMaterialMenuBar_onDeleteExecute(event){
       var o = this;
       var item = o._frameSet._catalogContent.focusItem();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrMaterialConsole).deleteBitmap(item._linkGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsMaterialMenuBar_onDeleteClick = function FDsMaterialMenuBar_onDeleteClick(event){
@@ -70948,15 +70812,15 @@ with(MO){
       if(!item){
          return alert('请选中后再点击删除');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前资源？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsMaterialMenuBar_onCaptureLoad = function FDsMaterialMenuBar_onCaptureLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsMaterialMenuBar_onCaptureClick = function FDsMaterialMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var connection = o._frameSet._canvas.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
    }
@@ -70971,7 +70835,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialPropertyFrame = function FDsMaterialPropertyFrame(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeResource = null;
       o._controlGuid    = null;
       o._controlCode    = null;
@@ -71013,7 +70877,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialPropertyToolBar = function FDsMaterialPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.material.PropertyToolBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsMaterialPropertyToolBar_onBuilded;
@@ -71107,7 +70971,7 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialSelectDialog = function FDsMaterialSelectDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.material.SelectDialog';
       o._nodeGuid             = null;
       o._controlPrivateButton = null;
@@ -71135,21 +70999,21 @@ with(MO){
       var guid = resource.guid();
       var url = '/cloud.resource.material.wv?do=importData&guid=' + guid + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       o._fileReader = RObject.dispose(reader);
    }
    MO.FDsMaterialSelectDialog_onConfirmLoad = function FDsMaterialSelectDialog_onConfirmLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       o.hide();
       o._frameSet.reload();
    }
    MO.FDsMaterialSelectDialog_onConfirmClick = function FDsMaterialSelectDialog_onConfirmClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }
@@ -71167,12 +71031,12 @@ with(MO){
 }
 with(MO){
    MO.FDsMaterialWorkspace = function FDsMaterialWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -71201,11 +71065,11 @@ with(MO){
       frame._hPanel.className = o.styleName('Body_Ground');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var menuBar = o._menuBar = RClass.create(FDsMaterialMenuBar);
+      var menuBar = o._menuBar = MO.Class.create(FDsMaterialMenuBar);
       menuBar._workspace = o;
       menuBar.buildDefine(p);
       o._frameToolBar.push(menuBar);
-      var frameSet = o._frameSet = RClass.create(FDsMaterialFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsMaterialFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -71225,35 +71089,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -71270,7 +71134,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -71292,7 +71156,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCanvasContent = function FDsModelCanvasContent(o){
-      o = RClass.inherits(this, o, FDsCanvas);
+      o = MO.Class.inherits(this, o, FDsCanvas);
       o._resourceTypeCd      = EE3sResource.Model;
       o._autoDistance        = null;
       o._autoOutline         = null;
@@ -71345,7 +71209,7 @@ with(MO){
          return;
       }
       var r = o._activeSpace.region();
-      var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
+      var st = MO.Console.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
       var r = st.test(r, p.offsetX, p.offsetY);
       o.selectRenderable(r);
       o._capturePosition.set(p.clientX, p.clientY);
@@ -71361,7 +71225,7 @@ with(MO){
          for(var i = rs.count() - 1; i >= 0; i--){
             var r = rs.getAt(i);
             if(!r._dragMatrix){
-               r._dragMatrix = new SMatrix3d();
+               r._dragMatrix = new MO.SMatrix3d();
             }
             r._dragMatrix.assign(r.matrix());
          }
@@ -71461,10 +71325,10 @@ with(MO){
       lc.setPosition(10, 10, 0);
       lc.lookAt(0, 0, 0);
       lc.update();
-      var event = new SEvent(o);
+      var event = new MO.SEvent(o);
       o.processLoadListener(event);
       event.dispose();
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsModelCanvasContent_oeResize = function FDsModelCanvasContent_oeResize(p){
       var o = this;
@@ -71486,15 +71350,15 @@ with(MO){
    MO.FDsModelCanvasContent_construct = function FDsModelCanvasContent_construct(){
       var o = this;
       o.__base.FDsCanvas.construct.call(o);
-      o._autoDistance = new SPoint3(6, 6, 6);
-      o._autoOutline = new SOutline3d();
-      o._autoMatrix = new SMatrix3d();
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._templateMatrix = new SMatrix3d();
-      o._templateFaceMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._autoDistance = new MO.SPoint3(6, 6, 6);
+      o._autoOutline = new MO.SOutline3d();
+      o._autoMatrix = new MO.SMatrix3d();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._templateMatrix = new MO.SMatrix3d();
+      o._templateFaceMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
       o._selectRenderables = new TObjects();
    }
    MO.FDsModelCanvasContent_innerSelectDisplay = function FDsModelCanvasContent_innerSelectDisplay(p){
@@ -71503,7 +71367,7 @@ with(MO){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var r = s.getAt(i);
-         if(RClass.isClass(r, FDsSceneRenderable)){
+         if(MO.Class.isClass(r, FDsSceneRenderable)){
             o._selectRenderables.push(r);
             r.showBoundBox();
          }
@@ -71715,14 +71579,14 @@ with(MO){
    MO.FDsModelCanvasContent_loadByGuid = function FDsModelCanvasContent_loadByGuid(guid){
       var o = this;
       var space = o._activeSpace;
-      var modelConsole = RConsole.find(FE3dModelConsole);
+      var modelConsole = MO.Console.find(FE3dModelConsole);
       if(space){
          RStage.unregister(space);
          modelConsole.free(space);
       }
       space = o._activeSpace = modelConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
@@ -71740,7 +71604,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCanvasToolBar = function FDsModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName                 = 'resource.model.CanvasToolBar';
       o._canvasModeCd              = EDsCanvasMode.Drop;
       o._controlDrop               = null;
@@ -71879,7 +71743,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCatalogContent = function FDsModelCatalogContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       o._iconView             = 'resource.tools.view';
       o._iconViewNot          = 'resource.tools.viewno';
       o.onBuild               = FDsModelCatalogContent_onBuild;
@@ -71910,7 +71774,7 @@ with(MO){
       var o = this;
       var c = p.treeNodeCell;
       var s = p.treeNode.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          if(p.ctrlKey){
             var ds = o._displays;
             for(var i = ds.count() - 1; i >= 0; i--){
@@ -71926,7 +71790,7 @@ with(MO){
             c.setIcon(s._visible ? o._iconView : o._iconViewNot);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          if(p.ctrlKey){
             var rs = o._renderables;
             for(var i = rs.count() - 1; i >= 0; i--){
@@ -71948,7 +71812,7 @@ with(MO){
       var n = p.treeNode;
       var c = p.treeNodeCell;
       var s = n.dataPropertyGet('linker');
-      if(RClass.isClass(s, FDisplay)){
+      if(MO.Class.isClass(s, FDisplay)){
          var s = o._displays;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -71957,7 +71821,7 @@ with(MO){
             n.cell('view').setIcon(o._iconView);
          }
       }
-      if(RClass.isClass(s, FDrawable)){
+      if(MO.Class.isClass(s, FDrawable)){
          var s = o._renderables;
          for(var i = s.count() - 1; i >= 0; i--){
             var n = s.get(i);
@@ -72032,7 +71896,7 @@ with(MO){
    }
    MO.FDsModelCatalogContent_showObject = function FDsModelCatalogContent_showObject(p){
       var o = this;
-      if(RClass.isClass(p, FDsSceneRenderable)){
+      if(MO.Class.isClass(p, FDsSceneRenderable)){
          var s = o._renderables;
          var c = s.count();
          for(var i = 0; i < c; i++){
@@ -72054,7 +71918,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelCatalogToolBar = function FDsModelCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.model.CatalogToolBar';
       o._activeNodeGuid        = null;
       o._controlCreateCamera   = null;
@@ -72101,16 +71965,16 @@ with(MO){
       var linker = node.dataPropertyGet('linker');
       var layer = null;
       var sprite = null;
-      if(RClass.isClass(linker, FDisplayLayer)){
+      if(MO.Class.isClass(linker, FDisplayLayer)){
          layer = linker;
-      }else if(RClass.isClass(linker, FE3dSprite)){
+      }else if(MO.Class.isClass(linker, FE3dSprite)){
          layer = linker.findParent(FDisplayLayer);
          sprite = linker;
       }else{
          return alert('请选中显示层或者精灵节点。');
       }
       var frameSet = o._frameSet;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = frameSet._activeSpace.resource().guid();
       dialog._layerGuid = layer.resource().guid();
@@ -72131,7 +71995,7 @@ with(MO){
    }
    MO.FDsModelCatalogToolBar_onCopyLoad = function FDsModelCatalogToolBar_onCopyLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsModelCatalogToolBar_onCopyExecute = function FDsModelCatalogToolBar_onCopyExecute(event){
       var o = this;
@@ -72140,8 +72004,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsModelCatalogToolBar_onCopyClick = function FDsModelCatalogToolBar_onCopyClick(event){
@@ -72149,12 +72013,12 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var sprite = null;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          sprite = linker;
          o._activeGuid = linker.resource().guid();
       }else{
@@ -72164,16 +72028,16 @@ with(MO){
       var parentResource = resource.parent();
       var displayResource = resource.clone();
       parentResource.pushDisplay(displayResource);
-      var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+      var display = MO.Console.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
       display.linkGraphicContext(sprite);
       display.loadResource(displayResource);
-      RConsole.find(FE3dSceneConsole).loadDisplay(display);
+      MO.Console.find(FE3dSceneConsole).loadDisplay(display);
       var parent = sprite.parent();
       parent.pushDisplay(display);
    }
    MO.FDsModelCatalogToolBar_onDeleteLoad = function FDsModelCatalogToolBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -72189,8 +72053,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsModelCatalogToolBar_onDeleteClick = function FDsModelCatalogToolBar_onDeleteClick(event){
@@ -72198,16 +72062,16 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          o._activeGuid = linker.resource().guid();
       }else{
          return alert('不能删除当前选中的节点.');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsModelCatalogToolBar_onFolderOpenClick = function FDsModelCatalogToolBar_onFolderOpenClick(event){
@@ -72225,7 +72089,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelFrameSet = function FDsModelFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCatalog         = null;
       o._frameCatalogToolBar  = null;
       o._frameCatalogContent  = null;
@@ -72273,35 +72137,35 @@ with(MO){
          return;
       }
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dSpace)){
+      if(MO.Class.isClass(select, FE3dSpace)){
          var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dLight)){
+      }else if(MO.Class.isClass(select, FG3dLight)){
          var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dModelDisplay)){
+      }else if(MO.Class.isClass(select, FE3dModelDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dModelRenderable)){
+      }else if(MO.Class.isClass(select, FE3dModelRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -72330,7 +72194,7 @@ with(MO){
 }
 with(MO){
    MO.FDsModelMenuBar = function FDsModelMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlSaveButton    = null;
       o._controlCaptureButton = null;
       o.onSaveLoad            = FDsModelMenuBar_onSaveLoad;
@@ -72342,24 +72206,24 @@ with(MO){
       return o;
    }
    MO.FDsModelMenuBar_onSaveLoad = function FDsModelMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsModelMenuBar_onSaveClick = function FDsModelMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      var connection = RConsole.find(FDrModelConsole).update(xconfig);
+      var connection = MO.Console.find(FDrModelConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsModelMenuBar_onCaptureLoad = function FDsModelMenuBar_onCaptureLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsModelMenuBar_onCaptureClick = function FDsModelMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var connection = o._frameSet._canvasContent.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
    }
@@ -72374,12 +72238,12 @@ with(MO){
 }
 with(MO){
    MO.FDsModelWorkspace = function FDsModelWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.mesh.Workspace';
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -72408,11 +72272,11 @@ with(MO){
       frame._hPanel.className = o.styleName('Body_Ground');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var menuBar = o._menuBar = RClass.create(FDsModelMenuBar);
+      var menuBar = o._menuBar = MO.Class.create(FDsModelMenuBar);
       menuBar._workspace = o;
       menuBar.buildDefine(p);
       o._frameToolBar.push(menuBar);
-      var frameSet = o._frameSet = RClass.create(FDsModelFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsModelFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -72432,35 +72296,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -72477,7 +72341,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._frameProperty._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -72499,7 +72363,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateCanvasContent = function FDsTemplateCanvasContent(o){
-      o = RClass.inherits(this, o, FDsSpaceCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceCanvas);
       o._resourceTypeCd     = EE3sResource.Template;
       o._context            = null;
       o._stage              = null;
@@ -72589,10 +72453,10 @@ with(MO){
       lc.setPosition(10, 10, 0);
       lc.lookAt(0, 0, 0);
       lc.update();
-      var event = new SEvent(o);
+      var event = new MO.SEvent(o);
       o.processLoadListener(event);
       event.dispose();
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateCanvasContent_oeRefresh = function FDsTemplateCanvasContent_oeRefresh(p){
       var o = this;
@@ -72612,22 +72476,22 @@ with(MO){
    MO.FDsTemplateCanvasContent_construct = function FDsTemplateCanvasContent_construct(){
       var o = this;
       o.__base.FDsSpaceCanvas.construct.call(o);
-      o._capturePosition = new SPoint2();
-      o._captureMatrix = new SMatrix3d();
-      o._rotation = new SVector3();
-      o._captureRotation = new SVector3();
+      o._capturePosition = new MO.SPoint2();
+      o._captureMatrix = new MO.SMatrix3d();
+      o._rotation = new MO.SVector3();
+      o._captureRotation = new MO.SVector3();
    }
    MO.FDsTemplateCanvasContent_loadByGuid = function FDsTemplateCanvasContent_loadByGuid(guid){
       var o = this;
       var space = o._activeSpace;
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       if(space){
          RStage.unregister(space);
          templateConsole.free(space);
       }
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
          space._linked = true;
          space.addLoadListener(o, o.onDataLoaded);
@@ -72637,14 +72501,14 @@ with(MO){
    MO.FDsTemplateCanvasContent_loadByCode = function FDsTemplateCanvasContent_loadByCode(code){
       var o = this;
       var space = o._activeSpace;
-      var templateConsole = RConsole.find(FE3dTemplateConsole);
+      var templateConsole = MO.Console.find(FE3dTemplateConsole);
       if(space){
          RStage.unregister(space);
          templateConsole.free(space);
       }
       space = o._activeSpace = templateConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          space._layer.pushRenderable(o._dimensional);
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
@@ -72659,7 +72523,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateCanvasToolBar = function FDsTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._refreshButton  = null;
       o._saveButton     = null;
       o._canvasModeCd   = EDsCanvasMode.Drop;
@@ -72716,7 +72580,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateCatalogContent = function FDsTemplateCatalogContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       o.onBuild        = FDsTemplateCatalogContent_onBuild;
       o.onNodeClick    = FDsTemplateCatalogContent_onNodeClick;
       o.construct      = FDsTemplateCatalogContent_construct;
@@ -72784,7 +72648,7 @@ with(MO){
       var resource = display.resource();
       var node = o.createNode();
       node.setTypeCode('Display');
-      node.setLabel(RString.nvl(resource.code(), 'Display'));
+      node.setLabel(MO.Lang.String.nvl(resource.code(), 'Display'));
       node.setNote(resource.label());
       node.dataPropertySet('linker', display);
       parentNode.appendNode(node);
@@ -72844,7 +72708,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateCatalogToolBar = function FDsTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.template.CatalogToolBar';
       o._activeNodeGuid        = null;
       o._controlCreateCamera   = null;
@@ -72885,7 +72749,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setContentCode('');
@@ -72894,7 +72758,7 @@ with(MO){
    }
    MO.FDsTemplateCatalogToolBar_onCopyLoad = function FDsTemplateCatalogToolBar_onCopyLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateCatalogToolBar_onCopyExecute = function FDsTemplateCatalogToolBar_onCopyExecute(event){
       var o = this;
@@ -72903,8 +72767,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsTemplateCatalogToolBar_onCopyClick = function FDsTemplateCatalogToolBar_onCopyClick(event){
@@ -72912,12 +72776,12 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var sprite = null;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          sprite = linker;
          o._activeGuid = linker.resource().guid();
       }else{
@@ -72927,16 +72791,16 @@ with(MO){
       var parentResource = resource.parent();
       var displayResource = resource.clone();
       parentResource.pushDisplay(displayResource);
-      var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+      var display = MO.Console.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
       display.linkGraphicContext(sprite);
       display.loadResource(displayResource);
-      RConsole.find(FE3dSceneConsole).loadDisplay(display);
+      MO.Console.find(FE3dSceneConsole).loadDisplay(display);
       var parent = sprite.parent();
       parent.pushDisplay(display);
    }
    MO.FDsTemplateCatalogToolBar_onDeleteLoad = function FDsTemplateCatalogToolBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -72952,8 +72816,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsTemplateCatalogToolBar_onDeleteClick = function FDsTemplateCatalogToolBar_onDeleteClick(event){
@@ -72961,16 +72825,16 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          o._activeGuid = linker.resource().guid();
       }else{
          return alert('不能删除当前选中的节点.');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsTemplateCatalogToolBar_onFolderOpenClick = function FDsTemplateCatalogToolBar_onFolderOpenClick(event){
@@ -72988,7 +72852,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateFrameSet = function FDsTemplateFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCatalog         = null;
       o._frameCatalogToolBar  = null;
       o._frameCatalogContent  = null;
@@ -73036,35 +72900,35 @@ with(MO){
          return;
       }
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dSpace)){
+      if(MO.Class.isClass(select, FE3dSpace)){
          var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dTemplateDisplay)){
+      }else if(MO.Class.isClass(select, FE3dTemplateDisplay)){
          var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dMaterial)){
+      }else if(MO.Class.isClass(select, FG3dMaterial)){
          var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRenderable)){
+      }else if(MO.Class.isClass(select, FE3dRenderable)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -73093,7 +72957,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateMenuBar = function FDsTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._controlSave           = null;
       o._controlCapture        = null;
       o._controlSelectMaterial = null;
@@ -73111,24 +72975,24 @@ with(MO){
       return o;
    }
    MO.FDsTemplateMenuBar_onSaveLoad = function FDsTemplateMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateMenuBar_onSaveClick = function FDsTemplateMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       var resource = space.resource();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      var connection = RConsole.find(FDrTemplateConsole).update(xconfig);
+      var connection = MO.Console.find(FDrTemplateConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsTemplateMenuBar_onCaptureLoad = function FDsTemplateMenuBar_onCaptureLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsTemplateMenuBar_onCaptureClick = function FDsTemplateMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var canvas = o._frameSet._canvasContent;
       var connection = canvas.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
@@ -73137,7 +73001,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMaterialDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonMaterialDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -73149,7 +73013,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -73161,7 +73025,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonDisplayDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setContentCode('');
@@ -73179,7 +73043,7 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateToolBar = function FDsTemplateToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._refreshButton = null;
       o._saveButton    = null;
       o.onBuild        = FDsTemplateToolBar_onBuild;
@@ -73192,13 +73056,13 @@ with(MO){
    MO.FDsTemplateToolBar_onBuild = function FDsTemplateToolBar_onBuild(p){
       var o = this;
       o.__base.FDuiToolBar.onBuild.call(o, p);
-      var b = o._refreshButton  = RClass.create(FDuiToolButton);
+      var b = o._refreshButton  = MO.Class.create(FDuiToolButton);
       b.setLabel('刷新');
       b.setIcon('design3d.tools.refresh');
       b.build(p);
       b.addClickListener(o, o.onRefreshClick);
       o.push(b);
-      var b = o._saveButton = RClass.create(FDuiToolButton);
+      var b = o._saveButton = MO.Class.create(FDuiToolButton);
       b.setLabel('保存');
       b.setIcon('design3d.tools.save');
       b.build(p);
@@ -73224,7 +73088,7 @@ with(MO){
             m.saveConfig(xr.create('Material'));
          }
       }
-      RConsole.find(FE3sTemplateConsole).update(xr);
+      MO.Console.find(FE3sTemplateConsole).update(xr);
    }
    MO.FDsTemplateToolBar_construct = function FDsTemplateToolBar_construct(){
       var o = this;
@@ -73237,12 +73101,12 @@ with(MO){
 }
 with(MO){
    MO.FDsTemplateWorkspace = function FDsTemplateWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
-      o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround  = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround    = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround  = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround   = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
+      o._styleToolbarGround    = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround  = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround    = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround  = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround   = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain          = null;
       o._framesetBody          = null;
       o._frameToolBar          = null;
@@ -73272,37 +73136,37 @@ with(MO){
       o.__base.FDuiWorkspace.onBuild.call(o, p);
       o._hPanel.style.width = '100%';
       o._hPanel.style.height = '100%';
-      var fs = o._framesetMain = RClass.create(FDuiFrameSet);
+      var fs = o._framesetMain = MO.Class.create(FDuiFrameSet);
       fs.build(p);
-      var f = o._frameToolBar = RClass.create(FDuiFramePage);
+      var f = o._frameToolBar = MO.Class.create(FDuiFramePage);
       f.setHeight(26);
       f.build(p);
       f._hPanel.className = o.styleName('Toolbar_Ground');
       fs.appendFrame(f);
-      var f = o._frameBody = RClass.create(FDuiFramePage);
+      var f = o._frameBody = MO.Class.create(FDuiFramePage);
       f.build(p);
       fs.appendFrame(f);
-      var f = o._frameStatusBar = RClass.create(FDuiFramePage);
+      var f = o._frameStatusBar = MO.Class.create(FDuiFramePage);
       f.setHeight(18);
       f.build(p);
       f._hPanel.className = o.styleName('Statusbar_Ground');
       fs.appendFrame(f);
       fs.setPanel(o._hPanel);
-      var fs = RClass.create(FDuiFrameSet);
+      var fs = MO.Class.create(FDuiFrameSet);
       fs._directionCd = EUiDirection.Horizontal;
       fs.build(p);
-      var f = o._frameCatalog = RClass.create(FDuiFramePage);
+      var f = o._frameCatalog = MO.Class.create(FDuiFramePage);
       f.setWidth(400);
       f.build(p);
       f._hPanel.className = o.styleName('Catalog_Ground');
       fs.appendFrame(f);
       var sp1 = fs.appendSpliter();
-      var f = o._frameWorkspace = RClass.create(FDuiFramePage);
+      var f = o._frameWorkspace = MO.Class.create(FDuiFramePage);
       f.build(p);
       f._hPanel.className = o.styleName('Workspace_Ground');
       fs.appendFrame(f);
       var sp2 = fs.appendSpliter();
-      var f = o._frameProperty = RClass.create(FDuiFramePage);
+      var f = o._frameProperty = MO.Class.create(FDuiFramePage);
       f.setWidth(240);
       f.build(p);
       f._hPanel.className = o.styleName('Property_Ground');
@@ -73312,13 +73176,13 @@ with(MO){
       sp1._hSize = o._frameCatalog._hPanel;
       sp2._alignCd = EUiAlign.Right;
       sp2._hSize = o._frameStatusBar._hPanel;
-      var c = o._catalog = RClass.create(FDsTemplateCatalog);
+      var c = o._catalog = MO.Class.create(FDsTemplateCatalog);
       c._workspace = o;
       c.build(p);
       c.setPanel(o._frameCatalog._hPanel);
       c.addSelectedListener(o, o.onCatalogSelected);
       o.push(c);
-      var c = o._toolbar = RClass.create(FDsTemplateToolBar);
+      var c = o._toolbar = MO.Class.create(FDsTemplateToolBar);
       c._workspace = o;
       c.build(p);
       c.setPanel(o._frameToolBar._hPanel);
@@ -73328,14 +73192,14 @@ with(MO){
       hf.style.height = '100%';
       var hc = RBuilder.appendTableRowCell(hf);
       hc.height = 20;
-      var c = o._canvasToolbar = RClass.create(FDsTemplateCanvasToolBar);
+      var c = o._canvasToolbar = MO.Class.create(FDsTemplateCanvasToolBar);
       c._workspace = o;
       c.build(p);
       c.setPanel(hc);
       o.push(c);
       var hc = RBuilder.appendTableRowCell(hf);
       hc.vAlign = 'top';
-      var c = o._canvas = RClass.create(FDsTemplateCanvas);
+      var c = o._canvas = MO.Class.create(FDsTemplateCanvas);
       c.addLoadListener(o, o.onTemplateLoad);
       c._workspace = o;
       c._toolbar = o._canvasToolbar;
@@ -73364,19 +73228,19 @@ with(MO){
       if(o._displayPropertyFrame){
          o._displayPropertyFrame.hide();
       }
-      if(RClass.isClass(p, FE3dTemplate)){
+      if(MO.Class.isClass(p, FE3dTemplate)){
          var f = o.templatePropertyFrame();
          f.show();
          f.loadObject(t);
-      }else if(RClass.isClass(p, FE3sTemplateTheme)){
+      }else if(MO.Class.isClass(p, FE3sTemplateTheme)){
          var f = o.themePropertyFrame();
          f.show();
          f.loadObject(t, p);
-      }else if(RClass.isClass(p, FE3sMaterial)){
+      }else if(MO.Class.isClass(p, FE3sMaterial)){
          var f = o.materialPropertyFrame();
          f.show();
          f.loadObject(t, p);
-      }else if(RClass.isClass(p, MG3dRenderable)){
+      }else if(MO.Class.isClass(p, MG3dRenderable)){
          var f = o.displayPropertyFrame();
          f.show();
          f.loadObject(t, p);
@@ -73393,7 +73257,7 @@ with(MO){
       var o = this;
       var f = o._templatePropertyFrame;
       if(!f){
-         f = o._templatePropertyFrame = RClass.create(FDsTemplatePropertyFrame);
+         f = o._templatePropertyFrame = MO.Class.create(FDsTemplatePropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -73404,7 +73268,7 @@ with(MO){
       var o = this;
       var f = o._themePropertyFrame;
       if(!f){
-         var f = o._themePropertyFrame = RClass.create(FDsTemplateThemePropertyFrame);
+         var f = o._themePropertyFrame = MO.Class.create(FDsTemplateThemePropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -73415,7 +73279,7 @@ with(MO){
       var o = this;
       var f = o._materialPropertyFrame;
       if(!f){
-         f = o._materialPropertyFrame = RClass.create(FDsTemplateMaterialPropertyFrame);
+         f = o._materialPropertyFrame = MO.Class.create(FDsTemplateMaterialPropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -73426,7 +73290,7 @@ with(MO){
       var o = this;
       var f = o._displayPropertyFrame;
       if(!f){
-         f = o._displayPropertyFrame = RClass.create(FDsTemplateDisplayPropertyFrame);
+         f = o._displayPropertyFrame = MO.Class.create(FDsTemplateDisplayPropertyFrame);
          f._workspace = o;
          f.buildDefine(o._hPanel);
          f.setPanel(o._frameProperty._hPanel);
@@ -73444,7 +73308,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneCanvasContent = function FDsSceneCanvasContent(o){
-      o = RClass.inherits(this, o, FDsSpaceDesignCanvas);
+      o = MO.Class.inherits(this, o, FDsSpaceDesignCanvas);
       o._resourceTypeCd = EE3sResource.Scene;
       o.loadByGuid      = FDsSceneCanvasContent_loadByGuid;
       o.dispose         = FDsSceneCanvasContent_dispose;
@@ -73454,19 +73318,19 @@ with(MO){
       var o = this;
       o.reloadRegion()
       o.processLoadListener(o);
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneCanvasContent_loadByGuid = function FDsSceneCanvasContent_loadByGuid(guid){
       var o = this;
       var space = o._activeSpace;
-      var sceneConsole = RConsole.find(FE3dSceneConsole);
+      var sceneConsole = MO.Console.find(FE3dSceneConsole);
       if(space){
          RStage.unregister(space);
          sceneConsole.free(space);
       }
       space = o._activeSpace = sceneConsole.allocByGuid(o, guid);
       if(!space._linked){
-         RConsole.find(FDuiDesktopConsole).showLoading();
+         MO.Console.find(FDuiDesktopConsole).showLoading();
          space.addLoadListener(o, o.onDataLoaded);
          space._linked = true;
       }
@@ -73479,7 +73343,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneCanvasToolBar = function FDsSceneCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName         = 'resource.scene.CanvasToolBar';
       o._canvasModeCd      = EDsCanvasMode.Drop;
       o._controlModeDrop   = null;
@@ -73556,7 +73420,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneCatalogContent = function FDsSceneCatalogContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       o._catalogCode    = 'resource.scene';
       o.onBuild         = FDsSceneCatalogContent_onBuild;
       o.onLoadDisplay   = FDsSceneCatalogContent_onLoadDisplay;
@@ -73570,7 +73434,7 @@ with(MO){
    }
    MO.FDsSceneCatalogContent_onBuild = function FDsSceneCatalogContent_onBuild(event){
       var o = this;
-      var column = RClass.create(FDuiTreeColumn);
+      var column = MO.Class.create(FDuiTreeColumn);
       column.setName('view');
       o.push(column);
       o.__base.FDsCatalog.onBuild.call(o, event);
@@ -73683,7 +73547,7 @@ with(MO){
       var layerCount = layers.count();
       for(var i = 0; i < layerCount; i++){
          var layer = layers.at(i);
-         if(RClass.isClass(layer, FDisplayUiLayer)){
+         if(MO.Class.isClass(layer, FDisplayUiLayer)){
             continue;
          }
          var layerResource = layer.resource();
@@ -73718,7 +73582,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneCatalogToolBar = function FDsSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._activeNodeGuid        = null;
       o._controlCreateCamera   = null;
       o._controlCreateLayer    = null;
@@ -73772,16 +73636,16 @@ with(MO){
       var linker = node.dataPropertyGet('linker');
       var layer = null;
       var sprite = null;
-      if(RClass.isClass(linker, FDisplayLayer)){
+      if(MO.Class.isClass(linker, FDisplayLayer)){
          layer = linker;
-      }else if(RClass.isClass(linker, FE3dSprite)){
+      }else if(MO.Class.isClass(linker, FE3dSprite)){
          layer = linker.findParent(FDisplayLayer);
          sprite = linker;
       }else{
          return alert('请选中显示层或者精灵节点。');
       }
       var frameSet = o._frameSet;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonSpriteDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = frameSet._activeSpace.resource().guid();
       dialog._layerGuid = layer.resource().guid();
@@ -73810,14 +73674,14 @@ with(MO){
       var linker = node.dataPropertyGet('linker');
       var layer = null;
       var sprite = null;
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          layer = linker.findParent(FDisplayLayer);
          sprite = linker;
       }else{
          return alert('请选中精灵节点。');
       }
       var frameSet = o._frameSet;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonMovieDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonMovieDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = frameSet._activeSpace.resource().guid();
       dialog._layerGuid = layer.resource().guid();
@@ -73834,7 +73698,7 @@ with(MO){
    }
    MO.FDsSceneCatalogToolBar_onCopyLoad = function FDsSceneCatalogToolBar_onCopyLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneCatalogToolBar_onCopyExecute = function FDsSceneCatalogToolBar_onCopyExecute(event){
       var o = this;
@@ -73843,8 +73707,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).copyNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsSceneCatalogToolBar_onCopyClick = function FDsSceneCatalogToolBar_onCopyClick(event){
@@ -73852,12 +73716,12 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var sprite = null;
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          sprite = linker;
          o._activeGuid = linker.resource().guid();
       }else{
@@ -73867,16 +73731,16 @@ with(MO){
       var parentResource = resource.parent();
       var displayResource = resource.clone();
       parentResource.pushDisplay(displayResource);
-      var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+      var display = MO.Console.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
       display.linkGraphicContext(sprite);
       display.loadResource(displayResource);
-      RConsole.find(FE3dSceneConsole).loadDisplay(display);
+      MO.Console.find(FE3dSceneConsole).loadDisplay(display);
       var parent = sprite.parent();
       parent.pushDisplay(display);
    }
    MO.FDsSceneCatalogToolBar_onDeleteLoad = function FDsSceneCatalogToolBar_onDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -73892,8 +73756,8 @@ with(MO){
       }
       var space = o._frameSet._activeSpace;
       var spaceGuid = space.resource().guid();
-      RConsole.find(FDuiDesktopConsole).showUploading();
-      var connection = RConsole.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
+      MO.Console.find(FDuiDesktopConsole).showUploading();
+      var connection = MO.Console.find(FDrSceneConsole).deleteNode(spaceGuid, o._activeGuid);
       connection.addLoadListener(o, o.onDeleteLoad);
    }
    MO.FDsSceneCatalogToolBar_onDeleteClick = function FDsSceneCatalogToolBar_onDeleteClick(event){
@@ -73901,16 +73765,16 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中节点后，再点击操作。');
       }
       o._activeNodeGuid = node.guid();
       var linker = node.dataPropertyGet('linker');
-      if(RClass.isClass(linker, FE3dSprite)){
+      if(MO.Class.isClass(linker, FE3dSprite)){
          o._activeGuid = linker.resource().guid();
       }else{
          return alert('不能删除当前选中的节点.');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前节点？');
       dialog.addResultListener(o, o.onDeleteExecute);
    }
    MO.FDsSceneCatalogToolBar_onFolderOpenClick = function FDsSceneCatalogToolBar_onFolderOpenClick(event){
@@ -73928,7 +73792,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneFrameSet = function FDsSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsFrameSet);
+      o = MO.Class.inherits(this, o, FDsFrameSet);
       o._frameCatalog         = null;
       o._frameCatalogToolBar  = null;
       o._frameCatalogContent  = null;
@@ -73962,7 +73826,7 @@ with(MO){
       var spliter = o._spliterProperty;
       spliter.setAlignCd(EUiAlign.Right);
       spliter.setSizeHtml(o._frameProperty._hPanel);
-      var sceneConsole = RConsole.find(FE3dInstanceConsole);
+      var sceneConsole = MO.Console.find(FE3dInstanceConsole);
       sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
       sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
       sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
@@ -73981,23 +73845,23 @@ with(MO){
       }
       var canvas = o._canvasContent;
       o.hidePropertyFrames();
-      if(RClass.isClass(select, FE3dScene)){
+      if(MO.Class.isClass(select, FE3dScene)){
          var frame = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dTechnique)){
+      }else if(MO.Class.isClass(select, FG3dTechnique)){
          var frame = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRegion)){
+      }else if(MO.Class.isClass(select, FE3dRegion)){
          var frame = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dCamera)){
+      }else if(MO.Class.isClass(select, FE3dCamera)){
          var frame = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(select, FG3dDirectionalLight)){
          var frame = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
@@ -74005,36 +73869,36 @@ with(MO){
          if(flag){
             canvas.selectLayers(select);
          }
-      }else if(RClass.isClass(select, FE3dSceneLayer)){
+      }else if(MO.Class.isClass(select, FE3dSceneLayer)){
          if(flag){
             canvas.selectLayer(select);
          }
          var frame = o.findPropertyFrame(EDsFrame.CommonLayerPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dSceneDisplay)){
+      }else if(MO.Class.isClass(select, FE3dSceneDisplay)){
          if(flag){
             canvas.selectDisplay(select);
          }
          var frame = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dSceneMaterial)){
+      }else if(MO.Class.isClass(select, FE3dSceneMaterial)){
          if(flag){
             canvas.selectMaterial(select);
          }
          var frame = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dAnimation)){
+      }else if(MO.Class.isClass(select, FE3dAnimation)){
          var frame = o.findPropertyFrame(EDsFrame.CommonAnimationPropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dMovie)){
+      }else if(MO.Class.isClass(select, FE3dMovie)){
          var frame = o.findPropertyFrame(EDsFrame.CommonMoviePropertyFrame);
          frame.show();
          frame.loadObject(space, select);
-      }else if(RClass.isClass(select, FE3dRenderable)){
+      }else if(MO.Class.isClass(select, FE3dRenderable)){
          if(flag){
             canvas.selectRenderable(select);
          }
@@ -74066,7 +73930,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneMenuBar = function FDsSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._refreshButton        = null;
       o._saveButton           = null;
       o._runButton            = null;
@@ -74087,25 +73951,25 @@ with(MO){
       o.__base.FDuiMenuBar.onBuilded.call(o, p);
    }
    MO.FDsSceneMenuBar_onSaveLoad = function FDsSceneMenuBar_onSaveLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneMenuBar_onSaveClick = function FDsSceneMenuBar_onSaveClick(p){
       var o = this;
       var space = o._frameSet._activeSpace;
       space.commitResource();
       var resource = space.resource();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var xconfig = new TXmlNode();
       resource.saveConfig(xconfig);
-      var connection = RConsole.find(FDrSceneConsole).update(xconfig);
+      var connection = MO.Console.find(FDrSceneConsole).update(xconfig);
       connection.addLoadListener(o, o.onSaveLoad);
    }
    MO.FDsSceneMenuBar_onCaptureLoad = function FDsSceneMenuBar_onCaptureLoad(event){
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsSceneMenuBar_onCaptureClick = function FDsSceneMenuBar_onCaptureClick(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       var canvasContent = o._frameSet._canvasContent;
       var connection = canvasContent.capture();
       connection.addLoadListener(o, o.onCaptureLoad);
@@ -74114,7 +73978,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonLayerDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonLayerDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -74126,7 +73990,7 @@ with(MO){
       var o = this;
       var frameSet = o._frameSet;
       var space = frameSet._activeSpace;
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsCommonTemplateDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsCommonTemplateDialog);
       dialog._frameSet = frameSet;
       dialog._spaceGuid = space.resource().guid();
       dialog.setSpace(space);
@@ -74150,7 +74014,7 @@ with(MO){
 }
 with(MO){
    MO.FDsScenePropertyToolBar = function FDsScenePropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName                   = 'resource.scene.PropertyToolBar';
       o._controlRefresh   = null;
       o._activeNodeGuid              = null;
@@ -74180,7 +74044,7 @@ with(MO){
          parentGuid = node.guid();
          parentLabel = node.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._parentGuid = parentGuid;
@@ -74191,7 +74055,7 @@ with(MO){
    }
    MO.FDsScenePropertyToolBar_onFolderDeleteLoad = function FDsScenePropertyToolBar_onFolderDeleteLoad(event){
       var o = this;
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       var catalog = o._frameSet._catalogContent;
       var guid = o._activeNodeGuid;
       if(guid){
@@ -74207,9 +74071,9 @@ with(MO){
       }
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       o._activeNodeGuid = node._guid;
-      var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
+      var connection = MO.Console.find(FDrResourceConsole).doFolderDelete(node._guid);
       connection.addLoadListener(o, o.onFolderDeleteLoad);
    }
    MO.FDsScenePropertyToolBar_onFolderDeleteClick = function FDsScenePropertyToolBar_onFolderDeleteClick(event){
@@ -74217,9 +74081,9 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
-      var dialog = RConsole.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
+      var dialog = MO.Console.find(FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
       dialog.addResultListener(o, o.onFolderDeleteExcute);
    }
    MO.FDsScenePropertyToolBar_onFolderPropertyClick = function FDsScenePropertyToolBar_onFolderPropertyClick(event){
@@ -74227,13 +74091,13 @@ with(MO){
       var catalog = o._frameSet._catalogContent;
       var node = catalog.focusNode();
       if(!node){
-         return RConsole.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+         return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
       }
       var parentLabel = null;
       if(node._parent){
          parentLabel = node._parent.label();
       }
-      var dialog = RConsole.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
+      var dialog = MO.Console.find(FDuiWindowConsole).find(FDsResourceFolderDialog);
       dialog._workspace = o._workspace;
       dialog._frameSet = o._frameSet;
       dialog._nodeGuid = node._guid;
@@ -74257,13 +74121,13 @@ with(MO){
 }
 with(MO){
    MO.FDsSceneWorkspace = function FDsSceneWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.share.scene.Workspace';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain         = null;
       o._framesetBody         = null;
       o._frameToolBar         = null;
@@ -74301,22 +74165,22 @@ with(MO){
       var f = o._propertySpliter = o.searchControl('propertySpliter');
       f.setAlignCd(EUiAlign.Right);
       f.setSizeHtml(o._frameProperty._hPanel);
-      var c = o._toolbar = RClass.create(FDsSceneMenuBar);
+      var c = o._toolbar = MO.Class.create(FDsSceneMenuBar);
       c._workspace = o;
       c.buildDefine(p);
       o._frameToolBar.push(c);
-      var c = o._catalog = RClass.create(FDsSceneCatalog);
+      var c = o._catalog = MO.Class.create(FDsSceneCatalog);
       c._workspace = o;
       c.build(p);
       c.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalog.push(c);
       var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-      var c = o._canvasToolbar = RClass.create(FDsSceneCanvasToolBar);
+      var c = o._canvasToolbar = MO.Class.create(FDsSceneCanvasToolBar);
       c._workspace = o;
       c.buildDefine(p);
       o._canvasToolbarFrame.push(c);
       var f = o._canvasFrame = o.searchControl('canvasFrame');
-      var c = o._canvas = RClass.create(FDsSceneCanvas);
+      var c = o._canvas = MO.Class.create(FDsSceneCanvas);
       c._workspace = o;
       c._toolbar = o._canvasToolbar;
       c.addLoadListener(o, o.onSceneLoad);
@@ -74339,23 +74203,23 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dScene)){
+      if(MO.Class.isClass(p, FE3dScene)){
          var f = o.findPropertyFrame(EDsFrame.SceneSpacePropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.SceneRegionPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
          f.show();
          f.loadObject(s, p);
@@ -74363,32 +74227,32 @@ with(MO){
          if(pc){
             o._canvas.selectLayers(p);
          }
-      }else if(RClass.isClass(p, FE3dSceneLayer)){
+      }else if(MO.Class.isClass(p, FE3dSceneLayer)){
          if(pc){
             o._canvas.selectLayer(p);
          }
          var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dSceneDisplay)){
+      }else if(MO.Class.isClass(p, FE3dSceneDisplay)){
          if(pc){
             o._canvas.selectDisplay(p);
          }
          var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dSceneMaterial)){
+      }else if(MO.Class.isClass(p, FE3dSceneMaterial)){
          if(pc){
             o._canvas.selectMaterial(p);
          }
          var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3rAnimation)){
+      }else if(MO.Class.isClass(p, FE3rAnimation)){
          var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
          f.show();
          f.loadObject(s, p);
-      }else if(RClass.isClass(p, FE3dRenderable)){
+      }else if(MO.Class.isClass(p, FE3dRenderable)){
          if(pc){
             o._canvas.selectRenderable(p);
          }
@@ -74408,7 +74272,7 @@ with(MO){
       var o = this;
       var frame = o._propertyFrames.get(p);
       if(!frame){
-         frame = RConsole.find(FDuiFrameConsole).get(o, p, o._frameProperty._hContainer);
+         frame = MO.Console.find(FDuiFrameConsole).get(o, p, o._frameProperty._hContainer);
          frame._workspace = o;
          o._propertyFrames.set(p, frame);
       }
@@ -75592,7 +75456,7 @@ MO.FEditorDsListMenuBar_onBuilded = function FEditorDsListMenuBar_onBuilded(even
 }
 MO.FEditorDsListPropertyToolBar = function FEditorDsListPropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;
@@ -75790,7 +75654,7 @@ MO.FEditorDsTreeMenuBar_onBuilded = function FEditorDsTreeMenuBar_onBuilded(even
 }
 MO.FEditorDsTreePropertyToolBar = function FEditorDsTreePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;
@@ -75904,7 +75768,7 @@ MO.FEditorDsFrameCatalogContent = function FEditorDsFrameCatalogContent(o){
 }
 MO.FEditorDsFrameCatalogToolBar = function FEditorDsFrameCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName = 'system.design.frame.CatalogToolBar';
+   o._frameName = 'editor.design.frame.CatalogToolBar';
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;
    o._controlFolderPropertyButton = null;
@@ -76208,7 +76072,7 @@ MO.FEditorDsFramePictureProperty_dispose = function FEditorDsFramePicturePropert
 }
 MO.FEditorDsFramePropertyToolBar = function FEditorDsFramePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'system.design.frame.PropertyToolBar';
+   o._frameName           = 'editor.design.frame.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;
@@ -76479,7 +76343,7 @@ MO.FEditorDsFrameSpaceContent_dispose = function FEditorDsFrameSpaceContent_disp
 }
 MO.FEditorDsFrameSpaceToolBar = function FEditorDsFrameSpaceToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName   = 'system.design.frame.SpaceToolBar';
+   o._frameName   = 'editor.design.frame.SpaceToolBar';
    o._storageCode = o._frameName;
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;
@@ -76589,7 +76453,7 @@ MO.FEditorDsFrameSpaceToolBar_dispose = function FEditorDsFrameSpaceToolBar_disp
 }
 with(MO){
    MO.FDsPrivateTabBar = function FDsPrivateTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName            = 'resource.private.TabBar';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -76634,12 +76498,12 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateWorkspace = function FDsPrivateWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiWorkspace, MUiStorage);
       o._frameName            = 'resource.private.Workspace';
       o._storageCode          = o._frameName;
-      o._styleMenuBarGround   = RClass.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusBarGround = RClass.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
+      o._styleMenuBarGround   = MO.Class.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusBarGround = MO.Class.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
       o._activeFrameSetCode   = null;
       o._activeProjectGuid    = null;
       o._frameToolBar         = null;
@@ -76663,7 +76527,7 @@ with(MO){
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
-      var control = o._tabBar = RClass.create(FDsPrivateTabBar);
+      var control = o._tabBar = MO.Class.create(FDsPrivateTabBar);
       control._workspace = o;
       control.buildDefine(event);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -76683,66 +76547,66 @@ with(MO){
       var frameSet = o._frameSets.get(name);
       if(!frameSet){
          if(name == EDsFrameSet.PrivateSolutionFrameSet){
-            var menuBar = RClass.create(FDsSolutionMenuBar);
+            var menuBar = MO.Class.create(FDsSolutionMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsSolutionFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateProjectFrameSet){
-            var menuBar = RClass.create(FDsPrivateProjectMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateProjectMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateProjectFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateResourceFrameSet){
-            var menuBar = RClass.create(FDsPrivateResourceMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateBitmapFrameSet){
-            var menuBar = RClass.create(FDsPrivateBitmapMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateBitmapMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateMaterialFrameSet){
-            var menuBar = RClass.create(FDsPrivateMaterialMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateMaterialMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateModelFrameSet){
-            var menuBar = RClass.create(FDsPrivateModelMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateModelMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateTemplateFrameSet){
-            var menuBar = RClass.create(FDsPrivateTemplateMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateTemplateMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.PrivateSceneFrameSet){
-            var menuBar = RClass.create(FDsPrivateSceneMenuBar);
+            var menuBar = MO.Class.create(FDsPrivateSceneMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsPrivateSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -76843,7 +76707,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateProjectFrameSet = function FDsPrivateProjectFrameSet(o){
-      o = RClass.inherits(this, o, FDsProjectFrameSet);
+      o = MO.Class.inherits(this, o, FDsProjectFrameSet);
       o._frameName = 'resource.private.project.FrameSet';
       o.onBuilded  = FDsPrivateProjectFrameSet_onBuilded;
       return o;
@@ -76851,31 +76715,31 @@ with(MO){
    MO.FDsPrivateProjectFrameSet_onBuilded = function FDsPrivateProjectFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsProjectFrameSet.onBuilded.call(o, event);
-      var control = o._sceneListToolbar = RClass.create(FDsProjectSceneListToolBar);
+      var control = o._sceneListToolbar = MO.Class.create(FDsProjectSceneListToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._frameSceneListToolBar.push(control);
-      var control = o._sceneListContent = RClass.create(FDsProjectSceneListContent);
+      var control = o._sceneListContent = MO.Class.create(FDsProjectSceneListContent);
       control._frameSet = o;
       control.build(event);
       o._frameSceneListContent.push(control);
-      var control = o._sceneCatalogToolbar = RClass.create(FDsProjectSceneCatalogToolBar);
+      var control = o._sceneCatalogToolbar = MO.Class.create(FDsProjectSceneCatalogToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._frameSceneCatalogToolBar.push(control);
-      var control = o._sceneCatalogContent = RClass.create(FDsProjectSceneCatalogContent);
+      var control = o._sceneCatalogContent = MO.Class.create(FDsProjectSceneCatalogContent);
       control._frameSet = o;
       control.build(event);
       o._frameSceneCatalogContent.push(control);
-      var control = o._canvasSpaceToolbar = RClass.create(FDsProjectCanvasSpaceToolBar);
+      var control = o._canvasSpaceToolbar = MO.Class.create(FDsProjectCanvasSpaceToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCanvasSpaceToolBar.push(control);
-      var control = o._canvasPreviewToolbar = RClass.create(FDsProjectCanvasPreviewToolBar);
+      var control = o._canvasPreviewToolbar = MO.Class.create(FDsProjectCanvasPreviewToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCanvasPreviewToolBar.push(control);
-      var control = o._propertyToolbar = RClass.create(FDsProjectPropertyToolBar);
+      var control = o._propertyToolbar = MO.Class.create(FDsProjectPropertyToolBar);
       control._frameSet = o;
       control.buildDefine(event);
       o._framePropertyAttributeToolBar.push(control);
@@ -76883,7 +76747,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateProjectMenuBar = function FDsPrivateProjectMenuBar(o){
-      o = RClass.inherits(this, o, FDsProjectMenuBar);
+      o = MO.Class.inherits(this, o, FDsProjectMenuBar);
       o._frameName = 'resource.private.project.MenuBar';
       o.onBuilded  = FDsPrivateProjectMenuBar_onBuilded;
       return o;
@@ -76895,14 +76759,14 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateResourceCatalogToolBar = function FDsPrivateResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceCatalogToolBar);
       o._frameName = 'resource.private.resource.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateResourceFrameSet = function FDsPrivateResourceFrameSet(o){
-      o = RClass.inherits(this, o, FDsResourceFrameSet);
+      o = MO.Class.inherits(this, o, FDsResourceFrameSet);
       o._frameName        = 'resource.share.resource.FrameSet';
       o.onBuilded         = FDsPrivateResourceFrameSet_onBuilded;
       o.onCatalogSelected = FDsPrivateResourceFrameSet_onCatalogSelected;
@@ -76918,22 +76782,22 @@ with(MO){
       var f = o._catalogSplitter = o.searchControl('catalogSpliter');
       f.setAlignCd(EUiAlign.Left);
       f.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsPrivateResourceCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsPrivateResourceCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsResourceCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameCatalogContent.push(control);
-      var control = o._listToolBar = RClass.create(FDsPrivateResourceListToolBar);
+      var control = o._listToolBar = MO.Class.create(FDsPrivateResourceListToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameListToolBar.push(control);
-      var control = o._listContent = RClass.create(FDsResourceListContent);
+      var control = o._listContent = MO.Class.create(FDsResourceListContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -76948,35 +76812,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -76987,7 +76851,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateResourceListToolBar = function FDsPrivateResourceListToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceListToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceListToolBar);
       o._frameName   = 'resource.private.resource.ListToolBar';
       o._storageCode = o._frameName;
       return o;
@@ -76995,7 +76859,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateResourceMenuBar = function FDsPrivateResourceMenuBar(o){
-      o = RClass.inherits(this, o, FDsResourceMenuBar);
+      o = MO.Class.inherits(this, o, FDsResourceMenuBar);
       o._frameName      = 'resource.private.resource.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsPrivateResourceMenuBar_onBuilded;
@@ -77019,14 +76883,14 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateBitmapCanvasToolBar = function FDsPrivateBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvasToolBar);
       o._frameName = 'resource.private.bitmap.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateBitmapFrameSet = function FDsPrivateBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsBitmapFrameSet);
+      o = MO.Class.inherits(this, o, FDsBitmapFrameSet);
       o._frameName = 'resource.private.bitmap.FrameSet';
       o.onBuilded  = FDsPrivateBitmapFrameSet_onBuilded;
       return o;
@@ -77034,18 +76898,18 @@ with(MO){
    MO.FDsPrivateBitmapFrameSet_onBuilded = function FDsPrivateBitmapFrameSet_onBuilded(p){
       var o = this;
       o.__base.FDsBitmapFrameSet.onBuilded.call(o, p);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateBitmapCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateBitmapCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(p);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsBitmapCanvasContent);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.backgroundColor = '#333333';
       canvas._hParent.style.scroll = 'auto';
       canvas.build(p);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolBar = RClass.create(FDsBitmapPropertyToolBar);
+      var toolbar = o._propertyToolBar = MO.Class.create(FDsBitmapPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(p);
       o._framePropertyToolBar.push(toolbar);
@@ -77055,7 +76919,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateBitmapMenuBar = function FDsPrivateBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDsBitmapMenuBar);
+      o = MO.Class.inherits(this, o, FDsBitmapMenuBar);
       o._frameName  = 'resource.private.bitmap.MenuBar';
       o.onBuilded   = FDsPrivateBitmapMenuBar_onBuilded;
       o.onBackClick = FDsPrivateBitmapMenuBar_onBackClick;
@@ -77076,21 +76940,21 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateMaterialCanvasToolBar = function FDsPrivateMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsMaterialCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsMaterialCanvasToolBar);
       o._frameName = 'resource.private.material.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateMaterialCatalogToolBar = function FDsPrivateMaterialCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsMaterialCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsMaterialCatalogToolBar);
       o._frameName = 'resource.private.material.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateMaterialFrameSet = function FDsPrivateMaterialFrameSet(o){
-      o = RClass.inherits(this, o, FDsMaterialFrameSet);
+      o = MO.Class.inherits(this, o, FDsMaterialFrameSet);
       o._frameName = 'resource.private.material.FrameSet';
       o.onBuilded  = FDsPrivateMaterialFrameSet_onBuilded;
       return o;
@@ -77098,19 +76962,19 @@ with(MO){
    MO.FDsPrivateMaterialFrameSet_onBuilded = function FDsPrivateMaterialFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsMaterialFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolBar = RClass.create(FDsPrivateMaterialCatalogToolBar);
+      var toolbar = o._catalogToolBar = MO.Class.create(FDsPrivateMaterialCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsMaterialCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateMaterialCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateMaterialCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var toolbar = o._propertyToolBar = RClass.create(FDsMaterialPropertyToolBar);
+      var toolbar = o._propertyToolBar = MO.Class.create(FDsMaterialPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -77118,28 +76982,28 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateMaterialMenuBar = function FDsPrivateMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FDsMaterialMenuBar);
+      o = MO.Class.inherits(this, o, FDsMaterialMenuBar);
       o._frameName = 'resource.private.material.MenuBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateModelCanvasToolBar = function FDsPrivateModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCanvasToolBar);
       o._frameName = 'resource.private.model.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateModelCatalogToolBar = function FDsPrivateModelCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCatalogToolBar);
       o._frameName = 'resource.private.model.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateModelFrameSet = function FDsPrivateModelFrameSet(o){
-      o = RClass.inherits(this, o, FDsModelFrameSet);
+      o = MO.Class.inherits(this, o, FDsModelFrameSet);
       o._frameName = 'resource.private.model.FrameSet';
       o.onBuilded  = FDsPrivateModelFrameSet_onBuilded;
       return o;
@@ -77147,20 +77011,20 @@ with(MO){
    MO.FDsPrivateModelFrameSet_onBuilded = function FDsPrivateModelFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsModelFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolBar = RClass.create(FDsPrivateModelCatalogToolBar);
+      var toolbar = o._catalogToolBar = MO.Class.create(FDsPrivateModelCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsModelCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsModelCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateModelCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateModelCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsModelCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsModelCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -77173,7 +77037,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateModelMenuBar = function FDsPrivateModelMenuBar(o){
-      o = RClass.inherits(this, o, FDsModelMenuBar);
+      o = MO.Class.inherits(this, o, FDsModelMenuBar);
       o._frameName = 'resource.private.model.MenuBar';
       o.onBuilded  = FDsPrivateModelMenuBar_onBuilded;
       return o;
@@ -77187,14 +77051,14 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateTemplateCanvasToolBar = function FDsPrivateTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCanvasToolBar);
       o._frameName      = 'resource.private.template.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateTemplateCatalogToolBar = function FDsPrivateTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCatalogToolBar);
       o._frameName = 'resource.private.template.CatalogToolBar';
       return o;
    }
@@ -77276,7 +77140,7 @@ MO.FDsPrivateTemplateFrameSet_onCatalogSelected = function FDsPrivateTemplateFra
 }
 with(MO){
    MO.FDsPrivateTemplateMenuBar = function FDsPrivateTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDsTemplateMenuBar);
+      o = MO.Class.inherits(this, o, FDsTemplateMenuBar);
       o._frameName = 'resource.private.template.MenuBar';
       o.onBuilded  = FDsPrivateTemplateMenuBar_onBuilded;
       return o;
@@ -77293,21 +77157,21 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateSceneCanvasToolBar = function FDsPrivateSceneCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCanvasToolBar);
       o._frameName = 'resource.private.scene.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateSceneCatalogToolBar = function FDsPrivateSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCatalogToolBar);
       o._frameName = 'resource.private.scene.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsPrivateSceneFrameSet = function FDsPrivateSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsSceneFrameSet);
+      o = MO.Class.inherits(this, o, FDsSceneFrameSet);
       o._frameName = 'resource.private.scene.FrameSet';
       o.onBuilded  = FDsPrivateSceneFrameSet_onBuilded;
       return o;
@@ -77315,20 +77179,20 @@ with(MO){
    MO.FDsPrivateSceneFrameSet_onBuilded = function FDsPrivateSceneFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsSceneFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsPrivateSceneCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsPrivateSceneCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsSceneCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolBar = RClass.create(FDsPrivateSceneCanvasToolBar);
+      var toolbar = o._canvasToolBar = MO.Class.create(FDsPrivateSceneCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsSceneCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -77337,7 +77201,7 @@ with(MO){
       canvas.addLoadListener(o, o.onDataLoaded);
       canvas.build(event);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
+      var toolbar = o._propertyToolbar = MO.Class.create(FDsScenePropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -77345,7 +77209,7 @@ with(MO){
 }
 with(MO){
    MO.FDsPrivateSceneMenuBar = function FDsPrivateSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDsSceneMenuBar);
+      o = MO.Class.inherits(this, o, FDsSceneMenuBar);
       o._frameName = 'resource.private.scene.MenuBar';
       o.onBuilded  = FDsPrivateSceneMenuBar_onBuilded;
       return o;
@@ -77362,7 +77226,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTabBar = function FDsShareTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName            = 'resource.share.TabBar';
       o._resourceTypeCd       = 'private';
       o._controlPrivateButton = null;
@@ -77400,12 +77264,12 @@ with(MO){
 }
 with(MO){
    MO.FDsShareWorkspace = function FDsShareWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace, MUiStorage);
+      o = MO.Class.inherits(this, o, FDuiWorkspace, MUiStorage);
       o._frameName            = 'resource.share.Workspace';
       o._storageCode          = o._frameName;
-      o._styleMenubarGround   = RClass.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
-      o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleMenubarGround   = MO.Class.register(o, new AStyle('_styleMenubarGround', 'Menubar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeFrameSetCode   = null;
       o._activeProjectGuid    = null;
       o._frameToolBar         = null;
@@ -77429,7 +77293,7 @@ with(MO){
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
       o._hMenuPanel = RBuilder.appendTableCell(hRow);
-      var control = o._tabBar = RClass.create(FDsShareTabBar);
+      var control = o._tabBar = MO.Class.create(FDsShareTabBar);
       control._workspace = o;
       control.buildDefine(event);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -77449,50 +77313,50 @@ with(MO){
       var frameSet = o._frameSets.get(name);
       if(!frameSet){
          if(name == EDsFrameSet.ShareResourceFrameSet){
-            var menuBar = RClass.create(FDsShareResourceMenuBar);
+            var menuBar = MO.Class.create(FDsShareResourceMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareResourceFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareBitmapFrameSet){
-            var menuBar = RClass.create(FDsShareBitmapMenuBar);
+            var menuBar = MO.Class.create(FDsShareBitmapMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareBitmapFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareMaterialFrameSet){
-            var menuBar = RClass.create(FDsShareMaterialMenuBar);
+            var menuBar = MO.Class.create(FDsShareMaterialMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareMaterialFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareModelFrameSet){
-            var menuBar = RClass.create(FDsShareModelMenuBar);
+            var menuBar = MO.Class.create(FDsShareModelMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareModelFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareModelFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareTemplateFrameSet){
-            var menuBar = RClass.create(FDsShareTemplateMenuBar);
+            var menuBar = MO.Class.create(FDsShareTemplateMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareTemplateFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
          }else if(name == EDsFrameSet.ShareSceneFrameSet){
-            var menuBar = RClass.create(FDsShareSceneMenuBar);
+            var menuBar = MO.Class.create(FDsShareSceneMenuBar);
             menuBar._workspace = o;
             menuBar.buildDefine(o._hPanel);
-            frameSet = RConsole.find(FDuiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
+            frameSet = MO.Console.find(FDuiFrameConsole).findByClass(o, FDsShareSceneFrameSet);
             frameSet._workspace = o;
             frameSet._menuBar = menuBar;
             menuBar._frameSet = frameSet;
@@ -77546,7 +77410,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceCatalogContent = function FDsShareResourceCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._activeSpace          = null;
       o._materials            = null;
       o.onBuild               = FDsShareResourceCatalogContent_onBuild;
@@ -77603,7 +77467,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceCatalogToolBar = function FDsShareResourceCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName                = 'resource.share.resource.CatalogToolBar';
       o._controlFolderOpenButton  = null;
       o._controlFolderCloseButton = null;
@@ -77636,12 +77500,12 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceFrameSet = function FDsShareResourceFrameSet(o){
-      o = RClass.inherits(this, o, FDuiFrameSet);
+      o = MO.Class.inherits(this, o, FDuiFrameSet);
       o._frameName            = 'resource.share.resource.FrameSet';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = RClass.register(o, new AStyle('_styleListContent', 'List_Content'));
-      o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
       o._resourceTypeCd       = 'picture';
       o._frameCatalog         = null;
       o._frameCatalogToolbar  = null;
@@ -77672,22 +77536,22 @@ with(MO){
       var f = o._catalogSplitter = o.searchControl('catalogSpliter');
       f.setAlignCd(EUiAlign.Left);
       f.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsShareResourceCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsShareResourceCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsShareResourceCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsShareResourceCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameCatalogContent.push(control);
-      var control = o._listToolBar = RClass.create(FDsShareResourceListToolBar);
+      var control = o._listToolBar = MO.Class.create(FDsShareResourceListToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameListToolBar.push(control);
-      var control = o._listContent = RClass.create(FDsShareResourceListContent);
+      var control = o._listContent = MO.Class.create(FDsShareResourceListContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
@@ -77702,35 +77566,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -77747,7 +77611,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -77772,7 +77636,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceListContent = function FDsShareResourceListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       o._contentFlag      = null;
       o._contentTypeCd    = EE3sResource.All;
       o._contentSerach    = '';
@@ -77820,7 +77684,7 @@ with(MO){
             o.push(item);
          }
       }
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
    }
    MO.FDsShareResourceListContent_construct = function FDsShareResourceListContent_construct(){
       var o = this;
@@ -77879,8 +77743,8 @@ with(MO){
       o._contentOrder = order;
       o._contentPageSize = pageSize;
       o._contentPage = page;
-      RConsole.find(FDuiDesktopConsole).showLoading();
-      var connection = RConsole.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
+      MO.Console.find(FDuiDesktopConsole).showLoading();
+      var connection = MO.Console.find(FDrResourceConsole).doListShare(o._contentTypeCd, o._contentSerach, o._contentOrder, o._contentPageSize, o._contentPage);
       connection.addLoadListener(o, o.onServiceLoad);
    }
    MO.FDsShareResourceListContent_serviceResearch = function FDsShareResourceListContent_serviceResearch(){
@@ -77894,13 +77758,13 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceListItem = function FDsShareResourceListItem(o){
-      o = RClass.inherits(this, o, FDsResourceListItem);
+      o = MO.Class.inherits(this, o, FDsResourceListItem);
       return o;
    }
 }
 with(MO){
    MO.FDsShareResourceListToolBar = function FDsShareResourceListToolBar(o){
-      o = RClass.inherits(this, o, FDsResourceListToolBar);
+      o = MO.Class.inherits(this, o, FDsResourceListToolBar);
       o._frameName   = 'resource.share.resource.ListToolBar';
       o._storageCode = o._frameName;
       return o;
@@ -77908,7 +77772,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceMenuBar = function FDsShareResourceMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._frameName      = 'resource.share.resource.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsShareResourceMenuBar_onBuilded;
@@ -77935,13 +77799,13 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourcePropertyContent = function FDsShareResourcePropertyContent(o){
-      o = RClass.inherits(this, o, FDsResourcePropertyContent);
+      o = MO.Class.inherits(this, o, FDsResourcePropertyContent);
       return o;
    }
 }
 with(MO){
    MO.FDsShareResourcePropertyToolBar = function FDsShareResourcePropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName             = 'resource.resource.PropertyToolBar';
       o._controlInsertButton   = null;
       o._controlUpdateButton   = null;
@@ -77979,7 +77843,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceTabBar = function FDsShareResourceTabBar(o){
-      o = RClass.inherits(this, o, FDuiTabBar);
+      o = MO.Class.inherits(this, o, FDuiTabBar);
       o._frameName             = 'design3d.resource.TabBar';
       o._resourceTypeCd        = 'mesh';
       o._controlPictureButton  = null;
@@ -78027,18 +77891,18 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceWorkspace = function FDsShareResourceWorkspace(o){
-      o = RClass.inherits(this, o, FDuiWorkspace);
+      o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.share.resource.Workspace';
-      o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
-      o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
-      o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._resourceTypeCd       = 'picture';
       o._frameToolBar         = null;
       o._frameStatusBar       = null;
@@ -78074,12 +77938,12 @@ with(MO){
       var hTable = RBuilder.createTable(p);
       hTable.width = '100%';
       var hRow = RBuilder.appendTableRow(hTable);
-      var c = o._toolbar = RClass.create(FDsShareResourceMenuBar);
+      var c = o._toolbar = MO.Class.create(FDsShareResourceMenuBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
       hCell.appendChild(c._hPanel);
-      var c = o._tabBar = RClass.create(FDsShareResourceTabBar);
+      var c = o._tabBar = MO.Class.create(FDsShareResourceTabBar);
       c._workspace = o;
       c.buildDefine(p);
       var hCell = RBuilder.appendTableCell(hRow);
@@ -78088,7 +77952,7 @@ with(MO){
       hCell.vAlign = 'bottom';
       hCell.appendChild(c._hPanel);
       o._frameToolBar._hPanel.appendChild(hTable);
-      var frameSet = o._frameSet = RClass.create(FDsShareResourceFrameSet);
+      var frameSet = o._frameSet = MO.Class.create(FDsShareResourceFrameSet);
       frameSet._workspace = o;
       frameSet.buildDefine(p);
       o._frameBody.push(frameSet);
@@ -78108,35 +77972,35 @@ with(MO){
          var f = fs.value(i);
          f.hide();
       }
-      if(RClass.isClass(p, FE3dStage)){
+      if(MO.Class.isClass(p, FE3dStage)){
          var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
          f.show();
          f.loadObject(space, space);
-      }else if(RClass.isClass(p, FG3dTechnique)){
+      }else if(MO.Class.isClass(p, FG3dTechnique)){
          var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dRegion)){
+      }else if(MO.Class.isClass(p, FE3dRegion)){
          var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dCamera)){
+      }else if(MO.Class.isClass(p, FE3dCamera)){
          var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      }else if(MO.Class.isClass(p, FG3dDirectionalLight)){
          var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshDisplay)){
+      }else if(MO.Class.isClass(p, FE3dMeshDisplay)){
          var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FG3dMaterial)){
+      }else if(MO.Class.isClass(p, FG3dMaterial)){
          var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
          f.show();
          f.loadObject(space, p);
-      }else if(RClass.isClass(p, FE3dMeshRenderable)){
+      }else if(MO.Class.isClass(p, FE3dMeshRenderable)){
          var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
          f.show();
          f.loadObject(space, p);
@@ -78153,7 +78017,7 @@ with(MO){
       var o = this;
       var f = o._propertyFrames.get(p);
       if(!f){
-         var fc = RConsole.find(FFrameConsole);
+         var fc = MO.Console.find(FFrameConsole);
          f = fc.get(o, p, o._framePreview._hContainer);
          f._workspace = o;
          o._propertyFrames.set(p, f);
@@ -78175,20 +78039,20 @@ with(MO){
 }
 with(MO){
    MO.FDsShareBitmapCanvasContent = function FDsShareBitmapCanvasContent(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvasContent);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvasContent);
       return o;
    }
 }
 with(MO){
    MO.FDsShareBitmapCanvasToolBar = function FDsShareBitmapCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsBitmapCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsBitmapCanvasToolBar);
       o._frameName = 'resource.share.bitmap.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareBitmapFrameSet = function FDsShareBitmapFrameSet(o){
-      o = RClass.inherits(this, o, FDsBitmapFrameSet);
+      o = MO.Class.inherits(this, o, FDsBitmapFrameSet);
       o._frameName = 'resource.share.bitmap.FrameSet';
       o.onBuilded  = FDsShareBitmapFrameSet_onBuilded;
       return o;
@@ -78196,18 +78060,18 @@ with(MO){
    MO.FDsShareBitmapFrameSet_onBuilded = function FDsShareBitmapFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsBitmapFrameSet.onBuilded.call(o, event);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareBitmapCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareBitmapCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsBitmapCanvasContent);
       canvas._frameSet = o;
       canvas._hParent = o._frameCanvasContent._hPanel;
       canvas._hParent.style.backgroundColor = '#333333';
       canvas._hParent.style.scroll = 'auto';
       canvas.build(event);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolbar = RClass.create(FDsBitmapPropertyToolBar);
+      var toolbar = o._propertyToolbar = MO.Class.create(FDsBitmapPropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -78217,7 +78081,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareBitmapMenuBar = function FDsShareBitmapMenuBar(o){
-      o = RClass.inherits(this, o, FDsBitmapMenuBar);
+      o = MO.Class.inherits(this, o, FDsBitmapMenuBar);
       o._frameName  = 'resource.share.bitmap.MenuBar';
       o.onBuilded   = FDsShareBitmapMenuBar_onBuilded;
       o.onBackClick = FDsShareBitmapMenuBar_onBackClick;
@@ -78236,28 +78100,28 @@ with(MO){
 }
 with(MO){
    MO.FDsShareBitmapPropertyToolBar = function FDsShareBitmapPropertyToolBar(o){
-      o = RClass.inherits(this, o, FDsBitmapPropertyToolBar);
+      o = MO.Class.inherits(this, o, FDsBitmapPropertyToolBar);
       o._frameName = 'resource.share.bitmap.PropertyToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareBitmapWorkspace = function FDsShareBitmapWorkspace(o){
-      o = RClass.inherits(this, o, FDsBitmapWorkspace);
+      o = MO.Class.inherits(this, o, FDsBitmapWorkspace);
       o._frameName = 'resource.share.bitmap.Workspace';
       return o;
    }
 }
 with(MO){
    MO.FDsShareMaterialCanvasToolBar = function FDsShareMaterialCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsMaterialCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsMaterialCanvasToolBar);
       o._frameName = 'resource.share.materail.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareMaterialFrameSet = function FDsShareMaterialFrameSet(o){
-      o = RClass.inherits(this, o, FDsMaterialFrameSet);
+      o = MO.Class.inherits(this, o, FDsMaterialFrameSet);
       o._frameName = 'resource.share.material.FrameSet';
       o.onBuilded  = FDsShareMaterialFrameSet_onBuilded;
       return o;
@@ -78265,20 +78129,20 @@ with(MO){
    MO.FDsShareMaterialFrameSet_onBuilded = function FDsShareMaterialFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsMaterialFrameSet.onBuilded.call(o, event);
-      var toolbar = o._toolbar = RClass.create(FDsShareMaterialMenuBar);
+      var toolbar = o._toolbar = MO.Class.create(FDsShareMaterialMenuBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsMaterialCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsMaterialCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareMaterialCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareMaterialCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsMaterialCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsMaterialCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -78291,28 +78155,28 @@ with(MO){
 }
 with(MO){
    MO.FDsShareMaterialMenuBar = function FDsShareMaterialMenuBar(o){
-      o = RClass.inherits(this, o, FDsMaterialMenuBar);
+      o = MO.Class.inherits(this, o, FDsMaterialMenuBar);
       o._frameName = 'resource.share.material.MenuBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareModelCanvasToolBar = function FDsShareModelCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCanvasToolBar);
       o._frameName = 'resource.share.model.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareModelCatalogToolBar = function FDsShareModelCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsModelCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsModelCatalogToolBar);
       o._frameName = 'resource.share.model.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareModelFrameSet = function FDsShareModelFrameSet(o){
-      o = RClass.inherits(this, o, FDsModelFrameSet);
+      o = MO.Class.inherits(this, o, FDsModelFrameSet);
       o._frameName = 'resource.share.model.FrameSet';
       o.onBuilded  = FDsShareModelFrameSet_onBuilded;
       return o;
@@ -78320,20 +78184,20 @@ with(MO){
    MO.FDsShareModelFrameSet_onBuilded = function FDsShareModelFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsModelFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsShareModelCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsShareModelCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsModelCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsModelCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareModelCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareModelCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsModelCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsModelCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -78346,7 +78210,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareModelMenuBar = function FDsShareModelMenuBar(o){
-      o = RClass.inherits(this, o, FDsModelMenuBar);
+      o = MO.Class.inherits(this, o, FDsModelMenuBar);
       o._frameName = 'resource.share.model.MenuBar';
       o.onBuilded  = FDsShareModelMenuBar_onBuilded;
       return o;
@@ -78358,7 +78222,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateCanvasToolBar = function FDsShareTemplateCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName      = 'resource.share.template.CanvasToolBar';
       o._refreshButton  = null;
       o._saveButton     = null;
@@ -78415,14 +78279,14 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateCatalogToolBar = function FDsShareTemplateCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateCatalogToolBar);
       o._frameName = 'resource.share.template.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareTemplateFrameSet = function FDsShareTemplateFrameSet(o){
-      o = RClass.inherits(this, o, FDsTemplateFrameSet);
+      o = MO.Class.inherits(this, o, FDsTemplateFrameSet);
       o._frameName = 'resource.share.template.FrameSet';
       o.onBuilded  = FDsShareTemplateFrameSet_onBuilded;
       return o;
@@ -78430,21 +78294,21 @@ with(MO){
    MO.FDsShareTemplateFrameSet_onBuilded = function FDsShareTemplateFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsTemplateFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsShareTemplateCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsShareTemplateCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsTemplateCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsTemplateCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareTemplateCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareTemplateCanvasToolBar);
       toolbar._frameSet = o;
       toolbar._workspace = o._worksapce;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsTemplateCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsTemplateCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -78457,7 +78321,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateMenuBar = function FDsShareTemplateMenuBar(o){
-      o = RClass.inherits(this, o, FDsTemplateMenuBar);
+      o = MO.Class.inherits(this, o, FDsTemplateMenuBar);
       o._frameName = 'resource.share.template.MenuBar';
       o.onBuilded  = FDsShareTemplateMenuBar_onBuilded;
       return o;
@@ -78469,19 +78333,19 @@ with(MO){
 }
 with(MO){
    MO.FDsShareTemplateToolBar = function FDsShareTemplateToolBar(o){
-      o = RClass.inherits(this, o, FDsTemplateToolBar);
+      o = MO.Class.inherits(this, o, FDsTemplateToolBar);
       return o;
    }
    MO.FDsShareTemplateToolBar_onBuild = function FDsShareTemplateToolBar_onBuild(p){
       var o = this;
       o.__base.FDuiToolBar.onBuild.call(o, p);
-      var b = o._refreshButton  = RClass.create(FDuiToolButton);
+      var b = o._refreshButton  = MO.Class.create(FDuiToolButton);
       b.setLabel('刷新');
       b.setIcon('design3d.tools.refresh');
       b.build(p);
       b.addClickListener(o, o.onRefreshClick);
       o.push(b);
-      var b = o._saveButton = RClass.create(FDuiToolButton);
+      var b = o._saveButton = MO.Class.create(FDuiToolButton);
       b.setLabel('保存');
       b.setIcon('design3d.tools.save');
       b.build(p);
@@ -78507,7 +78371,7 @@ with(MO){
             m.saveConfig(xr.create('Material'));
          }
       }
-      RConsole.find(FE3sTemplateConsole).update(xr);
+      MO.Console.find(FE3sTemplateConsole).update(xr);
    }
    MO.FDsShareTemplateToolBar_construct = function FDsShareTemplateToolBar_construct(){
       var o = this;
@@ -78520,21 +78384,21 @@ with(MO){
 }
 with(MO){
    MO.FDsShareSceneCanvasToolBar = function FDsShareSceneCanvasToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCanvasToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCanvasToolBar);
       o._frameName = 'resource.share.scene.CanvasToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareSceneCatalogToolBar = function FDsShareSceneCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDsSceneCatalogToolBar);
+      o = MO.Class.inherits(this, o, FDsSceneCatalogToolBar);
       o._frameName = 'resource.share.scene.CatalogToolBar';
       return o;
    }
 }
 with(MO){
    MO.FDsShareSceneFrameSet = function FDsShareSceneFrameSet(o){
-      o = RClass.inherits(this, o, FDsSceneFrameSet);
+      o = MO.Class.inherits(this, o, FDsSceneFrameSet);
       o._frameName = 'resource.share.scene.FrameSet';
       o.onBuilded  = FDsShareSceneFrameSet_onBuilded;
       return o;
@@ -78542,20 +78406,20 @@ with(MO){
    MO.FDsShareSceneFrameSet_onBuilded = function FDsShareSceneFrameSet_onBuilded(event){
       var o = this;
       o.__base.FDsSceneFrameSet.onBuilded.call(o, event);
-      var toolbar = o._catalogToolbar = RClass.create(FDsShareSceneCatalogToolBar);
+      var toolbar = o._catalogToolbar = MO.Class.create(FDsShareSceneCatalogToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCatalogToolBar.push(toolbar);
-      var catalog = o._catalogContent = RClass.create(FDsSceneCatalogContent);
+      var catalog = o._catalogContent = MO.Class.create(FDsSceneCatalogContent);
       catalog._frameSet = o;
       catalog.build(event);
       catalog.addSelectedListener(o, o.onCatalogSelected);
       o._frameCatalogContent.push(catalog);
-      var toolbar = o._canvasToolbar = RClass.create(FDsShareSceneCanvasToolBar);
+      var toolbar = o._canvasToolbar = MO.Class.create(FDsShareSceneCanvasToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._frameCanvasToolBar.push(toolbar);
-      var canvas = o._canvasContent = RClass.create(FDsSceneCanvasContent);
+      var canvas = o._canvasContent = MO.Class.create(FDsSceneCanvasContent);
       canvas._frameSet = o;
       canvas._toolbar = o._canvasToolbar;
       canvas._hParent = o._frameCanvasContent._hPanel;
@@ -78564,7 +78428,7 @@ with(MO){
       canvas.addLoadListener(o, o.onDataLoaded);
       canvas.build(event);
       o._frameCanvasContent.push(canvas);
-      var toolbar = o._propertyToolbar = RClass.create(FDsScenePropertyToolBar);
+      var toolbar = o._propertyToolbar = MO.Class.create(FDsScenePropertyToolBar);
       toolbar._frameSet = o;
       toolbar.buildDefine(event);
       o._framePropertyToolBar.push(toolbar);
@@ -78572,7 +78436,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareSceneMenuBar = function FDsShareSceneMenuBar(o){
-      o = RClass.inherits(this, o, FDsSceneMenuBar);
+      o = MO.Class.inherits(this, o, FDsSceneMenuBar);
       o._frameName = 'resource.share.scene.MenuBar';
       o.onBuilded  = FDsShareSceneMenuBar_onBuilded;
       return o;
@@ -83313,6 +83177,10 @@ MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o){
    o._value           = MO.Class.register(o, new MO.AGetter('_value'), '0');
    o._originValue     = '0';
    o._startTick       = 0;
+   o._textFontW       = "0";
+   o._unitFontW       = "0";
+   o._negative        = "0";
+   o._origin          = "0";
    o._rolling         = MO.Class.register(o, new MO.AGetSet('_rolling'), false);
    o._rollingDuration = MO.Class.register(o, new MO.AGetSet('_rollingDuration'), 1000);
    o._rollingPages    = null;
@@ -83332,10 +83200,17 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var textFont = o._foreFont;
    var unitFont = o._backFont;
    graphic.setFont(textFont);
-   var baseX = rectangle.left;
+   var baseX;
+   var unitTextX;
+   if( o._alignCd == "right" ){
+       baseX =  rectangle.left;
+       unitTextX = baseX + 4;
+   }else{
+       baseX =  rectangle.right() - o._unitFontW + (o._textFontW - o._unitFontW) - 65;
+       unitTextX = baseX ;
+   }
    var baseY = rectangle.top + rectangle.height;
-   var unitTextX = baseX + 4;
-   var unitTextY = baseY - 4;
+   var unitTextY = baseY - 2;
    var drawedText = '';
    var passedTick = MO.Timer.current() - o._startTick;
    if (passedTick > o._rollingDuration || o._noRolling) {
@@ -83343,54 +83218,79 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       o._rolling = false;
    }
    for (var i = 0; i < o._value.length; i++) {
-      var passedValue = o._rollingPages.get(i) * (passedTick / o._rollingDuration);
-      var numString = (parseInt(o._originValue.charAt(i)) + parseInt(passedValue)).toString();
-      var currentNum = parseInt(numString.charAt(numString.length - 1));
-      var nextNum = currentNum == 9 ? 0 : currentNum + 1;
-      var rate = passedValue - parseInt(passedValue);
-      graphic.setFont(textFont);
-      var drawedTextWidth = graphic.textWidth(drawedText);
-      var textColor = '';
-      if (i < o._originValue.length - 8) {
-         textColor = '#FFD926';
-      }else if (i < o._originValue.length - 4) {
-         textColor = '#FF7200';
-      }else if (i < o._originValue.length) {
-         textColor = '#FD0000';
-      }
-      graphic.drawText(currentNum, baseX + drawedTextWidth, baseY - 38 * rate, textColor);
-      graphic.drawText(nextNum, baseX + drawedTextWidth, baseY + 38 - 38 * rate, textColor);
-      drawedText += currentNum;
-      if (i == o._originValue.length - 9) {
+         var passedValue = o._rollingPages.get(i) * (passedTick / o._rollingDuration);
+         var numString = (parseInt(o._originValue.charAt(i)) + parseInt(passedValue)).toString();
+         var currentNum = parseInt(numString.charAt(numString.length - 1));
+         var nextNum = currentNum == 9 ? 0 : currentNum + 1;
+         var prevNum = currentNum == 0 ? 9 : currentNum - 1;
+         var reg = /^[0-9]+$/;
+         var rate = passedValue - parseInt(passedValue);
+         graphic.setFont(textFont);
+         var drawedTextWidth;
+         var textColor = '';
+         if (i < o._originValue.length - 8) {
+            textColor = '#FFD926';
+         }else if (i < o._originValue.length - 4) {
+            textColor = '#FF7200';
+         }else if (i < o._originValue.length) {
+            textColor = '#FD0000';
+         }
+         if( !reg.test(o._negative) ){
+            var negativeColor ="";
+            if ( o._negative.length <= 5) {
+               negativeColor = '#FD0000';
+            }else if ( o._negative.length <= 9) {
+               negativeColor = '#FF7200';
+            }else if ( o._negative.length <= 13) {
+               negativeColor = '#FFD926';
+            }
+            graphic.setFont(textFont);
+            graphic.drawText("-", baseX - 10, baseY , negativeColor);
+         }
          drawedTextWidth = graphic.textWidth(drawedText);
-         graphic.setFont(unitFont);
-         graphic.drawText('亿', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-         drawedText += '亿';
-      }else if (i == o._originValue.length - 5) {
-         drawedTextWidth = graphic.textWidth(drawedText);
-         graphic.setFont(unitFont);
-         graphic.drawText('万', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-         drawedText += '万';
-      }else if (i == o._originValue.length -1) {
-         drawedTextWidth = graphic.textWidth(drawedText);
-         graphic.setFont(unitFont);
-         graphic.drawText('元', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-         drawedText += '元';
-      }
+         o._textFontW = drawedTextWidth;
+         graphic.drawText(prevNum, baseX + drawedTextWidth, baseY - 38 - 38 * rate, textColor);
+         graphic.drawText(currentNum, baseX + drawedTextWidth, baseY - 38 * rate, textColor);
+         graphic.drawText(nextNum, baseX + drawedTextWidth, baseY + 38 - 38 * rate, textColor);
+         drawedText += currentNum;
+         if (i == o._originValue.length - 9) {
+            drawedTextWidth = graphic.textWidth(drawedText);
+            graphic.setFont(unitFont);
+            graphic.drawText('亿', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+            drawedText += '亿';
+         }else if (i == o._originValue.length - 5) {
+            drawedTextWidth = graphic.textWidth(drawedText);
+            graphic.setFont(unitFont);
+            graphic.drawText('万', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+            drawedText += '万';
+         }else if (i == o._originValue.length -1) {
+            drawedTextWidth = graphic.textWidth(drawedText);
+            graphic.setFont(unitFont);
+            graphic.drawText('元', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+            drawedText += '元';
+            o._unitFontW = drawedTextWidth;
+         }
    }
    if (o._rolling == false) {
       o._originValue = o._value;
+      o._origin = o._negative;
       o._rollingPages.clear();
    }
 }
 MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    var o = this;
+   var fetch;
+   o._negative = value;
    if (o._value == value) {
       return;
    }
    if (o._rolling) {
       o._originValue = o._value;
+      o._origin = o._negative;
    }
+   o._negative = value;
+   fetch = value - o._origin;
+   var value = Math.abs(value).toString();
    o._value = value;
    var originValue = o._originValue;
    var lengthDiff = value.length - originValue.length;
@@ -83401,10 +83301,18 @@ MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    o._originValue = originValue;
    o._rollingPages.clear();
    o._rollingPages._length = value.length;
-   for (var i = 0; i < value.length; i++) {
-      var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
-      pages = pages < 0 ? pages + 10 : pages;
-      o._rollingPages.set(i, pages);
+   if( fetch < 0  ){
+      for (var i = 0; i < value.length; i++) {
+         var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
+         pages = pages > 0 ? pages - 10 : pages;
+         o._rollingPages.set(i, pages);
+       }
+   }else{
+      for (var i = 0; i < value.length; i++) {
+            var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
+            pages = pages < 0 ? pages + 10 : pages;
+            o._rollingPages.set(i, pages);
+      }
    }
    o._startTick = MO.Timer.current();
    o._rolling = true;

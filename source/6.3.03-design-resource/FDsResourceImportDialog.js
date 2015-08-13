@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceImportDialog = function FDsResourceImportDialog(o){
-      o = RClass.inherits(this, o, FDuiDialog);
+      o = MO.Class.inherits(this, o, FDuiDialog);
       //..........................................................
       // @property
       o._frameName            = 'resource.resource.ImportDialog';
@@ -67,10 +67,10 @@ with(MO){
       var name = o._controlFile.get();
       // 设置代码和标签
       var code = RFile.name(name);
-      if(RString.isEmpty(o._controlCode.get())){
+      if(MO.Lang.String.isEmpty(o._controlCode.get())){
          o._controlCode.set(code);
       }
-      if(RString.isEmpty(o._controlLabel.get())){
+      if(MO.Lang.String.isEmpty(o._controlLabel.get())){
          o._controlLabel.set(code);
       }
    }
@@ -102,7 +102,7 @@ with(MO){
       url += '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
       url = RBrowser.urlEncode(url);
       // 发送数据
-      var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+      var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       // 释放文件
       o._fileReader = RObject.dispose(reader);
@@ -117,7 +117,7 @@ with(MO){
    MO.FDsResourceImportDialog_onConfirmLoad = function FDsResourceImportDialog_onConfirmLoad(event){
       var o = this;
       // 隐藏窗口
-      RConsole.find(FDuiDesktopConsole).hide();
+      MO.Console.find(FDuiDesktopConsole).hide();
       // 隐藏窗口
       o.hide();
       // 刷新搜索内容
@@ -134,10 +134,10 @@ with(MO){
    MO.FDsResourceImportDialog_onConfirmClick = function FDsResourceImportDialog_onConfirmClick(event){
       var o = this;
       // 画面禁止操作
-      RConsole.find(FDuiDesktopConsole).showUploading();
+      MO.Console.find(FDuiDesktopConsole).showUploading();
       // 加载文件数据
       var file = o._controlFile._hInput.files[0];
-      var reader = o._fileReader = RClass.create(FFileReader);
+      var reader = o._fileReader = MO.Class.create(FFileReader);
       reader.addLoadListener(o, o.onFileLoaded);
       reader.loadFile(file);
    }

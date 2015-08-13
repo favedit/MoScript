@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSolutionListContent = function FDsSolutionListContent(o){
-      o = RClass.inherits(this, o, FDuiListView);
+      o = MO.Class.inherits(this, o, FDuiListView);
       //..........................................................
       // @attribute
       o._activeControl    = null;
@@ -72,7 +72,7 @@ with(MO){
             item.propertyLoad(xnode);
             item._typeCd = xnode.get('type');
             item._guid = xnode.get('guid');
-            item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+            item.setLabel(MO.Lang.String.nvl(xnode.get('label'), xnode.get('code')));
             item.refreshStyle();
             o.push(item);
          }
@@ -138,7 +138,7 @@ with(MO){
       // 画面禁止操作
       RWindow.disable();
       // 发送数据请求
-      var connection = RConsole.find(FDrProjectConsole).doList(serach, null, pageSize, page);
+      var connection = MO.Console.find(FDrProjectConsole).doList(serach, null, pageSize, page);
       connection.addLoadListener(o, o.onServiceLoad);
    }
 
