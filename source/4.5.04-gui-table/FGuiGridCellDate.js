@@ -6,7 +6,7 @@
 // @version 150804
 //==========================================================
 MO.FGuiGridCellDate = function FGuiGridCellDate(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellDate);
+   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellDate);
    //..........................................................
    // @method
    o.construct = MO.FGuiGridCellDate_construct;
@@ -24,7 +24,7 @@ MO.FGuiGridCellDate = function FGuiGridCellDate(o){
 //==========================================================
 MO.FGuiGridCellDate_construct = function FGuiGridCellDate_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FGuiGridCell.construct.call(o);
    o.__base.MUiGridCellDate.construct.call(o);
 }
 
@@ -32,17 +32,18 @@ MO.FGuiGridCellDate_construct = function FGuiGridCellDate_construct(){
 // <T>绘制处理。</T>
 //
 // @method
-// @return 绘制处理
+// @param context:SGuiGridPaintContext 绘制环境
 //==========================================================
-MO.FGuiGridCellDate_draw = function FGuiGridCellDate_draw(graphic, x, y, width, height){
+MO.FGuiGridCellDate_draw = function FGuiGridCellDate_draw(context){
    var o = this;
-   // 获得字体
+   var graphic = context.graphic;
+   var rectangle = context.rectangle;
+   var font = context.style.font;
    var text = o.text();
-   var font = o.findFont();
    // 绘制底框
    // graphic.fillRectangle(x, y, width, height, '#122A46');
    // 绘制文字
-   graphic.drawFontText(text, font, x, y, width, height, MO.EUiAlign.Center);
+   graphic.drawFontText(text, font, rectangle.left, rectangle.top, rectangle.width, rectangle.height, MO.EUiAlign.Center);
 }
 
 //==========================================================
@@ -55,5 +56,5 @@ MO.FGuiGridCellDate_dispose = function FGuiGridCellDate_dispose(){
    // 释放属性
    // 父处理
    o.__base.MUiGridCellDate.dispose.call(o);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FGuiGridCell.dispose.call(o);
 }

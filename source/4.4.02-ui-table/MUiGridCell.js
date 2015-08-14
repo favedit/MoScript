@@ -9,19 +9,21 @@ MO.MUiGridCell = function MUiGridCell(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._grid      = MO.Class.register(o, new MO.AGetSet('_grid'));
-   o._column    = MO.Class.register(o, new MO.AGetSet('_column'));
-   o._row       = MO.Class.register(o, new MO.AGetSet('_row'));
+   o._grid          = MO.Class.register(o, new MO.AGetSet('_grid'));
+   o._column        = MO.Class.register(o, new MO.AGetSet('_column'));
+   o._row           = MO.Class.register(o, new MO.AGetSet('_row'));
    // @attribute
-   o._font      = MO.Class.register(o, new MO.AGetSet('_font'));
-   o._value     = MO.Class.register(o, new MO.AGetSet('_value'));
+   o._alignCd       = MO.Class.register(o, new MO.AGetSet('_alignCd'), MO.EUiAlign.Left);
+   o._font          = MO.Class.register(o, new MO.AGetSet('_font'));
+   o._value         = MO.Class.register(o, new MO.AGetSet('_value'));
    //..........................................................
    // @method
-   o.findFont   = MO.MUiGridCell_findFont;
-   o.text       = MO.MUiGridCell_text;
-   o.setText    = MO.MUiGridCell_setText;
+   o.findFont       = MO.MUiGridCell_findFont;
+   o.calculateStyle = MO.MUiGridCell_calculateStyle;
+   o.text           = MO.MUiGridCell_text;
+   o.setText        = MO.MUiGridCell_setText;
    // @method
-   o.dispose    = MO.MUiGridCell_dispose;
+   o.dispose        = MO.MUiGridCell_dispose;
    return o;
 }
 
@@ -45,6 +47,37 @@ MO.MUiGridCell_findFont = function MUiGridCell_findFont(){
       font = o._grid.rowFont();
    }
    return font;
+}
+
+//==========================================================
+// <T>计算样式。</T>
+//
+// @method
+// @param style:SUiGridCellStyle 样式
+//==========================================================
+MO.MUiGridCell_calculateStyle = function MUiGridCell_calculateStyle(style){
+   var o = this;
+   var row = o._row;
+   var column = o._column;
+   var grid = o._grid;
+   // 获得字体
+   var font = o._font;
+   if(font){
+      font = row.font();
+   }
+   if(!font){
+      font = column.font();
+   }
+   if(!font){
+      font = grid.rowFont();
+   }
+   style.font = font;
+   // 获得对齐
+   var alignCd = o._alignCd;
+   if(!alignCd){
+      alignCd = column.alignCd();
+   }
+   style.alignCd = alignCd;
 }
 
 //==========================================================

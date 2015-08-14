@@ -6,7 +6,7 @@
 // @version 150804
 //==========================================================
 MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellDate);
+   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellDate);
    //..........................................................
    o._fontColor  = null;
    o._numberFont = null;
@@ -28,7 +28,7 @@ MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
 //==========================================================
 MO.FGuiGridCellCurrency_construct = function FGuiGridCellCurrency_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FGuiGridCell.construct.call(o);
    o.__base.MUiGridCellDate.construct.call(o);
    // 设置属性
    o._numberFont = new MO.SUiFont();
@@ -49,17 +49,23 @@ MO.FGuiGridCellCurrency_formatText = function FGuiGridCellCurrency_formatText(va
 // <T>绘制处理。</T>
 //
 // @method
-// @return 绘制处理
+// @param context:SGuiGridPaintContext 绘制环境
 //==========================================================
-MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(graphic, x, y, width, height){
+MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(context){
    var o = this;
+   var graphic = context.graphic;
+   var rectangle = context.rectangle;
+   var font = context.style.font;
+   var x = rectangle.left;
+   var y = rectangle.top;
+   var width = rectangle.width;
+   var height = rectangle.height;
    var column = o._column;
    var cellPadding = column.cellPadding();
    // 获得字体
    var value = o.value();
    var text = o.text();
    var textLength = text.length;
-   var font = o.findFont();
    var numberFont = o._numberFont;
    numberFont.assign(font);
    var contentWidth = width - cellPadding.right;
@@ -101,5 +107,5 @@ MO.FGuiGridCellCurrency_dispose = function FGuiGridCellCurrency_dispose(){
    o._numberFont = MO.Lang.Object.dispose(o._numberFont);
    // 父处理
    o.__base.MUiGridCellDate.dispose.call(o);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FGuiGridCell.dispose.call(o);
 }

@@ -6,7 +6,7 @@
 // @version 150804
 //==========================================================
 MO.FGuiGridCell = function FGuiGridCell(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellText);
+   o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @method
    o.onPaint   = MO.FGuiGridCell_onPaint;
@@ -21,16 +21,6 @@ MO.FGuiGridCell = function FGuiGridCell(o){
 }
 
 //==========================================================
-// <T>绘制事件处理。</T>
-//
-// @method
-// @return 绘制事件处理
-//==========================================================
-MO.FGuiGridCell_onPaint = function FGuiGridCell_onPaint(event){
-   var o = this;
-}
-
-//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -38,24 +28,15 @@ MO.FGuiGridCell_onPaint = function FGuiGridCell_onPaint(event){
 MO.FGuiGridCell_construct = function FGuiGridCell_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.__base.MUiGridCellText.construct.call(o);
 }
 
 //==========================================================
 // <T>绘制处理。</T>
 //
 // @method
-// @return 绘制处理
+// @param context:SGuiGridPaintContext 绘制环境
 //==========================================================
-MO.FGuiGridCell_draw = function FGuiGridCell_draw(graphic, x, y, width, height){
-   var o = this;
-   // 获得文本
-   var text = o.text();
-   var font = o.findFont();
-   // 绘制底框
-   // graphic.fillRectangle(x, y, width, height, '#122A46');
-   // 绘制文字
-   graphic.drawFontText(text, font, x, y, width, height, MO.EUiAlign.Center);
+MO.FGuiGridCell_draw = function FGuiGridCell_draw(context){
 }
 
 //==========================================================
@@ -67,6 +48,5 @@ MO.FGuiGridCell_dispose = function FGuiGridCell_dispose(){
    var o = this;
    // 释放属性
    // 父处理
-   o.__base.MUiGridCellText.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

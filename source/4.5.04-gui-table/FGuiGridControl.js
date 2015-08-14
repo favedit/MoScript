@@ -9,16 +9,20 @@ MO.FGuiGridControl = function FGuiGridControl(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiGridControl);
    //..........................................................
    // @attribute
+   o._optionClip     = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
+   // @attribute
    o._rowScroll      = 0;
    o._rowScrollSpeed = 1;
+   // @attribute
+   o._paintContext   = null;
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FGuiGridControl_onPaintBegin;
+   o.onPaintBegin    = MO.FGuiGridControl_onPaintBegin;
    //..........................................................
    // @method
-   o.construct    = MO.FGuiGridControl_construct;
+   o.construct       = MO.FGuiGridControl_construct;
    // @method
-   o.dispose      = MO.FGuiGridControl_dispose;
+   o.dispose         = MO.FGuiGridControl_dispose;
    return o;
 }
 
@@ -30,8 +34,12 @@ MO.FGuiGridControl = function FGuiGridControl(o){
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    var o = this;
    var padding = o._padding;
-   // 绘制边框
+   var context = o._paintContext;
+   var contextStyle = context.style;
+   var contextRectangle = context.rectangle;
    var graphic = event.graphic;
+   context.graphic = graphic;
+   // 绘制边框
    var rectangle = event.rectangle;
    var left = rectangle.left + padding.left;
    var top = rectangle.top + padding.top;
@@ -60,7 +68,8 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       for(var i = 0; i < columnCount; i++){
          var column = columns.at(i);
          var columnWidth = gridWidth * column.width() / columnWidthTotal;
-         column.draw(graphic, columnX, columnY, columnWidth, headHeight);
+         contextRectangle.set(columnX, columnY, columnWidth, headHeight);
+         column.draw(context);
          columnX += columnWidth;
       }
       drawY += headHeight;
@@ -69,7 +78,9 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    // 计算可绘制行数
    var rowsHeight = bottom - drawY;
    var rowHeight = o._rowHeight;
-   graphic.clip(drawX, drawY, gridWidth, rowsHeight);
+   if(o._optionClip){
+      graphic.clip(drawX, drawY, gridWidth, rowsHeight);
+   }
    //..........................................................
    // 绘制数据
    var rows = o._rows;
@@ -84,7 +95,9 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
             var dataName = column.dataName();
             var columnWidth = gridWidth * column.width() / columnWidthTotal;
             var cell = row.cells().get(dataName);
-            cell.draw(graphic, columnX, drawY, columnWidth, rowHeight);
+            cell.calculateStyle(contextStyle);
+            contextRectangle.set(columnX, drawY, columnWidth, rowHeight);
+            cell.draw(context);
             columnX += columnWidth;
          }
       }
@@ -106,6 +119,7 @@ MO.FGuiGridControl_construct = function FGuiGridControl_construct(){
    o.__base.MUiGridControl.construct.call(o);
    // 设置变量
    o._rowClass = MO.FGuiGridRow;
+   o._paintContext = new MO.SGuiGridPaintContext();
 }
 
 //==========================================================
@@ -115,6 +129,8 @@ MO.FGuiGridControl_construct = function FGuiGridControl_construct(){
 //==========================================================
 MO.FGuiGridControl_dispose = function FGuiGridControl_dispose(){
    var o = this;
+   o._rowClass = null;
+   o._paintContext = MO.Lang.Object.dispose(o._paintContext);
    // 父处理
    o.__base.MUiGridControl.dispose.call(o);
    o.__base.FGuiControl.dispose.call(o);

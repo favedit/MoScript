@@ -45,17 +45,19 @@ MO.FGuiGridCellText_construct = function FGuiGridCellText_construct(){
 // <T>绘制处理。</T>
 //
 // @method
-// @return 绘制处理
+// @param context:SGuiGridPaintContext 绘制环境
 //==========================================================
-MO.FGuiGridCellText_draw = function FGuiGridCellText_draw(graphic, x, y, width, height){
+MO.FGuiGridCellText_draw = function FGuiGridCellText_draw(context){
    var o = this;
+   var graphic = context.graphic;
+   var rectangle = context.rectangle;
+   var font = context.style.font;
    // 获得文本
    var text = o.text();
-   var font = o.findFont();
    // 绘制底框
    // graphic.fillRectangle(x, y, width, height, '#122A46');
    // 绘制文字
-   graphic.drawFontText(text, font, x, y, width, height, MO.EUiAlign.Center);
+   graphic.drawFontText(text, font, rectangle.left, rectangle.top, rectangle.width, rectangle.height, MO.EUiAlign.Center);
 }
 
 //==========================================================

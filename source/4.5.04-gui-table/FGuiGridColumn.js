@@ -32,14 +32,17 @@ MO.FGuiGridColumn_construct = function FGuiGridColumn_construct(){
 // <T>绘制处理。</T>
 //
 // @method
+// @param context:SGuiGridPaintContext 绘制环境
 //==========================================================
-MO.FGuiGridColumn_draw = function FGuiGridColumn_draw(graphic, x, y, width, height){
+MO.FGuiGridColumn_draw = function FGuiGridColumn_draw(context){
    var o = this;
+   var graphic = context.graphic;
+   var rectangle = context.rectangle;
    var padding = o._padding;
-   var contentX = x + padding.left;
-   var contentY = y + padding.top;
-   var contentWidth = width - padding.left - padding.right;
-   var contentHeight = height - padding.top - padding.bottom;
+   var contentX = rectangle.left + padding.left;
+   var contentY = rectangle.top + padding.top;
+   var contentWidth = rectangle.width - padding.left - padding.right;
+   var contentHeight = rectangle.height - padding.top - padding.bottom;
    // 绘制底框
    var backColor = o._backColor;
    if(!backColor){

@@ -445,27 +445,27 @@ with(MO){
       o.__base.FE3dShape.dispose.call(o);
    }
 }
-MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o){
+MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o) {
    o = MO.Class.inherits(this, o, MO.FGuiLabel);
-   o._value           = MO.Class.register(o, new MO.AGetter('_value'), '0');
-   o._originValue     = '0';
-   o._startTick       = 0;
-   o._textFontW       = "0";
-   o._unitFontW       = "0";
-   o._negative        = "0";
-   o._origin          = "0";
-   o._rolling         = MO.Class.register(o, new MO.AGetSet('_rolling'), false);
+   o._value = MO.Class.register(o, new MO.AGetter('_value'), '0');
+   o._originValue = '0';
+   o._startTick = 0;
+   o._textFontW = "0";
+   o._unitFontW = "0";
+   o._negative = "0";
+   o._origin = "0";
+   o._rolling = MO.Class.register(o, new MO.AGetSet('_rolling'), false);
    o._rollingDuration = MO.Class.register(o, new MO.AGetSet('_rollingDuration'), 1000);
-   o._rollingPages    = null;
-   o._noRolling       = MO.Class.register(o, new MO.AGetSet('_noRolling'), false);
-   o.onPaintLabel     = MO.FEaiStatisticsLabel_onPaintLabel;
-   o.oeUpdate         = MO.FEaiStatisticsLabel_oeUpdate;
-   o.construct        = MO.FEaiStatisticsLabel_construct;
-   o.setValue         = MO.FEaiStatisticsLabel_setValue;
-   o.dispose          = MO.FEaiStatisticsLabel_dispose;
+   o._rollingPages = null;
+   o._noRolling = MO.Class.register(o, new MO.AGetSet('_noRolling'), false);
+   o.onPaintLabel = MO.FEaiStatisticsLabel_onPaintLabel;
+   o.oeUpdate = MO.FEaiStatisticsLabel_oeUpdate;
+   o.construct = MO.FEaiStatisticsLabel_construct;
+   o.setValue = MO.FEaiStatisticsLabel_setValue;
+   o.dispose = MO.FEaiStatisticsLabel_dispose;
    return o;
 }
-MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(event){
+MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(event) {
    var o = this;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
@@ -475,12 +475,12 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    graphic.setFont(textFont);
    var baseX;
    var unitTextX;
-   if( o._alignCd == "right" ){
-       baseX =  rectangle.left;
-       unitTextX = baseX + 4;
-   }else{
-       baseX =  rectangle.right() - o._unitFontW + (o._textFontW - o._unitFontW) - 65;
-       unitTextX = baseX ;
+   if (o._alignCd != MO.EUiAlign.Right) {
+      baseX = rectangle.left;
+      unitTextX = baseX + 4;
+   } else {
+      baseX = rectangle.right() - o._unitFontW + (o._textFontW - o._unitFontW) - 65;
+      unitTextX = baseX;
    }
    var baseY = rectangle.top + rectangle.height;
    var unitTextY = baseY - 2;
@@ -491,58 +491,71 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       o._rolling = false;
    }
    for (var i = 0; i < o._value.length; i++) {
-         var passedValue = o._rollingPages.get(i) * (passedTick / o._rollingDuration);
-         var numString = (parseInt(o._originValue.charAt(i)) + parseInt(passedValue)).toString();
-         var currentNum = parseInt(numString.charAt(numString.length - 1));
-         var nextNum = currentNum == 9 ? 0 : currentNum + 1;
-         var prevNum = currentNum == 0 ? 9 : currentNum - 1;
-         var reg = /^[0-9]+$/;
-         var rate = passedValue - parseInt(passedValue);
+      var passedValue = o._rollingPages.get(i) * (passedTick / o._rollingDuration);
+      var numString = (parseInt(o._originValue.charAt(i)) + parseInt(passedValue)).toString();
+      var currentNum = parseInt(numString.charAt(numString.length - 1));
+      var nextNum = currentNum == 9 ? 0 : currentNum + 1;
+      var prevNum = currentNum == 0 ? 9 : currentNum - 1;
+      var reg = /^[0-9]+$/;
+      var rate = passedValue - parseInt(passedValue);
+      graphic.setFont(textFont);
+      var drawedTextWidth;
+      var textColor = '';
+      var originValueLs = o._originValue.length;
+      if (i < originValueLs - 8) {
+         textColor = '#FFD926';
+      } else if (i < originValueLs - 4) {
+         textColor = '#FF7200';
+      } else if (i < originValueLs) {
+         textColor = '#FD0000';
+      }
+      if ( !reg.test(o._negative) ) {
+         var negativeColor = "";
+         var negativeRate = 1;
+         var negativeLs = o._negative.length;
+         var negativeX = baseX;
+         if (negativeLs <= 5) {
+            negativeColor = '#FD0000';
+         } else if (negativeLs <= 9) {
+            negativeColor = '#FF7200';
+         } else if (negativeLs <= 13) {
+            negativeColor = '#FFD926';
+         }
          graphic.setFont(textFont);
-         var drawedTextWidth;
-         var textColor = '';
-         if (i < o._originValue.length - 8) {
-            textColor = '#FFD926';
-         }else if (i < o._originValue.length - 4) {
-            textColor = '#FF7200';
-         }else if (i < o._originValue.length) {
-            textColor = '#FD0000';
+         if (o._rollingPages.get(0) != "0") {
+            negativeRate = rate;
          }
-         if( !reg.test(o._negative) ){
-            var negativeColor ="";
-            if ( o._negative.length <= 5) {
-               negativeColor = '#FD0000';
-            }else if ( o._negative.length <= 9) {
-               negativeColor = '#FF7200';
-            }else if ( o._negative.length <= 13) {
-               negativeColor = '#FFD926';
-            }
-            graphic.setFont(textFont);
-            graphic.drawText("-", baseX - 10, baseY , negativeColor);
+         if (i == 0) {
+            baseX = baseX + 10;
+            unitTextX = unitTextX + 10;
+            graphic.drawText("-", negativeX, baseY - 38 * negativeRate, negativeColor);
+            graphic.drawText("-", negativeX, baseY * negativeRate, negativeColor);
+            graphic.drawText("-", negativeX, baseY + 38 * negativeRate, negativeColor);
          }
+      }
+      drawedTextWidth = graphic.textWidth(drawedText);
+      o._textFontW = drawedTextWidth;
+      graphic.drawText(prevNum, baseX + drawedTextWidth, baseY - 38 - 38 * rate, textColor);
+      graphic.drawText(currentNum, baseX + drawedTextWidth, baseY - 38 * rate, textColor);
+      graphic.drawText(nextNum, baseX + drawedTextWidth, baseY + 38 - 38 * rate, textColor);
+      drawedText += currentNum;
+      if (i == originValueLs - 9) {
          drawedTextWidth = graphic.textWidth(drawedText);
-         o._textFontW = drawedTextWidth;
-         graphic.drawText(prevNum, baseX + drawedTextWidth, baseY - 38 - 38 * rate, textColor);
-         graphic.drawText(currentNum, baseX + drawedTextWidth, baseY - 38 * rate, textColor);
-         graphic.drawText(nextNum, baseX + drawedTextWidth, baseY + 38 - 38 * rate, textColor);
-         drawedText += currentNum;
-         if (i == o._originValue.length - 9) {
-            drawedTextWidth = graphic.textWidth(drawedText);
-            graphic.setFont(unitFont);
-            graphic.drawText('亿', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-            drawedText += '亿';
-         }else if (i == o._originValue.length - 5) {
-            drawedTextWidth = graphic.textWidth(drawedText);
-            graphic.setFont(unitFont);
-            graphic.drawText('万', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-            drawedText += '万';
-         }else if (i == o._originValue.length -1) {
-            drawedTextWidth = graphic.textWidth(drawedText);
-            graphic.setFont(unitFont);
-            graphic.drawText('元', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-            drawedText += '元';
-            o._unitFontW = drawedTextWidth;
-         }
+         graphic.setFont(unitFont);
+         graphic.drawText('亿', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+         drawedText += '亿';
+      } else if (i == originValueLs - 5) {
+         drawedTextWidth = graphic.textWidth(drawedText);
+         graphic.setFont(unitFont);
+         graphic.drawText('万', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+         drawedText += '万';
+      } else if (i == originValueLs - 1) {
+         drawedTextWidth = graphic.textWidth(drawedText);
+         graphic.setFont(unitFont);
+         graphic.drawText('元', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
+         drawedText += '元';
+         o._unitFontW = drawedTextWidth;
+      }
    }
    if (o._rolling == false) {
       o._originValue = o._value;
@@ -574,23 +587,24 @@ MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    o._originValue = originValue;
    o._rollingPages.clear();
    o._rollingPages._length = value.length;
-   if( fetch < 0  ){
-      for (var i = 0; i < value.length; i++) {
+   var valueLs = value.length;
+   if (fetch < 0) {
+      for (var i = 0; i < valueLs; i++) {
          var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
          pages = pages > 0 ? pages - 10 : pages;
          o._rollingPages.set(i, pages);
-       }
-   }else{
-      for (var i = 0; i < value.length; i++) {
-            var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
-            pages = pages < 0 ? pages + 10 : pages;
-            o._rollingPages.set(i, pages);
+      }
+   } else {
+      for (var i = 0; i < valueLs; i++) {
+         var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
+         pages = pages < 0 ? pages + 10 : pages;
+         o._rollingPages.set(i, pages);
       }
    }
    o._startTick = MO.Timer.current();
    o._rolling = true;
 }
-MO.FEaiStatisticsLabel_oeUpdate = function FEaiStatisticsLabel_oeUpdate(event){
+MO.FEaiStatisticsLabel_oeUpdate = function FEaiStatisticsLabel_oeUpdate(event) {
    var o = this;
    o.__base.FGuiLabel.oeUpdate.call(o, event);
    if (o._rolling) {
@@ -598,12 +612,12 @@ MO.FEaiStatisticsLabel_oeUpdate = function FEaiStatisticsLabel_oeUpdate(event){
    }
    return MO.EEventStatus.Stop;
 }
-MO.FEaiStatisticsLabel_construct = function FEaiStatisticsLabel_construct(){
+MO.FEaiStatisticsLabel_construct = function FEaiStatisticsLabel_construct() {
    var o = this;
    o.__base.FGuiLabel.construct.call(o);
    o._rollingPages = new MO.TArray();
 }
-MO.FEaiStatisticsLabel_dispose = function FEaiStatisticsLabel_dispose(){
+MO.FEaiStatisticsLabel_dispose = function FEaiStatisticsLabel_dispose() {
    var o = this;
    o._ticker = MO.RObject.dispose(o._ticker);
    o.__base.FGuiLabel.dispose.call(o);

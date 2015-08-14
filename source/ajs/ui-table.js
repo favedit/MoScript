@@ -1,14 +1,16 @@
 MO.MUiGridCell = function MUiGridCell(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._grid      = MO.Class.register(o, new MO.AGetSet('_grid'));
-   o._column    = MO.Class.register(o, new MO.AGetSet('_column'));
-   o._row       = MO.Class.register(o, new MO.AGetSet('_row'));
-   o._font      = MO.Class.register(o, new MO.AGetSet('_font'));
-   o._value     = MO.Class.register(o, new MO.AGetSet('_value'));
-   o.findFont   = MO.MUiGridCell_findFont;
-   o.text       = MO.MUiGridCell_text;
-   o.setText    = MO.MUiGridCell_setText;
-   o.dispose    = MO.MUiGridCell_dispose;
+   o._grid          = MO.Class.register(o, new MO.AGetSet('_grid'));
+   o._column        = MO.Class.register(o, new MO.AGetSet('_column'));
+   o._row           = MO.Class.register(o, new MO.AGetSet('_row'));
+   o._alignCd       = MO.Class.register(o, new MO.AGetSet('_alignCd'), MO.EUiAlign.Left);
+   o._font          = MO.Class.register(o, new MO.AGetSet('_font'));
+   o._value         = MO.Class.register(o, new MO.AGetSet('_value'));
+   o.findFont       = MO.MUiGridCell_findFont;
+   o.calculateStyle = MO.MUiGridCell_calculateStyle;
+   o.text           = MO.MUiGridCell_text;
+   o.setText        = MO.MUiGridCell_setText;
+   o.dispose        = MO.MUiGridCell_dispose;
    return o;
 }
 MO.MUiGridCell_findFont = function MUiGridCell_findFont(){
@@ -24,6 +26,28 @@ MO.MUiGridCell_findFont = function MUiGridCell_findFont(){
       font = o._grid.rowFont();
    }
    return font;
+}
+MO.MUiGridCell_calculateStyle = function MUiGridCell_calculateStyle(style){
+   var o = this;
+   var row = o._row;
+   var column = o._column;
+   var grid = o._grid;
+   var font = o._font;
+   if(font){
+      font = row.font();
+   }
+   if(!font){
+      font = column.font();
+   }
+   if(!font){
+      font = grid.rowFont();
+   }
+   style.font = font;
+   var alignCd = o._alignCd;
+   if(!alignCd){
+      alignCd = column.alignCd();
+   }
+   style.alignCd = alignCd;
 }
 MO.MUiGridCell_text = function MUiGridCell_text(){
    var o = this;
@@ -324,4 +348,16 @@ MO.MUiGridRow_dispose = function MUiGridRow_dispose(){
    o._grid = null;
    o._cells = MO.Lang.Object.dispose(o._cells);
    o.__base.FObject.dispose.call(o);
+}
+MO.SUiGridCellStyle = function SUiGridCellStyle(){
+   var o = this;
+   o.alignCd = null;
+   o.font    = null;
+   o.dispose = MO.SUiGridCellStyle_dispose;
+   return o;
+}
+MO.SUiGridCellStyle_dispose = function SUiGridCellStyle_dispose(){
+   var o = this;
+   o.alignCd = null;
+   o.font = null;
 }
