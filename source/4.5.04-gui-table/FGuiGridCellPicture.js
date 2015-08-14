@@ -58,8 +58,9 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(graphic, x, y, w
    // 创建图片
    var image = o._image = imageConsole.load(imageurl);
    image.testReady();
-   var imageWidth = image.size().width;
-   var imageHeight = image.size().height;
+   var imageSize   = image.size();
+   var imageWidth  = imageSize.width;
+   var imageHeight = imageSize.height;
    var imageX = (width / 2) - (imageWidth / 2) + x;
    var imageY = (height / 2) - (imageHeight / 2) + y;
    // 绘制图片
