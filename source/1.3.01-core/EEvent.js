@@ -67,5 +67,11 @@ MO.EEvent = new function EEvent(){
    o.Visibility       = 'Visibility';
    // @attribute 屏幕缩放
    o.Orientation      = 'Orientation';
+   // @attribute 操作落下
+   o.OperationDown    = 'OperationDown';
+   // @attribute 操作移动
+   o.OperationMove    = 'OperationMove';
+   // @attribute 操作抬起
+   o.OperationUp      = 'OperationUp';
    return o;
 }

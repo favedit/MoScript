@@ -9148,6 +9148,9 @@ MO.EEvent = new function EEvent(){
    o.TouchZoom        = 'TouchZoom';
    o.Visibility       = 'Visibility';
    o.Orientation      = 'Orientation';
+   o.OperationDown    = 'OperationDown';
+   o.OperationMove    = 'OperationMove';
+   o.OperationUp      = 'OperationUp';
    return o;
 }
 MO.EHttpContent = new function EHttpContent(){
