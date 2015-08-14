@@ -60,7 +60,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
        unitTextX = baseX + 4;
    }else{
        baseX =  rectangle.right() - o._unitFontW + (o._textFontW - o._unitFontW) - 65;
-       unitTextX = baseX ;
+       unitTextX = baseX;
    }
    var baseY = rectangle.top + rectangle.height;
    var unitTextY = baseY - 2;
@@ -92,6 +92,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
          
          if( !reg.test(o._negative) ){
             var negativeColor ="";
+            var negativeRate = 1;
             if ( o._negative.length <= 5) {
                negativeColor = '#FD0000';
             }else if ( o._negative.length <= 9) {
@@ -100,7 +101,12 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
                negativeColor = '#FFD926';
             }
             graphic.setFont(textFont);
-            graphic.drawText("-", baseX - 10, baseY , negativeColor);
+            if( o._rollingPages.get(0) != "0"){
+               negativeRate = rate;
+            }
+            graphic.drawText("-", baseX - 10, baseY - 38 * negativeRate, negativeColor);
+            graphic.drawText("-", baseX - 10, baseY * negativeRate, negativeColor);
+            graphic.drawText("-", baseX - 10, baseY + 38 * negativeRate, negativeColor);
          }
 
          drawedTextWidth = graphic.textWidth(drawedText);
