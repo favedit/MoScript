@@ -164,14 +164,14 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    grid.rowFont().font = 'Microsoft YaHei';
    grid.rowFont().size = 20;
    grid.rowFont().color = '#59FDE9';
-   
-   var column = MO.Class.create(MO.FGuiGridColumnImage);
+   //现在图片为默认居中
+   var column = MO.Class.create(MO.FGuiGridColumnPicture);
    column.setName('rank');
    column.setLabel();
    column.setDataName('image');
    column.setWidth(160);
-   column.setPadding(10, 1, 1, 1);
-   
+   column.setPadding(10, 1, 1, 1); 
+   column.setAlign(MO.EUiAlign.Left);
    grid.pushColumn(column);
    
    var column = MO.Class.create(MO.FGuiGridColumnText);

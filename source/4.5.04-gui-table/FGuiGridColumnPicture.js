@@ -5,13 +5,16 @@
 // @author maocy
 // @version 150805
 //==========================================================
-MO.FGuiGridColumnImage = function FGuiGridColumnImage(o){
+MO.FGuiGridColumnPicture = function FGuiGridColumnPicture(o) {
    o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
+
+   o._align   = MO.Class.register(o, new MO.AGetSet('_align'));
+
    //..........................................................
    // @method
-   o.construct = MO.FGuiGridColumnImage_construct;
+   o.construct = MO.FGuiGridColumnPicture_construct;
    // @method
-   o.dispose   = MO.FGuiGridColumnImage_dispose;
+   o.dispose   = MO.FGuiGridColumnPicture_dispose;
    return o;
 }
 
@@ -20,12 +23,12 @@ MO.FGuiGridColumnImage = function FGuiGridColumnImage(o){
 //
 // @method
 //==========================================================
-MO.FGuiGridColumnImage_construct = function FGuiGridColumnImage_construct(){
+MO.FGuiGridColumnPicture_construct = function FGuiGridColumnPicture_construct() {
    var o = this;
    o.__base.FGuiGridColumn.construct.call(o);
    o.__base.MUiGridColumnText.construct.call(o);
    // 设置属性
-   o._cellClass = MO.FGuiGridCellImage;
+   o._cellClass = MO.FGuiGridCellPicture;
 }
 
 //==========================================================
@@ -33,7 +36,7 @@ MO.FGuiGridColumnImage_construct = function FGuiGridColumnImage_construct(){
 //
 // @method
 //==========================================================
-MO.FGuiGridColumnImage_dispose = function FGuiGridColumnImage_dispose(){
+MO.FGuiGridColumnPicture_dispose = function FGuiGridColumnPicture_dispose() {
    var o = this;
    // 父处理
    o.__base.MUiGridColumnText.dispose.call(o);

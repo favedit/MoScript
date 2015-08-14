@@ -172,11 +172,13 @@ with (MO) {
       }
       startTime.date.setTime(bakTime);
       startTime.refresh();
+      
       // 曲线
       var data = o._data;
       if (!data || data.length < 1) {
          return;
       }
+      
       // 找到最大
       var maxInves = 0;
       for (var i = 0; i < data.length; i++) {
@@ -226,6 +228,7 @@ with (MO) {
       ctx.fill();
       startTime.date.setTime(bakTime);
       startTime.refresh();
+      //.....................................................
       // 统计
       var lastHour = -1;
       var hourInves = 0;

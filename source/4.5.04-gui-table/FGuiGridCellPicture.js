@@ -5,21 +5,21 @@
 // @author maocy
 // @version 150804
 //==========================================================
-MO.FGuiGridCellImage = function FGuiGridCellImage(o) {
+MO.FGuiGridCellPicture = function FGuiGridCellPicture(o) {
    o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCellText);
    //..........................................................
    // @attribute
-   o._image           = null;
+   o._image = null;
    //..........................................................
    // @method
-   o.onPaint = MO.FGuiGridCellImage_onPaint;
+   o.onPaint = MO.FGuiGridCellPicture_onPaint;
    //..........................................................
    // @method
-   o.construct = MO.FGuiGridCellImage_construct;
+   o.construct = MO.FGuiGridCellPicture_construct;
    // @method
-   o.draw = MO.FGuiGridCellImage_draw;
+   o.draw = MO.FGuiGridCellPicture_draw;
    // @method
-   o.dispose = MO.FGuiGridCellImage_dispose;
+   o.dispose = MO.FGuiGridCellPicture_dispose;
    return o;
 }
 
@@ -29,7 +29,7 @@ MO.FGuiGridCellImage = function FGuiGridCellImage(o) {
 // @method
 // @return 绘制事件处理
 //==========================================================
-MO.FGuiGridCellImage_onPaint = function FGuiGridCellImage_onPaint(event) {
+MO.FGuiGridCellPicture_onPaint = function FGuiGridCellPicture_onPaint(event) {
    var o = this;
 }
 
@@ -38,7 +38,7 @@ MO.FGuiGridCellImage_onPaint = function FGuiGridCellImage_onPaint(event) {
 //
 // @method
 //==========================================================
-MO.FGuiGridCellImage_construct = function FGuiGridCellImage_construct() {
+MO.FGuiGridCellPicture_construct = function FGuiGridCellPicture_construct() {
    var o = this;
    o.__base.FObject.construct.call(o);
    o.__base.MUiGridCellText.construct.call(o);
@@ -50,7 +50,7 @@ MO.FGuiGridCellImage_construct = function FGuiGridCellImage_construct() {
 // @method
 // @return 绘制处理
 //==========================================================
-MO.FGuiGridCellImage_draw = function FGuiGridCellImage_draw(graphic, x, y, width, height) {
+MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(graphic, x, y, width, height) {
    var o = this;
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 获得文本
@@ -58,10 +58,12 @@ MO.FGuiGridCellImage_draw = function FGuiGridCellImage_draw(graphic, x, y, width
    // 创建图片
    var image = o._image = imageConsole.load(imageurl);
    image.testReady();
-    var imageX = (width/2)-(image.size().width/2)+x;
-   var imageY = (height/2)-(image.size().height/2)+y;
+   var imageWidth = image.size().width;
+   var imageHeight = image.size().height;
+   var imageX = (width / 2) - (imageWidth / 2) + x;
+   var imageY = (height / 2) - (imageHeight / 2) + y;
    // 绘制图片
-   graphic.drawImage(image, imageX, imageY,image.size().width,image.size().height);
+   graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
 }
 
 //==========================================================
@@ -69,7 +71,7 @@ MO.FGuiGridCellImage_draw = function FGuiGridCellImage_draw(graphic, x, y, width
 //
 // @method
 //==========================================================
-MO.FGuiGridCellImage_dispose = function FGuiGridCellImage_dispose() {
+MO.FGuiGridCellPicture_dispose = function FGuiGridCellPicture_dispose() {
    var o = this;
    // 释放属性
    // 父处理
