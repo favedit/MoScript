@@ -50,7 +50,7 @@ MO.FGuiGridCellPicture_construct = function FGuiGridCellPicture_construct() {
 // @method
 // @param context:SGuiGridPaintContext 绘制环境
 //==========================================================
-MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context){
+MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    var o = this;
    var graphic = context.graphic;
    var rectangle = context.rectangle;
@@ -59,11 +59,20 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context){
    // 创建图片
    var image = o._image = MO.Console.find(MO.FImageConsole).load(imageurl);
    image.testReady();
-   var imageSize   = image.size();
-   var imageWidth  = imageSize.width;
+   var imageSize = image.size();
+   var imageWidth = imageSize.width;
    var imageHeight = imageSize.height;
-   var imageX = (rectangle.width / 2) - (imageWidth / 2) + rectangle.left;
-   var imageY = (rectangle.height / 2) - (imageHeight / 2) + rectangle.right;
+   var align = o._column._align;
+   var imageX = 0;
+   var imageY = (rectangle.height / 2) - (imageHeight / 2) + rectangle.top;
+   if (align == MO.EUiAlign.Left) {
+      imageX = rectangle.left;
+   } else if (align == MO.EUiAlign.Center) {
+      imageX = (rectangle.width / 2) - (imageWidth / 2) + rectangle.left;
+   } else if (align == MO.EUiAlign.Right) {
+      imageX = (rectangle.width / 2) + (imageWidth / 2) + rectangle.left;
+   }
+
    // 绘制图片
    graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
 }

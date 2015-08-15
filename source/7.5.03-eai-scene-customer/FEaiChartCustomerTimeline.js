@@ -181,7 +181,6 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
    var top = rectangle.top;
    var bottom = rectangle.top + rectangle.height;
    var middle = bottom - 30;
-
    var decoLeft = rectangle.left + 5;
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
@@ -217,8 +216,7 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
          textWidth = graphic.textWidth(text);
          graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
       }
-   }
-   
+   }   
    startTime.date.setTime(bakTime);
    startTime.refresh();
    // 曲线
