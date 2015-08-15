@@ -143,7 +143,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    //..........................................................
    var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
    grid.setOptionClip(false);
-//   grid.setDisplayHead(false);
+   grid.setDisplayHead(false);
    grid.setLocation(50, 170);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
