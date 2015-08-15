@@ -143,13 +143,14 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    //..........................................................
    var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
    grid.setOptionClip(false);
-   grid.setDisplayHead(false);
+//   grid.setDisplayHead(false);
    grid.setLocation(50, 170);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
    grid.setLeft(9);
    grid.setRight(19);
-   grid.setHeadHeight(10);
+   grid.setHeadHeight(40);
+//   grid.headPadding().set(0,20,0,20);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 22;
