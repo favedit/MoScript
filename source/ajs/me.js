@@ -39325,18 +39325,19 @@ MO.FGuiGridColumnText_dispose = function FGuiGridColumnText_dispose(){
    o.__base.MUiGridColumnText.dispose.call(o);
    o.__base.FGuiGridColumn.dispose.call(o);
 }
-MO.FGuiGridControl = function FGuiGridControl(o){
+MO.FGuiGridControl = function FGuiGridControl(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiGridControl);
-   o._optionClip     = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
-   o._rowScroll      = 0;
+   o._optionClip = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
+   o._headPadding = MO.Class.register(o, new MO.AGetter('_headPadding'));
+   o._rowScroll = 0;
    o._rowScrollSpeed = 1;
-   o._paintContext   = null;
-   o.onPaintBegin    = MO.FGuiGridControl_onPaintBegin;
-   o.construct       = MO.FGuiGridControl_construct;
-   o.dispose         = MO.FGuiGridControl_dispose;
+   o._paintContext = null;
+   o.onPaintBegin = MO.FGuiGridControl_onPaintBegin;
+   o.construct = MO.FGuiGridControl_construct;
+   o.dispose = MO.FGuiGridControl_dispose;
    return o;
 }
-MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
+MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
    var o = this;
    var dirty = false;
    var padding = o._padding;
@@ -39351,22 +39352,23 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    var bottom = rectangle.bottom() - padding.bottom;
    var width = rectangle.width - padding.left - padding.right;
    var height = rectangle.height - padding.top - padding.bottom;
+   var headPadding = o._headPadding;
    var drawX = left;
-   var drawY = top;
+   var drawY = top + headPadding.top;;
    var gridWidth = width;
    var columnWidthTotal = 0;
    var columns = o._columns;
    var columnCount = columns.count();
-   for(var i = 0; i < columnCount; i++){
+   for (var i = 0; i < columnCount; i++) {
       var column = columns.at(i);
       columnWidthTotal += column.width();
    }
-   if(o._displayHead){
+   if (o._displayHead) {
       var columnX = drawX;
-      var columnY = top;
+      var columnY = drawY;
       var headTextTop = columnY + 0;
       var headHeight = o._headHeight;
-      for(var i = 0; i < columnCount; i++){
+      for (var i = 0; i < columnCount; i++) {
          var column = columns.at(i);
          if(!column.testReady()){
             dirty = true;
@@ -39377,21 +39379,21 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
          column.draw(context);
          columnX += columnWidth;
       }
-      drawY += headHeight;
+      drawY += headHeight + headPadding.bottom;
    }
    var rowsHeight = bottom - drawY;
    var rowHeight = o._rowHeight;
-   if(o._optionClip){
+   if (o._optionClip) {
       graphic.clip(drawX, drawY, gridWidth, rowsHeight);
    }
    var rows = o._rows;
    var rowCount = rows.count();
    drawY += o._rowScroll;
-   for(var rowIndex = 0; rowIndex < rowCount; rowIndex++){
+   for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
       var columnX = drawX;
-      if(drawY > -rowHeight){
+      if (drawY > -rowHeight) {
          var row = rows.at(rowIndex);
-         for(var i = 0; i < columnCount; i++){
+         for (var i = 0; i < columnCount; i++) {
             var column = columns.at(i);
             var dataName = column.dataName();
             var columnWidth = gridWidth * column.width() / columnWidthTotal;
@@ -39407,7 +39409,7 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
          }
       }
       drawY += rowHeight;
-      if(drawY > bottom){
+      if (drawY > bottom) {
          break;
       }
    }
@@ -39415,16 +39417,18 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       o.dirty();
    }
 }
-MO.FGuiGridControl_construct = function FGuiGridControl_construct(){
+MO.FGuiGridControl_construct = function FGuiGridControl_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o.__base.MUiGridControl.construct.call(o);
    o._rowClass = MO.FGuiGridRow;
    o._paintContext = new MO.SGuiGridPaintContext();
+   o._headPadding = new MO.SPadding();
 }
-MO.FGuiGridControl_dispose = function FGuiGridControl_dispose(){
+MO.FGuiGridControl_dispose = function FGuiGridControl_dispose() {
    var o = this;
    o._rowClass = null;
+   o._headPadding = null;
    o._paintContext = MO.Lang.Object.dispose(o._paintContext);
    o.__base.MUiGridControl.dispose.call(o);
    o.__base.FGuiControl.dispose.call(o);

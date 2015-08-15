@@ -567,7 +567,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
    grid.setLeft(9);
    grid.setRight(19);
-   grid.setHeadHeight(10);
+   grid.setHeadHeight(40);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 22;
