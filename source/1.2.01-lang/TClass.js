@@ -106,7 +106,7 @@ MO.TClass_assign = function TClass_assign(clazz){
             // 检查重复
             if(!annotation.isDuplicate()){
                if(annotations[name]){
-                  throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
+                  throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", annotationName, o.name, name, clazz.name, name, annotation.toString());
                }
             }
             // 复制描述器

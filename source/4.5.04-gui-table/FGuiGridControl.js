@@ -33,6 +33,7 @@ MO.FGuiGridControl = function FGuiGridControl(o){
 //==========================================================
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    var o = this;
+   var dirty = false;
    var padding = o._padding;
    var context = o._paintContext;
    var contextStyle = context.style;
@@ -67,6 +68,10 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       var headHeight = o._headHeight;
       for(var i = 0; i < columnCount; i++){
          var column = columns.at(i);
+         if(!column.testReady()){
+            dirty = true;
+            continue;
+         }
          var columnWidth = gridWidth * column.width() / columnWidthTotal;
          contextRectangle.set(columnX, columnY, columnWidth, headHeight);
          column.draw(context);
@@ -94,7 +99,12 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
             var column = columns.at(i);
             var dataName = column.dataName();
             var columnWidth = gridWidth * column.width() / columnWidthTotal;
+            // 绘制单元格
             var cell = row.cells().get(dataName);
+            if(!cell.testReady()){
+               dirty = true;
+               continue;
+            }
             cell.calculateStyle(contextStyle);
             contextRectangle.set(columnX, drawY, columnWidth, rowHeight);
             cell.draw(context);
@@ -105,6 +115,10 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       if(drawY > bottom){
          break;
       }
+   }
+   // 脏处理
+   if(dirty){
+      o.dirty();
    }
 }
 

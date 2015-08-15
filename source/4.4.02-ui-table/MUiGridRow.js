@@ -18,6 +18,7 @@ MO.MUiGridRow = function MUiGridRow(o){
    // @method
    o.construct = MO.MUiGridRow_construct;
    // @method
+   o.findCell  = MO.MUiGridRow_findCell;
    o.pushCell  = MO.MUiGridRow_pushCell;
    o.get       = MO.MUiGridRow_get;
    o.set       = MO.MUiGridRow_set;
@@ -35,6 +36,19 @@ MO.MUiGridRow_construct = function MUiGridRow_construct(){
    o.__base.FObject.construct.call(o);
    // 设置属性
    o._cells = new MO.TDictionary();
+}
+
+//==========================================================
+// <T>根据名称查找一个单元格。</T>
+//
+// @method
+// @param name:String 名称
+// @return MUiGridCell 单元格
+//==========================================================
+MO.MUiGridRow_findCell = function MUiGridRow_findCell(name){
+   var o = this;
+   var cell = o._cells.get(name);
+   return cell;
 }
 
 //==========================================================

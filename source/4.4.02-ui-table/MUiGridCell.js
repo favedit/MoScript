@@ -6,7 +6,7 @@
 // @version 150804
 //==========================================================
 MO.MUiGridCell = function MUiGridCell(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
    o._grid          = MO.Class.register(o, new MO.AGetSet('_grid'));
@@ -18,35 +18,15 @@ MO.MUiGridCell = function MUiGridCell(o){
    o._value         = MO.Class.register(o, new MO.AGetSet('_value'));
    //..........................................................
    // @method
-   o.findFont       = MO.MUiGridCell_findFont;
+   o.construct      = MO.Method.empty;
+   // @method
    o.calculateStyle = MO.MUiGridCell_calculateStyle;
+   // @method
    o.text           = MO.MUiGridCell_text;
    o.setText        = MO.MUiGridCell_setText;
    // @method
    o.dispose        = MO.MUiGridCell_dispose;
    return o;
-}
-
-//==========================================================
-// <T>查找字体。</T>
-//
-// @method
-// @return 字体
-//==========================================================
-MO.MUiGridCell_findFont = function MUiGridCell_findFont(){
-   var o = this;
-   // 获得字体
-   var font = o._font;
-   if(font){
-      font = o._row.font();
-   }
-   if(!font){
-      font = o._column.font();
-   }
-   if(!font){
-      font = o._grid.rowFont();
-   }
-   return font;
 }
 
 //==========================================================

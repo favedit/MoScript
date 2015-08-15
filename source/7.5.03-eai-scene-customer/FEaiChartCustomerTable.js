@@ -180,7 +180,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setName('label_phone');
    column.setLabel('');
    column.setDataName('label_phone');
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
@@ -192,7 +192,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
    column.cellPadding().right = 10;
-   column.setWidth(120);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);
@@ -234,7 +234,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setName('customerInfo');
    column.setLabel('用户-手机');
    column.setDataName('customer_info');
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
@@ -246,7 +246,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
    column.cellPadding().right = 10;
-   column.setWidth(120);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);

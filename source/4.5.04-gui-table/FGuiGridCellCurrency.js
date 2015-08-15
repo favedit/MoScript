@@ -6,7 +6,7 @@
 // @version 150804
 //==========================================================
 MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
-   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellDate);
+   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellCurrency);
    //..........................................................
    o._fontColor  = null;
    o._numberFont = null;
@@ -29,7 +29,7 @@ MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
 MO.FGuiGridCellCurrency_construct = function FGuiGridCellCurrency_construct(){
    var o = this;
    o.__base.FGuiGridCell.construct.call(o);
-   o.__base.MUiGridCellDate.construct.call(o);
+   o.__base.MUiGridCellCurrency.construct.call(o);
    // 设置属性
    o._numberFont = new MO.SUiFont();
 }
@@ -106,6 +106,6 @@ MO.FGuiGridCellCurrency_dispose = function FGuiGridCellCurrency_dispose(){
    // 释放属性
    o._numberFont = MO.Lang.Object.dispose(o._numberFont);
    // 父处理
-   o.__base.MUiGridCellDate.dispose.call(o);
+   o.__base.MUiGridCellCurrency.dispose.call(o);
    o.__base.FGuiGridCell.dispose.call(o);
 }

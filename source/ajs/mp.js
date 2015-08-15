@@ -1724,7 +1724,7 @@ MO.TClass_assign = function TClass_assign(clazz){
             var annotation = clazzAnnotations[name];
             if(!annotation.isDuplicate()){
                if(annotations[name]){
-                  throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, clazz.name, n, annotation.toString());
+                  throw new MO.TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", annotationName, o.name, name, clazz.name, name, annotation.toString());
                }
             }
             if(annotation._inherit){
@@ -36265,33 +36265,19 @@ MO.FUiFrameDefineConsole_load = function FUiFrameDefineConsole_load(name){
    return xframe;
 }
 MO.MUiGridCell = function MUiGridCell(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o);
    o._grid          = MO.Class.register(o, new MO.AGetSet('_grid'));
    o._column        = MO.Class.register(o, new MO.AGetSet('_column'));
    o._row           = MO.Class.register(o, new MO.AGetSet('_row'));
    o._alignCd       = MO.Class.register(o, new MO.AGetSet('_alignCd'), MO.EUiAlign.Left);
    o._font          = MO.Class.register(o, new MO.AGetSet('_font'));
    o._value         = MO.Class.register(o, new MO.AGetSet('_value'));
-   o.findFont       = MO.MUiGridCell_findFont;
+   o.construct      = MO.Method.empty;
    o.calculateStyle = MO.MUiGridCell_calculateStyle;
    o.text           = MO.MUiGridCell_text;
    o.setText        = MO.MUiGridCell_setText;
    o.dispose        = MO.MUiGridCell_dispose;
    return o;
-}
-MO.MUiGridCell_findFont = function MUiGridCell_findFont(){
-   var o = this;
-   var font = o._font;
-   if(font){
-      font = o._row.font();
-   }
-   if(!font){
-      font = o._column.font();
-   }
-   if(!font){
-      font = o._grid.rowFont();
-   }
-   return font;
 }
 MO.MUiGridCell_calculateStyle = function MUiGridCell_calculateStyle(style){
    var o = this;
@@ -36333,46 +36319,52 @@ MO.MUiGridCell_dispose = function MUiGridCell_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.MUiGridCellCurrency = function MUiGridCellCurrency(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o = MO.Class.inherits(this, o);
    o.construct = MO.MUiGridCellCurrency_construct;
    o.dispose   = MO.MUiGridCellCurrency_dispose;
    return o;
 }
 MO.MUiGridCellCurrency_construct = function MUiGridCellCurrency_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
 }
 MO.MUiGridCellCurrency_dispose = function MUiGridCellCurrency_dispose(){
    var o = this;
-   o.__base.MUiGridCell.dispose.call(o);
 }
 MO.MUiGridCellDate = function MUiGridCellDate(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o = MO.Class.inherits(this, o);
    o.construct = MO.MUiGridCellDate_construct;
    o.dispose   = MO.MUiGridCellDate_dispose;
    return o;
 }
 MO.MUiGridCellDate_construct = function MUiGridCellDate_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
 }
 MO.MUiGridCellDate_dispose = function MUiGridCellDate_dispose(){
    var o = this;
-   o.__base.MUiGridCell.dispose.call(o);
+}
+MO.MUiGridCellPicture = function MUiGridCellPicture(o){
+   o = MO.Class.inherits(this, o);
+   o.construct = MO.MUiGridCellPicture_construct;
+   o.dispose   = MO.MUiGridCellPicture_dispose;
+   return o;
+}
+MO.MUiGridCellPicture_construct = function MUiGridCellPicture_construct(){
+   var o = this;
+}
+MO.MUiGridCellPicture_dispose = function MUiGridCellPicture_dispose(){
+   var o = this;
 }
 MO.MUiGridCellText = function MUiGridCellText(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o = MO.Class.inherits(this, o);
    o.construct = MO.MUiGridCellText_construct;
    o.dispose   = MO.MUiGridCellText_dispose;
    return o;
 }
 MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
 }
 MO.MUiGridCellText_dispose = function MUiGridCellText_dispose(){
    var o = this;
-   o.__base.MUiGridCell.dispose.call(o);
 }
 MO.MUiGridColumn = function MUiGridColumn(o){
    o = MO.Class.inherits(this, o, MO.MUiPadding, MO.MUiMargin, MO.MUiTextFormator);
@@ -36582,6 +36574,7 @@ MO.MUiGridRow = function MUiGridRow(o){
    o._font     = MO.Class.register(o, new MO.AGetSet('_font'));
    o._height   = MO.Class.register(o, new MO.AGetSet('_height'), 28);
    o.construct = MO.MUiGridRow_construct;
+   o.findCell  = MO.MUiGridRow_findCell;
    o.pushCell  = MO.MUiGridRow_pushCell;
    o.get       = MO.MUiGridRow_get;
    o.set       = MO.MUiGridRow_set;
@@ -36591,6 +36584,11 @@ MO.MUiGridRow_construct = function MUiGridRow_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._cells = new MO.TDictionary();
+}
+MO.MUiGridRow_findCell = function MUiGridRow_findCell(name){
+   var o = this;
+   var cell = o._cells.get(name);
+   return cell;
 }
 MO.MUiGridRow_pushCell = function MUiGridRow_pushCell(cell){
    var o = this;
@@ -39018,25 +39016,26 @@ MO.SGuiGridPaintContext_dispose = function SGuiGridPaintContext_dispose(){
    o.style = MO.Lang.Object.dispose(o.style);
 }
 MO.FGuiGridCell = function FGuiGridCell(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCell);
    o.onPaint   = MO.FGuiGridCell_onPaint;
    o.construct = MO.FGuiGridCell_construct;
-   o.draw      = MO.FGuiGridCell_draw;
+   o.testReady = MO.Method.emptyTrue;
+   o.draw      = MO.Method.empty;
    o.dispose   = MO.FGuiGridCell_dispose;
    return o;
 }
 MO.FGuiGridCell_construct = function FGuiGridCell_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-}
-MO.FGuiGridCell_draw = function FGuiGridCell_draw(context){
+   o.__base.MUiGridCell.construct.call(o);
 }
 MO.FGuiGridCell_dispose = function FGuiGridCell_dispose(){
    var o = this;
+   o.__base.MUiGridCell.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
-   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellDate);
+   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellCurrency);
    o._fontColor  = null;
    o._numberFont = null;
    o.construct   = MO.FGuiGridCellCurrency_construct;
@@ -39048,7 +39047,7 @@ MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
 MO.FGuiGridCellCurrency_construct = function FGuiGridCellCurrency_construct(){
    var o = this;
    o.__base.FGuiGridCell.construct.call(o);
-   o.__base.MUiGridCellDate.construct.call(o);
+   o.__base.MUiGridCellCurrency.construct.call(o);
    o._numberFont = new MO.SUiFont();
 }
 MO.FGuiGridCellCurrency_formatText = function FGuiGridCellCurrency_formatText(value){
@@ -39099,7 +39098,7 @@ MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(context){
 MO.FGuiGridCellCurrency_dispose = function FGuiGridCellCurrency_dispose(){
    var o = this;
    o._numberFont = MO.Lang.Object.dispose(o._numberFont);
-   o.__base.MUiGridCellDate.dispose.call(o);
+   o.__base.MUiGridCellCurrency.dispose.call(o);
    o.__base.FGuiGridCell.dispose.call(o);
 }
 MO.FGuiGridCellDate = function FGuiGridCellDate(o){
@@ -39128,51 +39127,73 @@ MO.FGuiGridCellDate_dispose = function FGuiGridCellDate_dispose(){
    o.__base.FGuiGridCell.dispose.call(o);
 }
 MO.FGuiGridCellPicture = function FGuiGridCellPicture(o) {
-   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellText);
-   o._image = null;
-   o.onPaint = MO.FGuiGridCellPicture_onPaint;
+   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellPicture);
+   o._image    = null;
    o.construct = MO.FGuiGridCellPicture_construct;
-   o.draw = MO.FGuiGridCellPicture_draw;
-   o.dispose = MO.FGuiGridCellPicture_dispose;
+   o.testReady = MO.FGuiGridCellPicture_testReady;
+   o.setValue  = MO.FGuiGridCellPicture_setValue;
+   o.draw      = MO.FGuiGridCellPicture_draw;
+   o.dispose   = MO.FGuiGridCellPicture_dispose;
    return o;
-}
-MO.FGuiGridCellPicture_onPaint = function FGuiGridCellPicture_onPaint(event) {
-   var o = this;
 }
 MO.FGuiGridCellPicture_construct = function FGuiGridCellPicture_construct() {
    var o = this;
    o.__base.FGuiGridCell.construct.call(o);
-   o.__base.MUiGridCellText.construct.call(o);
+   o.__base.MUiGridCellPicture.construct.call(o);
 }
-MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context){
+MO.FGuiGridCellPicture_testReady = function FGuiGridCellPicture_testReady(){
+   var o = this;
+   var image = o._image;
+   if(image){
+      return image.testReady();
+   }
+   return true;
+}
+MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    var o = this;
    var graphic = context.graphic;
    var rectangle = context.rectangle;
    var imageurl = o.text();
-   var image = o._image = MO.Console.find(MO.FImageConsole).load(imageurl);
-   image.testReady();
-   var imageSize   = image.size();
-   var imageWidth  = imageSize.width;
+   var image = o._image;
+   if(!image){
+      return;
+   }
+   var imageSize = image.size();
+   var imageWidth = imageSize.width;
    var imageHeight = imageSize.height;
-   var imageX = (rectangle.width / 2) - (imageWidth / 2) + rectangle.left;
-   var imageY = (rectangle.height / 2) - (imageHeight / 2) + rectangle.right;
+   var align = o._column._align;
+   var imageX = 0;
+   var imageY = (rectangle.height / 2) - (imageHeight / 2) + rectangle.top;
+   if (align == MO.EUiAlign.Left) {
+      imageX = rectangle.left;
+   } else if (align == MO.EUiAlign.Center) {
+      imageX = (rectangle.width / 2) - (imageWidth / 2) + rectangle.left;
+   } else if (align == MO.EUiAlign.Right) {
+      imageX = (rectangle.width / 2) + (imageWidth / 2) + rectangle.left;
+   }
    graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+}
+MO.FGuiGridCellPicture_setValue = function FGuiGridCellPicture_setValue(value){
+   var o = this;
+   o.__base.FGuiGridCell.setValue.call(o, value);
+   var url = o.text();
+   if(MO.Lang.String.isEmpty(url)){
+      o._image = null;
+   }else{
+      o._image = MO.Console.find(MO.FImageConsole).load(url);
+   }
 }
 MO.FGuiGridCellPicture_dispose = function FGuiGridCellPicture_dispose() {
    var o = this;
-   o.__base.MUiGridCellText.dispose.call(o);
+   o.__base.MUiGridCellPicture.dispose.call(o);
    o.__base.FGuiGridCell.dispose.call(o);
 }
 MO.FGuiGridCellText = function FGuiGridCellText(o){
    o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellText);
-   o.onPaint   = MO.FGuiGridCellText_onPaint;
    o.construct = MO.FGuiGridCellText_construct;
    o.draw      = MO.FGuiGridCellText_draw;
    o.dispose   = MO.FGuiGridCellText_dispose;
    return o;
-}
-MO.FGuiGridCellText_onPaint = function FGuiGridCellText_onPaint(event){
-   var o = this;
 }
 MO.FGuiGridCellText_construct = function FGuiGridCellText_construct(){
    var o = this;
@@ -39195,6 +39216,7 @@ MO.FGuiGridCellText_dispose = function FGuiGridCellText_dispose(){
 MO.FGuiGridColumn = function FGuiGridColumn(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridColumn);
    o.construct = MO.FGuiGridColumn_construct;
+   o.testReady = MO.Method.emptyTrue;
    o.draw      = MO.FGuiGridColumn_draw;
    o.dispose   = MO.FGuiGridColumn_dispose;
    return o;
@@ -39316,6 +39338,7 @@ MO.FGuiGridControl = function FGuiGridControl(o){
 }
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    var o = this;
+   var dirty = false;
    var padding = o._padding;
    var context = o._paintContext;
    var contextStyle = context.style;
@@ -39345,6 +39368,10 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       var headHeight = o._headHeight;
       for(var i = 0; i < columnCount; i++){
          var column = columns.at(i);
+         if(!column.testReady()){
+            dirty = true;
+            continue;
+         }
          var columnWidth = gridWidth * column.width() / columnWidthTotal;
          contextRectangle.set(columnX, columnY, columnWidth, headHeight);
          column.draw(context);
@@ -39369,6 +39396,10 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
             var dataName = column.dataName();
             var columnWidth = gridWidth * column.width() / columnWidthTotal;
             var cell = row.cells().get(dataName);
+            if(!cell.testReady()){
+               dirty = true;
+               continue;
+            }
             cell.calculateStyle(contextStyle);
             contextRectangle.set(columnX, drawY, columnWidth, rowHeight);
             cell.draw(context);
@@ -39379,6 +39410,9 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       if(drawY > bottom){
          break;
       }
+   }
+   if(dirty){
+      o.dirty();
    }
 }
 MO.FGuiGridControl_construct = function FGuiGridControl_construct(){
@@ -85667,35 +85701,35 @@ MO.FEaiChartCustomerScene_processResize = function FEaiChartCustomerScene_proces
 }
 MO.FEaiChartCustomerTable = function FEaiChartCustomerTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o._currentDate          = null;
-   o._rank                 = MO.Class.register(o, new MO.AGetter('_rank'));
-   o._rankLogoImage        = null;
-   o._rankTitleImage       = null;
-   o._rankLineImage        = null;
-   o._rankLinePadding      = null;
-   o._rank1Image           = null;
-   o._rank2Image           = null;
-   o._rank3Image           = null;
-   o._backgroundImage      = null;
-   o._backgroundPadding    = null;
-   o._tableCount           = 0;
-   o._units                = null;
-   o._lineScroll           = 0;
+   o._currentDate = null;
+   o._rank = MO.Class.register(o, new MO.AGetter('_rank'));
+   o._rankLogoImage = null;
+   o._rankTitleImage = null;
+   o._rankLineImage = null;
+   o._rankLinePadding = null;
+   o._rank1Image = null;
+   o._rank2Image = null;
+   o._rank3Image = null;
+   o._backgroundImage = null;
+   o._backgroundPadding = null;
+   o._tableCount = 0;
+   o._units = null;
+   o._lineScroll = 0;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o.onImageLoad           = MO.FEaiChartCustomerTable_onImageLoad;
-   o.onPaintBegin          = MO.FEaiChartCustomerTable_onPaintBegin;
-   o.construct             = MO.FEaiChartCustomerTable_construct;
-   o.setup                 = MO.FEaiChartCustomerTable_setup;
-   o.setRankUnits          = MO.FEaiChartCustomerTable_setRankUnits;
-   o.pushUnit              = MO.FEaiChartCustomerTable_pushUnit;
-   o.drawRow               = MO.FEaiChartCustomerTable_drawRow;
-   o.dispose               = MO.FEaiChartCustomerTable_dispose;
+   o.onImageLoad = MO.FEaiChartCustomerTable_onImageLoad;
+   o.onPaintBegin = MO.FEaiChartCustomerTable_onPaintBegin;
+   o.construct = MO.FEaiChartCustomerTable_construct;
+   o.setup = MO.FEaiChartCustomerTable_setup;
+   o.setRankUnits = MO.FEaiChartCustomerTable_setRankUnits;
+   o.pushUnit = MO.FEaiChartCustomerTable_pushUnit;
+   o.drawRow = MO.FEaiChartCustomerTable_drawRow;
+   o.dispose = MO.FEaiChartCustomerTable_dispose;
    return o;
 }
-MO.FEaiChartCustomerTable_onImageLoad = function FEaiChartCustomerTable_onImageLoad(){
+MO.FEaiChartCustomerTable_onImageLoad = function FEaiChartCustomerTable_onImageLoad() {
    this.dirty();
 }
-MO.FEaiChartCustomerTable_onPaintBegin = function FEaiChartCustomerTable_onPaintBegin(event){
+MO.FEaiChartCustomerTable_onPaintBegin = function FEaiChartCustomerTable_onPaintBegin(event) {
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
@@ -85723,12 +85757,12 @@ MO.FEaiChartCustomerTable_onPaintBegin = function FEaiChartCustomerTable_onPaint
    graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
    graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 198, 40);
    var rankUnits = o._rank;
-   if(rankUnits){
+   if (rankUnits) {
       var tableText = '';
       var tableTextWidth = 0;
       var count = rankUnit.count();
       tableTop += 90;
-      for(var i = 0; i < count; i++) {
+      for (var i = 0; i < count; i++) {
          var unit = rankUnit.at(i);
          o.drawRow(graphic, unit, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
       }
@@ -85754,41 +85788,42 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');
    image.addLoadListener(o, o.onImageLoad);
    var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
+   grid.setOptionClip(false);
    grid.setDisplayHead(false);
    grid.setLocation(50, 170);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
    grid.setLeft(9);
    grid.setRight(19);
-   grid.setHeadHeight(0);
+   grid.setHeadHeight(10);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 22;
    grid.headFont().color = '#00B2F2';
    grid.setRowHeight(40);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 20;
+   grid.rowFont().size = 22;
    grid.rowFont().color = '#59FDE9';
    var column = MO.Class.create(MO.FGuiGridColumnPicture);
    column.setName('rank');
    column.setLabel();
    column.setDataName('image');
-   column.setWidth(160);
-   column.setPadding(10, 1, 1, 1);
-   column.setAlign(MO.EUiAlign.Left);
+   column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
+   column.setAlign(MO.EUiAlign.Center);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('card');
    column.setLabel('');
    column.setDataName('card');
-   column.setWidth(110);
+   column.setWidth(100);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('label_phone');
    column.setLabel('');
    column.setDataName('label_phone');
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
@@ -85800,11 +85835,12 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
    column.cellPadding().right = 10;
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
+   grid.setOptionClip(true);
    grid.setLocation(50, 332);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
@@ -85817,7 +85853,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    grid.headFont().color = '#00B2F2';
    grid.setRowHeight(30);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 20;
+   grid.rowFont().size = 22;
    grid.rowFont().color = '#59FDE9';
    var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
@@ -85838,7 +85874,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setName('customerInfo');
    column.setLabel('用户-手机');
    column.setDataName('customer_info');
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
@@ -85850,13 +85886,13 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
    column.cellPadding().right = 10;
-   column.setWidth(120);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);
    o._headFontStyle = 'bold 32px Microsoft YaHei';
    var isVertical = MO.Window.Browser.isOrientationVertical()
-   if(isVertical){
+   if (isVertical) {
       o._tableCount = 11;
       o._rankStart = 100;
       o._rankTitleStart = -5;
@@ -85872,7 +85908,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
       o._rowStart = 418;
       o._rowTextTop = 0;
       o._rowFontStyle = '36px Microsoft YaHei';
-   }else{
+   } else {
       o._tableCount = 19;
       o._rankStart = 110;
       o._rankTitleStart = 0;
@@ -85889,30 +85925,30 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
       o._rowStart = 384;
    }
 }
-MO.FEaiChartCustomerTable_setRankUnits = function FEaiChartCustomerTable_setRankUnits(units){
+MO.FEaiChartCustomerTable_setRankUnits = function FEaiChartCustomerTable_setRankUnits(units) {
    var o = this;
    var grid = o._gridRank;
    grid.clearRows();
    var count = units.count();
-   for(var i = 0; i < count; i++){
+   for (var i = 0; i < count; i++) {
       var unit = units.at(i);
       var row = grid.allocRow();
-      row.set('image', '{eai.resource}/live/'+(i+1)+'.png');
+      row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
       row.set('card', unit.card());
-      row.set('label_phone',unit.label() +" - "+ unit.phone());
+      row.set('label_phone', unit.label() + " - " + unit.phone());
       row.set('investment', unit.investment());
       grid.pushRow(row);
    }
 }
-MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(unit){
+MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(unit) {
    var o = this;
-   if(!unit){
+   if (!unit) {
       return null;
    }
    var card = unit.card();
    var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
    var cityLabel = '';
-   if(city){
+   if (city) {
       cityLabel = city.label();
    }
    var grid = o._gridControl;
@@ -85925,11 +85961,11 @@ MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(un
    var entities = o._units;
    entities.unshift(unit);
    o._lineScroll -= o._rowHeight;
-   if(entities.count() > o._tableCount){
+   if (entities.count() > o._tableCount) {
       entities.pop();
    }
 }
-MO.FEaiChartCustomerTable_dispose = function FEaiChartCustomerTable_dispose(){
+MO.FEaiChartCustomerTable_dispose = function FEaiChartCustomerTable_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);

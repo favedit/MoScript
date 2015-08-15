@@ -6,7 +6,7 @@
 // @version 150804
 //==========================================================
 MO.MUiGridCellDate = function MUiGridCellDate(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @method
    o.construct = MO.MUiGridCellDate_construct;
@@ -21,7 +21,6 @@ MO.MUiGridCellDate = function MUiGridCellDate(o){
 //==========================================================
 MO.MUiGridCellDate_construct = function MUiGridCellDate_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
 }
 
 //==========================================================
@@ -31,7 +30,4 @@ MO.MUiGridCellDate_construct = function MUiGridCellDate_construct(){
 //==========================================================
 MO.MUiGridCellDate_dispose = function MUiGridCellDate_dispose(){
    var o = this;
-   // 释放属性
-   // 父处理
-   o.__base.MUiGridCell.dispose.call(o);
 }

@@ -6,7 +6,7 @@
 // @version 150804
 //==========================================================
 MO.FGuiGridCell = function FGuiGridCell(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCell);
    //..........................................................
    // @method
    o.onPaint   = MO.FGuiGridCell_onPaint;
@@ -14,7 +14,8 @@ MO.FGuiGridCell = function FGuiGridCell(o){
    // @method
    o.construct = MO.FGuiGridCell_construct;
    // @method
-   o.draw      = MO.FGuiGridCell_draw;
+   o.testReady = MO.Method.emptyTrue;
+   o.draw      = MO.Method.empty;
    // @method
    o.dispose   = MO.FGuiGridCell_dispose;
    return o;
@@ -28,15 +29,7 @@ MO.FGuiGridCell = function FGuiGridCell(o){
 MO.FGuiGridCell_construct = function FGuiGridCell_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-}
-
-//==========================================================
-// <T>绘制处理。</T>
-//
-// @method
-// @param context:SGuiGridPaintContext 绘制环境
-//==========================================================
-MO.FGuiGridCell_draw = function FGuiGridCell_draw(context){
+   o.__base.MUiGridCell.construct.call(o);
 }
 
 //==========================================================
@@ -46,7 +39,7 @@ MO.FGuiGridCell_draw = function FGuiGridCell_draw(context){
 //==========================================================
 MO.FGuiGridCell_dispose = function FGuiGridCell_dispose(){
    var o = this;
-   // 释放属性
    // 父处理
+   o.__base.MUiGridCell.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

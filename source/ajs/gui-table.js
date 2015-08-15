@@ -13,25 +13,26 @@ MO.SGuiGridPaintContext_dispose = function SGuiGridPaintContext_dispose(){
    o.style = MO.Lang.Object.dispose(o.style);
 }
 MO.FGuiGridCell = function FGuiGridCell(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridCell);
    o.onPaint   = MO.FGuiGridCell_onPaint;
    o.construct = MO.FGuiGridCell_construct;
-   o.draw      = MO.FGuiGridCell_draw;
+   o.testReady = MO.Method.emptyTrue;
+   o.draw      = MO.Method.empty;
    o.dispose   = MO.FGuiGridCell_dispose;
    return o;
 }
 MO.FGuiGridCell_construct = function FGuiGridCell_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-}
-MO.FGuiGridCell_draw = function FGuiGridCell_draw(context){
+   o.__base.MUiGridCell.construct.call(o);
 }
 MO.FGuiGridCell_dispose = function FGuiGridCell_dispose(){
    var o = this;
+   o.__base.MUiGridCell.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
-   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellDate);
+   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellCurrency);
    o._fontColor  = null;
    o._numberFont = null;
    o.construct   = MO.FGuiGridCellCurrency_construct;
@@ -43,7 +44,7 @@ MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
 MO.FGuiGridCellCurrency_construct = function FGuiGridCellCurrency_construct(){
    var o = this;
    o.__base.FGuiGridCell.construct.call(o);
-   o.__base.MUiGridCellDate.construct.call(o);
+   o.__base.MUiGridCellCurrency.construct.call(o);
    o._numberFont = new MO.SUiFont();
 }
 MO.FGuiGridCellCurrency_formatText = function FGuiGridCellCurrency_formatText(value){
@@ -94,7 +95,7 @@ MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(context){
 MO.FGuiGridCellCurrency_dispose = function FGuiGridCellCurrency_dispose(){
    var o = this;
    o._numberFont = MO.Lang.Object.dispose(o._numberFont);
-   o.__base.MUiGridCellDate.dispose.call(o);
+   o.__base.MUiGridCellCurrency.dispose.call(o);
    o.__base.FGuiGridCell.dispose.call(o);
 }
 MO.FGuiGridCellDate = function FGuiGridCellDate(o){
@@ -123,51 +124,73 @@ MO.FGuiGridCellDate_dispose = function FGuiGridCellDate_dispose(){
    o.__base.FGuiGridCell.dispose.call(o);
 }
 MO.FGuiGridCellPicture = function FGuiGridCellPicture(o) {
-   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellText);
-   o._image = null;
-   o.onPaint = MO.FGuiGridCellPicture_onPaint;
+   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellPicture);
+   o._image    = null;
    o.construct = MO.FGuiGridCellPicture_construct;
-   o.draw = MO.FGuiGridCellPicture_draw;
-   o.dispose = MO.FGuiGridCellPicture_dispose;
+   o.testReady = MO.FGuiGridCellPicture_testReady;
+   o.setValue  = MO.FGuiGridCellPicture_setValue;
+   o.draw      = MO.FGuiGridCellPicture_draw;
+   o.dispose   = MO.FGuiGridCellPicture_dispose;
    return o;
-}
-MO.FGuiGridCellPicture_onPaint = function FGuiGridCellPicture_onPaint(event) {
-   var o = this;
 }
 MO.FGuiGridCellPicture_construct = function FGuiGridCellPicture_construct() {
    var o = this;
    o.__base.FGuiGridCell.construct.call(o);
-   o.__base.MUiGridCellText.construct.call(o);
+   o.__base.MUiGridCellPicture.construct.call(o);
 }
-MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context){
+MO.FGuiGridCellPicture_testReady = function FGuiGridCellPicture_testReady(){
+   var o = this;
+   var image = o._image;
+   if(image){
+      return image.testReady();
+   }
+   return true;
+}
+MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    var o = this;
    var graphic = context.graphic;
    var rectangle = context.rectangle;
    var imageurl = o.text();
-   var image = o._image = MO.Console.find(MO.FImageConsole).load(imageurl);
-   image.testReady();
-   var imageSize   = image.size();
-   var imageWidth  = imageSize.width;
+   var image = o._image;
+   if(!image){
+      return;
+   }
+   var imageSize = image.size();
+   var imageWidth = imageSize.width;
    var imageHeight = imageSize.height;
-   var imageX = (rectangle.width / 2) - (imageWidth / 2) + rectangle.left;
-   var imageY = (rectangle.height / 2) - (imageHeight / 2) + rectangle.right;
+   var align = o._column._align;
+   var imageX = 0;
+   var imageY = (rectangle.height / 2) - (imageHeight / 2) + rectangle.top;
+   if (align == MO.EUiAlign.Left) {
+      imageX = rectangle.left;
+   } else if (align == MO.EUiAlign.Center) {
+      imageX = (rectangle.width / 2) - (imageWidth / 2) + rectangle.left;
+   } else if (align == MO.EUiAlign.Right) {
+      imageX = (rectangle.width / 2) + (imageWidth / 2) + rectangle.left;
+   }
    graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+}
+MO.FGuiGridCellPicture_setValue = function FGuiGridCellPicture_setValue(value){
+   var o = this;
+   o.__base.FGuiGridCell.setValue.call(o, value);
+   var url = o.text();
+   if(MO.Lang.String.isEmpty(url)){
+      o._image = null;
+   }else{
+      o._image = MO.Console.find(MO.FImageConsole).load(url);
+   }
 }
 MO.FGuiGridCellPicture_dispose = function FGuiGridCellPicture_dispose() {
    var o = this;
-   o.__base.MUiGridCellText.dispose.call(o);
+   o.__base.MUiGridCellPicture.dispose.call(o);
    o.__base.FGuiGridCell.dispose.call(o);
 }
 MO.FGuiGridCellText = function FGuiGridCellText(o){
    o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellText);
-   o.onPaint   = MO.FGuiGridCellText_onPaint;
    o.construct = MO.FGuiGridCellText_construct;
    o.draw      = MO.FGuiGridCellText_draw;
    o.dispose   = MO.FGuiGridCellText_dispose;
    return o;
-}
-MO.FGuiGridCellText_onPaint = function FGuiGridCellText_onPaint(event){
-   var o = this;
 }
 MO.FGuiGridCellText_construct = function FGuiGridCellText_construct(){
    var o = this;
@@ -190,6 +213,7 @@ MO.FGuiGridCellText_dispose = function FGuiGridCellText_dispose(){
 MO.FGuiGridColumn = function FGuiGridColumn(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MUiGridColumn);
    o.construct = MO.FGuiGridColumn_construct;
+   o.testReady = MO.Method.emptyTrue;
    o.draw      = MO.FGuiGridColumn_draw;
    o.dispose   = MO.FGuiGridColumn_dispose;
    return o;
@@ -311,6 +335,7 @@ MO.FGuiGridControl = function FGuiGridControl(o){
 }
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
    var o = this;
+   var dirty = false;
    var padding = o._padding;
    var context = o._paintContext;
    var contextStyle = context.style;
@@ -340,6 +365,10 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       var headHeight = o._headHeight;
       for(var i = 0; i < columnCount; i++){
          var column = columns.at(i);
+         if(!column.testReady()){
+            dirty = true;
+            continue;
+         }
          var columnWidth = gridWidth * column.width() / columnWidthTotal;
          contextRectangle.set(columnX, columnY, columnWidth, headHeight);
          column.draw(context);
@@ -364,6 +393,10 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
             var dataName = column.dataName();
             var columnWidth = gridWidth * column.width() / columnWidthTotal;
             var cell = row.cells().get(dataName);
+            if(!cell.testReady()){
+               dirty = true;
+               continue;
+            }
             cell.calculateStyle(contextStyle);
             contextRectangle.set(columnX, drawY, columnWidth, rowHeight);
             cell.draw(context);
@@ -374,6 +407,9 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event){
       if(drawY > bottom){
          break;
       }
+   }
+   if(dirty){
+      o.dirty();
    }
 }
 MO.FGuiGridControl_construct = function FGuiGridControl_construct(){

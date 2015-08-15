@@ -9,25 +9,12 @@ MO.FGuiGridCellText = function FGuiGridCellText(o){
    o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellText);
    //..........................................................
    // @method
-   o.onPaint   = MO.FGuiGridCellText_onPaint;
-   //..........................................................
-   // @method
    o.construct = MO.FGuiGridCellText_construct;
    // @method
    o.draw      = MO.FGuiGridCellText_draw;
    // @method
    o.dispose   = MO.FGuiGridCellText_dispose;
    return o;
-}
-
-//==========================================================
-// <T>绘制事件处理。</T>
-//
-// @method
-// @return 绘制事件处理
-//==========================================================
-MO.FGuiGridCellText_onPaint = function FGuiGridCellText_onPaint(event){
-   var o = this;
 }
 
 //==========================================================

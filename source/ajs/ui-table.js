@@ -1,31 +1,17 @@
 MO.MUiGridCell = function MUiGridCell(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o);
    o._grid          = MO.Class.register(o, new MO.AGetSet('_grid'));
    o._column        = MO.Class.register(o, new MO.AGetSet('_column'));
    o._row           = MO.Class.register(o, new MO.AGetSet('_row'));
    o._alignCd       = MO.Class.register(o, new MO.AGetSet('_alignCd'), MO.EUiAlign.Left);
    o._font          = MO.Class.register(o, new MO.AGetSet('_font'));
    o._value         = MO.Class.register(o, new MO.AGetSet('_value'));
-   o.findFont       = MO.MUiGridCell_findFont;
+   o.construct      = MO.Method.empty;
    o.calculateStyle = MO.MUiGridCell_calculateStyle;
    o.text           = MO.MUiGridCell_text;
    o.setText        = MO.MUiGridCell_setText;
    o.dispose        = MO.MUiGridCell_dispose;
    return o;
-}
-MO.MUiGridCell_findFont = function MUiGridCell_findFont(){
-   var o = this;
-   var font = o._font;
-   if(font){
-      font = o._row.font();
-   }
-   if(!font){
-      font = o._column.font();
-   }
-   if(!font){
-      font = o._grid.rowFont();
-   }
-   return font;
 }
 MO.MUiGridCell_calculateStyle = function MUiGridCell_calculateStyle(style){
    var o = this;
@@ -67,46 +53,52 @@ MO.MUiGridCell_dispose = function MUiGridCell_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.MUiGridCellCurrency = function MUiGridCellCurrency(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o = MO.Class.inherits(this, o);
    o.construct = MO.MUiGridCellCurrency_construct;
    o.dispose   = MO.MUiGridCellCurrency_dispose;
    return o;
 }
 MO.MUiGridCellCurrency_construct = function MUiGridCellCurrency_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
 }
 MO.MUiGridCellCurrency_dispose = function MUiGridCellCurrency_dispose(){
    var o = this;
-   o.__base.MUiGridCell.dispose.call(o);
 }
 MO.MUiGridCellDate = function MUiGridCellDate(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o = MO.Class.inherits(this, o);
    o.construct = MO.MUiGridCellDate_construct;
    o.dispose   = MO.MUiGridCellDate_dispose;
    return o;
 }
 MO.MUiGridCellDate_construct = function MUiGridCellDate_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
 }
 MO.MUiGridCellDate_dispose = function MUiGridCellDate_dispose(){
    var o = this;
-   o.__base.MUiGridCell.dispose.call(o);
+}
+MO.MUiGridCellPicture = function MUiGridCellPicture(o){
+   o = MO.Class.inherits(this, o);
+   o.construct = MO.MUiGridCellPicture_construct;
+   o.dispose   = MO.MUiGridCellPicture_dispose;
+   return o;
+}
+MO.MUiGridCellPicture_construct = function MUiGridCellPicture_construct(){
+   var o = this;
+}
+MO.MUiGridCellPicture_dispose = function MUiGridCellPicture_dispose(){
+   var o = this;
 }
 MO.MUiGridCellText = function MUiGridCellText(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o = MO.Class.inherits(this, o);
    o.construct = MO.MUiGridCellText_construct;
    o.dispose   = MO.MUiGridCellText_dispose;
    return o;
 }
 MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
 }
 MO.MUiGridCellText_dispose = function MUiGridCellText_dispose(){
    var o = this;
-   o.__base.MUiGridCell.dispose.call(o);
 }
 MO.MUiGridColumn = function MUiGridColumn(o){
    o = MO.Class.inherits(this, o, MO.MUiPadding, MO.MUiMargin, MO.MUiTextFormator);
@@ -316,6 +308,7 @@ MO.MUiGridRow = function MUiGridRow(o){
    o._font     = MO.Class.register(o, new MO.AGetSet('_font'));
    o._height   = MO.Class.register(o, new MO.AGetSet('_height'), 28);
    o.construct = MO.MUiGridRow_construct;
+   o.findCell  = MO.MUiGridRow_findCell;
    o.pushCell  = MO.MUiGridRow_pushCell;
    o.get       = MO.MUiGridRow_get;
    o.set       = MO.MUiGridRow_set;
@@ -325,6 +318,11 @@ MO.MUiGridRow_construct = function MUiGridRow_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._cells = new MO.TDictionary();
+}
+MO.MUiGridRow_findCell = function MUiGridRow_findCell(name){
+   var o = this;
+   var cell = o._cells.get(name);
+   return cell;
 }
 MO.MUiGridRow_pushCell = function MUiGridRow_pushCell(cell){
    var o = this;

@@ -11,6 +11,7 @@ MO.FGuiGridColumn = function FGuiGridColumn(o){
    // @method
    o.construct = MO.FGuiGridColumn_construct;
    // @method
+   o.testReady = MO.Method.emptyTrue;
    o.draw      = MO.FGuiGridColumn_draw;
    // @method
    o.dispose   = MO.FGuiGridColumn_dispose;

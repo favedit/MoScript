@@ -6,7 +6,7 @@
 // @version 150804
 //==========================================================
 MO.MUiGridCellText = function MUiGridCellText(o){
-   o = MO.Class.inherits(this, o, MO.MUiGridCell);
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @method
    o.construct = MO.MUiGridCellText_construct;
@@ -21,7 +21,6 @@ MO.MUiGridCellText = function MUiGridCellText(o){
 //==========================================================
 MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
    var o = this;
-   o.__base.MUiGridCell.construct.call(o);
 }
 
 //==========================================================
@@ -31,7 +30,4 @@ MO.MUiGridCellText_construct = function MUiGridCellText_construct(){
 //==========================================================
 MO.MUiGridCellText_dispose = function MUiGridCellText_dispose(){
    var o = this;
-   // 释放属性
-   // 父处理
-   o.__base.MUiGridCell.dispose.call(o);
 }

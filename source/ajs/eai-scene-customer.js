@@ -473,35 +473,35 @@ MO.FEaiChartCustomerScene_processResize = function FEaiChartCustomerScene_proces
 }
 MO.FEaiChartCustomerTable = function FEaiChartCustomerTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o._currentDate          = null;
-   o._rank                 = MO.Class.register(o, new MO.AGetter('_rank'));
-   o._rankLogoImage        = null;
-   o._rankTitleImage       = null;
-   o._rankLineImage        = null;
-   o._rankLinePadding      = null;
-   o._rank1Image           = null;
-   o._rank2Image           = null;
-   o._rank3Image           = null;
-   o._backgroundImage      = null;
-   o._backgroundPadding    = null;
-   o._tableCount           = 0;
-   o._units                = null;
-   o._lineScroll           = 0;
+   o._currentDate = null;
+   o._rank = MO.Class.register(o, new MO.AGetter('_rank'));
+   o._rankLogoImage = null;
+   o._rankTitleImage = null;
+   o._rankLineImage = null;
+   o._rankLinePadding = null;
+   o._rank1Image = null;
+   o._rank2Image = null;
+   o._rank3Image = null;
+   o._backgroundImage = null;
+   o._backgroundPadding = null;
+   o._tableCount = 0;
+   o._units = null;
+   o._lineScroll = 0;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o.onImageLoad           = MO.FEaiChartCustomerTable_onImageLoad;
-   o.onPaintBegin          = MO.FEaiChartCustomerTable_onPaintBegin;
-   o.construct             = MO.FEaiChartCustomerTable_construct;
-   o.setup                 = MO.FEaiChartCustomerTable_setup;
-   o.setRankUnits          = MO.FEaiChartCustomerTable_setRankUnits;
-   o.pushUnit              = MO.FEaiChartCustomerTable_pushUnit;
-   o.drawRow               = MO.FEaiChartCustomerTable_drawRow;
-   o.dispose               = MO.FEaiChartCustomerTable_dispose;
+   o.onImageLoad = MO.FEaiChartCustomerTable_onImageLoad;
+   o.onPaintBegin = MO.FEaiChartCustomerTable_onPaintBegin;
+   o.construct = MO.FEaiChartCustomerTable_construct;
+   o.setup = MO.FEaiChartCustomerTable_setup;
+   o.setRankUnits = MO.FEaiChartCustomerTable_setRankUnits;
+   o.pushUnit = MO.FEaiChartCustomerTable_pushUnit;
+   o.drawRow = MO.FEaiChartCustomerTable_drawRow;
+   o.dispose = MO.FEaiChartCustomerTable_dispose;
    return o;
 }
-MO.FEaiChartCustomerTable_onImageLoad = function FEaiChartCustomerTable_onImageLoad(){
+MO.FEaiChartCustomerTable_onImageLoad = function FEaiChartCustomerTable_onImageLoad() {
    this.dirty();
 }
-MO.FEaiChartCustomerTable_onPaintBegin = function FEaiChartCustomerTable_onPaintBegin(event){
+MO.FEaiChartCustomerTable_onPaintBegin = function FEaiChartCustomerTable_onPaintBegin(event) {
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
@@ -529,12 +529,12 @@ MO.FEaiChartCustomerTable_onPaintBegin = function FEaiChartCustomerTable_onPaint
    graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
    graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 198, 40);
    var rankUnits = o._rank;
-   if(rankUnits){
+   if (rankUnits) {
       var tableText = '';
       var tableTextWidth = 0;
       var count = rankUnit.count();
       tableTop += 90;
-      for(var i = 0; i < count; i++) {
+      for (var i = 0; i < count; i++) {
          var unit = rankUnit.at(i);
          o.drawRow(graphic, unit, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
       }
@@ -560,41 +560,42 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');
    image.addLoadListener(o, o.onImageLoad);
    var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
+   grid.setOptionClip(false);
    grid.setDisplayHead(false);
    grid.setLocation(50, 170);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
    grid.setLeft(9);
    grid.setRight(19);
-   grid.setHeadHeight(0);
+   grid.setHeadHeight(10);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 22;
    grid.headFont().color = '#00B2F2';
    grid.setRowHeight(40);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 20;
+   grid.rowFont().size = 22;
    grid.rowFont().color = '#59FDE9';
    var column = MO.Class.create(MO.FGuiGridColumnPicture);
    column.setName('rank');
    column.setLabel();
    column.setDataName('image');
-   column.setWidth(160);
-   column.setPadding(10, 1, 1, 1);
-   column.setAlign(MO.EUiAlign.Left);
+   column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
+   column.setAlign(MO.EUiAlign.Center);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('card');
    column.setLabel('');
    column.setDataName('card');
-   column.setWidth(110);
+   column.setWidth(100);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('label_phone');
    column.setLabel('');
    column.setDataName('label_phone');
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
@@ -606,11 +607,12 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
    column.cellPadding().right = 10;
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
+   grid.setOptionClip(true);
    grid.setLocation(50, 332);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
@@ -623,7 +625,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    grid.headFont().color = '#00B2F2';
    grid.setRowHeight(30);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 20;
+   grid.rowFont().size = 22;
    grid.rowFont().color = '#59FDE9';
    var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
@@ -644,7 +646,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setName('customerInfo');
    column.setLabel('用户-手机');
    column.setDataName('customer_info');
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
@@ -656,13 +658,13 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
    column.cellPadding().right = 10;
-   column.setWidth(120);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    o.push(grid);
    o._headFontStyle = 'bold 32px Microsoft YaHei';
    var isVertical = MO.Window.Browser.isOrientationVertical()
-   if(isVertical){
+   if (isVertical) {
       o._tableCount = 11;
       o._rankStart = 100;
       o._rankTitleStart = -5;
@@ -678,7 +680,7 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
       o._rowStart = 418;
       o._rowTextTop = 0;
       o._rowFontStyle = '36px Microsoft YaHei';
-   }else{
+   } else {
       o._tableCount = 19;
       o._rankStart = 110;
       o._rankTitleStart = 0;
@@ -695,30 +697,30 @@ MO.FEaiChartCustomerTable_setup = function FEaiChartCustomerTable_setup() {
       o._rowStart = 384;
    }
 }
-MO.FEaiChartCustomerTable_setRankUnits = function FEaiChartCustomerTable_setRankUnits(units){
+MO.FEaiChartCustomerTable_setRankUnits = function FEaiChartCustomerTable_setRankUnits(units) {
    var o = this;
    var grid = o._gridRank;
    grid.clearRows();
    var count = units.count();
-   for(var i = 0; i < count; i++){
+   for (var i = 0; i < count; i++) {
       var unit = units.at(i);
       var row = grid.allocRow();
-      row.set('image', '{eai.resource}/live/'+(i+1)+'.png');
+      row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
       row.set('card', unit.card());
-      row.set('label_phone',unit.label() +" - "+ unit.phone());
+      row.set('label_phone', unit.label() + " - " + unit.phone());
       row.set('investment', unit.investment());
       grid.pushRow(row);
    }
 }
-MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(unit){
+MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(unit) {
    var o = this;
-   if(!unit){
+   if (!unit) {
       return null;
    }
    var card = unit.card();
    var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
    var cityLabel = '';
-   if(city){
+   if (city) {
       cityLabel = city.label();
    }
    var grid = o._gridControl;
@@ -731,11 +733,11 @@ MO.FEaiChartCustomerTable_pushUnit = function FEaiChartCustomerTable_pushUnit(un
    var entities = o._units;
    entities.unshift(unit);
    o._lineScroll -= o._rowHeight;
-   if(entities.count() > o._tableCount){
+   if (entities.count() > o._tableCount) {
       entities.pop();
    }
 }
-MO.FEaiChartCustomerTable_dispose = function FEaiChartCustomerTable_dispose(){
+MO.FEaiChartCustomerTable_dispose = function FEaiChartCustomerTable_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
