@@ -303,9 +303,7 @@ MO.FEaiChartCustomerTable_setRankUnits = function FEaiChartCustomerTable_setRank
    for (var i = 0; i < count; i++) {
       var unit = units.at(i);
       var row = grid.allocRow();
-      // 获得部门名称
-      //      var cell = MO.Class.create(MO.FGuiGridCellImage);
-      //      row.setImage(o._rank1Image);
+      // 排行榜数据填充
       row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
       row.set('card', unit.card());
       row.set('label_phone', unit.label() + " - " + unit.phone());

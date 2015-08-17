@@ -143,10 +143,10 @@ MO.FEaiChartCustomerTimeline_drawTrend = function FEaiChartCustomerTimeline_draw
       handle.lineTo(x, y);
    }
    var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
-   //var bottomColor = '#' + hexColor.substring(2);
+   var bottomColor = '#' + hexColor.substring(2);
    var opBottomColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
    var hexColor = MO.Lang.Hex.format(rateResource.findRate(1));
-   //var topColor = '#' + hexColor.substring(2);
+   var topColor = '#' + hexColor.substring(2);
    var opTopColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
    var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
    gradient.addColorStop('0', bottomColor);
@@ -157,11 +157,11 @@ MO.FEaiChartCustomerTimeline_drawTrend = function FEaiChartCustomerTimeline_draw
    handle.strokeStyle = gradient;
    handle.lineWidth = 4;
    handle.stroke();
-   //handle.fillStyle = opGradient;
-   //handle.lineTo(x, dataBottom);
-   //handle.lineTo(dataLeft, dataBottom);
-   //handle.lineTo(dataLeft, lastY);
-   //handle.fill();
+   handle.fillStyle = opGradient;
+   handle.lineTo(x, dataBottom);
+   handle.lineTo(dataLeft, dataBottom);
+   handle.lineTo(dataLeft, lastY);
+   handle.fill();
 }
 
 //==========================================================
@@ -216,7 +216,8 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
          textWidth = graphic.textWidth(text);
          graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
       }
-   }   
+   }
+
    startTime.date.setTime(bakTime);
    startTime.refresh();
    // 曲线
@@ -239,12 +240,10 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
          maxAmount = investment;
       }
    }
-  
-   startTime.date.setTime(bakTime);
-   startTime.refresh();
-   // ........................................................
-   // 统计
+   //曲线及填充
    o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
+   // ........................................................
+   // 统计   
    var lastHour = -1;
    var hourInves = 0;
    var maxHourInves = 0;
