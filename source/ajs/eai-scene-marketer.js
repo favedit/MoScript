@@ -12,7 +12,9 @@ MO.FEaiChartMarketerDynamicInfo = function FEaiChartMarketerDynamicInfo(o){
    o._performanceTotal   = MO.Class.register(o, [new MO.AGetter('_performanceTotal'), new MO.APersistence('_interestTotal', MO.EDataType.Double)]);
    o._customerCount      = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Int32)]);
    o._customerTotal      = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Int32)]);
-   o._rankUnits          = MO.Class.register(o, [new MO.AGetter('_rankUnits'), new MO.APersistence('_rankUnits', MO.EDataType.Objects, MO.FEaiChartMarketerDynamicRankUnit)]);
+   o._rankDayUnits       = MO.Class.register(o, [new MO.AGetter('_rankDayUnits'), new MO.APersistence('_rankDayUnits', MO.EDataType.Objects, MO.FEaiChartMarketerDynamicRankUnit)]);
+   o._rankWeekUnits      = MO.Class.register(o, [new MO.AGetter('_rankWeekUnits'), new MO.APersistence('_rankWeekUnits', MO.EDataType.Objects, MO.FEaiChartMarketerDynamicRankUnit)]);
+   o._rankMonthUnits     = MO.Class.register(o, [new MO.AGetter('_rankMonthUnits'), new MO.APersistence('_rankMonthUnits', MO.EDataType.Objects, MO.FEaiChartMarketerDynamicRankUnit)]);
    o._units              = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartMarketerDynamicUnit)]);
    return o;
 }
@@ -86,7 +88,7 @@ MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcesso
    var dynamicInfo = o._dynamicInfo;
    dynamicInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    var rankUnits = o._rankUnits;
-   rankUnits.assign(dynamicInfo.rankUnits());
+   rankUnits.assign(dynamicInfo.rankDayUnits());
    var units = o._units;
    units.append(dynamicInfo.units());
    var unitCount = units.count();
