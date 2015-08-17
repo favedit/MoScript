@@ -114,9 +114,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
             graphic.drawText("-", negativeX, baseY * negativeRate, negativeColor);
             graphic.drawText("-", negativeX, baseY + 38 * negativeRate, negativeColor);
          }
-
       }
-
       drawedTextWidth = graphic.textWidth(drawedText);
       o._textFontW = drawedTextWidth;
       // 字宽 ;  

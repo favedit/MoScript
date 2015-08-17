@@ -91,6 +91,10 @@ MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcesso
    // 触发数据事件
    var changeEvent = o._eventDataChanged;
    changeEvent.rankUnits = rankUnits;
+   changeEvent.rankDayUnits = dynamicInfo._rankDayUnits;
+   changeEvent.rankWeekUnits = dynamicInfo._rankWeekUnits;
+   changeEvent.rankMonthUnits = dynamicInfo._rankMonthUnits;
+
    changeEvent.unit = null;
    o.processDataChangedListener(changeEvent);
 }

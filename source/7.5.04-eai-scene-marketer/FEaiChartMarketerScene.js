@@ -59,9 +59,13 @@ MO.FEaiChartMarketerScene = function FEaiChartMarketerScene(o) {
 MO.FEaiChartMarketerScene_onInvestmentDataChanged = function FEaiChartMarketerScene_onInvestmentDataChanged(event) {
    var o = this;
    var unit = event.unit;
+
    // 设置表格数据
    var table = o._liveTable;
-   table.setRankUnits(event.rankUnits);
+   table.setRankDayUnits(event.rankDayUnits);
+   table.setRankWeekUnits(event.rankWeekUnits);
+   table.setRankMonthUnits(event.rankMonthUnits);
+
    table.pushUnit(unit);
    table.dirty();
 }
@@ -170,6 +174,7 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       // 获取所有信息
       var processor = o._processor;
       if(processor.invementDayCurrent() > 0){
+         // MO.Class.create(MO.FEaiChartMarketerProcessor);
          // 投资总金额
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
@@ -182,6 +187,16 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
          // 利息总金额
          //var interestTotal = logoBar.findComponent('interestTotal');
          //interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
+         var dynamicInfo = processor._dynamicInfo;
+         var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
+         redemptionTotalCount.setValue(parseInt(dynamicInfo._redemptionTotal).toString());
+         
+         var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
+         netinvestmentTotalCount.setValue(parseInt(dynamicInfo._netinvestmentTotal).toString());
+         
+         var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
+         investmentTotalCount.setValue(parseInt(dynamicInfo._investmentTotal).toString());
+     
       }
       //..........................................................
       // 更新时间
