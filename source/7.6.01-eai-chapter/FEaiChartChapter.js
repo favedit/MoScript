@@ -15,10 +15,11 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneHistory    = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
    o._sceneCustomer   = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
    o._sceneMarketer   = MO.Class.register(o, new MO.AGetter('_sceneMarketer'));
+   o._scenePerformence   = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
    o._sceneDepartment = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
    o._sceneLive       = MO.Class.register(o, new MO.AGetter('_sceneLive'));
    o._sceneWorld      = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
-   o._sceneSales      = MO.Class.register(o, new MO.AGetter('_sceneSales'));
+   o._sceneSales      = MO.Class.register(o, new MO.AGetter('_sceneSales'));   
    //..........................................................
    // @method
    o.construct        = MO.FEaiChartChapter_construct;
@@ -63,6 +64,10 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var scene = o._sceneMarketer = MO.Class.create(MO.FEaiChartMarketerScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
+   // 创建业绩数据图表
+//   var scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
+//   scene.linkGraphicContext(o);
+//   o.registerScene(scene);
    // 创建部门数据图表
    var scene = o._sceneDepartment = MO.Class.create(MO.FEaiChartDepartmentScene);
    scene.linkGraphicContext(o);
