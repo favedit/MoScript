@@ -9,19 +9,19 @@ MO.FEaiLogic = function FEaiLogic(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._code          = null;
-   o._parameters    = null;
-   o._urlParameters = null;
+   o._code             = null;
+   o._parameters       = null;
+   o._urlParameters    = null;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiLogic_construct;
+   o.construct         = MO.FEaiLogic_construct;
    // @method
-   o.makeUrl        = MO.FEaiLogic_makeUrl;
+   o.makeUrl           = MO.FEaiLogic_makeUrl;
    o.prepareParemeters = MO.FEaiLogic_prepareParemeters;
-   o.send           = MO.FEaiLogic_send;
-   o.sendService    = MO.FEaiLogic_sendService;
+   o.send              = MO.FEaiLogic_send;
+   o.sendService       = MO.FEaiLogic_sendService;
    // @method
-   o.dispose        = MO.FEaiLogic_dispose;
+   o.dispose           = MO.FEaiLogic_dispose;
    return o;
 }
 
@@ -138,6 +138,7 @@ MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner
    // 发送请求
    var connection = MO.Console.find(MO.FHttpConsole).alloc();
    connection.setAsynchronous(true);
+   connection.attributes().set('sign', sign);
    connection.addLoadListener(owner, callback);
    connection.send(url);
 }

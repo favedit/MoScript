@@ -1905,7 +1905,7 @@ MO.FObject_toString = function FObject_toString(){
 }
 MO.FObject_dispose = function FObject_dispose(){
    var o = this;
-   MO.RObject.free(o);
+   MO.Lang.Object.free(o);
    o.__dispose = true;
 }
 MO.FObject_innerDump = function FObject_innerDump(dump, level){
@@ -3960,6 +3960,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o._contentCd           = MO.EHttpContent.Binary;
    o._url                 = null;
    o._heads               = MO.Class.register(o, new MO.AGetter('_heads'));
+   o._attributes          = MO.Class.register(o, new MO.AGetter('_attributes'));
    o._input               = null;
    o._inputData           = MO.Class.register(o, new MO.AGetSet('_inputData'));
    o._output              = null;
@@ -4022,6 +4023,13 @@ MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionC
    var event = o._event;
    event.connection = o;
    event.content = o._outputData;
+   var attributes = o._attributes;
+   var count = attributes.count();
+   for(var i = 0; i < count; i++){
+      var name = attributes.name(i);
+      var value = attributes.value(i);
+      event[name] = value;
+   }
    o.processLoadListener(event);
    o.processCompleteListener(event);
 }
@@ -4029,6 +4037,7 @@ MO.FHttpConnection_construct = function FHttpConnection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._heads = new MO.TAttributes();
+   o._attributes = new MO.TAttributes();
    o._event = new MO.SEvent();
    var handle = o._handle = MO.Window.Xml.createConnection();
    handle._linker = o;
@@ -4087,6 +4096,7 @@ MO.FHttpConnection_content = function FHttpConnection_content(){
 MO.FHttpConnection_reset = function FHttpConnection_reset(){
    var o = this;
    o._handle.abort()
+   o._attributes.clear();
    o.clearAllListeners();
 }
 MO.FHttpConnection_sendSync = function FHttpConnection_sendSync(){
@@ -4138,6 +4148,7 @@ MO.FHttpConnection_post = function FHttpConnection_send(url, data){
 MO.FHttpConnection_dispose = function FHttpConnection_dispose(){
    var o = this;
    o._heads = MO.Lang.Object.dispose(o._heads);
+   o._attributes = MO.Lang.Object.dispose(o._attributes);
    o._event = MO.Lang.Object.dispose(o._event);
    o._input = null;
    o._inputData = null;

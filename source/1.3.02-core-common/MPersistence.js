@@ -9,10 +9,13 @@ MO.MPersistence = function MPersistence(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @method
-   o.unserialize       = MO.MPersistence_unserialize;
-   o.unserializeBuffer = MO.MPersistence_unserializeBuffer;
-   o.serialize         = MO.MPersistence_serialize;
-   o.serializeBuffer   = MO.MPersistence_serializeBuffer;
+   o.unserialize                = MO.MPersistence_unserialize;
+   o.unserializeBuffer          = MO.MPersistence_unserializeBuffer;
+   o.unserializeEncryptedBuffer = MO.MPersistence_unserializeEncryptedBuffer;
+   // @method
+   o.serialize                  = MO.MPersistence_serialize;
+   o.serializeBuffer            = MO.MPersistence_serializeBuffer;
+   o.serializeEncryptedBuffer   = MO.MPersistence_serializeEncryptedBuffer;
    return o;
 }
 
@@ -98,6 +101,27 @@ MO.MPersistence_unserializeBuffer = function MPersistence_unserializeBuffer(buff
 }
 
 //==========================================================
+// <T>从加密数据中反序列化数据内容。</T>
+//
+// @method
+// @param sign:Boolean 签名
+// @param buffer:ArrayBuffer 缓冲
+// @param endianCd:Boolean 编码
+//==========================================================
+MO.MPersistence_unserializeEncryptedBuffer = function MPersistence_unserializeEncryptedBuffer(sign, buffer, endianCd){
+   var o = this;
+   // 反序列化数据
+   var view = MO.Class.create(MO.FEncryptedView);
+   view.setSign(sign);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   // 读取数据
+   o.unserialize(view);
+   // 释放数据
+   view.dispose();
+}
+
+//==========================================================
 // <T>将数据内容序列化到输出流中。</T>
 //
 // @method
@@ -151,6 +175,27 @@ MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, 
    var o = this;
    // 反序列化数据
    var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   // 读取数据
+   o.serialize(view);
+   // 释放数据
+   view.dispose();
+}
+
+//==========================================================
+// <T>将数据内容序列化到加密缓冲中。</T>
+//
+// @method
+// @param sign:Boolean 签名
+// @param buffer:ArrayBuffer 缓冲
+// @param endianCd:Boolean 编码
+//==========================================================
+MO.MPersistence_serializeEncryptedBuffer = function MPersistence_serializeEncryptedBuffer(sign, buffer, endianCd){
+   var o = this;
+   // 反序列化数据
+   var view = MO.Class.create(MO.FEncryptedView);
+   view.setSign(sign);
    view.setEndianCd(endianCd);
    view.link(buffer);
    // 读取数据

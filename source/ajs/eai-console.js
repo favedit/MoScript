@@ -90,15 +90,15 @@ MO.FEaiFinancialMarketerDynamic_dispose = function FEaiFinancialMarketerDynamic_
 }
 MO.FEaiLogic = function FEaiLogic(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._code          = null;
-   o._parameters    = null;
-   o._urlParameters = null;
-   o.construct      = MO.FEaiLogic_construct;
-   o.makeUrl        = MO.FEaiLogic_makeUrl;
+   o._code             = null;
+   o._parameters       = null;
+   o._urlParameters    = null;
+   o.construct         = MO.FEaiLogic_construct;
+   o.makeUrl           = MO.FEaiLogic_makeUrl;
    o.prepareParemeters = MO.FEaiLogic_prepareParemeters;
-   o.send           = MO.FEaiLogic_send;
-   o.sendService    = MO.FEaiLogic_sendService;
-   o.dispose        = MO.FEaiLogic_dispose;
+   o.send              = MO.FEaiLogic_send;
+   o.sendService       = MO.FEaiLogic_sendService;
+   o.dispose           = MO.FEaiLogic_dispose;
    return o;
 }
 MO.FEaiLogic_construct = function FEaiLogic_construct(){
@@ -165,6 +165,7 @@ MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner
    }
    var connection = MO.Console.find(MO.FHttpConsole).alloc();
    connection.setAsynchronous(true);
+   connection.attributes().set('sign', sign);
    connection.addLoadListener(owner, callback);
    connection.send(url);
 }

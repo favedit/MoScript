@@ -940,15 +940,15 @@ MO.FEaiFinancialMarketerDynamic_dispose = function FEaiFinancialMarketerDynamic_
 }
 MO.FEaiLogic = function FEaiLogic(o){
    o = MO.Class.inherits(this, o, MO.FObject);
-   o._code          = null;
-   o._parameters    = null;
-   o._urlParameters = null;
-   o.construct      = MO.FEaiLogic_construct;
-   o.makeUrl        = MO.FEaiLogic_makeUrl;
+   o._code             = null;
+   o._parameters       = null;
+   o._urlParameters    = null;
+   o.construct         = MO.FEaiLogic_construct;
+   o.makeUrl           = MO.FEaiLogic_makeUrl;
    o.prepareParemeters = MO.FEaiLogic_prepareParemeters;
-   o.send           = MO.FEaiLogic_send;
-   o.sendService    = MO.FEaiLogic_sendService;
-   o.dispose        = MO.FEaiLogic_dispose;
+   o.send              = MO.FEaiLogic_send;
+   o.sendService       = MO.FEaiLogic_sendService;
+   o.dispose           = MO.FEaiLogic_dispose;
    return o;
 }
 MO.FEaiLogic_construct = function FEaiLogic_construct(){
@@ -1015,6 +1015,7 @@ MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner
    }
    var connection = MO.Console.find(MO.FHttpConsole).alloc();
    connection.setAsynchronous(true);
+   connection.attributes().set('sign', sign);
    connection.addLoadListener(owner, callback);
    connection.send(url);
 }
@@ -6738,7 +6739,7 @@ MO.FEaiChartCustomerProcessor_onDynamicData = function FEaiChartCustomerProcesso
    var o = this;
    var content = event.content;
    var dynamicInfo = o._dynamicInfo;
-   dynamicInfo.unserializeBuffer(event.content, true);
+   dynamicInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    var rankUnits = o._rankUnits;
    rankUnits.assign(dynamicInfo.rankUnits());
    var units = o._units;
@@ -7462,7 +7463,7 @@ MO.FEaiChartCustomerTimeline_sync = function FEaiChartCustomerTimeline_sync() {
 }
 MO.FEaiChartCustomerTimeline_on24HDataFetch = function FEaiChartCustomerTimeline_on24HDataFetch(event) {
    var o = this;
-   o._trendInfo.unserializeBuffer(event.content, true);
+   o._trendInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    o.dirty();
 }
 MO.FEaiChartCustomerTimeline_oeUpdate = function FEaiChartCustomerTimeline_oeUpdate(event) {
@@ -7669,7 +7670,7 @@ MO.FEaiChartMarketerDynamicRankUnit = function FEaiChartMarketerDynamicRankUnit(
    o._netinvestmentTotal = MO.Class.register(o, [new MO.AGetter('_netinvestmentTotal'), new MO.APersistence('_netinvestmentTotal', MO.EDataType.Double)]);
    o._interestTotal      = MO.Class.register(o, [new MO.AGetter('_interestTotal'), new MO.APersistence('_interestTotal', MO.EDataType.Double)]);
    o._performanceTotal   = MO.Class.register(o, [new MO.AGetter('_performanceTotal'), new MO.APersistence('_performanceTotal', MO.EDataType.Double)]);
-   o._customerRegister   = MO.Class.register(o, [new MO.AGetter('_customerRegister'), new MO.APersistence('_customerRegister', MO.EDataType.Int32)]);
+   o._customerCount      = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Int32)]);
    o._customerTotal      = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Int32)]);
    return o;
 }
@@ -7727,9 +7728,8 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
 }
 MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcessor_onDynamicData(event){
    var o = this;
-   var content = event.content;
    var dynamicInfo = o._dynamicInfo;
-   dynamicInfo.unserializeBuffer(event.content, true);
+   dynamicInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    var rankUnits = o._rankUnits;
    rankUnits.assign(dynamicInfo.rankUnits());
    var units = o._units;
@@ -8530,7 +8530,7 @@ MO.FEaiChartMarketerTimeline_sync = function FEaiChartMarketerTimeline_sync() {
 }
 MO.FEaiChartMarketerTimeline_on24HDataFetch = function FEaiChartMarketerTimeline_on24HDataFetch(event) {
    var o = this;
-   o._trendInfo.unserializeBuffer(event.content, true);
+   o._trendInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    o.dirty();
 }
 MO.FEaiChartMarketerTimeline_oeUpdate = function FEaiChartMarketerTimeline_oeUpdate(event) {

@@ -83,7 +83,7 @@ MO.FEaiChartCustomerTimeline_sync = function FEaiChartCustomerTimeline_sync() {
 MO.FEaiChartCustomerTimeline_on24HDataFetch = function FEaiChartCustomerTimeline_on24HDataFetch(event) {
    var o = this;
    // 读取数据
-   o._trendInfo.unserializeBuffer(event.content, true);
+   o._trendInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    // 脏处理
    o.dirty();
 }

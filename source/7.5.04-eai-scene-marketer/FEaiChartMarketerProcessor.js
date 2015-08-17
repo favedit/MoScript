@@ -73,10 +73,9 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
 //==========================================================
 MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcessor_onDynamicData(event){
    var o = this;
-   var content = event.content;
    // 读取数据
    var dynamicInfo = o._dynamicInfo;
-   dynamicInfo.unserializeBuffer(event.content, true);
+   dynamicInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    // 计算刷新间隔
    var rankUnits = o._rankUnits;
    rankUnits.assign(dynamicInfo.rankUnits());

@@ -702,6 +702,426 @@ MO.MDataView_setDouble = function MDataView_setDouble(p, v){
    var o = this;
    o._viewer.setDouble(p, v, o._endianCd);
 }
+MO.MEncryptedStream = function MEncryptedStream(o){
+   o = MO.Class.inherits(this, o, MO.MDataStream);
+   o._sign        = null;
+   o._signLength  = null;
+   o._data        = null;
+   o._dataViewer  = null;
+   o.testString   = MO.MEncryptedStream_testString;
+   o.readBoolean  = MO.MEncryptedStream_readBoolean;
+   o.readInt8     = MO.MEncryptedStream_readInt8;
+   o.readInt16    = MO.MEncryptedStream_readInt16;
+   o.readInt32    = MO.MEncryptedStream_readInt32;
+   o.readInt64    = MO.MEncryptedStream_readInt64;
+   o.readUint8    = MO.MEncryptedStream_readUint8;
+   o.readUint16   = MO.MEncryptedStream_readUint16;
+   o.readUint32   = MO.MEncryptedStream_readUint32;
+   o.readUint64   = MO.MEncryptedStream_readUint64;
+   o.readFloat    = MO.MEncryptedStream_readFloat;
+   o.readDouble   = MO.MEncryptedStream_readDouble;
+   o.readString   = MO.MEncryptedStream_readString;
+   o.readBytes    = MO.MEncryptedStream_readBytes;
+   o.readData     = MO.MEncryptedStream_readData;
+   o.writeBoolean = MO.MEncryptedStream_writeBoolean;
+   o.writeInt8    = MO.MEncryptedStream_writeInt8;
+   o.writeInt16   = MO.MEncryptedStream_writeInt16;
+   o.writeInt32   = MO.MEncryptedStream_writeInt32;
+   o.writeInt64   = MO.MEncryptedStream_writeInt64;
+   o.writeUint8   = MO.MEncryptedStream_writeUint8;
+   o.writeUint16  = MO.MEncryptedStream_writeUint16;
+   o.writeUint32  = MO.MEncryptedStream_writeUint32;
+   o.writeUint64  = MO.MEncryptedStream_writeUint64;
+   o.writeFloat   = MO.MEncryptedStream_writeFloat;
+   o.writeDouble  = MO.MEncryptedStream_writeDouble;
+   o.writeString  = MO.MEncryptedStream_writeString;
+   o.writeBytes   = MO.MEncryptedStream_writeBytes;
+   o.writeData    = MO.MEncryptedStream_writeData;
+   return o;
+}
+MO.MEncryptedStream_testString = function MEncryptedStream_testString(){
+   var o = this;
+   debugger
+   var position = o._position;
+   var length = o._viewer.getUint16(position, o._endianCd);
+   position += 2;
+   var result = new MO.TString();
+   for(var i = 0; i < length; i++){
+      var value = o._viewer.getUint16(position, o._endianCd);
+      position += 2;
+      result.push(String.fromCharCode(value));
+   }
+   return result.flush();
+}
+MO.MEncryptedStream_readBoolean = function MEncryptedStream_readBoolean(){
+   var o = this;
+   var value = o._viewer.getInt8(o._position, o._endianCd) ^ o._sign[0];
+   o._position++;
+   return value > 0;
+}
+MO.MEncryptedStream_readInt8 = function MEncryptedStream_readInt8(){
+   var o = this;
+   var value = o._viewer.getInt8(o._position, o._endianCd) ^ o._sign[0];
+   o._position++;
+   return value;
+}
+MO.MEncryptedStream_readInt16 = function MEncryptedStream_readInt16(){
+   var o = this;
+   var sign = o._sign;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var dataViewer = o._dataViewer;
+   for(var i = 0; i < 2; i++){
+      dataViewer.setUint8(i, viewer.getUint8(o._position + i, endianCd) ^ sign[i], endianCd);
+   }
+   var value = dataViewer.getInt16(0, endianCd);
+   o._position += 2;
+   return value;
+}
+MO.MEncryptedStream_readInt32 = function MEncryptedStream_readInt32(){
+   var o = this;
+   var sign = o._sign;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var dataViewer = o._dataViewer;
+   for(var i = 0; i < 4; i++){
+      dataViewer.setUint8(i, viewer.getUint8(o._position + i, endianCd) ^ sign[i], endianCd);
+   }
+   var value = dataViewer.getInt32(0, endianCd);
+   o._position += 4;
+   return value;
+}
+MO.MEncryptedStream_readInt64 = function MEncryptedStream_readInt64(){
+   var o = this;
+   var sign = o._sign;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var dataViewer = o._dataViewer;
+   for(var i = 0; i < 8; i++){
+      dataViewer.setUint8(i, viewer.getUint8(o._position + i, endianCd) ^ sign[i], endianCd);
+   }
+   var value = dataViewer.getInt64(0, endianCd);
+   o._position += 8;
+   return value;
+}
+MO.MEncryptedStream_readUint8 = function MEncryptedStream_readUint8(){
+   var o = this;
+   var value = o._viewer.getUint8(o._position, o._endianCd) ^ o._sign[0];
+   o._position += 1;
+   return value;
+}
+MO.MEncryptedStream_readUint16 = function MEncryptedStream_readUint16(){
+   var o = this;
+   var sign = o._sign;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var dataViewer = o._dataViewer;
+   for(var i = 0; i < 2; i++){
+      dataViewer.setUint8(i, viewer.getUint8(o._position + i, endianCd) ^ sign[i], endianCd);
+   }
+   var value = dataViewer.getUint16(0, endianCd);
+   o._position += 2;
+   return value;
+}
+MO.MEncryptedStream_readUint32 = function MEncryptedStream_readUint32(){
+   var o = this;
+   var sign = o._sign;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var dataViewer = o._dataViewer;
+   for(var i = 0; i < 4; i++){
+      dataViewer.setUint8(i, viewer.getUint8(o._position + i, endianCd) ^ sign[i], endianCd);
+   }
+   var value = dataViewer.getUint32(0, endianCd);
+   o._position += 4;
+   return value;
+}
+MO.MEncryptedStream_readUint64 = function MEncryptedStream_readUint64(){
+   var o = this;
+   var sign = o._sign;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var dataViewer = o._dataViewer;
+   for(var i = 0; i < 8; i++){
+      dataViewer.setUint8(i, viewer.getUint8(o._position + i, endianCd) ^ sign[i], endianCd);
+   }
+   var value = dataViewer.getUint64(0, endianCd);
+   o._position += 8;
+   return value;
+}
+MO.MEncryptedStream_readFloat = function MEncryptedStream_readFloat(){
+   var o = this;
+   var sign = o._sign;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var dataViewer = o._dataViewer;
+   for(var i = 0; i < 4; i++){
+      dataViewer.setUint8(i, viewer.getUint8(o._position + i, endianCd) ^ sign[i], endianCd);
+   }
+   var value = dataViewer.getFloat32(0, endianCd);
+   o._position += 4;
+   return value;
+}
+MO.MEncryptedStream_readDouble = function MEncryptedStream_readDouble(){
+   var o = this;
+   var sign = o._sign;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var dataViewer = o._dataViewer;
+   for(var i = 0; i < 8; i++){
+      dataViewer.setUint8(i, viewer.getUint8(o._position + i, endianCd) ^ sign[i], endianCd);
+   }
+   var value = dataViewer.getFloat64(0, endianCd);
+   o._position += 8;
+   return value;
+}
+MO.MEncryptedStream_readString = function MEncryptedStream_readString(){
+   var o = this;
+   var sign = o._sign;
+   var signLength = o._signLength;
+   var dataViewer = o._dataViewer;
+   var viewer = o._viewer;
+   var endianCd = o._endianCd;
+   var length = o.readUint16();
+   if(length == 0){
+      return '';
+   }
+   var dataBuffer = new Uint8Array(o._data);
+   var buffer = new Uint8Array(o._memory);
+   var position = o._position;
+   var value = new MO.TString();
+   for(var i = 0; i < length; i++){
+      var index = i << 1;
+      dataViewer.setUint8(0, viewer.getUint8(position    , endianCd) ^ sign[(index    ) % signLength], endianCd);
+      dataViewer.setUint8(1, viewer.getUint8(position + 1, endianCd) ^ sign[(index + 1) % signLength], endianCd);
+      var character = dataViewer.getUint16(0, endianCd);
+      value.push(String.fromCharCode(character));
+      position += 2;
+   }
+   o._position = position;
+   return value.flush();
+}
+MO.MEncryptedStream_readBytes = function MEncryptedStream_readBytes(data, offset, length){
+   var o = this;
+   var viewer = o._viewer;
+   if(length <= 0){
+      return;
+   }
+   if(offset != 0){
+      throw new MO.TError(o, 'Unsupport.');
+   }
+   var position = o._position;
+   var endianCd = o._endianCd;
+   if(length % 8 == 0){
+      var array = new Float64Array(data);
+      var count = length >> 3;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getFloat64(position, endianCd);
+         position += 8;
+      }
+      o._position = position;
+      return;
+   }
+   if(length % 4 == 0){
+      var array = new Uint32Array(data);
+      var count = length >> 2;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint32(position, endianCd);
+         position += 4;
+      }
+      o._position = position;
+      return;
+   }
+   if(length % 2 == 0){
+      var array = new Uint16Array(data);
+      var count = length >> 1;
+      for(var i = 0; i < count; i++){
+         array[i] = viewer.getUint16(position, endianCd);
+         position += 2;
+      }
+      o._position = position;
+      return;
+   }
+   var array = new Uint8Array(data);
+   for(var i = 0; i < length; i++){
+      array[i] = viewer.getUint8(position++, endianCd);
+   }
+   o._position = position;
+}
+MO.MEncryptedStream_readData = function MEncryptedStream_readData(dataCd){
+   var o = this;
+   switch(dataCd){
+      case MO.EDataType.Int8:
+         return o.readInt8();
+      case MO.EDataType.Int16:
+         return o.readInt16();
+      case MO.EDataType.Int32:
+         return o.readInt32();
+      case MO.EDataType.Int64:
+         return o.readInt64();
+      case MO.EDataType.Uint8:
+         return o.readUint8();
+      case MO.EDataType.Uint16:
+         return o.readUint16();
+      case MO.EDataType.Uint32:
+         return o.readUint32();
+      case MO.EDataType.Uint64:
+         return o.readUint64();
+      case MO.EDataType.Float32:
+         return o.readFloat();
+      case MO.EDataType.Float64:
+         return o.readDouble();
+      case MO.EDataType.String:
+         return o.readString();
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
+}
+MO.MEncryptedStream_writeBoolean = function MEncryptedStream_writeBoolean(value){
+   var o = this;
+   o._viewer.setInt8(o._position, (value > 0) ? 1 : 0, o._endianCd);
+   o._position++;
+}
+MO.MEncryptedStream_writeInt8 = function MEncryptedStream_writeInt8(value){
+   var o = this;
+   o._viewer.setInt8(o._position, value, o._endianCd);
+   o._position++;
+}
+MO.MEncryptedStream_writeInt16 = function MEncryptedStream_writeInt16(value){
+   var o = this;
+   o._viewer.setInt16(o._position, value, o._endianCd);
+   o._position += 2;
+}
+MO.MEncryptedStream_writeInt32 = function MEncryptedStream_writeInt32(value){
+   var o = this;
+   o._viewer.setInt32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+MO.MEncryptedStream_writeInt64 = function MEncryptedStream_writeInt64(value){
+   var o = this;
+   o._viewer.setInt64(o._position, value, o._endianCd);
+   o._position += 8;
+}
+MO.MEncryptedStream_writeUint8 = function MEncryptedStream_writeUint8(value){
+   var o = this;
+   o._viewer.setUint8(o._position, value, o._endianCd);
+   o._position += 1;
+}
+MO.MEncryptedStream_writeUint16 = function MEncryptedStream_writeUint16(value){
+   var o = this;
+   o._viewer.setUint16(o._position, value, o._endianCd);
+   o._position += 2;
+}
+MO.MEncryptedStream_writeUint32 = function MEncryptedStream_writeUint32(value){
+   var o = this;
+   o._viewer.setUint32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+MO.MEncryptedStream_writeUint64 = function MEncryptedStream_writeUint64(value){
+   var o = this;
+   o._viewer.setUint64(o._position, value, o._endianCd);
+   o._position += 8;
+}
+MO.MEncryptedStream_writeFloat = function MEncryptedStream_writeFloat(value){
+   var o = this;
+   o._viewer.setFloat32(o._position, value, o._endianCd);
+   o._position += 4;
+}
+MO.MEncryptedStream_writeDouble = function MEncryptedStream_writeDouble(value){
+   var o = this;
+   o._viewer.setDouble(o._position, value, o._endianCd);
+   o._position += 8;
+}
+MO.MEncryptedStream_writeString = function MEncryptedStream_writeString(value){
+   var o = this;
+   var sign = o._sign;
+   var signLength = o._signLength;
+   var viewer = o._viewer;
+   var length = v.length;
+   var endianCd = o._endianCd;
+   var position = o._position;
+   viewer.setUint16(position, length ^ sign[0], endianCd);
+   position += 2;
+   for(var i = 0; i < length; i++){
+      viewer.setUint16(position, value.charCodeAt(i) ^ sign[i % signLength], endianCd);
+      position += 2;
+   }
+   o._position = position;
+}
+MO.MEncryptedStream_writeBytes = function MEncryptedStream_writeBytes(data, offset, length){
+   var o = this;
+   var viewer = o._viewer;
+   if(length <= 0){
+      return;
+   }
+   if(offset != 0){
+      throw new MO.TError('Unsupport.');
+   }
+   var position = o._position;
+   var endianCd = o._endianCd;
+   if(length % 8 == 0){
+      var array = new Float64Array(data);
+      var count = length >> 3;
+      for(var i = 0; i < count; i++){
+         viewer.setFloat64(position, array[i], endianCd);
+         position += 8;
+      }
+      o._position = position;
+      return;
+   }
+   if(length % 4 == 0){
+      var array = new Uint32Array(data);
+      var count = length >> 2;
+      for(var i = 0; i < count; i++){
+         viewer.setUint32(position, array[i], endianCd);
+         position += 4;
+      }
+      o._position = position;
+      return;
+   }
+   if(length % 2 == 0){
+      var array = new Uint16Array(data);
+      var count = length >> 1;
+      for(var i = 0; i < count; i++){
+         viewer.setUint16(position, array[i], endianCd);
+         position += 2;
+      }
+      o._position = position;
+      return;
+   }
+   var array = new Uint8Array(data);
+   for(var i = 0; i < length; i++){
+      viewer.setUint8(position++, array[i], endianCd);
+   }
+   o._position = position;
+}
+MO.MEncryptedStream_writeData = function MEncryptedStream_writeData(dataCd, value){
+   var o = this;
+   switch(dataCd){
+      case MO.EDataType.Int8:
+         return o.writeInt8(value);
+      case MO.EDataType.Int16:
+         return o.writeInt16(value);
+      case MO.EDataType.Int32:
+         return o.writeInt32(value);
+      case MO.EDataType.Int64:
+         return o.writeInt64(value);
+      case MO.EDataType.Uint8:
+         return o.writeUint8(value);
+      case MO.EDataType.Uint16:
+         return o.writeUint16(value);
+      case MO.EDataType.Uint32:
+         return o.writeUint32(value);
+      case MO.EDataType.Uint64:
+         return o.writeUint64(value);
+      case MO.EDataType.Float32:
+         return o.writeFloat(value);
+      case MO.EDataType.Float64:
+         return o.writeDouble(value);
+      case MO.EDataType.String:
+         return o.writeString(value);
+   }
+   throw new TError(o, 'Unknown data cd. (data_cd={1})', dataCd);
+}
 MO.MListenerLoad = function MListenerLoad(o){
    o = MO.Class.inherits(this, o, MO.MListener);
    o.addLoadListener     = MO.MListenerLoad_addLoadListener;
@@ -810,10 +1230,12 @@ MO.MParent_dispose = function MParent_dispose(){
 }
 MO.MPersistence = function MPersistence(o){
    o = MO.Class.inherits(this, o);
-   o.unserialize       = MO.MPersistence_unserialize;
-   o.unserializeBuffer = MO.MPersistence_unserializeBuffer;
-   o.serialize         = MO.MPersistence_serialize;
-   o.serializeBuffer   = MO.MPersistence_serializeBuffer;
+   o.unserialize                = MO.MPersistence_unserialize;
+   o.unserializeBuffer          = MO.MPersistence_unserializeBuffer;
+   o.unserializeEncryptedBuffer = MO.MPersistence_unserializeEncryptedBuffer;
+   o.serialize                  = MO.MPersistence_serialize;
+   o.serializeBuffer            = MO.MPersistence_serializeBuffer;
+   o.serializeEncryptedBuffer   = MO.MPersistence_serializeEncryptedBuffer;
    return o;
 }
 MO.MPersistence_unserialize = function MPersistence_unserialize(input){
@@ -874,6 +1296,15 @@ MO.MPersistence_unserializeBuffer = function MPersistence_unserializeBuffer(buff
    o.unserialize(view);
    view.dispose();
 }
+MO.MPersistence_unserializeEncryptedBuffer = function MPersistence_unserializeEncryptedBuffer(sign, buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FEncryptedView);
+   view.setSign(sign);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
 MO.MPersistence_serialize = function MPersistence_serialize(output){
    var o = this;
    var clazz = MO.Class.find(o.constructor);
@@ -909,6 +1340,15 @@ MO.MPersistence_serialize = function MPersistence_serialize(output){
 MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.serialize(view);
+   view.dispose();
+}
+MO.MPersistence_serializeEncryptedBuffer = function MPersistence_serializeEncryptedBuffer(sign, buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FEncryptedView);
+   view.setSign(sign);
    view.setEndianCd(endianCd);
    view.link(buffer);
    o.serialize(view);
@@ -1270,6 +1710,48 @@ MO.FDataView_link = function FDataView_link(data){
 }
 MO.FDataView_dispose = function FDataView_dispose(){
    var o = this;
+   o._viewer = null;
+   o._memory = null;
+   o.__base.FObject.dispose.call(o);
+}
+MO.FEncryptedView = function FEncryptedView(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MDataView, MO.MEncryptedStream);
+   o.construct = MO.FEncryptedView_construct;
+   o.setSign   = MO.FEncryptedView_setSign;
+   o.link      = MO.FEncryptedView_link;
+   o.dispose   = MO.FEncryptedView_dispose;
+   return o;
+}
+MO.FEncryptedView_construct = function FEncryptedView_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._data = new ArrayBuffer(8);
+   o._dataViewer = new DataView(o._data);
+}
+MO.FEncryptedView_setSign = function FEncryptedView_setSign(value){
+   var o = this;
+   var sign = o._sign = new Uint8Array(8);
+   sign[0] = (value      ) & 0xFF;
+   sign[1] = (value >>  8) & 0xFF;
+   sign[2] = (value >> 16) & 0xFF;
+   sign[3] = (value >> 24) & 0xFF;
+   sign[4] = (value >> 24) & 0xFF;
+   sign[5] = (value >> 16) & 0xFF;
+   sign[6] = (value >>  8) & 0xFF;
+   sign[7] = (value      ) & 0xFF;
+   o._signLength = sign.length;
+}
+MO.FEncryptedView_link = function FEncryptedView_link(data){
+   var o = this;
+   o._memory = data;
+   o._viewer = new DataView(data);
+}
+MO.FEncryptedView_dispose = function FEncryptedView_dispose(){
+   var o = this;
+   o._sign = null;
+   o._data = null;
+   o._dataViewer.buffer = null;
+   o._dataViewer = null;
    o._viewer = null;
    o._memory = null;
    o.__base.FObject.dispose.call(o);

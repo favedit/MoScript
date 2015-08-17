@@ -15,6 +15,7 @@ MO.FHttpConnection = function FHttpConnection(o){
    o._url                 = null;
    // @attribute
    o._heads               = MO.Class.register(o, new MO.AGetter('_heads'));
+   o._attributes          = MO.Class.register(o, new MO.AGetter('_attributes'));
    o._input               = null;
    o._inputData           = MO.Class.register(o, new MO.AGetSet('_inputData'));
    o._output              = null;
@@ -105,6 +106,14 @@ MO.FHttpConnection_onConnectionComplete = function FHttpConnection_onConnectionC
    var event = o._event;
    event.connection = o;
    event.content = o._outputData;
+   // 设置属性
+   var attributes = o._attributes;
+   var count = attributes.count();
+   for(var i = 0; i < count; i++){
+      var name = attributes.name(i);
+      var value = attributes.value(i);
+      event[name] = value;
+   }
    o.processLoadListener(event);
    // 完成处理
    o.processCompleteListener(event);
@@ -120,6 +129,7 @@ MO.FHttpConnection_construct = function FHttpConnection_construct(){
    o.__base.FObject.construct.call(o);
    // 设置属性
    o._heads = new MO.TAttributes();
+   o._attributes = new MO.TAttributes();
    o._event = new MO.SEvent();
    // 创建链接
    var handle = o._handle = MO.Window.Xml.createConnection();
@@ -228,6 +238,8 @@ MO.FHttpConnection_reset = function FHttpConnection_reset(){
    var o = this;
    // 重置链接
    o._handle.abort()
+   // 清空属性
+   o._attributes.clear();
    // 清空监听器
    o.clearAllListeners();
 }
@@ -323,6 +335,7 @@ MO.FHttpConnection_dispose = function FHttpConnection_dispose(){
    var o = this;
    // 释放属性
    o._heads = MO.Lang.Object.dispose(o._heads);
+   o._attributes = MO.Lang.Object.dispose(o._attributes);
    o._event = MO.Lang.Object.dispose(o._event);
    o._input = null;
    o._inputData = null;

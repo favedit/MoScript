@@ -2364,7 +2364,7 @@ MO.FObject_toString = function FObject_toString(){
 }
 MO.FObject_dispose = function FObject_dispose(){
    var o = this;
-   MO.RObject.free(o);
+   MO.Lang.Object.free(o);
    o.__dispose = true;
 }
 MO.FObject_innerDump = function FObject_innerDump(dump, level){

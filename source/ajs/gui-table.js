@@ -125,12 +125,12 @@ MO.FGuiGridCellDate_dispose = function FGuiGridCellDate_dispose(){
 }
 MO.FGuiGridCellPicture = function FGuiGridCellPicture(o) {
    o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellPicture);
-   o._image    = null;
+   o._image = null;
    o.construct = MO.FGuiGridCellPicture_construct;
    o.testReady = MO.FGuiGridCellPicture_testReady;
-   o.setValue  = MO.FGuiGridCellPicture_setValue;
-   o.draw      = MO.FGuiGridCellPicture_draw;
-   o.dispose   = MO.FGuiGridCellPicture_dispose;
+   o.setValue = MO.FGuiGridCellPicture_setValue;
+   o.draw = MO.FGuiGridCellPicture_draw;
+   o.dispose = MO.FGuiGridCellPicture_dispose;
    return o;
 }
 MO.FGuiGridCellPicture_construct = function FGuiGridCellPicture_construct() {
@@ -138,10 +138,10 @@ MO.FGuiGridCellPicture_construct = function FGuiGridCellPicture_construct() {
    o.__base.FGuiGridCell.construct.call(o);
    o.__base.MUiGridCellPicture.construct.call(o);
 }
-MO.FGuiGridCellPicture_testReady = function FGuiGridCellPicture_testReady(){
+MO.FGuiGridCellPicture_testReady = function FGuiGridCellPicture_testReady() {
    var o = this;
    var image = o._image;
-   if(image){
+   if (image) {
       return image.testReady();
    }
    return true;
@@ -152,15 +152,21 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    var rectangle = context.rectangle;
    var imageurl = o.text();
    var image = o._image;
-   if(!image){
+   if (!image) {
       return;
    }
    var imageSize = image.size();
    var imageWidth = imageSize.width;
    var imageHeight = imageSize.height;
+   var rectangleHeight = rectangle.height;
    var align = o._column._align;
    var imageX = 0;
-   var imageY = (rectangle.height / 2) - (imageHeight / 2) + rectangle.top;
+   var imageY = rectangle.top;
+   if (rectangleHeight >= imageHeight) {
+      imageY = (rectangleHeight / 2) - (imageHeight / 2) + imageY + 3;
+   } else {
+      imageY = imageY - (imageHeight - rectangleHeight);
+   }
    if (align == MO.EUiAlign.Left) {
       imageX = rectangle.left;
    } else if (align == MO.EUiAlign.Center) {
@@ -170,13 +176,13 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    }
    graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
 }
-MO.FGuiGridCellPicture_setValue = function FGuiGridCellPicture_setValue(value){
+MO.FGuiGridCellPicture_setValue = function FGuiGridCellPicture_setValue(value) {
    var o = this;
    o.__base.FGuiGridCell.setValue.call(o, value);
    var url = o.text();
-   if(MO.Lang.String.isEmpty(url)){
+   if (MO.Lang.String.isEmpty(url)) {
       o._image = null;
-   }else{
+   } else {
       o._image = MO.Console.find(MO.FImageConsole).load(url);
    }
 }

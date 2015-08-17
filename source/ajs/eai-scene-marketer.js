@@ -25,7 +25,7 @@ MO.FEaiChartMarketerDynamicRankUnit = function FEaiChartMarketerDynamicRankUnit(
    o._netinvestmentTotal = MO.Class.register(o, [new MO.AGetter('_netinvestmentTotal'), new MO.APersistence('_netinvestmentTotal', MO.EDataType.Double)]);
    o._interestTotal      = MO.Class.register(o, [new MO.AGetter('_interestTotal'), new MO.APersistence('_interestTotal', MO.EDataType.Double)]);
    o._performanceTotal   = MO.Class.register(o, [new MO.AGetter('_performanceTotal'), new MO.APersistence('_performanceTotal', MO.EDataType.Double)]);
-   o._customerRegister   = MO.Class.register(o, [new MO.AGetter('_customerRegister'), new MO.APersistence('_customerRegister', MO.EDataType.Int32)]);
+   o._customerCount      = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Int32)]);
    o._customerTotal      = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Int32)]);
    return o;
 }
@@ -83,9 +83,8 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
 }
 MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcessor_onDynamicData(event){
    var o = this;
-   var content = event.content;
    var dynamicInfo = o._dynamicInfo;
-   dynamicInfo.unserializeBuffer(event.content, true);
+   dynamicInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    var rankUnits = o._rankUnits;
    rankUnits.assign(dynamicInfo.rankUnits());
    var units = o._units;
@@ -886,7 +885,7 @@ MO.FEaiChartMarketerTimeline_sync = function FEaiChartMarketerTimeline_sync() {
 }
 MO.FEaiChartMarketerTimeline_on24HDataFetch = function FEaiChartMarketerTimeline_on24HDataFetch(event) {
    var o = this;
-   o._trendInfo.unserializeBuffer(event.content, true);
+   o._trendInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
    o.dirty();
 }
 MO.FEaiChartMarketerTimeline_oeUpdate = function FEaiChartMarketerTimeline_oeUpdate(event) {
