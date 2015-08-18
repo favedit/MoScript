@@ -316,6 +316,7 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o.doCustomerTrend      = MO.FEaiLogicStatistics_doCustomerTrend;
    o.doMarketerDynamic    = MO.FEaiLogicStatistics_doMarketerDynamic;
    o.doMarketerTrend      = MO.FEaiLogicStatistics_doMarketerTrend;
+   o.doPerformenceDynamic    = MO.FEaiLogicStatistics_doPerformenceDynamic;
    o.doDepartmentDynamic  = MO.FEaiLogicStatistics_doDepartmentDynamic;
    o.doDepartmentTrend    = MO.FEaiLogicStatistics_doDepartmentTrend;
    return o;
@@ -373,6 +374,13 @@ MO.FEaiLogicStatistics_doMarketerTrend = function FEaiLogicStatistics_doMarketer
    parameters.set('begin', startDate);
    parameters.set('end', endDate);
    o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=trend', parameters, owner, callback);
+}
+MO.FEaiLogicStatistics_doPerformenceDynamic = function FEaiLogicStatistics_doPerformenceDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=dynamic', parameters, owner, callback);
 }
 MO.FEaiLogicStatistics_doDepartmentDynamic = function FEaiLogicStatistics_doDepartmentDynamic(owner, callback, startDate, endDate){
    var o = this;

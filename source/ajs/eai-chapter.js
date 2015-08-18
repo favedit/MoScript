@@ -38,6 +38,9 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    var scene = o._sceneMarketer = MO.Class.create(MO.FEaiChartMarketerScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
+   var scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
+   scene.linkGraphicContext(o);
+   o.registerScene(scene);
    var scene = o._sceneDepartment = MO.Class.create(MO.FEaiChartDepartmentScene);
    scene.linkGraphicContext(o);
    o.registerScene(scene);
