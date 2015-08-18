@@ -47,7 +47,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiApplication_processResize = function FEaiApplication_processResize(){
+MO.FEaiApplication_processResize = function FEaiApplication_processResize(event){
    var o = this;
    o.__base.FApplication.processResize.call(o, event);
    // 处理事件

@@ -477,13 +477,13 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    var unitTextX;
    if (o._alignCd != MO.EUiAlign.Right) {
       baseX = rectangle.left;
-      unitTextX = baseX + 4;
+      unitTextX = baseX + 2;
    } else {
       baseX = rectangle.right() - o._unitFontW + (o._textFontW - o._unitFontW) - 65;
-      unitTextX = baseX;
+      unitTextX = baseX + 2;
    }
    var baseY = rectangle.top + rectangle.height;
-   var unitTextY = baseY - 2;
+   var unitTextY = baseY - 3;
    var drawedText = '';
    var passedTick = MO.Timer.current() - o._startTick;
    if (passedTick > o._rollingDuration || o._noRolling) {

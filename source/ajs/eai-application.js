@@ -21,7 +21,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
    return true;
 }
-MO.FEaiApplication_processResize = function FEaiApplication_processResize(){
+MO.FEaiApplication_processResize = function FEaiApplication_processResize(event){
    var o = this;
    o.__base.FApplication.processResize.call(o, event);
    var desktop = o._desktop;
