@@ -1551,7 +1551,7 @@ MO.FGuiButton_onPaintBegin = function FGuiButton_onPaintBegin(event){
 }
 MO.FGuiLabel = function FGuiLabel(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o._alignCd     = MO.Class.register(o, new MO.AGetter('_alignCd'), MO.EUiAlign.Left);
+   o._alignCd     = MO.Class.register(o, [new MO.APtyString('_alignCd'), new MO.AGetter('_alignCd')], MO.EUiAlign.Left);
    o.onPaintLabel = MO.FGuiLabel_onPaintLabel;
    o.onPaintBegin = MO.FGuiLabel_onPaintBegin;
    o.setLabel     = MO.FGuiLabel_setLabel;

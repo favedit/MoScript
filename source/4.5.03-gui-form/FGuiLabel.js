@@ -9,7 +9,7 @@ MO.FGuiLabel = function FGuiLabel(o){
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._alignCd     = MO.Class.register(o, new MO.AGetter('_alignCd'), MO.EUiAlign.Left);
+   o._alignCd     = MO.Class.register(o, [new MO.APtyString('_alignCd'), new MO.AGetter('_alignCd')], MO.EUiAlign.Left);
    //..........................................................
    // @event
    o.onPaintLabel = MO.FGuiLabel_onPaintLabel;
