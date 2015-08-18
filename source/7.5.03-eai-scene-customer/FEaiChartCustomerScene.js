@@ -29,8 +29,6 @@ MO.FEaiChartCustomerScene = function FEaiChartCustomerScene(o) {
    o._statusStart = false;
    o._statusLayerCount = 100;
    o._statusLayerLevel = 100;
-   // @attribute
-   o._groundAutioUrl = '{eai.resource}/music/statistics.mp3';
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartCustomerScene_onInvestmentDataChanged;

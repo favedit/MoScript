@@ -27,8 +27,10 @@ RJsLoader = new function RJsLoader(){
 // @param buffer:String 数据内容
 //==========================================================
 function RJsLoader_onFinish(buffer){
+   // 解析字符串
+   var source = MO.Lang.String.decodeUtf(buffer);
    // 解析脚本
-   eval(buffer);
+   eval(source);
    // 设置变量
    top.MO = MO;
    // 回调处理

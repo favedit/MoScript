@@ -1511,7 +1511,6 @@ MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(ca
 }
 MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
    var code = entity.data().code();
-   MO.Assert.debugNotEmpty(code);
    this._citys.set(code, entity);
 }
 MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context){
@@ -1672,7 +1671,6 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
-      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);
@@ -5694,7 +5692,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var systemConsole = MO.Console.find(MO.FEaiLogicConsole).system();
    systemConsole.refresh();
    var audioConsole = MO.Console.find(MO.FAudioConsole);
-   var audio = o._groundAutio = audioConsole.load('{eai.resource}/ground03.mp3');
+   var audio = o._groundAutio = audioConsole.load('{eai.resource}-{device.type}/chart/ground.mp3');
    audio.setLoop(true);
    audio.setVolume(0.2);
    audio.play();
@@ -6913,7 +6911,6 @@ MO.FEaiChartCustomerScene = function FEaiChartCustomerScene(o) {
    o._statusStart = false;
    o._statusLayerCount = 100;
    o._statusLayerLevel = 100;
-   o._groundAutioUrl = '{eai.resource}/music/statistics.mp3';
    o.onInvestmentDataChanged = MO.FEaiChartCustomerScene_onInvestmentDataChanged;
    o.onOperationVisibility = MO.FEaiChartCustomerScene_onOperationVisibility;
    o.onProcessReady = MO.FEaiChartCustomerScene_onProcessReady;
@@ -7929,7 +7926,6 @@ MO.FEaiChartMarketerScene = function FEaiChartMarketerScene(o) {
    o._statusStart = false;
    o._statusLayerCount = 100;
    o._statusLayerLevel = 100;
-   o._groundAutioUrl = '{eai.resource}/music/statistics.mp3';
    o.onInvestmentDataChanged = MO.FEaiChartMarketerScene_onInvestmentDataChanged;
    o.onOperationVisibility = MO.FEaiChartMarketerScene_onOperationVisibility;
    o.onProcessReady = MO.FEaiChartMarketerScene_onProcessReady;
@@ -9674,7 +9670,6 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }else{
       o._calculateRate.set(1, 1);
    }
-   MO.Logger.debug(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    var canvas3d = o._canvas3d;
    if(browser.capability().canvasScale){
       canvas3d.resize(width, height);

@@ -768,7 +768,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var systemConsole = MO.Console.find(MO.FEaiLogicConsole).system();
    systemConsole.refresh();
    var audioConsole = MO.Console.find(MO.FAudioConsole);
-   var audio = o._groundAutio = audioConsole.load('{eai.resource}/ground03.mp3');
+   var audio = o._groundAutio = audioConsole.load('{eai.resource}-{device.type}/chart/ground.mp3');
    audio.setLoop(true);
    audio.setVolume(0.2);
    audio.play();

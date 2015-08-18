@@ -219,7 +219,6 @@ MO.FEaiChartCustomerScene = function FEaiChartCustomerScene(o) {
    o._statusStart = false;
    o._statusLayerCount = 100;
    o._statusLayerLevel = 100;
-   o._groundAutioUrl = '{eai.resource}/music/statistics.mp3';
    o.onInvestmentDataChanged = MO.FEaiChartCustomerScene_onInvestmentDataChanged;
    o.onOperationVisibility = MO.FEaiChartCustomerScene_onOperationVisibility;
    o.onProcessReady = MO.FEaiChartCustomerScene_onProcessReady;

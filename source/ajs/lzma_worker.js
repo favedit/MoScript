@@ -2388,13 +2388,22 @@ var LZMA = (function () {
                 return utf;
             }
             if (j == 65535) {
-                buf.push(String.fromCharCode.apply(String, charCodes));
+                //buf.push(String.fromCharCode.apply(String, charCodes));
+                var charLength = charCodes.length;
+                for(var charIndex = 0; charIndex < charLength; charIndex++){
+                  buf.push(String.fromCharCode(charCodes[charIndex]));
+                }
                 j = -1;
             }
         }
         if (j > 0) {
             charCodes.length = j;
-            buf.push(String.fromCharCode.apply(String, charCodes));
+             var charLength = charCodes.length;
+             for(var charIndex = 0; charIndex < charLength; charIndex++){
+               buf.push(String.fromCharCode(charCodes[charIndex]));
+             }
+            //buf.push(String.fromCharCode.apply(String, charCodes));
+             //buf.push(charCodes.join(''));
         }
         return buf.join("");
     }
@@ -2554,17 +2563,12 @@ var LZMA = (function () {
                     update_progress(1, cbn);
                 }
             }
-            
-            res = decode($toByteArray(this$static.d.output));
-            
+            var res = new Uint8Array($toByteArray(this$static.d.output));
+            // res = decode(data);
             if (on_finish) {
                 on_finish(res);
             } else if (typeof cbn != "undefined") {
-                postMessage({
-                    action: action_decompress,
-                    cbn: cbn,
-                    result: res
-                });
+                postMessage({action: action_decompress, cbn: cbn, result: res});
             }
         }
         

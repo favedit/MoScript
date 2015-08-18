@@ -7,7 +7,8 @@ RJsLoader = new function RJsLoader(){
    return o;
 }
 function RJsLoader_onFinish(buffer){
-   eval(buffer);
+   var source = MO.Lang.String.decodeUtf(buffer);
+   eval(source);
    top.MO = MO;
    RJsLoader._callback();
 }

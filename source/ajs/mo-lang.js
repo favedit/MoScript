@@ -219,6 +219,125 @@ MO.RRuntime.prototype.pairSort = function RArray_pairSort(names, values, offset,
    o.pairSortSub(names, values, begin, end, MO.Runtime.nvl(comparer, o.sortComparerAsc), parameters);
 }
 MO.Runtime = new MO.RRuntime();
+MO.TAttributes = function TAttributes(){
+   var o = this;
+   MO.TDictionary.call(o);
+   o.joinValue  = MO.TAttributes_joinValue;
+   o.join       = MO.TAttributes_join;
+   o.split      = MO.TAttributes_split;
+   o.pack       = MO.TAttributes_pack;
+   o.unpack     = MO.TAttributes_unpack;
+   o.dump       = MO.TAttributes_dump;
+   return o;
+}
+MO.TAttributes_joinValue = function TAttributes_joinValue(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
+      }
+      source.append(o._values[i]);
+   }
+   return source.flush();
+}
+MO.TAttributes_join = function TAttributes_join(name, value){
+   var o = this;
+   var source = new MO.TString();
+   if(!name){
+      name = '=';
+   }
+   if(!value){
+      value = ',';
+   }
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(value);
+      }
+      source.append(o._names[i]);
+      source.append(name);
+      source.append(o._values[i]);
+   }
+   return source.flush();
+}
+MO.TAttributes_split = function TAttributes_split(source, name, value){
+   var o = this;
+   var items = source.split(value);
+   var count = items.length;
+   for(var i = 0; i < count; i++){
+      var item = items[i];
+      if(item.length){
+         var codes = item.split(name);
+         if(codes.length == 2){
+            o.set(MO.Lang.String.trim(codes[0]), MO.Lang.String.trim(codes[1]));
+         }else{
+            o.set(MO.Lang.String.trim(item), '');
+         }
+      }
+   }
+}
+MO.TAttributes_pack = function TAttributes_pack(){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   var names = o._names;
+   var values = o._values;
+   for(var i = 0; i < count; i++){
+      var name = names[i];
+      var value = values[i];
+      var nameLength = name.length;
+      source.append(nameLength.toString().length, nameLength, name);
+      if(value != null){
+         var value = value + '';
+         var valueLength = value.length;
+         source.append(valueLength.toString().length, valueLength, value);
+      }else{
+         source.append('0');
+      }
+   }
+   return source.flush();
+}
+MO.TAttributes_unpack = function TAttributes_unpack(source){
+   var o = this;
+   o.count = 0;
+   var position = 0;
+   var sourceLength = source.length;
+   while(position < sourceLength){
+      var lengthLength = parseInt(source.substr(position++, 1));
+      var length = parseInt(source.substr(position, lengthLength));
+      var name = source.substr(position + lengthLength, length);
+      position += lengthLength + length;
+      lengthLength = parseInt(source.substr(position++, 1));
+      var value = null;
+      if(lengthLength > 0){
+         length = parseInt(source.substr(position, lengthLength));
+         value = source.substr(position + lengthLength, length);
+         position += lengthLength + length;
+      }
+      o.set(name, value);
+   }
+}
+MO.TAttributes_dump = function TAttributes_dump(){
+   var o = this;
+   var result = new MO.TString();
+   var count = o._count;
+   result.append(MO.Runtime.className(o), ' : ', count);
+   if(count > 0){
+      var names = o._names;
+      var values = o._values;
+      result.append(' (');
+      for(var i = 0; i < count; i++){
+         if(i > 0){
+            result.append(', ');
+         }
+         result.append(names[i], '=', values[i]);
+      }
+      result.append(')');
+   }
+   return result.flush();
+}
 MO.TDictionary = function TDictionary(){
    var o = this;
    MO.TMap.call(o);
@@ -1040,125 +1159,6 @@ MO.TArray_dump = function TArray_dump(){
    }
    return result.flush();
 }
-MO.TAttributes = function TAttributes(){
-   var o = this;
-   MO.TDictionary.call(o);
-   o.joinValue  = MO.TAttributes_joinValue;
-   o.join       = MO.TAttributes_join;
-   o.split      = MO.TAttributes_split;
-   o.pack       = MO.TAttributes_pack;
-   o.unpack     = MO.TAttributes_unpack;
-   o.dump       = MO.TAttributes_dump;
-   return o;
-}
-MO.TAttributes_joinValue = function TAttributes_joinValue(split){
-   var o = this;
-   var source = new MO.TString();
-   var count = o._count;
-   for(var i = 0; i < count; i++){
-      if(i > 0){
-         source.append(split);
-      }
-      source.append(o._values[i]);
-   }
-   return source.flush();
-}
-MO.TAttributes_join = function TAttributes_join(name, value){
-   var o = this;
-   var source = new MO.TString();
-   if(!name){
-      name = '=';
-   }
-   if(!value){
-      value = ',';
-   }
-   var count = o._count;
-   for(var i = 0; i < count; i++){
-      if(i > 0){
-         source.append(value);
-      }
-      source.append(o._names[i]);
-      source.append(name);
-      source.append(o._values[i]);
-   }
-   return source.flush();
-}
-MO.TAttributes_split = function TAttributes_split(source, name, value){
-   var o = this;
-   var items = source.split(value);
-   var count = items.length;
-   for(var i = 0; i < count; i++){
-      var item = items[i];
-      if(item.length){
-         var codes = item.split(name);
-         if(codes.length == 2){
-            o.set(MO.Lang.String.trim(codes[0]), MO.Lang.String.trim(codes[1]));
-         }else{
-            o.set(MO.Lang.String.trim(item), '');
-         }
-      }
-   }
-}
-MO.TAttributes_pack = function TAttributes_pack(){
-   var o = this;
-   var source = new MO.TString();
-   var count = o._count;
-   var names = o._names;
-   var values = o._values;
-   for(var i = 0; i < count; i++){
-      var name = names[i];
-      var value = values[i];
-      var nameLength = name.length;
-      source.append(nameLength.toString().length, nameLength, name);
-      if(value != null){
-         var value = value + '';
-         var valueLength = value.length;
-         source.append(valueLength.toString().length, valueLength, value);
-      }else{
-         source.append('0');
-      }
-   }
-   return source.flush();
-}
-MO.TAttributes_unpack = function TAttributes_unpack(source){
-   var o = this;
-   o.count = 0;
-   var position = 0;
-   var sourceLength = source.length;
-   while(position < sourceLength){
-      var lengthLength = parseInt(source.substr(position++, 1));
-      var length = parseInt(source.substr(position, lengthLength));
-      var name = source.substr(position + lengthLength, length);
-      position += lengthLength + length;
-      lengthLength = parseInt(source.substr(position++, 1));
-      var value = null;
-      if(lengthLength > 0){
-         length = parseInt(source.substr(position, lengthLength));
-         value = source.substr(position + lengthLength, length);
-         position += lengthLength + length;
-      }
-      o.set(name, value);
-   }
-}
-MO.TAttributes_dump = function TAttributes_dump(){
-   var o = this;
-   var result = new MO.TString();
-   var count = o._count;
-   result.append(MO.Runtime.className(o), ' : ', count);
-   if(count > 0){
-      var names = o._names;
-      var values = o._values;
-      result.append(' (');
-      for(var i = 0; i < count; i++){
-         if(i > 0){
-            result.append(', ');
-         }
-         result.append(names[i], '=', values[i]);
-      }
-      result.append(')');
-   }
-   return result.flush();
-}
 MO.RMemory = function RMemory(){
    var o = MO.RSingleton.call(this);
    o._entryUnused = null;;
@@ -1179,13 +1179,11 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
-   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1198,9 +1196,7 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
-   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
-   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1258,7 +1254,6 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -4111,6 +4106,64 @@ MO.RString.prototype.replaceChar = function RString_replaceChar(v, s, t){
    }
    return v;
 }
+MO.RString.prototype.decodeUtf = function RString_decodeUtf(data){
+   var i = 0;
+   var j = 0;
+   var x = 0;
+   var y = 0;
+   var z = 0;
+   var l = data.length;
+   var result = [];
+   var codes = [];
+   for(; i < l; ++i, ++j){
+      x = data[i] & 255;
+      if(!(x & 128)){
+         if(!x){
+            return data;
+         }
+         codes[j] = x;
+      }else if((x & 224) == 192){
+         if(i + 1 >= l){
+            return data;
+         }
+         y = data[++i] & 255;
+         if ((y & 192) != 128) {
+            return data;
+         }
+         codes[j] = ((x & 31) << 6) | (y & 63);
+      }else if ((x & 240) == 224){
+         if(i + 2 >= l){
+            return data;
+         }
+         y = data[++i] & 255;
+         if((y & 192) != 128){
+            return data;
+         }
+         z = data[++i] & 255;
+         if((z & 192) != 128){
+            return data;
+         }
+         codes[j] = ((x & 15) << 12) | ((y & 63) << 6) | (z & 63);
+      }else{
+         return data;
+      }
+      if(j == 65535){
+         var charLength = codes.length;
+         for(var index = 0; index < charLength; index++){
+            result.push(String.fromCharCode(codes[index]));
+         }
+         j = -1;
+      }
+   }
+   if(j > 0){
+      codes.length = j;
+      var charLength = codes.length;
+      for(var index = 0; index < charLength; index++){
+         result.push(String.fromCharCode(codes[index]));
+      }
+   }
+   return result.join("");
+}
 MO.RString.prototype.remove = function RString_remove(s, t){
    return s.replace(t, '');
 }
@@ -5093,7 +5146,6 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
-   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -5394,11 +5446,6 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
-   MO.Assert.debugNotNull(source);
-   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
-   MO.Assert.debugTrue(sourceCount <= source.length);
-   MO.Assert.debugNotNull(target);
-   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }
@@ -5620,7 +5667,6 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 }
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var name = null;
    if(value.constructor == String){
       name = value;
@@ -5653,7 +5699,6 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){

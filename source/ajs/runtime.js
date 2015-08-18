@@ -219,6 +219,125 @@ MO.RRuntime.prototype.pairSort = function RArray_pairSort(names, values, offset,
    o.pairSortSub(names, values, begin, end, MO.Runtime.nvl(comparer, o.sortComparerAsc), parameters);
 }
 MO.Runtime = new MO.RRuntime();
+MO.TAttributes = function TAttributes(){
+   var o = this;
+   MO.TDictionary.call(o);
+   o.joinValue  = MO.TAttributes_joinValue;
+   o.join       = MO.TAttributes_join;
+   o.split      = MO.TAttributes_split;
+   o.pack       = MO.TAttributes_pack;
+   o.unpack     = MO.TAttributes_unpack;
+   o.dump       = MO.TAttributes_dump;
+   return o;
+}
+MO.TAttributes_joinValue = function TAttributes_joinValue(split){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(split);
+      }
+      source.append(o._values[i]);
+   }
+   return source.flush();
+}
+MO.TAttributes_join = function TAttributes_join(name, value){
+   var o = this;
+   var source = new MO.TString();
+   if(!name){
+      name = '=';
+   }
+   if(!value){
+      value = ',';
+   }
+   var count = o._count;
+   for(var i = 0; i < count; i++){
+      if(i > 0){
+         source.append(value);
+      }
+      source.append(o._names[i]);
+      source.append(name);
+      source.append(o._values[i]);
+   }
+   return source.flush();
+}
+MO.TAttributes_split = function TAttributes_split(source, name, value){
+   var o = this;
+   var items = source.split(value);
+   var count = items.length;
+   for(var i = 0; i < count; i++){
+      var item = items[i];
+      if(item.length){
+         var codes = item.split(name);
+         if(codes.length == 2){
+            o.set(MO.Lang.String.trim(codes[0]), MO.Lang.String.trim(codes[1]));
+         }else{
+            o.set(MO.Lang.String.trim(item), '');
+         }
+      }
+   }
+}
+MO.TAttributes_pack = function TAttributes_pack(){
+   var o = this;
+   var source = new MO.TString();
+   var count = o._count;
+   var names = o._names;
+   var values = o._values;
+   for(var i = 0; i < count; i++){
+      var name = names[i];
+      var value = values[i];
+      var nameLength = name.length;
+      source.append(nameLength.toString().length, nameLength, name);
+      if(value != null){
+         var value = value + '';
+         var valueLength = value.length;
+         source.append(valueLength.toString().length, valueLength, value);
+      }else{
+         source.append('0');
+      }
+   }
+   return source.flush();
+}
+MO.TAttributes_unpack = function TAttributes_unpack(source){
+   var o = this;
+   o.count = 0;
+   var position = 0;
+   var sourceLength = source.length;
+   while(position < sourceLength){
+      var lengthLength = parseInt(source.substr(position++, 1));
+      var length = parseInt(source.substr(position, lengthLength));
+      var name = source.substr(position + lengthLength, length);
+      position += lengthLength + length;
+      lengthLength = parseInt(source.substr(position++, 1));
+      var value = null;
+      if(lengthLength > 0){
+         length = parseInt(source.substr(position, lengthLength));
+         value = source.substr(position + lengthLength, length);
+         position += lengthLength + length;
+      }
+      o.set(name, value);
+   }
+}
+MO.TAttributes_dump = function TAttributes_dump(){
+   var o = this;
+   var result = new MO.TString();
+   var count = o._count;
+   result.append(MO.Runtime.className(o), ' : ', count);
+   if(count > 0){
+      var names = o._names;
+      var values = o._values;
+      result.append(' (');
+      for(var i = 0; i < count; i++){
+         if(i > 0){
+            result.append(', ');
+         }
+         result.append(names[i], '=', values[i]);
+      }
+      result.append(')');
+   }
+   return result.flush();
+}
 MO.TDictionary = function TDictionary(){
    var o = this;
    MO.TMap.call(o);

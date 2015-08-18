@@ -6,10 +6,7 @@
 <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 <link rel="stylesheet" href='../acs/eai_mobile.css' type="text/css" media="all" />
-<script language='javascript' src='../ajs/extension.js'></script>
-<script language='javascript' src='../ajs/me.js'></script>
-<script language='javascript' src='../ajs/eai.js'></script>
-<script language='javascript' src='../ajs/context_cn.js'></script>
+<script language='javascript' src='../ajs/mc.js'></script>
 <script>
    var g_loadingHandle;
 
@@ -52,7 +49,7 @@
        liveScene._countryEntity._audioMapEnter.play(0);
    }
 
-   function onLoad() {
+   function onLoadScript() {
       // 设置变量
       MO.initialize();
       MO.Runtime.setProcessCd(MO.EProcess.Debug);
@@ -65,8 +62,8 @@
       // 设置环境
       MO.Console.find(MO.FE3sVendorConsole).setup('net');
       MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
-      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://localhost:8099');
-     // MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://eai.ezubo.com:8089');
+      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://localhost:8099');
+      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://eai.ezubo.com:8089');
       //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://service.eai.ezubo.com');
       // 设置日志
       // MO.Console.find(MO.FLoggerConsole).connect('ws://10.21.0.128:8080/logger');
@@ -75,6 +72,11 @@
       application.setSceneCode(MO.EEaiScene.ChartMarketer);
       application.setup(document.body);
       //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EConstant.DeviceType, 'mb');
+   }
+
+   function onLoad(){
+      MO.initialize();
+      RJsLoader.loadUrl('../ajs/release/eai.jc', onLoadScript);
    }
 </script>
 </head>

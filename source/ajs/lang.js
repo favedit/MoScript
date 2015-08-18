@@ -2612,6 +2612,64 @@ MO.RString.prototype.replaceChar = function RString_replaceChar(v, s, t){
    }
    return v;
 }
+MO.RString.prototype.decodeUtf = function RString_decodeUtf(data){
+   var i = 0;
+   var j = 0;
+   var x = 0;
+   var y = 0;
+   var z = 0;
+   var l = data.length;
+   var result = [];
+   var codes = [];
+   for(; i < l; ++i, ++j){
+      x = data[i] & 255;
+      if(!(x & 128)){
+         if(!x){
+            return data;
+         }
+         codes[j] = x;
+      }else if((x & 224) == 192){
+         if(i + 1 >= l){
+            return data;
+         }
+         y = data[++i] & 255;
+         if ((y & 192) != 128) {
+            return data;
+         }
+         codes[j] = ((x & 31) << 6) | (y & 63);
+      }else if ((x & 240) == 224){
+         if(i + 2 >= l){
+            return data;
+         }
+         y = data[++i] & 255;
+         if((y & 192) != 128){
+            return data;
+         }
+         z = data[++i] & 255;
+         if((z & 192) != 128){
+            return data;
+         }
+         codes[j] = ((x & 15) << 12) | ((y & 63) << 6) | (z & 63);
+      }else{
+         return data;
+      }
+      if(j == 65535){
+         var charLength = codes.length;
+         for(var index = 0; index < charLength; index++){
+            result.push(String.fromCharCode(codes[index]));
+         }
+         j = -1;
+      }
+   }
+   if(j > 0){
+      codes.length = j;
+      var charLength = codes.length;
+      for(var index = 0; index < charLength; index++){
+         result.push(String.fromCharCode(codes[index]));
+      }
+   }
+   return result.join("");
+}
 MO.RString.prototype.remove = function RString_remove(s, t){
    return s.replace(t, '');
 }
