@@ -259,8 +259,8 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
    column.setName('monthCustomerCount');
    column.setLabel('客户数');
    column.setDataName('month_customer_count');
-   column.setWidth(81 );
-   column.setPadding(1, 1, 1, 1);
+   column.setWidth(82);
+   column.setPadding(1, 1, 0, 1);
    grid.pushColumn(column);
    o.push(grid);
 
