@@ -157,7 +157,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var audio = o._groundAutio = audioConsole.load('{eai.resource}-{device.type}/chart/ground.mp3');
    audio.setLoop(true);
    audio.setVolume(0.2);
-   audio.play();
+//   audio.play();
    //..........................................................
    // 创建南海
    if(o._optionMapCountry){

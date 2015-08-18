@@ -20,6 +20,8 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o.doCustomerTrend      = MO.FEaiLogicStatistics_doCustomerTrend;
    o.doMarketerDynamic    = MO.FEaiLogicStatistics_doMarketerDynamic;
    o.doMarketerTrend      = MO.FEaiLogicStatistics_doMarketerTrend;
+   o.doPerformenceDynamic    = MO.FEaiLogicStatistics_doPerformenceDynamic;
+//   o.doMarketerTrend      = MO.FEaiLogicStatistics_doMarketerTrend;
    o.doDepartmentDynamic  = MO.FEaiLogicStatistics_doDepartmentDynamic;
    o.doDepartmentTrend    = MO.FEaiLogicStatistics_doDepartmentTrend;
    return o;
@@ -149,6 +151,24 @@ MO.FEaiLogicStatistics_doMarketerTrend = function FEaiLogicStatistics_doMarketer
    parameters.set('begin', startDate);
    parameters.set('end', endDate);
    o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=trend', parameters, owner, callback);
+}
+
+//==========================================================
+// <T>获取业绩。</T>
+//
+// @method
+// @param owner:Obejct 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicStatistics_doPerformenceDynamic = function FEaiLogicStatistics_doPerformenceDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=dynamic', parameters, owner, callback);
 }
 
 //==========================================================

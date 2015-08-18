@@ -65,9 +65,9 @@ MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
    scene.linkGraphicContext(o);
    o.registerScene(scene);
    // 创建业绩数据图表
-//   var scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
-//   scene.linkGraphicContext(o);
-//   o.registerScene(scene);
+   var scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
+   scene.linkGraphicContext(o);
+   o.registerScene(scene);
    // 创建部门数据图表
    var scene = o._sceneDepartment = MO.Class.create(MO.FEaiChartDepartmentScene);
    scene.linkGraphicContext(o);

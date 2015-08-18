@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150805
 //==========================================================
-MO.FEaiChartCustomerDynamicRankUnit = function FEaiChartCustomerDynamicRankUnit(o){
+MO.FEaiChartPerformenceDynamicRankUnit = function FEaiChartPerformenceDynamicRankUnit(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute

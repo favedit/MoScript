@@ -9,7 +9,7 @@ MO.FEaiChartPerformenceScene = function FEaiChartPerformenceScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code = MO.EEaiScene.ChartCustomer;
+   o._code = MO.EEaiScene.ChartPerformence;
    // @attribute
    o._processor = MO.Class.register(o, new MO.AGetter('_processor'));
    o._processorCurrent = 0;
@@ -123,45 +123,46 @@ MO.FEaiChartPerformenceScene_onProcess = function FEaiChartPerformenceScene_onPr
          }
          o._statusLayerLevel--;
       }
-      if (o._statusLayerLevel <= 0) {
-         if (hLoading) {
-            document.body.removeChild(hLoading);
-         }
-         var countryEntity = o._countryEntity;
-         countryEntity.start();
-         o._mapEntity.showCountry(countryEntity);
-         o.processLoaded();
-         o._playing = true;
-         o._statusStart = true;
-      }
+      
+//      if (o._statusLayerLevel <= 0) {
+//         if (hLoading) {
+//            document.body.removeChild(hLoading);
+//         }
+//         var countryEntity = o._countryEntity;
+//         countryEntity.start();
+//         o._mapEntity.showCountry(countryEntity);
+//         o.processLoaded();
+//         o._playing = true;
+//         o._statusStart = true;
+//      }
    }
    // 重复播放
    if (o._playing) {
       // 播放地图
-      var countryEntity = o._countryEntity;
-      if (!countryEntity.introAnimeDone()) {
-         countryEntity.process();
-         //return;
-      }
+//      var countryEntity = o._countryEntity;
+//      if (!countryEntity.introAnimeDone()) {
+//         countryEntity.process();
+//         //return;
+//      }
       // 显示界面
-      if (!o._mapReady) {
-         o._guiManager.show();
-         // 淡出显示界面
-         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
-         alphaAction.setAlphaBegin(0);
-         alphaAction.setAlphaEnd(1);
-         alphaAction.setAlphaInterval(0.01);
-         alphaAction.push(o._guiManager);
-         o._guiManager.mainTimeline().pushAction(alphaAction);
-         o._mapReady = true;
-      }
+//      if (!o._mapReady) {
+//         o._guiManager.show();
+//         // 淡出显示界面
+//         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+//         alphaAction.setAlphaBegin(0);
+//         alphaAction.setAlphaEnd(1);
+//         alphaAction.setAlphaInterval(0.01);
+//         alphaAction.push(o._guiManager);
+//         o._guiManager.mainTimeline().pushAction(alphaAction);
+//         o._mapReady = true;
+//      }
       //..........................................................
       // 刷新时间
-      var currentTick = MO.Timer.current();
-      if (currentTick - o._24HLastTick > o._24HTrendInterval) {
-         o._timeline.sync();
-         o._24HLastTick = currentTick;
-      }
+//      var currentTick = MO.Timer.current();
+//      if (currentTick - o._24HLastTick > o._24HTrendInterval) {
+//         o._timeline.sync();
+//         o._24HLastTick = currentTick;
+//      }
       // 投资处理
       o._processor.process();
       //..........................................................
@@ -222,11 +223,11 @@ MO.FEaiChartPerformenceScene_setup = function FEaiChartPerformenceScene_setup() 
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
    // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.performence.LogoBar');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
-   var invement = o._processor = MO.Class.create(MO.FEaiChartCustomerProcessor);
+   var invement = o._processor = MO.Class.create(MO.FEaiChartPerformenceProcessor);
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
@@ -236,16 +237,16 @@ MO.FEaiChartPerformenceScene_setup = function FEaiChartPerformenceScene_setup() 
    dataLayer.push(display);
    //..........................................................
    // 创建时间轴
-   var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FEaiChartCustomerTimeline);
-   timeline.setName('Timeline');
-   timeline.linkGraphicContext(o);
-   timeline.sync();
-   timeline.build();
-   o._guiManager.register(timeline);
+//   var stage = o.activeStage();
+//   var timeline = o._timeline = MO.Class.create(MO.FEaiChartCustomerTimeline);
+//   timeline.setName('Timeline');
+//   timeline.linkGraphicContext(o);
+//   timeline.sync();
+//   timeline.build();
+//   o._guiManager.register(timeline);
    //..........................................................
    // 创建表格
-   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartCustomerTable);
+   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartPerformenceTable);
    liveTable.setName('LiveTable');
    liveTable.linkGraphicContext(o);
    liveTable.setup();
@@ -253,7 +254,7 @@ MO.FEaiChartPerformenceScene_setup = function FEaiChartPerformenceScene_setup() 
    o._guiManager.register(liveTable);
    //..........................................................
    // 隐藏全部界面
-   o._guiManager.hide();
+//   o._guiManager.hide();
    //..........................................................
    // 创建粒子
    //var context = o._graphicContext;
@@ -264,12 +265,12 @@ MO.FEaiChartPerformenceScene_setup = function FEaiChartPerformenceScene_setup() 
    //o.fixMatrix(particle.matrix());
    //o._activeStage.spriteLayer().pushRenderable(particle);
    //..........................................................
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   // 建立城市实体
-   entityConsole.cityModule().build(o);
-   // 加载世界数据
-   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
-   o._readyLoader.push(countryEntity);
+//   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+//   // 建立城市实体
+//   entityConsole.cityModule().build(o);
+//   // 加载世界数据
+//   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
+//   o._readyLoader.push(countryEntity);
 }
 
 //==========================================================
@@ -371,34 +372,34 @@ MO.FEaiChartPerformenceScene_processResize = function FEaiChartPerformenceScene_
    }
    //..........................................................
    // 设置南海
-   var control = o._southSea;
-   if (isVertical) {
-      control.setDockCd(MO.EUiDock.RightTop);
-      control.setTop(570);
-      control.setRight(100);
-   } else {
-      control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(780);
-      control.setBottom(260);
-   }
+//   var control = o._southSea;
+//   if (isVertical) {
+//      control.setDockCd(MO.EUiDock.RightTop);
+//      control.setTop(570);
+//      control.setRight(100);
+//   } else {
+//      control.setDockCd(MO.EUiDock.RightBottom);
+//      control.setRight(780);
+//      control.setBottom(260);
+//   }
    //..........................................................
    // 设置时间轴
-   var timeline = o._timeline;
-   if (isVertical) {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(10);
-      timeline.setRight(10);
-      timeline.setBottom(920);
-      timeline.setHeight(250);
-   } else {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(30);
-      timeline.setRight(780);
-      timeline.setHeight(250);
-   }
+//   var timeline = o._timeline;
+//   if (isVertical) {
+//      timeline.setDockCd(MO.EUiDock.Bottom);
+//      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+//      timeline.setLeft(10);
+//      timeline.setRight(10);
+//      timeline.setBottom(920);
+//      timeline.setHeight(250);
+//   } else {
+//      timeline.setDockCd(MO.EUiDock.Bottom);
+//      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+//      timeline.setLeft(20);
+//      timeline.setBottom(30);
+//      timeline.setRight(780);
+//      timeline.setHeight(250);
+//   }
    //..........................................................
    // 设置表格
    var liveTable = o._liveTable;

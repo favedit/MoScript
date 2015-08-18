@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150804
 //==========================================================
-MO.FEaiChartCustomerDynamicInfo = function FEaiChartCustomerDynamicInfo(o){
+MO.FEaiChartPerformenceDynamicInfo = function FEaiChartPerformenceDynamicInfo(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
@@ -14,7 +14,7 @@ MO.FEaiChartCustomerDynamicInfo = function FEaiChartCustomerDynamicInfo(o){
    o._customerCount   = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Int32)]);
    o._customerTotal   = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Int32)]);
    // @attribute
-   o._rankUnits       = MO.Class.register(o, [new MO.AGetter('_rankUnits'), new MO.APersistence('_rankUnits', MO.EDataType.Objects, MO.FEaiChartCustomerDynamicRankUnit)]);
-   o._units           = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartCustomerDynamicUnit)]);
+   o._rankUnits       = MO.Class.register(o, [new MO.AGetter('_rankUnits'), new MO.APersistence('_rankUnits', MO.EDataType.Objects, MO.FEaiChartPerformenceDynamicRankUnit)]);
+   o._units           = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartPerformenceDynamicUnit)]);
    return o;
 }
