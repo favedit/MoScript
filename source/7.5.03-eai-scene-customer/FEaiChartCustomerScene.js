@@ -139,7 +139,7 @@ MO.FEaiChartCustomerScene_onProcess = function FEaiChartCustomerScene_onProcess(
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         //return;
+         return;
       }
       // 显示界面
       if (!o._mapReady) {

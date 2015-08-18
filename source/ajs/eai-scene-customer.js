@@ -293,6 +293,7 @@ MO.FEaiChartCustomerScene_onProcess = function FEaiChartCustomerScene_onProcess(
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
