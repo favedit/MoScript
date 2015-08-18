@@ -68,7 +68,7 @@ MO.FEaiChartCustomerProcessor_onDynamicData = function FEaiChartCustomerProcesso
    var o = this;
    var content = event.content;
    var dynamicInfo = o._dynamicInfo;
-   dynamicInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
+   dynamicInfo.unserializeSignBuffer(event.sign, event.content, true);
    var rankUnits = o._rankUnits;
    rankUnits.assign(dynamicInfo.rankUnits());
    var units = o._units;
@@ -791,7 +791,7 @@ MO.FEaiChartCustomerTimeline_sync = function FEaiChartCustomerTimeline_sync() {
 }
 MO.FEaiChartCustomerTimeline_on24HDataFetch = function FEaiChartCustomerTimeline_on24HDataFetch(event) {
    var o = this;
-   o._trendInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
+   o._trendInfo.unserializeSignBuffer(event.sign, event.content, true);
    o.dirty();
 }
 MO.FEaiChartCustomerTimeline_oeUpdate = function FEaiChartCustomerTimeline_oeUpdate(event) {
