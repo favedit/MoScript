@@ -47,7 +47,7 @@ MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    var o = this;
    // 获得信息
    var info = o._info;
-   info.unserializeBuffer(event.content, true);
+   info.unserializeSignBuffer(event.sign, event.content, true);
    // 设置内容
    o._token = info.token();
    o._localDate.setNow();

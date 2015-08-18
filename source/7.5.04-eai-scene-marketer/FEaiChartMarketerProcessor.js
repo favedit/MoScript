@@ -75,7 +75,7 @@ MO.FEaiChartMarketerProcessor_onDynamicData = function FEaiChartMarketerProcesso
    var o = this;
    // 读取数据
    var dynamicInfo = o._dynamicInfo;
-   dynamicInfo.unserializeEncryptedBuffer(event.sign, event.content, true);
+   dynamicInfo.unserializeSignBuffer(event.sign, event.content, true);
    // 计算刷新间隔
    var rankUnits = o._rankUnits;
    rankUnits.assign(dynamicInfo.rankDayUnits());

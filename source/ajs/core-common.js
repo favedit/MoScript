@@ -1232,9 +1232,11 @@ MO.MPersistence = function MPersistence(o){
    o = MO.Class.inherits(this, o);
    o.unserialize                = MO.MPersistence_unserialize;
    o.unserializeBuffer          = MO.MPersistence_unserializeBuffer;
+   o.unserializeSignBuffer      = MO.MPersistence_unserializeSignBuffer;
    o.unserializeEncryptedBuffer = MO.MPersistence_unserializeEncryptedBuffer;
    o.serialize                  = MO.MPersistence_serialize;
    o.serializeBuffer            = MO.MPersistence_serializeBuffer;
+   o.serializeSignBuffer        = MO.MPersistence_serializeSignBuffer;
    o.serializeEncryptedBuffer   = MO.MPersistence_serializeEncryptedBuffer;
    return o;
 }
@@ -1296,6 +1298,16 @@ MO.MPersistence_unserializeBuffer = function MPersistence_unserializeBuffer(buff
    o.unserialize(view);
    view.dispose();
 }
+MO.MPersistence_unserializeSignBuffer = function MPersistence_unserializeSignBuffer(sign, buffer, endianCd){
+   var o = this;
+   var bytes = new Uint8Array(buffer);
+   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
 MO.MPersistence_unserializeEncryptedBuffer = function MPersistence_unserializeEncryptedBuffer(sign, buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FEncryptedView);
@@ -1338,6 +1350,14 @@ MO.MPersistence_serialize = function MPersistence_serialize(output){
    }
 }
 MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.serialize(view);
+   view.dispose();
+}
+MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);

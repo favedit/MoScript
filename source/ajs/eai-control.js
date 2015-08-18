@@ -329,6 +329,7 @@ MO.FGui2DMap_onPaintBegin = function FGui2DMap_onPaintBegin(event) {
    graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 2);
    var ctx = graphic._handle;
        ctx.lineCap = 'round';
+       ctx.beginPath();
    var provinces = countryRes.data().provinces(),
       count = provinces.count(),
       province,boundaries,boundary,positions,items,panX,panY,x,y,scale;
@@ -350,17 +351,33 @@ MO.FGui2DMap_onPaintBegin = function FGui2DMap_onPaintBegin(event) {
         }
      }
    }
-   ctx.strokeStyle = "rgb(1, 127, 156)";
+   ctx.fillStyle = "rgba(8, 13, 25, 0.63)";
+   ctx.strokeStyle = "#00B5F6";
    ctx.lineWidth = 1;
    ctx.stroke();
+   ctx.fill();
+   o.onPaintCity(event);
 }
-MO.FGui2DMap_onPaintCity = function FGui2DMap_onPaintCity(card){
+MO.FGui2DMap_onPaintCity = function FGui2DMap_onPaintCity(event,card){
    var o = this;
+   var graphic     = event.graphic;
+   var rectangle   = event.rectangle;
+   var panX        = -1000;
+   var panY        = -400;
+   var scale       = 14;
+   var ctx = graphic._handle;
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityModule();
    var cityData =  cityConsole.findByCard("1410"),
-       x=cityData._location.x,
-       y=cityData._location.y;
-   console.log(x+"..."+y);
+       x = cityData._location.x * scale + panX,
+       y = (90 - cityData._location.y) * scale + panY;
+  var cityEntity = MO.Class.create(MO.FEaiCityEntity),
+      centerColor = "rgba(" + cityEntity._color.red + "," + cityEntity._color.green + "," + cityEntity._color.blue + "," +cityEntity._color.alpha + ")",
+      outerColor = "rgba(" + cityEntity._rangeColor.red + ", " + cityEntity._rangeColor.green + "," + cityEntity._rangeColor.blue + ", " + cityEntity._rangeColor.alpha + ")",
+      gradient = ctx.createRadialGradient(x, y, 1, x, y, 20);
+      gradient.addColorStop(0, "red");
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+      graphic.drawCircle(x, y,20,1,"rgba(255, 255, 255, 0)",gradient);
+      graphic.drawCircle(x, y,2,1,"rgba(255, 255, 255, 0)","#f96");
 }
 MO.FGui2DMap_dispose = function FGui2DMap_dispose(){
    var o = this;

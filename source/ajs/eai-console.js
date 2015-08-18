@@ -410,7 +410,7 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
 MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
    var o = this;
    var info = o._info;
-   info.unserializeBuffer(event.content, true);
+   info.unserializeSignBuffer(event.sign, event.content, true);
    o._token = info.token();
    o._localDate.setNow();
    o._systemDate.parse(info.date());

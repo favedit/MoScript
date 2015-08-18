@@ -9,6 +9,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneHistory    = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
    o._sceneCustomer   = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
    o._sceneMarketer   = MO.Class.register(o, new MO.AGetter('_sceneMarketer'));
+   o._scenePerformence   = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
    o._sceneDepartment = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
    o._sceneLive       = MO.Class.register(o, new MO.AGetter('_sceneLive'));
    o._sceneWorld      = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
