@@ -12,14 +12,11 @@ MO.FGui2DMap = function FGui2DMap(o) {
    o._bgImage       = null;
    // @attribute
    o._countryRes    = MO.Class.register(o, new MO.AGetSet('_countryRes'));
-   // o._resourceConsole = MO.Class.register(o, new MO.AGetSet('_resourceConsole'));
-
    //..........................................................
    // @method
    o.construct      = MO.FGui2DMap_construct;
    // @method
    o.onPaintBegin   = MO.FGui2DMap_onPaintBegin;
-
    o.onPaintCity    = MO.FGui2DMap_onPaintCity;
    // @method
    o.dispose        = MO.FGui2DMap_dispose;
@@ -55,7 +52,7 @@ MO.FGui2DMap_onPaintBegin = function FGui2DMap_onPaintBegin(event) {
 
    var ctx = graphic._handle;
        ctx.lineCap = 'round';
-
+       ctx.beginPath();
    var provinces = countryRes.data().provinces(),
       count = provinces.count(),
       province,boundaries,boundary,positions,items,panX,panY,x,y,scale;
@@ -82,39 +79,42 @@ MO.FGui2DMap_onPaintBegin = function FGui2DMap_onPaintBegin(event) {
      }
 
    }
-
-   ctx.strokeStyle = "rgb(1, 127, 156)";
-   // ctx.fillStyle = "rgba(84, 9, 9, 0.39)";
+   ctx.fillStyle = "rgba(8, 13, 25, 0.63)";
+   ctx.strokeStyle = "#00B5F6";
    ctx.lineWidth = 1;
    ctx.stroke();
-   // ctx.fill();
-   // console.log(o.onPaintBegin(event));
+   ctx.fill();
+
+   o.onPaintCity(event);
 }
 //==========================================================
 // <T>根据代码查找城市信息</T>
-//
+// card : int
 // @method
 //==========================================================
 
-MO.FGui2DMap_onPaintCity = function FGui2DMap_onPaintCity(card){
+MO.FGui2DMap_onPaintCity = function FGui2DMap_onPaintCity(event,card){
    var o = this;
-   // var graphic = event.graphic;
-   // var rectangle = event.rectangle;
+   var graphic     = event.graphic;
+   var rectangle   = event.rectangle;
+   var panX        = -1000;
+   var panY        = -400;
+   var scale       = 14;
+   var ctx = graphic._handle;
    var cityConsole = MO.Console.find(MO.FEaiResourceConsole).cityModule();
    var cityData =  cityConsole.findByCard("1410"),
-       x=cityData._location.x,
-       y=cityData._location.y;
-   console.log(x+"..."+y);
-   // var cardModule = o._resourceConsole.cardModule();
-   // var cityCode = cardModule.findCityCode(card);
-   // console.log(o);
-   // if(cityCode){
-   //    city = o._citys.get(cityCode);
-   // }
-   // return city;
-   // graphic.drawCircle(cityData._location.x,cityData._location.y,2,5,"#f96","rgb(49, 208, 124)","red");
+       x = cityData._location.x * scale + panX,
+       y = (90 - cityData._location.y) * scale + panY;
 
-}
+  var cityEntity = MO.Class.create(MO.FEaiCityEntity),
+      centerColor = "rgba(" + cityEntity._color.red + "," + cityEntity._color.green + "," + cityEntity._color.blue + "," +cityEntity._color.alpha + ")",
+      outerColor = "rgba(" + cityEntity._rangeColor.red + ", " + cityEntity._rangeColor.green + "," + cityEntity._rangeColor.blue + ", " + cityEntity._rangeColor.alpha + ")",
+      gradient = ctx.createRadialGradient(x, y, 1, x, y, 20);
+      gradient.addColorStop(0, "red");
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0)"); 
+      graphic.drawCircle(x, y,20,1,"rgba(255, 255, 255, 0)",gradient);
+      graphic.drawCircle(x, y,2,1,"rgba(255, 255, 255, 0)","#f96");
+} 
 
 //==========================================================
 // <T>释放处理。</T>
