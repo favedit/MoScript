@@ -454,30 +454,31 @@ MO.FEditorDsTabBar_dispose = function FEditorDsTabBar_dispose(){
 }
 MO.FEditorDsWorkspace = function FEditorDsWorkspace(o){
    o = MO.Class.inherits(this, o, MO.FDuiWorkspace, MO.MUiStorage);
-   o._frameName            = 'editor.design.Workspace';
-   o._storageCode          = o._frameName;
-   o._styleMenuBarGround   = MO.Class.register(o, new MO.AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
-   o._styleBodyGround      = MO.Class.register(o, new MO.AStyle('_styleBodyGround', 'Body_Ground'));
-   o._styleStatusBarGround = MO.Class.register(o, new MO.AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
-   o._activeFrameSetCode   = null;
-   o._activeProjectGuid    = null;
-   o._frameToolBar         = null;
-   o._frameStatusBar       = null;
-   o._activeFrameSet       = null;
-   o._frameSets            = null;
-   o.onBuilded             = MO.FEditorDsWorkspace_onBuilded;
-   o.construct             = MO.FEditorDsWorkspace_construct;
-   o.selectFrameSet        = MO.FEditorDsWorkspace_selectFrameSet;
-   o.load                  = MO.FEditorDsWorkspace_load;
-   o.dispose               = MO.FEditorDsWorkspace_dispose;
+   o._frameName          = 'editor.design.Workspace';
+   o._storageCode        = o._frameName;
+   o._styleMenuBarGround = MO.Class.register(o, new MO.AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
+   o._styleModuleGround  = MO.Class.register(o, new MO.AStyle('_styleModuleGround', 'Module_Ground'));
+   o._styleSpaceGround   = MO.Class.register(o, new MO.AStyle('_styleSpaceGround', 'Space_Ground'));
+   o._activeFrameSetCode = null;
+   o._activeProjectGuid  = null;
+   o._frameToolBar       = null;
+   o._frameStatusBar     = null;
+   o._activeFrameSet     = null;
+   o._frameSets          = null;
+   o.onBuilded           = MO.FEditorDsWorkspace_onBuilded;
+   o.construct           = MO.FEditorDsWorkspace_construct;
+   o.selectFrameSet      = MO.FEditorDsWorkspace_selectFrameSet;
+   o.load                = MO.FEditorDsWorkspace_load;
+   o.dispose             = MO.FEditorDsWorkspace_dispose;
    return o;
 }
 MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    var o = this;
    o.__base.FDuiWorkspace.onBuilded.call(o, event);
    o._frameMenuBar._hPanel.className = o.styleName('MenuBar_Ground');
-   o._frameBody._hPanel.className = o.styleName('Body_Ground');
-   o._frameStatusBar._hPanel.className = o.styleName('StatusBar_Ground');
+   o._frameModule._hPanel.className = o.styleName('Module_Ground');
+   o._frameSpace._hPanel.className = o.styleName('Space_Ground');
+   return;
    var hTable = MO.Window.Builder.createTable(event);
    hTable.width = '100%';
    var hRow = MO.Window.Builder.appendTableRow(hTable);
@@ -499,6 +500,7 @@ MO.FEditorDsWorkspace_construct = function FEditorDsWorkspace_construct(){
 }
 MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSet(name, guid){
    var o = this;
+   return;
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
       if(name == MO.EEditorFrameSet.PersistenceFrameSet){
@@ -572,6 +574,7 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
 }
 MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
    var o = this;
+   return;
    var code = o._activeFrameSetCode = o.storageGet('frameset_code', MO.EEditorFrameSet.SolutionFrameSet);
    var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
    var button = null;
@@ -596,7 +599,7 @@ MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
 }
 MO.FEditorDsWorkspace_dispose = function FEditorDsWorkspace_dispose(){
    var o = this;
-   o._frameSets = RObject.dispose(o._frameSets, true);
+   o._frameSets = MO.Lang.Object.dispose(o._frameSets, true);
    o.__base.FDuiWorkspace.dispose.call(o);
 }
 MO.FEditorFrameDefineConsole = function FEditorFrameDefineConsole(o){

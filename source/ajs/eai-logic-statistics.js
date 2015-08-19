@@ -571,8 +571,8 @@ MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    if (o._value == value) {
       return;
    }
-   if (o._negative == value) {
-      return;
+    if (o._negative == value) {
+       return;
    }
    if (o._rolling) {
       o._originValue = o._value;

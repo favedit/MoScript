@@ -8,34 +8,34 @@ MO.FEditorDsWorkspace = function FEditorDsWorkspace(o){
    o = MO.Class.inherits(this, o, MO.FDuiWorkspace, MO.MUiStorage);
    //..........................................................
    // @property
-   o._frameName            = 'editor.design.Workspace';
-   o._storageCode          = o._frameName;
+   o._frameName          = 'editor.design.Workspace';
+   o._storageCode        = o._frameName;
    //..........................................................
    // @style
-   o._styleMenuBarGround   = MO.Class.register(o, new MO.AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
-   o._styleBodyGround      = MO.Class.register(o, new MO.AStyle('_styleBodyGround', 'Body_Ground'));
-   o._styleStatusBarGround = MO.Class.register(o, new MO.AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
+   o._styleMenuBarGround = MO.Class.register(o, new MO.AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
+   o._styleModuleGround  = MO.Class.register(o, new MO.AStyle('_styleModuleGround', 'Module_Ground'));
+   o._styleSpaceGround   = MO.Class.register(o, new MO.AStyle('_styleSpaceGround', 'Space_Ground'));
    //..........................................................
    // @attribute
-   o._activeFrameSetCode   = null;
-   o._activeProjectGuid    = null;
+   o._activeFrameSetCode = null;
+   o._activeProjectGuid  = null;
    // @attribute
-   o._frameToolBar         = null;
-   o._frameStatusBar       = null;
+   o._frameToolBar       = null;
+   o._frameStatusBar     = null;
    // @attribute
-   o._activeFrameSet       = null;
-   o._frameSets            = null;
+   o._activeFrameSet     = null;
+   o._frameSets          = null;
    //..........................................................
    // @process
-   o.onBuilded             = MO.FEditorDsWorkspace_onBuilded;
+   o.onBuilded           = MO.FEditorDsWorkspace_onBuilded;
    //..........................................................
    // @method
-   o.construct             = MO.FEditorDsWorkspace_construct;
+   o.construct           = MO.FEditorDsWorkspace_construct;
    // @method
-   o.selectFrameSet        = MO.FEditorDsWorkspace_selectFrameSet;
-   o.load                  = MO.FEditorDsWorkspace_load;
+   o.selectFrameSet      = MO.FEditorDsWorkspace_selectFrameSet;
+   o.load                = MO.FEditorDsWorkspace_load;
    // @method
-   o.dispose               = MO.FEditorDsWorkspace_dispose;
+   o.dispose             = MO.FEditorDsWorkspace_dispose;
    return o;
 }
 
@@ -51,8 +51,9 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    //..........................................................
    // 设置样式
    o._frameMenuBar._hPanel.className = o.styleName('MenuBar_Ground');
-   o._frameBody._hPanel.className = o.styleName('Body_Ground');
-   o._frameStatusBar._hPanel.className = o.styleName('StatusBar_Ground');
+   o._frameModule._hPanel.className = o.styleName('Module_Ground');
+   o._frameSpace._hPanel.className = o.styleName('Space_Ground');
+   return;
    //..........................................................
    var hTable = MO.Window.Builder.createTable(event);
    hTable.width = '100%';
@@ -92,6 +93,7 @@ MO.FEditorDsWorkspace_construct = function FEditorDsWorkspace_construct(){
 //==========================================================
 MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSet(name, guid){
    var o = this;
+   return;
    // 获得框架
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
@@ -186,6 +188,7 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
 //==========================================================
 MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
    var o = this;
+   return;
    // 选择开始页面
    var code = o._activeFrameSetCode = o.storageGet('frameset_code', MO.EEditorFrameSet.SolutionFrameSet);
    var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
@@ -219,7 +222,7 @@ MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
 MO.FEditorDsWorkspace_dispose = function FEditorDsWorkspace_dispose(){
    var o = this;
    // 设置属性
-   o._frameSets = RObject.dispose(o._frameSets, true);
+   o._frameSets = MO.Lang.Object.dispose(o._frameSets, true);
    // 父处理
    o.__base.FDuiWorkspace.dispose.call(o);
 }

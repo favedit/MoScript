@@ -59,6 +59,9 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
    o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+   o._investmentTotal         = MO.Class.register(o, new MO.AGetter('_investmentTotal'));
+   o._redemptionTotal         = MO.Class.register(o, new MO.AGetter('_redemptionTotal'));
+   o._netinvestmentTotal       = MO.Class.register(o, new MO.AGetter('_netinvestmentTotal'));
    o._intervalMinute          = 1;
    o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
    o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
@@ -144,6 +147,9 @@ MO.FEaiChartMarketerProcessor_calculateCurrent = function FEaiChartMarketerProce
    var redemptionCurrent = info.redemptionCount();
    var interestCount = info.interestCount();
    var performanceCurrent = info.performanceCount();
+   var investmentTotal = info.investmentTotal();
+   var redemptionTotal = info.redemptionTotal();
+   var netinvestmentTotal = info.netinvestmentTotal();
    var units = o._units;
    var count = units.count();
    for(var i = 0; i < count; i++){
@@ -154,11 +160,16 @@ MO.FEaiChartMarketerProcessor_calculateCurrent = function FEaiChartMarketerProce
       if(actionCd == 1){
          investmentCurrent -= amount;
          performanceCurrent -= amount;
+         investmentTotal -= amount;
       }else if(actionCd == 2){
          redemptionCurrent -= amount;
          interestCount -= interest;
+         redemptionTotal -= amount;
       }
    }
+   o._investmentTotal = investmentTotal;
+   o._redemptionTotal = redemptionTotal;
+   o._netinvestmentTotal = investmentTotal - redemptionTotal;
    o._invementDayCurrent = investmentCurrent;
    o._redemptionDayCurrent = redemptionCurrent;
    o._netinvestmentDayCurrent = investmentCurrent - redemptionCurrent;
@@ -353,19 +364,18 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       var logoBar = o._logoBar;
       var processor = o._processor;
       if(processor.invementDayCurrent() > 0){
+         var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
+         investmentTotalCount.setValue(parseInt(processor.investmentTotal()).toString());
+         var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
+         redemptionTotalCount.setValue(parseInt(processor.redemptionTotal()).toString());
+         var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
+         netinvestmentTotalCount.setValue(parseInt(processor.netinvestmentTotal()).toString());
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
          var redemptionTotal = logoBar.findComponent('redemptionTotal');
          redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
          var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
          netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
-         var dynamicInfo = processor._dynamicInfo;
-         var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
-         redemptionTotalCount.setValue(parseInt(dynamicInfo._redemptionTotal).toString());
-         var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
-         netinvestmentTotalCount.setValue(parseInt(dynamicInfo._netinvestmentTotal).toString());
-         var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
-         investmentTotalCount.setValue(parseInt(dynamicInfo._investmentTotal).toString());
       }
       if (o._nowTicker.process()) {
          var bar = o._logoBar;

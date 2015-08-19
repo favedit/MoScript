@@ -126,7 +126,7 @@ MO.FEaiChartCustomerProcessor_calculateCurrent = function FEaiChartCustomerProce
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
       investmentCurrent -= unit.investment();
-      investmentTotalCurrent += unit.investment();
+      investmentTotalCurrent -= unit.investment();
    }
    o._invementTotalCurrent = investmentTotalCurrent;
    o._invementDayCurrent = investmentCurrent;
