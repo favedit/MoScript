@@ -159,13 +159,12 @@ MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    var o = this;
    var fetch;
    var reg = /^[0-9]+$/;
-   
    var values = value;
    if (o._value == value) {
       return;
    }
-   if (o._negative == value) {
-      return;
+    if (o._negative == value) {
+       return;
    }
    if (o._rolling) {
       o._originValue = o._value;
@@ -197,7 +196,6 @@ MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
       }
    } else {
       for (var i = 0; i < valueLs; i++) {
-         //var pages = parseInt(value.substring(0, i + 1)) - parseInt(originValue.substring(0, i + 1));
          var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
          pages = pages < 0 ? pages + 10 : pages;
          o._rollingPages.set(i, pages);

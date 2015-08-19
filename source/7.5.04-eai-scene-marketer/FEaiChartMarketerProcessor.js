@@ -26,6 +26,10 @@ MO.FEaiChartMarketerProcessor = function FEaiChartMarketerProcessor(o){
    o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
    
    o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+
+   o._investmentTotal         = MO.Class.register(o, new MO.AGetter('_investmentTotal'));
+   o._redemptionTotal         = MO.Class.register(o, new MO.AGetter('_redemptionTotal'));
+   o._netinvestmentTotal       = MO.Class.register(o, new MO.AGetter('_netinvestmentTotal'));
    
    o._intervalMinute          = 1;
    // @attribute
@@ -166,21 +170,32 @@ MO.FEaiChartMarketerProcessor_calculateCurrent = function FEaiChartMarketerProce
    var redemptionCurrent = info.redemptionCount();
    var interestCount = info.interestCount();
    var performanceCurrent = info.performanceCount();
+   var investmentTotal = info.investmentTotal();
+   var redemptionTotal = info.redemptionTotal();
+   var netinvestmentTotal = info.netinvestmentTotal();
+
    var units = o._units;
    var count = units.count();
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
+
       var actionCd = unit.customerActionCd();
       var amount = unit.customerActionAmount();
       var interest = unit.customerActionInterest();
       if(actionCd == 1){
          investmentCurrent -= amount;
          performanceCurrent -= amount;
+         investmentTotal -= amount;
       }else if(actionCd == 2){
          redemptionCurrent -= amount;
          interestCount -= interest;
+         redemptionTotal -= amount;
       }
    }
+
+   o._investmentTotal = investmentTotal;
+   o._redemptionTotal = redemptionTotal;
+   o._netinvestmentTotal = investmentTotal - redemptionTotal;
    o._invementDayCurrent = investmentCurrent;
    o._redemptionDayCurrent = redemptionCurrent;
    o._netinvestmentDayCurrent = investmentCurrent - redemptionCurrent;

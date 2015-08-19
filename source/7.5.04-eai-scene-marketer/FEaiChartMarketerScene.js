@@ -173,28 +173,30 @@ MO.FEaiChartMarketerScene_onProcess = function FEaiChartMarketerScene_onProcess(
       var processor = o._processor;
       if(processor.invementDayCurrent() > 0){
          // MO.Class.create(MO.FEaiChartMarketerProcessor);
-         // 投资总金额
+          // 投资总金额
+         var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
+         investmentTotalCount.setValue(parseInt(processor.investmentTotal()).toString());
+         // 赎回总金额
+         var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
+         redemptionTotalCount.setValue(parseInt(processor.redemptionTotal()).toString());
+         // 净投总金额 
+         var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
+         netinvestmentTotalCount.setValue(parseInt(processor.netinvestmentTotal()).toString());
+        
+         // 当日投资总金额
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
-         // 赎回总金额
+         // 当日赎回总金额
          var redemptionTotal = logoBar.findComponent('redemptionTotal');
          redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
-         // 净投总金额     
+         // 当日净投总金额     
          var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
          netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
          // 利息总金额
          //var interestTotal = logoBar.findComponent('interestTotal');
          //interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
-         var dynamicInfo = processor._dynamicInfo;
-         var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
-         redemptionTotalCount.setValue(parseInt(dynamicInfo._redemptionTotal).toString());
-         
-         var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
-         netinvestmentTotalCount.setValue(parseInt(dynamicInfo._netinvestmentTotal).toString());
-         
-         var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
-         investmentTotalCount.setValue(parseInt(dynamicInfo._investmentTotal).toString());
-     
+       
+
       }
       //..........................................................
       // 更新时间
