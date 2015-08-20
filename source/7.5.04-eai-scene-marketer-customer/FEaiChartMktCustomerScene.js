@@ -139,7 +139,7 @@ MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onPr
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         return;
+         // return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -337,8 +337,8 @@ MO.FEaiChartMktCustomerScene_fixMatrix = function FEaiChartMktCustomerScene_fixM
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    } else {
-      matrix.tx = -34.8;
-      matrix.ty = -11.0;
+      matrix.tx = -34.9;
+      matrix.ty = -10.9;
       matrix.tz = 0;
       matrix.setScale(0.28, 0.31, 0.28);
    }
@@ -377,7 +377,7 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
    } else {
       control.setDockCd(MO.EUiDock.RightBottom);
       control.setRight(780);
-      control.setBottom(260);
+      control.setBottom(280);
    }
    //..........................................................
    // 设置时间轴
@@ -414,6 +414,6 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
       liveTable.setTop(10);
       liveTable.setRight(0);
       liveTable.setBottom(10);
-      liveTable.setWidth(750);
+      liveTable.setWidth(760);
    }
 }
