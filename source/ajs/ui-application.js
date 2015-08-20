@@ -142,6 +142,7 @@ MO.FChapter = function FChapter(o){
    o.construct            = MO.FChapter_construct;
    o.registerScene        = MO.FChapter_registerScene;
    o.unregisterScene      = MO.FChapter_unregisterScene;
+   o.createScene          = MO.Method.empty;
    o.selectScene          = MO.FChapter_selectScene;
    o.selectSceneByCode    = MO.FChapter_selectSceneByCode;
    o.setup                = MO.Method.empty;
@@ -190,7 +191,11 @@ MO.FChapter_selectScene = function FChapter_selectScene(scene){
 MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var o = this;
    var scene = o._scenes.get(code);
-   MO.Assert.debugNotNull(scene);
+   if(scene == null){
+      scene = o.createScene(code);
+      MO.Assert.debugNotNull(scene);
+      o.registerScene(scene);
+   }
    o.selectScene(scene);
    return scene;
 }

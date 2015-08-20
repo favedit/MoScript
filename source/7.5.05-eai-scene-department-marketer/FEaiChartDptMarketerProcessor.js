@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150619
 //==========================================================
-MO.FEaiChartCustomerProcessor = function FEaiChartCustomerProcessor(o){
+MO.FEaiChartDptMarketerProcessor = function FEaiChartDptMarketerProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
@@ -25,9 +25,11 @@ MO.FEaiChartCustomerProcessor = function FEaiChartCustomerProcessor(o){
    o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
    
-   
-   
    o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+
+   o._investmentTotal         = MO.Class.register(o, new MO.AGetter('_investmentTotal'));
+   o._redemptionTotal         = MO.Class.register(o, new MO.AGetter('_redemptionTotal'));
+   o._netinvestmentTotal       = MO.Class.register(o, new MO.AGetter('_netinvestmentTotal'));
    
    o._intervalMinute          = 1;
    // @attribute
@@ -51,20 +53,20 @@ MO.FEaiChartCustomerProcessor = function FEaiChartCustomerProcessor(o){
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @method
-   o.onDynamicData            = MO.FEaiChartCustomerProcessor_onDynamicData;
+   o.onDynamicData            = MO.FEaiChartDptMarketerProcessor_onDynamicData;
    //..........................................................
    // @method
-   o.construct                = MO.FEaiChartCustomerProcessor_construct;
+   o.construct                = MO.FEaiChartDptMarketerProcessor_construct;
    // @method
-   o.allocUnit                = MO.FEaiChartCustomerProcessor_allocUnit;
-   o.allocShape               = MO.FEaiChartCustomerProcessor_allocShape;
-   o.setup                    = MO.FEaiChartCustomerProcessor_setup;
+   o.allocUnit                = MO.FEaiChartDptMarketerProcessor_allocUnit;
+   o.allocShape               = MO.FEaiChartDptMarketerProcessor_allocShape;
+   o.setup                    = MO.FEaiChartDptMarketerProcessor_setup;
    // @method
-   o.calculateCurrent         = MO.FEaiChartCustomerProcessor_calculateCurrent;
-   o.focusEntity              = MO.FEaiChartCustomerProcessor_focusEntity;
-   o.process                  = MO.FEaiChartCustomerProcessor_process;
+   o.calculateCurrent         = MO.FEaiChartDptMarketerProcessor_calculateCurrent;
+   o.focusEntity              = MO.FEaiChartDptMarketerProcessor_focusEntity;
+   o.process                  = MO.FEaiChartDptMarketerProcessor_process;
    // @method
-   o.dispose                  = MO.FEaiChartCustomerProcessor_dispose;
+   o.dispose                  = MO.FEaiChartDptMarketerProcessor_dispose;
    return o;
 }
 
@@ -73,15 +75,14 @@ MO.FEaiChartCustomerProcessor = function FEaiChartCustomerProcessor(o){
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_onDynamicData = function FEaiChartCustomerProcessor_onDynamicData(event){
+MO.FEaiChartDptMarketerProcessor_onDynamicData = function FEaiChartDptMarketerProcessor_onDynamicData(event){
    var o = this;
-   var content = event.content;
    // 读取数据
    var dynamicInfo = o._dynamicInfo;
    dynamicInfo.unserializeSignBuffer(event.sign, event.content, true);
    // 计算刷新间隔
    var rankUnits = o._rankUnits;
-   rankUnits.assign(dynamicInfo.rankUnits());
+   rankUnits.assign(dynamicInfo.rankDayUnits());
    var units = o._units;
    units.append(dynamicInfo.units());
    var unitCount = units.count();
@@ -94,6 +95,10 @@ MO.FEaiChartCustomerProcessor_onDynamicData = function FEaiChartCustomerProcesso
    // 触发数据事件
    var changeEvent = o._eventDataChanged;
    changeEvent.rankUnits = rankUnits;
+   changeEvent.rankDayUnits = dynamicInfo._rankDayUnits;
+   changeEvent.rankWeekUnits = dynamicInfo._rankWeekUnits;
+   changeEvent.rankMonthUnits = dynamicInfo._rankMonthUnits;
+
    changeEvent.unit = null;
    o.processDataChangedListener(changeEvent);
 }
@@ -103,7 +108,7 @@ MO.FEaiChartCustomerProcessor_onDynamicData = function FEaiChartCustomerProcesso
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_construct = function FEaiChartCustomerProcessor_construct(){
+MO.FEaiChartDptMarketerProcessor_construct = function FEaiChartDptMarketerProcessor_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置变量
@@ -115,7 +120,7 @@ MO.FEaiChartCustomerProcessor_construct = function FEaiChartCustomerProcessor_co
    // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建缓冲
-   o._dynamicInfo = MO.Class.create(MO.FEaiChartCustomerDynamicInfo);
+   o._dynamicInfo = MO.Class.create(MO.FEaiChartDptMarketerDynamicInfo);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
@@ -125,13 +130,13 @@ MO.FEaiChartCustomerProcessor_construct = function FEaiChartCustomerProcessor_co
 // <T>收集实体。</T>
 //
 // @method
-// @return FEaiChartCustomerProcessorEntity 实体
+// @return FEaiChartDptMarketerProcessorEntity 实体
 //==========================================================
-MO.FEaiChartCustomerProcessor_allocUnit = function FEaiChartCustomerProcessor_allocUnit(){
+MO.FEaiChartDptMarketerProcessor_allocUnit = function FEaiChartDptMarketerProcessor_allocUnit(){
    var o = this;
    var unit = o._unitPool.alloc();
    if(!unit){
-      unit = MO.Class.create(MO.FEaiChartCustomerDynamicUnit);
+      unit = MO.Class.create(MO.FEaiChartDptMarketerDynamicUnit);
    }
    return unit;
 }
@@ -141,7 +146,7 @@ MO.FEaiChartCustomerProcessor_allocUnit = function FEaiChartCustomerProcessor_al
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_setup = function FEaiChartCustomerProcessor_setup(){
+MO.FEaiChartDptMarketerProcessor_setup = function FEaiChartDptMarketerProcessor_setup(){
    var o = this;
    // 创建声音
    var audioConsole = MO.Console.find(MO.FAudioConsole);
@@ -158,20 +163,44 @@ MO.FEaiChartCustomerProcessor_setup = function FEaiChartCustomerProcessor_setup(
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_calculateCurrent = function FEaiChartCustomerProcessor_calculateCurrent(){
+MO.FEaiChartDptMarketerProcessor_calculateCurrent = function FEaiChartDptMarketerProcessor_calculateCurrent(){
    var o = this;
    var info = o._dynamicInfo;
    var investmentCurrent = info.investmentCount();
-   var investmentTotalCurrent = info.investmentTotal();
+   var redemptionCurrent = info.redemptionCount();
+   var interestCount = info.interestCount();
+   var performanceCurrent = info.performanceCount();
+   var investmentTotal = info.investmentTotal();
+   var redemptionTotal = info.redemptionTotal();
+   var netinvestmentTotal = info.netinvestmentTotal();
+
    var units = o._units;
    var count = units.count();
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
-      investmentCurrent -= unit.investment();
-      investmentTotalCurrent -= unit.investment();
+
+      var actionCd = unit.customerActionCd();
+      var amount = unit.customerActionAmount();
+      var interest = unit.customerActionInterest();
+      if(actionCd == 1){
+         investmentCurrent -= amount;
+         performanceCurrent -= amount;
+         investmentTotal -= amount;
+      }else if(actionCd == 2){
+         redemptionCurrent -= amount;
+         interestCount -= interest;
+         redemptionTotal -= amount;
+      }
    }
-   o._invementTotalCurrent = investmentTotalCurrent;
+
+   o._investmentTotal = investmentTotal;
+   o._redemptionTotal = redemptionTotal;
+   o._netinvestmentTotal = investmentTotal - redemptionTotal;
    o._invementDayCurrent = investmentCurrent;
+   o._redemptionDayCurrent = redemptionCurrent;
+   o._netinvestmentDayCurrent = investmentCurrent - redemptionCurrent;
+   o._interestDayCurrent = interestCount;
+   o._performanceDayCurrent = performanceCurrent;
 }
 
 //==========================================================
@@ -179,29 +208,32 @@ MO.FEaiChartCustomerProcessor_calculateCurrent = function FEaiChartCustomerProce
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_focusEntity = function FEaiChartCustomerProcessor_focusEntity(unit){
+MO.FEaiChartDptMarketerProcessor_focusEntity = function FEaiChartDptMarketerProcessor_focusEntity(unit){
    var o = this;
    var mapEntity = o._mapEntity;
    // 显示实体
-   var card = unit.card();
-   var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
-   if(cityEntity){
-      // 计算级别
-      var investment = unit.investment();
-      var level = MO.Console.find(MO.FEaiLogicConsole).statistics().calculateAmountLevel(investment);
-      // 更新省份数据
-      var provinceCode = cityEntity.data().provinceCode();
-      var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
-      if(provinceEntity){
-         provinceEntity.doInvestment(level, investment);
-      }
-      // 更新城市数据
-      cityEntity.addInvestmentTotal(level, investment);
-      o._mapEntity.upload();
-      // 播放声音
-      var autio = o._autios[level];
-      if(autio){
-         autio.play(0);
+   var actionCd = unit.customerActionCd();
+   if(actionCd == 1){
+      var card = unit.customerCard();
+      var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
+      if(cityEntity){
+         // 计算级别
+         var amount = unit.customerActionAmount();
+         var level = MO.Console.find(MO.FEaiLogicConsole).statistics().calculateAmountLevel(amount);
+         // 更新省份数据
+         var provinceCode = cityEntity.data().provinceCode();
+         var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
+         if(provinceEntity){
+            provinceEntity.doInvestment(level, amount);
+         }
+         // 更新城市数据
+         cityEntity.addInvestmentTotal(level, amount);
+         o._mapEntity.upload();
+         // 播放声音
+         var autio = o._autios[level];
+         if(autio){
+            autio.play(0);
+         }
       }
    }
    //..........................................................
@@ -218,7 +250,7 @@ MO.FEaiChartCustomerProcessor_focusEntity = function FEaiChartCustomerProcessor_
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiChartCustomerProcessor_process = function FEaiChartCustomerProcessor_process(){
+MO.FEaiChartDptMarketerProcessor_process = function FEaiChartDptMarketerProcessor_process(){
    var o = this;
    //..........................................................
    // 获得系统时间
@@ -244,7 +276,7 @@ MO.FEaiChartCustomerProcessor_process = function FEaiChartCustomerProcessor_proc
       var endDate = o._endDate;
       beginDate.assign(endDate);
       endDate.assign(systemDate);
-      statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
+      statistics.marketer().doMarketerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
       beginDate.assign(endDate);
    }
@@ -280,7 +312,7 @@ MO.FEaiChartCustomerProcessor_process = function FEaiChartCustomerProcessor_proc
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_dispose = function FEaiChartCustomerProcessor_dispose(){
+MO.FEaiChartDptMarketerProcessor_dispose = function FEaiChartDptMarketerProcessor_dispose(){
    var o = this;
    // 释放属性
    o._units = MO.Lang.Object.dispose(o._units);

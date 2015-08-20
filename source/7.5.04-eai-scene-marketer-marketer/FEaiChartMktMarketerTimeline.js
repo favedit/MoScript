@@ -5,7 +5,7 @@
 // @author sunpeng
 // @version 150630
 //==========================================================
-MO.FEaiChartMarketerTimeline = function FEaiChartMarketerTimeline(o) {
+MO.FEaiChartMktMarketerTimeline = function FEaiChartMktMarketerTimeline(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
@@ -23,14 +23,14 @@ MO.FEaiChartMarketerTimeline = function FEaiChartMarketerTimeline(o) {
    o._decoLineWidth    = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
    //..........................................................
    // @event
-   o.oeUpdate          = MO.FEaiChartMarketerTimeline_oeUpdate;
+   o.oeUpdate          = MO.FEaiChartMktMarketerTimeline_oeUpdate;
    //..........................................................
    // @method
-   o.construct         = MO.FEaiChartMarketerTimeline_construct;
-   o.sync              = MO.FEaiChartMarketerTimeline_sync;
-   o.drawTrend         = MO.FEaiChartMarketerTimeline_drawTrend;
-   o.onPaintBegin      = MO.FEaiChartMarketerTimeline_onPaintBegin;
-   o.on24HDataFetch    = MO.FEaiChartMarketerTimeline_on24HDataFetch;
+   o.construct         = MO.FEaiChartMktMarketerTimeline_construct;
+   o.sync              = MO.FEaiChartMktMarketerTimeline_sync;
+   o.drawTrend         = MO.FEaiChartMktMarketerTimeline_drawTrend;
+   o.onPaintBegin      = MO.FEaiChartMktMarketerTimeline_onPaintBegin;
+   o.on24HDataFetch    = MO.FEaiChartMktMarketerTimeline_on24HDataFetch;
    return o;
 }
 
@@ -39,12 +39,12 @@ MO.FEaiChartMarketerTimeline = function FEaiChartMarketerTimeline(o) {
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTimeline_construct = function FEaiChartMarketerTimeline_construct() {
+MO.FEaiChartMktMarketerTimeline_construct = function FEaiChartMktMarketerTimeline_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
-   o._trendInfo = MO.Class.create(MO.FEaiChartMarketerTrendInfo);
+   o._trendInfo = MO.Class.create(MO.FEaiChartMktMarketerTrendInfo);
 }
 
 //==========================================================
@@ -52,7 +52,7 @@ MO.FEaiChartMarketerTimeline_construct = function FEaiChartMarketerTimeline_cons
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTimeline_sync = function FEaiChartMarketerTimeline_sync() {
+MO.FEaiChartMktMarketerTimeline_sync = function FEaiChartMktMarketerTimeline_sync() {
    var o = this;
    if (!o._ready) {
       return;
@@ -72,7 +72,7 @@ MO.FEaiChartMarketerTimeline_sync = function FEaiChartMarketerTimeline_sync() {
    endTime.assign(currentDate);
    // 发送数据
    var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-   statisticsLogic.doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
+   statisticsLogic.marketer().doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
 }
 
 //==========================================================
@@ -80,7 +80,7 @@ MO.FEaiChartMarketerTimeline_sync = function FEaiChartMarketerTimeline_sync() {
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTimeline_on24HDataFetch = function FEaiChartMarketerTimeline_on24HDataFetch(event) {
+MO.FEaiChartMktMarketerTimeline_on24HDataFetch = function FEaiChartMktMarketerTimeline_on24HDataFetch(event) {
    var o = this;
    // 读取数据
    o._trendInfo.unserializeSignBuffer(event.sign, event.content, true);
@@ -94,7 +94,7 @@ MO.FEaiChartMarketerTimeline_on24HDataFetch = function FEaiChartMarketerTimeline
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartMarketerTimeline_oeUpdate = function FEaiChartMarketerTimeline_oeUpdate(event) {
+MO.FEaiChartMktMarketerTimeline_oeUpdate = function FEaiChartMktMarketerTimeline_oeUpdate(event) {
    var o = this;
    o.__base.FGuiControl.oeUpdate.call(o, event);
    // 更新内容
@@ -114,7 +114,7 @@ MO.FEaiChartMarketerTimeline_oeUpdate = function FEaiChartMarketerTimeline_oeUpd
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTimeline_drawTrend = function FEaiChartMarketerTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor){
+MO.FEaiChartMktMarketerTimeline_drawTrend = function FEaiChartMktMarketerTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor){
    var o = this;
    var startTime = o._startTime;
    var units = o._trendInfo.units();
@@ -169,7 +169,7 @@ MO.FEaiChartMarketerTimeline_drawTrend = function FEaiChartMarketerTimeline_draw
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTimeline_onPaintBegin = function FEaiChartMarketerTimeline_onPaintBegin(event) {
+MO.FEaiChartMktMarketerTimeline_onPaintBegin = function FEaiChartMktMarketerTimeline_onPaintBegin(event) {
    var o = this;
    if (!o._ready) {
       return;

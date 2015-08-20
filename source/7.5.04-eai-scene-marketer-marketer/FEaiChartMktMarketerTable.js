@@ -5,7 +5,7 @@
 // @author sunpeng
 // @history 150702
 //==========================================================
-MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
+MO.FEaiChartMktMarketerTable = function FEaiChartMktMarketerTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
@@ -33,22 +33,22 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiChartMarketerTable_onImageLoad;
-   o.onPaintBegin          = MO.FEaiChartMarketerTable_onPaintBegin;
+   o.onImageLoad           = MO.FEaiChartMktMarketerTable_onImageLoad;
+   o.onPaintBegin          = MO.FEaiChartMktMarketerTable_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiChartMarketerTable_construct;
+   o.construct             = MO.FEaiChartMktMarketerTable_construct;
    // @method
-   o.setup                 = MO.FEaiChartMarketerTable_setup;
-   o.pushUnit              = MO.FEaiChartMarketerTable_pushUnit;
+   o.setup                 = MO.FEaiChartMktMarketerTable_setup;
+   o.pushUnit              = MO.FEaiChartMktMarketerTable_pushUnit;
 
-   o.setRankDayUnits       = MO.FEaiChartMarketerTable_setRankDayUnits;
-   o.setRankWeekUnits      = MO.FEaiChartMarketerTable_setRankWeekUnits;
-   o.setRankMonthUnits     = MO.FEaiChartMarketerTable_setRankMonthUnits;
+   o.setRankDayUnits       = MO.FEaiChartMktMarketerTable_setRankDayUnits;
+   o.setRankWeekUnits      = MO.FEaiChartMktMarketerTable_setRankWeekUnits;
+   o.setRankMonthUnits     = MO.FEaiChartMktMarketerTable_setRankMonthUnits;
 
-   o.drawRow               = MO.FEaiChartMarketerTable_drawRow;
+   o.drawRow               = MO.FEaiChartMktMarketerTable_drawRow;
    // @method
-   o.dispose               = MO.FEaiChartMarketerTable_dispose;
+   o.dispose               = MO.FEaiChartMktMarketerTable_dispose;
    return o;
 }
 
@@ -57,7 +57,7 @@ MO.FEaiChartMarketerTable = function FEaiChartMarketerTable(o) {
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageLoad(){
+MO.FEaiChartMktMarketerTable_onImageLoad = function FEaiChartMktMarketerTable_onImageLoad(){
    this.dirty();
 }
 
@@ -66,7 +66,7 @@ MO.FEaiChartMarketerTable_onImageLoad = function FEaiChartMarketerTable_onImageL
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaintBegin(event){
+MO.FEaiChartMktMarketerTable_onPaintBegin = function FEaiChartMktMarketerTable_onPaintBegin(event){
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -123,7 +123,7 @@ MO.FEaiChartMarketerTable_onPaintBegin = function FEaiChartMarketerTable_onPaint
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTable_construct = function FEaiChartMarketerTable_construct() {
+MO.FEaiChartMktMarketerTable_construct = function FEaiChartMktMarketerTable_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    // 创建属性
@@ -138,7 +138,7 @@ MO.FEaiChartMarketerTable_construct = function FEaiChartMarketerTable_construct(
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
+MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() {
    var o = this;
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建图片
@@ -570,7 +570,7 @@ MO.FEaiChartMarketerTable_setup = function FEaiChartMarketerTable_setup() {
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiChartMarketerTable_setRankDayUnits = function FEaiChartMarketerTable_setRankDayUnits(units){
+MO.FEaiChartMktMarketerTable_setRankDayUnits = function FEaiChartMktMarketerTable_setRankDayUnits(units){
    var o = this;
    var grid = o._gridDayRank;
    grid.clearRows();
@@ -602,7 +602,7 @@ MO.FEaiChartMarketerTable_setRankDayUnits = function FEaiChartMarketerTable_setR
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiChartMarketerTable_setRankWeekUnits = function FEaiChartMarketerTable_setRankWeekUnits(units){
+MO.FEaiChartMktMarketerTable_setRankWeekUnits = function FEaiChartMktMarketerTable_setRankWeekUnits(units){
    var o = this;
    var grid = o._gridWeeksRank;
    grid.clearRows();
@@ -633,7 +633,7 @@ MO.FEaiChartMarketerTable_setRankWeekUnits = function FEaiChartMarketerTable_set
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiChartMarketerTable_setRankMonthUnits = function FEaiChartMarketerTable_setRankMonthUnits(units){
+MO.FEaiChartMktMarketerTable_setRankMonthUnits = function FEaiChartMktMarketerTable_setRankMonthUnits(units){
    var o = this;
    var grid = o._gridMonthRank;
    grid.clearRows();
@@ -666,7 +666,7 @@ MO.FEaiChartMarketerTable_setRankMonthUnits = function FEaiChartMarketerTable_se
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(unit){
+MO.FEaiChartMktMarketerTable_pushUnit = function FEaiChartMktMarketerTable_pushUnit(unit){
    var o = this;
    // 检查参数
    if(!unit){
@@ -715,7 +715,7 @@ MO.FEaiChartMarketerTable_pushUnit = function FEaiChartMarketerTable_pushUnit(un
 //
 // @method
 //==========================================================
-MO.FEaiChartMarketerTable_dispose = function FEaiChartMarketerTable_dispose(){
+MO.FEaiChartMktMarketerTable_dispose = function FEaiChartMktMarketerTable_dispose(){
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);

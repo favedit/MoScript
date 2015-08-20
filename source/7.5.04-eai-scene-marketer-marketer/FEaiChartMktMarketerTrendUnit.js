@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150803
 //==========================================================
-MO.FEaiChartMarketerTrendUnit = function FEaiChartMarketerTrendUnit(o){
+MO.FEaiChartMktMarketerTrendUnit = function FEaiChartMktMarketerTrendUnit(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute

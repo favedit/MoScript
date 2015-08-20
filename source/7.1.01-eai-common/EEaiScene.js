@@ -22,9 +22,15 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartWorld      = 'chart.world';
    o.ChartSales      = 'chart.sales';
    // 图表
-   o.ChartIndustry   = 'chart.industry';
-   o.ChartInvestment = 'chart.investment';
-   o.ChartCustomer   = 'chart.customer';
-   o.ChartPerformence   = 'chart.performence';
+   o.ChartIndustry    = 'chart.industry';
+   o.ChartInvestment  = 'chart.investment';
+   o.ChartPerformence = 'chart.performence';
+   // 图表
+   o.ChartCustomer             = 'chart.customer';
+   o.ChartMarketerCustomer     = 'chart.marketer.customer';
+   o.ChartMarketerMarketer     = 'chart.marketer.marketer';
+   o.ChartDepartmentCustomer   = 'chart.department.customer';
+   o.ChartDepartmentMarketer   = 'chart.department.marketer';
+   o.ChartDepartmentDepartment = 'chart.department.department';
    return o;
 }

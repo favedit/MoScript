@@ -4,52 +4,46 @@ MO.FEaiChapter = function FEaiChapter(o){
 }
 MO.FEaiChartChapter = function FEaiChartChapter(o){
    o = MO.Class.inherits(this, o, MO.FEaiChapter);
-   o._code            = MO.EEaiChapter.Chart;
-   o._sceneTotal      = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
-   o._sceneHistory    = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
-   o._sceneCustomer   = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
-   o._sceneMarketer   = MO.Class.register(o, new MO.AGetter('_sceneMarketer'));
-   o._scenePerformence   = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
-   o._sceneDepartment = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
-   o._sceneLive       = MO.Class.register(o, new MO.AGetter('_sceneLive'));
-   o._sceneWorld      = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
-   o._sceneSales      = MO.Class.register(o, new MO.AGetter('_sceneSales'));
-   o.construct        = MO.FEaiChartChapter_construct;
-   o.setup            = MO.FEaiChartChapter_setup;
-   o.process          = MO.FEaiChartChapter_process;
-   o.dispose          = MO.FEaiChartChapter_dispose;
+   o._code                    = MO.EEaiChapter.Chart;
+   o._sceneTotal              = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
+   o._sceneHistory            = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
+   o._sceneCustomer           = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
+   o._sceneMarketerMarketer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerMarketer'));
+   o._sceneDepartmentMarketer = MO.Class.register(o, new MO.AGetter('_sceneDepartmentMarketer'));
+   o._scenePerformence        = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
+   o._sceneDepartment         = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
+   o._sceneLive               = MO.Class.register(o, new MO.AGetter('_sceneLive'));
+   o._sceneWorld              = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
+   o._sceneSales              = MO.Class.register(o, new MO.AGetter('_sceneSales'));
+   o.construct                = MO.FEaiChartChapter_construct;
+   o.createScene              = MO.FEaiChartChapter_createScene;
+   o.process                  = MO.FEaiChartChapter_process;
+   o.dispose                  = MO.FEaiChartChapter_dispose;
    return o;
 }
 MO.FEaiChartChapter_construct = function FEaiChartChapter_construct(){
    var o = this;
    o.__base.FEaiChapter.construct.call(o);
 }
-MO.FEaiChartChapter_setup = function FEaiChartChapter_setup(){
+MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
    var o = this;
-   var scene = o._sceneTotal = MO.Class.create(MO.FEaiChartTotalScene);
+   var scene = null;
+   switch(code){
+      case MO.EEaiScene.ChartMarketerCustomer:
+         scene = o._sceneMarketerCustomer = MO.Class.create(MO.FEaiChartMktCustomerScene);
+         break;
+      case MO.EEaiScene.ChartMarketerMarketer:
+         scene = o._sceneMarketerMarketer = MO.Class.create(MO.FEaiChartMktMarketerScene);
+         break;
+      case MO.EEaiScene.ChartDepartmentMarketer:
+         scene = o._sceneDepartmentMarketer = MO.Class.create(MO.FEaiChartDptMarketerScene);
+         break;
+      case MO.EEaiScene.ChartPerformence:
+         scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
+         break;
+   }
    scene.linkGraphicContext(o);
-   o.registerScene(scene);
-   var scene = o._sceneHistory = MO.Class.create(MO.FEaiChartHistoryScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
-   var scene = o._sceneCustomer = MO.Class.create(MO.FEaiChartCustomerScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
-   var scene = o._sceneMarketer = MO.Class.create(MO.FEaiChartMarketerScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
-   var scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
-   var scene = o._sceneDepartment = MO.Class.create(MO.FEaiChartDepartmentScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
-   var scene = o._sceneLive = MO.Class.create(MO.FEaiChartLiveScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
-   var scene = o._sceneWorld = MO.Class.create(MO.FEaiChartWorldScene);
-   scene.linkGraphicContext(o);
-   o.registerScene(scene);
+   return scene;
 }
 MO.FEaiChartChapter_process = function FEaiChartChapter_process(){
    var o = this;

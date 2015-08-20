@@ -5,32 +5,32 @@
 // @author sunpeng
 // @version 150630
 //==========================================================
-MO.FEaiChartCustomerTimeline = function FEaiChartCustomerTimeline(o) {
+MO.FEaiChartDptMarketerTimeline = function FEaiChartDptMarketerTimeline(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
-   o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
-   o._ready = false;
-   o._investmentTotal = 0;
-   o._intervalMiniute = 10;
+   o._startTime        = MO.Class.register(o, new MO.AGetSet('_startTime'));
+   o._endTime          = MO.Class.register(o, new MO.AGetSet('_endTime'));
+   o._ready            = false;
+   o._investmentTotal  = 0;
+   o._intervalMiniute  = 10;
    // @attribute
    o._baseHeight = 5;
    o._degreeLineHeight = MO.Class.register(o, new MO.AGetSet('_degreeLineHeight'), 10);
-   o._triangleWidth = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
-   o._triangleHeight = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
-   o._decoLineGap = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
-   o._decoLineWidth = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
+   o._triangleWidth    = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
+   o._triangleHeight   = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
+   o._decoLineGap      = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
+   o._decoLineWidth    = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
    //..........................................................
    // @event
-   o.oeUpdate = MO.FEaiChartCustomerTimeline_oeUpdate;
+   o.oeUpdate          = MO.FEaiChartDptMarketerTimeline_oeUpdate;
    //..........................................................
    // @method
-   o.construct = MO.FEaiChartCustomerTimeline_construct;
-   o.sync = MO.FEaiChartCustomerTimeline_sync;
-   o.drawTrend = MO.FEaiChartCustomerTimeline_drawTrend;
-   o.onPaintBegin = MO.FEaiChartCustomerTimeline_onPaintBegin;
-   o.on24HDataFetch = MO.FEaiChartCustomerTimeline_on24HDataFetch;
+   o.construct         = MO.FEaiChartDptMarketerTimeline_construct;
+   o.sync              = MO.FEaiChartDptMarketerTimeline_sync;
+   o.drawTrend         = MO.FEaiChartDptMarketerTimeline_drawTrend;
+   o.onPaintBegin      = MO.FEaiChartDptMarketerTimeline_onPaintBegin;
+   o.on24HDataFetch    = MO.FEaiChartDptMarketerTimeline_on24HDataFetch;
    return o;
 }
 
@@ -39,12 +39,12 @@ MO.FEaiChartCustomerTimeline = function FEaiChartCustomerTimeline(o) {
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerTimeline_construct = function FEaiChartCustomerTimeline_construct() {
+MO.FEaiChartDptMarketerTimeline_construct = function FEaiChartDptMarketerTimeline_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
-   o._trendInfo = MO.Class.create(MO.FEaiChartCustomerTrendInfo);
+   o._trendInfo = MO.Class.create(MO.FEaiChartDptMarketerTrendInfo);
 }
 
 //==========================================================
@@ -52,13 +52,13 @@ MO.FEaiChartCustomerTimeline_construct = function FEaiChartCustomerTimeline_cons
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerTimeline_sync = function FEaiChartCustomerTimeline_sync() {
+MO.FEaiChartDptMarketerTimeline_sync = function FEaiChartDptMarketerTimeline_sync() {
    var o = this;
    if (!o._ready) {
       return;
    }
    var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
-   if (!systemLogic.testReady()) {
+   if(!systemLogic.testReady()){
       return;
    }
    var currentDate = systemLogic.currentDate();
@@ -72,7 +72,7 @@ MO.FEaiChartCustomerTimeline_sync = function FEaiChartCustomerTimeline_sync() {
    endTime.assign(currentDate);
    // 发送数据
    var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-   statisticsLogic.marketer().doCustomerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
+   statisticsLogic.marketer().doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
 }
 
 //==========================================================
@@ -80,7 +80,7 @@ MO.FEaiChartCustomerTimeline_sync = function FEaiChartCustomerTimeline_sync() {
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerTimeline_on24HDataFetch = function FEaiChartCustomerTimeline_on24HDataFetch(event) {
+MO.FEaiChartDptMarketerTimeline_on24HDataFetch = function FEaiChartDptMarketerTimeline_on24HDataFetch(event) {
    var o = this;
    // 读取数据
    o._trendInfo.unserializeSignBuffer(event.sign, event.content, true);
@@ -94,7 +94,7 @@ MO.FEaiChartCustomerTimeline_on24HDataFetch = function FEaiChartCustomerTimeline
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartCustomerTimeline_oeUpdate = function FEaiChartCustomerTimeline_oeUpdate(event) {
+MO.FEaiChartDptMarketerTimeline_oeUpdate = function FEaiChartDptMarketerTimeline_oeUpdate(event) {
    var o = this;
    o.__base.FGuiControl.oeUpdate.call(o, event);
    // 更新内容
@@ -114,7 +114,7 @@ MO.FEaiChartCustomerTimeline_oeUpdate = function FEaiChartCustomerTimeline_oeUpd
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerTimeline_drawTrend = function FEaiChartCustomerTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor) {
+MO.FEaiChartDptMarketerTimeline_drawTrend = function FEaiChartDptMarketerTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor){
    var o = this;
    var startTime = o._startTime;
    var units = o._trendInfo.units();
@@ -131,7 +131,7 @@ MO.FEaiChartCustomerTimeline_drawTrend = function FEaiChartCustomerTimeline_draw
    handle.beginPath();
    handle.moveTo(lastX, lastY);
    var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
-   for (var i = 1; i < count; i++) {
+   for(var i = 1; i < count; i++){
       var unit = units.get(i);
       var value = unit[propertyName];
       startTime.parseAuto(unit.recordDate());
@@ -143,10 +143,10 @@ MO.FEaiChartCustomerTimeline_drawTrend = function FEaiChartCustomerTimeline_draw
       handle.lineTo(x, y);
    }
    var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
-   var bottomColor = '#' + hexColor.substring(2);
+   //var bottomColor = '#' + hexColor.substring(2);
    var opBottomColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
    var hexColor = MO.Lang.Hex.format(rateResource.findRate(1));
-   var topColor = '#' + hexColor.substring(2);
+   //var topColor = '#' + hexColor.substring(2);
    var opTopColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
    var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
    gradient.addColorStop('0', bottomColor);
@@ -157,11 +157,11 @@ MO.FEaiChartCustomerTimeline_drawTrend = function FEaiChartCustomerTimeline_draw
    handle.strokeStyle = gradient;
    handle.lineWidth = 4;
    handle.stroke();
-   handle.fillStyle = opGradient;
-   handle.lineTo(x, dataBottom);
-   handle.lineTo(dataLeft, dataBottom);
-   handle.lineTo(dataLeft, lastY);
-   handle.fill();
+   //handle.fillStyle = opGradient;
+   //handle.lineTo(x, dataBottom);
+   //handle.lineTo(dataLeft, dataBottom);
+   //handle.lineTo(dataLeft, lastY);
+   //handle.fill();
 }
 
 //==========================================================
@@ -169,7 +169,7 @@ MO.FEaiChartCustomerTimeline_drawTrend = function FEaiChartCustomerTimeline_draw
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_onPaintBegin(event) {
+MO.FEaiChartDptMarketerTimeline_onPaintBegin = function FEaiChartDptMarketerTimeline_onPaintBegin(event) {
    var o = this;
    if (!o._ready) {
       return;
@@ -181,6 +181,7 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
    var top = rectangle.top;
    var bottom = rectangle.top + rectangle.height;
    var middle = bottom - 30;
+
    var decoLeft = rectangle.left + 5;
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
@@ -195,7 +196,7 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
    var dataBottom = bottom - 30;
    var dataHeight = dataBottom - dataTop;
    // 主轴
-   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 1);
+   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
    // 刻度
    var startTime = o.startTime();
    var endTime = o.endTime();
@@ -216,17 +217,17 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
          textWidth = graphic.textWidth(text);
          graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
       }
-   }
 
+   }
    startTime.date.setTime(bakTime);
    startTime.refresh();
    // 曲线
    var trendInfo = o._trendInfo;
    var units = trendInfo.units();
-   if (!units) {
+   if(!units){
       return;
    }
-   if (units.isEmpty()) {
+   if(units.isEmpty()){
       return;
    }
    var unitFirst = units.first();
@@ -239,11 +240,19 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
       if (investment > maxAmount) {
          maxAmount = investment;
       }
+      var redemption = unit.redemption();
+      if (redemption > maxAmount) {
+         maxAmount = redemption;
+      }
    }
-   //曲线及填充
    o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
-   // ........................................................
-   // 统计   
+   o.drawTrend(graphic, '_redemption', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#0088FF', '#0000FF');
+   //o.drawTrend(graphic, '_netinvestment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#00FF00');
+   //o.drawTrend(graphic, '_interest', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FFFFFF');
+   // 完成
+   startTime.date.setTime(bakTime);
+   startTime.refresh();
+   // 统计
    var lastHour = -1;
    var hourInves = 0;
    var maxHourInves = 0;
@@ -256,9 +265,9 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
       startTime.refresh();
       var hour = startTime.date.getHours();
       if (lastHour == hour) {
-         hourInves += unit.investment();
-      } else {
-         if (hourInves > maxHourInves) {
+         hourInves += unit.redemption();
+      }else{
+         if(hourInves > maxHourInves){
             maxHourInves = hourInves;
             hourInves = 0;
          }
@@ -276,22 +285,22 @@ MO.FEaiChartCustomerTimeline_onPaintBegin = function FEaiChartCustomerTimeline_o
    var textWidth = graphic.textWidth('投资总计：');
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
    var investmentTotalWidth = graphic.textWidth(investmentTotalText);
-   //24小时内，小时投资峰值
-   var investmentMaxText = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
-   var investmentMaxWidth = graphic.textWidth(investmentMaxText);
-   //24小时内，小时平均值
-   var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
-   var investmentAvgWidth = graphic.textWidth(investmentAvgText);
-   var maxWidth = investmentTotalWidth;
+   var redemptionTotalText = MO.Lang.Float.unitFormat(trendInfo.redemptionTotal(), 0, 0, 2, 0, 10000, '万');
+   var redemptionTotalWidth = graphic.textWidth(redemptionTotalText);
+   var netinvestmentTotalText = MO.Lang.Float.unitFormat(trendInfo.netinvestmentTotal(), 0, 0, 2, 0, 10000, '万');
+   var netinvestmentTotalWidth = graphic.textWidth(netinvestmentTotalText);
+   var interestTotalText = MO.Lang.Float.unitFormat(trendInfo.interestTotal(), 0, 0, 2, 0, 10000, '万');
+   var interestTotalWidth = graphic.textWidth(interestTotalText);
+   var maxWidth = Math.max(Math.max(Math.max(investmentTotalWidth, redemptionTotalWidth), netinvestmentTotalWidth), interestTotalWidth);
    // 绘制文字
-   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
+   graphic.drawText('投资总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
    graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
-
-   graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
-
-   graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
+   graphic.drawText('赎回总额：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
+   graphic.drawText(redemptionTotalText, decoLeft + textWidth + maxWidth - redemptionTotalWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
+   graphic.drawText('净投总额：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
+   graphic.drawText(netinvestmentTotalText, decoLeft + textWidth + maxWidth - netinvestmentTotalWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
+   graphic.drawText('利息总额：', decoLeft, rowStart + rowHeight * 3 + 15, '#00CFFF');
+   graphic.drawText(interestTotalText, decoLeft + textWidth + maxWidth - interestTotalWidth, rowStart + rowHeight * 3 + 15, '#00B5F6');
    // 设置时间
    startTime.date.setTime(bakTime);
    startTime.refresh();

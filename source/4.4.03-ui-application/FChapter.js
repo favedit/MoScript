@@ -26,6 +26,7 @@ MO.FChapter = function FChapter(o){
    // @method
    o.registerScene        = MO.FChapter_registerScene;
    o.unregisterScene      = MO.FChapter_unregisterScene;
+   o.createScene          = MO.Method.empty;
    o.selectScene          = MO.FChapter_selectScene;
    o.selectSceneByCode    = MO.FChapter_selectSceneByCode;
    // @method
@@ -120,8 +121,15 @@ MO.FChapter_selectScene = function FChapter_selectScene(scene){
 //==========================================================
 MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var o = this;
+   // 获得场景
    var scene = o._scenes.get(code);
-   MO.Assert.debugNotNull(scene);
+   // 创建场景
+   if(scene == null){
+      scene = o.createScene(code);
+      MO.Assert.debugNotNull(scene);
+      o.registerScene(scene);
+   }
+   // 选择场景
    o.selectScene(scene);
    return scene;
 }

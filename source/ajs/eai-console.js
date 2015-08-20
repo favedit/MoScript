@@ -193,16 +193,16 @@ MO.FEaiLogicAchievement_doQuery = function FEaiLogicAchievement_doQuery(owner, c
 }
 MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
-   o._system       = MO.Class.register(o, new MO.AGetter('_system'));
-   o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
-   o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));
-   o._schedule     = MO.Class.register(o, new MO.AGetter('_schedule'));
-   o._statistics   = MO.Class.register(o, new MO.AGetter('_statistics'));
-   o._thread       = null;
-   o._interval     = 1000 * 60 * 10;
-   o.onProcess     = MO.FEaiLogicConsole_onProcess;
-   o.construct     = MO.FEaiLogicConsole_construct;
-   o.dispose       = MO.FEaiLogicConsole_dispose;
+   o._system             = MO.Class.register(o, new MO.AGetter('_system'));
+   o._organization       = MO.Class.register(o, new MO.AGetter('_organization'));
+   o._achievement        = MO.Class.register(o, new MO.AGetter('_achievement'));
+   o._schedule           = MO.Class.register(o, new MO.AGetter('_schedule'));
+   o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
+   o._thread             = null;
+   o._interval           = 1000 * 60 * 10;
+   o.onProcess           = MO.FEaiLogicConsole_onProcess;
+   o.construct           = MO.FEaiLogicConsole_construct;
+   o.dispose             = MO.FEaiLogicConsole_dispose;
    return o;
 }
 MO.FEaiLogicConsole_onProcess = function FEaiLogicConsole_onProcess(event){
@@ -311,17 +311,21 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    o._code                 = 'statistics';
    o._customerDynamicFirst = true;
    o._marketerDynamicFirst = true;
+   o._customer             = MO.Class.register(o, new MO.AGetter('_customer'));
+   o._marketer             = MO.Class.register(o, new MO.AGetter('_marketer'));
+   o._department           = MO.Class.register(o, new MO.AGetter('_department'));
+   o.construct             = MO.FEaiLogicStatistics_construct;
    o.calculateAmountLevel  = MO.FEaiLogicStatistics_calculateAmountLevel;
-   o.doInvestmentDynamic   = MO.FEaiLogicStatistics_doInvestmentDynamic;
-   o.doInvestmentTrend     = MO.FEaiLogicStatistics_doInvestmentTrend;
-   o.doCustomerDynamic     = MO.FEaiLogicStatistics_doCustomerDynamic;
-   o.doCustomerTrend       = MO.FEaiLogicStatistics_doCustomerTrend;
-   o.doMarketerDynamic     = MO.FEaiLogicStatistics_doMarketerDynamic;
-   o.doMarketerTrend       = MO.FEaiLogicStatistics_doMarketerTrend;
-   o.doDepartmentDynamic   = MO.FEaiLogicStatistics_doDepartmentDynamic;
-   o.doDepartmentTrend     = MO.FEaiLogicStatistics_doDepartmentTrend;
    o.doPerformenceDynamic  = MO.FEaiLogicStatistics_doPerformenceDynamic;
+   o.dispose               = MO.FEaiLogicStatistics_dispose;
    return o;
+}
+MO.FEaiLogicStatistics_construct = function FEaiLogicStatistics_construct(){
+   var o = this;
+   o.__base.FEaiLogic.construct.call(o);
+   o._customer = MO.Class.create(MO.FEaiLogicStatisticsCustomer);
+   o._marketer = MO.Class.create(MO.FEaiLogicStatisticsMarketer);
+   o._department = MO.Class.create(MO.FEaiLogicStatisticsDepartment);
 }
 MO.FEaiLogicStatistics_calculateAmountLevel = function FEaiLogicStatistics_calculateAmountLevel(amount){
    var o = this;
@@ -407,6 +411,152 @@ MO.FEaiLogicStatistics_doPerformenceDynamic = function FEaiLogicStatistics_doPer
    parameters.set('begin', startDate);
    parameters.set('end', endDate);
    o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=dynamic', parameters, owner, callback);
+}
+MO.FEaiLogicStatistics_dispose = function FEaiLogicStatistics_dispose(){
+   var o = this;
+   o._customer = MO.Lang.Object.dispose(o._customer);
+   o._marketer = MO.Lang.Object.dispose(o._marketer);
+   o._department = MO.Lang.Object.dispose(o._department);
+   o.__base.FEaiLogic.dispose.call(o);
+}
+MO.FEaiLogicStatisticsCustomer = function FEaiLogicStatisticsCustomer(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._customerDynamicFirst   = true;
+   o.doCustomerDynamic = MO.FEaiLogicStatisticsCustomer_doCustomerDynamic;
+   o.doCustomerTrend   = MO.FEaiLogicStatisticsCustomer_doCustomerTrend;
+   return o;
+}
+MO.FEaiLogicStatisticsCustomer_doCustomerDynamic = function FEaiLogicStatisticsCustomer_doCustomerDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var first = o._customerDynamicFirst;
+   var parameters = o.prepareParemeters();
+   if(first){
+      parameters.set('first', first);
+   }
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.customer.wv?do=dynamic', parameters, owner, callback);
+   o._customerDynamicFirst = false;
+}
+MO.FEaiLogicStatisticsCustomer_doCustomerTrend = function FEaiLogicStatisticsCustomer_doCustomerTrend(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.customer.wv?do=trend', parameters, owner, callback);
+}
+MO.FEaiLogicStatisticsDepartment = function FEaiLogicStatisticsDepartment(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._customerDynamicFirst   = true;
+   o._marketerDynamicFirst   = true;
+   o._departmentDynamicFirst = true;
+   o.doCustomerDynamic       = MO.FEaiLogicStatisticsDepartment_doCustomerDynamic;
+   o.doCustomerTrend         = MO.FEaiLogicStatisticsDepartment_doCustomerTrend;
+   o.doMarketerDynamic       = MO.FEaiLogicStatisticsDepartment_doMarketerDynamic;
+   o.doMarketerTrend         = MO.FEaiLogicStatisticsDepartment_doMarketerTrend;
+   o.doDepartmentDynamic     = MO.FEaiLogicStatisticsDepartment_doDepartmentDynamic;
+   o.doDepartmentTrend       = MO.FEaiLogicStatisticsDepartment_doDepartmentTrend;
+   return o;
+}
+MO.FEaiLogicStatisticsDepartment_doCustomerDynamic = function FEaiLogicStatisticsDepartment_doCustomerDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var first = o._customerDynamicFirst;
+   var parameters = o.prepareParemeters();
+   if(first){
+      parameters.set('first', first);
+   }
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.department.customer.wv?do=dynamic', parameters, owner, callback);
+   o._customerDynamicFirst = false;
+}
+MO.FEaiLogicStatisticsDepartment_doCustomerTrend = function FEaiLogicStatisticsDepartment_doCustomerTrend(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.department.customer.wv?do=trend', parameters, owner, callback);
+}
+MO.FEaiLogicStatisticsDepartment_doMarketerDynamic = function FEaiLogicStatisticsDepartment_doMarketerDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var first = o._marketerDynamicFirst;
+   var parameters = o.prepareParemeters();
+   if(first){
+      parameters.set('first', first);
+   }
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.department.marketer.wv?do=dynamic', parameters, owner, callback);
+   o._marketerDynamicFirst = false;
+}
+MO.FEaiLogicStatisticsDepartment_doMarketerTrend = function FEaiLogicStatisticsDepartment_doMarketerTrend(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.department.marketer.wv?do=trend', parameters, owner, callback);
+}
+MO.FEaiLogicStatisticsDepartment_doDepartmentDynamic = function FEaiLogicStatisticsDepartment_doDepartmentDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.department.department.wv?do=dynamic', parameters, owner, callback);
+}
+MO.FEaiLogicStatisticsDepartment_doDepartmentTrend = function FEaiLogicStatisticsDepartment_doDepartmentTrend(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.department.department.wv?do=trend', parameters, owner, callback);
+}
+MO.FEaiLogicStatisticsMarketer = function FEaiLogicStatisticsMarketer(o){
+   o = MO.Class.inherits(this, o, MO.FEaiLogic);
+   o._customerDynamicFirst = true;
+   o._marketerDynamicFirst = true;
+   o.doCustomerDynamic     = MO.FEaiLogicStatisticsMarketer_doCustomerDynamic;
+   o.doCustomerTrend       = MO.FEaiLogicStatisticsMarketer_doCustomerTrend;
+   o.doMarketerDynamic     = MO.FEaiLogicStatisticsMarketer_doMarketerDynamic;
+   o.doMarketerTrend       = MO.FEaiLogicStatisticsMarketer_doMarketerTrend;
+   return o;
+}
+MO.FEaiLogicStatisticsMarketer_doCustomerDynamic = function FEaiLogicStatisticsMarketer_doCustomerDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var first = o._customerDynamicFirst;
+   var parameters = o.prepareParemeters();
+   if(first){
+      parameters.set('first', first);
+   }
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.customer.wv?do=dynamic', parameters, owner, callback);
+   o._customerDynamicFirst = false;
+}
+MO.FEaiLogicStatisticsMarketer_doCustomerTrend = function FEaiLogicStatisticsMarketer_doCustomerTrend(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.customer.wv?do=trend', parameters, owner, callback);
+}
+MO.FEaiLogicStatisticsMarketer_doMarketerDynamic = function FEaiLogicStatisticsMarketer_doMarketerDynamic(owner, callback, startDate, endDate){
+   var o = this;
+   var first = o._marketerDynamicFirst;
+   var parameters = o.prepareParemeters();
+   if(first){
+      parameters.set('first', first);
+   }
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.marketer.wv?do=dynamic', parameters, owner, callback);
+   o._marketerDynamicFirst = false;
+}
+MO.FEaiLogicStatisticsMarketer_doMarketerTrend = function FEaiLogicStatisticsMarketer_doMarketerTrend(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.marketer.marketer.wv?do=trend', parameters, owner, callback);
 }
 MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
    o = MO.Class.inherits(this, o, MO.FEaiLogic);

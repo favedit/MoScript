@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150803
 //==========================================================
-MO.FEaiChartMarketerTrendInfo = function FEaiChartMarketerTrendInfo(o){
+MO.FEaiChartDptMarketerTrendInfo = function FEaiChartDptMarketerTrendInfo(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    // @attribute
    o._investmentTotal    = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Double)]);
@@ -15,6 +15,6 @@ MO.FEaiChartMarketerTrendInfo = function FEaiChartMarketerTrendInfo(o){
    o._performanceTotal   = MO.Class.register(o, [new MO.AGetter('_performanceTotal'), new MO.APersistence('_performanceTotal', MO.EDataType.Double)]);
    //..........................................................
    // @attribute
-   o._units = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartMarketerTrendUnit)]);
+   o._units = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartDptMarketerTrendUnit)]);
    return o;
 }

@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150619
 //==========================================================
-MO.FEaiChartCustomerProcessor = function FEaiChartCustomerProcessor(o){
+MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
@@ -51,20 +51,20 @@ MO.FEaiChartCustomerProcessor = function FEaiChartCustomerProcessor(o){
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @method
-   o.onDynamicData            = MO.FEaiChartCustomerProcessor_onDynamicData;
+   o.onDynamicData            = MO.FEaiChartMktCustomerProcessor_onDynamicData;
    //..........................................................
    // @method
-   o.construct                = MO.FEaiChartCustomerProcessor_construct;
+   o.construct                = MO.FEaiChartMktCustomerProcessor_construct;
    // @method
-   o.allocUnit                = MO.FEaiChartCustomerProcessor_allocUnit;
-   o.allocShape               = MO.FEaiChartCustomerProcessor_allocShape;
-   o.setup                    = MO.FEaiChartCustomerProcessor_setup;
+   o.allocUnit                = MO.FEaiChartMktCustomerProcessor_allocUnit;
+   o.allocShape               = MO.FEaiChartMktCustomerProcessor_allocShape;
+   o.setup                    = MO.FEaiChartMktCustomerProcessor_setup;
    // @method
-   o.calculateCurrent         = MO.FEaiChartCustomerProcessor_calculateCurrent;
-   o.focusEntity              = MO.FEaiChartCustomerProcessor_focusEntity;
-   o.process                  = MO.FEaiChartCustomerProcessor_process;
+   o.calculateCurrent         = MO.FEaiChartMktCustomerProcessor_calculateCurrent;
+   o.focusEntity              = MO.FEaiChartMktCustomerProcessor_focusEntity;
+   o.process                  = MO.FEaiChartMktCustomerProcessor_process;
    // @method
-   o.dispose                  = MO.FEaiChartCustomerProcessor_dispose;
+   o.dispose                  = MO.FEaiChartMktCustomerProcessor_dispose;
    return o;
 }
 
@@ -73,7 +73,7 @@ MO.FEaiChartCustomerProcessor = function FEaiChartCustomerProcessor(o){
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_onDynamicData = function FEaiChartCustomerProcessor_onDynamicData(event){
+MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerProcessor_onDynamicData(event){
    var o = this;
    var content = event.content;
    // 读取数据
@@ -103,7 +103,7 @@ MO.FEaiChartCustomerProcessor_onDynamicData = function FEaiChartCustomerProcesso
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_construct = function FEaiChartCustomerProcessor_construct(){
+MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProcessor_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置变量
@@ -115,7 +115,7 @@ MO.FEaiChartCustomerProcessor_construct = function FEaiChartCustomerProcessor_co
    // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建缓冲
-   o._dynamicInfo = MO.Class.create(MO.FEaiChartCustomerDynamicInfo);
+   o._dynamicInfo = MO.Class.create(MO.FEaiChartMktCustomerDynamicInfo);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
@@ -125,13 +125,13 @@ MO.FEaiChartCustomerProcessor_construct = function FEaiChartCustomerProcessor_co
 // <T>收集实体。</T>
 //
 // @method
-// @return FEaiChartCustomerProcessorEntity 实体
+// @return FEaiChartMktCustomerProcessorEntity 实体
 //==========================================================
-MO.FEaiChartCustomerProcessor_allocUnit = function FEaiChartCustomerProcessor_allocUnit(){
+MO.FEaiChartMktCustomerProcessor_allocUnit = function FEaiChartMktCustomerProcessor_allocUnit(){
    var o = this;
    var unit = o._unitPool.alloc();
    if(!unit){
-      unit = MO.Class.create(MO.FEaiChartCustomerDynamicUnit);
+      unit = MO.Class.create(MO.FEaiChartMktCustomerDynamicUnit);
    }
    return unit;
 }
@@ -141,7 +141,7 @@ MO.FEaiChartCustomerProcessor_allocUnit = function FEaiChartCustomerProcessor_al
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_setup = function FEaiChartCustomerProcessor_setup(){
+MO.FEaiChartMktCustomerProcessor_setup = function FEaiChartMktCustomerProcessor_setup(){
    var o = this;
    // 创建声音
    var audioConsole = MO.Console.find(MO.FAudioConsole);
@@ -158,7 +158,7 @@ MO.FEaiChartCustomerProcessor_setup = function FEaiChartCustomerProcessor_setup(
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_calculateCurrent = function FEaiChartCustomerProcessor_calculateCurrent(){
+MO.FEaiChartMktCustomerProcessor_calculateCurrent = function FEaiChartMktCustomerProcessor_calculateCurrent(){
    var o = this;
    var info = o._dynamicInfo;
    var investmentCurrent = info.investmentCount();
@@ -179,7 +179,7 @@ MO.FEaiChartCustomerProcessor_calculateCurrent = function FEaiChartCustomerProce
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_focusEntity = function FEaiChartCustomerProcessor_focusEntity(unit){
+MO.FEaiChartMktCustomerProcessor_focusEntity = function FEaiChartMktCustomerProcessor_focusEntity(unit){
    var o = this;
    var mapEntity = o._mapEntity;
    // 显示实体
@@ -218,7 +218,7 @@ MO.FEaiChartCustomerProcessor_focusEntity = function FEaiChartCustomerProcessor_
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiChartCustomerProcessor_process = function FEaiChartCustomerProcessor_process(){
+MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcessor_process(){
    var o = this;
    //..........................................................
    // 获得系统时间
@@ -280,7 +280,7 @@ MO.FEaiChartCustomerProcessor_process = function FEaiChartCustomerProcessor_proc
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerProcessor_dispose = function FEaiChartCustomerProcessor_dispose(){
+MO.FEaiChartMktCustomerProcessor_dispose = function FEaiChartMktCustomerProcessor_dispose(){
    var o = this;
    // 释放属性
    o._units = MO.Lang.Object.dispose(o._units);

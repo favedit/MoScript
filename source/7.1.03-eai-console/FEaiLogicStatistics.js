@@ -13,24 +13,48 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    // @attribute
    o._customerDynamicFirst = true;
    o._marketerDynamicFirst = true;
+   // @attribute
+   o._customer             = MO.Class.register(o, new MO.AGetter('_customer'));
+   o._marketer             = MO.Class.register(o, new MO.AGetter('_marketer'));
+   o._department           = MO.Class.register(o, new MO.AGetter('_department'));
    //..........................................................
+   // @method
+   o.construct             = MO.FEaiLogicStatistics_construct;
    // @method
    o.calculateAmountLevel  = MO.FEaiLogicStatistics_calculateAmountLevel;
    // @method
-   o.doInvestmentDynamic   = MO.FEaiLogicStatistics_doInvestmentDynamic;
-   o.doInvestmentTrend     = MO.FEaiLogicStatistics_doInvestmentTrend;
+   //o.doInvestmentDynamic   = MO.FEaiLogicStatistics_doInvestmentDynamic;
+   //o.doInvestmentTrend     = MO.FEaiLogicStatistics_doInvestmentTrend;
    // @method
-   o.doCustomerDynamic     = MO.FEaiLogicStatistics_doCustomerDynamic;
-   o.doCustomerTrend       = MO.FEaiLogicStatistics_doCustomerTrend;
+   //o.doCustomerDynamic     = MO.FEaiLogicStatistics_doCustomerDynamic;
+   //o.doCustomerTrend       = MO.FEaiLogicStatistics_doCustomerTrend;
    // @method
-   o.doMarketerDynamic     = MO.FEaiLogicStatistics_doMarketerDynamic;
-   o.doMarketerTrend       = MO.FEaiLogicStatistics_doMarketerTrend;
+   //o.doMarketerDynamic     = MO.FEaiLogicStatistics_doMarketerDynamic;
+   //o.doMarketerTrend       = MO.FEaiLogicStatistics_doMarketerTrend;
    // @method
-   o.doDepartmentDynamic   = MO.FEaiLogicStatistics_doDepartmentDynamic;
-   o.doDepartmentTrend     = MO.FEaiLogicStatistics_doDepartmentTrend;
+   //o.doDepartmentDynamic   = MO.FEaiLogicStatistics_doDepartmentDynamic;
+   //o.doDepartmentTrend     = MO.FEaiLogicStatistics_doDepartmentTrend;
    // @method
    o.doPerformenceDynamic  = MO.FEaiLogicStatistics_doPerformenceDynamic;
+   // @method
+   o.dispose               = MO.FEaiLogicStatistics_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+// @param owner:Object 拥有者
+// @param callback:Function 回调函数
+//==========================================================
+MO.FEaiLogicStatistics_construct = function FEaiLogicStatistics_construct(){
+   var o = this;
+   o.__base.FEaiLogic.construct.call(o);
+   // 创建逻辑控制器
+   o._customer = MO.Class.create(MO.FEaiLogicStatisticsCustomer);
+   o._marketer = MO.Class.create(MO.FEaiLogicStatisticsMarketer);
+   o._department = MO.Class.create(MO.FEaiLogicStatisticsDepartment);
 }
 
 //==========================================================
@@ -221,4 +245,20 @@ MO.FEaiLogicStatistics_doPerformenceDynamic = function FEaiLogicStatistics_doPer
    parameters.set('begin', startDate);
    parameters.set('end', endDate);
    o.sendService('{eai.logic.service}/eai.financial.marketer.wv?do=dynamic', parameters, owner, callback);
+}
+
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiLogicStatistics_dispose = function FEaiLogicStatistics_dispose(){
+   var o = this;
+   // 释放属性
+   o._customer = MO.Lang.Object.dispose(o._customer);
+   o._marketer = MO.Lang.Object.dispose(o._marketer);
+   o._department = MO.Lang.Object.dispose(o._department);
+   // 父处理
+   o.__base.FEaiLogic.dispose.call(o);
 }

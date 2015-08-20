@@ -9,21 +9,21 @@ MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
    //..........................................................
    // @attribute
-   o._system       = MO.Class.register(o, new MO.AGetter('_system'));
-   o._organization = MO.Class.register(o, new MO.AGetter('_organization'));
-   o._achievement  = MO.Class.register(o, new MO.AGetter('_achievement'));
-   o._schedule     = MO.Class.register(o, new MO.AGetter('_schedule'));
-   o._statistics   = MO.Class.register(o, new MO.AGetter('_statistics'));
+   o._system             = MO.Class.register(o, new MO.AGetter('_system'));
+   o._organization       = MO.Class.register(o, new MO.AGetter('_organization'));
+   o._achievement        = MO.Class.register(o, new MO.AGetter('_achievement'));
+   o._schedule           = MO.Class.register(o, new MO.AGetter('_schedule'));
+   o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
    // @attribute
-   o._thread       = null;
-   o._interval     = 1000 * 60 * 10;
+   o._thread             = null;
+   o._interval           = 1000 * 60 * 10;
    //..........................................................
    // @event
-   o.onProcess     = MO.FEaiLogicConsole_onProcess;
+   o.onProcess           = MO.FEaiLogicConsole_onProcess;
    //..........................................................
    // @method
-   o.construct     = MO.FEaiLogicConsole_construct;
-   o.dispose       = MO.FEaiLogicConsole_dispose;
+   o.construct           = MO.FEaiLogicConsole_construct;
+   o.dispose             = MO.FEaiLogicConsole_dispose;
    return o;
 }
 

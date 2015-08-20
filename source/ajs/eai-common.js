@@ -36,10 +36,15 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartLive       = 'chart.live';
    o.ChartWorld      = 'chart.world';
    o.ChartSales      = 'chart.sales';
-   o.ChartIndustry   = 'chart.industry';
-   o.ChartInvestment = 'chart.investment';
-   o.ChartCustomer   = 'chart.customer';
-   o.ChartPerformence   = 'chart.performence';
+   o.ChartIndustry    = 'chart.industry';
+   o.ChartInvestment  = 'chart.investment';
+   o.ChartPerformence = 'chart.performence';
+   o.ChartCustomer             = 'chart.customer';
+   o.ChartMarketerCustomer     = 'chart.marketer.customer';
+   o.ChartMarketerMarketer     = 'chart.marketer.marketer';
+   o.ChartDepartmentCustomer   = 'chart.department.customer';
+   o.ChartDepartmentMarketer   = 'chart.department.marketer';
+   o.ChartDepartmentDepartment = 'chart.department.department';
    return o;
 }
 MO.Eai = new function FEai(){
