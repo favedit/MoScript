@@ -2879,19 +2879,18 @@ MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|D [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+   var count = arguments.length;
+   for(var n = 2; n < count; n++){
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      message = message.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
    result.append(message);
    o.output(owner, result.flush());
@@ -2916,19 +2915,18 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
+   var c = arguments.length;
    for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      message = message.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
    result.append(message);
    o.output(owner, result.flush());
@@ -2953,19 +2951,18 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|W [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+   var count = arguments.length;
+   for(var n = 2; n < count; n++){
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      message = message.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
    result.append(message);
    o.output(owner, result.flush());
@@ -2990,19 +2987,18 @@ MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
+   var c = arguments.length;
    for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      message = message.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
    result.append(message);
    o.output(owner, result.flush());

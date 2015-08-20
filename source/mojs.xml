@@ -166,14 +166,6 @@
          <File source='/ajs/core-template.js'/>
          <File source='/ajs/console.js'/>
       </FileMerger>
-      <FileMerger target='/ajs/mc.js'>
-         <File source='/ajs/lzma.js'/>
-         <File source='/ajs/runtime.js'/>
-         <File source='/ajs/lang.js'/>
-         <File source='/ajs/core.js'/>
-         <File source='/ajs/core-window.js'/>
-         <File source='/ajs/core-loader.js'/>
-      </FileMerger>
       <FileMerger target='/ajs/mo-window.js'>
          <File source='/ajs/core-window.js'/>
          <File source='/ajs/core-window-extension.js'/>
@@ -312,6 +304,25 @@
          <File source='/ajs/mo-design-private.js'/>
          <File source='/ajs/mo-design-share.js'/>
       </FileMerger>
+      <!-- MoCore -->
+      <FileMerger target='/ajs/mc.js'>
+         <File source='/ajs/lzma.js'/>
+         <File source='/ajs/runtime.js'/>
+         <File source='/ajs/lang.js'/>
+         <File source='/ajs/core.js'/>
+         <File source='/ajs/core-window.js'/>
+         <File source='/ajs/core-loader.js'/>
+      </FileMerger>
+      <!-- MoLoader -->
+      <FileMerger target='/ajs/ml.js'>
+         <File source='/ajs/lzma.js'/>
+         <File source='/ajs/mo-lang.js'/>
+         <File source='/ajs/mo-core.js'/>
+         <File source='/ajs/mo-window.js'/>
+         <File source='/ajs/core-loader.js'/>
+         <File source='/ajs/mo-graphic.js'/>
+      </FileMerger>
+      <!-- MoEngine -->
       <FileMerger target='/ajs/me.js'>
          <File source='/ajs/mo-lang.js'/>
          <File source='/ajs/mo-core.js'/>
@@ -320,7 +331,6 @@
          <File source='/ajs/mo-engine.js'/>
          <File source='/ajs/mo-ui.js'/>
          <File source='/ajs/mo-gui.js'/>
-         <!-- <File source='/ajs/mo-game.js'/> -->
       </FileMerger>
       <FileMerger target='/ajs/mo.js'>
          <File source='/ajs/mo-lang.js'/>
@@ -364,10 +374,6 @@
       </FileMerger>
       <FileMerger target='/ajs/mo-demo.js'>
          <File source='/ajs/demo.js'/>
-      </FileMerger>
-      <FileMerger target='/ajs/extension.js'>
-         <File source='/ajs/lzma.js'/>
-         <File source='/ajs/md5.js'/>
       </FileMerger>
       <!-- MoPlatform -->
       <FileMerger target='/ajs/mp.js'>

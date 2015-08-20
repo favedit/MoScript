@@ -13,10 +13,7 @@
 @REM ============================================================
 @COPY /Y %JS_HOME%\9.1.01-context\*.js %JS_HOME%\ajs\
 
-@REM @"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\lzma.js  --js_output_file ajs\release\lzma.js
-@REM @"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\lzma_worker.js  --js_output_file ajs\release\lzma_worker.js
-@"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\mc.js  --js_output_file ajs\release\mc.js
-@"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\mo.js  --js_output_file ajs\release\mo.js
+@"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\ml.js  --js_output_file ajs\release\ml.js
 @"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\me.js  --js_output_file ajs\release\me.js
 @"%JAVA_HOME%\bin\java.exe" -jar %JS_HOME%\..\library\compiler.jar --js ajs\eai.js --js_output_file ajs\release\eai.js
 
@@ -30,6 +27,5 @@
 @XCOPY /E /Y %JS_HOME%\ars\shader %PJ_EAI%\ars\shader
 
 @COPY /Y %JS_HOME%\ajs\release\lzma_worker.js %PJ_EAI%\ajs\lzma_worker.js
-@COPY /Y %JS_HOME%\ajs\release\mc.js          %PJ_EAI%\ajs\mc.js
-@COPY /Y %JS_HOME%\ajs\release\me.js          %PJ_EAI%\ajs\me.js
+@COPY /Y %JS_HOME%\ajs\release\ml.js          %PJ_EAI%\ajs\ml.js
 @COPY /Y %JS_HOME%\ajs\release\eai.jc         %PJ_EAI%\ajs\eai.jc

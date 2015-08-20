@@ -3219,19 +3219,18 @@ MO.RLogger.prototype.debug = function RLogger_debug(owner, message, params){
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|D [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+   var count = arguments.length;
+   for(var n = 2; n < count; n++){
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      message = message.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
    result.append(message);
    o.output(owner, result.flush());
@@ -3256,19 +3255,18 @@ MO.RLogger.prototype.info = function RLogger_info(owner, message, params){
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|I [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
+   var c = arguments.length;
    for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      message = message.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
    result.append(message);
    o.output(owner, result.flush());
@@ -3293,19 +3291,18 @@ MO.RLogger.prototype.warn = function RLogger_warn(owner, message, params){
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|W [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+   var count = arguments.length;
+   for(var n = 2; n < count; n++){
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      message = message.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
    result.append(message);
    o.output(owner, result.flush());
@@ -3330,19 +3327,18 @@ MO.RLogger.prototype.error = function RLogger_error(owner, message, params){
    var result = new MO.TString();
    result.append(MO.Lang.Date.format('yymmdd-hh24miss.ms'));
    result.append('|E [' + MO.Lang.String.rpad(name, o._labelLength) + '] ');
-   var as = arguments;
-   var c = as.length;
+   var c = arguments.length;
    for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a != null){
-         if(typeof(a) == 'function'){
-            s = MO.Method.name(a);
+      var parameter = arguments[n];
+      var value = '';
+      if(parameter != null){
+         if(typeof(parameter) == 'function'){
+            value = MO.Method.name(parameter);
          }else{
-            s = a.toString();
+            value = parameter.toString();
          }
       }
-      message = message.replace('{' + (n - 1) + '}', s);
+      message = message.replace('{' + (n - 1) + '}', value);
    }
    result.append(message);
    o.output(owner, result.flush());
@@ -15300,20 +15296,20 @@ MO.RContext.prototype.initialize = function RContext_initialize(s){
       }
    }
 }
-MO.RContext.prototype.get = function RContext_get(p, p1, p2, p3, p4, p5){
+MO.RContext.prototype.get = function RContext_get(code, p1, p2, p3, p4, p5){
    var o = this;
-   var r = o._contexts[p];
-   if(!r){
-      return MO.Logger.fatal(o, null, 'Can not find context (path={1})', p);
+   var context = o._contexts[code];
+   if(!context){
+      return MO.Logger.warn(o, 'Can not find context (code={1})', code);
    }
-   return MO.Lang.String.format(r.text, p1, p2, p3, p4, p5)
+   return MO.Lang.String.format(context.text, p1, p2, p3, p4, p5)
 }
 MO.RContext.prototype.find = function RContext_find(s, c){
    var o = this;
    var id = s + ':' + c;
    var r = o._contexts[id];
    if(!r){
-      return MO.Logger.fatal(o, null, 'Can not find context (id={1})', id);
+      return MO.Logger.warn(o, 'Can not find context (id={1})', id);
    }
    return r.text;
 }
@@ -37695,7 +37691,7 @@ MO.FTestApplication_setup = function FTestApplication_setup(hPanel){
       context3d.saveConfig(xcontext3d);
    }
    xroot.set('identity_code', identityCode);
-   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
+   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot);
 }
 MO.RApplication = function RApplication(){
    var o = this;

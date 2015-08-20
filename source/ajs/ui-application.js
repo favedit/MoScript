@@ -482,7 +482,7 @@ MO.FTestApplication_setup = function FTestApplication_setup(hPanel){
       context3d.saveConfig(xcontext3d);
    }
    xroot.set('identity_code', identityCode);
-   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
+   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot);
 }
 MO.RApplication = function RApplication(){
    var o = this;

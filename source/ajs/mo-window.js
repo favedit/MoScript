@@ -1439,20 +1439,20 @@ MO.RContext.prototype.initialize = function RContext_initialize(s){
       }
    }
 }
-MO.RContext.prototype.get = function RContext_get(p, p1, p2, p3, p4, p5){
+MO.RContext.prototype.get = function RContext_get(code, p1, p2, p3, p4, p5){
    var o = this;
-   var r = o._contexts[p];
-   if(!r){
-      return MO.Logger.fatal(o, null, 'Can not find context (path={1})', p);
+   var context = o._contexts[code];
+   if(!context){
+      return MO.Logger.warn(o, 'Can not find context (code={1})', code);
    }
-   return MO.Lang.String.format(r.text, p1, p2, p3, p4, p5)
+   return MO.Lang.String.format(context.text, p1, p2, p3, p4, p5)
 }
 MO.RContext.prototype.find = function RContext_find(s, c){
    var o = this;
    var id = s + ':' + c;
    var r = o._contexts[id];
    if(!r){
-      return MO.Logger.fatal(o, null, 'Can not find context (id={1})', id);
+      return MO.Logger.warn(o, 'Can not find context (id={1})', id);
    }
    return r.text;
 }

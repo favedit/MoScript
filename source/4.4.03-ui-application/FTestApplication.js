@@ -50,5 +50,5 @@ MO.FTestApplication_setup = function FTestApplication_setup(hPanel){
    }
    // 设置鉴定码
    xroot.set('identity_code', identityCode);
-   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot)
+   MO.Console.find(MO.FServiceConsole).send('cloud.info.device', 'access', xroot);
 }
