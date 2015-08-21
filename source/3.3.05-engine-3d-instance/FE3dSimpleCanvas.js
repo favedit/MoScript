@@ -271,11 +271,11 @@ MO.FE3dSimpleCanvas_onSceneLoad = function FE3dSimpleCanvas_onSceneLoad(p){
 // <T>改变大小事件处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件信息
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(p){
+MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(event){
    var o = this;
-   o.__base.FE3dCanvas.onResize.call(o, p);
+   o.__base.FE3dCanvas.onResize.call(o, event);
    // 获得相机信息
    var c = o._graphicContext;
    var cs = c.size();
@@ -313,7 +313,7 @@ MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
    var stage = o._stage = o._activeSpace = MO.Class.create(MO.FE3dSimpleStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
-   stage.selectTechnique(o, FE3dGeneralTechnique);
+   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
    //var faceLayer = stage.faceLayer();
    //faceLayer.selectTechnique(o, FE3dControlTechnique);
    // 注册舞台

@@ -200,7 +200,7 @@ MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
    o._adjustSize.set(adjustWidth, adjustHeight);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var context2d = canvas.context();
+   var context2d = canvas.graphicContext();
    context2d.drawImage(image, 0, 0, width, height);
    o._texture.upload(canvas);
    canvasConsole.free(canvas);
@@ -1222,14 +1222,16 @@ MO.FE3dRectangle = function FE3dRectangle(o){
    o.setup                 = MO.FE3dRectangle_setup;
    return o;
 }
-MO.FE3dRectangle_setup = function FE3dRectangle_setup(p){
+MO.FE3dRectangle_setup = function FE3dRectangle_setup(context){
    var o = this;
    var vp = [
       -1.0,  1.0, 0.0,
        1.0,  1.0, 0.0,
        1.0, -1.0, 0.0,
       -1.0, -1.0, 0.0 ];
-   var buffer = o._vertexPositionBuffer = p.createVertexBuffer();
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(vp, 4 * 3, 4);
    o.pushVertexBuffer(buffer);
    var vc = [
@@ -1237,7 +1239,9 @@ MO.FE3dRectangle_setup = function FE3dRectangle_setup(p){
       1.0, 0.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       0.0, 0.0, 0.0, 1.0 ];
-   var buffer = o._vertexColorBuffer = p.createVertexBuffer();
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer.setCode('color');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
    buffer.upload(vc, 4 * 4, 4);
    o.pushVertexBuffer(buffer);
    var id = [0, 1, 2, 0, 2, 3];

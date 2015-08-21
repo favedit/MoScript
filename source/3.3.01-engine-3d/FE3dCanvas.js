@@ -50,6 +50,7 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o.hide                = MO.FE3dCanvas_hide;
    o.setVisible          = MO.FE3dCanvas_setVisible;
    o.setPanel            = MO.FE3dCanvas_setPanel;
+   o.process             = MO.FE3dCanvas_process;
    // @method
    o.dispose             = MO.FE3dCanvas_dispose;
    return o;
@@ -92,7 +93,9 @@ MO.FE3dCanvas_ohTouchStop = function FE3dCanvas_ohTouchStop(event){
 // @param event:SEvent 事件信息
 //==========================================================
 MO.FE3dCanvas_onResize = function FE3dCanvas_onResize(event){
-   this.resize();
+   var o = this;
+   var hPanel = o._hParent;
+   o.resize(hPanel.offsetWidth, hPanel.offsetHeight);
 }
 
 //==========================================================
@@ -117,6 +120,7 @@ MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
 //==========================================================
 MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    var o = this;
+   o._hParent = hPanel;
    // 获得大小
    var size = o._size;
    var width = size.width;
@@ -147,10 +151,10 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    parameters.antialias = o._optionAntialias;
    o._graphicContext = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas, parameters);
    // 启动处理
-   if(o._optionStageProcess){
-      RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-      RStage.start(o._interval);
-   }
+   //if(o._optionStageProcess){
+      //RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+      //RStage.start(o._interval);
+   //}
    // 监听大小改变
    if(o._optionResize){
       MO.Window.lsnsResize.register(o, o.onResize);
@@ -228,7 +232,19 @@ MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    hPanel.appendChild(o._hCanvas);
    o._hPanel = hPanel;
    // 改变大小
-   o.resize();
+   o.resize(hPanel.offsetWidth, hPanel.offsetHeight);
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FE3dCanvas_process = function FE3dCanvas_process(){
+   var o = this;
+   // 进入帧处理
+   o.onEnterFrame();
+   o._stage.process();
 }
 
 //==========================================================

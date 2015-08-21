@@ -35,6 +35,7 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o.hide                = MO.FE3dCanvas_hide;
    o.setVisible          = MO.FE3dCanvas_setVisible;
    o.setPanel            = MO.FE3dCanvas_setPanel;
+   o.process             = MO.FE3dCanvas_process;
    o.dispose             = MO.FE3dCanvas_dispose;
    return o;
 }
@@ -48,7 +49,9 @@ MO.FE3dCanvas_ohTouchStop = function FE3dCanvas_ohTouchStop(event){
    this.__linker.onTouchStop(event);
 }
 MO.FE3dCanvas_onResize = function FE3dCanvas_onResize(event){
-   this.resize();
+   var o = this;
+   var hPanel = o._hParent;
+   o.resize(hPanel.offsetWidth, hPanel.offsetHeight);
 }
 MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
    var o = this;
@@ -59,6 +62,7 @@ MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
 }
 MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    var o = this;
+   o._hParent = hPanel;
    var size = o._size;
    var width = size.width;
    var height = size.height;
@@ -84,10 +88,6 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    parameters.alpha = o._optionAlpha;
    parameters.antialias = o._optionAntialias;
    o._graphicContext = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas, parameters);
-   if(o._optionStageProcess){
-      RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-      RStage.start(o._interval);
-   }
    if(o._optionResize){
       MO.Window.lsnsResize.register(o, o.onResize);
       MO.Window.lsnsOrientation.register(o, o.onResize);
@@ -125,7 +125,12 @@ MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;
    hPanel.appendChild(o._hCanvas);
    o._hPanel = hPanel;
-   o.resize();
+   o.resize(hPanel.offsetWidth, hPanel.offsetHeight);
+}
+MO.FE3dCanvas_process = function FE3dCanvas_process(){
+   var o = this;
+   o.onEnterFrame();
+   o._stage.process();
 }
 MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
    var o = this;
@@ -565,6 +570,7 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('general.color.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('general.color.flood', MO.FE3dFloodLightEffect);
    effectConsole.register('shadow.depth.automatic', MO.FE3dShadowDepthAutomaticEffect);
    effectConsole.register('shadow.depth.skeleton', MO.FE3dShadowDepthSkeletonEffect);
    effectConsole.register('shadow.color.automatic', MO.FE3dShadowColorAutomaticEffect);

@@ -2234,7 +2234,7 @@ MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width,
    var code = width + 'x' + height;
    var canvas = pools.alloc(code);
    if(!canvas){
-      canvas = MO.Class.create(FE2dCanvas);
+      canvas = MO.Class.create(MO.FE2dCanvas);
       canvas.size().set(width, height);
       canvas.build(MO.RWindow._hDocument);
    }
@@ -2289,6 +2289,7 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o.hide                = MO.FE3dCanvas_hide;
    o.setVisible          = MO.FE3dCanvas_setVisible;
    o.setPanel            = MO.FE3dCanvas_setPanel;
+   o.process             = MO.FE3dCanvas_process;
    o.dispose             = MO.FE3dCanvas_dispose;
    return o;
 }
@@ -2302,7 +2303,9 @@ MO.FE3dCanvas_ohTouchStop = function FE3dCanvas_ohTouchStop(event){
    this.__linker.onTouchStop(event);
 }
 MO.FE3dCanvas_onResize = function FE3dCanvas_onResize(event){
-   this.resize();
+   var o = this;
+   var hPanel = o._hParent;
+   o.resize(hPanel.offsetWidth, hPanel.offsetHeight);
 }
 MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
    var o = this;
@@ -2313,6 +2316,7 @@ MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
 }
 MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    var o = this;
+   o._hParent = hPanel;
    var size = o._size;
    var width = size.width;
    var height = size.height;
@@ -2338,10 +2342,6 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    parameters.alpha = o._optionAlpha;
    parameters.antialias = o._optionAntialias;
    o._graphicContext = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas, parameters);
-   if(o._optionStageProcess){
-      RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-      RStage.start(o._interval);
-   }
    if(o._optionResize){
       MO.Window.lsnsResize.register(o, o.onResize);
       MO.Window.lsnsOrientation.register(o, o.onResize);
@@ -2379,7 +2379,12 @@ MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;
    hPanel.appendChild(o._hCanvas);
    o._hPanel = hPanel;
-   o.resize();
+   o.resize(hPanel.offsetWidth, hPanel.offsetHeight);
+}
+MO.FE3dCanvas_process = function FE3dCanvas_process(){
+   var o = this;
+   o.onEnterFrame();
+   o._stage.process();
 }
 MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
    var o = this;
@@ -2819,6 +2824,7 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('general.color.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
+   effectConsole.register('general.color.flood', MO.FE3dFloodLightEffect);
    effectConsole.register('shadow.depth.automatic', MO.FE3dShadowDepthAutomaticEffect);
    effectConsole.register('shadow.depth.skeleton', MO.FE3dShadowDepthSkeletonEffect);
    effectConsole.register('shadow.color.automatic', MO.FE3dShadowColorAutomaticEffect);
@@ -5810,6 +5816,7 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
    o.construct         = MO.FE3rDynamicMesh_construct;
    o.mergeCount        = MO.FE3rDynamicMesh_mergeCount;
    o.mergeMaxCount     = MO.FE3rDynamicMesh_mergeMaxCount;
+   o.mergeStride       = MO.FE3rDynamicMesh_mergeStride;
    o.mergeRenderables  = MO.FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = MO.FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = MO.FE3rDynamicMesh_mergeRenderable;
@@ -5821,13 +5828,16 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
 MO.FE3rDynamicMesh_construct = function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
-   o._mergeRenderables = new TObjects();
+   o._mergeRenderables = new MO.TObjects();
 }
 MO.FE3rDynamicMesh_mergeCount = function FE3rDynamicMesh_mergeCount(){
    return this._mergeRenderables.count();
 }
 MO.FE3rDynamicMesh_mergeMaxCount = function FE3rDynamicMesh_mergeMaxCount(){
    return this._model._mergeMaxCount;
+}
+MO.FE3rDynamicMesh_mergeStride = function FE3rDynamicMesh_mergeStride(){
+   return 4;
 }
 MO.FE3rDynamicMesh_mergeRenderables = function FE3rDynamicMesh_mergeRenderables(){
    return this._mergeRenderables;
@@ -5946,10 +5956,10 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
    var instanceVertexBuffer = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
    instanceVertexBuffer.setCode('instance');
    instanceVertexBuffer.setStride(4);
-   instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
+   instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
    var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
    o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
-   var indexBuffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
+   var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
    if(capability.optionIndex32){
       indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
       indexBuffer._data = new Uint32Array(indexTotal);
@@ -5971,7 +5981,7 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
          var vertexBuffer = o.syncVertexBuffer(vb);
          o.mergeVertexBuffer(renderable, vbrc, vertexBuffer, vertexBufferResource);
       }
-      RFloat.fill(vdi, o._vertexPosition, vc, i);
+      MO.Lang.Float.fill(vdi, o._vertexPosition, vc, i);
       var indexBuffer = renderable.indexBuffers().first();
       var ic = indexBuffer.count();
       var indexBufferResource = indexBuffer._resource;
@@ -5991,10 +6001,10 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
 }
 MO.FE3rDynamicModel = function FE3rDynamicModel(o){
    o = MO.Class.inherits(this, o, MO.FE3rObject);
-   o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
-   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
-   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
-   o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
+   o._renderables   = MO.Class.register(o, new MO.AGetter('_renderables'));
+   o._mergeMaxCount = MO.Class.register(o, new MO.AGetter('_mergeMaxCount'));
+   o._mergeStride   = MO.Class.register(o, new MO.AGetter('_mergeStride'), 4);
+   o._meshes        = MO.Class.register(o, new MO.AGetter('_meshes'));
    o._updateDate    = 0;
    o.construct      = MO.FE3rDynamicModel_construct;
    o.createMesh     = MO.FE3rDynamicModel_createMesh;
@@ -7467,6 +7477,24 @@ MO.FE3dControlTechnique_drawRegion = function FE3dControlTechnique_drawRegion(p)
    }
    o._graphicContext.clearDepth(1);
    o.__base.FG3dTechnique.drawRegion.call(o, p);
+}
+MO.FE3dFloodLightEffect = function FE3dFloodLightEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.flood';
+   o.drawRenderable = MO.FE3dFloodLightEffect_drawRenderable;
+   return o;
+}
+MO.FE3dFloodLightEffect_drawRenderable = function FE3dFloodLightEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var contextSize = context.size();
+   var sizeWidth = contextSize.width ;
+   var sizeHeight = contextSize.height;
+   var program = o._program;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   var matrix = renderable.matrix();
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 MO.FE3dGeneralColorAutomaticEffect = function FE3dGeneralColorAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
@@ -9836,9 +9864,9 @@ MO.FE3dSimpleCanvas_onSceneLoad = function FE3dSimpleCanvas_onSceneLoad(p){
    o._cameraMouseRotation = gr.rotationMouseSpeed();
    o.processLoadListener(o, s);
 }
-MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(p){
+MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(event){
    var o = this;
-   o.__base.FE3dCanvas.onResize.call(o, p);
+   o.__base.FE3dCanvas.onResize.call(o, event);
    var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeSpace;
@@ -9862,7 +9890,7 @@ MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
    var stage = o._stage = o._activeSpace = MO.Class.create(MO.FE3dSimpleStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
-   stage.selectTechnique(o, FE3dGeneralTechnique);
+   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
    MO.RStage.register('simple.stage', stage);
 }
 MO.FE3dSimpleCanvas_setPanel = function FE3dSimpleCanvas_setPanel(hPanel){
@@ -11404,7 +11432,7 @@ MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
    o._adjustSize.set(adjustWidth, adjustHeight);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var context2d = canvas.context();
+   var context2d = canvas.graphicContext();
    context2d.drawImage(image, 0, 0, width, height);
    o._texture.upload(canvas);
    canvasConsole.free(canvas);
@@ -12426,14 +12454,16 @@ MO.FE3dRectangle = function FE3dRectangle(o){
    o.setup                 = MO.FE3dRectangle_setup;
    return o;
 }
-MO.FE3dRectangle_setup = function FE3dRectangle_setup(p){
+MO.FE3dRectangle_setup = function FE3dRectangle_setup(context){
    var o = this;
    var vp = [
       -1.0,  1.0, 0.0,
        1.0,  1.0, 0.0,
        1.0, -1.0, 0.0,
       -1.0, -1.0, 0.0 ];
-   var buffer = o._vertexPositionBuffer = p.createVertexBuffer();
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(vp, 4 * 3, 4);
    o.pushVertexBuffer(buffer);
    var vc = [
@@ -12441,7 +12471,9 @@ MO.FE3dRectangle_setup = function FE3dRectangle_setup(p){
       1.0, 0.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       0.0, 0.0, 0.0, 1.0 ];
-   var buffer = o._vertexColorBuffer = p.createVertexBuffer();
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer.setCode('color');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
    buffer.upload(vc, 4 * 4, 4);
    o.pushVertexBuffer(buffer);
    var id = [0, 1, 2, 0, 2, 3];

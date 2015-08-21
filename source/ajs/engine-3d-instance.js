@@ -1886,9 +1886,9 @@ MO.FE3dSimpleCanvas_onSceneLoad = function FE3dSimpleCanvas_onSceneLoad(p){
    o._cameraMouseRotation = gr.rotationMouseSpeed();
    o.processLoadListener(o, s);
 }
-MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(p){
+MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(event){
    var o = this;
-   o.__base.FE3dCanvas.onResize.call(o, p);
+   o.__base.FE3dCanvas.onResize.call(o, event);
    var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeSpace;
@@ -1912,7 +1912,7 @@ MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
    var stage = o._stage = o._activeSpace = MO.Class.create(MO.FE3dSimpleStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
-   stage.selectTechnique(o, FE3dGeneralTechnique);
+   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
    MO.RStage.register('simple.stage', stage);
 }
 MO.FE3dSimpleCanvas_setPanel = function FE3dSimpleCanvas_setPanel(hPanel){
