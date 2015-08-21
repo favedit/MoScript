@@ -145,7 +145,7 @@ with(MO){
    //==========================================================
    MO.FDuiToolButtonMenu_push = function FDuiToolButtonMenu_push(c){
       var o = this;
-      if(RClass.isClass(c, MDuiMenuButton)){
+      if(RClass.isClass(c, MUiMenuButton)){
          return o._menu.push(c);
       }
       o.__base.FDuiToolButton.push.call(o, c);

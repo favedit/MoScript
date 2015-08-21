@@ -23,6 +23,9 @@ MO.FDuiFramePage_onBuildPanel = function FDuiFramePage_onBuildPanel(p){
    var hPanel = o._hPanel = MO.Window.Builder.createTableCell(p, o.styleName('Panel'));
    hPanel.vAlign = 'top';
    hPanel.height = '100%';
+   if(o._backColor){
+      hPanel.bgColor = o._backColor;
+   }
 }
 MO.FDuiFramePage_onBuild = function FDuiFramePage_onBuild(p){
    var o = this;

@@ -606,25 +606,25 @@
 /* FDuiPanel                                              */
 /* ------------------------------------------------------ */
 .FDuiPanel_Panel{
-   padding: 1px 3px;
+   padding: 3px 5px;
 }
 
 .FDuiPanel_Label{
    font-family: "Microsoft YaHei"; 
    cursor: pointer;
-   text-align: center;
+   height: 28px;
+   padding-left: 10px;
    padding-top: 1px;
    padding-bottom: 1px;
-   border: 1px solid #3E3E3E;
-   border-radius:4px 4px 0px 0px;
-   color: #EEEEEE;
-   background-color: #333333;
+   border: 1px solid #CDCDCD;
+   color: #333333;
+   background-color: #F7F7F7;
 }
 
 .FDuiPanel_Body{
    border-radius:0px 0px 4px 4px;
-   padding: 2px 10px 2px 10px;
-   background-color: #555555;
+   padding: 4px 10px 4px 10px;
+   background-color: #FFFFFF;
 }
 
 .FDuiPanel_Form{
@@ -1078,21 +1078,89 @@
 }
 
 /* ------------------------------------------------------ */
-/* FDuiMenuButtonGroup                                    */
+/* FDuiSliderMenu                                         */
 /* ------------------------------------------------------ */
-.FDuiMenuButtonGroup_Panel{
+.FDuiSliderMenu_Panel{
+   width:100%;
 }
 
-.FDuiMenuButtonGroup_ButtonPanel{
+.FDuiSliderMenu_MenuPanel{
+   background-color: #394555;
+   height: 26px;
+}
+
+.FDuiSliderMenu_GroupPanel{
 }
 
 /* ------------------------------------------------------ */
-/* FDuiMenuSlider                                         */
+/* FDuiSliderGroup                                        */
 /* ------------------------------------------------------ */
-.FDuiMenuSlider_Panel{
+.FDuiSliderGroup_Panel{
+   width:100%;
+   color: #FFFFFF;
+   padding:8px 12px 8px 12px;
+   border-bottom: 1px solid #394555;
+   cursor: pointer;
 }
 
-.FDuiMenuSlider_GroupPanel{
+.FDuiSliderGroup_ButtonPanel{
+}
+
+.FDuiSliderGroup_IconPanel{
+   padding-right: 4px;
+}
+
+.FDuiSliderGroup_SpacePanel{
+   width: 8px;
+}
+
+.FDuiSliderGroup_LabelPanel{
+   font-size: 16px;
+   white-space: nowrap;
+}
+
+/* ------------------------------------------------------ */
+/* FDuiSliderButton                                        */
+/* ------------------------------------------------------ */
+.FDuiSliderButton_Normal{
+   width:100%;
+   padding:3px 12px 3px 12px;
+   cursor: pointer;
+}
+
+.FDuiSliderButton_Hover{
+   width:100%;
+   background-color: #0099CC;
+   padding:3px 12px 3px 12px;
+   cursor: pointer;
+}
+
+.FDuiSliderButton_Press{
+   width:100%;
+   padding:3px 12px 3px 12px;
+   cursor: pointer;
+}
+
+.FDuiSliderButton_Disable{
+   width:100%;
+   margin:0px 2px 0px 2px;
+   padding:1px 4px 1px 4px;
+   border-radius:3px;
+   cursor: pointer;
+}
+
+.FDuiSliderButton_IconPanel{
+   padding-right: 4px;
+}
+
+.FDuiSliderButton_SpacePanel{
+   width: 8px;
+}
+
+.FDuiSliderButton_LabelPanel{
+   color: #FFFFFF;
+   font-size: 14px;
+   white-space: nowrap;
 }
 
 /* ------------------------------------------------------ */
@@ -1131,21 +1199,15 @@
 /* ------------------------------------------------------ */
 .FDuiToolButton_Normal{
    margin:0px 1px 0px 1px;
-   padding:1px 4px 1px 4px;
+   padding:2px 6px 2px 6px;
    cursor: pointer;
-   border-radius: 3px;
    border:1px solid #999999;
    background-color: #DDDDDD;
-   background: -ms-linear-gradient(top, #FFFFFF, #BBBBBB);
-   background: -moz-linear-gradient(top, #FFFFFF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#FFFFFF, endColorStr=#BBBBBB);
 }
 
 .FDuiToolButton_Hover{
    margin:0px 1px 0px 1px;
-   padding:1px 4px 1px 4px;
-   border-radius:3px;
+   padding:2px 6px 2px 6px;
    border:1px solid #999999;
    background-color: #FFFFF0;
    cursor: pointer;
@@ -1155,13 +1217,8 @@
    margin:0px 1px 0px 1px;
    padding:1px 4px 1px 4px;
    cursor: pointer;
-   border-radius:3px;
    border:1px solid #999999;
    background-color: #999999;
-   background: -ms-linear-gradient(top, #999999, #FFFFFF);
-   background: -moz-linear-gradient(top, #999999, #FFFFFF); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#999999), to(#FFFFFF)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#999999, endColorStr=#FFFFFF);
 }
 
 .FDuiToolButton_Disable{
@@ -1267,7 +1324,7 @@
 /* FDuiFrameSpliter                                       */
 /* ------------------------------------------------------ */
 .FDuiFrameSpliter_Normal{
-   background-color: #666666;
+   background-color: #C6CBD0;
 }
 
 .FDuiFrameSpliter_Hover{

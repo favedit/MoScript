@@ -50,7 +50,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
    var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
    r.align = 'absmiddle';
    if(u){
-      r.src = MO.RResource.iconPath(u);
+      r.src = MO.Window.Resource.iconPath(u);
    }
    if(w){
       r.style.width = w + 'px';

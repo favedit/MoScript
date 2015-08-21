@@ -2301,26 +2301,6 @@ MO.RMessage_onWindowClose = function RMessage_onWindowClose(v){
    this.confirmResult = v;
 }
 MO.RMessage = new MO.RMessage();
-MO.RResource = function RResource(){
-   var o = this;
-   o.uriIcon  = '/ars/icon/';
-   o.uriImage = '/ars/img/';
-   return o;
-}
-MO.RResource.prototype.iconPath = function RResource_iconPath(path, type){
-   var o = this;
-   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
-   return MO.RBrowser.contentPath('/ars/icon/' + path);
-}
-MO.RResource.prototype.iconUrlPath = function RResource_iconUrlPath(path, type){
-   var o = this;
-   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
-   return MO.RBrowser.contentPath('/ars/icon/' + path);
-}
-MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
-   var o = this;
-}
-MO.RResource = new MO.RResource();
 MO.RStyle = function RStyle(){
    var o = this;
    o._connected = false;

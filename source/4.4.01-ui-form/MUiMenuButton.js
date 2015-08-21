@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150121
 //==========================================================
-MO.MDuiMenuButton = function MDuiMenuButton(o){
+MO.MUiMenuButton = function MUiMenuButton(o){
    o = MO.Class.inherits(this, o);
    return o;
 }

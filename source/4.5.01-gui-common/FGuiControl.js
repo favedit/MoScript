@@ -6,7 +6,7 @@
 // @version 150610
 //==========================================================
 MO.FGuiControl = function FGuiControl(o){
-   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MUiMargin, MO.MUiPadding, MO.MGuiBorder);
+   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MUiMargin, MO.MUiPadding, MO.MUiBorder, MO.MGuiSize);
    //..........................................................
    // @property
    o._optionScale            = MO.Class.register(o, [new MO.AGetter('_optionScale')], true);
@@ -282,7 +282,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MGuiSize.construct.call(o);
    o.__base.MUiMargin.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
-   o.__base.MGuiBorder.construct.call(o);
+   o.__base.MUiBorder.construct.call(o);
    // 创建属性
    o._parentRectangle = new MO.SRectangle();
    o._clientRectangle = new MO.SRectangle();
@@ -630,10 +630,10 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
    o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
    // 父处理
-   o.__base.MGuiBorder.dispose.call(o);
+   o.__base.MGuiSize.dispose.call(o);
+   o.__base.MUiBorder.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiMargin.dispose.call(o);
-   o.__base.MGuiSize.dispose.call(o);
    o.__base.MRenderableLinker.dispose.call(o);
    o.__base.MGraphicObject.dispose.call(o);
    o.__base.MUiControl.dispose.call(o);

@@ -5,17 +5,17 @@
 // @author maocy
 // @version 150610
 //==========================================================
-MO.MGuiBorder = function MGuiBorder(o){
-   o = MO.RClass.inherits(this, o);
+MO.MUiBorder = function MUiBorder(o){
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
-   o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
-   o._borderOuter = MO.RClass.register(o, [new MO.APtyBorder('_borderOuter'), new MO.AGetter('_borderOuter')]);
+   o._borderInner = MO.Class.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
+   o._borderOuter = MO.Class.register(o, [new MO.APtyBorder('_borderOuter'), new MO.AGetter('_borderOuter')]);
    //..........................................................
    // @method
-   o.construct   = MO.MGuiBorder_construct;
+   o.construct    = MO.MUiBorder_construct;
    // @method
-   o.dispose     = MO.MGuiBorder_dispose;
+   o.dispose      = MO.MUiBorder_dispose;
    return o;
 }
 
@@ -24,7 +24,7 @@ MO.MGuiBorder = function MGuiBorder(o){
 //
 // @method
 //==========================================================
-MO.MGuiBorder_construct = function MGuiBorder_construct(){
+MO.MUiBorder_construct = function MUiBorder_construct(){
    var o = this;
    o._borderInner = new MO.SBorder();
    o._borderOuter = new MO.SBorder();
@@ -35,7 +35,7 @@ MO.MGuiBorder_construct = function MGuiBorder_construct(){
 //
 // @method
 //==========================================================
-MO.MGuiBorder_dispose = function MGuiBorder_dispose(){
+MO.MUiBorder_dispose = function MUiBorder_dispose(){
    var o = this;
    o._borderInner = MO.Lang.Object.dispose(o._borderInner);
    o._borderOuter = MO.Lang.Object.dispose(o._borderOuter);

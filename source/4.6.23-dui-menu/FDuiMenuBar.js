@@ -58,7 +58,7 @@ MO.FDuiMenuBar_appendChild = function FDuiMenuBar_appendChild(control){
    var o = this;
    o.__base.FDuiContainer.appendChild.call(o, control);
    // 按键处理
-   if(MO.Class.isClass(control, MO.MDuiMenuButton)){
+   if(MO.Class.isClass(control, MO.MUiMenuButton)){
       var hLine = o._hLine;
       // 建立按键
       var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('ButtonPanel'));

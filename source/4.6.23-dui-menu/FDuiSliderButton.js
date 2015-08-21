@@ -15,7 +15,7 @@
 // @author maocy
 // @history 150121
 //==========================================================
-MO.FDuiMenuButton = function FDuiMenuButton(o){
+MO.FDuiSliderButton = function FDuiSliderButton(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiMenuButton);
    //..........................................................
    // @property
@@ -47,22 +47,22 @@ MO.FDuiMenuButton = function FDuiMenuButton(o){
    o._hLabelPanel     = null;
    //..........................................................
    // @event
-   o.onBuildPanel     = MO.FDuiMenuButton_onBuildPanel
-   o.onBuild          = MO.FDuiMenuButton_onBuild;
+   o.onBuildPanel     = MO.FDuiSliderButton_onBuildPanel
+   o.onBuild          = MO.FDuiSliderButton_onBuild;
    // @event
-   o.onEnter          = MO.FDuiMenuButton_onEnter;
-   o.onLeave          = MO.FDuiMenuButton_onLeave;
-   o.onMouseDown      = MO.Class.register(o, new MO.AEventMouseDown('onMouseDown'), MO.FDuiMenuButton_onMouseDown);
-   o.onMouseUp        = MO.Class.register(o, new MO.AEventMouseDown('onMouseUp'), MO.FDuiMenuButton_onMouseUp);
+   o.onEnter          = MO.FDuiSliderButton_onEnter;
+   o.onLeave          = MO.FDuiSliderButton_onLeave;
+   o.onMouseDown      = MO.Class.register(o, new MO.AEventMouseDown('onMouseDown'), MO.FDuiSliderButton_onMouseDown);
+   o.onMouseUp        = MO.Class.register(o, new MO.AEventMouseDown('onMouseUp'), MO.FDuiSliderButton_onMouseUp);
    //..........................................................
    // @method
-   o.icon             = MO.FDuiMenuButton_icon;
-   o.setIcon          = MO.FDuiMenuButton_setIcon;
-   o.setLabel         = MO.FDuiMenuButton_setLabel;
-   o.setHint          = MO.FDuiMenuButton_setHint;
-   o.setEnable        = MO.FDuiMenuButton_setEnable;
-   o.click            = MO.FDuiMenuButton_click;
-   o.dispose          = MO.FDuiMenuButton_dispose;
+   o.icon             = MO.FDuiSliderButton_icon;
+   o.setIcon          = MO.FDuiSliderButton_setIcon;
+   o.setLabel         = MO.FDuiSliderButton_setLabel;
+   o.setHint          = MO.FDuiSliderButton_setHint;
+   o.setEnable        = MO.FDuiSliderButton_setEnable;
+   o.click            = MO.FDuiSliderButton_click;
+   o.dispose          = MO.FDuiSliderButton_dispose;
    return o;
 }
 
@@ -72,7 +72,7 @@ MO.FDuiMenuButton = function FDuiMenuButton(o){
 // @method
 // @param event:TEventProcess 事件处理
 //==========================================================
-MO.FDuiMenuButton_onBuildPanel = function FDuiMenuButton_onBuildPanel(event){
+MO.FDuiSliderButton_onBuildPanel = function FDuiSliderButton_onBuildPanel(event){
    var o = this;
    o._hPanel = MO.Window.Builder.createDiv(event, o.styleName('Normal'));
 }
@@ -83,7 +83,7 @@ MO.FDuiMenuButton_onBuildPanel = function FDuiMenuButton_onBuildPanel(event){
 // @method
 // @param event:TEventProcess 事件处理
 //==========================================================
-MO.FDuiMenuButton_onBuild = function FDuiMenuButton_onBuild(event){
+MO.FDuiSliderButton_onBuild = function FDuiSliderButton_onBuild(event){
    var o = this;
    o.__base.FDuiControl.onBuild.call(o, event);
    // 设置面板
@@ -125,7 +125,7 @@ MO.FDuiMenuButton_onBuild = function FDuiMenuButton_onBuild(event){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-MO.FDuiMenuButton_onEnter = function FDuiMenuButton_onEnter(p){
+MO.FDuiSliderButton_onEnter = function FDuiSliderButton_onEnter(p){
    var o = this;
    if(!o._disabled){
       o._hPanel.className = o.styleName('Hover');
@@ -138,7 +138,7 @@ MO.FDuiMenuButton_onEnter = function FDuiMenuButton_onEnter(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-MO.FDuiMenuButton_onLeave = function FDuiMenuButton_onLeave(){
+MO.FDuiSliderButton_onLeave = function FDuiSliderButton_onLeave(){
    var o = this;
    if(!o._disabled){
       o._hPanel.className = o.styleName('Normal');
@@ -151,7 +151,7 @@ MO.FDuiMenuButton_onLeave = function FDuiMenuButton_onLeave(){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-MO.FDuiMenuButton_onMouseDown = function FDuiMenuButton_onMouseDown(){
+MO.FDuiSliderButton_onMouseDown = function FDuiSliderButton_onMouseDown(){
    var o = this;
    if(!o._disabled){
       o._hPanel.className = o.styleName('Press');
@@ -165,7 +165,7 @@ MO.FDuiMenuButton_onMouseDown = function FDuiMenuButton_onMouseDown(){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-MO.FDuiMenuButton_onMouseUp = function FDuiMenuButton_onMouseUp(){
+MO.FDuiSliderButton_onMouseUp = function FDuiSliderButton_onMouseUp(){
    var o = this;
    if(!o._disabled){
       o._hPanel.className = o.styleName('Hover');
@@ -178,7 +178,7 @@ MO.FDuiMenuButton_onMouseUp = function FDuiMenuButton_onMouseUp(){
 // @method
 // @return String 图标
 //==========================================================
-MO.FDuiMenuButton_icon = function FDuiMenuButton_icon(){
+MO.FDuiSliderButton_icon = function FDuiSliderButton_icon(){
    return this._icon;
 }
 
@@ -188,7 +188,7 @@ MO.FDuiMenuButton_icon = function FDuiMenuButton_icon(){
 // @method
 // @param icon:String 图标
 //==========================================================
-MO.FDuiMenuButton_setIcon = function FDuiMenuButton_setIcon(icon){
+MO.FDuiSliderButton_setIcon = function FDuiSliderButton_setIcon(icon){
    var o = this;
    o._icon = icon;
    if(o._hIcon){
@@ -202,7 +202,7 @@ MO.FDuiMenuButton_setIcon = function FDuiMenuButton_setIcon(icon){
 // @method
 // @param label:String 标签
 //==========================================================
-MO.FDuiMenuButton_setLabel = function FDuiMenuButton_setLabel(label){
+MO.FDuiSliderButton_setLabel = function FDuiSliderButton_setLabel(label){
    var o = this;
    var text = MO.Lang.String.nvl(label);
    o._label = text;
@@ -215,7 +215,7 @@ MO.FDuiMenuButton_setLabel = function FDuiMenuButton_setLabel(label){
 // @method
 // @param hint:String 提示
 //==========================================================
-MO.FDuiMenuButton_setHint = function FDuiMenuButton_setHint(hint){
+MO.FDuiSliderButton_setHint = function FDuiSliderButton_setHint(hint){
    var o = this;
    o._hint = hint;
    var text = MO.Lang.String.nvl(hint);
@@ -233,7 +233,7 @@ MO.FDuiMenuButton_setHint = function FDuiMenuButton_setHint(hint){
 // @method
 // @param p:enable:Boolean 是否可操作
 //==========================================================
-MO.FDuiMenuButton_setEnable = function FDuiMenuButton_setEnable(p){
+MO.FDuiSliderButton_setEnable = function FDuiSliderButton_setEnable(p){
    var o = this;
    o.__base.FDuiControl.setEnable.call(o, p);
    // 允许处理
@@ -256,7 +256,7 @@ MO.FDuiMenuButton_setEnable = function FDuiMenuButton_setEnable(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
+MO.FDuiSliderButton_click = function FDuiSliderButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
@@ -277,7 +277,7 @@ MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
 //
 // @method
 //==========================================================
-MO.FDuiMenuButton_dispose = function FDuiMenuButton_dispose(){
+MO.FDuiSliderButton_dispose = function FDuiSliderButton_dispose(){
    var o = this;
    // 释放属性
    o._hForm = MO.Window.Html.free(o._hForm);

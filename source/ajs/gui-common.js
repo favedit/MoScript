@@ -1,21 +1,3 @@
-MO.MGuiBorder = function MGuiBorder(o){
-   o = MO.RClass.inherits(this, o);
-   o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
-   o._borderOuter = MO.RClass.register(o, [new MO.APtyBorder('_borderOuter'), new MO.AGetter('_borderOuter')]);
-   o.construct   = MO.MGuiBorder_construct;
-   o.dispose     = MO.MGuiBorder_dispose;
-   return o;
-}
-MO.MGuiBorder_construct = function MGuiBorder_construct(){
-   var o = this;
-   o._borderInner = new MO.SBorder();
-   o._borderOuter = new MO.SBorder();
-}
-MO.MGuiBorder_dispose = function MGuiBorder_dispose(){
-   var o = this;
-   o._borderInner = MO.Lang.Object.dispose(o._borderInner);
-   o._borderOuter = MO.Lang.Object.dispose(o._borderOuter);
-}
 MO.MGuiContainer = function MGuiContainer(o){
    o = MO.Class.inherits(this, o);
    o.createChild = MO.MGuiContainer_createChild;
@@ -358,7 +340,7 @@ MO.FGuiContainer = function FGuiContainer(o){
    return o;
 }
 MO.FGuiControl = function FGuiControl(o){
-   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MUiMargin, MO.MUiPadding, MO.MGuiBorder);
+   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MUiMargin, MO.MUiPadding, MO.MUiBorder, MO.MGuiSize);
    o._optionScale            = MO.Class.register(o, [new MO.AGetter('_optionScale')], true);
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
    o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
@@ -527,7 +509,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MGuiSize.construct.call(o);
    o.__base.MUiMargin.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
-   o.__base.MGuiBorder.construct.call(o);
+   o.__base.MUiBorder.construct.call(o);
    o._parentRectangle = new MO.SRectangle();
    o._clientRectangle = new MO.SRectangle();
    o._eventRectangle = new MO.SRectangle();
@@ -720,10 +702,10 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.RObject.dispose(o._backImage);
    o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
    o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
-   o.__base.MGuiBorder.dispose.call(o);
+   o.__base.MGuiSize.dispose.call(o);
+   o.__base.MUiBorder.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiMargin.dispose.call(o);
-   o.__base.MGuiSize.dispose.call(o);
    o.__base.MRenderableLinker.dispose.call(o);
    o.__base.MGraphicObject.dispose.call(o);
    o.__base.MUiControl.dispose.call(o);

@@ -165,15 +165,16 @@ MO.FDuiEditor_doBlur = function FDuiEditor_doBlur(){
 // <T>获得底板。</T>
 //
 // @method
+// @param panelCd:EPanel 底板类型
 //==========================================================
-MO.FDuiEditor_panel = function FDuiEditor_panel(p){
+MO.FDuiEditor_panel = function FDuiEditor_panel(panelCd){
    var o = this;
-   if(p == EPanel.Edit){
+   if(panelCd == MO.EPanel.Edit){
       return o._hEdit;
-   }else if(p == MO.EPanel.Focus){
+   }else if(panelCd == MO.EPanel.Focus){
       return o._hEdit;
    }
-   return o.__base.FDuiControl.panel.call(o, p);
+   return o.__base.FDuiControl.panel.call(o, panelCd);
 }
 
 //==========================================================

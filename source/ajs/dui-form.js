@@ -3098,12 +3098,12 @@ MO.FDuiDropEditor_onBuild = function FDuiDropEditor_onBuild(p){
    o.onBuildDrop();
    o.onBuildButton();
 }
-MO.FDuiDropEditor_panel = function FDuiDropEditor_panel(p){
+MO.FDuiDropEditor_panel = function FDuiDropEditor_panel(panelCd){
    var o = this;
-   if(p == EPanel.Shadow){
+   if(panelCd == MO.EPanel.Shadow){
       return o.hPanel;
    }
-   return o.__base.FDuiEditor.panel.call(o, p);
+   return o.__base.FDuiEditor.panel.call(o, panelCd);
 }
 MO.FDuiDropEditor_setVisible = function FDuiDropEditor_setVisible(p){
    var o = this;
@@ -3505,14 +3505,14 @@ MO.FDuiEditor_doBlur = function FDuiEditor_doBlur(){
       }
    }
 }
-MO.FDuiEditor_panel = function FDuiEditor_panel(p){
+MO.FDuiEditor_panel = function FDuiEditor_panel(panelCd){
    var o = this;
-   if(p == EPanel.Edit){
+   if(panelCd == MO.EPanel.Edit){
       return o._hEdit;
-   }else if(p == MO.EPanel.Focus){
+   }else if(panelCd == MO.EPanel.Focus){
       return o._hEdit;
    }
-   return o.__base.FDuiControl.panel.call(o, p);
+   return o.__base.FDuiControl.panel.call(o, panelCd);
 }
 MO.FDuiEditor_linkControl = function FDuiEditor_linkControl(c){
    var o = this;

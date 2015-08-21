@@ -219,6 +219,8 @@ MO.FEditorDsWorkspace = function FEditorDsWorkspace(o){
    o = MO.Class.inherits(this, o, MO.FDuiWorkspace, MO.MUiStorage);
    o._frameName          = 'editor.design.Workspace';
    o._storageCode        = o._frameName;
+   o._styleTitleLogo     = MO.Class.register(o, new MO.AStyle('_styleTitlePanel', 'Title_Panel'));
+   o._styleTitleLogo     = MO.Class.register(o, new MO.AStyle('_styleTitleLogo', 'Title_Logo'));
    o._styleMenuBarGround = MO.Class.register(o, new MO.AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
    o._styleModuleGround  = MO.Class.register(o, new MO.AStyle('_styleModuleGround', 'Module_Ground'));
    o._styleSpaceGround   = MO.Class.register(o, new MO.AStyle('_styleSpaceGround', 'Space_Ground'));
@@ -229,6 +231,7 @@ MO.FEditorDsWorkspace = function FEditorDsWorkspace(o){
    o._activeFrameSet     = null;
    o._frameSets          = null;
    o.onBuilded           = MO.FEditorDsWorkspace_onBuilded;
+   o.onSliderButtonClick = MO.FEditorDsWorkspace_onSliderButtonClick;
    o.construct           = MO.FEditorDsWorkspace_construct;
    o.selectFrameSet      = MO.FEditorDsWorkspace_selectFrameSet;
    o.load                = MO.FEditorDsWorkspace_load;
@@ -241,6 +244,16 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    o._frameMenuBar._hPanel.className = o.styleName('MenuBar_Ground');
    o._frameModule._hPanel.className = o.styleName('Module_Ground');
    o._frameSpace._hPanel.className = o.styleName('Space_Ground');
+   o._controlPersistenceButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlListButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlTreeButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlFrameButton.addClickListener(o, o.onSliderButtonClick);
+   var hTitleForm = MO.Window.Builder.appendTable(o._frameMenuBar._hPanel, o.styleName('Title_Panel'));
+   var hTitleLine = MO.Window.Builder.appendTableRow(hTitleForm);
+   var hTitleCell = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Title_Logo'));
+   hTitleCell.align = 'center';
+   hTitleCell.vAlign = 'middle';
+   MO.Window.Builder.appendIcon(hTitleCell, null, 'editor.design.logo|png');
    return;
    var hTable = MO.Window.Builder.createTable(event);
    hTable.width = '100%';
@@ -256,6 +269,27 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    hCell.appendChild(control._hPanel);
    o._frameMenuBar._hPanel.appendChild(hTable);
 }
+MO.FEditorDsWorkspace_onSliderButtonClick = function FEditorDsWorkspace_onSliderButtonClick(event){
+   var o = this;
+   var button = event.sender;
+   var name = button.name();
+   switch(name){
+      case 'persistenceButton':
+         o.selectFrameSet(MO.EEditorFrameSet.PersistenceFrameSet);
+         break;
+      case 'listButton':
+         o.selectFrameSet(MO.EEditorFrameSet.ListFrameSet);
+         break;
+      case 'treeButton':
+         o.selectFrameSet(MO.EEditorFrameSet.TreeFrameSet);
+         break;
+      case 'frameButton':
+         o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
+         break;
+      default:
+         throw new TError(o, 'Invalid click.');
+   }
+}
 MO.FEditorDsWorkspace_construct = function FEditorDsWorkspace_construct(){
    var o = this;
    o.__base.FDuiWorkspace.construct.call(o);
@@ -263,7 +297,6 @@ MO.FEditorDsWorkspace_construct = function FEditorDsWorkspace_construct(){
 }
 MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSet(name, guid){
    var o = this;
-   return;
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
       if(name == MO.EEditorFrameSet.PersistenceFrameSet){
@@ -306,11 +339,9 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
    var activeFrameSet = o._activeFrameSet;
    if(activeFrameSet != frameSet){
       if(activeFrameSet){
-         o._hMenuPanel.removeChild(activeFrameSet._menuBar._hPanel);
-         o._frameBody.remove(activeFrameSet);
+         o._frameSpace.remove(activeFrameSet);
       }
-      o._hMenuPanel.appendChild(frameSet._menuBar._hPanel);
-      o._frameBody.push(frameSet);
+      o._frameSpace.push(frameSet);
       frameSet.psResize();
    }
    o._activeFrameSet = frameSet;
@@ -337,27 +368,18 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
 }
 MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
    var o = this;
-   return;
    var code = o._activeFrameSetCode = o.storageGet('frameset_code', MO.EEditorFrameSet.SolutionFrameSet);
    var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
    var button = null;
    if(code == MO.EEditorFrameSet.PersistenceFrameSet){
-      button = o._tabBar.findControl('persistence');
-      button.doClick();
+      o.selectFrameSet(MO.EEditorFrameSet.PersistenceFrameSet);
    }else if(code == MO.EEditorFrameSet.ListFrameSet){
-      button = o._tabBar.findControl('list');
-      o._tabBar.select(button);
-      o.selectFrameSet(code, guid)
+      o.selectFrameSet(MO.EEditorFrameSet.ListFrameSet);
    }else if(code == MO.EEditorFrameSet.TreeFrameSet){
-      button = o._tabBar.findControl('tree');
-      button.doClick();
+      o.selectFrameSet(MO.EEditorFrameSet.TreeFrameSet);
    }else if(code == MO.EEditorFrameSet.FrameFrameSet){
-      button = o._tabBar.findControl('frame');
-      o._tabBar.select(button);
-      o.selectFrameSet(code, guid)
+      o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
    }else{
-      button = o._tabBar.findControl('frame');
-      button.doClick();
    }
 }
 MO.FEditorDsWorkspace_dispose = function FEditorDsWorkspace_dispose(){

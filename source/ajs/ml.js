@@ -12166,26 +12166,6 @@ MO.RMessage_onWindowClose = function RMessage_onWindowClose(v){
    this.confirmResult = v;
 }
 MO.RMessage = new MO.RMessage();
-MO.RResource = function RResource(){
-   var o = this;
-   o.uriIcon  = '/ars/icon/';
-   o.uriImage = '/ars/img/';
-   return o;
-}
-MO.RResource.prototype.iconPath = function RResource_iconPath(path, type){
-   var o = this;
-   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
-   return MO.RBrowser.contentPath('/ars/icon/' + path);
-}
-MO.RResource.prototype.iconUrlPath = function RResource_iconUrlPath(path, type){
-   var o = this;
-   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
-   return MO.RBrowser.contentPath('/ars/icon/' + path);
-}
-MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
-   var o = this;
-}
-MO.RResource = new MO.RResource();
 MO.RStyle = function RStyle(){
    var o = this;
    o._connected = false;
@@ -15180,7 +15160,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
    var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
    r.align = 'absmiddle';
    if(u){
-      r.src = MO.RResource.iconPath(u);
+      r.src = MO.Window.Resource.iconPath(u);
    }
    if(w){
       r.style.width = w + 'px';
@@ -16029,6 +16009,35 @@ MO.RKeyboard.prototype.fixChars = function RKeyboard_fixChars(e, p){
    return true;
 }
 MO.Window.Keyboard = new MO.RKeyboard();
+MO.RResource = function RResource(){
+   var o = this;
+   o.uriIcon  = '/ars/icon/';
+   o.uriImage = '/ars/img/';
+   return o;
+}
+MO.RResource.prototype.iconPath = function RResource_iconPath(code, type){
+   var o = this;
+   var path = null;
+   if(code.indexOf('|') != -1){
+      var items = code.split('|');
+      path = items[0];
+      type = items[1];
+   }else{
+      path = code;
+   }
+   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
+   return MO.Window.Browser.contentPath('/ars/icon/' + path);
+}
+MO.RResource.prototype.iconUrlPath = function RResource_iconUrlPath(path, type){
+   var o = this;
+   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
+   return MO.RBrowser.contentPath('/ars/icon/' + path);
+}
+MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
+   var o = this;
+}
+MO.RResource = new MO.RResource();
+MO.Window.Resource = MO.RResource;
 MO.RValue = function RValue(){
    var o = this;
    o.float1    = null;

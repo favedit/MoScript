@@ -4,11 +4,84 @@
 .FEditorDsWorkspace_MenuBar_Ground{
    background: #0099CC;
 }
+
+.FEditorDsWorkspace_Title_Panel{
+   height: 100%;
+}
+
+.FEditorDsWorkspace_Title_Logo{
+   width: 48px;
+   background-color: #0087B4;
+}
+
 .FEditorDsWorkspace_Module_Ground{
    background: #293038;
 }
+
 .FEditorDsWorkspace_Space_Ground{
    background: #FFFFFF;
+}
+
+/* ------------------------------------------------------ */
+/* FEditorDsFrameSet                                */
+/* ------------------------------------------------------ */
+.FEditorDsFrameSet_Toolbar_Ground{
+   padding-left: 6px;
+   padding-top: 4px;
+   padding-bottom: 1px;
+   border-bottom: 1px solid #C6CBD0;
+   background-color: #EAEDF1;
+}
+
+.FEditorDsFrameSet_Catalog_Content{
+   background: #EAEDF1;
+}
+
+.FEditorDsFrameSet_Space_Content{
+   position: relative;
+   background: #FFFFFF;
+}
+
+.FEditorDsFrameSet_Property_Content{
+   background-color: #FFFFFF;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------------------------------------------ */
+/* FDsFrameSet                                            */
+/* ------------------------------------------------------ */
+.FDsFrameSet_ToolBar_Ground{
+   padding-left: 4px;
+   padding-top: 1px;
+   padding-bottom: 1px;
+   border-top: 1px solid #EEEEEE;
+   border-bottom: 1px solid #666666;
+   background-color: #CED3D9;
+}
+
+.FDsFrameSet_Catalog_Content{
+   background-color: #EEEEEE;
+}
+
+.FDsFrameSet_Canvas_Content{
+   background-color: #EEEEEE;
+}
+
+.FDsFrameSet_Property_Content{
+   background-color: #777777;
 }
 
 
@@ -38,34 +111,6 @@
 
 .FDsResourceSelectDialog_List_Content{
    background-color: #EEEEEE;
-}
-
-/* ------------------------------------------------------ */
-/* FDsFrameSet                                            */
-/* ------------------------------------------------------ */
-.FDsFrameSet_ToolBar_Ground{
-   padding-left: 4px;
-   padding-top: 1px;
-   padding-bottom: 1px;
-   border-top: 1px solid #EEEEEE;
-   border-bottom: 1px solid #666666;
-   background-color: #AEAEAE;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FDsFrameSet_Catalog_Content{
-   background-color: #EEEEEE;
-}
-
-.FDsFrameSet_Canvas_Content{
-   background-color: #EEEEEE;
-}
-
-.FDsFrameSet_Property_Content{
-   background-color: #777777;
 }
 
 /* ------------------------------------------------------ */
@@ -506,33 +551,4 @@
    background: -moz-linear-gradient(top, #555555, #AEAEAE); 
    background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#BBBBBB)); 
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
-}
-
-/* ------------------------------------------------------ */
-/* FEditorDsFrameSet                                */
-/* ------------------------------------------------------ */
-.FEditorDsFrameSet_Toolbar_Ground{
-   padding-left: 4px;
-   padding-top: 1px;
-   padding-bottom: 1px;
-   border-top: 1px solid #EEEEEE;
-   border-bottom: 1px solid #666666;
-   background-color: #AEAEAE;
-   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
-   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#BBBBBB)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
-}
-
-.FEditorDsFrameSet_Catalog_Content{
-   background: #EEEEEE;
-}
-
-.FEditorDsFrameSet_Space_Content{
-   position: relative;
-   background: #EEEEEE;
-}
-
-.FEditorDsFrameSet_Property_Content{
-   background-color: #777777;
 }

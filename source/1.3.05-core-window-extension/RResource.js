@@ -14,17 +14,25 @@ MO.RResource = function RResource(){
    return o;
 }
 
-// ------------------------------------------------------------
-MO.RResource.prototype.iconPath = function RResource_iconPath(path, type){
+//==========================================================
+// <T>获得图片路径。</T>
+//
+// @method
+// @param code:String 代码
+// @param type:String 类型
+//==========================================================
+MO.RResource.prototype.iconPath = function RResource_iconPath(code, type){
    var o = this;
-   //var rc = top.RContext;
+   var path = null;
+   if(code.indexOf('|') != -1){
+      var items = code.split('|');
+      path = items[0];
+      type = items[1];
+   }else{
+      path = code;
+   }
    path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
-   //if(RString.startsWith(path, '#')){
-      //path = path.substr(1);
-      //return rc.context(rc.uriIcon + '/' + path);
-   //}
-   return MO.RBrowser.contentPath('/ars/icon/' + path);
-   //return rc.context('/ars/icon/' + path);
+   return MO.Window.Browser.contentPath('/ars/icon/' + path);
 }
 
 // ------------------------------------------------------------
@@ -55,7 +63,7 @@ MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
    //}
    //return rc.context('/ars/img/' + path);
 }
-// ------------------------------------------------------------
 //..........................................................
 // 实例化内容
 MO.RResource = new MO.RResource();
+MO.Window.Resource = MO.RResource;

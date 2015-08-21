@@ -12023,26 +12023,6 @@ MO.RMessage_onWindowClose = function RMessage_onWindowClose(v){
    this.confirmResult = v;
 }
 MO.RMessage = new MO.RMessage();
-MO.RResource = function RResource(){
-   var o = this;
-   o.uriIcon  = '/ars/icon/';
-   o.uriImage = '/ars/img/';
-   return o;
-}
-MO.RResource.prototype.iconPath = function RResource_iconPath(path, type){
-   var o = this;
-   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
-   return MO.RBrowser.contentPath('/ars/icon/' + path);
-}
-MO.RResource.prototype.iconUrlPath = function RResource_iconUrlPath(path, type){
-   var o = this;
-   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
-   return MO.RBrowser.contentPath('/ars/icon/' + path);
-}
-MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
-   var o = this;
-}
-MO.RResource = new MO.RResource();
 MO.RStyle = function RStyle(){
    var o = this;
    o._connected = false;
@@ -15037,7 +15017,7 @@ MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
    var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
    r.align = 'absmiddle';
    if(u){
-      r.src = MO.RResource.iconPath(u);
+      r.src = MO.Window.Resource.iconPath(u);
    }
    if(w){
       r.style.width = w + 'px';
@@ -15886,6 +15866,35 @@ MO.RKeyboard.prototype.fixChars = function RKeyboard_fixChars(e, p){
    return true;
 }
 MO.Window.Keyboard = new MO.RKeyboard();
+MO.RResource = function RResource(){
+   var o = this;
+   o.uriIcon  = '/ars/icon/';
+   o.uriImage = '/ars/img/';
+   return o;
+}
+MO.RResource.prototype.iconPath = function RResource_iconPath(code, type){
+   var o = this;
+   var path = null;
+   if(code.indexOf('|') != -1){
+      var items = code.split('|');
+      path = items[0];
+      type = items[1];
+   }else{
+      path = code;
+   }
+   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
+   return MO.Window.Browser.contentPath('/ars/icon/' + path);
+}
+MO.RResource.prototype.iconUrlPath = function RResource_iconUrlPath(path, type){
+   var o = this;
+   path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + MO.Lang.String.nvl(type, 'gif');
+   return MO.RBrowser.contentPath('/ars/icon/' + path);
+}
+MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
+   var o = this;
+}
+MO.RResource = new MO.RResource();
+MO.Window.Resource = MO.RResource;
 MO.RValue = function RValue(){
    var o = this;
    o.float1    = null;
@@ -35939,6 +35948,24 @@ MO.EUiWrap = new function EUiWrap(){
    o.SameLine = 1;
    return o;
 }
+MO.MUiBorder = function MUiBorder(o){
+   o = MO.Class.inherits(this, o);
+   o._borderInner = MO.Class.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
+   o._borderOuter = MO.Class.register(o, [new MO.APtyBorder('_borderOuter'), new MO.AGetter('_borderOuter')]);
+   o.construct    = MO.MUiBorder_construct;
+   o.dispose      = MO.MUiBorder_dispose;
+   return o;
+}
+MO.MUiBorder_construct = function MUiBorder_construct(){
+   var o = this;
+   o._borderInner = new MO.SBorder();
+   o._borderOuter = new MO.SBorder();
+}
+MO.MUiBorder_dispose = function MUiBorder_dispose(){
+   var o = this;
+   o._borderInner = MO.Lang.Object.dispose(o._borderInner);
+   o._borderOuter = MO.Lang.Object.dispose(o._borderOuter);
+}
 MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
    o._guid           = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
@@ -36845,6 +36872,10 @@ MO.FUiFrameDefineConsole_load = function FUiFrameDefineConsole_load(name){
       throw new MO.TError(o, 'Unknown frame. (name={1])', name);
    }
    return xframe;
+}
+MO.MUiMenuButton = function MUiMenuButton(o){
+   o = MO.Class.inherits(this, o);
+   return o;
 }
 MO.MUiGridCell = function MUiGridCell(o){
    o = MO.Class.inherits(this, o);
@@ -37795,24 +37826,6 @@ MO.RDesktop.prototype.release = function RDesktop_release(){
    }
 }
 MO.Desktop = new MO.RDesktop();
-MO.MGuiBorder = function MGuiBorder(o){
-   o = MO.RClass.inherits(this, o);
-   o._borderInner = MO.RClass.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
-   o._borderOuter = MO.RClass.register(o, [new MO.APtyBorder('_borderOuter'), new MO.AGetter('_borderOuter')]);
-   o.construct   = MO.MGuiBorder_construct;
-   o.dispose     = MO.MGuiBorder_dispose;
-   return o;
-}
-MO.MGuiBorder_construct = function MGuiBorder_construct(){
-   var o = this;
-   o._borderInner = new MO.SBorder();
-   o._borderOuter = new MO.SBorder();
-}
-MO.MGuiBorder_dispose = function MGuiBorder_dispose(){
-   var o = this;
-   o._borderInner = MO.Lang.Object.dispose(o._borderInner);
-   o._borderOuter = MO.Lang.Object.dispose(o._borderOuter);
-}
 MO.MGuiContainer = function MGuiContainer(o){
    o = MO.Class.inherits(this, o);
    o.createChild = MO.MGuiContainer_createChild;
@@ -38155,7 +38168,7 @@ MO.FGuiContainer = function FGuiContainer(o){
    return o;
 }
 MO.FGuiControl = function FGuiControl(o){
-   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MGuiSize, MO.MUiMargin, MO.MUiPadding, MO.MGuiBorder);
+   o = MO.Class.inherits(this, o, MO.FGuiComponent, MO.MUiControl, MO.MGraphicObject, MO.MRenderableLinker, MO.MListener, MO.MUiMargin, MO.MUiPadding, MO.MUiBorder, MO.MGuiSize);
    o._optionScale            = MO.Class.register(o, [new MO.AGetter('_optionScale')], true);
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
    o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
@@ -38324,7 +38337,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o.__base.MGuiSize.construct.call(o);
    o.__base.MUiMargin.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
-   o.__base.MGuiBorder.construct.call(o);
+   o.__base.MUiBorder.construct.call(o);
    o._parentRectangle = new MO.SRectangle();
    o._clientRectangle = new MO.SRectangle();
    o._eventRectangle = new MO.SRectangle();
@@ -38517,10 +38530,10 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.RObject.dispose(o._backImage);
    o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
    o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
-   o.__base.MGuiBorder.dispose.call(o);
+   o.__base.MGuiSize.dispose.call(o);
+   o.__base.MUiBorder.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiMargin.dispose.call(o);
-   o.__base.MGuiSize.dispose.call(o);
    o.__base.MRenderableLinker.dispose.call(o);
    o.__base.MGraphicObject.dispose.call(o);
    o.__base.MUiControl.dispose.call(o);

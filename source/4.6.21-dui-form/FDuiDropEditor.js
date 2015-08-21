@@ -74,13 +74,14 @@ MO.FDuiDropEditor_onBuild = function FDuiDropEditor_onBuild(p){
 // <T>获得底板。</T>
 //
 // @method
+// @param panelCd:EPanel 底板类型
 //==========================================================
-MO.FDuiDropEditor_panel = function FDuiDropEditor_panel(p){
+MO.FDuiDropEditor_panel = function FDuiDropEditor_panel(panelCd){
    var o = this;
-   if(p == EPanel.Shadow){
+   if(panelCd == MO.EPanel.Shadow){
       return o.hPanel;
    }
-   return o.__base.FDuiEditor.panel.call(o, p);
+   return o.__base.FDuiEditor.panel.call(o, panelCd);
 }
 
 //==========================================================

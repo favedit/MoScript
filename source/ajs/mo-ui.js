@@ -872,6 +872,24 @@ MO.EUiWrap = new function EUiWrap(){
    o.SameLine = 1;
    return o;
 }
+MO.MUiBorder = function MUiBorder(o){
+   o = MO.Class.inherits(this, o);
+   o._borderInner = MO.Class.register(o, [new MO.APtyBorder('_borderInner'), new MO.AGetter('_borderInner')]);
+   o._borderOuter = MO.Class.register(o, [new MO.APtyBorder('_borderOuter'), new MO.AGetter('_borderOuter')]);
+   o.construct    = MO.MUiBorder_construct;
+   o.dispose      = MO.MUiBorder_dispose;
+   return o;
+}
+MO.MUiBorder_construct = function MUiBorder_construct(){
+   var o = this;
+   o._borderInner = new MO.SBorder();
+   o._borderOuter = new MO.SBorder();
+}
+MO.MUiBorder_dispose = function MUiBorder_dispose(){
+   var o = this;
+   o._borderInner = MO.Lang.Object.dispose(o._borderInner);
+   o._borderOuter = MO.Lang.Object.dispose(o._borderOuter);
+}
 MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
    o._guid           = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
@@ -1778,6 +1796,10 @@ MO.FUiFrameDefineConsole_load = function FUiFrameDefineConsole_load(name){
       throw new MO.TError(o, 'Unknown frame. (name={1])', name);
    }
    return xframe;
+}
+MO.MUiMenuButton = function MUiMenuButton(o){
+   o = MO.Class.inherits(this, o);
+   return o;
 }
 MO.MUiGridCell = function MUiGridCell(o){
    o = MO.Class.inherits(this, o);
