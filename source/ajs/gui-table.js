@@ -350,6 +350,9 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
    var graphic = event.graphic;
    context.graphic = graphic;
    var rectangle = event.rectangle;
+   if(MO.Class.isClass(o, MO.FGuiTable)){
+      graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 4);
+   }
    var left = rectangle.left + padding.left;
    var top = rectangle.top + padding.top;
    var bottom = rectangle.bottom() - padding.bottom;

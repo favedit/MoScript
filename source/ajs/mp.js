@@ -14459,6 +14459,7 @@ MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationH
    return this._orientationCd == MO.EOrientation.Horizontal;
 }
 MO.RBrowser.prototype.isOrientationVertical = function RBrowser_isOrientationVertical(){
+   return true;
    return this._orientationCd == MO.EOrientation.Vertical;
 }
 MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(){
@@ -38515,12 +38516,16 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    }else if(o._anchorCd & MO.EUiAnchor.Left){
       left = (parentRight - width - o._right) * calculateRate.width;
       width = right - left;
+   }else if(o._anchorCd & MO.EUiAnchor.Right){
+      width = (parentRight - left - o._right) * calculateRate.width;
    }
    if((anchorCd & MO.EUiAnchor.Top) && (o._anchorCd & MO.EUiAnchor.Bottom)){
       height = bottom - top;
    }else if(o._anchorCd & MO.EUiAnchor.Top){
       top = (parentBottom - height - o._bottom) * calculateRate.height;
       height = bottom - top;
+   }else if(o._anchorCd & MO.EUiAnchor.Bottom){
+      height = (parentBottom - top - o._bottom) * calculateRate.height;
    }
    event.optionContainer = false;
    graphic.store();
@@ -40028,6 +40033,9 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
    var graphic = event.graphic;
    context.graphic = graphic;
    var rectangle = event.rectangle;
+   if(MO.Class.isClass(o, MO.FGuiTable)){
+      graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 4);
+   }
    var left = rectangle.left + padding.left;
    var top = rectangle.top + padding.top;
    var bottom = rectangle.bottom() - padding.bottom;
@@ -88089,9 +88097,10 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
    grid.setOptionClip(true);
    grid.setLocation(50, 332);
    grid.setSize(800, 700);
-   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setRight(19);
+   grid.setBottom(100);
    grid.setHeadHeight(32);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
@@ -88817,7 +88826,6 @@ MO.FEaiChartMktMarketerScene_onProcess = function FEaiChartMktMarketerScene_onPr
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
@@ -89381,9 +89389,10 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setLocation(50,570);
    grid.setSize(800, 430);
-   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setRight(19);
+   grid.setBottom(20);
    grid.setHeadHeight(32);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';

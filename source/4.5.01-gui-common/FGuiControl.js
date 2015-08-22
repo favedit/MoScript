@@ -464,12 +464,16 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    }else if(o._anchorCd & MO.EUiAnchor.Left){
       left = (parentRight - width - o._right) * calculateRate.width;
       width = right - left;
+   }else if(o._anchorCd & MO.EUiAnchor.Right){
+      width = (parentRight - left - o._right) * calculateRate.width;
    }
    if((anchorCd & MO.EUiAnchor.Top) && (o._anchorCd & MO.EUiAnchor.Bottom)){
       height = bottom - top;
    }else if(o._anchorCd & MO.EUiAnchor.Top){
       top = (parentBottom - height - o._bottom) * calculateRate.height;
       height = bottom - top;
+   }else if(o._anchorCd & MO.EUiAnchor.Bottom){
+      height = (parentBottom - top - o._bottom) * calculateRate.height;
    }
    event.optionContainer = false;
    graphic.store();
