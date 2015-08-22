@@ -132,7 +132,7 @@ MO.FDuiPopupMenu_show = function FDuiPopupMenu_show(h, positionCd, v){
       width = openerWidth;
    }
    if(height > 300){
-      o._hFormPanel.style.overflowY = 'scroll';
+      o._hContainerPanel.style.overflowY = 'scroll';
       style.height = height + 'px';
    }
    // …Ë÷√Œª÷√
@@ -140,7 +140,7 @@ MO.FDuiPopupMenu_show = function FDuiPopupMenu_show(h, positionCd, v){
    style.left = '3px';
    style.top = (openerHeight + 1) + 'px';
    style.width = width + 'px';
-   style.zIndex = RDuiLayer.next();
+   style.zIndex = MO.RDuiLayer.next();
    //o.focus();
 }
 

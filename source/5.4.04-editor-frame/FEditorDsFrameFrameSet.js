@@ -8,17 +8,18 @@ MO.FEditorDsFrameFrameSet = function FEditorDsFrameFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsFrameSet);
    //..........................................................
    // @property
-   o._frameName   = 'editor.design.frame.FrameSet';
+   o._frameName    = 'editor.design.frame.FrameSet';
    //..........................................................
    // @process
-   o.onBuilded    = MO.FEditorDsFrameFrameSet_onBuilded;
+   o.onBuilded     = MO.FEditorDsFrameFrameSet_onBuilded;
    //..........................................................
    // @method
-   o.construct    = MO.FEditorDsFrameFrameSet_construct;
+   o.construct     = MO.FEditorDsFrameFrameSet_construct;
    // @method
-   o.selectObject = MO.FEditorDsFrameFrameSet_selectObject
+   o.setFrameTitle = MO.FEditorDsFrameFrameSet_setFrameTitle;
+   o.selectObject  = MO.FEditorDsFrameFrameSet_selectObject
    // @method
-   o.dispose      = MO.FEditorDsFrameFrameSet_dispose;
+   o.dispose       = MO.FEditorDsFrameFrameSet_dispose;
    return o;
 }
 
@@ -38,7 +39,6 @@ MO.FEditorDsFrameFrameSet_onBuilded = function FEditorDsFrameFrameSet_onBuilded(
    o._frameSpaceTitle._hPanel.className = o.styleName('Title_Ground');
    o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
-   o._framePropertyTitle._hPanel.className = o.styleName('Title_Ground');
    o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
    //..........................................................
@@ -78,11 +78,11 @@ MO.FEditorDsFrameFrameSet_onBuilded = function FEditorDsFrameFrameSet_onBuilded(
    o._frameSpaceContent.push(control);
    //..........................................................
    // 设置属性工具栏
-   var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsFramePropertyToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._framePropertyToolBar.push(control);
+   //var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsFramePropertyToolBar);
+   //control._workspace = o._workspace;
+   //control._frameSet = o;
+   //control.buildDefine(event);
+   //o._framePropertyToolBar.push(control);
    //..........................................................
    // 设置标题
    MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '表单目录');
@@ -97,6 +97,18 @@ MO.FEditorDsFrameFrameSet_construct = function FEditorDsFrameFrameSet_construct(
    var o = this;
    // 父处理
    o.__base.FEditorDsFrameSet.construct.call(o);
+}
+
+//==========================================================
+// <T>设置页面标题。</T>
+//
+// @method
+// @param title:String 标题
+//==========================================================
+MO.FEditorDsFrameFrameSet_setFrameTitle = function FEditorDsFrameFrameSet_setFrameTitle(title){
+   var o = this;
+   var hTitlePanel = o._frameSpaceTitle._hPanel;
+   MO.Window.Html.textSet(hTitlePanel, title);
 }
 
 //==========================================================

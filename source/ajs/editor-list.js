@@ -12,6 +12,7 @@ MO.FEditorDsListCatalogToolBar = function FEditorDsListCatalogToolBar(o){
    o._controlFolderOpenButton     = null;
    o._controlFolderCloseButton    = null;
    o._activeNodeGuid              = null;
+   o.onListClick                  = MO.FEditorDsListCatalogToolBar_onListClick;
    o.onBuilded                    = MO.FEditorDsListCatalogToolBar_onBuilded;
    o.onFolderCreateClick          = MO.FEditorDsListCatalogToolBar_onFolderCreateClick;
    o.onFolderDeleteLoad           = MO.FEditorDsListCatalogToolBar_onFolderDeleteLoad;
@@ -24,9 +25,13 @@ MO.FEditorDsListCatalogToolBar = function FEditorDsListCatalogToolBar(o){
    o.dispose                      = MO.FEditorDsListCatalogToolBar_dispose;
    return o;
 }
+MO.FEditorDsListCatalogToolBar_onListClick = function FEditorDsListCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject('list', 'editor.design.list.ListForm', null, null);
+}
 MO.FEditorDsListCatalogToolBar_onBuilded = function FEditorDsListCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FDuiToolBar.onBuilded.call(o, p);
+   o._controlList.addClickListener(o, o.onListClick);
 }
 MO.FEditorDsListCatalogToolBar_onFolderCreateClick = function FEditorDsListCatalogToolBar_onFolderCreateClick(event){
    var o = this;

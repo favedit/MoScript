@@ -44,7 +44,6 @@ MO.FDuiTreeNode = function FDuiTreeNode(o){
    o._child            = MO.Class.register(o, new MO.APtyBoolean('_child', 'has_child'), false);
    o._typeGroup        = MO.Class.register(o, [new MO.APtyString('_typeGroup'), new MO.AGetSet('_typeGroup')]);
    o._typeCode         = MO.Class.register(o, [new MO.APtyString('_typeCode'), new MO.AGetter('_typeCode')]);
-   o._code             = MO.Class.register(o, [new MO.APtyString('_code'), new MO.AGetSet('_code')]);
    o._icon             = MO.Class.register(o, new MO.APtyString('_icon'));
    o._checked          = MO.Class.register(o, new MO.APtyBoolean('_checked'), false);
    o._extended         = MO.Class.register(o, new MO.APtyBoolean('_extended'), false);
@@ -858,7 +857,6 @@ MO.FDuiTreeNodeCell_set = function FDuiTreeNodeCell_set(p){
 }
 MO.FDuiTreeNodeType = function FDuiTreeNodeType(o){
    o = MO.Class.inherits(this, o, MO.FDuiComponent);
-   o._code       = MO.Class.register(o, [new MO.APtyString('_code'), new MO.AGetSet('_code')]);
    o._storage    = MO.Class.register(o, [new MO.APtyString('_storage'), new MO.AGetSet('_storage')]);
    o._icon       = MO.Class.register(o, [new MO.APtyString('_icon'), new MO.AGetSet('_icon')]);
    o._service    = MO.Class.register(o, [new MO.APtyString('_service'), new MO.AGetSet('_service')]);

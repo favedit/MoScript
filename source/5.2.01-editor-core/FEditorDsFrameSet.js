@@ -29,6 +29,7 @@ MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
    // @method
    o.construct             = MO.FEditorDsFrameSet_construct;
    // @method
+   o.setFrameTitle         = MO.FEditorDsFrameSet_setFrameTitle;
    o.selectObject          = MO.FEditorDsFrameSet_selectObject;
    // @method
    o.load                  = MO.FEditorDsFrameSet_load;
@@ -46,6 +47,18 @@ MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
    var o = this;
    // 父处理
    o.__base.FEditorFrameSet.construct.call(o);
+}
+
+//==========================================================
+// <T>设置页面标题。</T>
+//
+// @method
+// @param title:String 标题
+//==========================================================
+MO.FEditorDsFrameSet_setFrameTitle = function FEditorDsFrameSet_setFrameTitle(title){
+   var o = this;
+   var hTitlePanel = o._framePropertyTitle._hPanel;
+   MO.Window.Html.textSet(hTitlePanel, title);
 }
 
 //==========================================================
@@ -68,8 +81,7 @@ MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(type
    }
    //..........................................................
    // 显示标题
-   var hTitlePanel = o._framePropertyTitle._hPanel;
-   MO.Window.Html.textSet(hTitlePanel, frame.label());
+   o.setFrameTitle(frame.label());
    // 显示工具栏
    var hToolBarPanel = o._framePropertyToolBar._hPanel;
    MO.Window.Html.clear(hToolBarPanel);

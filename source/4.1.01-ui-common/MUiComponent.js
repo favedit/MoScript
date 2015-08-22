@@ -10,6 +10,7 @@ MO.MUiComponent = function MUiComponent(o){
    //..........................................................
    // @property
    o._guid            = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
+   o._code            = MO.Class.register(o, [new MO.APtyString('_code'), new MO.AGetSet('_code')]);
    o._name            = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
    o._label           = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
    o._attributes      = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), new MO.AGetter('_attributes')]);

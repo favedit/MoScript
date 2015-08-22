@@ -22,7 +22,7 @@ MO.RDuiLayer = function RDuiLayer(){
 //==========================================================
 MO.RDuiLayer.prototype.next = function RDuiLayer_next(p){
    var o = this;
-   var n = MO.Lang.Integer.nvl(p, EUiLayer.Default);
+   var n = MO.Lang.Integer.nvl(p, MO.EUiLayer.Default);
    var c = MO.Lang.Integer.nvl(o._layers[n], n);
    o._layers[n] = ++c;
    return c;
@@ -38,7 +38,7 @@ MO.RDuiLayer.prototype.next = function RDuiLayer_next(p){
 //==========================================================
 MO.RDuiLayer.prototype.free = function RDuiLayer_free(p, l){
    var o = this;
-   var n = MO.Lang.Integer.nvl(p, EUiLayer.Default);
+   var n = MO.Lang.Integer.nvl(p, MO.EUiLayer.Default);
    var c = MO.Lang.Integer.nvl(o._layers[n], n);
    --c;
    if(c > n){

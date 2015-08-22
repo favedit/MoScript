@@ -20,7 +20,7 @@
 // @version 150131
 //==========================================================
 MO.FDuiNumber = function FDuiNumber(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged, MO.MUiPropertyNumber);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyNumber);
    //..........................................................
    // @property
    o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
@@ -35,6 +35,8 @@ MO.FDuiNumber = function FDuiNumber(o){
    // @attribute
    o._innerOriginValue = null;
    o._innerDataValue   = null;
+   // @attribute
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @html
    o._hInput           = null;

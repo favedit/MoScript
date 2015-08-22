@@ -26,8 +26,7 @@ MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogTool
    return o;
 }
 MO.FEditorDsPersistenceCatalogToolBar_onListClick = function FEditorDsPersistenceCatalogToolBar_onListClick(event){
-   var o = this;
-   o._frameSet.selectObject('list', 'editor.design.persistence.ListForm', null, null);
+   this._frameSet.selectObject('list', 'editor.design.persistence.ListForm', null, null);
 }
 MO.FEditorDsPersistenceCatalogToolBar_onBuilded = function FEditorDsPersistenceCatalogToolBar_onBuilded(p){
    var o = this;

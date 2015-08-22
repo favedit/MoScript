@@ -23,8 +23,9 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    // @method
    o.construct      = MO.FEditorDsPropertyForm_construct;
    // @method
-   o.load           = MO.FEditorDsPropertyForm_load;
-   o.save           = MO.FEditorDsPropertyForm_save;
+   o.load           = MO.FEditorDsPropertyForm_doLoad;
+   o.doSave         = MO.FEditorDsPropertyForm_doSave;
+   o.doDelete       = MO.FEditorDsPropertyForm_doDelete;
    // @method
    o.dispose        = MO.FEditorDsPropertyForm_dispose;
    return o;
@@ -39,6 +40,17 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
 MO.FEditorDsPropertyForm_onButtonClick = function FEditorDsPropertyForm_onButtonClick(event){
    var o  = this;
    var button = event.sender;
+   var code = button.code();
+   switch(code){
+      case 'save':
+         o.doSave();
+         break;
+      case 'delete':
+         break;
+      case 'sort':
+         break;
+   }
+   return;
    // 获得参数
    var logicGroup = button.attributeGet('logic_group');
    var frameName = button.attributeGet('frame_name');
@@ -122,7 +134,7 @@ MO.FEditorDsPropertyForm_construct = function FEditorDsPropertyForm_construct(){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
-MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(typeGroup, containerName, itemName){
+MO.FEditorDsPropertyForm_doLoad = function FEditorDsPropertyForm_doLoad(typeGroup, containerName, itemName){
    var o = this;
    // 设置属性
    o._containerName = containerName;
@@ -140,7 +152,7 @@ MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(typeGroup, c
 // @method
 // @param containerName:String 容器名称
 //==========================================================
-MO.FEditorDsPropertyForm_save = function FEditorDsPropertyForm_save(){
+MO.FEditorDsPropertyForm_doSave = function FEditorDsPropertyForm_doSave(){
    var o = this;
    // 禁止处理
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
@@ -149,7 +161,7 @@ MO.FEditorDsPropertyForm_save = function FEditorDsPropertyForm_save(){
    var xroot = xdocument.root();
    o.saveUnit(xroot.create('Content'));
    // 发送请求
-   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataModeCd, o._logicGroup, o._containerName, o._itemName);
+   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, 'update', o._logicGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataSave);
 }

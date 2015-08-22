@@ -2225,14 +2225,14 @@ MO.RDuiLayer = function RDuiLayer(){
 }
 MO.RDuiLayer.prototype.next = function RDuiLayer_next(p){
    var o = this;
-   var n = MO.Lang.Integer.nvl(p, EUiLayer.Default);
+   var n = MO.Lang.Integer.nvl(p, MO.EUiLayer.Default);
    var c = MO.Lang.Integer.nvl(o._layers[n], n);
    o._layers[n] = ++c;
    return c;
 }
 MO.RDuiLayer.prototype.free = function RDuiLayer_free(p, l){
    var o = this;
-   var n = MO.Lang.Integer.nvl(p, EUiLayer.Default);
+   var n = MO.Lang.Integer.nvl(p, MO.EUiLayer.Default);
    var c = MO.Lang.Integer.nvl(o._layers[n], n);
    --c;
    if(c > n){
@@ -9018,7 +9018,7 @@ MO.FDuiMemo_refreshStyle = function FDuiMemo_refreshStyle(){
    hInput.readOnly = !o._statusValueEdit;
 }
 MO.FDuiNumber = function FDuiNumber(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged, MO.MUiPropertyNumber);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyNumber);
    o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
    o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
    o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
@@ -9027,6 +9027,7 @@ MO.FDuiNumber = function FDuiNumber(o){
    o._styleDownPanel   = MO.Class.register(o, new MO.AStyle('_styleDownPanel'));
    o._innerOriginValue = null;
    o._innerDataValue   = null;
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o._hInput           = null;
    o._iconUp           = null;
    o._iconDown         = null;
@@ -9191,20 +9192,21 @@ MO.FDuiNumber_drop = function FDuiNumber_drop(){
    }
 }
 MO.FDuiNumber2 = function FDuiNumber2(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged);
-   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
-   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
-   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
-   o._innerOriginValue = null;
-   o._innerDataValue   = null;
-   o._hInput          = null;
-   o.onBuildEditInput  = MO.FDuiNumber3_onBuildEditInput;
-   o.onBuildEditValue = MO.FDuiNumber2_onBuildEditValue;
-   o.onInputKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber2_onInputKeyPress);
-   o.onInputChanged    = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber2_onInputChanged);
-   o.construct        = MO.FDuiNumber2_construct;
-   o.get              = MO.FDuiNumber2_get;
-   o.set              = MO.FDuiNumber2_set;
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl);
+   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._innerOriginValue     = null;
+   o._innerDataValue       = null;
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._hInput1              = null;
+   o._hInput2              = null;
+   o.onBuildEditInput      = MO.FDuiNumber3_onBuildEditInput;
+   o.onBuildEditValue      = MO.FDuiNumber2_onBuildEditValue;
+   o.onInputKeyPress       = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber2_onInputKeyPress);
+   o.onInputChanged        = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber2_onInputChanged);
+   o.construct             = MO.FDuiNumber2_construct;
+   o.get                   = MO.FDuiNumber2_get;
+   o.set                   = MO.FDuiNumber2_set;
+   o.refreshStyle          = MO.FDuiNumber2_refreshStyle;
    return o;
 }
 MO.FDuiNumber2_oeDataLoad = function FDuiNumber2_oeDataLoad(p){
@@ -9223,17 +9225,16 @@ MO.FDuiNumber3_onBuildEditInput = function FDuiNumber3_onBuildEditInput(p, h){
 }
 MO.FDuiNumber2_onBuildEditValue = function FDuiNumber2_onBuildEditValue(event){
    var o = this;
-   var h = o._hValuePanel;
-   h.className = o.styleName('InputPanel');
-   var hf = o._hInputForm = MO.Window.Builder.appendTable(h);
-   var hr = MO.Window.Builder.appendTableRow(hf);
-   var hCell = MO.Window.Builder.appendTableCell(hr);
-   hCell.style.borderRight = '1px solid #666666';
-   var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   var hValuePanel = o._hValuePanel;
+   var hForm = o._hInputForm = MO.Window.Builder.appendTable(hValuePanel);
+   var hLine = MO.Window.Builder.appendTableRow(hForm);
+   var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
+   hCell.style.borderRight = '1px solid #CCCCCC';
+   var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell);
    o.onBuildEditInput(event, hInput)
-   var hCell = MO.Window.Builder.appendTableCell(hr);
-   hCell.style.borderLeft = '1px solid #999999';
-   var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
+   hCell.style.borderLeft = '1px solid #EEEEEE';
+   var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell);
    o.onBuildEditInput(event, hInput)
 }
 MO.FDuiNumber2_onInputKeyPress = function FDuiNumber2_onInputKeyPress(p){
@@ -9395,14 +9396,35 @@ MO.FDuiNumber2_clone = function FDuiNumber2_clone(){
 MO.FDuiNumber2_link = function FDuiNumber2_link(){
    var o = this;
 }
+MO.FDuiNumber2_refreshStyle = function FDuiNumber2_refreshStyle(){
+   var o = this;
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   var inputStyle = null;
+   if(o._statusValueEdit){
+      if(o._statusValueHover){
+         inputStyle = 'InputHover';
+      }else{
+         inputStyle = 'InputEdit';
+      }
+   }else{
+      inputStyle = 'InputReadonly';
+   }
+   var hInput1 = o._hInput1;
+   hInput1.className = o.styleName(inputStyle);
+   hInput1.readOnly = !o._statusValueEdit;
+   var hInput2 = o._hInput2;
+   hInput2.className = o.styleName(inputStyle);
+   hInput2.readOnly = !o._statusValueEdit;
+}
 MO.FDuiNumber3 = function FDuiNumber3(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MListenerDataChanged);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl);
    o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
    o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
    o._styleInputPanel  = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
    o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
    o._innerOriginValue = null;
    o._innerDataValue   = null;
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o._hInput           = null;
    o.onBuildEditInput  = MO.FDuiNumber3_onBuildEditInput;
    o.onBuildEditValue  = MO.FDuiNumber3_onBuildEditValue;
@@ -9609,6 +9631,7 @@ MO.FDuiNumber4 = function FDuiNumber4(o){
    o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
    o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
    o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o._hInput          = null;
    o.onBuildEditValue = MO.FDuiNumber4_onBuildEditValue;
    o.construct        = MO.FDuiNumber4_construct;
@@ -14257,13 +14280,13 @@ MO.FDuiPopupMenu_show = function FDuiPopupMenu_show(h, positionCd, v){
       width = openerWidth;
    }
    if(height > 300){
-      o._hFormPanel.style.overflowY = 'scroll';
+      o._hContainerPanel.style.overflowY = 'scroll';
       style.height = height + 'px';
    }
    style.left = '3px';
    style.top = (openerHeight + 1) + 'px';
    style.width = width + 'px';
-   style.zIndex = RDuiLayer.next();
+   style.zIndex = MO.RDuiLayer.next();
 }
 MO.FDuiPopupMenu_setVisible = function FDuiPopupMenu_setVisible(visible){
    var o = this;
@@ -15813,7 +15836,6 @@ MO.FDuiTreeNode = function FDuiTreeNode(o){
    o._child            = MO.Class.register(o, new MO.APtyBoolean('_child', 'has_child'), false);
    o._typeGroup        = MO.Class.register(o, [new MO.APtyString('_typeGroup'), new MO.AGetSet('_typeGroup')]);
    o._typeCode         = MO.Class.register(o, [new MO.APtyString('_typeCode'), new MO.AGetter('_typeCode')]);
-   o._code             = MO.Class.register(o, [new MO.APtyString('_code'), new MO.AGetSet('_code')]);
    o._icon             = MO.Class.register(o, new MO.APtyString('_icon'));
    o._checked          = MO.Class.register(o, new MO.APtyBoolean('_checked'), false);
    o._extended         = MO.Class.register(o, new MO.APtyBoolean('_extended'), false);
@@ -16627,7 +16649,6 @@ MO.FDuiTreeNodeCell_set = function FDuiTreeNodeCell_set(p){
 }
 MO.FDuiTreeNodeType = function FDuiTreeNodeType(o){
    o = MO.Class.inherits(this, o, MO.FDuiComponent);
-   o._code       = MO.Class.register(o, [new MO.APtyString('_code'), new MO.AGetSet('_code')]);
    o._storage    = MO.Class.register(o, [new MO.APtyString('_storage'), new MO.AGetSet('_storage')]);
    o._icon       = MO.Class.register(o, [new MO.APtyString('_icon'), new MO.AGetSet('_icon')]);
    o._service    = MO.Class.register(o, [new MO.APtyString('_service'), new MO.AGetSet('_service')]);

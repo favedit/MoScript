@@ -21,6 +21,8 @@ MO.FEditorDsListCatalogToolBar = function FEditorDsListCatalogToolBar(o){
    o._activeNodeGuid              = null;
    //..........................................................
    // @event
+   o.onListClick                  = MO.FEditorDsListCatalogToolBar_onListClick;
+   // @event
    o.onBuilded                    = MO.FEditorDsListCatalogToolBar_onBuilded;
    // @event
    o.onFolderCreateClick          = MO.FEditorDsListCatalogToolBar_onFolderCreateClick;
@@ -39,6 +41,16 @@ MO.FEditorDsListCatalogToolBar = function FEditorDsListCatalogToolBar(o){
 }
 
 //==========================================================
+// <T>列表按键点击处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件信息
+//==========================================================
+MO.FEditorDsListCatalogToolBar_onListClick = function FEditorDsListCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject('list', 'editor.design.list.ListForm', null, null);
+}
+
+//==========================================================
 // <T>构建完成处理。</T>
 //
 // @method
@@ -49,6 +61,7 @@ MO.FEditorDsListCatalogToolBar_onBuilded = function FEditorDsListCatalogToolBar_
    o.__base.FDuiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
+   o._controlList.addClickListener(o, o.onListClick);
    //o._controlFolderCreateButton.addClickListener(o, o.onFolderCreateClick);
    //o._controlFolderDeleteButton.addClickListener(o, o.onFolderDeleteClick);
    //o._controlFolderPropertyButton.addClickListener(o, o.onFolderPropertyClick);

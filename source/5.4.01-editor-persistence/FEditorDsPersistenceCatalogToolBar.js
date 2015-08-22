@@ -41,14 +41,13 @@ MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogTool
 }
 
 //==========================================================
-// <T>文件夹创建点击处理。</T>
+// <T>列表按键点击处理。</T>
 //
 // @method
-// @param event:TEventProcess 事件处理
+// @param event:TEventProcess 事件信息
 //==========================================================
 MO.FEditorDsPersistenceCatalogToolBar_onListClick = function FEditorDsPersistenceCatalogToolBar_onListClick(event){
-   var o = this;
-   o._frameSet.selectObject('list', 'editor.design.persistence.ListForm', null, null);
+   this._frameSet.selectObject('list', 'editor.design.persistence.ListForm', null, null);
 }
 
 //==========================================================

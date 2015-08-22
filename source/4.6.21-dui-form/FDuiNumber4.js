@@ -15,6 +15,8 @@ MO.FDuiNumber4 = function FDuiNumber4(o){
    // @style
    o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
    o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   // @attribute
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @html
    o._hInput          = null;

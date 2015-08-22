@@ -53,6 +53,7 @@ MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
    o._framePropertyToolbar = null;
    o._framePropertyContent = null;
    o.construct             = MO.FEditorDsFrameSet_construct;
+   o.setFrameTitle         = MO.FEditorDsFrameSet_setFrameTitle;
    o.selectObject          = MO.FEditorDsFrameSet_selectObject;
    o.load                  = MO.FEditorDsFrameSet_load;
    o.dispose               = MO.FEditorDsFrameSet_dispose;
@@ -62,14 +63,18 @@ MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
    var o = this;
    o.__base.FEditorFrameSet.construct.call(o);
 }
+MO.FEditorDsFrameSet_setFrameTitle = function FEditorDsFrameSet_setFrameTitle(title){
+   var o = this;
+   var hTitlePanel = o._framePropertyTitle._hPanel;
+   MO.Window.Html.textSet(hTitlePanel, title);
+}
 MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(typeGroup, frameName, modeCd, containerName, controlName){
    var o = this;
    var frame = o.selectPropertyFrame(frameName);
    if(containerName){
       frame.load(typeGroup, containerName, controlName);
    }
-   var hTitlePanel = o._framePropertyTitle._hPanel;
-   MO.Window.Html.textSet(hTitlePanel, frame.label());
+   o.setFrameTitle(frame.label());
    var hToolBarPanel = o._framePropertyToolBar._hPanel;
    MO.Window.Html.clear(hToolBarPanel);
    var toolBar = frame.findControl('toolBar');
@@ -130,14 +135,26 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o.onDataLoad     = MO.FEditorDsPropertyForm_onDataLoad;
    o.onDataSave     = MO.FEditorDsPropertyForm_onDataSave;
    o.construct      = MO.FEditorDsPropertyForm_construct;
-   o.load           = MO.FEditorDsPropertyForm_load;
-   o.save           = MO.FEditorDsPropertyForm_save;
+   o.load           = MO.FEditorDsPropertyForm_doLoad;
+   o.doSave         = MO.FEditorDsPropertyForm_doSave;
+   o.doDelete       = MO.FEditorDsPropertyForm_doDelete;
    o.dispose        = MO.FEditorDsPropertyForm_dispose;
    return o;
 }
 MO.FEditorDsPropertyForm_onButtonClick = function FEditorDsPropertyForm_onButtonClick(event){
    var o  = this;
    var button = event.sender;
+   var code = button.code();
+   switch(code){
+      case 'save':
+         o.doSave();
+         break;
+      case 'delete':
+         break;
+      case 'sort':
+         break;
+   }
+   return;
    var logicGroup = button.attributeGet('logic_group');
    var frameName = button.attributeGet('frame_name');
    var componentType = button.attributeGet('component_type');
@@ -174,7 +191,7 @@ MO.FEditorDsPropertyForm_construct = function FEditorDsPropertyForm_construct(){
    var o = this;
    o.__base.FDuiForm.construct.call(o);
 }
-MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(typeGroup, containerName, itemName){
+MO.FEditorDsPropertyForm_doLoad = function FEditorDsPropertyForm_doLoad(typeGroup, containerName, itemName){
    var o = this;
    o._containerName = containerName;
    o._itemName = itemName;
@@ -183,13 +200,13 @@ MO.FEditorDsPropertyForm_load = function FEditorDsPropertyForm_load(typeGroup, c
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
    connection.addLoadListener(o, o.onDataLoad);
 }
-MO.FEditorDsPropertyForm_save = function FEditorDsPropertyForm_save(){
+MO.FEditorDsPropertyForm_doSave = function FEditorDsPropertyForm_doSave(){
    var o = this;
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
    o.saveUnit(xroot.create('Content'));
-   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataModeCd, o._logicGroup, o._containerName, o._itemName);
+   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, 'update', o._logicGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataSave);
 }
