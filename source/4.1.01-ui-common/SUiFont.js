@@ -43,7 +43,28 @@ MO.SUiFont_assign = function SUiFont_assign(value){
 //==========================================================
 MO.SUiFont_parse = function SUiFont_parse(source){
    var o = this;
-   throw new MO.TError('Unsupport.');
+
+   var boldIndex = source.toLowerCase().indexOf('bold');
+   if (boldIndex != -1) {
+      o.bold = true;
+      source = source.replace(source.substring(boldIndex, boldIndex + 4), '');
+   }
+
+   var sharpIndex = source.indexOf('#');
+   if (sharpIndex != -1) {
+      o.color = source.substring(sharpIndex, sharpIndex + 7);
+      source = source.replace(o.color, '');
+   }
+
+   var sizeIndex = source.toLowerCase().indexOf('px');
+   if (sizeIndex != -1) {
+      // 已测，前边是空格或者得-1都没问题
+      var sizeString = source.substring(sizeIndex - 2, sizeIndex + 2);
+      o.size = parseInt(sizeString);
+      source = source.replace(sizeString, '');
+   }
+
+   o.font = MO.RString.trim(source);
 }
 
 //==========================================================

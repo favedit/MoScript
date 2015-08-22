@@ -11,12 +11,11 @@ MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o) {
    // @attribute
    o._value = MO.Class.register(o, new MO.AGetter('_value'), '0');
    o._originValue = '0';
+   o._valueSign = 1;
+   o._originValueSign = 1;
+   o._increasing = false;
    // @attribute
    o._startTick = 0;
-   o._textFontW = "0";
-   o._unitFontW = "0";
-   o._negative = "0";
-   o._origin = "0";
    o._rolling = MO.Class.register(o, new MO.AGetSet('_rolling'), false);
    o._rollingDuration = MO.Class.register(o, new MO.AGetSet('_rollingDuration'), 1000);
    o._rollingPages = null;
@@ -51,100 +50,96 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    // 设置字体
    var textFont = o._foreFont;
    var unitFont = o._backFont;
-
-   graphic.setFont(textFont);
+   
    var baseX;
-   var unitTextX;
    if (o._alignCd != MO.EUiAlign.Right) {
       baseX = rectangle.left;
-      unitTextX = baseX + 2;
    } else {
-      baseX = rectangle.right() - o._unitFontW + (o._textFontW - o._unitFontW) - 65;
-      unitTextX = baseX + 2;
+      graphic.setFont(textFont);
+      var valueTextLength = graphic.textWidth(o._value);
+      var unitText = '元';
+      if (o._value.length > 4) { unitText += '万'; }
+      if (o._value.length > 8) { unitText += '亿'; }
+      graphic.setFont(unitFont);
+      var unitTextLength = graphic.textWidth(unitText);
+      baseX = rectangle.right() - valueTextLength - unitTextLength;
    }
    var baseY = rectangle.top + rectangle.height;
-   var unitTextY = baseY - 3;
-   var drawedText = '';
+
+   var drawX = baseX;
+
    var passedTick = MO.Timer.current() - o._startTick;
    if (passedTick > o._rollingDuration || o._noRolling) {
       passedTick = o._rollingDuration;
       o._rolling = false;
    }
 
+   var increasing = o._increasing;
+   var originValue = o._originValue;
+   var originValueSign = o._originValueSign;
    for (var i = 0; i < o._value.length; i++) {
       var passedValue = o._rollingPages.get(i) * (passedTick / o._rollingDuration);
-      var numString = (parseInt(o._originValue.charAt(i)) + parseInt(passedValue)).toString();
-      var currentNum = parseInt(numString.charAt(numString.length - 1));
-      var nextNum = currentNum == 9 ? 0 : currentNum + 1;
-      var prevNum = currentNum == 0 ? 9 : currentNum - 1;
-      var reg = /^[0-9]+$/;
+      var currentNum = parseInt(originValue.charAt(i)) * originValueSign + parseInt(passedValue);
+      var currentNumString = currentNum.toString();
+      var nextNum;
+      if (increasing) {
+         nextNum = currentNum + 1;
+      }
+      else {
+         nextNum = currentNum - 1;
+      }
+      var nextNumString = nextNum.toString();
+      var currentNumChar = parseInt(currentNumString.charAt(currentNumString.length - 1));
+      var nextNumChar = parseInt(nextNumString.charAt(nextNumString.length - 1));
+
       var rate = passedValue - parseInt(passedValue);
+      rate = increasing ? rate : rate * -1;
+
       graphic.setFont(textFont);
-      var drawedTextWidth;
       var textColor = '';
-      var originValueLs = o._originValue.length;
-      if (i < originValueLs - 8) {
+      if (i < o._originValue.length - 8) {
          textColor = '#FFD926';
-      } else if (i < originValueLs - 4) {
+      }
+      else if (i < o._originValue.length - 4) {
          textColor = '#FF7200';
-      } else if (i < originValueLs) {
+      }
+      else if (i < o._originValue.length) {
          textColor = '#FD0000';
       }
 
-      if ( !reg.test(o._negative) ) {
-         var negativeColor = "";
-         var negativeRate = 1;
-         var negativeLs = o._negative.length;
-         var negativeX = baseX;
-         if (negativeLs <= 5) {
-            negativeColor = '#FD0000';
-         } else if (negativeLs <= 9) {
-            negativeColor = '#FF7200';
-         } else if (negativeLs <= 13) {
-            negativeColor = '#FFD926';
-         }
-         graphic.setFont(textFont);
-         if (o._rollingPages.get(0) != "0") {
-            negativeRate = rate;
-         }
-         if (i == 0) {
-            baseX = baseX + 10;
-            unitTextX = unitTextX + 10;
-            graphic.drawText("-", negativeX, baseY - 38 * negativeRate, negativeColor);
-            graphic.drawText("-", negativeX, baseY * negativeRate, negativeColor);
-            graphic.drawText("-", negativeX, baseY + 38 * negativeRate, negativeColor);
-         }
+      var fontHeight = textFont.size;
+      if (increasing) {
+         graphic.drawText(currentNumChar, drawX, baseY - fontHeight * rate, textColor);
+         graphic.drawText(nextNumChar, drawX, baseY + fontHeight - fontHeight * rate, textColor);
       }
-      drawedTextWidth = graphic.textWidth(drawedText);
-      o._textFontW = drawedTextWidth;
-      // 字宽 ;  
-      graphic.drawText(prevNum, baseX + drawedTextWidth, baseY - 38 - 38 * rate, textColor);
-      graphic.drawText(currentNum, baseX + drawedTextWidth, baseY - 38 * rate, textColor);
-      graphic.drawText(nextNum, baseX + drawedTextWidth, baseY + 38 - 38 * rate, textColor);
-      drawedText += currentNum;
-
-      if (i == originValueLs - 9) {
-         drawedTextWidth = graphic.textWidth(drawedText);
+      else {
+         graphic.drawText(currentNumChar, drawX, baseY + fontHeight * rate, textColor);
+         graphic.drawText(nextNumChar, drawX, baseY - fontHeight + fontHeight * rate, textColor);
+      }
+      drawX += graphic.textWidth(currentNumChar);
+      
+      var unitDrawY = baseY - 3;
+      if (i == o._originValue.length - 9) {
          graphic.setFont(unitFont);
-         graphic.drawText('亿', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-         drawedText += '亿';
-      } else if (i == originValueLs - 5) {
-         drawedTextWidth = graphic.textWidth(drawedText);
+         graphic.drawText('亿', drawX, unitDrawY, '#00B5F6');
+         drawX += graphic.textWidth('亿');
+      }
+      else if (i == o._originValue.length - 5) {
          graphic.setFont(unitFont);
-         graphic.drawText('万', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-         drawedText += '万';
-      } else if (i == originValueLs - 1) {
-         drawedTextWidth = graphic.textWidth(drawedText);
+         graphic.drawText('万', drawX, unitDrawY, '#00B5F6');
+         drawX += graphic.textWidth('万');
+      }
+      else if (i == o._originValue.length - 1) {
          graphic.setFont(unitFont);
-         graphic.drawText('元', unitTextX + drawedTextWidth, unitTextY, '#00B5F6');
-         drawedText += '元';
-         o._unitFontW = drawedTextWidth;
+         graphic.drawText('元', drawX, unitDrawY, '#00B5F6');
+         drawX += graphic.textWidth('元');
       }
 
    }
+
    if (o._rolling == false) {
       o._originValue = o._value;
-      o._origin = o._negative;
+      o._originValueSign = o._valueSign;
       o._rollingPages.clear();
    }
 
@@ -157,28 +152,28 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
 //==========================================================
 MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    var o = this;
-   var fetch;
-   var reg = /^[0-9]+$/;
-   var values = value;
    if (o._value == value) {
       return;
    }
-    if (o._negative == value) {
-       return;
+
+   if (value.charAt(0) == '-') {
+      o._valueSign = -1;
+      value = value.substring(1, value.length - 2);
    }
+   else {
+      o._valueSign = 1;
+   }
+
    if (o._rolling) {
       o._originValue = o._value;
-      o._origin = o._negative;
+      o._originValueSign = o._valueSign;
    }
-   o._negative = value;
-   fetch = value - o._origin;
-   var value = Math.abs(value).toString();
+
    o._value = value;
 
    //计算实际需要转过的页数
    var originValue = o._originValue;
    var lengthDiff = value.length - originValue.length;
-
    while (lengthDiff > 0) {
       originValue = '0' + originValue;
       lengthDiff--;
@@ -186,21 +181,36 @@ MO.FEaiStatisticsLabel_setValue = function FEaiStatisticsLabel_setValue(value) {
    o._originValue = originValue;
    o._rollingPages.clear();
    o._rollingPages._length = value.length;
-   var valueLs = value.length;
-   fetch = reg.test(values) ? fetch < 0 : fetch > 0 ;
-   if (fetch) {
-      for (var i = 0; i < valueLs; i++) {
-         var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
-         pages = pages > 0 ? pages - 10 : pages;
-         o._rollingPages.set(i, pages);
-      }
-   } else {
-      for (var i = 0; i < valueLs; i++) {
-         var pages = parseInt(value.substring(i, i + 1)) - parseInt(originValue.substring(i, i + 1));
-         pages = pages < 0 ? pages + 10 : pages;
+   var valueSign = o._valueSign;
+   var originValueSign = o._originValueSign;
+   var increasing = o._increasing = parseInt(value) > parseInt(originValue);
+   if (increasing) {
+      for (var i = 0; i < value.length; i++) {
+         var pages = parseInt(value.substring(i, i + 1)) * valueSign - parseInt(originValue.substring(i, i + 1)) * originValueSign;
+         if (pages == 0 && valueSign * originValueSign < 0) {
+            pages = parseInt(value.substring(i, i + 1)) * 2;
+            pages = pages == 0 ? 10 : pages;
+         }
+         else {
+            pages = pages < 0 ? pages + 10 : pages;
+         }
          o._rollingPages.set(i, pages);
       }
    }
+   else {
+      for (var i = 0; i < value.length; i++) {
+         var pages = parseInt(value.substring(i, i + 1)) * valueSign - parseInt(originValue.substring(i, i + 1)) * originValueSign;
+         if (pages == 0 && valueSign * originValueSign < 0) {
+            pages = parseInt(value.substring(i, i + 1)) * -2;
+            pages = pages == 0 ? 10 : pages;
+         }
+         else {
+            pages = pages > 0 ? pages - 10 : pages;
+         }
+         o._rollingPages.set(i, pages);
+      }
+   }
+
    o._startTick = MO.Timer.current();
    o._rolling = true;
 }
