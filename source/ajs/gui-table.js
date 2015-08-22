@@ -330,14 +330,14 @@ MO.FGuiGridColumnText_dispose = function FGuiGridColumnText_dispose(){
 }
 MO.FGuiGridControl = function FGuiGridControl(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiGridControl);
-   o._optionClip = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
-   o._headPadding = MO.Class.register(o, new MO.AGetter('_headPadding'));
-   o._rowScroll = 0;
+   o._optionClip     = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
+   o._headPadding    = MO.Class.register(o, new MO.AGetter('_headPadding'));
+   o._rowScroll      = 0;
    o._rowScrollSpeed = 1;
-   o._paintContext = null;
-   o.onPaintBegin = MO.FGuiGridControl_onPaintBegin;
-   o.construct = MO.FGuiGridControl_construct;
-   o.dispose = MO.FGuiGridControl_dispose;
+   o._paintContext   = null;
+   o.onPaintBegin    = MO.FGuiGridControl_onPaintBegin;
+   o.construct       = MO.FGuiGridControl_construct;
+   o.dispose         = MO.FGuiGridControl_dispose;
    return o;
 }
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
@@ -350,9 +350,6 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
    var graphic = event.graphic;
    context.graphic = graphic;
    var rectangle = event.rectangle;
-   if(MO.Class.isClass(o, MO.FGuiTable)){
-      graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 4);
-   }
    var left = rectangle.left + padding.left;
    var top = rectangle.top + padding.top;
    var bottom = rectangle.bottom() - padding.bottom;

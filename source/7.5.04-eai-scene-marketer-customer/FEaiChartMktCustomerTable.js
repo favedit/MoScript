@@ -203,7 +203,7 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setRight(19);
-   grid.setBottom(100);
+   grid.setBottom(20);
    grid.setHeadHeight(32);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';

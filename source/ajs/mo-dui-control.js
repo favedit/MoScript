@@ -12377,1015 +12377,1013 @@ with(MO){
       o.push(c);
    }
 }
-with(MO){
-   MO.FDuiGridControl = function FDuiGridControl(o) {
-      o = MO.Class.inherits(this, o, FDuiContainer);
-      o._displayCount        = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
-      o._displayTitle        = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', EGridDisplay.Title), true);
-      o._displayColumnStatus = true;
-      o._displayColumnSelect = true;
-      o._rowHeight           = MO.Class.register(o, new MO.APtyInteger('rowHeight'), 0);
-      o._stylePanel          = MO.Class.register(o, new MO.AStyle('_stylePanel'));
-      o._styleTitlePanel     = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
-      o._styleTitleForm      = MO.Class.register(o, new MO.AStyle('_styleTitleForm'));
-      o._styleCaption        = MO.Class.register(o, new MO.AStyle('_styleCaption'));
-      o._styleContentPanel   = MO.Class.register(o, new MO.AStyle('_styleContentPanel'));
-      o._styleContentForm    = MO.Class.register(o, new MO.AStyle('_styleContentForm'));
-      o._styleHintPanel      = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
-      o._styleHintForm       = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
-      o._styleHint           = MO.Class.register(o, new MO.AStyle('_styleHint'));
-      o._styleButton         = MO.Class.register(o, new MO.AStyle('_styleButton'));
-      o._minHeight           = 80;
-      o._buttons             = null;
-      o._columns             = null;
-      o._rowClass            = FGridRow;
-      o._rows                = null;
-      o._focusCell           = null;
-      o._focusRow            = null;
-      o._loadEvent           = null;
-      o._hTitlePanel         = null;
-      o._hTitleForm          = null;
-      o._hTitleLine          = null;
-      o._hCaption            = null;
-      o._hContentPanel       = null;
-      o._hHintPanel          = null;
-      o._hHintForm           = null;
-      o.lsnsRowClick         = null;
-      o.lsnsRowDblClick      = null;
-      o.onBuildTitle         = FDuiGridControl_onBuildTitle;
-      o.onBuildContent       = RMethod.virtual(o, 'onBuildContent');
-      o.onBuildHint          = FDuiGridControl_onBuildHint;
-      o.onBuildPanel         = FDuiGridControl_onBuildPanel;
-      o.onBuild              = FDuiGridControl_onBuild;
-      o.onDatasetLoadDelay   = FDuiGridControl_onDatasetLoadDelay;
-      o.onDatasetLoad        = FDuiGridControl_onDatasetLoad;
-      o.construct            = FDuiGridControl_construct;
-      o.buildNavigatorButton = FDuiGridControl_buildNavigatorButton;
-      o.appendColumn         = RMethod.virtual(o, 'appendColumn');
-      o.appendChild          = FDuiGridControl_appendChild;
-      o.push                 = FDuiGridControl_push;
-      o.createRow            = FDuiGridControl_createRow;
-      o.insertRow            = FDuiGridControl_insertRow;
-      o.syncRow              = FDuiGridControl_syncRow;
-      o.hideRows             = FDuiGridControl_hideRows;
-      o.clickCell            = FDuiGridControl_clickCell;
-      o.clickRow             = FDuiGridControl_clickRow;
-      o.doubleClickRow       = FDuiGridControl_doubleClickRow;
-      return o;
-   }
-   MO.FDuiGridControl_onBuildPanel = function FDuiGridControl_onBuildPanel(p){
-      var o = this;
-      o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
-   }
-   MO.FDuiGridControl_onBuildTitle = function FDuiGridControl_onBuildTitle(e){
-      var o = this;
-      var hf = o._hTitleForm = MO.Window.Builder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
-      var hr = o._hTitleLine = MO.Window.Builder.appendTableRow(hf);
-      var hc = o._hCaption = MO.Window.Builder.appendTableCell(hr, o.styleName('Caption'));
-      hc.innerText = o.label();
-      RHtml.displaySet(hf, o._displayTitle);
-   }
-   MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(e) {
-      var o = this;
-      var hr = MO.Window.Builder.appendTableRow(o._hHintForm);
+MO.FDuiGridControl = function FDuiGridControl(o) {
+   o = MO.Class.inherits(this, o, MO.FDuiContainer);
+   o._displayCount        = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
+   o._displayTitle        = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', EGridDisplay.Title), true);
+   o._displayColumnStatus = true;
+   o._displayColumnSelect = true;
+   o._rowHeight           = MO.Class.register(o, new MO.APtyInteger('rowHeight'), 0);
+   o._stylePanel          = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._styleTitlePanel     = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
+   o._styleTitleForm      = MO.Class.register(o, new MO.AStyle('_styleTitleForm'));
+   o._styleCaption        = MO.Class.register(o, new MO.AStyle('_styleCaption'));
+   o._styleContentPanel   = MO.Class.register(o, new MO.AStyle('_styleContentPanel'));
+   o._styleContentForm    = MO.Class.register(o, new MO.AStyle('_styleContentForm'));
+   o._styleHintPanel      = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
+   o._styleHintForm       = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
+   o._styleHint           = MO.Class.register(o, new MO.AStyle('_styleHint'));
+   o._styleButton         = MO.Class.register(o, new MO.AStyle('_styleButton'));
+   o._minHeight           = 80;
+   o._buttons             = null;
+   o._columns             = null;
+   o._rowClass            = MO.FGridRow;
+   o._rows                = null;
+   o._focusCell           = null;
+   o._focusRow            = null;
+   o._loadEvent           = null;
+   o._hTitlePanel         = null;
+   o._hTitleForm          = null;
+   o._hTitleLine          = null;
+   o._hCaption            = null;
+   o._hContentPanel       = null;
+   o._hHintPanel          = null;
+   o._hHintForm           = null;
+   o.lsnsRowClick         = null;
+   o.lsnsRowDblClick      = null;
+   o.onBuildTitle         = MO.FDuiGridControl_onBuildTitle;
+   o.onBuildContent       = MO.Method.virtual(o, 'onBuildContent');
+   o.onBuildHint          = MO.FDuiGridControl_onBuildHint;
+   o.onBuildPanel         = MO.FDuiGridControl_onBuildPanel;
+   o.onBuild              = MO.FDuiGridControl_onBuild;
+   o.onDatasetLoadDelay   = MO.FDuiGridControl_onDatasetLoadDelay;
+   o.onDatasetLoad        = MO.FDuiGridControl_onDatasetLoad;
+   o.construct            = MO.FDuiGridControl_construct;
+   o.buildNavigatorButton = MO.FDuiGridControl_buildNavigatorButton;
+   o.appendColumn         = MO.Method.virtual(o, 'appendColumn');
+   o.appendChild          = MO.FDuiGridControl_appendChild;
+   o.push                 = MO.FDuiGridControl_push;
+   o.createRow            = MO.FDuiGridControl_createRow;
+   o.insertRow            = MO.FDuiGridControl_insertRow;
+   o.syncRow              = MO.FDuiGridControl_syncRow;
+   o.hideRows             = MO.FDuiGridControl_hideRows;
+   o.clickCell            = MO.FDuiGridControl_clickCell;
+   o.clickRow             = MO.FDuiGridControl_clickRow;
+   o.doubleClickRow       = MO.FDuiGridControl_doubleClickRow;
+   return o;
+}
+MO.FDuiGridControl_onBuildPanel = function FDuiGridControl_onBuildPanel(p){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
+}
+MO.FDuiGridControl_onBuildTitle = function FDuiGridControl_onBuildTitle(e){
+   var o = this;
+   var hf = o._hTitleForm = MO.Window.Builder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
+   var hr = o._hTitleLine = MO.Window.Builder.appendTableRow(hf);
+   var hc = o._hCaption = MO.Window.Builder.appendTableCell(hr, o.styleName('Caption'));
+   hc.innerText = o.label();
+   RHtml.displaySet(hf, o._displayTitle);
+}
+MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(e) {
+   var o = this;
+   var hr = MO.Window.Builder.appendTableRow(o._hHintForm);
+   var hc = MO.Window.Builder.appendTableCell(hr);
+   hc.width = 60;
+   o.hExtendButton = o.buildNavigatorButton(hc, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
       var hc = MO.Window.Builder.appendTableCell(hr);
       hc.width = 60;
-      o.hExtendButton = o.buildNavigatorButton(hc, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
-         var hc = MO.Window.Builder.appendTableCell(hr);
-         hc.width = 60;
-         o.hInsertButton = o.buildNavigatorButton(hc, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
-      var hc = MO.Window.Builder.appendTableCell(hr);
-      hc.width = 10;
-      var hc = MO.Window.Builder.appendTableCell(hr);
-      hc.noWrap = true;
-      o._hHint = MO.Window.Builder.appendText(hc, o.styleName('Hint'))
-      var hc = MO.Window.Builder.appendTableCell(hr);
-      hc.noWrap = true;
-      hc.align = 'right';
-      o.hNavFirst = o.buildNavigatorButton(hc, 'control.grid.first', '&nbsp;' + RContext.get('FDuiGridControl:First'));
-      o.hNavPrior = o.buildNavigatorButton(hc, 'control.grid.prior', '&nbsp;' + RContext.get('FDuiGridControl:Prior'));
-      o.hNavPrior.style.paddingRight = '20';
-      o.hPage = MO.Window.Builder.appendEdit(hc)
-      o.hPage.style.width = 40;
-      o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
-      o.hNavLast = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
+      o.hInsertButton = o.buildNavigatorButton(hc, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
+   var hc = MO.Window.Builder.appendTableCell(hr);
+   hc.width = 10;
+   var hc = MO.Window.Builder.appendTableCell(hr);
+   hc.noWrap = true;
+   o._hHint = MO.Window.Builder.appendText(hc, o.styleName('Hint'))
+   var hc = MO.Window.Builder.appendTableCell(hr);
+   hc.noWrap = true;
+   hc.align = 'right';
+   o.hNavFirst = o.buildNavigatorButton(hc, 'control.grid.first', '&nbsp;' + RContext.get('FDuiGridControl:First'));
+   o.hNavPrior = o.buildNavigatorButton(hc, 'control.grid.prior', '&nbsp;' + RContext.get('FDuiGridControl:Prior'));
+   o.hNavPrior.style.paddingRight = '20';
+   o.hPage = MO.Window.Builder.appendEdit(hc)
+   o.hPage.style.width = 40;
+   o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
+   o.hNavLast = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
+}
+MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(p){
+   var o = this;
+   if(!o._size.height || o._size.height < 160){
+      o.height = '100%';
    }
-   MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(p){
-      var o = this;
-      if(!o._size.height || o._size.height < 160){
-         o.height = '100%';
-      }
-      o.__base.FDuiContainer.onBuild.call(o, p);
-      var hc = o._hTitlePanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
-      o.onBuildTitle(p);
-      var hbp = o._hContentPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
-      o.onBuildContent(p);
-      o._hHintPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
-      o._hHintForm = MO.Window.Builder.appendTable(o._hHintPanel, o.styleName('HintForm'));
-      o.onBuildHint(p);
-      var c = o._statusColumn = MO.Class.create(FColumnStatus);
-      c._table = this;
-      c._name = '_s';
-      c.build(p);
-      o.push(c);
-      var c = o._selectColumn = MO.Class.create(FColumnSelected);
-      c._table = this;
-      c._name = '_select';
-      c.build(p);
-      o.push(c);
+   o.__base.FDuiContainer.onBuild.call(o, p);
+   var hc = o._hTitlePanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
+   o.onBuildTitle(p);
+   var hbp = o._hContentPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
+   o.onBuildContent(p);
+   o._hHintPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
+   o._hHintForm = MO.Window.Builder.appendTable(o._hHintPanel, o.styleName('HintForm'));
+   o.onBuildHint(p);
+   var c = o._statusColumn = MO.Class.create(FColumnStatus);
+   c._table = this;
+   c._name = '_s';
+   c.build(p);
+   o.push(c);
+   var c = o._selectColumn = MO.Class.create(FColumnSelected);
+   c._table = this;
+   c._name = '_select';
+   c.build(p);
+   o.push(c);
+}
+MO.FDuiGridControl_onDatasetLoadDelay = function FDuiGridControl_onDatasetLoadDelay(p){
+   var o = this;
+   var c = o._displayCount;
+   var h = o._rowHeight;
+   var d = p.dataset;
+   var rc = d.count();
+   var rb = p.index;
+   var re = rb + p.acceleration;
+   if(re > rc - 1){
+      re = rc - 1;
    }
-   MO.FDuiGridControl_onDatasetLoadDelay = function FDuiGridControl_onDatasetLoadDelay(p){
-      var o = this;
-      var c = o._displayCount;
-      var h = o._rowHeight;
-      var d = p.dataset;
-      var rc = d.count();
-      var rb = p.index;
-      var re = rb + p.acceleration;
-      if(re > rc - 1){
-         re = rc - 1;
+   if(o._hHeadPanel){
+      o._hHeadPanel.scrollLeft = 0;
+   }
+   if(o._hColumnPanel){
+      o._hColumnPanel.scrollTop = 0;
+   }
+   for(var i = rb; i <= re; i++){
+      var r = o.syncRow(i);
+      if(h > 0) {
+         r._hFixPanel.height = h + 'px';
       }
-      if(o._hHeadPanel){
-         o._hHeadPanel.scrollLeft = 0;
+      var dr = d.row(i);
+      r.loadRow(dr);
+      r.setVisible(true);
+   }
+   if(re == rc - 1){
+      p.setValid(false);
+      o.psRefresh();
+      return;
+   }
+   p.index += a.acceleration;
+}
+MO.FDuiGridControl_onDatasetLoad = function FDuiGridControl_onDatasetLoad(p){
+   var o = this;
+   if(o._hColumnPanel){
+      o._hColumnPanel.scrollTop = 0;
+      o._hColumnPanel.scrollLeft = 0;
+   }
+   if(o._hDataPanel){
+     o._hDataPanel.scrollTop = 0;
+     o._hDataPanel.scrollLeft = 0;
+   }
+   if(p.isEmpty()){
+      return;
+   }
+   var e = o._loadEvent;
+   e.index = 0;
+   e.acceleration = 5;
+   e.dataset = o._dataset;
+   e.setValid(true);
+   RConsole.find(FEventConsole).push(o._loadEvent);
+}
+MO.FDuiGridControl_construct = function FDuiGridControl_construct() {
+   var o = this;
+   o.__base.FDuiContainer.construct.call(o);
+   o._buttons = new TDictionary();
+   o._columns = new TDictionary();
+   o._rows = new TObjects();
+   o.lsnsRowClick = new TListeners();
+   o.lsnsRowDblClick = new TListeners();
+   var e = o._loadEvent = MO.Class.create(FEvent);
+   e.setOwner(o);
+   e.setCallback(o.onDatasetLoadDelay);
+   e.setValid(false);
+}
+MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name){
+   var o = this;
+   var h = MO.Window.Builder.append(hParent, 'SPAN', o.styleName('Button'));
+   h.style.cursor = 'hand';
+   h.style.paddingLeft = '10';
+   if (iconBf) {
+      MO.Window.Builder.appendIcon(h, null, iconBf);
+   }
+   if(text){
+      if(name){
+         o[name + 'Text'] = MO.Window.Builder.appendText(h, null, text);
+      }else{
+         MO.Window.Builder.appendText(h, null, text);
       }
-      if(o._hColumnPanel){
-         o._hColumnPanel.scrollTop = 0;
-      }
-      for(var i = rb; i <= re; i++){
-         var r = o.syncRow(i);
-         if(h > 0) {
-            r._hFixPanel.height = h + 'px';
+   }
+   if(iconAf){
+      MO.Window.Builder.appendIcon(h, null, iconAf);
+   }
+   return h;
+}
+MO.FDuiGridControl_appendChild = function FDuiGridControl_appendChild(p){
+   var o = this;
+   o.__base.FDuiContainer.appendChild.call(o, p);
+   if(RClass.isClass(p, FColumn)){
+      o.appendColumn(p);
+   }
+}
+MO.FDuiGridControl_push = function FDuiGridControl_push(p){
+   var o = this;
+   if(RClass.isClass(p, FColumn)){
+      p._table = o;
+      o._columns.set(p.name(), p);
+   }else if(RClass.isClass(p, FTableButton)){
+      p._table = o;
+      o._buttons.set(p.name(), p);
+   }
+   o.__base.FDuiContainer.push.call(o, p);
+}
+MO.FDuiGridControl_createRow = function FDuiGridControl_createRow() {
+   var o = this;
+   var r = MO.Class.create(o._rowClass);
+   r._table = r._parent = o;
+   return r;
+}
+MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(i, r){
+   var o = this;
+   r.index = i;
+   r.build();
+   if(r._hFixPanel){
+      o._hFixRows.appendChild(r._hFixPanel);
+      RHtml.tableMoveRow(o._hColumnForm, r._hFixPanel.rowIndex, i + 2);
+   }
+   o._hRows.appendChild(r._hPanel);
+   RHtml.tableMoveRow(o._hContentForm, r._hPanel.rowIndex, i + 2);
+   r.refreshStyle();
+   o._rows.insert(i, r);
+}
+MO.FDuiGridControl_syncRow = function FDuiGridControl_syncRow(p){
+   var o = this;
+   var rs = o._rows;
+   var r = rs.get(p);
+   if(!r){
+      for(var i = rs.count(); i <= p; i++){
+         r = o.createRow();
+         r._index = i;
+         r.build(o._hPanel);
+         if(r._hFixPanel){
+            o._hFixRows.appendChild(r._hFixPanel);
          }
-         var dr = d.row(i);
-         r.loadRow(dr);
-         r.setVisible(true);
-      }
-      if(re == rc - 1){
-         p.setValid(false);
-         o.psRefresh();
-         return;
-      }
-      p.index += a.acceleration;
-   }
-   MO.FDuiGridControl_onDatasetLoad = function FDuiGridControl_onDatasetLoad(p){
-      var o = this;
-      if(o._hColumnPanel){
-         o._hColumnPanel.scrollTop = 0;
-         o._hColumnPanel.scrollLeft = 0;
-      }
-      if(o._hDataPanel){
-        o._hDataPanel.scrollTop = 0;
-        o._hDataPanel.scrollLeft = 0;
-      }
-      if(p.isEmpty()){
-         return;
-      }
-      var e = o._loadEvent;
-      e.index = 0;
-      e.acceleration = 5;
-      e.dataset = o._dataset;
-      e.setValid(true);
-      RConsole.find(FEventConsole).push(o._loadEvent);
-   }
-   MO.FDuiGridControl_construct = function FDuiGridControl_construct() {
-      var o = this;
-      o.__base.FDuiContainer.construct.call(o);
-      o._buttons = new TDictionary();
-      o._columns = new TDictionary();
-      o._rows = new TObjects();
-      o.lsnsRowClick = new TListeners();
-      o.lsnsRowDblClick = new TListeners();
-      var e = o._loadEvent = MO.Class.create(FEvent);
-      e.setOwner(o);
-      e.setCallback(o.onDatasetLoadDelay);
-      e.setValid(false);
-   }
-   MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name){
-      var o = this;
-      var h = MO.Window.Builder.append(hParent, 'SPAN', o.styleName('Button'));
-      h.style.cursor = 'hand';
-      h.style.paddingLeft = '10';
-      if (iconBf) {
-         MO.Window.Builder.appendIcon(h, null, iconBf);
-      }
-      if(text){
-         if(name){
-            o[name + 'Text'] = MO.Window.Builder.appendText(h, null, text);
-         }else{
-            MO.Window.Builder.appendText(h, null, text);
-         }
-      }
-      if(iconAf){
-         MO.Window.Builder.appendIcon(h, null, iconAf);
-      }
-      return h;
-   }
-   MO.FDuiGridControl_appendChild = function FDuiGridControl_appendChild(p){
-      var o = this;
-      o.__base.FDuiContainer.appendChild.call(o, p);
-      if(RClass.isClass(p, FColumn)){
-         o.appendColumn(p);
+         o._hRows.appendChild(r._hPanel);
+         r._hPanel.style.height = r._hFixPanel.offsetHeight + 'px';
+         rs.push(r);
       }
    }
-   MO.FDuiGridControl_push = function FDuiGridControl_push(p){
-      var o = this;
-      if(RClass.isClass(p, FColumn)){
-         p._table = o;
-         o._columns.set(p.name(), p);
-      }else if(RClass.isClass(p, FTableButton)){
-         p._table = o;
-         o._buttons.set(p.name(), p);
+   r._extended = false;
+   if(r._childRows){
+      r.hideChild();
+      r._childRows.clear();
+   }
+   return r;
+}
+MO.FDuiGridControl_hideRows = function FDuiGridControl_hideRows(){
+   var o = this;
+   var rs = o._rows;
+   var c = rs.count();
+   for(var i = c - 1; i >= 0 ; i--){
+      rs.get(i).setVisible(false);
+   }
+}
+MO.FDuiGridControl_clickCell = function FDuiGridControl_clickCell(p){
+   this._focusCell = p;
+}
+MO.FDuiGridControl_clickRow = function FDuiGridControl_clickRow(p){
+   var o = this;
+   o.lsnsRowClick.process(p);
+   o._focusRow = p;
+}
+MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(p){
+   var o = this;
+   o.lsnsRowDblClick.process(p);
+   o._focusRow = p;
+}
+MO.FDuiGridControl_pushButton = function FDuiGridControl_pushButton(b){
+   var o = this;
+   var hc  = o._hButtons.insertCell();
+   hc.style.border = '0 solid #C6D7FF';
+   hc.appendChild(b._hPanel);
+   o.push(b);
+}
+MO.FDuiGridControl_onMouseDown = function FDuiGridControl_onMouseDown(e, he){
+   var o = this;
+}
+MO.FDuiGridControl_onHeadMouseDown = function FDuiGridControl_onHeadMouseDown(e){
+   var o = this;
+   var m = o.getHeadMode(e);
+   if(EGridColumn.Size == m){
+      o.hoverMode = EGridColumn.Size;
+      e.srcElement.status = EGridColumn.Size;
+      o.hoverX = e.srcElement.offsetLeft + e.x;
+      o.hoverDataCell = null;
+      if(o._hContentForm._rows.length){
+         o.hoverDataCell = o._hContentForm._rows[0].cells[o.hoverHead.index];
       }
-      o.__base.FDuiContainer.push.call(o, p);
+      o._hHeadForm.setCapture();
    }
-   MO.FDuiGridControl_createRow = function FDuiGridControl_createRow() {
-      var o = this;
-      var r = MO.Class.create(o._rowClass);
-      r._table = r._parent = o;
-      return r;
-   }
-   MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(i, r){
-      var o = this;
-      r.index = i;
-      r.build();
-      if(r._hFixPanel){
-         o._hFixRows.appendChild(r._hFixPanel);
-         RHtml.tableMoveRow(o._hColumnForm, r._hFixPanel.rowIndex, i + 2);
+}
+MO.FDuiGridControl_onHeadMouseMove = function FDuiGridControl_onHeadMouseMove(e){
+   var o = this;
+   if(EGridColumn.Size == o.hoverMode){
+      var bl = o.hoverCellLength;
+      var mx = e.srcElement.offsetLeft + e.x;
+      var w =  mx - o.hoverX + bl;
+      if(w > 0){
+         o.hoverHead._hPanel.style.pixelWidth = w;
+         o.hoverHead._hFixPanel.style.pixelWidth = w;
       }
-      o._hRows.appendChild(r._hPanel);
-      RHtml.tableMoveRow(o._hContentForm, r._hPanel.rowIndex, i + 2);
-      r.refreshStyle();
-      o._rows.insert(i, r);
-   }
-   MO.FDuiGridControl_syncRow = function FDuiGridControl_syncRow(p){
-      var o = this;
-      var rs = o._rows;
-      var r = rs.get(p);
-      if(!r){
-         for(var i = rs.count(); i <= p; i++){
-            r = o.createRow();
-            r._index = i;
-            r.build(o._hPanel);
-            if(r._hFixPanel){
-               o._hFixRows.appendChild(r._hFixPanel);
-            }
-            o._hRows.appendChild(r._hPanel);
-            r._hPanel.style.height = r._hFixPanel.offsetHeight + 'px';
-            rs.push(r);
-         }
-      }
-      r._extended = false;
-      if(r._childRows){
-         r.hideChild();
-         r._childRows.clear();
-      }
-      return r;
-   }
-   MO.FDuiGridControl_hideRows = function FDuiGridControl_hideRows(){
-      var o = this;
-      var rs = o._rows;
-      var c = rs.count();
-      for(var i = c - 1; i >= 0 ; i--){
-         rs.get(i).setVisible(false);
-      }
-   }
-   MO.FDuiGridControl_clickCell = function FDuiGridControl_clickCell(p){
-      this._focusCell = p;
-   }
-   MO.FDuiGridControl_clickRow = function FDuiGridControl_clickRow(p){
-      var o = this;
-      o.lsnsRowClick.process(p);
-      o._focusRow = p;
-   }
-   MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(p){
-      var o = this;
-      o.lsnsRowDblClick.process(p);
-      o._focusRow = p;
-   }
-   MO.FDuiGridControl_pushButton = function FDuiGridControl_pushButton(b){
-      var o = this;
-      var hc  = o._hButtons.insertCell();
-      hc.style.border = '0 solid #C6D7FF';
-      hc.appendChild(b._hPanel);
-      o.push(b);
-   }
-   MO.FDuiGridControl_onMouseDown = function FDuiGridControl_onMouseDown(e, he){
-      var o = this;
-   }
-   MO.FDuiGridControl_onHeadMouseDown = function FDuiGridControl_onHeadMouseDown(e){
-      var o = this;
+   }else if(EGridColumn.None == o.hoverMode){
       var m = o.getHeadMode(e);
+      var c = 'default';
       if(EGridColumn.Size == m){
-         o.hoverMode = EGridColumn.Size;
-         e.srcElement.status = EGridColumn.Size;
-         o.hoverX = e.srcElement.offsetLeft + e.x;
-         o.hoverDataCell = null;
-         if(o._hContentForm._rows.length){
-            o.hoverDataCell = o._hContentForm._rows[0].cells[o.hoverHead.index];
-         }
-         o._hHeadForm.setCapture();
+         c = 'e-resize';
+      }else if(EGridColumn.Drag == m){
+         c = 'hand';
       }
+      o._hHeadForm.style.cursor = c;
    }
-   MO.FDuiGridControl_onHeadMouseMove = function FDuiGridControl_onHeadMouseMove(e){
-      var o = this;
-      if(EGridColumn.Size == o.hoverMode){
-         var bl = o.hoverCellLength;
-         var mx = e.srcElement.offsetLeft + e.x;
-         var w =  mx - o.hoverX + bl;
-         if(w > 0){
-            o.hoverHead._hPanel.style.pixelWidth = w;
-            o.hoverHead._hFixPanel.style.pixelWidth = w;
-         }
-      }else if(EGridColumn.None == o.hoverMode){
-         var m = o.getHeadMode(e);
-         var c = 'default';
-         if(EGridColumn.Size == m){
-            c = 'e-resize';
-         }else if(EGridColumn.Drag == m){
-            c = 'hand';
-         }
-         o._hHeadForm.style.cursor = c;
-      }
+}
+MO.FDuiGridControl_onHeadMouseUp = function FDuiGridControl_onHeadMouseUp(e){
+   var o = this;
+   if(EGridColumn.Size == o.hoverMode){
+      o._hHeadForm.releaseCapture();
    }
-   MO.FDuiGridControl_onHeadMouseUp = function FDuiGridControl_onHeadMouseUp(e){
-      var o = this;
-      if(EGridColumn.Size == o.hoverMode){
-         o._hHeadForm.releaseCapture();
-      }
-      o.hoverMode = EGridColumn.None;
+   o.hoverMode = EGridColumn.None;
+}
+MO.FDuiGridControl_onDataScroll = function FDuiGridControl_onDataScroll(){
+   var o = this;
+   o._hHeadPanel.scrollLeft = o._hContentPanel.scrollLeft;
+   o._hColumnPanel.scrollTop = o._hContentPanel.scrollTop;
+}
+MO.FDuiGridControl_onCellKeyDown = function FDuiGridControl_onCellKeyDown(c, e, he){
+   var o = this;
+   var k = e.keyCode;
+   var l = c.column;
+   var r = c.row;
+   if(EKey.Up == k) {
+      l.moveCellFocus(r, EPosition.Top);
+      RKey.eventClear(he);
+   }else if(EKey.Down == k) {
+      l.moveCellFocus(r, EPosition.Bottom);
+      RKey.eventClear(he);
+   }else if(EKey.Tab == k && e.shiftKey){
+      l.moveCellFocus(r, EPosition.Before);
+      RKey.eventClear(he);
+   }else if(EKey.Tab == k){
+      l.moveCellFocus(r, EPosition.After);
+      RKey.eventClear(he);
    }
-   MO.FDuiGridControl_onDataScroll = function FDuiGridControl_onDataScroll(){
-      var o = this;
-      o._hHeadPanel.scrollLeft = o._hContentPanel.scrollLeft;
-      o._hColumnPanel.scrollTop = o._hContentPanel.scrollTop;
+}
+MO.FDuiGridControl_onRowMouseEnter = function FDuiGridControl_onRowMouseEnter(s, e){
+   this.hoverRow(s, true);
+}
+MO.FDuiGridControl_onRowMouseLeave = function FDuiGridControl_onRowMouseLeave(s, e){
+   this.hoverRow(s, false);
+}
+MO.FDuiGridControl_onRowClick = function FDuiGridControl_onRowClick(s, e){
+   var o = this;
+   o.selectRow(s, !e.ctrlKey, true);
+   o.lsnsRowClick.process(s);
+   var e = o._eventRowClick;
+   if(!e){
+      e = o._eventRowClick = new TEvent();
+      e.source = o;
    }
-   MO.FDuiGridControl_onCellKeyDown = function FDuiGridControl_onCellKeyDown(c, e, he){
-      var o = this;
-      var k = e.keyCode;
-      var l = c.column;
-      var r = c.row;
-      if(EKey.Up == k) {
-         l.moveCellFocus(r, EPosition.Top);
-         RKey.eventClear(he);
-      }else if(EKey.Down == k) {
-         l.moveCellFocus(r, EPosition.Bottom);
-         RKey.eventClear(he);
-      }else if(EKey.Tab == k && e.shiftKey){
-         l.moveCellFocus(r, EPosition.Before);
-         RKey.eventClear(he);
-      }else if(EKey.Tab == k){
-         l.moveCellFocus(r, EPosition.After);
-         RKey.eventClear(he);
-      }
-   }
-   MO.FDuiGridControl_onRowMouseEnter = function FDuiGridControl_onRowMouseEnter(s, e){
-      this.hoverRow(s, true);
-   }
-   MO.FDuiGridControl_onRowMouseLeave = function FDuiGridControl_onRowMouseLeave(s, e){
-      this.hoverRow(s, false);
-   }
-   MO.FDuiGridControl_onRowClick = function FDuiGridControl_onRowClick(s, e){
-      var o = this;
-      o.selectRow(s, !e.ctrlKey, true);
-      o.lsnsRowClick.process(s);
-      var e = o._eventRowClick;
-      if(!e){
-         e = o._eventRowClick = new TEvent();
-         e.source = o;
-      }
-      e.caller = s;
-      e.handle = 'onTableRowClick';
-      RConsole.find(FFormConsole).processEvent(e);
-   }
-   MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(s, e){
-      var o = this;
-      if(EKey.Enter == e.keyCode){
-         if(!o._isSearching || !o.table._isSearching){
-            o._isSearching = true;
-            if(o.table){
-               o.table.doSearch();
-                o.table.dpScrollLeft = o.table._hContentPanel.scrollLeft;
-                o.table.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
-            }else{
-               o.doSearch();
-               o.dpScrollLeft = o._hContentPanel.scrollLeft;
-               o.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
-            }
-         }
-      }
-   }
-   MO.FDuiGridControl_onButtonMouseDown = function FDuiGridControl_onButtonMouseDown(e){
-      var o = this;
-      var ds = o.dsViewer;
-      if(!ds || 0 == ds.dataset.pageCount){
-         return;
-      }
-      var h = e.hSource;
-      if(o.hInsertButton == h){
-         o.onInsertButtonClick();
-      }else if(o.hExtendButton == h){
-         o.onExtendButtonClick();
-      }else if (o.hNavFirst == h && ds.pageIndex != 0){
-         o.dsMovePage(EDataAction.First);
-      } else if (o.hNavPrior == h && ds.pageIndex != 0){
-         o.dsMovePage(EDataAction.Prior);
-      } else if (o.hNavNext == h && ds.pageIndex != ds.pageCount - 1){
-         o.dsMovePage(EDataAction.Next);
-      } else if (o.hNavLast == h && ds.pageIndex != ds.pageCount - 1){
-         o.dsMovePage(EDataAction.Last);
-      }
-   }
-   MO.FDuiGridControl_onPageCountDown = function FDuiGridControl_onPageCountDown(e){
-      var o = this;
-      var ds = o.dsViewer;
-      if(RString.isEmpty(o.hPage.value) || !ds || 0 == ds.dataset.pageCount){
-         return;
-      }
-      var n = RInt.parse(o.hPage.value);
-      if(EKey.Enter == e.keyCode && n != ds.pageIndex + 1){
-         if(n < 1){
-            n = 1;
-         }
-         if(n > ds.pageCount){
-            n = ds.pageCount;
-         }
-         o.dsMovePage(n - 1);
-      }
-   }
-   MO.FDuiGridControl_onInsertButtonClick = function FDuiGridControl_onInsertButtonClick(){
-      RFormSpace.doPrepare(this);
-   }
-   MO.FDuiGridControl_onExtendButtonClick = function FDuiGridControl_onExtendButtonClick(){
-      var o = this;
-      if(400 == o.dsPageSize){
-         o.dsPageSize = o.dsPageSizeStore;
-         o.hExtendText.innerText = ' 展开';
-      }else{
-         o.dsPageSizeStore = o.dsPageSize;
-         o.dsPageSize = 400;
-         o.hExtendText.innerText = ' 收缩';
-      }
-      o.dsSearch();
-   }
-   MO.FDuiGridControl_oeMode = function FDuiGridControl_oeMode(e){
-      var o = this;
-      o.dispUpdate = true;
-      o.dispDelete = true;
-      o.__base.FDuiContainer.oeMode.call(o, e);
-      o.__base.MDisplay.oeMode.call(o, e);
-      o._editable = o.canEdit(e.mode);
-      return EEventStatus.Stop;
-   }
-   MO.FDuiGridControl_oeProgress = function FDuiGridControl_oeProgress(e){
-      var o = this;
-      if('none' == o._hPanel.currentStyle.display){
-         return;
-      }
-      var hdp = o._hDelayPanel;
-      if(!hdp){
-         hdp = o._hDelayPanel = MO.Window.Builder.appendDiv(o.hBorderPanel);
-         var st = hdp.style;
-         st.position = 'absolute';
-         st.zIndex = RLayer.next();
-         st.filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity=100)';
-         st.backgroundColor = '#FFFFFF';
-         st.top = 0;
-         st.width = '100%';
-         st.height = '100%';
-         st.display = 'none';
-         var hdf = o._hDelayForm = MO.Window.Builder.appendTable(hdp);
-         hdf.style.width = '100%';
-         hdf.style.height = '100%';
-         var hc = hdf.insertRow().insertCell();
-         hc.align = 'center';
-         hc.vAlign = 'middle';
-         MO.Window.Builder.appendIcon(hc, 'ctl.FDuiGridControl_Loading')
-         var t = o._hDelayText = MO.Window.Builder.append(hc, 'SPAN');
-         t.innerHTML = "<BR><BR><FONT color='red'><B>" + RContext.get('FDuiGridControl:Loading') + "</B></FONT>";
-      }
-      if(e.enable){
-         RHtml.setRect(hdp, o.calculateDataSize());
-         hdp.filters[0].opacity = 100;
-         hdp.style.display = 'block';
-      }else{
-         if(o._loadFinish){
-            hdp.style.display = 'none';
-         }
-      }
-      o.refreshHint();
-      return EEventStatus.Stop;
-   }
-   MO.FDuiGridControl_isFormLinked = function FDuiGridControl_isFormLinked(){
-      return this._formLinked || this._formName;
-   }
-   MO.FDuiGridControl_isDataSelected = function FDuiGridControl_isDataSelected(){
-      var rs = this._rows;
-      for(var n=rs.count-1; n>=0; n--){
-         if(rs.get(n).isSelect){
-            return true;
-         }
-      }
-   }
-   MO.FDuiGridControl_isDataChanged = function FDuiGridControl_isDataChanged(){
-      var rs = this._rows;
-      for(var n=rs.count-1; n>=0; n--){
-         if(rs.get(n).isDataChanged()){
-            return true;
-         }
-      }
-   }
-   MO.FDuiGridControl_hasAction = function FDuiGridControl_hasAction(){
-      var o = this;
-      var cs = o.components;
-      var ct = cs.count;
-      for(var n = 0; n < ct; n++){
-         var c = cs.value(n);
-         if(RClass.isClass(c, FDataAction)){
-            return o.isDataSelected();
-         }
-      }
-   }
-   MO.FDuiGridControl_getFormLink = function FDuiGridControl_getFormLink(t){
-      var o = this;
-      if(EFormLink.Form == t){
-         return this._formName;
-      }else if(EFormLink.Table == t){
-         return this.name;
-      }
-      RMessage.fatal(o, null, 'Form link is invalid. (type={0})', t);
-   }
-   MO.FDuiGridControl_getHeadMode = function FDuiGridControl_getHeadMode(e){
-      var o = this;
-      var p = RHtml.point(o._hHeadForm);
-      var x = e.srcElement.offsetLeft + e.x - p.x;
-      var cs = o._columns;
-      for(var n = 0; n<cs.count; n++){
-         var c = cs.value(n);
-         if(c.dispSize){
-            var l = c._hPanel.offsetLeft + c._hPanel.offsetWidth - p.x;
-            o.hoverCellLength = c._hPanel.offsetWidth;
-            if(l - 6 <= x && x<=l){
-               o.hoverHead = c;
-               return EGridColumn.Size;
-            }
-         }
-      }
-      return EGridColumn.None;
-   }
-   MO.FDuiGridControl_getRowBar = function FDuiGridControl_getRowBar(){
-      var o = this;
-      var rb = o._rowBar;
-      if(!rb){
-         rb = o._rowBar = MO.Class.create(FGridRowBar);
-         rb.table = o;
-         rb.psBuild(o.hBorderPanel);
-      }
-      return rb;
-   }
-   MO.FDuiGridControl_calculateDataSize = function FDuiGridControl_calculateDataSize(){
-      var o = this;
-      var r = o._dataRect;
-      if(!r){
-         r = o._dataRect = new TRect();
-      }
-      var hcfh = o.hTitleForm ? o.hTitleForm.offsetHeight : 0;
-      var hfph = o._hFixPanel ? o._hFixPanel.offsetHeight : 0;
-      r.left = 0;
-      r.top = hfph + hcfh;
-      r.setWidth(o.hBorderPanel.offsetWidth);
-      r.setHeight(o.hBorderPanel.offsetHeight - hcfh - hfph);
-      return r;
-   }
-   MO.FDuiGridControl_hasVisibleRow = function FDuiGridControl_hasVisibleRow() {
-      var o = this;
-      var rs = o._rows;
-      for(var n = 0; n<rs.count; n++){
-         var rt = rs.get(n);
-         if(rt._visible){
-            return true;
-         }
-      }
-      return false;
-   }
-   MO.FDuiGridControl_getCurrentRow = function FDuiGridControl_getCurrentRow(){
-      var c = this._focusCell;
-      if(c){
-         return c.row.saveRow();
-      }
-   }
-   MO.FDuiGridControl_getSelectedRow = function FDuiGridControl_getSelectedRow(){
-      var rs = this._rows;
-      var c = rs.count;
-      for(var n=0; n<c; n++){
-         var r = rs.get(n);
-         if(r.isSelect){
-            return r;
-         }
-      }
-   }
-   MO.FDuiGridControl_getSelectedRows = function FDuiGridControl_getSelectedRows(){
-      var ls = new TList();
-      var rs = this._rows;
-      var c = rs.count;
-      for(var n=0; n<c; n++){
-         var r = rs.get(n);
-         if(r.isSelect && r.isVisible()){
-            ls.push(r.saveRow());
-         }
-      }
-      return ls;
-   }
-   MO.FDuiGridControl_getChangedRows = function FDuiGridControl_getChangedRows(){
-      var ls = new TList();
-      var rs = this._rows;
-      var c = rs.count;
-      for(var n=0; n<c; n++){
-         var r = rs.get(n);
-         if(r.isVisible()){
-            if(r.isDataChanged()){
-               ls.push(r.saveRow());
-            }
-         }
-      }
-      return ls;
-   }
-   MO.FDuiGridControl_getRows = function FDuiGridControl_getRows(){
-      var ls = new TList();
-      var rs = this._rows;
-      var c = rs.count;
-      for(var n=0; n<c; n++){
-        var r = rs.get(n);
-        if(r.isVisible()){
-            ls.push(r.saveRow());
-        }
-      }
-      return ls;
-   }
-   MO.FDuiGridControl_refreshHint = function FDuiGridControl_refreshHint(){
-      var o = this;
-      var h = o._hHint;
-      var ds = o._dataset;
-      if(ds && h){
-         var ci = 0;
-         var r = o.getSelectedRow();
-         if(r){
-            ci = o._rows.indexOf(r)+1;
-         }
-         h.innerHTML ='共' +"<FONT color='red' style='font-weight:BOLD '>"+ds.pageCount +"</FONT>" + '页' + "<FONT color='red' style='font-weight:BOLD '>"+ds.total +"</FONT>" + '条记录，' + '当前选中第'+"<FONT color='red' style='font-weight:BOLD '>"+(ds.pageIndex + 1)+"</FONT>" +'页第'+ "<FONT color='red' style='font-weight:BOLD '>"+ci+"</FONT>" + '条记录';
-         o.hPage.value = ds.pageIndex + 1;
-      }
-   }
-   MO.FDuiGridControl_refreshSelected = function FDuiGridControl_refreshSelected(){
-      var o = this;
-      var cs = o._columns;
-      var sc = cs.get('_select');
-      sc.hSelected.checked = false;
-      var rs = o._rows;
-      var rc = rs.count;
-      for(var n = 0; n < rc; n++){
-         var r = rs.get(n);
-         r.isSelect = false;
-      }
-   }
-   MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
-      var o = this;
-      if(f){
-         o._hoverRow = r;
-         r.refreshStyle();
-      }else{
-         if(o._hoverRow == r){
-            o._hoverRow = null;
-         }
-         r.refreshStyle();
-      }
-   }
-   MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, force) {
-      var o = this;
-      var has = false;
-      if(reset){
-         var rs = o._rows;
-         var c = rs.count;
-         for(var n=0; n<c; n++){
-            var r = rs.get(n);
-            if(r != row && r.isSelect){
-               r.select(false);
-               has = true;
-            }
-         }
-      }
-      row.select(has || !row.isSelect || force);
-      o.refreshHint();
-   }
-   MO.FDuiGridControl_clearSelectRow = function FDuiGridControl_clearSelectRow(row) {
-      var o = this;
-      row.select(false);
-      o.refreshHint();
-   }
-   MO.FDuiGridControl_clearSelectRows = function FDuiGridControl_clearSelectRows() {
-       var o = this;
-       var rs = o._rows;
-       for(var n = 0; n < rs.count; n++){
-          rs.get(n).isSelect = false;
-       }
-       o.refreshHint();
-   }
-   MO.FDuiGridControl_setDataStatus = function FDuiGridControl_setDataStatus(r, s) {
-      var o = this;
-      r.dataStatus = s;
-      o._statusColumn.setDataStatus(r, s);
-   }
-   MO.FDuiGridControl_dsInsert = function FDuiGridControl_dsInsert() {
-   }
-   MO.FDuiGridControl_dsUpdate = function FDuiGridControl_dsUpdate(r){
-      var o = this;
-      o.psMode(EMode.Update);
-      o.dsFetch(true);
-   }
-   MO.FDuiGridControl_dsDelete = function FDuiGridControl_dsDelete() {
-   }
-   MO.FDuiGridControl_doSearch = function FDuiGridControl_doSearch(){
-      var o = this;
-      o.dsSearchs.clear();
-      var cs = o._columns;
-      for(var n=0; n<cs.count; n++){
-         var c = cs.value(n);
-         var v = c.searchValue();
-         if(RClass.isClass(c, FColumnCalendar)){
-            if(v){
-               var si = new TSearchItem();
-               si.set(c.dataName, v.value, ESearch.Date, v.format);
-               o.dsSearchs.push(si);
-            }
+   e.caller = s;
+   e.handle = 'onTableRowClick';
+   RConsole.find(FFormConsole).processEvent(e);
+}
+MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(s, e){
+   var o = this;
+   if(EKey.Enter == e.keyCode){
+      if(!o._isSearching || !o.table._isSearching){
+         o._isSearching = true;
+         if(o.table){
+            o.table.doSearch();
+             o.table.dpScrollLeft = o.table._hContentPanel.scrollLeft;
+             o.table.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
          }else{
-            if(!RString.isEmpty(v)){
-               var si = new TSearchItem();
-               si.set(c.dataName, v, ESearch.Like);
-               o.dsSearchs.push(si);
-            }
+            o.doSearch();
+            o.dpScrollLeft = o._hContentPanel.scrollLeft;
+            o.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
          }
       }
-      o.dsValues = o.toDeepAttributes();
-      o.dsSearch();
    }
-   MO.FDuiGridControl_focus = function FDuiGridControl_focus(){
-      var o = this;
-      RConsole.find(FFocusConsole).focusClass(MDataset, o);
+}
+MO.FDuiGridControl_onButtonMouseDown = function FDuiGridControl_onButtonMouseDown(e){
+   var o = this;
+   var ds = o.dsViewer;
+   if(!ds || 0 == ds.dataset.pageCount){
+      return;
    }
-   MO.FDuiGridControl_pack = function FDuiGridControl_pack(){
-      var o = this;
-      var rfs = o._rows;
-      var ct = rfs.count;
-      var root = new TNode('Dataset');
-      for(var n = 0; n < ct; n++){
-         var r = rfs.get(n);
+   var h = e.hSource;
+   if(o.hInsertButton == h){
+      o.onInsertButtonClick();
+   }else if(o.hExtendButton == h){
+      o.onExtendButtonClick();
+   }else if (o.hNavFirst == h && ds.pageIndex != 0){
+      o.dsMovePage(EDataAction.First);
+   } else if (o.hNavPrior == h && ds.pageIndex != 0){
+      o.dsMovePage(EDataAction.Prior);
+   } else if (o.hNavNext == h && ds.pageIndex != ds.pageCount - 1){
+      o.dsMovePage(EDataAction.Next);
+   } else if (o.hNavLast == h && ds.pageIndex != ds.pageCount - 1){
+      o.dsMovePage(EDataAction.Last);
+   }
+}
+MO.FDuiGridControl_onPageCountDown = function FDuiGridControl_onPageCountDown(e){
+   var o = this;
+   var ds = o.dsViewer;
+   if(RString.isEmpty(o.hPage.value) || !ds || 0 == ds.dataset.pageCount){
+      return;
+   }
+   var n = RInt.parse(o.hPage.value);
+   if(EKey.Enter == e.keyCode && n != ds.pageIndex + 1){
+      if(n < 1){
+         n = 1;
+      }
+      if(n > ds.pageCount){
+         n = ds.pageCount;
+      }
+      o.dsMovePage(n - 1);
+   }
+}
+MO.FDuiGridControl_onInsertButtonClick = function FDuiGridControl_onInsertButtonClick(){
+   RFormSpace.doPrepare(this);
+}
+MO.FDuiGridControl_onExtendButtonClick = function FDuiGridControl_onExtendButtonClick(){
+   var o = this;
+   if(400 == o.dsPageSize){
+      o.dsPageSize = o.dsPageSizeStore;
+      o.hExtendText.innerText = ' 展开';
+   }else{
+      o.dsPageSizeStore = o.dsPageSize;
+      o.dsPageSize = 400;
+      o.hExtendText.innerText = ' 收缩';
+   }
+   o.dsSearch();
+}
+MO.FDuiGridControl_oeMode = function FDuiGridControl_oeMode(e){
+   var o = this;
+   o.dispUpdate = true;
+   o.dispDelete = true;
+   o.__base.FDuiContainer.oeMode.call(o, e);
+   o.__base.MDisplay.oeMode.call(o, e);
+   o._editable = o.canEdit(e.mode);
+   return EEventStatus.Stop;
+}
+MO.FDuiGridControl_oeProgress = function FDuiGridControl_oeProgress(e){
+   var o = this;
+   if('none' == o._hPanel.currentStyle.display){
+      return;
+   }
+   var hdp = o._hDelayPanel;
+   if(!hdp){
+      hdp = o._hDelayPanel = MO.Window.Builder.appendDiv(o.hBorderPanel);
+      var st = hdp.style;
+      st.position = 'absolute';
+      st.zIndex = RLayer.next();
+      st.filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity=100)';
+      st.backgroundColor = '#FFFFFF';
+      st.top = 0;
+      st.width = '100%';
+      st.height = '100%';
+      st.display = 'none';
+      var hdf = o._hDelayForm = MO.Window.Builder.appendTable(hdp);
+      hdf.style.width = '100%';
+      hdf.style.height = '100%';
+      var hc = hdf.insertRow().insertCell();
+      hc.align = 'center';
+      hc.vAlign = 'middle';
+      MO.Window.Builder.appendIcon(hc, 'ctl.FDuiGridControl_Loading')
+      var t = o._hDelayText = MO.Window.Builder.append(hc, 'SPAN');
+      t.innerHTML = "<BR><BR><FONT color='red'><B>" + RContext.get('FDuiGridControl:Loading') + "</B></FONT>";
+   }
+   if(e.enable){
+      RHtml.setRect(hdp, o.calculateDataSize());
+      hdp.filters[0].opacity = 100;
+      hdp.style.display = 'block';
+   }else{
+      if(o._loadFinish){
+         hdp.style.display = 'none';
+      }
+   }
+   o.refreshHint();
+   return EEventStatus.Stop;
+}
+MO.FDuiGridControl_isFormLinked = function FDuiGridControl_isFormLinked(){
+   return this._formLinked || this._formName;
+}
+MO.FDuiGridControl_isDataSelected = function FDuiGridControl_isDataSelected(){
+   var rs = this._rows;
+   for(var n=rs.count-1; n>=0; n--){
+      if(rs.get(n).isSelect){
+         return true;
+      }
+   }
+}
+MO.FDuiGridControl_isDataChanged = function FDuiGridControl_isDataChanged(){
+   var rs = this._rows;
+   for(var n=rs.count-1; n>=0; n--){
+      if(rs.get(n).isDataChanged()){
+         return true;
+      }
+   }
+}
+MO.FDuiGridControl_hasAction = function FDuiGridControl_hasAction(){
+   var o = this;
+   var cs = o.components;
+   var ct = cs.count;
+   for(var n = 0; n < ct; n++){
+      var c = cs.value(n);
+      if(RClass.isClass(c, FDataAction)){
+         return o.isDataSelected();
+      }
+   }
+}
+MO.FDuiGridControl_getFormLink = function FDuiGridControl_getFormLink(t){
+   var o = this;
+   if(EFormLink.Form == t){
+      return this._formName;
+   }else if(EFormLink.Table == t){
+      return this.name;
+   }
+   RMessage.fatal(o, null, 'Form link is invalid. (type={0})', t);
+}
+MO.FDuiGridControl_getHeadMode = function FDuiGridControl_getHeadMode(e){
+   var o = this;
+   var p = RHtml.point(o._hHeadForm);
+   var x = e.srcElement.offsetLeft + e.x - p.x;
+   var cs = o._columns;
+   for(var n = 0; n<cs.count; n++){
+      var c = cs.value(n);
+      if(c.dispSize){
+         var l = c._hPanel.offsetLeft + c._hPanel.offsetWidth - p.x;
+         o.hoverCellLength = c._hPanel.offsetWidth;
+         if(l - 6 <= x && x<=l){
+            o.hoverHead = c;
+            return EGridColumn.Size;
+         }
+      }
+   }
+   return EGridColumn.None;
+}
+MO.FDuiGridControl_getRowBar = function FDuiGridControl_getRowBar(){
+   var o = this;
+   var rb = o._rowBar;
+   if(!rb){
+      rb = o._rowBar = MO.Class.create(FGridRowBar);
+      rb.table = o;
+      rb.psBuild(o.hBorderPanel);
+   }
+   return rb;
+}
+MO.FDuiGridControl_calculateDataSize = function FDuiGridControl_calculateDataSize(){
+   var o = this;
+   var r = o._dataRect;
+   if(!r){
+      r = o._dataRect = new TRect();
+   }
+   var hcfh = o.hTitleForm ? o.hTitleForm.offsetHeight : 0;
+   var hfph = o._hFixPanel ? o._hFixPanel.offsetHeight : 0;
+   r.left = 0;
+   r.top = hfph + hcfh;
+   r.setWidth(o.hBorderPanel.offsetWidth);
+   r.setHeight(o.hBorderPanel.offsetHeight - hcfh - hfph);
+   return r;
+}
+MO.FDuiGridControl_hasVisibleRow = function FDuiGridControl_hasVisibleRow() {
+   var o = this;
+   var rs = o._rows;
+   for(var n = 0; n<rs.count; n++){
+      var rt = rs.get(n);
+      if(rt._visible){
+         return true;
+      }
+   }
+   return false;
+}
+MO.FDuiGridControl_getCurrentRow = function FDuiGridControl_getCurrentRow(){
+   var c = this._focusCell;
+   if(c){
+      return c.row.saveRow();
+   }
+}
+MO.FDuiGridControl_getSelectedRow = function FDuiGridControl_getSelectedRow(){
+   var rs = this._rows;
+   var c = rs.count;
+   for(var n=0; n<c; n++){
+      var r = rs.get(n);
+      if(r.isSelect){
+         return r;
+      }
+   }
+}
+MO.FDuiGridControl_getSelectedRows = function FDuiGridControl_getSelectedRows(){
+   var ls = new TList();
+   var rs = this._rows;
+   var c = rs.count;
+   for(var n=0; n<c; n++){
+      var r = rs.get(n);
+      if(r.isSelect && r.isVisible()){
+         ls.push(r.saveRow());
+      }
+   }
+   return ls;
+}
+MO.FDuiGridControl_getChangedRows = function FDuiGridControl_getChangedRows(){
+   var ls = new TList();
+   var rs = this._rows;
+   var c = rs.count;
+   for(var n=0; n<c; n++){
+      var r = rs.get(n);
+      if(r.isVisible()){
          if(r.isDataChanged()){
-            var atts = r.toAttrs();
-            var nd = new TNode('Row', atts)
-            root.push(nd);
+            ls.push(r.saveRow());
          }
       }
-      return root;
    }
-   MO.FDuiGridControl_setVisible = function FDuiGridControl_setVisible(v){
-      var o = this;
-      o.__base.FDuiContainer.setVisible.call(o, v);
-      o.__base.MDuiHorizontal.setVisible.call(o, v);
+   return ls;
+}
+MO.FDuiGridControl_getRows = function FDuiGridControl_getRows(){
+   var ls = new TList();
+   var rs = this._rows;
+   var c = rs.count;
+   for(var n=0; n<c; n++){
+     var r = rs.get(n);
+     if(r.isVisible()){
+         ls.push(r.saveRow());
+     }
    }
-   MO.FDuiGridControl_setButtonVisible = function FDuiGridControl_setButtonVisible(n, v){
-      var o = this;
-      var b = o._buttons.get(n);
-      if(b){
-         b.setVisible(v);
+   return ls;
+}
+MO.FDuiGridControl_refreshHint = function FDuiGridControl_refreshHint(){
+   var o = this;
+   var h = o._hHint;
+   var ds = o._dataset;
+   if(ds && h){
+      var ci = 0;
+      var r = o.getSelectedRow();
+      if(r){
+         ci = o._rows.indexOf(r)+1;
       }
+      h.innerHTML ='共' +"<FONT color='red' style='font-weight:BOLD '>"+ds.pageCount +"</FONT>" + '页' + "<FONT color='red' style='font-weight:BOLD '>"+ds.total +"</FONT>" + '条记录，' + '当前选中第'+"<FONT color='red' style='font-weight:BOLD '>"+(ds.pageIndex + 1)+"</FONT>" +'页第'+ "<FONT color='red' style='font-weight:BOLD '>"+ci+"</FONT>" + '条记录';
+      o.hPage.value = ds.pageIndex + 1;
    }
-   MO.FDuiGridControl_refreshStyle = function FDuiGridControl_refreshStyle(){
-      var o = this;
+}
+MO.FDuiGridControl_refreshSelected = function FDuiGridControl_refreshSelected(){
+   var o = this;
+   var cs = o._columns;
+   var sc = cs.get('_select');
+   sc.hSelected.checked = false;
+   var rs = o._rows;
+   var rc = rs.count;
+   for(var n = 0; n < rc; n++){
+      var r = rs.get(n);
+      r.isSelect = false;
+   }
+}
+MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
+   var o = this;
+   if(f){
+      o._hoverRow = r;
+      r.refreshStyle();
+   }else{
+      if(o._hoverRow == r){
+         o._hoverRow = null;
+      }
+      r.refreshStyle();
+   }
+}
+MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, force) {
+   var o = this;
+   var has = false;
+   if(reset){
       var rs = o._rows;
       var c = rs.count;
       for(var n=0; n<c; n++){
-         rs.get(n).refreshStyle();
-      }
-   }
-   MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
-      var o = this;
-      o.__base.FDuiContainer.dispose.call(o);
-      o.hBorderPanel = null;
-      o._hDelayPanel = null;
-      o._hDelayForm = null;
-      o._hFixPanel = null;
-      o._hFixForm = null;
-      o._hFixHead = null;
-      o._hFixSearch = null;
-      o._hHeadPanel = null;
-      o._hHeadForm = null;
-      o._hHead = null;
-      o._hSearch = null;
-      o._hColumnPanel = null;
-      o._hColumnForm = null;
-      o._hFixRows = null;
-      o._hFixRowLine = null;
-      o._hContentPanel = null;
-      o._hContentForm = null;
-      o._hRows = null;
-      o._hRowLine = null;
-      o._hHintForm = null;
-      o._hInsertButton = null;
-      o._hExtendButton = null;
-      o._hExtendText = null;
-   }
-   MO.FDuiGridControl_dump = function FDuiGridControl_dump(s) {
-      var o = this;
-      s = RString.nvlStr(s);
-      s.appendLine(RClass.name(o));
-      var rs = o._rows;
-      for(var n = 0; n < rs.count; n++) {
-         s.appendLine(rs.get(n).dump());
-      }
-      return s;
-   }
-   MO.FDuiGridControl_storeValues = function FDuiGridControl_storeValues(a){
-      var o = this;
-      if(!a){
-         a = new TAttributes();
-      }
-      var s = o.getSelectRows();
-      if(s.count){
-         if(1 != s.count){
-            RMessage.fatal(o, 'Invalid selected rows. (count={0})', s.count);
-         }
-         s.get(0).toAttributes(a);
-      }
-      return a;
-   }
-   MO.FDuiGridControl_buildRows = function FDuiGridControl_buildRows(){
-      var o = this;
-      var rs = o._rows;
-      if(!rs.count){
-         var c = o._displayCount;
-         for(var n = 0; n < c; n++){
-            var r = MO.Class.create(FGridRow);
-            r.table = this;
-            r.build();
-            o._hRows.appendChild(r._hPanel);
-            rs.push(r);
+         var r = rs.get(n);
+         if(r != row && r.isSelect){
+            r.select(false);
+            has = true;
          }
       }
    }
-   MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(config) {
-      var o = this;
-      var c = o.__base.FDuiContainer.createChild.call(o, config);
-      if(RClass.isClass(c, FGridRow)){
-         c.table = o;
-         c.row = o.dsLoadRowNode(config);
-         o._rows.push(c);
-         return null;
-      }else if(RClass.isClass(c, FColumnEditControl)){
-         c.table = o;
-      }
-      return c;
-   }
-   MO.FDuiGridControl_setStyleStatus = function FDuiGridControl_setStyleStatus(row, status) {
-      var hRow = row._hPanel;
-      if (hRow) {
-         switch (status) {
-            case EStyle.Normal:
-               row.select(false);
-               break;
-            case EStyle.Select:
-               row.select(true);
-               break;
-         }
-      }
-   }
-   MO.FDuiGridControl_buildRow = function FDuiGridControl_buildRow(row) {
-      var o = this;
-      var cs = o._columns;
-      for ( var n = 0; n < cs.count; n++) {
-         var c = cs.value(n);
-         var cell = c.createCell(row);
-         if(c.dataName){
-            cell.set(RString.nvl(row.get(c.dataName), c.dataDefault));
-         }
-         row.push(cell);
-      }
-      return row;
-   }
-   MO.FDuiGridControl_clearSelectAll = function FDuiGridControl_clearSelectAll() {
-      var o = this;
-      var cs = o._columns;
-      var sc = cs.get('_select');
-      sc.hSelected.checked = false;
-   }
-   MO.FDuiGridControl_appendRow = function FDuiGridControl_appendRow(row) {
-      this._hRows.appendChild(row._hRow);
-      this._rows.push(row);
-   }
-   MO.FDuiGridControl_deleteRow = function FDuiGridControl_deleteRow(r) {
-      var o = this;
-      r = RObject.nvl(r, o.selectedRow);
-      if (!r) {
-         return alert('Please select row.');
-      }
-      if (r.isExist()) {
-         if (r.isDelete()) {
-            r.doNormal();
-            o.setDataStatus(r, EDataStatus.Unknown);
-            o.setStyleStatus(r, EStyle.Select);
-         } else {
-            r.doDelete();
-            o.setDataStatus(r, EDataStatus.Delete);
-            o.setStyleStatus(r, EStyle.Delete);
-         }
-      } else {
-         r.release();
-      }
-   }
-   MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows() {
-      var o = this;
-      var c = o._rows.count;
-      for(var n=0; n<c; n++){
-         var r = o._rows.get(n);
-         if(r){
-            r.dispose();
-         }
-      }
-      o._rows.clear();
-      RHtml.clear(o._hRows);
-   }
-   MO.FDuiGridControl_onColumnTreeService = function FDuiGridControl_onColumnTreeService(g){
-      var o = this;
-      var d = g.resultDatasets.get(g.path);
-      var rs = d._rows;
-      if(rs && rs.count > 0){
-         var pr = o.focusRow;
-         pr.extdStatus = true;
-         pr.psResize();
-         var idx = pr._hPanel.rowIndex + 1;
-         for(var n = 0; n < rs.count; n++){
-            var r = MO.Class.create(FGridRow);
-            r.table = o;
-            pr.childRows.push(r);
-            r.parentRow = pr;
-            r.buildChild(o._hFixRows, o._hRows, idx + n);
-            r.loadRow(rs.get(n));
-         }
-      }
-   }
-   MO.FDuiGridControl_getRowType = function FDuiGridControl_getRowType(){
-      var o = this;
-      var cs = o.components;
-      var ct = cs.count;
-      for(var n = 0; n < ct; n++){
-         var c = cs.value(n);
-         if(RClass.isClass(c, FGridRowType)){
-            return c;
-         }
-      }
-   }
-   MO.FDuiGridControl_onColumnTreeClick = function FDuiGridControl_onColumnTreeClick(s, e){
-      var o = this;
-      var c = o.getRowType();
-      if(!c){
-         return;
-      }
-      var r = s.row;
-      if(r.childRows && r.childRows.count > 0){
-         if(r.extended){
-            r.hideChild();
-         }else{
-            r.showChild();
-         }
-         r.extended = !r.extended;
-         if(r.extended){
-            s.hImg.src = s.styleIconPath('Fold', FColumnTree);
-         }else{
-            s.hImg.src = s.styleIconPath('Expend', FColumnTree);
+   row.select(has || !row.isSelect || force);
+   o.refreshHint();
+}
+MO.FDuiGridControl_clearSelectRow = function FDuiGridControl_clearSelectRow(row) {
+   var o = this;
+   row.select(false);
+   o.refreshHint();
+}
+MO.FDuiGridControl_clearSelectRows = function FDuiGridControl_clearSelectRows() {
+    var o = this;
+    var rs = o._rows;
+    for(var n = 0; n < rs.count; n++){
+       rs.get(n).isSelect = false;
+    }
+    o.refreshHint();
+}
+MO.FDuiGridControl_setDataStatus = function FDuiGridControl_setDataStatus(r, s) {
+   var o = this;
+   r.dataStatus = s;
+   o._statusColumn.setDataStatus(r, s);
+}
+MO.FDuiGridControl_dsInsert = function FDuiGridControl_dsInsert() {
+}
+MO.FDuiGridControl_dsUpdate = function FDuiGridControl_dsUpdate(r){
+   var o = this;
+   o.psMode(EMode.Update);
+   o.dsFetch(true);
+}
+MO.FDuiGridControl_dsDelete = function FDuiGridControl_dsDelete() {
+}
+MO.FDuiGridControl_doSearch = function FDuiGridControl_doSearch(){
+   var o = this;
+   o.dsSearchs.clear();
+   var cs = o._columns;
+   for(var n=0; n<cs.count; n++){
+      var c = cs.value(n);
+      var v = c.searchValue();
+      if(RClass.isClass(c, FColumnCalendar)){
+         if(v){
+            var si = new TSearchItem();
+            si.set(c.dataName, v.value, ESearch.Date, v.format);
+            o.dsSearchs.push(si);
          }
       }else{
-         o.focusRow = s.row;
-         if(o.focusRow.row.get('ochd') == 'Y'){
-            s.row.extended = true;
-            s.hImg.src = s.styleIconPath('Fold', FColumnTree);
-            var name = s.row.get('otyp');
-            var tb = s.row.table;
-            var rt = tb.component(name);
-            var ds = o.topControl(MDataset);
-            var g = new TDatasetFetchArg(ds.name, ds.formId, ds.dsPageSize, ds.dsPageIndex, null, null, o.fullPath(), rt.formResearch);
-            ds.dsSearchs.clear();
-            if(rt && rt.formWhere){
-               var si = new TSearchItem();
-               si.set(rt.dataName, rt.formWhere, ESearch.Source);
-               ds.dsSearchs.push(si);
-            }
-            g.force = true;
-            g.reset = true;
-            g.searchs = ds.dsSearchs;
-            var ats = new TAttributes();
-            s.row.toDeepAttributes(ats);
-            g.values = ats;
-            g.callback = new TInvoke(o, o.onColumnTreeService);
-            RConsole.find(FDatasetConsole).fetch(g);
+         if(!RString.isEmpty(v)){
+            var si = new TSearchItem();
+            si.set(c.dataName, v, ESearch.Like);
+            o.dsSearchs.push(si);
          }
+      }
+   }
+   o.dsValues = o.toDeepAttributes();
+   o.dsSearch();
+}
+MO.FDuiGridControl_focus = function FDuiGridControl_focus(){
+   var o = this;
+   RConsole.find(FFocusConsole).focusClass(MDataset, o);
+}
+MO.FDuiGridControl_pack = function FDuiGridControl_pack(){
+   var o = this;
+   var rfs = o._rows;
+   var ct = rfs.count;
+   var root = new TNode('Dataset');
+   for(var n = 0; n < ct; n++){
+      var r = rfs.get(n);
+      if(r.isDataChanged()){
+         var atts = r.toAttrs();
+         var nd = new TNode('Row', atts)
+         root.push(nd);
+      }
+   }
+   return root;
+}
+MO.FDuiGridControl_setVisible = function FDuiGridControl_setVisible(v){
+   var o = this;
+   o.__base.FDuiContainer.setVisible.call(o, v);
+   o.__base.MDuiHorizontal.setVisible.call(o, v);
+}
+MO.FDuiGridControl_setButtonVisible = function FDuiGridControl_setButtonVisible(n, v){
+   var o = this;
+   var b = o._buttons.get(n);
+   if(b){
+      b.setVisible(v);
+   }
+}
+MO.FDuiGridControl_refreshStyle = function FDuiGridControl_refreshStyle(){
+   var o = this;
+   var rs = o._rows;
+   var c = rs.count;
+   for(var n=0; n<c; n++){
+      rs.get(n).refreshStyle();
+   }
+}
+MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
+   var o = this;
+   o.__base.FDuiContainer.dispose.call(o);
+   o.hBorderPanel = null;
+   o._hDelayPanel = null;
+   o._hDelayForm = null;
+   o._hFixPanel = null;
+   o._hFixForm = null;
+   o._hFixHead = null;
+   o._hFixSearch = null;
+   o._hHeadPanel = null;
+   o._hHeadForm = null;
+   o._hHead = null;
+   o._hSearch = null;
+   o._hColumnPanel = null;
+   o._hColumnForm = null;
+   o._hFixRows = null;
+   o._hFixRowLine = null;
+   o._hContentPanel = null;
+   o._hContentForm = null;
+   o._hRows = null;
+   o._hRowLine = null;
+   o._hHintForm = null;
+   o._hInsertButton = null;
+   o._hExtendButton = null;
+   o._hExtendText = null;
+}
+MO.FDuiGridControl_dump = function FDuiGridControl_dump(s) {
+   var o = this;
+   s = RString.nvlStr(s);
+   s.appendLine(RClass.name(o));
+   var rs = o._rows;
+   for(var n = 0; n < rs.count; n++) {
+      s.appendLine(rs.get(n).dump());
+   }
+   return s;
+}
+MO.FDuiGridControl_storeValues = function FDuiGridControl_storeValues(a){
+   var o = this;
+   if(!a){
+      a = new TAttributes();
+   }
+   var s = o.getSelectRows();
+   if(s.count){
+      if(1 != s.count){
+         RMessage.fatal(o, 'Invalid selected rows. (count={0})', s.count);
+      }
+      s.get(0).toAttributes(a);
+   }
+   return a;
+}
+MO.FDuiGridControl_buildRows = function FDuiGridControl_buildRows(){
+   var o = this;
+   var rs = o._rows;
+   if(!rs.count){
+      var c = o._displayCount;
+      for(var n = 0; n < c; n++){
+         var r = MO.Class.create(FGridRow);
+         r.table = this;
+         r.build();
+         o._hRows.appendChild(r._hPanel);
+         rs.push(r);
+      }
+   }
+}
+MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(config) {
+   var o = this;
+   var c = o.__base.FDuiContainer.createChild.call(o, config);
+   if(RClass.isClass(c, FGridRow)){
+      c.table = o;
+      c.row = o.dsLoadRowNode(config);
+      o._rows.push(c);
+      return null;
+   }else if(RClass.isClass(c, FColumnEditControl)){
+      c.table = o;
+   }
+   return c;
+}
+MO.FDuiGridControl_setStyleStatus = function FDuiGridControl_setStyleStatus(row, status) {
+   var hRow = row._hPanel;
+   if (hRow) {
+      switch (status) {
+         case EStyle.Normal:
+            row.select(false);
+            break;
+         case EStyle.Select:
+            row.select(true);
+            break;
+      }
+   }
+}
+MO.FDuiGridControl_buildRow = function FDuiGridControl_buildRow(row) {
+   var o = this;
+   var cs = o._columns;
+   for ( var n = 0; n < cs.count; n++) {
+      var c = cs.value(n);
+      var cell = c.createCell(row);
+      if(c.dataName){
+         cell.set(RString.nvl(row.get(c.dataName), c.dataDefault));
+      }
+      row.push(cell);
+   }
+   return row;
+}
+MO.FDuiGridControl_clearSelectAll = function FDuiGridControl_clearSelectAll() {
+   var o = this;
+   var cs = o._columns;
+   var sc = cs.get('_select');
+   sc.hSelected.checked = false;
+}
+MO.FDuiGridControl_appendRow = function FDuiGridControl_appendRow(row) {
+   this._hRows.appendChild(row._hRow);
+   this._rows.push(row);
+}
+MO.FDuiGridControl_deleteRow = function FDuiGridControl_deleteRow(r) {
+   var o = this;
+   r = RObject.nvl(r, o.selectedRow);
+   if (!r) {
+      return alert('Please select row.');
+   }
+   if (r.isExist()) {
+      if (r.isDelete()) {
+         r.doNormal();
+         o.setDataStatus(r, EDataStatus.Unknown);
+         o.setStyleStatus(r, EStyle.Select);
+      } else {
+         r.doDelete();
+         o.setDataStatus(r, EDataStatus.Delete);
+         o.setStyleStatus(r, EStyle.Delete);
+      }
+   } else {
+      r.release();
+   }
+}
+MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows() {
+   var o = this;
+   var c = o._rows.count;
+   for(var n=0; n<c; n++){
+      var r = o._rows.get(n);
+      if(r){
+         r.dispose();
+      }
+   }
+   o._rows.clear();
+   RHtml.clear(o._hRows);
+}
+MO.FDuiGridControl_onColumnTreeService = function FDuiGridControl_onColumnTreeService(g){
+   var o = this;
+   var d = g.resultDatasets.get(g.path);
+   var rs = d._rows;
+   if(rs && rs.count > 0){
+      var pr = o.focusRow;
+      pr.extdStatus = true;
+      pr.psResize();
+      var idx = pr._hPanel.rowIndex + 1;
+      for(var n = 0; n < rs.count; n++){
+         var r = MO.Class.create(FGridRow);
+         r.table = o;
+         pr.childRows.push(r);
+         r.parentRow = pr;
+         r.buildChild(o._hFixRows, o._hRows, idx + n);
+         r.loadRow(rs.get(n));
+      }
+   }
+}
+MO.FDuiGridControl_getRowType = function FDuiGridControl_getRowType(){
+   var o = this;
+   var cs = o.components;
+   var ct = cs.count;
+   for(var n = 0; n < ct; n++){
+      var c = cs.value(n);
+      if(RClass.isClass(c, FGridRowType)){
+         return c;
+      }
+   }
+}
+MO.FDuiGridControl_onColumnTreeClick = function FDuiGridControl_onColumnTreeClick(s, e){
+   var o = this;
+   var c = o.getRowType();
+   if(!c){
+      return;
+   }
+   var r = s.row;
+   if(r.childRows && r.childRows.count > 0){
+      if(r.extended){
+         r.hideChild();
+      }else{
+         r.showChild();
+      }
+      r.extended = !r.extended;
+      if(r.extended){
+         s.hImg.src = s.styleIconPath('Fold', FColumnTree);
+      }else{
+         s.hImg.src = s.styleIconPath('Expend', FColumnTree);
+      }
+   }else{
+      o.focusRow = s.row;
+      if(o.focusRow.row.get('ochd') == 'Y'){
+         s.row.extended = true;
+         s.hImg.src = s.styleIconPath('Fold', FColumnTree);
+         var name = s.row.get('otyp');
+         var tb = s.row.table;
+         var rt = tb.component(name);
+         var ds = o.topControl(MDataset);
+         var g = new TDatasetFetchArg(ds.name, ds.formId, ds.dsPageSize, ds.dsPageIndex, null, null, o.fullPath(), rt.formResearch);
+         ds.dsSearchs.clear();
+         if(rt && rt.formWhere){
+            var si = new TSearchItem();
+            si.set(rt.dataName, rt.formWhere, ESearch.Source);
+            ds.dsSearchs.push(si);
+         }
+         g.force = true;
+         g.reset = true;
+         g.searchs = ds.dsSearchs;
+         var ats = new TAttributes();
+         s.row.toDeepAttributes(ats);
+         g.values = ats;
+         g.callback = new TInvoke(o, o.onColumnTreeService);
+         RConsole.find(FDatasetConsole).fetch(g);
       }
    }
 }
@@ -14579,12 +14577,6 @@ MO.FDuiSliderMenu_dispose = function FDuiSliderMenu_dispose(){
    o.__base.FDuiContainer.dispose.call(o);
 }
 with(MO){
-   MO.MDuiToolButton = function MDuiToolButton(o){
-      o = MO.Class.inherits(this, o);
-      return o;
-   }
-}
-with(MO){
    MO.FDuiToolBar = function FDuiToolBar(o){
       o = MO.Class.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       o._alignCd          = MO.Class.register(o, new MO.APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
@@ -14608,7 +14600,7 @@ with(MO){
    MO.FDuiToolBar_appendChild = function FDuiToolBar_appendChild(control){
       var o = this;
       o.__base.FDuiContainer.appendChild.call(o, control);
-      if(RClass.isClass(control, MDuiToolButton)){
+      if(RClass.isClass(control, MUiToolButton)){
          var h = o._hPanel;
          var hl = o._hLine;
          if(o._directionCd == EUiDirection.Horizontal){
@@ -14626,7 +14618,7 @@ with(MO){
    }
    MO.FDuiToolBar_removeChild = function FDuiToolBar_removeChild(p){
       var o = this;
-      if(RClass.isClass(p, MDuiToolButton)){
+      if(RClass.isClass(p, MUiToolButton)){
          var hp = p._hParent;
          var hl = p._hParentLine;
          hl.removeChild(hp);
@@ -14642,7 +14634,7 @@ with(MO){
    }
 }
 MO.FDuiToolButton = function FDuiToolButton(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiToolButton);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiToolButton);
    o._icon            = MO.Class.register(o, [new MO.APtyString('_icon'), new MO.AGetter('_icon')]);
    o._iconDisable     = MO.Class.register(o, [new MO.APtyString('_iconDisable'), new MO.AGetter('_iconDisable')]);
    o._hotkey          = MO.Class.register(o, [new MO.APtyString('_hotkey'), new MO.AGetter('_hotkey')]);
@@ -15092,7 +15084,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiToolButtonSplit = function FDuiToolButtonSplit(o){
-      o = MO.Class.inherits(this, o, FDuiToolButton, MDuiToolButton);
+      o = MO.Class.inherits(this, o, FDuiToolButton, MUiToolButton);
       o._stylePanel = MO.Class.register(o, new MO.AStyle('_stylePanel'));
       o.onBuild     = FDuiToolButtonSplit_onBuild;
       return o;

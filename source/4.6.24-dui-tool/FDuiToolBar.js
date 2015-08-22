@@ -63,7 +63,7 @@ with(MO){
       // 父处理
       o.__base.FDuiContainer.appendChild.call(o, control);
       // 按键处理
-      if(RClass.isClass(control, MDuiToolButton)){
+      if(RClass.isClass(control, MUiToolButton)){
          var h = o._hPanel;
          var hl = o._hLine;
          // 横向排布
@@ -93,7 +93,7 @@ with(MO){
    MO.FDuiToolBar_removeChild = function FDuiToolBar_removeChild(p){
       var o = this;
       // 按键处理
-      if(RClass.isClass(p, MDuiToolButton)){
+      if(RClass.isClass(p, MUiToolButton)){
          var hp = p._hParent;
          var hl = p._hParentLine;
          hl.removeChild(hp);

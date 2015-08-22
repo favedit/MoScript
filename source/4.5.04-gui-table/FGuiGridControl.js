@@ -9,21 +9,21 @@ MO.FGuiGridControl = function FGuiGridControl(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiGridControl);
    //..........................................................
    // @attribute
-   o._optionClip = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
-   o._headPadding = MO.Class.register(o, new MO.AGetter('_headPadding'));
+   o._optionClip     = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
+   o._headPadding    = MO.Class.register(o, new MO.AGetter('_headPadding'));
    // @attribute
-   o._rowScroll = 0;
+   o._rowScroll      = 0;
    o._rowScrollSpeed = 1;
    // @attribute
-   o._paintContext = null;
+   o._paintContext   = null;
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FGuiGridControl_onPaintBegin;
+   o.onPaintBegin    = MO.FGuiGridControl_onPaintBegin;
    //..........................................................
    // @method
-   o.construct = MO.FGuiGridControl_construct;
+   o.construct       = MO.FGuiGridControl_construct;
    // @method
-   o.dispose = MO.FGuiGridControl_dispose;
+   o.dispose         = MO.FGuiGridControl_dispose;
    return o;
 }
 
@@ -43,9 +43,6 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
    context.graphic = graphic;
    // 绘制边框
    var rectangle = event.rectangle;
-   if(MO.Class.isClass(o, MO.FGuiTable)){
-      graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 4);
-   }
    var left = rectangle.left + padding.left;
    var top = rectangle.top + padding.top;
    var bottom = rectangle.bottom() - padding.bottom;

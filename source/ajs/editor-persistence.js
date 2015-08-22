@@ -185,6 +185,45 @@ MO.FEditorDsPersistenceMenuBar_onBuildClick = function FEditorDsPersistenceMenuB
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
    connection.addLoadListener(o, o.onBuildFinish);
 }
+MO.FEditorDsPersistencePropertyListForm = function FEditorDsPersistencePropertyListForm(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
+   o._activeFrame     = null;
+   o._activeComponent = null;
+   o.onBuilded        = MO.FEditorDsFrameComponentProperty_onBuilded;
+   o.onDataChanged    = MO.FEditorDsFrameComponentProperty_onDataChanged;
+   o.construct        = MO.FEditorDsFrameComponentProperty_construct;
+   o.loadObject       = MO.FEditorDsFrameComponentProperty_loadObject;
+   o.dispose          = MO.FEditorDsFrameComponentProperty_dispose;
+   return o;
+}
+MO.FEditorDsFrameComponentProperty_onBuilded = function FEditorDsFrameComponentProperty_onBuilded(p){
+   var o = this;
+   o.__base.FEditorDsPropertyForm.onBuilded.call(o, p);
+}
+MO.FEditorDsFrameComponentProperty_onDataChanged = function FEditorDsFrameComponentProperty_onDataChanged(event){
+   var o  = this;
+   var frame = o._activeFrame;
+   var control = o._activeControl;
+   var size = o._controlSize.get();
+   control.size().set(size.x, size.y);
+   frame.build();
+}
+MO.FEditorDsFrameComponentProperty_construct = function FEditorDsFrameComponentProperty_construct(){
+   var o = this;
+   o.__base.FEditorDsPropertyForm.construct.call(o);
+}
+MO.FEditorDsFrameComponentProperty_loadObject = function FEditorDsFrameComponentProperty_loadObject(frame, component){
+   var o = this;
+   o._activeFrame = frame;
+   o._activeComponent = component;
+   o._controlType.set(RClass.name(component));
+   o._controlName.set(component.name());
+   o._controlLabel.set(component.label());
+}
+MO.FEditorDsFrameComponentProperty_dispose = function FEditorDsFrameComponentProperty_dispose(){
+   var o = this;
+   o.__base.FEditorDsPropertyForm.dispose.call(o);
+}
 MO.FEditorDsPersistencePropertyToolBar = function FEditorDsPersistencePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
    o._frameName           = 'editor.design.frame.PropertyToolBar';

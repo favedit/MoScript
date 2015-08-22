@@ -53,16 +53,20 @@ MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
 //
 // @method
 // @param typeGroup:EDuiTreeNodeGroup 类型分组枚举
-// @param propertyFrame:String 属性名称
+// @param frameName:String 属性名称
+// @param modeCd:String 模式类型
 // @param containerName:String 容器名称
 // @param controlName:String 控件名称
 //==========================================================
-MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
+MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(typeGroup, frameName, modeCd, containerName, controlName){
    var o = this;
-   // 选中
-   var frame = o.selectPropertyFrame(propertyFrame);
-   // 显示容器
-   frame.load(typeGroup, containerName, controlName);
+   // 选中页面
+   var frame = o.selectPropertyFrame(frameName);
+   // 加载数据
+   if(containerName){
+      frame.load(typeGroup, containerName, controlName);
+   }
+   //..........................................................
    // 显示标题
    var hTitlePanel = o._framePropertyTitle._hPanel;
    MO.Window.Html.textSet(hTitlePanel, frame.label());
@@ -73,6 +77,7 @@ MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(type
    if(toolBar){
       toolBar.setPanel(hToolBarPanel);
    }
+   return frame;
 }
 
 //==========================================================

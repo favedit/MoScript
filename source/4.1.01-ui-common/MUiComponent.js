@@ -9,43 +9,44 @@ MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
-   o._guid           = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
-   o._name           = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
-   o._label          = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
-   o._attributes     = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), new MO.AGetter('_attributes')]);
+   o._guid            = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
+   o._name            = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
+   o._label           = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
+   o._attributes      = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), new MO.AGetter('_attributes')]);
    //..........................................................
    // @attribute TDictionary 组件字典
-   o._components     = null;
+   o._components      = null;
    // @attribute Object 附加数据
-   o._tag            = MO.Class.register(o, new MO.AGetSet('_tag'));
+   o._tag             = MO.Class.register(o, new MO.AGetSet('_tag'));
    //..........................................................
    // @process
-   o.oeInitialize    = MO.MUiComponent_oeInitialize;
-   o.oeRelease       = MO.MUiComponent_oeRelease;
+   o.oeInitialize     = MO.MUiComponent_oeInitialize;
+   o.oeRelease        = MO.MUiComponent_oeRelease;
    //..........................................................
    // @method
-   o.attributeGet    = MO.MUiComponent_attributeGet;
-   o.attributeSet    = MO.MUiComponent_attributeSet;
+   o.attributeGet     = MO.MUiComponent_attributeGet;
+   o.attributeSet     = MO.MUiComponent_attributeSet;
    // @method
-   o.topComponent    = MO.MUiComponent_topComponent;
-   o.hasComponent    = MO.MUiComponent_hasComponent;
-   o.findComponent   = MO.MUiComponent_findComponent;
-   o.searchComponent = MO.MUiComponent_searchComponent;
-   o.components      = MO.MUiComponent_components;
-   o.push            = MO.MUiComponent_push;
-   o.remove          = MO.MUiComponent_remove;
-   o.clear           = MO.MUiComponent_clear;
+   o.topComponent     = MO.MUiComponent_topComponent;
+   o.hasComponent     = MO.MUiComponent_hasComponent;
+   o.findComponent    = MO.MUiComponent_findComponent;
+   o.searchComponent  = MO.MUiComponent_searchComponent;
+   o.searchComponents = MO.MUiComponent_searchComponents;
+   o.components       = MO.MUiComponent_components;
+   o.push             = MO.MUiComponent_push;
+   o.remove           = MO.MUiComponent_remove;
+   o.clear            = MO.MUiComponent_clear;
    // @method
-   o.process         = MO.MUiComponent_process;
-   o.psInitialize    = MO.MUiComponent_psInitialize;
-   o.psRelease       = MO.MUiComponent_psRelease;
+   o.process          = MO.MUiComponent_process;
+   o.psInitialize     = MO.MUiComponent_psInitialize;
+   o.psRelease        = MO.MUiComponent_psRelease;
    // @method
-   o.toString        = MO.MUiComponent_toString;
+   o.toString         = MO.MUiComponent_toString;
    // @method
-   o.dispose         = MO.MUiComponent_dispose;
+   o.dispose          = MO.MUiComponent_dispose;
    // @method
-   o.innerDumpInfo   = MO.MUiComponent_innerDumpInfo;
-   o.innerDump       = MO.MUiComponent_innerDump;
+   o.innerDumpInfo    = MO.MUiComponent_innerDumpInfo;
+   o.innerDump        = MO.MUiComponent_innerDump;
    return o;
 }
 
@@ -174,6 +175,28 @@ MO.MUiComponent_searchComponent = function MUiComponent_searchComponent(name){
       }
    }
    return findComponent;
+}
+
+//==========================================================
+// <T>根据类型搜索所有子组件。</T>
+//
+// @method
+// @param findComponents:TObjects 找到集合
+// @param clazz:Function 类型
+//==========================================================
+MO.MUiComponent_searchComponents = function MUiComponent_searchComponents(findComponents, clazz){
+   var o = this;
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         if(MO.Class.isClass(component, clazz)){
+            findComponents.push(component);
+         }
+         component.searchComponents(findComponents, clazz);
+      }
+   }
 }
 
 //==========================================================

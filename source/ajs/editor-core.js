@@ -20,10 +20,10 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
    var typeGroup = node.typeGroup();
    var frameName = node.type().get('property_frame');
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.selectObject(typeGroup, frameName, containerName);
+      o._frameSet.selectObject(typeGroup, frameName, MO.EUiMode.Update, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
       var itemName = node.guid();
-      o._frameSet.selectObject(typeGroup, frameName, containerName, itemName);
+      o._frameSet.selectObject(typeGroup, frameName, MO.EUiMode.Update, containerName, itemName);
    }
 }
 MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construct(){
@@ -62,10 +62,12 @@ MO.FEditorDsFrameSet_construct = function FEditorDsFrameSet_construct(){
    var o = this;
    o.__base.FEditorFrameSet.construct.call(o);
 }
-MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
+MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(typeGroup, frameName, modeCd, containerName, controlName){
    var o = this;
-   var frame = o.selectPropertyFrame(propertyFrame);
-   frame.load(typeGroup, containerName, controlName);
+   var frame = o.selectPropertyFrame(frameName);
+   if(containerName){
+      frame.load(typeGroup, containerName, controlName);
+   }
    var hTitlePanel = o._framePropertyTitle._hPanel;
    MO.Window.Html.textSet(hTitlePanel, frame.label());
    var hToolBarPanel = o._framePropertyToolBar._hPanel;
@@ -74,6 +76,7 @@ MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(type
    if(toolBar){
       toolBar.setPanel(hToolBarPanel);
    }
+   return frame;
 }
 MO.FEditorDsFrameSet_load = function FEditorDsFrameSet_load(){
    var o = this;
@@ -121,6 +124,7 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiForm);
    o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
    o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
+   o.onButtonClick  = MO.FEditorDsPropertyForm_onButtonClick;
    o.onBuilded      = MO.FEditorDsPropertyForm_onBuilded;
    o.onDataChanged  = MO.FEditorDsPropertyForm_onDataChanged;
    o.onDataLoad     = MO.FEditorDsPropertyForm_onDataLoad;
@@ -131,9 +135,26 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o.dispose        = MO.FEditorDsPropertyForm_dispose;
    return o;
 }
+MO.FEditorDsPropertyForm_onButtonClick = function FEditorDsPropertyForm_onButtonClick(event){
+   var o  = this;
+   var button = event.sender;
+   var logicGroup = button.attributeGet('logic_group');
+   var frameName = button.attributeGet('frame_name');
+   var componentType = button.attributeGet('component_type');
+   var frame = o._frameSet.selectObject(logicGroup, frameName, MO.EUiMode.Insert);
+   var componentType = frame.searchComponent('componentType');
+   componentType.set(componentType);
+}
 MO.FEditorDsPropertyForm_onBuilded = function FEditorDsPropertyForm_onBuilded(event){
    var o = this;
    o.__base.FDuiForm.onBuilded.call(o, event);
+   var buttons = new MO.TObjects();
+   o.searchComponents(buttons, MO.MUiToolButton);
+   var count = buttons.count();
+   for(var i = 0; i < count; i++){
+      var button = buttons.at(i);
+      button.addClickListener(o, o.onButtonClick);
+   }
 }
 MO.FEditorDsPropertyForm_onDataChanged = function FEditorDsPropertyForm_onDataChanged(event){
    var o  = this;

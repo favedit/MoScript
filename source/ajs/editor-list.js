@@ -123,8 +123,10 @@ MO.FEditorDsListFrameSet = function FEditorDsListFrameSet(o){
 MO.FEditorDsListFrameSet_onBuilded = function FEditorDsListFrameSet_onBuilded(event){
    var o = this;
    o.__base.FEditorDsFrameSet.onBuilded.call(o, event);
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
    o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._framePropertyTitle._hPanel.className = o.styleName('Title_Ground');
    o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
@@ -142,6 +144,7 @@ MO.FEditorDsListFrameSet_onBuilded = function FEditorDsListFrameSet_onBuilded(ev
    control._frameSet = o;
    control.buildDefine(event);
    o._framePropertyToolBar.push(control);
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '列表目录');
 }
 MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
    var o = this;

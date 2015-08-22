@@ -30,8 +30,10 @@ MO.FEditorDsTreeFrameSet_onBuilded = function FEditorDsTreeFrameSet_onBuilded(ev
    var o = this;
    o.__base.FEditorDsFrameSet.onBuilded.call(o, event);
    // 设置样式
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
    o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._framePropertyTitle._hPanel.className = o.styleName('Title_Ground');
    o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
    //..........................................................
@@ -60,6 +62,9 @@ MO.FEditorDsTreeFrameSet_onBuilded = function FEditorDsTreeFrameSet_onBuilded(ev
    control._frameSet = o;
    control.buildDefine(event);
    o._framePropertyToolBar.push(control);
+   //..........................................................
+   // 设置标题
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '树目录配置');
 }
 
 //==========================================================

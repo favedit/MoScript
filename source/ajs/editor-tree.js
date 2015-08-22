@@ -123,8 +123,10 @@ MO.FEditorDsTreeFrameSet = function FEditorDsTreeFrameSet(o){
 MO.FEditorDsTreeFrameSet_onBuilded = function FEditorDsTreeFrameSet_onBuilded(event){
    var o = this;
    o.__base.FEditorDsFrameSet.onBuilded.call(o, event);
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
    o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._framePropertyTitle._hPanel.className = o.styleName('Title_Ground');
    o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
@@ -145,6 +147,7 @@ MO.FEditorDsTreeFrameSet_onBuilded = function FEditorDsTreeFrameSet_onBuilded(ev
    control._frameSet = o;
    control.buildDefine(event);
    o._framePropertyToolBar.push(control);
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '树目录配置');
 }
 MO.FEditorDsTreeFrameSet_construct = function FEditorDsTreeFrameSet_construct(){
    var o = this;

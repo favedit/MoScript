@@ -43,10 +43,10 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
    var typeGroup = node.typeGroup();
    var frameName = node.type().get('property_frame');
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.selectObject(typeGroup, frameName, containerName);
+      o._frameSet.selectObject(typeGroup, frameName, MO.EUiMode.Update, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
       var itemName = node.guid();
-      o._frameSet.selectObject(typeGroup, frameName, containerName, itemName);
+      o._frameSet.selectObject(typeGroup, frameName, MO.EUiMode.Update, containerName, itemName);
    }
 }
 

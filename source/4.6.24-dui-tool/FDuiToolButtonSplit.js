@@ -7,7 +7,7 @@ with(MO){
    // @history 150203
    //==========================================================
    MO.FDuiToolButtonSplit = function FDuiToolButtonSplit(o){
-      o = MO.Class.inherits(this, o, FDuiToolButton, MDuiToolButton);
+      o = MO.Class.inherits(this, o, FDuiToolButton, MUiToolButton);
       //..........................................................
       // @style
       o._stylePanel = MO.Class.register(o, new MO.AStyle('_stylePanel'));

@@ -14459,7 +14459,6 @@ MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationH
    return this._orientationCd == MO.EOrientation.Horizontal;
 }
 MO.RBrowser.prototype.isOrientationVertical = function RBrowser_isOrientationVertical(){
-   return true;
    return this._orientationCd == MO.EOrientation.Vertical;
 }
 MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(){
@@ -35940,6 +35939,14 @@ MO.EUiMerge = new function EUiMerge(){
    o.Disable  = 'disable';
    return o;
 }
+MO.EUiMode = new function EUiMode(){
+   var o = this;
+   MO.TEnum.call(o);
+   o.Insert = 'Insert';
+   o.Update = 'Update';
+   o.Delete = 'Delete';
+   return o;
+}
 MO.EPanel = new function EPanel(){
    var o = this;
    o.Container = 0;
@@ -36026,31 +36033,32 @@ MO.MUiBorder_dispose = function MUiBorder_dispose(){
 }
 MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
-   o._guid           = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
-   o._name           = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
-   o._label          = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
-   o._attributes     = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), new MO.AGetter('_attributes')]);
-   o._components     = null;
-   o._tag            = MO.Class.register(o, new MO.AGetSet('_tag'));
-   o.oeInitialize    = MO.MUiComponent_oeInitialize;
-   o.oeRelease       = MO.MUiComponent_oeRelease;
-   o.attributeGet    = MO.MUiComponent_attributeGet;
-   o.attributeSet    = MO.MUiComponent_attributeSet;
-   o.topComponent    = MO.MUiComponent_topComponent;
-   o.hasComponent    = MO.MUiComponent_hasComponent;
-   o.findComponent   = MO.MUiComponent_findComponent;
-   o.searchComponent = MO.MUiComponent_searchComponent;
-   o.components      = MO.MUiComponent_components;
-   o.push            = MO.MUiComponent_push;
-   o.remove          = MO.MUiComponent_remove;
-   o.clear           = MO.MUiComponent_clear;
-   o.process         = MO.MUiComponent_process;
-   o.psInitialize    = MO.MUiComponent_psInitialize;
-   o.psRelease       = MO.MUiComponent_psRelease;
-   o.toString        = MO.MUiComponent_toString;
-   o.dispose         = MO.MUiComponent_dispose;
-   o.innerDumpInfo   = MO.MUiComponent_innerDumpInfo;
-   o.innerDump       = MO.MUiComponent_innerDump;
+   o._guid            = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
+   o._name            = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
+   o._label           = MO.Class.register(o, [new MO.APtyString('_label'), new MO.AGetSet('_label')]);
+   o._attributes      = MO.Class.register(o, [new MO.APtyAttributes('_attributes'), new MO.AGetter('_attributes')]);
+   o._components      = null;
+   o._tag             = MO.Class.register(o, new MO.AGetSet('_tag'));
+   o.oeInitialize     = MO.MUiComponent_oeInitialize;
+   o.oeRelease        = MO.MUiComponent_oeRelease;
+   o.attributeGet     = MO.MUiComponent_attributeGet;
+   o.attributeSet     = MO.MUiComponent_attributeSet;
+   o.topComponent     = MO.MUiComponent_topComponent;
+   o.hasComponent     = MO.MUiComponent_hasComponent;
+   o.findComponent    = MO.MUiComponent_findComponent;
+   o.searchComponent  = MO.MUiComponent_searchComponent;
+   o.searchComponents = MO.MUiComponent_searchComponents;
+   o.components       = MO.MUiComponent_components;
+   o.push             = MO.MUiComponent_push;
+   o.remove           = MO.MUiComponent_remove;
+   o.clear            = MO.MUiComponent_clear;
+   o.process          = MO.MUiComponent_process;
+   o.psInitialize     = MO.MUiComponent_psInitialize;
+   o.psRelease        = MO.MUiComponent_psRelease;
+   o.toString         = MO.MUiComponent_toString;
+   o.dispose          = MO.MUiComponent_dispose;
+   o.innerDumpInfo    = MO.MUiComponent_innerDumpInfo;
+   o.innerDump        = MO.MUiComponent_innerDump;
    return o;
 }
 MO.MUiComponent_oeInitialize = function MUiComponent_oeInitialize(e){
@@ -36113,6 +36121,20 @@ MO.MUiComponent_searchComponent = function MUiComponent_searchComponent(name){
       }
    }
    return findComponent;
+}
+MO.MUiComponent_searchComponents = function MUiComponent_searchComponents(findComponents, clazz){
+   var o = this;
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.at(i);
+         if(MO.Class.isClass(component, clazz)){
+            findComponents.push(component);
+         }
+         component.searchComponents(findComponents, clazz);
+      }
+   }
 }
 MO.MUiComponent_components = function MUiComponent_components(){
    var o = this;
@@ -36948,6 +36970,10 @@ MO.FUiFrameDefineConsole_load = function FUiFrameDefineConsole_load(name){
    return xframe;
 }
 MO.MUiMenuButton = function MUiMenuButton(o){
+   o = MO.Class.inherits(this, o);
+   return o;
+}
+MO.MUiToolButton = function MUiToolButton(o){
    o = MO.Class.inherits(this, o);
    return o;
 }
@@ -40013,14 +40039,14 @@ MO.FGuiGridColumnText_dispose = function FGuiGridColumnText_dispose(){
 }
 MO.FGuiGridControl = function FGuiGridControl(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiGridControl);
-   o._optionClip = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
-   o._headPadding = MO.Class.register(o, new MO.AGetter('_headPadding'));
-   o._rowScroll = 0;
+   o._optionClip     = MO.Class.register(o, new MO.AGetSet('_optionClip'), true);
+   o._headPadding    = MO.Class.register(o, new MO.AGetter('_headPadding'));
+   o._rowScroll      = 0;
    o._rowScrollSpeed = 1;
-   o._paintContext = null;
-   o.onPaintBegin = MO.FGuiGridControl_onPaintBegin;
-   o.construct = MO.FGuiGridControl_construct;
-   o.dispose = MO.FGuiGridControl_dispose;
+   o._paintContext   = null;
+   o.onPaintBegin    = MO.FGuiGridControl_onPaintBegin;
+   o.construct       = MO.FGuiGridControl_construct;
+   o.dispose         = MO.FGuiGridControl_dispose;
    return o;
 }
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
@@ -40033,9 +40059,6 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
    var graphic = event.graphic;
    context.graphic = graphic;
    var rectangle = event.rectangle;
-   if(MO.Class.isClass(o, MO.FGuiTable)){
-      graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 4);
-   }
    var left = rectangle.left + padding.left;
    var top = rectangle.top + padding.top;
    var bottom = rectangle.bottom() - padding.bottom;

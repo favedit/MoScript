@@ -12,6 +12,8 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
    //..........................................................
    // @event
+   o.onButtonClick  = MO.FEditorDsPropertyForm_onButtonClick;
+   // @event
    o.onBuilded      = MO.FEditorDsPropertyForm_onBuilded;
    // @event
    o.onDataChanged  = MO.FEditorDsPropertyForm_onDataChanged;
@@ -29,6 +31,25 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
 }
 
 //==========================================================
+// <T>数据改变处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEditorDsPropertyForm_onButtonClick = function FEditorDsPropertyForm_onButtonClick(event){
+   var o  = this;
+   var button = event.sender;
+   // 获得参数
+   var logicGroup = button.attributeGet('logic_group');
+   var frameName = button.attributeGet('frame_name');
+   var componentType = button.attributeGet('component_type');
+   // 显示页面
+   var frame = o._frameSet.selectObject(logicGroup, frameName, MO.EUiMode.Insert);
+   var componentType = frame.searchComponent('componentType');
+   componentType.set(componentType);
+}
+
+//==========================================================
 // <T>构建完成处理。</T>
 //
 // @method
@@ -37,6 +58,14 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
 MO.FEditorDsPropertyForm_onBuilded = function FEditorDsPropertyForm_onBuilded(event){
    var o = this;
    o.__base.FDuiForm.onBuilded.call(o, event);
+   // 注册按键监听
+   var buttons = new MO.TObjects();
+   o.searchComponents(buttons, MO.MUiToolButton);
+   var count = buttons.count();
+   for(var i = 0; i < count; i++){
+      var button = buttons.at(i);
+      button.addClickListener(o, o.onButtonClick);
+   }
 }
 
 //==========================================================

@@ -16,7 +16,7 @@
 // @history 150121
 //==========================================================
 MO.FDuiToolButton = function FDuiToolButton(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiToolButton);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiToolButton);
    //..........................................................
    // @property
    o._icon            = MO.Class.register(o, [new MO.APtyString('_icon'), new MO.AGetter('_icon')]);

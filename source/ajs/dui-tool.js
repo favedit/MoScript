@@ -1,10 +1,4 @@
 with(MO){
-   MO.MDuiToolButton = function MDuiToolButton(o){
-      o = MO.Class.inherits(this, o);
-      return o;
-   }
-}
-with(MO){
    MO.FDuiToolBar = function FDuiToolBar(o){
       o = MO.Class.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       o._alignCd          = MO.Class.register(o, new MO.APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
@@ -28,7 +22,7 @@ with(MO){
    MO.FDuiToolBar_appendChild = function FDuiToolBar_appendChild(control){
       var o = this;
       o.__base.FDuiContainer.appendChild.call(o, control);
-      if(RClass.isClass(control, MDuiToolButton)){
+      if(RClass.isClass(control, MUiToolButton)){
          var h = o._hPanel;
          var hl = o._hLine;
          if(o._directionCd == EUiDirection.Horizontal){
@@ -46,7 +40,7 @@ with(MO){
    }
    MO.FDuiToolBar_removeChild = function FDuiToolBar_removeChild(p){
       var o = this;
-      if(RClass.isClass(p, MDuiToolButton)){
+      if(RClass.isClass(p, MUiToolButton)){
          var hp = p._hParent;
          var hl = p._hParentLine;
          hl.removeChild(hp);
@@ -62,7 +56,7 @@ with(MO){
    }
 }
 MO.FDuiToolButton = function FDuiToolButton(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiToolButton);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiToolButton);
    o._icon            = MO.Class.register(o, [new MO.APtyString('_icon'), new MO.AGetter('_icon')]);
    o._iconDisable     = MO.Class.register(o, [new MO.APtyString('_iconDisable'), new MO.AGetter('_iconDisable')]);
    o._hotkey          = MO.Class.register(o, [new MO.APtyString('_hotkey'), new MO.AGetter('_hotkey')]);
@@ -512,7 +506,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiToolButtonSplit = function FDuiToolButtonSplit(o){
-      o = MO.Class.inherits(this, o, FDuiToolButton, MDuiToolButton);
+      o = MO.Class.inherits(this, o, FDuiToolButton, MUiToolButton);
       o._stylePanel = MO.Class.register(o, new MO.AStyle('_stylePanel'));
       o.onBuild     = FDuiToolButtonSplit_onBuild;
       return o;

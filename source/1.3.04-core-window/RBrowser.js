@@ -348,7 +348,6 @@ MO.RBrowser.prototype.isOrientationHorizontal = function RBrowser_isOrientationH
 // @return 是否垂直
 //===========================================================
 MO.RBrowser.prototype.isOrientationVertical = function RBrowser_isOrientationVertical(){
-   return true;
    return this._orientationCd == MO.EOrientation.Vertical;
 }
 

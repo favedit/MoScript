@@ -464,9 +464,10 @@ MO.FEaiChartDptMarketerTable_setup = function FEaiChartDptMarketerTable_setup() 
    // grid.setLocation(50, 332);
    grid.setLocation(50,570);
    grid.setSize(800, 430);
-   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setRight(19);
+   grid.setBottom(20);
    grid.setHeadHeight(32);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';

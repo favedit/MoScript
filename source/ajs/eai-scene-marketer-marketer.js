@@ -343,6 +343,7 @@ MO.FEaiChartMktMarketerScene_onProcess = function FEaiChartMktMarketerScene_onPr
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
+         return;
       }
       if (!o._mapReady) {
          o._guiManager.show();
