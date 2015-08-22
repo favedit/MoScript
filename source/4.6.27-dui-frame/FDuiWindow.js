@@ -7,12 +7,12 @@
 // @version 1.0.1
 //==========================================================
 MO.FDuiWindow = function FDuiWindow(o){
-   //o = RClass.inherits(this, o, FDuiLayout, MDuiFocus, MDisplayAble, MDuiSizeable, MMoveable, MWinBorder);
+   //o = MO.Class.inherits(this, o, FDuiLayout, MDuiFocus, MDisplayAble, MDuiSizeable, MMoveable, MWinBorder);
    o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MMouseCapture);
    //..........................................................
    // @property
    o._statusVisible      = false;
-   //o._caption          = RClass.register(o, new APtyString('_caption'));
+   //o._caption          = MO.Class.register(o, new MO.APtyString('_caption'));
    //..........................................................
    // @style
    o._stylePanel         = MO.Class.register(o, new MO.AStyle('_stylePanel'));

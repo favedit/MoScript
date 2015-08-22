@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiCellStatus = function FDuiCellStatus(o){
-      o = RClass.inherits(this, o, FCell);
+      o = MO.Class.inherits(this, o, FCell);
       //..........................................................
       // @property
       o._dataName = '_status';
@@ -21,7 +21,7 @@ with(MO){
 
       //..........................................................
       // @event
-      //o.onStatusEnter = RClass.register(o, new HMouseEnter('onStatusEnter'), FDuiCellStatus_onStatusEnter);
+      //o.onStatusEnter = MO.Class.register(o, new HMouseEnter('onStatusEnter'), FDuiCellStatus_onStatusEnter);
       //..........................................................
       // @method
       //o.isDataChanged = RMethod.emptyFalse;
@@ -52,8 +52,8 @@ with(MO){
       h.style.cursor = 'normal';
       //c.linkEvent(o, 'onCellClick', hp, c.onCellClick);
       // 创建状态图标
-      //o._hStatus = RBuilder.appendIcon(hp, o.column.styleIcon(c.table.isFormLinked() ? 'Normal' : 'Normal'));
-      o._hStatus = RBuilder.appendIcon(h, null, 'n');
+      //o._hStatus = MO.Window.Builder.appendIcon(hp, o.column.styleIcon(c.table.isFormLinked() ? 'Normal' : 'Normal'));
+      o._hStatus = MO.Window.Builder.appendIcon(h, null, 'n');
       //if(c.table.dispRowbar){
          //o.attachEvent('onStatusEnter', o._hStatus);
       //}

@@ -39,7 +39,6 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('general.color.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
-   effectConsole.register('general.color.flood', MO.FE3dFloodLightEffect);
    // 阴影效果器
    effectConsole.register('shadow.depth.automatic', MO.FE3dShadowDepthAutomaticEffect);
    effectConsole.register('shadow.depth.skeleton', MO.FE3dShadowDepthSkeletonEffect);

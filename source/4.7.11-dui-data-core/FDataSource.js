@@ -3,7 +3,7 @@ with(MO){
    // FDataSource
    // ============================================================
    MO.FDataSource = function FDataSource(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       //..........................................................
       // @attribute
       o._currentRow     = null;

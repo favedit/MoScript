@@ -7,7 +7,7 @@ with(MO){
    // @version 150319
    //==========================================================
    MO.MUiDataAction = function MUiDataAction(o){
-      o = RClass.inherits(this, o);
+      o = MO.Class.inherits(this, o);
       //..........................................................
       // @method
       o.doAction = MUiDataAction_doAction

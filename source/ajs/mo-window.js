@@ -633,7 +633,7 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
       }else if((window.orientation == 90) || (window.orientation == -90)){
          o._orientationCd = MO.EOrientation.Horizontal;
       }else{
-         throw new TError(o, 'Unknown orientation mode.');
+         throw new MO.TError(o, 'Unknown orientation mode.');
       }
    }
    return o._orientationCd;
@@ -1176,32 +1176,32 @@ MO.RBuilder.prototype.create = function RBuilder_create(h, t, s){
    }
    return h;
 }
-MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
-   var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
-   r.align = 'absmiddle';
-   if(u){
-      r.src = MO.Window.Resource.iconPath(u);
+MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(hDocument, style, uri, width, height){
+   var hImage = this.create(hDocument, 'IMG', MO.Lang.String.nvl(style, 'Tag_Icon'));
+   hImage.align = 'absmiddle';
+   if(uri){
+      hImage.src = MO.Window.Resource.iconPath(uri);
    }
-   if(w){
-      r.style.width = w + 'px';
+   if(width){
+      hImage.style.width = width + 'px';
    }
-   if(h){
-      r.style.height = h + 'px';
+   if(height){
+      hImage.style.height = height + 'px';
    }
-   return r;
+   return hImage;
 }
-MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
-   var r = this.create(d, 'IMG', u);
-   if(u){
-      r.src = MO.RResource.imagePath(u);
+MO.RBuilder.prototype.createImage = function RBuilder_createImage(hDocument, style, uri, width, height){
+   var hImage = this.create(hDocument, 'IMG', style);
+   if(uri){
+      hImage.src = MO.Window.Resource.imagePath(uri);
    }
-   if(w){
-      r.style.width = w;
+   if(width){
+      hImage.style.width = width + 'px';
    }
-   if(h){
-      r.style.height = h;
+   if(height){
+      hImage.style.height = height + 'px';
    }
-   return r;
+   return hImage;
 }
 MO.RBuilder.prototype.createText = function RBuilder_createText(d, s, v){
    var r = this.create(d, 'SPAN', s);
@@ -1479,7 +1479,7 @@ MO.RDump.prototype.onclick = function RDump_onclick(){
    }
 }
 MO.RDump.prototype.nameInfo = function RDump_nameInfo(v){
-   var t = RClass.typeOf(v);
+   var t = MO.Class.typeOf(v);
    switch(t){
       case 'Unknown':
          return '@unknown';
@@ -1690,111 +1690,111 @@ MO.RHtml.prototype.uid = function RHtml_uid(value){
    }
    return uuid;
 }
-MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
-   var r = null;
-   var s = h.style.display;
-   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
-      r = (s == 'inline');
+MO.RHtml.prototype.displayGet = function RHtml_displayGet(hTag){
+   var result = null;
+   var text = hTag.style.display;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
+      result = (text == 'inline');
    }else{
-      r = (s != 'none');
+      result = (text != 'none');
    }
-   return r;
+   return result;
 }
-MO.RHtml.prototype.displaySet = function RHtml_displaySet(h, v){
-   var s = null;
-   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
-      s = v ? 'inline' : 'none';
+MO.RHtml.prototype.displaySet = function RHtml_displaySet(hTag, visible){
+   var text = null;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
+      text = visible ? 'inline' : 'none';
    }else{
-      s = v ? null : 'none';
+      text = visible ? null : 'none';
    }
-   h.style.display = s;
+   hTag.style.display = text;
 }
-MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(h){
-   var r = null;
-   var s = h.style.display;
-   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
-      r = (s == 'block');
+MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(hTag){
+   var result = null;
+   var text = hTag.style.display;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
+      result = (text == 'block');
    }else{
-      r = (s != 'none');
+      result = (text != 'none');
    }
-   return r;
+   return result;
 }
-MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(h, v){
-   var s = null;
-   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
-      s = v ? '' : 'none';
+MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(hTag, visible){
+   var text = null;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
+      text = visible ? '' : 'none';
    }else{
-      s = v ? null : 'none';
+      text = visible ? null : 'none';
    }
-   h.style.display = s;
+   hTag.style.display = text;
 }
-MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
-   var r = null;
-   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
-      r = h.textContent;
+MO.RHtml.prototype.textGet = function RHtml_textGet(hTag, defaultText){
+   var text = null;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.FireFox)){
+      text = hTag.textContent;
    }else{
-      r = h.innerText;
+      text = hTag.innerText;
    }
-   return r;
+   return text;
 }
-MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
-   if(MO.RBrowser.isBrowser(MO.EBrowser.FireFox)){
-      h.textContent = v;
+MO.RHtml.prototype.textSet = function RHtml_textSet(hTag, text){
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.FireFox)){
+      hTag.textContent = text;
    }else{
-      h.innerText = v;
+      hTag.innerText = text;
    }
 }
-MO.RHtml.prototype.checkGet = function RHtml_checkGet(h){
-   return MO.Lang.Bool.toString(h.checked);
+MO.RHtml.prototype.checkGet = function RHtml_checkGet(hTag){
+   return MO.Lang.Bool.toString(hTag.checked);
 }
-MO.RHtml.prototype.checkSet = function RHtml_checkSet(h, v){
-   h.checked = MO.Lang.Bool.isTrue(v);
+MO.RHtml.prototype.checkSet = function RHtml_checkSet(hTag, value){
+   hTag.checked = MO.Lang.Bool.isTrue(value);
 }
 MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
    if(hs){
-      var c = hs.length;
-      for(var n = 0; n < c; n++){
-         var h = hs[n];
-         if(h.checked){
-            return h.value;
+      var count = hs.length;
+      for(var n = 0; n < count; n++){
+         var hItem = hs[n];
+         if(hItem.checked){
+            return hItem.value;
          }
       }
    }
    return null;
 }
-MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
-   if(hs){
-      var c = hs.length;
-      for(var n = 0; n < c; n++){
-         var h = hs[n];
-         if(h.value == v){
-            h.checked = true;
+MO.RHtml.prototype.radioSet = function RHtml_radioSet(hTag, value){
+   if(hTag){
+      var count = hTag.length;
+      for(var n = 0; n < count; n++){
+         var hItem = hTag[n];
+         if(hItem.value == value){
+            hItem.checked = true;
             break;
          }
       }
    }
 }
-MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(h, v){
-   if(h){
-      h.style.cursor = v;
+MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(hTag, value){
+   if(hTag){
+      hTag.style.cursor = value;
    }
 }
-MO.RHtml.prototype.linkGet = function RHtml_linkGet(h, n){
+MO.RHtml.prototype.linkGet = function RHtml_linkGet(hTag, name){
    var o = this;
-   var u = o.uid(h);
-   var i = o._links[u];
-   return i ? i.get(n) : null;
+   var uid = o.uid(hTag);
+   var item = o._links[uid];
+   return item ? item.get(name) : null;
 }
-MO.RHtml.prototype.linkSet = function RHtml_linkSet(h, n, v){
+MO.RHtml.prototype.linkSet = function RHtml_linkSet(hTag, n, v){
    var o = this;
-   var ls = o._links;
-   var u = o.uid(h);
-   var i = ls[u];
-   if(!i){
-      i = ls[u] = new MO.THtmlItem();
-      i._link = h;
+   var links = o._links;
+   var uid = o.uid(hTag);
+   var item = links[uid];
+   if(!item){
+      item = links[uid] = new MO.THtmlItem();
+      item._link = hTag;
    }
-   i.set(n, v);
+   item.set(n, v);
 }
 MO.RHtml.prototype.clientPosition = function RHtml_clientPosition(hTag, hTop){
    var o = this;
@@ -1933,6 +1933,35 @@ MO.RHtml.prototype.tableMoveRow = function RHtml_tableMoveRow(ph, ps, pt){
       }
    }
    return true;
+}
+MO.RHtml.prototype.clear = function RHtml_clear(hTag){
+   var o = this;
+   if(hTag){
+      var hChildren = hTag.children;
+      if(hChildren){
+         var count = hChildren.length;
+         for(var i = count - 1; i >= 0; i--){
+            var hChild = hChildren[i];
+            hTag.removeChild(hChild);
+         }
+      }
+   }
+}
+MO.RHtml.prototype.clearAll = function RHtml_clearAll(hTag){
+   var o = this;
+   if(hTag){
+      var hChildren = hTag.children;
+      if(hChildren){
+         var count = hChildren.length;
+         for(var i = count - 1; i >= 0; i--){
+            var hChild = hChildren[i];
+            if(hChild.children){
+               o.clear(hChild);
+            }
+            hTag.removeChild(hChild);
+         }
+      }
+   }
 }
 MO.RHtml.prototype.free = function RHtml_free(p){
    return null;

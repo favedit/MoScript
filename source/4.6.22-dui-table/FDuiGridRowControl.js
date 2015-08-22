@@ -7,7 +7,7 @@ with(MO){
    // @version 150125
    //==========================================================
    MO.FDuiGridRowControl = function FDuiGridRowControl(o){
-      o = RClass.inherits(this, o, FContainer, MDataContainer);
+      o = MO.Class.inherits(this, o, FContainer, MDataContainer);
       //..........................................................
       // @attribute TDictionary 单元格字典
       o._cells         = null;
@@ -40,8 +40,8 @@ with(MO){
 
       //..........................................................
       // @style
-      //o.stHover          = RClass.register(o, new TStyle('Hover'));
-      //o.stSelect         = RClass.register(o, new TStyle('Select'));
+      //o.stHover          = MO.Class.register(o, new TStyle('Hover'));
+      //o.stSelect         = MO.Class.register(o, new TStyle('Select'));
       //o._visible        = true;
       //..........................................................
       // @attribute FGridControl 表控件
@@ -101,7 +101,7 @@ with(MO){
    //==========================================================
    MO.FDuiGridRowControl_onBuildPanel = function FDuiGridRowControl_onBuildPanel(p){
       var o = this;
-      o._hPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
+      o._hPanel = MO.Window.Builder.createTableRow(p, o.styleName('Panel'));
    }
 
    //==========================================================
@@ -159,7 +159,7 @@ with(MO){
    //==========================================================
    MO.FDuiGridRowControl_loadRow = function FDuiGridRowControl_loadRow(p){
       var o = this;
-      var ds = RClass.create(FDataSource);
+      var ds = MO.Class.create(FDataSource);
       ds.selectRow(p);
       o.dsDataLoad(ds);
       // 重置数据

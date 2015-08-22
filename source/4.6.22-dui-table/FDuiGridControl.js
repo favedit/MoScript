@@ -27,27 +27,27 @@ with(MO){
    // @history 090922 MAOCY 创建
    //==========================================================
    MO.FDuiGridControl = function FDuiGridControl(o) {
-      //o = RClass.inherits(this, o, FDuiContainer, MValue, MDataset, MDisplay, MDuiFocus, MForm, MProgress, MDuiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
-      o = RClass.inherits(this, o, FDuiContainer);
+      //o = MO.Class.inherits(this, o, FDuiContainer, MValue, MDataset, MDisplay, MDuiFocus, MForm, MProgress, MDuiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
+      o = MO.Class.inherits(this, o, FDuiContainer);
       //..........................................................
       // @property
-      o._displayCount        = RClass.register(o, new APtyInteger('_displayCount'), 20);
-      o._displayTitle        = RClass.register(o, new APtySet('_displayTitle', 'display_title', EGridDisplay.Title), true);
+      o._displayCount        = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
+      o._displayTitle        = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', EGridDisplay.Title), true);
       o._displayColumnStatus = true;
       o._displayColumnSelect = true;
-      o._rowHeight           = RClass.register(o, new APtyInteger('rowHeight'), 0);
+      o._rowHeight           = MO.Class.register(o, new MO.APtyInteger('rowHeight'), 0);
       //..........................................................
       // @style
-      o._stylePanel          = RClass.register(o, new AStyle('_stylePanel'));
-      o._styleTitlePanel     = RClass.register(o, new AStyle('_styleTitlePanel'));
-      o._styleTitleForm      = RClass.register(o, new AStyle('_styleTitleForm'));
-      o._styleCaption        = RClass.register(o, new AStyle('_styleCaption'));
-      o._styleContentPanel   = RClass.register(o, new AStyle('_styleContentPanel'));
-      o._styleContentForm    = RClass.register(o, new AStyle('_styleContentForm'));
-      o._styleHintPanel      = RClass.register(o, new AStyle('_styleHintPanel'));
-      o._styleHintForm       = RClass.register(o, new AStyle('_styleHintForm'));
-      o._styleHint           = RClass.register(o, new AStyle('_styleHint'));
-      o._styleButton         = RClass.register(o, new AStyle('_styleButton'));
+      o._stylePanel          = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+      o._styleTitlePanel     = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
+      o._styleTitleForm      = MO.Class.register(o, new MO.AStyle('_styleTitleForm'));
+      o._styleCaption        = MO.Class.register(o, new MO.AStyle('_styleCaption'));
+      o._styleContentPanel   = MO.Class.register(o, new MO.AStyle('_styleContentPanel'));
+      o._styleContentForm    = MO.Class.register(o, new MO.AStyle('_styleContentForm'));
+      o._styleHintPanel      = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
+      o._styleHintForm       = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
+      o._styleHint           = MO.Class.register(o, new MO.AStyle('_styleHint'));
+      o._styleButton         = MO.Class.register(o, new MO.AStyle('_styleButton'));
       //..........................................................
       // @attribute
       o._minHeight           = 80;
@@ -112,16 +112,16 @@ with(MO){
 
       //..........................................................
       // @property
-      //o._formCustom            = RClass.register(o, new APtyBoolean('formCustom'), false);
-      //o._formName              = RClass.register(o, new APtyString('formName'));
-      //o._formParameter         = RClass.register(o, new APtyString('formParameter'));
-      //o._formLinked            = RClass.register(o, new APtyBoolean('formLinked'), false);
-      //o._dispRowbar            = RClass.register(o, new APtyBoolean('dispRowbar'), false);
-      //o._dispSelected          = RClass.register(o, new APtyBoolean('dispSelected'), false);
-      //o._panelHead             = RClass.register(o, new APtySet('panelHead', 'panelAccess', EGridDisplay.Head), false);
-      //o._panelSearch           = RClass.register(o, new APtySet('panelSearch', 'panelAccess', EGridDisplay.Search), false);
-      //o._panelTotal            = RClass.register(o, new APtySet('panelTotal', 'panelAccess', EGridDisplay.Total), false);
-      //o._panelNavigator        = RClass.register(o, new APtySet('panelNavigator', 'panelAccess', EGridDisplay.Navigator), false);
+      //o._formCustom            = MO.Class.register(o, new MO.APtyBoolean('formCustom'), false);
+      //o._formName              = MO.Class.register(o, new MO.APtyString('formName'));
+      //o._formParameter         = MO.Class.register(o, new MO.APtyString('formParameter'));
+      //o._formLinked            = MO.Class.register(o, new MO.APtyBoolean('formLinked'), false);
+      //o._dispRowbar            = MO.Class.register(o, new MO.APtyBoolean('dispRowbar'), false);
+      //o._dispSelected          = MO.Class.register(o, new MO.APtyBoolean('dispSelected'), false);
+      //o._panelHead             = MO.Class.register(o, new MO.APtySet('panelHead', 'panelAccess', EGridDisplay.Head), false);
+      //o._panelSearch           = MO.Class.register(o, new MO.APtySet('panelSearch', 'panelAccess', EGridDisplay.Search), false);
+      //o._panelTotal            = MO.Class.register(o, new MO.APtySet('panelTotal', 'panelAccess', EGridDisplay.Total), false);
+      //o._panelNavigator        = MO.Class.register(o, new MO.APtySet('panelNavigator', 'panelAccess', EGridDisplay.Navigator), false);
       //o._panelTitle            = true;
       //o._panelHead             = true;
       //o._panelSearch           = true;
@@ -129,11 +129,11 @@ with(MO){
       //o._panelNavigator        = true;
       //..........................................................
       // @style
-      //o._styleHeadLine         = RClass.register(o, new AStyle('_styleHeadLine', 'HeadLine'));
-      //o._styleSearchLine       = RClass.register(o, new AStyle('_styleSearchLine', 'SearchLine'));
+      //o._styleHeadLine         = MO.Class.register(o, new MO.AStyle('_styleHeadLine', 'HeadLine'));
+      //o._styleSearchLine       = MO.Class.register(o, new MO.AStyle('_styleSearchLine', 'SearchLine'));
       //..........................................................
       // @icon
-      //o._styleButtonIcon       = RClass.register(o, new AStyleIcon('Button'));
+      //o._styleButtonIcon       = MO.Class.register(o, new AStyleIcon('Button'));
       //..........................................................
       //o._dataset               = null;
       //o._hoverRow              = null;
@@ -160,20 +160,20 @@ with(MO){
       //o._hButtons              = null;
       //..........................................................
       //o.onMouseDown            = FDuiGridControl_onMouseDown;
-      //o.onHeadMouseDown        = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FDuiGridControl_onHeadMouseDown);
-      //o.onHeadMouseMove        = RClass.register(o, new AEventMouseMove('onHeadMouseMove'), FDuiGridControl_onHeadMouseMove);
-      //o.onHeadMouseUp          = RClass.register(o, new AEventMouseUp('onHeadMouseUp'), FDuiGridControl_onHeadMouseUp);
-      //o.onDataScroll           = RClass.register(o, new AEventScroll('onDataScroll'), FDuiGridControl_onDataScroll);
+      //o.onHeadMouseDown        = MO.Class.register(o, new AEventMouseDown('onHeadMouseDown'), FDuiGridControl_onHeadMouseDown);
+      //o.onHeadMouseMove        = MO.Class.register(o, new AEventMouseMove('onHeadMouseMove'), FDuiGridControl_onHeadMouseMove);
+      //o.onHeadMouseUp          = MO.Class.register(o, new AEventMouseUp('onHeadMouseUp'), FDuiGridControl_onHeadMouseUp);
+      //o.onDataScroll           = MO.Class.register(o, new AEventScroll('onDataScroll'), FDuiGridControl_onDataScroll);
       // @event 单元格内按键按下
-      //o.onCellKeyDown          = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FDuiGridControl_onCellKeyDown);
-      //o.onRowMouseEnter        = RClass.register(o, new AEventMouseEnter('onRowMouseEnter'), FDuiGridControl_onRowMouseEnter);
-      //o.onRowMouseLeave        = RClass.register(o, new AEventMouseLeave('onRowMouseLeave'), FDuiGridControl_onRowMouseLeave);
+      //o.onCellKeyDown          = MO.Class.register(o, new AEventKeyDown('onCellKeyDown'), FDuiGridControl_onCellKeyDown);
+      //o.onRowMouseEnter        = MO.Class.register(o, new AEventMouseEnter('onRowMouseEnter'), FDuiGridControl_onRowMouseEnter);
+      //o.onRowMouseLeave        = MO.Class.register(o, new AEventMouseLeave('onRowMouseLeave'), FDuiGridControl_onRowMouseLeave);
       // @event 行控件单击事件
-      //o.onRowClick             = RClass.register(o, new AEventClick('onRowClick'), FDuiGridControl_onRowClick);
+      //o.onRowClick             = MO.Class.register(o, new AEventClick('onRowClick'), FDuiGridControl_onRowClick);
       // @event 行控件双击事件
-      //o.onColumnSearchKeyDown  = RClass.register(o, new AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
-      //o.onButtonMouseDown      = RClass.register(o, new AEventMouseDown('onButtonMouseDown'), FDuiGridControl_onButtonMouseDown);
-      //o.onPageCountDown        = RClass.register(o, new AEventKeyDown('onPageCountDown'), FDuiGridControl_onPageCountDown);
+      //o.onColumnSearchKeyDown  = MO.Class.register(o, new AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
+      //o.onButtonMouseDown      = MO.Class.register(o, new AEventMouseDown('onButtonMouseDown'), FDuiGridControl_onButtonMouseDown);
+      //o.onPageCountDown        = MO.Class.register(o, new AEventKeyDown('onPageCountDown'), FDuiGridControl_onPageCountDown);
       //o.onInsertButtonClick    = FDuiGridControl_onInsertButtonClick;
       //o.onExtendButtonClick    = FDuiGridControl_onExtendButtonClick;
       // @event
@@ -230,7 +230,7 @@ with(MO){
       //o.dispose                = FDuiGridControl_dispose;
       //o.dump                   = FDuiGridControl_dump;
       // ---------------------------------------------------------
-      //o.onColumnTreeClick      = RClass.register(o, new AEventClick('onColumnTreeClick'), FDuiGridControl_onColumnTreeClick);
+      //o.onColumnTreeClick      = MO.Class.register(o, new AEventClick('onColumnTreeClick'), FDuiGridControl_onColumnTreeClick);
       //o.onColumnTreeService    = FDuiGridControl_onColumnTreeService;
       //o.hoverMode              = EGridColumn.None;
       //o._searchKeyDownEvent    = new TEvent();
@@ -253,7 +253,7 @@ with(MO){
    //==========================================================
    MO.FDuiGridControl_onBuildPanel = function FDuiGridControl_onBuildPanel(p){
       var o = this;
-      o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+      o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
    }
 
    //==========================================================
@@ -264,10 +264,10 @@ with(MO){
    //==========================================================
    MO.FDuiGridControl_onBuildTitle = function FDuiGridControl_onBuildTitle(e){
       var o = this;
-      var hf = o._hTitleForm = RBuilder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
-      var hr = o._hTitleLine = RBuilder.appendTableRow(hf);
+      var hf = o._hTitleForm = MO.Window.Builder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
+      var hr = o._hTitleLine = MO.Window.Builder.appendTableRow(hf);
       // 建立标题格子
-      var hc = o._hCaption = RBuilder.appendTableCell(hr, o.styleName('Caption'));
+      var hc = o._hCaption = MO.Window.Builder.appendTableCell(hr, o.styleName('Caption'));
       hc.innerText = o.label();
       // 设置可见性
       RHtml.displaySet(hf, o._displayTitle);
@@ -275,7 +275,7 @@ with(MO){
       //hdc = hbc.insertCell();
       //hdc.style.backgroundColor='#CAE9FE';
       //hdc.style.borderTop='1 solid #95C6FE';
-      //hbf = o._hButtonForm = RBuilder.appendTable(hdc);
+      //hbf = o._hButtonForm = MO.Window.Builder.appendTable(hdc);
       //hbf.height = 28;
       //hb = o._hButtons = hbf.insertRow();
       //hdc.style.display = o._panelTitle ? 'block' : 'none';
@@ -290,31 +290,31 @@ with(MO){
    MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(e) {
       var o = this;
       // 建立提示行
-      var hr = RBuilder.appendTableRow(o._hHintForm);
+      var hr = MO.Window.Builder.appendTableRow(o._hHintForm);
       // 展开按钮
-      var hc = RBuilder.appendTableCell(hr);
+      var hc = MO.Window.Builder.appendTableCell(hr);
       hc.width = 60;
       o.hExtendButton = o.buildNavigatorButton(hc, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
       // 新建按键
       //if(o.editInsert && o._formName){
-         var hc = RBuilder.appendTableCell(hr);
+         var hc = MO.Window.Builder.appendTableCell(hr);
          hc.width = 60;
          o.hInsertButton = o.buildNavigatorButton(hc, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
       //}
       // 提示栏
-      var hc = RBuilder.appendTableCell(hr);
+      var hc = MO.Window.Builder.appendTableCell(hr);
       hc.width = 10;
-      var hc = RBuilder.appendTableCell(hr);
+      var hc = MO.Window.Builder.appendTableCell(hr);
       hc.noWrap = true;
-      o._hHint = RBuilder.appendText(hc, o.styleName('Hint'))
+      o._hHint = MO.Window.Builder.appendText(hc, o.styleName('Hint'))
       // 分页栏
-      var hc = RBuilder.appendTableCell(hr);
+      var hc = MO.Window.Builder.appendTableCell(hr);
       hc.noWrap = true;
       hc.align = 'right';
       o.hNavFirst = o.buildNavigatorButton(hc, 'control.grid.first', '&nbsp;' + RContext.get('FDuiGridControl:First'));
       o.hNavPrior = o.buildNavigatorButton(hc, 'control.grid.prior', '&nbsp;' + RContext.get('FDuiGridControl:Prior'));
       o.hNavPrior.style.paddingRight = '20';
-      o.hPage = RBuilder.appendEdit(hc)
+      o.hPage = MO.Window.Builder.appendEdit(hc)
       o.hPage.style.width = 40;
       //o.attachEvent('onPageCountDown', o.hPage);
       o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
@@ -339,37 +339,37 @@ with(MO){
       o.__base.FDuiContainer.onBuild.call(o, p);
       //..........................................................
       // 标题顶层标题区
-      var hc = o._hTitlePanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
+      var hc = o._hTitlePanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
       o.onBuildTitle(p);
       //hc.width = 1;
-      //var hd = o._hFixHeight = RBuilder.appendDiv(hc);
+      //var hd = o._hFixHeight = MO.Window.Builder.appendDiv(hc);
       //hd.style.width = 1;
       //hd.style.height = o._minHeight;
       // 建立内部表格
-      var hbp = o._hContentPanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
+      var hbp = o._hContentPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
       o.onBuildContent(p);
       //hbp.className = o.styleName('BorderPanel');
       //hbp.vAlign = 'top';
       //hbp.style.position = 'relative';
       //hbp.style.overflow = 'hidden';
       // 建立提示区
-      o._hHintPanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
-      o._hHintForm = RBuilder.appendTable(o._hHintPanel, o.styleName('HintForm'));
+      o._hHintPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
+      o._hHintForm = MO.Window.Builder.appendTable(o._hHintPanel, o.styleName('HintForm'));
       o.onBuildHint(p);
       //if(o._panelNavigator){
       //   var hnp = o._hNavigator = o._hPanel.insertRow().insertCell();
       //   hnp.height = 1;
-      //   o._hHintForm = RBuilder.appendTable(hnp, o.styleName('HintForm'));
+      //   o._hHintForm = MO.Window.Builder.appendTable(hnp, o.styleName('HintForm'));
       //   o.onBuildHint(p);
       //}
       // 建立状态列
-      var c = o._statusColumn = RClass.create(FColumnStatus);
+      var c = o._statusColumn = MO.Class.create(FColumnStatus);
       c._table = this;
       c._name = '_s';
       c.build(p);
       o.push(c);
       // 建立选择列
-      var c = o._selectColumn = RClass.create(FColumnSelected);
+      var c = o._selectColumn = MO.Class.create(FColumnSelected);
       c._table = this;
       c._name = '_select';
       c.build(p);
@@ -548,7 +548,7 @@ with(MO){
       //o._clickRowEvent = new TEvent();
       //o._doubleClickRowEvent = new TEvent();
       // 建立延迟加载事件
-      var e = o._loadEvent = RClass.create(FEvent);
+      var e = o._loadEvent = MO.Class.create(FEvent);
       e.setOwner(o);
       e.setCallback(o.onDatasetLoadDelay);
       e.setValid(false);
@@ -563,22 +563,22 @@ with(MO){
    //==========================================================
    MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name){
       var o = this;
-      var h = RBuilder.append(hParent, 'SPAN', o.styleName('Button'));
+      var h = MO.Window.Builder.append(hParent, 'SPAN', o.styleName('Button'));
       h.style.cursor = 'hand';
       h.style.paddingLeft = '10';
       //o.attachEvent('onButtonMouseDown', h);
       if (iconBf) {
-         RBuilder.appendIcon(h, null, iconBf);
+         MO.Window.Builder.appendIcon(h, null, iconBf);
       }
       if(text){
          if(name){
-            o[name + 'Text'] = RBuilder.appendText(h, null, text);
+            o[name + 'Text'] = MO.Window.Builder.appendText(h, null, text);
          }else{
-            RBuilder.appendText(h, null, text);
+            MO.Window.Builder.appendText(h, null, text);
          }
       }
       if(iconAf){
-         RBuilder.appendIcon(h, null, iconAf);
+         MO.Window.Builder.appendIcon(h, null, iconAf);
       }
       return h;
    }
@@ -627,7 +627,7 @@ with(MO){
    //==========================================================
    MO.FDuiGridControl_createRow = function FDuiGridControl_createRow() {
       var o = this;
-      var r = RClass.create(o._rowClass);
+      var r = MO.Class.create(o._rowClass);
       r._table = r._parent = o;
       return r;
    }
@@ -1081,7 +1081,7 @@ with(MO){
       var hdp = o._hDelayPanel;
       if(!hdp){
          // 建立处理中的底板
-         hdp = o._hDelayPanel = RBuilder.appendDiv(o.hBorderPanel);
+         hdp = o._hDelayPanel = MO.Window.Builder.appendDiv(o.hBorderPanel);
          var st = hdp.style;
          st.position = 'absolute';
          st.zIndex = RLayer.next();
@@ -1092,14 +1092,14 @@ with(MO){
          st.height = '100%';
          st.display = 'none';
          // 建立加载中的表单
-         var hdf = o._hDelayForm = RBuilder.appendTable(hdp);
+         var hdf = o._hDelayForm = MO.Window.Builder.appendTable(hdp);
          hdf.style.width = '100%';
          hdf.style.height = '100%';
          var hc = hdf.insertRow().insertCell();
          hc.align = 'center';
          hc.vAlign = 'middle';
-         RBuilder.appendIcon(hc, 'ctl.FDuiGridControl_Loading')
-         var t = o._hDelayText = RBuilder.append(hc, 'SPAN');
+         MO.Window.Builder.appendIcon(hc, 'ctl.FDuiGridControl_Loading')
+         var t = o._hDelayText = MO.Window.Builder.append(hc, 'SPAN');
          t.innerHTML = "<BR><BR><FONT color='red'><B>" + RContext.get('FDuiGridControl:Loading') + "</B></FONT>";
       }
       // 根据可见性设置底板
@@ -1225,7 +1225,7 @@ with(MO){
       var o = this;
       var rb = o._rowBar;
       if(!rb){
-         rb = o._rowBar = RClass.create(FGridRowBar);
+         rb = o._rowBar = MO.Class.create(FGridRowBar);
          rb.table = o;
          rb.psBuild(o.hBorderPanel);
       }
@@ -1700,7 +1700,7 @@ with(MO){
          var c = o._displayCount;
          for(var n = 0; n < c; n++){
             // 建立一行
-            var r = RClass.create(FGridRow);
+            var r = MO.Class.create(FGridRow);
             r.table = this;
             r.build();
             // 追加到表的数据行集内
@@ -1817,7 +1817,7 @@ with(MO){
          pr.psResize();
          var idx = pr._hPanel.rowIndex + 1;
          for(var n = 0; n < rs.count; n++){
-            var r = RClass.create(FGridRow);
+            var r = MO.Class.create(FGridRow);
             r.table = o;
             pr.childRows.push(r);
             r.parentRow = pr;

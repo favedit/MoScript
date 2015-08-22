@@ -12,16 +12,16 @@ with(MO){
       o._frameName            = 'resource.resource.Workspace';
       //..........................................................
       // @style
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
-      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new MO.AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new MO.AStyle('_stylePreviewGround', 'Preview_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new MO.AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       //..........................................................
       // @attribute
       o._resourceTypeCd       = 'picture';
@@ -78,20 +78,20 @@ with(MO){
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
       //..........................................................
-      var hTable = RBuilder.createTable(p);
+      var hTable = MO.Window.Builder.createTable(p);
       hTable.width = '100%';
-      var hRow = RBuilder.appendTableRow(hTable);
+      var hRow = MO.Window.Builder.appendTableRow(hTable);
       // 设置工具栏
       var c = o._toolbar = MO.Class.create(FDsResourceMenuBar);
       c._workspace = o;
       c.buildDefine(p);
-      var hCell = RBuilder.appendTableCell(hRow);
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
       hCell.appendChild(c._hPanel);
       // 设置分页栏
       var c = o._tabBar = MO.Class.create(FDsResourceTabBar);
       c._workspace = o;
       c.buildDefine(p);
-      var hCell = RBuilder.appendTableCell(hRow);
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
       hCell.width = '450px';
       hCell.align = 'right';
       hCell.vAlign = 'bottom';

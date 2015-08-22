@@ -43,7 +43,7 @@ MO.RDump.prototype.onclick = function RDump_onclick(){
 // @return 名称信息
 //===========================================================
 MO.RDump.prototype.nameInfo = function RDump_nameInfo(v){
-   var t = RClass.typeOf(v);
+   var t = MO.Class.typeOf(v);
    switch(t){
       case 'Unknown':
          return '@unknown';

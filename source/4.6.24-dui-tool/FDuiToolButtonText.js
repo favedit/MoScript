@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDuiToolButtonText = function FDuiToolButtonText(o){
-      o = RClass.inherits(this, o, FDuiToolButton);
+      o = MO.Class.inherits(this, o, FDuiToolButton);
       return o;
    }
 }

@@ -151,18 +151,6 @@ MO.FEditorDsListFrameSet_dispose = function FEditorDsListFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
 }
-MO.FEditorDsListItemProperty = function FEditorDsListItemProperty(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.list';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsListListProperty = function FEditorDsListListProperty(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.list';
-   o._logicGroup   = 'container';
-   return o;
-}
 MO.FEditorDsListMenuBar = function FEditorDsListMenuBar(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
    o._frameName = 'editor.design.list.MenuBar';

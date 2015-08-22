@@ -13,13 +13,13 @@ with(MO){
       o._storageCode          = o._frameName;
       //..........................................................
       // @style
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
-      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'List_Toolbar'));
-      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Property_Ground'));
-      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new MO.AStyle('_styleSearchGround', 'List_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'List_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new MO.AStyle('_stylePreviewGround', 'Property_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new MO.AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
       //..........................................................
       // @attribute
       o._pageSize             = 40;
@@ -91,20 +91,20 @@ with(MO){
       //spliter.setAlignCd(EUiAlign.Right);
       //spliter.setSizeHtml(o._frameProperty._hPanel);
       //..........................................................
-      //var hTable = RBuilder.createTable(p);
+      //var hTable = MO.Window.Builder.createTable(p);
       //hTable.width = '100%';
-      //var hRow = RBuilder.appendTableRow(hTable);
+      //var hRow = MO.Window.Builder.appendTableRow(hTable);
       // 设置工具栏
       //var c = o._toolbar = MO.Class.create(FDsSolutionMenuBar);
       //c._workspace = o;
       //c.buildDefine(p);
-      //var hCell = RBuilder.appendTableCell(hRow);
+      //var hCell = MO.Window.Builder.appendTableCell(hRow);
       //hCell.appendChild(c._hPanel);
       // 设置分页栏
       //var c = o._tabBar = MO.Class.create(FDsSolutionTabBar);
       //c._workspace = o;
       //c.buildDefine(p);
-      //var hCell = RBuilder.appendTableCell(hRow);
+      //var hCell = MO.Window.Builder.appendTableCell(hRow);
       //hCell.width = '170px';
       //hCell.align = 'right';
       //hCell.vAlign = 'bottom';

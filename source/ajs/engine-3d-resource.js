@@ -1752,7 +1752,7 @@ MO.FE3sSceneRenderable_unserialize = function FE3sSceneRenderable_unserialize(in
    o.__base.FE3sObject.unserialize.call(o, input);
 }
 MO.FE3sShape = function FE3sShape(o){
-   o = RClass.inherits(this, o, FE3sRenderable);
+   o = MO.Class.inherits(this, o, FE3sRenderable);
    o._modelGuid    = MO.Class.register(o, new MO.AGetter('_modelGuid'));
    o._model        = null;
    o._meshGuid     = MO.Class.register(o, new MO.AGetter('_meshGuid'));
@@ -2386,7 +2386,7 @@ MO.FE3sTheme_unserialize = function FE3sTheme_unserialize(input){
    if(count > 0){
       var materials = o._materials = new MO.TDictionary();
       for(var n = 0; n < c; n++){
-         var material = RClass.create(FE3sMaterial);
+         var material = MO.Class.create(FE3sMaterial);
          material.unserialize(input);
          materials.set(material.code(), material);
       }

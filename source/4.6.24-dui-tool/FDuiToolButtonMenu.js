@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDuiToolButtonMenu = function FDuiToolButtonMenu(o){
-      o = RClass.inherits(this, o, FDuiToolButton, MDuiContainer, MDuiDropable, MDuiFocus);
+      o = MO.Class.inherits(this, o, FDuiToolButton, MDuiContainer, MDuiDropable, MDuiFocus);
       //..........................................................
       // @attribute
       o._menu           = null;
@@ -16,8 +16,8 @@ with(MO){
       o._hDropPanel     = null;
       //..........................................................
       // @style
-      o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
-      o._styleDropHover = RClass.register(o, new AStyleIcon('_styleDropHover'));
+      o._stylePanel     = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+      o._styleDropHover = MO.Class.register(o, new AStyleIcon('_styleDropHover'));
       //..........................................................
       // @event
       o.onBuild         = FDuiToolButtonMenu_onBuild;
@@ -48,9 +48,9 @@ with(MO){
       var o = this;
       o.__base.FDuiToolButton.onBuild.call(o, event);
       // 建立下拉按键
-      var hDropPanel = o._hDropPanel = RBuilder.appendTableCell(o._hLine);
+      var hDropPanel = o._hDropPanel = MO.Window.Builder.appendTableCell(o._hLine);
       o.onBuildDrop(hDropPanel);
-      //o._hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
+      //o._hDropIcon = MO.Window.Builder.appendIcon(h, o.styleIcon('Drop'));
       //o.attachEvent('onDropClick', hDropPanel);
       // 建立弹出菜单
       o._menu.onBuild(event);
@@ -133,7 +133,7 @@ with(MO){
       var o = this;
       o.__base.FDuiToolButton.construct.call(o);
       // 创建弹出窗口
-      var menu = o._menu = RClass.create(FDuiPopupMenu);
+      var menu = o._menu = MO.Class.create(FDuiPopupMenu);
       menu._opener = o;
    }
 
@@ -190,8 +190,8 @@ with(MO){
    //==========================================================
    MO.FDuiToolButtonMenu_dispose = function FDuiToolButtonMenu_dispose(){
       var o = this;
-      o._hDropIcon = RHtml.free(o._hDropIcon);
-      o._hDropPanel = RHtml.free(o._hDropPanel);
+      o._hDropIcon = MO.Window.Html.free(o._hDropIcon);
+      o._hDropPanel = MO.Window.Html.free(o._hDropPanel);
       o.__base.FControl.dispose.call(o);
    }
 }

@@ -7,7 +7,7 @@ with(MO){
    // @history 150629
    //==========================================================
    MO.FEaiStatisticsInvestmentShape = function FEaiStatisticsInvestmentShape(o){
-      o = RClass.inherits(this, o, FE3dShape);
+      o = MO.Class.inherits(this, o, FE3dShape);
       //..........................................................
       // @attribute
       o._ready         = false;
@@ -16,8 +16,8 @@ with(MO){
       o._image         = null;
       o._statusPaint   = false;
       // @attribute
-      o._cityEntity    = RClass.register(o, new AGetSet('_cityEntity'));
-      o._entity        = RClass.register(o, new AGetter('_entity'));
+      o._cityEntity    = MO.Class.register(o, new AGetSet('_cityEntity'));
+      o._entity        = MO.Class.register(o, new AGetter('_entity'));
       // @attribute
       o._customerLabel = null;
       o._cityLabel     = null;
@@ -74,14 +74,14 @@ with(MO){
       o.__base.FE3dShape.setup.call(o);
       //..........................................................
       // 创建渲染数据
-      var renderable = o._renderable = RClass.create(FE3dShapeData);
+      var renderable = o._renderable = MO.Class.create(FE3dShapeData);
       renderable.linkGraphicContext(o);
       renderable.setOptionCenter(true);
       renderable.size().set(128, 64);
       renderable.setup();
       //..........................................................
       // 加载图片
-      var image = o._image = RClass.create(FImage);
+      var image = o._image = MO.Class.create(FImage);
       image.addLoadListener(o, o.onImageLoad);
       image.loadUrl('/script/ars/eai/investment.png');
       // 设置属性

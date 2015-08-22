@@ -5,7 +5,7 @@
 // @history 150129
 //==========================================================
 MO.FE3sShape = function FE3sShape(o){
-   o = RClass.inherits(this, o, FE3sRenderable);
+   o = MO.Class.inherits(this, o, FE3sRenderable);
    //..........................................................
    // @attribute
    o._modelGuid    = MO.Class.register(o, new MO.AGetter('_modelGuid'));

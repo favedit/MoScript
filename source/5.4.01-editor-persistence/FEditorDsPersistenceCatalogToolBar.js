@@ -9,7 +9,7 @@ MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogTool
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
    //..........................................................
    // @property
-   o._frameName = 'editor.design.frame.CatalogToolBar';
+   o._frameName                   = 'editor.design.persistence.CatalogToolBar';
    //..........................................................
    // @attribute
    o._controlFolderCreateButton   = null;
@@ -20,6 +20,8 @@ MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogTool
    // @attribute
    o._activeNodeGuid              = null;
    //..........................................................
+   // @event
+   o.onListClick                  = MO.FEditorDsPersistenceCatalogToolBar_onListClick;
    // @event
    o.onBuilded                    = MO.FEditorDsPersistenceCatalogToolBar_onBuilded;
    // @event
@@ -39,6 +41,17 @@ MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogTool
 }
 
 //==========================================================
+// <T>文件夹创建点击处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件处理
+//==========================================================
+MO.FEditorDsPersistenceCatalogToolBar_onListClick = function FEditorDsPersistenceCatalogToolBar_onListClick(event){
+   var o = this;
+   o._frameSet.selectObject('list', 'editor.design.persistence.ListForm', null, null);
+}
+
+//==========================================================
 // <T>构建完成处理。</T>
 //
 // @method
@@ -49,6 +62,7 @@ MO.FEditorDsPersistenceCatalogToolBar_onBuilded = function FEditorDsPersistenceC
    o.__base.FDuiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
+   o._controlList.addClickListener(o, o.onListClick);
    //o._controlFolderCreateButton.addClickListener(o, o.onFolderCreateClick);
    //o._controlFolderDeleteButton.addClickListener(o, o.onFolderDeleteClick);
    //o._controlFolderPropertyButton.addClickListener(o, o.onFolderPropertyClick);

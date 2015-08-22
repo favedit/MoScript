@@ -7,7 +7,7 @@ with(MO){
    // @version 150319
    //==========================================================
    MO.FUiDataMemo = function FUiDataMemo(o){
-      o = RClass.inherits(this, o, FDuiMemo, MUiDataField);
+      o = MO.Class.inherits(this, o, FDuiMemo, MUiDataField);
       return o;
    }
 }

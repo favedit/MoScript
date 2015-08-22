@@ -46,7 +46,7 @@ MO.EUiDataStore = new function EUiDataStore(){
 }
 with(MO){
    MO.MUiDataAction = function MUiDataAction(o){
-      o = RClass.inherits(this, o);
+      o = MO.Class.inherits(this, o);
       o.doAction = MUiDataAction_doAction
       return o;
    }
@@ -62,13 +62,13 @@ with(MO){
 }
 with(MO){
    MO.MUiDataset = function MUiDataset(o){
-      o = RClass.inherits(this, o);
-      o._dsDataset         = RClass.register(o, new APtyString('_dsDataset', 'dataset'));
-      o._dsPageSize        = RClass.register(o, new APtyInteger('_dsPageSize', 'page_size'), 20);
+      o = MO.Class.inherits(this, o);
+      o._dsDataset         = MO.Class.register(o, new MO.APtyString('_dsDataset', 'dataset'));
+      o._dsPageSize        = MO.Class.register(o, new MO.APtyInteger('_dsPageSize', 'page_size'), 20);
       o._dsPageIndex       = 0;
-      o._dsInsertAction    = RClass.register(o, new APtyString('_dsInsertAction', 'insert_action'));
-      o._dsUpdateAction    = RClass.register(o, new APtyString('_dsUpdateAction', 'update_action'));
-      o._dsDeleteAction    = RClass.register(o, new APtyString('_dsDeleteAction', 'delete_action'));
+      o._dsInsertAction    = MO.Class.register(o, new MO.APtyString('_dsInsertAction', 'insert_action'));
+      o._dsUpdateAction    = MO.Class.register(o, new MO.APtyString('_dsUpdateAction', 'update_action'));
+      o._dsDeleteAction    = MO.Class.register(o, new MO.APtyString('_dsDeleteAction', 'delete_action'));
       o._dataSource        = null;
       o._dataViewer        = null;
       o._dataValues        = null;

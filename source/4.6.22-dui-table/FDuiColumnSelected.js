@@ -7,13 +7,13 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiColumnSelected = function FDuiColumnSelected(o){
-      o = RClass.inherits(this, o, FColumnEditControl);
+      o = MO.Class.inherits(this, o, FColumnEditControl);
       //..........................................................
       // @property
       o._dataName         = '_select';
       //..........................................................
       // @style
-      o._styleEdit        = RClass.register(o, new AStyle('_styleEdit'));
+      o._styleEdit        = MO.Class.register(o, new MO.AStyle('_styleEdit'));
       //..........................................................
       // @attribute
       o._optionFixed      = true;
@@ -62,12 +62,12 @@ with(MO){
    //==========================================================
    MO.FDuiColumnSelected_onBuildSearchForm = function FDuiColumnSelected_onBuildSearchForm(p){
       var o = this;
-      var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
+      var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
       hf.width = '100%';
-      var hfl = o._hSearchFormLine = RBuilder.appendTableRow(hf);
-      var hc = RBuilder.appendTableCell(hfl);
+      var hfl = o._hSearchFormLine = MO.Window.Builder.appendTableRow(hf);
+      var hc = MO.Window.Builder.appendTableCell(hfl);
       hc.align = 'center';
-      o._hSelected = RBuilder.appendCheck(hc, o.styleName('Edit'));
+      o._hSelected = MO.Window.Builder.appendCheck(hc, o.styleName('Edit'));
       o._hSelected.column = o;
       o._hSelected.onclick = o.onSelectedClick;
    }
@@ -85,7 +85,7 @@ with(MO){
       h.align = 'center';
       h.style.width = '30px';
       h.style.height = '22px';
-      RBuilder.appendEmpty(o._hPanel, 12, 12);
+      MO.Window.Builder.appendEmpty(o._hPanel, 12, 12);
       return r;
    }
 

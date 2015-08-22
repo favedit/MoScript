@@ -7,22 +7,22 @@ with (MO) {
    // @version 150630
    //==========================================================
    MO.FGui24HTimeline = function FGui24HTimeline(o) {
-      o = RClass.inherits(this, o, FGuiControl);
+      o = MO.Class.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
-      o._startTime        = RClass.register(o, new AGetSet('_startTime'));
-      o._endTime          = RClass.register(o, new AGetSet('_endTime'));
+      o._startTime        = MO.Class.register(o, new AGetSet('_startTime'));
+      o._endTime          = MO.Class.register(o, new AGetSet('_endTime'));
       o._data             = null;
       o._ready            = false;
       o._investmentTotal  = 0;
       o._intervalMiniute  = 10;
       // @attribute
       o._baseHeight = 5;
-      o._degreeLineHeight = RClass.register(o, new AGetSet('_degreeLineHeight'), 10);
-      o._triangleWidth    = RClass.register(o, new AGetSet('_triangleWidth'), 10);
-      o._triangleHeight   = RClass.register(o, new AGetSet('_triangleHeight'), 12);
-      o._decoLineGap      = RClass.register(o, new AGetSet('_decoLineGap'), 10);
-      o._decoLineWidth    = RClass.register(o, new AGetSet('_decoLineWidth'), 30);
+      o._degreeLineHeight = MO.Class.register(o, new AGetSet('_degreeLineHeight'), 10);
+      o._triangleWidth    = MO.Class.register(o, new AGetSet('_triangleWidth'), 10);
+      o._triangleHeight   = MO.Class.register(o, new AGetSet('_triangleHeight'), 12);
+      o._decoLineGap      = MO.Class.register(o, new AGetSet('_decoLineGap'), 10);
+      o._decoLineWidth    = MO.Class.register(o, new AGetSet('_decoLineWidth'), 30);
       //..........................................................
       // @event
       o.oeUpdate          = FGui24HTimeline_oeUpdate;

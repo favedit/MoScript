@@ -366,7 +366,7 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
       }else if((window.orientation == 90) || (window.orientation == -90)){
          o._orientationCd = MO.EOrientation.Horizontal;
       }else{
-         throw new TError(o, 'Unknown orientation mode.');
+         throw new MO.TError(o, 'Unknown orientation mode.');
       }
    }
    return o._orientationCd;

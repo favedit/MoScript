@@ -69,7 +69,7 @@ MO.FDuiIconPicker_onBuildEdit = function FDuiIconPicker_onBuildEdit(b){
 MO.FDuiIconPicker_setText = function FDuiIconPicker_setText(t){
    var o = this;
    o.base.FDuiEditControl.setText.call(o, t);
-   o.hEditIcon.src = RResource.iconPath(MO.Lang.String.nvl(o.text(), o.styleIcon("Default")));
+   o.hEditIcon.src = MO.Window.Resource.iconPath(MO.Lang.String.nvl(o.text(), o.styleIcon("Default")));
 }
 // ------------------------------------------------------------
 // text

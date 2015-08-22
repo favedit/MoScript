@@ -113,7 +113,7 @@ MO.FDuiPageControl_onBuild = function FDuiPageControl_onBuild(event){
    var hbc = o._hFirstBottom = MO.Window.Builder.appendTableCell(o._hBottom);
    hbc.className = o.styleName('Bottom', FDuiPageSheet);
    // 建立分隔区
-   //var hc = RBuilder.appendTableRowCell(h);
+   //var hc = MO.Window.Builder.appendTableRowCell(h);
    //hc.height = 2;
    // 建立标题区右边第一列
    var hc = o._hLastTop = MO.Window.Builder.appendTableCell(o._hTop);

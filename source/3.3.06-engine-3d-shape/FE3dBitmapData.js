@@ -43,7 +43,7 @@ MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
    // 绘制画板
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var context2d = canvas.graphicContext();
+   var context2d = canvas.context();
    context2d.drawImage(image, 0, 0, width, height);
    // 创建纹理
    o._texture.upload(canvas);

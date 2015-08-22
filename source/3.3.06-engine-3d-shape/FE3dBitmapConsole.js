@@ -64,9 +64,9 @@ MO.FE3dBitmapConsole_construct = function FE3dBitmapConsole_construct(){
 //   MO.Logger.info(o, 'Load bitmap. (url={1})', url);
 //   // 加载模型
 //   if(code == 'environment'){
-//      bitmap = RClass.create(FE3rBitmapCubePack);
+//      bitmap = MO.Class.create(FE3rBitmapCubePack);
 //   }else{
-//      bitmap = RClass.create(FE3rBitmapFlatPack);
+//      bitmap = MO.Class.create(FE3rBitmapFlatPack);
 //   }
 //   bitmap.linkGraphicContext(context);
 //   bitmap.loadUrl(url);

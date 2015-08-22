@@ -24,19 +24,19 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiColumn = function FDuiColumn(o){
-      //o = RClass.inherits(this, o, FControl, MEditDescriptor, MDisplay);
-      o = RClass.inherits(this, o, FControl, MDataField);
+      //o = MO.Class.inherits(this, o, FControl, MEditDescriptor, MDisplay);
+      o = MO.Class.inherits(this, o, FControl, MDataField);
       //..........................................................
       // @property
-      //o._displayList     = RClass.register(o, new APtySet('dispList', 'disp_config', EDisplayConfig.List), true);
+      //o._displayList     = MO.Class.register(o, new MO.APtySet('dispList', 'disp_config', EDisplayConfig.List), true);
       o._displayList       = true;
       //..........................................................
       // @style
-      o._styleLabel        = RClass.register(o, new AStyle('_styleLabel'));
-      o._styleSearchPanel  = RClass.register(o, new AStyle('_styleSearchPanel'));
-      o._styleSearchEdit   = RClass.register(o, new AStyle('_styleSearchEdit'));
-      o._styleIconSortUp   = RClass.register(o, new AStyleIcon('_styleIconSortUp'));
-      o._styleIconSortDown = RClass.register(o, new AStyleIcon('_styleIconSortDown'));
+      o._styleLabel        = MO.Class.register(o, new MO.AStyle('_styleLabel'));
+      o._styleSearchPanel  = MO.Class.register(o, new MO.AStyle('_styleSearchPanel'));
+      o._styleSearchEdit   = MO.Class.register(o, new MO.AStyle('_styleSearchEdit'));
+      o._styleIconSortUp   = MO.Class.register(o, new AStyleIcon('_styleIconSortUp'));
+      o._styleIconSortDown = MO.Class.register(o, new AStyleIcon('_styleIconSortDown'));
       //..........................................................
       // @attribute
       o._cellClass         = FCell;
@@ -66,10 +66,10 @@ with(MO){
       o.onBuildPanel       = FDuiColumn_onBuildPanel;
       o.onBuild            = FDuiColumn_onBuild;
       // @event
-      o.onSearchEnter      = RClass.register(o, new AEventMouseEnter('onSearchEnter'));
-      o.onSearchClick      = RClass.register(o, new AEventClick('onSearchClick'));
-      o.onSearchLeave      = RClass.register(o, new AEventMouseLeave('onSearchLeave'));
-      o.onSearchKeyDown    = RClass.register(o, new AEventKeyDown('onSearchKeyDown'));
+      o.onSearchEnter      = MO.Class.register(o, new AEventMouseEnter('onSearchEnter'));
+      o.onSearchClick      = MO.Class.register(o, new AEventClick('onSearchClick'));
+      o.onSearchLeave      = MO.Class.register(o, new AEventMouseLeave('onSearchLeave'));
+      o.onSearchKeyDown    = MO.Class.register(o, new AEventKeyDown('onSearchKeyDown'));
       //..........................................................
       // @process
       //..........................................................
@@ -85,21 +85,21 @@ with(MO){
 
       //..........................................................
       // @property
-      //o._displayList          = RClass.register(o, new APtySet('dispList', 'dispConfig', EDisplayConfig.List));
-      //o._dispFixed         = RClass.register(o, new APtySet('dispFixed', 'dispConfig', EDisplayConfig.Fixed));
-      //o._dispAuto          = RClass.register(o, new APtySet('dispAuto', 'dispConfig', EDisplayConfig.Auto));
-      //o._dispSize          = RClass.register(o, new APtySet('dispSize', 'dispConfig', EDisplayConfig.Size));
-      //o._dispDrag          = RClass.register(o, new APtySet('dispDrag', 'dispConfig', EDisplayConfig.Drag));
-      //o._dataType          = RClass.register(o, new APtyString('dataType'));
-      //o._editColor         = RClass.register(o, new APtyString('editColor'));
-      //o._editBgcolor       = RClass.register(o, new APtyString('editBgcolor'));
-      //o._orderAble         = RClass.register(o, new APtyBoolean('orderAble'));
+      //o._displayList          = MO.Class.register(o, new MO.APtySet('dispList', 'dispConfig', EDisplayConfig.List));
+      //o._dispFixed         = MO.Class.register(o, new MO.APtySet('dispFixed', 'dispConfig', EDisplayConfig.Fixed));
+      //o._dispAuto          = MO.Class.register(o, new MO.APtySet('dispAuto', 'dispConfig', EDisplayConfig.Auto));
+      //o._dispSize          = MO.Class.register(o, new MO.APtySet('dispSize', 'dispConfig', EDisplayConfig.Size));
+      //o._dispDrag          = MO.Class.register(o, new MO.APtySet('dispDrag', 'dispConfig', EDisplayConfig.Drag));
+      //o._dataType          = MO.Class.register(o, new MO.APtyString('dataType'));
+      //o._editColor         = MO.Class.register(o, new MO.APtyString('editColor'));
+      //o._editBgcolor       = MO.Class.register(o, new MO.APtyString('editBgcolor'));
+      //o._orderAble         = MO.Class.register(o, new MO.APtyBoolean('orderAble'));
       //o._editAlign         = EAlign.Left;
-      //o._viewIcons         = RClass.register(o, new APtyString('viewIcons'));
+      //o._viewIcons         = MO.Class.register(o, new MO.APtyString('viewIcons'));
       //..........................................................
       // @style
-      //o._styleHead         = RClass.register(o, new AStyle('_styleHead'));
-      //o._styleHeadLabel    = RClass.register(o, new AStyle('_styleHeadLabel'));
+      //o._styleHead         = MO.Class.register(o, new MO.AStyle('_styleHead'));
+      //o._styleHeadLabel    = MO.Class.register(o, new MO.AStyle('_styleHeadLabel'));
       //..........................................................
       // @attribute
       //o.hasIconArea       = false;
@@ -131,12 +131,12 @@ with(MO){
       //o._hFixPanel         = null;
       //..........................................................
       // @event
-      //o.onCellMouseEnter  = RClass.register(o, new AEventMouseEnter('onCellMouseEnter'), FDuiColumn_onCellMouseEnter);
-      //o.onCellMouseLeave  = RClass.register(o, new AEventMouseLeave('onCellMouseLeave'), FDuiColumn_onCellMouseLeave);
-      //o.onCellMouseDown   = RClass.register(o, new AEventMouseDown('onCellMouseDown'), FDuiColumn_onCellMouseDown);
-      //o.onCellClick       = RClass.register(o, new AEventClick('onCellClick'), FDuiColumn_onCellClick);
-      //o.onCellDoubleClick = RClass.register(o, new AEventDoubleClick('onCellDoubleClick'), FDuiColumn_onCellDoubleClick);
-      //o.onCellKeyDown     = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FDuiColumn_onCellKeyDown);
+      //o.onCellMouseEnter  = MO.Class.register(o, new AEventMouseEnter('onCellMouseEnter'), FDuiColumn_onCellMouseEnter);
+      //o.onCellMouseLeave  = MO.Class.register(o, new AEventMouseLeave('onCellMouseLeave'), FDuiColumn_onCellMouseLeave);
+      //o.onCellMouseDown   = MO.Class.register(o, new AEventMouseDown('onCellMouseDown'), FDuiColumn_onCellMouseDown);
+      //o.onCellClick       = MO.Class.register(o, new AEventClick('onCellClick'), FDuiColumn_onCellClick);
+      //o.onCellDoubleClick = MO.Class.register(o, new AEventDoubleClick('onCellDoubleClick'), FDuiColumn_onCellDoubleClick);
+      //o.onCellKeyDown     = MO.Class.register(o, new AEventKeyDown('onCellKeyDown'), FDuiColumn_onCellKeyDown);
       // @event
       //o.onDataKeyDown     = FDuiColumn_onDataKeyDown;
       //o.onDataChanged     = FDuiColumn_onDataChanged;
@@ -146,7 +146,7 @@ with(MO){
       //o.onEditChanged     = FDuiColumn_onEditChanged;
       //..........................................................
       // @event
-      //o.onHeadMouseDown   = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FDuiColumn_onHeadMouseDown);
+      //o.onHeadMouseDown   = MO.Class.register(o, new AEventMouseDown('onHeadMouseDown'), FDuiColumn_onHeadMouseDown);
       //..........................................................
       // @process
       //o.oeMode            = FDuiColumn_oeMode;
@@ -178,11 +178,11 @@ with(MO){
       var hr = o._hFormLine;
       // 建立图标区
       if (o._icon) {
-         var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
-         o._hIcon = RBuilder.appendIcon(hip, o.icon);
+         var hip = o._hIconPanel = MO.Window.Builder.appendTableCell(hr);
+         o._hIcon = MO.Window.Builder.appendIcon(hip, o.icon);
       }
       // 建立标题区
-      var hl = o._hLabel = RBuilder.appendTableCell(hr);
+      var hl = o._hLabel = MO.Window.Builder.appendTableCell(hr);
       //hl.noWrap = true;
       //hl.style.fontSize = '12';
       //hl.style.fontWeight = 'bolder';
@@ -195,10 +195,10 @@ with(MO){
       //hl.align = o._labelAlignCd;
       hl.innerHTML = RString.nvl(o.label());
       // 建立排序区
-      var hsp = o._hSortPanel = RBuilder.appendTableCell(hr);
-      var hsu = o._hSortUp = RBuilder.appendIcon(hsp, o.styleIcon('SortUp', FDuiColumn));
+      var hsp = o._hSortPanel = MO.Window.Builder.appendTableCell(hr);
+      var hsu = o._hSortUp = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortUp', FDuiColumn));
       hsu.style.display = 'none';
-      var hsu = o._hSortDown = RBuilder.appendIcon(hsp, o.styleIcon('SortDown', FDuiColumn));
+      var hsu = o._hSortDown = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortDown', FDuiColumn));
       hsu.style.display = 'none';
       // 如果当前控件支持列表接口
       //if(RClass.isClass(o, MListView)){
@@ -214,8 +214,8 @@ with(MO){
    //==========================================================
    MO.FDuiColumn_onBuildSearchEdit = function FDuiColumn_onBuildSearchEdit(p){
       var o = this;
-      var hc = o._hSearchEditPanel = RBuilder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
-      var he = o._hSearchEdit = RBuilder.appendEdit(hc, o.styleName('SearchEdit'));
+      var hc = o._hSearchEditPanel = MO.Window.Builder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
+      var he = o._hSearchEdit = MO.Window.Builder.appendEdit(hc, o.styleName('SearchEdit'));
       // 关联事件
       //o.table.linkEvent(o, 'onColumnSearchKeyDown', he);
       //o.attachEvent('onSearchClick', he);
@@ -234,7 +234,7 @@ with(MO){
    //==========================================================
    MO.FDuiColumn_onBuildSearchForm = function FDuiColumn_onBuildSearchForm(p){
       var o = this;
-      var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
+      var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
       hf.width = '100%';
       hf.style.backgroundColor = '#FFFFFF';
       var hfl = o._hSearchFormLine = hf.insertRow();
@@ -262,7 +262,7 @@ with(MO){
    MO.FDuiColumn_onBuildSearch = function FDuiColumn_onBuildSearch(p){
       var o = this;
       // 创建底板
-      var h = o._hSearchPanel = RBuilder.create(p, 'TD', o.styleName('SearchPanel'));
+      var h = o._hSearchPanel = MO.Window.Builder.create(p, 'TD', o.styleName('SearchPanel'));
       h.style.backgroundColor = "#FFFFFF";
       h.style.borderBottom = '1 solid #9EC4EB';
       RHtml.linkSet(h, 'control', o);
@@ -282,7 +282,7 @@ with(MO){
    MO.FDuiColumn_onBuildTotal = function FDuiColumn_onBuildTotal(p){
       var o = this;
       // 创建底板
-      var h = o._hTotalPanel = RBuilder.create(p, 'TD');
+      var h = o._hTotalPanel = MO.Window.Builder.create(p, 'TD');
       RHtml.linkSet(h, 'control', o);
       h.align = 'right';
       h.style.color = '#686860';
@@ -299,7 +299,7 @@ with(MO){
    //==========================================================
    MO.FDuiColumn_onBuildPanel = function FDuiColumn_onBuildPanel(p) {
       var o = this;
-      o._hPanel = RBuilder.create(p, 'TD', o.styleName('Label'));
+      o._hPanel = MO.Window.Builder.create(p, 'TD', o.styleName('Label'));
    }
 
    //==========================================================
@@ -332,19 +332,19 @@ with(MO){
       //hp.style.backgroundImage = 'url(' + RResource.iconPath('control.column.head') + ')';
       hp.style.padding = 4;
       // 创建标题头容器(TD对象)
-      var hf = o._hForm = RBuilder.appendTable(hp);
+      var hf = o._hForm = MO.Window.Builder.appendTable(hp);
       if (!o._orderAble) {
         hf.style.cursor = 'hand';
         //o.attachEvent('onHeadMouseDown', hf);
       }
-      var hr = o._hFormLine = RBuilder.appendTableRow(o._hForm);
+      var hr = o._hFormLine = MO.Window.Builder.appendTableRow(o._hForm);
       o.onBuildLabel(p);
       // 创建搜索区
       o.onBuildSearch(p);
       // 创建统计区
       o.onBuildTotal(p);
       // 创建数据区的修正对象<TD>
-      var h = o._hFixPanel = RBuilder.create(p, 'TD');
+      var h = o._hFixPanel = MO.Window.Builder.create(p, 'TD');
       h.height = 1;
       h.bgColor = '#FFFFFF'
       // 设置宽度
@@ -365,7 +365,7 @@ with(MO){
    //==========================================================
    MO.FDuiColumn_createCell = function FDuiColumn_createCell(p) {
       var o = this;
-      var c = RClass.create(o._cellClass);
+      var c = MO.Class.create(o._cellClass);
       var t = c._table = o._table;
       c._name = o._name;
       c._column = o;
@@ -560,7 +560,7 @@ with(MO){
       var o = this;
       var r = o.cloneMove;
       if (!r) {
-         r = RClass.create(o.constructor);
+         r = MO.Class.create(o.constructor);
          r.buildMode = EColumnMode.Drag;
          r.assign(o, EAssign.Property);
          r.build();

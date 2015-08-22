@@ -275,6 +275,7 @@ MO.FEditorDsCatalogContent_dispose = function FEditorDsCatalogContent_dispose(){
 }
 MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorFrameSet);
+   o._styleTitleGround     = MO.Class.register(o, new MO.AStyle('_styleTitleGround', 'Title_Ground'));
    o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
    o._styleSpaceContent    = MO.Class.register(o, new MO.AStyle('_styleSpaceContent', 'Space_Content'));
@@ -302,6 +303,14 @@ MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(type
    var o = this;
    var frame = o.selectPropertyFrame(propertyFrame);
    frame.load(typeGroup, containerName, controlName);
+   var hTitlePanel = o._framePropertyTitle._hPanel;
+   MO.Window.Html.textSet(hTitlePanel, frame.label());
+   var hToolBarPanel = o._framePropertyToolBar._hPanel;
+   MO.Window.Html.clear(hToolBarPanel);
+   var toolBar = frame.findControl('toolBar');
+   if(toolBar){
+      toolBar.setPanel(hToolBarPanel);
+   }
 }
 MO.FEditorDsFrameSet_load = function FEditorDsFrameSet_load(){
    var o = this;
@@ -349,8 +358,6 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiForm);
    o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
    o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
-   o._logicService  = null;
-   o._logicGroup    = null;
    o.onBuilded      = MO.FEditorDsPropertyForm_onBuilded;
    o.onDataChanged  = MO.FEditorDsPropertyForm_onDataChanged;
    o.onDataLoad     = MO.FEditorDsPropertyForm_onDataLoad;
@@ -456,8 +463,9 @@ MO.FEditorDsWorkspace = function FEditorDsWorkspace(o){
    o = MO.Class.inherits(this, o, MO.FDuiWorkspace, MO.MUiStorage);
    o._frameName          = 'editor.design.Workspace';
    o._storageCode        = o._frameName;
-   o._styleTitleLogo     = MO.Class.register(o, new MO.AStyle('_styleTitlePanel', 'Title_Panel'));
+   o._styleTitlePanel    = MO.Class.register(o, new MO.AStyle('_styleTitlePanel', 'Title_Panel'));
    o._styleTitleLogo     = MO.Class.register(o, new MO.AStyle('_styleTitleLogo', 'Title_Logo'));
+   o._styleTitleLabel    = MO.Class.register(o, new MO.AStyle('_styleTitleLabel', 'Title_Label'));
    o._styleMenuBarGround = MO.Class.register(o, new MO.AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
    o._styleModuleGround  = MO.Class.register(o, new MO.AStyle('_styleModuleGround', 'Module_Ground'));
    o._styleSpaceGround   = MO.Class.register(o, new MO.AStyle('_styleSpaceGround', 'Space_Ground'));
@@ -491,6 +499,8 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    hTitleCell.align = 'center';
    hTitleCell.vAlign = 'middle';
    MO.Window.Builder.appendIcon(hTitleCell, null, 'editor.design.logo|png');
+   var hTitleCell = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Title_Label'));
+   MO.Window.Html.textSet(hTitleCell, '开发设计平台');
    return;
    var hTable = MO.Window.Builder.createTable(event);
    hTable.width = '100%';
@@ -780,13 +790,14 @@ MO.FEditorDsPersistenceCatalogContent = function FEditorDsPersistenceCatalogCont
 }
 MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName = 'editor.design.frame.CatalogToolBar';
+   o._frameName                   = 'editor.design.persistence.CatalogToolBar';
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;
    o._controlFolderPropertyButton = null;
    o._controlFolderOpenButton     = null;
    o._controlFolderCloseButton    = null;
    o._activeNodeGuid              = null;
+   o.onListClick                  = MO.FEditorDsPersistenceCatalogToolBar_onListClick;
    o.onBuilded                    = MO.FEditorDsPersistenceCatalogToolBar_onBuilded;
    o.onFolderCreateClick          = MO.FEditorDsPersistenceCatalogToolBar_onFolderCreateClick;
    o.onFolderDeleteLoad           = MO.FEditorDsPersistenceCatalogToolBar_onFolderDeleteLoad;
@@ -799,9 +810,14 @@ MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogTool
    o.dispose                      = MO.FEditorDsPersistenceCatalogToolBar_dispose;
    return o;
 }
+MO.FEditorDsPersistenceCatalogToolBar_onListClick = function FEditorDsPersistenceCatalogToolBar_onListClick(event){
+   var o = this;
+   o._frameSet.selectObject('list', 'editor.design.persistence.ListForm', null, null);
+}
 MO.FEditorDsPersistenceCatalogToolBar_onBuilded = function FEditorDsPersistenceCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FDuiToolBar.onBuilded.call(o, p);
+   o._controlList.addClickListener(o, o.onListClick);
 }
 MO.FEditorDsPersistenceCatalogToolBar_onFolderCreateClick = function FEditorDsPersistenceCatalogToolBar_onFolderCreateClick(event){
    var o = this;
@@ -898,8 +914,10 @@ MO.FEditorDsPersistenceFrameSet = function FEditorDsPersistenceFrameSet(o){
 MO.FEditorDsPersistenceFrameSet_onBuilded = function FEditorDsPersistenceFrameSet_onBuilded(event){
    var o = this;
    o.__base.FEditorDsFrameSet.onBuilded.call(o, event);
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
    o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._framePropertyTitle._hPanel.className = o.styleName('Title_Ground');
    o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
@@ -915,11 +933,7 @@ MO.FEditorDsPersistenceFrameSet_onBuilded = function FEditorDsPersistenceFrameSe
    control._frameSet = o;
    control.build(event);
    o._frameCatalogContent.push(control);
-   var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsPersistencePropertyToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._framePropertyToolBar.push(control);
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '持久化目录');
 }
 MO.FEditorDsPersistenceFrameSet_construct = function FEditorDsPersistenceFrameSet_construct(){
    var o = this;
@@ -955,30 +969,6 @@ MO.FEditorDsPersistenceMenuBar_onBuildClick = function FEditorDsPersistenceMenuB
    var url = MO.Lang.String.format('/editor.design.persistence.ws?action=build&type=all');
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
    connection.addLoadListener(o, o.onBuildFinish);
-}
-MO.FEditorDsPersistencePropertyAttributeForm = function FEditorDsPersistencePropertyAttributeForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.persistence';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsPersistencePropertyComponentForm = function FEditorDsPersistencePropertyComponentForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.persistence';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsPersistencePropertyInterfaceForm = function FEditorDsPersistencePropertyInterfaceForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.persistence';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsPersistencePropertyPersistenceForm = function FEditorDsPersistencePropertyPersistenceForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.persistence';
-   o._logicGroup   = 'container';
-   return o;
 }
 MO.FEditorDsPersistencePropertyToolBar = function FEditorDsPersistencePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
@@ -1161,18 +1151,6 @@ MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){
 MO.FEditorDsListFrameSet_dispose = function FEditorDsListFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
-}
-MO.FEditorDsListItemProperty = function FEditorDsListItemProperty(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.list';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsListListProperty = function FEditorDsListListProperty(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.list';
-   o._logicGroup   = 'container';
-   return o;
 }
 MO.FEditorDsListMenuBar = function FEditorDsListMenuBar(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
@@ -1413,24 +1391,6 @@ MO.FEditorDsTreePropertyToolBar_construct = function FEditorDsTreePropertyToolBa
 MO.FEditorDsTreePropertyToolBar_dispose = function FEditorDsTreePropertyToolBar_dispose(){
    var o = this;
    o.__base.FDuiToolBar.dispose.call(o);
-}
-MO.FEditorDsTreePropertyTreeNodeForm = function FEditorDsTreePropertyTreeNodeForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.tree';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsTreePropertyTreeNodeTypeForm = function FEditorDsTreePropertyTreeNodeTypeForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.tree';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsTreePropertyTreeViewForm = function FEditorDsTreePropertyTreeViewForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.tree';
-   o._logicGroup   = 'container';
-   return o;
 }
 MO.FEditorDsFrameBarProperty = function FEditorDsFrameBarProperty(o){
    o = MO.Class.inherits(this, o, MO.FDsSystemFrameControlProperty);

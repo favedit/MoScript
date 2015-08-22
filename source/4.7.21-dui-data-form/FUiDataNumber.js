@@ -6,8 +6,8 @@ with(MO){
    // @history 091106 MAOCY 创建
    //==========================================================
    MO.FUiDataNumber = function FUiDataNumber(o){
-      //o = RClass.inherits(this, o, FDuiNumber, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
-      o = RClass.inherits(this, o, FDuiNumber);
+      //o = MO.Class.inherits(this, o, FDuiNumber, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
+      o = MO.Class.inherits(this, o, FDuiNumber);
       //..........................................................
       // @property
       //o.editAlign         = EAlign.Right;
@@ -16,8 +16,8 @@ with(MO){
       //o.borderStyle       = EUiBorder.RoundDrop;
       //..........................................................
       // @event
-      //o.onEditFocus       = RClass.register(o, new HFocus('onEditFocus'), FUiDataNumber_onEditFocus);
-      //o.onEditBlur        = RClass.register(o, new HBlur('onEditBlur'), FUiDataNumber_onEditBlur);
+      //o.onEditFocus       = MO.Class.register(o, new HFocus('onEditFocus'), FUiDataNumber_onEditFocus);
+      //o.onEditBlur        = MO.Class.register(o, new HBlur('onEditBlur'), FUiDataNumber_onEditBlur);
       //o.onBuildEdit       = FUiDataNumber_onBuildEdit;
       //..........................................................
       // @method
@@ -77,7 +77,7 @@ with(MO){
    MO.FUiDataNumber_onBuildEdit = function FUiDataNumber_onBuildEdit(b){
       var o = this;
       // 建立编辑控件
-      var htb = RBuilder.appendTable(b.hPanel);
+      var htb = MO.Window.Builder.appendTable(b.hPanel);
       htb.style.tableLayout = 'fixed';
       var hr = o.hEdit = htb.insertRow();
       // 建立修改标志
@@ -85,13 +85,13 @@ with(MO){
       // 建立放大标志
       if(o.canZoom()){
          var hc = hr.insertCell();
-         o.hZoom = RBuilder.appendIcon(hc, 'ctl.zooms');
+         o.hZoom = MO.Window.Builder.appendIcon(hc, 'ctl.zooms');
          hc.width = 16;
       }
       // 建立输入框
       var hc = hr.insertCell();
       hc.style.width = '100%';
-      var he = o.hEdit = RBuilder.appendEdit(hc, o.style('Edit'));
+      var he = o.hEdit = MO.Window.Builder.appendEdit(hc, o.style('Edit'));
       o.attachEvent('onEditFocus', he, o.onEditFocus);
       o.attachEvent('onEditKeyPress', he, o.onEditKeyPress);
       o.attachEvent('onEditBlur', he, o.onEditBlur);

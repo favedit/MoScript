@@ -30,7 +30,7 @@ MO.FE3dModelDisplay_construct = function FE3dModelDisplay_construct(){
    var o = this;
    o.__base.FE3dDisplay.construct.call(o);
    // 设置属性
-   o._material = RClass.create(FE3dMaterial);
+   o._material = MO.Class.create(FE3dMaterial);
 }
 
 //==========================================================

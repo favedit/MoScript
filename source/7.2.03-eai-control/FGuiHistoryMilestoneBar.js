@@ -7,7 +7,7 @@ with (MO) {
    // @history 150711
    //==========================================================
    MO.FGuiHistoryMilestoneBar = function FGuiHistoryMilestoneBar(o) {
-      o = RClass.inherits(this, o, FGuiControl);
+      o = MO.Class.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
       o._bgImage = null;
@@ -17,7 +17,7 @@ with (MO) {
       o._wanImage = null;
       o._yiImage = null;
       // @attribute
-      o._data = RClass.register(o, new AGetSet('_data'));
+      o._data = MO.Class.register(o, new AGetSet('_data'));
       o._fullWidth = 0;
       o._fullHeight = 0;
       //..........................................................

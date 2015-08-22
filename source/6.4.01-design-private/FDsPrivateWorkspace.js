@@ -13,9 +13,9 @@ with(MO){
       o._storageCode          = o._frameName;
       //..........................................................
       // @style
-      o._styleMenuBarGround   = MO.Class.register(o, new AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
-      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusBarGround = MO.Class.register(o, new AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
+      o._styleMenuBarGround   = MO.Class.register(o, new MO.AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new MO.AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusBarGround = MO.Class.register(o, new MO.AStyle('_styleStatusBarGround', 'StatusBar_Ground'));
       //..........................................................
       // @attribute
       o._activeFrameSetCode   = null;
@@ -55,16 +55,16 @@ with(MO){
       o._frameBody._hPanel.className = o.styleName('Body_Ground');
       o._frameStatusBar._hPanel.className = o.styleName('StatusBar_Ground');
       //..........................................................
-      var hTable = RBuilder.createTable(event);
+      var hTable = MO.Window.Builder.createTable(event);
       hTable.width = '100%';
-      var hRow = RBuilder.appendTableRow(hTable);
+      var hRow = MO.Window.Builder.appendTableRow(hTable);
       // 设置工具栏
-      o._hMenuPanel = RBuilder.appendTableCell(hRow);
+      o._hMenuPanel = MO.Window.Builder.appendTableCell(hRow);
       // 设置分页栏
       var control = o._tabBar = MO.Class.create(FDsPrivateTabBar);
       control._workspace = o;
       control.buildDefine(event);
-      var hCell = RBuilder.appendTableCell(hRow);
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
       hCell.width = '100px';
       hCell.align = 'right';
       hCell.vAlign = 'bottom';

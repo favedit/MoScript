@@ -7,12 +7,12 @@ with(MO){
    // @history 150318
    //==========================================================
    MO.FUiDataAction = function FUiDataAction(o){
-      o = RClass.inherits(this, o, FDuiComponent, MInvoke);
+      o = MO.Class.inherits(this, o, FDuiComponent, MInvoke);
       //..........................................................
       // @property
-      o._action        = RClass.register(o, new APtyString('_action'));
-      o._service       = RClass.register(o, new APtyString('_service'));
-      o._execute       = RClass.register(o, new APtyString('_execute'));
+      o._action        = MO.Class.register(o, new MO.APtyString('_action'));
+      o._service       = MO.Class.register(o, new MO.APtyString('_service'));
+      o._execute       = MO.Class.register(o, new MO.APtyString('_execute'));
       //..........................................................
       // @attribute
       o._loading       = false;

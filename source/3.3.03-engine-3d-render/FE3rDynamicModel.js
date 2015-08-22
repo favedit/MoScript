@@ -8,10 +8,10 @@ MO.FE3rDynamicModel = function FE3rDynamicModel(o){
    o = MO.Class.inherits(this, o, MO.FE3rObject);
    //..........................................................
    // @attribute
-   o._renderables   = MO.Class.register(o, new MO.AGetter('_renderables'));
-   o._mergeMaxCount = MO.Class.register(o, new MO.AGetter('_mergeMaxCount'));
-   o._mergeStride   = MO.Class.register(o, new MO.AGetter('_mergeStride'), 4);
-   o._meshes        = MO.Class.register(o, new MO.AGetter('_meshes'));
+   o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
+   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
+   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
+   o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
    o._updateDate    = 0;
    //..........................................................
    // @method

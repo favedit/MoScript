@@ -8,8 +8,8 @@ with(MO){
    MO.FDsMaterialCatalogItem = function FDsMaterialCatalogItem(o){
       o = MO.Class.inherits(this, o, FDuiListViewItem);
       //..........................................................
-      o._styleTypePanel = MO.Class.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypeLabel = MO.Class.register(o, new AStyle('_styleTypeLabel'));
+      o._styleTypePanel = MO.Class.register(o, new MO.AStyle('_styleTypePanel'));
+      o._styleTypeLabel = MO.Class.register(o, new MO.AStyle('_styleTypeLabel'));
       //..........................................................
       // @event
       o.onBuild         = FDsMaterialCatalogItem_onBuild;
@@ -36,7 +36,7 @@ with(MO){
       // 建立类型
       o._hLine1.className = o.styleName('TypePanel');
       o._hLine1.vAlign = 'top';
-      o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
+      o._hTypeLabel = MO.Window.Builder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
    }
 
    //==========================================================

@@ -1,12 +1,12 @@
 with(MO){
    MO.FUiDataColumn = function FUiDataColumn(o){
-      o = RClass.inherits(this, o, FControl, MDataField);
+      o = MO.Class.inherits(this, o, FControl, MDataField);
       o._displayList       = true;
-      o._styleLabel        = RClass.register(o, new AStyle('_styleLabel'));
-      o._styleSearchPanel  = RClass.register(o, new AStyle('_styleSearchPanel'));
-      o._styleSearchEdit   = RClass.register(o, new AStyle('_styleSearchEdit'));
-      o._styleIconSortUp   = RClass.register(o, new AStyleIcon('_styleIconSortUp'));
-      o._styleIconSortDown = RClass.register(o, new AStyleIcon('_styleIconSortDown'));
+      o._styleLabel        = MO.Class.register(o, new MO.AStyle('_styleLabel'));
+      o._styleSearchPanel  = MO.Class.register(o, new MO.AStyle('_styleSearchPanel'));
+      o._styleSearchEdit   = MO.Class.register(o, new MO.AStyle('_styleSearchEdit'));
+      o._styleIconSortUp   = MO.Class.register(o, new AStyleIcon('_styleIconSortUp'));
+      o._styleIconSortDown = MO.Class.register(o, new AStyleIcon('_styleIconSortDown'));
       o._cellClass         = FCell;
       o._hForm             = null;
       o._hFormLine         = null;
@@ -27,10 +27,10 @@ with(MO){
       o.onBuildTotal       = FUiDataColumn_onBuildTotal;
       o.onBuildPanel       = FUiDataColumn_onBuildPanel;
       o.onBuild            = FUiDataColumn_onBuild;
-      o.onSearchEnter      = RClass.register(o, new AEventMouseEnter('onSearchEnter'));
-      o.onSearchClick      = RClass.register(o, new AEventClick('onSearchClick'));
-      o.onSearchLeave      = RClass.register(o, new AEventMouseLeave('onSearchLeave'));
-      o.onSearchKeyDown    = RClass.register(o, new AEventKeyDown('onSearchKeyDown'));
+      o.onSearchEnter      = MO.Class.register(o, new AEventMouseEnter('onSearchEnter'));
+      o.onSearchClick      = MO.Class.register(o, new AEventClick('onSearchClick'));
+      o.onSearchLeave      = MO.Class.register(o, new AEventMouseLeave('onSearchLeave'));
+      o.onSearchKeyDown    = MO.Class.register(o, new AEventKeyDown('onSearchKeyDown'));
       o.createCell         = FUiDataColumn_createCell;
       return o;
    }
@@ -38,25 +38,25 @@ with(MO){
       var o = this;
       var hr = o._hFormLine;
       if (o._icon) {
-         var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
-         o._hIcon = RBuilder.appendIcon(hip, o.icon);
+         var hip = o._hIconPanel = MO.Window.Builder.appendTableCell(hr);
+         o._hIcon = MO.Window.Builder.appendIcon(hip, o.icon);
       }
-      var hl = o._hLabel = RBuilder.appendTableCell(hr);
+      var hl = o._hLabel = MO.Window.Builder.appendTableCell(hr);
       hl.innerHTML = RString.nvl(o.label());
-      var hsp = o._hSortPanel = RBuilder.appendTableCell(hr);
-      var hsu = o._hSortUp = RBuilder.appendIcon(hsp, o.styleIcon('SortUp', FUiDataColumn));
+      var hsp = o._hSortPanel = MO.Window.Builder.appendTableCell(hr);
+      var hsu = o._hSortUp = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortUp', FUiDataColumn));
       hsu.style.display = 'none';
-      var hsu = o._hSortDown = RBuilder.appendIcon(hsp, o.styleIcon('SortDown', FUiDataColumn));
+      var hsu = o._hSortDown = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortDown', FUiDataColumn));
       hsu.style.display = 'none';
    }
    MO.FUiDataColumn_onBuildSearchEdit = function FUiDataColumn_onBuildSearchEdit(p){
       var o = this;
-      var hc = o._hSearchEditPanel = RBuilder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
-      var he = o._hSearchEdit = RBuilder.appendEdit(hc, o.styleName('SearchEdit'));
+      var hc = o._hSearchEditPanel = MO.Window.Builder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
+      var he = o._hSearchEdit = MO.Window.Builder.appendEdit(hc, o.styleName('SearchEdit'));
    }
    MO.FUiDataColumn_onBuildSearchForm = function FUiDataColumn_onBuildSearchForm(p){
       var o = this;
-      var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
+      var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
       hf.width = '100%';
       hf.style.backgroundColor = '#FFFFFF';
       var hfl = o._hSearchFormLine = hf.insertRow();
@@ -73,7 +73,7 @@ with(MO){
    }
    MO.FUiDataColumn_onBuildSearch = function FUiDataColumn_onBuildSearch(p){
       var o = this;
-      var h = o._hSearchPanel = RBuilder.create(p, 'TD', o.styleName('SearchPanel'));
+      var h = o._hSearchPanel = MO.Window.Builder.create(p, 'TD', o.styleName('SearchPanel'));
       h.style.backgroundColor = "#FFFFFF";
       h.style.borderBottom = '1 solid #9EC4EB';
       RHtml.linkSet(h, 'control', o);
@@ -83,7 +83,7 @@ with(MO){
    }
    MO.FUiDataColumn_onBuildTotal = function FUiDataColumn_onBuildTotal(p){
       var o = this;
-      var h = o._hTotalPanel = RBuilder.create(p, 'TD');
+      var h = o._hTotalPanel = MO.Window.Builder.create(p, 'TD');
       RHtml.linkSet(h, 'control', o);
       h.align = 'right';
       h.style.color = '#686860';
@@ -93,7 +93,7 @@ with(MO){
    }
    MO.FUiDataColumn_onBuildPanel = function FUiDataColumn_onBuildPanel(p) {
       var o = this;
-      o._hPanel = RBuilder.create(p, 'TD', o.styleName('Label'));
+      o._hPanel = MO.Window.Builder.create(p, 'TD', o.styleName('Label'));
    }
    MO.FUiDataColumn_onBuild = function FUiDataColumn_onBuild(p) {
       var o = this;
@@ -114,15 +114,15 @@ with(MO){
       o.__base.FControl.onBuild.call(o, p);
       var hp = o._hPanel;
       hp.style.padding = 4;
-      var hf = o._hForm = RBuilder.appendTable(hp);
+      var hf = o._hForm = MO.Window.Builder.appendTable(hp);
       if (!o._orderAble) {
         hf.style.cursor = 'hand';
       }
-      var hr = o._hFormLine = RBuilder.appendTableRow(o._hForm);
+      var hr = o._hFormLine = MO.Window.Builder.appendTableRow(o._hForm);
       o.onBuildLabel(p);
       o.onBuildSearch(p);
       o.onBuildTotal(p);
-      var h = o._hFixPanel = RBuilder.create(p, 'TD');
+      var h = o._hFixPanel = MO.Window.Builder.create(p, 'TD');
       h.height = 1;
       h.bgColor = '#FFFFFF'
       if(o._size.width < 40){
@@ -134,7 +134,7 @@ with(MO){
    }
    MO.FUiDataColumn_createCell = function FUiDataColumn_createCell(p) {
       var o = this;
-      var c = RClass.create(o._cellClass);
+      var c = MO.Class.create(o._cellClass);
       var t = c._table = o._table;
       c._name = o._name;
       c._column = o;
@@ -272,7 +272,7 @@ with(MO){
       var o = this;
       var r = o.cloneMove;
       if (!r) {
-         r = RClass.create(o.constructor);
+         r = MO.Class.create(o.constructor);
          r.buildMode = EColumnMode.Drag;
          r.assign(o, EAssign.Property);
          r.build();

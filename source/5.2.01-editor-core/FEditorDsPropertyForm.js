@@ -10,9 +10,6 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    // @attribute
    o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
    o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
-   // @attribute
-   o._logicService  = null;
-   o._logicGroup    = null;
    //..........................................................
    // @event
    o.onBuilded      = MO.FEditorDsPropertyForm_onBuilded;

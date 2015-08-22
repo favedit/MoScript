@@ -20,12 +20,13 @@ MO.FDuiEdit = function FDuiEdit(o){
    // @property
    o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
    o._unit                 = MO.Class.register(o, new MO.APtyString('_unit'));
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @style
-   o._styleValuePanel      = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
    o._styleInputPanel      = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
    o._styleInput           = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   //..........................................................
+   // @attribute
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @html
    o._hValueForm           = null;
@@ -47,6 +48,7 @@ MO.FDuiEdit = function FDuiEdit(o){
    o.setText               = MO.FDuiEdit_setText;
    o.setEditAble           = MO.FDuiEdit_setEditAble;
    o.refreshValue          = MO.FDuiEdit_refreshValue;
+   o.refreshStyle          = MO.FDuiEdit_refreshStyle;
    return o;
 }
 
@@ -54,22 +56,21 @@ MO.FDuiEdit = function FDuiEdit(o){
 // <T>建立编辑器内容。</T>
 //
 // @method
-// @param p:argements:SArgements 参数集合
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(p){
+MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(event){
    var o = this;
    var hValuePanel = o._hValuePanel;
-   hValuePanel.className = o.styleName('ValuePanel');
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
    hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
    //..........................................................
    // 建立改变栏
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
-   o.onBuildEditChange(p);
+   o.onBuildEditChange(event);
    //..........................................................
    // 建立输入栏
-   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel, o.styleName('Input'));
    o.attachEvent('onInputEdit', hInput, o.onInputEdit);
    // 设置大小
@@ -180,4 +181,28 @@ MO.FDuiEdit_refreshValue = function FDuiEdit_refreshValue(){
    var o = this;
    // 内容改变通知
    o.processDataChangedListener(o);
+}
+
+//==========================================================
+// <T>根据当前状态刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiEdit_refreshStyle = function FDuiEdit_refreshStyle(){
+   var o = this;
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   // 设置编辑样式
+   var hInput = o._hInput;
+   var inputStyle = null;
+   if(o._statusValueEdit){
+      if(o._statusValueHover){
+         inputStyle = 'InputHover';
+      }else{
+         inputStyle = 'InputEdit';
+      }
+   }else{
+      inputStyle = 'InputReadonly';
+   }
+   hInput.className = o.styleName(inputStyle);
+   hInput.readOnly = !o._statusValueEdit;
 }

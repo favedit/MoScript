@@ -77,7 +77,7 @@ MO.MG3dRegion_construct = function MG3dRegion_construct(){
    o._lightProjectionMatrix = new MO.SMatrix3d();
    o._lightViewProjectionMatrix = new MO.SMatrix3d();
    o._lightInfo = new MO.SVector4();
-   //o._materialMap = RClass.create(FG3dMaterialMap);
+   //o._materialMap = MO.Class.create(FG3dMaterialMap);
 }
 
 //==========================================================

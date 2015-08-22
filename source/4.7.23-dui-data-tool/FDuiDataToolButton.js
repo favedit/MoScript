@@ -7,25 +7,25 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FUiDataToolButton = function FUiDataToolButton(o){
-      o = RClass.inherits(this, o, FDuiToolButton);
+      o = MO.Class.inherits(this, o, FDuiToolButton);
       //..........................................................
       // @property
-      o._serviceName     = RClass.register(o, new APtyString('_serviceName'));
-      //o._type            = RClass.register(o, new APtyString('_type'));
-      //o._dataAction      = RClass.register(o, new APtyString('_dataAction'));
-      //o._target          = RClass.register(o, new APtyString('_target'));
-      //o._page            = RClass.register(o, new APtyString('_page'));
-      //o._method          = RClass.register(o, new APtyString('_method'));
-      //o._attributes      = RClass.register(o, new APtyString('_attributes'));
+      o._serviceName     = MO.Class.register(o, new MO.APtyString('_serviceName'));
+      //o._type            = MO.Class.register(o, new MO.APtyString('_type'));
+      //o._dataAction      = MO.Class.register(o, new MO.APtyString('_dataAction'));
+      //o._target          = MO.Class.register(o, new MO.APtyString('_target'));
+      //o._page            = MO.Class.register(o, new MO.APtyString('_page'));
+      //o._method          = MO.Class.register(o, new MO.APtyString('_method'));
+      //o._attributes      = MO.Class.register(o, new MO.APtyString('_attributes'));
       //..........................................................
       // @event
-      //o.onButtonClick   = RClass.register(o, new AEventClick('onButtonClick'), FUiDataToolButton_onButtonClick);
+      //o.onButtonClick   = MO.Class.register(o, new AEventClick('onButtonClick'), FUiDataToolButton_onButtonClick);
       //..........................................................
       // @style
-      //o._styleIconDisable   = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
-      //o._styleButton        = RClass.register(o, new AStyleIcon('_styleButton', 'Button'));
-      //o._styleButtonDisable = RClass.register(o, new AStyleIcon('_styleButtonDisable', 'ButtonDisable'));
-      //o._styleButtonHover   = RClass.register(o, new AStyleIcon('_styleButtonHover', 'ButtonHover'));
+      //o._styleIconDisable   = MO.Class.register(o, new MO.AStyle('_styleIconDisable', 'IconDisable'));
+      //o._styleButton        = MO.Class.register(o, new AStyleIcon('_styleButton', 'Button'));
+      //o._styleButtonDisable = MO.Class.register(o, new AStyleIcon('_styleButtonDisable', 'ButtonDisable'));
+      //o._styleButtonHover   = MO.Class.register(o, new AStyleIcon('_styleButtonHover', 'ButtonHover'));
       //..........................................................
       // @html
       //o._hButton         = null;

@@ -557,7 +557,7 @@ MO.FE3dModelDisplay = function FE3dModelDisplay(o){
 MO.FE3dModelDisplay_construct = function FE3dModelDisplay_construct(){
    var o = this;
    o.__base.FE3dDisplay.construct.call(o);
-   o._material = RClass.create(FE3dMaterial);
+   o._material = MO.Class.create(FE3dMaterial);
 }
 MO.FE3dModelDisplay_load = function FE3dModelDisplay_load(renderable){
    var o = this;
@@ -1886,9 +1886,9 @@ MO.FE3dSimpleCanvas_onSceneLoad = function FE3dSimpleCanvas_onSceneLoad(p){
    o._cameraMouseRotation = gr.rotationMouseSpeed();
    o.processLoadListener(o, s);
 }
-MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(event){
+MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(p){
    var o = this;
-   o.__base.FE3dCanvas.onResize.call(o, event);
+   o.__base.FE3dCanvas.onResize.call(o, p);
    var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeSpace;
@@ -1912,7 +1912,7 @@ MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
    var stage = o._stage = o._activeSpace = MO.Class.create(MO.FE3dSimpleStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
-   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+   stage.selectTechnique(o, FE3dGeneralTechnique);
    MO.RStage.register('simple.stage', stage);
 }
 MO.FE3dSimpleCanvas_setPanel = function FE3dSimpleCanvas_setPanel(hPanel){

@@ -7,19 +7,19 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiCellButton = function FDuiCellButton(o){
-      o = RClass.inherits(this, o, FCell);
+      o = MO.Class.inherits(this, o, FCell);
       //..........................................................
       // @attribute
       o.buttons           = null;
       o.attributes        = null;
       //..........................................................
       // @event
-      o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiCellButton_onButtonEnter);
-      o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiCellButton_onButtonLeave);
-      o.onCellLeave       = RClass.register(o, new AEventMouseLeave('onCellLeave'), FDuiCellButton_onCellLeave);
-      o.onHintEnter       = RClass.register(o, new AEventMouseEnter('onHintEnter'), FDuiCellButton_onHintEnter);
-      o.onHintLeave       = RClass.register(o, new AEventMouseLeave('onHintLeave'), FDuiCellButton_onHintLeave);
-      o.onButtonClick     = RClass.register(o, new AEventClick('onButtonClick'), FDuiCellButton_onButtonClick);
+      o.onButtonEnter     = MO.Class.register(o, new AEventMouseEnter('onButtonEnter'), FDuiCellButton_onButtonEnter);
+      o.onButtonLeave     = MO.Class.register(o, new AEventMouseLeave('onButtonLeave'), FDuiCellButton_onButtonLeave);
+      o.onCellLeave       = MO.Class.register(o, new AEventMouseLeave('onCellLeave'), FDuiCellButton_onCellLeave);
+      o.onHintEnter       = MO.Class.register(o, new AEventMouseEnter('onHintEnter'), FDuiCellButton_onHintEnter);
+      o.onHintLeave       = MO.Class.register(o, new AEventMouseLeave('onHintLeave'), FDuiCellButton_onHintLeave);
+      o.onButtonClick     = MO.Class.register(o, new AEventClick('onButtonClick'), FDuiCellButton_onButtonClick);
       //..........................................................
       // @method
       o.construct         = FDuiCellButton_construct;
@@ -155,7 +155,7 @@ with(MO){
       hp.align = 'left';
       hp.padding = 1;
       // 建立表格底板
-      var hf = o.hForm = RBuilder.appendTable(o.hPanel);
+      var hf = o.hForm = MO.Window.Builder.appendTable(o.hPanel);
       var hr = o.hFormLine = hf.insertRow();
       // 建立按键
       var bs = c.components;
@@ -169,10 +169,10 @@ with(MO){
             var hc = hr.insertCell();
             hc.align = 'center';
             hc.style.padding = '0 3';
-            var hbp = RBuilder.append(hc, 'DIV');
+            var hbp = MO.Window.Builder.append(hc, 'DIV');
             var hi = null;
             if(b.icon){
-               hi = RBuilder.appendIcon(hbp, b.icon);
+               hi = MO.Window.Builder.appendIcon(hbp, b.icon);
             }else{
                hbp.style.padding = '2 6';
                //hbp.style.borderLeft = '1 solid #DDDDDD';
@@ -191,7 +191,7 @@ with(MO){
                if(b.icon){
                   hi.title = b.label;
                }else{
-                  ht = RBuilder.appendText(hbp, b.label);
+                  ht = MO.Window.Builder.appendText(hbp, b.label);
                }
             }
             // 创建按键
@@ -276,7 +276,7 @@ with(MO){
       // 如果存在提示，则创建提示对象
       if(as.contains('hint')){
          // 自己创建div的提示框
-         hfd = o.hFloatDrop = RBuilder.append(o.hHintPanel, 'DIV');
+         hfd = o.hFloatDrop = MO.Window.Builder.append(o.hHintPanel, 'DIV');
          // 设置样式
          hfd.style.borderLeft = '1 solid #CCCCCC';
          hfd.style.borderTop = '1 solid #CCCCCC';

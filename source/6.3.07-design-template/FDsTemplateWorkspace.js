@@ -9,11 +9,11 @@ with(MO){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
       //..........................................................
       // @style
-      o._styleToolbarGround    = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround  = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround    = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround  = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround   = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround    = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround  = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround    = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround  = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround   = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
       //..........................................................
       // @attribute
       o._framesetMain          = null;
@@ -128,11 +128,11 @@ with(MO){
       c.setPanel(o._frameToolBar._hPanel);
       o.push(c);
       //..........................................................
-      var hf = RBuilder.appendTable(o._frameWorkspace._hPanel);
+      var hf = MO.Window.Builder.appendTable(o._frameWorkspace._hPanel);
       hf.style.width = '100%';
       hf.style.height = '100%';
       // 建立工具栏
-      var hc = RBuilder.appendTableRowCell(hf);
+      var hc = MO.Window.Builder.appendTableRowCell(hf);
       hc.height = 20;
       var c = o._canvasToolbar = MO.Class.create(FDsTemplateCanvasToolBar);
       c._workspace = o;
@@ -140,7 +140,7 @@ with(MO){
       c.setPanel(hc);
       o.push(c);
       // 建立画板
-      var hc = RBuilder.appendTableRowCell(hf);
+      var hc = MO.Window.Builder.appendTableRowCell(hf);
       hc.vAlign = 'top';
       var c = o._canvas = MO.Class.create(FDsTemplateCanvas);
       c.addLoadListener(o, o.onTemplateLoad);

@@ -6,7 +6,7 @@
  * @version 1.0.1
  **********************************************************/
 MO.FIdleConsole = function FIdleConsole(o){
-   o = RClass.inherits(this, o, FConsole);
+   o = MO.Class.inherits(this, o, FConsole);
    // Attribute
    o.scope    = MO.EScope.Page;
    o.register = MO.FIdleConsole_register;

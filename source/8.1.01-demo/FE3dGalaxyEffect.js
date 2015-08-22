@@ -6,7 +6,7 @@
    // @history 150211
    //==========================================================
    MO.FE3dGalaxyEffect = function FE3dGalaxyEffect(o){
-      o = RClass.inherits(this, o, FG3dAutomaticEffect);
+      o = MO.Class.inherits(this, o, FG3dAutomaticEffect);
       //..........................................................
       // @attribute
       o._code          = 'galaxy.automatic';

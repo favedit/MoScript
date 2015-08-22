@@ -160,6 +160,6 @@ MO.FDuiTreeNodeCell_get = function FDuiTreeNodeCell_get(){
 //==========================================================
 MO.FDuiTreeNodeCell_set = function FDuiTreeNodeCell_set(p){
    // 建立显示文本
-   //o._hLabel = RBuilder.appendText(hnp, o.styleName('Label'));
+   //o._hLabel = MO.Window.Builder.appendText(hnp, o.styleName('Label'));
    //o.setLabel(o._label);
 }

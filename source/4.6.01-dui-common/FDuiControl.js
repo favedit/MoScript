@@ -27,13 +27,13 @@ MO.FDuiControl = function FDuiControl(o){
    // @style
    o._stylePanel    = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    // @style
-   //o._styleDesign = MO.Class.register(o, new AStyle('Design'));
+   //o._styleDesign = MO.Class.register(o, new MO.AStyle('Design'));
    // @style
-   //o._styleDesignHover = MO.Class.register(o, new AStyle('DesignHover'));
+   //o._styleDesignHover = MO.Class.register(o, new MO.AStyle('DesignHover'));
    // @style
-   //o._styleDesignDrag  = MO.Class.register(o, new AStyle('DesignDrag'));
+   //o._styleDesignDrag  = MO.Class.register(o, new MO.AStyle('DesignDrag'));
    // @style
-   //o._styleDesignMove  = MO.Class.register(o, new AStyle('DesignMove'));
+   //o._styleDesignMove  = MO.Class.register(o, new MO.AStyle('DesignMove'));
    //..........................................................
    // @attribute
    o._layoutCd      = MO.EUiLayout.Display;
@@ -162,11 +162,11 @@ MO.FDuiControl_onBuild = function FDuiControl_onBuild(p){
       o.setVisible(o._visible);
    }
    // 设置容器样式
-   var h = o._hPanel;
-   MO.RHtml.linkSet(h, 'control', o);
+   var hPanel = o._hPanel;
+   MO.Window.Html.linkSet(hPanel, 'control', o);
    // 关联容器事件
-   o.attachEvent('onEnter', h);
-   o.attachEvent('onLeave', h);
+   o.attachEvent('onEnter', hPanel);
+   o.attachEvent('onLeave', hPanel);
    //o.attachEvent('onMouseOver', h);
    //o.attachEvent('onMouseOut', h);
    //o.attachEvent('onMouseDown', h);

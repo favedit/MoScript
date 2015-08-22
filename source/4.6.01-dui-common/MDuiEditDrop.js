@@ -35,6 +35,8 @@ MO.MDuiEditDrop = function MDuiEditDrop(o){
    // @method
    o.construct       = MO.MDuiEditDrop_construct;
    // @method
+   o.refreshStyle    = MO.MDuiEditDrop_refreshStyle;
+   // @method
    o.dispose         = MO.MDuiEditDrop_dispose;
    return o;
 }
@@ -48,15 +50,15 @@ MO.MDuiEditDrop = function MDuiEditDrop(o){
 MO.MDuiEditDrop_onBuildEditDrop = function MDuiEditDrop_onBuildEditDrop(p){
    var o = this;
    // 设置底板
-   var h = o._hDropPanel;
-   h.className = o.styleName('DropPanel', MO.MDuiEditDrop);
-   h.width = 11;
-   o.attachEvent('onDropEnter', h);
-   o.attachEvent('onDropLeave', h);
-   o.attachEvent('onDropClick', h);
+   var hDropPanel = o._hDropPanel;
+   hDropPanel.align = 'center';
+   hDropPanel.className = o.styleName('DropPanel', MO.MDuiEditDrop);
+   o.attachEvent('onDropEnter', hDropPanel);
+   o.attachEvent('onDropLeave', hDropPanel);
+   o.attachEvent('onDropClick', hDropPanel);
    // 设置图标
-   var hi = o._hDropIcon = MO.RBuilder.appendIcon(h, o.styleName('DropIcon', MO.MDuiEditDrop), 'control.drop');
-   hi.align = 'center';
+   var hDropIcon = o._hDropIcon = MO.Window.Builder.appendIcon(hDropPanel, o.styleName('DropIcon', MO.MDuiEditDrop), 'control.drop');
+   hDropIcon.align = 'absmiddle';
 }
 
 //==========================================================
@@ -109,6 +111,25 @@ MO.MDuiEditDrop_onDropClick = function MDuiEditDrop_onDropClick(e){
 // @method
 //==========================================================
 MO.MDuiEditDrop_construct = function MDuiEditDrop_construct(){
+}
+
+//==========================================================
+// <T>根据当前状态刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.MDuiEditDrop_refreshStyle = function MDuiEditDrop_refreshStyle(){
+   var o = this;
+   // 设置样式
+   var hDropIcon = o._hDropIcon;
+   if(o._statusValueEdit){
+      if(o._statusValueHover){
+         hDropIcon.src = MO.Window.Resource.iconPath('control.drop-hover');
+      }else{
+         hDropIcon.src = MO.Window.Resource.iconPath('control.drop');
+      }
+   }
+   MO.Window.Html.visibleSet(o._hDropPanel, o._statusValueEdit);
 }
 
 //==========================================================

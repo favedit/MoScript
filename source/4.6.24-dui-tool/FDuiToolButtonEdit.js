@@ -7,10 +7,10 @@ with(MO){
    // @history 150326
    //==========================================================
    MO.FDuiToolButtonEdit = function FDuiToolButtonEdit(o){
-      o = RClass.inherits(this, o, FDuiToolButton, MListenerDataChanged);
+      o = MO.Class.inherits(this, o, FDuiToolButton, MListenerDataChanged);
       //..........................................................
       // @property
-      o._editSize      = RClass.register(o, new APtySize2('_editSize'));
+      o._editSize      = MO.Class.register(o, new MO.APtySize2('_editSize'));
       //..........................................................
       // @html
       o._hEdit         = null;
@@ -19,8 +19,8 @@ with(MO){
       o.onBuildButton  = FDuiToolButtonEdit_onBuildButton;
       o.onEnter        = RMethod.empty;
       o.onLeave        = RMethod.empty;
-      o.onInputEdit    = RClass.register(o, new AEventInputChanged('onInputEdit'), FDuiToolButtonEdit_onInputEdit);
-      o.onInputKeyDown = RClass.register(o, new AEventKeyDown('onInputKeyDown'), FDuiToolButtonEdit_onInputKeyDown);
+      o.onInputEdit    = MO.Class.register(o, new AEventInputChanged('onInputEdit'), FDuiToolButtonEdit_onInputEdit);
+      o.onInputKeyDown = MO.Class.register(o, new AEventKeyDown('onInputKeyDown'), FDuiToolButtonEdit_onInputKeyDown);
       //..........................................................
       // @method
       o.construct      = FDuiToolButtonEdit_construct;
@@ -41,27 +41,27 @@ with(MO){
       // 设置面板
       var hPanel = o._hPanel;
       // 建立表单
-      var hForm = o._hForm = RBuilder.appendTable(hPanel);
-      var hLine = o._hLine = RBuilder.appendTableRow(hForm);
+      var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
+      var hLine = o._hLine = MO.Window.Builder.appendTableRow(hForm);
       // 建立输入框
-      var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hLine);
-      var hEdit = o._hEdit = RBuilder.appendEdit(hEditPanel);
+      var hEditPanel = o._hEditPanel = MO.Window.Builder.appendTableCell(hLine);
+      var hEdit = o._hEdit = MO.Window.Builder.appendEdit(hEditPanel);
       hEdit.style.width = o._editSize.width +  'px';
       o.attachEvent('onInputEdit', hEdit, o.onInputEdit);
       o.attachEvent('onInputKeyDown', hEdit);
-      o._hEditSpacePanel = RBuilder.appendTableCell(hLine, o.styleName('SpacePanel'));
+      o._hEditSpacePanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('SpacePanel'));
       // 建立图标
       if(o._icon){
-         var hc = o._hIconPanel = RBuilder.appendTableCell(hLine, o.styleName('IconPanel'));
-         o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
+         var hc = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('IconPanel'));
+         o._hIcon = MO.Window.Builder.appendIcon(hc, null, o._icon);
       }
       // 建立分割
       if(o._icon && o._label){
-         o._hSpacePanel = RBuilder.appendTableCell(hLine, o.styleName('SpacePanel'));
+         o._hSpacePanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('SpacePanel'));
       }
       // 建立标签
       if(o._label){
-         var hLabelPanel = o._hLabelPanel = RBuilder.appendTableCell(hLine, o.styleName('LabelPanel'));
+         var hLabelPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('LabelPanel'));
          o.attachEvent('onMouseDown', hLabelPanel);
          o.attachEvent('onMouseUp', hLabelPanel);
          hLabelPanel.noWrap = true;

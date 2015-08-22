@@ -19,7 +19,7 @@ MO.MDuiEditReference = function MDuiEditReference(o){
    o._listView      = null;
    //..........................................................
    // @event
-   //o.onListClick    = RClass.register(o, new HClick('onListClick'), MDuiEditReference_onListClick);
+   //o.onListClick    = MO.Class.register(o, new HClick('onListClick'), MDuiEditReference_onListClick);
    o.onListSelected = MO.Method.empty;
    //..........................................................
    // @method

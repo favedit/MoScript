@@ -196,21 +196,3 @@ MO.FEditorDsTreePropertyToolBar_dispose = function FEditorDsTreePropertyToolBar_
    var o = this;
    o.__base.FDuiToolBar.dispose.call(o);
 }
-MO.FEditorDsTreePropertyTreeNodeForm = function FEditorDsTreePropertyTreeNodeForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.tree';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsTreePropertyTreeNodeTypeForm = function FEditorDsTreePropertyTreeNodeTypeForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.tree';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsTreePropertyTreeViewForm = function FEditorDsTreePropertyTreeViewForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.tree';
-   o._logicGroup   = 'container';
-   return o;
-}

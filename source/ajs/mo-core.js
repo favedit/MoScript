@@ -4014,7 +4014,7 @@ MO.FHttpConsole_dispose = function FHttpConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
 }
 MO.FIdleConsole = function FIdleConsole(o){
-   o = RClass.inherits(this, o, FConsole);
+   o = MO.Class.inherits(this, o, FConsole);
    o.scope    = MO.EScope.Page;
    o.register = MO.FIdleConsole_register;
    return o;
@@ -4281,7 +4281,7 @@ MO.FProcess_process = function FProcess_process(p){
    o._worker.postMessage(e);
 }
 MO.FProcessConsole = function FProcessConsole(o){
-   o = RClass.inherits(this, o, FConsole);
+   o = MO.Class.inherits(this, o, FConsole);
    o._scopeCd     = MO.EScope.Local;
    o._connections = null;
    o.onLoad       = MO.FProcessConsole_onLoad;

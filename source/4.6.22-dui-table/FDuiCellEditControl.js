@@ -17,7 +17,7 @@ with(MO){
    // @version 150125
    //==========================================================
    MO.FDuiCellEditControl = function FDuiCellEditControl(o){
-      o = RClass.inherits(this, o, FCell);
+      o = MO.Class.inherits(this, o, FCell);
       //..........................................................
       // @html
       //o._hEditPanel  = null;
@@ -31,12 +31,12 @@ with(MO){
       o.onBuild      = FDuiCellEditControl_onBuild;
       //..........................................................
       /// @style
-      //o.stEditable   = RClass.register(o, new TStyle('Readonly'));
-      //o.stPanel      = RClass.register(o, new TStyle('PanelSelect'));
-      //o.stEditable   = RClass.register(o, new TStyle('ReadonlySelect'));
-      //o.stEditSelect = RClass.register(o, new TStyle('EditSelect'));
-      //o.stEdit       = RClass.register(o, new TStyle('EditReadonly'));
-      //o.stEditSelect = RClass.register(o, new TStyle('EditReadonlySelect'));
+      //o.stEditable   = MO.Class.register(o, new TStyle('Readonly'));
+      //o.stPanel      = MO.Class.register(o, new TStyle('PanelSelect'));
+      //o.stEditable   = MO.Class.register(o, new TStyle('ReadonlySelect'));
+      //o.stEditSelect = MO.Class.register(o, new TStyle('EditSelect'));
+      //o.stEdit       = MO.Class.register(o, new TStyle('EditReadonly'));
+      //o.stEditSelect = MO.Class.register(o, new TStyle('EditReadonlySelect'));
       //..........................................................
       // @method
       //o.getEditRange = FDuiCellEditControl_getEditRange;
@@ -54,7 +54,7 @@ with(MO){
    //==========================================================
    MO.FDuiCellEditControl_onBuildIcon = function FDuiCellEditControl_onBuildIcon(p){
       var o = this;
-      o.hIcon = RBuilder.append(o.hIconPanel, 'IMG');
+      o.hIcon = MO.Window.Builder.append(o.hIconPanel, 'IMG');
    }
 
    //==========================================================
@@ -67,7 +67,7 @@ with(MO){
       var o = this;
       var c = o._column;
       // 建立文本输入框
-      //o._hEdit = RBuilder.appendEdit(o._hEditPanel, o.styleName('Edit'));
+      //o._hEdit = MO.Window.Builder.appendEdit(o._hEditPanel, o.styleName('Edit'));
       // 关联事件
       //c.linkEvent(o, 'onCellMouseDown', he, c.onCellMouseDown);
       //c.linkEvent(o, 'onCellKeyDown', he, c.onCellKeyDown);
@@ -100,7 +100,7 @@ with(MO){
       // 拥有图标区或下拉区的控件，才允许建立表格底板
       if(c._hasIconArea || c._hasDropArea){
          // 建立表格底板
-         var hf = o.hForm = RBuilder.appendTable(o._hPanel);
+         var hf = o.hForm = MO.Window.Builder.appendTable(o._hPanel);
          hf.width = '100%';
          var hr = o.hFormLine = hf.insertRow();
          // 建立图标区

@@ -7,7 +7,7 @@ with(MO){
    // @version 1.0.1
    //==========================================================
    MO.FDatasetConsole = function FDatasetConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = MO.Class.inherits(this, o, FConsole);
       //..........................................................
       // @attribute EScope 对象范围
       o._scopeCd = EScope.Local;

@@ -8,9 +8,9 @@
 MO.FUiDataEdit = function FUiDataEdit(o){
    o = MO.Class.inherits(this, o, MO.FDuiEdit, MO.MUiDataField);
    //..........................................................
-   //o.onKeyDown    = RClass.register(o, new AEventKeyDown('onKeyDown'));
-   //o.onKeyPress   = RClass.register(o, new AEventKeyPress('onKeyPress'));
-   //o.onKeyUp      = RClass.register(o, new AEventKeyUp('onKeyUp'));
+   //o.onKeyDown    = MO.Class.register(o, new AEventKeyDown('onKeyDown'));
+   //o.onKeyPress   = MO.Class.register(o, new AEventKeyPress('onKeyPress'));
+   //o.onKeyUp      = MO.Class.register(o, new AEventKeyUp('onKeyUp'));
    //..........................................................
    // @html
    //o.hUnit         = null;

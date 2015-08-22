@@ -33,8 +33,20 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    // @style
    o._styleLabelPanel        = MO.Class.register(o, new MO.AStyle('_styleLabelPanel'));
    o._styleEditPanel         = MO.Class.register(o, new MO.AStyle('_styleEditPanel'));
+   o._styleValueReadonly     = MO.Class.register(o, new MO.AStyle('_styleValueReadonly'));
+   o._styleValueEdit         = MO.Class.register(o, new MO.AStyle('_styleValueEdit'));
+   o._styleValueHover        = MO.Class.register(o, new MO.AStyle('_styleValueHover'));
+   o._styleInputPanel        = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInputReadonly     = MO.Class.register(o, new MO.AStyle('_styleInputReadonly'));
+   o._styleInputEdit         = MO.Class.register(o, new MO.AStyle('_styleInputEdit'));
+   o._styleInputHover        = MO.Class.register(o, new MO.AStyle('_styleInputHover'));
+   o._styleInputInvalid      = MO.Class.register(o, new MO.AStyle('_styleInputInvalid'));
    //..........................................................
    // @attribute
+   o._optionValueStyle       = true;
+   // @attribute
+   o._statusValueHover       = false;
+   o._statusValueEdit        = true;
    o._progressing            = false;
    //..........................................................
    // @html <TD> 标签面板
@@ -59,6 +71,9 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    //o.hHintIcon             = null;
    //..........................................................
    // @event
+   o.onValueEnter            = MO.Class.register(o, new MO.AEventMouseEnter('onValueEnter'), MO.FDuiEditControl_onValueEnter);
+   o.onValueLeave            = MO.Class.register(o, new MO.AEventMouseLeave('onValueLeave'), MO.FDuiEditControl_onValueLeave);
+   // @event
    o.onBuildLabelIcon        = MO.FDuiEditControl_onBuildLabelIcon;
    o.onBuildLabelText        = MO.FDuiEditControl_onBuildLabelText;
    o.onBuildLabel            = MO.FDuiEditControl_onBuildLabel;
@@ -80,9 +95,34 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    o.panel                   = MO.FDuiEditControl_panel;
    o.setLabel                = MO.FDuiEditControl_setLabel;
    o.calculateValueRectangle = MO.FDuiEditControl_calculateValueRectangle;
+   o.refreshStyle            = MO.FDuiEditControl_refreshStyle;
    // @method
    o.dispose                 = MO.FDuiEditControl_dispose;
    return o;
+}
+
+//==========================================================
+// <T>当该内容获得热点时的处理</T>
+//
+// @method
+// @param event:TEvent 事件对象
+//==========================================================
+MO.FDuiEditControl_onValueEnter = function FDuiEditControl_onValueEnter(event){
+   var o = this;
+   o._statusValueHover = true;
+   o.refreshStyle();
+}
+
+//==========================================================
+// <T>当该内容失去热点时的处理</T>
+//
+// @method
+// @param event:TEvent 事件对象
+//==========================================================
+MO.FDuiEditControl_onValueLeave = function FDuiEditControl_onValueLeave(event){
+   var o = this;
+   o._statusValueHover = false;
+   o.refreshStyle();
 }
 
 //==========================================================
@@ -154,7 +194,9 @@ MO.FDuiEditControl_onBuildEdit = function FDuiEditControl_onBuildEdit(event){
    var hEditForm = o._hEditForm = MO.Window.Builder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
    var hEditLine = o._hEditLine = MO.Window.Builder.appendTableRow(hEditForm);
    // 建立编辑面板
-   o._hValuePanel = MO.Window.Builder.appendTableCell(hEditLine);
+   var hValuePanel = o._hValuePanel = MO.Window.Builder.appendTableCell(hEditLine);
+   o.attachEvent('onValueEnter', hValuePanel);
+   o.attachEvent('onValueLeave', hValuePanel);
    o.onBuildEditValue(event);
    // 设置大小
    MO.Window.Html.setSize(hEditForm, o._editSize);
@@ -296,6 +338,8 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
    if(hEditPanel){
       o.onBuildEdit(event);
    }
+   // 刷新样式
+   o.refreshStyle();
 }
 
 //==========================================================
@@ -447,6 +491,27 @@ MO.FDuiEditControl_calculateValueRectangle = function FDuiEditControl_calculateV
    rectangle.width = hPanel.offsetWidth;
    rectangle.height = hPanel.offsetHeight;
    return rectangle;
+}
+
+//==========================================================
+// <T>根据当前状态刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiEditControl_refreshStyle = function FDuiEditControl_refreshStyle(){
+   var o = this;
+   var hValuePanel = o._hValuePanel;
+   if(o._optionValueStyle){
+      if(o._statusValueEdit){
+         if(o._statusValueHover){
+            hValuePanel.className = o.styleName('ValueHover');
+         }else{
+            hValuePanel.className = o.styleName('ValueEdit');
+         }
+      }else{
+         hValuePanel.className = o.styleName('ValueReadonly');
+      }
+   }
 }
 
 //==========================================================

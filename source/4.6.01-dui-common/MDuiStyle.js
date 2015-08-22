@@ -23,36 +23,39 @@ MO.MDuiStyle = function MDuiStyle(o){
 // <T>获得定义的样式名称。</T>
 // <P>样式不存在的话，产生例外。</P>
 //
-// @param n:name:String 名称
-// @param c:class:TClass 类对象
+// @param name:String 名称
+// @param method:Function 类对象
 // @return String 样式名称
 //==========================================================
-MO.MDuiStyle_styleName = function MDuiStyle_styleName(n, c){
+MO.MDuiStyle_styleName = function MDuiStyle_styleName(name, method){
    var o = this;
-   var f = c ? c : o;
-   var tn = MO.Class.name(f);
-   var t = MO.Class.forName(tn);
-   return t.style(n);
+   var findMethod = method ? method : o;
+   var className = MO.Class.name(findMethod);
+   var clazz = MO.Class.forName(className);
+   return clazz.style(name);
 }
 
 //==========================================================
 // <T>获得定义的样式图标名称。</T>
 //
-// @param n:name:String 名称
-// @param c:class:TClass 类对象
+// @param name:String 名称
+// @param method:Function 类对象
 // @return String 图标名称
 //==========================================================
-MO.MDuiStyle_styleIcon = function MDuiStyle_styleIcon(n, c){
-   return MO.Class.name(c ? c : this, true) + '_' + n;
+MO.MDuiStyle_styleIcon = function MDuiStyle_styleIcon(name, method){
+   var className = MO.Class.name(method ? method : this, true);
+   return className + '_' + name;
 }
 
 //==========================================================
 // <T>获得定义的样式图标路径。</T>
 //
-// @param n:name:String 名称
-// @param c:class:TClass 类对象
+// @param name:String 名称
+// @param method:Function 类对象
 // @return String 图标路径
 //==========================================================
-MO.MDuiStyle_styleIconPath = function MDuiStyle_styleIconPath(n, c){
-   return MO.RResource.iconPath(MO.Class.name(c ? c : this, true) + '_' + n);
+MO.MDuiStyle_styleIconPath = function MDuiStyle_styleIconPath(name, method){
+   var className = MO.Class.name(method ? method : this, true);
+   var iconName = className + '_' + name;
+   return MO.RResource.iconPath(iconName);
 }

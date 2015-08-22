@@ -12,8 +12,9 @@ MO.FEditorDsWorkspace = function FEditorDsWorkspace(o){
    o._storageCode        = o._frameName;
    //..........................................................
    // @style
-   o._styleTitleLogo     = MO.Class.register(o, new MO.AStyle('_styleTitlePanel', 'Title_Panel'));
+   o._styleTitlePanel    = MO.Class.register(o, new MO.AStyle('_styleTitlePanel', 'Title_Panel'));
    o._styleTitleLogo     = MO.Class.register(o, new MO.AStyle('_styleTitleLogo', 'Title_Logo'));
+   o._styleTitleLabel    = MO.Class.register(o, new MO.AStyle('_styleTitleLabel', 'Title_Label'));
    o._styleMenuBarGround = MO.Class.register(o, new MO.AStyle('_styleMenuBarGround', 'MenuBar_Ground'));
    o._styleModuleGround  = MO.Class.register(o, new MO.AStyle('_styleModuleGround', 'Module_Ground'));
    o._styleSpaceGround   = MO.Class.register(o, new MO.AStyle('_styleSpaceGround', 'Space_Ground'));
@@ -71,6 +72,9 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    hTitleCell.align = 'center';
    hTitleCell.vAlign = 'middle';
    MO.Window.Builder.appendIcon(hTitleCell, null, 'editor.design.logo|png');
+   // 设置标题
+   var hTitleCell = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Title_Label'));
+   MO.Window.Html.textSet(hTitleCell, '开发设计平台');
    return;
    //..........................................................
    var hTable = MO.Window.Builder.createTable(event);

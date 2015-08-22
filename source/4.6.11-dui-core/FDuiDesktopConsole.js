@@ -79,8 +79,8 @@ MO.FDuiDesktopConsole_getMaskPanel = function FDuiDesktopConsole_getMaskPanel(){
    // 创建图片
    //var hi = o._hDisableImage;
    //if(!hi){
-   //   hi = o._hDisableImage = RBuilder.appendIcon(h);
-   //   hi.src = RResource.iconPath('control.RWindow_Loading');
+   //   hi = o._hDisableImage = MO.Window.Builder.appendIcon(h);
+   //   hi.src = MO.Window.Resource.iconPath('control.RWindow_Loading');
    //   hi.style.margin = o._hContainer.offsetHeight / 2;
    //   hi.style.display = 'none';
    //}

@@ -7,11 +7,11 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiCellEdit = function FDuiCellEdit(o){
-      //o = RClass.inherits(this, o, FDuiCellEditControl, MDuiFocus);
-      o = RClass.inherits(this, o, FDuiCellEditControl);
+      //o = MO.Class.inherits(this, o, FDuiCellEditControl, MDuiFocus);
+      o = MO.Class.inherits(this, o, FDuiCellEditControl);
       //..........................................................
       // @style
-      o._styleInput = RClass.register(o, new AStyle('_styleInput'));
+      o._styleInput = MO.Class.register(o, new MO.AStyle('_styleInput'));
       //..........................................................
       // @html
       o._hInput     = null;
@@ -41,13 +41,13 @@ with(MO){
       var o = this;
       var c = o._column;
       // 建立文本输入框
-      o._hInput = RBuilder.appendEdit(o._hEditPanel, o.styleName('Input'));
+      o._hInput = MO.Window.Builder.appendEdit(o._hEditPanel, o.styleName('Input'));
       //if(c.canZoom()){
       //   // 设置文本底板
       //   var hep = o.hEditPanel;
       //   c.linkEvent(o, 'onCellDoubleClick', hep, c.onCellDoubleClick);
       //   // 建立显示文本
-      //   var he = o.hEdit = RBuilder.append(hep, 'SPAN');
+      //   var he = o.hEdit = MO.Window.Builder.append(hep, 'SPAN');
       //   he.style.color = 'blue';
       //   he.style.textDecoration = 'underline';
       //   he.style.cursor = 'hand';
@@ -119,7 +119,7 @@ with(MO){
          var hdp = o.hDropPanel;
          hdp.align = 'right';
          hdp.style.paddingRight = 2;
-         var hli = o.hLovImage = RBuilder.appendIcon(hdp, 'ctl.FDuiCellEdit_Lov', null, 16, 16);
+         var hli = o.hLovImage = MO.Window.Builder.appendIcon(hdp, 'ctl.FDuiCellEdit_Lov', null, 16, 16);
          hli.style.borderLeft='1 solid #CCCCCC';
          hli.style.cursor = 'hand';
          c.linkEvent(o, 'onListClick', hli);
@@ -141,7 +141,7 @@ with(MO){
       if(m && m.get(f.icon)){
          hi.style.display = 'block';
          hi.title = f.iconHint;
-         hi.src = RResource.iconPath(m.get(f.icon));
+         hi.src = MO.Window.Resource.iconPath(m.get(f.icon));
       }else{
          if(hi){
             hi.style.display = 'none';

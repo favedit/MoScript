@@ -21,7 +21,6 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
    // @method
    o.mergeCount        = MO.FE3rDynamicMesh_mergeCount;
    o.mergeMaxCount     = MO.FE3rDynamicMesh_mergeMaxCount;
-   o.mergeStride       = MO.FE3rDynamicMesh_mergeStride;
    o.mergeRenderables  = MO.FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = MO.FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = MO.FE3rDynamicMesh_mergeRenderable;
@@ -39,7 +38,7 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
 MO.FE3rDynamicMesh_construct = function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
-   o._mergeRenderables = new MO.TObjects();
+   o._mergeRenderables = new TObjects();
 }
 
 //==========================================================
@@ -60,16 +59,6 @@ MO.FE3rDynamicMesh_mergeCount = function FE3rDynamicMesh_mergeCount(){
 //==========================================================
 MO.FE3rDynamicMesh_mergeMaxCount = function FE3rDynamicMesh_mergeMaxCount(){
    return this._model._mergeMaxCount;
-}
-
-//==========================================================
-// <T>获得合并宽度。</T>
-//
-// @method
-// @return Integer 总数
-//==========================================================
-MO.FE3rDynamicMesh_mergeStride = function FE3rDynamicMesh_mergeStride(){
-   return 4;
 }
 
 //==========================================================
@@ -237,11 +226,11 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
    var instanceVertexBuffer = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
    instanceVertexBuffer.setCode('instance');
    instanceVertexBuffer.setStride(4);
-   instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
+   instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
    var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
    o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
    // 创建索引流
-   var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
+   var indexBuffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
    if(capability.optionIndex32){
       indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
       indexBuffer._data = new Uint32Array(indexTotal);
@@ -266,7 +255,7 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
          o.mergeVertexBuffer(renderable, vbrc, vertexBuffer, vertexBufferResource);
       }
       // 生成顶点实例数据
-      MO.Lang.Float.fill(vdi, o._vertexPosition, vc, i);
+      RFloat.fill(vdi, o._vertexPosition, vc, i);
       // 生成索引数据
       var indexBuffer = renderable.indexBuffers().first();
       var ic = indexBuffer.count();

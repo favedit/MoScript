@@ -65,7 +65,7 @@ MO.FDuiPopupMenu_onBuild = function FDuiPopupMenu_onBuild(event){
    hLineBottom.bgColor = '#666666';
    hLineBottom.height = '2px';
 
-   //var hd = o._hFormPanel = RBuilder.append(hc, 'DIV')
+   //var hd = o._hFormPanel = MO.Window.Builder.append(hc, 'DIV')
    //hd.style.width = '100%';
    //hd.style.height = '100%';
    // 设置内部表单

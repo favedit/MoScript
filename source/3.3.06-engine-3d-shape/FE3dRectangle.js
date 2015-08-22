@@ -28,7 +28,7 @@ MO.FE3dRectangle = function FE3dRectangle(o){
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
-MO.FE3dRectangle_setup = function FE3dRectangle_setup(context){
+MO.FE3dRectangle_setup = function FE3dRectangle_setup(p){
    var o = this;
    // 设置顶点数据
    var vp = [
@@ -36,9 +36,7 @@ MO.FE3dRectangle_setup = function FE3dRectangle_setup(context){
        1.0,  1.0, 0.0,
        1.0, -1.0, 0.0,
       -1.0, -1.0, 0.0 ];
-   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-   buffer.setCode('position');
-   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
+   var buffer = o._vertexPositionBuffer = p.createVertexBuffer();
    buffer.upload(vp, 4 * 3, 4);
    o.pushVertexBuffer(buffer);
    // 设置颜色数据
@@ -47,9 +45,7 @@ MO.FE3dRectangle_setup = function FE3dRectangle_setup(context){
       1.0, 0.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       0.0, 0.0, 0.0, 1.0 ];
-   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-   buffer.setCode('color');
-   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+   var buffer = o._vertexColorBuffer = p.createVertexBuffer();
    buffer.upload(vc, 4 * 4, 4);
    o.pushVertexBuffer(buffer);
    // 设置索引数据

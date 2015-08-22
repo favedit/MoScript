@@ -10,7 +10,6 @@ MO.EUiColor = new function EUiColor(){
    //..........................................................
    // @attribute
    o.ReadonlyBackgroundColor = '#FEFECB';
-
    // Attribute
    o.Normal        = '#FFFFFF';
    o.Select        = '#F8C59A';

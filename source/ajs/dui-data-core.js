@@ -1,6 +1,6 @@
 with(MO){
    MO.FDatasetConsole = function FDatasetConsole(o){
-      o = RClass.inherits(this, o, FConsole);
+      o = MO.Class.inherits(this, o, FConsole);
       o._scopeCd = EScope.Local;
       o._service = 'cloud.data.frame';
       o._datasets        = null;
@@ -332,7 +332,7 @@ with(MO){
 }
 with(MO){
    MO.FDataSource = function FDataSource(o){
-      o = RClass.inherits(this, o, FObject);
+      o = MO.Class.inherits(this, o, FObject);
       o._currentRow     = null;
       o._currentDataset = null;
       o._datasets       = null;

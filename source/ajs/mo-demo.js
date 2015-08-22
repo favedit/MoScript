@@ -1,6 +1,6 @@
 with(MO){
    MO.FE3dGalaxy = function FE3dGalaxy(o){
-      o = RClass.inherits(this, o, FE3dRenderable);
+      o = MO.Class.inherits(this, o, FE3dRenderable);
       o._seed                 = 0;
       o._cellSize             = null;
       o._size                 = null;
@@ -24,7 +24,7 @@ with(MO){
    MO.FE3dGalaxy_construct = function FE3dGalaxy_construct(){
       var o = this;
       o.__base.FE3dRenderable.construct.call(o);
-      o._material = RClass.create(FE3dMaterial);
+      o._material = MO.Class.create(FE3dMaterial);
       o._cellSize = new SSize2();
       o._cellSize.set(2, 2);
       o._size = new SSize2();
@@ -128,7 +128,7 @@ with(MO){
 }
 with(MO){
    MO.FE3dGalaxyEffect = function FE3dGalaxyEffect(o){
-      o = RClass.inherits(this, o, FG3dAutomaticEffect);
+      o = MO.Class.inherits(this, o, FG3dAutomaticEffect);
       o._code          = 'galaxy.automatic';
       o.drawRenderable = FE3dGalaxyEffect_drawRenderable;
       return o;

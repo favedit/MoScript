@@ -12,10 +12,10 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiCell = function FDuiCell(o){
-      o = RClass.inherits(this, o, FControl, MEditValue, MDataValue);
+      o = MO.Class.inherits(this, o, FControl, MEditValue, MDataValue);
       //..........................................................
       // @style
-      o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
+      o._stylePanel   = MO.Class.register(o, new MO.AStyle('_stylePanel'));
       //..........................................................
       // @attribute
       o._table       = null;
@@ -68,7 +68,7 @@ with(MO){
    //==========================================================
    MO.FDuiCell_onBuildPanel = function FDuiCell_onBuildPanel(p){
       var o = this;
-      o._hPanel = RBuilder.create(p, 'TD', o.styleName('Panel'));
+      o._hPanel = MO.Window.Builder.create(p, 'TD', o.styleName('Panel'));
    }
 
    //==========================================================

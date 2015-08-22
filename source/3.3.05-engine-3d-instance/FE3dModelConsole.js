@@ -110,7 +110,7 @@ MO.FE3dModelConsole_allocByCode = function FE3dModelConsole_allocByCode(context,
    // 加载渲染对象
    //var renderable = RConsole.find(FE3rModelConsole).load(context, guid);
    // 加载模型
-   //var model = RClass.create(FE3dModel);
+   //var model = MO.Class.create(FE3dModel);
    //model.linkGraphicContext(context);
    //model.setPoolCode(code);
    //model.setRenderable(renderable);

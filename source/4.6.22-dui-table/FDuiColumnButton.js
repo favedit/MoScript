@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiColumnButton = function FDuiColumnButton(o){
-      o = RClass.inherits(this, o, FColumn);
+      o = MO.Class.inherits(this, o, FColumn);
       //..........................................................
       // @attribute
       o.__cellClass = FCellButton;

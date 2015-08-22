@@ -49,7 +49,7 @@ MO.FDuiTreeColumn_oeBuild = function FDuiTreeColumn_oeBuild(event){
 // <T>建立标签。</T>
 //
 // @method
-// @see RBuilder.create
+// @see MO.Window.Builder.create
 //==========================================================
 MO.FDuiTreeColumn_onBuildPanel = function FDuiTreeColumn_onBuildPanel(){
    this.hPanel = MO.Window.Builder.create(null, 'TD');

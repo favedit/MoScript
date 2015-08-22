@@ -19,21 +19,21 @@ with(MO){
    // @version 150102
    //==========================================================
    MO.FUiDataEditControl = function FUiDataEditControl(o){
-      o = RClass.inherits(this, o, FDuiEditControl, MUiEditValue, MDuiEditChange, MDuiEditDrop);
+      o = MO.Class.inherits(this, o, FDuiEditControl, MUiEditValue, MDuiEditChange, MDuiEditDrop);
       //..........................................................
       // @property
-      o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
-      o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
-      o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
-      o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EUiAlign.Left);
-      o._labelColor       = RClass.register(o, new APtyString('_labelColor'));
+      o._labelModeCd      = MO.Class.register(o, new MO.APtyString('_labelModeCd'), EUiLabelMode.All);
+      o._labelPositionCd  = MO.Class.register(o, new MO.APtyString('_labelPositionCd'), EUiLabelPosition.Left);
+      o._labelSize        = MO.Class.register(o, new MO.APtySize2('_labelSize'));
+      o._labelAlignCd     = MO.Class.register(o, new MO.APtyString('_labelAlignCd'), EUiAlign.Left);
+      o._labelColor       = MO.Class.register(o, new MO.APtyString('_labelColor'));
       // @property
-      o._editSize         = RClass.register(o, new APtySize2('_editSize'));
-      o._editColor        = RClass.register(o, new APtyString('_editColor'));
+      o._editSize         = MO.Class.register(o, new MO.APtySize2('_editSize'));
+      o._editColor        = MO.Class.register(o, new MO.APtyString('_editColor'));
       //..........................................................
       // @style
-      o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
-      o._styleEditPanel   = RClass.register(o, new AStyle('_styleEditPanel'));
+      o._styleLabelPanel  = MO.Class.register(o, new MO.AStyle('_styleLabelPanel'));
+      o._styleEditPanel   = MO.Class.register(o, new MO.AStyle('_styleEditPanel'));
       //..........................................................
       // @attribute
       o._progressing      = false;
@@ -119,9 +119,9 @@ with(MO){
    MO.FUiDataEditControl_onBuildLabelIcon = function FUiDataEditControl_onBuildLabelIcon(p){
       var o = this;
       if(o._labelIcon){
-         o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, o._labelIcon);
+         o._hIcon = MO.Window.Builder.appendIcon(o._hIconPanel, null, o._labelIcon);
       }else{
-         o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, 'n', 16, 16);
+         o._hIcon = MO.Window.Builder.appendIcon(o._hIconPanel, null, 'n', 16, 16);
       }
    }
 
@@ -133,7 +133,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_onBuildLabelText = function FUiDataEditControl_onBuildLabelText(p){
       var o = this;
-      o._hText = RBuilder.appendSpan(o._hTextPanel, null, o._label);
+      o._hText = MO.Window.Builder.appendSpan(o._hTextPanel, null, o._label);
    }
 
    //==========================================================
@@ -144,14 +144,14 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_onBuildLabel = function FUiDataEditControl_onBuildLabel(p){
       var o = this;
-      var h = o._hLabelForm = RBuilder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
-      var hr = RBuilder.appendTableRow(h);
+      var h = o._hLabelForm = MO.Window.Builder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
+      var hr = MO.Window.Builder.appendTableRow(h);
       // 建立标签图标
-      var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
+      var hip = o._hIconPanel = MO.Window.Builder.appendTableCell(hr);
       hip.width = '20px';
       o.onBuildLabelIcon(p);
       // 建立标签文字
-      var htp = o._hTextPanel = RBuilder.appendTableCell(hr);
+      var htp = o._hTextPanel = MO.Window.Builder.appendTableCell(hr);
       htp.noWrap = true;
       o.onBuildLabelText(p);
       // 设置标签尺寸
@@ -176,10 +176,10 @@ with(MO){
    MO.FUiDataEditControl_onBuildEdit = function FUiDataEditControl_onBuildEdit(p){
       var o = this;
       /// 建立控件表格
-      var h = o._hEditForm = RBuilder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
-      var hr = o._hEditLine = RBuilder.appendTableRow(h);
+      var h = o._hEditForm = MO.Window.Builder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
+      var hr = o._hEditLine = MO.Window.Builder.appendTableRow(h);
       // 建立编辑面板
-      o._hValuePanel = RBuilder.appendTableCell(hr);
+      o._hValuePanel = MO.Window.Builder.appendTableCell(hr);
       o.onBuildEditValue(p);
       // 设置大小
       RHtml.setSize(h, o._editSize);
@@ -223,7 +223,7 @@ with(MO){
          hp.width = 13;
          hp.align = 'right';
          hp.vAlign = 'top';
-         var hi = o.hHintIcon = RBuilder.appendIcon(hp, 'ctl.hint');
+         var hi = o.hHintIcon = MO.Window.Builder.appendIcon(hp, 'ctl.hint');
          hi._pname = 'hHintIcon';
          hi.title = o.hint;
       }
@@ -244,7 +244,7 @@ with(MO){
    //==========================================================
    MO.FUiDataEditControl_onBuildPanel = function FUiDataEditControl_onBuildPanel(p){
       var o = this;
-      o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+      o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
    }
 
    //==========================================================
@@ -271,27 +271,27 @@ with(MO){
       var lmc = o._labelModeCd;
       if(lmc == EUiLabelMode.Label){
          // 只建立标签的情况
-         hlp = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
+         hlp = MO.Window.Builder.appendTableCell(RBuilder.appendTableRow(hc));
       }else if(lmc == EUiLabelMode.Hidden){
          // 只建立编辑框的情况
-         hep = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
+         hep = MO.Window.Builder.appendTableCell(RBuilder.appendTableRow(hc));
       }else{
          // 全部建立的情况
          var lpc = o._labelPositionCd;
          if(lpc == EUiLabelPosition.Top){
-            hlp = RBuilder.appendTableRowCell(hc);
-            hep = RBuilder.appendTableRowCell(hc);
+            hlp = MO.Window.Builder.appendTableRowCell(hc);
+            hep = MO.Window.Builder.appendTableRowCell(hc);
          }else if(lpc == EUiLabelPosition.Right){
-            var hr = RBuilder.appendTableRow(hc);
-            hep = RBuilder.appendTableCell(hr);
-            hlp = RBuilder.appendTableCell(hr);
+            var hr = MO.Window.Builder.appendTableRow(hc);
+            hep = MO.Window.Builder.appendTableCell(hr);
+            hlp = MO.Window.Builder.appendTableCell(hr);
          }else if(lpc == EUiLabelPosition.Bottom){
-            hep = RBuilder.appendTableRowCell(hc);
-            hlp = RBuilder.appendTableRowCell(hc);
+            hep = MO.Window.Builder.appendTableRowCell(hc);
+            hlp = MO.Window.Builder.appendTableRowCell(hc);
          }else{
-            var hr = RBuilder.appendTableRow(hc);
-            hlp = RBuilder.appendTableCell(hr);
-            hep = RBuilder.appendTableCell(hr);
+            var hr = MO.Window.Builder.appendTableRow(hc);
+            hlp = MO.Window.Builder.appendTableCell(hr);
+            hep = MO.Window.Builder.appendTableCell(hr);
          }
       }
       o._hLabelPanel = hlp;
@@ -482,16 +482,16 @@ with(MO){
       o._labelSize = RObject.dispose(o._labelSize);
       o._editSize = RObject.dispose(o._editSize);
       // 释放页面元素
-      o._hLabelPanel = RHtml.free(o._hLabelPanel);
-      o._hLabelForm = RHtml.free(o._hLabelForm);
-      o._hIconPanel = RHtml.free(o._hIconPanel);
-      o._hIcon = RHtml.free(o._hIcon);
-      o._hTextPanel = RHtml.free(o._hTextPanel);
-      o._hText = RHtml.free(o._hText);
-      o._hEditPanel = RHtml.free(o._hEditPanel);
-      o._hEditForm = RHtml.free(o._hEditForm);
-      o._hValuePanel = RHtml.free(o._hValuePanel);
-      o._hDropPanel = RHtml.free(o._hDropPanel);
+      o._hLabelPanel = MO.Window.Html.free(o._hLabelPanel);
+      o._hLabelForm = MO.Window.Html.free(o._hLabelForm);
+      o._hIconPanel = MO.Window.Html.free(o._hIconPanel);
+      o._hIcon = MO.Window.Html.free(o._hIcon);
+      o._hTextPanel = MO.Window.Html.free(o._hTextPanel);
+      o._hText = MO.Window.Html.free(o._hText);
+      o._hEditPanel = MO.Window.Html.free(o._hEditPanel);
+      o._hEditForm = MO.Window.Html.free(o._hEditForm);
+      o._hValuePanel = MO.Window.Html.free(o._hValuePanel);
+      o._hDropPanel = MO.Window.Html.free(o._hDropPanel);
       // 父处理
       o.__base.MDuiEditDrop.dispose.call(o);
       o.__base.MDuiEditChange.dispose.call(o);

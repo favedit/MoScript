@@ -232,8 +232,8 @@ with(MO){
 with(MO){
    MO.FDsMaterialCatalogItem = function FDsMaterialCatalogItem(o){
       o = MO.Class.inherits(this, o, FDuiListViewItem);
-      o._styleTypePanel = MO.Class.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypeLabel = MO.Class.register(o, new AStyle('_styleTypeLabel'));
+      o._styleTypePanel = MO.Class.register(o, new MO.AStyle('_styleTypePanel'));
+      o._styleTypeLabel = MO.Class.register(o, new MO.AStyle('_styleTypeLabel'));
       o.onBuild         = FDsMaterialCatalogItem_onBuild;
       o.setTypeLabel    = FDsMaterialCatalogItem_setTypeLabel;
       o.refreshStyle    = FDsMaterialCatalogItem_refreshStyle;
@@ -247,7 +247,7 @@ with(MO){
       h.style.height = '150px';
       o._hLine1.className = o.styleName('TypePanel');
       o._hLine1.vAlign = 'top';
-      o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
+      o._hTypeLabel = MO.Window.Builder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
    }
    MO.FDsMaterialCatalogItem_setTypeLabel = function FDsMaterialCatalogItem_setTypeLabel(label){
       this._hTypeLabel.innerHTML = label;
@@ -847,10 +847,10 @@ with(MO){
    MO.FDsMaterialWorkspace = function FDsMaterialWorkspace(o){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new MO.AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;

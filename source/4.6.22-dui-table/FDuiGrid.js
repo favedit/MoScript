@@ -32,7 +32,7 @@ with(MO){
    // @history 091022 MAOCY 创建
    //==========================================================
    MO.FDuiGrid = function FDuiGrid(o) {
-      o = RClass.inherits(this, o, FDuiGridControl);
+      o = MO.Class.inherits(this, o, FDuiGridControl);
       //..........................................................
       // @event
       o.onResizeAfter = FDuiGrid_onResizeAfter;
@@ -62,24 +62,24 @@ with(MO){
    //==========================================================
    MO.FDuiGrid_onBuildData = function FDuiGrid_onBuildData(){
       // 建立固定区(Layer:2)
-      var hfp = o.hFixPanel = RBuilder.appendDiv(hbp);
+      var hfp = o.hFixPanel = MO.Window.Builder.appendDiv(hbp);
       hfp.style.zIndex = 2;
       hfp.style.position = 'absolute';
-      var hff = o.hFixForm = RBuilder.appendTable(hfp, null, 1);
-      var hffb = RBuilder.append(hff, 'TBODY');
+      var hff = o.hFixForm = MO.Window.Builder.appendTable(hfp, null, 1);
+      var hffb = MO.Window.Builder.append(hff, 'TBODY');
       hff.style.tableLayout = 'fixed';
       hff.frame = 'rhs';
       hff.borderColorLight = '#29BAD5';
       hff.borderColorDark = '#EEEEEE';
-      o.hFixHead = RBuilder.append(hffb, 'TR');
-      o.hFixSearch = RBuilder.append(hffb, 'TR');
+      o.hFixHead = MO.Window.Builder.append(hffb, 'TR');
+      o.hFixSearch = MO.Window.Builder.append(hffb, 'TR');
       // 建立列的标题区(Layer:1)
-      var hhp = o.hHeadPanel = RBuilder.appendDiv(hbp);
+      var hhp = o.hHeadPanel = MO.Window.Builder.appendDiv(hbp);
       hhp.style.zIndex = 1;
       hhp.style.position = 'absolute';
       hhp.style.overflowX = 'hidden';
       hhp.style.width = 1;
-      var hhf = o.hHeadForm = RBuilder.appendTable(hhp, null, 1);
+      var hhf = o.hHeadForm = MO.Window.Builder.appendTable(hhp, null, 1);
       hhf.frame = 'rhs';
       hhf.style.tableLayout = 'fixed';
       hhf.borderColorLight = '#29BAD5';
@@ -87,18 +87,18 @@ with(MO){
       o.hHead = hhf.insertRow();
       o.hSearch = hhf.insertRow();
       // 建立列区(Layer:1)
-      var hcp = o.hColumnPanel = RBuilder.appendDiv(hbp, o.style('DataPanel'));
+      var hcp = o.hColumnPanel = MO.Window.Builder.appendDiv(hbp, o.style('DataPanel'));
       hcp.style.zIndex = 1;
       hcp.style.position = 'absolute';
       hcp.style.overflowY = 'hidden';
-      var hcf = o.hColumnForm = RBuilder.appendTable(hcp, o.style('DataForm'), 0, 0, 1);
-      o.hFixRows = RBuilder.append(hcf, 'TBODY');
-      o.hFixRowLine = RBuilder.append(o.hFixRows, 'TR');
+      var hcf = o.hColumnForm = MO.Window.Builder.appendTable(hcp, o.style('DataForm'), 0, 0, 1);
+      o.hFixRows = MO.Window.Builder.append(hcf, 'TBODY');
+      o.hFixRowLine = MO.Window.Builder.append(o.hFixRows, 'TR');
       // 建立数据区
-      var hdp = o.hDataPanel = RBuilder.appendDiv(hbp, o.style('DataPanel'));
-      var hdf = o.hDataForm = RBuilder.appendTable(hdp, o.style('DataForm'), 0, 0, 1);
-      o.hRows = RBuilder.append(hdf, 'TBODY');
-      o.hRowLine = RBuilder.append(o.hRows, 'TR');
+      var hdp = o.hDataPanel = MO.Window.Builder.appendDiv(hbp, o.style('DataPanel'));
+      var hdf = o.hDataForm = MO.Window.Builder.appendTable(hdp, o.style('DataForm'), 0, 0, 1);
+      o.hRows = MO.Window.Builder.append(hdf, 'TBODY');
+      o.hRowLine = MO.Window.Builder.append(o.hRows, 'TR');
       // 关联事件对象
       o.attachEvent('onHeadMouseDown', o.hHeadForm, o.onHeadMouseDown);
       o.attachEvent('onHeadMouseMove', o.hHeadForm, o.onHeadMouseMove);

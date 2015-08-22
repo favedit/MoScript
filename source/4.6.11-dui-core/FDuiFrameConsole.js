@@ -91,7 +91,7 @@ MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    //   o._framesLoaded.set(fd, true);
    //}
    // 创建表单实例
-   //var c = RClass.create('F' + fx.name);
+   //var c = MO.Class.create('F' + fx.name);
    //RDuiControl.innerCreate(c, fx);
    //c.psInitialize();
    //if(!b){
@@ -256,7 +256,7 @@ MO.FDuiFrameConsole_loadEvents = function FDuiFrameConsole_loadEvents(cfg){
    //for(var n = 0; n < l; n++){
    //   var x = ns.get(n);
    //   if(x.isName('Event')){
-   //      var c = RClass.create(FEvent);
+   //      var c = MO.Class.create(FEvent);
    //      c.loadConfig(x);
    //      if(RString.isEmpty(c.name) || RString.isEmpty(c.source) || RString.isEmpty(c.form)){
    //         RMessage.fatel(o, null, "Event property is invalid. (event={0})", x.xml());

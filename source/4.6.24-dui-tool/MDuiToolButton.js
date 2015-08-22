@@ -7,7 +7,7 @@ with(MO){
    // @history 150228
    //==========================================================
    MO.MDuiToolButton = function MDuiToolButton(o){
-      o = RClass.inherits(this, o);
+      o = MO.Class.inherits(this, o);
       return o;
    }
 }

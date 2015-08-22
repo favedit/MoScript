@@ -6,7 +6,7 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FUiDataToolBar = function FUiDataToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       return o;
    }
 }

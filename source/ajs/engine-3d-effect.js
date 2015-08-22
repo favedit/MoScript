@@ -120,24 +120,6 @@ MO.FE3dControlTechnique_drawRegion = function FE3dControlTechnique_drawRegion(p)
    o._graphicContext.clearDepth(1);
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }
-MO.FE3dFloodLightEffect = function FE3dFloodLightEffect(o){
-   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
-   o._code          = 'general.color.flood';
-   o.drawRenderable = MO.FE3dFloodLightEffect_drawRenderable;
-   return o;
-}
-MO.FE3dFloodLightEffect_drawRenderable = function FE3dFloodLightEffect_drawRenderable(region, renderable){
-   var o = this;
-   var context = o._graphicContext;
-   var contextSize = context.size();
-   var sizeWidth = contextSize.width ;
-   var sizeHeight = contextSize.height;
-   var program = o._program;
-   var material = renderable.material();
-   o.bindMaterial(material);
-   var matrix = renderable.matrix();
-   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
-}
 MO.FE3dGeneralColorAutomaticEffect = function FE3dGeneralColorAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
    o._code          = 'general.color.automatic';

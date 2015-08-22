@@ -7,7 +7,7 @@ with(MO){
    // @version 150125
    //==========================================================
    MO.FDuiGridRow = function FDuiGridRow(o){
-      o = RClass.inherits(this, o, FDuiGridRowControl);
+      o = MO.Class.inherits(this, o, FDuiGridRowControl);
       //..........................................................
       // @html 行对象<TR>
       o._hFixPanel   = null;
@@ -41,7 +41,7 @@ with(MO){
       var o = this;
       o.__base.FDuiGridRowControl.onBuildPanel.call(o, p);
       // 建立固定行对象
-      o._hFixPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
+      o._hFixPanel = MO.Window.Builder.createTableRow(p, o.styleName('Panel'));
    }
 
    //==========================================================

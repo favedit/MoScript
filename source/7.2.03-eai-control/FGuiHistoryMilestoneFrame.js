@@ -7,7 +7,7 @@ with (MO) {
    // @history 151626
    //==========================================================
    MO.FGuiHistoryMilestoneFrame = function FGuiHistoryMilestoneFrame(o) {
-      o = RClass.inherits(this, o, FGuiControl);
+      o = MO.Class.inherits(this, o, FGuiControl);
       //..........................................................
       // @attribute
       o._bgImage              = null;
@@ -15,7 +15,7 @@ with (MO) {
       o._wanImage             = null;
       o._yiImage              = null;
       // @attribute
-      o._data                 = RClass.register(o, new AGetSet('_data'));
+      o._data                 = MO.Class.register(o, new AGetSet('_data'));
       o._startTick            = 0;
       o._popDuration          = 400;
       o._showDuration         = 3000;
@@ -26,7 +26,7 @@ with (MO) {
       o._popupSE              = null;
       o._100yiSE              = null;
       // @attribute
-      o._listenersDataChanged = RClass.register(o, new AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+      o._listenersDataChanged = MO.Class.register(o, new AListener('_listenersDataChanged', MO.EEvent.DataChanged));
       //..........................................................
       // @method
       o.setup                 = FGuiHistoryMilestoneFrame_setup;

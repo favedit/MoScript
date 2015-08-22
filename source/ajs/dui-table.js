@@ -16,8 +16,8 @@ MO.EDuiGridDisplay = new function EDuiGridDisplayFace(){
 }
 with(MO){
    MO.FDuiCell = function FDuiCell(o){
-      o = RClass.inherits(this, o, FControl, MEditValue, MDataValue);
-      o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
+      o = MO.Class.inherits(this, o, FControl, MEditValue, MDataValue);
+      o._stylePanel   = MO.Class.register(o, new MO.AStyle('_stylePanel'));
       o._table       = null;
       o._column      = null;
       o._row         = null;
@@ -29,7 +29,7 @@ with(MO){
    }
    MO.FDuiCell_onBuildPanel = function FDuiCell_onBuildPanel(p){
       var o = this;
-      o._hPanel = RBuilder.create(p, 'TD', o.styleName('Panel'));
+      o._hPanel = MO.Window.Builder.create(p, 'TD', o.styleName('Panel'));
    }
    MO.FDuiCell_onBuild = function FDuiCell_onBuild(p){
       var o = this;
@@ -173,15 +173,15 @@ with(MO){
 }
 with(MO){
    MO.FDuiCellButton = function FDuiCellButton(o){
-      o = RClass.inherits(this, o, FCell);
+      o = MO.Class.inherits(this, o, FCell);
       o.buttons           = null;
       o.attributes        = null;
-      o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FDuiCellButton_onButtonEnter);
-      o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FDuiCellButton_onButtonLeave);
-      o.onCellLeave       = RClass.register(o, new AEventMouseLeave('onCellLeave'), FDuiCellButton_onCellLeave);
-      o.onHintEnter       = RClass.register(o, new AEventMouseEnter('onHintEnter'), FDuiCellButton_onHintEnter);
-      o.onHintLeave       = RClass.register(o, new AEventMouseLeave('onHintLeave'), FDuiCellButton_onHintLeave);
-      o.onButtonClick     = RClass.register(o, new AEventClick('onButtonClick'), FDuiCellButton_onButtonClick);
+      o.onButtonEnter     = MO.Class.register(o, new AEventMouseEnter('onButtonEnter'), FDuiCellButton_onButtonEnter);
+      o.onButtonLeave     = MO.Class.register(o, new AEventMouseLeave('onButtonLeave'), FDuiCellButton_onButtonLeave);
+      o.onCellLeave       = MO.Class.register(o, new AEventMouseLeave('onCellLeave'), FDuiCellButton_onCellLeave);
+      o.onHintEnter       = MO.Class.register(o, new AEventMouseEnter('onHintEnter'), FDuiCellButton_onHintEnter);
+      o.onHintLeave       = MO.Class.register(o, new AEventMouseLeave('onHintLeave'), FDuiCellButton_onHintLeave);
+      o.onButtonClick     = MO.Class.register(o, new AEventClick('onButtonClick'), FDuiCellButton_onButtonClick);
       o.construct         = FDuiCellButton_construct;
       o.isDataChanged     = RMethod.emptyFalse;
       o.findButtonByPanel = FDuiCellButton_findButtonByPanel;
@@ -264,7 +264,7 @@ with(MO){
       RControl.attachEvent(o, 'onCellLeave', hp, o.onCellLeave);
       hp.align = 'left';
       hp.padding = 1;
-      var hf = o.hForm = RBuilder.appendTable(o.hPanel);
+      var hf = o.hForm = MO.Window.Builder.appendTable(o.hPanel);
       var hr = o.hFormLine = hf.insertRow();
       var bs = c.components;
       if(bs){
@@ -274,10 +274,10 @@ with(MO){
             var hc = hr.insertCell();
             hc.align = 'center';
             hc.style.padding = '0 3';
-            var hbp = RBuilder.append(hc, 'DIV');
+            var hbp = MO.Window.Builder.append(hc, 'DIV');
             var hi = null;
             if(b.icon){
-               hi = RBuilder.appendIcon(hbp, b.icon);
+               hi = MO.Window.Builder.appendIcon(hbp, b.icon);
             }else{
                hbp.style.padding = '2 6';
                hbp.style.color = '#0661B0';
@@ -291,7 +291,7 @@ with(MO){
                if(b.icon){
                   hi.title = b.label;
                }else{
-                  ht = RBuilder.appendText(hbp, b.label);
+                  ht = MO.Window.Builder.appendText(hbp, b.label);
                }
             }
             var cb = new TCellButton();
@@ -354,7 +354,7 @@ with(MO){
          }
       }
       if(as.contains('hint')){
-         hfd = o.hFloatDrop = RBuilder.append(o.hHintPanel, 'DIV');
+         hfd = o.hFloatDrop = MO.Window.Builder.append(o.hHintPanel, 'DIV');
          hfd.style.borderLeft = '1 solid #CCCCCC';
          hfd.style.borderTop = '1 solid #CCCCCC';
          hfd.style.borderRight = '1 solid #666666';
@@ -392,8 +392,8 @@ with(MO){
 }
 with(MO){
    MO.FDuiCellEdit = function FDuiCellEdit(o){
-      o = RClass.inherits(this, o, FDuiCellEditControl);
-      o._styleInput = RClass.register(o, new AStyle('_styleInput'));
+      o = MO.Class.inherits(this, o, FDuiCellEditControl);
+      o._styleInput = MO.Class.register(o, new MO.AStyle('_styleInput'));
       o._hInput     = null;
       o.onBuildEdit = FDuiCellEdit_onBuildEdit;
       o.get         = FDuiCellEdit_get;
@@ -403,7 +403,7 @@ with(MO){
    MO.FDuiCellEdit_onBuildEdit = function FDuiCellEdit_onBuildEdit(p){
       var o = this;
       var c = o._column;
-      o._hInput = RBuilder.appendEdit(o._hEditPanel, o.styleName('Input'));
+      o._hInput = MO.Window.Builder.appendEdit(o._hEditPanel, o.styleName('Input'));
    }
    MO.FDuiCellEdit_get = function FDuiCellEdit_get(){
       var r = o.__base.FDuiCellEditControl.get.call(o, p);
@@ -428,7 +428,7 @@ with(MO){
          var hdp = o.hDropPanel;
          hdp.align = 'right';
          hdp.style.paddingRight = 2;
-         var hli = o.hLovImage = RBuilder.appendIcon(hdp, 'ctl.FDuiCellEdit_Lov', null, 16, 16);
+         var hli = o.hLovImage = MO.Window.Builder.appendIcon(hdp, 'ctl.FDuiCellEdit_Lov', null, 16, 16);
          hli.style.borderLeft='1 solid #CCCCCC';
          hli.style.cursor = 'hand';
          c.linkEvent(o, 'onListClick', hli);
@@ -443,7 +443,7 @@ with(MO){
       if(m && m.get(f.icon)){
          hi.style.display = 'block';
          hi.title = f.iconHint;
-         hi.src = RResource.iconPath(m.get(f.icon));
+         hi.src = MO.Window.Resource.iconPath(m.get(f.icon));
       }else{
          if(hi){
             hi.style.display = 'none';
@@ -477,7 +477,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiCellEditControl = function FDuiCellEditControl(o){
-      o = RClass.inherits(this, o, FCell);
+      o = MO.Class.inherits(this, o, FCell);
       o.onBuildIcon  = FDuiCellEditControl_onBuildIcon;
       o.onBuildEdit  = FDuiCellEditControl_onBuildEdit;
       o.onBuildDrop  = RMethod.empty;
@@ -487,7 +487,7 @@ with(MO){
    }
    MO.FDuiCellEditControl_onBuildIcon = function FDuiCellEditControl_onBuildIcon(p){
       var o = this;
-      o.hIcon = RBuilder.append(o.hIconPanel, 'IMG');
+      o.hIcon = MO.Window.Builder.append(o.hIconPanel, 'IMG');
    }
    MO.FDuiCellEditControl_onBuildEdit = function FDuiCellEditControl_onBuildEdit(p){
       var o = this;
@@ -497,7 +497,7 @@ with(MO){
       var o = this;
       var c = o._column;
       if(c._hasIconArea || c._hasDropArea){
-         var hf = o.hForm = RBuilder.appendTable(o._hPanel);
+         var hf = o.hForm = MO.Window.Builder.appendTable(o._hPanel);
          hf.width = '100%';
          var hr = o.hFormLine = hf.insertRow();
          if(c.hasIconArea){
@@ -608,9 +608,9 @@ with(MO){
 }
 with(MO){
    MO.FDuiCellSelected = function FDuiCellSelected(o){
-      o = RClass.inherits(this, o, FCell);
+      o = MO.Class.inherits(this, o, FCell);
       o._dataName  = '_select';
-      o._styleEdit = RClass.register(o, new AStyle('_styleEdit'));
+      o._styleEdit = MO.Class.register(o, new MO.AStyle('_styleEdit'));
       o._hSelected = null;
       o.onBuild    = FDuiCellSelected_onBuild;
       o.onSelected = FDuiCellSelected_onSelected;
@@ -622,7 +622,7 @@ with(MO){
       var c = o._column;
       var h = o._hPanel;
       h.align = 'center';
-      var hs = o._hSelected = RBuilder.appendCheck(h, o.styleName('Edit'));
+      var hs = o._hSelected = MO.Window.Builder.appendCheck(h, o.styleName('Edit'));
       hs.parent = o;
       hs.onclick = o.onSelected;
    }
@@ -655,7 +655,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiCellStatus = function FDuiCellStatus(o){
-      o = RClass.inherits(this, o, FCell);
+      o = MO.Class.inherits(this, o, FCell);
       o._dataName = '_status';
       o._hStatus  = null;
       o.onBuild   = FDuiCellStatus_onBuild;
@@ -670,7 +670,7 @@ with(MO){
       h.style.paddingTop = 2;
       h.style.paddingBottom = 2;
       h.style.cursor = 'normal';
-      o._hStatus = RBuilder.appendIcon(h, null, 'n');
+      o._hStatus = MO.Window.Builder.appendIcon(h, null, 'n');
    }
    MO.FDuiCellStatus_onStatusEnter = function FDuiCellStatus_onStatusEnter(){
       this.row.table.getRowBar().linkCell(this);
@@ -698,13 +698,13 @@ with(MO){
 }
 with(MO){
    MO.FDuiColumn = function FDuiColumn(o){
-      o = RClass.inherits(this, o, FControl, MDataField);
+      o = MO.Class.inherits(this, o, FControl, MDataField);
       o._displayList       = true;
-      o._styleLabel        = RClass.register(o, new AStyle('_styleLabel'));
-      o._styleSearchPanel  = RClass.register(o, new AStyle('_styleSearchPanel'));
-      o._styleSearchEdit   = RClass.register(o, new AStyle('_styleSearchEdit'));
-      o._styleIconSortUp   = RClass.register(o, new AStyleIcon('_styleIconSortUp'));
-      o._styleIconSortDown = RClass.register(o, new AStyleIcon('_styleIconSortDown'));
+      o._styleLabel        = MO.Class.register(o, new MO.AStyle('_styleLabel'));
+      o._styleSearchPanel  = MO.Class.register(o, new MO.AStyle('_styleSearchPanel'));
+      o._styleSearchEdit   = MO.Class.register(o, new MO.AStyle('_styleSearchEdit'));
+      o._styleIconSortUp   = MO.Class.register(o, new AStyleIcon('_styleIconSortUp'));
+      o._styleIconSortDown = MO.Class.register(o, new AStyleIcon('_styleIconSortDown'));
       o._cellClass         = FCell;
       o._hForm             = null;
       o._hFormLine         = null;
@@ -725,10 +725,10 @@ with(MO){
       o.onBuildTotal       = FDuiColumn_onBuildTotal;
       o.onBuildPanel       = FDuiColumn_onBuildPanel;
       o.onBuild            = FDuiColumn_onBuild;
-      o.onSearchEnter      = RClass.register(o, new AEventMouseEnter('onSearchEnter'));
-      o.onSearchClick      = RClass.register(o, new AEventClick('onSearchClick'));
-      o.onSearchLeave      = RClass.register(o, new AEventMouseLeave('onSearchLeave'));
-      o.onSearchKeyDown    = RClass.register(o, new AEventKeyDown('onSearchKeyDown'));
+      o.onSearchEnter      = MO.Class.register(o, new AEventMouseEnter('onSearchEnter'));
+      o.onSearchClick      = MO.Class.register(o, new AEventClick('onSearchClick'));
+      o.onSearchLeave      = MO.Class.register(o, new AEventMouseLeave('onSearchLeave'));
+      o.onSearchKeyDown    = MO.Class.register(o, new AEventKeyDown('onSearchKeyDown'));
       o.createCell         = FDuiColumn_createCell;
       return o;
    }
@@ -736,25 +736,25 @@ with(MO){
       var o = this;
       var hr = o._hFormLine;
       if (o._icon) {
-         var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
-         o._hIcon = RBuilder.appendIcon(hip, o.icon);
+         var hip = o._hIconPanel = MO.Window.Builder.appendTableCell(hr);
+         o._hIcon = MO.Window.Builder.appendIcon(hip, o.icon);
       }
-      var hl = o._hLabel = RBuilder.appendTableCell(hr);
+      var hl = o._hLabel = MO.Window.Builder.appendTableCell(hr);
       hl.innerHTML = RString.nvl(o.label());
-      var hsp = o._hSortPanel = RBuilder.appendTableCell(hr);
-      var hsu = o._hSortUp = RBuilder.appendIcon(hsp, o.styleIcon('SortUp', FDuiColumn));
+      var hsp = o._hSortPanel = MO.Window.Builder.appendTableCell(hr);
+      var hsu = o._hSortUp = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortUp', FDuiColumn));
       hsu.style.display = 'none';
-      var hsu = o._hSortDown = RBuilder.appendIcon(hsp, o.styleIcon('SortDown', FDuiColumn));
+      var hsu = o._hSortDown = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortDown', FDuiColumn));
       hsu.style.display = 'none';
    }
    MO.FDuiColumn_onBuildSearchEdit = function FDuiColumn_onBuildSearchEdit(p){
       var o = this;
-      var hc = o._hSearchEditPanel = RBuilder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
-      var he = o._hSearchEdit = RBuilder.appendEdit(hc, o.styleName('SearchEdit'));
+      var hc = o._hSearchEditPanel = MO.Window.Builder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
+      var he = o._hSearchEdit = MO.Window.Builder.appendEdit(hc, o.styleName('SearchEdit'));
    }
    MO.FDuiColumn_onBuildSearchForm = function FDuiColumn_onBuildSearchForm(p){
       var o = this;
-      var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
+      var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
       hf.width = '100%';
       hf.style.backgroundColor = '#FFFFFF';
       var hfl = o._hSearchFormLine = hf.insertRow();
@@ -771,7 +771,7 @@ with(MO){
    }
    MO.FDuiColumn_onBuildSearch = function FDuiColumn_onBuildSearch(p){
       var o = this;
-      var h = o._hSearchPanel = RBuilder.create(p, 'TD', o.styleName('SearchPanel'));
+      var h = o._hSearchPanel = MO.Window.Builder.create(p, 'TD', o.styleName('SearchPanel'));
       h.style.backgroundColor = "#FFFFFF";
       h.style.borderBottom = '1 solid #9EC4EB';
       RHtml.linkSet(h, 'control', o);
@@ -781,7 +781,7 @@ with(MO){
    }
    MO.FDuiColumn_onBuildTotal = function FDuiColumn_onBuildTotal(p){
       var o = this;
-      var h = o._hTotalPanel = RBuilder.create(p, 'TD');
+      var h = o._hTotalPanel = MO.Window.Builder.create(p, 'TD');
       RHtml.linkSet(h, 'control', o);
       h.align = 'right';
       h.style.color = '#686860';
@@ -791,7 +791,7 @@ with(MO){
    }
    MO.FDuiColumn_onBuildPanel = function FDuiColumn_onBuildPanel(p) {
       var o = this;
-      o._hPanel = RBuilder.create(p, 'TD', o.styleName('Label'));
+      o._hPanel = MO.Window.Builder.create(p, 'TD', o.styleName('Label'));
    }
    MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(p) {
       var o = this;
@@ -812,15 +812,15 @@ with(MO){
       o.__base.FControl.onBuild.call(o, p);
       var hp = o._hPanel;
       hp.style.padding = 4;
-      var hf = o._hForm = RBuilder.appendTable(hp);
+      var hf = o._hForm = MO.Window.Builder.appendTable(hp);
       if (!o._orderAble) {
         hf.style.cursor = 'hand';
       }
-      var hr = o._hFormLine = RBuilder.appendTableRow(o._hForm);
+      var hr = o._hFormLine = MO.Window.Builder.appendTableRow(o._hForm);
       o.onBuildLabel(p);
       o.onBuildSearch(p);
       o.onBuildTotal(p);
-      var h = o._hFixPanel = RBuilder.create(p, 'TD');
+      var h = o._hFixPanel = MO.Window.Builder.create(p, 'TD');
       h.height = 1;
       h.bgColor = '#FFFFFF'
       if(o._size.width < 40){
@@ -832,7 +832,7 @@ with(MO){
    }
    MO.FDuiColumn_createCell = function FDuiColumn_createCell(p) {
       var o = this;
-      var c = RClass.create(o._cellClass);
+      var c = MO.Class.create(o._cellClass);
       var t = c._table = o._table;
       c._name = o._name;
       c._column = o;
@@ -970,7 +970,7 @@ with(MO){
       var o = this;
       var r = o.cloneMove;
       if (!r) {
-         r = RClass.create(o.constructor);
+         r = MO.Class.create(o.constructor);
          r.buildMode = EColumnMode.Drag;
          r.assign(o, EAssign.Property);
          r.build();
@@ -1165,14 +1165,14 @@ with(MO){
 }
 with(MO){
    MO.FDuiColumnButton = function FDuiColumnButton(o){
-      o = RClass.inherits(this, o, FColumn);
+      o = MO.Class.inherits(this, o, FColumn);
       o.__cellClass = FCellButton;
       return o;
    }
 }
 with(MO){
    MO.FDuiColumnEdit = function FDuiColumnEdit(o){
-      o = RClass.inherits(this, o, FDuiColumnEditControl, MUiPropertyEdit);
+      o = MO.Class.inherits(this, o, FDuiColumnEditControl, MUiPropertyEdit);
       o._cellClass     = FCellEdit;
       return o;
    }
@@ -1204,7 +1204,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiColumnEditControl = function FDuiColumnEditControl(o){
-      o = RClass.inherits(this, o, FColumn);
+      o = MO.Class.inherits(this, o, FColumn);
       o.isEditAble = FDuiColumnEditControl_isEditAble;
       return o;
    }
@@ -1217,7 +1217,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiColumnEmpty = function FDuiColumnEmpty(o){
-      o = RClass.inherits(this, o, FColumn);
+      o = MO.Class.inherits(this, o, FColumn);
       o._dispList         = true;
       o.onBuildSearchForm = RMethod.empty;
       return o;
@@ -1225,9 +1225,9 @@ with(MO){
 }
 with(MO){
    MO.FDuiColumnSelected = function FDuiColumnSelected(o){
-      o = RClass.inherits(this, o, FColumnEditControl);
+      o = MO.Class.inherits(this, o, FColumnEditControl);
       o._dataName         = '_select';
-      o._styleEdit        = RClass.register(o, new AStyle('_styleEdit'));
+      o._styleEdit        = MO.Class.register(o, new MO.AStyle('_styleEdit'));
       o._optionFixed      = true;
       o._cellClass        = FCellSelected;
       o.onBuildSearchForm = FDuiColumnSelected_onBuildSearchForm;
@@ -1238,12 +1238,12 @@ with(MO){
    }
    MO.FDuiColumnSelected_onBuildSearchForm = function FDuiColumnSelected_onBuildSearchForm(p){
       var o = this;
-      var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
+      var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
       hf.width = '100%';
-      var hfl = o._hSearchFormLine = RBuilder.appendTableRow(hf);
-      var hc = RBuilder.appendTableCell(hfl);
+      var hfl = o._hSearchFormLine = MO.Window.Builder.appendTableRow(hf);
+      var hc = MO.Window.Builder.appendTableCell(hfl);
       hc.align = 'center';
-      o._hSelected = RBuilder.appendCheck(hc, o.styleName('Edit'));
+      o._hSelected = MO.Window.Builder.appendCheck(hc, o.styleName('Edit'));
       o._hSelected.column = o;
       o._hSelected.onclick = o.onSelectedClick;
    }
@@ -1254,7 +1254,7 @@ with(MO){
       h.align = 'center';
       h.style.width = '30px';
       h.style.height = '22px';
-      RBuilder.appendEmpty(o._hPanel, 12, 12);
+      MO.Window.Builder.appendEmpty(o._hPanel, 12, 12);
       return r;
    }
    MO.FDuiColumnSelected_createCell = function FDuiColumnSelected_createCell(p){
@@ -1301,7 +1301,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiColumnStatus = function FDuiColumnStatus(o){
-      o = RClass.inherits(this, o, FColumnEditControl);
+      o = MO.Class.inherits(this, o, FColumnEditControl);
       o._dataName         = '_status';
       o._optionFixed      = true;
       o._cellClass        = FCellStatus;
@@ -1312,11 +1312,11 @@ with(MO){
    }
    MO.FDuiColumnStatus_onBuildSearchForm = function FDuiColumnStatus_onBuildSearchForm(p){
       var o = this;
-      var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
+      var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
       hf.height = 18;
       hf.width = '100%';
-      var hfl = o._hSearchFormLine = RBuilder.appendTableRow(hf);
-      var hc = RBuilder.appendTableCell(hfl);
+      var hfl = o._hSearchFormLine = MO.Window.Builder.appendTableRow(hf);
+      var hc = MO.Window.Builder.appendTableCell(hfl);
       hc.align = 'center';
    }
    MO.FDuiColumnStatus_onBuild = function FDuiColumnStatus_onBuild(p){
@@ -1326,7 +1326,7 @@ with(MO){
       h.align = 'center';
       h.style.width = '30px';
       h.style.height = '22px';
-      RBuilder.appendEmpty(h, 12, 12);
+      MO.Window.Builder.appendEmpty(h, 12, 12);
    }
    MO.FDuiColumnStatus_createCell = function FDuiColumnStatus_createCell(p){
       var o = this;
@@ -1376,7 +1376,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiGrid = function FDuiGrid(o) {
-      o = RClass.inherits(this, o, FDuiGridControl);
+      o = MO.Class.inherits(this, o, FDuiGridControl);
       o.onResizeAfter = FDuiGrid_onResizeAfter;
       o.onBuildData   = FDuiGrid_onBuildData;
       o.oeResize      = FDuiGrid_oeResize;
@@ -1394,40 +1394,40 @@ with(MO){
       o.hColumnPanel.style.pixelHeight = hdp.offsetHeight - hfp.offsetHeight - sh + 1;
    }
    MO.FDuiGrid_onBuildData = function FDuiGrid_onBuildData(){
-      var hfp = o.hFixPanel = RBuilder.appendDiv(hbp);
+      var hfp = o.hFixPanel = MO.Window.Builder.appendDiv(hbp);
       hfp.style.zIndex = 2;
       hfp.style.position = 'absolute';
-      var hff = o.hFixForm = RBuilder.appendTable(hfp, null, 1);
-      var hffb = RBuilder.append(hff, 'TBODY');
+      var hff = o.hFixForm = MO.Window.Builder.appendTable(hfp, null, 1);
+      var hffb = MO.Window.Builder.append(hff, 'TBODY');
       hff.style.tableLayout = 'fixed';
       hff.frame = 'rhs';
       hff.borderColorLight = '#29BAD5';
       hff.borderColorDark = '#EEEEEE';
-      o.hFixHead = RBuilder.append(hffb, 'TR');
-      o.hFixSearch = RBuilder.append(hffb, 'TR');
-      var hhp = o.hHeadPanel = RBuilder.appendDiv(hbp);
+      o.hFixHead = MO.Window.Builder.append(hffb, 'TR');
+      o.hFixSearch = MO.Window.Builder.append(hffb, 'TR');
+      var hhp = o.hHeadPanel = MO.Window.Builder.appendDiv(hbp);
       hhp.style.zIndex = 1;
       hhp.style.position = 'absolute';
       hhp.style.overflowX = 'hidden';
       hhp.style.width = 1;
-      var hhf = o.hHeadForm = RBuilder.appendTable(hhp, null, 1);
+      var hhf = o.hHeadForm = MO.Window.Builder.appendTable(hhp, null, 1);
       hhf.frame = 'rhs';
       hhf.style.tableLayout = 'fixed';
       hhf.borderColorLight = '#29BAD5';
       hhf.borderColorDark = '#EEEEEE';
       o.hHead = hhf.insertRow();
       o.hSearch = hhf.insertRow();
-      var hcp = o.hColumnPanel = RBuilder.appendDiv(hbp, o.style('DataPanel'));
+      var hcp = o.hColumnPanel = MO.Window.Builder.appendDiv(hbp, o.style('DataPanel'));
       hcp.style.zIndex = 1;
       hcp.style.position = 'absolute';
       hcp.style.overflowY = 'hidden';
-      var hcf = o.hColumnForm = RBuilder.appendTable(hcp, o.style('DataForm'), 0, 0, 1);
-      o.hFixRows = RBuilder.append(hcf, 'TBODY');
-      o.hFixRowLine = RBuilder.append(o.hFixRows, 'TR');
-      var hdp = o.hDataPanel = RBuilder.appendDiv(hbp, o.style('DataPanel'));
-      var hdf = o.hDataForm = RBuilder.appendTable(hdp, o.style('DataForm'), 0, 0, 1);
-      o.hRows = RBuilder.append(hdf, 'TBODY');
-      o.hRowLine = RBuilder.append(o.hRows, 'TR');
+      var hcf = o.hColumnForm = MO.Window.Builder.appendTable(hcp, o.style('DataForm'), 0, 0, 1);
+      o.hFixRows = MO.Window.Builder.append(hcf, 'TBODY');
+      o.hFixRowLine = MO.Window.Builder.append(o.hFixRows, 'TR');
+      var hdp = o.hDataPanel = MO.Window.Builder.appendDiv(hbp, o.style('DataPanel'));
+      var hdf = o.hDataForm = MO.Window.Builder.appendTable(hdp, o.style('DataForm'), 0, 0, 1);
+      o.hRows = MO.Window.Builder.append(hdf, 'TBODY');
+      o.hRowLine = MO.Window.Builder.append(o.hRows, 'TR');
       o.attachEvent('onHeadMouseDown', o.hHeadForm, o.onHeadMouseDown);
       o.attachEvent('onHeadMouseMove', o.hHeadForm, o.onHeadMouseMove);
       o.attachEvent('onHeadMouseUp', o.hHeadForm, o.onHeadMouseUp);
@@ -1526,22 +1526,22 @@ with(MO){
 }
 with(MO){
    MO.FDuiGridControl = function FDuiGridControl(o) {
-      o = RClass.inherits(this, o, FDuiContainer);
-      o._displayCount        = RClass.register(o, new APtyInteger('_displayCount'), 20);
-      o._displayTitle        = RClass.register(o, new APtySet('_displayTitle', 'display_title', EGridDisplay.Title), true);
+      o = MO.Class.inherits(this, o, FDuiContainer);
+      o._displayCount        = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
+      o._displayTitle        = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', EGridDisplay.Title), true);
       o._displayColumnStatus = true;
       o._displayColumnSelect = true;
-      o._rowHeight           = RClass.register(o, new APtyInteger('rowHeight'), 0);
-      o._stylePanel          = RClass.register(o, new AStyle('_stylePanel'));
-      o._styleTitlePanel     = RClass.register(o, new AStyle('_styleTitlePanel'));
-      o._styleTitleForm      = RClass.register(o, new AStyle('_styleTitleForm'));
-      o._styleCaption        = RClass.register(o, new AStyle('_styleCaption'));
-      o._styleContentPanel   = RClass.register(o, new AStyle('_styleContentPanel'));
-      o._styleContentForm    = RClass.register(o, new AStyle('_styleContentForm'));
-      o._styleHintPanel      = RClass.register(o, new AStyle('_styleHintPanel'));
-      o._styleHintForm       = RClass.register(o, new AStyle('_styleHintForm'));
-      o._styleHint           = RClass.register(o, new AStyle('_styleHint'));
-      o._styleButton         = RClass.register(o, new AStyle('_styleButton'));
+      o._rowHeight           = MO.Class.register(o, new MO.APtyInteger('rowHeight'), 0);
+      o._stylePanel          = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+      o._styleTitlePanel     = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
+      o._styleTitleForm      = MO.Class.register(o, new MO.AStyle('_styleTitleForm'));
+      o._styleCaption        = MO.Class.register(o, new MO.AStyle('_styleCaption'));
+      o._styleContentPanel   = MO.Class.register(o, new MO.AStyle('_styleContentPanel'));
+      o._styleContentForm    = MO.Class.register(o, new MO.AStyle('_styleContentForm'));
+      o._styleHintPanel      = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
+      o._styleHintForm       = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
+      o._styleHint           = MO.Class.register(o, new MO.AStyle('_styleHint'));
+      o._styleButton         = MO.Class.register(o, new MO.AStyle('_styleButton'));
       o._minHeight           = 80;
       o._buttons             = null;
       o._columns             = null;
@@ -1582,37 +1582,37 @@ with(MO){
    }
    MO.FDuiGridControl_onBuildPanel = function FDuiGridControl_onBuildPanel(p){
       var o = this;
-      o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+      o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
    }
    MO.FDuiGridControl_onBuildTitle = function FDuiGridControl_onBuildTitle(e){
       var o = this;
-      var hf = o._hTitleForm = RBuilder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
-      var hr = o._hTitleLine = RBuilder.appendTableRow(hf);
-      var hc = o._hCaption = RBuilder.appendTableCell(hr, o.styleName('Caption'));
+      var hf = o._hTitleForm = MO.Window.Builder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
+      var hr = o._hTitleLine = MO.Window.Builder.appendTableRow(hf);
+      var hc = o._hCaption = MO.Window.Builder.appendTableCell(hr, o.styleName('Caption'));
       hc.innerText = o.label();
       RHtml.displaySet(hf, o._displayTitle);
    }
    MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(e) {
       var o = this;
-      var hr = RBuilder.appendTableRow(o._hHintForm);
-      var hc = RBuilder.appendTableCell(hr);
+      var hr = MO.Window.Builder.appendTableRow(o._hHintForm);
+      var hc = MO.Window.Builder.appendTableCell(hr);
       hc.width = 60;
       o.hExtendButton = o.buildNavigatorButton(hc, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
-         var hc = RBuilder.appendTableCell(hr);
+         var hc = MO.Window.Builder.appendTableCell(hr);
          hc.width = 60;
          o.hInsertButton = o.buildNavigatorButton(hc, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
-      var hc = RBuilder.appendTableCell(hr);
+      var hc = MO.Window.Builder.appendTableCell(hr);
       hc.width = 10;
-      var hc = RBuilder.appendTableCell(hr);
+      var hc = MO.Window.Builder.appendTableCell(hr);
       hc.noWrap = true;
-      o._hHint = RBuilder.appendText(hc, o.styleName('Hint'))
-      var hc = RBuilder.appendTableCell(hr);
+      o._hHint = MO.Window.Builder.appendText(hc, o.styleName('Hint'))
+      var hc = MO.Window.Builder.appendTableCell(hr);
       hc.noWrap = true;
       hc.align = 'right';
       o.hNavFirst = o.buildNavigatorButton(hc, 'control.grid.first', '&nbsp;' + RContext.get('FDuiGridControl:First'));
       o.hNavPrior = o.buildNavigatorButton(hc, 'control.grid.prior', '&nbsp;' + RContext.get('FDuiGridControl:Prior'));
       o.hNavPrior.style.paddingRight = '20';
-      o.hPage = RBuilder.appendEdit(hc)
+      o.hPage = MO.Window.Builder.appendEdit(hc)
       o.hPage.style.width = 40;
       o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
       o.hNavLast = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
@@ -1623,19 +1623,19 @@ with(MO){
          o.height = '100%';
       }
       o.__base.FDuiContainer.onBuild.call(o, p);
-      var hc = o._hTitlePanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
+      var hc = o._hTitlePanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
       o.onBuildTitle(p);
-      var hbp = o._hContentPanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
+      var hbp = o._hContentPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
       o.onBuildContent(p);
-      o._hHintPanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
-      o._hHintForm = RBuilder.appendTable(o._hHintPanel, o.styleName('HintForm'));
+      o._hHintPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
+      o._hHintForm = MO.Window.Builder.appendTable(o._hHintPanel, o.styleName('HintForm'));
       o.onBuildHint(p);
-      var c = o._statusColumn = RClass.create(FColumnStatus);
+      var c = o._statusColumn = MO.Class.create(FColumnStatus);
       c._table = this;
       c._name = '_s';
       c.build(p);
       o.push(c);
-      var c = o._selectColumn = RClass.create(FColumnSelected);
+      var c = o._selectColumn = MO.Class.create(FColumnSelected);
       c._table = this;
       c._name = '_select';
       c.build(p);
@@ -1702,28 +1702,28 @@ with(MO){
       o._rows = new TObjects();
       o.lsnsRowClick = new TListeners();
       o.lsnsRowDblClick = new TListeners();
-      var e = o._loadEvent = RClass.create(FEvent);
+      var e = o._loadEvent = MO.Class.create(FEvent);
       e.setOwner(o);
       e.setCallback(o.onDatasetLoadDelay);
       e.setValid(false);
    }
    MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name){
       var o = this;
-      var h = RBuilder.append(hParent, 'SPAN', o.styleName('Button'));
+      var h = MO.Window.Builder.append(hParent, 'SPAN', o.styleName('Button'));
       h.style.cursor = 'hand';
       h.style.paddingLeft = '10';
       if (iconBf) {
-         RBuilder.appendIcon(h, null, iconBf);
+         MO.Window.Builder.appendIcon(h, null, iconBf);
       }
       if(text){
          if(name){
-            o[name + 'Text'] = RBuilder.appendText(h, null, text);
+            o[name + 'Text'] = MO.Window.Builder.appendText(h, null, text);
          }else{
-            RBuilder.appendText(h, null, text);
+            MO.Window.Builder.appendText(h, null, text);
          }
       }
       if(iconAf){
-         RBuilder.appendIcon(h, null, iconAf);
+         MO.Window.Builder.appendIcon(h, null, iconAf);
       }
       return h;
    }
@@ -1747,7 +1747,7 @@ with(MO){
    }
    MO.FDuiGridControl_createRow = function FDuiGridControl_createRow() {
       var o = this;
-      var r = RClass.create(o._rowClass);
+      var r = MO.Class.create(o._rowClass);
       r._table = r._parent = o;
       return r;
    }
@@ -1990,7 +1990,7 @@ with(MO){
       }
       var hdp = o._hDelayPanel;
       if(!hdp){
-         hdp = o._hDelayPanel = RBuilder.appendDiv(o.hBorderPanel);
+         hdp = o._hDelayPanel = MO.Window.Builder.appendDiv(o.hBorderPanel);
          var st = hdp.style;
          st.position = 'absolute';
          st.zIndex = RLayer.next();
@@ -2000,14 +2000,14 @@ with(MO){
          st.width = '100%';
          st.height = '100%';
          st.display = 'none';
-         var hdf = o._hDelayForm = RBuilder.appendTable(hdp);
+         var hdf = o._hDelayForm = MO.Window.Builder.appendTable(hdp);
          hdf.style.width = '100%';
          hdf.style.height = '100%';
          var hc = hdf.insertRow().insertCell();
          hc.align = 'center';
          hc.vAlign = 'middle';
-         RBuilder.appendIcon(hc, 'ctl.FDuiGridControl_Loading')
-         var t = o._hDelayText = RBuilder.append(hc, 'SPAN');
+         MO.Window.Builder.appendIcon(hc, 'ctl.FDuiGridControl_Loading')
+         var t = o._hDelayText = MO.Window.Builder.append(hc, 'SPAN');
          t.innerHTML = "<BR><BR><FONT color='red'><B>" + RContext.get('FDuiGridControl:Loading') + "</B></FONT>";
       }
       if(e.enable){
@@ -2083,7 +2083,7 @@ with(MO){
       var o = this;
       var rb = o._rowBar;
       if(!rb){
-         rb = o._rowBar = RClass.create(FGridRowBar);
+         rb = o._rowBar = MO.Class.create(FGridRowBar);
          rb.table = o;
          rb.psBuild(o.hBorderPanel);
       }
@@ -2370,7 +2370,7 @@ with(MO){
       if(!rs.count){
          var c = o._displayCount;
          for(var n = 0; n < c; n++){
-            var r = RClass.create(FGridRow);
+            var r = MO.Class.create(FGridRow);
             r.table = this;
             r.build();
             o._hRows.appendChild(r._hPanel);
@@ -2469,7 +2469,7 @@ with(MO){
          pr.psResize();
          var idx = pr._hPanel.rowIndex + 1;
          for(var n = 0; n < rs.count; n++){
-            var r = RClass.create(FGridRow);
+            var r = MO.Class.create(FGridRow);
             r.table = o;
             pr.childRows.push(r);
             r.parentRow = pr;
@@ -2538,7 +2538,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiGridRow = function FDuiGridRow(o){
-      o = RClass.inherits(this, o, FDuiGridRowControl);
+      o = MO.Class.inherits(this, o, FDuiGridRowControl);
       o._hFixPanel   = null;
       o.onBuildPanel = FDuiGridRow_onBuildPanel;
       o.setVisible   = FDuiGridRow_setVisible;
@@ -2549,7 +2549,7 @@ with(MO){
    MO.FDuiGridRow_onBuildPanel = function FDuiGridRow_onBuildPanel(p){
       var o = this;
       o.__base.FDuiGridRowControl.onBuildPanel.call(o, p);
-      o._hFixPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
+      o._hFixPanel = MO.Window.Builder.createTableRow(p, o.styleName('Panel'));
    }
    MO.FDuiGridRow_setVisible = function FDuiGridRow_setVisible(p){
       var o = this;
@@ -2606,7 +2606,7 @@ with(MO){
 }
 with(MO){
    MO.FDuiGridRowControl = function FDuiGridRowControl(o){
-      o = RClass.inherits(this, o, FContainer, MDataContainer);
+      o = MO.Class.inherits(this, o, FContainer, MDataContainer);
       o._cells         = null;
       o._rows          = null;
       o._clearProcess  = null;
@@ -2627,7 +2627,7 @@ with(MO){
    }
    MO.FDuiGridRowControl_onBuildPanel = function FDuiGridRowControl_onBuildPanel(p){
       var o = this;
-      o._hPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
+      o._hPanel = MO.Window.Builder.createTableRow(p, o.styleName('Panel'));
    }
    MO.FDuiGridRowControl_onBuild = function FDuiGridRowControl_onBuild(p){
       var o = this;
@@ -2655,7 +2655,7 @@ with(MO){
    }
    MO.FDuiGridRowControl_loadRow = function FDuiGridRowControl_loadRow(p){
       var o = this;
-      var ds = RClass.create(FDataSource);
+      var ds = MO.Class.create(FDataSource);
       ds.selectRow(p);
       o.dsDataLoad(ds);
    }
@@ -2850,16 +2850,16 @@ with(MO){
 }
 with(MO){
    MO.FDuiTable = function FDuiTable(o) {
-      o = RClass.inherits(this, o, FGridControl, MDataset);
-      o._detailFrameName  = RClass.register(o, new APtyString('_detailFrameName'));
-      o._styleFixPanel    = RClass.register(o, new AStyle('_styleFixPanel'));
-      o._styleFixForm     = RClass.register(o, new AStyle('_styleFixForm'));
-      o._styleHeadPanel   = RClass.register(o, new AStyle('_styleHeadPanel'));
-      o._styleHeadForm    = RClass.register(o, new AStyle('_styleHeadForm'));
-      o._styleColumnPanel = RClass.register(o, new AStyle('_styleColumnPanel'));
-      o._styleColumnForm  = RClass.register(o, new AStyle('_styleColumnForm'));
-      o._styleDataPanel   = RClass.register(o, new AStyle('_styleDataPanel'));
-      o._styleDataForm    = RClass.register(o, new AStyle('_styleDataForm'));
+      o = MO.Class.inherits(this, o, FGridControl, MDataset);
+      o._detailFrameName  = MO.Class.register(o, new MO.APtyString('_detailFrameName'));
+      o._styleFixPanel    = MO.Class.register(o, new MO.AStyle('_styleFixPanel'));
+      o._styleFixForm     = MO.Class.register(o, new MO.AStyle('_styleFixForm'));
+      o._styleHeadPanel   = MO.Class.register(o, new MO.AStyle('_styleHeadPanel'));
+      o._styleHeadForm    = MO.Class.register(o, new MO.AStyle('_styleHeadForm'));
+      o._styleColumnPanel = MO.Class.register(o, new MO.AStyle('_styleColumnPanel'));
+      o._styleColumnForm  = MO.Class.register(o, new MO.AStyle('_styleColumnForm'));
+      o._styleDataPanel   = MO.Class.register(o, new MO.AStyle('_styleDataPanel'));
+      o._styleDataForm    = MO.Class.register(o, new MO.AStyle('_styleDataForm'));
       o._hFixPanel        = null;
       o._hFixForm         = null;
       o._hHeadPanel       = null;
@@ -2876,22 +2876,22 @@ with(MO){
    MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(p){
       var o = this;
       var hbp = o._hContentPanel;
-      var hfp = o._hFixPanel = RBuilder.appendDiv(hbp, o.styleName('FixPanel'));
+      var hfp = o._hFixPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('FixPanel'));
       hfp.style.zIndex = 2;
       hfp.style.position = 'absolute';
-      var hff = o._hFixForm = RBuilder.appendTable(hfp, o.styleName('FixForm'), 0, 0, 1);
+      var hff = o._hFixForm = MO.Window.Builder.appendTable(hfp, o.styleName('FixForm'), 0, 0, 1);
       hff.borderColorLight = '#D0D0D0';
       hff.borderColorDark = '#EEEEEE';
-      o._hFixHead =  RBuilder.appendTableRow(hff);
-      o._hFixSearch = RBuilder.appendTableRow(hff);
-      o._hFixTotal = RBuilder.appendTableRow(hff);
+      o._hFixHead =  MO.Window.Builder.appendTableRow(hff);
+      o._hFixSearch = MO.Window.Builder.appendTableRow(hff);
+      o._hFixTotal = MO.Window.Builder.appendTableRow(hff);
       o._hFixTotal.style.display = 'none';
-      var hhp = o._hHeadPanel = RBuilder.appendDiv(hbp, o.styleName('HeadPanel'));
+      var hhp = o._hHeadPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('HeadPanel'));
       hhp.style.zIndex = 1;
       hhp.style.position = 'absolute';
       hhp.style.overflowX = 'hidden';
       hhp.style.width = 1;
-      var hhf = o._hHeadForm = RBuilder.appendTable(hhp, o.styleName('HeadForm'), 0, 0, 1);
+      var hhf = o._hHeadForm = MO.Window.Builder.appendTable(hhp, o.styleName('HeadForm'), 0, 0, 1);
       hhf.frame = 'rhs';
       hhf.style.tableLayout = 'fixed';
       hhf.borderColorLight = '#D0D0D0';
@@ -2900,19 +2900,19 @@ with(MO){
       o._hSearch = hhf.insertRow();
       o._hTotal = hhf.insertRow();
       o._hTotal.style.display = 'none';
-      var hcp = o._hColumnPanel = RBuilder.appendDiv(hbp, o.styleName('ColumnPanel'));
+      var hcp = o._hColumnPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('ColumnPanel'));
       hcp.style.zIndex = 1;
       hcp.style.position = 'absolute';
       hcp.style.overflowY = 'hidden';
-      var hcf = o._hColumnForm = RBuilder.appendTable(hcp, o.styleName('ColumnForm'), 0, 0, 1);
-      o._hFixRows = RBuilder.append(hcf, 'TBODY');
-      o._hFixRowLine = RBuilder.append(o._hFixRows, 'TR');
-      var hdp = o._hDataPanel = RBuilder.appendDiv(hbp, o.styleName('DataPanel'));
+      var hcf = o._hColumnForm = MO.Window.Builder.appendTable(hcp, o.styleName('ColumnForm'), 0, 0, 1);
+      o._hFixRows = MO.Window.Builder.append(hcf, 'TBODY');
+      o._hFixRowLine = MO.Window.Builder.append(o._hFixRows, 'TR');
+      var hdp = o._hDataPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('DataPanel'));
       hdp.width = '100%';
       hdp.height = '100%';
-      var hdf = o._hDataForm = RBuilder.appendTable(hdp, o.styleName('DataForm'), 0, 0, 1);
-      o._hRows = RBuilder.append(hdf, 'TBODY');
-      o._hRowLine = RBuilder.append(o._hRows, 'TR');
+      var hdf = o._hDataForm = MO.Window.Builder.appendTable(hdp, o.styleName('DataForm'), 0, 0, 1);
+      o._hRows = MO.Window.Builder.append(hdf, 'TBODY');
+      o._hRowLine = MO.Window.Builder.append(o._hRows, 'TR');
       o.panelNavigator = true;
    }
    MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(e){

@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiColumnEmpty = function FDuiColumnEmpty(o){
-      o = RClass.inherits(this, o, FColumn);
+      o = MO.Class.inherits(this, o, FColumn);
       // @attribute
       o._dispList         = true;
       // @event

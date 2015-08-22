@@ -9,10 +9,10 @@ MO.MDuiEditable = function MDuiEditable(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
-   //o._editInsert = RClass.register(o, new APtySet(null, '_editInsert', 'edit_mode', EDisplayMode.Insert, false));
-   //o._editUpdate = RClass.register(o, new APtySet(null, '_editUpdate', 'edit_mode', EDisplayMode.Update, false));
-   //o._editDelete = RClass.register(o, new APtySet(null, '_editDelete', 'edit_mode', EDisplayMode.Delete, false));
-   //o._editZoom   = RClass.register(o, new APtySet(null, '_editZoom', 'edit_mode', EDisplayMode.Zoom, false));
+   //o._editInsert = MO.Class.register(o, new MO.APtySet(null, '_editInsert', 'edit_mode', EDisplayMode.Insert, false));
+   //o._editUpdate = MO.Class.register(o, new MO.APtySet(null, '_editUpdate', 'edit_mode', EDisplayMode.Update, false));
+   //o._editDelete = MO.Class.register(o, new MO.APtySet(null, '_editDelete', 'edit_mode', EDisplayMode.Delete, false));
+   //o._editZoom   = MO.Class.register(o, new MO.APtySet(null, '_editZoom', 'edit_mode', EDisplayMode.Zoom, false));
    //..........................................................
    // @attribute
    //o._absEdit   = true;

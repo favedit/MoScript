@@ -14,7 +14,7 @@ var layer = null;
 var bitmaps = null;
 var tick = 0;
 //----------------------------------------------------------
-function onEnterFrame(event){
+function onEnterFrame(){
    var count = bitmaps.count();
    for(var i = 0; i < count; i++){
       var bitmap = bitmaps.at(i);
@@ -33,18 +33,18 @@ function _load(){
    // 环境设置
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
-   MO.Window.Browser.setContentPath('../..');
-   //MO.Application.initialize();
+   MO.RApplication.initialize();
+   MO.RBrowser.setContentPath('../..');
    // 设置环境
-   MO.Console.find(MO.FE3sVendorConsole).setup('net');
-   var application = MO.Desktop.initialize(MO.FCanvas3dApplication);
-   application.addEnterFrameListener(null, onEnterFrame);
-   application.setup(document.body);
+   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
    // 创建画布
-   canvas = application.canvas();
+   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
+   canvas.build(document);
+   canvas.setPanel(document.body);
    var context = canvas.graphicContext();
-   stage = canvas.stage();
+   stage = canvas._stage;
    stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   stage.addEnterFrameListener(null, onEnterFrame);
    layer = stage.spriteLayer();
    // 创建图片
    bitmaps = new MO.TObjects();

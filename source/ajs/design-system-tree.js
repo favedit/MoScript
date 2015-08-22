@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsSystemTreeCatalogContent = function FDsSystemTreeCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._activeFrame = null;
       o.onNodeClick  = FDsSystemTreeCatalogContent_onNodeClick;
       o.construct    = FDsSystemTreeCatalogContent_construct;
@@ -57,7 +57,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemTreeCatalogToolBar = function FDsSystemTreeCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName = 'system.design.frame.CatalogToolBar';
       o._controlFolderCreateButton   = null;
       o._controlFolderDeleteButton   = null;
@@ -168,7 +168,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemTreeFrameSet = function FDsSystemTreeFrameSet(o){
-      o = RClass.inherits(this, o, FDsSystemDesignFrameSet);
+      o = MO.Class.inherits(this, o, FDsSystemDesignFrameSet);
       o._frameName   = 'system.design.tree.FrameSet';
       o.onBuilded    = FDsSystemTreeFrameSet_onBuilded;
       o.construct    = FDsSystemTreeFrameSet_construct;
@@ -187,17 +187,17 @@ with(MO){
       var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
       spliter.setAlignCd(EUiAlign.Left);
       spliter.setSizeHtml(o._frameCatalog._hPanel);
-      var control = o._catalogToolbar = RClass.create(FDsSystemTreeCatalogToolBar);
+      var control = o._catalogToolbar = MO.Class.create(FDsSystemTreeCatalogToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
       o._frameCatalogToolBar.push(control);
-      var control = o._catalogContent = RClass.create(FDsSystemTreeCatalogContent);
+      var control = o._catalogContent = MO.Class.create(FDsSystemTreeCatalogContent);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.build(event);
       o._frameCatalogContent.push(control);
-      var control = o._propertyToolbar = RClass.create(FDsSystemTreePropertyToolBar);
+      var control = o._propertyToolbar = MO.Class.create(FDsSystemTreePropertyToolBar);
       control._workspace = o._workspace;
       control._frameSet = o;
       control.buildDefine(event);
@@ -239,7 +239,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemTreeMenuBar = function FDsSystemTreeMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._frameName      = 'system.design.frame.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsSystemTreeMenuBar_onBuilded;
@@ -274,7 +274,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemTreePropertyContent = function FDsSystemTreePropertyContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       o.onBuild        = FDsSystemTreePropertyContent_onBuild;
       o.onNodeClick    = FDsSystemTreePropertyContent_onNodeClick;
       o.construct      = FDsSystemTreePropertyContent_construct;
@@ -401,7 +401,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemTreePropertyToolBar = function FDsSystemTreePropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName           = 'system.design.frame.PropertyToolBar';
       o._controlInsertButton = null;
       o._controlUpdateButton = null;

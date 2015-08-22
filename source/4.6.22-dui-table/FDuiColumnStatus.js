@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiColumnStatus = function FDuiColumnStatus(o){
-      o = RClass.inherits(this, o, FColumnEditControl);
+      o = MO.Class.inherits(this, o, FColumnEditControl);
       //..........................................................
       // @property
       o._dataName         = '_status';
@@ -34,19 +34,19 @@ with(MO){
 
       //..........................................................
       // @icon 通常
-      //o._styleIconNormal      = RClass.register(o, new AStyleIcon('_styleIconNormal'));
+      //o._styleIconNormal      = MO.Class.register(o, new AStyleIcon('_styleIconNormal'));
       // @icon 通常进入
-      //o._styleIconNormalEnter = RClass.register(o, new AStyleIcon('_styleIconNormalEnter'));
+      //o._styleIconNormalEnter = MO.Class.register(o, new AStyleIcon('_styleIconNormalEnter'));
       // @icon 插入
-      //o._styleIconInsert      = RClass.register(o, new AStyleIcon('_styleIconInsert'));
+      //o._styleIconInsert      = MO.Class.register(o, new AStyleIcon('_styleIconInsert'));
       // @icon 改变
-      //o._styleIconChanged     = RClass.register(o, new AStyleIcon('_styleIconChanged'));
+      //o._styleIconChanged     = MO.Class.register(o, new AStyleIcon('_styleIconChanged'));
       // @icon 删除
-      //o._styleIconDelete      = RClass.register(o, new AStyleIcon('_styleIconDelete'));
+      //o._styleIconDelete      = MO.Class.register(o, new AStyleIcon('_styleIconDelete'));
       // @icon 无效
-      //o._styleIconInvalid     = RClass.register(o, new AStyleIcon('_styleIconInvalid'));
+      //o._styleIconInvalid     = MO.Class.register(o, new AStyleIcon('_styleIconInvalid'));
       // @icon 锁定
-      //o._styleIconLock        = RClass.register(o, new AStyleIcon('_styleIconLock'));
+      //o._styleIconLock        = MO.Class.register(o, new AStyleIcon('_styleIconLock'));
       //..........................................................
       // @event
       //o.onCellClick           = FDuiColumnStatus_onCellClick;
@@ -85,13 +85,13 @@ with(MO){
    //==========================================================
    MO.FDuiColumnStatus_onBuildSearchForm = function FDuiColumnStatus_onBuildSearchForm(p){
       var o = this;
-      var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
+      var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
       hf.height = 18;
       hf.width = '100%';
-      var hfl = o._hSearchFormLine = RBuilder.appendTableRow(hf);
-      var hc = RBuilder.appendTableCell(hfl);
+      var hfl = o._hSearchFormLine = MO.Window.Builder.appendTableRow(hf);
+      var hc = MO.Window.Builder.appendTableCell(hfl);
       hc.align = 'center';
-      //o._hSearchIcon = RBuilder.appendIcon(hc, o.styleIcon('Search'));
+      //o._hSearchIcon = MO.Window.Builder.appendIcon(hc, o.styleIcon('Search'));
       //o._hSearchIcon.title = RContext.get('FDuiColumnStatus:Search');
    }
 
@@ -109,7 +109,7 @@ with(MO){
       h.style.width = '30px';
       h.style.height = '22px';
       //o._hFixPanel.style.pixelWidth = 30;
-      RBuilder.appendEmpty(h, 12, 12);
+      MO.Window.Builder.appendEmpty(h, 12, 12);
    }
 
    //==========================================================

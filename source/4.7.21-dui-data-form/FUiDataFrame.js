@@ -7,7 +7,7 @@ with(MO){
    // @version 150318
    //==========================================================
    MO.FUiDataFrame = function FUiDataFrame(o){
-      o = RClass.inherits(this, o, FDuiFrame, MUiDataset, MUiDataContainer, MUiDataAction);
+      o = MO.Class.inherits(this, o, FDuiFrame, MUiDataset, MUiDataContainer, MUiDataAction);
       //..........................................................
       return o;
    }

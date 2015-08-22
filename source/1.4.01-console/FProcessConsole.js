@@ -6,7 +6,7 @@
 // @version 150104
 //==========================================================
 MO.FProcessConsole = function FProcessConsole(o){
-   o = RClass.inherits(this, o, FConsole);
+   o = MO.Class.inherits(this, o, FConsole);
    // Attribute
    o._scopeCd     = MO.EScope.Local;
    o._connections = null;

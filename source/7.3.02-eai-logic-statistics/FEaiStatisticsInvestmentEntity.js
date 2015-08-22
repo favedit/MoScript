@@ -7,16 +7,16 @@ with(MO){
    // @history 150629
    //==========================================================
    MO.FEaiStatisticsInvestmentEntity = function FEaiStatisticsInvestmentEntity(o){
-      o = RClass.inherits(this, o, FEaiEntity);
+      o = MO.Class.inherits(this, o, FEaiEntity);
       //..........................................................
       // @attribute
-      o._date       = RClass.register(o, new AGetter('_date'));
-      o._customer   = RClass.register(o, new AGetter('_customer'));
-      o._phone      = RClass.register(o, new AGetter('_phone'));
-      o._card       = RClass.register(o, new AGetter('_card'));
-      o._investment = RClass.register(o, new AGetter('_investment'));
+      o._date       = MO.Class.register(o, new AGetter('_date'));
+      o._customer   = MO.Class.register(o, new AGetter('_customer'));
+      o._phone      = MO.Class.register(o, new AGetter('_phone'));
+      o._card       = MO.Class.register(o, new AGetter('_card'));
+      o._investment = MO.Class.register(o, new AGetter('_investment'));
       // @attribute
-      o._shape      = RClass.register(o, new AGetSet('_shape'));
+      o._shape      = MO.Class.register(o, new AGetSet('_shape'));
       //..........................................................
       // @method
       o.construct   = FEaiStatisticsInvestmentEntity_construct;

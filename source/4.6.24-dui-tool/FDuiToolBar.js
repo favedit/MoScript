@@ -12,18 +12,18 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDuiToolBar = function FDuiToolBar(o){
-      o = RClass.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
+      o = MO.Class.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
       //..........................................................
       // @property EUiAlign 对齐枚举
-      o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
+      o._alignCd          = MO.Class.register(o, new MO.APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
       // @property EUiDirection 方向枚举
-      o._directionCd      = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection, EUiDirection.Horizontal));
+      o._directionCd      = MO.Class.register(o, new MO.APtyEnum('_directionCd', null, EUiDirection, EUiDirection.Horizontal));
       // @property EUiMerge 合并枚举
-      o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
+      o._mergeCd          = MO.Class.register(o, new MO.APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
       //..........................................................
       // @style
-      o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
-      o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
+      o._stylePanel       = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+      o._styleButtonPanel = MO.Class.register(o, new MO.AStyle('_styleButtonPanel'));
       //..........................................................
       // @html
       o._hLine            = null;
@@ -49,7 +49,7 @@ with(MO){
    //==========================================================
    MO.FDuiToolBar_onBuildPanel = function FDuiToolBar_onBuildPanel(p){
       var o = this;
-      o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+      o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
    }
 
    //==========================================================
@@ -69,15 +69,15 @@ with(MO){
          // 横向排布
          if(o._directionCd == EUiDirection.Horizontal){
             if(!hl){
-               hl = o._hLine = RBuilder.appendTableRow(h);
+               hl = o._hLine = MO.Window.Builder.appendTableRow(h);
             }
          }
          // 纵向排布
          if(o._directionCd == EUiDirection.Vertical){
-            hl = o._hLine = RBuilder.appendTableRow(h);
+            hl = o._hLine = MO.Window.Builder.appendTableRow(h);
          }
          // 建立按键
-         var hc = RBuilder.appendTableCell(hl, o.styleName('ButtonPanel'));
+         var hc = MO.Window.Builder.appendTableCell(hl, o.styleName('ButtonPanel'));
          //hc._hParentLine = hl;
          control._hPanelCell = hc;
          control.setPanel(hc);
@@ -111,7 +111,7 @@ with(MO){
    //==========================================================
    MO.FDuiToolBar_dispose = function FDuiToolBar_dispose(){
       var o = this;
-      o._hLine = RHtml.free(o._hLine);
+      o._hLine = MO.Window.Html.free(o._hLine);
       o.__base.FDuiContainer.dispose.call(o);
    }
 }

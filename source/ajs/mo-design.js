@@ -922,10 +922,10 @@ with(MO){
 with(MO){
    MO.FDsFrameSet = function FDsFrameSet(o){
       o = MO.Class.inherits(this, o, FDuiFrameSet);
-      o._styleToolBarGround   = MO.Class.register(o, new AStyle('_styleToolBarGround', 'ToolBar_Ground'));
-      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleToolBarGround   = MO.Class.register(o, new MO.AStyle('_styleToolBarGround', 'ToolBar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasContent   = MO.Class.register(o, new MO.AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
       o._activeGuid           = null;
       o._activeCode           = null;
       o._activeSpace          = null;
@@ -1291,11 +1291,11 @@ with(MO){
 with(MO){
    MO.FDsMainWorkspace = function FDsMainWorkspace(o){
       o = MO.Class.inherits(this, o, FWorkspace);
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain         = null;
       o._framesetBody         = null;
       o._frameToolBar         = null;
@@ -4254,13 +4254,13 @@ with(MO){
       o = MO.Class.inherits(this, o, FDuiFrameSet, MUiStorage);
       o._frameName            = 'resource.private.solution.FrameSet';
       o._storageCode          = o._frameName;
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
-      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'List_Toolbar'));
-      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Property_Ground'));
-      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new MO.AStyle('_styleSearchGround', 'List_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'List_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new MO.AStyle('_stylePreviewGround', 'Property_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new MO.AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
       o._pageSize             = 40;
       o._activeResourceCd     = 'private';
       o._activeProjectGuid    = null;
@@ -5582,15 +5582,15 @@ with(MO){
    MO.FDsProjectFrameSet = function FDsProjectFrameSet(o){
       o = MO.Class.inherits(this, o, FDuiFrameSet);
       o._frameName            = 'resource.project.FrameSet';
-      o._stylePageControl     = MO.Class.register(o, new AStyle('_stylePageControl', 'PageControl'));
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleCanvasGround    = MO.Class.register(o, new AStyle('_styleCanvasGround', 'Canvas_Ground'));
-      o._styleCanvasContent   = MO.Class.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._stylePageControl     = MO.Class.register(o, new MO.AStyle('_stylePageControl', 'PageControl'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleCanvasGround    = MO.Class.register(o, new MO.AStyle('_styleCanvasGround', 'Canvas_Ground'));
+      o._styleCanvasContent   = MO.Class.register(o, new MO.AStyle('_styleCanvasContent', 'Canvas_Content'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -6867,16 +6867,16 @@ with(MO){
    MO.FDsProjectWorkspace = function FDsProjectWorkspace(o){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.project.Workspace';
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyToolbar = MO.Class.register(o, new AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
-      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new MO.AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyToolbar = MO.Class.register(o, new MO.AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
+      o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._resourceTypeCd       = 'project';
       o._frameToolBar         = null;
       o._frameStatusBar       = null;
@@ -6911,14 +6911,14 @@ with(MO){
       o._frameBody = o.searchControl('bodyFrame');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var hTable = RBuilder.createTable(p);
+      var hTable = MO.Window.Builder.createTable(p);
       hTable.width = '100%';
-      var hRow = RBuilder.appendTableRow(hTable);
-      o._hMenuPanel = RBuilder.appendTableCell(hRow);
+      var hRow = MO.Window.Builder.appendTableRow(hTable);
+      o._hMenuPanel = MO.Window.Builder.appendTableCell(hRow);
       var c = o._tabBar = MO.Class.create(FDsProjectTabBar);
       c._workspace = o;
       c.buildDefine(p);
-      var hCell = RBuilder.appendTableCell(hRow);
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
       hCell.width = '150px';
       hCell.align = 'right';
       hCell.vAlign = 'bottom';
@@ -7424,10 +7424,10 @@ with(MO){
 with(MO){
    MO.FDsResourceFrameSet = function FDsResourceFrameSet(o){
       o = MO.Class.inherits(this, o, FDsFrameSet);
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
-      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new MO.AStyle('_styleListContent', 'List_Content'));
+      o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
       o._resourceTypeCd       = 'picture';
       o._frameCatalog         = null;
       o._frameCatalogToolbar  = null;
@@ -7746,9 +7746,9 @@ with(MO){
 with(MO){
    MO.FDsResourceListItem = function FDsResourceListItem(o){
       o = MO.Class.inherits(this, o, FDuiListViewItem);
-      o._styleTypePanel        = MO.Class.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypePrivateLabel = MO.Class.register(o, new AStyle('_styleTypePublicLabel'));
-      o._styleTypePublicLabel  = MO.Class.register(o, new AStyle('_styleTypePrivateLabel'));
+      o._styleTypePanel        = MO.Class.register(o, new MO.AStyle('_styleTypePanel'));
+      o._styleTypePrivateLabel = MO.Class.register(o, new MO.AStyle('_styleTypePublicLabel'));
+      o._styleTypePublicLabel  = MO.Class.register(o, new MO.AStyle('_styleTypePrivateLabel'));
       o.onBuild         = FDsResourceListItem_onBuild;
       o.setTypeLabel    = FDsResourceListItem_setTypeLabel;
       o.refreshStyle    = FDsResourceListItem_refreshStyle;
@@ -7762,7 +7762,7 @@ with(MO){
       h.style.height = '150px';
       o._hLine1.className = o.styleName('TypePanel');
       o._hLine1.vAlign = 'top';
-      o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
+      o._hTypeLabel = MO.Window.Builder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
    }
    MO.FDsResourceListItem_setTypeLabel = function FDsResourceListItem_setTypeLabel(label){
       this._hTypeLabel.innerHTML = label;
@@ -8664,9 +8664,9 @@ with(MO){
    MO.FDsResourceSelectDialog = function FDsResourceSelectDialog(o){
       o = MO.Class.inherits(this, o, FDuiDialog);
       o._frameName            = 'resource.resource.SelectDialog';
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleCatalogContent  = MO.Class.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
-      o._styleListContent     = MO.Class.register(o, new AStyle('_styleListContent', 'List_Content'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
+      o._styleListContent     = MO.Class.register(o, new MO.AStyle('_styleListContent', 'List_Content'));
       o._dataModeCd           = null;
       o._controlParentLabel   = null;
       o._controlLabel         = null;
@@ -8997,16 +8997,16 @@ with(MO){
    MO.FDsResourceWorkspace = function FDsResourceWorkspace(o){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.resource.Workspace';
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePreviewGround   = MO.Class.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
-      o._stylePreviewToolbar  = MO.Class.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new MO.AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePreviewGround   = MO.Class.register(o, new MO.AStyle('_stylePreviewGround', 'Preview_Ground'));
+      o._stylePreviewToolbar  = MO.Class.register(o, new MO.AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       o._resourceTypeCd       = 'picture';
       o._frameToolBar         = null;
       o._frameStatusBar       = null;
@@ -9039,18 +9039,18 @@ with(MO){
       frame._hPanel.className = o.styleName('Catalog_Ground');
       var frame = o._frameStatusBar = o.searchControl('statusFrame');
       frame._hPanel.className = o.styleName('Statusbar_Ground');
-      var hTable = RBuilder.createTable(p);
+      var hTable = MO.Window.Builder.createTable(p);
       hTable.width = '100%';
-      var hRow = RBuilder.appendTableRow(hTable);
+      var hRow = MO.Window.Builder.appendTableRow(hTable);
       var c = o._toolbar = MO.Class.create(FDsResourceMenuBar);
       c._workspace = o;
       c.buildDefine(p);
-      var hCell = RBuilder.appendTableCell(hRow);
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
       hCell.appendChild(c._hPanel);
       var c = o._tabBar = MO.Class.create(FDsResourceTabBar);
       c._workspace = o;
       c.buildDefine(p);
-      var hCell = RBuilder.appendTableCell(hRow);
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
       hCell.width = '450px';
       hCell.align = 'right';
       hCell.vAlign = 'bottom';
@@ -9436,10 +9436,10 @@ with(MO){
    MO.FDsBitmapWorkspace = function FDsBitmapWorkspace(o){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new MO.AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -9791,8 +9791,8 @@ with(MO){
 with(MO){
    MO.FDsMaterialCatalogItem = function FDsMaterialCatalogItem(o){
       o = MO.Class.inherits(this, o, FDuiListViewItem);
-      o._styleTypePanel = MO.Class.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypeLabel = MO.Class.register(o, new AStyle('_styleTypeLabel'));
+      o._styleTypePanel = MO.Class.register(o, new MO.AStyle('_styleTypePanel'));
+      o._styleTypeLabel = MO.Class.register(o, new MO.AStyle('_styleTypeLabel'));
       o.onBuild         = FDsMaterialCatalogItem_onBuild;
       o.setTypeLabel    = FDsMaterialCatalogItem_setTypeLabel;
       o.refreshStyle    = FDsMaterialCatalogItem_refreshStyle;
@@ -9806,7 +9806,7 @@ with(MO){
       h.style.height = '150px';
       o._hLine1.className = o.styleName('TypePanel');
       o._hLine1.vAlign = 'top';
-      o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
+      o._hTypeLabel = MO.Window.Builder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
    }
    MO.FDsMaterialCatalogItem_setTypeLabel = function FDsMaterialCatalogItem_setTypeLabel(label){
       this._hTypeLabel.innerHTML = label;
@@ -10406,10 +10406,10 @@ with(MO){
    MO.FDsMaterialWorkspace = function FDsMaterialWorkspace(o){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design2d.bitmap.Workspace';
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new MO.AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -11613,10 +11613,10 @@ with(MO){
    MO.FDsModelWorkspace = function FDsModelWorkspace(o){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'design3d.mesh.Workspace';
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleBodyGround      = MO.Class.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleBodyGround      = MO.Class.register(o, new MO.AStyle('_styleBodyGround', 'Body_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
       o._activeSpace          = null;
       o._activeMesh           = null;
       o._framesetMain         = null;
@@ -12475,11 +12475,11 @@ with(MO){
 with(MO){
    MO.FDsTemplateWorkspace = function FDsTemplateWorkspace(o){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
-      o._styleToolbarGround    = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround  = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround    = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround  = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround   = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround    = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround  = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround    = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround  = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround   = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain          = null;
       o._framesetBody          = null;
       o._frameToolBar          = null;
@@ -12560,17 +12560,17 @@ with(MO){
       c.build(p);
       c.setPanel(o._frameToolBar._hPanel);
       o.push(c);
-      var hf = RBuilder.appendTable(o._frameWorkspace._hPanel);
+      var hf = MO.Window.Builder.appendTable(o._frameWorkspace._hPanel);
       hf.style.width = '100%';
       hf.style.height = '100%';
-      var hc = RBuilder.appendTableRowCell(hf);
+      var hc = MO.Window.Builder.appendTableRowCell(hf);
       hc.height = 20;
       var c = o._canvasToolbar = MO.Class.create(FDsTemplateCanvasToolBar);
       c._workspace = o;
       c.build(p);
       c.setPanel(hc);
       o.push(c);
-      var hc = RBuilder.appendTableRowCell(hf);
+      var hc = MO.Window.Builder.appendTableRowCell(hf);
       hc.vAlign = 'top';
       var c = o._canvas = MO.Class.create(FDsTemplateCanvas);
       c.addLoadListener(o, o.onTemplateLoad);
@@ -13496,11 +13496,11 @@ with(MO){
    MO.FDsSceneWorkspace = function FDsSceneWorkspace(o){
       o = MO.Class.inherits(this, o, FDuiWorkspace);
       o._frameName            = 'resource.share.scene.Workspace';
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
       o._framesetMain         = null;
       o._framesetBody         = null;
       o._frameToolBar         = null;

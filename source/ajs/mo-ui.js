@@ -451,6 +451,34 @@ MO.APtyEnum_toString = function APtyEnum_toString(){
    var o = this;
    return 'linker=' + o._linker + ',enum=' + o._enum + ',default=' + o._default;
 }
+MO.APtyFont = function APtyFont(name, linker, font, size, bold, color) {
+   var o = this;
+   MO.AProperty.call(o, name, linker);
+   o._font  = MO.Lang.Integer.nvl(font);
+   o._size  = MO.Lang.Integer.nvl(size);
+   o._bold  = MO.Lang.Integer.nvl(bold);
+   o._color = MO.Lang.Integer.nvl(color);
+   o.load = MO.APtyFont_load;
+   o.save = MO.APtyFont_save;
+   o.toString = MO.APtyFont_toString;
+   return o;
+}
+MO.APtyFont_load = function APtyFont_load(instance, xconfig) {
+   var o = this;
+   var value = xconfig.get(o._linker);
+   instance[o._name].parse(value);
+}
+MO.APtyFont_save = function APtyFont_save(instance, xconfig) {
+   var o = this;
+   var value = instance[o._name];
+   if (!value.isEmpty()) {
+      xconfig.set(o._linker, value.toString());
+   }
+}
+MO.APtyFont_toString = function APtyFont_toString() {
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._font + ',' + o._size + o._bold + ',' + o._color;
+}
 MO.APtyInteger = function APtyInteger(n, l, v){
    var o = this;
    MO.AProperty.call(o, n, l);
@@ -1727,7 +1755,23 @@ MO.SUiFont_assign = function SUiFont_assign(value){
 }
 MO.SUiFont_parse = function SUiFont_parse(source){
    var o = this;
-   throw new MO.TError('Unsupport.');
+   var boldIndex = source.toLowerCase().indexOf('bold');
+   if (boldIndex != -1) {
+      o.bold = true;
+      source = source.replace(source.substring(boldIndex, boldIndex + 4), '');
+   }
+   var sharpIndex = source.indexOf('#');
+   if (sharpIndex != -1) {
+      o.color = source.substring(sharpIndex, sharpIndex + 7);
+      source = source.replace(o.color, '');
+   }
+   var sizeIndex = source.toLowerCase().indexOf('px');
+   if (sizeIndex != -1) {
+      var sizeString = source.substring(sizeIndex - 2, sizeIndex + 2);
+      o.size = parseInt(sizeString);
+      source = source.replace(sizeString, '');
+   }
+   o.font = MO.RString.trim(source);
 }
 MO.SUiFont_toString = function SUiFont_toString(){
    var o = this;
@@ -2293,35 +2337,6 @@ MO.FApplication_dispose = function FApplication_dispose(){
    o.__base.MFrameProcessor.dispose.call(o);
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
-}
-MO.FCanvas3dApplication = function FCanvas3dApplication(o){
-   o = MO.Class.inherits(this, o, MO.FApplication);
-   o._canvas   = MO.Class.register(o, new MO.AGetter('_canvas'));
-   o.construct = MO.FCanvas3dApplication_construct;
-   o.setup     = MO.FCanvas3dApplication_setup;
-   o.process   = MO.FCanvas3dApplication_process;
-   o.dispose   = MO.FCanvas3dApplication_dispose;
-   return o;
-}
-MO.FCanvas3dApplication_construct = function FCanvas3dApplication_construct(){
-   var o = this;
-   o.__base.FApplication.construct.call(o);
-}
-MO.FCanvas3dApplication_setup = function FCanvas3dApplication_setup(hPanel){
-   var o = this;
-   MO.RE3dEngine.setup();
-   var canvas = o._canvas = MO.Class.create(MO.FE3dSimpleCanvas);
-   canvas.build(hPanel);
-   canvas.setPanel(hPanel);
-}
-MO.FCanvas3dApplication_process = function FCanvas3dApplication_process(){
-   var o = this;
-   o.__base.FApplication.process.call(o);
-   o._canvas.process();
-}
-MO.FCanvas3dApplication_dispose = function FCanvas3dApplication_dispose(){
-   var o = this;
-   o.__base.FApplication.dispose.call(o);
 }
 MO.FChapter = function FChapter(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);

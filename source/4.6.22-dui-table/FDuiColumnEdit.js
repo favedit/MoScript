@@ -7,7 +7,7 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiColumnEdit = function FDuiColumnEdit(o){
-      o = RClass.inherits(this, o, FDuiColumnEditControl, MUiPropertyEdit);
+      o = MO.Class.inherits(this, o, FDuiColumnEditControl, MUiPropertyEdit);
       //..........................................................
       // @attribute
       o._cellClass     = FCellEdit;
@@ -21,9 +21,9 @@ with(MO){
       //o.onCellMouseEnter = FDuiColumnEdit_onCellMouseEnter;
       //o.onCellMouseLeave = FDuiColumnEdit_onCellMouseLeave;
       //o.onListClick      = FDuiColumnEdit_onListClick;
-      //o.onZoomClick      = RClass.register(o, new AEventClick('onZoomClick'), FDuiColumnEdit_onZoomClick);
-      //o.onZoomHover      = RClass.register(o, new AEventMouseEnter('onZoomHover'), FDuiColumnEdit_onZoomHover);
-      //o.onZoomLeave      = RClass.register(o, new AEventMouseLeave('onZoomLeave'), FDuiColumnEdit_onZoomLeave);
+      //o.onZoomClick      = MO.Class.register(o, new AEventClick('onZoomClick'), FDuiColumnEdit_onZoomClick);
+      //o.onZoomHover      = MO.Class.register(o, new AEventMouseEnter('onZoomHover'), FDuiColumnEdit_onZoomHover);
+      //o.onZoomLeave      = MO.Class.register(o, new AEventMouseLeave('onZoomLeave'), FDuiColumnEdit_onZoomLeave);
 
       return o;
    }

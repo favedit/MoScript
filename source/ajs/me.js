@@ -13180,7 +13180,7 @@ MO.FHttpConsole_dispose = function FHttpConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
 }
 MO.FIdleConsole = function FIdleConsole(o){
-   o = RClass.inherits(this, o, FConsole);
+   o = MO.Class.inherits(this, o, FConsole);
    o.scope    = MO.EScope.Page;
    o.register = MO.FIdleConsole_register;
    return o;
@@ -13447,7 +13447,7 @@ MO.FProcess_process = function FProcess_process(p){
    o._worker.postMessage(e);
 }
 MO.FProcessConsole = function FProcessConsole(o){
-   o = RClass.inherits(this, o, FConsole);
+   o = MO.Class.inherits(this, o, FConsole);
    o._scopeCd     = MO.EScope.Local;
    o._connections = null;
    o.onLoad       = MO.FProcessConsole_onLoad;
@@ -14470,7 +14470,7 @@ MO.RBrowser.prototype.refreshOrientation = function RBrowser_refreshOrientation(
       }else if((window.orientation == 90) || (window.orientation == -90)){
          o._orientationCd = MO.EOrientation.Horizontal;
       }else{
-         throw new TError(o, 'Unknown orientation mode.');
+         throw new MO.TError(o, 'Unknown orientation mode.');
       }
    }
    return o._orientationCd;
@@ -15013,32 +15013,32 @@ MO.RBuilder.prototype.create = function RBuilder_create(h, t, s){
    }
    return h;
 }
-MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
-   var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
-   r.align = 'absmiddle';
-   if(u){
-      r.src = MO.Window.Resource.iconPath(u);
+MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(hDocument, style, uri, width, height){
+   var hImage = this.create(hDocument, 'IMG', MO.Lang.String.nvl(style, 'Tag_Icon'));
+   hImage.align = 'absmiddle';
+   if(uri){
+      hImage.src = MO.Window.Resource.iconPath(uri);
    }
-   if(w){
-      r.style.width = w + 'px';
+   if(width){
+      hImage.style.width = width + 'px';
    }
-   if(h){
-      r.style.height = h + 'px';
+   if(height){
+      hImage.style.height = height + 'px';
    }
-   return r;
+   return hImage;
 }
-MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
-   var r = this.create(d, 'IMG', u);
-   if(u){
-      r.src = MO.RResource.imagePath(u);
+MO.RBuilder.prototype.createImage = function RBuilder_createImage(hDocument, style, uri, width, height){
+   var hImage = this.create(hDocument, 'IMG', style);
+   if(uri){
+      hImage.src = MO.Window.Resource.imagePath(uri);
    }
-   if(w){
-      r.style.width = w;
+   if(width){
+      hImage.style.width = width + 'px';
    }
-   if(h){
-      r.style.height = h;
+   if(height){
+      hImage.style.height = height + 'px';
    }
-   return r;
+   return hImage;
 }
 MO.RBuilder.prototype.createText = function RBuilder_createText(d, s, v){
    var r = this.create(d, 'SPAN', s);
@@ -15316,7 +15316,7 @@ MO.RDump.prototype.onclick = function RDump_onclick(){
    }
 }
 MO.RDump.prototype.nameInfo = function RDump_nameInfo(v){
-   var t = RClass.typeOf(v);
+   var t = MO.Class.typeOf(v);
    switch(t){
       case 'Unknown':
          return '@unknown';
@@ -15527,111 +15527,111 @@ MO.RHtml.prototype.uid = function RHtml_uid(value){
    }
    return uuid;
 }
-MO.RHtml.prototype.displayGet = function RHtml_displayGet(h){
-   var r = null;
-   var s = h.style.display;
-   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
-      r = (s == 'inline');
+MO.RHtml.prototype.displayGet = function RHtml_displayGet(hTag){
+   var result = null;
+   var text = hTag.style.display;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
+      result = (text == 'inline');
    }else{
-      r = (s != 'none');
+      result = (text != 'none');
    }
-   return r;
+   return result;
 }
-MO.RHtml.prototype.displaySet = function RHtml_displaySet(h, v){
-   var s = null;
-   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
-      s = v ? 'inline' : 'none';
+MO.RHtml.prototype.displaySet = function RHtml_displaySet(hTag, visible){
+   var text = null;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
+      text = visible ? 'inline' : 'none';
    }else{
-      s = v ? null : 'none';
+      text = visible ? null : 'none';
    }
-   h.style.display = s;
+   hTag.style.display = text;
 }
-MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(h){
-   var r = null;
-   var s = h.style.display;
-   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
-      r = (s == 'block');
+MO.RHtml.prototype.visibleGet = function RHtml_visibleGet(hTag){
+   var result = null;
+   var text = hTag.style.display;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
+      result = (text == 'block');
    }else{
-      r = (s != 'none');
+      result = (text != 'none');
    }
-   return r;
+   return result;
 }
-MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(h, v){
-   var s = null;
-   if(MO.RBrowser.isBrowser(MO.EBrowser.Explorer)){
-      s = v ? '' : 'none';
+MO.RHtml.prototype.visibleSet = function RHtml_visibleSet(hTag, visible){
+   var text = null;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
+      text = visible ? '' : 'none';
    }else{
-      s = v ? null : 'none';
+      text = visible ? null : 'none';
    }
-   h.style.display = s;
+   hTag.style.display = text;
 }
-MO.RHtml.prototype.textGet = function RHtml_textGet(h, v){
-   var r = null;
-   if(MO.RBrowser.isBrowser(EBrowser.FireFox)){
-      r = h.textContent;
+MO.RHtml.prototype.textGet = function RHtml_textGet(hTag, defaultText){
+   var text = null;
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.FireFox)){
+      text = hTag.textContent;
    }else{
-      r = h.innerText;
+      text = hTag.innerText;
    }
-   return r;
+   return text;
 }
-MO.RHtml.prototype.textSet = function RHtml_textSet(h, v){
-   if(MO.RBrowser.isBrowser(MO.EBrowser.FireFox)){
-      h.textContent = v;
+MO.RHtml.prototype.textSet = function RHtml_textSet(hTag, text){
+   if(MO.Window.Browser.isBrowser(MO.EBrowser.FireFox)){
+      hTag.textContent = text;
    }else{
-      h.innerText = v;
+      hTag.innerText = text;
    }
 }
-MO.RHtml.prototype.checkGet = function RHtml_checkGet(h){
-   return MO.Lang.Bool.toString(h.checked);
+MO.RHtml.prototype.checkGet = function RHtml_checkGet(hTag){
+   return MO.Lang.Bool.toString(hTag.checked);
 }
-MO.RHtml.prototype.checkSet = function RHtml_checkSet(h, v){
-   h.checked = MO.Lang.Bool.isTrue(v);
+MO.RHtml.prototype.checkSet = function RHtml_checkSet(hTag, value){
+   hTag.checked = MO.Lang.Bool.isTrue(value);
 }
 MO.RHtml.prototype.radioGet = function RHtml_radioGet(hs){
    if(hs){
-      var c = hs.length;
-      for(var n = 0; n < c; n++){
-         var h = hs[n];
-         if(h.checked){
-            return h.value;
+      var count = hs.length;
+      for(var n = 0; n < count; n++){
+         var hItem = hs[n];
+         if(hItem.checked){
+            return hItem.value;
          }
       }
    }
    return null;
 }
-MO.RHtml.prototype.radioSet = function RHtml_radioSet(hs, v){
-   if(hs){
-      var c = hs.length;
-      for(var n = 0; n < c; n++){
-         var h = hs[n];
-         if(h.value == v){
-            h.checked = true;
+MO.RHtml.prototype.radioSet = function RHtml_radioSet(hTag, value){
+   if(hTag){
+      var count = hTag.length;
+      for(var n = 0; n < count; n++){
+         var hItem = hTag[n];
+         if(hItem.value == value){
+            hItem.checked = true;
             break;
          }
       }
    }
 }
-MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(h, v){
-   if(h){
-      h.style.cursor = v;
+MO.RHtml.prototype.cursorSet = function RHtml_cursorSet(hTag, value){
+   if(hTag){
+      hTag.style.cursor = value;
    }
 }
-MO.RHtml.prototype.linkGet = function RHtml_linkGet(h, n){
+MO.RHtml.prototype.linkGet = function RHtml_linkGet(hTag, name){
    var o = this;
-   var u = o.uid(h);
-   var i = o._links[u];
-   return i ? i.get(n) : null;
+   var uid = o.uid(hTag);
+   var item = o._links[uid];
+   return item ? item.get(name) : null;
 }
-MO.RHtml.prototype.linkSet = function RHtml_linkSet(h, n, v){
+MO.RHtml.prototype.linkSet = function RHtml_linkSet(hTag, n, v){
    var o = this;
-   var ls = o._links;
-   var u = o.uid(h);
-   var i = ls[u];
-   if(!i){
-      i = ls[u] = new MO.THtmlItem();
-      i._link = h;
+   var links = o._links;
+   var uid = o.uid(hTag);
+   var item = links[uid];
+   if(!item){
+      item = links[uid] = new MO.THtmlItem();
+      item._link = hTag;
    }
-   i.set(n, v);
+   item.set(n, v);
 }
 MO.RHtml.prototype.clientPosition = function RHtml_clientPosition(hTag, hTop){
    var o = this;
@@ -15770,6 +15770,35 @@ MO.RHtml.prototype.tableMoveRow = function RHtml_tableMoveRow(ph, ps, pt){
       }
    }
    return true;
+}
+MO.RHtml.prototype.clear = function RHtml_clear(hTag){
+   var o = this;
+   if(hTag){
+      var hChildren = hTag.children;
+      if(hChildren){
+         var count = hChildren.length;
+         for(var i = count - 1; i >= 0; i--){
+            var hChild = hChildren[i];
+            hTag.removeChild(hChild);
+         }
+      }
+   }
+}
+MO.RHtml.prototype.clearAll = function RHtml_clearAll(hTag){
+   var o = this;
+   if(hTag){
+      var hChildren = hTag.children;
+      if(hChildren){
+         var count = hChildren.length;
+         for(var i = count - 1; i >= 0; i--){
+            var hChild = hChildren[i];
+            if(hChild.children){
+               o.clear(hChild);
+            }
+            hTag.removeChild(hChild);
+         }
+      }
+   }
 }
 MO.RHtml.prototype.free = function RHtml_free(p){
    return null;
@@ -19764,7 +19793,7 @@ MO.FG3dSelectSkeletonEffect_drawRenderable = function FG3dSelectSkeletonEffect_d
    c.drawTriangles(pr.indexBuffer());
 }
 MO.FG3dSelectTechnique = function FG3dSelectTechnique(o){
-   o = RClass.inherits(this, o, FG3dTechnique);
+   o = MO.Class.inherits(this, o, FG3dTechnique);
    o._code       = 'select';
    o._passSelect = MO.Class.register(o, new MO.AGetter('_passSelect'));
    o.setup       = MO.FG3dSelectTechnique_setup;
@@ -23695,7 +23724,7 @@ MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width,
    var code = width + 'x' + height;
    var canvas = pools.alloc(code);
    if(!canvas){
-      canvas = MO.Class.create(MO.FE2dCanvas);
+      canvas = MO.Class.create(FE2dCanvas);
       canvas.size().set(width, height);
       canvas.build(MO.RWindow._hDocument);
    }
@@ -23750,7 +23779,6 @@ MO.FE3dCanvas = function FE3dCanvas(o){
    o.hide                = MO.FE3dCanvas_hide;
    o.setVisible          = MO.FE3dCanvas_setVisible;
    o.setPanel            = MO.FE3dCanvas_setPanel;
-   o.process             = MO.FE3dCanvas_process;
    o.dispose             = MO.FE3dCanvas_dispose;
    return o;
 }
@@ -23764,9 +23792,7 @@ MO.FE3dCanvas_ohTouchStop = function FE3dCanvas_ohTouchStop(event){
    this.__linker.onTouchStop(event);
 }
 MO.FE3dCanvas_onResize = function FE3dCanvas_onResize(event){
-   var o = this;
-   var hPanel = o._hParent;
-   o.resize(hPanel.offsetWidth, hPanel.offsetHeight);
+   this.resize();
 }
 MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
    var o = this;
@@ -23777,7 +23803,6 @@ MO.FE3dCanvas_construct = function FE3dCanvas_construct(){
 }
 MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    var o = this;
-   o._hParent = hPanel;
    var size = o._size;
    var width = size.width;
    var height = size.height;
@@ -23803,6 +23828,10 @@ MO.FE3dCanvas_build = function FE3dCanvas_build(hPanel){
    parameters.alpha = o._optionAlpha;
    parameters.antialias = o._optionAntialias;
    o._graphicContext = MO.Graphic.Context3d.createContext(MO.FWglContext, hCanvas, parameters);
+   if(o._optionStageProcess){
+      RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+      RStage.start(o._interval);
+   }
    if(o._optionResize){
       MO.Window.lsnsResize.register(o, o.onResize);
       MO.Window.lsnsOrientation.register(o, o.onResize);
@@ -23840,12 +23869,7 @@ MO.FE3dCanvas_setPanel = function FE3dCanvas_setPanel(hPanel){
    var o = this;
    hPanel.appendChild(o._hCanvas);
    o._hPanel = hPanel;
-   o.resize(hPanel.offsetWidth, hPanel.offsetHeight);
-}
-MO.FE3dCanvas_process = function FE3dCanvas_process(){
-   var o = this;
-   o.onEnterFrame();
-   o._stage.process();
+   o.resize();
 }
 MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
    var o = this;
@@ -24285,7 +24309,6 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('general.color.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
-   effectConsole.register('general.color.flood', MO.FE3dFloodLightEffect);
    effectConsole.register('shadow.depth.automatic', MO.FE3dShadowDepthAutomaticEffect);
    effectConsole.register('shadow.depth.skeleton', MO.FE3dShadowDepthSkeletonEffect);
    effectConsole.register('shadow.color.automatic', MO.FE3dShadowColorAutomaticEffect);
@@ -26053,7 +26076,7 @@ MO.FE3sSceneRenderable_unserialize = function FE3sSceneRenderable_unserialize(in
    o.__base.FE3sObject.unserialize.call(o, input);
 }
 MO.FE3sShape = function FE3sShape(o){
-   o = RClass.inherits(this, o, FE3sRenderable);
+   o = MO.Class.inherits(this, o, FE3sRenderable);
    o._modelGuid    = MO.Class.register(o, new MO.AGetter('_modelGuid'));
    o._model        = null;
    o._meshGuid     = MO.Class.register(o, new MO.AGetter('_meshGuid'));
@@ -26687,7 +26710,7 @@ MO.FE3sTheme_unserialize = function FE3sTheme_unserialize(input){
    if(count > 0){
       var materials = o._materials = new MO.TDictionary();
       for(var n = 0; n < c; n++){
-         var material = RClass.create(FE3sMaterial);
+         var material = MO.Class.create(FE3sMaterial);
          material.unserialize(input);
          materials.set(material.code(), material);
       }
@@ -27277,7 +27300,6 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
    o.construct         = MO.FE3rDynamicMesh_construct;
    o.mergeCount        = MO.FE3rDynamicMesh_mergeCount;
    o.mergeMaxCount     = MO.FE3rDynamicMesh_mergeMaxCount;
-   o.mergeStride       = MO.FE3rDynamicMesh_mergeStride;
    o.mergeRenderables  = MO.FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = MO.FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = MO.FE3rDynamicMesh_mergeRenderable;
@@ -27289,16 +27311,13 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
 MO.FE3rDynamicMesh_construct = function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
-   o._mergeRenderables = new MO.TObjects();
+   o._mergeRenderables = new TObjects();
 }
 MO.FE3rDynamicMesh_mergeCount = function FE3rDynamicMesh_mergeCount(){
    return this._mergeRenderables.count();
 }
 MO.FE3rDynamicMesh_mergeMaxCount = function FE3rDynamicMesh_mergeMaxCount(){
    return this._model._mergeMaxCount;
-}
-MO.FE3rDynamicMesh_mergeStride = function FE3rDynamicMesh_mergeStride(){
-   return 4;
 }
 MO.FE3rDynamicMesh_mergeRenderables = function FE3rDynamicMesh_mergeRenderables(){
    return this._mergeRenderables;
@@ -27417,10 +27436,10 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
    var instanceVertexBuffer = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
    instanceVertexBuffer.setCode('instance');
    instanceVertexBuffer.setStride(4);
-   instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
+   instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
    var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
    o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
-   var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
+   var indexBuffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
    if(capability.optionIndex32){
       indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
       indexBuffer._data = new Uint32Array(indexTotal);
@@ -27442,7 +27461,7 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
          var vertexBuffer = o.syncVertexBuffer(vb);
          o.mergeVertexBuffer(renderable, vbrc, vertexBuffer, vertexBufferResource);
       }
-      MO.Lang.Float.fill(vdi, o._vertexPosition, vc, i);
+      RFloat.fill(vdi, o._vertexPosition, vc, i);
       var indexBuffer = renderable.indexBuffers().first();
       var ic = indexBuffer.count();
       var indexBufferResource = indexBuffer._resource;
@@ -27462,10 +27481,10 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
 }
 MO.FE3rDynamicModel = function FE3rDynamicModel(o){
    o = MO.Class.inherits(this, o, MO.FE3rObject);
-   o._renderables   = MO.Class.register(o, new MO.AGetter('_renderables'));
-   o._mergeMaxCount = MO.Class.register(o, new MO.AGetter('_mergeMaxCount'));
-   o._mergeStride   = MO.Class.register(o, new MO.AGetter('_mergeStride'), 4);
-   o._meshes        = MO.Class.register(o, new MO.AGetter('_meshes'));
+   o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
+   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
+   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
+   o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
    o._updateDate    = 0;
    o.construct      = MO.FE3rDynamicModel_construct;
    o.createMesh     = MO.FE3rDynamicModel_createMesh;
@@ -28939,24 +28958,6 @@ MO.FE3dControlTechnique_drawRegion = function FE3dControlTechnique_drawRegion(p)
    o._graphicContext.clearDepth(1);
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }
-MO.FE3dFloodLightEffect = function FE3dFloodLightEffect(o){
-   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
-   o._code          = 'general.color.flood';
-   o.drawRenderable = MO.FE3dFloodLightEffect_drawRenderable;
-   return o;
-}
-MO.FE3dFloodLightEffect_drawRenderable = function FE3dFloodLightEffect_drawRenderable(region, renderable){
-   var o = this;
-   var context = o._graphicContext;
-   var contextSize = context.size();
-   var sizeWidth = contextSize.width ;
-   var sizeHeight = contextSize.height;
-   var program = o._program;
-   var material = renderable.material();
-   o.bindMaterial(material);
-   var matrix = renderable.matrix();
-   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
-}
 MO.FE3dGeneralColorAutomaticEffect = function FE3dGeneralColorAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
    o._code          = 'general.color.automatic';
@@ -29996,7 +29997,7 @@ MO.FE3dModelDisplay = function FE3dModelDisplay(o){
 MO.FE3dModelDisplay_construct = function FE3dModelDisplay_construct(){
    var o = this;
    o.__base.FE3dDisplay.construct.call(o);
-   o._material = RClass.create(FE3dMaterial);
+   o._material = MO.Class.create(FE3dMaterial);
 }
 MO.FE3dModelDisplay_load = function FE3dModelDisplay_load(renderable){
    var o = this;
@@ -31325,9 +31326,9 @@ MO.FE3dSimpleCanvas_onSceneLoad = function FE3dSimpleCanvas_onSceneLoad(p){
    o._cameraMouseRotation = gr.rotationMouseSpeed();
    o.processLoadListener(o, s);
 }
-MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(event){
+MO.FE3dSimpleCanvas_onResize = function FE3dSimpleCanvas_onResize(p){
    var o = this;
-   o.__base.FE3dCanvas.onResize.call(o, event);
+   o.__base.FE3dCanvas.onResize.call(o, p);
    var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeSpace;
@@ -31351,7 +31352,7 @@ MO.FE3dSimpleCanvas_build = function FE3dSimpleCanvas_build(hPanel){
    var stage = o._stage = o._activeSpace = MO.Class.create(MO.FE3dSimpleStage);
    stage.linkGraphicContext(o);
    stage.region().linkGraphicContext(o);
-   stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+   stage.selectTechnique(o, FE3dGeneralTechnique);
    MO.RStage.register('simple.stage', stage);
 }
 MO.FE3dSimpleCanvas_setPanel = function FE3dSimpleCanvas_setPanel(hPanel){
@@ -32893,7 +32894,7 @@ MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
    o._adjustSize.set(adjustWidth, adjustHeight);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var context2d = canvas.graphicContext();
+   var context2d = canvas.context();
    context2d.drawImage(image, 0, 0, width, height);
    o._texture.upload(canvas);
    canvasConsole.free(canvas);
@@ -33915,16 +33916,14 @@ MO.FE3dRectangle = function FE3dRectangle(o){
    o.setup                 = MO.FE3dRectangle_setup;
    return o;
 }
-MO.FE3dRectangle_setup = function FE3dRectangle_setup(context){
+MO.FE3dRectangle_setup = function FE3dRectangle_setup(p){
    var o = this;
    var vp = [
       -1.0,  1.0, 0.0,
        1.0,  1.0, 0.0,
        1.0, -1.0, 0.0,
       -1.0, -1.0, 0.0 ];
-   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-   buffer.setCode('position');
-   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
+   var buffer = o._vertexPositionBuffer = p.createVertexBuffer();
    buffer.upload(vp, 4 * 3, 4);
    o.pushVertexBuffer(buffer);
    var vc = [
@@ -33932,9 +33931,7 @@ MO.FE3dRectangle_setup = function FE3dRectangle_setup(context){
       1.0, 0.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       0.0, 0.0, 0.0, 1.0 ];
-   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-   buffer.setCode('color');
-   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+   var buffer = o._vertexColorBuffer = p.createVertexBuffer();
    buffer.upload(vc, 4 * 4, 4);
    o.pushVertexBuffer(buffer);
    var id = [0, 1, 2, 0, 2, 3];
@@ -35559,6 +35556,34 @@ MO.APtyEnum_toString = function APtyEnum_toString(){
    var o = this;
    return 'linker=' + o._linker + ',enum=' + o._enum + ',default=' + o._default;
 }
+MO.APtyFont = function APtyFont(name, linker, font, size, bold, color) {
+   var o = this;
+   MO.AProperty.call(o, name, linker);
+   o._font  = MO.Lang.Integer.nvl(font);
+   o._size  = MO.Lang.Integer.nvl(size);
+   o._bold  = MO.Lang.Integer.nvl(bold);
+   o._color = MO.Lang.Integer.nvl(color);
+   o.load = MO.APtyFont_load;
+   o.save = MO.APtyFont_save;
+   o.toString = MO.APtyFont_toString;
+   return o;
+}
+MO.APtyFont_load = function APtyFont_load(instance, xconfig) {
+   var o = this;
+   var value = xconfig.get(o._linker);
+   instance[o._name].parse(value);
+}
+MO.APtyFont_save = function APtyFont_save(instance, xconfig) {
+   var o = this;
+   var value = instance[o._name];
+   if (!value.isEmpty()) {
+      xconfig.set(o._linker, value.toString());
+   }
+}
+MO.APtyFont_toString = function APtyFont_toString() {
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._font + ',' + o._size + o._bold + ',' + o._color;
+}
 MO.APtyInteger = function APtyInteger(n, l, v){
    var o = this;
    MO.AProperty.call(o, n, l);
@@ -36835,7 +36860,23 @@ MO.SUiFont_assign = function SUiFont_assign(value){
 }
 MO.SUiFont_parse = function SUiFont_parse(source){
    var o = this;
-   throw new MO.TError('Unsupport.');
+   var boldIndex = source.toLowerCase().indexOf('bold');
+   if (boldIndex != -1) {
+      o.bold = true;
+      source = source.replace(source.substring(boldIndex, boldIndex + 4), '');
+   }
+   var sharpIndex = source.indexOf('#');
+   if (sharpIndex != -1) {
+      o.color = source.substring(sharpIndex, sharpIndex + 7);
+      source = source.replace(o.color, '');
+   }
+   var sizeIndex = source.toLowerCase().indexOf('px');
+   if (sizeIndex != -1) {
+      var sizeString = source.substring(sizeIndex - 2, sizeIndex + 2);
+      o.size = parseInt(sizeString);
+      source = source.replace(sizeString, '');
+   }
+   o.font = MO.RString.trim(source);
 }
 MO.SUiFont_toString = function SUiFont_toString(){
    var o = this;
@@ -37401,35 +37442,6 @@ MO.FApplication_dispose = function FApplication_dispose(){
    o.__base.MFrameProcessor.dispose.call(o);
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
-}
-MO.FCanvas3dApplication = function FCanvas3dApplication(o){
-   o = MO.Class.inherits(this, o, MO.FApplication);
-   o._canvas   = MO.Class.register(o, new MO.AGetter('_canvas'));
-   o.construct = MO.FCanvas3dApplication_construct;
-   o.setup     = MO.FCanvas3dApplication_setup;
-   o.process   = MO.FCanvas3dApplication_process;
-   o.dispose   = MO.FCanvas3dApplication_dispose;
-   return o;
-}
-MO.FCanvas3dApplication_construct = function FCanvas3dApplication_construct(){
-   var o = this;
-   o.__base.FApplication.construct.call(o);
-}
-MO.FCanvas3dApplication_setup = function FCanvas3dApplication_setup(hPanel){
-   var o = this;
-   MO.RE3dEngine.setup();
-   var canvas = o._canvas = MO.Class.create(MO.FE3dSimpleCanvas);
-   canvas.build(hPanel);
-   canvas.setPanel(hPanel);
-}
-MO.FCanvas3dApplication_process = function FCanvas3dApplication_process(){
-   var o = this;
-   o.__base.FApplication.process.call(o);
-   o._canvas.process();
-}
-MO.FCanvas3dApplication_dispose = function FCanvas3dApplication_dispose(){
-   var o = this;
-   o.__base.FApplication.dispose.call(o);
 }
 MO.FChapter = function FChapter(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
@@ -38234,9 +38246,9 @@ MO.FGuiControl = function FGuiControl(o){
    o._alpha                  = MO.Class.register(o, [new MO.APtyString('_alpha'), new MO.AGetSet('_alpha')], 1);
    o._displayOrder           = MO.Class.register(o, [new MO.APtyString('_displayOrder'), new MO.AGetSet('_displayOrder')], 0);
    o._foreColor              = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')], '#FFFFFF');
-   o._foreFont               = MO.Class.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
+   o._foreFont               = MO.Class.register(o, [new MO.APtyFont('_foreFont'), new MO.AGetSet('_foreFont')]);
    o._backColor              = MO.Class.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
-   o._backFont               = MO.Class.register(o, [new MO.APtyString('_backFont'), new MO.AGetSet('_backFont')]);
+   o._backFont               = MO.Class.register(o, [new MO.APtyFont('_backFont'), new MO.AGetSet('_backFont')]);
    o._backResource           = MO.Class.register(o, [new MO.APtyString('_backResource'), new MO.AGetSet('_backResource')]);
    o._backGrid               = MO.Class.register(o, [new MO.APtyPadding('_backGrid'), new MO.AGetter('_backGrid')]);
    o._backHoverColor         = MO.Class.register(o, [new MO.APtyString('_backHoverColor'), new MO.AGetSet('_backHoverColor')]);
@@ -38402,6 +38414,8 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o._parentRectangle = new MO.SRectangle();
    o._clientRectangle = new MO.SRectangle();
    o._eventRectangle = new MO.SRectangle();
+   o._foreFont = new MO.SUiFont();
+   o._backFont = new MO.SUiFont();
 }
 MO.FGuiControl_isReady = function FGuiControl_isReady(){
    return this._statusReady;

@@ -6,32 +6,34 @@
 // @version 150216
 //==========================================================
 MO.FDuiCheck = function FDuiCheck(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyCheck, MO.MListenerDataChanged);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyCheck);
    //..........................................................
-   // @style
-   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   // @attribute
+   o._optionValueStyle     = false;
+   // @attribute
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @html
-   o._hInput          = null;
+   o._hInput               = null;
    //..........................................................
    // @event
-   o.onBuildEditValue = MO.FDuiCheck_onBuildEditValue;
-   o.onInputClick     = MO.Class.register(o, new MO.AEventClick('onInputClick'), MO.FDuiCheck_onInputClick);
+   o.onBuildEditValue      = MO.FDuiCheck_onBuildEditValue;
+   o.onInputClick          = MO.Class.register(o, new MO.AEventClick('onInputClick'), MO.FDuiCheck_onInputClick);
    //..........................................................
    // @process
-   o.oeSaveValue      = MO.FDuiCheck_oeSaveValue;
+   o.oeSaveValue           = MO.FDuiCheck_oeSaveValue;
    //..........................................................
    // @method
-   o.construct        = MO.FDuiCheck_construct;
+   o.construct             = MO.FDuiCheck_construct;
    // @method
-   o.formatLoad       = MO.FDuiCheck_formatLoad;
-   o.formatSave       = MO.FDuiCheck_formatSave;
+   o.formatLoad            = MO.FDuiCheck_formatLoad;
+   o.formatSave            = MO.FDuiCheck_formatSave;
    // @method
-   o.get              = MO.FDuiCheck_get;
-   o.set              = MO.FDuiCheck_set;
+   o.get                   = MO.FDuiCheck_get;
+   o.set                   = MO.FDuiCheck_set;
    // @method
-   o.refreshValue     = MO.FDuiCheck_refreshValue;
-   o.refreshStyle     = MO.FDuiCheck_refreshStyle;
+   o.refreshValue          = MO.FDuiCheck_refreshValue;
+   o.refreshStyle          = MO.FDuiCheck_refreshStyle;
    return o;
 }
 
@@ -44,8 +46,8 @@ MO.FDuiCheck = function FDuiCheck(o){
 MO.FDuiCheck_onBuildEditValue = function FDuiCheck_onBuildEditValue(p){
    var o = this;
    // 建立编辑控件
-   var h = o._hInput = MO.Window.Builder.appendCheck(o._hValuePanel, o.styleName('Input'));
-   o.attachEvent('onInputClick', h);
+   var hInput = o._hInput = MO.Window.Builder.appendCheck(o._hValuePanel);
+   o.attachEvent('onInputClick', hInput);
 }
 
 //==========================================================
@@ -62,18 +64,18 @@ MO.FDuiCheck_onInputClick = function FDuiCheck_onInputClick(p){
 // <T>存储内容。</T>
 //
 // @method
-// @param e:event:TEvent 事件对象
+// @param event:TEvent 事件对象
 //==========================================================
-MO.FDuiCheck_oeSaveValue = function FDuiCheck_oeSaveValue(e){
+MO.FDuiCheck_oeSaveValue = function FDuiCheck_oeSaveValue(event){
    var o = this;
    // 数据准备模式
-   if(MO.EStore.Prepare == e.store){
+   if(MO.EStore.Prepare == event.store){
       if(MO.Lang.Boolean.isTrue(o.reget())){
-         e.values.set(o.dataName, EBoolean.True);
+         event.values.set(o.dataName, EBoolean.True);
       }
       return MO.EEventStatus.Stop;
    }
-   return o.base.FDuiEditControl.oeSaveValue.call(o, e);
+   return o.base.FDuiEditControl.oeSaveValue.call(o, event);
 }
 
 //==========================================================
@@ -145,15 +147,13 @@ MO.FDuiCheck_refreshValue = function FDuiCheck_refreshValue(){
 }
 
 //==========================================================
-// <T>根据设置信息，刷新样式。</T>
+// <T>根据当前状态刷新样式。</T>
 //
 // @method
 //==========================================================
 MO.FDuiCheck_refreshStyle = function FDuiCheck_refreshStyle(){
    var o = this;
-   var h = o.panel(MO.EPanel.Edit);
-   h.disabled = !o._editable;
-   if(!o._editable){
-      o.hEdit.style.cursor = 'normal';
-   }
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   // 设置编辑样式
+   o._hInput.readOnly = !o._statusValueEdit;
 }

@@ -40,7 +40,7 @@ MO.FE3sTheme_unserialize = function FE3sTheme_unserialize(input){
    if(count > 0){
       var materials = o._materials = new MO.TDictionary();
       for(var n = 0; n < c; n++){
-         var material = RClass.create(FE3sMaterial);
+         var material = MO.Class.create(FE3sMaterial);
          material.unserialize(input);
          materials.set(material.code(), material);
       }

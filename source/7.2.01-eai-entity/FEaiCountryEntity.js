@@ -9,13 +9,13 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    //..........................................................
    // @property
-   //o._startDelay            = RClass.register(o, new APtyInteger('_startDelay'), 0);
-   //o._riseDuration          = RClass.register(o, new APtyNumber('_riseDuration'), 1200);
-   //o._riseDistance          = RClass.register(o, new APtyNumber('_riseDistance'), 2050);
-   //o._fallDuration          = RClass.register(o, new APtyNumber('_fallDuration'), 400);
-   //o._fallDistance          = RClass.register(o, new APtyNumber('_fallDistance'), 50);
-   //o._blockInterval         = RClass.register(o, new APtyNumber('_blockInterval'), 60);
-   //o._mouseOverRiseHeight   = RClass.register(o, new APtyNumber('_mouseOverRiseHeight'), 10);
+   //o._startDelay            = MO.Class.register(o, new MO.APtyInteger('_startDelay'), 0);
+   //o._riseDuration          = MO.Class.register(o, new MO.APtyNumber('_riseDuration'), 1200);
+   //o._riseDistance          = MO.Class.register(o, new MO.APtyNumber('_riseDistance'), 2050);
+   //o._fallDuration          = MO.Class.register(o, new MO.APtyNumber('_fallDuration'), 400);
+   //o._fallDistance          = MO.Class.register(o, new MO.APtyNumber('_fallDistance'), 50);
+   //o._blockInterval         = MO.Class.register(o, new MO.APtyNumber('_blockInterval'), 60);
+   //o._mouseOverRiseHeight   = MO.Class.register(o, new MO.APtyNumber('_mouseOverRiseHeight'), 10);
    o._enterSELoaded           = false;
    //o._downSELoaded            = false;
    o._enterSEPlaying          = false;

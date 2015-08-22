@@ -27,20 +27,20 @@ with(MO){
    // @version 150125
    //==========================================================
    MO.FDuiTable = function FDuiTable(o) {
-      o = RClass.inherits(this, o, FGridControl, MDataset);
+      o = MO.Class.inherits(this, o, FGridControl, MDataset);
       //..........................................................
       // @property
-      o._detailFrameName  = RClass.register(o, new APtyString('_detailFrameName'));
+      o._detailFrameName  = MO.Class.register(o, new MO.APtyString('_detailFrameName'));
       //..........................................................
       // @style
-      o._styleFixPanel    = RClass.register(o, new AStyle('_styleFixPanel'));
-      o._styleFixForm     = RClass.register(o, new AStyle('_styleFixForm'));
-      o._styleHeadPanel   = RClass.register(o, new AStyle('_styleHeadPanel'));
-      o._styleHeadForm    = RClass.register(o, new AStyle('_styleHeadForm'));
-      o._styleColumnPanel = RClass.register(o, new AStyle('_styleColumnPanel'));
-      o._styleColumnForm  = RClass.register(o, new AStyle('_styleColumnForm'));
-      o._styleDataPanel   = RClass.register(o, new AStyle('_styleDataPanel'));
-      o._styleDataForm    = RClass.register(o, new AStyle('_styleDataForm'));
+      o._styleFixPanel    = MO.Class.register(o, new MO.AStyle('_styleFixPanel'));
+      o._styleFixForm     = MO.Class.register(o, new MO.AStyle('_styleFixForm'));
+      o._styleHeadPanel   = MO.Class.register(o, new MO.AStyle('_styleHeadPanel'));
+      o._styleHeadForm    = MO.Class.register(o, new MO.AStyle('_styleHeadForm'));
+      o._styleColumnPanel = MO.Class.register(o, new MO.AStyle('_styleColumnPanel'));
+      o._styleColumnForm  = MO.Class.register(o, new MO.AStyle('_styleColumnForm'));
+      o._styleDataPanel   = MO.Class.register(o, new MO.AStyle('_styleDataPanel'));
+      o._styleDataForm    = MO.Class.register(o, new MO.AStyle('_styleDataForm'));
       //..........................................................
       // @html
       o._hFixPanel        = null;
@@ -80,25 +80,25 @@ with(MO){
       var o = this;
       var hbp = o._hContentPanel;
       // 建立固定区(Layer:2)
-      var hfp = o._hFixPanel = RBuilder.appendDiv(hbp, o.styleName('FixPanel'));
+      var hfp = o._hFixPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('FixPanel'));
       hfp.style.zIndex = 2;
       hfp.style.position = 'absolute';
-      var hff = o._hFixForm = RBuilder.appendTable(hfp, o.styleName('FixForm'), 0, 0, 1);
+      var hff = o._hFixForm = MO.Window.Builder.appendTable(hfp, o.styleName('FixForm'), 0, 0, 1);
       //hff.style.tableLayout = 'fixed';
       //hff.frame = 'rhs';
       hff.borderColorLight = '#D0D0D0';
       hff.borderColorDark = '#EEEEEE';
-      o._hFixHead =  RBuilder.appendTableRow(hff);
-      o._hFixSearch = RBuilder.appendTableRow(hff);
-      o._hFixTotal = RBuilder.appendTableRow(hff);
+      o._hFixHead =  MO.Window.Builder.appendTableRow(hff);
+      o._hFixSearch = MO.Window.Builder.appendTableRow(hff);
+      o._hFixTotal = MO.Window.Builder.appendTableRow(hff);
       o._hFixTotal.style.display = 'none';
       // 建立列的标题区(Layer:1)
-      var hhp = o._hHeadPanel = RBuilder.appendDiv(hbp, o.styleName('HeadPanel'));
+      var hhp = o._hHeadPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('HeadPanel'));
       hhp.style.zIndex = 1;
       hhp.style.position = 'absolute';
       hhp.style.overflowX = 'hidden';
       hhp.style.width = 1;
-      var hhf = o._hHeadForm = RBuilder.appendTable(hhp, o.styleName('HeadForm'), 0, 0, 1);
+      var hhf = o._hHeadForm = MO.Window.Builder.appendTable(hhp, o.styleName('HeadForm'), 0, 0, 1);
       hhf.frame = 'rhs';
       hhf.style.tableLayout = 'fixed';
       hhf.borderColorLight = '#D0D0D0';
@@ -108,21 +108,21 @@ with(MO){
       o._hTotal = hhf.insertRow();
       o._hTotal.style.display = 'none';
       // 建立列区(Layer:1)
-      var hcp = o._hColumnPanel = RBuilder.appendDiv(hbp, o.styleName('ColumnPanel'));
+      var hcp = o._hColumnPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('ColumnPanel'));
       hcp.style.zIndex = 1;
       hcp.style.position = 'absolute';
       hcp.style.overflowY = 'hidden';
-      var hcf = o._hColumnForm = RBuilder.appendTable(hcp, o.styleName('ColumnForm'), 0, 0, 1);
-      o._hFixRows = RBuilder.append(hcf, 'TBODY');
-      o._hFixRowLine = RBuilder.append(o._hFixRows, 'TR');
+      var hcf = o._hColumnForm = MO.Window.Builder.appendTable(hcp, o.styleName('ColumnForm'), 0, 0, 1);
+      o._hFixRows = MO.Window.Builder.append(hcf, 'TBODY');
+      o._hFixRowLine = MO.Window.Builder.append(o._hFixRows, 'TR');
       // 建立数据区
-      var hdp = o._hDataPanel = RBuilder.appendDiv(hbp, o.styleName('DataPanel'));
+      var hdp = o._hDataPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('DataPanel'));
       hdp.width = '100%';
       hdp.height = '100%';
-      var hdf = o._hDataForm = RBuilder.appendTable(hdp, o.styleName('DataForm'), 0, 0, 1);
+      var hdf = o._hDataForm = MO.Window.Builder.appendTable(hdp, o.styleName('DataForm'), 0, 0, 1);
       //hdf.style.tableLayout = 'fixed';
-      o._hRows = RBuilder.append(hdf, 'TBODY');
-      o._hRowLine = RBuilder.append(o._hRows, 'TR');
+      o._hRows = MO.Window.Builder.append(hdf, 'TBODY');
+      o._hRowLine = MO.Window.Builder.append(o._hRows, 'TR');
       // 关联事件对象
       //o.attachEvent('onHeadMouseDown', o._hHeadForm, o.onHeadMouseDown);
       //o.attachEvent('onHeadMouseMove', o._hHeadForm, o.onHeadMouseMove);

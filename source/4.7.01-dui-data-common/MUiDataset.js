@@ -7,29 +7,29 @@ with(MO){
    // @history 091118 MAOCY 创建
    //==========================================================
    MO.MUiDataset = function MUiDataset(o){
-      o = RClass.inherits(this, o);
+      o = MO.Class.inherits(this, o);
       //..........................................................
       // @property String 数据集的名称
-      o._dsDataset         = RClass.register(o, new APtyString('_dsDataset', 'dataset'));
+      o._dsDataset         = MO.Class.register(o, new MO.APtyString('_dsDataset', 'dataset'));
       // @property Integer 数据集的分页大小
-      o._dsPageSize        = RClass.register(o, new APtyInteger('_dsPageSize', 'page_size'), 20);
+      o._dsPageSize        = MO.Class.register(o, new MO.APtyInteger('_dsPageSize', 'page_size'), 20);
       // @attribute Integer 当前页号
       o._dsPageIndex       = 0;
       // @property String 新建命令
-      o._dsInsertAction    = RClass.register(o, new APtyString('_dsInsertAction', 'insert_action'));
+      o._dsInsertAction    = MO.Class.register(o, new MO.APtyString('_dsInsertAction', 'insert_action'));
       // @property String 更新命令
-      o._dsUpdateAction    = RClass.register(o, new APtyString('_dsUpdateAction', 'update_action'));
+      o._dsUpdateAction    = MO.Class.register(o, new MO.APtyString('_dsUpdateAction', 'update_action'));
       // @property String 删除命令
-      o._dsDeleteAction    = RClass.register(o, new APtyString('_dsDeleteAction', 'delete_action'));
+      o._dsDeleteAction    = MO.Class.register(o, new MO.APtyString('_dsDeleteAction', 'delete_action'));
       // @property String 数据集的服务地址
-      //o._dsService         = RClass.register(o, new APtyString('dsService', EService.WebDataset, 'service'));
-      //o._displayToolbar    = RClass.register(o, new APtyBoolean('dispToolbar'), false);
+      //o._dsService         = MO.Class.register(o, new MO.APtyString('dsService', EService.WebDataset, 'service'));
+      //o._displayToolbar    = MO.Class.register(o, new MO.APtyBoolean('dispToolbar'), false);
       // @property Boolean 是否允许搜索操作
-      //o._editFetch         = RClass.register(o, new APtySet('_editFetch', 'edit_config'), EEditConfig.Fetch);
+      //o._editFetch         = MO.Class.register(o, new MO.APtySet('_editFetch', 'edit_config'), EEditConfig.Fetch);
       // @property Boolean 是否允许搜索操作
-      //o._editSearch        = RClass.register(o, new APtySet('_editSearch', 'edit_config'), EEditConfig.Search);
+      //o._editSearch        = MO.Class.register(o, new MO.APtySet('_editSearch', 'edit_config'), EEditConfig.Search);
       // @property Boolean 是否允许复制操作
-      //o._editCopy          = RClass.register(o, new APtySet('_editCopy', 'edit_config'), EEditConfig.Copy);
+      //o._editCopy          = MO.Class.register(o, new MO.APtySet('_editCopy', 'edit_config'), EEditConfig.Copy);
       //..........................................................
       // @attribute
       o._dataSource        = null;

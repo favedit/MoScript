@@ -97,14 +97,14 @@ textarea{
 
 
 ::-webkit-scrollbar{
-   width: 12px;
-   height: 12px;
+   width: 14px;
+   height: 14px;
 }
 ::-webkit-scrollbar-thumb{
    height:50px;
-   background-color: #CCCCCC;
-   border: 1px solid #999999;
-   -webkit-border-radius: 2px;
+   background-color: #EEEEEE;
+   border: 1px solid #CCCCCC;
+   // -webkit-border-radius: 2px;
 }
 ::-webkit-scrollbar-track-piece{
    background-color: #EEEEEE;

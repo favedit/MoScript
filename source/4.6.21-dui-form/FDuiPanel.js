@@ -61,8 +61,8 @@ MO.FDuiPanel_onBuildPanel = function FDuiPanel_onBuildPanel(p){
 //==========================================================
 MO.FDuiPanel_onTitleClick = function FDuiPanel_onTitleClick(p){
    var o = this;
-   var s = !o._statusBody;
-   o._statusBody = s;
-   o._hImage.src = MO.RResource.iconPath(s ? o._imageMinus : o._imagePlus);
-   Html.displaySet(o._hBody, s);
+   var status = !o._statusBody;
+   o._statusBody = status;
+   o._hImage.src = MO.Window.Resource.iconPath(status ? o._imageMinus : o._imagePlus);
+   MO.Window.Html.displaySet(o._hBody, status);
 }

@@ -130,35 +130,6 @@ MO.FApplication_dispose = function FApplication_dispose(){
    o.__base.MListener.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
-MO.FCanvas3dApplication = function FCanvas3dApplication(o){
-   o = MO.Class.inherits(this, o, MO.FApplication);
-   o._canvas   = MO.Class.register(o, new MO.AGetter('_canvas'));
-   o.construct = MO.FCanvas3dApplication_construct;
-   o.setup     = MO.FCanvas3dApplication_setup;
-   o.process   = MO.FCanvas3dApplication_process;
-   o.dispose   = MO.FCanvas3dApplication_dispose;
-   return o;
-}
-MO.FCanvas3dApplication_construct = function FCanvas3dApplication_construct(){
-   var o = this;
-   o.__base.FApplication.construct.call(o);
-}
-MO.FCanvas3dApplication_setup = function FCanvas3dApplication_setup(hPanel){
-   var o = this;
-   MO.RE3dEngine.setup();
-   var canvas = o._canvas = MO.Class.create(MO.FE3dSimpleCanvas);
-   canvas.build(hPanel);
-   canvas.setPanel(hPanel);
-}
-MO.FCanvas3dApplication_process = function FCanvas3dApplication_process(){
-   var o = this;
-   o.__base.FApplication.process.call(o);
-   o._canvas.process();
-}
-MO.FCanvas3dApplication_dispose = function FCanvas3dApplication_dispose(){
-   var o = this;
-   o.__base.FApplication.dispose.call(o);
-}
 MO.FChapter = function FChapter(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MGraphicObject, MO.MEventDispatcher, MO.MFrameProcessor);
    o._code                = MO.Class.register(o, new MO.AGetSet('_code'));

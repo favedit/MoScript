@@ -39,51 +39,51 @@ MO.RBuilder.prototype.create = function RBuilder_create(h, t, s){
 // <T>创建一个页面图标对象。</T>
 //
 // @method
-// @param d:document:HtmlDocument 页面文档对象
-// @param s:style:String 样式名称
-// @param u:url:String 图片路径
-// @param w:width:Integer 图片高度
-// @param h:height:Integer 图片宽度
+// @param hDocument:HtmlDocument 页面文档对象
+// @param style:String 样式名称
+// @param uri:String 图片路径
+// @param width:Integer 图片高度
+// @param height:Integer 图片宽度
 // @return HtmlImgTag 页面图标对象
 //==========================================================
-MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(d, s, u, w, h){
-   var r = this.create(d, 'IMG', MO.Lang.String.nvl(s, 'Tag_Icon'));
-   r.align = 'absmiddle';
-   if(u){
-      r.src = MO.Window.Resource.iconPath(u);
+MO.RBuilder.prototype.createIcon = function RBuilder_createIcon(hDocument, style, uri, width, height){
+   var hImage = this.create(hDocument, 'IMG', MO.Lang.String.nvl(style, 'Tag_Icon'));
+   hImage.align = 'absmiddle';
+   if(uri){
+      hImage.src = MO.Window.Resource.iconPath(uri);
    }
-   if(w){
-      r.style.width = w + 'px';
+   if(width){
+      hImage.style.width = width + 'px';
    }
-   if(h){
-      r.style.height = h + 'px';
+   if(height){
+      hImage.style.height = height + 'px';
    }
-   return r;
+   return hImage;
 }
 
 //==========================================================
 // <T>创建一个页面图片对象。</T>
 //
 // @method
-// @param d:document:HtmlDocument 页面文档对象
-// @param s:style:String 样式名称
-// @param u:url:String 图片路径
-// @param w:width:Integer 图片高度
-// @param h:height:Integer 图片宽度
+// @param hDocument:HtmlDocument 页面文档对象
+// @param style:String 样式名称
+// @param uri:String 图片路径
+// @param width:Integer 图片高度
+// @param height:Integer 图片宽度
 // @return HtmlImgTag 页面图片对象
 //==========================================================
-MO.RBuilder.prototype.createImage = function RBuilder_createImage(d, s, u, w, h){
-   var r = this.create(d, 'IMG', u);
-   if(u){
-      r.src = MO.RResource.imagePath(u);
+MO.RBuilder.prototype.createImage = function RBuilder_createImage(hDocument, style, uri, width, height){
+   var hImage = this.create(hDocument, 'IMG', style);
+   if(uri){
+      hImage.src = MO.Window.Resource.imagePath(uri);
    }
-   if(w){
-      r.style.width = w;
+   if(width){
+      hImage.style.width = width + 'px';
    }
-   if(h){
-      r.style.height = h;
+   if(height){
+      hImage.style.height = height + 'px';
    }
-   return r;
+   return hImage;
 }
 
 //==========================================================
@@ -273,7 +273,7 @@ MO.RBuilder.prototype.createFragment = function RBuilder_createFragment(document
 // @param t:tagName:String 标签名称
 // @param s:styleName:String 样式名称
 // @return HtmlTag 页面对象
-// @see RBuilder.create
+// @see MO.Window.Builder.create
 //==========================================================
 MO.RBuilder.prototype.append = function RBuilder_append(p, t, s){
    var r = this.create(p.ownerDocument, t, s);
@@ -457,7 +457,7 @@ MO.RBuilder.prototype.appendDiv = function RBuilder_appendDiv(p, s){
 // @param cs:cellSpaceing:Integer 单元格之间的宽度
 // @param cp:cellPadding:Integer 单元格内文字与单元格边框之间的距离
 // @return HtmlTag 表格对象
-// @see RBuilder.createTable
+// @see MO.Window.Builder.createTable
 //==========================================================
 MO.RBuilder.prototype.appendTable = function RBuilder_appendTable(p, s, b, cs, cp){
    var r = this.createTable(p.ownerDocument, s, b, cs, cp);

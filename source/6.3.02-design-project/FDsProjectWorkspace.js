@@ -12,16 +12,16 @@ with(MO){
       o._frameName            = 'design3d.project.Workspace';
       //..........................................................
       // @style
-      o._styleToolbarGround   = MO.Class.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-      o._styleStatusbarGround = MO.Class.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-      o._styleCatalogGround   = MO.Class.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-      o._styleCatalogToolbar  = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
-      o._styleSearchGround    = MO.Class.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
-      o._styleSearchToolbar   = MO.Class.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
-      o._stylePropertyGround  = MO.Class.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-      o._stylePropertyToolbar = MO.Class.register(o, new AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
-      o._stylePropertyContent = MO.Class.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
-      o._styleWorkspaceGround = MO.Class.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+      o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+      o._styleStatusbarGround = MO.Class.register(o, new MO.AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+      o._styleCatalogGround   = MO.Class.register(o, new MO.AStyle('_styleCatalogGround', 'Catalog_Ground'));
+      o._styleCatalogToolbar  = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+      o._styleSearchGround    = MO.Class.register(o, new MO.AStyle('_styleSearchGround', 'Search_Ground'));
+      o._styleSearchToolbar   = MO.Class.register(o, new MO.AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+      o._stylePropertyGround  = MO.Class.register(o, new MO.AStyle('_stylePropertyGround', 'Property_Ground'));
+      o._stylePropertyToolbar = MO.Class.register(o, new MO.AStyle('_stylePropertyToolbar', 'Property_Toolbar'));
+      o._stylePropertyContent = MO.Class.register(o, new MO.AStyle('_stylePropertyContent', 'Property_Content'));
+      o._styleWorkspaceGround = MO.Class.register(o, new MO.AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
       //..........................................................
       // @attribute
       o._resourceTypeCd       = 'project';
@@ -107,21 +107,21 @@ with(MO){
       //f.setAlignCd(EUiAlign.Right);
       //f.setSizeHtml(o._frameProperty._hPanel);
       //..........................................................
-      var hTable = RBuilder.createTable(p);
+      var hTable = MO.Window.Builder.createTable(p);
       hTable.width = '100%';
-      var hRow = RBuilder.appendTableRow(hTable);
+      var hRow = MO.Window.Builder.appendTableRow(hTable);
       // 设置工具栏
       //var c = o._toolbar = MO.Class.create(FDsProjectMenuBar);
       //c._workspace = o;
       //c.buildDefine(p);
-      //var hCell = o._hMenuPanel = RBuilder.appendTableCell(hRow);
+      //var hCell = o._hMenuPanel = MO.Window.Builder.appendTableCell(hRow);
       //hCell.appendChild(c._hPanel);
-      o._hMenuPanel = RBuilder.appendTableCell(hRow);
+      o._hMenuPanel = MO.Window.Builder.appendTableCell(hRow);
       // 设置分页栏
       var c = o._tabBar = MO.Class.create(FDsProjectTabBar);
       c._workspace = o;
       c.buildDefine(p);
-      var hCell = RBuilder.appendTableCell(hRow);
+      var hCell = MO.Window.Builder.appendTableCell(hRow);
       hCell.width = '150px';
       hCell.align = 'right';
       hCell.vAlign = 'bottom';

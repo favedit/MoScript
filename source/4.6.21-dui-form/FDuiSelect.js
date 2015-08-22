@@ -17,10 +17,6 @@
 MO.FDuiSelect = function FDuiSelect(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MDuiContainer, MO.MUiPropertySelect);
    //..........................................................
-   // @style
-   o._styleValuePanel      = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
-   o._styleInput           = MO.Class.register(o, new MO.AStyle('_styleInput'));
-   //..........................................................
    // @attribtue
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -47,6 +43,7 @@ MO.FDuiSelect = function FDuiSelect(o){
    o.set                   = MO.FDuiSelect_set;
    o.selectItem            = MO.FDuiSelect_selectItem;
    o.refreshValue          = MO.FDuiSelect_refreshValue;
+   o.refreshStyle          = MO.FDuiSelect_refreshStyle;
    // @method
    o.drop                  = MO.FDuiSelect_drop;
    // @method
@@ -56,7 +53,6 @@ MO.FDuiSelect = function FDuiSelect(o){
    // @event
    //o.onEditEnd     = FDuiSelect_onEditEnd;
    //o.loadConfig    = FDuiSelect_loadConfig;
-   //o.refreshStyle  = FDuiSelect_refreshStyle;
    //o.doBlur        = FDuiSelect_doBlur;
    return o;
 }
@@ -65,51 +61,49 @@ MO.FDuiSelect = function FDuiSelect(o){
 // <T>建立编辑器内容。</T>
 //
 // @method
-// @param p:argements:SArgements 参数集合
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiSelect_onBuildEditValue = function FDuiSelect_onBuildEditValue(p){
+MO.FDuiSelect_onBuildEditValue = function FDuiSelect_onBuildEditValue(event){
    var o = this;
-   var hp = o._hValuePanel;
-   hp.className = o.styleName('ValuePanel');
-   var hf = o._hValueForm = MO.Window.Builder.appendTable(hp);
-   hf.width = '100%';
-   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   var hValuePanel = o._hValuePanel;
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
+   hValueForm.width = '100%';
+   var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
    //..........................................................
    // 建立改变栏
-   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
-   o.onBuildEditChange(p);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
+   o.onBuildEditChange(event);
    //..........................................................
    // 建立输入栏
-   var hep = o._hInputPanel = MO.Window.Builder.appendTableCell(hl);
-   var he = o._hInput = MO.Window.Builder.appendEdit(hep, o.styleName('Input'));
-   o.attachEvent('onDoubleClick', he);
-   o.attachEvent('onKeyDown', he);
-   //o.attachEvent('onInputEdit', he, o.onInputEdit);
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
+   var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel);
+   o.attachEvent('onDoubleClick', hInput);
+   o.attachEvent('onKeyDown', hInput);
+   //o.attachEvent('onInputEdit', hInput, o.onInputEdit);
    // 设置大小
-   //MO.Window.Html.setSize(hep, o._inputSize);
+   //MO.Window.Html.setSize(hInputPanel, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
-      he.maxLength = o._editLength;
+      hInput.maxLength = o._editLength;
    }
    //..........................................................
    // 建立下拉栏
-   var hdp = o._hDropPanel = MO.Window.Builder.appendTableCell(hl);
-   hdp.style.borderLeft = '1px solid #666666';
-   o.onBuildEditDrop(p);
+   var hdp = o._hDropPanel = MO.Window.Builder.appendTableCell(hValueLine);
+   o.onBuildEditDrop(event);
    //..........................................................
    // 创建空行
-   var c = o._emptyItem = MO.Class.create(MO.FDuiSelectItem);
-   c.build(p);
-   o.push(c);
+   var item = o._emptyItem = MO.Class.create(MO.FDuiSelectItem);
+   item.build(event);
+   o.push(item);
 }
 
 //==========================================================
 // <T>鼠标点击修改标志。</T>
 //
 // @method
-// @param p:event:TEvent 事件对象
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiSelect_onDropClick = function FDuiSelect_onDropClick(p){
+MO.FDuiSelect_onDropClick = function FDuiSelect_onDropClick(event){
    this.drop();
 }
 
@@ -117,18 +111,18 @@ MO.FDuiSelect_onDropClick = function FDuiSelect_onDropClick(p){
 // <T>响应编辑按键事件。</T>
 //
 // @method
-// @param e:editor:FEditor 编辑器
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiSelect_onKeyDown = function FDuiSelect_onKeyDown(p){
+MO.FDuiSelect_onKeyDown = function FDuiSelect_onKeyDown(event){
    var o = this;
    // 获得编辑中
-   var e = o._editor;
-   if(e && e._statusEditing && (e._source == o)){
-      e.onEditKeyDown(p);
+   var editor = o._editor;
+   if(editor && editor._statusEditing && (editor._source == o)){
+      editor.onEditKeyDown(event);
       return;
    }
    // 下拉展开
-   if(p.keyCode == MO.EKeyCode.Down){
+   if(event.keyCode == MO.EKeyCode.Down){
       o.drop();
    }
 }
@@ -147,17 +141,17 @@ MO.FDuiSelect_construct = function FDuiSelect_construct(){
 // <T>根据项目名称查找项目。</T>
 //
 // @method
-// @param p:label:String 项目名称
+// @param label:String 项目名称
 // @return FDuiSelectItem 项目
 //==========================================================
-MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(p){
+MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(label){
    var o = this;
-   var s = o._components;
-   if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
-         var c = s.valueAt(i);
-         if(MO.Lang.String.equals(c._label, p, true)){
-            return c;
+   var components = o._components;
+   if(components){
+      for(var i = components.count() - 1; i >= 0; i--){
+         var component = components.at(i);
+         if(MO.Lang.String.equals(component.label(), label, true)){
+            return component;
          }
       }
    }
@@ -168,17 +162,17 @@ MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(p){
 // <T>根据项目数据查找项目。</T>
 //
 // @method
-// @param p:dataValue:String 项目数据
+// @param dataValue:String 项目数据
 // @return FDuiSelectItem 项目
 //==========================================================
-MO.FDuiSelect_findItemByData = function FDuiSelect_findItemByData(p){
+MO.FDuiSelect_findItemByData = function FDuiSelect_findItemByData(dataValue){
    var o = this;
-   var s = o._components;
-   if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
-         var c = s.valueAt(i);
-         if(MO.Lang.String.equals(c._dataValue, p, true)){
-            return c;
+   var components = o._components;
+   if(components){
+      for(var i = components.count() - 1; i >= 0; i--){
+         var component = components.at(i);
+         if(MO.Lang.String.equals(component.dataValue(), dataValue, true)){
+            return component;
          }
       }
    }
@@ -210,11 +204,12 @@ MO.FDuiSelect_formatValue = function FDuiSelect_formatValue(label){
 //==========================================================
 MO.FDuiSelect_formatDisplay = function FDuiSelect_formatDisplay(value){
    var o = this;
+   var label = '';
    var item = o.findItemByData(value);
    if(item){
-      return MO.Lang.String.nvl(item.label());
+      label = MO.Lang.String.nvl(item.label());
    }
-   return item;
+   return label;
 }
 
 //==========================================================
@@ -276,6 +271,31 @@ MO.FDuiSelect_refreshValue = function FDuiSelect_refreshValue(){
 }
 
 //==========================================================
+// <T>根据当前状态刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiSelect_refreshStyle = function FDuiSelect_refreshStyle(){
+   var o = this;
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   o.__base.MDuiEditDrop.refreshStyle.call(o);
+   // 设置编辑样式
+   var hInput = o._hInput;
+   var inputStyle = null;
+   if(o._statusValueEdit){
+      if(o._statusValueHover){
+         inputStyle = 'InputHover';
+      }else{
+         inputStyle = 'InputEdit';
+      }
+   }else{
+      inputStyle = 'InputReadonly';
+   }
+   hInput.className = o.styleName(inputStyle);
+   hInput.readOnly = !o._statusValueEdit;
+}
+
+//==========================================================
 // <T>下拉操作。</T>
 //
 // @method
@@ -287,10 +307,13 @@ MO.FDuiSelect_drop = function FDuiSelect_drop(){
       //if(!o._editRefer){
       //   return RMessage.fatal(o, null, 'Edit refer is null.');
       //}
-      var e = o._editor = MO.Console.find(MO.FDuiEditorConsole).focus(o, MO.FDuiSelectEditor, o._name);
-      e.buildItems(o);
-      e.set(o.get());
-      e.show();
+      // 获得内容
+      var value = o.get();
+      // 显示编辑框
+      var editor = o._editor = MO.Console.find(MO.FDuiEditorConsole).focus(o, MO.FDuiSelectEditor, o._name);
+      editor.buildItems(o);
+      editor.set(value);
+      editor.show();
    }
 }
 
@@ -359,22 +382,6 @@ MO.FDuiSelect_loadConfig = function FDuiSelect_loadConfig(c){
       }
    }
    return EStatus.Stop;
-}
-
-//==========================================================
-// <T>设置编辑样式。</T>
-//
-// @method
-//==========================================================
-MO.FDuiSelect_refreshStyle = function FDuiSelect_refreshStyle(){
-   var o = this;
-   o.__base.FDuiEditControl.refreshStyle.call(o);
-   //o.hDrop.src = o.styleIconPath(o.isEditHover(t) ? 'DropSelect' : 'Drop');
-   if(!o.editCheck){
-     //o.hEdit.style.cursor = 'hand';
-      o.hEdit.readOnly = 'true';
-   }
-   //o.hDrop.style.display = o._editable? "block" : "none";
 }
 
 //==========================================================

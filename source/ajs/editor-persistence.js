@@ -5,13 +5,14 @@ MO.FEditorDsPersistenceCatalogContent = function FEditorDsPersistenceCatalogCont
 }
 MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName = 'editor.design.frame.CatalogToolBar';
+   o._frameName                   = 'editor.design.persistence.CatalogToolBar';
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;
    o._controlFolderPropertyButton = null;
    o._controlFolderOpenButton     = null;
    o._controlFolderCloseButton    = null;
    o._activeNodeGuid              = null;
+   o.onListClick                  = MO.FEditorDsPersistenceCatalogToolBar_onListClick;
    o.onBuilded                    = MO.FEditorDsPersistenceCatalogToolBar_onBuilded;
    o.onFolderCreateClick          = MO.FEditorDsPersistenceCatalogToolBar_onFolderCreateClick;
    o.onFolderDeleteLoad           = MO.FEditorDsPersistenceCatalogToolBar_onFolderDeleteLoad;
@@ -24,9 +25,14 @@ MO.FEditorDsPersistenceCatalogToolBar = function FEditorDsPersistenceCatalogTool
    o.dispose                      = MO.FEditorDsPersistenceCatalogToolBar_dispose;
    return o;
 }
+MO.FEditorDsPersistenceCatalogToolBar_onListClick = function FEditorDsPersistenceCatalogToolBar_onListClick(event){
+   var o = this;
+   o._frameSet.selectObject('list', 'editor.design.persistence.ListForm', null, null);
+}
 MO.FEditorDsPersistenceCatalogToolBar_onBuilded = function FEditorDsPersistenceCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FDuiToolBar.onBuilded.call(o, p);
+   o._controlList.addClickListener(o, o.onListClick);
 }
 MO.FEditorDsPersistenceCatalogToolBar_onFolderCreateClick = function FEditorDsPersistenceCatalogToolBar_onFolderCreateClick(event){
    var o = this;
@@ -123,8 +129,10 @@ MO.FEditorDsPersistenceFrameSet = function FEditorDsPersistenceFrameSet(o){
 MO.FEditorDsPersistenceFrameSet_onBuilded = function FEditorDsPersistenceFrameSet_onBuilded(event){
    var o = this;
    o.__base.FEditorDsFrameSet.onBuilded.call(o, event);
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
    o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._framePropertyTitle._hPanel.className = o.styleName('Title_Ground');
    o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
    o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
@@ -140,11 +148,7 @@ MO.FEditorDsPersistenceFrameSet_onBuilded = function FEditorDsPersistenceFrameSe
    control._frameSet = o;
    control.build(event);
    o._frameCatalogContent.push(control);
-   var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsPersistencePropertyToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._framePropertyToolBar.push(control);
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '持久化目录');
 }
 MO.FEditorDsPersistenceFrameSet_construct = function FEditorDsPersistenceFrameSet_construct(){
    var o = this;
@@ -180,30 +184,6 @@ MO.FEditorDsPersistenceMenuBar_onBuildClick = function FEditorDsPersistenceMenuB
    var url = MO.Lang.String.format('/editor.design.persistence.ws?action=build&type=all');
    var connection = MO.Console.find(MO.FXmlConsole).send(url);
    connection.addLoadListener(o, o.onBuildFinish);
-}
-MO.FEditorDsPersistencePropertyAttributeForm = function FEditorDsPersistencePropertyAttributeForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.persistence';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsPersistencePropertyComponentForm = function FEditorDsPersistencePropertyComponentForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.persistence';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsPersistencePropertyInterfaceForm = function FEditorDsPersistencePropertyInterfaceForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.persistence';
-   o._logicGroup   = 'item';
-   return o;
-}
-MO.FEditorDsPersistencePropertyPersistenceForm = function FEditorDsPersistencePropertyPersistenceForm(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);
-   o._logicService = 'editor.design.persistence';
-   o._logicGroup   = 'container';
-   return o;
 }
 MO.FEditorDsPersistencePropertyToolBar = function FEditorDsPersistencePropertyToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);

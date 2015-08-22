@@ -397,19 +397,20 @@ MO.MDuiEditDrop = function MDuiEditDrop(o){
    o.onDropLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onDropLeave'), MO.MDuiEditDrop_onDropLeave);
    o.onDropClick     = MO.Class.register(o, new MO.AEventClick('onDropClick'), MO.MDuiEditDrop_onDropClick);
    o.construct       = MO.MDuiEditDrop_construct;
+   o.refreshStyle    = MO.MDuiEditDrop_refreshStyle;
    o.dispose         = MO.MDuiEditDrop_dispose;
    return o;
 }
 MO.MDuiEditDrop_onBuildEditDrop = function MDuiEditDrop_onBuildEditDrop(p){
    var o = this;
-   var h = o._hDropPanel;
-   h.className = o.styleName('DropPanel', MO.MDuiEditDrop);
-   h.width = 11;
-   o.attachEvent('onDropEnter', h);
-   o.attachEvent('onDropLeave', h);
-   o.attachEvent('onDropClick', h);
-   var hi = o._hDropIcon = MO.RBuilder.appendIcon(h, o.styleName('DropIcon', MO.MDuiEditDrop), 'control.drop');
-   hi.align = 'center';
+   var hDropPanel = o._hDropPanel;
+   hDropPanel.align = 'center';
+   hDropPanel.className = o.styleName('DropPanel', MO.MDuiEditDrop);
+   o.attachEvent('onDropEnter', hDropPanel);
+   o.attachEvent('onDropLeave', hDropPanel);
+   o.attachEvent('onDropClick', hDropPanel);
+   var hDropIcon = o._hDropIcon = MO.Window.Builder.appendIcon(hDropPanel, o.styleName('DropIcon', MO.MDuiEditDrop), 'control.drop');
+   hDropIcon.align = 'absmiddle';
 }
 MO.MDuiEditDrop_onDropEnter = function MDuiEditDrop_onDropEnter(e){
    var o = this;
@@ -420,6 +421,18 @@ MO.MDuiEditDrop_onDropLeave = function MDuiEditDrop_onDropLeave(e){
 MO.MDuiEditDrop_onDropClick = function MDuiEditDrop_onDropClick(e){
 }
 MO.MDuiEditDrop_construct = function MDuiEditDrop_construct(){
+}
+MO.MDuiEditDrop_refreshStyle = function MDuiEditDrop_refreshStyle(){
+   var o = this;
+   var hDropIcon = o._hDropIcon;
+   if(o._statusValueEdit){
+      if(o._statusValueHover){
+         hDropIcon.src = MO.Window.Resource.iconPath('control.drop-hover');
+      }else{
+         hDropIcon.src = MO.Window.Resource.iconPath('control.drop');
+      }
+   }
+   MO.Window.Html.visibleSet(o._hDropPanel, o._statusValueEdit);
 }
 MO.MDuiEditDrop_dispose = function MDuiEditDrop_dispose(){
    var o = this;
@@ -835,18 +848,21 @@ MO.MDuiStyle = function MDuiStyle(o){
    o.dispose       = MO.Method.empty;
    return o;
 }
-MO.MDuiStyle_styleName = function MDuiStyle_styleName(n, c){
+MO.MDuiStyle_styleName = function MDuiStyle_styleName(name, method){
    var o = this;
-   var f = c ? c : o;
-   var tn = MO.Class.name(f);
-   var t = MO.Class.forName(tn);
-   return t.style(n);
+   var findMethod = method ? method : o;
+   var className = MO.Class.name(findMethod);
+   var clazz = MO.Class.forName(className);
+   return clazz.style(name);
 }
-MO.MDuiStyle_styleIcon = function MDuiStyle_styleIcon(n, c){
-   return MO.Class.name(c ? c : this, true) + '_' + n;
+MO.MDuiStyle_styleIcon = function MDuiStyle_styleIcon(name, method){
+   var className = MO.Class.name(method ? method : this, true);
+   return className + '_' + name;
 }
-MO.MDuiStyle_styleIconPath = function MDuiStyle_styleIconPath(n, c){
-   return MO.RResource.iconPath(MO.Class.name(c ? c : this, true) + '_' + n);
+MO.MDuiStyle_styleIconPath = function MDuiStyle_styleIconPath(name, method){
+   var className = MO.Class.name(method ? method : this, true);
+   var iconName = className + '_' + name;
+   return MO.RResource.iconPath(iconName);
 }
 MO.MDuiVertical = function MDuiVertical(o){
    o = MO.Class.inherits(this, o);
@@ -1529,10 +1545,10 @@ MO.FDuiControl_onBuild = function FDuiControl_onBuild(p){
    if(o._statusVisible != o._visible){
       o.setVisible(o._visible);
    }
-   var h = o._hPanel;
-   MO.RHtml.linkSet(h, 'control', o);
-   o.attachEvent('onEnter', h);
-   o.attachEvent('onLeave', h);
+   var hPanel = o._hPanel;
+   MO.Window.Html.linkSet(hPanel, 'control', o);
+   o.attachEvent('onEnter', hPanel);
+   o.attachEvent('onLeave', hPanel);
    o.refreshBounds();
    o.refreshPadding();
    o.refreshMargin();
@@ -2001,7 +2017,7 @@ MO.RDuiControl.prototype.linkEvent = function RDuiControl_linkEvent(tc, sc, n, h
    var o = this;
    var p = tc[n];
    if(!RMethod.isEmpty(p) || m){
-      var cz = RClass.find(c.constructor);
+      var cz = MO.Class.find(c.constructor);
       var a = cz.annotation(MO.EAnnotation.Event, n);
       var e = new a.constructor();
       e.name = a.name;
@@ -2054,7 +2070,7 @@ MO.RDuiControl.prototype.toXml = function RDuiControl_toXml(){
 }
 MO.RDuiControl.prototype.store = function RDuiControl_store(o, type){
    var x = new TNode();
-   x.name = RClass.name(o).substr(1);
+   x.name = MO.Class.name(o).substr(1);
    if(RClass.isClass(o, FContainer)){
       o.storeConfig(x);
    }else{

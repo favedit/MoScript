@@ -9,6 +9,7 @@ MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorFrameSet);
    //..........................................................
    // @style
+   o._styleTitleGround     = MO.Class.register(o, new MO.AStyle('_styleTitleGround', 'Title_Ground'));
    o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
    o._styleSpaceContent    = MO.Class.register(o, new MO.AStyle('_styleSpaceContent', 'Space_Content'));
@@ -62,6 +63,16 @@ MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(type
    var frame = o.selectPropertyFrame(propertyFrame);
    // 显示容器
    frame.load(typeGroup, containerName, controlName);
+   // 显示标题
+   var hTitlePanel = o._framePropertyTitle._hPanel;
+   MO.Window.Html.textSet(hTitlePanel, frame.label());
+   // 显示工具栏
+   var hToolBarPanel = o._framePropertyToolBar._hPanel;
+   MO.Window.Html.clear(hToolBarPanel);
+   var toolBar = frame.findControl('toolBar');
+   if(toolBar){
+      toolBar.setPanel(hToolBarPanel);
+   }
 }
 
 //==========================================================

@@ -8,9 +8,9 @@ with(MO){
    MO.FDsResourceListItem = function FDsResourceListItem(o){
       o = MO.Class.inherits(this, o, FDuiListViewItem);
       //..........................................................
-      o._styleTypePanel        = MO.Class.register(o, new AStyle('_styleTypePanel'));
-      o._styleTypePrivateLabel = MO.Class.register(o, new AStyle('_styleTypePublicLabel'));
-      o._styleTypePublicLabel  = MO.Class.register(o, new AStyle('_styleTypePrivateLabel'));
+      o._styleTypePanel        = MO.Class.register(o, new MO.AStyle('_styleTypePanel'));
+      o._styleTypePrivateLabel = MO.Class.register(o, new MO.AStyle('_styleTypePublicLabel'));
+      o._styleTypePublicLabel  = MO.Class.register(o, new MO.AStyle('_styleTypePrivateLabel'));
       //..........................................................
       // @event
       o.onBuild         = FDsResourceListItem_onBuild;
@@ -37,7 +37,7 @@ with(MO){
       // 建立类型
       o._hLine1.className = o.styleName('TypePanel');
       o._hLine1.vAlign = 'top';
-      o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
+      o._hTypeLabel = MO.Window.Builder.appendDiv(o._hLine1, o.styleName('TypePrivateLabel'));
    }
 
    //==========================================================

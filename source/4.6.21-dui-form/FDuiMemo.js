@@ -15,35 +15,34 @@
 // @version 150318
 //==========================================================
 MO.FDuiMemo = function FDuiMemo(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit, MO.MListenerDataChanged);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit);
    //..........................................................
    // @property
-   o._inputSize       = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
    //..........................................................
-   // @style
-   o._styleValuePanel = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
-   o._styleInputPanel = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
-   o._styleInput      = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   // @attribute
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @html
-   o._hValueForm      = null;
-   o._hValueLine      = null;
-   o._hInputPanel     = null;
-   o._hInput          = null;
+   o._hValueForm           = null;
+   o._hValueLine           = null;
+   o._hInputPanel          = null;
+   o._hInput               = null;
    //..........................................................
    // @event
-   o.onBuildEditValue = MO.FDuiMemo_onBuildEditValue;
-   o.onInputEdit      = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), MO.FDuiMemo_onInputEdit);
+   o.onBuildEditValue      = MO.FDuiMemo_onBuildEditValue;
+   o.onInputEdit           = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), MO.FDuiMemo_onInputEdit);
    //..........................................................
    // @method
-   o.construct        = MO.FDuiMemo_construct;
+   o.construct             = MO.FDuiMemo_construct;
    // @method
-   o.formatDisplay    = MO.FDuiMemo_formatDisplay;
-   o.formatValue      = MO.FDuiMemo_formatValue;
+   o.formatDisplay         = MO.FDuiMemo_formatDisplay;
+   o.formatValue           = MO.FDuiMemo_formatValue;
    // @method
-   o.get              = MO.FDuiMemo_get;
-   o.set              = MO.FDuiMemo_set;
-   o.refreshValue     = MO.FDuiMemo_refreshValue;
+   o.get                   = MO.FDuiMemo_get;
+   o.set                   = MO.FDuiMemo_set;
+   o.refreshValue          = MO.FDuiMemo_refreshValue;
+   o.refreshStyle          = MO.FDuiMemo_refreshStyle;
    return o;
 }
 
@@ -55,19 +54,20 @@ MO.FDuiMemo = function FDuiMemo(o){
 //==========================================================
 MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(p){
    var o = this;
-   var hp = o._hValuePanel;
-   hp.className = o.styleName('ValuePanel');
-   var hf = o._hValueForm = MO.Window.Builder.appendTable(hp);
-   hf.width = '100%';
-   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   var hValuePanel = o._hValuePanel;
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
+   hValueForm.width = '100%';
+   var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
    //..........................................................
    // 建立改变栏
-   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(p);
    //..........................................................
    // 建立输入栏
-   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hl);
-   var hInput = o._hInput = MO.Window.Builder.append(hInputPanel, 'TEXTAREA', o.styleName('Input'));
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
+   hInputPanel.style.padding = '1px';
+   var hInput = o._hInput = MO.Window.Builder.append(hInputPanel, 'TEXTAREA');
+   hInput.style.height = '100%';
    hInput.wrap = 'off';
    o.attachEvent('onInputEdit', hInput, o.onInputEdit);
    // 设置大小
@@ -172,4 +172,28 @@ MO.FDuiMemo_refreshValue = function FDuiMemo_refreshValue(){
    var o = this;
    // 内容改变通知
    o.processDataChangedListener(o);
+}
+
+//==========================================================
+// <T>根据当前状态刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiMemo_refreshStyle = function FDuiMemo_refreshStyle(){
+   var o = this;
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   // 设置编辑样式
+   var hInput = o._hInput;
+   var inputStyle = null;
+   if(o._statusValueEdit){
+      if(o._statusValueHover){
+         inputStyle = 'InputHover';
+      }else{
+         inputStyle = 'InputEdit';
+      }
+   }else{
+      inputStyle = 'InputReadonly';
+   }
+   hInput.className = o.styleName(inputStyle);
+   hInput.readOnly = !o._statusValueEdit;
 }

@@ -174,7 +174,7 @@ MO.RDuiControl.prototype.create = function RDuiControl_create(pc, px, pa){
    //      if(x.name == 'CellEdit'){
    //         RDuiControl.newInstance(FCellEdit);
    //      }else{
-   //          o = RClass.createByName('F' + x.name);
+   //          o = MO.Class.createByName('F' + x.name);
    //          this.innerCreate(o, x, m);
    //      }
    //      o._emode = m;
@@ -182,7 +182,7 @@ MO.RDuiControl.prototype.create = function RDuiControl_create(pc, px, pa){
    //   }
    //}else{
    //   // 类对象(Class)的处理
-   //   o = RClass.create(x);
+   //   o = MO.Class.create(x);
    //   o._emode = m;
    //}
    // 实例存在的处理
@@ -339,7 +339,7 @@ MO.RDuiControl.prototype.linkEvent = function RDuiControl_linkEvent(tc, sc, n, h
    var p = tc[n];
    if(!RMethod.isEmpty(p) || m){
       // 获得注册过的事件对象
-      var cz = RClass.find(c.constructor);
+      var cz = MO.Class.find(c.constructor);
       var a = cz.annotation(MO.EAnnotation.Event, n);
       // 复制当前注册事件
       var e = new a.constructor();
@@ -438,7 +438,7 @@ MO.RDuiControl.prototype.toXml = function RDuiControl_toXml(){
 //===========================================================
 MO.RDuiControl.prototype.store = function RDuiControl_store(o, type){
    var x = new TNode();
-   x.name = RClass.name(o).substr(1);
+   x.name = MO.Class.name(o).substr(1);
    if(RClass.isClass(o, FContainer)){
       o.storeConfig(x);
    }else{

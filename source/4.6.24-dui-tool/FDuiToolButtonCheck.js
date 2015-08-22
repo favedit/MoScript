@@ -7,12 +7,12 @@ with(MO){
    // @history 150121
    //==========================================================
    MO.FDuiToolButtonCheck = function FDuiToolButtonCheck(o){
-      o = RClass.inherits(this, o, FDuiToolButton);
+      o = MO.Class.inherits(this, o, FDuiToolButton);
       //..........................................................
       // @property
-      o._optionChecked  = RClass.register(o, new APtyBoolean('_optionChecked', 'check'));
-      o._groupName      = RClass.register(o, new APtyString('_groupName'));
-      o._groupDefault   = RClass.register(o, new APtyString('_groupDefault'));
+      o._optionChecked  = MO.Class.register(o, new MO.APtyBoolean('_optionChecked', 'check'));
+      o._groupName      = MO.Class.register(o, new MO.APtyString('_groupName'));
+      o._groupDefault   = MO.Class.register(o, new MO.APtyString('_groupDefault'));
       //..........................................................
       // @attribute
       o._statusChecked  = false;

@@ -7,13 +7,13 @@ with(MO){
    // @version 150123
    //==========================================================
    MO.FDuiCellSelected = function FDuiCellSelected(o){
-      o = RClass.inherits(this, o, FCell);
+      o = MO.Class.inherits(this, o, FCell);
       //..........................................................
       // @property
       o._dataName  = '_select';
       //..........................................................
       // @style
-      o._styleEdit = RClass.register(o, new AStyle('_styleEdit'));
+      o._styleEdit = MO.Class.register(o, new MO.AStyle('_styleEdit'));
       //..........................................................
       // @html
       o._hSelected = null;
@@ -48,7 +48,7 @@ with(MO){
       var c = o._column;
       var h = o._hPanel;
       h.align = 'center';
-      var hs = o._hSelected = RBuilder.appendCheck(h, o.styleName('Edit'));
+      var hs = o._hSelected = MO.Window.Builder.appendCheck(h, o.styleName('Edit'));
       hs.parent = o;
       hs.onclick = o.onSelected;
    }

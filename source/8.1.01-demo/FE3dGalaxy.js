@@ -13,7 +13,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FE3dGalaxy = function FE3dGalaxy(o){
-      o = RClass.inherits(this, o, FE3dRenderable);
+      o = MO.Class.inherits(this, o, FE3dRenderable);
       //..........................................................
       // @attribute
       o._seed                 = 0;
@@ -50,7 +50,7 @@ with(MO){
    MO.FE3dGalaxy_construct = function FE3dGalaxy_construct(){
       var o = this;
       o.__base.FE3dRenderable.construct.call(o);
-      o._material = RClass.create(FE3dMaterial);
+      o._material = MO.Class.create(FE3dMaterial);
       o._cellSize = new SSize2();
       o._cellSize.set(2, 2);
       o._size = new SSize2();

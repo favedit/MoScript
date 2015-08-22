@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsSystemFrameBarProperty = function FDsSystemFrameBarProperty(o){
-      o = RClass.inherits(this, o, FDsSystemFrameControlProperty);
+      o = MO.Class.inherits(this, o, FDsSystemFrameControlProperty);
       o._activeSpace      = null;
       o._activeRenderable = null;
       o.onBuilded         = FDsSystemFrameBarProperty_onBuilded;
@@ -33,7 +33,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFrameButtonProperty = function FDsSystemFrameButtonProperty(o){
-      o = RClass.inherits(this, o, FDsSystemFrameControlProperty);
+      o = MO.Class.inherits(this, o, FDsSystemFrameControlProperty);
       o._activeSpace      = null;
       o._activeRenderable = null;
       o.onBuilded         = FDsSystemFrameButtonProperty_onBuilded;
@@ -66,7 +66,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFrameCatalogContent = function FDsSystemFrameCatalogContent(o){
-      o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
       o._activeFrame = null;
       o.onNodeClick  = FDsSystemFrameCatalogContent_onNodeClick;
       o.construct    = FDsSystemFrameCatalogContent_construct;
@@ -123,7 +123,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFrameCatalogToolBar = function FDsSystemFrameCatalogToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName = 'system.design.frame.CatalogToolBar';
       o._controlFolderCreateButton   = null;
       o._controlFolderDeleteButton   = null;
@@ -234,7 +234,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFrameComponentProperty = function FDsSystemFrameComponentProperty(o){
-      o = RClass.inherits(this, o, FDuiForm);
+      o = MO.Class.inherits(this, o, FDuiForm);
       o._activeFrame     = null;
       o._activeComponent = null;
       o.onBuilded        = FDsSystemFrameComponentProperty_onBuilded;
@@ -275,7 +275,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFrameControlProperty = function FDsSystemFrameControlProperty(o){
-      o = RClass.inherits(this, o, FDsSystemFrameComponentProperty);
+      o = MO.Class.inherits(this, o, FDsSystemFrameComponentProperty);
       o._activeFrame   = null;
       o._activeControl = null;
       o.onBuilded         = FDsSystemFrameControlProperty_onBuilded;
@@ -408,7 +408,7 @@ MO.FDsSystemFrameFrameSet_dispose = function FDsSystemFrameFrameSet_dispose(){
 }
 with(MO){
    MO.FDsSystemFrameMenuBar = function FDsSystemFrameMenuBar(o){
-      o = RClass.inherits(this, o, FDuiMenuBar);
+      o = MO.Class.inherits(this, o, FDuiMenuBar);
       o._frameName      = 'system.design.frame.MenuBar';
       o._controlRefresh = null;
       o.onBuilded       = FDsSystemFrameMenuBar_onBuilded;
@@ -443,7 +443,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFramePictureProperty = function FDsSystemFramePictureProperty(o){
-      o = RClass.inherits(this, o, FDsSystemFrameControlProperty);
+      o = MO.Class.inherits(this, o, FDsSystemFrameControlProperty);
       o._activeSpace      = null;
       o._activeRenderable = null;
       o.onBuilded         = FDsSystemFramePictureProperty_onBuilded;
@@ -476,7 +476,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFramePropertyContent = function FDsSystemFramePropertyContent(o){
-      o = RClass.inherits(this, o, FDsCatalog);
+      o = MO.Class.inherits(this, o, FDsCatalog);
       o.onBuild        = FDsSystemFramePropertyContent_onBuild;
       o.onNodeClick    = FDsSystemFramePropertyContent_onNodeClick;
       o.construct      = FDsSystemFramePropertyContent_construct;
@@ -603,7 +603,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSystemFramePropertyToolBar = function FDsSystemFramePropertyToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName           = 'system.design.frame.PropertyToolBar';
       o._controlInsertButton = null;
       o._controlUpdateButton = null;
@@ -868,7 +868,7 @@ MO.FDsSystemFrameSpaceContent_dispose = function FDsSystemFrameSpaceContent_disp
 }
 with(MO){
    MO.FDsSystemFrameSpaceToolBar = function FDsSystemFrameSpaceToolBar(o){
-      o = RClass.inherits(this, o, FDuiToolBar);
+      o = MO.Class.inherits(this, o, FDuiToolBar);
       o._frameName   = 'system.design.frame.SpaceToolBar';
       o._storageCode = o._frameName;
       o._controlFolderCreateButton   = null;

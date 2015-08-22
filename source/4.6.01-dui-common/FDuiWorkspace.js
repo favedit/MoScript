@@ -34,7 +34,7 @@ MO.FDuiWorkspace = function FDuiWorkspace(o){
 MO.FDuiWorkspace_onBuildPanel = function FDuiWorkspace_onBuildPanel(event){
    var o = this;
    o._hPanel = MO.RBuilder.createDiv(event, o.styleName('Panel'));
-   //o._hPanel = RBuilder.createFragment(event);
+   //o._hPanel = MO.Window.Builder.createFragment(event);
 }
 
 //==========================================================
