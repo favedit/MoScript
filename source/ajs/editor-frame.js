@@ -67,104 +67,20 @@ MO.FEditorDsFrameCatalogContent = function FEditorDsFrameCatalogContent(o){
 }
 MO.FEditorDsFrameCatalogToolBar = function FEditorDsFrameCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName = 'editor.design.frame.CatalogToolBar';
-   o._controlFolderCreateButton   = null;
-   o._controlFolderDeleteButton   = null;
-   o._controlFolderPropertyButton = null;
-   o._controlFolderOpenButton     = null;
-   o._controlFolderCloseButton    = null;
-   o._activeNodeGuid              = null;
-   o.onBuilded                    = MO.FEditorDsFrameCatalogToolBar_onBuilded;
-   o.onFolderCreateClick          = MO.FEditorDsFrameCatalogToolBar_onFolderCreateClick;
-   o.onFolderDeleteLoad           = MO.FEditorDsFrameCatalogToolBar_onFolderDeleteLoad;
-   o.onFolderDeleteExcute         = MO.FEditorDsFrameCatalogToolBar_onFolderDeleteExcute;
-   o.onFolderDeleteClick          = MO.FEditorDsFrameCatalogToolBar_onFolderDeleteClick;
-   o.onFolderPropertyClick        = MO.FEditorDsFrameCatalogToolBar_onFolderPropertyClick;
-   o.onFolderOpenClick            = MO.FEditorDsFrameCatalogToolBar_onFolderOpenClick;
-   o.onFolderCloseClick           = MO.FEditorDsFrameCatalogToolBar_onFolderCloseClick;
-   o.construct                    = MO.FEditorDsFrameCatalogToolBar_construct;
-   o.dispose                      = MO.FEditorDsFrameCatalogToolBar_dispose;
+   o._frameName  = 'editor.design.frame.CatalogToolBar';
+   o.onListClick = MO.FEditorDsListCatalogToolBar_onListClick;
+   o.onBuilded   = MO.FEditorDsFrameCatalogToolBar_onBuilded;
+   o.construct   = MO.FEditorDsFrameCatalogToolBar_construct;
+   o.dispose     = MO.FEditorDsFrameCatalogToolBar_dispose;
    return o;
+}
+MO.FEditorDsListCatalogToolBar_onListClick = function FEditorDsListCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject('editor.design.frame.ListForm');
 }
 MO.FEditorDsFrameCatalogToolBar_onBuilded = function FEditorDsFrameCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FDuiToolBar.onBuilded.call(o, p);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderCreateClick = function FEditorDsFrameCatalogToolBar_onFolderCreateClick(event){
-   var o = this;
-   var parentGuid = null;
-   var parentLabel = null;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(node){
-      parentGuid = node.guid();
-      parentLabel = node.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._parentGuid = parentGuid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel('');
-   dialog.switchDataMode(EUiDataMode.Insert);
-   dialog.showPosition(EUiPosition.Center);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderDeleteLoad = function FEditorDsFrameCatalogToolBar_onFolderDeleteLoad(event){
-   var o = this;
-   MO.Console.find(MO.FDuiDesktopConsole).hide();
-   var catalog = o._frameSet._catalogContent;
-   var guid = o._activeNodeGuid;
-   if(guid){
-      var node = catalog.findByGuid(guid);
-      node.removeSelf();
-   }
-   o._activeNodeGuid = null;
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderDeleteExcute = function FEditorDsFrameCatalogToolBar_onFolderDeleteExcute(event){
-   var o = this;
-   if(event.resultCd != EResult.Success){
-      return;
-   }
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   MO.Console.find(MO.FDuiDesktopConsole).showUploading();
-   o._activeNodeGuid = node._guid;
-   var connection = MO.Console.find(MO.FDrResourceConsole).doFolderDelete(node._guid);
-   connection.addLoadListener(o, o.onFolderDeleteLoad);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderDeleteClick = function FEditorDsFrameCatalogToolBar_onFolderDeleteClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(MO.FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var dialog = MO.Console.find(MO.FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
-   dialog.addResultListener(o, o.onFolderDeleteExcute);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderPropertyClick = function FEditorDsFrameCatalogToolBar_onFolderPropertyClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var parentLabel = null;
-   if(node._parent){
-      parentLabel = node._parent.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._nodeGuid = node._guid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel(node.label());
-   dialog.switchDataMode(EUiDataMode.Update);
-   dialog.showPosition(MO.EUiPosition.Center);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderOpenClick = function FEditorDsFrameCatalogToolBar_onFolderOpenClick(event){
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderCloseClick = function FEditorDsFrameCatalogToolBar_onFolderCloseClick(event){
+   o._controlList.addClickListener(o, o.onListClick);
 }
 MO.FEditorDsFrameCatalogToolBar_construct = function FEditorDsFrameCatalogToolBar_construct(){
    var o = this;
@@ -266,7 +182,6 @@ MO.FEditorDsFrameFrameSet = function FEditorDsFrameFrameSet(o){
    o.onBuilded     = MO.FEditorDsFrameFrameSet_onBuilded;
    o.construct     = MO.FEditorDsFrameFrameSet_construct;
    o.setFrameTitle = MO.FEditorDsFrameFrameSet_setFrameTitle;
-   o.selectObject  = MO.FEditorDsFrameFrameSet_selectObject
    o.dispose       = MO.FEditorDsFrameFrameSet_dispose;
    return o;
 }
@@ -317,13 +232,6 @@ MO.FEditorDsFrameFrameSet_setFrameTitle = function FEditorDsFrameFrameSet_setFra
    var o = this;
    var hTitlePanel = o._frameSpaceTitle._hPanel;
    MO.Window.Html.textSet(hTitlePanel, title);
-}
-MO.FEditorDsFrameFrameSet_selectObject = function FEditorDsFrameFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
-   var o = this;
-   var frame = o.__base.FEditorDsFrameSet.selectObject.call(o, typeGroup, propertyFrame, containerName, controlName);
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-   }else{
-   }
 }
 MO.FEditorDsFrameFrameSet_dispose = function FEditorDsFrameFrameSet_dispose(){
    var o = this;

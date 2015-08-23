@@ -5,104 +5,20 @@ MO.FEditorDsTreeCatalogContent = function FEditorDsTreeCatalogContent(o){
 }
 MO.FEditorDsTreeCatalogToolBar = function FEditorDsTreeCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName                   = 'editor.design.frame.CatalogToolBar';
-   o._controlFolderCreateButton   = null;
-   o._controlFolderDeleteButton   = null;
-   o._controlFolderPropertyButton = null;
-   o._controlFolderOpenButton     = null;
-   o._controlFolderCloseButton    = null;
-   o._activeNodeGuid              = null;
-   o.onBuilded                    = MO.FEditorDsTreeCatalogToolBar_onBuilded;
-   o.onFolderCreateClick          = MO.FEditorDsTreeCatalogToolBar_onFolderCreateClick;
-   o.onFolderDeleteLoad           = MO.FEditorDsTreeCatalogToolBar_onFolderDeleteLoad;
-   o.onFolderDeleteExcute         = MO.FEditorDsTreeCatalogToolBar_onFolderDeleteExcute;
-   o.onFolderDeleteClick          = MO.FEditorDsTreeCatalogToolBar_onFolderDeleteClick;
-   o.onFolderPropertyClick        = MO.FEditorDsTreeCatalogToolBar_onFolderPropertyClick;
-   o.onFolderOpenClick            = MO.FEditorDsTreeCatalogToolBar_onFolderOpenClick;
-   o.onFolderCloseClick           = MO.FEditorDsTreeCatalogToolBar_onFolderCloseClick;
-   o.construct                    = MO.FEditorDsTreeCatalogToolBar_construct;
-   o.dispose                      = MO.FEditorDsTreeCatalogToolBar_dispose;
+   o._frameName  = 'editor.design.tree.CatalogToolBar';
+   o.onListClick = MO.FEditorDsTreeCatalogToolBar_onListClick;
+   o.onBuilded   = MO.FEditorDsTreeCatalogToolBar_onBuilded;
+   o.construct   = MO.FEditorDsTreeCatalogToolBar_construct;
+   o.dispose     = MO.FEditorDsTreeCatalogToolBar_dispose;
    return o;
+}
+MO.FEditorDsTreeCatalogToolBar_onListClick = function FEditorDsTreeCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject('editor.design.tree.ListForm');
 }
 MO.FEditorDsTreeCatalogToolBar_onBuilded = function FEditorDsTreeCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FDuiToolBar.onBuilded.call(o, p);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderCreateClick = function FEditorDsTreeCatalogToolBar_onFolderCreateClick(event){
-   var o = this;
-   var parentGuid = null;
-   var parentLabel = null;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(node){
-      parentGuid = node.guid();
-      parentLabel = node.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._parentGuid = parentGuid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel('');
-   dialog.switchDataMode(MO.EUiDataMode.Insert);
-   dialog.showPosition(MO.EUiPosition.Center);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderDeleteLoad = function FEditorDsTreeCatalogToolBar_onFolderDeleteLoad(event){
-   var o = this;
-   MO.Console.find(MO.FDuiDesktopConsole).hide();
-   var catalog = o._frameSet._catalogContent;
-   var guid = o._activeNodeGuid;
-   if(guid){
-      var node = catalog.findByGuid(guid);
-      node.removeSelf();
-   }
-   o._activeNodeGuid = null;
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderDeleteExcute = function FEditorDsTreeCatalogToolBar_onFolderDeleteExcute(event){
-   var o = this;
-   if(event.resultCd != MO.EResult.Success){
-      return;
-   }
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   MO.Console.find(MO.FDuiDesktopConsole).showUploading();
-   o._activeNodeGuid = node._guid;
-   var connection = MO.Console.find(MO.FDrResourceConsole).doFolderDelete(node._guid);
-   connection.addLoadListener(o, o.onFolderDeleteLoad);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderDeleteClick = function FEditorDsTreeCatalogToolBar_onFolderDeleteClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(MO.FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var dialog = MO.Console.find(MO.FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
-   dialog.addResultListener(o, o.onFolderDeleteExcute);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderPropertyClick = function FEditorDsTreeCatalogToolBar_onFolderPropertyClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(MO.FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var parentLabel = null;
-   if(node._parent){
-      parentLabel = node._parent.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._nodeGuid = node._guid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel(node.label());
-   dialog.switchDataMode(MO.EUiDataMode.Update);
-   dialog.showPosition(MO.EUiPosition.Center);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderOpenClick = function FEditorDsTreeCatalogToolBar_onFolderOpenClick(event){
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderCloseClick = function FEditorDsTreeCatalogToolBar_onFolderCloseClick(event){
+   o._controlList.addClickListener(o, o.onListClick);
 }
 MO.FEditorDsTreeCatalogToolBar_construct = function FEditorDsTreeCatalogToolBar_construct(){
    var o = this;

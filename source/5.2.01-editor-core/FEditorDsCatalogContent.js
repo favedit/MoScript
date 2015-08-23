@@ -6,22 +6,43 @@
 // @history 150812
 //==========================================================
 MO.FEditorDsCatalogContent = function FEditorDsCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView);
+   o = MO.Class.inherits(this, o, MO.FDuiDataTreeView);
    //..........................................................
    // @attribute
    o._defineCode    = null;
+   o._serviceDefine = 'content.define.tree';
    // @attribute
    o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
    o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
    //..........................................................
    // @event
+   o.onDefineLoad   = MO.FEditorDsCatalogContent_onDefineLoad;
    o.onNodeClick    = MO.FEditorDsCatalogContent_onNodeClick;
    //..........................................................
    // @method
    o.construct      = MO.FEditorDsCatalogContent_construct;
    // @method
+   o.loadDefine     = MO.FEditorDsCatalogContent_loadDefine;
+   // @method
    o.dispose        = MO.FEditorDsCatalogContent_dispose;
    return o;
+}
+
+//==========================================================
+// <T>定义加载完成处理。</T>
+//
+// @method
+// @param event:SXmlEvent 事件信息
+//==========================================================
+MO.FEditorDsCatalogContent_onDefineLoad = function FEditorDsCatalogContent_onDefineLoad(event){
+   var o = this;
+   o.__base.FDuiDataTreeView.onDefineLoad.call(o, event);
+   // 加载服务信息
+   var xtree = event.xtree;
+   var serviceCode = xtree.get('service');
+   if(serviceCode){
+      o.loadService(serviceCode);
+   }
 }
 
 //==========================================================
@@ -72,10 +93,9 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
 //==========================================================
 MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
+   o.__base.FDuiDataTreeView.construct.call(o);
    // 加载定义
-   var url = MO.Lang.String.format('/content.define.tree.ws?action=query&code={1}', o._defineCode);
-   o.loadUrl(url);
+   o.loadDefine(o._defineCode);
 }
 
 //==========================================================
@@ -86,5 +106,5 @@ MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construc
 MO.FEditorDsCatalogContent_dispose = function FEditorDsCatalogContent_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FDuiDataTreeView.dispose.call(o);
 }

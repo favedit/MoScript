@@ -201,11 +201,16 @@ MO.FDuiTreeNode_onBuild = function FDuiTreeNode_onBuild(p){
 //==========================================================
 MO.FDuiTreeNode_onNodeEnter = function FDuiTreeNode_onNodeEnter(e){
    var o = this;
-   var t = o._tree;
-   if(!t._focusNode || (t._focusNode && (t._focusNode != o))){
+   var tree = o._tree;
+   if(!tree._focusNode || (tree._focusNode && (tree._focusNode != o))){
       o._statusHover = true;
       o.refreshStyle();
-      t.lsnsEnter.process(t, o);
+      // 发送事件
+      var event = new MO.SEvent();
+      event.tree = tree;
+      event.node = o;
+      tree.processNodeEnterListener(event);
+      event.dispose();
    }
 }
 
@@ -221,7 +226,12 @@ MO.FDuiTreeNode_onNodeLeave = function FDuiTreeNode_onNodeLeave(event){
    if(!tree._focusNode || (tree._focusNode && (tree._focusNode != o))){
       o._statusHover = false;
       o.refreshStyle();
-      tree.lsnsLeave.process(tree, o);
+      // 发送事件
+      var event = new MO.SEvent();
+      event.tree = tree;
+      event.node = o;
+      tree.processNodeLeaveListener(event);
+      event.dispose();
    }
 }
 
@@ -732,12 +742,13 @@ MO.FDuiTreeNode_extendAll = function FDuiTreeNode_extendAll(p){
 //==========================================================
 MO.FDuiTreeNode_searchLast = function FDuiTreeNode_searchLast(){
    var o = this;
-   var s = o._nodes;
-   if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i)
-         if(n._statusLinked){
-            return n.searchLast();
+   var nodes = o._nodes;
+   if(nodes){
+      var count = nodes.count();
+      for(var i = count - 1; i >= 0; i--){
+         var node = nodes.at(i)
+         if(node._statusLinked){
+            return node.searchLast();
          }
       }
    }
@@ -748,15 +759,16 @@ MO.FDuiTreeNode_searchLast = function FDuiTreeNode_searchLast(){
 // <T>创建子节点。</T>
 //
 // @method
-// @param x:config:TNode 配置节点
+// @param xconfig:TNode 配置节点
 //==========================================================
-MO.FDuiTreeNode_createChild = function FDuiTreeNode_createChild(x){
-   var r = null;
-   if(x.isName('Node') || x.isName('TreeNode')){
-      r = MO.Class.create(FDuiTreeNode);
-      r._tree = this._tree;
+MO.FDuiTreeNode_createChild = function FDuiTreeNode_createChild(xconfig){
+   var o = this;
+   var instance = null;
+   if(xconfig.isName('Node') || xconfig.isName('TreeNode')){
+      instance = MO.Class.create(MO.FDuiTreeNode);
+      instance._tree = o._tree;
    }
-   return r;
+   return instance;
 }
 
 //==========================================================
@@ -776,13 +788,13 @@ MO.FDuiTreeNode_appendChild = function FDuiTreeNode_appendChild(control){
 // <T>追加一个子目录节点。</T>
 //
 // @method
-// @param p:ndoe:TTreeNode 目录节点
+// @param ndoe:TTreeNode 目录节点
 //==========================================================
-MO.FDuiTreeNode_appendNode = function FDuiTreeNode_appendNode(p){
+MO.FDuiTreeNode_appendNode = function FDuiTreeNode_appendNode(ndoe){
    var o = this;
-   var t = o._tree;
-   o.push(p);
-   t.appendNode(p, o);
+   var tree = o._tree;
+   o.push(ndoe);
+   tree.appendNode(ndoe, o);
    o.extend(true);
 }
 
@@ -833,7 +845,7 @@ MO.FDuiTreeNode_push = function FDuiTreeNode_push(component){
 MO.FDuiTreeNode_remove = function FDuiTreeNode_remove(component){
    var o = this;
    // 检查类型
-   if(MO.Class.isClass(component, FDuiTreeNode)){
+   if(MO.Class.isClass(component, MO.FDuiTreeNode)){
       o._nodes.remove(component);
    }
    // 父处理
@@ -847,13 +859,16 @@ MO.FDuiTreeNode_remove = function FDuiTreeNode_remove(component){
 //==========================================================
 MO.FDuiTreeNode_removeSelf = function FDuiTreeNode_removeSelf(){
    var o = this;
-   var tree = o._tree;
+   // 未选中
+   o._statusSelected = false;
+   // 取消关联
    if(o._statusLinked){
+      var tree = o._tree;
       // 删除所有子节点
       o.removeChildren();
       // 父节点刷新
       var parent = o._parent;
-      if(MO.Class.isClass(parent, FDuiTreeNode)){
+      if(MO.Class.isClass(parent, MO.FDuiTreeNode)){
          parent.remove(o);
          parent.calculateImage();
       }

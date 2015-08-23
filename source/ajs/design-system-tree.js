@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsSystemTreeCatalogContent = function FDsSystemTreeCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._activeFrame = null;
       o.onNodeClick  = FDsSystemTreeCatalogContent_onNodeClick;
       o.construct    = FDsSystemTreeCatalogContent_construct;
@@ -26,7 +26,7 @@ with(MO){
    }
    MO.FDsSystemTreeCatalogContent_construct = function FDsSystemTreeCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.tree');
    }
    MO.FDsSystemTreeCatalogContent_selectObject = function FDsSystemTreeCatalogContent_selectObject(item){
@@ -52,7 +52,7 @@ with(MO){
    MO.FDsSystemTreeCatalogContent_dispose = function FDsSystemTreeCatalogContent_dispose(){
       var o = this;
       o._activeFrame = null;
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){

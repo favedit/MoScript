@@ -1,6 +1,6 @@
 with(MO){
    MO.FDsSystemPersistenceCatalogContent = function FDsSystemPersistenceCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._activeFrame = null;
       o.onNodeClick  = FDsSystemPersistenceCatalogContent_onNodeClick;
       o.construct    = FDsSystemPersistenceCatalogContent_construct;
@@ -26,7 +26,7 @@ with(MO){
    }
    MO.FDsSystemPersistenceCatalogContent_construct = function FDsSystemPersistenceCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=system.design.persistence');
    }
    MO.FDsSystemPersistenceCatalogContent_selectObject = function FDsSystemPersistenceCatalogContent_selectObject(item){
@@ -52,7 +52,7 @@ with(MO){
    MO.FDsSystemPersistenceCatalogContent_dispose = function FDsSystemPersistenceCatalogContent_dispose(){
       var o = this;
       o._activeFrame = null;
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){

@@ -504,16 +504,16 @@ MO.TMap_get = function TMap_get(name, defaultValue){
 }
 MO.TMap_set = function TMap_set(name, value){
    var o = this;
-   if(name != null){
-      var code = name.toString().toLowerCase();
-      var index = o._table[code];
-      if((index == null) || (index >= o._count)){
-         index = o._count++;
-         o._names[index] = name;
-         o._table[code] = index;
-      }
-      o._values[index] = value;
+   MO.Assert.debugNotNull(name);
+   var nameString = name.toString();
+   var code = nameString.toLowerCase();
+   var index = o._table[code];
+   if((index == null) || (index >= o._count)){
+      index = o._count++;
+      o._names[index] = nameString;
+      o._table[code] = index;
    }
+   o._values[index] = value;
 }
 MO.TMap_assign = function TMap_assign(map){
    var o = this;
@@ -9167,9 +9167,19 @@ MO.Lang.Random = MO.RRandom;
 MO.AListener = function AListener(name, linker){
    var o = this;
    MO.Assert.debugNotEmpty(name);
-   MO.Assert.debugNotEmpty(linker);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
+   if(linker == null){
+      var name = o._name;
+      if(MO.Lang.String.startsWith(name, '_listeners')){
+         name = name.substring(10);
+      }else{
+         throw new MO.TError('Linker is invalid.');
+      }
+      o._linker = name;
+   }else{
+      o._linker = linker;
+   }
    return o;
 }
 MO.AListener_build = function AListener_build(clazz, instance){
@@ -56434,11 +56444,15 @@ MO.FDuiTreeNode_onBuild = function FDuiTreeNode_onBuild(p){
 }
 MO.FDuiTreeNode_onNodeEnter = function FDuiTreeNode_onNodeEnter(e){
    var o = this;
-   var t = o._tree;
-   if(!t._focusNode || (t._focusNode && (t._focusNode != o))){
+   var tree = o._tree;
+   if(!tree._focusNode || (tree._focusNode && (tree._focusNode != o))){
       o._statusHover = true;
       o.refreshStyle();
-      t.lsnsEnter.process(t, o);
+      var event = new MO.SEvent();
+      event.tree = tree;
+      event.node = o;
+      tree.processNodeEnterListener(event);
+      event.dispose();
    }
 }
 MO.FDuiTreeNode_onNodeLeave = function FDuiTreeNode_onNodeLeave(event){
@@ -56447,7 +56461,11 @@ MO.FDuiTreeNode_onNodeLeave = function FDuiTreeNode_onNodeLeave(event){
    if(!tree._focusNode || (tree._focusNode && (tree._focusNode != o))){
       o._statusHover = false;
       o.refreshStyle();
-      tree.lsnsLeave.process(tree, o);
+      var event = new MO.SEvent();
+      event.tree = tree;
+      event.node = o;
+      tree.processNodeLeaveListener(event);
+      event.dispose();
    }
 }
 MO.FDuiTreeNode_onNodeClick = function FDuiTreeNode_onNodeClick(event){
@@ -56753,24 +56771,26 @@ MO.FDuiTreeNode_extendAll = function FDuiTreeNode_extendAll(p){
 }
 MO.FDuiTreeNode_searchLast = function FDuiTreeNode_searchLast(){
    var o = this;
-   var s = o._nodes;
-   if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i)
-         if(n._statusLinked){
-            return n.searchLast();
+   var nodes = o._nodes;
+   if(nodes){
+      var count = nodes.count();
+      for(var i = count - 1; i >= 0; i--){
+         var node = nodes.at(i)
+         if(node._statusLinked){
+            return node.searchLast();
          }
       }
    }
    return o;
 }
-MO.FDuiTreeNode_createChild = function FDuiTreeNode_createChild(x){
-   var r = null;
-   if(x.isName('Node') || x.isName('TreeNode')){
-      r = MO.Class.create(FDuiTreeNode);
-      r._tree = this._tree;
+MO.FDuiTreeNode_createChild = function FDuiTreeNode_createChild(xconfig){
+   var o = this;
+   var instance = null;
+   if(xconfig.isName('Node') || xconfig.isName('TreeNode')){
+      instance = MO.Class.create(MO.FDuiTreeNode);
+      instance._tree = o._tree;
    }
-   return r;
+   return instance;
 }
 MO.FDuiTreeNode_appendChild = function FDuiTreeNode_appendChild(control){
    var o = this;
@@ -56778,11 +56798,11 @@ MO.FDuiTreeNode_appendChild = function FDuiTreeNode_appendChild(control){
       o._hPanel.appendChild(control._hPanel);
    }
 }
-MO.FDuiTreeNode_appendNode = function FDuiTreeNode_appendNode(p){
+MO.FDuiTreeNode_appendNode = function FDuiTreeNode_appendNode(ndoe){
    var o = this;
-   var t = o._tree;
-   o.push(p);
-   t.appendNode(p, o);
+   var tree = o._tree;
+   o.push(ndoe);
+   tree.appendNode(ndoe, o);
    o.extend(true);
 }
 MO.FDuiTreeNode_push = function FDuiTreeNode_push(component){
@@ -56814,18 +56834,19 @@ MO.FDuiTreeNode_push = function FDuiTreeNode_push(component){
 }
 MO.FDuiTreeNode_remove = function FDuiTreeNode_remove(component){
    var o = this;
-   if(MO.Class.isClass(component, FDuiTreeNode)){
+   if(MO.Class.isClass(component, MO.FDuiTreeNode)){
       o._nodes.remove(component);
    }
    o.__base.FDuiContainer.remove.call(o, component);
 }
 MO.FDuiTreeNode_removeSelf = function FDuiTreeNode_removeSelf(){
    var o = this;
-   var tree = o._tree;
+   o._statusSelected = false;
    if(o._statusLinked){
+      var tree = o._tree;
       o.removeChildren();
       var parent = o._parent;
-      if(MO.Class.isClass(parent, FDuiTreeNode)){
+      if(MO.Class.isClass(parent, MO.FDuiTreeNode)){
          parent.remove(o);
          parent.calculateImage();
       }
@@ -57188,9 +57209,9 @@ MO.FDuiTreeView = function FDuiTreeView(o){
    o._hNodeForm          = null;
    o._hHeadLine          = null;
    o._hNodeRows          = null;
-   o.lsnsEnter           = new MO.TListeners();
-   o.lsnsLeave           = new MO.TListeners();
-   o._listenersNodeClick = MO.Class.register(o, new MO.AListener('_listenersNodeClick', MO.EEvent.NodeClick));
+   o._listenersNodeEnter = MO.Class.register(o, new MO.AListener('_listenersNodeEnter'));
+   o._listenersNodeLeave = MO.Class.register(o, new MO.AListener('_listenersNodeLeave'));
+   o._listenersNodeClick = MO.Class.register(o, new MO.AListener('_listenersNodeClick'));
    o.onBuildPanel        = MO.FDuiTreeView_onBuildPanel;
    o.onBuild             = MO.FDuiTreeView_onBuild;
    o.onNodeClick         = MO.FDuiTreeView_onNodeClick;
@@ -57691,6 +57712,7 @@ MO.FDuiTreeView_clearAllNodes = function FDuiTreeView_clearAllNodes(){
       nodes.clear();
    }
    o._allNodes.clear();
+   o._focusNode = null;
 }
 MO.FDuiTreeView_clear = function FDuiTreeView_clear(){
    var o = this;
@@ -57698,21 +57720,12 @@ MO.FDuiTreeView_clear = function FDuiTreeView_clear(){
 }
 MO.FDuiTreeView_dispose = function FDuiTreeView_dispose(){
    var o = this;
-   o.__base.FDuiContainer.dispose.call(o);
-   var ns = o._nodes;
-   if(ns){
-      ns.dispose();
-      o._nodes = null;
-   }
-   var ns = o._allNodes;
-   if(ns){
-      ns.dispose();
-      o._allNodes = null;
-   }
+   o._nodes = MO.Lang.Object.dispose(o._nodes);
+   o._allNodes = MO.Lang.Object.dispose(o._nodes);
    o._hNodePanel = null;
    o._hNodeForm = null;
    o._hHeadLine = null;
-   return true;
+   o.__base.FDuiContainer.dispose.call(o);
 }
 MO.FDuiDialog = function FDuiDialog(o){
    o = MO.Class.inherits(this, o, MO.FDuiWindow, MO.MDuiDescribeFrame);
@@ -61556,38 +61569,37 @@ with(MO){
       }
    }
 }
-MO.FUiDataTreeView = function FUiDataTreeView(o){
+MO.FDuiDataTreeView = function FDuiDataTreeView(o){
    o = MO.Class.inherits(this, o, MO.FDuiTreeView);
-   o._serviceCode     = MO.Class.register(o, new MO.APtyString('_serviceCode', 'service'));
-   o._statusLoading   = false;
-   o.lsnsLoaded       = new MO.TListeners();
-   o.lsnsNodeLoad     = new MO.TListeners();
-   o.lsnsNodeLoaded   = new MO.TListeners();
-   o.onLoaded         = MO.FUiDataTreeView_onLoaded;
-   o.onNodeLoaded     = MO.FUiDataTreeView_onNodeLoaded;
-   o.construct        = MO.FUiDataTreeView_construct;
-   o.innerBuildNode   = MO.FUiDataTreeView_innerBuildNode;
-   o.loadNode         = MO.FUiDataTreeView_loadNode;
-   o.loadUrl          = MO.FUiDataTreeView_loadUrl;
-   o.loadService      = MO.FUiDataTreeView_loadService;
-   o.dispose          = MO.FUiDataTreeView_dispose;
+   o._serviceDefine       = null;
+   o._serviceCode         = MO.Class.register(o, new MO.APtyString('_serviceCode', 'service'));
+   o._statusLoading       = false;
+   o._listenersDefineLoad = MO.Class.register(o, new MO.AListener('_listenersDefineLoad'));
+   o._listenersNodeLoad   = MO.Class.register(o, new MO.AListener('_listenersNodeLoad'));
+   o.onDefineLoad         = MO.FDuiDataTreeView_onDefineLoad;
+   o.onNodeLoaded         = MO.FDuiDataTreeView_onNodeLoaded;
+   o.construct            = MO.FDuiDataTreeView_construct;
+   o.buildNode            = MO.FDuiDataTreeView_buildNode;
+   o.loadDefine           = MO.FDuiDataTreeView_loadDefine;
+   o.loadService          = MO.FDuiDataTreeView_loadService;
+   o.loadNode             = MO.FDuiDataTreeView_loadNode;
+   o.reload               = MO.FDuiDataTreeView_reload;
+   o.reloadNode           = MO.FDuiDataTreeView_reloadNode;
+   o.reloadParentNode     = MO.FDuiDataTreeView_reloadParentNode;
+   o.dispose              = MO.FDuiDataTreeView_dispose;
    return o;
 }
-MO.FUiDataTreeView_onLoaded = function FUiDataTreeView_onLoaded(p){
+MO.FDuiDataTreeView_onDefineLoad = function FDuiDataTreeView_onDefineLoad(event){
    var o = this;
-   var x = p.root;
-   if(x == null){
+   var xroot = event.root;
+   if(xroot == null){
       throw new MO.TError(o, 'Load tree data failure.');
    }
-   var xt = x.find('TreeView');
-   MO.RDuiControl.build(o, xt, null, o._hPanel);
-   o.lsnsLoaded.process(p);
-   var serviceCode = xt.get('service');
-   if(serviceCode){
-      o.loadService(serviceCode);
-   }
+   var xtree = event.xtree = xroot.find('TreeView');
+   MO.RDuiControl.build(o, xtree, null, o._hPanel);
+   o.processDefineLoadListener(event);
 }
-MO.FUiDataTreeView_onNodeLoaded = function FUiDataTreeView_onNodeLoaded(event){
+MO.FDuiDataTreeView_onNodeLoaded = function FDuiDataTreeView_onNodeLoaded(event){
    var o = this;
    var xroot = event.root;
    if(!xroot){
@@ -61599,14 +61611,14 @@ MO.FUiDataTreeView_onNodeLoaded = function FUiDataTreeView_onNodeLoaded(event){
       o._hNodeRows.removeChild(ln._hPanel);
    }
    o._statusLoading = false;
-   o.innerBuildNode(parentNode, xroot);
-   o.lsnsNodeLoaded.process(event);
+   o.buildNode(parentNode, xroot);
+   o.processNodeLoadListener(event);
 }
-MO.FUiDataTreeView_construct = function FUiDataTreeView_construct(){
+MO.FDuiDataTreeView_construct = function FDuiDataTreeView_construct(){
    var o = this;
    o.__base.FDuiTreeView.construct.call(o);
 }
-MO.FUiDataTreeView_innerBuildNode = function FUiDataTreeView_innerBuildNode(parent, xconfig){
+MO.FDuiDataTreeView_buildNode = function FDuiDataTreeView_buildNode(parent, xconfig){
    var o = this;
    var xnodes = xconfig._nodes;
    if(xnodes){
@@ -61633,7 +61645,42 @@ MO.FUiDataTreeView_innerBuildNode = function FUiDataTreeView_innerBuildNode(pare
       parent.calculateImage();
    }
 }
-MO.FUiDataTreeView_loadNode = function FUiDataTreeView_loadNode(node, refresh){
+MO.FDuiDataTreeView_loadDefine = function FDuiDataTreeView_loadDefine(code){
+   var o = this;
+   var url = MO.Lang.String.format('/{1}.ws?action=query&code={2}', o._serviceDefine, code);
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url);
+   connection.addLoadListener(o, o.onDefineLoad);
+}
+MO.FDuiDataTreeView_loadService = function FDuiDataTreeView_loadService(serviceCode, attributes){
+   var o = this;
+   MO.Assert.debugNotEmpty(serviceCode);
+   o._serviceCode = serviceCode;
+   o.clear();
+   var service = MO.RDuiService.parse(serviceCode);
+   if(!service){
+      throw new MO.TError(o, 'Invalid service code.');
+   }
+   attributes = MO.Lang.Object.nvl(attributes, o._attributes);
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', service.action);
+   MO.Console.find(MO.FDuiEnvironmentConsole).build(xroot);
+   if(!attributes.isEmpty()){
+      if(MO.Class.isClass(attributes, MO.TNode)){
+         xroot.push(attributes);
+      }if(MO.Class.isClass(attributes, MO.TAttributes)){
+         xroot.create('Tree').attributes = attributes;
+         xroot.create('Attributes').attributes = attributes;
+      }else{
+         xroot.create('Tree').value = attributes;
+         xroot.create('Attributes').value = attributes;
+      }
+   }
+   o._focusNode = null;
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(service.url, xdocument);
+   connection.addLoadListener(o, o.onNodeLoaded);
+}
+MO.FDuiDataTreeView_loadNode = function FDuiDataTreeView_loadNode(node, refresh){
    var o = this;
    o._statusLoading = true;
    node.removeChildren();
@@ -61667,7 +61714,11 @@ MO.FUiDataTreeView_loadNode = function FUiDataTreeView_loadNode(node, refresh){
    if(!action){
       throw new MO.TError(o, 'Unknown service action.');
    }
-   o.lsnsNodeLoad.process(o, node);
+   var event = new MO.SEvent();
+   event.tree = o;
+   event.node = node;
+   o.processNodeLoadListener(event);
+   event.dispose();
    var xd = new MO.TXmlDocument();
    var x = xd.root();
    x.set('action', action);
@@ -61694,151 +61745,42 @@ MO.FUiDataTreeView_loadNode = function FUiDataTreeView_loadNode(node, refresh){
    connection.parentNode = node;
    connection.addLoadListener(o, o.onNodeLoaded);
 }
-MO.FUiDataTreeView_loadUrl = function FUiDataTreeView_loadUrl(url, node){
-   var o = this;
-   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url);
-   connection.addLoadListener(o, o.onLoaded);
-}
-MO.FUiDataTreeView_loadService = function FUiDataTreeView_loadService(serviceCode, attributes){
+MO.FDuiDataTreeView_reload = function FDuiDataTreeView_reload(){
    var o = this;
    o.clear();
-   if(!serviceCode){
-      serviceCode = o._serviceCode;
-   }
-   var service = MO.RDuiService.parse(serviceCode);
-   if(!service){
-      return alert('Unknown service');
-   }
-   attributes = MO.Lang.Object.nvl(attributes, o._attributes);
-   var xdocument = new MO.TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', service.action);
-   MO.Console.find(MO.FDuiEnvironmentConsole).build(xroot);
-   if(!attributes.isEmpty()){
-      if(MO.Class.isClass(attributes, MO.TNode)){
-         xr.push(attributes);
-      }if(MO.Class.isClass(attributes, MO.TAttributes)){
-         xr.create('Tree').attributes = attributes;
-         xr.create('Attributes').attributes = attributes;
-      }else{
-         xr.create('Tree').value = attributes;
-         xr.create('Attributes').value = attributes;
-      }
-   }
-   o._focusNode = null;
-   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(service.url, xdocument);
-   connection.addLoadListener(o, o.onNodeLoaded);
-}
-MO.FUiDataTreeView_dispose = function FUiDataTreeView_dispose(){
-   var o = this;
-   o.__base.FDuiTreeView.dispose.call(o);
-}
-MO.FUiDataTreeView_load = function FUiDataTreeView_load(p){
-   var o = this;
    o.loadService(o._serviceCode);
 }
-MO.FUiDataTreeView_reload = function FUiDataTreeView_reload(){
+MO.FDuiDataTreeView_reloadNode = function FDuiDataTreeView_reloadNode(node){
    var o = this;
-   o.clear();
-   o.loadUrl();
-}
-MO.FUiDataTreeView_loadNodeUrl = function FUiDataTreeView_loadNodeUrl(p, n){
-   var o = this;
-   var xc = RConsole.find(FXmlConsole);
-   var c = xc.sendAsync(p);
-   c.parentNode = RObject.nvl(n, o._focusNode);
-   c.addLoadListener(o, o.onNodeLoaded);
-}
-MO.FUiDataTreeView_reloadService = function FUiDataTreeView_reloadService(serviceCode, attributes){
-   var o = this;
-   o.clear();
-   return o.loadService(serviceCode, attributes)
-}
-MO.FUiDataTreeView_loadNodeService = function FUiDataTreeView_loadNodeService(ps, pa){
-   var o = this;
-   var svc = RDuiService.parse(RString.nvl(ps, o._service));
-   if(!svc){
-      throw new TError(o, 'Unknown service.');
-   }
-   var as = RObject.nvl(pa, o._attributes);
-   var xd = new TXmlDocument();
-   var xr = xd.root();
-   xr.set('action', svc.action);
-   if(!as.isEmpty()){
-      if(RClass.isClass(as, TNode)){
-         xr.push(attrs);
-      }if(RClass.isClass(as, TAttributes)){
-      }else{
-      }
-   }
-   var ln = o._loadingNode;
-   var xc = RConsole.find(FXmlConsole);
-   var c = xc.sendAsync(svc.url, xr);
-   c.parentNode = o._focusNode;
-   c.addLoadListener(o, o.onNodeLoaded);
-}
-MO.FUiDataTreeView_reloadNode = function FUiDataTreeView_reloadNode(n){
-   var o = this;
-   n = RObject.nvl(n, o._focusNode);
-   if(!n){
-      return o.reload();
-   }
-   n.removeChildren();
-   o.loadNode(n);
-}
-MO.FUiDataTreeView_onQueryLoaded = function FUiDataTreeView_onQueryLoaded(e){
-   var o = this;
-   var doc = e.document;
-   if(doc){
-      var tvn = doc.root().find('TreeView');
-      if(tvn && tvn._nodes){
-         var nc = tvn._nodes.count;
-         for(var n=0; n<nc; n++){
-            var nd = tvn._nodes.get(n);
-            if(nd.isName('TreeNode')){
-               var nm = nd.get('name');
-               var fd = o.findByName(nm);
-               if(fd){
-                  fd.loadQuery(nd);
-               }
-            }
-         }
-      }
-   }
-}
-MO.FUiDataTreeView_doQuery = function FUiDataTreeView_doQuery(){
-   var o = this;
-   var svc = RDuiService.parse(o._queryService);
-   if(!svc){
-      return alert('Unknown query service');
-   }
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', svc.action);
-   root.create('Attributes').attrs = o._attributes;
-   var e = new TEvent(o, EXmlEvent.Send, o.onQueryLoaded);
-   e.url = svc.url;
-   e.document = doc;
-   RConsole.find(FXmlConsole).process(e);
-}
-MO.FUiDataTreeView_fetchExtendsAll = function FUiDataTreeView_fetchExtendsAll(s){
-   var o = this;
-   if(s && RClass.isClass(s, FDuiTreeNode)){
-      fmMain.target = 'frmMain';
-      fmMain.form_search.value = '';
-      fmMain.form_order.value = '';
-      fmMain.form_values.value = '';
-      var type = node.type.typeName;
-      if('table' == type || 'form' == type){
-         fmMain.form_name.value = node.get('form');
-         fmMain.action = top.RContext.context('/ent/apl/logic/form/InnerForm.wa?do=update');
-         fmMain.submit();
-      }else if('frameTree' == type){
-         fmMain.action = top.RContext.context(node.get('redirect'));
-         fmMain.submit();
-      }
+   var selectNode = MO.Runtime.nvl(node, o._focusNode);
+   if(!selectNode){
+      o.reload();
    }else{
+      selectNode.removeChildren();
+      o.loadNode(selectNode);
    }
+}
+MO.FDuiDataTreeView_reloadParentNode = function FDuiDataTreeView_reloadParentNode(node){
+   var o = this;
+   var selectNode = MO.Runtime.nvl(node, o._focusNode);
+   if(selectNode){
+      var parentNode = selectNode.parent();
+      if(MO.Class.isClass(parentNode, MO.FDuiTreeNode)){
+         selectNode = selectNode.parent();
+      }else{
+         selectNode = null;
+      }
+   }
+   if(!selectNode){
+      o.reload();
+   }else{
+      selectNode.removeChildren();
+      o.loadNode(selectNode);
+   }
+}
+MO.FDuiDataTreeView_dispose = function FDuiDataTreeView_dispose(){
+   var o = this;
+   o.__base.FDuiTreeView.dispose.call(o);
 }
 MO.EDsCanvasDrag = new function EDsCanvasDrag(){
    var o = this;
@@ -62449,7 +62391,7 @@ MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
 }
 with(MO){
    MO.FDsCatalog = function FDsCatalog(o){
-      o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
+      o = MO.Class.inherits(this, o, MO.FDuiDataTreeView, MO.MListenerSelected);
       o._iconView             = 'resource.scene.view';
       o._iconViewNot          = 'resource.scene.viewno';
       o._displayNodes         = null;
@@ -62475,7 +62417,7 @@ with(MO){
    }
    MO.FDsCatalog_onBuild = function FDsCatalog_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.addNodeClickListener(o, o.onNodeClick);
    }
    MO.FDsCatalog_onLoadDisplay = function FDsCatalog_onLoadDisplay(p){
@@ -62584,7 +62526,7 @@ with(MO){
    }
    MO.FDsCatalog_construct = function FDsCatalog_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._displayNodes = new MO.TObjects();
       o._renderableNodes = new MO.TObjects();
       o._materialNodes = new MO.TObjects();
@@ -62758,7 +62700,7 @@ with(MO){
       o._displayNodes = MO.Lang.Object.dispose(o._displayNodes);
       o._renderableNodes = MO.Lang.Object.dispose(o._renderableNodes);
       o._materialNodes = MO.Lang.Object.dispose(o._materialNodes);
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
@@ -65812,7 +65754,7 @@ with(MO){
 }
 with(MO){
    MO.FDsSolutionCatalogContent = function FDsSolutionCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._iconView             = 'resource.solution.view';
       o._iconViewNot          = 'resource.solution.viewno';
       o._activeSpace          = null;
@@ -65836,12 +65778,12 @@ with(MO){
    }
    MO.FDsSolutionCatalogContent_onLoaded = function FDsSolutionCatalogContent_onLoaded(p){
       var o = this;
-      o.__base.FUiDataTreeView.onLoaded.call(o, p);
+      o.__base.FDuiDataTreeView.onLoaded.call(o, p);
       this.buildCatalog();
    }
    MO.FDsSolutionCatalogContent_onBuild = function FDsSolutionCatalogContent_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.addNodeClickListener(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.solution');
    }
@@ -65943,7 +65885,7 @@ with(MO){
    }
    MO.FDsSolutionCatalogContent_construct = function FDsSolutionCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._renderables = new TObjects();
       o._materials = new TObjects();
    }
@@ -66043,7 +65985,7 @@ with(MO){
       o._displays = RObject.dispose(o._displays);
       o._renderables = RObject.dispose(o._renderables);
       o._materials = RObject.dispose(o._materials);
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
@@ -67150,7 +67092,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCatalogContent = function FDsProjectCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._iconView             = 'design3d.mesh.view';
       o._iconViewNot          = 'design3d.mesh.viewno';
       o._activeSpace          = null;
@@ -67174,7 +67116,7 @@ with(MO){
    }
    MO.FDsProjectCatalogContent_onBuild = function FDsProjectCatalogContent_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.lsnsClick.register(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.project');
    }
@@ -67276,7 +67218,7 @@ with(MO){
    }
    MO.FDsProjectCatalogContent_construct = function FDsProjectCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._renderables = new TObjects();
       o._materials = new TObjects();
    }
@@ -67372,7 +67314,7 @@ with(MO){
       o._displays = RObject.dispose(o._displays);
       o._renderables = RObject.dispose(o._renderables);
       o._materials = RObject.dispose(o._materials);
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
@@ -68104,7 +68046,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneCatalogContent = function FDsProjectSceneCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._iconView             = 'design3d.mesh.view';
       o._iconViewNot          = 'design3d.mesh.viewno';
       o._activeSpace          = null;
@@ -68128,7 +68070,7 @@ with(MO){
    }
    MO.FDsProjectSceneCatalogContent_onBuild = function FDsProjectSceneCatalogContent_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.lsnsClick.register(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.project');
    }
@@ -68230,7 +68172,7 @@ with(MO){
    }
    MO.FDsProjectSceneCatalogContent_construct = function FDsProjectSceneCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._renderables = new TObjects();
       o._materials = new TObjects();
    }
@@ -68326,7 +68268,7 @@ with(MO){
       o._displays = RObject.dispose(o._displays);
       o._renderables = RObject.dispose(o._renderables);
       o._materials = RObject.dispose(o._materials);
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
@@ -68906,7 +68848,7 @@ with(MO){
 }
 with(MO){
    MO.FDsResourceCatalogContent = function FDsResourceCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._activeSpace          = null;
       o._materials            = null;
       o.onBuild               = FDsResourceCatalogContent_onBuild;
@@ -68923,7 +68865,7 @@ with(MO){
    }
    MO.FDsResourceCatalogContent_onBuild = function FDsResourceCatalogContent_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.addNodeClickListener(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.catalog');
    }
@@ -68943,7 +68885,7 @@ with(MO){
    }
    MO.FDsResourceCatalogContent_construct = function FDsResourceCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._renderables = new TObjects();
       o._materials = new TObjects();
    }
@@ -68958,7 +68900,7 @@ with(MO){
    }
    MO.FDsResourceCatalogContent_dispose = function FDsResourceCatalogContent_dispose(){
       var o = this;
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
@@ -75743,14 +75685,26 @@ MO.FEditorGuiManage_dispose = function FEditorGuiManage_dispose(){
    o.__base.FGuiCanvasManage.dispose.call(o);
 }
 MO.FEditorDsCatalogContent = function FEditorDsCatalogContent(o){
-   o = MO.Class.inherits(this, o, MO.FUiDataTreeView);
+   o = MO.Class.inherits(this, o, MO.FDuiDataTreeView);
    o._defineCode    = null;
+   o._serviceDefine = 'content.define.tree';
    o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
    o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
+   o.onDefineLoad   = MO.FEditorDsCatalogContent_onDefineLoad;
    o.onNodeClick    = MO.FEditorDsCatalogContent_onNodeClick;
    o.construct      = MO.FEditorDsCatalogContent_construct;
+   o.loadDefine     = MO.FEditorDsCatalogContent_loadDefine;
    o.dispose        = MO.FEditorDsCatalogContent_dispose;
    return o;
+}
+MO.FEditorDsCatalogContent_onDefineLoad = function FEditorDsCatalogContent_onDefineLoad(event){
+   var o = this;
+   o.__base.FDuiDataTreeView.onDefineLoad.call(o, event);
+   var xtree = event.xtree;
+   var serviceCode = xtree.get('service');
+   if(serviceCode){
+      o.loadService(serviceCode);
+   }
 }
 MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNodeClick(event){
    var o = this;
@@ -75781,13 +75735,12 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
 }
 MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
-   var url = MO.Lang.String.format('/content.define.tree.ws?action=query&code={1}', o._defineCode);
-   o.loadUrl(url);
+   o.__base.FDuiDataTreeView.construct.call(o);
+   o.loadDefine(o._defineCode);
 }
 MO.FEditorDsCatalogContent_dispose = function FEditorDsCatalogContent_dispose(){
    var o = this;
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FDuiDataTreeView.dispose.call(o);
 }
 MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorFrameSet);
@@ -75897,20 +75850,22 @@ MO.FEditorDsPropertyForm_onButtonClick = function FEditorDsPropertyForm_onButton
    var o  = this;
    var button = event.sender;
    var attributes = button.attributes();
-   var action = attributes.get('action');
-   switch(action){
-      case 'insert':
-         o.doPrepare(attributes);
-         break;
-      case 'save':
-         o.doSave();
-         break;
-      case 'delete':
-         o.doDelete();
-         break;
-      case 'sort':
-         o.doSort();
-         break;
+   if(attributes){
+      var action = attributes.get('action');
+      switch(action){
+         case 'insert':
+            o.doPrepare(attributes);
+            break;
+         case 'save':
+            o.doSave();
+            break;
+         case 'delete':
+            o.doDelete();
+            break;
+         case 'sort':
+            o.doSort();
+            break;
+      }
    }
 }
 MO.FEditorDsPropertyForm_onBuilded = function FEditorDsPropertyForm_onBuilded(event){
@@ -75936,6 +75891,27 @@ MO.FEditorDsPropertyForm_onDataLoad = function FEditorDsPropertyForm_onDataLoad(
 }
 MO.FEditorDsPropertyForm_onDataSave = function FEditorDsPropertyForm_onDataSave(event){
    var o = this;
+   var dataActionCd = o._dataActionCd;
+   switch(dataActionCd){
+      case MO.EUiDataAction.Insert:
+         if(o._logicGroup == 'container'){
+            o._frameSet._catalogContent.reload();
+         }else{
+            o._frameSet._catalogContent.reloadNode();
+         }
+         break;
+      case MO.EUiDataAction.Update:
+         break;
+      case MO.EUiDataAction.Delete:
+         if(o._logicGroup == 'container'){
+            o._frameSet._catalogContent.reload();
+         }else{
+            o._frameSet._catalogContent.reloadParentNode();
+         }
+         break;
+      default:
+         throw new MO.TError(o, 'Invalid data action.');
+   }
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
 MO.FEditorDsPropertyForm_onDataDelete = function FEditorDsPropertyForm_onDataDelete(event){
@@ -75987,12 +75963,7 @@ MO.FEditorDsPropertyForm_doSave = function FEditorDsPropertyForm_doSave(){
 MO.FEditorDsPropertyForm_doDelete = function FEditorDsPropertyForm_doDelete(){
    var o = this;
    o._dataActionCd = MO.EUiDataAction.Delete;
-   var xdocument = new MO.TXmlDocument();
-   var xroot = xdocument.root();
-   o.saveUnit(xroot.create('Content'));
-   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataActionCd, o._logicGroup, o._containerName, o._itemName);
-   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
-   connection.addLoadListener(o, o.onDataSave);
+   o.doSave();
 }
 MO.FEditorDsPropertyForm_dispose = function FEditorDsPropertyForm_dispose(){
    var o = this;
@@ -76629,24 +76600,11 @@ MO.FEditorDsListCatalogContent = function FEditorDsListCatalogContent(o){
 }
 MO.FEditorDsListCatalogToolBar = function FEditorDsListCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName = 'editor.design.frame.CatalogToolBar';
-   o._controlFolderCreateButton   = null;
-   o._controlFolderDeleteButton   = null;
-   o._controlFolderPropertyButton = null;
-   o._controlFolderOpenButton     = null;
-   o._controlFolderCloseButton    = null;
-   o._activeNodeGuid              = null;
-   o.onListClick                  = MO.FEditorDsListCatalogToolBar_onListClick;
-   o.onBuilded                    = MO.FEditorDsListCatalogToolBar_onBuilded;
-   o.onFolderCreateClick          = MO.FEditorDsListCatalogToolBar_onFolderCreateClick;
-   o.onFolderDeleteLoad           = MO.FEditorDsListCatalogToolBar_onFolderDeleteLoad;
-   o.onFolderDeleteExcute         = MO.FEditorDsListCatalogToolBar_onFolderDeleteExcute;
-   o.onFolderDeleteClick          = MO.FEditorDsListCatalogToolBar_onFolderDeleteClick;
-   o.onFolderPropertyClick        = MO.FEditorDsListCatalogToolBar_onFolderPropertyClick;
-   o.onFolderOpenClick            = MO.FEditorDsListCatalogToolBar_onFolderOpenClick;
-   o.onFolderCloseClick           = MO.FEditorDsListCatalogToolBar_onFolderCloseClick;
-   o.construct                    = MO.FEditorDsListCatalogToolBar_construct;
-   o.dispose                      = MO.FEditorDsListCatalogToolBar_dispose;
+   o._frameName  = 'editor.design.list.CatalogToolBar';
+   o.onListClick = MO.FEditorDsListCatalogToolBar_onListClick;
+   o.onBuilded   = MO.FEditorDsListCatalogToolBar_onBuilded;
+   o.construct   = MO.FEditorDsListCatalogToolBar_construct;
+   o.dispose     = MO.FEditorDsListCatalogToolBar_dispose;
    return o;
 }
 MO.FEditorDsListCatalogToolBar_onListClick = function FEditorDsListCatalogToolBar_onListClick(event){
@@ -76656,82 +76614,6 @@ MO.FEditorDsListCatalogToolBar_onBuilded = function FEditorDsListCatalogToolBar_
    var o = this;
    o.__base.FDuiToolBar.onBuilded.call(o, p);
    o._controlList.addClickListener(o, o.onListClick);
-}
-MO.FEditorDsListCatalogToolBar_onFolderCreateClick = function FEditorDsListCatalogToolBar_onFolderCreateClick(event){
-   var o = this;
-   var parentGuid = null;
-   var parentLabel = null;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(node){
-      parentGuid = node.guid();
-      parentLabel = node.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._parentGuid = parentGuid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel('');
-   dialog.switchDataMode(MO.EUiDataMode.Insert);
-   dialog.showPosition(MO.EUiPosition.Center);
-}
-MO.FEditorDsListCatalogToolBar_onFolderDeleteLoad = function FEditorDsListCatalogToolBar_onFolderDeleteLoad(event){
-   var o = this;
-   MO.Console.find(MO.FDuiDesktopConsole).hide();
-   var catalog = o._frameSet._catalogContent;
-   var guid = o._activeNodeGuid;
-   if(guid){
-      var node = catalog.findByGuid(guid);
-      node.removeSelf();
-   }
-   o._activeNodeGuid = null;
-}
-MO.FEditorDsListCatalogToolBar_onFolderDeleteExcute = function FEditorDsListCatalogToolBar_onFolderDeleteExcute(event){
-   var o = this;
-   if(event.resultCd != MO.EResult.Success){
-      return;
-   }
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   MO.Console.find(MO.FDuiDesktopConsole).showUploading();
-   o._activeNodeGuid = node._guid;
-   var connection = MO.Console.find(MO.FDrResourceConsole).doFolderDelete(node._guid);
-   connection.addLoadListener(o, o.onFolderDeleteLoad);
-}
-MO.FEditorDsListCatalogToolBar_onFolderDeleteClick = function FEditorDsListCatalogToolBar_onFolderDeleteClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(MO.FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var dialog = MO.Console.find(MO.FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
-   dialog.addResultListener(o, o.onFolderDeleteExcute);
-}
-MO.FEditorDsListCatalogToolBar_onFolderPropertyClick = function FEditorDsListCatalogToolBar_onFolderPropertyClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(MO.FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var parentLabel = null;
-   if(node._parent){
-      parentLabel = node._parent.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._nodeGuid = node._guid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel(node.label());
-   dialog.switchDataMode(MO.EUiDataMode.Update);
-   dialog.showPosition(MO.EUiPosition.Center);
-}
-MO.FEditorDsListCatalogToolBar_onFolderOpenClick = function FEditorDsListCatalogToolBar_onFolderOpenClick(event){
-}
-MO.FEditorDsListCatalogToolBar_onFolderCloseClick = function FEditorDsListCatalogToolBar_onFolderCloseClick(event){
 }
 MO.FEditorDsListCatalogToolBar_construct = function FEditorDsListCatalogToolBar_construct(){
    var o = this;
@@ -76828,104 +76710,20 @@ MO.FEditorDsTreeCatalogContent = function FEditorDsTreeCatalogContent(o){
 }
 MO.FEditorDsTreeCatalogToolBar = function FEditorDsTreeCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName                   = 'editor.design.frame.CatalogToolBar';
-   o._controlFolderCreateButton   = null;
-   o._controlFolderDeleteButton   = null;
-   o._controlFolderPropertyButton = null;
-   o._controlFolderOpenButton     = null;
-   o._controlFolderCloseButton    = null;
-   o._activeNodeGuid              = null;
-   o.onBuilded                    = MO.FEditorDsTreeCatalogToolBar_onBuilded;
-   o.onFolderCreateClick          = MO.FEditorDsTreeCatalogToolBar_onFolderCreateClick;
-   o.onFolderDeleteLoad           = MO.FEditorDsTreeCatalogToolBar_onFolderDeleteLoad;
-   o.onFolderDeleteExcute         = MO.FEditorDsTreeCatalogToolBar_onFolderDeleteExcute;
-   o.onFolderDeleteClick          = MO.FEditorDsTreeCatalogToolBar_onFolderDeleteClick;
-   o.onFolderPropertyClick        = MO.FEditorDsTreeCatalogToolBar_onFolderPropertyClick;
-   o.onFolderOpenClick            = MO.FEditorDsTreeCatalogToolBar_onFolderOpenClick;
-   o.onFolderCloseClick           = MO.FEditorDsTreeCatalogToolBar_onFolderCloseClick;
-   o.construct                    = MO.FEditorDsTreeCatalogToolBar_construct;
-   o.dispose                      = MO.FEditorDsTreeCatalogToolBar_dispose;
+   o._frameName  = 'editor.design.tree.CatalogToolBar';
+   o.onListClick = MO.FEditorDsTreeCatalogToolBar_onListClick;
+   o.onBuilded   = MO.FEditorDsTreeCatalogToolBar_onBuilded;
+   o.construct   = MO.FEditorDsTreeCatalogToolBar_construct;
+   o.dispose     = MO.FEditorDsTreeCatalogToolBar_dispose;
    return o;
+}
+MO.FEditorDsTreeCatalogToolBar_onListClick = function FEditorDsTreeCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject('editor.design.tree.ListForm');
 }
 MO.FEditorDsTreeCatalogToolBar_onBuilded = function FEditorDsTreeCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FDuiToolBar.onBuilded.call(o, p);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderCreateClick = function FEditorDsTreeCatalogToolBar_onFolderCreateClick(event){
-   var o = this;
-   var parentGuid = null;
-   var parentLabel = null;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(node){
-      parentGuid = node.guid();
-      parentLabel = node.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._parentGuid = parentGuid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel('');
-   dialog.switchDataMode(MO.EUiDataMode.Insert);
-   dialog.showPosition(MO.EUiPosition.Center);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderDeleteLoad = function FEditorDsTreeCatalogToolBar_onFolderDeleteLoad(event){
-   var o = this;
-   MO.Console.find(MO.FDuiDesktopConsole).hide();
-   var catalog = o._frameSet._catalogContent;
-   var guid = o._activeNodeGuid;
-   if(guid){
-      var node = catalog.findByGuid(guid);
-      node.removeSelf();
-   }
-   o._activeNodeGuid = null;
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderDeleteExcute = function FEditorDsTreeCatalogToolBar_onFolderDeleteExcute(event){
-   var o = this;
-   if(event.resultCd != MO.EResult.Success){
-      return;
-   }
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   MO.Console.find(MO.FDuiDesktopConsole).showUploading();
-   o._activeNodeGuid = node._guid;
-   var connection = MO.Console.find(MO.FDrResourceConsole).doFolderDelete(node._guid);
-   connection.addLoadListener(o, o.onFolderDeleteLoad);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderDeleteClick = function FEditorDsTreeCatalogToolBar_onFolderDeleteClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(MO.FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var dialog = MO.Console.find(MO.FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
-   dialog.addResultListener(o, o.onFolderDeleteExcute);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderPropertyClick = function FEditorDsTreeCatalogToolBar_onFolderPropertyClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(MO.FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var parentLabel = null;
-   if(node._parent){
-      parentLabel = node._parent.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._nodeGuid = node._guid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel(node.label());
-   dialog.switchDataMode(MO.EUiDataMode.Update);
-   dialog.showPosition(MO.EUiPosition.Center);
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderOpenClick = function FEditorDsTreeCatalogToolBar_onFolderOpenClick(event){
-}
-MO.FEditorDsTreeCatalogToolBar_onFolderCloseClick = function FEditorDsTreeCatalogToolBar_onFolderCloseClick(event){
+   o._controlList.addClickListener(o, o.onListClick);
 }
 MO.FEditorDsTreeCatalogToolBar_construct = function FEditorDsTreeCatalogToolBar_construct(){
    var o = this;
@@ -77091,104 +76889,20 @@ MO.FEditorDsFrameCatalogContent = function FEditorDsFrameCatalogContent(o){
 }
 MO.FEditorDsFrameCatalogToolBar = function FEditorDsFrameCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName = 'editor.design.frame.CatalogToolBar';
-   o._controlFolderCreateButton   = null;
-   o._controlFolderDeleteButton   = null;
-   o._controlFolderPropertyButton = null;
-   o._controlFolderOpenButton     = null;
-   o._controlFolderCloseButton    = null;
-   o._activeNodeGuid              = null;
-   o.onBuilded                    = MO.FEditorDsFrameCatalogToolBar_onBuilded;
-   o.onFolderCreateClick          = MO.FEditorDsFrameCatalogToolBar_onFolderCreateClick;
-   o.onFolderDeleteLoad           = MO.FEditorDsFrameCatalogToolBar_onFolderDeleteLoad;
-   o.onFolderDeleteExcute         = MO.FEditorDsFrameCatalogToolBar_onFolderDeleteExcute;
-   o.onFolderDeleteClick          = MO.FEditorDsFrameCatalogToolBar_onFolderDeleteClick;
-   o.onFolderPropertyClick        = MO.FEditorDsFrameCatalogToolBar_onFolderPropertyClick;
-   o.onFolderOpenClick            = MO.FEditorDsFrameCatalogToolBar_onFolderOpenClick;
-   o.onFolderCloseClick           = MO.FEditorDsFrameCatalogToolBar_onFolderCloseClick;
-   o.construct                    = MO.FEditorDsFrameCatalogToolBar_construct;
-   o.dispose                      = MO.FEditorDsFrameCatalogToolBar_dispose;
+   o._frameName  = 'editor.design.frame.CatalogToolBar';
+   o.onListClick = MO.FEditorDsListCatalogToolBar_onListClick;
+   o.onBuilded   = MO.FEditorDsFrameCatalogToolBar_onBuilded;
+   o.construct   = MO.FEditorDsFrameCatalogToolBar_construct;
+   o.dispose     = MO.FEditorDsFrameCatalogToolBar_dispose;
    return o;
+}
+MO.FEditorDsListCatalogToolBar_onListClick = function FEditorDsListCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject('editor.design.frame.ListForm');
 }
 MO.FEditorDsFrameCatalogToolBar_onBuilded = function FEditorDsFrameCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FDuiToolBar.onBuilded.call(o, p);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderCreateClick = function FEditorDsFrameCatalogToolBar_onFolderCreateClick(event){
-   var o = this;
-   var parentGuid = null;
-   var parentLabel = null;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(node){
-      parentGuid = node.guid();
-      parentLabel = node.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._parentGuid = parentGuid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel('');
-   dialog.switchDataMode(EUiDataMode.Insert);
-   dialog.showPosition(EUiPosition.Center);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderDeleteLoad = function FEditorDsFrameCatalogToolBar_onFolderDeleteLoad(event){
-   var o = this;
-   MO.Console.find(MO.FDuiDesktopConsole).hide();
-   var catalog = o._frameSet._catalogContent;
-   var guid = o._activeNodeGuid;
-   if(guid){
-      var node = catalog.findByGuid(guid);
-      node.removeSelf();
-   }
-   o._activeNodeGuid = null;
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderDeleteExcute = function FEditorDsFrameCatalogToolBar_onFolderDeleteExcute(event){
-   var o = this;
-   if(event.resultCd != EResult.Success){
-      return;
-   }
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   MO.Console.find(MO.FDuiDesktopConsole).showUploading();
-   o._activeNodeGuid = node._guid;
-   var connection = MO.Console.find(MO.FDrResourceConsole).doFolderDelete(node._guid);
-   connection.addLoadListener(o, o.onFolderDeleteLoad);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderDeleteClick = function FEditorDsFrameCatalogToolBar_onFolderDeleteClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(MO.FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var dialog = MO.Console.find(MO.FDuiMessageConsole).showConfirm('请确认是否删除当前目录？');
-   dialog.addResultListener(o, o.onFolderDeleteExcute);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderPropertyClick = function FEditorDsFrameCatalogToolBar_onFolderPropertyClick(event){
-   var o = this;
-   var catalog = o._frameSet._catalogContent;
-   var node = catalog.focusNode();
-   if(!node){
-      return MO.Console.find(FDuiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
-   }
-   var parentLabel = null;
-   if(node._parent){
-      parentLabel = node._parent.label();
-   }
-   var dialog = MO.Console.find(MO.FDuiWindowConsole).find(MO.FDsResourceFolderDialog);
-   dialog._workspace = o._workspace;
-   dialog._frameSet = o._frameSet;
-   dialog._nodeGuid = node._guid;
-   dialog.setNodeParentLabel(parentLabel);
-   dialog.setNodeLabel(node.label());
-   dialog.switchDataMode(EUiDataMode.Update);
-   dialog.showPosition(MO.EUiPosition.Center);
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderOpenClick = function FEditorDsFrameCatalogToolBar_onFolderOpenClick(event){
-}
-MO.FEditorDsFrameCatalogToolBar_onFolderCloseClick = function FEditorDsFrameCatalogToolBar_onFolderCloseClick(event){
+   o._controlList.addClickListener(o, o.onListClick);
 }
 MO.FEditorDsFrameCatalogToolBar_construct = function FEditorDsFrameCatalogToolBar_construct(){
    var o = this;
@@ -77290,7 +77004,6 @@ MO.FEditorDsFrameFrameSet = function FEditorDsFrameFrameSet(o){
    o.onBuilded     = MO.FEditorDsFrameFrameSet_onBuilded;
    o.construct     = MO.FEditorDsFrameFrameSet_construct;
    o.setFrameTitle = MO.FEditorDsFrameFrameSet_setFrameTitle;
-   o.selectObject  = MO.FEditorDsFrameFrameSet_selectObject
    o.dispose       = MO.FEditorDsFrameFrameSet_dispose;
    return o;
 }
@@ -77341,13 +77054,6 @@ MO.FEditorDsFrameFrameSet_setFrameTitle = function FEditorDsFrameFrameSet_setFra
    var o = this;
    var hTitlePanel = o._frameSpaceTitle._hPanel;
    MO.Window.Html.textSet(hTitlePanel, title);
-}
-MO.FEditorDsFrameFrameSet_selectObject = function FEditorDsFrameFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
-   var o = this;
-   var frame = o.__base.FEditorDsFrameSet.selectObject.call(o, typeGroup, propertyFrame, containerName, controlName);
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-   }else{
-   }
 }
 MO.FEditorDsFrameFrameSet_dispose = function FEditorDsFrameFrameSet_dispose(){
    var o = this;
@@ -78737,7 +78443,7 @@ with(MO){
 }
 with(MO){
    MO.FDsShareResourceCatalogContent = function FDsShareResourceCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._activeSpace          = null;
       o._materials            = null;
       o.onBuild               = FDsShareResourceCatalogContent_onBuild;
@@ -78754,7 +78460,7 @@ with(MO){
    }
    MO.FDsShareResourceCatalogContent_onBuild = function FDsShareResourceCatalogContent_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.addNodeClickListener(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.catalog');
    }
@@ -78774,7 +78480,7 @@ with(MO){
    }
    MO.FDsShareResourceCatalogContent_construct = function FDsShareResourceCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._renderables = new TObjects();
       o._materials = new TObjects();
    }
@@ -78789,7 +78495,7 @@ with(MO){
    }
    MO.FDsShareResourceCatalogContent_dispose = function FDsShareResourceCatalogContent_dispose(){
       var o = this;
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){

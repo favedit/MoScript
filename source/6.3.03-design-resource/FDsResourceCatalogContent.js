@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsResourceCatalogContent = function FDsResourceCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       //..........................................................
       // @attributes
       o._activeSpace          = null;
@@ -43,7 +43,7 @@ with(MO){
    MO.FDsResourceCatalogContent_onBuild = function FDsResourceCatalogContent_onBuild(p){
       var o = this;
       // 父处理
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       // 注册事件
       o.addNodeClickListener(o, o.onNodeClick);
       // 加载定义
@@ -100,7 +100,7 @@ with(MO){
    //==========================================================
    MO.FDsResourceCatalogContent_construct = function FDsResourceCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       // 设置属性
       o._renderables = new TObjects();
       o._materials = new TObjects();
@@ -137,6 +137,6 @@ with(MO){
    MO.FDsResourceCatalogContent_dispose = function FDsResourceCatalogContent_dispose(){
       var o = this;
       // 父处理
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }

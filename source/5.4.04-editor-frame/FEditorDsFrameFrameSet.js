@@ -17,7 +17,6 @@ MO.FEditorDsFrameFrameSet = function FEditorDsFrameFrameSet(o){
    o.construct     = MO.FEditorDsFrameFrameSet_construct;
    // @method
    o.setFrameTitle = MO.FEditorDsFrameFrameSet_setFrameTitle;
-   o.selectObject  = MO.FEditorDsFrameFrameSet_selectObject
    // @method
    o.dispose       = MO.FEditorDsFrameFrameSet_dispose;
    return o;
@@ -77,13 +76,6 @@ MO.FEditorDsFrameFrameSet_onBuilded = function FEditorDsFrameFrameSet_onBuilded(
    control.build(o._frameSpaceContent._hPanel);
    o._frameSpaceContent.push(control);
    //..........................................................
-   // 设置属性工具栏
-   //var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsFramePropertyToolBar);
-   //control._workspace = o._workspace;
-   //control._frameSet = o;
-   //control.buildDefine(event);
-   //o._framePropertyToolBar.push(control);
-   //..........................................................
    // 设置标题
    MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '表单目录');
 }
@@ -109,28 +101,6 @@ MO.FEditorDsFrameFrameSet_setFrameTitle = function FEditorDsFrameFrameSet_setFra
    var o = this;
    var hTitlePanel = o._frameSpaceTitle._hPanel;
    MO.Window.Html.textSet(hTitlePanel, title);
-}
-
-//==========================================================
-// <T>选择对象处理。</T>
-//
-// @method
-// @param typeGroup:EDuiTreeNodeGroup 类型分组枚举
-// @param propertyFrame:String 属性名称
-// @param containerName:String 容器名称
-// @param controlName:String 控件名称
-//==========================================================
-MO.FEditorDsFrameFrameSet_selectObject = function FEditorDsFrameFrameSet_selectObject(typeGroup, propertyFrame, containerName, controlName){
-   var o = this;
-   var frame = o.__base.FEditorDsFrameSet.selectObject.call(o, typeGroup, propertyFrame, containerName, controlName);
-   // 显示控件信息
-   if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      //frame.loadObject(activeFrame, activeFrame);
-   }else{
-      //var activeControl = activeFrame.findComponent(controlName);
-      //frame.loadObject(activeFrame, activeControl);
-      //o._spaceContent.selectControl(activeControl);
-   }
 }
 
 //==========================================================

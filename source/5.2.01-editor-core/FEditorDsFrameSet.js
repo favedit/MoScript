@@ -80,25 +80,6 @@ MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(fram
    if(toolBar){
       toolBar.setPanel(hToolBarPanel);
    }
-   //..........................................................
-   // 设置显示模式
-   //switch(modeCd){
-   //   case MO.EUiMode.View:
-   //      if(containerName){
-   //         frame.doLoad(typeGroup, containerName, controlName);
-   //      }
-   //      break;
-   //   case MO.EUiMode.Insert:
-   //      frame.dataPrepare();
-   //      break;
-   //   case MO.EUiMode.Update:
-   //      if(containerName){
-   //         frame.doLoad(typeGroup, containerName, controlName);
-   //      }
-   //      break;
-   //   default:
-   //      throw new MO.TError("Invalid mode.");
-   //}
    return frame;
 }
 

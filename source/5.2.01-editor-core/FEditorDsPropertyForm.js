@@ -44,21 +44,23 @@ MO.FEditorDsPropertyForm_onButtonClick = function FEditorDsPropertyForm_onButton
    var button = event.sender;
    // 获得命令
    var attributes = button.attributes();
-   var action = attributes.get('action');
-   // 执行命令
-   switch(action){
-      case 'insert':
-         o.doPrepare(attributes);
-         break;
-      case 'save':
-         o.doSave();
-         break;
-      case 'delete':
-         o.doDelete();
-         break;
-      case 'sort':
-         o.doSort();
-         break;
+   if(attributes){
+      var action = attributes.get('action');
+      // 执行命令
+      switch(action){
+         case 'insert':
+            o.doPrepare(attributes);
+            break;
+         case 'save':
+            o.doSave();
+            break;
+         case 'delete':
+            o.doDelete();
+            break;
+         case 'sort':
+            o.doSort();
+            break;
+      }
    }
 }
 
@@ -114,6 +116,28 @@ MO.FEditorDsPropertyForm_onDataLoad = function FEditorDsPropertyForm_onDataLoad(
 //==========================================================
 MO.FEditorDsPropertyForm_onDataSave = function FEditorDsPropertyForm_onDataSave(event){
    var o = this;
+   //o._containerName, o._itemName
+   var dataActionCd = o._dataActionCd;
+   switch(dataActionCd){
+      case MO.EUiDataAction.Insert:
+         if(o._logicGroup == 'container'){
+            o._frameSet._catalogContent.reload();
+         }else{
+            o._frameSet._catalogContent.reloadNode();
+         }
+         break;
+      case MO.EUiDataAction.Update:
+         break;
+      case MO.EUiDataAction.Delete:
+         if(o._logicGroup == 'container'){
+            o._frameSet._catalogContent.reload();
+         }else{
+            o._frameSet._catalogContent.reloadParentNode();
+         }
+         break;
+      default:
+         throw new MO.TError(o, 'Invalid data action.');
+   }
    // 允许处理
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
@@ -218,14 +242,8 @@ MO.FEditorDsPropertyForm_doDelete = function FEditorDsPropertyForm_doDelete(){
    var o = this;
    // 禁止处理
    o._dataActionCd = MO.EUiDataAction.Delete;
-   // 创建命令
-   var xdocument = new MO.TXmlDocument();
-   var xroot = xdocument.root();
-   o.saveUnit(xroot.create('Content'));
-   // 发送请求
-   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataActionCd, o._logicGroup, o._containerName, o._itemName);
-   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
-   connection.addLoadListener(o, o.onDataSave);
+   // 存储处理
+   o.doSave();
 }
 
 //==========================================================

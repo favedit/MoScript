@@ -607,7 +607,7 @@ MO.FDsCanvas_dispose = function FDsCanvas_dispose(){
 }
 with(MO){
    MO.FDsCatalog = function FDsCatalog(o){
-      o = MO.Class.inherits(this, o, MO.FUiDataTreeView, MO.MListenerSelected);
+      o = MO.Class.inherits(this, o, MO.FDuiDataTreeView, MO.MListenerSelected);
       o._iconView             = 'resource.scene.view';
       o._iconViewNot          = 'resource.scene.viewno';
       o._displayNodes         = null;
@@ -633,7 +633,7 @@ with(MO){
    }
    MO.FDsCatalog_onBuild = function FDsCatalog_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.addNodeClickListener(o, o.onNodeClick);
    }
    MO.FDsCatalog_onLoadDisplay = function FDsCatalog_onLoadDisplay(p){
@@ -742,7 +742,7 @@ with(MO){
    }
    MO.FDsCatalog_construct = function FDsCatalog_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._displayNodes = new MO.TObjects();
       o._renderableNodes = new MO.TObjects();
       o._materialNodes = new MO.TObjects();
@@ -916,7 +916,7 @@ with(MO){
       o._displayNodes = MO.Lang.Object.dispose(o._displayNodes);
       o._renderableNodes = MO.Lang.Object.dispose(o._renderableNodes);
       o._materialNodes = MO.Lang.Object.dispose(o._materialNodes);
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){

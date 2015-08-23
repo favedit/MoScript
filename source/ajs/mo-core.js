@@ -1,9 +1,19 @@
 MO.AListener = function AListener(name, linker){
    var o = this;
    MO.Assert.debugNotEmpty(name);
-   MO.Assert.debugNotEmpty(linker);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
+   if(linker == null){
+      var name = o._name;
+      if(MO.Lang.String.startsWith(name, '_listeners')){
+         name = name.substring(10);
+      }else{
+         throw new MO.TError('Linker is invalid.');
+      }
+      o._linker = name;
+   }else{
+      o._linker = linker;
+   }
    return o;
 }
 MO.AListener_build = function AListener_build(clazz, instance){

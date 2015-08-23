@@ -6,7 +6,7 @@ with(MO){
    // @history 141231
    //==========================================================
    MO.FDsSolutionCatalogContent = function FDsSolutionCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       //..........................................................
       // @const
       o._iconView             = 'resource.solution.view';
@@ -53,7 +53,7 @@ with(MO){
    MO.FDsSolutionCatalogContent_onLoaded = function FDsSolutionCatalogContent_onLoaded(p){
       var o = this;
       // 父处理
-      o.__base.FUiDataTreeView.onLoaded.call(o, p);
+      o.__base.FDuiDataTreeView.onLoaded.call(o, p);
       this.buildCatalog();
    }
 
@@ -66,7 +66,7 @@ with(MO){
    MO.FDsSolutionCatalogContent_onBuild = function FDsSolutionCatalogContent_onBuild(p){
       var o = this;
       // 父处理
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       // 注册事件
       o.addNodeClickListener(o, o.onNodeClick);
       // 加载定义
@@ -212,7 +212,7 @@ with(MO){
    //==========================================================
    MO.FDsSolutionCatalogContent_construct = function FDsSolutionCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       // 设置属性
       o._renderables = new TObjects();
       o._materials = new TObjects();
@@ -386,6 +386,6 @@ with(MO){
       o._renderables = RObject.dispose(o._renderables);
       o._materials = RObject.dispose(o._materials);
       // 父处理
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }

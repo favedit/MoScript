@@ -55,10 +55,9 @@ MO.FDuiTreeView = function FDuiTreeView(o){
    o._hNodeRows          = null;
    //..........................................................
    // @listener
-   o.lsnsEnter           = new MO.TListeners();
-   o.lsnsLeave           = new MO.TListeners();
-   //o.lsnsClick           = new TListeners();
-   o._listenersNodeClick = MO.Class.register(o, new MO.AListener('_listenersNodeClick', MO.EEvent.NodeClick));
+   o._listenersNodeEnter = MO.Class.register(o, new MO.AListener('_listenersNodeEnter'));
+   o._listenersNodeLeave = MO.Class.register(o, new MO.AListener('_listenersNodeLeave'));
+   o._listenersNodeClick = MO.Class.register(o, new MO.AListener('_listenersNodeClick'));
    //..........................................................
    // @event
    o.onBuildPanel        = MO.FDuiTreeView_onBuildPanel;
@@ -821,6 +820,7 @@ MO.FDuiTreeView_filterNode = function FDuiTreeView_filterNode(pl, pa){
 //==========================================================
 MO.FDuiTreeView_clearAllNodes = function FDuiTreeView_clearAllNodes(){
    var o = this;
+   // 清空节点
    var nodes = o._nodes;
    if(nodes){
       var count = nodes.count();
@@ -830,6 +830,8 @@ MO.FDuiTreeView_clearAllNodes = function FDuiTreeView_clearAllNodes(){
       nodes.clear();
    }
    o._allNodes.clear();
+   // 清空焦点
+   o._focusNode = null;
 }
 
 //==========================================================
@@ -849,22 +851,13 @@ MO.FDuiTreeView_clear = function FDuiTreeView_clear(){
 //==========================================================
 MO.FDuiTreeView_dispose = function FDuiTreeView_dispose(){
    var o = this;
-   o.__base.FDuiContainer.dispose.call(o);
    // 清空属性
-   var ns = o._nodes;
-   if(ns){
-      ns.dispose();
-      o._nodes = null;
-   }
-   // 清空属性
-   var ns = o._allNodes;
-   if(ns){
-      ns.dispose();
-      o._allNodes = null;
-   }
+   o._nodes = MO.Lang.Object.dispose(o._nodes);
+   o._allNodes = MO.Lang.Object.dispose(o._nodes);
    // 清空属性
    o._hNodePanel = null;
    o._hNodeForm = null;
    o._hHeadLine = null;
-   return true;
+   // 父处理
+   o.__base.FDuiContainer.dispose.call(o);
 }

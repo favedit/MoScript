@@ -227,7 +227,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectCatalogContent = function FDsProjectCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._iconView             = 'design3d.mesh.view';
       o._iconViewNot          = 'design3d.mesh.viewno';
       o._activeSpace          = null;
@@ -251,7 +251,7 @@ with(MO){
    }
    MO.FDsProjectCatalogContent_onBuild = function FDsProjectCatalogContent_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.lsnsClick.register(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.project');
    }
@@ -353,7 +353,7 @@ with(MO){
    }
    MO.FDsProjectCatalogContent_construct = function FDsProjectCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._renderables = new TObjects();
       o._materials = new TObjects();
    }
@@ -449,7 +449,7 @@ with(MO){
       o._displays = RObject.dispose(o._displays);
       o._renderables = RObject.dispose(o._renderables);
       o._materials = RObject.dispose(o._materials);
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){
@@ -1181,7 +1181,7 @@ with(MO){
 }
 with(MO){
    MO.FDsProjectSceneCatalogContent = function FDsProjectSceneCatalogContent(o){
-      o = MO.Class.inherits(this, o, FUiDataTreeView, MListenerSelected);
+      o = MO.Class.inherits(this, o, FDuiDataTreeView, MListenerSelected);
       o._iconView             = 'design3d.mesh.view';
       o._iconViewNot          = 'design3d.mesh.viewno';
       o._activeSpace          = null;
@@ -1205,7 +1205,7 @@ with(MO){
    }
    MO.FDsProjectSceneCatalogContent_onBuild = function FDsProjectSceneCatalogContent_onBuild(p){
       var o = this;
-      o.__base.FUiDataTreeView.onBuild.call(o, p);
+      o.__base.FDuiDataTreeView.onBuild.call(o, p);
       o.lsnsClick.register(o, o.onNodeClick);
       o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.project');
    }
@@ -1307,7 +1307,7 @@ with(MO){
    }
    MO.FDsProjectSceneCatalogContent_construct = function FDsProjectSceneCatalogContent_construct(){
       var o = this;
-      o.__base.FUiDataTreeView.construct.call(o);
+      o.__base.FDuiDataTreeView.construct.call(o);
       o._renderables = new TObjects();
       o._materials = new TObjects();
    }
@@ -1403,7 +1403,7 @@ with(MO){
       o._displays = RObject.dispose(o._displays);
       o._renderables = RObject.dispose(o._renderables);
       o._materials = RObject.dispose(o._materials);
-      o.__base.FUiDataTreeView.dispose.call(o);
+      o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
 with(MO){

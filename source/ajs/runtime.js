@@ -504,16 +504,16 @@ MO.TMap_get = function TMap_get(name, defaultValue){
 }
 MO.TMap_set = function TMap_set(name, value){
    var o = this;
-   if(name != null){
-      var code = name.toString().toLowerCase();
-      var index = o._table[code];
-      if((index == null) || (index >= o._count)){
-         index = o._count++;
-         o._names[index] = name;
-         o._table[code] = index;
-      }
-      o._values[index] = value;
+   MO.Assert.debugNotNull(name);
+   var nameString = name.toString();
+   var code = nameString.toLowerCase();
+   var index = o._table[code];
+   if((index == null) || (index >= o._count)){
+      index = o._count++;
+      o._names[index] = nameString;
+      o._table[code] = index;
    }
+   o._values[index] = value;
 }
 MO.TMap_assign = function TMap_assign(map){
    var o = this;
