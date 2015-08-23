@@ -65,21 +65,12 @@ MO.FEditorDsFrameSet_setFrameTitle = function FEditorDsFrameSet_setFrameTitle(ti
 // <T>选择对象处理。</T>
 //
 // @method
-// @param typeGroup:EDuiTreeNodeGroup 类型分组枚举
 // @param frameName:String 属性名称
-// @param modeCd:String 模式类型
-// @param containerName:String 容器名称
-// @param controlName:String 控件名称
 //==========================================================
-MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(typeGroup, frameName, modeCd, containerName, controlName){
+MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(frameName){
    var o = this;
    // 选中页面
    var frame = o.selectPropertyFrame(frameName);
-   // 加载数据
-   if(containerName){
-      frame.load(typeGroup, containerName, controlName);
-   }
-   //..........................................................
    // 显示标题
    o.setFrameTitle(frame.label());
    // 显示工具栏
@@ -89,6 +80,25 @@ MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(type
    if(toolBar){
       toolBar.setPanel(hToolBarPanel);
    }
+   //..........................................................
+   // 设置显示模式
+   //switch(modeCd){
+   //   case MO.EUiMode.View:
+   //      if(containerName){
+   //         frame.doLoad(typeGroup, containerName, controlName);
+   //      }
+   //      break;
+   //   case MO.EUiMode.Insert:
+   //      frame.dataPrepare();
+   //      break;
+   //   case MO.EUiMode.Update:
+   //      if(containerName){
+   //         frame.doLoad(typeGroup, containerName, controlName);
+   //      }
+   //      break;
+   //   default:
+   //      throw new MO.TError("Invalid mode.");
+   //}
    return frame;
 }
 

@@ -188,15 +188,15 @@ MO.FDuiControl_onBuild = function FDuiControl_onBuild(p){
 }
 
 //==========================================================
-// <T>改变当前控件的工作模式。</T>
+// <T>控件模式变更处理。</T>
 //
 // @method
-// @param e:event:MO.TEventProcess 事件处理
+// @param event:SUiDispatchEvent 事件信息
 // @return EEventStatus 处理状态
 //==========================================================
-MO.FDuiControl_oeMode = function FDuiControl_oeMode(e){
+MO.FDuiControl_oeMode = function FDuiControl_oeMode(event){
    var o = this;
-   o._displayCd = e.displayCd;
+   o._modeCd = event.modeCd;
    return MO.EEventStatus.Continue;
 }
 

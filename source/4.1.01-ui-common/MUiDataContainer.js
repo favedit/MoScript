@@ -9,17 +9,17 @@ MO.MUiDataContainer = function MUiDataContainer(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
-   o._dataModeCd = MO.Class.register(o, new MO.AGetSet('_dataModeCd'), MO.EUiDataMode.View);
+   o._dataActionCd = MO.Class.register(o, new MO.AGetter('_dataActionCd'));
    //..........................................................
    // @method
-   o.loadUnit    = MO.MUiDataContainer_loadUnit;
-   o.saveUnit    = MO.MUiDataContainer_saveUnit;
+   o.loadUnit      = MO.MUiDataContainer_loadUnit;
+   o.saveUnit      = MO.MUiDataContainer_saveUnit;
    // @method
-   o.dataView    = MO.MUiDataContainer_dataView;
-   o.dataPrepare = MO.MUiDataContainer_dataPrepare;
-   o.dataEdit    = MO.MUiDataContainer_dataEdit;
-   o.dataDelete  = MO.MUiDataContainer_dataDelete;
-   o.dataSave    = MO.MUiDataContainer_dataSave;
+   o.dataView      = MO.MUiDataContainer_dataView;
+   o.dataPrepare   = MO.MUiDataContainer_dataPrepare;
+   o.dataModify    = MO.MUiDataContainer_dataModify;
+   o.dataErase     = MO.MUiDataContainer_dataErase;
+   o.dataSave      = MO.MUiDataContainer_dataSave;
    return o;
 }
 
@@ -58,8 +58,6 @@ MO.MUiDataContainer_saveUnit = function MUiDataContainer_saveUnit(unit){
 //==========================================================
 MO.MUiDataContainer_dataView = function MUiDataContainer_dataView(){
    var o = this;
-   // 设置模式
-   o._dataModeCd = MO.EUiDataMode.View;
    // 数据处理
    var event = new MO.SUiDispatchEvent(o, 'oeDataView', MO.MUiDataField);
    o.process(event);
@@ -73,8 +71,8 @@ MO.MUiDataContainer_dataView = function MUiDataContainer_dataView(){
 //==========================================================
 MO.MUiDataContainer_dataPrepare = function MUiDataContainer_dataPrepare(){
    var o = this;
-   // 设置模式
-   o._dataModeCd = MO.EUiDataMode.Insert;
+   // 设置命令
+   o._dataActionCd = MO.EUiDataAction.Insert;
    // 数据处理
    var event = new MO.SUiDispatchEvent(o, 'oeDataPrepare', MO.MUiDataField);
    o.process(event);
@@ -86,10 +84,10 @@ MO.MUiDataContainer_dataPrepare = function MUiDataContainer_dataPrepare(){
 //
 // @method
 //==========================================================
-MO.MUiDataContainer_dataEdit = function MUiDataContainer_dataEdit(){
+MO.MUiDataContainer_dataModify = function MUiDataContainer_dataModify(){
    var o = this;
-   // 设置模式
-   o._dataModeCd = MO.EUiDataMode.Delete;
+   // 设置命令
+   o._dataActionCd = MO.EUiDataAction.Update;
    // 数据处理
    var event = new MO.SUiDispatchEvent(o, 'oeDataEdit', MO.MUiDataField);
    o.process(event);
@@ -101,10 +99,10 @@ MO.MUiDataContainer_dataEdit = function MUiDataContainer_dataEdit(){
 //
 // @method
 //==========================================================
-MO.MUiDataContainer_dataDelete = function MUiDataContainer_dataDelete(){
+MO.MUiDataContainer_dataErase = function MUiDataContainer_dataErase(){
    var o = this;
-   // 设置模式
-   o._dataModeCd = MO.EUiDataMode.Delete;
+   // 设置命令
+   o._dataActionCd = MO.EUiDataAction.Delete;
    // 数据处理
    var event = new MO.SUiDispatchEvent(o, 'oeDataDelete', MO.MUiDataField);
    o.process(event);
@@ -118,8 +116,6 @@ MO.MUiDataContainer_dataDelete = function MUiDataContainer_dataDelete(){
 //==========================================================
 MO.MUiDataContainer_dataSave = function MUiDataContainer_dataSave(){
    var o = this;
-   // 设置模式
-   o._dataModeCd = MO.EUiDataMode.View;
    // 数据处理
    var event = new MO.SUiDispatchEvent(o, 'oeDataSave', MO.MUiDataField);
    o.process(event);

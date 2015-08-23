@@ -8,16 +8,19 @@
 MO.FEditorDsCatalogContent = function FEditorDsCatalogContent(o){
    o = MO.Class.inherits(this, o, MO.FUiDataTreeView);
    //..........................................................
-   // @attributes
-   o._defineCode = null;
+   // @attribute
+   o._defineCode    = null;
+   // @attribute
+   o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
+   o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
    //..........................................................
    // @event
-   o.onNodeClick = MO.FEditorDsCatalogContent_onNodeClick;
+   o.onNodeClick    = MO.FEditorDsCatalogContent_onNodeClick;
    //..........................................................
    // @method
-   o.construct   = MO.FEditorDsCatalogContent_construct;
+   o.construct      = MO.FEditorDsCatalogContent_construct;
    // @method
-   o.dispose     = MO.FEditorDsCatalogContent_dispose;
+   o.dispose        = MO.FEditorDsCatalogContent_dispose;
    return o;
 }
 
@@ -38,15 +41,27 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
       }
       parent = parent.parent();
    }
-   var containerName = parent.code();
+   // 获得名称
+   var containerName = o._containerName = parent.code();
+   o._itemName = null;
    // 显示画面
    var typeGroup = node.typeGroup();
    var frameName = node.type().get('property_frame');
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.selectObject(typeGroup, frameName, MO.EUiMode.Update, containerName);
+      // 显示界面
+      var frame = o._frameSet.selectObject(frameName);
+      frame.processMode(MO.EUiMode.Update);
+      frame.dataModify();
+      // 加载数据
+      frame.doLoad(typeGroup, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      var itemName = node.guid();
-      o._frameSet.selectObject(typeGroup, frameName, MO.EUiMode.Update, containerName, itemName);
+      // 显示界面
+      var frame = o._frameSet.selectObject(frameName);
+      frame.processMode(MO.EUiMode.Update);
+      frame.dataModify();
+      // 加载数据
+      var itemName = o._itemName = node.guid();
+      frame.doLoad(typeGroup, containerName, itemName);
    }
 }
 

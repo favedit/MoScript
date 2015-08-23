@@ -1,9 +1,11 @@
 MO.FEditorDsCatalogContent = function FEditorDsCatalogContent(o){
    o = MO.Class.inherits(this, o, MO.FUiDataTreeView);
-   o._defineCode = null;
-   o.onNodeClick = MO.FEditorDsCatalogContent_onNodeClick;
-   o.construct   = MO.FEditorDsCatalogContent_construct;
-   o.dispose     = MO.FEditorDsCatalogContent_dispose;
+   o._defineCode    = null;
+   o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
+   o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
+   o.onNodeClick    = MO.FEditorDsCatalogContent_onNodeClick;
+   o.construct      = MO.FEditorDsCatalogContent_construct;
+   o.dispose        = MO.FEditorDsCatalogContent_dispose;
    return o;
 }
 MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNodeClick(event){
@@ -16,14 +18,21 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
       }
       parent = parent.parent();
    }
-   var containerName = parent.code();
+   var containerName = o._containerName = parent.code();
+   o._itemName = null;
    var typeGroup = node.typeGroup();
    var frameName = node.type().get('property_frame');
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
-      o._frameSet.selectObject(typeGroup, frameName, MO.EUiMode.Update, containerName);
+      var frame = o._frameSet.selectObject(frameName);
+      frame.processMode(MO.EUiMode.Update);
+      frame.dataModify();
+      frame.doLoad(typeGroup, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
-      var itemName = node.guid();
-      o._frameSet.selectObject(typeGroup, frameName, MO.EUiMode.Update, containerName, itemName);
+      var frame = o._frameSet.selectObject(frameName);
+      frame.processMode(MO.EUiMode.Update);
+      frame.dataModify();
+      var itemName = o._itemName = node.guid();
+      frame.doLoad(typeGroup, containerName, itemName);
    }
 }
 MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construct(){
@@ -68,12 +77,9 @@ MO.FEditorDsFrameSet_setFrameTitle = function FEditorDsFrameSet_setFrameTitle(ti
    var hTitlePanel = o._framePropertyTitle._hPanel;
    MO.Window.Html.textSet(hTitlePanel, title);
 }
-MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(typeGroup, frameName, modeCd, containerName, controlName){
+MO.FEditorDsFrameSet_selectObject = function FEditorDsFrameSet_selectObject(frameName){
    var o = this;
    var frame = o.selectPropertyFrame(frameName);
-   if(containerName){
-      frame.load(typeGroup, containerName, controlName);
-   }
    o.setFrameTitle(frame.label());
    var hToolBarPanel = o._framePropertyToolBar._hPanel;
    MO.Window.Html.clear(hToolBarPanel);
@@ -127,15 +133,17 @@ MO.FEditorDsMenuBar_onDeleteClick = function FEditorDsMenuBar_onDeleteClick(even
 }
 MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiForm);
-   o._containerName = MO.Class.register(o, new MO.AGetter('_containerName'));
-   o._itemName      = MO.Class.register(o, new MO.AGetter('_itemName'));
+   o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
+   o._itemName      = MO.Class.register(o, new MO.AGetSet('_itemName'));
    o.onButtonClick  = MO.FEditorDsPropertyForm_onButtonClick;
    o.onBuilded      = MO.FEditorDsPropertyForm_onBuilded;
    o.onDataChanged  = MO.FEditorDsPropertyForm_onDataChanged;
    o.onDataLoad     = MO.FEditorDsPropertyForm_onDataLoad;
    o.onDataSave     = MO.FEditorDsPropertyForm_onDataSave;
+   o.onDataDelete   = MO.FEditorDsPropertyForm_onDataDelete;
    o.construct      = MO.FEditorDsPropertyForm_construct;
-   o.load           = MO.FEditorDsPropertyForm_doLoad;
+   o.doPrepare      = MO.FEditorDsPropertyForm_doPrepare;
+   o.doLoad         = MO.FEditorDsPropertyForm_doLoad;
    o.doSave         = MO.FEditorDsPropertyForm_doSave;
    o.doDelete       = MO.FEditorDsPropertyForm_doDelete;
    o.dispose        = MO.FEditorDsPropertyForm_dispose;
@@ -144,23 +152,22 @@ MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
 MO.FEditorDsPropertyForm_onButtonClick = function FEditorDsPropertyForm_onButtonClick(event){
    var o  = this;
    var button = event.sender;
-   var code = button.code();
-   switch(code){
+   var attributes = button.attributes();
+   var action = attributes.get('action');
+   switch(action){
+      case 'insert':
+         o.doPrepare(attributes);
+         break;
       case 'save':
          o.doSave();
          break;
       case 'delete':
+         o.doDelete();
          break;
       case 'sort':
+         o.doSort();
          break;
    }
-   return;
-   var logicGroup = button.attributeGet('logic_group');
-   var frameName = button.attributeGet('frame_name');
-   var componentType = button.attributeGet('component_type');
-   var frame = o._frameSet.selectObject(logicGroup, frameName, MO.EUiMode.Insert);
-   var componentType = frame.searchComponent('componentType');
-   componentType.set(componentType);
 }
 MO.FEditorDsPropertyForm_onBuilded = function FEditorDsPropertyForm_onBuilded(event){
    var o = this;
@@ -187,9 +194,32 @@ MO.FEditorDsPropertyForm_onDataSave = function FEditorDsPropertyForm_onDataSave(
    var o = this;
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
+MO.FEditorDsPropertyForm_onDataDelete = function FEditorDsPropertyForm_onDataDelete(event){
+   var o = this;
+   MO.Console.find(MO.FDuiDesktopConsole).hide();
+}
 MO.FEditorDsPropertyForm_construct = function FEditorDsPropertyForm_construct(){
    var o = this;
    o.__base.FDuiForm.construct.call(o);
+}
+MO.FEditorDsPropertyForm_doPrepare = function FEditorDsPropertyForm_doPrepare(parameters){
+   var o = this;
+   var logicGroup = o._logicGroup = parameters.get('logic_group');
+   var containerName = null;
+   var itemName = null;
+   if(logicGroup != 'container'){
+      var catalog = o._frameSet._catalogContent;
+      containerName = catalog.containerName();
+      itemName = catalog.itemName();
+   }
+   var frameName = parameters.get('frame_name');
+   var frame = o._frameSet.selectObject(frameName);
+   frame.dataPrepare();
+   var control = frame.searchComponent('componentType');
+   var componentType = parameters.get('component_type');
+   control.set(componentType);
+   frame.setContainerName(containerName);
+   frame.setItemName(itemName);
 }
 MO.FEditorDsPropertyForm_doLoad = function FEditorDsPropertyForm_doLoad(typeGroup, containerName, itemName){
    var o = this;
@@ -206,7 +236,17 @@ MO.FEditorDsPropertyForm_doSave = function FEditorDsPropertyForm_doSave(){
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
    o.saveUnit(xroot.create('Content'));
-   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, 'update', o._logicGroup, o._containerName, o._itemName);
+   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataActionCd, o._logicGroup, o._containerName, o._itemName);
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
+   connection.addLoadListener(o, o.onDataSave);
+}
+MO.FEditorDsPropertyForm_doDelete = function FEditorDsPropertyForm_doDelete(){
+   var o = this;
+   o._dataActionCd = MO.EUiDataAction.Delete;
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   o.saveUnit(xroot.create('Content'));
+   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataActionCd, o._logicGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataSave);
 }

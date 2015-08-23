@@ -351,17 +351,18 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
 //==========================================================
 MO.FDuiEditControl_oeMode = function FDuiEditControl_oeMode(event){
    var o = this;
-   o.__base.FDuiControl.oeMode.call(o, event);
-   o.__base.MDisplay.oeMode.call(o, event);
+   var resultCd = o.__base.FDuiControl.oeMode.call(o, event);
+   //o.__base.MDisplay.oeMode.call(o, event);
    // 根据工作模式获得设置信息
-   o._editable = o.canEdit(event.mode);
-   o._validable = o.canValid(event.mode);
+   //o._editable = o.canEdit(event.mode);
+   //o._validable = o.canValid(event.mode);
    // 如果在加载中不设置工作模式，由加载处理设置信息
-   if(!o._progressing){
-      o.setEditable(o._editable);
-   }
+   //if(!o._progressing){
+   //   o.setEditable(o._editable);
+   //}
    // 返回处理结果
-   return MO.EEventStatus.Stop;
+   //return MO.EEventStatus.Stop;
+   return resultCd;
 }
 
 //==========================================================

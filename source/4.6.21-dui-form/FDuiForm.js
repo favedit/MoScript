@@ -14,13 +14,18 @@ MO.FDuiForm = function FDuiForm(o){
    o._logicService  = MO.Class.register(o, [new MO.APtyString('_logicService'), new MO.AGetter('_logicService')]);
    o._logicAction   = MO.Class.register(o, [new MO.APtyString('_logicAction'), new MO.AGetter('_logicAction')]);
    //..........................................................
+   // @attribute
+   o._modeCd        = MO.Class.register(o, new MO.AGetter('_modeCd'), MO.EUiMode.View);
+   //..........................................................
    // @event
-   //o.onMouseDown        = MO.FDuiForm_onMouseDown;
+   //o.onMouseDown  = MO.FDuiForm_onMouseDown;
    //..........................................................
    // @method
-   o.construct          = MO.FDuiForm_construct;
+   o.construct      = MO.FDuiForm_construct;
    // @method
-   o.dispose            = MO.FDuiForm_dispose;
+   o.processMode    = MO.FDuiForm_processMode;
+   // @method
+   o.dispose        = MO.FDuiForm_dispose;
 
    //..........................................................
    // @attribute
@@ -95,6 +100,22 @@ MO.FDuiForm_construct = function FDuiForm_construct(){
    //o.lsnsClick = new TListeners();
    // 建立处理器
    //o._dataComponents = new TMap();
+}
+
+//==========================================================
+// <T>数据删除处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiForm_processMode = function FDuiForm_processMode(modeCd){
+   var o = this;
+   // 设置命令
+   o._modeCd = modeCd;
+   // 数据处理
+   var event = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDataField);
+   event.modeCd = modeCd;
+   o.process(event);
+   event.dispose();
 }
 
 //==========================================================

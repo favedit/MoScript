@@ -3361,14 +3361,8 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
 }
 MO.FDuiEditControl_oeMode = function FDuiEditControl_oeMode(event){
    var o = this;
-   o.__base.FDuiControl.oeMode.call(o, event);
-   o.__base.MDisplay.oeMode.call(o, event);
-   o._editable = o.canEdit(event.mode);
-   o._validable = o.canValid(event.mode);
-   if(!o._progressing){
-      o.setEditable(o._editable);
-   }
-   return MO.EEventStatus.Stop;
+   var resultCd = o.__base.FDuiControl.oeMode.call(o, event);
+   return resultCd;
 }
 MO.FDuiEditControl_oeProgress = function FDuiEditControl_oeProgress(event){
    var o = this;
@@ -3711,13 +3705,23 @@ MO.FDuiForm = function FDuiForm(o){
    o._logicCode     = MO.Class.register(o, [new MO.APtyString('_logicCode'), new MO.AGetter('_logicCode')]);
    o._logicService  = MO.Class.register(o, [new MO.APtyString('_logicService'), new MO.AGetter('_logicService')]);
    o._logicAction   = MO.Class.register(o, [new MO.APtyString('_logicAction'), new MO.AGetter('_logicAction')]);
-   o.construct          = MO.FDuiForm_construct;
-   o.dispose            = MO.FDuiForm_dispose;
+   o._modeCd        = MO.Class.register(o, new MO.AGetter('_modeCd'), MO.EUiMode.View);
+   o.construct      = MO.FDuiForm_construct;
+   o.processMode    = MO.FDuiForm_processMode;
+   o.dispose        = MO.FDuiForm_dispose;
    return o;
 }
 MO.FDuiForm_construct = function FDuiForm_construct(){
    var o = this;
    o.__base.FDuiLayout.construct.call(o);
+}
+MO.FDuiForm_processMode = function FDuiForm_processMode(modeCd){
+   var o = this;
+   o._modeCd = modeCd;
+   var event = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDataField);
+   event.modeCd = modeCd;
+   o.process(event);
+   event.dispose();
 }
 MO.FDuiForm_dispose = function FDuiForm_dispose(){
    var o = this;
@@ -5967,7 +5971,7 @@ MO.FDuiSelect = function FDuiSelect(o){
    o.onKeyDown             = MO.Class.register(o, new MO.AEventKeyDown('onKeyDown'), MO.FDuiSelect_onKeyDown);
    o.construct             = MO.FDuiSelect_construct;
    o.findItemByLabel       = MO.FDuiSelect_findItemByLabel;
-   o.findItemByData        = MO.FDuiSelect_findItemByData;
+   o.findItemByValue       = MO.FDuiSelect_findItemByValue;
    o.formatValue           = MO.FDuiSelect_formatValue;
    o.formatDisplay         = MO.FDuiSelect_formatDisplay;
    o.get                   = MO.FDuiSelect_get;
@@ -6022,7 +6026,8 @@ MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(label){
    var o = this;
    var components = o._components;
    if(components){
-      for(var i = components.count() - 1; i >= 0; i--){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
          var component = components.at(i);
          if(MO.Lang.String.equals(component.label(), label, true)){
             return component;
@@ -6031,11 +6036,12 @@ MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(label){
    }
    return null;
 }
-MO.FDuiSelect_findItemByData = function FDuiSelect_findItemByData(dataValue){
+MO.FDuiSelect_findItemByValue = function FDuiSelect_findItemByValue(dataValue){
    var o = this;
    var components = o._components;
    if(components){
-      for(var i = components.count() - 1; i >= 0; i--){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
          var component = components.at(i);
          if(MO.Lang.String.equals(component.dataValue(), dataValue, true)){
             return component;
@@ -6055,7 +6061,7 @@ MO.FDuiSelect_formatValue = function FDuiSelect_formatValue(label){
 MO.FDuiSelect_formatDisplay = function FDuiSelect_formatDisplay(value){
    var o = this;
    var label = '';
-   var item = o.findItemByData(value);
+   var item = o.findItemByValue(value);
    if(item){
       label = MO.Lang.String.nvl(item.label());
    }

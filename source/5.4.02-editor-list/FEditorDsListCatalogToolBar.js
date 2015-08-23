@@ -47,7 +47,7 @@ MO.FEditorDsListCatalogToolBar = function FEditorDsListCatalogToolBar(o){
 // @param event:TEventProcess 事件信息
 //==========================================================
 MO.FEditorDsListCatalogToolBar_onListClick = function FEditorDsListCatalogToolBar_onListClick(event){
-   this._frameSet.selectObject('list', 'editor.design.list.ListForm', null, null);
+   this._frameSet.selectObject('editor.design.list.ListForm');
 }
 
 //==========================================================

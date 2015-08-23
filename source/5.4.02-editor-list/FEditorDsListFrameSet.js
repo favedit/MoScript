@@ -54,10 +54,10 @@ MO.FEditorDsListFrameSet_onBuilded = function FEditorDsListFrameSet_onBuilded(ev
    o._frameCatalogContent.push(control);
    //..........................................................
    // 设置属性工具栏
-   var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsListPropertyToolBar);
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._framePropertyToolBar.push(control);
+   //var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsListPropertyToolBar);
+   //control._frameSet = o;
+   //control.buildDefine(event);
+   //o._framePropertyToolBar.push(control);
    //..........................................................
    // 设置标题
    MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '列表目录');

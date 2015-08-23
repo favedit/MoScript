@@ -1553,9 +1553,9 @@ MO.FDuiControl_onBuild = function FDuiControl_onBuild(p){
    o.refreshPadding();
    o.refreshMargin();
 }
-MO.FDuiControl_oeMode = function FDuiControl_oeMode(e){
+MO.FDuiControl_oeMode = function FDuiControl_oeMode(event){
    var o = this;
-   o._displayCd = e.displayCd;
+   o._modeCd = event.modeCd;
    return MO.EEventStatus.Continue;
 }
 MO.FDuiControl_construct = function FDuiControl_construct(){

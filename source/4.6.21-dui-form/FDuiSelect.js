@@ -36,7 +36,7 @@ MO.FDuiSelect = function FDuiSelect(o){
    o.construct             = MO.FDuiSelect_construct;
    // @method
    o.findItemByLabel       = MO.FDuiSelect_findItemByLabel;
-   o.findItemByData        = MO.FDuiSelect_findItemByData;
+   o.findItemByValue       = MO.FDuiSelect_findItemByValue;
    o.formatValue           = MO.FDuiSelect_formatValue;
    o.formatDisplay         = MO.FDuiSelect_formatDisplay;
    o.get                   = MO.FDuiSelect_get;
@@ -148,7 +148,8 @@ MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(label){
    var o = this;
    var components = o._components;
    if(components){
-      for(var i = components.count() - 1; i >= 0; i--){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
          var component = components.at(i);
          if(MO.Lang.String.equals(component.label(), label, true)){
             return component;
@@ -165,11 +166,12 @@ MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(label){
 // @param dataValue:String 项目数据
 // @return FDuiSelectItem 项目
 //==========================================================
-MO.FDuiSelect_findItemByData = function FDuiSelect_findItemByData(dataValue){
+MO.FDuiSelect_findItemByValue = function FDuiSelect_findItemByValue(dataValue){
    var o = this;
    var components = o._components;
    if(components){
-      for(var i = components.count() - 1; i >= 0; i--){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
          var component = components.at(i);
          if(MO.Lang.String.equals(component.dataValue(), dataValue, true)){
             return component;
@@ -205,7 +207,7 @@ MO.FDuiSelect_formatValue = function FDuiSelect_formatValue(label){
 MO.FDuiSelect_formatDisplay = function FDuiSelect_formatDisplay(value){
    var o = this;
    var label = '';
-   var item = o.findItemByData(value);
+   var item = o.findItemByValue(value);
    if(item){
       label = MO.Lang.String.nvl(item.label());
    }

@@ -41,9 +41,9 @@
 }
 
 .FEditorDsFrameSet_Toolbar_Ground{
+   height: 30px;
    padding-left: 6px;
    padding-top: 4px;
-   padding-bottom: 1px;
    border-bottom: 1px solid #C6CBD0;
    background-color: #EAEDF1;
 }

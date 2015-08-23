@@ -26,7 +26,7 @@ MO.FEditorDsListCatalogToolBar = function FEditorDsListCatalogToolBar(o){
    return o;
 }
 MO.FEditorDsListCatalogToolBar_onListClick = function FEditorDsListCatalogToolBar_onListClick(event){
-   this._frameSet.selectObject('list', 'editor.design.list.ListForm', null, null);
+   this._frameSet.selectObject('editor.design.list.ListForm');
 }
 MO.FEditorDsListCatalogToolBar_onBuilded = function FEditorDsListCatalogToolBar_onBuilded(p){
    var o = this;
@@ -145,10 +145,6 @@ MO.FEditorDsListFrameSet_onBuilded = function FEditorDsListFrameSet_onBuilded(ev
    control._frameSet = o;
    control.build(event);
    o._frameCatalogContent.push(control);
-   var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsListPropertyToolBar);
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._framePropertyToolBar.push(control);
    MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '列表目录');
 }
 MO.FEditorDsListFrameSet_construct = function FEditorDsListFrameSet_construct(){

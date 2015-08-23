@@ -749,12 +749,13 @@ MO.EUiCursor = new function EUiCursor(){
    o.Move      = 'move';
    return o;
 }
-MO.EUiDataMode = new function EUiDataMode(){
+MO.EUiDataAction = new function EUiDataAction(){
    var o = this;
-   o.View   = 'view';
-   o.Insert = 'insert';
-   o.Update = 'update';
-   o.Delete = 'delete';
+   MO.TEnum.call(o);
+   o.Prepare   = 'prepare';
+   o.Insert    = 'insert';
+   o.Update    = 'update';
+   o.Delete    = 'delete';
    return o;
 }
 MO.EUiDialog = new function EUiDialog(){
@@ -837,9 +838,11 @@ MO.EUiMerge = new function EUiMerge(){
 MO.EUiMode = new function EUiMode(){
    var o = this;
    MO.TEnum.call(o);
-   o.Insert = 'Insert';
-   o.Update = 'Update';
-   o.Delete = 'Delete';
+   o.View   = 'V';
+   o.Design = 'S';
+   o.Insert = 'I';
+   o.Update = 'U';
+   o.Delete = 'D';
    return o;
 }
 MO.EPanel = new function EPanel(){
@@ -1254,14 +1257,14 @@ MO.MUiControl_dispose = function MUiControl_dispose(){
 }
 MO.MUiDataContainer = function MUiDataContainer(o){
    o = MO.Class.inherits(this, o);
-   o._dataModeCd = MO.Class.register(o, new MO.AGetSet('_dataModeCd'), MO.EUiDataMode.View);
-   o.loadUnit    = MO.MUiDataContainer_loadUnit;
-   o.saveUnit    = MO.MUiDataContainer_saveUnit;
-   o.dataView    = MO.MUiDataContainer_dataView;
-   o.dataPrepare = MO.MUiDataContainer_dataPrepare;
-   o.dataEdit    = MO.MUiDataContainer_dataEdit;
-   o.dataDelete  = MO.MUiDataContainer_dataDelete;
-   o.dataSave    = MO.MUiDataContainer_dataSave;
+   o._dataActionCd = MO.Class.register(o, new MO.AGetter('_dataActionCd'));
+   o.loadUnit      = MO.MUiDataContainer_loadUnit;
+   o.saveUnit      = MO.MUiDataContainer_saveUnit;
+   o.dataView      = MO.MUiDataContainer_dataView;
+   o.dataPrepare   = MO.MUiDataContainer_dataPrepare;
+   o.dataModify    = MO.MUiDataContainer_dataModify;
+   o.dataErase     = MO.MUiDataContainer_dataErase;
+   o.dataSave      = MO.MUiDataContainer_dataSave;
    return o;
 }
 MO.MUiDataContainer_loadUnit = function MUiDataContainer_loadUnit(unit){
@@ -1280,35 +1283,33 @@ MO.MUiDataContainer_saveUnit = function MUiDataContainer_saveUnit(unit){
 }
 MO.MUiDataContainer_dataView = function MUiDataContainer_dataView(){
    var o = this;
-   o._dataModeCd = MO.EUiDataMode.View;
    var event = new MO.SUiDispatchEvent(o, 'oeDataView', MO.MUiDataField);
    o.process(event);
    event.dispose();
 }
 MO.MUiDataContainer_dataPrepare = function MUiDataContainer_dataPrepare(){
    var o = this;
-   o._dataModeCd = MO.EUiDataMode.Insert;
+   o._dataActionCd = MO.EUiDataAction.Insert;
    var event = new MO.SUiDispatchEvent(o, 'oeDataPrepare', MO.MUiDataField);
    o.process(event);
    event.dispose();
 }
-MO.MUiDataContainer_dataEdit = function MUiDataContainer_dataEdit(){
+MO.MUiDataContainer_dataModify = function MUiDataContainer_dataModify(){
    var o = this;
-   o._dataModeCd = MO.EUiDataMode.Delete;
+   o._dataActionCd = MO.EUiDataAction.Update;
    var event = new MO.SUiDispatchEvent(o, 'oeDataEdit', MO.MUiDataField);
    o.process(event);
    event.dispose();
 }
-MO.MUiDataContainer_dataDelete = function MUiDataContainer_dataDelete(){
+MO.MUiDataContainer_dataErase = function MUiDataContainer_dataErase(){
    var o = this;
-   o._dataModeCd = MO.EUiDataMode.Delete;
+   o._dataActionCd = MO.EUiDataAction.Delete;
    var event = new MO.SUiDispatchEvent(o, 'oeDataDelete', MO.MUiDataField);
    o.process(event);
    event.dispose();
 }
 MO.MUiDataContainer_dataSave = function MUiDataContainer_dataSave(){
    var o = this;
-   o._dataModeCd = MO.EUiDataMode.View;
    var event = new MO.SUiDispatchEvent(o, 'oeDataSave', MO.MUiDataField);
    o.process(event);
    event.dispose();
