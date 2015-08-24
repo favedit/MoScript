@@ -176,27 +176,9 @@ MO.FEaiChartMktMarketerScene_onProcess = function FEaiChartMktMarketerScene_onPr
           // 投资总金额
          var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
          investmentTotalCount.setValue(parseInt(processor.investmentTotal()).toString());
-         // 赎回总金额
-         var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
-         redemptionTotalCount.setValue(parseInt(processor.redemptionTotal()).toString());
-         // 净投总金额 
-         var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
-         netinvestmentTotalCount.setValue(parseInt(processor.netinvestmentTotal()).toString());
-        
          // 当日投资总金额
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
-         // 当日赎回总金额
-         var redemptionTotal = logoBar.findComponent('redemptionTotal');
-         redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
-         // 当日净投总金额     
-         var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
-         netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
-         // 利息总金额
-         //var interestTotal = logoBar.findComponent('interestTotal');
-         //interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
-       
-
       }
       //..........................................................
       // 更新时间
@@ -243,7 +225,7 @@ MO.FEaiChartMktMarketerScene_setup = function FEaiChartMktMarketerScene_setup() 
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
    // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.marketer.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.marketer-marketer.LogoBar');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
