@@ -58,11 +58,6 @@ MO.FEditorDsTreeFrameSet_onBuilded = function FEditorDsTreeFrameSet_onBuilded(ev
    control._frameSet = o;
    control.build(event);
    o._frameCatalogContent.push(control);
-   var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsTreePropertyToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(event);
-   o._framePropertyToolBar.push(control);
    MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '树目录配置');
 }
 MO.FEditorDsTreeFrameSet_construct = function FEditorDsTreeFrameSet_construct(){
@@ -72,46 +67,4 @@ MO.FEditorDsTreeFrameSet_construct = function FEditorDsTreeFrameSet_construct(){
 MO.FEditorDsTreeFrameSet_dispose = function FEditorDsTreeFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
-}
-MO.FEditorDsTreeMenuBar = function FEditorDsTreeMenuBar(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
-   o._frameName = 'editor.design.tree.MenuBar';
-   o.onBuilded  = MO.FEditorDsTreeMenuBar_onBuilded;
-   return o;
-}
-MO.FEditorDsTreeMenuBar_onBuilded = function FEditorDsTreeMenuBar_onBuilded(event){
-   var o = this;
-   o.__base.FEditorDsMenuBar.onBuilded.call(o, event);
-   o._controlCreate.addClickListener(o, o.onCreateClick);
-   o._controlUpdate.addClickListener(o, o.onUpdateClick);
-   o._controlDelete.addClickListener(o, o.onDeleteClick);
-}
-MO.FEditorDsTreePropertyToolBar = function FEditorDsTreePropertyToolBar(o){
-   o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'editor.design.frame.PropertyToolBar';
-   o._controlInsertButton = null;
-   o._controlUpdateButton = null;
-   o._controlDeleteButton = null;
-   o.onBuilded            = MO.FEditorDsTreePropertyToolBar_onBuilded;
-   o.onUpdateClick        = MO.FEditorDsTreePropertyToolBar_onUpdateClick;
-   o.construct            = MO.FEditorDsTreePropertyToolBar_construct;
-   o.dispose              = MO.FEditorDsTreePropertyToolBar_dispose;
-   return o;
-}
-MO.FEditorDsTreePropertyToolBar_onBuilded = function FEditorDsTreePropertyToolBar_onBuilded(p){
-   var o = this;
-   o.__base.FDuiToolBar.onBuilded.call(o, p);
-}
-MO.FEditorDsTreePropertyToolBar_onUpdateClick = function FEditorDsTreePropertyToolBar_onUpdateClick(event){
-   var o = this;
-   var guid = o._workspace._activeProjectGuid;
-   window.location = 'Project.wa?do=detail&guid=' + guid;
-}
-MO.FEditorDsTreePropertyToolBar_construct = function FEditorDsTreePropertyToolBar_construct(){
-   var o = this;
-   o.__base.FDuiToolBar.construct.call(o);
-}
-MO.FEditorDsTreePropertyToolBar_dispose = function FEditorDsTreePropertyToolBar_dispose(){
-   var o = this;
-   o.__base.FDuiToolBar.dispose.call(o);
 }

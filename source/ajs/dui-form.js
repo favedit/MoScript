@@ -5220,31 +5220,31 @@ MO.FDuiNumber2_set = function FDuiNumber2_set(value){
    var o = this;
    o.__base.FDuiEditControl.set.call(o, value);
    var originValue = o._innerOriginValue;
-   var vd = o._innerDataValue;
+   var dataValue = o._innerDataValue;
    if(arguments.length == 1){
       var value = arguments[0];
-      if(value.constructor == SPoint2){
+      if(value == null){
+         originValue.set(0, 0);
+      }else if(value.constructor == MO.SPoint2){
          originValue.assign(value);
-         vd.assign(value);
-      }else if(value.constructor == SSize2){
+      }else if(value.constructor == MO.SSize2){
          originValue.set(value.width, value.height);
-         vd.set(value.width, value.height);
       }else{
          throw new MO.TError('Invalid value format.');
       }
    }else if(arguments.length == 2){
       originValue.set(arguments[0], arguments[1]);
-      vd.assign(originValue);
    }else{
       throw new MO.TError('Invalid value format.');
    }
+   dataValue.assign(originValue);
    var hInput = o._hInput1;
    if(hInput){
-      hInput.value = MO.Lang.Float.format(vd.x, 0, null, 2, null);
+      hInput.value = MO.Lang.Float.format(dataValue.x, 0, null, 2, null);
    }
    var hInput = o._hInput2;
    if(hInput){
-      hInput.value = MO.Lang.Float.format(vd.y, 0, null, 2, null);
+      hInput.value = MO.Lang.Float.format(dataValue.y, 0, null, 2, null);
    }
    o.changeSet(false);
 }

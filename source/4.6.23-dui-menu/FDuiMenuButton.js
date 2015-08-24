@@ -111,7 +111,7 @@ MO.FDuiMenuButton_onBuild = function FDuiMenuButton_onBuild(event){
    }
    // 建立热键
    if(o._hotkey){
-      MO.Console.find(MO.FKeyConsole).register(o._hotkey, o, o.onMouseDown);
+      //MO.Console.find(MO.FKeyConsole).register(o._hotkey, o, o.onMouseDown);
    }
    // 建立提示
    if(o._hint){

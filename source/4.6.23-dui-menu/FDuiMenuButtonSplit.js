@@ -6,7 +6,7 @@
 // @history 150121
 //==========================================================
 MO.FDuiMenuButtonSplit = function FDuiMenuButtonSplit(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiMenuButton);
+   o = MO.Class.inherits(this, o, MO.FDuiControl);
    //..........................................................
    // @style
    o._stylePanelHorizontal = MO.Class.register(o, new MO.AStyle('_stylePanelHorizontal'));

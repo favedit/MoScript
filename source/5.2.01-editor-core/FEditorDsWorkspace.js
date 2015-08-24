@@ -147,48 +147,21 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
       if(name == MO.EEditorFrameSet.PersistenceFrameSet){
-         // 创建菜单
-         var menuBar = MO.Class.create(MO.FEditorDsPersistenceMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
          // 创建框架
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsPersistenceFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
       }else if(name == MO.EEditorFrameSet.ListFrameSet){
-         // 创建菜单
-         var menuBar = MO.Class.create(MO.FEditorDsListMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
          // 创建框架
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsListFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
       }else if(name == MO.EEditorFrameSet.TreeFrameSet){
-         // 创建菜单
-         var menuBar = MO.Class.create(MO.FEditorDsTreeMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
          // 创建框架
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsTreeFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
       }else if(name == MO.EEditorFrameSet.FrameFrameSet){
-         // 创建菜单
-         var menuBar = MO.Class.create(MO.FEditorDsFrameMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
          // 创建框架
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsFrameFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
+      frameSet._workspace = o;
       o._frameSets.set(name, frameSet);
    }
    //..........................................................
@@ -196,12 +169,8 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
    var activeFrameSet = o._activeFrameSet;
    if(activeFrameSet != frameSet){
       if(activeFrameSet){
-         //o._hMenuPanel.removeChild(activeFrameSet._menuBar._hPanel);
-         //o._frameBody.remove(activeFrameSet);
          o._frameSpace.remove(activeFrameSet);
       }
-      //o._hMenuPanel.appendChild(frameSet._menuBar._hPanel);
-      //o._frameBody.push(frameSet);
       o._frameSpace.push(frameSet);
       frameSet.psResize();
    }

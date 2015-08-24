@@ -366,16 +366,8 @@ MO.FEaiChartMktMarketerScene_onProcess = function FEaiChartMktMarketerScene_onPr
       if(processor.invementDayCurrent() > 0){
          var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
          investmentTotalCount.setValue(parseInt(processor.investmentTotal()).toString());
-         var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
-         redemptionTotalCount.setValue(parseInt(processor.redemptionTotal()).toString());
-         var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
-         netinvestmentTotalCount.setValue(parseInt(processor.netinvestmentTotal()).toString());
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
-         var redemptionTotal = logoBar.findComponent('redemptionTotal');
-         redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
-         var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
-         netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
       }
       if (o._nowTicker.process()) {
          var bar = o._logoBar;
@@ -398,7 +390,7 @@ MO.FEaiChartMktMarketerScene_setup = function FEaiChartMktMarketerScene_setup() 
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.marketer.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.marketer-marketer.LogoBar');
    o._guiManager.register(frame);
    var invement = o._processor = MO.Class.create(MO.FEaiChartMktMarketerProcessor);
    invement.linkGraphicContext(o);
@@ -535,6 +527,9 @@ MO.FEaiChartMktMarketerTable = function FEaiChartMktMarketerTable(o) {
    o._rank                 = MO.Class.register(o, new MO.AGetter('_rank'));
    o._rankLogoImage        = null;
    o._rankTitleImage       = null;
+   o._rankLineMonthImage   = null;
+   o._rankLineWeeksImage   = null;
+   o._rankLineDayImage     = null;
    o._rankLineImage        = null;
    o._rankLinePadding      = null;
    o._rank1Image           = null;
@@ -590,7 +585,9 @@ MO.FEaiChartMktMarketerTable_onPaintBegin = function FEaiChartMktMarketerTable_o
    graphic.setFont(o._rowFontStyle);
    var tableTop = top + o._rankStart;
    var timeX = left + 6;
-   graphic.drawGridImage(o._rankLineImage, timeX, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
+   graphic.drawGridImage(o._rankLineMonthImage, timeX, tableTop + o._rankTitleStart, width - 22, o._rankWeeksHeight, o._rankLinePadding);
+   graphic.drawGridImage(o._rankLineWeeksImage, timeX, tableTop + o._rankTitleStart + 174, width - 22, 139, o._rankLinePadding);
+   graphic.drawGridImage(o._rankLineDayImage, timeX, tableTop + o._rankTitleStart + 175 + 139, width - 22, 137, o._rankLinePadding);
    graphic.drawImage(o._dayImage, timeX, tableTop + 44, 56, 130);
    graphic.drawImage(o._weeksImage, timeX, tableTop + 177, 56, 137);
    graphic.drawImage(o._monthImage, timeX, tableTop + 317, 56, 130);
@@ -623,7 +620,11 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rankTitleImage = imageConsole.load('{eai.resource}/marketer/title.png');
    image.addLoadListener(o, o.onImageLoad);
-   var image = o._rankLineImage = imageConsole.load('{eai.resource}/marketer/rank.png');
+   var image = o._rankLineMonthImage = imageConsole.load('{eai.resource}/marketer/rank2.png');
+   image.addLoadListener(o, o.onImageLoad);
+   var image = o._rankLineWeeksImage = imageConsole.load('{eai.resource}/marketer/rank3.png');
+   image.addLoadListener(o, o.onImageLoad);
+   var image = o._rankLineDayImage = imageConsole.load('{eai.resource}/marketer/rank4.png');
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rank1Image = imageConsole.load('{eai.resource}/live/1.png');
    image.addLoadListener(o, o.onImageLoad);
@@ -694,30 +695,6 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    column.setWidth(123);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('monthRedemptionTotal');
-   column.setLabel('赎回');
-   column.setDataName('month_redemption_total');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
-   column.setWidth(118);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('monthNetinvestmentTotal');
-   column.setLabel('净投');
-   column.setDataName('month_netinvestment_total');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
-   column.setWidth(127);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('monthCustomerCount');
    column.setLabel('客户数');
@@ -783,30 +760,6 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    column.setWidth(123);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('weeksRedemptionTotal');
-   column.setLabel('赎回');
-   column.setDataName('weeks_redemption_total');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
-   column.setWidth(118);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('weeksNetinvestmentTotal');
-   column.setLabel('净投');
-   column.setDataName('weeks_netinvestment_total');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
-   column.setWidth(127);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('weeksCustomerCount');
    column.setLabel('客户数');
@@ -870,30 +823,6 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    column.setNegativeColor('#FF0000');
    column.cellPadding().right = 10;
    column.setWidth(123);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('redemptionTotal');
-   column.setLabel('赎回');
-   column.setDataName('redemption_total');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
-   column.setWidth(118);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('netinvestmentTotal');
-   column.setLabel('净投');
-   column.setDataName('netinvestment_total');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
-   column.setWidth(127);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
@@ -991,7 +920,10 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
       o._tableCount = 19;
       o._rankStart = 110;
       o._rankTitleStart = 0;
-      o._rankHeight = 450;
+      o._rankHeight = 174;
+      o._rankWeeksHeight = 174;
+      o._rankMonthHeight = 139;
+      o._rankDayHeight = 137;
       o._rankRowHeight = 40;
       o._rankIconStart = 25;
       o._rankTextStart = 0;
@@ -1021,8 +953,6 @@ MO.FEaiChartMktMarketerTable_setRankDayUnits = function FEaiChartMktMarketerTabl
       row.set('department_label', departmentLabel);
       row.set('marketer_label', unit.marketerLabel());
       row.set('investment_total', unit.investmentTotal());
-      row.set('redemption_total', unit.redemptionTotal());
-      row.set('netinvestment_total', unit.netinvestmentTotal());
       row.set('customer_count', unit.customerTotal());
       grid.pushRow(row);
    }
@@ -1044,8 +974,6 @@ MO.FEaiChartMktMarketerTable_setRankWeekUnits = function FEaiChartMktMarketerTab
       row.set('weeks_department_label', departmentLabel);
       row.set('weeks_marketer_label', unit.marketerLabel());
       row.set('weeks_investment_total', unit.investmentTotal());
-      row.set('weeks_redemption_total', unit.redemptionTotal());
-      row.set('weeks_netinvestment_total', unit.netinvestmentTotal());
       row.set('weeks_customer_count', unit.customerTotal());
       grid.pushRow(row);
    }
@@ -1067,8 +995,6 @@ MO.FEaiChartMktMarketerTable_setRankMonthUnits = function FEaiChartMktMarketerTa
       row.set('month_department_label', departmentLabel);
       row.set('month_marketer_label', unit.marketerLabel());
       row.set('month_investment_total', unit.investmentTotal());
-      row.set('month_redemption_total', unit.redemptionTotal());
-      row.set('month_netinvestment_total', unit.netinvestmentTotal());
       row.set('month_customer_count', unit.customerTotal());
       grid.pushRow(row);
    }
@@ -1096,11 +1022,7 @@ MO.FEaiChartMktMarketerTable_pushUnit = function FEaiChartMktMarketerTable_pushU
    row.set('marketer_label', unit.marketerLabel());
    row.set('customer_city', cityLabel);
    row.set('customer_info', unit.customerLabel() + ' - ' + unit.customerPhone());
-   if(unit.customerActionCd() == 1){
-      row.set('customer_amount', unit.customerActionAmount());
-   }else{
-      row.set('customer_amount', -unit.customerActionAmount());
-   }
+   row.set('customer_amount', unit.customerActionAmount());
    grid.insertRow(row);
    var entities = o._units;
    entities.unshift(unit);
@@ -1289,7 +1211,6 @@ MO.FEaiChartMktMarketerTimeline_onPaintBegin = function FEaiChartMktMarketerTime
       }
    }
    o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
-   o.drawTrend(graphic, '_redemption', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#0088FF', '#0000FF');
    startTime.date.setTime(bakTime);
    startTime.refresh();
    var lastHour = -1;
@@ -1321,21 +1242,17 @@ MO.FEaiChartMktMarketerTimeline_onPaintBegin = function FEaiChartMktMarketerTime
    var textWidth = graphic.textWidth('投资总计：');
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
    var investmentTotalWidth = graphic.textWidth(investmentTotalText);
-   var redemptionTotalText = MO.Lang.Float.unitFormat(trendInfo.redemptionTotal(), 0, 0, 2, 0, 10000, '万');
-   var redemptionTotalWidth = graphic.textWidth(redemptionTotalText);
-   var netinvestmentTotalText = MO.Lang.Float.unitFormat(trendInfo.netinvestmentTotal(), 0, 0, 2, 0, 10000, '万');
-   var netinvestmentTotalWidth = graphic.textWidth(netinvestmentTotalText);
-   var interestTotalText = MO.Lang.Float.unitFormat(trendInfo.interestTotal(), 0, 0, 2, 0, 10000, '万');
-   var interestTotalWidth = graphic.textWidth(interestTotalText);
-   var maxWidth = Math.max(Math.max(Math.max(investmentTotalWidth, redemptionTotalWidth), netinvestmentTotalWidth), interestTotalWidth);
+   var investmentMaxText = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
+   var investmentMaxWidth = graphic.textWidth(investmentMaxText);
+   var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
+   var investmentAvgWidth = graphic.textWidth(investmentAvgText);
+   var maxWidth =Math.max(investmentTotalWidth);
    graphic.drawText('投资总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
    graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
-   graphic.drawText('赎回总额：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   graphic.drawText(redemptionTotalText, decoLeft + textWidth + maxWidth - redemptionTotalWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
-   graphic.drawText('净投总额：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
-   graphic.drawText(netinvestmentTotalText, decoLeft + textWidth + maxWidth - netinvestmentTotalWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
-   graphic.drawText('利息总额：', decoLeft, rowStart + rowHeight * 3 + 15, '#00CFFF');
-   graphic.drawText(interestTotalText, decoLeft + textWidth + maxWidth - interestTotalWidth, rowStart + rowHeight * 3 + 15, '#00B5F6');
+   graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
+   graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
+   graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
+   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
    startTime.date.setTime(bakTime);
    startTime.refresh();
 }

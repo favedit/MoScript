@@ -76,6 +76,7 @@ MO.FEditorDsPropertyForm_onBuilded = function FEditorDsPropertyForm_onBuilded(ev
    // 注册按键监听
    var buttons = new MO.TObjects();
    o.searchComponents(buttons, MO.MUiToolButton);
+   o.searchComponents(buttons, MO.MUiMenuButton);
    var count = buttons.count();
    for(var i = 0; i < count; i++){
       var button = buttons.at(i);

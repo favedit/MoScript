@@ -560,14 +560,13 @@ MO.FDuiTreeNode_removeSelf = function FDuiTreeNode_removeSelf(){
    var o = this;
    o._statusSelected = false;
    if(o._statusLinked){
-      var tree = o._tree;
       o.removeChildren();
       var parent = o._parent;
       if(MO.Class.isClass(parent, MO.FDuiTreeNode)){
          parent.remove(o);
          parent.calculateImage();
       }
-      tree.freeNode(o);
+      o._tree.freeNode(o);
    }
 }
 MO.FDuiTreeNode_removeChildren = function FDuiTreeNode_removeChildren(){

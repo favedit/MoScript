@@ -22,8 +22,6 @@ MO.FEditorDsCatalogContent = function FEditorDsCatalogContent(o){
    // @method
    o.construct      = MO.FEditorDsCatalogContent_construct;
    // @method
-   o.loadDefine     = MO.FEditorDsCatalogContent_loadDefine;
-   // @method
    o.dispose        = MO.FEditorDsCatalogContent_dispose;
    return o;
 }

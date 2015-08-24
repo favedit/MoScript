@@ -56,13 +56,6 @@ MO.FEditorDsPersistenceFrameSet_onBuilded = function FEditorDsPersistenceFrameSe
    //control.addSelectedListener(o, o.selectObject);
    o._frameCatalogContent.push(control);
    //..........................................................
-   // 设置属性工具栏
-   //var control = o._propertyToolbar = MO.Class.create(MO.FEditorDsPersistencePropertyToolBar);
-   //control._workspace = o._workspace;
-   //control._frameSet = o;
-   //control.buildDefine(event);
-   //o._framePropertyToolBar.push(control);
-   //..........................................................
    // 设置标题
    MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '持久化目录');
 }

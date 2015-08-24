@@ -7,7 +7,6 @@ MO.FEditorDsCatalogContent = function FEditorDsCatalogContent(o){
    o.onDefineLoad   = MO.FEditorDsCatalogContent_onDefineLoad;
    o.onNodeClick    = MO.FEditorDsCatalogContent_onNodeClick;
    o.construct      = MO.FEditorDsCatalogContent_construct;
-   o.loadDefine     = MO.FEditorDsCatalogContent_loadDefine;
    o.dispose        = MO.FEditorDsCatalogContent_dispose;
    return o;
 }
@@ -55,6 +54,42 @@ MO.FEditorDsCatalogContent_construct = function FEditorDsCatalogContent_construc
 MO.FEditorDsCatalogContent_dispose = function FEditorDsCatalogContent_dispose(){
    var o = this;
    o.__base.FDuiDataTreeView.dispose.call(o);
+}
+MO.FEditorDsCatalogToolBar = function FEditorDsCatalogToolBar(o){
+   o = MO.Class.inherits(this, o, MO.FDuiToolBar);
+   o._listFrameName = null;
+   o.onSearchClick  = MO.FEditorDsCatalogToolBar_onSearchClick;
+   o.onRefreshClick = MO.FEditorDsCatalogToolBar_onRefreshClick;
+   o.onListClick    = MO.FEditorDsCatalogToolBar_onListClick;
+   o.onBuilded      = MO.FEditorDsCatalogToolBar_onBuilded;
+   o.construct      = MO.FEditorDsCatalogToolBar_construct;
+   o.dispose        = MO.FEditorDsCatalogToolBar_dispose;
+   return o;
+}
+MO.FEditorDsCatalogToolBar_onSearchClick = function FEditorDsCatalogToolBar_onSearchClick(event){
+}
+MO.FEditorDsCatalogToolBar_onRefreshClick = function FEditorDsCatalogToolBar_onRefreshClick(event){
+   var o = this;
+   var catalog = o._frameSet._catalogContent;
+   catalog.reloadNode();
+}
+MO.FEditorDsCatalogToolBar_onListClick = function FEditorDsCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject(o._listFrameName);
+}
+MO.FEditorDsCatalogToolBar_onBuilded = function FEditorDsCatalogToolBar_onBuilded(p){
+   var o = this;
+   o.__base.FDuiToolBar.onBuilded.call(o, p);
+   o._controlSearch.addClickListener(o, o.onSearchClick);
+   o._controlRefresh.addClickListener(o, o.onRefreshClick);
+   o._controlList.addClickListener(o, o.onListClick);
+}
+MO.FEditorDsCatalogToolBar_construct = function FEditorDsCatalogToolBar_construct(){
+   var o = this;
+   o.__base.FDuiToolBar.construct.call(o);
+}
+MO.FEditorDsCatalogToolBar_dispose = function FEditorDsCatalogToolBar_dispose(){
+   var o = this;
+   o.__base.FDuiToolBar.dispose.call(o);
 }
 MO.FEditorDsFrameSet = function FEditorDsFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FEditorFrameSet);
@@ -107,41 +142,6 @@ MO.FEditorDsFrameSet_dispose = function FEditorDsFrameSet_dispose(){
    var o = this;
    o.__base.FEditorFrameSet.dispose.call(o);
 }
-MO.FEditorDsMenuBar = function FEditorDsMenuBar(o){
-   o = MO.Class.inherits(this, o, MO.FDuiMenuBar);
-   o.onCreateClick = MO.FEditorDsMenuBar_onCreateClick;
-   o.onUpdateClick = MO.FEditorDsMenuBar_onUpdateClick;
-   o.onDeleteClick = MO.FEditorDsMenuBar_onDeleteClick;
-   return o;
-}
-MO.FEditorDsMenuBar_onCreateClick = function FEditorDsMenuBar_onCreateClick(event){
-   var o = this;
-   var button = event.sender;
-   var componentType = button.attributeGet('component_type');
-   var propertyFrame = button.attributeGet('property_frame');
-   var frame = o._frameSet.selectPropertyFrame(propertyFrame);
-   frame.dataPrepare();
-   frame.searchComponent('componentType').set(componentType);
-}
-MO.FEditorDsMenuBar_onUpdateClick = function FEditorDsMenuBar_onUpdateClick(event){
-   var o = this;
-   var frame = o._frameSet.activePropertyFrame();
-   if(frame){
-      frame.save();
-   }else{
-      alert('请选择项目。');
-   }
-}
-MO.FEditorDsMenuBar_onDeleteClick = function FEditorDsMenuBar_onDeleteClick(event){
-   var o = this;
-   var frame = o._frameSet.activePropertyFrame();
-   if(frame){
-      frame.dataDelete();
-      frame.save();
-   }else{
-      alert('请选择项目。');
-   }
-}
 MO.FEditorDsPropertyForm = function FEditorDsPropertyForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiForm);
    o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
@@ -187,6 +187,7 @@ MO.FEditorDsPropertyForm_onBuilded = function FEditorDsPropertyForm_onBuilded(ev
    o.__base.FDuiForm.onBuilded.call(o, event);
    var buttons = new MO.TObjects();
    o.searchComponents(buttons, MO.MUiToolButton);
+   o.searchComponents(buttons, MO.MUiMenuButton);
    var count = buttons.count();
    for(var i = 0; i < count; i++){
       var button = buttons.at(i);
@@ -417,40 +418,17 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
       if(name == MO.EEditorFrameSet.PersistenceFrameSet){
-         var menuBar = MO.Class.create(MO.FEditorDsPersistenceMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsPersistenceFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
       }else if(name == MO.EEditorFrameSet.ListFrameSet){
-         var menuBar = MO.Class.create(MO.FEditorDsListMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsListFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
       }else if(name == MO.EEditorFrameSet.TreeFrameSet){
-         var menuBar = MO.Class.create(MO.FEditorDsTreeMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsTreeFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
       }else if(name == MO.EEditorFrameSet.FrameFrameSet){
-         var menuBar = MO.Class.create(MO.FEditorDsFrameMenuBar);
-         menuBar._workspace = o;
-         menuBar.buildDefine(o._hPanel);
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsFrameFrameSet);
-         frameSet._workspace = o;
-         frameSet._menuBar = menuBar;
-         menuBar._frameSet = frameSet;
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
+      frameSet._workspace = o;
       o._frameSets.set(name, frameSet);
    }
    var activeFrameSet = o._activeFrameSet;

@@ -237,19 +237,6 @@ MO.FEditorDsFrameFrameSet_dispose = function FEditorDsFrameFrameSet_dispose(){
    var o = this;
    o.__base.FEditorDsFrameSet.dispose.call(o);
 }
-MO.FEditorDsFrameMenuBar = function FEditorDsFrameMenuBar(o){
-   o = MO.Class.inherits(this, o, MO.FEditorDsMenuBar);
-   o._frameName = 'editor.design.frame.MenuBar';
-   o.onBuilded  = MO.FEditorDsFrameMenuBar_onBuilded;
-   return o;
-}
-MO.FEditorDsFrameMenuBar_onBuilded = function FEditorDsFrameMenuBar_onBuilded(event){
-   var o = this;
-   o.__base.FEditorDsMenuBar.onBuilded.call(o, event);
-   o._controlCreate.addClickListener(o, o.onCreateClick);
-   o._controlUpdate.addClickListener(o, o.onUpdateClick);
-   o._controlDelete.addClickListener(o, o.onDeleteClick);
-}
 MO.FEditorDsFramePictureProperty = function FEditorDsFramePictureProperty(o){
    o = MO.Class.inherits(this, o, MO.FDsSystemFrameControlProperty);
    o._activeSpace      = null;
@@ -280,35 +267,6 @@ MO.FEditorDsFramePictureProperty_loadObject = function FEditorDsFramePictureProp
 MO.FEditorDsFramePictureProperty_dispose = function FEditorDsFramePictureProperty_dispose(){
    var o = this;
    o.__base.FDsSystemFrameControlProperty.dispose.call(o);
-}
-MO.FEditorDsFramePropertyToolBar = function FEditorDsFramePropertyToolBar(o){
-   o = MO.Class.inherits(this, o, MO.FDuiToolBar);
-   o._frameName           = 'editor.design.frame.PropertyToolBar';
-   o._controlInsertButton = null;
-   o._controlUpdateButton = null;
-   o._controlDeleteButton = null;
-   o.onBuilded            = MO.FEditorDsFramePropertyToolBar_onBuilded;
-   o.onUpdateClick        = MO.FEditorDsFramePropertyToolBar_onUpdateClick;
-   o.construct            = MO.FEditorDsFramePropertyToolBar_construct;
-   o.dispose              = MO.FEditorDsFramePropertyToolBar_dispose;
-   return o;
-}
-MO.FEditorDsFramePropertyToolBar_onBuilded = function FEditorDsFramePropertyToolBar_onBuilded(p){
-   var o = this;
-   o.__base.FDuiToolBar.onBuilded.call(o, p);
-}
-MO.FEditorDsFramePropertyToolBar_onUpdateClick = function FEditorDsFramePropertyToolBar_onUpdateClick(event){
-   var o = this;
-   var guid = o._workspace._activeProjectGuid;
-   window.location = 'Project.wa?do=detail&guid=' + guid;
-}
-MO.FEditorDsFramePropertyToolBar_construct = function FEditorDsFramePropertyToolBar_construct(){
-   var o = this;
-   o.__base.FDuiToolBar.construct.call(o);
-}
-MO.FEditorDsFramePropertyToolBar_dispose = function FEditorDsFramePropertyToolBar_dispose(){
-   var o = this;
-   o.__base.FDuiToolBar.dispose.call(o);
 }
 MO.FEditorDsFramePropertyToolBarForm = function FEditorDsFramePropertyToolBarForm(o){
    o = MO.Class.inherits(this, o, MO.FEditorDsPropertyForm);

@@ -863,7 +863,6 @@ MO.FDuiTreeNode_removeSelf = function FDuiTreeNode_removeSelf(){
    o._statusSelected = false;
    // 取消关联
    if(o._statusLinked){
-      var tree = o._tree;
       // 删除所有子节点
       o.removeChildren();
       // 父节点刷新
@@ -873,7 +872,7 @@ MO.FDuiTreeNode_removeSelf = function FDuiTreeNode_removeSelf(){
          parent.calculateImage();
       }
       // 删除自己
-      tree.freeNode(o);
+      o._tree.freeNode(o);
    }
 }
 

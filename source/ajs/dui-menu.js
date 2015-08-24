@@ -104,7 +104,6 @@ MO.FDuiMenuButton_onBuild = function FDuiMenuButton_onBuild(event){
       o.setLabel(o._label);
    }
    if(o._hotkey){
-      MO.Console.find(MO.FKeyConsole).register(o._hotkey, o, o.onMouseDown);
    }
    if(o._hint){
       o.setHint(o._hint);
@@ -324,7 +323,7 @@ MO.FDuiMenuButtonMenu_dispose = function FDuiMenuButtonMenu_dispose(){
    o.hLabel = null;
 }
 MO.FDuiMenuButtonSplit = function FDuiMenuButtonSplit(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiMenuButton);
+   o = MO.Class.inherits(this, o, MO.FDuiControl);
    o._stylePanelHorizontal = MO.Class.register(o, new MO.AStyle('_stylePanelHorizontal'));
    o._stylePanelVertical   = MO.Class.register(o, new MO.AStyle('_stylePanelVertical'));
    o.onBuild               = MO.FDuiMenuButtonSplit_onBuild;
