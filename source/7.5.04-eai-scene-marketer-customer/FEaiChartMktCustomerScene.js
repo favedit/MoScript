@@ -19,8 +19,6 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    o._playing = false;
    o._lastTick = 0;
    o._interval = 10;
-   o._24HLastTick = 0;
-   o._24HTrendInterval = 1000 * 60 * 5;
    // @attribute
    o._logoBar = null;
    o._timeline = null;
@@ -32,6 +30,7 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartMktCustomerScene_onInvestmentDataChanged;
+   o.on24HDataChanged = MO.FEaiChartMktCustomerScene_on24HDataChanged;
    o.onOperationVisibility = MO.FEaiChartMktCustomerScene_onOperationVisibility;
    o.onProcessReady = MO.FEaiChartMktCustomerScene_onProcessReady;
    o.onProcess = MO.FEaiChartMktCustomerScene_onProcess;
@@ -46,6 +45,22 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    // @method
    o.processResize = MO.FEaiChartMktCustomerScene_processResize;
    return o;
+}
+
+//==========================================================
+// <T>24小时曲线数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartMktCustomerScene_on24HDataChanged = function FEaiChartMktCustomerScene_on24HDataChanged(event) {
+   var o = this;
+   // 设置表格数据
+   var timeline = o._timeline;
+   timeline.startTime().assign(event.beginDate);
+   timeline.endTime().assign(event.endDate);
+   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   timeline.dirty();
 }
 
 //==========================================================
@@ -153,13 +168,6 @@ MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onPr
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
-      //..........................................................
-      // 刷新时间
-      var currentTick = MO.Timer.current();
-      if (currentTick - o._24HLastTick > o._24HTrendInterval) {
-         o._timeline.sync();
-         o._24HLastTick = currentTick;
-      }
       // 投资处理
       o._processor.process();
       //..........................................................
@@ -229,6 +237,7 @@ MO.FEaiChartMktCustomerScene_setup = function FEaiChartMktCustomerScene_setup() 
    invement.setMapEntity(o._mapEntity);
    invement.setup();
    invement.addDataChangedListener(o, o.onInvestmentDataChanged);
+   invement.add24HDataChangedListener(o, o.on24HDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
@@ -238,7 +247,6 @@ MO.FEaiChartMktCustomerScene_setup = function FEaiChartMktCustomerScene_setup() 
    var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktCustomerTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
-   timeline.sync();
    timeline.build();
    o._guiManager.register(timeline);
    //..........................................................

@@ -11,9 +11,9 @@ MO.FEaiChartMktCustomerTimeline = function FEaiChartMktCustomerTimeline(o) {
    // @attribute
    o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
    o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
+   o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
    o._ready = false;
    o._investmentTotal = 0;
-   o._intervalMiniute = 10;
    // @attribute
    o._baseHeight = 5;
    o._degreeLineHeight = MO.Class.register(o, new MO.AGetSet('_degreeLineHeight'), 10);
@@ -48,47 +48,6 @@ MO.FEaiChartMktCustomerTimeline_construct = function FEaiChartMktCustomerTimelin
 }
 
 //==========================================================
-// <T>更新时间。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMktCustomerTimeline_sync = function FEaiChartMktCustomerTimeline_sync() {
-   var o = this;
-   if (!o._ready) {
-      return;
-   }
-   var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
-   if (!systemLogic.testReady()) {
-      return;
-   }
-   var currentDate = systemLogic.currentDate();
-   currentDate.truncMinute(o._intervalMiniute);
-   // 设置开始时间
-   var startTime = o._startTime;
-   startTime.assign(currentDate);
-   startTime.addDay(-1);
-   // 设置结束时间
-   var endTime = o._endTime;
-   endTime.assign(currentDate);
-   // 发送数据
-   var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-   statisticsLogic.marketer().doCustomerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
-}
-
-//==========================================================
-// <T>前绘制处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMktCustomerTimeline_on24HDataFetch = function FEaiChartMktCustomerTimeline_on24HDataFetch(event) {
-   var o = this;
-   // 读取数据
-   o._trendInfo.unserializeSignBuffer(event.sign, event.content, true);
-   // 脏处理
-   o.dirty();
-}
-
-//==========================================================
 // <T>更新处理。</T>
 //
 // @method
@@ -104,7 +63,6 @@ MO.FEaiChartMktCustomerTimeline_oeUpdate = function FEaiChartMktCustomerTimeline
    var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
    if (systemLogic.testReady()) {
       o._ready = true;
-      o.sync();
    }
    return MO.EEventStatus.Stop;
 }
