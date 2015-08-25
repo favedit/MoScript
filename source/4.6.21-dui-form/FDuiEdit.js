@@ -42,7 +42,7 @@ MO.FDuiEdit = function FDuiEdit(o){
    // @method
    o.get                   = MO.FDuiEdit_get;
    o.set                   = MO.FDuiEdit_set;
-   o.setEditAble           = MO.FDuiEdit_setEditAble;
+   // @method
    o.refreshValue          = MO.FDuiEdit_refreshValue;
    o.refreshStyle          = MO.FDuiEdit_refreshStyle;
    // @method
@@ -159,24 +159,6 @@ MO.FDuiEdit_set = function FDuiEdit_set(value){
    o._hInput.value = text;
    // 设置修改状态
    o.changeSet(false);
-}
-
-//==========================================================
-// <T>设置编辑对象的可编辑性。</T>
-//
-// @method
-// @param flag:Boolean 可编辑性
-//==========================================================
-MO.FDuiEdit_setEditAble = function FDuiEdit_setEditAble(flag){
-   var o = this;
-   o.__base.FDuiEditControl.setEditAble.call(o, flag);
-   // 设置属性
-   o._hInput.readOnly = !flag;
-   //if(flag){
-   //}else{
-   //   o._hInput.style.backgroundColor = EUiColor.ReadonlyBackgroundColor;
-   //   o._hValuePanel.style.backgroundColor = EUiColor.ReadonlyBackgroundColor;
-   //}
 }
 
 //==========================================================

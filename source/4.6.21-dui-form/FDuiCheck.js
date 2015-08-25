@@ -20,20 +20,17 @@ MO.FDuiCheck = function FDuiCheck(o){
    o.onBuildEditValue      = MO.FDuiCheck_onBuildEditValue;
    o.onInputClick          = MO.Class.register(o, new MO.AEventClick('onInputClick'), MO.FDuiCheck_onInputClick);
    //..........................................................
-   // @process
-   o.oeSaveValue           = MO.FDuiCheck_oeSaveValue;
-   //..........................................................
    // @method
    o.construct             = MO.FDuiCheck_construct;
    // @method
-   o.formatLoad            = MO.FDuiCheck_formatLoad;
-   o.formatSave            = MO.FDuiCheck_formatSave;
-   // @method
    o.get                   = MO.FDuiCheck_get;
    o.set                   = MO.FDuiCheck_set;
+   o.text                  = MO.FDuiCheck_text;
    // @method
    o.refreshValue          = MO.FDuiCheck_refreshValue;
    o.refreshStyle          = MO.FDuiCheck_refreshStyle;
+   // @method
+   o.dispose               = MO.FDuiCheck_dispose;
    return o;
 }
 
@@ -47,6 +44,7 @@ MO.FDuiCheck_onBuildEditValue = function FDuiCheck_onBuildEditValue(p){
    var o = this;
    // 建立编辑控件
    var hInput = o._hInput = MO.Window.Builder.appendCheck(o._hValuePanel);
+   hInput.style.cursor = 'hand';
    o.attachEvent('onInputClick', hInput);
 }
 
@@ -58,24 +56,6 @@ MO.FDuiCheck_onBuildEditValue = function FDuiCheck_onBuildEditValue(p){
 //==========================================================
 MO.FDuiCheck_onInputClick = function FDuiCheck_onInputClick(p){
    this.refreshValue();
-}
-
-//==========================================================
-// <T>存储内容。</T>
-//
-// @method
-// @param event:TEvent 事件对象
-//==========================================================
-MO.FDuiCheck_oeSaveValue = function FDuiCheck_oeSaveValue(event){
-   var o = this;
-   // 数据准备模式
-   if(MO.EStore.Prepare == event.store){
-      if(MO.Lang.Boolean.isTrue(o.reget())){
-         event.values.set(o.dataName, EBoolean.True);
-      }
-      return MO.EEventStatus.Stop;
-   }
-   return o.base.FDuiEditControl.oeSaveValue.call(o, event);
 }
 
 //==========================================================
@@ -92,37 +72,15 @@ MO.FDuiCheck_construct = function FDuiCheck_construct(){
 }
 
 //==========================================================
-// <T>格式化控件数据到存储内容。</T>
-//
-// @method
-// @param value:String 控件数据
-// @return Object 存储内容
-//==========================================================
-MO.FDuiCheck_formatLoad = function FDuiCheck_formatLoad(value){
-   var o = this;
-   return (value == o._valueTrue);
-}
-
-//==========================================================
-// <T>格式化存储内容到控件数据。</T>
-//
-// @method
-// @param value:Object 控件数据
-// @return String 存储内容
-//==========================================================
-MO.FDuiCheck_formatSave = function FDuiCheck_formatSave(value){
-   var o = this;
-   return MO.Lang.Boolean.toString(value, o._valueTrue, o._valueFalse);
-}
-
-//==========================================================
 // <T>获得数据。</T>
 //
 // @method
 // @return String 数据
 //==========================================================
 MO.FDuiCheck_get = function FDuiCheck_get(){
-   return this._hInput.checked;
+   var o = this;
+   var value = o._hInput.checked;
+   return value;
 }
 
 //==========================================================
@@ -132,7 +90,27 @@ MO.FDuiCheck_get = function FDuiCheck_get(){
 // @param value:String 数据
 //==========================================================
 MO.FDuiCheck_set = function FDuiCheck_set(value){
-   this._hInput.checked = value;
+   var o = this;
+   var dataValue = MO.Lang.Boolean.parse(value);
+   // 设置数据
+   o._dataValue = dataValue;
+   // 设置显示
+   o._hInput.checked = dataValue;
+   // 设置修改状态
+   o.changeSet(false);
+}
+
+//==========================================================
+// <T>获得文本内容。</T>
+//
+// @method
+// @return String 显示内容
+//==========================================================
+MO.FDuiCheck_text = function FDuiCheck_text(){
+   var o = this;
+   var value = this.get();
+   var text = MO.Lang.Boolean.toString(value, o._valueTrue, o._valueFalse);
+   return text;
 }
 
 //==========================================================
@@ -156,4 +134,17 @@ MO.FDuiCheck_refreshStyle = function FDuiCheck_refreshStyle(){
    o.__base.FDuiEditControl.refreshStyle.call(o);
    // 设置编辑样式
    o._hInput.readOnly = !o._statusValueEdit;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiCheck_dispose = function FDuiCheck_dispose(){
+   var o = this
+   // 释放属性
+   o._inputSize = MO.Lang.Object.dispose(o._inputSize);
+   // 父处理
+   o.__base.FDuiEditControl.dispose.call(o);
 }

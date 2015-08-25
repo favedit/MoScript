@@ -35960,10 +35960,14 @@ MO.EUiMode = new function EUiMode(){
    var o = this;
    MO.TEnum.call(o);
    o.View   = 'V';
-   o.Design = 'S';
    o.Insert = 'I';
    o.Update = 'U';
    o.Delete = 'D';
+   o.Search = 'S';
+   o.Picker = 'P';
+   o.Zoom   = 'Z';
+   o.Design = 'G';
+   o.Print  = 'R';
    return o;
 }
 MO.EPanel = new function EPanel(){

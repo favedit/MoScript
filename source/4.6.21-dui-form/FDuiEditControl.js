@@ -92,9 +92,10 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    // @method
    o.construct               = MO.FDuiEditControl_construct;
    // @method
+   o.calculateValueRectangle = MO.FDuiEditControl_calculateValueRectangle;
    o.panel                   = MO.FDuiEditControl_panel;
    o.setLabel                = MO.FDuiEditControl_setLabel;
-   o.calculateValueRectangle = MO.FDuiEditControl_calculateValueRectangle;
+   o.setEditAble             = MO.FDuiEditControl_setEditAble;
    o.refreshStyle            = MO.FDuiEditControl_refreshStyle;
    // @method
    o.dispose                 = MO.FDuiEditControl_dispose;
@@ -423,7 +424,9 @@ MO.FDuiEditControl_oeSaveUnit = function FDuiEditControl_oeSaveUnit(event){
    var dataName = o._dataName;
    if(!MO.Lang.String.isEmpty(dataName)){
       var text = o.text();
-      unit.set(dataName, text)
+      if(!MO.Lang.String.isEmpty(text)){
+         unit.set(dataName, text)
+      }
    }
    return MO.EEventStatus.Stop;
 }
@@ -473,6 +476,20 @@ MO.FDuiEditControl_setLabel = function FDuiEditControl_setLabel(value){
    if(o._hText){
       o._hText.innerHTML = MO.Lang.String.nvl(value);
    }
+}
+
+//==========================================================
+// <T>设置编辑对象的可编辑性。</T>
+//
+// @method
+// @param flag:Boolean 可编辑性
+//==========================================================
+MO.FDuiEditControl_setEditAble = function FDuiEditControl_setEditAble(value){
+   var o = this;
+   o.__base.FDuiControl.setEditAble.call(o, value);
+   // 设置属性
+   o._statusValueEdit = value;
+   o.refreshStyle();
 }
 
 //==========================================================

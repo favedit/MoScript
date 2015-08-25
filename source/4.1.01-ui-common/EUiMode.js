@@ -10,9 +10,13 @@ MO.EUiMode = new function EUiMode(){
    MO.TEnum.call(o);
    // @member
    o.View   = 'V';
-   o.Design = 'S';
    o.Insert = 'I';
    o.Update = 'U';
    o.Delete = 'D';
+   o.Search = 'S';
+   o.Picker = 'P';
+   o.Zoom   = 'Z';
+   o.Design = 'G';
+   o.Print  = 'R';
    return o;
 }

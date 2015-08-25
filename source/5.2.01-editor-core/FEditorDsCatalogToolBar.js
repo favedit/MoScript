@@ -53,7 +53,8 @@ MO.FEditorDsCatalogToolBar_onRefreshClick = function FEditorDsCatalogToolBar_onR
 // @param event:SEvent 事件信息
 //==========================================================
 MO.FEditorDsCatalogToolBar_onListClick = function FEditorDsCatalogToolBar_onListClick(event){
-   this._frameSet.selectObject(o._listFrameName);
+   var o = this;
+   o._frameSet.selectObject(o._listFrameName);
 }
 
 //==========================================================

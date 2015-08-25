@@ -1366,52 +1366,46 @@ MO.FDuiCheck = function FDuiCheck(o){
    o._hInput               = null;
    o.onBuildEditValue      = MO.FDuiCheck_onBuildEditValue;
    o.onInputClick          = MO.Class.register(o, new MO.AEventClick('onInputClick'), MO.FDuiCheck_onInputClick);
-   o.oeSaveValue           = MO.FDuiCheck_oeSaveValue;
    o.construct             = MO.FDuiCheck_construct;
-   o.formatLoad            = MO.FDuiCheck_formatLoad;
-   o.formatSave            = MO.FDuiCheck_formatSave;
    o.get                   = MO.FDuiCheck_get;
    o.set                   = MO.FDuiCheck_set;
+   o.text                  = MO.FDuiCheck_text;
    o.refreshValue          = MO.FDuiCheck_refreshValue;
    o.refreshStyle          = MO.FDuiCheck_refreshStyle;
+   o.dispose               = MO.FDuiCheck_dispose;
    return o;
 }
 MO.FDuiCheck_onBuildEditValue = function FDuiCheck_onBuildEditValue(p){
    var o = this;
    var hInput = o._hInput = MO.Window.Builder.appendCheck(o._hValuePanel);
+   hInput.style.cursor = 'hand';
    o.attachEvent('onInputClick', hInput);
 }
 MO.FDuiCheck_onInputClick = function FDuiCheck_onInputClick(p){
    this.refreshValue();
-}
-MO.FDuiCheck_oeSaveValue = function FDuiCheck_oeSaveValue(event){
-   var o = this;
-   if(MO.EStore.Prepare == event.store){
-      if(MO.Lang.Boolean.isTrue(o.reget())){
-         event.values.set(o.dataName, EBoolean.True);
-      }
-      return MO.EEventStatus.Stop;
-   }
-   return o.base.FDuiEditControl.oeSaveValue.call(o, event);
 }
 MO.FDuiCheck_construct = function FDuiCheck_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
    o._editSize.set(60, 20);
 }
-MO.FDuiCheck_formatLoad = function FDuiCheck_formatLoad(value){
-   var o = this;
-   return (value == o._valueTrue);
-}
-MO.FDuiCheck_formatSave = function FDuiCheck_formatSave(value){
-   var o = this;
-   return MO.Lang.Boolean.toString(value, o._valueTrue, o._valueFalse);
-}
 MO.FDuiCheck_get = function FDuiCheck_get(){
-   return this._hInput.checked;
+   var o = this;
+   var value = o._hInput.checked;
+   return value;
 }
 MO.FDuiCheck_set = function FDuiCheck_set(value){
-   this._hInput.checked = value;
+   var o = this;
+   var dataValue = MO.Lang.Boolean.parse(value);
+   o._dataValue = dataValue;
+   o._hInput.checked = dataValue;
+   o.changeSet(false);
+}
+MO.FDuiCheck_text = function FDuiCheck_text(){
+   var o = this;
+   var value = this.get();
+   var text = MO.Lang.Boolean.toString(value, o._valueTrue, o._valueFalse);
+   return text;
 }
 MO.FDuiCheck_refreshValue = function FDuiCheck_refreshValue(){
    var o = this;
@@ -1421,6 +1415,11 @@ MO.FDuiCheck_refreshStyle = function FDuiCheck_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
    o._hInput.readOnly = !o._statusValueEdit;
+}
+MO.FDuiCheck_dispose = function FDuiCheck_dispose(){
+   var o = this
+   o._inputSize = MO.Lang.Object.dispose(o._inputSize);
+   o.__base.FDuiEditControl.dispose.call(o);
 }
 MO.FDuiCheckPicker = function FDuiCheckPicker(o){
    o = MO.Class.inherits(this, o, MO.FEditControl, MO.MEditBorder, MO.MDescCheckPicker, MO.MDropable);
@@ -3163,7 +3162,6 @@ MO.FDuiEdit = function FDuiEdit(o){
    o.formatValue           = MO.FDuiEdit_formatValue;
    o.get                   = MO.FDuiEdit_get;
    o.set                   = MO.FDuiEdit_set;
-   o.setEditAble           = MO.FDuiEdit_setEditAble;
    o.refreshValue          = MO.FDuiEdit_refreshValue;
    o.refreshStyle          = MO.FDuiEdit_refreshStyle;
    o.dispose               = MO.FDuiEdit_dispose;
@@ -3214,11 +3212,6 @@ MO.FDuiEdit_set = function FDuiEdit_set(value){
    var text = MO.Lang.String.nvl(value);
    o._hInput.value = text;
    o.changeSet(false);
-}
-MO.FDuiEdit_setEditAble = function FDuiEdit_setEditAble(flag){
-   var o = this;
-   o.__base.FDuiEditControl.setEditAble.call(o, flag);
-   o._hInput.readOnly = !flag;
 }
 MO.FDuiEdit_refreshValue = function FDuiEdit_refreshValue(){
    var o = this;
@@ -3292,9 +3285,10 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    o.oeLoadUnit              = MO.FDuiEditControl_oeLoadUnit;
    o.oeSaveUnit              = MO.FDuiEditControl_oeSaveUnit;
    o.construct               = MO.FDuiEditControl_construct;
+   o.calculateValueRectangle = MO.FDuiEditControl_calculateValueRectangle;
    o.panel                   = MO.FDuiEditControl_panel;
    o.setLabel                = MO.FDuiEditControl_setLabel;
-   o.calculateValueRectangle = MO.FDuiEditControl_calculateValueRectangle;
+   o.setEditAble             = MO.FDuiEditControl_setEditAble;
    o.refreshStyle            = MO.FDuiEditControl_refreshStyle;
    o.dispose                 = MO.FDuiEditControl_dispose;
    return o;
@@ -3431,7 +3425,9 @@ MO.FDuiEditControl_oeSaveUnit = function FDuiEditControl_oeSaveUnit(event){
    var dataName = o._dataName;
    if(!MO.Lang.String.isEmpty(dataName)){
       var text = o.text();
-      unit.set(dataName, text)
+      if(!MO.Lang.String.isEmpty(text)){
+         unit.set(dataName, text)
+      }
    }
    return MO.EEventStatus.Stop;
 }
@@ -3458,6 +3454,12 @@ MO.FDuiEditControl_setLabel = function FDuiEditControl_setLabel(value){
    if(o._hText){
       o._hText.innerHTML = MO.Lang.String.nvl(value);
    }
+}
+MO.FDuiEditControl_setEditAble = function FDuiEditControl_setEditAble(value){
+   var o = this;
+   o.__base.FDuiControl.setEditAble.call(o, value);
+   o._statusValueEdit = value;
+   o.refreshStyle();
 }
 MO.FDuiEditControl_calculateValueRectangle = function FDuiEditControl_calculateValueRectangle(rectangle){
    var o = this;
@@ -4981,6 +4983,7 @@ MO.FDuiMemo = function FDuiMemo(o){
    o.set                   = MO.FDuiMemo_set;
    o.refreshValue          = MO.FDuiMemo_refreshValue;
    o.refreshStyle          = MO.FDuiMemo_refreshStyle;
+   o.dispose               = MO.FDuiMemo_dispose;
    return o;
 }
 MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(p){
@@ -5010,7 +5013,7 @@ MO.FDuiMemo_onInputEdit = function FDuiMemo_onInputEdit(p){
 MO.FDuiMemo_construct = function FDuiMemo_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
-   o._inputSize = new MO.SSize2(120, 0);
+   o._inputSize = new MO.SSize2(0, 0);
 }
 MO.FDuiMemo_formatDisplay = function FDuiMemo_formatDisplay(value){
    var o = this;
@@ -5023,14 +5026,15 @@ MO.FDuiMemo_formatValue = function FDuiMemo_formatValue(value){
 }
 MO.FDuiMemo_get = function FDuiMemo_get(){
    var o = this;
-   o.__base.FDuiEditControl.get.call(o);
    var value = o._hInput.value;
    return value;
 }
 MO.FDuiMemo_set = function FDuiMemo_set(value){
    var o = this;
-   o.__base.FDuiEditControl.set.call(o, value);
-   o._hInput.value = MO.Lang.String.nvl(value);
+   o._dataValue = value;
+   var text = MO.Lang.String.nvl(value);
+   o._hInput.value = text;
+   o.changeSet(false);
 }
 MO.FDuiMemo_refreshValue = function FDuiMemo_refreshValue(){
    var o = this;
@@ -5052,6 +5056,11 @@ MO.FDuiMemo_refreshStyle = function FDuiMemo_refreshStyle(){
    }
    hInput.className = o.styleName(inputStyle);
    hInput.readOnly = !o._statusValueEdit;
+}
+MO.FDuiMemo_dispose = function FDuiMemo_dispose(){
+   var o = this
+   o._inputSize = MO.Lang.Object.dispose(o._inputSize);
+   o.__base.FDuiEditControl.dispose.call(o);
 }
 MO.FDuiNumber = function FDuiNumber(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyNumber);

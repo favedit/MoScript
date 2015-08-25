@@ -74,7 +74,8 @@ MO.FEditorDsCatalogToolBar_onRefreshClick = function FEditorDsCatalogToolBar_onR
    catalog.reloadNode();
 }
 MO.FEditorDsCatalogToolBar_onListClick = function FEditorDsCatalogToolBar_onListClick(event){
-   this._frameSet.selectObject(o._listFrameName);
+   var o = this;
+   o._frameSet.selectObject(o._listFrameName);
 }
 MO.FEditorDsCatalogToolBar_onBuilded = function FEditorDsCatalogToolBar_onBuilded(p){
    var o = this;

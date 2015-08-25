@@ -8,14 +8,15 @@ MO.MDuiDisplay = function MDuiDisplay(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
-   o._dispDisplay = MO.Class.register(o, new MO.APtySet(null, '_dispDisplay', 'disp_mode', MO.EDisplayMode.Display, false));
-   o._dispSearch  = MO.Class.register(o, new MO.APtySet(null, '_dispSearch', 'disp_mode', MO.EDisplayMode.Search, false));
-   o._dispInsert  = MO.Class.register(o, new MO.APtySet(null, '_dispInsert', 'disp_mode', MO.EDisplayMode.Insert, false));
-   o._dispUpdate  = MO.Class.register(o, new MO.APtySet(null, '_dispUpdate', 'disp_mode', MO.EDisplayMode.Update, false));
-   o._dispDelete  = MO.Class.register(o, new MO.APtySet(null, '_dispDelete', 'disp_mode', MO.EDisplayMode.Delete, false));
-   o._dispZoom    = MO.Class.register(o, new MO.APtySet(null, '_dispZoom', 'disp_mode', MO.EDisplayMode.Zoom, false));
+   o._displayView   = MO.Class.register(o, new MO.APtySet(null, '_displayView', 'display_mode', MO.EUiMode.View, false));
+   o._displayInsert = MO.Class.register(o, new MO.APtySet(null, '_displayInsert', 'display_mode', MO.EUiMode.Insert, false));
+   o._displayUpdate = MO.Class.register(o, new MO.APtySet(null, '_displayUpdate', 'display_mode', MO.EUiMode.Update, false));
+   o._displayDelete = MO.Class.register(o, new MO.APtySet(null, '_displayDelete', 'display_mode', MO.EUiMode.Delete, false));
+   o._displaySearch = MO.Class.register(o, new MO.APtySet(null, '_dispSearch', 'display_mode', MO.EUiMode.Search, false));
+   o._displayPicker = MO.Class.register(o, new MO.APtySet(null, '_dispSearch', 'display_mode', MO.EUiMode.Picker, false));
+   o._displayZoom   = MO.Class.register(o, new MO.APtySet(null, '_dispZoom', 'display_mode', MO.EUiMode.Zoom, false));
    // @property
-   o._dispAlign   = MO.Class.register(o, new MO.APtyString(null, '_dispAlign', null, MO.EAlign.Left));
+   o._dispAlign     = MO.Class.register(o, new MO.APtyString(null, '_dispAlign', null, MO.EAlign.Left));
    //..........................................................
    // @attribute
    o._visible    = true;
@@ -32,16 +33,16 @@ MO.MDuiDisplay = function MDuiDisplay(o){
 // <T>根据工作模式改变当前控件的显示状态。</T>
 //
 // @method
-// @param e:event:TEvent 事件对象
+// @param event:SEvent 事件信息
 //==========================================================
-MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(e){
+MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(event){
    var o = this;
-   if(e.isBefore()){
-      var v = true;
-      if(!o.base.MDuiDisplayAble){
-         v = o.canVisible(e.mode);
+   if(event.isBefore()){
+      var modeCd = event.modeCd;
+      if(MO.Class.isClass(o, MO.MDuiDisplayAble)){
+         var visible = o.canVisible(modeCd);
+         o.setVisible(visible);
       }
-      o.setVisible(v);
    }
 }
 
@@ -49,23 +50,23 @@ MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(e){
 // <T>根据模式获得控件的可见性。</T>
 //
 // @method
-// @param m:mode:EMode 模式
-// @param e:event:TEvent 事件对象
+// @param modeCd:EUiMode 模式
 //==========================================================
-MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(m){
+MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(modeCd){
    var o = this;
-   switch(RString.nvl(m, o._emode)){
-      case MO.EMode.Display:
-         return o.dispList;
-      case MO.EMode.Search:
-         return o.dispSearch;
-      case MO.EMode.Insert:
-         return o.dispInsert;
-      case MO.EMode.Update:
-         return o.dispUpdate;
-      case MO.EMode.Delete:
-         return o.dispDelete;
-      case MO.EMode.Zoom:
-         return o.dispZoom;
+   switch(RString.nvl(modeCd, o._emode)){
+      case MO.EUiMode.View:
+         return o._displayView;
+      case MO.EUiMode.Search:
+         return o._displaySearch;
+      case MO.EUiMode.Insert:
+         return o._displayInsert;
+      case MO.EUiMode.Update:
+         return o._displayUpdate;
+      case MO.EUiMode.Delete:
+         return o._displayDelete;
+      case MO.EUiMode.Zoom:
+         return o._displayZoom;
    }
+   return false;
 }

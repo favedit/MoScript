@@ -41,8 +41,11 @@ MO.FDuiMemo = function FDuiMemo(o){
    // @method
    o.get                   = MO.FDuiMemo_get;
    o.set                   = MO.FDuiMemo_set;
+   // @method
    o.refreshValue          = MO.FDuiMemo_refreshValue;
    o.refreshStyle          = MO.FDuiMemo_refreshStyle;
+   // @method
+   o.dispose               = MO.FDuiMemo_dispose;
    return o;
 }
 
@@ -99,7 +102,8 @@ MO.FDuiMemo_onInputEdit = function FDuiMemo_onInputEdit(p){
 MO.FDuiMemo_construct = function FDuiMemo_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
-   o._inputSize = new MO.SSize2(120, 0);
+   // 设置属性
+   o._inputSize = new MO.SSize2(0, 0);
 }
 
 //==========================================================
@@ -140,8 +144,6 @@ MO.FDuiMemo_formatValue = function FDuiMemo_formatValue(value){
 //==========================================================
 MO.FDuiMemo_get = function FDuiMemo_get(){
    var o = this;
-   o.__base.FDuiEditControl.get.call(o);
-   // 获得显示
    var value = o._hInput.value;
    return value;
 }
@@ -154,13 +156,13 @@ MO.FDuiMemo_get = function FDuiMemo_get(){
 //==========================================================
 MO.FDuiMemo_set = function FDuiMemo_set(value){
    var o = this;
-   o.__base.FDuiEditControl.set.call(o, value);
-   // 设置显示
-   o._hInput.value = MO.Lang.String.nvl(value);
-   //o.finded = v;
-   //if(o.hChangeIcon){
-   //   o.hChangeIcon.style.display = 'none';
-   //}
+   // 设置数据
+   o._dataValue = value;
+   // 设置文本
+   var text = MO.Lang.String.nvl(value);
+   o._hInput.value = text;
+   // 设置修改状态
+   o.changeSet(false);
 }
 
 //==========================================================
@@ -196,4 +198,17 @@ MO.FDuiMemo_refreshStyle = function FDuiMemo_refreshStyle(){
    }
    hInput.className = o.styleName(inputStyle);
    hInput.readOnly = !o._statusValueEdit;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiMemo_dispose = function FDuiMemo_dispose(){
+   var o = this
+   // 释放属性
+   o._inputSize = MO.Lang.Object.dispose(o._inputSize);
+   // 父处理
+   o.__base.FDuiEditControl.dispose.call(o);
 }
