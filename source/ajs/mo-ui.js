@@ -359,31 +359,32 @@ MO.APtyAttributes_toString = function APtyAttributes_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
 }
-MO.APtyBoolean = function APtyBoolean(n, l, v){
+MO.APtyBoolean = function APtyBoolean(name, linker, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
-   o._value    = v ? v : false;
+   MO.AProperty.call(o, name, linker);
+   o._value    = value ? value : false;
    o.build    = MO.APtyBoolean_build;
    o.load     = MO.APtyBoolean_load;
    o.save     = MO.APtyBoolean_save;
    o.toString = MO.APtyBoolean_toString;
    return o;
 }
-MO.APtyBoolean_build = function APtyBoolean_build(v){
+MO.APtyBoolean_build = function APtyBoolean_build(instance){
    var o = this;
-   if(v[o._name] == null){
-      v[o._name] = o._value;
+   if(instance[o._name] == null){
+      instance[o._name] = o._value;
    }
 }
-MO.APtyBoolean_load = function APtyBoolean_load(v, x){
+MO.APtyBoolean_load = function APtyBoolean_load(instance, xconfig){
    var o = this;
-   v[o._name] = MO.Lang.Boolean.parse(x.get(o._linker));
+   var value = xconfig.get(o._linker);
+   instance[o._name] = MO.Lang.Boolean.parse(value);
 }
-MO.APtyBoolean_save = function APtyBoolean_save(v, x){
+MO.APtyBoolean_save = function APtyBoolean_save(instance, xconfig){
    var o = this;
-   var d = v[o._name];
-   if(d){
-      x.set(o._linker, MO.Lang.Boolean.toString(d));
+   var value = instance[o._name];
+   if(value){
+      xconfig.set(o._linker, MO.Lang.Boolean.toString(value));
    }
 }
 MO.APtyBoolean_toString = function APtyBoolean_toString(){
@@ -931,6 +932,7 @@ MO.MUiBorder_dispose = function MUiBorder_dispose(){
 }
 MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
+   o._valid           = MO.Class.register(o, [new MO.APtyBoolean('_valid'), new MO.AGetSet('_valid')]);
    o._guid            = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
    o._code            = MO.Class.register(o, [new MO.APtyString('_code'), new MO.AGetSet('_code')]);
    o._name            = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
@@ -1375,13 +1377,13 @@ MO.MUiEditValue = function MUiEditValue(o){
    o._statusInvalid  = true;
    o._recordText     = null;
    o._recordValue    = null;
+   o._currentValue   = null;
    o.isTextChanged   = MO.MUiEditValue_isTextChanged;
    o.isValueChanged  = MO.MUiEditValue_isValueChanged;
    o.formator        = MO.MUiEditValue_formator;
-   o.text            = MO.MUiEditValue_text;
-   o.setText         = MO.MUiEditValue_setText;
    o.get             = MO.MUiEditValue_get;
    o.set             = MO.MUiEditValue_set;
+   o.text            = MO.MUiEditValue_text;
    o.clearValue      = MO.MUiEditValue_clearValue;
    o.resetValue      = MO.MUiEditValue_resetValue;
    o.loadValue       = MO.MUiEditValue_loadValue;
@@ -1406,21 +1408,14 @@ MO.MUiEditValue_isValueChanged = function MUiEditValue_isValueChanged(){
 MO.MUiEditValue_formator = function MUiEditValue_formator(){
    return this;
 }
-MO.MUiEditValue_text = function MUiEditValue_text(){
-}
-MO.MUiEditValue_setText = function MUiEditValue_setText(text){
-}
 MO.MUiEditValue_get = function MUiEditValue_get(){
-   var o = this;
-   var text = o.text();
-   var value = o._dataValue = o.formator().formatValue(text)
-   return value;
+   throw new MO.TError('Unsupport method.');
 }
 MO.MUiEditValue_set = function MUiEditValue_set(value){
-   var o = this;
-   o._dataValue = MO.Lang.String.nvl(value);
-   var text = o.formator().formatText(value)
-   o.setText(text);
+   throw new MO.TError('Unsupport method.');
+}
+MO.MUiEditValue_text = function MUiEditValue_text(){
+   return this.get();
 }
 MO.MUiEditValue_clearValue = function MUiEditValue_clearValue(){
    var o = this;

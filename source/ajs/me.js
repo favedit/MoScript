@@ -5857,9 +5857,9 @@ MO.RFile = new MO.RFile();
 MO.Stream.File = MO.File;
 MO.RFloat = function RFloat(){
    var o = this;
-   o.Chars     = '0123456789-.%';
-   o.NUMBER    = '0123456789-.%';
-   o.LEFT_CHAR = '0';
+   o.Chars    = '0123456789-.%';
+   o.NUMBER   = '0123456789-.%';
+   o.PAD_CHAR = '0';
    return o;
 }
 MO.RFloat.prototype.isFloat = function RFloat_isFloat(p){
@@ -5888,32 +5888,37 @@ MO.RFloat.prototype.parse = function RFloat_parse(source){
    }
    return isNaN(result) ? 0 : result;
 }
-MO.RFloat.prototype.format = function RFloat_format(v, l, lp, r, rp){
+MO.RFloat.prototype.format = function RFloat_format(value, leftLength, leftPad, rightLength, rightPad){
    var o = this;
-   if(l == null){
-      l = 0;
+   if(value == null){
+      return '';
    }
-   if(lp == null){
-      lp = o.LEFT_CHAR;
+   if(leftLength == null){
+      leftLength = 0;
    }
-   if(r == null){
-      r = 6;
+   if(leftPad == null){
+      leftPad = o.PAD_CHAR;
    }
-   if(rp == null){
-      rp = o.LEFT_CHAR;
+   if(rightLength == null){
+      rightLength = 6;
    }
-   var s = v.toString();
-   var f = s.indexOf('.');
-   if(f == -1){
-      var sl = s;
-      var sr = '';
+   if(rightPad == null){
+      rightPad = o.PAD_CHAR;
+   }
+   var leftSource = null;
+   var rightSource = null;
+   var text = value.toString();
+   var index = text.indexOf('.');
+   if(index == -1){
+      leftSource = text;
+      rightSource = '';
    }else{
-      var sl = s.substring(0, f);
-      var sr = s.substring(f + 1, f + r + 1);
+      leftSource = text.substring(0, index);
+      rightSource = text.substring(index + 1, index + rightLength + 1);
    }
-   var fl = MO.Lang.String.lpad(sl, l, lp);
-   var fr = MO.Lang.String.rpad(sr, r, rp);
-   return fl + '.' + fr;
+   var left = MO.Lang.String.lpad(leftSource, leftLength, leftPad);
+   var right = MO.Lang.String.rpad(rightSource, rightLength, rightPad);
+   return left + '.' + right;
 }
 MO.RFloat.prototype.formatParttern = function RFloat_formatParttern(value, parttern){
    var floatVal = parseFloat(value);
@@ -5958,13 +5963,13 @@ MO.RFloat.prototype.unitFormat = function RFloat_unitFormat(v, l, lp, r, rp, div
       l = 0;
    }
    if (lp == null) {
-      lp = o.LEFT_CHAR;
+      lp = o.PAD_CHAR;
    }
    if (r == null) {
       r = 6;
    }
    if (rp == null) {
-      rp = o.LEFT_CHAR;
+      rp = o.PAD_CHAR;
    }
    if (divide == null || unit == null) {
       divide = 1;
@@ -35474,31 +35479,32 @@ MO.APtyAttributes_toString = function APtyAttributes_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
 }
-MO.APtyBoolean = function APtyBoolean(n, l, v){
+MO.APtyBoolean = function APtyBoolean(name, linker, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
-   o._value    = v ? v : false;
+   MO.AProperty.call(o, name, linker);
+   o._value    = value ? value : false;
    o.build    = MO.APtyBoolean_build;
    o.load     = MO.APtyBoolean_load;
    o.save     = MO.APtyBoolean_save;
    o.toString = MO.APtyBoolean_toString;
    return o;
 }
-MO.APtyBoolean_build = function APtyBoolean_build(v){
+MO.APtyBoolean_build = function APtyBoolean_build(instance){
    var o = this;
-   if(v[o._name] == null){
-      v[o._name] = o._value;
+   if(instance[o._name] == null){
+      instance[o._name] = o._value;
    }
 }
-MO.APtyBoolean_load = function APtyBoolean_load(v, x){
+MO.APtyBoolean_load = function APtyBoolean_load(instance, xconfig){
    var o = this;
-   v[o._name] = MO.Lang.Boolean.parse(x.get(o._linker));
+   var value = xconfig.get(o._linker);
+   instance[o._name] = MO.Lang.Boolean.parse(value);
 }
-MO.APtyBoolean_save = function APtyBoolean_save(v, x){
+MO.APtyBoolean_save = function APtyBoolean_save(instance, xconfig){
    var o = this;
-   var d = v[o._name];
-   if(d){
-      x.set(o._linker, MO.Lang.Boolean.toString(d));
+   var value = instance[o._name];
+   if(value){
+      xconfig.set(o._linker, MO.Lang.Boolean.toString(value));
    }
 }
 MO.APtyBoolean_toString = function APtyBoolean_toString(){
@@ -36046,6 +36052,7 @@ MO.MUiBorder_dispose = function MUiBorder_dispose(){
 }
 MO.MUiComponent = function MUiComponent(o){
    o = MO.Class.inherits(this, o);
+   o._valid           = MO.Class.register(o, [new MO.APtyBoolean('_valid'), new MO.AGetSet('_valid')]);
    o._guid            = MO.Class.register(o, [new MO.APtyString('_guid'), new MO.AGetSet('_guid')]);
    o._code            = MO.Class.register(o, [new MO.APtyString('_code'), new MO.AGetSet('_code')]);
    o._name            = MO.Class.register(o, [new MO.APtyString('_name'), new MO.AGetSet('_name')]);
@@ -36490,13 +36497,13 @@ MO.MUiEditValue = function MUiEditValue(o){
    o._statusInvalid  = true;
    o._recordText     = null;
    o._recordValue    = null;
+   o._currentValue   = null;
    o.isTextChanged   = MO.MUiEditValue_isTextChanged;
    o.isValueChanged  = MO.MUiEditValue_isValueChanged;
    o.formator        = MO.MUiEditValue_formator;
-   o.text            = MO.MUiEditValue_text;
-   o.setText         = MO.MUiEditValue_setText;
    o.get             = MO.MUiEditValue_get;
    o.set             = MO.MUiEditValue_set;
+   o.text            = MO.MUiEditValue_text;
    o.clearValue      = MO.MUiEditValue_clearValue;
    o.resetValue      = MO.MUiEditValue_resetValue;
    o.loadValue       = MO.MUiEditValue_loadValue;
@@ -36521,21 +36528,14 @@ MO.MUiEditValue_isValueChanged = function MUiEditValue_isValueChanged(){
 MO.MUiEditValue_formator = function MUiEditValue_formator(){
    return this;
 }
-MO.MUiEditValue_text = function MUiEditValue_text(){
-}
-MO.MUiEditValue_setText = function MUiEditValue_setText(text){
-}
 MO.MUiEditValue_get = function MUiEditValue_get(){
-   var o = this;
-   var text = o.text();
-   var value = o._dataValue = o.formator().formatValue(text)
-   return value;
+   throw new MO.TError('Unsupport method.');
 }
 MO.MUiEditValue_set = function MUiEditValue_set(value){
-   var o = this;
-   o._dataValue = MO.Lang.String.nvl(value);
-   var text = o.formator().formatText(value)
-   o.setText(text);
+   throw new MO.TError('Unsupport method.');
+}
+MO.MUiEditValue_text = function MUiEditValue_text(){
+   return this.get();
 }
 MO.MUiEditValue_clearValue = function MUiEditValue_clearValue(){
    var o = this;

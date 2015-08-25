@@ -7884,6 +7884,8 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    o._dateSetup               = false;
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
+   o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
+   o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
    o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
    o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
    o._netinvestmentDayCurrent = MO.Class.register(o, new MO.AGetter('_netinvestmentDayCurrent'), 0);
@@ -7907,7 +7909,10 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    o._autios                  = null;
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._event24HDataChanged     = null;
+   o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
    o.onDynamicData            = MO.FEaiChartMktCustomerProcessor_onDynamicData;
+   o.on24HDataFetch           = MO.FEaiChartMktCustomerProcessor_on24HDataFetch
    o.construct                = MO.FEaiChartMktCustomerProcessor_construct;
    o.allocUnit                = MO.FEaiChartMktCustomerProcessor_allocUnit;
    o.allocShape               = MO.FEaiChartMktCustomerProcessor_allocShape;
@@ -7917,6 +7922,12 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    o.process                  = MO.FEaiChartMktCustomerProcessor_process;
    o.dispose                  = MO.FEaiChartMktCustomerProcessor_dispose;
    return o;
+}
+MO.FEaiChartMktCustomerProcessor_on24HDataFetch = function FEaiChartMktCustomerProcessor_on24HDataFetch(event) {
+   var o = this;
+   event.beginDate = o._24HBeginDate;
+   event.endDate = o._24HEndDate;
+   o.process24HDataChangedListener(event);
 }
 MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerProcessor_onDynamicData(event){
    var o = this;
@@ -7943,7 +7954,9 @@ MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProces
    var o = this;
    o.__base.FObject.construct.call(o);
    o._beginDate = new MO.TDate();
-   o._endDate = new MO.TDate();
+   o._endDate = new MO.TDate
+   o._24HBeginDate = new MO.TDate();
+   o._24HEndDate = new MO.TDate();
    o._units = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
@@ -7952,6 +7965,7 @@ MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProces
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
+   o._event24HDataChanged = new MO.SEvent(o);
 }
 MO.FEaiChartMktCustomerProcessor_allocUnit = function FEaiChartMktCustomerProcessor_allocUnit(){
    var o = this;
@@ -8031,6 +8045,12 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
       endDate.assign(systemDate);
       statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       beginDate.assign(endDate);
+      var beginDate24H = o._24HBeginDate;
+      beginDate24H.assign(systemDate);
+      beginDate24H.addDay(-1);
+      var endDate24H = o._24HEndDate;
+      endDate24H.assign(systemDate);
+      statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
    }
    var currentTick = MO.Timer.current();
    if(currentTick - o._tableTick > o._tableInterval){
@@ -8065,8 +8085,6 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    o._playing = false;
    o._lastTick = 0;
    o._interval = 10;
-   o._24HLastTick = 0;
-   o._24HTrendInterval = 1000 * 60 * 5;
    o._logoBar = null;
    o._timeline = null;
    o._liveTable = null;
@@ -8074,6 +8092,7 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    o._statusLayerCount = 100;
    o._statusLayerLevel = 100;
    o.onInvestmentDataChanged = MO.FEaiChartMktCustomerScene_onInvestmentDataChanged;
+   o.on24HDataChanged = MO.FEaiChartMktCustomerScene_on24HDataChanged;
    o.onOperationVisibility = MO.FEaiChartMktCustomerScene_onOperationVisibility;
    o.onProcessReady = MO.FEaiChartMktCustomerScene_onProcessReady;
    o.onProcess = MO.FEaiChartMktCustomerScene_onProcess;
@@ -8085,6 +8104,14 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    o.fixMatrix = MO.FEaiChartMktCustomerScene_fixMatrix;
    o.processResize = MO.FEaiChartMktCustomerScene_processResize;
    return o;
+}
+MO.FEaiChartMktCustomerScene_on24HDataChanged = function FEaiChartMktCustomerScene_on24HDataChanged(event) {
+   var o = this;
+   var timeline = o._timeline;
+   timeline.startTime().assign(event.beginDate);
+   timeline.endTime().assign(event.endDate);
+   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   timeline.dirty();
 }
 MO.FEaiChartMktCustomerScene_onInvestmentDataChanged = function FEaiChartMktCustomerScene_onInvestmentDataChanged(event) {
    var o = this;
@@ -8158,11 +8185,6 @@ MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onPr
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
-      var currentTick = MO.Timer.current();
-      if (currentTick - o._24HLastTick > o._24HTrendInterval) {
-         o._timeline.sync();
-         o._24HLastTick = currentTick;
-      }
       o._processor.process();
       var logoBar = o._logoBar;
       var processor = o._processor;
@@ -8200,6 +8222,7 @@ MO.FEaiChartMktCustomerScene_setup = function FEaiChartMktCustomerScene_setup() 
    invement.setMapEntity(o._mapEntity);
    invement.setup();
    invement.addDataChangedListener(o, o.onInvestmentDataChanged);
+   invement.add24HDataChangedListener(o, o.on24HDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
@@ -8207,7 +8230,6 @@ MO.FEaiChartMktCustomerScene_setup = function FEaiChartMktCustomerScene_setup() 
    var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktCustomerTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
-   timeline.sync();
    timeline.build();
    o._guiManager.register(timeline);
    var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktCustomerTable);
@@ -8622,9 +8644,9 @@ MO.FEaiChartMktCustomerTimeline = function FEaiChartMktCustomerTimeline(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
    o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
+   o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
    o._ready = false;
    o._investmentTotal = 0;
-   o._intervalMiniute = 10;
    o._baseHeight = 5;
    o._degreeLineHeight = MO.Class.register(o, new MO.AGetSet('_degreeLineHeight'), 10);
    o._triangleWidth = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
@@ -8646,30 +8668,6 @@ MO.FEaiChartMktCustomerTimeline_construct = function FEaiChartMktCustomerTimelin
    o._endTime = new MO.TDate();
    o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
 }
-MO.FEaiChartMktCustomerTimeline_sync = function FEaiChartMktCustomerTimeline_sync() {
-   var o = this;
-   if (!o._ready) {
-      return;
-   }
-   var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
-   if (!systemLogic.testReady()) {
-      return;
-   }
-   var currentDate = systemLogic.currentDate();
-   currentDate.truncMinute(o._intervalMiniute);
-   var startTime = o._startTime;
-   startTime.assign(currentDate);
-   startTime.addDay(-1);
-   var endTime = o._endTime;
-   endTime.assign(currentDate);
-   var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-   statisticsLogic.marketer().doCustomerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
-}
-MO.FEaiChartMktCustomerTimeline_on24HDataFetch = function FEaiChartMktCustomerTimeline_on24HDataFetch(event) {
-   var o = this;
-   o._trendInfo.unserializeSignBuffer(event.sign, event.content, true);
-   o.dirty();
-}
 MO.FEaiChartMktCustomerTimeline_oeUpdate = function FEaiChartMktCustomerTimeline_oeUpdate(event) {
    var o = this;
    o.__base.FGuiControl.oeUpdate.call(o, event);
@@ -8679,7 +8677,6 @@ MO.FEaiChartMktCustomerTimeline_oeUpdate = function FEaiChartMktCustomerTimeline
    var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
    if (systemLogic.testReady()) {
       o._ready = true;
-      o.sync();
    }
    return MO.EEventStatus.Stop;
 }

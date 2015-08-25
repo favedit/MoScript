@@ -222,11 +222,14 @@ MO.FDuiSelect_formatDisplay = function FDuiSelect_formatDisplay(value){
 //==========================================================
 MO.FDuiSelect_get = function FDuiSelect_get(){
    var o = this;
-   // 获得文本
-   var value = o._hInput.value;
-   // 获得内容
-   var result = o.formatValue(value);
-   return result;
+   var value = null;
+   // 获得项目
+   var text = o._hInput.value;
+   var item = o.findItemByLabel(text);
+   if(item){
+      value = item.dataValue();
+   }
+   return value;
 }
 
 //==========================================================
@@ -237,14 +240,16 @@ MO.FDuiSelect_get = function FDuiSelect_get(){
 //==========================================================
 MO.FDuiSelect_set = function FDuiSelect_set(value){
    var o = this;
-   // 获得显示
-   var text = o.formatDisplay(value);
-   // 设置显示
+   var text = null;
+   // 查找项目
+   var item = o.findItemByValue(value);
+   if(item){
+      text = item.label();
+   }
+   // 设置内容
    o._hInput.value = MO.Lang.String.nvl(text);
-   //o.finded = v;
-   //if(o.hChangeIcon){
-   //   o.hChangeIcon.style.display = 'none';
-   //}
+   // 设置修改状态
+   o.changeSet(false);
 }
 
 //==========================================================

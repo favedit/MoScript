@@ -1,6 +1,11 @@
 //==========================================================
 // <T>编辑内容的接口。</T>
 // <P>Text指显示内容，Value指数据内容，之间可以通过Formator进行转换。</T>
+// <P>  set  - 设置任意支持的内容。</T>
+// <P>  get  - 获取数据内容。</T>
+// <P>  text - 获取文本内容。</T>
+// <P> recordValue - 原始数据内容。</T>
+// <P> dataValue   - 数据内容。</T>
 //
 // @face
 // @author maocy
@@ -16,16 +21,16 @@ MO.MUiEditValue = function MUiEditValue(o){
    // @attribute
    o._recordText     = null;
    o._recordValue    = null;
+   o._currentValue   = null;
    //..........................................................
    // @method
    o.isTextChanged   = MO.MUiEditValue_isTextChanged;
    o.isValueChanged  = MO.MUiEditValue_isValueChanged;
    // @method
    o.formator        = MO.MUiEditValue_formator;
-   o.text            = MO.MUiEditValue_text;
-   o.setText         = MO.MUiEditValue_setText;
    o.get             = MO.MUiEditValue_get;
    o.set             = MO.MUiEditValue_set;
+   o.text            = MO.MUiEditValue_text;
    // @method
    o.clearValue      = MO.MUiEditValue_clearValue;
    o.resetValue      = MO.MUiEditValue_resetValue;
@@ -96,37 +101,13 @@ MO.MUiEditValue_formator = function MUiEditValue_formator(){
 }
 
 //==========================================================
-// <T>获得文本内容。</T>
-//
-// @method
-// @return String 显示内容
-//==========================================================
-MO.MUiEditValue_text = function MUiEditValue_text(){
-   //throw new TUnsupportError();
-}
-
-//==========================================================
-// <T>设置文本内容。</T>
-//
-// @method
-// @param text:String 文本内容
-//==========================================================
-MO.MUiEditValue_setText = function MUiEditValue_setText(text){
-   //throw new TUnsupportError();
-}
-
-//==========================================================
 // <T>获取数据。</T>
 //
 // @method
 // @return String 数据
 //==========================================================
 MO.MUiEditValue_get = function MUiEditValue_get(){
-   var o = this;
-   // 设置数据
-   var text = o.text();
-   var value = o._dataValue = o.formator().formatValue(text)
-   return value;
+   throw new MO.TError('Unsupport method.');
 }
 
 //==========================================================
@@ -136,12 +117,17 @@ MO.MUiEditValue_get = function MUiEditValue_get(){
 // @param value:String 数据
 //==========================================================
 MO.MUiEditValue_set = function MUiEditValue_set(value){
-   var o = this;
-   // 设置数据
-   o._dataValue = MO.Lang.String.nvl(value);
-   // 设置文本
-   var text = o.formator().formatText(value)
-   o.setText(text);
+   throw new MO.TError('Unsupport method.');
+}
+
+//==========================================================
+// <T>获得文本内容。</T>
+//
+// @method
+// @return String 显示内容
+//==========================================================
+MO.MUiEditValue_text = function MUiEditValue_text(){
+   return this.get();
 }
 
 //==========================================================

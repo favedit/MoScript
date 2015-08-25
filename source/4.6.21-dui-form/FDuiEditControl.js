@@ -400,10 +400,11 @@ MO.FDuiEditControl_oeProgress = function FDuiEditControl_oeProgress(event){
 MO.FDuiEditControl_oeLoadUnit = function FDuiEditControl_oeLoadUnit(event){
    var o = this;
    var unit = event.unit;
+   // 获得数据内容
    var dataName = o._dataName;
    if(!MO.Lang.String.isEmpty(dataName)){
-      var value = unit.get(o._dataName);
-      o.set(value);
+      var text = unit.get(dataName);
+      o.set(text);
    }
    return MO.EEventStatus.Stop;
 }
@@ -418,10 +419,11 @@ MO.FDuiEditControl_oeLoadUnit = function FDuiEditControl_oeLoadUnit(event){
 MO.FDuiEditControl_oeSaveUnit = function FDuiEditControl_oeSaveUnit(event){
    var o = this;
    var unit = event.unit;
+   // 设置数据内容
    var dataName = o._dataName;
    if(!MO.Lang.String.isEmpty(dataName)){
-      var value = o.get();
-      unit.set(o._dataName, value)
+      var text = o.text();
+      unit.set(dataName, text)
    }
    return MO.EEventStatus.Stop;
 }

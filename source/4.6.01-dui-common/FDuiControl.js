@@ -18,11 +18,11 @@ MO.FDuiControl = function FDuiControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiComponent, MO.MUiControl, MO.MListener, MO.MUiMargin, MO.MUiPadding, MO.MDuiSize, MO.MDuiStyle);
    //..........................................................
    // @property
+   o._nowrap        = MO.Class.register(o, [new MO.APtyBoolean('_nowrap'), new MO.AGetSet('_nowrap')]);
    o._foreColor     = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
    o._foreFont      = MO.Class.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
    o._backColor     = MO.Class.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
    o._backFont      = MO.Class.register(o, [new MO.APtyString('_backFont'), new MO.AGetSet('_backFont')]);
-   o._wrapCd        = MO.Class.register(o, [new MO.APtyEnum('_wrapCd', null, MO.EUiWrap, MO.EUiWrap.NextLine), new MO.AGetSet('_wrapCd')]);
    //..........................................................
    // @style
    o._stylePanel    = MO.Class.register(o, new MO.AStyle('_stylePanel'));
@@ -682,7 +682,6 @@ MO.FDuiControl_dispose = function FDuiControl_dispose(){
    var o = this;
    // 释放属性
    o._disable = null;
-   o._wrapCd = null;
    o._hint = null;
    // 释放属性
    o._styleContainer = null;

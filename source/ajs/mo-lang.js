@@ -5857,9 +5857,9 @@ MO.RFile = new MO.RFile();
 MO.Stream.File = MO.File;
 MO.RFloat = function RFloat(){
    var o = this;
-   o.Chars     = '0123456789-.%';
-   o.NUMBER    = '0123456789-.%';
-   o.LEFT_CHAR = '0';
+   o.Chars    = '0123456789-.%';
+   o.NUMBER   = '0123456789-.%';
+   o.PAD_CHAR = '0';
    return o;
 }
 MO.RFloat.prototype.isFloat = function RFloat_isFloat(p){
@@ -5888,32 +5888,37 @@ MO.RFloat.prototype.parse = function RFloat_parse(source){
    }
    return isNaN(result) ? 0 : result;
 }
-MO.RFloat.prototype.format = function RFloat_format(v, l, lp, r, rp){
+MO.RFloat.prototype.format = function RFloat_format(value, leftLength, leftPad, rightLength, rightPad){
    var o = this;
-   if(l == null){
-      l = 0;
+   if(value == null){
+      return '';
    }
-   if(lp == null){
-      lp = o.LEFT_CHAR;
+   if(leftLength == null){
+      leftLength = 0;
    }
-   if(r == null){
-      r = 6;
+   if(leftPad == null){
+      leftPad = o.PAD_CHAR;
    }
-   if(rp == null){
-      rp = o.LEFT_CHAR;
+   if(rightLength == null){
+      rightLength = 6;
    }
-   var s = v.toString();
-   var f = s.indexOf('.');
-   if(f == -1){
-      var sl = s;
-      var sr = '';
+   if(rightPad == null){
+      rightPad = o.PAD_CHAR;
+   }
+   var leftSource = null;
+   var rightSource = null;
+   var text = value.toString();
+   var index = text.indexOf('.');
+   if(index == -1){
+      leftSource = text;
+      rightSource = '';
    }else{
-      var sl = s.substring(0, f);
-      var sr = s.substring(f + 1, f + r + 1);
+      leftSource = text.substring(0, index);
+      rightSource = text.substring(index + 1, index + rightLength + 1);
    }
-   var fl = MO.Lang.String.lpad(sl, l, lp);
-   var fr = MO.Lang.String.rpad(sr, r, rp);
-   return fl + '.' + fr;
+   var left = MO.Lang.String.lpad(leftSource, leftLength, leftPad);
+   var right = MO.Lang.String.rpad(rightSource, rightLength, rightPad);
+   return left + '.' + right;
 }
 MO.RFloat.prototype.formatParttern = function RFloat_formatParttern(value, parttern){
    var floatVal = parseFloat(value);
@@ -5958,13 +5963,13 @@ MO.RFloat.prototype.unitFormat = function RFloat_unitFormat(v, l, lp, r, rp, div
       l = 0;
    }
    if (lp == null) {
-      lp = o.LEFT_CHAR;
+      lp = o.PAD_CHAR;
    }
    if (r == null) {
       r = 6;
    }
    if (rp == null) {
-      rp = o.LEFT_CHAR;
+      rp = o.PAD_CHAR;
    }
    if (divide == null || unit == null) {
       divide = 1;

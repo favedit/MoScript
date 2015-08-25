@@ -153,22 +153,26 @@ MO.FDuiLayout_oeRefresh = function FDuiLayout_oeRefresh(p){
 // <T>创建一个控件容器。</T>
 //
 // @method
+// @param controlSource:MUiControl 来源控件
+// @param controlTarget:MUiControl 目标控件
+// @param index:Integer 索引位置
+// @param copy:Boolean 是否复制
 // @return HtmlTag 页面元素
 //==========================================================
-MO.FDuiLayout_insertPosition = function FDuiLayout_insertPosition(cf, ct, idx, copy){
+MO.FDuiLayout_insertPosition = function FDuiLayout_insertPosition(controlSource, controlTarget, index, copy){
    var o = this;
-   var ms = o._components;
-   var cs = o.controls;
-   ms.removeValue(cf);
-   cs.removeValue(cf);
-   if(ct){
-      var index = ms.indexOfValue(ct);
-      ms.insert(index+idx, cf.name, cf);
-      var index = cs.indexOfValue(ct);
-      cs.insert(index+idx, cf.name, cf);
+   var components = o._components;
+   var controls = o._controls;
+   components.removeValue(controlSource);
+   controls.removeValue(controlSource);
+   if(controlTarget){
+      var index = components.indexOfValue(controlTarget);
+      components.insert(index + index, controlSource.name, controlSource);
+      var index = controls.indexOfValue(controlTarget);
+      controls.insert(index + index, controlSource.name, controlSource);
    }else{
-      ms.set(cf.name, cf);
-      cs.set(cf.name, cf);
+      components.set(controlSource.name, controlSource);
+      controls.set(controlSource.name, controlSource);
    }
 }
 
@@ -333,7 +337,7 @@ MO.FDuiLayout_appendChild = function FDuiLayout_appendChild(control){
       hCell.appendChild(control._hPanel);
       control._hLayoutCell = hCell;
       // 追加下一行
-      if((control.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != control)){
+      if(!control.nowrap() && (o.controls.last() != control)){
          o.innerAppendLine();
       }
    }else{
@@ -351,42 +355,42 @@ MO.FDuiLayout_appendChild = function FDuiLayout_appendChild(control){
             o._lastSplit = control;
          }
          // 追加一个新行
-         var hr = MO.Window.Builder.appendTableRow(o._hPanelForm);
-         var hc = MO.Window.Builder.appendTableCell(hr, o.styleName('ControlPanel'));
-         hc.vAlign = 'top';
-         hc.appendChild(control._hPanel);
-         control._hLayoutRow = hr;
-         o._hPanelLast = hc;
+         var hLine = MO.Window.Builder.appendTableRow(o._hPanelForm);
+         var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('ControlPanel'));
+         hCell.vAlign = 'top';
+         hCell.appendChild(control._hPanel);
+         control._hLayoutRow = hLine;
+         o._hPanelLast = hCell;
          // 设置行高
          if(!MO.Lang.Set.contains(control._sizeCd, MO.EUiSize.Vertical)){
-            hc.height = 1;
+            hCell.height = 1;
          }else if(control.height){
-            hc.height = control.height;
+            hCell.height = control.height;
          }
          o._hPanelLine = null;
       }else{
          // 增加普通对象
          if(!o._hPanelLine){
-            var hr = MO.Window.Builder.appendTableRow(o._hPanelForm);
-            hr.height = 1;
+            var hLine = MO.Window.Builder.appendTableRow(o._hPanelForm);
+            hLine.height = 1;
             if(o._lastSplit){
-               o._lastSplit.pushLine(hr);
+               o._lastSplit.pushLine(hLine);
             }
             // 追加新的行表单
-            var hc = MO.Window.Builder.appendTableCell(hr, o.styleName('ControlPanel'));
-            hc.vAlign = 'top';
-            var ht = o._hPanelTable = MO.Window.Builder.appendTable(hc);
+            var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('ControlPanel'));
+            hCell.vAlign = 'top';
+            var ht = o._hPanelTable = MO.Window.Builder.appendTable(hCell);
             o._hPanelLine = MO.Window.Builder.appendTableRow(ht);
          }
          // 追加一个单元格
-         var hc = MO.Window.Builder.appendTableCell(o._hPanelLine, o.styleName('ControlPanel'))
+         var hCell = MO.Window.Builder.appendTableCell(o._hPanelLine, o.styleName('ControlPanel'))
          // 追加一般控件
          control._hLayoutRow = o._hPanelLine;
-         o._hPanelLast = hc;
-         hc.appendChild(control._hPanel);
-         control._hLayoutCell = hc;
+         o._hPanelLast = hCell;
+         hCell.appendChild(control._hPanel);
+         control._hLayoutCell = hCell;
          // 追加下一行
-         if(control.wrapCd() == MO.EUiWrap.NextLine){
+         if(!control.nowrap()){
             o._hPanelLine = null;
          }
       }
@@ -400,14 +404,14 @@ MO.FDuiLayout_appendChild = function FDuiLayout_appendChild(control){
 //==========================================================
 MO.FDuiLayout_resize = function FDuiLayout_resize(){
    var o = this;
-   var cs = o._components;
-   if(cs){
+   var components = o._components;
+   if(components){
       // 如果含有表格或分页内嵌控件，则自动高度为100%
       var ha = false;
-      var c = cs.count();
-      for(var n = 0; n < c; n++){
-         var p = o._components.at(n);
-         if(MO.Class.isClass(p, FDuiTable) || MO.Class.isClass(p, FDuiPageControl)){
+      var count = components.count();
+      for(var n = 0; n < count; n++){
+         var component = components.at(n);
+         if(MO.Class.isClass(component, MO.FDuiTable) || MO.Class.isClass(component, MO.FDuiPageControl)){
             ha = true;
             break;
          }
@@ -423,9 +427,11 @@ MO.FDuiLayout_resize = function FDuiLayout_resize(){
 //==========================================================
 MO.FDuiLayout_dispose = function FDuiLayout_dispose(){
    var o = this;
+   // 释放属性
    o._hPanelCurrent = null;
    o._hPanelTable = null;
    o._hPanel = null;
    o._hContainer = null;
+   // 父处理
    o.__base.FDuiContainer.dispose.call(o);
 }

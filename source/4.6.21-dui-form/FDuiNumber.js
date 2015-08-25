@@ -23,40 +23,43 @@ MO.FDuiNumber = function FDuiNumber(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyNumber);
    //..........................................................
    // @property
-   o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
    //..........................................................
    // @style
-   o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
-   o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
-   o._styleAdjustForm  = MO.Class.register(o, new MO.AStyle('_styleAdjustForm'));
-   o._styleUpPanel     = MO.Class.register(o, new MO.AStyle('_styleUpPanel'));
-   o._styleDownPanel   = MO.Class.register(o, new MO.AStyle('_styleDownPanel'));
+   o._styleAdjustPanel     = MO.Class.register(o, new MO.AStyle('_styleAdjustPanel'));
+   o._styleAdjustForm      = MO.Class.register(o, new MO.AStyle('_styleAdjustForm'));
+   o._styleUpPanel         = MO.Class.register(o, new MO.AStyle('_styleUpPanel'));
+   o._styleDownPanel       = MO.Class.register(o, new MO.AStyle('_styleDownPanel'));
    //..........................................................
    // @attribute
-   o._innerOriginValue = null;
-   o._innerDataValue   = null;
+   o._innerOriginValue     = null;
+   o._innerDataValue       = null;
    // @attribute
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged'));
    //..........................................................
    // @html
-   o._hInput           = null;
-   o._iconUp           = null;
-   o._iconDown         = null;
+   o._hInput               = null;
+   o._iconUp               = null;
+   o._iconDown             = null;
    //..........................................................
    // @event
-   o.onBuildEditValue  = FDuiNumber_onBuildEditValue;
+   o.onBuildEditValue      = MO.FDuiNumber_onBuildEditValue;
    // @event
-   o.onInputKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber_onInputKeyPress);
-   o.onInputChanged    = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber_onInputChanged);
+   o.onInputKeyPress       = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber_onInputKeyPress);
+   o.onInputChanged        = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber_onInputChanged);
    //..........................................................
    // @method
-   o.construct         = MO.FDuiNumber_construct;
+   o.construct             = MO.FDuiNumber_construct;
    // @method
-   o.formatDisplay     = MO.FDuiNumber_formatDisplay;
-   o.formatValue       = MO.FDuiNumber_formatValue;
+   o.formatDisplay         = MO.FDuiNumber_formatDisplay;
+   o.formatValue           = MO.FDuiNumber_formatValue;
    // @method
-   o.get               = MO.FDuiNumber_get;
-   o.set               = MO.FDuiNumber_set;
+   o.get                   = MO.FDuiNumber_get;
+   o.set                   = MO.FDuiNumber_set;
+   // @method
+   o.refreshStyle          = MO.FDuiNumber_refreshStyle;
+   // @method
+   o.dispose               = MO.FDuiNumber_dispose;
 
 
 
@@ -84,61 +87,56 @@ MO.FDuiNumber = function FDuiNumber(o){
 //==========================================================
 MO.FDuiNumber_onBuildEditValue = function FDuiNumber_onBuildEditValue(p){
    var o = this;
-   var hp = o._hValuePanel;
-   hp.className = o.styleName('ValuePanel');
-   var hf = o._hValueForm = MO.Window.Builder.appendTable(hp);
-   hf.width = '100%';
-   var hl = o._hValueLine = MO.Window.Builder.appendTableRow(hf);
+   var hValuePanel = o._hValuePanel;
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
+   var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
    //..........................................................
    // 建立改变栏
-   o._hChangePanel = MO.Window.Builder.appendTableCell(hl);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(p);
    //..........................................................
    // 建立输入栏
-   var hip = o._hInputPanel = MO.Window.Builder.appendTableCell(hl);
-   var he = o._hInput = MO.Window.Builder.appendEdit(hip, o.styleName('Input'));
+   var hip = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
+   var he = o._hInput = MO.Window.Builder.appendEdit(hip);
    //o.attachEvent('onEditFocus', he, o.onEditFocus);
    o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
    o.attachEvent('onInputChanged', he, o.onInputChanged);
    //o.attachEvent('onEditBlur', he, o.onEditBlur);
    //o.attachEvent('onDataKeyUp', he, o.ohEditKeyUp); 
    // 设置大小
-   //MO.Window.Html.setSize(he, o._inputSize);
+   // MO.Window.Html.setSize(he, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
       he.maxLength = o._editLength;
    }
    //..........................................................
    // 建立调整栏
-   var hap = o._hAdjustPanel = MO.Window.Builder.appendTableCell(hl);
-   hap.style.borderLeft = '1px solid #666666';
-   hap.width = 12;
-   var haf = o.hAdjustForm = MO.Window.Builder.appendTable(hap, o.styleName('AdjustForm'));
+   var hAdjustPanel = o._hAdjustPanel = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('AdjustForm'));
+   var hAdjustForm = o.hAdjustForm = MO.Window.Builder.appendTable(hAdjustPanel, o.styleName('AdjustForm'));
    // 建立上按键
-   var hc = MO.Window.Builder.appendTableRowCell(haf);
-   hc.className = o.styleName('UpPanel');
-   var hi = o._hUpIcon = MO.Window.Builder.appendIcon(hc, null, 'control.number.up');
-   hi.align = 'center';
+   var hCell = MO.Window.Builder.appendTableRowCell(hAdjustForm, o.styleName('UpPanel'));
+   var hIcon = o._hUpIcon = MO.Window.Builder.appendIcon(hCell, null, 'control.number.up');
+   hIcon.align = 'center';
    //o.attachEvent('onUpMouseDown', hi);
    // 建立下按键
-   var hc = MO.Window.Builder.appendTableRowCell(haf);
-   hc.className = o.styleName('DownPanel');
-   var hi = o._hDownIcon = MO.Window.Builder.appendIcon(hc, null, 'control.number.down');
-   //o.attachEvent('onDownMouseDown', hi);
+   var hCell = MO.Window.Builder.appendTableRowCell(hAdjustForm, o.styleName('DownPanel'));
+   var hIcon = o._hDownIcon = MO.Window.Builder.appendIcon(hCell, null, 'control.number.down');
+   hIcon.align = 'center';
+   //o.attachEvent('onDownMouseDown', hIcon);
 }
 
 //==========================================================
 // <T>编辑控件中键盘按下处理。 </T>
 //
-// @param p:event:SEvent 事件对象
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiNumber_onInputKeyPress = function FDuiNumber_onInputKeyPress(p){
+MO.FDuiNumber_onInputKeyPress = function FDuiNumber_onInputKeyPress(event){
    var o = this;
-   var c = p.keyCode;
+   var code = event.keyCode;
    // 检查输入字符是否为浮点数，否则给清除输入内容
-   if(!MO.RKeyboard.isFloatKey(c)){
-      p.cancel();
-   }
+   //if(!MO.RKeyboard.isFloatKey(c)){
+   //   p.cancel();
+   //}
 }
 
 //==========================================================
@@ -167,20 +165,20 @@ MO.FDuiNumber_construct = function FDuiNumber_construct(){
    o.__base.FDuiEditControl.construct.call(o);
    // 设置属性
    o._editSize.set(100, 20);
-   o._inputSize = new SSize2(80, 0);
+   o._inputSize = new MO.SSize2(80, 0);
 }
 
 //==========================================================
 // <T>格式化显示内容。</T>
 //
 // @method
-// @param p:value:String 数据
+// @param value:String 数据
 // @return 内容
 //==========================================================
-MO.FDuiNumber_formatDisplay = function FDuiNumber_formatDisplay(p){
+MO.FDuiNumber_formatDisplay = function FDuiNumber_formatDisplay(value){
    var o = this;
-   var r = o._dataDisplay = MO.Lang.Float.format(p, 0, null, o._valuePrecision, null);
-   return r;
+   var text = o._dataDisplay = MO.Lang.Float.format(value, 0, null, o._valuePrecision, null);
+   return text;
 }
 
 //==========================================================
@@ -198,40 +196,69 @@ MO.FDuiNumber_formatValue = function FDuiNumber_formatValue(p){
 // <T>获得数据。</T>
 //
 // @method
-// @return String 数据
+// @return Number 数据
 //==========================================================
-MO.FDuiNumber_get = function FDuiNumber_get(p){
+MO.FDuiNumber_get = function FDuiNumber_get(){
    var o = this;
-   var r = o.__base.FDuiEditControl.get.call(o, p);
-   // 获得显示
-   var h = o._hInput;
-   if(h){
-      r = o.formatValue(h.value);
-   }
-   return r;
+   var value = o._hInput.value;
+   return value;
 }
 
 //==========================================================
 // <T>设置数据。</T>
 //
 // @method
-// @param p:value:String 数据
+// @param value:String 数据
 //==========================================================
-MO.FDuiNumber_set = function FDuiNumber_set(p){
+MO.FDuiNumber_set = function FDuiNumber_set(value){
    var o = this;
-   o.__base.FDuiEditControl.set.call(o, p);
-   // 获得内容
-   var v = MO.Lang.String.nvl(p, '0');
-   o._innerOriginValue = v;
-   o._innerDataValue = v;
-   // 设置显示
-   var h = o._hInput;
-   if(h){
-      h.value = o.formatDisplay(p);
-   }
+   // 设置数据
+   o._dataValue = value;
+   // 设置文本
+   var text = MO.Lang.String.nvl(value);
+   o._hInput.value = text;
    // 设置修改状态
    o.changeSet(false);
 }
+
+//==========================================================
+// <T>根据当前状态刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiNumber_refreshStyle = function FDuiNumber_refreshStyle(){
+   var o = this;
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   // 设置编辑样式
+   var hInput = o._hInput;
+   var inputStyle = null;
+   if(o._statusValueEdit){
+      if(o._statusValueHover){
+         inputStyle = 'InputHover';
+      }else{
+         inputStyle = 'InputEdit';
+      }
+   }else{
+      inputStyle = 'InputReadonly';
+   }
+   hInput.className = o.styleName(inputStyle);
+   hInput.readOnly = !o._statusValueEdit;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiNumber_dispose = function FDuiNumber_dispose(){
+   var o = this
+   // 释放属性
+   o._inputSize = MO.Lang.Object.dispose(o._inputSize);
+   // 父处理
+   o.__base.FDuiEditControl.dispose.call(o);
+}
+
+
 
 
 

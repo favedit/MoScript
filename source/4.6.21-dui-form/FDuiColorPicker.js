@@ -1,95 +1,215 @@
-// ============================================================
-// FDuiColorPicker
-// ============================================================
+//==========================================================
+// <T>文本编辑框。</T>
+//
+//  hValuePanel<TD>
+//  hValueForm<TABLE>
+// ┌-----------------┬----------------------┐
+// │hChangePanel<TD> │ hInputPanel<TD>      │hValueLine<TR>
+// │hChangeIcon<IMG> │┌------------------┐│
+// │                 ││hInput<INPUT>     ││
+// │                 │└------------------┘│
+// └-----------------┴----------------------┘
+//
+// @class
+// @author maocy
+// @version 150102
+//==========================================================
 MO.FDuiColorPicker = function FDuiColorPicker(o){
-   o = MO.Class.inherits(this, o, MO.FEditControl, MO.MEditBorder, MO.MDescColor, MO.MDropable);
-   // Html
-   o.borderStyle   = MO.EUiBorder.RoundDrop;
-   // Event
-   o.onBuildEdit   = MO.FDuiColorPicker_onBuildEdit;
-   o.onEditEnd     = MO.FDuiColorPicker_onEditEnd;
-   o.onDataKeyDown = MO.FDuiColorPicker_onDataKeyDown;
-   o.checkColor    = MO.FDuiColorPicker_checkColor;
-   // Method
-   o.setText       = MO.FDuiColorPicker_setText;
-   o.drop          = MO.FDuiColorPicker_drop;
-   o.dispose       = MO.FDuiColorPicker_dispose;
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit);
+   //..........................................................
+   // @property
+   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._unit                 = MO.Class.register(o, new MO.APtyString('_unit'));
+   //..........................................................
+   // @attribute
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   //..........................................................
+   // @html
+   o._hValueForm           = null;
+   o._hValueLine           = null;
+   o._hInputPanel          = null;
+   o._hInput               = null;
+   //..........................................................
+   // @event
+   o.onBuildEditValue      = MO.FDuiColorPicker_onBuildEditValue;
+   o.onInputEdit           = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), MO.FDuiColorPicker_onInputEdit);
+   //..........................................................
+   // @method
+   o.construct             = MO.FDuiColorPicker_construct;
+   // @method
+   o.formatText            = MO.FDuiColorPicker_formatText;
+   o.formatValue           = MO.FDuiColorPicker_formatValue;
+   // @method
+   o.get                   = MO.FDuiColorPicker_get;
+   o.set                   = MO.FDuiColorPicker_set;
+   o.setEditAble           = MO.FDuiColorPicker_setEditAble;
+   o.refreshValue          = MO.FDuiColorPicker_refreshValue;
+   o.refreshStyle          = MO.FDuiColorPicker_refreshStyle;
+   // @method
+   o.dispose               = MO.FDuiColorPicker_dispose;
    return o;
 }
-// ------------------------------------------------------------
-MO.FDuiColorPicker_onBuildEdit = function FDuiColorPicker_onBuildEdit(b){
+
+//==========================================================
+// <T>建立编辑器内容。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiColorPicker_onBuildEditValue = function FDuiColorPicker_onBuildEditValue(event){
    var o = this;
-   // 建立编辑控件
-   var h = o.hEdit = MO.Window.Builder.appendEdit(b.hPanel, o.style('Edit'));
-   h.maxLength = 20;
-}
-// ------------------------------------------------------------
-MO.FDuiColorPicker_onEditEnd = function FDuiColorPicker_onEditEnd(editor){
-   var o = this;
-   RLog.debug(o, 'Begin (editor={0}:{1} value={2})', editor, editor?editor.color:'', o.dataValue);
-   if(editor){
-      o.set(editor.color);
-      o.hDrop.style.backgroundColor = editor.color;
+   var hValuePanel = o._hValuePanel;
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
+   hValueForm.width = '100%';
+   var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   //..........................................................
+   // 建立改变栏
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
+   o.onBuildEditChange(event);
+   //..........................................................
+   // 建立输入栏
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
+   var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel);
+   o.attachEvent('onInputEdit', hInput, o.onInputEdit);
+   // 设置大小
+   MO.Window.Html.setSize(hInputPanel, o._inputSize);
+   // 设置可以输入的最大长度
+   if(o._editLength){
+      hInput.maxLength = o._editLength;
    }
-   //alert(FDuiColorPicker_onEditEnd);
-   o.onDataEditEnd(o);
-   //o.base.FEditControl.onEditEnd.call(o);
-   RLog.debug(o, 'End (editor={0} value={1})', editor, o.dataValue);
-}
-// ------------------------------------------------------------
-// text
-MO.FDuiColorPicker_setText = function FDuiColorPicker_setText(t){
-   var o = this;
-   o.base.FEditControl.setText.call(o, MO.Lang.String.toUpper(t));
-   o.hDrop.style.backgroundColor = t;
-}
-//------------------------------------------------------------
-MO.FDuiColorPicker_checkColor = function FDuiColorPicker_checkColor(c)
-{
-   var oSpan = document.createElement("<span style='color:"+c+";'></span>");
-   if(oSpan.style.color != ""){
-      return true;
-   }else{
-      return false;
-   }
-   //oSpan = null;
 }
 
-//------------------------------------------------------------
-MO.FDuiColorPicker_onDataKeyDown = function FDuiColorPicker_onDataKeyDown(e){
-      var o = this;
-      o.base.FEditControl.onDataKeyDown.call(o, o, e);
-      if(o.checkColor(o.text())){
-         o.hDrop.style.backgroundColor = o.text();
+//==========================================================
+// <T>编辑控件中数据修改处理。 </T>
+//
+// @param p:event:SEvent 事件对象
+//==========================================================
+MO.FDuiColorPicker_onInputEdit = function FDuiColorPicker_onInputEdit(p){
+   var o = this;
+   // 刷新数据
+   o.refreshValue();
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiColorPicker_construct = function FDuiColorPicker_construct(){
+   var o = this;
+   o.__base.FDuiEditControl.construct.call(o);
+   // 设置属性
+   o._inputSize = new MO.SSize2(0, 0);
+}
+
+//==========================================================
+// <T>格式化显示内容。</T>
+//
+// @method
+// @param value:String 数据
+// @return 内容
+//==========================================================
+MO.FDuiColorPicker_formatText = function FDuiColorPicker_formatText(value){
+   var o = this;
+   var result = MO.Lang.String.nvl(value);
+   //if(ECase.Upper == o.editCase){
+   //   r = MO.Lang.String.toUpper(r);
+   //}else if(ECase.Lower == o.editCase){
+   //   r = MO.Lang.String.toLower(r);
+   //}
+   o._dataDisplay = result;
+   return result;
+}
+
+//==========================================================
+// <T>格式化数据内容。</T>
+//
+// @method
+// @param value:String 内容
+// @return 数据
+//==========================================================
+MO.FDuiColorPicker_formatValue = function FDuiColorPicker_formatValue(value){
+   return value;
+}
+
+//==========================================================
+// <T>获取数据。</T>
+//
+// @method
+// @return String 数据
+//==========================================================
+MO.FDuiColorPicker_get = function FDuiColorPicker_get(){
+   var o = this;
+   var value = o._hInput.value;
+   return value;
+}
+
+//==========================================================
+// <T>设置数据。</T>
+//
+// @method
+// @param value:String 数据
+//==========================================================
+MO.FDuiColorPicker_set = function FDuiColorPicker_set(value){
+   var o = this;
+   // 设置数据
+   o._dataValue = value;
+   // 设置文本
+   var text = MO.Lang.String.nvl(value);
+   o._hInput.value = text;
+   // 设置修改状态
+   o.changeSet(false);
+}
+
+//==========================================================
+// <T>设置编辑对象的可编辑性。</T>
+//
+// @method
+// @param flag:Boolean 可编辑性
+//==========================================================
+MO.FDuiColorPicker_setEditAble = function FDuiColorPicker_setEditAble(flag){
+   var o = this;
+   o.__base.FDuiEditControl.setEditAble.call(o, flag);
+   // 设置属性
+   o._hInput.readOnly = !flag;
+   //if(flag){
+   //}else{
+   //   o._hInput.style.backgroundColor = EUiColor.ReadonlyBackgroundColor;
+   //   o._hValuePanel.style.backgroundColor = EUiColor.ReadonlyBackgroundColor;
+   //}
+}
+
+//==========================================================
+// <T>刷新数据。</T>
+//
+// @method
+//==========================================================
+MO.FDuiColorPicker_refreshValue = function FDuiColorPicker_refreshValue(){
+   var o = this;
+   // 内容改变通知
+   o.processDataChangedListener(o);
+}
+
+//==========================================================
+// <T>根据当前状态刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiColorPicker_refreshStyle = function FDuiColorPicker_refreshStyle(){
+   var o = this;
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   // 设置编辑样式
+   var hInput = o._hInput;
+   var inputStyle = null;
+   if(o._statusValueEdit){
+      if(o._statusValueHover){
+         inputStyle = 'InputHover';
       }else{
-         o.hDrop.style.backgroundColor = '';
+         inputStyle = 'InputEdit';
       }
-}
-// ------------------------------------------------------------
-MO.FDuiColorPicker_drop = function FDuiColorPicker_drop(){
-   var o = this;
-   if(o.canDrop() && o.canEdit){
-      var ed = o.editor = RConsole.find(FEditConsole).focus(o, FDuiColorPickerEditor, o.name);
-      if(ed.linkControl(o)){
-         //ed.setItems(o.items);
-         ed.set(o.reget());
-      }
-      ed.show();
+   }else{
+      inputStyle = 'InputReadonly';
    }
-//   var o = this;
-//   if(o.canDrop() && o.canEdit){
-//      var editor = RConsole.find(FEditConsole).focus(o, FDuiColorPickerEditor, o.name);
-//      editor.linkPanel(o.hEditCell, o.editBorder, o.hEdit);
-//      editor.setValue(o.formatValue(o.text()));
-//      editor.show();
-//   }
-}
-//------------------------------------------------------------
-MO.FDuiColorPicker_dispose = function FDuiColorPicker_dispose(){
-   var o = this;
-   o.base.FEditControl.dispose.call(o);
-   RMemory.freeHtml(o.hEdit);
-   RMemory.freeHtml(o.hDrop);
-   o.hEdit = null;
-   o.hDrop = null;
+   hInput.className = o.styleName(inputStyle);
+   hInput.readOnly = !o._statusValueEdit;
 }

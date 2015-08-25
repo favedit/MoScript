@@ -2,18 +2,18 @@
 // <T>布尔的属性描述类。</T>
 //
 // @property
-// @param n:name:String 名称
-// @param l:linker:String 关联名称
-// @param v:value:Boolean 缺省内容
+// @param name:String 名称
+// @param linker:String 关联名称
+// @param value:Boolean 缺省内容
 // @author maocy
 // @version 141231
 //==========================================================
-MO.APtyBoolean = function APtyBoolean(n, l, v){
+MO.APtyBoolean = function APtyBoolean(name, linker, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
+   MO.AProperty.call(o, name, linker);
    //..........................................................
    // @attribute
-   o._value    = v ? v : false;
+   o._value    = value ? value : false;
    //..........................................................
    // @method
    o.build    = MO.APtyBoolean_build;
@@ -27,12 +27,12 @@ MO.APtyBoolean = function APtyBoolean(n, l, v){
 // <T>构建处理。</T>
 //
 // @method
-// @param v:value:Object 对象
+// @param instance:Object 对象
 //============================================================
-MO.APtyBoolean_build = function APtyBoolean_build(v){
+MO.APtyBoolean_build = function APtyBoolean_build(instance){
    var o = this;
-   if(v[o._name] == null){
-      v[o._name] = o._value;
+   if(instance[o._name] == null){
+      instance[o._name] = o._value;
    }
 }
 
@@ -40,26 +40,27 @@ MO.APtyBoolean_build = function APtyBoolean_build(v){
 // <T>加载属性值。</T>
 //
 // @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
+// @param instance:Object 对象
+// @param xconfig:TNode 节点
 //============================================================
-MO.APtyBoolean_load = function APtyBoolean_load(v, x){
+MO.APtyBoolean_load = function APtyBoolean_load(instance, xconfig){
    var o = this;
-   v[o._name] = MO.Lang.Boolean.parse(x.get(o._linker));
+   var value = xconfig.get(o._linker);
+   instance[o._name] = MO.Lang.Boolean.parse(value);
 }
 
 //============================================================
 // <T>存储属性值。</T>
 //
 // @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
+// @param instance:Object 对象
+// @param xconfig:TNode 节点
 //============================================================
-MO.APtyBoolean_save = function APtyBoolean_save(v, x){
+MO.APtyBoolean_save = function APtyBoolean_save(instance, xconfig){
    var o = this;
-   var d = v[o._name];
-   if(d){
-      x.set(o._linker, MO.Lang.Boolean.toString(d));
+   var value = instance[o._name];
+   if(value){
+      xconfig.set(o._linker, MO.Lang.Boolean.toString(value));
    }
 }
 

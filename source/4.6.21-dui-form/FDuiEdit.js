@@ -18,15 +18,11 @@ MO.FDuiEdit = function FDuiEdit(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyEdit);
    //..........................................................
    // @property
-   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
-   o._unit                 = MO.Class.register(o, new MO.APtyString('_unit'));
-   //..........................................................
-   // @style
-   o._styleInputPanel      = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
-   o._styleInput           = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
+   o._unit                 = MO.Class.register(o, [new MO.APtyString('_unit'), new MO.AGetSet('_unit')]);
    //..........................................................
    // @attribute
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged'));
    //..........................................................
    // @html
    o._hValueForm           = null;
@@ -44,11 +40,13 @@ MO.FDuiEdit = function FDuiEdit(o){
    o.formatText            = MO.FDuiEdit_formatText;
    o.formatValue           = MO.FDuiEdit_formatValue;
    // @method
-   o.text                  = MO.FDuiEdit_text;
-   o.setText               = MO.FDuiEdit_setText;
+   o.get                   = MO.FDuiEdit_get;
+   o.set                   = MO.FDuiEdit_set;
    o.setEditAble           = MO.FDuiEdit_setEditAble;
    o.refreshValue          = MO.FDuiEdit_refreshValue;
    o.refreshStyle          = MO.FDuiEdit_refreshStyle;
+   // @method
+   o.dispose               = MO.FDuiEdit_dispose;
    return o;
 }
 
@@ -70,8 +68,8 @@ MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(event){
    o.onBuildEditChange(event);
    //..........................................................
    // 建立输入栏
-   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
-   var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel, o.styleName('Input'));
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
+   var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel);
    o.attachEvent('onInputEdit', hInput, o.onInputEdit);
    // 设置大小
    MO.Window.Html.setSize(hInputPanel, o._inputSize);
@@ -101,7 +99,7 @@ MO.FDuiEdit_construct = function FDuiEdit_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
    // 设置属性
-   o._inputSize = new MO.SSize2(120, 0);
+   o._inputSize = new MO.SSize2(0, 0);
 }
 
 //==========================================================
@@ -135,23 +133,32 @@ MO.FDuiEdit_formatValue = function FDuiEdit_formatValue(value){
 }
 
 //==========================================================
-// <T>获得文本内容。</T>
+// <T>获取数据。</T>
 //
 // @method
-// @return String 显示内容
+// @return String 数据
 //==========================================================
-MO.FDuiEdit_text = function FDuiEdit_text(){
-   return this._hInput.value;
+MO.FDuiEdit_get = function FDuiEdit_get(){
+   var o = this;
+   var value = o._hInput.value;
+   return value;
 }
 
 //==========================================================
-// <T>设置文本内容。</T>
+// <T>设置数据。</T>
 //
 // @method
-// @param text:String 文本内容
+// @param value:String 数据
 //==========================================================
-MO.FDuiEdit_setText = function FDuiEdit_setText(text){
-   this._hInput.value = text;
+MO.FDuiEdit_set = function FDuiEdit_set(value){
+   var o = this;
+   // 设置数据
+   o._dataValue = value;
+   // 设置文本
+   var text = MO.Lang.String.nvl(value);
+   o._hInput.value = text;
+   // 设置修改状态
+   o.changeSet(false);
 }
 
 //==========================================================
@@ -205,4 +212,17 @@ MO.FDuiEdit_refreshStyle = function FDuiEdit_refreshStyle(){
    }
    hInput.className = o.styleName(inputStyle);
    hInput.readOnly = !o._statusValueEdit;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiEdit_dispose = function FDuiEdit_dispose(){
+   var o = this
+   // 释放属性
+   o._inputSize = MO.Lang.Object.dispose(o._inputSize);
+   // 父处理
+   o.__base.FDuiEditControl.dispose.call(o);
 }

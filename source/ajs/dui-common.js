@@ -249,15 +249,13 @@ MO.MDuiEditChange = function MDuiEditChange(o){
 }
 MO.MDuiEditChange_onBuildEditChange = function MDuiEditChange_onBuildEditChange(p){
    var o = this;
-   var h = o._hChangePanel;
-   h.className = o.styleName('ChangePanel', MO.MDuiEditChange);
-   h.style.verticalAlign = 'top';
-   h.width = 5;
-   o.attachEvent('onChangeEnter', h, o.onChangeEnter);
-   o.attachEvent('onChangeLeave', h, o.onChangeLeave);
-   o.attachEvent('onChangeClick', h, o.onChangeClick);
-   var hi = o._hChangeIcon = MO.RBuilder.appendIcon(h, o.styleName('ChangeIcon', MO.MDuiEditChange), 'control.change');
-   hi._pname = 'change.icon';
+   var hPanel = o._hChangePanel;
+   hPanel.className = o.styleName('ChangePanel', MO.MDuiEditChange);
+   o.attachEvent('onChangeEnter', hPanel, o.onChangeEnter);
+   o.attachEvent('onChangeLeave', hPanel, o.onChangeLeave);
+   o.attachEvent('onChangeClick', hPanel, o.onChangeClick);
+   var hIcon = o._hChangeIcon = MO.Window.Builder.appendIcon(hPanel, o.styleName('ChangeIcon', MO.MDuiEditChange), 'control.change');
+   hIcon._pname = 'change.icon';
 }
 MO.MDuiEditChange_onChangeEnter = function MDuiEditChange_onChangeEnter(e){
    var o = this;
@@ -1472,11 +1470,11 @@ MO.FDuiContainer_dispose = function FDuiContainer_dispose(){
 }
 MO.FDuiControl = function FDuiControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiComponent, MO.MUiControl, MO.MListener, MO.MUiMargin, MO.MUiPadding, MO.MDuiSize, MO.MDuiStyle);
+   o._nowrap        = MO.Class.register(o, [new MO.APtyBoolean('_nowrap'), new MO.AGetSet('_nowrap')]);
    o._foreColor     = MO.Class.register(o, [new MO.APtyString('_foreColor'), new MO.AGetSet('_foreColor')]);
    o._foreFont      = MO.Class.register(o, [new MO.APtyString('_foreFont'), new MO.AGetSet('_foreFont')]);
    o._backColor     = MO.Class.register(o, [new MO.APtyString('_backColor'), new MO.AGetSet('_backColor')]);
    o._backFont      = MO.Class.register(o, [new MO.APtyString('_backFont'), new MO.AGetSet('_backFont')]);
-   o._wrapCd        = MO.Class.register(o, [new MO.APtyEnum('_wrapCd', null, MO.EUiWrap, MO.EUiWrap.NextLine), new MO.AGetSet('_wrapCd')]);
    o._stylePanel    = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    o._layoutCd      = MO.EUiLayout.Display;
    o._sizeCd        = MO.EUiSize.Normal;
@@ -1805,7 +1803,6 @@ MO.FDuiControl_setPanel = function FDuiControl_setPanel(h){
 MO.FDuiControl_dispose = function FDuiControl_dispose(){
    var o = this;
    o._disable = null;
-   o._wrapCd = null;
    o._hint = null;
    o._styleContainer = null;
    o._statusVisible = null;

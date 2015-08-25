@@ -9,9 +9,9 @@ MO.RFloat = function RFloat(){
    var o = this;
    //..........................................................
    // @define
-   o.Chars     = '0123456789-.%';
-   o.NUMBER    = '0123456789-.%';
-   o.LEFT_CHAR = '0';
+   o.Chars    = '0123456789-.%';
+   o.NUMBER   = '0123456789-.%';
+   o.PAD_CHAR = '0';
    return o;
 }
 
@@ -66,41 +66,46 @@ MO.RFloat.prototype.parse = function RFloat_parse(source){
 // <T>格式化浮点数为指定格式。</T>
 //
 // @method
-// @param v:value:Number 浮点数
-// @param l:leftLength:Number 小数点左侧位数
-// @param lp:leftPad:String 小数点左侧补足字符
-// @param r:rightLength:Number 小数点右侧位数
-// @param rp:rightPad:String 小数点右侧补足字符
+// @param value:Number 浮点数
+// @param leftLength:Number 小数点左侧位数
+// @param leftPad:String 小数点左侧补足字符
+// @param rightLength:Number 小数点右侧位数
+// @param rightPad:String 小数点右侧补足字符
 // @return String 浮点数
 //===========================================================
-MO.RFloat.prototype.format = function RFloat_format(v, l, lp, r, rp){
+MO.RFloat.prototype.format = function RFloat_format(value, leftLength, leftPad, rightLength, rightPad){
    var o = this;
-   // 校正参数
-   if(l == null){
-      l = 0;
+   // 检查参数
+   if(value == null){
+      return '';
    }
-   if(lp == null){
-      lp = o.LEFT_CHAR;
+   if(leftLength == null){
+      leftLength = 0;
    }
-   if(r == null){
-      r = 6;
+   if(leftPad == null){
+      leftPad = o.PAD_CHAR;
    }
-   if(rp == null){
-      rp = o.LEFT_CHAR;
+   if(rightLength == null){
+      rightLength = 6;
+   }
+   if(rightPad == null){
+      rightPad = o.PAD_CHAR;
    }
    // 分割内容
-   var s = v.toString();
-   var f = s.indexOf('.');
-   if(f == -1){
-      var sl = s;
-      var sr = '';
+   var leftSource = null;
+   var rightSource = null;
+   var text = value.toString();
+   var index = text.indexOf('.');
+   if(index == -1){
+      leftSource = text;
+      rightSource = '';
    }else{
-      var sl = s.substring(0, f);
-      var sr = s.substring(f + 1, f + r + 1);
+      leftSource = text.substring(0, index);
+      rightSource = text.substring(index + 1, index + rightLength + 1);
    }
-   var fl = MO.Lang.String.lpad(sl, l, lp);
-   var fr = MO.Lang.String.rpad(sr, r, rp);
-   return fl + '.' + fr;
+   var left = MO.Lang.String.lpad(leftSource, leftLength, leftPad);
+   var right = MO.Lang.String.rpad(rightSource, rightLength, rightPad);
+   return left + '.' + right;
 }
 
 //==========================================================
@@ -170,13 +175,13 @@ MO.RFloat.prototype.unitFormat = function RFloat_unitFormat(v, l, lp, r, rp, div
       l = 0;
    }
    if (lp == null) {
-      lp = o.LEFT_CHAR;
+      lp = o.PAD_CHAR;
    }
    if (r == null) {
       r = 6;
    }
    if (rp == null) {
-      rp = o.LEFT_CHAR;
+      rp = o.PAD_CHAR;
    }
    if (divide == null || unit == null) {
       divide = 1;

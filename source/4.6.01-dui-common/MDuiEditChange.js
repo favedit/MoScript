@@ -52,17 +52,14 @@ MO.MDuiEditChange = function MDuiEditChange(o){
 MO.MDuiEditChange_onBuildEditChange = function MDuiEditChange_onBuildEditChange(p){
    var o = this;
    // 设置底板
-   var h = o._hChangePanel;
-   h.className = o.styleName('ChangePanel', MO.MDuiEditChange);
-   //h.vAlign = 'top';
-   h.style.verticalAlign = 'top';
-   h.width = 5;
-   o.attachEvent('onChangeEnter', h, o.onChangeEnter);
-   o.attachEvent('onChangeLeave', h, o.onChangeLeave);
-   o.attachEvent('onChangeClick', h, o.onChangeClick);
+   var hPanel = o._hChangePanel;
+   hPanel.className = o.styleName('ChangePanel', MO.MDuiEditChange);
+   o.attachEvent('onChangeEnter', hPanel, o.onChangeEnter);
+   o.attachEvent('onChangeLeave', hPanel, o.onChangeLeave);
+   o.attachEvent('onChangeClick', hPanel, o.onChangeClick);
    // 建立图标
-   var hi = o._hChangeIcon = MO.RBuilder.appendIcon(h, o.styleName('ChangeIcon', MO.MDuiEditChange), 'control.change');
-   hi._pname = 'change.icon';
+   var hIcon = o._hChangeIcon = MO.Window.Builder.appendIcon(hPanel, o.styleName('ChangeIcon', MO.MDuiEditChange), 'control.change');
+   hIcon._pname = 'change.icon';
 }
 
 //==========================================================
