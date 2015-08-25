@@ -7912,7 +7912,7 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    o._event24HDataChanged     = null;
    o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
    o.onDynamicData            = MO.FEaiChartMktCustomerProcessor_onDynamicData;
-   o.on24HDataFetch           = MO.FEaiChartMktCustomerProcessor_on24HDataFetch
+   o.on24HDataFetch           = MO.FEaiChartMktCustomerProcessor_on24HDataFetch;
    o.construct                = MO.FEaiChartMktCustomerProcessor_construct;
    o.allocUnit                = MO.FEaiChartMktCustomerProcessor_allocUnit;
    o.allocShape               = MO.FEaiChartMktCustomerProcessor_allocShape;
@@ -7954,7 +7954,7 @@ MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProces
    var o = this;
    o.__base.FObject.construct.call(o);
    o._beginDate = new MO.TDate();
-   o._endDate = new MO.TDate
+   o._endDate = new MO.TDate();
    o._24HBeginDate = new MO.TDate();
    o._24HEndDate = new MO.TDate();
    o._units = new MO.TObjects();
@@ -8047,9 +8047,11 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
       beginDate.assign(endDate);
       var beginDate24H = o._24HBeginDate;
       beginDate24H.assign(systemDate);
+      beginDate24H.truncMinute(15);
       beginDate24H.addDay(-1);
       var endDate24H = o._24HEndDate;
       endDate24H.assign(systemDate);
+      endDate24H.truncMinute(15);
       statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
    }
    var currentTick = MO.Timer.current();
@@ -8750,7 +8752,7 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    var dataTop = top + 60;
    var dataBottom = bottom - 30;
    var dataHeight = dataBottom - dataTop;
-   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 1);
+   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
    var startTime = o.startTime();
    var endTime = o.endTime();
    var timeSpan = endTime.date.getTime() - startTime.date.getTime();
@@ -8758,19 +8760,24 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    var text;
    var drawText = false;
    var textWidth = 0;
+   graphic.setFont('bold 20px Microsoft YaHei');
    while (!startTime.isAfter(endTime)) {
       var span = startTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
       graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
-      text = startTime.format('HH24:00');
+      text = startTime.format('HH24:MI');
       startTime.addHour(1);
+      startTime.truncHour();
       drawText = !drawText;
       if (drawText) {
-         graphic.setFont('bold 20px Microsoft YaHei');
          textWidth = graphic.textWidth(text);
          graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
       }
    }
+   graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
+   text = endTime.format('HH24:MI');
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
    startTime.date.setTime(bakTime);
    startTime.refresh();
    var trendInfo = o._trendInfo;
@@ -8900,6 +8907,8 @@ MO.FEaiChartMktMarketerProcessor = function FEaiChartMktMarketerProcessor(o){
    o._dateSetup               = false;
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
+   o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
+   o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
    o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
    o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
    o._netinvestmentDayCurrent = MO.Class.register(o, new MO.AGetter('_netinvestmentDayCurrent'), 0);
@@ -8926,7 +8935,10 @@ MO.FEaiChartMktMarketerProcessor = function FEaiChartMktMarketerProcessor(o){
    o._autios                  = null;
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._event24HDataChanged     = null;
+   o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
    o.onDynamicData            = MO.FEaiChartMktMarketerProcessor_onDynamicData;
+   o.on24HDataFetch           = MO.FEaiChartMktMarketerProcessor_on24HDataFetch;
    o.construct                = MO.FEaiChartMktMarketerProcessor_construct;
    o.allocUnit                = MO.FEaiChartMktMarketerProcessor_allocUnit;
    o.allocShape               = MO.FEaiChartMktMarketerProcessor_allocShape;
@@ -8936,6 +8948,12 @@ MO.FEaiChartMktMarketerProcessor = function FEaiChartMktMarketerProcessor(o){
    o.process                  = MO.FEaiChartMktMarketerProcessor_process;
    o.dispose                  = MO.FEaiChartMktMarketerProcessor_dispose;
    return o;
+}
+MO.FEaiChartMktMarketerProcessor_on24HDataFetch = function FEaiChartMktMarketerProcessor_on24HDataFetch(event) {
+   var o = this;
+   event.beginDate = o._24HBeginDate;
+   event.endDate = o._24HEndDate;
+   o.process24HDataChangedListener(event);
 }
 MO.FEaiChartMktMarketerProcessor_onDynamicData = function FEaiChartMktMarketerProcessor_onDynamicData(event){
    var o = this;
@@ -8965,6 +8983,8 @@ MO.FEaiChartMktMarketerProcessor_construct = function FEaiChartMktMarketerProces
    o.__base.FObject.construct.call(o);
    o._beginDate = new MO.TDate();
    o._endDate = new MO.TDate();
+   o._24HBeginDate = new MO.TDate();
+   o._24HEndDate = new MO.TDate();
    o._units = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
@@ -8973,6 +8993,7 @@ MO.FEaiChartMktMarketerProcessor_construct = function FEaiChartMktMarketerProces
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
+   o._event24HDataChanged = new MO.SEvent(o);
 }
 MO.FEaiChartMktMarketerProcessor_allocUnit = function FEaiChartMktMarketerProcessor_allocUnit(){
    var o = this;
@@ -9076,6 +9097,14 @@ MO.FEaiChartMktMarketerProcessor_process = function FEaiChartMktMarketerProcesso
       endDate.assign(systemDate);
       statistics.marketer().doMarketerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       beginDate.assign(endDate);
+      var beginDate24H = o._24HBeginDate;
+      beginDate24H.assign(systemDate);
+      beginDate24H.truncMinute(15);
+      beginDate24H.addDay(-1);
+      var endDate24H = o._24HEndDate;
+      endDate24H.assign(systemDate);
+      endDate24H.truncMinute(15);
+      statistics.marketer().doMarketerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
    }
    var currentTick = MO.Timer.current();
    if(currentTick - o._tableTick > o._tableInterval){
@@ -9110,8 +9139,6 @@ MO.FEaiChartMktMarketerScene = function FEaiChartMktMarketerScene(o) {
    o._playing = false;
    o._lastTick = 0;
    o._interval = 10;
-   o._24HLastTick = 0;
-   o._24HTrendInterval = 1000 * 60 * 5;
    o._logoBar = null;
    o._timeline = null;
    o._liveTable = null;
@@ -9119,6 +9146,7 @@ MO.FEaiChartMktMarketerScene = function FEaiChartMktMarketerScene(o) {
    o._statusLayerCount = 100;
    o._statusLayerLevel = 100;
    o.onInvestmentDataChanged = MO.FEaiChartMktMarketerScene_onInvestmentDataChanged;
+   o.on24HDataChanged = MO.FEaiChartMktMarketerScene_on24HDataChanged;
    o.onOperationVisibility = MO.FEaiChartMktMarketerScene_onOperationVisibility;
    o.onProcessReady = MO.FEaiChartMktMarketerScene_onProcessReady;
    o.onProcess = MO.FEaiChartMktMarketerScene_onProcess;
@@ -9130,6 +9158,14 @@ MO.FEaiChartMktMarketerScene = function FEaiChartMktMarketerScene(o) {
    o.fixMatrix = MO.FEaiChartMktMarketerScene_fixMatrix;
    o.processResize = MO.FEaiChartMktMarketerScene_processResize;
    return o;
+}
+MO.FEaiChartMktMarketerScene_on24HDataChanged = function FEaiChartMktMarketerScene_on24HDataChanged(event) {
+   var o = this;
+   var timeline = o._timeline;
+   timeline.startTime().assign(event.beginDate);
+   timeline.endTime().assign(event.endDate);
+   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   timeline.dirty();
 }
 MO.FEaiChartMktMarketerScene_onInvestmentDataChanged = function FEaiChartMktMarketerScene_onInvestmentDataChanged(event) {
    var o = this;
@@ -9206,11 +9242,6 @@ MO.FEaiChartMktMarketerScene_onProcess = function FEaiChartMktMarketerScene_onPr
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
-      var currentTick = MO.Timer.current();
-      if (currentTick - o._24HLastTick > o._24HTrendInterval) {
-         o._timeline.sync();
-         o._24HLastTick = currentTick;
-      }
       o._processor.process();
       var logoBar = o._logoBar;
       var processor = o._processor;
@@ -9248,6 +9279,7 @@ MO.FEaiChartMktMarketerScene_setup = function FEaiChartMktMarketerScene_setup() 
    invement.setMapEntity(o._mapEntity);
    invement.setup();
    invement.addDataChangedListener(o, o.onInvestmentDataChanged);
+   invement.add24HDataChangedListener(o, o.on24HDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
@@ -9255,7 +9287,6 @@ MO.FEaiChartMktMarketerScene_setup = function FEaiChartMktMarketerScene_setup() 
    var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktMarketerTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
-   timeline.sync();
    timeline.build();
    o._guiManager.register(timeline);
    var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktMarketerTable);
@@ -9890,23 +9921,23 @@ MO.FEaiChartMktMarketerTable_dispose = function FEaiChartMktMarketerTable_dispos
 }
 MO.FEaiChartMktMarketerTimeline = function FEaiChartMktMarketerTimeline(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o._startTime        = MO.Class.register(o, new MO.AGetSet('_startTime'));
-   o._endTime          = MO.Class.register(o, new MO.AGetSet('_endTime'));
-   o._ready            = false;
-   o._investmentTotal  = 0;
-   o._intervalMiniute  = 10;
+   o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
+   o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
+   o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
+   o._ready = false;
+   o._investmentTotal = 0;
    o._baseHeight = 5;
    o._degreeLineHeight = MO.Class.register(o, new MO.AGetSet('_degreeLineHeight'), 10);
-   o._triangleWidth    = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
-   o._triangleHeight   = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
-   o._decoLineGap      = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
-   o._decoLineWidth    = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
-   o.oeUpdate          = MO.FEaiChartMktMarketerTimeline_oeUpdate;
-   o.construct         = MO.FEaiChartMktMarketerTimeline_construct;
-   o.sync              = MO.FEaiChartMktMarketerTimeline_sync;
-   o.drawTrend         = MO.FEaiChartMktMarketerTimeline_drawTrend;
-   o.onPaintBegin      = MO.FEaiChartMktMarketerTimeline_onPaintBegin;
-   o.on24HDataFetch    = MO.FEaiChartMktMarketerTimeline_on24HDataFetch;
+   o._triangleWidth = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
+   o._triangleHeight = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
+   o._decoLineGap = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
+   o._decoLineWidth = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
+   o.oeUpdate = MO.FEaiChartMktMarketerTimeline_oeUpdate;
+   o.construct = MO.FEaiChartMktMarketerTimeline_construct;
+   o.sync = MO.FEaiChartMktMarketerTimeline_sync;
+   o.drawTrend = MO.FEaiChartMktMarketerTimeline_drawTrend;
+   o.onPaintBegin = MO.FEaiChartMktMarketerTimeline_onPaintBegin;
+   o.on24HDataFetch = MO.FEaiChartMktMarketerTimeline_on24HDataFetch;
    return o;
 }
 MO.FEaiChartMktMarketerTimeline_construct = function FEaiChartMktMarketerTimeline_construct() {
@@ -9915,30 +9946,6 @@ MO.FEaiChartMktMarketerTimeline_construct = function FEaiChartMktMarketerTimelin
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
    o._trendInfo = MO.Class.create(MO.FEaiChartMktMarketerTrendInfo);
-}
-MO.FEaiChartMktMarketerTimeline_sync = function FEaiChartMktMarketerTimeline_sync() {
-   var o = this;
-   if (!o._ready) {
-      return;
-   }
-   var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
-   if(!systemLogic.testReady()){
-      return;
-   }
-   var currentDate = systemLogic.currentDate();
-   currentDate.truncMinute(o._intervalMiniute);
-   var startTime = o._startTime;
-   startTime.assign(currentDate);
-   startTime.addDay(-1);
-   var endTime = o._endTime;
-   endTime.assign(currentDate);
-   var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-   statisticsLogic.marketer().doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
-}
-MO.FEaiChartMktMarketerTimeline_on24HDataFetch = function FEaiChartMktMarketerTimeline_on24HDataFetch(event) {
-   var o = this;
-   o._trendInfo.unserializeSignBuffer(event.sign, event.content, true);
-   o.dirty();
 }
 MO.FEaiChartMktMarketerTimeline_oeUpdate = function FEaiChartMktMarketerTimeline_oeUpdate(event) {
    var o = this;
@@ -9949,11 +9956,10 @@ MO.FEaiChartMktMarketerTimeline_oeUpdate = function FEaiChartMktMarketerTimeline
    var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
    if (systemLogic.testReady()) {
       o._ready = true;
-      o.sync();
    }
    return MO.EEventStatus.Stop;
 }
-MO.FEaiChartMktMarketerTimeline_drawTrend = function FEaiChartMktMarketerTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor){
+MO.FEaiChartMktMarketerTimeline_drawTrend = function FEaiChartMktMarketerTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor) {
    var o = this;
    var startTime = o._startTime;
    var units = o._trendInfo.units();
@@ -9968,7 +9974,7 @@ MO.FEaiChartMktMarketerTimeline_drawTrend = function FEaiChartMktMarketerTimelin
    handle.beginPath();
    handle.moveTo(lastX, lastY);
    var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
-   for(var i = 1; i < count; i++){
+   for (var i = 1; i < count; i++) {
       var unit = units.get(i);
       var value = unit[propertyName];
       startTime.parseAuto(unit.recordDate());
@@ -10024,27 +10030,32 @@ MO.FEaiChartMktMarketerTimeline_onPaintBegin = function FEaiChartMktMarketerTime
    var text;
    var drawText = false;
    var textWidth = 0;
+   graphic.setFont('bold 20px Microsoft YaHei');
    while (!startTime.isAfter(endTime)) {
       var span = startTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
       graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
-      text = startTime.format('HH24:00');
+      text = startTime.format('HH24:MI');
       startTime.addHour(1);
+      startTime.truncHour();
       drawText = !drawText;
       if (drawText) {
-         graphic.setFont('bold 20px Microsoft YaHei');
          textWidth = graphic.textWidth(text);
          graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
       }
    }
+   graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
+   text = endTime.format('HH24:MI');
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
    startTime.date.setTime(bakTime);
    startTime.refresh();
    var trendInfo = o._trendInfo;
    var units = trendInfo.units();
-   if(!units){
+   if (!units) {
       return;
    }
-   if(units.isEmpty()){
+   if (units.isEmpty()) {
       return;
    }
    var unitFirst = units.first();
@@ -10077,8 +10088,8 @@ MO.FEaiChartMktMarketerTimeline_onPaintBegin = function FEaiChartMktMarketerTime
       var hour = startTime.date.getHours();
       if (lastHour == hour) {
          hourInves += unit.redemption();
-      }else{
-         if(hourInves > maxHourInves){
+      } else {
+         if (hourInves > maxHourInves) {
             maxHourInves = hourInves;
             hourInves = 0;
          }
@@ -10097,7 +10108,7 @@ MO.FEaiChartMktMarketerTimeline_onPaintBegin = function FEaiChartMktMarketerTime
    var investmentMaxWidth = graphic.textWidth(investmentMaxText);
    var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
    var investmentAvgWidth = graphic.textWidth(investmentAvgText);
-   var maxWidth =Math.max(investmentTotalWidth);
+   var maxWidth = Math.max(investmentTotalWidth);
    graphic.drawText('投资总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
    graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
    graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
