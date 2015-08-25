@@ -57,7 +57,7 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    //..........................................................
    // @method
    o.onDynamicData            = MO.FEaiChartMktCustomerProcessor_onDynamicData;
-   o.on24HDataFetch           = MO.FEaiChartMktCustomerProcessor_on24HDataFetch
+   o.on24HDataFetch           = MO.FEaiChartMktCustomerProcessor_on24HDataFetch;
    //..........................................................
    // @method
    o.construct                = MO.FEaiChartMktCustomerProcessor_construct;
@@ -126,7 +126,7 @@ MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProces
    o.__base.FObject.construct.call(o);
    // 设置变量
    o._beginDate = new MO.TDate();
-   o._endDate = new MO.TDate
+   o._endDate = new MO.TDate();
    o._24HBeginDate = new MO.TDate();
    o._24HEndDate = new MO.TDate();
    o._units = new MO.TObjects();
@@ -273,10 +273,12 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
       // 设置开始时间
       var beginDate24H = o._24HBeginDate;
       beginDate24H.assign(systemDate);
+      beginDate24H.truncMinute(15);
       beginDate24H.addDay(-1);
       // 设置结束时间
       var endDate24H = o._24HEndDate;
       endDate24H.assign(systemDate);
+      endDate24H.truncMinute(15);
       // 取数据
       statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
    }

@@ -153,7 +153,7 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    var dataBottom = bottom - 30;
    var dataHeight = dataBottom - dataTop;
    // 主轴
-   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 1);
+   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
    // 刻度
    var startTime = o.startTime();
    var endTime = o.endTime();
@@ -162,19 +162,24 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    var text;
    var drawText = false;
    var textWidth = 0;
+   graphic.setFont('bold 20px Microsoft YaHei');
    while (!startTime.isAfter(endTime)) {
       var span = startTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
       graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
-      text = startTime.format('HH24:00');
+      text = startTime.format('HH24:MI');
       startTime.addHour(1);
+      startTime.truncHour();
       drawText = !drawText;
       if (drawText) {
-         graphic.setFont('bold 20px Microsoft YaHei');
          textWidth = graphic.textWidth(text);
          graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
       }
    }
+   graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
+   text = endTime.format('HH24:MI');
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
 
    startTime.date.setTime(bakTime);
    startTime.refresh();

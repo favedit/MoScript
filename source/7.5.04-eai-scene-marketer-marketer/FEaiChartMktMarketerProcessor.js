@@ -13,6 +13,8 @@ MO.FEaiChartMktMarketerProcessor = function FEaiChartMktMarketerProcessor(o){
    // @attribute
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
+   o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
+   o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
    // @attribute
    o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
    o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
@@ -51,9 +53,13 @@ MO.FEaiChartMktMarketerProcessor = function FEaiChartMktMarketerProcessor(o){
    // @event
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+
+   o._event24HDataChanged     = null;
+   o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
    //..........................................................
    // @method
    o.onDynamicData            = MO.FEaiChartMktMarketerProcessor_onDynamicData;
+   o.on24HDataFetch           = MO.FEaiChartMktMarketerProcessor_on24HDataFetch;
    //..........................................................
    // @method
    o.construct                = MO.FEaiChartMktMarketerProcessor_construct;
@@ -68,6 +74,18 @@ MO.FEaiChartMktMarketerProcessor = function FEaiChartMktMarketerProcessor(o){
    // @method
    o.dispose                  = MO.FEaiChartMktMarketerProcessor_dispose;
    return o;
+}
+
+//==========================================================
+// <T>24小时数据获取处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartMktMarketerProcessor_on24HDataFetch = function FEaiChartMktMarketerProcessor_on24HDataFetch(event) {
+   var o = this;
+   event.beginDate = o._24HBeginDate;
+   event.endDate = o._24HEndDate;
+   o.process24HDataChangedListener(event);
 }
 
 //==========================================================
@@ -114,6 +132,8 @@ MO.FEaiChartMktMarketerProcessor_construct = function FEaiChartMktMarketerProces
    // 设置变量
    o._beginDate = new MO.TDate();
    o._endDate = new MO.TDate();
+   o._24HBeginDate = new MO.TDate();
+   o._24HEndDate = new MO.TDate();
    o._units = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
@@ -124,6 +144,7 @@ MO.FEaiChartMktMarketerProcessor_construct = function FEaiChartMktMarketerProces
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
+   o._event24HDataChanged = new MO.SEvent(o);
 }
 
 //==========================================================
@@ -279,6 +300,19 @@ MO.FEaiChartMktMarketerProcessor_process = function FEaiChartMktMarketerProcesso
       statistics.marketer().doMarketerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
       beginDate.assign(endDate);
+
+      // 取24小时统计数据
+      // 设置开始时间
+      var beginDate24H = o._24HBeginDate;
+      beginDate24H.assign(systemDate);
+      beginDate24H.truncMinute(15);
+      beginDate24H.addDay(-1);
+      // 设置结束时间
+      var endDate24H = o._24HEndDate;
+      endDate24H.assign(systemDate);
+      endDate24H.truncMinute(15);
+      // 取数据
+      statistics.marketer().doMarketerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
    }
    //..........................................................
    // 设置表格刷新
