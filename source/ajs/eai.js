@@ -1686,7 +1686,6 @@ MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(ca
 }
 MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
    var code = entity.data().code();
-   MO.Assert.debugNotEmpty(code);
    this._citys.set(code, entity);
 }
 MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context){
@@ -1847,7 +1846,6 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
-      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);
@@ -9522,7 +9520,7 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    image.addLoadListener(o, o.onImageLoad);
    var grid = o._gridMonthRank = MO.Class.create(MO.FGuiGridControl);
    grid.setLocation(50, 112);
-   grid.setSize(800, 900);
+   grid.setSize(800, 200);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
    grid.setLeft(9);
    grid.setRight(19);
@@ -9718,6 +9716,7 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setLocation(50,570);
    grid.setSize(800, 430);
+   grid.setPadding(0,0,0,10);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setRight(19);
@@ -9786,7 +9785,7 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
       o._tableCount = 11;
       o._rankStart = 100;
       o._rankTitleStart = -5;
-      o._rankHeight = 249;
+      o._rankHeight = 174;
       o._rankRowHeight = 50;
       o._rankIconStart = 22;
       o._rankTextStart = 8;
@@ -10677,6 +10676,9 @@ MO.FEaiChartDptMarketerTable = function FEaiChartDptMarketerTable(o) {
    o._rankTitleImage       = null;
    o._rankLineImage        = null;
    o._rankLinePadding      = null;
+   o._rankLineMonthImage   = null;
+   o._rankLineWeeksImage   = null;
+   o._rankLineDayImage     = null;
    o._rank1Image           = null;
    o._rank2Image           = null;
    o._rank3Image           = null;
@@ -10730,7 +10732,9 @@ MO.FEaiChartDptMarketerTable_onPaintBegin = function FEaiChartDptMarketerTable_o
    graphic.setFont(o._rowFontStyle);
    var tableTop = top + o._rankStart;
    var timeX = left + 6;
-   graphic.drawGridImage(o._rankLineImage, timeX, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
+   graphic.drawGridImage(o._rankLineMonthImage, timeX, tableTop + o._rankTitleStart, width - 22, o._rankWeeksHeight, o._rankLinePadding);
+   graphic.drawGridImage(o._rankLineWeeksImage, timeX, tableTop + o._rankTitleStart + 174, width - 22, 139, o._rankLinePadding);
+   graphic.drawGridImage(o._rankLineDayImage, timeX, tableTop + o._rankTitleStart + 175 + 139, width - 22, 137, o._rankLinePadding);
    graphic.drawImage(o._dayImage, timeX, tableTop + 44, 56, 130);
    graphic.drawImage(o._weeksImage, timeX, tableTop + 177, 56, 137);
    graphic.drawImage(o._monthImage, timeX, tableTop + 317, 56, 130);
@@ -10763,7 +10767,11 @@ MO.FEaiChartDptMarketerTable_setup = function FEaiChartDptMarketerTable_setup() 
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rankTitleImage = imageConsole.load('{eai.resource}/marketer/title.png');
    image.addLoadListener(o, o.onImageLoad);
-   var image = o._rankLineImage = imageConsole.load('{eai.resource}/marketer/rank.png');
+   var image = o._rankLineMonthImage = imageConsole.load('{eai.resource}/marketer/rank2.png');
+   image.addLoadListener(o, o.onImageLoad);
+   var image = o._rankLineWeeksImage = imageConsole.load('{eai.resource}/marketer/rank3.png');
+   image.addLoadListener(o, o.onImageLoad);
+   var image = o._rankLineDayImage = imageConsole.load('{eai.resource}/marketer/rank4.png');
    image.addLoadListener(o, o.onImageLoad);
    var image = o._rank1Image = imageConsole.load('{eai.resource}/live/1.png');
    image.addLoadListener(o, o.onImageLoad);
@@ -11047,6 +11055,7 @@ MO.FEaiChartDptMarketerTable_setup = function FEaiChartDptMarketerTable_setup() 
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setLocation(50,570);
    grid.setSize(800, 430);
+   grid.setPadding(0,0,0,10);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setRight(19);
@@ -11115,7 +11124,7 @@ MO.FEaiChartDptMarketerTable_setup = function FEaiChartDptMarketerTable_setup() 
       o._tableCount = 11;
       o._rankStart = 100;
       o._rankTitleStart = -5;
-      o._rankHeight = 249;
+      o._rankHeight = 174;
       o._rankRowHeight = 50;
       o._rankIconStart = 22;
       o._rankTextStart = 8;
@@ -11131,7 +11140,10 @@ MO.FEaiChartDptMarketerTable_setup = function FEaiChartDptMarketerTable_setup() 
       o._tableCount = 19;
       o._rankStart = 110;
       o._rankTitleStart = 0;
-      o._rankHeight = 450;
+      o._rankHeight = 174;
+      o._rankWeeksHeight = 174;
+      o._rankMonthHeight = 139;
+      o._rankDayHeight = 137;
       o._rankRowHeight = 40;
       o._rankIconStart = 25;
       o._rankTextStart = 0;
@@ -12417,7 +12429,6 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }else{
       o._calculateRate.set(1, 1);
    }
-   MO.Logger.debug(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    var canvas3d = o._canvas3d;
    if(browser.capability().canvasScale){
       canvas3d.resize(width, height);

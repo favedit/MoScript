@@ -39,18 +39,6 @@ MO.ERowStatus = new function ERowStatusFace(){
    o.Delete  = 'D';
    return o;
 }
-MO.MDuiContainer = function MDuiContainer(o){
-   o = MO.Class.inherits(this, o);
-   o.createChild = MO.MDuiContainer_createChild;
-   o.appendChild = MO.Method.empty;
-   o.removeChild = MO.Method.empty;
-   return o;
-}
-MO.MDuiContainer_createChild = function MDuiContainer_createChild(p){
-   var c = MO.RDuiControl.newInstance(p);
-   c._parent = this;
-   return c;
-}
 MO.MDuiDescribeFrame = function MDuiDescribeFrame(o){
    o = MO.Class.inherits(this, o);
    o._frameName  = null;
@@ -147,32 +135,33 @@ MO.MDuiDisplay = function MDuiDisplay(o){
    o.canVisible  = MO.MDuiDisplay_canVisible;
    return o;
 }
-MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(e){
+MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(event){
    var o = this;
-   if(e.isBefore()){
-      var v = true;
-      if(!o.base.MDuiDisplayAble){
-         v = o.canVisible(e.mode);
+   if(event.isBefore()){
+      var modeCd = event.modeCd;
+      if(MO.Class.isClass(o, MO.MDuiDisplayAble)){
+         var visible = o.canVisible(modeCd);
+         o.setVisible(visible);
       }
-      o.setVisible(v);
    }
 }
-MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(m){
+MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(modeCd){
    var o = this;
-   switch(RString.nvl(m, o._emode)){
-      case MO.EMode.Display:
-         return o.dispList;
-      case MO.EMode.Search:
-         return o.dispSearch;
-      case MO.EMode.Insert:
-         return o.dispInsert;
-      case MO.EMode.Update:
-         return o.dispUpdate;
-      case MO.EMode.Delete:
-         return o.dispDelete;
-      case MO.EMode.Zoom:
-         return o.dispZoom;
+   switch(RString.nvl(modeCd, o._emode)){
+      case MO.EUiMode.View:
+         return o._displayView;
+      case MO.EUiMode.Search:
+         return o._displaySearch;
+      case MO.EUiMode.Insert:
+         return o._displayInsert;
+      case MO.EUiMode.Update:
+         return o._displayUpdate;
+      case MO.EUiMode.Delete:
+         return o._displayDelete;
+      case MO.EUiMode.Zoom:
+         return o._displayZoom;
    }
+   return false;
 }
 MO.MDuiDropable = function MDuiDropable(o){
    o = MO.Class.inherits(this, o);
@@ -349,7 +338,6 @@ MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(
    var o = this;
    var vt = s._invalidText = o.validText(s.text());
    if(vt){
-      MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
    }else{
       s.commitValue();
    }
@@ -1308,8 +1296,7 @@ MO.FDuiComponent_dispose = function FDuiComponent_dispose(){
    o.__base.FComponent.dispose.call(o);
 }
 MO.FDuiContainer = function FDuiContainer(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiContainer);
-   o._scrollCd           = MO.Class.register(o, new MO.APtyEnum('_scrollCd', null, MO.EUiScroll, MO.EUiScroll.None));
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiContainer);
    o._controls           = null;
    o.oeDesign            = MO.Method.empty;
    o.construct           = MO.FDuiContainer_construct;
@@ -1321,6 +1308,7 @@ MO.FDuiContainer = function FDuiContainer(o){
    o.focusFirstControl   = MO.FDuiContainer_focusFirstControl;
    o.setControlsProperty = MO.FDuiContainer_setControlsProperty;
    o.storeConfig         = MO.FDuiContainer_storeConfig;
+   o.createChild         = MO.FDuiContainer_createChild;
    o.push                = MO.FDuiContainer_push;
    o.remove              = MO.FDuiContainer_remove;
    o.clear               = MO.FDuiContainer_clear;
@@ -1428,6 +1416,11 @@ MO.FDuiContainer_storeConfig = function FDuiContainer_storeConfig(x){
          }
       }
    }
+}
+MO.FDuiContainer_createChild = function FDuiContainer_createChild(xconfig){
+   var control = MO.RDuiControl.newInstance(xconfig);
+   control._parent = this;
+   return control;
 }
 MO.FDuiContainer_push = function FDuiContainer_push(p){
    var o = this;
@@ -1911,7 +1904,7 @@ MO.RDuiControl.prototype.innerCreate = function RDuiControl_innerCreate(pc, px, 
    if(MO.Class.isClass(pc, MO.MProperty)){
       pc.propertyLoad(px)
    }
-   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -1957,7 +1950,7 @@ MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px
    if(pc.__typed){
       pr = pc;
    }
-   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -1974,41 +1967,41 @@ MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px
       pc.builded(ph);
    }
 }
-MO.RDuiControl.prototype.build = function RDuiControl_build(c, x, a, h){
+MO.RDuiControl.prototype.build = function RDuiControl_build(control, xconfig, attributes, hPanel){
    var o = this;
-   if(!c){
-      c = MO.RDuiControl.newInstance(x);
+   if(!control){
+      control = MO.RDuiControl.newInstance(xconfig);
    }
-   o.innerbuild(c, c, x, a, h);
-   return c;
+   o.innerbuild(control, control, xconfig, attributes, hPanel);
+   return control;
 }
-MO.RDuiControl.prototype.setStyleScroll = function RDuiControl_setStyleScroll(h, c){
-   var s = h.style;
-   switch(c){
+MO.RDuiControl.prototype.setStyleScroll = function RDuiControl_setStyleScroll(hTag, scrollCd){
+   var hStyle = hTag.style;
+   switch(scrollCd){
       case MO.EUiScroll.None:
-         s.overflowX = '';
-         s.overflowY = '';
+         hStyle.overflowX = '';
+         hStyle.overflowY = '';
          break;
       case MO.EUiScroll.Horizontal:
-         s.overflowX = 'scroll';
+         hStyle.overflowX = 'scroll';
          break;
       case MO.EUiScroll.HorizontalAuto:
-         s.overflowX = 'auto';
+         hStyle.overflowX = 'auto';
          break;
       case MO.EUiScroll.Vertical:
-         s.overflowY = 'scroll';
+         hStyle.overflowY = 'scroll';
          break;
       case MO.EUiScroll.VerticalAuto:
-         s.overflowY = 'auto';
+         hStyle.overflowY = 'auto';
          break;
       case MO.EUiScroll.Both:
-         s.overflow = 'scroll';
+         hStyle.overflow = 'scroll';
          break;
       case MO.EUiScroll.BothAuto:
-         s.overflow = 'auto';
+         hStyle.overflow = 'auto';
          break;
       default:
-         throw new MO.TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
+         throw new MO.TError(o, 'Unknown scroll type. (scroll_cd={1})', scrollCd);
    }
 }
 MO.RDuiControl.prototype.linkEvent = function RDuiControl_linkEvent(tc, sc, n, h, m){

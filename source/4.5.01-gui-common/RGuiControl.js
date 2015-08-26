@@ -130,7 +130,7 @@ MO.RGuiControl.prototype.innerbuild = function RGuiControl_innerbuild(parentCont
       parentControl = control;
    }
    // 建立子节点
-   if(MO.Class.isClass(control, MO.MGuiContainer) && xconfig.hasNode()){
+   if(MO.Class.isClass(control, MO.MUiContainer) && xconfig.hasNode()){
       var nodes = xconfig.nodes();
       var nodeCount = nodes.count();
       for(var i = 0; i < nodeCount; i++){

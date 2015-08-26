@@ -1163,6 +1163,14 @@ MO.MUiComponent_innerDump = function MUiComponent_innerDump(info, level){
    }
    return info;
 }
+MO.MUiContainer = function MUiContainer(o){
+   o = MO.Class.inherits(this, o);
+   o._scrollCd   = MO.Class.register(o, new MO.APtyEnum('_scrollCd', null, MO.EUiScroll, MO.EUiScroll.None));
+   o.createChild = MO.Method.empty;
+   o.appendChild = MO.Method.empty;
+   o.removeChild = MO.Method.empty;
+   return o;
+}
 MO.MUiControl = function MUiControl(o){
    o = MO.Class.inherits(this, o);
    o._visible      = MO.Class.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);

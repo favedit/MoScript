@@ -39,18 +39,6 @@ MO.ERowStatus = new function ERowStatusFace(){
    o.Delete  = 'D';
    return o;
 }
-MO.MDuiContainer = function MDuiContainer(o){
-   o = MO.Class.inherits(this, o);
-   o.createChild = MO.MDuiContainer_createChild;
-   o.appendChild = MO.Method.empty;
-   o.removeChild = MO.Method.empty;
-   return o;
-}
-MO.MDuiContainer_createChild = function MDuiContainer_createChild(p){
-   var c = MO.RDuiControl.newInstance(p);
-   c._parent = this;
-   return c;
-}
 MO.MDuiDescribeFrame = function MDuiDescribeFrame(o){
    o = MO.Class.inherits(this, o);
    o._frameName  = null;
@@ -147,32 +135,33 @@ MO.MDuiDisplay = function MDuiDisplay(o){
    o.canVisible  = MO.MDuiDisplay_canVisible;
    return o;
 }
-MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(e){
+MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(event){
    var o = this;
-   if(e.isBefore()){
-      var v = true;
-      if(!o.base.MDuiDisplayAble){
-         v = o.canVisible(e.mode);
+   if(event.isBefore()){
+      var modeCd = event.modeCd;
+      if(MO.Class.isClass(o, MO.MDuiDisplayAble)){
+         var visible = o.canVisible(modeCd);
+         o.setVisible(visible);
       }
-      o.setVisible(v);
    }
 }
-MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(m){
+MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(modeCd){
    var o = this;
-   switch(RString.nvl(m, o._emode)){
-      case MO.EMode.Display:
-         return o.dispList;
-      case MO.EMode.Search:
-         return o.dispSearch;
-      case MO.EMode.Insert:
-         return o.dispInsert;
-      case MO.EMode.Update:
-         return o.dispUpdate;
-      case MO.EMode.Delete:
-         return o.dispDelete;
-      case MO.EMode.Zoom:
-         return o.dispZoom;
+   switch(RString.nvl(modeCd, o._emode)){
+      case MO.EUiMode.View:
+         return o._displayView;
+      case MO.EUiMode.Search:
+         return o._displaySearch;
+      case MO.EUiMode.Insert:
+         return o._displayInsert;
+      case MO.EUiMode.Update:
+         return o._displayUpdate;
+      case MO.EUiMode.Delete:
+         return o._displayDelete;
+      case MO.EUiMode.Zoom:
+         return o._displayZoom;
    }
+   return false;
 }
 MO.MDuiDropable = function MDuiDropable(o){
    o = MO.Class.inherits(this, o);
@@ -349,7 +338,6 @@ MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(
    var o = this;
    var vt = s._invalidText = o.validText(s.text());
    if(vt){
-      MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
    }else{
       s.commitValue();
    }
@@ -1308,8 +1296,7 @@ MO.FDuiComponent_dispose = function FDuiComponent_dispose(){
    o.__base.FComponent.dispose.call(o);
 }
 MO.FDuiContainer = function FDuiContainer(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiContainer);
-   o._scrollCd           = MO.Class.register(o, new MO.APtyEnum('_scrollCd', null, MO.EUiScroll, MO.EUiScroll.None));
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiContainer);
    o._controls           = null;
    o.oeDesign            = MO.Method.empty;
    o.construct           = MO.FDuiContainer_construct;
@@ -1321,6 +1308,7 @@ MO.FDuiContainer = function FDuiContainer(o){
    o.focusFirstControl   = MO.FDuiContainer_focusFirstControl;
    o.setControlsProperty = MO.FDuiContainer_setControlsProperty;
    o.storeConfig         = MO.FDuiContainer_storeConfig;
+   o.createChild         = MO.FDuiContainer_createChild;
    o.push                = MO.FDuiContainer_push;
    o.remove              = MO.FDuiContainer_remove;
    o.clear               = MO.FDuiContainer_clear;
@@ -1428,6 +1416,11 @@ MO.FDuiContainer_storeConfig = function FDuiContainer_storeConfig(x){
          }
       }
    }
+}
+MO.FDuiContainer_createChild = function FDuiContainer_createChild(xconfig){
+   var control = MO.RDuiControl.newInstance(xconfig);
+   control._parent = this;
+   return control;
 }
 MO.FDuiContainer_push = function FDuiContainer_push(p){
    var o = this;
@@ -1911,7 +1904,7 @@ MO.RDuiControl.prototype.innerCreate = function RDuiControl_innerCreate(pc, px, 
    if(MO.Class.isClass(pc, MO.MProperty)){
       pc.propertyLoad(px)
    }
-   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -1957,7 +1950,7 @@ MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px
    if(pc.__typed){
       pr = pc;
    }
-   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -1974,41 +1967,41 @@ MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px
       pc.builded(ph);
    }
 }
-MO.RDuiControl.prototype.build = function RDuiControl_build(c, x, a, h){
+MO.RDuiControl.prototype.build = function RDuiControl_build(control, xconfig, attributes, hPanel){
    var o = this;
-   if(!c){
-      c = MO.RDuiControl.newInstance(x);
+   if(!control){
+      control = MO.RDuiControl.newInstance(xconfig);
    }
-   o.innerbuild(c, c, x, a, h);
-   return c;
+   o.innerbuild(control, control, xconfig, attributes, hPanel);
+   return control;
 }
-MO.RDuiControl.prototype.setStyleScroll = function RDuiControl_setStyleScroll(h, c){
-   var s = h.style;
-   switch(c){
+MO.RDuiControl.prototype.setStyleScroll = function RDuiControl_setStyleScroll(hTag, scrollCd){
+   var hStyle = hTag.style;
+   switch(scrollCd){
       case MO.EUiScroll.None:
-         s.overflowX = '';
-         s.overflowY = '';
+         hStyle.overflowX = '';
+         hStyle.overflowY = '';
          break;
       case MO.EUiScroll.Horizontal:
-         s.overflowX = 'scroll';
+         hStyle.overflowX = 'scroll';
          break;
       case MO.EUiScroll.HorizontalAuto:
-         s.overflowX = 'auto';
+         hStyle.overflowX = 'auto';
          break;
       case MO.EUiScroll.Vertical:
-         s.overflowY = 'scroll';
+         hStyle.overflowY = 'scroll';
          break;
       case MO.EUiScroll.VerticalAuto:
-         s.overflowY = 'auto';
+         hStyle.overflowY = 'auto';
          break;
       case MO.EUiScroll.Both:
-         s.overflow = 'scroll';
+         hStyle.overflow = 'scroll';
          break;
       case MO.EUiScroll.BothAuto:
-         s.overflow = 'auto';
+         hStyle.overflow = 'auto';
          break;
       default:
-         throw new MO.TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
+         throw new MO.TError(o, 'Unknown scroll type. (scroll_cd={1})', scrollCd);
    }
 }
 MO.RDuiControl.prototype.linkEvent = function RDuiControl_linkEvent(tc, sc, n, h, m){
@@ -2683,7 +2676,6 @@ MO.FDuiEditorConsole_focus = function FDuiEditorConsole_focus(c, n, l){
       e.build(c._hPanel);
       o._editors.set(l, e);
    }
-   MO.Logger.debug(o, 'Focus editor {1} (editable={2}, name={3})', MO.Class.dump(e), MO.Class.dump(c), l);
    e.reset();
    if(MO.Class.isClass(e, MO.FDuiDropEditor)){
       e.linkControl(c);
@@ -2694,7 +2686,6 @@ MO.FDuiEditorConsole_focus = function FDuiEditorConsole_focus(c, n, l){
 MO.FDuiEditorConsole_blur = function FDuiEditorConsole_blur(editor){
    var o = this;
    if(o._focusEditor){
-      MO.Logger.debug(o, 'Blur editor {1}', MO.Class.dump(editor));
       editor = MO.Lang.Object.nvl(editor, o._focusEditor);
       if(editor){
          editor.onEditEnd();
@@ -2848,7 +2839,7 @@ MO.FDuiFocusConsole_construct = function FDuiFocusConsole_construct(){
 }
 MO.FDuiFocusConsole_enter = function FDuiFocusConsole_enter(c){
    var o = this;
-   if(MO.Class.isClass(c, MO.MDuiContainer)){
+   if(MO.Class.isClass(c, MO.MUiContainer)){
       o._hoverContainer = c;
    }else{
       o._hoverControl = c;
@@ -2878,14 +2869,12 @@ MO.FDuiFocusConsole_focus = function FDuiFocusConsole_focus(c, e){
    var bc = o._blurControl;
    if(bc != f){
       if(o._blurAble && f && f.testBlur(c)){
-         MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, MO.Class.dump(f));
          o._blurControl = f;
          f.doBlur(e);
          o.lsnsBlur.process(f);
       }
    }
    if(o._focusAble){
-      MO.Logger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, MO.Class.dump(c));
       c.doFocus(e);
       o._focusControl = o._activeControl = c;
       o.lsnsFocus.process(c);
@@ -2899,12 +2888,10 @@ MO.FDuiFocusConsole_blur = function FDuiFocusConsole_blur(c, e){
       return;
    }
    if(bc != c && MO.Class.isClass(c, MO.MDuiFocus)){
-      MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, MO.Class.dump(c));
       o._blurControl = c;
       c.doBlur(e);
    }
    if(fc){
-      MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, MO.Class.dump(fc));
       fc.doBlur(e);
       o._focusControl = null;
    }
@@ -2928,14 +2915,12 @@ MO.FDuiFocusConsole_focusClass = function FDuiFocusConsole_focusClass(c, p){
    var n = MO.Class.name(c);
    if(o._focusClasses[n] != p){
       o._focusClasses[n] = p;
-      MO.Logger.debug(o, 'Focus class. (name={1}, class={2})', n, MO.Class.dump(p));
       o.lsnsFocusClass.process(p, c);
    }
 }
 MO.FDuiFocusConsole_focusHtml = function FDuiFocusConsole_focusHtml(p){
    var o = this;
    var c = MO.Window.Html.searchLinker(p, MO.FDuiControl);
-   MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', MO.Class.dump(c), p.tagName);
    if(c){
       if(o._focusControl != c){
          o.blur(c, p);
@@ -3153,7 +3138,6 @@ MO.FDuiFrameEventConsole_construct = function FDuiFrameEventConsole_construct(){
    t.setInterval(o._interval);
    t.addProcessListener(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(t);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(t));
 }
 MO.FDuiFrameEventConsole_register = function FDuiFrameEventConsole_register(po, pc){
    this._events.push(new MO.TEvent(po, null, pc));
@@ -4617,7 +4601,6 @@ MO.FDuiButton_doClick = function FDuiButton_doClick(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -5502,12 +5485,10 @@ MO.FDuiCheckPicker_onBuildEdit = function FDuiCheckPicker_onBuildEdit(b){
 }
 MO.FDuiCheckPicker_onEditEnd = function FDuiCheckPicker_onEditEnd(editor){
    var o = this;
-   MO.Logger.debug(o, 'Begin (editor={1}:{2} value={3})', editor, editor?editor.value():'', o.dataValue);
    if(editor){
       o.set(editor.values);
    }
    o.onDataEditEnd(o);
-   MO.Logger.debug(o, 'End (editor={1} value={2})', editor, o.dataValue);
 }
 MO.FDuiCheckPicker_loadConfig = function FDuiCheckPicker_loadConfig(c){
    var o = this;
@@ -7600,7 +7581,6 @@ MO.FDuiEditor_onEditBegin = function FDuiEditor_onEditBegin(){
 }
 MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
    var o = this;
-   MO.Logger.debug(o, 'Edit changed');
    var g = o.storage = MO.Lang.Object.nvlObj(o.storage);
    if(g.value == o.value()){
       if(o.changed){
@@ -7615,7 +7595,6 @@ MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
 MO.FDuiEditor_onEditEnd = function FDuiEditor_onEditEnd(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor end. (control={1})', MO.Class.dump(s));
    o.hide();
    if(o.lsnEditEnd){
       o.lsnEditEnd.process(o);
@@ -7664,7 +7643,6 @@ MO.FDuiEditor_linkControl = function FDuiEditor_linkControl(c){
 MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor begin. (control={1})', MO.Class.dump(s));
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
    }
@@ -7674,7 +7652,6 @@ MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
 MO.FDuiEditor_editCancel = function FDuiEditor_editCancel(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor cancel. (control={1})', MO.Class.dump(s));
    o.hide();
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
@@ -10188,7 +10165,7 @@ MO.FDuiRadio_refreshStyle = function FDuiRadio_refreshStyle(){
    h.style.cursor = o._editable? 'hand':'normal';
 }
 MO.FDuiSelect = function FDuiSelect(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MDuiContainer, MO.MUiPropertySelect);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiContainer, MO.MUiPropertySelect);
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o._hValueForm           = null;
    o._hValueLine           = null;
@@ -10199,6 +10176,7 @@ MO.FDuiSelect = function FDuiSelect(o){
    o.onDropClick           = MO.FDuiSelect_onDropClick;
    o.onKeyDown             = MO.Class.register(o, new MO.AEventKeyDown('onKeyDown'), MO.FDuiSelect_onKeyDown);
    o.construct             = MO.FDuiSelect_construct;
+   o.createChild           = MO.FDuiSelect_createChild;
    o.findItemByLabel       = MO.FDuiSelect_findItemByLabel;
    o.findItemByValue       = MO.FDuiSelect_findItemByValue;
    o.formatValue           = MO.FDuiSelect_formatValue;
@@ -10250,6 +10228,11 @@ MO.FDuiSelect_onKeyDown = function FDuiSelect_onKeyDown(event){
 MO.FDuiSelect_construct = function FDuiSelect_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
+}
+MO.FDuiSelect_createChild = function FDuiSelect_createChild(xconfig){
+   var control = MO.RDuiControl.newInstance(xconfig);
+   control._parent = this;
+   return control;
 }
 MO.FDuiSelect_findItemByLabel = function FDuiSelect_findItemByLabel(label){
    var o = this;
@@ -11975,7 +11958,6 @@ with(MO){
       o.table.editRow = row;
       o.table.editColumn = o;
       o.table.select(row, true);
-      MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
    }
    MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
       var o = this;
@@ -11985,7 +11967,6 @@ with(MO){
       o.setText(row, text);
       o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
       o.editor = null;
-      MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
    }
    MO.FDuiColumn_onEditChanged = function FDuiColumn_onEditChanged(cell) {
       cell.row.refresh();
@@ -14245,7 +14226,6 @@ MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -14635,7 +14615,6 @@ MO.FDuiSliderButton_click = function FDuiSliderButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -14785,62 +14764,60 @@ MO.FDuiSliderMenu_dispose = function FDuiSliderMenu_dispose(){
    o._hLine = MO.Window.Html.free(o._hLine);
    o.__base.FDuiContainer.dispose.call(o);
 }
-with(MO){
-   MO.FDuiToolBar = function FDuiToolBar(o){
-      o = MO.Class.inherits(this, o, FDuiContainer, MDuiDescribeFrame);
-      o._alignCd          = MO.Class.register(o, new MO.APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
-      o._directionCd      = MO.Class.register(o, new MO.APtyEnum('_directionCd', null, EUiDirection, EUiDirection.Horizontal));
-      o._mergeCd          = MO.Class.register(o, new MO.APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
-      o._stylePanel       = MO.Class.register(o, new MO.AStyle('_stylePanel'));
-      o._styleButtonPanel = MO.Class.register(o, new MO.AStyle('_styleButtonPanel'));
-      o._hLine            = null;
-      o.onBuildPanel      = FDuiToolBar_onBuildPanel;
-      o.onEnter           = RMethod.empty;
-      o.onLeave           = RMethod.empty;
-      o.appendChild       = FDuiToolBar_appendChild;
-      o.removeChild       = FDuiToolBar_removeChild;
-      o.dispose           = FDuiToolBar_dispose;
-      return o;
-   }
-   MO.FDuiToolBar_onBuildPanel = function FDuiToolBar_onBuildPanel(p){
-      var o = this;
-      o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
-   }
-   MO.FDuiToolBar_appendChild = function FDuiToolBar_appendChild(control){
-      var o = this;
-      o.__base.FDuiContainer.appendChild.call(o, control);
-      if(RClass.isClass(control, MUiToolButton)){
-         var h = o._hPanel;
-         var hl = o._hLine;
-         if(o._directionCd == EUiDirection.Horizontal){
-            if(!hl){
-               hl = o._hLine = MO.Window.Builder.appendTableRow(h);
-            }
-         }
-         if(o._directionCd == EUiDirection.Vertical){
+MO.FDuiToolBar = function FDuiToolBar(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiDescribeFrame);
+   o._alignCd          = MO.Class.register(o, new MO.APtyEnum('_alignCd', null, MO.EUiAlign, MO.EUiAlign.Left));
+   o._directionCd      = MO.Class.register(o, new MO.APtyEnum('_directionCd', null, MO.EUiDirection, MO.EUiDirection.Horizontal));
+   o._mergeCd          = MO.Class.register(o, new MO.APtyEnum('_mergeCd', null, MO.EUiMerge, MO.EUiMerge.Override));
+   o._stylePanel       = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._styleButtonPanel = MO.Class.register(o, new MO.AStyle('_styleButtonPanel'));
+   o._hLine            = null;
+   o.onBuildPanel      = MO.FDuiToolBar_onBuildPanel;
+   o.onEnter           = MO.Method.empty;
+   o.onLeave           = MO.Method.empty;
+   o.appendChild       = MO.FDuiToolBar_appendChild;
+   o.removeChild       = MO.FDuiToolBar_removeChild;
+   o.dispose           = MO.FDuiToolBar_dispose;
+   return o;
+}
+MO.FDuiToolBar_onBuildPanel = function FDuiToolBar_onBuildPanel(p){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTable(p, o.styleName('Panel'));
+}
+MO.FDuiToolBar_appendChild = function FDuiToolBar_appendChild(control){
+   var o = this;
+   o.__base.FDuiContainer.appendChild.call(o, control);
+   if(MO.Class.isClass(control, MO.MUiToolButton)){
+      var h = o._hPanel;
+      var hl = o._hLine;
+      if(o._directionCd == MO.EUiDirection.Horizontal){
+         if(!hl){
             hl = o._hLine = MO.Window.Builder.appendTableRow(h);
          }
-         var hc = MO.Window.Builder.appendTableCell(hl, o.styleName('ButtonPanel'));
-         control._hPanelCell = hc;
-         control.setPanel(hc);
       }
-   }
-   MO.FDuiToolBar_removeChild = function FDuiToolBar_removeChild(p){
-      var o = this;
-      if(RClass.isClass(p, MUiToolButton)){
-         var hp = p._hParent;
-         var hl = p._hParentLine;
-         hl.removeChild(hp);
-         p._hParent = null;
-         p._hParentLine = null;
+      if(o._directionCd == MO.EUiDirection.Vertical){
+         hl = o._hLine = MO.Window.Builder.appendTableRow(h);
       }
-      o.__base.FDuiContainer.removeChild.call(o, p);
+      var hc = MO.Window.Builder.appendTableCell(hl, o.styleName('ButtonPanel'));
+      control._hPanelCell = hc;
+      control.setPanel(hc);
    }
-   MO.FDuiToolBar_dispose = function FDuiToolBar_dispose(){
-      var o = this;
-      o._hLine = MO.Window.Html.free(o._hLine);
-      o.__base.FDuiContainer.dispose.call(o);
+}
+MO.FDuiToolBar_removeChild = function FDuiToolBar_removeChild(p){
+   var o = this;
+   if(MO.Class.isClass(p, MO.MUiToolButton)){
+      var hp = p._hParent;
+      var hl = p._hParentLine;
+      hl.removeChild(hp);
+      p._hParent = null;
+      p._hParentLine = null;
    }
+   o.__base.FDuiContainer.removeChild.call(o, p);
+}
+MO.FDuiToolBar_dispose = function FDuiToolBar_dispose(){
+   var o = this;
+   o._hLine = MO.Window.Html.free(o._hLine);
+   o.__base.FDuiContainer.dispose.call(o);
 }
 MO.FDuiToolButton = function FDuiToolButton(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiToolButton);
@@ -15002,7 +14979,6 @@ MO.FDuiToolButton_doClick = function FDuiToolButton_doClick(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -15021,189 +14997,169 @@ MO.FDuiToolButton_dispose = function FDuiToolButton_dispose(){
    o._hLabelPanel = MO.Window.Html.free(o._hLabelPanel);
    o.__base.FDuiControl.dispose.call(o);
 }
-with(MO){
-   MO.FDuiToolButtonCheck = function FDuiToolButtonCheck(o){
-      o = MO.Class.inherits(this, o, FDuiToolButton);
-      o._optionChecked  = MO.Class.register(o, new MO.APtyBoolean('_optionChecked', 'check'));
-      o._groupName      = MO.Class.register(o, new MO.APtyString('_groupName'));
-      o._groupDefault   = MO.Class.register(o, new MO.APtyString('_groupDefault'));
-      o._statusChecked  = false;
-      o.onEnter         = FDuiToolButtonCheck_onEnter;
-      o.onLeave         = FDuiToolButtonCheck_onLeave;
-      o.onMouseDown     = FDuiToolButtonCheck_onMouseDown;
-      o.onMouseUp       = FDuiToolButtonCheck_onMouseUp;
-      o.groupName       = FDuiToolButtonCheck_groupName;
-      o.setGroupName    = FDuiToolButtonCheck_setGroupName;
-      o.groupDefault    = FDuiToolButtonCheck_groupDefault;
-      o.setGroupDefault = FDuiToolButtonCheck_setGroupDefault;
-      o.innerCheck      = FDuiToolButtonCheck_innerCheck;
-      o.isCheck         = FDuiToolButtonCheck_isCheck;
-      o.check           = FDuiToolButtonCheck_check;
-      o.dispose         = FDuiToolButtonCheck_dispose;
-      return o;
+MO.FDuiToolButtonCheck = function FDuiToolButtonCheck(o){
+   o = MO.Class.inherits(this, o, MO.FDuiToolButton);
+   o._optionChecked = MO.Class.register(o, [new MO.APtyBoolean('_optionChecked', 'check'), new MO.AGetSet('_optionChecked')]);
+   o._groupName     = MO.Class.register(o, [new MO.APtyString('_groupName'), new MO.AGetSet('_groupName')]);
+   o._groupDefault  = MO.Class.register(o, [new MO.APtyString('_groupDefault'), new MO.AGetSet('_groupDefault')]);
+   o._statusChecked = false;
+   o.onEnter        = MO.FDuiToolButtonCheck_onEnter;
+   o.onLeave        = MO.FDuiToolButtonCheck_onLeave;
+   o.onMouseDown    = MO.FDuiToolButtonCheck_onMouseDown;
+   o.onMouseUp      = MO.FDuiToolButtonCheck_onMouseUp;
+   o.innerCheck     = MO.FDuiToolButtonCheck_innerCheck;
+   o.isCheck        = MO.FDuiToolButtonCheck_isCheck;
+   o.check          = MO.FDuiToolButtonCheck_check;
+   o.dispose        = MO.FDuiToolButtonCheck_dispose;
+   return o;
+}
+MO.FDuiToolButtonCheck_onEnter = function FDuiToolButtonCheck_onEnter(p){
+   var o = this;
+   if(!o._statusChecked){
+      o._hForm.className = this.styleName('Hover');
    }
-   MO.FDuiToolButtonCheck_onEnter = function FDuiToolButtonCheck_onEnter(p){
-      var o = this;
-      if(!o._statusChecked){
-         o._hForm.className = this.styleName('Hover');
+}
+MO.FDuiToolButtonCheck_onLeave = function FDuiToolButtonCheck_onLeave(p){
+   var o = this;
+   if(!o._statusChecked){
+      o._hForm.className = this.styleName('Normal');
+   }
+}
+MO.FDuiToolButtonCheck_onMouseDown = function FDuiToolButtonCheck_onMouseDown(p){
+   var o = this;
+   o.check(!o._statusChecked);
+   var event = new MO.SClickEvent(o);
+   event.checked = o._statusChecked;
+   o.processClickListener(event, o._statusChecked);
+   event.dispose();
+}
+MO.FDuiToolButtonCheck_onMouseUp = function FDuiToolButtonCheck_onMouseUp(){
+   var o = this;
+}
+MO.FDuiToolButtonCheck_innerCheck = function FDuiToolButtonCheck_innerCheck(p){
+   var o = this;
+   if(o._statusChecked != p){
+      o._statusChecked = p;
+      if(p){
+         o._hForm.className = o.styleName('Press');
+      }else{
+         o._hForm.className = o.styleName('Normal');
       }
    }
-   MO.FDuiToolButtonCheck_onLeave = function FDuiToolButtonCheck_onLeave(p){
-      var o = this;
-      if(!o._statusChecked){
-         o._hForm.className = this.styleName('Normal');
-      }
-   }
-   MO.FDuiToolButtonCheck_onMouseDown = function FDuiToolButtonCheck_onMouseDown(p){
-      var o = this;
-      o.check(!o._statusChecked);
-      var event = new SClickEvent(o);
-      event.checked = o._statusChecked;
-      o.processClickListener(event, o._statusChecked);
-      event.dispose();
-   }
-   MO.FDuiToolButtonCheck_onMouseUp = function FDuiToolButtonCheck_onMouseUp(){
-      var o = this;
-   }
-   MO.FDuiToolButtonCheck_groupName = function FDuiToolButtonCheck_groupName(){
-      return this._groupName;
-   }
-   MO.FDuiToolButtonCheck_setGroupName = function FDuiToolButtonCheck_setGroupName(p){
-      this._groupName = p;
-   }
-   MO.FDuiToolButtonCheck_groupDefault = function FDuiToolButtonCheck_groupDefault(){
-      return this._groupDefault;
-   }
-   MO.FDuiToolButtonCheck_setGroupDefault = function FDuiToolButtonCheck_setGroupDefault(p){
-      this._groupDefault = p;
-   }
-   MO.FDuiToolButtonCheck_innerCheck = function FDuiToolButtonCheck_innerCheck(p){
-      var o = this;
-      if(o._statusChecked != p){
-         o._statusChecked = p;
-         if(p){
-            o._hForm.className = o.styleName('Press');
-         }else{
-            o._hForm.className = o.styleName('Normal');
-         }
-      }
-   }
-   MO.FDuiToolButtonCheck_isCheck = function FDuiToolButtonCheck_isCheck(){
-      return this._statusChecked;
-   }
-   MO.FDuiToolButtonCheck_check = function FDuiToolButtonCheck_check(p){
-      var o = this;
-      if(!p){
-         if(o._groupDefault == o){
-            return;
-         }
-      }
-      o.innerCheck(p);
-      if(!o._parent){
+}
+MO.FDuiToolButtonCheck_isCheck = function FDuiToolButtonCheck_isCheck(){
+   return this._statusChecked;
+}
+MO.FDuiToolButtonCheck_check = function FDuiToolButtonCheck_check(p){
+   var o = this;
+   if(!p){
+      if(o._groupDefault == o){
          return;
       }
-      if(p){
-         if(!RString.isEmpty(o._groupName)){
-            var cs = o._parent.components();
-            for(var i = cs.count() - 1; i >= 0; i--){
-               var c = cs.value(i);
-               if(c != o){
-                  if(RClass.isClass(c, FDuiToolButtonCheck)){
-                     c.innerCheck(false);
-                  }
+   }
+   o.innerCheck(p);
+   if(!o._parent){
+      return;
+   }
+   if(p){
+      if(!MO.String.isEmpty(o._groupName)){
+         var cs = o._parent.components();
+         for(var i = cs.count() - 1; i >= 0; i--){
+            var c = cs.value(i);
+            if(c != o){
+               if(MO.Class.isClass(c, FDuiToolButtonCheck)){
+                  c.innerCheck(false);
                }
             }
          }
-      }else{
-         if(!RString.isEmpty(o._groupDefault)){
-            var components = o._parent.components();
-            var control = components.get(o._groupDefault);
-            if(control){
-               control.innerCheck(true);
-            }else{
-               MO.Logger.error("Can't find group default control. (name={1})", o._groupDefault);
-            }
+      }
+   }else{
+      if(!MO.String.isEmpty(o._groupDefault)){
+         var components = o._parent.components();
+         var control = components.get(o._groupDefault);
+         if(control){
+            control.innerCheck(true);
+         }else{
+            MO.Logger.error("Can't find group default control. (name={1})", o._groupDefault);
          }
       }
    }
-   MO.FDuiToolButtonCheck_dispose = function FDuiToolButtonCheck_dispose(){
-      var o = this;
-      o._statusChecked = null;
-      o._groupName = null;
-      o.__base.FDuiToolButton.dispose.call(o);
+}
+MO.FDuiToolButtonCheck_dispose = function FDuiToolButtonCheck_dispose(){
+   var o = this;
+   o._statusChecked = null;
+   o._groupName = null;
+   o.__base.FDuiToolButton.dispose.call(o);
+}
+MO.FDuiToolButtonEdit = function FDuiToolButtonEdit(o){
+   o = MO.Class.inherits(this, o, MO.FDuiToolButton, MO.MListenerDataChanged);
+   o._editSize      = MO.Class.register(o, new MO.APtySize2('_editSize'));
+   o._hEdit         = null;
+   o.onBuildButton  = MO.FDuiToolButtonEdit_onBuildButton;
+   o.onEnter        = MO.Method.empty;
+   o.onLeave        = MO.Method.empty;
+   o.onInputEdit    = MO.Class.register(o, new MO.AEventInputChanged('onInputEdit'), MO.FDuiToolButtonEdit_onInputEdit);
+   o.onInputKeyDown = MO.Class.register(o, new MO.AEventKeyDown('onInputKeyDown'), MO.FDuiToolButtonEdit_onInputKeyDown);
+   o.construct      = MO.FDuiToolButtonEdit_construct;
+   o.text           = MO.FDuiToolButtonEdit_text;
+   o.setText        = MO.FDuiToolButtonEdit_setText;
+   return o;
+}
+MO.FDuiToolButtonEdit_onBuildButton = function FDuiToolButtonEdit_onBuildButton(p){
+   var o = this;
+   var hPanel = o._hPanel;
+   var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
+   var hLine = o._hLine = MO.Window.Builder.appendTableRow(hForm);
+   var hEditPanel = o._hEditPanel = MO.Window.Builder.appendTableCell(hLine);
+   var hEdit = o._hEdit = MO.Window.Builder.appendEdit(hEditPanel);
+   hEdit.style.width = o._editSize.width +  'px';
+   o.attachEvent('onInputEdit', hEdit, o.onInputEdit);
+   o.attachEvent('onInputKeyDown', hEdit);
+   o._hEditSpacePanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('SpacePanel'));
+   if(o._icon){
+      var hc = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('IconPanel'));
+      o._hIcon = MO.Window.Builder.appendIcon(hc, null, o._icon);
+   }
+   if(o._icon && o._label){
+      o._hSpacePanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('SpacePanel'));
+   }
+   if(o._label){
+      var hLabelPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('LabelPanel'));
+      o.attachEvent('onMouseDown', hLabelPanel);
+      o.attachEvent('onMouseUp', hLabelPanel);
+      hLabelPanel.noWrap = true;
+      o.setLabel(o._label);
+   }
+   if(o._hotkey){
+      MO.Console.find(MO.FKeyConsole).register(o._hotkey, o, o.onMouseDown);
+   }
+   if(o._hint){
+      o.setHint(o._hint);
    }
 }
-with(MO){
-   MO.FDuiToolButtonEdit = function FDuiToolButtonEdit(o){
-      o = MO.Class.inherits(this, o, FDuiToolButton, MListenerDataChanged);
-      o._editSize      = MO.Class.register(o, new MO.APtySize2('_editSize'));
-      o._hEdit         = null;
-      o.onBuildButton  = FDuiToolButtonEdit_onBuildButton;
-      o.onEnter        = RMethod.empty;
-      o.onLeave        = RMethod.empty;
-      o.onInputEdit    = MO.Class.register(o, new AEventInputChanged('onInputEdit'), FDuiToolButtonEdit_onInputEdit);
-      o.onInputKeyDown = MO.Class.register(o, new AEventKeyDown('onInputKeyDown'), FDuiToolButtonEdit_onInputKeyDown);
-      o.construct      = FDuiToolButtonEdit_construct;
-      o.text           = FDuiToolButtonEdit_text;
-      o.setText        = FDuiToolButtonEdit_setText;
-      return o;
+MO.FDuiToolButtonEdit_onInputEdit = function FDuiToolButtonEdit_onInputEdit(event){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+MO.FDuiToolButtonEdit_onInputKeyDown = function FDuiToolButtonEdit_onInputKeyDown(event){
+   var o = this;
+   if(event.keyCode == MO.EKeyCode.Enter){
+      o.doClick();
    }
-   MO.FDuiToolButtonEdit_onBuildButton = function FDuiToolButtonEdit_onBuildButton(p){
-      var o = this;
-      var hPanel = o._hPanel;
-      var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
-      var hLine = o._hLine = MO.Window.Builder.appendTableRow(hForm);
-      var hEditPanel = o._hEditPanel = MO.Window.Builder.appendTableCell(hLine);
-      var hEdit = o._hEdit = MO.Window.Builder.appendEdit(hEditPanel);
-      hEdit.style.width = o._editSize.width +  'px';
-      o.attachEvent('onInputEdit', hEdit, o.onInputEdit);
-      o.attachEvent('onInputKeyDown', hEdit);
-      o._hEditSpacePanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('SpacePanel'));
-      if(o._icon){
-         var hc = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('IconPanel'));
-         o._hIcon = MO.Window.Builder.appendIcon(hc, null, o._icon);
-      }
-      if(o._icon && o._label){
-         o._hSpacePanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('SpacePanel'));
-      }
-      if(o._label){
-         var hLabelPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('LabelPanel'));
-         o.attachEvent('onMouseDown', hLabelPanel);
-         o.attachEvent('onMouseUp', hLabelPanel);
-         hLabelPanel.noWrap = true;
-         o.setLabel(o._label);
-      }
-      if(o._hotkey){
-         RConsole.find(FKeyConsole).register(o._hotkey, o, o.onMouseDown);
-      }
-      if(o._hint){
-         o.setHint(o._hint);
-      }
-   }
-   MO.FDuiToolButtonEdit_onInputEdit = function FDuiToolButtonEdit_onInputEdit(event){
-      var o = this;
-      o.processDataChangedListener(o);
-   }
-   MO.FDuiToolButtonEdit_onInputKeyDown = function FDuiToolButtonEdit_onInputKeyDown(event){
-      var o = this;
-      if(event.keyCode == EKeyCode.Enter){
-         o.doClick();
-      }
-   }
-   MO.FDuiToolButtonEdit_construct = function FDuiToolButtonEdit_construct(){
-      var o = this;
-      o.__base.FDuiToolButton.construct.call(o);
-      o._editSize = new SSize2();
-   }
-   MO.FDuiToolButtonEdit_text = function FDuiToolButtonEdit_text(){
-      return this._hEdit.value;
-   }
-   MO.FDuiToolButtonEdit_setText = function FDuiToolButtonEdit_setText(text){
-      this._hEdit.value = text;
-   }
+}
+MO.FDuiToolButtonEdit_construct = function FDuiToolButtonEdit_construct(){
+   var o = this;
+   o.__base.FDuiToolButton.construct.call(o);
+   o._editSize = new MO.SSize2();
+}
+MO.FDuiToolButtonEdit_text = function FDuiToolButtonEdit_text(){
+   return this._hEdit.value;
+}
+MO.FDuiToolButtonEdit_setText = function FDuiToolButtonEdit_setText(text){
+   this._hEdit.value = text;
 }
 MO.FDuiToolButtonMenu = function FDuiToolButtonMenu(o){
-   o = MO.Class.inherits(this, o, MO.FDuiToolButton, MO.MDuiContainer, MO.MDuiDropable, MO.MDuiFocus);
+   o = MO.Class.inherits(this, o, MO.FDuiToolButton, MO.MUiContainer, MO.MDuiDropable, MO.MDuiFocus);
    o._menu           = null;
    o._statusDrop     = false;
    o._hDropPanel     = null;
@@ -15216,6 +15172,7 @@ MO.FDuiToolButtonMenu = function FDuiToolButtonMenu(o){
    o.onBlur          = MO.FDuiToolButtonMenu_onBlur;
    o.onMouseUp       = MO.Method.empty;
    o.construct       = MO.FDuiToolButtonMenu_construct;
+   o.createChild     = MO.FDuiToolButtonMenu_createChild;
    o.push            = MO.FDuiToolButtonMenu_push;
    o.drop            = MO.FDuiToolButtonMenu_drop;
    o.doClick         = MO.FDuiToolButtonMenu_doClick;
@@ -15258,6 +15215,11 @@ MO.FDuiToolButtonMenu_construct = function FDuiToolButtonMenu_construct(){
    menu._opener = o;
    o.push(menu);
 }
+MO.FDuiToolButtonMenu_createChild = function FDuiToolButtonMenu_createChild(xconfig){
+   var control = MO.RDuiControl.newInstance(xconfig);
+   control._parent = this;
+   return control;
+}
 MO.FDuiToolButtonMenu_push = function FDuiToolButtonMenu_push(component){
    var o = this;
    if(MO.Class.isClass(component, MO.MUiMenuButton)){
@@ -15291,83 +15253,77 @@ MO.FDuiToolButtonMenu_dispose = function FDuiToolButtonMenu_dispose(){
    o._hDropPanel = MO.Window.Html.free(o._hDropPanel);
    o.__base.FControl.dispose.call(o);
 }
-with(MO){
-   MO.FDuiToolButtonSplit = function FDuiToolButtonSplit(o){
-      o = MO.Class.inherits(this, o, FDuiToolButton, MUiToolButton);
-      o._stylePanel = MO.Class.register(o, new MO.AStyle('_stylePanel'));
-      o.onBuild     = FDuiToolButtonSplit_onBuild;
-      return o;
-   }
-   MO.FDuiToolButtonSplit_onBuild = function FDuiToolButtonSplit_onBuild(p){
-      var o = this;
-      o.__base.FDuiControl.onBuild.call(o, p);
-      o._hPanel.className = o.styleName('Panel');
-   }
+MO.FDuiToolButtonSplit = function FDuiToolButtonSplit(o){
+   o = MO.Class.inherits(this, o, MO.FDuiToolButton, MO.MUiToolButton);
+   o._stylePanel = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o.onBuild     = MO.FDuiToolButtonSplit_onBuild;
+   return o;
 }
-with(MO){
-   MO.FDuiToolButtonText = function FDuiToolButtonText(o){
-      o = MO.Class.inherits(this, o, FDuiToolButton);
-      return o;
-   }
+MO.FDuiToolButtonSplit_onBuild = function FDuiToolButtonSplit_onBuild(p){
+   var o = this;
+   o.__base.FDuiControl.onBuild.call(o, p);
+   o._hPanel.className = o.styleName('Panel');
 }
-with(MO){
-   MO.RDuiToolBar = function RDuiToolBar(){
-      var o = this;
-      o.fromNode = RDuiToolBar_fromNode;
-      return o;
+MO.FDuiToolButtonText = function FDuiToolButtonText(o){
+   o = MO.Class.inherits(this, o, MO.FDuiToolButton);
+   return o;
+}
+MO.RDuiToolBar = function RDuiToolBar(){
+   var o = this;
+   return o;
+}
+MO.RDuiToolBar.prototype.mergeNode = function RDuiToolBar_mergeNode(xtb, xNode, r){
+   var ns = xNode.nodes;
+   for(var j=0; j<ns.count; j++){
+      var n = ns.get(j);
+      if('ToolBar' == n.name){
+         if(n.nodes){
+            for(var i=0; i<n.nodes.count; i++){
+               xtb.push(n.nodes.get(i));
+            }
+         }
+      }
    }
-   MO.RDuiToolBar_mergeNode = function RDuiToolBar_mergeNode(xtb, xNode, r){
-      var ns = xNode.nodes;
-      for(var j=0; j<ns.count; j++){
+   if(r){
+      for(var j=ns.count-1; j>=0; j--){
          var n = ns.get(j);
          if('ToolBar' == n.name){
-            if(n.nodes){
-               for(var i=0; i<n.nodes.count; i++){
-                  xtb.push(n.nodes.get(i));
-               }
+            ns.removeItem(n);
+         }
+      }
+   }
+   return xtb;
+}
+MO.RDuiToolBar.prototype.fromNode = function RDuiToolBar_fromNode(control, config, panel, r){
+   if(config && config._nodes){
+      var xtb = null;
+      var ns = config._nodes;
+      var jc = ns.count();
+      for(var j = 0; j < jc; j++){
+         var n = ns.getAt(j);
+         if(n.isName('ToolBar')){
+            if(!xtb){
+               xtb = n;
+            }else if(n.hasNode()){
+               xtb.nodes().append(n.nodes());
             }
          }
       }
       if(r){
-         for(var j=ns.count-1; j>=0; j--){
-            var n = ns.get(j);
-            if('ToolBar' == n.name){
-               ns.removeItem(n);
-            }
-         }
-      }
-      return xtb;
-   }
-   MO.RDuiToolBar_fromNode = function RDuiToolBar_fromNode(control, config, panel, r){
-      if(config && config._nodes){
-         var xtb = null;
-         var ns = config._nodes;
-         var jc = ns.count();
-         for(var j = 0; j < jc; j++){
-            var n = ns.getAt(j);
+         for(var i = 0; i < ns.count(); i++){
+            var n = ns.getAt(i);
             if(n.isName('ToolBar')){
-               if(!xtb){
-                  xtb = n;
-               }else if(n.hasNode()){
-                  xtb.nodes().append(n.nodes());
-               }
+               ns.erase(i--);
             }
-         }
-         if(r){
-            for(var i = 0; i < ns.count(); i++){
-               var n = ns.getAt(i);
-               if(n.isName('ToolBar')){
-                  ns.erase(i--);
-               }
-            }
-         }
-         if(xtb){
-            RControl.build(control, xtb, null, panel);
          }
       }
+      if(xtb){
+         RControl.build(control, xtb, null, panel);
+      }
    }
-   MO.RDuiToolBar = new RDuiToolBar();
 }
+MO.RDuiToolBar = new MO.RDuiToolBar();
+MO.Dui.ToolBar = MO.RDuiToolBar;
 MO.FDuiPageControl = function FDuiPageControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer);
    o._sizeCd          = MO.EUiSize.Horizontal;
@@ -17192,15 +17148,12 @@ MO.FDuiTreeView_push = function FDuiTreeView_push(control){
    control._tree = o;
    if(MO.Class.isClass(control, MO.FDuiTreeColumn)){
       var columnName = control.name();
-      MO.Assert.debugNotEmpty(columnName);
       o._nodeColumns.set(columnName, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeLevel)){
       var levelId = control.id();
-      MO.Assert.debugNotEmpty(levelId);
       o._nodeLevels.set(levelId, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNodeType)){
       var typeCode = control.code();
-      MO.Assert.debugNotEmpty(typeCode);
       o._nodeTypes.set(typeCode, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNode)){
       o._nodes.push(control);
@@ -19117,7 +19070,6 @@ with(MO){
    }
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
-      MO.Assert.debugTrue(RClass.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');
@@ -19128,7 +19080,6 @@ with(MO){
       root.set('action', svc.action);
       RConsole.find(FEnvironmentConsole).build(root);
       p.dsSaveValue(root.create('Data'));
-      MO.Logger.debug(this, xdocument.dump());
       o._loading = true;
       o._dataContainer = p;
       var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);
@@ -20987,7 +20938,6 @@ with(MO){
       o.table.editRow = row;
       o.table.editColumn = o;
       o.table.select(row, true);
-      MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
    }
    MO.FUiDataColumn_onEditEnd = function FUiDataColumn_onEditEnd(e) {
       var o = this;
@@ -20997,7 +20947,6 @@ with(MO){
       o.setText(row, text);
       o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
       o.editor = null;
-      MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
    }
    MO.FUiDataColumn_onEditChanged = function FUiDataColumn_onEditChanged(cell) {
       cell.row.refresh();
@@ -21252,7 +21201,6 @@ with(MO){
    }
    MO.FUiDataToolButton_click = function FUiDataToolButton_click(){
       var o = this;
-      MO.Logger.debug(o, 'Mouse button click. (label={1})' + o._label);
          o.processClickListener(o);
    }
    MO.FUiDataToolButton_onShowHint = function FUiDataToolButton_onShowHint(a){
@@ -21347,7 +21295,6 @@ MO.FDuiDataTreeView_loadDefine = function FDuiDataTreeView_loadDefine(code){
 }
 MO.FDuiDataTreeView_loadService = function FDuiDataTreeView_loadService(serviceCode, attributes){
    var o = this;
-   MO.Assert.debugNotEmpty(serviceCode);
    o._serviceCode = serviceCode;
    o.clear();
    var service = MO.RDuiService.parse(serviceCode);

@@ -15,7 +15,7 @@
 // @version 150224
 //==========================================================
 MO.FDuiSelect = function FDuiSelect(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MDuiContainer, MO.MUiPropertySelect);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiContainer, MO.MUiPropertySelect);
    //..........................................................
    // @attribtue
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
@@ -35,6 +35,7 @@ MO.FDuiSelect = function FDuiSelect(o){
    // @method
    o.construct             = MO.FDuiSelect_construct;
    // @method
+   o.createChild           = MO.FDuiSelect_createChild;
    o.findItemByLabel       = MO.FDuiSelect_findItemByLabel;
    o.findItemByValue       = MO.FDuiSelect_findItemByValue;
    o.formatValue           = MO.FDuiSelect_formatValue;
@@ -135,6 +136,20 @@ MO.FDuiSelect_onKeyDown = function FDuiSelect_onKeyDown(event){
 MO.FDuiSelect_construct = function FDuiSelect_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
+}
+
+//==========================================================
+// <T>创建子节点。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+// @return FDuiControl 控件
+//==========================================================
+MO.FDuiSelect_createChild = function FDuiSelect_createChild(xconfig){
+   // 创建实例
+   var control = MO.RDuiControl.newInstance(xconfig);
+   control._parent = this;
+   return control;
 }
 
 //==========================================================

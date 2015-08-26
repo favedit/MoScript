@@ -5,7 +5,7 @@
 // @history 150121
 //==========================================================
 MO.FDuiToolButtonMenu = function FDuiToolButtonMenu(o){
-   o = MO.Class.inherits(this, o, MO.FDuiToolButton, MO.MDuiContainer, MO.MDuiDropable, MO.MDuiFocus);
+   o = MO.Class.inherits(this, o, MO.FDuiToolButton, MO.MUiContainer, MO.MDuiDropable, MO.MDuiFocus);
    //..........................................................
    // @attribute
    o._menu           = null;
@@ -29,6 +29,8 @@ MO.FDuiToolButtonMenu = function FDuiToolButtonMenu(o){
    //..........................................................
    // @method
    o.construct       = MO.FDuiToolButtonMenu_construct;
+   // @method
+   o.createChild     = MO.FDuiToolButtonMenu_createChild;
    // @method
    o.push            = MO.FDuiToolButtonMenu_push;
    o.drop            = MO.FDuiToolButtonMenu_drop;
@@ -135,6 +137,20 @@ MO.FDuiToolButtonMenu_construct = function FDuiToolButtonMenu_construct(){
    var menu = o._menu = MO.Class.create(MO.FDuiPopupMenu);
    menu._opener = o;
    o.push(menu);
+}
+
+//==========================================================
+// <T>创建子节点。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+// @return FDuiControl 控件
+//==========================================================
+MO.FDuiToolButtonMenu_createChild = function FDuiToolButtonMenu_createChild(xconfig){
+   // 创建实例
+   var control = MO.RDuiControl.newInstance(xconfig);
+   control._parent = this;
+   return control;
 }
 
 //==========================================================

@@ -110,7 +110,7 @@ MO.FDuiFocusConsole_construct = function FDuiFocusConsole_construct(){
 //==========================================================
 MO.FDuiFocusConsole_enter = function FDuiFocusConsole_enter(c){
    var o = this;
-   if(MO.Class.isClass(c, MO.MDuiContainer)){
+   if(MO.Class.isClass(c, MO.MUiContainer)){
       o._hoverContainer = c;
    }else{
       o._hoverControl = c;

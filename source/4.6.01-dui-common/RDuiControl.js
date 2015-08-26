@@ -125,7 +125,7 @@ MO.RDuiControl.prototype.innerCreate = function RDuiControl_innerCreate(pc, px, 
       pc.propertyLoad(px)
    }
    // 构建子节点
-   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -234,7 +234,7 @@ MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px
       pr = pc;
    }
    // 建立子节点
-   if(MO.Class.isClass(pc, MO.MDuiContainer) && px.hasNode()){
+   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -267,56 +267,56 @@ MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px
 // </P>
 //
 // @method
-// @param c:control:FDuiControl 控件对象
-// @param x:config:TXmlNode 配置节点
-// @param a:attribute:Object 属性集合
-// @param h:panel:HtmlTag 页面元素
+// @param control:FDuiControl 控件对象
+// @param xconfig:TXmlNode 配置节点
+// @param attributes:Object 属性集合
+// @param hPanel:HtmlTag 页面元素
 //===========================================================
-MO.RDuiControl.prototype.build = function RDuiControl_build(c, x, a, h){
+MO.RDuiControl.prototype.build = function RDuiControl_build(control, xconfig, attributes, hPanel){
    var o = this;
    // 创建控件对象
-   if(!c){
-      c = MO.RDuiControl.newInstance(x);
+   if(!control){
+      control = MO.RDuiControl.newInstance(xconfig);
    }
    // 内部构造
-   o.innerbuild(c, c, x, a, h);
-   return c;
+   o.innerbuild(control, control, xconfig, attributes, hPanel);
+   return control;
 }
 
 //===========================================================
 // <T>设置页面元素滚动样式。</T>
 //
 // @method
-// @param h:html:HtmlTag 页面元素
-// @param c:scrollCd:EUiScroll 滚动枚举
+// @param hTag:HtmlTag 页面元素
+// @param scrollCd:EUiScroll 滚动枚举
 //===========================================================
-MO.RDuiControl.prototype.setStyleScroll = function RDuiControl_setStyleScroll(h, c){
-   var s = h.style;
-   switch(c){
+MO.RDuiControl.prototype.setStyleScroll = function RDuiControl_setStyleScroll(hTag, scrollCd){
+   var hStyle = hTag.style;
+   switch(scrollCd){
       case MO.EUiScroll.None:
-         s.overflowX = '';
-         s.overflowY = '';
+         hStyle.overflowX = '';
+         hStyle.overflowY = '';
          break;
       case MO.EUiScroll.Horizontal:
-         s.overflowX = 'scroll';
+         hStyle.overflowX = 'scroll';
          break;
       case MO.EUiScroll.HorizontalAuto:
-         s.overflowX = 'auto';
+         hStyle.overflowX = 'auto';
          break;
       case MO.EUiScroll.Vertical:
-         s.overflowY = 'scroll';
+         hStyle.overflowY = 'scroll';
          break;
       case MO.EUiScroll.VerticalAuto:
-         s.overflowY = 'auto';
+         hStyle.overflowY = 'auto';
          break;
       case MO.EUiScroll.Both:
-         s.overflow = 'scroll';
+         hStyle.overflow = 'scroll';
          break;
       case MO.EUiScroll.BothAuto:
-         s.overflow = 'auto';
+         hStyle.overflow = 'auto';
          break;
       default:
-         throw new MO.TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
+         throw new MO.TError(o, 'Unknown scroll type. (scroll_cd={1})', scrollCd);
    }
 }
 

@@ -5,10 +5,7 @@
 // @version 141231
 //==========================================================
 MO.FDuiContainer = function FDuiContainer(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MDuiContainer);
-   //..........................................................
-   // @property Boolean 是否禁止
-   o._scrollCd           = MO.Class.register(o, new MO.APtyEnum('_scrollCd', null, MO.EUiScroll, MO.EUiScroll.None));
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiContainer);
    //..........................................................
    // @attributes
    o._controls           = null;
@@ -28,6 +25,7 @@ MO.FDuiContainer = function FDuiContainer(o){
    o.setControlsProperty = MO.FDuiContainer_setControlsProperty;
    o.storeConfig         = MO.FDuiContainer_storeConfig;
    // @method
+   o.createChild         = MO.FDuiContainer_createChild;
    o.push                = MO.FDuiContainer_push;
    o.remove              = MO.FDuiContainer_remove;
    o.clear               = MO.FDuiContainer_clear;
@@ -209,6 +207,20 @@ MO.FDuiContainer_storeConfig = function FDuiContainer_storeConfig(x){
          }
       }
    }
+}
+
+//==========================================================
+// <T>创建子节点。</T>
+//
+// @method
+// @param xconfig:TXmlNode 配置节点
+// @return FDuiControl 控件
+//==========================================================
+MO.FDuiContainer_createChild = function FDuiContainer_createChild(xconfig){
+   // 创建实例
+   var control = MO.RDuiControl.newInstance(xconfig);
+   control._parent = this;
+   return control;
 }
 
 //==========================================================
