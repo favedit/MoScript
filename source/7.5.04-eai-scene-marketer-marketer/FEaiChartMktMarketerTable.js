@@ -186,7 +186,7 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    var grid = o._gridMonthRank = MO.Class.create(MO.FGuiGridControl);
    // grid.setDisplayHead(false);
    grid.setLocation(50, 112);
-   grid.setSize(800, 900);
+   grid.setSize(800, 200);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
    grid.setLeft(9);
    grid.setRight(19);
@@ -407,6 +407,7 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setLocation(50,570);
    grid.setSize(800, 430);
+   grid.setPadding(0,0,0,10);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setRight(19);
@@ -477,7 +478,7 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
       o._tableCount = 11;
       o._rankStart = 100;
       o._rankTitleStart = -5;
-      o._rankHeight = 249;
+      o._rankHeight = 174;
       o._rankRowHeight = 50;
       o._rankIconStart = 22;
       o._rankTextStart = 8;
@@ -497,7 +498,6 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
       o._rankWeeksHeight = 174;
       o._rankMonthHeight = 139;
       o._rankDayHeight = 137;
-
       o._rankRowHeight = 40;
       o._rankIconStart = 25;
       o._rankTextStart = 0;
