@@ -9,41 +9,41 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code = MO.EEaiScene.ChartCustomer;
+   o._code                   = MO.EEaiScene.ChartCustomer;
    // @attribute
-   o._processor = MO.Class.register(o, new MO.AGetter('_processor'));
-   o._processorCurrent = 0;
+   o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
+   o._processorCurrent       = 0;
    // @attribute
-   o._ready = false;
-   o._mapReady = false;
-   o._playing = false;
-   o._lastTick = 0;
-   o._interval = 10;
+   o._ready                  = false;
+   o._mapReady               = false;
+   o._playing                = false;
+   o._lastTick               = 0;
+   o._interval               = 10;
    // @attribute
-   o._logoBar = null;
-   o._timeline = null;
-   o._liveTable = null;
+   o._logoBar                = null;
+   o._timeline               = null;
+   o._liveTable              = null;
    // @attribute
-   o._statusStart = false;
-   o._statusLayerCount = 100;
-   o._statusLayerLevel = 100;
+   o._statusStart            = false;
+   o._statusLayerCount       = 100;
+   o._statusLayerLevel       = 100;
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartMktCustomerScene_onInvestmentDataChanged;
-   o.on24HDataChanged = MO.FEaiChartMktCustomerScene_on24HDataChanged;
-   o.onOperationVisibility = MO.FEaiChartMktCustomerScene_onOperationVisibility;
-   o.onProcessReady = MO.FEaiChartMktCustomerScene_onProcessReady;
-   o.onProcess = MO.FEaiChartMktCustomerScene_onProcess;
-   o.onSwitchProcess = MO.FEaiChartMktCustomerScene_onSwitchProcess;
-   o.onSwitchComplete = MO.FEaiChartMktCustomerScene_onSwitchComplete;
+   o.on24HDataChanged        = MO.FEaiChartMktCustomerScene_on24HDataChanged;
+   o.onOperationVisibility   = MO.FEaiChartMktCustomerScene_onOperationVisibility;
+   o.onProcessReady          = MO.FEaiChartMktCustomerScene_onProcessReady;
+   o.onProcess               = MO.FEaiChartMktCustomerScene_onProcess;
+   o.onSwitchProcess         = MO.FEaiChartMktCustomerScene_onSwitchProcess;
+   o.onSwitchComplete        = MO.FEaiChartMktCustomerScene_onSwitchComplete;
    //..........................................................
    // @method
-   o.setup = MO.FEaiChartMktCustomerScene_setup;
-   o.showParticle = MO.FEaiChartMktCustomerScene_showParticle;
-   o.showFace = MO.FEaiChartMktCustomerScene_showFace;
-   o.fixMatrix = MO.FEaiChartMktCustomerScene_fixMatrix;
+   o.setup                   = MO.FEaiChartMktCustomerScene_setup;
+   o.showParticle            = MO.FEaiChartMktCustomerScene_showParticle;
+   o.showFace                = MO.FEaiChartMktCustomerScene_showFace;
+   o.fixMatrix               = MO.FEaiChartMktCustomerScene_fixMatrix;
    // @method
-   o.processResize = MO.FEaiChartMktCustomerScene_processResize;
+   o.processResize           = MO.FEaiChartMktCustomerScene_processResize;
    return o;
 }
 
@@ -154,7 +154,7 @@ MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onPr
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         // return;
+         return;
       }
       // 显示界面
       if (!o._mapReady) {

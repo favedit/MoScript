@@ -9,41 +9,41 @@ MO.FEaiChartMktMarketerScene = function FEaiChartMktMarketerScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code = MO.EEaiScene.ChartMarketerMarketer;
+   o._code                   = MO.EEaiScene.ChartMarketerMarketer;
    // @attribute
-   o._processor = MO.Class.register(o, new MO.AGetter('_processor'));
-   o._processorCurrent = 0;
+   o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
+   o._processorCurrent       = 0;
    // @attribute
-   o._ready = false;
-   o._mapReady = false;
-   o._playing = false;
-   o._lastTick = 0;
-   o._interval = 10;
+   o._ready                  = false;
+   o._mapReady               = false;
+   o._playing                = false;
+   o._lastTick               = 0;
+   o._interval               = 10;
    // @attribute
-   o._logoBar = null;
-   o._timeline = null;
-   o._liveTable = null;
+   o._logoBar                = null;
+   o._timeline               = null;
+   o._liveTable              = null;
    // @attribute
-   o._statusStart = false;
-   o._statusLayerCount = 100;
-   o._statusLayerLevel = 100;
+   o._statusStart            = false;
+   o._statusLayerCount       = 100;
+   o._statusLayerLevel       = 100;
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartMktMarketerScene_onInvestmentDataChanged;
-   o.on24HDataChanged = MO.FEaiChartMktMarketerScene_on24HDataChanged;
-   o.onOperationVisibility = MO.FEaiChartMktMarketerScene_onOperationVisibility;
-   o.onProcessReady = MO.FEaiChartMktMarketerScene_onProcessReady;
-   o.onProcess = MO.FEaiChartMktMarketerScene_onProcess;
-   o.onSwitchProcess = MO.FEaiChartMktMarketerScene_onSwitchProcess;
-   o.onSwitchComplete = MO.FEaiChartMktMarketerScene_onSwitchComplete;
+   o.on24HDataChanged        = MO.FEaiChartMktMarketerScene_on24HDataChanged;
+   o.onOperationVisibility   = MO.FEaiChartMktMarketerScene_onOperationVisibility;
+   o.onProcessReady          = MO.FEaiChartMktMarketerScene_onProcessReady;
+   o.onProcess               = MO.FEaiChartMktMarketerScene_onProcess;
+   o.onSwitchProcess         = MO.FEaiChartMktMarketerScene_onSwitchProcess;
+   o.onSwitchComplete        = MO.FEaiChartMktMarketerScene_onSwitchComplete;
    //..........................................................
    // @method
-   o.setup = MO.FEaiChartMktMarketerScene_setup;
-   o.showParticle = MO.FEaiChartMktMarketerScene_showParticle;
-   o.showFace = MO.FEaiChartMktMarketerScene_showFace;
-   o.fixMatrix = MO.FEaiChartMktMarketerScene_fixMatrix;
+   o.setup                   = MO.FEaiChartMktMarketerScene_setup;
+   o.showParticle            = MO.FEaiChartMktMarketerScene_showParticle;
+   o.showFace                = MO.FEaiChartMktMarketerScene_showFace;
+   o.fixMatrix               = MO.FEaiChartMktMarketerScene_fixMatrix;
    // @method
-   o.processResize = MO.FEaiChartMktMarketerScene_processResize;
+   o.processResize           = MO.FEaiChartMktMarketerScene_processResize;
    return o;
 }
 
