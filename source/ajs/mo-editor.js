@@ -272,12 +272,12 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
    var frameName = node.type().get('property_frame');
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
       var frame = o._frameSet.selectObject(frameName);
-      frame.processMode(MO.EUiMode.Update);
+      frame.psMode(MO.EUiMode.Update);
       frame.dataModify();
       frame.doLoad(typeGroup, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
       var frame = o._frameSet.selectObject(frameName);
-      frame.processMode(MO.EUiMode.Update);
+      frame.psMode(MO.EUiMode.Update);
       frame.dataModify();
       var itemName = o._itemName = node.guid();
       frame.doLoad(typeGroup, containerName, itemName);

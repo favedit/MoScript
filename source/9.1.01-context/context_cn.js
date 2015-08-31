@@ -73,7 +73,7 @@ MO.RContext.initialize({
       'Loading'  : '正在加载数据中,请等候...',
       'Row'      : '行号: ',
       'Page'     : '页码: ',
-      'FUiirst'    : '首页',
+      'First'    : '首页',
       'Last'     : '末页',
       'Prior'    : '前一页',
       'Next'     : '后一页'

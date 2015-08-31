@@ -355,7 +355,7 @@ MO.FDuiTreeView_appendChild = function FDuiTreeView_appendChild(child){
    var o = this;
    //var hc = o._hHeadLine.insertCell();
    //hc.height = '100%';
-   //if(RClass.isClass(child, FTreeColumn)){
+   //if(MO.Class.isClass(child, FTreeColumn)){
    //   hc.appendChild(child._hPanel);
    //}
 }

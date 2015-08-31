@@ -193,7 +193,7 @@ MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(
 //==========================================================
 MO.MDuiEditDescriptor_oeSaveCode = function MDuiEditDescriptor_oeSaveCode(e){
    var o = this;
-   if(!RString.isEmpty(o.dataName) && !RString.isEmpty(o.dataCode)){
+   if(!MO.Lang.String.isEmpty(o.dataName) && !MO.Lang.String.isEmpty(o.dataCode)){
       e.values.set(o.dataName, o.dataCode);
    }
    return EEventStatus.Stop;
@@ -249,7 +249,7 @@ MO.MDuiEditDescriptor_validText = function MDuiEditDescriptor_validText(t){
    var o = this;
    // 必须性检查
    //if(o.validRequire){
-      //if(RString.isEmpty(t)){
+      //if(MO.Lang.String.isEmpty(t)){
          //return RContext.get('MDuiEditDescriptor:Empty');
       //}
    //}

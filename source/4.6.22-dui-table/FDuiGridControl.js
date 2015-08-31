@@ -25,13 +25,13 @@
 // @class FDuiContainer, MForm, MDataset, MValue, MDuiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
 // @history 090922 MAOCY 创建
 //==========================================================
-MO.FDuiGridControl = function FDuiGridControl(o) {
-   //o = MO.Class.inherits(this, o, FDuiContainer, MValue, MDataset, MDisplay, MDuiFocus, MForm, MProgress, MDuiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
-   o = MO.Class.inherits(this, o, MO.FDuiContainer);
+MO.FDuiGridControl = function FDuiGridControl(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDataContainer, MO.MUiDisplayContrainer, MO.MDuiDescribeFrame);
    //..........................................................
    // @property
    o._displayCount        = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
-   o._displayTitle        = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', EGridDisplay.Title), true);
+   //o._displayTitle        = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', MO.EGridDisplay.Title), true);
+   o._displayTitle        = true;
    o._displayColumnStatus = true;
    o._displayColumnSelect = true;
    o._rowHeight           = MO.Class.register(o, new MO.APtyInteger('rowHeight'), 0);
@@ -46,6 +46,7 @@ MO.FDuiGridControl = function FDuiGridControl(o) {
    o._styleHintPanel      = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
    o._styleHintForm       = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
    o._styleHint           = MO.Class.register(o, new MO.AStyle('_styleHint'));
+   o._styleButtonForm     = MO.Class.register(o, new MO.AStyle('_styleButtonForm'));
    o._styleButton         = MO.Class.register(o, new MO.AStyle('_styleButton'));
    //..........................................................
    // @attribute
@@ -53,7 +54,7 @@ MO.FDuiGridControl = function FDuiGridControl(o) {
    // @attribute
    o._buttons             = null;
    o._columns             = null;
-   o._rowClass            = MO.FGridRow;
+   o._rowClass            = MO.FDuiGridRow;
    o._rows                = null;
    // @attribute
    o._focusCell           = null;
@@ -132,7 +133,7 @@ MO.FDuiGridControl = function FDuiGridControl(o) {
    //o._styleSearchLine       = MO.Class.register(o, new MO.AStyle('_styleSearchLine', 'SearchLine'));
    //..........................................................
    // @icon
-   //o._styleButtonIcon       = MO.Class.register(o, new AStyleIcon('Button'));
+   //o._styleButtonIcon       = MO.Class.register(o, new MO.AStyleIcon('Button'));
    //..........................................................
    //o._dataset               = null;
    //o._hoverRow              = null;
@@ -159,20 +160,20 @@ MO.FDuiGridControl = function FDuiGridControl(o) {
    //o._hButtons              = null;
    //..........................................................
    //o.onMouseDown            = FDuiGridControl_onMouseDown;
-   //o.onHeadMouseDown        = MO.Class.register(o, new AEventMouseDown('onHeadMouseDown'), FDuiGridControl_onHeadMouseDown);
-   //o.onHeadMouseMove        = MO.Class.register(o, new AEventMouseMove('onHeadMouseMove'), FDuiGridControl_onHeadMouseMove);
-   //o.onHeadMouseUp          = MO.Class.register(o, new AEventMouseUp('onHeadMouseUp'), FDuiGridControl_onHeadMouseUp);
-   //o.onDataScroll           = MO.Class.register(o, new AEventScroll('onDataScroll'), FDuiGridControl_onDataScroll);
+   //o.onHeadMouseDown        = MO.Class.register(o, new MO.AEventMouseDown('onHeadMouseDown'), FDuiGridControl_onHeadMouseDown);
+   //o.onHeadMouseMove        = MO.Class.register(o, new MO.AEventMouseMove('onHeadMouseMove'), FDuiGridControl_onHeadMouseMove);
+   //o.onHeadMouseUp          = MO.Class.register(o, new MO.AEventMouseUp('onHeadMouseUp'), FDuiGridControl_onHeadMouseUp);
+   //o.onDataScroll           = MO.Class.register(o, new MO.AEventScroll('onDataScroll'), FDuiGridControl_onDataScroll);
    // @event 单元格内按键按下
-   //o.onCellKeyDown          = MO.Class.register(o, new AEventKeyDown('onCellKeyDown'), FDuiGridControl_onCellKeyDown);
-   //o.onRowMouseEnter        = MO.Class.register(o, new AEventMouseEnter('onRowMouseEnter'), FDuiGridControl_onRowMouseEnter);
-   //o.onRowMouseLeave        = MO.Class.register(o, new AEventMouseLeave('onRowMouseLeave'), FDuiGridControl_onRowMouseLeave);
+   //o.onCellKeyDown          = MO.Class.register(o, new MO.AEventKeyDown('onCellKeyDown'), FDuiGridControl_onCellKeyDown);
+   //o.onRowMouseEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), FDuiGridControl_onRowMouseEnter);
+   //o.onRowMouseLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), FDuiGridControl_onRowMouseLeave);
    // @event 行控件单击事件
-   //o.onRowClick             = MO.Class.register(o, new AEventClick('onRowClick'), FDuiGridControl_onRowClick);
+   //o.onRowClick             = MO.Class.register(o, new MO.AEventClick('onRowClick'), FDuiGridControl_onRowClick);
    // @event 行控件双击事件
-   //o.onColumnSearchKeyDown  = MO.Class.register(o, new AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
-   //o.onButtonMouseDown      = MO.Class.register(o, new AEventMouseDown('onButtonMouseDown'), FDuiGridControl_onButtonMouseDown);
-   //o.onPageCountDown        = MO.Class.register(o, new AEventKeyDown('onPageCountDown'), FDuiGridControl_onPageCountDown);
+   //o.onColumnSearchKeyDown  = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
+   //o.onButtonMouseDown      = MO.Class.register(o, new MO.AEventMouseDown('onButtonMouseDown'), FDuiGridControl_onButtonMouseDown);
+   //o.onPageCountDown        = MO.Class.register(o, new MO.AEventKeyDown('onPageCountDown'), FDuiGridControl_onPageCountDown);
    //o.onInsertButtonClick    = FDuiGridControl_onInsertButtonClick;
    //o.onExtendButtonClick    = FDuiGridControl_onExtendButtonClick;
    // @event
@@ -229,7 +230,7 @@ MO.FDuiGridControl = function FDuiGridControl(o) {
    //o.dispose                = FDuiGridControl_dispose;
    //o.dump                   = FDuiGridControl_dump;
    // ---------------------------------------------------------
-   //o.onColumnTreeClick      = MO.Class.register(o, new AEventClick('onColumnTreeClick'), FDuiGridControl_onColumnTreeClick);
+   //o.onColumnTreeClick      = MO.Class.register(o, new MO.AEventClick('onColumnTreeClick'), FDuiGridControl_onColumnTreeClick);
    //o.onColumnTreeService    = FDuiGridControl_onColumnTreeService;
    //o.hoverMode              = EGridColumn.None;
    //o._searchKeyDownEvent    = new TEvent();
@@ -259,18 +260,18 @@ MO.FDuiGridControl_onBuildPanel = function FDuiGridControl_onBuildPanel(p){
 // <T>构建表格的标题栏。</T>
 //
 // @method
-// @param p:event:TEventProcess 构建事件
+// @param event:SUiDispatchEvent 事件信息
 //==========================================================
-MO.FDuiGridControl_onBuildTitle = function FDuiGridControl_onBuildTitle(e){
+MO.FDuiGridControl_onBuildTitle = function FDuiGridControl_onBuildTitle(event){
    var o = this;
-   var hf = o._hTitleForm = MO.Window.Builder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
-   var hr = o._hTitleLine = MO.Window.Builder.appendTableRow(hf);
+   var hTitleForm = o._hTitleForm = MO.Window.Builder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
+   var hTitleLine = o._hTitleLine = MO.Window.Builder.appendTableRow(hTitleForm);
    // 建立标题格子
-   var hc = o._hCaption = MO.Window.Builder.appendTableCell(hr, o.styleName('Caption'));
+   var hc = o._hCaption = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Caption'));
    hc.innerText = o.label();
    // 设置可见性
-   RHtml.displaySet(hf, o._displayTitle);
-   //hbc = hf.insertRow();
+   MO.Window.Html.displaySet(hTitleForm, o._displayTitle);
+   //hbc = hTitleForm.insertRow();
    //hdc = hbc.insertCell();
    //hdc.style.backgroundColor='#CAE9FE';
    //hdc.style.borderTop='1 solid #95C6FE';
@@ -284,40 +285,51 @@ MO.FDuiGridControl_onBuildTitle = function FDuiGridControl_onBuildTitle(e){
 // <T>构建表格的提示栏。</T>
 //
 // @method
-// @param e:event:TEvent 构建事件
+// @param event:SUiDispatchEvent 事件信息
 //==========================================================
-MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(e) {
+MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(event){
    var o = this;
    // 建立提示行
-   var hr = MO.Window.Builder.appendTableRow(o._hHintForm);
+   var hHintLine = MO.Window.Builder.appendTableRow(o._hHintForm);
    // 展开按钮
-   var hc = MO.Window.Builder.appendTableCell(hr);
-   hc.width = 60;
-   o.hExtendButton = o.buildNavigatorButton(hc, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.width = 60;
+   o.hExtendButton = o.buildNavigatorButton(hCell, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
    // 新建按键
    //if(o.editInsert && o._formName){
-      var hc = MO.Window.Builder.appendTableCell(hr);
-      hc.width = 60;
-      o.hInsertButton = o.buildNavigatorButton(hc, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
+      var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+      hCell.width = 60;
+      o.hInsertButton = o.buildNavigatorButton(hCell, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
    //}
    // 提示栏
-   var hc = MO.Window.Builder.appendTableCell(hr);
-   hc.width = 10;
-   var hc = MO.Window.Builder.appendTableCell(hr);
-   hc.noWrap = true;
-   o._hHint = MO.Window.Builder.appendText(hc, o.styleName('Hint'))
-   // 分页栏
-   var hc = MO.Window.Builder.appendTableCell(hr);
-   hc.noWrap = true;
-   hc.align = 'right';
-   o.hNavFirst = o.buildNavigatorButton(hc, 'control.grid.first', '&nbsp;' + RContext.get('FDuiGridControl:First'));
-   o.hNavPrior = o.buildNavigatorButton(hc, 'control.grid.prior', '&nbsp;' + RContext.get('FDuiGridControl:Prior'));
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.width = 10;
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.noWrap = true;
+   o._hHint = MO.Window.Builder.appendText(hCell, o.styleName('Hint'))
+   // 新建[首页]控件
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.width = 60;
+   o.hNavFirst = o.buildNavigatorButton(hCell, 'control.grid.first', '&nbsp;' + MO.Context.get('FDuiGridControl:First'));
+   // 新建[前一页]控件
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.width = 60;
+   o.hNavPrior = o.buildNavigatorButton(hCell, 'control.grid.prior', '&nbsp;' + MO.Context.get('FDuiGridControl:Prior'));
    o.hNavPrior.style.paddingRight = '20';
-   o.hPage = MO.Window.Builder.appendEdit(hc)
+   // 新建[页号]控件
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.width = 60;
+   o.hPage = MO.Window.Builder.appendEdit(hCell)
    o.hPage.style.width = 40;
    //o.attachEvent('onPageCountDown', o.hPage);
-   o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
-   o.hNavLast = o.buildNavigatorButton(hc, null, RContext.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
+   // 新建[后一页]控件
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.width = 60;
+   o.hNavNext = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
+   // 新建[末页]控件
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.width = 60;
+   o.hNavLast = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
    // 设置可见性
    //o._hHintForm.style.display = o._panelNavigator ? 'block' : 'none';
 }
@@ -362,17 +374,17 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(p){
    //   o.onBuildHint(p);
    //}
    // 建立状态列
-   var c = o._statusColumn = MO.Class.create(FColumnStatus);
-   c._table = this;
-   c._name = '_s';
-   c.build(p);
-   o.push(c);
+   var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
+   statusColumn._table = this;
+   statusColumn._name = '_s';
+   statusColumn.build(p);
+   o.push(statusColumn);
    // 建立选择列
-   var c = o._selectColumn = MO.Class.create(FColumnSelected);
-   c._table = this;
-   c._name = '_select';
-   c.build(p);
-   o.push(c);
+   var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
+   selectColumn._table = this;
+   selectColumn._name = '_select';
+   selectColumn.build(p);
+   o.push(selectColumn);
    //..........................................................
    //var cs = o._columns;
    // 追加标题列
@@ -381,8 +393,8 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(p){
    //   o.pushColumn(cs.value(i));
    //}
    //for(var i = 0; i < cc; i++){
-   //   var c = cs.value(i);
-   //   c._index = i;
+   //   var column = cs.value(i);
+   //   column._index = i;
    //}
    // 建立树据行
    //var rs = o._rows;
@@ -531,14 +543,14 @@ MO.FDuiGridControl_onDatasetLoad = function FDuiGridControl_onDatasetLoad(p){
 MO.FDuiGridControl_construct = function FDuiGridControl_construct() {
    var o = this;
    o.__base.FDuiContainer.construct.call(o);
-   //o.__base.MDataset.construct.call(o);
+   o.__base.MUiDisplayContrainer.construct.call(o);
    // 初始化
-   o._buttons = new TDictionary();
-   o._columns = new TDictionary();
-   o._rows = new TObjects();
+   o._buttons = new MO.TDictionary();
+   o._columns = new MO.TDictionary();
+   o._rows = new MO.TObjects();
    // 建立监听
-   o.lsnsRowClick = new TListeners();
-   o.lsnsRowDblClick = new TListeners();
+   o.lsnsRowClick = new MO.TListeners();
+   o.lsnsRowDblClick = new MO.TListeners();
    // 设置获取行数
    //if(o._displayCount < 0){
    //   o.dsPageSize = 400;
@@ -547,10 +559,9 @@ MO.FDuiGridControl_construct = function FDuiGridControl_construct() {
    //o._clickRowEvent = new TEvent();
    //o._doubleClickRowEvent = new TEvent();
    // 建立延迟加载事件
-   var e = o._loadEvent = MO.Class.create(FEvent);
-   e.setOwner(o);
-   e.setCallback(o.onDatasetLoadDelay);
-   e.setValid(false);
+   var event = o._loadEvent = new MO.SEvent(o);
+   //event.setCallback(o.onDatasetLoadDelay);
+   //event.setValid(false);
    // 创建刷新异步事件
    //o.eventResizeAfter = new TEvent(o, 'ResizeAfter', o.onResizeAfter);
 }
@@ -562,38 +573,43 @@ MO.FDuiGridControl_construct = function FDuiGridControl_construct() {
 //==========================================================
 MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name){
    var o = this;
-   var h = MO.Window.Builder.append(hParent, 'SPAN', o.styleName('Button'));
-   h.style.cursor = 'hand';
-   h.style.paddingLeft = '10';
-   //o.attachEvent('onButtonMouseDown', h);
-   if (iconBf) {
-      MO.Window.Builder.appendIcon(h, null, iconBf);
+   var hForm = MO.Window.Builder.appendTable(hParent, o.styleName('ButtonForm'));
+   hForm.style.cursor = 'hand';
+   hForm.style.paddingLeft = '10';
+   var hLine = MO.Window.Builder.appendTableRow(hForm);
+   //o.attachEvent('onButtonMouseDown', hForm);
+   if(iconBf){
+      var hCell = MO.Window.Builder.appendTableCell(hLine);
+      MO.Window.Builder.appendIcon(hCell, null, iconBf);
    }
    if(text){
-      if(name){
-         o[name + 'Text'] = MO.Window.Builder.appendText(h, null, text);
-      }else{
-         MO.Window.Builder.appendText(h, null, text);
-      }
+      var hCell = MO.Window.Builder.appendTableCell(hLine);
+      hCell.innerHTML = text;
+      //if(name){
+      //   o[name + 'Text'] = MO.Window.Builder.appendText(hForm, null, text);
+      //}else{
+      //   MO.Window.Builder.appendText(hForm, null, text);
+      //}
    }
    if(iconAf){
-      MO.Window.Builder.appendIcon(h, null, iconAf);
+      var hCell = MO.Window.Builder.appendTableCell(hLine);
+      MO.Window.Builder.appendIcon(hCell, null, iconAf);
    }
-   return h;
+   return hForm;
 }
 
 //==========================================================
 // <T>增加一个控件。</T>
 //
 // @method
-// @param p:control:FControl 控件
+// @param control:FControl 控件
 //==========================================================
-MO.FDuiGridControl_appendChild = function FDuiGridControl_appendChild(p){
+MO.FDuiGridControl_appendChild = function FDuiGridControl_appendChild(control){
    var o = this;
-   o.__base.FDuiContainer.appendChild.call(o, p);
+   o.__base.FDuiContainer.appendChild.call(o, control);
    // 类型处理
-   if(RClass.isClass(p, FColumn)){
-      o.appendColumn(p);
+   if(MO.Class.isClass(control, MO.FDuiColumn)){
+      o.appendColumn(control);
    }
 }
 
@@ -601,20 +617,20 @@ MO.FDuiGridControl_appendChild = function FDuiGridControl_appendChild(p){
 // <T>增加一个子组件。</T>
 //
 // @method
-// @param p:component:FComponent 组件
+// @param component:FComponent 组件
 //==========================================================
-MO.FDuiGridControl_push = function FDuiGridControl_push(p){
+MO.FDuiGridControl_push = function FDuiGridControl_push(component){
    var o = this;
    // 类型处理
-   if(RClass.isClass(p, FColumn)){
-      p._table = o;
-      o._columns.set(p.name(), p);
-   }else if(RClass.isClass(p, FTableButton)){
-      p._table = o;
-      o._buttons.set(p.name(), p);
+   if(MO.Class.isClass(component, MO.FDuiColumn)){
+      component._table = o;
+      o._columns.set(component.name(), component);
+   }else if(MO.Class.isClass(component, MO.FDuiTableButton)){
+      component._table = o;
+      o._buttons.set(component.name(), component);
    }
    // 父处理
-   o.__base.FDuiContainer.push.call(o, p);
+   o.__base.FDuiContainer.push.call(o, component);
 }
 
 //==========================================================
@@ -626,9 +642,9 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(p){
 //==========================================================
 MO.FDuiGridControl_createRow = function FDuiGridControl_createRow() {
    var o = this;
-   var r = MO.Class.create(o._rowClass);
-   r._table = r._parent = o;
-   return r;
+   var row = MO.Class.create(o._rowClass);
+   row._table = row._parent = o;
+   return row;
 }
 
 //==========================================================
@@ -645,10 +661,10 @@ MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(i, r){
    // 追加到表的数据行集内
    if(r._hFixPanel){
       o._hFixRows.appendChild(r._hFixPanel);
-      RHtml.tableMoveRow(o._hColumnForm, r._hFixPanel.rowIndex, i + 2);
+      MO.Window.Html.tableMoveRow(o._hColumnForm, r._hFixPanel.rowIndex, i + 2);
    }
    o._hRows.appendChild(r._hPanel);
-   RHtml.tableMoveRow(o._hContentForm, r._hPanel.rowIndex, i + 2);
+   MO.Window.Html.tableMoveRow(o._hContentForm, r._hPanel.rowIndex, i + 2);
    r.refreshStyle();
    o._rows.insert(i, r);
 }
@@ -1013,7 +1029,7 @@ MO.FDuiGridControl_onButtonMouseDown = function FDuiGridControl_onButtonMouseDow
 MO.FDuiGridControl_onPageCountDown = function FDuiGridControl_onPageCountDown(e){
    var o = this;
    var ds = o.dsViewer;
-   if(RString.isEmpty(o.hPage.value) || !ds || 0 == ds.dataset.pageCount){
+   if(MO.Lang.String.isEmpty(o.hPage.value) || !ds || 0 == ds.dataset.pageCount){
       return;
    }
    var n = RInt.parse(o.hPage.value);
@@ -1169,7 +1185,7 @@ MO.FDuiGridControl_hasAction = function FDuiGridControl_hasAction(){
    var ct = cs.count;
    for(var n = 0; n < ct; n++){
       var c = cs.value(n);
-      if(RClass.isClass(c, FDataAction)){
+      if(MO.Class.isClass(c, FDataAction)){
          return o.isDataSelected();
       }
    }
@@ -1533,14 +1549,14 @@ MO.FDuiGridControl_doSearch = function FDuiGridControl_doSearch(){
    for(var n=0; n<cs.count; n++){
       var c = cs.value(n);
       var v = c.searchValue();
-      if(RClass.isClass(c, FColumnCalendar)){
+      if(MO.Class.isClass(c, FColumnCalendar)){
          if(v){
             var si = new TSearchItem();
             si.set(c.dataName, v.value, ESearch.Date, v.format);
             o.dsSearchs.push(si);
          }
       }else{
-         if(!RString.isEmpty(v)){
+         if(!MO.Lang.String.isEmpty(v)){
             var si = new TSearchItem();
             si.set(c.dataName, v, ESearch.Like);
             o.dsSearchs.push(si);
@@ -1630,7 +1646,6 @@ MO.FDuiGridControl_refreshStyle = function FDuiGridControl_refreshStyle(){
 //==========================================================
 MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
    var o = this;
-   o.__base.FDuiContainer.dispose.call(o);
    o.hBorderPanel = null;
    o._hDelayPanel = null;
    o._hDelayForm = null;
@@ -1654,6 +1669,9 @@ MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
    o._hInsertButton = null;
    o._hExtendButton = null;
    o._hExtendText = null;
+   // 父处理
+   o.__base.MUiDisplayContrainer.dispose.call(o);
+   o.__base.FDuiContainer.dispose.call(o);
 }
 
 //==========================================================
@@ -1713,12 +1731,12 @@ MO.FDuiGridControl_buildRows = function FDuiGridControl_buildRows(){
 MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(config) {
    var o = this;
    var c = o.__base.FDuiContainer.createChild.call(o, config);
-   if(RClass.isClass(c, FGridRow)){
+   if(MO.Class.isClass(c, FGridRow)){
       c.table = o;
       c.row = o.dsLoadRowNode(config);
       o._rows.push(c);
       return null;
-   }else if(RClass.isClass(c, FColumnEditControl)){
+   }else if(MO.Class.isClass(c, FColumnEditControl)){
       c.table = o;
       //c.loadConfig(config);
       //o._columns.set(c.name, c);
@@ -1833,7 +1851,7 @@ MO.FDuiGridControl_getRowType = function FDuiGridControl_getRowType(){
    var ct = cs.count;
    for(var n = 0; n < ct; n++){
       var c = cs.value(n);
-      if(RClass.isClass(c, FGridRowType)){
+      if(MO.Class.isClass(c, FGridRowType)){
          return c;
       }
    }

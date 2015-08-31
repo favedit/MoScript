@@ -311,7 +311,7 @@ with(MO){
          //      hl.style.color = EUiColor.Require;
          //   }
          //   // 如果当前控件支持列表接口
-         //   if(RClass.isClass(o, MListView)){
+         //   if(MO.Class.isClass(o, MListView)){
          //      o.setLabelStyle(hl);
          //   }
          //}
@@ -423,7 +423,7 @@ with(MO){
       var o = this;
       o._label = p;
       if(o._hText){
-         o._hText.innerHTML = RString.nvl(p);
+         o._hText.innerHTML = MO.Lang.String.nvl(p);
       }
    }
 
@@ -550,11 +550,11 @@ with(MO){
    MO.FUiDataEditControl_onDataDoubleClick = function FUiDataEditControl_onDataDoubleClick(){
       var o = this;
       // 展开下拉菜单
-      if(RClass.isClass(o, MDropable)){
+      if(MO.Class.isClass(o, MDropable)){
          o.onDropDoubleClick();
       }
       // 显示选取列表
-      if(RClass.isClass(o, MListView)){
+      if(MO.Class.isClass(o, MListView)){
          o.onListClick();
       }
    }
@@ -573,7 +573,7 @@ with(MO){
       if(hci){
          hci.style.display = o.isDataChanged() ? 'block' : 'none';
       }
-      if(RClass.isClass(o, MDropable) && EKey.Down==e.keyCode){
+      if(MO.Class.isClass(o, MDropable) && EKey.Down==e.keyCode){
          // 展开下拉菜单
          o.drop();
       }else if(e.ctrlKey && (EKey.Enter==e.keyCode) && o.editSearch){
@@ -782,7 +782,7 @@ with(MO){
             o.hLabel.style.color = v ? EUiColor.Require : EUiColor.Text;
          }
          // 如果当前控件支持列表接口
-         if(RClass.isClass(o, MListView) && o.canListView()){
+         if(MO.Class.isClass(o, MListView) && o.canListView()){
             hl.style.cursor = v ? 'hand' : 'normal';
             hl.className = v ? 'RLine_Underline' : '';
          }
@@ -839,13 +839,13 @@ with(MO){
          tc = EUiColor.TextEdit;
          bc = EUiColor.Edit;
          cr = 'hand';
-         if(!RString.isEmpty(o.editTip) && o.hEdit.innerText == o.editTip){
+         if(!MO.Lang.String.isEmpty(o.editTip) && o.hEdit.innerText == o.editTip){
             tc = '#CCCCCC';
          }
       }
       // 检查有效性
       if(o._invalidText){
-         if(!RString.isEmpty(o.text())){
+         if(!MO.Lang.String.isEmpty(o.text())){
             tc = EUiColor.TextInvalid;
             bc = EUiColor.Invalid;
          }

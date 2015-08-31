@@ -360,7 +360,7 @@ MO.FDuiMessageDialog_hide = function FDuiMessageDialog_hide(){
    o.__base.FDuiWindow.hide.call(o);
    // 关闭加载状态
    var f = o._messageArg.argument.form;
-   if(RClass.isClass(f, MDataset)){
+   if(MO.Class.isClass(f, MDataset)){
       f.psProgress(false);
    }
    // 允许窗口操作

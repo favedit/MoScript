@@ -69,14 +69,14 @@ MO.FEditorDsCatalogContent_onNodeClick = function FEditorDsCatalogContent_onNode
    if(typeGroup == MO.EDuiTreeNodeGroup.Container){
       // 显示界面
       var frame = o._frameSet.selectObject(frameName);
-      frame.processMode(MO.EUiMode.Update);
+      frame.psMode(MO.EUiMode.Update);
       frame.dataModify();
       // 加载数据
       frame.doLoad(typeGroup, containerName);
    }else if(typeGroup == MO.EDuiTreeNodeGroup.Item){
       // 显示界面
       var frame = o._frameSet.selectObject(frameName);
-      frame.processMode(MO.EUiMode.Update);
+      frame.psMode(MO.EUiMode.Update);
       frame.dataModify();
       // 加载数据
       var itemName = o._itemName = node.guid();

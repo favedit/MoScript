@@ -168,7 +168,7 @@ MO.RDuiControl.prototype.create = function RDuiControl_create(pc, px, pa){
    }
    // 内部创建
    o.innerCreate(c, px, pa);
-   //if(RClass.isClass(x, TNode)){
+   //if(MO.Class.isClass(x, TNode)){
    //   if(x){
    //      // 节点对象(TNode)的处理
    //      if(x.name == 'CellEdit'){
@@ -439,7 +439,7 @@ MO.RDuiControl.prototype.toXml = function RDuiControl_toXml(){
 MO.RDuiControl.prototype.store = function RDuiControl_store(o, type){
    var x = new TNode();
    x.name = MO.Class.name(o).substr(1);
-   if(RClass.isClass(o, FContainer)){
+   if(MO.Class.isClass(o, FContainer)){
       o.storeConfig(x);
    }else{
       o.saveConfig(x);
@@ -459,7 +459,7 @@ MO.RDuiControl.prototype.htmlControl = function RDuiControl_htmlControl(e, c){
    if(c){
       while(e){
          var o = RHtml.linkGet(e, 'control');
-         if(o && RClass.isClass(o, c)){
+         if(o && MO.Class.isClass(o, c)){
             return o;
          }
          e = e.parentElement;

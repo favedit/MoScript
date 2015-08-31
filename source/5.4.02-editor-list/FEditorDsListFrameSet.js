@@ -10,7 +10,7 @@ MO.FEditorDsListFrameSet = function FEditorDsListFrameSet(o){
    // @property
    o._frameName = 'editor.design.list.FrameSet';
    //..........................................................
-   // @process
+   // @event
    o.onBuilded  = MO.FEditorDsListFrameSet_onBuilded;
    //..........................................................
    // @method

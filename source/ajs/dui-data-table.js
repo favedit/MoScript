@@ -5,8 +5,8 @@ with(MO){
       o._styleLabel        = MO.Class.register(o, new MO.AStyle('_styleLabel'));
       o._styleSearchPanel  = MO.Class.register(o, new MO.AStyle('_styleSearchPanel'));
       o._styleSearchEdit   = MO.Class.register(o, new MO.AStyle('_styleSearchEdit'));
-      o._styleIconSortUp   = MO.Class.register(o, new AStyleIcon('_styleIconSortUp'));
-      o._styleIconSortDown = MO.Class.register(o, new AStyleIcon('_styleIconSortDown'));
+      o._styleIconSortUp   = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortUp'));
+      o._styleIconSortDown = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortDown'));
       o._cellClass         = FCell;
       o._hForm             = null;
       o._hFormLine         = null;
@@ -27,10 +27,10 @@ with(MO){
       o.onBuildTotal       = FUiDataColumn_onBuildTotal;
       o.onBuildPanel       = FUiDataColumn_onBuildPanel;
       o.onBuild            = FUiDataColumn_onBuild;
-      o.onSearchEnter      = MO.Class.register(o, new AEventMouseEnter('onSearchEnter'));
-      o.onSearchClick      = MO.Class.register(o, new AEventClick('onSearchClick'));
-      o.onSearchLeave      = MO.Class.register(o, new AEventMouseLeave('onSearchLeave'));
-      o.onSearchKeyDown    = MO.Class.register(o, new AEventKeyDown('onSearchKeyDown'));
+      o.onSearchEnter      = MO.Class.register(o, new MO.AEventMouseEnter('onSearchEnter'));
+      o.onSearchClick      = MO.Class.register(o, new MO.AEventClick('onSearchClick'));
+      o.onSearchLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onSearchLeave'));
+      o.onSearchKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onSearchKeyDown'));
       o.createCell         = FUiDataColumn_createCell;
       return o;
    }
@@ -42,7 +42,7 @@ with(MO){
          o._hIcon = MO.Window.Builder.appendIcon(hip, o.icon);
       }
       var hl = o._hLabel = MO.Window.Builder.appendTableCell(hr);
-      hl.innerHTML = RString.nvl(o.label());
+      hl.innerHTML = MO.Lang.String.nvl(o.label());
       var hsp = o._hSortPanel = MO.Window.Builder.appendTableCell(hr);
       var hsu = o._hSortUp = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortUp', FUiDataColumn));
       hsu.style.display = 'none';
@@ -60,7 +60,7 @@ with(MO){
       hf.width = '100%';
       hf.style.backgroundColor = '#FFFFFF';
       var hfl = o._hSearchFormLine = hf.insertRow();
-      if(RClass.isClass(o, FUiDataColumnButton)){
+      if(MO.Class.isClass(o, FUiDataColumnButton)){
          o._hSearchPanel.style.backgroundColor = '#EEEFF1';
          o._hSearchPanel.style.borderLeft='1 solid #808080';
          o._hSearchPanel.style.borderTop='1 solid #808080';
@@ -100,13 +100,13 @@ with(MO){
       var t = o.table;
       o._absEdit = o._editInsert || o._editUpdate || o._editDelete;
       if(!o._absEdit){
-         if(!RString.isEmpty(o._lovReference)){
+         if(!MO.Lang.String.isEmpty(o._lovReference)){
             o._hasDropArea = true;
          }else{
             o._hasDropArea = false;
          }
       }
-      if (!RString.isEmpty(o._viewIcons)) {
+      if (!MO.Lang.String.isEmpty(o._viewIcons)) {
          var im = o.iconMap = new TAttributes();
          im.split(o._viewIcons.replace(/\n/g, ';'), '=', ';');
          o.hasIconArea = im.count > 0;
@@ -156,7 +156,7 @@ with(MO){
       t.selectRow(r, !e.ctrlKey, true);
       var fc = RConsole.find(FFocusConsole);
       var c = fc.focusControl;
-      if(RClass.isClass(c, FDropEditor)){
+      if(MO.Class.isClass(c, FDropEditor)){
          if(c.source == s){
             return;
          }
@@ -234,11 +234,11 @@ with(MO){
       var tbl = o.table;
       var ct = tbl.dsViewer.count;
       var x = e.x;
-      if(!RClass.isClass(o, FUiDataColumnButton)){
+      if(!MO.Class.isClass(o, FUiDataColumnButton)){
    	   var l = o._hPanel.offsetWidth;
    	   var r = l - 6;
    	   if (x > 0 && x < r) {
-   	      if (ct > 0 && !RClass.isClass(e.source, FUiDataColumnStatus)) {
+   	      if (ct > 0 && !MO.Class.isClass(e.source, FUiDataColumnStatus)) {
    	         var cs = tbl.columns;
    	         var len = cs.count;
    	         for ( var n = 0; n < len; n++) {
@@ -332,7 +332,7 @@ with(MO){
       return r.cell(this.index);
    }
    MO.FUiDataColumn_equalsValue = function FUiDataColumn_equalsValue(s, t) {
-      return RString.nvl(s).replace(/\n/g, '\\n').replace(/\r/g, '\\r') == RString.nvl(t).replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+      return RString.nvl(s).replace(/\n/g, '\\n').replace(/\r/g, '\\r') == MO.Lang.String.nvl(t).replace(/\n/g, '\\n').replace(/\r/g, '\\r');
    }
    MO.FUiDataColumn_setWidth = function FUiDataColumn_setWidth(w){
       var o = this;
@@ -373,7 +373,7 @@ with(MO){
             var fr = t.rows.get(n);
             for( var i = fi; i >= 0; i--){
                var ft = t.columns.value(i);
-               if(RClass.isClass(ft, FUiDataColumn) && ft._displayList){
+               if(MO.Class.isClass(ft, FUiDataColumn) && ft._displayList){
                   mt = ft;
                   mr = fr;
                   mc = mr.cell(mt.index);
@@ -394,7 +394,7 @@ with(MO){
             var fr = t.rows.get(n);
             for(var i = fi; i < cc; i++){
                var ft = t.columns.value(i);
-               if(RClass.isClass(ft, FUiDataColumn) && ft._displayList){
+               if(MO.Class.isClass(ft, FUiDataColumn) && ft._displayList){
                   mt = ft;
                   mr = fr;
                   mc = mr.cell(mt.index);

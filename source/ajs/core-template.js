@@ -64,7 +64,7 @@ MO.FTag_innerDump = function FTag_innerDump(ps, pt, pl){
    ps.appendRepeat('   ', pl);
    ps.append(MO.Class.dump(pt));
    var s = pt.toString();
-   if(!MO.RString.isEmpty(s)){
+   if(!MO.MO.Lang.String.isEmpty(s)){
       ps.append(' [', s, ']');
    }
    var ts = pt._children;

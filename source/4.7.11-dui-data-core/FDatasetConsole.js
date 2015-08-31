@@ -128,7 +128,7 @@ with(MO){
       var o = this;
       // 获得数据集名称
       var n = x.get('name');
-      if(RString.isEmpty(n)){
+      if(MO.Lang.String.isEmpty(n)){
          throw new TError('Unknown dataset name.');
       }
       // 获得数据集合
@@ -302,7 +302,7 @@ with(MO){
          for(var n = 0; n < xfc; n ++){
             var xf = xfs.get(n);
             var fd = xf.get('id');
-            if(!RString.isEmpty(fd)){
+            if(!MO.Lang.String.isEmpty(fd)){
                o.loadDatasets(rds, fd, xf);
             }
          }

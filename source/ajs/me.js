@@ -792,7 +792,7 @@ MO.TObjects_push = function TObjects_push(value){
 MO.TObjects_pushUnique = function TObjects_pushUnique(value){
    var o = this;
    var index = o.indexOf(value);
-   if(value == -1){
+   if(index == -1){
       o.push(value);
    }
 }
@@ -12394,7 +12394,7 @@ MO.FTag_innerDump = function FTag_innerDump(ps, pt, pl){
    ps.appendRepeat('   ', pl);
    ps.append(MO.Class.dump(pt));
    var s = pt.toString();
-   if(!MO.RString.isEmpty(s)){
+   if(!MO.MO.Lang.String.isEmpty(s)){
       ps.append(' [', s, ']');
    }
    var ts = pt._children;
@@ -15309,6 +15309,7 @@ MO.RContext.prototype.find = function RContext_find(s, c){
    return r.text;
 }
 MO.RContext = new MO.RContext();
+MO.Context = MO.RContext;
 MO.RDump = function RDump(){
    var o = this;
    o.LINE_SINGLE = '------------------------------';
@@ -25846,7 +25847,7 @@ MO.FE3sResource_unserialize = function FE3sResource_unserialize(input){
 }
 MO.FE3sResource_saveConfig = function FE3sResource_saveConfig(xconfig){
    var o = this;
-   if(!MO.String.isEmpty(o._typeName)){
+   if(!MO.Lang.String.isEmpty(o._typeName)){
       xconfig.setName(o._typeName);
    }
    xconfig.set('guid', o._guid);
@@ -30757,7 +30758,7 @@ MO.FE3dSceneCanvas_switchPlay = function FE3dSceneCanvas_switchPlay(flag){
    var count = displays.count();
    for(var i = 0; i < count; i++){
       var display = displays.at(i);
-      if(RClass.isClass(display, FE3dSceneDisplay)){
+      if(MO.Class.isClass(display, FE3dSceneDisplay)){
          var sprite = display._sprite;
          if(sprite){
             sprite._optionPlay = flag;
@@ -36155,7 +36156,7 @@ MO.MUiComponent_searchComponents = function MUiComponent_searchComponents(findCo
       for(var i = 0; i < count; i++){
          var component = components.at(i);
          if(MO.Class.isClass(component, clazz)){
-            findComponents.push(component);
+            findComponents.pushUnique(component);
          }
          component.searchComponents(findComponents, clazz);
       }
@@ -36493,6 +36494,34 @@ MO.MUiDataValue = function MUiDataValue(o){
    o._dataValue = MO.Class.register(o, [new MO.APtyString('_dataValue'), new MO.AGetSet('_dataValue')]);
    o.oeLoadUnit = MO.Method.empty;
    o.oeSaveUnit = MO.Method.empty;
+   return o;
+}
+MO.MUiDisplayContrainer = function MUiDisplayContrainer(o){
+   o = MO.Class.inherits(this, o);
+   o._modeCd    = MO.Class.register(o, new MO.AGetter('_modeCd'), MO.EUiMode.View);
+   o._eventMode = null;
+   o.construct  = MO.MUiDisplayContrainer_construct;
+   o.psMode     = MO.MUiDisplayContrainer_psMode;
+   o.dispose    = MO.MUiDisplayContrainer_dispose;
+   return o;
+}
+MO.MUiDisplayContrainer_construct = function MUiDisplayContrainer_construct(){
+   var o = this;
+   o._eventMode = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDisplayField);
+}
+MO.MUiDisplayContrainer_psMode = function MUiDisplayContrainer_psMode(modeCd){
+   var o = this;
+   o._modeCd = modeCd;
+   var event = o._eventMode;
+   event.modeCd = modeCd;
+   o.process(event);
+}
+MO.MUiDisplayContrainer_dispose = function MUiDisplayContrainer_dispose(){
+   var o = this;
+   o._eventMode = MO.Lang.Object.Dispose(o._eventMode);
+}
+MO.MUiDisplayField = function MUiDisplayField(o){
+   o = MO.Class.inherits(this, o);
    return o;
 }
 MO.MUiDragable = function MUiDragable(o){

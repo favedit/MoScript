@@ -466,7 +466,7 @@ MO.FDuiWindow_doFocus = function FDuiWindow_doFocus(){
       var cs = o.searchControls;
       for(var n = 0; n < cs.count; n++){
          var c = o.searchControls.get(0)
-         if(RClass.isClass(c, MEditValue)){
+         if(MO.Class.isClass(c, MEditValue)){
             c.focus();
          }
       }

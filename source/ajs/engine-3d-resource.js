@@ -1507,7 +1507,7 @@ MO.FE3sResource_unserialize = function FE3sResource_unserialize(input){
 }
 MO.FE3sResource_saveConfig = function FE3sResource_saveConfig(xconfig){
    var o = this;
-   if(!MO.String.isEmpty(o._typeName)){
+   if(!MO.Lang.String.isEmpty(o._typeName)){
       xconfig.setName(o._typeName);
    }
    xconfig.set('guid', o._guid);

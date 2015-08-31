@@ -1302,7 +1302,7 @@ MO.FE3dSceneCanvas_switchPlay = function FE3dSceneCanvas_switchPlay(flag){
    var count = displays.count();
    for(var i = 0; i < count; i++){
       var display = displays.at(i);
-      if(RClass.isClass(display, FE3dSceneDisplay)){
+      if(MO.Class.isClass(display, FE3dSceneDisplay)){
          var sprite = display._sprite;
          if(sprite){
             sprite._optionPlay = flag;

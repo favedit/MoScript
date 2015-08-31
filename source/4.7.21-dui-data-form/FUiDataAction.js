@@ -37,7 +37,7 @@ with(MO){
       //var r = RConsole.find(FResultConsole).checkService(e.document.root());
       //if(r){
       //   var v = o._dataContainer;
-      //   if(RClass.isClass(v, MDuiFocus)){
+      //   if(MO.Class.isClass(v, MDuiFocus)){
       //      v.focus();
       //   }
       //}
@@ -53,7 +53,7 @@ with(MO){
    //==========================================================
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
-      MO.Assert.debugTrue(RClass.isClass(p, MUiDataContainer));
+      MO.Assert.debugTrue(MO.Class.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');

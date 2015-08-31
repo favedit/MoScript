@@ -64,7 +64,7 @@ with(MO){
    //==========================================================
    MO.FDataSource_selectDataset = function FDataSource_selectDataset(p){
       var o = this;
-      var dn = RString.nvl(p, 'default');
+      var dn = MO.Lang.String.nvl(p, 'default');
       var d = o._datasets.get(dn);
       if(d == null){
          d = new TDataset();

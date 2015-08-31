@@ -35,8 +35,8 @@ with(MO){
       o._styleLabel        = MO.Class.register(o, new MO.AStyle('_styleLabel'));
       o._styleSearchPanel  = MO.Class.register(o, new MO.AStyle('_styleSearchPanel'));
       o._styleSearchEdit   = MO.Class.register(o, new MO.AStyle('_styleSearchEdit'));
-      o._styleIconSortUp   = MO.Class.register(o, new AStyleIcon('_styleIconSortUp'));
-      o._styleIconSortDown = MO.Class.register(o, new AStyleIcon('_styleIconSortDown'));
+      o._styleIconSortUp   = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortUp'));
+      o._styleIconSortDown = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortDown'));
       //..........................................................
       // @attribute
       o._cellClass         = FCell;
@@ -66,10 +66,10 @@ with(MO){
       o.onBuildPanel       = FUiDataColumn_onBuildPanel;
       o.onBuild            = FUiDataColumn_onBuild;
       // @event
-      o.onSearchEnter      = MO.Class.register(o, new AEventMouseEnter('onSearchEnter'));
-      o.onSearchClick      = MO.Class.register(o, new AEventClick('onSearchClick'));
-      o.onSearchLeave      = MO.Class.register(o, new AEventMouseLeave('onSearchLeave'));
-      o.onSearchKeyDown    = MO.Class.register(o, new AEventKeyDown('onSearchKeyDown'));
+      o.onSearchEnter      = MO.Class.register(o, new MO.AEventMouseEnter('onSearchEnter'));
+      o.onSearchClick      = MO.Class.register(o, new MO.AEventClick('onSearchClick'));
+      o.onSearchLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onSearchLeave'));
+      o.onSearchKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onSearchKeyDown'));
       //..........................................................
       // @process
       //..........................................................
@@ -131,12 +131,12 @@ with(MO){
       //o._hFixPanel         = null;
       //..........................................................
       // @event
-      //o.onCellMouseEnter  = MO.Class.register(o, new AEventMouseEnter('onCellMouseEnter'), FUiDataColumn_onCellMouseEnter);
-      //o.onCellMouseLeave  = MO.Class.register(o, new AEventMouseLeave('onCellMouseLeave'), FUiDataColumn_onCellMouseLeave);
-      //o.onCellMouseDown   = MO.Class.register(o, new AEventMouseDown('onCellMouseDown'), FUiDataColumn_onCellMouseDown);
-      //o.onCellClick       = MO.Class.register(o, new AEventClick('onCellClick'), FUiDataColumn_onCellClick);
-      //o.onCellDoubleClick = MO.Class.register(o, new AEventDoubleClick('onCellDoubleClick'), FUiDataColumn_onCellDoubleClick);
-      //o.onCellKeyDown     = MO.Class.register(o, new AEventKeyDown('onCellKeyDown'), FUiDataColumn_onCellKeyDown);
+      //o.onCellMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onCellMouseEnter'), FUiDataColumn_onCellMouseEnter);
+      //o.onCellMouseLeave  = MO.Class.register(o, new MO.AEventMouseLeave('onCellMouseLeave'), FUiDataColumn_onCellMouseLeave);
+      //o.onCellMouseDown   = MO.Class.register(o, new MO.AEventMouseDown('onCellMouseDown'), FUiDataColumn_onCellMouseDown);
+      //o.onCellClick       = MO.Class.register(o, new MO.AEventClick('onCellClick'), FUiDataColumn_onCellClick);
+      //o.onCellDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onCellDoubleClick'), FUiDataColumn_onCellDoubleClick);
+      //o.onCellKeyDown     = MO.Class.register(o, new MO.AEventKeyDown('onCellKeyDown'), FUiDataColumn_onCellKeyDown);
       // @event
       //o.onDataKeyDown     = FUiDataColumn_onDataKeyDown;
       //o.onDataChanged     = FUiDataColumn_onDataChanged;
@@ -146,7 +146,7 @@ with(MO){
       //o.onEditChanged     = FUiDataColumn_onEditChanged;
       //..........................................................
       // @event
-      //o.onHeadMouseDown   = MO.Class.register(o, new AEventMouseDown('onHeadMouseDown'), FUiDataColumn_onHeadMouseDown);
+      //o.onHeadMouseDown   = MO.Class.register(o, new MO.AEventMouseDown('onHeadMouseDown'), FUiDataColumn_onHeadMouseDown);
       //..........................................................
       // @process
       //o.oeMode            = FUiDataColumn_oeMode;
@@ -193,7 +193,7 @@ with(MO){
       //   hl.style.color = EColor.Require;
       //}
       //hl.align = o._labelAlignCd;
-      hl.innerHTML = RString.nvl(o.label());
+      hl.innerHTML = MO.Lang.String.nvl(o.label());
       // 建立排序区
       var hsp = o._hSortPanel = MO.Window.Builder.appendTableCell(hr);
       var hsu = o._hSortUp = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortUp', FUiDataColumn));
@@ -201,7 +201,7 @@ with(MO){
       var hsu = o._hSortDown = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortDown', FUiDataColumn));
       hsu.style.display = 'none';
       // 如果当前控件支持列表接口
-      //if(RClass.isClass(o, MListView)){
+      //if(MO.Class.isClass(o, MListView)){
          //o.setLabelStyle(o._hLabel);
       //}
    }
@@ -221,7 +221,7 @@ with(MO){
       //o.attachEvent('onSearchClick', he);
       //he.innerText = o.searchHint;
       // 设置文字对齐方式
-      //if(!RString.isEmpty(o._editAlign)){
+      //if(!MO.Lang.String.isEmpty(o._editAlign)){
          //he.style.textAlign = o._editAlign;
       //}
    }
@@ -238,7 +238,7 @@ with(MO){
       hf.width = '100%';
       hf.style.backgroundColor = '#FFFFFF';
       var hfl = o._hSearchFormLine = hf.insertRow();
-      if(RClass.isClass(o, FUiDataColumnButton)){
+      if(MO.Class.isClass(o, FUiDataColumnButton)){
          o._hSearchPanel.style.backgroundColor = '#EEEFF1';
          o._hSearchPanel.style.borderLeft='1 solid #808080';
          o._hSearchPanel.style.borderTop='1 solid #808080';
@@ -314,14 +314,14 @@ with(MO){
       // 设置绝对编辑标志
       o._absEdit = o._editInsert || o._editUpdate || o._editDelete;
       if(!o._absEdit){
-         if(!RString.isEmpty(o._lovReference)){
+         if(!MO.Lang.String.isEmpty(o._lovReference)){
             o._hasDropArea = true;
          }else{
             o._hasDropArea = false;
          }
       }
       // 分解的图标字符串，判断是否拥有图标区
-      if (!RString.isEmpty(o._viewIcons)) {
+      if (!MO.Lang.String.isEmpty(o._viewIcons)) {
          var im = o.iconMap = new TAttributes();
          im.split(o._viewIcons.replace(/\n/g, ';'), '=', ';');
          o.hasIconArea = im.count > 0;
@@ -416,7 +416,7 @@ with(MO){
       // 设置焦点
       var fc = RConsole.find(FFocusConsole);
       var c = fc.focusControl;
-      if(RClass.isClass(c, FDropEditor)){
+      if(MO.Class.isClass(c, FDropEditor)){
          if(c.source == s){
             return;
          }
@@ -516,11 +516,11 @@ with(MO){
       var tbl = o.table;
       var ct = tbl.dsViewer.count;
       var x = e.x;
-      if(!RClass.isClass(o, FUiDataColumnButton)){
+      if(!MO.Class.isClass(o, FUiDataColumnButton)){
    	   var l = o._hPanel.offsetWidth;
    	   var r = l - 6;
    	   if (x > 0 && x < r) {
-   	      if (ct > 0 && !RClass.isClass(e.source, FUiDataColumnStatus)) {
+   	      if (ct > 0 && !MO.Class.isClass(e.source, FUiDataColumnStatus)) {
    	         // 设置排序信息
    	         var cs = tbl.columns;
    	         var len = cs.count;
@@ -640,7 +640,7 @@ with(MO){
 
    //==========================================================
    MO.FUiDataColumn_equalsValue = function FUiDataColumn_equalsValue(s, t) {
-      return RString.nvl(s).replace(/\n/g, '\\n').replace(/\r/g, '\\r') == RString.nvl(t).replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+      return RString.nvl(s).replace(/\n/g, '\\n').replace(/\r/g, '\\r') == MO.Lang.String.nvl(t).replace(/\n/g, '\\n').replace(/\r/g, '\\r');
    }
 
    //==========================================================
@@ -693,7 +693,7 @@ with(MO){
             var fr = t.rows.get(n);
             for( var i = fi; i >= 0; i--){
                var ft = t.columns.value(i);
-               if(RClass.isClass(ft, FUiDataColumn) && ft._displayList){
+               if(MO.Class.isClass(ft, FUiDataColumn) && ft._displayList){
                   mt = ft;
                   mr = fr;
                   mc = mr.cell(mt.index);
@@ -714,7 +714,7 @@ with(MO){
             var fr = t.rows.get(n);
             for(var i = fi; i < cc; i++){
                var ft = t.columns.value(i);
-               if(RClass.isClass(ft, FUiDataColumn) && ft._displayList){
+               if(MO.Class.isClass(ft, FUiDataColumn) && ft._displayList){
                   mt = ft;
                   mr = fr;
                   mc = mr.cell(mt.index);

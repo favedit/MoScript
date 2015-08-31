@@ -14,7 +14,7 @@ MO.TSearchItem = function TSearchItem(){
    //o.value  = v;
    /// @attribute String 格式化
    //o.format = f;
-   //o.type   = RString.nvl(t, ESearch.Equals);
+   //o.type   = MO.Lang.String.nvl(t, ESearch.Equals);
    // Method
    //o.set    = TSearchItem_set;
    //o.equals = TSearchItem_equals;

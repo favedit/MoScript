@@ -792,7 +792,7 @@ MO.TObjects_push = function TObjects_push(value){
 MO.TObjects_pushUnique = function TObjects_pushUnique(value){
    var o = this;
    var index = o.indexOf(value);
-   if(value == -1){
+   if(index == -1){
       o.push(value);
    }
 }

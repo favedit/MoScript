@@ -935,7 +935,7 @@ MO.TObjects_push = function TObjects_push(value){
 MO.TObjects_pushUnique = function TObjects_pushUnique(value){
    var o = this;
    var index = o.indexOf(value);
-   if(value == -1){
+   if(index == -1){
       o.push(value);
    }
 }
@@ -12537,7 +12537,7 @@ MO.FTag_innerDump = function FTag_innerDump(ps, pt, pl){
    ps.appendRepeat('   ', pl);
    ps.append(MO.Class.dump(pt));
    var s = pt.toString();
-   if(!MO.RString.isEmpty(s)){
+   if(!MO.MO.Lang.String.isEmpty(s)){
       ps.append(' [', s, ']');
    }
    var ts = pt._children;
@@ -15452,6 +15452,7 @@ MO.RContext.prototype.find = function RContext_find(s, c){
    return r.text;
 }
 MO.RContext = new MO.RContext();
+MO.Context = MO.RContext;
 MO.RDump = function RDump(){
    var o = this;
    o.LINE_SINGLE = '------------------------------';

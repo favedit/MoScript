@@ -185,7 +185,7 @@ with(MO){
    MO.FUiDataNumber3_validPattern = function FUiDataNumber3_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       // 首先检测是否是数字 如果不是数字格式 返回 false
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;  
@@ -226,7 +226,7 @@ with(MO){
    // 保证是有效数字的前提下
    MO.FUiDataNumber3_splitValue = function FUiDataNumber3_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       // 负号位置
       var j = RString.findChars(s,"-");
       // 百分号位置
@@ -236,7 +236,7 @@ with(MO){
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -273,7 +273,7 @@ with(MO){
    // 去掉分隔符
    MO.FUiDataNumber3_removeSplit = function FUiDataNumber3_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
@@ -281,13 +281,13 @@ with(MO){
    //------------------------------------------------------------
    MO.FUiDataNumber3_precisionValue = function FUiDataNumber3_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
       // 精度的格式一定要正确 0.1,1,10,100...
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;

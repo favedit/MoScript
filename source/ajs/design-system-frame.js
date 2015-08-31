@@ -103,7 +103,7 @@ with(MO){
    }
    MO.FDsSystemFrameCatalogContent_showObject = function FDsSystemFrameCatalogContent_showObject(item){
       var o = this;
-      if(RClass.isClass(item, FDsSceneRenderable)){
+      if(MO.Class.isClass(item, FDsSceneRenderable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){

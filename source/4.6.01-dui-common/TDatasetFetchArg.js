@@ -107,9 +107,9 @@ MO.TDatasetFetchArg_process = function TDatasetFetchArg_process(){
 //==========================================================
 MO.TDatasetFetchArg_push = function TDatasetFetchArg_push(v){
    var o = this;
-   if(RClass.isClass(v, TSearchItem)){
+   if(MO.Class.isClass(v, TSearchItem)){
       o.searchs.push(v);
-   }else if(RClass.isClass(v, TOrderItem)){
+   }else if(MO.Class.isClass(v, TOrderItem)){
       o.orders.push(v);
    }
 }

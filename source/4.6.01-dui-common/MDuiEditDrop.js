@@ -70,7 +70,7 @@ MO.MDuiEditDrop_onBuildEditDrop = function MDuiEditDrop_onBuildEditDrop(p){
 MO.MDuiEditDrop_onDropEnter = function MDuiEditDrop_onDropEnter(e){
    var o = this;
    //var t = null;
-   //if(RString.isEmpty(o.dataValue)){
+   //if(MO.Lang.String.isEmpty(o.dataValue)){
    //   t = RContext.get('MDuiEditDrop:Drop.empty');
    //}else{
    //   t = RContext.get('MDuiEditDrop:Drop.restore', o.dataValue);
@@ -87,7 +87,7 @@ MO.MDuiEditDrop_onDropEnter = function MDuiEditDrop_onDropEnter(e){
 MO.MDuiEditDrop_onDropLeave = function MDuiEditDrop_onDropLeave(e){
    var o = this;
    //var t = null;
-   //if(RString.isEmpty(o.dataValue)){
+   //if(MO.Lang.String.isEmpty(o.dataValue)){
    //   t = RContext.get('MDuiEditDrop:Drop.empty');
    //}else{
    //   t = RContext.get('MDuiEditDrop:Drop.restore', o.dataValue);

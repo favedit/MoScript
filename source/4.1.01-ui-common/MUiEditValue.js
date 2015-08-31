@@ -148,7 +148,7 @@ MO.MUiEditValue_clearValue = function MUiEditValue_clearValue(){
 //==========================================================
 MO.MUiEditValue_resetValue = function MUiEditValue_resetValue(){
    var o = this;
-   //var v = RString.nvl(o.descriptor().dataDefault);
+   //var v = MO.Lang.String.nvl(o.descriptor().dataDefault);
    o._dataValue = value;
    o.set(value);
 }

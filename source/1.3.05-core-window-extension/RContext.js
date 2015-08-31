@@ -126,3 +126,4 @@ MO.RContext.prototype.find = function RContext_find(s, c){
 //..........................................................
 // 实例化内容
 MO.RContext = new MO.RContext();
+MO.Context = MO.RContext;

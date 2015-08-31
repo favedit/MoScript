@@ -395,7 +395,7 @@ with(MO){
       var ts = new TList();
       var p = o;
       while(p){
-         if(RClass.isClass(p, MUiDataset)){
+         if(MO.Class.isClass(p, MUiDataset)){
             ts.push(p);
          }
          if(!p.parent){
@@ -406,9 +406,9 @@ with(MO){
       // 内层的数据覆盖外层数据集的数据
       for(var n=ts.count; n>=0; n--){
          var p = ts.get(n);
-         if(RClass.isClass(p, FForm)){
+         if(MO.Class.isClass(p, FForm)){
             p.toAttributes(a, m);
-         }else if(RClass.isClass(m, FTable)){
+         }else if(MO.Class.isClass(m, FTable)){
             var r = p.getCurrentRow();
             if(r){
                r.toAttributes(a, m);
@@ -946,7 +946,7 @@ with(MO){
       }else{
          ds.move(p);
       }
-      if(RClass.isClass(o, MValue)){
+      if(MO.Class.isClass(o, MValue)){
          o.loadValue(ds.current());
       }
    }

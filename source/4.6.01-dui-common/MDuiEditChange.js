@@ -71,7 +71,7 @@ MO.MDuiEditChange_onBuildEditChange = function MDuiEditChange_onBuildEditChange(
 MO.MDuiEditChange_onChangeEnter = function MDuiEditChange_onChangeEnter(e){
    var o = this;
    //var t = null;
-   //if(RString.isEmpty(o.dataValue)){
+   //if(MO.Lang.String.isEmpty(o.dataValue)){
    //   t = RContext.get('MDuiEditChange:change.empty');
    //}else{
    //   t = RContext.get('MDuiEditChange:change.restore', o.dataValue);
@@ -88,7 +88,7 @@ MO.MDuiEditChange_onChangeEnter = function MDuiEditChange_onChangeEnter(e){
 MO.MDuiEditChange_onChangeLeave = function MDuiEditChange_onChangeLeave(e){
    var o = this;
    //var t = null;
-   //if(RString.isEmpty(o.dataValue)){
+   //if(MO.Lang.String.isEmpty(o.dataValue)){
    //   t = RContext.get('MDuiEditChange:change.empty');
    //}else{
    //   t = RContext.get('MDuiEditChange:change.restore', o.dataValue);

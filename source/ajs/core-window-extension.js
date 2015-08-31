@@ -512,6 +512,7 @@ MO.RContext.prototype.find = function RContext_find(s, c){
    return r.text;
 }
 MO.RContext = new MO.RContext();
+MO.Context = MO.RContext;
 MO.RDump = function RDump(){
    var o = this;
    o.LINE_SINGLE = '------------------------------';

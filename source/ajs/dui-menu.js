@@ -490,6 +490,9 @@ MO.FDuiSliderButton_onBuild = function FDuiSliderButton_onBuild(event){
    if(o._label){
       var hLabelPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('LabelPanel'));
       hLabelPanel.noWrap = true;
+      if(o._foreColor){
+         hLabelPanel.style.color = o._foreColor;
+      }
       o.setLabel(o._label);
    }
    if(o._hotkey){

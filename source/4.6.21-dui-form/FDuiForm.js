@@ -6,16 +6,13 @@
 // @version 150122
 //==========================================================
 MO.FDuiForm = function FDuiForm(o){
-   o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MUiDataContainer, MO.MDuiDescribeFrame);
+   o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MUiDataContainer, MO.MUiDisplayContrainer, MO.MDuiDescribeFrame);
    //..........................................................
    // @property
    o._logicGroup    = MO.Class.register(o, [new MO.APtyString('_logicGroup'), new MO.AGetter('_logicGroup')]);
    o._logicCode     = MO.Class.register(o, [new MO.APtyString('_logicCode'), new MO.AGetter('_logicCode')]);
    o._logicService  = MO.Class.register(o, [new MO.APtyString('_logicService'), new MO.AGetter('_logicService')]);
    o._logicAction   = MO.Class.register(o, [new MO.APtyString('_logicAction'), new MO.AGetter('_logicAction')]);
-   //..........................................................
-   // @attribute
-   o._modeCd        = MO.Class.register(o, new MO.AGetter('_modeCd'), MO.EUiMode.View);
    //..........................................................
    // @event
    //o.onMouseDown  = MO.FDuiForm_onMouseDown;
@@ -95,27 +92,12 @@ MO.FDuiForm = function FDuiForm(o){
 MO.FDuiForm_construct = function FDuiForm_construct(){
    var o = this;
    o.__base.FDuiLayout.construct.call(o);
+   o.__base.MUiDisplayContrainer.construct.call(o);
    // 建立监听器
    //o.lsnsLoaded = new TListeners();
    //o.lsnsClick = new TListeners();
    // 建立处理器
    //o._dataComponents = new TMap();
-}
-
-//==========================================================
-// <T>数据删除处理。</T>
-//
-// @method
-//==========================================================
-MO.FDuiForm_processMode = function FDuiForm_processMode(modeCd){
-   var o = this;
-   // 设置命令
-   o._modeCd = modeCd;
-   // 数据处理
-   var event = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDataField);
-   event.modeCd = modeCd;
-   o.process(event);
-   event.dispose();
 }
 
 //==========================================================
@@ -129,6 +111,7 @@ MO.FDuiForm_dispose = function FDuiForm_dispose(){
    o._hEdit = MO.Window.Html.free(o._hEdit);
    o._hDrop = MO.Window.Html.free(o._hDrop);
    // 父处理
+   o.__base.MUiDisplayContrainer.dispose.call(o);
    o.__base.FDuiLayout.dispose.call(o);
 }
 

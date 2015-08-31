@@ -349,7 +349,7 @@ MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(
 }
 MO.MDuiEditDescriptor_oeSaveCode = function MDuiEditDescriptor_oeSaveCode(e){
    var o = this;
-   if(!RString.isEmpty(o.dataName) && !RString.isEmpty(o.dataCode)){
+   if(!MO.Lang.String.isEmpty(o.dataName) && !MO.Lang.String.isEmpty(o.dataCode)){
       e.values.set(o.dataName, o.dataCode);
    }
    return EEventStatus.Stop;
@@ -982,9 +982,9 @@ MO.TDatasetFetchArg_process = function TDatasetFetchArg_process(){
 }
 MO.TDatasetFetchArg_push = function TDatasetFetchArg_push(v){
    var o = this;
-   if(RClass.isClass(v, TSearchItem)){
+   if(MO.Class.isClass(v, TSearchItem)){
       o.searchs.push(v);
-   }else if(RClass.isClass(v, TOrderItem)){
+   }else if(MO.Class.isClass(v, TOrderItem)){
       o.orders.push(v);
    }
 }
@@ -2063,7 +2063,7 @@ MO.RDuiControl.prototype.toXml = function RDuiControl_toXml(){
 MO.RDuiControl.prototype.store = function RDuiControl_store(o, type){
    var x = new TNode();
    x.name = MO.Class.name(o).substr(1);
-   if(RClass.isClass(o, FContainer)){
+   if(MO.Class.isClass(o, FContainer)){
       o.storeConfig(x);
    }else{
       o.saveConfig(x);
@@ -2074,7 +2074,7 @@ MO.RDuiControl.prototype.htmlControl = function RDuiControl_htmlControl(e, c){
    if(c){
       while(e){
          var o = RHtml.linkGet(e, 'control');
-         if(o && RClass.isClass(o, c)){
+         if(o && MO.Class.isClass(o, c)){
             return o;
          }
          e = e.parentElement;

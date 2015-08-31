@@ -3223,7 +3223,7 @@ MO.FTag_innerDump = function FTag_innerDump(ps, pt, pl){
    ps.appendRepeat('   ', pl);
    ps.append(MO.Class.dump(pt));
    var s = pt.toString();
-   if(!MO.RString.isEmpty(s)){
+   if(!MO.MO.Lang.String.isEmpty(s)){
       ps.append(' [', s, ']');
    }
    var ts = pt._children;
@@ -14547,7 +14547,7 @@ MO.FE3sResource_unserialize = function FE3sResource_unserialize(input){
 }
 MO.FE3sResource_saveConfig = function FE3sResource_saveConfig(xconfig){
    var o = this;
-   if(!MO.String.isEmpty(o._typeName)){
+   if(!MO.Lang.String.isEmpty(o._typeName)){
       xconfig.setName(o._typeName);
    }
    xconfig.set('guid', o._guid);
@@ -19458,7 +19458,7 @@ MO.FE3dSceneCanvas_switchPlay = function FE3dSceneCanvas_switchPlay(flag){
    var count = displays.count();
    for(var i = 0; i < count; i++){
       var display = displays.at(i);
-      if(RClass.isClass(display, FE3dSceneDisplay)){
+      if(MO.Class.isClass(display, FE3dSceneDisplay)){
          var sprite = display._sprite;
          if(sprite){
             sprite._optionPlay = flag;

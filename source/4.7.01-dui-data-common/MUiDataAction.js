@@ -31,7 +31,7 @@ with(MO){
       //}
       // 执行数据处理
       var c = o.findComponent(n);
-      if(RClass.isClass(c, MInvoke)){
+      if(MO.Class.isClass(c, MInvoke)){
          c.invoke(this);
       }else{
          throw new TError(o, 'Component is invalid.');

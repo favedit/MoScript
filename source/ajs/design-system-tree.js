@@ -37,7 +37,7 @@ with(MO){
    }
    MO.FDsSystemTreeCatalogContent_showObject = function FDsSystemTreeCatalogContent_showObject(item){
       var o = this;
-      if(RClass.isClass(item, FDsSceneRenderable)){
+      if(MO.Class.isClass(item, FDsSceneRenderable)){
          var renderableNodes = o._renderableNodes;
          var renderableCount = renderableNodes.count();
          for(var i = 0; i < renderableCount; i++){

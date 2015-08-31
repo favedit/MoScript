@@ -3738,12 +3738,11 @@ MO.FDuiFile_refreshValue = function FDuiFile_refreshValue(){
    o.processDataChangedListener(o);
 }
 MO.FDuiForm = function FDuiForm(o){
-   o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MUiDataContainer, MO.MDuiDescribeFrame);
+   o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MUiDataContainer, MO.MUiDisplayContrainer, MO.MDuiDescribeFrame);
    o._logicGroup    = MO.Class.register(o, [new MO.APtyString('_logicGroup'), new MO.AGetter('_logicGroup')]);
    o._logicCode     = MO.Class.register(o, [new MO.APtyString('_logicCode'), new MO.AGetter('_logicCode')]);
    o._logicService  = MO.Class.register(o, [new MO.APtyString('_logicService'), new MO.AGetter('_logicService')]);
    o._logicAction   = MO.Class.register(o, [new MO.APtyString('_logicAction'), new MO.AGetter('_logicAction')]);
-   o._modeCd        = MO.Class.register(o, new MO.AGetter('_modeCd'), MO.EUiMode.View);
    o.construct      = MO.FDuiForm_construct;
    o.processMode    = MO.FDuiForm_processMode;
    o.dispose        = MO.FDuiForm_dispose;
@@ -3752,19 +3751,13 @@ MO.FDuiForm = function FDuiForm(o){
 MO.FDuiForm_construct = function FDuiForm_construct(){
    var o = this;
    o.__base.FDuiLayout.construct.call(o);
-}
-MO.FDuiForm_processMode = function FDuiForm_processMode(modeCd){
-   var o = this;
-   o._modeCd = modeCd;
-   var event = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDataField);
-   event.modeCd = modeCd;
-   o.process(event);
-   event.dispose();
+   o.__base.MUiDisplayContrainer.construct.call(o);
 }
 MO.FDuiForm_dispose = function FDuiForm_dispose(){
    var o = this;
    o._hEdit = MO.Window.Html.free(o._hEdit);
    o._hDrop = MO.Window.Html.free(o._hDrop);
+   o.__base.MUiDisplayContrainer.dispose.call(o);
    o.__base.FDuiLayout.dispose.call(o);
 }
 MO.FDuiForm_onMouseDown = function FDuiForm_onMouseDown(p){

@@ -54,13 +54,13 @@ MO.FDuiControl = function FDuiControl(o){
    // @event
    o.onEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onEnter'), MO.FDuiControl_onEnter);
    o.onLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onLeave'), MO.FDuiControl_onLeave);
-   //o.onMouseOver    = MO.Class.register(o, new AEventMouseOver('onMouseOver'));
-   //o.onMouseOut     = MO.Class.register(o, new AEventMouseOut('onMouseOut'));
-   //o.onMouseDown    = MO.Class.register(o, new AEventMouseDown('onMouseDown'));
-   //o.onMouseUp      = MO.Class.register(o, new AEventMouseUp('onMouseUp'));
-   //o.onClick        = MO.Class.register(o, new AEventClick('onClick'));
-   //o.onDoubleClick  = MO.Class.register(o, new AEventDoubleClick('onDoubleClick'));
-   //o.onResize       = MO.Class.register(o, new AEventResize('onResize'));
+   //o.onMouseOver    = MO.Class.register(o, new MO.AEventMouseOver('onMouseOver'));
+   //o.onMouseOut     = MO.Class.register(o, new MO.AEventMouseOut('onMouseOut'));
+   //o.onMouseDown    = MO.Class.register(o, new MO.AEventMouseDown('onMouseDown'));
+   //o.onMouseUp      = MO.Class.register(o, new MO.AEventMouseUp('onMouseUp'));
+   //o.onClick        = MO.Class.register(o, new MO.AEventClick('onClick'));
+   //o.onDoubleClick  = MO.Class.register(o, new MO.AEventDoubleClick('onDoubleClick'));
+   //o.onResize       = MO.Class.register(o, new MO.AEventResize('onResize'));
    // @event
    o.onBuildPanel   = MO.FDuiControl_onBuildPanel;
    o.onBuild        = MO.FDuiControl_onBuild;

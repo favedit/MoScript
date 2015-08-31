@@ -37,7 +37,7 @@ with(MO){
    MO.FDatasetConsole_loadDataset = function FDatasetConsole_loadDataset(x){
       var o = this;
       var n = x.get('name');
-      if(RString.isEmpty(n)){
+      if(MO.Lang.String.isEmpty(n)){
          throw new TError('Unknown dataset name.');
       }
       var d = o._datasets.get(n);
@@ -125,7 +125,7 @@ with(MO){
          for(var n = 0; n < xfc; n ++){
             var xf = xfs.get(n);
             var fd = xf.get('id');
-            if(!RString.isEmpty(fd)){
+            if(!MO.Lang.String.isEmpty(fd)){
                o.loadDatasets(rds, fd, xf);
             }
          }
@@ -350,7 +350,7 @@ with(MO){
    }
    MO.FDataSource_selectDataset = function FDataSource_selectDataset(p){
       var o = this;
-      var dn = RString.nvl(p, 'default');
+      var dn = MO.Lang.String.nvl(p, 'default');
       var d = o._datasets.get(dn);
       if(d == null){
          d = new TDataset();

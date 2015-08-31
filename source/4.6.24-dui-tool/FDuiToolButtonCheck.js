@@ -138,7 +138,7 @@ MO.FDuiToolButtonCheck_check = function FDuiToolButtonCheck_check(p){
    }
    if(p){
       // 其他按键改为非选中
-      if(!MO.String.isEmpty(o._groupName)){
+      if(!MO.Lang.String.isEmpty(o._groupName)){
          var cs = o._parent.components();
          for(var i = cs.count() - 1; i >= 0; i--){
             var c = cs.value(i);
@@ -151,7 +151,7 @@ MO.FDuiToolButtonCheck_check = function FDuiToolButtonCheck_check(p){
       }
    }else{
       // 选中默认按键
-      if(!MO.String.isEmpty(o._groupDefault)){
+      if(!MO.Lang.String.isEmpty(o._groupDefault)){
          var components = o._parent.components();
          var control = components.get(o._groupDefault);
          if(control){

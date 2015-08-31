@@ -143,7 +143,7 @@ MO.FTag_innerDump = function FTag_innerDump(ps, pt, pl){
    ps.append(MO.Class.dump(pt));
    // 追加属性
    var s = pt.toString();
-   if(!MO.RString.isEmpty(s)){
+   if(!MO.MO.Lang.String.isEmpty(s)){
       ps.append(' [', s, ']');
    }
    // 追加子标签

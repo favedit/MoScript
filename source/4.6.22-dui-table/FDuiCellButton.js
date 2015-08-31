@@ -14,12 +14,12 @@ with(MO){
       o.attributes        = null;
       //..........................................................
       // @event
-      o.onButtonEnter     = MO.Class.register(o, new AEventMouseEnter('onButtonEnter'), FDuiCellButton_onButtonEnter);
-      o.onButtonLeave     = MO.Class.register(o, new AEventMouseLeave('onButtonLeave'), FDuiCellButton_onButtonLeave);
-      o.onCellLeave       = MO.Class.register(o, new AEventMouseLeave('onCellLeave'), FDuiCellButton_onCellLeave);
-      o.onHintEnter       = MO.Class.register(o, new AEventMouseEnter('onHintEnter'), FDuiCellButton_onHintEnter);
-      o.onHintLeave       = MO.Class.register(o, new AEventMouseLeave('onHintLeave'), FDuiCellButton_onHintLeave);
-      o.onButtonClick     = MO.Class.register(o, new AEventClick('onButtonClick'), FDuiCellButton_onButtonClick);
+      o.onButtonEnter     = MO.Class.register(o, new MO.AEventMouseEnter('onButtonEnter'), FDuiCellButton_onButtonEnter);
+      o.onButtonLeave     = MO.Class.register(o, new MO.AEventMouseLeave('onButtonLeave'), FDuiCellButton_onButtonLeave);
+      o.onCellLeave       = MO.Class.register(o, new MO.AEventMouseLeave('onCellLeave'), FDuiCellButton_onCellLeave);
+      o.onHintEnter       = MO.Class.register(o, new MO.AEventMouseEnter('onHintEnter'), FDuiCellButton_onHintEnter);
+      o.onHintLeave       = MO.Class.register(o, new MO.AEventMouseLeave('onHintLeave'), FDuiCellButton_onHintLeave);
+      o.onButtonClick     = MO.Class.register(o, new MO.AEventClick('onButtonClick'), FDuiCellButton_onButtonClick);
       //..........................................................
       // @method
       o.construct         = FDuiCellButton_construct;
@@ -218,13 +218,13 @@ with(MO){
    //==========================================================
    MO.FDuiCellButton_set = function FDuiCellButton_set(v){
       var o = this;
-      if(!RString.isEmpty(v)){
+      if(!MO.Lang.String.isEmpty(v)){
          var pbs = new TAttributes();
          pbs.unpack(v);
          for(var n=0; n<pbs.count; n++){
             var b = o.buttons.get(pbs.name(n));
             var pk = pbs.value(n);
-            if(b && !RString.isEmpty(pk)){
+            if(b && !MO.Lang.String.isEmpty(pk)){
                var as = o.attributes;
                as.clear();
                as.unpack(pk);

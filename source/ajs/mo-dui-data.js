@@ -29,7 +29,7 @@ with(MO){
    MO.MUiDataAction_doAction = function MUiDataAction_doAction(n){
       var o = this;
       var c = o.findComponent(n);
-      if(RClass.isClass(c, MInvoke)){
+      if(MO.Class.isClass(c, MInvoke)){
          c.invoke(this);
       }else{
          throw new TError(o, 'Component is invalid.');
@@ -228,7 +228,7 @@ with(MO){
       var ts = new TList();
       var p = o;
       while(p){
-         if(RClass.isClass(p, MUiDataset)){
+         if(MO.Class.isClass(p, MUiDataset)){
             ts.push(p);
          }
          if(!p.parent){
@@ -238,9 +238,9 @@ with(MO){
       }
       for(var n=ts.count; n>=0; n--){
          var p = ts.get(n);
-         if(RClass.isClass(p, FForm)){
+         if(MO.Class.isClass(p, FForm)){
             p.toAttributes(a, m);
-         }else if(RClass.isClass(m, FTable)){
+         }else if(MO.Class.isClass(m, FTable)){
             var r = p.getCurrentRow();
             if(r){
                r.toAttributes(a, m);
@@ -531,7 +531,7 @@ with(MO){
       }else{
          ds.move(p);
       }
-      if(RClass.isClass(o, MValue)){
+      if(MO.Class.isClass(o, MValue)){
          o.loadValue(ds.current());
       }
    }
@@ -659,7 +659,7 @@ with(MO){
    MO.FDatasetConsole_loadDataset = function FDatasetConsole_loadDataset(x){
       var o = this;
       var n = x.get('name');
-      if(RString.isEmpty(n)){
+      if(MO.Lang.String.isEmpty(n)){
          throw new TError('Unknown dataset name.');
       }
       var d = o._datasets.get(n);
@@ -747,7 +747,7 @@ with(MO){
          for(var n = 0; n < xfc; n ++){
             var xf = xfs.get(n);
             var fd = xf.get('id');
-            if(!RString.isEmpty(fd)){
+            if(!MO.Lang.String.isEmpty(fd)){
                o.loadDatasets(rds, fd, xf);
             }
          }
@@ -972,7 +972,7 @@ with(MO){
    }
    MO.FDataSource_selectDataset = function FDataSource_selectDataset(p){
       var o = this;
-      var dn = RString.nvl(p, 'default');
+      var dn = MO.Lang.String.nvl(p, 'default');
       var d = o._datasets.get(dn);
       if(d == null){
          d = new TDataset();
@@ -1086,7 +1086,7 @@ with(MO){
    }
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
-      MO.Assert.debugTrue(RClass.isClass(p, MUiDataContainer));
+      MO.Assert.debugTrue(MO.Class.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');
@@ -1134,7 +1134,7 @@ with(MO){
    }
    MO.FUiDataColorPicker_formatValue = function FUiDataColorPicker_formatValue(v){
       var o = this;
-      var r = RString.nvl(v);
+      var r = MO.Lang.String.nvl(v);
       if(ECase.Upper == o.editCase){
          r = RString.toUpper(r);
       }else if(ECase.Lower == o.editCase){
@@ -1225,7 +1225,7 @@ MO.FUiDataEdit_onDataKeyDown = function FUiDataEdit_onDataKeyDown(s, e){
 }
 MO.FUiDataEdit_formatValue = function FUiDataEdit_formatValue(v){
    var o = this;
-   var r = RString.nvl(v);
+   var r = MO.Lang.String.nvl(v);
    if(ECase.Upper == o.editCase){
       r = RString.toUpper(r);
    }else if(ECase.Lower == o.editCase){
@@ -1476,7 +1476,7 @@ with(MO){
       var o = this;
       o._label = p;
       if(o._hText){
-         o._hText.innerHTML = RString.nvl(p);
+         o._hText.innerHTML = MO.Lang.String.nvl(p);
       }
    }
    MO.FUiDataEditControl_text = function FUiDataEditControl_text(){
@@ -1530,10 +1530,10 @@ with(MO){
    }
    MO.FUiDataEditControl_onDataDoubleClick = function FUiDataEditControl_onDataDoubleClick(){
       var o = this;
-      if(RClass.isClass(o, MDropable)){
+      if(MO.Class.isClass(o, MDropable)){
          o.onDropDoubleClick();
       }
-      if(RClass.isClass(o, MListView)){
+      if(MO.Class.isClass(o, MListView)){
          o.onListClick();
       }
    }
@@ -1544,7 +1544,7 @@ with(MO){
       if(hci){
          hci.style.display = o.isDataChanged() ? 'block' : 'none';
       }
-      if(RClass.isClass(o, MDropable) && EKey.Down==e.keyCode){
+      if(MO.Class.isClass(o, MDropable) && EKey.Down==e.keyCode){
          o.drop();
       }else if(e.ctrlKey && (EKey.Enter==e.keyCode) && o.editSearch){
          var dc = o.dsControl;
@@ -1665,7 +1665,7 @@ with(MO){
          if(o.validRequire){
             o.hLabel.style.color = v ? EUiColor.Require : EUiColor.Text;
          }
-         if(RClass.isClass(o, MListView) && o.canListView()){
+         if(MO.Class.isClass(o, MListView) && o.canListView()){
             hl.style.cursor = v ? 'hand' : 'normal';
             hl.className = v ? 'RLine_Underline' : '';
          }
@@ -1698,12 +1698,12 @@ with(MO){
          tc = EUiColor.TextEdit;
          bc = EUiColor.Edit;
          cr = 'hand';
-         if(!RString.isEmpty(o.editTip) && o.hEdit.innerText == o.editTip){
+         if(!MO.Lang.String.isEmpty(o.editTip) && o.hEdit.innerText == o.editTip){
             tc = '#CCCCCC';
          }
       }
       if(o._invalidText){
-         if(!RString.isEmpty(o.text())){
+         if(!MO.Lang.String.isEmpty(o.text())){
             tc = EUiColor.TextInvalid;
             bc = EUiColor.Invalid;
          }
@@ -1754,7 +1754,7 @@ with(MO){
    }
    MO.FUiDataIconPicker_formatValue = function FUiDataIconPicker_formatValue(v){
       var o = this;
-      var r = RString.nvl(v);
+      var r = MO.Lang.String.nvl(v);
       if(ECase.Upper == o.editCase){
          r = RString.toUpper(r);
       }else if(ECase.Lower == o.editCase){
@@ -1927,7 +1927,7 @@ with(MO){
    MO.FUiDataNumber_validPattern = function FUiDataNumber_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;
       }
@@ -1959,14 +1959,14 @@ with(MO){
    }
    MO.FUiDataNumber_splitValue = function FUiDataNumber_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       var j = RString.findChars(s,"-");
       var b = RString.findChars(s,"%");
       s = RString.removeChars(s, "'");
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -1990,19 +1990,19 @@ with(MO){
    }
    MO.FUiDataNumber_removeSplit = function FUiDataNumber_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
    }
    MO.FUiDataNumber_precisionValue = function FUiDataNumber_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;
@@ -2151,7 +2151,7 @@ with(MO){
    MO.FUiDataNumber2_validPattern = function FUiDataNumber2_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;
       }
@@ -2183,14 +2183,14 @@ with(MO){
    }
    MO.FUiDataNumber2_splitValue = function FUiDataNumber2_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       var j = RString.findChars(s,"-");
       var b = RString.findChars(s,"%");
       s = RString.removeChars(s, "'");
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -2214,19 +2214,19 @@ with(MO){
    }
    MO.FUiDataNumber2_removeSplit = function FUiDataNumber2_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
    }
    MO.FUiDataNumber2_precisionValue = function FUiDataNumber2_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;
@@ -2375,7 +2375,7 @@ with(MO){
    MO.FUiDataNumber3_validPattern = function FUiDataNumber3_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;
       }
@@ -2407,14 +2407,14 @@ with(MO){
    }
    MO.FUiDataNumber3_splitValue = function FUiDataNumber3_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       var j = RString.findChars(s,"-");
       var b = RString.findChars(s,"%");
       s = RString.removeChars(s, "'");
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -2438,19 +2438,19 @@ with(MO){
    }
    MO.FUiDataNumber3_removeSplit = function FUiDataNumber3_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
    }
    MO.FUiDataNumber3_precisionValue = function FUiDataNumber3_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;
@@ -2599,7 +2599,7 @@ with(MO){
    MO.FUiDataNumber4_validPattern = function FUiDataNumber4_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;
       }
@@ -2631,14 +2631,14 @@ with(MO){
    }
    MO.FUiDataNumber4_splitValue = function FUiDataNumber4_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       var j = RString.findChars(s,"-");
       var b = RString.findChars(s,"%");
       s = RString.removeChars(s, "'");
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -2662,19 +2662,19 @@ with(MO){
    }
    MO.FUiDataNumber4_removeSplit = function FUiDataNumber4_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
    }
    MO.FUiDataNumber4_precisionValue = function FUiDataNumber4_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;
@@ -2747,8 +2747,8 @@ with(MO){
       o._styleLabel        = MO.Class.register(o, new MO.AStyle('_styleLabel'));
       o._styleSearchPanel  = MO.Class.register(o, new MO.AStyle('_styleSearchPanel'));
       o._styleSearchEdit   = MO.Class.register(o, new MO.AStyle('_styleSearchEdit'));
-      o._styleIconSortUp   = MO.Class.register(o, new AStyleIcon('_styleIconSortUp'));
-      o._styleIconSortDown = MO.Class.register(o, new AStyleIcon('_styleIconSortDown'));
+      o._styleIconSortUp   = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortUp'));
+      o._styleIconSortDown = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortDown'));
       o._cellClass         = FCell;
       o._hForm             = null;
       o._hFormLine         = null;
@@ -2769,10 +2769,10 @@ with(MO){
       o.onBuildTotal       = FUiDataColumn_onBuildTotal;
       o.onBuildPanel       = FUiDataColumn_onBuildPanel;
       o.onBuild            = FUiDataColumn_onBuild;
-      o.onSearchEnter      = MO.Class.register(o, new AEventMouseEnter('onSearchEnter'));
-      o.onSearchClick      = MO.Class.register(o, new AEventClick('onSearchClick'));
-      o.onSearchLeave      = MO.Class.register(o, new AEventMouseLeave('onSearchLeave'));
-      o.onSearchKeyDown    = MO.Class.register(o, new AEventKeyDown('onSearchKeyDown'));
+      o.onSearchEnter      = MO.Class.register(o, new MO.AEventMouseEnter('onSearchEnter'));
+      o.onSearchClick      = MO.Class.register(o, new MO.AEventClick('onSearchClick'));
+      o.onSearchLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onSearchLeave'));
+      o.onSearchKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onSearchKeyDown'));
       o.createCell         = FUiDataColumn_createCell;
       return o;
    }
@@ -2784,7 +2784,7 @@ with(MO){
          o._hIcon = MO.Window.Builder.appendIcon(hip, o.icon);
       }
       var hl = o._hLabel = MO.Window.Builder.appendTableCell(hr);
-      hl.innerHTML = RString.nvl(o.label());
+      hl.innerHTML = MO.Lang.String.nvl(o.label());
       var hsp = o._hSortPanel = MO.Window.Builder.appendTableCell(hr);
       var hsu = o._hSortUp = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortUp', FUiDataColumn));
       hsu.style.display = 'none';
@@ -2802,7 +2802,7 @@ with(MO){
       hf.width = '100%';
       hf.style.backgroundColor = '#FFFFFF';
       var hfl = o._hSearchFormLine = hf.insertRow();
-      if(RClass.isClass(o, FUiDataColumnButton)){
+      if(MO.Class.isClass(o, FUiDataColumnButton)){
          o._hSearchPanel.style.backgroundColor = '#EEEFF1';
          o._hSearchPanel.style.borderLeft='1 solid #808080';
          o._hSearchPanel.style.borderTop='1 solid #808080';
@@ -2842,13 +2842,13 @@ with(MO){
       var t = o.table;
       o._absEdit = o._editInsert || o._editUpdate || o._editDelete;
       if(!o._absEdit){
-         if(!RString.isEmpty(o._lovReference)){
+         if(!MO.Lang.String.isEmpty(o._lovReference)){
             o._hasDropArea = true;
          }else{
             o._hasDropArea = false;
          }
       }
-      if (!RString.isEmpty(o._viewIcons)) {
+      if (!MO.Lang.String.isEmpty(o._viewIcons)) {
          var im = o.iconMap = new TAttributes();
          im.split(o._viewIcons.replace(/\n/g, ';'), '=', ';');
          o.hasIconArea = im.count > 0;
@@ -2898,7 +2898,7 @@ with(MO){
       t.selectRow(r, !e.ctrlKey, true);
       var fc = RConsole.find(FFocusConsole);
       var c = fc.focusControl;
-      if(RClass.isClass(c, FDropEditor)){
+      if(MO.Class.isClass(c, FDropEditor)){
          if(c.source == s){
             return;
          }
@@ -2976,11 +2976,11 @@ with(MO){
       var tbl = o.table;
       var ct = tbl.dsViewer.count;
       var x = e.x;
-      if(!RClass.isClass(o, FUiDataColumnButton)){
+      if(!MO.Class.isClass(o, FUiDataColumnButton)){
    	   var l = o._hPanel.offsetWidth;
    	   var r = l - 6;
    	   if (x > 0 && x < r) {
-   	      if (ct > 0 && !RClass.isClass(e.source, FUiDataColumnStatus)) {
+   	      if (ct > 0 && !MO.Class.isClass(e.source, FUiDataColumnStatus)) {
    	         var cs = tbl.columns;
    	         var len = cs.count;
    	         for ( var n = 0; n < len; n++) {
@@ -3074,7 +3074,7 @@ with(MO){
       return r.cell(this.index);
    }
    MO.FUiDataColumn_equalsValue = function FUiDataColumn_equalsValue(s, t) {
-      return RString.nvl(s).replace(/\n/g, '\\n').replace(/\r/g, '\\r') == RString.nvl(t).replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+      return RString.nvl(s).replace(/\n/g, '\\n').replace(/\r/g, '\\r') == MO.Lang.String.nvl(t).replace(/\n/g, '\\n').replace(/\r/g, '\\r');
    }
    MO.FUiDataColumn_setWidth = function FUiDataColumn_setWidth(w){
       var o = this;
@@ -3115,7 +3115,7 @@ with(MO){
             var fr = t.rows.get(n);
             for( var i = fi; i >= 0; i--){
                var ft = t.columns.value(i);
-               if(RClass.isClass(ft, FUiDataColumn) && ft._displayList){
+               if(MO.Class.isClass(ft, FUiDataColumn) && ft._displayList){
                   mt = ft;
                   mr = fr;
                   mc = mr.cell(mt.index);
@@ -3136,7 +3136,7 @@ with(MO){
             var fr = t.rows.get(n);
             for(var i = fi; i < cc; i++){
                var ft = t.columns.value(i);
-               if(RClass.isClass(ft, FUiDataColumn) && ft._displayList){
+               if(MO.Class.isClass(ft, FUiDataColumn) && ft._displayList){
                   mt = ft;
                   mr = fr;
                   mc = mr.cell(mt.index);

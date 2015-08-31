@@ -194,7 +194,7 @@ MO.MUiComponent_searchComponents = function MUiComponent_searchComponents(findCo
       for(var i = 0; i < count; i++){
          var component = components.at(i);
          if(MO.Class.isClass(component, clazz)){
-            findComponents.push(component);
+            findComponents.pushUnique(component);
          }
          component.searchComponents(findComponents, clazz);
       }

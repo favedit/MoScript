@@ -17,7 +17,7 @@ with(MO){
    }
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
-      MO.Assert.debugTrue(RClass.isClass(p, MUiDataContainer));
+      MO.Assert.debugTrue(MO.Class.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');
@@ -65,7 +65,7 @@ with(MO){
    }
    MO.FUiDataColorPicker_formatValue = function FUiDataColorPicker_formatValue(v){
       var o = this;
-      var r = RString.nvl(v);
+      var r = MO.Lang.String.nvl(v);
       if(ECase.Upper == o.editCase){
          r = RString.toUpper(r);
       }else if(ECase.Lower == o.editCase){
@@ -156,7 +156,7 @@ MO.FUiDataEdit_onDataKeyDown = function FUiDataEdit_onDataKeyDown(s, e){
 }
 MO.FUiDataEdit_formatValue = function FUiDataEdit_formatValue(v){
    var o = this;
-   var r = RString.nvl(v);
+   var r = MO.Lang.String.nvl(v);
    if(ECase.Upper == o.editCase){
       r = RString.toUpper(r);
    }else if(ECase.Lower == o.editCase){
@@ -407,7 +407,7 @@ with(MO){
       var o = this;
       o._label = p;
       if(o._hText){
-         o._hText.innerHTML = RString.nvl(p);
+         o._hText.innerHTML = MO.Lang.String.nvl(p);
       }
    }
    MO.FUiDataEditControl_text = function FUiDataEditControl_text(){
@@ -461,10 +461,10 @@ with(MO){
    }
    MO.FUiDataEditControl_onDataDoubleClick = function FUiDataEditControl_onDataDoubleClick(){
       var o = this;
-      if(RClass.isClass(o, MDropable)){
+      if(MO.Class.isClass(o, MDropable)){
          o.onDropDoubleClick();
       }
-      if(RClass.isClass(o, MListView)){
+      if(MO.Class.isClass(o, MListView)){
          o.onListClick();
       }
    }
@@ -475,7 +475,7 @@ with(MO){
       if(hci){
          hci.style.display = o.isDataChanged() ? 'block' : 'none';
       }
-      if(RClass.isClass(o, MDropable) && EKey.Down==e.keyCode){
+      if(MO.Class.isClass(o, MDropable) && EKey.Down==e.keyCode){
          o.drop();
       }else if(e.ctrlKey && (EKey.Enter==e.keyCode) && o.editSearch){
          var dc = o.dsControl;
@@ -596,7 +596,7 @@ with(MO){
          if(o.validRequire){
             o.hLabel.style.color = v ? EUiColor.Require : EUiColor.Text;
          }
-         if(RClass.isClass(o, MListView) && o.canListView()){
+         if(MO.Class.isClass(o, MListView) && o.canListView()){
             hl.style.cursor = v ? 'hand' : 'normal';
             hl.className = v ? 'RLine_Underline' : '';
          }
@@ -629,12 +629,12 @@ with(MO){
          tc = EUiColor.TextEdit;
          bc = EUiColor.Edit;
          cr = 'hand';
-         if(!RString.isEmpty(o.editTip) && o.hEdit.innerText == o.editTip){
+         if(!MO.Lang.String.isEmpty(o.editTip) && o.hEdit.innerText == o.editTip){
             tc = '#CCCCCC';
          }
       }
       if(o._invalidText){
-         if(!RString.isEmpty(o.text())){
+         if(!MO.Lang.String.isEmpty(o.text())){
             tc = EUiColor.TextInvalid;
             bc = EUiColor.Invalid;
          }
@@ -685,7 +685,7 @@ with(MO){
    }
    MO.FUiDataIconPicker_formatValue = function FUiDataIconPicker_formatValue(v){
       var o = this;
-      var r = RString.nvl(v);
+      var r = MO.Lang.String.nvl(v);
       if(ECase.Upper == o.editCase){
          r = RString.toUpper(r);
       }else if(ECase.Lower == o.editCase){
@@ -858,7 +858,7 @@ with(MO){
    MO.FUiDataNumber_validPattern = function FUiDataNumber_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;
       }
@@ -890,14 +890,14 @@ with(MO){
    }
    MO.FUiDataNumber_splitValue = function FUiDataNumber_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       var j = RString.findChars(s,"-");
       var b = RString.findChars(s,"%");
       s = RString.removeChars(s, "'");
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -921,19 +921,19 @@ with(MO){
    }
    MO.FUiDataNumber_removeSplit = function FUiDataNumber_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
    }
    MO.FUiDataNumber_precisionValue = function FUiDataNumber_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;
@@ -1082,7 +1082,7 @@ with(MO){
    MO.FUiDataNumber2_validPattern = function FUiDataNumber2_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;
       }
@@ -1114,14 +1114,14 @@ with(MO){
    }
    MO.FUiDataNumber2_splitValue = function FUiDataNumber2_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       var j = RString.findChars(s,"-");
       var b = RString.findChars(s,"%");
       s = RString.removeChars(s, "'");
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -1145,19 +1145,19 @@ with(MO){
    }
    MO.FUiDataNumber2_removeSplit = function FUiDataNumber2_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
    }
    MO.FUiDataNumber2_precisionValue = function FUiDataNumber2_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;
@@ -1306,7 +1306,7 @@ with(MO){
    MO.FUiDataNumber3_validPattern = function FUiDataNumber3_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;
       }
@@ -1338,14 +1338,14 @@ with(MO){
    }
    MO.FUiDataNumber3_splitValue = function FUiDataNumber3_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       var j = RString.findChars(s,"-");
       var b = RString.findChars(s,"%");
       s = RString.removeChars(s, "'");
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -1369,19 +1369,19 @@ with(MO){
    }
    MO.FUiDataNumber3_removeSplit = function FUiDataNumber3_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
    }
    MO.FUiDataNumber3_precisionValue = function FUiDataNumber3_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;
@@ -1530,7 +1530,7 @@ with(MO){
    MO.FUiDataNumber4_validPattern = function FUiDataNumber4_validPattern(s) {
       var o = this;
       var flag = true;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       if(!RRegExp.test(ERegExp.NUMBER,s)){
          return false;
       }
@@ -1562,14 +1562,14 @@ with(MO){
    }
    MO.FUiDataNumber4_splitValue = function FUiDataNumber4_splitValue(v){
       var o = this;
-      var s = RString.nvl(v.toString());
+      var s = MO.Lang.String.nvl(v.toString());
       var j = RString.findChars(s,"-");
       var b = RString.findChars(s,"%");
       s = RString.removeChars(s, "'");
       s = RString.removeChars(s, " ");
       s = RString.removeChars(s, "%");
       s = RString.removeChars(s, "-");
-      if (!RString.isEmpty(s)) {
+      if (!MO.Lang.String.isEmpty(s)) {
          var sc = '';
          var c = '';
          var n = 0;
@@ -1593,19 +1593,19 @@ with(MO){
    }
    MO.FUiDataNumber4_removeSplit = function FUiDataNumber4_removeSplit(s){
       var o = this;
-      var s = RString.nvl(s);
+      var s = MO.Lang.String.nvl(s);
       s = RString.removeChars(s,"'");
       s = RString.removeChars(s,"%");
       return s;
    }
    MO.FUiDataNumber4_precisionValue = function FUiDataNumber4_precisionValue(v){
       var o = this;
-      if(RString.isEmpty(v)){
+      if(MO.Lang.String.isEmpty(v)){
          return v;
       }
       var l1,l2;
-      var p = RString.nvl(o.editPrecision);
-      v = RString.nvl(v);
+      var p = MO.Lang.String.nvl(o.editPrecision);
+      v = MO.Lang.String.nvl(v);
       if(RString.contains(p,'.')){
          var sp = p.split('.')
          l2 = sp[1].length;

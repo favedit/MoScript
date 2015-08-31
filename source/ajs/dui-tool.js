@@ -297,7 +297,7 @@ MO.FDuiToolButtonCheck_check = function FDuiToolButtonCheck_check(p){
       return;
    }
    if(p){
-      if(!MO.String.isEmpty(o._groupName)){
+      if(!MO.Lang.String.isEmpty(o._groupName)){
          var cs = o._parent.components();
          for(var i = cs.count() - 1; i >= 0; i--){
             var c = cs.value(i);
@@ -309,7 +309,7 @@ MO.FDuiToolButtonCheck_check = function FDuiToolButtonCheck_check(p){
          }
       }
    }else{
-      if(!MO.String.isEmpty(o._groupDefault)){
+      if(!MO.Lang.String.isEmpty(o._groupDefault)){
          var components = o._parent.components();
          var control = components.get(o._groupDefault);
          if(control){

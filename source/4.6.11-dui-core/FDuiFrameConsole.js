@@ -258,7 +258,7 @@ MO.FDuiFrameConsole_loadEvents = function FDuiFrameConsole_loadEvents(cfg){
    //   if(x.isName('Event')){
    //      var c = MO.Class.create(FEvent);
    //      c.loadConfig(x);
-   //      if(RString.isEmpty(c.name) || RString.isEmpty(c.source) || RString.isEmpty(c.form)){
+   //      if(MO.Lang.String.isEmpty(c.name) || MO.Lang.String.isEmpty(c.source) || MO.Lang.String.isEmpty(c.form)){
    //         RMessage.fatel(o, null, "Event property is invalid. (event={0})", x.xml());
    //      }
    //      // onchange@editLength@design.webform.EditForm

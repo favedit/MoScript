@@ -78,7 +78,7 @@ MO.FDuiFocusConsole_onMouseDown = function FDuiFocusConsole_onMouseDown(p){
 MO.FDuiFocusConsole_onMouseWheel = function FDuiFocusConsole_onMouseWheel(s, e){
    var o = this;
    //var c = this._focusControl;
-   //if(RClass.isClass(c, MMouseWheel)){
+   //if(MO.Class.isClass(c, MMouseWheel)){
    //   c.onMouseWheel(s, e);
    //}
 }

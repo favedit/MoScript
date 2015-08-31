@@ -56,7 +56,7 @@ MO.RResource.prototype.iconUrlPath = function RResource_iconUrlPath(path, type){
 MO.RResource.prototype.imagePath = function RResource_imagePath(path, type){
    var o = this;
    //var rc = top.RContext;
-   //path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
+   //path = MO.Lang.String.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
    //if(RString.startsWith(path, '#')){
    //   path = path.substr(1);
    //   return rc.context(rc.uriImage + '/' + path);

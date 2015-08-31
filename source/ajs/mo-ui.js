@@ -1035,7 +1035,7 @@ MO.MUiComponent_searchComponents = function MUiComponent_searchComponents(findCo
       for(var i = 0; i < count; i++){
          var component = components.at(i);
          if(MO.Class.isClass(component, clazz)){
-            findComponents.push(component);
+            findComponents.pushUnique(component);
          }
          component.searchComponents(findComponents, clazz);
       }
@@ -1373,6 +1373,34 @@ MO.MUiDataValue = function MUiDataValue(o){
    o._dataValue = MO.Class.register(o, [new MO.APtyString('_dataValue'), new MO.AGetSet('_dataValue')]);
    o.oeLoadUnit = MO.Method.empty;
    o.oeSaveUnit = MO.Method.empty;
+   return o;
+}
+MO.MUiDisplayContrainer = function MUiDisplayContrainer(o){
+   o = MO.Class.inherits(this, o);
+   o._modeCd    = MO.Class.register(o, new MO.AGetter('_modeCd'), MO.EUiMode.View);
+   o._eventMode = null;
+   o.construct  = MO.MUiDisplayContrainer_construct;
+   o.psMode     = MO.MUiDisplayContrainer_psMode;
+   o.dispose    = MO.MUiDisplayContrainer_dispose;
+   return o;
+}
+MO.MUiDisplayContrainer_construct = function MUiDisplayContrainer_construct(){
+   var o = this;
+   o._eventMode = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDisplayField);
+}
+MO.MUiDisplayContrainer_psMode = function MUiDisplayContrainer_psMode(modeCd){
+   var o = this;
+   o._modeCd = modeCd;
+   var event = o._eventMode;
+   event.modeCd = modeCd;
+   o.process(event);
+}
+MO.MUiDisplayContrainer_dispose = function MUiDisplayContrainer_dispose(){
+   var o = this;
+   o._eventMode = MO.Lang.Object.Dispose(o._eventMode);
+}
+MO.MUiDisplayField = function MUiDisplayField(o){
+   o = MO.Class.inherits(this, o);
    return o;
 }
 MO.MUiDragable = function MUiDragable(o){

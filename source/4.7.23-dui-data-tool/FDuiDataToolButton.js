@@ -19,13 +19,13 @@ with(MO){
       //o._attributes      = MO.Class.register(o, new MO.APtyString('_attributes'));
       //..........................................................
       // @event
-      //o.onButtonClick   = MO.Class.register(o, new AEventClick('onButtonClick'), FUiDataToolButton_onButtonClick);
+      //o.onButtonClick   = MO.Class.register(o, new MO.AEventClick('onButtonClick'), FUiDataToolButton_onButtonClick);
       //..........................................................
       // @style
       //o._styleIconDisable   = MO.Class.register(o, new MO.AStyle('_styleIconDisable', 'IconDisable'));
-      //o._styleButton        = MO.Class.register(o, new AStyleIcon('_styleButton', 'Button'));
-      //o._styleButtonDisable = MO.Class.register(o, new AStyleIcon('_styleButtonDisable', 'ButtonDisable'));
-      //o._styleButtonHover   = MO.Class.register(o, new AStyleIcon('_styleButtonHover', 'ButtonHover'));
+      //o._styleButton        = MO.Class.register(o, new MO.AStyleIcon('_styleButton', 'Button'));
+      //o._styleButtonDisable = MO.Class.register(o, new MO.AStyleIcon('_styleButtonDisable', 'ButtonDisable'));
+      //o._styleButtonHover   = MO.Class.register(o, new MO.AStyleIcon('_styleButtonHover', 'ButtonHover'));
       //..........................................................
       // @html
       //o._hButton         = null;

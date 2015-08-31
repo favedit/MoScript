@@ -9,9 +9,9 @@ with(MO){
    MO.FUiDataColorPicker = function FUiDataColorPicker(o){
       o = MO.Class.inherits(this, o, FDuiEdit, MUiDataField);
       //..........................................................
-      //o.onKeyDown    = MO.Class.register(o, new AEventKeyDown('onKeyDown'));
-      //o.onKeyPress   = MO.Class.register(o, new AEventKeyPress('onKeyPress'));
-      //o.onKeyUp      = MO.Class.register(o, new AEventKeyUp('onKeyUp'));
+      //o.onKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onKeyDown'));
+      //o.onKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onKeyPress'));
+      //o.onKeyUp      = MO.Class.register(o, new MO.AEventKeyUp('onKeyUp'));
       //..........................................................
       // @html
       //o.hUnit         = null;
@@ -80,7 +80,7 @@ with(MO){
    //==========================================================
    MO.FUiDataColorPicker_formatValue = function FUiDataColorPicker_formatValue(v){
       var o = this;
-      var r = RString.nvl(v);
+      var r = MO.Lang.String.nvl(v);
       if(ECase.Upper == o.editCase){
          r = RString.toUpper(r);
       }else if(ECase.Lower == o.editCase){
