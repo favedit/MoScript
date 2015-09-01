@@ -21,6 +21,11 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    o._frameSpace           = null;
    o._frameSpaceToolbar    = null;
    o._frameSpaceContent    = null;
+   // @attribute
+   o._activeFrame          = MO.Class.register(o, new MO.AGetSet('_activeFrame'));
+   //..........................................................
+   // @process
+   o.onBuilded             = MO.FManageFrameSet_onBuilded;
    //..........................................................
    // @method
    o.construct             = MO.FManageFrameSet_construct;
@@ -36,6 +41,24 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    // @method
    o.dispose               = MO.FManageFrameSet_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构建完成处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件处理
+//==========================================================
+MO.FManageFrameSet_onBuilded = function FManageFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FDuiFrameSet.onBuilded.call(o, event);
+   // 设置空间工具栏
+   var control = o._spaceToolBar = MO.Class.create(MO.FManageSpaceToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   control.setVisible(false);
+   o._frameSpaceToolBar.push(control);
 }
 
 //==========================================================
@@ -112,7 +135,7 @@ MO.FManageFrameSet_selectSpaceFrame = function FManageFrameSet_selectSpaceFrame(
       frame.show();
    }
    // 激活页面
-   o._activeSpaceFrame = frame;
+   o._activeFrame = frame;
    return frame;
 }
 
@@ -129,12 +152,14 @@ MO.FManageFrameSet_selectObject = function FManageFrameSet_selectObject(frameNam
    // 显示标题
    o.setFrameTitle(frame.label());
    // 显示工具栏
-   var hToolBarPanel = o._frameSpaceToolBar._hPanel;
-   MO.Window.Html.clear(hToolBarPanel);
-   var toolBar = frame.findControl('toolBar');
-   if(toolBar){
-      toolBar.setPanel(hToolBarPanel);
-   }
+   o._spaceToolBar.setVisible(true);
+   //var hToolBarPanel = o._frameSpaceToolBar._hPanel;
+   //MO.Window.Html.clear(hToolBarPanel);
+   //o._frameSpaceToolBar.push(o._spaceToolBar);
+   //var toolBar = frame.findControl('toolBar');
+   //if(toolBar){
+   //   toolBar.setPanel(hToolBarPanel);
+   //}
    return frame;
 }
 

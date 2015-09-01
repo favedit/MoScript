@@ -9,6 +9,7 @@ MO.EEditorFrameSet = new function EEditorFrameSet(){
    o.ListFrameSet        = 'editor.design.list.FrameSet';
    o.TreeFrameSet        = 'editor.design.tree.FrameSet';
    o.FrameFrameSet       = 'editor.design.frame.FrameSet';
+   o.DatasetFrameSet     = 'editor.design.dataset.FrameSet';
    return o;
 }
 MO.FEditorCanvas = function FEditorCanvas(o){
@@ -602,6 +603,7 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    o._controlListButton.addClickListener(o, o.onSliderButtonClick);
    o._controlTreeButton.addClickListener(o, o.onSliderButtonClick);
    o._controlFrameButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlDatasetButton.addClickListener(o, o.onSliderButtonClick);
    var hTitleForm = MO.Window.Builder.appendTable(o._frameMenuBar._hPanel, o.styleName('Title_Panel'));
    var hTitleLine = MO.Window.Builder.appendTableRow(hTitleForm);
    var hTitleCell = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Title_Logo'));
@@ -642,6 +644,9 @@ MO.FEditorDsWorkspace_onSliderButtonClick = function FEditorDsWorkspace_onSlider
       case 'frameButton':
          o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
          break;
+      case 'datasetButton':
+         o.selectFrameSet(MO.EEditorFrameSet.DatasetFrameSet);
+         break;
       default:
          throw new TError(o, 'Invalid click.');
    }
@@ -663,6 +668,8 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsTreeFrameSet);
       }else if(name == MO.EEditorFrameSet.FrameFrameSet){
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsFrameFrameSet);
+      }else if(name == MO.EEditorFrameSet.DatasetFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsDatasetFrameSet);
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
@@ -691,6 +698,9 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
       case MO.EEditorFrameSet.FrameFrameSet:
          frameSet.load();
          break;
+      case MO.EEditorFrameSet.DatasetFrameSet:
+         frameSet.load();
+         break;
       default:
          throw new TError('Unknown frameset. (name={1})', name);
    }
@@ -712,6 +722,8 @@ MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
       o.selectFrameSet(MO.EEditorFrameSet.TreeFrameSet);
    }else if(code == MO.EEditorFrameSet.FrameFrameSet){
       o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
+   }else if(code == MO.EEditorFrameSet.DatasetFrameSet){
+      o.selectFrameSet(MO.EEditorFrameSet.DatasetFrameSet);
    }else{
    }
 }
@@ -1689,4 +1701,72 @@ MO.FEditorDsFrameSpaceToolBar_construct = function FEditorDsFrameSpaceToolBar_co
 MO.FEditorDsFrameSpaceToolBar_dispose = function FEditorDsFrameSpaceToolBar_dispose(){
    var o = this;
    o.__base.FDuiToolBar.dispose.call(o);
+}
+MO.FEditorDsDatasetCatalogContent = function FEditorDsDatasetCatalogContent(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsCatalogContent);
+   o._defineCode = 'editor.design.dataset';
+   return o;
+}
+MO.FEditorDsDatasetCatalogToolBar = function FEditorDsDatasetCatalogToolBar(o){
+   o = MO.Class.inherits(this, o, MO.FDuiToolBar);
+   o._frameName  = 'editor.design.dataset.CatalogToolBar';
+   o.onListClick = MO.FEditorDsDatasetCatalogToolBar_onListClick;
+   o.onBuilded   = MO.FEditorDsDatasetCatalogToolBar_onBuilded;
+   o.construct   = MO.FEditorDsDatasetCatalogToolBar_construct;
+   o.dispose     = MO.FEditorDsDatasetCatalogToolBar_dispose;
+   return o;
+}
+MO.FEditorDsDatasetCatalogToolBar_onListClick = function FEditorDsDatasetCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject('editor.design.list.ListForm');
+}
+MO.FEditorDsDatasetCatalogToolBar_onBuilded = function FEditorDsDatasetCatalogToolBar_onBuilded(p){
+   var o = this;
+   o.__base.FDuiToolBar.onBuilded.call(o, p);
+   o._controlList.addClickListener(o, o.onListClick);
+}
+MO.FEditorDsDatasetCatalogToolBar_construct = function FEditorDsDatasetCatalogToolBar_construct(){
+   var o = this;
+   o.__base.FDuiToolBar.construct.call(o);
+}
+MO.FEditorDsDatasetCatalogToolBar_dispose = function FEditorDsDatasetCatalogToolBar_dispose(){
+   var o = this;
+   o.__base.FDuiToolBar.dispose.call(o);
+}
+MO.FEditorDsDatasetFrameSet = function FEditorDsDatasetFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsFrameSet);
+   o._frameName = 'editor.design.dataset.FrameSet';
+   o.onBuilded  = MO.FEditorDsDatasetFrameSet_onBuilded;
+   o.construct  = MO.FEditorDsDatasetFrameSet_construct;
+   o.dispose    = MO.FEditorDsDatasetFrameSet_dispose;
+   return o;
+}
+MO.FEditorDsDatasetFrameSet_onBuilded = function FEditorDsDatasetFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FEditorDsFrameSet.onBuilded.call(o, event);
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
+   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._framePropertyTitle._hPanel.className = o.styleName('Title_Ground');
+   o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
+   var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
+   spliter.setAlignCd(MO.EUiAlign.Left);
+   spliter.setSizeHtml(o._frameCatalog._hPanel);
+   var control = o._catalogToolbar = MO.Class.create(MO.FEditorDsDatasetCatalogToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogToolBar.push(control);
+   var control = o._catalogContent = MO.Class.create(MO.FEditorDsDatasetCatalogContent);
+   control._frameSet = o;
+   control.build(event);
+   o._frameCatalogContent.push(control);
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '数据集合');
+}
+MO.FEditorDsDatasetFrameSet_construct = function FEditorDsDatasetFrameSet_construct(){
+   var o = this;
+   o.__base.FEditorDsFrameSet.construct.call(o);
+}
+MO.FEditorDsDatasetFrameSet_dispose = function FEditorDsDatasetFrameSet_dispose(){
+   var o = this;
+   o.__base.FEditorDsFrameSet.dispose.call(o);
 }

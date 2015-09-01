@@ -41,7 +41,8 @@
       <PathMerger source='/3.3.07-engine-3d-particle'        target='/ajs/engine-3d-particle.js'/>
       <PathMerger source='/3.4.01-engine-3d-server'          target='/ajs/engine-3d-server.js'/>
 
-      <PathMerger source='/4.1.01-ui-common'                 target='/ajs/ui-common.js'/>
+      <PathMerger source='/4.1.01-ui-base'                   target='/ajs/ui-base.js'/>
+      <PathMerger source='/4.1.02-ui-common'                 target='/ajs/ui-common.js'/>
       <PathMerger source='/4.2.01-ui-core'                   target='/ajs/ui-core.js'/>
       <PathMerger source='/4.3.01-ui-console'                target='/ajs/ui-console.js'/>
       <PathMerger source='/4.4.01-ui-form'                   target='/ajs/ui-form.js'/>
@@ -88,6 +89,7 @@
       <PathMerger source='/5.4.02-editor-list'               target='/ajs/editor-list.js'/>
       <PathMerger source='/5.4.03-editor-tree'               target='/ajs/editor-tree.js'/>
       <PathMerger source='/5.4.04-editor-frame'              target='/ajs/editor-frame.js'/>
+      <PathMerger source='/5.4.11-editor-dataset'            target='/ajs/editor-dataset.js'/>
 
       <PathMerger source='/6.0.01-manage-common'             target='/ajs/manage-common.js'/>
       <PathMerger source='/6.0.02-manage-core'               target='/ajs/manage-core.js'/>
@@ -200,6 +202,7 @@
          <File source='/ajs/engine-3d-particle.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-ui.js'>
+         <File source='/ajs/ui-base.js'/>
          <File source='/ajs/ui-common.js'/>
          <File source='/ajs/ui-core.js'/>
          <File source='/ajs/ui-console.js'/>
@@ -267,6 +270,7 @@
          <File source='/ajs/editor-list.js'/>
          <File source='/ajs/editor-tree.js'/>
          <File source='/ajs/editor-frame.js'/>
+         <File source='/ajs/editor-dataset.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-manage.js'>
          <File source='/ajs/manage-common.js'/>

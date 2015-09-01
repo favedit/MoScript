@@ -64,6 +64,7 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    o._controlListButton.addClickListener(o, o.onSliderButtonClick);
    o._controlTreeButton.addClickListener(o, o.onSliderButtonClick);
    o._controlFrameButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlDatasetButton.addClickListener(o, o.onSliderButtonClick);
    //..........................................................
    // 建立标题
    var hTitleForm = MO.Window.Builder.appendTable(o._frameMenuBar._hPanel, o.styleName('Title_Panel'));
@@ -117,6 +118,9 @@ MO.FEditorDsWorkspace_onSliderButtonClick = function FEditorDsWorkspace_onSlider
       case 'frameButton':
          o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
          break;
+      case 'datasetButton':
+         o.selectFrameSet(MO.EEditorFrameSet.DatasetFrameSet);
+         break;
       default:
          throw new TError(o, 'Invalid click.');
    }
@@ -158,6 +162,9 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
       }else if(name == MO.EEditorFrameSet.FrameFrameSet){
          // 创建框架
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsFrameFrameSet);
+      }else if(name == MO.EEditorFrameSet.DatasetFrameSet){
+         // 创建框架
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsDatasetFrameSet);
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
@@ -188,6 +195,9 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
          frameSet.load();
          break;
       case MO.EEditorFrameSet.FrameFrameSet:
+         frameSet.load();
+         break;
+      case MO.EEditorFrameSet.DatasetFrameSet:
          frameSet.load();
          break;
       default:
@@ -228,6 +238,11 @@ MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
       //button.doClick();
    }else if(code == MO.EEditorFrameSet.FrameFrameSet){
       o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
+      //button = o._tabBar.findControl('frame');
+      //o._tabBar.select(button);
+      //o.selectFrameSet(code, guid)
+   }else if(code == MO.EEditorFrameSet.DatasetFrameSet){
+      o.selectFrameSet(MO.EEditorFrameSet.DatasetFrameSet);
       //button = o._tabBar.findControl('frame');
       //o._tabBar.select(button);
       //o.selectFrameSet(code, guid)

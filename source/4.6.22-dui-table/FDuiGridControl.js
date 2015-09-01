@@ -338,52 +338,48 @@ MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(event){
 // <T>建立显示框架。</T>
 //
 // @method
-// @param p:argements:SArgements 参数集合
+// @param event:SUiDispatchEvent 事件信息
 //==========================================================
-MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(p){
+MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
    var o = this;
    // 高度修正
    if(!o._size.height || o._size.height < 160){
       o.height = '100%';
    }
    // 父类处理
-   o.__base.FDuiContainer.onBuild.call(o, p);
+   o.__base.FDuiContainer.onBuild.call(o, event);
    //..........................................................
    // 标题顶层标题区
    var hc = o._hTitlePanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
-   o.onBuildTitle(p);
+   o.onBuildTitle(event);
    //hc.width = 1;
    //var hd = o._hFixHeight = MO.Window.Builder.appendDiv(hc);
    //hd.style.width = 1;
    //hd.style.height = o._minHeight;
    // 建立内部表格
-   var hbp = o._hContentPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
-   o.onBuildContent(p);
-   //hbp.className = o.styleName('BorderPanel');
-   //hbp.vAlign = 'top';
-   //hbp.style.position = 'relative';
-   //hbp.style.overflow = 'hidden';
+   o._hContentPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
+   o.onBuildContent(event);
    // 建立提示区
    o._hHintPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
    o._hHintForm = MO.Window.Builder.appendTable(o._hHintPanel, o.styleName('HintForm'));
-   o.onBuildHint(p);
+   o.onBuildHint(event);
    //if(o._panelNavigator){
    //   var hnp = o._hNavigator = o._hPanel.insertRow().insertCell();
    //   hnp.height = 1;
    //   o._hHintForm = MO.Window.Builder.appendTable(hnp, o.styleName('HintForm'));
-   //   o.onBuildHint(p);
+   //   o.onBuildHint(event);
    //}
    // 建立状态列
    var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
    statusColumn._table = this;
-   statusColumn._name = '_s';
-   statusColumn.build(p);
+   statusColumn._name = '_status';
+   statusColumn.build(event);
    o.push(statusColumn);
    // 建立选择列
    var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
    selectColumn._table = this;
    selectColumn._name = '_select';
-   selectColumn.build(p);
+   selectColumn.build(event);
    o.push(selectColumn);
    //..........................................................
    //var cs = o._columns;
@@ -640,7 +636,7 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(component){
 // @method
 // @return FGridRowControl 行控件
 //==========================================================
-MO.FDuiGridControl_createRow = function FDuiGridControl_createRow() {
+MO.FDuiGridControl_createRow = function FDuiGridControl_createRow(){
    var o = this;
    var row = MO.Class.create(o._rowClass);
    row._table = row._parent = o;

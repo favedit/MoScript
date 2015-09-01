@@ -76,50 +76,36 @@ MO.FDuiTable = function FDuiTable(o) {
 //==========================================================
 MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    var o = this;
-   var hbp = o._hContentPanel;
+   var hContentPanel = o._hContentPanel;
    // 建立固定区(Layer:2)
-   var hfp = o._hFixPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('FixPanel'));
-   hfp.style.zIndex = 2;
-   hfp.style.position = 'absolute';
-   var hff = o._hFixForm = MO.Window.Builder.appendTable(hfp, o.styleName('FixForm'), 0, 0, 1);
-   //hff.style.tableLayout = 'fixed';
-   //hff.frame = 'rhs';
-   hff.borderColorLight = '#D0D0D0';
-   hff.borderColorDark = '#EEEEEE';
-   o._hFixHead =  MO.Window.Builder.appendTableRow(hff);
-   o._hFixSearch = MO.Window.Builder.appendTableRow(hff);
-   o._hFixTotal = MO.Window.Builder.appendTableRow(hff);
+   var hFixPanel = o._hFixPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('FixPanel'));
+   var hFixForm = o._hFixForm = MO.Window.Builder.appendTable(hFixPanel, o.styleName('FixForm'), 0, 0, 1);
+   //hFixForm.frame = 'rhs';
+   hFixForm.borderColorLight = '#D0D0D0';
+   hFixForm.borderColorDark = '#EEEEEE';
+   o._hFixHead =  MO.Window.Builder.appendTableRow(hFixForm);
+   o._hFixSearch = MO.Window.Builder.appendTableRow(hFixForm);
+   o._hFixTotal = MO.Window.Builder.appendTableRow(hFixForm);
    o._hFixTotal.style.display = 'none';
    // 建立列的标题区(Layer:1)
-   var hhp = o._hHeadPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('HeadPanel'));
-   hhp.style.zIndex = 1;
-   hhp.style.position = 'absolute';
-   hhp.style.overflowX = 'hidden';
-   hhp.style.width = 1;
-   var hhf = o._hHeadForm = MO.Window.Builder.appendTable(hhp, o.styleName('HeadForm'), 0, 0, 1);
-   hhf.frame = 'rhs';
-   hhf.style.tableLayout = 'fixed';
-   hhf.borderColorLight = '#D0D0D0';
-   hhf.borderColorDark = '#EEEEEE';
-   o._hHead = hhf.insertRow();
-   o._hSearch = hhf.insertRow();
-   o._hTotal = hhf.insertRow();
+   var hHeadPanel = o._hHeadPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('HeadPanel'));
+   var hHeadForm = o._hHeadForm = MO.Window.Builder.appendTable(hHeadPanel, o.styleName('HeadForm'), 0, 0, 1);
+   //hHeadForm.frame = 'rhs';
+   hHeadForm.borderColorLight = '#D0D0D0';
+   hHeadForm.borderColorDark = '#EEEEEE';
+   o._hHead = MO.Window.Builder.appendTableRow(hHeadForm);
+   o._hSearch = MO.Window.Builder.appendTableRow(hHeadForm);
+   o._hTotal = MO.Window.Builder.appendTableRow(hHeadForm);
    o._hTotal.style.display = 'none';
    // 建立列区(Layer:1)
-   var hcp = o._hColumnPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('ColumnPanel'));
-   hcp.style.zIndex = 1;
-   hcp.style.position = 'absolute';
-   hcp.style.overflowY = 'hidden';
-   var hcf = o._hColumnForm = MO.Window.Builder.appendTable(hcp, o.styleName('ColumnForm'), 0, 0, 1);
-   o._hFixRows = MO.Window.Builder.append(hcf, 'TBODY');
+   var hColumnPanel = o._hColumnPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('ColumnPanel'));
+   var hColumnForm = o._hColumnForm = MO.Window.Builder.appendTable(hColumnPanel, o.styleName('ColumnForm'), 0, 0, 1);
+   o._hFixRows = MO.Window.Builder.append(hColumnForm, 'TBODY');
    o._hFixRowLine = MO.Window.Builder.append(o._hFixRows, 'TR');
    // 建立数据区
-   var hdp = o._hDataPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('DataPanel'));
-   hdp.width = '100%';
-   hdp.height = '100%';
-   var hdf = o._hDataForm = MO.Window.Builder.appendTable(hdp, o.styleName('DataForm'), 0, 0, 1);
-   //hdf.style.tableLayout = 'fixed';
-   o._hRows = MO.Window.Builder.append(hdf, 'TBODY');
+   var hDataPanel = o._hDataPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('DataPanel'));
+   var hDataForm = o._hDataForm = MO.Window.Builder.appendTable(hDataPanel, o.styleName('DataForm'), 0, 0, 1);
+   o._hRows = MO.Window.Builder.append(hDataForm, 'TBODY');
    o._hRowLine = MO.Window.Builder.append(o._hRows, 'TR');
    // 关联事件对象
    //o.attachEvent('onHeadMouseDown', o._hHeadForm, o.onHeadMouseDown);
@@ -193,6 +179,9 @@ MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(event){
          var column = columns.at(i);
          var columnVisible = column.visible();
          if(columnVisible){
+            // 刷新宽度
+            column.refreshWidth();
+            // 计算是否自动调整宽度
             if(column.dispAuto){
                if(columnAuto){
                   return MO.Message.fatal(o, 'Too many autosize column. (name1={1}, name2={2})', columnAuto.name, column.name);
@@ -262,29 +251,29 @@ MO.FDuiTable_oeResize = function FDuiTable_oeResize(e){
 // <T>增加一个表格列。</T>
 //
 // @method
-// @param event:SUiDispatchEvent 事件信息
+// @param column:FDuiColumn 列控件
 //==========================================================
-MO.FDuiTable_appendColumn = function FDuiTable_appendColumn(event){
+MO.FDuiTable_appendColumn = function FDuiTable_appendColumn(column){
    var o = this;
    // 为固定列的情况
-   if(event._optionFixed){
+   if(column._optionFixed){
       // 追加标题列
-      o._hFixHead.appendChild(event._hPanel);
+      o._hFixHead.appendChild(column._hPanel);
       // 追加搜索列
-      o._hFixSearch.appendChild(event._hSearchPanel);
+      o._hFixSearch.appendChild(column._hSearchPanel);
       // 追加统计列
-      o._hFixTotal.appendChild(event._hTotalPanel);
+      o._hFixTotal.appendChild(column._hTotalPanel);
       // 在数据区追加修正行
-      o._hFixRowLine.appendChild(event._hFixPanel);
+      o._hFixRowLine.appendChild(column._hFixPanel);
    }else{
       // 追加标题列
-      o._hHead.appendChild(event._hPanel);
+      o._hHead.appendChild(column._hPanel);
       // 追加搜索列
-      o._hSearch.appendChild(event._hSearchPanel);
+      o._hSearch.appendChild(column._hSearchPanel);
       // 追加统计列
-      o._hTotal.appendChild(event._hTotalPanel);
+      o._hTotal.appendChild(column._hTotalPanel);
       // 在数据区追加修正行
-      o._hRowLine.appendChild(event._hFixPanel);
+      o._hRowLine.appendChild(column._hFixPanel);
    }
 }
 

@@ -13,7 +13,6 @@ MO.FDuiColumnStatus = function FDuiColumnStatus(o){
    //..........................................................
    // @attribute
    o._optionFixed      = true;
-   // @attribute
    o._cellClass        = MO.FCellStatus;
    //..........................................................
    // @event

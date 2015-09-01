@@ -5,7 +5,7 @@
 // @history 150812
 //==========================================================
 MO.FManageDataTable = function FManageDataTable(o){
-   o = MO.Class.inherits(this, o, MO.FDuiTable);
+   o = MO.Class.inherits(this, o, MO.FDuiTableFrame);
    //..........................................................
    // @attribute
    o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
@@ -72,7 +72,7 @@ MO.FManageDataTable_onButtonClick = function FManageDataTable_onButtonClick(even
 //==========================================================
 MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
    var o = this;
-   o.__base.FDuiTable.onBuilded.call(o, event);
+   o.__base.FDuiTableFrame.onBuilded.call(o, event);
    // 注册按键监听
    var buttons = new MO.TObjects();
    o.searchComponents(buttons, MO.MUiToolButton);
@@ -92,7 +92,7 @@ MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
 //==========================================================
 MO.FManageDataTable_onDataChanged = function FManageDataTable_onDataChanged(event){
    var o  = this;
-   o.__base.FDuiTable.onDataChanged.call(o, event);
+   o.__base.FDuiTableFrame.onDataChanged.call(o, event);
 }
 
 //==========================================================
@@ -163,7 +163,7 @@ MO.FManageDataTable_onDataDelete = function FManageDataTable_onDataDelete(event)
 MO.FManageDataTable_construct = function FManageDataTable_construct(){
    var o = this;
    // 父处理
-   o.__base.FDuiTable.construct.call(o);
+   o.__base.FDuiTableFrame.construct.call(o);
 }
 
 //==========================================================
@@ -255,5 +255,5 @@ MO.FManageDataTable_doDelete = function FManageDataTable_doDelete(){
 MO.FManageDataTable_dispose = function FManageDataTable_dispose(){
    var o = this;
    // 父处理
-   o.__base.FDuiTable.dispose.call(o);
+   o.__base.FDuiTableFrame.dispose.call(o);
 }

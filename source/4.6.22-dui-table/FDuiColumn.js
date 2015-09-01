@@ -37,6 +37,7 @@ MO.FDuiColumn = function FDuiColumn(o){
    o._styleIconSortDown = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortDown'));
    //..........................................................
    // @attribute
+   o._optionFixed       = MO.Class.register(o, new MO.AGetSet('_optionFixed'), false);
    o._cellClass         = MO.FDuiCell;
    //..........................................................
    // @html
@@ -52,6 +53,7 @@ MO.FDuiColumn = function FDuiColumn(o){
    // @html
    o._hSearchEditPanel  = null;
    o._hSearchEdit       = null;
+   o._hFixPanel         = null;
    //..........................................................
    // @event
    o.onBuildLabel       = MO.FDuiColumn_onBuildLabel;
@@ -73,6 +75,7 @@ MO.FDuiColumn = function FDuiColumn(o){
    //..........................................................
    // @method
    o.createCell         = MO.FDuiColumn_createCell;
+   o.refreshWidth       = MO.FDuiColumn_refreshWidth;
 
 
    //..........................................................
@@ -120,7 +123,6 @@ MO.FDuiColumn = function FDuiColumn(o){
    //o._hSearchIcon       = null;
    //o._hSearchDropPanel  = null;
    //o._hSearchDrop       = null;
-   //o._hFixPanel         = null;
    //..........................................................
    // @event
    //o.onCellMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onCellMouseEnter'), FDuiColumn_onCellMouseEnter);
@@ -302,7 +304,12 @@ MO.FDuiColumn_onBuildPanel = function FDuiColumn_onBuildPanel(event) {
 //==========================================================
 MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    var o = this;
-   var t = o.table;
+   var table = o.table;
+   // 计算宽度
+   var width = o._size.width;
+   if(width < 40){
+      width = 40;
+   }
    // 设置绝对编辑标志
    o._absEdit = o._editInsert || o._editUpdate || o._editDelete;
    if(!o._absEdit){
@@ -314,38 +321,33 @@ MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    }
    // 分解的图标字符串，判断是否拥有图标区
    if(!MO.Lang.String.isEmpty(o._viewIcons)){
-      var im = o.iconMap = new MO.TAttributes();
-      im.split(o._viewIcons.replace(/\n/g, ';'), '=', ';');
-      o.hasIconArea = im.count > 0;
+      var map = o._iconMap = new MO.TAttributes();
+      map.split(o._viewIcons.replace(/\n/g, ';'), '=', ';');
+      o._hasIconArea = map.count > 0;
    }
    // 调用底层建立对象
    o.__base.FDuiControl.onBuild.call(o, event);
-   var hp = o._hPanel;
-   //hp.style.backgroundImage = 'url(' + RResource.iconPath('control.column.head') + ')';
-   hp.style.padding = 4;
+   var hPanel = o._hPanel;
+   hPanel.style.width = width + 'px';
+   hPanel.style.padding = 4;
    // 创建标题头容器(TD对象)
-   var hf = o._hForm = MO.Window.Builder.appendTable(hp);
+   var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
    if (!o._orderAble) {
-     hf.style.cursor = 'hand';
-     //o.attachEvent('onHeadMouseDown', hf);
+     hForm.style.cursor = 'hand';
+     //o.attachEvent('onHeadMouseDown', hForm);
    }
-   var hLine = o._hFormLine = MO.Window.Builder.appendTableRow(o._hForm);
+   o._hFormLine = MO.Window.Builder.appendTableRow(hForm);
+   // 创建标签区
    o.onBuildLabel(event);
    // 创建搜索区
    o.onBuildSearch(event);
    // 创建统计区
    o.onBuildTotal(event);
    // 创建数据区的修正对象<TD>
-   var h = o._hFixPanel = MO.Window.Builder.create(event, 'TD');
-   h.height = 1;
-   h.bgColor = '#FFFFFF'
-   // 设置宽度
-   if(o._size.width < 40){
-      o._size.width = 40;
-   }
-   MO.Window.Html.setSize(h, o._size);
-   o._hPanel.style.pixelWidth = o.width;
-   o._hFixPanel.style.pixelWidth = o.width;
+   var hFixPanel = o._hFixPanel = MO.Window.Builder.create(event, 'TD');
+   hFixPanel.style.width = width + 'px';
+   hFixPanel.style.height = '1px';
+   hFixPanel.style.backgroundColor = '#FFFFFF'
 }
 
 //==========================================================
@@ -366,7 +368,16 @@ MO.FDuiColumn_createCell = function FDuiColumn_createCell(row){
    return cell;
 }
 
-
+//==========================================================
+// <T>刷新列宽度。</T>
+//
+// @method
+//==========================================================
+MO.FDuiColumn_refreshWidth = function FDuiColumn_refreshWidth(){
+   var o = this;
+   var width = o._hPanel.offsetWidth - 2;
+   o._hFixPanel.style.width = width + 'px';
+}
 
 
 

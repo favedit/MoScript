@@ -43,7 +43,7 @@ MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilde
    spliter.setSizeHtml(o._frameCatalog._hPanel);
    //..........................................................
    // 设置目录工具栏
-   var control = o._catalogToolbar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
+   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);

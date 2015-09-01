@@ -7,6 +7,10 @@ MO.FDuiDialog_construct = function FDuiDialog_construct(){
    var o = this;
    o.__base.FDuiWindow.construct.call(o);
 }
+MO.FDuiFormFrame = function FDuiFormFrame(o) {
+   o = MO.Class.inherits(this, o, MO.FDuiForm, MO.MUiDataset);
+   return o;
+}
 MO.FDuiFramePage = function FDuiFramePage(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer);
    o._styleContainer = MO.Class.register(o, new MO.AStyle('_styleContainer'));
@@ -355,6 +359,11 @@ MO.FDuiFrameSpliter_dispose = function FDuiFrameSpliter_dispose(){
    o._hDrag = MO.Window.Html.free(o._hDrag);
    o._hSize = MO.Window.Html.free(o._hSize);
    o.__base.FDuiControl.dispose.call(o);
+}
+MO.FDuiTableFrame = function FDuiTableFrame(o) {
+   o = MO.Class.inherits(this, o, MO.FDuiTable, MO.MUiDataset);
+   o._itemFrameName = MO.Class.register(o, [new MO.APtyString('_itemFrameName'), new MO.AGetSet('_itemFrameName')]);
+   return o;
 }
 MO.FDuiWindow = function FDuiWindow(o){
    o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MMouseCapture);

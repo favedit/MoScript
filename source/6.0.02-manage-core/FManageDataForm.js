@@ -5,7 +5,7 @@
 // @history 150812
 //==========================================================
 MO.FManageDataForm = function FManageDataForm(o){
-   o = MO.Class.inherits(this, o, MO.FDuiForm);
+   o = MO.Class.inherits(this, o, MO.FDuiFormFrame);
    //..........................................................
    // @attribute
    o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
@@ -72,7 +72,7 @@ MO.FManageDataForm_onButtonClick = function FManageDataForm_onButtonClick(event)
 //==========================================================
 MO.FManageDataForm_onBuilded = function FManageDataForm_onBuilded(event){
    var o = this;
-   o.__base.FDuiForm.onBuilded.call(o, event);
+   o.__base.FDuiFormFrame.onBuilded.call(o, event);
    // 注册按键监听
    var buttons = new MO.TObjects();
    o.searchComponents(buttons, MO.MUiToolButton);
@@ -92,7 +92,7 @@ MO.FManageDataForm_onBuilded = function FManageDataForm_onBuilded(event){
 //==========================================================
 MO.FManageDataForm_onDataChanged = function FManageDataForm_onDataChanged(event){
    var o  = this;
-   o.__base.FDuiForm.onDataChanged.call(o, event);
+   o.__base.FDuiFormFrame.onDataChanged.call(o, event);
 }
 
 //==========================================================
@@ -163,7 +163,7 @@ MO.FManageDataForm_onDataDelete = function FManageDataForm_onDataDelete(event){
 MO.FManageDataForm_construct = function FManageDataForm_construct(){
    var o = this;
    // 父处理
-   o.__base.FDuiForm.construct.call(o);
+   o.__base.FDuiFormFrame.construct.call(o);
 }
 
 //==========================================================
@@ -172,28 +172,12 @@ MO.FManageDataForm_construct = function FManageDataForm_construct(){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
-MO.FManageDataForm_doPrepare = function FManageDataForm_doPrepare(parameters){
+MO.FManageDataForm_doPrepare = function FManageDataForm_doPrepare(){
    var o = this;
-   // 获得参数
-   var logicGroup = o._logicGroup = parameters.get('logic_group');
-   var containerName = null;
-   var itemName = null;
-   if(logicGroup != 'container'){
-      var catalog = o._frameSet._catalogContent;
-      containerName = catalog.containerName();
-      itemName = catalog.itemName();
-   }
    // 显示页面
-   var frameName = parameters.get('frame_name');
-   var frame = o._frameSet.selectObject(frameName);
-   frame.dataPrepare();
-   // 设置类型
-   var control = frame.searchComponent('componentType');
-   var componentType = parameters.get('component_type');
-   control.set(componentType);
-   // 设置容器
-   frame.setContainerName(containerName);
-   frame.setItemName(itemName);
+   //var frameName = parameters.get('frame_name');
+   //var frame = o._frameSet.selectObject(frameName);
+   o.dataPrepare();
 }
 
 //==========================================================
@@ -222,12 +206,17 @@ MO.FManageDataForm_doLoad = function FManageDataForm_doLoad(typeGroup, container
 //==========================================================
 MO.FManageDataForm_doSave = function FManageDataForm_doSave(){
    var o = this;
+   // 存储数据源
+   var dataSource = MO.Class.create(MO.FDataSource);
+   o.dsSaveSource(dataSource);
    // 禁止处理
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
    // 创建命令
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
-   o.saveUnit(xroot.create('Content'));
+   dataSource.saveConfig(xroot.create('Content'));
+   alert(xroot.xml());
+   return;
    // 发送请求
    var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataActionCd, o._logicGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
@@ -255,5 +244,5 @@ MO.FManageDataForm_doDelete = function FManageDataForm_doDelete(){
 MO.FManageDataForm_dispose = function FManageDataForm_dispose(){
    var o = this;
    // 父处理
-   o.__base.FDuiForm.dispose.call(o);
+   o.__base.FDuiFormFrame.dispose.call(o);
 }

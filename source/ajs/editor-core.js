@@ -365,6 +365,7 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    o._controlListButton.addClickListener(o, o.onSliderButtonClick);
    o._controlTreeButton.addClickListener(o, o.onSliderButtonClick);
    o._controlFrameButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlDatasetButton.addClickListener(o, o.onSliderButtonClick);
    var hTitleForm = MO.Window.Builder.appendTable(o._frameMenuBar._hPanel, o.styleName('Title_Panel'));
    var hTitleLine = MO.Window.Builder.appendTableRow(hTitleForm);
    var hTitleCell = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Title_Logo'));
@@ -405,6 +406,9 @@ MO.FEditorDsWorkspace_onSliderButtonClick = function FEditorDsWorkspace_onSlider
       case 'frameButton':
          o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
          break;
+      case 'datasetButton':
+         o.selectFrameSet(MO.EEditorFrameSet.DatasetFrameSet);
+         break;
       default:
          throw new TError(o, 'Invalid click.');
    }
@@ -426,6 +430,8 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsTreeFrameSet);
       }else if(name == MO.EEditorFrameSet.FrameFrameSet){
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsFrameFrameSet);
+      }else if(name == MO.EEditorFrameSet.DatasetFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsDatasetFrameSet);
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
@@ -454,6 +460,9 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
       case MO.EEditorFrameSet.FrameFrameSet:
          frameSet.load();
          break;
+      case MO.EEditorFrameSet.DatasetFrameSet:
+         frameSet.load();
+         break;
       default:
          throw new TError('Unknown frameset. (name={1})', name);
    }
@@ -475,6 +484,8 @@ MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
       o.selectFrameSet(MO.EEditorFrameSet.TreeFrameSet);
    }else if(code == MO.EEditorFrameSet.FrameFrameSet){
       o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
+   }else if(code == MO.EEditorFrameSet.DatasetFrameSet){
+      o.selectFrameSet(MO.EEditorFrameSet.DatasetFrameSet);
    }else{
    }
 }

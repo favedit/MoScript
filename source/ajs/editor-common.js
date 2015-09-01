@@ -9,6 +9,7 @@ MO.EEditorFrameSet = new function EEditorFrameSet(){
    o.ListFrameSet        = 'editor.design.list.FrameSet';
    o.TreeFrameSet        = 'editor.design.tree.FrameSet';
    o.FrameFrameSet       = 'editor.design.frame.FrameSet';
+   o.DatasetFrameSet     = 'editor.design.dataset.FrameSet';
    return o;
 }
 MO.FEditorCanvas = function FEditorCanvas(o){

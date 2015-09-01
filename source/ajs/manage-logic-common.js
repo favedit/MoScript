@@ -38,7 +38,7 @@ MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilde
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(MO.EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
-   var control = o._catalogToolbar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
+   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);

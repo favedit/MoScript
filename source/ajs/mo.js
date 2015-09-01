@@ -4380,227 +4380,6 @@ MO.TContext = function TContext(n, c, t){
    o.text = t;
    return o;
 }
-MO.TDataset = function TDataset(){
-   var o = this;
-   o._code      = null;
-   o._pageSize  = 20;
-   o._pageIndex = 0;
-   o._pageCount = 0;
-   o._total     = 0;
-   o._rows      = new MO.TObjects();
-   o.isEmpty    = MO.TDataset_isEmpty;
-   o.createRow  = MO.TDataset_createRow;
-   o.count      = MO.TDataset_count;
-   o.row        = MO.TDataset_row;
-   o.rows       = MO.TDataset_rows;
-   o.find       = MO.TDataset_find;
-   o.push       = MO.TDataset_push;
-   o.loadConfig = MO.TDataset_loadConfig;
-   o.clear      = MO.TDataset_clear;
-   return o;
-}
-MO.TDataset_isEmpty = function TDataset_isEmpty(){
-   var o = this;
-   return o._rows.isEmpty();
-}
-MO.TDataset_createRow = function TDataset_createRow(){
-   var o = this;
-   var r = new MO.TRow();
-   r._dataset = o;
-   o._rows.push(r);
-   return r;
-}
-MO.TDataset_count = function TDataset_count(){
-   return this._rows.count();
-}
-MO.TDataset_row = function TDataset_row(p){
-   return this._rows.get(p);
-}
-MO.TDataset_rows = function TDataset_rows(){
-   return this._rows;
-}
-MO.TDataset_find = function TDataset_find(p){
-   var o = this;
-   var a = arguments;
-   var l = a.length;
-   if((l % 2) != 0){
-      throw new MO.TError(o, 'Parameters must is pairs (length={1})', l);
-   }
-   var rs = o._rows;
-   var c = rs.count();
-   for(var n = 0; n < c; n++){
-      var r = rs.get(n);
-      var f = true;
-      for(var i = 0; i < l; i += 2){
-         if(r.get(a[n]) != a[n + 1]){
-            f = false;
-            break;
-         }
-      }
-      if(f){
-         return r;
-      }
-   }
-   return null;
-}
-MO.TDataset_push = function TDataset_push(r){
-   this._rows.push(r);
-}
-MO.TDataset_loadConfig = function TDataset_loadConfig(x){
-   var o = this;
-   o._code = x.get('name');
-   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
-   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
-   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
-   o._total = MO.Lang.Integer.parse(x.get('total'));
-   var xns = x.nodes();
-   if(xns){
-      var rs = o._rows;
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         if(xn.isName('Row')){
-            var r = o.createRow();
-            r.loadConfig(xn);
-         }
-      }
-   }
-}
-MO.TDataset_clear = function TDataset_clear(){
-   var o = this;
-   o._pageSize = 20;
-   o._pageIndex = 0;
-   o._pageCount = 0;
-   o._total = 0;
-   o._rows.clear();
-}
-MO.TDataset_findIndex = function TDataset_findIndex(p){
-   var o = this;
-   var rs = o._rows;
-   var c = rs.count();
-   for(var n = 0; n < c; n++){
-      var r = rs.get(n);
-      if(r._index = p){
-         return r;
-      }
-   }
-   return null;
-}
-MO.TDataset_remove = function TDataset_remove(i){
-   return this._rows.remove(i);
-}
-MO.TDataset_removeRow = function TDataset_removeRow(r){
-   var o = this;
-   var i = o.indexOf(r);
-   if(-1 != i){
-      o._rows.remove(i);
-   }
-}
-MO.TDataset_saveViewer = function TDataset_saveViewer(v){
-   var o = this;
-   v.datasetName = o._code;
-   v.datasetId = o.id;
-   v.position = 0;
-   v.start = 0;
-   v._count = o._rows._count;
-   v._rows = o._rows;
-   v.dataset = o;
-}
-MO.TDataset_pack = function TDataset_pack(){
-   var o = this;
-   var rs = o._rows;
-   var ss = new MO.TStrings();
-   for(var n = 0; n < rs._count; n++){
-      ss.push(rs.get(n).pack());
-   }
-   return ss.pack();
-}
-MO.TDataset_dump = function TDataset_dump(){
-   var o = this;
-   var r = new MO.TString();
-   r.append(MO.Class._code(o));
-   r.append(' count=', o._count);
-   r.append(' fields=', o.fieldCount);
-   r.appendLine();
-   if(o._rows){
-      var c = o._count;
-      for(var n = 0; n < c; n++){
-         r.append('- ');
-         o._rows.get(n).dump(s);
-         if(n != o._count-1){
-            r.appendLine();
-         }
-      }
-   }
-   return r.toString();
-}
-MO.TDatasetViewer = function TDatasetViewer(){
-   var o = this;
-   o._datasetId = null;
-   o._position  = 0;
-   o._start     = 0;
-   o._count     = 0;
-   e._values   = null;
-   o._rows      = null;
-   o._ouids     = null;
-   o.isEmpty   = MO.TDatasetViewer_isEmpty;
-   o.count     = MO.TDatasetViewer_count;
-   o.current   = MO.TDatasetViewer_current;
-   o.reset     = MO.TDatasetViewer_reset;
-   o.move      = MO.TDatasetViewer_move;
-   o.moveToRow = MO.TDatasetViewer_moveToRow;
-   o.first     = MO.TDatasetViewer_first;
-   o.prior     = MO.TDatasetViewer_prior;
-   o.next      = MO.TDatasetViewer_next;
-   o.last      = MO.TDatasetViewer_last;
-   return o;
-}
-MO.TDatasetViewer_isEmpty = function TDatasetViewer_isEmpty(){
-   return (this._count == null);
-}
-MO.TDatasetViewer_count = function TDatasetViewer_count(){
-   return this._count;
-}
-MO.TDatasetViewer_current = function TDatasetViewer_current(){
-   var o = this;
-   var s = o._rows;
-   return s ? s.get(o._position - o._start) : null;
-}
-MO.TDatasetViewer_reset = function TDatasetViewer_reset(){
-   this._position = -1;
-}
-MO.TDatasetViewer_move = function TDatasetViewer_move(p){
-   this._position = p;
-}
-MO.TDatasetViewer_moveToRow = function TDatasetViewer_moveToRow(r){
-   var o = this;
-   var p = o._rows.indexOf(r);
-   if(p != -1){
-      o._position = p - o._start;
-   }
-}
-MO.TDatasetViewer_first = function TDatasetViewer_first(r){
-   this._position = r ? -1 : 0;
-}
-MO.TDatasetViewer_prior = function TDatasetViewer_prior(){
-   var o = this;
-   if(o._position > 0){
-      o._position--;
-      return true;
-   }
-   return false;
-}
-MO.TDatasetViewer_next = function TDatasetViewer_next(){
-   var o = this;
-   if(o._position < o._count-1){
-      o._position++;
-      return true;
-   }
-   return false;
-}
-MO.TDatasetViewer_last = function TDatasetViewer_last(){
-   this._position = this._count-1;
-}
 MO.TFatalError = function TFatalError(po, pe, pm, pp){
    var o = this;
    var r = new MO.TString();
@@ -35119,6 +34898,540 @@ MO.FE3dRainFontParticleItem_dispose = function FE3dRainFontParticleItem_dispose(
    o._direction = MO.Lang.Object.dispose(o._direction);
    o.__base.FE3dParticleItem.dispose.call(o);
 }
+MO.EDataStatus = new function EDataStatus(){
+   var o = this;
+   o.Unknown = '';
+   o.Insert = 'I';
+   o.Update = 'U';
+   o.Delete = 'D';
+   return o;
+}
+MO.FDataRow = function FDataRow(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._dataset    = MO.Class.register(o, new MO.AGetSet('_dataset'));
+   o._index      = MO.Class.register(o, new MO.AGetSet('_index'), 0);
+   o._statusCd   = MO.Class.register(o, new MO.AGetSet('_statusCd'), MO.EDataStatus.Unknown);
+   o._dataValues = null;
+   o.construct   = MO.FDataRow_construct;
+   o.isEmpty     = MO.FDataRow_isEmpty;
+   o.count       = MO.FDataRow_count;
+   o.get         = MO.FDataRow_get;
+   o.set         = MO.FDataRow_set;
+   o.clear       = MO.FDataRow_clear;
+   o.loadConfig  = MO.FDataRow_loadConfig;
+   o.saveConfig  = MO.FDataRow_saveConfig;
+   o.dispose     = MO.FDataRow_dispose;
+   return o;
+}
+MO.FDataRow_construct = function FDataRow_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._dataValues = new MO.TDictionary();
+}
+MO.FDataRow_isEmpty = function FDataRow_isEmpty(){
+   return this._dataValues.isEmpty();
+}
+MO.FDataRow_count = function FDataRow_count(){
+   return this._dataValues.count();
+}
+MO.FDataRow_get = function FDataRow_get(name, defaultValue){
+   var o = this;
+   var dataValue = o._dataValues.get(name);
+   if(dataValue){
+      return dataValue.get();
+   }
+   return defaultValue;
+}
+MO.FDataRow_set = function FDataRow_set(name, value, typeCd){
+   var o = this;
+   var dataValues = o._dataValues;
+   var dataValue = dataValues.get(name);
+   if(!dataValue){
+      dataValue = MO.Class.create(MO.FDataValue);
+      dataValues.set(name, dataValue);
+   }
+   dataValue.set(value, typeCd);
+}
+MO.FDataRow_clear = function FDataRow_clear(){
+   var o = this;
+   var dataValues = o._dataValues;
+   var count = dataValues.count();
+   for(var i = 0; i < count; i++){
+      var dataValue = dataValues.at(i);
+      dataValue.clear();
+   }
+}
+MO.FDataRow_loadConfig = function FDataRow_loadConfig(xconfig){
+   var o = this;
+}
+MO.FDataRow_saveConfig = function FDataRow_saveConfig(xconfig){
+   var o = this;
+   xconfig.set('_status_cd', o._statusCd);
+   var dataValues = o._dataValues;
+   var count = dataValues.count();
+   for(var i = 0; i < count; i++){
+      var name = dataValues.name(i);
+      var dataValue = dataValues.value(i);
+      var value = dataValue.get();
+      xconfig.set(name, value);
+   }
+}
+MO.FDataRow_dispose = function FDataRow_dispose(){
+   var o = this;
+   o._dataValues = MO.Lang.Object.dispose(o._dataValues);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FDataset = function FDataset(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._name        = MO.Class.register(o, new MO.AGetSet('_name'));
+   o._pageSize    = MO.Class.register(o, new MO.AGetSet('_pageSize'), 20);
+   o._pageIndex   = MO.Class.register(o, new MO.AGetter('_pageIndex'));
+   o._pageCount   = MO.Class.register(o, new MO.AGetter('_pageCount'));
+   o._total       = MO.Class.register(o, new MO.AGetter('_total'));
+   o._rows        = MO.Class.register(o, new MO.AGetter('_rows'));
+   o._viewers     = MO.Class.register(o, new MO.AGetter('_viewers'));
+   o.construct    = MO.FDataset_construct;
+   o.isEmpty      = MO.FDataset_isEmpty;
+   o.count        = MO.FDataset_count;
+   o.createRow    = MO.FDataset_createRow;
+   o.row          = MO.FDataset_row;
+   o.rows         = MO.FDataset_rows;
+   o.find         = MO.FDataset_find;
+   o.findIndex    = MO.FDataset_findIndex;
+   o.push         = MO.FDataset_push;
+   o.erase        = MO.FDataset_erase;
+   o.remove       = MO.FDataset_remove;
+   o.createViewer = MO.FDataset_createViewer;
+   o.loadConfig   = MO.FDataset_loadConfig;
+   o.saveConfig   = MO.FDataset_saveConfig;
+   o.clear        = MO.FDataset_clear;
+   o.dispose      = MO.FDataset_dispose;
+   return o;
+}
+MO.FDataset_construct = function FDataset_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._rows = new MO.TObjects();
+   o._viewers = new MO.TObjects();
+}
+MO.FDataset_isEmpty = function FDataset_isEmpty(){
+   return this._rows.isEmpty();
+}
+MO.FDataset_count = function FDataset_count(){
+   return this._rows.count();
+}
+MO.FDataset_createRow = function FDataset_createRow(){
+   var o = this;
+   var row = MO.Class.create(MO.FDataRow);
+   row.setDataset(o);
+   o._rows.push(row);
+   return row;
+}
+MO.FDataset_row = function FDataset_row(index){
+   return this._rows.get(index);
+}
+MO.FDataset_rows = function FDataset_rows(){
+   return this._rows;
+}
+MO.FDataset_find = function FDataset_find(){
+   var o = this;
+   var length = arguments.length;
+   if((length % 2) != 0){
+      throw new MO.TError(o, 'Parameters must is pairs (length={1})', length);
+   }
+   var rows = o._rows;
+   var count = rows.count();
+   for(var n = 0; n < count; n++){
+      var row = rows.at(n);
+      var find = true;
+      for(var i = 0; i < length; i += 2){
+         var parameterName = arguments[n];
+         var parameterValue = arguments[n + 1];
+         var findValue = row.get(parameterName)
+         if(findValue != parameterValue){
+            find = false;
+            break;
+         }
+      }
+      if(find){
+         return row;
+      }
+   }
+   return null;
+}
+MO.FDataset_findIndex = function FDataset_findIndex(index){
+   var o = this;
+   var rows = o._rows;
+   var count = rows.count();
+   for(var n = 0; n < count; n++){
+      var row = rows.at(n);
+      var rowIndex = row.index();
+      if(rowIndex = index){
+         return row;
+      }
+   }
+   return null;
+}
+MO.FDataset_push = function FDataset_push(row){
+   this._rows.push(row);
+}
+MO.FDataset_erase = function FDataset_erase(index){
+   return this._rows.remove(index);
+}
+MO.FDataset_remove = function FDataset_remove(row){
+   this._rows.remove(row);
+}
+MO.FDataset_createViewer = function FDataset_createViewer(offset, count){
+   var o = this;
+   var viewer = MO.Class.create(MO.FDatasetViewer);
+   viewer.setDataset(o);
+   viewer.setOffset(MO.Runtime.nvl(offset, 0));
+   viewer.setCount(MO.Runtime.nvl(count, o._rows.count()));
+   o._viewers.push(viewer);
+   return row;
+}
+MO.FDataset_loadConfig = function FDataset_loadConfig(xconfig){
+   var o = this;
+   debugger
+   o._code = x.get('name');
+   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
+   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
+   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
+   o._total = MO.Lang.Integer.parse(x.get('total'));
+   var xns = x.nodes();
+   if(xns){
+      var rs = o._rows;
+      var xnc = xns.count();
+      for(var i = 0; i < xnc; i++){
+         var xn = xns.get(i);
+         if(xn.isName('Row')){
+            var r = o.createRow();
+            r.loadConfig(xn);
+         }
+      }
+   }
+}
+MO.FDataset_saveConfig = function FDataset_saveConfig(xconfig){
+   var o = this;
+   xconfig.set('name', o._name);
+   var rows = o._rows;
+   var count = rows.count();
+   for(var i = 0; i < count; i++){
+      var row = rows.at(i);
+      row.saveConfig(xconfig.create('Row'));
+   }
+}
+MO.FDataset_clear = function FDataset_clear(){
+   var o = this;
+   o._pageSize = 20;
+   o._pageIndex = 0;
+   o._pageCount = 0;
+   o._total = 0;
+   o._rows.clear();
+}
+MO.FDataset_dispose = function FDataset_dispose(){
+   var o = this;
+   o._values = MO.Lang.Object.dispose(o._values);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FDatasetViewer = function FDatasetViewer(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._dataset  = MO.Class.register(o, new MO.AGetSet('_dataset'));
+   o._position = MO.Class.register(o, new MO.AGetter('_position'), 0);
+   o._offset   = MO.Class.register(o, new MO.AGetSet('_offset'), 0);
+   o._count    = MO.Class.register(o, new MO.AGetSet('_count'), 0);
+   o.construct = MO.FDatasetViewer_construct;
+   o.isEmpty   = MO.FDatasetViewer_isEmpty;
+   o.current   = MO.FDatasetViewer_current;
+   o.first     = MO.FDatasetViewer_first;
+   o.prior     = MO.FDatasetViewer_prior;
+   o.next      = MO.FDatasetViewer_next;
+   o.last      = MO.FDatasetViewer_last;
+   o.move      = MO.FDatasetViewer_move;
+   o.moveToRow = MO.FDatasetViewer_moveToRow;
+   o.reset     = MO.FDatasetViewer_reset;
+   o.dispose   = MO.FDatasetViewer_dispose;
+   return o;
+}
+MO.FDatasetViewer_construct = function FDatasetViewer_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+MO.FDatasetViewer_isEmpty = function FDatasetViewer_isEmpty(){
+   return (this._count == 0);
+}
+MO.FDatasetViewer_current = function FDatasetViewer_current(){
+   var o = this;
+   var position = o._position;
+   if(position != -1){
+      var index = position + o._offset;
+      var rows = o._dataset.rows();
+      var row = rows.get(index);
+      return row;
+   }
+   return null;
+}
+MO.FDatasetViewer_move = function FDatasetViewer_move(position){
+   var o = this;
+   var count = o._count;
+   if(count > 0){
+      if((position >= 0) && (position < count)){
+         o._position = position;
+         return true;
+      }
+   }
+   return false;
+}
+MO.FDatasetViewer_moveToRow = function FDatasetViewer_moveToRow(row){
+   var o = this;
+   var index = o._rows.indexOf(row);
+   if(index != -1){
+      o._position = index - o._offset;
+   }
+}
+MO.FDatasetViewer_first = function FDatasetViewer_first(){
+   var o = this;
+   var count = o._count;
+   if(count > 0){
+      o._position = 0;
+      return true;
+   }else{
+      o._position = -1;
+      return false;
+   }
+}
+MO.FDatasetViewer_prior = function FDatasetViewer_prior(){
+   var o = this;
+   if(o._position > 0){
+      o._position--;
+      return true;
+   }
+   return false;
+}
+MO.FDatasetViewer_next = function FDatasetViewer_next(){
+   var o = this;
+   if(o._position < o._count - 1){
+      o._position++;
+      return true;
+   }
+   return false;
+}
+MO.FDatasetViewer_last = function FDatasetViewer_last(){
+   var o = this;
+   var count = o._count;
+   if(count > 0){
+      o._position = count - 1;
+      return true;
+   }else{
+      o._position = -1;
+      return false;
+   }
+}
+MO.FDatasetViewer_reset = function FDatasetViewer_reset(){
+   this._position = -1;
+}
+MO.FDatasetViewer_dispose = function FDatasetViewer_dispose(){
+   var o = this;
+   o._dataset = null;
+   o.__base.FObject.dispose.call(o);
+}
+MO.FDataSource = function FDataSource(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._currentRow     = MO.Class.register(o, new MO.AGetter('_currentRow'));
+   o._currentDataset = MO.Class.register(o, new MO.AGetter('_currentDataset'));
+   o._datasets       = null;
+   o.construct       = MO.FDataSource_construct;
+   o.selectDataset   = MO.FDataSource_selectDataset;
+   o.selectRow       = MO.FDataSource_selectRow;
+   o.loadConfig      = MO.FDataSource_loadConfig;
+   o.saveConfig      = MO.FDataSource_saveConfig;
+   o.dispose         = MO.FDataSource_dispose;
+   return o;
+}
+MO.FDataSource_construct = function FDataSource_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._datasets = new MO.TDictionary();
+}
+MO.FDataSource_selectDataset = function FDataSource_selectDataset(name){
+   var o = this;
+   var datasets = o._datasets;
+   var name = MO.Lang.String.nvl(name, 'default');
+   var dataset = datasets.get(name);
+   if(!dataset){
+      dataset = MO.Class.create(MO.FDataset);
+      dataset.setName(name);
+      datasets.set(name, dataset);
+   }
+   o._currentDataset = dataset;
+   return dataset;
+}
+MO.FDataSource_selectRow = function FDataSource_selectRow(row){
+   var o = this;
+   if(row){
+      o._currentRow = row;
+      return;
+   }
+   var row = null;
+   var dataset = o._currentDataset;
+   if(dataset.isEmpty()){
+      row = dataset.createRow();
+   }else{
+      row = dataset.rows.first();
+   }
+   o._currentRow = row;
+   return row;
+}
+MO.FDataSource_loadConfig = function FDataSource_loadConfig(xconfig){
+   var o = this;
+   debugger
+   o._code = x.get('name');
+   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
+   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
+   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
+   o._total = MO.Lang.Integer.parse(x.get('total'));
+   var xns = x.nodes();
+   if(xns){
+      var rs = o._rows;
+      var xnc = xns.count();
+      for(var i = 0; i < xnc; i++){
+         var xn = xns.get(i);
+         if(xn.isName('Row')){
+            var r = o.createRow();
+            r.loadConfig(xn);
+         }
+      }
+   }
+}
+MO.FDataSource_saveConfig = function FDataSource_saveConfig(xconfig){
+   var o = this;
+   var datasets = o._datasets;
+   var count = datasets.count();
+   for(var i = 0; i < count; i++){
+      var dataset = datasets.at(i);
+      dataset.saveConfig(xconfig.create('Dataset'));
+   }
+}
+MO.FDataSource_dispose = function FDataSource_dispose(){
+   var o = this;
+   o._datasets = MO.Lang.Object.dispose(o._datasets);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FDataSource_create = function FDataSource_create(c){
+   return this.dataset.create(c);
+}
+MO.FDataSource_count = function FDataSource_count(){
+   return this.dataset.count;
+}
+MO.FDataSource_row = function FDataSource_row(n){
+   return this.dataset.get(n);
+}
+MO.FDataSource_current = function FDataSource_current(){
+   return this.row(this._position);
+}
+MO.FDataSource_isChanged = function FDataSource_isChanged(){
+   var o = this;
+   var d = o.dataset;
+   for(var n=0; n<d.count; n++){
+      var r = d.get(n);
+      if(r && r.isSave()){
+         return true;
+      }
+   }
+   return false;
+}
+MO.FDataSource_get = function FDataSource_get(n){
+   var r = this.current();
+   return r ? r.get(n) : '';
+}
+MO.FDataSource_set = function FDataSource_set(n, v){
+   var r = this.current();
+   if(r){
+      r.set(n, v);
+   }
+}
+MO.FDataSource_move = function FDataSource_move(p){
+   this._position = p;
+}
+MO.FDataSource_moveToRow = function FDataSource_moveToRow(row){
+   var p = this.dataset.indexOf(row);
+   if(-1 != p){
+      this._position = p;
+   }
+}
+MO.FDataSource_find = function FDataSource_find(){
+   return this.dataset.findByArgs(arguments);
+}
+MO.FDataSource_loadNode = function FDataSource_loadNode(config){
+   if(config && config.nodes){
+      var nodes = config.nodes;
+      for(var n=0; n<nodes.count; n++){
+         var node = nodes.get(n);
+         if(node && node.isName('Row')){
+            var row = this.dataset.create();
+            row.loadNode(node);
+            row.store();
+         }
+      }
+   }
+}
+MO.FDataSource_dump = function FDataSource_dump(s){
+   var o = this;
+   s = RString.nvlStr(s);
+   s.appendLine(RClass.dump(o));
+   o.dataset.dump(s);
+   return s;
+}
+MO.FDataValue = function FDataValue(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._typeCd           = MO.Class.register(o, new MO.AGetter('_typeCd'), MO.EDataType.Unknown);
+   o._origin           = MO.Class.register(o, new MO.AGetSet('_origin'));
+   o._value            = MO.Class.register(o, new MO.AGetSet('_value'));
+   o._listenersChanged = null;
+   o.isSet             = MO.FDataValue_isSet;
+   o.listenersChanged  = MO.FDataValue_listenersChanged;
+   o.get               = MO.FDataValue_get;
+   o.set               = MO.FDataValue_set;
+   o.clear             = MO.FDataValue_clear;
+   o.dispose           = MO.FDataValue_dispose;
+   return o;
+}
+MO.FDataValue_isSet = function FDataValue_isSet(){
+   return this._typeCd != MO.EDataType.Unknown;
+}
+MO.FDataValue_listenersChanged = function FDataValue_listenersChanged(){
+   var o = this;
+   var listeners = o._listenersChanged;
+   if(!listeners){
+      listeners = o._listenersChanged = new MO.TListeners();
+   }
+   return listeners;
+}
+MO.FDataValue_get = function FDataValue_get(){
+   var o = this;
+   if(o._typeCd != MO.EDataType.Unknown){
+      return o._value;
+   }
+   return null;
+}
+MO.FDataValue_set = function FDataValue_set(value, typeCd){
+   var o = this;
+   o._typeCd = MO.Runtime.nvl(typeCd, MO.EDataType.String);
+   o._origin = value;
+   o._value = value;
+}
+MO.FDataValue_clear = function FDataValue_clear(){
+   var o = this;
+   o._typeCd = MO.EDataType.Unknown;
+   o._origin = null;
+   o._value = null;
+}
+MO.FDataValue_dispose = function FDataValue_dispose(){
+   var o = this;
+   o.clear();
+   o._listenersChanged = MO.Lang.Object.dispose(o._listenersChanged);
+   o.__base.FObject.dispose.call(o);
+}
 MO.AEvent = function AEvent(n, l, h){
    var o = this;
    MO.AAnnotation.call(o, n);
@@ -36488,6 +36801,541 @@ MO.MUiDataProperties_dataPropertyGet = function MUiDataProperties_dataPropertyGe
 }
 MO.MUiDataProperties_dataPropertySet = function MUiDataProperties_dataPropertySet(name, value){
    this.dataProperties().set(name, value);
+}
+MO.MUiDataset = function MUiDataset(o){
+   o = MO.Class.inherits(this, o);
+   o._dsService       = MO.Class.register(o, [new MO.APtyString('_dsService', 'dataset_service'), new MO.AGetSet('_dsService')]);
+   o._dsName          = MO.Class.register(o, [new MO.APtyString('_dsName', 'dataset_name'), new MO.AGetSet('_dsName')]);
+   o._dsPageSize      = MO.Class.register(o, [new MO.APtyInteger('_dsPageSize', 'page_size'), new MO.AGetSet('_dsPageSize')], 20);
+   o._dsPageIndex     = 0;
+   o._dsInsertAction  = MO.Class.register(o, [new MO.APtyString('_dsInsertAction', 'insert_action'), new MO.AGetSet('_dsInsertAction')]);
+   o._dsUpdateAction  = MO.Class.register(o, [new MO.APtyString('_dsUpdateAction', 'update_action'), new MO.AGetSet('_dsUpdateAction')]);
+   o._dsDeleteAction  = MO.Class.register(o, [new MO.APtyString('_dsDeleteAction', 'delete_action'), new MO.AGetSet('_dsDeleteAction')]);
+   o._activeDataset   = null;
+   o.oeLoadDataSource = MO.MUiDataContainer_oeLoadDataSource;
+   o.oeSaveDataSource = MO.MUiDataContainer_oeSaveDataSource;
+   o.dsLoadSource     = MO.MUiDataContainer_dsLoadSource;
+   o.dsSaveSource     = MO.MUiDataContainer_dsSaveSource;
+   return o;
+}
+MO.MUiDataContainer_oeLoadDataSource = function MUiDataContainer_oeLoadDataSource(event){
+   var o = this;
+   if(event.isBefore()){
+      var source = event.source;
+      o._activeDataset = source.selectDataset(o._dsName);
+      var row = source.selectRow();
+      o.loadUnit(row);
+   }
+   return MO.EEventStatus.Contine;
+}
+MO.MUiDataContainer_oeSaveDataSource = function MUiDataContainer_oeSaveDataSource(event){
+   var o = this;
+   if(event.isBefore()){
+      var source = event.source;
+      o._activeDataset = source.selectDataset(o._dsName);
+      var row = source.selectRow();
+      o.saveUnit(row);
+   }
+   return MO.EEventStatus.Contine;
+}
+MO.MUiDataContainer_dsLoadSource = function MUiDataContainer_dsLoadSource(source){
+   var o = this;
+   var event = new MO.SUiDispatchEvent(o, 'oeLoadDataSource', MO.MUiDataset);
+   event.source = source;
+   o.process(event);
+   event.dispose();
+}
+MO.MUiDataContainer_dsSaveSource = function MUiDataContainer_dsSaveSource(source){
+   var o = this;
+   var event = new MO.SUiDispatchEvent(o, 'oeSaveDataSource', MO.MUiDataset);
+   event.source = source;
+   o.process(event);
+   event.dispose();
+}
+MO.MUiDataset_onDsFetch = function MUiDataset_onDsFetch(g){
+   var o = this;
+   var ds = g.datasets;
+   o.dsDatasetLoad(ds);
+}
+MO.MUiDataset_onDsCopy = function MUiDataset_onDsCopy(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+MO.MUiDataset_onDsPrepare = function MUiDataset_onDsPrepare(g){
+   var o = this;
+   g.resultDatasets.set('/', null);
+   o.loadDatasets(g.resultDatasets);
+   o.doPrepare(g.resultRow);
+   if(g.invokeSuccess()){
+	   return;
+   }
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+MO.MUiDataset_onDsUpdate = function MUiDataset_onDsUpdate(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+MO.MUiDataset_onDsDoUpdate = function MUiDataset_onDsDoUpdate(g){
+   var o = this;
+   if(!g.invokeSuccess()){
+      o.psRefresh();
+   }
+   if(!g.processFinish){
+      o.focus();
+      o.lsnsUpdateEnd.process(g);
+   }
+   o.onLoadDatasetEnd();
+}
+MO.MUiDataset_onDsDelete = function MUiDataset_onDsDelete(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.doDelete(g.resultRow);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+MO.MUiDataset_onDsProcess = function MUiDataset_onDsProcess(g){
+   var o = this;
+   var cb = g.resultCallback;
+   if(cb){
+      cb.invoke(o, g);
+   }
+}
+MO.MUiDataset_oeDataLoad = function MUiDataset_oeDataLoad(p){
+   var o = this;
+   if(p.isBefore()){
+      var ds = p.source;
+      ds.selectDataset();
+      ds.selectRow();
+   }
+   return EEventStatus.Contine;
+}
+MO.MUiDataset_oeDataSave = function MUiDataset_oeDataSave(p){
+   var o = this;
+   if(p.isBefore()){
+      var ds = p.source;
+      ds.selectDataset();
+      ds.selectRow();
+   }
+   return EEventStatus.Contine;
+}
+MO.MUiDataset_oeDatasetLoad = function MUiDataset_oeDatasetLoad(p){
+   var o = this;
+   if(p.isBefore()){
+      var ds = p.datasets;
+      var d = ds.get(o._name);
+      o._dataset = d;
+      o.onDatasetLoad(d);
+   }
+   return EEventStatus.Contine;
+}
+MO.MUiDataset_construct = function MUiDataset_construct(){
+   var o = this;
+   o._dataViewer = new TDatasetViewer();
+}
+MO.MUiDataset_loadDataset = function MUiDataset_loadDataset(d){
+   var o = this;
+   o.dsStore = d;
+   d.saveViewer(o._dataViewer);
+   o.onLoadDataset(d);
+}
+MO.MUiDataset_loadDatasets = function MUiDataset_loadDatasets(p){
+   var o = this;
+   var c = p.count();
+   for(var i = 0; i < c; i++){
+      var d = p.value(n);
+      var dc = o.findByPath(d.name)
+      if(!dc){
+         return RMessage.fatal(o, null, 'Load dataset failed. (dataset={1}', d.name);
+      }
+      dc.loadDataset(d);
+   }
+}
+MO.MUiDataset_dsDatasetLoad = function MUiDataset_dsDatasetLoad(p){
+   var o = this;
+   var e = new TEventProcess(null, o, 'oeDatasetLoad', MUiDataset);
+   e.datasets = p;
+   o.process(e);
+   e.dispose();
+}
+MO.MUiDataset_toDeepAttributes = function MUiDataset_toDeepAttributes(a, m){
+   var o = this;
+   if(!a){
+      a = new TAttributes();
+   }
+   var ts = new TList();
+   var p = o;
+   while(p){
+      if(MO.Class.isClass(p, MUiDataset)){
+         ts.push(p);
+      }
+      if(!p.parent){
+         break;
+      }
+      p = p.topControl(MUiDataset);
+   }
+   for(var n=ts.count; n>=0; n--){
+      var p = ts.get(n);
+      if(MO.Class.isClass(p, FForm)){
+         p.toAttributes(a, m);
+      }else if(MO.Class.isClass(m, FTable)){
+         var r = p.getCurrentRow();
+         if(r){
+            r.toAttributes(a, m);
+         }
+      }
+   }
+   return a;
+}
+MO.MUiDataset_dsFetch = function MUiDataset_dsFetch(){
+   var o = this;
+   var g = new TDatasetFetchArg();
+   g.owner = o;
+   g.name = o._name;
+   g.callback = o.onDsFetch;
+   RConsole.find(FDatasetConsole).fetch(g);
+}
+MO.MUiDataset_dsInitialize = function MUiDataset_dsInitialize(){
+   this.callEvent('onFormInitialize', this, this.__initializeEvent);
+}
+MO.MUiDataset_dsShow = function MUiDataset_dsShow(){
+   this.callEvent('onFormShow', this, this.__showEvent);
+}
+MO.MUiDataset_dsLoaded = function MUiDataset_dsLoaded(){
+   this.callEvent('onDatasetLoaded', this, this.__loadedEvent);
+}
+MO.MUiDataset_dsSearch = function MUiDataset_dsSearch(s){
+   var o = this;
+   o.psProgress(true);
+   var tc = o.topControl();
+   var pth = o.fullPath();
+   if(s){
+      pth = s.fullPath();
+   }
+   var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, 0, true, false, pth);
+   g.mode = tc._emode;
+   g.searchs.append(o._dataGlobalSearchs);
+   g.searchs.append(o._dataSearchs);
+   g.orders.append(o._dataGlobalOrders);
+   g.orders.append(o._dataOrders);
+   o.toDeepAttributes(g.values);
+   g.values.append(o._dataValues);
+   g.callback = new TInvoke(o, o.onDsFetch);
+   RConsole.find(FDatasetConsole).fetch(g);
+}
+MO.MUiDataset_dsCopy = function MUiDataset_dsCopy(r){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Insert);
+   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
+   g.form = o;
+   g.mode = EMode.Insert;
+   o._dataSearchs.clear();
+   o._dataSearchs.push(new TSearchItem('OUID', r.get("OUID")));
+   g.searchs = o._dataSearchs;
+   g.callback = new TInvoke(o, o.onDsCopy);
+   if(o.onDsUpdateCheck(g)){
+      RConsole.find(FDatasetConsole).fetch(g);
+   }
+   return;
+}
+MO.MUiDataset_dsPrepare = function MUiDataset_dsPrepare(cb){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Insert);
+   var g = new TDatasetPrepareArg(o.name, o.formId);
+   g.form = o;
+   g.values.append(o._dataValues);
+   g.callbackSuccess = cb;
+   if(o.onDsPrepareCheck(g)){
+      g.callback = new TInvoke(o, o.onDsPrepare);
+      RConsole.find(FDatasetConsole).prepare(g);
+   }
+}
+MO.MUiDataset_dsUpdate = function MUiDataset_dsUpdate(u, v){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Update);
+   o.dsFetch(true);
+}
+MO.MUiDataset_dsDoUpdate = function MUiDataset_dsDoUpdate(cb, ck){
+   var o = this;
+   if(!o.psValid()){
+      return;
+   }
+   var t = o.topControl();
+   var g = new TDatasetUpdateArg(t.name, o.formId, o.dsName);
+   g.form = o;
+   g.path = o.fullPath();
+   g.mode = o._emode;
+   g.codes = o.getDataCodes();
+   g.callback = new TInvoke(o, o.onDsDoUpdate);
+   g.callbackSuccess = cb;
+   if(EMode.Insert == o._emode || EMode.Delete == o._emode){
+      g.dataset.rows.append(o.getCurrentRows());
+   }else{
+      g.dataset.rows.append(o.getChangedRows());
+      if(!ck){
+         if(!g.hasData()){
+            return RMessage.warn(o, RContext.get('MUiDataset:nochange'));
+         }
+      }
+   }
+   o.psProgress(true);
+   RConsole.find(FDatasetConsole).update(g);
+}
+MO.MUiDataset_dsDelete = function MUiDataset_dsDelete(u, v){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Delete);
+   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
+   g.callback = new TInvoke(o, o.onDsDelete);
+   g.form = o;
+   g.mode = EMode.Delete;
+   if(u){
+      g.searchs.push(new TSearchItem('OUID', u));
+   }
+   if(v){
+       g.searchs.push(new TSearchItem('OVER', v));
+   }
+   g.values = o._dataValues;
+   if(o.onDsDeleteCheck(g)){
+      RConsole.find(FDatasetConsole).fetch(g);
+   }
+   return;
+}
+MO.MUiDataset_dsMode = function MUiDataset_dsMode(m){
+   var o = this;
+   switch(m){
+      case EMode.Insert:
+         o.dsPrepare();
+         break;
+      case EMode.Update:
+         o.dsUpdate();
+         break;
+      case EMode.Delete:
+         o.dsDelete();
+         break;
+   }
+}
+MO.MUiDataset_dsProcess = function MUiDataset_dsProcess(da, cb){
+   var o = this;
+   if(!o.psValid()){
+      return;
+   }
+   var g = new TDatasetServiceArg(o.topControl().name, da);
+   g.form = o;
+   g.controlName = o.name;
+   o.toDeepAttributes(g.attributes);
+   g.codes = o.getDataCodes();
+   g.push(o.getCurrentRow());
+   g.resultCallback = cb;
+   o.psProgress(true);
+   g.callback = new TInvoke(o, o.onDsProcess);
+   RConsole.find(FFormConsole).process(g);
+}
+MO.MUiDataset_dsProcessCustom = function MUiDataset_dsProcessCustom(pm, da, cb, cc){
+	var o = this;
+	if(!cc){
+	if(!o.psValid()){
+	   return;
+	}
+	}
+	var g = new TDatasetServiceArg(o.topControl().name, da);
+	g.form = o;
+	g.controlName = o.name;
+	g.attributes = pm;
+	g.codes = o.getDataCodes();
+	g.push(o.getCurrentRow());
+	g.resultCallback = cb;
+	if(!cc){
+	   if(!g.hasData()){
+	      return RMessage.warn(o, RContext.get('MUiDataset:nodata'));
+	   }
+	}
+	o.psProgress(true);
+	g.callback = new TInvoke(o, o.onDsProcess);
+	RConsole.find(FFormConsole).process(g);
+}
+MO.MUiDataset_dsProcessSelected = function MUiDataset_dsProcessSelected(da, cb){
+	var o = this;
+	if(!o.psValid()){
+	   return;
+	}
+	   var g = new TDatasetServiceArg(o.topControl().name, da);
+	   g.form = o;
+	   g.controlName = o.name;
+	   o.toDeepAttributes(g.attributes);
+	   g.codes = o.getDataCodes();
+	   g.rows = o.getSelectedRows();
+	   if(g.rows.count > 0){
+		  g.resultCallback = cb;
+		  o.psProgress(true);
+		  g.callback = new TInvoke(o, o.onDsProcess);
+		  RConsole.find(FFormConsole).process(g);
+		  o.clearSelectRows();
+	   }else{
+	      return RMessage.warn(o, RContext.get('MUiDataset:norows'));
+	   }
+}
+MO.MUiDataset_dsProcessChanged = function MUiDataset_dsProcessChanged(da, cb){
+   var o = this;
+   if(!o.psValid()){
+      return;
+   }
+   var g = new TDatasetServiceArg(o.topControl().name, da);
+   g.form = o;
+   g.controlName = o.name;
+   o.toDeepAttributes(g.attributes);
+   g.codes = o.getDataCodes();
+   g.rows = o.getChangedRows();
+   g.resultCallback = cb;
+   if(!g.hasData()){
+      return RMessage.warn(o, RContext.get('MUiDataset:nochange'));
+   }
+   o.psProgress(true);
+   g.callback = new TInvoke(o, o.onDsProcess);
+   RConsole.find(FFormConsole).process(g);
+}
+MO.MUiDataset_dsProcessAll = function MUiDataset_dsProcessAll(da, cb){
+   var o = this;
+   if(!o.psValid()){
+      return;
+   }
+   var g = new TDatasetServiceArg(o.topControl().name, da);
+   g.form = o;
+   g.controlName = o.name;
+   o.toDeepAttributes(g.attributes);
+   g.codes = o.getDataCodes();
+   g.rows = o.getRows();
+   g.resultCallback = cb;
+   o.psProgress(true);
+   g.callback = new TInvoke(o, o.onDsProcess);
+   RConsole.find(FFormConsole).process(g);
+}
+MO.MUiDataset_psProgress = function MUiDataset_psProgress(v){
+   var o = this;
+   if(o.__progress == v){
+      return;
+   }
+   o.__progress = v;
+   var e = o.__progressProcess;
+   e.enable = v;
+   o.process(e);
+}
+MO.MUiDataset_psValid = function MUiDataset_psValid(){
+   var o = this;
+   var e = o.__validProcess;
+   var cs = e.controls;
+   cs.clear();
+   o.process(e);
+   if(!cs.isEmpty()){
+      var cw = RConsole.find(FCheckWindowConsole).find();
+      cw.set(cs);
+      cw.show();
+      return false;
+   }
+   return true;
+}
+MO.MUiDataset_dsIsChanged = function MUiDataset_dsIsChanged(){
+   var ds = this.dsStore;
+   return ds ? ds.isChanged() : false;
+}
+MO.MUiDataset_dsCount = function MUiDataset_dsCount(){
+   return this.dsStore ? this.dsStore.count : 0;
+}
+MO.MUiDataset_dsCurrent = function MUiDataset_dsCurrent(){
+   var o = this;
+   var ds = o.dsStore;
+}
+MO.MUiDataset_dsMove = function MUiDataset_dsMove(p){
+   var o = this;
+   var ds = o.dsStore;
+   if(null == p && !ds){
+      return;
+   }
+   if(!RInt.isInt(p)){
+      if(EDataAction.First == p){
+         ds.moveFirst();
+      }else if(EDataAction.Prior == p){
+         ds.movePrior();
+      }else if(EDataAction.Next == p){
+         ds.moveNext();
+      }else if(EDataAction.Last == p){
+         ds.moveLast();
+      }else{
+         RMessage.fatal(o, null, 'Unknown position (postion={0})', p);
+      }
+   }else{
+      ds.move(p);
+   }
+   if(MO.Class.isClass(o, MValue)){
+      o.loadValue(ds.current());
+   }
+}
+MO.MUiDataset_dsMovePage = function MUiDataset_dsMovePage(p){
+   var o = this;
+   var ds = o.dsStore;
+   if(!RInt.isInt(p)){
+      if(EDataAction.First == p){
+         p = 0;
+      }else if(EDataAction.Prior == p){
+         p = ds.pageIndex;
+         if(p > 0){
+            p--;
+         }
+      }else if(EDataAction.Next == p){
+         p = ds.pageIndex;
+         if(p < ds.pageCount - 1){
+            p++;
+         }
+      }else if(EDataAction.Last == p){
+         p = ds.pageCount - 1;
+      }else{
+         RMessage.fatal(o, null, 'Unknown page (page={0})', p);
+      }
+   }
+   if(p != ds.pageIndex){
+      o.psProgress(true);
+      var t = o.topControl(MUiDataset);
+      var g = new TDatasetFetchArg(t.name, t.formId, o.dsPageSize, p, true);
+      g.path =  o.fullPath();
+      g.mode = t._emode;
+      g.searchs.append(o._dataGlobalSearchs);
+      g.searchs.append(o._dataSearchs);
+      g.orders.append(o._dataGlobalOrders);
+      g.orders.append(o._dataOrders);
+      g.values = o.toDeepAttributes();
+      g.values.append(o._dataValues);
+      g.callback = new TInvoke(o, o.onDsFetch);
+      RConsole.find(FDatasetConsole).fetch(g);
+   }
+}
+MO.MUiDataset_dsGet = function MUiDataset_dsGet(n){
+   return this.dsStore ? this.dsStore.get(n) : '';
+}
+MO.MUiDataset_dsSet = function MUiDataset_dsSet(n, v){
+   if(this.dsStore){
+      this.dsStore.set(n, v);
+   }
+}
+MO.MUiDataset_dsRefresh = function MUiDataset_dsRefresh(){
+   if(this._dsService){
+      this.dsMove(this.dsPage, true);
+   }
+}
+MO.MUiDataset_doSearch = function MUiDataset_doSearch(){
+   var o = this;
+   var sw = o.dsSearchWindow;
+   if(!sw){
+      sw = o.dsSearchWindow = top.RControl.create(top.FSearchWindow);
+      sw.linkDsControl(o);
+   }
+   sw.show();
 }
 MO.MUiDataValue = function MUiDataValue(o){
    o = MO.Class.inherits(this, o, MO.MUiValue);
@@ -52276,6 +53124,7 @@ MO.FDuiColumn = function FDuiColumn(o){
    o._styleSearchEdit   = MO.Class.register(o, new MO.AStyle('_styleSearchEdit'));
    o._styleIconSortUp   = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortUp'));
    o._styleIconSortDown = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortDown'));
+   o._optionFixed       = MO.Class.register(o, new MO.AGetSet('_optionFixed'), false);
    o._cellClass         = MO.FDuiCell;
    o._hForm             = null;
    o._hFormLine         = null;
@@ -52287,6 +53136,7 @@ MO.FDuiColumn = function FDuiColumn(o){
    o._hSortDown         = null;
    o._hSearchEditPanel  = null;
    o._hSearchEdit       = null;
+   o._hFixPanel         = null;
    o.onBuildLabel       = MO.FDuiColumn_onBuildLabel;
    o.onBuildSearchIcon  = MO.Method.empty;
    o.onBuildSearchEdit  = MO.FDuiColumn_onBuildSearchEdit;
@@ -52301,6 +53151,7 @@ MO.FDuiColumn = function FDuiColumn(o){
    o.onSearchLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onSearchLeave'));
    o.onSearchKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onSearchKeyDown'));
    o.createCell         = MO.FDuiColumn_createCell;
+   o.refreshWidth       = MO.FDuiColumn_refreshWidth;
    return o;
 }
 MO.FDuiColumn_onBuildLabel = function FDuiColumn_onBuildLabel(event){
@@ -52366,7 +53217,11 @@ MO.FDuiColumn_onBuildPanel = function FDuiColumn_onBuildPanel(event) {
 }
 MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    var o = this;
-   var t = o.table;
+   var table = o.table;
+   var width = o._size.width;
+   if(width < 40){
+      width = 40;
+   }
    o._absEdit = o._editInsert || o._editUpdate || o._editDelete;
    if(!o._absEdit){
       if(!MO.Lang.String.isEmpty(o._lovReference)){
@@ -52376,30 +53231,26 @@ MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
       }
    }
    if(!MO.Lang.String.isEmpty(o._viewIcons)){
-      var im = o.iconMap = new MO.TAttributes();
-      im.split(o._viewIcons.replace(/\n/g, ';'), '=', ';');
-      o.hasIconArea = im.count > 0;
+      var map = o._iconMap = new MO.TAttributes();
+      map.split(o._viewIcons.replace(/\n/g, ';'), '=', ';');
+      o._hasIconArea = map.count > 0;
    }
    o.__base.FDuiControl.onBuild.call(o, event);
-   var hp = o._hPanel;
-   hp.style.padding = 4;
-   var hf = o._hForm = MO.Window.Builder.appendTable(hp);
+   var hPanel = o._hPanel;
+   hPanel.style.width = width + 'px';
+   hPanel.style.padding = 4;
+   var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
    if (!o._orderAble) {
-     hf.style.cursor = 'hand';
+     hForm.style.cursor = 'hand';
    }
-   var hLine = o._hFormLine = MO.Window.Builder.appendTableRow(o._hForm);
+   o._hFormLine = MO.Window.Builder.appendTableRow(hForm);
    o.onBuildLabel(event);
    o.onBuildSearch(event);
    o.onBuildTotal(event);
-   var h = o._hFixPanel = MO.Window.Builder.create(event, 'TD');
-   h.height = 1;
-   h.bgColor = '#FFFFFF'
-   if(o._size.width < 40){
-      o._size.width = 40;
-   }
-   MO.Window.Html.setSize(h, o._size);
-   o._hPanel.style.pixelWidth = o.width;
-   o._hFixPanel.style.pixelWidth = o.width;
+   var hFixPanel = o._hFixPanel = MO.Window.Builder.create(event, 'TD');
+   hFixPanel.style.width = width + 'px';
+   hFixPanel.style.height = '1px';
+   hFixPanel.style.backgroundColor = '#FFFFFF'
 }
 MO.FDuiColumn_createCell = function FDuiColumn_createCell(row){
    var o = this;
@@ -52410,6 +53261,11 @@ MO.FDuiColumn_createCell = function FDuiColumn_createCell(row){
    cell.build(table._hPanel);
    cell.setVisible(o._displayList);
    return cell;
+}
+MO.FDuiColumn_refreshWidth = function FDuiColumn_refreshWidth(){
+   var o = this;
+   var width = o._hPanel.offsetWidth - 2;
+   o._hFixPanel.style.width = width + 'px';
 }
 MO.FDuiColumn_onCellMouseEnter = function FDuiColumn_onCellMouseEnter(s, e){
    this.table.hoverRow(s.row, true);
@@ -53183,28 +54039,28 @@ MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(event){
    hCell.width = 60;
    o.hNavLast = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
 }
-MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(p){
+MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
    var o = this;
    if(!o._size.height || o._size.height < 160){
       o.height = '100%';
    }
-   o.__base.FDuiContainer.onBuild.call(o, p);
+   o.__base.FDuiContainer.onBuild.call(o, event);
    var hc = o._hTitlePanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
-   o.onBuildTitle(p);
-   var hbp = o._hContentPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
-   o.onBuildContent(p);
+   o.onBuildTitle(event);
+   o._hContentPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
+   o.onBuildContent(event);
    o._hHintPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
    o._hHintForm = MO.Window.Builder.appendTable(o._hHintPanel, o.styleName('HintForm'));
-   o.onBuildHint(p);
+   o.onBuildHint(event);
    var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
    statusColumn._table = this;
-   statusColumn._name = '_s';
-   statusColumn.build(p);
+   statusColumn._name = '_status';
+   statusColumn.build(event);
    o.push(statusColumn);
    var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
    selectColumn._table = this;
    selectColumn._name = '_select';
-   selectColumn.build(p);
+   selectColumn.build(event);
    o.push(selectColumn);
 }
 MO.FDuiGridControl_onDatasetLoadDelay = function FDuiGridControl_onDatasetLoadDelay(p){
@@ -53309,7 +54165,7 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(component){
    }
    o.__base.FDuiContainer.push.call(o, component);
 }
-MO.FDuiGridControl_createRow = function FDuiGridControl_createRow() {
+MO.FDuiGridControl_createRow = function FDuiGridControl_createRow(){
    var o = this;
    var row = MO.Class.create(o._rowClass);
    row._table = row._parent = o;
@@ -54431,43 +55287,30 @@ MO.FDuiTable = function FDuiTable(o) {
 }
 MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    var o = this;
-   var hbp = o._hContentPanel;
-   var hfp = o._hFixPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('FixPanel'));
-   hfp.style.zIndex = 2;
-   hfp.style.position = 'absolute';
-   var hff = o._hFixForm = MO.Window.Builder.appendTable(hfp, o.styleName('FixForm'), 0, 0, 1);
-   hff.borderColorLight = '#D0D0D0';
-   hff.borderColorDark = '#EEEEEE';
-   o._hFixHead =  MO.Window.Builder.appendTableRow(hff);
-   o._hFixSearch = MO.Window.Builder.appendTableRow(hff);
-   o._hFixTotal = MO.Window.Builder.appendTableRow(hff);
+   var hContentPanel = o._hContentPanel;
+   var hFixPanel = o._hFixPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('FixPanel'));
+   var hFixForm = o._hFixForm = MO.Window.Builder.appendTable(hFixPanel, o.styleName('FixForm'), 0, 0, 1);
+   hFixForm.borderColorLight = '#D0D0D0';
+   hFixForm.borderColorDark = '#EEEEEE';
+   o._hFixHead =  MO.Window.Builder.appendTableRow(hFixForm);
+   o._hFixSearch = MO.Window.Builder.appendTableRow(hFixForm);
+   o._hFixTotal = MO.Window.Builder.appendTableRow(hFixForm);
    o._hFixTotal.style.display = 'none';
-   var hhp = o._hHeadPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('HeadPanel'));
-   hhp.style.zIndex = 1;
-   hhp.style.position = 'absolute';
-   hhp.style.overflowX = 'hidden';
-   hhp.style.width = 1;
-   var hhf = o._hHeadForm = MO.Window.Builder.appendTable(hhp, o.styleName('HeadForm'), 0, 0, 1);
-   hhf.frame = 'rhs';
-   hhf.style.tableLayout = 'fixed';
-   hhf.borderColorLight = '#D0D0D0';
-   hhf.borderColorDark = '#EEEEEE';
-   o._hHead = hhf.insertRow();
-   o._hSearch = hhf.insertRow();
-   o._hTotal = hhf.insertRow();
+   var hHeadPanel = o._hHeadPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('HeadPanel'));
+   var hHeadForm = o._hHeadForm = MO.Window.Builder.appendTable(hHeadPanel, o.styleName('HeadForm'), 0, 0, 1);
+   hHeadForm.borderColorLight = '#D0D0D0';
+   hHeadForm.borderColorDark = '#EEEEEE';
+   o._hHead = MO.Window.Builder.appendTableRow(hHeadForm);
+   o._hSearch = MO.Window.Builder.appendTableRow(hHeadForm);
+   o._hTotal = MO.Window.Builder.appendTableRow(hHeadForm);
    o._hTotal.style.display = 'none';
-   var hcp = o._hColumnPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('ColumnPanel'));
-   hcp.style.zIndex = 1;
-   hcp.style.position = 'absolute';
-   hcp.style.overflowY = 'hidden';
-   var hcf = o._hColumnForm = MO.Window.Builder.appendTable(hcp, o.styleName('ColumnForm'), 0, 0, 1);
-   o._hFixRows = MO.Window.Builder.append(hcf, 'TBODY');
+   var hColumnPanel = o._hColumnPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('ColumnPanel'));
+   var hColumnForm = o._hColumnForm = MO.Window.Builder.appendTable(hColumnPanel, o.styleName('ColumnForm'), 0, 0, 1);
+   o._hFixRows = MO.Window.Builder.append(hColumnForm, 'TBODY');
    o._hFixRowLine = MO.Window.Builder.append(o._hFixRows, 'TR');
-   var hdp = o._hDataPanel = MO.Window.Builder.appendDiv(hbp, o.styleName('DataPanel'));
-   hdp.width = '100%';
-   hdp.height = '100%';
-   var hdf = o._hDataForm = MO.Window.Builder.appendTable(hdp, o.styleName('DataForm'), 0, 0, 1);
-   o._hRows = MO.Window.Builder.append(hdf, 'TBODY');
+   var hDataPanel = o._hDataPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('DataPanel'));
+   var hDataForm = o._hDataForm = MO.Window.Builder.appendTable(hDataPanel, o.styleName('DataForm'), 0, 0, 1);
+   o._hRows = MO.Window.Builder.append(hDataForm, 'TBODY');
    o._hRowLine = MO.Window.Builder.append(o._hRows, 'TR');
    o.panelNavigator = true;
 }
@@ -54513,6 +55356,7 @@ MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(event){
          var column = columns.at(i);
          var columnVisible = column.visible();
          if(columnVisible){
+            column.refreshWidth();
             if(column.dispAuto){
                if(columnAuto){
                   return MO.Message.fatal(o, 'Too many autosize column. (name1={1}, name2={2})', columnAuto.name, column.name);
@@ -54561,18 +55405,18 @@ MO.FDuiTable_oeResize = function FDuiTable_oeResize(e){
    MO.Console.find(MO.FEventConsole).push(o.eventResizeAfter);
    return EEventStatus.Stop;
 }
-MO.FDuiTable_appendColumn = function FDuiTable_appendColumn(event){
+MO.FDuiTable_appendColumn = function FDuiTable_appendColumn(column){
    var o = this;
-   if(event._optionFixed){
-      o._hFixHead.appendChild(event._hPanel);
-      o._hFixSearch.appendChild(event._hSearchPanel);
-      o._hFixTotal.appendChild(event._hTotalPanel);
-      o._hFixRowLine.appendChild(event._hFixPanel);
+   if(column._optionFixed){
+      o._hFixHead.appendChild(column._hPanel);
+      o._hFixSearch.appendChild(column._hSearchPanel);
+      o._hFixTotal.appendChild(column._hTotalPanel);
+      o._hFixRowLine.appendChild(column._hFixPanel);
    }else{
-      o._hHead.appendChild(event._hPanel);
-      o._hSearch.appendChild(event._hSearchPanel);
-      o._hTotal.appendChild(event._hTotalPanel);
-      o._hRowLine.appendChild(event._hFixPanel);
+      o._hHead.appendChild(column._hPanel);
+      o._hSearch.appendChild(column._hSearchPanel);
+      o._hTotal.appendChild(column._hTotalPanel);
+      o._hRowLine.appendChild(column._hFixPanel);
    }
 }
 MO.FDuiTable_onResizeAfter = function FDuiTable_onResizeAfter(){
@@ -57932,6 +58776,10 @@ MO.FDuiDialog_construct = function FDuiDialog_construct(){
    var o = this;
    o.__base.FDuiWindow.construct.call(o);
 }
+MO.FDuiFormFrame = function FDuiFormFrame(o) {
+   o = MO.Class.inherits(this, o, MO.FDuiForm, MO.MUiDataset);
+   return o;
+}
 MO.FDuiFramePage = function FDuiFramePage(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer);
    o._styleContainer = MO.Class.register(o, new MO.AStyle('_styleContainer'));
@@ -58281,6 +59129,11 @@ MO.FDuiFrameSpliter_dispose = function FDuiFrameSpliter_dispose(){
    o._hSize = MO.Window.Html.free(o._hSize);
    o.__base.FDuiControl.dispose.call(o);
 }
+MO.FDuiTableFrame = function FDuiTableFrame(o) {
+   o = MO.Class.inherits(this, o, MO.FDuiTable, MO.MUiDataset);
+   o._itemFrameName = MO.Class.register(o, [new MO.APtyString('_itemFrameName'), new MO.AGetSet('_itemFrameName')]);
+   return o;
+}
 MO.FDuiWindow = function FDuiWindow(o){
    o = MO.Class.inherits(this, o, MO.FDuiLayout, MO.MMouseCapture);
    o._statusVisible      = false;
@@ -58567,566 +59420,6 @@ with(MO){
       }else{
          throw new TError(o, 'Component is invalid.');
       }
-   }
-}
-with(MO){
-   MO.MUiDataset = function MUiDataset(o){
-      o = MO.Class.inherits(this, o);
-      o._dsDataset         = MO.Class.register(o, new MO.APtyString('_dsDataset', 'dataset'));
-      o._dsPageSize        = MO.Class.register(o, new MO.APtyInteger('_dsPageSize', 'page_size'), 20);
-      o._dsPageIndex       = 0;
-      o._dsInsertAction    = MO.Class.register(o, new MO.APtyString('_dsInsertAction', 'insert_action'));
-      o._dsUpdateAction    = MO.Class.register(o, new MO.APtyString('_dsUpdateAction', 'update_action'));
-      o._dsDeleteAction    = MO.Class.register(o, new MO.APtyString('_dsDeleteAction', 'delete_action'));
-      o._dataSource        = null;
-      o._dataViewer        = null;
-      o._dataValues        = null;
-      o._dataGlobalSearchs = null;
-      o._dataSearchs       = null;
-      o._dataGlobalOrders  = null;
-      o._dataOrders        = null;
-      o.__progress           = false;
-      o.lsnsUpdateBegin    = null;
-      o.lsnsUpdateEnd      = null;
-      o.onDatasetLoadBegin = RMethod.empty;
-      o.onDatasetLoad      = RMethod.empty;
-      o.onDatasetLoadEnd   = RMethod.empty;
-      o.onStoreChanged     = RMethod.empty;
-      o.onDsFetchBegin     = RMethod.empty;
-      o.onDsFetchEnd       = RMethod.empty;
-      o.onDsUpdateBegin    = RMethod.empty;
-      o.onDsUpdateEnd      = RMethod.empty;
-      o.onDsFetch          = MUiDataset_onDsFetch;
-      o.onDsPrepareCheck   = RMethod.emptyTrue;
-      o.onDsCopy           = MUiDataset_onDsCopy;
-      o.onDsPrepare        = MUiDataset_onDsPrepare;
-      o.onDsUpdateCheck    = RMethod.emptyTrue;
-      o.onDsUpdate         = MUiDataset_onDsUpdate;
-      o.onDsDoUpdate       = MUiDataset_onDsDoUpdate;
-      o.onDsDeleteCheck    = RMethod.emptyTrue;
-      o.onDsDelete         = MUiDataset_onDsDelete;
-      o.onDsProcess        = MUiDataset_onDsProcess;
-      o.oeDataLoad         = MUiDataset_oeDataLoad;
-      o.oeDataSave         = MUiDataset_oeDataSave;
-      o.oeDatasetLoad      = MUiDataset_oeDatasetLoad;
-      o.construct          = MUiDataset_construct;
-      o.loadDataset        = MUiDataset_loadDataset;
-      o.loadDatasets       = MUiDataset_loadDatasets;
-      o.toDeepAttributes   = MUiDataset_toDeepAttributes;
-      o.dsDatasetLoad      = MUiDataset_dsDatasetLoad;
-      o.dsFetch            = MUiDataset_dsFetch;
-      o.dsInitialize        = MUiDataset_dsInitialize;
-      o.dsShow              = MUiDataset_dsShow;
-      o.dsLoaded            = MUiDataset_dsLoaded;
-      o.dsSearch            = MUiDataset_dsSearch;
-      o.dsCopy              = MUiDataset_dsCopy;
-      o.dsPrepare           = MUiDataset_dsPrepare;
-      o.dsUpdate            = MUiDataset_dsUpdate;
-      o.dsDelete            = MUiDataset_dsDelete;
-      o.dsMode              = MUiDataset_dsMode;
-      o.dsDoUpdate          = MUiDataset_dsDoUpdate;
-      o.dsProcess           = MUiDataset_dsProcess;
-      o.dsProcessCustom     = MUiDataset_dsProcessCustom;
-      o.dsProcessChanged    = MUiDataset_dsProcessChanged;
-      o.dsProcessSelected   = MUiDataset_dsProcessSelected;
-      o.dsProcessAll        = MUiDataset_dsProcessAll;
-      o.psProgress          = MUiDataset_psProgress;
-      o.psValid             = MUiDataset_psValid;
-      o.dsIsChanged         = MUiDataset_dsIsChanged;
-      o.dsCount             = MUiDataset_dsCount;
-      o.dsCurrent           = MUiDataset_dsCurrent;
-      o.dsMove              = MUiDataset_dsMove;
-      o.dsMovePage          = MUiDataset_dsMovePage;
-      o.dsGet               = MUiDataset_dsGet;
-      o.dsSet               = MUiDataset_dsSet;
-      o.dsRefresh           = MUiDataset_dsRefresh;
-      o.doSearch            = MUiDataset_doSearch;
-      return o;
-   }
-   MO.MUiDataset_onDsFetch = function MUiDataset_onDsFetch(g){
-      var o = this;
-      var ds = g.datasets;
-      o.dsDatasetLoad(ds);
-   }
-   MO.MUiDataset_onDsCopy = function MUiDataset_onDsCopy(g){
-      var o = this;
-      o.loadDatasets(g.resultDatasets);
-      o.onLoadDatasetEnd();
-      o.focus();
-   }
-   MO.MUiDataset_onDsPrepare = function MUiDataset_onDsPrepare(g){
-      var o = this;
-      g.resultDatasets.set('/', null);
-      o.loadDatasets(g.resultDatasets);
-      o.doPrepare(g.resultRow);
-      if(g.invokeSuccess()){
-   	   return;
-      }
-      o.onLoadDatasetEnd();
-      o.focus();
-   }
-   MO.MUiDataset_onDsUpdate = function MUiDataset_onDsUpdate(g){
-      var o = this;
-      o.loadDatasets(g.resultDatasets);
-      o.onLoadDatasetEnd();
-      o.focus();
-   }
-   MO.MUiDataset_onDsDoUpdate = function MUiDataset_onDsDoUpdate(g){
-      var o = this;
-      if(!g.invokeSuccess()){
-         o.psRefresh();
-      }
-      if(!g.processFinish){
-         o.focus();
-         o.lsnsUpdateEnd.process(g);
-      }
-      o.onLoadDatasetEnd();
-   }
-   MO.MUiDataset_onDsDelete = function MUiDataset_onDsDelete(g){
-      var o = this;
-      o.loadDatasets(g.resultDatasets);
-      o.doDelete(g.resultRow);
-      o.onLoadDatasetEnd();
-      o.focus();
-   }
-   MO.MUiDataset_onDsProcess = function MUiDataset_onDsProcess(g){
-      var o = this;
-      var cb = g.resultCallback;
-      if(cb){
-         cb.invoke(o, g);
-      }
-   }
-   MO.MUiDataset_oeDataLoad = function MUiDataset_oeDataLoad(p){
-      var o = this;
-      if(p.isBefore()){
-         var ds = p.source;
-         ds.selectDataset();
-         ds.selectRow();
-      }
-      return EEventStatus.Contine;
-   }
-   MO.MUiDataset_oeDataSave = function MUiDataset_oeDataSave(p){
-      var o = this;
-      if(p.isBefore()){
-         var ds = p.source;
-         ds.selectDataset();
-         ds.selectRow();
-      }
-      return EEventStatus.Contine;
-   }
-   MO.MUiDataset_oeDatasetLoad = function MUiDataset_oeDatasetLoad(p){
-      var o = this;
-      if(p.isBefore()){
-         var ds = p.datasets;
-         var d = ds.get(o._name);
-         o._dataset = d;
-         o.onDatasetLoad(d);
-      }
-      return EEventStatus.Contine;
-   }
-   MO.MUiDataset_construct = function MUiDataset_construct(){
-      var o = this;
-      o._dataViewer = new TDatasetViewer();
-   }
-   MO.MUiDataset_loadDataset = function MUiDataset_loadDataset(d){
-      var o = this;
-      o.dsStore = d;
-      d.saveViewer(o._dataViewer);
-      o.onLoadDataset(d);
-   }
-   MO.MUiDataset_loadDatasets = function MUiDataset_loadDatasets(p){
-      var o = this;
-      var c = p.count();
-      for(var i = 0; i < c; i++){
-         var d = p.value(n);
-         var dc = o.findByPath(d.name)
-         if(!dc){
-            return RMessage.fatal(o, null, 'Load dataset failed. (dataset={1}', d.name);
-         }
-         dc.loadDataset(d);
-      }
-   }
-   MO.MUiDataset_dsDatasetLoad = function MUiDataset_dsDatasetLoad(p){
-      var o = this;
-      var e = new TEventProcess(null, o, 'oeDatasetLoad', MUiDataset);
-      e.datasets = p;
-      o.process(e);
-      e.dispose();
-   }
-   MO.MUiDataset_toDeepAttributes = function MUiDataset_toDeepAttributes(a, m){
-      var o = this;
-      if(!a){
-         a = new TAttributes();
-      }
-      var ts = new TList();
-      var p = o;
-      while(p){
-         if(MO.Class.isClass(p, MUiDataset)){
-            ts.push(p);
-         }
-         if(!p.parent){
-            break;
-         }
-         p = p.topControl(MUiDataset);
-      }
-      for(var n=ts.count; n>=0; n--){
-         var p = ts.get(n);
-         if(MO.Class.isClass(p, FForm)){
-            p.toAttributes(a, m);
-         }else if(MO.Class.isClass(m, FTable)){
-            var r = p.getCurrentRow();
-            if(r){
-               r.toAttributes(a, m);
-            }
-         }
-      }
-      return a;
-   }
-   MO.MUiDataset_dsFetch = function MUiDataset_dsFetch(){
-      var o = this;
-      var g = new TDatasetFetchArg();
-      g.owner = o;
-      g.name = o._name;
-      g.callback = o.onDsFetch;
-      RConsole.find(FDatasetConsole).fetch(g);
-   }
-   MO.MUiDataset_dsInitialize = function MUiDataset_dsInitialize(){
-      this.callEvent('onFormInitialize', this, this.__initializeEvent);
-   }
-   MO.MUiDataset_dsShow = function MUiDataset_dsShow(){
-      this.callEvent('onFormShow', this, this.__showEvent);
-   }
-   MO.MUiDataset_dsLoaded = function MUiDataset_dsLoaded(){
-      this.callEvent('onDatasetLoaded', this, this.__loadedEvent);
-   }
-   MO.MUiDataset_dsSearch = function MUiDataset_dsSearch(s){
-      var o = this;
-      o.psProgress(true);
-      var tc = o.topControl();
-      var pth = o.fullPath();
-      if(s){
-         pth = s.fullPath();
-      }
-      var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, 0, true, false, pth);
-      g.mode = tc._emode;
-      g.searchs.append(o._dataGlobalSearchs);
-      g.searchs.append(o._dataSearchs);
-      g.orders.append(o._dataGlobalOrders);
-      g.orders.append(o._dataOrders);
-      o.toDeepAttributes(g.values);
-      g.values.append(o._dataValues);
-      g.callback = new TInvoke(o, o.onDsFetch);
-      RConsole.find(FDatasetConsole).fetch(g);
-   }
-   MO.MUiDataset_dsCopy = function MUiDataset_dsCopy(r){
-      var o = this;
-      o.psProgress(true);
-      o.psMode(EMode.Insert);
-      var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
-      g.form = o;
-      g.mode = EMode.Insert;
-      o._dataSearchs.clear();
-      o._dataSearchs.push(new TSearchItem('OUID', r.get("OUID")));
-      g.searchs = o._dataSearchs;
-      g.callback = new TInvoke(o, o.onDsCopy);
-      if(o.onDsUpdateCheck(g)){
-         RConsole.find(FDatasetConsole).fetch(g);
-      }
-      return;
-   }
-   MO.MUiDataset_dsPrepare = function MUiDataset_dsPrepare(cb){
-      var o = this;
-      o.psProgress(true);
-      o.psMode(EMode.Insert);
-      var g = new TDatasetPrepareArg(o.name, o.formId);
-      g.form = o;
-      g.values.append(o._dataValues);
-      g.callbackSuccess = cb;
-      if(o.onDsPrepareCheck(g)){
-         g.callback = new TInvoke(o, o.onDsPrepare);
-         RConsole.find(FDatasetConsole).prepare(g);
-      }
-   }
-   MO.MUiDataset_dsUpdate = function MUiDataset_dsUpdate(u, v){
-      var o = this;
-      o.psProgress(true);
-      o.psMode(EMode.Update);
-      o.dsFetch(true);
-   }
-   MO.MUiDataset_dsDoUpdate = function MUiDataset_dsDoUpdate(cb, ck){
-      var o = this;
-      if(!o.psValid()){
-         return;
-      }
-      var t = o.topControl();
-      var g = new TDatasetUpdateArg(t.name, o.formId, o.dsName);
-      g.form = o;
-      g.path = o.fullPath();
-      g.mode = o._emode;
-      g.codes = o.getDataCodes();
-      g.callback = new TInvoke(o, o.onDsDoUpdate);
-      g.callbackSuccess = cb;
-      if(EMode.Insert == o._emode || EMode.Delete == o._emode){
-         g.dataset.rows.append(o.getCurrentRows());
-      }else{
-         g.dataset.rows.append(o.getChangedRows());
-         if(!ck){
-            if(!g.hasData()){
-               return RMessage.warn(o, RContext.get('MUiDataset:nochange'));
-            }
-         }
-      }
-      o.psProgress(true);
-      RConsole.find(FDatasetConsole).update(g);
-   }
-   MO.MUiDataset_dsDelete = function MUiDataset_dsDelete(u, v){
-      var o = this;
-      o.psProgress(true);
-      o.psMode(EMode.Delete);
-      var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
-      g.callback = new TInvoke(o, o.onDsDelete);
-      g.form = o;
-      g.mode = EMode.Delete;
-      if(u){
-         g.searchs.push(new TSearchItem('OUID', u));
-      }
-      if(v){
-          g.searchs.push(new TSearchItem('OVER', v));
-      }
-      g.values = o._dataValues;
-      if(o.onDsDeleteCheck(g)){
-         RConsole.find(FDatasetConsole).fetch(g);
-      }
-      return;
-   }
-   MO.MUiDataset_dsMode = function MUiDataset_dsMode(m){
-      var o = this;
-      switch(m){
-         case EMode.Insert:
-            o.dsPrepare();
-            break;
-         case EMode.Update:
-            o.dsUpdate();
-            break;
-         case EMode.Delete:
-            o.dsDelete();
-            break;
-      }
-   }
-   MO.MUiDataset_dsProcess = function MUiDataset_dsProcess(da, cb){
-      var o = this;
-      if(!o.psValid()){
-         return;
-      }
-      var g = new TDatasetServiceArg(o.topControl().name, da);
-      g.form = o;
-      g.controlName = o.name;
-      o.toDeepAttributes(g.attributes);
-      g.codes = o.getDataCodes();
-      g.push(o.getCurrentRow());
-      g.resultCallback = cb;
-      o.psProgress(true);
-      g.callback = new TInvoke(o, o.onDsProcess);
-      RConsole.find(FFormConsole).process(g);
-   }
-   MO.MUiDataset_dsProcessCustom = function MUiDataset_dsProcessCustom(pm, da, cb, cc){
-   	var o = this;
-   	if(!cc){
-   	if(!o.psValid()){
-   	   return;
-   	}
-   	}
-   	var g = new TDatasetServiceArg(o.topControl().name, da);
-   	g.form = o;
-   	g.controlName = o.name;
-   	g.attributes = pm;
-   	g.codes = o.getDataCodes();
-   	g.push(o.getCurrentRow());
-   	g.resultCallback = cb;
-   	if(!cc){
-   	   if(!g.hasData()){
-   	      return RMessage.warn(o, RContext.get('MUiDataset:nodata'));
-   	   }
-   	}
-   	o.psProgress(true);
-   	g.callback = new TInvoke(o, o.onDsProcess);
-   	RConsole.find(FFormConsole).process(g);
-   }
-   MO.MUiDataset_dsProcessSelected = function MUiDataset_dsProcessSelected(da, cb){
-   	var o = this;
-   	if(!o.psValid()){
-   	   return;
-   	}
-   	   var g = new TDatasetServiceArg(o.topControl().name, da);
-   	   g.form = o;
-   	   g.controlName = o.name;
-   	   o.toDeepAttributes(g.attributes);
-   	   g.codes = o.getDataCodes();
-   	   g.rows = o.getSelectedRows();
-   	   if(g.rows.count > 0){
-   		  g.resultCallback = cb;
-   		  o.psProgress(true);
-   		  g.callback = new TInvoke(o, o.onDsProcess);
-   		  RConsole.find(FFormConsole).process(g);
-   		  o.clearSelectRows();
-   	   }else{
-   	      return RMessage.warn(o, RContext.get('MUiDataset:norows'));
-   	   }
-   }
-   MO.MUiDataset_dsProcessChanged = function MUiDataset_dsProcessChanged(da, cb){
-      var o = this;
-      if(!o.psValid()){
-         return;
-      }
-      var g = new TDatasetServiceArg(o.topControl().name, da);
-      g.form = o;
-      g.controlName = o.name;
-      o.toDeepAttributes(g.attributes);
-      g.codes = o.getDataCodes();
-      g.rows = o.getChangedRows();
-      g.resultCallback = cb;
-      if(!g.hasData()){
-         return RMessage.warn(o, RContext.get('MUiDataset:nochange'));
-      }
-      o.psProgress(true);
-      g.callback = new TInvoke(o, o.onDsProcess);
-      RConsole.find(FFormConsole).process(g);
-   }
-   MO.MUiDataset_dsProcessAll = function MUiDataset_dsProcessAll(da, cb){
-      var o = this;
-      if(!o.psValid()){
-         return;
-      }
-      var g = new TDatasetServiceArg(o.topControl().name, da);
-      g.form = o;
-      g.controlName = o.name;
-      o.toDeepAttributes(g.attributes);
-      g.codes = o.getDataCodes();
-      g.rows = o.getRows();
-      g.resultCallback = cb;
-      o.psProgress(true);
-      g.callback = new TInvoke(o, o.onDsProcess);
-      RConsole.find(FFormConsole).process(g);
-   }
-   MO.MUiDataset_psProgress = function MUiDataset_psProgress(v){
-      var o = this;
-      if(o.__progress == v){
-         return;
-      }
-      o.__progress = v;
-      var e = o.__progressProcess;
-      e.enable = v;
-      o.process(e);
-   }
-   MO.MUiDataset_psValid = function MUiDataset_psValid(){
-      var o = this;
-      var e = o.__validProcess;
-      var cs = e.controls;
-      cs.clear();
-      o.process(e);
-      if(!cs.isEmpty()){
-         var cw = RConsole.find(FCheckWindowConsole).find();
-         cw.set(cs);
-         cw.show();
-         return false;
-      }
-      return true;
-   }
-   MO.MUiDataset_dsIsChanged = function MUiDataset_dsIsChanged(){
-      var ds = this.dsStore;
-      return ds ? ds.isChanged() : false;
-   }
-   MO.MUiDataset_dsCount = function MUiDataset_dsCount(){
-      return this.dsStore ? this.dsStore.count : 0;
-   }
-   MO.MUiDataset_dsCurrent = function MUiDataset_dsCurrent(){
-      var o = this;
-      var ds = o.dsStore;
-   }
-   MO.MUiDataset_dsMove = function MUiDataset_dsMove(p){
-      var o = this;
-      var ds = o.dsStore;
-      if(null == p && !ds){
-         return;
-      }
-      if(!RInt.isInt(p)){
-         if(EDataAction.First == p){
-            ds.moveFirst();
-         }else if(EDataAction.Prior == p){
-            ds.movePrior();
-         }else if(EDataAction.Next == p){
-            ds.moveNext();
-         }else if(EDataAction.Last == p){
-            ds.moveLast();
-         }else{
-            RMessage.fatal(o, null, 'Unknown position (postion={0})', p);
-         }
-      }else{
-         ds.move(p);
-      }
-      if(MO.Class.isClass(o, MValue)){
-         o.loadValue(ds.current());
-      }
-   }
-   MO.MUiDataset_dsMovePage = function MUiDataset_dsMovePage(p){
-      var o = this;
-      var ds = o.dsStore;
-      if(!RInt.isInt(p)){
-         if(EDataAction.First == p){
-            p = 0;
-         }else if(EDataAction.Prior == p){
-            p = ds.pageIndex;
-            if(p > 0){
-               p--;
-            }
-         }else if(EDataAction.Next == p){
-            p = ds.pageIndex;
-            if(p < ds.pageCount - 1){
-               p++;
-            }
-         }else if(EDataAction.Last == p){
-            p = ds.pageCount - 1;
-         }else{
-            RMessage.fatal(o, null, 'Unknown page (page={0})', p);
-         }
-      }
-      if(p != ds.pageIndex){
-         o.psProgress(true);
-         var t = o.topControl(MUiDataset);
-         var g = new TDatasetFetchArg(t.name, t.formId, o.dsPageSize, p, true);
-         g.path =  o.fullPath();
-         g.mode = t._emode;
-         g.searchs.append(o._dataGlobalSearchs);
-         g.searchs.append(o._dataSearchs);
-         g.orders.append(o._dataGlobalOrders);
-         g.orders.append(o._dataOrders);
-         g.values = o.toDeepAttributes();
-         g.values.append(o._dataValues);
-         g.callback = new TInvoke(o, o.onDsFetch);
-         RConsole.find(FDatasetConsole).fetch(g);
-      }
-   }
-   MO.MUiDataset_dsGet = function MUiDataset_dsGet(n){
-      return this.dsStore ? this.dsStore.get(n) : '';
-   }
-   MO.MUiDataset_dsSet = function MUiDataset_dsSet(n, v){
-      if(this.dsStore){
-         this.dsStore.set(n, v);
-      }
-   }
-   MO.MUiDataset_dsRefresh = function MUiDataset_dsRefresh(){
-      if(this._dsService){
-         this.dsMove(this.dsPage, true);
-      }
-   }
-   MO.MUiDataset_doSearch = function MUiDataset_doSearch(){
-      var o = this;
-      var sw = o.dsSearchWindow;
-      if(!sw){
-         sw = o.dsSearchWindow = top.RControl.create(top.FSearchWindow);
-         sw.linkDsControl(o);
-      }
-      sw.show();
    }
 }
 with(MO){
@@ -59483,121 +59776,6 @@ with(MO){
       e.arg = g;
       e.action = EDataAction.TreeUpdate;
       RConsole.find(FXmlConsole).process(e);
-   }
-}
-with(MO){
-   MO.FDataSource = function FDataSource(o){
-      o = MO.Class.inherits(this, o, FObject);
-      o._currentRow     = null;
-      o._currentDataset = null;
-      o._datasets       = null;
-      o.construct       = FDataSource_construct;
-      o.selectDataset   = FDataSource_selectDataset;
-      o.currentDataset  = FDataSource_currentDataset;
-      o.selectRow       = FDataSource_selectRow;
-      o.currentRow      = FDataSource_currentRow;
-      return o;
-   }
-   MO.FDataSource_construct = function FDataSource_construct(){
-      var o = this;
-      o.__base.FObject.construct.call(o);
-      o._datasets = new TDictionary();
-   }
-   MO.FDataSource_selectDataset = function FDataSource_selectDataset(p){
-      var o = this;
-      var dn = MO.Lang.String.nvl(p, 'default');
-      var d = o._datasets.get(dn);
-      if(d == null){
-         d = new TDataset();
-         d._name = dn;
-         o._datasets.set(dn, d);
-      }
-      o._currentDataset = d;
-   }
-   MO.FDataSource_currentDataset = function FDataSource_currentDataset(){
-      return this._currentDataset;
-   }
-   MO.FDataSource_selectRow = function FDataSource_selectRow(p){
-      var o = this;
-      if(p){
-         o._currentRow = p;
-         return;
-      }
-      var d = o._currentDataset;
-      var r = d.rows().first();
-      if(r == null){
-         r = d.createRow();
-      }
-      o._currentRow = r;
-      return r;
-   }
-   MO.FDataSource_currentRow = function FDataSource_currentRow(){
-      return this._currentRow;
-   }
-   MO.FDataSource_create = function FDataSource_create(c){
-      return this.dataset.create(c);
-   }
-   MO.FDataSource_count = function FDataSource_count(){
-      return this.dataset.count;
-   }
-   MO.FDataSource_row = function FDataSource_row(n){
-      return this.dataset.get(n);
-   }
-   MO.FDataSource_current = function FDataSource_current(){
-      return this.row(this._position);
-   }
-   MO.FDataSource_isChanged = function FDataSource_isChanged(){
-      var o = this;
-      var d = o.dataset;
-      for(var n=0; n<d.count; n++){
-         var r = d.get(n);
-         if(r && r.isSave()){
-            return true;
-         }
-      }
-      return false;
-   }
-   MO.FDataSource_get = function FDataSource_get(n){
-      var r = this.current();
-      return r ? r.get(n) : '';
-   }
-   MO.FDataSource_set = function FDataSource_set(n, v){
-      var r = this.current();
-      if(r){
-         r.set(n, v);
-      }
-   }
-   MO.FDataSource_move = function FDataSource_move(p){
-      this._position = p;
-   }
-   MO.FDataSource_moveToRow = function FDataSource_moveToRow(row){
-      var p = this.dataset.indexOf(row);
-      if(-1 != p){
-         this._position = p;
-      }
-   }
-   MO.FDataSource_find = function FDataSource_find(){
-      return this.dataset.findByArgs(arguments);
-   }
-   MO.FDataSource_loadNode = function FDataSource_loadNode(config){
-      if(config && config.nodes){
-         var nodes = config.nodes;
-         for(var n=0; n<nodes.count; n++){
-            var node = nodes.get(n);
-            if(node && node.isName('Row')){
-               var row = this.dataset.create();
-               row.loadNode(node);
-               row.store();
-            }
-         }
-      }
-   }
-   MO.FDataSource_dump = function FDataSource_dump(s){
-      var o = this;
-      s = RString.nvlStr(s);
-      s.appendLine(RClass.dump(o));
-      o.dataset.dump(s);
-      return s;
    }
 }
 with(MO){
@@ -75654,6 +75832,7 @@ MO.EEditorFrameSet = new function EEditorFrameSet(){
    o.ListFrameSet        = 'editor.design.list.FrameSet';
    o.TreeFrameSet        = 'editor.design.tree.FrameSet';
    o.FrameFrameSet       = 'editor.design.frame.FrameSet';
+   o.DatasetFrameSet     = 'editor.design.dataset.FrameSet';
    return o;
 }
 MO.FEditorCanvas = function FEditorCanvas(o){
@@ -76247,6 +76426,7 @@ MO.FEditorDsWorkspace_onBuilded = function FEditorDsWorkspace_onBuilded(event){
    o._controlListButton.addClickListener(o, o.onSliderButtonClick);
    o._controlTreeButton.addClickListener(o, o.onSliderButtonClick);
    o._controlFrameButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlDatasetButton.addClickListener(o, o.onSliderButtonClick);
    var hTitleForm = MO.Window.Builder.appendTable(o._frameMenuBar._hPanel, o.styleName('Title_Panel'));
    var hTitleLine = MO.Window.Builder.appendTableRow(hTitleForm);
    var hTitleCell = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Title_Logo'));
@@ -76287,6 +76467,9 @@ MO.FEditorDsWorkspace_onSliderButtonClick = function FEditorDsWorkspace_onSlider
       case 'frameButton':
          o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
          break;
+      case 'datasetButton':
+         o.selectFrameSet(MO.EEditorFrameSet.DatasetFrameSet);
+         break;
       default:
          throw new TError(o, 'Invalid click.');
    }
@@ -76308,6 +76491,8 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsTreeFrameSet);
       }else if(name == MO.EEditorFrameSet.FrameFrameSet){
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsFrameFrameSet);
+      }else if(name == MO.EEditorFrameSet.DatasetFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FEditorDsDatasetFrameSet);
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
@@ -76336,6 +76521,9 @@ MO.FEditorDsWorkspace_selectFrameSet = function FEditorDsWorkspace_selectFrameSe
       case MO.EEditorFrameSet.FrameFrameSet:
          frameSet.load();
          break;
+      case MO.EEditorFrameSet.DatasetFrameSet:
+         frameSet.load();
+         break;
       default:
          throw new TError('Unknown frameset. (name={1})', name);
    }
@@ -76357,6 +76545,8 @@ MO.FEditorDsWorkspace_load = function FEditorDsWorkspace_load(){
       o.selectFrameSet(MO.EEditorFrameSet.TreeFrameSet);
    }else if(code == MO.EEditorFrameSet.FrameFrameSet){
       o.selectFrameSet(MO.EEditorFrameSet.FrameFrameSet);
+   }else if(code == MO.EEditorFrameSet.DatasetFrameSet){
+      o.selectFrameSet(MO.EEditorFrameSet.DatasetFrameSet);
    }else{
    }
 }
@@ -77335,6 +77525,74 @@ MO.FEditorDsFrameSpaceToolBar_dispose = function FEditorDsFrameSpaceToolBar_disp
    var o = this;
    o.__base.FDuiToolBar.dispose.call(o);
 }
+MO.FEditorDsDatasetCatalogContent = function FEditorDsDatasetCatalogContent(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsCatalogContent);
+   o._defineCode = 'editor.design.dataset';
+   return o;
+}
+MO.FEditorDsDatasetCatalogToolBar = function FEditorDsDatasetCatalogToolBar(o){
+   o = MO.Class.inherits(this, o, MO.FDuiToolBar);
+   o._frameName  = 'editor.design.dataset.CatalogToolBar';
+   o.onListClick = MO.FEditorDsDatasetCatalogToolBar_onListClick;
+   o.onBuilded   = MO.FEditorDsDatasetCatalogToolBar_onBuilded;
+   o.construct   = MO.FEditorDsDatasetCatalogToolBar_construct;
+   o.dispose     = MO.FEditorDsDatasetCatalogToolBar_dispose;
+   return o;
+}
+MO.FEditorDsDatasetCatalogToolBar_onListClick = function FEditorDsDatasetCatalogToolBar_onListClick(event){
+   this._frameSet.selectObject('editor.design.list.ListForm');
+}
+MO.FEditorDsDatasetCatalogToolBar_onBuilded = function FEditorDsDatasetCatalogToolBar_onBuilded(p){
+   var o = this;
+   o.__base.FDuiToolBar.onBuilded.call(o, p);
+   o._controlList.addClickListener(o, o.onListClick);
+}
+MO.FEditorDsDatasetCatalogToolBar_construct = function FEditorDsDatasetCatalogToolBar_construct(){
+   var o = this;
+   o.__base.FDuiToolBar.construct.call(o);
+}
+MO.FEditorDsDatasetCatalogToolBar_dispose = function FEditorDsDatasetCatalogToolBar_dispose(){
+   var o = this;
+   o.__base.FDuiToolBar.dispose.call(o);
+}
+MO.FEditorDsDatasetFrameSet = function FEditorDsDatasetFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FEditorDsFrameSet);
+   o._frameName = 'editor.design.dataset.FrameSet';
+   o.onBuilded  = MO.FEditorDsDatasetFrameSet_onBuilded;
+   o.construct  = MO.FEditorDsDatasetFrameSet_construct;
+   o.dispose    = MO.FEditorDsDatasetFrameSet_dispose;
+   return o;
+}
+MO.FEditorDsDatasetFrameSet_onBuilded = function FEditorDsDatasetFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FEditorDsFrameSet.onBuilded.call(o, event);
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
+   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._framePropertyTitle._hPanel.className = o.styleName('Title_Ground');
+   o._framePropertyToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._framePropertyContent._hPanel.className = o.styleName('Property_Content');
+   var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
+   spliter.setAlignCd(MO.EUiAlign.Left);
+   spliter.setSizeHtml(o._frameCatalog._hPanel);
+   var control = o._catalogToolbar = MO.Class.create(MO.FEditorDsDatasetCatalogToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogToolBar.push(control);
+   var control = o._catalogContent = MO.Class.create(MO.FEditorDsDatasetCatalogContent);
+   control._frameSet = o;
+   control.build(event);
+   o._frameCatalogContent.push(control);
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '数据集合');
+}
+MO.FEditorDsDatasetFrameSet_construct = function FEditorDsDatasetFrameSet_construct(){
+   var o = this;
+   o.__base.FEditorDsFrameSet.construct.call(o);
+}
+MO.FEditorDsDatasetFrameSet_dispose = function FEditorDsDatasetFrameSet_dispose(){
+   var o = this;
+   o.__base.FEditorDsFrameSet.dispose.call(o);
+}
 MO.EManageFrame = new function EManageFrame(){
    var o = this;
    return o;
@@ -77416,7 +77674,7 @@ MO.FManageCatalogToolBar_dispose = function FManageCatalogToolBar_dispose(){
    o.__base.FDuiToolBar.dispose.call(o);
 }
 MO.FManageDataForm = function FManageDataForm(o){
-   o = MO.Class.inherits(this, o, MO.FDuiForm);
+   o = MO.Class.inherits(this, o, MO.FDuiFormFrame);
    o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
    o._itemName      = MO.Class.register(o, new MO.AGetSet('_itemName'));
    o.onButtonClick  = MO.FManageDataForm_onButtonClick;
@@ -77457,7 +77715,7 @@ MO.FManageDataForm_onButtonClick = function FManageDataForm_onButtonClick(event)
 }
 MO.FManageDataForm_onBuilded = function FManageDataForm_onBuilded(event){
    var o = this;
-   o.__base.FDuiForm.onBuilded.call(o, event);
+   o.__base.FDuiFormFrame.onBuilded.call(o, event);
    var buttons = new MO.TObjects();
    o.searchComponents(buttons, MO.MUiToolButton);
    o.searchComponents(buttons, MO.MUiMenuButton);
@@ -77469,7 +77727,7 @@ MO.FManageDataForm_onBuilded = function FManageDataForm_onBuilded(event){
 }
 MO.FManageDataForm_onDataChanged = function FManageDataForm_onDataChanged(event){
    var o  = this;
-   o.__base.FDuiForm.onDataChanged.call(o, event);
+   o.__base.FDuiFormFrame.onDataChanged.call(o, event);
 }
 MO.FManageDataForm_onDataLoad = function FManageDataForm_onDataLoad(event){
    var o = this;
@@ -77508,26 +77766,11 @@ MO.FManageDataForm_onDataDelete = function FManageDataForm_onDataDelete(event){
 }
 MO.FManageDataForm_construct = function FManageDataForm_construct(){
    var o = this;
-   o.__base.FDuiForm.construct.call(o);
+   o.__base.FDuiFormFrame.construct.call(o);
 }
-MO.FManageDataForm_doPrepare = function FManageDataForm_doPrepare(parameters){
+MO.FManageDataForm_doPrepare = function FManageDataForm_doPrepare(){
    var o = this;
-   var logicGroup = o._logicGroup = parameters.get('logic_group');
-   var containerName = null;
-   var itemName = null;
-   if(logicGroup != 'container'){
-      var catalog = o._frameSet._catalogContent;
-      containerName = catalog.containerName();
-      itemName = catalog.itemName();
-   }
-   var frameName = parameters.get('frame_name');
-   var frame = o._frameSet.selectObject(frameName);
-   frame.dataPrepare();
-   var control = frame.searchComponent('componentType');
-   var componentType = parameters.get('component_type');
-   control.set(componentType);
-   frame.setContainerName(containerName);
-   frame.setItemName(itemName);
+   o.dataPrepare();
 }
 MO.FManageDataForm_doLoad = function FManageDataForm_doLoad(typeGroup, containerName, itemName){
    var o = this;
@@ -77540,10 +77783,14 @@ MO.FManageDataForm_doLoad = function FManageDataForm_doLoad(typeGroup, container
 }
 MO.FManageDataForm_doSave = function FManageDataForm_doSave(){
    var o = this;
+   var dataSource = MO.Class.create(MO.FDataSource);
+   o.dsSaveSource(dataSource);
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
-   o.saveUnit(xroot.create('Content'));
+   dataSource.saveConfig(xroot.create('Content'));
+   alert(xroot.xml());
+   return;
    var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataActionCd, o._logicGroup, o._containerName, o._itemName);
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataSave);
@@ -77555,10 +77802,10 @@ MO.FManageDataForm_doDelete = function FManageDataForm_doDelete(){
 }
 MO.FManageDataForm_dispose = function FManageDataForm_dispose(){
    var o = this;
-   o.__base.FDuiForm.dispose.call(o);
+   o.__base.FDuiFormFrame.dispose.call(o);
 }
 MO.FManageDataTable = function FManageDataTable(o){
-   o = MO.Class.inherits(this, o, MO.FDuiTable);
+   o = MO.Class.inherits(this, o, MO.FDuiTableFrame);
    o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
    o._itemName      = MO.Class.register(o, new MO.AGetSet('_itemName'));
    o.onButtonClick  = MO.FManageDataTable_onButtonClick;
@@ -77599,7 +77846,7 @@ MO.FManageDataTable_onButtonClick = function FManageDataTable_onButtonClick(even
 }
 MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
    var o = this;
-   o.__base.FDuiTable.onBuilded.call(o, event);
+   o.__base.FDuiTableFrame.onBuilded.call(o, event);
    var buttons = new MO.TObjects();
    o.searchComponents(buttons, MO.MUiToolButton);
    o.searchComponents(buttons, MO.MUiMenuButton);
@@ -77611,7 +77858,7 @@ MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
 }
 MO.FManageDataTable_onDataChanged = function FManageDataTable_onDataChanged(event){
    var o  = this;
-   o.__base.FDuiTable.onDataChanged.call(o, event);
+   o.__base.FDuiTableFrame.onDataChanged.call(o, event);
 }
 MO.FManageDataTable_onDataLoad = function FManageDataTable_onDataLoad(event){
    var o = this;
@@ -77650,7 +77897,7 @@ MO.FManageDataTable_onDataDelete = function FManageDataTable_onDataDelete(event)
 }
 MO.FManageDataTable_construct = function FManageDataTable_construct(){
    var o = this;
-   o.__base.FDuiTable.construct.call(o);
+   o.__base.FDuiTableFrame.construct.call(o);
 }
 MO.FManageDataTable_doPrepare = function FManageDataTable_doPrepare(parameters){
    var o = this;
@@ -77697,7 +77944,7 @@ MO.FManageDataTable_doDelete = function FManageDataTable_doDelete(){
 }
 MO.FManageDataTable_dispose = function FManageDataTable_dispose(){
    var o = this;
-   o.__base.FDuiTable.dispose.call(o);
+   o.__base.FDuiTableFrame.dispose.call(o);
 }
 MO.FManageFrameDefineConsole = function FManageFrameDefineConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole);
@@ -77860,6 +78107,8 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    o._frameSpace           = null;
    o._frameSpaceToolbar    = null;
    o._frameSpaceContent    = null;
+   o._activeFrame          = MO.Class.register(o, new MO.AGetSet('_activeFrame'));
+   o.onBuilded             = MO.FManageFrameSet_onBuilded;
    o.construct             = MO.FManageFrameSet_construct;
    o.setFrameTitle         = MO.FManageFrameSet_setFrameTitle;
    o.findSpaceFrame        = MO.FManageFrameSet_findSpaceFrame;
@@ -77869,6 +78118,16 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    o.load                  = MO.FManageFrameSet_load;
    o.dispose               = MO.FManageFrameSet_dispose;
    return o;
+}
+MO.FManageFrameSet_onBuilded = function FManageFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FDuiFrameSet.onBuilded.call(o, event);
+   var control = o._spaceToolBar = MO.Class.create(MO.FManageSpaceToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   control.setVisible(false);
+   o._frameSpaceToolBar.push(control);
 }
 MO.FManageFrameSet_construct = function FManageFrameSet_construct(){
    var o = this;
@@ -77907,19 +78166,14 @@ MO.FManageFrameSet_selectSpaceFrame = function FManageFrameSet_selectSpaceFrame(
       frame = o.findSpaceFrame(frameName);
       frame.show();
    }
-   o._activeSpaceFrame = frame;
+   o._activeFrame = frame;
    return frame;
 }
 MO.FManageFrameSet_selectObject = function FManageFrameSet_selectObject(frameName){
    var o = this;
    var frame = o.selectSpaceFrame(frameName);
    o.setFrameTitle(frame.label());
-   var hToolBarPanel = o._frameSpaceToolBar._hPanel;
-   MO.Window.Html.clear(hToolBarPanel);
-   var toolBar = frame.findControl('toolBar');
-   if(toolBar){
-      toolBar.setPanel(hToolBarPanel);
-   }
+   o._spaceToolBar.setVisible(true);
    return frame;
 }
 MO.FManageFrameSet_load = function FManageFrameSet_load(){
@@ -77929,6 +78183,53 @@ MO.FManageFrameSet_dispose = function FManageFrameSet_dispose(){
    var o = this;
    o._spaceFrames = MO.Lang.Object.dispose(o._spaceFrames, true);
    o.__base.FDuiFrameSet.dispose.call(o);
+}
+MO.FManageSpaceToolBar = function FManageSpaceToolBar(o){
+   o = MO.Class.inherits(this, o, MO.FDuiToolBar);
+   o._frameName     = 'manage.logic.SpaceToolBar';
+   o.onInsertClick  = MO.FManageSpaceToolBar_onInsertClick;
+   o.onUpdateClick  = MO.FManageSpaceToolBar_onUpdateClick;
+   o.onDeleteClick  = MO.FManageSpaceToolBar_onDeleteClick;
+   o.onSearchClick  = MO.FManageSpaceToolBar_onSearchClick;
+   o.onBuilded      = MO.FManageSpaceToolBar_onBuilded;
+   o.construct      = MO.FManageSpaceToolBar_construct;
+   o.dispose        = MO.FManageSpaceToolBar_dispose;
+   return o;
+}
+MO.FManageSpaceToolBar_onInsertClick = function FManageSpaceToolBar_onInsertClick(event){
+   var o = this;
+   var frame = o._frameSet.activeFrame();
+   if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+      var itemFrameName = frame.itemFrameName();
+      MO.Assert.debugNotEmpty(itemFrameName);
+      var itemFrame = o._frameSet.selectSpaceFrame(itemFrameName);
+      itemFrame.doPrepare();
+   }
+}
+MO.FManageSpaceToolBar_onUpdateClick = function FManageSpaceToolBar_onUpdateClick(event){
+   var o = this;
+   var frame = o._frameSet.activeFrame();
+   frame.doSave();
+}
+MO.FManageSpaceToolBar_onDeleteClick = function FManageSpaceToolBar_onDeleteClick(event){
+   var o = this;
+   var frame = o._frameSet.activeFrame();
+   frame.doDelete();
+}
+MO.FManageSpaceToolBar_onBuilded = function FManageSpaceToolBar_onBuilded(p){
+   var o = this;
+   o.__base.FDuiToolBar.onBuilded.call(o, p);
+   o._controlInsert.addClickListener(o, o.onInsertClick);
+   o._controlUpdate.addClickListener(o, o.onUpdateClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
+}
+MO.FManageSpaceToolBar_construct = function FManageSpaceToolBar_construct(){
+   var o = this;
+   o.__base.FDuiToolBar.construct.call(o);
+}
+MO.FManageSpaceToolBar_dispose = function FManageSpaceToolBar_dispose(){
+   var o = this;
+   o.__base.FDuiToolBar.dispose.call(o);
 }
 MO.FManageWorkspace = function FManageWorkspace(o){
    o = MO.Class.inherits(this, o, MO.FDuiWorkspace, MO.MUiStorage);
@@ -78089,7 +78390,7 @@ MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilde
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(MO.EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
-   var control = o._catalogToolbar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
+   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
