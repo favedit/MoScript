@@ -1938,6 +1938,19 @@ MO.MUiDataContainer_oeSaveDataSource = function MUiDataContainer_oeSaveDataSourc
       var source = event.source;
       o._activeDataset = source.selectDataset(o._dsName);
       var row = source.selectRow();
+      switch(o._dataActionCd){
+         case MO.EUiDataAction.Insert:
+            row._statusCd = MO.EDataStatus.Insert;
+            break;
+         case MO.EUiDataAction.Update:
+            row._statusCd = MO.EDataStatus.Update;
+            break;
+         case MO.EUiDataAction.Delete:
+            row._statusCd = MO.EDataStatus.Delete;
+            break;
+         default:
+            throw new TError(o, 'Invalid data action.');
+      }
       o.saveUnit(row);
    }
    return MO.EEventStatus.Contine;

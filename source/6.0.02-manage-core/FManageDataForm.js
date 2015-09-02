@@ -207,6 +207,8 @@ MO.FManageDataForm_doDetail = function FManageDataForm_doDetail(row){
    xcontent.set('frame_name', o._name);
    var xrow = xcontent.create('Row');
    row.saveDataRow(xrow);
+   // 数据更新
+   o.dataModify();
    // 发送请求
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=detail');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
@@ -280,6 +282,7 @@ MO.FManageDataForm_doDelete = function FManageDataForm_doDelete(){
    // 禁止处理
    o._dataActionCd = MO.EUiDataAction.Delete;
    // 存储处理
+   o.dataErase();
    o.doSave();
 }
 

@@ -37,6 +37,7 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    o.cell           = MO.FDuiGridRowControl_cell;
    o.push           = MO.FDuiGridRowControl_push;
    o.select         = MO.FDuiGridRowControl_select;
+   o.refreshStyle   = MO.FDuiGridRowControl_refreshStyle;
    // @method
    o.loadDataRow    = MO.FDuiGridRowControl_loadDataRow;
    o.saveDataRow    = MO.FDuiGridRowControl_saveDataRow;
@@ -87,7 +88,6 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    //o.doDelete         = FDuiGridRowControl_doDelete;
    //o.refresh          = FDuiGridRowControl_refresh;
    //o.refreshSize      = RMethod.empty;
-   //o.refreshStyle     = FDuiGridRowControl_refreshStyle;
    //o.dump             = FDuiGridRowControl_dump;
    return o;
 }
@@ -226,6 +226,23 @@ MO.FDuiGridRowControl_select = function FDuiGridRowControl_select(value){
    o._hPanel.style.backgroundColor = value ? EColor._rowselect : EColor.Row;
    // 刷新所有单元格颜色
    o.refreshStyle();
+}
+
+//==========================================================
+// <T>刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiGridRowControl_refreshStyle = function FDuiGridRowControl_refreshStyle(){
+   var o = this;
+   var cells = o._cells;
+   if(cells){
+      var count = cells.count();
+      for(var i = 0; i < count; i++){
+         var cell = cells.at(i);
+         cell.refreshStyle();
+      }
+   }
 }
 
 //==========================================================
@@ -499,21 +516,6 @@ MO.FDuiGridRowControl_doDelete = function FDuiGridRowControl_doDelete(){
 MO.FDuiGridRowControl_refresh = function FDuiGridRowControl_refresh(){
    var o = this;
    o.table.setDataStatus(o, o.isDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
-}
-
-//==========================================================
-// <T>刷新样式。</T>
-//
-// @method
-//==========================================================
-MO.FDuiGridRowControl_refreshStyle = function FDuiGridRowControl_refreshStyle(){
-   var o = this;
-   var cs = o._cells;
-   if(cs){
-      for(var n=cs.count-1; n>=0; n--){
-         cs.value(n).refreshStyle();
-      }
-   }
 }
 
 //==========================================================

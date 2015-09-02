@@ -191,32 +191,32 @@ MO.FDuiCell_focus = function FDuiCell_focus(value){
 //==========================================================
 MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
    var o = this;
-   var t = o._table;
-   var r = o._row;
-   var s = r.isSelect;
+   var table = o._table;
+   var row = o._row;
+   var s = row.isSelect;
    // 设置编辑颜色
-   var he = o._hEdit;
-   if(he){
-      he.readOnly = true;
-      he.style.color = EColor.TextReadonly;
-      he.style.backgroundColor = bc;
-   }
+   //var he = o._hEdit;
+   //if(he){
+   //   he.readOnly = true;
+   //   he.style.color = EColor.TextReadonly;
+   //   he.style.backgroundColor = bc;
+   //}
    // 设置背景颜色
-   var bc = null;
-   if(s){
-      bc = EColor._rowSelect;
-   }else{
-      var ih = (t.__hoverRow == r);
-      if(ih){
-         bc = EColor._rowHover;
-      }else{
-         bc = EColor._rows[r.index % EColor._rows.length];
-      }
-   }
-   if(o.__focus){
-      bc = EColor._rowEditHover;
-   }
-   o._hPanel.style.backgroundColor = bc;
+   //var bc = null;
+   //if(s){
+   //   bc = EColor._rowSelect;
+   //}else{
+   //   var ih = (table.__hoverRow == row);
+   //   if(ih){
+   //      bc = EColor._rowHover;
+   //   }else{
+   //      bc = EColor._rows[row.index % EColor._rows.length];
+   //   }
+   //}
+   //if(o.__focus){
+   //   bc = EColor._rowEditHover;
+   //}
+   //o._hPanel.style.backgroundColor = bc;
 }
 
 //==========================================================

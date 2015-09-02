@@ -1972,6 +1972,7 @@ MO.FManageDataForm_doDetail = function FManageDataForm_doDetail(row){
    xcontent.set('frame_name', o._name);
    var xrow = xcontent.create('Row');
    row.saveDataRow(xrow);
+   o.dataModify();
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=detail');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataDetail);
@@ -2006,6 +2007,7 @@ MO.FManageDataForm_doSave = function FManageDataForm_doSave(){
 MO.FManageDataForm_doDelete = function FManageDataForm_doDelete(){
    var o = this;
    o._dataActionCd = MO.EUiDataAction.Delete;
+   o.dataErase();
    o.doSave();
 }
 MO.FManageDataForm_dispose = function FManageDataForm_dispose(){
@@ -2081,7 +2083,9 @@ MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
    var xcontent = xservice.findNode('Content');
    var source = MO.Class.create(MO.FDataSource);
    source.loadConfig(xcontent);
-   o.loadDataset(source.currentDataset());
+   var dataset = source.currentDataset();
+   o.clearRows();
+   o.loadDataset(dataset);
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
 MO.FManageDataTable_onDataSave = function FManageDataTable_onDataSave(event){

@@ -56,6 +56,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._columns                 = null;
    o._rowClass                = MO.FDuiGridRow;
    o._rows                    = null;
+   o._rowPool                 = null;
    // @attribute
    o._focusCell               = null;
    o._focusRow                = null;
@@ -101,10 +102,14 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.push                     = MO.FDuiGridControl_push;
    // @method
    o.createRow                = MO.FDuiGridControl_createRow;
+   o.dropRow                  = MO.FDuiGridControl_dropRow;
+   // @method
    o.insertRow                = MO.FDuiGridControl_insertRow;
    o.pushRow                  = MO.FDuiGridControl_pushRow;
+   o.removeRow                = MO.FDuiGridControl_removeRow;
    o.syncRow                  = MO.FDuiGridControl_syncRow;
    o.hideRows                 = MO.FDuiGridControl_hideRows;
+   o.clearRows                = MO.FDuiGridControl_clearRows;
    // @method
    o.loadDataset              = MO.FDuiGridControl_loadDataset;
    // @method
@@ -113,6 +118,8 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.doubleClickRow           = MO.FDuiGridControl_doubleClickRow;
    o.hoverRow                 = MO.FDuiGridControl_hoverRow;
    o.selectRow                = MO.FDuiGridControl_selectRow;
+   // @method
+   o.dispose                  = MO.FDuiGridControl_dispose;
 
 
 
@@ -233,7 +240,6 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    //o.setButtonVisible       = FDuiGridControl_setButtonVisible;
    //o.hasVisibleRow          = FDuiGridControl_hasVisibleRow
    //o.refreshStyle           = FDuiGridControl_refreshStyle;
-   //o.dispose                = FDuiGridControl_dispose;
    //o.dump                   = FDuiGridControl_dump;
    // ---------------------------------------------------------
    //o.onColumnTreeClick      = MO.Class.register(o, new MO.AEventClick('onColumnTreeClick'), FDuiGridControl_onColumnTreeClick);
@@ -245,7 +251,6 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    //o.buildRows              = FDuiGridControl_buildRows;
    //o.appendRow              = FDuiGridControl_appendRow;
    //o.deleteRow              = FDuiGridControl_deleteRow;
-   //o.clearRows              = FDuiGridControl_clearRows;
    //o.getRowType             = FDuiGridControl_getRowType;
    //o.setStyleStatus         = FDuiGridControl_setStyleStatus;
    return o;
@@ -579,6 +584,7 @@ MO.FDuiGridControl_construct = function FDuiGridControl_construct() {
    o._buttons = new MO.TDictionary();
    o._columns = new MO.TDictionary();
    o._rows = new MO.TObjects();
+   o._rowPool = MO.Class.create(MO.FObjectPool);
    // 建立监听
    o.lsnsRowClick = new MO.TListeners();
    o.lsnsRowDblClick = new MO.TListeners();
@@ -671,14 +677,37 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(component){
 // <P>当前行并没有被放入表格中。</P>
 //
 // @method
+// @param clazz:Function 类对象
 // @return FDuiGridRowControl 行控件
 //==========================================================
-MO.FDuiGridControl_createRow = function FDuiGridControl_createRow(){
+MO.FDuiGridControl_createRow = function FDuiGridControl_createRow(clazz){
    var o = this;
-   var row = MO.Class.create(o._rowClass);
-   row._table = row._parent = o;
-   row.build(o._hPanel);
+   var row = o._rowPool.alloc();
+   if(!row){
+      var rowClass = MO.Runtime.nvl(clazz, o._rowClass);
+      row = MO.Class.create(rowClass);
+      row._table = row._parent = o;
+      row.build(o._hPanel);
+   }
    return row;
+}
+
+//==========================================================
+// <T>删除一个行对象。</T>
+// <P>从网格中脱离，但并没有离开行集合。</P>
+//
+// @method
+// @param row:FDuiGridRowControl 行对象
+//==========================================================
+MO.FDuiGridControl_dropRow = function FDuiGridControl_dropRow(row){
+   var o = this;
+   // 删除固定行
+   var hFixPanel = row._hFixPanel;
+   if(hFixPanel){
+      o._hFixRows.removeChild(hFixPanel);
+   }
+   // 删除动态行
+   o._hRows.removeChild(row._hPanel);
 }
 
 //==========================================================
@@ -704,7 +733,7 @@ MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(index, row){
 }
 
 //==========================================================
-// <T>在指定位置插入一个空行。</T>
+// <T>增加一个网格行。</T>
 //
 // @method
 // @param row:FDuiGridRowControl 行对象
@@ -718,8 +747,23 @@ MO.FDuiGridControl_pushRow = function FDuiGridControl_pushRow(row){
    }
    o._hRows.appendChild(row._hPanel);
    row._hPanel.style.height = hFixPanel.offsetHeight + 'px';
-   //row.refreshStyle();
+   // 刷新样式
+   row.refreshStyle();
+   // 增加集合
    o._rows.push(row);
+}
+
+//==========================================================
+// <T>移除一个网格行。</T>
+//
+// @method
+// @param row:FDuiGridRowControl 行对象
+//==========================================================
+MO.FDuiGridControl_removeRow = function FDuiGridControl_removeRow(row){
+   var o = this;
+   MO.Assert.debugNotNull(row);
+   o.dropRow(row);
+   o._rows.remove(row);
 }
 
 //==========================================================
@@ -771,6 +815,24 @@ MO.FDuiGridControl_hideRows = function FDuiGridControl_hideRows(){
       var row = rows.at(i);
       row.setVisible(false);
    }
+}
+
+//==========================================================
+// <T>清空所有行。</T>
+//
+// @method
+//==========================================================
+MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows(){
+   var o = this;
+   var rows = o._rows;
+   var rowPool = o._rowPool;
+   var count = rows.count();
+   for(var i = count - 1; i >= 0 ; i--){
+      var row = rows.at(i);
+      o.dropRow(row);
+      rowPool.free(row);
+   }
+   rows.clear();
 }
 
 //==========================================================
@@ -862,6 +924,91 @@ MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(row)
    //RConsole.find(FListenerConsole).process(FDuiGridControl, EGridAction.RowDblClick, r, r)
 }
 
+//==========================================================
+// <T>热点一行数据。</T>
+//
+// @method
+// @param r:row:FDuiGridRowControl 热点行
+// @param f:flag:Boolean 是否给与热点
+//==========================================================
+MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
+   var o = this;
+   if(f){
+      o._hoverRow = r;
+      r.refreshStyle();
+   }else{
+      if(o._hoverRow == r){
+         o._hoverRow = null;
+      }
+      r.refreshStyle();
+   }
+}
+
+//==========================================================
+// <T>选中一行数据。</T>
+// <P>如果重置参数为真，则清除以前所有选中行后再选中当前行。</P>
+// <P>否则，将当前选中的行加到已选中的行中。。</P>
+//
+// @method
+// @param row 要选中的行
+// @param reset 是否清除以前选中行
+// @param force 是否强制总是选取
+//==========================================================
+MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, force) {
+   var o = this;
+   var has = false;
+   if(reset){
+      var rs = o._rows;
+      var c = rs.count;
+      for(var n=0; n<c; n++){
+         var r = rs.get(n);
+         if(r != row && r.isSelect){
+            r.select(false);
+            has = true;
+         }
+      }
+   }
+   row.select(has || !row.isSelect || force);
+   // 刷新选中行的提示信息
+   o.refreshHint();
+}
+
+//==========================================================
+// <T>释放当前表格。</T>
+//
+// @method
+//==========================================================
+MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
+   var o = this;
+   o._rows = MO.Lang.Object.dispose(o._rows);
+   o._rowPool = MO.Lang.Object.dispose(o._rowPool);
+   o._hBorderPanel = null;
+   o._hDelayPanel = null;
+   o._hDelayForm = null;
+   o._hFixPanel = null;
+   o._hFixForm = null;
+   o._hFixHead = null;
+   o._hFixSearch = null;
+   o._hHeadPanel = null;
+   o._hHeadForm = null;
+   o._hHead = null;
+   o._hSearch = null;
+   o._hColumnPanel = null;
+   o._hColumnForm = null;
+   o._hFixRows = null;
+   o._hFixRowLine = null;
+   o._hContentPanel = null;
+   o._hContentForm = null;
+   o._hRows = null;
+   o._hRowLine = null;
+   o._hHintForm = null;
+   o._hInsertButton = null;
+   o._hExtendButton = null;
+   o._hExtendText = null;
+   // 父处理
+   o.__base.MUiDisplayContrainer.dispose.call(o);
+   o.__base.FDuiContainer.dispose.call(o);
+}
 
 
 
@@ -1496,55 +1643,6 @@ MO.FDuiGridControl_refreshSelected = function FDuiGridControl_refreshSelected(){
 }
 
 //==========================================================
-// <T>热点一行数据。</T>
-//
-// @method
-// @param r:row:FDuiGridRowControl 热点行
-// @param f:flag:Boolean 是否给与热点
-//==========================================================
-MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
-   var o = this;
-   if(f){
-      o._hoverRow = r;
-      r.refreshStyle();
-   }else{
-      if(o._hoverRow == r){
-         o._hoverRow = null;
-      }
-      r.refreshStyle();
-   }
-}
-
-//==========================================================
-// <T>选中一行数据。</T>
-// <P>如果重置参数为真，则清除以前所有选中行后再选中当前行。</P>
-// <P>否则，将当前选中的行加到已选中的行中。。</P>
-//
-// @method
-// @param row 要选中的行
-// @param reset 是否清除以前选中行
-// @param force 是否强制总是选取
-//==========================================================
-MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, force) {
-   var o = this;
-   var has = false;
-   if(reset){
-      var rs = o._rows;
-      var c = rs.count;
-      for(var n=0; n<c; n++){
-         var r = rs.get(n);
-         if(r != row && r.isSelect){
-            r.select(false);
-            has = true;
-         }
-      }
-   }
-   row.select(has || !row.isSelect || force);
-   // 刷新选中行的提示信息
-   o.refreshHint();
-}
-
-//==========================================================
 //<T>选中一行数据。</T>
 //<P>如果重置参数为真，则清除以前所有选中行后再选中当前行。</P>
 //<P>否则，将当前选中的行加到已选中的行中。。</P>
@@ -1713,41 +1811,6 @@ MO.FDuiGridControl_refreshStyle = function FDuiGridControl_refreshStyle(){
 }
 
 //==========================================================
-// <T>释放当前表格。</T>
-//
-// @method
-//==========================================================
-MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
-   var o = this;
-   o.hBorderPanel = null;
-   o._hDelayPanel = null;
-   o._hDelayForm = null;
-   o._hFixPanel = null;
-   o._hFixForm = null;
-   o._hFixHead = null;
-   o._hFixSearch = null;
-   o._hHeadPanel = null;
-   o._hHeadForm = null;
-   o._hHead = null;
-   o._hSearch = null;
-   o._hColumnPanel = null;
-   o._hColumnForm = null;
-   o._hFixRows = null;
-   o._hFixRowLine = null;
-   o._hContentPanel = null;
-   o._hContentForm = null;
-   o._hRows = null;
-   o._hRowLine = null;
-   o._hHintForm = null;
-   o._hInsertButton = null;
-   o._hExtendButton = null;
-   o._hExtendText = null;
-   // 父处理
-   o.__base.MUiDisplayContrainer.dispose.call(o);
-   o.__base.FDuiContainer.dispose.call(o);
-}
-
-//==========================================================
 // <T>获得运行时信息。</T>
 //
 // @method
@@ -1882,19 +1945,6 @@ MO.FDuiGridControl_deleteRow = function FDuiGridControl_deleteRow(r) {
    } else {
       r.release();
    }
-}
-// ------------------------------------------------------------
-MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows() {
-   var o = this;
-   var c = o._rows.count;
-   for(var n=0; n<c; n++){
-      var r = o._rows.get(n);
-      if(r){
-         r.dispose();
-      }
-   }
-   o._rows.clear();
-   RHtml.clear(o._hRows);
 }
 // ------------------------------------------------------------
 MO.FDuiGridControl_onColumnTreeService = function FDuiGridControl_onColumnTreeService(g){

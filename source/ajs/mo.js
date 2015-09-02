@@ -36838,6 +36838,19 @@ MO.MUiDataContainer_oeSaveDataSource = function MUiDataContainer_oeSaveDataSourc
       var source = event.source;
       o._activeDataset = source.selectDataset(o._dsName);
       var row = source.selectRow();
+      switch(o._dataActionCd){
+         case MO.EUiDataAction.Insert:
+            row._statusCd = MO.EDataStatus.Insert;
+            break;
+         case MO.EUiDataAction.Update:
+            row._statusCd = MO.EDataStatus.Update;
+            break;
+         case MO.EUiDataAction.Delete:
+            row._statusCd = MO.EDataStatus.Delete;
+            break;
+         default:
+            throw new TError(o, 'Invalid data action.');
+      }
       o.saveUnit(row);
    }
    return MO.EEventStatus.Contine;
@@ -52506,30 +52519,9 @@ MO.FDuiCell_focus = function FDuiCell_focus(value){
 }
 MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
    var o = this;
-   var t = o._table;
-   var r = o._row;
-   var s = r.isSelect;
-   var he = o._hEdit;
-   if(he){
-      he.readOnly = true;
-      he.style.color = EColor.TextReadonly;
-      he.style.backgroundColor = bc;
-   }
-   var bc = null;
-   if(s){
-      bc = EColor._rowSelect;
-   }else{
-      var ih = (t.__hoverRow == r);
-      if(ih){
-         bc = EColor._rowHover;
-      }else{
-         bc = EColor._rows[r.index % EColor._rows.length];
-      }
-   }
-   if(o.__focus){
-      bc = EColor._rowEditHover;
-   }
-   o._hPanel.style.backgroundColor = bc;
+   var table = o._table;
+   var row = o._row;
+   var s = row.isSelect;
 }
 MO.FDuiCell_dispose = function FDuiCell_dispose(){
    var o = this;
@@ -53955,6 +53947,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._columns                 = null;
    o._rowClass                = MO.FDuiGridRow;
    o._rows                    = null;
+   o._rowPool                 = null;
    o._focusCell               = null;
    o._focusRow                = null;
    o._loadEvent               = null;
@@ -53984,16 +53977,20 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.appendChild              = MO.FDuiGridControl_appendChild;
    o.push                     = MO.FDuiGridControl_push;
    o.createRow                = MO.FDuiGridControl_createRow;
+   o.dropRow                  = MO.FDuiGridControl_dropRow;
    o.insertRow                = MO.FDuiGridControl_insertRow;
    o.pushRow                  = MO.FDuiGridControl_pushRow;
+   o.removeRow                = MO.FDuiGridControl_removeRow;
    o.syncRow                  = MO.FDuiGridControl_syncRow;
    o.hideRows                 = MO.FDuiGridControl_hideRows;
+   o.clearRows                = MO.FDuiGridControl_clearRows;
    o.loadDataset              = MO.FDuiGridControl_loadDataset;
    o.clickCell                = MO.FDuiGridControl_clickCell;
    o.clickRow                 = MO.FDuiGridControl_clickRow;
    o.doubleClickRow           = MO.FDuiGridControl_doubleClickRow;
    o.hoverRow                 = MO.FDuiGridControl_hoverRow;
    o.selectRow                = MO.FDuiGridControl_selectRow;
+   o.dispose                  = MO.FDuiGridControl_dispose;
    return o;
 }
 MO.FDuiGridControl_onBuildPanel = function FDuiGridControl_onBuildPanel(p){
@@ -54132,6 +54129,7 @@ MO.FDuiGridControl_construct = function FDuiGridControl_construct() {
    o._buttons = new MO.TDictionary();
    o._columns = new MO.TDictionary();
    o._rows = new MO.TObjects();
+   o._rowPool = MO.Class.create(MO.FObjectPool);
    o.lsnsRowClick = new MO.TListeners();
    o.lsnsRowDblClick = new MO.TListeners();
    var event = o._loadEvent = new MO.SEvent(o);
@@ -54176,12 +54174,24 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(component){
    }
    o.__base.FDuiContainer.push.call(o, component);
 }
-MO.FDuiGridControl_createRow = function FDuiGridControl_createRow(){
+MO.FDuiGridControl_createRow = function FDuiGridControl_createRow(clazz){
    var o = this;
-   var row = MO.Class.create(o._rowClass);
-   row._table = row._parent = o;
-   row.build(o._hPanel);
+   var row = o._rowPool.alloc();
+   if(!row){
+      var rowClass = MO.Runtime.nvl(clazz, o._rowClass);
+      row = MO.Class.create(rowClass);
+      row._table = row._parent = o;
+      row.build(o._hPanel);
+   }
    return row;
+}
+MO.FDuiGridControl_dropRow = function FDuiGridControl_dropRow(row){
+   var o = this;
+   var hFixPanel = row._hFixPanel;
+   if(hFixPanel){
+      o._hFixRows.removeChild(hFixPanel);
+   }
+   o._hRows.removeChild(row._hPanel);
 }
 MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(index, row){
    var o = this;
@@ -54204,7 +54214,14 @@ MO.FDuiGridControl_pushRow = function FDuiGridControl_pushRow(row){
    }
    o._hRows.appendChild(row._hPanel);
    row._hPanel.style.height = hFixPanel.offsetHeight + 'px';
+   row.refreshStyle();
    o._rows.push(row);
+}
+MO.FDuiGridControl_removeRow = function FDuiGridControl_removeRow(row){
+   var o = this;
+   MO.Assert.debugNotNull(row);
+   o.dropRow(row);
+   o._rows.remove(row);
 }
 MO.FDuiGridControl_syncRow = function FDuiGridControl_syncRow(p){
    var o = this;
@@ -54239,6 +54256,18 @@ MO.FDuiGridControl_hideRows = function FDuiGridControl_hideRows(){
       row.setVisible(false);
    }
 }
+MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows(){
+   var o = this;
+   var rows = o._rows;
+   var rowPool = o._rowPool;
+   var count = rows.count();
+   for(var i = count - 1; i >= 0 ; i--){
+      var row = rows.at(i);
+      o.dropRow(row);
+      rowPool.free(row);
+   }
+   rows.clear();
+}
 MO.FDuiGridControl_loadDataset = function FDuiGridControl_loadDataset(dataset){
    var o = this;
    var dataRows = dataset.rows();
@@ -54271,6 +54300,65 @@ MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(row)
    event.row = row;
    o.processRowDoubleClickListener(event);
    event.dispose();
+}
+MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
+   var o = this;
+   if(f){
+      o._hoverRow = r;
+      r.refreshStyle();
+   }else{
+      if(o._hoverRow == r){
+         o._hoverRow = null;
+      }
+      r.refreshStyle();
+   }
+}
+MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, force) {
+   var o = this;
+   var has = false;
+   if(reset){
+      var rs = o._rows;
+      var c = rs.count;
+      for(var n=0; n<c; n++){
+         var r = rs.get(n);
+         if(r != row && r.isSelect){
+            r.select(false);
+            has = true;
+         }
+      }
+   }
+   row.select(has || !row.isSelect || force);
+   o.refreshHint();
+}
+MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
+   var o = this;
+   o._rows = MO.Lang.Object.dispose(o._rows);
+   o._rowPool = MO.Lang.Object.dispose(o._rowPool);
+   o._hBorderPanel = null;
+   o._hDelayPanel = null;
+   o._hDelayForm = null;
+   o._hFixPanel = null;
+   o._hFixForm = null;
+   o._hFixHead = null;
+   o._hFixSearch = null;
+   o._hHeadPanel = null;
+   o._hHeadForm = null;
+   o._hHead = null;
+   o._hSearch = null;
+   o._hColumnPanel = null;
+   o._hColumnForm = null;
+   o._hFixRows = null;
+   o._hFixRowLine = null;
+   o._hContentPanel = null;
+   o._hContentForm = null;
+   o._hRows = null;
+   o._hRowLine = null;
+   o._hHintForm = null;
+   o._hInsertButton = null;
+   o._hExtendButton = null;
+   o._hExtendText = null;
+   o.__base.MUiDisplayContrainer.dispose.call(o);
+   o.__base.FDuiContainer.dispose.call(o);
 }
 MO.FDuiGridControl_pushButton = function FDuiGridControl_pushButton(b){
    var o = this;
@@ -54651,35 +54739,6 @@ MO.FDuiGridControl_refreshSelected = function FDuiGridControl_refreshSelected(){
       r.isSelect = false;
    }
 }
-MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
-   var o = this;
-   if(f){
-      o._hoverRow = r;
-      r.refreshStyle();
-   }else{
-      if(o._hoverRow == r){
-         o._hoverRow = null;
-      }
-      r.refreshStyle();
-   }
-}
-MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, force) {
-   var o = this;
-   var has = false;
-   if(reset){
-      var rs = o._rows;
-      var c = rs.count;
-      for(var n=0; n<c; n++){
-         var r = rs.get(n);
-         if(r != row && r.isSelect){
-            r.select(false);
-            has = true;
-         }
-      }
-   }
-   row.select(has || !row.isSelect || force);
-   o.refreshHint();
-}
 MO.FDuiGridControl_clearSelectRow = function FDuiGridControl_clearSelectRow(row) {
    var o = this;
    row.select(false);
@@ -54769,34 +54828,6 @@ MO.FDuiGridControl_refreshStyle = function FDuiGridControl_refreshStyle(){
    for(var n=0; n<c; n++){
       rs.get(n).refreshStyle();
    }
-}
-MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
-   var o = this;
-   o.hBorderPanel = null;
-   o._hDelayPanel = null;
-   o._hDelayForm = null;
-   o._hFixPanel = null;
-   o._hFixForm = null;
-   o._hFixHead = null;
-   o._hFixSearch = null;
-   o._hHeadPanel = null;
-   o._hHeadForm = null;
-   o._hHead = null;
-   o._hSearch = null;
-   o._hColumnPanel = null;
-   o._hColumnForm = null;
-   o._hFixRows = null;
-   o._hFixRowLine = null;
-   o._hContentPanel = null;
-   o._hContentForm = null;
-   o._hRows = null;
-   o._hRowLine = null;
-   o._hHintForm = null;
-   o._hInsertButton = null;
-   o._hExtendButton = null;
-   o._hExtendText = null;
-   o.__base.MUiDisplayContrainer.dispose.call(o);
-   o.__base.FDuiContainer.dispose.call(o);
 }
 MO.FDuiGridControl_dump = function FDuiGridControl_dump(s) {
    var o = this;
@@ -54904,18 +54935,6 @@ MO.FDuiGridControl_deleteRow = function FDuiGridControl_deleteRow(r) {
    } else {
       r.release();
    }
-}
-MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows() {
-   var o = this;
-   var c = o._rows.count;
-   for(var n=0; n<c; n++){
-      var r = o._rows.get(n);
-      if(r){
-         r.dispose();
-      }
-   }
-   o._rows.clear();
-   RHtml.clear(o._hRows);
 }
 MO.FDuiGridControl_onColumnTreeService = function FDuiGridControl_onColumnTreeService(g){
    var o = this;
@@ -55075,6 +55094,7 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    o.cell           = MO.FDuiGridRowControl_cell;
    o.push           = MO.FDuiGridRowControl_push;
    o.select         = MO.FDuiGridRowControl_select;
+   o.refreshStyle   = MO.FDuiGridRowControl_refreshStyle;
    o.loadDataRow    = MO.FDuiGridRowControl_loadDataRow;
    o.saveDataRow    = MO.FDuiGridRowControl_saveDataRow;
    return o;
@@ -55142,6 +55162,17 @@ MO.FDuiGridRowControl_select = function FDuiGridRowControl_select(value){
    o._statusSelect = value;
    o._hPanel.style.backgroundColor = value ? EColor._rowselect : EColor.Row;
    o.refreshStyle();
+}
+MO.FDuiGridRowControl_refreshStyle = function FDuiGridRowControl_refreshStyle(){
+   var o = this;
+   var cells = o._cells;
+   if(cells){
+      var count = cells.count();
+      for(var i = 0; i < count; i++){
+         var cell = cells.at(i);
+         cell.refreshStyle();
+      }
+   }
 }
 MO.FDuiGridRowControl_loadDataRow = function FDuiGridRowControl_loadDataRow(dataRow){
    var o = this;
@@ -55288,15 +55319,6 @@ MO.FDuiGridRowControl_doDelete = function FDuiGridRowControl_doDelete(){
 MO.FDuiGridRowControl_refresh = function FDuiGridRowControl_refresh(){
    var o = this;
    o.table.setDataStatus(o, o.isDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
-}
-MO.FDuiGridRowControl_refreshStyle = function FDuiGridRowControl_refreshStyle(){
-   var o = this;
-   var cs = o._cells;
-   if(cs){
-      for(var n=cs.count-1; n>=0; n--){
-         cs.value(n).refreshStyle();
-      }
-   }
 }
 MO.FDuiGridRowControl_dump = function FDuiGridRowControl_dump(s){
    var o = this;
@@ -77843,6 +77865,7 @@ MO.FManageDataForm_doDetail = function FManageDataForm_doDetail(row){
    xcontent.set('frame_name', o._name);
    var xrow = xcontent.create('Row');
    row.saveDataRow(xrow);
+   o.dataModify();
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=detail');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataDetail);
@@ -77877,6 +77900,7 @@ MO.FManageDataForm_doSave = function FManageDataForm_doSave(){
 MO.FManageDataForm_doDelete = function FManageDataForm_doDelete(){
    var o = this;
    o._dataActionCd = MO.EUiDataAction.Delete;
+   o.dataErase();
    o.doSave();
 }
 MO.FManageDataForm_dispose = function FManageDataForm_dispose(){
@@ -77952,7 +77976,9 @@ MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
    var xcontent = xservice.findNode('Content');
    var source = MO.Class.create(MO.FDataSource);
    source.loadConfig(xcontent);
-   o.loadDataset(source.currentDataset());
+   var dataset = source.currentDataset();
+   o.clearRows();
+   o.loadDataset(dataset);
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
 MO.FManageDataTable_onDataSave = function FManageDataTable_onDataSave(event){

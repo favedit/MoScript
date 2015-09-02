@@ -123,7 +123,9 @@ MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
    var source = MO.Class.create(MO.FDataSource);
    source.loadConfig(xcontent);
    // 加载数据
-   o.loadDataset(source.currentDataset());
+   var dataset = source.currentDataset();
+   o.clearRows();
+   o.loadDataset(dataset);
    // 允许处理
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
