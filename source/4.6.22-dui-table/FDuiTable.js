@@ -60,7 +60,6 @@ MO.FDuiTable = function FDuiTable(o) {
    //..........................................................
    // @method
    o.appendColumn      = MO.FDuiTable_appendColumn;
-
    //..........................................................
    // @event
    //o.onResizeAfter = MO.FDuiTable_onResizeAfter;
@@ -276,6 +275,14 @@ MO.FDuiTable_appendColumn = function FDuiTable_appendColumn(column){
       o._hRowLine.appendChild(column._hFixPanel);
    }
 }
+
+
+
+
+
+
+
+
 
 
 

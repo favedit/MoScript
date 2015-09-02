@@ -6,7 +6,6 @@
 // @version 150123
 //==========================================================
 MO.FDuiCellEdit = function FDuiCellEdit(o){
-   //o = MO.Class.inherits(this, o, FDuiCellEditControl, MDuiFocus);
    o = MO.Class.inherits(this, o, MO.FDuiCellEditControl);
    //..........................................................
    // @style
@@ -78,12 +77,8 @@ MO.FDuiCellEdit_onBuildEdit = function FDuiCellEdit_onBuildEdit(p){
 // @return String 数据
 //==========================================================
 MO.FDuiCellEdit_get = function FDuiCellEdit_get(){
-   var value = o.__base.FDuiCellEditControl.get.call(o, p);
-   // 获得显示
-   var hInput = o._hInput;
-   if(hInput){
-      value = hInput.value;
-   }
+   var o = this;
+   var value = o._hInput.value;
    return value;
 }
 
@@ -95,12 +90,8 @@ MO.FDuiCellEdit_get = function FDuiCellEdit_get(){
 //==========================================================
 MO.FDuiCellEdit_set = function FDuiCellEdit_set(value){
    var o = this;
-   o.__base.FDuiCellEditControl.set.call(o, value);
-   // 设置显示
-   var hInput = o._hInput;
-   if(hInput){
-      hInput.value = MO.Lang.String.nvl(value);
-   }
+   var text = MO.Lang.String.nvl(value);
+   o._hInput.value = text;
    //o.finded = v;
    //if(o.hChangeIcon){
    //   o.hChangeIcon.style.display = 'none';

@@ -4684,12 +4684,12 @@ MO.TNode_nodes = function TNode_nodes(){
 MO.TNode_get = function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;
 }
-MO.TNode_getInteger = function TNode_getInteger(n, v){
-   return MO.Lang.Integer.parse(this.get(n, v));
+MO.TNode_getInteger = function TNode_getInteger(name, defaultValue){
+   return MO.Lang.Integer.parse(this.get(name, defaultValue));
 }
-MO.TNode_set = function TNode_set(n, v){
-   if(v != null){
-      this.attributes().set(n, v);
+MO.TNode_set = function TNode_set(name, value){
+   if(value != null){
+      this.attributes().set(name, value);
    }
 }
 MO.TNode_setNvl = function TNode_setNvl(name, value){

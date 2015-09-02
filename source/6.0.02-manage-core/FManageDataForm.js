@@ -16,6 +16,7 @@ MO.FManageDataForm = function FManageDataForm(o){
    // @event
    o.onBuilded      = MO.FManageDataForm_onBuilded;
    // @event
+   o.onDataDetail   = MO.FManageDataForm_onDataDetail;
    o.onDataChanged  = MO.FManageDataForm_onDataChanged;
    o.onDataLoad     = MO.FManageDataForm_onDataLoad;
    o.onDataSave     = MO.FManageDataForm_onDataSave;
@@ -24,6 +25,7 @@ MO.FManageDataForm = function FManageDataForm(o){
    // @method
    o.construct      = MO.FManageDataForm_construct;
    // @method
+   o.doDetail       = MO.FManageDataForm_doDetail;
    o.doPrepare      = MO.FManageDataForm_doPrepare;
    o.doLoad         = MO.FManageDataForm_doLoad;
    o.doSave         = MO.FManageDataForm_doSave;
@@ -101,6 +103,27 @@ MO.FManageDataForm_onDataChanged = function FManageDataForm_onDataChanged(event)
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
+MO.FManageDataForm_onDataDetail = function FManageDataForm_onDataDetail(event){
+   var o = this;
+   var xservice = event.content;
+   var xcontent = xservice.findNode('Content');
+   var source = MO.Class.create(MO.FDataSource);
+   source.loadConfig(xcontent);
+   // 加载数据
+   var dataset = source.currentDataset();
+   var row = dataset.rows().first();
+   o.loadUnit(row);
+   //o.loadDataset(source.currentDataset());
+   // 允许处理
+   MO.Console.find(MO.FDuiDesktopConsole).hide();
+}
+
+//==========================================================
+// <T>数据加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
 MO.FManageDataForm_onDataLoad = function FManageDataForm_onDataLoad(event){
    var o = this;
    var xcontent = event.content;
@@ -117,6 +140,7 @@ MO.FManageDataForm_onDataLoad = function FManageDataForm_onDataLoad(event){
 //==========================================================
 MO.FManageDataForm_onDataSave = function FManageDataForm_onDataSave(event){
    var o = this;
+   return;
    //o._containerName, o._itemName
    var dataActionCd = o._dataActionCd;
    switch(dataActionCd){
@@ -172,6 +196,29 @@ MO.FManageDataForm_construct = function FManageDataForm_construct(){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
+MO.FManageDataForm_doDetail = function FManageDataForm_doDetail(row){
+   var o = this;
+   // 禁止处理
+   MO.Console.find(MO.FDuiDesktopConsole).showProgress();
+   // 创建命令
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   var xcontent = xroot.create('Content');
+   xcontent.set('frame_name', o._name);
+   var xrow = xcontent.create('Row');
+   row.saveDataRow(xrow);
+   // 发送请求
+   var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=detail');
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
+   connection.addLoadListener(o, o.onDataDetail);
+}
+
+//==========================================================
+// <T>加载配置信息。</T>
+//
+// @method
+// @param containerName:String 容器名称
+//==========================================================
 MO.FManageDataForm_doPrepare = function FManageDataForm_doPrepare(){
    var o = this;
    // 显示页面
@@ -214,11 +261,11 @@ MO.FManageDataForm_doSave = function FManageDataForm_doSave(){
    // 创建命令
    var xdocument = new MO.TXmlDocument();
    var xroot = xdocument.root();
-   dataSource.saveConfig(xroot.create('Content'));
-   alert(xroot.xml());
-   return;
+   var xcontent = xroot.create('Content');
+   xcontent.set('frame_name', o._name);
+   dataSource.saveConfig(xcontent);
    // 发送请求
-   var url = MO.Lang.String.format('/{1}.ws?action={2}&group={3}&container={4}&item={5}', o._logicService, o._dataActionCd, o._logicGroup, o._containerName, o._itemName);
+   var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=save');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataSave);
 }

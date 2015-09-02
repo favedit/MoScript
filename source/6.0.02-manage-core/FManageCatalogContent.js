@@ -35,7 +35,12 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    var frame = o._frameSet.selectObject(frameName);
    frame.psMode(MO.EUiMode.Update);
    frame.psRefresh();
-   frame.dataModify();
+   if(MO.Class.isClass(frame, MO.FDuiFormFrame)){
+      frame.dataModify();
+      //frame.doFetch();
+   }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+      frame.doFetch();
+   }
    // 加载数据
    //frame.doLoad(typeGroup, containerName);
 }

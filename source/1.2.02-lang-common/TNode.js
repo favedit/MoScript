@@ -185,8 +185,8 @@ MO.TNode_nodes = function TNode_nodes(){
 // <T>取得属性对应的属性值。</T>
 //
 // @method
-// @param n:name:String 属性名称
-// @param v:value:String 属性值
+// @param name:String 属性名称
+// @param value:String 属性值
 // @return String 字符串内容
 //==========================================================
 MO.TNode_get = function TNode_get(n, v){
@@ -197,24 +197,24 @@ MO.TNode_get = function TNode_get(n, v){
 // <T>取得属性对应的数字属性值。</T>
 //
 // @method
-// @param n:name:String 属性名称
-// @param v:value:String 属性值
+// @param name:String 属性名称
+// @param defaultValue:String 属性值
 // @return Integer 数字内容
 //==========================================================
-MO.TNode_getInteger = function TNode_getInteger(n, v){
-   return MO.Lang.Integer.parse(this.get(n, v));
+MO.TNode_getInteger = function TNode_getInteger(name, defaultValue){
+   return MO.Lang.Integer.parse(this.get(name, defaultValue));
 }
 
 //==========================================================
 // <T>设置属性对应的属性值。</T>
 //
 // @method
-// @param n:name:String 属性名称
-// @param v:value:String 属性值
+// @param name:String 属性名称
+// @param value:String 属性值
 //==========================================================
-MO.TNode_set = function TNode_set(n, v){
-   if(v != null){
-      this.attributes().set(n, v);
+MO.TNode_set = function TNode_set(name, value){
+   if(value != null){
+      this.attributes().set(name, value);
    }
 }
 

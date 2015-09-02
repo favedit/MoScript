@@ -13,11 +13,13 @@ MO.FDuiColumnStatus = function FDuiColumnStatus(o){
    //..........................................................
    // @attribute
    o._optionFixed      = true;
-   o._cellClass        = MO.FCellStatus;
+   o._cellClass        = MO.FDuiCellStatus;
    //..........................................................
    // @event
    o.onBuildSearchForm = MO.FDuiColumnStatus_onBuildSearchForm;
    o.onBuild           = MO.FDuiColumnStatus_onBuild;
+   // @event
+   o.onCellClick       = MO.FDuiColumnStatus_onCellClick;
    //..........................................................
    // @method
    o.createCell        = MO.FDuiColumnStatus_createCell;
@@ -45,9 +47,6 @@ MO.FDuiColumnStatus = function FDuiColumnStatus(o){
    //o._styleIconInvalid     = MO.Class.register(o, new MO.AStyleIcon('_styleIconInvalid'));
    // @icon 锁定
    //o._styleIconLock        = MO.Class.register(o, new MO.AStyleIcon('_styleIconLock'));
-   //..........................................................
-   // @event
-   //o.onCellClick           = FDuiColumnStatus_onCellClick;
    //..........................................................
    // @method
    //o.setDataStatus         = FDuiColumnStatus_setDataStatus;
@@ -79,9 +78,9 @@ MO.FDuiColumnStatus = function FDuiColumnStatus(o){
 // <T>建立搜索框。</T>
 //
 // @method
-// @param p:param:TEventProcess 事件
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiColumnStatus_onBuildSearchForm = function FDuiColumnStatus_onBuildSearchForm(p){
+MO.FDuiColumnStatus_onBuildSearchForm = function FDuiColumnStatus_onBuildSearchForm(event){
    var o = this;
    var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
    hf.height = 18;
@@ -97,17 +96,33 @@ MO.FDuiColumnStatus_onBuildSearchForm = function FDuiColumnStatus_onBuildSearchF
 // <T>建立显示框架。</T>
 //
 // @method
-// @param p:argements:SArgements 参数集合
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiColumnStatus_onBuild = function FDuiColumnStatus_onBuild(p){
+MO.FDuiColumnStatus_onBuild = function FDuiColumnStatus_onBuild(event){
    var o = this;
-   var r = o.__base.FDuiColumnEditControl.onBuild.call(o, p);
+   var r = o.__base.FDuiColumnEditControl.onBuild.call(o, event);
    var h = o._hPanel;
    h.align = 'center';
    h.style.width = '30px';
    h.style.height = '22px';
    //o._hFixPanel.style.pixelWidth = 30;
    MO.Window.Builder.appendEmpty(h, 12, 12);
+}
+
+//==========================================================
+// <T>点击单元格处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiColumnStatus_onCellClick = function FDuiColumnStatus_onCellClick(event){
+   debugger
+   var row = o._row;
+   o._table.clickRow(row);
+   //if(this.table.callEvent('onTableRowDoubleClick', s.row)){
+   //   return;
+   //}
+   //RConsole.find(FListenerConsole).process(FGridControl, EGridAction.RowClick, s.row, s.row);
 }
 
 //==========================================================
@@ -128,23 +143,22 @@ MO.FDuiColumnStatus_createCell = function FDuiColumnStatus_createCell(p){
 
 
 
-//==========================================================
-   //..........................................................
-   // @event
-// <T>��굥���¼���</T>
-//
-// @method
-// @param s:sender:FControl �ؼ�����
-// @param e:event:TEvent �¼�����
-//==========================================================
-MO.FDuiColumnStatus_onCellClick = function FDuiColumnStatus_onCellClick(s, e){
-   // �����¼�
-   if(this.table.callEvent('onTableRowDoubleClick', s.row)){
-      return;
-   }
-   // ��������
-   RConsole.find(FListenerConsole).process(FGridControl, EGridAction.RowClick, s.row, s.row);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>���õ�Ԫ��Ĺ���״̬��</T>

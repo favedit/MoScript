@@ -16,7 +16,7 @@ MO.FDuiColumnSelected = function FDuiColumnSelected(o){
    //..........................................................
    // @attribute
    o._optionFixed      = true;
-   o._cellClass        = MO.FCellSelected;
+   o._cellClass        = MO.FDuiCellSelected;
    //..........................................................
    // @event
    o.onBuildSearchForm = MO.FDuiColumnSelected_onBuildSearchForm;

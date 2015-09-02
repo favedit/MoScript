@@ -16,7 +16,7 @@
 // @version 150125
 //==========================================================
 MO.FDuiCellEditControl = function FDuiCellEditControl(o){
-   o = MO.Class.inherits(this, o, MO.FCell);
+   o = MO.Class.inherits(this, o, MO.FDuiCell);
    //..........................................................
    // @html
    o._hForm       = null;
@@ -134,7 +134,7 @@ MO.FDuiCellEditControl_onBuildForm = function FDuiCellEditControl_onBuildForm(p)
 //==========================================================
 MO.FDuiCellEditControl_onBuild = function FDuiCellEditControl_onBuild(p){
    var o = this;
-   o.__base.FCell.onBuild.call(o, p)
+   o.__base.FDuiCell.onBuild.call(o, p)
    // 创建布局
    o.onBuildForm(p);
 }
@@ -170,14 +170,14 @@ MO.FDuiCellEditControl_select = function FDuiCellEditControl_select(v){
    var o = this;
    var a = o.descriptor().isEditAble(o.row);
    if(v){
-      if(!MO.Class.isClass(o, FCellCalendar)){
+      if(!MO.Class.isClass(o, FDuiCellCalendar)){
          o.setEditStyle(a ? EStyle.Select : EStyle.ReadonlySelect);
       }else{
          o.setEditStyle(EStyle.ReadonlySelect);
          o.column.disable();
       }        
    }else{
-      if(!MO.Class.isClass(o, FCellCalendar)){
+      if(!MO.Class.isClass(o, FDuiCellCalendar)){
          o.setEditStyle(a ? EStyle.Normal : EStyle.Readonly);
       }else{
          o.setEditStyle(EStyle.Readonly);
@@ -195,7 +195,7 @@ MO.FDuiCellEditControl_setVisible = function FDuiCellEditControl_setVisible(v){
    var o = this;
    o.hPanel.style.display = v ? 'block' : 'none';
    if(v){
-      if(!MO.Class.isClass(o, FCellCalendar)){
+      if(!MO.Class.isClass(o, FDuiCellCalendar)){
          var a = o.descriptor().isEditAble(o.row);
          o.setEditStyle(a ? EStyle.Normal : EStyle.Readonly);
      }else{

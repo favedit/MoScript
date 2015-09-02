@@ -8,9 +8,10 @@
 MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDataContainer);
    //..........................................................
-   // @attribute TDictionary 单元格字典
-   o._cells         = null;
-   // @attribute TObjects 子数据行
+   // @attribute 单元格字典
+   o._table         = MO.Class.register(o, new MO.AGetSet('_table'));
+   o._cells         = MO.Class.register(o, new MO.AGetter('_cells'));
+   // @attribute 子数据行
    o._rows          = null;
    // @attribute
    o._clearProcess  = null;
@@ -20,6 +21,8 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    o._recordProcess = null;
    // @attribute
    o._statusCell    = null;
+   // @attribute
+   o._statusSelect  = false;
    //..........................................................
    // @event
    o.onBuildPanel   = MO.FDuiGridRowControl_onBuildPanel;
@@ -28,30 +31,29 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    // @method
    o.construct      = MO.FDuiGridRowControl_construct;
    // @method
-   o.loadRow        = MO.FDuiGridRowControl_loadRow;
-   o.saveRow        = MO.FDuiGridRowControl_saveRow;
-   // @method
    o.setVisible     = MO.FDuiGridRowControl_setVisible;
    // @method
    o.appendChild    = MO.FDuiGridRowControl_appendChild;
+   o.cell           = MO.FDuiGridRowControl_cell;
    o.push           = MO.FDuiGridRowControl_push;
+   o.select         = MO.FDuiGridRowControl_select;
+   // @method
+   o.loadDataRow    = MO.FDuiGridRowControl_loadDataRow;
+   o.saveDataRow    = MO.FDuiGridRowControl_saveDataRow;
 
 
    //..........................................................
    // @style
    //o.stHover          = MO.Class.register(o, new TStyle('Hover'));
    //o.stSelect         = MO.Class.register(o, new TStyle('Select'));
-   //o._visible        = true;
+   //o._visible         = true;
    //..........................................................
    // @attribute FGridControl 表控件
-   //o.table            = null;
    /// @attribute TAttributes 属性集合
    //o.attributes       = null;
    //o.selectAble       = true;
    // @attribute
    //o.status           = ERowStatus.Update;
-   // @attribute Boolean 是否已经选中
-   //o.isSelect         = false;
    // @attribute Integer 层级
    //o.level            = 0;
    // @attribute Boolean 是否存在
@@ -72,7 +74,6 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    //o.getId            = FDuiGridRowControl_getId;
    //o.getVersion       = FDuiGridRowControl_getVersion;
    //o.getStatus        = FDuiGridRowControl_getStatus;
-   //o.cell             = FDuiGridRowControl_cell;
    //o.get              = FDuiGridRowControl_get;
    //o.reget            = FDuiGridRowControl_reget;
    //o.set              = FDuiGridRowControl_set;
@@ -81,7 +82,6 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    //o.recordValue      = FDuiGridRowControl_recordValue;
    //o.toAttributes     = FDuiGridRowControl_toAttributes;
    //o.toDeepAttributes = FDuiGridRowControl_toDeepAttributes;
-   //o.select           = FDuiGridRowControl_select;
    //o.extend           = FDuiGridRowControl_extend;
    //o.doInsert         = FDuiGridRowControl_doInsert;
    //o.doDelete         = FDuiGridRowControl_doDelete;
@@ -111,7 +111,7 @@ MO.FDuiGridRowControl_onBuildPanel = function FDuiGridRowControl_onBuildPanel(p)
 //==========================================================
 MO.FDuiGridRowControl_onBuild = function FDuiGridRowControl_onBuild(p){
    var o = this;
-   o.__base.FContainer.onBuild.call(o, p)
+   o.__base.FDuiContainer.onBuild.call(o, p)
    // 建立行对象
    var table = o._table;
    var hPanel = o._hPanel;
@@ -138,7 +138,7 @@ MO.FDuiGridRowControl_onBuild = function FDuiGridRowControl_onBuild(p){
 //==========================================================
 MO.FDuiGridRowControl_construct = function FDuiGridRowControl_construct(){
    var o = this;
-   o.__base.FContainer.construct.call(o);
+   o.__base.FDuiContainer.construct.call(o);
    // 构造属性
    o._cells = new MO.TDictionary();
    o._rows = new MO.TObjects();
@@ -151,57 +151,18 @@ MO.FDuiGridRowControl_construct = function FDuiGridRowControl_construct(){
 }
 
 //==========================================================
-// <T>加载数据行。</T>
-//
-// @method
-// @param p:row:TRow 数据行
-//==========================================================
-MO.FDuiGridRowControl_loadRow = function FDuiGridRowControl_loadRow(p){
-   var o = this;
-   var ds = MO.Class.create(MO.FDataSource);
-   ds.selectRow(p);
-   o.dsDataLoad(ds);
-   // 重置数据
-   //o.process(o._clearProcess);
-   // 加载数据
-   //var e = o._loadProcess;
-   //e.values = r;
-   //o.process(e);
-}
-
-//==========================================================
-// <T>保存数据行。</T>
-//
-// @method
-// @param p:row:FGridRow 数据行
-//==========================================================
-MO.FDuiGridRowControl_saveRow = function FDuiGridRowControl_saveRow(p){
-   var o = this;
-   //if(!r){
-   //   r = new TRow();
-   //}
-   // 存储所有单元格数据
-   //var e = o._saveProcess;
-   //e.values = r;
-   //o.process(e);
-   // 存储状态
-   //r.set('_status', o.status);
-   return r;
-}
-
-//==========================================================
 // <T>设置控件的隐藏和显示。</T>
 //
 // @method
-// @param p:visible:Boolean 是否显示
+// @param visible:Boolean 是否显示
 //==========================================================
-MO.FDuiGridRowControl_setVisible = function FDuiGridRowControl_setVisible(p){
+MO.FDuiGridRowControl_setVisible = function FDuiGridRowControl_setVisible(visible){
    var o = this;
-   o._visible = p;
+   o._visible = visible;
    // 设置控件底板的可见性
-   var h = o._hPanel;
-   if(h){
-      RHtml.displaySet(h, p);
+   var hPanel = o._hPanel;
+   if(hPanel){
+      MO.Window.Html.displaySet(hPanel, visible);
    }
 }
 
@@ -213,12 +174,24 @@ MO.FDuiGridRowControl_setVisible = function FDuiGridRowControl_setVisible(p){
 //==========================================================
 MO.FDuiGridRowControl_appendChild = function FDuiGridRowControl_appendChild(control){
    var o = this;
-   o.__base.FContainer.appendChild.call(o, control);
+   o.__base.FDuiContainer.appendChild.call(o, control);
    // 增加单元格
-   var column = control._column;
-   if(!c._optionFixed){
+   var column = control.column();
+   var fixed = column.optionFixed();
+   if(!fixed){
       o._hPanel.appendChild(control._hPanel);
    }
+}
+
+//==========================================================
+// <T>根据索引获得一个单元格。</T>
+//
+// @method
+// @param index:Integer 索引位置
+// @return FDuiCell 单元格
+//==========================================================
+MO.FDuiGridRowControl_cell = function FDuiGridRowControl_cell(index){
+   return this._cells.value(index);
 }
 
 //==========================================================
@@ -229,16 +202,59 @@ MO.FDuiGridRowControl_appendChild = function FDuiGridRowControl_appendChild(cont
 //==========================================================
 MO.FDuiGridRowControl_push = function FDuiGridRowControl_push(component){
    var o = this;
-   o.__base.FContainer.push.call(o, component);
+   o.__base.FDuiContainer.push.call(o, component);
    // 设置单元格信息
+   var column = component.column();
    component._row = o;
-   o._cells.set(component._column._dataName, component);
+   o._cells.set(column._dataName, component);
    // 关联状态单元格
    if(MO.Class.isClass(component, MO.FDuiCellStatus)){
       o._statusCell = component;
    }
 }
 
+//==========================================================
+// <T>选中当前行。</T>
+//
+// @method
+// @param value:Boolean 选中状态
+//==========================================================
+MO.FDuiGridRowControl_select = function FDuiGridRowControl_select(value){
+   var o = this;
+   o._statusSelect = value;
+   // 设置背景颜色
+   o._hPanel.style.backgroundColor = value ? EColor._rowselect : EColor.Row;
+   // 刷新所有单元格颜色
+   o.refreshStyle();
+}
+
+//==========================================================
+// <T>加载数据行。</T>
+//
+// @method
+// @param dataRow:FDataRow 数据行
+//==========================================================
+MO.FDuiGridRowControl_loadDataRow = function FDuiGridRowControl_loadDataRow(dataRow){
+   var o = this;
+   var event = new MO.SUiDispatchEvent(o, 'oeLoadDataRow', MO.FDuiCell);
+   event.dataRow = dataRow;
+   o.process(event);
+   event.dispose();
+}
+
+//==========================================================
+// <T>保存数据行。</T>
+//
+// @method
+// @param dataRow:FDataRow 数据行
+//==========================================================
+MO.FDuiGridRowControl_saveDataRow = function FDuiGridRowControl_saveDataRow(dataRow){
+   var o = this;
+   var event = new MO.SUiDispatchEvent(o, 'oeSaveDataRow', MO.FDuiCell);
+   event.dataRow = dataRow;
+   o.process(event);
+   event.dispose();
+}
 
 
 
@@ -356,16 +372,6 @@ MO.FDuiGridRowControl_getStatus = function FDuiGridRowControl_getStatus(){
 }
 
 //==========================================================
-// <T>根据索引获得一个单元格。</T>
-//
-// @method
-// @return String 对象版本
-//==========================================================
-MO.FDuiGridRowControl_cell = function FDuiGridRowControl_cell(n){
-   return this._cells.value(n);
-}
-
-//==========================================================
 // <T>根据字段名称，从单元格对象中获得数据内容。</T>
 //
 // @method
@@ -451,20 +457,6 @@ MO.FDuiGridRowControl_toDeepAttributes = function FDuiGridRowControl_toDeepAttri
 }
 
 //==========================================================
-// 选择一行时，遍历所有的cell 更改样式表
-//
-// @method
-//==========================================================
-MO.FDuiGridRowControl_select = function FDuiGridRowControl_select(v){
-   var o = this;
-   o.isSelect = v;
-   // 设置背景颜色
-   o._hPanel.style.backgroundColor = v ? EColor._rowselect : EColor.Row;
-   // 刷新所有单元格颜色
-   o.refreshStyle();
-}
-
-//==========================================================
 MO.FDuiGridRowControl_extend = function FDuiGridRowControl_extend(v){
    var o = this;
    var rs = o._rows;
@@ -535,7 +527,7 @@ MO.FDuiGridRowControl_dump = function FDuiGridRowControl_dump(s){
    var o = this;
    s = RString.nvlStr(s);
    s.append(RClass.dump(o), '[');
-   s.append(o.isSelect ? 'S' : '_');
+   s.append(o._statusSelect ? 'S' : '_');
    s.append(']');
    s.append(o.saveRow().dump());
    return s;

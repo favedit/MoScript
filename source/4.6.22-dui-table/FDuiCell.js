@@ -11,31 +11,41 @@
 // @version 150123
 //==========================================================
 MO.FDuiCell = function FDuiCell(o){
-   //o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MEditValue, MO.MDataValue);
-   o = MO.Class.inherits(this, o, MO.FDuiControl);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiValue, MO.MUiDataValue);
    //..........................................................
    // @style
-   o._stylePanel  = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._stylePanel   = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    //..........................................................
    // @attribute
-   o._table       = null;
-   o._column      = null;
-   o._row         = null;
+   o._table        = MO.Class.register(o, new MO.AGetSet('_table'));
+   o._column       = MO.Class.register(o, new MO.AGetSet('_column'));
+   o._row          = MO.Class.register(o, new MO.AGetSet('_row'));
    //..........................................................
    // @html
-   //o._hEditPanel  = null;
    //..........................................................
    // @event
-   o.onBuildPanel = MO.FDuiCell_onBuildPanel;
-   o.onBuild      = MO.FDuiCell_onBuild;
+   o.onBuildPanel  = MO.FDuiCell_onBuildPanel;
+   o.onBuild       = MO.FDuiCell_onBuild;
+   // @event
+   o.onCellClick   = MO.Class.register(o, new MO.AEventClick('onCellClick'), MO.FDuiCell_onCellClick);
    //..........................................................
    // @process
-   o.oeDataLoad   = MO.FDuiCell_oeDataLoad;
-   o.oeDataSave   = MO.FDuiCell_oeDataSave;
+   o.oeLoadDataRow = MO.FDuiCell_oeLoadDataRow;
+   o.oeSaveDataRow = MO.FDuiCell_oeSaveDataRow;
+   //..........................................................
+   // @method
+   o.construct    = MO.FDuiCell_construct;
+   // @method
+   o.setVisible   = MO.FDuiCell_setVisible;
+   o.focus        = MO.FDuiCell_focus;
+   o.refreshStyle = MO.FDuiCell_refreshStyle;
+   // @method
+   o.dispose      = MO.FDuiCell_dispose;
 
 
 
    // Html
+   //o._hEditPanel  = null;
    //o.hForm        = null;
    //o.hFormLine    = null;
    //o.hIconPanel   = null;
@@ -51,11 +61,7 @@ MO.FDuiCell = function FDuiCell(o){
    //o.descriptor   = FDuiCell_descriptor;
    //o.text         = FDuiCell_text;
    //o.setText      = FDuiCell_setText;
-   //o.focus        = FDuiCell_focus;
-   //o.setVisible   = FDuiCell_setVisible;
    //o.setEditStyle = RMethod.empty;
-   //o.refreshStyle = FDuiCell_refreshStyle;
-   //o.dispose      = FDuiCell_dispose;
    //o.dump         = FDuiCell_dump;
    return o;
 }
@@ -84,9 +90,10 @@ MO.FDuiCell_onBuild = function FDuiCell_onBuild(event){
    var column = o._column;
    var hPanel = o._hPanel;
    MO.Window.Html.linkSet(hPanel, 'control', o);
-   // 创建布局
-   //c.linkEvent(o, 'onCellMouseEnter', h, c.onCellMouseEnter);
-   //c.linkEvent(o, 'onCellMouseLeave', h, c.onCellMouseLeave);
+   // 关联事件
+   o.attachEvent('onCellClick', hPanel);
+   //column.linkEvent(o, 'onCellMouseEnter', hPanel, column.onCellMouseEnter);
+   //column.linkEvent(o, 'onCellMouseLeave', hPanel, column.onCellMouseLeave);
    // 设置编辑颜色
    //if(c.editColor){
    //   h.style.color = c.editColor;
@@ -110,15 +117,27 @@ MO.FDuiCell_onBuild = function FDuiCell_onBuild(event){
 // @method
 // @param event:SUiDispatchEvent 事件信息
 //==========================================================
-MO.FDuiCell_oeDataLoad = function FDuiCell_oeDataLoad(event){
+MO.FDuiCell_onCellClick = function FDuiCell_onCellClick(event){
+   var o = this;
+   var table = o._table;
+   var row = o._row;
+   table.clickRow(row);
+}
+
+//==========================================================
+// <T>数据源从加载数据处理。</T>
+//
+// @method
+// @param event:SUiDispatchEvent 事件信息
+//==========================================================
+MO.FDuiCell_oeLoadDataRow = function FDuiCell_oeLoadDataRow(event){
    var o = this;
    var column = o._column;
    var dataName = column.dataName();
-   var dataset = event.source;
-   var row = dataset.currentRow();
-   var value = row.get(dataName);
+   var dataRow = event.dataRow;
+   var value = dataRow.get(dataName);
    o.set(value);
-   return EEventStatus.Stop;
+   return MO.EEventStatus.Stop;
 }
 
 //==========================================================
@@ -127,15 +146,97 @@ MO.FDuiCell_oeDataLoad = function FDuiCell_oeDataLoad(event){
 // @method
 // @param event:SUiDispatchEvent 事件信息
 //==========================================================
-MO.FDuiCell_oeDataSave = function FDuiCell_oeDataSave(event){
+MO.FDuiCell_oeSaveDataRow = function FDuiCell_oeSaveDataRow(event){
    var o = this;
    var column = o._column;
    var dataName = column.dataName();
-   var dataset = event.source;
-   var row = dataset.currentRow();
+   var dataRow = event.dataRow;
    var value = o.get();
-   row.set(dataName, value);
-   return EEventStatus.Stop;
+   dataRow.set(dataName, value);
+   return MO.EEventStatus.Stop;
+}
+
+//==========================================================
+// <T>设置单元格的可见性。</T>
+//
+// @method
+// @param v:visible:Boolean 可见性
+//==========================================================
+MO.FDuiCell_setVisible = function FDuiCell_setVisible(value){
+   //this._hPanel.style.display = value ? 'block' : 'none';
+}
+
+//==========================================================
+// <T>设置单元格的焦点。</T>
+//
+// @method
+// @param value:Boolean 是否获得焦点
+//==========================================================
+MO.FDuiCell_focus = function FDuiCell_focus(value){
+   var o = this;
+   //var hEdit = o._hEdit;
+   //if(hEdit){
+   //   o._column._table.selectRow(o._row, true, true);
+   //   hEdit.focus();
+   //   if(value){
+   //      hEdit.select();
+   //   }
+   //}
+}
+
+//==========================================================
+// <T>根据设置信息，刷新单元格的样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
+   var o = this;
+   var t = o._table;
+   var r = o._row;
+   var s = r.isSelect;
+   // 设置编辑颜色
+   var he = o._hEdit;
+   if(he){
+      he.readOnly = true;
+      he.style.color = EColor.TextReadonly;
+      he.style.backgroundColor = bc;
+   }
+   // 设置背景颜色
+   var bc = null;
+   if(s){
+      bc = EColor._rowSelect;
+   }else{
+      var ih = (t.__hoverRow == r);
+      if(ih){
+         bc = EColor._rowHover;
+      }else{
+         bc = EColor._rows[r.index % EColor._rows.length];
+      }
+   }
+   if(o.__focus){
+      bc = EColor._rowEditHover;
+   }
+   o._hPanel.style.backgroundColor = bc;
+}
+
+//==========================================================
+// <T>释放单元格内的所有对象。</T>
+//
+// @method
+//==========================================================
+MO.FDuiCell_dispose = function FDuiCell_dispose(){
+   var o = this;
+   //RMemory.freeHtml(o._hPanel);
+   //o._hPanel = null;
+   //o.hForm = null;
+   //o.hFormLine = null;
+   //o.hIconPanel = null;
+   //o.hIcon = null;
+   //o._hEditPanel = null;
+   //o._hEdit = null;
+   //o.hDropPanel = null;
+   //o.hDrop = null;
+   o.__base.FDuiControl.dispose.call(o);
 }
 
 
@@ -236,89 +337,6 @@ MO.FDuiCell_setText = function FDuiCell_setText(t){
    }else if(o._hEditPanel){
       o._hEditPanel.innerText = t;
    }
-}
-
-//==========================================================
-// <T>设置单元格的焦点。</T>
-//
-// @method
-// @param s:select:Boolean 是否选中数据内容
-//==========================================================
-MO.FDuiCell_focus = function FDuiCell_focus(s){
-   var o = this;
-   var h = o._hEdit;
-   if(h){
-      o._column._table.selectRow(o._row, true, true);
-      h.focus();
-      if(s){
-         h.select();
-      }
-   }
-}
-
-//==========================================================
-// <T>设置单元格的可见性。</T>
-//
-// @method
-// @param v:visible:Boolean 可见性
-//==========================================================
-MO.FDuiCell_setVisible = function FDuiCell_setVisible(v){
-   this._hPanel.style.display = v ? 'block' : 'none';
-}
-
-//==========================================================
-// <T>根据设置信息，刷新单元格的样式。</T>
-//
-// @method
-//==========================================================
-MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
-   var o = this;
-   var t = o._table;
-   var r = o._row;
-   var s = r.isSelect;
-   // 设置编辑颜色
-   var he = o._hEdit;
-   if(he){
-      he.readOnly = true;
-      he.style.color = EColor.TextReadonly;
-      he.style.backgroundColor = bc;
-   }
-   // 设置背景颜色
-   var bc = null;
-   if(s){
-      bc = EColor._rowSelect;
-   }else{
-      var ih = (t.__hoverRow == r);
-      if(ih){
-         bc = EColor._rowHover;
-      }else{
-         bc = EColor._rows[r.index % EColor._rows.length];
-      }
-   }
-   if(o.__focus){
-      bc = EColor._rowEditHover;
-   }
-   o._hPanel.style.backgroundColor = bc;
-}
-
-//==========================================================
-// <T>释放单元格内的所有对象。</T>
-//
-// @method
-//==========================================================
-MO.FDuiCell_dispose = function FDuiCell_dispose(){
-   var o = this;
-   o.base.FDuiControl.dispose.call(o);
-   RMemory.freeHtml(o._hPanel);
-   o._hPanel = null;
-   o.hForm = null;
-   o.hFormLine = null;
-   o.hIconPanel = null;
-   o.hIcon = null;
-   o._hEditPanel = null;
-   o._hEdit = null;
-   o.hDropPanel = null;
-   o.hDrop = null;
 }
 
 //==========================================================

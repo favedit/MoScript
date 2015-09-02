@@ -17,6 +17,7 @@ MO.FGuiTable = function FGuiTable(o){
    o.construct       = MO.FGuiTable_construct;
    // @method
    o.insertRow       = MO.FGuiTable_insertRow;
+   o.loadDataset     = MO.FGuiTable_loadDataset;
    // @method
    o.dispose         = MO.FGuiTable_dispose;
    return o;
@@ -79,6 +80,15 @@ MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
    o._rows.unshift(row);
    o._rowScroll -= o._rowHeight;
    o.dirty();
+}
+
+//==========================================================
+// <T>加载数据集。</T>
+//
+// @method
+// @param dataset:FDataset 数据集
+//==========================================================
+MO.FGuiTable_loadDataset = function FGuiTable_loadDataset(dataset){
 }
 
 //==========================================================

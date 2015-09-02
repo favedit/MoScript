@@ -63,6 +63,16 @@ MO.FDataRow_clear = function FDataRow_clear(){
 }
 MO.FDataRow_loadConfig = function FDataRow_loadConfig(xconfig){
    var o = this;
+   o._statusCd = MO.EDataStatus.View;
+   var attributes = xconfig.attributes();
+   if(attributes){
+      var count = attributes.count();
+      for(var i = 0; i < count; i++){
+         var name = attributes.name(i);
+         var value = attributes.value(i);
+         o.set(name, value);
+      }
+   }
 }
 MO.FDataRow_saveConfig = function FDataRow_saveConfig(xconfig){
    var o = this;
@@ -192,21 +202,19 @@ MO.FDataset_createViewer = function FDataset_createViewer(offset, count){
 }
 MO.FDataset_loadConfig = function FDataset_loadConfig(xconfig){
    var o = this;
-   debugger
-   o._code = x.get('name');
-   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
-   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
-   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
-   o._total = MO.Lang.Integer.parse(x.get('total'));
-   var xns = x.nodes();
-   if(xns){
-      var rs = o._rows;
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         if(xn.isName('Row')){
-            var r = o.createRow();
-            r.loadConfig(xn);
+   o._code = xconfig.get('name');
+   o._pageSize = MO.Lang.Integer.parse(xconfig.get('page_size', 1000));
+   o._pageIndex = MO.Lang.Integer.parse(xconfig.get('page', 0));
+   o._pageCount = MO.Lang.Integer.parse(xconfig.get('page_count', 1));
+   o._total = MO.Lang.Integer.parse(xconfig.get('total'));
+   var xnodes = xconfig.nodes();
+   if(xnodes){
+      var count = xnodes.count();
+      for(var i = 0; i < count; i++){
+         var xnode = xnodes.at(i);
+         if(xnode.isName('Row')){
+            var row = o.createRow();
+            row.loadConfig(xnode);
          }
       }
    }
@@ -384,21 +392,17 @@ MO.FDataSource_selectRow = function FDataSource_selectRow(row){
 }
 MO.FDataSource_loadConfig = function FDataSource_loadConfig(xconfig){
    var o = this;
-   debugger
-   o._code = x.get('name');
-   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
-   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
-   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
-   o._total = MO.Lang.Integer.parse(x.get('total'));
-   var xns = x.nodes();
-   if(xns){
-      var rs = o._rows;
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         if(xn.isName('Row')){
-            var r = o.createRow();
-            r.loadConfig(xn);
+   var xnodes = xconfig.nodes();
+   if(xnodes){
+      var datasets = o._datasets;
+      var count = xnodes.count();
+      for(var i = 0; i < count; i++){
+         var xnode = xnodes.at(i);
+         if(xnode.isName('Dataset')){
+            var datasetName = xnode.get('name');
+            MO.Assert.debugNotEmpty(datasetName);
+            var dataset = o.selectDataset(datasetName);
+            dataset.loadConfig(xnode);
          }
       }
    }

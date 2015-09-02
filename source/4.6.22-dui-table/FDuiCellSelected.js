@@ -6,7 +6,7 @@
 // @version 150123
 //==========================================================
 MO.FDuiCellSelected = function FDuiCellSelected(o){
-   o = MO.Class.inherits(this, o, MO.FCell);
+   o = MO.Class.inherits(this, o, MO.FDuiCell);
    //..........................................................
    // @property
    o._dataName  = '_select';
@@ -42,7 +42,7 @@ MO.FDuiCellSelected = function FDuiCellSelected(o){
 //==========================================================
 MO.FDuiCellSelected_onBuild = function FDuiCellSelected_onBuild(p){
    var o = this;
-   o.__base.FCell.onBuild.call(o, p)
+   o.__base.FDuiCell.onBuild.call(o, p)
    // 创建底板
    var c = o._column;
    var h = o._hPanel;
@@ -106,6 +106,6 @@ MO.FDuiCellSelected_refreshStyle = function FDuiCellSelected_refreshStyle(){
 //==========================================================
 MO.FDuiCellSelected_dispose = function FDuiCellSelected_dispose(){
    var o = this;
-   o.base.FCellEditControl.dispose.call(o);
+   o.base.FDuiCellEditControl.dispose.call(o);
    o._hSelected = null;
 }

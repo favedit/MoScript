@@ -8,29 +8,44 @@ MO.FManageDataTable = function FManageDataTable(o){
    o = MO.Class.inherits(this, o, MO.FDuiTableFrame);
    //..........................................................
    // @attribute
-   o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
-   o._itemName      = MO.Class.register(o, new MO.AGetSet('_itemName'));
    //..........................................................
    // @event
+   o.onRowClick     = MO.FManageDataTable_onRowClick;
    o.onButtonClick  = MO.FManageDataTable_onButtonClick;
    // @event
    o.onBuilded      = MO.FManageDataTable_onBuilded;
    // @event
    o.onDataChanged  = MO.FManageDataTable_onDataChanged;
-   o.onDataLoad     = MO.FManageDataTable_onDataLoad;
+   o.onDataFetch    = MO.FManageDataTable_onDataFetch;
    o.onDataSave     = MO.FManageDataTable_onDataSave;
    o.onDataDelete   = MO.FManageDataTable_onDataDelete;
    //..........................................................
    // @method
    o.construct      = MO.FManageDataTable_construct;
    // @method
+   o.doFetch        = MO.FManageDataTable_doFetch;
    o.doPrepare      = MO.FManageDataTable_doPrepare;
-   o.doLoad         = MO.FManageDataTable_doLoad;
    o.doSave         = MO.FManageDataTable_doSave;
    o.doDelete       = MO.FManageDataTable_doDelete;
    // @method
    o.dispose        = MO.FManageDataTable_dispose;
    return o;
+}
+
+//==========================================================
+// <T>行单击处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FManageDataTable_onRowClick = function FManageDataTable_onRowClick(event){
+   var o = this;
+   var row = event.row;
+   // 显示子项页面
+   var unitFrameName = o._unitFrameName;
+   MO.Assert.debugNotEmpty(unitFrameName);
+   var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
+   unitFrame.doDetail(row);
 }
 
 //==========================================================
@@ -101,12 +116,16 @@ MO.FManageDataTable_onDataChanged = function FManageDataTable_onDataChanged(even
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataTable_onDataLoad = function FManageDataTable_onDataLoad(event){
+MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
    var o = this;
-   var xcontent = event.content;
+   var xservice = event.content;
+   var xcontent = xservice.findNode('Content');
+   var source = MO.Class.create(MO.FDataSource);
+   source.loadConfig(xcontent);
    // 加载数据
-   var xunit = xcontent.nodes().first();
-   o.loadUnit(xunit);
+   o.loadDataset(source.currentDataset());
+   // 允许处理
+   MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -118,27 +137,27 @@ MO.FManageDataTable_onDataLoad = function FManageDataTable_onDataLoad(event){
 MO.FManageDataTable_onDataSave = function FManageDataTable_onDataSave(event){
    var o = this;
    //o._containerName, o._itemName
-   var dataActionCd = o._dataActionCd;
-   switch(dataActionCd){
-      case MO.EUiDataAction.Insert:
-         if(o._logicGroup == 'container'){
-            o._frameSet._catalogContent.reload();
-         }else{
-            o._frameSet._catalogContent.reloadNode();
-         }
-         break;
-      case MO.EUiDataAction.Update:
-         break;
-      case MO.EUiDataAction.Delete:
-         if(o._logicGroup == 'container'){
-            o._frameSet._catalogContent.reload();
-         }else{
-            o._frameSet._catalogContent.reloadParentNode();
-         }
-         break;
-      default:
-         throw new MO.TError(o, 'Invalid data action.');
-   }
+   //var dataActionCd = o._dataActionCd;
+   //switch(dataActionCd){
+   //   case MO.EUiDataAction.Insert:
+   //      if(o._logicGroup == 'container'){
+   //         o._frameSet._catalogContent.reload();
+   //      }else{
+   //         o._frameSet._catalogContent.reloadNode();
+   //      }
+   //      break;
+   //   case MO.EUiDataAction.Update:
+   //      break;
+   //   case MO.EUiDataAction.Delete:
+   //      if(o._logicGroup == 'container'){
+   //         o._frameSet._catalogContent.reload();
+   //      }else{
+   //         o._frameSet._catalogContent.reloadParentNode();
+   //      }
+   //      break;
+   //   default:
+   //      throw new MO.TError(o, 'Invalid data action.');
+   //}
    // 允许处理
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
@@ -172,8 +191,30 @@ MO.FManageDataTable_construct = function FManageDataTable_construct(){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
+MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
+   var o = this;
+   // 禁止处理
+   MO.Console.find(MO.FDuiDesktopConsole).showProgress();
+   // 创建命令
+   var xdocument = new MO.TXmlDocument();
+   var xroot = xdocument.root();
+   var xcontent = xroot.create('Content');
+   xcontent.set('frame_name', o._name);
+   // 发送请求
+   var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=fetch');
+   var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
+   connection.addLoadListener(o, o.onDataFetch);
+}
+
+//==========================================================
+// <T>加载配置信息。</T>
+//
+// @method
+// @param containerName:String 容器名称
+//==========================================================
 MO.FManageDataTable_doPrepare = function FManageDataTable_doPrepare(parameters){
    var o = this;
+   debugger
    // 获得参数
    var logicGroup = o._logicGroup = parameters.get('logic_group');
    var containerName = null;
@@ -194,24 +235,6 @@ MO.FManageDataTable_doPrepare = function FManageDataTable_doPrepare(parameters){
    // 设置容器
    frame.setContainerName(containerName);
    frame.setItemName(itemName);
-}
-
-//==========================================================
-// <T>加载配置信息。</T>
-//
-// @method
-// @param containerName:String 容器名称
-//==========================================================
-MO.FManageDataTable_doLoad = function FManageDataTable_doLoad(typeGroup, containerName, itemName){
-   var o = this;
-   // 设置属性
-   o._containerName = containerName;
-   o._itemName = itemName;
-   o._logicGroup = typeGroup;
-   // 发送请求
-   var url = MO.Lang.String.format('/{1}.ws?action=query&group={2}&container={3}&item={4}', o._logicService, typeGroup, o._containerName, o._itemName);
-   var connection = MO.Console.find(MO.FXmlConsole).send(url);
-   connection.addLoadListener(o, o.onDataLoad);
 }
 
 //==========================================================

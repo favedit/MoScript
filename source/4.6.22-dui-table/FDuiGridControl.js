@@ -22,86 +22,99 @@
 // │└------------┴--------------------------------------┘              │
 // └----------------------------------------------------------------------┘
 //
-// @class FDuiContainer, MForm, MDataset, MValue, MDuiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
+// @class MO.FDuiContainer, MO.MUiDataContainer, MO.MUiDisplayContrainer, MO.MDuiDescribeFrame
 // @history 090922 MAOCY 创建
 //==========================================================
 MO.FDuiGridControl = function FDuiGridControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDataContainer, MO.MUiDisplayContrainer, MO.MDuiDescribeFrame);
    //..........................................................
    // @property
-   o._displayCount        = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
-   //o._displayTitle        = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', MO.EGridDisplay.Title), true);
-   o._displayTitle        = true;
-   o._displayColumnStatus = true;
-   o._displayColumnSelect = true;
-   o._rowHeight           = MO.Class.register(o, new MO.APtyInteger('rowHeight'), 0);
+   o._displayCount            = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
+   //o._displayTitle          = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', MO.EGridDisplay.Title), true);
+   o._displayTitle            = true;
+   o._displayColumnStatus     = true;
+   o._displayColumnSelect     = true;
+   o._rowHeight               = MO.Class.register(o, new MO.APtyInteger('_rowHeight'), 0);
    //..........................................................
    // @style
-   o._stylePanel          = MO.Class.register(o, new MO.AStyle('_stylePanel'));
-   o._styleTitlePanel     = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
-   o._styleTitleForm      = MO.Class.register(o, new MO.AStyle('_styleTitleForm'));
-   o._styleCaption        = MO.Class.register(o, new MO.AStyle('_styleCaption'));
-   o._styleContentPanel   = MO.Class.register(o, new MO.AStyle('_styleContentPanel'));
-   o._styleContentForm    = MO.Class.register(o, new MO.AStyle('_styleContentForm'));
-   o._styleHintPanel      = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
-   o._styleHintForm       = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
-   o._styleHint           = MO.Class.register(o, new MO.AStyle('_styleHint'));
-   o._styleButtonForm     = MO.Class.register(o, new MO.AStyle('_styleButtonForm'));
-   o._styleButton         = MO.Class.register(o, new MO.AStyle('_styleButton'));
+   o._stylePanel              = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._styleTitlePanel         = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
+   o._styleTitleForm          = MO.Class.register(o, new MO.AStyle('_styleTitleForm'));
+   o._styleCaption            = MO.Class.register(o, new MO.AStyle('_styleCaption'));
+   o._styleContentPanel       = MO.Class.register(o, new MO.AStyle('_styleContentPanel'));
+   o._styleContentForm        = MO.Class.register(o, new MO.AStyle('_styleContentForm'));
+   o._styleHintPanel          = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
+   o._styleHintForm           = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
+   o._styleHint               = MO.Class.register(o, new MO.AStyle('_styleHint'));
+   o._styleButtonForm         = MO.Class.register(o, new MO.AStyle('_styleButtonForm'));
+   o._styleButton             = MO.Class.register(o, new MO.AStyle('_styleButton'));
    //..........................................................
    // @attribute
-   o._minHeight           = 80;
+   o._minHeight               = 80;
    // @attribute
-   o._buttons             = null;
-   o._columns             = null;
-   o._rowClass            = MO.FDuiGridRow;
-   o._rows                = null;
+   o._buttons                 = null;
+   o._columns                 = null;
+   o._rowClass                = MO.FDuiGridRow;
+   o._rows                    = null;
    // @attribute
-   o._focusCell           = null;
-   o._focusRow            = null;
+   o._focusCell               = null;
+   o._focusRow                = null;
    // @attribute
-   o._loadEvent           = null; 
+   o._loadEvent               = null; 
    //..........................................................
    // @html
-   o._hTitlePanel         = null;
-   o._hTitleForm          = null;
-   o._hTitleLine          = null;
-   o._hCaption            = null;
-   o._hContentPanel       = null;
-   o._hHintPanel          = null;
-   o._hHintForm           = null;
+   o._hTitlePanel             = null;
+   o._hTitleForm              = null;
+   o._hTitleLine              = null;
+   o._hCaption                = null;
+   o._hContentPanel           = null;
+   o._hHintPanel              = null;
+   o._hHintForm               = null;
+   // @html
+   o._hRows                   = null;
    //..........................................................
    // @listeners
-   o.lsnsRowClick         = null;
-   o.lsnsRowDblClick      = null;
+   o._listenersRowClick       = MO.Class.register(o, new MO.AListener('_listenersRowClick'));
+   o._listenersRowDoubleClick = MO.Class.register(o, new MO.AListener('_listenersRowDoubleClick'));
    //..........................................................
    // @event
-   o.onBuildTitle         = MO.FDuiGridControl_onBuildTitle;
-   o.onBuildContent       = MO.Method.virtual(o, 'onBuildContent');
-   o.onBuildHint          = MO.FDuiGridControl_onBuildHint;
-   o.onBuildPanel         = MO.FDuiGridControl_onBuildPanel;
-   o.onBuild              = MO.FDuiGridControl_onBuild;
+   o.onBuildTitle             = MO.FDuiGridControl_onBuildTitle;
+   o.onBuildContent           = MO.Method.virtual(o, 'onBuildContent');
+   o.onBuildHint              = MO.FDuiGridControl_onBuildHint;
+   o.onBuildPanel             = MO.FDuiGridControl_onBuildPanel;
+   o.onBuild                  = MO.FDuiGridControl_onBuild;
    // @event
-   o.onDatasetLoadDelay   = MO.FDuiGridControl_onDatasetLoadDelay;
-   o.onDatasetLoad        = MO.FDuiGridControl_onDatasetLoad;
+   o.onRowMouseEnter          = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), MO.FDuiGridControl_onRowMouseEnter);
+   o.onRowMouseLeave          = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), MO.FDuiGridControl_onRowMouseLeave);
+   o.onRowClick               = MO.Class.register(o, new MO.AEventClick('onRowClick'), MO.FDuiGridControl_onRowClick);
+   // @event
+   o.onDatasetLoadDelay       = MO.FDuiGridControl_onDatasetLoadDelay;
+   o.onDatasetLoad            = MO.FDuiGridControl_onDatasetLoad;
    //..........................................................
    // @method
-   o.construct            = MO.FDuiGridControl_construct;
+   o.construct                = MO.FDuiGridControl_construct;
    // @method
-   o.buildNavigatorButton = MO.FDuiGridControl_buildNavigatorButton;
+   o.buildNavigatorButton     = MO.FDuiGridControl_buildNavigatorButton;
    // @method
-   o.appendColumn         = MO.Method.virtual(o, 'appendColumn');
-   o.appendChild          = MO.FDuiGridControl_appendChild;
-   o.push                 = MO.FDuiGridControl_push;
+   o.appendColumn             = MO.Method.virtual(o, 'appendColumn');
+   o.appendChild              = MO.FDuiGridControl_appendChild;
+   o.push                     = MO.FDuiGridControl_push;
    // @method
-   o.createRow            = MO.FDuiGridControl_createRow;
-   o.insertRow            = MO.FDuiGridControl_insertRow;
-   o.syncRow              = MO.FDuiGridControl_syncRow;
-   o.hideRows             = MO.FDuiGridControl_hideRows;
+   o.createRow                = MO.FDuiGridControl_createRow;
+   o.insertRow                = MO.FDuiGridControl_insertRow;
+   o.pushRow                  = MO.FDuiGridControl_pushRow;
+   o.syncRow                  = MO.FDuiGridControl_syncRow;
+   o.hideRows                 = MO.FDuiGridControl_hideRows;
    // @method
-   o.clickCell            = MO.FDuiGridControl_clickCell;
-   o.clickRow             = MO.FDuiGridControl_clickRow;
-   o.doubleClickRow       = MO.FDuiGridControl_doubleClickRow;
+   o.loadDataset              = MO.FDuiGridControl_loadDataset;
+   // @method
+   o.clickCell                = MO.FDuiGridControl_clickCell;
+   o.clickRow                 = MO.FDuiGridControl_clickRow;
+   o.doubleClickRow           = MO.FDuiGridControl_doubleClickRow;
+   o.hoverRow                 = MO.FDuiGridControl_hoverRow;
+   o.selectRow                = MO.FDuiGridControl_selectRow;
+
+
 
 
 
@@ -151,7 +164,6 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    //o._hSearch               = null;
    //o._hFixRowLine           = null;
    //o._hFixRows              = null;
-   //o._hRows                 = null;
    //o._hRowLine              = null;
    //o._hDelayPanel           = null;
    //o._hDelayText            = null;
@@ -166,10 +178,6 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    //o.onDataScroll           = MO.Class.register(o, new MO.AEventScroll('onDataScroll'), FDuiGridControl_onDataScroll);
    // @event 单元格内按键按下
    //o.onCellKeyDown          = MO.Class.register(o, new MO.AEventKeyDown('onCellKeyDown'), FDuiGridControl_onCellKeyDown);
-   //o.onRowMouseEnter        = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), FDuiGridControl_onRowMouseEnter);
-   //o.onRowMouseLeave        = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), FDuiGridControl_onRowMouseLeave);
-   // @event 行控件单击事件
-   //o.onRowClick             = MO.Class.register(o, new MO.AEventClick('onRowClick'), FDuiGridControl_onRowClick);
    // @event 行控件双击事件
    //o.onColumnSearchKeyDown  = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
    //o.onButtonMouseDown      = MO.Class.register(o, new MO.AEventMouseDown('onButtonMouseDown'), FDuiGridControl_onButtonMouseDown);
@@ -209,8 +217,6 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    //o.getRows                = FDuiGridControl_getRows;
    //o.refreshHint            = FDuiGridControl_refreshHint;
    //o.refreshSelected        = FDuiGridControl_refreshSelected;
-   //o.hoverRow               = FDuiGridControl_hoverRow;
-   //o.selectRow              = FDuiGridControl_selectRow;
    //o.clearSelectRow         = FDuiGridControl_clearSelectRow;
    //o.clearSelectRows        = FDuiGridControl_clearSelectRows;
    //o.setDataStatus          = FDuiGridControl_setDataStatus;
@@ -406,6 +412,35 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
    //}
    // 设置数据
    //o._dsPageSize = o._displayCount;
+}
+
+//==========================================================
+// <T>行获得热点处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiGridControl_onRowMouseEnter = function FDuiGridControl_onRowMouseEnter(event){
+   this.hoverRow(s, true);
+}
+
+//==========================================================
+// <T>行获得热点处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiGridControl_onRowMouseLeave = function FDuiGridControl_onRowMouseLeave(event){
+   this.hoverRow(s, false);
+}
+
+//==========================================================
+// <T>行单击处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiGridControl_onRowClick = function FDuiGridControl_onRowClick(event){
 }
 
 //==========================================================
@@ -624,6 +659,8 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(component){
    }else if(MO.Class.isClass(component, MO.FDuiTableButton)){
       component._table = o;
       o._buttons.set(component.name(), component);
+   }else if(MO.Class.isClass(component, MO.FDuiGridRowControl)){
+      component._table = o;
    }
    // 父处理
    o.__base.FDuiContainer.push.call(o, component);
@@ -634,12 +671,13 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(component){
 // <P>当前行并没有被放入表格中。</P>
 //
 // @method
-// @return FGridRowControl 行控件
+// @return FDuiGridRowControl 行控件
 //==========================================================
 MO.FDuiGridControl_createRow = function FDuiGridControl_createRow(){
    var o = this;
    var row = MO.Class.create(o._rowClass);
    row._table = row._parent = o;
+   row.build(o._hPanel);
    return row;
 }
 
@@ -647,22 +685,41 @@ MO.FDuiGridControl_createRow = function FDuiGridControl_createRow(){
 // <T>在指定位置插入一个空行。</T>
 //
 // @method
-// @param i:index:Integer 索引位置
-// @param r:row:FGridRowControl 行对象
+// @param index:Integer 索引位置
+// @param row:FDuiGridRowControl 行对象
 //==========================================================
-MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(i, r){
+MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(index, row){
    var o = this;
-   r.index = i;
-   r.build();
+   row.index = index;
+   row.build();
    // 追加到表的数据行集内
-   if(r._hFixPanel){
-      o._hFixRows.appendChild(r._hFixPanel);
-      MO.Window.Html.tableMoveRow(o._hColumnForm, r._hFixPanel.rowIndex, i + 2);
+   if(row._hFixPanel){
+      o._hFixRows.appendChild(row._hFixPanel);
+      MO.Window.Html.tableMoveRow(o._hColumnForm, row._hFixPanel.rowIndex, index + 2);
    }
-   o._hRows.appendChild(r._hPanel);
-   MO.Window.Html.tableMoveRow(o._hContentForm, r._hPanel.rowIndex, i + 2);
-   r.refreshStyle();
-   o._rows.insert(i, r);
+   o._hRows.appendChild(row._hPanel);
+   MO.Window.Html.tableMoveRow(o._hContentForm, row._hPanel.rowIndex, index + 2);
+   row.refreshStyle();
+   o._rows.insert(index, row);
+}
+
+//==========================================================
+// <T>在指定位置插入一个空行。</T>
+//
+// @method
+// @param row:FDuiGridRowControl 行对象
+//==========================================================
+MO.FDuiGridControl_pushRow = function FDuiGridControl_pushRow(row){
+   var o = this;
+   // 追加到表的数据行集内
+   var hFixPanel = row._hFixPanel;
+   if(hFixPanel){
+      o._hFixRows.appendChild(hFixPanel);
+   }
+   o._hRows.appendChild(row._hPanel);
+   row._hPanel.style.height = hFixPanel.offsetHeight + 'px';
+   //row.refreshStyle();
+   o._rows.push(row);
 }
 
 //==========================================================
@@ -670,7 +727,7 @@ MO.FDuiGridControl_insertRow = function FDuiGridControl_insertRow(i, r){
 //
 // @method
 // @param p:index:Integer 行号
-// @return FGridRowControl 行控件
+// @return FDuiGridRowControl 行控件
 //==========================================================
 MO.FDuiGridControl_syncRow = function FDuiGridControl_syncRow(p){
    var o = this;
@@ -708,10 +765,29 @@ MO.FDuiGridControl_syncRow = function FDuiGridControl_syncRow(p){
 //==========================================================
 MO.FDuiGridControl_hideRows = function FDuiGridControl_hideRows(){
    var o = this;
-   var rs = o._rows;
-   var c = rs.count();
-   for(var i = c - 1; i >= 0 ; i--){
-      rs.get(i).setVisible(false);
+   var rows = o._rows;
+   var count = rows.count();
+   for(var i = count - 1; i >= 0 ; i--){
+      var row = rows.at(i);
+      row.setVisible(false);
+   }
+}
+
+//==========================================================
+// <T>加载数据集。</T>
+//
+// @method
+// @param dataset:FDataset 数据集
+//==========================================================
+MO.FDuiGridControl_loadDataset = function FDuiGridControl_loadDataset(dataset){
+   var o = this;
+   var dataRows = dataset.rows();
+   var count = dataRows.count();
+   for(var i = 0; i < count ; i++){
+      var dataRow = dataRows.at(i);
+      var row = o.createRow();
+      row.loadDataRow(dataRow);
+      o.pushRow(row);
    }
 }
 
@@ -719,23 +795,29 @@ MO.FDuiGridControl_hideRows = function FDuiGridControl_hideRows(){
 // <T>单击一个单元格。</T>
 //
 // @method
-// @param p:cell:FCell 单元格
+// @param cell:FDuiCell 单元格
 //==========================================================
-MO.FDuiGridControl_clickCell = function FDuiGridControl_clickCell(p){
-   this._focusCell = p;
+MO.FDuiGridControl_clickCell = function FDuiGridControl_clickCell(cell){
+   this._focusCell = cell;
 }
 
 //==========================================================
-// <T>单击一个表格行。</T>
+// <T>单击一个网格行。</T>
 //
 // @method
-// @param p:row:FGridRow 单元格
+// @param row:FDuiGridRowControl 单元格
 //==========================================================
-MO.FDuiGridControl_clickRow = function FDuiGridControl_clickRow(p){
+MO.FDuiGridControl_clickRow = function FDuiGridControl_clickRow(row){
    var o = this;
-   // 响应监听
-   o.lsnsRowClick.process(p);
-   o._focusRow = p;
+   // 设置焦点行
+   o._focusRow = row;
+   // 处理监听
+   var event = new MO.SEvent(o);
+   event.grid = o;
+   event.row = row;
+   o.onRowClick(event);
+   o.processRowClickListener(event);
+   event.dispose();
    //if(o.callEvent('onTableRowClick', r)){
    //   return;
    //}
@@ -752,16 +834,21 @@ MO.FDuiGridControl_clickRow = function FDuiGridControl_clickRow(p){
 }
 
 //==========================================================
-// <T>双击一个表格行。</T>
+// <T>双击一个网格行。</T>
 //
 // @method
-// @param p:row:FGridRow 单元格
+// @param row:FDuiGridRowControl 单元格
 //==========================================================
-MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(p){
+MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(row){
    var o = this;
+   // 设置焦点行
+   o._focusRow = row;
    // 处理监听
-   o.lsnsRowDblClick.process(p);
-   o._focusRow = p;
+   var event = new MO.SEvent(o);
+   event.grid = o;
+   event.row = row;
+   o.processRowDoubleClickListener(event);
+   event.dispose();
    // 调用事件
    //if(o.callEvent('onTableRowDoubleClick', r)){
    //   return;
@@ -937,16 +1024,6 @@ MO.FDuiGridControl_onCellKeyDown = function FDuiGridControl_onCellKeyDown(c, e, 
    } else {
       o.processKeyDown(e);
    }*/
-}
-
-//==========================================================
-MO.FDuiGridControl_onRowMouseEnter = function FDuiGridControl_onRowMouseEnter(s, e){
-   this.hoverRow(s, true);
-}
-
-//==========================================================
-MO.FDuiGridControl_onRowMouseLeave = function FDuiGridControl_onRowMouseLeave(s, e){
-   this.hoverRow(s, false);
 }
 
 //==========================================================
@@ -1236,7 +1313,7 @@ MO.FDuiGridControl_getRowBar = function FDuiGridControl_getRowBar(){
    var o = this;
    var rb = o._rowBar;
    if(!rb){
-      rb = o._rowBar = MO.Class.create(FGridRowBar);
+      rb = o._rowBar = MO.Class.create(FDuiGridRowControlBar);
       rb.table = o;
       rb.psBuild(o.hBorderPanel);
    }
@@ -1271,7 +1348,7 @@ MO.FDuiGridControl_calculateDataSize = function FDuiGridControl_calculateDataSiz
 //<P>当前行并没有被放入表格中。</P>
 //
 //@method
-//@return FGridRowControl 行控件
+//@return FDuiGridRowControl 行控件
 //==========================================================
 MO.FDuiGridControl_hasVisibleRow = function FDuiGridControl_hasVisibleRow() {
    var o = this;
@@ -1422,7 +1499,7 @@ MO.FDuiGridControl_refreshSelected = function FDuiGridControl_refreshSelected(){
 // <T>热点一行数据。</T>
 //
 // @method
-// @param r:row:FGridRowControl 热点行
+// @param r:row:FDuiGridRowControl 热点行
 // @param f:flag:Boolean 是否给与热点
 //==========================================================
 MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
@@ -1507,7 +1584,7 @@ MO.FDuiGridControl_clearSelectRows = function FDuiGridControl_clearSelectRows() 
 // <T>设置一行的数据状态。</T>
 //
 // @method
-// @param r:row:FGridRowControl 数据行对象
+// @param r:row:FDuiGridRowControl 数据行对象
 // @param s:status:EDataStatus 数据状态
 //==========================================================
 MO.FDuiGridControl_setDataStatus = function FDuiGridControl_setDataStatus(r, s) {
@@ -1713,7 +1790,7 @@ MO.FDuiGridControl_buildRows = function FDuiGridControl_buildRows(){
       var c = o._displayCount;
       for(var n = 0; n < c; n++){
          // 建立一行
-         var r = MO.Class.create(FGridRow);
+         var r = MO.Class.create(FDuiGridRowControl);
          r.table = this;
          r.build();
          // 追加到表的数据行集内
@@ -1727,7 +1804,7 @@ MO.FDuiGridControl_buildRows = function FDuiGridControl_buildRows(){
 MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(config) {
    var o = this;
    var c = o.__base.FDuiContainer.createChild.call(o, config);
-   if(MO.Class.isClass(c, FGridRow)){
+   if(MO.Class.isClass(c, FDuiGridRowControl)){
       c.table = o;
       c.row = o.dsLoadRowNode(config);
       o._rows.push(c);
@@ -1830,7 +1907,7 @@ MO.FDuiGridControl_onColumnTreeService = function FDuiGridControl_onColumnTreeSe
       pr.psResize();
       var idx = pr._hPanel.rowIndex + 1;
       for(var n = 0; n < rs.count; n++){
-         var r = MO.Class.create(FGridRow);
+         var r = MO.Class.create(FDuiGridRowControl);
          r.table = o;
          pr.childRows.push(r);
          r.parentRow = pr;
@@ -1847,7 +1924,7 @@ MO.FDuiGridControl_getRowType = function FDuiGridControl_getRowType(){
    var ct = cs.count;
    for(var n = 0; n < ct; n++){
       var c = cs.value(n);
-      if(MO.Class.isClass(c, FGridRowType)){
+      if(MO.Class.isClass(c, FDuiGridRowControlType)){
          return c;
       }
    }

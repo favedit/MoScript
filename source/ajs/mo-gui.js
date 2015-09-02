@@ -2232,6 +2232,7 @@ MO.FGuiTable = function FGuiTable(o){
    o.oeUpdate        = MO.FGuiTable_oeUpdate;
    o.construct       = MO.FGuiTable_construct;
    o.insertRow       = MO.FGuiTable_insertRow;
+   o.loadDataset     = MO.FGuiTable_loadDataset;
    o.dispose         = MO.FGuiTable_dispose;
    return o;
 }
@@ -2269,6 +2270,8 @@ MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
    o._rows.unshift(row);
    o._rowScroll -= o._rowHeight;
    o.dirty();
+}
+MO.FGuiTable_loadDataset = function FGuiTable_loadDataset(dataset){
 }
 MO.FGuiTable_dispose = function FGuiTable_dispose(){
    var o = this;

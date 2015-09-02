@@ -9,8 +9,7 @@ MO.FDuiColumnEdit = function FDuiColumnEdit(o){
    o = MO.Class.inherits(this, o, MO.FDuiColumnEditControl, MO.MUiPropertyEdit);
    //..........................................................
    // @attribute
-   o._cellClass     = MO.FCellEdit;
-
+   o._cellClass     = MO.FDuiCellEdit;
 
 
 

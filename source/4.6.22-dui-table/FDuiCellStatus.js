@@ -6,16 +6,18 @@
 // @version 150123
 //==========================================================
 MO.FDuiCellStatus = function FDuiCellStatus(o){
-   o = MO.Class.inherits(this, o, MO.FCell);
+   o = MO.Class.inherits(this, o, MO.FDuiCell);
    //..........................................................
    // @property
-   o._dataName = '_status';
+   o._dataName   = '_status';
    //..........................................................
    // @html
-   o._hStatus  = null;
+   o._hStatus    = null;
    //..........................................................
    // @event
-   o.onBuild   = MO.FDuiCellStatus_onBuild;
+   o.onBuild     = MO.FDuiCellStatus_onBuild;
+   // @event
+   //o.onCellClick = MO.FDuiCellStatus_onCellClick;
 
 
    //..........................................................
@@ -41,7 +43,7 @@ MO.FDuiCellStatus = function FDuiCellStatus(o){
 //==========================================================
 MO.FDuiCellStatus_onBuild = function FDuiCellStatus_onBuild(p){
    var o = this;
-   o.__base.FCell.onBuild.call(o, p)
+   o.__base.FDuiCell.onBuild.call(o, p)
    // 创建底板
    var c = o._column;
    var h = o._hPanel;
@@ -107,6 +109,6 @@ MO.FDuiCellStatus_refreshStyle = function FDuiCellStatus_refreshStyle(){
 //==========================================================
 MO.FDuiCellStatus_dispose = function FDuiCellStatus_dispose(){
    var o = this;
-   o.base.FCellEditControl.dispose.call(o);
+   o.base.FDuiCellEditControl.dispose.call(o);
    o._hStatus = null;
 }

@@ -4684,12 +4684,12 @@ MO.TNode_nodes = function TNode_nodes(){
 MO.TNode_get = function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;
 }
-MO.TNode_getInteger = function TNode_getInteger(n, v){
-   return MO.Lang.Integer.parse(this.get(n, v));
+MO.TNode_getInteger = function TNode_getInteger(name, defaultValue){
+   return MO.Lang.Integer.parse(this.get(name, defaultValue));
 }
-MO.TNode_set = function TNode_set(n, v){
-   if(v != null){
-      this.attributes().set(n, v);
+MO.TNode_set = function TNode_set(name, value){
+   if(value != null){
+      this.attributes().set(name, value);
    }
 }
 MO.TNode_setNvl = function TNode_setNvl(name, value){
@@ -34963,6 +34963,16 @@ MO.FDataRow_clear = function FDataRow_clear(){
 }
 MO.FDataRow_loadConfig = function FDataRow_loadConfig(xconfig){
    var o = this;
+   o._statusCd = MO.EDataStatus.View;
+   var attributes = xconfig.attributes();
+   if(attributes){
+      var count = attributes.count();
+      for(var i = 0; i < count; i++){
+         var name = attributes.name(i);
+         var value = attributes.value(i);
+         o.set(name, value);
+      }
+   }
 }
 MO.FDataRow_saveConfig = function FDataRow_saveConfig(xconfig){
    var o = this;
@@ -35092,21 +35102,19 @@ MO.FDataset_createViewer = function FDataset_createViewer(offset, count){
 }
 MO.FDataset_loadConfig = function FDataset_loadConfig(xconfig){
    var o = this;
-   debugger
-   o._code = x.get('name');
-   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
-   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
-   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
-   o._total = MO.Lang.Integer.parse(x.get('total'));
-   var xns = x.nodes();
-   if(xns){
-      var rs = o._rows;
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         if(xn.isName('Row')){
-            var r = o.createRow();
-            r.loadConfig(xn);
+   o._code = xconfig.get('name');
+   o._pageSize = MO.Lang.Integer.parse(xconfig.get('page_size', 1000));
+   o._pageIndex = MO.Lang.Integer.parse(xconfig.get('page', 0));
+   o._pageCount = MO.Lang.Integer.parse(xconfig.get('page_count', 1));
+   o._total = MO.Lang.Integer.parse(xconfig.get('total'));
+   var xnodes = xconfig.nodes();
+   if(xnodes){
+      var count = xnodes.count();
+      for(var i = 0; i < count; i++){
+         var xnode = xnodes.at(i);
+         if(xnode.isName('Row')){
+            var row = o.createRow();
+            row.loadConfig(xnode);
          }
       }
    }
@@ -35284,21 +35292,17 @@ MO.FDataSource_selectRow = function FDataSource_selectRow(row){
 }
 MO.FDataSource_loadConfig = function FDataSource_loadConfig(xconfig){
    var o = this;
-   debugger
-   o._code = x.get('name');
-   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
-   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
-   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
-   o._total = MO.Lang.Integer.parse(x.get('total'));
-   var xns = x.nodes();
-   if(xns){
-      var rs = o._rows;
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         if(xn.isName('Row')){
-            var r = o.createRow();
-            r.loadConfig(xn);
+   var xnodes = xconfig.nodes();
+   if(xnodes){
+      var datasets = o._datasets;
+      var count = xnodes.count();
+      for(var i = 0; i < count; i++){
+         var xnode = xnodes.at(i);
+         if(xnode.isName('Dataset')){
+            var datasetName = xnode.get('name');
+            MO.Assert.debugNotEmpty(datasetName);
+            var dataset = o.selectDataset(datasetName);
+            dataset.loadConfig(xnode);
          }
       }
    }
@@ -37340,8 +37344,8 @@ MO.MUiDataset_doSearch = function MUiDataset_doSearch(){
 MO.MUiDataValue = function MUiDataValue(o){
    o = MO.Class.inherits(this, o, MO.MUiValue);
    o._dataValue = MO.Class.register(o, [new MO.APtyString('_dataValue'), new MO.AGetSet('_dataValue')]);
-   o.oeLoadUnit = MO.Method.empty;
-   o.oeSaveUnit = MO.Method.empty;
+   o.oeLoadDataRow = MO.Method.empty;
+   o.oeSaveDataRow = MO.Method.empty;
    return o;
 }
 MO.MUiDisplayContrainer = function MUiDisplayContrainer(o){
@@ -41061,6 +41065,7 @@ MO.FGuiTable = function FGuiTable(o){
    o.oeUpdate        = MO.FGuiTable_oeUpdate;
    o.construct       = MO.FGuiTable_construct;
    o.insertRow       = MO.FGuiTable_insertRow;
+   o.loadDataset     = MO.FGuiTable_loadDataset;
    o.dispose         = MO.FGuiTable_dispose;
    return o;
 }
@@ -41098,6 +41103,8 @@ MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
    o._rows.unshift(row);
    o._rowScroll -= o._rowHeight;
    o.dirty();
+}
+MO.FGuiTable_loadDataset = function FGuiTable_loadDataset(dataset){
 }
 MO.FGuiTable_dispose = function FGuiTable_dispose(){
    var o = this;

@@ -230,38 +230,23 @@ MO.FDataset_createViewer = function FDataset_createViewer(offset, count){
 //==========================================================
 MO.FDataset_loadConfig = function FDataset_loadConfig(xconfig){
    var o = this;
-   debugger
-   // 获得数据集信息
-   o._code = x.get('name');
-   o._pageSize = MO.Lang.Integer.parse(x.get('page_size', 1000));
-   o._pageIndex = MO.Lang.Integer.parse(x.get('page', 0));
-   o._pageCount = MO.Lang.Integer.parse(x.get('page_count', 1));
-   o._total = MO.Lang.Integer.parse(x.get('total'));
-   // 加载数据行记录
-   var xns = x.nodes();
-   if(xns){
-      var rs = o._rows;
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         if(xn.isName('Row')){
-            var r = o.createRow();
-            r.loadConfig(xn);
-            // 察看原来的缓冲中是否有数据行，有则使用旧对象
-            //var r = rs.memory[n];
-            //if(!r){
-            //   var r = new FDataRow();
-            //   r.dataset = o;
-            //   rs._count = n;
-            //   rs.push(r);
-            //}else{
-            //   r.release();
-            //}
-            // 加载行对象的数据
-            //r.loadNode(xr);
+   // 加载数据集信息
+   o._code = xconfig.get('name');
+   o._pageSize = MO.Lang.Integer.parse(xconfig.get('page_size', 1000));
+   o._pageIndex = MO.Lang.Integer.parse(xconfig.get('page', 0));
+   o._pageCount = MO.Lang.Integer.parse(xconfig.get('page_count', 1));
+   o._total = MO.Lang.Integer.parse(xconfig.get('total'));
+   // 加载数据行集合
+   var xnodes = xconfig.nodes();
+   if(xnodes){
+      var count = xnodes.count();
+      for(var i = 0; i < count; i++){
+         var xnode = xnodes.at(i);
+         if(xnode.isName('Row')){
+            var row = o.createRow();
+            row.loadConfig(xnode);
          }
       }
-      //rs._count = xrc;
    }
 }
 

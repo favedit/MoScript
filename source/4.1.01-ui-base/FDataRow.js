@@ -123,6 +123,18 @@ MO.FDataRow_clear = function FDataRow_clear(){
 //==========================================================
 MO.FDataRow_loadConfig = function FDataRow_loadConfig(xconfig){
    var o = this;
+   // 设置属性
+   o._statusCd = MO.EDataStatus.View;
+   // 加载数据行
+   var attributes = xconfig.attributes();
+   if(attributes){
+      var count = attributes.count();
+      for(var i = 0; i < count; i++){
+         var name = attributes.name(i);
+         var value = attributes.value(i);
+         o.set(name, value);
+      }
+   }
 }
 
 //==========================================================

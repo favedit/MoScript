@@ -37,10 +37,10 @@ MO.FManageSpaceToolBar_onInsertClick = function FManageSpaceToolBar_onInsertClic
    var frame = o._frameSet.activeFrame();
    if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       // 显示子项页面
-      var itemFrameName = frame.itemFrameName();
-      MO.Assert.debugNotEmpty(itemFrameName);
-      var itemFrame = o._frameSet.selectSpaceFrame(itemFrameName);
-      itemFrame.doPrepare();
+      var unitFrameName = frame.unitFrameName();
+      MO.Assert.debugNotEmpty(unitFrameName);
+      var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
+      unitFrame.doPrepare();
    }
 }
 
