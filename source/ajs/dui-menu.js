@@ -1,3 +1,264 @@
+MO.FDuiHistoryBar = function FDuiHistoryBar(o){
+   o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiDescribeFrame);
+   o._stylePanel           = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._styleMenuPanel       = MO.Class.register(o, new MO.AStyle('_styleMenuPanel'));
+   o._styleGroupPanel      = MO.Class.register(o, new MO.AStyle('_styleGroupPanel'));
+   o._buttons              = null;
+   o._buttonPool           = null;
+   o._listenersButtonClick = MO.Class.register(o, new MO.AListener('_listenersButtonClick'));
+   o._hLine                 = null;
+   o.onBuildPanel           = MO.FDuiHistoryBar_onBuildPanel;
+   o.onEnter                = MO.Method.empty;
+   o.onLeave                = MO.Method.empty;
+   o.construct              = MO.FDuiHistoryBar_construct;
+   o.appendChild            = MO.FDuiHistoryBar_appendChild;
+   o.removeChild            = MO.FDuiHistoryBar_removeChild;
+   o.historyPush            = MO.FDuiHistoryBar_historyPush;
+   o.historyPop             = MO.FDuiHistoryBar_historyPop;
+   o.historyClear           = MO.FDuiHistoryBar_historyClear;
+   o.dispose                = MO.FDuiHistoryBar_dispose;
+   return o;
+}
+MO.FDuiHistoryBar_onBuildPanel = function FDuiHistoryBar_onBuildPanel(event){
+   var o = this;
+   var hPanel = o._hPanel = MO.Window.Builder.createTable(event, o.styleName('Panel'));
+   o._hLine = MO.Window.Builder.appendTableRow(hPanel);
+}
+MO.FDuiHistoryBar_construct = function FDuiHistoryBar_construct(){
+   var o = this;
+   o.__base.FDuiContainer.construct.call(o);
+   o._buttons = new MO.TObjects();
+   o._buttonPool = MO.Class.create(MO.FObjectPool);
+}
+MO.FDuiHistoryBar_appendChild = function FDuiHistoryBar_appendChild(control){
+   var o = this;
+   o.__base.FDuiContainer.appendChild.call(o, control);
+   if(MO.Class.isClass(control, MO.FDuiHistoryButton)){
+      o._hLine.appendChild(control._hSplit);
+      o._hLine.appendChild(control._hPanel);
+   }
+}
+MO.FDuiHistoryBar_removeChild = function FDuiHistoryBar_removeChild(control){
+   var o = this;
+   if(MO.Class.isClass(control, MO.FDuiHistoryButton)){
+      o._hLine.removeChild(control._hSplit);
+      o._hLine.removeChild(control._hPanel);
+   }
+   o.__base.FDuiContainer.removeChild.call(o, control);
+}
+MO.FDuiHistoryBar_historyPush = function FDuiHistoryBar_historyPush(){
+   var o = this;
+   var button = o._buttonPool.alloc();
+   if(!button){
+      button = MO.Class.create(MO.FDuiHistoryButton);
+      button.setParent(o);
+      button.build(o);
+   }
+   o.appendChild(button);
+   if(o._buttons.isEmpty()){
+      button._hSplit.innerHTML = '';
+   }else{
+      button._hSplit.innerHTML = '>';
+   }
+   o._buttons.push(button);
+   return button;
+}
+MO.FDuiHistoryBar_historyPop = function FDuiHistoryBar_historyPop(button){
+   var o = this;
+   var buttons = o._buttons;
+   var count = buttons.count();
+   if(count > 1){
+      if(!button){
+         button = buttons.last();
+      }
+      for(var i = count - 1; i >= 0; i--){
+         var findButton = buttons.at(i);
+         o.removeChild(button);
+         buttons.remove(findButton);
+         o._buttonPool.free(findButton);
+         if(findButton == button){
+            break;
+         }
+      }
+   }
+   return buttons.last();
+}
+MO.FDuiHistoryBar_historyClear = function FDuiHistoryBar_historyClear(){
+   var o = this;
+   var buttons = o._buttons;
+   var count = buttons.count();
+   for(var i = count - 1; i >= 0; i--){
+      var button = buttons.at(i);
+      o.removeChild(button);
+      o._buttonPool.free(button);
+   }
+   buttons.clear();
+}
+MO.FDuiHistoryBar_dispose = function FDuiHistoryBar_dispose(){
+   var o = this;
+   o._buttons = MO.Lang.Object.dispose(o._buttons);
+   o._buttonPool = MO.Lang.Object.dispose(o._buttonPool);
+   o._hLine = MO.Window.Html.free(o._hLine);
+   o.__base.FDuiContainer.dispose.call(o);
+}
+MO.FDuiHistoryButton = function FDuiHistoryButton(o){
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiMenuButton);
+   o._icon            = MO.Class.register(o, [new MO.APtyString('_icon'), new MO.AGetter('_icon')]);
+   o._iconDisable     = MO.Class.register(o, [new MO.APtyString('_iconDisable'), new MO.AGetter('_iconDisable')]);
+   o._hotkey          = MO.Class.register(o, [new MO.APtyString('_hotkey'), new MO.AGetter('_hotkey')]);
+   o._action          = MO.Class.register(o, [new MO.APtyString('_action'), new MO.AGetter('_action')]);
+   o._styleNormal     = MO.Class.register(o, new MO.AStyle('_styleNormal'));
+   o._styleHover      = MO.Class.register(o, new MO.AStyle('_styleHover'));
+   o._stylePress      = MO.Class.register(o, new MO.AStyle('_stylePress'));
+   o._styleDisable    = MO.Class.register(o, new MO.AStyle('_styleDisable'));
+   o._styleIconPanel  = MO.Class.register(o, new MO.AStyle('_styleIconPanel'));
+   o._styleSpacePanel = MO.Class.register(o, new MO.AStyle('_styleSpacePanel'));
+   o._styleLabelPanel = MO.Class.register(o, new MO.AStyle('_styleLabelPanel'));
+   o._disabled        = false;
+   o._listenersClick  = MO.Class.register(o, new MO.AListener('_listenersClick', MO.EEvent.Click));
+   o._hForm           = null;
+   o._hLine           = null;
+   o._hIconPanel      = null;
+   o._hIcon           = null;
+   o._hSpacePanel     = null;
+   o._hLabelPanel     = null;
+   o.onBuildPanel     = MO.FDuiHistoryButton_onBuildPanel
+   o.onBuild          = MO.FDuiHistoryButton_onBuild;
+   o.onEnter          = MO.FDuiHistoryButton_onEnter;
+   o.onLeave          = MO.FDuiHistoryButton_onLeave;
+   o.onMouseDown      = MO.Class.register(o, new MO.AEventMouseDown('onMouseDown'), MO.FDuiHistoryButton_onMouseDown);
+   o.onMouseUp        = MO.Class.register(o, new MO.AEventMouseDown('onMouseUp'), MO.FDuiHistoryButton_onMouseUp);
+   o.construct        = MO.FDuiHistoryButton_construct;
+   o.setIcon          = MO.FDuiHistoryButton_setIcon;
+   o.setLabel         = MO.FDuiHistoryButton_setLabel;
+   o.setHint          = MO.FDuiHistoryButton_setHint;
+   o.setEnable        = MO.FDuiHistoryButton_setEnable;
+   o.click            = MO.FDuiHistoryButton_click;
+   o.dispose          = MO.FDuiHistoryButton_dispose;
+   return o;
+}
+MO.FDuiHistoryButton_onBuildPanel = function FDuiHistoryButton_onBuildPanel(event){
+   var o = this;
+   o._hPanel = MO.Window.Builder.createTableCell(event, o.styleName('Normal'));
+   var hSplit = o._hSplit = MO.Window.Builder.createTableCell(event);
+   hSplit.innerHTML = '>';
+   hSplit.style.fontSize = '22px';
+}
+MO.FDuiHistoryButton_onBuild = function FDuiHistoryButton_onBuild(event){
+   var o = this;
+   o.__base.FDuiControl.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   o.attachEvent('onMouseDown', hPanel);
+   o.attachEvent('onMouseUp', hPanel);
+   var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
+   var hLine = o._hLine = MO.Window.Builder.appendTableRow(hForm);
+   if(o._icon){
+      var hIconPanel = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('IconPanel'));
+      o._hIcon = MO.Window.Builder.appendIcon(hIconPanel, null, o._icon);
+   }
+   if(o._icon && o._label){
+      o._hSpacePanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('SpacePanel'));
+   }
+   var hLabelPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('LabelPanel'));
+   hLabelPanel.noWrap = true;
+   if(o._foreColor){
+      hLabelPanel.style.color = o._foreColor;
+   }
+   o.setLabel(o._label);
+   if(o._hotkey){
+      MO.Console.find(MO.FKeyConsole).register(o._hotkey, o, o.onMouseDown);
+   }
+   if(o._hint){
+      o.setHint(o._hint);
+   }
+}
+MO.FDuiHistoryButton_onEnter = function FDuiHistoryButton_onEnter(p){
+   var o = this;
+   if(!o._disabled){
+      o._hPanel.className = o.styleName('Hover');
+   }
+}
+MO.FDuiHistoryButton_onLeave = function FDuiHistoryButton_onLeave(){
+   var o = this;
+   if(!o._disabled){
+      o._hPanel.className = o.styleName('Normal');
+   }
+}
+MO.FDuiHistoryButton_onMouseDown = function FDuiHistoryButton_onMouseDown(){
+   var o = this;
+   if(!o._disabled){
+      o._hPanel.className = o.styleName('Press');
+      o.click();
+   }
+}
+MO.FDuiHistoryButton_onMouseUp = function FDuiHistoryButton_onMouseUp(){
+   var o = this;
+   if(!o._disabled){
+      o._hPanel.className = o.styleName('Hover');
+   }
+}
+MO.FDuiHistoryButton_construct = function FDuiHistoryButton_construct(){
+   var o = this;
+   o.__base.FDuiControl.construct.call(o);
+   o._attributes = new MO.TAttributes();
+}
+MO.FDuiHistoryButton_setIcon = function FDuiHistoryButton_setIcon(icon){
+   var o = this;
+   o._icon = icon;
+   if(o._hIcon){
+      o._hIcon.src = o.styleIconPath(icon);
+   }
+}
+MO.FDuiHistoryButton_setLabel = function FDuiHistoryButton_setLabel(label){
+   var o = this;
+   var text = MO.Lang.String.nvl(label);
+   o._label = text;
+   MO.Window.Html.textSet(o._hLabelPanel, text);
+}
+MO.FDuiHistoryButton_setHint = function FDuiHistoryButton_setHint(hint){
+   var o = this;
+   o._hint = hint;
+   var text = MO.Lang.String.nvl(hint);
+   if(o._hint){
+      if(o._hotkey){
+         text += ' [' + o._hotkey + ']';
+      }
+   }
+   o._hPanel.title = text;
+}
+MO.FDuiHistoryButton_setEnable = function FDuiHistoryButton_setEnable(p){
+   var o = this;
+   o.__base.FDuiControl.setEnable.call(o, p);
+   if(p){
+      o._hPanel.className = o.style('Button');
+      if(o._iconDisable && o._icon){
+         o._hIcon.src = RRes._iconPath(o._icon);
+      }
+   }else{
+      o._hPanel.className = o.style('Disable');
+      if(o._iconDisable){
+         o._hIcon.src = RRes._iconPath(o._iconDisable);
+      }
+   }
+}
+MO.FDuiHistoryButton_click = function FDuiHistoryButton_click(){
+   var o = this;
+   if(!o._disabled){
+      var event = new MO.SEvent(o);
+      o._parent.processButtonClickListener(event);
+      event.dispose();
+   }
+}
+MO.FDuiHistoryButton_dispose = function FDuiHistoryButton_dispose(){
+   var o = this;
+   o._hForm = MO.Window.Html.free(o._hForm);
+   o._hLine = MO.Window.Html.free(o._hLine);
+   o._hIconPanel = MO.Window.Html.free(o._hIconPanel);
+   o._hIcon = MO.Window.Html.free(o._hIcon);
+   o._hSpacePanel = MO.Window.Html.free(o._hSpacePanel);
+   o._hLabelPanel = MO.Window.Html.free(o._hLabelPanel);
+   o.__base.FDuiControl.dispose.call(o);
+}
 MO.FDuiMenuBar = function FDuiMenuBar(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MDuiDescribeFrame);
    o._mergeCd          = MO.Class.register(o, new MO.APtyEnum('_mergeCd', null, MO.EUiMerge, MO.EUiMerge.Override));

@@ -11,18 +11,19 @@ MO.TClass = function TClass(){
    // @attribute 本类是安全对象，禁止内存管理器自动释放
    o.__disposed     = true;
    // @attribute
-   o._unused        = null;
+   o._abstract      = false;
    o._annotations   = new Object();
    o._attributes    = new Object();
+   o._styles        = new Array();
+   // @attribute
+   o._base          = null;
+   o._clazz         = null;
+   o._parent        = null;
+   // @attribute
+   o._instance      = null;
+   o._pool          = new MO.TMemoryPool();
    // @attribute
    o.name           = null;
-   o.parent         = null;
-   o.base           = null;
-   o.clazz          = null;
-   o.instance       = null;
-   o._abstract      = false;
-   o.styles         = new Array();
-   o.instances      = new Array();
    //..........................................................
    // @method
    o.register       = MO.TClass_register;
@@ -47,6 +48,7 @@ MO.TClass = function TClass(){
 //==========================================================
 MO.TClass_register = function TClass_register(annotation){
    var o = this;
+   annotation._clazz = o;
    // 检查类型和名称的合法性
    var annotationCd = annotation.annotationCd();
    var ordered = annotation.isOrdered();
@@ -130,37 +132,37 @@ MO.TClass_assign = function TClass_assign(clazz){
 // <T>获得一个描述类型的描述对象集合。</T>
 //
 // @method
-// @param a:annotation:EAnnotation 描述类型
+// @param annotationCd:EAnnotation 描述类型
 // @return Object 描述对象集合
 //==========================================================
-MO.TClass_annotations = function TClass_annotations(a){
+MO.TClass_annotations = function TClass_annotations(annotationCd){
    var o = this;
-   var r = o._annotations[a];
-   if(!r){
-      MO.Logger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
+   var annotation = o._annotations[annotationCd];
+   if(!annotation){
+      MO.Logger.fatal(o, null, "Can't find annotations. (annotation_cd={1}, class={2})", annotationCd, o.name);
    }
-   return r;
+   return annotation;
 }
 
 //==========================================================
 // <T>获得一个描述类型下的一个描述对象。</T>
 //
 // @method
-// @param a:annotation:EAnnotation 描述类型
-// @param n:name:String 名称
+// @param annotationCd:EAnnotation 描述类型
+// @param name:String 名称
 // @return Object 描述对象
 //==========================================================
-MO.TClass_annotation = function TClass_annotation(a, n){
+MO.TClass_annotation = function TClass_annotation(annotationCd, name){
    var o = this;
-   var r = null;
-   var as = o._annotations[a];
-   if(as){
-      r = as[n];
+   var annotation = null;
+   var annotations = o._annotations[annotationCd];
+   if(annotations){
+      annotation = annotations[name];
    }
-   if(!r){
-      MO.Logger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
+   if(!annotation){
+      MO.Logger.fatal(o, null, "Can't find annotation. (annotation_cd={1}, name={2}, class={3})", annotationCd, name, o.name);
    }
-   return r;
+   return annotation;
 }
 
 //==========================================================
@@ -172,14 +174,13 @@ MO.TClass_annotation = function TClass_annotation(a, n){
 //==========================================================
 MO.TClass_annotationFind = function TClass_annotationFind(p){
    var o = this;
-   var r = null;
-   for(var n in o._annotations){
-      var as = o._annotations[n];
-      if(as){
-         var a = as[p];
-         if(a != null){
-            if(a.constructor != Function){
-               return a;
+   for(var name in o._annotations){
+      var annotations = o._annotations[name];
+      if(annotations){
+         var annotation = annotations[p];
+         if(annotation != null){
+            if(annotation.constructor != Function){
+               return annotation;
             }
          }
       }
@@ -195,10 +196,10 @@ MO.TClass_annotationFind = function TClass_annotationFind(p){
 // @return Object 描述对象
 //==========================================================
 MO.TClass_attributeFind = function TClass_attributeFind(p){
-   var a = this._attributes[p];
-   if(a){
-      if(a.constructor != Function){
-         return a;
+   var attribute = this._attributes[p];
+   if(attribute){
+      if(attribute.constructor != Function){
+         return attribute;
       }
    }
    return null;
@@ -208,36 +209,37 @@ MO.TClass_attributeFind = function TClass_attributeFind(p){
 // <T>获得一个类关联的样式描述。</T>
 //
 // @method
-// @param n:name:String 名称
+// @param name:String 名称
 // @return String 样式名称
 //==========================================================
-MO.TClass_style = function TClass_style(n){
+MO.TClass_style = function TClass_style(name){
    var o = this;
    // 从缓冲中获得样式名称，如果存在，则直接返回
-   if(o.styles[n]){
-      return o.styles[n];
+   var styles = o._styles;
+   if(styles[name]){
+      return styles[name];
    }
    // 递规找到自己或父类上注册的名称
-   var a = null;
-   var p = o;
-   while(p){
-      var as = p._annotations[MO.EAnnotation.Style];
-      if(as){
-         a = as[n];
-         if(a){
+   var annotation = null;
+   var find = o;
+   while(find){
+      var annotations = find._annotations[MO.EAnnotation.Style];
+      if(annotations){
+         annotation = annotations[name];
+         if(annotation){
             break;
          }
       }
-      p = p.parent;
+      find = find._parent;
    }
    // 如果未注册，则告诉用户错误
-   if(!a){
-      MO.Logger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
+   if(!annotation){
+      MO.Logger.fatal(o, null, "No register style annotation. (class={1}, name={2})", o.name, o.name + '_' + name);
    }
    // 生成样式名称
-   var sn = p.name + '_' + a.style();
-   o.styles[n] = sn;
-   return sn;
+   var styleName = find.name + '_' + annotation.style();
+   styles[name] = styleName;
+   return styleName;
 }
 
 //==========================================================
@@ -247,7 +249,7 @@ MO.TClass_style = function TClass_style(n){
 //==========================================================
 MO.TClass_build = function TClass_build(){
    var o = this;
-   var instance = o.instance;
+   var instance = o._instance;
    //..........................................................
    // 检查类中是否存在虚函数
    for(var name in instance){
@@ -289,100 +291,66 @@ MO.TClass_build = function TClass_build(){
 MO.TClass_newInstance = function TClass_newInstance(){
    var o = this;
    // 检测要实例化的类是否为虚类
-   var instance = o.alloc();
-   if(!instance){
-      // 判断是否为虚类
-      if(o._abstract){
-         var message = new MO.TString();
-         for(var name in o.instance){
-            var value = o.instance[name];
-            if(MO.Method.isVirtual(value)){
-               if(!message.isEmpty()){
-                  message.append(',');
-               }
-               message.append(value._name);
+   var instance = null;
+   // 判断是否为虚类
+   if(o._abstract){
+      var message = new MO.TString();
+      for(var name in o._instance){
+         var value = o._instance[name];
+         if(MO.Method.isVirtual(value)){
+            if(!message.isEmpty()){
+               message.append(',');
             }
+            message.append(value._name);
          }
-         throw new MO.TError(o, "Abstract Class can't be create.(name={1})\n[{2}]", o.name, message);
       }
-      // 同一个类的实例中全部共享base对象，中间不能存私有树据。
-      var template = o.instance;
-      if(!template){
-         return MO.Logger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
-      }
-      instance = new template.constructor();
-      for(var name in template){
-         var value = template[name];
-         if(value != null){
-            // 特殊属性处理
-            if((name == '__base') || (name == '__inherits')){
-               instance[name] = template[name];
-               continue;
-            }
-            // 递归创建所有子对象
-            if(!MO.Class.isBase(value)){
-               value = MO.Lang.Object.clone(value);
-            }
+      throw new MO.TError(o, "Abstract Class can't be create.(name={1})\n[{2}]", o.name, message);
+   }
+   // 同一个类的实例中全部共享base对象，中间不能存私有树据。
+   var template = o._instance;
+   if(!template){
+      return MO.Logger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
+   }
+   instance = new template.constructor();
+   for(var name in template){
+      var value = template[name];
+      if(value != null){
+         // 特殊属性处理
+         if((name == '__base') || (name == '__inherits')){
+            instance[name] = template[name];
+            continue;
          }
-         instance[name] = value;
+         // 递归创建所有子对象
+         if(!MO.Class.isBase(value)){
+            value = MO.Lang.Object.clone(value);
+         }
       }
-      // 初始化对象
-      instance.__class = o;
-      if(instance.construct){
-         instance.construct();
-      }
+      instance[name] = value;
+   }
+   // 初始化对象
+   instance.__class = o;
+   if(instance.construct){
+      instance.construct();
    }
    return instance;
 }
 
 //==========================================================
-//<T>获得当前没有使用的对象。</T>
+// <T>收集一个实例。</T>
 //
-//@method
-//@param v:value:Object 对象
+// @method
+// @return FObject 实例
 //==========================================================
 MO.TClass_alloc = function TClass_alloc(){
-   var o = this;
-   var e = o._unused;
-   if(e){
-      o._unused = e.cnext;
-      e.cnext = null;
-      e._using = true;
-   }
-   return e;
+   return this._pool.alloc();
 }
 
 //==========================================================
-//<T>回收对象。</T>
+// <T>释放一个实例。</T>
 //
-//@method
-//@param v:value:Object 对象
+// @method
+// @param instance:FObject 实例
 //==========================================================
-MO.TClass_free = function TClass_free(v){
-   var o = this;
-   if(v._using){
-      var u = o._unused;
-      v.cnext = u;
-      o._unused = v;
-      v._using = false;
-      // 遍历释放子节点
-      for(var n in v){
-         var cv = v[n];
-         if(cv){
-            if(!RClass.isBase(cv)){
-               // 如果是含有_class的对象，直接free
-               if(cv._class){
-                  o.free(cv);
-               }else if(o.isClass(cv, Array)){
-                  for(var i = 0; i < cv.length; i++){
-                     var mv = cv[i];
-                     if(mv._class){
-                        o.free(mv);
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
+MO.TClass_free = function TClass_free(instance){
+   this._pool.free(instance);
 }

@@ -41,8 +41,12 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       frame.doFetch();
    }
-   // 加载数据
-   //frame.doLoad(typeGroup, containerName);
+   // 设置历史
+   var historyBar = o._frameSet._historyBar;
+   historyBar.historyClear();
+   var historyButton = historyBar.historyPush();
+   historyButton.setLabel(frame.label());
+   historyButton.attributeSet('frame_name', frame.name());
 }
 
 //==========================================================

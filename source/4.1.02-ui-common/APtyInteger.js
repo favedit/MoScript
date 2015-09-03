@@ -2,18 +2,18 @@
 // <T>整数的属性描述类。</T>
 //
 // @property
-// @param n:name:String 名称
-// @param l:linker:String 关联名称
-// @param v:value:Integer 缺省内容
+// @param name:String 名称
+// @param linker:String 关联名称
+// @param value:Integer 缺省内容
 // @author maocy
 // @version 141231
 //==========================================================
-MO.APtyInteger = function APtyInteger(n, l, v){
+MO.APtyInteger = function APtyInteger(name, linker, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
+   MO.AProperty.call(o, name, linker);
    //..........................................................
    // @attribute
-   o._value   = MO.Lang.Integer.nvl(v);
+   o._value   = MO.Lang.Integer.nvl(value);
    //..........................................................
    // @method
    o.build    = MO.APtyInteger_build;
@@ -27,12 +27,13 @@ MO.APtyInteger = function APtyInteger(n, l, v){
 // <T>构建处理。</T>
 //
 // @method
-// @param v:value:Object 对象
+// @param instance:Object 对象
 //============================================================
-MO.APtyInteger_build = function APtyInteger_build(v){
+MO.APtyInteger_build = function APtyInteger_build(instance){
    var o = this;
-   if(v[o._name] == null){
-      v[o._name] = o._value;
+   var name = o._name;
+   if(instance[name] == null){
+      instance[name] = o._value;
    }
 }
 
@@ -40,24 +41,26 @@ MO.APtyInteger_build = function APtyInteger_build(v){
 // <T>加载属性值。</T>
 //
 // @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
+// @param instance:Object 对象
+// @param xconfig:TNode 节点
 //============================================================
-MO.APtyInteger_load = function APtyInteger_load(v, x){
+MO.APtyInteger_load = function APtyInteger_load(instance, xconfig){
    var o = this;
-   v[o._name] = MO.Lang.Integer.parse(x.get(o._linker));
+   var value = xconfig.get(o._linker);
+   instance[o._name] = MO.Lang.Integer.parse(value);
 }
 
 //============================================================
 // <T>存储属性值。</T>
 //
 // @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
+// @param instance:Object 对象
+// @param xconfig:TNode 节点
 //============================================================
-MO.APtyInteger_save = function APtyInteger_save(v, x){
+MO.APtyInteger_save = function APtyInteger_save(instance, xconfig){
    var o = this;
-   x.set(o._linker, MO.Lang.Integer.toString(v[o._name]));
+   var value = instance[o._name];
+   xconfig.set(o._linker, MO.Lang.Integer.toString(value));
 }
 
 //============================================================

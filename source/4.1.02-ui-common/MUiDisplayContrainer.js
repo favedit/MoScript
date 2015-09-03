@@ -17,6 +17,7 @@ MO.MUiDisplayContrainer = function MUiDisplayContrainer(o){
    o.construct  = MO.MUiDisplayContrainer_construct;
    // @method
    o.psMode     = MO.MUiDisplayContrainer_psMode;
+   o.psDesign   = MO.MUiDisplayContrainer_psDesign;
    // @method
    o.dispose    = MO.MUiDisplayContrainer_dispose;
    return o;
@@ -29,7 +30,7 @@ MO.MUiDisplayContrainer = function MUiDisplayContrainer(o){
 //==========================================================
 MO.MUiDisplayContrainer_construct = function MUiDisplayContrainer_construct(){
    var o = this;
-   o._eventMode = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDisplayField);
+   o._eventMode = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDisplay);
 }
 
 //==========================================================
@@ -46,6 +47,25 @@ MO.MUiDisplayContrainer_psMode = function MUiDisplayContrainer_psMode(modeCd){
    var event = o._eventMode;
    event.modeCd = modeCd;
    o.process(event);
+}
+
+//==========================================================
+// <T>分发改变控件设计状态的事件。</T>
+//
+// @method
+// @param m:mode:EDesign 设计模式
+// @param f:flag:Boolean 开始还是结束
+//==========================================================
+MO.MUiDisplayContrainer_psDesign = function MUiDisplayContrainer_psDesign(m, f){
+   var o = this;
+   MO.Console.find(FDesignConsole).setFlag(m, f, o);
+   // 创建事件
+   var event = new MO.SUiDispatchEvent(o, 'oeDesign', MO.MUiDesign)
+   event.mode = m;
+   event.flag = f;
+   // 处理消息
+   o.process(event);
+   event.dispose();
 }
 
 //==========================================================

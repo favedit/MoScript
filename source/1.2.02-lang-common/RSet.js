@@ -12,28 +12,27 @@ MO.RSet = function RSet(){
 //===========================================================
 // <T>内容中是否含有指定数据。</T>
 //
-// @param v:value:Integer 内容
-// @param d:data:Integer 数据
+// @param source:Integer 内容
+// @param value:Integer 数据
 // @return Boolean 是否含有
 //===========================================================
-MO.RSet.prototype.contains = function RSet_contains(v, d){
-   return (v & d) == d;
+MO.RSet.prototype.contains = function RSet_contains(source, value){
+   return (source & value) == value;
 }
 
 //===========================================================
 // <T>内容中是否含有指定数据。</T>
 //
-// @param v:value:String 内容
-// @param d:data:String 数据
+// @param source:String 内容
+// @param value:String 数据
 // @return Boolean 是否含有
 //===========================================================
-MO.RSet.prototype.containsString = function RSet_containsString(v, d){
-   if((v != null) && (s != null)){
-      return v.indexOf(s) != -1;
+MO.RSet.prototype.containsString = function RSet_containsString(source, value){
+   if((source != null) && (value != null)){
+      return source.indexOf(value) != -1;
    }
    return false;
 }
 //..........................................................
 // 实例化内容
-MO.RSet = new MO.RSet();
-MO.Lang.Set = MO.RSet;
+MO.Lang.Set = new MO.RSet();

@@ -26,6 +26,7 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    //..........................................................
    // @process
    o.onBuilded             = MO.FManageFrameSet_onBuilded;
+   o.onHistoryButtonClick  = MO.FManageFrameSet_onHistoryButtonClick;
    //..........................................................
    // @method
    o.construct             = MO.FManageFrameSet_construct;
@@ -52,6 +53,13 @@ MO.FManageFrameSet = function FManageFrameSet(o){
 MO.FManageFrameSet_onBuilded = function FManageFrameSet_onBuilded(event){
    var o = this;
    o.__base.FDuiFrameSet.onBuilded.call(o, event);
+   // 设置历史工具栏
+   var control = o._historyBar = MO.Class.create(MO.FDuiHistoryBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(event);
+   control.addButtonClickListener(o, o.onHistoryButtonClick);
+   o._frameSpaceTitle.push(control);
    // 设置空间工具栏
    var control = o._spaceToolBar = MO.Class.create(MO.FManageSpaceToolBar);
    control._workspace = o._workspace;
@@ -59,6 +67,19 @@ MO.FManageFrameSet_onBuilded = function FManageFrameSet_onBuilded(event){
    control.buildDefine(event);
    control.setVisible(false);
    o._frameSpaceToolBar.push(control);
+}
+
+//==========================================================
+// <T>构建完成处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件处理
+//==========================================================
+MO.FManageFrameSet_onHistoryButtonClick = function FManageFrameSet_onHistoryButtonClick(event){
+   var o = this;
+   var button = event.sender;
+   var frameName = button.attributeGet('frame_name');
+   o.selectSpaceFrame(frameName);
 }
 
 //==========================================================
@@ -81,8 +102,8 @@ MO.FManageFrameSet_construct = function FManageFrameSet_construct(){
 //==========================================================
 MO.FManageFrameSet_setFrameTitle = function FManageFrameSet_setFrameTitle(title){
    var o = this;
-   var hTitlePanel = o._frameSpaceTitle._hPanel;
-   MO.Window.Html.textSet(hTitlePanel, title);
+   //var hTitlePanel = o._frameSpaceTitle._hPanel;
+   //MO.Window.Html.textSet(hTitlePanel, title);
 }
 
 //==========================================================

@@ -7,12 +7,14 @@
 //===========================================================
 MO.ESource = new function ESource(){
    var o = this;
+   // @member 虚函数
+   o.Virtual  = 'virtual';
    // @member 获得
-   o.Get    = 'get';
+   o.Get      = 'get';
    // @member 设置
-   o.Set    = 'set';
+   o.Set      = 'set';
    // @member 获得设置
-   o.GetSet = 'getset';
+   o.GetSet   = 'getset';
    // @member 监听器
    o.Listener = 'listener';
    return o;

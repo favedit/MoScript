@@ -1800,6 +1800,11 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       frame.doFetch();
    }
+   var historyBar = o._frameSet._historyBar;
+   historyBar.historyClear();
+   var historyButton = historyBar.historyPush();
+   historyButton.setLabel(frame.label());
+   historyButton.attributeSet('frame_name', frame.name());
 }
 MO.FManageCatalogContent_onBuilded = function FManageCatalogContent_onBuilded(event){
    var o = this;
@@ -1931,27 +1936,12 @@ MO.FManageDataForm_onDataLoad = function FManageDataForm_onDataLoad(event){
 }
 MO.FManageDataForm_onDataSave = function FManageDataForm_onDataSave(event){
    var o = this;
-   return;
-   var dataActionCd = o._dataActionCd;
-   switch(dataActionCd){
-      case MO.EUiDataAction.Insert:
-         if(o._logicGroup == 'container'){
-            o._frameSet._catalogContent.reload();
-         }else{
-            o._frameSet._catalogContent.reloadNode();
-         }
-         break;
-      case MO.EUiDataAction.Update:
-         break;
-      case MO.EUiDataAction.Delete:
-         if(o._logicGroup == 'container'){
-            o._frameSet._catalogContent.reload();
-         }else{
-            o._frameSet._catalogContent.reloadParentNode();
-         }
-         break;
-      default:
-         throw new MO.TError(o, 'Invalid data action.');
+   var historyBar = o._frameSet._historyBar;
+   var historyButton = historyBar.historyPop();
+   var frameName = historyButton.attributeGet('frame_name');
+   var frame = o._frameSet.selectSpaceFrame(frameName);
+   if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+      frame.doFetch();
    }
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
@@ -1973,6 +1963,7 @@ MO.FManageDataForm_doDetail = function FManageDataForm_doDetail(row){
    var xrow = xcontent.create('Row');
    row.saveDataRow(xrow);
    o.dataModify();
+   o.psMode(MO.EUiMode.Update);
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=detail');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataDetail);
@@ -1980,6 +1971,7 @@ MO.FManageDataForm_doDetail = function FManageDataForm_doDetail(row){
 MO.FManageDataForm_doPrepare = function FManageDataForm_doPrepare(){
    var o = this;
    o.dataPrepare();
+   o.psMode(MO.EUiMode.Insert);
 }
 MO.FManageDataForm_doLoad = function FManageDataForm_doLoad(typeGroup, containerName, itemName){
    var o = this;
@@ -2016,6 +2008,7 @@ MO.FManageDataForm_dispose = function FManageDataForm_dispose(){
 }
 MO.FManageDataTable = function FManageDataTable(o){
    o = MO.Class.inherits(this, o, MO.FDuiTableFrame);
+   o.onCellClick    = MO.FManageDataTable_onCellClick;
    o.onRowClick     = MO.FManageDataTable_onRowClick;
    o.onButtonClick  = MO.FManageDataTable_onButtonClick;
    o.onBuilded      = MO.FManageDataTable_onBuilded;
@@ -2031,13 +2024,33 @@ MO.FManageDataTable = function FManageDataTable(o){
    o.dispose        = MO.FManageDataTable_dispose;
    return o;
 }
+MO.FManageDataTable_onCellClick = function FManageDataTable_onCellClick(event){
+   var o = this;
+   var cell = event.cell;
+   if(MO.Class.isClass(cell, MO.FDuiCellStatus)){
+      var row = event.row;
+      var unitFrameName = o._unitFrameName;
+      MO.Assert.debugNotEmpty(unitFrameName);
+      var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
+      unitFrame.doDetail(row);
+      var historyBar = o._frameSet._historyBar;
+      var historyButton = historyBar.historyPush();
+      historyButton.setLabel(unitFrame.label());
+      historyButton.attributeSet('frame_name', unitFrame.name());
+   }
+}
 MO.FManageDataTable_onRowClick = function FManageDataTable_onRowClick(event){
    var o = this;
+   return;
    var row = event.row;
    var unitFrameName = o._unitFrameName;
    MO.Assert.debugNotEmpty(unitFrameName);
    var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
    unitFrame.doDetail(row);
+   var historyBar = o._frameSet._historyBar;
+   var historyButton = historyBar.historyPush();
+   historyButton.setLabel(unitFrame.label());
+   historyButton.attributeSet('frame_name', unitFrame.name());
 }
 MO.FManageDataTable_onButtonClick = function FManageDataTable_onButtonClick(event){
    var o  = this;
@@ -2072,6 +2085,7 @@ MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
       var button = buttons.at(i);
       button.addClickListener(o, o.onButtonClick);
    }
+   o.addCellClickListener(o, o.onCellClick);
 }
 MO.FManageDataTable_onDataChanged = function FManageDataTable_onDataChanged(event){
    var o  = this;
@@ -2313,6 +2327,7 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    o._frameSpaceContent    = null;
    o._activeFrame          = MO.Class.register(o, new MO.AGetSet('_activeFrame'));
    o.onBuilded             = MO.FManageFrameSet_onBuilded;
+   o.onHistoryButtonClick  = MO.FManageFrameSet_onHistoryButtonClick;
    o.construct             = MO.FManageFrameSet_construct;
    o.setFrameTitle         = MO.FManageFrameSet_setFrameTitle;
    o.findSpaceFrame        = MO.FManageFrameSet_findSpaceFrame;
@@ -2326,12 +2341,24 @@ MO.FManageFrameSet = function FManageFrameSet(o){
 MO.FManageFrameSet_onBuilded = function FManageFrameSet_onBuilded(event){
    var o = this;
    o.__base.FDuiFrameSet.onBuilded.call(o, event);
+   var control = o._historyBar = MO.Class.create(MO.FDuiHistoryBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.build(event);
+   control.addButtonClickListener(o, o.onHistoryButtonClick);
+   o._frameSpaceTitle.push(control);
    var control = o._spaceToolBar = MO.Class.create(MO.FManageSpaceToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    control.setVisible(false);
    o._frameSpaceToolBar.push(control);
+}
+MO.FManageFrameSet_onHistoryButtonClick = function FManageFrameSet_onHistoryButtonClick(event){
+   var o = this;
+   var button = event.sender;
+   var frameName = button.attributeGet('frame_name');
+   o.selectSpaceFrame(frameName);
 }
 MO.FManageFrameSet_construct = function FManageFrameSet_construct(){
    var o = this;
@@ -2340,8 +2367,6 @@ MO.FManageFrameSet_construct = function FManageFrameSet_construct(){
 }
 MO.FManageFrameSet_setFrameTitle = function FManageFrameSet_setFrameTitle(title){
    var o = this;
-   var hTitlePanel = o._frameSpaceTitle._hPanel;
-   MO.Window.Html.textSet(hTitlePanel, title);
 }
 MO.FManageFrameSet_findSpaceFrame = function FManageFrameSet_findSpaceFrame(code){
    var o = this;

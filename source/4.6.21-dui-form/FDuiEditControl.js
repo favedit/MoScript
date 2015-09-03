@@ -18,7 +18,7 @@
 // @version 150102
 //==========================================================
 MO.FDuiEditControl = function FDuiEditControl(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDataValue, MO.MUiDataField, MO.MUiEditValue, MO.MDuiEditChange, MO.MDuiEditDrop);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDataValue, MO.MUiDataField, MO.MUiDisplay, MO.MUiEditValue, MO.MUiEditable, MO.MDuiEditChange, MO.MDuiEditDrop);
    //..........................................................
    // @property
    o._labelModeCd            = MO.Class.register(o, new MO.APtyString('_labelModeCd'), MO.EUiLabelMode.All);
@@ -33,20 +33,19 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    // @style
    o._styleLabelPanel        = MO.Class.register(o, new MO.AStyle('_styleLabelPanel'));
    o._styleEditPanel         = MO.Class.register(o, new MO.AStyle('_styleEditPanel'));
-   o._styleValueReadonly     = MO.Class.register(o, new MO.AStyle('_styleValueReadonly'));
-   o._styleValueEdit         = MO.Class.register(o, new MO.AStyle('_styleValueEdit'));
+   o._styleValuePanel        = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleValueNormal       = MO.Class.register(o, new MO.AStyle('_styleValueNormal'));
    o._styleValueHover        = MO.Class.register(o, new MO.AStyle('_styleValueHover'));
+   o._styleValueReadonly     = MO.Class.register(o, new MO.AStyle('_styleValueReadonly'));
    o._styleInputPanel        = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
-   o._styleInputReadonly     = MO.Class.register(o, new MO.AStyle('_styleInputReadonly'));
-   o._styleInputEdit         = MO.Class.register(o, new MO.AStyle('_styleInputEdit'));
+   o._styleInputNormal       = MO.Class.register(o, new MO.AStyle('_styleInputNormal'));
    o._styleInputHover        = MO.Class.register(o, new MO.AStyle('_styleInputHover'));
-   o._styleInputInvalid      = MO.Class.register(o, new MO.AStyle('_styleInputInvalid'));
+   o._styleInputReadonly     = MO.Class.register(o, new MO.AStyle('_styleInputReadonly'));
    //..........................................................
    // @attribute
    o._optionValueStyle       = true;
    // @attribute
    o._statusValueHover       = false;
-   o._statusValueEdit        = true;
    o._progressing            = false;
    //..........................................................
    // @html <TD> 标签面板
@@ -95,7 +94,7 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    o.calculateValueRectangle = MO.FDuiEditControl_calculateValueRectangle;
    o.panel                   = MO.FDuiEditControl_panel;
    o.setLabel                = MO.FDuiEditControl_setLabel;
-   o.setEditAble             = MO.FDuiEditControl_setEditAble;
+   o.setEditable             = MO.FDuiEditControl_setEditable;
    o.refreshStyle            = MO.FDuiEditControl_refreshStyle;
    // @method
    o.dispose                 = MO.FDuiEditControl_dispose;
@@ -352,8 +351,9 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
 //==========================================================
 MO.FDuiEditControl_oeMode = function FDuiEditControl_oeMode(event){
    var o = this;
-   var resultCd = o.__base.FDuiControl.oeMode.call(o, event);
-   //o.__base.MDisplay.oeMode.call(o, event);
+   o.__base.FDuiControl.oeMode.call(o, event);
+   o.__base.MUiDisplay.oeMode.call(o, event);
+   o.__base.MUiEditable.oeMode.call(o, event);
    // 根据工作模式获得设置信息
    //o._editable = o.canEdit(event.mode);
    //o._validable = o.canValid(event.mode);
@@ -362,8 +362,7 @@ MO.FDuiEditControl_oeMode = function FDuiEditControl_oeMode(event){
    //   o.setEditable(o._editable);
    //}
    // 返回处理结果
-   //return MO.EEventStatus.Stop;
-   return resultCd;
+   return MO.EEventStatus.Stop;
 }
 
 //==========================================================
@@ -482,13 +481,13 @@ MO.FDuiEditControl_setLabel = function FDuiEditControl_setLabel(value){
 // <T>设置编辑对象的可编辑性。</T>
 //
 // @method
-// @param flag:Boolean 可编辑性
+// @param value:Boolean 可编辑性
 //==========================================================
-MO.FDuiEditControl_setEditAble = function FDuiEditControl_setEditAble(value){
+MO.FDuiEditControl_setEditable = function FDuiEditControl_setEditable(value){
    var o = this;
-   o.__base.FDuiControl.setEditAble.call(o, value);
    // 设置属性
-   o._statusValueEdit = value;
+   o._statusEditable = value;
+   // 刷新样式
    o.refreshStyle();
 }
 
@@ -520,16 +519,18 @@ MO.FDuiEditControl_calculateValueRectangle = function FDuiEditControl_calculateV
 //==========================================================
 MO.FDuiEditControl_refreshStyle = function FDuiEditControl_refreshStyle(){
    var o = this;
-   var hValuePanel = o._hValuePanel;
    if(o._optionValueStyle){
-      if(o._statusValueEdit){
-         if(o._statusValueHover){
-            hValuePanel.className = o.styleName('ValueHover');
+      var hForm = o._hValueForm;
+      if(hForm){
+         if(o._statusEditable){
+            if(o._statusValueHover){
+               hForm.className = o.styleName('ValueHover');
+            }else{
+               hForm.className = o.styleName('ValueNormal');
+            }
          }else{
-            hValuePanel.className = o.styleName('ValueEdit');
+            hForm.className = o.styleName('ValueReadonly');
          }
-      }else{
-         hValuePanel.className = o.styleName('ValueReadonly');
       }
    }
 }

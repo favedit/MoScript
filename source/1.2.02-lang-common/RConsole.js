@@ -153,7 +153,7 @@ MO.RConsole.prototype.find = function RConsole_find(value){
    }
    // 创建控制台实例
    var template = MO.Class.forName(name);
-   var scopeCd = template.instance.scopeCd();
+   var scopeCd = template._instance.scopeCd();
    switch(scopeCd){
       case MO.EScope.Global:
          // 从顶层对象重新创建

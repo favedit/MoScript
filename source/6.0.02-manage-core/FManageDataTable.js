@@ -10,6 +10,7 @@ MO.FManageDataTable = function FManageDataTable(o){
    // @attribute
    //..........................................................
    // @event
+   o.onCellClick    = MO.FManageDataTable_onCellClick;
    o.onRowClick     = MO.FManageDataTable_onRowClick;
    o.onButtonClick  = MO.FManageDataTable_onButtonClick;
    // @event
@@ -38,14 +39,44 @@ MO.FManageDataTable = function FManageDataTable(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
+MO.FManageDataTable_onCellClick = function FManageDataTable_onCellClick(event){
+   var o = this;
+   var cell = event.cell;
+   if(MO.Class.isClass(cell, MO.FDuiCellStatus)){
+      var row = event.row;
+      // 显示子项页面
+      var unitFrameName = o._unitFrameName;
+      MO.Assert.debugNotEmpty(unitFrameName);
+      var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
+      unitFrame.doDetail(row);
+      // 设置历史栏
+      var historyBar = o._frameSet._historyBar;
+      var historyButton = historyBar.historyPush();
+      historyButton.setLabel(unitFrame.label());
+      historyButton.attributeSet('frame_name', unitFrame.name());
+   }
+}
+
+//==========================================================
+// <T>行单击处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
 MO.FManageDataTable_onRowClick = function FManageDataTable_onRowClick(event){
    var o = this;
+   return;
    var row = event.row;
    // 显示子项页面
    var unitFrameName = o._unitFrameName;
    MO.Assert.debugNotEmpty(unitFrameName);
    var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
    unitFrame.doDetail(row);
+   // 设置历史栏
+   var historyBar = o._frameSet._historyBar;
+   var historyButton = historyBar.historyPush();
+   historyButton.setLabel(unitFrame.label());
+   historyButton.attributeSet('frame_name', unitFrame.name());
 }
 
 //==========================================================
@@ -97,6 +128,7 @@ MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
       var button = buttons.at(i);
       button.addClickListener(o, o.onButtonClick);
    }
+   o.addCellClickListener(o, o.onCellClick);
 }
 
 //==========================================================

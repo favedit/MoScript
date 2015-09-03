@@ -10,6 +10,8 @@ MO.AAnnotation = function AAnnotation(name){
    var o = this;
    //..........................................................
    // @attribute
+   o._clazz        = null;
+   // @attribute
    o._annotationCd = null;
    o._inherit      = false;
    o._duplicate    = false;
@@ -18,6 +20,7 @@ MO.AAnnotation = function AAnnotation(name){
    o._name         = name;
    //..........................................................
    // @method
+   o.clazz         = MO.AAnnotation_clazz;
    o.annotationCd  = MO.AAnnotation_annotationCd;
    o.isInherit     = MO.AAnnotation_isInherit;
    o.isDuplicate   = MO.AAnnotation_isDuplicate;
@@ -27,6 +30,16 @@ MO.AAnnotation = function AAnnotation(name){
    o.code          = MO.AAnnotation_code;
    o.value         = MO.AAnnotation_value;
    return o;
+}
+
+//============================================================
+// <T>获得关联类对象。</T>
+//
+// @method
+// @return TClass 关联类对
+//============================================================
+MO.AAnnotation_clazz = function AAnnotation_clazz(){
+   return this._clazz;
 }
 
 //============================================================

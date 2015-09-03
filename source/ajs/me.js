@@ -1499,11 +1499,13 @@ MO.RGlobal.prototype.set = function RGlobal_set(name, value){
 MO.Global = new MO.RGlobal();
 MO.AAnnotation = function AAnnotation(name){
    var o = this;
+   o._clazz        = null;
    o._annotationCd = null;
    o._inherit      = false;
    o._duplicate    = false;
    o._ordered      = false;
    o._name         = name;
+   o.clazz         = MO.AAnnotation_clazz;
    o.annotationCd  = MO.AAnnotation_annotationCd;
    o.isInherit     = MO.AAnnotation_isInherit;
    o.isDuplicate   = MO.AAnnotation_isDuplicate;
@@ -1512,6 +1514,9 @@ MO.AAnnotation = function AAnnotation(name){
    o.code          = MO.AAnnotation_code;
    o.value         = MO.AAnnotation_value;
    return o;
+}
+MO.AAnnotation_clazz = function AAnnotation_clazz(){
+   return this._clazz;
 }
 MO.AAnnotation_annotationCd = function AAnnotation_annotationCd(){
    return this._annotationCd;
@@ -1597,6 +1602,16 @@ MO.ASource_build = function ASource_build(){
 MO.ASource_toString = function ASource_toString(){
    return '<' + this._annotationCd + ',linker=' + this._linker + '>';
 }
+MO.AVirtual = function AVirtual(name, linker){
+   var o = this;
+   MO.ASource.call(o, name, MO.ESource.Virtual, linker);
+   o.build   = MO.AVirtual_build;
+   return o;
+}
+MO.AVirtual_build = function AVirtual_build(clazz, instance){
+   var o = this;
+   instance[o._name] = MO.Method.makeVirtual(o._clazz, o._name);
+}
 MO.EAnnotation = new function EAnnotation(){
    var o = this;
    o.Constructor = 'constructor';
@@ -1641,9 +1656,10 @@ MO.EEndian = new function EEndian(){
 }
 MO.ESource = new function ESource(){
    var o = this;
-   o.Get    = 'get';
-   o.Set    = 'set';
-   o.GetSet = 'getset';
+   o.Virtual  = 'virtual';
+   o.Get      = 'get';
+   o.Set      = 'set';
+   o.GetSet   = 'getset';
    o.Listener = 'listener';
    return o;
 }
@@ -1655,17 +1671,16 @@ MO.SLogger = function SLogger(){
 MO.TClass = function TClass(){
    var o = this;
    o.__disposed     = true;
-   o._unused        = null;
+   o._abstract      = false;
    o._annotations   = new Object();
    o._attributes    = new Object();
+   o._styles        = new Array();
+   o._base          = null;
+   o._clazz         = null;
+   o._parent        = null;
+   o._instance      = null;
+   o._pool          = new MO.TMemoryPool();
    o.name           = null;
-   o.parent         = null;
-   o.base           = null;
-   o.clazz          = null;
-   o.instance       = null;
-   o._abstract      = false;
-   o.styles         = new Array();
-   o.instances      = new Array();
    o.register       = MO.TClass_register;
    o.assign         = MO.TClass_assign;
    o.annotations    = MO.TClass_annotations;
@@ -1681,6 +1696,7 @@ MO.TClass = function TClass(){
 }
 MO.TClass_register = function TClass_register(annotation){
    var o = this;
+   annotation._clazz = o;
    var annotationCd = annotation.annotationCd();
    var ordered = annotation.isOrdered();
    var name = annotation.name();
@@ -1740,36 +1756,35 @@ MO.TClass_assign = function TClass_assign(clazz){
       }
    }
 }
-MO.TClass_annotations = function TClass_annotations(a){
+MO.TClass_annotations = function TClass_annotations(annotationCd){
    var o = this;
-   var r = o._annotations[a];
-   if(!r){
-      MO.Logger.fatal(o, null, "Can't find annotations. (annotation={1}, class={2})", a, o.name);
+   var annotation = o._annotations[annotationCd];
+   if(!annotation){
+      MO.Logger.fatal(o, null, "Can't find annotations. (annotation_cd={1}, class={2})", annotationCd, o.name);
    }
-   return r;
+   return annotation;
 }
-MO.TClass_annotation = function TClass_annotation(a, n){
+MO.TClass_annotation = function TClass_annotation(annotationCd, name){
    var o = this;
-   var r = null;
-   var as = o._annotations[a];
-   if(as){
-      r = as[n];
+   var annotation = null;
+   var annotations = o._annotations[annotationCd];
+   if(annotations){
+      annotation = annotations[name];
    }
-   if(!r){
-      MO.Logger.fatal(o, null, "Can't find annotation. (annotation={1}, name={2}, class={3})", a, n, o.name);
+   if(!annotation){
+      MO.Logger.fatal(o, null, "Can't find annotation. (annotation_cd={1}, name={2}, class={3})", annotationCd, name, o.name);
    }
-   return r;
+   return annotation;
 }
 MO.TClass_annotationFind = function TClass_annotationFind(p){
    var o = this;
-   var r = null;
-   for(var n in o._annotations){
-      var as = o._annotations[n];
-      if(as){
-         var a = as[p];
-         if(a != null){
-            if(a.constructor != Function){
-               return a;
+   for(var name in o._annotations){
+      var annotations = o._annotations[name];
+      if(annotations){
+         var annotation = annotations[p];
+         if(annotation != null){
+            if(annotation.constructor != Function){
+               return annotation;
             }
          }
       }
@@ -1777,41 +1792,42 @@ MO.TClass_annotationFind = function TClass_annotationFind(p){
    return null;
 }
 MO.TClass_attributeFind = function TClass_attributeFind(p){
-   var a = this._attributes[p];
-   if(a){
-      if(a.constructor != Function){
-         return a;
+   var attribute = this._attributes[p];
+   if(attribute){
+      if(attribute.constructor != Function){
+         return attribute;
       }
    }
    return null;
 }
-MO.TClass_style = function TClass_style(n){
+MO.TClass_style = function TClass_style(name){
    var o = this;
-   if(o.styles[n]){
-      return o.styles[n];
+   var styles = o._styles;
+   if(styles[name]){
+      return styles[name];
    }
-   var a = null;
-   var p = o;
-   while(p){
-      var as = p._annotations[MO.EAnnotation.Style];
-      if(as){
-         a = as[n];
-         if(a){
+   var annotation = null;
+   var find = o;
+   while(find){
+      var annotations = find._annotations[MO.EAnnotation.Style];
+      if(annotations){
+         annotation = annotations[name];
+         if(annotation){
             break;
          }
       }
-      p = p.parent;
+      find = find._parent;
    }
-   if(!a){
-      MO.Logger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
+   if(!annotation){
+      MO.Logger.fatal(o, null, "No register style annotation. (class={1}, name={2})", o.name, o.name + '_' + name);
    }
-   var sn = p.name + '_' + a.style();
-   o.styles[n] = sn;
-   return sn;
+   var styleName = find.name + '_' + annotation.style();
+   styles[name] = styleName;
+   return styleName;
 }
 MO.TClass_build = function TClass_build(){
    var o = this;
-   var instance = o.instance;
+   var instance = o._instance;
    for(var name in instance){
       var value = instance[name];
       if(value != null){
@@ -1838,81 +1854,49 @@ MO.TClass_build = function TClass_build(){
 }
 MO.TClass_newInstance = function TClass_newInstance(){
    var o = this;
-   var instance = o.alloc();
-   if(!instance){
-      if(o._abstract){
-         var message = new MO.TString();
-         for(var name in o.instance){
-            var value = o.instance[name];
-            if(MO.Method.isVirtual(value)){
-               if(!message.isEmpty()){
-                  message.append(',');
-               }
-               message.append(value._name);
+   var instance = null;
+   if(o._abstract){
+      var message = new MO.TString();
+      for(var name in o._instance){
+         var value = o._instance[name];
+         if(MO.Method.isVirtual(value)){
+            if(!message.isEmpty()){
+               message.append(',');
             }
+            message.append(value._name);
          }
-         throw new MO.TError(o, "Abstract Class can't be create.(name={1})\n[{2}]", o.name, message);
       }
-      var template = o.instance;
-      if(!template){
-         return MO.Logger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
-      }
-      instance = new template.constructor();
-      for(var name in template){
-         var value = template[name];
-         if(value != null){
-            if((name == '__base') || (name == '__inherits')){
-               instance[name] = template[name];
-               continue;
-            }
-            if(!MO.Class.isBase(value)){
-               value = MO.Lang.Object.clone(value);
-            }
+      throw new MO.TError(o, "Abstract Class can't be create.(name={1})\n[{2}]", o.name, message);
+   }
+   var template = o._instance;
+   if(!template){
+      return MO.Logger.fatal(o, null, "Class instance is empty. (name={1})", o.name);
+   }
+   instance = new template.constructor();
+   for(var name in template){
+      var value = template[name];
+      if(value != null){
+         if((name == '__base') || (name == '__inherits')){
+            instance[name] = template[name];
+            continue;
          }
-         instance[name] = value;
+         if(!MO.Class.isBase(value)){
+            value = MO.Lang.Object.clone(value);
+         }
       }
-      instance.__class = o;
-      if(instance.construct){
-         instance.construct();
-      }
+      instance[name] = value;
+   }
+   instance.__class = o;
+   if(instance.construct){
+      instance.construct();
    }
    return instance;
 }
 MO.TClass_alloc = function TClass_alloc(){
-   var o = this;
-   var e = o._unused;
-   if(e){
-      o._unused = e.cnext;
-      e.cnext = null;
-      e._using = true;
-   }
-   return e;
+   return this._pool.alloc();
 }
-MO.TClass_free = function TClass_free(v){
-   var o = this;
-   if(v._using){
-      var u = o._unused;
-      v.cnext = u;
-      o._unused = v;
-      v._using = false;
-      for(var n in v){
-         var cv = v[n];
-         if(cv){
-            if(!RClass.isBase(cv)){
-               if(cv._class){
-                  o.free(cv);
-               }else if(o.isClass(cv, Array)){
-                  for(var i = 0; i < cv.length; i++){
-                     var mv = cv[i];
-                     if(mv._class){
-                        o.free(mv);
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
+MO.TClass_free = function TClass_free(instance){
+   this._pool.free(instance);
 }
 MO.TClassBase = function TClassBase(){
    var o = this;
@@ -2602,9 +2586,9 @@ MO.RClass.prototype.createClass = function RClass_createClass(className){
    var o = this;
    var clazz = o._classes[className] = new MO.TClass();
    clazz.name = className;
-   clazz.base = o.createBase(className);
-   clazz.clazz = new clazz.base.constructor();
-   eval('MO.' + className)(clazz.clazz);
+   clazz._base = o.createBase(className);
+   clazz._clazz = new clazz._base.constructor();
+   eval('MO.' + className)(clazz._clazz);
    return clazz;
 }
 MO.RClass.prototype.create = function RClass_create(clazz){
@@ -2629,38 +2613,39 @@ MO.RClass.prototype.createByName = function RClass_createByName(className){
    return clazz.newInstance();
 }
 MO.RClass.prototype.innerCopy = function RClass_innerCopy(source, target){
+   var o = this;
    if((source != null) && (target != null)){
-      for(var n in source){
-         var value = source[n];
+      for(var name in source){
+         var value = source[name];
          if(value != null){
             var typeName = typeof(value)
             if(typeName == 'function'){
-               var targetValue = target[n];
+               var targetValue = target[name];
                if(targetValue == null){
-                  target[n] = value;
+                  target[name] = value;
                }else if(MO.Method.isVirtual(targetValue)){
-                  target[n] = value;
+                  target[name] = value;
                }else if(!MO.Method.isVirtual(value) && MO.Method.isEmpty(targetValue)){
-                  target[n] = value;
+                  target[name] = value;
                }else if(!MO.Method.isVirtual(value) && !MO.Method.isEmpty(value)){
-                  target[n] = value;
+                  target[name] = value;
                }
                continue;
             }else if(!MO.Class.isBaseName(typeName)){
-               if(target[n] == null){
-                  target[n] = new value.constructor();
+               if(target[name] == null){
+                  target[name] = new value.constructor();
                }
-               this.innerCopy(value, target[n]);
+               o.innerCopy(value, target[name]);
                continue;
             }
          }
-         target[n] = value;
+         target[name] = value;
       }
    }
 }
 MO.RClass.prototype.build = function RClass_build(clazz){
    var o = this;
-   var inherits = clazz.clazz.__inherits;
+   var inherits = clazz._clazz.__inherits;
    if(inherits && (inherits.constructor == Array)){
       var finded = false;
       var inheritCount = inherits.length;
@@ -2670,12 +2655,12 @@ MO.RClass.prototype.build = function RClass_build(clazz){
             if(finded){
                MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
             }
-            clazz.parent = MO.Class.forName(name);
+            clazz._parent = MO.Class.forName(name);
             finded = true;
          }
       }
    }
-   var instance = clazz.instance = new clazz.base.constructor();
+   var instance = clazz._instance = new clazz._base.constructor();
    if(inherits && (inherits.constructor == Array)){
       var inheritCount = inherits.length;
       for(var i = 0; i < inheritCount; i++){
@@ -2685,20 +2670,20 @@ MO.RClass.prototype.build = function RClass_build(clazz){
             if(findClass == null){
                MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
             }
-            MO.Class.innerCopy(findClass.instance, instance);
+            MO.Class.innerCopy(findClass._instance, instance);
             clazz.assign(findClass);
          }
       }
    }
-   if(clazz.parent){
-      o.innerCopy(clazz.parent.instance, instance);
-      clazz.assign(clazz.parent);
+   if(clazz._parent){
+      o.innerCopy(clazz._parent._instance, instance);
+      clazz.assign(clazz._parent);
    }
    if(!instance.__base){
       instance.__base = new MO.TClassBase();
    }
-   instance.__base[clazz.name] = new clazz.base.constructor();
-   var cf = clazz.clazz;
+   instance.__base[clazz.name] = new clazz._base.constructor();
+   var cf = clazz._clazz;
    for(var name in cf){
       if(name != '__base'){
          if((cf[name] == null) && (instance[name] == null)){
@@ -2715,8 +2700,8 @@ MO.RClass.prototype.build = function RClass_build(clazz){
       for(var i = 0; i < inheritCount; i++){
          var name = inherits[i];
          var baseClass = MO.Class.forName(name);
-         var base = instance.__base[name] = new baseClass.base.constructor();
-         var baseInstance = baseClass.instance;
+         var base = instance.__base[name] = new baseClass._base.constructor();
+         var baseInstance = baseClass._instance;
          for(var name in baseInstance){
             if(name != '__base'){
                var cfn = baseInstance[name];
@@ -2732,20 +2717,19 @@ MO.RClass.prototype.build = function RClass_build(clazz){
    }
    clazz.build();
    if(MO.Runtime.isRelease()){
-      var instance = clazz.instance;
+      var instance = clazz._instance;
       for(var name in instance){
          var value = instance[name];
          if(value == null){
-            delete clazz.instance[name];
+            delete clazz._instance[name];
          }
       }
    }
 }
-MO.RClass.prototype.free = function RClass_free(o){
-   var c = o.__class;
-   if(c){
-      c.free(o);
-   }
+MO.RClass.prototype.free = function RClass_free(instance){
+   var clazz = instance.__class;
+   MO.Assert.debugNotNull(clazz);
+   clazz.free(instance);
 }
 MO.RClass.prototype.dump = function RClass_dump(v){
    var o = this;
@@ -3483,14 +3467,31 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
    var o = this;
    var method = null;
    var code = MO.Class.name(value) + '.' + name;
-   if(o._virtuals[code]){
-      method = o._virtuals[code];
+   var virtuals = o._virtuals;
+   if(virtuals[code]){
+      method = virtuals[code];
    }else{
       var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
       method = new Function(source);
       method.__virtual = true;
       method.__name = code;
-      o._virtuals[code] = method;
+      virtuals[code] = method;
+   }
+   return method;
+}
+MO.RMethod.prototype.makeVirtual = function RMethod_makeVirtual(clazz, name){
+   var o = this;
+   var method = null;
+   var code = clazz.name + '.' + name;
+   var virtuals = o._virtuals;
+   if(virtuals[code]){
+      method = virtuals[code];
+   }else{
+      var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
+      method = new Function(source);
+      method.__virtual = true;
+      method.__name = code;
+      virtuals[code] = method;
    }
    return method;
 }
@@ -5471,7 +5472,7 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       return console;
    }
    var template = MO.Class.forName(name);
-   var scopeCd = template.instance.scopeCd();
+   var scopeCd = template._instance.scopeCd();
    switch(scopeCd){
       case MO.EScope.Global:
          console = top.MO.Console.createByName(name);
@@ -5942,17 +5943,16 @@ MO.RRegExp = new MO.RRegExp();
 MO.RSet = function RSet(){
    return this;
 }
-MO.RSet.prototype.contains = function RSet_contains(v, d){
-   return (v & d) == d;
+MO.RSet.prototype.contains = function RSet_contains(source, value){
+   return (source & value) == value;
 }
-MO.RSet.prototype.containsString = function RSet_containsString(v, d){
-   if((v != null) && (s != null)){
-      return v.indexOf(s) != -1;
+MO.RSet.prototype.containsString = function RSet_containsString(source, value){
+   if((source != null) && (value != null)){
+      return source.indexOf(value) != -1;
    }
    return false;
 }
-MO.RSet = new MO.RSet();
-MO.Lang.Set = MO.RSet;
+MO.Lang.Set = new MO.RSet();
 MO.RTimer = function RTimer(){
    var o = this;
    o._startTime = 0;
@@ -35918,29 +35918,32 @@ MO.APtyFont_toString = function APtyFont_toString() {
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._font + ',' + o._size + o._bold + ',' + o._color;
 }
-MO.APtyInteger = function APtyInteger(n, l, v){
+MO.APtyInteger = function APtyInteger(name, linker, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
-   o._value   = MO.Lang.Integer.nvl(v);
+   MO.AProperty.call(o, name, linker);
+   o._value   = MO.Lang.Integer.nvl(value);
    o.build    = MO.APtyInteger_build;
    o.load     = MO.APtyInteger_load;
    o.save     = MO.APtyInteger_save;
    o.toString = MO.APtyInteger_toString;
    return o;
 }
-MO.APtyInteger_build = function APtyInteger_build(v){
+MO.APtyInteger_build = function APtyInteger_build(instance){
    var o = this;
-   if(v[o._name] == null){
-      v[o._name] = o._value;
+   var name = o._name;
+   if(instance[name] == null){
+      instance[name] = o._value;
    }
 }
-MO.APtyInteger_load = function APtyInteger_load(v, x){
+MO.APtyInteger_load = function APtyInteger_load(instance, xconfig){
    var o = this;
-   v[o._name] = MO.Lang.Integer.parse(x.get(o._linker));
+   var value = xconfig.get(o._linker);
+   instance[o._name] = MO.Lang.Integer.parse(value);
 }
-MO.APtyInteger_save = function APtyInteger_save(v, x){
+MO.APtyInteger_save = function APtyInteger_save(instance, xconfig){
    var o = this;
-   x.set(o._linker, MO.Lang.Integer.toString(v[o._name]));
+   var value = instance[o._name];
+   xconfig.set(o._linker, MO.Lang.Integer.toString(value));
 }
 MO.APtyInteger_toString = function APtyInteger_toString(){
    var o = this;
@@ -36027,42 +36030,56 @@ MO.APtyPoint2_toString = function APtyPoint2_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
 }
-MO.APtySet = function APtySet(n, l, s, v){
+MO.APtySet = function APtySet(name, linker, search, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
-   o._search = s;
-   o._value  = v;
+   MO.AProperty.call(o, name, linker);
+   var code = null;
+   if(MO.Lang.String.startsWith(name, '_')){
+      code = name.substring(1);
+   }else{
+      code = name;
+   }
+   o._code   = MO.Lang.String.toUnderline(code);
+   o._search = search;
+   o._value  = value;
+   o.code     = MO.APtySet_code;
    o.build    = MO.APtySet_build;
    o.load     = MO.APtySet_load;
    o.save     = MO.APtySet_save;
    o.toString = MO.APtySet_toString;
    return o;
 }
-MO.APtySet_build = function APtySet_build(v){
+MO.APtySet_code = function APtySet_code(){
+   return this._code;
+}
+MO.APtySet_build = function APtySet_build(instance){
    var o = this;
-   if(v[o.name] == null){
-      v[o.name] = o._value;
+   var name = o._name;
+   if(instance[name] == null){
+      instance[name] = o._value;
    }
 }
-MO.APtySet_load = function APtySet_load(v, x){
+MO.APtySet_load = function APtySet_load(instance, xconfig){
    var o = this;
-   v[o.name] = MO.Lang.Set.containsString(x.get(o.linker), o.search);
+   var value = xconfig.get(o._linker)
+   instance[o._name] = MO.Lang.Set.containsString(value, o._search);
 }
-MO.APtySet_save = function APtySet_save(v, x){
+MO.APtySet_save = function APtySet_save(instance, xconfig){
    var o = this;
-   var n = o.name;
-   var vs = v[n];
-   var xs = x.get(o.linker);
-   var e = MO.Lang.Set.containsString(xs, o._search);
-   if(vs && !e){
-      x.set(n, vs + o._search);
-   }else if(!v && e){
-      x.set(n, MO.Lang.String.remove(vs, o._search));
+   var name = o._name;
+   var search = o._search;
+   var value = instance[name];
+   var values = xconfig.get(o._linker);
+   var exists = MO.Lang.Set.containsString(xs, search);
+   if(value && !exists){
+      xconfig.set(name, values + search);
+   }else if(!value && exists){
+      xconfig.set(name, MO.Lang.String.remove(values, search));
    }
 }
 MO.APtySet_toString = function APtySet_toString(){
    var o = this;
-   return 'linker=' + o.linker + ',value=' + o._value + ',search=' + o._search;
+   return 'linker=' + o._linker + ',value=' + o._value + ',search=' + o._search;
 }
 MO.APtySize2 = function APtySize2(name, linker, width, height){
    var o = this;
@@ -36149,26 +36166,12 @@ MO.EUiBorderStyle = new function EUiBorderStyle(){
 }
 MO.EUiColor = new function EUiColor(){
    var o = this;
-   o.ReadonlyBackgroundColor = '#FEFECB';
-   o.Normal        = '#FFFFFF';
-   o.Select        = '#F8C59A';
-   o.Valid         = '#FFCCCC';
-   o.Invalid       = '#FFCCCC';
-   o.Edit          = '#FFFFFF';
-   o.EditHover     = '#EBFFFF';
-   o.Require       = '#FF0000';
-   o.Text          = '#000000';
-   o.TextEdit      = '#0066FF';
-   o.TextReadonly  = '#333333';
-   o.TextInvalid   = 'red';
-   o.Delete        = '#DDDDDD';
-   o.ColumnReadonly = '#FFFFFF';
-   o.Rows          = new Array('#FFFFFF', '#FAFAFA');
-   o.RowSelect     = '#cde5ff';
-   o.RowHover      = '#E8E8FF';
-   o.RowEdit       = '#FFFFFF';
-   o.RowEditSelect = '#FDEBDB';
-   o.RowEditHover  = '#F8F8E0';
+   o.Text         = '#0099FF';
+   o.TextHover    = '#000000';
+   o.TextReadonly = '#000000';
+   o.Edit         = '#EBFFFF';
+   o.EditHover    = '#EBFFFF';
+   o.EditReadonly = '#FEFECB';
    return o;
 }
 MO.EUiCursor = new function EUiCursor(){
@@ -37361,18 +37364,60 @@ MO.MUiDataValue = function MUiDataValue(o){
    o.oeSaveDataRow = MO.Method.empty;
    return o;
 }
+MO.MUiDisplay = function MUiDisplay(o){
+   o = MO.Class.inherits(this, o);
+   o._displayView   = MO.Class.register(o, new MO.APtySet('_displayView', 'display_mode', MO.EUiMode.View, true));
+   o._displayInsert = MO.Class.register(o, new MO.APtySet('_displayInsert', 'display_mode', MO.EUiMode.Insert, false));
+   o._displayUpdate = MO.Class.register(o, new MO.APtySet('_displayUpdate', 'display_mode', MO.EUiMode.Update, true));
+   o._displayDelete = MO.Class.register(o, new MO.APtySet('_displayDelete', 'display_mode', MO.EUiMode.Delete, false));
+   o._displaySearch = MO.Class.register(o, new MO.APtySet('_displaySearch', 'display_mode', MO.EUiMode.Search, false));
+   o._displayPicker = MO.Class.register(o, new MO.APtySet('_displayPicker', 'display_mode', MO.EUiMode.Picker, false));
+   o._displayZoom   = MO.Class.register(o, new MO.APtySet('_displayZoom', 'display_mode', MO.EUiMode.Zoom, false));
+   o._statusDisplay = MO.Class.register(o, new MO.AGetter('_statusDisplay', 'isDisplay'), true);
+   o.oeMode         = MO.MUiDisplay_oeMode;
+   o.testVisible    = MO.MUiDisplay_testVisible;
+   o.setVisible     = MO.Method.empty;
+   return o;
+}
+MO.MUiDisplay_oeMode = function MUiDisplay_oeMode(event){
+   var o = this;
+   if(event.isBefore()){
+      var modeCd = event.modeCd;
+      var visible = o._statusDisplay = o.testVisible(modeCd);
+      o.setVisible(visible);
+   }
+}
+MO.MUiDisplay_testVisible = function MUiDisplay_testVisible(modeCd){
+   var o = this;
+   switch(modeCd){
+      case MO.EUiMode.View:
+         return o._displayView;
+      case MO.EUiMode.Search:
+         return o._displaySearch;
+      case MO.EUiMode.Insert:
+         return o._displayInsert;
+      case MO.EUiMode.Update:
+         return o._displayUpdate;
+      case MO.EUiMode.Delete:
+         return o._displayDelete;
+      case MO.EUiMode.Zoom:
+         return o._displayZoom;
+   }
+   return false;
+}
 MO.MUiDisplayContrainer = function MUiDisplayContrainer(o){
    o = MO.Class.inherits(this, o);
    o._modeCd    = MO.Class.register(o, new MO.AGetter('_modeCd'), MO.EUiMode.View);
    o._eventMode = null;
    o.construct  = MO.MUiDisplayContrainer_construct;
    o.psMode     = MO.MUiDisplayContrainer_psMode;
+   o.psDesign   = MO.MUiDisplayContrainer_psDesign;
    o.dispose    = MO.MUiDisplayContrainer_dispose;
    return o;
 }
 MO.MUiDisplayContrainer_construct = function MUiDisplayContrainer_construct(){
    var o = this;
-   o._eventMode = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDisplayField);
+   o._eventMode = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDisplay);
 }
 MO.MUiDisplayContrainer_psMode = function MUiDisplayContrainer_psMode(modeCd){
    var o = this;
@@ -37381,13 +37426,18 @@ MO.MUiDisplayContrainer_psMode = function MUiDisplayContrainer_psMode(modeCd){
    event.modeCd = modeCd;
    o.process(event);
 }
+MO.MUiDisplayContrainer_psDesign = function MUiDisplayContrainer_psDesign(m, f){
+   var o = this;
+   MO.Console.find(FDesignConsole).setFlag(m, f, o);
+   var event = new MO.SUiDispatchEvent(o, 'oeDesign', MO.MUiDesign)
+   event.mode = m;
+   event.flag = f;
+   o.process(event);
+   event.dispose();
+}
 MO.MUiDisplayContrainer_dispose = function MUiDisplayContrainer_dispose(){
    var o = this;
    o._eventMode = MO.Lang.Object.Dispose(o._eventMode);
-}
-MO.MUiDisplayField = function MUiDisplayField(o){
-   o = MO.Class.inherits(this, o);
-   return o;
 }
 MO.MUiDragable = function MUiDragable(o){
    o = MO.Class.inherits(this, o);
@@ -37395,6 +37445,40 @@ MO.MUiDragable = function MUiDragable(o){
    o.onDragMove  = MO.Method.virtual(o, 'onDragMove');
    o.onDragStop  = MO.Method.virtual(o, 'onDragStop');
    return o;
+}
+MO.MUiEditable = function MUiEditable(o){
+   o = MO.Class.inherits(this, o);
+   o._editView       = MO.Class.register(o, new MO.APtySet('_editView', 'edit_mode', MO.EUiMode.View, false));
+   o._editInsert     = MO.Class.register(o, new MO.APtySet('_editInsert', 'edit_mode', MO.EUiMode.Insert, false));
+   o._editUpdate     = MO.Class.register(o, new MO.APtySet('_editUpdate', 'edit_mode', MO.EUiMode.Update, false));
+   o._editDelete     = MO.Class.register(o, new MO.APtySet('_editDelete', 'edit_mode', MO.EUiMode.Delete, false));
+   o._statusEditable = MO.Class.register(o, new MO.AGetter('_statusEditable', 'isEditable'), true);
+   o.oeMode          = MO.MUiEditable_oeMode;
+   o.testEditable    = MO.MUiEditable_testEditable;
+   o.setEditable     = MO.Class.register(o, new MO.AVirtual('setEditable'));
+   return o;
+}
+MO.MUiEditable_oeMode = function MUiEditable_oeMode(event){
+   var o = this;
+   if(event.isBefore()){
+      var modeCd = event.modeCd;
+      var editable = o._statusEditable = o.testEditable(modeCd);
+      o.setEditable(editable);
+   }
+}
+MO.MUiEditable_testEditable = function MUiEditable_testEditable(modeCd){
+   var o = this;
+   switch(modeCd){
+      case MO.EUiMode.View:
+         return o._editView;
+      case MO.EUiMode.Insert:
+         return o._editInsert;
+      case MO.EUiMode.Update:
+         return o._editUpdate;
+      case MO.EUiMode.Delete:
+         return o._editDelete;
+   }
+   return false;
 }
 MO.MUiEditValue = function MUiEditValue(o){
    o = MO.Class.inherits(this, o, MO.MUiTextFormator);

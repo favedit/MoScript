@@ -140,28 +140,14 @@ MO.FManageDataForm_onDataLoad = function FManageDataForm_onDataLoad(event){
 //==========================================================
 MO.FManageDataForm_onDataSave = function FManageDataForm_onDataSave(event){
    var o = this;
-   return;
-   //o._containerName, o._itemName
-   var dataActionCd = o._dataActionCd;
-   switch(dataActionCd){
-      case MO.EUiDataAction.Insert:
-         if(o._logicGroup == 'container'){
-            o._frameSet._catalogContent.reload();
-         }else{
-            o._frameSet._catalogContent.reloadNode();
-         }
-         break;
-      case MO.EUiDataAction.Update:
-         break;
-      case MO.EUiDataAction.Delete:
-         if(o._logicGroup == 'container'){
-            o._frameSet._catalogContent.reload();
-         }else{
-            o._frameSet._catalogContent.reloadParentNode();
-         }
-         break;
-      default:
-         throw new MO.TError(o, 'Invalid data action.');
+   // 设置历史
+   var historyBar = o._frameSet._historyBar;
+   var historyButton = historyBar.historyPop();
+   var frameName = historyButton.attributeGet('frame_name');
+   // 显示页面
+   var frame = o._frameSet.selectSpaceFrame(frameName);
+   if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+      frame.doFetch();
    }
    // 允许处理
    MO.Console.find(MO.FDuiDesktopConsole).hide();
@@ -209,6 +195,7 @@ MO.FManageDataForm_doDetail = function FManageDataForm_doDetail(row){
    row.saveDataRow(xrow);
    // 数据更新
    o.dataModify();
+   o.psMode(MO.EUiMode.Update);
    // 发送请求
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=detail');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
@@ -223,10 +210,8 @@ MO.FManageDataForm_doDetail = function FManageDataForm_doDetail(row){
 //==========================================================
 MO.FManageDataForm_doPrepare = function FManageDataForm_doPrepare(){
    var o = this;
-   // 显示页面
-   //var frameName = parameters.get('frame_name');
-   //var frame = o._frameSet.selectObject(frameName);
    o.dataPrepare();
+   o.psMode(MO.EUiMode.Insert);
 }
 
 //==========================================================

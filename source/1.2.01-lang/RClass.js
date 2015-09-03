@@ -404,9 +404,9 @@ MO.RClass.prototype.createClass = function RClass_createClass(className){
    var o = this;
    var clazz = o._classes[className] = new MO.TClass();
    clazz.name = className;
-   clazz.base = o.createBase(className);
-   clazz.clazz = new clazz.base.constructor();
-   eval('MO.' + className)(clazz.clazz);
+   clazz._base = o.createBase(className);
+   clazz._clazz = new clazz._base.constructor();
+   eval('MO.' + className)(clazz._clazz);
    return clazz;
 }
 
@@ -459,34 +459,35 @@ MO.RClass.prototype.createByName = function RClass_createByName(className){
 // @param target:Object 指定实例
 //==========================================================
 MO.RClass.prototype.innerCopy = function RClass_innerCopy(source, target){
+   var o = this;
    if((source != null) && (target != null)){
-      for(var n in source){
-         var value = source[n];
+      for(var name in source){
+         var value = source[name];
          if(value != null){
             var typeName = typeof(value)
             if(typeName == 'function'){
-               var targetValue = target[n];
+               var targetValue = target[name];
                // Over order: method > empty > virtual > null
                if(targetValue == null){
-                  target[n] = value;
+                  target[name] = value;
                }else if(MO.Method.isVirtual(targetValue)){
-                  target[n] = value;
+                  target[name] = value;
                }else if(!MO.Method.isVirtual(value) && MO.Method.isEmpty(targetValue)){
-                  target[n] = value;
+                  target[name] = value;
                }else if(!MO.Method.isVirtual(value) && !MO.Method.isEmpty(value)){
-                  target[n] = value;
+                  target[name] = value;
                }
                continue;
             }else if(!MO.Class.isBaseName(typeName)){
                // Create child object
-               if(target[n] == null){
-                  target[n] = new value.constructor();
+               if(target[name] == null){
+                  target[name] = new value.constructor();
                }
-               this.innerCopy(value, target[n]);
+               o.innerCopy(value, target[name]);
                continue;
             }
          }
-         target[n] = value;
+         target[name] = value;
       }
    }
 }
@@ -500,7 +501,7 @@ MO.RClass.prototype.innerCopy = function RClass_innerCopy(source, target){
 MO.RClass.prototype.build = function RClass_build(clazz){
    var o = this;
    // 找到当前类的父名称，即以字母(F)开头的类
-   var inherits = clazz.clazz.__inherits;
+   var inherits = clazz._clazz.__inherits;
    if(inherits && (inherits.constructor == Array)){
       var finded = false;
       var inheritCount = inherits.length;
@@ -510,14 +511,14 @@ MO.RClass.prototype.build = function RClass_build(clazz){
             if(finded){
                MO.Logger.fatal(o, null, 'Parent class is too many. (name={1})', name);
             }
-            clazz.parent = MO.Class.forName(name);
+            clazz._parent = MO.Class.forName(name);
             finded = true;
          }
       }
    }
    //..........................................................
    // 用基类创建一个实例，当前实例只有当前类里声明的函数，没有任何继承关系
-   var instance = clazz.instance = new clazz.base.constructor();
+   var instance = clazz._instance = new clazz._base.constructor();
    // 复制除了以(F)开头的实类以外，所有基类信息到当前实例中
    if(inherits && (inherits.constructor == Array)){
       var inheritCount = inherits.length;
@@ -528,23 +529,23 @@ MO.RClass.prototype.build = function RClass_build(clazz){
             if(findClass == null){
                MO.Logger.fatal(o, null, 'Parent class is not exists. (name={1})', name);
             }
-            MO.Class.innerCopy(findClass.instance, instance);
+            MO.Class.innerCopy(findClass._instance, instance);
             clazz.assign(findClass);
          }
       }
    }
    // 复制父类到当前实例中
-   if(clazz.parent){
-      o.innerCopy(clazz.parent.instance, instance);
-      clazz.assign(clazz.parent);
+   if(clazz._parent){
+      o.innerCopy(clazz._parent._instance, instance);
+      clazz.assign(clazz._parent);
    }
    // 检查基类对象是否存在，如果不存在建立一个基类对象
    if(!instance.__base){
       instance.__base = new MO.TClassBase();
    }
    // 为基容器对象(base)中创建一个当前类的空实例
-   instance.__base[clazz.name] = new clazz.base.constructor();
-   var cf = clazz.clazz;
+   instance.__base[clazz.name] = new clazz._base.constructor();
+   var cf = clazz._clazz;
    for(var name in cf){
       if(name != '__base'){
          if((cf[name] == null) && (instance[name] == null)){
@@ -563,8 +564,8 @@ MO.RClass.prototype.build = function RClass_build(clazz){
       for(var i = 0; i < inheritCount; i++){
          var name = inherits[i];
          var baseClass = MO.Class.forName(name);
-         var base = instance.__base[name] = new baseClass.base.constructor();
-         var baseInstance = baseClass.instance;
+         var base = instance.__base[name] = new baseClass._base.constructor();
+         var baseInstance = baseClass._instance;
          for(var name in baseInstance){
             if(name != '__base'){
                var cfn = baseInstance[name];
@@ -584,29 +585,26 @@ MO.RClass.prototype.build = function RClass_build(clazz){
    //..........................................................
    // 删除类中所有空属性
    if(MO.Runtime.isRelease()){
-      var instance = clazz.instance;
+      var instance = clazz._instance;
       for(var name in instance){
          var value = instance[name];
          if(value == null){
-            delete clazz.instance[name];
+            delete clazz._instance[name];
          }
       }
    }
 }
 
 //==========================================================
-//<T>获得一个实例的调试信息。</T>
-//<P>调试信息的格式：类型名称<辅助信息>@唯一代码:内容。</P>
+//<T>释放一个实例。</T>
 //
 //@method
-//@param v:value:Object 数据内容
-//@return String 调试信息
+//@param instance:FObject 实例对象
 //==========================================================
-MO.RClass.prototype.free = function RClass_free(o){
-   var c = o.__class;
-   if(c){
-      c.free(o);
-   }
+MO.RClass.prototype.free = function RClass_free(instance){
+   var clazz = instance.__class;
+   MO.Assert.debugNotNull(clazz);
+   clazz.free(instance);
 }
 
 //==========================================================

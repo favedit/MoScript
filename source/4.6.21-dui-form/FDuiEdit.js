@@ -60,7 +60,7 @@ MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(event){
    var o = this;
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   hValueForm.width = '100%';
+   //hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
    //..........................................................
    // 建立改变栏
@@ -180,20 +180,18 @@ MO.FDuiEdit_refreshValue = function FDuiEdit_refreshValue(){
 MO.FDuiEdit_refreshStyle = function FDuiEdit_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
-   // 设置编辑样式
+   // 设置样式
    var hInput = o._hInput;
-   var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
-         inputStyle = 'InputHover';
+         hInput.className = o.styleName('InputHover');
       }else{
-         inputStyle = 'InputEdit';
+         hInput.className = o.styleName('InputNormal');
       }
    }else{
-      inputStyle = 'InputReadonly';
+      hInput.className = o.styleName('InputReadonly');
    }
-   hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 
 //==========================================================

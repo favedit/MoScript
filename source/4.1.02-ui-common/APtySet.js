@@ -2,22 +2,30 @@
 // <T>集合的属性描述类。</T>
 //
 // @property
-// @param n:name:String 名称
-// @param l:linker:String 关联名称
-// @param s:search:String 缺省内容
-// @param v:value:Boolean 缺省内容
+// @param name:String 名称
+// @param linker:String 关联名称
+// @param search:String 缺省内容
+// @param value:Boolean 缺省内容
 // @author maocy
 // @version 141231
 //==========================================================
-MO.APtySet = function APtySet(n, l, s, v){
+MO.APtySet = function APtySet(name, linker, search, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
+   MO.AProperty.call(o, name, linker);
    //..........................................................
    // @attribute
-   o._search = s;
-   o._value  = v;
+   var code = null;
+   if(MO.Lang.String.startsWith(name, '_')){
+      code = name.substring(1);
+   }else{
+      code = name;
+   }
+   o._code   = MO.Lang.String.toUnderline(code);
+   o._search = search;
+   o._value  = value;
    //..........................................................
    // @method
+   o.code     = MO.APtySet_code;
    o.build    = MO.APtySet_build;
    o.load     = MO.APtySet_load;
    o.save     = MO.APtySet_save;
@@ -26,15 +34,26 @@ MO.APtySet = function APtySet(n, l, s, v){
 }
 
 //============================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//============================================================
+MO.APtySet_code = function APtySet_code(){
+   return this._code;
+}
+
+//============================================================
 // <T>构建处理。</T>
 //
 // @method
-// @param v:value:Object 对象
+// @param instance:Object 对象
 //============================================================
-MO.APtySet_build = function APtySet_build(v){
+MO.APtySet_build = function APtySet_build(instance){
    var o = this;
-   if(v[o.name] == null){
-      v[o.name] = o._value;
+   var name = o._name;
+   if(instance[name] == null){
+      instance[name] = o._value;
    }
 }
 
@@ -42,31 +61,33 @@ MO.APtySet_build = function APtySet_build(v){
 // <T>加载属性值。</T>
 //
 // @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
+// @param instance:Object 对象
+// @param xconfig:TNode 节点
 //============================================================
-MO.APtySet_load = function APtySet_load(v, x){
+MO.APtySet_load = function APtySet_load(instance, xconfig){
    var o = this;
-   v[o.name] = MO.Lang.Set.containsString(x.get(o.linker), o.search);
+   var value = xconfig.get(o._linker)
+   instance[o._name] = MO.Lang.Set.containsString(value, o._search);
 }
 
 //============================================================
 // <T>存储属性值。</T>
 //
 // @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
+// @param instance:Object 对象
+// @param xconfig:TNode 节点
 //============================================================
-MO.APtySet_save = function APtySet_save(v, x){
+MO.APtySet_save = function APtySet_save(instance, xconfig){
    var o = this;
-   var n = o.name;
-   var vs = v[n];
-   var xs = x.get(o.linker);
-   var e = MO.Lang.Set.containsString(xs, o._search);
-   if(vs && !e){
-      x.set(n, vs + o._search);
-   }else if(!v && e){
-      x.set(n, MO.Lang.String.remove(vs, o._search));
+   var name = o._name;
+   var search = o._search;
+   var value = instance[name];
+   var values = xconfig.get(o._linker);
+   var exists = MO.Lang.Set.containsString(xs, search);
+   if(value && !exists){
+      xconfig.set(name, values + search);
+   }else if(!value && exists){
+      xconfig.set(name, MO.Lang.String.remove(values, search));
    }
 }
 
@@ -78,5 +99,5 @@ MO.APtySet_save = function APtySet_save(v, x){
 //============================================================
 MO.APtySet_toString = function APtySet_toString(){
    var o = this;
-   return 'linker=' + o.linker + ',value=' + o._value + ',search=' + o._search;
+   return 'linker=' + o._linker + ',value=' + o._value + ',search=' + o._search;
 }

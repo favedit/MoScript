@@ -3171,7 +3171,6 @@ MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(event){
    var o = this;
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(event);
@@ -3221,18 +3220,16 @@ MO.FDuiEdit_refreshStyle = function FDuiEdit_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
    var hInput = o._hInput;
-   var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
-         inputStyle = 'InputHover';
+         hInput.className = o.styleName('InputHover');
       }else{
-         inputStyle = 'InputEdit';
+         hInput.className = o.styleName('InputNormal');
       }
    }else{
-      inputStyle = 'InputReadonly';
+      hInput.className = o.styleName('InputReadonly');
    }
-   hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 MO.FDuiEdit_dispose = function FDuiEdit_dispose(){
    var o = this
@@ -3240,7 +3237,7 @@ MO.FDuiEdit_dispose = function FDuiEdit_dispose(){
    o.__base.FDuiEditControl.dispose.call(o);
 }
 MO.FDuiEditControl = function FDuiEditControl(o){
-   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDataValue, MO.MUiDataField, MO.MUiEditValue, MO.MDuiEditChange, MO.MDuiEditDrop);
+   o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDataValue, MO.MUiDataField, MO.MUiDisplay, MO.MUiEditValue, MO.MUiEditable, MO.MDuiEditChange, MO.MDuiEditDrop);
    o._labelModeCd            = MO.Class.register(o, new MO.APtyString('_labelModeCd'), MO.EUiLabelMode.All);
    o._labelPositionCd        = MO.Class.register(o, new MO.APtyString('_labelPositionCd'), MO.EUiLabelPosition.Left);
    o._labelSize              = MO.Class.register(o, new MO.APtySize2('_labelSize'));
@@ -3250,17 +3247,16 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    o._editColor              = MO.Class.register(o, new MO.APtyString('_editColor'));
    o._styleLabelPanel        = MO.Class.register(o, new MO.AStyle('_styleLabelPanel'));
    o._styleEditPanel         = MO.Class.register(o, new MO.AStyle('_styleEditPanel'));
-   o._styleValueReadonly     = MO.Class.register(o, new MO.AStyle('_styleValueReadonly'));
-   o._styleValueEdit         = MO.Class.register(o, new MO.AStyle('_styleValueEdit'));
+   o._styleValuePanel        = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleValueNormal       = MO.Class.register(o, new MO.AStyle('_styleValueNormal'));
    o._styleValueHover        = MO.Class.register(o, new MO.AStyle('_styleValueHover'));
+   o._styleValueReadonly     = MO.Class.register(o, new MO.AStyle('_styleValueReadonly'));
    o._styleInputPanel        = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
-   o._styleInputReadonly     = MO.Class.register(o, new MO.AStyle('_styleInputReadonly'));
-   o._styleInputEdit         = MO.Class.register(o, new MO.AStyle('_styleInputEdit'));
+   o._styleInputNormal       = MO.Class.register(o, new MO.AStyle('_styleInputNormal'));
    o._styleInputHover        = MO.Class.register(o, new MO.AStyle('_styleInputHover'));
-   o._styleInputInvalid      = MO.Class.register(o, new MO.AStyle('_styleInputInvalid'));
+   o._styleInputReadonly     = MO.Class.register(o, new MO.AStyle('_styleInputReadonly'));
    o._optionValueStyle       = true;
    o._statusValueHover       = false;
-   o._statusValueEdit        = true;
    o._progressing            = false;
    o._hLabelPanel            = null;
    o._hLabelForm             = null;
@@ -3288,7 +3284,7 @@ MO.FDuiEditControl = function FDuiEditControl(o){
    o.calculateValueRectangle = MO.FDuiEditControl_calculateValueRectangle;
    o.panel                   = MO.FDuiEditControl_panel;
    o.setLabel                = MO.FDuiEditControl_setLabel;
-   o.setEditAble             = MO.FDuiEditControl_setEditAble;
+   o.setEditable             = MO.FDuiEditControl_setEditable;
    o.refreshStyle            = MO.FDuiEditControl_refreshStyle;
    o.dispose                 = MO.FDuiEditControl_dispose;
    return o;
@@ -3391,8 +3387,10 @@ MO.FDuiEditControl_onBuild = function FDuiEditControl_onBuild(event){
 }
 MO.FDuiEditControl_oeMode = function FDuiEditControl_oeMode(event){
    var o = this;
-   var resultCd = o.__base.FDuiControl.oeMode.call(o, event);
-   return resultCd;
+   o.__base.FDuiControl.oeMode.call(o, event);
+   o.__base.MUiDisplay.oeMode.call(o, event);
+   o.__base.MUiEditable.oeMode.call(o, event);
+   return MO.EEventStatus.Stop;
 }
 MO.FDuiEditControl_oeProgress = function FDuiEditControl_oeProgress(event){
    var o = this;
@@ -3455,10 +3453,9 @@ MO.FDuiEditControl_setLabel = function FDuiEditControl_setLabel(value){
       o._hText.innerHTML = MO.Lang.String.nvl(value);
    }
 }
-MO.FDuiEditControl_setEditAble = function FDuiEditControl_setEditAble(value){
+MO.FDuiEditControl_setEditable = function FDuiEditControl_setEditable(value){
    var o = this;
-   o.__base.FDuiControl.setEditAble.call(o, value);
-   o._statusValueEdit = value;
+   o._statusEditable = value;
    o.refreshStyle();
 }
 MO.FDuiEditControl_calculateValueRectangle = function FDuiEditControl_calculateValueRectangle(rectangle){
@@ -3476,16 +3473,18 @@ MO.FDuiEditControl_calculateValueRectangle = function FDuiEditControl_calculateV
 }
 MO.FDuiEditControl_refreshStyle = function FDuiEditControl_refreshStyle(){
    var o = this;
-   var hValuePanel = o._hValuePanel;
    if(o._optionValueStyle){
-      if(o._statusValueEdit){
-         if(o._statusValueHover){
-            hValuePanel.className = o.styleName('ValueHover');
+      var hForm = o._hValueForm;
+      if(hForm){
+         if(o._statusEditable){
+            if(o._statusValueHover){
+               hForm.className = o.styleName('ValueHover');
+            }else{
+               hForm.className = o.styleName('ValueNormal');
+            }
          }else{
-            hValuePanel.className = o.styleName('ValueEdit');
+            hForm.className = o.styleName('ValueReadonly');
          }
-      }else{
-         hValuePanel.className = o.styleName('ValueReadonly');
       }
    }
 }

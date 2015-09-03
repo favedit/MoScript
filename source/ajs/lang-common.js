@@ -1284,7 +1284,7 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       return console;
    }
    var template = MO.Class.forName(name);
-   var scopeCd = template.instance.scopeCd();
+   var scopeCd = template._instance.scopeCd();
    switch(scopeCd){
       case MO.EScope.Global:
          console = top.MO.Console.createByName(name);
@@ -1755,17 +1755,16 @@ MO.RRegExp = new MO.RRegExp();
 MO.RSet = function RSet(){
    return this;
 }
-MO.RSet.prototype.contains = function RSet_contains(v, d){
-   return (v & d) == d;
+MO.RSet.prototype.contains = function RSet_contains(source, value){
+   return (source & value) == value;
 }
-MO.RSet.prototype.containsString = function RSet_containsString(v, d){
-   if((v != null) && (s != null)){
-      return v.indexOf(s) != -1;
+MO.RSet.prototype.containsString = function RSet_containsString(source, value){
+   if((source != null) && (value != null)){
+      return source.indexOf(value) != -1;
    }
    return false;
 }
-MO.RSet = new MO.RSet();
-MO.Lang.Set = MO.RSet;
+MO.Lang.Set = new MO.RSet();
 MO.RTimer = function RTimer(){
    var o = this;
    o._startTime = 0;

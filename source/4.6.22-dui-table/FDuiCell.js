@@ -14,44 +14,32 @@ MO.FDuiCell = function FDuiCell(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiValue, MO.MUiDataValue);
    //..........................................................
    // @style
-   o._stylePanel   = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._stylePanel       = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    //..........................................................
    // @attribute
-   o._table        = MO.Class.register(o, new MO.AGetSet('_table'));
-   o._column       = MO.Class.register(o, new MO.AGetSet('_column'));
-   o._row          = MO.Class.register(o, new MO.AGetSet('_row'));
-   //..........................................................
-   // @html
+   o._table            = MO.Class.register(o, new MO.AGetSet('_table'));
+   o._column           = MO.Class.register(o, new MO.AGetSet('_column'));
+   o._row              = MO.Class.register(o, new MO.AGetSet('_row'));
    //..........................................................
    // @event
-   o.onBuildPanel  = MO.FDuiCell_onBuildPanel;
-   o.onBuild       = MO.FDuiCell_onBuild;
+   o.onBuildPanel      = MO.FDuiCell_onBuildPanel;
+   o.onBuild           = MO.FDuiCell_onBuild;
    // @event
-   o.onCellClick   = MO.Class.register(o, new MO.AEventClick('onCellClick'), MO.FDuiCell_onCellClick);
+   o.onCellClick       = MO.Class.register(o, new MO.AEventClick('onCellClick'), MO.FDuiCell_onCellClick);
+   o.onCellDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onCellDoubleClick'), MO.FDuiCell_onCellDoubleClick);
    //..........................................................
    // @process
-   o.oeLoadDataRow = MO.FDuiCell_oeLoadDataRow;
-   o.oeSaveDataRow = MO.FDuiCell_oeSaveDataRow;
+   o.oeLoadDataRow     = MO.FDuiCell_oeLoadDataRow;
+   o.oeSaveDataRow     = MO.FDuiCell_oeSaveDataRow;
    //..........................................................
    // @method
-   o.construct    = MO.FDuiCell_construct;
+   o.construct        = MO.FDuiCell_construct;
    // @method
-   o.setVisible   = MO.FDuiCell_setVisible;
-   o.focus        = MO.FDuiCell_focus;
-   o.refreshStyle = MO.FDuiCell_refreshStyle;
+   o.setVisible       = MO.FDuiCell_setVisible;
+   o.focus            = MO.FDuiCell_focus;
+   o.refreshStyle     = MO.FDuiCell_refreshStyle;
    // @method
-   o.dispose      = MO.FDuiCell_dispose;
-
-
-
-   // Html
-   //o._hEditPanel  = null;
-   //o.hForm        = null;
-   //o.hFormLine    = null;
-   //o.hIconPanel   = null;
-   //o.hIcon        = null;
-   //o.hDropPanel   = null;
-   //o.hDrop        = null;
+   o.dispose          = MO.FDuiCell_dispose;
    //..........................................................
    // @method
    //o.doFocus      = FDuiCell_doFocus;
@@ -112,7 +100,7 @@ MO.FDuiCell_onBuild = function FDuiCell_onBuild(event){
 }
 
 //==========================================================
-// <T>数据源从加载数据处理。</T>
+// <T>单击单元格事件处理。</T>
 //
 // @method
 // @param event:SUiDispatchEvent 事件信息
@@ -120,8 +108,19 @@ MO.FDuiCell_onBuild = function FDuiCell_onBuild(event){
 MO.FDuiCell_onCellClick = function FDuiCell_onCellClick(event){
    var o = this;
    var table = o._table;
-   var row = o._row;
-   table.clickRow(row);
+   table.clickCell(o);
+}
+
+//==========================================================
+// <T>双击单元格事件处理。</T>
+//
+// @method
+// @param event:SUiDispatchEvent 事件信息
+//==========================================================
+MO.FDuiCell_onCellDoubleClick = function FDuiCell_onCellDoubleClick(event){
+   var o = this;
+   var table = o._table;
+   table.doubleClickCell(o);
 }
 
 //==========================================================
@@ -226,28 +225,9 @@ MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
 //==========================================================
 MO.FDuiCell_dispose = function FDuiCell_dispose(){
    var o = this;
-   //RMemory.freeHtml(o._hPanel);
-   //o._hPanel = null;
-   //o.hForm = null;
-   //o.hFormLine = null;
-   //o.hIconPanel = null;
-   //o.hIcon = null;
-   //o._hEditPanel = null;
-   //o._hEdit = null;
-   //o.hDropPanel = null;
-   //o.hDrop = null;
+   // 父处理
    o.__base.FDuiControl.dispose.call(o);
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

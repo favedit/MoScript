@@ -82,12 +82,12 @@ MO.FDuiColumnStatus = function FDuiColumnStatus(o){
 //==========================================================
 MO.FDuiColumnStatus_onBuildSearchForm = function FDuiColumnStatus_onBuildSearchForm(event){
    var o = this;
-   var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
-   hf.height = 18;
-   hf.width = '100%';
-   var hfl = o._hSearchFormLine = MO.Window.Builder.appendTableRow(hf);
-   var hc = MO.Window.Builder.appendTableCell(hfl);
-   hc.align = 'center';
+   var hForm = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
+   hForm.width = '100%';
+   hForm.height = 18;
+   var hLine = o._hSearchFormLine = MO.Window.Builder.appendTableRow(hForm);
+   var hCell = MO.Window.Builder.appendTableCell(hLine);
+   hCell.align = 'center';
    //o._hSearchIcon = MO.Window.Builder.appendIcon(hc, o.styleIcon('Search'));
    //o._hSearchIcon.title = RContext.get('FDuiColumnStatus:Search');
 }

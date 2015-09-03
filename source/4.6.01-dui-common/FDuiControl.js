@@ -94,9 +94,6 @@ MO.FDuiControl = function FDuiControl(o){
    o.linkEvent      = MO.FDuiControl_linkEvent;
    o.callEvent      = MO.FDuiControl_callEvent;
    // @method
-   o.psMode         = MO.FDuiControl_psMode;
-   o.psDesign       = MO.FDuiControl_psDesign;
-   // @method
    o.isBuild        = MO.FDuiControl_isBuild;
    o.build          = MO.FDuiControl_build;
    o.builded        = MO.FDuiControl_builded;
@@ -140,7 +137,7 @@ MO.FDuiControl_onLeave = function FDuiControl_onLeave(e){
 // <P>默认为DIV页面元素。</P>
 //
 // @method
-// @param p:event:MO.TEventProcess 事件处理
+// @param p:event:MO.SUiDispatchEvent 事件处理
 //==========================================================
 MO.FDuiControl_onBuildPanel = function FDuiControl_onBuildPanel(p){
    var o = this;
@@ -545,41 +542,6 @@ MO.FDuiControl_callEvent = function FDuiControl_callEvent(n, s, e){
 }
 
 //==========================================================
-// <T>分发工作模式的事件。</T>
-//
-// @method
-// @param p:displayMode:EDisplayMode 显示模式
-//==========================================================
-MO.FDuiControl_psMode = function FDuiControl_psMode(p){
-   var o = this;
-   // 创建事件
-   var e = new MO.TEventProcess(o, 'oeMode', MO.FDuiControl);
-   e.displayCd = p;
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件设计状态的事件。</T>
-//
-// @method
-// @param m:mode:EDesign 设计模式
-// @param f:flag:Boolean 开始还是结束
-//==========================================================
-MO.FDuiControl_psDesign = function FDuiControl_psDesign(m, f){
-   var o = this;
-   MO.Console.find(FDesignConsole).setFlag(m, f, o);
-   // 创建事件
-   var e = new MO.TEventProcess(o, 'oeDesign', MO.MDesign)
-   e.mode = m;
-   e.flag = f;
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
 // <T>判断是否已经构建。</T>
 //
 // @method
@@ -594,33 +556,32 @@ MO.FDuiControl_isBuild = function FDuiControl_isBuild(){
 // <P>只允许构建一次，不允许重复构建。</P>
 //
 // @method
-// @param p:html:HtmlTag 页面元素
+// @param parent:Object 父对象
 //==========================================================
-MO.FDuiControl_build = function FDuiControl_build(p){
+MO.FDuiControl_build = function FDuiControl_build(parent){
    var o = this;
    // 检查状态
    if(o._statusBuild){
       throw new MO.TError(o, 'Current control is already builded.');
    }
    // 获得文档对象
-   var d = null;
-   if(p.createElement){
-      d = p;
-   }else if(p.ownerDocument && p.ownerDocument.createElement){
-      d = p.ownerDocument;
-   }else if(p.hDocument){
-      d = p.hDocument;
+   var hDocument = null;
+   if(MO.Class.isClass(parent, MO.FDuiControl)){
+      hDocument = parent._hPanel.ownerDocument;
+   }else if(parent.createElement){
+      hDocument = parent;
+   }else if(parent.ownerDocument && parent.ownerDocument.createElement){
+      hDocument = parent.ownerDocument;
+   }else if(parent.hDocument){
+      hDocument = parent.hDocument;
    }else{
-      throw new MO.TError("Build document is invalid. (document={1})", p);
+      throw new MO.TError("Parent is invalid. (parent={1})", parent);
    }
    // 构建处理
-   var a = new MO.SArguments();
-   a.owner = o;
-   a.hDocument = d;
-   o.onBuild(a);
-   a.owner = null;
-   a.hDocument = null;
-   MO.Lang.Object.free(a);
+   var event = new MO.SEvent(o);
+   event.hDocument = hDocument;
+   o.onBuild(event);
+   event.dispose();
    // 设置状态
    o._statusBuild = true;
 }
@@ -691,7 +652,7 @@ MO.FDuiControl_dispose = function FDuiControl_dispose(){
    o._statusBuild = null;
    // 释放属性
    o._hParent = null;
-   o._hPanel = MO.RHtml.free(o._hPanel);
+   o._hPanel = MO.Window.Html.free(o._hPanel);
    // 释放处理
    o.__base.MDuiStyle.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);

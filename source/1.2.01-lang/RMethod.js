@@ -148,15 +148,42 @@ MO.RMethod.prototype.virtual = function RMethod_virtual(value, name){
    var o = this;
    var method = null;
    var code = MO.Class.name(value) + '.' + name;
-   if(o._virtuals[code]){
-      method = o._virtuals[code];
+   var virtuals = o._virtuals;
+   if(virtuals[code]){
+      method = virtuals[code];
    }else{
       // 创建函数对象
       var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
       method = new Function(source);
       method.__virtual = true;
       method.__name = code;
-      o._virtuals[code] = method;
+      virtuals[code] = method;
+   }
+   return method;
+}
+
+//==========================================================
+// <T>创建一个虚函数。</T>
+//
+// @method
+// @param clazz:TClass 类对象
+// @param name:String 函数名称
+// @return Function 虚函数
+//==========================================================
+MO.RMethod.prototype.makeVirtual = function RMethod_makeVirtual(clazz, name){
+   var o = this;
+   var method = null;
+   var code = clazz.name + '.' + name;
+   var virtuals = o._virtuals;
+   if(virtuals[code]){
+      method = virtuals[code];
+   }else{
+      // 创建函数对象
+      var source = 'throw new Error(\'Virtual method be called.(' + code + ')\');';
+      method = new Function(source);
+      method.__virtual = true;
+      method.__name = code;
+      virtuals[code] = method;
    }
    return method;
 }

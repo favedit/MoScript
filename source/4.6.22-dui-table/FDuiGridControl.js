@@ -29,105 +29,100 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDataContainer, MO.MUiDisplayContrainer, MO.MDuiDescribeFrame);
    //..........................................................
    // @property
-   o._displayCount            = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
-   //o._displayTitle          = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', MO.EGridDisplay.Title), true);
-   o._displayTitle            = true;
-   o._displayColumnStatus     = true;
-   o._displayColumnSelect     = true;
-   o._rowHeight               = MO.Class.register(o, new MO.APtyInteger('_rowHeight'), 0);
+   o._displayCount             = MO.Class.register(o, new MO.APtyInteger('_displayCount'), 20);
+   //o._displayTitle           = MO.Class.register(o, new MO.APtySet('_displayTitle', 'display_title', MO.EGridDisplay.Title), true);
+   o._displayTitle             = true;
+   o._displayColumnStatus      = true;
+   o._displayColumnSelect      = true;
+   o._rowHeight                = MO.Class.register(o, new MO.APtyInteger('_rowHeight'), 0);
    //..........................................................
    // @style
-   o._stylePanel              = MO.Class.register(o, new MO.AStyle('_stylePanel'));
-   o._styleTitlePanel         = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
-   o._styleTitleForm          = MO.Class.register(o, new MO.AStyle('_styleTitleForm'));
-   o._styleCaption            = MO.Class.register(o, new MO.AStyle('_styleCaption'));
-   o._styleContentPanel       = MO.Class.register(o, new MO.AStyle('_styleContentPanel'));
-   o._styleContentForm        = MO.Class.register(o, new MO.AStyle('_styleContentForm'));
-   o._styleHintPanel          = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
-   o._styleHintForm           = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
-   o._styleHint               = MO.Class.register(o, new MO.AStyle('_styleHint'));
-   o._styleButtonForm         = MO.Class.register(o, new MO.AStyle('_styleButtonForm'));
-   o._styleButton             = MO.Class.register(o, new MO.AStyle('_styleButton'));
+   o._stylePanel               = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._styleTitlePanel          = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
+   o._styleTitleForm           = MO.Class.register(o, new MO.AStyle('_styleTitleForm'));
+   o._styleCaption             = MO.Class.register(o, new MO.AStyle('_styleCaption'));
+   o._styleContentPanel        = MO.Class.register(o, new MO.AStyle('_styleContentPanel'));
+   o._styleContentForm         = MO.Class.register(o, new MO.AStyle('_styleContentForm'));
+   o._styleHintPanel           = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
+   o._styleHintForm            = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
+   o._styleHint                = MO.Class.register(o, new MO.AStyle('_styleHint'));
+   o._styleButtonForm          = MO.Class.register(o, new MO.AStyle('_styleButtonForm'));
+   o._styleButton              = MO.Class.register(o, new MO.AStyle('_styleButton'));
    //..........................................................
    // @attribute
-   o._minHeight               = 80;
+   o._minHeight                = 80;
    // @attribute
-   o._buttons                 = null;
-   o._columns                 = null;
-   o._rowClass                = MO.FDuiGridRow;
-   o._rows                    = null;
-   o._rowPool                 = null;
+   o._buttons                  = null;
+   o._columns                  = null;
+   o._rowClass                 = MO.FDuiGridRow;
+   o._rows                     = null;
+   o._rowPool                  = null;
    // @attribute
-   o._focusCell               = null;
-   o._focusRow                = null;
+   o._focusCell                = null;
+   o._focusRow                 = null;
    // @attribute
-   o._loadEvent               = null; 
+   o._loadEvent                = null; 
    //..........................................................
    // @html
-   o._hTitlePanel             = null;
-   o._hTitleForm              = null;
-   o._hTitleLine              = null;
-   o._hCaption                = null;
-   o._hContentPanel           = null;
-   o._hHintPanel              = null;
-   o._hHintForm               = null;
+   o._hTitlePanel              = null;
+   o._hTitleForm               = null;
+   o._hTitleLine               = null;
+   o._hCaption                 = null;
+   o._hContentPanel            = null;
+   o._hHintPanel               = null;
+   o._hHintForm                = null;
    // @html
-   o._hRows                   = null;
+   o._hRows                    = null;
    //..........................................................
    // @listeners
-   o._listenersRowClick       = MO.Class.register(o, new MO.AListener('_listenersRowClick'));
-   o._listenersRowDoubleClick = MO.Class.register(o, new MO.AListener('_listenersRowDoubleClick'));
+   o._listenersCellClick       = MO.Class.register(o, new MO.AListener('_listenersCellClick'));
+   o._listenersCellDoubleClick = MO.Class.register(o, new MO.AListener('_listenersCellDoubleClick'));
+   o._listenersRowClick        = MO.Class.register(o, new MO.AListener('_listenersRowClick'));
+   o._listenersRowDoubleClick  = MO.Class.register(o, new MO.AListener('_listenersRowDoubleClick'));
    //..........................................................
    // @event
-   o.onBuildTitle             = MO.FDuiGridControl_onBuildTitle;
-   o.onBuildContent           = MO.Method.virtual(o, 'onBuildContent');
-   o.onBuildHint              = MO.FDuiGridControl_onBuildHint;
-   o.onBuildPanel             = MO.FDuiGridControl_onBuildPanel;
-   o.onBuild                  = MO.FDuiGridControl_onBuild;
+   o.onBuildTitle              = MO.FDuiGridControl_onBuildTitle;
+   o.onBuildContent            = MO.Method.virtual(o, 'onBuildContent');
+   o.onBuildHint               = MO.FDuiGridControl_onBuildHint;
+   o.onBuildPanel              = MO.FDuiGridControl_onBuildPanel;
+   o.onBuild                   = MO.FDuiGridControl_onBuild;
    // @event
-   o.onRowMouseEnter          = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), MO.FDuiGridControl_onRowMouseEnter);
-   o.onRowMouseLeave          = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), MO.FDuiGridControl_onRowMouseLeave);
-   o.onRowClick               = MO.Class.register(o, new MO.AEventClick('onRowClick'), MO.FDuiGridControl_onRowClick);
+   o.onRowMouseEnter           = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), MO.FDuiGridControl_onRowMouseEnter);
+   o.onRowMouseLeave           = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), MO.FDuiGridControl_onRowMouseLeave);
+   o.onRowClick                = MO.Class.register(o, new MO.AEventClick('onRowClick'), MO.FDuiGridControl_onRowClick);
    // @event
-   o.onDatasetLoadDelay       = MO.FDuiGridControl_onDatasetLoadDelay;
-   o.onDatasetLoad            = MO.FDuiGridControl_onDatasetLoad;
+   o.onDatasetLoadDelay        = MO.FDuiGridControl_onDatasetLoadDelay;
+   o.onDatasetLoad             = MO.FDuiGridControl_onDatasetLoad;
    //..........................................................
    // @method
-   o.construct                = MO.FDuiGridControl_construct;
+   o.construct                 = MO.FDuiGridControl_construct;
    // @method
-   o.buildNavigatorButton     = MO.FDuiGridControl_buildNavigatorButton;
+   o.buildNavigatorButton      = MO.FDuiGridControl_buildNavigatorButton;
    // @method
-   o.appendColumn             = MO.Method.virtual(o, 'appendColumn');
-   o.appendChild              = MO.FDuiGridControl_appendChild;
-   o.push                     = MO.FDuiGridControl_push;
+   o.appendColumn              = MO.Method.virtual(o, 'appendColumn');
+   o.appendChild               = MO.FDuiGridControl_appendChild;
+   o.push                      = MO.FDuiGridControl_push;
    // @method
-   o.createRow                = MO.FDuiGridControl_createRow;
-   o.dropRow                  = MO.FDuiGridControl_dropRow;
+   o.createRow                 = MO.FDuiGridControl_createRow;
+   o.dropRow                   = MO.FDuiGridControl_dropRow;
    // @method
-   o.insertRow                = MO.FDuiGridControl_insertRow;
-   o.pushRow                  = MO.FDuiGridControl_pushRow;
-   o.removeRow                = MO.FDuiGridControl_removeRow;
-   o.syncRow                  = MO.FDuiGridControl_syncRow;
-   o.hideRows                 = MO.FDuiGridControl_hideRows;
-   o.clearRows                = MO.FDuiGridControl_clearRows;
+   o.insertRow                 = MO.FDuiGridControl_insertRow;
+   o.pushRow                   = MO.FDuiGridControl_pushRow;
+   o.removeRow                 = MO.FDuiGridControl_removeRow;
+   o.syncRow                   = MO.FDuiGridControl_syncRow;
+   o.hideRows                  = MO.FDuiGridControl_hideRows;
+   o.clearRows                 = MO.FDuiGridControl_clearRows;
    // @method
-   o.loadDataset              = MO.FDuiGridControl_loadDataset;
+   o.loadDataset               = MO.FDuiGridControl_loadDataset;
    // @method
-   o.clickCell                = MO.FDuiGridControl_clickCell;
-   o.clickRow                 = MO.FDuiGridControl_clickRow;
-   o.doubleClickRow           = MO.FDuiGridControl_doubleClickRow;
-   o.hoverRow                 = MO.FDuiGridControl_hoverRow;
-   o.selectRow                = MO.FDuiGridControl_selectRow;
+   o.clickCell                 = MO.FDuiGridControl_clickCell;
+   o.doubleClickCell           = MO.FDuiGridControl_doubleClickCell;
+   o.clickRow                  = MO.FDuiGridControl_clickRow;
+   o.doubleClickRow            = MO.FDuiGridControl_doubleClickRow;
+   o.hoverRow                  = MO.FDuiGridControl_hoverRow;
+   o.selectRow                 = MO.FDuiGridControl_selectRow;
    // @method
-   o.dispose                  = MO.FDuiGridControl_dispose;
-
-
-
-
-
-
-
-
+   o.dispose                   = MO.FDuiGridControl_dispose;
 
 
    //..........................................................
@@ -860,7 +855,41 @@ MO.FDuiGridControl_loadDataset = function FDuiGridControl_loadDataset(dataset){
 // @param cell:FDuiCell 单元格
 //==========================================================
 MO.FDuiGridControl_clickCell = function FDuiGridControl_clickCell(cell){
-   this._focusCell = cell;
+   var o = this;
+   var row = cell.row();
+   // 设置焦点
+   o._focusCell = cell;
+   // 处理监听
+   var event = new MO.SEvent(o);
+   event.grid = o;
+   event.row = row;
+   event.cell = cell;
+   o.processCellClickListener(event);
+   event.dispose();
+   // 点击行处理
+   o.clickRow(row);
+}
+
+//==========================================================
+// <T>单击一个单元格。</T>
+//
+// @method
+// @param cell:FDuiCell 单元格
+//==========================================================
+MO.FDuiGridControl_doubleClickCell = function FDuiGridControl_doubleClickCell(cell){
+   var o = this;
+   var row = cell.row();
+   // 设置焦点
+   o._focusCell = cell;
+   // 处理监听
+   var event = new MO.SEvent(o);
+   event.grid = o;
+   event.row = row;
+   event.cell = cell;
+   o.processCellDoubleClickListener(event);
+   event.dispose();
+   // 点击行处理
+   o.doubleClickRow(row);
 }
 
 //==========================================================
@@ -877,18 +906,8 @@ MO.FDuiGridControl_clickRow = function FDuiGridControl_clickRow(row){
    var event = new MO.SEvent(o);
    event.grid = o;
    event.row = row;
-   o.onRowClick(event);
    o.processRowClickListener(event);
    event.dispose();
-   //if(o.callEvent('onTableRowClick', r)){
-   //   return;
-   //}
-   // 发布事件
-   //var e = o._clickRowEvent;
-   //e.source = o;
-   //e.caller = r;
-   //e.handle = 'onTableRowClick';
-   //RConsole.find(FFormConsole).processEvent(e);
    // 处理选取表格
    //if(o.isLov){
    //   o.doubleClickRow(r);
@@ -911,17 +930,6 @@ MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(row)
    event.row = row;
    o.processRowDoubleClickListener(event);
    event.dispose();
-   // 调用事件
-   //if(o.callEvent('onTableRowDoubleClick', r)){
-   //   return;
-   //}
-   // 发布事件
-   //var e = o._doubleClickRowEvent;
-   //e.source = o;
-   //e.caller = r;
-   //e.handle = 'onTableRowDoubleClick';
-   //RConsole.find(FFormConsole).processEvent(e);
-   //RConsole.find(FListenerConsole).process(FDuiGridControl, EGridAction.RowDblClick, r, r)
 }
 
 //==========================================================

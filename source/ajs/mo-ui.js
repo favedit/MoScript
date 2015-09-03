@@ -1018,29 +1018,32 @@ MO.APtyFont_toString = function APtyFont_toString() {
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._font + ',' + o._size + o._bold + ',' + o._color;
 }
-MO.APtyInteger = function APtyInteger(n, l, v){
+MO.APtyInteger = function APtyInteger(name, linker, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
-   o._value   = MO.Lang.Integer.nvl(v);
+   MO.AProperty.call(o, name, linker);
+   o._value   = MO.Lang.Integer.nvl(value);
    o.build    = MO.APtyInteger_build;
    o.load     = MO.APtyInteger_load;
    o.save     = MO.APtyInteger_save;
    o.toString = MO.APtyInteger_toString;
    return o;
 }
-MO.APtyInteger_build = function APtyInteger_build(v){
+MO.APtyInteger_build = function APtyInteger_build(instance){
    var o = this;
-   if(v[o._name] == null){
-      v[o._name] = o._value;
+   var name = o._name;
+   if(instance[name] == null){
+      instance[name] = o._value;
    }
 }
-MO.APtyInteger_load = function APtyInteger_load(v, x){
+MO.APtyInteger_load = function APtyInteger_load(instance, xconfig){
    var o = this;
-   v[o._name] = MO.Lang.Integer.parse(x.get(o._linker));
+   var value = xconfig.get(o._linker);
+   instance[o._name] = MO.Lang.Integer.parse(value);
 }
-MO.APtyInteger_save = function APtyInteger_save(v, x){
+MO.APtyInteger_save = function APtyInteger_save(instance, xconfig){
    var o = this;
-   x.set(o._linker, MO.Lang.Integer.toString(v[o._name]));
+   var value = instance[o._name];
+   xconfig.set(o._linker, MO.Lang.Integer.toString(value));
 }
 MO.APtyInteger_toString = function APtyInteger_toString(){
    var o = this;
@@ -1127,42 +1130,56 @@ MO.APtyPoint2_toString = function APtyPoint2_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
 }
-MO.APtySet = function APtySet(n, l, s, v){
+MO.APtySet = function APtySet(name, linker, search, value){
    var o = this;
-   MO.AProperty.call(o, n, l);
-   o._search = s;
-   o._value  = v;
+   MO.AProperty.call(o, name, linker);
+   var code = null;
+   if(MO.Lang.String.startsWith(name, '_')){
+      code = name.substring(1);
+   }else{
+      code = name;
+   }
+   o._code   = MO.Lang.String.toUnderline(code);
+   o._search = search;
+   o._value  = value;
+   o.code     = MO.APtySet_code;
    o.build    = MO.APtySet_build;
    o.load     = MO.APtySet_load;
    o.save     = MO.APtySet_save;
    o.toString = MO.APtySet_toString;
    return o;
 }
-MO.APtySet_build = function APtySet_build(v){
+MO.APtySet_code = function APtySet_code(){
+   return this._code;
+}
+MO.APtySet_build = function APtySet_build(instance){
    var o = this;
-   if(v[o.name] == null){
-      v[o.name] = o._value;
+   var name = o._name;
+   if(instance[name] == null){
+      instance[name] = o._value;
    }
 }
-MO.APtySet_load = function APtySet_load(v, x){
+MO.APtySet_load = function APtySet_load(instance, xconfig){
    var o = this;
-   v[o.name] = MO.Lang.Set.containsString(x.get(o.linker), o.search);
+   var value = xconfig.get(o._linker)
+   instance[o._name] = MO.Lang.Set.containsString(value, o._search);
 }
-MO.APtySet_save = function APtySet_save(v, x){
+MO.APtySet_save = function APtySet_save(instance, xconfig){
    var o = this;
-   var n = o.name;
-   var vs = v[n];
-   var xs = x.get(o.linker);
-   var e = MO.Lang.Set.containsString(xs, o._search);
-   if(vs && !e){
-      x.set(n, vs + o._search);
-   }else if(!v && e){
-      x.set(n, MO.Lang.String.remove(vs, o._search));
+   var name = o._name;
+   var search = o._search;
+   var value = instance[name];
+   var values = xconfig.get(o._linker);
+   var exists = MO.Lang.Set.containsString(xs, search);
+   if(value && !exists){
+      xconfig.set(name, values + search);
+   }else if(!value && exists){
+      xconfig.set(name, MO.Lang.String.remove(values, search));
    }
 }
 MO.APtySet_toString = function APtySet_toString(){
    var o = this;
-   return 'linker=' + o.linker + ',value=' + o._value + ',search=' + o._search;
+   return 'linker=' + o._linker + ',value=' + o._value + ',search=' + o._search;
 }
 MO.APtySize2 = function APtySize2(name, linker, width, height){
    var o = this;
@@ -1249,26 +1266,12 @@ MO.EUiBorderStyle = new function EUiBorderStyle(){
 }
 MO.EUiColor = new function EUiColor(){
    var o = this;
-   o.ReadonlyBackgroundColor = '#FEFECB';
-   o.Normal        = '#FFFFFF';
-   o.Select        = '#F8C59A';
-   o.Valid         = '#FFCCCC';
-   o.Invalid       = '#FFCCCC';
-   o.Edit          = '#FFFFFF';
-   o.EditHover     = '#EBFFFF';
-   o.Require       = '#FF0000';
-   o.Text          = '#000000';
-   o.TextEdit      = '#0066FF';
-   o.TextReadonly  = '#333333';
-   o.TextInvalid   = 'red';
-   o.Delete        = '#DDDDDD';
-   o.ColumnReadonly = '#FFFFFF';
-   o.Rows          = new Array('#FFFFFF', '#FAFAFA');
-   o.RowSelect     = '#cde5ff';
-   o.RowHover      = '#E8E8FF';
-   o.RowEdit       = '#FFFFFF';
-   o.RowEditSelect = '#FDEBDB';
-   o.RowEditHover  = '#F8F8E0';
+   o.Text         = '#0099FF';
+   o.TextHover    = '#000000';
+   o.TextReadonly = '#000000';
+   o.Edit         = '#EBFFFF';
+   o.EditHover    = '#EBFFFF';
+   o.EditReadonly = '#FEFECB';
    return o;
 }
 MO.EUiCursor = new function EUiCursor(){
@@ -2461,18 +2464,60 @@ MO.MUiDataValue = function MUiDataValue(o){
    o.oeSaveDataRow = MO.Method.empty;
    return o;
 }
+MO.MUiDisplay = function MUiDisplay(o){
+   o = MO.Class.inherits(this, o);
+   o._displayView   = MO.Class.register(o, new MO.APtySet('_displayView', 'display_mode', MO.EUiMode.View, true));
+   o._displayInsert = MO.Class.register(o, new MO.APtySet('_displayInsert', 'display_mode', MO.EUiMode.Insert, false));
+   o._displayUpdate = MO.Class.register(o, new MO.APtySet('_displayUpdate', 'display_mode', MO.EUiMode.Update, true));
+   o._displayDelete = MO.Class.register(o, new MO.APtySet('_displayDelete', 'display_mode', MO.EUiMode.Delete, false));
+   o._displaySearch = MO.Class.register(o, new MO.APtySet('_displaySearch', 'display_mode', MO.EUiMode.Search, false));
+   o._displayPicker = MO.Class.register(o, new MO.APtySet('_displayPicker', 'display_mode', MO.EUiMode.Picker, false));
+   o._displayZoom   = MO.Class.register(o, new MO.APtySet('_displayZoom', 'display_mode', MO.EUiMode.Zoom, false));
+   o._statusDisplay = MO.Class.register(o, new MO.AGetter('_statusDisplay', 'isDisplay'), true);
+   o.oeMode         = MO.MUiDisplay_oeMode;
+   o.testVisible    = MO.MUiDisplay_testVisible;
+   o.setVisible     = MO.Method.empty;
+   return o;
+}
+MO.MUiDisplay_oeMode = function MUiDisplay_oeMode(event){
+   var o = this;
+   if(event.isBefore()){
+      var modeCd = event.modeCd;
+      var visible = o._statusDisplay = o.testVisible(modeCd);
+      o.setVisible(visible);
+   }
+}
+MO.MUiDisplay_testVisible = function MUiDisplay_testVisible(modeCd){
+   var o = this;
+   switch(modeCd){
+      case MO.EUiMode.View:
+         return o._displayView;
+      case MO.EUiMode.Search:
+         return o._displaySearch;
+      case MO.EUiMode.Insert:
+         return o._displayInsert;
+      case MO.EUiMode.Update:
+         return o._displayUpdate;
+      case MO.EUiMode.Delete:
+         return o._displayDelete;
+      case MO.EUiMode.Zoom:
+         return o._displayZoom;
+   }
+   return false;
+}
 MO.MUiDisplayContrainer = function MUiDisplayContrainer(o){
    o = MO.Class.inherits(this, o);
    o._modeCd    = MO.Class.register(o, new MO.AGetter('_modeCd'), MO.EUiMode.View);
    o._eventMode = null;
    o.construct  = MO.MUiDisplayContrainer_construct;
    o.psMode     = MO.MUiDisplayContrainer_psMode;
+   o.psDesign   = MO.MUiDisplayContrainer_psDesign;
    o.dispose    = MO.MUiDisplayContrainer_dispose;
    return o;
 }
 MO.MUiDisplayContrainer_construct = function MUiDisplayContrainer_construct(){
    var o = this;
-   o._eventMode = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDisplayField);
+   o._eventMode = new MO.SUiDispatchEvent(o, 'oeMode', MO.MUiDisplay);
 }
 MO.MUiDisplayContrainer_psMode = function MUiDisplayContrainer_psMode(modeCd){
    var o = this;
@@ -2481,13 +2526,18 @@ MO.MUiDisplayContrainer_psMode = function MUiDisplayContrainer_psMode(modeCd){
    event.modeCd = modeCd;
    o.process(event);
 }
+MO.MUiDisplayContrainer_psDesign = function MUiDisplayContrainer_psDesign(m, f){
+   var o = this;
+   MO.Console.find(FDesignConsole).setFlag(m, f, o);
+   var event = new MO.SUiDispatchEvent(o, 'oeDesign', MO.MUiDesign)
+   event.mode = m;
+   event.flag = f;
+   o.process(event);
+   event.dispose();
+}
 MO.MUiDisplayContrainer_dispose = function MUiDisplayContrainer_dispose(){
    var o = this;
    o._eventMode = MO.Lang.Object.Dispose(o._eventMode);
-}
-MO.MUiDisplayField = function MUiDisplayField(o){
-   o = MO.Class.inherits(this, o);
-   return o;
 }
 MO.MUiDragable = function MUiDragable(o){
    o = MO.Class.inherits(this, o);
@@ -2495,6 +2545,40 @@ MO.MUiDragable = function MUiDragable(o){
    o.onDragMove  = MO.Method.virtual(o, 'onDragMove');
    o.onDragStop  = MO.Method.virtual(o, 'onDragStop');
    return o;
+}
+MO.MUiEditable = function MUiEditable(o){
+   o = MO.Class.inherits(this, o);
+   o._editView       = MO.Class.register(o, new MO.APtySet('_editView', 'edit_mode', MO.EUiMode.View, false));
+   o._editInsert     = MO.Class.register(o, new MO.APtySet('_editInsert', 'edit_mode', MO.EUiMode.Insert, false));
+   o._editUpdate     = MO.Class.register(o, new MO.APtySet('_editUpdate', 'edit_mode', MO.EUiMode.Update, false));
+   o._editDelete     = MO.Class.register(o, new MO.APtySet('_editDelete', 'edit_mode', MO.EUiMode.Delete, false));
+   o._statusEditable = MO.Class.register(o, new MO.AGetter('_statusEditable', 'isEditable'), true);
+   o.oeMode          = MO.MUiEditable_oeMode;
+   o.testEditable    = MO.MUiEditable_testEditable;
+   o.setEditable     = MO.Class.register(o, new MO.AVirtual('setEditable'));
+   return o;
+}
+MO.MUiEditable_oeMode = function MUiEditable_oeMode(event){
+   var o = this;
+   if(event.isBefore()){
+      var modeCd = event.modeCd;
+      var editable = o._statusEditable = o.testEditable(modeCd);
+      o.setEditable(editable);
+   }
+}
+MO.MUiEditable_testEditable = function MUiEditable_testEditable(modeCd){
+   var o = this;
+   switch(modeCd){
+      case MO.EUiMode.View:
+         return o._editView;
+      case MO.EUiMode.Insert:
+         return o._editInsert;
+      case MO.EUiMode.Update:
+         return o._editUpdate;
+      case MO.EUiMode.Delete:
+         return o._editDelete;
+   }
+   return false;
 }
 MO.MUiEditValue = function MUiEditValue(o){
    o = MO.Class.inherits(this, o, MO.MUiTextFormator);

@@ -120,49 +120,6 @@ MO.MDuiDesign_onDesignEnd = function MDuiDesign_onDesignEnd(p){
    o._hPanel.zIndex = g.designLayer;
    o._statusDesign = false;
 }
-MO.MDuiDisplay = function MDuiDisplay(o){
-   o = MO.Class.inherits(this, o);
-   o._displayView   = MO.Class.register(o, new MO.APtySet(null, '_displayView', 'display_mode', MO.EUiMode.View, false));
-   o._displayInsert = MO.Class.register(o, new MO.APtySet(null, '_displayInsert', 'display_mode', MO.EUiMode.Insert, false));
-   o._displayUpdate = MO.Class.register(o, new MO.APtySet(null, '_displayUpdate', 'display_mode', MO.EUiMode.Update, false));
-   o._displayDelete = MO.Class.register(o, new MO.APtySet(null, '_displayDelete', 'display_mode', MO.EUiMode.Delete, false));
-   o._displaySearch = MO.Class.register(o, new MO.APtySet(null, '_dispSearch', 'display_mode', MO.EUiMode.Search, false));
-   o._displayPicker = MO.Class.register(o, new MO.APtySet(null, '_dispSearch', 'display_mode', MO.EUiMode.Picker, false));
-   o._displayZoom   = MO.Class.register(o, new MO.APtySet(null, '_dispZoom', 'display_mode', MO.EUiMode.Zoom, false));
-   o._dispAlign     = MO.Class.register(o, new MO.APtyString(null, '_dispAlign', null, MO.EAlign.Left));
-   o._visible    = true;
-   o.oeMode      = MO.MDuiDisplay_oeMode;
-   o.canVisible  = MO.MDuiDisplay_canVisible;
-   return o;
-}
-MO.MDuiDisplay_oeMode = function MDuiDisplay_oeMode(event){
-   var o = this;
-   if(event.isBefore()){
-      var modeCd = event.modeCd;
-      if(MO.Class.isClass(o, MO.MDuiDisplayAble)){
-         var visible = o.canVisible(modeCd);
-         o.setVisible(visible);
-      }
-   }
-}
-MO.MDuiDisplay_canVisible = function MDuiDisplay_canVisible(modeCd){
-   var o = this;
-   switch(RString.nvl(modeCd, o._emode)){
-      case MO.EUiMode.View:
-         return o._displayView;
-      case MO.EUiMode.Search:
-         return o._displaySearch;
-      case MO.EUiMode.Insert:
-         return o._displayInsert;
-      case MO.EUiMode.Update:
-         return o._displayUpdate;
-      case MO.EUiMode.Delete:
-         return o._displayDelete;
-      case MO.EUiMode.Zoom:
-         return o._displayZoom;
-   }
-   return false;
-}
 MO.MDuiDropable = function MDuiDropable(o){
    o = MO.Class.inherits(this, o);
    o._styleDrop         = MO.Class.register(o, new MO.AStyle('_styleDrop'));
@@ -204,23 +161,6 @@ MO.MDuiDropable_canDrop = function MDuiDropable_canDrop(){
       return !MO.Console.find(MO.FUiDesignConsole).canDesignMove;
    }
    return true;
-}
-MO.MDuiEditable = function MDuiEditable(o){
-   o = MO.Class.inherits(this, o);
-   return o;
-}
-MO.MDuiEditable_testEdit = function MDuiEditable_testEdit(m){
-   var o = this;
-   switch(MO.Lang.String.nvl(m, o._emode)){
-      case MO.EMode.Insert:
-         return o.editInsert;
-      case MO.EMode.Update:
-         return o.editUpdate;
-      case MO.EMode.Delete:
-         return o.editDelete;
-      case MO.EMode.Zoom:
-         return o.editZoom;
-   }
 }
 MO.MDuiEditChange = function MDuiEditChange(o){
    o = MO.Class.inherits(this, o);
@@ -1504,8 +1444,6 @@ MO.FDuiControl = function FDuiControl(o){
    o.attachEvent    = MO.FDuiControl_attachEvent;
    o.linkEvent      = MO.FDuiControl_linkEvent;
    o.callEvent      = MO.FDuiControl_callEvent;
-   o.psMode         = MO.FDuiControl_psMode;
-   o.psDesign       = MO.FDuiControl_psDesign;
    o.isBuild        = MO.FDuiControl_isBuild;
    o.build          = MO.FDuiControl_build;
    o.builded        = MO.FDuiControl_builded;
@@ -1730,47 +1668,30 @@ MO.FDuiControl_callEvent = function FDuiControl_callEvent(n, s, e){
       }
    }
 }
-MO.FDuiControl_psMode = function FDuiControl_psMode(p){
-   var o = this;
-   var e = new MO.TEventProcess(o, 'oeMode', MO.FDuiControl);
-   e.displayCd = p;
-   o.process(e);
-   e.dispose();
-}
-MO.FDuiControl_psDesign = function FDuiControl_psDesign(m, f){
-   var o = this;
-   MO.Console.find(FDesignConsole).setFlag(m, f, o);
-   var e = new MO.TEventProcess(o, 'oeDesign', MO.MDesign)
-   e.mode = m;
-   e.flag = f;
-   o.process(e);
-   e.dispose();
-}
 MO.FDuiControl_isBuild = function FDuiControl_isBuild(){
    return this._statusBuild;
 }
-MO.FDuiControl_build = function FDuiControl_build(p){
+MO.FDuiControl_build = function FDuiControl_build(parent){
    var o = this;
    if(o._statusBuild){
       throw new MO.TError(o, 'Current control is already builded.');
    }
-   var d = null;
-   if(p.createElement){
-      d = p;
-   }else if(p.ownerDocument && p.ownerDocument.createElement){
-      d = p.ownerDocument;
-   }else if(p.hDocument){
-      d = p.hDocument;
+   var hDocument = null;
+   if(MO.Class.isClass(parent, MO.FDuiControl)){
+      hDocument = parent._hPanel.ownerDocument;
+   }else if(parent.createElement){
+      hDocument = parent;
+   }else if(parent.ownerDocument && parent.ownerDocument.createElement){
+      hDocument = parent.ownerDocument;
+   }else if(parent.hDocument){
+      hDocument = parent.hDocument;
    }else{
-      throw new MO.TError("Build document is invalid. (document={1})", p);
+      throw new MO.TError("Parent is invalid. (parent={1})", parent);
    }
-   var a = new MO.SArguments();
-   a.owner = o;
-   a.hDocument = d;
-   o.onBuild(a);
-   a.owner = null;
-   a.hDocument = null;
-   MO.Lang.Object.free(a);
+   var event = new MO.SEvent(o);
+   event.hDocument = hDocument;
+   o.onBuild(event);
+   event.dispose();
    o._statusBuild = true;
 }
 MO.FDuiControl_builded = function FDuiControl_builded(p){
@@ -1804,7 +1725,7 @@ MO.FDuiControl_dispose = function FDuiControl_dispose(){
    o._statusEnable = null;
    o._statusBuild = null;
    o._hParent = null;
-   o._hPanel = MO.RHtml.free(o._hPanel);
+   o._hPanel = MO.Window.Html.free(o._hPanel);
    o.__base.MDuiStyle.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiMargin.dispose.call(o);
