@@ -95,6 +95,8 @@
       <PathMerger source='/6.0.02-manage-core'               target='/ajs/manage-core.js'/>
       <PathMerger source='/6.0.03-manage-console'            target='/ajs/manage-console.js'/>
       <PathMerger source='/6.0.41-manage-logic-common'       target='/ajs/manage-logic-common.js'/>
+      <PathMerger source='/6.0.42-manage-logic-person'       target='/ajs/manage-logic-person.js'/>
+      <PathMerger source='/6.0.43-manage-logic-logger'       target='/ajs/manage-logic-logger.js'/>
 
       <PathMerger source='/6.1.01-design'                    target='/ajs/design.js'/>
       <PathMerger source='/6.2.01-design-core'               target='/ajs/design-core.js'/>
@@ -277,6 +279,8 @@
          <File source='/ajs/manage-core.js'/>
          <File source='/ajs/manage-console.js'/>
          <File source='/ajs/manage-logic-common.js'/>
+         <File source='/ajs/manage-logic-person.js'/>
+         <File source='/ajs/manage-logic-logger.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-design.js'>
          <File source='/ajs/design.js'/>

@@ -4,14 +4,14 @@
 // @author maocy
 // @history 150121
 //==========================================================
-MO.FManageLgCommonFrameSet = function FManageLgCommonFrameSet(o){
+MO.FManageLgPersonFrameSet = function FManageLgPersonFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FManageFrameSet);
    //..........................................................
    // @property
-   o._frameName = 'manage.logic.common.FrameSet';
+   o._frameName = 'manage.logic.person.FrameSet';
    //..........................................................
    // @process
-   o.onBuilded  = MO.FManageLgCommonFrameSet_onBuilded;
+   o.onBuilded  = MO.FManageLgPersonFrameSet_onBuilded;
    return o;
 }
 
@@ -21,7 +21,7 @@ MO.FManageLgCommonFrameSet = function FManageLgCommonFrameSet(o){
 // @method
 // @param event:TEventProcess 事件处理
 //==========================================================
-MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilded(event){
+MO.FManageLgPersonFrameSet_onBuilded = function FManageLgPersonFrameSet_onBuilded(event){
    var o = this;
    o.__base.FManageFrameSet.onBuilded.call(o, event);
    // 设置样式
@@ -38,18 +38,18 @@ MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilde
    spliter.setSizeHtml(o._frameCatalog._hPanel);
    //..........................................................
    // 设置目录工具栏
-   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
+   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgPersonCatalogToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    o._frameCatalogToolBar.push(control);
    // 设置目录内容
-   var control = o._catalogContent = MO.Class.create(MO.FManageLgCommonCatalogContent);
+   var control = o._catalogContent = MO.Class.create(MO.FManageLgPersonCatalogContent);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    o._frameCatalogContent.push(control);
    //..........................................................
    // 设置标题
-   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '共通业务');
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '用户业务');
 }

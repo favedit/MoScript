@@ -442,8 +442,8 @@ MO.FDuiEditControl_construct = function FDuiEditControl_construct(){
    o.__base.MDuiEditChange.construct.call(o);
    o.__base.MDuiEditDrop.construct.call(o);
    // 设置属性
-   o._labelSize = new MO.SSize2(100, 20);
-   o._editSize = new MO.SSize2(200, 20);
+   o._labelSize = new MO.SSize2(0, 0);
+   o._editSize = new MO.SSize2(0, 0);
 }
 
 //==========================================================

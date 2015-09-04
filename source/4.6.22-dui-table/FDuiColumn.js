@@ -26,6 +26,8 @@ MO.FDuiColumn = function FDuiColumn(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDataField);
    //..........................................................
    // @property
+   o._optionFixed       = MO.Class.register(o, [new MO.APtyBoolean('_optionFixed'), new MO.AGetSet('_optionFixed')], false);
+   // @property
    //o._displayList     = MO.Class.register(o, new MO.APtySet('dispList', 'disp_config', EDisplayConfig.List), true);
    o._displayList       = true;
    //..........................................................
@@ -37,7 +39,7 @@ MO.FDuiColumn = function FDuiColumn(o){
    o._styleIconSortDown = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortDown'));
    //..........................................................
    // @attribute
-   o._optionFixed       = MO.Class.register(o, new MO.AGetSet('_optionFixed'), false);
+   o._table             = MO.Class.register(o, new MO.AGetSet('_table'));
    o._cellClass         = MO.FDuiCell;
    //..........................................................
    // @html
@@ -172,28 +174,28 @@ MO.FDuiColumn_onBuildLabel = function FDuiColumn_onBuildLabel(event){
    var hLine = o._hFormLine;
    // 建立图标区
    if (o._icon) {
-      var hip = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine);
-      o._hIcon = MO.Window.Builder.appendIcon(hip, o.icon);
+      var hIconPanel = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine);
+      o._hIcon = MO.Window.Builder.appendIcon(hIconPanel, o.icon);
    }
    // 建立标题区
-   var hl = o._hLabel = MO.Window.Builder.appendTableCell(hLine);
-   //hl.noWrap = true;
-   //hl.style.fontSize = '12';
-   //hl.style.fontWeight = 'bolder';
+   var hLabel = o._hLabel = MO.Window.Builder.appendTableCell(hLine);
+   //hLabel.noWrap = true;
+   //hLabel.style.fontSize = '12';
+   //hLabel.style.fontWeight = 'bolder';
    // 设置可编辑性
-   //hl.style.color = o.editUpdate ? EColor.TextEdit : EColor.TextReadonly;
+   //hLabel.style.color = o.editUpdate ? EColor.TextEdit : EColor.TextReadonly;
    // 设置标题颜色
    //if(o.editUpdate && o.validRequire){
-   //   hl.style.color = EColor.Require;
+   //   hLabel.style.color = EColor.Require;
    //}
-   //hl.align = o._labelAlignCd;
-   hl.innerHTML = MO.Lang.String.nvl(o.label());
+   //hLabel.align = o._labelAlignCd;
+   hLabel.innerHTML = MO.Lang.String.nvl(o.label());
    // 建立排序区
-   var hsp = o._hSortPanel = MO.Window.Builder.appendTableCell(hLine);
-   var hsu = o._hSortUp = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortUp', MO.FDuiColumn));
-   hsu.style.display = 'none';
-   var hsu = o._hSortDown = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortDown', MO.FDuiColumn));
-   hsu.style.display = 'none';
+   var hSortPanel = o._hSortPanel = MO.Window.Builder.appendTableCell(hLine);
+   var hSortUp = o._hSortUp = MO.Window.Builder.appendIcon(hSortPanel, o.styleIcon('SortUp', MO.FDuiColumn));
+   hSortUp.style.display = 'none';
+   var hSortDown = o._hSortDown = MO.Window.Builder.appendIcon(hSortPanel, o.styleIcon('SortDown', MO.FDuiColumn));
+   hSortDown.style.display = 'none';
    // 如果当前控件支持列表接口
    //if(MO.Class.isClass(o, MListView)){
       //o.setLabelStyle(o._hLabel);
@@ -208,16 +210,16 @@ MO.FDuiColumn_onBuildLabel = function FDuiColumn_onBuildLabel(event){
 //==========================================================
 MO.FDuiColumn_onBuildSearchEdit = function FDuiColumn_onBuildSearchEdit(event){
    var o = this;
-   var hc = o._hSearchEditPanel = MO.Window.Builder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
-   var he = o._hSearchEdit = MO.Window.Builder.appendEdit(hc, o.styleName('SearchEdit'));
+   var hSearchEditPanel = o._hSearchEditPanel = MO.Window.Builder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
+   var hSearchEdit = o._hSearchEdit = MO.Window.Builder.appendEdit(hSearchEditPanel, o.styleName('SearchEdit'));
    // 关联事件
-   //o.table.linkEvent(o, 'onColumnSearchKeyDown', he);
-   //o.attachEvent('onSearchClick', he);
-   //he.innerText = o.searchHint;
+   o._table.linkEvent(o, 'onColumnSearchKeyDown', hSearchEdit);
+   //o.attachEvent('onSearchClick', hSearchEdit);
+   // hSearchEdit.innerText = o.searchHint;
    // 设置文字对齐方式
-   //if(!MO.Lang.String.isEmpty(o._editAlign)){
-      //he.style.textAlign = o._editAlign;
-   //}
+   // if(!MO.Lang.String.isEmpty(o._editAlign)){
+      // hSearchEdit.style.textAlign = o._editAlign;
+   // }
 }
 
 //==========================================================
@@ -228,23 +230,23 @@ MO.FDuiColumn_onBuildSearchEdit = function FDuiColumn_onBuildSearchEdit(event){
 //==========================================================
 MO.FDuiColumn_onBuildSearchForm = function FDuiColumn_onBuildSearchForm(event){
    var o = this;
-   var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
-   hf.width = '100%';
-   hf.style.backgroundColor = '#FFFFFF';
-   var hfl = o._hSearchFormLine = hf.insertRow();
-   if(MO.Class.isClass(o, MO.FDuiColumnButton)){
-      o._hSearchPanel.style.backgroundColor = '#EEEFF1';
-      o._hSearchPanel.style.borderLeft='1 solid #808080';
-      o._hSearchPanel.style.borderTop='1 solid #808080';
-      o._hSearchPanel.style.borderBottom = '1 solid #9EC4EB';
-      return;
-   }
+   var hSearchForm = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
+   hSearchForm.style.width = (o._width - 2) + 'px';
+   //hSearchForm.style.backgroundColor = '#9EC4EB';
+   var hSearchFormLine = o._hSearchFormLine = MO.Window.Builder.appendTableRow(hSearchForm);
+   //if(MO.Class.isClass(o, MO.FDuiColumnButton)){
+   //   o._hSearchPanel.style.backgroundColor = '#EEEFF1';
+   //   o._hSearchPanel.style.borderLeft='1 solid #808080';
+   //   o._hSearchPanel.style.borderTop='1 solid #808080';
+   //   o._hSearchPanel.style.borderBottom = '1 solid #9EC4EB';
+   //   return;
+   //}
    // 建立图标区
-   o.onBuildSearchIcon();
+   //o.onBuildSearchIcon();
    // 建立编辑区
    o.onBuildSearchEdit();
    // 建立下拉区
-   o.onBuildSearchDrop();
+   //o.onBuildSearchDrop();
 }
 
 //==========================================================
@@ -256,13 +258,13 @@ MO.FDuiColumn_onBuildSearchForm = function FDuiColumn_onBuildSearchForm(event){
 MO.FDuiColumn_onBuildSearch = function FDuiColumn_onBuildSearch(event){
    var o = this;
    // 创建底板
-   var h = o._hSearchPanel = MO.Window.Builder.create(event, 'TD', o.styleName('SearchPanel'));
-   h.style.backgroundColor = "#FFFFFF";
-   h.style.borderBottom = '1 solid #9EC4EB';
-   MO.Window.Html.linkSet(h, 'control', o);
+   var hSearchPanel = o._hSearchPanel = MO.Window.Builder.create(event, 'TD', o.styleName('SearchPanel'));
+   hSearchPanel.style.backgroundColor = "#FFFFFF";
+   hSearchPanel.style.borderBottom = '1 solid #9EC4EB';
+   MO.Window.Html.linkSet(hSearchPanel, 'control', o);
    // 关联事件
-  o.attachEvent('onSearchEnter', h);
-  o.attachEvent('onSearchLeave', h);
+  o.attachEvent('onSearchEnter', hSearchPanel);
+  o.attachEvent('onSearchLeave', hSearchPanel);
   // 创建布局
   o.onBuildSearchForm(event);
 }
@@ -276,13 +278,13 @@ MO.FDuiColumn_onBuildSearch = function FDuiColumn_onBuildSearch(event){
 MO.FDuiColumn_onBuildTotal = function FDuiColumn_onBuildTotal(event){
    var o = this;
    // 创建底板
-   var h = o._hTotalPanel = MO.Window.Builder.create(event, 'TD');
-   MO.Window.Html.linkSet(h, 'control', o);
-   h.align = 'right';
-   h.style.color = '#686860';
-   h.style.backgroundColor = '#F8F8F0';
-   h.style.borderBottom = '1 solid #B8B8B0';
-   h.innerText = ' ';
+   var hTotalPanel = o._hTotalPanel = MO.Window.Builder.create(event, 'TD');
+   MO.Window.Html.linkSet(hTotalPanel, 'control', o);
+   hTotalPanel.align = 'right';
+   hTotalPanel.style.color = '#686860';
+   hTotalPanel.style.backgroundColor = '#F8F8F0';
+   hTotalPanel.style.borderBottom = '1 solid #B8B8B0';
+   hTotalPanel.innerText = ' ';
 }
 
 //==========================================================
@@ -304,12 +306,9 @@ MO.FDuiColumn_onBuildPanel = function FDuiColumn_onBuildPanel(event) {
 //==========================================================
 MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    var o = this;
-   var table = o.table;
+   var table = o._table;
    // 计算宽度
-   var width = o._size.width;
-   if(width < 40){
-      width = 40;
-   }
+   var width = o._width = Math.max(o._size.width, 10);
    // 设置绝对编辑标志
    o._absEdit = o._editInsert || o._editUpdate || o._editDelete;
    if(!o._absEdit){
@@ -328,8 +327,8 @@ MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    // 调用底层建立对象
    o.__base.FDuiControl.onBuild.call(o, event);
    var hPanel = o._hPanel;
-   hPanel.style.width = width + 'px';
-   hPanel.style.padding = 4;
+   //hPanel.style.width = width + 'px';
+   //hPanel.style.padding = 4;
    // 创建标题头容器(TD对象)
    var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
    if (!o._orderAble) {

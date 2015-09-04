@@ -662,15 +662,36 @@ MO.FDuiCellStatus_dispose = function FDuiCellStatus_dispose(){
    o.base.FDuiCellEditControl.dispose.call(o);
    o._hStatus = null;
 }
+MO.FDuiCellText = function FDuiCellText(o){
+   o = MO.Class.inherits(this, o, MO.FDuiCell);
+   o.onBuildEdit = MO.FDuiCellText_onBuildEdit;
+   o.get         = MO.FDuiCellText_get;
+   o.set         = MO.FDuiCellText_set;
+   return o;
+}
+MO.FDuiCellText_onBuildEdit = function FDuiCellText_onBuildEdit(p){
+   var o = this;
+}
+MO.FDuiCellText_get = function FDuiCellText_get(){
+   var o = this;
+   var value = o._hPanel.innerHTML;
+   return value;
+}
+MO.FDuiCellText_set = function FDuiCellText_set(value){
+   var o = this;
+   var text = MO.Lang.String.nvl(value);
+   o._hPanel.innerHTML = text;
+}
 MO.FDuiColumn = function FDuiColumn(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiDataField);
+   o._optionFixed       = MO.Class.register(o, [new MO.APtyBoolean('_optionFixed'), new MO.AGetSet('_optionFixed')], false);
    o._displayList       = true;
    o._styleLabel        = MO.Class.register(o, new MO.AStyle('_styleLabel'));
    o._styleSearchPanel  = MO.Class.register(o, new MO.AStyle('_styleSearchPanel'));
    o._styleSearchEdit   = MO.Class.register(o, new MO.AStyle('_styleSearchEdit'));
    o._styleIconSortUp   = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortUp'));
    o._styleIconSortDown = MO.Class.register(o, new MO.AStyleIcon('_styleIconSortDown'));
-   o._optionFixed       = MO.Class.register(o, new MO.AGetSet('_optionFixed'), false);
+   o._table             = MO.Class.register(o, new MO.AGetSet('_table'));
    o._cellClass         = MO.FDuiCell;
    o._hForm             = null;
    o._hFormLine         = null;
@@ -704,58 +725,49 @@ MO.FDuiColumn_onBuildLabel = function FDuiColumn_onBuildLabel(event){
    var o = this;
    var hLine = o._hFormLine;
    if (o._icon) {
-      var hip = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine);
-      o._hIcon = MO.Window.Builder.appendIcon(hip, o.icon);
+      var hIconPanel = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine);
+      o._hIcon = MO.Window.Builder.appendIcon(hIconPanel, o.icon);
    }
-   var hl = o._hLabel = MO.Window.Builder.appendTableCell(hLine);
-   hl.innerHTML = MO.Lang.String.nvl(o.label());
-   var hsp = o._hSortPanel = MO.Window.Builder.appendTableCell(hLine);
-   var hsu = o._hSortUp = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortUp', MO.FDuiColumn));
-   hsu.style.display = 'none';
-   var hsu = o._hSortDown = MO.Window.Builder.appendIcon(hsp, o.styleIcon('SortDown', MO.FDuiColumn));
-   hsu.style.display = 'none';
+   var hLabel = o._hLabel = MO.Window.Builder.appendTableCell(hLine);
+   hLabel.innerHTML = MO.Lang.String.nvl(o.label());
+   var hSortPanel = o._hSortPanel = MO.Window.Builder.appendTableCell(hLine);
+   var hSortUp = o._hSortUp = MO.Window.Builder.appendIcon(hSortPanel, o.styleIcon('SortUp', MO.FDuiColumn));
+   hSortUp.style.display = 'none';
+   var hSortDown = o._hSortDown = MO.Window.Builder.appendIcon(hSortPanel, o.styleIcon('SortDown', MO.FDuiColumn));
+   hSortDown.style.display = 'none';
 }
 MO.FDuiColumn_onBuildSearchEdit = function FDuiColumn_onBuildSearchEdit(event){
    var o = this;
-   var hc = o._hSearchEditPanel = MO.Window.Builder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
-   var he = o._hSearchEdit = MO.Window.Builder.appendEdit(hc, o.styleName('SearchEdit'));
+   var hSearchEditPanel = o._hSearchEditPanel = MO.Window.Builder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
+   var hSearchEdit = o._hSearchEdit = MO.Window.Builder.appendEdit(hSearchEditPanel, o.styleName('SearchEdit'));
+   o._table.linkEvent(o, 'onColumnSearchKeyDown', hSearchEdit);
 }
 MO.FDuiColumn_onBuildSearchForm = function FDuiColumn_onBuildSearchForm(event){
    var o = this;
-   var hf = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
-   hf.width = '100%';
-   hf.style.backgroundColor = '#FFFFFF';
-   var hfl = o._hSearchFormLine = hf.insertRow();
-   if(MO.Class.isClass(o, MO.FDuiColumnButton)){
-      o._hSearchPanel.style.backgroundColor = '#EEEFF1';
-      o._hSearchPanel.style.borderLeft='1 solid #808080';
-      o._hSearchPanel.style.borderTop='1 solid #808080';
-      o._hSearchPanel.style.borderBottom = '1 solid #9EC4EB';
-      return;
-   }
-   o.onBuildSearchIcon();
+   var hSearchForm = o._hSearchForm = MO.Window.Builder.appendTable(o._hSearchPanel);
+   hSearchForm.style.width = (o._width - 2) + 'px';
+   var hSearchFormLine = o._hSearchFormLine = MO.Window.Builder.appendTableRow(hSearchForm);
    o.onBuildSearchEdit();
-   o.onBuildSearchDrop();
 }
 MO.FDuiColumn_onBuildSearch = function FDuiColumn_onBuildSearch(event){
    var o = this;
-   var h = o._hSearchPanel = MO.Window.Builder.create(event, 'TD', o.styleName('SearchPanel'));
-   h.style.backgroundColor = "#FFFFFF";
-   h.style.borderBottom = '1 solid #9EC4EB';
-   MO.Window.Html.linkSet(h, 'control', o);
-  o.attachEvent('onSearchEnter', h);
-  o.attachEvent('onSearchLeave', h);
+   var hSearchPanel = o._hSearchPanel = MO.Window.Builder.create(event, 'TD', o.styleName('SearchPanel'));
+   hSearchPanel.style.backgroundColor = "#FFFFFF";
+   hSearchPanel.style.borderBottom = '1 solid #9EC4EB';
+   MO.Window.Html.linkSet(hSearchPanel, 'control', o);
+  o.attachEvent('onSearchEnter', hSearchPanel);
+  o.attachEvent('onSearchLeave', hSearchPanel);
   o.onBuildSearchForm(event);
 }
 MO.FDuiColumn_onBuildTotal = function FDuiColumn_onBuildTotal(event){
    var o = this;
-   var h = o._hTotalPanel = MO.Window.Builder.create(event, 'TD');
-   MO.Window.Html.linkSet(h, 'control', o);
-   h.align = 'right';
-   h.style.color = '#686860';
-   h.style.backgroundColor = '#F8F8F0';
-   h.style.borderBottom = '1 solid #B8B8B0';
-   h.innerText = ' ';
+   var hTotalPanel = o._hTotalPanel = MO.Window.Builder.create(event, 'TD');
+   MO.Window.Html.linkSet(hTotalPanel, 'control', o);
+   hTotalPanel.align = 'right';
+   hTotalPanel.style.color = '#686860';
+   hTotalPanel.style.backgroundColor = '#F8F8F0';
+   hTotalPanel.style.borderBottom = '1 solid #B8B8B0';
+   hTotalPanel.innerText = ' ';
 }
 MO.FDuiColumn_onBuildPanel = function FDuiColumn_onBuildPanel(event) {
    var o = this;
@@ -763,11 +775,8 @@ MO.FDuiColumn_onBuildPanel = function FDuiColumn_onBuildPanel(event) {
 }
 MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    var o = this;
-   var table = o.table;
-   var width = o._size.width;
-   if(width < 40){
-      width = 40;
-   }
+   var table = o._table;
+   var width = o._width = Math.max(o._size.width, 10);
    o._absEdit = o._editInsert || o._editUpdate || o._editDelete;
    if(!o._absEdit){
       if(!MO.Lang.String.isEmpty(o._lovReference)){
@@ -783,8 +792,6 @@ MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    }
    o.__base.FDuiControl.onBuild.call(o, event);
    var hPanel = o._hPanel;
-   hPanel.style.width = width + 'px';
-   hPanel.style.padding = 4;
    var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
    if (!o._orderAble) {
      hForm.style.cursor = 'hand';
@@ -1190,6 +1197,8 @@ MO.FDuiColumnEmpty = function FDuiColumnEmpty(o){
 }
 MO.FDuiColumnSelected = function FDuiColumnSelected(o){
    o = MO.Class.inherits(this, o, MO.FDuiColumnEditControl);
+   o._name             = '_select';
+   o._label            = '选中';
    o._dataName         = '_select';
    o._styleEdit        = MO.Class.register(o, new MO.AStyle('_styleEdit'));
    o._optionFixed      = true;
@@ -1213,13 +1222,9 @@ MO.FDuiColumnSelected_onBuildSearchForm = function FDuiColumnSelected_onBuildSea
 }
 MO.FDuiColumnSelected_onBuild = function FDuiColumnSelected_onBuild(e){
    var o = this;
-   var r = o.__base.FDuiColumnEditControl.onBuild.call(o, e);
-   var h = o._hPanel;
-   h.align = 'center';
-   h.style.width = '30px';
-   h.style.height = '22px';
-   MO.Window.Builder.appendEmpty(o._hPanel, 12, 12);
-   return r;
+   o.__base.FDuiColumnEditControl.onBuild.call(o, e);
+   var hPanel = o._hPanel;
+   hPanel.align = 'center';
 }
 MO.FDuiColumnSelected_createCell = function FDuiColumnSelected_createCell(p){
    var o = this;
@@ -1264,6 +1269,8 @@ MO.FDuiColumnSelected_onSelectedClick = function FDuiColumnSelected_onSelectedCl
 }
 MO.FDuiColumnStatus = function FDuiColumnStatus(o){
    o = MO.Class.inherits(this, o, MO.FDuiColumnEditControl);
+   o._name             = '_status';
+   o._label            = '状态';
    o._dataName         = '_status';
    o._optionFixed      = true;
    o._cellClass        = MO.FDuiCellStatus;
@@ -1284,15 +1291,11 @@ MO.FDuiColumnStatus_onBuildSearchForm = function FDuiColumnStatus_onBuildSearchF
 }
 MO.FDuiColumnStatus_onBuild = function FDuiColumnStatus_onBuild(event){
    var o = this;
-   var r = o.__base.FDuiColumnEditControl.onBuild.call(o, event);
-   var h = o._hPanel;
-   h.align = 'center';
-   h.style.width = '30px';
-   h.style.height = '22px';
-   MO.Window.Builder.appendEmpty(h, 12, 12);
+   o.__base.FDuiColumnEditControl.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   hPanel.align = 'center';
 }
 MO.FDuiColumnStatus_onCellClick = function FDuiColumnStatus_onCellClick(event){
-   debugger
    var row = o._row;
    o._table.clickRow(row);
 }
@@ -1334,6 +1337,11 @@ MO.FDuiColumnStatus_dispose = function FDuiColumnStatus_dispose(){
    var o = this;
    o.__base.FDuiColumnEditControl.dispose.call(o);
    o._hSelect = null;
+}
+MO.FDuiColumnText = function FDuiColumnText(o){
+   o = MO.Class.inherits(this, o, MO.FDuiColumn);
+   o._cellClass = MO.FDuiCellText;
+   return o;
 }
 with(MO){
    MO.FDuiGrid = function FDuiGrid(o) {
@@ -1501,8 +1509,10 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._styleHintPanel           = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
    o._styleHintForm            = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
    o._styleHint                = MO.Class.register(o, new MO.AStyle('_styleHint'));
+   o._stylePage                = MO.Class.register(o, new MO.AStyle('_stylePage'));
    o._styleButtonForm          = MO.Class.register(o, new MO.AStyle('_styleButtonForm'));
    o._styleButton              = MO.Class.register(o, new MO.AStyle('_styleButton'));
+   o._dataset                  = null;
    o._minHeight                = 80;
    o._buttons                  = null;
    o._columns                  = null;
@@ -1529,9 +1539,11 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.onBuildHint               = MO.FDuiGridControl_onBuildHint;
    o.onBuildPanel              = MO.FDuiGridControl_onBuildPanel;
    o.onBuild                   = MO.FDuiGridControl_onBuild;
+   o.onColumnSearchKeyDown     = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
    o.onRowMouseEnter           = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), MO.FDuiGridControl_onRowMouseEnter);
    o.onRowMouseLeave           = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), MO.FDuiGridControl_onRowMouseLeave);
    o.onRowClick                = MO.Class.register(o, new MO.AEventClick('onRowClick'), MO.FDuiGridControl_onRowClick);
+   o.onButtonMouseDown         = MO.Class.register(o, new MO.AEventMouseDown('onButtonMouseDown'), MO.FDuiGridControl_onButtonMouseDown);
    o.onDatasetLoadDelay        = MO.FDuiGridControl_onDatasetLoadDelay;
    o.onDatasetLoad             = MO.FDuiGridControl_onDatasetLoad;
    o.construct                 = MO.FDuiGridControl_construct;
@@ -1554,6 +1566,9 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.doubleClickRow            = MO.FDuiGridControl_doubleClickRow;
    o.hoverRow                  = MO.FDuiGridControl_hoverRow;
    o.selectRow                 = MO.FDuiGridControl_selectRow;
+   o.refreshHint               = MO.FDuiGridControl_refreshHint;
+   o.dsMovePage                = MO.Method.empty;
+   o.dsSearch                  = MO.Method.empty;
    o.dispose                   = MO.FDuiGridControl_dispose;
    return o;
 }
@@ -1573,33 +1588,28 @@ MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(event){
    var o = this;
    var hHintLine = MO.Window.Builder.appendTableRow(o._hHintForm);
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hExtendButton = o.buildNavigatorButton(hCell, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
-      var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-      hCell.width = 60;
-      o.hInsertButton = o.buildNavigatorButton(hCell, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
-   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
    hCell.width = 10;
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
    hCell.noWrap = true;
    o._hHint = MO.Window.Builder.appendText(hCell, o.styleName('Hint'))
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hNavFirst = o.buildNavigatorButton(hCell, 'control.grid.first', '&nbsp;' + MO.Context.get('FDuiGridControl:First'));
+   hCell.width = 70;
+   o._hNavFirst = o.buildNavigatorButton(hCell, 'control.grid.first', '&nbsp;' + MO.Context.get('FDuiGridControl:First'));
+   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   hCell.width = 70;
+   o._hNavPrior = o.buildNavigatorButton(hCell, 'control.grid.prior', '&nbsp;' + MO.Context.get('FDuiGridControl:Prior'));
+   o._hNavPrior.style.paddingRight = '20';
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
    hCell.width = 60;
-   o.hNavPrior = o.buildNavigatorButton(hCell, 'control.grid.prior', '&nbsp;' + MO.Context.get('FDuiGridControl:Prior'));
-   o.hNavPrior.style.paddingRight = '20';
+   var hPage = o._hPage = MO.Window.Builder.appendEdit(hCell, o.styleName('Page'))
+   hPage.style.textAlign = 'right';
+   hPage.style.width = '40px';
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hPage = MO.Window.Builder.appendEdit(hCell)
-   o.hPage.style.width = 40;
+   hCell.width = 70;
+   o._hNavNext = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Next') + '&nbsp;', 'control.grid.next');
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hNavNext = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
-   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hNavLast = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
+   hCell.width = 70;
+   o._hNavLast = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Last') + '&nbsp;', 'control.grid.last');
 }
 MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
    var o = this;
@@ -1615,15 +1625,22 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
    o._hHintForm = MO.Window.Builder.appendTable(o._hHintPanel, o.styleName('HintForm'));
    o.onBuildHint(event);
    var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
-   statusColumn._table = this;
-   statusColumn._name = '_status';
+   statusColumn.setTable(o);
+   statusColumn.size().set(40, 0);
    statusColumn.build(event);
    o.push(statusColumn);
    var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
-   selectColumn._table = this;
-   selectColumn._name = '_select';
+   selectColumn.setTable(o);
+   selectColumn.size().set(40, 0);
    selectColumn.build(event);
    o.push(selectColumn);
+}
+MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(event){
+   var o = this;
+   debugger
+   if(event.keyCode == MO.EKeyCode.Enter){
+      o.dsSearch();
+   }
 }
 MO.FDuiGridControl_onRowMouseEnter = function FDuiGridControl_onRowMouseEnter(event){
    this.hoverRow(s, true);
@@ -1632,6 +1649,29 @@ MO.FDuiGridControl_onRowMouseLeave = function FDuiGridControl_onRowMouseLeave(ev
    this.hoverRow(s, false);
 }
 MO.FDuiGridControl_onRowClick = function FDuiGridControl_onRowClick(event){
+}
+MO.FDuiGridControl_onButtonMouseDown = function FDuiGridControl_onButtonMouseDown(event){
+   var o = this;
+   var dataset = o._dataset;
+   if(!dataset){
+      return;
+   }
+   var pageCount = dataset.pageCount();
+   var page = dataset.page();
+   var hSource = event.hSource;
+   if(o._hInsertButton == hSource){
+      o.onInsertButtonClick();
+   }else if(o._hExtendButton == hSource){
+      o.onExtendButtonClick();
+   }else if (o._hNavFirst == hSource && (page != 0)){
+      o.dsMovePage(MO.EUiDataAction.First);
+   } else if (o._hNavPrior == hSource && (page != 0)){
+      o.dsMovePage(MO.EUiDataAction.Prior);
+   } else if (o._hNavNext == hSource && (page != pageCount - 1)){
+      o.dsMovePage(MO.EUiDataAction.Next);
+   } else if (o._hNavLast == hSource && (page != pageCount - 1)){
+      o.dsMovePage(MO.EUiDataAction.Last);
+   }
 }
 MO.FDuiGridControl_onDatasetLoadDelay = function FDuiGridControl_onDatasetLoadDelay(p){
    var o = this;
@@ -1704,6 +1744,7 @@ MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigato
    hForm.style.cursor = 'hand';
    hForm.style.paddingLeft = '10';
    var hLine = MO.Window.Builder.appendTableRow(hForm);
+   o.attachEvent('onButtonMouseDown', hForm);
    if(iconBf){
       var hCell = MO.Window.Builder.appendTableCell(hLine);
       MO.Window.Builder.appendIcon(hCell, null, iconBf);
@@ -1834,6 +1875,7 @@ MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows(){
 }
 MO.FDuiGridControl_loadDataset = function FDuiGridControl_loadDataset(dataset){
    var o = this;
+   o._dataset = dataset;
    var dataRows = dataset.rows();
    var count = dataRows.count();
    for(var i = 0; i < count ; i++){
@@ -1842,6 +1884,7 @@ MO.FDuiGridControl_loadDataset = function FDuiGridControl_loadDataset(dataset){
       row.loadDataRow(dataRow);
       o.pushRow(row);
    }
+   o.refreshHint();
 }
 MO.FDuiGridControl_clickCell = function FDuiGridControl_clickCell(cell){
    var o = this;
@@ -1913,6 +1956,18 @@ MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, fo
    }
    row.select(has || !row.isSelect || force);
    o.refreshHint();
+}
+MO.FDuiGridControl_refreshHint = function FDuiGridControl_refreshHint(){
+   var o = this;
+   var hHint = o._hHint;
+   var dataset = o._dataset;
+   if(dataset){
+      var total = dataset.total();
+      var pageCount = dataset.pageCount();
+      var page = dataset.page();
+      hHint.innerHTML ='共' +"<FONT color='red'>" + pageCount + "</FONT>" + '页' + "<FONT color='red'>" + total + "</FONT>" + '条记录，' + "当前选中第<FONT color='red'>" + (page + 1) + "</FONT>" +'页';
+      o._hPage.value = page + 1;
+   }
 }
 MO.FDuiGridControl_dispose = function FDuiGridControl_dispose(){
    var o = this;
@@ -2032,44 +2087,6 @@ MO.FDuiGridControl_onRowClick = function FDuiGridControl_onRowClick(s, e){
    e.caller = s;
    e.handle = 'onTableRowClick';
    RConsole.find(FFormConsole).processEvent(e);
-}
-MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(s, e){
-   var o = this;
-   if(EKey.Enter == e.keyCode){
-      if(!o._isSearching || !o.table._isSearching){
-         o._isSearching = true;
-         if(o.table){
-            o.table.doSearch();
-             o.table.dpScrollLeft = o.table._hContentPanel.scrollLeft;
-             o.table.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
-         }else{
-            o.doSearch();
-            o.dpScrollLeft = o._hContentPanel.scrollLeft;
-            o.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
-         }
-      }
-   }
-}
-MO.FDuiGridControl_onButtonMouseDown = function FDuiGridControl_onButtonMouseDown(e){
-   var o = this;
-   var ds = o.dsViewer;
-   if(!ds || 0 == ds.dataset.pageCount){
-      return;
-   }
-   var h = e.hSource;
-   if(o.hInsertButton == h){
-      o.onInsertButtonClick();
-   }else if(o.hExtendButton == h){
-      o.onExtendButtonClick();
-   }else if (o.hNavFirst == h && ds.pageIndex != 0){
-      o.dsMovePage(EDataAction.First);
-   } else if (o.hNavPrior == h && ds.pageIndex != 0){
-      o.dsMovePage(EDataAction.Prior);
-   } else if (o.hNavNext == h && ds.pageIndex != ds.pageCount - 1){
-      o.dsMovePage(EDataAction.Next);
-   } else if (o.hNavLast == h && ds.pageIndex != ds.pageCount - 1){
-      o.dsMovePage(EDataAction.Last);
-   }
 }
 MO.FDuiGridControl_onPageCountDown = function FDuiGridControl_onPageCountDown(e){
    var o = this;
@@ -2296,20 +2313,6 @@ MO.FDuiGridControl_getRows = function FDuiGridControl_getRows(){
      }
    }
    return ls;
-}
-MO.FDuiGridControl_refreshHint = function FDuiGridControl_refreshHint(){
-   var o = this;
-   var h = o._hHint;
-   var ds = o._dataset;
-   if(ds && h){
-      var ci = 0;
-      var r = o.getSelectedRow();
-      if(r){
-         ci = o._rows.indexOf(r)+1;
-      }
-      h.innerHTML ='共' +"<FONT color='red' style='font-weight:BOLD '>"+ds.pageCount +"</FONT>" + '页' + "<FONT color='red' style='font-weight:BOLD '>"+ds.total +"</FONT>" + '条记录，' + '当前选中第'+"<FONT color='red' style='font-weight:BOLD '>"+(ds.pageIndex + 1)+"</FONT>" +'页第'+ "<FONT color='red' style='font-weight:BOLD '>"+ci+"</FONT>" + '条记录';
-      o.hPage.value = ds.pageIndex + 1;
-   }
 }
 MO.FDuiGridControl_refreshSelected = function FDuiGridControl_refreshSelected(){
    var o = this;
@@ -2946,9 +2949,12 @@ MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    hFixForm.borderColorLight = '#D0D0D0';
    hFixForm.borderColorDark = '#EEEEEE';
    o._hFixHead =  MO.Window.Builder.appendTableRow(hFixForm);
+   o._hFixHead.style.height = '28px';
    o._hFixSearch = MO.Window.Builder.appendTableRow(hFixForm);
+   o._hFixSearch.style.height = '22px';
    o._hFixTotal = MO.Window.Builder.appendTableRow(hFixForm);
    o._hFixTotal.style.display = 'none';
+   o._hFixTotal.style.height = '22px';
    var hHeadPanel = o._hHeadPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('HeadPanel'));
    var hHeadForm = o._hHeadForm = MO.Window.Builder.appendTable(hHeadPanel, o.styleName('HeadForm'), 0, 0, 1);
    hHeadForm.borderColorLight = '#D0D0D0';
@@ -3009,7 +3015,6 @@ MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(event){
          var column = columns.at(i);
          var columnVisible = column.visible();
          if(columnVisible){
-            column.refreshWidth();
             if(column.dispAuto){
                if(columnAuto){
                   return MO.Message.fatal(o, 'Too many autosize column. (name1={1}, name2={2})', columnAuto.name, column.name);
@@ -3019,9 +3024,6 @@ MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(event){
                dataWidth -= column._hPanel.offsetWidth;
             }
          }
-      }
-      if(columnAuto){
-         columnAuto.setWidth(Math.max(dataWidth - 1, columnAuto.width ? columnAuto.width : 120));
       }
    }
 }

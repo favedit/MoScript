@@ -9,6 +9,11 @@ MO.EUiDataAction = new function EUiDataAction(){
    var o = this;
    MO.TEnum.call(o);
    // @member
+   o.First     = 'first';
+   o.Prior     = 'prior';
+   o.Next      = 'next';
+   o.Last      = 'last';
+   // @member
    o.Prepare   = 'prepare';
    o.Insert    = 'insert';
    o.Update    = 'update';
@@ -18,10 +23,6 @@ MO.EUiDataAction = new function EUiDataAction(){
    //o.Search    = 'search';
    //o.Lov       = 'lov';
    //o.Zoom      = 'zoom';
-   //o.First     = 'first';
-   //o.Prior     = 'prior';
-   //o.Next      = 'next';
-   //o.Last      = 'last';
    //o.Action    = 'action';
    //o.FetchLov  = 'fetchLov';
    //o.EndFetch  = 'endfetch';

@@ -9,6 +9,8 @@ MO.FDuiColumnSelected = function FDuiColumnSelected(o){
    o = MO.Class.inherits(this, o, MO.FDuiColumnEditControl);
    //..........................................................
    // @property
+   o._name             = '_select';
+   o._label            = '选中';
    o._dataName         = '_select';
    //..........................................................
    // @style
@@ -78,13 +80,12 @@ MO.FDuiColumnSelected_onBuildSearchForm = function FDuiColumnSelected_onBuildSea
 //==========================================================
 MO.FDuiColumnSelected_onBuild = function FDuiColumnSelected_onBuild(e){
    var o = this;
-   var r = o.__base.FDuiColumnEditControl.onBuild.call(o, e);
-   var h = o._hPanel;
-   h.align = 'center';
-   h.style.width = '30px';
-   h.style.height = '22px';
-   MO.Window.Builder.appendEmpty(o._hPanel, 12, 12);
-   return r;
+   o.__base.FDuiColumnEditControl.onBuild.call(o, e);
+   var hPanel = o._hPanel;
+   hPanel.align = 'center';
+   //hPanel.style.width = '30px';
+   //hPanel.style.height = '22px';
+   //MO.Window.Builder.appendEmpty(hPanel, 12, 12);
 }
 
 //==========================================================

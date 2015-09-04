@@ -46,9 +46,12 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._styleHintPanel           = MO.Class.register(o, new MO.AStyle('_styleHintPanel'));
    o._styleHintForm            = MO.Class.register(o, new MO.AStyle('_styleHintForm'));
    o._styleHint                = MO.Class.register(o, new MO.AStyle('_styleHint'));
+   o._stylePage                = MO.Class.register(o, new MO.AStyle('_stylePage'));
    o._styleButtonForm          = MO.Class.register(o, new MO.AStyle('_styleButtonForm'));
    o._styleButton              = MO.Class.register(o, new MO.AStyle('_styleButton'));
    //..........................................................
+   // @attribute
+   o._dataset                  = null;
    // @attribute
    o._minHeight                = 80;
    // @attribute
@@ -87,9 +90,11 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.onBuildPanel              = MO.FDuiGridControl_onBuildPanel;
    o.onBuild                   = MO.FDuiGridControl_onBuild;
    // @event
+   o.onColumnSearchKeyDown     = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
    o.onRowMouseEnter           = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), MO.FDuiGridControl_onRowMouseEnter);
    o.onRowMouseLeave           = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), MO.FDuiGridControl_onRowMouseLeave);
    o.onRowClick                = MO.Class.register(o, new MO.AEventClick('onRowClick'), MO.FDuiGridControl_onRowClick);
+   o.onButtonMouseDown         = MO.Class.register(o, new MO.AEventMouseDown('onButtonMouseDown'), MO.FDuiGridControl_onButtonMouseDown);
    // @event
    o.onDatasetLoadDelay        = MO.FDuiGridControl_onDatasetLoadDelay;
    o.onDatasetLoad             = MO.FDuiGridControl_onDatasetLoad;
@@ -121,6 +126,11 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.doubleClickRow            = MO.FDuiGridControl_doubleClickRow;
    o.hoverRow                  = MO.FDuiGridControl_hoverRow;
    o.selectRow                 = MO.FDuiGridControl_selectRow;
+   // @method
+   o.refreshHint               = MO.FDuiGridControl_refreshHint;
+   // @method
+   o.dsMovePage                = MO.Method.empty;
+   o.dsSearch                  = MO.Method.empty;
    // @method
    o.dispose                   = MO.FDuiGridControl_dispose;
 
@@ -181,8 +191,6 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    // @event 单元格内按键按下
    //o.onCellKeyDown          = MO.Class.register(o, new MO.AEventKeyDown('onCellKeyDown'), FDuiGridControl_onCellKeyDown);
    // @event 行控件双击事件
-   //o.onColumnSearchKeyDown  = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
-   //o.onButtonMouseDown      = MO.Class.register(o, new MO.AEventMouseDown('onButtonMouseDown'), FDuiGridControl_onButtonMouseDown);
    //o.onPageCountDown        = MO.Class.register(o, new MO.AEventKeyDown('onPageCountDown'), FDuiGridControl_onPageCountDown);
    //o.onInsertButtonClick    = FDuiGridControl_onInsertButtonClick;
    //o.onExtendButtonClick    = FDuiGridControl_onExtendButtonClick;
@@ -217,7 +225,6 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    //o.getCurrentRows         = FDuiGridControl_getChangedRows;
    //o.getChangedRows         = FDuiGridControl_getChangedRows;
    //o.getRows                = FDuiGridControl_getRows;
-   //o.refreshHint            = FDuiGridControl_refreshHint;
    //o.refreshSelected        = FDuiGridControl_refreshSelected;
    //o.clearSelectRow         = FDuiGridControl_clearSelectRow;
    //o.clearSelectRows        = FDuiGridControl_clearSelectRows;
@@ -298,14 +305,14 @@ MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(event){
    // 建立提示行
    var hHintLine = MO.Window.Builder.appendTableRow(o._hHintForm);
    // 展开按钮
-   var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hExtendButton = o.buildNavigatorButton(hCell, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
+   //var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+   //hCell.width = 60;
+   //o._hExtendButton = o.buildNavigatorButton(hCell, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
    // 新建按键
    //if(o.editInsert && o._formName){
-      var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-      hCell.width = 60;
-      o.hInsertButton = o.buildNavigatorButton(hCell, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
+      //var hCell = MO.Window.Builder.appendTableCell(hHintLine);
+      //hCell.width = 60;
+      //o._hInsertButton = o.buildNavigatorButton(hCell, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
    //}
    // 提示栏
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
@@ -315,27 +322,28 @@ MO.FDuiGridControl_onBuildHint = function FDuiGridControl_onBuildHint(event){
    o._hHint = MO.Window.Builder.appendText(hCell, o.styleName('Hint'))
    // 新建[首页]控件
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hNavFirst = o.buildNavigatorButton(hCell, 'control.grid.first', '&nbsp;' + MO.Context.get('FDuiGridControl:First'));
+   hCell.width = 70;
+   o._hNavFirst = o.buildNavigatorButton(hCell, 'control.grid.first', '&nbsp;' + MO.Context.get('FDuiGridControl:First'));
    // 新建[前一页]控件
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hNavPrior = o.buildNavigatorButton(hCell, 'control.grid.prior', '&nbsp;' + MO.Context.get('FDuiGridControl:Prior'));
-   o.hNavPrior.style.paddingRight = '20';
+   hCell.width = 70;
+   o._hNavPrior = o.buildNavigatorButton(hCell, 'control.grid.prior', '&nbsp;' + MO.Context.get('FDuiGridControl:Prior'));
+   o._hNavPrior.style.paddingRight = '20';
    // 新建[页号]控件
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
    hCell.width = 60;
-   o.hPage = MO.Window.Builder.appendEdit(hCell)
-   o.hPage.style.width = 40;
-   //o.attachEvent('onPageCountDown', o.hPage);
+   var hPage = o._hPage = MO.Window.Builder.appendEdit(hCell, o.styleName('Page'))
+   hPage.style.textAlign = 'right';
+   hPage.style.width = '40px';
+   //o.attachEvent('onPageCountDown', hPage);
    // 新建[后一页]控件
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hNavNext = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Next')+'&nbsp;', 'control.grid.next');
+   hCell.width = 70;
+   o._hNavNext = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Next') + '&nbsp;', 'control.grid.next');
    // 新建[末页]控件
    var hCell = MO.Window.Builder.appendTableCell(hHintLine);
-   hCell.width = 60;
-   o.hNavLast = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Last')+'&nbsp;', 'control.grid.last');
+   hCell.width = 70;
+   o._hNavLast = o.buildNavigatorButton(hCell, null, MO.Context.get('FDuiGridControl:Last') + '&nbsp;', 'control.grid.last');
    // 设置可见性
    //o._hHintForm.style.display = o._panelNavigator ? 'block' : 'none';
 }
@@ -377,14 +385,14 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
    //}
    // 建立状态列
    var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
-   statusColumn._table = this;
-   statusColumn._name = '_status';
+   statusColumn.setTable(o);
+   statusColumn.size().set(40, 0);
    statusColumn.build(event);
    o.push(statusColumn);
    // 建立选择列
    var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
-   selectColumn._table = this;
-   selectColumn._name = '_select';
+   selectColumn.setTable(o);
+   selectColumn.size().set(40, 0);
    selectColumn.build(event);
    o.push(selectColumn);
    //..........................................................
@@ -415,6 +423,33 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
 }
 
 //==========================================================
+// <T>相应搜索数据的事件。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(event){
+   var o = this;
+   debugger
+   if(event.keyCode == MO.EKeyCode.Enter){
+      o.dsSearch();
+      //if(!o._isSearching || !o.table._isSearching){
+         //o._isSearching = true;
+         // 建立查询信息
+         //if(o.table){
+         //   o.table.doSearch();
+         //    o.table.dpScrollLeft = o.table._hContentPanel.scrollLeft;
+         //    o.table.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
+         //}else{
+         //   o.doSearch();
+         //   o.dpScrollLeft = o._hContentPanel.scrollLeft;
+         //   o.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
+         //}
+      //}
+   }
+}
+
+//==========================================================
 // <T>行获得热点处理。</T>
 //
 // @method
@@ -441,6 +476,38 @@ MO.FDuiGridControl_onRowMouseLeave = function FDuiGridControl_onRowMouseLeave(ev
 // @param event:SEvent 事件信息
 //==========================================================
 MO.FDuiGridControl_onRowClick = function FDuiGridControl_onRowClick(event){
+}
+
+//==========================================================
+// <T>按键点击处理。</T>
+//
+// @method
+// @param event:SEvent 按键点击处理
+//==========================================================
+MO.FDuiGridControl_onButtonMouseDown = function FDuiGridControl_onButtonMouseDown(event){
+   var o = this;
+   // 获得数据
+   var dataset = o._dataset;
+   if(!dataset){
+      return;
+   }
+   var pageCount = dataset.pageCount();
+   var page = dataset.page();
+   // 按键处理
+   var hSource = event.hSource;
+   if(o._hInsertButton == hSource){
+      o.onInsertButtonClick();
+   }else if(o._hExtendButton == hSource){
+      o.onExtendButtonClick();
+   }else if (o._hNavFirst == hSource && (page != 0)){
+      o.dsMovePage(MO.EUiDataAction.First);
+   } else if (o._hNavPrior == hSource && (page != 0)){
+      o.dsMovePage(MO.EUiDataAction.Prior);
+   } else if (o._hNavNext == hSource && (page != pageCount - 1)){
+      o.dsMovePage(MO.EUiDataAction.Next);
+   } else if (o._hNavLast == hSource && (page != pageCount - 1)){
+      o.dsMovePage(MO.EUiDataAction.Last);
+   }
 }
 
 //==========================================================
@@ -561,8 +628,8 @@ MO.FDuiGridControl_onDatasetLoad = function FDuiGridControl_onDatasetLoad(p){
    //   o.refreshHint();
    //}
    //o.refreshSelected();
-   //if(o.hPage){
-   //   o.hPage.value = ds.pageIndex + 1;
+   //if(o._hPage){
+   //   o._hPage.value = ds.pageIndex + 1;
    //}
 }
 
@@ -609,7 +676,7 @@ MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigato
    hForm.style.cursor = 'hand';
    hForm.style.paddingLeft = '10';
    var hLine = MO.Window.Builder.appendTableRow(hForm);
-   //o.attachEvent('onButtonMouseDown', hForm);
+   o.attachEvent('onButtonMouseDown', hForm);
    if(iconBf){
       var hCell = MO.Window.Builder.appendTableCell(hLine);
       MO.Window.Builder.appendIcon(hCell, null, iconBf);
@@ -838,6 +905,8 @@ MO.FDuiGridControl_clearRows = function FDuiGridControl_clearRows(){
 //==========================================================
 MO.FDuiGridControl_loadDataset = function FDuiGridControl_loadDataset(dataset){
    var o = this;
+   o._dataset = dataset;
+   // 设置数据
    var dataRows = dataset.rows();
    var count = dataRows.count();
    for(var i = 0; i < count ; i++){
@@ -846,6 +915,8 @@ MO.FDuiGridControl_loadDataset = function FDuiGridControl_loadDataset(dataset){
       row.loadDataRow(dataRow);
       o.pushRow(row);
    }
+   // 设置显示
+   o.refreshHint();
 }
 
 //==========================================================
@@ -979,6 +1050,32 @@ MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, fo
    row.select(has || !row.isSelect || force);
    // 刷新选中行的提示信息
    o.refreshHint();
+}
+
+//==========================================================
+// 把所有选中的行 放到一个TList里
+//
+// @method
+// @return TList 选中的行组成的链表
+//==========================================================
+MO.FDuiGridControl_refreshHint = function FDuiGridControl_refreshHint(){
+   var o = this;
+   var hHint = o._hHint;
+   var dataset = o._dataset;
+   if(dataset){
+      var total = dataset.total();
+      var pageCount = dataset.pageCount();
+      var page = dataset.page();
+      //var ci = 0;
+      //var r = o.getSelectedRow();
+      //if(r){
+      //   ci = o._rows.indexOf(r) + 1;
+      //}
+      //h.innerText = '[' + RContext.get('FDuiGridControl:Row') + ci + '/' + o.dsViewer.count + '/' + ds.total +" "+ RContext.get('FDuiGridControl:Page') + (ds.pageIndex + 1) + '/' + ds.pageCount + ']';
+      //hHint.innerHTML ='共' +"<FONT color='red' style='font-weight:BOLD '>" + pageCount + "</FONT>" + '页' + "<FONT color='red' style='font-weight:BOLD '>" + total + "</FONT>" + '条记录，' + '当前选中第'+"<FONT color='red' style='font-weight:BOLD '>"+(dataset.pageIndex + 1)+"</FONT>" +'页第'+ "<FONT color='red' style='font-weight:BOLD '>"+ci+"</FONT>" + '条记录';
+      hHint.innerHTML ='共' +"<FONT color='red'>" + pageCount + "</FONT>" + '页' + "<FONT color='red'>" + total + "</FONT>" + '条记录，' + "当前选中第<FONT color='red'>" + (page + 1) + "</FONT>" +'页';
+      o._hPage.value = page + 1;
+   }
 }
 
 //==========================================================
@@ -1202,55 +1299,6 @@ MO.FDuiGridControl_onRowClick = function FDuiGridControl_onRowClick(s, e){
    RConsole.find(FFormConsole).processEvent(e);
 }
 
-//==========================================================
-// <T>相应搜索数据的事件。</T>
-//
-// @method
-// @param s:sender:Object 发出事件对象
-// @param e:event:TEvent 构建事件
-//==========================================================
-MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(s, e){
-   var o = this;
-   if(EKey.Enter == e.keyCode){
-      if(!o._isSearching || !o.table._isSearching){
-         o._isSearching = true;
-         // 建立查询信息
-         if(o.table){
-            o.table.doSearch();
-             o.table.dpScrollLeft = o.table._hContentPanel.scrollLeft;
-             o.table.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
-         }else{
-            o.doSearch();
-            o.dpScrollLeft = o._hContentPanel.scrollLeft;
-            o.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
-         }
-         // 记录横向滚动位置
-      }
-   }
-}
-
-// ------------------------------------------------------------
-MO.FDuiGridControl_onButtonMouseDown = function FDuiGridControl_onButtonMouseDown(e){
-   var o = this;
-   var ds = o.dsViewer;
-   if(!ds || 0 == ds.dataset.pageCount){
-      return;
-   }
-   var h = e.hSource;
-   if(o.hInsertButton == h){
-      o.onInsertButtonClick();
-   }else if(o.hExtendButton == h){
-      o.onExtendButtonClick();
-   }else if (o.hNavFirst == h && ds.pageIndex != 0){
-      o.dsMovePage(EDataAction.First);
-   } else if (o.hNavPrior == h && ds.pageIndex != 0){
-      o.dsMovePage(EDataAction.Prior);
-   } else if (o.hNavNext == h && ds.pageIndex != ds.pageCount - 1){
-      o.dsMovePage(EDataAction.Next);
-   } else if (o.hNavLast == h && ds.pageIndex != ds.pageCount - 1){
-      o.dsMovePage(EDataAction.Last);
-   }
-}
 
 // ------------------------------------------------------------
 // sender, event
@@ -1604,29 +1652,6 @@ MO.FDuiGridControl_getRows = function FDuiGridControl_getRows(){
      }
    }
    return ls;
-}
-
-//==========================================================
-// 把所有选中的行 放到一个TList里
-//
-// @method
-// @return TList 选中的行组成的链表
-//==========================================================
-MO.FDuiGridControl_refreshHint = function FDuiGridControl_refreshHint(){
-   var o = this;
-   var h = o._hHint;
-   var ds = o._dataset;
-   if(ds && h){
-      var ci = 0;
-      var r = o.getSelectedRow();
-      if(r){
-         ci = o._rows.indexOf(r)+1;
-      }
-      //h.innerText = '[' + RContext.get('FDuiGridControl:Row') + ci + '/' + o.dsViewer.count + '/' + ds.total +" "+ RContext.get('FDuiGridControl:Page') + (ds.pageIndex + 1) + '/' + ds.pageCount + ']';
-      h.innerHTML ='共' +"<FONT color='red' style='font-weight:BOLD '>"+ds.pageCount +"</FONT>" + '页' + "<FONT color='red' style='font-weight:BOLD '>"+ds.total +"</FONT>" + '条记录，' + '当前选中第'+"<FONT color='red' style='font-weight:BOLD '>"+(ds.pageIndex + 1)+"</FONT>" +'页第'+ "<FONT color='red' style='font-weight:BOLD '>"+ci+"</FONT>" + '条记录';
-      //h.innerText = '';
-      o.hPage.value = ds.pageIndex + 1;
-   }
 }
 
 //==========================================================

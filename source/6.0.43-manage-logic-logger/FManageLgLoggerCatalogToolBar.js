@@ -5,10 +5,10 @@
 // @author maocy
 // @history 150409
 //==========================================================
-MO.FManageLgCommonCatalogToolBar = function FManageLgCommonCatalogToolBar(o){
+MO.FManageLgLoggerCatalogToolBar = function FManageLgLoggerCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
    //..........................................................
    // @property
-   o._frameName = 'manage.logic.person.CatalogToolBar';
+   o._frameName = 'manage.logic.logger.CatalogToolBar';
    return o;
 }

@@ -5,6 +5,8 @@ MO.EManageFrame = new function EManageFrame(){
 MO.EManageFrameSet = new function EManageFrameSet(){
    var o = this;
    o.CommonFrameSet = 'manage.logic.common.FrameSet';
+   o.PersonFrameSet = 'manage.logic.person.FrameSet';
+   o.LoggerFrameSet = 'manage.logic.logger.FrameSet';
    return o;
 }
 MO.FManageCatalogContent = function FManageCatalogContent(o){
@@ -26,6 +28,8 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    if(MO.Class.isClass(frame, MO.FDuiFormFrame)){
       frame.dataModify();
    }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+      frame._dsPageSize = 20;
+      frame._dsPage = 0;
       frame.doFetch();
    }
    var historyBar = o._frameSet._historyBar;
@@ -245,6 +249,7 @@ MO.FManageDataTable = function FManageDataTable(o){
    o.onDataSave     = MO.FManageDataTable_onDataSave;
    o.onDataDelete   = MO.FManageDataTable_onDataDelete;
    o.construct      = MO.FManageDataTable_construct;
+   o.dsMovePage     = MO.FManageDataTable_dsMovePage;
    o.doFetch        = MO.FManageDataTable_doFetch;
    o.doPrepare      = MO.FManageDataTable_doPrepare;
    o.doSave         = MO.FManageDataTable_doSave;
@@ -342,6 +347,37 @@ MO.FManageDataTable_construct = function FManageDataTable_construct(){
    var o = this;
    o.__base.FDuiTableFrame.construct.call(o);
 }
+MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
+   var o = this;
+   var dataset = o._dataset;
+   var pageSize = dataset.pageSize();
+   var pageCount = dataset.pageCount();
+   var page = dataset.page();
+   var movePage = page;
+   switch(actionCd){
+      case MO.EUiDataAction.First:
+         movePage = 0;
+         break;
+      case MO.EUiDataAction.Prior:
+         if(page > 1){
+            movePage--;
+         }
+         break;
+      case MO.EUiDataAction.Next:
+         if(page < pageCount - 1){
+            movePage++;
+         }
+         break;
+      case MO.EUiDataAction.Last:
+         movePage = pageCount - 1;
+         break;
+   }
+   if(movePage != page){
+      o._dsPageSize = pageSize;
+      o._dsPage = movePage;
+      o.doFetch();
+   }
+}
 MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var o = this;
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
@@ -349,6 +385,8 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var xroot = xdocument.root();
    var xcontent = xroot.create('Content');
    xcontent.set('frame_name', o._name);
+   xcontent.set('page_size', o._dsPageSize);
+   xcontent.set('page', o._dsPage);
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=fetch');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataFetch);
@@ -719,6 +757,8 @@ MO.FManageWorkspace_onBuilded = function FManageWorkspace_onBuilded(event){
    o._frameModule._hPanel.className = o.styleName('Module_Ground');
    o._frameSpace._hPanel.className = o.styleName('Space_Ground');
    o._controlCommonButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlPersonButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlLoggerButton.addClickListener(o, o.onSliderButtonClick);
    var hTitleForm = MO.Window.Builder.appendTable(o._frameMenuBar._hPanel, o.styleName('Title_Panel'));
    var hTitleLine = MO.Window.Builder.appendTableRow(hTitleForm);
    var hTitleCell = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Title_Logo'));
@@ -750,6 +790,12 @@ MO.FManageWorkspace_onSliderButtonClick = function FManageWorkspace_onSliderButt
       case 'commonButton':
          o.selectFrameSet(MO.EManageFrameSet.CommonFrameSet);
          break;
+      case 'personButton':
+         o.selectFrameSet(MO.EManageFrameSet.PersonFrameSet);
+         break;
+      case 'loggerButton':
+         o.selectFrameSet(MO.EManageFrameSet.LoggerFrameSet);
+         break;
       default:
          throw new TError(o, 'Invalid click.');
    }
@@ -765,6 +811,10 @@ MO.FManageWorkspace_selectFrameSet = function FManageWorkspace_selectFrameSet(na
    if(!frameSet){
       if(name == MO.EManageFrameSet.CommonFrameSet){
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgCommonFrameSet);
+      }else if(name == MO.EManageFrameSet.PersonFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgPersonFrameSet);
+      }else if(name == MO.EManageFrameSet.LoggerFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgLoggerFrameSet);
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
@@ -784,6 +834,12 @@ MO.FManageWorkspace_selectFrameSet = function FManageWorkspace_selectFrameSet(na
       case MO.EManageFrameSet.CommonFrameSet:
          frameSet.load();
          break;
+      case MO.EManageFrameSet.PersonFrameSet:
+         frameSet.load();
+         break;
+      case MO.EManageFrameSet.LoggerFrameSet:
+         frameSet.load();
+         break;
       default:
          throw new TError('Unknown frameset. (name={1})', name);
    }
@@ -799,7 +855,10 @@ MO.FManageWorkspace_load = function FManageWorkspace_load(){
    var button = null;
    if(code == MO.EManageFrameSet.CommonFrameSet){
       o.selectFrameSet(MO.EManageFrameSet.CommonFrameSet);
-   }else{
+   }else if(code == MO.EManageFrameSet.PersonFrameSet){
+      o.selectFrameSet(MO.EManageFrameSet.PersonFrameSet);
+   }else if(code == MO.EManageFrameSet.LoggerFrameSet){
+      o.selectFrameSet(MO.EManageFrameSet.LoggerFrameSet);
    }
 }
 MO.FManageWorkspace_dispose = function FManageWorkspace_dispose(){
@@ -814,25 +873,13 @@ MO.FManageLgCommonCatalogContent = function FManageLgCommonCatalogContent(o){
 }
 MO.FManageLgCommonCatalogToolBar = function FManageLgCommonCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
-   o._frameName = 'manage.logic.common.CatalogToolBar';
-   o.construct  = MO.FManageLgCommonCatalogToolBar_construct;
-   o.dispose    = MO.FManageLgCommonCatalogToolBar_dispose;
+   o._frameName = 'manage.logic.person.CatalogToolBar';
    return o;
-}
-MO.FManageLgCommonCatalogToolBar_construct = function FManageLgCommonCatalogToolBar_construct(){
-   var o = this;
-   o.__base.FManageCatalogToolBar.construct.call(o);
-}
-MO.FManageLgCommonCatalogToolBar_dispose = function FManageLgCommonCatalogToolBar_dispose(){
-   var o = this;
-   o.__base.FManageCatalogToolBar.dispose.call(o);
 }
 MO.FManageLgCommonFrameSet = function FManageLgCommonFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FManageFrameSet);
    o._frameName = 'manage.logic.common.FrameSet';
    o.onBuilded  = MO.FManageLgCommonFrameSet_onBuilded;
-   o.construct  = MO.FManageLgCommonFrameSet_construct;
-   o.dispose    = MO.FManageLgCommonFrameSet_dispose;
    return o;
 }
 MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilded(event){
@@ -859,11 +906,83 @@ MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilde
    o._frameCatalogContent.push(control);
    MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '共通业务');
 }
-MO.FManageLgCommonFrameSet_construct = function FManageLgCommonFrameSet_construct(){
-   var o = this;
-   o.__base.FManageFrameSet.construct.call(o);
+MO.FManageLgPersonCatalogContent = function FManageLgPersonCatalogContent(o){
+   o = MO.Class.inherits(this, o, MO.FManageCatalogContent);
+   o._frameName = 'manage.logic.person.CatalogContent';
+   return o;
 }
-MO.FManageLgCommonFrameSet_dispose = function FManageLgCommonFrameSet_dispose(){
+MO.FManageLgPersonCatalogToolBar = function FManageLgPersonCatalogToolBar(o){
+   o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
+   o._frameName = 'manage.logic.person.CatalogToolBar';
+   return o;
+}
+MO.FManageLgPersonFrameSet = function FManageLgPersonFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FManageFrameSet);
+   o._frameName = 'manage.logic.person.FrameSet';
+   o.onBuilded  = MO.FManageLgPersonFrameSet_onBuilded;
+   return o;
+}
+MO.FManageLgPersonFrameSet_onBuilded = function FManageLgPersonFrameSet_onBuilded(event){
    var o = this;
-   o.__base.FManageFrameSet.dispose.call(o);
+   o.__base.FManageFrameSet.onBuilded.call(o, event);
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
+   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._frameSpaceTitle._hPanel.className = o.styleName('Title_Ground');
+   o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
+   var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
+   spliter.setAlignCd(MO.EUiAlign.Left);
+   spliter.setSizeHtml(o._frameCatalog._hPanel);
+   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgPersonCatalogToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogToolBar.push(control);
+   var control = o._catalogContent = MO.Class.create(MO.FManageLgPersonCatalogContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogContent.push(control);
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '用户业务');
+}
+MO.FManageLgLoggerCatalogContent = function FManageLgLoggerCatalogContent(o){
+   o = MO.Class.inherits(this, o, MO.FManageCatalogContent);
+   o._frameName = 'manage.logic.logger.CatalogContent';
+   return o;
+}
+MO.FManageLgLoggerCatalogToolBar = function FManageLgLoggerCatalogToolBar(o){
+   o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
+   o._frameName = 'manage.logic.logger.CatalogToolBar';
+   return o;
+}
+MO.FManageLgLoggerFrameSet = function FManageLgLoggerFrameSet(o){
+   o = MO.Class.inherits(this, o, MO.FManageFrameSet);
+   o._frameName = 'manage.logic.logger.FrameSet';
+   o.onBuilded  = MO.FManageLgLoggerFrameSet_onBuilded;
+   return o;
+}
+MO.FManageLgLoggerFrameSet_onBuilded = function FManageLgLoggerFrameSet_onBuilded(event){
+   var o = this;
+   o.__base.FManageFrameSet.onBuilded.call(o, event);
+   o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
+   o._frameCatalogToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameCatalogContent._hPanel.className = o.styleName('Catalog_Content');
+   o._frameSpaceTitle._hPanel.className = o.styleName('Title_Ground');
+   o._frameSpaceToolBar._hPanel.className = o.styleName('Toolbar_Ground');
+   o._frameSpaceContent._hPanel.className = o.styleName('Space_Content');
+   var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
+   spliter.setAlignCd(MO.EUiAlign.Left);
+   spliter.setSizeHtml(o._frameCatalog._hPanel);
+   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgLoggerCatalogToolBar);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogToolBar.push(control);
+   var control = o._catalogContent = MO.Class.create(MO.FManageLgLoggerCatalogContent);
+   control._workspace = o._workspace;
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCatalogContent.push(control);
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '日志业务');
 }

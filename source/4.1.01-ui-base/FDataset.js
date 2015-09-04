@@ -10,14 +10,14 @@ MO.FDataset = function FDataset(o){
    //..........................................................
    // @attribute 代码
    o._name        = MO.Class.register(o, new MO.AGetSet('_name'));
-   // @attribute 页面大小
-   o._pageSize    = MO.Class.register(o, new MO.AGetSet('_pageSize'), 20);
-   // @attribute 页面索引
-   o._pageIndex   = MO.Class.register(o, new MO.AGetter('_pageIndex'));
-   // @attribute 页面总数
-   o._pageCount   = MO.Class.register(o, new MO.AGetter('_pageCount'));
    // @attribute 记录总数
    o._total       = MO.Class.register(o, new MO.AGetter('_total'));
+   // @attribute 页面大小
+   o._pageSize    = MO.Class.register(o, new MO.AGetSet('_pageSize'), 20);
+   // @attribute 页面总数
+   o._pageCount   = MO.Class.register(o, new MO.AGetter('_pageCount'));
+   // @attribute 页面索引
+   o._page        = MO.Class.register(o, new MO.AGetSet('_page'));
    // @attribute 行集合
    o._rows        = MO.Class.register(o, new MO.AGetter('_rows'));
    // @attribute 可见集合
@@ -232,10 +232,10 @@ MO.FDataset_loadConfig = function FDataset_loadConfig(xconfig){
    var o = this;
    // 加载数据集信息
    o._code = xconfig.get('name');
-   o._pageSize = MO.Lang.Integer.parse(xconfig.get('page_size', 1000));
-   o._pageIndex = MO.Lang.Integer.parse(xconfig.get('page', 0));
-   o._pageCount = MO.Lang.Integer.parse(xconfig.get('page_count', 1));
    o._total = MO.Lang.Integer.parse(xconfig.get('total'));
+   o._pageSize = MO.Lang.Integer.parse(xconfig.get('page_size', 100));
+   o._pageCount = MO.Lang.Integer.parse(xconfig.get('page_count', 1));
+   o._page = MO.Lang.Integer.parse(xconfig.get('page', 0));
    // 加载数据行集合
    var xnodes = xconfig.nodes();
    if(xnodes){
@@ -277,7 +277,7 @@ MO.FDataset_saveConfig = function FDataset_saveConfig(xconfig){
 MO.FDataset_clear = function FDataset_clear(){
    var o = this;
    o._pageSize = 20;
-   o._pageIndex = 0;
+   o._page = 0;
    o._pageCount = 0;
    o._total = 0;
    o._rows.clear();

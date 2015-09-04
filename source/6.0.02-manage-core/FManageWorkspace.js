@@ -61,9 +61,8 @@ MO.FManageWorkspace_onBuilded = function FManageWorkspace_onBuilded(event){
    //..........................................................
    // 监听菜单点击事件
    o._controlCommonButton.addClickListener(o, o.onSliderButtonClick);
-   //o._controlListButton.addClickListener(o, o.onSliderButtonClick);
-   //o._controlTreeButton.addClickListener(o, o.onSliderButtonClick);
-   //o._controlFrameButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlPersonButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlLoggerButton.addClickListener(o, o.onSliderButtonClick);
    //..........................................................
    // 建立标题
    var hTitleForm = MO.Window.Builder.appendTable(o._frameMenuBar._hPanel, o.styleName('Title_Panel'));
@@ -108,6 +107,12 @@ MO.FManageWorkspace_onSliderButtonClick = function FManageWorkspace_onSliderButt
       case 'commonButton':
          o.selectFrameSet(MO.EManageFrameSet.CommonFrameSet);
          break;
+      case 'personButton':
+         o.selectFrameSet(MO.EManageFrameSet.PersonFrameSet);
+         break;
+      case 'loggerButton':
+         o.selectFrameSet(MO.EManageFrameSet.LoggerFrameSet);
+         break;
       default:
          throw new TError(o, 'Invalid click.');
    }
@@ -138,8 +143,11 @@ MO.FManageWorkspace_selectFrameSet = function FManageWorkspace_selectFrameSet(na
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
       if(name == MO.EManageFrameSet.CommonFrameSet){
-         // 创建框架
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgCommonFrameSet);
+      }else if(name == MO.EManageFrameSet.PersonFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgPersonFrameSet);
+      }else if(name == MO.EManageFrameSet.LoggerFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgLoggerFrameSet);
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
@@ -161,6 +169,12 @@ MO.FManageWorkspace_selectFrameSet = function FManageWorkspace_selectFrameSet(na
    // 初始化操作
    switch(name){
       case MO.EManageFrameSet.CommonFrameSet:
+         frameSet.load();
+         break;
+      case MO.EManageFrameSet.PersonFrameSet:
+         frameSet.load();
+         break;
+      case MO.EManageFrameSet.LoggerFrameSet:
          frameSet.load();
          break;
       default:
@@ -188,11 +202,10 @@ MO.FManageWorkspace_load = function FManageWorkspace_load(){
    var button = null;
    if(code == MO.EManageFrameSet.CommonFrameSet){
       o.selectFrameSet(MO.EManageFrameSet.CommonFrameSet);
-      //button = o._tabBar.findControl('persistence');
-      //button.doClick();
-   }else{
-      //button = o._tabBar.findControl('frame');
-      //button.doClick();
+   }else if(code == MO.EManageFrameSet.PersonFrameSet){
+      o.selectFrameSet(MO.EManageFrameSet.PersonFrameSet);
+   }else if(code == MO.EManageFrameSet.LoggerFrameSet){
+      o.selectFrameSet(MO.EManageFrameSet.LoggerFrameSet);
    }
 }
 

@@ -87,7 +87,7 @@ MO.FDuiNumber2_onBuildEditValue = function FDuiNumber2_onBuildEditValue(event){
    var hValuePanel = o._hValuePanel;
    //..........................................................
    // 建立改变栏
-   var hForm = o._hInputForm = MO.Window.Builder.appendTable(hValuePanel);
+   var hForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
    var hLine = MO.Window.Builder.appendTableRow(hForm);
    //..........................................................
    // 建立输入框1
@@ -245,15 +245,17 @@ MO.FDuiNumber2_refreshStyle = function FDuiNumber2_refreshStyle(){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
-   o._hInput1.className = o.styleName(inputStyle);
-   o._hInput1.readOnly = !o._statusValueEdit;
-   o._hInput2.className = o.styleName(inputStyle);
-   o._hInput2.readOnly = !o._statusValueEdit;
+   var hInput1 = o._hInput1;
+   hInput1.className = o.styleName(inputStyle);
+   hInput1.readOnly = !o._statusValueEdit;
+   var hInput2 = o._hInput2;
+   hInput2.className = o.styleName(inputStyle);
+   hInput2.readOnly = !o._statusValueEdit;
 }
 
 //==========================================================
@@ -447,31 +449,4 @@ MO.FDuiNumber2_clone = function FDuiNumber2_clone(){
 MO.FDuiNumber2_link = function FDuiNumber2_link(){
    var o = this;
    
-}
-
-//==========================================================
-// <T>根据当前状态刷新样式。</T>
-//
-// @method
-//==========================================================
-MO.FDuiNumber2_refreshStyle = function FDuiNumber2_refreshStyle(){
-   var o = this;
-   o.__base.FDuiEditControl.refreshStyle.call(o);
-   // 设置编辑样式
-   var inputStyle = null;
-   if(o._statusValueEdit){
-      if(o._statusValueHover){
-         inputStyle = 'InputHover';
-      }else{
-         inputStyle = 'InputEdit';
-      }
-   }else{
-      inputStyle = 'InputReadonly';
-   }
-   var hInput1 = o._hInput1;
-   hInput1.className = o.styleName(inputStyle);
-   hInput1.readOnly = !o._statusValueEdit;
-   var hInput2 = o._hInput2;
-   hInput2.className = o.styleName(inputStyle);
-   hInput2.readOnly = !o._statusValueEdit;
 }

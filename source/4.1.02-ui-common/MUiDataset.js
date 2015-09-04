@@ -15,7 +15,7 @@ MO.MUiDataset = function MUiDataset(o){
    // @property 数据集的分页大小
    o._dsPageSize      = MO.Class.register(o, [new MO.APtyInteger('_dsPageSize', 'page_size'), new MO.AGetSet('_dsPageSize')], 20);
    // @attribute 当前页号
-   o._dsPageIndex     = 0;
+   o._dsPage          = 0;
    // @property 新建命令
    o._dsInsertAction  = MO.Class.register(o, [new MO.APtyString('_dsInsertAction', 'insert_action'), new MO.AGetSet('_dsInsertAction')]);
    // @property 更新命令

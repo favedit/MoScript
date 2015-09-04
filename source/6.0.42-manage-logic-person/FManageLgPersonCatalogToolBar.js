@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150409
 //==========================================================
-MO.FManageLgCommonCatalogToolBar = function FManageLgCommonCatalogToolBar(o){
+MO.FManageLgPersonCatalogToolBar = function FManageLgPersonCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
    //..........................................................
    // @property

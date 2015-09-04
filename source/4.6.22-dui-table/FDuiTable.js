@@ -83,9 +83,12 @@ MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    hFixForm.borderColorLight = '#D0D0D0';
    hFixForm.borderColorDark = '#EEEEEE';
    o._hFixHead =  MO.Window.Builder.appendTableRow(hFixForm);
+   o._hFixHead.style.height = '28px';
    o._hFixSearch = MO.Window.Builder.appendTableRow(hFixForm);
+   o._hFixSearch.style.height = '22px';
    o._hFixTotal = MO.Window.Builder.appendTableRow(hFixForm);
    o._hFixTotal.style.display = 'none';
+   o._hFixTotal.style.height = '22px';
    // 建立列的标题区(Layer:1)
    var hHeadPanel = o._hHeadPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('HeadPanel'));
    var hHeadForm = o._hHeadForm = MO.Window.Builder.appendTable(hHeadPanel, o.styleName('HeadForm'), 0, 0, 1);
@@ -179,7 +182,7 @@ MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(event){
          var columnVisible = column.visible();
          if(columnVisible){
             // 刷新宽度
-            column.refreshWidth();
+            //column.refreshWidth();
             // 计算是否自动调整宽度
             if(column.dispAuto){
                if(columnAuto){
@@ -191,9 +194,9 @@ MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(event){
             }
          }
       }
-      if(columnAuto){
-         columnAuto.setWidth(Math.max(dataWidth - 1, columnAuto.width ? columnAuto.width : 120));
-      }
+      //if(columnAuto){
+      //   columnAuto.setWidth(Math.max(dataWidth - 1, columnAuto.width ? columnAuto.width : 120));
+      //}
    }
 }
 

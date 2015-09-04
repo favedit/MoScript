@@ -1,20 +1,20 @@
-MO.FManageLgCommonCatalogContent = function FManageLgCommonCatalogContent(o){
+MO.FManageLgPersonCatalogContent = function FManageLgPersonCatalogContent(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogContent);
-   o._frameName = 'manage.logic.common.CatalogContent';
+   o._frameName = 'manage.logic.person.CatalogContent';
    return o;
 }
-MO.FManageLgCommonCatalogToolBar = function FManageLgCommonCatalogToolBar(o){
+MO.FManageLgPersonCatalogToolBar = function FManageLgPersonCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
    o._frameName = 'manage.logic.person.CatalogToolBar';
    return o;
 }
-MO.FManageLgCommonFrameSet = function FManageLgCommonFrameSet(o){
+MO.FManageLgPersonFrameSet = function FManageLgPersonFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FManageFrameSet);
-   o._frameName = 'manage.logic.common.FrameSet';
-   o.onBuilded  = MO.FManageLgCommonFrameSet_onBuilded;
+   o._frameName = 'manage.logic.person.FrameSet';
+   o.onBuilded  = MO.FManageLgPersonFrameSet_onBuilded;
    return o;
 }
-MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilded(event){
+MO.FManageLgPersonFrameSet_onBuilded = function FManageLgPersonFrameSet_onBuilded(event){
    var o = this;
    o.__base.FManageFrameSet.onBuilded.call(o, event);
    o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
@@ -26,15 +26,15 @@ MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilde
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(MO.EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
-   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
+   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgPersonCatalogToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    o._frameCatalogToolBar.push(control);
-   var control = o._catalogContent = MO.Class.create(MO.FManageLgCommonCatalogContent);
+   var control = o._catalogContent = MO.Class.create(MO.FManageLgPersonCatalogContent);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    o._frameCatalogContent.push(control);
-   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '共通业务');
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '用户业务');
 }

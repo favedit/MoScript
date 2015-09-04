@@ -6,7 +6,6 @@
 // @version 150102
 //==========================================================
 MO.FDuiNumber4 = function FDuiNumber4(o){
-   //o = MO.Class.inherits(this, o, FDuiEditControl, MUiPropertyEdit);
    o = MO.Class.inherits(this, o, MO.FDuiEditControl);
    //..........................................................
    // @property
@@ -92,7 +91,7 @@ MO.FDuiNumber4_onBuildEditValue = function FDuiNumber4_onBuildEditValue(p){
    var hValuePanel = o._hValuePanel;
    //..........................................................
    // 建立改变栏
-   var hForm = o._hInputForm = MO.Window.Builder.appendTable(hValuePanel);
+   var hForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
    var hLine = MO.Window.Builder.appendTableRow(hForm);
    //..........................................................
    // 建立输入框1

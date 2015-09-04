@@ -9,6 +9,8 @@ MO.FDuiColumnStatus = function FDuiColumnStatus(o){
    o = MO.Class.inherits(this, o, MO.FDuiColumnEditControl);
    //..........................................................
    // @property
+   o._name             = '_status';
+   o._label            = '状态';
    o._dataName         = '_status';
    //..........................................................
    // @attribute
@@ -100,13 +102,13 @@ MO.FDuiColumnStatus_onBuildSearchForm = function FDuiColumnStatus_onBuildSearchF
 //==========================================================
 MO.FDuiColumnStatus_onBuild = function FDuiColumnStatus_onBuild(event){
    var o = this;
-   var r = o.__base.FDuiColumnEditControl.onBuild.call(o, event);
-   var h = o._hPanel;
-   h.align = 'center';
-   h.style.width = '30px';
-   h.style.height = '22px';
+   o.__base.FDuiColumnEditControl.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   hPanel.align = 'center';
+   //hPanel.style.width = '30px';
+   //hPanel.style.height = '22px';
    //o._hFixPanel.style.pixelWidth = 30;
-   MO.Window.Builder.appendEmpty(h, 12, 12);
+   //MO.Window.Builder.appendEmpty(hPanel, 12, 12);
 }
 
 //==========================================================
@@ -116,7 +118,6 @@ MO.FDuiColumnStatus_onBuild = function FDuiColumnStatus_onBuild(event){
 // @param event:SEvent 事件信息
 //==========================================================
 MO.FDuiColumnStatus_onCellClick = function FDuiColumnStatus_onCellClick(event){
-   debugger
    var row = o._row;
    o._table.clickRow(row);
    //if(this.table.callEvent('onTableRowDoubleClick', s.row)){

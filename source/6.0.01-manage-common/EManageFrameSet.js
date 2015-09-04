@@ -7,7 +7,9 @@
 //==========================================================
 MO.EManageFrameSet = new function EManageFrameSet(){
    var o = this;
-   // @member 共通业务页面
+   // @member
    o.CommonFrameSet = 'manage.logic.common.FrameSet';
+   o.PersonFrameSet = 'manage.logic.person.FrameSet';
+   o.LoggerFrameSet = 'manage.logic.logger.FrameSet';
    return o;
 }

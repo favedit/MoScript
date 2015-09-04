@@ -24,6 +24,8 @@ MO.FManageDataTable = function FManageDataTable(o){
    // @method
    o.construct      = MO.FManageDataTable_construct;
    // @method
+   o.dsMovePage     = MO.FManageDataTable_dsMovePage;
+   // @method
    o.doFetch        = MO.FManageDataTable_doFetch;
    o.doPrepare      = MO.FManageDataTable_doPrepare;
    o.doSave         = MO.FManageDataTable_doSave;
@@ -225,6 +227,47 @@ MO.FManageDataTable_construct = function FManageDataTable_construct(){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
+MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
+   var o = this;
+   // 获得数据集合
+   var dataset = o._dataset;
+   var pageSize = dataset.pageSize();
+   var pageCount = dataset.pageCount();
+   var page = dataset.page();
+   // 计算移动位置
+   var movePage = page;
+   switch(actionCd){
+      case MO.EUiDataAction.First:
+         movePage = 0;
+         break;
+      case MO.EUiDataAction.Prior:
+         if(page > 1){
+            movePage--;
+         }
+         break;
+      case MO.EUiDataAction.Next:
+         if(page < pageCount - 1){
+            movePage++;
+         }
+         break;
+      case MO.EUiDataAction.Last:
+         movePage = pageCount - 1;
+         break;
+   }
+   // 获取数据
+   if(movePage != page){
+      o._dsPageSize = pageSize;
+      o._dsPage = movePage;
+      o.doFetch();
+   }
+}
+
+//==========================================================
+// <T>加载配置信息。</T>
+//
+// @method
+// @param containerName:String 容器名称
+//==========================================================
 MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var o = this;
    // 禁止处理
@@ -234,6 +277,8 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var xroot = xdocument.root();
    var xcontent = xroot.create('Content');
    xcontent.set('frame_name', o._name);
+   xcontent.set('page_size', o._dsPageSize);
+   xcontent.set('page', o._dsPage);
    // 发送请求
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=fetch');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);

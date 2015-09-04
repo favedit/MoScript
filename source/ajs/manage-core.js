@@ -17,6 +17,8 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    if(MO.Class.isClass(frame, MO.FDuiFormFrame)){
       frame.dataModify();
    }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+      frame._dsPageSize = 20;
+      frame._dsPage = 0;
       frame.doFetch();
    }
    var historyBar = o._frameSet._historyBar;
@@ -236,6 +238,7 @@ MO.FManageDataTable = function FManageDataTable(o){
    o.onDataSave     = MO.FManageDataTable_onDataSave;
    o.onDataDelete   = MO.FManageDataTable_onDataDelete;
    o.construct      = MO.FManageDataTable_construct;
+   o.dsMovePage     = MO.FManageDataTable_dsMovePage;
    o.doFetch        = MO.FManageDataTable_doFetch;
    o.doPrepare      = MO.FManageDataTable_doPrepare;
    o.doSave         = MO.FManageDataTable_doSave;
@@ -333,6 +336,37 @@ MO.FManageDataTable_construct = function FManageDataTable_construct(){
    var o = this;
    o.__base.FDuiTableFrame.construct.call(o);
 }
+MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
+   var o = this;
+   var dataset = o._dataset;
+   var pageSize = dataset.pageSize();
+   var pageCount = dataset.pageCount();
+   var page = dataset.page();
+   var movePage = page;
+   switch(actionCd){
+      case MO.EUiDataAction.First:
+         movePage = 0;
+         break;
+      case MO.EUiDataAction.Prior:
+         if(page > 1){
+            movePage--;
+         }
+         break;
+      case MO.EUiDataAction.Next:
+         if(page < pageCount - 1){
+            movePage++;
+         }
+         break;
+      case MO.EUiDataAction.Last:
+         movePage = pageCount - 1;
+         break;
+   }
+   if(movePage != page){
+      o._dsPageSize = pageSize;
+      o._dsPage = movePage;
+      o.doFetch();
+   }
+}
 MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var o = this;
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
@@ -340,6 +374,8 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var xroot = xdocument.root();
    var xcontent = xroot.create('Content');
    xcontent.set('frame_name', o._name);
+   xcontent.set('page_size', o._dsPageSize);
+   xcontent.set('page', o._dsPage);
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=fetch');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataFetch);
@@ -710,6 +746,8 @@ MO.FManageWorkspace_onBuilded = function FManageWorkspace_onBuilded(event){
    o._frameModule._hPanel.className = o.styleName('Module_Ground');
    o._frameSpace._hPanel.className = o.styleName('Space_Ground');
    o._controlCommonButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlPersonButton.addClickListener(o, o.onSliderButtonClick);
+   o._controlLoggerButton.addClickListener(o, o.onSliderButtonClick);
    var hTitleForm = MO.Window.Builder.appendTable(o._frameMenuBar._hPanel, o.styleName('Title_Panel'));
    var hTitleLine = MO.Window.Builder.appendTableRow(hTitleForm);
    var hTitleCell = MO.Window.Builder.appendTableCell(hTitleLine, o.styleName('Title_Logo'));
@@ -741,6 +779,12 @@ MO.FManageWorkspace_onSliderButtonClick = function FManageWorkspace_onSliderButt
       case 'commonButton':
          o.selectFrameSet(MO.EManageFrameSet.CommonFrameSet);
          break;
+      case 'personButton':
+         o.selectFrameSet(MO.EManageFrameSet.PersonFrameSet);
+         break;
+      case 'loggerButton':
+         o.selectFrameSet(MO.EManageFrameSet.LoggerFrameSet);
+         break;
       default:
          throw new TError(o, 'Invalid click.');
    }
@@ -756,6 +800,10 @@ MO.FManageWorkspace_selectFrameSet = function FManageWorkspace_selectFrameSet(na
    if(!frameSet){
       if(name == MO.EManageFrameSet.CommonFrameSet){
          frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgCommonFrameSet);
+      }else if(name == MO.EManageFrameSet.PersonFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgPersonFrameSet);
+      }else if(name == MO.EManageFrameSet.LoggerFrameSet){
+         frameSet = MO.Console.find(MO.FDuiFrameConsole).findByClass(o, MO.FManageLgLoggerFrameSet);
       }else{
          throw new MO.TError('Unknown frameset. (name={1})', name);
       }
@@ -775,6 +823,12 @@ MO.FManageWorkspace_selectFrameSet = function FManageWorkspace_selectFrameSet(na
       case MO.EManageFrameSet.CommonFrameSet:
          frameSet.load();
          break;
+      case MO.EManageFrameSet.PersonFrameSet:
+         frameSet.load();
+         break;
+      case MO.EManageFrameSet.LoggerFrameSet:
+         frameSet.load();
+         break;
       default:
          throw new TError('Unknown frameset. (name={1})', name);
    }
@@ -790,7 +844,10 @@ MO.FManageWorkspace_load = function FManageWorkspace_load(){
    var button = null;
    if(code == MO.EManageFrameSet.CommonFrameSet){
       o.selectFrameSet(MO.EManageFrameSet.CommonFrameSet);
-   }else{
+   }else if(code == MO.EManageFrameSet.PersonFrameSet){
+      o.selectFrameSet(MO.EManageFrameSet.PersonFrameSet);
+   }else if(code == MO.EManageFrameSet.LoggerFrameSet){
+      o.selectFrameSet(MO.EManageFrameSet.LoggerFrameSet);
    }
 }
 MO.FManageWorkspace_dispose = function FManageWorkspace_dispose(){

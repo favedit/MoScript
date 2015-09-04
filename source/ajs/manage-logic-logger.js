@@ -1,20 +1,20 @@
-MO.FManageLgCommonCatalogContent = function FManageLgCommonCatalogContent(o){
+MO.FManageLgLoggerCatalogContent = function FManageLgLoggerCatalogContent(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogContent);
-   o._frameName = 'manage.logic.common.CatalogContent';
+   o._frameName = 'manage.logic.logger.CatalogContent';
    return o;
 }
-MO.FManageLgCommonCatalogToolBar = function FManageLgCommonCatalogToolBar(o){
+MO.FManageLgLoggerCatalogToolBar = function FManageLgLoggerCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
-   o._frameName = 'manage.logic.person.CatalogToolBar';
+   o._frameName = 'manage.logic.logger.CatalogToolBar';
    return o;
 }
-MO.FManageLgCommonFrameSet = function FManageLgCommonFrameSet(o){
+MO.FManageLgLoggerFrameSet = function FManageLgLoggerFrameSet(o){
    o = MO.Class.inherits(this, o, MO.FManageFrameSet);
-   o._frameName = 'manage.logic.common.FrameSet';
-   o.onBuilded  = MO.FManageLgCommonFrameSet_onBuilded;
+   o._frameName = 'manage.logic.logger.FrameSet';
+   o.onBuilded  = MO.FManageLgLoggerFrameSet_onBuilded;
    return o;
 }
-MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilded(event){
+MO.FManageLgLoggerFrameSet_onBuilded = function FManageLgLoggerFrameSet_onBuilded(event){
    var o = this;
    o.__base.FManageFrameSet.onBuilded.call(o, event);
    o._frameCatalogTitle._hPanel.className = o.styleName('Title_Ground');
@@ -26,15 +26,15 @@ MO.FManageLgCommonFrameSet_onBuilded = function FManageLgCommonFrameSet_onBuilde
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(MO.EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
-   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgCommonCatalogToolBar);
+   var control = o._catalogToolBar = MO.Class.create(MO.FManageLgLoggerCatalogToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    o._frameCatalogToolBar.push(control);
-   var control = o._catalogContent = MO.Class.create(MO.FManageLgCommonCatalogContent);
+   var control = o._catalogContent = MO.Class.create(MO.FManageLgLoggerCatalogContent);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(event);
    o._frameCatalogContent.push(control);
-   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '共通业务');
+   MO.Window.Html.textSet(o._frameCatalogTitle._hPanel, '日志业务');
 }
