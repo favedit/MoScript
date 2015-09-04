@@ -1359,7 +1359,7 @@ MO.FDuiContainer_storeConfig = function FDuiContainer_storeConfig(x){
    }
 }
 MO.FDuiContainer_createChild = function FDuiContainer_createChild(xconfig){
-   var control = MO.RDuiControl.newInstance(xconfig);
+   var control = MO.Dui.Control.newInstance(xconfig);
    control._parent = this;
    return control;
 }
@@ -1652,19 +1652,19 @@ MO.FDuiControl_refreshPadding = function FDuiControl_refreshPadding(){
    var p = o._padding;
    o.setPadding(p.left, p.top, p.right, p.bottom);
 }
-MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(n, h, m, u){
-   return MO.RDuiControl.attachEvent(this, n, h, m, u);
+MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(name, hTag, method, capture){
+   return MO.Dui.Control.attachEvent(this, name, hTag, method, capture);
 }
-MO.FDuiControl_linkEvent = function FDuiControl_linkEvent(t, n, h, m){
-   return MO.RDuiControl.linkEvent(this, t, n, h, m);
+MO.FDuiControl_linkEvent = function FDuiControl_linkEvent(control, name, hTag, method, capture){
+   return MO.Dui.Control.linkEvent(this, control, name, hTag, method, capture);
 }
-MO.FDuiControl_callEvent = function FDuiControl_callEvent(n, s, e){
+MO.FDuiControl_callEvent = function FDuiControl_callEvent(name, source, event){
    var o = this;
    var es = o._events;
    if(es){
-      var ec = es.get(n);
+      var ec = es.get(name);
       if(ec){
-         ec.invoke(s, s, e);
+         ec.invoke(source, source, event);
       }
    }
 }
@@ -1798,25 +1798,48 @@ MO.RDuiControl.prototype.newInstance = function RDuiControl_newInstance(p){
    }
    return r;
 }
-MO.RDuiControl.prototype.attachEvent = function RDuiControl_attachEvent(c, n, h, m, u){
+MO.RDuiControl.prototype.attachEvent = function RDuiControl_attachEvent(control, name, hTag, method, capture){
    var o = this;
-   var e = null;
-   var p = c[n];
-   if(!MO.Method.isEmpty(p) || m){
-      var cz = MO.Class.find(c.constructor);
-      var a = cz.annotation(MO.EAnnotation.Event, n);
-      e = a.create();
-      e.annotation = a;
-      e.source = c;
-      e.hSource = h;
-      e.ohProcess = m;
-      e.onProcess = p;
-      e.process = MO.RDuiEvent.onProcess;
-      MO.RDuiEvent.find(h).push(a.linker(), e);
-      MO.RHtml.linkSet(h, '_plink', c);
-      a.bind(h, u);
+   var event = null;
+   var callback = control[name];
+   if(!MO.Method.isEmpty(callback) || method){
+      var clazz = MO.Class.find(control.constructor);
+      var annotation = clazz.annotation(MO.EAnnotation.Event, name);
+      var linker = annotation.linker();
+      event = annotation.create();
+      event.annotation = annotation;
+      event.source = control;
+      event.hSource = hTag;
+      event.ohProcess = method;
+      event.onProcess = callback;
+      event.process = MO.Dui.Event.onProcess;
+      MO.Dui.Event.find(hTag).push(linker, event);
+      MO.Window.Html.linkSet(hTag, '_plink', control);
+      annotation.bind(hTag, capture);
    }
-   return e;
+   return event;
+}
+MO.RDuiControl.prototype.linkEvent = function RDuiControl_linkEvent(targetControl, sourceControl, name, hTag, method, capture){
+   var o = this;
+   var event = null;
+   var callback = targetControl[name];
+   if(!MO.Method.isEmpty(callback) || method){
+      var clazz = MO.Class.find(targetControl.constructor);
+      var annotation = clazz.annotation(MO.EAnnotation.Event, name);
+      var linker = annotation.linker();
+      var event = new annotation.constructor();
+      event.annotation = annotation;
+      event.source = targetControl;
+      event.sender = sourceControl;
+      event.hSource = hTag;
+      event.ohProcess = method;
+      event.onProcess = callback;
+      event.process = MO.Dui.Event.onProcess;
+      MO.Dui.Event.find(hTag).push(linker, event);
+      MO.Window.Html.linkSet(hTag, '_plink', targetControl);
+      annotation.bind(hTag, capture);
+   }
+   return event;
 }
 MO.RDuiControl.prototype.innerCreate = function RDuiControl_innerCreate(pc, px, pa){
    var o = this;
@@ -1850,49 +1873,49 @@ MO.RDuiControl.prototype.create = function RDuiControl_create(pc, px, pa){
    o.innerCreate(c, px, pa);
    return c;
 }
-MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px, pa, ph){
+MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(reference, control, xconfig, attributes, hTag){
    var o = this;
-   if((pc == null) || (px == null)){
+   if((control == null) || (xconfig == null)){
       return;
    }
-   if(MO.Class.isClass(pc, MO.MProperty)){
-      pc.propertyLoad(px);
+   if(MO.Class.isClass(control, MO.MProperty)){
+      control.propertyLoad(xconfig);
    }
-   var l = px.get('linker');
-   if(l && pr){
-      pr[l] = pc;
+   var linker = xconfig.get('linker');
+   if(linker && reference){
+      reference[linker] = control;
    }
-   if(MO.Class.isClass(pc, MO.FDuiControl)){
-      if(!pc.isBuild()){
-         pc.build(ph);
+   if(MO.Class.isClass(control, MO.FDuiControl)){
+      if(!control.isBuild()){
+         control.build(hTag);
       }else{
-         pc.refresh();
+         control.refresh();
       }
    }
-   if(pc.__typed){
-      pr = pc;
+   if(control.__typed){
+      reference = control;
    }
-   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
-      var ns = px.nodes();
-      var nc = ns.count();
-      for(var i = 0; i < nc; i++){
-         var n = ns.get(i);
-         var c = pc.createChild(n);
-         if(!c){
+   if(MO.Class.isClass(control, MO.MUiContainer) && xconfig.hasNode()){
+      var xnodes = xconfig.nodes();
+      var nodeCount = xnodes.count();
+      for(var i = 0; i < nodeCount; i++){
+         var xnode = xnodes.at(i);
+         var child = control.createChild(xnode);
+         if(!child){
             throw new MO.TError('Invalid create child.');
          }
-         o.innerbuild(pr, c, n, pa, ph);
-         pc.push(c);
+         o.innerbuild(reference, child, xnode, attributes, hTag);
+         control.push(child);
       }
    }
-   if(MO.Class.isClass(pc, MO.FDuiControl)){
-      pc.builded(ph);
+   if(MO.Class.isClass(control, MO.FDuiControl)){
+      control.builded(hTag);
    }
 }
 MO.RDuiControl.prototype.build = function RDuiControl_build(control, xconfig, attributes, hPanel){
    var o = this;
    if(!control){
-      control = MO.RDuiControl.newInstance(xconfig);
+      control = MO.Dui.Control.newInstance(xconfig);
    }
    o.innerbuild(control, control, xconfig, attributes, hPanel);
    return control;
@@ -1924,26 +1947,6 @@ MO.RDuiControl.prototype.setStyleScroll = function RDuiControl_setStyleScroll(hT
          break;
       default:
          throw new MO.TError(o, 'Unknown scroll type. (scroll_cd={1})', scrollCd);
-   }
-}
-MO.RDuiControl.prototype.linkEvent = function RDuiControl_linkEvent(tc, sc, n, h, m){
-   var o = this;
-   var p = tc[n];
-   if(!RMethod.isEmpty(p) || m){
-      var cz = MO.Class.find(c.constructor);
-      var a = cz.annotation(MO.EAnnotation.Event, n);
-      var e = new a.constructor();
-      e.name = a.name;
-      e.source = tc;
-      e.sender = sc;
-      e.hSource = h;
-      e.ohProcess = m;
-      e.onProcess = p;
-      e.process = RDuiEvent.onProcess;
-      RDuiEvent.find(h).push(e.type, e);
-      h[e.handle] = RDuiEvent.ohEvent;
-      RHtml.linkSet(h, '_plink', tc);
-      return e;
    }
 }
 MO.RDuiControl.prototype.find = function RDuiControl_find(c){
@@ -2035,8 +2038,7 @@ MO.RDuiControl.prototype.isInfo = function RDuiControl_isInfo(v){
 MO.RDuiControl.prototype.isGroup = function RDuiControl_isGroup(v){
    return v ? (0 == v.indexOf('G#')) : false;
 }
-MO.RDuiControl = new MO.RDuiControl();
-MO.Dui.Control = MO.RDuiControl;
+MO.Dui.Control = new MO.RDuiControl();
 MO.RDuiEvent = function RDuiEvent(){
    var o = this;
    o._objects  = new Array();
@@ -2044,8 +2046,8 @@ MO.RDuiEvent = function RDuiEvent(){
    o.events    = new Array();
    return o;
 }
-MO.RDuiEvent.prototype.ohEvent = function RDuiEvent_ohEvent(e){
-   MO.RDuiEvent.process(this, e ? e : window.event);
+MO.RDuiEvent.prototype.ohEvent = function RDuiEvent_ohEvent(event){
+   MO.Dui.Event.process(this, event ? event : window.event);
 }
 MO.RDuiEvent.prototype.onProcess = function RDuiEvent_onProcess(e){
    var e = this;
@@ -2055,15 +2057,16 @@ MO.RDuiEvent.prototype.onProcess = function RDuiEvent_onProcess(e){
       e.onProcess.call(e.source, e);
    }
 }
-MO.RDuiEvent.prototype.find = function RDuiEvent_find(p){
-   var u = MO.RHtml.uid(p);
-   var es = this._objects;
-   var e = es[u];
-   if(e == null){
-      e = es[u] = new MO.THtmlEvent();
-      e.linker = p;
+MO.RDuiEvent.prototype.find = function RDuiEvent_find(hTag){
+   var o = this;
+   var uid = MO.Window.Html.uid(hTag);
+   var events = o._objects;
+   var event = events[uid];
+   if(event == null){
+      event = events[uid] = new MO.THtmlEvent();
+      event.linker = hTag;
    }
-   return e;
+   return event;
 }
 MO.RDuiEvent.prototype.process = function RDuiEvent_process(hs, he){
    var o = this;
@@ -2130,7 +2133,7 @@ MO.RDuiEvent.prototype.alloc = function RDuiEvent_alloc(s, c){
 MO.RDuiEvent.prototype.free = function RDuiEvent_free(e){
    e.inUsing = false;
 }
-MO.RDuiEvent = new MO.RDuiEvent();
+MO.Dui.Event = new MO.RDuiEvent();
 MO.RDuiLayer = function RDuiLayer(){
    var o = this;
    o._layers = new Array();

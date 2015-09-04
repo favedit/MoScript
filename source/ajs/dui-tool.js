@@ -451,7 +451,7 @@ MO.FDuiToolButtonMenu_construct = function FDuiToolButtonMenu_construct(){
    o.push(menu);
 }
 MO.FDuiToolButtonMenu_createChild = function FDuiToolButtonMenu_createChild(xconfig){
-   var control = MO.RDuiControl.newInstance(xconfig);
+   var control = MO.Dui.Control.newInstance(xconfig);
    control._parent = this;
    return control;
 }

@@ -218,7 +218,7 @@ MO.FDuiContainer_storeConfig = function FDuiContainer_storeConfig(x){
 //==========================================================
 MO.FDuiContainer_createChild = function FDuiContainer_createChild(xconfig){
    // 创建实例
-   var control = MO.RDuiControl.newInstance(xconfig);
+   var control = MO.Dui.Control.newInstance(xconfig);
    control._parent = this;
    return control;
 }

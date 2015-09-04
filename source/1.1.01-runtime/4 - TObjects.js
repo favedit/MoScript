@@ -38,6 +38,7 @@ MO.TObjects = function TObjects(){
    o.sort       = MO.TObjects_sort;
    o.erase      = MO.TObjects_erase;
    o.remove     = MO.TObjects_remove;
+   o.invoke     = MO.TObjects_invoke;
    o.clear      = MO.TObjects_clear;
    // @method
    o.dispose    = MO.TObjects_dispose;
@@ -372,6 +373,28 @@ MO.TObjects_remove = function TObjects_remove(value){
       o._count = index;
    }
    return value;
+}
+
+//==========================================================
+// <T>调用函数处理。</T>
+//
+// @method
+// @param methodName:String 函数名称
+// @param parameter1:Object 参数1
+// @param parameter2:Object 参数2
+// @param parameter3:Object 参数3
+// @param parameter4:Object 参数4
+// @param parameter5:Object 参数5
+//==========================================================
+MO.TObjects_invoke = function TObjects_invoke(methodName, parameter1, parameter2, parameter3, parameter4, parameter5){
+   var o = this;
+   var count = o._count;
+   var items = o._items;
+   for(var i = 0; i < count; i++){
+      var item = items[i];
+      var method = item[methodName];
+      method.call(item, parameter1, parameter2, parameter3, parameter4, parameter5);
+   }
 }
 
 //===========================================================

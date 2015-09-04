@@ -80,7 +80,7 @@ MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    var dc = MO.Console.find(MO.FUiFrameDefineConsole);
    var x = dc.load(n);
    // 构建处理
-   var f = MO.RDuiControl.build(null, x, null, c._hPanel);
+   var f = MO.Dui.Control.build(null, x, null, c._hPanel);
    //var fx = fdc.find(n, t);
    //var fd = t + ':' + n;
    //if(!o._framesLoaded.contains(fd)){

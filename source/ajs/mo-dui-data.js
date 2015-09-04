@@ -2584,7 +2584,7 @@ MO.FDuiDataTreeView_onDefineLoad = function FDuiDataTreeView_onDefineLoad(event)
       throw new MO.TError(o, 'Load tree data failure.');
    }
    var xtree = event.xtree = xroot.find('TreeView');
-   MO.RDuiControl.build(o, xtree, null, o._hPanel);
+   MO.Dui.Control.build(o, xtree, null, o._hPanel);
    o.processDefineLoadListener(event);
 }
 MO.FDuiDataTreeView_onNodeLoaded = function FDuiDataTreeView_onNodeLoaded(event){

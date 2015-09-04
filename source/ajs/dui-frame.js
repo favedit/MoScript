@@ -37,7 +37,7 @@ MO.FDuiFramePage_onBuild = function FDuiFramePage_onBuild(p){
    var h = o._hPanel;
    if(o._scrollCd != MO.EUiScroll.None){
       var hc = o._hContainer = MO.Window.Builder.appendDiv(h, o.styleName('Container'));
-      MO.RDuiControl.setStyleScroll(hc, o._scrollCd);
+      MO.Dui.Control.setStyleScroll(hc, o._scrollCd);
    }else{
       o._hContainer = h;
    }

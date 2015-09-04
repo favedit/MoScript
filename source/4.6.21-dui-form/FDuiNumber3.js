@@ -9,7 +9,7 @@ MO.FDuiNumber3 = function FDuiNumber3(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl);
    //..........................................................
    // @property
-   o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
    //..........................................................
    // @style
    o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
@@ -88,26 +88,27 @@ MO.FDuiNumber3_onBuildEditValue = function FDuiNumber3_onBuildEditValue(p){
    var o = this;
    var h = o._hValuePanel;
    h.className = o.styleName('ValuePanel');
-   var hf = o._hValueForm = MO.Window.Builder.appendTable(h);
-   var hr = MO.Window.Builder.appendTableRow(hf);
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(h);
+   var hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    //..........................................................
    // 建立改变栏
-   o._hChangePanel = MO.Window.Builder.appendTableCell(hr);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(p);
    //..........................................................
    // 建立输入框1
-   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderRight = '1px solid #666666';
    var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
    o.onBuildEditInput(p, hInput)
    // 建立输入框2
-   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #999999';
    hCell.style.borderRight = '1px solid #666666';
    var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
    o.onBuildEditInput(p, hInput)
    // 建立输入框3
-   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #999999';
    var hInput = o._hInput3 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
    o.onBuildEditInput(p, hInput)

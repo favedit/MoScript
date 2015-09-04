@@ -566,12 +566,12 @@ MO.AEvent_value = function AEvent_value(){
 MO.AEvent_create = function AEvent_create(){
    return new MO.SEvent();
 }
-MO.AEvent_bind = function AEvent_bind(h, u){
+MO.AEvent_bind = function AEvent_bind(hTag, capture){
    var o = this;
-   if(u){
-      h.addEventListener(o._linker, MO.RDuiEvent.ohEvent, true);
+   if(capture){
+      hTag.addEventListener(o._linker, MO.Dui.Event.ohEvent, true);
    }else{
-      h[o._handle] = MO.RDuiEvent.ohEvent;
+      hTag[o._handle] = MO.Dui.Event.ohEvent;
    }
 }
 MO.AEvent_toString = function AEvent_toString(){
@@ -636,9 +636,9 @@ MO.AEventInputChanged_attach = function AEventInputChanged_attach(e, h){
 MO.AEventInputChanged_bind = function AEventInputChanged_bind(h, u){
    var o = this;
    if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
-      h.onpropertychange = MO.RDuiEvent.ohEvent;
+      h.onpropertychange = MO.Dui.Event.ohEvent;
    }else{
-      h.addEventListener('input', MO.RDuiEvent.ohEvent);
+      h.addEventListener('input', MO.Dui.Event.ohEvent);
    }
 }
 MO.AEventKeyDown = function AEventKeyDown(n){
@@ -1094,10 +1094,8 @@ MO.APtyPadding_save = function APtyPadding_save(instance, xconfig){
    var name = o._name;
    var padding = instance[name];
    if(padding){
-      if(!padding.isEmpty()){
-         var value = padding.toString()
-         xconfig.set(o._linker, value);
-      }
+      var value = padding.toString()
+      xconfig.set(o._linker, value);
    }
 }
 MO.APtyPadding_toString = function APtyPadding_toString(){
@@ -1193,14 +1191,21 @@ MO.APtySize2 = function APtySize2(name, linker, width, height){
 }
 MO.APtySize2_load = function APtySize2_load(instance, xconfig){
    var o = this;
+   var name = o._name;
    var value = xconfig.get(o._linker);
-   instance[o._name].parse(value);
+   var size = instance[name];
+   if(!size){
+      size = instance[name] = new MO.SSize2();
+   }
+   size.parse(value);
 }
 MO.APtySize2_save = function APtySize2_save(instance, xconfig){
    var o = this;
-   var value = instance[o._name];
-   if(!value.isEmpty()){
-      xconfig.set(o._linker, value.toString());
+   var name = o._name;
+   var size = instance[name];
+   if(size){
+      var value = size.toString()
+      xconfig.set(o._linker, value);
    }
 }
 MO.APtySize2_toString = function APtySize2_toString(){

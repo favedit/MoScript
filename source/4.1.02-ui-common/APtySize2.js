@@ -34,8 +34,13 @@ MO.APtySize2 = function APtySize2(name, linker, width, height){
 //============================================================
 MO.APtySize2_load = function APtySize2_load(instance, xconfig){
    var o = this;
+   var name = o._name;
    var value = xconfig.get(o._linker);
-   instance[o._name].parse(value);
+   var size = instance[name];
+   if(!size){
+      size = instance[name] = new MO.SSize2();
+   }
+   size.parse(value);
 }
 
 //============================================================
@@ -47,9 +52,11 @@ MO.APtySize2_load = function APtySize2_load(instance, xconfig){
 //============================================================
 MO.APtySize2_save = function APtySize2_save(instance, xconfig){
    var o = this;
-   var value = instance[o._name];
-   if(!value.isEmpty()){
-      xconfig.set(o._linker, value.toString());
+   var name = o._name;
+   var size = instance[name];
+   if(size){
+      var value = size.toString()
+      xconfig.set(o._linker, value);
    }
 }
 

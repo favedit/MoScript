@@ -890,8 +890,8 @@ MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control,
       e.hSource = h;
       e.ohProcess = m;
       e.onProcess = p;
-      e.process = MO.RDuiEvent.onProcess;
-      MO.RDuiEvent.find(h).push(a.linker(), e);
+      e.process = MO.Dui.Event.onProcess;
+      MO.Dui.Event.find(h).push(a.linker(), e);
       MO.RHtml.linkSet(h, '_plink', c);
       a.bind(h, u);
    }

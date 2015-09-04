@@ -311,15 +311,17 @@ MO.RHtml.prototype.clientY = function RHtml_clientY(p, t){
 // <T>设置页面元素大小。</T>
 //
 // @method
-// @param h:html:HtmlTag 页面元素
-// @param s:size:SSize2 大小
+// @param hTag:HtmlTag 页面元素
+// @param size:SSize2 大小
 //==========================================================
-MO.RHtml.prototype.setSize = function RHtml_setSize(h, s){
-   if(s.width){
-      h.style.width = s.width + 'px';
-   }
-   if(s.height){
-      h.style.height = s.height + 'px';
+MO.RHtml.prototype.setSize = function RHtml_setSize(hTag, size){
+   if(size){
+      if(size.width){
+         hTag.style.width = size.width + 'px';
+      }
+      if(size.height){
+         hTag.style.height = size.height + 'px';
+      }
    }
 }
 

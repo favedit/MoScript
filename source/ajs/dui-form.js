@@ -3172,12 +3172,12 @@ MO.FDuiEdit_onBuildEditValue = function FDuiEdit_onBuildEditValue(event){
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(event);
    var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
    var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel);
    o.attachEvent('onInputEdit', hInput, o.onInputEdit);
-   MO.Window.Html.setSize(hInputPanel, o._inputSize);
    if(o._editLength){
       hInput.maxLength = o._editLength;
    }
@@ -3189,7 +3189,7 @@ MO.FDuiEdit_onInputEdit = function FDuiEdit_onInputEdit(p){
 MO.FDuiEdit_construct = function FDuiEdit_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
-   o._inputSize = new MO.SSize2(0, 0);
+   o._inputSize = new MO.SSize2();
 }
 MO.FDuiEdit_formatText = function FDuiEdit_formatText(value){
    var o = this;
@@ -5056,7 +5056,7 @@ MO.FDuiMemo_dispose = function FDuiMemo_dispose(){
 }
 MO.FDuiNumber = function FDuiNumber(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyNumber);
-   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
    o._styleAdjustPanel     = MO.Class.register(o, new MO.AStyle('_styleAdjustPanel'));
    o._styleAdjustForm      = MO.Class.register(o, new MO.AStyle('_styleAdjustForm'));
    o._styleUpPanel         = MO.Class.register(o, new MO.AStyle('_styleUpPanel'));
@@ -5084,6 +5084,7 @@ MO.FDuiNumber_onBuildEditValue = function FDuiNumber_onBuildEditValue(p){
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(p);
    var hip = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
@@ -5236,7 +5237,7 @@ MO.FDuiNumber_drop = function FDuiNumber_drop(){
 }
 MO.FDuiNumber2 = function FDuiNumber2(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl);
-   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o._hInput1              = null;
    o._hInput2              = null;
@@ -5260,8 +5261,9 @@ MO.FDuiNumber2_onBuildEditInput = function FDuiNumber2_onBuildEditInput(event, h
 MO.FDuiNumber2_onBuildEditValue = function FDuiNumber2_onBuildEditValue(event){
    var o = this;
    var hValuePanel = o._hValuePanel;
-   var hForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   var hLine = MO.Window.Builder.appendTableRow(hForm);
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
+   var hLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
    var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell);
    o.onBuildEditInput(event, hInput)
@@ -5279,7 +5281,7 @@ MO.FDuiNumber2_onInputChanged = function FDuiNumber2_onInputChanged(p){
 MO.FDuiNumber2_construct = function FDuiNumber2_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
-   o._inputSize = new MO.SSize2(0, 0);
+   o._inputSize = new MO.SSize2();
    o._currentValue = new MO.SPoint2();
    o._dataValue = new MO.SPoint2();
 }
@@ -5447,7 +5449,7 @@ MO.FDuiNumber2_link = function FDuiNumber2_link(){
 }
 MO.FDuiNumber3 = function FDuiNumber3(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl);
-   o._inputSize        = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
    o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
    o._styleInputPanel  = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
    o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
@@ -5473,20 +5475,21 @@ MO.FDuiNumber3_onBuildEditValue = function FDuiNumber3_onBuildEditValue(p){
    var o = this;
    var h = o._hValuePanel;
    h.className = o.styleName('ValuePanel');
-   var hf = o._hValueForm = MO.Window.Builder.appendTable(h);
-   var hr = MO.Window.Builder.appendTableRow(hf);
-   o._hChangePanel = MO.Window.Builder.appendTableCell(hr);
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(h);
+   var hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
+   o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(p);
-   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderRight = '1px solid #666666';
    var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
    o.onBuildEditInput(p, hInput)
-   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #999999';
    hCell.style.borderRight = '1px solid #666666';
    var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
    o.onBuildEditInput(p, hInput)
-   var hCell = MO.Window.Builder.appendTableCell(hr, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #999999';
    var hInput = o._hInput3 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
    o.onBuildEditInput(p, hInput)
@@ -5657,7 +5660,7 @@ MO.FDuiNumber3_link = function FDuiNumber3_link(){
 }
 MO.FDuiNumber4 = function FDuiNumber4(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl);
-   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o._hInput               = null;
    o.onBuildEditInput      = MO.FDuiNumber4_onBuildEditInput;
@@ -5680,20 +5683,21 @@ MO.FDuiNumber4_onBuildEditInput = function FDuiNumber4_onBuildEditInput(event, h
 MO.FDuiNumber4_onBuildEditValue = function FDuiNumber4_onBuildEditValue(p){
    var o = this;
    var hValuePanel = o._hValuePanel;
-   var hForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   var hLine = MO.Window.Builder.appendTableRow(hForm);
-   var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
+   var hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell);
    o.onBuildEditInput(event, hInput)
-   var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #EEEEEE';
    var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell);
    o.onBuildEditInput(event, hInput)
-   var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #EEEEEE';
    var hInput = o._hInput3 = MO.Window.Builder.appendEdit(hCell);
    o.onBuildEditInput(event, hInput)
-   var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
+   var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #EEEEEE';
    var hInput = o._hInput4 = MO.Window.Builder.appendEdit(hCell);
    o.onBuildEditInput(event, hInput)
@@ -6108,6 +6112,7 @@ MO.FDuiRadio_refreshStyle = function FDuiRadio_refreshStyle(){
 }
 MO.FDuiSelect = function FDuiSelect(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiContainer, MO.MUiPropertySelect);
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o._hValueForm           = null;
    o._hValueLine           = null;
@@ -6136,8 +6141,8 @@ MO.FDuiSelect_onBuildEditValue = function FDuiSelect_onBuildEditValue(event){
    var o = this;
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(event);
    var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
@@ -6170,9 +6175,10 @@ MO.FDuiSelect_onKeyDown = function FDuiSelect_onKeyDown(event){
 MO.FDuiSelect_construct = function FDuiSelect_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
+   o._inputSize = new MO.SSize2();
 }
 MO.FDuiSelect_createChild = function FDuiSelect_createChild(xconfig){
-   var control = MO.RDuiControl.newInstance(xconfig);
+   var control = MO.Dui.Control.newInstance(xconfig);
    control._parent = this;
    return control;
 }

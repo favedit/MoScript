@@ -936,14 +936,15 @@ MO.RClass.prototype.isBaseDataType = function RClass_isBaseDataType(clazz){
 MO.RClass.prototype.isName = function RClass_isName(value, name){
    return (this.name(value) == name);
 }
-MO.RClass.prototype.isClass = function RClass_isClass(v, c){
-   if(v && c){
-      var o = this;
-      var n = o.name(c);
-      if(v.__base){
-         return (v.__base[n] != null);
+MO.RClass.prototype.isClass = function RClass_isClass(value, clazz){
+   var o = this;
+   MO.Assert.debugNotNull(clazz);
+   if(value){
+      var name = o.name(clazz);
+      if(value.__base){
+         return (value.__base[name] != null);
       }else{
-         return (o.name(v) == n);
+         return (o.name(value) == name);
       }
    }
    return false;

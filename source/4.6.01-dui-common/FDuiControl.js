@@ -491,14 +491,14 @@ MO.FDuiControl_refreshPadding = function FDuiControl_refreshPadding(){
 //    执行时该函数的this指针指向当前控件实例。</P>
 //
 // @method
-// @param n:name:String 注册过的事件名称
-// @param h:hPanel:HTML 页面元素
-// @param m:method:Function 立即函数
+// @param name:String 注册过的事件名称
+// @param hTag:HtmlTag 页面元素
+// @param method:Function 立即函数
+// @param capture:Boolean 捕捉
 // @return TEvent 关联的事件对象
-// @see RControl.attachEvent
 //==========================================================
-MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(n, h, m, u){
-   return MO.RDuiControl.attachEvent(this, n, h, m, u);
+MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(name, hTag, method, capture){
+   return MO.Dui.Control.attachEvent(this, name, hTag, method, capture);
 }
 
 //==========================================================
@@ -511,32 +511,32 @@ MO.FDuiControl_attachEvent = function FDuiControl_attachEvent(n, h, m, u){
 //    可以通过事件对象的发出者访问到该发出对象。</P>
 //
 // @method
-// @param t:target:FDuiControl 到达者控件
-// @param n:name:String 注册过的事件名称
-// @param h:hPanel:HTML 页面元素
-// @param m:method:Function 立即函数
+// @param control:FDuiControl 控件
+// @param name:String 注册过的事件名称
+// @param hTag:HtmlTag 页面元素
+// @param method:Function 立即函数
+// @param capture:Boolean 是否捕捉
 // @return TEvent 关联的事件对象
-// @see RControl.linkEvent
 //==========================================================
-MO.FDuiControl_linkEvent = function FDuiControl_linkEvent(t, n, h, m){
-   return MO.RDuiControl.linkEvent(this, t, n, h, m);
+MO.FDuiControl_linkEvent = function FDuiControl_linkEvent(control, name, hTag, method, capture){
+   return MO.Dui.Control.linkEvent(this, control, name, hTag, method, capture);
 }
 
 //==========================================================
 // <T>调用控件的关联事件。</T>
 //
 // @method
-// @param n:name:String 事件名称
-// @param s:source:FDuiControl 事件源
-// @param e:event:TEvent 事件对象
+// @param name:String 事件名称
+// @param source:FDuiControl 事件源
+// @param event:TEvent 事件对象
 //==========================================================
-MO.FDuiControl_callEvent = function FDuiControl_callEvent(n, s, e){
+MO.FDuiControl_callEvent = function FDuiControl_callEvent(name, source, event){
    var o = this;
    var es = o._events;
    if(es){
-      var ec = es.get(n);
+      var ec = es.get(name);
       if(ec){
-         ec.invoke(s, s, e);
+         ec.invoke(source, source, event);
       }
    }
 }

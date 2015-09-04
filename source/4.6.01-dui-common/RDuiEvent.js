@@ -30,10 +30,10 @@ MO.RDuiEvent = function RDuiEvent(){
 // <T>页面事件处理。</T>
 //
 // @method
-// @param e:event:Event 事件对象
+// @param event:Event 事件对象
 //==========================================================
-MO.RDuiEvent.prototype.ohEvent = function RDuiEvent_ohEvent(e){
-   MO.RDuiEvent.process(this, e ? e : window.event);
+MO.RDuiEvent.prototype.ohEvent = function RDuiEvent_ohEvent(event){
+   MO.Dui.Event.process(this, event ? event : window.event);
 }
 
 //==========================================================
@@ -61,17 +61,18 @@ MO.RDuiEvent.prototype.onProcess = function RDuiEvent_onProcess(e){
 // <T>查找事件对象。</T>
 //
 // @method
-// @param p:html:HtmlTag 页面元素
+// @param hTag:HtmlTag 页面元素
 // =========================================================
-MO.RDuiEvent.prototype.find = function RDuiEvent_find(p){
-   var u = MO.RHtml.uid(p);
-   var es = this._objects;
-   var e = es[u];
-   if(e == null){
-      e = es[u] = new MO.THtmlEvent();
-      e.linker = p;
+MO.RDuiEvent.prototype.find = function RDuiEvent_find(hTag){
+   var o = this;
+   var uid = MO.Window.Html.uid(hTag);
+   var events = o._objects;
+   var event = events[uid];
+   if(event == null){
+      event = events[uid] = new MO.THtmlEvent();
+      event.linker = hTag;
    }
-   return e;
+   return event;
 }
 
 //==========================================================
@@ -197,4 +198,4 @@ MO.RDuiEvent.prototype.free = function RDuiEvent_free(e){
 }
 //..........................................................
 // 实例化内容
-MO.RDuiEvent = new MO.RDuiEvent();
+MO.Dui.Event = new MO.RDuiEvent();

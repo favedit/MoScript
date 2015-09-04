@@ -78,15 +78,15 @@ MO.AEvent_create = function AEvent_create(){
 //
 // @method
 // @return SEvent 事件对象
-// @param h:html:HtmlTag 页面元素
-// @param u:capture:Boolean 是否捕捉
+// @param hTag:HtmlTag 页面元素
+// @param capture:Boolean 是否捕捉
 //==========================================================
-MO.AEvent_bind = function AEvent_bind(h, u){
+MO.AEvent_bind = function AEvent_bind(hTag, capture){
    var o = this;
-   if(u){
-      h.addEventListener(o._linker, MO.RDuiEvent.ohEvent, true);
+   if(capture){
+      hTag.addEventListener(o._linker, MO.Dui.Event.ohEvent, true);
    }else{
-      h[o._handle] = MO.RDuiEvent.ohEvent;
+      hTag[o._handle] = MO.Dui.Event.ohEvent;
    }
 }
 

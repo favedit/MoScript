@@ -148,7 +148,7 @@ MO.FDuiToolButtonMenu_construct = function FDuiToolButtonMenu_construct(){
 //==========================================================
 MO.FDuiToolButtonMenu_createChild = function FDuiToolButtonMenu_createChild(xconfig){
    // 创建实例
-   var control = MO.RDuiControl.newInstance(xconfig);
+   var control = MO.Dui.Control.newInstance(xconfig);
    control._parent = this;
    return control;
 }

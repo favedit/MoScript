@@ -17,6 +17,9 @@
 MO.FDuiSelect = function FDuiSelect(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiContainer, MO.MUiPropertySelect);
    //..........................................................
+   // @property
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
+   //..........................................................
    // @attribtue
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -68,8 +71,8 @@ MO.FDuiSelect_onBuildEditValue = function FDuiSelect_onBuildEditValue(event){
    var o = this;
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    //..........................................................
    // 建立改变栏
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
@@ -82,7 +85,6 @@ MO.FDuiSelect_onBuildEditValue = function FDuiSelect_onBuildEditValue(event){
    o.attachEvent('onKeyDown', hInput);
    //o.attachEvent('onInputEdit', hInput, o.onInputEdit);
    // 设置大小
-   //MO.Window.Html.setSize(hInputPanel, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
       hInput.maxLength = o._editLength;
@@ -136,6 +138,8 @@ MO.FDuiSelect_onKeyDown = function FDuiSelect_onKeyDown(event){
 MO.FDuiSelect_construct = function FDuiSelect_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
+   // 设置属性
+   o._inputSize = new MO.SSize2();
 }
 
 //==========================================================
@@ -147,7 +151,7 @@ MO.FDuiSelect_construct = function FDuiSelect_construct(){
 //==========================================================
 MO.FDuiSelect_createChild = function FDuiSelect_createChild(xconfig){
    // 创建实例
-   var control = MO.RDuiControl.newInstance(xconfig);
+   var control = MO.Dui.Control.newInstance(xconfig);
    control._parent = this;
    return control;
 }

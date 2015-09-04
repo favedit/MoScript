@@ -41,6 +41,7 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       frame._dsPageSize = 20;
       frame._dsPage = 0;
+      frame.resetSearch();
       frame.doFetch();
    }
    // 设置历史

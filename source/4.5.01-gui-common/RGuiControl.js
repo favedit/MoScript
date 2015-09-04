@@ -85,8 +85,8 @@ MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control,
       // 设置队列回调事件
       e.onProcess = p;
       // 存储事件
-      e.process = MO.RDuiEvent.onProcess;
-      MO.RDuiEvent.find(h).push(a.linker(), e);
+      e.process = MO.Dui.Event.onProcess;
+      MO.Dui.Event.find(h).push(a.linker(), e);
       // 关联事件处理到HTML元素上
       MO.RHtml.linkSet(h, '_plink', c);
       a.bind(h, u);

@@ -59,10 +59,8 @@ MO.APtyPadding_save = function APtyPadding_save(instance, xconfig){
    var name = o._name;
    var padding = instance[name];
    if(padding){
-      if(!padding.isEmpty()){
-         var value = padding.toString()
-         xconfig.set(o._linker, value);
-      }
+      var value = padding.toString()
+      xconfig.set(o._linker, value);
    }
 }
 

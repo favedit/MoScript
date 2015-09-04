@@ -409,10 +409,10 @@ MO.TMap = function TMap(){
    o.removeName    = MO.TMap_removeName;
    o.removeValue   = MO.TMap_removeValue;
    o.rebuild       = MO.TMap_rebuild;
+   o.invoke        = MO.TMap_invoke;
    o.clear         = MO.TMap_clear;
    o.toString      = MO.TMap_toString;
    o.dispose       = MO.TMap_dispose;
-   o.dump          = MO.TMap_dump;
    return o;
 }
 MO.TMap_isEmpty = function TMap_isEmpty(){
@@ -604,6 +604,16 @@ MO.TMap_rebuild = function TMap_rebuild(){
       table[code] = i;
    }
 }
+MO.TMap_invoke = function TMap_invoke(methodName, parameter1, parameter2, parameter3, parameter4, parameter5){
+   var o = this;
+   var count = o._count;
+   var values = o._values;
+   for(var i = 0; i < count; i++){
+      var value = values[i];
+      var method = value[methodName];
+      method.call(value, parameter1, parameter2, parameter3, parameter4, parameter5);
+   }
+}
 MO.TMap_clear = function TMap_clear(){
    var o = this;
    o._count = 0;
@@ -644,22 +654,6 @@ MO.TMap_dispose = function TMap_dispose(flag){
    }
    o._count = 0;
 }
-MO.TMap_dump = function TMap_dump(){
-   var o = this;
-   var result = new MO.TString();
-   var count = o._count;
-   result.appendLine(MO.Runtime.className(o), ': ', count);
-   if(count > 0){
-      var names = o._names;
-      var values = o._values;
-      result.append(' {');
-      for(var i = 0; i < count; i++){
-         result.appendLine(names[i], '=[', values[i], ']');
-      }
-      result.append('}');
-   }
-   return result.flush();
-}
 MO.TObjects = function TObjects(){
    var o = this;
    o._count     = 0;
@@ -688,6 +682,7 @@ MO.TObjects = function TObjects(){
    o.sort       = MO.TObjects_sort;
    o.erase      = MO.TObjects_erase;
    o.remove     = MO.TObjects_remove;
+   o.invoke     = MO.TObjects_invoke;
    o.clear      = MO.TObjects_clear;
    o.dispose    = MO.TObjects_dispose;
    o.dump       = MO.TObjects_dump;
@@ -845,6 +840,16 @@ MO.TObjects_remove = function TObjects_remove(value){
       o._count = index;
    }
    return value;
+}
+MO.TObjects_invoke = function TObjects_invoke(methodName, parameter1, parameter2, parameter3, parameter4, parameter5){
+   var o = this;
+   var count = o._count;
+   var items = o._items;
+   for(var i = 0; i < count; i++){
+      var item = items[i];
+      var method = item[methodName];
+      method.call(item, parameter1, parameter2, parameter3, parameter4, parameter5);
+   }
 }
 MO.TObjects_clear = function TObjects_clear(){
    this._count = 0;

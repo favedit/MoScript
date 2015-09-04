@@ -72,37 +72,78 @@ MO.RDuiControl.prototype.newInstance = function RDuiControl_newInstance(p){
 // <T>连接一个页面事件。</T>
 //
 // @method
-// @param c:control:FDuiControl 控件对象
-// @param n:name:String 事件名称
-// @param h:html:HtmlTag 页面元素
-// @param m:method:Function 处理函数
-// @param u:capture:Boolean 是否捕捉
+// @param control:FDuiControl 控件对象
+// @param name:String 事件名称
+// @param hTag:HtmlTag 页面元素
+// @param method:Function 处理函数
+// @param capture:Boolean 是否捕捉
 //==========================================================
-MO.RDuiControl.prototype.attachEvent = function RDuiControl_attachEvent(c, n, h, m, u){
+MO.RDuiControl.prototype.attachEvent = function RDuiControl_attachEvent(control, name, hTag, method, capture){
    var o = this;
-   var e = null;
-   var p = c[n];
-   if(!MO.Method.isEmpty(p) || m){
+   var event = null;
+   var callback = control[name];
+   if(!MO.Method.isEmpty(callback) || method){
       // 获得注册过的事件对象
-      var cz = MO.Class.find(c.constructor);
-      var a = cz.annotation(MO.EAnnotation.Event, n);
+      var clazz = MO.Class.find(control.constructor);
+      var annotation = clazz.annotation(MO.EAnnotation.Event, name);
+      var linker = annotation.linker();
       // 复制当前注册事件
-      e = a.create();
-      e.annotation = a;
-      e.source = c;
-      e.hSource = h;
+      event = annotation.create();
+      event.annotation = annotation;
+      event.source = control;
+      event.hSource = hTag;
       // 设置立即回调事件
-      e.ohProcess = m;
+      event.ohProcess = method;
       // 设置队列回调事件
-      e.onProcess = p;
+      event.onProcess = callback;
       // 存储事件
-      e.process = MO.RDuiEvent.onProcess;
-      MO.RDuiEvent.find(h).push(a.linker(), e);
+      event.process = MO.Dui.Event.onProcess;
+      MO.Dui.Event.find(hTag).push(linker, event);
       // 关联事件处理到HTML元素上
-      MO.RHtml.linkSet(h, '_plink', c);
-      a.bind(h, u);
+      MO.Window.Html.linkSet(hTag, '_plink', control);
+      annotation.bind(hTag, capture);
    }
-   return e;
+   return event;
+}
+
+//==========================================================
+// <T>连接一个页面事件。</T>
+//
+// @method
+// @param targetControl:FDuiControl 目标控件
+// @param sourceControl:FDuiControl 来源控件
+// @param name:String 事件名称发的
+// @param hTag:HtmlTag 页面元素
+// @param method:Function 处理函数
+// @param capture:Boolean 是否捕捉
+//==========================================================
+MO.RDuiControl.prototype.linkEvent = function RDuiControl_linkEvent(targetControl, sourceControl, name, hTag, method, capture){
+   var o = this;
+   var event = null;
+   var callback = targetControl[name];
+   if(!MO.Method.isEmpty(callback) || method){
+      // 获得注册过的事件对象
+      var clazz = MO.Class.find(targetControl.constructor);
+      var annotation = clazz.annotation(MO.EAnnotation.Event, name);
+      var linker = annotation.linker();
+      // 复制当前注册事件
+      var event = new annotation.constructor();
+      event.annotation = annotation;
+      event.source = targetControl;
+      event.sender = sourceControl;
+      event.hSource = hTag;
+      // 设置立即回调事件
+      event.ohProcess = method;
+      // 设置队列回调事件
+      event.onProcess = callback;
+      event.process = MO.Dui.Event.onProcess;
+      // 存储事件
+      MO.Dui.Event.find(hTag).push(linker, event);
+      // 关联事件处理到HTML元素上
+      MO.Window.Html.linkSet(hTag, '_plink', targetControl);
+      annotation.bind(hTag, capture);
+   }
+   return event;
 }
 
 //===========================================================
@@ -203,53 +244,55 @@ MO.RDuiControl.prototype.create = function RDuiControl_create(pc, px, pa){
 // <T>根据配置信息内部构件一个控件。</T>
 //
 // @method
-// @param pc:control:FDuiControl 控件对象
-// @param px:config:TXmlNode 配置节点
-// @param pa:attribute:Object 属性集合
+// @param reference:FDuiControl 控件引用
+// @param control:FDuiControl 控件对象
+// @param xconfig:TXmlNode 配置节点
+// @param attributes:Object 属性集合
+// @param hTag:HtmlTag 页面元素
 //===========================================================
-MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(pr, pc, px, pa, ph){
+MO.RDuiControl.prototype.innerbuild = function RDuiControl_innerbuild(reference, control, xconfig, attributes, hTag){
    var o = this;
    // 检查参数
-   if((pc == null) || (px == null)){
+   if((control == null) || (xconfig == null)){
       return;
    }
    // 加载属性集合
-   if(MO.Class.isClass(pc, MO.MProperty)){
-      pc.propertyLoad(px);
+   if(MO.Class.isClass(control, MO.MProperty)){
+      control.propertyLoad(xconfig);
    }
-   var l = px.get('linker');
-   if(l && pr){
-      pr[l] = pc;
+   var linker = xconfig.get('linker');
+   if(linker && reference){
+      reference[linker] = control;
    }
    // 构建处理
-   if(MO.Class.isClass(pc, MO.FDuiControl)){
-      if(!pc.isBuild()){
-         pc.build(ph);
+   if(MO.Class.isClass(control, MO.FDuiControl)){
+      if(!control.isBuild()){
+         control.build(hTag);
       }else{
-         pc.refresh();
+         control.refresh();
       }
    }
    // 检查类型化
-   if(pc.__typed){
-      pr = pc;
+   if(control.__typed){
+      reference = control;
    }
    // 建立子节点
-   if(MO.Class.isClass(pc, MO.MUiContainer) && px.hasNode()){
-      var ns = px.nodes();
-      var nc = ns.count();
-      for(var i = 0; i < nc; i++){
-         var n = ns.get(i);
-         var c = pc.createChild(n);
-         if(!c){
+   if(MO.Class.isClass(control, MO.MUiContainer) && xconfig.hasNode()){
+      var xnodes = xconfig.nodes();
+      var nodeCount = xnodes.count();
+      for(var i = 0; i < nodeCount; i++){
+         var xnode = xnodes.at(i);
+         var child = control.createChild(xnode);
+         if(!child){
             throw new MO.TError('Invalid create child.');
          }
-         o.innerbuild(pr, c, n, pa, ph);
-         pc.push(c);
+         o.innerbuild(reference, child, xnode, attributes, hTag);
+         control.push(child);
       }
    }
    // 构建完成处理
-   if(MO.Class.isClass(pc, MO.FDuiControl)){
-      pc.builded(ph);
+   if(MO.Class.isClass(control, MO.FDuiControl)){
+      control.builded(hTag);
    }
 }
 
@@ -276,7 +319,7 @@ MO.RDuiControl.prototype.build = function RDuiControl_build(control, xconfig, at
    var o = this;
    // 创建控件对象
    if(!control){
-      control = MO.RDuiControl.newInstance(xconfig);
+      control = MO.Dui.Control.newInstance(xconfig);
    }
    // 内部构造
    o.innerbuild(control, control, xconfig, attributes, hPanel);
@@ -328,38 +371,6 @@ MO.RDuiControl.prototype.setStyleScroll = function RDuiControl_setStyleScroll(hT
 
 
 
-// ------------------------------------------------------------
-// tc:targetControl:FDuiControl
-// sc:senderControl:FDuiControl
-// n:name:String 注册过的事件名称
-// h:html:HTML 注册过的事件名称
-// m:method:Function 即时处理函数
-MO.RDuiControl.prototype.linkEvent = function RDuiControl_linkEvent(tc, sc, n, h, m){
-   var o = this;
-   var p = tc[n];
-   if(!RMethod.isEmpty(p) || m){
-      // 获得注册过的事件对象
-      var cz = MO.Class.find(c.constructor);
-      var a = cz.annotation(MO.EAnnotation.Event, n);
-      // 复制当前注册事件
-      var e = new a.constructor();
-      e.name = a.name;
-      e.source = tc;
-      e.sender = sc;
-      e.hSource = h;
-      // 设置立即回调事件
-      e.ohProcess = m;
-      // 设置队列回调事件
-      e.onProcess = p;
-      e.process = RDuiEvent.onProcess;
-      // 存储事件
-      RDuiEvent.find(h).push(e.type, e);
-      // 关联事件处理到HTML元素上
-      h[e.handle] = RDuiEvent.ohEvent;
-      RHtml.linkSet(h, '_plink', tc);
-      return e;
-   }
-}
 // ------------------------------------------------------------
 MO.RDuiControl.prototype.find = function RDuiControl_find(c){
    var o = this;
@@ -515,5 +526,5 @@ MO.RDuiControl.prototype.isGroup = function RDuiControl_isGroup(v){
 }
 //..........................................................
 // 实例化内容
-MO.RDuiControl = new MO.RDuiControl();
-MO.Dui.Control = MO.RDuiControl;
+//MO.RDuiControl = new MO.RDuiControl();
+MO.Dui.Control = new MO.RDuiControl();

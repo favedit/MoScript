@@ -53,6 +53,9 @@ MO.FDuiColumn = function FDuiColumn(o){
    o._hSortUp           = null;
    o._hSortDown         = null;
    // @html
+   o._hSearchPanel      = null;
+   o._hSearchForm       = null;
+   o._hSearchFormLine   = null;
    o._hSearchEditPanel  = null;
    o._hSearchEdit       = null;
    o._hFixPanel         = null;
@@ -73,12 +76,13 @@ MO.FDuiColumn = function FDuiColumn(o){
    o.onSearchLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onSearchLeave'));
    o.onSearchKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onSearchKeyDown'));
    //..........................................................
-   // @process
-   //..........................................................
    // @method
    o.createCell         = MO.FDuiColumn_createCell;
+   o.searchValue        = MO.FDuiColumn_searchValue;
+   o.searchReset        = MO.FDuiColumn_searchReset;
    o.refreshWidth       = MO.FDuiColumn_refreshWidth;
-
+   // @method
+   o.dispose            = MO.FDuiColumn_dispose;
 
    //..........................................................
    // @property
@@ -117,10 +121,6 @@ MO.FDuiColumn = function FDuiColumn(o){
    //o._hLabel            = null;
    //o._hSortPanel        = null;
    //o._hSortUp           = null;
-   //o._hSortDown         = null;
-   //o._hSearchPanel      = null;
-   //o._hSearchForm       = null;
-   //o._hSearchFormLine   = null;
    //o._hSearchIconPanel  = null;
    //o._hSearchIcon       = null;
    //o._hSearchDropPanel  = null;
@@ -150,7 +150,6 @@ MO.FDuiColumn = function FDuiColumn(o){
    //..........................................................
    // @method
    //o.createMoveable    = FDuiColumn_createMoveable;
-   //o.searchValue       = FDuiColumn_searchValue;
    //o.setStyleStatus    = FDuiColumn_setStyleStatus;
    //o.cell              = FDuiColumn_cell;
    //o.equalsValue       = FDuiColumn_equalsValue;
@@ -158,7 +157,6 @@ MO.FDuiColumn = function FDuiColumn(o){
    //o.setVisible        = FDuiColumn_setVisible;
    //o.moveCellFocus     = FDuiColumn_moveCellFocus;
    //o.getEditRange      = FDuiColumn_getEditRange;
-   //o.dispose           = FDuiColumn_dispose;
    //o.dump              = FDuiColumn_dump;
    return o;
 }
@@ -368,16 +366,58 @@ MO.FDuiColumn_createCell = function FDuiColumn_createCell(row){
 }
 
 //==========================================================
+// <T>获得搜索内容。</T>
+//
+// @method
+// @return 搜索内容
+//==========================================================
+MO.FDuiColumn_searchValue = function FDuiColumn_searchValue(){
+   var o = this;
+   var value = null;
+   var hSearchEdit = o._hSearchEdit;
+   if(hSearchEdit){
+      value = hSearchEdit.value;
+   }
+   return value;
+}
+
+//==========================================================
+// <T>重置搜索内容。</T>
+//
+// @method
+//==========================================================
+MO.FDuiColumn_searchReset = function FDuiColumn_searchReset(){
+   var o = this;
+   var hSearchEdit = o._hSearchEdit;
+   if(hSearchEdit){
+      hSearchEdit.value = '';
+   }
+}
+
+//==========================================================
 // <T>刷新列宽度。</T>
 //
 // @method
 //==========================================================
 MO.FDuiColumn_refreshWidth = function FDuiColumn_refreshWidth(){
    var o = this;
-   var width = o._hPanel.offsetWidth - 2;
+   //var width = o._hPanel.offsetWidth - 2;
+   var width = o._hPanel.offsetWidth;
    o._hFixPanel.style.width = width + 'px';
 }
 
+//==========================================================
+// <T>刷新列宽释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiColumn_dispose = function FDuiColumn_dispose(){
+   var o = this;
+   o._hSearchPanel = MO.Window.Html.free(o._hSearchPanel);
+   o._hFixPanel = MO.Window.Html.free(o._hFixPanel);
+   // 父处理
+   o.__base.FDuiControl.dispose.call(o);
+}
 
 
 
@@ -584,14 +624,6 @@ MO.FDuiColumn_createMoveable = function FDuiColumn_createMoveable(p) {
 }
 
 //==========================================================
-MO.FDuiColumn_searchValue = function FDuiColumn_searchValue() {
-   var o = this;
-   if(o._hSearchEdit){
-      return o._hSearchEdit.value;
-   }
-}
-
-//==========================================================
 MO.FDuiColumn_setStyleStatus = function FDuiColumn_setStyleStatus(row, status) {
    var o = this;
    var h = o.cell(row);
@@ -744,52 +776,4 @@ MO.FDuiColumn_getEditRange = function FDuiColumn_getEditRange(){
    var w = hc.offsetWidth;
    var h = hc.offsetHeight;
    return new TRange(p.x, p.y, w, h);
-}
-
-//==========================================================
-MO.FDuiColumn_dispose = function FDuiColumn_dispose(){
-   var o = this;
-   o.__base.FDuiControl.dispose.call(o);
-   RMemory.freeHtml(o._hSearchPanel);
-   RMemory.freeHtml(o._hFixPanel);
-   o._hForm = null;
-   o._hFormLine = null;
-   o._hIconPanel = null;
-   o._hIcon = null;
-   o._hHeadPanel = null;
-   o._hLabel = null;
-   o._hSortPanel = null;
-   o._hSortUp = null;
-   o._hSortDown = null;
-   o._hSearchPanel = null;
-   o._hSearchForm = null;
-   o._hSearchFormLine = null;
-   o._hSearchIconPanel = null;
-   o._hSearchIcon = null;
-   o._hSearchEditPanel = null;
-   o._hSearchEdit = null;
-   o._hSearchDropPanel = null;
-   o._hSearchDrop = null;
-   o._hFixPanel = null;
-}
-
-//==========================================================
-MO.FDuiColumn_dump = function FDuiColumn_dump(s) {
-   var o = this;
-   s = RString.nvlStr(s);
-   s.append(RClass.dump(o), '[');
-   s.append('name=', o.name);
-   s.appendIf(o.icon, ',icon=', o.icon);
-   s.appendIf(o.label, ',label=', o.label);
-   s.appendIf(o.align, ',align=', o.align);
-   s.appendIf(o.valign, ',valign=', o.valign);
-   s.appendIf(o.dataName, ',dataName=', o.dataName);
-   s.appendIf(o.dataDefault, ',dataDefault=', o.dataDefault);
-   s.appendIf(o.index, ',index=', o.index);
-   s.append(']');
-   s.append(' [editAccess=');
-   s.append(o.editInsert ? 'I' : '_');
-   s.append(o.editUpdate ? 'U' : '_');
-   s.append(']');
-   return s;
 }

@@ -701,6 +701,9 @@ MO.FDuiColumn = function FDuiColumn(o){
    o._hSortPanel        = null;
    o._hSortUp           = null;
    o._hSortDown         = null;
+   o._hSearchPanel      = null;
+   o._hSearchForm       = null;
+   o._hSearchFormLine   = null;
    o._hSearchEditPanel  = null;
    o._hSearchEdit       = null;
    o._hFixPanel         = null;
@@ -718,7 +721,10 @@ MO.FDuiColumn = function FDuiColumn(o){
    o.onSearchLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onSearchLeave'));
    o.onSearchKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onSearchKeyDown'));
    o.createCell         = MO.FDuiColumn_createCell;
+   o.searchValue        = MO.FDuiColumn_searchValue;
+   o.searchReset        = MO.FDuiColumn_searchReset;
    o.refreshWidth       = MO.FDuiColumn_refreshWidth;
+   o.dispose            = MO.FDuiColumn_dispose;
    return o;
 }
 MO.FDuiColumn_onBuildLabel = function FDuiColumn_onBuildLabel(event){
@@ -815,10 +821,32 @@ MO.FDuiColumn_createCell = function FDuiColumn_createCell(row){
    cell.setVisible(o._displayList);
    return cell;
 }
+MO.FDuiColumn_searchValue = function FDuiColumn_searchValue(){
+   var o = this;
+   var value = null;
+   var hSearchEdit = o._hSearchEdit;
+   if(hSearchEdit){
+      value = hSearchEdit.value;
+   }
+   return value;
+}
+MO.FDuiColumn_searchReset = function FDuiColumn_searchReset(){
+   var o = this;
+   var hSearchEdit = o._hSearchEdit;
+   if(hSearchEdit){
+      hSearchEdit.value = '';
+   }
+}
 MO.FDuiColumn_refreshWidth = function FDuiColumn_refreshWidth(){
    var o = this;
-   var width = o._hPanel.offsetWidth - 2;
+   var width = o._hPanel.offsetWidth;
    o._hFixPanel.style.width = width + 'px';
+}
+MO.FDuiColumn_dispose = function FDuiColumn_dispose(){
+   var o = this;
+   o._hSearchPanel = MO.Window.Html.free(o._hSearchPanel);
+   o._hFixPanel = MO.Window.Html.free(o._hFixPanel);
+   o.__base.FDuiControl.dispose.call(o);
 }
 MO.FDuiColumn_onCellMouseEnter = function FDuiColumn_onCellMouseEnter(s, e){
    this.table.hoverRow(s.row, true);
@@ -964,12 +992,6 @@ MO.FDuiColumn_createMoveable = function FDuiColumn_createMoveable(p) {
    r.show();
    return r;
 }
-MO.FDuiColumn_searchValue = function FDuiColumn_searchValue() {
-   var o = this;
-   if(o._hSearchEdit){
-      return o._hSearchEdit.value;
-   }
-}
 MO.FDuiColumn_setStyleStatus = function FDuiColumn_setStyleStatus(row, status) {
    var o = this;
    var h = o.cell(row);
@@ -1097,50 +1119,6 @@ MO.FDuiColumn_getEditRange = function FDuiColumn_getEditRange(){
    var w = hc.offsetWidth;
    var h = hc.offsetHeight;
    return new TRange(p.x, p.y, w, h);
-}
-MO.FDuiColumn_dispose = function FDuiColumn_dispose(){
-   var o = this;
-   o.__base.FDuiControl.dispose.call(o);
-   RMemory.freeHtml(o._hSearchPanel);
-   RMemory.freeHtml(o._hFixPanel);
-   o._hForm = null;
-   o._hFormLine = null;
-   o._hIconPanel = null;
-   o._hIcon = null;
-   o._hHeadPanel = null;
-   o._hLabel = null;
-   o._hSortPanel = null;
-   o._hSortUp = null;
-   o._hSortDown = null;
-   o._hSearchPanel = null;
-   o._hSearchForm = null;
-   o._hSearchFormLine = null;
-   o._hSearchIconPanel = null;
-   o._hSearchIcon = null;
-   o._hSearchEditPanel = null;
-   o._hSearchEdit = null;
-   o._hSearchDropPanel = null;
-   o._hSearchDrop = null;
-   o._hFixPanel = null;
-}
-MO.FDuiColumn_dump = function FDuiColumn_dump(s) {
-   var o = this;
-   s = RString.nvlStr(s);
-   s.append(RClass.dump(o), '[');
-   s.append('name=', o.name);
-   s.appendIf(o.icon, ',icon=', o.icon);
-   s.appendIf(o.label, ',label=', o.label);
-   s.appendIf(o.align, ',align=', o.align);
-   s.appendIf(o.valign, ',valign=', o.valign);
-   s.appendIf(o.dataName, ',dataName=', o.dataName);
-   s.appendIf(o.dataDefault, ',dataDefault=', o.dataDefault);
-   s.appendIf(o.index, ',index=', o.index);
-   s.append(']');
-   s.append(' [editAccess=');
-   s.append(o.editInsert ? 'I' : '_');
-   s.append(o.editUpdate ? 'U' : '_');
-   s.append(']');
-   return s;
 }
 with(MO){
    MO.FDuiColumnButton = function FDuiColumnButton(o){
@@ -1539,7 +1517,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.onBuildHint               = MO.FDuiGridControl_onBuildHint;
    o.onBuildPanel              = MO.FDuiGridControl_onBuildPanel;
    o.onBuild                   = MO.FDuiGridControl_onBuild;
-   o.onColumnSearchKeyDown     = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
+   o.onColumnSearchKeyDown     = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), MO.FDuiGridControl_onColumnSearchKeyDown);
    o.onRowMouseEnter           = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), MO.FDuiGridControl_onRowMouseEnter);
    o.onRowMouseLeave           = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), MO.FDuiGridControl_onRowMouseLeave);
    o.onRowClick                = MO.Class.register(o, new MO.AEventClick('onRowClick'), MO.FDuiGridControl_onRowClick);
@@ -1548,6 +1526,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.onDatasetLoad             = MO.FDuiGridControl_onDatasetLoad;
    o.construct                 = MO.FDuiGridControl_construct;
    o.buildNavigatorButton      = MO.FDuiGridControl_buildNavigatorButton;
+   o.createChild               = MO.FDuiGridControl_createChild;
    o.appendColumn              = MO.Method.virtual(o, 'appendColumn');
    o.appendChild               = MO.FDuiGridControl_appendChild;
    o.push                      = MO.FDuiGridControl_push;
@@ -1566,6 +1545,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.doubleClickRow            = MO.FDuiGridControl_doubleClickRow;
    o.hoverRow                  = MO.FDuiGridControl_hoverRow;
    o.selectRow                 = MO.FDuiGridControl_selectRow;
+   o.resetSearch               = MO.FDuiGridControl_resetSearch;
    o.refreshHint               = MO.FDuiGridControl_refreshHint;
    o.dsMovePage                = MO.Method.empty;
    o.dsSearch                  = MO.Method.empty;
@@ -1637,7 +1617,6 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
 }
 MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(event){
    var o = this;
-   debugger
    if(event.keyCode == MO.EKeyCode.Enter){
       o.dsSearch();
    }
@@ -1758,6 +1737,17 @@ MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigato
       MO.Window.Builder.appendIcon(hCell, null, iconAf);
    }
    return hForm;
+}
+MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(xconfig){
+   var o = this;
+   var control = o.__base.FDuiContainer.createChild.call(o, xconfig);
+   if(MO.Class.isClass(control, MO.FDuiGridRowControl)){
+      control.setTable(o);
+      return null;
+   }else if(MO.Class.isClass(control, MO.FDuiColumn)){
+      control.setTable(o);
+   }
+   return control;
 }
 MO.FDuiGridControl_appendChild = function FDuiGridControl_appendChild(control){
    var o = this;
@@ -1956,6 +1946,9 @@ MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, fo
    }
    row.select(has || !row.isSelect || force);
    o.refreshHint();
+}
+MO.FDuiGridControl_resetSearch = function FDuiGridControl_resetSearch(){
+   this._columns.invoke('searchReset');
 }
 MO.FDuiGridControl_refreshHint = function FDuiGridControl_refreshHint(){
    var o = this;
@@ -2453,19 +2446,6 @@ MO.FDuiGridControl_buildRows = function FDuiGridControl_buildRows(){
          rs.push(r);
       }
    }
-}
-MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(config) {
-   var o = this;
-   var c = o.__base.FDuiContainer.createChild.call(o, config);
-   if(MO.Class.isClass(c, FDuiGridRowControl)){
-      c.table = o;
-      c.row = o.dsLoadRowNode(config);
-      o._rows.push(c);
-      return null;
-   }else if(MO.Class.isClass(c, FColumnEditControl)){
-      c.table = o;
-   }
-   return c;
 }
 MO.FDuiGridControl_setStyleStatus = function FDuiGridControl_setStyleStatus(row, status) {
    var hRow = row._hPanel;

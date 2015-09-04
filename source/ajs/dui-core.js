@@ -692,7 +692,7 @@ MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    var o = this;
    var dc = MO.Console.find(MO.FUiFrameDefineConsole);
    var x = dc.load(n);
-   var f = MO.RDuiControl.build(null, x, null, c._hPanel);
+   var f = MO.Dui.Control.build(null, x, null, c._hPanel);
    return f;
 }
 MO.FDuiFrameConsole_find = function FDuiFrameConsole_find(n){

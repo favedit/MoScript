@@ -25,6 +25,7 @@ MO.FManageDataTable = function FManageDataTable(o){
    o.construct      = MO.FManageDataTable_construct;
    // @method
    o.dsMovePage     = MO.FManageDataTable_dsMovePage;
+   o.dsSearch       = MO.FManageDataTable_dsSearch;
    // @method
    o.doFetch        = MO.FManageDataTable_doFetch;
    o.doPrepare      = MO.FManageDataTable_doPrepare;
@@ -268,6 +269,17 @@ MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
+MO.FManageDataTable_dsSearch = function FManageDataTable_dsSearch(){
+   var o = this;
+   o.doFetch();
+}
+
+//==========================================================
+// <T>加载配置信息。</T>
+//
+// @method
+// @param containerName:String 容器名称
+//==========================================================
 MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var o = this;
    // 禁止处理
@@ -279,6 +291,19 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    xcontent.set('frame_name', o._name);
    xcontent.set('page_size', o._dsPageSize);
    xcontent.set('page', o._dsPage);
+   // 建立搜索信息
+   var xsearch = xcontent.create('Search');
+   var columns = o._columns;
+   var count = columns.count();
+   for(var i = 0; i < count; i++){
+      var column = columns.at(i);
+      var searchValue = column.searchValue();
+      if(!MO.Lang.String.isEmpty(searchValue)){
+         var xcolumn = xsearch.create('Column');
+         xcolumn.set('name', column.name());
+         xcolumn.set('value', searchValue);
+      }
+   }
    // 发送请求
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=fetch');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);

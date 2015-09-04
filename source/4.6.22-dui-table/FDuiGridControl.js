@@ -90,7 +90,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.onBuildPanel              = MO.FDuiGridControl_onBuildPanel;
    o.onBuild                   = MO.FDuiGridControl_onBuild;
    // @event
-   o.onColumnSearchKeyDown     = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), FDuiGridControl_onColumnSearchKeyDown);
+   o.onColumnSearchKeyDown     = MO.Class.register(o, new MO.AEventKeyDown('onColumnSearchKeyDown'), MO.FDuiGridControl_onColumnSearchKeyDown);
    o.onRowMouseEnter           = MO.Class.register(o, new MO.AEventMouseEnter('onRowMouseEnter'), MO.FDuiGridControl_onRowMouseEnter);
    o.onRowMouseLeave           = MO.Class.register(o, new MO.AEventMouseLeave('onRowMouseLeave'), MO.FDuiGridControl_onRowMouseLeave);
    o.onRowClick                = MO.Class.register(o, new MO.AEventClick('onRowClick'), MO.FDuiGridControl_onRowClick);
@@ -104,6 +104,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    // @method
    o.buildNavigatorButton      = MO.FDuiGridControl_buildNavigatorButton;
    // @method
+   o.createChild               = MO.FDuiGridControl_createChild;
    o.appendColumn              = MO.Method.virtual(o, 'appendColumn');
    o.appendChild               = MO.FDuiGridControl_appendChild;
    o.push                      = MO.FDuiGridControl_push;
@@ -127,6 +128,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o.hoverRow                  = MO.FDuiGridControl_hoverRow;
    o.selectRow                 = MO.FDuiGridControl_selectRow;
    // @method
+   o.resetSearch               = MO.FDuiGridControl_resetSearch;
    o.refreshHint               = MO.FDuiGridControl_refreshHint;
    // @method
    o.dsMovePage                = MO.Method.empty;
@@ -248,7 +250,6 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    //o.onColumnTreeService    = FDuiGridControl_onColumnTreeService;
    //o.hoverMode              = EGridColumn.None;
    //o._searchKeyDownEvent    = new TEvent();
-   //o.createChild            = FDuiGridControl_createChild;
    //o.buildRow               = FDuiGridControl_buildRow;
    //o.buildRows              = FDuiGridControl_buildRows;
    //o.appendRow              = FDuiGridControl_appendRow;
@@ -430,7 +431,6 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
 //==========================================================
 MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(event){
    var o = this;
-   debugger
    if(event.keyCode == MO.EKeyCode.Enter){
       o.dsSearch();
       //if(!o._isSearching || !o.table._isSearching){
@@ -695,6 +695,30 @@ MO.FDuiGridControl_buildNavigatorButton = function FDuiGridControl_buildNavigato
       MO.Window.Builder.appendIcon(hCell, null, iconAf);
    }
    return hForm;
+}
+
+//==========================================================
+// <T>创建一个子控件。</T>
+//
+// @method
+// @param xconfig:TXmlNode 节点
+// @return FControl 控件
+//==========================================================
+MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(xconfig){
+   var o = this;
+   var control = o.__base.FDuiContainer.createChild.call(o, xconfig);
+   if(MO.Class.isClass(control, MO.FDuiGridRowControl)){
+      control.setTable(o);
+      //control.row = o.dsLoadRowNode(config);
+      //o._rows.push(control);
+      return null;
+   }else if(MO.Class.isClass(control, MO.FDuiColumn)){
+      control.setTable(o);
+      //control.loadConfig(config);
+      //o._columns.set(control.name, control);
+      //return null;
+   }
+   return control;
 }
 
 //==========================================================
@@ -1050,6 +1074,13 @@ MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, fo
    row.select(has || !row.isSelect || force);
    // 刷新选中行的提示信息
    o.refreshHint();
+}
+
+//==========================================================
+// <T>重置所有搜索条件。</T>
+//==========================================================
+MO.FDuiGridControl_resetSearch = function FDuiGridControl_resetSearch(){
+   this._columns.invoke('searchReset');
 }
 
 //==========================================================
@@ -1894,24 +1925,6 @@ MO.FDuiGridControl_buildRows = function FDuiGridControl_buildRows(){
          rs.push(r);
       }
    }
-}
-
-// ------------------------------------------------------------
-MO.FDuiGridControl_createChild = function FDuiGridControl_createChild(config) {
-   var o = this;
-   var c = o.__base.FDuiContainer.createChild.call(o, config);
-   if(MO.Class.isClass(c, FDuiGridRowControl)){
-      c.table = o;
-      c.row = o.dsLoadRowNode(config);
-      o._rows.push(c);
-      return null;
-   }else if(MO.Class.isClass(c, FColumnEditControl)){
-      c.table = o;
-      //c.loadConfig(config);
-      //o._columns.set(c.name, c);
-      //return null;
-   }
-   return c;
 }
 // ------------------------------------------------------------
 MO.FDuiGridControl_setStyleStatus = function FDuiGridControl_setStyleStatus(row, status) {

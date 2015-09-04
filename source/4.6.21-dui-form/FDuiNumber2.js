@@ -9,7 +9,7 @@ MO.FDuiNumber2 = function FDuiNumber2(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl);
    //..........................................................
    // @property
-   o._inputSize            = MO.Class.register(o, new MO.APtySize2('_inputSize'));
+   o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
    //..........................................................
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
@@ -87,8 +87,9 @@ MO.FDuiNumber2_onBuildEditValue = function FDuiNumber2_onBuildEditValue(event){
    var hValuePanel = o._hValuePanel;
    //..........................................................
    // 建立改变栏
-   var hForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   var hLine = MO.Window.Builder.appendTableRow(hForm);
+   var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
+   var hLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    //..........................................................
    // 建立输入框1
    var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
@@ -158,7 +159,7 @@ MO.FDuiNumber2_onInputChanged = function FDuiNumber2_onInputChanged(p){
 MO.FDuiNumber2_construct = function FDuiNumber2_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
-   o._inputSize = new MO.SSize2(0, 0);
+   o._inputSize = new MO.SSize2();
    o._currentValue = new MO.SPoint2();
    o._dataValue = new MO.SPoint2();
 }

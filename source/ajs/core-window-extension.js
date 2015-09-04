@@ -882,12 +882,14 @@ MO.RHtml.prototype.clientY = function RHtml_clientY(p, t){
    }
    return r;
 }
-MO.RHtml.prototype.setSize = function RHtml_setSize(h, s){
-   if(s.width){
-      h.style.width = s.width + 'px';
-   }
-   if(s.height){
-      h.style.height = s.height + 'px';
+MO.RHtml.prototype.setSize = function RHtml_setSize(hTag, size){
+   if(size){
+      if(size.width){
+         hTag.style.width = size.width + 'px';
+      }
+      if(size.height){
+         hTag.style.height = size.height + 'px';
+      }
    }
 }
 MO.RHtml.prototype.toText = function RHtml_toText(p){

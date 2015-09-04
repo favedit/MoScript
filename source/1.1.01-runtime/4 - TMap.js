@@ -23,6 +23,7 @@ MO.TMap = function TMap(){
    o.indexOfValue  = MO.TMap_indexOfValue;
    o.first         = MO.TMap_first;
    o.last          = MO.TMap_last;
+   // @method
    o.nameAt        = MO.TMap_nameAt;
    o.name          = MO.TMap_name;
    o.valueAt       = MO.TMap_valueAt;
@@ -32,6 +33,7 @@ MO.TMap = function TMap(){
    o.setValue      = MO.TMap_setValue;
    o.get           = MO.TMap_get;
    o.set           = MO.TMap_set;
+   // @method
    o.assign        = MO.TMap_assign;
    o.append        = MO.TMap_append;
    o.insert        = MO.TMap_insert;
@@ -39,10 +41,11 @@ MO.TMap = function TMap(){
    o.removeName    = MO.TMap_removeName;
    o.removeValue   = MO.TMap_removeValue;
    o.rebuild       = MO.TMap_rebuild;
+   o.invoke        = MO.TMap_invoke;
    o.clear         = MO.TMap_clear;
    o.toString      = MO.TMap_toString;
+   // @method
    o.dispose       = MO.TMap_dispose;
-   o.dump          = MO.TMap_dump;
    return o;
 }
 
@@ -417,6 +420,28 @@ MO.TMap_rebuild = function TMap_rebuild(){
 }
 
 //==========================================================
+// <T>调用函数处理。</T>
+//
+// @method
+// @param methodName:String 函数名称
+// @param parameter1:Object 参数1
+// @param parameter2:Object 参数2
+// @param parameter3:Object 参数3
+// @param parameter4:Object 参数4
+// @param parameter5:Object 参数5
+//==========================================================
+MO.TMap_invoke = function TMap_invoke(methodName, parameter1, parameter2, parameter3, parameter4, parameter5){
+   var o = this;
+   var count = o._count;
+   var values = o._values;
+   for(var i = 0; i < count; i++){
+      var value = values[i];
+      var method = value[methodName];
+      method.call(value, parameter1, parameter2, parameter3, parameter4, parameter5);
+   }
+}
+
+//==========================================================
 // <T>清除所有内容。</T>
 //
 // @method
@@ -479,27 +504,4 @@ MO.TMap_dispose = function TMap_dispose(flag){
    }
    // 清空属性
    o._count = 0;
-}
-
-//==========================================================
-// <T>获得数组的内部信息。</T>
-//
-// @method
-// @return String 字符串
-//==========================================================
-MO.TMap_dump = function TMap_dump(){
-   var o = this;
-   var result = new MO.TString();
-   var count = o._count;
-   result.appendLine(MO.Runtime.className(o), ': ', count);
-   if(count > 0){
-      var names = o._names;
-      var values = o._values;
-      result.append(' {');
-      for(var i = 0; i < count; i++){
-         result.appendLine(names[i], '=[', values[i], ']');
-      }
-      result.append('}');
-   }
-   return result.flush();
 }

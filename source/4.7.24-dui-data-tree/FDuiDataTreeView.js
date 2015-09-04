@@ -65,7 +65,7 @@ MO.FDuiDataTreeView_onDefineLoad = function FDuiDataTreeView_onDefineLoad(event)
    }
    var xtree = event.xtree = xroot.find('TreeView');
    // 建立内部对象
-   MO.RDuiControl.build(o, xtree, null, o._hPanel);
+   MO.Dui.Control.build(o, xtree, null, o._hPanel);
    // 响应事件
    o.processDefineLoadListener(event);
 }

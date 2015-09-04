@@ -1802,6 +1802,7 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       frame._dsPageSize = 20;
       frame._dsPage = 0;
+      frame.resetSearch();
       frame.doFetch();
    }
    var historyBar = o._frameSet._historyBar;
@@ -2022,6 +2023,7 @@ MO.FManageDataTable = function FManageDataTable(o){
    o.onDataDelete   = MO.FManageDataTable_onDataDelete;
    o.construct      = MO.FManageDataTable_construct;
    o.dsMovePage     = MO.FManageDataTable_dsMovePage;
+   o.dsSearch       = MO.FManageDataTable_dsSearch;
    o.doFetch        = MO.FManageDataTable_doFetch;
    o.doPrepare      = MO.FManageDataTable_doPrepare;
    o.doSave         = MO.FManageDataTable_doSave;
@@ -2150,6 +2152,10 @@ MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
       o.doFetch();
    }
 }
+MO.FManageDataTable_dsSearch = function FManageDataTable_dsSearch(){
+   var o = this;
+   o.doFetch();
+}
 MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var o = this;
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
@@ -2159,6 +2165,18 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    xcontent.set('frame_name', o._name);
    xcontent.set('page_size', o._dsPageSize);
    xcontent.set('page', o._dsPage);
+   var xsearch = xcontent.create('Search');
+   var columns = o._columns;
+   var count = columns.count();
+   for(var i = 0; i < count; i++){
+      var column = columns.at(i);
+      var searchValue = column.searchValue();
+      if(!MO.Lang.String.isEmpty(searchValue)){
+         var xcolumn = xsearch.create('Column');
+         xcolumn.set('name', column.name());
+         xcolumn.set('value', searchValue);
+      }
+   }
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=fetch');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataFetch);

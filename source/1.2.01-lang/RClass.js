@@ -139,20 +139,21 @@ MO.RClass.prototype.isName = function RClass_isName(value, name){
 // <T>判断某个实例的类对象是指定类对象。</T>
 //
 // @method
-// @param v:value:Object 实例对象
-// @param c:constructor:Fcuntion 类函数
+// @param value:Object 实例对象
+// @param clazz:Function 类函数
 // @return Boolean
 //    <L value='true'>是</L>
 //    <L value='false'>否</L>
 //=========================================================
-MO.RClass.prototype.isClass = function RClass_isClass(v, c){
-   if(v && c){
-      var o = this;
-      var n = o.name(c);
-      if(v.__base){
-         return (v.__base[n] != null);
+MO.RClass.prototype.isClass = function RClass_isClass(value, clazz){
+   var o = this;
+   MO.Assert.debugNotNull(clazz);
+   if(value){
+      var name = o.name(clazz);
+      if(value.__base){
+         return (value.__base[name] != null);
       }else{
-         return (o.name(v) == n);
+         return (o.name(value) == name);
       }
    }
    return false;

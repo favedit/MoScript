@@ -409,10 +409,10 @@ MO.TMap = function TMap(){
    o.removeName    = MO.TMap_removeName;
    o.removeValue   = MO.TMap_removeValue;
    o.rebuild       = MO.TMap_rebuild;
+   o.invoke        = MO.TMap_invoke;
    o.clear         = MO.TMap_clear;
    o.toString      = MO.TMap_toString;
    o.dispose       = MO.TMap_dispose;
-   o.dump          = MO.TMap_dump;
    return o;
 }
 MO.TMap_isEmpty = function TMap_isEmpty(){
@@ -604,6 +604,16 @@ MO.TMap_rebuild = function TMap_rebuild(){
       table[code] = i;
    }
 }
+MO.TMap_invoke = function TMap_invoke(methodName, parameter1, parameter2, parameter3, parameter4, parameter5){
+   var o = this;
+   var count = o._count;
+   var values = o._values;
+   for(var i = 0; i < count; i++){
+      var value = values[i];
+      var method = value[methodName];
+      method.call(value, parameter1, parameter2, parameter3, parameter4, parameter5);
+   }
+}
 MO.TMap_clear = function TMap_clear(){
    var o = this;
    o._count = 0;
@@ -644,22 +654,6 @@ MO.TMap_dispose = function TMap_dispose(flag){
    }
    o._count = 0;
 }
-MO.TMap_dump = function TMap_dump(){
-   var o = this;
-   var result = new MO.TString();
-   var count = o._count;
-   result.appendLine(MO.Runtime.className(o), ': ', count);
-   if(count > 0){
-      var names = o._names;
-      var values = o._values;
-      result.append(' {');
-      for(var i = 0; i < count; i++){
-         result.appendLine(names[i], '=[', values[i], ']');
-      }
-      result.append('}');
-   }
-   return result.flush();
-}
 MO.TObjects = function TObjects(){
    var o = this;
    o._count     = 0;
@@ -688,6 +682,7 @@ MO.TObjects = function TObjects(){
    o.sort       = MO.TObjects_sort;
    o.erase      = MO.TObjects_erase;
    o.remove     = MO.TObjects_remove;
+   o.invoke     = MO.TObjects_invoke;
    o.clear      = MO.TObjects_clear;
    o.dispose    = MO.TObjects_dispose;
    o.dump       = MO.TObjects_dump;
@@ -845,6 +840,16 @@ MO.TObjects_remove = function TObjects_remove(value){
       o._count = index;
    }
    return value;
+}
+MO.TObjects_invoke = function TObjects_invoke(methodName, parameter1, parameter2, parameter3, parameter4, parameter5){
+   var o = this;
+   var count = o._count;
+   var items = o._items;
+   for(var i = 0; i < count; i++){
+      var item = items[i];
+      var method = item[methodName];
+      method.call(item, parameter1, parameter2, parameter3, parameter4, parameter5);
+   }
 }
 MO.TObjects_clear = function TObjects_clear(){
    this._count = 0;
@@ -2435,14 +2440,15 @@ MO.RClass.prototype.isBaseDataType = function RClass_isBaseDataType(clazz){
 MO.RClass.prototype.isName = function RClass_isName(value, name){
    return (this.name(value) == name);
 }
-MO.RClass.prototype.isClass = function RClass_isClass(v, c){
-   if(v && c){
-      var o = this;
-      var n = o.name(c);
-      if(v.__base){
-         return (v.__base[n] != null);
+MO.RClass.prototype.isClass = function RClass_isClass(value, clazz){
+   var o = this;
+   MO.Assert.debugNotNull(clazz);
+   if(value){
+      var name = o.name(clazz);
+      if(value.__base){
+         return (value.__base[name] != null);
       }else{
-         return (o.name(v) == n);
+         return (o.name(value) == name);
       }
    }
    return false;
@@ -15458,12 +15464,14 @@ MO.RHtml.prototype.clientY = function RHtml_clientY(p, t){
    }
    return r;
 }
-MO.RHtml.prototype.setSize = function RHtml_setSize(h, s){
-   if(s.width){
-      h.style.width = s.width + 'px';
-   }
-   if(s.height){
-      h.style.height = s.height + 'px';
+MO.RHtml.prototype.setSize = function RHtml_setSize(hTag, size){
+   if(size){
+      if(size.width){
+         hTag.style.width = size.width + 'px';
+      }
+      if(size.height){
+         hTag.style.height = size.height + 'px';
+      }
    }
 }
 MO.RHtml.prototype.toText = function RHtml_toText(p){
@@ -35466,12 +35474,12 @@ MO.AEvent_value = function AEvent_value(){
 MO.AEvent_create = function AEvent_create(){
    return new MO.SEvent();
 }
-MO.AEvent_bind = function AEvent_bind(h, u){
+MO.AEvent_bind = function AEvent_bind(hTag, capture){
    var o = this;
-   if(u){
-      h.addEventListener(o._linker, MO.RDuiEvent.ohEvent, true);
+   if(capture){
+      hTag.addEventListener(o._linker, MO.Dui.Event.ohEvent, true);
    }else{
-      h[o._handle] = MO.RDuiEvent.ohEvent;
+      hTag[o._handle] = MO.Dui.Event.ohEvent;
    }
 }
 MO.AEvent_toString = function AEvent_toString(){
@@ -35536,9 +35544,9 @@ MO.AEventInputChanged_attach = function AEventInputChanged_attach(e, h){
 MO.AEventInputChanged_bind = function AEventInputChanged_bind(h, u){
    var o = this;
    if(MO.Window.Browser.isBrowser(MO.EBrowser.Explorer)){
-      h.onpropertychange = MO.RDuiEvent.ohEvent;
+      h.onpropertychange = MO.Dui.Event.ohEvent;
    }else{
-      h.addEventListener('input', MO.RDuiEvent.ohEvent);
+      h.addEventListener('input', MO.Dui.Event.ohEvent);
    }
 }
 MO.AEventKeyDown = function AEventKeyDown(n){
@@ -35994,10 +36002,8 @@ MO.APtyPadding_save = function APtyPadding_save(instance, xconfig){
    var name = o._name;
    var padding = instance[name];
    if(padding){
-      if(!padding.isEmpty()){
-         var value = padding.toString()
-         xconfig.set(o._linker, value);
-      }
+      var value = padding.toString()
+      xconfig.set(o._linker, value);
    }
 }
 MO.APtyPadding_toString = function APtyPadding_toString(){
@@ -36093,14 +36099,21 @@ MO.APtySize2 = function APtySize2(name, linker, width, height){
 }
 MO.APtySize2_load = function APtySize2_load(instance, xconfig){
    var o = this;
+   var name = o._name;
    var value = xconfig.get(o._linker);
-   instance[o._name].parse(value);
+   var size = instance[name];
+   if(!size){
+      size = instance[name] = new MO.SSize2();
+   }
+   size.parse(value);
 }
 MO.APtySize2_save = function APtySize2_save(instance, xconfig){
    var o = this;
-   var value = instance[o._name];
-   if(!value.isEmpty()){
-      xconfig.set(o._linker, value.toString());
+   var name = o._name;
+   var size = instance[name];
+   if(size){
+      var value = size.toString()
+      xconfig.set(o._linker, value);
    }
 }
 MO.APtySize2_toString = function APtySize2_toString(){
@@ -39824,8 +39837,8 @@ MO.RGuiControl.prototype.attachEvent = function RGuiControl_attachEvent(control,
       e.hSource = h;
       e.ohProcess = m;
       e.onProcess = p;
-      e.process = MO.RDuiEvent.onProcess;
-      MO.RDuiEvent.find(h).push(a.linker(), e);
+      e.process = MO.Dui.Event.onProcess;
+      MO.Dui.Event.find(h).push(a.linker(), e);
       MO.RHtml.linkSet(h, '_plink', c);
       a.bind(h, u);
    }
