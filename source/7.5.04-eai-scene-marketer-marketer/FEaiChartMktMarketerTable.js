@@ -477,7 +477,7 @@ MO.FEaiChartMktMarketerTable_setup = function FEaiChartMktMarketerTable_setup() 
    if(isVertical){
       o._tableCount = 11;
       o._rankStart = 100;
-      o._rankTitleStart = -5;
+      o._rankTitleStart = 5;
       o._rankHeight = 174;
       o._rankRowHeight = 50;
       o._rankIconStart = 22;
