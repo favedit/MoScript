@@ -32,7 +32,7 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    var frameName = button.attributeGet('frame_name');
    MO.Assert.debugNotEmpty(frameName);
    // 显示界面
-   var frame = o._frameSet.selectObject(frameName);
+   var frame = o._frameSet.selectSpaceFrame(frameName);
    frame.psMode(MO.EUiMode.Update);
    frame.psRefresh();
    if(MO.Class.isClass(frame, MO.FDuiFormFrame)){

@@ -36,7 +36,6 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    o.findSpaceFrame        = MO.FManageFrameSet_findSpaceFrame;
    o.hideSpaceFrames       = MO.FManageFrameSet_hideSpaceFrames;
    o.selectSpaceFrame      = MO.FManageFrameSet_selectSpaceFrame;
-   o.selectObject          = MO.FManageFrameSet_selectObject;
    // @method
    o.load                  = MO.FManageFrameSet_load;
    // @method
@@ -60,13 +59,6 @@ MO.FManageFrameSet_onBuilded = function FManageFrameSet_onBuilded(event){
    control.build(event);
    control.addButtonClickListener(o, o.onHistoryButtonClick);
    o._frameSpaceTitle.push(control);
-   // 设置空间工具栏
-   var control = o._spaceToolBar = MO.Class.create(MO.FManageSpaceToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(event);
-   control.setVisible(false);
-   o._frameSpaceToolBar.push(control);
 }
 
 //==========================================================
@@ -147,40 +139,28 @@ MO.FManageFrameSet_hideSpaceFrames = function FManageFrameSet_hideSpaceFrames(){
 //==========================================================
 MO.FManageFrameSet_selectSpaceFrame = function FManageFrameSet_selectSpaceFrame(frameName){
    var o = this;
+   // 清空工具栏
+   var hToolBarPanel = o._frameSpaceToolBar._hPanel;
+   MO.Window.Html.clear(hToolBarPanel);
    // 隐藏所有属性面板
    o.hideSpaceFrames();
    // 显示控件信息
    var frame = null;
    if(frameName){
+      // 查找页面
       frame = o.findSpaceFrame(frameName);
       frame.show();
+      var frameLabel = frame.label();
+      // 显示标题
+      o.setFrameTitle(frame.label());
+      // 显示工具栏
+      var toolBar = frame.findControl('toolBar');
+      if(toolBar){
+         toolBar.setPanel(hToolBarPanel);
+      }
    }
    // 激活页面
    o._activeFrame = frame;
-   return frame;
-}
-
-//==========================================================
-// <T>选择对象处理。</T>
-//
-// @method
-// @param frameName:String 属性名称
-//==========================================================
-MO.FManageFrameSet_selectObject = function FManageFrameSet_selectObject(frameName){
-   var o = this;
-   // 选中页面
-   var frame = o.selectSpaceFrame(frameName);
-   // 显示标题
-   o.setFrameTitle(frame.label());
-   // 显示工具栏
-   o._spaceToolBar.setVisible(true);
-   //var hToolBarPanel = o._frameSpaceToolBar._hPanel;
-   //MO.Window.Html.clear(hToolBarPanel);
-   //o._frameSpaceToolBar.push(o._spaceToolBar);
-   //var toolBar = frame.findControl('toolBar');
-   //if(toolBar){
-   //   toolBar.setPanel(hToolBarPanel);
-   //}
    return frame;
 }
 

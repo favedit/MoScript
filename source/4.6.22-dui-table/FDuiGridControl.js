@@ -748,9 +748,9 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(component){
    if(MO.Class.isClass(component, MO.FDuiColumn)){
       component._table = o;
       o._columns.set(component.name(), component);
-   }else if(MO.Class.isClass(component, MO.FDuiTableButton)){
-      component._table = o;
-      o._buttons.set(component.name(), component);
+   //}else if(MO.Class.isClass(component, MO.FDuiTableButton)){
+   //   component._table = o;
+   //   o._buttons.set(component.name(), component);
    }else if(MO.Class.isClass(component, MO.FDuiGridRowControl)){
       component._table = o;
    }

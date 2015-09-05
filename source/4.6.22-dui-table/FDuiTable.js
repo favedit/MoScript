@@ -78,7 +78,7 @@ MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    var hContentPanel = o._hContentPanel;
    // 建立固定区(Layer:2)
    var hFixPanel = o._hFixPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('FixPanel'));
-   var hFixForm = o._hFixForm = MO.Window.Builder.appendTable(hFixPanel, o.styleName('FixForm'), 0, 0, 1);
+   var hFixForm = o._hFixForm = MO.Window.Builder.appendTable(hFixPanel, o.styleName('FixForm'));
    //hFixForm.frame = 'rhs';
    hFixForm.borderColorLight = '#D0D0D0';
    hFixForm.borderColorDark = '#EEEEEE';
@@ -91,7 +91,7 @@ MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    o._hFixTotal.style.height = '22px';
    // 建立列的标题区(Layer:1)
    var hHeadPanel = o._hHeadPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('HeadPanel'));
-   var hHeadForm = o._hHeadForm = MO.Window.Builder.appendTable(hHeadPanel, o.styleName('HeadForm'), 0, 0, 1);
+   var hHeadForm = o._hHeadForm = MO.Window.Builder.appendTable(hHeadPanel, o.styleName('HeadForm'));
    //hHeadForm.frame = 'rhs';
    hHeadForm.borderColorLight = '#D0D0D0';
    hHeadForm.borderColorDark = '#EEEEEE';
@@ -101,12 +101,12 @@ MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    o._hTotal.style.display = 'none';
    // 建立列区(Layer:1)
    var hColumnPanel = o._hColumnPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('ColumnPanel'));
-   var hColumnForm = o._hColumnForm = MO.Window.Builder.appendTable(hColumnPanel, o.styleName('ColumnForm'), 0, 0, 1);
+   var hColumnForm = o._hColumnForm = MO.Window.Builder.appendTable(hColumnPanel, o.styleName('ColumnForm'));
    o._hFixRows = MO.Window.Builder.append(hColumnForm, 'TBODY');
    o._hFixRowLine = MO.Window.Builder.append(o._hFixRows, 'TR');
    // 建立数据区
    var hDataPanel = o._hDataPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('DataPanel'));
-   var hDataForm = o._hDataForm = MO.Window.Builder.appendTable(hDataPanel, o.styleName('DataForm'), 0, 0, 1);
+   var hDataForm = o._hDataForm = MO.Window.Builder.appendTable(hDataPanel, o.styleName('DataForm'));
    o._hRows = MO.Window.Builder.append(hDataForm, 'TBODY');
    o._hRowLine = MO.Window.Builder.append(o._hRows, 'TR');
    // 关联事件对象

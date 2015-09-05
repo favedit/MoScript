@@ -344,7 +344,7 @@ MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    var hFixPanel = o._hFixPanel = MO.Window.Builder.create(event, 'TD');
    hFixPanel.style.width = width + 'px';
    hFixPanel.style.height = '1px';
-   hFixPanel.style.backgroundColor = '#FFFFFF'
+   hFixPanel.style.backgroundColor = '#999999'
 }
 
 //==========================================================
@@ -357,11 +357,12 @@ MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
 MO.FDuiColumn_createCell = function FDuiColumn_createCell(row){
    var o = this;
    var cell = MO.Class.create(o._cellClass);
-   var table = cell._table = o._table;
-   cell._name = o._name;
-   cell._column = o;
-   cell.build(table._hPanel);
+   cell.setTable(o._table);
+   cell.setColumn(o);
+   cell.setName(o._name);
+   cell.build(o);
    cell.setVisible(o._displayList);
+   cell._hPanel.style.width = o._width + 'px';
    return cell;
 }
 

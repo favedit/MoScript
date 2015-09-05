@@ -884,7 +884,8 @@
 /* ------------------------------------------------------ */
 .FDuiCell_Panel{
    background-color: #F0F0F0;
-   border-right: 1px solid #F0F0F0;
+   padding-top: 1px;
+   padding-bottom: 1px;
    border-bottom: 1px dotted #CCCCCC;
 }
 

@@ -7,12 +7,11 @@
 MO.FManageDataTable = function FManageDataTable(o){
    o = MO.Class.inherits(this, o, MO.FDuiTableFrame);
    //..........................................................
-   // @attribute
-   //..........................................................
    // @event
+   o.onInsertClick  = MO.FManageDataTable_onInsertClick;
    o.onCellClick    = MO.FManageDataTable_onCellClick;
    o.onRowClick     = MO.FManageDataTable_onRowClick;
-   o.onButtonClick  = MO.FManageDataTable_onButtonClick;
+   o.onPageClick    = MO.FManageDataTable_onPageClick;
    // @event
    o.onBuilded      = MO.FManageDataTable_onBuilded;
    // @event
@@ -34,6 +33,24 @@ MO.FManageDataTable = function FManageDataTable(o){
    // @method
    o.dispose        = MO.FManageDataTable_dispose;
    return o;
+}
+
+//==========================================================
+// <T>搜索按键点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FManageDataTable_onInsertClick = function FManageDataTable_onInsertClick(event){
+   var o = this;
+   var frame = o._frameSet.activeFrame();
+   if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+      // 显示子项页面
+      var unitFrameName = frame.unitFrameName();
+      MO.Assert.debugNotEmpty(unitFrameName);
+      var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
+      unitFrame.doPrepare();
+   }
 }
 
 //==========================================================
@@ -88,7 +105,7 @@ MO.FManageDataTable_onRowClick = function FManageDataTable_onRowClick(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataTable_onButtonClick = function FManageDataTable_onButtonClick(event){
+MO.FManageDataTable_onPageClick = function FManageDataTable_onPageClick(event){
    var o  = this;
    var button = event.sender;
    // 获得命令
@@ -122,6 +139,8 @@ MO.FManageDataTable_onButtonClick = function FManageDataTable_onButtonClick(even
 MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
    var o = this;
    o.__base.FDuiTableFrame.onBuilded.call(o, event);
+   // 按键处理
+   o._controlInsert.addClickListener(o, o.onInsertClick);
    // 注册按键监听
    var buttons = new MO.TObjects();
    o.searchComponents(buttons, MO.MUiToolButton);
@@ -129,7 +148,7 @@ MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
    var count = buttons.count();
    for(var i = 0; i < count; i++){
       var button = buttons.at(i);
-      button.addClickListener(o, o.onButtonClick);
+      button.addClickListener(o, o.onPageClick);
    }
    o.addCellClickListener(o, o.onCellClick);
 }

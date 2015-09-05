@@ -7,12 +7,10 @@
 MO.FManageDataForm = function FManageDataForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiFormFrame);
    //..........................................................
-   // @attribute
-   o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
-   o._itemName      = MO.Class.register(o, new MO.AGetSet('_itemName'));
-   //..........................................................
    // @event
-   o.onButtonClick  = MO.FManageDataForm_onButtonClick;
+   o.onBackClick    = MO.FManageDataForm_onBackClick;
+   o.onUpdateClick  = MO.FManageDataForm_onUpdateClick;
+   o.onDeleteClick  = MO.FManageDataForm_onDeleteClick;
    // @event
    o.onBuilded      = MO.FManageDataForm_onBuilded;
    // @event
@@ -36,34 +34,38 @@ MO.FManageDataForm = function FManageDataForm(o){
 }
 
 //==========================================================
-// <T>数据改变处理。</T>
+// <T>刷新按键点击处理。</T>
 //
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataForm_onButtonClick = function FManageDataForm_onButtonClick(event){
-   var o  = this;
-   var button = event.sender;
-   // 获得命令
-   var attributes = button.attributes();
-   if(attributes){
-      var action = attributes.get('action');
-      // 执行命令
-      switch(action){
-         case 'insert':
-            o.doPrepare(attributes);
-            break;
-         case 'save':
-            o.doSave();
-            break;
-         case 'delete':
-            o.doDelete();
-            break;
-         case 'sort':
-            o.doSort();
-            break;
-      }
-   }
+MO.FManageDataForm_onBackClick = function FManageDataForm_onBackClick(event){
+   var o = this;
+   // 设置历史
+   var historyBar = o._frameSet._historyBar;
+   var historyButton = historyBar.historyPop();
+   var frameName = historyButton.attributeGet('frame_name');
+   o._frameSet.selectSpaceFrame(frameName);
+}
+
+//==========================================================
+// <T>刷新按键点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FManageDataForm_onUpdateClick = function FManageDataForm_onUpdateClick(event){
+   this.doSave();
+}
+
+//==========================================================
+// <T>列表按键点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FManageDataForm_onDeleteClick = function FManageDataForm_onDeleteClick(event){
+   this.doDelete();
 }
 
 //==========================================================
@@ -75,15 +77,10 @@ MO.FManageDataForm_onButtonClick = function FManageDataForm_onButtonClick(event)
 MO.FManageDataForm_onBuilded = function FManageDataForm_onBuilded(event){
    var o = this;
    o.__base.FDuiFormFrame.onBuilded.call(o, event);
-   // 注册按键监听
-   var buttons = new MO.TObjects();
-   o.searchComponents(buttons, MO.MUiToolButton);
-   o.searchComponents(buttons, MO.MUiMenuButton);
-   var count = buttons.count();
-   for(var i = 0; i < count; i++){
-      var button = buttons.at(i);
-      button.addClickListener(o, o.onButtonClick);
-   }
+   // 注册事件
+   o._controlBack.addClickListener(o, o.onBackClick);
+   o._controlUpdate.addClickListener(o, o.onUpdateClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
 }
 
 //==========================================================
@@ -113,7 +110,6 @@ MO.FManageDataForm_onDataDetail = function FManageDataForm_onDataDetail(event){
    var dataset = source.currentDataset();
    var row = dataset.rows().first();
    o.loadUnit(row);
-   //o.loadDataset(source.currentDataset());
    // 允许处理
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
