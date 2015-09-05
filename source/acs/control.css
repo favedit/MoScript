@@ -882,21 +882,48 @@
 /* ------------------------------------------------------ */
 /* FDuiCell                                               */
 /* ------------------------------------------------------ */
-.FDuiCell_Panel{
-   background-color: #F0F0F0;
+.FDuiCell_PanelNormal{
    padding-top: 1px;
    padding-bottom: 1px;
    border-bottom: 1px dotted #CCCCCC;
+   background-color: #F0F0F0;
+}
+
+.FDuiCell_PanelHover{
+   padding-top: 1px;
+   padding-bottom: 1px;
+   border-bottom: 1px dotted #CCCCCC;
+   background-color: #E8E8FF;
+}
+
+.FDuiCell_PanelSelect{
+   padding-top: 1px;
+   padding-bottom: 1px;
+   border-bottom: 1px dotted #CCCCCC;
+   background-color: #CDE5FF;
+}
+
+.FDuiCell_InputNormal{
+   width: 100%;
+   border: 0px;
+   background-color: #F0F0F0;
+}
+
+.FDuiCell_InputHover{
+   width: 100%;
+   border: 0px;
+   background-color: #E8E8FF;
+}
+
+.FDuiCell_InputSelect{
+   width: 100%;
+   border: 0px;
+   background-color: #CDE5FF;
 }
 
 /* ------------------------------------------------------ */
 /* FDuiCellEdit                                           */
 /* ------------------------------------------------------ */
-.FDuiCellEdit_Input{
-   width: 100%;
-   border: 0px;
-   background-color: #F0F0F0;
-}
 
 /* ------------------------------------------------------ */
 /* FDuiColumn                                             */
@@ -915,6 +942,18 @@
    width: 100%;
    border: 1px solid #DDDDDD;
    background-color: #FFFFFF;
+}
+
+/* ------------------------------------------------------ */
+/* FDuiGridRowControl                                     */
+/* ------------------------------------------------------ */
+.FDuiGridRowControl_PanelNormal{
+}
+
+.FDuiGridRowControl_PanelHover{
+}
+
+.FDuiGridRowControl_PanelSelect{
 }
 
 /* ------------------------------------------------------ */

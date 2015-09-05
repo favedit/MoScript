@@ -5,7 +5,7 @@ MO.FManageLgCommonCatalogContent = function FManageLgCommonCatalogContent(o){
 }
 MO.FManageLgCommonCatalogToolBar = function FManageLgCommonCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
-   o._frameName = 'manage.logic.person.CatalogToolBar';
+   o._frameName = 'manage.logic.common.CatalogToolBar';
    return o;
 }
 MO.FManageLgCommonFrameSet = function FManageLgCommonFrameSet(o){

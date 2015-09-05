@@ -14,14 +14,29 @@ MO.EDuiGridDisplay = new function EDuiGridDisplayFace(){
    o.Navigator = 'N';
    return o;
 }
+MO.EDuiGridRowStatus = new function EDuiGridRowStatus(){
+   var o = this;
+   o.Normal = 'Normal';
+   o.Hover  = 'Hover';
+   o.Select = 'Select';
+   return o;
+}
 MO.FDuiCell = function FDuiCell(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiValue, MO.MUiDataValue);
-   o._stylePanel       = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._stylePanelNormal = MO.Class.register(o, new MO.AStyle('_stylePanelNormal'));
+   o._stylePanelHover  = MO.Class.register(o, new MO.AStyle('_stylePanelHover'));
+   o._stylePanelSelect = MO.Class.register(o, new MO.AStyle('_stylePanelSelect'));
+   o._styleInputNormal = MO.Class.register(o, new MO.AStyle('_styleInputNormal'));
+   o._styleInputHover  = MO.Class.register(o, new MO.AStyle('_styleInputHover'));
+   o._styleInputSelect = MO.Class.register(o, new MO.AStyle('_styleInputSelect'));
    o._table            = MO.Class.register(o, new MO.AGetSet('_table'));
    o._column           = MO.Class.register(o, new MO.AGetSet('_column'));
    o._row              = MO.Class.register(o, new MO.AGetSet('_row'));
+   o._rowStatusCd      = MO.EDuiGridRowStatus.Normal;
    o.onBuildPanel      = MO.FDuiCell_onBuildPanel;
    o.onBuild           = MO.FDuiCell_onBuild;
+   o.onCellMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onCellMouseEnter'), MO.FDuiCell_onCellMouseEnter);
+   o.onCellMouseLeave  = MO.Class.register(o, new MO.AEventMouseLeave('onCellMouseLeave'), MO.FDuiCell_onCellMouseLeave);
    o.onCellClick       = MO.Class.register(o, new MO.AEventClick('onCellClick'), MO.FDuiCell_onCellClick);
    o.onCellDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onCellDoubleClick'), MO.FDuiCell_onCellDoubleClick);
    o.oeLoadDataRow     = MO.FDuiCell_oeLoadDataRow;
@@ -43,7 +58,22 @@ MO.FDuiCell_onBuild = function FDuiCell_onBuild(event){
    var column = o._column;
    var hPanel = o._hPanel;
    MO.Window.Html.linkSet(hPanel, 'control', o);
+   o.attachEvent('onCellMouseEnter', hPanel);
+   o.attachEvent('onCellMouseLeave', hPanel);
    o.attachEvent('onCellClick', hPanel);
+   o.attachEvent('onCellDoubleClick', hPanel);
+}
+MO.FDuiCell_onCellMouseEnter = function FDuiCell_onCellMouseEnter(event){
+   var o = this;
+   var table = o._table;
+   var row = o._row;
+   table.hoverRow(row, true);
+}
+MO.FDuiCell_onCellMouseLeave = function FDuiCell_onCellMouseLeave(event){
+   var o = this;
+   var table = o._table;
+   var row = o._row;
+   table.hoverRow(row, false);
 }
 MO.FDuiCell_onCellClick = function FDuiCell_onCellClick(event){
    var o = this;
@@ -82,7 +112,18 @@ MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
    var o = this;
    var table = o._table;
    var row = o._row;
-   var s = row.isSelect;
+   var selected = row._statusSelect;
+   if(selected){
+      o._rowStatusCd = MO.EDuiGridRowStatus.Select;
+   }else{
+      var hover = (table._hoverRow == row);
+      if(hover){
+         o._rowStatusCd = MO.EDuiGridRowStatus.Hover;
+      }else{
+         o._rowStatusCd = MO.EDuiGridRowStatus.Normal;
+      }
+   }
+   o._hPanel.className = o.styleName('Panel' + o._rowStatusCd);
 }
 MO.FDuiCell_dispose = function FDuiCell_dispose(){
    var o = this;
@@ -368,17 +409,17 @@ with(MO){
 }
 MO.FDuiCellEdit = function FDuiCellEdit(o){
    o = MO.Class.inherits(this, o, MO.FDuiCellEditControl);
-   o._styleInput = MO.Class.register(o, new MO.AStyle('_styleInput'));
-   o._hInput     = null;
-   o.onBuildEdit = MO.FDuiCellEdit_onBuildEdit;
-   o.get         = MO.FDuiCellEdit_get;
-   o.set         = MO.FDuiCellEdit_set;
+   o._hInput      = null;
+   o.onBuildEdit  = MO.FDuiCellEdit_onBuildEdit;
+   o.get          = MO.FDuiCellEdit_get;
+   o.set          = MO.FDuiCellEdit_set;
+   o.refreshStyle = MO.FDuiCellEdit_refreshStyle;
    return o;
 }
 MO.FDuiCellEdit_onBuildEdit = function FDuiCellEdit_onBuildEdit(p){
    var o = this;
    var c = o._column;
-   o._hInput = MO.Window.Builder.appendEdit(o._hEditPanel, o.styleName('Input'));
+   o._hInput = MO.Window.Builder.appendEdit(o._hEditPanel);
 }
 MO.FDuiCellEdit_get = function FDuiCellEdit_get(){
    var o = this;
@@ -389,6 +430,11 @@ MO.FDuiCellEdit_set = function FDuiCellEdit_set(value){
    var o = this;
    var text = MO.Lang.String.nvl(value);
    o._hInput.value = text;
+}
+MO.FDuiCellEdit_refreshStyle = function FDuiCellEdit_refreshStyle(){
+   var o = this;
+   o.__base.FDuiCellEditControl.refreshStyle.call(o);
+   o._hInput.className = o.styleName('Input' + o._rowStatusCd);
 }
 MO.FDuiCellEdit_buildDrop = function FDuiCellEdit_buildDrop(){
    var o = this;
@@ -720,6 +766,8 @@ MO.FDuiColumn = function FDuiColumn(o){
    o.onSearchClick      = MO.Class.register(o, new MO.AEventClick('onSearchClick'));
    o.onSearchLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onSearchLeave'));
    o.onSearchKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onSearchKeyDown'));
+   o.onCellMouseEnter   = MO.Class.register(o, new MO.AEventMouseEnter('onCellMouseEnter'), MO.FDuiColumn_onCellMouseEnter);
+   o.onCellMouseLeave   = MO.Class.register(o, new MO.AEventMouseLeave('onCellMouseLeave'), MO.FDuiColumn_onCellMouseLeave);
    o.createCell         = MO.FDuiColumn_createCell;
    o.searchValue        = MO.FDuiColumn_searchValue;
    o.searchReset        = MO.FDuiColumn_searchReset;
@@ -809,16 +857,25 @@ MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
    var hFixPanel = o._hFixPanel = MO.Window.Builder.create(event, 'TD');
    hFixPanel.style.width = width + 'px';
    hFixPanel.style.height = '1px';
-   hFixPanel.style.backgroundColor = '#FFFFFF'
+   hFixPanel.style.backgroundColor = '#999999'
+}
+MO.FDuiColumn_onCellMouseEnter = function FDuiColumn_onCellMouseEnter(event){
+   var row = event.row;
+   this._table.hoverRow(row, true);
+}
+MO.FDuiColumn_onCellMouseLeave = function FDuiColumn_onCellMouseLeave(event){
+   var row = event.row;
+   this._table.hoverRow(row, false);
 }
 MO.FDuiColumn_createCell = function FDuiColumn_createCell(row){
    var o = this;
    var cell = MO.Class.create(o._cellClass);
-   var table = cell._table = o._table;
-   cell._name = o._name;
-   cell._column = o;
-   cell.build(table._hPanel);
+   cell.setTable(o._table);
+   cell.setColumn(o);
+   cell.setName(o._name);
+   cell.build(o);
    cell.setVisible(o._displayList);
+   cell._hPanel.style.width = o._width + 'px';
    return cell;
 }
 MO.FDuiColumn_searchValue = function FDuiColumn_searchValue(){
@@ -847,12 +904,6 @@ MO.FDuiColumn_dispose = function FDuiColumn_dispose(){
    o._hSearchPanel = MO.Window.Html.free(o._hSearchPanel);
    o._hFixPanel = MO.Window.Html.free(o._hFixPanel);
    o.__base.FDuiControl.dispose.call(o);
-}
-MO.FDuiColumn_onCellMouseEnter = function FDuiColumn_onCellMouseEnter(s, e){
-   this.table.hoverRow(s.row, true);
-}
-MO.FDuiColumn_onCellMouseLeave = function FDuiColumn_onCellMouseLeave(s, e){
-   this.table.hoverRow(s.row, false);
 }
 MO.FDuiColumn_onCellMouseDown = function FDuiColumn_onCellMouseDown(s, e){
    var o = this;
@@ -920,7 +971,6 @@ MO.FDuiColumn_onEditBegin = function FDuiColumn_onEditBegin(editor) {
    o.table.editRow = row;
    o.table.editColumn = o;
    o.table.select(row, true);
-   MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
 }
 MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
    var o = this;
@@ -930,7 +980,6 @@ MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
    o.setText(row, text);
    o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
    o.editor = null;
-   MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
 }
 MO.FDuiColumn_onEditChanged = function FDuiColumn_onEditChanged(cell) {
    cell.row.refresh();
@@ -1761,9 +1810,6 @@ MO.FDuiGridControl_push = function FDuiGridControl_push(component){
    if(MO.Class.isClass(component, MO.FDuiColumn)){
       component._table = o;
       o._columns.set(component.name(), component);
-   }else if(MO.Class.isClass(component, MO.FDuiTableButton)){
-      component._table = o;
-      o._buttons.set(component.name(), component);
    }else if(MO.Class.isClass(component, MO.FDuiGridRowControl)){
       component._table = o;
    }
@@ -1814,7 +1860,6 @@ MO.FDuiGridControl_pushRow = function FDuiGridControl_pushRow(row){
 }
 MO.FDuiGridControl_removeRow = function FDuiGridControl_removeRow(row){
    var o = this;
-   MO.Assert.debugNotNull(row);
    o.dropRow(row);
    o._rows.remove(row);
 }
@@ -1918,16 +1963,16 @@ MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(row)
    o.processRowDoubleClickListener(event);
    event.dispose();
 }
-MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
+MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(row, flag){
    var o = this;
-   if(f){
-      o._hoverRow = r;
-      r.refreshStyle();
+   if(flag){
+      o._hoverRow = row;
+      row.refreshStyle();
    }else{
-      if(o._hoverRow == r){
+      if(o._hoverRow == row){
          o._hoverRow = null;
       }
-      r.refreshStyle();
+      row.refreshStyle();
    }
 }
 MO.FDuiGridControl_selectRow = function FDuiGridControl_selectRow(row, reset, force) {
@@ -2887,15 +2932,6 @@ MO.FDuiGridRowControl_refresh = function FDuiGridRowControl_refresh(){
    var o = this;
    o.table.setDataStatus(o, o.isDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
 }
-MO.FDuiGridRowControl_dump = function FDuiGridRowControl_dump(s){
-   var o = this;
-   s = RString.nvlStr(s);
-   s.append(RClass.dump(o), '[');
-   s.append(o._statusSelect ? 'S' : '_');
-   s.append(']');
-   s.append(o.saveRow().dump());
-   return s;
-}
 MO.FDuiTable = function FDuiTable(o) {
    o = MO.Class.inherits(this, o, MO.FDuiGridControl);
    o._detailFrameName  = MO.Class.register(o, new MO.APtyString('_detailFrameName'));
@@ -2925,7 +2961,7 @@ MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    var o = this;
    var hContentPanel = o._hContentPanel;
    var hFixPanel = o._hFixPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('FixPanel'));
-   var hFixForm = o._hFixForm = MO.Window.Builder.appendTable(hFixPanel, o.styleName('FixForm'), 0, 0, 1);
+   var hFixForm = o._hFixForm = MO.Window.Builder.appendTable(hFixPanel, o.styleName('FixForm'));
    hFixForm.borderColorLight = '#D0D0D0';
    hFixForm.borderColorDark = '#EEEEEE';
    o._hFixHead =  MO.Window.Builder.appendTableRow(hFixForm);
@@ -2936,7 +2972,7 @@ MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    o._hFixTotal.style.display = 'none';
    o._hFixTotal.style.height = '22px';
    var hHeadPanel = o._hHeadPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('HeadPanel'));
-   var hHeadForm = o._hHeadForm = MO.Window.Builder.appendTable(hHeadPanel, o.styleName('HeadForm'), 0, 0, 1);
+   var hHeadForm = o._hHeadForm = MO.Window.Builder.appendTable(hHeadPanel, o.styleName('HeadForm'));
    hHeadForm.borderColorLight = '#D0D0D0';
    hHeadForm.borderColorDark = '#EEEEEE';
    o._hHead = MO.Window.Builder.appendTableRow(hHeadForm);
@@ -2944,11 +2980,11 @@ MO.FDuiTable_onBuildContent = function FDuiTable_onBuildContent(event){
    o._hTotal = MO.Window.Builder.appendTableRow(hHeadForm);
    o._hTotal.style.display = 'none';
    var hColumnPanel = o._hColumnPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('ColumnPanel'));
-   var hColumnForm = o._hColumnForm = MO.Window.Builder.appendTable(hColumnPanel, o.styleName('ColumnForm'), 0, 0, 1);
+   var hColumnForm = o._hColumnForm = MO.Window.Builder.appendTable(hColumnPanel, o.styleName('ColumnForm'));
    o._hFixRows = MO.Window.Builder.append(hColumnForm, 'TBODY');
    o._hFixRowLine = MO.Window.Builder.append(o._hFixRows, 'TR');
    var hDataPanel = o._hDataPanel = MO.Window.Builder.appendDiv(hContentPanel, o.styleName('DataPanel'));
-   var hDataForm = o._hDataForm = MO.Window.Builder.appendTable(hDataPanel, o.styleName('DataForm'), 0, 0, 1);
+   var hDataForm = o._hDataForm = MO.Window.Builder.appendTable(hDataPanel, o.styleName('DataForm'));
    o._hRows = MO.Window.Builder.append(hDataForm, 'TBODY');
    o._hRowLine = MO.Window.Builder.append(o._hRows, 'TR');
    o.panelNavigator = true;
@@ -3004,6 +3040,12 @@ MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(event){
                dataWidth -= column._hPanel.offsetWidth;
             }
          }
+      }
+      var rows = o._rows;
+      var count = rows.count();
+      for(var i = 0; i < count; i++){
+         var row = rows.at(i);
+         row._hPanel.style.height = row._hFixPanel.offsetHeight + 'px';
       }
    }
 }

@@ -278,7 +278,6 @@ MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(
    var o = this;
    var vt = s._invalidText = o.validText(s.text());
    if(vt){
-      MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
    }else{
       s.commitValue();
    }
@@ -353,14 +352,16 @@ MO.MDuiEditDrop_construct = function MDuiEditDrop_construct(){
 MO.MDuiEditDrop_refreshStyle = function MDuiEditDrop_refreshStyle(){
    var o = this;
    var hDropIcon = o._hDropIcon;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
+      var icon = null;
       if(o._statusValueHover){
-         hDropIcon.src = MO.Window.Resource.iconPath('control.drop-hover');
+         icon = 'control.drop-hover';
       }else{
-         hDropIcon.src = MO.Window.Resource.iconPath('control.drop');
+         icon = 'control.drop';
       }
+      hDropIcon.src = MO.Window.Resource.iconPath(icon );
    }
-   MO.Window.Html.visibleSet(o._hDropPanel, o._statusValueEdit);
+   MO.Window.Html.visibleSet(o._hDropPanel, o._statusEditable);
 }
 MO.MDuiEditDrop_dispose = function MDuiEditDrop_dispose(){
    var o = this;

@@ -6,7 +6,7 @@
 // @history 150516
 //==========================================================
 MO.FManageFrameSet = function FManageFrameSet(o){
-   o = MO.Class.inherits(this, o, MO.FDuiFrameSet);
+   o = MO.Class.inherits(this, o, MO.FDuiFrameSet, MO.MUiStorage);
    //..........................................................
    // @style
    o._styleTitleGround     = MO.Class.register(o, new MO.AStyle('_styleTitleGround', 'Title_Ground'));
@@ -14,6 +14,8 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
    o._styleSpaceContent    = MO.Class.register(o, new MO.AStyle('_styleSpaceContent', 'Space_Content'));
    //..........................................................
+   // @attribute
+   o._storageCode          = 'manage.logic.common.FrameSet';
    // @attribute
    o._frameCatalog         = null;
    o._frameCatalogToolbar  = null;
@@ -161,6 +163,12 @@ MO.FManageFrameSet_selectSpaceFrame = function FManageFrameSet_selectSpaceFrame(
    }
    // 激活页面
    o._activeFrame = frame;
+   //..........................................................
+   // 存储选择内容
+   if(frame){
+      o.storageSet('frame_name', frameName)
+      o.storageUpdate();
+   }
    return frame;
 }
 
@@ -171,6 +179,28 @@ MO.FManageFrameSet_selectSpaceFrame = function FManageFrameSet_selectSpaceFrame(
 //==========================================================
 MO.FManageFrameSet_load = function FManageFrameSet_load(){
    var o = this;
+   var frameName = o.storageGet('frame_name');
+   if(frameName){
+      // 显示界面
+      var frame = o.selectSpaceFrame(frameName);
+      frame.psMode(MO.EUiMode.Update);
+      frame.psRefresh();
+      if(MO.Class.isClass(frame, MO.FDuiFormFrame)){
+         frame.dataModify();
+         //frame.doFetch();
+      }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+         frame._dsPageSize = 20;
+         frame._dsPage = 0;
+         frame.resetSearch();
+         frame.doFetch();
+      }
+      // 设置历史
+      var historyBar = o._historyBar;
+      historyBar.historyClear();
+      var historyButton = historyBar.historyPush();
+      historyButton.setLabel(frame.label());
+      historyButton.attributeSet('frame_name', frame.name());
+   }
 }
 
 //==========================================================

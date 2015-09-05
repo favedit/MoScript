@@ -308,17 +308,17 @@ MO.FDuiSelect_refreshStyle = function FDuiSelect_refreshStyle(){
    // 设置编辑样式
    var hInput = o._hInput;
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
    hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 
 //==========================================================

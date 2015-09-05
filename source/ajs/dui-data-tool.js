@@ -12,7 +12,6 @@ with(MO){
    }
    MO.FUiDataToolButton_click = function FUiDataToolButton_click(){
       var o = this;
-      MO.Logger.debug(o, 'Mouse button click. (label={1})' + o._label);
          o.processClickListener(o);
    }
    MO.FUiDataToolButton_onShowHint = function FUiDataToolButton_onShowHint(a){

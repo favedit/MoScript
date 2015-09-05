@@ -83,6 +83,10 @@ MO.FDuiSliderGroup_onBuild = function FDuiSliderGroup_onBuild(event){
    if(o._label){
       var hLabelPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('LabelPanel'));
       hLabelPanel.noWrap = true;
+      // 设置颜色
+      if(o._foreColor){
+         hLabelPanel.style.color = o._foreColor;
+      }
       // 设置标签
       o.setLabel(o._label);
    }

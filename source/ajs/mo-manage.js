@@ -21,8 +21,7 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    var o = this;
    var button = event.sender;
    var frameName = button.attributeGet('frame_name');
-   MO.Assert.debugNotEmpty(frameName);
-   var frame = o._frameSet.selectObject(frameName);
+   var frame = o._frameSet.selectSpaceFrame(frameName);
    frame.psMode(MO.EUiMode.Update);
    frame.psRefresh();
    if(MO.Class.isClass(frame, MO.FDuiFormFrame)){
@@ -94,9 +93,9 @@ MO.FManageCatalogToolBar_dispose = function FManageCatalogToolBar_dispose(){
 }
 MO.FManageDataForm = function FManageDataForm(o){
    o = MO.Class.inherits(this, o, MO.FDuiFormFrame);
-   o._containerName = MO.Class.register(o, new MO.AGetSet('_containerName'));
-   o._itemName      = MO.Class.register(o, new MO.AGetSet('_itemName'));
-   o.onButtonClick  = MO.FManageDataForm_onButtonClick;
+   o.onBackClick    = MO.FManageDataForm_onBackClick;
+   o.onUpdateClick  = MO.FManageDataForm_onUpdateClick;
+   o.onDeleteClick  = MO.FManageDataForm_onDeleteClick;
    o.onBuilded      = MO.FManageDataForm_onBuilded;
    o.onDataDetail   = MO.FManageDataForm_onDataDetail;
    o.onDataChanged  = MO.FManageDataForm_onDataChanged;
@@ -112,39 +111,25 @@ MO.FManageDataForm = function FManageDataForm(o){
    o.dispose        = MO.FManageDataForm_dispose;
    return o;
 }
-MO.FManageDataForm_onButtonClick = function FManageDataForm_onButtonClick(event){
-   var o  = this;
-   var button = event.sender;
-   var attributes = button.attributes();
-   if(attributes){
-      var action = attributes.get('action');
-      switch(action){
-         case 'insert':
-            o.doPrepare(attributes);
-            break;
-         case 'save':
-            o.doSave();
-            break;
-         case 'delete':
-            o.doDelete();
-            break;
-         case 'sort':
-            o.doSort();
-            break;
-      }
-   }
+MO.FManageDataForm_onBackClick = function FManageDataForm_onBackClick(event){
+   var o = this;
+   var historyBar = o._frameSet._historyBar;
+   var historyButton = historyBar.historyPop();
+   var frameName = historyButton.attributeGet('frame_name');
+   o._frameSet.selectSpaceFrame(frameName);
+}
+MO.FManageDataForm_onUpdateClick = function FManageDataForm_onUpdateClick(event){
+   this.doSave();
+}
+MO.FManageDataForm_onDeleteClick = function FManageDataForm_onDeleteClick(event){
+   this.doDelete();
 }
 MO.FManageDataForm_onBuilded = function FManageDataForm_onBuilded(event){
    var o = this;
    o.__base.FDuiFormFrame.onBuilded.call(o, event);
-   var buttons = new MO.TObjects();
-   o.searchComponents(buttons, MO.MUiToolButton);
-   o.searchComponents(buttons, MO.MUiMenuButton);
-   var count = buttons.count();
-   for(var i = 0; i < count; i++){
-      var button = buttons.at(i);
-      button.addClickListener(o, o.onButtonClick);
-   }
+   o._controlBack.addClickListener(o, o.onBackClick);
+   o._controlUpdate.addClickListener(o, o.onUpdateClick);
+   o._controlDelete.addClickListener(o, o.onDeleteClick);
 }
 MO.FManageDataForm_onDataChanged = function FManageDataForm_onDataChanged(event){
    var o  = this;
@@ -241,86 +226,53 @@ MO.FManageDataForm_dispose = function FManageDataForm_dispose(){
 }
 MO.FManageDataTable = function FManageDataTable(o){
    o = MO.Class.inherits(this, o, MO.FDuiTableFrame);
-   o.onCellClick    = MO.FManageDataTable_onCellClick;
-   o.onRowClick     = MO.FManageDataTable_onRowClick;
-   o.onButtonClick  = MO.FManageDataTable_onButtonClick;
-   o.onBuilded      = MO.FManageDataTable_onBuilded;
-   o.onDataChanged  = MO.FManageDataTable_onDataChanged;
-   o.onDataFetch    = MO.FManageDataTable_onDataFetch;
-   o.onDataSave     = MO.FManageDataTable_onDataSave;
-   o.onDataDelete   = MO.FManageDataTable_onDataDelete;
-   o.construct      = MO.FManageDataTable_construct;
-   o.dsMovePage     = MO.FManageDataTable_dsMovePage;
-   o.dsSearch       = MO.FManageDataTable_dsSearch;
-   o.doFetch        = MO.FManageDataTable_doFetch;
-   o.doPrepare      = MO.FManageDataTable_doPrepare;
-   o.doSave         = MO.FManageDataTable_doSave;
-   o.doDelete       = MO.FManageDataTable_doDelete;
-   o.dispose        = MO.FManageDataTable_dispose;
+   o.onInsertClick     = MO.FManageDataTable_onInsertClick;
+   o.onCellClick       = MO.FManageDataTable_onCellClick;
+   o.onCellDoubleClick = MO.FManageDataTable_onCellDoubleClick;
+   o.onBuilded         = MO.FManageDataTable_onBuilded;
+   o.onDataChanged     = MO.FManageDataTable_onDataChanged;
+   o.onDataFetch       = MO.FManageDataTable_onDataFetch;
+   o.onDataSave        = MO.FManageDataTable_onDataSave;
+   o.onDataDelete      = MO.FManageDataTable_onDataDelete;
+   o.construct         = MO.FManageDataTable_construct;
+   o.dsMovePage        = MO.FManageDataTable_dsMovePage;
+   o.dsSearch          = MO.FManageDataTable_dsSearch;
+   o.doFetch           = MO.FManageDataTable_doFetch;
+   o.doDetail          = MO.FManageDataTable_doDetail;
+   o.doPrepare         = MO.FManageDataTable_doPrepare;
+   o.doSave            = MO.FManageDataTable_doSave;
+   o.doDelete          = MO.FManageDataTable_doDelete;
+   o.dispose           = MO.FManageDataTable_dispose;
    return o;
+}
+MO.FManageDataTable_onInsertClick = function FManageDataTable_onInsertClick(event){
+   var o = this;
+   var frame = o._frameSet.activeFrame();
+   if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+      var unitFrameName = frame.unitFrameName();
+      var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
+      unitFrame.doPrepare();
+   }
 }
 MO.FManageDataTable_onCellClick = function FManageDataTable_onCellClick(event){
    var o = this;
    var cell = event.cell;
    if(MO.Class.isClass(cell, MO.FDuiCellStatus)){
       var row = event.row;
-      var unitFrameName = o._unitFrameName;
-      MO.Assert.debugNotEmpty(unitFrameName);
-      var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
-      unitFrame.doDetail(row);
-      var historyBar = o._frameSet._historyBar;
-      var historyButton = historyBar.historyPush();
-      historyButton.setLabel(unitFrame.label());
-      historyButton.attributeSet('frame_name', unitFrame.name());
+      o.doDetail(row);
    }
 }
-MO.FManageDataTable_onRowClick = function FManageDataTable_onRowClick(event){
+MO.FManageDataTable_onCellDoubleClick = function FManageDataTable_onCellDoubleClick(event){
    var o = this;
-   return;
    var row = event.row;
-   var unitFrameName = o._unitFrameName;
-   MO.Assert.debugNotEmpty(unitFrameName);
-   var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
-   unitFrame.doDetail(row);
-   var historyBar = o._frameSet._historyBar;
-   var historyButton = historyBar.historyPush();
-   historyButton.setLabel(unitFrame.label());
-   historyButton.attributeSet('frame_name', unitFrame.name());
-}
-MO.FManageDataTable_onButtonClick = function FManageDataTable_onButtonClick(event){
-   var o  = this;
-   var button = event.sender;
-   var attributes = button.attributes();
-   if(attributes){
-      var action = attributes.get('action');
-      switch(action){
-         case 'insert':
-            o.doPrepare(attributes);
-            break;
-         case 'save':
-            o.doSave();
-            break;
-         case 'delete':
-            o.doDelete();
-            break;
-         case 'sort':
-            o.doSort();
-            break;
-      }
-   }
+   o.doDetail(row);
 }
 MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
    var o = this;
    o.__base.FDuiTableFrame.onBuilded.call(o, event);
-   var buttons = new MO.TObjects();
-   o.searchComponents(buttons, MO.MUiToolButton);
-   o.searchComponents(buttons, MO.MUiMenuButton);
-   var count = buttons.count();
-   for(var i = 0; i < count; i++){
-      var button = buttons.at(i);
-      button.addClickListener(o, o.onButtonClick);
-   }
+   o._controlInsert.addClickListener(o, o.onInsertClick);
    o.addCellClickListener(o, o.onCellClick);
+   o.addCellDoubleClickListener(o, o.onCellDoubleClick);
 }
 MO.FManageDataTable_onDataChanged = function FManageDataTable_onDataChanged(event){
    var o  = this;
@@ -335,6 +287,7 @@ MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
    var dataset = source.currentDataset();
    o.clearRows();
    o.loadDataset(dataset);
+   o.psRefresh();
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
 MO.FManageDataTable_onDataSave = function FManageDataTable_onDataSave(event){
@@ -408,6 +361,16 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=fetch');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataFetch);
+}
+MO.FManageDataTable_doDetail = function FManageDataTable_doDetail(row){
+   var o = this;
+   var unitFrameName = o._unitFrameName;
+   var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
+   unitFrame.doDetail(row);
+   var historyBar = o._frameSet._historyBar;
+   var historyButton = historyBar.historyPush();
+   historyButton.setLabel(unitFrame.label());
+   historyButton.attributeSet('frame_name', unitFrame.name());
 }
 MO.FManageDataTable_doPrepare = function FManageDataTable_doPrepare(parameters){
    var o = this;
@@ -598,11 +561,12 @@ MO.FManageFrameDefineConsole_getEvents = function FManageFrameDefineConsole_getE
    return this.events.get(n);
 }
 MO.FManageFrameSet = function FManageFrameSet(o){
-   o = MO.Class.inherits(this, o, MO.FDuiFrameSet);
+   o = MO.Class.inherits(this, o, MO.FDuiFrameSet, MO.MUiStorage);
    o._styleTitleGround     = MO.Class.register(o, new MO.AStyle('_styleTitleGround', 'Title_Ground'));
    o._styleToolbarGround   = MO.Class.register(o, new MO.AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleCatalogContent  = MO.Class.register(o, new MO.AStyle('_styleCatalogContent', 'Catalog_Content'));
    o._styleSpaceContent    = MO.Class.register(o, new MO.AStyle('_styleSpaceContent', 'Space_Content'));
+   o._storageCode          = 'manage.logic.common.FrameSet';
    o._frameCatalog         = null;
    o._frameCatalogToolbar  = null;
    o._frameCatalogContent  = null;
@@ -617,7 +581,6 @@ MO.FManageFrameSet = function FManageFrameSet(o){
    o.findSpaceFrame        = MO.FManageFrameSet_findSpaceFrame;
    o.hideSpaceFrames       = MO.FManageFrameSet_hideSpaceFrames;
    o.selectSpaceFrame      = MO.FManageFrameSet_selectSpaceFrame;
-   o.selectObject          = MO.FManageFrameSet_selectObject;
    o.load                  = MO.FManageFrameSet_load;
    o.dispose               = MO.FManageFrameSet_dispose;
    return o;
@@ -631,12 +594,6 @@ MO.FManageFrameSet_onBuilded = function FManageFrameSet_onBuilded(event){
    control.build(event);
    control.addButtonClickListener(o, o.onHistoryButtonClick);
    o._frameSpaceTitle.push(control);
-   var control = o._spaceToolBar = MO.Class.create(MO.FManageSpaceToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(event);
-   control.setVisible(false);
-   o._frameSpaceToolBar.push(control);
 }
 MO.FManageFrameSet_onHistoryButtonClick = function FManageFrameSet_onHistoryButtonClick(event){
    var o = this;
@@ -673,24 +630,48 @@ MO.FManageFrameSet_hideSpaceFrames = function FManageFrameSet_hideSpaceFrames(){
 }
 MO.FManageFrameSet_selectSpaceFrame = function FManageFrameSet_selectSpaceFrame(frameName){
    var o = this;
+   var hToolBarPanel = o._frameSpaceToolBar._hPanel;
+   MO.Window.Html.clear(hToolBarPanel);
    o.hideSpaceFrames();
    var frame = null;
    if(frameName){
       frame = o.findSpaceFrame(frameName);
       frame.show();
+      var frameLabel = frame.label();
+      o.setFrameTitle(frame.label());
+      var toolBar = frame.findControl('toolBar');
+      if(toolBar){
+         toolBar.setPanel(hToolBarPanel);
+      }
    }
    o._activeFrame = frame;
-   return frame;
-}
-MO.FManageFrameSet_selectObject = function FManageFrameSet_selectObject(frameName){
-   var o = this;
-   var frame = o.selectSpaceFrame(frameName);
-   o.setFrameTitle(frame.label());
-   o._spaceToolBar.setVisible(true);
+   if(frame){
+      o.storageSet('frame_name', frameName)
+      o.storageUpdate();
+   }
    return frame;
 }
 MO.FManageFrameSet_load = function FManageFrameSet_load(){
    var o = this;
+   var frameName = o.storageGet('frame_name');
+   if(frameName){
+      var frame = o.selectSpaceFrame(frameName);
+      frame.psMode(MO.EUiMode.Update);
+      frame.psRefresh();
+      if(MO.Class.isClass(frame, MO.FDuiFormFrame)){
+         frame.dataModify();
+      }else if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
+         frame._dsPageSize = 20;
+         frame._dsPage = 0;
+         frame.resetSearch();
+         frame.doFetch();
+      }
+      var historyBar = o._historyBar;
+      historyBar.historyClear();
+      var historyButton = historyBar.historyPush();
+      historyButton.setLabel(frame.label());
+      historyButton.attributeSet('frame_name', frame.name());
+   }
 }
 MO.FManageFrameSet_dispose = function FManageFrameSet_dispose(){
    var o = this;
@@ -714,7 +695,6 @@ MO.FManageSpaceToolBar_onInsertClick = function FManageSpaceToolBar_onInsertClic
    var frame = o._frameSet.activeFrame();
    if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       var unitFrameName = frame.unitFrameName();
-      MO.Assert.debugNotEmpty(unitFrameName);
       var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
       unitFrame.doPrepare();
    }
@@ -891,7 +871,7 @@ MO.FManageLgCommonCatalogContent = function FManageLgCommonCatalogContent(o){
 }
 MO.FManageLgCommonCatalogToolBar = function FManageLgCommonCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
-   o._frameName = 'manage.logic.person.CatalogToolBar';
+   o._frameName = 'manage.logic.common.CatalogToolBar';
    return o;
 }
 MO.FManageLgCommonFrameSet = function FManageLgCommonFrameSet(o){

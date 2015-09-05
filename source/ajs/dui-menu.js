@@ -441,7 +441,6 @@ MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -742,8 +741,8 @@ MO.FDuiSliderButton_onBuild = function FDuiSliderButton_onBuild(event){
    var hForm = o._hForm = MO.Window.Builder.appendTable(hPanel);
    var hLine = o._hLine = MO.Window.Builder.appendTableRow(hForm);
    if(o._icon){
-      var hc = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('IconPanel'));
-      o._hIcon = MO.Window.Builder.appendIcon(hc, null, o._icon);
+      var hIconPanel = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('IconPanel'));
+      o._hIcon = MO.Window.Builder.appendIcon(hIconPanel, null, o._icon);
    }
    if(o._icon && o._label){
       o._hSpacePanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('SpacePanel'));
@@ -834,7 +833,6 @@ MO.FDuiSliderButton_click = function FDuiSliderButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -893,6 +891,9 @@ MO.FDuiSliderGroup_onBuild = function FDuiSliderGroup_onBuild(event){
    if(o._label){
       var hLabelPanel = o._hLabelPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('LabelPanel'));
       hLabelPanel.noWrap = true;
+      if(o._foreColor){
+         hLabelPanel.style.color = o._foreColor;
+      }
       o.setLabel(o._label);
    }
    if(o._hotkey){

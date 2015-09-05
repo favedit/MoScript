@@ -1031,19 +1031,19 @@ MO.FDuiGridControl_doubleClickRow = function FDuiGridControl_doubleClickRow(row)
 // <T>热点一行数据。</T>
 //
 // @method
-// @param r:row:FDuiGridRowControl 热点行
-// @param f:flag:Boolean 是否给与热点
+// @param row:FDuiGridRowControl 热点行
+// @param flag:Boolean 是否给与热点
 //==========================================================
-MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(r, f){
+MO.FDuiGridControl_hoverRow = function FDuiGridControl_hoverRow(row, flag){
    var o = this;
-   if(f){
-      o._hoverRow = r;
-      r.refreshStyle();
+   if(flag){
+      o._hoverRow = row;
+      row.refreshStyle();
    }else{
-      if(o._hoverRow == r){
+      if(o._hoverRow == row){
          o._hoverRow = null;
       }
-      r.refreshStyle();
+      row.refreshStyle();
    }
 }
 

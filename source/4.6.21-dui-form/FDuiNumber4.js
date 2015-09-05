@@ -250,25 +250,26 @@ MO.FDuiNumber4_text = function FDuiNumber4_text(){
 MO.FDuiNumber4_refreshStyle = function FDuiNumber4_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
-   // 设置编辑样式
+   // 计算格式
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
+   // 设置样式
    o._hInput1.className = o.styleName(inputStyle);
-   o._hInput1.readOnly = !o._statusValueEdit;
+   o._hInput1.readOnly = !o._statusEditable;
    o._hInput2.className = o.styleName(inputStyle);
-   o._hInput2.readOnly = !o._statusValueEdit;
+   o._hInput2.readOnly = !o._statusEditable;
    o._hInput3.className = o.styleName(inputStyle);
-   o._hInput3.readOnly = !o._statusValueEdit;
+   o._hInput3.readOnly = !o._statusEditable;
    o._hInput4.className = o.styleName(inputStyle);
-   o._hInput4.readOnly = !o._statusValueEdit;
+   o._hInput4.readOnly = !o._statusEditable;
 }
 
 //==========================================================

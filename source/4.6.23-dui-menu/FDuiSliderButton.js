@@ -95,8 +95,8 @@ MO.FDuiSliderButton_onBuild = function FDuiSliderButton_onBuild(event){
    var hLine = o._hLine = MO.Window.Builder.appendTableRow(hForm);
    // 建立图标
    if(o._icon){
-      var hc = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('IconPanel'));
-      o._hIcon = MO.Window.Builder.appendIcon(hc, null, o._icon);
+      var hIconPanel = o._hIconPanel = MO.Window.Builder.appendTableCell(hLine, o.styleName('IconPanel'));
+      o._hIcon = MO.Window.Builder.appendIcon(hIconPanel, null, o._icon);
    }
    // 建立分割
    if(o._icon && o._label){

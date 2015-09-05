@@ -8,18 +8,17 @@
 MO.FDuiCellEdit = function FDuiCellEdit(o){
    o = MO.Class.inherits(this, o, MO.FDuiCellEditControl);
    //..........................................................
-   // @style
-   o._styleInput = MO.Class.register(o, new MO.AStyle('_styleInput'));
-   //..........................................................
    // @html
-   o._hInput     = null;
+   o._hInput      = null;
    //..........................................................
    // @event
-   o.onBuildEdit = MO.FDuiCellEdit_onBuildEdit;
+   o.onBuildEdit  = MO.FDuiCellEdit_onBuildEdit;
    //..........................................................
    // @method
-   o.get         = MO.FDuiCellEdit_get;
-   o.set         = MO.FDuiCellEdit_set;
+   o.get          = MO.FDuiCellEdit_get;
+   o.set          = MO.FDuiCellEdit_set;
+   // @method
+   o.refreshStyle = MO.FDuiCellEdit_refreshStyle;
    //..........................................................
    // @method
    //o.buildDrop = FDuiCellEdit_buildDrop;
@@ -39,7 +38,7 @@ MO.FDuiCellEdit_onBuildEdit = function FDuiCellEdit_onBuildEdit(p){
    var o = this;
    var c = o._column;
    // 建立文本输入框
-   o._hInput = MO.Window.Builder.appendEdit(o._hEditPanel, o.styleName('Input'));
+   o._hInput = MO.Window.Builder.appendEdit(o._hEditPanel);
    //if(c.canZoom()){
    //   // 设置文本底板
    //   var hep = o.hEditPanel;
@@ -97,6 +96,28 @@ MO.FDuiCellEdit_set = function FDuiCellEdit_set(value){
    //   o.hChangeIcon.style.display = 'none';
    //}
 }
+
+//==========================================================
+// <T>刷新单元格的样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiCellEdit_refreshStyle = function FDuiCellEdit_refreshStyle(){
+   var o = this;
+   o.__base.FDuiCellEditControl.refreshStyle.call(o);
+   // 设置样式
+   o._hInput.className = o.styleName('Input' + o._rowStatusCd);
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

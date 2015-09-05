@@ -8,30 +8,30 @@ MO.FManageDataTable = function FManageDataTable(o){
    o = MO.Class.inherits(this, o, MO.FDuiTableFrame);
    //..........................................................
    // @event
-   o.onInsertClick  = MO.FManageDataTable_onInsertClick;
-   o.onCellClick    = MO.FManageDataTable_onCellClick;
-   o.onRowClick     = MO.FManageDataTable_onRowClick;
-   o.onPageClick    = MO.FManageDataTable_onPageClick;
+   o.onInsertClick     = MO.FManageDataTable_onInsertClick;
+   o.onCellClick       = MO.FManageDataTable_onCellClick;
+   o.onCellDoubleClick = MO.FManageDataTable_onCellDoubleClick;
    // @event
-   o.onBuilded      = MO.FManageDataTable_onBuilded;
+   o.onBuilded         = MO.FManageDataTable_onBuilded;
    // @event
-   o.onDataChanged  = MO.FManageDataTable_onDataChanged;
-   o.onDataFetch    = MO.FManageDataTable_onDataFetch;
-   o.onDataSave     = MO.FManageDataTable_onDataSave;
-   o.onDataDelete   = MO.FManageDataTable_onDataDelete;
+   o.onDataChanged     = MO.FManageDataTable_onDataChanged;
+   o.onDataFetch       = MO.FManageDataTable_onDataFetch;
+   o.onDataSave        = MO.FManageDataTable_onDataSave;
+   o.onDataDelete      = MO.FManageDataTable_onDataDelete;
    //..........................................................
    // @method
-   o.construct      = MO.FManageDataTable_construct;
+   o.construct         = MO.FManageDataTable_construct;
    // @method
-   o.dsMovePage     = MO.FManageDataTable_dsMovePage;
-   o.dsSearch       = MO.FManageDataTable_dsSearch;
+   o.dsMovePage        = MO.FManageDataTable_dsMovePage;
+   o.dsSearch          = MO.FManageDataTable_dsSearch;
    // @method
-   o.doFetch        = MO.FManageDataTable_doFetch;
-   o.doPrepare      = MO.FManageDataTable_doPrepare;
-   o.doSave         = MO.FManageDataTable_doSave;
-   o.doDelete       = MO.FManageDataTable_doDelete;
+   o.doFetch           = MO.FManageDataTable_doFetch;
+   o.doDetail          = MO.FManageDataTable_doDetail;
+   o.doPrepare         = MO.FManageDataTable_doPrepare;
+   o.doSave            = MO.FManageDataTable_doSave;
+   o.doDelete          = MO.FManageDataTable_doDelete;
    // @method
-   o.dispose        = MO.FManageDataTable_dispose;
+   o.dispose           = MO.FManageDataTable_dispose;
    return o;
 }
 
@@ -64,16 +64,7 @@ MO.FManageDataTable_onCellClick = function FManageDataTable_onCellClick(event){
    var cell = event.cell;
    if(MO.Class.isClass(cell, MO.FDuiCellStatus)){
       var row = event.row;
-      // 显示子项页面
-      var unitFrameName = o._unitFrameName;
-      MO.Assert.debugNotEmpty(unitFrameName);
-      var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
-      unitFrame.doDetail(row);
-      // 设置历史栏
-      var historyBar = o._frameSet._historyBar;
-      var historyButton = historyBar.historyPush();
-      historyButton.setLabel(unitFrame.label());
-      historyButton.attributeSet('frame_name', unitFrame.name());
+      o.doDetail(row);
    }
 }
 
@@ -83,51 +74,10 @@ MO.FManageDataTable_onCellClick = function FManageDataTable_onCellClick(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataTable_onRowClick = function FManageDataTable_onRowClick(event){
+MO.FManageDataTable_onCellDoubleClick = function FManageDataTable_onCellDoubleClick(event){
    var o = this;
-   return;
    var row = event.row;
-   // 显示子项页面
-   var unitFrameName = o._unitFrameName;
-   MO.Assert.debugNotEmpty(unitFrameName);
-   var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
-   unitFrame.doDetail(row);
-   // 设置历史栏
-   var historyBar = o._frameSet._historyBar;
-   var historyButton = historyBar.historyPush();
-   historyButton.setLabel(unitFrame.label());
-   historyButton.attributeSet('frame_name', unitFrame.name());
-}
-
-//==========================================================
-// <T>数据改变处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FManageDataTable_onPageClick = function FManageDataTable_onPageClick(event){
-   var o  = this;
-   var button = event.sender;
-   // 获得命令
-   var attributes = button.attributes();
-   if(attributes){
-      var action = attributes.get('action');
-      // 执行命令
-      switch(action){
-         case 'insert':
-            o.doPrepare(attributes);
-            break;
-         case 'save':
-            o.doSave();
-            break;
-         case 'delete':
-            o.doDelete();
-            break;
-         case 'sort':
-            o.doSort();
-            break;
-      }
-   }
+   o.doDetail(row);
 }
 
 //==========================================================
@@ -141,16 +91,8 @@ MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
    o.__base.FDuiTableFrame.onBuilded.call(o, event);
    // 按键处理
    o._controlInsert.addClickListener(o, o.onInsertClick);
-   // 注册按键监听
-   var buttons = new MO.TObjects();
-   o.searchComponents(buttons, MO.MUiToolButton);
-   o.searchComponents(buttons, MO.MUiMenuButton);
-   var count = buttons.count();
-   for(var i = 0; i < count; i++){
-      var button = buttons.at(i);
-      button.addClickListener(o, o.onPageClick);
-   }
    o.addCellClickListener(o, o.onCellClick);
+   o.addCellDoubleClickListener(o, o.onCellDoubleClick);
 }
 
 //==========================================================
@@ -180,6 +122,7 @@ MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
    var dataset = source.currentDataset();
    o.clearRows();
    o.loadDataset(dataset);
+   o.psRefresh();
    // 允许处理
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
@@ -327,6 +270,26 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var url = MO.Lang.String.format('/cloud.logic.frame.ws?action=fetch');
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataFetch);
+}
+
+//==========================================================
+// <T>加载配置信息。</T>
+//
+// @method
+// @param containerName:String 容器名称
+//==========================================================
+MO.FManageDataTable_doDetail = function FManageDataTable_doDetail(row){
+   var o = this;
+   // 显示子项页面
+   var unitFrameName = o._unitFrameName;
+   MO.Assert.debugNotEmpty(unitFrameName);
+   var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
+   unitFrame.doDetail(row);
+   // 设置历史栏
+   var historyBar = o._frameSet._historyBar;
+   var historyButton = historyBar.historyPush();
+   historyButton.setLabel(unitFrame.label());
+   historyButton.attributeSet('frame_name', unitFrame.name());
 }
 
 //==========================================================

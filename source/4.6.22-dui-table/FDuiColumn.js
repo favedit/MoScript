@@ -75,6 +75,8 @@ MO.FDuiColumn = function FDuiColumn(o){
    o.onSearchClick      = MO.Class.register(o, new MO.AEventClick('onSearchClick'));
    o.onSearchLeave      = MO.Class.register(o, new MO.AEventMouseLeave('onSearchLeave'));
    o.onSearchKeyDown    = MO.Class.register(o, new MO.AEventKeyDown('onSearchKeyDown'));
+   o.onCellMouseEnter   = MO.Class.register(o, new MO.AEventMouseEnter('onCellMouseEnter'), MO.FDuiColumn_onCellMouseEnter);
+   o.onCellMouseLeave   = MO.Class.register(o, new MO.AEventMouseLeave('onCellMouseLeave'), MO.FDuiColumn_onCellMouseLeave);
    //..........................................................
    // @method
    o.createCell         = MO.FDuiColumn_createCell;
@@ -127,8 +129,6 @@ MO.FDuiColumn = function FDuiColumn(o){
    //o._hSearchDrop       = null;
    //..........................................................
    // @event
-   //o.onCellMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onCellMouseEnter'), FDuiColumn_onCellMouseEnter);
-   //o.onCellMouseLeave  = MO.Class.register(o, new MO.AEventMouseLeave('onCellMouseLeave'), FDuiColumn_onCellMouseLeave);
    //o.onCellMouseDown   = MO.Class.register(o, new MO.AEventMouseDown('onCellMouseDown'), FDuiColumn_onCellMouseDown);
    //o.onCellClick       = MO.Class.register(o, new MO.AEventClick('onCellClick'), FDuiColumn_onCellClick);
    //o.onCellDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onCellDoubleClick'), FDuiColumn_onCellDoubleClick);
@@ -348,6 +348,28 @@ MO.FDuiColumn_onBuild = function FDuiColumn_onBuild(event) {
 }
 
 //==========================================================
+// <T>单元格鼠标进入处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiColumn_onCellMouseEnter = function FDuiColumn_onCellMouseEnter(event){
+   var row = event.row;
+   this._table.hoverRow(row, true);
+}
+
+//==========================================================
+// <T>单元格鼠标离开处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiColumn_onCellMouseLeave = function FDuiColumn_onCellMouseLeave(event){
+   var row = event.row;
+   this._table.hoverRow(row, false);
+}
+
+//==========================================================
 // <T>创建单元格。</T>
 //
 // @method
@@ -438,15 +460,7 @@ MO.FDuiColumn_dispose = function FDuiColumn_dispose(){
 
 
 
-//==========================================================
-MO.FDuiColumn_onCellMouseEnter = function FDuiColumn_onCellMouseEnter(s, e){
-   this.table.hoverRow(s.row, true);
-}
 
-//==========================================================
-MO.FDuiColumn_onCellMouseLeave = function FDuiColumn_onCellMouseLeave(s, e){
-   this.table.hoverRow(s.row, false);
-}
 
 //==========================================================
 MO.FDuiColumn_onCellMouseDown = function FDuiColumn_onCellMouseDown(s, e){

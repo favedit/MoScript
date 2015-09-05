@@ -230,20 +230,21 @@ MO.FDuiNumber_set = function FDuiNumber_set(value){
 MO.FDuiNumber_refreshStyle = function FDuiNumber_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
-   // 设置编辑样式
+   // 计算格式
    var hInput = o._hInput;
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
+   // 设置样式
    hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 
 //==========================================================

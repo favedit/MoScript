@@ -647,7 +647,6 @@ MO.TMap_get = function TMap_get(name, defaultValue){
 }
 MO.TMap_set = function TMap_set(name, value){
    var o = this;
-   MO.Assert.debugNotNull(name);
    var nameString = name.toString();
    var code = nameString.toLowerCase();
    var index = o._table[code];
@@ -1327,13 +1326,11 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
-   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1346,9 +1343,7 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
-   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
-   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1406,7 +1401,6 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -2585,7 +2579,6 @@ MO.RClass.prototype.isName = function RClass_isName(value, name){
 }
 MO.RClass.prototype.isClass = function RClass_isClass(value, clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    if(value){
       var name = o.name(clazz);
       if(value.__base){
@@ -2877,7 +2870,6 @@ MO.RClass.prototype.build = function RClass_build(clazz){
 }
 MO.RClass.prototype.free = function RClass_free(instance){
    var clazz = instance.__class;
-   MO.Assert.debugNotNull(clazz);
    clazz.free(instance);
 }
 MO.RClass.prototype.dump = function RClass_dump(v){
@@ -5076,7 +5068,6 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
-   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -5377,11 +5368,6 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
-   MO.Assert.debugNotNull(source);
-   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
-   MO.Assert.debugTrue(sourceCount <= source.length);
-   MO.Assert.debugNotNull(target);
-   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }
@@ -5603,7 +5589,6 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 }
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var name = null;
    if(value.constructor == String){
       name = value;
@@ -5636,7 +5621,6 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){
@@ -9099,7 +9083,6 @@ MO.RRandom = new MO.RRandom();
 MO.Lang.Random = MO.RRandom;
 MO.AListener = function AListener(name, linker){
    var o = this;
-   MO.Assert.debugNotEmpty(name);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    if(linker == null){
@@ -13024,7 +13007,6 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -13929,7 +13911,6 @@ MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
-   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.Window;
@@ -13937,7 +13918,6 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
-   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    var o = MO.Window;
@@ -14101,7 +14081,6 @@ MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
    o._statusEnable = v;
 }
 MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
-   MO.Assert.debugNotNull(control);
    this._hContainer.appendChild(hPanel);
 }
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
@@ -14285,7 +14264,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(o._typeCd == MO.EBrowser.Chrome){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
-   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, platformCd), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -14306,7 +14284,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
          capability.pixelRatio = Math.min(pixelRatio, 3);
-         MO.Logger.debug(o, 'Parse browser agent. (pixel_ratio={1}, capability_ratio={2})', pixelRatio, capability.pixelRatio);
       }
    }
    if(window.Worker){
@@ -14337,7 +14314,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       events['visibilitychange'] = 'webkitvisibilitychange';
    }
    o.refreshOrientation();
-   MO.Logger.debug(o, 'Browser connect. (agent={1})', o._agent);
 }
 MO.RBrowser.prototype.agent = function RBrowser_agent(){
    return this._agent;
@@ -15454,7 +15430,6 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
-   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){
@@ -15967,7 +15942,6 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
-   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -19879,7 +19853,6 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
-            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
@@ -20158,7 +20131,6 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    o._size.set(width, height);
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
-   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;

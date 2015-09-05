@@ -12,31 +12,35 @@ MO.FDuiNumber3 = function FDuiNumber3(o){
    o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
    //..........................................................
    // @style
-   o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
-   o._styleInputPanel  = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
-   o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._styleValuePanel      = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInputPanel      = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput           = MO.Class.register(o, new MO.AStyle('_styleInput'));
    //..........................................................
    // @attribute
-   o._innerOriginValue = null;
-   o._innerDataValue   = null;
+   o._innerOriginValue     = null;
+   o._innerDataValue       = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @html
-   o._hInput           = null;
+   o._hInput               = null;
    //..........................................................
    // @event
-   o.onBuildEditInput  = MO.FDuiNumber3_onBuildEditInput;
-   o.onBuildEditValue  = MO.FDuiNumber3_onBuildEditValue;
+   o.onBuildEditInput      = MO.FDuiNumber3_onBuildEditInput;
+   o.onBuildEditValue      = MO.FDuiNumber3_onBuildEditValue;
    // @event
-   o.onInputKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), FDuiNumber3_onInputKeyPress);
-   o.onInputChanged    = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), FDuiNumber3_onInputChanged);
+   o.onInputKeyPress       = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), FDuiNumber3_onInputKeyPress);
+   o.onInputChanged        = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), FDuiNumber3_onInputChanged);
    //..........................................................
    // @method
-   o.construct         = MO.FDuiNumber3_construct;
+   o.construct             = MO.FDuiNumber3_construct;
    // @method
-   o.get               = MO.FDuiNumber3_get;
-   o.set               = MO.FDuiNumber3_set;
+   o.get                   = MO.FDuiNumber3_get;
+   o.set                   = MO.FDuiNumber3_set;
+   // @method
+   o.refreshStyle          = MO.FDuiNumber3_refreshStyle;
+   // @method
+   o.dispose               = MO.FDuiNumber3_dispose;
 
 
 
@@ -234,11 +238,48 @@ MO.FDuiNumber3_set = function FDuiNumber3_set(p){
    o.changeSet(false);
 }
 
+//==========================================================
+// <T>根据当前状态刷新样式。</T>
+//
+// @method
+//==========================================================
+MO.FDuiNumber3_refreshStyle = function FDuiNumber3_refreshStyle(){
+   var o = this;
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   // 计算格式
+   var inputStyle = null;
+   if(o._statusEditable){
+      if(o._statusValueHover){
+         inputStyle = 'InputHover';
+      }else{
+         inputStyle = 'InputNormal';
+      }
+   }else{
+      inputStyle = 'InputReadonly';
+   }
+   // 设置样式
+   o._hInput1.className = o.styleName(inputStyle);
+   o._hInput1.readOnly = !o._statusEditable;
+   o._hInput2.className = o.styleName(inputStyle);
+   o._hInput2.readOnly = !o._statusEditable;
+   o._hInput3.className = o.styleName(inputStyle);
+   o._hInput3.readOnly = !o._statusEditable;
+}
 
-
-
-
-
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FDuiNumber3_dispose = function FDuiNumber3_dispose(){
+   var o = this
+   // 释放属性
+   o._inputSize = MO.Lang.Object.dispose(o._inputSize);
+   o._dataValue = MO.Lang.Object.dispose(o._dataValue);
+   o._currentValue = MO.Lang.Object.dispose(o._currentValue);
+   // 父处理
+   o.__base.FDuiEditControl.dispose.call(o);
+}
 
 
 

@@ -197,6 +197,13 @@ MO.FDuiTable_oeRefresh = function FDuiTable_oeRefresh(event){
       //if(columnAuto){
       //   columnAuto.setWidth(Math.max(dataWidth - 1, columnAuto.width ? columnAuto.width : 120));
       //}
+      // 设置行高
+      var rows = o._rows;
+      var count = rows.count();
+      for(var i = 0; i < count; i++){
+         var row = rows.at(i);
+         row._hPanel.style.height = row._hFixPanel.offsetHeight + 'px';
+      }
    }
 }
 

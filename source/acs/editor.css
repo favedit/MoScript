@@ -60,6 +60,7 @@
 
 .FEditorDsFrameSet_Property_Content{
    background-color: #FFFFFF;
+   overflow-y: auto;
 }
 
 

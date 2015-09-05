@@ -178,17 +178,20 @@ MO.FDuiEdit_refreshValue = function FDuiEdit_refreshValue(){
 MO.FDuiEdit_refreshStyle = function FDuiEdit_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
-   // 设置样式
-   var hInput = o._hInput;
+   // 计算样式
+   var inputStyle = null;
    if(o._statusEditable){
       if(o._statusValueHover){
-         hInput.className = o.styleName('InputHover');
+         inputStyle = 'InputHover';
       }else{
-         hInput.className = o.styleName('InputNormal');
+         inputStyle = 'InputNormal';
       }
    }else{
-      hInput.className = o.styleName('InputReadonly');
+      inputStyle = 'InputReadonly';
    }
+   // 设置样式
+   var hInput = o._hInput;
+   hInput.className = o.styleName(inputStyle);
    hInput.readOnly = !o._statusEditable;
 }
 

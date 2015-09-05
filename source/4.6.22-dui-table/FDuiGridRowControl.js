@@ -88,7 +88,6 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    //o.doDelete         = FDuiGridRowControl_doDelete;
    //o.refresh          = FDuiGridRowControl_refresh;
    //o.refreshSize      = RMethod.empty;
-   //o.dump             = FDuiGridRowControl_dump;
    return o;
 }
 
@@ -516,21 +515,4 @@ MO.FDuiGridRowControl_doDelete = function FDuiGridRowControl_doDelete(){
 MO.FDuiGridRowControl_refresh = function FDuiGridRowControl_refresh(){
    var o = this;
    o.table.setDataStatus(o, o.isDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
-}
-
-//==========================================================
-// <T>获得的运行信息。</T>
-//
-// @method
-// @param d:dump:TString 调试信息
-// @return 调试信息
-//==========================================================
-MO.FDuiGridRowControl_dump = function FDuiGridRowControl_dump(s){
-   var o = this;
-   s = RString.nvlStr(s);
-   s.append(RClass.dump(o), '[');
-   s.append(o._statusSelect ? 'S' : '_');
-   s.append(']');
-   s.append(o.saveRow().dump());
-   return s;
 }

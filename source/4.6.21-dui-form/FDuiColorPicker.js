@@ -60,8 +60,8 @@ MO.FDuiColorPicker_onBuildEditValue = function FDuiColorPicker_onBuildEditValue(
    var o = this;
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    //..........................................................
    // 建立改变栏
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
@@ -71,8 +71,6 @@ MO.FDuiColorPicker_onBuildEditValue = function FDuiColorPicker_onBuildEditValue(
    var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
    var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel);
    o.attachEvent('onInputEdit', hInput, o.onInputEdit);
-   // 设置大小
-   MO.Window.Html.setSize(hInputPanel, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
       hInput.maxLength = o._editLength;
@@ -198,18 +196,19 @@ MO.FDuiColorPicker_refreshValue = function FDuiColorPicker_refreshValue(){
 MO.FDuiColorPicker_refreshStyle = function FDuiColorPicker_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
-   // 设置编辑样式
-   var hInput = o._hInput;
+   // 计算样式
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
+   // 设置样式
+   var hInput = o._hInput;
    hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }

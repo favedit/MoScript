@@ -562,7 +562,6 @@ MO.FDuiButton_doClick = function FDuiButton_doClick(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -1447,12 +1446,10 @@ MO.FDuiCheckPicker_onBuildEdit = function FDuiCheckPicker_onBuildEdit(b){
 }
 MO.FDuiCheckPicker_onEditEnd = function FDuiCheckPicker_onEditEnd(editor){
    var o = this;
-   MO.Logger.debug(o, 'Begin (editor={1}:{2} value={3})', editor, editor?editor.value():'', o.dataValue);
    if(editor){
       o.set(editor.values);
    }
    o.onDataEditEnd(o);
-   MO.Logger.debug(o, 'End (editor={1} value={2})', editor, o.dataValue);
 }
 MO.FDuiCheckPicker_loadConfig = function FDuiCheckPicker_loadConfig(c){
    var o = this;
@@ -2236,14 +2233,13 @@ MO.FDuiColorPicker_onBuildEditValue = function FDuiColorPicker_onBuildEditValue(
    var o = this;
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(event);
    var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
    var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel);
    o.attachEvent('onInputEdit', hInput, o.onInputEdit);
-   MO.Window.Html.setSize(hInputPanel, o._inputSize);
    if(o._editLength){
       hInput.maxLength = o._editLength;
    }
@@ -2290,19 +2286,19 @@ MO.FDuiColorPicker_refreshValue = function FDuiColorPicker_refreshValue(){
 MO.FDuiColorPicker_refreshStyle = function FDuiColorPicker_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
-   var hInput = o._hInput;
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
+   var hInput = o._hInput;
    hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 MO.FDuiColorPickerEditor = function FDuiColorPickerEditor(o){
    o = MO.Class.inherits(this, o, MO.FDropEditor, MO.MShadow);
@@ -3219,16 +3215,18 @@ MO.FDuiEdit_refreshValue = function FDuiEdit_refreshValue(){
 MO.FDuiEdit_refreshStyle = function FDuiEdit_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
-   var hInput = o._hInput;
+   var inputStyle = null;
    if(o._statusEditable){
       if(o._statusValueHover){
-         hInput.className = o.styleName('InputHover');
+         inputStyle = 'InputHover';
       }else{
-         hInput.className = o.styleName('InputNormal');
+         inputStyle = 'InputNormal';
       }
    }else{
-      hInput.className = o.styleName('InputReadonly');
+      inputStyle = 'InputReadonly';
    }
+   var hInput = o._hInput;
+   hInput.className = o.styleName(inputStyle);
    hInput.readOnly = !o._statusEditable;
 }
 MO.FDuiEdit_dispose = function FDuiEdit_dispose(){
@@ -3544,7 +3542,6 @@ MO.FDuiEditor_onEditBegin = function FDuiEditor_onEditBegin(){
 }
 MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
    var o = this;
-   MO.Logger.debug(o, 'Edit changed');
    var g = o.storage = MO.Lang.Object.nvlObj(o.storage);
    if(g.value == o.value()){
       if(o.changed){
@@ -3559,7 +3556,6 @@ MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
 MO.FDuiEditor_onEditEnd = function FDuiEditor_onEditEnd(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor end. (control={1})', MO.Class.dump(s));
    o.hide();
    if(o.lsnEditEnd){
       o.lsnEditEnd.process(o);
@@ -3608,7 +3604,6 @@ MO.FDuiEditor_linkControl = function FDuiEditor_linkControl(c){
 MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor begin. (control={1})', MO.Class.dump(s));
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
    }
@@ -3618,7 +3613,6 @@ MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
 MO.FDuiEditor_editCancel = function FDuiEditor_editCancel(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor cancel. (control={1})', MO.Class.dump(s));
    o.hide();
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
@@ -4135,14 +4129,13 @@ MO.FDuiIconPicker_onBuildEditValue = function FDuiIconPicker_onBuildEditValue(ev
    var o = this;
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
    o.onBuildEditChange(event);
    var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
    var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel);
    o.attachEvent('onInputEdit', hInput, o.onInputEdit);
-   MO.Window.Html.setSize(hInputPanel, o._inputSize);
    if(o._editLength){
       hInput.maxLength = o._editLength;
    }
@@ -4189,19 +4182,19 @@ MO.FDuiIconPicker_refreshValue = function FDuiIconPicker_refreshValue(){
 MO.FDuiIconPicker_refreshStyle = function FDuiIconPicker_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
-   var hInput = o._hInput;
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
+   var hInput = o._hInput;
    hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 MO.FDuiLabel = function FDuiLabel(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl);
@@ -5142,17 +5135,17 @@ MO.FDuiNumber_refreshStyle = function FDuiNumber_refreshStyle(){
    o.__base.FDuiEditControl.refreshStyle.call(o);
    var hInput = o._hInput;
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
    hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 MO.FDuiNumber_dispose = function FDuiNumber_dispose(){
    var o = this
@@ -5329,7 +5322,7 @@ MO.FDuiNumber2_refreshStyle = function FDuiNumber2_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
@@ -5340,10 +5333,10 @@ MO.FDuiNumber2_refreshStyle = function FDuiNumber2_refreshStyle(){
    }
    var hInput1 = o._hInput1;
    hInput1.className = o.styleName(inputStyle);
-   hInput1.readOnly = !o._statusValueEdit;
+   hInput1.readOnly = !o._statusEditable;
    var hInput2 = o._hInput2;
    hInput2.className = o.styleName(inputStyle);
-   hInput2.readOnly = !o._statusValueEdit;
+   hInput2.readOnly = !o._statusEditable;
 }
 MO.FDuiNumber2_dispose = function FDuiNumber2_dispose(){
    var o = this
@@ -5450,20 +5443,22 @@ MO.FDuiNumber2_link = function FDuiNumber2_link(){
 MO.FDuiNumber3 = function FDuiNumber3(o){
    o = MO.Class.inherits(this, o, MO.FDuiEditControl);
    o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
-   o._styleValuePanel  = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
-   o._styleInputPanel  = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
-   o._styleInput       = MO.Class.register(o, new MO.AStyle('_styleInput'));
-   o._innerOriginValue = null;
-   o._innerDataValue   = null;
+   o._styleValuePanel      = MO.Class.register(o, new MO.AStyle('_styleValuePanel'));
+   o._styleInputPanel      = MO.Class.register(o, new MO.AStyle('_styleInputPanel'));
+   o._styleInput           = MO.Class.register(o, new MO.AStyle('_styleInput'));
+   o._innerOriginValue     = null;
+   o._innerDataValue       = null;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o._hInput           = null;
-   o.onBuildEditInput  = MO.FDuiNumber3_onBuildEditInput;
-   o.onBuildEditValue  = MO.FDuiNumber3_onBuildEditValue;
-   o.onInputKeyPress   = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), FDuiNumber3_onInputKeyPress);
-   o.onInputChanged    = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), FDuiNumber3_onInputChanged);
-   o.construct         = MO.FDuiNumber3_construct;
-   o.get               = MO.FDuiNumber3_get;
-   o.set               = MO.FDuiNumber3_set;
+   o._hInput               = null;
+   o.onBuildEditInput      = MO.FDuiNumber3_onBuildEditInput;
+   o.onBuildEditValue      = MO.FDuiNumber3_onBuildEditValue;
+   o.onInputKeyPress       = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), FDuiNumber3_onInputKeyPress);
+   o.onInputChanged        = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), FDuiNumber3_onInputChanged);
+   o.construct             = MO.FDuiNumber3_construct;
+   o.get                   = MO.FDuiNumber3_get;
+   o.set                   = MO.FDuiNumber3_set;
+   o.refreshStyle          = MO.FDuiNumber3_refreshStyle;
+   o.dispose               = MO.FDuiNumber3_dispose;
    return o;
 }
 MO.FDuiNumber3_onBuildEditInput = function FDuiNumber3_onBuildEditInput(p, h){
@@ -5562,6 +5557,33 @@ MO.FDuiNumber3_set = function FDuiNumber3_set(p){
       h.value = MO.Lang.Float.format(vd.z, 0, null, 3, null);
    }
    o.changeSet(false);
+}
+MO.FDuiNumber3_refreshStyle = function FDuiNumber3_refreshStyle(){
+   var o = this;
+   o.__base.FDuiEditControl.refreshStyle.call(o);
+   var inputStyle = null;
+   if(o._statusEditable){
+      if(o._statusValueHover){
+         inputStyle = 'InputHover';
+      }else{
+         inputStyle = 'InputNormal';
+      }
+   }else{
+      inputStyle = 'InputReadonly';
+   }
+   o._hInput1.className = o.styleName(inputStyle);
+   o._hInput1.readOnly = !o._statusEditable;
+   o._hInput2.className = o.styleName(inputStyle);
+   o._hInput2.readOnly = !o._statusEditable;
+   o._hInput3.className = o.styleName(inputStyle);
+   o._hInput3.readOnly = !o._statusEditable;
+}
+MO.FDuiNumber3_dispose = function FDuiNumber3_dispose(){
+   var o = this
+   o._inputSize = MO.Lang.Object.dispose(o._inputSize);
+   o._dataValue = MO.Lang.Object.dispose(o._dataValue);
+   o._currentValue = MO.Lang.Object.dispose(o._currentValue);
+   o.__base.FDuiEditControl.dispose.call(o);
 }
 MO.FDuiNumber3_onDataKeyDown = function FDuiNumber3_onDataKeyDown(s, e){
    var o = this;
@@ -5765,23 +5787,23 @@ MO.FDuiNumber4_refreshStyle = function FDuiNumber4_refreshStyle(){
    var o = this;
    o.__base.FDuiEditControl.refreshStyle.call(o);
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
    o._hInput1.className = o.styleName(inputStyle);
-   o._hInput1.readOnly = !o._statusValueEdit;
+   o._hInput1.readOnly = !o._statusEditable;
    o._hInput2.className = o.styleName(inputStyle);
-   o._hInput2.readOnly = !o._statusValueEdit;
+   o._hInput2.readOnly = !o._statusEditable;
    o._hInput3.className = o.styleName(inputStyle);
-   o._hInput3.readOnly = !o._statusValueEdit;
+   o._hInput3.readOnly = !o._statusEditable;
    o._hInput4.className = o.styleName(inputStyle);
-   o._hInput4.readOnly = !o._statusValueEdit;
+   o._hInput4.readOnly = !o._statusEditable;
 }
 MO.FDuiNumber4_dispose = function FDuiNumber4_dispose(){
    var o = this
@@ -6262,17 +6284,17 @@ MO.FDuiSelect_refreshStyle = function FDuiSelect_refreshStyle(){
    o.__base.MDuiEditDrop.refreshStyle.call(o);
    var hInput = o._hInput;
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
    hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 MO.FDuiSelect_drop = function FDuiSelect_drop(){
    var o = this;

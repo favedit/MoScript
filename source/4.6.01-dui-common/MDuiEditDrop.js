@@ -122,14 +122,16 @@ MO.MDuiEditDrop_refreshStyle = function MDuiEditDrop_refreshStyle(){
    var o = this;
    // 设置样式
    var hDropIcon = o._hDropIcon;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
+      var icon = null;
       if(o._statusValueHover){
-         hDropIcon.src = MO.Window.Resource.iconPath('control.drop-hover');
+         icon = 'control.drop-hover';
       }else{
-         hDropIcon.src = MO.Window.Resource.iconPath('control.drop');
+         icon = 'control.drop';
       }
+      hDropIcon.src = MO.Window.Resource.iconPath(icon );
    }
-   MO.Window.Html.visibleSet(o._hDropPanel, o._statusValueEdit);
+   MO.Window.Html.visibleSet(o._hDropPanel, o._statusEditable);
 }
 
 //==========================================================

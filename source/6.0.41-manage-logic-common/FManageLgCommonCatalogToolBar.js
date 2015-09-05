@@ -9,6 +9,6 @@ MO.FManageLgCommonCatalogToolBar = function FManageLgCommonCatalogToolBar(o){
    o = MO.Class.inherits(this, o, MO.FManageCatalogToolBar);
    //..........................................................
    // @property
-   o._frameName = 'manage.logic.person.CatalogToolBar';
+   o._frameName = 'manage.logic.common.CatalogToolBar';
    return o;
 }

@@ -14,17 +14,26 @@ MO.FDuiCell = function FDuiCell(o){
    o = MO.Class.inherits(this, o, MO.FDuiControl, MO.MUiValue, MO.MUiDataValue);
    //..........................................................
    // @style
-   o._stylePanel       = MO.Class.register(o, new MO.AStyle('_stylePanel'));
+   o._stylePanelNormal = MO.Class.register(o, new MO.AStyle('_stylePanelNormal'));
+   o._stylePanelHover  = MO.Class.register(o, new MO.AStyle('_stylePanelHover'));
+   o._stylePanelSelect = MO.Class.register(o, new MO.AStyle('_stylePanelSelect'));
+   o._styleInputNormal = MO.Class.register(o, new MO.AStyle('_styleInputNormal'));
+   o._styleInputHover  = MO.Class.register(o, new MO.AStyle('_styleInputHover'));
+   o._styleInputSelect = MO.Class.register(o, new MO.AStyle('_styleInputSelect'));
    //..........................................................
    // @attribute
    o._table            = MO.Class.register(o, new MO.AGetSet('_table'));
    o._column           = MO.Class.register(o, new MO.AGetSet('_column'));
    o._row              = MO.Class.register(o, new MO.AGetSet('_row'));
+   // @attribute
+   o._rowStatusCd      = MO.EDuiGridRowStatus.Normal;
    //..........................................................
    // @event
    o.onBuildPanel      = MO.FDuiCell_onBuildPanel;
    o.onBuild           = MO.FDuiCell_onBuild;
    // @event
+   o.onCellMouseEnter  = MO.Class.register(o, new MO.AEventMouseEnter('onCellMouseEnter'), MO.FDuiCell_onCellMouseEnter);
+   o.onCellMouseLeave  = MO.Class.register(o, new MO.AEventMouseLeave('onCellMouseLeave'), MO.FDuiCell_onCellMouseLeave);
    o.onCellClick       = MO.Class.register(o, new MO.AEventClick('onCellClick'), MO.FDuiCell_onCellClick);
    o.onCellDoubleClick = MO.Class.register(o, new MO.AEventDoubleClick('onCellDoubleClick'), MO.FDuiCell_onCellDoubleClick);
    //..........................................................
@@ -79,7 +88,10 @@ MO.FDuiCell_onBuild = function FDuiCell_onBuild(event){
    var hPanel = o._hPanel;
    MO.Window.Html.linkSet(hPanel, 'control', o);
    // 关联事件
+   o.attachEvent('onCellMouseEnter', hPanel);
+   o.attachEvent('onCellMouseLeave', hPanel);
    o.attachEvent('onCellClick', hPanel);
+   o.attachEvent('onCellDoubleClick', hPanel);
    //column.linkEvent(o, 'onCellMouseEnter', hPanel, column.onCellMouseEnter);
    //column.linkEvent(o, 'onCellMouseLeave', hPanel, column.onCellMouseLeave);
    // 设置编辑颜色
@@ -97,6 +109,32 @@ MO.FDuiCell_onBuild = function FDuiCell_onBuild(event){
    //o._hEditPanel.style.paddingLeft = 2;
    //o._hEditPanel.style.overflow = 'hidden';
    //o._hEditPanel.style.textOverflow = 'ellipsis';
+}
+
+//==========================================================
+// <T>单元格鼠标进入处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiCell_onCellMouseEnter = function FDuiCell_onCellMouseEnter(event){
+   var o = this;
+   var table = o._table;
+   var row = o._row;
+   table.hoverRow(row, true);
+}
+
+//==========================================================
+// <T>单元格鼠标离开处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiCell_onCellMouseLeave = function FDuiCell_onCellMouseLeave(event){
+   var o = this;
+   var table = o._table;
+   var row = o._row;
+   table.hoverRow(row, false);
 }
 
 //==========================================================
@@ -184,7 +222,7 @@ MO.FDuiCell_focus = function FDuiCell_focus(value){
 }
 
 //==========================================================
-// <T>根据设置信息，刷新单元格的样式。</T>
+// <T>刷新单元格的样式。</T>
 //
 // @method
 //==========================================================
@@ -192,7 +230,7 @@ MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
    var o = this;
    var table = o._table;
    var row = o._row;
-   var s = row.isSelect;
+   var selected = row._statusSelect;
    // 设置编辑颜色
    //var he = o._hEdit;
    //if(he){
@@ -201,21 +239,23 @@ MO.FDuiCell_refreshStyle = function FDuiCell_refreshStyle(){
    //   he.style.backgroundColor = bc;
    //}
    // 设置背景颜色
-   //var bc = null;
-   //if(s){
-   //   bc = EColor._rowSelect;
-   //}else{
-   //   var ih = (table.__hoverRow == row);
-   //   if(ih){
-   //      bc = EColor._rowHover;
-   //   }else{
-   //      bc = EColor._rows[row.index % EColor._rows.length];
-   //   }
-   //}
+   if(selected){
+      o._rowStatusCd = MO.EDuiGridRowStatus.Select;
+   }else{
+      var hover = (table._hoverRow == row);
+      if(hover){
+         o._rowStatusCd = MO.EDuiGridRowStatus.Hover;
+      }else{
+         o._rowStatusCd = MO.EDuiGridRowStatus.Normal;
+         //bc = EColor._rows[row.index % EColor._rows.length];
+      }
+   }
    //if(o.__focus){
    //   bc = EColor._rowEditHover;
    //}
    //o._hPanel.style.backgroundColor = bc;
+   // 设置样式
+   o._hPanel.className = o.styleName('Panel' + o._rowStatusCd);
 }
 
 //==========================================================
