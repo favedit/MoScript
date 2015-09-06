@@ -53,18 +53,18 @@ MO.FDuiMemo = function FDuiMemo(o){
 // <T>建立编辑器内容。</T>
 //
 // @method
-// @param p:argements:SArgements 参数集合
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(p){
+MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(event){
    var o = this;
    var hValuePanel = o._hValuePanel;
    var hValueForm = o._hValueForm = MO.Window.Builder.appendTable(hValuePanel);
-   hValueForm.width = '100%';
    var hValueLine = o._hValueLine = MO.Window.Builder.appendTableRow(hValueForm);
+   MO.Window.Html.setSize(hValueForm, o._inputSize);
    //..........................................................
    // 建立改变栏
    o._hChangePanel = MO.Window.Builder.appendTableCell(hValueLine);
-   o.onBuildEditChange(p);
+   o.onBuildEditChange(event);
    //..........................................................
    // 建立输入栏
    var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
@@ -73,8 +73,6 @@ MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(p){
    hInput.style.height = '100%';
    hInput.wrap = 'off';
    o.attachEvent('onInputEdit', hInput, o.onInputEdit);
-   // 设置大小
-   MO.Window.Html.setSize(hInputPanel, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
       hInput.maxLength = o._editLength;
@@ -84,12 +82,12 @@ MO.FDuiMemo_onBuildEditValue = function FDuiMemo_onBuildEditValue(p){
 //==========================================================
 // <T>编辑控件中数据修改处理。 </T>
 //
-// @param p:event:SEvent 事件对象
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiMemo_onInputEdit = function FDuiMemo_onInputEdit(p){
+MO.FDuiMemo_onInputEdit = function FDuiMemo_onInputEdit(event){
    var o = this;
    // 设置滑动栏
-   var v = o._hInput.value;
+   //var value = o._hInput.value;
    // 刷新数据
    o.refreshValue();
 }
@@ -103,7 +101,7 @@ MO.FDuiMemo_construct = function FDuiMemo_construct(){
    var o = this;
    o.__base.FDuiEditControl.construct.call(o);
    // 设置属性
-   o._inputSize = new MO.SSize2(0, 0);
+   o._inputSize = new MO.SSize2();
 }
 
 //==========================================================
@@ -187,17 +185,17 @@ MO.FDuiMemo_refreshStyle = function FDuiMemo_refreshStyle(){
    // 设置编辑样式
    var hInput = o._hInput;
    var inputStyle = null;
-   if(o._statusValueEdit){
+   if(o._statusEditable){
       if(o._statusValueHover){
          inputStyle = 'InputHover';
       }else{
-         inputStyle = 'InputEdit';
+         inputStyle = 'InputNormal';
       }
    }else{
       inputStyle = 'InputReadonly';
    }
    hInput.className = o.styleName(inputStyle);
-   hInput.readOnly = !o._statusValueEdit;
+   hInput.readOnly = !o._statusEditable;
 }
 
 //==========================================================

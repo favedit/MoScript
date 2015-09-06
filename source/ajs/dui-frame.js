@@ -360,6 +360,41 @@ MO.FDuiFrameSpliter_dispose = function FDuiFrameSpliter_dispose(){
    o._hSize = MO.Window.Html.free(o._hSize);
    o.__base.FDuiControl.dispose.call(o);
 }
+MO.FDuiPickerFrame = function FDuiPickerFrame(o) {
+   o = MO.Class.inherits(this, o, MO.FDuiWindow, MO.MUiDataset);
+   o._table      = null;
+   o.onBuild     = MO.FDuiPickerFrame_onBuild;
+   o.construct   = MO.FDuiPickerFrame_construct;
+   o.createChild = MO.FDuiPickerFrame_createChild;
+   o.push        = MO.FDuiPickerFrame_push;
+   return o;
+}
+MO.FDuiPickerFrame_onBuild = function FDuiPickerFrame_onBuild(event){
+   var o = this;
+   o.__base.FDuiWindow.onBuild.call(o, event);
+   var table = o._table;
+   table.build(o);
+   table._hPanel.style.width = '100%';
+   table._hPanel.style.height = '100%';
+   table._hDataPanel.style.backgound = '100%';
+   table.setPanel(o._hPanelForm);
+   table.psRefresh();
+}
+MO.FDuiPickerFrame_construct = function FDuiPickerFrame_construct(){
+   var o = this;
+   o.__base.FDuiWindow.construct.call(o);
+   var table = o._table = MO.Class.create(MO.FDuiTable);
+   table._displayTitle = false;
+}
+MO.FDuiPickerFrame_createChild = function FDuiPickerFrame_createChild(xconfig){
+   var o = this;
+   var control = o._table.createChild(xconfig);
+   return control;
+}
+MO.FDuiPickerFrame_push = function FDuiPickerFrame_push(control){
+   var o = this;
+   o._table.push(control);
+}
 MO.FDuiTableFrame = function FDuiTableFrame(o) {
    o = MO.Class.inherits(this, o, MO.FDuiTable, MO.MUiDataset);
    o._unitFrameName = MO.Class.register(o, [new MO.APtyString('_unitFrameName'), new MO.AGetSet('_unitFrameName')]);
@@ -417,24 +452,26 @@ MO.FDuiWindow_onBuild = function FDuiWindow_onBuild(event){
 }
 MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(event){
    var o = this;
+   var hPanel = o._hPanel;
    o._mouseDraging = true;
    o._mousePosition.set(event.x, event.y);
-   o._mouseControl.set(o._hPanel.offsetLeft, o._hPanel.offsetTop);
-   MO.Window.Html.cursorSet(o._hPanel, EUiCursor.Move);
+   o._mouseControl.set(hPanel.offsetLeft, hPanel.offsetTop);
+   MO.Window.Html.cursorSet(hPanel, MO.EUiCursor.Move);
 }
 MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
    var o = this;
+   var hPanel = null;
    if(o._mouseDraging){
       var cx = event.x - o._mousePosition.x;
       var cy = event.y - o._mousePosition.y;
-      o._hPanel.style.left = (o._mouseControl.x + cx) + 'px';
-      o._hPanel.style.top = (o._mouseControl.y + cy) + 'px';
+      hPanel.style.left = (o._mouseControl.x + cx) + 'px';
+      hPanel.style.top = (o._mouseControl.y + cy) + 'px';
    }
 }
 MO.FDuiWindow_onMouseCaptureStop = function FDuiWindow_onMouseCaptureStop(event){
    var o = this;
    o._mouseDraging = false;
-   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+   MO.Window.Html.cursorSet(o._hPanel, MO.EUiCursor.Auto);
 }
 MO.FDuiWindow_construct = function FDuiWindow_construct(){
    var o = this;
@@ -460,6 +497,7 @@ MO.FDuiWindow_setLabel = function FDuiWindow_setLabel(label){
 }
 MO.FDuiWindow_showPosition = function FDuiWindow_showPosition(positionCd){
    var o = this;
+   var hPanel = o._hPanel;
    o.show();
    if(positionCd == MO.EUiPosition.Center){
       var width = o._hPanel.offsetWidth;
@@ -468,6 +506,8 @@ MO.FDuiWindow_showPosition = function FDuiWindow_showPosition(positionCd){
       var top = (window.document.body.offsetHeight - height) / 2;
       o._hPanel.style.left = left + 'px';
       o._hPanel.style.top = top + 'px';
+   }else{
+      throw new MO.TError(o, 'Invalid position.');
    }
 }
 MO.FDuiWindow_doFocus = function FDuiWindow_doFocus(){

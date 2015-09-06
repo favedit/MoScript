@@ -278,6 +278,7 @@ MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(
    var o = this;
    var vt = s._invalidText = o.validText(s.text());
    if(vt){
+      MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
    }else{
       s.commitValue();
    }
@@ -368,48 +369,6 @@ MO.MDuiEditDrop_dispose = function MDuiEditDrop_dispose(){
    o._hDropIcon = MO.Window.Html.free(o._hDropIcon);
    o._hDropPanel = MO.Window.Html.free(o._hDropPanel);
 }
-MO.MDuiEditReference = function MDuiEditReference(o){
-   o = MO.Class.inherits(this, o);
-   o._lovService    = MO.Class.register(o, new MO.APtyString('_lovService'));
-   o._lovReference  = MO.Class.register(o, new MO.APtyString('_lovReference'));
-   o._lovFields     = MO.Class.register(o, new MO.APtyString('_lovFields'));
-   o._lovWhere      = MO.Class.register(o, new MO.APtyString('_lovWhere'));
-   o._lovOrder      = MO.Class.register(o, new MO.APtyString('_lovOrder'));
-   o._listView      = null;
-   o.onListSelected = MO.Method.empty;
-   o.canListView    = MO.MDuiEditReference_canListView;
-   o.setLabelStyle  = MO.MDuiEditReference_setLabelStyle;
-   o.doListView     = MO.MDuiEditReference_doListView;
-   return o;
-}
-MO.MDuiEditReference_onListClick = function MDuiEditReference_onListClick(e){
-   var o = this;
-   if(o.canListView()){
-      o.doListView();
-   }
-}
-MO.MDuiEditReference_canListView = function MDuiEditReference_canListView(){
-   return !MO.Lang.String.isEmpty(this._lovReference) && this._editable;
-}
-MO.MDuiEditReference_setLabelStyle = function MDuiEditReference_setLabelStyle(){
-   var o = this;
-   if(!MO.Lang.String.isEmpty(o.lovRefer)){
-      o.hLabel.style.cursor = 'hand';
-      o.attachEvent('onListClick', o.hLabel);
-      o.hLabel.className = 'RLine_Underline';
-   }
-}
-MO.MDuiEditReference_doListView = function MDuiEditReference_doListView(cvs){
-   var o = this;
-   var v = o._listView;
-   if(!v){
-      v = o._listView = top.MO.RControl.create(top.MO.FListWindow);
-   }
-   v.linkConsole = MO.RConsole;
-   v.linkLovControl(o);
-   v.show();
-   v.fetch(cvs);
-}
 MO.MDuiEditValidator = function MDuiEditValidator(o){
    o = MO.Class.inherits(this, o);
    o._validable = false;
@@ -417,20 +376,6 @@ MO.MDuiEditValidator = function MDuiEditValidator(o){
    o._validText = null;
    o.oeValid    = MO.Method.empty;
    return o;
-}
-MO.MDuiEditZoom = function MDuiEditZoom(o){
-   o = MO.Class.inherits(this, o);
-   o._zoomReference = MO.Class.register(o, new MO.APtyString('_zoomReference'));
-   o._zoomField     = MO.Class.register(o, new MO.APtyString('_zoomField'));
-   o.testZoom       = MO.MDuiEditZoom_testZoom;
-   o.doZoom         = MO.MDuiEditZoom_doZoom;
-   return o;
-}
-MO.MDuiEditZoom_testZoom = function MDuiEditZoom_testZoom(){
-   return !MO.Lang.String.isEmpty(this._zoomReference);
-}
-MO.MDuiEditZoom_doZoom = function MDuiEditZoom_doZoom(p){
-   MO.RFormSpace.doZoom(this, p);
 }
 MO.MDuiFocus = function MDuiFocus(o){
    o = MO.Class.inherits(this, o);

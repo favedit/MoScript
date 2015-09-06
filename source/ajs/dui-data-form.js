@@ -17,6 +17,7 @@ with(MO){
    }
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
+      MO.Assert.debugTrue(MO.Class.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');
@@ -27,6 +28,7 @@ with(MO){
       root.set('action', svc.action);
       RConsole.find(FEnvironmentConsole).build(root);
       p.dsSaveValue(root.create('Data'));
+      MO.Logger.debug(this, xdocument.dump());
       o._loading = true;
       o._dataContainer = p;
       var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);

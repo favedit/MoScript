@@ -1935,6 +1935,62 @@ MO.MUiDataValue = function MUiDataValue(o){
    o.oeSaveDataRow = MO.Method.empty;
    return o;
 }
+MO.MUiDescriptorPicker = function MUiDescriptorPicker(o){
+   o = MO.Class.inherits(this, o);
+   o._pickerService = MO.Class.register(o, new MO.APtyString('_pickerService'));
+   o._pickerFrame   = MO.Class.register(o, new MO.APtyString('_pickerFrame'));
+   o._pickerFields  = MO.Class.register(o, new MO.APtyString('_pickerFields'));
+   o._pickerWhere   = MO.Class.register(o, new MO.APtyString('_pickerWhere'));
+   o._pickerOrder   = MO.Class.register(o, new MO.APtyString('_pickerOrder'));
+   o._listView      = null;
+   o.onListSelected = MO.Method.empty;
+   o.canListView    = MO.MUiDescriptorPicker_canListView;
+   o.setLabelStyle  = MO.MUiDescriptorPicker_setLabelStyle;
+   o.doListView     = MO.MUiDescriptorPicker_doListView;
+   return o;
+}
+MO.MUiDescriptorPicker_onListClick = function MUiDescriptorPicker_onListClick(e){
+   var o = this;
+   if(o.canListView()){
+      o.doListView();
+   }
+}
+MO.MUiDescriptorPicker_canListView = function MUiDescriptorPicker_canListView(){
+   return !MO.Lang.String.isEmpty(this._pickerFrame) && this._editable;
+}
+MO.MUiDescriptorPicker_setLabelStyle = function MUiDescriptorPicker_setLabelStyle(){
+   var o = this;
+   if(!MO.Lang.String.isEmpty(o.lovRefer)){
+      o.hLabel.style.cursor = 'hand';
+      o.attachEvent('onListClick', o.hLabel);
+      o.hLabel.className = 'RLine_Underline';
+   }
+}
+MO.MUiDescriptorPicker_doListView = function MUiDescriptorPicker_doListView(cvs){
+   var o = this;
+   var v = o._listView;
+   if(!v){
+      v = o._listView = top.MO.RControl.create(top.MO.FListWindow);
+   }
+   v.linkConsole = MO.RConsole;
+   v.linkLovControl(o);
+   v.show();
+   v.fetch(cvs);
+}
+MO.MUiDescriptorZoom = function MUiDescriptorZoom(o){
+   o = MO.Class.inherits(this, o);
+   o._zoomFrame = MO.Class.register(o, new MO.APtyString('_zoomFrame'));
+   o._zoomField = MO.Class.register(o, new MO.APtyString('_zoomField'));
+   o.testZoom   = MO.MUiDescriptorZoom_testZoom;
+   o.doZoom     = MO.MUiDescriptorZoom_doZoom;
+   return o;
+}
+MO.MUiDescriptorZoom_testZoom = function MUiDescriptorZoom_testZoom(){
+   return !MO.Lang.String.isEmpty(this._zoomFrame);
+}
+MO.MUiDescriptorZoom_doZoom = function MUiDescriptorZoom_doZoom(p){
+   MO.RFormSpace.doZoom(this, p);
+}
 MO.MUiDisplay = function MUiDisplay(o){
    o = MO.Class.inherits(this, o);
    o._displayView   = MO.Class.register(o, new MO.APtySet('_displayView', 'display_mode', MO.EUiMode.View, true));
@@ -2264,7 +2320,7 @@ MO.MUiPropertyCheck = function MUiPropertyCheck(o){
    return o;
 }
 MO.MUiPropertyEdit = function MUiPropertyEdit(o){
-   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
+   o = MO.Class.inherits(this, o);
    o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
    o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
    o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
@@ -2298,7 +2354,7 @@ MO.MUiPropertyNumber = function MUiPropertyNumber(o){
    return o;
 }
 MO.MUiPropertySelect = function MUiPropertySelect(o){
-   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
+   o = MO.Class.inherits(this, o);
    o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
    o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
    o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));

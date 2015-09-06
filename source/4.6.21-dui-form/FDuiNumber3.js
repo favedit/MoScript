@@ -104,17 +104,20 @@ MO.FDuiNumber3_onBuildEditValue = function FDuiNumber3_onBuildEditValue(p){
    var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderRight = '1px solid #666666';
    var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(p, hInput)
    // 建立输入框2
    var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #999999';
    hCell.style.borderRight = '1px solid #666666';
    var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(p, hInput)
    // 建立输入框3
    var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #999999';
    var hInput = o._hInput3 = MO.Window.Builder.appendEdit(hCell, o.styleName('Input'));
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(p, hInput)
 }
 

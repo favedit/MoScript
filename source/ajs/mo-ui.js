@@ -400,6 +400,7 @@ MO.FDataSource_loadConfig = function FDataSource_loadConfig(xconfig){
          var xnode = xnodes.at(i);
          if(xnode.isName('Dataset')){
             var datasetName = xnode.get('name');
+            MO.Assert.debugNotEmpty(datasetName);
             var dataset = o.selectDataset(datasetName);
             dataset.loadConfig(xnode);
          }
@@ -2472,6 +2473,62 @@ MO.MUiDataValue = function MUiDataValue(o){
    o.oeSaveDataRow = MO.Method.empty;
    return o;
 }
+MO.MUiDescriptorPicker = function MUiDescriptorPicker(o){
+   o = MO.Class.inherits(this, o);
+   o._pickerService = MO.Class.register(o, new MO.APtyString('_pickerService'));
+   o._pickerFrame   = MO.Class.register(o, new MO.APtyString('_pickerFrame'));
+   o._pickerFields  = MO.Class.register(o, new MO.APtyString('_pickerFields'));
+   o._pickerWhere   = MO.Class.register(o, new MO.APtyString('_pickerWhere'));
+   o._pickerOrder   = MO.Class.register(o, new MO.APtyString('_pickerOrder'));
+   o._listView      = null;
+   o.onListSelected = MO.Method.empty;
+   o.canListView    = MO.MUiDescriptorPicker_canListView;
+   o.setLabelStyle  = MO.MUiDescriptorPicker_setLabelStyle;
+   o.doListView     = MO.MUiDescriptorPicker_doListView;
+   return o;
+}
+MO.MUiDescriptorPicker_onListClick = function MUiDescriptorPicker_onListClick(e){
+   var o = this;
+   if(o.canListView()){
+      o.doListView();
+   }
+}
+MO.MUiDescriptorPicker_canListView = function MUiDescriptorPicker_canListView(){
+   return !MO.Lang.String.isEmpty(this._pickerFrame) && this._editable;
+}
+MO.MUiDescriptorPicker_setLabelStyle = function MUiDescriptorPicker_setLabelStyle(){
+   var o = this;
+   if(!MO.Lang.String.isEmpty(o.lovRefer)){
+      o.hLabel.style.cursor = 'hand';
+      o.attachEvent('onListClick', o.hLabel);
+      o.hLabel.className = 'RLine_Underline';
+   }
+}
+MO.MUiDescriptorPicker_doListView = function MUiDescriptorPicker_doListView(cvs){
+   var o = this;
+   var v = o._listView;
+   if(!v){
+      v = o._listView = top.MO.RControl.create(top.MO.FListWindow);
+   }
+   v.linkConsole = MO.RConsole;
+   v.linkLovControl(o);
+   v.show();
+   v.fetch(cvs);
+}
+MO.MUiDescriptorZoom = function MUiDescriptorZoom(o){
+   o = MO.Class.inherits(this, o);
+   o._zoomFrame = MO.Class.register(o, new MO.APtyString('_zoomFrame'));
+   o._zoomField = MO.Class.register(o, new MO.APtyString('_zoomField'));
+   o.testZoom   = MO.MUiDescriptorZoom_testZoom;
+   o.doZoom     = MO.MUiDescriptorZoom_doZoom;
+   return o;
+}
+MO.MUiDescriptorZoom_testZoom = function MUiDescriptorZoom_testZoom(){
+   return !MO.Lang.String.isEmpty(this._zoomFrame);
+}
+MO.MUiDescriptorZoom_doZoom = function MUiDescriptorZoom_doZoom(p){
+   MO.RFormSpace.doZoom(this, p);
+}
 MO.MUiDisplay = function MUiDisplay(o){
    o = MO.Class.inherits(this, o);
    o._displayView   = MO.Class.register(o, new MO.APtySet('_displayView', 'display_mode', MO.EUiMode.View, true));
@@ -2801,7 +2858,7 @@ MO.MUiPropertyCheck = function MUiPropertyCheck(o){
    return o;
 }
 MO.MUiPropertyEdit = function MUiPropertyEdit(o){
-   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
+   o = MO.Class.inherits(this, o);
    o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
    o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
    o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
@@ -2835,7 +2892,7 @@ MO.MUiPropertyNumber = function MUiPropertyNumber(o){
    return o;
 }
 MO.MUiPropertySelect = function MUiPropertySelect(o){
-   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
+   o = MO.Class.inherits(this, o);
    o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));
    o._editPattern    = MO.Class.register(o, new MO.APtyString('_editPattern'));
    o._editLength     = MO.Class.register(o, new MO.APtyInteger('_editLength'));
@@ -3500,6 +3557,7 @@ MO.FApplication = function FApplication(o){
    return o;
 }
 MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
+   MO.Logger.debug(this, 'Application process ready.');
 }
 MO.FApplication_onProcess = function FApplication_onProcess(event){
    var o = this;
@@ -3603,6 +3661,7 @@ MO.FChapter = function FChapter(o){
    return o;
 }
 MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
+   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
@@ -3613,6 +3672,7 @@ MO.FChapter_construct = function FChapter_construct(){
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
    var code = scene.code();
+   MO.Assert.debugNotEmpty(code);
    scene.setApplication(o._application);
    scene.setChapter(o);
    o._scenes.set(code, scene);
@@ -3640,6 +3700,7 @@ MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var scene = o._scenes.get(code);
    if(scene == null){
       scene = o.createScene(code);
+      MO.Assert.debugNotNull(scene);
       o.registerScene(scene);
    }
    o.selectScene(scene);
@@ -3652,10 +3713,12 @@ MO.FChapter_active = function FChapter_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
+   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    o._statusActive = false;
+   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 MO.FChapter_processEvent = function FChapter_processEvent(event){
    var o = this;
@@ -3837,6 +3900,7 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    o._visible = event.visibility;
 }
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
+   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 MO.FScene_onProcess = function FScene_onProcess(){
    var o = this;
@@ -3858,11 +3922,13 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
+   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    o._statusActive = false;
+   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 MO.FScene_process = function FScene_process(){
    var o = this;

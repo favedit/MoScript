@@ -94,12 +94,14 @@ MO.FDuiNumber2_onBuildEditValue = function FDuiNumber2_onBuildEditValue(event){
    // 建立输入框1
    var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
    var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell);
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(event, hInput)
    //..........................................................
    // 建立输入框2
    var hCell = MO.Window.Builder.appendTableCell(hLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #EEEEEE';
    var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell);
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(event, hInput)
 
    //htb.style.tableLayout = 'fixed';

@@ -112,10 +112,11 @@ MO.FDuiWindow_onBuild = function FDuiWindow_onBuild(event){
 //==========================================================
 MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(event){
    var o = this;
+   var hPanel = o._hPanel;
    o._mouseDraging = true;
    o._mousePosition.set(event.x, event.y);
-   o._mouseControl.set(o._hPanel.offsetLeft, o._hPanel.offsetTop);
-   MO.Window.Html.cursorSet(o._hPanel, EUiCursor.Move);
+   o._mouseControl.set(hPanel.offsetLeft, hPanel.offsetTop);
+   MO.Window.Html.cursorSet(hPanel, MO.EUiCursor.Move);
 }
 
 //==========================================================
@@ -126,11 +127,12 @@ MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(even
 //==========================================================
 MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
    var o = this;
+   var hPanel = null;
    if(o._mouseDraging){
       var cx = event.x - o._mousePosition.x;
       var cy = event.y - o._mousePosition.y;
-      o._hPanel.style.left = (o._mouseControl.x + cx) + 'px';
-      o._hPanel.style.top = (o._mouseControl.y + cy) + 'px';
+      hPanel.style.left = (o._mouseControl.x + cx) + 'px';
+      hPanel.style.top = (o._mouseControl.y + cy) + 'px';
    }
 }
 
@@ -143,7 +145,7 @@ MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
 MO.FDuiWindow_onMouseCaptureStop = function FDuiWindow_onMouseCaptureStop(event){
    var o = this;
    o._mouseDraging = false;
-   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
+   MO.Window.Html.cursorSet(o._hPanel, MO.EUiCursor.Auto);
 }
 
 //==========================================================
@@ -202,6 +204,7 @@ MO.FDuiWindow_setLabel = function FDuiWindow_setLabel(label){
 //==========================================================
 MO.FDuiWindow_showPosition = function FDuiWindow_showPosition(positionCd){
    var o = this;
+   var hPanel = o._hPanel;
    // 显示处理
    o.show();
    // 设置位置
@@ -212,6 +215,8 @@ MO.FDuiWindow_showPosition = function FDuiWindow_showPosition(positionCd){
       var top = (window.document.body.offsetHeight - height) / 2;
       o._hPanel.style.left = left + 'px';
       o._hPanel.style.top = top + 'px';
+   }else{
+      throw new MO.TError(o, 'Invalid position.');
    }
 }
 

@@ -20,7 +20,7 @@
 // @version 150131
 //==========================================================
 MO.FDuiNumber = function FDuiNumber(o){
-   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiPropertyNumber);
+   o = MO.Class.inherits(this, o, MO.FDuiEditControl, MO.MUiDescriptorPicker, MO.MUiDescriptorZoom, MO.MUiPropertyNumber);
    //..........................................................
    // @property
    o._inputSize            = MO.Class.register(o, [new MO.APtySize2('_inputSize'), new MO.AGetter('_inputSize')]);
@@ -47,6 +47,7 @@ MO.FDuiNumber = function FDuiNumber(o){
    // @event
    o.onInputKeyPress       = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber_onInputKeyPress);
    o.onInputChanged        = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber_onInputChanged);
+   o.onInputDoubleClick    = MO.Class.register(o, new MO.AEventDoubleClick('onInputDoubleClick'), MO.FDuiNumber_onInputDoubleClick);
    //..........................................................
    // @method
    o.construct             = MO.FDuiNumber_construct;
@@ -97,18 +98,18 @@ MO.FDuiNumber_onBuildEditValue = function FDuiNumber_onBuildEditValue(p){
    o.onBuildEditChange(p);
    //..........................................................
    // 建立输入栏
-   var hip = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
-   var he = o._hInput = MO.Window.Builder.appendEdit(hip);
-   //o.attachEvent('onEditFocus', he, o.onEditFocus);
-   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   o.attachEvent('onInputChanged', he, o.onInputChanged);
-   //o.attachEvent('onEditBlur', he, o.onEditBlur);
-   //o.attachEvent('onDataKeyUp', he, o.ohEditKeyUp); 
-   // 设置大小
-   // MO.Window.Html.setSize(he, o._inputSize);
+   var hInputPanel = o._hInputPanel = MO.Window.Builder.appendTableCell(hValueLine);
+   var hInput = o._hInput = MO.Window.Builder.appendEdit(hInputPanel);
+   hInput.style.textAlign = 'right';
+   //o.attachEvent('onEditFocus', hInput, o.onEditFocus);
+   o.attachEvent('onInputKeyPress', hInput, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', hInput, o.onInputChanged);
+   o.attachEvent('onInputDoubleClick', hInput);
+   //o.attachEvent('onEditBlur', hInput, o.onEditBlur);
+   //o.attachEvent('onDataKeyUp', hInput, o.ohEditKeyUp); 
    // 设置可以输入的最大长度
    if(o._editLength){
-      he.maxLength = o._editLength;
+      hInput.maxLength = o._editLength;
    }
    //..........................................................
    // 建立调整栏
@@ -157,6 +158,21 @@ MO.FDuiNumber_onInputChanged = function FDuiNumber_onInputChanged(p){
 }
 
 //==========================================================
+// <T>编辑控件中双击处理。 </T>
+//
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiNumber_onInputDoubleClick = function FDuiNumber_onInputDoubleClick(event){
+   var o = this;
+   var pickerFrame = o._pickerFrame;
+   if(!MO.Lang.String.isEmpty(pickerFrame)){
+      var frame = MO.Console.find(MO.FDuiFrameConsole).get(o, pickerFrame, o._hPanel);
+      frame._frameSet = o;
+      frame.showPosition(MO.EUiPosition.Center)
+   }
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -189,8 +205,8 @@ MO.FDuiNumber_formatDisplay = function FDuiNumber_formatDisplay(value){
 // @param p:value:String 内容
 // @return 数据
 //==========================================================
-MO.FDuiNumber_formatValue = function FDuiNumber_formatValue(p){
-   return p;
+MO.FDuiNumber_formatValue = function FDuiNumber_formatValue(value){
+   return value;
 }
 
 //==========================================================

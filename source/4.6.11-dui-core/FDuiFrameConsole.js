@@ -57,11 +57,11 @@ MO.FDuiFrameConsole_construct = function FDuiFrameConsole_construct(){
 // <T>构建指定表单名称的控件对象，并放置在指定HTML页面ID的位置。</T>
 //
 // @method
-// @param c:control:FDuiControl 控件
-// @param n:name:String 名称
+// @param control:FDuiControl 控件
+// @param name:String 名称
 // @return FDuiFrame 页面控件
 //==========================================================
-MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
+MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(control, name){
    var o = this;
    // 检查是否有未使用的表单
    //var fs = o._freeFrames;
@@ -69,7 +69,7 @@ MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    //   var c = fs.count();
    //   for(var i = 0; i < c; i++){
    //      var f = fs.get(i);
-   //      if(f.name() == n){
+   //      if(f.name() == name){
    //         var f = fs.remove(i);
    //         f.setPanel(h);
    //         return f;
@@ -77,21 +77,21 @@ MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    //   }
    //}
    // 获得表单定义
-   var dc = MO.Console.find(MO.FUiFrameDefineConsole);
-   var x = dc.load(n);
+   var defineConsole = MO.Console.find(MO.FUiFrameDefineConsole);
+   var xframe = defineConsole.load(name);
    // 构建处理
-   var f = MO.Dui.Control.build(null, x, null, c._hPanel);
-   //var fx = fdc.find(n, t);
-   //var fd = t + ':' + n;
+   var frame = MO.Dui.Control.build(null, xframe, null, control._hPanel);
+   //var fx = fdc.find(name, t);
+   //var fd = t + ':' + name;
    //if(!o._framesLoaded.contains(fd)){
-   //   var es = fdc.getEvents(n);
+   //   var es = fdc.getEvents(name);
    //   if(es){
    //      o.loadEvents(es);
    //   }
    //   o._framesLoaded.set(fd, true);
    //}
    // 创建表单实例
-   //var c = MO.Class.create('F' + fx.name);
+   //var control = MO.Class.create('F' + fx.name);
    //RDuiControl.innerCreate(c, fx);
    //c.psInitialize();
    //if(!b){
@@ -103,8 +103,8 @@ MO.FDuiFrameConsole_create = function FDuiFrameConsole_create(c, n){
    // 存储表单实例
    //c.formId = fdc.nextFormId();
    //o._formIds.set(c.formId, c);
-   //o._frames.set(n, c);
-   return f;
+   //o._frames.set(name, c);
+   return frame;
 }
 
 //==========================================================

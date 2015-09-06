@@ -6,7 +6,7 @@
 // @version 150102
 //==========================================================
 MO.MUiPropertyEdit = function MUiPropertyEdit(o){
-   o = MO.Class.inherits(this, o, MO.MDuiEditValidator, MO.MDuiEditReference, MO.MDuiEditZoom);
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
    o._editCaseCd     = MO.Class.register(o, new MO.APtyString('_editCaseCd'));

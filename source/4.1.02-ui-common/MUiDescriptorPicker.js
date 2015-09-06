@@ -3,29 +3,29 @@
 //
 // @face
 // @author maocy
-// @version 150102
+// @version 150906
 //==========================================================
-MO.MDuiEditReference = function MDuiEditReference(o){
+MO.MUiDescriptorPicker = function MUiDescriptorPicker(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property
-   o._lovService    = MO.Class.register(o, new MO.APtyString('_lovService'));
-   o._lovReference  = MO.Class.register(o, new MO.APtyString('_lovReference'));
-   o._lovFields     = MO.Class.register(o, new MO.APtyString('_lovFields'));
-   o._lovWhere      = MO.Class.register(o, new MO.APtyString('_lovWhere'));
-   o._lovOrder      = MO.Class.register(o, new MO.APtyString('_lovOrder'));
+   o._pickerService = MO.Class.register(o, new MO.APtyString('_pickerService'));
+   o._pickerFrame   = MO.Class.register(o, new MO.APtyString('_pickerFrame'));
+   o._pickerFields  = MO.Class.register(o, new MO.APtyString('_pickerFields'));
+   o._pickerWhere   = MO.Class.register(o, new MO.APtyString('_pickerWhere'));
+   o._pickerOrder   = MO.Class.register(o, new MO.APtyString('_pickerOrder'));
    //..........................................................
    // @attribute
    o._listView      = null;
    //..........................................................
    // @event
-   //o.onListClick    = MO.Class.register(o, new HClick('onListClick'), MDuiEditReference_onListClick);
+   //o.onListClick  = MO.Class.register(o, new HClick('onListClick'), MUiDescriptorPicker_onListClick);
    o.onListSelected = MO.Method.empty;
    //..........................................................
    // @method
-   o.canListView    = MO.MDuiEditReference_canListView;
-   o.setLabelStyle  = MO.MDuiEditReference_setLabelStyle;
-   o.doListView     = MO.MDuiEditReference_doListView;
+   o.canListView    = MO.MUiDescriptorPicker_canListView;
+   o.setLabelStyle  = MO.MUiDescriptorPicker_setLabelStyle;
+   o.doListView     = MO.MUiDescriptorPicker_doListView;
    return o;
 }
 
@@ -34,7 +34,7 @@ MO.MDuiEditReference = function MDuiEditReference(o){
 //
 // @method
 //==========================================================
-MO.MDuiEditReference_onListClick = function MDuiEditReference_onListClick(e){
+MO.MUiDescriptorPicker_onListClick = function MUiDescriptorPicker_onListClick(e){
    var o = this;
    if(o.canListView()){
       o.doListView();
@@ -48,8 +48,8 @@ MO.MDuiEditReference_onListClick = function MDuiEditReference_onListClick(e){
 //    <L value='true'>允许</L>
 //    <L value='false'>不允许</L>
 //==========================================================
-MO.MDuiEditReference_canListView = function MDuiEditReference_canListView(){
-   return !MO.Lang.String.isEmpty(this._lovReference) && this._editable;
+MO.MUiDescriptorPicker_canListView = function MUiDescriptorPicker_canListView(){
+   return !MO.Lang.String.isEmpty(this._pickerFrame) && this._editable;
 }
 
 //==========================================================
@@ -57,7 +57,7 @@ MO.MDuiEditReference_canListView = function MDuiEditReference_canListView(){
 //
 // @method
 //==========================================================
-MO.MDuiEditReference_setLabelStyle = function MDuiEditReference_setLabelStyle(){
+MO.MUiDescriptorPicker_setLabelStyle = function MUiDescriptorPicker_setLabelStyle(){
    var o = this;
    if(!MO.Lang.String.isEmpty(o.lovRefer)){
       o.hLabel.style.cursor = 'hand';
@@ -71,7 +71,7 @@ MO.MDuiEditReference_setLabelStyle = function MDuiEditReference_setLabelStyle(){
 //
 // @method
 //==========================================================
-MO.MDuiEditReference_doListView = function MDuiEditReference_doListView(cvs){
+MO.MUiDescriptorPicker_doListView = function MUiDescriptorPicker_doListView(cvs){
    var o = this;
    // 获取关联的选取窗口
    var v = o._listView;

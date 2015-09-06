@@ -98,24 +98,25 @@ MO.FDuiNumber4_onBuildEditValue = function FDuiNumber4_onBuildEditValue(p){
    // 建立输入框1
    var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    var hInput = o._hInput1 = MO.Window.Builder.appendEdit(hCell);
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(event, hInput)
-   //..........................................................
    // 建立输入框2
    var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #EEEEEE';
    var hInput = o._hInput2 = MO.Window.Builder.appendEdit(hCell);
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(event, hInput)
-   //..........................................................
    // 建立输入框3
    var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #EEEEEE';
    var hInput = o._hInput3 = MO.Window.Builder.appendEdit(hCell);
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(event, hInput)
-   //..........................................................
    // 建立输入框4
    var hCell = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('InputPanel'));
    hCell.style.borderLeft = '1px solid #EEEEEE';
    var hInput = o._hInput4 = MO.Window.Builder.appendEdit(hCell);
+   hInput.style.textAlign = 'right';
    o.onBuildEditInput(event, hInput)
 }
 
