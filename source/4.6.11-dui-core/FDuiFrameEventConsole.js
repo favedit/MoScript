@@ -51,37 +51,40 @@ MO.FDuiFrameEventConsole = function FDuiFrameEventConsole(o){
 //==========================================================
 MO.FDuiFrameEventConsole_onProcess = function FDuiFrameEventConsole_onProcess(){
    var o = this;
-   var es = o._events;
-   var ec = es.count();
-   if(ec > 0){
-      //var sp = new TSpeed(o, 'Process events (count={1})', es.count);
-      while(true){
-         var has = false;
-         // 执行每一个事件
-         for(var n = 0; n < ec; n++){
-            var e = es.get(n);
-            // 如果事件存在的情况下，进行事件处理
-            if(e){
-               has = true;
-               e.process();
-               // 如果有监听器监听这个事件的话，相应监听器处理
-               var ls = o._listeners.get(MO.Method.name(e));
-               if(ls){
-                  ls.process(e);
-               }
-               // 执行事件后，将当前位置设置为空
-               es.set(n, null)
+   // 检查是否为空
+   var events = o._events;
+   if(events.isEmpty()){
+      return;
+   }
+   // 循环执行是防止事件中产生新事件处理
+   while(true){
+      var processed = false;
+      // 执行每一个事件
+      var eventCount = events.count();
+      for(var i = 0; i < eventCount; i++){
+         var event = events.at(i);
+         // 如果事件存在的情况下，进行事件处理
+         if(event){
+            processed = true;
+            // 事件处理
+            event.process();
+            // 如果有监听器监听这个事件的话，相应监听器处理
+            var className = MO.Method.name(event);
+            var listeners = o._listeners.get(className);
+            if(listeners){
+               listeners.process(event);
             }
-         }
-         // 检查队列中是否为空
-         if(!has){
-            break;
+            // 执行事件后，将当前位置设置为空
+            events.set(i, null)
          }
       }
-      //sp.record();
-      // 清除运行队列
-      es.clear();
+      // 检查队列中是否为空
+      if(!processed){
+         break;
+      }
    }
+   // 清除运行队列
+   events.clear();
 }
 
 //==========================================================

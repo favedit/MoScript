@@ -829,29 +829,31 @@ MO.FDuiFrameEventConsole = function FDuiFrameEventConsole(o){
 }
 MO.FDuiFrameEventConsole_onProcess = function FDuiFrameEventConsole_onProcess(){
    var o = this;
-   var es = o._events;
-   var ec = es.count();
-   if(ec > 0){
-      while(true){
-         var has = false;
-         for(var n = 0; n < ec; n++){
-            var e = es.get(n);
-            if(e){
-               has = true;
-               e.process();
-               var ls = o._listeners.get(MO.Method.name(e));
-               if(ls){
-                  ls.process(e);
-               }
-               es.set(n, null)
+   var events = o._events;
+   if(events.isEmpty()){
+      return;
+   }
+   while(true){
+      var processed = false;
+      var eventCount = events.count();
+      for(var i = 0; i < eventCount; i++){
+         var event = events.at(i);
+         if(event){
+            processed = true;
+            event.process();
+            var className = MO.Method.name(event);
+            var listeners = o._listeners.get(className);
+            if(listeners){
+               listeners.process(event);
             }
-         }
-         if(!has){
-            break;
+            events.set(i, null)
          }
       }
-      es.clear();
+      if(!processed){
+         break;
+      }
    }
+   events.clear();
 }
 MO.FDuiFrameEventConsole_construct = function FDuiFrameEventConsole_construct(){
    var o = this;

@@ -1543,10 +1543,10 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._styleButton              = MO.Class.register(o, new MO.AStyle('_styleButton'));
    o._dataset                  = null;
    o._minHeight                = 80;
-   o._buttons                  = null;
-   o._columns                  = null;
-   o._rowClass                 = MO.FDuiGridRow;
-   o._rows                     = null;
+   o._buttons                  = MO.Class.register(o, new MO.AGetter('_buttons'));
+   o._columns                  = MO.Class.register(o, new MO.AGetter('_columns'));
+   o._rowClass                 = MO.Class.register(o, new MO.AGetSet('_rowClass'), MO.FDuiGridRow);
+   o._rows                     = MO.Class.register(o, new MO.AGetter('_rows'));
    o._rowPool                  = null;
    o._focusCell                = null;
    o._focusRow                 = null;
@@ -1559,6 +1559,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._hHintPanel               = null;
    o._hHintForm                = null;
    o._hRows                    = null;
+   o._listenersDataSearch      = MO.Class.register(o, new MO.AListener('_listenersDataSearch'));
    o._listenersCellClick       = MO.Class.register(o, new MO.AListener('_listenersCellClick'));
    o._listenersCellDoubleClick = MO.Class.register(o, new MO.AListener('_listenersCellDoubleClick'));
    o._listenersRowClick        = MO.Class.register(o, new MO.AListener('_listenersRowClick'));
@@ -1669,6 +1670,7 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
 MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(event){
    var o = this;
    if(event.keyCode == MO.EKeyCode.Enter){
+      o.processDataSearchListener(event);
       o.dsSearch();
    }
 }
@@ -2705,6 +2707,8 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    o.onBuild        = MO.FDuiGridRowControl_onBuild;
    o.construct      = MO.FDuiGridRowControl_construct;
    o.setVisible     = MO.FDuiGridRowControl_setVisible;
+   o.get            = MO.FDuiGridRowControl_get;
+   o.set            = MO.FDuiGridRowControl_set;
    o.appendChild    = MO.FDuiGridRowControl_appendChild;
    o.cell           = MO.FDuiGridRowControl_cell;
    o.push           = MO.FDuiGridRowControl_push;
@@ -2749,6 +2753,12 @@ MO.FDuiGridRowControl_setVisible = function FDuiGridRowControl_setVisible(visibl
    if(hPanel){
       MO.Window.Html.displaySet(hPanel, visible);
    }
+}
+MO.FDuiGridRowControl_get = function FDuiGridRowControl_get(name){
+   return this._cells.get(name).get();
+}
+MO.FDuiGridRowControl_set = function FDuiGridRowControl_set(name, value){
+   this._cells.get(name).set(value);
 }
 MO.FDuiGridRowControl_appendChild = function FDuiGridRowControl_appendChild(control){
    var o = this;
@@ -2852,14 +2862,8 @@ MO.FDuiGridRowControl_getVersion = function FDuiGridRowControl_getVersion(){
 MO.FDuiGridRowControl_getStatus = function FDuiGridRowControl_getStatus(){
    return this._statusCell;
 }
-MO.FDuiGridRowControl_get = function FDuiGridRowControl_get(n){
-   return this._cells.get(n).get();
-}
 MO.FDuiGridRowControl_reget = function FDuiGridRowControl_reget(n){
    return this._cells.get(n).reget();
-}
-MO.FDuiGridRowControl_set = function FDuiGridRowControl_set(n, v){
-   this._cells.get(n).set(v);
 }
 MO.FDuiGridRowControl_loadValue = function FDuiGridRowControl_loadValue(v){
    this.loadRow(v);

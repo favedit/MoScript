@@ -55,10 +55,10 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    // @attribute
    o._minHeight                = 80;
    // @attribute
-   o._buttons                  = null;
-   o._columns                  = null;
-   o._rowClass                 = MO.FDuiGridRow;
-   o._rows                     = null;
+   o._buttons                  = MO.Class.register(o, new MO.AGetter('_buttons'));
+   o._columns                  = MO.Class.register(o, new MO.AGetter('_columns'));
+   o._rowClass                 = MO.Class.register(o, new MO.AGetSet('_rowClass'), MO.FDuiGridRow);
+   o._rows                     = MO.Class.register(o, new MO.AGetter('_rows'));
    o._rowPool                  = null;
    // @attribute
    o._focusCell                = null;
@@ -78,6 +78,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._hRows                    = null;
    //..........................................................
    // @listeners
+   o._listenersDataSearch      = MO.Class.register(o, new MO.AListener('_listenersDataSearch'));
    o._listenersCellClick       = MO.Class.register(o, new MO.AListener('_listenersCellClick'));
    o._listenersCellDoubleClick = MO.Class.register(o, new MO.AListener('_listenersCellDoubleClick'));
    o._listenersRowClick        = MO.Class.register(o, new MO.AListener('_listenersRowClick'));
@@ -432,6 +433,7 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
 MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(event){
    var o = this;
    if(event.keyCode == MO.EKeyCode.Enter){
+      o.processDataSearchListener(event);
       o.dsSearch();
       //if(!o._isSearching || !o.table._isSearching){
          //o._isSearching = true;

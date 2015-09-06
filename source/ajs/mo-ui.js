@@ -864,38 +864,36 @@ MO.AEventTouchStart = function AEventTouchStart(n){
 }
 MO.AEventTouchStart_attach = function AEventTouchStart_attach(e, h){
 }
-MO.APtyAttributes = function APtyAttributes(n, l, vl, vt, vr, vb){
+MO.APtyAttributes = function APtyAttributes(name, linker, splitName, splitValue){
    var o = this;
-   MO.AProperty.call(o, n, l);
-   o._left    = MO.Lang.Integer.nvl(vl);
-   o._top     = MO.Lang.Integer.nvl(vt);
-   o._right   = MO.Lang.Integer.nvl(vr);
-   o._bottom  = MO.Lang.Integer.nvl(vb);
-   o.load     = MO.APtyAttributes_load;
-   o.save     = MO.APtyAttributes_save;
-   o.toString = MO.APtyAttributes_toString;
+   MO.AProperty.call(o, name, linker);
+   o._splitName  = MO.Lang.String.nvl(splitName, '=');
+   o._splitValue = MO.Lang.String.nvl(splitValue, '\n');
+   o.load        = MO.APtyAttributes_load;
+   o.save        = MO.APtyAttributes_save;
+   o.toString    = MO.APtyAttributes_toString;
    return o;
 }
-MO.APtyAttributes_load = function APtyAttributes_load(v, x){
+MO.APtyAttributes_load = function APtyAttributes_load(instance, xconfig){
    var o = this;
-   var s = v[o._name];
-   if(!s){
-      s = v[o._name] = new MO.TAttributes();
+   var name = o._name;
+   var attributes = instance[name];
+   if(!attributes){
+      attributes = instance[name] = new MO.TAttributes();
    }
-   s.split(x.get(o._linker), '=', '\n');
+   var value = xconfig.get(o._linker);
+   attributes.split(value, o._splitName, o._splitValue);
 }
-MO.APtyAttributes_save = function APtyAttributes_save(v, x){
+MO.APtyAttributes_save = function APtyAttributes_save(instance, xconfig){
    var o = this;
-   var s = v[o._name];
-   if(s){
-      if(!s.isEmpty()){
-         x.set(o._linker, s.join('=', '\n'));
-      }
+   var attributes = instance[o._name];
+   if(attributes){
+      xconfig.set(o._linker, attributes.join(o._splitName, o._splitValue));
    }
 }
 MO.APtyAttributes_toString = function APtyAttributes_toString(){
    var o = this;
-   return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
+   return 'linker=' + o._linker + ',split_name=' + o._splitName + ',split_value' + o._splitValue;
 }
 MO.APtyBoolean = function APtyBoolean(name, linker, value){
    var o = this;
@@ -2477,43 +2475,42 @@ MO.MUiDescriptorPicker = function MUiDescriptorPicker(o){
    o = MO.Class.inherits(this, o);
    o._pickerService = MO.Class.register(o, new MO.APtyString('_pickerService'));
    o._pickerFrame   = MO.Class.register(o, new MO.APtyString('_pickerFrame'));
-   o._pickerFields  = MO.Class.register(o, new MO.APtyString('_pickerFields'));
+   o._pickerFields  = MO.Class.register(o, new MO.APtyAttributes('_pickerFields', null, '=', ';'));
    o._pickerWhere   = MO.Class.register(o, new MO.APtyString('_pickerWhere'));
    o._pickerOrder   = MO.Class.register(o, new MO.APtyString('_pickerOrder'));
-   o._listView      = null;
-   o.onListSelected = MO.Method.empty;
-   o.canListView    = MO.MUiDescriptorPicker_canListView;
-   o.setLabelStyle  = MO.MUiDescriptorPicker_setLabelStyle;
-   o.doListView     = MO.MUiDescriptorPicker_doListView;
+   o._picker        = null;
+   o.onPickerClick  = MO.MUiDescriptorPicker_onPickerClick;
+   o.onPickerSelect = MO.MUiDescriptorPicker_onPickerSelect;
+   o.testPicker     = MO.MUiDescriptorPicker_testPicker;
+   o.doPicker       = MO.Method.empty;
    return o;
 }
-MO.MUiDescriptorPicker_onListClick = function MUiDescriptorPicker_onListClick(e){
+MO.MUiDescriptorPicker_onPickerClick = function MUiDescriptorPicker_onPickerClick(event){
    var o = this;
-   if(o.canListView()){
-      o.doListView();
+   if(o.testPicker()){
+      o.doPicker();
    }
 }
-MO.MUiDescriptorPicker_canListView = function MUiDescriptorPicker_canListView(){
-   return !MO.Lang.String.isEmpty(this._pickerFrame) && this._editable;
-}
-MO.MUiDescriptorPicker_setLabelStyle = function MUiDescriptorPicker_setLabelStyle(){
+MO.MUiDescriptorPicker_onPickerSelect = function MUiDescriptorPicker_onPickerSelect(event){
    var o = this;
-   if(!MO.Lang.String.isEmpty(o.lovRefer)){
-      o.hLabel.style.cursor = 'hand';
-      o.attachEvent('onListClick', o.hLabel);
-      o.hLabel.className = 'RLine_Underline';
+   var row = event.row;
+   var fields = o._pickerFields;
+   var dataset = o.findParent(MO.MUiDataset);
+   var count = fields.count();
+   for(var i = 0; i < count; i++){
+      var fieldName = fields.name(i);
+      var fieldValue = fields.value(i);
+      var dataField = dataset.searchComponent(fieldName);
+      var dataValue = row.get(fieldValue);
+      dataField.set(dataValue);
    }
 }
-MO.MUiDescriptorPicker_doListView = function MUiDescriptorPicker_doListView(cvs){
+MO.MUiDescriptorPicker_testPicker = function MUiDescriptorPicker_testPicker(){
    var o = this;
-   var v = o._listView;
-   if(!v){
-      v = o._listView = top.MO.RControl.create(top.MO.FListWindow);
+   if(!o._statusEditable){
+      return false;
    }
-   v.linkConsole = MO.RConsole;
-   v.linkLovControl(o);
-   v.show();
-   v.fetch(cvs);
+   return !MO.Lang.String.isEmpty(o._pickerFrame);
 }
 MO.MUiDescriptorZoom = function MUiDescriptorZoom(o){
    o = MO.Class.inherits(this, o);

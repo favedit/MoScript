@@ -30,6 +30,8 @@ MO.FDuiWindow = function FDuiWindow(o){
    o.onBuildPanel        = MO.FDuiWindow_onBuildPanel;
    o.onBuild             = MO.FDuiWindow_onBuild;
    // @event
+   o.onCloseClick        = MO.Class.register(o, new MO.AEventClick('onCloseClick'), MO.FDuiWindow_onCloseClick);
+   // @event
    o.onMouseCaptureStart = MO.FDuiWindow_onMouseCaptureStart;
    o.onMouseCapture      = MO.FDuiWindow_onMouseCapture;
    o.onMouseCaptureStop  = MO.FDuiWindow_onMouseCaptureStop;
@@ -92,6 +94,9 @@ MO.FDuiWindow_onBuild = function FDuiWindow_onBuild(event){
    MO.Window.Html.textSet(hTitle, o._label);
    var hTitleButton = MO.Window.Builder.appendTableCell(hTitleLine);
    hTitleButton.width = 20;
+   hTitleButton.style.cursor = 'pointer';
+   MO.Window.Builder.appendIcon(hTitleButton, null, 'editor.common.close');
+   o.attachEvent('onCloseClick', hTitleButton);
    // 建立内容
    hBodyPanel.appendChild(o._hPanelForm);
    // 刷新大小
@@ -102,6 +107,16 @@ MO.FDuiWindow_onBuild = function FDuiWindow_onBuild(event){
    //hp.link = o;
    //hp._sizeable = true;
    //sc.registerDrag(o, hp);
+}
+
+//==========================================================
+// <T>关闭按键点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FDuiWindow_onCloseClick = function FDuiWindow_onCloseClick(event){
+   this.hide();
 }
 
 //==========================================================
@@ -127,7 +142,7 @@ MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(even
 //==========================================================
 MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
    var o = this;
-   var hPanel = null;
+   var hPanel = o._hPanel;
    if(o._mouseDraging){
       var cx = event.x - o._mousePosition.x;
       var cy = event.y - o._mousePosition.y;
@@ -144,8 +159,9 @@ MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
 //==========================================================
 MO.FDuiWindow_onMouseCaptureStop = function FDuiWindow_onMouseCaptureStop(event){
    var o = this;
+   var hPanel = o._hPanel;
    o._mouseDraging = false;
-   MO.Window.Html.cursorSet(o._hPanel, MO.EUiCursor.Auto);
+   MO.Window.Html.cursorSet(hPanel, MO.EUiCursor.Auto);
 }
 
 //==========================================================
@@ -171,7 +187,9 @@ MO.FDuiWindow_construct = function FDuiWindow_construct(){
 //==========================================================
 MO.FDuiWindow_setVisible = function FDuiWindow_setVisible(visible){
    var o = this;
-   o._statusVisible = visible;
+   if(o._statusVisible == visible){
+      return;
+   }
    // 设置控件底板的可见性
    var hPanel = o.panel(MO.EPanel.Container);
    if(visible){
@@ -179,6 +197,7 @@ MO.FDuiWindow_setVisible = function FDuiWindow_setVisible(visible){
    }else{
       MO.Window._hContainer.removeChild(hPanel);
    }
+   o._statusVisible = visible;
 }
 
 //==========================================================

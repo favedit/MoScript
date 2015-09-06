@@ -53,6 +53,10 @@
    color: #333333;
 }
 
+.FDuiEditControl_LabelPicker{
+   color: #333333;
+}
+
 .FDuiEditControl_EditorPanel{
 }
 
@@ -1476,20 +1480,20 @@
 }
 
 .FDuiWindow_TitlePanel{
-   height:24px;
-   border-radius:4px 4px 0px 0px;
-   background:#999999;
+   height: 24px;
+   border-radius: 4px 4px 0px 0px;
+   background-color: #DDDDDD;
 }
 
 .FDuiWindow_BodyPanel{
-   background: #666666;
-   border:1px solid #333333;
+   background-color: #EEEEEE;
+   border: 1px solid #333333;
 }
 
 .FDuiWindow_StatusPanel{
-   height:24px;
-   border-radius:0px 0px 4px 4px;
-   background:#999999;
+   height: 24px;
+   border-radius: 0px 0px 4px 4px;
+   background-color: #DDDDDD;
 }
 
 /* ------------------------------------------------------ */

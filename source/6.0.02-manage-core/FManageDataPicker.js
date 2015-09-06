@@ -4,30 +4,40 @@
 // @author maocy
 // @history 150812
 //==========================================================
-MO.FManageDataTable = function FManageDataTable(o){
+MO.FManageDataPicker = function FManageDataPicker(o){
    o = MO.Class.inherits(this, o, MO.FDuiPickerFrame);
    //..........................................................
+   // @attribute
+   o._listenersDataSelect = MO.Class.register(o, new MO.AListener('_listenersDataSelect'));
+   //..........................................................
    // @event
-   o.onCellClick       = MO.FManageDataTable_onCellClick;
-   o.onCellDoubleClick = MO.FManageDataTable_onCellDoubleClick;
+   o.onDataSearch         = MO.FManageDataPicker_onDataSearch;
+   o.onCellClick          = MO.FManageDataPicker_onCellClick;
+   o.onCellDoubleClick    = MO.FManageDataPicker_onCellDoubleClick;
    // @event
-   o.onBuilded         = MO.FManageDataTable_onBuilded;
+   o.onBuilded            = MO.FManageDataPicker_onBuilded;
    // @event
-   o.onDataChanged     = MO.FManageDataTable_onDataChanged;
-   o.onDataFetch       = MO.FManageDataTable_onDataFetch;
-   o.onDataSave        = MO.FManageDataTable_onDataSave;
-   o.onDataDelete      = MO.FManageDataTable_onDataDelete;
+   o.onDataFetch          = MO.FManageDataPicker_onDataFetch;
    //..........................................................
    // @method
-   o.construct         = MO.FManageDataTable_construct;
+   o.construct            = MO.FManageDataPicker_construct;
    // @method
-   o.dsMovePage        = MO.FManageDataTable_dsMovePage;
-   o.dsSearch          = MO.FManageDataTable_dsSearch;
+   o.dsMovePage           = MO.FManageDataPicker_dsMovePage;
    // @method
-   o.doFetch           = MO.FManageDataTable_doFetch;
+   o.doFetch              = MO.FManageDataPicker_doFetch;
    // @method
-   o.dispose           = MO.FManageDataTable_dispose;
+   o.dispose              = MO.FManageDataPicker_dispose;
    return o;
+}
+
+//==========================================================
+// <T>数据搜索。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FManageDataPicker_onDataSearch = function FManageDataPicker_onDataSearch(event){
+   this.doFetch();
 }
 
 //==========================================================
@@ -36,12 +46,14 @@ MO.FManageDataTable = function FManageDataTable(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataTable_onCellClick = function FManageDataTable_onCellClick(event){
+MO.FManageDataPicker_onCellClick = function FManageDataPicker_onCellClick(event){
    var o = this;
    var cell = event.cell;
    if(MO.Class.isClass(cell, MO.FDuiCellStatus)){
-      var row = event.row;
-      o.doDetail(row);
+      // 数据选取
+      o.processDataSelectListener(event);
+      // 隐藏页面
+      o.hide();
    }
 }
 
@@ -51,10 +63,12 @@ MO.FManageDataTable_onCellClick = function FManageDataTable_onCellClick(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataTable_onCellDoubleClick = function FManageDataTable_onCellDoubleClick(event){
+MO.FManageDataPicker_onCellDoubleClick = function FManageDataPicker_onCellDoubleClick(event){
    var o = this;
-   var row = event.row;
-   o.doDetail(row);
+   // 数据选取
+   o.processDataSelectListener(event);
+   // 隐藏页面
+   o.hide();
 }
 
 //==========================================================
@@ -63,24 +77,15 @@ MO.FManageDataTable_onCellDoubleClick = function FManageDataTable_onCellDoubleCl
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
+MO.FManageDataPicker_onBuilded = function FManageDataPicker_onBuilded(event){
    var o = this;
    o.__base.FDuiPickerFrame.onBuilded.call(o, event);
    // 按键处理
-   o._controlInsert.addClickListener(o, o.onInsertClick);
-   o.addCellClickListener(o, o.onCellClick);
-   o.addCellDoubleClickListener(o, o.onCellDoubleClick);
-}
-
-//==========================================================
-// <T>数据改变处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FManageDataTable_onDataChanged = function FManageDataTable_onDataChanged(event){
-   var o  = this;
-   o.__base.FDuiPickerFrame.onDataChanged.call(o, event);
+   var table = o._table;
+   //o._controlInsert.addClickListener(o, o.onInsertClick);
+   table.addDataSearchListener(o, o.onDataSearch);
+   table.addCellClickListener(o, o.onCellClick);
+   table.addCellDoubleClickListener(o, o.onCellDoubleClick);
 }
 
 //==========================================================
@@ -89,17 +94,18 @@ MO.FManageDataTable_onDataChanged = function FManageDataTable_onDataChanged(even
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
+MO.FManageDataPicker_onDataFetch = function FManageDataPicker_onDataFetch(event){
    var o = this;
+   var table = o._table;
    var xservice = event.content;
    var xcontent = xservice.findNode('Content');
    var source = MO.Class.create(MO.FDataSource);
    source.loadConfig(xcontent);
    // 加载数据
    var dataset = source.currentDataset();
-   o.clearRows();
-   o.loadDataset(dataset);
-   o.psRefresh();
+   table.clearRows();
+   table.loadDataset(dataset);
+   table.psRefresh();
    // 允许处理
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
@@ -110,41 +116,7 @@ MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FManageDataTable_onDataSave = function FManageDataTable_onDataSave(event){
-   var o = this;
-   //o._containerName, o._itemName
-   //var dataActionCd = o._dataActionCd;
-   //switch(dataActionCd){
-   //   case MO.EUiDataAction.Insert:
-   //      if(o._logicGroup == 'container'){
-   //         o._frameSet._catalogContent.reload();
-   //      }else{
-   //         o._frameSet._catalogContent.reloadNode();
-   //      }
-   //      break;
-   //   case MO.EUiDataAction.Update:
-   //      break;
-   //   case MO.EUiDataAction.Delete:
-   //      if(o._logicGroup == 'container'){
-   //         o._frameSet._catalogContent.reload();
-   //      }else{
-   //         o._frameSet._catalogContent.reloadParentNode();
-   //      }
-   //      break;
-   //   default:
-   //      throw new MO.TError(o, 'Invalid data action.');
-   //}
-   // 允许处理
-   MO.Console.find(MO.FDuiDesktopConsole).hide();
-}
-
-//==========================================================
-// <T>数据保存处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FManageDataTable_onDataDelete = function FManageDataTable_onDataDelete(event){
+MO.FManageDataPicker_onDataDelete = function FManageDataPicker_onDataDelete(event){
    var o = this;
    // 允许处理
    MO.Console.find(MO.FDuiDesktopConsole).hide();
@@ -155,7 +127,7 @@ MO.FManageDataTable_onDataDelete = function FManageDataTable_onDataDelete(event)
 //
 // @method
 //==========================================================
-MO.FManageDataTable_construct = function FManageDataTable_construct(){
+MO.FManageDataPicker_construct = function FManageDataPicker_construct(){
    var o = this;
    // 父处理
    o.__base.FDuiPickerFrame.construct.call(o);
@@ -167,7 +139,7 @@ MO.FManageDataTable_construct = function FManageDataTable_construct(){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
-MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
+MO.FManageDataPicker_dsMovePage = function FManageDataPicker_dsMovePage(actionCd){
    var o = this;
    // 获得数据集合
    var dataset = o._dataset;
@@ -208,18 +180,7 @@ MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
 // @method
 // @param containerName:String 容器名称
 //==========================================================
-MO.FManageDataTable_dsSearch = function FManageDataTable_dsSearch(){
-   var o = this;
-   o.doFetch();
-}
-
-//==========================================================
-// <T>加载配置信息。</T>
-//
-// @method
-// @param containerName:String 容器名称
-//==========================================================
-MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
+MO.FManageDataPicker_doFetch = function FManageDataPicker_doFetch(){
    var o = this;
    // 禁止处理
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
@@ -232,7 +193,7 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    xcontent.set('page', o._dsPage);
    // 建立搜索信息
    var xsearch = xcontent.create('Search');
-   var columns = o._columns;
+   var columns = o._table.columns();
    var count = columns.count();
    for(var i = 0; i < count; i++){
       var column = columns.at(i);
@@ -254,7 +215,7 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
 //
 // @method
 //==========================================================
-MO.FManageDataTable_dispose = function FManageDataTable_dispose(){
+MO.FManageDataPicker_dispose = function FManageDataPicker_dispose(){
    var o = this;
    // 父处理
    o.__base.FDuiPickerFrame.dispose.call(o);

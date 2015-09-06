@@ -376,7 +376,7 @@ MO.FDuiPickerFrame_onBuild = function FDuiPickerFrame_onBuild(event){
    table.build(o);
    table._hPanel.style.width = '100%';
    table._hPanel.style.height = '100%';
-   table._hDataPanel.style.backgound = '100%';
+   table._hDataPanel.style.backgound = '#CCCCCC';
    table.setPanel(o._hPanelForm);
    table.psRefresh();
 }
@@ -414,6 +414,7 @@ MO.FDuiWindow = function FDuiWindow(o){
    o._mouseControl       = null;
    o.onBuildPanel        = MO.FDuiWindow_onBuildPanel;
    o.onBuild             = MO.FDuiWindow_onBuild;
+   o.onCloseClick        = MO.Class.register(o, new MO.AEventClick('onCloseClick'), MO.FDuiWindow_onCloseClick);
    o.onMouseCaptureStart = MO.FDuiWindow_onMouseCaptureStart;
    o.onMouseCapture      = MO.FDuiWindow_onMouseCapture;
    o.onMouseCaptureStop  = MO.FDuiWindow_onMouseCaptureStop;
@@ -447,8 +448,14 @@ MO.FDuiWindow_onBuild = function FDuiWindow_onBuild(event){
    MO.Window.Html.textSet(hTitle, o._label);
    var hTitleButton = MO.Window.Builder.appendTableCell(hTitleLine);
    hTitleButton.width = 20;
+   hTitleButton.style.cursor = 'pointer';
+   MO.Window.Builder.appendIcon(hTitleButton, null, 'editor.common.close');
+   o.attachEvent('onCloseClick', hTitleButton);
    hBodyPanel.appendChild(o._hPanelForm);
    o.refreshSize();
+}
+MO.FDuiWindow_onCloseClick = function FDuiWindow_onCloseClick(event){
+   this.hide();
 }
 MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(event){
    var o = this;
@@ -460,7 +467,7 @@ MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(even
 }
 MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
    var o = this;
-   var hPanel = null;
+   var hPanel = o._hPanel;
    if(o._mouseDraging){
       var cx = event.x - o._mousePosition.x;
       var cy = event.y - o._mousePosition.y;
@@ -470,8 +477,9 @@ MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
 }
 MO.FDuiWindow_onMouseCaptureStop = function FDuiWindow_onMouseCaptureStop(event){
    var o = this;
+   var hPanel = o._hPanel;
    o._mouseDraging = false;
-   MO.Window.Html.cursorSet(o._hPanel, MO.EUiCursor.Auto);
+   MO.Window.Html.cursorSet(hPanel, MO.EUiCursor.Auto);
 }
 MO.FDuiWindow_construct = function FDuiWindow_construct(){
    var o = this;
@@ -482,13 +490,16 @@ MO.FDuiWindow_construct = function FDuiWindow_construct(){
 }
 MO.FDuiWindow_setVisible = function FDuiWindow_setVisible(visible){
    var o = this;
-   o._statusVisible = visible;
+   if(o._statusVisible == visible){
+      return;
+   }
    var hPanel = o.panel(MO.EPanel.Container);
    if(visible){
       MO.Window._hContainer.appendChild(hPanel);
    }else{
       MO.Window._hContainer.removeChild(hPanel);
    }
+   o._statusVisible = visible;
 }
 MO.FDuiWindow_setLabel = function FDuiWindow_setLabel(label){
    var o = this;

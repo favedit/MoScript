@@ -33,6 +33,9 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    // @method
    o.setVisible     = MO.FDuiGridRowControl_setVisible;
    // @method
+   o.get            = MO.FDuiGridRowControl_get;
+   o.set            = MO.FDuiGridRowControl_set;
+   // @method
    o.appendChild    = MO.FDuiGridRowControl_appendChild;
    o.cell           = MO.FDuiGridRowControl_cell;
    o.push           = MO.FDuiGridRowControl_push;
@@ -75,9 +78,7 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    //o.getId            = FDuiGridRowControl_getId;
    //o.getVersion       = FDuiGridRowControl_getVersion;
    //o.getStatus        = FDuiGridRowControl_getStatus;
-   //o.get              = FDuiGridRowControl_get;
    //o.reget            = FDuiGridRowControl_reget;
-   //o.set              = FDuiGridRowControl_set;
    //o.loadValue        = FDuiGridRowControl_loadValue;
    //o.saveValue        = FDuiGridRowControl_saveValue;
    //o.recordValue      = FDuiGridRowControl_recordValue;
@@ -163,6 +164,28 @@ MO.FDuiGridRowControl_setVisible = function FDuiGridRowControl_setVisible(visibl
    if(hPanel){
       MO.Window.Html.displaySet(hPanel, visible);
    }
+}
+
+//==========================================================
+// <T>根据字段名称，从单元格对象中获得数据内容。</T>
+//
+// @method
+// @param name:String 字段名称
+// @return String 数据内容
+//==========================================================
+MO.FDuiGridRowControl_get = function FDuiGridRowControl_get(name){
+   return this._cells.get(name).get();
+}
+
+//==========================================================
+// <T>根据字段名称，向单元格对象中设置数据内容。</T>
+//
+// @method
+// @param name:String 字段名称
+// @param value:String 数据内容
+//==========================================================
+MO.FDuiGridRowControl_set = function FDuiGridRowControl_set(name, value){
+   this._cells.get(name).set(value);
 }
 
 //==========================================================
@@ -388,17 +411,6 @@ MO.FDuiGridRowControl_getStatus = function FDuiGridRowControl_getStatus(){
 }
 
 //==========================================================
-// <T>根据字段名称，从单元格对象中获得数据内容。</T>
-//
-// @method
-// @param n:name:String 字段名称
-// @return String 数据内容
-//==========================================================
-MO.FDuiGridRowControl_get = function FDuiGridRowControl_get(n){
-   return this._cells.get(n).get();
-}
-
-//==========================================================
 // <T>根据字段名称，从单元格对象中获得最新数据内容。</T>
 //
 // @method
@@ -407,17 +419,6 @@ MO.FDuiGridRowControl_get = function FDuiGridRowControl_get(n){
 //==========================================================
 MO.FDuiGridRowControl_reget = function FDuiGridRowControl_reget(n){
    return this._cells.get(n).reget();
-}
-
-//==========================================================
-// <T>根据字段名称，向单元格对象中设置数据内容。</T>
-//
-// @method
-// @param n:name:String 字段名称
-// @param v:value:String 数据内容
-//==========================================================
-MO.FDuiGridRowControl_set = function FDuiGridRowControl_set(n, v){
-   this._cells.get(n).set(v);
 }
 //==========================================================
 // value

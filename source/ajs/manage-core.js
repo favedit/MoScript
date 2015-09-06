@@ -214,71 +214,66 @@ MO.FManageDataForm_dispose = function FManageDataForm_dispose(){
    var o = this;
    o.__base.FDuiFormFrame.dispose.call(o);
 }
-MO.FManageDataTable = function FManageDataTable(o){
+MO.FManageDataPicker = function FManageDataPicker(o){
    o = MO.Class.inherits(this, o, MO.FDuiPickerFrame);
-   o.onCellClick       = MO.FManageDataTable_onCellClick;
-   o.onCellDoubleClick = MO.FManageDataTable_onCellDoubleClick;
-   o.onBuilded         = MO.FManageDataTable_onBuilded;
-   o.onDataChanged     = MO.FManageDataTable_onDataChanged;
-   o.onDataFetch       = MO.FManageDataTable_onDataFetch;
-   o.onDataSave        = MO.FManageDataTable_onDataSave;
-   o.onDataDelete      = MO.FManageDataTable_onDataDelete;
-   o.construct         = MO.FManageDataTable_construct;
-   o.dsMovePage        = MO.FManageDataTable_dsMovePage;
-   o.dsSearch          = MO.FManageDataTable_dsSearch;
-   o.doFetch           = MO.FManageDataTable_doFetch;
-   o.dispose           = MO.FManageDataTable_dispose;
+   o._listenersDataSelect = MO.Class.register(o, new MO.AListener('_listenersDataSelect'));
+   o.onDataSearch         = MO.FManageDataPicker_onDataSearch;
+   o.onCellClick          = MO.FManageDataPicker_onCellClick;
+   o.onCellDoubleClick    = MO.FManageDataPicker_onCellDoubleClick;
+   o.onBuilded            = MO.FManageDataPicker_onBuilded;
+   o.onDataFetch          = MO.FManageDataPicker_onDataFetch;
+   o.construct            = MO.FManageDataPicker_construct;
+   o.dsMovePage           = MO.FManageDataPicker_dsMovePage;
+   o.doFetch              = MO.FManageDataPicker_doFetch;
+   o.dispose              = MO.FManageDataPicker_dispose;
    return o;
 }
-MO.FManageDataTable_onCellClick = function FManageDataTable_onCellClick(event){
+MO.FManageDataPicker_onDataSearch = function FManageDataPicker_onDataSearch(event){
+   this.doFetch();
+}
+MO.FManageDataPicker_onCellClick = function FManageDataPicker_onCellClick(event){
    var o = this;
    var cell = event.cell;
    if(MO.Class.isClass(cell, MO.FDuiCellStatus)){
-      var row = event.row;
-      o.doDetail(row);
+      o.processDataSelectListener(event);
+      o.hide();
    }
 }
-MO.FManageDataTable_onCellDoubleClick = function FManageDataTable_onCellDoubleClick(event){
+MO.FManageDataPicker_onCellDoubleClick = function FManageDataPicker_onCellDoubleClick(event){
    var o = this;
-   var row = event.row;
-   o.doDetail(row);
+   o.processDataSelectListener(event);
+   o.hide();
 }
-MO.FManageDataTable_onBuilded = function FManageDataTable_onBuilded(event){
+MO.FManageDataPicker_onBuilded = function FManageDataPicker_onBuilded(event){
    var o = this;
    o.__base.FDuiPickerFrame.onBuilded.call(o, event);
-   o._controlInsert.addClickListener(o, o.onInsertClick);
-   o.addCellClickListener(o, o.onCellClick);
-   o.addCellDoubleClickListener(o, o.onCellDoubleClick);
+   var table = o._table;
+   table.addDataSearchListener(o, o.onDataSearch);
+   table.addCellClickListener(o, o.onCellClick);
+   table.addCellDoubleClickListener(o, o.onCellDoubleClick);
 }
-MO.FManageDataTable_onDataChanged = function FManageDataTable_onDataChanged(event){
-   var o  = this;
-   o.__base.FDuiPickerFrame.onDataChanged.call(o, event);
-}
-MO.FManageDataTable_onDataFetch = function FManageDataTable_onDataFetch(event){
+MO.FManageDataPicker_onDataFetch = function FManageDataPicker_onDataFetch(event){
    var o = this;
+   var table = o._table;
    var xservice = event.content;
    var xcontent = xservice.findNode('Content');
    var source = MO.Class.create(MO.FDataSource);
    source.loadConfig(xcontent);
    var dataset = source.currentDataset();
-   o.clearRows();
-   o.loadDataset(dataset);
-   o.psRefresh();
+   table.clearRows();
+   table.loadDataset(dataset);
+   table.psRefresh();
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
-MO.FManageDataTable_onDataSave = function FManageDataTable_onDataSave(event){
+MO.FManageDataPicker_onDataDelete = function FManageDataPicker_onDataDelete(event){
    var o = this;
    MO.Console.find(MO.FDuiDesktopConsole).hide();
 }
-MO.FManageDataTable_onDataDelete = function FManageDataTable_onDataDelete(event){
-   var o = this;
-   MO.Console.find(MO.FDuiDesktopConsole).hide();
-}
-MO.FManageDataTable_construct = function FManageDataTable_construct(){
+MO.FManageDataPicker_construct = function FManageDataPicker_construct(){
    var o = this;
    o.__base.FDuiPickerFrame.construct.call(o);
 }
-MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
+MO.FManageDataPicker_dsMovePage = function FManageDataPicker_dsMovePage(actionCd){
    var o = this;
    var dataset = o._dataset;
    var pageSize = dataset.pageSize();
@@ -309,11 +304,7 @@ MO.FManageDataTable_dsMovePage = function FManageDataTable_dsMovePage(actionCd){
       o.doFetch();
    }
 }
-MO.FManageDataTable_dsSearch = function FManageDataTable_dsSearch(){
-   var o = this;
-   o.doFetch();
-}
-MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
+MO.FManageDataPicker_doFetch = function FManageDataPicker_doFetch(){
    var o = this;
    MO.Console.find(MO.FDuiDesktopConsole).showProgress();
    var xdocument = new MO.TXmlDocument();
@@ -323,7 +314,7 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    xcontent.set('page_size', o._dsPageSize);
    xcontent.set('page', o._dsPage);
    var xsearch = xcontent.create('Search');
-   var columns = o._columns;
+   var columns = o._table.columns();
    var count = columns.count();
    for(var i = 0; i < count; i++){
       var column = columns.at(i);
@@ -338,7 +329,7 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
    var connection = MO.Console.find(MO.FXmlConsole).sendAsync(url, xdocument);
    connection.addLoadListener(o, o.onDataFetch);
 }
-MO.FManageDataTable_dispose = function FManageDataTable_dispose(){
+MO.FManageDataPicker_dispose = function FManageDataPicker_dispose(){
    var o = this;
    o.__base.FDuiPickerFrame.dispose.call(o);
 }

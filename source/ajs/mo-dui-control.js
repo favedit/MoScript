@@ -2986,29 +2986,31 @@ MO.FDuiFrameEventConsole = function FDuiFrameEventConsole(o){
 }
 MO.FDuiFrameEventConsole_onProcess = function FDuiFrameEventConsole_onProcess(){
    var o = this;
-   var es = o._events;
-   var ec = es.count();
-   if(ec > 0){
-      while(true){
-         var has = false;
-         for(var n = 0; n < ec; n++){
-            var e = es.get(n);
-            if(e){
-               has = true;
-               e.process();
-               var ls = o._listeners.get(MO.Method.name(e));
-               if(ls){
-                  ls.process(e);
-               }
-               es.set(n, null)
+   var events = o._events;
+   if(events.isEmpty()){
+      return;
+   }
+   while(true){
+      var processed = false;
+      var eventCount = events.count();
+      for(var i = 0; i < eventCount; i++){
+         var event = events.at(i);
+         if(event){
+            processed = true;
+            event.process();
+            var className = MO.Method.name(event);
+            var listeners = o._listeners.get(className);
+            if(listeners){
+               listeners.process(event);
             }
-         }
-         if(!has){
-            break;
+            events.set(i, null)
          }
       }
-      es.clear();
+      if(!processed){
+         break;
+      }
    }
+   events.clear();
 }
 MO.FDuiFrameEventConsole_construct = function FDuiFrameEventConsole_construct(){
    var o = this;
@@ -8985,14 +8987,16 @@ MO.FDuiNumber = function FDuiNumber(o){
    o._iconUp               = null;
    o._iconDown             = null;
    o.onBuildEditValue      = MO.FDuiNumber_onBuildEditValue;
+   o.onLabelPickerClick    = MO.Class.register(o, new MO.AEventClick('onLabelPickerClick'));
    o.onInputKeyPress       = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber_onInputKeyPress);
    o.onInputChanged        = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber_onInputChanged);
-   o.onInputDoubleClick    = MO.Class.register(o, new MO.AEventDoubleClick('onInputDoubleClick'), MO.FDuiNumber_onInputDoubleClick);
+   o.onInputPickerClick    = MO.Class.register(o, new MO.AEventDoubleClick('onInputPickerClick'));
    o.construct             = MO.FDuiNumber_construct;
    o.formatDisplay         = MO.FDuiNumber_formatDisplay;
    o.formatValue           = MO.FDuiNumber_formatValue;
    o.get                   = MO.FDuiNumber_get;
    o.set                   = MO.FDuiNumber_set;
+   o.doPicker              = MO.FDuiNumber_doPicker;
    o.refreshStyle          = MO.FDuiNumber_refreshStyle;
    o.dispose               = MO.FDuiNumber_dispose;
    return o;
@@ -9010,9 +9014,15 @@ MO.FDuiNumber_onBuildEditValue = function FDuiNumber_onBuildEditValue(p){
    hInput.style.textAlign = 'right';
    o.attachEvent('onInputKeyPress', hInput, o.onInputKeyPress);
    o.attachEvent('onInputChanged', hInput, o.onInputChanged);
-   o.attachEvent('onInputDoubleClick', hInput);
+   o.attachEvent('onInputPickerClick', hInput, o.onPickerClick);
    if(o._editLength){
       hInput.maxLength = o._editLength;
+   }
+   if(!MO.Lang.String.isEmpty(o._pickerFrame)){
+      var hText = o._hText;
+      hText.style.cursor = 'pointer';
+      hText.style.textDecoration = 'underline';
+      o.attachEvent('onLabelPickerClick', hText, o.onPickerClick);
    }
    var hAdjustPanel = o._hAdjustPanel = MO.Window.Builder.appendTableCell(hValueLine, o.styleName('AdjustForm'));
    var hAdjustForm = o.hAdjustForm = MO.Window.Builder.appendTable(hAdjustPanel, o.styleName('AdjustForm'));
@@ -9030,15 +9040,6 @@ MO.FDuiNumber_onInputKeyPress = function FDuiNumber_onInputKeyPress(event){
 MO.FDuiNumber_onInputChanged = function FDuiNumber_onInputChanged(p){
    var o = this;
    o.processDataChangedListener(o);
-}
-MO.FDuiNumber_onInputDoubleClick = function FDuiNumber_onInputDoubleClick(event){
-   var o = this;
-   var pickerFrame = o._pickerFrame;
-   if(!MO.Lang.String.isEmpty(pickerFrame)){
-      var frame = MO.Console.find(MO.FDuiFrameConsole).get(o, pickerFrame, o._hPanel);
-      frame._frameSet = o;
-      frame.showPosition(MO.EUiPosition.Center)
-   }
 }
 MO.FDuiNumber_construct = function FDuiNumber_construct(){
    var o = this;
@@ -9065,6 +9066,16 @@ MO.FDuiNumber_set = function FDuiNumber_set(value){
    var text = MO.Lang.String.nvl(value);
    o._hInput.value = text;
    o.changeSet(false);
+}
+MO.FDuiNumber_doPicker = function FDuiNumber_doPicker(){
+   var o = this;
+   var pickerFrame = o._pickerFrame;
+   if(!MO.Lang.String.isEmpty(pickerFrame)){
+      var frame = MO.Console.find(MO.FDuiFrameConsole).get(o, pickerFrame);
+      frame.showPosition(MO.EUiPosition.Center)
+      frame.setDataSelectListener(o, o.onPickerSelect);
+      frame.doFetch();
+   }
 }
 MO.FDuiNumber_refreshStyle = function FDuiNumber_refreshStyle(){
    var o = this;
@@ -12716,10 +12727,10 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._styleButton              = MO.Class.register(o, new MO.AStyle('_styleButton'));
    o._dataset                  = null;
    o._minHeight                = 80;
-   o._buttons                  = null;
-   o._columns                  = null;
-   o._rowClass                 = MO.FDuiGridRow;
-   o._rows                     = null;
+   o._buttons                  = MO.Class.register(o, new MO.AGetter('_buttons'));
+   o._columns                  = MO.Class.register(o, new MO.AGetter('_columns'));
+   o._rowClass                 = MO.Class.register(o, new MO.AGetSet('_rowClass'), MO.FDuiGridRow);
+   o._rows                     = MO.Class.register(o, new MO.AGetter('_rows'));
    o._rowPool                  = null;
    o._focusCell                = null;
    o._focusRow                 = null;
@@ -12732,6 +12743,7 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._hHintPanel               = null;
    o._hHintForm                = null;
    o._hRows                    = null;
+   o._listenersDataSearch      = MO.Class.register(o, new MO.AListener('_listenersDataSearch'));
    o._listenersCellClick       = MO.Class.register(o, new MO.AListener('_listenersCellClick'));
    o._listenersCellDoubleClick = MO.Class.register(o, new MO.AListener('_listenersCellDoubleClick'));
    o._listenersRowClick        = MO.Class.register(o, new MO.AListener('_listenersRowClick'));
@@ -12842,6 +12854,7 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
 MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(event){
    var o = this;
    if(event.keyCode == MO.EKeyCode.Enter){
+      o.processDataSearchListener(event);
       o.dsSearch();
    }
 }
@@ -13878,6 +13891,8 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    o.onBuild        = MO.FDuiGridRowControl_onBuild;
    o.construct      = MO.FDuiGridRowControl_construct;
    o.setVisible     = MO.FDuiGridRowControl_setVisible;
+   o.get            = MO.FDuiGridRowControl_get;
+   o.set            = MO.FDuiGridRowControl_set;
    o.appendChild    = MO.FDuiGridRowControl_appendChild;
    o.cell           = MO.FDuiGridRowControl_cell;
    o.push           = MO.FDuiGridRowControl_push;
@@ -13922,6 +13937,12 @@ MO.FDuiGridRowControl_setVisible = function FDuiGridRowControl_setVisible(visibl
    if(hPanel){
       MO.Window.Html.displaySet(hPanel, visible);
    }
+}
+MO.FDuiGridRowControl_get = function FDuiGridRowControl_get(name){
+   return this._cells.get(name).get();
+}
+MO.FDuiGridRowControl_set = function FDuiGridRowControl_set(name, value){
+   this._cells.get(name).set(value);
 }
 MO.FDuiGridRowControl_appendChild = function FDuiGridRowControl_appendChild(control){
    var o = this;
@@ -14025,14 +14046,8 @@ MO.FDuiGridRowControl_getVersion = function FDuiGridRowControl_getVersion(){
 MO.FDuiGridRowControl_getStatus = function FDuiGridRowControl_getStatus(){
    return this._statusCell;
 }
-MO.FDuiGridRowControl_get = function FDuiGridRowControl_get(n){
-   return this._cells.get(n).get();
-}
 MO.FDuiGridRowControl_reget = function FDuiGridRowControl_reget(n){
    return this._cells.get(n).reget();
-}
-MO.FDuiGridRowControl_set = function FDuiGridRowControl_set(n, v){
-   this._cells.get(n).set(v);
 }
 MO.FDuiGridRowControl_loadValue = function FDuiGridRowControl_loadValue(v){
    this.loadRow(v);
@@ -18262,7 +18277,7 @@ MO.FDuiPickerFrame_onBuild = function FDuiPickerFrame_onBuild(event){
    table.build(o);
    table._hPanel.style.width = '100%';
    table._hPanel.style.height = '100%';
-   table._hDataPanel.style.backgound = '100%';
+   table._hDataPanel.style.backgound = '#CCCCCC';
    table.setPanel(o._hPanelForm);
    table.psRefresh();
 }
@@ -18300,6 +18315,7 @@ MO.FDuiWindow = function FDuiWindow(o){
    o._mouseControl       = null;
    o.onBuildPanel        = MO.FDuiWindow_onBuildPanel;
    o.onBuild             = MO.FDuiWindow_onBuild;
+   o.onCloseClick        = MO.Class.register(o, new MO.AEventClick('onCloseClick'), MO.FDuiWindow_onCloseClick);
    o.onMouseCaptureStart = MO.FDuiWindow_onMouseCaptureStart;
    o.onMouseCapture      = MO.FDuiWindow_onMouseCapture;
    o.onMouseCaptureStop  = MO.FDuiWindow_onMouseCaptureStop;
@@ -18333,8 +18349,14 @@ MO.FDuiWindow_onBuild = function FDuiWindow_onBuild(event){
    MO.Window.Html.textSet(hTitle, o._label);
    var hTitleButton = MO.Window.Builder.appendTableCell(hTitleLine);
    hTitleButton.width = 20;
+   hTitleButton.style.cursor = 'pointer';
+   MO.Window.Builder.appendIcon(hTitleButton, null, 'editor.common.close');
+   o.attachEvent('onCloseClick', hTitleButton);
    hBodyPanel.appendChild(o._hPanelForm);
    o.refreshSize();
+}
+MO.FDuiWindow_onCloseClick = function FDuiWindow_onCloseClick(event){
+   this.hide();
 }
 MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(event){
    var o = this;
@@ -18346,7 +18368,7 @@ MO.FDuiWindow_onMouseCaptureStart = function FDuiWindow_onMouseCaptureStart(even
 }
 MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
    var o = this;
-   var hPanel = null;
+   var hPanel = o._hPanel;
    if(o._mouseDraging){
       var cx = event.x - o._mousePosition.x;
       var cy = event.y - o._mousePosition.y;
@@ -18356,8 +18378,9 @@ MO.FDuiWindow_onMouseCapture = function FDuiWindow_onMouseCapture(event){
 }
 MO.FDuiWindow_onMouseCaptureStop = function FDuiWindow_onMouseCaptureStop(event){
    var o = this;
+   var hPanel = o._hPanel;
    o._mouseDraging = false;
-   MO.Window.Html.cursorSet(o._hPanel, MO.EUiCursor.Auto);
+   MO.Window.Html.cursorSet(hPanel, MO.EUiCursor.Auto);
 }
 MO.FDuiWindow_construct = function FDuiWindow_construct(){
    var o = this;
@@ -18368,13 +18391,16 @@ MO.FDuiWindow_construct = function FDuiWindow_construct(){
 }
 MO.FDuiWindow_setVisible = function FDuiWindow_setVisible(visible){
    var o = this;
-   o._statusVisible = visible;
+   if(o._statusVisible == visible){
+      return;
+   }
    var hPanel = o.panel(MO.EPanel.Container);
    if(visible){
       MO.Window._hContainer.appendChild(hPanel);
    }else{
       MO.Window._hContainer.removeChild(hPanel);
    }
+   o._statusVisible = visible;
 }
 MO.FDuiWindow_setLabel = function FDuiWindow_setLabel(label){
    var o = this;

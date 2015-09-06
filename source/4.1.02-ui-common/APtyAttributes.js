@@ -2,29 +2,26 @@
 // <T>填充的属性描述类。</T>
 //
 // @property
-// @param n:name:String 名称
-// @param l:linker:String 关联名称
-// @param vl:left:Integer 左边距
-// @param vt:top:Integer 上边距
-// @param vr:right:Integer 右边距
-// @param vb:bottom:Integer 下边距
+// @param name:String 名称
+// @param linker:String 关联名称
+// @param splitName:String 名称分隔
+// @param splitValue:String 内容分隔
 // @author maocy
 // @version 150101
 //==========================================================
-MO.APtyAttributes = function APtyAttributes(n, l, vl, vt, vr, vb){
+MO.APtyAttributes = function APtyAttributes(name, linker, splitName, splitValue){
    var o = this;
-   MO.AProperty.call(o, n, l);
+   MO.AProperty.call(o, name, linker);
    //..........................................................
    // @attribute
-   o._left    = MO.Lang.Integer.nvl(vl);
-   o._top     = MO.Lang.Integer.nvl(vt);
-   o._right   = MO.Lang.Integer.nvl(vr);
-   o._bottom  = MO.Lang.Integer.nvl(vb);
+   o._splitName  = MO.Lang.String.nvl(splitName, '=');
+   o._splitValue = MO.Lang.String.nvl(splitValue, '\n');
    //..........................................................
    // @method
-   o.load     = MO.APtyAttributes_load;
-   o.save     = MO.APtyAttributes_save;
-   o.toString = MO.APtyAttributes_toString;
+   o.load        = MO.APtyAttributes_load;
+   o.save        = MO.APtyAttributes_save;
+   // @method
+   o.toString    = MO.APtyAttributes_toString;
    return o;
 }
 
@@ -32,16 +29,18 @@ MO.APtyAttributes = function APtyAttributes(n, l, vl, vt, vr, vb){
 // <T>加载属性值。</T>
 //
 // @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
+// @param instance:Object 对象
+// @param xconfig:TNode 节点
 //============================================================
-MO.APtyAttributes_load = function APtyAttributes_load(v, x){
+MO.APtyAttributes_load = function APtyAttributes_load(instance, xconfig){
    var o = this;
-   var s = v[o._name];
-   if(!s){
-      s = v[o._name] = new MO.TAttributes();
+   var name = o._name;
+   var attributes = instance[name];
+   if(!attributes){
+      attributes = instance[name] = new MO.TAttributes();
    }
-   s.split(x.get(o._linker), '=', '\n');
+   var value = xconfig.get(o._linker);
+   attributes.split(value, o._splitName, o._splitValue);
 }
 
 //============================================================
@@ -49,15 +48,13 @@ MO.APtyAttributes_load = function APtyAttributes_load(v, x){
 //
 // @method
 // @param v:value:Object 对象
-// @param x:config:TNode 节点
+// @param xconfig:TNode 节点
 //============================================================
-MO.APtyAttributes_save = function APtyAttributes_save(v, x){
+MO.APtyAttributes_save = function APtyAttributes_save(instance, xconfig){
    var o = this;
-   var s = v[o._name];
-   if(s){
-      if(!s.isEmpty()){
-         x.set(o._linker, s.join('=', '\n'));
-      }
+   var attributes = instance[o._name];
+   if(attributes){
+      xconfig.set(o._linker, attributes.join(o._splitName, o._splitValue));
    }
 }
 
@@ -69,5 +66,5 @@ MO.APtyAttributes_save = function APtyAttributes_save(v, x){
 //============================================================
 MO.APtyAttributes_toString = function APtyAttributes_toString(){
    var o = this;
-   return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
+   return 'linker=' + o._linker + ',split_name=' + o._splitName + ',split_value' + o._splitValue;
 }

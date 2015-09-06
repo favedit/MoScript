@@ -39,7 +39,7 @@ MO.FDuiPickerFrame_onBuild = function FDuiPickerFrame_onBuild(event){
    table.build(o);
    table._hPanel.style.width = '100%';
    table._hPanel.style.height = '100%';
-   table._hDataPanel.style.backgound = '100%';
+   table._hDataPanel.style.backgound = '#CCCCCC';
    table.setPanel(o._hPanelForm);
    table.psRefresh();
 }

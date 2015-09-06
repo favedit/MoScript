@@ -45,9 +45,10 @@ MO.FDuiNumber = function FDuiNumber(o){
    // @event
    o.onBuildEditValue      = MO.FDuiNumber_onBuildEditValue;
    // @event
+   o.onLabelPickerClick    = MO.Class.register(o, new MO.AEventClick('onLabelPickerClick'));
    o.onInputKeyPress       = MO.Class.register(o, new MO.AEventKeyPress('onInputKeyPress'), MO.FDuiNumber_onInputKeyPress);
    o.onInputChanged        = MO.Class.register(o, new MO.AEventInputChanged('onInputChanged'), MO.FDuiNumber_onInputChanged);
-   o.onInputDoubleClick    = MO.Class.register(o, new MO.AEventDoubleClick('onInputDoubleClick'), MO.FDuiNumber_onInputDoubleClick);
+   o.onInputPickerClick    = MO.Class.register(o, new MO.AEventDoubleClick('onInputPickerClick'));
    //..........................................................
    // @method
    o.construct             = MO.FDuiNumber_construct;
@@ -58,6 +59,7 @@ MO.FDuiNumber = function FDuiNumber(o){
    o.get                   = MO.FDuiNumber_get;
    o.set                   = MO.FDuiNumber_set;
    // @method
+   o.doPicker              = MO.FDuiNumber_doPicker;
    o.refreshStyle          = MO.FDuiNumber_refreshStyle;
    // @method
    o.dispose               = MO.FDuiNumber_dispose;
@@ -104,12 +106,20 @@ MO.FDuiNumber_onBuildEditValue = function FDuiNumber_onBuildEditValue(p){
    //o.attachEvent('onEditFocus', hInput, o.onEditFocus);
    o.attachEvent('onInputKeyPress', hInput, o.onInputKeyPress);
    o.attachEvent('onInputChanged', hInput, o.onInputChanged);
-   o.attachEvent('onInputDoubleClick', hInput);
+   o.attachEvent('onInputPickerClick', hInput, o.onPickerClick);
    //o.attachEvent('onEditBlur', hInput, o.onEditBlur);
    //o.attachEvent('onDataKeyUp', hInput, o.ohEditKeyUp); 
    // 设置可以输入的最大长度
    if(o._editLength){
       hInput.maxLength = o._editLength;
+   }
+   //..........................................................
+   // 设置标签
+   if(!MO.Lang.String.isEmpty(o._pickerFrame)){
+      var hText = o._hText;
+      hText.style.cursor = 'pointer';
+      hText.style.textDecoration = 'underline';
+      o.attachEvent('onLabelPickerClick', hText, o.onPickerClick);
    }
    //..........................................................
    // 建立调整栏
@@ -155,21 +165,6 @@ MO.FDuiNumber_onInputChanged = function FDuiNumber_onInputChanged(p){
    //if(o._dataDisplay != v){
    //   o.processDataChangedListener(o);
    //}
-}
-
-//==========================================================
-// <T>编辑控件中双击处理。 </T>
-//
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FDuiNumber_onInputDoubleClick = function FDuiNumber_onInputDoubleClick(event){
-   var o = this;
-   var pickerFrame = o._pickerFrame;
-   if(!MO.Lang.String.isEmpty(pickerFrame)){
-      var frame = MO.Console.find(MO.FDuiFrameConsole).get(o, pickerFrame, o._hPanel);
-      frame._frameSet = o;
-      frame.showPosition(MO.EUiPosition.Center)
-   }
 }
 
 //==========================================================
@@ -236,6 +231,22 @@ MO.FDuiNumber_set = function FDuiNumber_set(value){
    o._hInput.value = text;
    // 设置修改状态
    o.changeSet(false);
+}
+
+//==========================================================
+// <T>弹出关联的数据选取窗口。</T>
+//
+// @method
+//==========================================================
+MO.FDuiNumber_doPicker = function FDuiNumber_doPicker(){
+   var o = this;
+   var pickerFrame = o._pickerFrame;
+   if(!MO.Lang.String.isEmpty(pickerFrame)){
+      var frame = MO.Console.find(MO.FDuiFrameConsole).get(o, pickerFrame);
+      frame.showPosition(MO.EUiPosition.Center)
+      frame.setDataSelectListener(o, o.onPickerSelect);
+      frame.doFetch();
+   }
 }
 
 //==========================================================
