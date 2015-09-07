@@ -11226,6 +11226,7 @@ MO.FDuiCell = function FDuiCell(o){
    o.oeLoadDataRow     = MO.FDuiCell_oeLoadDataRow;
    o.oeSaveDataRow     = MO.FDuiCell_oeSaveDataRow;
    o.construct        = MO.FDuiCell_construct;
+   o.testDataChanged  = MO.FDuiCell_testDataChanged;
    o.setVisible       = MO.FDuiCell_setVisible;
    o.focus            = MO.FDuiCell_focus;
    o.refreshStyle     = MO.FDuiCell_refreshStyle;
@@ -11853,39 +11854,34 @@ MO.FDuiCellSelected_dispose = function FDuiCellSelected_dispose(){
 }
 MO.FDuiCellStatus = function FDuiCellStatus(o){
    o = MO.Class.inherits(this, o, MO.FDuiCell);
-   o._dataName   = '_status';
-   o._hStatus    = null;
-   o.onBuild     = MO.FDuiCellStatus_onBuild;
+   o._dataName    = '_status';
+   o._hIcon     = null;
+   o.onBuild      = MO.FDuiCellStatus_onBuild;
+   o.refreshStyle = MO.FDuiCellStatus_refreshStyle;
    return o;
 }
 MO.FDuiCellStatus_onBuild = function FDuiCellStatus_onBuild(p){
    var o = this;
    o.__base.FDuiCell.onBuild.call(o, p)
-   var c = o._column;
-   var h = o._hPanel;
-   h.align = 'center';
-   h.style.paddingTop = 2;
-   h.style.paddingBottom = 2;
-   h.style.cursor = 'normal';
-   o._hStatus = MO.Window.Builder.appendIcon(h, null, 'n');
+   var hPanel = o._hPanel;
+   hPanel.align = 'center';
+   hPanel.style.paddingTop = 2;
+   hPanel.style.paddingBottom = 2;
+   hPanel.style.cursor = 'normal';
+   var hIcon = o._hIcon = MO.Window.Builder.appendIcon(hPanel, null, 'editor.design.frame.gridrownormal');
+   hIcon.style.cursor = 'pointer';
+}
+MO.FDuiCellStatus_refreshStyle = function FDuiCellStatus_refreshStyle(){
+   var o = this;
+   o.__base.FDuiCell.refreshStyle.call(o);
+   var row = o._row;
+   var table = o._table;
 }
 MO.FDuiCellStatus_onStatusEnter = function FDuiCellStatus_onStatusEnter(){
    this.row.table.getRowBar().linkCell(this);
 }
 MO.FDuiCellStatus_setIcon = function FDuiCellStatus_setIcon(s){
    this._hStatus.src = s;
-}
-MO.FDuiCellStatus_refreshStyle = function FDuiCellStatus_refreshStyle(){
-   var o = this;
-   var r = o.row;
-   var t = r.table;
-   var p = null;
-   if(r.isDataChanged()){
-      p = 'Changed';
-   }else{
-      p = t.isFormLinked() ? 'Normal' : 'Normal';
-   }
-   o.setIcon(o.column.styleIconPath(p));
 }
 MO.FDuiCellStatus_dispose = function FDuiCellStatus_dispose(){
    var o = this;
@@ -12712,6 +12708,8 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._displayTitle             = true;
    o._displayColumnStatus      = true;
    o._displayColumnSelect      = true;
+   o._optionColumnStatus       = true;
+   o._optionColumnSelect       = true;
    o._rowHeight                = MO.Class.register(o, new MO.APtyInteger('_rowHeight'), 0);
    o._stylePanel               = MO.Class.register(o, new MO.AStyle('_stylePanel'));
    o._styleTitlePanel          = MO.Class.register(o, new MO.AStyle('_styleTitlePanel'));
@@ -12840,16 +12838,20 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
    o._hHintPanel = MO.Window.Builder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
    o._hHintForm = MO.Window.Builder.appendTable(o._hHintPanel, o.styleName('HintForm'));
    o.onBuildHint(event);
-   var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
-   statusColumn.setTable(o);
-   statusColumn.size().set(40, 0);
-   statusColumn.build(event);
-   o.push(statusColumn);
-   var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
-   selectColumn.setTable(o);
-   selectColumn.size().set(40, 0);
-   selectColumn.build(event);
-   o.push(selectColumn);
+   if(o._optionColumnStatus){
+      var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
+      statusColumn.setTable(o);
+      statusColumn.size().set(40, 0);
+      statusColumn.build(event);
+      o.push(statusColumn);
+   }
+   if(o._optionColumnSelect){
+      var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
+      selectColumn.setTable(o);
+      selectColumn.size().set(40, 0);
+      selectColumn.build(event);
+      o.push(selectColumn);
+   }
 }
 MO.FDuiGridControl_onColumnSearchKeyDown = function FDuiGridControl_onColumnSearchKeyDown(event){
    var o = this;
@@ -13877,38 +13879,39 @@ MO.FDuiGridRow_refreshStyle = function FDuiGridRow_refreshStyle(){
 }
 MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDataContainer);
-   o._table         = MO.Class.register(o, new MO.AGetSet('_table'));
-   o._cells         = MO.Class.register(o, new MO.AGetter('_cells'));
-   o._rows          = null;
-   o._clearProcess  = null;
-   o._resetProcess  = null;
-   o._loadProcess   = null;
-   o._saveProcess   = null;
-   o._recordProcess = null;
-   o._statusCell    = null;
-   o._statusSelect  = false;
-   o.onBuildPanel   = MO.FDuiGridRowControl_onBuildPanel;
-   o.onBuild        = MO.FDuiGridRowControl_onBuild;
-   o.construct      = MO.FDuiGridRowControl_construct;
-   o.setVisible     = MO.FDuiGridRowControl_setVisible;
-   o.get            = MO.FDuiGridRowControl_get;
-   o.set            = MO.FDuiGridRowControl_set;
-   o.appendChild    = MO.FDuiGridRowControl_appendChild;
-   o.cell           = MO.FDuiGridRowControl_cell;
-   o.push           = MO.FDuiGridRowControl_push;
-   o.select         = MO.FDuiGridRowControl_select;
-   o.refreshStyle   = MO.FDuiGridRowControl_refreshStyle;
-   o.loadDataRow    = MO.FDuiGridRowControl_loadDataRow;
-   o.saveDataRow    = MO.FDuiGridRowControl_saveDataRow;
+   o._table          = MO.Class.register(o, new MO.AGetSet('_table'));
+   o._cells          = MO.Class.register(o, new MO.AGetter('_cells'));
+   o._rows           = null;
+   o._clearProcess   = null;
+   o._resetProcess   = null;
+   o._loadProcess    = null;
+   o._saveProcess    = null;
+   o._recordProcess  = null;
+   o._statusCell     = null;
+   o._statusSelect   = false;
+   o.onBuildPanel    = MO.FDuiGridRowControl_onBuildPanel;
+   o.onBuild         = MO.FDuiGridRowControl_onBuild;
+   o.construct       = MO.FDuiGridRowControl_construct;
+   o.testDataChanged = MO.FDuiGridRowControl_testDataChanged;
+   o.setVisible      = MO.FDuiGridRowControl_setVisible;
+   o.get             = MO.FDuiGridRowControl_get;
+   o.set             = MO.FDuiGridRowControl_set;
+   o.appendChild     = MO.FDuiGridRowControl_appendChild;
+   o.cell            = MO.FDuiGridRowControl_cell;
+   o.push            = MO.FDuiGridRowControl_push;
+   o.select          = MO.FDuiGridRowControl_select;
+   o.refreshStyle    = MO.FDuiGridRowControl_refreshStyle;
+   o.loadDataRow     = MO.FDuiGridRowControl_loadDataRow;
+   o.saveDataRow     = MO.FDuiGridRowControl_saveDataRow;
    return o;
 }
-MO.FDuiGridRowControl_onBuildPanel = function FDuiGridRowControl_onBuildPanel(p){
+MO.FDuiGridRowControl_onBuildPanel = function FDuiGridRowControl_onBuildPanel(event){
    var o = this;
-   o._hPanel = MO.Window.Builder.createTableRow(p, o.styleName('Panel'));
+   o._hPanel = MO.Window.Builder.createTableRow(event, o.styleName('Panel'));
 }
-MO.FDuiGridRowControl_onBuild = function FDuiGridRowControl_onBuild(p){
+MO.FDuiGridRowControl_onBuild = function FDuiGridRowControl_onBuild(event){
    var o = this;
-   o.__base.FDuiContainer.onBuild.call(o, p)
+   o.__base.FDuiContainer.onBuild.call(o, event);
    var table = o._table;
    var hPanel = o._hPanel;
    var columns = table._columns;
@@ -13929,6 +13932,18 @@ MO.FDuiGridRowControl_construct = function FDuiGridRowControl_construct(){
    o._loadProcess = new MO.TEventProcess(null, o, 'oeLoadValue', MO.MUiEditValue);
    o._saveProcess = new MO.TEventProcess(null, o, 'oeSaveValue', MO.MUiEditValue);
    o._recordProcess = new MO.TEventProcess(null, o, 'oeRecordValue', MO.MUiEditValue);
+}
+MO.FDuiGridRowControl_testDataChanged = function FDuiGridRowControl_testDataChanged(){
+   var o = this;
+   var cells = o._cells;
+   var count = cells.count();
+   for(var i = 0; i < count; i++){
+      var cell = cells.at(i);
+      if(cell.testDataChanged()){
+         return true;
+      }
+   }
+   return false;
 }
 MO.FDuiGridRowControl_setVisible = function FDuiGridRowControl_setVisible(visible){
    var o = this;
@@ -14017,16 +14032,6 @@ MO.FDuiGridRowControl_buildChildren = function FDuiGridRowControl_buildChildren(
       o._cells.set(c.dataName, cl);
    }
    o.doRefresh()
-}
-MO.FDuiGridRowControl_isDataChanged = function FDuiGridRowControl_isDataChanged(){
-   var o = this;
-   var cs = o._cells;
-   for(var n=cs.count-1; n>=0; n--){
-      if(cs.value(n).isDataChanged()){
-         return true;
-      }
-   }
-   return false;
 }
 MO.FDuiGridRowControl_isVisible = function FDuiGridRowControl_isVisible(){
 	var o = this;
@@ -14121,7 +14126,7 @@ MO.FDuiGridRowControl_doDelete = function FDuiGridRowControl_doDelete(){
 }
 MO.FDuiGridRowControl_refresh = function FDuiGridRowControl_refresh(){
    var o = this;
-   o.table.setDataStatus(o, o.isDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
+   o.table.setDataStatus(o, o.testDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
 }
 MO.FDuiTable = function FDuiTable(o) {
    o = MO.Class.inherits(this, o, MO.FDuiGridControl);
@@ -18286,6 +18291,7 @@ MO.FDuiPickerFrame_construct = function FDuiPickerFrame_construct(){
    o.__base.FDuiWindow.construct.call(o);
    var table = o._table = MO.Class.create(MO.FDuiTable);
    table._displayTitle = false;
+   table._optionColumnSelect = false;
 }
 MO.FDuiPickerFrame_createChild = function FDuiPickerFrame_createChild(xconfig){
    var o = this;

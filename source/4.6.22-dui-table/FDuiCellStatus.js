@@ -9,17 +9,20 @@ MO.FDuiCellStatus = function FDuiCellStatus(o){
    o = MO.Class.inherits(this, o, MO.FDuiCell);
    //..........................................................
    // @property
-   o._dataName   = '_status';
+   o._dataName    = '_status';
    //..........................................................
    // @html
-   o._hStatus    = null;
+   o._hIcon     = null;
    //..........................................................
    // @event
-   o.onBuild     = MO.FDuiCellStatus_onBuild;
+   o.onBuild      = MO.FDuiCellStatus_onBuild;
+   //..........................................................
+   // @method
+   o.refreshStyle = MO.FDuiCellStatus_refreshStyle;
+
+
    // @event
    //o.onCellClick = MO.FDuiCellStatus_onCellClick;
-
-
    //..........................................................
    // @event
    //o.onStatusEnter = MO.Class.register(o, new HMouseEnter('onStatusEnter'), FDuiCellStatus_onStatusEnter);
@@ -30,7 +33,6 @@ MO.FDuiCellStatus = function FDuiCellStatus(o){
    //o.reget         = RMethod.empty;
    //o.set           = RMethod.empty;
    //o.setIcon       = FDuiCellStatus_setIcon;
-   //o.refreshStyle  = FDuiCellStatus_refreshStyle;
    //o.dispose       = FDuiCellStatus_dispose;
    return o;
 }
@@ -39,26 +41,48 @@ MO.FDuiCellStatus = function FDuiCellStatus(o){
 // <T>建立显示框架。</T>
 //
 // @method
-// @param p:argements:SArgements 参数集合
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FDuiCellStatus_onBuild = function FDuiCellStatus_onBuild(p){
    var o = this;
    o.__base.FDuiCell.onBuild.call(o, p)
    // 创建底板
-   var c = o._column;
-   var h = o._hPanel;
-   h.align = 'center';
-   h.style.paddingTop = 2;
-   h.style.paddingBottom = 2;
-   h.style.cursor = 'normal';
-   //c.linkEvent(o, 'onCellClick', hp, c.onCellClick);
+   //var column = o._column;
+   var hPanel = o._hPanel;
+   hPanel.align = 'center';
+   hPanel.style.paddingTop = 2;
+   hPanel.style.paddingBottom = 2;
+   hPanel.style.cursor = 'normal';
+   //column.linkEvent(o, 'onCellClick', hp, column.onCellClick);
    // 创建状态图标
-   //o._hStatus = MO.Window.Builder.appendIcon(hp, o.column.styleIcon(c.table.isFormLinked() ? 'Normal' : 'Normal'));
-   o._hStatus = MO.Window.Builder.appendIcon(h, null, 'n');
-   //if(c.table.dispRowbar){
+   var hIcon = o._hIcon = MO.Window.Builder.appendIcon(hPanel, null, 'editor.design.frame.gridrownormal');
+   hIcon.style.cursor = 'pointer';
+   //if(column.table.dispRowbar){
       //o.attachEvent('onStatusEnter', o._hStatus);
    //}
 }
+
+
+//==========================================================
+// <T>根据信息刷新当前状态</T>
+//
+// @method
+//==========================================================
+MO.FDuiCellStatus_refreshStyle = function FDuiCellStatus_refreshStyle(){
+   var o = this;
+   o.__base.FDuiCell.refreshStyle.call(o);
+   var row = o._row;
+   var table = o._table;
+   //var p = null;
+   //if(r.isDataChanged()){
+   //   p = 'Changed';
+   //}else{
+   //   p = t.isFormLinked() ? 'Normal' : 'Normal';
+   //}
+   //o.setIcon(o.column.styleIconPath(p));
+}
+
+
 
 
 
@@ -82,24 +106,6 @@ MO.FDuiCellStatus_onStatusEnter = function FDuiCellStatus_onStatusEnter(){
 //==========================================================
 MO.FDuiCellStatus_setIcon = function FDuiCellStatus_setIcon(s){
    this._hStatus.src = s;
-}
-
-//==========================================================
-// <T>刷锟铰碉拷元锟斤拷锟斤拷式锟斤拷</T>
-//
-// @method
-//==========================================================
-MO.FDuiCellStatus_refreshStyle = function FDuiCellStatus_refreshStyle(){
-   var o = this;
-   var r = o.row;
-   var t = r.table;
-   var p = null;
-   if(r.isDataChanged()){
-      p = 'Changed';
-   }else{
-      p = t.isFormLinked() ? 'Normal' : 'Normal';
-   }
-   o.setIcon(o.column.styleIconPath(p));
 }
 
 //==========================================================

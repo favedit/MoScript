@@ -385,6 +385,7 @@ MO.FDuiPickerFrame_construct = function FDuiPickerFrame_construct(){
    o.__base.FDuiWindow.construct.call(o);
    var table = o._table = MO.Class.create(MO.FDuiTable);
    table._displayTitle = false;
+   table._optionColumnSelect = false;
 }
 MO.FDuiPickerFrame_createChild = function FDuiPickerFrame_createChild(xconfig){
    var o = this;

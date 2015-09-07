@@ -44,6 +44,7 @@ MO.FDuiCell = function FDuiCell(o){
    // @method
    o.construct        = MO.FDuiCell_construct;
    // @method
+   o.testDataChanged  = MO.FDuiCell_testDataChanged;
    o.setVisible       = MO.FDuiCell_setVisible;
    o.focus            = MO.FDuiCell_focus;
    o.refreshStyle     = MO.FDuiCell_refreshStyle;
@@ -92,8 +93,6 @@ MO.FDuiCell_onBuild = function FDuiCell_onBuild(event){
    o.attachEvent('onCellMouseLeave', hPanel);
    o.attachEvent('onCellClick', hPanel);
    o.attachEvent('onCellDoubleClick', hPanel);
-   //column.linkEvent(o, 'onCellMouseEnter', hPanel, column.onCellMouseEnter);
-   //column.linkEvent(o, 'onCellMouseLeave', hPanel, column.onCellMouseLeave);
    // 设置编辑颜色
    //if(c.editColor){
    //   h.style.color = c.editColor;

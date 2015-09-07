@@ -58,6 +58,7 @@ MO.FDuiPickerFrame_construct = function FDuiPickerFrame_construct(){
    // 设置面板
    var table = o._table = MO.Class.create(MO.FDuiTable);
    table._displayTitle = false;
+   table._optionColumnSelect = false;
 }
 
 //==========================================================

@@ -9,41 +9,42 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    o = MO.Class.inherits(this, o, MO.FDuiContainer, MO.MUiDataContainer);
    //..........................................................
    // @attribute 单元格字典
-   o._table         = MO.Class.register(o, new MO.AGetSet('_table'));
-   o._cells         = MO.Class.register(o, new MO.AGetter('_cells'));
+   o._table          = MO.Class.register(o, new MO.AGetSet('_table'));
+   o._cells          = MO.Class.register(o, new MO.AGetter('_cells'));
    // @attribute 子数据行
-   o._rows          = null;
+   o._rows           = null;
    // @attribute
-   o._clearProcess  = null;
-   o._resetProcess  = null;
-   o._loadProcess   = null;
-   o._saveProcess   = null;
-   o._recordProcess = null;
+   o._clearProcess   = null;
+   o._resetProcess   = null;
+   o._loadProcess    = null;
+   o._saveProcess    = null;
+   o._recordProcess  = null;
    // @attribute
-   o._statusCell    = null;
+   o._statusCell     = null;
    // @attribute
-   o._statusSelect  = false;
+   o._statusSelect   = false;
    //..........................................................
    // @event
-   o.onBuildPanel   = MO.FDuiGridRowControl_onBuildPanel;
-   o.onBuild        = MO.FDuiGridRowControl_onBuild;
+   o.onBuildPanel    = MO.FDuiGridRowControl_onBuildPanel;
+   o.onBuild         = MO.FDuiGridRowControl_onBuild;
    //..........................................................
    // @method
-   o.construct      = MO.FDuiGridRowControl_construct;
+   o.construct       = MO.FDuiGridRowControl_construct;
    // @method
-   o.setVisible     = MO.FDuiGridRowControl_setVisible;
+   o.testDataChanged = MO.FDuiGridRowControl_testDataChanged;
+   o.setVisible      = MO.FDuiGridRowControl_setVisible;
    // @method
-   o.get            = MO.FDuiGridRowControl_get;
-   o.set            = MO.FDuiGridRowControl_set;
+   o.get             = MO.FDuiGridRowControl_get;
+   o.set             = MO.FDuiGridRowControl_set;
    // @method
-   o.appendChild    = MO.FDuiGridRowControl_appendChild;
-   o.cell           = MO.FDuiGridRowControl_cell;
-   o.push           = MO.FDuiGridRowControl_push;
-   o.select         = MO.FDuiGridRowControl_select;
-   o.refreshStyle   = MO.FDuiGridRowControl_refreshStyle;
+   o.appendChild     = MO.FDuiGridRowControl_appendChild;
+   o.cell            = MO.FDuiGridRowControl_cell;
+   o.push            = MO.FDuiGridRowControl_push;
+   o.select          = MO.FDuiGridRowControl_select;
+   o.refreshStyle    = MO.FDuiGridRowControl_refreshStyle;
    // @method
-   o.loadDataRow    = MO.FDuiGridRowControl_loadDataRow;
-   o.saveDataRow    = MO.FDuiGridRowControl_saveDataRow;
+   o.loadDataRow     = MO.FDuiGridRowControl_loadDataRow;
+   o.saveDataRow     = MO.FDuiGridRowControl_saveDataRow;
 
 
    //..........................................................
@@ -72,7 +73,6 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
    // @method
    //o.build            = FDuiGridRowControl_build;
    //o.buildChildren    = FDuiGridRowControl_buildChildren;
-   //o.isDataChanged    = FDuiGridRowControl_isDataChanged;
    //o.isVisible        = FDuiGridRowControl_isVisible;
    //o.getIndex         = FDuiGridRowControl_getIndex;
    //o.getId            = FDuiGridRowControl_getId;
@@ -96,22 +96,22 @@ MO.FDuiGridRowControl = function FDuiGridRowControl(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiGridRowControl_onBuildPanel = function FDuiGridRowControl_onBuildPanel(p){
+MO.FDuiGridRowControl_onBuildPanel = function FDuiGridRowControl_onBuildPanel(event){
    var o = this;
-   o._hPanel = MO.Window.Builder.createTableRow(p, o.styleName('Panel'));
+   o._hPanel = MO.Window.Builder.createTableRow(event, o.styleName('Panel'));
 }
 
 //==========================================================
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:SEvent 事件信息
 //==========================================================
-MO.FDuiGridRowControl_onBuild = function FDuiGridRowControl_onBuild(p){
+MO.FDuiGridRowControl_onBuild = function FDuiGridRowControl_onBuild(event){
    var o = this;
-   o.__base.FDuiContainer.onBuild.call(o, p)
+   o.__base.FDuiContainer.onBuild.call(o, event);
    // 建立行对象
    var table = o._table;
    var hPanel = o._hPanel;
@@ -148,6 +148,25 @@ MO.FDuiGridRowControl_construct = function FDuiGridRowControl_construct(){
    o._loadProcess = new MO.TEventProcess(null, o, 'oeLoadValue', MO.MUiEditValue);
    o._saveProcess = new MO.TEventProcess(null, o, 'oeSaveValue', MO.MUiEditValue);
    o._recordProcess = new MO.TEventProcess(null, o, 'oeRecordValue', MO.MUiEditValue);
+}
+
+//==========================================================
+// <T>检查当前行内的所有数据是否变化过。</T>
+//
+// @method
+// @return Boolean 是否变化
+//==========================================================
+MO.FDuiGridRowControl_testDataChanged = function FDuiGridRowControl_testDataChanged(){
+   var o = this;
+   var cells = o._cells;
+   var count = cells.count();
+   for(var i = 0; i < count; i++){
+      var cell = cells.at(i);
+      if(cell.testDataChanged()){
+         return true;
+      }
+   }
+   return false;
 }
 
 //==========================================================
@@ -341,26 +360,6 @@ MO.FDuiGridRowControl_buildChildren = function FDuiGridRowControl_buildChildren(
 }
 
 //==========================================================
-// <T>检查当前行内的所有数据是否变化过。</T>
-//
-// @method
-// @return Boolean
-//    <L value='true'>变化过</L>
-//    <L value='false'>未变化</L>
-//==========================================================
-MO.FDuiGridRowControl_isDataChanged = function FDuiGridRowControl_isDataChanged(){
-   var o = this;
-   var cs = o._cells;
-   for(var n=cs.count-1; n>=0; n--){
-      // 检查数据变化
-      if(cs.value(n).isDataChanged()){
-         return true;
-      }
-   }
-   return false;
-}
-
-//==========================================================
 //<T>检查当前行内的所有数据是否变化过。</T>
 //
 //@method
@@ -515,5 +514,5 @@ MO.FDuiGridRowControl_doDelete = function FDuiGridRowControl_doDelete(){
 //==========================================================
 MO.FDuiGridRowControl_refresh = function FDuiGridRowControl_refresh(){
    var o = this;
-   o.table.setDataStatus(o, o.isDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
+   o.table.setDataStatus(o, o.testDataChanged() ? ERowStatus.Changed : ERowStatus.Normal);
 }

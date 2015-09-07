@@ -34,6 +34,8 @@ MO.FDuiGridControl = function FDuiGridControl(o){
    o._displayTitle             = true;
    o._displayColumnStatus      = true;
    o._displayColumnSelect      = true;
+   o._optionColumnStatus       = true;
+   o._optionColumnSelect       = true;
    o._rowHeight                = MO.Class.register(o, new MO.APtyInteger('_rowHeight'), 0);
    //..........................................................
    // @style
@@ -386,17 +388,21 @@ MO.FDuiGridControl_onBuild = function FDuiGridControl_onBuild(event){
    //   o.onBuildHint(event);
    //}
    // 建立状态列
-   var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
-   statusColumn.setTable(o);
-   statusColumn.size().set(40, 0);
-   statusColumn.build(event);
-   o.push(statusColumn);
+   if(o._optionColumnStatus){
+      var statusColumn = o._statusColumn = MO.Class.create(MO.FDuiColumnStatus);
+      statusColumn.setTable(o);
+      statusColumn.size().set(40, 0);
+      statusColumn.build(event);
+      o.push(statusColumn);
+   }
    // 建立选择列
-   var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
-   selectColumn.setTable(o);
-   selectColumn.size().set(40, 0);
-   selectColumn.build(event);
-   o.push(selectColumn);
+   if(o._optionColumnSelect){
+      var selectColumn = o._selectColumn = MO.Class.create(MO.FDuiColumnSelected);
+      selectColumn.setTable(o);
+      selectColumn.size().set(40, 0);
+      selectColumn.build(event);
+      o.push(selectColumn);
+   }
    //..........................................................
    //var cs = o._columns;
    // 追加标题列
