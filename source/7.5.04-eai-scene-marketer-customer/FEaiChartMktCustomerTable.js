@@ -207,18 +207,18 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
    grid.setHeadHeight(32);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
-   grid.headFont().size = 22;
+   grid.headFont().size = 20;
    grid.headFont().color = '#00B2F2';
    grid.setRowHeight(30);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 21;
+   grid.rowFont().size = 19;
    grid.rowFont().color = '#59FDE9';
    var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
    column.setLabel('时间');
    column.setDataName('record_date');
    column.setDateFormat('HH24:MI:SS');
-   column.setWidth(120);
+   column.setWidth(100);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
@@ -232,14 +232,7 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
    column.setName('customerInfo');
    column.setLabel('用户-手机');
    column.setDataName('customer_info');
-   column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('modelLabel');
-   column.setLabel('投资产品');
-   column.setDataName('model_label');
-   column.setWidth(120);
+   column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
@@ -254,18 +247,38 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
    column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('modelLabel');
+   column.setLabel('投资产品');
+   column.setDataName('model_label');
+   column.setWidth(120);
+   column.setPadding(1, 1, 1, 1);
+   grid.pushColumn(column);
+   
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
    column.setName('investmentGain');
-   column.setLabel('到期盈利(元)');
+   column.setLabel('年化收益(元)');
    column.setDataName('investment_gain');
    column.setNormalColor('#59FDE9');
    column.setHighColor('#FDEF01');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
+
+   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
+   column.setName('bankGain');
+   column.setLabel('银行收益(元)');
+   column.setDataName('bank_gain');
+   column.setNormalColor('#59FDE9');
+   column.setHighColor('#FDEF01');
+   column.setLowerColor('#EB6C03');
+   column.setNegativeColor('#FF0000');
+   column.setWidth(140);
+   column.setPadding(1, 1, 1, 1);
+   grid.pushColumn(column);
+
    o.push(grid);
    //..........................................................
    // 设置数据
@@ -365,6 +378,8 @@ MO.FEaiChartMktCustomerTable_pushUnit = function FEaiChartMktCustomerTable_pushU
    row.set('model_label', unit.modelLabel());
    row.set('investment_amount', unit.investment());
    row.set('investment_gain', unit.gain());
+   row.set('bank_gain', unit.bankGain());
+   
    grid.insertRow(row);
    // 放入队列
    var entities = o._units;
