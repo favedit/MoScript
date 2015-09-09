@@ -25,6 +25,7 @@ MO.FEaiChartMktCustomerDynamicUnit = function FEaiChartMktCustomerDynamicUnit(o)
    o._modelLabel = MO.Class.register(o, [new MO.AGetter('_modelLabel'), new MO.APersistence('_modelLabel', MO.EDataType.String)]);
    o._investment = MO.Class.register(o, [new MO.AGetter('_investment'), new MO.APersistence('_investment', MO.EDataType.Double)]);
    o._gain       = MO.Class.register(o, [new MO.AGetter('_gain'), new MO.APersistence('_gain', MO.EDataType.Double)]);
+   o._bankGain   = MO.Class.register(o, [new MO.AGetter('_bankGain'), new MO.APersistence('_bankGain', MO.EDataType.Double)]);
    return o;
 }
 MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
@@ -611,9 +612,9 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
    column.setAlign(MO.EUiAlign.Center);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('card');
+   column.setName('customer_city');
    column.setLabel('');
-   column.setDataName('card');
+   column.setDataName('customer_city');
    column.setWidth(100);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
@@ -751,8 +752,14 @@ MO.FEaiChartMktCustomerTable_setRankUnits = function FEaiChartMktCustomerTable_s
    for (var i = 0; i < count; i++) {
       var unit = units.at(i);
       var row = grid.allocRow();
+      var card = unit.card();
+      var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
+      var cityLabel = '';
+      if (city) {
+         cityLabel = city.label();
+      }
       row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
-      row.set('card', unit.card());
+      row.set('customer_city', cityLabel);
       row.set('label_phone', unit.label() + " - " + unit.phone());
       row.set('investment', unit.investment());
       grid.pushRow(row);
