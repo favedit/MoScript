@@ -34,5 +34,6 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartDepartmentMarketer   = 'chart.department.marketer';
    o.ChartDepartmentDepartment = 'chart.department.department';
    o.ChartStatisticsMarketer   = 'chart.statistics.marketer';
+   o.ChartPerformenceMarketer  = 'chart.performence.marketer';
    return o;
 }

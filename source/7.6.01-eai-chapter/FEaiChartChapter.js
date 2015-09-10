@@ -80,6 +80,10 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
       case MO.EEaiScene.ChartStatisticsMarketer:
          scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartStatMarketerScene);
          break;
+      // 创建理财师业绩数据图表
+      case MO.EEaiScene.ChartPerformenceMarketer:
+         scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartPerfMarketerScene);
+         break;
    }
    scene.linkGraphicContext(o);
    return scene;
