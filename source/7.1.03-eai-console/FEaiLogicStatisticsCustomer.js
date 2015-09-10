@@ -14,6 +14,7 @@ MO.FEaiLogicStatisticsCustomer = function FEaiLogicStatisticsCustomer(o){
    // @method
    o.doCustomerDynamic = MO.FEaiLogicStatisticsCustomer_doCustomerDynamic;
    o.doCustomerTrend   = MO.FEaiLogicStatisticsCustomer_doCustomerTrend;
+   o.doProvince        = MO.FEaiLogicStatisticsCustomer_doProvince;
    return o;
 }
 
@@ -56,4 +57,23 @@ MO.FEaiLogicStatisticsCustomer_doCustomerTrend = function FEaiLogicStatisticsCus
    parameters.set('begin', startDate);
    parameters.set('end', endDate);
    o.sendService('{eai.logic.service}/eai.financial.customer.wv?do=trend', parameters, owner, callback);
+}
+
+
+//==========================================================
+// <T>获取省份统计数据。</T>
+//
+// @method
+// @param owner:Obejct 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicStatisticsCustomer_doProvince = function FEaiLogicStatisticsCustomer_doProvince(owner, callback, startDate, endDate){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('begin', startDate);
+   parameters.set('end', endDate);
+   o.sendService('{eai.logic.service}/eai.financial.customer.wv?do=province', parameters, owner, callback);
 }
