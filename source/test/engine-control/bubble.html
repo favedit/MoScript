@@ -1,0 +1,66 @@
+﻿<html>
+<head>
+    <title>Stage3d Example</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all" />
+    <script language='javascript' src='../../ajs/me.js'></script>
+    <script language='javascript' src='../../ajs/eai.js'></script>
+    <script language='javascript' src='../../ajs/context_cn.js'></script>
+</head>
+
+<script>
+    var bubble = null;
+    var bubbleCanvas = null;
+    var x = 0;
+
+    function onEnterFrame(event) {
+        //bubble.setLocation(x++, 100);
+        bubbleCanvas.dirty();
+    }
+    //----------------------------------------------------------
+    function _load() {
+        // 环境设置
+        MO.initialize();
+        MO.Runtime.setProcessCd(MO.EProcess.Debug);
+        MO.Window.Browser.setContentPath('../..');
+        // 创建应用
+        var application = MO.Desktop.initialize(MO.FGuiApplication);
+        application.setup(document.body);
+        application.addEnterFrameListener(null, onEnterFrame);
+
+        var guiManager = application.manager();
+
+        var style = new MO.SGuiBubbleStyle();
+
+        bubble = MO.RClass.create(MO.FGuiBubble);
+        bubble.setLocation(100, 100);
+        bubble.setSize(100, 100);
+        bubble.setBubbleStyle(style);
+
+
+        var curveStyle = new MO.SGuiTransferCurveStyle();
+
+        var graphic = application.canvas().graphicContext();
+
+        curveStyle.arcStepHeight = 100;
+        curveStyle.arcAngle = 0.5;
+        curveStyle.flowPeriod = 5000;
+        var curve = MO.RClass.create(MO.FGuiTransferCurve);
+        curve.setCurveStyle(curveStyle);
+        curve.setup(100, 100, 100, 300);
+
+        bubbleCanvas = MO.RClass.create(MO.FGuiBubbleCanvas);
+        bubbleCanvas.setLocation(0, 0);
+        bubbleCanvas.setSize(500, 500);
+        bubbleCanvas._bubbles.push(bubble);
+        bubbleCanvas._curves.push(curve);
+
+        guiManager.register(bubbleCanvas);
+
+    }
+</script>
+
+<body scroll='auto' onload='_load()'>
+</body>
+
+</html>
