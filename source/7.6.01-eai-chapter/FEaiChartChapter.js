@@ -1,5 +1,5 @@
 //==========================================================
-// <T>集团舞台。</T>
+// <T>报表舞台。</T>
 //
 // @class
 // @author maocy
@@ -14,7 +14,9 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneTotal              = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
    o._sceneHistory            = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
    o._sceneCustomer           = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
+   o._sceneMarketerCustomer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerCustomer'));
    o._sceneMarketerMarketer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerMarketer'));
+   o._sceneMarketerManage     = MO.Class.register(o, new MO.AGetter('_sceneMarketerManage'));
    o._sceneDepartmentMarketer = MO.Class.register(o, new MO.AGetter('_sceneDepartmentMarketer'));
    o._scenePerformence        = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
    o._sceneDepartment         = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
@@ -61,6 +63,10 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
       case MO.EEaiScene.ChartMarketerMarketer:
          scene = o._sceneMarketerMarketer = MO.Class.create(MO.FEaiChartMktMarketerScene);
          break;
+      // 创建理财师管理数据图表
+      case MO.EEaiScene.ChartMarketerManage:
+         scene = o._sceneMarketerManage = MO.Class.create(MO.FEaiChartMktManageScene);
+         break;
       // 创建公司理财师数据图表
       case MO.EEaiScene.ChartDepartmentMarketer:
          scene = o._sceneDepartmentMarketer = MO.Class.create(MO.FEaiChartDptMarketerScene);
@@ -72,7 +78,6 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
    }
    scene.linkGraphicContext(o);
    return scene;
-
    // 创建总计图表
    //var scene = o._sceneTotal = MO.Class.create(MO.FEaiChartTotalScene);
    //scene.linkGraphicContext(o);
@@ -87,10 +92,6 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
    //o.registerScene(scene);
    // 创建即时图表
    //var scene = o._sceneLive = MO.Class.create(MO.FEaiChartLiveScene);
-   //scene.linkGraphicContext(o);
-   //o.registerScene(scene);
-   // 创建世界图表
-   //var scene = o._sceneWorld = MO.Class.create(MO.FEaiChartWorldScene);
    //scene.linkGraphicContext(o);
    //o.registerScene(scene);
 }

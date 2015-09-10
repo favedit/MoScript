@@ -29,6 +29,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartCustomer             = 'chart.customer';
    o.ChartMarketerCustomer     = 'chart.marketer.customer';
    o.ChartMarketerMarketer     = 'chart.marketer.marketer';
+   o.ChartMarketerManage       = 'chart.marketer.manage';
    o.ChartDepartmentCustomer   = 'chart.department.customer';
    o.ChartDepartmentMarketer   = 'chart.department.marketer';
    o.ChartDepartmentDepartment = 'chart.department.department';

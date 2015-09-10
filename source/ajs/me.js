@@ -16273,8 +16273,12 @@ MO.FG2dCanvasContext_drawCircle = function FG2dCanvasContext_drawCircle(x, y, ra
    handle.beginPath();
    handle.arc(x, y, radius, 0, 2 * Math.PI, false);
    handle.closePath();
-   handle.fill();
-   handle.stroke();
+   if (fillColor || fillColor != '') {
+      handle.fill();
+   }
+   if (strokeColor || strokeColor != '') {
+      handle.stroke();
+   }
 }
 MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
    var o = this;

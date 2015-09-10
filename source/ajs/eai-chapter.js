@@ -8,7 +8,9 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneTotal              = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
    o._sceneHistory            = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
    o._sceneCustomer           = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
+   o._sceneMarketerCustomer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerCustomer'));
    o._sceneMarketerMarketer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerMarketer'));
+   o._sceneMarketerManage     = MO.Class.register(o, new MO.AGetter('_sceneMarketerManage'));
    o._sceneDepartmentMarketer = MO.Class.register(o, new MO.AGetter('_sceneDepartmentMarketer'));
    o._scenePerformence        = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
    o._sceneDepartment         = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
@@ -34,6 +36,9 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
          break;
       case MO.EEaiScene.ChartMarketerMarketer:
          scene = o._sceneMarketerMarketer = MO.Class.create(MO.FEaiChartMktMarketerScene);
+         break;
+      case MO.EEaiScene.ChartMarketerManage:
+         scene = o._sceneMarketerManage = MO.Class.create(MO.FEaiChartMktManageScene);
          break;
       case MO.EEaiScene.ChartDepartmentMarketer:
          scene = o._sceneDepartmentMarketer = MO.Class.create(MO.FEaiChartDptMarketerScene);
