@@ -19,6 +19,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneMarketerManage     = MO.Class.register(o, new MO.AGetter('_sceneMarketerManage'));
    o._sceneDepartmentMarketer = MO.Class.register(o, new MO.AGetter('_sceneDepartmentMarketer'));
    o._scenePerformence        = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
+   o._sceneStatisticsMarketer = MO.Class.register(o, new MO.AGetter('_sceneStatisticsMarketer'));
    o._sceneDepartment         = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
    o._sceneLive               = MO.Class.register(o, new MO.AGetter('_sceneLive'));
    o._sceneWorld              = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
@@ -74,6 +75,10 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
       // 创建业绩数据图表
       case MO.EEaiScene.ChartPerformence:
          scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
+         break;
+      // 创建理财师分布数据图表
+      case MO.EEaiScene.ChartStatisticsMarketer:
+         scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartStatMarketerScene);
          break;
    }
    scene.linkGraphicContext(o);
