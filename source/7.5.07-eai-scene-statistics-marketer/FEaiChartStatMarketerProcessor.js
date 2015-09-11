@@ -15,6 +15,7 @@ MO.FEaiChartStatMarketerProcessor = function FEaiChartStatMarketerProcessor(o){
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
    o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
    o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
+   o._infoProvince            = MO.Class.register(o, new MO.AGetter('_infoProvince'));
    // @attribute
    o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
    o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
@@ -52,12 +53,16 @@ MO.FEaiChartStatMarketerProcessor = function FEaiChartStatMarketerProcessor(o){
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
 
+   o._eventInfoProvinceChanged= null;
+   o._listenersInfoProvinceChanged= MO.Class.register(o, new MO.AListener('_listenersInfoProvinceChanged', 'InfoProvinceDataChanged'));  
+
    o._event24HDataChanged     = null;
    o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
    //..........................................................
    // @method
    o.onDynamicData            = MO.FEaiChartStatMarketerProcessor_onDynamicData;
    o.on24HDataFetch           = MO.FEaiChartStatMarketerProcessor_on24HDataFetch;
+   o.onInfoProvince           = MO.FEaiChartStatMarketerProcessor_onInfoProvince;
    //..........................................................
    // @method
    o.construct                = MO.FEaiChartStatMarketerProcessor_construct;
@@ -84,6 +89,21 @@ MO.FEaiChartStatMarketerProcessor_on24HDataFetch = function FEaiChartStatMarkete
    event.beginDate = o._24HBeginDate;
    event.endDate = o._24HEndDate;
    o.process24HDataChangedListener(event);
+}
+//==========================================================
+// <T>省份数据获取处理。</T>
+// MO 空间下FEaiChartStatMarketerProcessor_onInfoProvince；
+// @method
+//==========================================================
+MO.FEaiChartStatMarketerProcessor_onInfoProvince = function FEaiChartStatMarketerProcessor_onInfoProvince(event){
+   var o = this;
+   var infoProvince = o._infoProvince;
+   infoProvince.unserializeSignBuffer(event.sign, event.content, true);
+   for (i in infoProvince){
+      alert(i);
+      alert(infoProvince[i]);
+   }
+   o.processInfoProvinceDataChangedListener(event);
 }
 
 //==========================================================
@@ -136,6 +156,7 @@ MO.FEaiChartStatMarketerProcessor_construct = function FEaiChartStatMarketerProc
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建缓冲
    o._dynamicInfo = MO.Class.create(MO.FEaiChartMktCustomerDynamicInfo);
+   o._infoProvince = MO.Class.create(MO.FEaiChartStatMarketerInfoProvince);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
@@ -182,6 +203,7 @@ MO.FEaiChartStatMarketerProcessor_setup = function FEaiChartStatMarketerProcesso
 MO.FEaiChartStatMarketerProcessor_calculateCurrent = function FEaiChartStatMarketerProcessor_calculateCurrent(){
    var o = this;
    var info = o._dynamicInfo;
+   var infoprovince = o._infoProvince;
    var investmentCurrent = info.investmentCount();
    var investmentTotalCurrent = info.investmentTotal();
    var units = o._units;
@@ -243,7 +265,9 @@ MO.FEaiChartStatMarketerProcessor_process = function FEaiChartStatMarketerProces
    var o = this;
    //..........................................................
    // 获得系统时间
+  
    var system = MO.Console.find(MO.FEaiLogicConsole).system();
+
    if(!system.testReady()){
       return;
    }
@@ -281,6 +305,9 @@ MO.FEaiChartStatMarketerProcessor_process = function FEaiChartStatMarketerProces
       endDate24H.truncMinute(15);
       // 取数据
       statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
+
+      //取省份数据
+      statistics.customer().doProvince(o, o.onInfoProvince,beginDate24H.format(), endDate24H.format());
    }
    //..........................................................
    // 设置表格刷新
