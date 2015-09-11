@@ -228,34 +228,34 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
          lastHour = hour;
       }
    }
-   // 输出数据文本
-   graphic.setFont('24px Microsoft YaHei');
-   graphic.drawText("24H数据曲线", decoLeft, top, '#54F0FF');
-   // 输出数据文本
-   graphic.setFont('22px Microsoft YaHei');
-   var rowStart = top + 30;
-   var rowHeight = 22;
-   // 计算宽度
-   var textWidth = graphic.textWidth('投资总计：');
-   var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
-   var investmentTotalWidth = graphic.textWidth(investmentTotalText);
-   //24小时内，小时投资峰值
-   var investmentMaxText = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
-   var investmentMaxWidth = graphic.textWidth(investmentMaxText);
-   //24小时内，小时平均值
-   var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
-   var investmentAvgWidth = graphic.textWidth(investmentAvgText);
-   var maxWidth = investmentTotalWidth;
-   // 绘制文字
-   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
-   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
+   // // 输出数据文本
+   // graphic.setFont('24px Microsoft YaHei');
+   // graphic.drawText("24H数据曲线", decoLeft, top, '#54F0FF');
+   // // 输出数据文本
+   // graphic.setFont('22px Microsoft YaHei');
+   // var rowStart = top + 30;
+   // var rowHeight = 22;
+   // // 计算宽度
+   // var textWidth = graphic.textWidth('投资总计：');
+   // var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
+   // var investmentTotalWidth = graphic.textWidth(investmentTotalText);
+   // //24小时内，小时投资峰值
+   // var investmentMaxText = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
+   // var investmentMaxWidth = graphic.textWidth(investmentMaxText);
+   // //24小时内，小时平均值
+   // var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
+   // var investmentAvgWidth = graphic.textWidth(investmentAvgText);
+   // var maxWidth = investmentTotalWidth;
+   // // 绘制文字
+   // graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
+   // graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
 
-   graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
+   // graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
+   // graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
 
-   graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
-   // 设置时间
-   startTime.date.setTime(bakTime);
-   startTime.refresh();
+   // graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
+   // graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
+   // // 设置时间
+   // startTime.date.setTime(bakTime);
+   // startTime.refresh();
 }

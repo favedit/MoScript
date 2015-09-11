@@ -27,10 +27,12 @@ MO.FEaiChartPerfMarketerProcessor = function FEaiChartPerfMarketerProcessor(o){
    o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
    
-   
+   // o._redemptionTotal         = MO.Class.register(o, new MO.AGetter('_redemptionTotal'));
+   // o._netinvestmentTotal       = MO.Class.register(o, new MO.AGetter('_netinvestmentTotal'));
    
    o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
-   
+   o._performanceDate         = MO.Class.register(o, new MO.AGetter('_performanceDate'));
+
    o._intervalMinute          = 1;
    // @attribute
    o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
@@ -47,7 +49,6 @@ MO.FEaiChartPerfMarketerProcessor = function FEaiChartPerfMarketerProcessor(o){
    o._unitPool                = null;
    // @attribute
    o._autios                  = null;
-   
    // @event
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
@@ -58,6 +59,9 @@ MO.FEaiChartPerfMarketerProcessor = function FEaiChartPerfMarketerProcessor(o){
    // @method
    o.onDynamicData            = MO.FEaiChartPerfMarketerProcessor_onDynamicData;
    o.on24HDataFetch           = MO.FEaiChartPerfMarketerProcessor_on24HDataFetch;
+   //@method 业绩数据回调
+   o.onPerformanceDate        = MO.FEaiChartPerfMarketerProcessor_onPerformanceDate;
+
    //..........................................................
    // @method
    o.construct                = MO.FEaiChartPerfMarketerProcessor_construct;
@@ -72,6 +76,18 @@ MO.FEaiChartPerfMarketerProcessor = function FEaiChartPerfMarketerProcessor(o){
    // @method
    o.dispose                  = MO.FEaiChartPerfMarketerProcessor_dispose;
    return o;
+}
+//==========================================================
+// <T>业绩数据获取处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartPerfMarketerProcessor_onPerformanceDate = function FEaiChartPerfMarketerProcessor_onPerformanceDate(event){
+   var o = this;
+   var performanceDate = o._performanceDate;
+   performanceDate.unserializeSignBuffer(event.sign, event.content, true);
+
+  
 }
 
 //==========================================================
@@ -140,6 +156,7 @@ MO.FEaiChartPerfMarketerProcessor_construct = function FEaiChartPerfMarketerProc
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
+   o._performanceDate = MO.Class.create(MO.FEaiChartPerfMarketerInfo);
 }
 
 //==========================================================
@@ -191,8 +208,11 @@ MO.FEaiChartPerfMarketerProcessor_calculateCurrent = function FEaiChartPerfMarke
       investmentCurrent -= unit.investment();
       investmentTotalCurrent -= unit.investment();
    }
+   // 总额
    o._invementTotalCurrent = investmentTotalCurrent;
+   // 当日总额
    o._invementDayCurrent = investmentCurrent;
+   
 }
 
 //==========================================================
@@ -281,7 +301,10 @@ MO.FEaiChartPerfMarketerProcessor_process = function FEaiChartPerfMarketerProces
       endDate24H.truncMinute(15);
       // 取数据
       statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
+      
    }
+   statistics.achievement().doDynamic(o,o.onPerformanceDate);
+
    //..........................................................
    // 设置表格刷新
    var currentTick = MO.Timer.current();
