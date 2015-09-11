@@ -34,6 +34,8 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    }
    // 设置效果器
    var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
+   effectConsole.register('select.select.eai.world.face', MO.FEaiSelectAutomaticEffect);
+   effectConsole.register('select.select.eai.map.face', MO.FEaiSelectAutomaticEffect);
    effectConsole.register('general.color.eai.world.face', MO.FEaiWorldFaceEffect);
    effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);

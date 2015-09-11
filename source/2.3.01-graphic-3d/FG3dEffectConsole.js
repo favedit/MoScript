@@ -98,19 +98,19 @@ MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(n){
 // <T>创建效果器。</T>
 //
 // @method
-// @param c:context:FG3dContext 环境
-// @param p:name:String 名称
+// @param context:FG3dContext 环境
+// @param name:String 名称
 //==========================================================
-MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(c, p){
+MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
    var o = this;
-   var t = o._registerEffects.get(p);
-   if(!t){
-      throw new MO.TError(this, 'Unknown effect type name. (type={1})', t);
+   var clazz = o._registerEffects.get(name);
+   if(!clazz){
+      throw new MO.TError(this, 'Unknown effect type name. (type={1})', clazz);
    }
-   var e = MO.Class.create(t);
-   e.linkGraphicContext(c);
-   e.setup();
-   return e;
+   var effect = MO.Class.create(clazz);
+   effect.linkGraphicContext(context);
+   effect.setup();
+   return effect;
 }
 
 //==========================================================

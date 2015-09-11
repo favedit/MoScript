@@ -138,7 +138,7 @@ MO.FEaiChartPerfMarketerScene_onProcess = function FEaiChartPerfMarketerScene_on
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         return;
+         // return;
       }
       // 显示界面
       if (!o._mapReady) {

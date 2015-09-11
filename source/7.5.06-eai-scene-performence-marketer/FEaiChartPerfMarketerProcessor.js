@@ -280,15 +280,15 @@ MO.FEaiChartPerfMarketerProcessor_process = function FEaiChartPerfMarketerProces
    // 设置处理时间
    if(o._dataTicker.process()){
       var statistics = MO.Console.find(MO.FEaiLogicConsole).statistics();
+      statistics.achievement().doDynamic(o,o.onPerformanceDate);
       // 设置结束时间
       var beginDate = o._beginDate;
       var endDate = o._endDate;
       beginDate.assign(endDate);
       endDate.assign(systemDate);
-      statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
+      //statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
       beginDate.assign(endDate);
-
       // 取24小时统计数据
       // 设置开始时间
       var beginDate24H = o._24HBeginDate;
@@ -300,10 +300,8 @@ MO.FEaiChartPerfMarketerProcessor_process = function FEaiChartPerfMarketerProces
       endDate24H.assign(systemDate);
       endDate24H.truncMinute(15);
       // 取数据
-      statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
-      
+      //statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
    }
-   statistics.achievement().doDynamic(o,o.onPerformanceDate);
 
    //..........................................................
    // 设置表格刷新
