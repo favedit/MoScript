@@ -207,6 +207,32 @@ MO.FEaiChartMktManageScene_onOperationDown = function FEaiChartMktManageScene_on
    o._operationRotationX = o._rotationX;
    o._operationRotationY = o._rotationY;
    o._operationPoint.set(event.x, event.y);
+
+   var region = o.activeStage().region();
+   var camera = region.camera();
+   var canvas3d = o.application().desktop().canvas3d();
+
+   //得到当前鼠标指向的对象
+   var selectTechnique = MO.Console.find(MO.FG3dTechniqueConsole).find(canvas3d._graphicContext, MO.FG3dSelectTechnique);
+   var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
+   if (!renderable) {
+      camera.setPosition(3, 24, -0.5);
+      camera.update();
+      return;
+   }
+
+   var outline = renderable.calculateOutline();
+   var relativeOutline = new SOutline3d();
+   relativeOutline.calculateFrom(outline, camera.matrix());
+   var distance = relativeOutline.radius / Math.sin(camera.projection().angle() / 2) * Math.sin(90 - camera.projection().angle() / 2);
+   var currentCenter = outline.center;
+   var cameraTo = new SPoint3(currentCenter.x - distance * o.cameraDirection().x, currentCenter.y - distance * o.cameraDirection().y, currentCenter.z - distance * o.cameraDirection().z);
+   var cameraPosition = camera.position();
+
+   o.setStartTime(new Date());
+   o.cameraFrom().assign(cameraPosition);
+   o.cameraTo().assign(cameraTo);
+   o.setCameraMoving(true);
 }
 
 //==========================================================

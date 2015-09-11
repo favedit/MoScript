@@ -5,7 +5,7 @@
 // @history 150119
 //==========================================================
 MO.FG3dSelectTechnique = function FG3dSelectTechnique(o){
-   o = MO.Class.inherits(this, o, FG3dTechnique);
+   o = MO.Class.inherits(this, o, MO.FG3dTechnique);
    //..........................................................
    // @attribute
    o._code       = 'select';
