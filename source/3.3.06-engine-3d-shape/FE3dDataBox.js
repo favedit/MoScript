@@ -24,6 +24,8 @@ MO.FE3dDataBox = function FE3dDataBox(o){
    // @method
    o.setup                 = MO.FE3dDataBox_setup;
    // @method
+   o.calculateOutline      = MO.FE3dDataBox_calculateOutline;
+   // @method
    o.dispose               = MO.FE3dDataBox_dispose;
    return o;
 }
@@ -86,6 +88,31 @@ MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
    var info = o.material().info();
    info.effectCode = 'control';
    info.ambientColor.set(1, 1, 1, 1);
+}
+
+//==========================================================
+// <T>计算轮廓。</T>
+//
+// @method
+// @return SOutline 轮廓
+//==========================================================
+MO.FE3dDataBox_calculateOutline = function FE3dDataBox_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var vertexCount = o._vertexCount;
+      var data = o._vertexPositionBuffer._data;
+      var index = 0;
+      for(var i = 0; i < vertexCount; i++){
+         var x = data[index++];
+         var y = data[index++];
+         var z = data[index++];
+         outline.mergePoint(x, y, z);
+      }
+      outline.update();
+   }
+   return outline;
 }
 
 //==========================================================

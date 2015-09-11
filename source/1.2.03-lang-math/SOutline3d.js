@@ -25,6 +25,7 @@ MO.SOutline3d = function SOutline3d(){
    //..........................................................
    // @method
    o.assign        = MO.SOutline3d_assign;
+   o.set           = MO.SOutline3d_set;
    o.update        = MO.SOutline3d_update;
    o.calculateFrom = MO.SOutline3d_calculateFrom;
    o.calculate     = MO.SOutline3d_calculate;
@@ -45,6 +46,24 @@ MO.SOutline3d_assign = function SOutline3d_assign(value){
    for(var i = 0; i < 24; i++){
       o.points[i] = value.points[i];
    }
+}
+
+//==========================================================
+// <T>设置参数。</T>
+//
+// @method
+// @param ix:minX:Number 最小X坐标
+// @param iy:minY:Number 最小Y坐标
+// @param iz:minZ:Number 最小Z坐标
+// @param ax:maxX:Number 最大X坐标
+// @param ay:maxY:Number 最大Y坐标
+// @param az:maxZ:Number 最大Z坐标
+//==========================================================
+MO.SOutline3d_set = function SOutline3d_set(minX, minY, minZ, maxX, maxY, maxZ){
+   var o = this;
+   o.min.set(minX, minY, minZ);
+   o.max.set(maxX, maxY, maxZ);
+   o.update();
 }
 
 //============================================================

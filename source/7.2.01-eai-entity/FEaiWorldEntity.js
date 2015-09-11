@@ -55,11 +55,17 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var context = o._graphicContext;
    // 创建合并形状
    var faceShape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
+   faceShape._worldEntity = o;
+   faceShape.outline().set(-1, -1, -1, 1, 1, 1);
    faceShape.linkGraphicContext(context);
    var borderShape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
+   borderShape._optionSelect = false;
+   borderShape._worldEntity = o;
+   borderShape.outline().set(-1, -1, -1, 1, 1, 1);
    borderShape.linkGraphicContext(context);
    // 创建球型内部
    var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
@@ -74,6 +80,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.specularLevel = 64;
    // 创建球型外壳
    var sphere = o._sphere = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
@@ -82,7 +89,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var info = sphere.material().info();
    info.optionAlpha = true;
    //info.optionDepth = true;
-   info.alphaRate = 0.6;
+   info.alphaRate = 0.8;
    info.ambientColor.setHex('#128AF9');
    info.ambientColor.alpha = 0.4
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
@@ -90,6 +97,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.specularLevel = 64;
    // 创建球型外壳大气
    var sphere = o._sphere3 = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
@@ -98,7 +106,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var info = sphere.material().info();
    info.optionAlpha = true;
    info.optionDepth = false;
-   info.alphaRate = 0.05;
+   info.alphaRate = 0.1;
    info.ambientColor.setHex('#128AF9');
    info.ambientColor.alpha = 0.4
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);

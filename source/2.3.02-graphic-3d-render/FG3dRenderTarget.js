@@ -56,8 +56,8 @@ MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
 //==========================================================
 MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._color = RObject.dispose(o._color);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._color = MO.Lang.Object.dispose(o._color);
    // 父处理
    o.__base.dispose.construct();
 }

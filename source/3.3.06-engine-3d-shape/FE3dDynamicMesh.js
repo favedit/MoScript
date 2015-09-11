@@ -8,27 +8,31 @@ MO.FE3dDynamicMesh = function FE3dDynamicMesh(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    //..........................................................
    // @attribute
-   o._shape            = MO.Class.register(o, new MO.AGetSet('_shape'));
-   o._optionMerge      = true;
-   o._vertexPosition   = 0;
-   o._vertexTotal      = 0;
-   o._indexPosition    = 0;
-   o._indexTotal       = 0;
-   o._mergeRenderables = MO.Class.register(o, new MO.AGetter('_mergeRenderables'));
+   o._shape              = MO.Class.register(o, new MO.AGetSet('_shape'));
+   o._optionMerge        = true;
+   o._vertexPosition     = 0;
+   o._vertexTotal        = 0;
+   o._indexPosition      = 0;
+   o._indexTotal         = 0;
+   o._mergeRenderables   = MO.Class.register(o, new MO.AGetter('_mergeRenderables'));
    //..........................................................
    // @method
-   o.construct         = MO.FE3dDynamicMesh_construct;
+   o.construct           = MO.FE3dDynamicMesh_construct;
    // @method
-   o.mergeCount        = MO.FE3dDynamicMesh_mergeCount;
-   o.mergeMaxCount     = MO.FE3dDynamicMesh_mergeMaxCount;
-   o.mergeStride       = MO.FE3dDynamicMesh_mergeStride;
-   o.syncVertexBuffer  = MO.FE3dDynamicMesh_syncVertexBuffer;
-   o.mergeRenderable   = MO.FE3dDynamicMesh_mergeRenderable;
-   o.mergeVertexBuffer = MO.FE3dDynamicMesh_mergeVertexBuffer;
-   o.mergeIndexBuffer  = MO.FE3dDynamicMesh_mergeIndexBuffer;
-   o.build             = MO.FE3dDynamicMesh_build;
+   o.mergeCount          = MO.FE3dDynamicMesh_mergeCount;
+   o.mergeMaxCount       = MO.FE3dDynamicMesh_mergeMaxCount;
+   o.mergeStride         = MO.FE3dDynamicMesh_mergeStride;
    // @method
-   o.dispose           = MO.FE3dDynamicMesh_dispose;
+   o.findMergeRenderable = MO.FE3dDynamicMesh_findMergeRenderable;
+   o.calculateOutline    = MO.FE3dDynamicMesh_calculateOutline;
+   // @method
+   o.syncVertexBuffer    = MO.FE3dDynamicMesh_syncVertexBuffer;
+   o.mergeRenderable     = MO.FE3dDynamicMesh_mergeRenderable;
+   o.mergeVertexBuffer   = MO.FE3dDynamicMesh_mergeVertexBuffer;
+   o.mergeIndexBuffer    = MO.FE3dDynamicMesh_mergeIndexBuffer;
+   o.build               = MO.FE3dDynamicMesh_build;
+   // @method
+   o.dispose             = MO.FE3dDynamicMesh_dispose;
    return o;
 }
 
@@ -72,6 +76,17 @@ MO.FE3dDynamicMesh_mergeMaxCount = function FE3dDynamicMesh_mergeMaxCount(){
 //==========================================================
 MO.FE3dDynamicMesh_mergeStride = function FE3dDynamicMesh_mergeStride(){
    return this._shape.mergeStride();
+}
+
+//==========================================================
+// <T>查找合并渲染对象。</T>
+//
+// @method
+// @param index:Integer 索引
+// @return MRenderable 渲染对象
+//==========================================================
+MO.FE3dDynamicMesh_findMergeRenderable = function FE3dDynamicMesh_findMergeRenderable(index){
+   return this._mergeRenderables.get(index);
 }
 
 //==========================================================
@@ -236,6 +251,13 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
    instanceVertexBuffer.setData(instanceVertexData);
    o.pushVertexBuffer(instanceVertexBuffer);
+   var indexVertexData = new Float32Array(4 * vertexTotal);
+   var indexVertexBuffer = o._indexVertexBuffer = context.createVertexBuffer();
+   indexVertexBuffer.setCode('index');
+   indexVertexBuffer.setStride(16);
+   indexVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float4);
+   indexVertexBuffer.setData(indexVertexData);
+   o.pushVertexBuffer(indexVertexBuffer);
    // 创建索引流
    var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
    if(capability.optionIndex32){
@@ -248,11 +270,24 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    indexBuffer.setCount(indexTotal);
    o.pushIndexBuffer(indexBuffer);
    // 合并顶点
+   var indexVertexPosition = 0;
    for(var n = 0; n < renderableCount; n++){
       var renderable = renderables.at(n);
       // 生成顶点实例数据
       var renderableVertexCount = renderable.vertexCount();
       MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, renderableVertexCount, n);
+      // 写入顶点索引数据
+      var index = n + 1;
+      var index1 = (index  & 0xFF) / 255;
+      var index2 = ((index >> 8) & 0xFF) / 255;
+      var index3 = ((index >> 16) & 0xFF) / 255;
+      for(var i = 0; i < renderableVertexCount; i++){
+         indexVertexData[indexVertexPosition++] = index1;
+         indexVertexData[indexVertexPosition++] = index2;
+         indexVertexData[indexVertexPosition++] = index3;
+         indexVertexData[indexVertexPosition++] = 1;
+      }
+      // 写入顶点缓冲数据
       var vertexBuffers = renderable.vertexBuffers();
       var vertexBufferCount = vertexBuffers.count();
       for(var i = 0; i < vertexBufferCount; i++){
@@ -282,6 +317,30 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
    MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
+}
+
+//==========================================================
+// <T>计算轮廓。</T>
+//
+// @method
+// @return SOutline 轮廓
+//==========================================================
+MO.FE3dDynamicMesh_calculateOutline = function FE3dDynamicMesh_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var renderables = o._mergeRenderables;
+      if(renderables){
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            var renderableOutline = renderable.calculateOutline()
+            outline.mergeMax(renderableOutline);
+         }
+      }
+   }
+   return outline;
 }
 
 //==========================================================

@@ -111,6 +111,7 @@ MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup() {
    var o = this;
    // 创建边界形状
    var shape = o._boundaryShape = MO.Class.create(MO.EE3dBoundaryShape);
+   shape._countryEntity = o;
    shape.linkGraphicContext(o);
 }
 
@@ -123,9 +124,11 @@ MO.FEaiCountryEntity_build = function FEaiCountryEntity_build(){
    var o = this;
    // 创建平面形状
    var shape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
+   shape._countryEntity = o;
    shape.linkGraphicContext(o);
    // 创建边框形状
    var shape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
+   shape._countryEntity = o;
    shape.linkGraphicContext(o);
    // 创建声音环境
    var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);

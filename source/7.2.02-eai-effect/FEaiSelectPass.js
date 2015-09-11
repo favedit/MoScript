@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141230
 //==========================================================
-MO.FG3dSelectPass = function FG3dSelectPass(o){
+MO.FEaiSelectPass = function FEaiSelectPass(o){
    o = MO.Class.inherits(this, o, MO.FG3dTechniquePass);
    //..........................................................
    // @attribute
@@ -15,10 +15,10 @@ MO.FG3dSelectPass = function FG3dSelectPass(o){
    o._data         = null;
    //..........................................................
    // @method
-   o.construct     = MO.FG3dSelectPass_construct;
+   o.construct     = MO.FEaiSelectPass_construct;
    // @method
-   o.setup         = MO.FG3dSelectPass_setup;
-   o.drawRegion    = MO.FG3dSelectPass_drawRegion;
+   o.setup         = MO.FEaiSelectPass_setup;
+   o.drawRegion    = MO.FEaiSelectPass_drawRegion;
    return o;
 }
 
@@ -27,7 +27,7 @@ MO.FG3dSelectPass = function FG3dSelectPass(o){
 //
 // @method
 //==========================================================
-MO.FG3dSelectPass_construct = function FG3dSelectPass_construct(){
+MO.FEaiSelectPass_construct = function FEaiSelectPass_construct(){
    var o = this;
    o.__base.FG3dTechniquePass.construct.call(o);
    // 设置属性
@@ -40,19 +40,19 @@ MO.FG3dSelectPass_construct = function FG3dSelectPass_construct(){
 //
 // @method
 //==========================================================
-MO.FG3dSelectPass_setup = function FG3dSelectPass_setup(){
+MO.FEaiSelectPass_setup = function FEaiSelectPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
    var c = o._graphicContext;
    // 创建平面
-   var T = o._texture = c.createFlatTexture();
-   T.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
-   T.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+   var texture = o._texture = c.createFlatTexture();
+   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
    // 创建渲染目标
-   var t = o._renderTarget = c.createRenderTarget();
-   t.size().set(1, 1);
-   t.textures().push(T);
-   t.build();
+   var target = o._renderTarget = c.createRenderTarget();
+   target.size().set(1, 1);
+   target.textures().push(texture);
+   target.build();
 }
 
 //==========================================================
@@ -61,7 +61,7 @@ MO.FG3dSelectPass_setup = function FG3dSelectPass_setup(){
 // @method
 // @param region:FG3dRetion 区域
 //==========================================================
-MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(region){
+MO.FEaiSelectPass_drawRegion = function FEaiSelectPass_drawRegion(region){
    var o = this;
    var context = o._graphicContext;
    var handle = context.handle();
@@ -77,25 +77,12 @@ MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(region){
    var renderableCount = renderables.count();
    for(var i = 0; i < renderableCount; i++){
       var renderable = renderables.at(i);
-      if(renderable.optionSelect()){
-         var effect = renderable.activeEffect();
-         context.setProgram(effect.program());
-         var display = renderable.display();
-         if(!display){
-            effect.drawRenderable(region, renderable, i);
-         }else if(!display._optionFace){
-            effect.drawRenderable(region, renderable, i);
-         }
-      }
-   }
-   // 绘制界面处理
-   context.clearDepth(1);
-   for(var i = 0; i < renderableCount; i++){
-      var renderable = renderables.at(i);
       var effect = renderable.activeEffect();
       context.setProgram(effect.program());
       var display = renderable.display();
-      if(display && display._optionFace){
+      if(!display){
+         effect.drawRenderable(region, renderable, i);
+      }else if(!display._optionFace){
          effect.drawRenderable(region, renderable, i);
       }
    }
@@ -105,6 +92,6 @@ MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(region){
    var index = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
    o._selectRenderable = null;
    if(index != 0){
-      o._selectRenderable = renderables.get(index - 1);
+      o._selectRenderable = region._selectRenderable.findMergeRenderable(index - 1);
    }
 }

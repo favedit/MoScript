@@ -8,7 +8,7 @@ MO.FEaiSelectAutomaticEffect = function FEaiSelectAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._code          = 'select.automatic';
+   o._code          = 'eai.select.automatic';
    //..........................................................
    // @method
    o.drawRenderable = MO.FEaiSelectAutomaticEffect_drawRenderable;
@@ -21,30 +21,38 @@ MO.FEaiSelectAutomaticEffect = function FEaiSelectAutomaticEffect(o){
 // @method
 // @param region:FG3dRegion 渲染区域
 // @param renderable:FG3dRenderable 渲染对象
-// @param index:Integer 索引位置
 //==========================================================
-MO.FEaiSelectAutomaticEffect_drawRenderable = function FEaiSelectAutomaticEffect_drawRenderable(region, renderable, index){
+MO.FEaiSelectAutomaticEffect_drawRenderable = function FEaiSelectAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
    var context = o._graphicContext;
    var size = context.size();
    var program = o._program;
    var selectX = region._selectX;
    var selectY = region._selectY;
-   debugger;
    // 绑定材质
    var material = renderable.material();
    var materialInfo = material.info();
    o.bindMaterial(material);
+   // 设置数据集合(4x4浮点数组 + 4个浮点颜色)
+   var mergeRenderables = renderable.mergeRenderables();
+   var mergeCount = mergeRenderables.count();
+   var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, 16 * mergeCount);
+   for(var i = 0; i < mergeCount; i++){
+      var index = 16 * i;
+      var mergeRenderable = mergeRenderables.at(i);
+      var matrix = mergeRenderable.matrix();
+      var color = mergeRenderable.color();
+      matrix.writeData(data, index);
+      data[index + 12] = color.red;
+      data[index + 13] = color.green;
+      data[index + 14] = color.blue;
+      data[index + 15] = color.alpha;
+   }
+   program.setParameter('vc_data', data);
    // 绑定所有属性流
    program.setParameter('vc_model_matrix', renderable.currentMatrix());
    program.setParameter('vc_vp_matrix', region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix));
    program.setParameter4('vc_offset', size.width, size.height, 1 - (selectX / size.width) * 2, (selectY / size.height) * 2 - 1);
-   // 设置材质
-   var i = index + 1;
-   var i1 = i  & 0xFF;
-   var i2 = (i >> 8) & 0xFF;
-   var i3 = (i >> 16) & 0xFF;
-   program.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, materialInfo.alphaBase);
    // 绑定所有属性流
    o.bindAttributes(renderable);
    // 绑定所有取样器

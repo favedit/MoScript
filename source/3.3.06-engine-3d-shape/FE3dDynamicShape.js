@@ -49,6 +49,7 @@ MO.FE3dDynamicShape_construct = function FE3dDynamicShape_construct(){
 MO.FE3dDynamicShape_createMesh = function FE3dDynamicShape_createMesh(){
    var o = this;
    var mesh = MO.Class.create(MO.FE3dDynamicMesh);
+   mesh._shape = o;
    mesh.linkGraphicContext(o);
    mesh.setShape(o);
    o._meshes.push(mesh);

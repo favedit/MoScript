@@ -4,18 +4,17 @@
 // @author maocy
 // @history 150119
 //==========================================================
-MO.FG3dSelectTechnique = function FG3dSelectTechnique(o){
+MO.FEaiSelectTechnique = function FEaiSelectTechnique(o){
    o = MO.Class.inherits(this, o, MO.FG3dTechnique);
    //..........................................................
    // @attribute
-   o._code       = 'select';
+   o._code       = 'eai';
    // @attribute
    o._passSelect = MO.Class.register(o, new MO.AGetter('_passSelect'));
    //..........................................................
    // @method
-   o.setup       = MO.FG3dSelectTechnique_setup;
-   o.test        = MO.FG3dSelectTechnique_test;
-   o.testDynamic = MO.FG3dSelectTechnique_testDynamic;
+   o.setup       = MO.FEaiSelectTechnique_setup;
+   o.test        = MO.FEaiSelectTechnique_test;
    return o;
 }
 
@@ -24,7 +23,7 @@ MO.FG3dSelectTechnique = function FG3dSelectTechnique(o){
 //
 // @method
 //==========================================================
-MO.FG3dSelectTechnique_setup = function FG3dSelectTechnique_setup(){
+MO.FEaiSelectTechnique_setup = function FEaiSelectTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    //..........................................................
@@ -32,7 +31,7 @@ MO.FG3dSelectTechnique_setup = function FG3dSelectTechnique_setup(){
    o.registerMode(MO.EG3dTechniqueMode.Result);
    //..........................................................
    // 创建选取处理过程
-   var pd = o._passSelect = MO.Class.create(MO.FG3dSelectPass);
+   var pd = o._passSelect = MO.Class.create(MO.FEaiSelectPass);
    pd.linkGraphicContext(o);
    pd.setup();
    o._passes.push(pd);
@@ -44,11 +43,12 @@ MO.FG3dSelectTechnique_setup = function FG3dSelectTechnique_setup(){
 // @method
 // @param region:FG3dRegion 渲染区域
 //==========================================================
-MO.FG3dSelectTechnique_test = function FG3dSelectTechnique_test(region, x, y){
+MO.FEaiSelectTechnique_test = function FEaiSelectTechnique_test(region, selectRenderable, x, y){
    var o = this;
    // 设置区域属性
    region._selectX = x;
    region._selectY = y;
+   region._selectRenderable = selectRenderable;
    region.setTechnique(o);
    // 绘制所有过程
    o.drawRegion(region);

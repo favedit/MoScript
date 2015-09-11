@@ -8,7 +8,7 @@ MO.FE3dDisplay = function FE3dDisplay(o){
    o = MO.Class.inherits(this, o, MO.FDisplay);
    //..........................................................
    // @attribute
-   o._outline         = null;
+   o._outline         = MO.Class.register(o, new MO.AGetter('_outline'));
    o._materials       = MO.Class.register(o, new MO.AGetter('_materials'));
    //..........................................................
    // @method
@@ -28,7 +28,7 @@ MO.FE3dDisplay = function FE3dDisplay(o){
 MO.FE3dDisplay_construct = function FE3dDisplay_construct(){
    var o = this;
    o.__base.FDisplay.construct.call(o);
-   o._outline = new MO.SOutline3();
+   o._outline = new MO.SOutline3d();
 }
 
 //==========================================================

@@ -213,8 +213,19 @@ MO.FEaiChartMktManageScene_onOperationDown = function FEaiChartMktManageScene_on
    var canvas3d = o.application().desktop().canvas3d();
 
    //得到当前鼠标指向的对象
-   var selectTechnique = MO.Console.find(MO.FG3dTechniqueConsole).find(canvas3d._graphicContext, MO.FG3dSelectTechnique);
+   var selectTechnique = MO.Console.find(MO.FG3dTechniqueConsole).find(canvas3d, MO.FG3dSelectTechnique);
    var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
+   if(renderable){
+      var eaiSelectTechnique = MO.Console.find(MO.FG3dTechniqueConsole).find(canvas3d, MO.FEaiSelectTechnique);
+      var countryRenderable = eaiSelectTechnique.test(region, renderable, event.offsetX, event.offsetY);
+      if(countryRenderable){
+         var countryEntity = countryRenderable._shape._countryEntity
+         var outline = renderable._shape.calculateOutline();
+         var countryOutline = countryRenderable.calculateOutline();
+         console.log('Select countty: ' + countryEntity.code() + ' - ' + outline + ' - ' + countryOutline);
+      }
+   }
+   return;
    if (!renderable) {
       camera.setPosition(3, 24, -0.5);
       camera.update();

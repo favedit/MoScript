@@ -168,6 +168,7 @@ MO.EE3dBoundaryShape_buildFace = function EE3dBoundaryShape_buildFace(){
    }
    // 创建三角面渲染对象
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable._shape = o;
    renderable.linkGraphicContext(context);
    renderable.setOptionColor(true);
    renderable.setOptionCoord(true);
@@ -284,6 +285,7 @@ MO.EE3dBoundaryShape_buildBorder = function EE3dBoundaryShape_buildBorder(){
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable._shape = o;
    renderable.linkGraphicContext(context);
    renderable.setup();
    renderable.setVertexCount(vertexTotal * 2);
