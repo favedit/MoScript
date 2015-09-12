@@ -29,6 +29,7 @@ MO.FEaiChartStatMarketerScene = function FEaiChartStatMarketerScene(o) {
    //..........................................................
    // @event
    o.on24HDataChanged        = MO.FEaiChartStatMarketerScene_on24HDataChanged;
+   o.onInfoProvinceDataChanged = MO.FEaiChartStatMarketerScene_onInfoProvinceDataChanged;
    o.onOperationVisibility   = MO.FEaiChartStatMarketerScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartStatMarketerScene_onProcessReady;
    o.onProcess               = MO.FEaiChartStatMarketerScene_onProcess;
@@ -58,6 +59,19 @@ MO.FEaiChartStatMarketerScene_on24HDataChanged = function FEaiChartStatMarketerS
    timeline.startTime().assign(event.beginDate);
    timeline.endTime().assign(event.endDate);
    timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   timeline.dirty();
+}
+//==========================================================
+// <T>省份数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartStatMarketerScene_onInfoProvinceDataChanged = function FEaiChartStatMarketerScene_onInfoProvinceDataChanged(event) {
+   var o = this;
+   // 设置表格数据
+   var timeline = o._timeline;
+   timeline.infoProvince().unserializeSignBuffer(event.sign, event.content, true);
    timeline.dirty();
 }
 
@@ -219,6 +233,7 @@ MO.FEaiChartStatMarketerScene_setup = function FEaiChartStatMarketerScene_setup(
    invement.setMapEntity(o._mapEntity);
    invement.setup();
    invement.add24HDataChangedListener(o, o.on24HDataChanged);
+   invement.addInfoProvinceDataChangedListener(o, o.onInfoProvinceDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);

@@ -12,6 +12,7 @@ MO.FEaiChartStatMarketerBarChart = function FEaiChartStatMarketerBarChart(o) {
    o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
    o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
    o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
+   o._infoProvince = MO.Class.register(o, new MO.AGetSet('_infoProvince'));
    o._ready = false;
    o._investmentTotal = 0;
    // @attribute
@@ -45,6 +46,7 @@ MO.FEaiChartStatMarketerBarChart_construct = function FEaiChartStatMarketerBarCh
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
    o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
+   o._infoProvince = MO.Class.create(MO.FEaiChartStatMarketerInfo);
 }
 
 //==========================================================
@@ -123,7 +125,7 @@ MO.FEaiChartStatMarketerBarChart_drawTrend = function FEaiChartStatMarketerBarCh
 }
 
 //==========================================================
-// <T>前绘制处理。</T>
+// <T>绘制柱状图处理。</T>
 //
 // @method
 //==========================================================
@@ -142,120 +144,207 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    var decoLeft = rectangle.left + 5;
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
-   // 绘制左右三角及轴延长部分
-   graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
-   graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
-   graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#F8CB3D', 3);
-   graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
-   var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
-   var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-   var dataTop = top + 60;
-   var dataBottom = bottom - 30;
-   var dataHeight = dataBottom - dataTop;
-   // 主轴
-   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
-   // 刻度
-   var startTime = o.startTime();
-   var endTime = o.endTime();
-   var timeSpan = endTime.date.getTime() - startTime.date.getTime();
-   var bakTime = startTime.date.getTime();
-   var text;
-   var drawText = false;
-   var textWidth = 0;
-   graphic.setFont('bold 20px Microsoft YaHei');
-   while (!startTime.isAfter(endTime)) {
-      var span = startTime.date.getTime() - bakTime;
-      var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
-      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
-      text = startTime.format('HH24:MI');
-      startTime.addHour(1);
-      startTime.truncHour();
-      drawText = !drawText;
-      if (drawText) {
-         textWidth = graphic.textWidth(text);
-         graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
-      }
-   }
-   graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
-   text = endTime.format('HH24:MI');
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
+   var provinceCount = 10;
+   var width  =  ( rectangle.right-rectangle.left)/provinceCount;
+   var infoproo = o._infoProvince;
+   var provincesarr = infoproo._provinces;
+   var maxInverstment = 0 ;
+   if (provincesarr){
+     for (var i = 0 ; i<provincesarr.count();i++){
+         var province = provincesarr.get(i);
+         var code = province.code();
+         var provincename = MO.Console.find(MO.FEaiResourceConsole).provinceModule().findByCode(code);
+         var provinceLabel = '';
+         var hight = 0;
+         var color = '#F8CB3D'
+         if(provincename&&provincename.label()){
+            provinceLabel= provincename.label();
+            if( maxInverstment<province.investmentTotal()){
+               maxInverstment = province.investmentTotal();
+            }
+            switch (provincename.code()%7){
+               case 0 :
+               color = '#FF0000';
+               break;
+               case 1 :
+               color = '#FF00FF';
+               break;
+               case 2 :
+               color = '#ADFF2F';
+               break;
+               case 3 :
+               color = '#9400D3';
+               break;
+               case 4 :
+               color = '#8B0A50';
+               break;
+               case 5 :
+               color = '#0000FF';
+               break;
+               case 6 :
+               color = '#F8CB3D';
+               break;
 
-   startTime.date.setTime(bakTime);
-   startTime.refresh();
-   // 曲线
-   var trendInfo = o._trendInfo;
-   var units = trendInfo.units();
-   if (!units) {
-      return;
-   }
-   if (units.isEmpty()) {
-      return;
-   }
-   var unitFirst = units.first();
-   // 找到最大数值
-   var maxAmount = 0;
-   var count = units.count();
-   for (var i = 0; i < count; i++) {
-      var unit = units.get(i);
-      var investment = unit.investment();
-      if (investment > maxAmount) {
-         maxAmount = investment;
-      }
-   }
-   //曲线及填充
-   o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
-   // ........................................................
-   // 统计   
-   var lastHour = -1;
-   var hourInves = 0;
-   var maxHourInves = 0;
-   startTime.parseAuto(unitFirst.recordDate());
-   startTime.refresh();
-   lastHour = startTime.date.getHours();
-   for (var i = 0; i < count; i++) {
-      var unit = units.get(i);
-      startTime.parseAuto(unit.recordDate());
-      startTime.refresh();
-      var hour = startTime.date.getHours();
-      if (lastHour == hour) {
-         hourInves += unit.investment();
-      } else {
-         if (hourInves > maxHourInves) {
-            maxHourInves = hourInves;
-            hourInves = 0;
+            }
+            hight = 200*province.investmentTotal()/maxInverstment
+            // var number = [];
+            // for(var j=0; j<provinceLabel.length;j++){
+            //    number.push(provinceLabel[j]);
+            //    number.push('\n\t\r');
+            // }
+           // provinceLabel=number;
+            graphic.setFont('9px Microsoft YaHei');
+            graphic.drawText(provinceLabel,decoLeft+i*35-6, bottom, '#00B5F6');
+            graphic.fillRectangle(decoLeft+i*35, bottom-30-hight, 16, hight, color, 10);
          }
-         lastHour = hour;
+        // graphic.drawText(provinceLabel,decoLeft+i*150, bottom-200+100+50, '#00B5F6');
       }
+   //   var code = provinces.code();
+   //   graphic.setFont('22px Microsoft YaHei');
+    //  var city = MO.Console.find(MO.FEaiResourceConsole).provinceModule().findBycode(code);
+     // var text = city.lable();
+   //  graphic.drawText(text,decoLeft+i*150, bottom-260, '#00B5F6');
    }
-   // 输出数据文本
-   graphic.setFont('24px Microsoft YaHei');
-   graphic.drawText("24H数据曲线", decoLeft, top, '#54F0FF');
-   // 输出数据文本
-   graphic.setFont('22px Microsoft YaHei');
-   var rowStart = top + 30;
-   var rowHeight = 22;
-   // 计算宽度
-   var textWidth = graphic.textWidth('投资总计：');
-   var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
-   var investmentTotalWidth = graphic.textWidth(investmentTotalText);
-   //24小时内，小时投资峰值
-   var investmentMaxText = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
-   var investmentMaxWidth = graphic.textWidth(investmentMaxText);
-   //24小时内，小时平均值
-   var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
-   var investmentAvgWidth = graphic.textWidth(investmentAvgText);
-   var maxWidth = investmentTotalWidth;
-   // 绘制文字
-   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
-   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
+  //  for (var i=0 ; i<provinceCount; i++){
+  //    graphic.fillRectangle(decoLeft+i*150, bottom-260, 50, 200, '#F8CB3D', 10);
+  //   // graphic.drawText(o._infoProvince.p,decoLeft+i*150, bottom-200+100+50, '#00B5F6');
 
-   graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
-
-   graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
-   // 设置时间
-   startTime.date.setTime(bakTime);
-   startTime.refresh();
+  // }
 }
+//==========================================================
+// <T>前绘制处理。</T>
+//
+// @method
+//==========================================================
+// MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBarChart_onPaintBegin(event) {
+//    var o = this;
+//    if (!o._ready) {
+//       return;
+//    }
+//    o.__base.FGuiControl.onPaintBegin.call(o, event);
+//    var graphic = event.graphic;
+//    var rectangle = event.rectangle;
+
+//    var top = rectangle.top;
+//    var bottom = rectangle.top + rectangle.height;
+//    var middle = bottom - 30;
+//    var decoLeft = rectangle.left + 5;
+//    var decoRight = rectangle.left + rectangle.width - 5;
+//    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+//    // 绘制左右三角及轴延长部分
+//    graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
+//    graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
+//    graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#F8CB3D', 3);
+//    graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
+//    var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+//    var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+//    var dataTop = top + 60;
+//    var dataBottom = bottom - 30;
+//    var dataHeight = dataBottom - dataTop;
+//    // 主轴
+//    graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
+//    // 刻度
+//    var startTime = o.startTime();
+//    var endTime = o.endTime();
+//    var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+//    var bakTime = startTime.date.getTime();
+//    var text;
+//    var drawText = false;
+//    var textWidth = 0;
+//    graphic.setFont('bold 20px Microsoft YaHei');
+//    while (!startTime.isAfter(endTime)) {
+//       var span = startTime.date.getTime() - bakTime;
+//       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+//       graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+//       text = startTime.format('HH24:MI');
+//       startTime.addHour(1);
+//       startTime.truncHour();
+//       drawText = !drawText;
+//       if (drawText) {
+//          textWidth = graphic.textWidth(text);
+//          graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
+//       }
+//    }
+//    graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
+//    text = endTime.format('HH24:MI');
+//    textWidth = graphic.textWidth(text);
+//    graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
+
+//    startTime.date.setTime(bakTime);
+//    startTime.refresh();
+//    // 曲线
+//    var trendInfo = o._trendInfo;
+//    var units = trendInfo.units();
+//    if (!units) {
+//       return;
+//    }
+//    if (units.isEmpty()) {
+//       return;
+//    }
+//    var unitFirst = units.first();
+//    // 找到最大数值
+//    var maxAmount = 0;
+//    var count = units.count();
+//    for (var i = 0; i < count; i++) {
+//       var unit = units.get(i);
+//       var investment = unit.investment();
+//       if (investment > maxAmount) {
+//          maxAmount = investment;
+//       }
+//    }
+//    //曲线及填充
+//    o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
+//    // ........................................................
+//    // 统计   
+//    var lastHour = -1;
+//    var hourInves = 0;
+//    var maxHourInves = 0;
+//    startTime.parseAuto(unitFirst.recordDate());
+//    startTime.refresh();
+//    lastHour = startTime.date.getHours();
+//    for (var i = 0; i < count; i++) {
+//       var unit = units.get(i);
+//       startTime.parseAuto(unit.recordDate());
+//       startTime.refresh();
+//       var hour = startTime.date.getHours();
+//       if (lastHour == hour) {
+//          hourInves += unit.investment();
+//       } else {
+//          if (hourInves > maxHourInves) {
+//             maxHourInves = hourInves;
+//             hourInves = 0;
+//          }
+//          lastHour = hour;
+//       }
+//    }
+//    // 输出数据文本
+//    graphic.setFont('24px Microsoft YaHei');
+//    graphic.drawText("24H数据曲线", decoLeft, top, '#54F0FF');
+//    // 输出数据文本
+//    graphic.setFont('22px Microsoft YaHei');
+//    var rowStart = top + 30;
+//    var rowHeight = 22;
+//    // 计算宽度
+//    var textWidth = graphic.textWidth('投资总计：');
+//    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
+//    var investmentTotalWidth = graphic.textWidth(investmentTotalText);
+//    //24小时内，小时投资峰值
+//    var investmentMaxText = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
+//    var investmentMaxWidth = graphic.textWidth(investmentMaxText);
+//    //24小时内，小时平均值
+//    var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
+//    var investmentAvgWidth = graphic.textWidth(investmentAvgText);
+//    var maxWidth = investmentTotalWidth;
+//    // 绘制文字
+//    graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
+//    graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
+
+//    graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
+//    graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
+
+//    graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
+//    graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
+//    // 设置时间
+//    startTime.date.setTime(bakTime);
+//    startTime.refresh();
+// }

@@ -54,7 +54,7 @@ MO.FEaiChartStatMarketerProcessor = function FEaiChartStatMarketerProcessor(o){
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
 
    o._eventInfoProvinceChanged= null;
-   o._listenersInfoProvinceChanged= MO.Class.register(o, new MO.AListener('_listenersInfoProvinceChanged', 'InfoProvinceDataChanged'));  
+   o._listenersInfoProvinceDataChanged = MO.Class.register(o, new MO.AListener('_listenersInfoProvinceDataChanged', 'InfoProvinceDataChanged'));  
 
    o._event24HDataChanged     = null;
    o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
@@ -98,11 +98,7 @@ MO.FEaiChartStatMarketerProcessor_on24HDataFetch = function FEaiChartStatMarkete
 MO.FEaiChartStatMarketerProcessor_onInfoProvince = function FEaiChartStatMarketerProcessor_onInfoProvince(event){
    var o = this;
    var infoProvince = o._infoProvince;
-   infoProvince.unserializeSignBuffer(event.sign, event.content, true);
-   for (i in infoProvince){
-      alert(i);
-      alert(infoProvince[i]);
-   }
+   //infoProvince.unserializeSignBuffer(event.sign, event.content, true);
    o.processInfoProvinceDataChangedListener(event);
 }
 
