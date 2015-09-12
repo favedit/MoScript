@@ -14,6 +14,8 @@ MO.FEaiLogicStatisticsDepartment = function FEaiLogicStatisticsDepartment(o){
    o._departmentDynamicFirst = true;
    //..........................................................
    // @method
+   o.doOrganization          = MO.FEaiLogicStatisticsDepartment_doOrganization;
+   // @method
    o.doCustomerDynamic       = MO.FEaiLogicStatisticsDepartment_doCustomerDynamic;
    o.doCustomerTrend         = MO.FEaiLogicStatisticsDepartment_doCustomerTrend;
    // @method
@@ -23,6 +25,23 @@ MO.FEaiLogicStatisticsDepartment = function FEaiLogicStatisticsDepartment(o){
    o.doDepartmentDynamic     = MO.FEaiLogicStatisticsDepartment_doDepartmentDynamic;
    o.doDepartmentTrend       = MO.FEaiLogicStatisticsDepartment_doDepartmentTrend;
    return o;
+}
+
+//==========================================================
+// <T>获取组织数据。</T>
+//
+// @method
+// @param owner:Obejct 拥有者
+// @param callback:Function 回调函数
+// @param level:Integer 级别
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicStatisticsDepartment_doOrganization = function FEaiLogicStatisticsDepartment_doOrganization(owner, callback, level){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   parameters.set('level', level);
+   o.sendService('{eai.logic.service}/eai.financial.department.marketer.wv?do=organization', parameters, owner, callback);
+   o._customerDynamicFirst = false;
 }
 
 //==========================================================

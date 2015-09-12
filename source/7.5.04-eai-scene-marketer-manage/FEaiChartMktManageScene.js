@@ -41,8 +41,12 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    o._worldScale             = 500;
    // @attribute
    o._groundAutioUrl         = '{eai.resource}/music/statistics.mp3';
+   // @attribute
+   o._organizationDataTicker = null;
+   o._organizationInfo       = null;
    //..........................................................
    // @event
+   o.onOrganizationFetch     = MO.FEaiChartMktManageScene_onOrganizationFetch;
    o.onInvestmentDataChanged = MO.FEaiChartMktManageScene_onInvestmentDataChanged;
    o.onProcessReady          = MO.FEaiChartMktManageScene_onProcessReady;
    o.onProcess               = MO.FEaiChartMktManageScene_onProcess;
@@ -63,6 +67,20 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    // @method
    o.processResize           = MO.FEaiChartMktManageScene_processResize;
    return o;
+}
+
+//==========================================================
+// <T>表格数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartMktManageScene_onOrganizationFetch = function FEaiChartMktManageScene_onOrganizationFetch(event){
+   var o = this;
+   // 读取数据
+   debugger
+   var info = o._organizationInfo;
+   info.unserializeSignBuffer(event.sign, event.content, true);
 }
 
 //==========================================================
@@ -153,6 +171,11 @@ MO.FEaiChartMktManageScene_onProcess = function FEaiChartMktManageScene_onProces
          alphaAction.push(o._guiManager);
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
+      }
+      //..........................................................
+      // 刷新组织数据
+      if(o._organizationDataTicker.process()){
+         MO.Console.find(MO.FEaiLogicConsole).statistics().department().doOrganization(o, o.onOrganizationFetch, 2);
       }
       //..........................................................
       // 刷新时间
@@ -319,6 +342,9 @@ MO.FEaiChartMktManageScene_construct = function FEaiChartMktManageScene_construc
    o.__base.FEaiChartScene.construct.call(o);
    // 设置属性
    o._operationPoint = new MO.SPoint2();
+   // 定时获取数据
+   o._organizationDataTicker = new MO.TTicker(1000 * 60);
+   o._organizationInfo = MO.Class.create(MO.FEaiChartMktManageInfo);
 }
 
 //==========================================================
