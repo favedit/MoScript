@@ -8,6 +8,13 @@
 MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    o = MO.Class.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
+
+   o._countryTable           = null;
+   o._provinceTable = null;
+
+   o._cameraFrom = MO.Class.register(o, new MO.AGetSet('_cameraFrom'));
+   o._cameraTo = MO.Class.register(o, new MO.AGetSet('_cameraTo'));
+
    // @attribute
    o._code                   = MO.EEaiScene.ChartWorld;
    //o._optionMapCountry       = false;
@@ -248,25 +255,29 @@ MO.FEaiChartMktManageScene_onOperationDown = function FEaiChartMktManageScene_on
          console.log('Select countty: ' + countryEntity.code() + ' - ' + outline + ' - ' + countryOutline);
       }
    }
-   return;
+
    if (!renderable) {
-      camera.setPosition(3, 24, -0.5);
+      camera.setPosition(-500, 24, -0.5);
       camera.update();
       return;
    }
 
    var outline = renderable.calculateOutline();
-   var relativeOutline = new SOutline3d();
+   var relativeOutline = new MO.SOutline3d();
+   camera.update();
    relativeOutline.calculateFrom(outline, camera.matrix());
    var distance = relativeOutline.radius / Math.sin(camera.projection().angle() / 2) * Math.sin(90 - camera.projection().angle() / 2);
    var currentCenter = outline.center;
-   var cameraTo = new SPoint3(currentCenter.x - distance * o.cameraDirection().x, currentCenter.y - distance * o.cameraDirection().y, currentCenter.z - distance * o.cameraDirection().z);
+   var cameraTo = new MO.SPoint3(currentCenter.x - distance * camera.direction().x, currentCenter.y - distance * camera.direction().y, currentCenter.z - distance * camera.direction().z);
    var cameraPosition = camera.position();
 
-   o.setStartTime(new Date());
-   o.cameraFrom().assign(cameraPosition);
-   o.cameraTo().assign(cameraTo);
-   o.setCameraMoving(true);
+   //o.setStartTime(new Date());
+   //o.cameraFrom().assign(cameraPosition);
+   //o.cameraTo().assign(cameraTo);
+
+   camera.setPosition(cameraTo.x, cameraTo.y, cameraTo.z);
+   camera.update();
+   //o.setCameraMoving(true);
 }
 
 //==========================================================
@@ -360,6 +371,27 @@ MO.FEaiChartMktManageScene_setup = function FEaiChartMktManageScene_setup() {
    // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.LogoBar');
    o._guiManager.register(frame);
+   // 全国各省分公司数、理财师数表
+   var countryTable = o._countryTable = MO.Class.create(MO.FEaiChartMktManageCountryTable);
+   countryTable.setName('CountryTable');
+   countryTable.linkGraphicContext(o);
+   countryTable.setup();
+   countryTable.build();
+   //o._guiManager.register(countryTable);
+   // 省内各分公司、理财师数表
+   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartMktManageProvinceTable);
+   provinceTable.setName('CountryTable');
+   provinceTable.linkGraphicContext(o);
+   provinceTable.setup();
+   provinceTable.build();
+   //o._guiManager.register(provinceTable);
+
+
+
+
+
+
+   
    //..........................................................
    // 创建投资数据
    var invement = o._investment = MO.Class.create(MO.FEaiStatisticsInvestment);
