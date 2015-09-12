@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150912
 //==========================================================
-MO.FEaiChartMktManageInfoDepartment = function FEaiChartMktManageInfoDepartment(o){
+MO.FEaiChartMktManageInfoDepartment2 = function FEaiChartMktManageInfoDepartment2(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute

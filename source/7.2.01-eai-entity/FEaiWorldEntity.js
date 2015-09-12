@@ -69,7 +69,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.98);
+   sphere.matrix().setScaleAll(0.97);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = false;
@@ -84,7 +84,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.99);
+   sphere.matrix().setScaleAll(0.98);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = true;

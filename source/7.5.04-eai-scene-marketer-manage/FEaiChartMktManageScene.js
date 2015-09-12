@@ -72,7 +72,6 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
 MO.FEaiChartMktManageScene_onOrganizationFetch = function FEaiChartMktManageScene_onOrganizationFetch(event) {
    var o = this;
    // 读取数据
-   debugger
    var info = o._organizationInfo;
    info.unserializeSignBuffer(event.sign, event.content, true);
 }
