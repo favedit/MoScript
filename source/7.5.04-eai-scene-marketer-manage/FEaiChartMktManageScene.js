@@ -18,23 +18,24 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    o._statusLayerCount        = 100;
    o._statusLayerLevel        = 100;
    // @attribute
-   o._operationFlag           = false;
    o._operationPoint          = null;
    o._operationRotationX      = 0;
    o._operationRotationY      = 0;
    o._rotationX               = 0;
    o._rotationY               = 0;
-   o._worldScale              = 500;
-
-   o._countryTable            = null;
-   o._provinceTable           = null;
-
-   o._cameraFrom              = MO.Class.register(o, new MO.AGetSet('_cameraFrom'));
-   o._cameraTo                = MO.Class.register(o, new MO.AGetSet('_cameraTo'));
-
    o._opMouseDown             = false;
    o._opMouseMoved            = false;
    o.__opMouseMoveThreshold   = 4;
+   // @attribute
+   o._countryTable            = null;
+   o._provinceTable           = null;
+   // @attribute
+   o._worldScale              = 500;
+   o._cameraFrom              = null;
+   o._cameraTo                = null;
+   o._cameraDirection         = null;
+   o._ccDirection             = null;
+   o._facePosition            = null;
    // @attribute
    o._organizationDataTicker  = null;
    o._organizationInfo        = null;
@@ -197,7 +198,7 @@ MO.FEaiChartMktManageScene_onOperationMove = function FEaiChartMktManageScene_on
       if (cx > o.__opMouseMoveThreshold) {
          o._operationMoved = true;
          var cx = event.x - o._operationPoint.x;
-         var cy = event.y - o._operationPoint.y;
+         //var cy = event.y - o._operationPoint.y;
          //o._rotationX = o._operationRotationX - cy * 0.001;
          o._rotationY = o._operationRotationY - cx * 0.002;
       }
@@ -228,19 +229,58 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
             //console.log('Select countty: ' + countryEntity.code() + ' - ' + outline + ' - ' + countryOutline);
             //var outline = renderable._shape.calculateOutline();
             var countryOutline = countryRenderable.calculateOutline();
-            var relativeOutline = new MO.SOutline3d();
-            relativeOutline.calculateFrom(countryOutline, camera.matrix());
-            var distance = relativeOutline.radius / Math.sin(camera.projection().angle() / 2) * Math.sin(90 - camera.projection().angle() / 2);
-            var currentCenter = countryOutline.center;
-            var cameraTo = new MO.SPoint3(currentCenter.x - distance * camera.direction().x, currentCenter.y - distance * camera.direction().y, currentCenter.z - distance * camera.direction().z);
-            var cameraPosition = camera.position();
-            //o.setStartTime(new Date());
-            //o.cameraFrom().assign(cameraPosition);
-            //o.cameraTo().assign(cameraTo);
+            var ccDirection = o._ccDirection;
+            ccDirection.assign(countryOutline.center);
+            ccDirection.normalize();
+            var mapEntity = o._mapEntity;
+            o._optionRotation = false;
+            o._rotationY = 0;
+            var faceMatrix = mapEntity.countryFaceDisplay().matrix()
+            var borderMatrix = mapEntity.countryBorderDisplay().matrix()
+            var facePosition = o._facePosition;
+            facePosition.set(faceMatrix.tx, faceMatrix.ty, faceMatrix.tz);
+            // 计算摄像机目标位置
+            var cameraTo = o._cameraTo;
+            //var relativeOutline = new MO.SOutline3d();
+            //relativeOutline.calculateFrom(countryOutline, camera.matrix());
+            //var distance = relativeOutline.radius / Math.sin(camera.projection().angle() / 2) * Math.sin(90 - camera.projection().angle() / 2);
+            o._worldScale = 800;
+            var distance = 100;
+            cameraTo.x = facePosition.x + ccDirection.x * distance;
+            cameraTo.y = facePosition.y + ccDirection.y * distance;
+            cameraTo.z = facePosition.z + ccDirection.z * distance;
+            // 记录摄像机起始位置
+            o._cameraFrom.assign(camera.position());
+
             camera.setPosition(cameraTo.x, cameraTo.y, cameraTo.z);
-            camera.lookAt(0, 0, 0);
+            camera.lookAt(facePosition.x, facePosition.y, facePosition.z);
             camera.update();
-            //o.setCameraMoving(true);
+
+
+
+
+
+            //var direction = new MO.SVector3();
+            //direction.assign(countryOutline.center);
+            //direction.normalize();
+            //// 计算形状
+            //var mapEntity = o._mapEntity;
+            //o._optionRotation = false;
+            ////o._rotationY = Math.PI/2;
+            //o._rotationY = 0;
+            //var faceMatrix = mapEntity.countryFaceDisplay().matrix()
+            //var borderMatrix = mapEntity.countryBorderDisplay().matrix()
+            //o.fixMatrix(faceMatrix)
+            //o.fixMatrix(borderMatrix)
+            //var point = new MO.SPoint3(faceMatrix.tx, faceMatrix.ty, faceMatrix.tz);
+            //var toPoint = new MO.SPoint3();
+            //toPoint.x = point.x + direction.x * o._worldScale * 1.2;
+            //toPoint.y = point.y + direction.y * o._worldScale * 1.2;
+            //toPoint.z = point.z + direction.z * o._worldScale * 1.2;
+            //camera.setPosition(toPoint.x, toPoint.y, toPoint.z);
+            //camera.lookAt(point.x, point.y, point.z);
+            //camera.update();
+
          }
          else {
             camera.position().set(0, 0, -10);
@@ -306,6 +346,11 @@ MO.FEaiChartMktManageScene_construct = function FEaiChartMktManageScene_construc
    // 定时获取数据
    o._organizationDataTicker = new MO.TTicker(1000 * 60);
    o._organizationInfo = MO.Class.create(MO.FEaiChartMktManageInfo);
+
+   o._cameraFrom = new MO.SPoint3();
+   o._cameraTo = new MO.SPoint3();
+   o._ccDirection = new MO.SVector3();
+   o._facePosition = new MO.SPoint3();
 }
 
 //==========================================================
