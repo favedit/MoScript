@@ -56,6 +56,10 @@ MO.FEaiChartPerfMarketerProcessor = function FEaiChartPerfMarketerProcessor(o){
    o._event24HDataChanged     = null;
    o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
    //..........................................................
+   
+   //event
+   o._eventPerformanceDateChanged = null;
+   o._listenersPerformanceDateChanged = MO.Class.register(o, new MO.AListener('_listenersPerformanceDateChanged','PerformanceDataChanged'));
    // @method
    o.onDynamicData            = MO.FEaiChartPerfMarketerProcessor_onDynamicData;
    o.on24HDataFetch           = MO.FEaiChartPerfMarketerProcessor_on24HDataFetch;
@@ -75,6 +79,8 @@ MO.FEaiChartPerfMarketerProcessor = function FEaiChartPerfMarketerProcessor(o){
    o.process                  = MO.FEaiChartPerfMarketerProcessor_process;
    // @method
    o.dispose                  = MO.FEaiChartPerfMarketerProcessor_dispose;
+   // @event
+   o._eventDayDataChanged     = null;
    return o;
 }
 //==========================================================
@@ -86,8 +92,8 @@ MO.FEaiChartPerfMarketerProcessor_onPerformanceDate = function FEaiChartPerfMark
    var o = this;
    var performanceDate = o._performanceDate;
    performanceDate.unserializeSignBuffer(event.sign, event.content, true);
-
-  
+   var dayData =  o._eventDayDataChanged;
+   o.processPerformanceDataChangedListener(performanceDate);
 }
 
 //==========================================================
@@ -151,12 +157,13 @@ MO.FEaiChartPerfMarketerProcessor_construct = function FEaiChartPerfMarketerProc
    // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建缓冲
+   o._performanceDate = MO.Class.create(MO.FEaiChartPerfMarketerInfo);
    o._dynamicInfo = MO.Class.create(MO.FEaiChartMktCustomerDynamicInfo);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
-   o._performanceDate = MO.Class.create(MO.FEaiChartPerfMarketerInfo);
+   o._listenersPerformanceDateChanged =  new MO.SEvent(o);
 }
 
 //==========================================================
@@ -198,20 +205,76 @@ MO.FEaiChartPerfMarketerProcessor_setup = function FEaiChartPerfMarketerProcesso
 //==========================================================
 MO.FEaiChartPerfMarketerProcessor_calculateCurrent = function FEaiChartPerfMarketerProcessor_calculateCurrent(){
    var o = this;
-   var info = o._dynamicInfo;
-   var investmentCurrent = info.investmentCount();
-   var investmentTotalCurrent = info.investmentTotal();
+   // var info = o._dynamicInfo;
+   var info = o._performanceDate;
+   var year = info._year;
+   var month = info._month;
+   var day = info._day;
+   // memberRegister 注册
+   // 当天
+   var dayInvestment = day.investment();
+   var dayNetinvestment = day.netinvestment();
+   var dayRedemption = day.redemption();
+   var dayCustomerRegister = day.customerRegister(); 
+   var dayMemberRegister = day.memberRegister();
+   // var ticks = day._ticks;
+   // 当月
+   var monthInvestment = month.investment();
+   var monthNetinvestment = month.netinvestment();
+   var monthRedemption = month.redemption();
+   var monthCustomerRegister = month.customerRegister(); 
+   var monthMemberRegister = month.memberRegister();
+   // 累计
+   var yearInvestment = year.investment();
+   var yearNetinvestment = year.netinvestment();
+   var yearRedemption = year.redemption();
+   var yearCustomerRegister = year.customerRegister(); 
+   var yearhMemberRegister = year.memberRegister();
+
+   // var investmentCurrent = info.investmentCount();
+   // var investmentTotalCurrent = info.investmentTotal();
    var units = o._units;
    var count = units.count();
+   console.log(count+"...............................");
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
-      investmentCurrent -= unit.investment();
-      investmentTotalCurrent -= unit.investment();
+      var actionCd = unit.customerActionCd();
+      var amount = unit.customerActionAmount();
+      var interest = unit.customerActionInterest();
+      // if(actionCd == 1){
+      //    investmentCurrent -= amount;
+      //    performanceCurrent -= amount;
+      //    investmentTotal -= amount;
+      // }else if(actionCd == 2){
+      //    redemptionCurrent -= amount;
+      //    interestCount -= interest;
+      //    redemptionTotal -= amount;
+      // }
+
+      // dayInvestment -= unit.investment();
+      // dayNetinvestment -= unit.dayNetinvestment();
    }
-   // 总额
-   o._invementTotalCurrent = investmentTotalCurrent;
-   // 当日总额
-   o._invementDayCurrent = investmentCurrent;
+   // 当日
+   o._dayInvestment = dayInvestment;
+   o._dayNetinvestment = dayNetinvestment;
+   o._dayRedemption = dayRedemption;
+   o._dayCustomerRegister = dayCustomerRegister;
+   o._dayMemberRegister = dayMemberRegister;
+   // 当月
+   o._monthInvestment = monthInvestment;
+   o._monthNetinvestment = monthNetinvestment;
+   o._monthRedemption = monthRedemption;
+   o._monthCustomerRegister = monthCustomerRegister; 
+   o._monthMemberRegister = monthMemberRegister;
+   // 累计
+   o._yearInvestment = yearInvestment;
+   o._yearNetinvestment = yearNetinvestment;
+   o._yearRedemption = yearRedemption;
+   o._yearCustomerRegister = yearCustomerRegister; 
+   o._yearhMemberRegister = yearhMemberRegister;
+
+   // // 当日总额
+   // o._invementDayCurrent = investmentCurrent;
    
 }
 
@@ -286,6 +349,7 @@ MO.FEaiChartPerfMarketerProcessor_process = function FEaiChartPerfMarketerProces
       var endDate = o._endDate;
       beginDate.assign(endDate);
       endDate.assign(systemDate);
+      // statistics.marketer().doCustomerDynamic(o,o.onPerformanceDate,  beginDate.format(), endDate.format());
       //statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
       beginDate.assign(endDate);
@@ -341,6 +405,7 @@ MO.FEaiChartPerfMarketerProcessor_dispose = function FEaiChartPerfMarketerProces
    o._units = MO.Lang.Object.dispose(o._units);
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);
    o._eventDataChanged = MO.Lang.Object.dispose(o._eventDataChanged);
+   o._eventDayDataChanged = MO.Lang.Object.dispose(o._eventDayDataChanged);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

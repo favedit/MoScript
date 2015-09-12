@@ -44,9 +44,23 @@ MO.FEaiChartPerfMarketerScene = function FEaiChartPerfMarketerScene(o) {
    o.fixMatrix               = MO.FEaiChartPerfMarketerScene_fixMatrix;
    // @method
    o.processResize           = MO.FEaiChartPerfMarketerScene_processResize;
+   //@event 
+   o.onPerformanceDataChangedListener = MO.FEaiChartPerfMarketerScene_onPerformanceDataChangedListener;
    return o;
 }
-
+//==========================================================
+// <T>图标数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartPerfMarketerScene_onPerformanceDataChangedListener = function FEaiChartPerfMarketerScene_onPerformanceDataChangedListener(event){
+   var o = this;
+   var charts = o._charts;
+   charts.setTrendInfo(event);
+   // charts.trendInfos().unserializeSignBuffer(event.sign, event.content, true);
+   charts.dirty();
+}
 //==========================================================
 // <T>24小时曲线数据变更处理。</T>
 //
@@ -159,38 +173,46 @@ MO.FEaiChartPerfMarketerScene_onProcess = function FEaiChartPerfMarketerScene_on
       var logoBar = o._logoBar;
       // 获取所有信息
       var processor = o._processor;
-      if(processor.invementDayCurrent() > 0){
+      if(processor._yearInvestment > 0){
          // // MO.Class.create(MO.FEaiChartDptMarketerProcessor);
-         // // 投资总金额
-         // var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
-         // investmentTotalCount.setValue(parseInt(processor.investmentTotal()).toString());
-         // // 赎回总金额
-         // var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
-         // redemptionTotalCount.setValue(parseInt(processor.redemptionTotal()).toString());
-         // // 净投总金额 
-         // var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
-         // netinvestmentTotalCount.setValue(parseInt(processor.netinvestmentTotal()).toString());
+         // 当日
+         var dayInvestment = logoBar.findComponent('dayInvestment');
+         dayInvestment.setValue(parseInt(processor._dayInvestment).toString());
+         var dayNetinvestment = logoBar.findComponent('dayNetinvestment');
+         dayNetinvestment.setValue(parseInt(processor._dayNetinvestment).toString());
+         var dayRedemption = logoBar.findComponent('dayRedemption');
+         dayRedemption.setValue(parseInt(processor._dayRedemption).toString());
+         var dayCustomerRegister = logoBar.findComponent('dayCustomerRegister');
+         dayCustomerRegister.setValue(parseInt(processor._dayCustomerRegister).toString());
+         var dayMemberRegister = logoBar.findComponent('dayMemberRegister');
+         dayMemberRegister.setValue(parseInt(processor._dayMemberRegister).toString());
+         // 当月
+         var monthInvestment = logoBar.findComponent('monthInvestment');
+         monthInvestment.setValue(parseInt(processor._monthInvestment).toString());
+         var monthNetinvestment = logoBar.findComponent('monthNetinvestment');
+         monthNetinvestment.setValue(parseInt(processor._monthNetinvestment).toString());
+         var monthRedemption = logoBar.findComponent('monthRedemption');
+         monthRedemption.setValue(parseInt(processor._monthRedemption).toString());
+         var monthCustomerRegister = logoBar.findComponent('monthCustomerRegister');
+         monthCustomerRegister.setValue(parseInt(processor._monthCustomerRegister).toString());
+         var monthMemberRegister = logoBar.findComponent('monthMemberRegister');
+         monthMemberRegister.setValue(parseInt(processor._monthMemberRegister).toString());
 
-         // // 当日投资总金额
+         // 累计
+         var yearInvestment = logoBar.findComponent('yearInvestment');
+         yearInvestment.setValue(parseInt(processor._yearInvestment).toString());
+         var yearNetinvestment = logoBar.findComponent('yearNetinvestment');
+         yearNetinvestment.setValue(parseInt(processor._yearNetinvestment).toString());
+         var yearRedemption = logoBar.findComponent('yearRedemption');
+         yearRedemption.setValue(parseInt(processor._yearRedemption).toString());
+         var yearCustomerRegister = logoBar.findComponent('yearCustomerRegister');
+         yearCustomerRegister.setValue(parseInt(processor._yearCustomerRegister).toString());
+         var yearhMemberRegister = logoBar.findComponent('yearhMemberRegister');
+         yearhMemberRegister.setValue(parseInt(processor._yearhMemberRegister).toString());
+
+         // // 日投资金额
          // var investmentTotal = logoBar.findComponent('investmentTotal');
-         // investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
-         // // 当日赎回总金额
-         // var redemptionTotal = logoBar.findComponent('redemptionTotal');
-         // redemptionTotal.setValue(parseInt(processor.redemptionDayCurrent()).toString());
-         // // 当日净投总金额     
-         // var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
-         // netinvestmentTotal.setValue(parseInt(processor.netinvestmentDayCurrent()).toString());
-         // // 利息总金额
-         // //var interestTotal = logoBar.findComponent('interestTotal');
-         // //interestTotal.setValue(parseInt(processor.interestDayCurrent()).toString());
-       
-
-         // 投资总金额
-         var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
-         investmentTotalCount.setValue(parseInt(processor.invementTotalCurrent()).toString());
-         // 日投资金额
-         var investmentTotal = logoBar.findComponent('investmentTotal');
-         investmentTotal.setValue(parseInt(processor.invementDayCurrent()).toString());
+         // investmentTotal.setValue(parseInt(processor.investmentCurrent()).toString());
       }
       //..........................................................
       // 更新时间
@@ -246,22 +268,22 @@ MO.FEaiChartPerfMarketerScene_setup = function FEaiChartPerfMarketerScene_setup(
    invement.setMapEntity(o._mapEntity);
    invement.setup();
    invement.add24HDataChangedListener(o, o.on24HDataChanged);
+   invement.addPerformanceDataChangedListener(o, o.onPerformanceDataChangedListener);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
 
-   //..........................................................
-   // 创建时间轴
-   var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FEaiChartPerfMarketerChart);
-   timeline.setName('Timeline');
-   timeline.linkGraphicContext(o);
-   timeline.build();
-   o._guiManager.register(timeline);
+   // //..........................................................
+   // // 创建时间轴
+   // var stage = o.activeStage();
+   // var timeline = o._timeline = MO.Class.create(MO.FEaiChartPerfMarketerChart);
+   // timeline.setName('Timeline');
+   // timeline.linkGraphicContext(o);
+   // timeline.build();
+   // o._guiManager.register(timeline);
    //..........................................................
    // 创建头部 标题
    var head = o._head = MO.Class.create(MO.FEaiChartPerfMarketerHead);
-   timeline.setName('head');
    head.linkGraphicContext(o);
    head.setup();
    head.build();
@@ -269,11 +291,12 @@ MO.FEaiChartPerfMarketerScene_setup = function FEaiChartPerfMarketerScene_setup(
 
    //..........................................................
    // 多张图表
-   var charts = o._charts = MO.Class.create(MO.FEaiChartPerfMarketerCharts);
+   var charts = o._charts = MO.Class.create(MO.FEaiChartPerfMarketerChart);
    charts.linkGraphicContext(o);
    charts.setup();
    charts.build();
    o._guiManager.register(charts);
+   //invement.addPerformanceDataChangedListener(o, o.onPerformanceDataChangedListener);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
@@ -406,27 +429,27 @@ MO.FEaiChartPerfMarketerScene_processResize = function FEaiChartPerfMarketerScen
    }
    //..........................................................
    // 设置时间轴
-   var timeline = o._timeline;
-   if (isVertical) {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(10);
-      timeline.setRight(10);
-      timeline.setBottom(920);
-      timeline.setHeight(250);
-   } else {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(30);
-      timeline.setRight(780);
-      timeline.setHeight(250);
-      // timeline.setLeft(457);
-      // timeline.setTop(279);
-      // // timeline.setBottom(30);
-      // // timeline.setRight(780);
-      // timeline.setHeight(236)
-   }
+   // var timeline = o._timeline;
+   // if (isVertical) {
+   //    timeline.setDockCd(MO.EUiDock.Bottom);
+   //    timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   //    timeline.setLeft(10);
+   //    timeline.setRight(10);
+   //    timeline.setBottom(920);
+   //    timeline.setHeight(250);
+   // } else {
+   //    timeline.setDockCd(MO.EUiDock.Right);
+   //    timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+   //    // timeline.setLeft(20);
+   //    // timeline.setBottom(30);
+   //    // timeline.setRight(780);
+   //    // timeline.setHeight(250);
+   //    timeline.setLeft(457);
+   //    timeline.setTop(10);
+   //    // timeline.setBottom(30);
+   //    // timeline.setRight(780);
+   //    timeline.setHeight(500)
+   // }
    //..........................................................
    // 设置头部
    var heads = o._head;

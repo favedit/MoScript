@@ -9,6 +9,16 @@ MO.FEaiChartPerfMarketerChart = function FEaiChartPerfMarketerChart(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
+   // @attribute
+   o._backgroundImage      = null;
+   o._dayImage             = null;
+   o._monthImage           = null;
+   o._cumulativeImage      = null;
+   o.__chartBackgroundImage= null;
+   o._rankLinePadding      = null;
+   o._backgroundPadding    = null;
+   o._logoPadding          = null;
+
    o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
    o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
    o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
@@ -21,8 +31,11 @@ MO.FEaiChartPerfMarketerChart = function FEaiChartPerfMarketerChart(o) {
    o._triangleHeight = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
    o._decoLineGap = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
    o._decoLineWidth = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
+   o.setup  = MO.FEaiChartPerfMarketerChart_setup;
    //..........................................................
    // @event
+   // @event
+   o.onImageLoad           = MO.FEaiChartPerfMarketerChart_onImageLoad;
    o.oeUpdate = MO.FEaiChartPerfMarketerChart_oeUpdate;
    //..........................................................
    // @method
@@ -44,9 +57,40 @@ MO.FEaiChartPerfMarketerChart_construct = function FEaiChartPerfMarketerChart_co
    o.__base.FGuiControl.construct.call(o);
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
-   o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
+   o._logoPadding = new MO.SPadding(0, 0, 0, 0);
+   o._startTime = new MO.TDate();
+   o._endTime = new MO.TDate();
+   // o._performanceDate = MO.Class.create(MO.FEaiChartPerfMarketerInfo);
+   // o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
 }
-
+//==========================================================
+// <T>图片加载完成处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartPerfMarketerChart_onImageLoad = function FEaiChartPerfMarketerCharts_onImageLoad(){
+   this.dirty();
+}
+//==========================================================
+// <T>初始化处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartPerfMarketerChart_setup = function FEaiChartPerfMarketerChart_setup(){
+   var o = this;
+   var imageConsole = MO.Console.find(MO.FImageConsole);
+   // 创建图片
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/performence_marketer/bg2.png');
+   image.addLoadListener = (o, o.onImageLoad);
+   var image = o._chartBackgroundImage = imageConsole.load('{eai.resource}/performence_marketer/right.png');
+   image.addLoadListener = (o, o.onImageLoad);
+   var image = o._dayImage = imageConsole.load('{eai.resource}/performence_marketer/3.png');
+   image.addLoadListener(o, o.onImageLoad);
+   var image = o._monthImage = imageConsole.load('{eai.resource}/performence_marketer/2.png');
+   image.addLoadListener(o, o.onImageLoad);
+   var image = o._cumulativeImage = imageConsole.load('{eai.resource}/performence_marketer/1.png');
+   image.addLoadListener(o, o.onImageLoad);
+}
 //==========================================================
 // <T>更新处理。</T>
 //
@@ -142,18 +186,32 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
    var decoLeft = rectangle.left + 5;
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+   var left = rectangle.left;
+   var width = rectangle.width;
+   var height = rectangle.height;
+
+   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._logoPadding);
+   // // 当日
+   graphic.drawGridImage(o._dayImage, left+20, top+41, 82, 236, o._logoPadding);
+   graphic.drawGridImage(o._chartBackgroundImage, left+433, top+41, 1416, 236, o._logoPadding);
+   // 当月
+   graphic.drawGridImage(o._monthImage, left+20, top+310, 82, 236, o._logoPadding);
+   graphic.drawGridImage(o._chartBackgroundImage, left+433, top+310, 1416, 236, o._logoPadding);
+   // 累计
+   graphic.drawGridImage(o._cumulativeImage, left+20, top+578, 82, 236, o._logoPadding);
+   graphic.drawGridImage(o._chartBackgroundImage, left+433, top+578, 1416, 236, o._logoPadding);
    // 绘制左右三角及轴延长部分
-   graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
-   graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
-   graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#F8CB3D', 3);
-   graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
+   // graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
+   // graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
+   // graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#F8CB3D', 3);
+   // graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
    var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
    var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
    var dataTop = top + 60;
    var dataBottom = bottom - 30;
    var dataHeight = dataBottom - dataTop;
    // 主轴
-   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
+   // graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
    // 刻度
    var startTime = o.startTime();
    var endTime = o.endTime();
@@ -176,7 +234,7 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
          graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
       }
    }
-   graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
+   // graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
    text = endTime.format('HH24:MI');
    textWidth = graphic.textWidth(text);
    graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
@@ -204,7 +262,7 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
       }
    }
    //曲线及填充
-   o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
+   // o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
    // ........................................................
    // 统计   
    var lastHour = -1;

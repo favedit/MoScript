@@ -17,6 +17,10 @@ MO.FEaiChartPerfMarketerCharts = function FEaiChartPerfMarketerCharts(o){
    o._rankLinePadding      = null;
    o._backgroundPadding    = null;
    o._logoPadding          = null;
+   o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
+   o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
+   o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
+
    // @event
    o.onImageLoad           = MO.FEaiChartPerfMarketerCharts_onImageLoad;
    o.onPaintBegin          = MO.FEaiChartPerfMarketerCharts_onPaintBegin;
@@ -48,47 +52,6 @@ MO.FEaiChartPerfMarketerCharts_setup = function FEaiChartPerfMarketerCharts_setu
    var image = o._cumulativeImage = imageConsole.load('{eai.resource}/performence_marketer/1.png');
    image.addLoadListener(o, o.onImageLoad);
 
-
-    //..........................................................
-   // 设置数据
-   o._headFontStyle = 'bold 32px Microsoft YaHei';
-   var isVertical = MO.Window.Browser.isOrientationVertical()
-   if(isVertical){
-      o._tableCount = 11;
-      o._rankStart = 100;
-      o._rankTitleStart = 5;
-      o._rankHeight = 174;
-      o._rankRowHeight = 50;
-      o._rankIconStart = 22;
-      o._rankTextStart = 8;
-      o._rankRowUp = 36;
-      o._rankRowDown = 68;
-      o._headStart = 352;
-      o._headTextTop = 37;
-      o._headHeight = 54;
-      o._rowStart = 418;
-      o._rowTextTop = 0;
-      o._rowFontStyle = '36px Microsoft YaHei';
-   }else{
-      o._tableCount = 19;
-      o._rankStart = 1416;
-      o._rankTitleStart = 0;
-      o._rankHeight = 174;
-      o._rankWeeksHeight = 174;
-      o._rankMonthHeight = 139;
-      o._rankDayHeight = 137;
-      o._rankRowHeight = 40;
-      o._rankIconStart = 25;
-      o._rankTextStart = 0;
-      o._rankRowUp = 32;
-      o._rankRowDown = 51;
-      o._headStart = 336;
-      o._headTextTop = 27;
-      o._headHeight = 40;
-      o._rowFontStyle = '22px Microsoft YaHei';
-      o._rowStart = 384;
-   }
-
 }
 //==========================================================
 // <T>构造处理。</T>
@@ -102,6 +65,9 @@ MO.FEaiChartPerfMarketerCharts_construct = function FEaiChartPerfMarketerCharts_
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
    o._backgroundPadding = new MO.SPadding(0, 0, 0, 0);
    o._logoPadding = new MO.SPadding(0, 0, 0, 0);
+   o._startTime = new MO.TDate();
+   o._endTime = new MO.TDate();
+   o._trendInfo = MO.Class.create(MO.FEaiChartPerfMarketerInfo);
 }
 
 //==========================================================
@@ -130,6 +96,68 @@ MO.FEaiChartPerfMarketerCharts_onPaintBegin = function FEaiChartPerfMarketerChar
    // 当日
    graphic.drawGridImage(o._dayImage, left+20, top+41, 82, 236, o._logoPadding);
    graphic.drawGridImage(o._chartBackgroundImage, left+433, top+41, 1416, 236, o._logoPadding);
+    // 刻度
+   var startTime = o.startTime();
+   var endTime = o.endTime();
+   var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+   var bakTime = startTime.date.getTime();
+
+   // var decoRight = rectangle.left + rectangle.width - 5;
+   // var decoLineMargin = o.triangleWidth() + o.decoLineGap();
+   // var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
+   // var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+
+   var text;
+   var drawText = false;
+   var textWidth = 0;
+   var top = rectangle.top;
+   var bottom = rectangle.top + rectangle.height;
+   var decoRight = rectangle.left + rectangle.width - 5;
+   var decoLeft = rectangle.left + 5;
+   console.log(startTime.format('HH24:MI'));
+   graphic.setFont('21px Microsoft YaHei');
+   // if(!startTime.isAfter(endTime)){
+   //    console.log(1233333333333333333333)
+   //    var span = startTime.date.getTime() - bakTime;
+   //    // var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+   //    // graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+   //    text = startTime.format('HH24:MI');
+   //    startTime.addHour(1);
+   //    startTime.truncHour();
+   //    drawText = !drawText;
+   //    if (drawText) {
+   //       textWidth = graphic.textWidth(text);
+   //       graphic.drawText(text, 500 - textWidth / 2, middle + 20, '#59FDE9');
+   //    }
+   // }
+   // console.log(startTime.isAfter(endTime));
+   while (!startTime.isAfter(endTime)) {
+       console.log(1233333333333333333333);
+      var span = startTime.date.getTime() - bakTime;
+      // var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+      // graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+      text = startTime.format('HH24:MI');
+      startTime.addHour(1);
+      startTime.truncHour();
+      drawText = !drawText;
+      if (drawText) {
+         textWidth = graphic.textWidth(text);
+         graphic.drawText(text, 500 - textWidth / 2, middle + 20, '#59FDE9');
+      }
+   }
+   // graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
+   text = endTime.format('HH24:MI');
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, 500 - textWidth / 2, 445 , '#59FDE9');
+   // graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
+   // graphic.drawText("12:00", 479, 445, '#eeb92f');
+
+   startTime.date.setTime(bakTime);
+   startTime.refresh();
+
+   // graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
+
+   
    // 当月
    graphic.drawGridImage(o._monthImage, left+20, top+310, 82, 236, o._logoPadding);
    graphic.drawGridImage(o._chartBackgroundImage, left+433, top+310, 1416, 236, o._logoPadding);
