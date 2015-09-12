@@ -32,6 +32,7 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    //..........................................................
    // @attribute
    o._data                    = MO.Class.register(o, new MO.AGetter('_data'));
+   o._outline2                = MO.Class.register(o, new MO.AGetter('_outline2'));
    // @attribute
    o._worldEntity             = MO.Class.register(o, new MO.AGetSet('_worldEntity'));
    o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
@@ -98,6 +99,7 @@ MO.FEaiCountryEntity_construct = function FEaiCountryEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
    // 创建边框
+   o._outline2 = new MO.SOutline2d();
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
 }
@@ -171,14 +173,27 @@ MO.FEaiCountryEntity_loadData = function FEaiCountryEntity_loadData(data){
    var o = this;
    o._data = data;
    o._code = data.code();
+   var outline = o._outline2;
+   outline.setMin();
    // 建立边界数据
    var shape = o._boundaryShape;
    var boundaries = data.boundaries();
    var count = boundaries.count()
    for(var i = 0; i < count; i++){
+      // 增加轮廓
       var boundary = boundaries.at(i);
       shape.pushPolygon(boundary);
+      // 计算轮廓
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var pi = 0; pi < positionCount; pi++){
+         var x = 180 - positions[positionIndex++];
+         var y = positions[positionIndex++];
+         outline.mergeMax2(x, y);
+      }
    }
+   outline.update();
    // 建立对象
    shape.build();
 }
