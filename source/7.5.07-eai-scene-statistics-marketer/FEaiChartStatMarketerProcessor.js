@@ -16,6 +16,8 @@ MO.FEaiChartStatMarketerProcessor = function FEaiChartStatMarketerProcessor(o){
    o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
    o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
    o._infoProvince            = MO.Class.register(o, new MO.AGetter('_infoProvince'));
+   o._365BeginDate            = MO.Class.register(o, new MO.AGetter('_365BeginDate'));
+   o._365EndDate              = MO.Class.register(o, new MO.AGetter('_365EndDate'));
    // @attribute
    o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
    o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
@@ -76,6 +78,7 @@ MO.FEaiChartStatMarketerProcessor = function FEaiChartStatMarketerProcessor(o){
    o.process                  = MO.FEaiChartStatMarketerProcessor_process;
    // @method
    o.dispose                  = MO.FEaiChartStatMarketerProcessor_dispose;
+   
    return o;
 }
 
@@ -98,8 +101,8 @@ MO.FEaiChartStatMarketerProcessor_on24HDataFetch = function FEaiChartStatMarkete
 MO.FEaiChartStatMarketerProcessor_onInfoProvince = function FEaiChartStatMarketerProcessor_onInfoProvince(event){
    var o = this;
    var infoProvince = o._infoProvince;
-   //infoProvince.unserializeSignBuffer(event.sign, event.content, true);
-   o.processInfoProvinceDataChangedListener(event);
+   infoProvince.unserializeSignBuffer(event.sign, event.content, true);
+   o.processInfoProvinceDataChangedListener(infoProvince);
 }
 
 //==========================================================
@@ -145,6 +148,8 @@ MO.FEaiChartStatMarketerProcessor_construct = function FEaiChartStatMarketerProc
    o._endDate = new MO.TDate();
    o._24HBeginDate = new MO.TDate();
    o._24HEndDate = new MO.TDate();
+   o._365BeginDate = new MO.TDate();
+   o._365EndDate = new MO.TDate();
    o._units = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
@@ -299,11 +304,20 @@ MO.FEaiChartStatMarketerProcessor_process = function FEaiChartStatMarketerProces
       var endDate24H = o._24HEndDate;
       endDate24H.assign(systemDate);
       endDate24H.truncMinute(15);
+
       // 取数据
       statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
 
+      var beginDate365H = o._365BeginDate;
+      beginDate24H.assign(systemDate);
+      beginDate24H.truncMinute(15);
+      beginDate24H.addDay(-665);
+      // 设置结束时间
+      var endDate365H = o._365EndDate;
+      endDate24H.assign(systemDate);
+      endDate24H.truncMinute(15);
       //取省份数据
-      statistics.customer().doProvince(o, o.onInfoProvince,beginDate24H.format(), endDate24H.format());
+      statistics.customer().doProvince(o, o.onInfoProvince, beginDate365H.format(),  endDate365H.format());
    }
    //..........................................................
    // 设置表格刷新

@@ -149,6 +149,7 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    var infoproo = o._infoProvince;
    var provincesarr = infoproo._provinces;
    var maxInverstment = 0 ;
+   var realityCount = 0;
    if (provincesarr){
      for (var i = 0 ; i<provincesarr.count();i++){
          var province = provincesarr.get(i);
@@ -162,31 +163,32 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
             if( maxInverstment<province.investmentTotal()){
                maxInverstment = province.investmentTotal();
             }
+            realityCount++;
             switch (provincename.code()%7){
                case 0 :
-               color = '#FF0000';
+               color = '#BF805F';
                break;
                case 1 :
-               color = '#FF00FF';
+               color = '#CAA466';
                break;
                case 2 :
-               color = '#ADFF2F';
+               color = '#9A9D50';
                break;
                case 3 :
-               color = '#9400D3';
+               color = '#7BB8B9';
                break;
                case 4 :
-               color = '#8B0A50';
+               color = '#F8CB3D';
                break;
                case 5 :
-               color = '#0000FF';
+               color = '#7C81C1';
                break;
                case 6 :
-               color = '#F8CB3D';
+               color = '#CE91CD';
                break;
 
             }
-            hight = 200*province.investmentTotal()/maxInverstment
+            hight = 170*(province.investmentTotal()+maxInverstment/2)/maxInverstment
             // var number = [];
             // for(var j=0; j<provinceLabel.length;j++){
             //    number.push(provinceLabel[j]);
@@ -194,8 +196,8 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
             // }
            // provinceLabel=number;
             graphic.setFont('9px Microsoft YaHei');
-            graphic.drawText(provinceLabel,decoLeft+i*35-6, bottom, '#00B5F6');
-            graphic.fillRectangle(decoLeft+i*35, bottom-30-hight, 16, hight, color, 10);
+            graphic.drawText(provinceLabel,decoLeft+realityCount*35-6, bottom, '#00B5F6');
+            graphic.fillRectangle(decoLeft+realityCount*35, bottom-30-hight, 16, hight, color, 10);
          }
         // graphic.drawText(provinceLabel,decoLeft+i*150, bottom-200+100+50, '#00B5F6');
       }
@@ -205,6 +207,26 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
      // var text = city.lable();
    //  graphic.drawText(text,decoLeft+i*150, bottom-260, '#00B5F6');
    }
+   // var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
+   // var bottomColor = '#' + hexColor.substring(2);
+   // var opBottomColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
+   // var hexColor = MO.Lang.Hex.format(rateResource.findRate(1));
+   // var topColor = '#' + hexColor.substring(2);
+   // var opTopColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
+   // var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
+   // gradient.addColorStop('0', bottomColor);
+   // gradient.addColorStop('1', topColor);
+   // var opGradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
+   // opGradient.addColorStop('0', opBottomColor);
+   // opGradient.addColorStop('1', opTopColor);
+   // handle.strokeStyle = gradient;
+   // handle.lineWidth = 4;
+   // handle.stroke();
+   // handle.fillStyle = opGradient;
+   // handle.lineTo(x, dataBottom);
+   // handle.lineTo(dataLeft, dataBottom);
+   // handle.lineTo(dataLeft, lastY);
+   // handle.fill();
   //  for (var i=0 ; i<provinceCount; i++){
   //    graphic.fillRectangle(decoLeft+i*150, bottom-260, 50, 200, '#F8CB3D', 10);
   //   // graphic.drawText(o._infoProvince.p,decoLeft+i*150, bottom-200+100+50, '#00B5F6');

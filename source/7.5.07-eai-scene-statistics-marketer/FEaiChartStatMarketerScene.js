@@ -22,6 +22,7 @@ MO.FEaiChartStatMarketerScene = function FEaiChartStatMarketerScene(o) {
    // @attribute
    o._logoBar                = null;
    o._timeline               = null;
+   o._provinceTable              = null;
    // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
@@ -56,9 +57,10 @@ MO.FEaiChartStatMarketerScene_on24HDataChanged = function FEaiChartStatMarketerS
    var o = this;
    // 设置表格数据
    var timeline = o._timeline;
-   timeline.startTime().assign(event.beginDate);
-   timeline.endTime().assign(event.endDate);
-   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+  // timeline.startTime().assign(event.startTime());
+  // timeline.endTime().assign(event.endTime());
+  // timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+  // timeline.trendInfo().assign=event.trendInfo();
    timeline.dirty();
 }
 //==========================================================
@@ -71,8 +73,13 @@ MO.FEaiChartStatMarketerScene_onInfoProvinceDataChanged = function FEaiChartStat
    var o = this;
    // 设置表格数据
    var timeline = o._timeline;
-   timeline.infoProvince().unserializeSignBuffer(event.sign, event.content, true);
+  // timeline.infoProvince().unserializeSignBuffer(event.sign, event.content, true);
+   timeline.setInfoProvince(event);
    timeline.dirty();
+   var table  =  o._provinceTable;
+   table.setInfoProvince(event);
+   table.setRankUnits();
+   table.dirty();
 }
 
 //==========================================================
@@ -245,6 +252,17 @@ MO.FEaiChartStatMarketerScene_setup = function FEaiChartStatMarketerScene_setup(
    timeline.linkGraphicContext(o);
    timeline.build();
    o._guiManager.register(timeline);
+   
+   //..........................................................
+   // 创建表格
+
+   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartMktCustomerTable);
+   provinceTable.setName('LiveTable');
+   provinceTable.linkGraphicContext(o);
+   provinceTable.setup();
+   provinceTable.build();
+   o._guiManager.register(provinceTable);
+   //..........................................................
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
@@ -392,5 +410,22 @@ MO.FEaiChartStatMarketerScene_processResize = function FEaiChartStatMarketerScen
       timeline.setBottom(30);
       timeline.setRight(780);
       timeline.setHeight(250);
+   }
+   var provinceTable = o._provinceTable;
+   if (isVertical) {
+      provinceTable.setDockCd(MO.EUiDock.Bottom);
+      provinceTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      provinceTable.setLeft(10);
+      provinceTable.setRight(10);
+      provinceTable.setBottom(10);
+      provinceTable.setWidth(1060);
+      provinceTable.setHeight(900);
+   } else {
+      provinceTable.setDockCd(MO.EUiDock.Right);
+      provinceTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      provinceTable.setTop(10);
+      provinceTable.setRight(0);
+      provinceTable.setBottom(10);
+      provinceTable.setWidth(760);
    }
 }
