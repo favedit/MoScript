@@ -9,11 +9,6 @@ MO.FEaiChartMktManageCountryTable = function FEaiChartMktManageCountryTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-
-   o._
-
-
-
    o._currentDate = null;
    o._rank = MO.Class.register(o, new MO.AGetter('_rank'));
    // @attribute
@@ -42,7 +37,7 @@ MO.FEaiChartMktManageCountryTable = function FEaiChartMktManageCountryTable(o) {
    // @method
    o.setup = MO.FEaiChartMktManageCountryTable_setup;
    o.setRankUnits = MO.FEaiChartMktManageCountryTable_setRankUnits;
-   o.pushUnit = MO.FEaiChartMktManageCountryTable_pushUnit;
+   o.setUnits = MO.FEaiChartMktManageCountryTable_setUnits;
    o.drawRow = MO.FEaiChartMktManageCountryTable_drawRow;
    // @method
    o.dispose = MO.FEaiChartMktManageCountryTable_dispose;
@@ -91,7 +86,7 @@ MO.FEaiChartMktManageCountryTable_onPaintBegin = function FEaiChartMktManageCoun
    var textLeft = left + (width - titleWidth) * 0.5;
    graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');
    drawPosition += 60
-      //..........................................................
+   //..........................................................
    graphic.setFont(o._rowFontStyle);
    // 绘制前3名
    var tableTop = top + o._rankStart;
@@ -133,7 +128,74 @@ MO.FEaiChartMktManageCountryTable_construct = function FEaiChartMktManageCountry
 MO.FEaiChartMktManageCountryTable_setup = function FEaiChartMktManageCountryTable_setup() {
    var o = this;
    var imageConsole = MO.Console.find(MO.FImageConsole);
-
+   // 创建图片
+   var image = o._logoImage = imageConsole.load('{eai.resource}/live/company.png');
+   image.addLoadListener(o, o.onImageLoad);
+   // 创建图片
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
+   image.addLoadListener(o, o.onImageLoad);
+   // 创建图片
+   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/live/tank-title.png');
+   image.addLoadListener(o, o.onImageLoad);
+   // 创建图片
+   var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');
+   image.addLoadListener(o, o.onImageLoad);
+   //..........................................................
+   var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
+   grid.setOptionClip(false);
+   grid.setDisplayHead(false);
+   grid.setLocation(50, 170);
+   grid.setSize(800, 700);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setLeft(9);
+   grid.setRight(19);
+   grid.setHeadHeight(40);
+   //   grid.headPadding().set(0,20,0,20);
+   grid.setHeadBackColor('#122A46');
+   grid.headFont().font = 'Microsoft YaHei';
+   grid.headFont().size = 22;
+   grid.headFont().color = '#00B2F2';
+   grid.setRowHeight(40);
+   grid.rowFont().font = 'Microsoft YaHei';
+   grid.rowFont().size = 22;
+   grid.rowFont().color = '#59FDE9';
+   //现在图片为默认居中
+   var column = MO.Class.create(MO.FGuiGridColumnPicture);
+   column.setName('rank');
+   column.setLabel();
+   column.setDataName('image');
+   column.setWidth(110);
+   column.setPadding(1, 1, 1, 1);
+   column.setAlign(MO.EUiAlign.Center);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('customer_city');
+   column.setLabel('');
+   column.setDataName('customer_city');
+   column.setWidth(100);
+   column.setPadding(1, 1, 1, 1);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('label_phone');
+   column.setLabel('');
+   column.setDataName('label_phone');
+   column.setWidth(160);
+   column.setPadding(1, 1, 1, 1);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
+   column.setName('investment');
+   column.setLabel('');
+   column.setDataName('investment');
+   column.setNormalColor('#59FDE9');
+   column.setHighColor('#FDEF01');
+   column.setLowerColor('#EB6C03');
+   column.setNegativeColor('#FF0000');
+   column.cellPadding().right = 10;
+   column.setWidth(160);
+   column.setPadding(1, 1, 1, 1);
+   grid.pushColumn(column);
+   o.push(grid);
+   //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
    grid.setLocation(50, 332);
@@ -151,32 +213,31 @@ MO.FEaiChartMktManageCountryTable_setup = function FEaiChartMktManageCountryTabl
    grid.rowFont().font = 'Microsoft YaHei';
    grid.rowFont().size = 21;
    grid.rowFont().color = '#59FDE9';
-   var column = MO.Class.create(MO.FGuiGridColumnDate);
-   column.setName('recordDate');
-   column.setLabel('时间');
-   column.setDataName('record_date');
-   column.setDateFormat('HH24:MI:SS');
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('companyName');
+   column.setLabel('公司名称');
+   column.setDataName('companyName');
    column.setWidth(120);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customerCity');
-   column.setLabel('城市');
-   column.setDataName('customer_city');
+   column.setName('marketerCount');
+   column.setLabel('理财师数');
+   column.setDataName('marketerCount');
    column.setWidth(120);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customerInfo');
-   column.setLabel('用户-手机');
-   column.setDataName('customer_info');
+   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
+   column.setName('investment');
+   column.setLabel('投资总额');
+   column.setDataName('investment');
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('investmentAmount');
-   column.setLabel('投资额');
-   column.setDataName('investment_amount');
+   column.setName('redemption');
+   column.setLabel('赎回总额');
+   column.setDataName('redemption');
    column.cellPadding().right = 10;
    column.setNormalColor('#59FDE9');
    column.setHighColor('#FDEF01');
@@ -185,36 +246,11 @@ MO.FEaiChartMktManageCountryTable_setup = function FEaiChartMktManageCountryTabl
    column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('modelLabel');
-   column.setLabel('投资产品');
-   column.setDataName('model_label');
-   column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('investmentGain');
-   column.setLabel('年化收益');
-   column.setDataName('investment_gain');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
+   column.setName('netinvestment');
+   column.setLabel('净投总额');
+   column.setDataName('netinvestment');
    column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('bankGain');
-   column.setLabel('银行收益');
-   column.setDataName('bank_gain');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.setWidth(120);
-   column.cellPadding().right = 10;
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
 
@@ -271,8 +307,8 @@ MO.FEaiChartMktManageCountryTable_setRankUnits = function FEaiChartMktManageCoun
    for (var i = 0; i < count; i++) {
       var unit = units.at(i);
       var row = grid.allocRow();
-      
-       // 获得客户城市
+
+      // 获得客户城市
       var card = unit.card();
       var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
       var cityLabel = '';
@@ -295,38 +331,25 @@ MO.FEaiChartMktManageCountryTable_setRankUnits = function FEaiChartMktManageCoun
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiChartMktManageCountryTable_pushUnit = function FEaiChartMktManageCountryTable_pushUnit(unit) {
+MO.FEaiChartMktManageCountryTable_setUnits = function FEaiChartMktManageCountryTable_setUnits(units) {
    var o = this;
    // 检查参数
-   if (!unit) {
+   if (!units) {
       return null;
    }
-   // 获得客户城市
-   var card = unit.card();
-   var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
-   var cityLabel = '';
-   if (city) {
-      cityLabel = city.label();
-   }
-   // 增加行
    var grid = o._gridControl;
-   var row = grid.allocRow();
-   row.set('record_date', unit.recordDate());
-   row.set('customer_city', cityLabel);
-   row.set('customer_info', unit.label() + ' - ' + unit.phone());
-   row.set('model_label', unit.modelLabel());
-   row.set('investment_amount', unit.investment());
-   row.set('investment_gain', unit.gain());
-   row.set('bank_gain', unit.bankGain());
-   
-   grid.insertRow(row);
-   // 放入队列
-   var entities = o._units;
-   entities.unshift(unit);
-   o._lineScroll -= o._rowHeight;
-   // 大于个数从尾部弹出
-   if (entities.count() > o._tableCount) {
-      entities.pop();
+   grid.clearRows();
+   var count = units.count();
+   for (var i = 0; i < count; i++) {
+      var unit = units.at(i);
+      var row = grid.allocRow();
+      row.set('companyName', unit.label());
+      row.set('marketerCount', unit.marketerCount());
+      row.set('investment', unit.investment());
+      row.set('redemption', unit.redemption());
+      row.set('netinvestment', unit.netinvestment());
+
+      grid.pushRow(row);
    }
 }
 
