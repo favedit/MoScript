@@ -39,7 +39,7 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    o._countryTable            = null;
    o._provinceTable           = null;
    // @attribute
-   o._worldScale              = 500;
+   o._worldScale              = 300;
    o._startWorldScale         = 500;
    o._targetWorldScale        = 500;
    o._cameraFrom              = null;
@@ -150,6 +150,11 @@ MO.FEaiChartMktManageScene_onProcess = function FEaiChartMktManageScene_onProces
          if (hLoading) {
             document.body.removeChild(hLoading);
          }
+         // 显示国家
+         var countryEntity = o._countryEntity;
+         countryEntity.start();
+         o._mapEntity.showCountry(countryEntity);
+         // 加载完成
          o.processLoaded();
          o._playing = true;
          o._statusStart = true;
@@ -180,6 +185,7 @@ MO.FEaiChartMktManageScene_onProcess = function FEaiChartMktManageScene_onProces
       var mapEntity = o._mapEntity;
       o.fixMatrix(mapEntity.countryFaceDisplay().matrix());
       o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
+      mapEntity.process();
    }
 }
 
@@ -241,10 +247,16 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
             o._startTranslateY = o._translateY;
             o._startRotateY = o._rotationY;
             o._startWorldScale = o._worldScale;
-            var countryEntity = countryRenderable._shape._countryEntity;
-            var countryOutline2d = countryEntity.outline2();
-            o._targetRotateY = Math.PI - countryOutline2d.center.x / 180 * Math.PI;
-            o._targetTranslateY = -1000 * (countryOutline2d.center.y / 90);
+            var entity = countryRenderable._shape._entity;
+            if(MO.Class.isClass(entity, MO.FEaiCountryEntity)){
+               var countryEntity = entity;
+            }else if(MO.Class.isClass(entity, MO.FEaiProvince3dEntity)){
+               var provinceEntity = entity;
+            }else{
+            }
+            var outline2d = entity.outline2();
+            o._targetRotateY = Math.PI - outline2d.center.x / 180 * Math.PI;
+            o._targetTranslateY = -1000 * (outline2d.center.y / 90);
             o._targetWorldScale = 1000;
 
             o._startTick = MO.Timer.current();
@@ -255,7 +267,7 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
             //var mapEntity = o._mapEntity;
             //var faceMatrix = mapEntity.countryFaceDisplay().matrix();
             //var borderMatrix = mapEntity.countryBorderDisplay().matrix();
-            //faceMatrix.ty = -o._worldScale * (countryOutline2d.center.y / 90);
+            //faceMatrix.ty = -o._worldScale * (outline2d.center.y / 90);
             //faceMatrix.updateForce();
             //borderMatrix.ty = 
             //borderMatrix.updateForce();
@@ -422,11 +434,15 @@ MO.FEaiChartMktManageScene_setup = function FEaiChartMktManageScene_setup() {
    var region = o._activeStage.region();
    region.selectCamera(camera);
    //..........................................................
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 加载世界数据
-   var worldEntity = o._worldEntity = MO.Console.find(MO.FEaiEntityConsole).mapModule().loadWorld(o);
+   var worldEntity = o._worldEntity = entityConsole.mapModule().loadWorld(o);
    o._readyLoader.push(worldEntity);
-   //MO.Console.find(MO.FEaiEntityConsole).loadWorldData();
-   //MO.Console.find(MO.FEaiEntityConsole).addLoadWorldListener(o, o.onLoadWorld);
+   // 建立城市实体
+   entityConsole.cityModule().build(o, MO.FEaiCity3dEntity);
+   // 加载国家数据
+   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry, MO.FEaiCountry3dEntity);
+   o._readyLoader.push(countryEntity);
 }
 
 //==========================================================
@@ -477,6 +493,7 @@ MO.FEaiChartMktManageScene_fixMatrix = function FEaiChartMktManageScene_fixMatri
       matrix.rx = o._rotationX;
       matrix.ry = o._rotationY;
       matrix.setScale(o._worldScale, o._worldScale, o._worldScale);
+      //matrix.setScale(2, 2, 2);
    }
    matrix.update();
    //..........................................................

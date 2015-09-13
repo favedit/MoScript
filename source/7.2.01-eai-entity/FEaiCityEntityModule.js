@@ -81,7 +81,7 @@ MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
 // @method
 // @param entity:FEaiCityEntity 城市实体
 //==========================================================
-MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context){
+MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context, clazz){
    var o = this;
    // 创建城市实体
    var citys = MO.Console.find(MO.FEaiResourceConsole).cityModule().citys();
@@ -94,7 +94,7 @@ MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context){
       var level = city.level();
       var cityLocation = city.location();
       // 创建实体
-      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      var cityEntity = MO.Class.create(MO.Runtime.nvl(clazz, MO.FEaiCityEntity));
       cityEntity.setData(city);
       cityEntity.build(o);
       cityEntities.set(code, cityEntity);
