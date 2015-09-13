@@ -10,6 +10,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    //..........................................................
    // @attribute
    o._optionMapCountry     = true;
+   o._optionMapCity3d      = false;
    o._readyProvince        = false;
    o._countryReady         = false;
    // @attribute
@@ -124,6 +125,7 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    // 获得实体控制台
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    entityConsole.linkGraphicContext(o);
+   entityConsole._option3d = o._optionMapCity3d;
    entityConsole.setup();
    var mapEntity = o._mapEntity = entityConsole.mapEntity();
    // 创建舞台

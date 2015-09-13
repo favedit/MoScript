@@ -20,6 +20,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o.construct             = MO.FEaiMapEntity_construct;
    // @method
    o.setup                 = MO.FEaiMapEntity_setup;
+   o.setup3d               = MO.FEaiMapEntity_setup3d;
    o.upload                = MO.FEaiMapEntity_upload;
    // @method
    o.showCity              = MO.FEaiMapEntity_showCity;
@@ -56,6 +57,29 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    citysRenderable._optionSelect = false;
    // 创建城市范围渲染对象
    var citysRangeRenderable = o._cityRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
+   citysRangeRenderable.linkGraphicContext(o);
+   citysRangeRenderable._optionSelect = false;
+   // 创建城市显示对象
+   var display = o._countryFaceDisplay = MO.Class.create(MO.FE3dDisplayContainer);
+   display.linkGraphicContext(o);
+   // 创建城市范围显示对象
+   var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplayContainer);
+   display.linkGraphicContext(o);
+}
+
+//==========================================================
+// <T>设置城市实体集合。</T>
+//
+// @method
+//==========================================================
+MO.FEaiMapEntity_setup3d = function FEaiMapEntity_setup3d(){
+   var o = this;
+   // 创建城市渲染对象
+   var citysRenderable = o._cityCenterRenderable = MO.Class.create(MO.FEaiCitys3dRenderable);
+   citysRenderable.linkGraphicContext(o);
+   citysRenderable._optionSelect = false;
+   // 创建城市范围渲染对象
+   var citysRangeRenderable = o._cityRangeRenderable = MO.Class.create(MO.FEaiCitysRange3dRenderable);
    citysRangeRenderable.linkGraphicContext(o);
    citysRangeRenderable._optionSelect = false;
    // 创建城市显示对象

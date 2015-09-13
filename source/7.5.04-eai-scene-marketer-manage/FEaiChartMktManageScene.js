@@ -10,6 +10,7 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    //..........................................................
    // @attribute
    o._code                    = MO.EEaiScene.ChartWorld;
+   o._optionMapCity3d         = true;
    // @attribute
    o._mapReady                = false;
    o._playing                 = false;
@@ -91,21 +92,27 @@ MO.FEaiChartMktManageScene_onOrganizationFetch = function FEaiChartMktManageScen
    var info = o._organizationInfo;
    info.unserializeSignBuffer(event.sign, event.content, true);
    o._countryTable.setUnits(info._department2s);
+   // 设置前20数据
    var countryUnits = o._countryUnits;
    var department4s = info._department4s;
    countryUnits.clear();
    for (var i = 0; i < 20; i++) {
       countryUnits.push(department4s.at(i));
    }
-
-   //var zz = 0;
-   //for (var i = 0; i < department4s.count(); i++) {
-   //   var unit = department4s.at(i);
-   //   if (unit.provinceCode() > 0) {
-   //      zz++;
-   //   }
-   //}
-   //alert(zz);
+   // 设置城市数据
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   var cityModule = entityConsole.cityModule();
+   var citys = info.citys();
+   var cityCount = citys.count();
+   for(var i = 0; i < cityCount; i++){
+      var city = citys.at(i);
+      var card = city.card();
+      var cityEntity = cityModule.findByCard(card);
+      if(cityEntity){
+         cityEntity.update(city);
+      }
+   }
+   o._mapEntity.upload();
 }
 
 //==========================================================
@@ -136,6 +143,10 @@ MO.FEaiChartMktManageScene_onProcessReady = function FEaiChartMktManageScene_onP
    o.__base.FEaiChartScene.onProcessReady.call(o);
    // 显示地图
    o._mapEntity.showWorld();
+   // 显示国家
+   o._mapEntity.showCountry(o._countryEntity);
+   // 显示城市
+   o._mapEntity.showCity();
 }
 
 //==========================================================
@@ -202,6 +213,8 @@ MO.FEaiChartMktManageScene_onProcess = function FEaiChartMktManageScene_onProces
       //..........................................................
       // 计算形状
       var mapEntity = o._mapEntity;
+      o.fixMatrix(mapEntity.cityRangeRenderable().matrix());
+      o.fixMatrix(mapEntity.cityCenterRenderable().matrix());
       o.fixMatrix(mapEntity.countryFaceDisplay().matrix());
       o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
       mapEntity.process();
@@ -390,7 +403,7 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
          o._countryEntity._faceShape.setVisible(false);
 
          var provinceTable = o._provinceTable;
-         provinceTable.setTitle('大陆地区');
+         provinceTable.setTitle('大陆公司列表');
          provinceTable.setUnits(o._countryUnits);
          provinceTable.dirty();
          provinceTable.setVisible(false);

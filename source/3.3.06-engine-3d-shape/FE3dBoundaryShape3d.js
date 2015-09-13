@@ -12,6 +12,7 @@ MO.FE3dBoundaryShape3d = function FE3dBoundaryShape3d(o){
    o._optionSphere     = false;
    o._scaleTop         = MO.Class.register(o, new MO.AGetSet('_scaleTop'), 1);
    o._scaleBottom      = MO.Class.register(o, new MO.AGetSet('_scaleBottom'), 0.9);
+   o._faceColor        = MO.Class.register(o, new MO.AGetter('_faceColor'));
    o._color            = MO.Class.register(o, new MO.AGetter('_color'));
    o._polygons         = MO.Class.register(o, new MO.AGetter('_polygons'));
    // @attribute
@@ -43,6 +44,7 @@ MO.FE3dBoundaryShape3d = function FE3dBoundaryShape3d(o){
 MO.FE3dBoundaryShape3d_construct = function FE3dBoundaryShape3d_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._faceColor = new MO.SColor4(1, 1, 1, 1);
    o._color = new MO.SColor4(0.3, 0.3, 0.3);
    o._polygons = new MO.TObjects();
 }
@@ -64,6 +66,7 @@ MO.FE3dBoundaryShape3d_pushPolygon = function FE3dBoundaryShape3d_pushPolygon(po
 MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    var o = this;
    var context = o._graphicContext;
+   var faceColor = o._faceColor;
    var color = o._color;
    var scaleTop = o._scaleTop;
    var scaleBottom = o._scaleBottom;
@@ -159,10 +162,10 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
    var positionTotal = vertexTotal * 2;
    for(var i = 0; i < positionTotal; i++){
-      colors[colorIndex++] = 0xFF;
-      colors[colorIndex++] = 0xFF;
-      colors[colorIndex++] = 0xFF;
-      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
    }
    // 创建三角面渲染对象
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
@@ -173,7 +176,7 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    //renderable.setOptionNormal(true);
    renderable.setVertexCount(vertexTotal * 2);
    renderable.setup();
-   renderable.color().setHex('#0a5294');
+   renderable.color().setHex('#0A5294');
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
    renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexTotal * 2, true);

@@ -10,7 +10,7 @@ MO.FEaiCity3dEntity = function FEaiCity3dEntity(o){
    //..........................................................
    // @attribute
    o._provinceEntity         = MO.Class.register(o, new MO.AGetSet('_provinceEntity'));
-   o._visible                = MO.Class.register(o, new MO.AGetter('_visible'), false);
+   o._visible                = MO.Class.register(o, new MO.AGetter('_visible'), true);
    o._location               = MO.Class.register(o, new MO.AGetter('_location'));
    o._size                   = MO.Class.register(o, new MO.AGetter('_size'));
    o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
@@ -60,7 +60,7 @@ MO.FEaiCity3dEntity_construct = function FEaiCity3dEntity_construct(){
    // 设置属性
    o._location = new MO.SPoint2();
    o._size = new MO.SSize2();
-   o._color = new MO.SColor4(0, 0, 0, 0);
+   o._color = new MO.SColor4(1, 1, 1, 1);
    o._rangeColor = new MO.SColor4(0, 0, 0, 0);
    o._inputPoint = new MO.SPoint3();
    o._outputPoint = new MO.SPoint3();
@@ -153,11 +153,12 @@ MO.FEaiCity3dEntity_reset = function FEaiCity3dEntity_reset(){
 //==========================================================
 MO.FEaiCity3dEntity_update = function FEaiCity3dEntity_update(data){
    var o = this;
-   var range = 1;
    o._color.set(1, 1, 1, 1);
+   var marketerCount = data.marketerCount();
+   var range = 1;
    o._rangeColor.set(1, 1, 1, 1);
    if(data){
-      o._cityTotal = data.investmentTotal();
+      o._cityTotal = marketerCount;
    }
    var total = o._cityTotal;
    if(total > 0){
@@ -165,13 +166,12 @@ MO.FEaiCity3dEntity_update = function FEaiCity3dEntity_update(data){
    }
    // 计算数值
    var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
-   var investmentCityTotal = historyModule.investmentCityTotal();
    var rateInfo = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Map);
-   var rate = Math.sqrt(total / investmentCityTotal) * 4;
+   var rate = Math.sqrt(total / 1000) * 2;
    var color = rateInfo.findRate(rate);
-   range = rate * 6;
+   range = rate * 2;
    rate = MO.Lang.Float.toRange(rate, 0, 1);
-   o._rangeColor.setIntAlpha(color, rate * 0.6);
+   o._rangeColor.setIntAlpha(color, rate * 2);
    o._range = MO.Lang.Float.toRange(Math.sqrt(range), 1, 6);
 }
 

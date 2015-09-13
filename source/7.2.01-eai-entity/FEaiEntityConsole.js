@@ -10,6 +10,7 @@ MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    //..........................................................
    // @attribute
    o._scopeCd              = MO.EScope.Local;
+   o._option3d             = false;
    // @attribute
    o._cityModule           = MO.Class.register(o, new MO.AGetter('_cityModule'));
    o._provinceModule       = MO.Class.register(o, new MO.AGetter('_provinceModule'));
@@ -55,7 +56,11 @@ MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
    // 创建地图实体
    var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
    mapEntity.linkGraphicContext(o);
-   mapEntity.setup();
+   if(o._option3d){
+      mapEntity.setup3d();
+   }else{
+      mapEntity.setup();
+   }
 }
 
 //==========================================================
