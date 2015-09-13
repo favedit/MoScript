@@ -103,7 +103,7 @@ MO.FEaiChartMktManageCountryTable_setup = function FEaiChartMktManageCountryTabl
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
    image.addLoadListener(o, o.onImageLoad);
    //..........................................................
-   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
+   var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
    grid.setOptionClip(true);
    grid.setLocation(50, 120);
    grid.setSize(800, 700);

@@ -39,6 +39,9 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    // @attribute
    o._countryTable            = null;
    o._provinceTable           = null;
+   o._selectedProvinceCode    = 0;
+   o._provinceUnits           = null;
+   o._countryUnits            = null;
    // @attribute
    o._worldScale              = 300;
    o._startWorldScale         = 500;
@@ -88,6 +91,21 @@ MO.FEaiChartMktManageScene_onOrganizationFetch = function FEaiChartMktManageScen
    var info = o._organizationInfo;
    info.unserializeSignBuffer(event.sign, event.content, true);
    o._countryTable.setUnits(info._department2s);
+   var countryUnits = o._countryUnits;
+   var department4s = info._department4s;
+   countryUnits.clear();
+   for (var i = 0; i < 20; i++) {
+      countryUnits.push(department4s.at(i));
+   }
+
+   //var zz = 0;
+   //for (var i = 0; i < department4s.count(); i++) {
+   //   var unit = department4s.at(i);
+   //   if (unit.provinceCode() > 0) {
+   //      zz++;
+   //   }
+   //}
+   //alert(zz);
 }
 
 //==========================================================
@@ -258,15 +276,41 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
                else {
                   o._countryEntity._borderShape.setVisible(false);
                   o._countryEntity._faceShape.setVisible(false);
+
+                  var provinceTable = o._provinceTable;
+                  provinceTable.setTitle('大陆地区');
+                  provinceTable.setUnits(o._countryUnits);
+                  provinceTable.dirty();
+                  provinceTable.setVisible(false);
+                  o._countryTable.setVisible(true);
                }
             }else if(MO.Class.isClass(entity, MO.FEaiProvince3dEntity)){
                var provinceEntity = entity;
                o._targetWorldScale = 3000;
+               var res = provinceEntity.resource();
+               var pCode = o._selectedProvinceCode = res.code();
+               var provinceTable = o._provinceTable;
+               provinceTable.setTitle(res.label() + '分公司');
+               var department4s =  o._organizationInfo._department4s;
+               var count = department4s.count();
+               var provinceUnits = o._provinceUnits;
+               provinceUnits.clear();
+               for (var i = 0; i < count ; i++) {
+                  var unit = department4s.at(i);
+                  if (unit.provinceCode() == pCode) {
+                     provinceUnits.push(unit);
+                     if (provinceUnits.count() > 26) {
+                        break;
+                     }
+                  }
+               }
+               provinceTable.setUnits(provinceUnits);
+               provinceTable.dirty();
             }else{
             }
             var outline2d = entity.outline2();
             o._targetRotateY = Math.PI - outline2d.center.x / 180 * Math.PI;
-            o._targetTranslateY = -o._targetWorldScale * (outline2d.center.y / 90);
+            o._targetTranslateY = -o._targetWorldScale * 1.5 * (outline2d.center.y / 90);
 
             o._startTick = MO.Timer.current();
             o._earthMoving = true;
@@ -332,7 +376,7 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
       }
       else {
          o._startTranslateY = o._translateY;
-         o._startRotateY = o._rotationY;
+         o._startRotateY = o._rotationY % (Math.PI * 2);
          o._startWorldScale = o._worldScale;
          o._targetTranslateY = 0
          o._targetRotateY = o._rotationY;
@@ -344,6 +388,13 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
 
          o._countryEntity._borderShape.setVisible(false);
          o._countryEntity._faceShape.setVisible(false);
+
+         var provinceTable = o._provinceTable;
+         provinceTable.setTitle('大陆地区');
+         provinceTable.setUnits(o._countryUnits);
+         provinceTable.dirty();
+         provinceTable.setVisible(false);
+         o._countryTable.setVisible(true);
       }
    }
    o._operationMoved = false;
@@ -403,6 +454,9 @@ MO.FEaiChartMktManageScene_construct = function FEaiChartMktManageScene_construc
    o._cameraTo = new MO.SPoint3();
    o._ccDirection = new MO.SVector3();
    o._facePosition = new MO.SPoint3();
+
+   o._provinceUnits = new MO.TObjects();
+   o._countryUnits = new MO.TObjects();
 }
 
 //==========================================================
@@ -428,7 +482,8 @@ MO.FEaiChartMktManageScene_setup = function FEaiChartMktManageScene_setup() {
    provinceTable.linkGraphicContext(o);
    provinceTable.setup();
    provinceTable.build();
-   //o._guiManager.register(provinceTable);
+   provinceTable.setVisible(false);
+   o._guiManager.register(provinceTable);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
@@ -493,6 +548,9 @@ MO.FEaiChartMktManageScene_fixMatrix = function FEaiChartMktManageScene_fixMatri
          if (o._showChina) {
             o._countryEntity._borderShape.setVisible(true);
             o._countryEntity._faceShape.setVisible(true);
+            o._provinceTable.setVisible(true);
+            o._countryTable.setVisible(false);
+            o._provinceTable.dirty();
             o._showChina = false;
          }
       }
@@ -549,5 +607,22 @@ MO.FEaiChartMktManageScene_processResize = function FEaiChartMktManageScene_proc
       countryTable.setRight(0);
       countryTable.setBottom(10);
       countryTable.setWidth(650);
+   }
+   var provinceTable = o._provinceTable;
+   if (isVertical) {
+      provinceTable.setDockCd(MO.EUiDock.Bottom);
+      provinceTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      provinceTable.setLeft(10);
+      provinceTable.setRight(10);
+      provinceTable.setBottom(10);
+      provinceTable.setWidth(1060);
+      provinceTable.setHeight(900);
+   } else {
+      provinceTable.setDockCd(MO.EUiDock.Right);
+      provinceTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      provinceTable.setTop(10);
+      provinceTable.setRight(0);
+      provinceTable.setBottom(10);
+      provinceTable.setWidth(650);
    }
 }
