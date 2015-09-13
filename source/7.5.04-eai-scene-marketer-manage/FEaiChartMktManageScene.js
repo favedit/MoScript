@@ -393,14 +393,14 @@ MO.FEaiChartMktManageScene_setup = function FEaiChartMktManageScene_setup() {
    //..........................................................
    // 全国各省分公司数、理财师数表
    var countryTable = o._countryTable = MO.Class.create(MO.FEaiChartMktManageCountryTable);
-   countryTable.setName('CountryTable');
+   countryTable.setName('countryTable');
    countryTable.linkGraphicContext(o);
    countryTable.setup();
    countryTable.build();
    o._guiManager.register(countryTable);
    // 省内各分公司、理财师数表
    var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartMktManageProvinceTable);
-   provinceTable.setName('CountryTable');
+   provinceTable.setName('provinceTable');
    provinceTable.linkGraphicContext(o);
    provinceTable.setup();
    provinceTable.build();
