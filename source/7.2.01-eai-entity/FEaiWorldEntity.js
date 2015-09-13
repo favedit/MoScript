@@ -141,7 +141,7 @@ MO.FEaiWorldEntity_loadResource = function FEaiWorldEntity_loadResource(resource
    for(var i = 0; i < count; i++){
       var countryData = countriesData.at(i);
       // 创建国家实体
-      var country = MO.Class.create(MO.FEaiCountryEntity);
+      var country = MO.Class.create(MO.FEaiCountry3dEntity);
       country.linkGraphicContext(o);
       country.setWorldEntity(o);
       country.setup();

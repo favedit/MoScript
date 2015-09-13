@@ -5,7 +5,7 @@
 // @author sunpeng
 // @history 150606
 //==========================================================
-MO.FEaiCountryEntity = function FEaiCountryEntity(o){
+MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    //..........................................................
    // @property
@@ -63,30 +63,30 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o._audioContext            = null;
    o._audioMapEnter           = null;
    //..........................................................
-   o.onOrganizationFetch      = MO.FEaiCountryEntity_onOrganizationFetch;
-   o.onMouseMove              = MO.FEaiCountryEntity_onMouseMove;
-   o.onMouseDown              = MO.FEaiCountryEntity_onMouseDown;
+   o.onOrganizationFetch      = MO.FEaiCountry3dEntity_onOrganizationFetch;
+   o.onMouseMove              = MO.FEaiCountry3dEntity_onMouseMove;
+   o.onMouseDown              = MO.FEaiCountry3dEntity_onMouseDown;
    //..........................................................
    // @method
-   o.construct                = MO.FEaiCountryEntity_construct;
+   o.construct                = MO.FEaiCountry3dEntity_construct;
    // @method
-   o.setup                    = MO.FEaiCountryEntity_setup;
-   o.build                    = MO.FEaiCountryEntity_build;
-   o.provinceShowOrderSort    = MO.FEaiCountryEntity_provinceShowOrderSort;
-   o.setupProvinces           = MO.FEaiCountryEntity_setupProvinces;
+   o.setup                    = MO.FEaiCountry3dEntity_setup;
+   o.build                    = MO.FEaiCountry3dEntity_build;
+   o.provinceShowOrderSort    = MO.FEaiCountry3dEntity_provinceShowOrderSort;
+   o.setupProvinces           = MO.FEaiCountry3dEntity_setupProvinces;
    // @method
-   o.loadData                 = MO.FEaiCountryEntity_loadData;
-   o.loadResource             = MO.FEaiCountryEntity_loadResource;
+   o.loadData                 = MO.FEaiCountry3dEntity_loadData;
+   o.loadResource             = MO.FEaiCountry3dEntity_loadResource;
    // @method
-   o.start                    = MO.FEaiCountryEntity_start;
-   o.process                  = MO.FEaiCountryEntity_process;
-   o.processLoad              = MO.FEaiCountryEntity_processLoad;
-   o.introAnime               = MO.FEaiCountryEntity_introAnime;
-   o.mouseOverFallAnime       = MO.FEaiCountryEntity_mouseOverFallAnime;
-   o.cameraMoveAnime          = MO.FEaiCountryEntity_cameraMoveAnime;
-   o.isReady                  = MO.FEaiCountryEntity_isReady;
+   o.start                    = MO.FEaiCountry3dEntity_start;
+   o.process                  = MO.FEaiCountry3dEntity_process;
+   o.processLoad              = MO.FEaiCountry3dEntity_processLoad;
+   o.introAnime               = MO.FEaiCountry3dEntity_introAnime;
+   o.mouseOverFallAnime       = MO.FEaiCountry3dEntity_mouseOverFallAnime;
+   o.cameraMoveAnime          = MO.FEaiCountry3dEntity_cameraMoveAnime;
+   o.isReady                  = MO.FEaiCountry3dEntity_isReady;
    // @method
-   o.dispose                  = MO.FEaiCountryEntity_dispose;
+   o.dispose                  = MO.FEaiCountry3dEntity_dispose;
    return o;
 }
 
@@ -95,7 +95,7 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_construct = function FEaiCountryEntity_construct(){
+MO.FEaiCountry3dEntity_construct = function FEaiCountry3dEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
    // 创建边框
@@ -109,10 +109,10 @@ MO.FEaiCountryEntity_construct = function FEaiCountryEntity_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup() {
+MO.FEaiCountry3dEntity_setup = function FEaiCountry3dEntity_setup() {
    var o = this;
    // 创建边界形状
-   var shape = o._boundaryShape = MO.Class.create(MO.EE3dBoundaryShape);
+   var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
    shape._entity = o;
    shape.linkGraphicContext(o);
 }
@@ -122,7 +122,7 @@ MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup() {
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_build = function FEaiCountryEntity_build(){
+MO.FEaiCountry3dEntity_build = function FEaiCountry3dEntity_build(){
    var o = this;
    // 创建平面形状
    var shape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
@@ -143,19 +143,19 @@ MO.FEaiCountryEntity_build = function FEaiCountryEntity_build(){
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_setupProvinces = function FEaiCountryEntity_setupProvinces() {
+MO.FEaiCountry3dEntity_setupProvinces = function FEaiCountry3dEntity_setupProvinces() {
    var o = this;
    var provinceEntities = o._provinceEntities;
    for (var i = 0; i < provinceEntities.count(); i++) {
       var provinceEntity = provinceEntities.at(i);
       var fr = provinceEntity.faceRenderable();
       var br = provinceEntity.borderRenderable();
-      var frm = fr.matrix();
-      var brm = br.matrix();
-      frm.tz = o.riseDistance();
-      frm.updateForce();
-      brm.tz = o.riseDistance();
-      brm.updateForce();
+      //var frm = fr.matrix();
+      //var brm = br.matrix();
+      //frm.tz = o.riseDistance();
+      //frm.updateForce();
+      //brm.tz = o.riseDistance();
+      //brm.updateForce();
    }
    var provinceArray = o._provinceArray = new Array(provinceEntities.count());
    for (var i = 0; i < provinceEntities.count() ; i++) {
@@ -169,7 +169,7 @@ MO.FEaiCountryEntity_setupProvinces = function FEaiCountryEntity_setupProvinces(
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_loadData = function FEaiCountryEntity_loadData(data){
+MO.FEaiCountry3dEntity_loadData = function FEaiCountry3dEntity_loadData(data){
    var o = this;
    o._data = data;
    o._code = data.code();
@@ -204,7 +204,7 @@ MO.FEaiCountryEntity_loadData = function FEaiCountryEntity_loadData(data){
 // @method
 // @param resource:FResource 资源对象
 //==========================================================
-MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(resource){
+MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(resource){
    var o = this;
    var data = resource.data();
    var provinceEntities = o._provinceEntities;
@@ -225,17 +225,19 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
       var provinceResource = provinceModule.findByCode(provinceCode);
       MO.Assert.debugNotNull(provinceResource);
       // 创建省份实体
-      var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
+      var provinceEntity = MO.Class.create(MO.FEaiProvince3dEntity);
+      provinceEntity._countryEntity = o;
+      provinceEntity.linkGraphicContext(o);
+      provinceEntity.setup();
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);
       provinceEntity.build(o);
       provinceEntities.set(provinceCode, provinceEntity);
       provinceEntityModule.push(provinceEntity);
       // 增加到融合渲染对象
-      var faceRenderable = provinceEntity.faceRenderable();
-      faceShape.pushMergeRenderable(faceRenderable);
-      var borderRenderable = provinceEntity.borderRenderable();
-      borderShape.pushMergeRenderable(borderRenderable);
+      var boundaryShape = provinceEntity.boundaryShape();
+      faceShape.pushMergeRenderable(boundaryShape.faceRenderable());
+      borderShape.pushMergeRenderable(boundaryShape.borderRenderable());
    }
    faceShape.build();
    borderShape.build();
@@ -249,7 +251,7 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
+MO.FEaiCountry3dEntity_isReady = function FEaiCountry3dEntity_isReady() {
    var o = this;
    if(o._audioMapEnter.testFinish()){
       // 记录开始时间
@@ -269,7 +271,7 @@ MO.FEaiCountryEntity_isReady = function FEaiCountryEntity_isReady() {
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_provinceShowOrderSort(p1, p2) {
+MO.FEaiCountry3dEntity_provinceShowOrderSort = function FEaiCountry3dEntity_provinceShowOrderSort(p1, p2) {
    var provinceModule = MO.Console.find(MO.FEaiResourceConsole).provinceModule();
    var p1Res = provinceModule.findByCode(p1.data().code());
    var p2Res = provinceModule.findByCode(p2.data().code())
@@ -284,7 +286,7 @@ MO.FEaiCountryEntity_provinceShowOrderSort = function FEaiCountryEntity_province
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_start = function FEaiCountryEntity_start(){
+MO.FEaiCountry3dEntity_start = function FEaiCountry3dEntity_start(){
    this._startTime = MO.Timer.current();
 }
 
@@ -293,7 +295,7 @@ MO.FEaiCountryEntity_start = function FEaiCountryEntity_start(){
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_process = function FEaiCountryEntity_process() {
+MO.FEaiCountry3dEntity_process = function FEaiCountry3dEntity_process() {
    var o = this;
    //if (!o.introAnimeDone()) {
    if (!o._provinceEntities) {
@@ -315,7 +317,7 @@ MO.FEaiCountryEntity_process = function FEaiCountryEntity_process() {
 // @method
 // @return Boolean 处理结果
 //==========================================================
-MO.FEaiCountryEntity_processLoad = function FEaiCountryEntity_processLoad(){
+MO.FEaiCountry3dEntity_processLoad = function FEaiCountry3dEntity_processLoad(){
    var o = this;
    // 检查资源
    var resource = o._resource;
@@ -332,7 +334,7 @@ MO.FEaiCountryEntity_processLoad = function FEaiCountryEntity_processLoad(){
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime() {
+MO.FEaiCountry3dEntity_introAnime = function FEaiCountry3dEntity_introAnime() {
    var o = this;
    var now = MO.Timer.current();
    var timePassed = now - o._startTime;
@@ -404,7 +406,7 @@ MO.FEaiCountryEntity_introAnime = function FEaiCountryEntity_introAnime() {
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_onMouseMove = function FEaiCountryEntity_onMouseMove(event){
+MO.FEaiCountry3dEntity_onMouseMove = function FEaiCountry3dEntity_onMouseMove(event){
    var o = this;
    ////检查时间间隔避免频繁调用开销较大的射线检测
    //var now = new Date();
@@ -435,7 +437,7 @@ MO.FEaiCountryEntity_onMouseMove = function FEaiCountryEntity_onMouseMove(event)
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_mouseOverFallAnime = function FEaiCountryEntity_mouseOverFallAnime() {
+MO.FEaiCountry3dEntity_mouseOverFallAnime = function FEaiCountry3dEntity_mouseOverFallAnime() {
    var o = this;
    //for (var i = o.mouseOverFallArray().count() - 1; i >= 0; i--) {
    //   var renderable = o.mouseOverFallArray().at(i);
@@ -464,7 +466,7 @@ MO.FEaiCountryEntity_mouseOverFallAnime = function FEaiCountryEntity_mouseOverFa
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_onOrganizationFetch = function FEaiCountryEntity_onOrganizationFetch(event) {
+MO.FEaiCountry3dEntity_onOrganizationFetch = function FEaiCountry3dEntity_onOrganizationFetch(event) {
    var o = this;
    //var content = event.content;
    //var branchCount = new Object();
@@ -513,7 +515,7 @@ MO.FEaiCountryEntity_onOrganizationFetch = function FEaiCountryEntity_onOrganiza
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_onMouseDown = function FEaiCountryEntity_onMouseDown(event){
+MO.FEaiCountry3dEntity_onMouseDown = function FEaiCountry3dEntity_onMouseDown(event){
    var o = this;
    //var region = o.template().region();
    //var camera = region.camera();
@@ -546,7 +548,7 @@ MO.FEaiCountryEntity_onMouseDown = function FEaiCountryEntity_onMouseDown(event)
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_cameraMoveAnime = function FEaiCountryEntity_cameraMoveAnime() {
+MO.FEaiCountry3dEntity_cameraMoveAnime = function FEaiCountry3dEntity_cameraMoveAnime() {
    var o = this;
    //var now = new Date();
    //var timePassed = now.getTime() - o._startTime;
@@ -579,7 +581,7 @@ MO.FEaiCountryEntity_cameraMoveAnime = function FEaiCountryEntity_cameraMoveAnim
 //
 // @method
 //==========================================================
-MO.FEaiCountryEntity_dispose = function FEaiCountryEntity_dispose(){
+MO.FEaiCountry3dEntity_dispose = function FEaiCountry3dEntity_dispose(){
    var o = this;
    // 创建边框
    o._provinceEntities = MO.Lang.Object.dispose(o._provinceEntities);

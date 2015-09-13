@@ -5,12 +5,13 @@
 // @author maocy
 // @history 150721
 //==========================================================
-MO.EE3dBoundaryShape = function EE3dBoundaryShape(o){
+MO.FE3dBoundaryShape3d = function FE3dBoundaryShape3d(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
    //..........................................................
    // @attribute
    o._optionSphere     = false;
-   o._scale            = MO.Class.register(o, new MO.AGetter('_scale'), 1);
+   o._scaleTop         = MO.Class.register(o, new MO.AGetSet('_scaleTop'), 1);
+   o._scaleBottom      = MO.Class.register(o, new MO.AGetSet('_scaleBottom'), 0.9);
    o._color            = MO.Class.register(o, new MO.AGetter('_color'));
    o._polygons         = MO.Class.register(o, new MO.AGetter('_polygons'));
    // @attribute
@@ -20,17 +21,17 @@ MO.EE3dBoundaryShape = function EE3dBoundaryShape(o){
    o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
    //..........................................................
    // @method
-   o.construct         = MO.EE3dBoundaryShape_construct;
+   o.construct         = MO.FE3dBoundaryShape3d_construct;
    // @method
-   o.pushPolygon       = MO.EE3dBoundaryShape_pushPolygon;
-   o.buildFace         = MO.EE3dBoundaryShape_buildFace;
-   o.buildBorder       = MO.EE3dBoundaryShape_buildBorder;
-   o.build             = MO.EE3dBoundaryShape_build;
+   o.pushPolygon       = MO.FE3dBoundaryShape3d_pushPolygon;
+   o.buildFace         = MO.FE3dBoundaryShape3d_buildFace;
+   o.buildBorder       = MO.FE3dBoundaryShape3d_buildBorder;
+   o.build             = MO.FE3dBoundaryShape3d_build;
    // @method
-   o.buildFlat         = MO.EE3dBoundaryShape_buildFlat;
-   o.buildSphere       = MO.EE3dBoundaryShape_buildSphere;
+   o.buildFlat         = MO.FE3dBoundaryShape3d_buildFlat;
+   o.buildSphere       = MO.FE3dBoundaryShape3d_buildSphere;
    // @method
-   o.dispose           = MO.EE3dBoundaryShape_dispose;
+   o.dispose           = MO.FE3dBoundaryShape3d_dispose;
    return o;
 }
 
@@ -39,7 +40,7 @@ MO.EE3dBoundaryShape = function EE3dBoundaryShape(o){
 //
 // @method
 //==========================================================
-MO.EE3dBoundaryShape_construct = function EE3dBoundaryShape_construct(){
+MO.FE3dBoundaryShape3d_construct = function FE3dBoundaryShape3d_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._color = new MO.SColor4(0.3, 0.3, 0.3);
@@ -51,7 +52,7 @@ MO.EE3dBoundaryShape_construct = function EE3dBoundaryShape_construct(){
 //
 // @method
 //==========================================================
-MO.EE3dBoundaryShape_pushPolygon = function EE3dBoundaryShape_pushPolygon(polygon){
+MO.FE3dBoundaryShape3d_pushPolygon = function FE3dBoundaryShape3d_pushPolygon(polygon){
    this._polygons.push(polygon);
 }
 
@@ -60,14 +61,16 @@ MO.EE3dBoundaryShape_pushPolygon = function EE3dBoundaryShape_pushPolygon(polygo
 //
 // @method
 //==========================================================
-MO.EE3dBoundaryShape_buildFace = function EE3dBoundaryShape_buildFace(){
+MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    var o = this;
    var context = o._graphicContext;
+   var color = o._color;
+   var scaleTop = o._scaleTop;
+   var scaleBottom = o._scaleBottom;
    var boundaries = o._polygons;
    var count = boundaries.count();
    var vertexTotal = o._vertexTotal;
    var indexTotal = o._indexTotal;
-   var color = o._color;
    // 设置变量
    var vertexStart = 0;
    var vertexIndex = 0;
@@ -88,12 +91,9 @@ MO.EE3dBoundaryShape_buildFace = function EE3dBoundaryShape_buildFace(){
          var cy = positions[positionIndex++];
          var x = cx * MO.Lang.Const.DEGREE_RATE;
          var y = cy * MO.Lang.Const.DEGREE_RATE;
-         vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * o._scale;
-         vertexData[vertexIndex++] = Math.sin(y) * o._scale;
-         vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * o._scale;
-         //vertexData[vertexIndex++] = positions[positionIndex++];
-         //vertexData[vertexIndex++] = positions[positionIndex++];
-         //vertexData[vertexIndex++] = 0;
+         vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * scaleTop;
+         vertexData[vertexIndex++] = Math.sin(y) * scaleTop;
+         vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleTop;
          coordData[coordIndex++] = cx / 360 + 0.5;
          coordData[coordIndex++] = 0.5 - cy / 180;
       }
@@ -121,12 +121,9 @@ MO.EE3dBoundaryShape_buildFace = function EE3dBoundaryShape_buildFace(){
       for(var i = 0; i < positionCount; i++){
          var x = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
          var y = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
-         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.9;
-         vertexData[vertexIndex++] = (Math.sin(y)) * 0.9;
-         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.9;
-         //vertexData[vertexIndex++] = positions[positionIndex++];
-         //vertexData[vertexIndex++] = positions[positionIndex++];
-         //vertexData[vertexIndex++] = o._layerDepth;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * scaleBottom;
+         vertexData[vertexIndex++] = (Math.sin(y)) * scaleBottom;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * scaleBottom;
          coordData[coordIndex++] = x;
          coordData[coordIndex++] = y;
       }
@@ -192,14 +189,16 @@ MO.EE3dBoundaryShape_buildFace = function EE3dBoundaryShape_buildFace(){
 //
 // @method
 //==========================================================
-MO.EE3dBoundaryShape_buildBorder = function EE3dBoundaryShape_buildBorder(){
+MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
    var o = this;
    var context = o._graphicContext;
+   var color = o._color;
+   var scaleTop = o._scaleTop * 1.001;
+   var scaleBottom = o._scaleBottom;
    var boundaries = o._polygons;
    var count = boundaries.count();
    var vertexTotal = o._vertexTotal;
    var indexTotal = o._indexTotal;
-   var color = o._color;
    // 填充点缓冲
    var vertexStart = 0;
    var vertexIndex = 0;
@@ -216,12 +215,9 @@ MO.EE3dBoundaryShape_buildBorder = function EE3dBoundaryShape_buildBorder(){
       for(var i = 0; i < positionCount; i++){
          var x = positions[positionIndex++] / 180 * Math.PI;
          var y = positions[positionIndex++] / 180 * Math.PI;
-         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 1.001;
-         vertexData[vertexIndex++] = (Math.sin(y)) * 1.001;
-         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 1.001;
-         //vertexData[vertexIndex++] = positions[positionIndex++];
-         //vertexData[vertexIndex++] = positions[positionIndex++];
-         //vertexData[vertexIndex++] = 0;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * scaleTop;
+         vertexData[vertexIndex++] = (Math.sin(y)) * scaleTop;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * scaleTop;
       }
       // 填充线索引
       for(var i = 0; i < positionCount; i++){
@@ -246,12 +242,9 @@ MO.EE3dBoundaryShape_buildBorder = function EE3dBoundaryShape_buildBorder(){
       for(var i = 0; i < positionCount; i++){
          var x = positions[positionIndex++] / 180 * Math.PI;
          var y = positions[positionIndex++] / 180 * Math.PI;
-         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * 0.98;
-         vertexData[vertexIndex++] = (Math.sin(y)) * 0.98;
-         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * 0.98;
-         //vertexData[vertexIndex++] = positions[positionIndex++];
-         //vertexData[vertexIndex++] = positions[positionIndex++];
-         //vertexData[vertexIndex++] = o._layerDepth;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * scaleBottom;
+         vertexData[vertexIndex++] = (Math.sin(y)) * scaleBottom;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * scaleBottom;
       }
       // 修正位置
       vertexStart += positionCount;
@@ -305,7 +298,7 @@ MO.EE3dBoundaryShape_buildBorder = function EE3dBoundaryShape_buildBorder(){
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.EE3dBoundaryShape_build = function EE3dBoundaryShape_build(context){
+MO.FE3dBoundaryShape3d_build = function FE3dBoundaryShape3d_build(context){
    var o = this;
    // 计算总点数
    var vertexTotal = 0;
@@ -331,7 +324,7 @@ MO.EE3dBoundaryShape_build = function EE3dBoundaryShape_build(context){
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.EE3dBoundaryShape_buildFlat = function EE3dBoundaryShape_buildFlat(context){
+MO.FE3dBoundaryShape3d_buildFlat = function FE3dBoundaryShape3d_buildFlat(context){
    var o = this;
    o._optionSphere = false;
    o.build(context)
@@ -343,7 +336,7 @@ MO.EE3dBoundaryShape_buildFlat = function EE3dBoundaryShape_buildFlat(context){
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.EE3dBoundaryShape_buildSphere = function EE3dBoundaryShape_buildSphere(context){
+MO.FE3dBoundaryShape3d_buildSphere = function FE3dBoundaryShape3d_buildSphere(context){
    var o = this;
    o._optionSphere = true;
    o.build(context)
@@ -354,7 +347,7 @@ MO.EE3dBoundaryShape_buildSphere = function EE3dBoundaryShape_buildSphere(contex
 //
 // @method
 //==========================================================
-MO.EE3dBoundaryShape_dispose = function EE3dBoundaryShape_dispose(){
+MO.FE3dBoundaryShape3d_dispose = function FE3dBoundaryShape3d_dispose(){
    var o = this;
    // 释放属性
    o._polygons = MO.Lang.Obejct.dispose(o._polygons);

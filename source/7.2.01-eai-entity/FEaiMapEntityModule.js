@@ -45,7 +45,7 @@ MO.FEaiMapEntityModule_construct = function FEaiMapEntityModule_construct(){
 // @param code:String 代码
 // @return 国家实体
 //==========================================================
-MO.FEaiMapEntityModule_loadCountry = function FEaiMapEntityModule_loadCountry(context, code){
+MO.FEaiMapEntityModule_loadCountry = function FEaiMapEntityModule_loadCountry(context, code, clazz){
    var o = this;
    // 查找对象
   var entities = o._countryEntities;
@@ -56,7 +56,7 @@ MO.FEaiMapEntityModule_loadCountry = function FEaiMapEntityModule_loadCountry(co
    // 查找资源
    var resource = MO.Console.find(MO.FEaiResourceConsole).mapModule().loadCountry(code);
    // 创建实体
-   entity = MO.Class.create(MO.FEaiCountryEntity);
+   entity = MO.Class.create(MO.Runtime.nvl(clazz, MO.FEaiCountryEntity));
    entity.linkGraphicContext(context);
    entity.setResource(resource);
    entity.setup();
