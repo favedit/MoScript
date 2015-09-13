@@ -35,6 +35,7 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    o._opMouseMoved            = false;
    o.__opMouseMoveThreshold   = 4;
    o._autoRotate              = true;
+   o._showChina               = false;
    // @attribute
    o._countryTable            = null;
    o._provinceTable           = null;
@@ -248,16 +249,24 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
             o._startRotateY = o._rotationY;
             o._startWorldScale = o._worldScale;
             var entity = countryRenderable._shape._entity;
-            if(MO.Class.isClass(entity, MO.FEaiCountryEntity)){
+            if(MO.Class.isClass(entity, MO.FEaiCountry3dEntity)){
                var countryEntity = entity;
+               o._targetWorldScale = 1200;
+               if (countryEntity.code() == 'China') {
+                  o._showChina = true;
+               }
+               else {
+                  o._countryEntity._borderShape.setVisible(false);
+                  o._countryEntity._faceShape.setVisible(false);
+               }
             }else if(MO.Class.isClass(entity, MO.FEaiProvince3dEntity)){
                var provinceEntity = entity;
+               o._targetWorldScale = 3000;
             }else{
             }
             var outline2d = entity.outline2();
             o._targetRotateY = Math.PI - outline2d.center.x / 180 * Math.PI;
-            o._targetTranslateY = -1000 * (outline2d.center.y / 90);
-            o._targetWorldScale = 1000;
+            o._targetTranslateY = -o._targetWorldScale * (outline2d.center.y / 90);
 
             o._startTick = MO.Timer.current();
             o._earthMoving = true;
@@ -332,6 +341,9 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
          o._startTick = MO.Timer.current();
          o._earthMoving = true;
          o._autoRotate = true;
+
+         o._countryEntity._borderShape.setVisible(false);
+         o._countryEntity._faceShape.setVisible(false);
       }
    }
    o._operationMoved = false;
@@ -423,7 +435,7 @@ MO.FEaiChartMktManageScene_setup = function FEaiChartMktManageScene_setup() {
    //..........................................................
    // 创建相机
    var camera = MO.Class.create(MO.FE3dOrthoCamera);
-   camera.position().set(0, 0, -2000);
+   camera.position().set(0, 0, -5000);
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
@@ -442,6 +454,8 @@ MO.FEaiChartMktManageScene_setup = function FEaiChartMktManageScene_setup() {
    entityConsole.cityModule().build(o, MO.FEaiCity3dEntity);
    // 加载国家数据
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry, MO.FEaiCountry3dEntity);
+   countryEntity._borderShape.setVisible(false);
+   countryEntity._faceShape.setVisible(false);
    o._readyLoader.push(countryEntity);
 }
 
@@ -476,6 +490,11 @@ MO.FEaiChartMktManageScene_fixMatrix = function FEaiChartMktManageScene_fixMatri
       if (rate > 1) {
          rate = 1;
          o._earthMoving = false;
+         if (o._showChina) {
+            o._countryEntity._borderShape.setVisible(true);
+            o._countryEntity._faceShape.setVisible(true);
+            o._showChina = false;
+         }
       }
       o._translateY = o._startTranslateY + (o._targetTranslateY - o._startTranslateY) * rate;
       o._rotationY = o._startRotateY + (o._targetRotateY - o._startRotateY) * rate;
