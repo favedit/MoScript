@@ -53,9 +53,11 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    // 创建城市渲染对象
    var citysRenderable = o._cityCenterRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);
+   citysRenderable._optionSelect = false;
    // 创建城市范围渲染对象
    var citysRangeRenderable = o._cityRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
+   citysRangeRenderable._optionSelect = false;
    // 创建城市显示对象
    var display = o._countryFaceDisplay = MO.Class.create(MO.FE3dDisplayContainer);
    display.linkGraphicContext(o);

@@ -18,6 +18,7 @@ MO.FG3dSelectPass = function FG3dSelectPass(o){
    o.construct     = MO.FG3dSelectPass_construct;
    // @method
    o.setup         = MO.FG3dSelectPass_setup;
+   o.activeEffects = MO.FG3dSelectPass_activeEffects;
    o.drawRegion    = MO.FG3dSelectPass_drawRegion;
    return o;
 }
@@ -53,6 +54,29 @@ MO.FG3dSelectPass_setup = function FG3dSelectPass_setup(){
    t.size().set(1, 1);
    t.textures().push(T);
    t.build();
+}
+
+//==========================================================
+// <T>激活效果器。</T>
+//
+// @method
+// @param region:FG3dRetion 区域
+// @param renderables:TObjects 渲染集合
+//==========================================================
+MO.FG3dSelectPass_activeEffects = function FG3dSelectPass_activeEffects(region, renderables){
+   var o = this;
+   var spaceName = region.spaceName();
+   // 关联渲染器
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(renderable.optionSelect()){
+         var info = renderable.selectInfo(spaceName);
+         if(!info.effect){
+            info.effect = MO.Console.find(MO.FG3dEffectConsole).find(o._graphicContext, region, renderable);
+         }
+      }
+   }
 }
 
 //==========================================================
@@ -92,11 +116,13 @@ MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(region){
    context.clearDepth(1);
    for(var i = 0; i < renderableCount; i++){
       var renderable = renderables.at(i);
-      var effect = renderable.activeEffect();
-      context.setProgram(effect.program());
-      var display = renderable.display();
-      if(display && display._optionFace){
-         effect.drawRenderable(region, renderable, i);
+      if(renderable.optionSelect()){
+         var effect = renderable.activeEffect();
+         context.setProgram(effect.program());
+         var display = renderable.display();
+         if(display && display._optionFace){
+            effect.drawRenderable(region, renderable, i);
+         }
       }
    }
    //..........................................................
