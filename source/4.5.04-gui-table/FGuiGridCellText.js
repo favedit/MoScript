@@ -43,8 +43,9 @@ MO.FGuiGridCellText_draw = function FGuiGridCellText_draw(context){
    var text = o.text();
    // 绘制底框
    // graphic.fillRectangle(x, y, width, height, '#122A46');
+   var column = o._column;
    // 绘制文字
-   graphic.drawFontText(text, font, rectangle.left, rectangle.top, rectangle.width, rectangle.height, MO.EUiAlign.Center);
+   graphic.drawFontText(text, font, rectangle.left, rectangle.top, rectangle.width, rectangle.height, column.textAlign());
 }
 
 //==========================================================

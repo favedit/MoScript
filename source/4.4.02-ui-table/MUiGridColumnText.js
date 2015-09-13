@@ -9,6 +9,7 @@ MO.MUiGridColumnText = function MUiGridColumnText(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
+   o._textAlign = MO.Class.register(o, new MO.AGetSet('_textAlign'), MO.EUiAlign.Center);
    //..........................................................
    // @method
    o.construct = MO.MUiGridColumnText_construct;
