@@ -147,7 +147,6 @@ MO.FEaiChartMktManageCountryTable_setup = function FEaiChartMktManageCountryTabl
    column.setWidth(160);
    column.cellPadding().right = 10;
    column.setPadding(1, 1, 1, 1);
-   column.setCurrencyUnit(MO.EUiCurrencyUnit.Wan);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnBigNumber);
    column.setName('redemption');
@@ -160,7 +159,6 @@ MO.FEaiChartMktManageCountryTable_setup = function FEaiChartMktManageCountryTabl
    column.setWidth(160);
    column.cellPadding().right = 10;
    column.setPadding(1, 1, 1, 1);
-   column.setCurrencyUnit(MO.EUiCurrencyUnit.Wan);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnBigNumber);
    column.setName('netinvestment');
@@ -173,7 +171,6 @@ MO.FEaiChartMktManageCountryTable_setup = function FEaiChartMktManageCountryTabl
    column.setWidth(160);
    column.cellPadding().right = 10;
    column.setPadding(1, 1, 1, 1);
-   column.setCurrencyUnit(MO.EUiCurrencyUnit.Wan);
    grid.pushColumn(column);
 
    o.push(grid);
