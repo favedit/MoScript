@@ -22,7 +22,7 @@ MO.FEaiChartStatMarketerScene = function FEaiChartStatMarketerScene(o) {
    // @attribute
    o._logoBar                = null;
    o._timeline               = null;
-   o._provinceTable              = null;
+   o._provinceTable          = null;
    // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
@@ -231,7 +231,7 @@ MO.FEaiChartStatMarketerScene_setup = function FEaiChartStatMarketerScene_setup(
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
    // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.statistic.LogoBar');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
@@ -256,7 +256,7 @@ MO.FEaiChartStatMarketerScene_setup = function FEaiChartStatMarketerScene_setup(
    //..........................................................
    // 创建表格
 
-   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartMktCustomerTable);
+   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartStatMarketerTable);
    provinceTable.setName('LiveTable');
    provinceTable.linkGraphicContext(o);
    provinceTable.setup();
@@ -273,7 +273,7 @@ MO.FEaiChartStatMarketerScene_setup = function FEaiChartStatMarketerScene_setup(
    //var particleData = context.createObject(MO.FE3dParticleData);
    //particleData.loadUrl('{eai.resource}/particle/6.png');
    //particle.setData(particleData);
-   //o.fixMatrix(particle.matrix());
+   //o.fixMatrix(particle.matri x());
    //o._activeStage.spriteLayer().pushRenderable(particle);
    //..........................................................
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);

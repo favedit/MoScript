@@ -5,7 +5,7 @@
 // @author sunpeng
 // @history 150702
 //==========================================================
-MO.FEaiChartMktCustomerTable = function FEaiChartMktCustomerTable(o) {
+MO.FEaiChartStatMarketerTable = function FEaiChartStatMarketerTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
@@ -29,18 +29,18 @@ MO.FEaiChartMktCustomerTable = function FEaiChartMktCustomerTable(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad = MO.FEaiChartMktCustomerTable_onImageLoad;
-   o.onPaintBegin = MO.FEaiChartMktCustomerTable_onPaintBegin;
+   o.onImageLoad = MO.FEaiChartStatMarketerTable_onImageLoad;
+   o.onPaintBegin = MO.FEaiChartStatMarketerTable_onPaintBegin;
    //..........................................................
    // @method
-   o.construct = MO.FEaiChartMktCustomerTable_construct;
+   o.construct = MO.FEaiChartStatMarketerTable_construct;
    // @method
-   o.setup = MO.FEaiChartMktCustomerTable_setup;
-   o.setRankUnits = MO.FEaiChartMktCustomerTable_setRankUnits;
-   o.pushUnit = MO.FEaiChartMktCustomerTable_pushUnit;
-   o.drawRow = MO.FEaiChartMktCustomerTable_drawRow;
+   o.setup = MO.FEaiChartStatMarketerTable_setup;
+   o.setRankUnits = MO.FEaiChartStatMarketerTable_setRankUnits;
+   o.pushUnit = MO.FEaiChartStatMarketerTable_pushUnit;
+   o.drawRow = MO.FEaiChartStatMarketerTable_drawRow;
    // @method
-   o.dispose = MO.FEaiChartMktCustomerTable_dispose;
+   o.dispose = MO.FEaiChartStatMarketerTable_dispose;
    o._infoProvince = MO.Class.register(o, new MO.AGetSet('_infoProvince'));
    return o;
 }
@@ -50,7 +50,7 @@ MO.FEaiChartMktCustomerTable = function FEaiChartMktCustomerTable(o) {
 //
 // @method
 //==========================================================
-MO.FEaiChartMktCustomerTable_onImageLoad = function FEaiChartMktCustomerTable_onImageLoad() {
+MO.FEaiChartStatMarketerTable_onImageLoad = function FEaiChartStatMarketerTable_onImageLoad() {
    this.dirty();
 }
 
@@ -59,7 +59,7 @@ MO.FEaiChartMktCustomerTable_onImageLoad = function FEaiChartMktCustomerTable_on
 //
 // @method
 //==========================================================
-MO.FEaiChartMktCustomerTable_onPaintBegin = function FEaiChartMktCustomerTable_onPaintBegin(event) {
+MO.FEaiChartStatMarketerTable_onPaintBegin = function FEaiChartStatMarketerTable_onPaintBegin(event) {
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -111,7 +111,7 @@ MO.FEaiChartMktCustomerTable_onPaintBegin = function FEaiChartMktCustomerTable_o
 //
 // @method
 //==========================================================
-MO.FEaiChartMktCustomerTable_construct = function FEaiChartMktCustomerTable_construct() {
+MO.FEaiChartStatMarketerTable_construct = function FEaiChartStatMarketerTable_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    // 创建属性
@@ -127,190 +127,78 @@ MO.FEaiChartMktCustomerTable_construct = function FEaiChartMktCustomerTable_cons
 //
 // @method
 //==========================================================
-MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() {
+MO.FEaiChartStatMarketerTable_setup = function FEaiChartStatMarketerTable_setup() {
    var o = this;
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建图片
-   var image = o._logoImage = imageConsole.load('{eai.resource}/live/company.png');
-   image.addLoadListener(o, o.onImageLoad);
-   // 创建图片
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
    image.addLoadListener(o, o.onImageLoad);
-   // 创建图片
-   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/live/tank-title.png');
-   image.addLoadListener(o, o.onImageLoad);
-   // 创建图片
-   var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');
-   image.addLoadListener(o, o.onImageLoad);
-   //..........................................................
-   var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
-   grid.setOptionClip(false);
-   grid.setDisplayHead(false);
-   grid.setLocation(50, 270);
-   grid.setSize(600, 900);
-   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Top  | MO.EUiAnchor.Bottom);
-   grid.setLeft(9);
-   grid.setRight(19);
-   grid.setHeadHeight(40);
-//   grid.headPadding().set(0,20,0,20);
-   grid.setHeadBackColor('#122A46');
-   grid.headFont().font = 'bold 42px Microsoft YaHei';
-   grid.headFont().size = 40;
-   grid.headFont().color = '#00B2F2';
-   grid.setRowHeight(20);
-   grid.rowFont().font = 'bold 42px Microsoft YaHei';
-   grid.rowFont().size = 16;
-   grid.rowFont().color = '#59FDE9';
-   //现在图片为默认居中
-   // var column = MO.Class.create(MO.FGuiGridColumnPicture);
-   // column.setName('rank');
-   // column.setLabel();
-   // column.setDataName('image');
-   // column.setWidth(110);
-   // column.setPadding(1, 1, 1, 1);
-   // column.setAlign(MO.EUiAlign.Center);
-   // grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('provincename');
-   column.setLabel('');
-   column.setDataName('provincename');
-   column.setWidth(70);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('investmentTotal');
-   column.setLabel('');
-   column.setDataName('investmentTotal');
-   column.setWidth(180);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customerCount');
-   column.setLabel('');
-   column.setDataName('customerCount');
-   column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('investmentAvg');
-   column.setLabel('');
-   column.setDataName('investmentAvg');
-   column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   // var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   // column.setName('investment');
-   // column.setLabel('');
-   // column.setDataName('investment');
-   // column.setNormalColor('#59FDE9');
-   // column.setHighColor('#FDEF01');
-   // column.setLowerColor('#EB6C03');
-   // column.setNegativeColor('#FF0000');
-   // column.cellPadding().right = 10;
-   // column.setWidth(160);
-   // column.setPadding(1, 1, 1, 1);
-   // grid.pushColumn(column);
-   o.push(grid);
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
-   grid.setLocation(50, 150);
+   grid.setLocation(50, 120);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setRight(19);
-   grid.setBottom(0);
-   grid.setHeadHeight(70);
+   grid.setBottom(20);
+   grid.setHeadHeight(35);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
-   grid.headFont().size = 22;
+   grid.headFont().size = 20;
    grid.headFont().color = '#00B2F2';
-   grid.setRowHeight(45);
+   grid.setRowHeight(32);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 25;
+   grid.rowFont().size = 18;
    grid.rowFont().color = '#59FDE9';
-   var column = MO.Class.create(MO.FGuiGridColumnDate);
-   column.setName('recordDate');
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('provinceName');
    column.setLabel('省份');
-   column.setDataName('record_date');
-   column.setDateFormat('HH24:MI:SS');
+   column.setDataName('provinceName');
    column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customerCity');
-   column.setLabel('总投资额（元）');
-   column.setDataName('customer_city');
-   column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customerInfo');
-   column.setLabel('人数');
-   column.setDataName('customer_info');
-   column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('investmentAmount');
-   column.setLabel('平均投资额（元）');
-   column.setDataName('investment_amount');
-   column.cellPadding().right = 10;
+   column.setName('investment');
+   column.setLabel('总投资额（元）');
+   column.setDataName('investment');
    column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
+   column.setHighColor('#FF7200');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
    column.setWidth(160);
+   column.cellPadding().right = 10;
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   // var column = MO.Class.create(MO.FGuiGridColumnText);
-   // column.setName('modelLabel');
-   // column.setLabel('投资产品');
-   // column.setDataName('model_label');
-   // column.setWidth(120);
-   // column.setPadding(1, 1, 1, 1);
-   // grid.pushColumn(column);
-   
-   // var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   // column.setName('investmentGain');
-   // column.setLabel('年化收益');
-   // column.setDataName('investment_gain');
-   // column.setNormalColor('#59FDE9');
-   // column.setHighColor('#FDEF01');
-   // column.setLowerColor('#EB6C03');
-   // column.setNegativeColor('#FF0000');
-   // column.setWidth(120);
-   // column.setPadding(1, 1, 1, 1);
-   // grid.pushColumn(column);
-
-   // var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   // column.setName('bankGain');
-   // column.setLabel('银行收益');
-   // column.setDataName('bank_gain');
-   // column.setNormalColor('#59FDE9');
-   // column.setHighColor('#FDEF01');
-   // column.setLowerColor('#EB6C03');
-   // column.setNegativeColor('#FF0000');
-   // column.setWidth(120);
-   // column.cellPadding().right = 10;
-   // column.setPadding(1, 1, 1, 1);
-   // grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('customerCount');
+   column.setLabel('人数');
+   column.setDataName('customerCount');
+   column.setTextAlign(MO.EUiAlign.Right);
+   column.setWidth(100);
+   column.cellPadding().right = 10;
+   column.setPadding(1, 1, 1, 1);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
+   column.setName('investmentAvg');
+   column.setLabel('平均投资额（元）');
+   column.setDataName('investmentAvg');
+   column.setNormalColor('#59FDE9');
+   column.setHighColor('#FF7200');
+   column.setLowerColor('#EB6C03');
+   column.setNegativeColor('#FF0000');
+   column.setWidth(120);
+   column.cellPadding().right = 10;
+   column.setPadding(1, 1, 1, 1);
+   grid.pushColumn(column);
 
    o.push(grid);
    //..........................................................
    // 设置数据
    o._headFontStyle = 'bold 32px Microsoft YaHei';
-    var isVertical = MO.Window.Browser.isOrientationVertical()
+   var isVertical = MO.Window.Browser.isOrientationVertical()
    if (isVertical) {
       o._tableCount = 11;
-      o._rankStart = 100;
-      o._rankTitleStart = -5;
-      o._rankHeight = 249;
-      o._rankRowHeight = 50;
-      o._rankIconStart = 22;
-      o._rankTextStart = 8;
-      o._rankRowUp = 36;
-      o._rankRowDown = 68;
       o._headStart = 352;
       o._headTextTop = 37;
       o._headHeight = 54;
@@ -319,14 +207,6 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
       o._rowFontStyle = '36px Microsoft YaHei';
    } else {
       o._tableCount = 19;
-      o._rankStart = 110;
-      o._rankTitleStart = 0;
-      o._rankHeight = 219;
-      o._rankRowHeight = 40;
-      o._rankIconStart = 25;
-      o._rankTextStart = 0;
-      o._rankRowUp = 32;
-      o._rankRowDown = 51;
       o._headStart = 336;
       o._headTextTop = 27;
       o._headHeight = 40;
@@ -341,9 +221,9 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiChartMktCustomerTable_setRankUnits = function FEaiChartMktCustomerTable_setRankUnits(units) {
+MO.FEaiChartStatMarketerTable_setRankUnits = function FEaiChartStatMarketerTable_setRankUnits(units) {
    var o = this;
-   var grid = o._gridRank;
+   var grid = o._gridControl;
    grid.clearRows();
    var pronvinceDate = o._infoProvince;
    var pronvinceDatearr = pronvinceDate._provinces;
@@ -359,8 +239,8 @@ MO.FEaiChartMktCustomerTable_setRankUnits = function FEaiChartMktCustomerTable_s
          if(provincename&&provincename.label()){
              provinceLabel= provincename.label();
             // row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
-             row.set('provincename', provincename.label());
-             row.set('investmentTotal', province.investmentTotal().toFixed(2));
+             row.set('provinceName', provincename.label());
+             row.set('investment', province.investmentTotal().toFixed(2));
              row.set('customerCount', province.customerCount());
              row.set('investmentAvg', province.investmentAvg().toFixed(2));
              grid.pushRow(row);
@@ -376,7 +256,7 @@ MO.FEaiChartMktCustomerTable_setRankUnits = function FEaiChartMktCustomerTable_s
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiChartMktCustomerTable_pushUnit = function FEaiChartMktCustomerTable_pushUnit(unit) {
+MO.FEaiChartStatMarketerTable_pushUnit = function FEaiChartStatMarketerTable_pushUnit(unit) {
    var o = this;
    // 检查参数
    if (!unit) {
@@ -416,7 +296,7 @@ MO.FEaiChartMktCustomerTable_pushUnit = function FEaiChartMktCustomerTable_pushU
 //
 // @method
 //==========================================================
-MO.FEaiChartMktCustomerTable_dispose = function FEaiChartMktCustomerTable_dispose() {
+MO.FEaiChartStatMarketerTable_dispose = function FEaiChartStatMarketerTable_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);

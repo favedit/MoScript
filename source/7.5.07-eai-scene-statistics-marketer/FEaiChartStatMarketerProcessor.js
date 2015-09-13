@@ -78,7 +78,7 @@ MO.FEaiChartStatMarketerProcessor = function FEaiChartStatMarketerProcessor(o){
    o.process                  = MO.FEaiChartStatMarketerProcessor_process;
    // @method
    o.dispose                  = MO.FEaiChartStatMarketerProcessor_dispose;
-   
+   o._peopleCounts            = MO.Class.register(o, new MO.AGetter('_peopleCounts'));
    return o;
 }
 
@@ -162,6 +162,7 @@ MO.FEaiChartStatMarketerProcessor_construct = function FEaiChartStatMarketerProc
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
+   o._peopleCounts = new MO.TDate();
 }
 
 //==========================================================
@@ -306,7 +307,7 @@ MO.FEaiChartStatMarketerProcessor_process = function FEaiChartStatMarketerProces
       endDate24H.truncMinute(15);
 
       // 取数据
-      statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
+     // statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
 
       var beginDate365H = o._365BeginDate;
       beginDate24H.assign(systemDate);
