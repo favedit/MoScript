@@ -88,7 +88,7 @@ MO.FEaiChartStatMarketerScene_onInfoProvinceDataChanged = function FEaiChartStat
 
    timeline.setInfoProvince(event);
    timeline.dirty();
-   var table  =  o._provinceTable;
+   var table = o._provinceTable;
    table.setInfoProvince(event);
    table.setRankUnits();
    table.dirty();
@@ -266,7 +266,6 @@ MO.FEaiChartStatMarketerScene_setup = function FEaiChartStatMarketerScene_setup(
    
    //..........................................................
    // 创建表格
-
    var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartStatMarketerTable);
    provinceTable.setName('LiveTable');
    provinceTable.linkGraphicContext(o);
@@ -401,7 +400,7 @@ MO.FEaiChartStatMarketerScene_processResize = function FEaiChartStatMarketerScen
       control.setRight(100);
    } else {
       control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(780);
+      control.setRight(660);
       control.setBottom(280);
    }
    //..........................................................
@@ -419,7 +418,7 @@ MO.FEaiChartStatMarketerScene_processResize = function FEaiChartStatMarketerScen
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(30);
-      timeline.setRight(780);
+      timeline.setRight(660);
       timeline.setHeight(250);
    }
    var provinceTable = o._provinceTable;
@@ -437,6 +436,6 @@ MO.FEaiChartStatMarketerScene_processResize = function FEaiChartStatMarketerScen
       provinceTable.setTop(10);
       provinceTable.setRight(0);
       provinceTable.setBottom(10);
-      provinceTable.setWidth(760);
+      provinceTable.setWidth(640);
    }
 }

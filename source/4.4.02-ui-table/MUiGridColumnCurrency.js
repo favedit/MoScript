@@ -11,8 +11,10 @@ MO.MUiGridColumnCurrency = function MUiGridColumnCurrency(o){
    // @attribute
    o._currencyPercent = MO.Class.register(o, new MO.AGetSet('_currencyPercent'), 2);
    o._normalColor     = MO.Class.register(o, new MO.AGetSet('_normalColor'), '#000000');
-   o._highColor       = MO.Class.register(o, new MO.AGetSet('_highColor'), '#000000');
+   o._lowerestColor   = MO.Class.register(o, new MO.AGetSet('_lowerestColor'), '#000000');
    o._lowerColor      = MO.Class.register(o, new MO.AGetSet('_lowerColor'), '#000000');
+   o._highColor       = MO.Class.register(o, new MO.AGetSet('_highColor'), '#000000');
+   o._highestColor    = MO.Class.register(o, new MO.AGetSet('_highestColor'), '#000000');
    o._negativeColor   = MO.Class.register(o, new MO.AGetSet('_negativeColor'), '#000000');
    // @attribute
    //..........................................................
