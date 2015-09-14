@@ -78,7 +78,7 @@ MO.FEaiChartPerfMarketerChart_construct = function FEaiChartPerfMarketerChart_co
 //
 // @method
 //==========================================================
-MO.FEaiChartPerfMarketerChart_onImageLoad = function FEaiChartPerfMarketerCharts_onImageLoad(){
+MO.FEaiChartPerfMarketerChart_onImageLoad = function FEaiChartPerfMarketerChart_onImageLoad(){
    this.dirty();
 }
 //==========================================================

@@ -222,73 +222,74 @@ MO.FEaiChartPerfMarketerProcessor_setup = function FEaiChartPerfMarketerProcesso
 //==========================================================
 MO.FEaiChartPerfMarketerProcessor_calculateCurrent = function FEaiChartPerfMarketerProcessor_calculateCurrent(){
    var o = this;
-   // var info = o._dynamicInfo;
    var info = o._performanceDate;
    var year = info._year;
    var month = info._month;
    var day = info._day;
-   // memberRegister 注册
+  
    // 当天
-   var dayInvestment = day.investment();
-   var dayNetinvestment = day.netinvestment();
-   var dayRedemption = day.redemption();
-   var dayCustomerRegister = day.customerRegister(); 
-   var dayMemberRegister = day.memberRegister();
-   // var ticks = day._ticks;
-   // 当月
-   var monthInvestment = month.investment();
-   var monthNetinvestment = month.netinvestment();
-   var monthRedemption = month.redemption();
-   var monthCustomerRegister = month.customerRegister(); 
-   var monthMemberRegister = month.memberRegister();
-   // 累计
-   var yearInvestment = year.investment();
-   var yearNetinvestment = year.netinvestment();
-   var yearRedemption = year.redemption();
-   var yearCustomerRegister = year.customerRegister(); 
-   var yearhMemberRegister = year.memberRegister();
+      if( year && month && day ){
+         var dayInvestment = day.investment();
+         var dayNetinvestment = day.netinvestment();
+         var dayRedemption = day.redemption();
+         var dayCustomerRegister = day.customerRegister(); 
+         var dayMemberRegister = day.memberRegister();
+         // var ticks = day._ticks;
+         // 当月
+         var monthInvestment = month.investment();
+         var monthNetinvestment = month.netinvestment();
+         var monthRedemption = month.redemption();
+         var monthCustomerRegister = month.customerRegister(); 
+         var monthMemberRegister = month.memberRegister();
+         // 累计
+         var yearInvestment = year.investment();
+         var yearNetinvestment = year.netinvestment();
+         var yearRedemption = year.redemption();
+         var yearCustomerRegister = year.customerRegister(); 
+         var yearhMemberRegister = year.memberRegister();
 
-   // var investmentCurrent = info.investmentCount();
-   // var investmentTotalCurrent = info.investmentTotal();
-   var units = o._units;
-   var count = units.count();
-   console.log(count+"...............................");
-   for(var i = 0; i < count; i++){
-      var unit = units.at(i);
-      var actionCd = unit.customerActionCd();
-      var amount = unit.customerActionAmount();
-      var interest = unit.customerActionInterest();
-      // if(actionCd == 1){
-      //    investmentCurrent -= amount;
-      //    performanceCurrent -= amount;
-      //    investmentTotal -= amount;
-      // }else if(actionCd == 2){
-      //    redemptionCurrent -= amount;
-      //    interestCount -= interest;
-      //    redemptionTotal -= amount;
-      // }
-      // dayInvestment -= unit.investment();
-      // dayNetinvestment -= unit.dayNetinvestment();
-   }
-   // 当日
-   o._dayInvestment = dayInvestment;
-   o._dayNetinvestment = dayNetinvestment;
-   o._dayRedemption = dayRedemption;
-   o._dayCustomerRegister = dayCustomerRegister;
-   o._dayMemberRegister = dayMemberRegister;
-   // 当月
-   o._monthInvestment = monthInvestment;
-   o._monthNetinvestment = monthNetinvestment;
-   o._monthRedemption = monthRedemption;
-   o._monthCustomerRegister = monthCustomerRegister; 
-   o._monthMemberRegister = monthMemberRegister;
-   // 累计
-   o._yearInvestment = yearInvestment;
-   o._yearNetinvestment = yearNetinvestment;
-   o._yearRedemption = yearRedemption;
-   o._yearCustomerRegister = yearCustomerRegister; 
-   o._yearhMemberRegister = yearhMemberRegister;
-   // // 当日总额
+         // var investmentCurrent = info.investmentCount();
+         // var investmentTotalCurrent = info.investmentTotal();
+         var units = o._units;
+         var count = units.count();
+         console.log(count+"...............................");
+         for(var i = 0; i < count; i++){
+            var unit = units.at(i);
+            var actionCd = unit.customerActionCd();
+            var amount = unit.customerActionAmount();
+            var interest = unit.customerActionInterest();
+            // if(actionCd == 1){
+            //    investmentCurrent -= amount;
+            //    performanceCurrent -= amount;
+            //    investmentTotal -= amount;
+            // }else if(actionCd == 2){
+            //    redemptionCurrent -= amount;
+            //    interestCount -= interest;
+            //    redemptionTotal -= amount;
+            // }
+            // dayInvestment -= unit.investment();
+            // dayNetinvestment -= unit.dayNetinvestment();
+         }
+         // 当日
+         o._dayInvestment = dayInvestment;
+         o._dayNetinvestment = dayNetinvestment;
+         o._dayRedemption = dayRedemption;
+         o._dayCustomerRegister = dayCustomerRegister;
+         o._dayMemberRegister = dayMemberRegister;
+         // 当月
+         o._monthInvestment = monthInvestment;
+         o._monthNetinvestment = monthNetinvestment;
+         o._monthRedemption = monthRedemption;
+         o._monthCustomerRegister = monthCustomerRegister; 
+         o._monthMemberRegister = monthMemberRegister;
+         // 累计
+         o._yearInvestment = yearInvestment;
+         o._yearNetinvestment = yearNetinvestment;
+         o._yearRedemption = yearRedemption;
+         o._yearCustomerRegister = yearCustomerRegister; 
+         o._yearhMemberRegister = yearhMemberRegister;
+      }
+   // 当日总额
    // o._invementDayCurrent = investmentCurrent;
 }
 
