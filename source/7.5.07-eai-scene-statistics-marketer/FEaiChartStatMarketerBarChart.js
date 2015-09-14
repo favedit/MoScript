@@ -134,6 +134,11 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    if (!o._ready) {
       return;
    }
+   var provincesarr = o._infoProvince._provinces;
+   if (!provincesarr) {
+      return;
+   }
+
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
    var rectangle = event.rectangle;
@@ -146,8 +151,6 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
    var provinceCount = 10;
-   var infoproo = o._infoProvince;
-   var provincesarr = infoproo._provinces;
    var width = (rectangle.width+rectangle.left)/71;
    var intervalWidth = (rectangle.width+rectangle.left)/33;
    var maxInverstment = 0 ;
@@ -177,9 +180,9 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
 
             graphic.setFont('9px Microsoft YaHei');
 
-            var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
-            var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
-            var bottomColor = '#' + hexColor.substring(2);
+             var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
+             var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
+             var bottomColor = '#' + hexColor.substring(2);
 
             graphic.drawText(provinceLabel,decoLeft+realityCount*intervalWidth-6, bottom, '#59FDE9');
             graphic._handle.rect(decoLeft+realityCount*intervalWidth, bottom-30-hight, width, hight);

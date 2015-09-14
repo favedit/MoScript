@@ -73,7 +73,19 @@ MO.FEaiChartStatMarketerScene_onInfoProvinceDataChanged = function FEaiChartStat
    var o = this;
    // 设置表格数据
    var timeline = o._timeline;
-  // timeline.infoProvince().unserializeSignBuffer(event.sign, event.content, true);
+   // timeline.infoProvince().unserializeSignBuffer(event.sign, event.content, true);
+
+   // hack
+   var provinces = event.provinces();
+   var count = provinces.count();
+   var customerTotal = 0;
+   for (var i = 0; i < count; i++) {
+      var pInfo = provinces.at(i);
+      customerTotal += pInfo.customerCount();
+   }
+   var investmentDay = o._logoBar.findComponent('investmentDay');
+   investmentDay.setValue(customerTotal.toString());
+
    timeline.setInfoProvince(event);
    timeline.dirty();
    var table  =  o._provinceTable;
@@ -182,9 +194,6 @@ MO.FEaiChartStatMarketerScene_onProcess = function FEaiChartStatMarketerScene_on
          // 投资总金额
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
-         // 日投资金额
-         var investmentDay = logoBar.findComponent('investmentDay');
-         investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
       }
       //..........................................................
       // 更新时间
@@ -232,6 +241,8 @@ MO.FEaiChartStatMarketerScene_setup = function FEaiChartStatMarketerScene_setup(
    //..........................................................
    // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.statistic.LogoBar');
+   var investmentTotal = frame.findComponent('investmentDay');
+   investmentTotal.setBasicUnitText('人');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
