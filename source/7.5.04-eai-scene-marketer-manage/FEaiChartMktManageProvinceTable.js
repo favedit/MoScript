@@ -9,7 +9,7 @@ MO.FEaiChartMktManageProvinceTable = function FEaiChartMktManageProvinceTable(o)
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._title = MO.Class.register(o, new MO.AGetSet('_title'), '大陆地区');
+   o._title = MO.Class.register(o, new MO.AGetSet('_title'), '大陆地区公司列表');
    o._backgroundImage = null;
    o._backgroundPadding = null;
    // @attibute

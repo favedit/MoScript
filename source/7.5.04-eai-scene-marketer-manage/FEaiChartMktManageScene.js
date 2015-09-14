@@ -307,7 +307,7 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
                   o._countryEntity._faceShape.setVisible(false);
 
                   var provinceTable = o._provinceTable;
-                  provinceTable.setTitle('大陆地区');
+                  provinceTable.setTitle('大陆地区公司列表');
                   provinceTable.setUnits(o._countryUnits);
                   provinceTable.dirty();
                   provinceTable.setVisible(false);
@@ -328,7 +328,7 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
                   o._selectedProvinceCode = pCode;
                }
                var provinceTable = o._provinceTable;
-               provinceTable.setTitle(res.label() + '分公司');
+               provinceTable.setTitle(res.label() + '地区分公司列表');
                var department4s =  o._organizationInfo._department4s;
                var count = department4s.count();
                var provinceUnits = o._provinceUnits;
@@ -428,7 +428,7 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
          o._countryEntity._faceShape.setVisible(false);
 
          var provinceTable = o._provinceTable;
-         provinceTable.setTitle('大陆公司列表');
+         provinceTable.setTitle('大陆地区公司列表');
          provinceTable.setUnits(o._countryUnits);
          provinceTable.dirty();
          provinceTable.setVisible(false);
