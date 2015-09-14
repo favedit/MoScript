@@ -66,6 +66,7 @@ MO.FEaiChartPerfMarketerScene_onPerformanceDataChangedListener = function FEaiCh
    // charts.trendInfos().unserializeSignBuffer(event.sign, event.content, true);
    charts.dirty();
 }
+
 //==========================================================
 // <T>24小时曲线数据变更处理。</T>
 //
@@ -238,6 +239,7 @@ MO.FEaiChartPerfMarketerScene_setup = function FEaiChartPerfMarketerScene_setup(
    //..........................................................
    // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.performence-marketer.LogoBar');
+   frame.setDisplayOrder(10);
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
