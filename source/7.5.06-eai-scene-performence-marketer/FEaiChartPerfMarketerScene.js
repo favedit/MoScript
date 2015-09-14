@@ -10,6 +10,7 @@ MO.FEaiChartPerfMarketerScene = function FEaiChartPerfMarketerScene(o) {
    //..........................................................
    // @attribute
    o._code                   = MO.EEaiScene.ChartCustomer;
+   o._optionMapCountry       = false;
    // @attribute
    o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
    o._processorCurrent       = 0;
@@ -31,7 +32,6 @@ MO.FEaiChartPerfMarketerScene = function FEaiChartPerfMarketerScene(o) {
    //..........................................................
    // @event
    o.on24HDataChanged        = MO.FEaiChartPerfMarketerScene_on24HDataChanged;
-   o.onOperationVisibility   = MO.FEaiChartPerfMarketerScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartPerfMarketerScene_onProcessReady;
    o.onProcess               = MO.FEaiChartPerfMarketerScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartPerfMarketerScene_onSwitchProcess;
@@ -39,7 +39,6 @@ MO.FEaiChartPerfMarketerScene = function FEaiChartPerfMarketerScene(o) {
    //..........................................................
    // @method
    o.setup                   = MO.FEaiChartPerfMarketerScene_setup;
-   o.showParticle            = MO.FEaiChartPerfMarketerScene_showParticle;
    o.showFace                = MO.FEaiChartPerfMarketerScene_showFace;
    o.fixMatrix               = MO.FEaiChartPerfMarketerScene_fixMatrix;
    // @method
@@ -81,24 +80,6 @@ MO.FEaiChartPerfMarketerScene_on24HDataChanged = function FEaiChartPerfMarketerS
    timeline.endTime().assign(event.endDate);
    timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
    timeline.dirty();
-}
-
-//==========================================================
-// <T>操作可见处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartPerfMarketerScene_onOperationVisibility = function FEaiChartPerfMarketerScene_onOperationVisibility(event) {
-   var o = this;
-   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
-   if (event.visibility) {
-      o._groundAutio.play();
-      o._countryEntity._audioMapEnter._hAudio.muted = false;
-   } else {
-      o._groundAutio.pause();
-      o._countryEntity._audioMapEnter._hAudio.muted = true;
-   }
 }
 
 //==========================================================
@@ -144,9 +125,6 @@ MO.FEaiChartPerfMarketerScene_onProcess = function FEaiChartPerfMarketerScene_on
          if (hLoading) {
             document.body.removeChild(hLoading);
          }
-         var countryEntity = o._countryEntity;
-         countryEntity.start();
-         o._mapEntity.showCountry(countryEntity);
          o.processLoaded();
          o._playing = true;
          o._statusStart = true;
@@ -154,12 +132,6 @@ MO.FEaiChartPerfMarketerScene_onProcess = function FEaiChartPerfMarketerScene_on
    }
    // 重复播放
    if (o._playing) {
-      // 播放地图
-      var countryEntity = o._countryEntity;
-      if (!countryEntity.introAnimeDone()) {
-         countryEntity.process();
-         // return;
-      }
       // 显示界面
       if (!o._mapReady) {
          o._guiManager.show();
@@ -306,54 +278,9 @@ MO.FEaiChartPerfMarketerScene_setup = function FEaiChartPerfMarketerScene_setup(
    // 隐藏全部界面
    o._guiManager.hide();
    //..........................................................
-   // 创建粒子
-   //var context = o._graphicContext;
-   //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
-   //var particleData = context.createObject(MO.FE3dParticleData);
-   //particleData.loadUrl('{eai.resource}/particle/6.png');
-   //particle.setData(particleData);
-   //o.fixMatrix(particle.matrix());
-   //o._activeStage.spriteLayer().pushRenderable(particle);
-   //..........................................................
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 建立城市实体
    entityConsole.cityModule().build(o);
-   // 加载世界数据
-   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
-   o._readyLoader.push(countryEntity);
-}
-
-//==========================================================
-// <T>显示粒子处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartPerfMarketerScene_showParticle = function FEaiChartPerfMarketerScene_showParticle(provinceEntity, cityResource) {
-   var o = this;
-   var particle = o._particle;
-   var location = cityResource.location();
-   var count = 4;
-   //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-   particle.color().set(1, 1, 0, 1);
-   for (var i = 0; i < count; i++) {
-      var itemCount = parseInt(Math.random() * 100);
-      var attenuation = Math.random();
-      //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-      //particle.position().set((x - 5) * 2, 0, 0);
-      particle.setItemCount(itemCount);
-      particle.position().assign(location);
-      particle.position().z = provinceEntity.currentZ();
-      particle.setDelay(10 * i);
-      //particle.setSpeed(Math.random() * 6 + 0.2 * i);
-      particle.setSpeed(4 + 0.4 * i);
-      //particle.setSpeed(speed);
-      //particle.setAngle(Math.PI * 2 / 90 * i);
-      //particle.setAcceleration(-Math.random() );
-      particle.setAcceleration(0);
-      //particle.setAttenuation(attenuation);
-      particle.setAttenuation(0.8);
-      particle.start();
-   }
 }
 
 //==========================================================
@@ -420,41 +347,6 @@ MO.FEaiChartPerfMarketerScene_processResize = function FEaiChartPerfMarketerScen
       logoBar.setLocation(5, 5);
       logoBar.setScale(0.9, 0.9);
    }
-   //..........................................................
-   // 设置南海
-   var control = o._southSea;
-   if (isVertical) {
-      control.setDockCd(MO.EUiDock.RightTop);
-      control.setTop(570);
-      control.setRight(100);
-   } else {
-      control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(780);
-      control.setBottom(280);
-   }
-   //..........................................................
-   // 设置时间轴
-   // var timeline = o._timeline;
-   // if (isVertical) {
-   //    timeline.setDockCd(MO.EUiDock.Bottom);
-   //    timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-   //    timeline.setLeft(10);
-   //    timeline.setRight(10);
-   //    timeline.setBottom(920);
-   //    timeline.setHeight(250);
-   // } else {
-   //    timeline.setDockCd(MO.EUiDock.Right);
-   //    timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-   //    // timeline.setLeft(20);
-   //    // timeline.setBottom(30);
-   //    // timeline.setRight(780);
-   //    // timeline.setHeight(250);
-   //    timeline.setLeft(457);
-   //    timeline.setTop(10);
-   //    // timeline.setBottom(30);
-   //    // timeline.setRight(780);
-   //    timeline.setHeight(500)
-   // }
    //..........................................................
    // 设置头部
    var heads = o._head;
