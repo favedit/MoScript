@@ -9,7 +9,7 @@ MO.SUiFont = function SUiFont(){
    var o = this;
    //..........................................................
    // @attribute
-   o.font     = null;
+   o.font     = 'Microsoft YaHei';
    o.size     = 16;
    o.bold     = false;
    o.color    = '#FFFFFF';

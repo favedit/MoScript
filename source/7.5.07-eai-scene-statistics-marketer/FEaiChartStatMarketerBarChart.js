@@ -13,6 +13,7 @@ MO.FEaiChartStatMarketerBarChart = function FEaiChartStatMarketerBarChart(o) {
    o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
    o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
    o._infoProvince = MO.Class.register(o, new MO.AGetSet('_infoProvince'));
+   o._provinceTextFont = MO.Class.register(o, new MO.AGetSet('_provinceTextFont'));
    o._ready = false;
    o._investmentTotal = 0;
    // @attribute
@@ -47,6 +48,10 @@ MO.FEaiChartStatMarketerBarChart_construct = function FEaiChartStatMarketerBarCh
    o._endTime = new MO.TDate();
    o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
    o._infoProvince = MO.Class.create(MO.FEaiChartStatMarketerInfo);
+   o._provinceTextFont = new MO.SUiFont();
+   o._provinceTextFont.size = 24;
+   o._provinceTextFont.bold = true;
+   o._provinceTextFont.color = '#59FDE9'
 }
 
 //==========================================================
@@ -151,51 +156,50 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
    var provinceCount = 10;
-   var width = (rectangle.width+rectangle.left)/71;
-   var intervalWidth = (rectangle.width+rectangle.left)/33;
-   var maxInverstment = 0 ;
+   var width = (rectangle.width + rectangle.left) / 71;
+   var intervalWidth = (rectangle.width + rectangle.left) / 33;
+   var maxInverstment = 0;
    graphic._handle.beginPath();
-   for(var i = 0 ;i<provincesarr.count();i++){
+   for (var i = 0 ; i < provincesarr.count() ; i++) {
       var province = provincesarr.get(i);
-      if( maxInverstment<province.investmentTotal()){
+      if (maxInverstment < province.investmentTotal()) {
          maxInverstment = province.investmentTotal();
       }
    }
-   graphic.drawLine(decoLeft, bottom-20, decoRight, bottom-20, '#F8CB3D', 3);
+   graphic.drawLine(decoLeft, bottom - 70, decoRight, bottom - 70, '#F8CB3D', 3);
    var realityCount = 0;
-   if (provincesarr){
-     for (var i = 0 ; i<provincesarr.count();i++){
+   var provinceTextFont = o._provinceTextFont;
+   if (provincesarr) {
+      for (var i = 0 ; i < provincesarr.count() ; i++) {
          var province = provincesarr.get(i);
          var code = province.code();
          var provincename = MO.Console.find(MO.FEaiResourceConsole).provinceModule().findByCode(code);
          var provinceLabel = '';
          var hight = 0;
          var color = '#F8CB3D'
-         if(provincename&&provincename.label()){
-            provinceLabel= provincename.label();
+         if (provincename && provincename.label()) {
+            provinceLabel = provincename.label();
 
             realityCount++;
 
-            hight = 170*(province.investmentTotal()+maxInverstment/3)/maxInverstment
+            hight = 170 * (province.investmentTotal() + maxInverstment / 3) / maxInverstment
 
             graphic.setFont('9px Microsoft YaHei');
 
-             var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
-             var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
-             var bottomColor = '#' + hexColor.substring(2);
+            var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
+            var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
+            var bottomColor = '#' + hexColor.substring(2);
 
-            graphic.drawText(provinceLabel,decoLeft+realityCount*intervalWidth-6, bottom, '#59FDE9');
-            graphic._handle.rect(decoLeft+realityCount*intervalWidth, bottom-30-hight, width, hight);
-
+            graphic.drawTextVertical(provinceLabel, decoLeft + realityCount * intervalWidth - 4, bottom - 45, provinceTextFont);
+            graphic._handle.rect(decoLeft + realityCount * intervalWidth, bottom - 80 - hight, width, hight);
 
          }
       }
-      var gradient = graphic.createLinearGradient(0, 845, 0,1010);
+      var gradient = graphic.createLinearGradient(0, 845, 0, 1010);
       gradient.addColorStop('0', '#fb2609');
       gradient.addColorStop('1', '#1c12a5');
-      graphic._handle.fillStyle=gradient;
+      graphic._handle.fillStyle = gradient;
       graphic._handle.fill();
-
    }
 
 }
