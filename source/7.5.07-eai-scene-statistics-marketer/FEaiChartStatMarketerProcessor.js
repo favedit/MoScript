@@ -63,7 +63,6 @@ MO.FEaiChartStatMarketerProcessor = function FEaiChartStatMarketerProcessor(o){
    //..........................................................
    // @method
    o.onDynamicData            = MO.FEaiChartStatMarketerProcessor_onDynamicData;
-   o.on24HDataFetch           = MO.FEaiChartStatMarketerProcessor_on24HDataFetch;
    o.onInfoProvince           = MO.FEaiChartStatMarketerProcessor_onInfoProvince;
    //..........................................................
    // @method
@@ -82,17 +81,6 @@ MO.FEaiChartStatMarketerProcessor = function FEaiChartStatMarketerProcessor(o){
    return o;
 }
 
-//==========================================================
-// <T>24小时数据获取处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartStatMarketerProcessor_on24HDataFetch = function FEaiChartStatMarketerProcessor_on24HDataFetch(event) {
-   var o = this;
-   event.beginDate = o._24HBeginDate;
-   event.endDate = o._24HEndDate;
-   o.process24HDataChangedListener(event);
-}
 //==========================================================
 // <T>省份数据获取处理。</T>
 // MO 空间下FEaiChartStatMarketerProcessor_onInfoProvince；
@@ -294,31 +282,8 @@ MO.FEaiChartStatMarketerProcessor_process = function FEaiChartStatMarketerProces
       statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
       beginDate.assign(endDate);
-
-      // 取24小时统计数据
-      // 设置开始时间
-      var beginDate24H = o._24HBeginDate;
-      beginDate24H.assign(systemDate);
-      beginDate24H.truncMinute(15);
-      beginDate24H.addDay(-1);
-      // 设置结束时间
-      var endDate24H = o._24HEndDate;
-      endDate24H.assign(systemDate);
-      endDate24H.truncMinute(15);
-
-      // 取数据
-     // statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
-
-      var beginDate365H = o._365BeginDate;
-      beginDate24H.assign(systemDate);
-      beginDate24H.truncMinute(15);
-      beginDate24H.addDay(-665);
-      // 设置结束时间
-      var endDate365H = o._365EndDate;
-      endDate24H.assign(systemDate);
-      endDate24H.truncMinute(15);
-      //取省份数据
-      statistics.customer().doProvince(o, o.onInfoProvince, beginDate365H.format(),  endDate365H.format());
+      // 取省份数据
+      statistics.customer().doProvince(o, o.onInfoProvince);
    }
    //..........................................................
    // 设置表格刷新

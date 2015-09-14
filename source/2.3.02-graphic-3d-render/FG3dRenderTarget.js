@@ -59,5 +59,5 @@ MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
    o._size = MO.Lang.Object.dispose(o._size);
    o._color = MO.Lang.Object.dispose(o._color);
    // 父处理
-   o.__base.dispose.dispose();
+   o.__base.FG3dObject.dispose();
 }

@@ -33,6 +33,7 @@ MO.TMap = function TMap(){
    o.setValue      = MO.TMap_setValue;
    o.get           = MO.TMap_get;
    o.set           = MO.TMap_set;
+   o.setNvl        = MO.TMap_setNvl;
    // @method
    o.assign        = MO.TMap_assign;
    o.append        = MO.TMap_append;
@@ -274,6 +275,20 @@ MO.TMap_set = function TMap_set(name, value){
       o._table[code] = index;
    }
    o._values[index] = value;
+}
+
+//==========================================================
+// <T>根据名称设置非空内容。</T>
+//
+// @method
+// @param name:String 名称
+// @param value:Object 默认内容
+// @return Object 内容
+//==========================================================
+MO.TMap_setNvl = function TMap_setNvl(name, value){
+   if(value){
+      this.set(name, value);
+   }
 }
 
 //==========================================================

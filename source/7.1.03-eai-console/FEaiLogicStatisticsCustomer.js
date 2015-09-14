@@ -73,7 +73,7 @@ MO.FEaiLogicStatisticsCustomer_doCustomerTrend = function FEaiLogicStatisticsCus
 MO.FEaiLogicStatisticsCustomer_doProvince = function FEaiLogicStatisticsCustomer_doProvince(owner, callback, startDate, endDate){
    var o = this;
    var parameters = o.prepareParemeters();
-   parameters.set('begin', startDate);
-   parameters.set('end', endDate);
+   parameters.setNvl('begin', startDate);
+   parameters.setNvl('end', endDate);
    o.sendService('{eai.logic.service}/eai.financial.customer.wv?do=province', parameters, owner, callback);
 }
