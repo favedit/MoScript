@@ -57,6 +57,12 @@ MO.FEaiChartPerfMarketerScene = function FEaiChartPerfMarketerScene(o) {
 MO.FEaiChartPerfMarketerScene_onPerformanceDataChangedListener = function FEaiChartPerfMarketerScene_onPerformanceDataChangedListener(event){
    var o = this;
    var charts = o._charts;
+   charts.setStartTime(event.beginDate);
+   charts.setEndTime(event.endDate);
+   charts.setMonthStart(event.monthStarDate);
+   charts.setMonthEnd(event.monthEndDate);
+   charts.setYearStart(event.yearStarDate);
+   charts.setYearEnd(event.yearEndDate);
    charts.setTrendInfo(event);
    // charts.trendInfos().unserializeSignBuffer(event.sign, event.content, true);
    charts.dirty();
@@ -296,7 +302,6 @@ MO.FEaiChartPerfMarketerScene_setup = function FEaiChartPerfMarketerScene_setup(
    charts.setup();
    charts.build();
    o._guiManager.register(charts);
-   //invement.addPerformanceDataChangedListener(o, o.onPerformanceDataChangedListener);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();

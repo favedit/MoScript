@@ -81,6 +81,11 @@ MO.FEaiChartPerfMarketerProcessor = function FEaiChartPerfMarketerProcessor(o){
    o.dispose                  = MO.FEaiChartPerfMarketerProcessor_dispose;
    // @event
    o._eventDayDataChanged     = null;
+   o._monthStartTime          = MO.Class.register(o, new MO.AGetter('_monthStartTime'));
+   o._monthEndTime            = MO.Class.register(o, new MO.AGetter('_monthEndTime'));
+
+   o._yearStartTime          = MO.Class.register(o, new MO.AGetter('_yearStartTime'));
+   o._yearEndTime            = MO.Class.register(o, new MO.AGetter('_yearEndTime'));
    return o;
 }
 //==========================================================
@@ -91,8 +96,15 @@ MO.FEaiChartPerfMarketerProcessor = function FEaiChartPerfMarketerProcessor(o){
 MO.FEaiChartPerfMarketerProcessor_onPerformanceDate = function FEaiChartPerfMarketerProcessor_onPerformanceDate(event){
    var o = this;
    var performanceDate = o._performanceDate;
-   performanceDate.unserializeSignBuffer(event.sign, event.content, true);
    var dayData =  o._eventDayDataChanged;
+   performanceDate.beginDate = o._24HBeginDate;
+   performanceDate.endDate = o._24HEndDate;
+   performanceDate.unserializeSignBuffer(event.sign, event.content, true);
+   performanceDate.monthStarDate = o._monthStartTime;
+   performanceDate.monthEndDate = o._monthEndTime;
+   performanceDate.yearStarDate = o._yearStartTime;
+   performanceDate.yearEndDate = o._yearEndTime;
+
    o.processPerformanceDataChangedListener(performanceDate);
 }
 
@@ -164,6 +176,11 @@ MO.FEaiChartPerfMarketerProcessor_construct = function FEaiChartPerfMarketerProc
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
    o._listenersPerformanceDateChanged =  new MO.SEvent(o);
+   o._monthStartTime = new MO.TDate();
+   o._monthEndTime = new MO.TDate();
+   o._yearStartTime = new MO.TDate();     
+   o._yearEndTime  = new MO.TDate();
+
 }
 
 //==========================================================
@@ -250,7 +267,6 @@ MO.FEaiChartPerfMarketerProcessor_calculateCurrent = function FEaiChartPerfMarke
       //    interestCount -= interest;
       //    redemptionTotal -= amount;
       // }
-
       // dayInvestment -= unit.investment();
       // dayNetinvestment -= unit.dayNetinvestment();
    }
@@ -272,10 +288,8 @@ MO.FEaiChartPerfMarketerProcessor_calculateCurrent = function FEaiChartPerfMarke
    o._yearRedemption = yearRedemption;
    o._yearCustomerRegister = yearCustomerRegister; 
    o._yearhMemberRegister = yearhMemberRegister;
-
    // // 当日总额
    // o._invementDayCurrent = investmentCurrent;
-   
 }
 
 //==========================================================
@@ -343,12 +357,12 @@ MO.FEaiChartPerfMarketerProcessor_process = function FEaiChartPerfMarketerProces
    // 设置处理时间
    if(o._dataTicker.process()){
       var statistics = MO.Console.find(MO.FEaiLogicConsole).statistics();
-      statistics.achievement().doDynamic(o,o.onPerformanceDate);
       // 设置结束时间
       var beginDate = o._beginDate;
       var endDate = o._endDate;
       beginDate.assign(endDate);
       endDate.assign(systemDate);
+      
       // statistics.marketer().doCustomerDynamic(o,o.onPerformanceDate,  beginDate.format(), endDate.format());
       //statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
@@ -358,12 +372,32 @@ MO.FEaiChartPerfMarketerProcessor_process = function FEaiChartPerfMarketerProces
       var beginDate24H = o._24HBeginDate;
       beginDate24H.assign(systemDate);
       beginDate24H.truncMinute(15);
-      beginDate24H.addDay(-1);
+      // beginDate24H.addDay(-1);
+      beginDate24H.addHour(-systemDate.hour);
       // 设置结束时间
       var endDate24H = o._24HEndDate;
       endDate24H.assign(systemDate);
       endDate24H.truncMinute(15);
+
+      var beginDate30D = o._monthStartTime;
+      beginDate30D.assign(systemDate);
+      // beginDate30H.truncMinute(15);
+      // beginDate30D.addMonth(-1);
+      beginDate30D.addDay(-systemDate.day);
+      var  endDate30D = o._monthEndTime;
+      endDate30D.assign(systemDate);
+      // endDate30D.truncMinute(15);
+      
+      var beginDate12Y = o._yearStartTime;
+      beginDate12Y.assign(systemDate);
+      // beginDate30H.truncMinute(15);
+      // beginDate12Y.addYear(-1);
+      beginDate12Y.addMonth(-systemDate.month);
+      var  endDate12Y = o._yearEndTime;
+      endDate12Y.assign(systemDate);
+
       // 取数据
+      statistics.achievement().doDynamic(o, o.onPerformanceDate, beginDate24H.format(), endDate.format(), beginDate30D.format(), endDate30D.format(), beginDate12Y.format(), endDate12Y.format());
       //statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
    }
 
