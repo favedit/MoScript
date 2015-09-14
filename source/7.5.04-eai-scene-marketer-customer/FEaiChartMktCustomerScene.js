@@ -39,7 +39,6 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    //..........................................................
    // @method
    o.setup                   = MO.FEaiChartMktCustomerScene_setup;
-   o.showParticle            = MO.FEaiChartMktCustomerScene_showParticle;
    o.showFace                = MO.FEaiChartMktCustomerScene_showFace;
    o.fixMatrix               = MO.FEaiChartMktCustomerScene_fixMatrix;
    // @method
@@ -276,39 +275,6 @@ MO.FEaiChartMktCustomerScene_setup = function FEaiChartMktCustomerScene_setup() 
    // 加载世界数据
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
-}
-
-//==========================================================
-// <T>显示粒子处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMktCustomerScene_showParticle = function FEaiChartMktCustomerScene_showParticle(provinceEntity, cityResource) {
-   var o = this;
-   var particle = o._particle;
-   var location = cityResource.location();
-   var count = 4;
-   //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-   particle.color().set(1, 1, 0, 1);
-   for (var i = 0; i < count; i++) {
-      var itemCount = parseInt(Math.random() * 100);
-      var attenuation = Math.random();
-      //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-      //particle.position().set((x - 5) * 2, 0, 0);
-      particle.setItemCount(itemCount);
-      particle.position().assign(location);
-      particle.position().z = provinceEntity.currentZ();
-      particle.setDelay(10 * i);
-      //particle.setSpeed(Math.random() * 6 + 0.2 * i);
-      particle.setSpeed(4 + 0.4 * i);
-      //particle.setSpeed(speed);
-      //particle.setAngle(Math.PI * 2 / 90 * i);
-      //particle.setAcceleration(-Math.random() );
-      particle.setAcceleration(0);
-      //particle.setAttenuation(attenuation);
-      particle.setAttenuation(0.8);
-      particle.start();
-   }
 }
 
 //==========================================================

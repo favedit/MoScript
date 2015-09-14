@@ -28,6 +28,8 @@ MO.SColor4 = function SColor4(red, green, blue, alpha){
    o.savePower    = MO.SColor4_savePower;
    o.copyArray    = MO.SColor4_copyArray;
    o.toString     = MO.SColor4_toString;
+   // @method
+   o.dispose      = MO.SColor4_dispose;
    return o;
 }
 
@@ -220,4 +222,17 @@ MO.SColor4_copyArray = function SColor4_copyArray(d, i){
 MO.SColor4_toString = function SColor4_toString(){
    var o = this;
    return MO.Lang.Float.format(o.red) + ',' + MO.Lang.Float.format(o.green) + ',' + MO.Lang.Float.format(o.blue) + ',' + MO.Lang.Float.format(o.alpha);
+}
+
+//============================================================
+// <T>释放处理。</T>
+//
+// @method
+//============================================================
+MO.SColor4_dispose = function SColor4_dispose(){
+   var o = this;
+   o.red = null;
+   o.green = null;
+   o.blue = null;
+   o.alpha = null;
 }

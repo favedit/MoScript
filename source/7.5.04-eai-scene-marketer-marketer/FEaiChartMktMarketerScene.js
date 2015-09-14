@@ -39,7 +39,6 @@ MO.FEaiChartMktMarketerScene = function FEaiChartMktMarketerScene(o) {
    //..........................................................
    // @method
    o.setup                   = MO.FEaiChartMktMarketerScene_setup;
-   o.showParticle            = MO.FEaiChartMktMarketerScene_showParticle;
    o.showFace                = MO.FEaiChartMktMarketerScene_showFace;
    o.fixMatrix               = MO.FEaiChartMktMarketerScene_fixMatrix;
    // @method
@@ -63,7 +62,6 @@ MO.FEaiChartMktMarketerScene_on24HDataChanged = function FEaiChartMktMarketerSce
    timeline.dirty();
 }
 
-//==========================================================
 //==========================================================
 // <T>表格数据变更处理。</T>
 //
@@ -181,7 +179,6 @@ MO.FEaiChartMktMarketerScene_onProcess = function FEaiChartMktMarketerScene_onPr
       // 获取所有信息
       var processor = o._processor;
       if(processor.invementDayCurrent() > 0){
-         // MO.Class.create(MO.FEaiChartMktMarketerProcessor);
           // 投资总金额
          var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
          investmentTotalCount.setValue(parseInt(processor.investmentTotal()).toString());
@@ -267,54 +264,12 @@ MO.FEaiChartMktMarketerScene_setup = function FEaiChartMktMarketerScene_setup() 
    // 隐藏全部界面
    o._guiManager.hide();
    //..........................................................
-   // 创建粒子
-   //var context = o._graphicContext;
-   //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
-   //var particleData = context.createObject(MO.FE3dParticleData);
-   //particleData.loadUrl('{eai.resource}/particle/6.png');
-   //particle.setData(particleData);
-   //o.fixMatrix(particle.matrix());
-   //o._activeStage.spriteLayer().pushRenderable(particle);
-   //..........................................................
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 建立城市实体
    entityConsole.cityModule().build(o);
    // 加载世界数据
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
-}
-
-//==========================================================
-// <T>显示粒子处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartMktMarketerScene_showParticle = function FEaiChartMktMarketerScene_showParticle(provinceEntity, cityResource) {
-   var o = this;
-   var particle = o._particle;
-   var location = cityResource.location();
-   var count = 4;
-   //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-   particle.color().set(1, 1, 0, 1);
-   for (var i = 0; i < count; i++) {
-      var itemCount = parseInt(Math.random() * 100);
-      var attenuation = Math.random();
-      //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-      //particle.position().set((x - 5) * 2, 0, 0);
-      particle.setItemCount(itemCount);
-      particle.position().assign(location);
-      particle.position().z = provinceEntity.currentZ();
-      particle.setDelay(10 * i);
-      //particle.setSpeed(Math.random() * 6 + 0.2 * i);
-      particle.setSpeed(4 + 0.4 * i);
-      //particle.setSpeed(speed);
-      //particle.setAngle(Math.PI * 2 / 90 * i);
-      //particle.setAcceleration(-Math.random() );
-      particle.setAcceleration(0);
-      //particle.setAttenuation(attenuation);
-      particle.setAttenuation(0.8);
-      particle.start();
-   }
 }
 
 //==========================================================

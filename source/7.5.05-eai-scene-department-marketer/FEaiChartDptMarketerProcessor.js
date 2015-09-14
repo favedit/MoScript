@@ -276,7 +276,7 @@ MO.FEaiChartDptMarketerProcessor_process = function FEaiChartDptMarketerProcesso
       var endDate = o._endDate;
       beginDate.assign(endDate);
       endDate.assign(systemDate);
-      statistics.marketer().doMarketerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
+      statistics.department().doMarketerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
       beginDate.assign(endDate);
    }

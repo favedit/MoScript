@@ -11,6 +11,8 @@ MO.EDataType = new function EDataType(){
    // @member 未知
    o.Unknown = 0;
    // @member 8位有符号整数
+   o.Boolean = 1;
+   // @member 8位有符号整数
    o.Int8 = 1;
    // @member 16位有符号整数
    o.Int16 = 2;

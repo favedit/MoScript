@@ -17,22 +17,12 @@ MO.FEaiChartMktMarketerProcessor = function FEaiChartMktMarketerProcessor(o){
    o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
    // @attribute
    o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
-   o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
-   o._netinvestmentDayCurrent = MO.Class.register(o, new MO.AGetter('_netinvestmentDayCurrent'), 0);
-   o._interestDayCurrent      = MO.Class.register(o, new MO.AGetter('_interestDayCurrent'), 0);
-   o._performanceDayCurrent   = MO.Class.register(o, new MO.AGetter('_performanceDayCurrent'), 0);
    o._customerDayCurrent      = MO.Class.register(o, new MO.AGetter('_customerDayCurrent'), 0);
-
    o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
    o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
    o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   
    o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
-
    o._investmentTotal         = MO.Class.register(o, new MO.AGetter('_investmentTotal'));
-   o._redemptionTotal         = MO.Class.register(o, new MO.AGetter('_redemptionTotal'));
-   o._netinvestmentTotal       = MO.Class.register(o, new MO.AGetter('_netinvestmentTotal'));
-   
    o._intervalMinute          = 1;
    // @attribute
    o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
@@ -188,40 +178,20 @@ MO.FEaiChartMktMarketerProcessor_calculateCurrent = function FEaiChartMktMarkete
    var o = this;
    var info = o._dynamicInfo;
    var investmentCurrent = info.investmentCount();
-   var redemptionCurrent = info.redemptionCount();
-   var interestCount = info.interestCount();
-   var performanceCurrent = info.performanceCount();
    var investmentTotal = info.investmentTotal();
-   var redemptionTotal = info.redemptionTotal();
-   var netinvestmentTotal = info.netinvestmentTotal();
-
    var units = o._units;
    var count = units.count();
    for(var i = 0; i < count; i++){
       var unit = units.at(i);
-
       var actionCd = unit.customerActionCd();
       var amount = unit.customerActionAmount();
-      var interest = unit.customerActionInterest();
       if(actionCd == 1){
          investmentCurrent -= amount;
-         performanceCurrent -= amount;
          investmentTotal -= amount;
-      }else if(actionCd == 2){
-         redemptionCurrent -= amount;
-         interestCount -= interest;
-         redemptionTotal -= amount;
       }
    }
-
    o._investmentTotal = investmentTotal;
-   o._redemptionTotal = redemptionTotal;
-   o._netinvestmentTotal = investmentTotal - redemptionTotal;
    o._invementDayCurrent = investmentCurrent;
-   o._redemptionDayCurrent = redemptionCurrent;
-   o._netinvestmentDayCurrent = investmentCurrent - redemptionCurrent;
-   o._interestDayCurrent = interestCount;
-   o._performanceDayCurrent = performanceCurrent;
 }
 
 //==========================================================

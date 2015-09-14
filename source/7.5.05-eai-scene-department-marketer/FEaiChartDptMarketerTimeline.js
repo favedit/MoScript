@@ -72,7 +72,7 @@ MO.FEaiChartDptMarketerTimeline_sync = function FEaiChartDptMarketerTimeline_syn
    endTime.assign(currentDate);
    // 发送数据
    var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-   statisticsLogic.marketer().doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
+   statisticsLogic.department().doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
 }
 
 //==========================================================
