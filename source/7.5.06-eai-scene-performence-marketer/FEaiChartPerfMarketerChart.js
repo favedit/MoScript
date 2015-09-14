@@ -256,9 +256,14 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
    }
    startTime.date.setTime(bakTime);
    startTime.refresh();
+
    // 曲线
    var trendInfo = o._trendInfo;
+   if( trendInfo == null ){
+      return;
+   }
    var units = trendInfo._day._ticks;
+
    if (!units) {
       return;
    }
@@ -329,6 +334,7 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
       }
       graphic.drawText( text, decoLeft + 8 + (x * i), 714, '#eeb92f');
    }
+
    var units = trendInfo._month._ticks;
    if (!units) {
       return;
