@@ -100,7 +100,7 @@ MO.FEaiChartMktManageProvinceTable_setup = function FEaiChartMktManageProvinceTa
    var o = this;
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建图片
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid2.png');
    image.addLoadListener(o, o.onImageLoad);
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
@@ -131,7 +131,7 @@ MO.FEaiChartMktManageProvinceTable_setup = function FEaiChartMktManageProvinceTa
    column.setName('branchName');
    column.setLabel('子公司名称');
    column.setDataName('branchName');
-   column.setWidth(140);
+   column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
@@ -145,7 +145,7 @@ MO.FEaiChartMktManageProvinceTable_setup = function FEaiChartMktManageProvinceTa
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnBigNumber);
    column.setName('investment');
-   column.setLabel('投资总额(万)');
+   column.setLabel('投资(万)');
    column.setDataName('investment');
    column.setNormalColor('#59FDE9');
    column.setHighColor('#FF7200');
@@ -157,7 +157,7 @@ MO.FEaiChartMktManageProvinceTable_setup = function FEaiChartMktManageProvinceTa
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnBigNumber);
    column.setName('redemption');
-   column.setLabel('赎回总额(万)');
+   column.setLabel('赎回(万)');
    column.setDataName('redemption');
    column.setNormalColor('#59FDE9');
    column.setHighColor('#FF7200');
@@ -169,7 +169,7 @@ MO.FEaiChartMktManageProvinceTable_setup = function FEaiChartMktManageProvinceTa
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnBigNumber);
    column.setName('netinvestment');
-   column.setLabel('净投总额(万)');
+   column.setLabel('净投(万)');
    column.setDataName('netinvestment');
    column.setNormalColor('#59FDE9');
    column.setHighColor('#FF7200');
@@ -179,7 +179,6 @@ MO.FEaiChartMktManageProvinceTable_setup = function FEaiChartMktManageProvinceTa
    column.cellPadding().right = 10;
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-
    o.push(grid);
    //..........................................................
    // 设置数据
@@ -215,19 +214,26 @@ MO.FEaiChartMktManageProvinceTable_setUnits = function FEaiChartMktManageProvinc
    if (!units) {
       return null;
    }
+   var departmentModule = MO.Console.find(MO.FEaiResourceConsole).departmentModule();
    var grid = o._gridControl;
    grid.clearRows();
-   var count = units.count();
+   var count = Math.min(units.count(), 40);
    for (var i = 0; i < count; i++) {
       var unit = units.at(i);
       var row = grid.allocRow();
-      row.set('companyName', unit.parentLabel());
+      // 获得公司名称
+      var departmentLabel = unit.parentLabel();
+      var department = departmentModule.findByFullLabel(departmentLabel);
+      if(department){
+         departmentLabel = department.label();
+      }
+      // 设置数据内容
+      row.set('companyName', departmentLabel);
       row.set('branchName', unit.label());
       row.set('marketerCount', unit.marketerCount());
       row.set('investment', unit.investment());
       row.set('redemption', unit.redemption());
       row.set('netinvestment', unit.netinvestment());
-
       grid.pushRow(row);
    }
 }

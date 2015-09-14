@@ -644,7 +644,7 @@ MO.FEaiChartMktManageScene_processResize = function FEaiChartMktManageScene_proc
       countryTable.setTop(10);
       countryTable.setRight(0);
       countryTable.setBottom(10);
-      countryTable.setWidth(650);
+      countryTable.setWidth(750);
    }
    var provinceTable = o._provinceTable;
    if (isVertical) {
@@ -661,6 +661,6 @@ MO.FEaiChartMktManageScene_processResize = function FEaiChartMktManageScene_proc
       provinceTable.setTop(10);
       provinceTable.setRight(0);
       provinceTable.setBottom(10);
-      provinceTable.setWidth(650);
+      provinceTable.setWidth(750);
    }
 }
