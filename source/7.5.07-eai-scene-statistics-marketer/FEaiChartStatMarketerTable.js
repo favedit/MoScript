@@ -149,7 +149,7 @@ MO.FEaiChartStatMarketerTable_setup = function FEaiChartStatMarketerTable_setup(
    grid.headFont().color = '#00B2F2';
    grid.setRowHeight(32);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 18;
+   grid.rowFont().size = 20;
    grid.rowFont().color = '#59FDE9';
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('provinceName');
