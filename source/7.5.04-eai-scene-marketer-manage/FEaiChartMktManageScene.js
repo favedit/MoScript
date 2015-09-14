@@ -37,6 +37,8 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
    o.__opMouseMoveThreshold   = 4;
    o._autoRotate              = true;
    o._showChina               = false;
+   // hack
+   o._showingMktInfo          = false;
    // @attribute
    o._countryTable            = null;
    o._provinceTable           = null;
@@ -230,6 +232,12 @@ MO.FEaiChartMktManageScene_onProcess = function FEaiChartMktManageScene_onProces
 MO.FEaiChartMktManageScene_onOperationDown = function FEaiChartMktManageScene_onOperationDown(event) {
    var o = this;
    o._opMouseDown = true;
+
+   // hack
+   if (o._showingMktInfo) {
+      return;
+   }
+
    o._operationRotationX = o._rotationX;
    o._operationRotationY = o._rotationY;
    o._operationPoint.set(event.x, event.y);
@@ -265,6 +273,14 @@ MO.FEaiChartMktManageScene_onOperationMove = function FEaiChartMktManageScene_on
 MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOperationUp(event) {
    var o = this;
    o._opMouseDown = false;
+   // hack
+   if (o._showingMktInfo) {
+      o._showingMktInfo = false;
+      var mktInfoDiv = document.getElementById('id_marketer_info');
+      mktInfoDiv.style.display = 'none';
+      return;
+   }
+
    if (!o._operationMoved) {
       var canvas3d = o.application().desktop().canvas3d();
       var region = o.activeStage().region();
@@ -301,7 +317,16 @@ MO.FEaiChartMktManageScene_onOperationUp = function FEaiChartMktManageScene_onOp
                var provinceEntity = entity;
                o._targetWorldScale = 3000;
                var res = provinceEntity.resource();
-               var pCode = o._selectedProvinceCode = res.code();
+               var pCode = res.code();
+               // hack
+               if (pCode == o._selectedProvinceCode) {
+                  var mktInfoDiv = document.getElementById('id_marketer_info');
+                  mktInfoDiv.style.display = '';
+                  o._showingMktInfo = true;
+               }
+               else {
+                  o._selectedProvinceCode = pCode;
+               }
                var provinceTable = o._provinceTable;
                provinceTable.setTitle(res.label() + '分公司');
                var department4s =  o._organizationInfo._department4s;
