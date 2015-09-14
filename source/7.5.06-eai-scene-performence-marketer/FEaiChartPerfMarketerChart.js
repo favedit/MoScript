@@ -126,39 +126,41 @@ MO.FEaiChartPerfMarketerChart_oeUpdate = function FEaiChartPerfMarketerChart_oeU
 //
 // @method
 //==========================================================
-MO.FEaiChartPerfMarketerChart_drawTrend = function FEaiChartPerfMarketerChart_drawTrend(graphic, units, proportion, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, color, bottomColor, topColor) {
+
+
+MO.FEaiChartPerfMarketerChart_drawTrend = function FEaiChartPerfMarketerChart_drawTrend(graphic, times, units, proportion, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount,  bottomColors, topColors, roundHeartColor, roundEdgeColor) {
    var o = this;
-   var startTime = o._startTime;
+   // var startTime = o._startTime;
    // var units = interface;o._trendInfo.+interface+._ticks;
    // var units = o._trendInfo.units();
    var count = units.count();
    var unitFirst = units.first();
-   var handle = graphic._handle;
-   handle.lineCap = 'round';
    // 找到最大
    var pixPer10k = dataHeight * 10000 / maxAmount;
    var amount = unitFirst[propertyName];
    var lastX = dataLeft;
    var lastY = dataBottom - amount / 10000 * pixPer10k;
 
+
+   var handle = graphic._handle;
+   handle.lineCap = 'round';
    // 绘制曲线
    handle.beginPath();
    handle.moveTo(lastX, lastY);
-   var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
    for (var i = 1; i < count; i++) {
       var unit = units.get(i);
       var value = unit[propertyName];
-      startTime.parseAuto(unit.recordDate());
-      startTime.refresh();
-      var degreeSpan = startTime.date.getTime() - bakTime;
+      times.parseAuto(unit.recordDate());
+      times.refresh();
+      var degreeSpan = times.date.getTime() - bakTime;
       //  总的宽 
-      var x = dataLeft + ((dataRight - dataLeft) * proportion)  * (degreeSpan / timeSpan);
-
+      // var x = dataLeft + ((dataRight - dataLeft) * proportion)  * (degreeSpan / timeSpan);
+       var x = dataLeft + ((dataRight - dataLeft) * proportion)  * (degreeSpan / timeSpan);
       var y = dataBottom - value / 10000 * pixPer10k;
       y -= o._baseHeight;
       handle.lineTo(x, y);
    }
-   
+   var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
    var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
    var bottomColor = '#' + hexColor.substring(2);
    var opBottomColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
@@ -168,19 +170,35 @@ MO.FEaiChartPerfMarketerChart_drawTrend = function FEaiChartPerfMarketerChart_dr
    var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
    // gradient.addColorStop('0', bottomColor);
    // gradient.addColorStop('1', topColor);
-   gradient.addColorStop('0', color);
-   gradient.addColorStop('1', color);
+   gradient.addColorStop('0', bottomColors);
+   gradient.addColorStop('1', topColors);
    // var opGradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
    // opGradient.addColorStop('0', opBottomColor);
    // opGradient.addColorStop('1', opTopColor);
    handle.strokeStyle = gradient;
-   handle.lineWidth = 4;
+   handle.lineWidth = 2;
    handle.stroke();
    // handle.fillStyle = opGradient;
    // handle.lineTo(x, dataBottom);
    // handle.lineTo(dataLeft, dataBottom);
    // handle.lineTo(dataLeft, lastY);
    // handle.fill();
+   graphic.drawCircle(lastX, lastY, 5, 2,roundEdgeColor, roundHeartColor);
+   for (var j = 1; j < count; j++) {
+      var unit = units.get(j);
+      var value = unit[propertyName];
+      times.parseAuto(unit.recordDate());
+      times.refresh();
+      var degreeSpans = times.date.getTime() - bakTime;
+      //  总的宽 
+      var x = dataLeft + ((dataRight - dataLeft) * proportion)  * (degreeSpans / timeSpan);
+      var y = dataBottom - value / 10000 * pixPer10k;
+      y -= o._baseHeight;
+     // graphic.drawCircle(x , y, 5, 1,"#fff","#fff");
+     graphic.drawCircle(x, y,5,2,roundEdgeColor ,roundHeartColor);
+   }
+   
+
 }
 MO.FEaiChartPerfMarketerChart_onCalculate = function FEaiChartPerfMarketerChart_onCalculate(){
    
@@ -210,27 +228,31 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
    var decoRight = rectangle.left + rectangle.width -20;
    // var decoLineMargin = o.triangleWidth() + o.decoLineGap();
    var curveW = width - decoLeft;
-   
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._logoPadding);
-   // 当日
-   graphic.drawGridImage(o._dayImage, left+20, top+41, 82, 236, o._logoPadding);
-   graphic.drawGridImage(o._chartBackgroundImage, decoLeft, top+41, curveW, 236, o._logoPadding);
-   // 当月
-   graphic.drawGridImage(o._monthImage, left+20, top+310, 82, 236, o._logoPadding);
-   graphic.drawGridImage(o._chartBackgroundImage, left+433, top+310, curveW, 236, o._logoPadding);
-   // 累计
-   graphic.drawGridImage(o._cumulativeImage, left+20, top+578, 82, 236, o._logoPadding);
-   graphic.drawGridImage(o._chartBackgroundImage, left+433, top+578, curveW, 236, o._logoPadding);
 
-   // var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
-   // var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
+   var imgL = left+20;
+   var paddingT = 41;
+   var imgH = (height-(paddingT*4)) / 3;
+   graphic.drawGridImage(o._dayImage, imgL, top+paddingT, 82, imgH, o._logoPadding);
+   // var titleL =  left + 120;
+   // var titleT =  top + 80;
+   // 当日
+   graphic.drawGridImage(o._dayImage, imgL, top+41, 82, imgH, o._logoPadding);
+   graphic.drawGridImage(o._chartBackgroundImage, decoLeft, top+41, curveW, imgH, o._logoPadding);
+   // 当月
+   graphic.drawGridImage(o._monthImage, imgL, top + imgH + paddingT*2, 82, imgH, o._logoPadding);
+   graphic.drawGridImage(o._chartBackgroundImage, decoLeft, top + imgH + paddingT*2, curveW, imgH, o._logoPadding);
+   // 累计
+   graphic.drawGridImage(o._cumulativeImage, imgL, top+(imgH*2)+(paddingT*3), 82, imgH, o._logoPadding);
+
+   graphic.drawGridImage(o._chartBackgroundImage, decoLeft, top+(imgH*2)+(paddingT*3), curveW, imgH, o._logoPadding);
+
+   
    var dataLeft = decoLeft + o.decoLineWidth();
    var dataRight = decoRight - o.decoLineWidth();
    var dataTop = top + 41;
-   var dataBottom = top + 159;
-   var dataHeight = 60;
-   // 主轴
-   // graphic.drawLine(dataLeft, dataBottom, dataRight, dataBottom, '#F8CB3D', 3);
+   var dataBottom = dataTop + imgH-75;
+   var dataHeight = 155;
    // 刻度
    var startTime = o.startTime();
    var endTime = o.endTime();
@@ -241,29 +263,29 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
    var text;
    var drawText = false;
    var textWidth = 0;
-   graphic.setFont('18px Microsoft YaHei');
+
+   var title = 38;
+   var dayHour = dataTop+imgH -15;
+   graphic.setFont('20px Microsoft YaHei');
    var span = startTime.date.getTime() - bakTime;
-   // var decoLeft = rectangle.left + 433;
-   // var decoRight = rectangle.left + rectangle.width -20;
-   var x = (decoRight - decoLeft -80 ) / hour;
+   var x = ( dataRight - dataLeft ) / hour;
    for(var i = 0; i <= hour; i++){
-      text = i ; 
-      if(i != 0){
-          text = i < 10 ? '0' + i : i;
-          textWidth = graphic.textWidth(i);
+      text = i;
+      if( i != 0){
+         text = i < 10 ? '0' + i : i;
       }
-      graphic.drawText( text+"h", decoLeft + 8 + (x * i), 445, '#eeb92f');
+      text += "h";
+      textWidth = graphic.textWidth(text);
+      graphic.drawText( text, dataLeft + (x * i) -(textWidth), dayHour , '#eeb92f');
    }
    startTime.date.setTime(bakTime);
    startTime.refresh();
-
    // 曲线
    var trendInfo = o._trendInfo;
    if( trendInfo == null ){
       return;
    }
    var units = trendInfo._day._ticks;
-
    if (!units) {
       return;
    }
@@ -283,9 +305,9 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
    }
    //曲线及填充
    // 当日
-   o.drawTrend(graphic, units, proportion, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#fb2509', '#fb2509');
-   o.drawTrend(graphic, units, proportion, '_redemption', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#457eff', '#457eff');
-   o.drawTrend(graphic, units, proportion, '_netinvestment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#02fb49', '#02fb49');
+   o.drawTrend(graphic, startTime, units, proportion, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#fb2509', '#fb2509',"#fff",'#fb2509');
+   o.drawTrend(graphic, startTime, units, proportion, '_redemption', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#457eff', '#457eff',"#fff",'#457eff');
+   o.drawTrend(graphic, startTime, units, proportion, '_netinvestment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#02fb49', '#02fb49',"#fff",'#02fb49');
    // ........................................................
    // 统计   
    var lastHour = -1;
@@ -309,12 +331,10 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
          lastHour = hour;
       }
    }
-   // 设置时间
-   // startTime.date.setTime(bakTime);
-   // startTime.refresh();
+
+   // 当月的
    var monthStart = o.monthStart();
    var monthEnd = o.monthEnd();
-
    var monthDay = monthStart.day;
    var monthProportion = monthEnd.day/monthDay;
    // monthStart.day;
@@ -325,16 +345,17 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
    var textWidth = 0;
    graphic.setFont('20px Microsoft YaHei');
    var day = monthDay;
-   var x = (decoRight - decoLeft -80 ) / monthDay;
-   for(var i = 0; i <= day; i++){
+
+ 
+   var x = (dataRight - dataLeft ) / (monthDay -1);
+   for(var i = 1; i <= day; i++){
       text = i;
       if( i != 0 ){
          text = i < 10 ? '0' + i : i;
          textWidth = graphic.textWidth(i);
       }
-      graphic.drawText( text, decoLeft + 8 + (x * i), 714, '#eeb92f');
+      graphic.drawText(text, dataLeft + (x * (i-1))-textWidth , dayHour + imgH +title, '#eeb92f');
    }
-
    var units = trendInfo._month._ticks;
    if (!units) {
       return;
@@ -353,7 +374,14 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
          maxAmount = investment;
       }
    }
-    // ........................................................
+   var yH = 280;
+   var monthDataTop = dataTop + yH;
+   var monthdataBottom = dataBottom+yH;
+   o.drawTrend(graphic,monthStart, units, monthProportion, '_redemption', dataLeft, monthDataTop, dataRight, monthdataBottom, dataHeight, endTimeS, timeSpan, maxAmount, '#457eff', '#457eff', "#fff", '#457eff');
+   o.drawTrend(graphic,monthStart, units, monthProportion, '_investment', dataLeft, monthDataTop, dataRight, monthdataBottom, dataHeight, endTimeS, timeSpan, maxAmount, '#fb2509', '#fb2509', "#fff", '#fb2509');
+   o.drawTrend(graphic,monthStart, units, monthProportion, '_netinvestment', dataLeft, monthDataTop, dataRight, monthdataBottom, dataHeight, endTimeS, timeSpan, maxAmount, '#02fb49', '#02fb49', "#fff", '#02fb49');
+
+   // // ........................................................
    // 统计   
    var lastday = -1;
    var dayInves = 0;
@@ -376,14 +404,10 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
          lastday = day;
       }
    }
-   // 当月
-   var yH = 280;
-   var monthDataTop = dataTop + yH;
-   var monthdataBottom = dataBottom+yH;
-   o.drawTrend(graphic, units, monthProportion, '_redemption', dataLeft, monthDataTop, dataRight, monthdataBottom, dataHeight, endTimeS, timeSpan, maxAmount, '#457eff', '#457eff');
-   o.drawTrend(graphic, units, monthProportion, '_investment', dataLeft, monthDataTop, dataRight, monthdataBottom, dataHeight, endTimeS, timeSpan, maxAmount, '#fb2509', '#fb2509');
-   o.drawTrend(graphic, units, monthProportion, '_netinvestment', dataLeft, monthDataTop, dataRight, monthdataBottom, dataHeight, endTimeS, timeSpan, maxAmount, '#02fb49', '#02fb49');
+      
 
+
+   // 累计
    var yearStart = o.yearStart();
    var yearEnd = o.yearEnd();
    var yearMonth = yearStart.month;
@@ -413,14 +437,14 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
    //       graphic.drawText(texts, x - textWidth / 2, 980, '#eeb92f');
    //    // }
    // }
-   var x = (decoRight - decoLeft -80 ) / yearMonth;
-   for(var i = 0; i <= year ; i++){
-       texts = i;
-      if( i != 0 ){
-         texts = i < 10 ? '0' + i : i;
-         textWidth = graphic.textWidth(i);
-      }
-      graphic.drawText(texts, decoLeft + 8 + (x * i), 980, '#eeb92f');
+
+   
+
+   var x = (dataRight - dataLeft) / (yearMonth -1);
+   for(var i = 1; i <= year ; i++){
+      texts = i < 10 ? '0' + i : i;
+      textWidth = graphic.textWidth(i);
+      graphic.drawText(texts, dataLeft +( x * (i-1) -textWidth ),  dayHour + (imgH+title+1)*2, '#eeb92f');
    }
    // graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
    // text = yearEnd.format('MM');
@@ -476,9 +500,9 @@ MO.FEaiChartPerfMarketerChart_onPaintBegin = function FEaiChartPerfMarketerChart
    var yearDataTop = dataTop + yH;
    var yeardataBottom = dataBottom +yH;
 
-   o.drawTrend(graphic, year, yearProportion, '_redemption', dataLeft, yearDataTop, dataRight, yeardataBottom, dataHeight, endTimeA, timeSpan, maxAmount,'#457eff', '#457eff');
-   o.drawTrend(graphic, year, yearProportion, '_investment', dataLeft, yearDataTop, dataRight, yeardataBottom, dataHeight, endTimeA, timeSpan, maxAmount, '#fb2509', '#fb2509');
-   o.drawTrend(graphic, year, yearProportion, '_netinvestment', dataLeft, yearDataTop, dataRight, yeardataBottom, dataHeight, endTimeA, timeSpan, maxAmount, '#02fb49', '#02fb49');
+   o.drawTrend(graphic, yearStart, year, yearProportion, '_redemption', dataLeft, yearDataTop, dataRight, yeardataBottom, dataHeight, endTimeA, timeSpan, maxAmount,'#457eff', '#457eff',"#fff","#457eff");
+   o.drawTrend(graphic, yearStart, year, yearProportion, '_investment', dataLeft, yearDataTop, dataRight, yeardataBottom, dataHeight, endTimeA, timeSpan, maxAmount, '#fb2509', '#fb2509',"#fff","#fb2509");
+   o.drawTrend(graphic, yearStart, year, yearProportion, '_netinvestment', dataLeft, yearDataTop, dataRight, yeardataBottom, dataHeight, endTimeA, timeSpan, maxAmount, '#02fb49', '#02fb49',"#fff","#02fb49");
   
    yearStart.date.setTime(endTimeA);
    yearStart.refresh();

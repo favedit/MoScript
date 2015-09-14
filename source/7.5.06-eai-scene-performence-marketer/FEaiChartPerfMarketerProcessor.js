@@ -363,7 +363,6 @@ MO.FEaiChartPerfMarketerProcessor_process = function FEaiChartPerfMarketerProces
       var endDate = o._endDate;
       beginDate.assign(endDate);
       endDate.assign(systemDate);
-      
       // statistics.marketer().doCustomerDynamic(o,o.onPerformanceDate,  beginDate.format(), endDate.format());
       //statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
@@ -372,13 +371,13 @@ MO.FEaiChartPerfMarketerProcessor_process = function FEaiChartPerfMarketerProces
       // 设置开始时间
       var beginDate24H = o._24HBeginDate;
       beginDate24H.assign(systemDate);
-      beginDate24H.truncMinute(15);
+      // beginDate24H.truncMinute(15);
       // beginDate24H.addDay(-1);
       beginDate24H.addHour(-systemDate.hour);
       // 设置结束时间
       var endDate24H = o._24HEndDate;
       endDate24H.assign(systemDate);
-      endDate24H.truncMinute(15);
+      // endDate24H.truncMinute(15);
 
       var beginDate30D = o._monthStartTime;
       beginDate30D.assign(systemDate);

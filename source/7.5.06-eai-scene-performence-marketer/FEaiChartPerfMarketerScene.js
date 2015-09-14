@@ -25,6 +25,7 @@ MO.FEaiChartPerfMarketerScene = function FEaiChartPerfMarketerScene(o) {
    o._timeline               = null;
    o._head                   = null;
    o._charts                 = null;
+   o._calculate              = null;
    // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
@@ -277,6 +278,14 @@ MO.FEaiChartPerfMarketerScene_setup = function FEaiChartPerfMarketerScene_setup(
    charts.build();
    o._guiManager.register(charts);
    //..........................................................
+   // 当月  当日  
+   // var calculate = o._calculate = MO.Class.create(MO.FEaiChartPerfMarketerCalculate);
+   // calculate.linkGraphicContext(o);
+   // calculate.setup();
+   // calculate.build();
+   // o._guiManager.register(calculate);
+   // 
+   //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
    //..........................................................
@@ -393,5 +402,25 @@ MO.FEaiChartPerfMarketerScene_processResize = function FEaiChartPerfMarketerScen
       charts.setHeight(862);
       charts.setWidth(1876);
    }
+   // 
+   // var calculate = o._calculate;
+   // if (isVertical) {
+   //    calculate.setDockCd(MO.EUiDock.Bottom);
+   //    calculate.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+   //    calculate.setLeft(10);
+   //    calculate.setRight(10);
+   //    calculate.setBottom(10);
+   //    calculate.setWidth(1060);
+   //    calculate.setHeight(900);
+   // } else {
+   //    calculate.setDockCd(MO.EUiDock.Bottom);
+   //    calculate.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.bottom );
+   //    calculate.setTop(0);
+   //    calculate.setLeft(24);
+   //    calculate.setBottom(20);
+   //    calculate.setHeight(862);
+   //    calculate.setWidth(433);
+   // }
+   
 
 }
