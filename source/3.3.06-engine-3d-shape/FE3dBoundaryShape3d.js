@@ -98,7 +98,8 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
          vertexData[vertexIndex++] = Math.sin(y) * scaleTop;
          vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleTop;
          coordData[coordIndex++] = cx / 360 + 0.5;
-         coordData[coordIndex++] = 0.5 - cy / 180;
+         //coordData[coordIndex++] = 0.5 - cy / 180;
+         coordData[coordIndex++] = cy / 180 - 0.5;
       }
       // 填充三角索引
       var indexes = boundary.indexes();

@@ -115,8 +115,6 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    //..........................................................
    // 创建纹理
    var texture = o._texture = context.createFlatTexture();
-   //texture.setOptionFlipY(true);
-   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
    o._material.setTexture('diffuse', texture);
    //..........................................................
    // 加载图片
@@ -180,7 +178,10 @@ MO.FEaiWorldEntity_processLoad = function FEaiWorldEntity_processLoad(){
    var image = o._imageGround;
    if(image){
       if(image.testReady()){
-         o._texture.upload(image);
+         var texture = o._texture;
+         texture.upload(image);
+         texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+         //texture.setOptionFlipY(true);
          o._imageGround = null;
       }
       return false;

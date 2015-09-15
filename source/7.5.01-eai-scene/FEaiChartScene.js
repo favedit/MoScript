@@ -174,21 +174,15 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    }
    //..........................................................
    // 创建背景
-   var bitmap = context.createObject(MO.FE3dBitmap);
-   bitmap._optionSelect = false;
-   bitmap.loadUrl('{eai.resource}/background2.jpg');
-   bitmap.material().info().effectCode = 'fill';
-   stage.groundLayer().push(bitmap);
-   //var control = o._background = MO.Class.create(MO.FGuiPicture);
-   //control.linkGraphicContext(o);
-   //control.size().assign(MO.Eai.Canvas.screenSize());
-   //control.size().set(1920, 1080);
-   //control.setBackResource('url:/script/ars/eai/background.png');
-   //control.psInitialize();
-   //control.build();
-   //control.renderable().setOptionFull(true);
-   //o._guiManager.register(control);
-   //stage.groundLayer().push(control);
+   var backgroundImage = o._application._groundBitmap;
+   //var texture = o._graphicContext.createFlatTexture();
+   //texture.update(backgroundImage);
+   //var bitmap = o._groundBitmap = context.createObject(MO.FE3dBitmap);
+   //bitmap._optionSelect = false;
+   //bitmap.loadUrl('{eai.resource}/background2.jpg');
+   //bitmap.material().info().effectCode = 'fill';
+   //bitmap._texture = texture;
+   stage.groundLayer().push(backgroundImage);
    //..........................................................
    // 加载标志
    //var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);

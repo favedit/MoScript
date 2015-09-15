@@ -6,10 +6,11 @@
 // @history 150610
 //==========================================================
 MO.FE3dBitmapData = function FE3dBitmapData(o){
-   o = MO.Class.inherits(this, o, MO.FE3dFaceData);
+   o = MO.Class.inherits(this, o, MO.FE3dFaceData, MO.MListener);
    //..........................................................
    // @attribute
    o._image      = null;
+   o._listenersImageLoad = MO.Class.register(o, new MO.AListener('_listenersImageLoad'));
    //..........................................................
    // @event
    o.onImageLoad = MO.FE3dBitmapData_onImageLoad;
@@ -40,9 +41,11 @@ MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
    var adjustWidth = MO.Lang.Integer.pow2(width);
    var adjustHeight = MO.Lang.Integer.pow2(height);
    o._adjustSize.set(adjustWidth, adjustHeight);
+   var texture = o._texture;
    if((adjustWidth == width) && (adjustHeight == height)){
       // 上传纹理
-      o._texture.upload(image);
+      texture.upload(image);
+      //texture.setOptionFlipY(false);
    }else{
       // 绘制画板
       var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
@@ -50,7 +53,8 @@ MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
       var context2d = canvas.graphicContext();
       context2d.drawImage(image, 0, 0, width, height);
       // 创建纹理
-      o._texture.upload(canvas);
+      texture.upload(canvas);
+      //texture.setOptionFlipY(false);
       // 释放画板
       canvasConsole.free(canvas);
    }
@@ -58,6 +62,7 @@ MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
    image.dispose();
    // 设置属性
    o._ready = true;
+   o.processImageLoadListener(o);
 }
 
 //==========================================================

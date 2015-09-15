@@ -16,6 +16,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
    //..........................................................
    // @method
+   o.onLoadGround    = MO.FEaiChartApplication_onLoadGround;
    o.onLoadResource  = MO.FEaiChartApplication_onLoadResource;
    //..........................................................
    // @method
@@ -32,13 +33,28 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
 //
 // @method
 //==========================================================
-MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
+MO.FEaiChartApplication_onLoadGround = function FEaiChartApplication_onLoadGround(event){
    var o = this;
    // 选择舞台和章节
    var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
    chapter.selectSceneByCode(o._sceneCode);
    // 修正画面大小
    o.processResize();
+}
+
+//==========================================================
+// <T>加载资源处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(event){
+   var o = this;
+   var canvas = o._desktop.canvas3d();
+   var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
+   bitmap._optionSelect = false;
+   bitmap.loadUrl('{eai.resource}/background2.jpg');
+   bitmap.material().info().effectCode = 'fill';
+   bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
 }
 
 //==========================================================
