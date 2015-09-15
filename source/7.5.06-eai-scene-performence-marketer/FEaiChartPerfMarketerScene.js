@@ -241,6 +241,21 @@ MO.FEaiChartPerfMarketerScene_setup = function FEaiChartPerfMarketerScene_setup(
    // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.performence-marketer.LogoBar');
    frame.setDisplayOrder(10);
+   // 当日
+   var dayCustomerRegister = frame.findComponent('dayCustomerRegister');
+   dayCustomerRegister.setBasicUnitText('人');
+   var dayMemberRegister = frame.findComponent('dayMemberRegister');
+   dayMemberRegister.setBasicUnitText('人');
+   // 当月
+   var monthCustomerRegister = frame.findComponent('monthCustomerRegister');
+   monthCustomerRegister.setBasicUnitText('人');
+   var monthMemberRegister = frame.findComponent('monthMemberRegister');
+   monthMemberRegister.setBasicUnitText('人');
+   // 累计
+   var yearCustomerRegister = frame.findComponent('yearCustomerRegister');
+   yearCustomerRegister.setBasicUnitText('人');
+   var yearhMemberRegister = frame.findComponent('yearhMemberRegister');
+   yearhMemberRegister.setBasicUnitText('人');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
