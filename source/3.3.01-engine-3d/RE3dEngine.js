@@ -32,6 +32,7 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    // 通用效果器
    effectConsole.register('general.color.control', MO.FE3dControlAutomaticEffect);
    effectConsole.register('general.color.flat', MO.FE3dGeneralColorFlatEffect);
+   effectConsole.register('general.color.fill', MO.FE3dGeneralColorFillEffect);
    effectConsole.register('general.color.automatic', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skin', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.parallax', MO.FE3dGeneralColorAutomaticEffect);

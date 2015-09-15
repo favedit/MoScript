@@ -122,6 +122,7 @@ MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
 MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var o = this;
    o.__base.FEaiScene.setup.call(o);
+   var context = o._graphicContext;
    // 获得实体控制台
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    entityConsole.linkGraphicContext(o);
@@ -173,6 +174,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    }
    //..........................................................
    // 创建背景
+   var bitmap = context.createObject(MO.FE3dBitmap);
+   bitmap._optionSelect = false;
+   bitmap.loadUrl('{eai.resource}/background2.jpg');
+   bitmap.material().info().effectCode = 'fill';
+   stage.groundLayer().push(bitmap);
    //var control = o._background = MO.Class.create(MO.FGuiPicture);
    //control.linkGraphicContext(o);
    //control.size().assign(MO.Eai.Canvas.screenSize());

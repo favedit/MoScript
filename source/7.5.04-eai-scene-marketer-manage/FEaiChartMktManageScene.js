@@ -90,6 +90,7 @@ MO.FEaiChartMktManageScene = function FEaiChartMktManageScene(o){
 //==========================================================
 MO.FEaiChartMktManageScene_onOrganizationFetch = function FEaiChartMktManageScene_onOrganizationFetch(event) {
    var o = this;
+   var mapEntity = o._mapEntity;
    // 读取数据
    var info = o._organizationInfo;
    info.unserializeSignBuffer(event.sign, event.content, true);
@@ -114,7 +115,7 @@ MO.FEaiChartMktManageScene_onOrganizationFetch = function FEaiChartMktManageScen
          cityEntity.update(city);
       }
    }
-   o._mapEntity.upload();
+   mapEntity.upload();
 }
 
 //==========================================================
@@ -146,7 +147,9 @@ MO.FEaiChartMktManageScene_onProcessReady = function FEaiChartMktManageScene_onP
    // 显示地图
    o._mapEntity.showWorld();
    // 显示国家
-   o._mapEntity.showCountry(o._countryEntity);
+   var countryEntity = o._countryEntity;
+   countryEntity.start();
+   o._mapEntity.showCountry(countryEntity);
    // 显示城市
    o._mapEntity.showCity();
 }
@@ -182,10 +185,6 @@ MO.FEaiChartMktManageScene_onProcess = function FEaiChartMktManageScene_onProces
          if (hLoading) {
             document.body.removeChild(hLoading);
          }
-         // 显示国家
-         var countryEntity = o._countryEntity;
-         countryEntity.start();
-         o._mapEntity.showCountry(countryEntity);
          // 加载完成
          o.processLoaded();
          o._playing = true;

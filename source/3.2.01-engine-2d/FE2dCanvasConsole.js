@@ -49,9 +49,9 @@ MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width,
    var canvas = pools.alloc(code);
    if(!canvas){
       // 创建画板
-      canvas = MO.Class.create(FE2dCanvas);
+      canvas = MO.Class.create(MO.FE2dCanvas);
       canvas.size().set(width, height);
-      canvas.build(MO.RWindow._hDocument);
+      canvas.build(MO.Window._hDocument);
    }
    // 重置处理
    canvas.reset();
