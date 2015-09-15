@@ -74,60 +74,6 @@ MO.FEaiChartStatMarketerBarChart_oeUpdate = function FEaiChartStatMarketerBarCha
    return MO.EEventStatus.Stop;
 }
 
-//==========================================================
-// <T>前绘制处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartStatMarketerBarChart_drawTrend = function FEaiChartStatMarketerBarChart_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor) {
-   var o = this;
-   var startTime = o._startTime;
-   var units = o._trendInfo.units();
-   var count = units.count();
-   var unitFirst = units.first();
-   var handle = graphic._handle;
-   handle.lineCap = 'round';
-   // 找到最大
-   var pixPer10k = dataHeight * 10000 / maxAmount;
-   var amount = unitFirst[propertyName];
-   var lastX = dataLeft;
-   var lastY = dataBottom - amount / 10000 * pixPer10k;
-   // 绘制曲线
-   handle.beginPath();
-   handle.moveTo(lastX, lastY);
-   var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
-   for (var i = 1; i < count; i++) {
-      var unit = units.get(i);
-      var value = unit[propertyName];
-      startTime.parseAuto(unit.recordDate());
-      startTime.refresh();
-      var degreeSpan = startTime.date.getTime() - bakTime;
-      var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
-      var y = dataBottom - value / 10000 * pixPer10k;
-      y -= o._baseHeight;
-      handle.lineTo(x, y);
-   }
-   var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
-   var bottomColor = '#' + hexColor.substring(2);
-   var opBottomColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
-   var hexColor = MO.Lang.Hex.format(rateResource.findRate(1));
-   var topColor = '#' + hexColor.substring(2);
-   var opTopColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
-   var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
-   gradient.addColorStop('0', bottomColor);
-   gradient.addColorStop('1', topColor);
-   var opGradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
-   opGradient.addColorStop('0', opBottomColor);
-   opGradient.addColorStop('1', opTopColor);
-   handle.strokeStyle = gradient;
-   handle.lineWidth = 4;
-   handle.stroke();
-   handle.fillStyle = opGradient;
-   handle.lineTo(x, dataBottom);
-   handle.lineTo(dataLeft, dataBottom);
-   handle.lineTo(dataLeft, lastY);
-   handle.fill();
-}
 
 //==========================================================
 // <T>绘制柱状图处理。</T>
@@ -182,7 +128,7 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
 
             realityCount++;
 
-            hight = 170 * (province.investmentTotal() + maxInverstment / 3) / maxInverstment
+            hight = 17/25*  rectangle.height* (province.investmentTotal() + maxInverstment / 3) / maxInverstment
 
             graphic.setFont('9px Microsoft YaHei');
 
@@ -195,7 +141,7 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
 
          }
       }
-      var gradient = graphic.createLinearGradient(0, 845, 0, 1010);
+      var gradient = graphic.createLinearGradient(0,  rectangle.top+30, 0,bottom -80);
       gradient.addColorStop('0', '#fb2609');
       gradient.addColorStop('1', '#1c12a5');
       graphic._handle.fillStyle = gradient;
