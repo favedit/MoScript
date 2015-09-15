@@ -141,7 +141,9 @@ MO.FEaiChartPerfMarketerChart_drawTrend = function FEaiChartPerfMarketerChart_dr
    var lastX = dataLeft;
    var lastY = dataBottom - amount / 10000 * pixPer10k;
 
-
+   times.parseAuto(unitFirst.recordDate());
+   times.refresh();
+   bakTime = times.date.getTime();
    var handle = graphic._handle;
    handle.lineCap = 'round';
    // 绘制曲线
