@@ -215,7 +215,7 @@ MO.FEaiChartDptMarketerTimeline_onPaintBegin = function FEaiChartDptMarketerTime
       if (drawText) {
          graphic.setFont('bold 20px Microsoft YaHei');
          textWidth = graphic.textWidth(text);
-         graphic.drawText(text+"--", x - textWidth / 2, middle + 20, '#59FDE9');
+         graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
       }
 
    }
