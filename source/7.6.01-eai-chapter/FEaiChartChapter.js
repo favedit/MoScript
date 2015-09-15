@@ -14,6 +14,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneTotal              = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
    o._sceneHistory            = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
    o._sceneCustomer           = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
+   o._sceneCustomerSphere     = MO.Class.register(o, new MO.AGetter('_sceneCustomerSphere'));
    o._sceneMarketerCustomer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerCustomer'));
    o._sceneMarketerMarketer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerMarketer'));
    o._sceneMarketerManage     = MO.Class.register(o, new MO.AGetter('_sceneMarketerManage'));
@@ -56,6 +57,10 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
    var o = this;
    var scene = null;
    switch(code){
+      // 创建客户球型数据图表
+      case MO.EEaiScene.ChartCustomerSphere:
+         scene = o._sceneCustomerSphere = MO.Class.create(MO.FEaiChartCustomerSphereScene);
+         break;
       // 创建理财师客户数据图表
       case MO.EEaiScene.ChartMarketerCustomer:
          scene = o._sceneMarketerCustomer = MO.Class.create(MO.FEaiChartMktCustomerScene);

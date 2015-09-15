@@ -163,9 +163,9 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    var positionTotal = vertexTotal * 2;
    for(var i = 0; i < positionTotal; i++){
       colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
-      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
-      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
-      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.green * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.blue * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.alpha * 255) & 0xFF;
    }
    // 创建三角面渲染对象
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);

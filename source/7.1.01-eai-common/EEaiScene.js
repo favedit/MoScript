@@ -27,6 +27,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartPerformence = 'chart.performence';
    // 图表
    o.ChartCustomer             = 'chart.customer';
+   o.ChartCustomerSphere       = 'chart.customer.sphere';
    o.ChartMarketerCustomer     = 'chart.marketer.customer';
    o.ChartMarketerMarketer     = 'chart.marketer.marketer';
    o.ChartMarketerManage       = 'chart.marketer.manage';

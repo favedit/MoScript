@@ -36,10 +36,11 @@ MO.FEaiChartPerfMarketerHead_setup = function FEaiChartPerfMarketerHead_setup(){
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建图片
    var image = o._logoimg = imageConsole.load('{eai.resource}/performence_marketer/logo.png');
-   image.addLoadListener = (o, o.onImageLoad);
+   image.addLoadListener(o, o.onImageLoad);
    var image = o._titleImage = imageConsole.load('{eai.resource}/performence_marketer/telte.png');
    image.addLoadListener(o, o.onImageLoad);
 }
+
 //==========================================================
 // <T>构造处理。</T>
 //

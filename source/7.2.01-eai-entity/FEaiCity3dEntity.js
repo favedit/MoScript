@@ -172,7 +172,7 @@ MO.FEaiCity3dEntity_update = function FEaiCity3dEntity_update(data){
    range = rate * 2;
    rate = MO.Lang.Float.toRange(rate, 0, 1);
    o._rangeColor.setIntAlpha(color, rate * 2);
-   o._range = MO.Lang.Float.toRange(Math.sqrt(range), 1, 6);
+   o._range = MO.Lang.Float.toRange(Math.sqrt(range / 100), 1, 2);
 }
 
 //==========================================================
