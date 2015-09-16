@@ -367,9 +367,9 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
       timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(20);
-      timeline.setBottom(30);
+      timeline.setBottom(10);
       timeline.setRight(780);
-      timeline.setHeight(250);
+      timeline.setHeight(300);
    }
    //..........................................................
    // 设置表格

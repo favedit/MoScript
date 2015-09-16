@@ -136,9 +136,11 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    var graphic = event.graphic;
    var rectangle = event.rectangle;
 
+   //graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, 'red', 2);
+
    var top = rectangle.top;
    var bottom = rectangle.top + rectangle.height;
-   var middle = bottom - 30;
+   var middle = bottom - 50;
    var decoLeft = rectangle.left + 5;
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
@@ -149,8 +151,8 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
    var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
    var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-   var dataTop = top + 60;
-   var dataBottom = bottom - 30;
+   var dataTop = top + 90;
+   var dataBottom = bottom - 50;
    var dataHeight = dataBottom - dataTop;
    // 主轴
    graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
@@ -177,9 +179,12 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
       }
    }
    graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
-   text = endTime.format('HH24:MI');
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
+   var endText = endTime.format('HH24:MI');
+   if (endText != text) {
+      textWidth = graphic.textWidth(endText);
+      graphic.drawText(endText, dataRight - textWidth / 2, middle + 40, '#59FDE9');
+   }
+  
 
    startTime.date.setTime(bakTime);
    startTime.refresh();
@@ -230,10 +235,10 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    }
    // 输出数据文本
    graphic.setFont('24px Microsoft YaHei');
-   graphic.drawText("24H数据曲线", decoLeft, top, '#54F0FF');
+   graphic.drawText("24H数据曲线", decoLeft, top + 30, '#54F0FF');
    // 输出数据文本
    graphic.setFont('22px Microsoft YaHei');
-   var rowStart = top + 30;
+   var rowStart = top + 60;
    var rowHeight = 22;
    // 计算宽度
    var textWidth = graphic.textWidth('投资总计：');
