@@ -128,7 +128,7 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
 
             realityCount++;
 
-            hight = 17/25*  rectangle.height* (province.investmentTotal() + maxInverstment / 3) / maxInverstment
+            hight = 25/25*  rectangle.height* (province.investmentTotal()+maxInverstment/10) / maxInverstment
 
             graphic.setFont('9px Microsoft YaHei');
 
