@@ -126,7 +126,7 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
          if (provincename && provincename.label()) {  
             provinceLabel = provincename.label();        
             realityCount++;
-            hight = 25/25*  rectangle.height* (province.investmentTotal()+maxInverstment/70) / maxInverstment
+            hight = 17/25*  rectangle.height* (province.investmentTotal()+maxInverstment/70) / maxInverstment
             graphic.setFont('9px Microsoft YaHei');
             var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
             var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
