@@ -39,9 +39,22 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.resetDate             = MO.FEaiChartScene_resetDate;
    o.processResize         = MO.FEaiChartScene_processResize;
    o.deactive              = MO.FEaiChartScene_deactive;
+   // @event
+   o.onOperationDown       = MO.FEaiChartScene_onOperationDown;
    // @method
    o.dispose               = MO.FEaiChartScene_dispose;
    return o;
+}
+
+//==========================================================
+// <T>鼠标按下处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartScene_onOperationDown = function FEaiChartScene_onOperationDown(event) {
+   var o = this;
+   o._mapEntity._startTime = 0;
 }
 
 //==========================================================

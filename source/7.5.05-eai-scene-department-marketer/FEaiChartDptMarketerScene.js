@@ -31,6 +31,7 @@ MO.FEaiChartDptMarketerScene = function FEaiChartDptMarketerScene(o) {
    o._statusLayerLevel       = 100;
    //..........................................................
    // @event
+   o.onOperationDown         = MO.FEaiChartDptMarketerScene_onOperationDown;
    o.onInvestmentDataChanged = MO.FEaiChartDptMarketerScene_onInvestmentDataChanged;
    o.onOperationVisibility   = MO.FEaiChartDptMarketerScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartDptMarketerScene_onProcessReady;
@@ -46,6 +47,17 @@ MO.FEaiChartDptMarketerScene = function FEaiChartDptMarketerScene(o) {
    // @method
    o.processResize           = MO.FEaiChartDptMarketerScene_processResize;
    return o;
+}
+
+//==========================================================
+// <T>鼠标按下处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartDptMarketerScene_onOperationDown = function FEaiChartDptMarketerScene_onOperationDown(event) {
+   var o = this;
+   o._countryEntity._startTime = 0;
 }
 
 //==========================================================
