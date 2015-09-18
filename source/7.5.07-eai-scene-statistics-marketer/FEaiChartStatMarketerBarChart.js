@@ -123,19 +123,14 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
          var provinceLabel = '';
          var hight = 0;
          var color = '#F8CB3D'
-         if (provincename && provincename.label()) {
-            provinceLabel = provincename.label();
-
+         if (provincename && provincename.label()) {  
+            provinceLabel = provincename.label();        
             realityCount++;
-
-            hight = 25/25*  rectangle.height* (province.investmentTotal()+maxInverstment/10) / maxInverstment
-
+            hight = 25/25*  rectangle.height* (province.investmentTotal()+maxInverstment/70) / maxInverstment
             graphic.setFont('9px Microsoft YaHei');
-
             var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
             var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
             var bottomColor = '#' + hexColor.substring(2);
-
             graphic.drawTextVertical(provinceLabel, decoLeft + realityCount * intervalWidth - 4, bottom - 45, provinceTextFont);
             graphic._handle.rect(decoLeft + realityCount * intervalWidth, bottom - 80 - hight, width, hight);
 
