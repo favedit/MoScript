@@ -347,9 +347,10 @@ MO.FG3dAutomaticEffect_bindSamplers = function FG3dAutomaticEffect_bindSamplers(
       for(var n = 0; n < count; n++){
          var sampler = samplers.at(n);
          if(sampler._bind && sampler._statusUsed){
+            var name = sampler.name();
             var linker = sampler.linker();
             var texture = renderable.findTexture(linker);
-            program.setSampler(sampler.name(), texture.texture());
+            program.setSampler(name, texture.texture());
          }
       }
    }
@@ -490,6 +491,7 @@ MO.FG3dSelectPass = function FG3dSelectPass(o){
    o._data         = null;
    o.construct     = MO.FG3dSelectPass_construct;
    o.setup         = MO.FG3dSelectPass_setup;
+   o.activeEffects = MO.FG3dSelectPass_activeEffects;
    o.drawRegion    = MO.FG3dSelectPass_drawRegion;
    return o;
 }
@@ -511,41 +513,59 @@ MO.FG3dSelectPass_setup = function FG3dSelectPass_setup(){
    t.textures().push(T);
    t.build();
 }
-MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(p){
+MO.FG3dSelectPass_activeEffects = function FG3dSelectPass_activeEffects(region, renderables){
+   var o = this;
+   var spaceName = region.spaceName();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(renderable.optionSelect()){
+         var info = renderable.selectInfo(spaceName);
+         if(!info.effect){
+            info.effect = MO.Console.find(MO.FG3dEffectConsole).find(o._graphicContext, region, renderable);
+         }
+      }
+   }
+}
+MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(region){
    var o = this;
    var context = o._graphicContext;
    var handle = context.handle();
    context.setRenderTarget(o._renderTarget);
    context.clear(0, 0, 0, 0, 1, 1);
-   var rs = p.allRenderables();
-   o.activeEffects(p, rs);
-   var rc = rs.count();
-   for(var i = 0; i < rc; i++){
-      var r = rs.get(i);
-      var e = r.activeEffect();
-      context.setProgram(e.program());
-      var d = r.display();
-      if(!d){
-         e.drawRenderable(p, r, i);
-      }else if(!d._optionFace){
-         e.drawRenderable(p, r, i);
+   var renderables = region.allRenderables();
+   o.activeEffects(region, renderables);
+   var renderableCount = renderables.count();
+   for(var i = 0; i < renderableCount; i++){
+      var renderable = renderables.at(i);
+      if(renderable.optionSelect()){
+         var effect = renderable.activeEffect();
+         context.setProgram(effect.program());
+         var display = renderable.display();
+         if(!display){
+            effect.drawRenderable(region, renderable, i);
+         }else if(!display._optionFace){
+            effect.drawRenderable(region, renderable, i);
+         }
       }
    }
    context.clearDepth(1);
-   for(var i = 0; i < rc; i++){
-      var r = rs.get(i);
-      var e = r.activeEffect();
-      context.setProgram(e.program());
-      var d = r.display();
-      if(d && d._optionFace){
-         e.drawRenderable(p, r, i);
+   for(var i = 0; i < renderableCount; i++){
+      var renderable = renderables.at(i);
+      if(renderable.optionSelect()){
+         var effect = renderable.activeEffect();
+         context.setProgram(effect.program());
+         var display = renderable.display();
+         if(display && display._optionFace){
+            effect.drawRenderable(region, renderable, i);
+         }
       }
    }
    handle.readPixels(0, 0, 1, 1, handle.RGBA, handle.UNSIGNED_BYTE, o._data);
-   var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
+   var index = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
    o._selectRenderable = null;
-   if(v != 0){
-      o._selectRenderable = rs.get(v - 1);
+   if(index != 0){
+      o._selectRenderable = renderables.get(index - 1);
    }
 }
 MO.FG3dSelectSkeletonEffect = function FG3dSelectSkeletonEffect(o){
@@ -577,21 +597,22 @@ MO.FG3dSelectSkeletonEffect_drawRenderable = function FG3dSelectSkeletonEffect_d
    c.drawTriangles(pr.indexBuffer());
 }
 MO.FG3dSelectTechnique = function FG3dSelectTechnique(o){
-   o = MO.Class.inherits(this, o, FG3dTechnique);
+   o = MO.Class.inherits(this, o, MO.FG3dTechnique);
    o._code       = 'select';
    o._passSelect = MO.Class.register(o, new MO.AGetter('_passSelect'));
    o.setup       = MO.FG3dSelectTechnique_setup;
    o.test        = MO.FG3dSelectTechnique_test;
+   o.testDynamic = MO.FG3dSelectTechnique_testDynamic;
    return o;
 }
 MO.FG3dSelectTechnique_setup = function FG3dSelectTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    o.registerMode(MO.EG3dTechniqueMode.Result);
-   var pd = o._passSelect = MO.Class.create(MO.FG3dSelectPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   o._passes.push(pd);
+   var pass = o._passSelect = MO.Class.create(MO.FG3dSelectPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }
 MO.FG3dSelectTechnique_test = function FG3dSelectTechnique_test(region, x, y){
    var o = this;

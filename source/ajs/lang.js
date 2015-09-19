@@ -130,6 +130,7 @@ MO.EAnnotation = new function EAnnotation(){
 MO.EDataType = new function EDataType(){
    var o = this;
    o.Unknown = 0;
+   o.Boolean = 1;
    o.Int8 = 1;
    o.Int16 = 2;
    o.Int32 = 3;

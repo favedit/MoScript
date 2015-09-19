@@ -691,6 +691,7 @@ MO.FEaiChartLiveScene_processResize = function FEaiChartLiveScene_processResize(
 MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.Class.inherits(this, o, MO.FEaiScene);
    o._optionMapCountry     = true;
+   o._optionMapCity3d      = false;
    o._readyProvince        = false;
    o._countryReady         = false;
    o._nowDate              = null;
@@ -710,8 +711,13 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o.resetDate             = MO.FEaiChartScene_resetDate;
    o.processResize         = MO.FEaiChartScene_processResize;
    o.deactive              = MO.FEaiChartScene_deactive;
+   o.onOperationDown       = MO.FEaiChartScene_onOperationDown;
    o.dispose               = MO.FEaiChartScene_dispose;
    return o;
+}
+MO.FEaiChartScene_onOperationDown = function FEaiChartScene_onOperationDown(event) {
+   var o = this;
+   o._mapEntity._startTime = 0;
 }
 MO.FEaiChartScene_onLoadTemplate = function FEaiChartScene_onLoadTemplate(event){
    var o = this;
@@ -745,8 +751,10 @@ MO.FEaiChartScene_fixMatrix = function FEaiChartScene_fixMatrix(matrix){
 MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var o = this;
    o.__base.FEaiScene.setup.call(o);
+   var context = o._graphicContext;
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    entityConsole.linkGraphicContext(o);
+   entityConsole._option3d = o._optionMapCity3d;
    entityConsole.setup();
    var mapEntity = o._mapEntity = entityConsole.mapEntity();
    var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
@@ -780,6 +788,8 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       control.build();
       o._guiManager.register(control);
    }
+   var backgroundImage = o._application._groundBitmap;
+   stage.groundLayer().push(backgroundImage);
 }
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;

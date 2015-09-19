@@ -35,8 +35,8 @@ MO.FE3dGeneralTechnique_setup = function FE3dGeneralTechnique_setup(){
    o.registerMode(MO.EG3dTechniqueMode.Result);
    //..........................................................
    // 创建颜色处理过程
-   var p = o._passColor = MO.Class.create(MO.FE3dGeneralColorPass);
-   p.linkGraphicContext(o);
-   p.setup();
-   o._passes.push(p);
+   var pass = o._passColor = MO.Class.create(MO.FE3dGeneralColorPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }

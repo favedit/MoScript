@@ -105,7 +105,7 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
    // 显示城市
-   o._mapEntity.showCity();
+   //o._mapEntity.showCity();
 }
 
 //==========================================================
@@ -141,7 +141,7 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
          }
          var countryEntity = o._countryEntity;
          countryEntity.start();
-         o._mapEntity.showCountry(countryEntity);
+         //o._mapEntity.showCountry(countryEntity);
          o.processLoaded();
          o._playing = true;
          o._statusStart = true;
@@ -157,7 +157,7 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       }
       // 显示界面
       if (!o._mapReady) {
-         o._guiManager.show();
+         //o._guiManager.show();
          // 淡出显示界面
          var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
          alphaAction.setAlphaBegin(0);
@@ -168,7 +168,7 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
          o._mapReady = true;
       }
       // 投资处理
-      o._processor.process();
+      // o._processor.process();
       //..........................................................
       // 设置数据
       var logoBar = o._logoBar;
@@ -226,14 +226,15 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    o.__base.FEaiChartScene.setup.call(o);
    var desktop = o._application.desktop();
    var canvas3d = desktop.canvas3d();
+   // 设置舞台
    var stage = o._activeStage;
    stage.selectTechnique(o, MO.FE3dSphereTechnique);
-   var dataLayer = o._activeStage.dataLayer();
    //..........................................................
    // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
    o._guiManager.register(frame);
    //..........................................................
+   var dataLayer = stage.dataLayer();
    // 创建投资数据
    var invement = o._processor = MO.Class.create(MO.FEaiChartMktCustomerProcessor);
    invement.linkGraphicContext(o);
@@ -263,15 +264,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
-   //..........................................................
-   // 创建粒子
-   //var context = o._graphicContext;
-   //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
-   //var particleData = context.createObject(MO.FE3dParticleData);
-   //particleData.loadUrl('{eai.resource}/particle/6.png');
-   //particle.setData(particleData);
-   //o.fixMatrix(particle.matrix());
-   //o._activeStage.spriteLayer().pushRenderable(particle);
    //..........................................................
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 建立城市实体

@@ -402,6 +402,7 @@ MO.TMap = function TMap(){
    o.setValue      = MO.TMap_setValue;
    o.get           = MO.TMap_get;
    o.set           = MO.TMap_set;
+   o.setNvl        = MO.TMap_setNvl;
    o.assign        = MO.TMap_assign;
    o.append        = MO.TMap_append;
    o.insert        = MO.TMap_insert;
@@ -514,6 +515,11 @@ MO.TMap_set = function TMap_set(name, value){
       o._table[code] = index;
    }
    o._values[index] = value;
+}
+MO.TMap_setNvl = function TMap_setNvl(name, value){
+   if(value){
+      this.set(name, value);
+   }
 }
 MO.TMap_assign = function TMap_assign(map){
    var o = this;
@@ -971,7 +977,6 @@ MO.TString_dump = function TString_dump(){
 MO.RAssert = function RAssert(){
    var o = MO.RSingleton.call(this);
    o.debugBegin = MO.Runtime.empty;
-   o.debug      = MO.Runtime.empty;
    o.debugEnd   = MO.Runtime.empty;
    return o;
 }
@@ -984,6 +989,9 @@ MO.RAssert.prototype.isFalse = function RAssert_isFalse(value){
    if(value){
       throw new Error('Assert false failure.');
    }
+}
+MO.RAssert.prototype.debug = function RAssert_debug(value){
+   return value;
 }
 MO.RAssert.prototype.debugTrue = function RAssert_debugTrue(value){
    if(!value){

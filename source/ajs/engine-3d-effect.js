@@ -107,10 +107,10 @@ MO.FE3dControlTechnique_setup = function FE3dControlTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    o.registerMode(MO.EG3dTechniqueMode.Result);
-   var pd = o._passControl = MO.Class.create(MO.FE3dControlPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   o._passes.push(pd);
+   var pass = o._passControl = MO.Class.create(MO.FE3dControlPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }
 MO.FE3dControlTechnique_drawRegion = function FE3dControlTechnique_drawRegion(p){
    var o = this;
@@ -191,6 +191,22 @@ MO.FE3dGeneralColorAutomaticEffect_drawRenderable = function FE3dGeneralColorAut
       o.buildMaterial(info, renderable);
       program.setParameter('fc_materials', info.material.memory());
    }
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+MO.FE3dGeneralColorFillEffect = function FE3dGeneralColorFillEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.flat';
+   o.drawRenderable = MO.FE3dGeneralColorFillEffect_drawRenderable;
+   return o;
+}
+MO.FE3dGeneralColorFillEffect_drawRenderable = function FE3dGeneralColorFillEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var contextSize = context.size();
+   var program = o._program;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   program.setParameter4('vc_position', 2, 2, -1, 1);
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 MO.FE3dGeneralColorFlatEffect = function FE3dGeneralColorFlatEffect(o){
@@ -312,10 +328,10 @@ MO.FE3dGeneralTechnique_setup = function FE3dGeneralTechnique_setup(){
    o.registerMode(MO.EG3dTechniqueMode.SpecularLevel);
    o.registerMode(MO.EG3dTechniqueMode.SpecularColor);
    o.registerMode(MO.EG3dTechniqueMode.Result);
-   var p = o._passColor = MO.Class.create(MO.FE3dGeneralColorPass);
-   p.linkGraphicContext(o);
-   p.setup();
-   o._passes.push(p);
+   var pass = o._passColor = MO.Class.create(MO.FE3dGeneralColorPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }
 MO.FE3dShadowColorAutomaticEffect = function FE3dShadowColorAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
@@ -582,14 +598,15 @@ MO.FE3dShadowTechnique_setup = function FE3dShadowTechnique_setup(){
    o.registerMode(MO.EG3dTechniqueMode.SpecularColor);
    o.registerMode(MO.EG3dTechniqueMode.Result);
    var ps = o._passes;
-   var pd = o._passDepth = MO.Class.create(MO.FE3dShadowDepthPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   var pc = o._passColor = MO.Class.create(MO.FE3dShadowColorPass);
-   pc.linkGraphicContext(o);
-   pc.setup();
-   ps.push(pc);
-   pc.setTextureDepth(pd.textureDepth());
+   var passDepth = o._passDepth = MO.Class.create(MO.FE3dShadowDepthPass);
+   passDepth.linkGraphicContext(o);
+   passDepth.setup();
+   o.pushPass(passDepth);
+   var passColor = o._passColor = MO.Class.create(MO.FE3dShadowColorPass);
+   passColor.linkGraphicContext(o);
+   passColor.setup();
+   o.pushPass(passColor);
+   passColor.setTextureDepth(passDepth.textureDepth());
 }
 MO.FE3dShadowTechnique_updateRegion = function FE3dShadowTechnique_updateRegion(p){
    var o = this;
@@ -599,4 +616,174 @@ MO.FE3dShadowTechnique_updateRegion = function FE3dShadowTechnique_updateRegion(
    var c = p.camera();
    var l = p.directionalLight();
    var lc = l.camera();
+}
+MO.FE3dSphereColorPass = function FE3dSphereColorPass(o){
+   o = MO.Class.inherits(this, o, MO.FG3dTechniquePass);
+   o._code         = 'color';
+   o._textureColor = MO.Class.register(o, new MO.AGetter('_textureColor'));
+   o.setup         = MO.FE3dSphereColorPass_setup;
+   o.drawBegin     = MO.FE3dSphereColorPass_drawBegin;
+   return o;
+}
+MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
+   var o = this;
+   o.__base.FG3dTechniquePass.setup.call(o);
+   var context = o._graphicContext;
+   var texture = o._textureColor = context.createFlatTexture();
+   texture.setFilterCd(MO.EG3dSamplerFilter.Linear, MO.EG3dSamplerFilter.Linear);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+   var target = o._renderTarget = context.createRenderTarget();
+   target.size().set(2048, 1024);
+   target.textures().push(texture);
+   target.build();
+}
+MO.FE3dSphereColorPass_drawBegin = function FE3dSphereColorPass_drawBegin(region){
+   var o = this;
+   var context = o._graphicContext;
+   var backgroundColor = region.backgroundColor();
+   context.setRenderTarget(o._renderTarget);
+   context.clear(backgroundColor.red, backgroundColor.green, backgroundColor.blue, backgroundColor.alpha, 1);
+}
+MO.FE3dSphereTechnique = function FE3dSphereTechnique(o){
+   o = MO.Class.inherits(this, o, MO.FE3dTechnique);
+   o._code      = 'general';
+   o._passColor = MO.Class.register(o, new MO.AGetter('_passColor'));
+   o._passView  = MO.Class.register(o, new MO.AGetter('_passView'));
+   o.setup      = MO.FE3dSphereTechnique_setup;
+   return o;
+}
+MO.FE3dSphereTechnique_setup = function FE3dSphereTechnique_setup(){
+   var o = this;
+   o.__base.FE3dTechnique.setup.call(o);
+   o.registerMode(MO.EG3dTechniqueMode.Ambient);
+   o.registerMode(MO.EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(MO.EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(MO.EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(MO.EG3dTechniqueMode.SpecularColor);
+   o.registerMode(MO.EG3dTechniqueMode.Result);
+   var passes = o._passes;
+   var passColor = o._passColor = MO.Class.create(MO.FE3dSphereColorPass);
+   passColor.linkGraphicContext(o);
+   passColor.setup();
+   o.pushPass(passColor);
+   var passView = o._passView = MO.Class.create(MO.FE3dSphereViewPass);
+   passView.linkGraphicContext(o);
+   passView.setup();
+   o.pushPass(passView);
+   passView.setTextureColor(passColor.textureColor());
+}
+MO.FE3dSphereViewAutomaticEffect = function FE3dSphereViewAutomaticEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'sphere.view.automatic';
+   o._rotation      = 0;
+   o.drawRenderable = MO.FE3dSphereViewAutomaticEffect_drawRenderable;
+   return o;
+}
+MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomaticEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   var size = context.size();
+   var rateX = 1;
+   var rateY = 1;
+   if(size.width > size.height){
+      rateX = size.width / size.height;
+   }else if(size.width < size.height){
+      rateY = size.height / size.width;
+   }
+   var rotation = o._rotation + 0.0001;
+   program.setParameter4('vc_const', rateX, rateY, 1, rotation);
+   program.setParameter4('fc_const', rateX, rateY, 1, rotation);
+   o._rotation = rotation;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffer());
+}
+MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
+   o = MO.Class.inherits(this, o, MO.FG3dTechniquePass);
+   o._code          = 'view';
+   o._radianSize    = null;
+   o._textureColor  = MO.Class.register(o, new MO.AGetSet('_textureColor'));
+   o._effect        = null;
+   o._textureRadian = null;
+   o._rectangle     = null;
+   o.construct      = MO.FE3dSphereViewPass_construct;
+   o.setup          = MO.FE3dSphereViewPass_setup;
+   o.drawBegin      = MO.FE3dSphereViewPass_drawBegin
+   o.drawRegion     = MO.FE3dSphereViewPass_drawRegion;
+   return o;
+}
+MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
+   var o = this;
+   o.__base.FG3dTechniquePass.construct.call(o);
+   o._radianSize = new MO.SSize2(1024, 1024);
+}
+MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
+   var o = this;
+   o.__base.FG3dTechniquePass.setup.call(o);
+   var context = o._graphicContext;
+   var pi2a = 0.5 / Math.PI;
+   var width = o._radianSize.width;
+   var height = o._radianSize.height;
+   var centerX = width / 2;
+   var centerY = height / 2;
+   var data = new Float32Array(width * height);
+   var position = 0;
+   var direction = new MO.SVector2();
+   for(var y = 0; y < height; y++){
+      var ay = (y - centerY) / (height / 2);
+      for(var x = 0; x < width; x++){
+         var ax = (x - centerX) / (width / 2);
+         var length = Math.sqrt(ax * ax + ay * ay);
+         var angle = 0.5;
+         if(length != 0){
+            var nx = ax / length;
+            var ny = ay / length;
+            direction.x = ax;
+            direction.y = ay;
+            direction.normalize();
+            var rx = Math.acos(direction.x);
+            var ry = Math.asin(direction.y);
+            var ra = (rx + ry) / 2
+            if(y > centerY){
+               angle = 0.5 - Math.acos(nx) * pi2a;
+            }else if(y < centerY){
+               angle = 0.5 + Math.acos(nx) * pi2a;
+            }
+         }
+         data[position++] = angle;
+      }
+   }
+   var texture = o._textureRadian = context.createFlatTexture();
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texture.uploadData(data, width, height);
+   var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
+   rectangle.linkGraphicContext(o);
+   rectangle.setup();
+}
+MO.FE3dSphereViewPass_drawBegin = function FE3dSphereViewPass_drawBegin(region){
+   var o = this;
+   var context = o._graphicContext;
+   var rectangle = o._rectangle;
+   var backgroundColor = region.backgroundColor();
+   context.setRenderTarget(null);
+   context.clear(0, 0, 0, 0, 1);
+   var textures = rectangle.textures();
+   if(textures.isEmpty()){
+      textures.set('diffuse', o._textureColor);
+      textures.set('radian', o._textureRadian);
+   }
+}
+MO.FE3dSphereViewPass_drawRegion = function FE3dSphereViewPass_drawRegion(region){
+   var o = this;
+   var context = o._graphicContext;
+   var rectangle = o._rectangle;
+   var effect = o._effect;
+   if(!effect){
+      effect = o._effect = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
+   }
+   context.setProgram(effect.program());
+   effect.drawRenderable(region, o._rectangle);
 }

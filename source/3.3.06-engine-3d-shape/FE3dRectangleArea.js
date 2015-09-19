@@ -7,7 +7,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-MO.FE3dRectangle = function FE3dRectangle(o){
+MO.FE3dRectangleArea = function FE3dRectangleArea(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    //..........................................................
    // @attribute
@@ -16,9 +16,9 @@ MO.FE3dRectangle = function FE3dRectangle(o){
    o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    //..........................................................
    // @method
-   o.construct             = MO.FE3dRectangle_construct;
+   o.construct             = MO.FE3dRectangleArea_construct;
    // @method
-   o.setup                 = MO.FE3dRectangle_setup;
+   o.setup                 = MO.FE3dRectangleArea_setup;
    return o;
 }
 
@@ -27,7 +27,7 @@ MO.FE3dRectangle = function FE3dRectangle(o){
 //
 // @method
 //==========================================================
-MO.FE3dRectangle_construct = function FE3dRectangle_construct(){
+MO.FE3dRectangleArea_construct = function FE3dRectangleArea_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    // 设置属性
@@ -37,14 +37,14 @@ MO.FE3dRectangle_construct = function FE3dRectangle_construct(){
 //==========================================================
 // <T>设置信息。</T>
 //==========================================================
-MO.FE3dRectangle_setup = function FE3dRectangle_setup(){
+MO.FE3dRectangleArea_setup = function FE3dRectangleArea_setup(){
    var o = this;
    var context = o._graphicContext;
    // 设置顶点数据
-   var vertexPositionData = [-1, 1, 0, 0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, -0.5, 0];
+   var vertexPositionData = [-1, 1, 1, 1, 1, -1, -1, -1];
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setCode('position');
-   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
    buffer.upload(vertexPositionData, 4 * 2, 4);
    o.pushVertexBuffer(buffer);
    // 设置颜色数据

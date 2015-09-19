@@ -2234,9 +2234,9 @@ MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width,
    var code = width + 'x' + height;
    var canvas = pools.alloc(code);
    if(!canvas){
-      canvas = MO.Class.create(FE2dCanvas);
+      canvas = MO.Class.create(MO.FE2dCanvas);
       canvas.size().set(width, height);
-      canvas.build(MO.RWindow._hDocument);
+      canvas.build(MO.Window._hDocument);
    }
    canvas.reset();
    return canvas;
@@ -2400,7 +2400,7 @@ MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
 }
 MO.FE3dDisplay = function FE3dDisplay(o){
    o = MO.Class.inherits(this, o, MO.FDisplay);
-   o._outline         = null;
+   o._outline         = MO.Class.register(o, new MO.AGetter('_outline'));
    o._materials       = MO.Class.register(o, new MO.AGetter('_materials'));
    o.construct        = MO.FE3dDisplay_construct;
    o.calculateOutline = MO.FE3dDisplay_calculateOutline;
@@ -2410,7 +2410,7 @@ MO.FE3dDisplay = function FE3dDisplay(o){
 MO.FE3dDisplay_construct = function FE3dDisplay_construct(){
    var o = this;
    o.__base.FDisplay.construct.call(o);
-   o._outline = new MO.SOutline3();
+   o._outline = new MO.SOutline3d();
 }
 MO.FE3dDisplay_calculateOutline = function FE3dDisplay_calculateOutline(){
    return this._outline;
@@ -2638,21 +2638,7 @@ MO.FE3dStage_onProcess = function FE3dStage_onProcess(){
    statistics._frameProcess.end();
    statistics._frameDraw.begin();
    if(region.isChanged()){
-      technique.clear(region.backgroundColor());
-      for(var i = 0; i < layerCount; i++){
-         var layer = layers.at(i);
-         var layerTechnique = layer.technique();
-         if(!layerTechnique){
-            layerTechnique = technique;
-         }
-         region.reset();
-         region.renderables().assign(layer.visibleRenderables());
-         if(layer.optionClearDepth()){
-            layerTechnique.clearDepth();
-         }
-         layerTechnique.drawRegion(region);
-      }
-      technique.present(region);
+      technique.drawStage(o, region);
    }
    statistics._frameDraw.end();
    statistics._frame.end();
@@ -2794,7 +2780,36 @@ MO.FE3dStageStatistics_resetFrame = function FE3dStageStatistics_resetFrame(){
 }
 MO.FE3dTechnique = function FE3dTechnique(o){
    o = MO.Class.inherits(this, o, MO.FG3dTechnique, MO.MLinkerResource);
+   o.drawStage = MO.FE3dTechnique_drawStage;
    return o;
+}
+MO.FE3dTechnique_drawStage = function FE3dTechnique_drawStage(stage, region){
+   var o = this;
+   var layers = stage.layers();
+   var layerCount = layers.count();
+   region.setTechnique(o);
+   var passes = o._passes;
+   var count = passes.count();
+   for(var passIndex = 0; passIndex < count; passIndex++){
+      var pass = passes.at(passIndex);
+      pass.drawBegin(region);
+      for(var layerIndex = 0; layerIndex < layerCount; layerIndex++){
+         var layer = layers.at(layerIndex);
+         var layerTechnique = layer.technique();
+         if(!layerTechnique){
+            layerTechnique = o;
+         }
+         region.reset();
+         region.renderables().assign(layer.visibleRenderables());
+         if(layer.optionClearDepth()){
+            layerTechnique.clearDepth();
+         }
+         region.setTechniquePass(pass, (passIndex == count - 1));
+         pass.drawRegion(region);
+      }
+      pass.drawEnd(region);
+   }
+   o.present(region);
 }
 MO.RE3dEngine = function RE3dEngine(){
    var o = this;
@@ -2812,6 +2827,7 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('control.control.control', MO.FE3dControlAutomaticEffect);
    effectConsole.register('general.color.control', MO.FE3dControlAutomaticEffect);
    effectConsole.register('general.color.flat', MO.FE3dGeneralColorFlatEffect);
+   effectConsole.register('general.color.fill', MO.FE3dGeneralColorFillEffect);
    effectConsole.register('general.color.automatic', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skin', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.parallax', MO.FE3dGeneralColorAutomaticEffect);
@@ -7455,10 +7471,10 @@ MO.FE3dControlTechnique_setup = function FE3dControlTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    o.registerMode(MO.EG3dTechniqueMode.Result);
-   var pd = o._passControl = MO.Class.create(MO.FE3dControlPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   o._passes.push(pd);
+   var pass = o._passControl = MO.Class.create(MO.FE3dControlPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }
 MO.FE3dControlTechnique_drawRegion = function FE3dControlTechnique_drawRegion(p){
    var o = this;
@@ -7539,6 +7555,22 @@ MO.FE3dGeneralColorAutomaticEffect_drawRenderable = function FE3dGeneralColorAut
       o.buildMaterial(info, renderable);
       program.setParameter('fc_materials', info.material.memory());
    }
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+MO.FE3dGeneralColorFillEffect = function FE3dGeneralColorFillEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.flat';
+   o.drawRenderable = MO.FE3dGeneralColorFillEffect_drawRenderable;
+   return o;
+}
+MO.FE3dGeneralColorFillEffect_drawRenderable = function FE3dGeneralColorFillEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var contextSize = context.size();
+   var program = o._program;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   program.setParameter4('vc_position', 2, 2, -1, 1);
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 MO.FE3dGeneralColorFlatEffect = function FE3dGeneralColorFlatEffect(o){
@@ -7660,10 +7692,10 @@ MO.FE3dGeneralTechnique_setup = function FE3dGeneralTechnique_setup(){
    o.registerMode(MO.EG3dTechniqueMode.SpecularLevel);
    o.registerMode(MO.EG3dTechniqueMode.SpecularColor);
    o.registerMode(MO.EG3dTechniqueMode.Result);
-   var p = o._passColor = MO.Class.create(MO.FE3dGeneralColorPass);
-   p.linkGraphicContext(o);
-   p.setup();
-   o._passes.push(p);
+   var pass = o._passColor = MO.Class.create(MO.FE3dGeneralColorPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }
 MO.FE3dShadowColorAutomaticEffect = function FE3dShadowColorAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
@@ -7930,14 +7962,15 @@ MO.FE3dShadowTechnique_setup = function FE3dShadowTechnique_setup(){
    o.registerMode(MO.EG3dTechniqueMode.SpecularColor);
    o.registerMode(MO.EG3dTechniqueMode.Result);
    var ps = o._passes;
-   var pd = o._passDepth = MO.Class.create(MO.FE3dShadowDepthPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   var pc = o._passColor = MO.Class.create(MO.FE3dShadowColorPass);
-   pc.linkGraphicContext(o);
-   pc.setup();
-   ps.push(pc);
-   pc.setTextureDepth(pd.textureDepth());
+   var passDepth = o._passDepth = MO.Class.create(MO.FE3dShadowDepthPass);
+   passDepth.linkGraphicContext(o);
+   passDepth.setup();
+   o.pushPass(passDepth);
+   var passColor = o._passColor = MO.Class.create(MO.FE3dShadowColorPass);
+   passColor.linkGraphicContext(o);
+   passColor.setup();
+   o.pushPass(passColor);
+   passColor.setTextureDepth(passDepth.textureDepth());
 }
 MO.FE3dShadowTechnique_updateRegion = function FE3dShadowTechnique_updateRegion(p){
    var o = this;
@@ -7947,6 +7980,176 @@ MO.FE3dShadowTechnique_updateRegion = function FE3dShadowTechnique_updateRegion(
    var c = p.camera();
    var l = p.directionalLight();
    var lc = l.camera();
+}
+MO.FE3dSphereColorPass = function FE3dSphereColorPass(o){
+   o = MO.Class.inherits(this, o, MO.FG3dTechniquePass);
+   o._code         = 'color';
+   o._textureColor = MO.Class.register(o, new MO.AGetter('_textureColor'));
+   o.setup         = MO.FE3dSphereColorPass_setup;
+   o.drawBegin     = MO.FE3dSphereColorPass_drawBegin;
+   return o;
+}
+MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
+   var o = this;
+   o.__base.FG3dTechniquePass.setup.call(o);
+   var context = o._graphicContext;
+   var texture = o._textureColor = context.createFlatTexture();
+   texture.setFilterCd(MO.EG3dSamplerFilter.Linear, MO.EG3dSamplerFilter.Linear);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+   var target = o._renderTarget = context.createRenderTarget();
+   target.size().set(2048, 1024);
+   target.textures().push(texture);
+   target.build();
+}
+MO.FE3dSphereColorPass_drawBegin = function FE3dSphereColorPass_drawBegin(region){
+   var o = this;
+   var context = o._graphicContext;
+   var backgroundColor = region.backgroundColor();
+   context.setRenderTarget(o._renderTarget);
+   context.clear(backgroundColor.red, backgroundColor.green, backgroundColor.blue, backgroundColor.alpha, 1);
+}
+MO.FE3dSphereTechnique = function FE3dSphereTechnique(o){
+   o = MO.Class.inherits(this, o, MO.FE3dTechnique);
+   o._code      = 'general';
+   o._passColor = MO.Class.register(o, new MO.AGetter('_passColor'));
+   o._passView  = MO.Class.register(o, new MO.AGetter('_passView'));
+   o.setup      = MO.FE3dSphereTechnique_setup;
+   return o;
+}
+MO.FE3dSphereTechnique_setup = function FE3dSphereTechnique_setup(){
+   var o = this;
+   o.__base.FE3dTechnique.setup.call(o);
+   o.registerMode(MO.EG3dTechniqueMode.Ambient);
+   o.registerMode(MO.EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(MO.EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(MO.EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(MO.EG3dTechniqueMode.SpecularColor);
+   o.registerMode(MO.EG3dTechniqueMode.Result);
+   var passes = o._passes;
+   var passColor = o._passColor = MO.Class.create(MO.FE3dSphereColorPass);
+   passColor.linkGraphicContext(o);
+   passColor.setup();
+   o.pushPass(passColor);
+   var passView = o._passView = MO.Class.create(MO.FE3dSphereViewPass);
+   passView.linkGraphicContext(o);
+   passView.setup();
+   o.pushPass(passView);
+   passView.setTextureColor(passColor.textureColor());
+}
+MO.FE3dSphereViewAutomaticEffect = function FE3dSphereViewAutomaticEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'sphere.view.automatic';
+   o._rotation      = 0;
+   o.drawRenderable = MO.FE3dSphereViewAutomaticEffect_drawRenderable;
+   return o;
+}
+MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomaticEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   var size = context.size();
+   var rateX = 1;
+   var rateY = 1;
+   if(size.width > size.height){
+      rateX = size.width / size.height;
+   }else if(size.width < size.height){
+      rateY = size.height / size.width;
+   }
+   var rotation = o._rotation + 0.0001;
+   program.setParameter4('vc_const', rateX, rateY, 1, rotation);
+   program.setParameter4('fc_const', rateX, rateY, 1, rotation);
+   o._rotation = rotation;
+   var material = renderable.material();
+   o.bindMaterial(material);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffer());
+}
+MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
+   o = MO.Class.inherits(this, o, MO.FG3dTechniquePass);
+   o._code          = 'view';
+   o._radianSize    = null;
+   o._textureColor  = MO.Class.register(o, new MO.AGetSet('_textureColor'));
+   o._effect        = null;
+   o._textureRadian = null;
+   o._rectangle     = null;
+   o.construct      = MO.FE3dSphereViewPass_construct;
+   o.setup          = MO.FE3dSphereViewPass_setup;
+   o.drawBegin      = MO.FE3dSphereViewPass_drawBegin
+   o.drawRegion     = MO.FE3dSphereViewPass_drawRegion;
+   return o;
+}
+MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
+   var o = this;
+   o.__base.FG3dTechniquePass.construct.call(o);
+   o._radianSize = new MO.SSize2(1024, 1024);
+}
+MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
+   var o = this;
+   o.__base.FG3dTechniquePass.setup.call(o);
+   var context = o._graphicContext;
+   var pi2a = 0.5 / Math.PI;
+   var width = o._radianSize.width;
+   var height = o._radianSize.height;
+   var centerX = width / 2;
+   var centerY = height / 2;
+   var data = new Float32Array(width * height);
+   var position = 0;
+   var direction = new MO.SVector2();
+   for(var y = 0; y < height; y++){
+      var ay = (y - centerY) / (height / 2);
+      for(var x = 0; x < width; x++){
+         var ax = (x - centerX) / (width / 2);
+         var length = Math.sqrt(ax * ax + ay * ay);
+         var angle = 0.5;
+         if(length != 0){
+            var nx = ax / length;
+            var ny = ay / length;
+            direction.x = ax;
+            direction.y = ay;
+            direction.normalize();
+            var rx = Math.acos(direction.x);
+            var ry = Math.asin(direction.y);
+            var ra = (rx + ry) / 2
+            if(y > centerY){
+               angle = 0.5 - Math.acos(nx) * pi2a;
+            }else if(y < centerY){
+               angle = 0.5 + Math.acos(nx) * pi2a;
+            }
+         }
+         data[position++] = angle;
+      }
+   }
+   var texture = o._textureRadian = context.createFlatTexture();
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texture.uploadData(data, width, height);
+   var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
+   rectangle.linkGraphicContext(o);
+   rectangle.setup();
+}
+MO.FE3dSphereViewPass_drawBegin = function FE3dSphereViewPass_drawBegin(region){
+   var o = this;
+   var context = o._graphicContext;
+   var rectangle = o._rectangle;
+   var backgroundColor = region.backgroundColor();
+   context.setRenderTarget(null);
+   context.clear(0, 0, 0, 0, 1);
+   var textures = rectangle.textures();
+   if(textures.isEmpty()){
+      textures.set('diffuse', o._textureColor);
+      textures.set('radian', o._textureRadian);
+   }
+}
+MO.FE3dSphereViewPass_drawRegion = function FE3dSphereViewPass_drawRegion(region){
+   var o = this;
+   var context = o._graphicContext;
+   var rectangle = o._rectangle;
+   var effect = o._effect;
+   if(!effect){
+      effect = o._effect = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
+   }
+   context.setProgram(effect.program());
+   effect.drawRenderable(region, o._rectangle);
 }
 MO.EE3dInstance = new function EE3dInstance(){
    var o = this;
@@ -11383,8 +11586,9 @@ MO.FE3dBitmapConsole_dispose = function FE3dBitmapConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
 }
 MO.FE3dBitmapData = function FE3dBitmapData(o){
-   o = MO.Class.inherits(this, o, MO.FE3dFaceData);
+   o = MO.Class.inherits(this, o, MO.FE3dFaceData, MO.MListener);
    o._image      = null;
+   o._listenersImageLoad = MO.Class.register(o, new MO.AListener('_listenersImageLoad'));
    o.onImageLoad = MO.FE3dBitmapData_onImageLoad;
    o.construct   = MO.FE3dBitmapData_construct;
    o.loadUrl     = MO.FE3dBitmapData_loadUrl;
@@ -11402,14 +11606,20 @@ MO.FE3dBitmapData_onImageLoad = function FE3dBitmapData_onImageLoad(event){
    var adjustWidth = MO.Lang.Integer.pow2(width);
    var adjustHeight = MO.Lang.Integer.pow2(height);
    o._adjustSize.set(adjustWidth, adjustHeight);
-   var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
-   var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var context2d = canvas.context();
-   context2d.drawImage(image, 0, 0, width, height);
-   o._texture.upload(canvas);
-   canvasConsole.free(canvas);
+   var texture = o._texture;
+   if((adjustWidth == width) && (adjustHeight == height)){
+      texture.upload(image);
+   }else{
+      var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
+      var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
+      var context2d = canvas.graphicContext();
+      context2d.drawImage(image, 0, 0, width, height);
+      texture.upload(canvas);
+      canvasConsole.free(canvas);
+   }
    image.dispose();
    o._ready = true;
+   o.processImageLoadListener(o);
 }
 MO.FE3dBitmapData_construct = function FE3dBitmapData_construct(){
    var o = this;
@@ -11429,6 +11639,7 @@ MO.FE3dBitmapData_dispose = function FE3dBitmapData_dispose(){
 MO.EE3dBoundaryShape = function EE3dBoundaryShape(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
    o._optionSphere     = false;
+   o._scale            = MO.Class.register(o, new MO.AGetter('_scale'), 1);
    o._color            = MO.Class.register(o, new MO.AGetter('_color'));
    o._polygons         = MO.Class.register(o, new MO.AGetter('_polygons'));
    o._faceEffectCode   = MO.Class.register(o, new MO.AGetSet('_faceEffectCode'));
@@ -11479,9 +11690,9 @@ MO.EE3dBoundaryShape_buildFace = function EE3dBoundaryShape_buildFace(){
          var cy = positions[positionIndex++];
          var x = cx * MO.Lang.Const.DEGREE_RATE;
          var y = cy * MO.Lang.Const.DEGREE_RATE;
-         vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y);
-         vertexData[vertexIndex++] = Math.sin(y);
-         vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y);
+         vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * o._scale;
+         vertexData[vertexIndex++] = Math.sin(y) * o._scale;
+         vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * o._scale;
          coordData[coordIndex++] = cx / 360 + 0.5;
          coordData[coordIndex++] = 0.5 - cy / 180;
       }
@@ -11545,6 +11756,7 @@ MO.EE3dBoundaryShape_buildFace = function EE3dBoundaryShape_buildFace(){
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable._shape = o;
    renderable.linkGraphicContext(context);
    renderable.setOptionColor(true);
    renderable.setOptionCoord(true);
@@ -11633,6 +11845,7 @@ MO.EE3dBoundaryShape_buildBorder = function EE3dBoundaryShape_buildBorder(){
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable._shape = o;
    renderable.linkGraphicContext(context);
    renderable.setup();
    renderable.setVertexCount(vertexTotal * 2);
@@ -11671,6 +11884,266 @@ MO.EE3dBoundaryShape_buildSphere = function EE3dBoundaryShape_buildSphere(contex
    o.build(context)
 }
 MO.EE3dBoundaryShape_dispose = function EE3dBoundaryShape_dispose(){
+   var o = this;
+   o._polygons = MO.Lang.Obejct.dispose(o._polygons);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FE3dBoundaryShape3d = function FE3dBoundaryShape3d(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
+   o._optionSphere     = false;
+   o._scaleTop         = MO.Class.register(o, new MO.AGetSet('_scaleTop'), 1);
+   o._scaleBottom      = MO.Class.register(o, new MO.AGetSet('_scaleBottom'), 0.9);
+   o._faceColor        = MO.Class.register(o, new MO.AGetter('_faceColor'));
+   o._color            = MO.Class.register(o, new MO.AGetter('_color'));
+   o._polygons         = MO.Class.register(o, new MO.AGetter('_polygons'));
+   o._faceEffectCode   = MO.Class.register(o, new MO.AGetSet('_faceEffectCode'));
+   o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
+   o._borderEffectCode = MO.Class.register(o, new MO.AGetSet('_borderEffectCode'));
+   o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
+   o.construct         = MO.FE3dBoundaryShape3d_construct;
+   o.pushPolygon       = MO.FE3dBoundaryShape3d_pushPolygon;
+   o.buildFace         = MO.FE3dBoundaryShape3d_buildFace;
+   o.buildBorder       = MO.FE3dBoundaryShape3d_buildBorder;
+   o.build             = MO.FE3dBoundaryShape3d_build;
+   o.buildFlat         = MO.FE3dBoundaryShape3d_buildFlat;
+   o.buildSphere       = MO.FE3dBoundaryShape3d_buildSphere;
+   o.dispose           = MO.FE3dBoundaryShape3d_dispose;
+   return o;
+}
+MO.FE3dBoundaryShape3d_construct = function FE3dBoundaryShape3d_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._faceColor = new MO.SColor4(1, 1, 1, 1);
+   o._color = new MO.SColor4(0.3, 0.3, 0.3);
+   o._polygons = new MO.TObjects();
+}
+MO.FE3dBoundaryShape3d_pushPolygon = function FE3dBoundaryShape3d_pushPolygon(polygon){
+   this._polygons.push(polygon);
+}
+MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
+   var o = this;
+   var context = o._graphicContext;
+   var faceColor = o._faceColor;
+   var color = o._color;
+   var scaleTop = o._scaleTop;
+   var scaleBottom = o._scaleBottom;
+   var boundaries = o._polygons;
+   var count = boundaries.count();
+   var vertexTotal = o._vertexTotal;
+   var indexTotal = o._indexTotal;
+   var vertexStart = 0;
+   var vertexIndex = 0;
+   var vertexData = new Float32Array(3 * vertexTotal * 2);
+   var coordIndex = 0;
+   var coordData = new Float32Array(2 * vertexTotal * 2);
+   var faceIndex = 0;
+   var faceData = new Uint32Array(indexTotal + 3 * 2 * vertexTotal);
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var cx = positions[positionIndex++];
+         var cy = positions[positionIndex++];
+         var x = cx * MO.Lang.Const.DEGREE_RATE;
+         var y = cy * MO.Lang.Const.DEGREE_RATE;
+         vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * scaleTop;
+         vertexData[vertexIndex++] = Math.sin(y) * scaleTop;
+         vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleTop;
+         coordData[coordIndex++] = cx / 360 + 0.5;
+         coordData[coordIndex++] = cy / 180 - 0.5;
+      }
+      var indexes = boundary.indexes();
+      var indexCount = indexes.length;
+      var faceCount = indexCount / 3;
+      for(var i = 0; i < faceCount; i++){
+         var facePosition = 3 * i;
+         faceData[faceIndex++] = vertexStart + indexes[facePosition + 2];
+         faceData[faceIndex++] = vertexStart + indexes[facePosition + 1];
+         faceData[faceIndex++] = vertexStart + indexes[facePosition    ];
+      }
+      vertexStart += positionCount;
+   }
+   var layerStart = vertexStart;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var x = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         var y = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * scaleBottom;
+         vertexData[vertexIndex++] = (Math.sin(y)) * scaleBottom;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * scaleBottom;
+         coordData[coordIndex++] = x;
+         coordData[coordIndex++] = y;
+      }
+   }
+   var vertexStart = 0;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      for(var i = 0; i < positionCount; i++){
+         if(i == positionCount - 1){
+            faceData[faceIndex++] = vertexStart + i;
+            faceData[faceIndex++] = vertexStart + 0;
+            faceData[faceIndex++] = vertexStart + i + layerStart;
+            faceData[faceIndex++] = vertexStart + 0;
+            faceData[faceIndex++] = vertexStart + layerStart;
+            faceData[faceIndex++] = vertexStart + i + layerStart;
+         }else{
+            faceData[faceIndex++] = vertexStart + i;
+            faceData[faceIndex++] = vertexStart + i + 1;
+            faceData[faceIndex++] = vertexStart + i + layerStart;
+            faceData[faceIndex++] = vertexStart + i + 1;
+            faceData[faceIndex++] = vertexStart + i + layerStart + 1;
+            faceData[faceIndex++] = vertexStart + i + layerStart;
+         }
+      }
+      vertexStart += positionCount;
+   }
+   var colorIndex = 0;
+   var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
+   var positionTotal = vertexTotal * 2;
+   for(var i = 0; i < positionTotal; i++){
+      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.green * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.blue * 255) & 0xFF;
+      colors[colorIndex++] = (faceColor.alpha * 255) & 0xFF;
+   }
+   var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable._shape = o;
+   renderable.linkGraphicContext(context);
+   renderable.setOptionColor(true);
+   renderable.setOptionCoord(true);
+   renderable.setVertexCount(vertexTotal * 2);
+   renderable.setup();
+   renderable.color().setHex('#0A5294');
+   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
+   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
+   renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexTotal * 2, true);
+   renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
+   renderable.indexBuffer().upload(faceData, faceIndex, true);
+}
+MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
+   var o = this;
+   var context = o._graphicContext;
+   var color = o._color;
+   var scaleTop = o._scaleTop * 1.001;
+   var scaleBottom = o._scaleBottom;
+   var boundaries = o._polygons;
+   var count = boundaries.count();
+   var vertexTotal = o._vertexTotal;
+   var indexTotal = o._indexTotal;
+   var vertexStart = 0;
+   var vertexIndex = 0;
+   var faceIndex = 0;
+   var vertexData = new Float32Array(3 * vertexTotal * 2);
+   var borderIndex = 0;
+   var borderData = new Uint32Array(2 * vertexTotal + 2 * vertexTotal);
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var x = positions[positionIndex++] / 180 * Math.PI;
+         var y = positions[positionIndex++] / 180 * Math.PI;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * scaleTop;
+         vertexData[vertexIndex++] = (Math.sin(y)) * scaleTop;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * scaleTop;
+      }
+      for(var i = 0; i < positionCount; i++){
+         borderData[borderIndex++] = vertexStart + i;
+         if(i == positionCount - 1){
+            borderData[borderIndex++] = vertexStart;
+         }else{
+            borderData[borderIndex++] = vertexStart + i + 1;
+         }
+      }
+      vertexStart += positionCount;
+   }
+   var layerStart = vertexStart;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var x = positions[positionIndex++] / 180 * Math.PI;
+         var y = positions[positionIndex++] / 180 * Math.PI;
+         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * scaleBottom;
+         vertexData[vertexIndex++] = (Math.sin(y)) * scaleBottom;
+         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * scaleBottom;
+      }
+      vertexStart += positionCount;
+   }
+   var vertexStart = 0;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      for(var i = 0; i < positionCount; i++){
+         borderData[borderIndex++] = vertexStart + i;
+         borderData[borderIndex++] = vertexStart + i + layerStart;
+      }
+      vertexStart += positionCount;
+   }
+   var colorIndex = 0;
+   var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
+   for(var i = 0; i < vertexTotal; i++){
+      colors[colorIndex++] = 0x22;
+      colors[colorIndex++] = 0xA9;
+      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0xFF;
+   }
+   for(var i = 0; i < vertexTotal; i++){
+      colors[colorIndex++] = 0x96;
+      colors[colorIndex++] = 0xB0;
+      colors[colorIndex++] = 0xD6;
+      colors[colorIndex++] = 0xFF;
+   }
+   var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable._shape = o;
+   renderable.linkGraphicContext(context);
+   renderable.setup();
+   renderable.setVertexCount(vertexTotal * 2);
+   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
+   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
+   renderable.indexBuffer().setDrawModeCd(MO.EG3dDrawMode.Lines);
+   renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
+   renderable.indexBuffer().setLineWidth(1);
+   renderable.indexBuffer().upload(borderData, borderIndex, true);
+   renderable.material().info().effectCode = 'eai.map.face';
+}
+MO.FE3dBoundaryShape3d_build = function FE3dBoundaryShape3d_build(context){
+   var o = this;
+   var vertexTotal = 0;
+   var indexTotal = 0;
+   var boundaries = o._polygons;
+   var count = boundaries.count();
+   for(var i = 0; i < count; i++){
+      var boundary = boundaries.at(i);
+      vertexTotal += boundary.positionCount();
+      indexTotal += boundary.indexes().length;
+   }
+   o._vertexTotal = vertexTotal;
+   o._indexTotal = indexTotal;
+   o.buildFace(context);
+   o.buildBorder(context);
+}
+MO.FE3dBoundaryShape3d_buildFlat = function FE3dBoundaryShape3d_buildFlat(context){
+   var o = this;
+   o._optionSphere = false;
+   o.build(context)
+}
+MO.FE3dBoundaryShape3d_buildSphere = function FE3dBoundaryShape3d_buildSphere(context){
+   var o = this;
+   o._optionSphere = true;
+   o.build(context)
+}
+MO.FE3dBoundaryShape3d_dispose = function FE3dBoundaryShape3d_dispose(){
    var o = this;
    o._polygons = MO.Lang.Obejct.dispose(o._polygons);
    o.__base.FObject.dispose.call(o);
@@ -11838,6 +12311,7 @@ MO.FE3dDataBox = function FE3dDataBox(o){
    o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    o.construct             = MO.FE3dDataBox_construct;
    o.setup                 = MO.FE3dDataBox_setup;
+   o.calculateOutline      = MO.FE3dDataBox_calculateOutline;
    o.dispose               = MO.FE3dDataBox_dispose;
    return o;
 }
@@ -11877,6 +12351,24 @@ MO.FE3dDataBox_setup = function FE3dDataBox_setup(vd, vc, id){
    var info = o.material().info();
    info.effectCode = 'control';
    info.ambientColor.set(1, 1, 1, 1);
+}
+MO.FE3dDataBox_calculateOutline = function FE3dDataBox_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var vertexCount = o._vertexCount;
+      var data = o._vertexPositionBuffer._data;
+      var index = 0;
+      for(var i = 0; i < vertexCount; i++){
+         var x = data[index++];
+         var y = data[index++];
+         var z = data[index++];
+         outline.mergePoint(x, y, z);
+      }
+      outline.update();
+   }
+   return outline;
 }
 MO.FE3dDataBox_dispose = function FE3dDataBox_dispose(){
    var o = this;
@@ -12006,23 +12498,25 @@ MO.FE3dDimensional_setup = function FE3dDimensional_setup(){
 }
 MO.FE3dDynamicMesh = function FE3dDynamicMesh(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
-   o._shape            = MO.Class.register(o, new MO.AGetSet('_shape'));
-   o._optionMerge      = true;
-   o._vertexPosition   = 0;
-   o._vertexTotal      = 0;
-   o._indexPosition    = 0;
-   o._indexTotal       = 0;
-   o._mergeRenderables = MO.Class.register(o, new MO.AGetter('_mergeRenderables'));
-   o.construct         = MO.FE3dDynamicMesh_construct;
-   o.mergeCount        = MO.FE3dDynamicMesh_mergeCount;
-   o.mergeMaxCount     = MO.FE3dDynamicMesh_mergeMaxCount;
-   o.mergeStride       = MO.FE3dDynamicMesh_mergeStride;
-   o.syncVertexBuffer  = MO.FE3dDynamicMesh_syncVertexBuffer;
-   o.mergeRenderable   = MO.FE3dDynamicMesh_mergeRenderable;
-   o.mergeVertexBuffer = MO.FE3dDynamicMesh_mergeVertexBuffer;
-   o.mergeIndexBuffer  = MO.FE3dDynamicMesh_mergeIndexBuffer;
-   o.build             = MO.FE3dDynamicMesh_build;
-   o.dispose           = MO.FE3dDynamicMesh_dispose;
+   o._shape              = MO.Class.register(o, new MO.AGetSet('_shape'));
+   o._optionMerge        = true;
+   o._vertexPosition     = 0;
+   o._vertexTotal        = 0;
+   o._indexPosition      = 0;
+   o._indexTotal         = 0;
+   o._mergeRenderables   = MO.Class.register(o, new MO.AGetter('_mergeRenderables'));
+   o.construct           = MO.FE3dDynamicMesh_construct;
+   o.mergeCount          = MO.FE3dDynamicMesh_mergeCount;
+   o.mergeMaxCount       = MO.FE3dDynamicMesh_mergeMaxCount;
+   o.mergeStride         = MO.FE3dDynamicMesh_mergeStride;
+   o.findMergeRenderable = MO.FE3dDynamicMesh_findMergeRenderable;
+   o.calculateOutline    = MO.FE3dDynamicMesh_calculateOutline;
+   o.syncVertexBuffer    = MO.FE3dDynamicMesh_syncVertexBuffer;
+   o.mergeRenderable     = MO.FE3dDynamicMesh_mergeRenderable;
+   o.mergeVertexBuffer   = MO.FE3dDynamicMesh_mergeVertexBuffer;
+   o.mergeIndexBuffer    = MO.FE3dDynamicMesh_mergeIndexBuffer;
+   o.build               = MO.FE3dDynamicMesh_build;
+   o.dispose             = MO.FE3dDynamicMesh_dispose;
    return o;
 }
 MO.FE3dDynamicMesh_construct = function FE3dDynamicMesh_construct(){
@@ -12038,6 +12532,9 @@ MO.FE3dDynamicMesh_mergeMaxCount = function FE3dDynamicMesh_mergeMaxCount(){
 }
 MO.FE3dDynamicMesh_mergeStride = function FE3dDynamicMesh_mergeStride(){
    return this._shape.mergeStride();
+}
+MO.FE3dDynamicMesh_findMergeRenderable = function FE3dDynamicMesh_findMergeRenderable(index){
+   return this._mergeRenderables.get(index);
 }
 MO.FE3dDynamicMesh_syncVertexBuffer = function FE3dDynamicMesh_syncVertexBuffer(vertexBuffer){
    var o = this;
@@ -12157,6 +12654,13 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
    instanceVertexBuffer.setData(instanceVertexData);
    o.pushVertexBuffer(instanceVertexBuffer);
+   var indexVertexData = new Float32Array(4 * vertexTotal);
+   var indexVertexBuffer = o._indexVertexBuffer = context.createVertexBuffer();
+   indexVertexBuffer.setCode('index');
+   indexVertexBuffer.setStride(16);
+   indexVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float4);
+   indexVertexBuffer.setData(indexVertexData);
+   o.pushVertexBuffer(indexVertexBuffer);
    var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
    if(capability.optionIndex32){
       indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
@@ -12167,10 +12671,21 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    }
    indexBuffer.setCount(indexTotal);
    o.pushIndexBuffer(indexBuffer);
+   var indexVertexPosition = 0;
    for(var n = 0; n < renderableCount; n++){
       var renderable = renderables.at(n);
       var renderableVertexCount = renderable.vertexCount();
       MO.Lang.Float.fill(instanceVertexData, o._vertexPosition, renderableVertexCount, n);
+      var index = n + 1;
+      var index1 = (index  & 0xFF) / 255;
+      var index2 = ((index >> 8) & 0xFF) / 255;
+      var index3 = ((index >> 16) & 0xFF) / 255;
+      for(var i = 0; i < renderableVertexCount; i++){
+         indexVertexData[indexVertexPosition++] = index1;
+         indexVertexData[indexVertexPosition++] = index2;
+         indexVertexData[indexVertexPosition++] = index3;
+         indexVertexData[indexVertexPosition++] = 1;
+      }
       var vertexBuffers = renderable.vertexBuffers();
       var vertexBufferCount = vertexBuffers.count();
       for(var i = 0; i < vertexBufferCount; i++){
@@ -12196,6 +12711,23 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
    MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
+}
+MO.FE3dDynamicMesh_calculateOutline = function FE3dDynamicMesh_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var renderables = o._mergeRenderables;
+      if(renderables){
+         var count = renderables.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderables.at(i);
+            var renderableOutline = renderable.calculateOutline()
+            outline.mergeMax(renderableOutline);
+         }
+      }
+   }
+   return outline;
 }
 MO.FE3dDynamicMesh_dispose = function FE3dDynamicMesh_dispose(){
    var o = this;
@@ -12225,6 +12757,7 @@ MO.FE3dDynamicShape_construct = function FE3dDynamicShape_construct(){
 MO.FE3dDynamicShape_createMesh = function FE3dDynamicShape_createMesh(){
    var o = this;
    var mesh = MO.Class.create(MO.FE3dDynamicMesh);
+   mesh._shape = o;
    mesh.linkGraphicContext(o);
    mesh.setShape(o);
    o._meshes.push(mesh);
@@ -12422,32 +12955,73 @@ MO.FE3dRectangle = function FE3dRectangle(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
-   o._indexBuffer          = null;
+   o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
+   o.construct             = MO.FE3dRectangle_construct;
    o.setup                 = MO.FE3dRectangle_setup;
    return o;
 }
-MO.FE3dRectangle_setup = function FE3dRectangle_setup(p){
+MO.FE3dRectangle_construct = function FE3dRectangle_construct(){
    var o = this;
-   var vp = [
-      -1.0,  1.0, 0.0,
-       1.0,  1.0, 0.0,
-       1.0, -1.0, 0.0,
-      -1.0, -1.0, 0.0 ];
-   var buffer = o._vertexPositionBuffer = p.createVertexBuffer();
-   buffer.upload(vp, 4 * 3, 4);
+   o.__base.FE3dRenderable.construct.call(o);
+   o._material = MO.Class.create(MO.FE3dMaterial);
+}
+MO.FE3dRectangle_setup = function FE3dRectangle_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   var vertexPositionData = [-1, 1, 0, 0.5, 0.5, 0, 0.5, -0.5, 0, -0.5, -0.5, 0];
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
+   buffer.upload(vertexPositionData, 4 * 2, 4);
    o.pushVertexBuffer(buffer);
-   var vc = [
-      0.0, 1.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      0.0, 0.0, 0.0, 1.0 ];
-   var buffer = o._vertexColorBuffer = p.createVertexBuffer();
-   buffer.upload(vc, 4 * 4, 4);
+   var vertexCoordData = [0, 1, 1, 1, 1, 0, 0, 0];
+   var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+   buffer.setCode('coord');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   buffer.upload(vertexCoordData, 4 * 2, 4);
    o.pushVertexBuffer(buffer);
-   var id = [0, 1, 2, 0, 2, 3];
-   var buffer = context.createIndexBuffer();
-   buffer.upload(id, 6);
+   var indexData = [0, 1, 2, 0, 2, 3];
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.upload(indexData, 6);
    o.pushIndexBuffer(buffer);
+   o._textures = new MO.TDictionary();
+   o._material.info().optionDouble = true;
+}
+MO.FE3dRectangleArea = function FE3dRectangleArea(o){
+   o = MO.Class.inherits(this, o, MO.FE3dRenderable);
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
+   o.construct             = MO.FE3dRectangleArea_construct;
+   o.setup                 = MO.FE3dRectangleArea_setup;
+   return o;
+}
+MO.FE3dRectangleArea_construct = function FE3dRectangleArea_construct(){
+   var o = this;
+   o.__base.FE3dRenderable.construct.call(o);
+   o._material = MO.Class.create(MO.FE3dMaterial);
+}
+MO.FE3dRectangleArea_setup = function FE3dRectangleArea_setup(){
+   var o = this;
+   var context = o._graphicContext;
+   var vertexPositionData = [-1, 1, 1, 1, 1, -1, -1, -1];
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer.setCode('position');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   buffer.upload(vertexPositionData, 4 * 2, 4);
+   o.pushVertexBuffer(buffer);
+   var vertexCoordData = [0, 1, 1, 1, 1, 0, 0, 0];
+   var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+   buffer.setCode('coord');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   buffer.upload(vertexCoordData, 4 * 2, 4);
+   o.pushVertexBuffer(buffer);
+   var indexData = [0, 1, 2, 0, 2, 3];
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.upload(indexData, 6);
+   o.pushIndexBuffer(buffer);
+   o._textures = new MO.TDictionary();
+   o._material.info().optionDouble = true;
 }
 MO.FE3dRuler = function FE3dRuler(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);

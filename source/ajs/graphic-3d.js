@@ -183,7 +183,8 @@ MO.MG3dRegion_dispose = function MG3dRegion_dispose(){
 }
 MO.MG3dRenderable = function MG3dRenderable(o){
    o = MO.Class.inherits(this, o, MO.MGraphicRenderable);
-   o._optionMerge   = false;
+   o._optionMerge   = MO.Class.register(o, new MO.AGetter('_optionMerge'), false);
+   o._optionSelect  = MO.Class.register(o, new MO.AGetter('_optionSelect'), true);
    o._currentMatrix = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
    o._matrix        = MO.Class.register(o, new MO.AGetter('_matrix'));
    o._material      = MO.Class.register(o, new MO.AGetSet('_material'));
@@ -1107,16 +1108,16 @@ MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(n, e){
 MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(n){
    this._registerEffects.set(n, null);
 }
-MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(c, p){
+MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
    var o = this;
-   var t = o._registerEffects.get(p);
-   if(!t){
-      throw new MO.TError(this, 'Unknown effect type name. (type={1})', t);
+   var clazz = o._registerEffects.get(name);
+   if(!clazz){
+      throw new MO.TError(this, 'Unknown effect type name. (type={1})', clazz);
    }
-   var e = MO.Class.create(t);
-   e.linkGraphicContext(c);
-   e.setup();
-   return e;
+   var effect = MO.Class.create(clazz);
+   effect.linkGraphicContext(context);
+   effect.setup();
+   return effect;
 }
 MO.FG3dEffectConsole_buildEffectInfo = function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderable){
    var o = this;
@@ -1538,6 +1539,7 @@ MO.FG3dTechnique = function FG3dTechnique(o){
    o.construct       = MO.FG3dTechnique_construct;
    o.registerMode    = MO.FG3dTechnique_registerMode;
    o.selectMode      = MO.FG3dTechnique_selectMode;
+   o.pushPass        = MO.FG3dTechnique_pushPass;
    o.updateRegion    = MO.Method.empty;
    o.clear           = MO.FG3dTechnique_clear;
    o.clearDepth      = MO.FG3dTechnique_clearDepth;
@@ -1562,6 +1564,12 @@ MO.FG3dTechnique_registerMode = function FG3dTechnique_registerMode(p){
 }
 MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
    var o = this;
+}
+MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
+   var o = this;
+   MO.Assert.debugNotNull(pass);
+   pass.setTechnique(o);
+   o._passes.push(pass);
 }
 MO.FG3dTechnique_clear = function FG3dTechnique_clear(color){
    var o = this;
@@ -1640,6 +1648,7 @@ MO.FG3dTechniqueMode = function FG3dTechniqueMode(o){
 }
 MO.FG3dTechniquePass = function FG3dTechniquePass(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
+   o._technique      = MO.Class.register(o, new MO.AGetSet('_technique'));
    o._fullCode       = MO.Class.register(o, new MO.AGetSet('_fullCode'));
    o._code           = MO.Class.register(o, new MO.AGetter('_code'));
    o._index          = null;
@@ -1648,7 +1657,9 @@ MO.FG3dTechniquePass = function FG3dTechniquePass(o){
    o.setup           = MO.FG3dTechniquePass_setup;
    o.activeEffects   = MO.FG3dTechniquePass_activeEffects;
    o.sortRenderables = MO.FG3dTechniquePass_sortRenderables;
+   o.drawBegin       = MO.FG3dTechniquePass_drawBegin;
    o.drawRegion      = MO.FG3dTechniquePass_drawRegion;
+   o.drawEnd         = MO.FG3dTechniquePass_drawEnd;
    return o;
 }
 MO.FG3dTechniquePass_setup = function FG3dTechniquePass_setup(){
@@ -1700,6 +1711,10 @@ MO.FG3dTechniquePass_activeEffects = function FG3dTechniquePass_activeEffects(re
       }
    }
 }
+MO.FG3dTechniquePass_drawBegin = function FG3dTechniquePass_drawBegin(region){
+   var o = this;
+   o._technique.clear(region.backgroundColor());
+}
 MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(region){
    var o = this;
    var renderables = region.renderables();
@@ -1744,6 +1759,8 @@ MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(region){
       }
       effect.drawRegion(region, groupBegin, groupEnd - groupBegin);
    }
+}
+MO.FG3dTechniquePass_drawEnd = function FG3dTechniquePass_drawEnd(region){
 }
 MO.FG3dTrack = function FG3dTrack(o){
    o = MO.Class.inherits(this, o, MO.FObject);

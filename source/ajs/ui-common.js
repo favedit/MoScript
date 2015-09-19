@@ -2490,7 +2490,7 @@ MO.SUiDispatchEvent_dump = function SUiDispatchEvent_dump(){
 }
 MO.SUiFont = function SUiFont(){
    var o = this;
-   o.font     = null;
+   o.font     = 'Microsoft YaHei';
    o.size     = 16;
    o.bold     = false;
    o.color    = '#FFFFFF';

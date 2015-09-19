@@ -12,6 +12,7 @@ MO.FWglContext = function FWglContext(o){
    o._statusRecord       = false;
    o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
    o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
+   o._statusFloatTexture = false;
    o._statusScissor      = false;
    o._data9              = null;
    o._data16             = null;
@@ -22,6 +23,7 @@ MO.FWglContext = function FWglContext(o){
    o.parameters          = MO.FWglContext_parameters;
    o.extension           = MO.FWglContext_extension;
    o.extensions          = MO.FWglContext_extensions;
+   o.enableFloatTexture  = MO.FWglContext_enableFloatTexture;
    o.recordBegin         = MO.FWglContext_recordBegin;
    o.recordEnd           = MO.FWglContext_recordEnd;
    o.createProgram       = MO.FWglContext_createProgram;
@@ -293,6 +295,21 @@ MO.FWglContext_extensions = function FWglContext_extensions(){
    }
    return extensions;
 }
+MO.FWglContext_enableFloatTexture = function FWglContext_enableFloatTexture(){
+   var o = this;
+   if(!o._statusFloatTexture){
+      var extension = o._handle.getExtension('OES_texture_float');
+      if(!extension){
+         return false;
+      }
+      var extension = o._handle.getExtension('OES_texture_float_linear');
+      if(!extension){
+         return false;
+      }
+      o._statusFloatTexture = true;
+   }
+   return o._statusFloatTexture;
+}
 MO.FWglContext_recordBegin = function FWglContext_recordBegin(){
    var o = this;
    o._recordBuffers.clear();
@@ -353,9 +370,9 @@ MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(clazz)
 MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(clazz){
    var o = this;
    var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglRenderTarget));
-   o._storeTargets.push(target);
+   o._storeTargets.push(texture);
    o._statistics._targetTotal++;
-   return target;
+   return texture;
 }
 MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
    var o = this;
@@ -945,13 +962,26 @@ MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, wid
       data = new Uint8Array(content);
    }else if(content.constructor == Uint8Array){
       data = content;
+   }else if(content.constructor == Float32Array){
+      if(!context.enableFloatTexture()){
+         throw new MO.TError('Invalid content float format.');
+      }
+      data = content;
    }else{
       throw new MO.TError('Invalid content format.');
    }
    o.width = width;
    o.height = height;
    handle.bindTexture(handle.TEXTURE_2D, o._handle);
-   handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, width, height, 0, handle.RGBA, handle.UNSIGNED_BYTE, data);
+   var internalformatCd = handle.RGBA;
+   var formatCd = handle.RGBA;
+   var typeCd = handle.UNSIGNED_BYTE;
+   if(content.constructor == Float32Array){
+      internalformatCd = handle.ALPHA;
+      formatCd = handle.ALPHA;
+      typeCd = handle.FLOAT;
+   }
+   handle.texImage2D(handle.TEXTURE_2D, 0, internalformatCd, width, height, 0, formatCd, typeCd, data);
    o._statusLoad = context.checkError("texImage2D", "Upload content failure.");
    o.update();
 }
@@ -1356,61 +1386,62 @@ MO.FWglRenderTarget = function FWglRenderTarget(o){
 MO.FWglRenderTarget_setup = function FWglRenderTarget_setup(){
    var o = this;
    o.__base.FG3dRenderTarget.setup.call(o);
-   var c = o._graphicContext;
-   var g = c._handle;
-   o._handle = g.createFramebuffer();
-   return c.checkError('createFramebuffer', 'Create frame buffer failure.');
+   var context = o._graphicContext;
+   var graphic = context._handle;
+   o._handle = graphic.createFramebuffer();
+   return context.checkError('createFramebuffer', 'Create frame buffer failure.');
 }
 MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
    var o = this;
-   var s = o._size;
-   var c = o._graphicContext;
-   var g = c._handle;
-   g.bindFramebuffer(g.FRAMEBUFFER, o._handle);
-   var r = c.checkError('bindFramebuffer', 'Bind frame buffer failure.');
-   if(!r){
-      return r;
+   var size = o._size;
+   var context = o._graphicContext;
+   var handle = context._handle;
+   handle.bindFramebuffer(handle.FRAMEBUFFER, o._handle);
+   var result = context.checkError('bindFramebuffer', 'Bind frame buffer failure.');
+   if(!result){
+      return result;
    }
    if(o._optionDepth){
-      var nd = o._handleDepth = g.createRenderbuffer();
-      var r = c.checkError('createRenderbuffer', 'Create render buffer failure.');
-      if(!r){
-         return r;
+      var depthHandle = o._handleDepth = handle.createRenderbuffer();
+      var result = context.checkError('createRenderbuffer', 'Create render buffer failure.');
+      if(!result){
+         return result;
       }
-      g.bindRenderbuffer(g.RENDERBUFFER, nd);
-      var r = c.checkError('bindRenderbuffer', 'Bind render buffer failure.');
-      if(!r){
-         return r;
+      handle.bindRenderbuffer(handle.RENDERBUFFER, depthHandle);
+      var result = context.checkError('bindRenderbuffer', 'Bind render buffer failure.');
+      if(!result){
+         return result;
       }
-      g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, s.width, s.height);
-      var r = c.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
-      if(!r){
-         return r;
+      handle.renderbufferStorage(handle.RENDERBUFFER, handle.DEPTH_COMPONENT16, size.width, size.height);
+      var result = context.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
+      if(!result){
+         return result;
       }
-      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nd);
-      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._handle, nd);
-      if(!r){
-         return r;
-      }
-   }
-   var ts = o._textures;
-   var tc = ts.count();
-   for(var i = 0; i < tc; i++){
-      var t = ts.get(i);
-      g.bindTexture(g.TEXTURE_2D, t._handle);
-      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
-      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
-      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, s.width, s.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
-      var r = c.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", t._handle, o._size.width, o._size.height);
-      if(!r){
-         return r;
-      }
-      g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0 + i, g.TEXTURE_2D, t._handle, 0);
-      var r = c.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, t._handle);
-      if(!r){
-         return r;
+      handle.framebufferRenderbuffer(handle.FRAMEBUFFER, handle.DEPTH_ATTACHMENT, handle.RENDERBUFFER, depthHandle);
+      var result = context.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._handle, depthHandle);
+      if(!result){
+         return result;
       }
    }
+   var textures = o._textures;
+   var textureCount = textures.count();
+   for(var i = 0; i < textureCount; i++){
+      var texture = textures.get(i);
+      handle.bindTexture(handle.TEXTURE_2D, texture._handle);
+      handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MAG_FILTER, handle.LINEAR);
+      handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MIN_FILTER, handle.LINEAR);
+      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, size.width, size.height, 0, handle.RGBA, handle.UNSIGNED_BYTE, null);
+      var result = context.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", texture._handle, size.width, size.height);
+      if(!result){
+         return result;
+      }
+      handle.framebufferTexture2D(handle.FRAMEBUFFER, handle.COLOR_ATTACHMENT0 + i, handle.TEXTURE_2D, texture._handle, 0);
+      var result = context.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, texture._handle);
+      if(!result){
+         return result;
+      }
+   }
+   handle.bindFramebuffer(handle.FRAMEBUFFER, null);
 }
 MO.FWglRenderTarget_dispose = function FWglRenderTarget_dispose(){
    var o = this;

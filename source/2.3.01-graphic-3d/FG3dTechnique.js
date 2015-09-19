@@ -18,6 +18,7 @@ MO.FG3dTechnique = function FG3dTechnique(o){
    // @method
    o.registerMode    = MO.FG3dTechnique_registerMode;
    o.selectMode      = MO.FG3dTechnique_selectMode;
+   o.pushPass        = MO.FG3dTechnique_pushPass;
    // @method
    o.updateRegion    = MO.Method.empty;
    o.clear           = MO.FG3dTechnique_clear;
@@ -66,6 +67,20 @@ MO.FG3dTechnique_registerMode = function FG3dTechnique_registerMode(p){
 //==========================================================
 MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
    var o = this;
+}
+
+//==========================================================
+// <T>增加过程模式。</T>
+//
+// @method
+// @param p:code:String 代码
+// @return FG3dTechniqueMode 技术模式
+//==========================================================
+MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
+   var o = this;
+   MO.Assert.debugNotNull(pass);
+   pass.setTechnique(o);
+   o._passes.push(pass);
 }
 
 //==========================================================

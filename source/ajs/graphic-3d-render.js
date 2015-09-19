@@ -641,13 +641,13 @@ MO.FG3dProgram_setParameter4 = function FG3dProgram_setParameter4(pn, px, py, pz
    v[3] = pw;
    this.setParameter(pn, v, 1);
 }
-MO.FG3dProgram_setSampler = function FG3dProgram_setSampler(pn, pt){
+MO.FG3dProgram_setSampler = function FG3dProgram_setSampler(name, texture){
    var o = this;
-   var p = o.findSampler(pn);
-   if(p == null){
-      throw new MO.TError(o, 'Bind invalid sampler. (name={1})', pn);
+   var sampler = o.findSampler(name);
+   if(!sampler){
+      throw new MO.TError(o, 'Bind invalid sampler. (name={1})', name);
    }
-   o._graphicContext.bindTexture(p._slot, p._index, pt);
+   o._graphicContext.bindTexture(sampler._slot, sampler._index, texture);
 }
 MO.FG3dProgram_dispose = function FG3dProgram_dispose(){
    var o = this;
@@ -662,10 +662,10 @@ MO.FG3dProgramAttribute = function FG3dProgramAttribute(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._name       = MO.Class.register(o, new MO.AGetter('_name'));
    o._linker     = MO.Class.register(o, new MO.AGetter('_linker'));
-   o._statusUsed = false;
+   o._statusUsed = MO.Class.register(o, new MO.AGetter('_statusUsed'), false);
    o._slot       = null;
    o._index      = -1;
-   o._formatCd   = MO.EG3dAttributeFormat.Unknown;
+   o._formatCd   = MO.Class.register(o, new MO.AGetter('_formatCd'), MO.EG3dAttributeFormat.Unknown);
    o.loadConfig  = MO.FG3dProgramAttribute_loadConfig;
    o.dispose     = MO.FG3dProgramAttribute_dispose;
    return o;
@@ -674,7 +674,7 @@ MO.FG3dProgramAttribute_loadConfig = function FG3dProgramAttribute_loadConfig(xc
    var o = this;
    o._name = xconfig.get('name');
    o._linker = xconfig.get('linker');
-   o._formatCd = MO.REnum.encode(MO.EG3dAttributeFormat, xconfig.get('format'));
+   o._formatCd = MO.Lang.Enum.encode(MO.EG3dAttributeFormat, xconfig.get('format'));
 }
 MO.FG3dProgramAttribute_dispose = function FG3dProgramAttribute_dispose(){
    var o = this;
@@ -771,23 +771,23 @@ MO.FG3dRenderTarget = function FG3dRenderTarget(o){
 MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
    var o = this;
    o.__base.FG3dObject.construct();
-   o._size = new SSize2();
-   o._color = new SColor4();
+   o._size = new MO.SSize2();
+   o._color = new MO.SColor4();
    o._color.set(0.0, 0.0, 0.0, 1.0);
 }
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;
    var textures = o._textures;
    if(textures == null){
-      textures = o._textures = new TObjects();
+      textures = o._textures = new MO.TObjects();
    }
    return textures;
 }
 MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._color = RObject.dispose(o._color);
-   o.__base.dispose.construct();
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._color = MO.Lang.Object.dispose(o._color);
+   o.__base.FG3dObject.dispose();
 }
 MO.FG3dShader = function FG3dShader(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);

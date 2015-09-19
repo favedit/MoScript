@@ -448,6 +448,7 @@ with(MO){
 MO.FEaiStatisticsLabel = function FEaiStatisticsLabel(o) {
    o = MO.Class.inherits(this, o, MO.FGuiLabel);
    o._value = MO.Class.register(o, new MO.AGetter('_value'), '0');
+   o._basicUnitText = MO.Class.register(o, new MO.AGetSet('_basicUnitText'), '元');
    o._originValue = '0';
    o._valueSign = 1;
    o._originValueSign = 1;
@@ -477,7 +478,7 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
    } else {
       graphic.setFont(textFont);
       var valueTextLength = graphic.textWidth(o._value);
-      var unitText = '元';
+      var unitText = o._basicUnitText;
       if (o._value.length > 4) { unitText += '万'; }
       if (o._value.length > 8) { unitText += '亿'; }
       graphic.setFont(unitFont);
@@ -544,8 +545,8 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       }
       else if (i == o._originValue.length - 1) {
          graphic.setFont(unitFont);
-         graphic.drawText('元', drawX, unitDrawY, '#00B5F6');
-         drawX += graphic.textWidth('元');
+         graphic.drawText(o._basicUnitText, drawX, unitDrawY, '#00B5F6');
+         drawX += graphic.textWidth(o._basicUnitText);
       }
    }
    if (o._rolling == false) {

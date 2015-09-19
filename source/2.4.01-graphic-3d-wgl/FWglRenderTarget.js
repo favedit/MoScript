@@ -7,7 +7,9 @@
 MO.FWglRenderTarget = function FWglRenderTarget(o){
    o = MO.Class.inherits(this, o, MO.FG3dRenderTarget);
    //..........................................................
+   // @attribute
    o._optionDepth = true;
+   // @attribute
    o._handle      = null;
    o._handleDepth = null;
    //..........................................................
@@ -28,12 +30,12 @@ MO.FWglRenderTarget = function FWglRenderTarget(o){
 MO.FWglRenderTarget_setup = function FWglRenderTarget_setup(){
    var o = this;
    o.__base.FG3dRenderTarget.setup.call(o);
-   var c = o._graphicContext;
-   var g = c._handle;
+   var context = o._graphicContext;
+   var graphic = context._handle;
    //............................................................
    // 创建帧缓冲
-   o._handle = g.createFramebuffer();
-   return c.checkError('createFramebuffer', 'Create frame buffer failure.');
+   o._handle = graphic.createFramebuffer();
+   return context.checkError('createFramebuffer', 'Create frame buffer failure.');
 }
 
 //==========================================================
@@ -43,65 +45,67 @@ MO.FWglRenderTarget_setup = function FWglRenderTarget_setup(){
 //==========================================================
 MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
    var o = this;
-   var s = o._size;
-   var c = o._graphicContext;
-   var g = c._handle;
+   var size = o._size;
+   var context = o._graphicContext;
+   var handle = context._handle;
    //............................................................
    // 绑定帧缓冲
-   g.bindFramebuffer(g.FRAMEBUFFER, o._handle);
-   var r = c.checkError('bindFramebuffer', 'Bind frame buffer failure.');
-   if(!r){
-      return r;
+   handle.bindFramebuffer(handle.FRAMEBUFFER, o._handle);
+   var result = context.checkError('bindFramebuffer', 'Bind frame buffer failure.');
+   if(!result){
+      return result;
    }
    //............................................................
    // 创建深度缓冲区
    if(o._optionDepth){
       // 绑定深度缓冲区
-      var nd = o._handleDepth = g.createRenderbuffer();
-      var r = c.checkError('createRenderbuffer', 'Create render buffer failure.');
-      if(!r){
-         return r;
+      var depthHandle = o._handleDepth = handle.createRenderbuffer();
+      var result = context.checkError('createRenderbuffer', 'Create render buffer failure.');
+      if(!result){
+         return result;
       }
-      g.bindRenderbuffer(g.RENDERBUFFER, nd);
-      var r = c.checkError('bindRenderbuffer', 'Bind render buffer failure.');
-      if(!r){
-         return r;
+      handle.bindRenderbuffer(handle.RENDERBUFFER, depthHandle);
+      var result = context.checkError('bindRenderbuffer', 'Bind render buffer failure.');
+      if(!result){
+         return result;
       }
-      g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, s.width, s.height);
-      var r = c.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
-      if(!r){
-         return r;
+      handle.renderbufferStorage(handle.RENDERBUFFER, handle.DEPTH_COMPONENT16, size.width, size.height);
+      var result = context.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
+      if(!result){
+         return result;
       }
       // 绑定深度缓冲区
-      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nd);
-      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._handle, nd);
-      if(!r){
-         return r;
+      handle.framebufferRenderbuffer(handle.FRAMEBUFFER, handle.DEPTH_ATTACHMENT, handle.RENDERBUFFER, depthHandle);
+      var result = context.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._handle, depthHandle);
+      if(!result){
+         return result;
       }
    }
    //............................................................
    // 绑定纹理缓冲集合
-   var ts = o._textures;
-   var tc = ts.count();
-   for(var i = 0; i < tc; i++){
-      var t = ts.get(i);
+   var textures = o._textures;
+   var textureCount = textures.count();
+   for(var i = 0; i < textureCount; i++){
+      var texture = textures.get(i);
       // 设置信息
-      g.bindTexture(g.TEXTURE_2D, t._handle);
-      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
-      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
+      handle.bindTexture(handle.TEXTURE_2D, texture._handle);
+      handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MAG_FILTER, handle.LINEAR);
+      handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MIN_FILTER, handle.LINEAR);
       // 设置存储
-      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, s.width, s.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
-      var r = c.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", t._handle, o._size.width, o._size.height);
-      if(!r){
-         return r;
+      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, size.width, size.height, 0, handle.RGBA, handle.UNSIGNED_BYTE, null);
+      var result = context.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", texture._handle, size.width, size.height);
+      if(!result){
+         return result;
       }
       // 绑定数据
-      g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0 + i, g.TEXTURE_2D, t._handle, 0);
-      var r = c.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, t._handle);
-      if(!r){
-         return r;
+      handle.framebufferTexture2D(handle.FRAMEBUFFER, handle.COLOR_ATTACHMENT0 + i, handle.TEXTURE_2D, texture._handle, 0);
+      var result = context.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, texture._handle);
+      if(!result){
+         return result;
       }
    }
+   // 清空渲染目标
+   handle.bindFramebuffer(handle.FRAMEBUFFER, null);
 }
 
 //==========================================================

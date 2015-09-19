@@ -38,17 +38,17 @@ MO.FE3dShadowTechnique_setup = function FE3dShadowTechnique_setup(){
    //..........................................................
    var ps = o._passes;
    // 创建光深处理过程
-   var pd = o._passDepth = MO.Class.create(MO.FE3dShadowDepthPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   //ps.push(pd);
+   var passDepth = o._passDepth = MO.Class.create(MO.FE3dShadowDepthPass);
+   passDepth.linkGraphicContext(o);
+   passDepth.setup();
+   o.pushPass(passDepth);
    // 创建颜色处理过程
-   var pc = o._passColor = MO.Class.create(MO.FE3dShadowColorPass);
-   pc.linkGraphicContext(o);
-   pc.setup();
-   ps.push(pc);
+   var passColor = o._passColor = MO.Class.create(MO.FE3dShadowColorPass);
+   passColor.linkGraphicContext(o);
+   passColor.setup();
+   o.pushPass(passColor);
    // 设置深度纹理
-   pc.setTextureDepth(pd.textureDepth());
+   passColor.setTextureDepth(passDepth.textureDepth());
 }
 
 //==========================================================

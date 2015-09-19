@@ -223,7 +223,7 @@ MO.FEaiChartDptMarketerProcessor_process = function FEaiChartDptMarketerProcesso
       var endDate = o._endDate;
       beginDate.assign(endDate);
       endDate.assign(systemDate);
-      statistics.marketer().doMarketerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
+      statistics.department().doMarketerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       beginDate.assign(endDate);
    }
    var currentTick = MO.Timer.current();
@@ -267,6 +267,7 @@ MO.FEaiChartDptMarketerScene = function FEaiChartDptMarketerScene(o) {
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
+   o.onOperationDown         = MO.FEaiChartDptMarketerScene_onOperationDown;
    o.onInvestmentDataChanged = MO.FEaiChartDptMarketerScene_onInvestmentDataChanged;
    o.onOperationVisibility   = MO.FEaiChartDptMarketerScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartDptMarketerScene_onProcessReady;
@@ -279,6 +280,10 @@ MO.FEaiChartDptMarketerScene = function FEaiChartDptMarketerScene(o) {
    o.fixMatrix               = MO.FEaiChartDptMarketerScene_fixMatrix;
    o.processResize           = MO.FEaiChartDptMarketerScene_processResize;
    return o;
+}
+MO.FEaiChartDptMarketerScene_onOperationDown = function FEaiChartDptMarketerScene_onOperationDown(event) {
+   var o = this;
+   o._countryEntity._startTime = 0;
 }
 MO.FEaiChartDptMarketerScene_onInvestmentDataChanged = function FEaiChartDptMarketerScene_onInvestmentDataChanged(event) {
    var o = this;
@@ -1173,7 +1178,7 @@ MO.FEaiChartDptMarketerTimeline_sync = function FEaiChartDptMarketerTimeline_syn
    var endTime = o._endTime;
    endTime.assign(currentDate);
    var statisticsLogic = MO.Console.find(MO.FEaiLogicConsole).statistics();
-   statisticsLogic.marketer().doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
+   statisticsLogic.department().doMarketerTrend(o, o.on24HDataFetch, startTime.format(), endTime.format());
 }
 MO.FEaiChartDptMarketerTimeline_on24HDataFetch = function FEaiChartDptMarketerTimeline_on24HDataFetch(event) {
    var o = this;

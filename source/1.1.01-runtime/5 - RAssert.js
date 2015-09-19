@@ -13,7 +13,6 @@ MO.RAssert = function RAssert(){
    //..........................................................
    // @method
    o.debugBegin = MO.Runtime.empty;
-   o.debug      = MO.Runtime.empty;
    o.debugEnd   = MO.Runtime.empty;
    return o;
 }
@@ -42,6 +41,17 @@ MO.RAssert.prototype.isFalse = function RAssert_isFalse(value){
    if(value){
       throw new Error('Assert false failure.');
    }
+}
+
+//==========================================================
+// <T>执行内容。</T>
+// <P>Release版本，本行不保留。</P>
+//
+// @method
+// @param value:Object 内容
+//==========================================================
+MO.RAssert.prototype.debug = function RAssert_debug(value){
+   return value;
 }
 
 //==========================================================

@@ -545,6 +545,7 @@ MO.TMap = function TMap(){
    o.setValue      = MO.TMap_setValue;
    o.get           = MO.TMap_get;
    o.set           = MO.TMap_set;
+   o.setNvl        = MO.TMap_setNvl;
    o.assign        = MO.TMap_assign;
    o.append        = MO.TMap_append;
    o.insert        = MO.TMap_insert;
@@ -657,6 +658,11 @@ MO.TMap_set = function TMap_set(name, value){
       o._table[code] = index;
    }
    o._values[index] = value;
+}
+MO.TMap_setNvl = function TMap_setNvl(name, value){
+   if(value){
+      this.set(name, value);
+   }
 }
 MO.TMap_assign = function TMap_assign(map){
    var o = this;
@@ -1114,7 +1120,6 @@ MO.TString_dump = function TString_dump(){
 MO.RAssert = function RAssert(){
    var o = MO.RSingleton.call(this);
    o.debugBegin = MO.Runtime.empty;
-   o.debug      = MO.Runtime.empty;
    o.debugEnd   = MO.Runtime.empty;
    return o;
 }
@@ -1127,6 +1132,9 @@ MO.RAssert.prototype.isFalse = function RAssert_isFalse(value){
    if(value){
       throw new Error('Assert false failure.');
    }
+}
+MO.RAssert.prototype.debug = function RAssert_debug(value){
+   return value;
 }
 MO.RAssert.prototype.debugTrue = function RAssert_debugTrue(value){
    if(!value){
@@ -1777,6 +1785,7 @@ MO.EAnnotation = new function EAnnotation(){
 MO.EDataType = new function EDataType(){
    var o = this;
    o.Unknown = 0;
+   o.Boolean = 1;
    o.Int8 = 1;
    o.Int16 = 2;
    o.Int32 = 3;
@@ -6167,6 +6176,7 @@ MO.SColor4 = function SColor4(red, green, blue, alpha){
    o.savePower    = MO.SColor4_savePower;
    o.copyArray    = MO.SColor4_copyArray;
    o.toString     = MO.SColor4_toString;
+   o.dispose      = MO.SColor4_dispose;
    return o;
 }
 MO.SColor4_assign = function SColor4_assign(p){
@@ -6266,6 +6276,13 @@ MO.SColor4_copyArray = function SColor4_copyArray(d, i){
 MO.SColor4_toString = function SColor4_toString(){
    var o = this;
    return MO.Lang.Float.format(o.red) + ',' + MO.Lang.Float.format(o.green) + ',' + MO.Lang.Float.format(o.blue) + ',' + MO.Lang.Float.format(o.alpha);
+}
+MO.SColor4_dispose = function SColor4_dispose(){
+   var o = this;
+   o.red = null;
+   o.green = null;
+   o.blue = null;
+   o.alpha = null;
 }
 MO.SCorners = function SCorners(){
    var o = this;
@@ -7520,6 +7537,136 @@ MO.SMatrix4x4_toString = function SMatrix4x4_toString(){
    }
    return r.flush();
 }
+MO.SOutline2 = function SOutline2(){
+   var o = this;
+   o.min         = new MO.SPoint2();
+   o.max         = new MO.SPoint2();
+   o.isEmpty     = MO.SOutline2_isEmpty;
+   o.assign      = MO.SOutline2_assign;
+   o.setMin      = MO.SOutline2_setMin;
+   o.setMax      = MO.SOutline2_setMax;
+   o.set         = MO.SOutline2_set;
+   o.mergeMin    = MO.SOutline2_mergeMin;
+   o.mergeMax    = MO.SOutline2_mergeMax;
+   o.mergeMax2   = MO.SOutline2_mergeMax2;
+   o.mergePoint  = MO.SOutline2_mergePoint;
+   o.serialize   = MO.SOutline2_serialize;
+   o.unserialize = MO.SOutline2_unserialize;
+   o.toString    = MO.SOutline2_toString;
+   return o;
+}
+MO.SOutline2_isEmpty = function SOutline2_isEmpty(p){
+   var o = this;
+   return o.min.isEmpty() && o.max.isEmpty();
+}
+MO.SOutline2_assign = function SOutline2_assign(p){
+   var o = this;
+   o.min.assign(p.min);
+   o.max.assign(p.max);
+}
+MO.SOutline2_setMin = function SOutline2_setMin(){
+   var o = this;
+   o.min.setMax();
+   o.max.setMin();
+}
+MO.SOutline2_setMax = function SOutline2_setMax(){
+   var o = this;
+   o.min.setMin();
+   o.max.setMax();
+}
+MO.SOutline2_set = function SOutline2_set(minX, minY, minZ, maxX, maxY, maxZ){
+   var o = this;
+   o.min.set(minX, minY, minZ);
+   o.max.set(maxX, maxY, maxZ);
+}
+MO.SOutline2_mergeMin = function SOutline2_mergeMin(p){
+   var o = this;
+   o.min.mergeMax(p.min);
+   o.max.mergeMin(p.max);
+}
+MO.SOutline2_mergeMax = function SOutline2_mergeMax(p){
+   var o = this;
+   o.min.mergeMin(p.min);
+   o.max.mergeMax(p.max);
+}
+MO.SOutline2_mergeMax2 = function SOutline2_mergeMax2(x, y){
+   var o = this;
+   o.min.mergeMin2(x, y);
+   o.max.mergeMax2(x, y);
+}
+MO.SOutline2_mergePoint = function SOutline2_mergePoint(x, y, z){
+   var o = this;
+   o.min.mergeMin3(x, y, z);
+   o.max.mergeMax3(x, y, z);
+}
+MO.SOutline2_serialize = function SOutline2_serialize(p){
+   var o = this;
+   o.min.serialize(p);
+   o.max.serialize(p);
+}
+MO.SOutline2_unserialize = function SOutline2_unserialize(p){
+   var o = this;
+   o.min.unserialize(p);
+   o.max.unserialize(p);
+}
+MO.SOutline2_toString = function SOutline2_toString(){
+   var o = this;
+   return '(' + o.min + ')-(' + o.max + ')';
+}
+MO.SOutline2d = function SOutline2d(){
+   var o = this;
+   MO.SOutline2.call(o);
+   o.center        = new MO.SPoint2();
+   o.distance      = new MO.SPoint2();
+   o.radius        = 0;
+   o.points        = new Array(8);
+   o.assign        = MO.SOutline2d_assign;
+   o.set           = MO.SOutline2d_set;
+   o.update        = MO.SOutline2d_update;
+   return o;
+}
+MO.SOutline2d_assign = function SOutline2d_assign(value){
+   var o = this;
+   o.center.assign(value.center);
+   o.distance.assign(value.distance);
+   o.radius = value.radius;
+   for(var i = 0; i < 8; i++){
+      o.points[i] = value.points[i];
+   }
+}
+MO.SOutline2d_set = function SOutline2d_set(minX, minY, maxX, maxY){
+   var o = this;
+   o.min.set(minX, minY);
+   o.max.set(maxX, maxY);
+   o.update();
+}
+MO.SOutline2d_update = function SOutline2d_update(){
+   var o = this;
+   var min = o.min;
+   var minX = min.x;
+   var minY = min.y;
+   var max = o.max;
+   var maxX = max.x;
+   var maxY = max.y;
+   var ps = o.points;
+   ps[0] = minX;
+   ps[1] = maxY;
+   ps[2] = maxX;
+   ps[3] = maxY;
+   ps[4] = maxX;
+   ps[5] = minY;
+   ps[6] = minX;
+   ps[7] = minY;
+   var center = o.center;
+   center.x = (minX + maxX) * 0.5;
+   center.y = (minY + maxY) * 0.5;
+   var distance = o.distance;
+   distance.x = maxX - minX;
+   distance.y = maxY - minY;
+   var cx = maxX - minX;
+   var cy = maxY - minY;
+   o.radius = Math.sqrt(cx * cx + cy * cy) * 0.5;
+}
 MO.SOutline3 = function SOutline3(){
    var o = this;
    o.min         = new MO.SPoint3();
@@ -7598,6 +7745,7 @@ MO.SOutline3d = function SOutline3d(){
    o.radius        = 0;
    o.points        = new Array(24);
    o.assign        = MO.SOutline3d_assign;
+   o.set           = MO.SOutline3d_set;
    o.update        = MO.SOutline3d_update;
    o.calculateFrom = MO.SOutline3d_calculateFrom;
    o.calculate     = MO.SOutline3d_calculate;
@@ -7611,6 +7759,12 @@ MO.SOutline3d_assign = function SOutline3d_assign(value){
    for(var i = 0; i < 24; i++){
       o.points[i] = value.points[i];
    }
+}
+MO.SOutline3d_set = function SOutline3d_set(minX, minY, minZ, maxX, maxY, maxZ){
+   var o = this;
+   o.min.set(minX, minY, minZ);
+   o.max.set(maxX, maxY, maxZ);
+   o.update();
 }
 MO.SOutline3d_update = function SOutline3d_update(){
    var o = this;
@@ -7851,36 +8005,13 @@ MO.SPlane_dump = function SPlane_dump(){
 }
 MO.SPoint2 = function SPoint2(x, y){
    var o = this;
-   o.x           = MO.Lang.Integer.nvl(x);
-   o.y           = MO.Lang.Integer.nvl(y);
-   o.isEmpty     = MO.SPoint2_isEmpty;
-   o.equals      = MO.SPoint2_equals;
-   o.assign      = MO.SPoint2_assign;
-   o.set         = MO.SPoint2_set;
+   MO.SValue2.call(o, MO.Lang.Integer.nvl(x), MO.Lang.Integer.nvl(y));
    o.serialize   = MO.SPoint2_serialize;
    o.unserialize = MO.SPoint2_unserialize;
    o.parse       = MO.SPoint2_parse;
    o.toString    = MO.SPoint2_toString;
    o.dispose     = MO.SPoint2_dispose;
-   o.dump        = MO.SPoint2_dump;
    return o;
-}
-MO.SPoint2_isEmpty = function SPoint2_isEmpty(){
-   var o = this;
-   return (o.x == 0) && (o.y == 0);
-}
-MO.SPoint2_equals = function SPoint2_equals(p){
-   return p ? (this.x == p.x && this.y == p.y) : false;
-}
-MO.SPoint2_assign = function SPoint2_assign(p){
-   var o = this;
-   o.x = p.x;
-   o.y = p.y;
-}
-MO.SPoint2_set = function SPoint2_set(x, y){
-   var o = this;
-   o.x = x;
-   o.y = y;
 }
 MO.SPoint2_serialize = function SPoint2_serialize(output){
    var o = this;
@@ -7910,9 +8041,6 @@ MO.SPoint2_dispose = function SPoint2_dispose(){
    var o = this;
    o.x = null;
    o.y = null;
-}
-MO.SPoint2_dump = function SPoint2_dump(){
-   return MO.Class.dump(this) + ' [' + this.x + ',' + this.y + ']';
 }
 MO.SPoint3 = function SPoint3(x, y, z){
    var o = this;
@@ -8612,6 +8740,114 @@ MO.SSquare_dump = function SSquare_dump(d){
    d.append('(', this.width(), '-', this.height(), ')');
    return d;
 }
+MO.SValue2 = function SValue2(x, y){
+   var o = this;
+   o.x            = MO.Runtime.nvl(x, 0);
+   o.y            = MO.Runtime.nvl(y, 0);
+   o.isEmpty      = MO.SValue2_isEmpty;
+   o.equals       = MO.SValue2_equals;
+   o.equalsData   = MO.SValue2_equalsData;
+   o.assign       = MO.SValue2_assign;
+   o.setMin       = MO.SValue2_setMin;
+   o.setMax       = MO.SValue2_setMax;
+   o.set          = MO.SValue2_set;
+   o.setAll       = MO.SValue2_setAll;
+   o.mergeMin     = MO.SValue2_mergeMin;
+   o.mergeMin2    = MO.SValue2_mergeMin2;
+   o.mergeMax     = MO.SValue2_mergeMax;
+   o.mergeMax2    = MO.SValue2_mergeMax2;
+   o.length       = MO.SValue2_absolute;
+   o.absolute     = MO.SValue2_absolute;
+   o.normalize    = MO.SValue2_normalize;
+   o.negative     = MO.SValue2_negative;
+   o.parse        = MO.SValue2_parse;
+   o.toString     = MO.SValue2_toString;
+   return o;
+}
+MO.SValue2_isEmpty = function SValue2_isEmpty(){
+   return (this.x == 0) && (this.y == 0);
+}
+MO.SValue2_equals = function SValue2_equals(value){
+   return (this.x == value.x) && (this.y == value.y);
+}
+MO.SValue2_equalsData = function SValue2_equalsData(x, y){
+   return (this.x == x) && (this.y == y);
+}
+MO.SValue2_assign = function SValue2_assign(value){
+   this.x = value.x;
+   this.y = value.y;
+}
+MO.SValue2_setMin = function SValue2_setMin(){
+   this.x = Number.MIN_VALUE;
+   this.y = Number.MIN_VALUE;
+}
+MO.SValue2_setMax = function SValue2_setMax(){
+   this.x = Number.MAX_VALUE;
+   this.y = Number.MAX_VALUE;
+}
+MO.SValue2_set = function SValue2_set(x, y){
+   this.x = x;
+   this.y = y;
+}
+MO.SValue2_setAll = function SValue2_set(value){
+   this.x = value;
+   this.y = value;
+}
+MO.SValue2_normalize = function SValue2_normalize(){
+   var value = this.absolute();
+   if(value != 0){
+      var rate = 1 / value;
+      this.x *= rate;
+      this.y *= rate;
+   }
+   return this;
+}
+MO.SValue2_mergeMin = function SValue2_mergeMin(value){
+   var o = this;
+   o.x = Math.min(o.x, value.x);
+   o.y = Math.min(o.y, value.y);
+}
+MO.SValue2_mergeMin2 = function SValue2_mergeMin2(x, y){
+   var o = this;
+   o.x = Math.min(o.x, x);
+   o.y = Math.min(o.y, y);
+}
+MO.SValue2_mergeMax = function SValue2_mergeMax(value){
+   var o = this;
+   o.x = Math.max(o.x, value.x);
+   o.y = Math.max(o.y, value.y);
+}
+MO.SValue2_mergeMax2 = function SValue2_mergeMax2(x, y){
+   var o = this;
+   o.x = Math.max(o.x, x);
+   o.y = Math.max(o.y, y);
+}
+MO.SValue2_absolute = function SValue2_absolute(){
+   return Math.sqrt((this.x * this.x) + (this.y * this.y));
+}
+MO.SValue2_negative = function SValue2_negative(value){
+   var result = null;
+   if(p){
+      result = value;
+   }else{
+      result = new this.constructor();
+   }
+   result.x = -this.x;
+   result.y = -this.y;
+   return result;
+}
+MO.SValue2_parse = function SValue2_parse(value){
+   var items = value.split(',')
+   if(items.length == 2){
+      this.x = parseFloat(items[0]);
+      this.y = parseFloat(items[1]);
+   }else{
+      throw new MO.TError(o, "Parse value failure. (value={1})", value);
+   }
+}
+MO.SValue2_toString = function SValue2_toString(){
+   return this.x + ',' + this.y;
+}
 MO.SValue3 = function SValue3(x, y, z){
    var o = this;
    o.x            = MO.Runtime.nvl(x, 0);
@@ -8803,6 +9039,72 @@ MO.SValue4_parse = function SValue4_parse(value){
 }
 MO.SValue4_toString = function SValue4_toString(){
    return this.x + ',' + this.y + ',' + this.z + ',' + this.w;
+}
+MO.SVector2 = function SVector2(x, y, z){
+   var o = this;
+   MO.SValue2.call(o, x, y, z);
+   o.length    = o.absolute;
+   o.direction = MO.SVector2_direction;
+   o.conjugate = MO.SVector2_conjugate;
+   o.dotPoint3 = MO.SVector2_dotPoint3;
+   o.cross     = MO.SVector2_cross;
+   o.cross2    = MO.SVector2_cross2;
+   o.slerp     = MO.SVector2_slerp;
+   o.clone     = MO.SVector2_clone;
+   return o;
+}
+MO.SVector2_direction = function SVector2_direction(startPoint, endPoint){
+   var o = this;
+   o.x = endPoint.x - startPoint.x;
+   o.y = endPoint.y - startPoint.y;
+   o.z = endPoint.z - startPoint.z;
+   return o;
+}
+MO.SVector2_conjugate = function SVector2_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new MO.SVector2();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
+}
+MO.SVector2_dotPoint3 = function SVector2_dotPoint3(v){
+   var o = this;
+   return (o.x * v.x) + (o.y * v.y) + (o.z * v.z);
+}
+MO.SVector2_cross = function SVector2_cross(v){
+   var o = this;
+   var vx = (o.y * v.z) - (o.z * v.y);
+   var vy = (o.z * v.x) - (o.x * v.z);
+   var vz = (o.x * v.y) - (o.y * v.x);
+   o.x = vx;
+   o.y = vy;
+   o.z = vz;
+}
+MO.SVector2_cross2 = function SVector2_cross2(po, pi){
+   var o = this;
+   po.x = (o.y * pi.z) - (o.z * pi.y);
+   po.y = (o.z * pi.x) - (o.x * pi.z);
+   po.z = (o.x * pi.y) - (o.y * pi.x);
+}
+MO.SVector2_slerp = function SVector2_slerp(v1, v2, r){
+   var o = this;
+   o.x = (v2.x - v1.x) * r + v1.x;
+   o.y = (v2.y - v1.y) * r + v1.y;
+   o.z = (v2.z - v1.z) * r + v1.z;
+}
+MO.SVector2_clone = function SVector2_clone(){
+   var o = this;
+   var r = new MO.SVector2();
+   r.x = o.x;
+   r.y = o.y;
+   r.z = o.z;
+   return r;
 }
 MO.SVector3 = function SVector3(x, y, z){
    var o = this;
@@ -16179,6 +16481,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawTriangle         = MO.FG2dCanvasContext_drawTriangle;
    o.drawCircle           = MO.FG2dCanvasContext_drawCircle;
    o.drawText             = MO.FG2dCanvasContext_drawText;
+   o.drawTextVertical     = MO.FG2dCanvasContext_drawTextVertical;
    o.drawImage            = MO.FG2dCanvasContext_drawImage;
    o.drawGridImage        = MO.FG2dCanvasContext_drawGridImage;
    o.drawQuadrilateral    = MO.FG2dCanvasContext_drawQuadrilateral;
@@ -16294,6 +16597,16 @@ MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, 
    var handle = o._handle;
    handle.fillStyle = color;
    handle.fillText(text, x, y);
+}
+MO.FG2dCanvasContext_drawTextVertical = function FG2dCanvasContext_drawTextVertical(text, x, y, font) {
+   var o = this;
+   var handle = o._handle;
+   handle.font = font.toString();
+   handle.fillStyle = font.color;
+   for (var i = 0; i < text.length; i++) {
+      handle.fillText(text.charAt(i), x, y);
+      y += font.size + parseInt(font.size / 5);
+   }
 }
 MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height){
    var o = this;
@@ -16644,7 +16957,8 @@ MO.MG3dRegion_dispose = function MG3dRegion_dispose(){
 }
 MO.MG3dRenderable = function MG3dRenderable(o){
    o = MO.Class.inherits(this, o, MO.MGraphicRenderable);
-   o._optionMerge   = false;
+   o._optionMerge   = MO.Class.register(o, new MO.AGetter('_optionMerge'), false);
+   o._optionSelect  = MO.Class.register(o, new MO.AGetter('_optionSelect'), true);
    o._currentMatrix = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
    o._matrix        = MO.Class.register(o, new MO.AGetter('_matrix'));
    o._material      = MO.Class.register(o, new MO.AGetSet('_material'));
@@ -17568,16 +17882,16 @@ MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(n, e){
 MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(n){
    this._registerEffects.set(n, null);
 }
-MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(c, p){
+MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
    var o = this;
-   var t = o._registerEffects.get(p);
-   if(!t){
-      throw new MO.TError(this, 'Unknown effect type name. (type={1})', t);
+   var clazz = o._registerEffects.get(name);
+   if(!clazz){
+      throw new MO.TError(this, 'Unknown effect type name. (type={1})', clazz);
    }
-   var e = MO.Class.create(t);
-   e.linkGraphicContext(c);
-   e.setup();
-   return e;
+   var effect = MO.Class.create(clazz);
+   effect.linkGraphicContext(context);
+   effect.setup();
+   return effect;
 }
 MO.FG3dEffectConsole_buildEffectInfo = function FG3dEffectConsole_buildEffectInfo(context, effectInfo, region, renderable){
    var o = this;
@@ -17999,6 +18313,7 @@ MO.FG3dTechnique = function FG3dTechnique(o){
    o.construct       = MO.FG3dTechnique_construct;
    o.registerMode    = MO.FG3dTechnique_registerMode;
    o.selectMode      = MO.FG3dTechnique_selectMode;
+   o.pushPass        = MO.FG3dTechnique_pushPass;
    o.updateRegion    = MO.Method.empty;
    o.clear           = MO.FG3dTechnique_clear;
    o.clearDepth      = MO.FG3dTechnique_clearDepth;
@@ -18023,6 +18338,12 @@ MO.FG3dTechnique_registerMode = function FG3dTechnique_registerMode(p){
 }
 MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
    var o = this;
+}
+MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
+   var o = this;
+   MO.Assert.debugNotNull(pass);
+   pass.setTechnique(o);
+   o._passes.push(pass);
 }
 MO.FG3dTechnique_clear = function FG3dTechnique_clear(color){
    var o = this;
@@ -18101,6 +18422,7 @@ MO.FG3dTechniqueMode = function FG3dTechniqueMode(o){
 }
 MO.FG3dTechniquePass = function FG3dTechniquePass(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
+   o._technique      = MO.Class.register(o, new MO.AGetSet('_technique'));
    o._fullCode       = MO.Class.register(o, new MO.AGetSet('_fullCode'));
    o._code           = MO.Class.register(o, new MO.AGetter('_code'));
    o._index          = null;
@@ -18109,7 +18431,9 @@ MO.FG3dTechniquePass = function FG3dTechniquePass(o){
    o.setup           = MO.FG3dTechniquePass_setup;
    o.activeEffects   = MO.FG3dTechniquePass_activeEffects;
    o.sortRenderables = MO.FG3dTechniquePass_sortRenderables;
+   o.drawBegin       = MO.FG3dTechniquePass_drawBegin;
    o.drawRegion      = MO.FG3dTechniquePass_drawRegion;
+   o.drawEnd         = MO.FG3dTechniquePass_drawEnd;
    return o;
 }
 MO.FG3dTechniquePass_setup = function FG3dTechniquePass_setup(){
@@ -18161,6 +18485,10 @@ MO.FG3dTechniquePass_activeEffects = function FG3dTechniquePass_activeEffects(re
       }
    }
 }
+MO.FG3dTechniquePass_drawBegin = function FG3dTechniquePass_drawBegin(region){
+   var o = this;
+   o._technique.clear(region.backgroundColor());
+}
 MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(region){
    var o = this;
    var renderables = region.renderables();
@@ -18205,6 +18533,8 @@ MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(region){
       }
       effect.drawRegion(region, groupBegin, groupEnd - groupBegin);
    }
+}
+MO.FG3dTechniquePass_drawEnd = function FG3dTechniquePass_drawEnd(region){
 }
 MO.FG3dTrack = function FG3dTrack(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -18955,13 +19285,13 @@ MO.FG3dProgram_setParameter4 = function FG3dProgram_setParameter4(pn, px, py, pz
    v[3] = pw;
    this.setParameter(pn, v, 1);
 }
-MO.FG3dProgram_setSampler = function FG3dProgram_setSampler(pn, pt){
+MO.FG3dProgram_setSampler = function FG3dProgram_setSampler(name, texture){
    var o = this;
-   var p = o.findSampler(pn);
-   if(p == null){
-      throw new MO.TError(o, 'Bind invalid sampler. (name={1})', pn);
+   var sampler = o.findSampler(name);
+   if(!sampler){
+      throw new MO.TError(o, 'Bind invalid sampler. (name={1})', name);
    }
-   o._graphicContext.bindTexture(p._slot, p._index, pt);
+   o._graphicContext.bindTexture(sampler._slot, sampler._index, texture);
 }
 MO.FG3dProgram_dispose = function FG3dProgram_dispose(){
    var o = this;
@@ -18976,10 +19306,10 @@ MO.FG3dProgramAttribute = function FG3dProgramAttribute(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._name       = MO.Class.register(o, new MO.AGetter('_name'));
    o._linker     = MO.Class.register(o, new MO.AGetter('_linker'));
-   o._statusUsed = false;
+   o._statusUsed = MO.Class.register(o, new MO.AGetter('_statusUsed'), false);
    o._slot       = null;
    o._index      = -1;
-   o._formatCd   = MO.EG3dAttributeFormat.Unknown;
+   o._formatCd   = MO.Class.register(o, new MO.AGetter('_formatCd'), MO.EG3dAttributeFormat.Unknown);
    o.loadConfig  = MO.FG3dProgramAttribute_loadConfig;
    o.dispose     = MO.FG3dProgramAttribute_dispose;
    return o;
@@ -18988,7 +19318,7 @@ MO.FG3dProgramAttribute_loadConfig = function FG3dProgramAttribute_loadConfig(xc
    var o = this;
    o._name = xconfig.get('name');
    o._linker = xconfig.get('linker');
-   o._formatCd = MO.REnum.encode(MO.EG3dAttributeFormat, xconfig.get('format'));
+   o._formatCd = MO.Lang.Enum.encode(MO.EG3dAttributeFormat, xconfig.get('format'));
 }
 MO.FG3dProgramAttribute_dispose = function FG3dProgramAttribute_dispose(){
    var o = this;
@@ -19085,23 +19415,23 @@ MO.FG3dRenderTarget = function FG3dRenderTarget(o){
 MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
    var o = this;
    o.__base.FG3dObject.construct();
-   o._size = new SSize2();
-   o._color = new SColor4();
+   o._size = new MO.SSize2();
+   o._color = new MO.SColor4();
    o._color.set(0.0, 0.0, 0.0, 1.0);
 }
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;
    var textures = o._textures;
    if(textures == null){
-      textures = o._textures = new TObjects();
+      textures = o._textures = new MO.TObjects();
    }
    return textures;
 }
 MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
    var o = this;
-   o._size = RObject.dispose(o._size);
-   o._color = RObject.dispose(o._color);
-   o.__base.dispose.construct();
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._color = MO.Lang.Object.dispose(o._color);
+   o.__base.FG3dObject.dispose();
 }
 MO.FG3dShader = function FG3dShader(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
@@ -19544,9 +19874,10 @@ MO.FG3dAutomaticEffect_bindSamplers = function FG3dAutomaticEffect_bindSamplers(
       for(var n = 0; n < count; n++){
          var sampler = samplers.at(n);
          if(sampler._bind && sampler._statusUsed){
+            var name = sampler.name();
             var linker = sampler.linker();
             var texture = renderable.findTexture(linker);
-            program.setSampler(sampler.name(), texture.texture());
+            program.setSampler(name, texture.texture());
          }
       }
    }
@@ -19687,6 +20018,7 @@ MO.FG3dSelectPass = function FG3dSelectPass(o){
    o._data         = null;
    o.construct     = MO.FG3dSelectPass_construct;
    o.setup         = MO.FG3dSelectPass_setup;
+   o.activeEffects = MO.FG3dSelectPass_activeEffects;
    o.drawRegion    = MO.FG3dSelectPass_drawRegion;
    return o;
 }
@@ -19708,41 +20040,59 @@ MO.FG3dSelectPass_setup = function FG3dSelectPass_setup(){
    t.textures().push(T);
    t.build();
 }
-MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(p){
+MO.FG3dSelectPass_activeEffects = function FG3dSelectPass_activeEffects(region, renderables){
+   var o = this;
+   var spaceName = region.spaceName();
+   var count = renderables.count();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.at(i);
+      if(renderable.optionSelect()){
+         var info = renderable.selectInfo(spaceName);
+         if(!info.effect){
+            info.effect = MO.Console.find(MO.FG3dEffectConsole).find(o._graphicContext, region, renderable);
+         }
+      }
+   }
+}
+MO.FG3dSelectPass_drawRegion = function FG3dSelectPass_drawRegion(region){
    var o = this;
    var context = o._graphicContext;
    var handle = context.handle();
    context.setRenderTarget(o._renderTarget);
    context.clear(0, 0, 0, 0, 1, 1);
-   var rs = p.allRenderables();
-   o.activeEffects(p, rs);
-   var rc = rs.count();
-   for(var i = 0; i < rc; i++){
-      var r = rs.get(i);
-      var e = r.activeEffect();
-      context.setProgram(e.program());
-      var d = r.display();
-      if(!d){
-         e.drawRenderable(p, r, i);
-      }else if(!d._optionFace){
-         e.drawRenderable(p, r, i);
+   var renderables = region.allRenderables();
+   o.activeEffects(region, renderables);
+   var renderableCount = renderables.count();
+   for(var i = 0; i < renderableCount; i++){
+      var renderable = renderables.at(i);
+      if(renderable.optionSelect()){
+         var effect = renderable.activeEffect();
+         context.setProgram(effect.program());
+         var display = renderable.display();
+         if(!display){
+            effect.drawRenderable(region, renderable, i);
+         }else if(!display._optionFace){
+            effect.drawRenderable(region, renderable, i);
+         }
       }
    }
    context.clearDepth(1);
-   for(var i = 0; i < rc; i++){
-      var r = rs.get(i);
-      var e = r.activeEffect();
-      context.setProgram(e.program());
-      var d = r.display();
-      if(d && d._optionFace){
-         e.drawRenderable(p, r, i);
+   for(var i = 0; i < renderableCount; i++){
+      var renderable = renderables.at(i);
+      if(renderable.optionSelect()){
+         var effect = renderable.activeEffect();
+         context.setProgram(effect.program());
+         var display = renderable.display();
+         if(display && display._optionFace){
+            effect.drawRenderable(region, renderable, i);
+         }
       }
    }
    handle.readPixels(0, 0, 1, 1, handle.RGBA, handle.UNSIGNED_BYTE, o._data);
-   var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
+   var index = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
    o._selectRenderable = null;
-   if(v != 0){
-      o._selectRenderable = rs.get(v - 1);
+   if(index != 0){
+      o._selectRenderable = renderables.get(index - 1);
    }
 }
 MO.FG3dSelectSkeletonEffect = function FG3dSelectSkeletonEffect(o){
@@ -19774,21 +20124,22 @@ MO.FG3dSelectSkeletonEffect_drawRenderable = function FG3dSelectSkeletonEffect_d
    c.drawTriangles(pr.indexBuffer());
 }
 MO.FG3dSelectTechnique = function FG3dSelectTechnique(o){
-   o = MO.Class.inherits(this, o, FG3dTechnique);
+   o = MO.Class.inherits(this, o, MO.FG3dTechnique);
    o._code       = 'select';
    o._passSelect = MO.Class.register(o, new MO.AGetter('_passSelect'));
    o.setup       = MO.FG3dSelectTechnique_setup;
    o.test        = MO.FG3dSelectTechnique_test;
+   o.testDynamic = MO.FG3dSelectTechnique_testDynamic;
    return o;
 }
 MO.FG3dSelectTechnique_setup = function FG3dSelectTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    o.registerMode(MO.EG3dTechniqueMode.Result);
-   var pd = o._passSelect = MO.Class.create(MO.FG3dSelectPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   o._passes.push(pd);
+   var pass = o._passSelect = MO.Class.create(MO.FG3dSelectPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }
 MO.FG3dSelectTechnique_test = function FG3dSelectTechnique_test(region, x, y){
    var o = this;
@@ -19812,6 +20163,7 @@ MO.FWglContext = function FWglContext(o){
    o._statusRecord       = false;
    o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
    o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
+   o._statusFloatTexture = false;
    o._statusScissor      = false;
    o._data9              = null;
    o._data16             = null;
@@ -19822,6 +20174,7 @@ MO.FWglContext = function FWglContext(o){
    o.parameters          = MO.FWglContext_parameters;
    o.extension           = MO.FWglContext_extension;
    o.extensions          = MO.FWglContext_extensions;
+   o.enableFloatTexture  = MO.FWglContext_enableFloatTexture;
    o.recordBegin         = MO.FWglContext_recordBegin;
    o.recordEnd           = MO.FWglContext_recordEnd;
    o.createProgram       = MO.FWglContext_createProgram;
@@ -20093,6 +20446,21 @@ MO.FWglContext_extensions = function FWglContext_extensions(){
    }
    return extensions;
 }
+MO.FWglContext_enableFloatTexture = function FWglContext_enableFloatTexture(){
+   var o = this;
+   if(!o._statusFloatTexture){
+      var extension = o._handle.getExtension('OES_texture_float');
+      if(!extension){
+         return false;
+      }
+      var extension = o._handle.getExtension('OES_texture_float_linear');
+      if(!extension){
+         return false;
+      }
+      o._statusFloatTexture = true;
+   }
+   return o._statusFloatTexture;
+}
 MO.FWglContext_recordBegin = function FWglContext_recordBegin(){
    var o = this;
    o._recordBuffers.clear();
@@ -20153,9 +20521,9 @@ MO.FWglContext_createCubeTexture = function FWglContext_createCubeTexture(clazz)
 MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(clazz){
    var o = this;
    var texture = o.createObject(MO.Runtime.nvl(clazz, MO.FWglRenderTarget));
-   o._storeTargets.push(target);
+   o._storeTargets.push(texture);
    o._statistics._targetTotal++;
-   return target;
+   return texture;
 }
 MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
    var o = this;
@@ -20745,13 +21113,26 @@ MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, wid
       data = new Uint8Array(content);
    }else if(content.constructor == Uint8Array){
       data = content;
+   }else if(content.constructor == Float32Array){
+      if(!context.enableFloatTexture()){
+         throw new MO.TError('Invalid content float format.');
+      }
+      data = content;
    }else{
       throw new MO.TError('Invalid content format.');
    }
    o.width = width;
    o.height = height;
    handle.bindTexture(handle.TEXTURE_2D, o._handle);
-   handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, width, height, 0, handle.RGBA, handle.UNSIGNED_BYTE, data);
+   var internalformatCd = handle.RGBA;
+   var formatCd = handle.RGBA;
+   var typeCd = handle.UNSIGNED_BYTE;
+   if(content.constructor == Float32Array){
+      internalformatCd = handle.ALPHA;
+      formatCd = handle.ALPHA;
+      typeCd = handle.FLOAT;
+   }
+   handle.texImage2D(handle.TEXTURE_2D, 0, internalformatCd, width, height, 0, formatCd, typeCd, data);
    o._statusLoad = context.checkError("texImage2D", "Upload content failure.");
    o.update();
 }
@@ -21156,61 +21537,62 @@ MO.FWglRenderTarget = function FWglRenderTarget(o){
 MO.FWglRenderTarget_setup = function FWglRenderTarget_setup(){
    var o = this;
    o.__base.FG3dRenderTarget.setup.call(o);
-   var c = o._graphicContext;
-   var g = c._handle;
-   o._handle = g.createFramebuffer();
-   return c.checkError('createFramebuffer', 'Create frame buffer failure.');
+   var context = o._graphicContext;
+   var graphic = context._handle;
+   o._handle = graphic.createFramebuffer();
+   return context.checkError('createFramebuffer', 'Create frame buffer failure.');
 }
 MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
    var o = this;
-   var s = o._size;
-   var c = o._graphicContext;
-   var g = c._handle;
-   g.bindFramebuffer(g.FRAMEBUFFER, o._handle);
-   var r = c.checkError('bindFramebuffer', 'Bind frame buffer failure.');
-   if(!r){
-      return r;
+   var size = o._size;
+   var context = o._graphicContext;
+   var handle = context._handle;
+   handle.bindFramebuffer(handle.FRAMEBUFFER, o._handle);
+   var result = context.checkError('bindFramebuffer', 'Bind frame buffer failure.');
+   if(!result){
+      return result;
    }
    if(o._optionDepth){
-      var nd = o._handleDepth = g.createRenderbuffer();
-      var r = c.checkError('createRenderbuffer', 'Create render buffer failure.');
-      if(!r){
-         return r;
+      var depthHandle = o._handleDepth = handle.createRenderbuffer();
+      var result = context.checkError('createRenderbuffer', 'Create render buffer failure.');
+      if(!result){
+         return result;
       }
-      g.bindRenderbuffer(g.RENDERBUFFER, nd);
-      var r = c.checkError('bindRenderbuffer', 'Bind render buffer failure.');
-      if(!r){
-         return r;
+      handle.bindRenderbuffer(handle.RENDERBUFFER, depthHandle);
+      var result = context.checkError('bindRenderbuffer', 'Bind render buffer failure.');
+      if(!result){
+         return result;
       }
-      g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, s.width, s.height);
-      var r = c.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
-      if(!r){
-         return r;
+      handle.renderbufferStorage(handle.RENDERBUFFER, handle.DEPTH_COMPONENT16, size.width, size.height);
+      var result = context.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
+      if(!result){
+         return result;
       }
-      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nd);
-      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._handle, nd);
-      if(!r){
-         return r;
-      }
-   }
-   var ts = o._textures;
-   var tc = ts.count();
-   for(var i = 0; i < tc; i++){
-      var t = ts.get(i);
-      g.bindTexture(g.TEXTURE_2D, t._handle);
-      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
-      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
-      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, s.width, s.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
-      var r = c.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", t._handle, o._size.width, o._size.height);
-      if(!r){
-         return r;
-      }
-      g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0 + i, g.TEXTURE_2D, t._handle, 0);
-      var r = c.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, t._handle);
-      if(!r){
-         return r;
+      handle.framebufferRenderbuffer(handle.FRAMEBUFFER, handle.DEPTH_ATTACHMENT, handle.RENDERBUFFER, depthHandle);
+      var result = context.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._handle, depthHandle);
+      if(!result){
+         return result;
       }
    }
+   var textures = o._textures;
+   var textureCount = textures.count();
+   for(var i = 0; i < textureCount; i++){
+      var texture = textures.get(i);
+      handle.bindTexture(handle.TEXTURE_2D, texture._handle);
+      handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MAG_FILTER, handle.LINEAR);
+      handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MIN_FILTER, handle.LINEAR);
+      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, size.width, size.height, 0, handle.RGBA, handle.UNSIGNED_BYTE, null);
+      var result = context.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", texture._handle, size.width, size.height);
+      if(!result){
+         return result;
+      }
+      handle.framebufferTexture2D(handle.FRAMEBUFFER, handle.COLOR_ATTACHMENT0 + i, handle.TEXTURE_2D, texture._handle, 0);
+      var result = context.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, texture._handle);
+      if(!result){
+         return result;
+      }
+   }
+   handle.bindFramebuffer(handle.FRAMEBUFFER, null);
 }
 MO.FWglRenderTarget_dispose = function FWglRenderTarget_dispose(){
    var o = this;

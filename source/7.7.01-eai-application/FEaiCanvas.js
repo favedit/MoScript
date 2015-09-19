@@ -75,7 +75,9 @@ MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
       // 设置舞台
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
-      stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+      if(!stage.technique()){
+         stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+      }
       // 设置相机
       //var camera = stage.region().camera();
       //var projection = camera.projection();

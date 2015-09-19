@@ -152,8 +152,10 @@ MO.MUiGridColumnCurrency = function MUiGridColumnCurrency(o){
    o = MO.Class.inherits(this, o);
    o._currencyPercent = MO.Class.register(o, new MO.AGetSet('_currencyPercent'), 2);
    o._normalColor     = MO.Class.register(o, new MO.AGetSet('_normalColor'), '#000000');
-   o._highColor       = MO.Class.register(o, new MO.AGetSet('_highColor'), '#000000');
+   o._lowerestColor   = MO.Class.register(o, new MO.AGetSet('_lowerestColor'), '#000000');
    o._lowerColor      = MO.Class.register(o, new MO.AGetSet('_lowerColor'), '#000000');
+   o._highColor       = MO.Class.register(o, new MO.AGetSet('_highColor'), '#000000');
+   o._highestColor    = MO.Class.register(o, new MO.AGetSet('_highestColor'), '#000000');
    o._negativeColor   = MO.Class.register(o, new MO.AGetSet('_negativeColor'), '#000000');
    o.construct        = MO.MUiGridColumnCurrency_construct;
    o.formatText       = MO.MUiGridColumnCurrency_formatText;
@@ -196,6 +198,7 @@ MO.MUiGridColumnDate_dispose = function MUiGridColumnDate_dispose(){
 }
 MO.MUiGridColumnText = function MUiGridColumnText(o){
    o = MO.Class.inherits(this, o);
+   o._textAlign = MO.Class.register(o, new MO.AGetSet('_textAlign'), MO.EUiAlign.Center);
    o.construct = MO.MUiGridColumnText_construct;
    o.dispose   = MO.MUiGridColumnText_dispose;
    return o;

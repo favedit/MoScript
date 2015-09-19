@@ -12,13 +12,13 @@ MO.FG3dProgramAttribute = function FG3dProgramAttribute(o){
    // @attribute 关联名称
    o._linker     = MO.Class.register(o, new MO.AGetter('_linker'));
    // @attribute 使用标志
-   o._statusUsed = false;
+   o._statusUsed = MO.Class.register(o, new MO.AGetter('_statusUsed'), false);
    // @attribute 插槽
    o._slot       = null;
    // @attribute 索引
    o._index      = -1;
    // @attribute 格式
-   o._formatCd   = MO.EG3dAttributeFormat.Unknown;
+   o._formatCd   = MO.Class.register(o, new MO.AGetter('_formatCd'), MO.EG3dAttributeFormat.Unknown);
    //..........................................................
    // @method
    o.loadConfig  = MO.FG3dProgramAttribute_loadConfig;
@@ -37,7 +37,7 @@ MO.FG3dProgramAttribute_loadConfig = function FG3dProgramAttribute_loadConfig(xc
    var o = this;
    o._name = xconfig.get('name');
    o._linker = xconfig.get('linker');
-   o._formatCd = MO.REnum.encode(MO.EG3dAttributeFormat, xconfig.get('format'));
+   o._formatCd = MO.Lang.Enum.encode(MO.EG3dAttributeFormat, xconfig.get('format'));
 }
 
 //==========================================================

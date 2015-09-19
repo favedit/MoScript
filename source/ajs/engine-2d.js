@@ -101,9 +101,9 @@ MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width,
    var code = width + 'x' + height;
    var canvas = pools.alloc(code);
    if(!canvas){
-      canvas = MO.Class.create(FE2dCanvas);
+      canvas = MO.Class.create(MO.FE2dCanvas);
       canvas.size().set(width, height);
-      canvas.build(MO.RWindow._hDocument);
+      canvas.build(MO.Window._hDocument);
    }
    canvas.reset();
    return canvas;

@@ -13,7 +13,8 @@ MO.FE3dSphereColorPass = function FE3dSphereColorPass(o){
    // @attribute
    //..........................................................
    // @method
-   o.drawRegion    = MO.FE3dSphereColorPass_drawRegion;
+   o.setup         = MO.FE3dSphereColorPass_setup;
+   o.drawBegin     = MO.FE3dSphereColorPass_drawBegin;
    return o;
 }
 
@@ -22,14 +23,14 @@ MO.FE3dSphereColorPass = function FE3dSphereColorPass(o){
 //
 // @method
 //==========================================================
-MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
+MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
    var context = o._graphicContext;
    // 创建平面
    var texture = o._textureColor = context.createFlatTexture();
-   texture.setFilter(EG3dSamplerFilter.Linear, EG3dSamplerFilter.Linear);
-   texture.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+   texture.setFilterCd(MO.EG3dSamplerFilter.Linear, MO.EG3dSamplerFilter.Linear);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
    // 创建渲染目标
    var target = o._renderTarget = context.createRenderTarget();
    target.size().set(2048, 1024);
@@ -38,18 +39,15 @@ MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
 }
 
 //==========================================================
-// <T>绘制区域处理。</T>
+// <T>开始绘制处理。</T>
 //
 // @method
 // @param region:FG3dRetion 区域
 //==========================================================
-MO.FE3dSphereColorPass_drawRegion = function FE3dSphereColorPass_drawRegion(region){
+MO.FE3dSphereColorPass_drawBegin = function FE3dSphereColorPass_drawBegin(region){
    var o = this;
    var context = o._graphicContext;
-   // 设置渲染目标
-   var backgroundColor = p._backgroundColor;
+   var backgroundColor = region.backgroundColor();
    context.setRenderTarget(o._renderTarget);
    context.clear(backgroundColor.red, backgroundColor.green, backgroundColor.blue, backgroundColor.alpha, 1);
-   // 绘制处理
-   o.__base.FG3dTechniquePass.drawRegion.call(o, region)
 }

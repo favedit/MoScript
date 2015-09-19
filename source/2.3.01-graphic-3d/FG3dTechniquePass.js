@@ -8,6 +8,7 @@ MO.FG3dTechniquePass = function FG3dTechniquePass(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
    //..........................................................
    // @attribute
+   o._technique      = MO.Class.register(o, new MO.AGetSet('_technique'));
    o._fullCode       = MO.Class.register(o, new MO.AGetSet('_fullCode'));
    o._code           = MO.Class.register(o, new MO.AGetter('_code'));
    o._index          = null;
@@ -19,7 +20,10 @@ MO.FG3dTechniquePass = function FG3dTechniquePass(o){
    o.setup           = MO.FG3dTechniquePass_setup;
    o.activeEffects   = MO.FG3dTechniquePass_activeEffects;
    o.sortRenderables = MO.FG3dTechniquePass_sortRenderables;
+   // @method
+   o.drawBegin       = MO.FG3dTechniquePass_drawBegin;
    o.drawRegion      = MO.FG3dTechniquePass_drawRegion;
+   o.drawEnd         = MO.FG3dTechniquePass_drawEnd;
    return o;
 }
 
@@ -100,6 +104,17 @@ MO.FG3dTechniquePass_activeEffects = function FG3dTechniquePass_activeEffects(re
 }
 
 //==========================================================
+// <T>开始绘制处理。</T>
+//
+// @method
+// @param region:FG3dRetion 区域
+//==========================================================
+MO.FG3dTechniquePass_drawBegin = function FG3dTechniquePass_drawBegin(region){
+   var o = this;
+   o._technique.clear(region.backgroundColor());
+}
+
+//==========================================================
 // <T>绘制区域处理。</T>
 //
 // @method
@@ -160,4 +175,13 @@ MO.FG3dTechniquePass_drawRegion = function FG3dTechniquePass_drawRegion(region){
       // 绘制当前渲染组
       effect.drawRegion(region, groupBegin, groupEnd - groupBegin);
    }
+}
+
+//==========================================================
+// <T>结束绘制处理。</T>
+//
+// @method
+// @param region:FG3dRetion 区域
+//==========================================================
+MO.FG3dTechniquePass_drawEnd = function FG3dTechniquePass_drawEnd(region){
 }

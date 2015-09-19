@@ -452,9 +452,10 @@ MO.FG3dAutomaticEffect_bindSamplers = function FG3dAutomaticEffect_bindSamplers(
       for(var n = 0; n < count; n++){
          var sampler = samplers.at(n);
          if(sampler._bind && sampler._statusUsed){
+            var name = sampler.name();
             var linker = sampler.linker();
             var texture = renderable.findTexture(linker);
-            program.setSampler(sampler.name(), texture.texture());
+            program.setSampler(name, texture.texture());
          }
       }
    }

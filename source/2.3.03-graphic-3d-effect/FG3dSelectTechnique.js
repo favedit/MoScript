@@ -32,10 +32,10 @@ MO.FG3dSelectTechnique_setup = function FG3dSelectTechnique_setup(){
    o.registerMode(MO.EG3dTechniqueMode.Result);
    //..........................................................
    // 创建选取处理过程
-   var pd = o._passSelect = MO.Class.create(MO.FG3dSelectPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   o._passes.push(pd);
+   var pass = o._passSelect = MO.Class.create(MO.FG3dSelectPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }
 
 //==========================================================

@@ -295,18 +295,18 @@ MO.FG3dProgram_setParameter4 = function FG3dProgram_setParameter4(pn, px, py, pz
 // <T>设置取样器。</T>
 //
 // @method
-// @param pn:name:String 名称
-// @param pt:texture:FG3dTexture 纹理
+// @param name:String 名称
+// @param texture:FG3dTexture 纹理
 //==========================================================
-MO.FG3dProgram_setSampler = function FG3dProgram_setSampler(pn, pt){
+MO.FG3dProgram_setSampler = function FG3dProgram_setSampler(name, texture){
    var o = this;
    // 获得定义
-   var p = o.findSampler(pn);
-   if(p == null){
-      throw new MO.TError(o, 'Bind invalid sampler. (name={1})', pn);
+   var sampler = o.findSampler(name);
+   if(!sampler){
+      throw new MO.TError(o, 'Bind invalid sampler. (name={1})', name);
    }
    // 设置内容
-   o._graphicContext.bindTexture(p._slot, p._index, pt);
+   o._graphicContext.bindTexture(sampler._slot, sampler._index, texture);
 }
 
 //==========================================================

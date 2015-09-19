@@ -10,6 +10,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    //..........................................................
    // @attribute
    o._sceneCode      = MO.Class.register(o, new MO.AGetSet('_sceneCode'), MO.EEaiScene.ChartCustomer);
+   o._backgroundUrl  = MO.Class.register(o, new MO.AGetSet('_backgroundUrl'), '{eai.resource}/background2.jpg');
    o._chapterLoading = MO.Class.register(o, new MO.AGetter('_chapterLoading'));
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
    // @attribute
@@ -52,7 +53,7 @@ MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadRes
    var canvas = o._desktop.canvas3d();
    var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
    bitmap._optionSelect = false;
-   bitmap.loadUrl('{eai.resource}/background2.jpg');
+   bitmap.loadUrl(o._backgroundUrl);
    bitmap.material().info().effectCode = 'fill';
    bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
 }

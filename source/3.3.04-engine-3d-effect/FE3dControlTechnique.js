@@ -31,10 +31,10 @@ MO.FE3dControlTechnique_setup = function FE3dControlTechnique_setup(){
    o.registerMode(MO.EG3dTechniqueMode.Result);
    //..........................................................
    // 创建选取处理过程
-   var pd = o._passControl = MO.Class.create(MO.FE3dControlPass);
-   pd.linkGraphicContext(o);
-   pd.setup();
-   o._passes.push(pd);
+   var pass = o._passControl = MO.Class.create(MO.FE3dControlPass);
+   pass.linkGraphicContext(o);
+   pass.setup();
+   o.pushPass(pass);
 }
 
 //==========================================================

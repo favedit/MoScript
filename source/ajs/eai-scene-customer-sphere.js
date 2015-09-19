@@ -1,36 +1,4 @@
-MO.FEaiChartMktCustomerDynamicInfo = function FEaiChartMktCustomerDynamicInfo(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._investmentCount = MO.Class.register(o, [new MO.AGetter('_investmentCount'), new MO.APersistence('_investmentCount', MO.EDataType.Double)]);
-   o._investmentTotal = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Double)]);
-   o._customerCount   = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Int32)]);
-   o._customerTotal   = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Int32)]);
-   o._rankUnits       = MO.Class.register(o, [new MO.AGetter('_rankUnits'), new MO.APersistence('_rankUnits', MO.EDataType.Objects, MO.FEaiChartMktCustomerDynamicRankUnit)]);
-   o._units           = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartMktCustomerDynamicUnit)]);
-   return o;
-}
-MO.FEaiChartMktCustomerDynamicRankUnit = function FEaiChartMktCustomerDynamicRankUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._label      = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
-   o._card       = MO.Class.register(o, [new MO.AGetter('_card'), new MO.APersistence('_card', MO.EDataType.String)]);
-   o._phone      = MO.Class.register(o, [new MO.AGetter('_phone'), new MO.APersistence('_phone', MO.EDataType.String)]);
-   o._investment = MO.Class.register(o, [new MO.AGetter('_investment'), new MO.APersistence('_investment', MO.EDataType.Double)]);
-   return o;
-}
-MO.FEaiChartMktCustomerDynamicUnit = function FEaiChartMktCustomerDynamicUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._recordDate = MO.Class.register(o, [new MO.AGetter('_recordDate'), new MO.APersistence('_recordDate', MO.EDataType.String)]);
-   o._label      = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
-   o._card       = MO.Class.register(o, [new MO.AGetter('_card'), new MO.APersistence('_card', MO.EDataType.String)]);
-   o._phone      = MO.Class.register(o, [new MO.AGetter('_phone'), new MO.APersistence('_phone', MO.EDataType.String)]);
-   o._first      = MO.Class.register(o, [new MO.AGetter('_first'), new MO.APersistence('_first', MO.EDataType.Boolean)]);
-   o._number     = MO.Class.register(o, [new MO.AGetter('_number'), new MO.APersistence('_number', MO.EDataType.Uint16)]);
-   o._modelLabel = MO.Class.register(o, [new MO.AGetter('_modelLabel'), new MO.APersistence('_modelLabel', MO.EDataType.String)]);
-   o._investment = MO.Class.register(o, [new MO.AGetter('_investment'), new MO.APersistence('_investment', MO.EDataType.Double)]);
-   o._gain       = MO.Class.register(o, [new MO.AGetter('_gain'), new MO.APersistence('_gain', MO.EDataType.Double)]);
-   o._bankGain   = MO.Class.register(o, [new MO.AGetter('_bankGain'), new MO.APersistence('_bankGain', MO.EDataType.Double)]);
-   return o;
-}
-MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
+MO.FEaiChartCustomerSphereProcessor = function FEaiChartCustomerSphereProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    o._dateSetup               = false;
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
@@ -62,25 +30,25 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    o._event24HDataChanged     = null;
    o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
-   o.onDynamicData            = MO.FEaiChartMktCustomerProcessor_onDynamicData;
-   o.on24HDataFetch           = MO.FEaiChartMktCustomerProcessor_on24HDataFetch;
-   o.construct                = MO.FEaiChartMktCustomerProcessor_construct;
-   o.allocUnit                = MO.FEaiChartMktCustomerProcessor_allocUnit;
-   o.allocShape               = MO.FEaiChartMktCustomerProcessor_allocShape;
-   o.setup                    = MO.FEaiChartMktCustomerProcessor_setup;
-   o.calculateCurrent         = MO.FEaiChartMktCustomerProcessor_calculateCurrent;
-   o.focusEntity              = MO.FEaiChartMktCustomerProcessor_focusEntity;
-   o.process                  = MO.FEaiChartMktCustomerProcessor_process;
-   o.dispose                  = MO.FEaiChartMktCustomerProcessor_dispose;
+   o.onDynamicData            = MO.FEaiChartCustomerSphereProcessor_onDynamicData;
+   o.on24HDataFetch           = MO.FEaiChartCustomerSphereProcessor_on24HDataFetch;
+   o.construct                = MO.FEaiChartCustomerSphereProcessor_construct;
+   o.allocUnit                = MO.FEaiChartCustomerSphereProcessor_allocUnit;
+   o.allocShape               = MO.FEaiChartCustomerSphereProcessor_allocShape;
+   o.setup                    = MO.FEaiChartCustomerSphereProcessor_setup;
+   o.calculateCurrent         = MO.FEaiChartCustomerSphereProcessor_calculateCurrent;
+   o.focusEntity              = MO.FEaiChartCustomerSphereProcessor_focusEntity;
+   o.process                  = MO.FEaiChartCustomerSphereProcessor_process;
+   o.dispose                  = MO.FEaiChartCustomerSphereProcessor_dispose;
    return o;
 }
-MO.FEaiChartMktCustomerProcessor_on24HDataFetch = function FEaiChartMktCustomerProcessor_on24HDataFetch(event) {
+MO.FEaiChartCustomerSphereProcessor_on24HDataFetch = function FEaiChartCustomerSphereProcessor_on24HDataFetch(event) {
    var o = this;
    event.beginDate = o._24HBeginDate;
    event.endDate = o._24HEndDate;
    o.process24HDataChangedListener(event);
 }
-MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerProcessor_onDynamicData(event){
+MO.FEaiChartCustomerSphereProcessor_onDynamicData = function FEaiChartCustomerSphereProcessor_onDynamicData(event){
    var o = this;
    var content = event.content;
    var dynamicInfo = o._dynamicInfo;
@@ -101,7 +69,7 @@ MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerPr
    changeEvent.unit = null;
    o.processDataChangedListener(changeEvent);
 }
-MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProcessor_construct(){
+MO.FEaiChartCustomerSphereProcessor_construct = function FEaiChartCustomerSphereProcessor_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._beginDate = new MO.TDate();
@@ -112,13 +80,13 @@ MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProces
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
-   o._dynamicInfo = MO.Class.create(MO.FEaiChartMktCustomerDynamicInfo);
+   o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
 }
-MO.FEaiChartMktCustomerProcessor_allocUnit = function FEaiChartMktCustomerProcessor_allocUnit(){
+MO.FEaiChartCustomerSphereProcessor_allocUnit = function FEaiChartCustomerSphereProcessor_allocUnit(){
    var o = this;
    var unit = o._unitPool.alloc();
    if(!unit){
@@ -126,7 +94,7 @@ MO.FEaiChartMktCustomerProcessor_allocUnit = function FEaiChartMktCustomerProces
    }
    return unit;
 }
-MO.FEaiChartMktCustomerProcessor_setup = function FEaiChartMktCustomerProcessor_setup(){
+MO.FEaiChartCustomerSphereProcessor_setup = function FEaiChartCustomerSphereProcessor_setup(){
    var o = this;
    var audioConsole = MO.Console.find(MO.FAudioConsole);
    for(var i = 1; i <= 5; i++){
@@ -135,7 +103,7 @@ MO.FEaiChartMktCustomerProcessor_setup = function FEaiChartMktCustomerProcessor_
    var display = o._display = MO.Class.create(MO.FE3dDisplay);
    display.linkGraphicContext(o);
 }
-MO.FEaiChartMktCustomerProcessor_calculateCurrent = function FEaiChartMktCustomerProcessor_calculateCurrent(){
+MO.FEaiChartCustomerSphereProcessor_calculateCurrent = function FEaiChartCustomerSphereProcessor_calculateCurrent(){
    var o = this;
    var info = o._dynamicInfo;
    var investmentCurrent = info.investmentCount();
@@ -150,7 +118,7 @@ MO.FEaiChartMktCustomerProcessor_calculateCurrent = function FEaiChartMktCustome
    o._invementTotalCurrent = investmentTotalCurrent;
    o._invementDayCurrent = investmentCurrent;
 }
-MO.FEaiChartMktCustomerProcessor_focusEntity = function FEaiChartMktCustomerProcessor_focusEntity(unit){
+MO.FEaiChartCustomerSphereProcessor_focusEntity = function FEaiChartCustomerSphereProcessor_focusEntity(unit){
    var o = this;
    var mapEntity = o._mapEntity;
    var card = unit.card();
@@ -175,7 +143,7 @@ MO.FEaiChartMktCustomerProcessor_focusEntity = function FEaiChartMktCustomerProc
    changedEvent.unit = unit;
    o.processDataChangedListener(changedEvent);
 }
-MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcessor_process(){
+MO.FEaiChartCustomerSphereProcessor_process = function FEaiChartCustomerSphereProcessor_process(){
    var o = this;
    var system = MO.Console.find(MO.FEaiLogicConsole).system();
    if(!system.testReady()){
@@ -221,16 +189,16 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
    dynamicInfo._investmentPoolItemCount = o._unitPool.items().count();
    dynamicInfo._investmentPoolFreeCount = o._unitPool.frees().count();
 }
-MO.FEaiChartMktCustomerProcessor_dispose = function FEaiChartMktCustomerProcessor_dispose(){
+MO.FEaiChartCustomerSphereProcessor_dispose = function FEaiChartCustomerSphereProcessor_dispose(){
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);
    o._eventDataChanged = MO.Lang.Object.dispose(o._eventDataChanged);
    o.__base.FObject.dispose.call(o);
 }
-MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
+MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
-   o._code                   = MO.EEaiScene.ChartCustomer;
+   o._code                   = MO.EEaiScene.ChartCustomerSphere;
    o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
    o._processorCurrent       = 0;
    o._ready                  = false;
@@ -244,25 +212,20 @@ MO.FEaiChartMktCustomerScene = function FEaiChartMktCustomerScene(o) {
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
-   o.onOperationDown         = MO.FEaiChartMktCustomerScene_onOperationDown;
-   o.onInvestmentDataChanged = MO.FEaiChartMktCustomerScene_onInvestmentDataChanged;
-   o.on24HDataChanged        = MO.FEaiChartMktCustomerScene_on24HDataChanged;
-   o.onOperationVisibility   = MO.FEaiChartMktCustomerScene_onOperationVisibility;
-   o.onProcessReady          = MO.FEaiChartMktCustomerScene_onProcessReady;
-   o.onProcess               = MO.FEaiChartMktCustomerScene_onProcess;
-   o.onSwitchProcess         = MO.FEaiChartMktCustomerScene_onSwitchProcess;
-   o.onSwitchComplete        = MO.FEaiChartMktCustomerScene_onSwitchComplete;
-   o.setup                   = MO.FEaiChartMktCustomerScene_setup;
-   o.showFace                = MO.FEaiChartMktCustomerScene_showFace;
-   o.fixMatrix               = MO.FEaiChartMktCustomerScene_fixMatrix;
-   o.processResize           = MO.FEaiChartMktCustomerScene_processResize;
+   o.onInvestmentDataChanged = MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged;
+   o.on24HDataChanged        = MO.FEaiChartCustomerSphereScene_on24HDataChanged;
+   o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
+   o.onProcessReady          = MO.FEaiChartCustomerSphereScene_onProcessReady;
+   o.onProcess               = MO.FEaiChartCustomerSphereScene_onProcess;
+   o.onSwitchProcess         = MO.FEaiChartCustomerSphereScene_onSwitchProcess;
+   o.onSwitchComplete        = MO.FEaiChartCustomerSphereScene_onSwitchComplete;
+   o.setup                   = MO.FEaiChartCustomerSphereScene_setup;
+   o.showFace                = MO.FEaiChartCustomerSphereScene_showFace;
+   o.fixMatrix               = MO.FEaiChartCustomerSphereScene_fixMatrix;
+   o.processResize           = MO.FEaiChartCustomerSphereScene_processResize;
    return o;
 }
-MO.FEaiChartMktCustomerScene_onOperationDown = function FEaiChartMktCustomerScene_onOperationDown(event) {
-   var o = this;
-   o._countryEntity._startTime = 0;
-}
-MO.FEaiChartMktCustomerScene_on24HDataChanged = function FEaiChartMktCustomerScene_on24HDataChanged(event) {
+MO.FEaiChartCustomerSphereScene_on24HDataChanged = function FEaiChartCustomerSphereScene_on24HDataChanged(event) {
    var o = this;
    var timeline = o._timeline;
    timeline.startTime().assign(event.beginDate);
@@ -270,7 +233,7 @@ MO.FEaiChartMktCustomerScene_on24HDataChanged = function FEaiChartMktCustomerSce
    timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
    timeline.dirty();
 }
-MO.FEaiChartMktCustomerScene_onInvestmentDataChanged = function FEaiChartMktCustomerScene_onInvestmentDataChanged(event) {
+MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged = function FEaiChartCustomerSphereScene_onInvestmentDataChanged(event) {
    var o = this;
    var unit = event.unit;
    var table = o._liveTable;
@@ -278,7 +241,7 @@ MO.FEaiChartMktCustomerScene_onInvestmentDataChanged = function FEaiChartMktCust
    table.pushUnit(unit);
    table.dirty();
 }
-MO.FEaiChartMktCustomerScene_onOperationVisibility = function FEaiChartMktCustomerScene_onOperationVisibility(event) {
+MO.FEaiChartCustomerSphereScene_onOperationVisibility = function FEaiChartCustomerSphereScene_onOperationVisibility(event) {
    var o = this;
    o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
    if (event.visibility) {
@@ -289,12 +252,11 @@ MO.FEaiChartMktCustomerScene_onOperationVisibility = function FEaiChartMktCustom
       o._countryEntity._audioMapEnter._hAudio.muted = true;
    }
 }
-MO.FEaiChartMktCustomerScene_onProcessReady = function FEaiChartMktCustomerScene_onProcessReady() {
+MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady() {
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
-   o._mapEntity.showCity();
 }
-MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onProcess() {
+MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    if (!o._statusStart) {
@@ -321,7 +283,6 @@ MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onPr
          }
          var countryEntity = o._countryEntity;
          countryEntity.start();
-         o._mapEntity.showCountry(countryEntity);
          o.processLoaded();
          o._playing = true;
          o._statusStart = true;
@@ -334,7 +295,6 @@ MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onPr
          return;
       }
       if (!o._mapReady) {
-         o._guiManager.show();
          var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
          alphaAction.setAlphaBegin(0);
          alphaAction.setAlphaEnd(1);
@@ -343,7 +303,6 @@ MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onPr
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
-      o._processor.process();
       var logoBar = o._logoBar;
       var processor = o._processor;
       if(processor.invementDayCurrent() > 0){
@@ -363,18 +322,22 @@ MO.FEaiChartMktCustomerScene_onProcess = function FEaiChartMktCustomerScene_onPr
       }
    }
 }
-MO.FEaiChartMktCustomerScene_onSwitchProcess = function FEaiChartMktCustomerScene_onSwitchProcess(event) {
+MO.FEaiChartCustomerSphereScene_onSwitchProcess = function FEaiChartCustomerSphereScene_onSwitchProcess(event) {
    var o = this;
 }
-MO.FEaiChartMktCustomerScene_onSwitchComplete = function FEaiChartMktCustomerScene_onSwitchComplete(event) {
+MO.FEaiChartCustomerSphereScene_onSwitchComplete = function FEaiChartCustomerSphereScene_onSwitchComplete(event) {
    var o = this;
 }
-MO.FEaiChartMktCustomerScene_setup = function FEaiChartMktCustomerScene_setup() {
+MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
-   var dataLayer = o._activeStage.dataLayer();
+   var desktop = o._application.desktop();
+   var canvas3d = desktop.canvas3d();
+   var stage = o._activeStage;
+   stage.selectTechnique(o, MO.FE3dSphereTechnique);
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
    o._guiManager.register(frame);
+   var dataLayer = stage.dataLayer();
    var invement = o._processor = MO.Class.create(MO.FEaiChartMktCustomerProcessor);
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
@@ -385,12 +348,12 @@ MO.FEaiChartMktCustomerScene_setup = function FEaiChartMktCustomerScene_setup() 
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktCustomerTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FEaiChartCustomerSphereTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
    timeline.build();
    o._guiManager.register(timeline);
-   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktCustomerTable);
+   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartCustomerSphereTable);
    liveTable.setName('LiveTable');
    liveTable.linkGraphicContext(o);
    liveTable.setup();
@@ -402,7 +365,7 @@ MO.FEaiChartMktCustomerScene_setup = function FEaiChartMktCustomerScene_setup() 
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
 }
-MO.FEaiChartMktCustomerScene_showFace = function FEaiChartMktCustomerScene_showFace() {
+MO.FEaiChartCustomerSphereScene_showFace = function FEaiChartCustomerSphereScene_showFace() {
    var o = this;
    o._statusStart = true;
    o._playing = true;
@@ -412,7 +375,7 @@ MO.FEaiChartMktCustomerScene_showFace = function FEaiChartMktCustomerScene_showF
    desktop.show();
    o.processResize();
 }
-MO.FEaiChartMktCustomerScene_fixMatrix = function FEaiChartMktCustomerScene_fixMatrix(matrix) {
+MO.FEaiChartCustomerSphereScene_fixMatrix = function FEaiChartCustomerSphereScene_fixMatrix(matrix) {
    var o = this;
    var isVertical = MO.Window.Browser.isOrientationVertical()
    if (isVertical) {
@@ -428,7 +391,7 @@ MO.FEaiChartMktCustomerScene_fixMatrix = function FEaiChartMktCustomerScene_fixM
    }
    matrix.update();
 }
-MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_processResize() {
+MO.FEaiChartCustomerSphereScene_processResize = function FEaiChartCustomerSphereScene_processResize() {
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
@@ -463,9 +426,9 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
       timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(20);
-      timeline.setBottom(10);
+      timeline.setBottom(30);
       timeline.setRight(780);
-      timeline.setHeight(300);
+      timeline.setHeight(250);
    }
    var liveTable = o._liveTable;
    if (isVertical) {
@@ -485,7 +448,7 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
       liveTable.setWidth(760);
    }
 }
-MO.FEaiChartMktCustomerTable = function FEaiChartMktCustomerTable(o) {
+MO.FEaiChartCustomerSphereTable = function FEaiChartCustomerSphereTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    o._currentDate = null;
    o._rank = MO.Class.register(o, new MO.AGetter('_rank'));
@@ -502,20 +465,20 @@ MO.FEaiChartMktCustomerTable = function FEaiChartMktCustomerTable(o) {
    o._units = null;
    o._lineScroll = 0;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o.onImageLoad = MO.FEaiChartMktCustomerTable_onImageLoad;
-   o.onPaintBegin = MO.FEaiChartMktCustomerTable_onPaintBegin;
-   o.construct = MO.FEaiChartMktCustomerTable_construct;
-   o.setup = MO.FEaiChartMktCustomerTable_setup;
-   o.setRankUnits = MO.FEaiChartMktCustomerTable_setRankUnits;
-   o.pushUnit = MO.FEaiChartMktCustomerTable_pushUnit;
-   o.drawRow = MO.FEaiChartMktCustomerTable_drawRow;
-   o.dispose = MO.FEaiChartMktCustomerTable_dispose;
+   o.onImageLoad = MO.FEaiChartCustomerSphereTable_onImageLoad;
+   o.onPaintBegin = MO.FEaiChartCustomerSphereTable_onPaintBegin;
+   o.construct = MO.FEaiChartCustomerSphereTable_construct;
+   o.setup = MO.FEaiChartCustomerSphereTable_setup;
+   o.setRankUnits = MO.FEaiChartCustomerSphereTable_setRankUnits;
+   o.pushUnit = MO.FEaiChartCustomerSphereTable_pushUnit;
+   o.drawRow = MO.FEaiChartCustomerSphereTable_drawRow;
+   o.dispose = MO.FEaiChartCustomerSphereTable_dispose;
    return o;
 }
-MO.FEaiChartMktCustomerTable_onImageLoad = function FEaiChartMktCustomerTable_onImageLoad() {
+MO.FEaiChartCustomerSphereTable_onImageLoad = function FEaiChartCustomerSphereTable_onImageLoad() {
    this.dirty();
 }
-MO.FEaiChartMktCustomerTable_onPaintBegin = function FEaiChartMktCustomerTable_onPaintBegin(event) {
+MO.FEaiChartCustomerSphereTable_onPaintBegin = function FEaiChartCustomerSphereTable_onPaintBegin(event) {
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
@@ -554,7 +517,7 @@ MO.FEaiChartMktCustomerTable_onPaintBegin = function FEaiChartMktCustomerTable_o
       }
    }
 }
-MO.FEaiChartMktCustomerTable_construct = function FEaiChartMktCustomerTable_construct() {
+MO.FEaiChartCustomerSphereTable_construct = function FEaiChartCustomerSphereTable_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o._units = new MO.TObjects();
@@ -562,7 +525,7 @@ MO.FEaiChartMktCustomerTable_construct = function FEaiChartMktCustomerTable_cons
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
    o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
 }
-MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() {
+MO.FEaiChartCustomerSphereTable_setup = function FEaiChartCustomerSphereTable_setup() {
    var o = this;
    var imageConsole = MO.Console.find(MO.FImageConsole);
    var image = o._logoImage = imageConsole.load('{eai.resource}/live/company.png');
@@ -742,7 +705,7 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
       o._rowStart = 384;
    }
 }
-MO.FEaiChartMktCustomerTable_setRankUnits = function FEaiChartMktCustomerTable_setRankUnits(units) {
+MO.FEaiChartCustomerSphereTable_setRankUnits = function FEaiChartCustomerSphereTable_setRankUnits(units) {
    var o = this;
    var grid = o._gridRank;
    grid.clearRows();
@@ -763,7 +726,7 @@ MO.FEaiChartMktCustomerTable_setRankUnits = function FEaiChartMktCustomerTable_s
       grid.pushRow(row);
    }
 }
-MO.FEaiChartMktCustomerTable_pushUnit = function FEaiChartMktCustomerTable_pushUnit(unit) {
+MO.FEaiChartCustomerSphereTable_pushUnit = function FEaiChartCustomerSphereTable_pushUnit(unit) {
    var o = this;
    if (!unit) {
       return null;
@@ -791,13 +754,13 @@ MO.FEaiChartMktCustomerTable_pushUnit = function FEaiChartMktCustomerTable_pushU
       entities.pop();
    }
 }
-MO.FEaiChartMktCustomerTable_dispose = function FEaiChartMktCustomerTable_dispose() {
+MO.FEaiChartCustomerSphereTable_dispose = function FEaiChartCustomerSphereTable_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    o.__base.FGuiControl.dispose.call(o);
 }
-MO.FEaiChartMktCustomerTimeline = function FEaiChartMktCustomerTimeline(o) {
+MO.FEaiChartCustomerSphereTimeline = function FEaiChartCustomerSphereTimeline(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
    o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
@@ -810,22 +773,22 @@ MO.FEaiChartMktCustomerTimeline = function FEaiChartMktCustomerTimeline(o) {
    o._triangleHeight = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
    o._decoLineGap = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
    o._decoLineWidth = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
-   o.oeUpdate = MO.FEaiChartMktCustomerTimeline_oeUpdate;
-   o.construct = MO.FEaiChartMktCustomerTimeline_construct;
-   o.sync = MO.FEaiChartMktCustomerTimeline_sync;
-   o.drawTrend = MO.FEaiChartMktCustomerTimeline_drawTrend;
-   o.onPaintBegin = MO.FEaiChartMktCustomerTimeline_onPaintBegin;
-   o.on24HDataFetch = MO.FEaiChartMktCustomerTimeline_on24HDataFetch;
+   o.oeUpdate = MO.FEaiChartCustomerSphereTimeline_oeUpdate;
+   o.construct = MO.FEaiChartCustomerSphereTimeline_construct;
+   o.sync = MO.FEaiChartCustomerSphereTimeline_sync;
+   o.drawTrend = MO.FEaiChartCustomerSphereTimeline_drawTrend;
+   o.onPaintBegin = MO.FEaiChartCustomerSphereTimeline_onPaintBegin;
+   o.on24HDataFetch = MO.FEaiChartCustomerSphereTimeline_on24HDataFetch;
    return o;
 }
-MO.FEaiChartMktCustomerTimeline_construct = function FEaiChartMktCustomerTimeline_construct() {
+MO.FEaiChartCustomerSphereTimeline_construct = function FEaiChartCustomerSphereTimeline_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
-   o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
+   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoCustomerTrend);
 }
-MO.FEaiChartMktCustomerTimeline_oeUpdate = function FEaiChartMktCustomerTimeline_oeUpdate(event) {
+MO.FEaiChartCustomerSphereTimeline_oeUpdate = function FEaiChartCustomerSphereTimeline_oeUpdate(event) {
    var o = this;
    o.__base.FGuiControl.oeUpdate.call(o, event);
    if (o._ready) {
@@ -837,7 +800,7 @@ MO.FEaiChartMktCustomerTimeline_oeUpdate = function FEaiChartMktCustomerTimeline
    }
    return MO.EEventStatus.Stop;
 }
-MO.FEaiChartMktCustomerTimeline_drawTrend = function FEaiChartMktCustomerTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor) {
+MO.FEaiChartCustomerSphereTimeline_drawTrend = function FEaiChartCustomerSphereTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor) {
    var o = this;
    var startTime = o._startTime;
    var units = o._trendInfo.units();
@@ -884,7 +847,7 @@ MO.FEaiChartMktCustomerTimeline_drawTrend = function FEaiChartMktCustomerTimelin
    handle.lineTo(dataLeft, lastY);
    handle.fill();
 }
-MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTimeline_onPaintBegin(event) {
+MO.FEaiChartCustomerSphereTimeline_onPaintBegin = function FEaiChartCustomerSphereTimeline_onPaintBegin(event) {
    var o = this;
    if (!o._ready) {
       return;
@@ -894,7 +857,7 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    var rectangle = event.rectangle;
    var top = rectangle.top;
    var bottom = rectangle.top + rectangle.height;
-   var middle = bottom - 50;
+   var middle = bottom - 30;
    var decoLeft = rectangle.left + 5;
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
@@ -904,8 +867,8 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
    var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
    var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-   var dataTop = top + 90;
-   var dataBottom = bottom - 50;
+   var dataTop = top + 60;
+   var dataBottom = bottom - 30;
    var dataHeight = dataBottom - dataTop;
    graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
    var startTime = o.startTime();
@@ -930,11 +893,9 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
       }
    }
    graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
-   var endText = endTime.format('HH24:MI');
-   if (endText != text) {
-      textWidth = graphic.textWidth(endText);
-      graphic.drawText(endText, dataRight - textWidth / 2, middle + 40, '#59FDE9');
-   }
+   text = endTime.format('HH24:MI');
+   textWidth = graphic.textWidth(text);
+   graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
    startTime.date.setTime(bakTime);
    startTime.refresh();
    var trendInfo = o._trendInfo;
@@ -978,9 +939,9 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
       }
    }
    graphic.setFont('24px Microsoft YaHei');
-   graphic.drawText("24H数据曲线", decoLeft, top + 30, '#54F0FF');
+   graphic.drawText("24H数据曲线", decoLeft, top, '#54F0FF');
    graphic.setFont('22px Microsoft YaHei');
-   var rowStart = top + 60;
+   var rowStart = top + 30;
    var rowHeight = 22;
    var textWidth = graphic.textWidth('投资总计：');
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
@@ -998,18 +959,4 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
    startTime.date.setTime(bakTime);
    startTime.refresh();
-}
-MO.FEaiChartMktCustomerTrendInfo = function FEaiChartMktCustomerTrendInfo(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._investmentTotal = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Double)]);
-   o._customerTotal   = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Uint32)]);
-   o._units           = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartMktCustomerTrendUnit)]);
-   return o;
-}
-MO.FEaiChartMktCustomerTrendUnit = function FEaiChartMktCustomerTrendUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._recordDate    = MO.Class.register(o, [new MO.AGetter('_recordDate'), new MO.APersistence('_recordDate', MO.EDataType.String)]);
-   o._investment    = MO.Class.register(o, [new MO.AGetter('_investment'), new MO.APersistence('_investment', MO.EDataType.Double)]);
-   o._customerCount = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Uint32)]);
-   return o;
 }

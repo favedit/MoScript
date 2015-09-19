@@ -146,7 +146,7 @@ MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
 }
 MO.FE3dDisplay = function FE3dDisplay(o){
    o = MO.Class.inherits(this, o, MO.FDisplay);
-   o._outline         = null;
+   o._outline         = MO.Class.register(o, new MO.AGetter('_outline'));
    o._materials       = MO.Class.register(o, new MO.AGetter('_materials'));
    o.construct        = MO.FE3dDisplay_construct;
    o.calculateOutline = MO.FE3dDisplay_calculateOutline;
@@ -156,7 +156,7 @@ MO.FE3dDisplay = function FE3dDisplay(o){
 MO.FE3dDisplay_construct = function FE3dDisplay_construct(){
    var o = this;
    o.__base.FDisplay.construct.call(o);
-   o._outline = new MO.SOutline3();
+   o._outline = new MO.SOutline3d();
 }
 MO.FE3dDisplay_calculateOutline = function FE3dDisplay_calculateOutline(){
    return this._outline;
@@ -384,21 +384,7 @@ MO.FE3dStage_onProcess = function FE3dStage_onProcess(){
    statistics._frameProcess.end();
    statistics._frameDraw.begin();
    if(region.isChanged()){
-      technique.clear(region.backgroundColor());
-      for(var i = 0; i < layerCount; i++){
-         var layer = layers.at(i);
-         var layerTechnique = layer.technique();
-         if(!layerTechnique){
-            layerTechnique = technique;
-         }
-         region.reset();
-         region.renderables().assign(layer.visibleRenderables());
-         if(layer.optionClearDepth()){
-            layerTechnique.clearDepth();
-         }
-         layerTechnique.drawRegion(region);
-      }
-      technique.present(region);
+      technique.drawStage(o, region);
    }
    statistics._frameDraw.end();
    statistics._frame.end();
@@ -540,7 +526,36 @@ MO.FE3dStageStatistics_resetFrame = function FE3dStageStatistics_resetFrame(){
 }
 MO.FE3dTechnique = function FE3dTechnique(o){
    o = MO.Class.inherits(this, o, MO.FG3dTechnique, MO.MLinkerResource);
+   o.drawStage = MO.FE3dTechnique_drawStage;
    return o;
+}
+MO.FE3dTechnique_drawStage = function FE3dTechnique_drawStage(stage, region){
+   var o = this;
+   var layers = stage.layers();
+   var layerCount = layers.count();
+   region.setTechnique(o);
+   var passes = o._passes;
+   var count = passes.count();
+   for(var passIndex = 0; passIndex < count; passIndex++){
+      var pass = passes.at(passIndex);
+      pass.drawBegin(region);
+      for(var layerIndex = 0; layerIndex < layerCount; layerIndex++){
+         var layer = layers.at(layerIndex);
+         var layerTechnique = layer.technique();
+         if(!layerTechnique){
+            layerTechnique = o;
+         }
+         region.reset();
+         region.renderables().assign(layer.visibleRenderables());
+         if(layer.optionClearDepth()){
+            layerTechnique.clearDepth();
+         }
+         region.setTechniquePass(pass, (passIndex == count - 1));
+         pass.drawRegion(region);
+      }
+      pass.drawEnd(region);
+   }
+   o.present(region);
 }
 MO.RE3dEngine = function RE3dEngine(){
    var o = this;
@@ -558,6 +573,7 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('control.control.control', MO.FE3dControlAutomaticEffect);
    effectConsole.register('general.color.control', MO.FE3dControlAutomaticEffect);
    effectConsole.register('general.color.flat', MO.FE3dGeneralColorFlatEffect);
+   effectConsole.register('general.color.fill', MO.FE3dGeneralColorFillEffect);
    effectConsole.register('general.color.automatic', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skin', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.parallax', MO.FE3dGeneralColorAutomaticEffect);

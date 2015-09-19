@@ -31,6 +31,75 @@ MO.FGuiGridCell_dispose = function FGuiGridCell_dispose(){
    o.__base.MUiGridCell.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
+MO.FGuiGridCellBigNumber = function FGuiGridCellBigNumber(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellCurrency);
+   o._fontColor  = null;
+   o._numberFont = null;
+   o.construct   = MO.FGuiGridCellBigNumber_construct;
+   o.formatText  = MO.FGuiGridCellBigNumber_formatText;
+   o.draw        = MO.FGuiGridCellBigNumber_draw;
+   o.dispose     = MO.FGuiGridCellBigNumber_dispose;
+   return o;
+}
+MO.FGuiGridCellBigNumber_construct = function FGuiGridCellBigNumber_construct(){
+   var o = this;
+   o.__base.FGuiGridCell.construct.call(o);
+   o.__base.MUiGridCellCurrency.construct.call(o);
+   o._numberFont = new MO.SUiFont();
+}
+MO.FGuiGridCellBigNumber_formatText = function FGuiGridCellBigNumber_formatText(value){
+   return this.__base.MUiGridColumnDate.formatText.call(this, value)
+}
+MO.FGuiGridCellBigNumber_draw = function FGuiGridCellBigNumber_draw(context){
+   var o = this;
+   var graphic = context.graphic;
+   var rectangle = context.rectangle;
+   var font = context.style.font;
+   var x = rectangle.left;
+   var y = rectangle.top;
+   var width = rectangle.width;
+   var height = rectangle.height;
+   var column = o._column;
+   var cellPadding = column.cellPadding();
+   var value = o.value();
+   var text = o.text();
+   var textLength = text.length;
+   var numberFont = o._numberFont;
+   numberFont.assign(font);
+   var contentWidth = width - cellPadding.right;
+   if(value >= 0){
+      if(textLength > 7){
+         var fontColor = null;
+         fontColor = column.highColor();
+         var high = text.substring(0, text.length - 11);
+         var low = text.substring(text.length - 11, text.length - 7) + '.' +text.substring(text.length - 7, text.length - 5);
+         var highWidth = graphic.textWidth(high);
+         var lowWidth = graphic.textWidth(low);
+         numberFont.color = column.highColor();
+         graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+         numberFont.color = column.normalColor();
+         graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }
+      else if(textLength > 5){
+         var low = '0.' + text.substring(text.length - 7, text.length - 5);
+         numberFont.color = column.normalColor();
+         graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }
+      else {
+         numberFont.color = column.normalColor();
+         graphic.drawFontText('0.00', numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }
+   }else if(value < 0){
+      numberFont.color = column.negativeColor();
+      graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+   }
+}
+MO.FGuiGridCellBigNumber_dispose = function FGuiGridCellBigNumber_dispose(){
+   var o = this;
+   o._numberFont = MO.Lang.Object.dispose(o._numberFont);
+   o.__base.MUiGridCellCurrency.dispose.call(o);
+   o.__base.FGuiGridCell.dispose.call(o);
+}
 MO.FGuiGridCellCurrency = function FGuiGridCellCurrency(o){
    o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellCurrency);
    o._fontColor  = null;
@@ -68,15 +137,29 @@ MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(context){
    numberFont.assign(font);
    var contentWidth = width - cellPadding.right;
    if(value >= 0){
-      if(textLength > 7){
+      if(textLength > 11){
+         var fontColor = null;
+         var highest = text.substring(0, text.length - 11);
+         var high = text.substring(textLength - 11, textLength - 7);
+         var low = text.substring(textLength - 7, textLength);
+         var highestWidth = graphic.textWidth(highest);
+         var highWidth = graphic.textWidth(high);
+         var lowWidth = graphic.textWidth(low);
+         numberFont.color = column.highestColor();
+         graphic.drawFontText(highest, numberFont, x, y, contentWidth - highWidth - lowWidth, height, MO.EUiAlign.Right);
+         numberFont.color = column.highColor();
+         graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+         numberFont.color = column.normalColor();
+         graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }else if(textLength > 7){
          var fontColor = null;
          if(textLength > 9){
             fontColor = column.highColor();
          }else{
             fontColor = column.lowerColor();
          }
-         var high = text.substring(0, text.length - 7);
-         var low = text.substring(text.length - 7, text.length);
+         var high = text.substring(0, textLength - 7);
+         var low = text.substring(textLength - 7, textLength);
          var highWidth = graphic.textWidth(high);
          var lowWidth = graphic.textWidth(low);
          numberFont.color = fontColor;
@@ -208,8 +291,12 @@ MO.FGuiGridCellText_draw = function FGuiGridCellText_draw(context){
    var graphic = context.graphic;
    var rectangle = context.rectangle;
    var font = context.style.font;
+   var column = o._column;
+   var cellPadding = column.cellPadding();
    var text = o.text();
-   graphic.drawFontText(text, font, rectangle.left, rectangle.top, rectangle.width, rectangle.height, MO.EUiAlign.Center);
+   var column = o._column;
+   var contentWidth = rectangle.width - cellPadding.right;
+   graphic.drawFontText(text, font, rectangle.left, rectangle.top, contentWidth, rectangle.height, column.textAlign());
 }
 MO.FGuiGridCellText_dispose = function FGuiGridCellText_dispose(){
    var o = this;
@@ -251,11 +338,32 @@ MO.FGuiGridColumn_dispose = function FGuiGridColumn_dispose(){
    o.__base.MUiGridColumn.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
+MO.FGuiGridColumnBigNumber = function FGuiGridColumnBigNumber(o){
+   o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnCurrency);
+   o.construct  = MO.FGuiGridColumnBigNumber_construct;
+   o.formatText = MO.FGuiGridColumnBigNumber_formatText;
+   o.dispose    = MO.FGuiGridColumnBigNumber_dispose;
+   return o;
+}
+MO.FGuiGridColumnBigNumber_construct = function FGuiGridColumnBigNumber_construct(){
+   var o = this;
+   o.__base.FGuiGridColumn.construct.call(o);
+   o.__base.MUiGridColumnCurrency.construct.call(o);
+   o._cellClass = MO.FGuiGridCellBigNumber;
+}
+MO.FGuiGridColumnBigNumber_formatText = function FGuiGridColumnBigNumber_formatText(value){
+   return this.__base.MUiGridColumnCurrency.formatText.call(this, value)
+}
+MO.FGuiGridColumnBigNumber_dispose = function FGuiGridColumnBigNumber_dispose(){
+   var o = this;
+   o.__base.MUiGridColumnCurrency.dispose.call(o);
+   o.__base.FGuiGridColumn.dispose.call(o);
+}
 MO.FGuiGridColumnCurrency = function FGuiGridColumnCurrency(o){
    o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnCurrency);
-   o.construct  = MO.FGuiGridColumnCurrency_construct;
-   o.formatText = MO.FGuiGridColumnCurrency_formatText;
-   o.dispose    = MO.FGuiGridColumnCurrency_dispose;
+   o.construct    = MO.FGuiGridColumnCurrency_construct;
+   o.formatText   = MO.FGuiGridColumnCurrency_formatText;
+   o.dispose      = MO.FGuiGridColumnCurrency_dispose;
    return o;
 }
 MO.FGuiGridColumnCurrency_construct = function FGuiGridColumnCurrency_construct(){

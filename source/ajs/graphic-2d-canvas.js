@@ -28,6 +28,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawTriangle         = MO.FG2dCanvasContext_drawTriangle;
    o.drawCircle           = MO.FG2dCanvasContext_drawCircle;
    o.drawText             = MO.FG2dCanvasContext_drawText;
+   o.drawTextVertical     = MO.FG2dCanvasContext_drawTextVertical;
    o.drawImage            = MO.FG2dCanvasContext_drawImage;
    o.drawGridImage        = MO.FG2dCanvasContext_drawGridImage;
    o.drawQuadrilateral    = MO.FG2dCanvasContext_drawQuadrilateral;
@@ -143,6 +144,16 @@ MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, 
    var handle = o._handle;
    handle.fillStyle = color;
    handle.fillText(text, x, y);
+}
+MO.FG2dCanvasContext_drawTextVertical = function FG2dCanvasContext_drawTextVertical(text, x, y, font) {
+   var o = this;
+   var handle = o._handle;
+   handle.font = font.toString();
+   handle.fillStyle = font.color;
+   for (var i = 0; i < text.length; i++) {
+      handle.fillText(text.charAt(i), x, y);
+      y += font.size + parseInt(font.size / 5);
+   }
 }
 MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x, y, width, height){
    var o = this;

@@ -25,6 +25,7 @@ MO.FWglContext = function FWglContext(o){
    o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
    o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
    // @attribute
+   o._statusFloatTexture = false;
    o._statusScissor      = false;
    o._data9              = null;
    o._data16             = null;
@@ -39,6 +40,8 @@ MO.FWglContext = function FWglContext(o){
    o.parameters          = MO.FWglContext_parameters;
    o.extension           = MO.FWglContext_extension;
    o.extensions          = MO.FWglContext_extensions;
+   // @method
+   o.enableFloatTexture  = MO.FWglContext_enableFloatTexture;
    // @method
    o.recordBegin         = MO.FWglContext_recordBegin;
    o.recordEnd           = MO.FWglContext_recordEnd;
@@ -382,6 +385,31 @@ MO.FWglContext_extensions = function FWglContext_extensions(){
       }
    }
    return extensions;
+}
+
+//==========================================================
+// <T>允许浮点纹理。</T>
+//
+// @method
+// @return Boolean 是否允许
+//==========================================================
+MO.FWglContext_enableFloatTexture = function FWglContext_enableFloatTexture(){
+   var o = this;
+   if(!o._statusFloatTexture){
+      // 检查浮点纹理
+      var extension = o._handle.getExtension('OES_texture_float');
+      if(!extension){
+         return false;
+      }
+      // 检查浮点纹理采样
+      var extension = o._handle.getExtension('OES_texture_float_linear');
+      if(!extension){
+         return false;
+      }
+      // 设置状态
+      o._statusFloatTexture = true;
+   }
+   return o._statusFloatTexture;
 }
 
 //==========================================================

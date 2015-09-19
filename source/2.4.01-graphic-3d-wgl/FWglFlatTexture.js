@@ -89,6 +89,11 @@ MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, wid
       data = new Uint8Array(content);
    }else if(content.constructor == Uint8Array){
       data = content;
+   }else if(content.constructor == Float32Array){
+      if(!context.enableFloatTexture()){
+         throw new MO.TError('Invalid content float format.');
+      }
+      data = content;
    }else{
       throw new MO.TError('Invalid content format.');
    }
@@ -98,7 +103,15 @@ MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, wid
    // 绑定数据
    handle.bindTexture(handle.TEXTURE_2D, o._handle);
    // 上传内容
-   handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, width, height, 0, handle.RGBA, handle.UNSIGNED_BYTE, data);
+   var internalformatCd = handle.RGBA;
+   var formatCd = handle.RGBA;
+   var typeCd = handle.UNSIGNED_BYTE;
+   if(content.constructor == Float32Array){
+      internalformatCd = handle.ALPHA;
+      formatCd = handle.ALPHA;
+      typeCd = handle.FLOAT;
+   }
+   handle.texImage2D(handle.TEXTURE_2D, 0, internalformatCd, width, height, 0, formatCd, typeCd, data);
    o._statusLoad = context.checkError("texImage2D", "Upload content failure.");
    // 更新处理
    o.update();

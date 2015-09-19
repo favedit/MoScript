@@ -1,3 +1,143 @@
+MO.FEaiCity3dEntity = function FEaiCity3dEntity(o){
+   o = MO.Class.inherits(this, o, MO.FEaiEntity);
+   o._provinceEntity         = MO.Class.register(o, new MO.AGetSet('_provinceEntity'));
+   o._visible                = MO.Class.register(o, new MO.AGetter('_visible'), true);
+   o._location               = MO.Class.register(o, new MO.AGetter('_location'));
+   o._size                   = MO.Class.register(o, new MO.AGetter('_size'));
+   o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
+   o._range                  = MO.Class.register(o, new MO.AGetter('_range'), 1);
+   o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
+   o._cityTotal              = 0;
+   o._investmentCount        = 0;
+   o._investmentTotal        = MO.Class.register(o, new MO.AGetSet('_investmentTotal'), 0);
+   o._investmentLevel        = 0;
+   o._investmentLast         = 0;
+   o._investmentRateTotal    = 0;
+   o._investmentRate         = 0;
+   o._investmentAlpha        = 0;
+   o._investmentRange        = 0;
+   o._investmentDirection    = 1;
+   o._stage                  = MO.Class.register(o, new MO.AGetSet('_stage'));
+   o._renderable             = MO.Class.register(o, new MO.AGetSet('_renderable'));
+   o._data                   = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._inputPoint             = null;
+   o._outputPoint            = null;
+   o.construct               = MO.FEaiCity3dEntity_construct;
+   o.calculateScreenPosition = MO.FEaiCity3dEntity_calculateScreenPosition;
+   o.build                   = MO.FEaiCity3dEntity_build;
+   o.addInvestmentTotal      = MO.FEaiCity3dEntity_addInvestmentTotal;
+   o.reset                   = MO.FEaiCity3dEntity_reset;
+   o.update                  = MO.FEaiCity3dEntity_update;
+   o.process                 = MO.FEaiCity3dEntity_process;
+   o.dispose                 = MO.FEaiCity3dEntity_dispose;
+   return o;
+}
+MO.FEaiCity3dEntity_construct = function FEaiCity3dEntity_construct(){
+   var o = this;
+   o.__base.FEaiEntity.construct.call(o);
+   o._location = new MO.SPoint2();
+   o._size = new MO.SSize2();
+   o._color = new MO.SColor4(1, 1, 1, 1);
+   o._rangeColor = new MO.SColor4(0, 0, 0, 0);
+   o._inputPoint = new MO.SPoint3();
+   o._outputPoint = new MO.SPoint3();
+}
+MO.FEaiCity3dEntity_calculateScreenPosition = function FEaiCity3dEntity_calculateScreenPosition(){
+   var o = this;
+   var region = o._stage.region();
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
+   var mMatrix = o._renderable.matrix();
+   var matrix = MO.Lang.Math.matrix;
+   matrix.identity();
+   matrix.append(mMatrix);
+   matrix.append(vpMatrix);
+   o._inputPoint.set(o._location.x, o._location.y, 0);
+   matrix.transformPoint3(o._inputPoint, o._outputPoint);
+   return o._outputPoint;
+}
+MO.FEaiCity3dEntity_build = function FEaiCity3dEntity_build(context){
+   var o = this;
+   o._location.assign(o._data.location());
+   o._size.set(2, 2);
+}
+MO.FEaiCity3dEntity_addInvestmentTotal = function FEaiCity3dEntity_addInvestmentTotal(level, investment){
+   var o = this;
+   o._investmentCount++;
+   o._investmentTotal += investment;
+   if(investment < o._investmentLast){
+      return;
+   }
+   var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.InvestmentRange);
+   var range = 200000;
+   var color = rateResource.findRate(investment / range);
+   o._color.set(1, 1, 1, 1);
+   o._rangeColor.setInteger(color);
+   o._rangeColor.alpha = 1;
+   o._investmentLast = investment;
+   o._investmentRateTotal = (level + 1) * 100000;
+   o._investmentRate = o._investmentRateTotal;
+   o._investmentRange = Math.log(investment * investment) / 10;
+   o._investmentAlpha = 8;
+   o._visible = true;
+}
+MO.FEaiCity3dEntity_reset = function FEaiCity3dEntity_reset(){
+   var o = this;
+   o._visible = false;
+   o._cityTotal = 0;
+   o._color.set(0, 0, 0, 0);
+   o._rangeColor.set(0, 0, 0, 0);
+}
+MO.FEaiCity3dEntity_update = function FEaiCity3dEntity_update(data){
+   var o = this;
+   o._color.set(1, 1, 1, 1);
+   var marketerCount = data.marketerCount();
+   var range = 1;
+   o._rangeColor.set(1, 1, 1, 1);
+   if(data){
+      o._cityTotal = marketerCount;
+   }
+   var total = o._cityTotal;
+   if(total > 0){
+      o._visible = true;
+   }
+   var historyModule = MO.Console.find(MO.FEaiResourceConsole).historyModule();
+   var rateInfo = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Map);
+   var rate = Math.sqrt(total / 1000) * 2;
+   var color = rateInfo.findRate(rate);
+   range = rate * 2;
+   rate = MO.Lang.Float.toRange(rate, 0, 1);
+   o._rangeColor.setIntAlpha(color, rate * 2);
+   o._range = MO.Lang.Float.toRange(Math.sqrt(range / 100), 1, 2);
+}
+MO.FEaiCity3dEntity_process = function FEaiCity3dEntity_process(data){
+   var o = this;
+   if(o._investmentRate > 0){
+      var rate = o._investmentRate / o._investmentRateTotal;
+      o._range = o._investmentRange * rate;
+      var alpha = Math.min(o._investmentAlpha * rate, 1);
+      o._color.alpha = alpha;
+      o._rangeColor.alpha = alpha;
+      o._investmentRate--;
+      return true;
+   }else{
+      o._investmentLast = 0;
+      o._investmentRate = 0;
+      o._investmentRange = 0;
+      o._investmentAlpha = 0;
+      o._visible = false;
+      return false;
+   }
+}
+MO.FEaiCity3dEntity_dispose = function FEaiCity3dEntity_dispose(){
+   var o = this;
+   o._location = MO.Lang.Object.dispose(o._location);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._color = MO.Lang.Object.dispose(o._color);
+   o._rangeColor = MO.Lang.Object.dispose(o._rangeColor);
+   o._inputPoint = MO.Lang.Object.dispose(o._inputPoint);
+   o._outputPoint = MO.Lang.Object.dispose(o._outputPoint);
+   o.__base.FEaiEntity.dispose.call(o);
+}
 MO.FEaiCityEntity = function FEaiCityEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    o._provinceEntity         = MO.Class.register(o, new MO.AGetSet('_provinceEntity'));
@@ -169,7 +309,7 @@ MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
    MO.Assert.debugNotEmpty(code);
    this._citys.set(code, entity);
 }
-MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context){
+MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context, clazz){
    var o = this;
    var citys = MO.Console.find(MO.FEaiResourceConsole).cityModule().citys();
    var cityEntities = o._citys;
@@ -179,7 +319,7 @@ MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context){
       var code = city.code();
       var level = city.level();
       var cityLocation = city.location();
-      var cityEntity = MO.Class.create(MO.FEaiCityEntity);
+      var cityEntity = MO.Class.create(MO.Runtime.nvl(clazz, MO.FEaiCityEntity));
       cityEntity.setData(city);
       cityEntity.build(o);
       cityEntities.set(code, cityEntity);
@@ -202,6 +342,265 @@ MO.FEaiCityEntityModule_dispose = function FEaiCityEntityModule_dispose(monitor)
    o._citys = MO.Lang.Object.dispose(o._citys);
    o.__base.FEaiEntityModule.dispose.call(o);
 }
+MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
+   o = MO.Class.inherits(this, o, MO.FEaiEntity);
+   o._enterSELoaded           = false;
+   o._enterSEPlaying          = false;
+   o._cameraDirection         = MO.Class.register(o, new MO.AGetSet('_cameraDirection'));
+   o._startDelay              = MO.Class.register(o, new MO.AGetSet('_startDelay'), 0);
+   o._riseDuration            = MO.Class.register(o, new MO.AGetSet('_riseDuration'), 5000);
+   o._riseDistance            = MO.Class.register(o, new MO.AGetSet('_riseDistance'), 600);
+   o._fallDuration            = MO.Class.register(o, new MO.AGetSet('_fallDuration'), 200);
+   o._fallDistance            = MO.Class.register(o, new MO.AGetSet('_fallDistance'), 3);
+   o._blockInterval           = MO.Class.register(o, new MO.AGetSet('_blockInterval'), 200);
+   o._mouseOverRiseHeight     = MO.Class.register(o, new MO.AGetSet('_mouseOverRiseHeight'), 3);
+   o._mouseMoveCheckInterval  = MO.Class.register(o, new MO.AGetSet('_mouseMoveCheckInterval'), 100);
+   o._cameraMoveDuration      = MO.Class.register(o, new MO.AGetSet('_cameraMoveDuration'), 500);
+   o._data                    = MO.Class.register(o, new MO.AGetter('_data'));
+   o._outline2                = MO.Class.register(o, new MO.AGetter('_outline2'));
+   o._worldEntity             = MO.Class.register(o, new MO.AGetSet('_worldEntity'));
+   o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
+   o._cityEntities            = MO.Class.register(o, new MO.AGetter('_cityEntities'));
+   o._boundaryShape           = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
+   o._faceShape               = MO.Class.register(o, new MO.AGetter('_faceShape'));
+   o._borderShape             = MO.Class.register(o, new MO.AGetter('_borderShape'));
+   o._provinceArray           = null;
+   o._playing                 = false;
+   o._lastTick                = 0;
+   o._interval                = 10;
+   o._template                = MO.Class.register(o, new MO.AGetSet('_template'));
+   o._introAnimeDone          = MO.Class.register(o, new MO.AGetSet('_introAnimeDone'), false);
+   o._startTime               = MO.Class.register(o, new MO.AGetSet('_startTime'));
+   o._mouseOverRiseRenderable = MO.Class.register(o, new MO.AGetSet('_mouseOverRiseRenderable'));
+   o._mouseOverFallArray      = MO.Class.register(o, new MO.AGetSet('_mouseOverFallArray'));
+   o._mouseMoveLastCheck      = MO.Class.register(o, new MO.AGetSet('_mouseMoveLastCheck'));
+   o._cameraMoving            = MO.Class.register(o, new MO.AGetSet('_cameraMoving'), false);
+   o._cameraFrom              = MO.Class.register(o, new MO.AGetSet('_cameraFrom'));
+   o._cameraTo                = MO.Class.register(o, new MO.AGetSet('_cameraTo'));
+   o._audioContext            = null;
+   o._audioMapEnter           = null;
+   o.onOrganizationFetch      = MO.FEaiCountry3dEntity_onOrganizationFetch;
+   o.onMouseMove              = MO.FEaiCountry3dEntity_onMouseMove;
+   o.onMouseDown              = MO.FEaiCountry3dEntity_onMouseDown;
+   o.construct                = MO.FEaiCountry3dEntity_construct;
+   o.setup                    = MO.FEaiCountry3dEntity_setup;
+   o.build                    = MO.FEaiCountry3dEntity_build;
+   o.provinceShowOrderSort    = MO.FEaiCountry3dEntity_provinceShowOrderSort;
+   o.setupProvinces           = MO.FEaiCountry3dEntity_setupProvinces;
+   o.loadData                 = MO.FEaiCountry3dEntity_loadData;
+   o.loadResource             = MO.FEaiCountry3dEntity_loadResource;
+   o.start                    = MO.FEaiCountry3dEntity_start;
+   o.process                  = MO.FEaiCountry3dEntity_process;
+   o.processLoad              = MO.FEaiCountry3dEntity_processLoad;
+   o.introAnime               = MO.FEaiCountry3dEntity_introAnime;
+   o.mouseOverFallAnime       = MO.FEaiCountry3dEntity_mouseOverFallAnime;
+   o.cameraMoveAnime          = MO.FEaiCountry3dEntity_cameraMoveAnime;
+   o.isReady                  = MO.FEaiCountry3dEntity_isReady;
+   o.dispose                  = MO.FEaiCountry3dEntity_dispose;
+   return o;
+}
+MO.FEaiCountry3dEntity_construct = function FEaiCountry3dEntity_construct(){
+   var o = this;
+   o.__base.FEaiEntity.construct.call(o);
+   o._outline2 = new MO.SOutline2d();
+   o._provinceEntities = new MO.TDictionary();
+   o._cityEntities = new MO.TDictionary();
+}
+MO.FEaiCountry3dEntity_setup = function FEaiCountry3dEntity_setup() {
+   var o = this;
+   var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
+   shape._entity = o;
+   shape.linkGraphicContext(o);
+}
+MO.FEaiCountry3dEntity_build = function FEaiCountry3dEntity_build(){
+   var o = this;
+   var shape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
+   shape._entity = o;
+   shape.linkGraphicContext(o);
+   var shape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
+   shape._entity = o;
+   shape.linkGraphicContext(o);
+   var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
+   var audioContext = o._audioContext = audioContextConsole.create();
+   o._audioMapEnter = audioContext.createBuffer('{eai.resource}/map_entry/enter.mp3');
+}
+MO.FEaiCountry3dEntity_setupProvinces = function FEaiCountry3dEntity_setupProvinces() {
+   var o = this;
+   var provinceEntities = o._provinceEntities;
+   for (var i = 0; i < provinceEntities.count(); i++) {
+      var provinceEntity = provinceEntities.at(i);
+      var fr = provinceEntity.faceRenderable();
+      var br = provinceEntity.borderRenderable();
+   }
+   var provinceArray = o._provinceArray = new Array(provinceEntities.count());
+   for (var i = 0; i < provinceEntities.count() ; i++) {
+      provinceArray[i] = provinceEntities.at(i);
+   }
+   provinceArray.sort(o.provinceShowOrderSort);
+}
+MO.FEaiCountry3dEntity_loadData = function FEaiCountry3dEntity_loadData(data){
+   var o = this;
+   o._data = data;
+   o._code = data.code();
+   var outline = o._outline2;
+   outline.setMin();
+   var shape = o._boundaryShape;
+   var boundaries = data.boundaries();
+   var count = boundaries.count()
+   for(var i = 0; i < count; i++){
+      var boundary = boundaries.at(i);
+      shape.pushPolygon(boundary);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var pi = 0; pi < positionCount; pi++){
+         var x = 180 - positions[positionIndex++];
+         var y = positions[positionIndex++];
+         outline.mergeMax2(x, y);
+      }
+   }
+   outline.update();
+   shape.build();
+}
+MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(resource){
+   var o = this;
+   var data = resource.data();
+   var provinceEntities = o._provinceEntities;
+   var faceShape = o._faceShape;
+   var borderShape = o._borderShape;
+   o.loadData(data);
+   var provinceModule = MO.Console.find(MO.FEaiResourceConsole).provinceModule();
+   var provinceEntityModule = MO.Console.find(MO.FEaiEntityConsole).provinceModule();
+   var provincesData = data.provinces();
+   var count = provincesData.count();
+   for(var i = 0; i < count; i++){
+      provinceData = provincesData.at(i);
+      var provinceCode = provinceData.code();
+      var provinceResource = provinceModule.findByCode(provinceCode);
+      MO.Assert.debugNotNull(provinceResource);
+      var provinceEntity = MO.Class.create(MO.FEaiProvince3dEntity);
+      provinceEntity._countryEntity = o;
+      provinceEntity.linkGraphicContext(o);
+      provinceEntity.setup();
+      provinceEntity.setResource(provinceResource);
+      provinceEntity.setData(provinceData);
+      provinceEntity.build(o);
+      provinceEntities.set(provinceCode, provinceEntity);
+      provinceEntityModule.push(provinceEntity);
+      var boundaryShape = provinceEntity.boundaryShape();
+      faceShape.pushMergeRenderable(boundaryShape.faceRenderable());
+      borderShape.pushMergeRenderable(boundaryShape.borderRenderable());
+   }
+   faceShape.build();
+   borderShape.build();
+   o.setupProvinces(provinceEntities);
+   MO.Console.find(MO.FEaiEntityConsole).cityModule().linkProvinces();
+}
+MO.FEaiCountry3dEntity_isReady = function FEaiCountry3dEntity_isReady() {
+   var o = this;
+   if(o._audioMapEnter.testFinish()){
+      o._startTime = MO.Timer.current();
+      return true;
+   }
+   return false;
+}
+MO.FEaiCountry3dEntity_provinceShowOrderSort = function FEaiCountry3dEntity_provinceShowOrderSort(p1, p2) {
+   var provinceModule = MO.Console.find(MO.FEaiResourceConsole).provinceModule();
+   var p1Res = provinceModule.findByCode(p1.data().code());
+   var p2Res = provinceModule.findByCode(p2.data().code())
+   if (p1Res.displayOrder() > p2Res.displayOrder()) {
+      return 1;
+   }
+   return -1;
+}
+MO.FEaiCountry3dEntity_start = function FEaiCountry3dEntity_start(){
+   this._startTime = MO.Timer.current();
+}
+MO.FEaiCountry3dEntity_process = function FEaiCountry3dEntity_process() {
+   var o = this;
+   if (!o._provinceEntities) {
+      return;
+   }
+   o.introAnime();
+}
+MO.FEaiCountry3dEntity_processLoad = function FEaiCountry3dEntity_processLoad(){
+   var o = this;
+   var resource = o._resource;
+   if(resource.testReady()){
+      o.loadResource(resource);
+      o._statusReady = true;
+      return true;
+   }
+   return false;
+}
+MO.FEaiCountry3dEntity_introAnime = function FEaiCountry3dEntity_introAnime() {
+   var o = this;
+   var now = MO.Timer.current();
+   var timePassed = now - o._startTime;
+   if (timePassed < o.startDelay()) {
+      return;
+   }
+   else {
+      timePassed -= o.startDelay();
+      if (timePassed > o.riseDuration() + o.fallDuration() + o.blockInterval() * o._provinceEntities.count()) {
+         o.setIntroAnimeDone(true);
+         var listener = new MO.TListener();
+         listener._owner = this;
+         listener._callback = o.onMouseMove;
+         MO.Window.lsnsMouseMove.push(listener);
+         var listener = new MO.TListener();
+         listener._owner = this;
+         listener._callback = o.onMouseDown;
+         MO.Window.lsnsMouseDown.push(listener);
+      }
+   }
+   if (!o._enterSEPlaying) {
+      o._audioMapEnter.play(0);
+      o._enterSEPlaying = true;
+   }
+   var idxCap = timePassed / o.blockInterval();
+   for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
+      var fr = o._provinceArray[i].faceRenderable();
+      var br = o._provinceArray[i].borderRenderable();
+      var frm = fr.matrix();
+      var brm = br.matrix();
+      var risePercentage = (timePassed - o.blockInterval() * i) / (o.riseDuration() - i * i);
+      var fallPercentage = 0;
+      if (risePercentage > 1) {
+         risePercentage = 1;
+         fallPercentage = (timePassed - o.blockInterval() * i - (o.riseDuration() - i * i)) / o.fallDuration();
+         if (fallPercentage > 1) {
+            fallPercentage = 1;
+         }
+      }
+      frm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
+      frm.updateForce();
+      brm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
+      brm.updateForce();
+   }
+   idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
+}
+MO.FEaiCountry3dEntity_onMouseMove = function FEaiCountry3dEntity_onMouseMove(event){
+   var o = this;
+}
+MO.FEaiCountry3dEntity_mouseOverFallAnime = function FEaiCountry3dEntity_mouseOverFallAnime() {
+   var o = this;
+}
+MO.FEaiCountry3dEntity_onOrganizationFetch = function FEaiCountry3dEntity_onOrganizationFetch(event) {
+   var o = this;
+}
+MO.FEaiCountry3dEntity_onMouseDown = function FEaiCountry3dEntity_onMouseDown(event){
+   var o = this;
+}
+MO.FEaiCountry3dEntity_cameraMoveAnime = function FEaiCountry3dEntity_cameraMoveAnime() {
+   var o = this;
+}
+MO.FEaiCountry3dEntity_dispose = function FEaiCountry3dEntity_dispose(){
+   var o = this;
+   o._provinceEntities = MO.Lang.Object.dispose(o._provinceEntities);
+   o._cityEntities = MO.Lang.Object.dispose(o._cityEntities);
+   o.__base.FEaiEntity.dispose.call(o);
+}
 MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    o._enterSELoaded           = false;
@@ -217,6 +616,7 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
    o._mouseMoveCheckInterval  = MO.Class.register(o, new MO.AGetSet('_mouseMoveCheckInterval'), 100);
    o._cameraMoveDuration      = MO.Class.register(o, new MO.AGetSet('_cameraMoveDuration'), 500);
    o._data                    = MO.Class.register(o, new MO.AGetter('_data'));
+   o._outline2                = MO.Class.register(o, new MO.AGetter('_outline2'));
    o._worldEntity             = MO.Class.register(o, new MO.AGetSet('_worldEntity'));
    o._provinceEntities        = MO.Class.register(o, new MO.AGetter('_provinceEntities'));
    o._cityEntities            = MO.Class.register(o, new MO.AGetter('_cityEntities'));
@@ -261,19 +661,23 @@ MO.FEaiCountryEntity = function FEaiCountryEntity(o){
 MO.FEaiCountryEntity_construct = function FEaiCountryEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
+   o._outline2 = new MO.SOutline2d();
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
 }
 MO.FEaiCountryEntity_setup = function FEaiCountryEntity_setup() {
    var o = this;
    var shape = o._boundaryShape = MO.Class.create(MO.EE3dBoundaryShape);
+   shape._entity = o;
    shape.linkGraphicContext(o);
 }
 MO.FEaiCountryEntity_build = function FEaiCountryEntity_build(){
    var o = this;
    var shape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
+   shape._entity = o;
    shape.linkGraphicContext(o);
    var shape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
+   shape._entity = o;
    shape.linkGraphicContext(o);
    var audioContextConsole = MO.Console.find(MO.FAudioContextConsole);
    var audioContext = o._audioContext = audioContextConsole.create();
@@ -303,13 +707,24 @@ MO.FEaiCountryEntity_loadData = function FEaiCountryEntity_loadData(data){
    var o = this;
    o._data = data;
    o._code = data.code();
+   var outline = o._outline2;
+   outline.setMin();
    var shape = o._boundaryShape;
    var boundaries = data.boundaries();
    var count = boundaries.count()
    for(var i = 0; i < count; i++){
       var boundary = boundaries.at(i);
       shape.pushPolygon(boundary);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var pi = 0; pi < positionCount; pi++){
+         var x = 180 - positions[positionIndex++];
+         var y = positions[positionIndex++];
+         outline.mergeMax2(x, y);
+      }
    }
+   outline.update();
    shape.build();
 }
 MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(resource){
@@ -500,6 +915,7 @@ MO.FEaiEntity = function FEaiEntity(o){
 MO.FEaiEntityConsole = function FEaiEntityConsole(o){
    o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener, MO.MGraphicObject);
    o._scopeCd              = MO.EScope.Local;
+   o._option3d             = false;
    o._cityModule           = MO.Class.register(o, new MO.AGetter('_cityModule'));
    o._provinceModule       = MO.Class.register(o, new MO.AGetter('_provinceModule'));
    o._countryModule        = MO.Class.register(o, new MO.AGetter('_countryModule'));
@@ -527,7 +943,11 @@ MO.FEaiEntityConsole_onSetup = function FEaiEntityConsole_onSetup(){
    o.__base.FConsole.onSetup.call(o);
    var mapEntity = o._mapEntity = MO.Class.create(MO.FEaiMapEntity);
    mapEntity.linkGraphicContext(o);
-   mapEntity.setup();
+   if(o._option3d){
+      mapEntity.setup3d();
+   }else{
+      mapEntity.setup();
+   }
 }
 MO.FEaiEntityConsole_onLoadCountry = function FEaiEntityConsole_onLoadCountry(event){
    var o = this;
@@ -627,6 +1047,7 @@ MO.FEaiMapEntity = function FEaiMapEntity(o){
    o._countryBorderDisplay = MO.Class.register(o, new MO.AGetter('_countryBorderDisplay'));
    o.construct             = MO.FEaiMapEntity_construct;
    o.setup                 = MO.FEaiMapEntity_setup;
+   o.setup3d               = MO.FEaiMapEntity_setup3d;
    o.upload                = MO.FEaiMapEntity_upload;
    o.showCity              = MO.FEaiMapEntity_showCity;
    o.showCountry           = MO.FEaiMapEntity_showCountry;
@@ -644,8 +1065,23 @@ MO.FEaiMapEntity_setup = function FEaiMapEntity_setup(){
    var o = this;
    var citysRenderable = o._cityCenterRenderable = MO.Class.create(MO.FEaiCitysRenderable);
    citysRenderable.linkGraphicContext(o);
+   citysRenderable._optionSelect = false;
    var citysRangeRenderable = o._cityRangeRenderable = MO.Class.create(MO.FEaiCitysRangeRenderable);
    citysRangeRenderable.linkGraphicContext(o);
+   citysRangeRenderable._optionSelect = false;
+   var display = o._countryFaceDisplay = MO.Class.create(MO.FE3dDisplayContainer);
+   display.linkGraphicContext(o);
+   var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplayContainer);
+   display.linkGraphicContext(o);
+}
+MO.FEaiMapEntity_setup3d = function FEaiMapEntity_setup3d(){
+   var o = this;
+   var citysRenderable = o._cityCenterRenderable = MO.Class.create(MO.FEaiCitys3dRenderable);
+   citysRenderable.linkGraphicContext(o);
+   citysRenderable._optionSelect = false;
+   var citysRangeRenderable = o._cityRangeRenderable = MO.Class.create(MO.FEaiCitysRange3dRenderable);
+   citysRangeRenderable.linkGraphicContext(o);
+   citysRangeRenderable._optionSelect = false;
    var display = o._countryFaceDisplay = MO.Class.create(MO.FE3dDisplayContainer);
    display.linkGraphicContext(o);
    var display = o._countryBorderDisplay = MO.Class.create(MO.FE3dDisplayContainer);
@@ -752,7 +1188,7 @@ MO.FEaiMapEntityModule_construct = function FEaiMapEntityModule_construct(){
    o._provinceEntities = new MO.TDictionary();
    o._cityEntities = new MO.TDictionary();
 }
-MO.FEaiMapEntityModule_loadCountry = function FEaiMapEntityModule_loadCountry(context, code){
+MO.FEaiMapEntityModule_loadCountry = function FEaiMapEntityModule_loadCountry(context, code, clazz){
    var o = this;
   var entities = o._countryEntities;
    var entity = entities.get(code);
@@ -760,7 +1196,7 @@ MO.FEaiMapEntityModule_loadCountry = function FEaiMapEntityModule_loadCountry(co
       return entity;
    }
    var resource = MO.Console.find(MO.FEaiResourceConsole).mapModule().loadCountry(code);
-   entity = MO.Class.create(MO.FEaiCountryEntity);
+   entity = MO.Class.create(MO.Runtime.nvl(clazz, MO.FEaiCountryEntity));
    entity.linkGraphicContext(context);
    entity.setResource(resource);
    entity.setup();
@@ -789,6 +1225,130 @@ MO.FEaiMapEntityModule_dispose = function FEaiMapEntityModule_dispose(){
    o._provinceEntities = MO.Lang.Object.dispose(o._provinceEntities);
    o._cityEntities = MO.Lang.Object.dispose(o._cityEntities);
    o.__base.FEaiEntityModule.dispose.call(o);
+}
+MO.FEaiProvince3dEntity = function FEaiProvince3dEntity(o){
+   o = MO.Class.inherits(this, o, MO.FEaiEntity);
+   o._data             = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._outline2         = MO.Class.register(o, new MO.AGetter('_outline2'));
+   o._resource         = MO.Class.register(o, new MO.AGetSet('_resource'));
+   o._boundaryShape    = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
+   o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
+   o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
+   o._layerDepth       = 3;
+   o._currentZ         = MO.Class.register(o, new MO.AGetter('_currentZ'), 0);
+   o._focusTick        = 0;
+   o._focusInterval    = 10;
+   o._focusCurrent     = 0;
+   o._focusColor       = null;
+   o._focusCount       = 200;
+   o.construct         = MO.FEaiProvince3dEntity_construct;
+   o.setup             = MO.FEaiProvince3dEntity_setup;
+   o.build             = MO.FEaiProvince3dEntity_build;
+   o.doInvestment      = MO.FEaiProvince3dEntity_doInvestment;
+   o.updateColor       = MO.FEaiProvince3dEntity_updateColor;
+   o.update            = MO.FEaiProvince3dEntity_update;
+   o.process           = MO.FEaiProvince3dEntity_process;
+   o.reset             = MO.FEaiProvince3dEntity_reset;
+   o.dispose           = MO.FEaiProvince3dEntity_dispose;
+   return o;
+}
+MO.FEaiProvince3dEntity_construct = function FEaiProvince3dEntity_construct(){
+   var o = this;
+   o.__base.FEaiEntity.construct.call(o);
+   o._outline2 = new MO.SOutline2d();
+   var colors = o._focusColors = new Array();
+   colors[0] = [0x28, 0x42, 0xB4];
+   colors[1] = [0x28, 0x42, 0xB4];
+   colors[2] = [0x1B, 0xA2, 0xBC];
+   colors[3] = [0xFF, 0xDF, 0x6F];
+   colors[4] = [0xFF, 0x6B, 0x49];
+   colors[5] = [0xFF, 0x6B, 0x49];
+}
+MO.FEaiProvince3dEntity_setup = function FEaiProvince3dEntity_setup() {
+   var o = this;
+   var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
+   shape._entity = o;
+   shape.setScaleTop(1.01);
+   shape.setScaleBottom(0.8);
+   shape.linkGraphicContext(o);
+}
+MO.FEaiProvince3dEntity_build = function FEaiProvince3dEntity_build(context){
+   var o = this;
+   var data = o._data;
+   var boundaries = data.boundaries();
+   var outline = o._outline2;
+   outline.setMin();
+   var shape = o._boundaryShape;
+   var count = boundaries.count()
+   for(var i = 0; i < count; i++){
+      var boundary = boundaries.at(i);
+      shape.pushPolygon(boundary);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var pi = 0; pi < positionCount; pi++){
+         var x = 180 - positions[positionIndex++];
+         var y = positions[positionIndex++];
+         outline.mergeMax2(x, y);
+      }
+   }
+   outline.update();
+   shape.faceColor().setHex('#070613');
+   shape.build();
+}
+MO.FEaiProvince3dEntity_doInvestment = function FEaiProvince3dEntity_doInvestment(level, investment){
+   var o = this;
+   o._focusTick = 0;
+   o._focusCurrent = o._focusCount;
+   o._focusColor = o._focusColors[level];
+}
+MO.FEaiProvince3dEntity_update = function FEaiProvince3dEntity_update(data){
+   var o = this;
+   var investmentTotal = data.investmentTotal();
+   var rate = Math.sqrt(investmentTotal) / 100;
+   if(rate > 255){
+      rate = 255;
+   }
+}
+MO.FEaiProvince3dEntity_updateColor = function FEaiProvince3dEntity_updateColor(rate){
+   var o = this;
+   var color = o._focusColor;
+   var rate = o._focusCurrent / o._focusCount;
+   var red = 0x08 + ((color[0] - 0x08)* rate);
+   var green = 0x0D + ((color[1] - 0x0D)* rate);
+   var blue = 0x19 + ((color[2] - 0x19)* rate);
+   var alpha = 0xFF;
+   o._faceRenderable.color().set(0, 0, 0, 0);
+}
+MO.FEaiProvince3dEntity_process = function FEaiProvince3dEntity_process(){
+   var o = this;
+   if(o._focusCurrent > 0){
+      var tick = MO.Timer.current();
+      if(tick - o._focusTick > o._focusInterval){
+         var z = o._currentZ = -o._focusCurrent / 60;
+         faceRenderable = o._faceRenderable;
+         matrix = faceRenderable.matrix();
+         matrix.tz = z;
+         matrix.updateForce();
+         borderRenderable = o._borderRenderable;
+         matrix = borderRenderable.matrix();
+         matrix.tz = z;
+         matrix.updateForce();
+         o.updateColor(o._focusCurrent);
+         o._focusCurrent--;
+         o._focusTick = tick;
+      }
+   }
+}
+MO.FEaiProvince3dEntity_reset = function FEaiProvince3dEntity_reset(){
+   var o = this;
+   o._currentZ = 0;
+   o._focusTick = 0;
+   o._focusCurrent = 0;
+}
+MO.FEaiProvince3dEntity_dispose = function FEaiProvince3dEntity_dispose(){
+   var o = this;
+   o.__base.FEaiEntity.dispose.call(o);
 }
 MO.FEaiProvinceEntity = function FEaiProvinceEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
@@ -1102,14 +1662,20 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var o = this;
    var context = o._graphicContext;
    var faceShape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
+   faceShape._worldEntity = o;
+   faceShape.outline().set(-1, -1, -1, 1, 1, 1);
    faceShape.linkGraphicContext(context);
    var borderShape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
+   borderShape._optionSelect = false;
+   borderShape._worldEntity = o;
+   borderShape.outline().set(-1, -1, -1, 1, 1, 1);
    borderShape.linkGraphicContext(context);
    var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.98);
+   sphere.matrix().setScaleAll(0.97);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = false;
@@ -1119,20 +1685,22 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
    var sphere = o._sphere = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.99);
+   sphere.matrix().setScaleAll(0.98);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = true;
-   info.alphaRate = 0.6;
+   info.alphaRate = 0.8;
    info.ambientColor.setHex('#128AF9');
    info.ambientColor.alpha = 0.4
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
    var sphere = o._sphere3 = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
@@ -1141,14 +1709,13 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var info = sphere.material().info();
    info.optionAlpha = true;
    info.optionDepth = false;
-   info.alphaRate = 0.05;
+   info.alphaRate = 0.1;
    info.ambientColor.setHex('#128AF9');
    info.ambientColor.alpha = 0.4
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
    var texture = o._texture = context.createFlatTexture();
-   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
    o._material.setTexture('diffuse', texture);
    o._imageGround = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/color.jpg');
 }
@@ -1161,7 +1728,7 @@ MO.FEaiWorldEntity_loadResource = function FEaiWorldEntity_loadResource(resource
    var count = countriesData.count();
    for(var i = 0; i < count; i++){
       var countryData = countriesData.at(i);
-      var country = MO.Class.create(MO.FEaiCountryEntity);
+      var country = MO.Class.create(MO.FEaiCountry3dEntity);
       country.linkGraphicContext(o);
       country.setWorldEntity(o);
       country.setup();
@@ -1190,7 +1757,9 @@ MO.FEaiWorldEntity_processLoad = function FEaiWorldEntity_processLoad(){
    var image = o._imageGround;
    if(image){
       if(image.testReady()){
-         o._texture.upload(image);
+         var texture = o._texture;
+         texture.upload(image);
+         texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
          o._imageGround = null;
       }
       return false;

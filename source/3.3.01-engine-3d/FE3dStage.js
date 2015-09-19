@@ -76,27 +76,10 @@ MO.FE3dStage_onProcess = function FE3dStage_onProcess(){
    MO.Console.find(MO.FE3dStageConsole).process(region);
    statistics._frameProcess.end();
    //..........................................................
+   // 绘制舞台
    statistics._frameDraw.begin();
-   // 处理所有层
    if(region.isChanged()){
-      technique.clear(region.backgroundColor());
-      for(var i = 0; i < layerCount; i++){
-         var layer = layers.at(i);
-         // 选用技术
-         var layerTechnique = layer.technique();
-         if(!layerTechnique){
-            layerTechnique = technique;
-         }
-         // 渲染单个层
-         region.reset();
-         region.renderables().assign(layer.visibleRenderables());
-         if(layer.optionClearDepth()){
-            layerTechnique.clearDepth();
-         }
-         layerTechnique.drawRegion(region);
-      }
-      // 绘制处理
-      technique.present(region);
+      technique.drawStage(o, region);
    }
    statistics._frameDraw.end();
    //..........................................................

@@ -15,10 +15,17 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
       return false;
    }
    var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
+   effectConsole.register('select.select.eai.world.face', MO.FG3dSelectAutomaticEffect);
+   effectConsole.register('select.select.eai.map.face', MO.FG3dSelectAutomaticEffect);
+   effectConsole.register('eai.select.automatic', MO.FEaiSelectAutomaticEffect);
+   effectConsole.register('eai.select.control', MO.FEaiSelectAutomaticEffect);
+   effectConsole.register('eai.select.eai.world.face', MO.FEaiSelectAutomaticEffect);
+   effectConsole.register('eai.select.eai.map.face', MO.FEaiSelectAutomaticEffect);
    effectConsole.register('general.color.eai.world.face', MO.FEaiWorldFaceEffect);
    effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
+   effectConsole.register('general.view.automatic', MO.FE3dSphereViewAutomaticEffect);
    return true;
 }
 MO.FEaiApplication_processResize = function FEaiApplication_processResize(event){
@@ -75,7 +82,9 @@ MO.FEaiCanvas_selectStage = function FEaiCanvas_selectStage(stage){
    if(stage){
       stage.linkGraphicContext(o);
       stage.region().linkGraphicContext(o);
-      stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+      if(!stage.technique()){
+         stage.selectTechnique(o, MO.FE3dGeneralTechnique);
+      }
    }
    o._activeStage = stage;
 }
@@ -89,20 +98,31 @@ MO.FEaiCanvas_dispose = function FEaiCanvas_dispose(){
 MO.FEaiChartApplication = function FEaiChartApplication(o){
    o = MO.Class.inherits(this, o, MO.FEaiApplication);
    o._sceneCode      = MO.Class.register(o, new MO.AGetSet('_sceneCode'), MO.EEaiScene.ChartCustomer);
+   o._backgroundUrl  = MO.Class.register(o, new MO.AGetSet('_backgroundUrl'), '{eai.resource}/background2.jpg');
    o._chapterLoading = MO.Class.register(o, new MO.AGetter('_chapterLoading'));
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
    o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+   o.onLoadGround    = MO.FEaiChartApplication_onLoadGround;
    o.onLoadResource  = MO.FEaiChartApplication_onLoadResource;
    o.construct       = MO.FEaiChartApplication_construct;
    o.setup           = MO.FEaiChartApplication_setup;
    o.dispose         = MO.FEaiChartApplication_dispose;
    return o;
 }
-MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(){
+MO.FEaiChartApplication_onLoadGround = function FEaiChartApplication_onLoadGround(event){
    var o = this;
    var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
    chapter.selectSceneByCode(o._sceneCode);
    o.processResize();
+}
+MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(event){
+   var o = this;
+   var canvas = o._desktop.canvas3d();
+   var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
+   bitmap._optionSelect = false;
+   bitmap.loadUrl(o._backgroundUrl);
+   bitmap.material().info().effectCode = 'fill';
+   bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
 }
 MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
    var o = this;
@@ -148,7 +168,7 @@ MO.FEaiChartCanvas = function FEaiChartCanvas(o){
    o._optionStageProcess = false;
    o._optionResize       = false;
    o._optionMouseCapture = false;
-   o._optionAlpha        = true;
+   o._optionAlpha        = false;
    o._optionAntialias    = false;
    o._capturePosition    = null;
    o._cameraPosition     = null;
