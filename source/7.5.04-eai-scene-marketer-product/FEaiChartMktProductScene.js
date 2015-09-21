@@ -21,7 +21,7 @@ MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
    o._interval               = 10;
    // @attribute
    o._logoBar                = null;
-   o._timeline               = null;
+ //  o._timeline               = null;
    o._liveTable              = null;
    // @attribute
    o._statusStart            = false;
@@ -52,16 +52,16 @@ MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
 //
 // @method
 // @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartMktProductScene_on24HDataChanged = function FEaiChartMktProductScene_on24HDataChanged(event) {
-   var o = this;
-   // 设置表格数据
-   var timeline = o._timeline;
-   timeline.startTime().assign(event.beginDate);
-   timeline.endTime().assign(event.endDate);
-   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-   timeline.dirty();
-}
+// //==========================================================
+// MO.FEaiChartMktProductScene_on24HDataChanged = function FEaiChartMktProductScene_on24HDataChanged(event) {
+//    var o = this;
+//    // 设置表格数据
+//    var timeline = o._timeline;
+//    timeline.startTime().assign(event.beginDate);
+//    timeline.endTime().assign(event.endDate);
+//    timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+//    timeline.dirty();
+// }
 
 //==========================================================
 // <T>表格数据变更处理。</T>
@@ -74,7 +74,7 @@ MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProdu
    var unit = event.unit;
    // 设置表格数据
    var table = o._liveTable;
-   table.setRankUnits(event.rankUnits);
+//   table.setRankUnits(event.rankUnits);
    table.pushUnit(unit);
    table.dirty();
 }
@@ -232,26 +232,26 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
-   var invement = o._processor = MO.Class.create(MO.FEaiChartMktCustomerProcessor);
+   var invement = o._processor = MO.Class.create(MO.FEaiChartMktProductProcessor);
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
    invement.addDataChangedListener(o, o.onInvestmentDataChanged);
-   invement.add24HDataChangedListener(o, o.on24HDataChanged);
+  // invement.add24HDataChangedListener(o, o.on24HDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
    //..........................................................
    // 创建时间轴
-   var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktCustomerTimeline);
-   timeline.setName('Timeline');
-   timeline.linkGraphicContext(o);
-   timeline.build();
-   o._guiManager.register(timeline);
+   // var stage = o.activeStage();
+   // var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktProductTimeline);
+   // timeline.setName('Timeline');
+   // timeline.linkGraphicContext(o);
+   // timeline.build();
+   // o._guiManager.register(timeline);
    //..........................................................
    // 创建表格
-   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktCustomerTable);
+   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktProductTable);
    liveTable.setName('LiveTable');
    liveTable.linkGraphicContext(o);
    liveTable.setup();
@@ -388,23 +388,23 @@ MO.FEaiChartMktProductScene_processResize = function FEaiChartMktProductScene_pr
       control.setBottom(280);
    }
    //..........................................................
-   // 设置时间轴
-   var timeline = o._timeline;
-   if (isVertical) {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(10);
-      timeline.setRight(10);
-      timeline.setBottom(920);
-      timeline.setHeight(250);
-   } else {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(30);
-      timeline.setRight(780);
-      timeline.setHeight(250);
-   }
+   // // 设置时间轴
+   // var timeline = o._timeline;
+   // if (isVertical) {
+   //    timeline.setDockCd(MO.EUiDock.Bottom);
+   //    timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   //    timeline.setLeft(10);
+   //    timeline.setRight(10);
+   //    timeline.setBottom(920);
+   //    timeline.setHeight(250);
+   // } else {
+   //    timeline.setDockCd(MO.EUiDock.Bottom);
+   //    timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   //    timeline.setLeft(20);
+   //    timeline.setBottom(30);
+   //    timeline.setRight(780);
+   //    timeline.setHeight(250);
+   // }
    //..........................................................
    // 设置表格
    var liveTable = o._liveTable;
@@ -417,11 +417,15 @@ MO.FEaiChartMktProductScene_processResize = function FEaiChartMktProductScene_pr
       liveTable.setWidth(1060);
       liveTable.setHeight(900);
    } else {
-      liveTable.setDockCd(MO.EUiDock.Right);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-      liveTable.setTop(10);
-      liveTable.setRight(0);
-      liveTable.setBottom(10);
-      liveTable.setWidth(760);
+      liveTable.setDockCd(MO.EUiDock.Bottom);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      // liveTable.setTop(10);
+      // liveTable.setRight(0);
+      // liveTable.setBottom(10);
+      // liveTable.setWidth(760);
+      liveTable.setLeft(20);
+      liveTable.setBottom(30);
+      liveTable.setRight(780);
+      liveTable.setHeight(250);
    }
 }
