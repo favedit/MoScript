@@ -1,9 +1,9 @@
 //==========================================================
-// <T>统计投资。</T>
+// <T>产品投资情况数据获取。</T>
 //
 // @class
-// @author maocy
-// @history 150619
+// @author sunpeng
+// @history 150923
 //==========================================================
 MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
@@ -13,8 +13,6 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
    // @attribute
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
-   o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
-   o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
    // @attribute
    o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
    o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
@@ -52,12 +50,12 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
 
-   o._event24HDataChanged     = null;
-   o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
+   o._eventTrenderDataChanged     = null;
+   o._listenersTrenderDataChanged = MO.Class.register(o, new MO.AListener('_listenersTrenderDataChanged', 'TrenderDataChanged'));
    //..........................................................
    // @method
    o.onDynamicData            = MO.FEaiChartMktProductProcessor_onDynamicData;
-//  o.on24HDataFetch           = MO.FEaiChartMktProductProcessor_on24HDataFetch;
+   o.onTrenderData            = MO.FEaiChartMktProductProcessor_onTrenderData;
    //..........................................................
    // @method
    o.construct                = MO.FEaiChartMktProductProcessor_construct;
@@ -79,12 +77,10 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
 //
 // @method
 //==========================================================
-// MO.FEaiChartMktProductProcessor_on24HDataFetch = function FEaiChartMktProductProcessor_on24HDataFetch(event) {
-//    var o = this;
-//    event.beginDate = o._24HBeginDate;
-//    event.endDate = o._24HEndDate;
-//    o.process24HDataChangedListener(event);
-// }
+MO.FEaiChartMktProductProcessor_onTrenderData = function FEaiChartMktProductProcessor_onTrenderData(event) {
+    var o = this;
+    o.processTrenderDataChangedListener(event);
+ }
 
 //==========================================================
 // <T>统计投资数据获取处理。</T>
@@ -127,15 +123,13 @@ MO.FEaiChartMktProductProcessor_construct = function FEaiChartMktProductProcesso
    // 设置变量
    o._beginDate = new MO.TDate();
    o._endDate = new MO.TDate();
-   o._24HBeginDate = new MO.TDate();
-   o._24HEndDate = new MO.TDate();
    o._units = new MO.TObjects();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
    // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建缓冲
-   o._dynamicInfo = MO.Class.create(MO.FEaiChartMktCustomerDynamicInfo);
+   o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
@@ -269,18 +263,8 @@ MO.FEaiChartMktProductProcessor_process = function FEaiChartMktProductProcessor_
       // 设置开始时间
       beginDate.assign(endDate);
 
-      // 取24小时统计数据
-      // 设置开始时间
-      var beginDate24H = o._24HBeginDate;
-      beginDate24H.assign(systemDate);
-      beginDate24H.truncMinute(15);
-      beginDate24H.addDay(-1);
-      // 设置结束时间
-      var endDate24H = o._24HEndDate;
-      endDate24H.assign(systemDate);
-      endDate24H.truncMinute(15);
-      // 取数据
-      // statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
+      // 取产品数据
+      statistics.tender().doInfo(o, o.onTrenderData);
    }
    //..........................................................
    // 设置表格刷新

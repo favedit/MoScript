@@ -24,7 +24,7 @@ MO.FEaiLogicStatisticsTender = function FEaiLogicStatisticsTender(o){
 // @param endDate:String 结束时间
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicStatisticsTender_doInfo = function FEaiLogicStatisticsTender_doInfo(owner, callback, startDate, endDate){
+MO.FEaiLogicStatisticsTender_doInfo = function FEaiLogicStatisticsTender_doInfo(owner, callback){
    var o = this;
    var parameters = o.prepareParemeters();
    o.sendService('{eai.logic.service}/eai.financial.tender.wv?do=info', parameters, owner, callback);

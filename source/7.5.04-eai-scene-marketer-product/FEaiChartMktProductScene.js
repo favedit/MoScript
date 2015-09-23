@@ -30,7 +30,7 @@ MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartMktProductScene_onInvestmentDataChanged;
-   o.on24HDataChanged        = MO.FEaiChartMktProductScene_on24HDataChanged;
+   o.onTrendDataChanged      = MO.FEaiChartMktProductScene_onTrendDataChanged;
    o.onOperationVisibility   = MO.FEaiChartMktProductScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartMktProductScene_onProcessReady;
    o.onProcess               = MO.FEaiChartMktProductScene_onProcess;
@@ -48,20 +48,25 @@ MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
 }
 
 //==========================================================
-// <T>24小时曲线数据变更处理。</T>
+// <T>产品数据变更处理。</T>
 //
 // @method
 // @param event:SEvent 事件信息
 // //==========================================================
-// MO.FEaiChartMktProductScene_on24HDataChanged = function FEaiChartMktProductScene_on24HDataChanged(event) {
-//    var o = this;
-//    // 设置表格数据
-//    var timeline = o._timeline;
-//    timeline.startTime().assign(event.beginDate);
-//    timeline.endTime().assign(event.endDate);
-//    timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-//    timeline.dirty();
-// }
+MO.FEaiChartMktProductScene_onTrendDataChanged = function FEaiChartMktProductScene_onTrendDataChanged(event) {
+   var o = this;
+
+   var aa = MO.Class.create(MO.FEaiLogicInfoTender);
+   aa.unserializeSignBuffer(event.sign, event.content, true);
+   //timeline.dirty();
+    // 设置表格数据
+    
+    //var timeline = o._timeline;
+    //timeline.startTime().assign(event.beginDate);
+    //timeline.endTime().assign(event.endDate);
+    //timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+    //timeline.dirty();
+ }
 
 //==========================================================
 // <T>表格数据变更处理。</T>
@@ -237,7 +242,7 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
    invement.setMapEntity(o._mapEntity);
    invement.setup();
    invement.addDataChangedListener(o, o.onInvestmentDataChanged);
-  // invement.add24HDataChangedListener(o, o.on24HDataChanged);
+   invement.addTrenderDataChangedListener(o, o.onTrendDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
