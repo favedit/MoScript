@@ -11,6 +11,7 @@ MO.FEaiLogicStatistics = function FEaiLogicStatistics(o){
    // @attribute
    o._code                = 'statistics';
    // @attribute
+   o._tender              = MO.Class.register(o, new MO.AGetter('_tender'));
    o._achievement         = MO.Class.register(o, new MO.AGetter('_achievement'));
    o._customer            = MO.Class.register(o, new MO.AGetter('_customer'));
    o._marketer            = MO.Class.register(o, new MO.AGetter('_marketer'));
@@ -38,6 +39,7 @@ MO.FEaiLogicStatistics_construct = function FEaiLogicStatistics_construct(){
    var o = this;
    o.__base.FEaiLogic.construct.call(o);
    // 创建逻辑控制器
+   o._tender = MO.Class.create(MO.FEaiLogicStatisticsTender);
    o._achievement = MO.Class.create(MO.FEaiLogicStatisticsAchievement);
    o._customer = MO.Class.create(MO.FEaiLogicStatisticsCustomer);
    o._marketer = MO.Class.create(MO.FEaiLogicStatisticsMarketer);
@@ -91,6 +93,7 @@ MO.FEaiLogicStatistics_doPerformenceDynamic = function FEaiLogicStatistics_doPer
 MO.FEaiLogicStatistics_dispose = function FEaiLogicStatistics_dispose(){
    var o = this;
    // 释放属性
+   o._tender = MO.Lang.Object.dispose(o._tender);
    o._achievement = MO.Lang.Object.dispose(o._achievement);
    o._customer = MO.Lang.Object.dispose(o._customer);
    o._marketer = MO.Lang.Object.dispose(o._marketer);
