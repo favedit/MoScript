@@ -23,6 +23,7 @@ MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
    o._logoBar                = null;
  //  o._timeline               = null;
    o._liveTable              = null;
+   o._circleProduct          = null;
    // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
@@ -263,8 +264,15 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
    liveTable.build();
    o._guiManager.register(liveTable);
    //..........................................................
-   // 隐藏全部界面
-   o._guiManager.hide();
+   
+   //创建产品空心圈
+    var circleProduct = o._circleProduct = MO.Class.create(MO.FEaiChartMktProductCircle);
+    circleProduct.setName('circleProduct');
+    circleProduct.linkGraphicContext(o);
+    circleProduct.build();
+    o._guiManager.register(circleProduct);
+
+
    //..........................................................
    // 创建粒子
    //var context = o._graphicContext;
@@ -275,6 +283,9 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
    //o.fixMatrix(particle.matrix());
    //o._activeStage.spriteLayer().pushRenderable(particle);
    //..........................................................
+
+   // 隐藏全部界面
+   o._guiManager.hide();
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 建立城市实体
    entityConsole.cityModule().build(o);
@@ -391,6 +402,24 @@ MO.FEaiChartMktProductScene_processResize = function FEaiChartMktProductScene_pr
       control.setDockCd(MO.EUiDock.RightBottom);
       control.setRight(780);
       control.setBottom(280);
+   }
+
+   var circleProduct = o._circleProduct;
+      if (isVertical) {
+      circleProduct.setDockCd(MO.EUiDock.Bottom);
+      circleProduct.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      circleProduct.setLeft(10);
+      circleProduct.setRight(10);
+      circleProduct.setBottom(10);
+      circleProduct.setWidth(1060);
+      circleProduct.setHeight(900);
+   } else {
+      circleProduct.setDockCd(MO.EUiDock.Right);
+      circleProduct.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      circleProduct.setTop(10);
+      circleProduct.setRight(0);
+      circleProduct.setBottom(10);
+      circleProduct.setWidth(750);
    }
    //..........................................................
    // // 设置时间轴
