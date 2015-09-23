@@ -144,7 +144,7 @@ MO.FEaiChartStatMarketerProcessor_construct = function FEaiChartStatMarketerProc
    // 定时获取数据
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    // 创建缓冲
-   o._dynamicInfo = MO.Class.create(MO.FEaiChartMktCustomerDynamicInfo);
+   o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
    o._infoProvince = MO.Class.create(MO.FEaiChartStatMarketerInfo);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);

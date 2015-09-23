@@ -46,7 +46,7 @@ MO.FEaiChartStatMarketerBarChart_construct = function FEaiChartStatMarketerBarCh
    o.__base.FGuiControl.construct.call(o);
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
-   o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
+   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoCustomerTrend);
    o._infoProvince = MO.Class.create(MO.FEaiChartStatMarketerInfo);
    o._provinceTextFont = new MO.SUiFont();
    o._provinceTextFont.size = 24;
