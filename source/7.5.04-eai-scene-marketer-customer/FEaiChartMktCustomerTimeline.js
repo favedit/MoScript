@@ -44,7 +44,7 @@ MO.FEaiChartMktCustomerTimeline_construct = function FEaiChartMktCustomerTimelin
    o.__base.FGuiControl.construct.call(o);
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
-   o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
+   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoCustomerTrend);
 }
 
 //==========================================================

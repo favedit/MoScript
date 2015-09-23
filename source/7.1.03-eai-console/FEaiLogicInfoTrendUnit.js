@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150923
 //==========================================================
-MO.FEaiLogicInfoCustomerTrendUnit = function FEaiLogicInfoCustomerTrendUnit(o){
+MO.FEaiLogicInfoTrendUnit = function FEaiLogicInfoTrendUnit(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
