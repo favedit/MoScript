@@ -69,17 +69,8 @@ MO.FEaiChartMktProductScene_onOperationDown = function FEaiChartMktProductScene_
 // //==========================================================
 MO.FEaiChartMktProductScene_onTrendDataChanged = function FEaiChartMktProductScene_onTrendDataChanged(event) {
    var o = this;
-
-   var aa = MO.Class.create(MO.FEaiLogicInfoTender);
-   aa.unserializeSignBuffer(event.sign, event.content, true);
-   //timeline.dirty();
-    // 设置表格数据
-    
-    //var timeline = o._timeline;
-    //timeline.startTime().assign(event.beginDate);
-    //timeline.endTime().assign(event.endDate);
-    //timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-    //timeline.dirty();
+   o._circleProduct.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   o._circleProduct.dirty();
  }
 
 //==========================================================
@@ -96,6 +87,8 @@ MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProdu
 //   table.setRankUnits(event.rankUnits);
    table.pushUnit(unit);
    table.dirty();
+   var circle= o._circleProduct;
+   circle.dirty();
 }
 
 //==========================================================
