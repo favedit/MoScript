@@ -135,12 +135,13 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }
    var sizeRate = o._sizeRate = Math.min(widthRate, heightRate);
    o._logicRate.set(widthRate, heightRate);
+   var calculateRate = o._calculateRate;
    if(widthRate > heightRate){
-      o._calculateRate.set(widthRate / sizeRate, 1);
+      calculateRate.set(widthRate / sizeRate, 1);
    }else if(widthRate < heightRate){
-      o._calculateRate.set(1, heightRate / sizeRate);
+      calculateRate.set(1, heightRate / sizeRate);
    }else{
-      o._calculateRate.set(1, 1);
+      calculateRate.set(1, 1);
    }
    MO.Logger.debug(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    //..........................................................
@@ -153,6 +154,7 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }
    var context3d = canvas3d.graphicContext();
    context3d.setViewport(0, 0, width, height)
+   o._virtualSize.set(logicSize.width * calculateRate.width, logicSize.height * calculateRate.height);
    // 设置2D画板
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);

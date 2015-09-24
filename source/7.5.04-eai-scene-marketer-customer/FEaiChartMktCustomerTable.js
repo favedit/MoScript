@@ -9,38 +9,38 @@ MO.FEaiChartMktCustomerTable = function FEaiChartMktCustomerTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._currentDate = null;
-   o._rank = MO.Class.register(o, new MO.AGetter('_rank'));
+   o._currentDate          = null;
+   o._rank                 = MO.Class.register(o, new MO.AGetter('_rank'));
    // @attribute
-   o._rankLogoImage = null;
-   o._rankTitleImage = null;
-   o._rankLineImage = null;
-   o._rankLinePadding = null;
-   o._rank1Image = null;
-   o._rank2Image = null;
-   o._rank3Image = null;
-   o._backgroundImage = null;
-   o._backgroundPadding = null;
+   o._rankLogoImage        = null;
+   o._rankTitleImage       = null;
+   o._rankLineImage        = null;
+   o._rankLinePadding      = null;
+   o._rank1Image           = null;
+   o._rank2Image           = null;
+   o._rank3Image           = null;
+   o._backgroundImage      = null;
+   o._backgroundPadding    = null;
    // @attibute
-   o._tableCount = 0;
-   o._units = null;
-   o._lineScroll = 0;
+   o._tableCount           = 0;
+   o._units                = null;
+   o._lineScroll           = 0;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad = MO.FEaiChartMktCustomerTable_onImageLoad;
-   o.onPaintBegin = MO.FEaiChartMktCustomerTable_onPaintBegin;
+   o.onImageLoad           = MO.FEaiChartMktCustomerTable_onImageLoad;
+   o.onPaintBegin          = MO.FEaiChartMktCustomerTable_onPaintBegin;
    //..........................................................
    // @method
-   o.construct = MO.FEaiChartMktCustomerTable_construct;
+   o.construct             = MO.FEaiChartMktCustomerTable_construct;
    // @method
-   o.setup = MO.FEaiChartMktCustomerTable_setup;
-   o.setRankUnits = MO.FEaiChartMktCustomerTable_setRankUnits;
-   o.pushUnit = MO.FEaiChartMktCustomerTable_pushUnit;
-   o.drawRow = MO.FEaiChartMktCustomerTable_drawRow;
+   o.setup                 = MO.FEaiChartMktCustomerTable_setup;
+   o.setRankUnits          = MO.FEaiChartMktCustomerTable_setRankUnits;
+   o.pushUnit              = MO.FEaiChartMktCustomerTable_pushUnit;
+   o.drawRow               = MO.FEaiChartMktCustomerTable_drawRow;
    // @method
-   o.dispose = MO.FEaiChartMktCustomerTable_dispose;
+   o.dispose               = MO.FEaiChartMktCustomerTable_dispose;
    return o;
 }
 

@@ -117,13 +117,12 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    var desktop = o._desktop;
    var calculateSize = desktop.calculateSize();
    var calculateRate = desktop.calculateRate()
+   var virtualSize = desktop.virtualSize();
    // 绘制处理
    var event = o._paintEvent;
-   event.optionContainer = true;
    event.graphic = graphic;
-   event.parentRectangle.set(0, 0, calculateSize.width, calculateSize.height);
-   event.calculateRate = calculateRate;
-   event.rectangle.reset();
+   event.parentRectangle.set(0, 0, virtualSize.width, virtualSize.height);
+   event.rectangle.set(0, 0, virtualSize.width, virtualSize.height);
    control.paint(event);
    // MO.Logger.debug(o, 'Draw control.', control);
 }
@@ -136,6 +135,13 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
 MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    var o = this;
    o.__base.FGuiManager.process.call(o);
+   var canvas = o._canvas;
+   var graphic = canvas.graphicContext();
+   // 计算画板缩放
+   var desktop = o._desktop;
+   var sizeRate = desktop.sizeRate();
+   var virtualSize = desktop.virtualSize();
+   graphic.setGlobalScale(sizeRate, sizeRate);
    // 获得准备好的控件集合
    var readyControls = o._readyControls;
    readyControls.clear();
@@ -152,12 +158,9 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       }
    }
    // 脏处理
-   // o._statusDirty = true;
-   var graphic = o._canvas.graphicContext();
    if(o._statusDirty){
       // 清空画板
-      graphic.prepare();
-      graphic.clear();
+      graphic.prepare(true);
       // 排序控件
       readyControls.sort(o.onSortControl);
       // 绘制处理
@@ -187,7 +190,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
       // 绘制处理
       var dirtyCount = dirtyControls.count();
       if(dirtyCount){
-         graphic.prepare();
+         graphic.prepare(false);
          for(var i = 0; i < dirtyCount; i++){
             var control = dirtyControls.at(i);
             // 清空控件
@@ -202,7 +205,6 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
             o.processControl(control);
          }
       }
-      //console.log('Dirty control: ' + dirtyCount);
    }
 }
 

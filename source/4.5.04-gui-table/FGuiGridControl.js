@@ -48,7 +48,6 @@ MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
    var bottom = rectangle.bottom() - padding.bottom;
    var width = rectangle.width - padding.left - padding.right;
    var height = rectangle.height - padding.top - padding.bottom;
-   //graphic.drawRectangle(left, top, width, height, '#FF0000', 1);
    var headPadding = o._headPadding;
    var drawX = left;
    var drawY = top + headPadding.top;;

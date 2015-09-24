@@ -427,7 +427,6 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var size = o._size;
    var graphic = event.graphic;
    var parentRectangle = event.parentRectangle;
-   var calculateRate = event.calculateRate;
    var rectangle = event.rectangle;
    o._parentRectangle.assign(parentRectangle);
    o._eventRectangle.assign(rectangle);
@@ -445,13 +444,6 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var bottom = parentBottom - o._bottom;
    var width2 = (parentRectangle.width - width) * 0.5;
    var height2 = (parentRectangle.height - height) * 0.5;
-   // 调整位置
-   if(event.optionContainer){
-      left *= calculateRate.width;
-      top *= calculateRate.height;
-      right *= calculateRate.width;
-      bottom *= calculateRate.height;
-   }
    // 计算顶层停靠位置
    if((dockCd == MO.EUiDock.LeftBottom) || (dockCd == MO.EUiDock.Bottom) || (dockCd == MO.EUiDock.RightBottom)){
       top = bottom - height;
@@ -462,20 +454,19 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    if((anchorCd & MO.EUiAnchor.Left) && (anchorCd & MO.EUiAnchor.Right)){
       width = right - left;
    }else if(o._anchorCd & MO.EUiAnchor.Left){
-      left = (parentRight - width - o._right) * calculateRate.width;
+      left = parentRight - width - o._right;
       width = right - left;
    }else if(o._anchorCd & MO.EUiAnchor.Right){
-      width = (parentRight - left - o._right) * calculateRate.width;
+      width = parentRight - left - o._right;
    }
    if((anchorCd & MO.EUiAnchor.Top) && (o._anchorCd & MO.EUiAnchor.Bottom)){
       height = bottom - top;
    }else if(o._anchorCd & MO.EUiAnchor.Top){
-      top = (parentBottom - height - o._bottom) * calculateRate.height;
+      top = parentBottom - height - o._bottom;
       height = bottom - top;
    }else if(o._anchorCd & MO.EUiAnchor.Bottom){
-      height = (parentBottom - top - o._bottom) * calculateRate.height;
+      height = parentBottom - top - o._bottom;
    }
-   event.optionContainer = false;
    graphic.store();
    //..........................................................
    // 计算范围

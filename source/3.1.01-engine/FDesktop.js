@@ -16,6 +16,7 @@ MO.FDesktop = function FDesktop(o){
    o._logicSize       = MO.Class.register(o, new MO.AGetter('_logicSize'));
    o._logicRate       = MO.Class.register(o, new MO.AGetter('_logicRate'));
    o._screenSize      = MO.Class.register(o, new MO.AGetter('_screenSize'));
+   o._virtualSize     = MO.Class.register(o, new MO.AGetter('_virtualSize'));
    // @attribute
    o._canvases        = MO.Class.register(o, new MO.AGetter('_canvases'));
    //..........................................................
@@ -24,11 +25,11 @@ MO.FDesktop = function FDesktop(o){
    // @method
    o.canvasRegister   = MO.FDesktop_canvasRegister;
    o.canvasUnregister = MO.FDesktop_canvasUnregister;
-   o.setup            = MO.FDesktop_setup;
-   o.build            = MO.FDesktop_build;
-   o.resize           = MO.FDesktop_resize;
+   o.setup            = MO.Method.empty;
+   o.build            = MO.Method.empty;
+   o.resize           = MO.Method.empty;
    o.processEvent     = MO.FDesktop_processEvent;
-   o.process          = MO.FDesktop_process;
+   o.process          = MO.Method.empty;
    // @method
    o.dispose          = MO.FDesktop_dispose;
    return o;
@@ -49,6 +50,7 @@ MO.FDesktop_construct = function FDesktop_construct(){
    o._logicSize = new MO.SSize2(1280, 720);
    o._logicRate = new MO.SSize2(1, 1);
    o._screenSize = new MO.SSize2(1280, 720);
+   o._virtualSize = new MO.SSize2(1280, 720);
    o._canvases = new MO.TObjects();
 }
 
@@ -77,35 +79,6 @@ MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
 }
 
 //==========================================================
-// <T>配置处理。</T>
-//
-// @method
-// @param hPanel:HtmlTag 页面元素
-//==========================================================
-MO.FDesktop_setup = function FDesktop_setup(hPanel){
-   var o = this;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-// @param hPanel:HtmlTag 页面元素
-//==========================================================
-MO.FDesktop_build = function FDesktop_build(hPanel){
-   var o = this;
-}
-
-//==========================================================
-// <T>改变大小处理。</T>
-//
-// @method
-//==========================================================
-MO.FDesktop_resize = function FDesktop_resize(){
-   var o = this;
-}
-
-//==========================================================
 // <T>事件处理。</T>
 //
 // @method
@@ -115,15 +88,6 @@ MO.FDesktop_processEvent = function FDesktop_processEvent(event){
    var o = this;
    // 处理事件
    o.dispatcherEvent(event);
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-MO.FDesktop_process = function FDesktop_process(){
-   var o = this;
 }
 
 //==========================================================
@@ -139,6 +103,7 @@ MO.FDesktop_dispose = function FDesktop_dispose(){
    o._logicSize = MO.Lang.Object.dispose(o._logicSize);
    o._logicRate = MO.Lang.Object.dispose(o._logicRate);
    o._screenSize = MO.Lang.Object.dispose(o._screenSize);
+   o._virtualSize = MO.Lang.Object.dispose(o._virtualSize);
    o._canvases = MO.Lang.Object.dispose(o._canvases);
    // 父处理
    o.__base.FObject.dispose.call(o);
