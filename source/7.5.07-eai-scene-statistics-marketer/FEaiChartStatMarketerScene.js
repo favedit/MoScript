@@ -9,42 +9,42 @@ MO.FEaiChartStatMarketerScene = function FEaiChartStatMarketerScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code                   = MO.EEaiScene.ChartCustomer;
+   o._code                     = MO.EEaiScene.ChartCustomer;
    // @attribute
-   o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
-   o._processorCurrent       = 0;
+   o._processor                = MO.Class.register(o, new MO.AGetter('_processor'));
+   o._processorCurrent         = 0;
    // @attribute
-   o._ready                  = false;
-   o._mapReady               = false;
-   o._playing                = false;
-   o._lastTick               = 0;
-   o._interval               = 10;
+   o._ready                    = false;
+   o._mapReady                 = false;
+   o._playing                  = false;
+   o._lastTick                 = 0;
+   o._interval                 = 10;
    // @attribute
-   o._logoBar                = null;
-   o._timeline               = null;
-   o._provinceTable          = null;
+   o._logoBar                  = null;
+   o._timeline                 = null;
+   o._provinceTable            = null;
    // @attribute
-   o._statusStart            = false;
-   o._statusLayerCount       = 100;
-   o._statusLayerLevel       = 100;
+   o._statusStart              = false;
+   o._statusLayerCount         = 100;
+   o._statusLayerLevel         = 100;
    //..........................................................
    // @event
-   o.onOperationDown         = MO.FEaiChartStatMarketerScene_onOperationDown;
-   o.on24HDataChanged        = MO.FEaiChartStatMarketerScene_on24HDataChanged;
+   o.onOperationDown           = MO.FEaiChartStatMarketerScene_onOperationDown;
+   o.on24HDataChanged          = MO.FEaiChartStatMarketerScene_on24HDataChanged;
    o.onInfoProvinceDataChanged = MO.FEaiChartStatMarketerScene_onInfoProvinceDataChanged;
-   o.onOperationVisibility   = MO.FEaiChartStatMarketerScene_onOperationVisibility;
-   o.onProcessReady          = MO.FEaiChartStatMarketerScene_onProcessReady;
-   o.onProcess               = MO.FEaiChartStatMarketerScene_onProcess;
-   o.onSwitchProcess         = MO.FEaiChartStatMarketerScene_onSwitchProcess;
-   o.onSwitchComplete        = MO.FEaiChartStatMarketerScene_onSwitchComplete;
+   o.onOperationVisibility     = MO.FEaiChartStatMarketerScene_onOperationVisibility;
+   o.onProcessReady            = MO.FEaiChartStatMarketerScene_onProcessReady;
+   o.onProcess                 = MO.FEaiChartStatMarketerScene_onProcess;
+   o.onSwitchProcess           = MO.FEaiChartStatMarketerScene_onSwitchProcess;
+   o.onSwitchComplete          = MO.FEaiChartStatMarketerScene_onSwitchComplete;
    //..........................................................
    // @method
-   o.setup                   = MO.FEaiChartStatMarketerScene_setup;
-   o.showParticle            = MO.FEaiChartStatMarketerScene_showParticle;
-   o.showFace                = MO.FEaiChartStatMarketerScene_showFace;
-   o.fixMatrix               = MO.FEaiChartStatMarketerScene_fixMatrix;
+   o.setup                     = MO.FEaiChartStatMarketerScene_setup;
+   o.showParticle              = MO.FEaiChartStatMarketerScene_showParticle;
+   o.showFace                  = MO.FEaiChartStatMarketerScene_showFace;
+   o.fixMatrix                 = MO.FEaiChartStatMarketerScene_fixMatrix;
    // @method
-   o.processResize           = MO.FEaiChartStatMarketerScene_processResize;
+   o.processResize             = MO.FEaiChartStatMarketerScene_processResize;
    return o;
 }
 
@@ -436,7 +436,7 @@ MO.FEaiChartStatMarketerScene_processResize = function FEaiChartStatMarketerScen
    var provinceTable = o._provinceTable;
    if (isVertical) {
       provinceTable.setDockCd(MO.EUiDock.Bottom);
-      provinceTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      provinceTable.setAnchorCd(MO.EUiAnchor.All);
       provinceTable.setLeft(10);
       provinceTable.setRight(10);
       provinceTable.setBottom(10);
@@ -444,7 +444,7 @@ MO.FEaiChartStatMarketerScene_processResize = function FEaiChartStatMarketerScen
       provinceTable.setHeight(900);
    } else {
       provinceTable.setDockCd(MO.EUiDock.Right);
-      provinceTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      provinceTable.setAnchorCd(MO.EUiAnchor.All);
       provinceTable.setTop(10);
       provinceTable.setRight(0);
       provinceTable.setBottom(10);

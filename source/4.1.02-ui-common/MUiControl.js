@@ -9,38 +9,38 @@ MO.MUiControl = function MUiControl(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @property Boolean 是否可见
-   o._visible      = MO.Class.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
+   o._visible       = MO.Class.register(o, [new MO.APtyString('_visible'), new MO.AGetter('_visible')], true);
    // @property Boolean 是否禁止
-   o._disable      = MO.Class.register(o, [new MO.APtyString('_disable'), new MO.AGetter('_disable')], false);
+   o._disable       = MO.Class.register(o, [new MO.APtyString('_disable'), new MO.AGetter('_disable')], false);
    // @property EUiDock 停靠方式
-   o._dockCd       = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EUiDock.LeftTop);
+   o._dockCd        = MO.Class.register(o, [new MO.APtyString('_dockCd'), new MO.AGetSet('_dockCd')], MO.EUiDock.LeftTop);
    // @property EUiAnchor 锚点方式
-   o._anchorCd     = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EUiAnchor.None);
+   o._anchorCd      = MO.Class.register(o, [new MO.APtyString('_anchorCd'), new MO.AGetSet('_anchorCd')], MO.EUiAnchor.None);
    // @property String 提示信息
-   o._hint         = MO.Class.register(o, [new MO.APtyString('_hint'), new MO.AGetSet('_hint')]);
+   o._hint          = MO.Class.register(o, [new MO.APtyString('_hint'), new MO.AGetSet('_hint')]);
    //..........................................................
    // @attribtue
-   o._eventEnable  = null;
-   o._eventVisible = null;
-   o._eventResize  = null;
-   o._eventRefresh = null;
-   o._eventFrame   = null;
+   o._eventEnable   = null;
+   o._eventVisible  = null;
+   o._eventResize   = null;
+   o._eventRefresh  = null;
+   o._eventFrame    = null;
    //..........................................................
    // @process
-   o.oeEnable      = MO.MUiControl_oeEnable;
-   o.oeVisible     = MO.MUiControl_oeVisible;
-   o.oeResize      = MO.MUiControl_oeResize;
-   o.oeRefresh     = MO.MUiControl_oeRefresh;
-   o.oeFrame       = MO.MUiControl_oeFrame;
+   o.oeEnable       = MO.MUiControl_oeEnable;
+   o.oeVisible      = MO.MUiControl_oeVisible;
+   o.oeResize       = MO.MUiControl_oeResize;
+   o.oeRefresh      = MO.MUiControl_oeRefresh;
+   o.oeFrame        = MO.MUiControl_oeFrame;
    //..........................................................
    // @method
-   o.psEnable      = MO.MUiControl_psEnable;
-   o.psVisible     = MO.MUiControl_psVisible;
-   o.psResize      = MO.MUiControl_psResize;
-   o.psRefresh     = MO.MUiControl_psRefresh;
-   o.psFrame       = MO.MUiControl_psFrame;
+   o.psEnable       = MO.MUiControl_psEnable;
+   o.psVisible      = MO.MUiControl_psVisible;
+   o.psResize       = MO.MUiControl_psResize;
+   o.psRefresh      = MO.MUiControl_psRefresh;
+   o.psFrame        = MO.MUiControl_psFrame;
    // @method
-   o.dispose       = MO.MUiControl_dispose;
+   o.dispose        = MO.MUiControl_dispose;
    return o;
 }
 

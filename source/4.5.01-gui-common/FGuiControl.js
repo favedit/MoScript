@@ -440,25 +440,41 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    // 设置范围
    var parentRight = parentRectangle.right();
    var parentBottom = parentRectangle.bottom();
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var right = parentRight;
-   var bottom = parentBottom;
-   var width = size.width;
-   var height = size.height;
-   if(event.optionScale || anchorCd){
-      left += location.x * calculateWidth;
-      top += location.y * calculateHeight;
-      right -= o._right * calculateWidth;
-      bottom -= o._bottom * calculateHeight;
-      width *= calculateWidth;
-      height *= calculateHeight;
-      event.optionScale = true;
+   var left = 0;
+   var top = 0;
+   var right = 0;
+   var bottom = 0;
+   var width = 0;
+   var height = 0;
+   if(anchorCd & MO.EUiAnchor.Left){
+      left = rectangle.left + location.x * calculateWidth;
    }else{
-      left += location.x;
-      top += location.y;
-      right -= o._right;
-      bottom -= o._bottom;
+      left = rectangle.left + location.x;
+   }
+   if(anchorCd & MO.EUiAnchor.Top){
+      top = rectangle.top + location.y * calculateHeight;
+   }else{
+      top = rectangle.top + location.y;
+   }
+   if(anchorCd & MO.EUiAnchor.Right){
+      right = parentRight - o._right * calculateWidth;
+   }else{
+      right = parentRight - o._right;
+   }
+   if(anchorCd & MO.EUiAnchor.Bottom){
+      bottom = parentBottom - o._bottom * calculateHeight;
+   }else{
+      bottom = parentBottom - o._bottom;
+   }
+   if((anchorCd & MO.EUiAnchor.Left) && (anchorCd & MO.EUiAnchor.Right)){
+      width = size.width * calculateWidth;
+   }else{
+      width = size.width;
+   }
+   if((anchorCd & MO.EUiAnchor.Top) && (anchorCd & MO.EUiAnchor.Bottom)){
+      height = size.height * calculateHeight;
+   }else{
+      height = size.height;
    }
    //..........................................................
    // 计算停靠位置

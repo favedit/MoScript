@@ -202,6 +202,7 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
+   grid.setTop(332);
    grid.setRight(19);
    grid.setBottom(20);
    grid.setHeadHeight(35);
@@ -333,15 +334,13 @@ MO.FEaiChartMktCustomerTable_setRankUnits = function FEaiChartMktCustomerTable_s
    for (var i = 0; i < count; i++) {
       var unit = units.at(i);
       var row = grid.allocRow();
-      
-       // 获得客户城市
+      // 获得客户城市
       var card = unit.card();
       var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
       var cityLabel = '';
       if (city) {
          cityLabel = city.label();
       }
-
       // 排行榜数据填充
       row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
       row.set('customer_city', cityLabel);
@@ -380,7 +379,6 @@ MO.FEaiChartMktCustomerTable_pushUnit = function FEaiChartMktCustomerTable_pushU
    row.set('investment_amount', unit.investment());
    row.set('investment_gain', unit.gain());
    row.set('bank_gain', unit.bankGain());
-   
    grid.insertRow(row);
    // 放入队列
    var entities = o._units;
