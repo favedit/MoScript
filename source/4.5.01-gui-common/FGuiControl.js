@@ -440,25 +440,25 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    // 设置范围
    var parentRight = parentRectangle.right();
    var parentBottom = parentRectangle.bottom();
-   var left = 0;
-   var top = 0;
-   var right = 0;
-   var bottom = 0;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   var right = parentRight;
+   var bottom = parentBottom;
    var width = size.width;
    var height = size.height;
    if(event.optionScale || anchorCd){
-      left = rectangle.left + location.x * calculateWidth;
-      top = rectangle.top + location.y * calculateHeight;
-      right = parentRight - o._right * calculateWidth;
-      bottom = parentBottom - o._bottom * calculateHeight;
+      left += location.x * calculateWidth;
+      top += location.y * calculateHeight;
+      right -= o._right * calculateWidth;
+      bottom -= o._bottom * calculateHeight;
       width *= calculateWidth;
       height *= calculateHeight;
       event.optionScale = true;
    }else{
-      left = rectangle.left + location.x;
-      top = rectangle.top + location.y;
-      right = parentRight - o._right;
-      bottom = parentBottom - o._bottom;
+      left += location.x;
+      top += location.y;
+      right -= o._right;
+      bottom -= o._bottom;
    }
    //..........................................................
    // 计算停靠位置
