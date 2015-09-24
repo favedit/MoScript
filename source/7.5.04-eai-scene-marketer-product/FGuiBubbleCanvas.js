@@ -51,6 +51,8 @@ MO.FGuiBubbleCanvas_onPaintBegin = function FGuiBubbleCanvas_onPaintBegin(event)
    var graphic = event.graphic;
    var rectangle = o._clientRectangle;
 
+   graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, 'red', 2);
+
    var hCenter = rectangle.left + rectangle.width / 2;
    var vCenter = rectangle.top + rectangle.height / 2;
 

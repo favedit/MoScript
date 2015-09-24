@@ -167,17 +167,23 @@ MO.FGuiTransferCurve_draw = function FGuiTransferCurve_draw(context) {
    var tangentVector = o._tangentVector.direction(stPoint3, etPoint3);
    tangentVector.normalize();
 
-   var flareFillStyle = graphic._handle.createRadialGradient(drawPoint.x, drawPoint.y, 0, drawPoint.x, drawPoint.y, 50);
+   var tailPoint = new MO.SPoint2();
+   curveData.pointAt(t - 0.1, tailPoint);
+
+   var flareFillStyle = graphic._handle.createRadialGradient(drawPoint.x, drawPoint.y, 0, tailPoint.x, tailPoint.y, 50);
    flareFillStyle.addColorStop("0", 'rgba(255, 156, 0, 1.0');
    flareFillStyle.addColorStop("1", 'rgba(251, 107, 0, 0');
 
    graphic._handle.save();
    graphic._handle.beginPath();
-   graphic._handle.moveTo(startPoint.x, startPoint.y);
-   graphic._handle.bezierCurveTo(scp.x + 2, scp.y, ecp.x + 2, ecp.y, endPoint.x + 2, endPoint.y);
-   graphic._handle.bezierCurveTo(ecp.x - 2, ecp.y, scp.x -2, scp.y, startPoint.x -2, startPoint.y);
+   graphic._handle.moveTo(startPoint.x - 2, startPoint.y);
+   graphic._handle.bezierCurveTo(scp.x - 2, scp.y, ecp.x - 2, ecp.y, endPoint.x - 2, endPoint.y);
+   graphic._handle.lineTo(endPoint.x + 2, endPoint.y);
+   graphic._handle.bezierCurveTo(ecp.x + 2, ecp.y, scp.x + 2, scp.y, startPoint.x + 2, startPoint.y);
+   //graphic._handle.lineTo(startPoint.x + 2, endPoint.y);
    graphic._handle.closePath();
    graphic._handle.clip();
+   //graphic._handle.stroke();
 
    graphic.drawCircle(drawPoint.x, drawPoint.y, 50, 0, '', flareFillStyle);
 

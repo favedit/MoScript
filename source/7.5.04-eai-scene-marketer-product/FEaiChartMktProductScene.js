@@ -24,12 +24,14 @@ MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
  //  o._timeline               = null;
    o._liveTable              = null;
    o._circleProduct          = null;
+   o._bubbleCanvas           = null;
    // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
    //..........................................................
    // @event
+   o.onOperationDown         = MO.FEaiChartMktProductScene_onOperationDown;
    o.onInvestmentDataChanged = MO.FEaiChartMktProductScene_onInvestmentDataChanged;
    o.onTrendDataChanged      = MO.FEaiChartMktProductScene_onTrendDataChanged;
    o.onOperationVisibility   = MO.FEaiChartMktProductScene_onOperationVisibility;
@@ -46,6 +48,17 @@ MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
    // @method
    o.processResize           = MO.FEaiChartMktProductScene_processResize;
    return o;
+}
+
+//==========================================================
+// <T>鼠标按下处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartMktProductScene_onOperationDown = function FEaiChartMktProductScene_onOperationDown(event) {
+   var o = this;
+   o._countryEntity._startTime = 0;
 }
 
 //==========================================================
@@ -263,6 +276,12 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
    liveTable.setup();
    liveTable.build();
    o._guiManager.register(liveTable);
+   // 创建产品泡泡画板
+   var bubbleCanvas = o._bubbleCanvas = MO.Class.create(MO.FGuiBubbleCanvas);
+   bubbleCanvas.setName('BubbleCanvas');
+   bubbleCanvas.linkGraphicContext(o);
+   bubbleCanvas.build();
+   o._guiManager.register(bubbleCanvas);
    //..........................................................
    
    //创建产品空心圈
@@ -273,15 +292,6 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
     o._guiManager.register(circleProduct);
 
 
-   //..........................................................
-   // 创建粒子
-   //var context = o._graphicContext;
-   //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
-   //var particleData = context.createObject(MO.FE3dParticleData);
-   //particleData.loadUrl('{eai.resource}/particle/6.png');
-   //particle.setData(particleData);
-   //o.fixMatrix(particle.matrix());
-   //o._activeStage.spriteLayer().pushRenderable(particle);
    //..........................................................
 
    // 隐藏全部界面
@@ -453,13 +463,29 @@ MO.FEaiChartMktProductScene_processResize = function FEaiChartMktProductScene_pr
    } else {
       liveTable.setDockCd(MO.EUiDock.Bottom);
       liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      // liveTable.setTop(10);
-      // liveTable.setRight(0);
-      // liveTable.setBottom(10);
-      // liveTable.setWidth(760);
       liveTable.setLeft(20);
-      liveTable.setBottom(30);
+      liveTable.setBottom(20);
       liveTable.setRight(780);
       liveTable.setHeight(250);
+   }
+   //..........................................................
+   // 设置泡泡画布
+   var canvas = o._bubbleCanvas;
+   if (isVertical) {
+      canvas.setDockCd(MO.EUiDock.Right);
+      canvas.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom | MO.EUiAnchor.Right);
+      canvas.setTop(10);
+      canvas.setBottom(20);
+      canvas.setRight(10);
+      canvas.setWidth(800);
+      canvas.setHeight(1050);
+   } else {
+      canvas.setDockCd(MO.EUiDock.Right);
+      canvas.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom | MO.EUiAnchor.Right);
+      canvas.setTop(10);
+      canvas.setBottom(20);
+      canvas.setRight(10);
+      canvas.setWidth(800);
+      canvas.setHeight(1050);
    }
 }
