@@ -116,13 +116,15 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    var graphic = o._canvas.graphicContext();
    var desktop = o._desktop;
    var calculateSize = desktop.calculateSize();
-   var calculateRate = desktop.calculateRate()
+   var calculateRate = desktop.calculateRate();
    var virtualSize = desktop.virtualSize();
    // 绘制处理
    var event = o._paintEvent;
+   event.optionScale = false;
    event.graphic = graphic;
    event.parentRectangle.set(0, 0, virtualSize.width, virtualSize.height);
    event.rectangle.set(0, 0, virtualSize.width, virtualSize.height);
+   event.calculateRate = calculateRate;
    control.paint(event);
    // MO.Logger.debug(o, 'Draw control.', control);
 }
@@ -140,20 +142,20 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    // 计算画板缩放
    var desktop = o._desktop;
    var sizeRate = desktop.sizeRate();
-   var virtualSize = desktop.virtualSize();
    graphic.setGlobalScale(sizeRate, sizeRate);
    // 获得准备好的控件集合
    var readyControls = o._readyControls;
    readyControls.clear();
    var controls = o._controls;
    var count = controls.count();
-   for(var i = 0; i < count; i++){
-      var control = controls.at(i);
-      if(control.processReady()){
-         if(o._visible && control.visible()){
-            // 放入准备好控件
-            control._flagDirty = false;
-            readyControls.push(control)
+   if(o._visible){
+      for(var i = 0; i < count; i++){
+         var control = controls.at(i);
+         if(control.processReady()){
+            if(control.visible()){
+               control._flagDirty = false;
+               readyControls.push(control)
+            }
          }
       }
    }

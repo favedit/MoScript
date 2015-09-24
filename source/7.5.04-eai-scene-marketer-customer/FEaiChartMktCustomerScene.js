@@ -332,8 +332,6 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
-      // 重新设置矩阵
-   o.fixMatrix(o._processor.display().matrix());
    //..........................................................
    // 设置大小
    var logoBar = o._logoBar;
@@ -393,4 +391,7 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
       liveTable.setBottom(10);
       liveTable.setWidth(760);
    }
+   //..........................................................
+   // 重新设置矩阵
+   o.fixMatrix(o._processor.display().matrix());
 }

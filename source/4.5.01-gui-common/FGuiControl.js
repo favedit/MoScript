@@ -425,32 +425,52 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var o = this;
    var location = o._location;
    var size = o._size;
+   var dockCd = o._dockCd;
+   var anchorCd = o._anchorCd;
    var graphic = event.graphic;
    var parentRectangle = event.parentRectangle;
    var rectangle = event.rectangle;
+   var sizeRate = event.sizeRate;
+   var calculateRate = event.calculateRate;
+   var calculateWidth = calculateRate.width;
+   var calculateHeight = calculateRate.height;
    o._parentRectangle.assign(parentRectangle);
    o._eventRectangle.assign(rectangle);
    //..........................................................
    // 设置范围
-   var dockCd = o._dockCd;
-   var anchorCd = o._anchorCd;
-   var left = rectangle.left + location.x;
-   var top = rectangle.top + location.y;
-   var width = size.width;
-   var height = size.height;
    var parentRight = parentRectangle.right();
    var parentBottom = parentRectangle.bottom();
-   var right = parentRight - o._right;
-   var bottom = parentBottom - o._bottom;
-   var width2 = (parentRectangle.width - width) * 0.5;
-   var height2 = (parentRectangle.height - height) * 0.5;
-   // 计算顶层停靠位置
-   if((dockCd == MO.EUiDock.LeftBottom) || (dockCd == MO.EUiDock.Bottom) || (dockCd == MO.EUiDock.RightBottom)){
-      top = bottom - height;
+   var left = 0;
+   var top = 0;
+   var right = 0;
+   var bottom = 0;
+   var width = size.width;
+   var height = size.height;
+   if(event.optionScale || anchorCd){
+      left = rectangle.left + location.x * calculateWidth;
+      top = rectangle.top + location.y * calculateHeight;
+      right = parentRight - o._right * calculateWidth;
+      bottom = parentBottom - o._bottom * calculateHeight;
+      width *= calculateWidth;
+      height *= calculateHeight;
+      event.optionScale = true;
+   }else{
+      left = rectangle.left + location.x;
+      top = rectangle.top + location.y;
+      right = parentRight - o._right;
+      bottom = parentBottom - o._bottom;
    }
+   //..........................................................
+   // 计算停靠位置
    if((dockCd == MO.EUiDock.RightTop) || (dockCd == MO.EUiDock.Right) || (dockCd == MO.EUiDock.RightBottom)){
+      right = parentRight - o._right * calculateWidth;
       left = right - width;
    }
+   if((dockCd == MO.EUiDock.LeftBottom) || (dockCd == MO.EUiDock.Bottom) || (dockCd == MO.EUiDock.RightBottom)){
+      bottom = parentBottom - o._bottom * calculateHeight;
+      top = bottom - height;
+   }
+   // 计算锚点位置
    if((anchorCd & MO.EUiAnchor.Left) && (anchorCd & MO.EUiAnchor.Right)){
       width = right - left;
    }else if(o._anchorCd & MO.EUiAnchor.Left){
@@ -467,13 +487,12 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    }else if(o._anchorCd & MO.EUiAnchor.Bottom){
       height = parentBottom - top - o._bottom;
    }
-   graphic.store();
    //..........................................................
    // 计算范围
    rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
    parentRectangle.assign(rectangle);
-   var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
+   graphic.store();
    graphic.setScale(o._scale.width, o._scale.height);
    //..........................................................
    // 开始绘制处理
