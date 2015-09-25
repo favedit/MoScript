@@ -23,10 +23,14 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
    // o._decoLineGap      = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
    // o._decoLineWidth    = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
    o._circleRadius     = MO.Class.register(o, new MO.AGetSet('_circleRadius'), 10);
-   o._circleAngle      = MO.Class.register(o, new MO.AGetSet('_circleAngle'), 0);
+  // o._circleAngle      = MO.Class.register(o, new MO.AGetSet('_circleAngle'), 0);
    o._trendInfo        = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
    o._TenderBef        = MO.Class.register(o, new MO.AGetSet('_TenderBef'));
    o._FirstLoad        = MO.Class.register(o, new MO.AGetSet('_FirstLoad'));
+   o._circleStyle      = MO.Class.register(o, new MO.AGetSet('_circleStyle'));
+   o._circleAirRadius  = MO.Class.register(o, new MO.AGetSet('_airRadius'), 7);
+   o._circlelColor     = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
+   o._tatolColor       = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
    //..........................................................
    // @event
    o.oeUpdate          = MO.FEaiChartMktProductCircle_oeUpdate;
@@ -37,8 +41,27 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
    // o.drawTrend         = MO.FEaiChartMktProductCircle_drawTrend;
    o.onPaintBegin      = MO.FEaiChartMktProductCircle_onPaintBegin;
    o.on24HDataFetch    = MO.FEaiChartMktProductCircle_on24HDataFetch;  
+   o.setCircleStyle    = MO.FEaiChartMktProductCircle_setCircleStyle;
+   o.dispose           = MO.FEaiChartMktProductCircle_dispose;
+   o.draw              = FEaiChartMktProductCircle_draw;
    return o;
 }
+MO.FEaiChartMktProductCircle_setCircleStyle  =  function FEaiChartMktProductCircle_setCircleStyle(Radius,color,unit){
+  var o = this;
+  o.setCircleRadius(o._circleStyle.radius);
+  o.setCircleAirRadius(o.__circleStyle.radius*11/15);
+  o.setCircleColor(o.__circleStyle.circlelColor);
+  o.setTatolColor(o.__circleStyle.tatolColor);
+  
+}
+MO.FEaiChartMktProductCircle_dispose = function FEaiChartMktProductCircle_dispose(){
+   var o = this;
+   o._trendInfo = MO.Lang.Object.dispose(o._trendInfo);
+   o._circleStyle = MO.Lang.Object.dispose(o._circleStyle);
+   // 父处理
+   o.__base.FGuiControl.dispose.call(o);
+}
+
 
 //==========================================================
 // <T>更新时间。</T>
@@ -48,11 +71,11 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
 MO.FEaiChartMktProductCircle_construct = function FEaiChartMktProductCircle_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
-   o._TenderBef = new Array(6);
-   o._TenderBef = [0,0,0,0,0,0];
-   o._FirstLoad = new Array(6);
-   o._FirstLoad = [true,true,true,true,true,true];
-   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoTender);
+   // o._TenderBef = new Array(6);
+   // o._TenderBef = [0,0,0,0,0,0];
+   // o._FirstLoad = new Array(6);
+   // o._FirstLoad = [true,true,true,true,true,true];
+   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoTrendUnit);
 }
 
 //==========================================================
@@ -171,7 +194,81 @@ MO.FEaiChartMktProductCircle_oeUpdate = function FEaiChartMktProductCircle_oeUpd
 //    //handle.lineTo(dataLeft, lastY);
 //    //handle.fill();
 // }
+MO.FEaiChartMktProductCircle_draw = function FEaiChartMktProductCircle_draw(context) {
+    var o = this;
+    if(!o._ready){
+      return;
+   }
+   if(!o._trendInfo){
+     return;
+   }
+    var graphic = context.graphic;
+    var rectangle = context.rectangle;
+    var productRadius = o.circleRadius();
+    var airRadius     = o.circleAirRadius();
+    var circle_x = rectangle.left+rectangle.width/30+productRadius;
+    var top = rectangle.top;
+    var bottom = rectangle.top + rectangle.height;
+    var circle_y = rectangle.top +rectangle.productRadius;
+    var textColor = '';
+    textColor = o.circlelColor();
+    graphic._handle.beginPath();
+    graphic._handle.arc(circle_x,circle_y, productRadius,0*Math.PI,2*Math.PI);
+    graphic._handle.closePath();
+    graphic._handle.strokeStyle = textColor;
+    graphic._handle.stroke();
+    graphic._handle.beginPath();
+    graphic._handle.arc(circle_x,circle_y, airRadius,0*Math.PI,2*Math.PI,false);
+    graphic._handle.closePath();
+    graphic._handle.strokeStyle = textColor;
+    graphic._handle.stroke();
+    graphic._handle.beginPath();
+    graphic._handle.arc(circle_x,circle_y, productRadius,0*Math.PI-Math.PI/2,2*Math.PI*tendRate-Math.PI/2,false);
+    graphic._handle.arc(circle_x,circle_y, airRadius,2*Math.PI*tendRate-Math.PI/2,0*Math.PI-Math.PI/2,true);
+    graphic._handle.closePath();
+    graphic._handle.fillStyle = textColor;
+    graphic._handle.fill();
 
+
+    textPx = 'px Microsoft YaHei';
+    textSize = 28;
+    textPx = textSize + textPx
+    graphic.setFont(textPx);
+    //产品投资比例
+    lable = persentRate+'%';
+    productText_w = graphic.textWidth(lable)/2;
+    graphic.drawText(lable, circle_x-productText_w, top+productRadius+productInterval+i*(2*productRadius+productInterval)+textSize/2,'#FFFFFF');
+    yearRate = (unit.rate()).toFixed(2);;
+    productText = unit.label();
+    //graphic.setFont('blod 480px Microsoft YaHei');
+    graphic.drawText(productText, text_x, circle_y, textColor);
+    yearRate =  '年化利率 :' + yearRate +'%';
+    graphic.setFont('20px Microsoft YaHei');
+    graphic.drawText(yearRate, text_x, circle_y, '#FFFFFF');
+    tatolLable = (unit.invesmentTotal()/100000000).toFixed(2);
+    lable = '总计:'+"   "+tatolLable+'亿';
+    graphic.drawText(lable,text_x, circle_y, '#FFFFFF');
+    dayLable  = unit.invesmentDay()/100000000;
+    lable = '当日:'+"    "+dayLable+'亿';
+    graphic.drawText(lable,text_x, circle_y, '#FFFFFF');
+    // graphic._handle.beginPath();
+    // graphic._handle.arc(circle_x,top+productRadius+productInterval+i*(2*productRadius+productInterval), productRadius,0*Math.PI,2*Math.PI);
+    // graphic._handle.closePath();
+    // graphic._handle.strokeStyle = textColor;
+    // graphic._handle.stroke();
+    // graphic._handle.beginPath();
+    // graphic._handle.arc(circle_x,top+productRadius+productInterval+i*(2*productRadius+productInterval), airRadius,0*Math.PI,2*Math.PI,false);
+    // graphic._handle.closePath();
+    // graphic._handle.strokeStyle = textColor;
+    // graphic._handle.stroke();
+    // graphic._handle.beginPath();
+    // graphic._handle.arc(circle_x,top+productRadius+productInterval+i*(2*productRadius+productInterval), productRadius,0*Math.PI-Math.PI/2,2*Math.PI*tendRate-Math.PI/2,false);
+    // graphic._handle.arc(circle_x,top+productRadius+productInterval+i*(2*productRadius+productInterval), airRadius,2*Math.PI*tendRate-Math.PI/2,0*Math.PI-Math.PI/2,true);
+    // graphic._handle.closePath();
+    // graphic._handle.fillStyle = textColor;
+    // graphic._handle.fill();
+
+}
 //==========================================================
 // <T>前绘制处理。</T>
 //
@@ -193,6 +290,7 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
     // var ss = o.circleAngle();
     // o.setCircleAngle(ss+10000);
     // var ss = o.circleAngle();
+    var unit = o._trendInfo
     var units =  o._trendInfo.units();
     // for (var i =0;i<5;i++ ){
     //   var s = o._TenderBef[i]=i;
@@ -306,7 +404,7 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
          lable = '总计:'+"   "+tatolLable+'亿';
          graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval, '#FFFFFF');
          dayLable  = unit.invesmentDay()/100000000;
-         lable = '当日'+"    "+dayLable+'亿';
+         lable = '当日:'+"    "+dayLable+'亿';
          graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval*2, '#FFFFFF');
 
 
@@ -317,11 +415,9 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
    }
 
 
-    if(o.circleAngle()/500==1){
-      o.setCircleAngle(0);
-    }
-
 }
+
+
 
 //==========================================================
 // <T>前绘制处理。</T>
