@@ -154,7 +154,11 @@ MO.FEaiChartDesktop_resize = function FEaiChartDesktop_resize(targetWidth, targe
    }
    var context3d = canvas3d.graphicContext();
    context3d.setViewport(0, 0, width, height)
-   o._virtualSize.set(logicSize.width * calculateRate.width, logicSize.height * calculateRate.height);
+   if(isVertical){
+      o._virtualSize.set(logicSize.height * calculateRate.width, logicSize.width * calculateRate.height);
+   }else{
+      o._virtualSize.set(logicSize.width * calculateRate.width, logicSize.height * calculateRate.height);
+   }
    // 设置2D画板
    var canvas2d = o._canvas2d;
    canvas2d.resize(width, height);

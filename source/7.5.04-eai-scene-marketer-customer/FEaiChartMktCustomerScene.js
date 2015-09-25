@@ -348,7 +348,7 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
    if (isVertical) {
       control.setDockCd(MO.EUiDock.RightTop);
       control.setTop(570);
-      control.setRight(100);
+      control.setRight(80);
    } else {
       control.setDockCd(MO.EUiDock.RightBottom);
       control.setRight(780);
@@ -377,11 +377,10 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
    var liveTable = o._liveTable;
    if (isVertical) {
       liveTable.setDockCd(MO.EUiDock.Bottom);
-      liveTable.setAnchorCd(MO.EUiAnchor.All);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
       liveTable.setLeft(10);
       liveTable.setRight(10);
       liveTable.setBottom(10);
-      liveTable.setWidth(1060);
       liveTable.setHeight(900);
    } else {
       liveTable.setDockCd(MO.EUiDock.Right);
