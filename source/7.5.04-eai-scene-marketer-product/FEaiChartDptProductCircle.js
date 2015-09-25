@@ -12,6 +12,7 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
    // o._startTime        = MO.Class.register(o, new MO.AGetSet('_startTime'));
    // o._endTime          = MO.Class.register(o, new MO.AGetSet('_endTime'));
     o._ready            = false;
+
    // o._investmentTotal  = 0;
    // o._intervalMiniute  = 10;
    // @attribute
@@ -25,6 +26,7 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
    o._circleAngle      = MO.Class.register(o, new MO.AGetSet('_circleAngle'), 0);
    o._trendInfo        = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
    o._TenderBef        = MO.Class.register(o, new MO.AGetSet('_TenderBef'));
+   o._FirstLoad        = MO.Class.register(o, new MO.AGetSet('_FirstLoad'));
    //..........................................................
    // @event
    o.oeUpdate          = MO.FEaiChartMktProductCircle_oeUpdate;
@@ -48,6 +50,8 @@ MO.FEaiChartMktProductCircle_construct = function FEaiChartMktProductCircle_cons
    o.__base.FGuiControl.construct.call(o);
    o._TenderBef = new Array(6);
    o._TenderBef = [0,0,0,0,0,0];
+   o._FirstLoad = new Array(6);
+   o._FirstLoad = [true,true,true,true,true,true];
    o._trendInfo = MO.Class.create(MO.FEaiLogicInfoTender);
 }
 
@@ -186,9 +190,9 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
 
    var decoLeft = rectangle.left + 5;
    var decoRight = rectangle.left + rectangle.width - 5;
-    var ss = o.circleAngle();
-    o.setCircleAngle(ss+10000);
-    var ss = o.circleAngle();
+    // var ss = o.circleAngle();
+    // o.setCircleAngle(ss+10000);
+    // var ss = o.circleAngle();
     var units =  o._trendInfo.units();
     // for (var i =0;i<5;i++ ){
     //   var s = o._TenderBef[i]=i;
@@ -207,6 +211,15 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
     var yearRate = '';
     var dayLable ='';
     var tatolLable = '';
+    var FirstLoad = o._FirstLoad;
+    var circle_x = decoLeft+rectangle.width/2;
+    var text_x   = decoLeft+rectangle.width*2/3;
+    var text_interval = rectangle.height/36;
+    var productText_w = 0;
+    var productText_h = 0;
+    var textSize = 0 ;
+    var textPx = '';
+    var textColor = '';
     if(units){
     for(var i=0;i<unitsCount;i++){
         var unit = units.get(i);
@@ -217,43 +230,84 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
              BefCount = tenderInvesment;
              o._TenderBef[i] =BefCount;
          }else{
-             BefCount += 1000000;
+              if(FirstLoad[i]){
+                BefCount = tenderInvesment ;
+                FirstLoad[i] = false;
+              }else{
+                  if(tenderInvesment-BefCount>10000000){
+                   BefCount  += 10000000;
+                  }else if(tenderInvesment-BefCount>1000000){
+                    BefCount += 1000000;
+                  }else if(tenderInvesment-BefCount>100000){
+                    BefCount += 100000;
+                  }else if(tenderInvesment-BefCount>10000){
+                    BefCount += 10000;
+                  }
+              }
              o._TenderBef[i] =BefCount;
+            
+         }
+         switch(i){
+          case 0:
+          textColor = "#00c6ed";
+          break;
+          case 1:
+          textColor = "#10d19c";
+          break;
+          case 2:
+          textColor = "#7b47d7";
+          break;
+          case 3:
+          textColor = "#ea3256";
+          break;
+          case 4:
+          textColor = "#ff6817";
+          break;
+          case 5:
+          textColor = '#ffeb4a';
+          break;
+
          }
          tendRate = BefCount/tenderTotal;
-         persentRate = (tenderInvesment/tenderTotal).toFixed(2)*100;;
+         persentRate = ((tenderInvesment/tenderTotal).toFixed(2)*100).toFixed(0);
          graphic._handle.beginPath();
-         graphic._handle.arc(decoLeft+200,top+productRadius+productInterval+i*(2*productRadius+productInterval), productRadius,0*Math.PI,2*Math.PI);
+         graphic._handle.arc(circle_x,top+productRadius+productInterval+i*(2*productRadius+productInterval), productRadius,0*Math.PI,2*Math.PI);
          graphic._handle.closePath();
-         graphic._handle.strokeStyle = '#54F0FF';
+         graphic._handle.strokeStyle = textColor;
          graphic._handle.stroke();
          graphic._handle.beginPath();
-         graphic._handle.arc(decoLeft+200,top+productRadius+productInterval+i*(2*productRadius+productInterval), airRadius,0*Math.PI,2*Math.PI,false);
+         graphic._handle.arc(circle_x,top+productRadius+productInterval+i*(2*productRadius+productInterval), airRadius,0*Math.PI,2*Math.PI,false);
          graphic._handle.closePath();
-         graphic._handle.strokeStyle = '#FFF0FF';
+         graphic._handle.strokeStyle = textColor;
          graphic._handle.stroke();
          graphic._handle.beginPath();
-         graphic._handle.arc(decoLeft+200,top+productRadius+productInterval+i*(2*productRadius+productInterval), productRadius,0*Math.PI-Math.PI/2,2*Math.PI*tendRate-Math.PI/2,false);
-         graphic._handle.arc(decoLeft+200,top+productRadius+productInterval+i*(2*productRadius+productInterval), airRadius,2*Math.PI*tendRate-Math.PI/2,0*Math.PI-Math.PI/2,true);
+         graphic._handle.arc(circle_x,top+productRadius+productInterval+i*(2*productRadius+productInterval), productRadius,0*Math.PI-Math.PI/2,2*Math.PI*tendRate-Math.PI/2,false);
+         graphic._handle.arc(circle_x,top+productRadius+productInterval+i*(2*productRadius+productInterval), airRadius,2*Math.PI*tendRate-Math.PI/2,0*Math.PI-Math.PI/2,true);
          graphic._handle.closePath();
-         graphic._handle.fillStyle = '#54F0FF';
+         graphic._handle.fillStyle = textColor;
          graphic._handle.fill();
-         graphic.setFont('20px Microsoft YaHei');
+         textPx = 'px Microsoft YaHei';
+         textSize = 28;
+         textPx = textSize + textPx
+         graphic.setFont(textPx);
+         //产品投资比例
          lable = persentRate+'%';
-         graphic.drawText(lable, decoLeft+200, top+productRadius+productInterval+i*(2*productRadius+productInterval), '#54F0FF');
+         productText_w = graphic.textWidth(lable)/2;
+         //productText_h = graphic.textHight(lable)/2;
+         graphic.drawText(lable, circle_x-productText_w, top+productRadius+productInterval+i*(2*productRadius+productInterval)+textSize/2,'#FFFFFF');
          yearRate = (unit.rate()).toFixed(2);;
          productText = unit.label();
-         graphic.setFont('blod 48px Microsoft YaHei');
-         graphic.drawText(productText, decoLeft+300, top+productRadius+productInterval+i*(2*productRadius+productInterval)-60, '#ffF0FF');
+         //graphic.setFont('blod 480px Microsoft YaHei');
+         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2, textColor);
          yearRate =  '年化利率 :' + yearRate +'%';
          graphic.setFont('20px Microsoft YaHei');
-         graphic.drawText(yearRate, decoLeft+300, top+productRadius+productInterval+i*(2*productRadius+productInterval), '#54F0FF');
+         graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval), '#FFFFFF');
          tatolLable = (unit.invesmentTotal()/100000000).toFixed(2);
          lable = '总计:'+"   "+tatolLable+'亿';
-         graphic.drawText(lable, decoLeft+300, top+productRadius+productInterval+i*(2*productRadius+productInterval)-30, '#54F0FF');
+         graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval, '#FFFFFF');
          dayLable  = unit.invesmentDay()/100000000;
          lable = '当日'+"    "+dayLable+'亿';
-         graphic.drawText(lable, decoLeft+300, top+productRadius+productInterval+i*(2*productRadius+productInterval)+60, '#54F0FF');
+         graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval*2, '#FFFFFF');
 
 
         //if( unit.code()= "newnianxiang")
@@ -262,25 +316,7 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
      }
    }
 
-   //  graphic._handle.beginPath();
-   //  for(var i=0;i<4;i++){
-   // graphic._handle.beginPath();
-   // graphic._handle.arc(decoLeft+100,top+100+i*rectangle.height/4, 100,0*Math.PI,2*Math.PI);
-   // graphic._handle.closePath();
-   // graphic._handle.strokeStyle = '#54F0FF';
-   // graphic._handle.stroke();
-   // graphic._handle.beginPath();
-   // graphic._handle.arc(decoLeft+100,top+100+i*rectangle.height/4, 70,0*Math.PI,2*Math.PI,false);
-   // graphic._handle.closePath();
-   // graphic._handle.strokeStyle = '#FFF0FF';
-   // graphic._handle.stroke();
-   // graphic._handle.beginPath();
-   // graphic._handle.arc(decoLeft+100,top+100+i*rectangle.height/4, 100,0*Math.PI,2*Math.PI*o.circleAngle()/500,false);
-   // graphic._handle.arc(decoLeft+100,top+100+i*rectangle.height/4, 70,2*Math.PI*o.circleAngle()/500,0*Math.PI,true);
-   // graphic._handle.closePath();
-   // graphic._handle.fillStyle = '#54F0FF';
-   // graphic._handle.fill();
-   //  }
+
     if(o.circleAngle()/500==1){
       o.setCircleAngle(0);
     }
