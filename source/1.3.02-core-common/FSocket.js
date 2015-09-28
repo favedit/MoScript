@@ -6,28 +6,42 @@
 // @history 15029
 //==========================================================
 MO.FSocket = function FSocket(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._connected = MO.Class.register(o, new MO.AGetter('_connected'), false);
-   o._handle    = MO.Class.register(o, new MO.AGetter('_handle'));
+   o._connected        = MO.Class.register(o, new MO.AGetter('_connected'), false);
+   o._handle           = MO.Class.register(o, new MO.AGetter('_handle'));
+   // @attribute
+   o._eventOpen        = null;
+   o._eventSend        = null;
+   o._eventReceive     = null;
+   o._eventClose       = null;
+   o._eventError       = null;
+   // @attribute
+   o._listenersOpen    = MO.Class.register(o, new MO.AListener('_listenersOpen'));
+   o._listenersSend    = MO.Class.register(o, new MO.AListener('_listenersSend'));
+   o._listenersReceive = MO.Class.register(o, new MO.AListener('_listenersReceive'));
+   o._listenersClose   = MO.Class.register(o, new MO.AListener('_listenersClose'));
+   o._listenersError   = MO.Class.register(o, new MO.AListener('_listenersError'));
    //..........................................................
    // @event
-   o.onOpen     = MO.FSocket_onOpen;
+   o.onOpen            = MO.FSocket_onOpen;
+   o.onReveive         = MO.FSocket_onReveive;
+   o.onClose           = MO.FSocket_onClose;
    // @event
-   o.ohOpen     = MO.FSocket_ohOpen;
-   o.ohError    = MO.FSocket_ohError;
-   o.ohMessage  = MO.FSocket_ohMessage;
-   o.ohClose    = MO.FSocket_ohClose;
+   o.ohOpen            = MO.FSocket_ohOpen;
+   o.ohError           = MO.FSocket_ohError;
+   o.ohReceive         = MO.FSocket_ohReceive;
+   o.ohClose           = MO.FSocket_ohClose;
    //..........................................................
    // @method
-   o.construct  = MO.FSocket_construct;
+   o.construct         = MO.FSocket_construct;
    // @method
-   o.connect    = MO.FSocket_connect;
-   o.send       = MO.FSocket_send;
-   o.disconnect = MO.FSocket_disconnect;
+   o.connect           = MO.FSocket_connect;
+   o.send              = MO.FSocket_send;
+   o.disconnect        = MO.FSocket_disconnect;
    // @method
-   o.dispose    = MO.FSocket_dispose;
+   o.dispose           = MO.FSocket_dispose;
    return o;
 }
 
@@ -35,52 +49,95 @@ MO.FSocket = function FSocket(o){
 // <T>打开处理。</T>
 //
 // @method
-// @param event:Object 事件
+// @param event:Event 事件信息
 //==========================================================
 MO.FSocket_onOpen = function FSocket_onOpen(event){
    var o = this;
    o._connected = true;
+   o.processOpenListener(event);
 }
 
 //==========================================================
 // <T>打开处理。</T>
 //
 // @method
-// @param event:Object 事件
+// @param hEvent:HtmlEvent 页面事件
 //==========================================================
-MO.FSocket_ohOpen = function FSocket_ohOpen(event){
-   this._linker.onOpen(event);
+MO.FSocket_ohOpen = function FSocket_ohOpen(hEvent){
+   var o = this._linker;
+   var event = o._eventOpen;
+   o.onOpen(event);
 }
 
 //==========================================================
-// <T>错误处理。</T>
+// <T>接收数据处理。</T>
 //
 // @method
-// @param event:Object 事件
+// @param event:Event 事件信息
 //==========================================================
-MO.FSocket_ohError = function FSocket_ohError(event){
-   var o = this._linker;
+MO.FSocket_onReveive = function FSocket_onReveive(event){
+   var o = this;
+   o.processReceiveListener(event);
 }
 
 //==========================================================
-// <T>消息处理。</T>
+// <T>接收数据处理。</T>
 //
 // @method
-// @param event:Object 事件
+// @param hEvent:HtmlEvent 页面事件
 //==========================================================
-MO.FSocket_ohMessage = function FSocket_ohMessage(event){
+MO.FSocket_ohReceive = function FSocket_ohReceive(hEvent){
    var o = this._linker;
+   var event = o._eventReceive;
+   event.message = hEvent.data;
+   o.onReveive(event);
 }
 
 //==========================================================
 // <T>关闭处理。</T>
 //
 // @method
-// @param event:Object 事件
+// @param event:Event 事件信息
 //==========================================================
-MO.FSocket_ohClose = function FSocket_ohClose(event){
-   var o = this._linker;
+MO.FSocket_onClose = function FSocket_onClose(event){
+   var o = this;
    o._connected = false;
+   o.processCloseListener(o._eventClose);
+}
+
+//==========================================================
+// <T>关闭处理。</T>
+//
+// @method
+// @param hEvent:HtmlEvent 页面事件
+//==========================================================
+MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
+   var o = this._linker;
+   var event = o._eventClose;
+   o.onClose(event);
+}
+
+//==========================================================
+// <T>错误处理。</T>
+//
+// @method
+// @param event:Event 事件信息
+//==========================================================
+MO.FSocket_onError = function FSocket_onError(event){
+   var o = this;
+   debugger
+   var event = o._eventError;
+   o.processErrorListener(event);
+}
+
+//==========================================================
+// <T>错误处理。</T>
+//
+// @method
+// @param hEvent:HtmlEvent 页面事件
+//==========================================================
+MO.FSocket_ohError = function FSocket_ohError(hEvent){
+   this._linker.onError(event);
 }
 
 //==========================================================
@@ -92,6 +149,12 @@ MO.FSocket_ohClose = function FSocket_ohClose(event){
 MO.FSocket_construct = function FSocket_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   // 设置属性
+   o._eventOpen = new MO.SEvent(o);
+   o._eventSend = new MO.SEvent(o);
+   o._eventReceive = new MO.SEvent(o);
+   o._eventClose = new MO.SEvent(o);
+   o._eventError = new MO.SEvent(o);
 }
 
 //==========================================================
@@ -105,9 +168,9 @@ MO.FSocket_connect = function FSocket_connect(url){
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;
-   handle.onerror = o.ohError
-   handle.onmessage = o.ohMessage;
+   handle.onmessage = o.ohReceive;
    handle.onclose = o.ohClose;
+   handle.onerror = o.ohError
 }
 
 //==========================================================
@@ -118,6 +181,11 @@ MO.FSocket_connect = function FSocket_connect(url){
 //==========================================================
 MO.FSocket_send = function FSocket_send(message){
    var o = this;
+   // 纷发消息
+   var event = o._eventSend;
+   event.message = message;
+   o.processSendListener(event);
+   // 发送内容
    o._handle.send(message);
 }
 
@@ -139,6 +207,11 @@ MO.FSocket_disconnect = function FSocket_disconnect(){
 MO.FSocket_dispose = function FSocket_dispose(){
    var o = this;
    // 释放属性
+   o._eventOpen = MO.Lang.Object.dispose(o._eventOpen);
+   o._eventSend = MO.Lang.Object.dispose(o._eventSend);
+   o._eventReceive = MO.Lang.Object.dispose(o._eventReceive);
+   o._eventClose = MO.Lang.Object.dispose(o._eventClose);
+   o._eventError = MO.Lang.Object.dispose(o._eventError);
    o._handle = null;
    // 父处理
    o.__base.FObject.dispose.call(o);
