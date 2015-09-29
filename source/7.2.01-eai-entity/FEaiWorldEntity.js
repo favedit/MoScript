@@ -55,6 +55,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var context = o._graphicContext;
    // 创建海洋图片
    var textureOcean = o._textureOcean = context.createFlatTexture();
+   var textureCloud = o._textureCloud = context.createFlatTexture();
    // 创建合并形状
    var faceShape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
    faceShape._worldEntity = o;
@@ -75,7 +76,6 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.matrix().update();
    sphere.pushTexture(textureOcean, 'diffuse');
    var info = sphere.material().info();
-   //sphere.material().setTexture('diffuse', textureOcean);
    info.optionAlpha = false;
    info.ambientColor.setHex('#128AF9');
    //info.ambientColor.alpha = 1.0
@@ -107,6 +107,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.setup();
    sphere.matrix().setScaleAll(1.1);
    sphere.matrix().update();
+   sphere.pushTexture(textureCloud, 'diffuse');
    var info = sphere.material().info();
    info.optionAlpha = true;
    info.optionDepth = false;
@@ -141,6 +142,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    // 加载图片
    o._imageGround = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/color4096.jpg');
    o._imageOcean = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/ocean4096.jpg');
+   o._imageCloud = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/cloud.jpg');
 }
 
 //==========================================================
@@ -217,6 +219,17 @@ MO.FEaiWorldEntity_processLoad = function FEaiWorldEntity_processLoad(){
          texture.upload(image);
          texture.makeMipmap();
          o._imageOcean = null;
+      }
+      return false;
+   }
+   // 检查云图片
+   var image = o._imageCloud;
+   if(image){
+      if(image.testReady()){
+         var texture = o._textureCloud;
+         texture.upload(image);
+         texture.makeMipmap();
+         o._imageCloud = null;
       }
       return false;
    }

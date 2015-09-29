@@ -149,9 +149,9 @@ MO.FEaiCstInvestment3dScene_onProcessReady = function FEaiCstInvestment3dScene_o
    // 显示国家
    var countryEntity = o._countryEntity;
    countryEntity.start();
-   //o._mapEntity.showCountry(countryEntity);
+   o._mapEntity.showCountry(countryEntity);
    // 显示城市
-   //o._mapEntity.showCity();
+   o._mapEntity.showCity();
 }
 
 //==========================================================
