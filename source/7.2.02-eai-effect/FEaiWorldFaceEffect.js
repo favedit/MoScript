@@ -31,6 +31,7 @@ MO.FEaiWorldFaceEffect_drawRenderable = function FEaiWorldFaceEffect_drawRendera
    var material = renderable.material();
    var info = material.info();
    o.bindMaterial(material);
+   context.setCullingMode(false);
    // 设置数据集合(4x4浮点数组 + 4个浮点颜色)
    var mergeRenderables = renderable.mergeRenderables();
    var mergeCount = mergeRenderables.count();

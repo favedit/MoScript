@@ -64,11 +64,12 @@ MO.FWglFlatTexture_texture = function FWglFlatTexture_texture(){
 //==========================================================
 MO.FWglFlatTexture_makeMipmap = function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var g = o._graphicContext._handle;
+   var context = o._graphicContext;
+   var handle = context._handle;
    // 绑定数据
-   g.bindTexture(g.TEXTURE_2D, o._handle);
+   handle.bindTexture(handle.TEXTURE_2D, o._handle);
    // 生成MIP
-   g.generateMipmap(g.TEXTURE_2D);
+   handle.generateMipmap(handle.TEXTURE_2D);
 }
 
 //==========================================================

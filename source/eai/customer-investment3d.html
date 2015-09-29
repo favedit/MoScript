@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>e租宝-全球实时投资数据展示中心(中国)</title>
+    <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" href='../acs/eai_mobile.css' type="text/css" media="all" />
+    <script language='javascript' src='../ajs/extension.js'></script>
+    <script language='javascript' src='../ajs/me.js'></script>
+    <script language='javascript' src='../ajs/eai.js'></script>
+    <script language='javascript' src='../ajs/context_cn.js'></script>
+    <script>
+        var g_loadingHandle;
+
+        function doLoading() {
+            var htmlBody = document.body;
+            htmlBody.style.backgroundImage = 'url(../ars/eai/background.jpg)';
+            var hImages = document.getElementById("loading_img_div").getElementsByTagName("img");
+            var index = [7, 6, 5, 4, 3, 2, 1, 0];
+            g_loadingHandle = setInterval(function () {
+                for (var i = 0; i < index.length; i++) {
+                    hImages[index[i]].style.opacity = 0.1 + (0.1 * i);
+                    if (i == index.length - 1) {
+                        index.push(index[0]);
+                        index.splice(0, 1);
+                    }
+                }
+            }, 80);
+        }
+
+        function onDeviceError(event) {
+            var hLoading = document.getElementById("id_loading")
+            document.body.removeChild(hLoading);
+            var hError = document.getElementById("id_error");
+            hError.style.backgroundImage = 'url(../ars/eai/loading/background.jpg)';
+            document.getElementById("error_img").src = "../ars/eai/loading/error.png";
+            MO.Window.Html.visibleSet(hError, true);
+        }
+
+        function onLoaded(event) {
+            clearInterval(g_loadingHandle);
+        }
+
+        function oniOSStart(event) {
+            var hLoading = document.getElementById("id_ios_play")
+            document.body.removeChild(hLoading);
+            MO.Console.find(MO.FAudioConsole).select();
+            var liveScene = MO.Desktop.application().activeChapter().activeScene();
+            liveScene._statusLayerLevel = -1;
+            liveScene._groundAutio.play(0);
+            liveScene._countryEntity._audioMapEnter.play(0);
+        }
+
+        function onLoad() {
+            // 设置变量
+            MO.initialize();
+            MO.Runtime.setProcessCd(MO.EProcess.Debug);
+            MO.Window.Browser.setContentPath('..');
+            MO.Window.Browser.fullscreen(window, true);
+            MO.Window.lsnsLoaded.register(null, onLoaded);
+            MO.Window.lsnsDeviceError.register(null, onDeviceError);
+            // MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+            // MO.Window.Browser.setOrientationCd(MO.EOrientation.Vertical);
+            // 设置环境
+            MO.Console.find(MO.FE3sVendorConsole).setup('net');
+            MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
+            MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://eai.ezubo.com:8089');
+            //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://localhost:8099');
+            // 设置日志
+            // MO.Console.find(MO.FLoggerConsole).connect('ws://10.21.0.128:8080/logger');
+            // 设置应用
+            var application = MO.Desktop.initialize(MO.FEaiChartApplication);
+            application.setSceneCode(MO.EEaiScene.ChartCustomerInvestment3d);
+            application.setup(document.body);
+            //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EConstant.DeviceType, 'mb');
+        }
+    </script>
+</head>
+
+<body scroll='no' style='position:relative;overflow:hidden;background-color:#000000;background-size:100% 100%;' onload='onLoad()'>
+    <table id='id_ios_play' style='position:absolute;left:0px;top:0px;width:100%;height:100%;background-size:100% 100%;display:none' onclick="oniOSStart()">
+        <tr>
+            <td align='center'>
+                <div id="ios_play_img">
+                    <img src='../ars/eai/player.png'>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table id='id_loading' style='position:absolute;left:0px;top:0px;width:100%;height:100%;background:url("../ars/eai/loading/background.jpg");background-size:100% 100%;'>
+        <tr>
+            <td align='center'>
+                <div id="loading_img">
+                    <div id="loading_img_div" style="position:relative;width:128px;">
+                        <img style="position:absolute;opacity:0.8;width:127;height:127;" src="../ars/eai/loading/loading7.png">
+                        <img style="position:absolute;opacity:0.7;width:127;height:127;" src="../ars/eai/loading/loading6.png">
+                        <img style="position:absolute;opacity:0.6;width:127;height:127;" src="../ars/eai/loading/loading5.png">
+                        <img style="position:absolute;opacity:0.5;width:127;height:127;" src="../ars/eai/loading/loading4.png">
+                        <img style="position:absolute;opacity:0.4;width:127;height:127;" src="../ars/eai/loading/loading3.png">
+                        <img style="position:absolute;opacity:0.3;width:127;height:127;" src="../ars/eai/loading/loading2.png">
+                        <img style="position:absolute;opacity:0.2;width:127;height:127;" src="../ars/eai/loading/loading1.png">
+                        <img style="opacity:0.1;width:127;height:127;" src="../ars/eai/loading/loading8.png">
+                    </div>
+                    <img src='../ars/eai/loading/loading.png' style='padding-top:30px;padding-left:20px;width:196;height:36'>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table id='id_error' style='position:absolute;left:0px;top:0px;width:100%;height:100%;background-size:100% 100%;display:none;'>
+        <tr>
+            <td align='center'>
+                <img id="error_img">
+                <br>
+            </td>
+        </tr>
+    </table>
+    <table id='id_marketer_info' style='position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 5; display: none; ' >
+        <tr>
+            <td align='center' valign="center">
+                <img src='../ars/eai/marketer_info.png' style="width: 70%; height: 70%; " />
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        doLoading();
+    </script>
+</body>
+
+</html>

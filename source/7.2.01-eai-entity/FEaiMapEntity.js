@@ -181,6 +181,7 @@ MO.FEaiMapEntity_showWorld = function FEaiMapEntity_showWorld(){
    o._countryFaceDisplay.push(worldEntity.sphere());
    o._countryFaceDisplay.push(worldEntity._sphere2);
    o._countryFaceDisplay.push(worldEntity._sphere3);
+   o._countryFaceDisplay.push(worldEntity._sphere4);
    o._countryFaceDisplay.push(worldEntity.faceShape());
    o._countryBorderDisplay.push(worldEntity.borderShape());
 }

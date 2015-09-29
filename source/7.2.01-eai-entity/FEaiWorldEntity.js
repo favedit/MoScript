@@ -53,62 +53,83 @@ MO.FEaiWorldEntity_construct = function FEaiWorldEntity_construct(){
 MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var o = this;
    var context = o._graphicContext;
+   // 创建海洋图片
+   var textureOcean = o._textureOcean = context.createFlatTexture();
    // 创建合并形状
    var faceShape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
    faceShape._worldEntity = o;
-   faceShape.outline().set(-1, -1, -1, 1, 1, 1);
    faceShape.linkGraphicContext(context);
+   faceShape.outline().set(-1, -1, -1, 1, 1, 1);
    var borderShape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
    borderShape._optionSelect = false;
    borderShape._worldEntity = o;
    borderShape.outline().set(-1, -1, -1, 1, 1, 1);
    borderShape.linkGraphicContext(context);
    // 创建球型内部
-   var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
-   sphere._optionSelect = false;
-   sphere.linkGraphicContext(context);
-   sphere.setSplitCount(24);
-   sphere.setup();
-   sphere.matrix().setScaleAll(0.97);
-   sphere.matrix().update();
-   var info = sphere.material().info();
-   info.optionAlpha = false;
-   info.ambientColor.setHex('#128AF9');
-   info.ambientColor.alpha = 1.0
-   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
-   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
-   info.specularLevel = 64;
-   // 创建球型外壳
    var sphere = o._sphere = MO.Class.create(MO.FE3dSphere);
    sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.98);
+   sphere.matrix().setScaleAll(0.975);
+   sphere.matrix().update();
+   sphere.pushTexture(textureOcean, 'diffuse');
+   var info = sphere.material().info();
+   //sphere.material().setTexture('diffuse', textureOcean);
+   info.optionAlpha = false;
+   info.ambientColor.setHex('#128AF9');
+   //info.ambientColor.alpha = 1.0
+   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
+   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
+   info.specularLevel = 64;
+   // 创建球型外壳
+   var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
+   sphere.linkGraphicContext(context);
+   sphere.setSplitCount(24);
+   sphere.setup();
+   sphere.matrix().setScaleAll(0.985);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = true;
    //info.optionDepth = true;
-   info.alphaRate = 0.8;
+   info.alphaRate = 0.3;
    info.ambientColor.setHex('#128AF9');
-   info.ambientColor.alpha = 0.4
+   //info.ambientColor.alpha = 0.4
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
-   // 创建球型外壳大气
+   // 创建球型外壳大气1
    var sphere = o._sphere3 = MO.Class.create(MO.FE3dSphere);
    sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(1.2);
+   sphere.matrix().setScaleAll(1.1);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = true;
    info.optionDepth = false;
    info.alphaRate = 0.1;
    info.ambientColor.setHex('#128AF9');
-   info.ambientColor.alpha = 0.4
+   //info.ambientColor.alpha = 0.4
+   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
+   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
+   info.specularLevel = 64;
+   // 创建球型外壳大气2
+   var sphere = o._sphere4 = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
+   sphere.linkGraphicContext(context);
+   sphere.setSplitCount(24);
+   sphere.setup();
+   sphere.matrix().setScaleAll(1.25);
+   sphere.matrix().update();
+   var info = sphere.material().info();
+   info.optionAlpha = true;
+   info.optionDepth = false;
+   info.alphaRate = 0.03;
+   info.ambientColor.setHex('#128AF9');
+   //info.ambientColor.alpha = 0.4
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
@@ -118,7 +139,8 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    o._material.setTexture('diffuse', texture);
    //..........................................................
    // 加载图片
-   o._imageGround = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/color.jpg');
+   o._imageGround = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/color4096.jpg');
+   o._imageOcean = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/ocean4096.jpg');
 }
 
 //==========================================================
@@ -174,15 +196,27 @@ MO.FEaiWorldEntity_loadResource = function FEaiWorldEntity_loadResource(resource
 //==========================================================
 MO.FEaiWorldEntity_processLoad = function FEaiWorldEntity_processLoad(){
    var o = this;
-   // 检查图片
+   // 检查大陆图片
    var image = o._imageGround;
    if(image){
       if(image.testReady()){
          var texture = o._texture;
-         texture.upload(image);
-         texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+         //texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
          //texture.setOptionFlipY(true);
+         texture.upload(image);
+         texture.makeMipmap();
          o._imageGround = null;
+      }
+      return false;
+   }
+   // 检查海洋图片
+   var image = o._imageOcean;
+   if(image){
+      if(image.testReady()){
+         var texture = o._textureOcean;
+         texture.upload(image);
+         texture.makeMipmap();
+         o._imageOcean = null;
       }
       return false;
    }

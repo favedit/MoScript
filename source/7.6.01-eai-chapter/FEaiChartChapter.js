@@ -9,31 +9,32 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o = MO.Class.inherits(this, o, MO.FEaiChapter);
    //..........................................................
    // @attribute
-   o._code                    = MO.EEaiChapter.Chart;
+   o._code                      = MO.EEaiChapter.Chart;
    // @attribute
-   o._sceneTotal              = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
-   o._sceneHistory            = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
-   o._sceneCustomer           = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
-   o._sceneCustomerSphere     = MO.Class.register(o, new MO.AGetter('_sceneCustomerSphere'));
-   o._sceneMarketerCustomer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerCustomer'));
-   o._sceneMarketerMarketer   = MO.Class.register(o, new MO.AGetter('_sceneMarketerMarketer'));
-   o._sceneMarketerProduct    = MO.Class.register(o, new MO.AGetter('_sceneMarketerProduct'));  
-   o._sceneMarketerManage     = MO.Class.register(o, new MO.AGetter('_sceneMarketerManage'));
-   o._sceneDepartmentMarketer = MO.Class.register(o, new MO.AGetter('_sceneDepartmentMarketer'));
-   o._scenePerformence        = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
-   o._sceneStatisticsMarketer = MO.Class.register(o, new MO.AGetter('_sceneStatisticsMarketer'));
-   o._sceneDepartment         = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
-   o._sceneLive               = MO.Class.register(o, new MO.AGetter('_sceneLive'));
-   o._sceneWorld              = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
-   o._sceneSales              = MO.Class.register(o, new MO.AGetter('_sceneSales'));   
+   o._sceneTotal                = MO.Class.register(o, new MO.AGetter('_sceneTotal'));
+   o._sceneHistory              = MO.Class.register(o, new MO.AGetter('_sceneHistory'));
+   o._sceneCustomer             = MO.Class.register(o, new MO.AGetter('_sceneCustomer'));
+   o._sceneCustomerSphere       = MO.Class.register(o, new MO.AGetter('_sceneCustomerSphere'));
+   o._sceneCustomerInvestment3d = MO.Class.register(o, new MO.AGetter('_sceneCustomerInvestment3d'));
+   o._sceneMarketerCustomer     = MO.Class.register(o, new MO.AGetter('_sceneMarketerCustomer'));
+   o._sceneMarketerMarketer     = MO.Class.register(o, new MO.AGetter('_sceneMarketerMarketer'));
+   o._sceneMarketerProduct      = MO.Class.register(o, new MO.AGetter('_sceneMarketerProduct'));  
+   o._sceneMarketerManage       = MO.Class.register(o, new MO.AGetter('_sceneMarketerManage'));
+   o._sceneDepartmentMarketer   = MO.Class.register(o, new MO.AGetter('_sceneDepartmentMarketer'));
+   o._scenePerformence          = MO.Class.register(o, new MO.AGetter('_scenePerformence'));
+   o._sceneStatisticsMarketer   = MO.Class.register(o, new MO.AGetter('_sceneStatisticsMarketer'));
+   o._sceneDepartment           = MO.Class.register(o, new MO.AGetter('_sceneDepartment'));
+   o._sceneLive                 = MO.Class.register(o, new MO.AGetter('_sceneLive'));
+   o._sceneWorld                = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
+   o._sceneSales                = MO.Class.register(o, new MO.AGetter('_sceneSales'));   
    //..........................................................
    // @method
-   o.construct                = MO.FEaiChartChapter_construct;
+   o.construct                  = MO.FEaiChartChapter_construct;
    // @method
-   o.createScene              = MO.FEaiChartChapter_createScene;
-   o.process                  = MO.FEaiChartChapter_process;
+   o.createScene                = MO.FEaiChartChapter_createScene;
+   o.process                    = MO.FEaiChartChapter_process;
    // @method
-   o.dispose                  = MO.FEaiChartChapter_dispose;
+   o.dispose                    = MO.FEaiChartChapter_dispose;
    return o;
 }
 
@@ -61,6 +62,10 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
       // 创建客户球型数据图表
       case MO.EEaiScene.ChartCustomerSphere:
          scene = o._sceneCustomerSphere = MO.Class.create(MO.FEaiChartCustomerSphereScene);
+         break;
+      // 创建客户投资3D图表
+      case MO.EEaiScene.ChartCustomerInvestment3d:
+         scene = o._sceneCustomerInvestment3d = MO.Class.create(MO.FEaiCstInvestment3dScene);
          break;
       // 创建理财师客户数据图表
       case MO.EEaiScene.ChartMarketerCustomer:
@@ -96,22 +101,6 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
    }
    scene.linkGraphicContext(o);
    return scene;
-   // 创建总计图表
-   //var scene = o._sceneTotal = MO.Class.create(MO.FEaiChartTotalScene);
-   //scene.linkGraphicContext(o);
-   //o.registerScene(scene);
-   // 创建历史图表
-   //var scene = o._sceneHistory = MO.Class.create(MO.FEaiChartHistoryScene);
-   //scene.linkGraphicContext(o);
-   //o.registerScene(scene);
-   // 创建部门数据图表
-   //var scene = o._sceneDepartment = MO.Class.create(MO.FEaiChartDepartmentScene);
-   //scene.linkGraphicContext(o);
-   //o.registerScene(scene);
-   // 创建即时图表
-   //var scene = o._sceneLive = MO.Class.create(MO.FEaiChartLiveScene);
-   //scene.linkGraphicContext(o);
-   //o.registerScene(scene);
 }
 
 //==========================================================

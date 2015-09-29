@@ -5,7 +5,7 @@
    <State name='cull_mode'   value='Front'/>
    <State name='depth_mode'  value='LessEqual'/>
    <State name='depth_write' value='Y'/>
-   <State name='blend_mode'  value='Y' source='SrcAlpha' target='One'/>
+   <State name='blend_mode'  value='N'/>
    <State name='alpha_test'  value='N'/>
    <!--=====================================================-->
    <Option name='shadow'   value='N'/>
@@ -51,7 +51,8 @@
          vec4 modelPosition = position * vc_model_matrix;
          gl_Position = modelPosition * vc_vp_matrix;
          // 设置颜色
-         v_color = va_color * vc_data[index + 3];
+         //v_color = va_color * vc_data[index + 3];
+         v_color = va_color;
          // 设置纹理
          v_coord = va_coord;
          // 设置法线
@@ -78,6 +79,7 @@
          //vec3 lightDirection = normalize(vec3(1, 1, 1));
          //float normalFactor = dot(v_normal, lightDirection) * 0.5 + 0.5;
          //color.rgb = color.rgb * normalFactor;
+         color *= v_color;
          gl_FragColor = color;
       }
    ]]></Source>

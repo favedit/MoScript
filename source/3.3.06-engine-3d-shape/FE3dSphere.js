@@ -14,6 +14,7 @@ MO.FE3dSphere = function FE3dSphere(o){
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
+   o._vertexCoordBuffer    = null;
    //..........................................................
    // @method
    o.construct             = MO.FE3dSphere_construct;
@@ -46,6 +47,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    // 计算坐标
    var positions = new MO.TArray();
    var normals = new MO.TArray();
+   var coords = new MO.TArray();
    var cr = o._splitCount * 2;
    var cz = o._splitCount;
    var stepr = Math.PI * 2 / cr;
@@ -60,6 +62,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
          var z = -Math.cos(radius) * Math.cos(radiusZ);
          positions.push(x, y, z);
          normals.push(x, y, z);
+         coords.push(radius / Math.PI / 2 + 0.5, radiusZ / Math.PI - 0.5);
          count++;
       }
    }
@@ -74,6 +77,11 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    buffer.setCode('normal');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+   buffer.setCode('coord');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   buffer.upload(new Float32Array(coords.memory()), 4 * 2, count);
    o.pushVertexBuffer(buffer);
    //..........................................................
    // 计算索引
