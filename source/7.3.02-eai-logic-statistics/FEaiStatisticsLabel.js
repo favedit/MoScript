@@ -253,7 +253,7 @@ MO.FEaiStatisticsLabel_construct = function FEaiStatisticsLabel_construct() {
 MO.FEaiStatisticsLabel_dispose = function FEaiStatisticsLabel_dispose() {
    var o = this;
    // 计时器
-   o._ticker = MO.RObject.dispose(o._ticker);
+   o._ticker = MO.Lang.Object.dispose(o._ticker);
    // 父处理
    o.__base.FGuiLabel.dispose.call(o);
 }

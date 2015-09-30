@@ -22,6 +22,8 @@ MO.FApplication = function FApplication(o){
    o.setup                = MO.Method.emptyTrue;
    // @method
    o.findSessionId        = MO.FApplication_findSessionId;
+   // @method
+   o.createChapter        = MO.Method.empty;
    o.registerChapter      = MO.FApplication_registerChapter;
    o.unregisterChapter    = MO.FApplication_unregisterChapter;
    o.selectChapter        = MO.FApplication_selectChapter;
@@ -143,7 +145,15 @@ MO.FApplication_selectChapter = function FApplication_selectChapter(chapter){
 //==========================================================
 MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(code){
    var o = this;
+   // 获得场景
    var chapter = o._chapters.get(code);
+   // 创建场景
+   if(!chapter){
+      chapter = o.createChapter(code);
+      MO.Assert.debugNotNull(chapter);
+      o.registerChapter(chapter);
+   }
+   // 选择章节
    o.selectChapter(chapter);
    return chapter;
 }

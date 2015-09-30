@@ -263,10 +263,10 @@ MO.FGuiManager_dirty = function FGuiManager_dirty(){
 //==========================================================
 MO.FGuiManager_dispose = function FGuiManager_dispose(){
    var o = this;
-   o._controls = MO.RObject.dispose(o._controls);
-   o._mainTimeline = MO.RObject.dispose(o._mainTimeline);
-   o._transforms = MO.RObject.dispose(o._transforms);
-   o._visibleControls = MO.RObject.dispose(o._visibleControls);
+   o._controls = MO.Lang.Object.dispose(o._controls);
+   o._mainTimeline = MO.Lang.Object.dispose(o._mainTimeline);
+   o._transforms = MO.Lang.Object.dispose(o._transforms);
+   o._visibleControls = MO.Lang.Object.dispose(o._visibleControls);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

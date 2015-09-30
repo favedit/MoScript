@@ -28,8 +28,6 @@ MO.FCanvasDesktop = function FCanvasDesktop(o){
    o.hide                   = MO.FCanvasDesktop_hide;
    o.selectStage            = MO.FCanvasDesktop_selectStage;
    // @method
-   o.process                = MO.FCanvasDesktop_process;
-   // @method
    o.dispose                = MO.FCanvasDesktop_dispose;
    return o;
 }
@@ -230,19 +228,6 @@ MO.FCanvasDesktop_selectStage = function FCanvasDesktop_selectStage(stage){
       camera.update();
    }
    o._activeStage = stage;
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-MO.FCanvasDesktop_process = function FCanvasDesktop_process(){
-   var o = this;
-   o.__base.FDesktop.process.call(o);
-   // 桌面处理
-   //o._canvas2d.process();
-   o._canvas3d.process();
 }
 
 //==========================================================

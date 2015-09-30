@@ -47,6 +47,6 @@ MO.SGuiUpdateEvent_isAfter = function SGuiUpdateEvent_isAfter(){
 //==========================================================
 MO.SGuiUpdateEvent_dispose = function SGuiUpdateEvent_dispose(){
    var o = this;
-   o.rectangle = MO.RObject.dispose(o.rectangle);
+   o.rectangle = MO.Lang.Object.dispose(o.rectangle);
    return o;
 }

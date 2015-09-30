@@ -5,30 +5,30 @@
 // @author maocy
 // @history 150106
 //==========================================================
-MO.FEaiScene = function FEaiScene(o){
+MO.FCanvasScene = function FCanvasScene(o){
    o = MO.Class.inherits(this, o, MO.FScene);
    //..........................................................
    // @attribute
    o._guiManager            = MO.Class.register(o, new MO.AGetter('_guiManager'));
    //..........................................................
    // @event
-   o.onOperationKeyDown     = MO.FEaiScene_onOperationKeyDown;
-   o.onOperationResize      = MO.FEaiScene_onOperationResize;
-   o.onOperationOrientation = MO.FEaiScene_onOperationOrientation;
-   o.onProcessAfter         = MO.FEaiScene_onProcessAfter;
+   o.onOperationKeyDown     = MO.FCanvasScene_onOperationKeyDown;
+   o.onOperationResize      = MO.FCanvasScene_onOperationResize;
+   o.onOperationOrientation = MO.FCanvasScene_onOperationOrientation;
+   o.onProcessAfter         = MO.FCanvasScene_onProcessAfter;
    //..........................................................
    // @method
-   o.construct              = MO.FEaiScene_construct;
+   o.construct              = MO.FCanvasScene_construct;
    // @method
-   o.setup                  = MO.FEaiScene_setup;
-   o.active                 = MO.FEaiScene_active;
-   o.deactive               = MO.FEaiScene_deactive;
+   o.setup                  = MO.FCanvasScene_setup;
+   o.active                 = MO.FCanvasScene_active;
+   o.deactive               = MO.FCanvasScene_deactive;
    // @method
-   o.processLoaded          = MO.FEaiScene_processLoaded;
-   o.processResize          = MO.FEaiScene_processResize;
-   o.processEvent           = MO.FEaiScene_processEvent;
+   o.processLoaded          = MO.FCanvasScene_processLoaded;
+   o.processResize          = MO.FCanvasScene_processResize;
+   o.processEvent           = MO.FCanvasScene_processEvent;
    // @method
-   o.dispose                = MO.FEaiScene_dispose;
+   o.dispose                = MO.FCanvasScene_dispose;
    return o;
 }
 
@@ -38,7 +38,7 @@ MO.FEaiScene = function FEaiScene(o){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiScene_onOperationKeyDown = function FEaiScene_onOperationKeyDown(event){
+MO.FCanvasScene_onOperationKeyDown = function FCanvasScene_onOperationKeyDown(event){
    var o = this;
    o.__base.FScene.onOperationKeyDown.call(o, event);
    // 显示调试信息
@@ -54,7 +54,7 @@ MO.FEaiScene_onOperationKeyDown = function FEaiScene_onOperationKeyDown(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
+MO.FCanvasScene_onOperationResize = function FCanvasScene_onOperationResize(event){
    var o = this;
    o.__base.FScene.onOperationResize.call(o, event);
    // 改变大小处理
@@ -67,7 +67,7 @@ MO.FEaiScene_onOperationResize = function FEaiScene_onOperationResize(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(event){
+MO.FCanvasScene_onOperationOrientation = function FCanvasScene_onOperationOrientation(event){
    var o = this;
    o.__base.FScene.onOperationOrientation.call(o, event);
    // 改变大小处理
@@ -79,7 +79,7 @@ MO.FEaiScene_onOperationOrientation = function FEaiScene_onOperationOrientation(
 //
 // @method
 //==========================================================
-MO.FEaiScene_onProcessAfter = function FEaiScene_onProcessAfter(){
+MO.FCanvasScene_onProcessAfter = function FCanvasScene_onProcessAfter(){
    var o = this;
    o.__base.FScene.onProcessAfter.call(o);
    // 界面处理
@@ -91,7 +91,7 @@ MO.FEaiScene_onProcessAfter = function FEaiScene_onProcessAfter(){
 //
 // @method
 //==========================================================
-MO.FEaiScene_construct = function FEaiScene_construct(){
+MO.FCanvasScene_construct = function FCanvasScene_construct(){
    var o = this;
    o.__base.FScene.construct.call(o);
 }
@@ -101,13 +101,12 @@ MO.FEaiScene_construct = function FEaiScene_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiScene_setup = function FEaiScene_setup(){
+MO.FCanvasScene_setup = function FCanvasScene_setup(){
    var o = this;
    o.__base.FScene.setup.call(o);
    // 隐藏画板
    var desktop = o._application.desktop();
    var canvas2d = desktop.canvas2d();
-   desktop.hide();
    // 创建界面桌面
    var guiManager = o._guiManager = MO.Class.create(MO.FGuiCanvasManager);
    guiManager.linkGraphicContext(o);
@@ -124,7 +123,7 @@ MO.FEaiScene_setup = function FEaiScene_setup(){
 //
 // @method
 //==========================================================
-MO.FEaiScene_active = function FEaiScene_active(){
+MO.FCanvasScene_active = function FCanvasScene_active(){
    var o = this;
    o.__base.FScene.active.call(o);
    // 创新信息
@@ -145,7 +144,7 @@ MO.FEaiScene_active = function FEaiScene_active(){
 //
 // @method
 //==========================================================
-MO.FEaiScene_deactive = function FEaiScene_deactive(){
+MO.FCanvasScene_deactive = function FCanvasScene_deactive(){
    var o = this;
    o.__base.FScene.deactive.call(o);
    // 清空舞台
@@ -160,7 +159,7 @@ MO.FEaiScene_deactive = function FEaiScene_deactive(){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
+MO.FCanvasScene_processLoaded = function FCanvasScene_processLoaded(){
    var o = this;
    // 加载完成
    var event = new MO.SEvent(o);
@@ -177,7 +176,7 @@ MO.FEaiScene_processLoaded = function FEaiScene_processLoaded(){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiScene_processResize = function FEaiScene_processResize(event){
+MO.FCanvasScene_processResize = function FCanvasScene_processResize(event){
    var o = this;
    // 界面重绘处理
    o._guiManager.dirty();
@@ -189,7 +188,7 @@ MO.FEaiScene_processResize = function FEaiScene_processResize(event){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
+MO.FCanvasScene_processEvent = function FCanvasScene_processEvent(event){
    var o = this;
    o.__base.FScene.processEvent.call(o, event);
    // 处理界面事件
@@ -201,7 +200,7 @@ MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
 //
 // @method
 //==========================================================
-MO.FEaiScene_dispose = function FEaiScene_dispose(){
+MO.FCanvasScene_dispose = function FCanvasScene_dispose(){
    var o = this;
    o._guiManager = MO.Lang.Object.dispose(o._guiManager);
    // 父处理

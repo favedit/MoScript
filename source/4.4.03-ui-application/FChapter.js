@@ -24,9 +24,9 @@ MO.FChapter = function FChapter(o){
    // @method
    o.construct            = MO.FChapter_construct;
    // @method
+   o.createScene          = MO.Method.empty;
    o.registerScene        = MO.FChapter_registerScene;
    o.unregisterScene      = MO.FChapter_unregisterScene;
-   o.createScene          = MO.Method.empty;
    o.selectScene          = MO.FChapter_selectScene;
    o.selectSceneByCode    = MO.FChapter_selectSceneByCode;
    // @method
@@ -124,7 +124,7 @@ MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    // 获得场景
    var scene = o._scenes.get(code);
    // 创建场景
-   if(scene == null){
+   if(!scene){
       scene = o.createScene(code);
       MO.Assert.debugNotNull(scene);
       o.registerScene(scene);
