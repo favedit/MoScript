@@ -58,8 +58,8 @@ MO.SBorder_toString = function SBorder_toString(){
 //============================================================
 MO.SBorder_dispose = function SBorder_dispose(){
    var o = this;
-   o.left = MO.RObject.dispose(o.left)
-   o.top = MO.RObject.dispose(o.top)
-   o.right = MO.RObject.dispose(o.right)
-   o.bottom = MO.RObject.dispose(o.bottom)
+   o.left = MO.Lang.Object.dispose(o.left)
+   o.top = MO.Lang.Object.dispose(o.top)
+   o.right = MO.Lang.Object.dispose(o.right)
+   o.bottom = MO.Lang.Object.dispose(o.bottom)
 }

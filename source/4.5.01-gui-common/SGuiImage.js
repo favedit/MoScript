@@ -71,6 +71,6 @@ MO.SGuiImage_load = function SGuiImage_load(){
 //==========================================================
 MO.SGuiImage_dispose = function SGuiImage_dispose(){
    var o = this;
-   o.bitmap = MO.RObject.dispose(o.bitmap);
+   o.bitmap = MO.Lang.Object.dispose(o.bitmap);
    return o;
 }

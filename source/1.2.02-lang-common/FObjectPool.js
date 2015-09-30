@@ -97,8 +97,8 @@ MO.FObjectPool_push = function FObjectPool_push(p){
 //==========================================================
 MO.FObjectPool_dispose = function FObjectPool_dispose(){
    var o = this;
-   o._items = MO.RObject.dispose(o._items);
-   o._frees = MO.RObject.dispose(o._frees);
+   o._items = MO.Lang.Object.dispose(o._items);
+   o._frees = MO.Lang.Object.dispose(o._frees);
    o.__base.FObject.dispose.call(o);
 }
 

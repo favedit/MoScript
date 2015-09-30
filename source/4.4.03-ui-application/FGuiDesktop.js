@@ -162,8 +162,8 @@ MO.FGuiDesktop_resize = function FGuiDesktop_resize(targetWidth, targetHeight){
 //==========================================================
 MO.FGuiDesktop_dispose = function FGuiDesktop_dispose(){
    var o = this;
-   o._canvas3d = MO.RObject.dispose(o._canvas3d);
-   o._canvas = MO.RObject.dispose(o._canvas);
+   o._canvas3d = MO.Lang.Object.dispose(o._canvas3d);
+   o._canvas = MO.Lang.Object.dispose(o._canvas);
    // 父处理
    o.__base.FDesktop.dispose.call(o);
 }

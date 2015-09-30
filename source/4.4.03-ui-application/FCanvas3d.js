@@ -18,6 +18,7 @@ MO.FCanvas3d = function FCanvas3d(o){
    o._activeStage        = MO.Class.register(o, new MO.AGetter('_activeStage'));
    // @attribute
    o._capturePosition    = null;
+   o._captureRotation    = null;
    o._cameraPosition     = null;
    //..........................................................
    // @method
@@ -25,8 +26,6 @@ MO.FCanvas3d = function FCanvas3d(o){
    // @method
    o.resize              = MO.FCanvas3d_resize;
    o.selectStage         = MO.FCanvas3d_selectStage;
-   // @method
-   o.process             = MO.FCanvas3d_process;
    // @method
    o.setPanel            = MO.FCanvas3d_setPanel;
    // @method
@@ -86,30 +85,8 @@ MO.FCanvas3d_selectStage = function FCanvas3d_selectStage(stage){
       if(!stage.technique()){
          stage.selectTechnique(o, MO.FE3dGeneralTechnique);
       }
-      // 设置相机
-      //var camera = stage.region().camera();
-      //var projection = camera.projection();
-      //projection.setAngle(80);
-      //projection.size().set(o._hCanvas.offsetWidth, o._hCanvas.offsetHeight);
-      //projection.update();
-      //camera.position().set(0, 0, -10);
-      //camera.lookAt(0, 0, 0);
-      //camera.update();
    }
    o._activeStage = stage;
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-MO.FCanvas3d_process = function FCanvas3d_process(){
-   var o = this;
-   var stage = o._activeStage;
-   if(stage){
-      stage.process();
-   }
 }
 
 //==========================================================

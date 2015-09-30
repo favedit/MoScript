@@ -11,7 +11,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    // @attribute
    o._sceneCode      = MO.Class.register(o, new MO.AGetSet('_sceneCode'), MO.EEaiScene.ChartCustomer);
    o._backgroundUrl  = MO.Class.register(o, new MO.AGetSet('_backgroundUrl'), '{eai.resource}/background2.jpg');
-   o._chapterLoading = MO.Class.register(o, new MO.AGetter('_chapterLoading'));
+   // @attribute
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
    // @attribute
    o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
@@ -23,6 +23,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    // @method
    o.construct       = MO.FEaiChartApplication_construct;
    // @method
+   o.createChapter   = MO.FEaiChartApplication_createChapter;
    o.setup           = MO.FEaiChartApplication_setup;
    // @method
    o.dispose         = MO.FEaiChartApplication_dispose;
@@ -69,6 +70,26 @@ MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
 }
 
 //==========================================================
+// <T>根据代码创建章节。</T>
+//
+// @method
+// @param code:String 代码
+// @return FChapter 章节
+//==========================================================
+MO.FEaiChartApplication_createChapter = function FEaiChartApplication_createChapter(code){
+   var o = this;
+   var chapter = null;
+   switch(code){
+      // 创建图表章节
+      case MO.EEaiChapter.Chart:
+         chapter = o._chapterChart = MO.Class.create(MO.FEaiChartChapter);
+         break;
+   }
+   chapter.linkGraphicContext(o);
+   return chapter;
+}
+
+//==========================================================
 // <T>配置处理。</T>
 //
 // @method
@@ -99,11 +120,6 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    control.location().set(10, 300);
    control.build();
    //..........................................................
-   // 创建图表舞台
-   var chapter = o._chapterChart = MO.Class.create(MO.FEaiChartChapter);
-   chapter.linkGraphicContext(o);
-   o.registerChapter(chapter);
-   //..........................................................
    // 加载资源
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
    resourceConsole.addLoadListener(o, o.onLoadResource);
@@ -119,8 +135,6 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
 MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
    var o = this;
    // 释放属性
-   o._chapterLoading = MO.Lang.Object.dispose(o._chapterLoading);
-   o._chapterChart = MO.Lang.Object.dispose(o._chapterChart);
    o._dynamicInfo = MO.Lang.Object.dispose(o._dynamicInfo);
    // 父处理
    o.__base.FEaiApplication.dispose.call(o);

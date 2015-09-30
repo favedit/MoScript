@@ -658,9 +658,9 @@ MO.FGuiControl_psUpdate = function FGuiControl_psUpdate(){
 MO.FGuiControl_dispose = function FGuiControl_dispose(){
    var o = this;
    // 释放属性
-   o._backImage = MO.RObject.dispose(o._backImage);
-   o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
-   o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
+   o._backImage = MO.Lang.Object.dispose(o._backImage);
+   o._backHoverImage = MO.Lang.Object.dispose(o._backHoverImage);
+   o._clientRectangle = MO.Lang.Object.dispose(o._clientRectangle);
    // 父处理
    o.__base.MGuiSize.dispose.call(o);
    o.__base.MUiBorder.dispose.call(o);
