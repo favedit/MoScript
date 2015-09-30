@@ -69,8 +69,11 @@ MO.FEaiChartMktProductScene_onOperationDown = function FEaiChartMktProductScene_
 // //==========================================================
 MO.FEaiChartMktProductScene_onTrendDataChanged = function FEaiChartMktProductScene_onTrendDataChanged(event) {
    var o = this;
-   o._circleProduct.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-   o._circleProduct.dirty();
+   //o._circleProduct.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   //o._circleProduct.dirty();
+   var bubbleCanvas = o._bubbleCanvas;
+   bubbleCanvas.setTenderUnits(event.tenderUnits);
+   bubbleCanvas.dirty();
  }
 
 //==========================================================
@@ -89,6 +92,13 @@ MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProdu
    table.dirty();
    var circle= o._circleProduct;
    circle.dirty();
+
+   if (unit) {
+      if (unit._modelChanged == 1) {
+
+}
+   }
+
 }
 
 //==========================================================
@@ -278,11 +288,11 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
    //..........................................................
    
    //创建产品空心圈
-    var circleProduct = o._circleProduct = MO.Class.create(MO.FEaiChartMktProductCircle);
-    circleProduct.setName('circleProduct');
-    circleProduct.linkGraphicContext(o);
-    circleProduct.build();
-    o._guiManager.register(circleProduct);
+   var circleProduct = o._circleProduct = MO.Class.create(MO.FEaiChartMktProductCircle);
+   circleProduct.setName('circleProduct');
+   circleProduct.linkGraphicContext(o);
+   circleProduct.build();
+   o._guiManager.register(circleProduct);
 
 
    //..........................................................
