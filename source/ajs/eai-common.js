@@ -51,6 +51,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartStatisticsMarketer   = 'chart.statistics.marketer';
    o.ChartPerformenceMarketer  = 'chart.performence.marketer';
    o.ChartMarketerProduct      = 'chart.marketer.product';
+   o.ChartShow1019             = 'chart.show.1019';
    return o;
 }
 MO.Eai = new function FEai(){

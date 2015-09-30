@@ -20,6 +20,8 @@
    <!--=====================================================-->
    <Sampler name='fs_diffuse'    linker='diffuse'/>
    <Sampler name='fs_radian'     linker='radian'/>
+   <!-- http://www.geekcome.com/content-10-3840-1.html -->
+   <!-- http://blog.sina.com.cn/s/blog_6084f5880101dpxl.html -->
    <!--=====================================================-->
    <Source name='vertex'><![CDATA[
       //..........................................................
@@ -37,8 +39,9 @@
       // 处理
       void main(){
          // 计算最终坐标
-         v_position = vec2(va_position.x * vc_const.x, va_position.y * vc_const.y);
-         gl_Position = vec4(va_position.xy, 0.0, 1.0);
+         gl_Position = vec4(va_position.x * vc_const.x, va_position.y * vc_const.y, 0.0, 1.0);
+         // 设置位置
+         v_position = va_position;
          // 设置纹理
          v_coord = va_coord;
       }
@@ -62,13 +65,25 @@
       //..........................................................
       // 处理
       void main(void){
-         float cx = texture2D(fs_radian, v_coord).a;
-         float cy = 1.0 - sqrt(v_position.x * v_position.x + v_position.y * v_position.y);
-         cy = min(max(cy, 0.0), 1.0);
-         vec4 color = texture2D(fs_diffuse, vec2(cx + fc_const.a, cy));
-         gl_FragColor = color;
-         //gl_FragColor = texture2D(fs_diffuse, v_coord);
+         vec2 position = vec2(v_position.x, v_position.y);
+         position.y += 0.4;
+         vec2 direction = normalize(position);
+         float angle = acos(direction.x) / 3.1415926 / 2.0;
+         float cx = 0.0;
+         if(sign(direction.y) == -1.0){
+            cx = 0.5 - angle;
+         }else{
+            cx = 0.5 + angle;
+         }
+         cx += fc_const.w;
+         float cy = 1.0 - sqrt(position.x * position.x + position.y * position.y);
+         vec4 color = texture2D(fs_diffuse, vec2(cx, cy));
+         gl_FragColor = vec4(color.rgb, 1.0);
          //gl_FragColor = vec4(cx, cx, cx, 1.0);
+         //gl_FragColor = vec4(cy, cy, cy, 1.0);
+         //gl_FragColor = texture2D(fs_diffuse, v_coord);
+         //gl_FragColor = texture2D(fs_radian, v_coord);
+         //gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
       }
    ]]></Source>
 </Configuration>

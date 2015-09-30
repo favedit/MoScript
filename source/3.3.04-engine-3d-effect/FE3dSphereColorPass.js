@@ -29,8 +29,9 @@ MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
    var context = o._graphicContext;
    // 创建平面
    var texture = o._textureColor = context.createFlatTexture();
-   texture.setFilterCd(MO.EG3dSamplerFilter.Linear, MO.EG3dSamplerFilter.Linear);
-   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texture.update();
    // 创建渲染目标
    var target = o._renderTarget = context.createRenderTarget();
    target.size().set(2048, 1024);
