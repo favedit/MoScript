@@ -8,10 +8,10 @@ MO.FE3rDynamicModel = function FE3rDynamicModel(o){
    o = MO.Class.inherits(this, o, MO.FE3rObject);
    //..........................................................
    // @attribute
-   o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
-   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
-   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
-   o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
+   o._renderables   = MO.Class.register(o, new MO.AGetter('_renderables'));
+   o._mergeMaxCount = MO.Class.register(o, new MO.AGetter('_mergeMaxCount'));
+   o._mergeStride   = MO.Class.register(o, new MO.AGetter('_mergeStride'), 4);
+   o._meshes        = MO.Class.register(o, new MO.AGetter('_meshes'));
    o._updateDate    = 0;
    //..........................................................
    // @method
@@ -44,11 +44,11 @@ MO.FE3rDynamicModel_construct = function FE3rDynamicModel_construct(){
 //==========================================================
 MO.FE3rDynamicModel_createMesh = function FE3rDynamicModel_createMesh(){
    var o = this;
-   var m = MO.Class.create(MO.FE3rDynamicMesh);
-   m._model = o;
-   m.linkGraphicContext(o);
-   o._meshes.push(m);
-   return m;
+   var mesh = MO.Class.create(MO.FE3rDynamicMesh);
+   mesh._model = o;
+   mesh.linkGraphicContext(o);
+   o._meshes.push(mesh);
+   return mesh;
 }
 
 //==========================================================

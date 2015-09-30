@@ -20,6 +20,7 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
    o.construct         = MO.FE3rDynamicMesh_construct;
    // @method
    o.mergeCount        = MO.FE3rDynamicMesh_mergeCount;
+   o.mergeStride       = MO.FE3rDynamicMesh_mergeStride;
    o.mergeMaxCount     = MO.FE3rDynamicMesh_mergeMaxCount;
    o.mergeRenderables  = MO.FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = MO.FE3rDynamicMesh_syncVertexBuffer;
@@ -38,7 +39,8 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
 MO.FE3rDynamicMesh_construct = function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
-   o._mergeRenderables = new TObjects();
+   // 设置属性
+   o._mergeRenderables = new MO.TObjects();
 }
 
 //==========================================================
@@ -49,6 +51,16 @@ MO.FE3rDynamicMesh_construct = function FE3rDynamicMesh_construct(){
 //==========================================================
 MO.FE3rDynamicMesh_mergeCount = function FE3rDynamicMesh_mergeCount(){
    return this._mergeRenderables.count();
+}
+
+//==========================================================
+// <T>获得合并渲染总数。</T>
+//
+// @method
+// @return Integer 总数
+//==========================================================
+MO.FE3rDynamicMesh_mergeStride = function FE3rDynamicMesh_mergeStride(){
+   return 4;
 }
 
 //==========================================================
@@ -133,18 +145,18 @@ MO.FE3rDynamicMesh_mergeRenderable = function FE3rDynamicMesh_mergeRenderable(re
    var indexBuffer = renderable.indexBuffers().first();
    var indexCount = indexBuffer.count();
    // 检查个数限制
-   var mc = capability.mergeCount;
-   if(o._mergeRenderables.count() >= mc){
+   var mergeCount = capability.mergeCount;
+   if(o._mergeRenderables.count() >= mergeCount){
       return false;
    }
    // 检查顶点总数限制
-   var vt = o._vertexTotal + vertexCount;
+   var vertexTotal = o._vertexTotal + vertexCount;
    if(capability.optionIndex32){
-      if(vt > MO.Lang.Integer.MAX_UINT32){
+      if(vertexTotal > MO.Lang.Integer.MAX_UINT32){
          return false;
       }
    }else{
-      if(vt > MO.Lang.Integer.MAX_UINT16){
+      if(vertexTotal > MO.Lang.Integer.MAX_UINT16){
          return false;
       }
    }
@@ -226,11 +238,11 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
    var instanceVertexBuffer = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
    instanceVertexBuffer.setCode('instance');
    instanceVertexBuffer.setStride(4);
-   instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
+   instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
    var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
    o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
    // 创建索引流
-   var indexBuffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
+   var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
    if(capability.optionIndex32){
       indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
       indexBuffer._data = new Uint32Array(indexTotal);
@@ -255,7 +267,7 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
          o.mergeVertexBuffer(renderable, vbrc, vertexBuffer, vertexBufferResource);
       }
       // 生成顶点实例数据
-      RFloat.fill(vdi, o._vertexPosition, vc, i);
+      MO.Lang.Float.fill(vdi, o._vertexPosition, vc, i);
       // 生成索引数据
       var indexBuffer = renderable.indexBuffers().first();
       var ic = indexBuffer.count();

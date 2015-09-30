@@ -47,7 +47,7 @@ MO.FE3dVideo_testReady = function FE3dVideo_testReady(){
             //matrix.sx = adjustSize.width / size.width;
             //matrix.sz = adjustSize.height / size.height;
             //matrix.updateForce();
-            var event = new SEvent(o);
+            var event = new MO.SEvent(o);
             o.processLoadListener(event);
             event.dispose();
          }

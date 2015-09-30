@@ -3,14 +3,11 @@
 <TITLE>Stage3d Example</TITLE>
 <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
-<SCRIPT language='javascript' src='../../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/mo.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
-var canvas = null;
-var stage = null;
-var layer = null;
 var videoData = null;
 var videos = null;
 var tick = 0;
@@ -36,31 +33,32 @@ function onEnterFrame(){
 }
 //----------------------------------------------------------
 function _load(){
+   var singleMode = false;
    // 环境设置
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
-   MO.RApplication.initialize();
-   MO.RBrowser.setContentPath('../..');
-   // 设置环境
-   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   MO.Window.Browser.setContentPath('../..');
+   MO.Console.find(MO.FE3sVendorConsole).setup('net');
+   // 创建应用
+   var application = MO.Desktop.initialize(MO.FCanvasApplication);
+   application.setup(document.body);
+   // 创建舞台
+   var desktop = application.desktop();
+   var stage = MO.Class.create(MO.FE3dSimpleStage);
+   desktop.selectStage(stage);
    // 创建画布
-   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
-   canvas.build(document);
-   canvas.setPanel(document.body);
-   var context = canvas.graphicContext();
-   stage = canvas._stage;
+   var context = application.desktop().canvas3d().graphicContext();
    stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    stage.addEnterFrameListener(null, onEnterFrame);
-   layer = stage.spriteLayer();
+   var layer = stage.spriteLayer();
    // 创建图片
    videos = new MO.TObjects();
-   if(false){
+   if(singleMode){
       videoData = context.createObject(MO.FE3dVideoData);
       videoData.loadUrl('../../ars/video/Test.mp4');
       var video = context.createObject(MO.FE3dVideo);
       video.setData(videoData);
       layer.pushRenderable(video);
-
       //var video = context.createObject(MO.FE3dVideo);
       //video.loadUrl('../../ars/video/Test.mp4');
    }else{

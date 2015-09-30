@@ -19,7 +19,7 @@ MO.FApplication = function FApplication(o){
    //..........................................................
    // @method
    o.construct            = MO.FApplication_construct;
-   o.setup                = MO.Method.empty;
+   o.setup                = MO.Method.emptyTrue;
    // @method
    o.findSessionId        = MO.FApplication_findSessionId;
    o.registerChapter      = MO.FApplication_registerChapter;

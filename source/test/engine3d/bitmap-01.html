@@ -30,25 +30,27 @@ function onEnterFrame(){
 }
 //----------------------------------------------------------
 function _load(){
+   var singleMode = false;
    // 环境设置
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
-   MO.RApplication.initialize();
-   MO.RBrowser.setContentPath('../..');
-   // 设置环境
-   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
+   MO.Window.Browser.setContentPath('../..');
+   MO.Console.find(MO.FE3sVendorConsole).setup('net');
+   // 创建应用
+   var application = MO.Desktop.initialize(MO.FCanvasApplication);
+   application.setup(document.body);
+   // 创建舞台
+   var desktop = application.desktop();
+   var stage = MO.Class.create(MO.FE3dSimpleStage);
+   desktop.selectStage(stage);
    // 创建画布
-   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
-   canvas.build(document);
-   canvas.setPanel(document.body);
-   var context = canvas.graphicContext();
-   stage = canvas._stage;
+   var context = application.desktop().canvas3d().graphicContext();
    stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    stage.addEnterFrameListener(null, onEnterFrame);
-   layer = stage.spriteLayer();
+   var layer = stage.spriteLayer();
    // 创建图片
    bitmaps = new MO.TObjects();
-   if(false){
+   if(singleMode){
       var bitmap = context.createObject(MO.FE3dBitmap);
       bitmap.loadUrl('../../ars/picture/star3.png');
       bitmaps.push(bitmap);
