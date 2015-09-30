@@ -453,7 +453,7 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
       }
       else {
          o._startTranslateY = o._translateY;
-         o._startRotateY = o._rotationY % (Math.PI * 2);
+         o._startRotateY = o._rotationY;
          o._startWorldScale = o._worldScale;
          o._targetTranslateY = 0
          o._targetRotateY = o._rotationY;
@@ -663,6 +663,9 @@ MO.FEaiChartShow1019Scene_fixMatrix = function FEaiChartShow1019Scene_fixMatrix(
    //..........................................................
    if (o._autoRotate) {
       o._rotationY += 0.001;
+      if (o._rotationY > Math.PI * 2) {
+         o._rotationY = 0;
+      }
    }
 }
 
