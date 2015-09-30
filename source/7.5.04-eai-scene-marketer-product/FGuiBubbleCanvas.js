@@ -11,13 +11,17 @@ MO.FGuiBubbleCanvas = function FGuiBubbleCanvas(o) {
    // @attribute
    o._gap            = MO.Class.register(o, new MO.AGetter('_gap'), 20);
    // @attribute
-   o._bubbles        = MO.Class.register(o, new MO.AGetter('_bubbles'));
+   o._ready          = MO.Class.register(o, new MO.AGetter('_ready'), false);
+   o._tenderUnits    = MO.Class.register(o, new MO.AGetter('_tenderUnits'), false);
+   o._bubbles        = MO.Class.register(o, new MO.AGetSet('_bubbles'));
    o._curves         = MO.Class.register(o, new MO.AGetter('_curves'));
    //..........................................................
    // @method
    o.construct       = MO.FGuiBubbleCanvas_construct;
    // @method
    o.onPaintBegin    = MO.FGuiBubbleCanvas_onPaintBegin;
+
+   o.setTenderUnits  = MO.FGuiBubbleCanvas_setTenderUnits;
    // @method
    o.dispose         = MO.FGuiBubbleCanvas_dispose;
    return o;
@@ -33,7 +37,38 @@ MO.FGuiBubbleCanvas_construct = function FGuiBubbleCanvas_construct() {
    o.__base.FGuiControl.construct.call(o);
    // 设置变量
    o._bubbles = new MO.TObjects();
-   o._curves = new MO.TObjects();
+   o._curves = new MO.TDictionary();
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FGuiBubbleCanvas_setTenderUnits = function FGuiBubbleCanvas_setTenderUnits(units) {
+   var o = this;
+   o._tenderUnits = units;
+   if (!_ready) {
+      // TODO: 创建bubbles
+   }
+
+   //var bubbles = o._bubbles;
+   //var count = bubbles.count();
+   //for (var i = 0; i < count; i++) {
+   //   var bubble = bubbles.at(i);
+   //   bubble.setUnit(units.at(i));
+   //}
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FGuiBubbleCanvas_showTransferCurve = function FGuiBubbleCanvas_showTransferCurve(unit) {
+   var o = this;
+
+
 }
 
 //==========================================================

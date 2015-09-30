@@ -36,6 +36,9 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
    // @attribute
    o._rankUnits               = MO.Class.register(o, new MO.AGetter('_rankUnits'));
    o._units                   = MO.Class.register(o, new MO.AGetter('_units'));
+
+   o._tenderUnits             = MO.Class.register(o, new MO.AGetter('_tenderUnits'));
+
    // @attribute
    o._tableCount              = 40;
    o._tableInterval           = 1000;
@@ -73,13 +76,17 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
 }
 
 //==========================================================
-// <T>24小时数据获取处理。</T>
+// <T>产品数据获取处理。</T>
 //
 // @method
 //==========================================================
 MO.FEaiChartMktProductProcessor_onTrenderData = function FEaiChartMktProductProcessor_onTrenderData(event) {
-    var o = this;
-    o.processTrenderDataChangedListener(event);
+   var o = this;
+   var tenderUnits = o._tenderUnits;
+   tenderUnits.unserializeSignBuffer(event.sign, event.content, true);
+   var changeEvent = o._eventTrenderDataChanged;
+   changeEvent.tenderUnits = tenderUnits.units();
+   o.processTrenderDataChangedListener(changeEvent);
  }
 
 //==========================================================
@@ -131,9 +138,10 @@ MO.FEaiChartMktProductProcessor_construct = function FEaiChartMktProductProcesso
    // 创建缓冲
    o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
    o._rankUnits = new MO.TObjects();
+   o._tenderUnits = MO.Class.create(MO.FEaiLogicInfoTender);
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
-   o._event24HDataChanged = new MO.SEvent(o);
+   o._eventTrenderDataChanged = new MO.SEvent(o);
 }
 
 //==========================================================

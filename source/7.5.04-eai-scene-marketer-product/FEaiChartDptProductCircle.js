@@ -30,7 +30,7 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
    o._circleStyle      = MO.Class.register(o, new MO.AGetSet('_circleStyle'));
    o._circleAirRadius  = MO.Class.register(o, new MO.AGetSet('_airRadius'), 7);
    o._circlelColor     = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
-   o._tatolColor       = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
+   //o._tatolColor       = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
    //..........................................................
    // @event
    o.oeUpdate          = MO.FEaiChartMktProductCircle_oeUpdate;
@@ -43,7 +43,7 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
    o.on24HDataFetch    = MO.FEaiChartMktProductCircle_on24HDataFetch;  
    o.setCircleStyle    = MO.FEaiChartMktProductCircle_setCircleStyle;
    o.dispose           = MO.FEaiChartMktProductCircle_dispose;
-   o.draw              = FEaiChartMktProductCircle_draw;
+   o.draw              = MO.FEaiChartMktProductCircle_draw;
    return o;
 }
 MO.FEaiChartMktProductCircle_setCircleStyle  =  function FEaiChartMktProductCircle_setCircleStyle(Radius,color,unit){
@@ -276,7 +276,7 @@ MO.FEaiChartMktProductCircle_draw = function FEaiChartMktProductCircle_draw(cont
 //==========================================================
 MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_onPaintBegin(event) {
    var o = this;
-   if(!o._ready){
+   if (!o._ready || !units) {
       return;
    }
    o.__base.FGuiControl.onPaintBegin.call(o, event);
