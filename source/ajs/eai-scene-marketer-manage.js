@@ -1196,7 +1196,7 @@ MO.FEaiChartMktManageScene_processResize = function FEaiChartMktManageScene_proc
    var provinceTable = o._provinceTable;
    if (isVertical) {
       provinceTable.setDockCd(MO.EUiDock.Bottom);
-      provinceTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      provinceTable.setAnchorCd(MO.EUiAnchor.All);
       provinceTable.setLeft(10);
       provinceTable.setRight(10);
       provinceTable.setBottom(10);
@@ -1204,7 +1204,7 @@ MO.FEaiChartMktManageScene_processResize = function FEaiChartMktManageScene_proc
       provinceTable.setHeight(900);
    } else {
       provinceTable.setDockCd(MO.EUiDock.Right);
-      provinceTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      provinceTable.setAnchorCd(MO.EUiAnchor.All);
       provinceTable.setTop(10);
       provinceTable.setRight(0);
       provinceTable.setBottom(10);

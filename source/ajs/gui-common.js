@@ -152,7 +152,7 @@ MO.SGuiImage_load = function SGuiImage_load(){
 }
 MO.SGuiImage_dispose = function SGuiImage_dispose(){
    var o = this;
-   o.bitmap = MO.RObject.dispose(o.bitmap);
+   o.bitmap = MO.Lang.Object.dispose(o.bitmap);
    return o;
 }
 MO.SGuiPaintEvent = function SGuiPaintEvent(){
@@ -171,8 +171,8 @@ MO.SGuiPaintEvent_free = function SGuiPaintEvent_free(){
 }
 MO.SGuiPaintEvent_dispose = function SGuiPaintEvent_dispose(){
    var o = this;
-   o.parentRectangle = MO.RObject.dispose(o.parentRectangle);
-   o.rectangle = MO.RObject.dispose(o.rectangle);
+   o.parentRectangle = MO.Lang.Object.dispose(o.parentRectangle);
+   o.rectangle = MO.Lang.Object.dispose(o.rectangle);
    return o;
 }
 MO.SGuiUpdateEvent = function SGuiUpdateEvent(){
@@ -192,7 +192,7 @@ MO.SGuiUpdateEvent_isAfter = function SGuiUpdateEvent_isAfter(){
 }
 MO.SGuiUpdateEvent_dispose = function SGuiUpdateEvent_dispose(){
    var o = this;
-   o.rectangle = MO.RObject.dispose(o.rectangle);
+   o.rectangle = MO.Lang.Object.dispose(o.rectangle);
    return o;
 }
 MO.FGuiAction = function FGuiAction(o){
@@ -573,58 +573,83 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var o = this;
    var location = o._location;
    var size = o._size;
-   var graphic = event.graphic;
-   var parentRectangle = event.parentRectangle;
-   var calculateRate = event.calculateRate;
-   var rectangle = event.rectangle;
-   o._parentRectangle.assign(parentRectangle);
-   o._eventRectangle.assign(rectangle);
    var dockCd = o._dockCd;
    var anchorCd = o._anchorCd;
-   var left = rectangle.left + location.x;
-   var top = rectangle.top + location.y;
-   var width = size.width;
-   var height = size.height;
+   var graphic = event.graphic;
+   var parentRectangle = event.parentRectangle;
+   var rectangle = event.rectangle;
+   var sizeRate = event.sizeRate;
+   var calculateRate = event.calculateRate;
+   var calculateWidth = calculateRate.width;
+   var calculateHeight = calculateRate.height;
+   o._parentRectangle.assign(parentRectangle);
+   o._eventRectangle.assign(rectangle);
    var parentRight = parentRectangle.right();
    var parentBottom = parentRectangle.bottom();
-   var right = parentRight - o._right;
-   var bottom = parentBottom - o._bottom;
-   var width2 = (parentRectangle.width - width) * 0.5;
-   var height2 = (parentRectangle.height - height) * 0.5;
-   if(event.optionContainer){
-      left *= calculateRate.width;
-      top *= calculateRate.height;
-      right *= calculateRate.width;
-      bottom *= calculateRate.height;
+   var left = 0;
+   var top = 0;
+   var right = 0;
+   var bottom = 0;
+   var width = 0;
+   var height = 0;
+   if(anchorCd & MO.EUiAnchor.Left){
+      left = rectangle.left + location.x * calculateWidth;
+   }else{
+      left = rectangle.left + location.x;
    }
-   if((dockCd == MO.EUiDock.LeftBottom) || (dockCd == MO.EUiDock.Bottom) || (dockCd == MO.EUiDock.RightBottom)){
-      top = bottom - height;
+   if(anchorCd & MO.EUiAnchor.Top){
+      top = rectangle.top + location.y * calculateHeight;
+   }else{
+      top = rectangle.top + location.y;
+   }
+   if(anchorCd & MO.EUiAnchor.Right){
+      right = parentRight - o._right * calculateWidth;
+   }else{
+      right = parentRight - o._right;
+   }
+   if(anchorCd & MO.EUiAnchor.Bottom){
+      bottom = parentBottom - o._bottom * calculateHeight;
+   }else{
+      bottom = parentBottom - o._bottom;
+   }
+   if((anchorCd & MO.EUiAnchor.Left) && (anchorCd & MO.EUiAnchor.Right)){
+      width = size.width * calculateWidth;
+   }else{
+      width = size.width;
+   }
+   if((anchorCd & MO.EUiAnchor.Top) && (anchorCd & MO.EUiAnchor.Bottom)){
+      height = size.height * calculateHeight;
+   }else{
+      height = size.height;
    }
    if((dockCd == MO.EUiDock.RightTop) || (dockCd == MO.EUiDock.Right) || (dockCd == MO.EUiDock.RightBottom)){
+      right = parentRight - o._right * calculateWidth;
       left = right - width;
+   }
+   if((dockCd == MO.EUiDock.LeftBottom) || (dockCd == MO.EUiDock.Bottom) || (dockCd == MO.EUiDock.RightBottom)){
+      bottom = parentBottom - o._bottom * calculateHeight;
+      top = bottom - height;
    }
    if((anchorCd & MO.EUiAnchor.Left) && (anchorCd & MO.EUiAnchor.Right)){
       width = right - left;
    }else if(o._anchorCd & MO.EUiAnchor.Left){
-      left = (parentRight - width - o._right) * calculateRate.width;
+      left = parentRight - width - o._right;
       width = right - left;
    }else if(o._anchorCd & MO.EUiAnchor.Right){
-      width = (parentRight - left - o._right) * calculateRate.width;
+      width = parentRight - left - o._right;
    }
    if((anchorCd & MO.EUiAnchor.Top) && (o._anchorCd & MO.EUiAnchor.Bottom)){
       height = bottom - top;
    }else if(o._anchorCd & MO.EUiAnchor.Top){
-      top = (parentBottom - height - o._bottom) * calculateRate.height;
+      top = parentBottom - height - o._bottom;
       height = bottom - top;
    }else if(o._anchorCd & MO.EUiAnchor.Bottom){
-      height = (parentBottom - top - o._bottom) * calculateRate.height;
+      height = parentBottom - top - o._bottom;
    }
-   event.optionContainer = false;
-   graphic.store();
    rectangle.set(left, top, Math.max(width, 0), Math.max(height, 0));
    parentRectangle.assign(rectangle);
-   var sacle = graphic.scale();
    o._clientRectangle.assign(rectangle);
+   graphic.store();
    graphic.setScale(o._scale.width, o._scale.height);
    o.onPaintBegin(event);
    var components = o._components;
@@ -699,9 +724,9 @@ MO.FGuiControl_psUpdate = function FGuiControl_psUpdate(){
 }
 MO.FGuiControl_dispose = function FGuiControl_dispose(){
    var o = this;
-   o._backImage = MO.RObject.dispose(o._backImage);
-   o._backHoverImage = MO.RObject.dispose(o._backHoverImage);
-   o._clientRectangle = MO.RObject.dispose(o._clientRectangle);
+   o._backImage = MO.Lang.Object.dispose(o._backImage);
+   o._backHoverImage = MO.Lang.Object.dispose(o._backHoverImage);
+   o._clientRectangle = MO.Lang.Object.dispose(o._clientRectangle);
    o.__base.MGuiSize.dispose.call(o);
    o.__base.MUiBorder.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);

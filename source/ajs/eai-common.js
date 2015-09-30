@@ -40,6 +40,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartInvestment  = 'chart.investment';
    o.ChartPerformence = 'chart.performence';
    o.ChartCustomer             = 'chart.customer';
+   o.ChartCustomerInvestment3d = 'chart.customer.investment.3d';
    o.ChartCustomerSphere       = 'chart.customer.sphere';
    o.ChartMarketerCustomer     = 'chart.marketer.customer';
    o.ChartMarketerMarketer     = 'chart.marketer.marketer';
@@ -49,6 +50,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartDepartmentDepartment = 'chart.department.department';
    o.ChartStatisticsMarketer   = 'chart.statistics.marketer';
    o.ChartPerformenceMarketer  = 'chart.performence.marketer';
+   o.ChartMarketerProduct      = 'chart.marketer.product';
    return o;
 }
 MO.Eai = new function FEai(){

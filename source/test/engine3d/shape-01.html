@@ -29,25 +29,26 @@ function onEnterFrame(){
 }
 //----------------------------------------------------------
 function _load(){
+   var singleMode = false;
    // 环境设置
    MO.initialize();
    MO.Runtime.setProcessCd(MO.EProcess.Debug);
-   MO.RApplication.initialize();
-   MO.RBrowser.setContentPath('../..');
-   // 设置环境
-   MO.RConsole.find(MO.FE3sVendorConsole).setup('net');
-   // 创建画布
-   canvas = MO.RClass.create(MO.FE3dSimpleCanvas);
-   canvas.build(document);
-   canvas.setPanel(document.body);
-   var context = canvas.graphicContext();
-   stage = canvas._stage;
+   MO.Window.Browser.setContentPath('../..');
+   MO.Console.find(MO.FE3sVendorConsole).setup('net');
+   // 创建应用
+   var application = MO.Desktop.initialize(MO.FCanvasApplication);
+   application.setup(document.body);
+   var chapter = application.selectChapterByCode(MO.ECanvasChapter.Simple);
+   var scene = chapter.selectSceneByCode(MO.ECanvasScene.Simple);
+   var context = application.desktop().canvas3d().graphicContext();
+   // 设置舞台
+   var stage = scene.activeStage();
    stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    stage.addEnterFrameListener(null, onEnterFrame);
-   layer = stage.spriteLayer();
+   var layer = stage.spriteLayer();
    // 创建图片
    shapes = new MO.TObjects();
-   if(false){
+   if(singleMode){
       var shapeData = context.createObject(MO.FE3dShapeData);
       shapeData.size().set(400, 200);
       var graphic = shapeData.beginDraw();

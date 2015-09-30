@@ -104,7 +104,7 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    o._hPanel = hPanel;
    //..........................................................
    // 创建桌面
-   var desktop = o._desktop = MO.Class.create(MO.FEaiChartDesktop);
+   var desktop = o._desktop = MO.Class.create(MO.FCanvasDesktop);
    desktop.build(hPanel);
    var canvas = MO.Eai.Canvas = desktop.canvas3d();
    var context = canvas.graphicContext();

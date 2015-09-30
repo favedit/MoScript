@@ -45,9 +45,9 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
    var adjustHeight = MO.Lang.Integer.pow2(size.height);
    o._adjustSize.set(adjustWidth, adjustHeight);
    // 绘制画板
-   var canvasConsole = MO.Console.find(FE2dCanvasConsole);
+   var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var graphic = o._graphic = canvas.context();
+   var graphic = o._graphic = canvas.graphicContext();
    return graphic;
 }
 

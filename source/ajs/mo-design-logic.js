@@ -159,8 +159,8 @@ MO.FEditorDesktop_resize = function FEditorDesktop_resize(targetWidth, targetHei
 }
 MO.FEditorDesktop_dispose = function FEditorDesktop_dispose(){
    var o = this;
-   o._canvas3d = MO.RObject.dispose(o._canvas3d);
-   o._canvas2d = MO.RObject.dispose(o._canvas2d);
+   o._canvas3d = MO.Lang.Object.dispose(o._canvas3d);
+   o._canvas2d = MO.Lang.Object.dispose(o._canvas2d);
    o.__base.FDesktop.dispose.call(o);
 }
 MO.FEditorFrameSet = function FEditorFrameSet(o){

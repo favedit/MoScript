@@ -2439,53 +2439,95 @@ MO.FJsonConnection_content = function FJsonConnection_content(){
    return this._content;
 }
 MO.FSocket = function FSocket(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._connected = MO.Class.register(o, new MO.AGetter('_connected'), false);
-   o._handle    = MO.Class.register(o, new MO.AGetter('_handle'));
-   o.onOpen     = MO.FSocket_onOpen;
-   o.ohOpen     = MO.FSocket_ohOpen;
-   o.ohError    = MO.FSocket_ohError;
-   o.ohMessage  = MO.FSocket_ohMessage;
-   o.ohClose    = MO.FSocket_ohClose;
-   o.construct  = MO.FSocket_construct;
-   o.connect    = MO.FSocket_connect;
-   o.send       = MO.FSocket_send;
-   o.disconnect = MO.FSocket_disconnect;
-   o.dispose    = MO.FSocket_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
+   o._connected        = MO.Class.register(o, new MO.AGetter('_connected'), false);
+   o._handle           = MO.Class.register(o, new MO.AGetter('_handle'));
+   o._eventOpen        = null;
+   o._eventSend        = null;
+   o._eventReceive     = null;
+   o._eventClose       = null;
+   o._eventError       = null;
+   o._listenersOpen    = MO.Class.register(o, new MO.AListener('_listenersOpen'));
+   o._listenersSend    = MO.Class.register(o, new MO.AListener('_listenersSend'));
+   o._listenersReceive = MO.Class.register(o, new MO.AListener('_listenersReceive'));
+   o._listenersClose   = MO.Class.register(o, new MO.AListener('_listenersClose'));
+   o._listenersError   = MO.Class.register(o, new MO.AListener('_listenersError'));
+   o.onOpen            = MO.FSocket_onOpen;
+   o.onReveive         = MO.FSocket_onReveive;
+   o.onClose           = MO.FSocket_onClose;
+   o.ohOpen            = MO.FSocket_ohOpen;
+   o.ohError           = MO.FSocket_ohError;
+   o.ohReceive         = MO.FSocket_ohReceive;
+   o.ohClose           = MO.FSocket_ohClose;
+   o.construct         = MO.FSocket_construct;
+   o.connect           = MO.FSocket_connect;
+   o.send              = MO.FSocket_send;
+   o.disconnect        = MO.FSocket_disconnect;
+   o.dispose           = MO.FSocket_dispose;
    return o;
 }
 MO.FSocket_onOpen = function FSocket_onOpen(event){
    var o = this;
    o._connected = true;
+   o.processOpenListener(event);
 }
-MO.FSocket_ohOpen = function FSocket_ohOpen(event){
-   this._linker.onOpen(event);
-}
-MO.FSocket_ohError = function FSocket_ohError(event){
+MO.FSocket_ohOpen = function FSocket_ohOpen(hEvent){
    var o = this._linker;
+   var event = o._eventOpen;
+   o.onOpen(event);
 }
-MO.FSocket_ohMessage = function FSocket_ohMessage(event){
-   var o = this._linker;
+MO.FSocket_onReveive = function FSocket_onReveive(event){
+   var o = this;
+   o.processReceiveListener(event);
 }
-MO.FSocket_ohClose = function FSocket_ohClose(event){
+MO.FSocket_ohReceive = function FSocket_ohReceive(hEvent){
    var o = this._linker;
+   var event = o._eventReceive;
+   event.message = hEvent.data;
+   o.onReveive(event);
+}
+MO.FSocket_onClose = function FSocket_onClose(event){
+   var o = this;
    o._connected = false;
+   o.processCloseListener(o._eventClose);
+}
+MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
+   var o = this._linker;
+   var event = o._eventClose;
+   o.onClose(event);
+}
+MO.FSocket_onError = function FSocket_onError(event){
+   var o = this;
+   debugger
+   var event = o._eventError;
+   o.processErrorListener(event);
+}
+MO.FSocket_ohError = function FSocket_ohError(hEvent){
+   this._linker.onError(event);
 }
 MO.FSocket_construct = function FSocket_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._eventOpen = new MO.SEvent(o);
+   o._eventSend = new MO.SEvent(o);
+   o._eventReceive = new MO.SEvent(o);
+   o._eventClose = new MO.SEvent(o);
+   o._eventError = new MO.SEvent(o);
 }
 MO.FSocket_connect = function FSocket_connect(url){
    var o = this;
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;
-   handle.onerror = o.ohError
-   handle.onmessage = o.ohMessage;
+   handle.onmessage = o.ohReceive;
    handle.onclose = o.ohClose;
+   handle.onerror = o.ohError
 }
 MO.FSocket_send = function FSocket_send(message){
    var o = this;
+   var event = o._eventSend;
+   event.message = message;
+   o.processSendListener(event);
    o._handle.send(message);
 }
 MO.FSocket_disconnect = function FSocket_disconnect(){
@@ -2494,6 +2536,11 @@ MO.FSocket_disconnect = function FSocket_disconnect(){
 }
 MO.FSocket_dispose = function FSocket_dispose(){
    var o = this;
+   o._eventOpen = MO.Lang.Object.dispose(o._eventOpen);
+   o._eventSend = MO.Lang.Object.dispose(o._eventSend);
+   o._eventReceive = MO.Lang.Object.dispose(o._eventReceive);
+   o._eventClose = MO.Lang.Object.dispose(o._eventClose);
+   o._eventError = MO.Lang.Object.dispose(o._eventError);
    o._handle = null;
    o.__base.FObject.dispose.call(o);
 }
@@ -4814,10 +4861,10 @@ MO.SBorder_toString = function SBorder_toString(){
 }
 MO.SBorder_dispose = function SBorder_dispose(){
    var o = this;
-   o.left = MO.RObject.dispose(o.left)
-   o.top = MO.RObject.dispose(o.top)
-   o.right = MO.RObject.dispose(o.right)
-   o.bottom = MO.RObject.dispose(o.bottom)
+   o.left = MO.Lang.Object.dispose(o.left)
+   o.top = MO.Lang.Object.dispose(o.top)
+   o.right = MO.Lang.Object.dispose(o.right)
+   o.bottom = MO.Lang.Object.dispose(o.bottom)
 }
 MO.SBorderLine = function SBorderLine(width, style, color){
    var o = this;
@@ -4953,9 +5000,7 @@ MO.FG2dCanvasContext_linkCanvas = function FG2dCanvasContext_linkCanvas(hCanvas)
    o._hCanvas = hCanvas;
 }
 MO.FG2dCanvasContext_setGlobalScale = function FG2dCanvasContext_setGlobalScale(width, height){
-   var o = this;
-   o._globalScale.set(width, height);
-   o._handle.scale(width, height);
+   this._globalScale.set(width, height);
 }
 MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
    var o = this;
@@ -4977,10 +5022,16 @@ MO.FG2dCanvasContext_store = function FG2dCanvasContext_store(){
 MO.FG2dCanvasContext_restore = function FG2dCanvasContext_restore(){
    this._handle.restore();
 }
-MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(){
+MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(clearFlag){
    var o = this;
+   var handle = o._handle;
    var scale = o._globalScale;
-   o._handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
+   if(clearFlag){
+      var size = o._size;
+      handle.setTransform(1, 0, 0, 1, 0, 0);
+      handle.clearRect(0, 0, size.width, size.height);
+   }
+   handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
 }
 MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
    var o = this;
@@ -7859,7 +7910,7 @@ MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;
    var textures = o._textures;
-   if(textures == null){
+   if(!textures){
       textures = o._textures = new MO.TObjects();
    }
    return textures;
@@ -7868,7 +7919,8 @@ MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
    var o = this;
    o._size = MO.Lang.Object.dispose(o._size);
    o._color = MO.Lang.Object.dispose(o._color);
-   o.__base.FG3dObject.dispose();
+   o._textures = MO.Lang.Object.dispose(o._textures);
+   o.__base.FG3dObject.dispose.call(o);
 }
 MO.FG3dShader = function FG3dShader(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
@@ -9537,9 +9589,10 @@ MO.FWglFlatTexture_texture = function FWglFlatTexture_texture(){
 }
 MO.FWglFlatTexture_makeMipmap = function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var g = o._graphicContext._handle;
-   g.bindTexture(g.TEXTURE_2D, o._handle);
-   g.generateMipmap(g.TEXTURE_2D);
+   var context = o._graphicContext;
+   var handle = context._handle;
+   handle.bindTexture(handle.TEXTURE_2D, o._handle);
+   handle.generateMipmap(handle.TEXTURE_2D);
 }
 MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, width, height){
    var o = this;
@@ -10033,15 +10086,15 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
 }
 MO.FWglRenderTarget_dispose = function FWglRenderTarget_dispose(){
    var o = this;
-   var c = o._graphicContext;
-   var n = o._handleDepth;
-   if(n){
-      c._handle.deleteRenderbuffer(n);
+   var context = o._graphicContext;
+   var handleDepth = o._handleDepth;
+   if(handleDepth){
+      context._handle.deleteRenderbuffer(handleDepth);
       o._handleDepth = null;
    }
-   var n = o._handle;
-   if(n){
-      c._handle.deleteFramebuffer(n);
+   var handle = o._handle;
+   if(handle){
+      context._handle.deleteFramebuffer(handle);
       o._handle = null;
    }
    o.__base.FG3dRenderTarget.dispose.call(o);
@@ -10615,15 +10668,16 @@ MO.FDesktop = function FDesktop(o){
    o._logicSize       = MO.Class.register(o, new MO.AGetter('_logicSize'));
    o._logicRate       = MO.Class.register(o, new MO.AGetter('_logicRate'));
    o._screenSize      = MO.Class.register(o, new MO.AGetter('_screenSize'));
+   o._virtualSize     = MO.Class.register(o, new MO.AGetter('_virtualSize'));
    o._canvases        = MO.Class.register(o, new MO.AGetter('_canvases'));
    o.construct        = MO.FDesktop_construct;
    o.canvasRegister   = MO.FDesktop_canvasRegister;
    o.canvasUnregister = MO.FDesktop_canvasUnregister;
-   o.setup            = MO.FDesktop_setup;
-   o.build            = MO.FDesktop_build;
-   o.resize           = MO.FDesktop_resize;
+   o.setup            = MO.Method.empty;
+   o.build            = MO.Method.empty;
+   o.resize           = MO.Method.empty;
    o.processEvent     = MO.FDesktop_processEvent;
-   o.process          = MO.FDesktop_process;
+   o.process          = MO.Method.empty;
    o.dispose          = MO.FDesktop_dispose;
    return o;
 }
@@ -10636,6 +10690,7 @@ MO.FDesktop_construct = function FDesktop_construct(){
    o._logicSize = new MO.SSize2(1280, 720);
    o._logicRate = new MO.SSize2(1, 1);
    o._screenSize = new MO.SSize2(1280, 720);
+   o._virtualSize = new MO.SSize2(1280, 720);
    o._canvases = new MO.TObjects();
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
@@ -10648,21 +10703,9 @@ MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
-MO.FDesktop_setup = function FDesktop_setup(hPanel){
-   var o = this;
-}
-MO.FDesktop_build = function FDesktop_build(hPanel){
-   var o = this;
-}
-MO.FDesktop_resize = function FDesktop_resize(){
-   var o = this;
-}
 MO.FDesktop_processEvent = function FDesktop_processEvent(event){
    var o = this;
    o.dispatcherEvent(event);
-}
-MO.FDesktop_process = function FDesktop_process(){
-   var o = this;
 }
 MO.FDesktop_dispose = function FDesktop_dispose(){
    var o = this;
@@ -10671,6 +10714,7 @@ MO.FDesktop_dispose = function FDesktop_dispose(){
    o._logicSize = MO.Lang.Object.dispose(o._logicSize);
    o._logicRate = MO.Lang.Object.dispose(o._logicRate);
    o._screenSize = MO.Lang.Object.dispose(o._screenSize);
+   o._virtualSize = MO.Lang.Object.dispose(o._virtualSize);
    o._canvases = MO.Lang.Object.dispose(o._canvases);
    o.__base.FObject.dispose.call(o);
 }
@@ -16115,6 +16159,7 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
    o._mergeRenderables = null;
    o.construct         = MO.FE3rDynamicMesh_construct;
    o.mergeCount        = MO.FE3rDynamicMesh_mergeCount;
+   o.mergeStride       = MO.FE3rDynamicMesh_mergeStride;
    o.mergeMaxCount     = MO.FE3rDynamicMesh_mergeMaxCount;
    o.mergeRenderables  = MO.FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = MO.FE3rDynamicMesh_syncVertexBuffer;
@@ -16127,10 +16172,13 @@ MO.FE3rDynamicMesh = function FE3rDynamicMesh(o){
 MO.FE3rDynamicMesh_construct = function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
-   o._mergeRenderables = new TObjects();
+   o._mergeRenderables = new MO.TObjects();
 }
 MO.FE3rDynamicMesh_mergeCount = function FE3rDynamicMesh_mergeCount(){
    return this._mergeRenderables.count();
+}
+MO.FE3rDynamicMesh_mergeStride = function FE3rDynamicMesh_mergeStride(){
+   return 4;
 }
 MO.FE3rDynamicMesh_mergeMaxCount = function FE3rDynamicMesh_mergeMaxCount(){
    return this._model._mergeMaxCount;
@@ -16181,17 +16229,17 @@ MO.FE3rDynamicMesh_mergeRenderable = function FE3rDynamicMesh_mergeRenderable(re
    var vertexCount = renderable.vertexCount();
    var indexBuffer = renderable.indexBuffers().first();
    var indexCount = indexBuffer.count();
-   var mc = capability.mergeCount;
-   if(o._mergeRenderables.count() >= mc){
+   var mergeCount = capability.mergeCount;
+   if(o._mergeRenderables.count() >= mergeCount){
       return false;
    }
-   var vt = o._vertexTotal + vertexCount;
+   var vertexTotal = o._vertexTotal + vertexCount;
    if(capability.optionIndex32){
-      if(vt > MO.Lang.Integer.MAX_UINT32){
+      if(vertexTotal > MO.Lang.Integer.MAX_UINT32){
          return false;
       }
    }else{
-      if(vt > MO.Lang.Integer.MAX_UINT16){
+      if(vertexTotal > MO.Lang.Integer.MAX_UINT16){
          return false;
       }
    }
@@ -16252,10 +16300,10 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
    var instanceVertexBuffer = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
    instanceVertexBuffer.setCode('instance');
    instanceVertexBuffer.setStride(4);
-   instanceVertexBuffer.setFormatCd(EG3dAttributeFormat.Float1);
+   instanceVertexBuffer.setFormatCd(MO.EG3dAttributeFormat.Float1);
    var vdi = instanceVertexBuffer._data = new Float32Array(vertexTotal);
    o._vertexBuffers.set(instanceVertexBuffer.code(), instanceVertexBuffer);
-   var indexBuffer = o._indexBuffer = context.createIndexBuffer(FE3rIndexBuffer);
+   var indexBuffer = o._indexBuffer = context.createIndexBuffer(MO.FE3rIndexBuffer);
    if(capability.optionIndex32){
       indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
       indexBuffer._data = new Uint32Array(indexTotal);
@@ -16277,7 +16325,7 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
          var vertexBuffer = o.syncVertexBuffer(vb);
          o.mergeVertexBuffer(renderable, vbrc, vertexBuffer, vertexBufferResource);
       }
-      RFloat.fill(vdi, o._vertexPosition, vc, i);
+      MO.Lang.Float.fill(vdi, o._vertexPosition, vc, i);
       var indexBuffer = renderable.indexBuffers().first();
       var ic = indexBuffer.count();
       var indexBufferResource = indexBuffer._resource;
@@ -16297,10 +16345,10 @@ MO.FE3rDynamicMesh_build = function FE3rDynamicMesh_build(){
 }
 MO.FE3rDynamicModel = function FE3rDynamicModel(o){
    o = MO.Class.inherits(this, o, MO.FE3rObject);
-   o._renderables   = MO.Class.register(o, new AGetter('_renderables'));
-   o._mergeMaxCount = MO.Class.register(o, new AGetter('_mergeMaxCount'));
-   o._mergeStride   = MO.Class.register(o, new AGetter('_mergeStride'), 4);
-   o._meshes        = MO.Class.register(o, new AGetter('_meshes'));
+   o._renderables   = MO.Class.register(o, new MO.AGetter('_renderables'));
+   o._mergeMaxCount = MO.Class.register(o, new MO.AGetter('_mergeMaxCount'));
+   o._mergeStride   = MO.Class.register(o, new MO.AGetter('_mergeStride'), 4);
+   o._meshes        = MO.Class.register(o, new MO.AGetter('_meshes'));
    o._updateDate    = 0;
    o.construct      = MO.FE3rDynamicModel_construct;
    o.createMesh     = MO.FE3rDynamicModel_createMesh;
@@ -16317,11 +16365,11 @@ MO.FE3rDynamicModel_construct = function FE3rDynamicModel_construct(){
 }
 MO.FE3rDynamicModel_createMesh = function FE3rDynamicModel_createMesh(){
    var o = this;
-   var m = MO.Class.create(MO.FE3rDynamicMesh);
-   m._model = o;
-   m.linkGraphicContext(o);
-   o._meshes.push(m);
-   return m;
+   var mesh = MO.Class.create(MO.FE3rDynamicMesh);
+   mesh._model = o;
+   mesh.linkGraphicContext(o);
+   o._meshes.push(mesh);
+   return mesh;
 }
 MO.FE3rDynamicModel_pushRenderable = function FE3rDynamicModel_pushRenderable(p){
    this._renderables.push(p);
@@ -22180,7 +22228,6 @@ MO.EE3dBoundaryShape_dispose = function EE3dBoundaryShape_dispose(){
 }
 MO.FE3dBoundaryShape3d = function FE3dBoundaryShape3d(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
-   o._optionSphere     = false;
    o._scaleTop         = MO.Class.register(o, new MO.AGetSet('_scaleTop'), 1);
    o._scaleBottom      = MO.Class.register(o, new MO.AGetSet('_scaleBottom'), 0.9);
    o._faceColor        = MO.Class.register(o, new MO.AGetter('_faceColor'));
@@ -22195,8 +22242,6 @@ MO.FE3dBoundaryShape3d = function FE3dBoundaryShape3d(o){
    o.buildFace         = MO.FE3dBoundaryShape3d_buildFace;
    o.buildBorder       = MO.FE3dBoundaryShape3d_buildBorder;
    o.build             = MO.FE3dBoundaryShape3d_build;
-   o.buildFlat         = MO.FE3dBoundaryShape3d_buildFlat;
-   o.buildSphere       = MO.FE3dBoundaryShape3d_buildSphere;
    o.dispose           = MO.FE3dBoundaryShape3d_dispose;
    return o;
 }
@@ -22221,13 +22266,16 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    var count = boundaries.count();
    var vertexTotal = o._vertexTotal;
    var indexTotal = o._indexTotal;
-   var vertexStart = 0;
+   var vertexSum = vertexTotal * 3;
    var vertexIndex = 0;
-   var vertexData = new Float32Array(3 * vertexTotal * 2);
+   var vertexData = new Float32Array(3 * vertexSum);
+   var colorIndex = 0;
+   var colors = new Uint8Array(4 * vertexSum);
    var coordIndex = 0;
-   var coordData = new Float32Array(2 * vertexTotal * 2);
+   var coordData = new Float32Array(2 * vertexSum);
    var faceIndex = 0;
    var faceData = new Uint32Array(indexTotal + 3 * 2 * vertexTotal);
+   var vertexStart = 0;
    for(var n = 0; n < count; n++){
       var boundary = boundaries.at(n);
       var positionCount = boundary.positionCount();
@@ -22241,6 +22289,10 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
          vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * scaleTop;
          vertexData[vertexIndex++] = Math.sin(y) * scaleTop;
          vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleTop;
+         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0xFF;
          coordData[coordIndex++] = cx / 360 + 0.5;
          coordData[coordIndex++] = cy / 180 - 0.5;
       }
@@ -22255,7 +22307,9 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
       }
       vertexStart += positionCount;
    }
-   var layerStart = vertexStart;
+   var layerUpStart = vertexStart;
+   scaleTop *= 0.999;
+   var vertexStart = 0;
    for(var n = 0; n < count; n++){
       var boundary = boundaries.at(n);
       var positionCount = boundary.positionCount();
@@ -22264,12 +22318,39 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
       for(var i = 0; i < positionCount; i++){
          var x = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
          var y = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
-         vertexData[vertexIndex++] = (Math.sin(x) * Math.cos(y)) * scaleBottom;
-         vertexData[vertexIndex++] = (Math.sin(y)) * scaleBottom;
-         vertexData[vertexIndex++] = (-Math.cos(x) * Math.cos(y)) * scaleBottom;
-         coordData[coordIndex++] = x;
-         coordData[coordIndex++] = y;
+         vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * scaleTop;
+         vertexData[vertexIndex++] = Math.sin(y) * scaleTop;
+         vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleTop;
+         colors[colorIndex++] = 0x42;
+         colors[colorIndex++] = 0x9A;
+         colors[colorIndex++] = 0xF9;
+         colors[colorIndex++] = 0xFF;
+         coordData[coordIndex++] = 0;
+         coordData[coordIndex++] = 0;
       }
+      vertexStart += positionCount;
+   }
+   var layerDownStart = layerUpStart + vertexStart;
+   var vertexStart = 0;
+   for(var n = 0; n < count; n++){
+      var boundary = boundaries.at(n);
+      var positionCount = boundary.positionCount();
+      var positions = boundary.positions();
+      var positionIndex = 0;
+      for(var i = 0; i < positionCount; i++){
+         var x = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         var y = positions[positionIndex++] * MO.Lang.Const.DEGREE_RATE;
+         vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * scaleBottom;
+         vertexData[vertexIndex++] = Math.sin(y) * scaleBottom;
+         vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleBottom;
+         colors[colorIndex++] = 0x12;
+         colors[colorIndex++] = 0x8A;
+         colors[colorIndex++] = 0xF9;
+         colors[colorIndex++] = 0xFF;
+         coordData[coordIndex++] = 0;
+         coordData[coordIndex++] = 0;
+      }
+      vertexStart += positionCount;
    }
    var vertexStart = 0;
    for(var n = 0; n < count; n++){
@@ -22277,45 +22358,37 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
       var positionCount = boundary.positionCount();
       for(var i = 0; i < positionCount; i++){
          if(i == positionCount - 1){
-            faceData[faceIndex++] = vertexStart + i;
-            faceData[faceIndex++] = vertexStart + 0;
-            faceData[faceIndex++] = vertexStart + i + layerStart;
-            faceData[faceIndex++] = vertexStart + 0;
-            faceData[faceIndex++] = vertexStart + layerStart;
-            faceData[faceIndex++] = vertexStart + i + layerStart;
+            faceData[faceIndex++] = layerUpStart   + vertexStart + i;
+            faceData[faceIndex++] = layerUpStart   + vertexStart;
+            faceData[faceIndex++] = layerDownStart + vertexStart + i;
+            faceData[faceIndex++] = layerUpStart   + vertexStart;
+            faceData[faceIndex++] = layerDownStart + vertexStart;
+            faceData[faceIndex++] = layerDownStart + vertexStart + i;
          }else{
-            faceData[faceIndex++] = vertexStart + i;
-            faceData[faceIndex++] = vertexStart + i + 1;
-            faceData[faceIndex++] = vertexStart + i + layerStart;
-            faceData[faceIndex++] = vertexStart + i + 1;
-            faceData[faceIndex++] = vertexStart + i + layerStart + 1;
-            faceData[faceIndex++] = vertexStart + i + layerStart;
+            faceData[faceIndex++] = layerUpStart   + vertexStart + i;
+            faceData[faceIndex++] = layerUpStart   + vertexStart + i + 1;
+            faceData[faceIndex++] = layerDownStart + vertexStart + i;
+            faceData[faceIndex++] = layerUpStart   + vertexStart + i + 1;
+            faceData[faceIndex++] = layerDownStart + vertexStart + i + 1;
+            faceData[faceIndex++] = layerDownStart + vertexStart + i;
          }
       }
       vertexStart += positionCount;
-   }
-   var colorIndex = 0;
-   var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
-   var positionTotal = vertexTotal * 2;
-   for(var i = 0; i < positionTotal; i++){
-      colors[colorIndex++] = (faceColor.red * 255) & 0xFF;
-      colors[colorIndex++] = (faceColor.green * 255) & 0xFF;
-      colors[colorIndex++] = (faceColor.blue * 255) & 0xFF;
-      colors[colorIndex++] = (faceColor.alpha * 255) & 0xFF;
    }
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
    renderable._shape = o;
    renderable.linkGraphicContext(context);
    renderable.setOptionColor(true);
    renderable.setOptionCoord(true);
-   renderable.setVertexCount(vertexTotal * 2);
+   renderable.setVertexCount(vertexTotal * 3);
    renderable.setup();
    renderable.color().setHex('#0A5294');
-   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
-   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
-   renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexTotal * 2, true);
-   renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
-   renderable.indexBuffer().upload(faceData, faceIndex, true);
+   renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexSum, true);
+   renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexSum, true);
+   renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexSum, true);
+   var indexBuffer = renderable.indexBuffer();
+   indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
+   indexBuffer.upload(faceData, faceIndex, true);
 }
 MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
    var o = this;
@@ -22331,6 +22404,8 @@ MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
    var vertexIndex = 0;
    var faceIndex = 0;
    var vertexData = new Float32Array(3 * vertexTotal * 2);
+   var colorIndex = 0;
+   var colors = new Uint8Array(4 * vertexTotal * 2);
    var borderIndex = 0;
    var borderData = new Uint32Array(2 * vertexTotal + 2 * vertexTotal);
    for(var n = 0; n < count; n++){
@@ -22380,18 +22455,16 @@ MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
       }
       vertexStart += positionCount;
    }
-   var colorIndex = 0;
-   var colors = o.colorsData = new Uint8Array(4 * vertexTotal * 2);
    for(var i = 0; i < vertexTotal; i++){
-      colors[colorIndex++] = 0x22;
-      colors[colorIndex++] = 0xA9;
-      colors[colorIndex++] = 0xFF;
+      colors[colorIndex++] = 0x42;
+      colors[colorIndex++] = 0x9A;
+      colors[colorIndex++] = 0xF9;
       colors[colorIndex++] = 0xFF;
    }
    for(var i = 0; i < vertexTotal; i++){
-      colors[colorIndex++] = 0x96;
-      colors[colorIndex++] = 0xB0;
-      colors[colorIndex++] = 0xD6;
+      colors[colorIndex++] = 0x12;
+      colors[colorIndex++] = 0x8A;
+      colors[colorIndex++] = 0xF9;
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);
@@ -22401,10 +22474,11 @@ MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
    renderable.setVertexCount(vertexTotal * 2);
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexTotal * 2, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexTotal * 2, true);
-   renderable.indexBuffer().setDrawModeCd(MO.EG3dDrawMode.Lines);
-   renderable.indexBuffer().setStrideCd(MO.EG3dIndexStride.Uint32);
-   renderable.indexBuffer().setLineWidth(1);
-   renderable.indexBuffer().upload(borderData, borderIndex, true);
+   var indexBuffer = renderable.indexBuffer();
+   indexBuffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
+   indexBuffer.setLineWidth(1);
+   indexBuffer.upload(borderData, borderIndex, true);
    renderable.material().info().effectCode = 'eai.map.face';
 }
 MO.FE3dBoundaryShape3d_build = function FE3dBoundaryShape3d_build(context){
@@ -22422,16 +22496,6 @@ MO.FE3dBoundaryShape3d_build = function FE3dBoundaryShape3d_build(context){
    o._indexTotal = indexTotal;
    o.buildFace(context);
    o.buildBorder(context);
-}
-MO.FE3dBoundaryShape3d_buildFlat = function FE3dBoundaryShape3d_buildFlat(context){
-   var o = this;
-   o._optionSphere = false;
-   o.build(context)
-}
-MO.FE3dBoundaryShape3d_buildSphere = function FE3dBoundaryShape3d_buildSphere(context){
-   var o = this;
-   o._optionSphere = true;
-   o.build(context)
 }
 MO.FE3dBoundaryShape3d_dispose = function FE3dBoundaryShape3d_dispose(){
    var o = this;
@@ -23580,9 +23644,9 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
    var adjustWidth = MO.Lang.Integer.pow2(size.width);
    var adjustHeight = MO.Lang.Integer.pow2(size.height);
    o._adjustSize.set(adjustWidth, adjustHeight);
-   var canvasConsole = MO.Console.find(FE2dCanvasConsole);
+   var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var graphic = o._graphic = canvas.context();
+   var graphic = o._graphic = canvas.graphicContext();
    return graphic;
 }
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
@@ -23606,6 +23670,7 @@ MO.FE3dSphere = function FE3dSphere(o){
    o._splitCount           = MO.Class.register(o, new MO.AGetSet('_splitCount'), 8);
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
+   o._vertexCoordBuffer    = null;
    o.construct             = MO.FE3dSphere_construct;
    o.setup                 = MO.FE3dSphere_setup;
    return o;
@@ -23621,6 +23686,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var context = o._graphicContext;
    var positions = new MO.TArray();
    var normals = new MO.TArray();
+   var coords = new MO.TArray();
    var cr = o._splitCount * 2;
    var cz = o._splitCount;
    var stepr = Math.PI * 2 / cr;
@@ -23635,6 +23701,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
          var z = -Math.cos(radius) * Math.cos(radiusZ);
          positions.push(x, y, z);
          normals.push(x, y, z);
+         coords.push(radius / Math.PI / 2 + 0.5, radiusZ / Math.PI - 0.5);
          count++;
       }
    }
@@ -23648,6 +23715,11 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    buffer.setCode('normal');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
+   o.pushVertexBuffer(buffer);
+   var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
+   buffer.setCode('coord');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
+   buffer.upload(new Float32Array(coords.memory()), 4 * 2, count);
    o.pushVertexBuffer(buffer);
    var indexes = new MO.TArray();
    for(var rz = 0; rz < cz; rz++){
@@ -23693,7 +23765,7 @@ MO.FE3dVideo_testReady = function FE3dVideo_testReady(){
       if(renderable){
          o._ready = renderable.testReady();
          if(o._ready){
-            var event = new SEvent(o);
+            var event = new MO.SEvent(o);
             o.processLoadListener(event);
             event.dispose();
          }

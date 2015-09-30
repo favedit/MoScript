@@ -133,10 +133,10 @@ MO.SBorder_toString = function SBorder_toString(){
 }
 MO.SBorder_dispose = function SBorder_dispose(){
    var o = this;
-   o.left = MO.RObject.dispose(o.left)
-   o.top = MO.RObject.dispose(o.top)
-   o.right = MO.RObject.dispose(o.right)
-   o.bottom = MO.RObject.dispose(o.bottom)
+   o.left = MO.Lang.Object.dispose(o.left)
+   o.top = MO.Lang.Object.dispose(o.top)
+   o.right = MO.Lang.Object.dispose(o.right)
+   o.bottom = MO.Lang.Object.dispose(o.bottom)
 }
 MO.SBorderLine = function SBorderLine(width, style, color){
    var o = this;
@@ -272,9 +272,7 @@ MO.FG2dCanvasContext_linkCanvas = function FG2dCanvasContext_linkCanvas(hCanvas)
    o._hCanvas = hCanvas;
 }
 MO.FG2dCanvasContext_setGlobalScale = function FG2dCanvasContext_setGlobalScale(width, height){
-   var o = this;
-   o._globalScale.set(width, height);
-   o._handle.scale(width, height);
+   this._globalScale.set(width, height);
 }
 MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
    var o = this;
@@ -296,10 +294,16 @@ MO.FG2dCanvasContext_store = function FG2dCanvasContext_store(){
 MO.FG2dCanvasContext_restore = function FG2dCanvasContext_restore(){
    this._handle.restore();
 }
-MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(){
+MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(clearFlag){
    var o = this;
+   var handle = o._handle;
    var scale = o._globalScale;
-   o._handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
+   if(clearFlag){
+      var size = o._size;
+      handle.setTransform(1, 0, 0, 1, 0, 0);
+      handle.clearRect(0, 0, size.width, size.height);
+   }
+   handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
 }
 MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
    var o = this;
@@ -3178,7 +3182,7 @@ MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;
    var textures = o._textures;
-   if(textures == null){
+   if(!textures){
       textures = o._textures = new MO.TObjects();
    }
    return textures;
@@ -3187,7 +3191,8 @@ MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
    var o = this;
    o._size = MO.Lang.Object.dispose(o._size);
    o._color = MO.Lang.Object.dispose(o._color);
-   o.__base.FG3dObject.dispose();
+   o._textures = MO.Lang.Object.dispose(o._textures);
+   o.__base.FG3dObject.dispose.call(o);
 }
 MO.FG3dShader = function FG3dShader(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
@@ -4856,9 +4861,10 @@ MO.FWglFlatTexture_texture = function FWglFlatTexture_texture(){
 }
 MO.FWglFlatTexture_makeMipmap = function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var g = o._graphicContext._handle;
-   g.bindTexture(g.TEXTURE_2D, o._handle);
-   g.generateMipmap(g.TEXTURE_2D);
+   var context = o._graphicContext;
+   var handle = context._handle;
+   handle.bindTexture(handle.TEXTURE_2D, o._handle);
+   handle.generateMipmap(handle.TEXTURE_2D);
 }
 MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, width, height){
    var o = this;
@@ -5352,15 +5358,15 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
 }
 MO.FWglRenderTarget_dispose = function FWglRenderTarget_dispose(){
    var o = this;
-   var c = o._graphicContext;
-   var n = o._handleDepth;
-   if(n){
-      c._handle.deleteRenderbuffer(n);
+   var context = o._graphicContext;
+   var handleDepth = o._handleDepth;
+   if(handleDepth){
+      context._handle.deleteRenderbuffer(handleDepth);
       o._handleDepth = null;
    }
-   var n = o._handle;
-   if(n){
-      c._handle.deleteFramebuffer(n);
+   var handle = o._handle;
+   if(handle){
+      context._handle.deleteFramebuffer(handle);
       o._handle = null;
    }
    o.__base.FG3dRenderTarget.dispose.call(o);

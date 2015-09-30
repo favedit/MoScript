@@ -778,7 +778,7 @@ MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;
    var textures = o._textures;
-   if(textures == null){
+   if(!textures){
       textures = o._textures = new MO.TObjects();
    }
    return textures;
@@ -787,7 +787,8 @@ MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
    var o = this;
    o._size = MO.Lang.Object.dispose(o._size);
    o._color = MO.Lang.Object.dispose(o._color);
-   o.__base.FG3dObject.dispose();
+   o._textures = MO.Lang.Object.dispose(o._textures);
+   o.__base.FG3dObject.dispose.call(o);
 }
 MO.FG3dShader = function FG3dShader(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
