@@ -901,6 +901,7 @@ MO.FEaiWorldFaceEffect_drawRenderable = function FEaiWorldFaceEffect_drawRendera
    var material = renderable.material();
    var info = material.info();
    o.bindMaterial(material);
+   context.setCullingMode(false);
    var mergeRenderables = renderable.mergeRenderables();
    var mergeCount = mergeRenderables.count();
    var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, 16 * mergeCount);

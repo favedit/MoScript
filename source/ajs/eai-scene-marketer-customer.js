@@ -1,35 +1,3 @@
-MO.FEaiChartMktCustomerDynamicInfo = function FEaiChartMktCustomerDynamicInfo(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._investmentCount = MO.Class.register(o, [new MO.AGetter('_investmentCount'), new MO.APersistence('_investmentCount', MO.EDataType.Double)]);
-   o._investmentTotal = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Double)]);
-   o._customerCount   = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Int32)]);
-   o._customerTotal   = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Int32)]);
-   o._rankUnits       = MO.Class.register(o, [new MO.AGetter('_rankUnits'), new MO.APersistence('_rankUnits', MO.EDataType.Objects, MO.FEaiChartMktCustomerDynamicRankUnit)]);
-   o._units           = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartMktCustomerDynamicUnit)]);
-   return o;
-}
-MO.FEaiChartMktCustomerDynamicRankUnit = function FEaiChartMktCustomerDynamicRankUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._label      = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
-   o._card       = MO.Class.register(o, [new MO.AGetter('_card'), new MO.APersistence('_card', MO.EDataType.String)]);
-   o._phone      = MO.Class.register(o, [new MO.AGetter('_phone'), new MO.APersistence('_phone', MO.EDataType.String)]);
-   o._investment = MO.Class.register(o, [new MO.AGetter('_investment'), new MO.APersistence('_investment', MO.EDataType.Double)]);
-   return o;
-}
-MO.FEaiChartMktCustomerDynamicUnit = function FEaiChartMktCustomerDynamicUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._recordDate = MO.Class.register(o, [new MO.AGetter('_recordDate'), new MO.APersistence('_recordDate', MO.EDataType.String)]);
-   o._label      = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
-   o._card       = MO.Class.register(o, [new MO.AGetter('_card'), new MO.APersistence('_card', MO.EDataType.String)]);
-   o._phone      = MO.Class.register(o, [new MO.AGetter('_phone'), new MO.APersistence('_phone', MO.EDataType.String)]);
-   o._first      = MO.Class.register(o, [new MO.AGetter('_first'), new MO.APersistence('_first', MO.EDataType.Boolean)]);
-   o._number     = MO.Class.register(o, [new MO.AGetter('_number'), new MO.APersistence('_number', MO.EDataType.Uint16)]);
-   o._modelLabel = MO.Class.register(o, [new MO.AGetter('_modelLabel'), new MO.APersistence('_modelLabel', MO.EDataType.String)]);
-   o._investment = MO.Class.register(o, [new MO.AGetter('_investment'), new MO.APersistence('_investment', MO.EDataType.Double)]);
-   o._gain       = MO.Class.register(o, [new MO.AGetter('_gain'), new MO.APersistence('_gain', MO.EDataType.Double)]);
-   o._bankGain   = MO.Class.register(o, [new MO.AGetter('_bankGain'), new MO.APersistence('_bankGain', MO.EDataType.Double)]);
-   return o;
-}
 MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    o._dateSetup               = false;
@@ -112,7 +80,7 @@ MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProces
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
-   o._dynamicInfo = MO.Class.create(MO.FEaiChartMktCustomerDynamicInfo);
+   o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
    o._rankUnits = new MO.TObjects();
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
@@ -432,7 +400,6 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
-   o.fixMatrix(o._processor.display().matrix());
    var logoBar = o._logoBar;
    if (isVertical) {
       logoBar.setLocation(8, 8);
@@ -445,7 +412,7 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
    if (isVertical) {
       control.setDockCd(MO.EUiDock.RightTop);
       control.setTop(570);
-      control.setRight(100);
+      control.setRight(80);
    } else {
       control.setDockCd(MO.EUiDock.RightBottom);
       control.setRight(780);
@@ -474,42 +441,42 @@ MO.FEaiChartMktCustomerScene_processResize = function FEaiChartMktCustomerScene_
       liveTable.setLeft(10);
       liveTable.setRight(10);
       liveTable.setBottom(10);
-      liveTable.setWidth(1060);
       liveTable.setHeight(900);
    } else {
       liveTable.setDockCd(MO.EUiDock.Right);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      liveTable.setAnchorCd(MO.EUiAnchor.All);
       liveTable.setTop(10);
       liveTable.setRight(0);
       liveTable.setBottom(10);
       liveTable.setWidth(760);
    }
+   o.fixMatrix(o._processor.display().matrix());
 }
 MO.FEaiChartMktCustomerTable = function FEaiChartMktCustomerTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o._currentDate = null;
-   o._rank = MO.Class.register(o, new MO.AGetter('_rank'));
-   o._rankLogoImage = null;
-   o._rankTitleImage = null;
-   o._rankLineImage = null;
-   o._rankLinePadding = null;
-   o._rank1Image = null;
-   o._rank2Image = null;
-   o._rank3Image = null;
-   o._backgroundImage = null;
-   o._backgroundPadding = null;
-   o._tableCount = 0;
-   o._units = null;
-   o._lineScroll = 0;
+   o._currentDate          = null;
+   o._rank                 = MO.Class.register(o, new MO.AGetter('_rank'));
+   o._rankLogoImage        = null;
+   o._rankTitleImage       = null;
+   o._rankLineImage        = null;
+   o._rankLinePadding      = null;
+   o._rank1Image           = null;
+   o._rank2Image           = null;
+   o._rank3Image           = null;
+   o._backgroundImage      = null;
+   o._backgroundPadding    = null;
+   o._tableCount           = 0;
+   o._units                = null;
+   o._lineScroll           = 0;
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o.onImageLoad = MO.FEaiChartMktCustomerTable_onImageLoad;
-   o.onPaintBegin = MO.FEaiChartMktCustomerTable_onPaintBegin;
-   o.construct = MO.FEaiChartMktCustomerTable_construct;
-   o.setup = MO.FEaiChartMktCustomerTable_setup;
-   o.setRankUnits = MO.FEaiChartMktCustomerTable_setRankUnits;
-   o.pushUnit = MO.FEaiChartMktCustomerTable_pushUnit;
-   o.drawRow = MO.FEaiChartMktCustomerTable_drawRow;
-   o.dispose = MO.FEaiChartMktCustomerTable_dispose;
+   o.onImageLoad           = MO.FEaiChartMktCustomerTable_onImageLoad;
+   o.onPaintBegin          = MO.FEaiChartMktCustomerTable_onPaintBegin;
+   o.construct             = MO.FEaiChartMktCustomerTable_construct;
+   o.setup                 = MO.FEaiChartMktCustomerTable_setup;
+   o.setRankUnits          = MO.FEaiChartMktCustomerTable_setRankUnits;
+   o.pushUnit              = MO.FEaiChartMktCustomerTable_pushUnit;
+   o.drawRow               = MO.FEaiChartMktCustomerTable_drawRow;
+   o.dispose               = MO.FEaiChartMktCustomerTable_dispose;
    return o;
 }
 MO.FEaiChartMktCustomerTable_onImageLoad = function FEaiChartMktCustomerTable_onImageLoad() {
@@ -631,6 +598,7 @@ MO.FEaiChartMktCustomerTable_setup = function FEaiChartMktCustomerTable_setup() 
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
+   grid.setTop(332);
    grid.setRight(19);
    grid.setBottom(20);
    grid.setHeadHeight(35);
@@ -823,7 +791,7 @@ MO.FEaiChartMktCustomerTimeline_construct = function FEaiChartMktCustomerTimelin
    o.__base.FGuiControl.construct.call(o);
    o._startTime = new MO.TDate();
    o._endTime = new MO.TDate();
-   o._trendInfo = MO.Class.create(MO.FEaiChartMktCustomerTrendInfo);
+   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoCustomerTrend);
 }
 MO.FEaiChartMktCustomerTimeline_oeUpdate = function FEaiChartMktCustomerTimeline_oeUpdate(event) {
    var o = this;
@@ -998,18 +966,4 @@ MO.FEaiChartMktCustomerTimeline_onPaintBegin = function FEaiChartMktCustomerTime
    graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
    startTime.date.setTime(bakTime);
    startTime.refresh();
-}
-MO.FEaiChartMktCustomerTrendInfo = function FEaiChartMktCustomerTrendInfo(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._investmentTotal = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Double)]);
-   o._customerTotal   = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Uint32)]);
-   o._units           = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiChartMktCustomerTrendUnit)]);
-   return o;
-}
-MO.FEaiChartMktCustomerTrendUnit = function FEaiChartMktCustomerTrendUnit(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._recordDate    = MO.Class.register(o, [new MO.AGetter('_recordDate'), new MO.APersistence('_recordDate', MO.EDataType.String)]);
-   o._investment    = MO.Class.register(o, [new MO.AGetter('_investment'), new MO.APersistence('_investment', MO.EDataType.Double)]);
-   o._customerCount = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Uint32)]);
-   return o;
 }

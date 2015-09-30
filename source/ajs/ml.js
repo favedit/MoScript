@@ -5210,8 +5210,8 @@ MO.FObjectPool_push = function FObjectPool_push(p){
 }
 MO.FObjectPool_dispose = function FObjectPool_dispose(){
    var o = this;
-   o._items = MO.RObject.dispose(o._items);
-   o._frees = MO.RObject.dispose(o._frees);
+   o._items = MO.Lang.Object.dispose(o._items);
+   o._frees = MO.Lang.Object.dispose(o._frees);
    o.__base.FObject.dispose.call(o);
 }
 MO.FObjectPool_innerDump = function FObjectPool_innerDump(result, level){
@@ -11840,53 +11840,95 @@ MO.FJsonConnection_content = function FJsonConnection_content(){
    return this._content;
 }
 MO.FSocket = function FSocket(o){
-   o = MO.Class.inherits(this, o, MO.FObject);
-   o._connected = MO.Class.register(o, new MO.AGetter('_connected'), false);
-   o._handle    = MO.Class.register(o, new MO.AGetter('_handle'));
-   o.onOpen     = MO.FSocket_onOpen;
-   o.ohOpen     = MO.FSocket_ohOpen;
-   o.ohError    = MO.FSocket_ohError;
-   o.ohMessage  = MO.FSocket_ohMessage;
-   o.ohClose    = MO.FSocket_ohClose;
-   o.construct  = MO.FSocket_construct;
-   o.connect    = MO.FSocket_connect;
-   o.send       = MO.FSocket_send;
-   o.disconnect = MO.FSocket_disconnect;
-   o.dispose    = MO.FSocket_dispose;
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
+   o._connected        = MO.Class.register(o, new MO.AGetter('_connected'), false);
+   o._handle           = MO.Class.register(o, new MO.AGetter('_handle'));
+   o._eventOpen        = null;
+   o._eventSend        = null;
+   o._eventReceive     = null;
+   o._eventClose       = null;
+   o._eventError       = null;
+   o._listenersOpen    = MO.Class.register(o, new MO.AListener('_listenersOpen'));
+   o._listenersSend    = MO.Class.register(o, new MO.AListener('_listenersSend'));
+   o._listenersReceive = MO.Class.register(o, new MO.AListener('_listenersReceive'));
+   o._listenersClose   = MO.Class.register(o, new MO.AListener('_listenersClose'));
+   o._listenersError   = MO.Class.register(o, new MO.AListener('_listenersError'));
+   o.onOpen            = MO.FSocket_onOpen;
+   o.onReveive         = MO.FSocket_onReveive;
+   o.onClose           = MO.FSocket_onClose;
+   o.ohOpen            = MO.FSocket_ohOpen;
+   o.ohError           = MO.FSocket_ohError;
+   o.ohReceive         = MO.FSocket_ohReceive;
+   o.ohClose           = MO.FSocket_ohClose;
+   o.construct         = MO.FSocket_construct;
+   o.connect           = MO.FSocket_connect;
+   o.send              = MO.FSocket_send;
+   o.disconnect        = MO.FSocket_disconnect;
+   o.dispose           = MO.FSocket_dispose;
    return o;
 }
 MO.FSocket_onOpen = function FSocket_onOpen(event){
    var o = this;
    o._connected = true;
+   o.processOpenListener(event);
 }
-MO.FSocket_ohOpen = function FSocket_ohOpen(event){
-   this._linker.onOpen(event);
-}
-MO.FSocket_ohError = function FSocket_ohError(event){
+MO.FSocket_ohOpen = function FSocket_ohOpen(hEvent){
    var o = this._linker;
+   var event = o._eventOpen;
+   o.onOpen(event);
 }
-MO.FSocket_ohMessage = function FSocket_ohMessage(event){
-   var o = this._linker;
+MO.FSocket_onReveive = function FSocket_onReveive(event){
+   var o = this;
+   o.processReceiveListener(event);
 }
-MO.FSocket_ohClose = function FSocket_ohClose(event){
+MO.FSocket_ohReceive = function FSocket_ohReceive(hEvent){
    var o = this._linker;
+   var event = o._eventReceive;
+   event.message = hEvent.data;
+   o.onReveive(event);
+}
+MO.FSocket_onClose = function FSocket_onClose(event){
+   var o = this;
    o._connected = false;
+   o.processCloseListener(o._eventClose);
+}
+MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
+   var o = this._linker;
+   var event = o._eventClose;
+   o.onClose(event);
+}
+MO.FSocket_onError = function FSocket_onError(event){
+   var o = this;
+   debugger
+   var event = o._eventError;
+   o.processErrorListener(event);
+}
+MO.FSocket_ohError = function FSocket_ohError(hEvent){
+   this._linker.onError(event);
 }
 MO.FSocket_construct = function FSocket_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._eventOpen = new MO.SEvent(o);
+   o._eventSend = new MO.SEvent(o);
+   o._eventReceive = new MO.SEvent(o);
+   o._eventClose = new MO.SEvent(o);
+   o._eventError = new MO.SEvent(o);
 }
 MO.FSocket_connect = function FSocket_connect(url){
    var o = this;
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;
-   handle.onerror = o.ohError
-   handle.onmessage = o.ohMessage;
+   handle.onmessage = o.ohReceive;
    handle.onclose = o.ohClose;
+   handle.onerror = o.ohError
 }
 MO.FSocket_send = function FSocket_send(message){
    var o = this;
+   var event = o._eventSend;
+   event.message = message;
+   o.processSendListener(event);
    o._handle.send(message);
 }
 MO.FSocket_disconnect = function FSocket_disconnect(){
@@ -11895,6 +11937,11 @@ MO.FSocket_disconnect = function FSocket_disconnect(){
 }
 MO.FSocket_dispose = function FSocket_dispose(){
    var o = this;
+   o._eventOpen = MO.Lang.Object.dispose(o._eventOpen);
+   o._eventSend = MO.Lang.Object.dispose(o._eventSend);
+   o._eventReceive = MO.Lang.Object.dispose(o._eventReceive);
+   o._eventClose = MO.Lang.Object.dispose(o._eventClose);
+   o._eventError = MO.Lang.Object.dispose(o._eventError);
    o._handle = null;
    o.__base.FObject.dispose.call(o);
 }
@@ -16377,10 +16424,10 @@ MO.SBorder_toString = function SBorder_toString(){
 }
 MO.SBorder_dispose = function SBorder_dispose(){
    var o = this;
-   o.left = MO.RObject.dispose(o.left)
-   o.top = MO.RObject.dispose(o.top)
-   o.right = MO.RObject.dispose(o.right)
-   o.bottom = MO.RObject.dispose(o.bottom)
+   o.left = MO.Lang.Object.dispose(o.left)
+   o.top = MO.Lang.Object.dispose(o.top)
+   o.right = MO.Lang.Object.dispose(o.right)
+   o.bottom = MO.Lang.Object.dispose(o.bottom)
 }
 MO.SBorderLine = function SBorderLine(width, style, color){
    var o = this;
@@ -16516,9 +16563,7 @@ MO.FG2dCanvasContext_linkCanvas = function FG2dCanvasContext_linkCanvas(hCanvas)
    o._hCanvas = hCanvas;
 }
 MO.FG2dCanvasContext_setGlobalScale = function FG2dCanvasContext_setGlobalScale(width, height){
-   var o = this;
-   o._globalScale.set(width, height);
-   o._handle.scale(width, height);
+   this._globalScale.set(width, height);
 }
 MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
    var o = this;
@@ -16540,10 +16585,16 @@ MO.FG2dCanvasContext_store = function FG2dCanvasContext_store(){
 MO.FG2dCanvasContext_restore = function FG2dCanvasContext_restore(){
    this._handle.restore();
 }
-MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(){
+MO.FG2dCanvasContext_prepare = function FG2dCanvasContext_prepare(clearFlag){
    var o = this;
+   var handle = o._handle;
    var scale = o._globalScale;
-   o._handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
+   if(clearFlag){
+      var size = o._size;
+      handle.setTransform(1, 0, 0, 1, 0, 0);
+      handle.clearRect(0, 0, size.width, size.height);
+   }
+   handle.setTransform(scale.width, 0, 0, scale.height, 0, 0);
 }
 MO.FG2dCanvasContext_clear = function FG2dCanvasContext_clear(){
    var o = this;
@@ -19422,7 +19473,7 @@ MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;
    var textures = o._textures;
-   if(textures == null){
+   if(!textures){
       textures = o._textures = new MO.TObjects();
    }
    return textures;
@@ -19431,7 +19482,8 @@ MO.FG3dRenderTarget_dispose = function FG3dRenderTarget_dispose(){
    var o = this;
    o._size = MO.Lang.Object.dispose(o._size);
    o._color = MO.Lang.Object.dispose(o._color);
-   o.__base.FG3dObject.dispose();
+   o._textures = MO.Lang.Object.dispose(o._textures);
+   o.__base.FG3dObject.dispose.call(o);
 }
 MO.FG3dShader = function FG3dShader(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
@@ -21100,9 +21152,10 @@ MO.FWglFlatTexture_texture = function FWglFlatTexture_texture(){
 }
 MO.FWglFlatTexture_makeMipmap = function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var g = o._graphicContext._handle;
-   g.bindTexture(g.TEXTURE_2D, o._handle);
-   g.generateMipmap(g.TEXTURE_2D);
+   var context = o._graphicContext;
+   var handle = context._handle;
+   handle.bindTexture(handle.TEXTURE_2D, o._handle);
+   handle.generateMipmap(handle.TEXTURE_2D);
 }
 MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, width, height){
    var o = this;
@@ -21596,15 +21649,15 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
 }
 MO.FWglRenderTarget_dispose = function FWglRenderTarget_dispose(){
    var o = this;
-   var c = o._graphicContext;
-   var n = o._handleDepth;
-   if(n){
-      c._handle.deleteRenderbuffer(n);
+   var context = o._graphicContext;
+   var handleDepth = o._handleDepth;
+   if(handleDepth){
+      context._handle.deleteRenderbuffer(handleDepth);
       o._handleDepth = null;
    }
-   var n = o._handle;
-   if(n){
-      c._handle.deleteFramebuffer(n);
+   var handle = o._handle;
+   if(handle){
+      context._handle.deleteFramebuffer(handle);
       o._handle = null;
    }
    o.__base.FG3dRenderTarget.dispose.call(o);

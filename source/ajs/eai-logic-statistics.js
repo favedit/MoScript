@@ -535,17 +535,17 @@ MO.FEaiStatisticsLabel_onPaintLabel = function FEaiStatisticsLabel_onPaintLabel(
       var unitDrawY = baseY - 3;
       if (i == o._originValue.length - 9) {
          graphic.setFont(unitFont);
-         graphic.drawText('亿', drawX, unitDrawY, '#00B5F6');
+         graphic.drawText('亿', drawX, unitDrawY-2, '#00B5F6');
          drawX += graphic.textWidth('亿');
       }
       else if (i == o._originValue.length - 5) {
          graphic.setFont(unitFont);
-         graphic.drawText('万', drawX, unitDrawY, '#00B5F6');
+         graphic.drawText('万', drawX, unitDrawY-2, '#00B5F6');
          drawX += graphic.textWidth('万');
       }
       else if (i == o._originValue.length - 1) {
          graphic.setFont(unitFont);
-         graphic.drawText(o._basicUnitText, drawX, unitDrawY, '#00B5F6');
+         graphic.drawText(o._basicUnitText, drawX, unitDrawY-2, '#00B5F6');
          drawX += graphic.textWidth(o._basicUnitText);
       }
    }
@@ -628,6 +628,6 @@ MO.FEaiStatisticsLabel_construct = function FEaiStatisticsLabel_construct() {
 }
 MO.FEaiStatisticsLabel_dispose = function FEaiStatisticsLabel_dispose() {
    var o = this;
-   o._ticker = MO.RObject.dispose(o._ticker);
+   o._ticker = MO.Lang.Object.dispose(o._ticker);
    o.__base.FGuiLabel.dispose.call(o);
 }

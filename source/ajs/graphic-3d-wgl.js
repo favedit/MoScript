@@ -949,9 +949,10 @@ MO.FWglFlatTexture_texture = function FWglFlatTexture_texture(){
 }
 MO.FWglFlatTexture_makeMipmap = function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var g = o._graphicContext._handle;
-   g.bindTexture(g.TEXTURE_2D, o._handle);
-   g.generateMipmap(g.TEXTURE_2D);
+   var context = o._graphicContext;
+   var handle = context._handle;
+   handle.bindTexture(handle.TEXTURE_2D, o._handle);
+   handle.generateMipmap(handle.TEXTURE_2D);
 }
 MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, width, height){
    var o = this;
@@ -1445,15 +1446,15 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
 }
 MO.FWglRenderTarget_dispose = function FWglRenderTarget_dispose(){
    var o = this;
-   var c = o._graphicContext;
-   var n = o._handleDepth;
-   if(n){
-      c._handle.deleteRenderbuffer(n);
+   var context = o._graphicContext;
+   var handleDepth = o._handleDepth;
+   if(handleDepth){
+      context._handle.deleteRenderbuffer(handleDepth);
       o._handleDepth = null;
    }
-   var n = o._handle;
-   if(n){
-      c._handle.deleteFramebuffer(n);
+   var handle = o._handle;
+   if(handle){
+      context._handle.deleteFramebuffer(handle);
       o._handle = null;
    }
    o.__base.FG3dRenderTarget.dispose.call(o);

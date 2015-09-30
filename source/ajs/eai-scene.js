@@ -1414,6 +1414,6 @@ MO.FEaiScene_processEvent = function FEaiScene_processEvent(event){
 }
 MO.FEaiScene_dispose = function FEaiScene_dispose(){
    var o = this;
-   o._guiManager = MO.RObject.dispose(o._guiManager);
+   o._guiManager = MO.Lang.Object.dispose(o._guiManager);
    o.__base.FScene.dispose.call(o);
 }

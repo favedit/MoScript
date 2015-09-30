@@ -1143,6 +1143,7 @@ MO.FEaiMapEntity_showWorld = function FEaiMapEntity_showWorld(){
    o._countryFaceDisplay.push(worldEntity.sphere());
    o._countryFaceDisplay.push(worldEntity._sphere2);
    o._countryFaceDisplay.push(worldEntity._sphere3);
+   o._countryFaceDisplay.push(worldEntity._sphere4);
    o._countryFaceDisplay.push(worldEntity.faceShape());
    o._countryBorderDisplay.push(worldEntity.borderShape());
 }
@@ -1661,41 +1662,42 @@ MO.FEaiWorldEntity_construct = function FEaiWorldEntity_construct(){
 MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    var o = this;
    var context = o._graphicContext;
+   var textureOcean = o._textureOcean = context.createFlatTexture();
+   var textureCloud = o._textureCloud = context.createFlatTexture();
    var faceShape = o._faceShape = MO.Class.create(MO.FE3dDynamicShape);
    faceShape._worldEntity = o;
-   faceShape.outline().set(-1, -1, -1, 1, 1, 1);
    faceShape.linkGraphicContext(context);
+   faceShape.outline().set(-1, -1, -1, 1, 1, 1);
    var borderShape = o._borderShape = MO.Class.create(MO.FE3dDynamicShape);
    borderShape._optionSelect = false;
    borderShape._worldEntity = o;
    borderShape.outline().set(-1, -1, -1, 1, 1, 1);
    borderShape.linkGraphicContext(context);
-   var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
-   sphere._optionSelect = false;
-   sphere.linkGraphicContext(context);
-   sphere.setSplitCount(24);
-   sphere.setup();
-   sphere.matrix().setScaleAll(0.97);
-   sphere.matrix().update();
-   var info = sphere.material().info();
-   info.optionAlpha = false;
-   info.ambientColor.setHex('#128AF9');
-   info.ambientColor.alpha = 1.0
-   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
-   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
-   info.specularLevel = 64;
    var sphere = o._sphere = MO.Class.create(MO.FE3dSphere);
    sphere._optionSelect = false;
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.98);
+   sphere.matrix().setScaleAll(0.975);
+   sphere.matrix().update();
+   sphere.pushTexture(textureOcean, 'diffuse');
+   var info = sphere.material().info();
+   info.optionAlpha = false;
+   info.ambientColor.setHex('#128AF9');
+   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
+   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
+   info.specularLevel = 64;
+   var sphere = o._sphere2 = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
+   sphere.linkGraphicContext(context);
+   sphere.setSplitCount(24);
+   sphere.setup();
+   sphere.matrix().setScaleAll(0.985);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = true;
-   info.alphaRate = 0.8;
+   info.alphaRate = 0.3;
    info.ambientColor.setHex('#128AF9');
-   info.ambientColor.alpha = 0.4
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
@@ -1704,20 +1706,37 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(1.2);
+   sphere.matrix().setScaleAll(1.1);
    sphere.matrix().update();
+   sphere.pushTexture(textureCloud, 'diffuse');
    var info = sphere.material().info();
    info.optionAlpha = true;
    info.optionDepth = false;
    info.alphaRate = 0.1;
    info.ambientColor.setHex('#128AF9');
-   info.ambientColor.alpha = 0.4
+   info.diffuseColor.set(0.4, 0.4, 0.4, 1);
+   info.specularColor.set(0.2, 0.2, 0.2, 0.2);
+   info.specularLevel = 64;
+   var sphere = o._sphere4 = MO.Class.create(MO.FE3dSphere);
+   sphere._optionSelect = false;
+   sphere.linkGraphicContext(context);
+   sphere.setSplitCount(24);
+   sphere.setup();
+   sphere.matrix().setScaleAll(1.25);
+   sphere.matrix().update();
+   var info = sphere.material().info();
+   info.optionAlpha = true;
+   info.optionDepth = false;
+   info.alphaRate = 0.03;
+   info.ambientColor.setHex('#128AF9');
    info.diffuseColor.set(0.4, 0.4, 0.4, 1);
    info.specularColor.set(0.2, 0.2, 0.2, 0.2);
    info.specularLevel = 64;
    var texture = o._texture = context.createFlatTexture();
    o._material.setTexture('diffuse', texture);
-   o._imageGround = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/color.jpg');
+   o._imageGround = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/color4096.jpg');
+   o._imageOcean = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/ocean4096.jpg');
+   o._imageCloud = MO.Console.find(MO.FImageConsole).load('{eai.resource}/world/cloud.jpg');
 }
 MO.FEaiWorldEntity_loadResource = function FEaiWorldEntity_loadResource(resource){
    var o = this;
@@ -1759,8 +1778,28 @@ MO.FEaiWorldEntity_processLoad = function FEaiWorldEntity_processLoad(){
       if(image.testReady()){
          var texture = o._texture;
          texture.upload(image);
-         texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+         texture.makeMipmap();
          o._imageGround = null;
+      }
+      return false;
+   }
+   var image = o._imageOcean;
+   if(image){
+      if(image.testReady()){
+         var texture = o._textureOcean;
+         texture.upload(image);
+         texture.makeMipmap();
+         o._imageOcean = null;
+      }
+      return false;
+   }
+   var image = o._imageCloud;
+   if(image){
+      if(image.testReady()){
+         var texture = o._textureCloud;
+         texture.upload(image);
+         texture.makeMipmap();
+         o._imageCloud = null;
       }
       return false;
    }

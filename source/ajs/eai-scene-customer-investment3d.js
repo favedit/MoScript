@@ -879,6 +879,8 @@ MO.FEaiCstInvestment3dScene_onProcessReady = function FEaiCstInvestment3dScene_o
    o._mapEntity.showWorld();
    var countryEntity = o._countryEntity;
    countryEntity.start();
+   o._mapEntity.showCountry(countryEntity);
+   o._mapEntity.showCity();
 }
 MO.FEaiCstInvestment3dScene_onProcess = function FEaiCstInvestment3dScene_onProcess() {
    var o = this;

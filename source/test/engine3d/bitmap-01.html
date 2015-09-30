@@ -39,12 +39,11 @@ function _load(){
    // 创建应用
    var application = MO.Desktop.initialize(MO.FCanvasApplication);
    application.setup(document.body);
-   // 创建舞台
-   var desktop = application.desktop();
-   var stage = MO.Class.create(MO.FE3dSimpleStage);
-   desktop.selectStage(stage);
-   // 创建画布
+   var chapter = application.selectChapterByCode(MO.ECanvasChapter.Simple);
+   var scene = chapter.selectSceneByCode(MO.ECanvasScene.Simple);
    var context = application.desktop().canvas3d().graphicContext();
+   // 设置舞台
+   var stage = scene.activeStage();
    stage.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    stage.addEnterFrameListener(null, onEnterFrame);
    var layer = stage.spriteLayer();
