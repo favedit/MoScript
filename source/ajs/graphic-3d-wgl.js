@@ -1693,6 +1693,8 @@ MO.RWglUtility.prototype.convertSamplerFilter = function RWglUtility_convertSamp
          return graphic.LINEAR;
       case MO.EG3dSamplerFilter.Repeat:
          return graphic.REPEAT;
+      case MO.EG3dSamplerFilter.MirroredRepeat:
+         return graphic.MIRRORED_REPEAT;
       case MO.EG3dSamplerFilter.ClampToEdge:
          return graphic.CLAMP_TO_EDGE;
       case MO.EG3dSamplerFilter.ClampToBorder:

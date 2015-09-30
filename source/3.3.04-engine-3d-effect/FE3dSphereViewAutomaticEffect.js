@@ -9,7 +9,8 @@ MO.FE3dSphereViewAutomaticEffect = function FE3dSphereViewAutomaticEffect(o){
    //..........................................................
    // @attribute
    o._code          = 'sphere.view.automatic';
-   o._rotation      = 0;
+   o._rotationX     = 0;
+   o._rotationY     = 0;
    //..........................................................
    // @method
    o.drawRenderable = MO.FE3dSphereViewAutomaticEffect_drawRenderable;
@@ -36,10 +37,12 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    }else if(size.width < size.height){
       rateY = size.height / size.width;
    }
-   var rotation = o._rotation + 0.0001;
-   program.setParameter4('vc_const', rateX, rateY, 1, rotation);
-   program.setParameter4('fc_const', rateX, rateY, 1, rotation);
-   o._rotation = rotation;
+   var rotationX = o._rotationX + 0.00005;
+   var rotationY = o._rotationY + 0.00002;
+   program.setParameter4('vc_const', 1 / rateX, 1 / rateY, rotationX, rotationY);
+   program.setParameter4('fc_const', rateX, rateY, rotationX, rotationY);
+   o._rotationX = rotationX;
+   o._rotationY = rotationY;
    // 绑定材质
    var material = renderable.material();
    o.bindMaterial(material);

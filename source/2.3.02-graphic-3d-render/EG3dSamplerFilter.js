@@ -7,11 +7,12 @@
 //==========================================================
 MO.EG3dSamplerFilter = new function EG3dSamplerFilter(){
    var o = this;
-   o.Unknown       = 0;
-   o.Nearest       = 1;
-   o.Linear        = 2;
-   o.Repeat        = 3;
-   o.ClampToEdge   = 4;
-   o.ClampToBorder = 5;
+   o.Unknown        = 'Unknown';
+   o.Nearest        = 'Nearest';
+   o.Linear         = 'Linear';
+   o.Repeat         = 'Repeat';
+   o.MirroredRepeat = 'MirroredRepeat';
+   o.ClampToEdge    = 'ClampToEdge';
+   o.ClampToBorder  = 'ClampToBorder';
    return o;
 }

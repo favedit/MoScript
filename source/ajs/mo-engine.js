@@ -7989,8 +7989,9 @@ MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
    o.__base.FG3dTechniquePass.setup.call(o);
    var context = o._graphicContext;
    var texture = o._textureColor = context.createFlatTexture();
-   texture.setFilterCd(MO.EG3dSamplerFilter.Linear, MO.EG3dSamplerFilter.Linear);
-   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToEdge, MO.EG3dSamplerFilter.ClampToEdge);
+   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texture.update();
    var target = o._renderTarget = context.createRenderTarget();
    target.size().set(2048, 1024);
    target.textures().push(texture);
@@ -8034,7 +8035,8 @@ MO.FE3dSphereTechnique_setup = function FE3dSphereTechnique_setup(){
 MO.FE3dSphereViewAutomaticEffect = function FE3dSphereViewAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
    o._code          = 'sphere.view.automatic';
-   o._rotation      = 0;
+   o._rotationX     = 0;
+   o._rotationY     = 0;
    o.drawRenderable = MO.FE3dSphereViewAutomaticEffect_drawRenderable;
    return o;
 }
@@ -8050,10 +8052,12 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    }else if(size.width < size.height){
       rateY = size.height / size.width;
    }
-   var rotation = o._rotation + 0.0001;
-   program.setParameter4('vc_const', rateX, rateY, 1, rotation);
-   program.setParameter4('fc_const', rateX, rateY, 1, rotation);
-   o._rotation = rotation;
+   var rotationX = o._rotationX + 0.00005;
+   var rotationY = o._rotationY + 0.00002;
+   program.setParameter4('vc_const', 1 / rateX, 1 / rateY, rotationX, rotationY);
+   program.setParameter4('fc_const', rateX, rateY, rotationX, rotationY);
+   o._rotationX = rotationX;
+   o._rotationY = rotationY;
    var material = renderable.material();
    o.bindMaterial(material);
    o.bindAttributes(renderable);
@@ -8103,20 +8107,22 @@ MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
             direction.x = ax;
             direction.y = ay;
             direction.normalize();
-            var rx = Math.acos(direction.x);
-            var ry = Math.asin(direction.y);
-            var ra = (rx + ry) / 2
             if(y > centerY){
                angle = 0.5 - Math.acos(nx) * pi2a;
             }else if(y < centerY){
                angle = 0.5 + Math.acos(nx) * pi2a;
+            }else if(x > centerX){
+               angle = 0.5;
+            }else if(x < centerX){
+               angle = 1.0;
             }
          }
          data[position++] = angle;
       }
    }
    var texture = o._textureRadian = context.createFlatTexture();
-   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Linear);
+   texture.setWrapCd(MO.EG3dSamplerFilter.MirroredRepeat, MO.EG3dSamplerFilter.MirroredRepeat);
    texture.uploadData(data, width, height);
    var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
    rectangle.linkGraphicContext(o);
