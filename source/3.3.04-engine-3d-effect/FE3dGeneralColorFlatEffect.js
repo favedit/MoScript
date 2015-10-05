@@ -26,17 +26,13 @@ MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffe
    var o = this;
    var context = o._graphicContext;
    var contextSize = context.size();
-   var contextRatio = context.ratio();
-   var contextSizeRatio = context.sizeRatio();
-   var radioWidth = contextSize.width * contextRatio;
-   var radioHeight = contextSize.height * contextRatio;
-   var sizeWidth = contextSize.width * contextSizeRatio.width;
-   var sizeHeight = contextSize.height * contextSizeRatio.height;
-   var program = o._program;
+   var sizeWidth = contextSize.width;
+   var sizeHeight = contextSize.height;
    // 绑定材质
    var material = renderable.material();
    o.bindMaterial(material);
    // 设置骨头集合
+   var program = o._program;
    if(renderable._optionMerge){
       var meshs = renderable.mergeRenderables();
       var meshCount = meshs.count();
@@ -64,8 +60,8 @@ MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffe
          var ty = 1 - matrix.ty / sizeHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);
       }else{
-         var cx = matrix.sx / radioWidth * 2;
-         var cy = matrix.sy / radioHeight * 2;
+         var cx = matrix.sx / sizeWidth * 2;
+         var cy = matrix.sy / sizeHeight * 2;
          var tx = matrix.tx / sizeWidth * 2 - 1;
          var ty = 1 - matrix.ty / sizeHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);

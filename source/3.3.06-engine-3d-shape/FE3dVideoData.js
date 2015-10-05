@@ -8,6 +8,9 @@
 MO.FE3dVideoData = function FE3dVideoData(o){
    o = MO.Class.inherits(this, o, MO.FE3dFaceData);
    //..........................................................
+   // @attribute
+   o._loaded      = false;
+   //..........................................................
    // @html
    o._hVideo      = null;
    //..........................................................
@@ -37,7 +40,7 @@ MO.FE3dVideoData_ohVideoLoad = function FE3dVideoData_ohVideoLoad(event){
    //hVideo.width = 1024;
    //hVideo.height = 512;
    // 设置属性
-   o._ready = true;
+   o._loaded  = true;
 }
 
 //==========================================================
@@ -86,8 +89,9 @@ MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(url){
 //==========================================================
 MO.FE3dVideoData_process = function FE3dVideoData_process(){
    var o = this;
-   if(o._ready){
+   if(o._loaded){
       o._texture.upload(o._hVideo);
+      o._ready = true;
    }
 }
 

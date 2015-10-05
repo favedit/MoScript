@@ -611,7 +611,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    var video = context3d.createObject(MO.FE3dVideo);
    video.setOptionSelect(false);
    video.setData(o._videoData);
-   //video.material().info().optionSelected = false;
+   video.material().info().effectCode = 'flat';
    var matrix = video.matrix();
    matrix.sx = 500;
    matrix.sy = 500;
