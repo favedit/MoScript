@@ -27,12 +27,14 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
+   o._earthSphere            = null;
    //..........................................................
    // @event
    o.onInvestmentDataChanged = MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged;
    o.on24HDataChanged        = MO.FEaiChartCustomerSphereScene_on24HDataChanged;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartCustomerSphereScene_onProcessReady;
+   o.onProcessInput          = MO.FEaiChartCustomerSphereScene_onProcessInput;
    o.onProcess               = MO.FEaiChartCustomerSphereScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartCustomerSphereScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartCustomerSphereScene_onSwitchComplete;
@@ -101,7 +103,7 @@ MO.FEaiChartCustomerSphereScene_onOperationVisibility = function FEaiChartCustom
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady() {
+MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady(){
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
    // 显示城市
@@ -109,11 +111,36 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
 }
 
 //==========================================================
+// <T>准备好处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartCustomerSphereScene_onProcessInput = function FEaiChartCustomerSphereScene_onProcessInput(){
+   var o = this;
+   var directionSpeed = 0.01;
+   var earthSphere = o._earthSphere;
+   var matrix = earthSphere.matrix();
+   // 横向旋转
+   if(MO.Window.Keyboard.isPress(MO.EKeyCode.A)){
+      matrix.ry += directionSpeed;
+   }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.D)){
+      matrix.ry -= directionSpeed;
+   }
+   // 纵向旋转
+   if(MO.Window.Keyboard.isPress(MO.EKeyCode.W)){
+      matrix.rz += directionSpeed;
+   }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.S)){
+      matrix.rz -= directionSpeed;
+   }
+   matrix.updateForce();
+}
+
+//==========================================================
 // <T>激活处理。</T>
 //
 // @method
 //==========================================================
-MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScene_onProcess() {
+MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScene_onProcess(){
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    // 检测首次播放
@@ -153,7 +180,7 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         return;
+         //return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -167,6 +194,10 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
+      //..........................................................
+      // 键盘处理
+      o.onProcessInput();
+      //..........................................................
       // 投资处理
       // o._processor.process();
       //..........................................................
@@ -226,9 +257,35 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    o.__base.FEaiChartScene.setup.call(o);
    var desktop = o._application.desktop();
    var canvas3d = desktop.canvas3d();
-   // 设置舞台
+   var context = canvas3d.graphicContext();
+   //..........................................................
+   // 创建地球
+   var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
+   earthSphere.linkGraphicContext(context);
+   earthSphere.setSplitCount(64);
+   //sphere.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   earthSphere.setup();
+   earthSphere.matrix().setScaleAll(100);
+   earthSphere.matrix().update();
+   //earthSphere.material().info().optionDouble = true;
+   // 设置技术
    var stage = o._activeStage;
-   stage.selectTechnique(o, MO.FE3dSphereTechnique);
+   var technique = stage.selectTechnique(o, MO.FE3dSphereTechnique);
+   var passView = technique.passView();
+   passView.setSphere(earthSphere);
+   //..........................................................
+   // 创建相机
+   var camera = MO.Class.create(MO.FE3dOrthoCamera);
+   camera.position().set(0, 0, -500);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection.size().assign(context.size());
+   projection.setZnear(1);
+   projection.setZfar(1000);
+   projection.update();
+   // 设置相机
+   stage.region().selectCamera(camera);
    //..........................................................
    // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
@@ -247,7 +304,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    dataLayer.push(display);
    //..........................................................
    // 创建时间轴
-   var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FEaiChartCustomerSphereTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);

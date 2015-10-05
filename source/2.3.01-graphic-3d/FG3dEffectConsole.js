@@ -77,21 +77,24 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
 // <T>注册一个效果器。</T>
 //
 // @method
-// @param n:name:String 名称
-// @param e:effect:FG3dEffect 效果器
+// @param name:String 名称
+// @param effect:FG3dEffect 效果器
 //==========================================================
-MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(n, e){
-   this._registerEffects.set(n, e);
+MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
+   MO.Assert.debugNotEmpty(name);
+   MO.Assert.debugNotNull(effect);
+   this._registerEffects.set(name, effect);
 }
 
 //==========================================================
 // <T>注销一个效果器。</T>
 //
 // @method
-// @param n:name:String 名称
+// @param name:String 名称
 //==========================================================
-MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(n){
-   this._registerEffects.set(n, null);
+MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
+   MO.Assert.debugNotEmpty(name);
+   this._registerEffects.set(name, null);
 }
 
 //==========================================================

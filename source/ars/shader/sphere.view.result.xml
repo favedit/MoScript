@@ -4,7 +4,7 @@
    <State name='fill_mode'   value='Face'/>
    <State name='cull_mode'   value='Front'/>
    <State name='depth_mode'  value='LessEqual'/>
-   <State name='depth_write' value='Y'/>
+   <State name='depth_write' value='N'/>
    <State name='blend_mode'  value='N'/>
    <State name='alpha_test'  value='N'/>
    <!--=====================================================-->
@@ -12,57 +12,35 @@
    <Option name='lightmap' value='N'/>
    <Option name='fog'      value='N'/>
    <!--=====================================================-->
-   <Parameter name='vc_model_matrix' format='Float4x4'/>
-   <Parameter name='vc_vp_matrix'    format='Float4x4'/>
-   <Parameter name='vc_const'        format='Float4'/>
-   <Parameter name='vc_direction'    format='Float4'/>
-   <Parameter name='fc_const'        format='Float4'/>
+   <Parameter name='vc_matrix'   format='Float4x4'/>
+   <Parameter name='vc_const'    format='Float4'/>
+   <Parameter name='fc_const'    format='Float4'/>
    <!--=====================================================-->
    <Attribute name='va_position' linker='position' format='Float3'/>
    <Attribute name='va_coord'    linker='coord'    format='Float2'/>
    <!--=====================================================-->
    <Sampler name='fs_diffuse'    linker='diffuse'/>
-   <!-- http://www.geekcome.com/content-10-3840-1.html -->
-   <!-- http://blog.sina.com.cn/s/blog_6084f5880101dpxl.html -->
    <!--=====================================================-->
    <Source name='vertex'><![CDATA[
       //..........................................................
       // 常量定义
-      uniform mat4 vc_model_matrix;
-      uniform mat4 vc_vp_matrix;
+      uniform mat4 vc_matrix;
       uniform vec4 vc_const;
-      uniform vec4 vc_direction;
       //..........................................................
       // 属性流声明
-      attribute vec3 va_position;
+      attribute vec2 va_position;
       attribute vec2 va_coord;
       //..........................................................
       // 属性流声明
       varying vec2 v_position;
       varying vec2 v_coord;
-      varying vec4 v_color;
       //..........................................................
       // 处理
       void main(){
-         // 计算模型位置
-         vec4 modelPosition = vec4(va_position.xyz, 1.0) * vc_model_matrix;
-         vec4 position = modelPosition * vc_vp_matrix;
-         //position = position / position.w;
-         // 平分球面角度
-         float angleCos = dot(vc_direction.xyz, normalize(modelPosition.xyz));
-         float angle = acos(angleCos) * vc_const.w;
-         // 计算投影方向
-         vec2 direction = normalize(modelPosition.xy);
-         vec2 coord = direction * angle;
-         gl_Position = vec4(coord.xy, position.z, 1.0);
-         //gl_Position = position;
-         // 设置位置
-         v_position = coord.xy;
+         // 设置坐标
+         gl_Position = vec4(va_position.xy, 1.0, 1.0) * vc_matrix;
          // 设置纹理
          v_coord = va_coord;
-         //v_color = vec4(normalize(modelPosition.xyz), 1.0);
-         //v_color = vec4(angleCos, angleCos, angleCos, 1.0);
-         //v_color = vec4(angle, angle, angle, 1.0);
       }
    ]]></Source>
    <Source name='fragment'><![CDATA[
@@ -75,23 +53,14 @@
       uniform vec4 fc_const;
       //..........................................................
       // 声明插值器
-      varying vec2 v_position;
       varying vec2 v_coord;
-      varying vec4 v_color;
       //..........................................................
       // 声明取样器
       uniform sampler2D fs_diffuse;
       //..........................................................
       // 处理
       void main(void){
-         // 检查范围
-         if(length(v_position) > 1.0){
-            discard;
-         }
-         // 获得颜色
-         vec4 color = texture2D(fs_diffuse, v_coord);
-         gl_FragColor = color;
-         //gl_FragColor = v_color;
+         gl_FragColor = texture2D(fs_diffuse, v_coord);
       }
    ]]></Source>
 </Configuration>

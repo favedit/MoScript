@@ -9,16 +9,20 @@ MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
    //..........................................................
    // @attribute
    o._code          = 'view';
-   o._radianSize    = null;
    // @attribute
-   o._textureColor  = MO.Class.register(o, new MO.AGetSet('_textureColor'));
-   o._effect        = null;
-   o._textureRadian = null;
+   o._sphere        = MO.Class.register(o, new MO.AGetter('_sphere'));
    o._rectangle     = null;
+   // @attribute
+   o._textureSize   = null;
+   o._textureView   = MO.Class.register(o, new MO.AGetter('_textureViewr'));
+   o._textureColor  = MO.Class.register(o, new MO.AGetSet('_textureColor'));
+   o._effectView    = null;
+   o._effectResult  = null;
    //..........................................................
    // @method
    o.construct      = MO.FE3dSphereViewPass_construct;
    o.setup          = MO.FE3dSphereViewPass_setup;
+   o.setSphere      = MO.FE3dSphereViewPass_setSphere;
    // @method
    o.drawBegin      = MO.FE3dSphereViewPass_drawBegin
    o.drawRegion     = MO.FE3dSphereViewPass_drawRegion;
@@ -33,8 +37,7 @@ MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
 MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
    var o = this;
    o.__base.FG3dTechniquePass.construct.call(o);
-   // 设置属性
-   o._radianSize = new MO.SSize2(1024, 1024);
+   o._textureSize = new MO.SSize2(2048, 2048);
 }
 
 //==========================================================
@@ -46,52 +49,34 @@ MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
    var context = o._graphicContext;
-   var pi2a = 0.5 / Math.PI;
-   // 创建浮点纹理（位置计算用）
-   var width = o._radianSize.width;
-   var height = o._radianSize.height;
-   var centerX = width / 2;
-   var centerY = height / 2;
-   var data = new Float32Array(width * height);
-   var position = 0;
-   var direction = new MO.SVector2();
-   for(var y = 0; y < height; y++){
-      var ay = (y - centerY) / (height / 2);
-      for(var x = 0; x < width; x++){
-         var ax = (x - centerX) / (width / 2);
-         var length = Math.sqrt(ax * ax + ay * ay);
-         var angle = 0.5;
-         if(length != 0){
-            // 计算方向
-            var nx = ax / length;
-            var ny = ay / length;
-            direction.x = ax;
-            direction.y = ay;
-            direction.normalize();
-            // 计算数值
-            if(y > centerY){
-               angle = 0.5 - Math.acos(nx) * pi2a;
-            }else if(y < centerY){
-               angle = 0.5 + Math.acos(nx) * pi2a;
-            }else if(x > centerX){
-               angle = 0.5;
-            }else if(x < centerX){
-               angle = 1.0;
-            }
-         }
-         data[position++] = angle;
-      }
-   }
-   var texture = o._textureRadian = context.createFlatTexture();
-   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Linear);
-   //texture.setFilterCd(MO.EG3dSamplerFilter.Linear, MO.EG3dSamplerFilter.Linear);
-   texture.setWrapCd(MO.EG3dSamplerFilter.MirroredRepeat, MO.EG3dSamplerFilter.MirroredRepeat);
-   texture.uploadData(data, width, height);
-   //texture.makeMipmap();
+   // 创建渲染纹理
+   var texture = o._textureView = context.createFlatTexture();
+   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texture.size().assign(o._textureSize);
+   texture.update();
    // 创建渲染目标
+   var target = o._renderTarget = context.createRenderTarget();
+   target.size().assign(o._textureSize);
+   target.textures().push(texture);
+   target.build();
+   // 创建渲渲染举行
    var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
    rectangle.linkGraphicContext(o);
    rectangle.setup();
+   rectangle.pushTexture(texture, 'diffuse');
+}
+
+//==========================================================
+// <T>开始绘制处理。</T>
+//
+// @method
+// @param region:FG3dRetion 区域
+//==========================================================
+MO.FE3dSphereViewPass_setSphere = function FE3dSphereViewPass_setSphere(sphere){
+   var o = this;
+   sphere.pushTexture(o._textureColor, 'diffuse');
+   o._sphere = sphere;
 }
 
 //==========================================================
@@ -104,16 +89,21 @@ MO.FE3dSphereViewPass_drawBegin = function FE3dSphereViewPass_drawBegin(region){
    var o = this;
    var context = o._graphicContext;
    var rectangle = o._rectangle;
+   // 创建效果器
+   var effectView = o._effectView;
+   if(!effectView){
+      region._spaceName = 'general.view'
+      effectView = o._effectView = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
+   }
+   var effectResult = o._effectResult;
+   if(!effectResult){
+      region._spaceName = 'general.view.result'
+      effectResult = o._effectResult = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
+   }
    // 清空屏幕
    var backgroundColor = region.backgroundColor();
    context.setRenderTarget(null);
    context.clear(0, 0, 0, 0, 1);
-   // 设置矩形
-   var textures = rectangle.textures();
-   if(textures.isEmpty()){
-      textures.set('diffuse', o._textureColor);
-      textures.set('radian', o._textureRadian);
-   }
 }
 
 //==========================================================
@@ -126,12 +116,18 @@ MO.FE3dSphereViewPass_drawRegion = function FE3dSphereViewPass_drawRegion(region
    var o = this;
    var context = o._graphicContext;
    var rectangle = o._rectangle;
-   // 创建效果器
-   var effect = o._effect;
-   if(!effect){
-      effect = o._effect = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
-   }
-   // 绘制处理
-   context.setProgram(effect.program());
-   effect.drawRenderable(region, o._rectangle);
+   // 绘制视图处理
+   var effectView = o._effectView;
+   //context.setRenderTarget(null);
+   context.setRenderTarget(o._renderTarget);
+   context.clear(0, 0, 0, 0, 1);
+   context.setProgram(effectView.program());
+   effectView.drawRenderable(region, o._sphere);
+   //return;
+   // 绘制显示处理
+   var effectResult = o._effectResult;
+   context.setRenderTarget(null);
+   context.clear(0, 0, 0, 0, 1);
+   context.setProgram(effectResult.program());
+   effectResult.drawRenderable(region, o._rectangle);
 }

@@ -30,13 +30,6 @@ MO.FE3dPerspectiveCamera_construct = function FE3dPerspectiveCamera_construct(){
    o.__base.FE3dCamera.construct.call(o);
    // 初始化变量
    o._projection = MO.Class.create(MO.FG3dPerspectiveProjection);
-   // 初始化变量
-   o._rotation = new MO.SVector3();
-   o._rotationMatrix = new MO.SMatrix3x3();
-   o._quaternion = new MO.SQuaternion();
-   o._quaternionX = new MO.SQuaternion();
-   o._quaternionY = new MO.SQuaternion();
-   o._quaternionZ = new MO.SQuaternion();
 }
 
 //==========================================================

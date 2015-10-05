@@ -65,24 +65,24 @@ MO.SVector3_conjugate = function SVector3_conjugate(p){
 // <T>向量点乘</T>
 //
 // @method
-// @param v:value:SVector3 三维向量
+// @param value:SVector3 三维向量
 //==========================================================
-MO.SVector3_dotPoint3 = function SVector3_dotPoint3(v){
+MO.SVector3_dotPoint3 = function SVector3_dotPoint3(value){
    var o = this;
-   return (o.x * v.x) + (o.y * v.y) + (o.z * v.z);
+   return (o.x * value.x) + (o.y * value.y) + (o.z * value.z);
 }
 
 //==========================================================
 // <T>点乘(内积)。</T>
 //
 // @method
-// @param v:value:SVector3 三维向量
+// @param value:SVector3 三维向量
 //==========================================================
-MO.SVector3_cross = function SVector3_cross(v){
+MO.SVector3_cross = function SVector3_cross(value){
    var o = this;
-   var vx = (o.y * v.z) - (o.z * v.y);
-   var vy = (o.z * v.x) - (o.x * v.z);
-   var vz = (o.x * v.y) - (o.y * v.x);
+   var vx = (o.y * value.z) - (o.z * value.y);
+   var vy = (o.z * value.x) - (o.x * value.z);
+   var vz = (o.x * value.y) - (o.y * value.x);
    o.x = vx;
    o.y = vy;
    o.z = vz;

@@ -278,24 +278,24 @@ MO.SMatrix3x3_transform = function SMatrix3x3_transform(po, pi, pc){
 // <T>变换顶点数据。</T>
 //
 // @method
-// @param pi:inputPoint:SPoint3 输入顶点
-// @param po:inputPoint:SPoint3 输出顶点
+// @param inputPoint:SPoint3 输入顶点
+// @param outputPoint:SPoint3 输出顶点
 //==========================================================
-MO.SMatrix3x3_transformPoint3 = function SMatrix3x3_transformPoint3(pi, po){
+MO.SMatrix3x3_transformPoint3 = function SMatrix3x3_transformPoint3(inputPoint, outputPoint){
    var d = this._data;
    // 计算内容
-   var x = (pi.x * d[0]) + (pi.y * d[3]) +(pi.z * d[6]);
-   var y = (pi.x * d[1]) + (pi.y * d[4]) +(pi.z * d[7]);
-   var z = (pi.x * d[2]) + (pi.y * d[5]) +(pi.z * d[8]);
+   var x = (inputPoint.x * d[0]) + (inputPoint.y * d[3]) +(inputPoint.z * d[6]);
+   var y = (inputPoint.x * d[1]) + (inputPoint.y * d[4]) +(inputPoint.z * d[7]);
+   var z = (inputPoint.x * d[2]) + (inputPoint.y * d[5]) +(inputPoint.z * d[8]);
    // 输出结果
-   var r = null;
-   if(po){
-      r = po;
+   var value = null;
+   if(outputPoint){
+      value = outputPoint;
    }else{
-      r = new SPoint3();
+      value = new MO.SPoint3();
    }
-   r.set(x, y, z);
-   return r;
+   value.set(x, y, z);
+   return value;
 }
 
 //============================================================

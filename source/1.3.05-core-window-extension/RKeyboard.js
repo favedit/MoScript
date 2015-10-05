@@ -111,14 +111,13 @@ MO.RKeyboard.prototype.isNumKey = function RKeyboard_isNumKey(c){
 // <T>判断按键是否按下。</T>
 //
 // @method
-// @param p:keyCode:Integer 按键代码
+// @param keyCode:Integer 按键代码
 // @return Boolean 是否按下
 //===========================================================
-MO.RKeyboard.prototype.isPress = function RKeyboard_isPress(p){
+MO.RKeyboard.prototype.isPress = function RKeyboard_isPress(keyCode){
    var o = this;
-   // 设置状态
-   var v = o._status[p];
-   return v == MO.EKeyStatus.Press;
+   var status = o._status[keyCode];
+   return status == MO.EKeyStatus.Press;
 }
 
 //===========================================================

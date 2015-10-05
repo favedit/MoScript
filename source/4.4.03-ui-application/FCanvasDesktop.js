@@ -150,12 +150,13 @@ MO.FCanvasDesktop_resize = function FCanvasDesktop_resize(targetWidth, targetHei
    //..........................................................
    // 设置3D画板
    var canvas3d = o._canvas3d;
+   var context3d = canvas3d.graphicContext();
+   context3d.size().set(width, height);
    if(browser.capability().canvasScale){
       canvas3d.resize(width, height);
    }else{
       canvas3d.resize(sourceWidth, sourceHeight);
    }
-   var context3d = canvas3d.graphicContext();
    context3d.setViewport(0, 0, width, height)
    if(isVertical){
       o._virtualSize.set(logicSize.height * calculateRate.width, logicSize.width * calculateRate.height);
@@ -217,15 +218,15 @@ MO.FCanvasDesktop_selectStage = function FCanvasDesktop_selectStage(stage){
    // 设置参数
    if(stage){
       // 设置投影
-      var camera = stage.region().camera();
+      var camera = stage.camera();
       var projection = camera.projection();
-      projection.setAngle(80);
+      //projection.setAngle(80);
       projection.size().assign(o._size);
       projection.update();
       // 设置相机
-      camera.position().set(0, 0, -10);
-      camera.lookAt(0, 0, 0);
-      camera.update();
+      //camera.position().set(0, 0, -10);
+      //camera.lookAt(0, 0, 0);
+      //camera.update();
    }
    o._activeStage = stage;
 }

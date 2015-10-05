@@ -185,7 +185,7 @@ MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture, cod
       textures = o._textures = new MO.TDictionary();
    }
    // 增加纹理
-   if(code != null){
+   if(code){
       textures.set(code, texture);
    }else if(texture._name){
       textures.set(texture._name, texture);

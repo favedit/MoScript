@@ -167,25 +167,22 @@ MO.FE3dCamera_commitResource = function FE3dCamera_commitResource(){
 MO.FE3dCamera_update = function FE3dCamera_update(){
    var o = this;
    // 计算旋转分量
-   var r = o._rotation;
-   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, r.x);
-   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, r.y);
-   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, r.z);
+   var rotation = o._rotation;
+   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, rotation.x);
+   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, rotation.y);
+   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, rotation.z);
    // 计算旋转
-   var q = o._quaternion.identity();
-   q.mul(o._quaternionX);
-   q.mul(o._quaternionY);
-   q.mul(o._quaternionZ);
+   var quaternion = o._quaternion.identity();
+   quaternion.mul(o._quaternionX);
+   quaternion.mul(o._quaternionY);
+   quaternion.mul(o._quaternionZ);
    // 转换为矩阵
-   var m = o._rotationMatrix;
-   m.build(q);
+   var matrix = o._rotationMatrix;
+   matrix.build(quaternion);
    // 计算目标
-   var d = o._direction;
-   m.transformPoint3(o._directionTarget, d);
-   d.normalize();
-   // 计算上轴
-   //m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
-   // 设置方向
+   var direction = o._direction;
+   matrix.transformPoint3(o._directionTarget, direction);
+   direction.normalize();
    // 父更新矩阵
    o.__base.FG3dCamera.update.call(o);
 }

@@ -10,11 +10,13 @@ MO.FE3dSphere = function FE3dSphere(o){
    //..........................................................
    // @attribute
    o._outline              = null;
+   o._drawModeCd           = MO.Class.register(o, new MO.AGetSet('_drawModeCd'), MO.EG3dDrawMode.Triangles);
    o._splitCount           = MO.Class.register(o, new MO.AGetSet('_splitCount'), 8);
    // @attribute
    o._vertexPositionBuffer = null;
-   o._vertexColorBuffer    = null;
+   o._vertexNormalBuffer   = null;
    o._vertexCoordBuffer    = null;
+   o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    //..........................................................
    // @method
    o.construct             = MO.FE3dSphere_construct;
@@ -48,15 +50,15 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var positions = new MO.TArray();
    var normals = new MO.TArray();
    var coords = new MO.TArray();
-   var cr = o._splitCount * 2;
-   var cz = o._splitCount;
-   var stepr = Math.PI * 2 / cr;
-   var stepz = Math.PI / cz;
+   var countAngle = o._splitCount * 2;
+   var countZ = o._splitCount;
+   var stepAngle = Math.PI * 2 / countAngle;
+   var stepZ = Math.PI / countZ;
    var count = 0;
-   for(var rz = 0; rz <= cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var radius = stepr * r - Math.PI;
-         var radiusZ = stepz * rz - MO.RConst.PI_2;
+   for(var rz = 0; rz <= countZ; rz++){
+      for(var r = 0; r < countAngle; r++){
+         var radius = stepAngle * r - Math.PI;
+         var radiusZ = stepZ * rz - MO.Const.PI_2;
          var x = Math.sin(radius) * Math.cos(radiusZ);
          var y = Math.sin(radiusZ);
          var z = -Math.cos(radius) * Math.cos(radiusZ);
@@ -67,17 +69,19 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
       }
    }
    o._vertexCount = count;
-   // 创建顶点缓冲
+   // 创建顶点位置缓冲
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setCode('position');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
    o.pushVertexBuffer(buffer);
-   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   // 创建顶点颜色缓冲
+   var buffer = o._vertexNormalBuffer = context.createVertexBuffer();
    buffer.setCode('normal');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
    o.pushVertexBuffer(buffer);
+   // 创建顶点纹理缓冲
    var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
    buffer.setCode('coord');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
@@ -85,26 +89,43 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    o.pushVertexBuffer(buffer);
    //..........................................................
    // 计算索引
+   var drawModeCd = o._drawModeCd;
    var indexes = new MO.TArray();
-   for(var rz = 0; rz < cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var i = cr * rz;
+   for(var rz = 0; rz < countZ; rz++){
+      for(var r = 0; r < countAngle; r++){
+         var i = countAngle * rz;
          var ci = i + r;
-         var ni = i + r + cr;
-         if(r == cr - 1){
-            indexes.push(ci, ni, i);
-            indexes.push(ni, i + cr, i);
+         var ni = i + r + countAngle;
+         if(r == countAngle - 1){
+            if(drawModeCd == MO.EG3dDrawMode.Lines){
+               indexes.push(ci, ni, ni, i, i, ci);
+               indexes.push(ni, i + countAngle, i + countAngle, i, i, ni);
+            }else{
+               indexes.push(ci, ni, i);
+               indexes.push(ni, i + countAngle, i);
+            }
          }else{
-            indexes.push(ci, ni, ci + 1);
-            indexes.push(ni, ni + 1, ci + 1);
+            if(drawModeCd == MO.EG3dDrawMode.Lines){
+               indexes.push(ci, ni, ni, ci + 1, ci + 1, ci);
+               indexes.push(ni, ni + 1, ni + 1, ci + 1, ci + 1, ni);
+            }else{
+               indexes.push(ci, ni, ci + 1);
+               indexes.push(ni, ni + 1, ci + 1);
+            }
          }
       }
    }
    // 创建索引缓冲
-   var buffer = context.createIndexBuffer();
-   //ib._fillMode = EG3dFillMode.Line;
-   //ib._lineWidth = 1;
-   buffer.upload(new Uint16Array(indexes.memory()), indexes.length());
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.setDrawModeCd(drawModeCd);
+   var indexLength = indexes.length();
+   var indexMemory = indexes.memory();
+   if(indexLength > 65535){
+      buffer.setStrideCd(MO.EG3dIndexStride.Uint32);
+      buffer.upload(new Uint32Array(indexMemory), indexLength);
+   }else{
+      buffer.upload(new Uint16Array(indexMemory), indexLength);
+   }
    o.pushIndexBuffer(buffer);
    //..........................................................
    // 更新处理

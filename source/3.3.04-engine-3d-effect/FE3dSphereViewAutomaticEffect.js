@@ -9,12 +9,34 @@ MO.FE3dSphereViewAutomaticEffect = function FE3dSphereViewAutomaticEffect(o){
    //..........................................................
    // @attribute
    o._code          = 'sphere.view.automatic';
-   o._rotationX     = 0;
-   o._rotationY     = 0;
+   // @attribute
+   o._modelMatrix   = null;
+   o._vpMatrix      = null;
+   o._pointOrigin   = null;
+   o._pointCenter   = null;
    //..........................................................
+   // @method
+   o.construct      = MO.FE3dSphereViewAutomaticEffect_construct;
    // @method
    o.drawRenderable = MO.FE3dSphereViewAutomaticEffect_drawRenderable;
    return o;
+}
+
+//==========================================================
+// <T>绘制渲染对象。</T>
+//
+// @method
+// @param region:FG3dRegion 渲染区域
+// @param renderable:FG3dRenderable 渲染对象
+//==========================================================
+MO.FE3dSphereViewAutomaticEffect_construct = function FE3dSphereViewAutomaticEffect_construct(){
+   var o = this;
+   o.__base.FG3dAutomaticEffect.construct.call(o);
+   // 设置属性
+   o._modelMatrix = new MO.SMatrix3d();
+   o._vpMatrix = new MO.SMatrix3d();
+   o._pointOrigin = new MO.SPoint3(0, 0, 0);
+   o._pointCenter = new MO.SPoint3(0, 0, 0);
 }
 
 //==========================================================
@@ -28,21 +50,25 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    var o = this;
    var context = o._graphicContext;
    var program = o._program;
-   // 计算比率
-   var size = context.size();
-   var rateX = 1;
-   var rateY = 1;
-   if(size.width > size.height){
-      rateX = size.width / size.height;
-   }else if(size.width < size.height){
-      rateY = size.height / size.width;
-   }
-   var rotationX = o._rotationX + 0.00005;
-   var rotationY = o._rotationY + 0.00002;
-   program.setParameter4('vc_const', 1 / rateX, 1 / rateY, rotationX, rotationY);
-   program.setParameter4('fc_const', rateX, rateY, rotationX, rotationY);
-   o._rotationX = rotationX;
-   o._rotationY = rotationY;
+   // 计算视角投影矩阵
+   var camera = region.camera();
+   var projection = camera.projection();
+   projection.size().set(2048, 2048);
+   projection.update();
+   // 计算显示矩阵
+   var matrix = renderable.matrix();
+   var modelMatrix = o._modelMatrix;
+   modelMatrix.assign(matrix);
+   modelMatrix.addRotationX(-Math.PI* 0.5);
+   // 计算矩阵
+   var vpMatrix = o._vpMatrix;
+   vpMatrix.assign(camera.matrix());
+   vpMatrix.append(projection.matrix());
+   // 设置变量
+   program.setParameter('vc_model_matrix', modelMatrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   program.setParameter4('vc_const', 0, 0, 0, 2 / Math.PI);
+   program.setParameter4('vc_direction', 0, 0, -1, 0);
    // 绑定材质
    var material = renderable.material();
    o.bindMaterial(material);
