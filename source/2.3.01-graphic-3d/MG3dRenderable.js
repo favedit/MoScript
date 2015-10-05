@@ -9,6 +9,7 @@ MO.MG3dRenderable = function MG3dRenderable(o){
    //..........................................................
    // @attribute
    o._optionMerge   = MO.Class.register(o, new MO.AGetSet('_optionMerge'), false);
+   o._optionFull    = MO.Class.register(o, new MO.AGetSet('_optionFull'), false);
    o._optionSelect  = MO.Class.register(o, new MO.AGetSet('_optionSelect'), true);
    // @attribute
    o._currentMatrix = MO.Class.register(o, new MO.AGetter('_currentMatrix'));

@@ -33,7 +33,8 @@ MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffe
    o.bindMaterial(material);
    // 设置骨头集合
    var program = o._program;
-   if(renderable._optionMerge){
+   var optionMerge = renderable.optionMerge();
+   if(optionMerge){
       var meshs = renderable.mergeRenderables();
       var meshCount = meshs.count();
       var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, 4 * meshCount);
@@ -53,12 +54,9 @@ MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffe
    }else{
       // 计算矩阵
       var matrix = renderable.matrix();
-      if(renderable._optionFull){
-         var cx = matrix.sx / sizeWidth * 2;
-         var cy = matrix.sy / sizeHeight * 2;
-         var tx = matrix.tx / sizeWidth * 2 - 1;
-         var ty = 1 - matrix.ty / sizeHeight * 2;
-         program.setParameter4('vc_position', cx, cy, tx, ty);
+      var optionFull = renderable.optionFull();
+      if(optionFull){
+         program.setParameter4('vc_position', 2, 2, -1, 1);
       }else{
          var cx = matrix.sx / sizeWidth * 2;
          var cy = matrix.sy / sizeHeight * 2;
