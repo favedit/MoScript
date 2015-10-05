@@ -8,8 +8,8 @@ MO.MG3dRenderable = function MG3dRenderable(o){
    o = MO.Class.inherits(this, o, MO.MGraphicRenderable);
    //..........................................................
    // @attribute
-   o._optionMerge   = MO.Class.register(o, new MO.AGetter('_optionMerge'), false);
-   o._optionSelect  = MO.Class.register(o, new MO.AGetter('_optionSelect'), true);
+   o._optionMerge   = MO.Class.register(o, new MO.AGetSet('_optionMerge'), false);
+   o._optionSelect  = MO.Class.register(o, new MO.AGetSet('_optionSelect'), true);
    // @attribute
    o._currentMatrix = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
    o._matrix        = MO.Class.register(o, new MO.AGetter('_matrix'));
