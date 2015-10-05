@@ -914,19 +914,19 @@ MO.SMatrix3x3_transform = function SMatrix3x3_transform(po, pi, pc){
       po[n + 2] = (pi[n] * d[2]) + (pi[n + 1] * d[5]) +(pi[n + 2] * d[8]);
    }
 }
-MO.SMatrix3x3_transformPoint3 = function SMatrix3x3_transformPoint3(pi, po){
+MO.SMatrix3x3_transformPoint3 = function SMatrix3x3_transformPoint3(inputPoint, outputPoint){
    var d = this._data;
-   var x = (pi.x * d[0]) + (pi.y * d[3]) +(pi.z * d[6]);
-   var y = (pi.x * d[1]) + (pi.y * d[4]) +(pi.z * d[7]);
-   var z = (pi.x * d[2]) + (pi.y * d[5]) +(pi.z * d[8]);
-   var r = null;
-   if(po){
-      r = po;
+   var x = (inputPoint.x * d[0]) + (inputPoint.y * d[3]) +(inputPoint.z * d[6]);
+   var y = (inputPoint.x * d[1]) + (inputPoint.y * d[4]) +(inputPoint.z * d[7]);
+   var z = (inputPoint.x * d[2]) + (inputPoint.y * d[5]) +(inputPoint.z * d[8]);
+   var value = null;
+   if(outputPoint){
+      value = outputPoint;
    }else{
-      r = new SPoint3();
+      value = new MO.SPoint3();
    }
-   r.set(x, y, z);
-   return r;
+   value.set(x, y, z);
+   return value;
 }
 MO.SMatrix3x3_build = function SMatrix3x3_build(r){
    var d = this._data;
@@ -2991,15 +2991,15 @@ MO.SVector3_conjugate = function SVector3_conjugate(p){
    r.z = -o.z;
    return r;
 }
-MO.SVector3_dotPoint3 = function SVector3_dotPoint3(v){
+MO.SVector3_dotPoint3 = function SVector3_dotPoint3(value){
    var o = this;
-   return (o.x * v.x) + (o.y * v.y) + (o.z * v.z);
+   return (o.x * value.x) + (o.y * value.y) + (o.z * value.z);
 }
-MO.SVector3_cross = function SVector3_cross(v){
+MO.SVector3_cross = function SVector3_cross(value){
    var o = this;
-   var vx = (o.y * v.z) - (o.z * v.y);
-   var vy = (o.z * v.x) - (o.x * v.z);
-   var vz = (o.x * v.y) - (o.y * v.x);
+   var vx = (o.y * value.z) - (o.z * value.y);
+   var vy = (o.z * value.x) - (o.x * value.z);
+   var vz = (o.x * value.y) - (o.y * value.x);
    o.x = vx;
    o.y = vy;
    o.z = vz;

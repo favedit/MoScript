@@ -729,7 +729,6 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
-   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){
@@ -1071,10 +1070,10 @@ MO.RKeyboard.prototype.isNumKey = function RKeyboard_isNumKey(c){
    }
    return false;
 }
-MO.RKeyboard.prototype.isPress = function RKeyboard_isPress(p){
+MO.RKeyboard.prototype.isPress = function RKeyboard_isPress(keyCode){
    var o = this;
-   var v = o._status[p];
-   return v == MO.EKeyStatus.Press;
+   var status = o._status[keyCode];
+   return status == MO.EKeyStatus.Press;
 }
 MO.RKeyboard.prototype.fixCase = function RKeyboard_fixCase(e, c){
    if(e && c){

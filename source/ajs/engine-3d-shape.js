@@ -144,15 +144,11 @@ MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, u
 }
 MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadByUrl(context, url);
 }
 MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(url);
    var dataUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
    var data = o._bitmapDatas.get(url);
@@ -167,8 +163,6 @@ MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(co
 }
 MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadDataByUrl(context, url);
 }
@@ -1319,7 +1313,6 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
-   MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_calculateOutline = function FE3dDynamicMesh_calculateOutline(){
    var o = this;
@@ -1907,7 +1900,6 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -1922,10 +1914,12 @@ MO.FE3dShapeData_dispose = function FE3dShapeData_dispose(){
 MO.FE3dSphere = function FE3dSphere(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    o._outline              = null;
+   o._drawModeCd           = MO.Class.register(o, new MO.AGetSet('_drawModeCd'), MO.EG3dDrawMode.Triangles);
    o._splitCount           = MO.Class.register(o, new MO.AGetSet('_splitCount'), 8);
    o._vertexPositionBuffer = null;
-   o._vertexColorBuffer    = null;
+   o._vertexNormalBuffer   = null;
    o._vertexCoordBuffer    = null;
+   o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    o.construct             = MO.FE3dSphere_construct;
    o.setup                 = MO.FE3dSphere_setup;
    return o;
@@ -1942,15 +1936,15 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var positions = new MO.TArray();
    var normals = new MO.TArray();
    var coords = new MO.TArray();
-   var cr = o._splitCount * 2;
-   var cz = o._splitCount;
-   var stepr = Math.PI * 2 / cr;
-   var stepz = Math.PI / cz;
+   var countAngle = o._splitCount * 2;
+   var countZ = o._splitCount;
+   var stepAngle = Math.PI * 2 / countAngle;
+   var stepZ = Math.PI / countZ;
    var count = 0;
-   for(var rz = 0; rz <= cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var radius = stepr * r - Math.PI;
-         var radiusZ = stepz * rz - MO.RConst.PI_2;
+   for(var rz = 0; rz <= countZ; rz++){
+      for(var r = 0; r < countAngle; r++){
+         var radius = stepAngle * r - Math.PI;
+         var radiusZ = stepZ * rz - MO.Const.PI_2;
          var x = Math.sin(radius) * Math.cos(radiusZ);
          var y = Math.sin(radiusZ);
          var z = -Math.cos(radius) * Math.cos(radiusZ);
@@ -1966,7 +1960,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
    o.pushVertexBuffer(buffer);
-   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   var buffer = o._vertexNormalBuffer = context.createVertexBuffer();
    buffer.setCode('normal');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
@@ -1976,23 +1970,42 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
    buffer.upload(new Float32Array(coords.memory()), 4 * 2, count);
    o.pushVertexBuffer(buffer);
+   var drawModeCd = o._drawModeCd;
    var indexes = new MO.TArray();
-   for(var rz = 0; rz < cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var i = cr * rz;
+   for(var rz = 0; rz < countZ; rz++){
+      for(var r = 0; r < countAngle; r++){
+         var i = countAngle * rz;
          var ci = i + r;
-         var ni = i + r + cr;
-         if(r == cr - 1){
-            indexes.push(ci, ni, i);
-            indexes.push(ni, i + cr, i);
+         var ni = i + r + countAngle;
+         if(r == countAngle - 1){
+            if(drawModeCd == MO.EG3dDrawMode.Lines){
+               indexes.push(ci, ni, ni, i, i, ci);
+               indexes.push(ni, i + countAngle, i + countAngle, i, i, ni);
+            }else{
+               indexes.push(ci, ni, i);
+               indexes.push(ni, i + countAngle, i);
+            }
          }else{
-            indexes.push(ci, ni, ci + 1);
-            indexes.push(ni, ni + 1, ci + 1);
+            if(drawModeCd == MO.EG3dDrawMode.Lines){
+               indexes.push(ci, ni, ni, ci + 1, ci + 1, ci);
+               indexes.push(ni, ni + 1, ni + 1, ci + 1, ci + 1, ni);
+            }else{
+               indexes.push(ci, ni, ci + 1);
+               indexes.push(ni, ni + 1, ci + 1);
+            }
          }
       }
    }
-   var buffer = context.createIndexBuffer();
-   buffer.upload(new Uint16Array(indexes.memory()), indexes.length());
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.setDrawModeCd(drawModeCd);
+   var indexLength = indexes.length();
+   var indexMemory = indexes.memory();
+   if(indexLength > 65535){
+      buffer.setStrideCd(MO.EG3dIndexStride.Uint32);
+      buffer.upload(new Uint32Array(indexMemory), indexLength);
+   }else{
+      buffer.upload(new Uint16Array(indexMemory), indexLength);
+   }
    o.pushIndexBuffer(buffer);
    o.update();
    var info = o.material().info();

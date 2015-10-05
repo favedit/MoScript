@@ -793,41 +793,41 @@ MO.FG3dCamera_doRoll = function FG3dCamera_doRoll(p){
 }
 MO.FG3dCamera_lookAt = function FG3dCamera_lookAt(x, y, z){
    var o = this;
-   var p = o._position;
-   var d = o._direction;
+   var position = o._position;
+   var direction = o._direction;
    o._target.set(x, y, z);
-   d.set(x - p.x, y - p.y, z - p.z);
-   d.normalize();
-   o._directionTarget.assign(d);
+   direction.set(x - position.x, y - position.y, z - position.z);
+   direction.normalize();
+   o._directionTarget.assign(direction);
 }
 MO.FG3dCamera_update = function FG3dCamera_update(){
    var o = this;
-   var ax = o.__axisX;
-   var ay = o.__axisY;
-   var az = o.__axisZ;
-   az.assign(o._direction);
-   az.normalize();
-   o.__axisUp.cross2(ax, az);
-   ax.normalize();
-   az.cross2(ay, ax);
-   ay.normalize();
-   var d = o._matrix.data();
-   d[ 0] = ax.x;
-   d[ 1] = ay.x;
-   d[ 2] = az.x;
-   d[ 3] = 0.0;
-   d[ 4] = ax.y;
-   d[ 5] = ay.y;
-   d[ 6] = az.y;
-   d[ 7] = 0.0;
-   d[ 8] = ax.z;
-   d[ 9] = ay.z;
-   d[10] = az.z;
-   d[11] = 0.0;
-   d[12] = -ax.dotPoint3(o._position);
-   d[13] = -ay.dotPoint3(o._position);
-   d[14] = -az.dotPoint3(o._position);
-   d[15] = 1.0;
+   var axisX = o.__axisX;
+   var axisY = o.__axisY;
+   var axisZ = o.__axisZ;
+   axisZ.assign(o._direction);
+   axisZ.normalize();
+   o.__axisUp.cross2(axisX, axisZ);
+   axisX.normalize();
+   axisZ.cross2(axisY, axisX);
+   axisY.normalize();
+   var data = o._matrix.data();
+   data[ 0] = axisX.x;
+   data[ 1] = axisY.x;
+   data[ 2] = axisZ.x;
+   data[ 3] = 0.0;
+   data[ 4] = axisX.y;
+   data[ 5] = axisY.y;
+   data[ 6] = axisZ.y;
+   data[ 7] = 0.0;
+   data[ 8] = axisX.z;
+   data[ 9] = axisY.z;
+   data[10] = axisZ.z;
+   data[11] = 0.0;
+   data[12] = -axisX.dotPoint3(o._position);
+   data[13] = -axisY.dotPoint3(o._position);
+   data[14] = -axisZ.dotPoint3(o._position);
+   data[15] = 1.0;
 }
 MO.FG3dCamera_updateFrustum = function FG3dCamera_updateFrustum(){
    var o = this;
@@ -1102,11 +1102,11 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
    o._effectInfo = new MO.SG3dEffectInfo();
    o._tagContext = MO.Class.create(MO.FTagContext);
 }
-MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(n, e){
-   this._registerEffects.set(n, e);
+MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
+   this._registerEffects.set(name, effect);
 }
-MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(n){
-   this._registerEffects.set(n, null);
+MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
+   this._registerEffects.set(name, null);
 }
 MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
    var o = this;
@@ -1567,7 +1567,6 @@ MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
 }
 MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
    var o = this;
-   MO.Assert.debugNotNull(pass);
    pass.setTechnique(o);
    o._passes.push(pass);
 }

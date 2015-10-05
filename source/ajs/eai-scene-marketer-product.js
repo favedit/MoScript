@@ -135,14 +135,13 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
    o._circleStyle      = MO.Class.register(o, new MO.AGetSet('_circleStyle'));
    o._circleAirRadius  = MO.Class.register(o, new MO.AGetSet('_airRadius'), 7);
    o._circlelColor     = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
-   o._tatolColor       = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
    o.oeUpdate          = MO.FEaiChartMktProductCircle_oeUpdate;
    o.construct         = MO.FEaiChartMktProductCircle_construct;
    o.onPaintBegin      = MO.FEaiChartMktProductCircle_onPaintBegin;
    o.on24HDataFetch    = MO.FEaiChartMktProductCircle_on24HDataFetch;
    o.setCircleStyle    = MO.FEaiChartMktProductCircle_setCircleStyle;
    o.dispose           = MO.FEaiChartMktProductCircle_dispose;
-   o.draw              = FEaiChartMktProductCircle_draw;
+   o.draw              = MO.FEaiChartMktProductCircle_draw;
    return o;
 }
 MO.FEaiChartMktProductCircle_setCircleStyle  =  function FEaiChartMktProductCircle_setCircleStyle(Radius,color,unit){
@@ -231,7 +230,7 @@ MO.FEaiChartMktProductCircle_draw = function FEaiChartMktProductCircle_draw(cont
 }
 MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_onPaintBegin(event) {
    var o = this;
-   if(!o._ready){
+   if (!o._ready || !units) {
       return;
    }
    o.__base.FGuiControl.onPaintBegin.call(o, event);
@@ -372,6 +371,7 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
    o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
    o._rankUnits               = MO.Class.register(o, new MO.AGetter('_rankUnits'));
    o._units                   = MO.Class.register(o, new MO.AGetter('_units'));
+   o._tenderUnits             = MO.Class.register(o, new MO.AGetter('_tenderUnits'));
    o._tableCount              = 40;
    o._tableInterval           = 1000;
    o._tableTick               = 1;
@@ -395,8 +395,12 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
    return o;
 }
 MO.FEaiChartMktProductProcessor_onTrenderData = function FEaiChartMktProductProcessor_onTrenderData(event) {
-    var o = this;
-    o.processTrenderDataChangedListener(event);
+   var o = this;
+   var tenderUnits = o._tenderUnits;
+   tenderUnits.unserializeSignBuffer(event.sign, event.content, true);
+   var changeEvent = o._eventTrenderDataChanged;
+   changeEvent.tenderUnits = tenderUnits.units();
+   o.processTrenderDataChangedListener(changeEvent);
  }
 MO.FEaiChartMktProductProcessor_onDynamicData = function FEaiChartMktProductProcessor_onDynamicData(event){
    var o = this;
@@ -430,9 +434,10 @@ MO.FEaiChartMktProductProcessor_construct = function FEaiChartMktProductProcesso
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
    o._rankUnits = new MO.TObjects();
+   o._tenderUnits = MO.Class.create(MO.FEaiLogicInfoTender);
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
-   o._event24HDataChanged = new MO.SEvent(o);
+   o._eventTrenderDataChanged = new MO.SEvent(o);
 }
 MO.FEaiChartMktProductProcessor_allocUnit = function FEaiChartMktProductProcessor_allocUnit(){
    var o = this;
@@ -575,8 +580,9 @@ MO.FEaiChartMktProductScene_onOperationDown = function FEaiChartMktProductScene_
 }
 MO.FEaiChartMktProductScene_onTrendDataChanged = function FEaiChartMktProductScene_onTrendDataChanged(event) {
    var o = this;
-   o._circleProduct.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-   o._circleProduct.dirty();
+   var bubbleCanvas = o._bubbleCanvas;
+   bubbleCanvas.setTenderUnits(event.tenderUnits);
+   bubbleCanvas.dirty();
  }
 MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProductScene_onInvestmentDataChanged(event) {
    var o = this;
@@ -586,6 +592,10 @@ MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProdu
    table.dirty();
    var circle= o._circleProduct;
    circle.dirty();
+   if (unit) {
+      if (unit._modelChanged == 1) {
+}
+   }
 }
 MO.FEaiChartMktProductScene_onOperationVisibility = function FEaiChartMktProductScene_onOperationVisibility(event) {
    var o = this;
@@ -703,11 +713,11 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
    bubbleCanvas.linkGraphicContext(o);
    bubbleCanvas.build();
    o._guiManager.register(bubbleCanvas);
-    var circleProduct = o._circleProduct = MO.Class.create(MO.FEaiChartMktProductCircle);
-    circleProduct.setName('circleProduct');
-    circleProduct.linkGraphicContext(o);
-    circleProduct.build();
-    o._guiManager.register(circleProduct);
+   var circleProduct = o._circleProduct = MO.Class.create(MO.FEaiChartMktProductCircle);
+   circleProduct.setName('circleProduct');
+   circleProduct.linkGraphicContext(o);
+   circleProduct.build();
+   o._guiManager.register(circleProduct);
    o._guiManager.hide();
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    entityConsole.cityModule().build(o);
@@ -1083,10 +1093,13 @@ MO.FGuiBubble_dispose = function FGuiBubble_dispose(){
 MO.FGuiBubbleCanvas = function FGuiBubbleCanvas(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    o._gap            = MO.Class.register(o, new MO.AGetter('_gap'), 20);
-   o._bubbles        = MO.Class.register(o, new MO.AGetter('_bubbles'));
+   o._ready          = MO.Class.register(o, new MO.AGetter('_ready'), false);
+   o._tenderUnits    = MO.Class.register(o, new MO.AGetter('_tenderUnits'), false);
+   o._bubbles        = MO.Class.register(o, new MO.AGetSet('_bubbles'));
    o._curves         = MO.Class.register(o, new MO.AGetter('_curves'));
    o.construct       = MO.FGuiBubbleCanvas_construct;
    o.onPaintBegin    = MO.FGuiBubbleCanvas_onPaintBegin;
+   o.setTenderUnits  = MO.FGuiBubbleCanvas_setTenderUnits;
    o.dispose         = MO.FGuiBubbleCanvas_dispose;
    return o;
 }
@@ -1094,7 +1107,16 @@ MO.FGuiBubbleCanvas_construct = function FGuiBubbleCanvas_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o._bubbles = new MO.TObjects();
-   o._curves = new MO.TObjects();
+   o._curves = new MO.TDictionary();
+}
+MO.FGuiBubbleCanvas_setTenderUnits = function FGuiBubbleCanvas_setTenderUnits(units) {
+   var o = this;
+   o._tenderUnits = units;
+   if (!_ready) {
+   }
+}
+MO.FGuiBubbleCanvas_showTransferCurve = function FGuiBubbleCanvas_showTransferCurve(unit) {
+   var o = this;
 }
 MO.FGuiBubbleCanvas_onPaintBegin = function FGuiBubbleCanvas_onPaintBegin(event) {
    var o = this;

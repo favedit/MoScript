@@ -212,10 +212,12 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
+   o._earthSphere            = null;
    o.onInvestmentDataChanged = MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged;
    o.on24HDataChanged        = MO.FEaiChartCustomerSphereScene_on24HDataChanged;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartCustomerSphereScene_onProcessReady;
+   o.onProcessInput          = MO.FEaiChartCustomerSphereScene_onProcessInput;
    o.onProcess               = MO.FEaiChartCustomerSphereScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartCustomerSphereScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartCustomerSphereScene_onSwitchComplete;
@@ -252,11 +254,28 @@ MO.FEaiChartCustomerSphereScene_onOperationVisibility = function FEaiChartCustom
       o._countryEntity._audioMapEnter._hAudio.muted = true;
    }
 }
-MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady() {
+MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady(){
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
 }
-MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScene_onProcess() {
+MO.FEaiChartCustomerSphereScene_onProcessInput = function FEaiChartCustomerSphereScene_onProcessInput(){
+   var o = this;
+   var directionSpeed = 0.01;
+   var earthSphere = o._earthSphere;
+   var matrix = earthSphere.matrix();
+   if(MO.Window.Keyboard.isPress(MO.EKeyCode.A)){
+      matrix.ry += directionSpeed;
+   }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.D)){
+      matrix.ry -= directionSpeed;
+   }
+   if(MO.Window.Keyboard.isPress(MO.EKeyCode.W)){
+      matrix.rz += directionSpeed;
+   }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.S)){
+      matrix.rz -= directionSpeed;
+   }
+   matrix.updateForce();
+}
+MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScene_onProcess(){
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    if (!o._statusStart) {
@@ -292,7 +311,6 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
@@ -303,6 +321,7 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
+      o.onProcessInput();
       var logoBar = o._logoBar;
       var processor = o._processor;
       if(processor.invementDayCurrent() > 0){
@@ -333,8 +352,27 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    o.__base.FEaiChartScene.setup.call(o);
    var desktop = o._application.desktop();
    var canvas3d = desktop.canvas3d();
+   var context = canvas3d.graphicContext();
+   var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
+   earthSphere.linkGraphicContext(context);
+   earthSphere.setSplitCount(64);
+   earthSphere.setup();
+   earthSphere.matrix().setScaleAll(100);
+   earthSphere.matrix().update();
    var stage = o._activeStage;
-   stage.selectTechnique(o, MO.FE3dSphereTechnique);
+   var technique = stage.selectTechnique(o, MO.FE3dSphereTechnique);
+   var passView = technique.passView();
+   passView.setSphere(earthSphere);
+   var camera = MO.Class.create(MO.FE3dOrthoCamera);
+   camera.position().set(0, 0, -500);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection.size().assign(context.size());
+   projection.setZnear(1);
+   projection.setZfar(1000);
+   projection.update();
+   stage.region().selectCamera(camera);
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
    o._guiManager.register(frame);
    var dataLayer = stage.dataLayer();
@@ -347,7 +385,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
-   var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FEaiChartCustomerSphereTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
@@ -959,4 +996,51 @@ MO.FEaiChartCustomerSphereTimeline_onPaintBegin = function FEaiChartCustomerSphe
    graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
    startTime.date.setTime(bakTime);
    startTime.refresh();
+}
+MO.FEaiEarthSphere = function FEaiEarthSphere(o){
+   o = MO.Class.inherits(this, o, MO.FE3dSphere);
+   o._axisUp        = MO.Class.register(o, new MO.AGetter('_axisUp'));
+   o._axisDirection = MO.Class.register(o, new MO.AGetter('_axisDirection'));
+   o._axisRotation  = MO.Class.register(o, new MO.AGetter('_axisRotation'));
+   o.construct      = MO.FEaiEarthSphere_construct;
+   o.setup          = MO.FEaiEarthSphere_setup;
+   o.updateMatrix   = MO.FEaiEarthSphere_updateMatrix;
+   return o;
+}
+MO.FEaiEarthSphere_construct = function FEaiEarthSphere_construct(){
+   var o = this;
+   o.__base.FE3dSphere.construct.call(o);
+   o._rotationMatrix = new MO.SMatrix3x3();
+   o._quaternion = new MO.SQuaternion();
+   o._quaternionX = new MO.SQuaternion();
+   o._quaternionY = new MO.SQuaternion();
+   o._quaternionZ = new MO.SQuaternion();
+   o._axisUp = new MO.SVector3(0, 1, 0);
+   o._axisDirection = new MO.SVector3(0, 0, 0);
+   o._axisRotation = new MO.SVector3(0, 0, 0);
+}
+MO.FEaiEarthSphere_setup = function FEaiEarthSphere_setup(){
+   var o = this;
+   o.__base.FE3dSphere.setup.call(o);
+}
+MO.FEaiEarthSphere_updateMatrix = function FEaiEarthSphere_updateMatrix(){
+   var o = this;
+   var rotation = o._axisRotation;
+   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, rotation.x);
+   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, rotation.y);
+   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, rotation.z);
+   var quaternion = o._quaternion.identity();
+   quaternion.mul(o._quaternionX);
+   quaternion.mul(o._quaternionY);
+   quaternion.mul(o._quaternionZ);
+   var rotationMatrix = o._rotationMatrix;
+   rotationMatrix.build(quaternion);
+   var axisDirection = o._axisDirection;
+   rotationMatrix.transformPoint3(o._axisUp, axisDirection);
+   axisDirection.normalize();
+   var matrix = o._matrix;
+   matrix.rx = axisDirection.x;
+   matrix.ry = axisDirection.y;
+   matrix.rz = axisDirection.z;
+   matrix.updateForce();
 }

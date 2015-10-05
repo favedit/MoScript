@@ -1889,7 +1889,6 @@ MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(ca
 }
 MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
    var code = entity.data().code();
-   MO.Assert.debugNotEmpty(code);
    this._citys.set(code, entity);
 }
 MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context, clazz){
@@ -2060,7 +2059,6 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
-      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvince3dEntity);
       provinceEntity._countryEntity = o;
       provinceEntity.linkGraphicContext(o);
@@ -2325,7 +2323,6 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
-      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);
@@ -6990,15 +6987,25 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    var o = this;
    o.__base.FEaiScene.setup.call(o);
    var context = o._graphicContext;
+   var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
+   stage.linkGraphicContext(o);
+   stage.region().linkGraphicContext(o);
+   stage.region().backgroundColor().set(0, 0, 0, 0);
+   var camera = stage.camera();
+   camera.position().set(0, 0, -10);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection.size().assign(context.size());
+   projection.setAngle(80);
+   projection.setZnear(1);
+   projection.setZfar(200);
+   projection.update();
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    entityConsole.linkGraphicContext(o);
    entityConsole._option3d = o._optionMapCity3d;
    entityConsole.setup();
    var mapEntity = o._mapEntity = entityConsole.mapEntity();
-   var stage = o._activeStage = MO.Class.create(MO.FEaiChartStage);
-   stage.linkGraphicContext(o);
-   stage.region().linkGraphicContext(o);
-   stage.region().backgroundColor().set(0, 0, 0, 0);
    var display = mapEntity.countryFaceDisplay();
    o.fixMatrix(display.matrix());
    stage.mapLayer().pushDisplay(display);
@@ -9208,10 +9215,12 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
+   o._earthSphere            = null;
    o.onInvestmentDataChanged = MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged;
    o.on24HDataChanged        = MO.FEaiChartCustomerSphereScene_on24HDataChanged;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartCustomerSphereScene_onProcessReady;
+   o.onProcessInput          = MO.FEaiChartCustomerSphereScene_onProcessInput;
    o.onProcess               = MO.FEaiChartCustomerSphereScene_onProcess;
    o.onSwitchProcess         = MO.FEaiChartCustomerSphereScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartCustomerSphereScene_onSwitchComplete;
@@ -9248,11 +9257,28 @@ MO.FEaiChartCustomerSphereScene_onOperationVisibility = function FEaiChartCustom
       o._countryEntity._audioMapEnter._hAudio.muted = true;
    }
 }
-MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady() {
+MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady(){
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
 }
-MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScene_onProcess() {
+MO.FEaiChartCustomerSphereScene_onProcessInput = function FEaiChartCustomerSphereScene_onProcessInput(){
+   var o = this;
+   var directionSpeed = 0.01;
+   var earthSphere = o._earthSphere;
+   var matrix = earthSphere.matrix();
+   if(MO.Window.Keyboard.isPress(MO.EKeyCode.A)){
+      matrix.ry += directionSpeed;
+   }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.D)){
+      matrix.ry -= directionSpeed;
+   }
+   if(MO.Window.Keyboard.isPress(MO.EKeyCode.W)){
+      matrix.rz += directionSpeed;
+   }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.S)){
+      matrix.rz -= directionSpeed;
+   }
+   matrix.updateForce();
+}
+MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScene_onProcess(){
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    if (!o._statusStart) {
@@ -9288,7 +9314,6 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         return;
       }
       if (!o._mapReady) {
          var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
@@ -9299,6 +9324,7 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
+      o.onProcessInput();
       var logoBar = o._logoBar;
       var processor = o._processor;
       if(processor.invementDayCurrent() > 0){
@@ -9329,8 +9355,27 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    o.__base.FEaiChartScene.setup.call(o);
    var desktop = o._application.desktop();
    var canvas3d = desktop.canvas3d();
+   var context = canvas3d.graphicContext();
+   var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
+   earthSphere.linkGraphicContext(context);
+   earthSphere.setSplitCount(64);
+   earthSphere.setup();
+   earthSphere.matrix().setScaleAll(100);
+   earthSphere.matrix().update();
    var stage = o._activeStage;
-   stage.selectTechnique(o, MO.FE3dSphereTechnique);
+   var technique = stage.selectTechnique(o, MO.FE3dSphereTechnique);
+   var passView = technique.passView();
+   passView.setSphere(earthSphere);
+   var camera = MO.Class.create(MO.FE3dOrthoCamera);
+   camera.position().set(0, 0, -500);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection.size().assign(context.size());
+   projection.setZnear(1);
+   projection.setZfar(1000);
+   projection.update();
+   stage.region().selectCamera(camera);
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
    o._guiManager.register(frame);
    var dataLayer = stage.dataLayer();
@@ -9343,7 +9388,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
-   var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FEaiChartCustomerSphereTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
@@ -9955,6 +9999,53 @@ MO.FEaiChartCustomerSphereTimeline_onPaintBegin = function FEaiChartCustomerSphe
    graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
    startTime.date.setTime(bakTime);
    startTime.refresh();
+}
+MO.FEaiEarthSphere = function FEaiEarthSphere(o){
+   o = MO.Class.inherits(this, o, MO.FE3dSphere);
+   o._axisUp        = MO.Class.register(o, new MO.AGetter('_axisUp'));
+   o._axisDirection = MO.Class.register(o, new MO.AGetter('_axisDirection'));
+   o._axisRotation  = MO.Class.register(o, new MO.AGetter('_axisRotation'));
+   o.construct      = MO.FEaiEarthSphere_construct;
+   o.setup          = MO.FEaiEarthSphere_setup;
+   o.updateMatrix   = MO.FEaiEarthSphere_updateMatrix;
+   return o;
+}
+MO.FEaiEarthSphere_construct = function FEaiEarthSphere_construct(){
+   var o = this;
+   o.__base.FE3dSphere.construct.call(o);
+   o._rotationMatrix = new MO.SMatrix3x3();
+   o._quaternion = new MO.SQuaternion();
+   o._quaternionX = new MO.SQuaternion();
+   o._quaternionY = new MO.SQuaternion();
+   o._quaternionZ = new MO.SQuaternion();
+   o._axisUp = new MO.SVector3(0, 1, 0);
+   o._axisDirection = new MO.SVector3(0, 0, 0);
+   o._axisRotation = new MO.SVector3(0, 0, 0);
+}
+MO.FEaiEarthSphere_setup = function FEaiEarthSphere_setup(){
+   var o = this;
+   o.__base.FE3dSphere.setup.call(o);
+}
+MO.FEaiEarthSphere_updateMatrix = function FEaiEarthSphere_updateMatrix(){
+   var o = this;
+   var rotation = o._axisRotation;
+   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, rotation.x);
+   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, rotation.y);
+   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, rotation.z);
+   var quaternion = o._quaternion.identity();
+   quaternion.mul(o._quaternionX);
+   quaternion.mul(o._quaternionY);
+   quaternion.mul(o._quaternionZ);
+   var rotationMatrix = o._rotationMatrix;
+   rotationMatrix.build(quaternion);
+   var axisDirection = o._axisDirection;
+   rotationMatrix.transformPoint3(o._axisUp, axisDirection);
+   axisDirection.normalize();
+   var matrix = o._matrix;
+   matrix.rx = axisDirection.x;
+   matrix.ry = axisDirection.y;
+   matrix.rz = axisDirection.z;
+   matrix.updateForce();
 }
 MO.FEaiCstInvestment3dCountryTable = function FEaiCstInvestment3dCountryTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
@@ -13704,14 +13795,13 @@ MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
    o._circleStyle      = MO.Class.register(o, new MO.AGetSet('_circleStyle'));
    o._circleAirRadius  = MO.Class.register(o, new MO.AGetSet('_airRadius'), 7);
    o._circlelColor     = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
-   o._tatolColor       = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
    o.oeUpdate          = MO.FEaiChartMktProductCircle_oeUpdate;
    o.construct         = MO.FEaiChartMktProductCircle_construct;
    o.onPaintBegin      = MO.FEaiChartMktProductCircle_onPaintBegin;
    o.on24HDataFetch    = MO.FEaiChartMktProductCircle_on24HDataFetch;
    o.setCircleStyle    = MO.FEaiChartMktProductCircle_setCircleStyle;
    o.dispose           = MO.FEaiChartMktProductCircle_dispose;
-   o.draw              = FEaiChartMktProductCircle_draw;
+   o.draw              = MO.FEaiChartMktProductCircle_draw;
    return o;
 }
 MO.FEaiChartMktProductCircle_setCircleStyle  =  function FEaiChartMktProductCircle_setCircleStyle(Radius,color,unit){
@@ -13800,7 +13890,7 @@ MO.FEaiChartMktProductCircle_draw = function FEaiChartMktProductCircle_draw(cont
 }
 MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_onPaintBegin(event) {
    var o = this;
-   if(!o._ready){
+   if (!o._ready || !units) {
       return;
    }
    o.__base.FGuiControl.onPaintBegin.call(o, event);
@@ -13941,6 +14031,7 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
    o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
    o._rankUnits               = MO.Class.register(o, new MO.AGetter('_rankUnits'));
    o._units                   = MO.Class.register(o, new MO.AGetter('_units'));
+   o._tenderUnits             = MO.Class.register(o, new MO.AGetter('_tenderUnits'));
    o._tableCount              = 40;
    o._tableInterval           = 1000;
    o._tableTick               = 1;
@@ -13964,8 +14055,12 @@ MO.FEaiChartMktProductProcessor = function FEaiChartMktProductProcessor(o){
    return o;
 }
 MO.FEaiChartMktProductProcessor_onTrenderData = function FEaiChartMktProductProcessor_onTrenderData(event) {
-    var o = this;
-    o.processTrenderDataChangedListener(event);
+   var o = this;
+   var tenderUnits = o._tenderUnits;
+   tenderUnits.unserializeSignBuffer(event.sign, event.content, true);
+   var changeEvent = o._eventTrenderDataChanged;
+   changeEvent.tenderUnits = tenderUnits.units();
+   o.processTrenderDataChangedListener(changeEvent);
  }
 MO.FEaiChartMktProductProcessor_onDynamicData = function FEaiChartMktProductProcessor_onDynamicData(event){
    var o = this;
@@ -13999,9 +14094,10 @@ MO.FEaiChartMktProductProcessor_construct = function FEaiChartMktProductProcesso
    o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
    o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
    o._rankUnits = new MO.TObjects();
+   o._tenderUnits = MO.Class.create(MO.FEaiLogicInfoTender);
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
-   o._event24HDataChanged = new MO.SEvent(o);
+   o._eventTrenderDataChanged = new MO.SEvent(o);
 }
 MO.FEaiChartMktProductProcessor_allocUnit = function FEaiChartMktProductProcessor_allocUnit(){
    var o = this;
@@ -14144,8 +14240,9 @@ MO.FEaiChartMktProductScene_onOperationDown = function FEaiChartMktProductScene_
 }
 MO.FEaiChartMktProductScene_onTrendDataChanged = function FEaiChartMktProductScene_onTrendDataChanged(event) {
    var o = this;
-   o._circleProduct.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-   o._circleProduct.dirty();
+   var bubbleCanvas = o._bubbleCanvas;
+   bubbleCanvas.setTenderUnits(event.tenderUnits);
+   bubbleCanvas.dirty();
  }
 MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProductScene_onInvestmentDataChanged(event) {
    var o = this;
@@ -14155,6 +14252,10 @@ MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProdu
    table.dirty();
    var circle= o._circleProduct;
    circle.dirty();
+   if (unit) {
+      if (unit._modelChanged == 1) {
+}
+   }
 }
 MO.FEaiChartMktProductScene_onOperationVisibility = function FEaiChartMktProductScene_onOperationVisibility(event) {
    var o = this;
@@ -14272,11 +14373,11 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
    bubbleCanvas.linkGraphicContext(o);
    bubbleCanvas.build();
    o._guiManager.register(bubbleCanvas);
-    var circleProduct = o._circleProduct = MO.Class.create(MO.FEaiChartMktProductCircle);
-    circleProduct.setName('circleProduct');
-    circleProduct.linkGraphicContext(o);
-    circleProduct.build();
-    o._guiManager.register(circleProduct);
+   var circleProduct = o._circleProduct = MO.Class.create(MO.FEaiChartMktProductCircle);
+   circleProduct.setName('circleProduct');
+   circleProduct.linkGraphicContext(o);
+   circleProduct.build();
+   o._guiManager.register(circleProduct);
    o._guiManager.hide();
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    entityConsole.cityModule().build(o);
@@ -14652,10 +14753,13 @@ MO.FGuiBubble_dispose = function FGuiBubble_dispose(){
 MO.FGuiBubbleCanvas = function FGuiBubbleCanvas(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    o._gap            = MO.Class.register(o, new MO.AGetter('_gap'), 20);
-   o._bubbles        = MO.Class.register(o, new MO.AGetter('_bubbles'));
+   o._ready          = MO.Class.register(o, new MO.AGetter('_ready'), false);
+   o._tenderUnits    = MO.Class.register(o, new MO.AGetter('_tenderUnits'), false);
+   o._bubbles        = MO.Class.register(o, new MO.AGetSet('_bubbles'));
    o._curves         = MO.Class.register(o, new MO.AGetter('_curves'));
    o.construct       = MO.FGuiBubbleCanvas_construct;
    o.onPaintBegin    = MO.FGuiBubbleCanvas_onPaintBegin;
+   o.setTenderUnits  = MO.FGuiBubbleCanvas_setTenderUnits;
    o.dispose         = MO.FGuiBubbleCanvas_dispose;
    return o;
 }
@@ -14663,7 +14767,16 @@ MO.FGuiBubbleCanvas_construct = function FGuiBubbleCanvas_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    o._bubbles = new MO.TObjects();
-   o._curves = new MO.TObjects();
+   o._curves = new MO.TDictionary();
+}
+MO.FGuiBubbleCanvas_setTenderUnits = function FGuiBubbleCanvas_setTenderUnits(units) {
+   var o = this;
+   o._tenderUnits = units;
+   if (!_ready) {
+   }
+}
+MO.FGuiBubbleCanvas_showTransferCurve = function FGuiBubbleCanvas_showTransferCurve(unit) {
+   var o = this;
 }
 MO.FGuiBubbleCanvas_onPaintBegin = function FGuiBubbleCanvas_onPaintBegin(event) {
    var o = this;
@@ -19738,7 +19851,7 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
       }
       else {
          o._startTranslateY = o._translateY;
-         o._startRotateY = o._rotationY % (Math.PI * 2);
+         o._startRotateY = o._rotationY;
          o._startWorldScale = o._worldScale;
          o._targetTranslateY = 0
          o._targetRotateY = o._rotationY;
@@ -19876,6 +19989,9 @@ MO.FEaiChartShow1019Scene_fixMatrix = function FEaiChartShow1019Scene_fixMatrix(
    matrix.update();
    if (o._autoRotate) {
       o._rotationY += 0.001;
+      if (o._rotationY > Math.PI * 2) {
+         o._rotationY = 0;
+      }
    }
 }
 MO.FEaiChartShow1019Scene_processResize = function FEaiChartShow1019Scene_processResize() {
@@ -20105,6 +20221,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
    effectConsole.register('general.view.automatic', MO.FE3dSphereViewAutomaticEffect);
+   effectConsole.register('general.view.result.automatic', MO.FE3dSphereViewResultEffect);
    return true;
 }
 MO.FEaiApplication_processResize = function FEaiApplication_processResize(event){

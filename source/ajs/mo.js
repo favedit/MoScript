@@ -505,7 +505,6 @@ MO.TMap_get = function TMap_get(name, defaultValue){
 }
 MO.TMap_set = function TMap_set(name, value){
    var o = this;
-   MO.Assert.debugNotNull(name);
    var nameString = name.toString();
    var code = nameString.toLowerCase();
    var index = o._table[code];
@@ -1192,13 +1191,11 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
-   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1211,9 +1208,7 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
-   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
-   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1271,7 +1266,6 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -2451,7 +2445,6 @@ MO.RClass.prototype.isName = function RClass_isName(value, name){
 }
 MO.RClass.prototype.isClass = function RClass_isClass(value, clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    if(value){
       var name = o.name(clazz);
       if(value.__base){
@@ -2743,7 +2736,6 @@ MO.RClass.prototype.build = function RClass_build(clazz){
 }
 MO.RClass.prototype.free = function RClass_free(instance){
    var clazz = instance.__class;
-   MO.Assert.debugNotNull(clazz);
    clazz.free(instance);
 }
 MO.RClass.prototype.dump = function RClass_dump(v){
@@ -4942,7 +4934,6 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
-   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -5243,11 +5234,6 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
-   MO.Assert.debugNotNull(source);
-   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
-   MO.Assert.debugTrue(sourceCount <= source.length);
-   MO.Assert.debugNotNull(target);
-   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }
@@ -5469,7 +5455,6 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 }
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var name = null;
    if(value.constructor == String){
       name = value;
@@ -5502,7 +5487,6 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){
@@ -6919,19 +6903,19 @@ MO.SMatrix3x3_transform = function SMatrix3x3_transform(po, pi, pc){
       po[n + 2] = (pi[n] * d[2]) + (pi[n + 1] * d[5]) +(pi[n + 2] * d[8]);
    }
 }
-MO.SMatrix3x3_transformPoint3 = function SMatrix3x3_transformPoint3(pi, po){
+MO.SMatrix3x3_transformPoint3 = function SMatrix3x3_transformPoint3(inputPoint, outputPoint){
    var d = this._data;
-   var x = (pi.x * d[0]) + (pi.y * d[3]) +(pi.z * d[6]);
-   var y = (pi.x * d[1]) + (pi.y * d[4]) +(pi.z * d[7]);
-   var z = (pi.x * d[2]) + (pi.y * d[5]) +(pi.z * d[8]);
-   var r = null;
-   if(po){
-      r = po;
+   var x = (inputPoint.x * d[0]) + (inputPoint.y * d[3]) +(inputPoint.z * d[6]);
+   var y = (inputPoint.x * d[1]) + (inputPoint.y * d[4]) +(inputPoint.z * d[7]);
+   var z = (inputPoint.x * d[2]) + (inputPoint.y * d[5]) +(inputPoint.z * d[8]);
+   var value = null;
+   if(outputPoint){
+      value = outputPoint;
    }else{
-      r = new SPoint3();
+      value = new MO.SPoint3();
    }
-   r.set(x, y, z);
-   return r;
+   value.set(x, y, z);
+   return value;
 }
 MO.SMatrix3x3_build = function SMatrix3x3_build(r){
    var d = this._data;
@@ -8996,15 +8980,15 @@ MO.SVector3_conjugate = function SVector3_conjugate(p){
    r.z = -o.z;
    return r;
 }
-MO.SVector3_dotPoint3 = function SVector3_dotPoint3(v){
+MO.SVector3_dotPoint3 = function SVector3_dotPoint3(value){
    var o = this;
-   return (o.x * v.x) + (o.y * v.y) + (o.z * v.z);
+   return (o.x * value.x) + (o.y * value.y) + (o.z * value.z);
 }
-MO.SVector3_cross = function SVector3_cross(v){
+MO.SVector3_cross = function SVector3_cross(value){
    var o = this;
-   var vx = (o.y * v.z) - (o.z * v.y);
-   var vy = (o.z * v.x) - (o.x * v.z);
-   var vz = (o.x * v.y) - (o.y * v.x);
+   var vx = (o.y * value.z) - (o.z * value.y);
+   var vy = (o.z * value.x) - (o.x * value.z);
+   var vz = (o.x * value.y) - (o.y * value.x);
    o.x = vx;
    o.y = vy;
    o.z = vz;
@@ -9258,7 +9242,6 @@ MO.RRandom = new MO.RRandom();
 MO.Lang.Random = MO.RRandom;
 MO.AListener = function AListener(name, linker){
    var o = this;
-   MO.Assert.debugNotEmpty(name);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    if(linker == null){
@@ -13230,7 +13213,6 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -14135,7 +14117,6 @@ MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
-   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.Window;
@@ -14143,7 +14124,6 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
-   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    var o = MO.Window;
@@ -14307,7 +14287,6 @@ MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
    o._statusEnable = v;
 }
 MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
-   MO.Assert.debugNotNull(control);
    this._hContainer.appendChild(hPanel);
 }
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
@@ -14491,7 +14470,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(o._typeCd == MO.EBrowser.Chrome){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
-   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, platformCd), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -14512,7 +14490,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
          capability.pixelRatio = Math.min(pixelRatio, 3);
-         MO.Logger.debug(o, 'Parse browser agent. (pixel_ratio={1}, capability_ratio={2})', pixelRatio, capability.pixelRatio);
       }
    }
    if(window.Worker){
@@ -14543,7 +14520,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       events['visibilitychange'] = 'webkitvisibilitychange';
    }
    o.refreshOrientation();
-   MO.Logger.debug(o, 'Browser connect. (agent={1})', o._agent);
 }
 MO.RBrowser.prototype.agent = function RBrowser_agent(){
    return this._agent;
@@ -15660,7 +15636,6 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
-   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){
@@ -16002,10 +15977,10 @@ MO.RKeyboard.prototype.isNumKey = function RKeyboard_isNumKey(c){
    }
    return false;
 }
-MO.RKeyboard.prototype.isPress = function RKeyboard_isPress(p){
+MO.RKeyboard.prototype.isPress = function RKeyboard_isPress(keyCode){
    var o = this;
-   var v = o._status[p];
-   return v == MO.EKeyStatus.Press;
+   var status = o._status[keyCode];
+   return status == MO.EKeyStatus.Press;
 }
 MO.RKeyboard.prototype.fixCase = function RKeyboard_fixCase(e, c){
    if(e && c){
@@ -16142,7 +16117,6 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
-   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -17444,41 +17418,41 @@ MO.FG3dCamera_doRoll = function FG3dCamera_doRoll(p){
 }
 MO.FG3dCamera_lookAt = function FG3dCamera_lookAt(x, y, z){
    var o = this;
-   var p = o._position;
-   var d = o._direction;
+   var position = o._position;
+   var direction = o._direction;
    o._target.set(x, y, z);
-   d.set(x - p.x, y - p.y, z - p.z);
-   d.normalize();
-   o._directionTarget.assign(d);
+   direction.set(x - position.x, y - position.y, z - position.z);
+   direction.normalize();
+   o._directionTarget.assign(direction);
 }
 MO.FG3dCamera_update = function FG3dCamera_update(){
    var o = this;
-   var ax = o.__axisX;
-   var ay = o.__axisY;
-   var az = o.__axisZ;
-   az.assign(o._direction);
-   az.normalize();
-   o.__axisUp.cross2(ax, az);
-   ax.normalize();
-   az.cross2(ay, ax);
-   ay.normalize();
-   var d = o._matrix.data();
-   d[ 0] = ax.x;
-   d[ 1] = ay.x;
-   d[ 2] = az.x;
-   d[ 3] = 0.0;
-   d[ 4] = ax.y;
-   d[ 5] = ay.y;
-   d[ 6] = az.y;
-   d[ 7] = 0.0;
-   d[ 8] = ax.z;
-   d[ 9] = ay.z;
-   d[10] = az.z;
-   d[11] = 0.0;
-   d[12] = -ax.dotPoint3(o._position);
-   d[13] = -ay.dotPoint3(o._position);
-   d[14] = -az.dotPoint3(o._position);
-   d[15] = 1.0;
+   var axisX = o.__axisX;
+   var axisY = o.__axisY;
+   var axisZ = o.__axisZ;
+   axisZ.assign(o._direction);
+   axisZ.normalize();
+   o.__axisUp.cross2(axisX, axisZ);
+   axisX.normalize();
+   axisZ.cross2(axisY, axisX);
+   axisY.normalize();
+   var data = o._matrix.data();
+   data[ 0] = axisX.x;
+   data[ 1] = axisY.x;
+   data[ 2] = axisZ.x;
+   data[ 3] = 0.0;
+   data[ 4] = axisX.y;
+   data[ 5] = axisY.y;
+   data[ 6] = axisZ.y;
+   data[ 7] = 0.0;
+   data[ 8] = axisX.z;
+   data[ 9] = axisY.z;
+   data[10] = axisZ.z;
+   data[11] = 0.0;
+   data[12] = -axisX.dotPoint3(o._position);
+   data[13] = -axisY.dotPoint3(o._position);
+   data[14] = -axisZ.dotPoint3(o._position);
+   data[15] = 1.0;
 }
 MO.FG3dCamera_updateFrustum = function FG3dCamera_updateFrustum(){
    var o = this;
@@ -17753,11 +17727,11 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
    o._effectInfo = new MO.SG3dEffectInfo();
    o._tagContext = MO.Class.create(MO.FTagContext);
 }
-MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(n, e){
-   this._registerEffects.set(n, e);
+MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
+   this._registerEffects.set(name, effect);
 }
-MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(n){
-   this._registerEffects.set(n, null);
+MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
+   this._registerEffects.set(name, null);
 }
 MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
    var o = this;
@@ -18218,7 +18192,6 @@ MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
 }
 MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
    var o = this;
-   MO.Assert.debugNotNull(pass);
    pass.setTechnique(o);
    o._passes.push(pass);
 }
@@ -18916,12 +18889,19 @@ MO.FG3dFlatTexture = function FG3dFlatTexture(o){
    o.uploadData   = MO.Method.virtual(o, 'uploadData');
    o.upload       = MO.Method.virtual(o, 'upload');
    o.update       = MO.Method.empty;
+   o.dispose      = MO.FG3dFlatTexture_dispose;
    return o;
 }
 MO.FG3dFlatTexture_construct = function FG3dFlatTexture_construct(){
    var o = this;
-   o.__base.FG3dTexture.construct();
+   o.__base.FG3dTexture.construct.call(o);
    o._textureCd = MO.EG3dTexture.Flat2d;
+   o._size = new MO.SSize2();
+}
+MO.FG3dFlatTexture_dispose = function FG3dFlatTexture_dispose(){
+   var o = this;
+   o._size = MO.Lang.Object.dispose(o._size);
+   o.__base.FG3dTexture.dispose.call(o);
 }
 MO.FG3dFragmentShader = function FG3dFragmentShader(o){
    o = MO.Class.inherits(this, o, MO.FG3dShader);
@@ -20115,7 +20095,6 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
-            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
@@ -20406,10 +20385,8 @@ MO.FWglContext_createRenderTarget = function FWglContext_createRenderTarget(claz
 }
 MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, height){
    var o = this;
-   o._size.set(width, height);
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
-   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;
@@ -22087,12 +22064,10 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_processEvent = function FDesktop_processEvent(event){
@@ -22927,12 +22902,10 @@ MO.FAudio_play = function FAudio_play(position){
       }
    }
    hAudio.play();
-   MO.Logger.debug(o, 'Audio play. (url={1}, position={2})', o._url, position);
 }
 MO.FAudio_pause = function FAudio_pause(){
    var o = this;
    o._hAudio.pause();
-   MO.Logger.debug(o, 'Audio pause. (url={1})', o._url);
 }
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
@@ -23579,7 +23552,6 @@ MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    o.unserialize(view);
    view.dispose();
    o._statusReady = true;
-   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
    return this._statusReady;
@@ -23918,7 +23890,6 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    hCanvas.height = height;
    o._size.set(width, height);
    o._graphicContext.size().set(width, height);
-   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);
@@ -24090,7 +24061,6 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
-   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -24280,7 +24250,7 @@ MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture, cod
    if(!textures){
       textures = o._textures = new MO.TDictionary();
    }
-   if(code != null){
+   if(code){
       textures.set(code, texture);
    }else if(texture._name){
       textures.set(texture._name, texture);
@@ -29728,7 +29698,7 @@ MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
    texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
    texture.update();
    var target = o._renderTarget = context.createRenderTarget();
-   target.size().set(2048, 1024);
+   target.size().set(2048, 2048);
    target.textures().push(texture);
    target.build();
 }
@@ -29738,6 +29708,36 @@ MO.FE3dSphereColorPass_drawBegin = function FE3dSphereColorPass_drawBegin(region
    var backgroundColor = region.backgroundColor();
    context.setRenderTarget(o._renderTarget);
    context.clear(backgroundColor.red, backgroundColor.green, backgroundColor.blue, backgroundColor.alpha, 1);
+}
+MO.FE3dSphereViewResultEffect = function FE3dSphereViewResultEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'sphere.view.result';
+   o.drawRenderable = MO.FE3dSphereViewResultEffect_drawRenderable;
+   return o;
+}
+MO.FE3dSphereViewResultEffect_drawRenderable = function FE3dSphereViewResultEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   var matrix = renderable.matrix();
+   var size = context.size();
+   var rateX = 1;
+   var rateY = 1;
+   if(size.width > size.height){
+      rateX = size.height / size.width;
+   }else if(size.width < size.height){
+      rateY = size.width / size.height;
+   }
+   matrix.sx = rateX;
+   matrix.sy = rateY;
+   matrix.updateForce();
+   program.setParameter('vc_matrix', matrix);
+   program.setParameter4('vc_const', rateX, rateY, 0, 0);
+   var material = renderable.material();
+   o.bindMaterial(material);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffer());
 }
 MO.FE3dSphereTechnique = function FE3dSphereTechnique(o){
    o = MO.Class.inherits(this, o, MO.FE3dTechnique);
@@ -29770,29 +29770,41 @@ MO.FE3dSphereTechnique_setup = function FE3dSphereTechnique_setup(){
 MO.FE3dSphereViewAutomaticEffect = function FE3dSphereViewAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
    o._code          = 'sphere.view.automatic';
-   o._rotationX     = 0;
-   o._rotationY     = 0;
+   o._modelMatrix   = null;
+   o._vpMatrix      = null;
+   o._pointOrigin   = null;
+   o._pointCenter   = null;
+   o.construct      = MO.FE3dSphereViewAutomaticEffect_construct;
    o.drawRenderable = MO.FE3dSphereViewAutomaticEffect_drawRenderable;
    return o;
+}
+MO.FE3dSphereViewAutomaticEffect_construct = function FE3dSphereViewAutomaticEffect_construct(){
+   var o = this;
+   o.__base.FG3dAutomaticEffect.construct.call(o);
+   o._modelMatrix = new MO.SMatrix3d();
+   o._vpMatrix = new MO.SMatrix3d();
+   o._pointOrigin = new MO.SPoint3(0, 0, 0);
+   o._pointCenter = new MO.SPoint3(0, 0, 0);
 }
 MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
    var context = o._graphicContext;
    var program = o._program;
-   var size = context.size();
-   var rateX = 1;
-   var rateY = 1;
-   if(size.width > size.height){
-      rateX = size.width / size.height;
-   }else if(size.width < size.height){
-      rateY = size.height / size.width;
-   }
-   var rotationX = o._rotationX + 0.00005;
-   var rotationY = o._rotationY + 0.00002;
-   program.setParameter4('vc_const', 1 / rateX, 1 / rateY, rotationX, rotationY);
-   program.setParameter4('fc_const', rateX, rateY, rotationX, rotationY);
-   o._rotationX = rotationX;
-   o._rotationY = rotationY;
+   var camera = region.camera();
+   var projection = camera.projection();
+   projection.size().set(2048, 2048);
+   projection.update();
+   var matrix = renderable.matrix();
+   var modelMatrix = o._modelMatrix;
+   modelMatrix.assign(matrix);
+   modelMatrix.addRotationX(-Math.PI* 0.5);
+   var vpMatrix = o._vpMatrix;
+   vpMatrix.assign(camera.matrix());
+   vpMatrix.append(projection.matrix());
+   program.setParameter('vc_model_matrix', modelMatrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   program.setParameter4('vc_const', 0, 0, 0, 2 / Math.PI);
+   program.setParameter4('vc_direction', 0, 0, -1, 0);
    var material = renderable.material();
    o.bindMaterial(material);
    o.bindAttributes(renderable);
@@ -29802,13 +29814,16 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
 MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
    o = MO.Class.inherits(this, o, MO.FG3dTechniquePass);
    o._code          = 'view';
-   o._radianSize    = null;
-   o._textureColor  = MO.Class.register(o, new MO.AGetSet('_textureColor'));
-   o._effect        = null;
-   o._textureRadian = null;
+   o._sphere        = MO.Class.register(o, new MO.AGetter('_sphere'));
    o._rectangle     = null;
+   o._textureSize   = null;
+   o._textureView   = MO.Class.register(o, new MO.AGetter('_textureViewr'));
+   o._textureColor  = MO.Class.register(o, new MO.AGetSet('_textureColor'));
+   o._effectView    = null;
+   o._effectResult  = null;
    o.construct      = MO.FE3dSphereViewPass_construct;
    o.setup          = MO.FE3dSphereViewPass_setup;
+   o.setSphere      = MO.FE3dSphereViewPass_setSphere;
    o.drawBegin      = MO.FE3dSphereViewPass_drawBegin
    o.drawRegion     = MO.FE3dSphereViewPass_drawRegion;
    return o;
@@ -29816,76 +29831,63 @@ MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
 MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
    var o = this;
    o.__base.FG3dTechniquePass.construct.call(o);
-   o._radianSize = new MO.SSize2(1024, 1024);
+   o._textureSize = new MO.SSize2(2048, 2048);
 }
 MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
    var context = o._graphicContext;
-   var pi2a = 0.5 / Math.PI;
-   var width = o._radianSize.width;
-   var height = o._radianSize.height;
-   var centerX = width / 2;
-   var centerY = height / 2;
-   var data = new Float32Array(width * height);
-   var position = 0;
-   var direction = new MO.SVector2();
-   for(var y = 0; y < height; y++){
-      var ay = (y - centerY) / (height / 2);
-      for(var x = 0; x < width; x++){
-         var ax = (x - centerX) / (width / 2);
-         var length = Math.sqrt(ax * ax + ay * ay);
-         var angle = 0.5;
-         if(length != 0){
-            var nx = ax / length;
-            var ny = ay / length;
-            direction.x = ax;
-            direction.y = ay;
-            direction.normalize();
-            if(y > centerY){
-               angle = 0.5 - Math.acos(nx) * pi2a;
-            }else if(y < centerY){
-               angle = 0.5 + Math.acos(nx) * pi2a;
-            }else if(x > centerX){
-               angle = 0.5;
-            }else if(x < centerX){
-               angle = 1.0;
-            }
-         }
-         data[position++] = angle;
-      }
-   }
-   var texture = o._textureRadian = context.createFlatTexture();
-   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Linear);
-   texture.setWrapCd(MO.EG3dSamplerFilter.MirroredRepeat, MO.EG3dSamplerFilter.MirroredRepeat);
-   texture.uploadData(data, width, height);
+   var texture = o._textureView = context.createFlatTexture();
+   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texture.size().assign(o._textureSize);
+   texture.update();
+   var target = o._renderTarget = context.createRenderTarget();
+   target.size().assign(o._textureSize);
+   target.textures().push(texture);
+   target.build();
    var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
    rectangle.linkGraphicContext(o);
    rectangle.setup();
+   rectangle.pushTexture(texture, 'diffuse');
+}
+MO.FE3dSphereViewPass_setSphere = function FE3dSphereViewPass_setSphere(sphere){
+   var o = this;
+   sphere.pushTexture(o._textureColor, 'diffuse');
+   o._sphere = sphere;
 }
 MO.FE3dSphereViewPass_drawBegin = function FE3dSphereViewPass_drawBegin(region){
    var o = this;
    var context = o._graphicContext;
    var rectangle = o._rectangle;
+   var effectView = o._effectView;
+   if(!effectView){
+      region._spaceName = 'general.view'
+      effectView = o._effectView = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
+   }
+   var effectResult = o._effectResult;
+   if(!effectResult){
+      region._spaceName = 'general.view.result'
+      effectResult = o._effectResult = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
+   }
    var backgroundColor = region.backgroundColor();
    context.setRenderTarget(null);
    context.clear(0, 0, 0, 0, 1);
-   var textures = rectangle.textures();
-   if(textures.isEmpty()){
-      textures.set('diffuse', o._textureColor);
-      textures.set('radian', o._textureRadian);
-   }
 }
 MO.FE3dSphereViewPass_drawRegion = function FE3dSphereViewPass_drawRegion(region){
    var o = this;
    var context = o._graphicContext;
    var rectangle = o._rectangle;
-   var effect = o._effect;
-   if(!effect){
-      effect = o._effect = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
-   }
-   context.setProgram(effect.program());
-   effect.drawRenderable(region, o._rectangle);
+   var effectView = o._effectView;
+   context.setRenderTarget(o._renderTarget);
+   context.clear(0, 0, 0, 0, 1);
+   context.setProgram(effectView.program());
+   effectView.drawRenderable(region, o._sphere);
+   var effectResult = o._effectResult;
+   context.setRenderTarget(null);
+   context.clear(0, 0, 0, 0, 1);
+   context.setProgram(effectResult.program());
+   effectResult.drawRenderable(region, o._rectangle);
 }
 MO.EE3dInstance = new function EE3dInstance(){
    var o = this;
@@ -29980,19 +29982,19 @@ MO.FE3dCamera_commitResource = function FE3dCamera_commitResource(){
 }
 MO.FE3dCamera_update = function FE3dCamera_update(){
    var o = this;
-   var r = o._rotation;
-   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, r.x);
-   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, r.y);
-   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, r.z);
-   var q = o._quaternion.identity();
-   q.mul(o._quaternionX);
-   q.mul(o._quaternionY);
-   q.mul(o._quaternionZ);
-   var m = o._rotationMatrix;
-   m.build(q);
-   var d = o._direction;
-   m.transformPoint3(o._directionTarget, d);
-   d.normalize();
+   var rotation = o._rotation;
+   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, rotation.x);
+   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, rotation.y);
+   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, rotation.z);
+   var quaternion = o._quaternion.identity();
+   quaternion.mul(o._quaternionX);
+   quaternion.mul(o._quaternionY);
+   quaternion.mul(o._quaternionZ);
+   var matrix = o._rotationMatrix;
+   matrix.build(quaternion);
+   var direction = o._direction;
+   matrix.transformPoint3(o._directionTarget, direction);
+   direction.normalize();
    o.__base.FG3dCamera.update.call(o);
 }
 MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
@@ -30631,12 +30633,6 @@ MO.FE3dPerspectiveCamera_construct = function FE3dPerspectiveCamera_construct(){
    var o = this;
    o.__base.FE3dCamera.construct.call(o);
    o._projection = MO.Class.create(MO.FG3dPerspectiveProjection);
-   o._rotation = new MO.SVector3();
-   o._rotationMatrix = new MO.SMatrix3x3();
-   o._quaternion = new MO.SQuaternion();
-   o._quaternionX = new MO.SQuaternion();
-   o._quaternionY = new MO.SQuaternion();
-   o._quaternionZ = new MO.SQuaternion();
 }
 MO.FE3dPerspectiveCamera_updateFrustum = function FE3dPerspectiveCamera_updateFrustum(){
    var o = this;
@@ -33287,15 +33283,11 @@ MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, u
 }
 MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadByUrl(context, url);
 }
 MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(url);
    var dataUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
    var data = o._bitmapDatas.get(url);
@@ -33310,8 +33302,6 @@ MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(co
 }
 MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadDataByUrl(context, url);
 }
@@ -34462,7 +34452,6 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
-   MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_calculateOutline = function FE3dDynamicMesh_calculateOutline(){
    var o = this;
@@ -35050,7 +35039,6 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -35065,10 +35053,12 @@ MO.FE3dShapeData_dispose = function FE3dShapeData_dispose(){
 MO.FE3dSphere = function FE3dSphere(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    o._outline              = null;
+   o._drawModeCd           = MO.Class.register(o, new MO.AGetSet('_drawModeCd'), MO.EG3dDrawMode.Triangles);
    o._splitCount           = MO.Class.register(o, new MO.AGetSet('_splitCount'), 8);
    o._vertexPositionBuffer = null;
-   o._vertexColorBuffer    = null;
+   o._vertexNormalBuffer   = null;
    o._vertexCoordBuffer    = null;
+   o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    o.construct             = MO.FE3dSphere_construct;
    o.setup                 = MO.FE3dSphere_setup;
    return o;
@@ -35085,15 +35075,15 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var positions = new MO.TArray();
    var normals = new MO.TArray();
    var coords = new MO.TArray();
-   var cr = o._splitCount * 2;
-   var cz = o._splitCount;
-   var stepr = Math.PI * 2 / cr;
-   var stepz = Math.PI / cz;
+   var countAngle = o._splitCount * 2;
+   var countZ = o._splitCount;
+   var stepAngle = Math.PI * 2 / countAngle;
+   var stepZ = Math.PI / countZ;
    var count = 0;
-   for(var rz = 0; rz <= cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var radius = stepr * r - Math.PI;
-         var radiusZ = stepz * rz - MO.RConst.PI_2;
+   for(var rz = 0; rz <= countZ; rz++){
+      for(var r = 0; r < countAngle; r++){
+         var radius = stepAngle * r - Math.PI;
+         var radiusZ = stepZ * rz - MO.Const.PI_2;
          var x = Math.sin(radius) * Math.cos(radiusZ);
          var y = Math.sin(radiusZ);
          var z = -Math.cos(radius) * Math.cos(radiusZ);
@@ -35109,7 +35099,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
    o.pushVertexBuffer(buffer);
-   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   var buffer = o._vertexNormalBuffer = context.createVertexBuffer();
    buffer.setCode('normal');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
@@ -35119,23 +35109,42 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
    buffer.upload(new Float32Array(coords.memory()), 4 * 2, count);
    o.pushVertexBuffer(buffer);
+   var drawModeCd = o._drawModeCd;
    var indexes = new MO.TArray();
-   for(var rz = 0; rz < cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var i = cr * rz;
+   for(var rz = 0; rz < countZ; rz++){
+      for(var r = 0; r < countAngle; r++){
+         var i = countAngle * rz;
          var ci = i + r;
-         var ni = i + r + cr;
-         if(r == cr - 1){
-            indexes.push(ci, ni, i);
-            indexes.push(ni, i + cr, i);
+         var ni = i + r + countAngle;
+         if(r == countAngle - 1){
+            if(drawModeCd == MO.EG3dDrawMode.Lines){
+               indexes.push(ci, ni, ni, i, i, ci);
+               indexes.push(ni, i + countAngle, i + countAngle, i, i, ni);
+            }else{
+               indexes.push(ci, ni, i);
+               indexes.push(ni, i + countAngle, i);
+            }
          }else{
-            indexes.push(ci, ni, ci + 1);
-            indexes.push(ni, ni + 1, ci + 1);
+            if(drawModeCd == MO.EG3dDrawMode.Lines){
+               indexes.push(ci, ni, ni, ci + 1, ci + 1, ci);
+               indexes.push(ni, ni + 1, ni + 1, ci + 1, ci + 1, ni);
+            }else{
+               indexes.push(ci, ni, ci + 1);
+               indexes.push(ni, ni + 1, ci + 1);
+            }
          }
       }
    }
-   var buffer = context.createIndexBuffer();
-   buffer.upload(new Uint16Array(indexes.memory()), indexes.length());
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.setDrawModeCd(drawModeCd);
+   var indexLength = indexes.length();
+   var indexMemory = indexes.memory();
+   if(indexLength > 65535){
+      buffer.setStrideCd(MO.EG3dIndexStride.Uint32);
+      buffer.upload(new Uint32Array(indexMemory), indexLength);
+   }else{
+      buffer.upload(new Uint16Array(indexMemory), indexLength);
+   }
    o.pushIndexBuffer(buffer);
    o.update();
    var info = o.material().info();
@@ -36349,7 +36358,6 @@ MO.FDataSource_loadConfig = function FDataSource_loadConfig(xconfig){
          var xnode = xnodes.at(i);
          if(xnode.isName('Dataset')){
             var datasetName = xnode.get('name');
-            MO.Assert.debugNotEmpty(datasetName);
             var dataset = o.selectDataset(datasetName);
             dataset.loadConfig(xnode);
          }
@@ -39520,7 +39528,6 @@ MO.FApplication = function FApplication(o){
    return o;
 }
 MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
-   MO.Logger.debug(this, 'Application process ready.');
 }
 MO.FApplication_onProcess = function FApplication_onProcess(event){
    var o = this;
@@ -39570,7 +39577,6 @@ MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(
    var chapter = o._chapters.get(code);
    if(!chapter){
       chapter = o.createChapter(code);
-      MO.Assert.debugNotNull(chapter);
       o.registerChapter(chapter);
    }
    o.selectChapter(chapter);
@@ -39831,14 +39837,14 @@ MO.FCanvasDesktop_resize = function FCanvasDesktop_resize(targetWidth, targetHei
    }else{
       calculateRate.set(1, 1);
    }
-   MO.Logger.debug(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    var canvas3d = o._canvas3d;
+   var context3d = canvas3d.graphicContext();
+   context3d.size().set(width, height);
    if(browser.capability().canvasScale){
       canvas3d.resize(width, height);
    }else{
       canvas3d.resize(sourceWidth, sourceHeight);
    }
-   var context3d = canvas3d.graphicContext();
    context3d.setViewport(0, 0, width, height)
    if(isVertical){
       o._virtualSize.set(logicSize.height * calculateRate.width, logicSize.width * calculateRate.height);
@@ -39867,14 +39873,10 @@ MO.FCanvasDesktop_selectStage = function FCanvasDesktop_selectStage(stage){
    var o = this;
    o._canvas3d.selectStage(stage);
    if(stage){
-      var camera = stage.region().camera();
+      var camera = stage.camera();
       var projection = camera.projection();
-      projection.setAngle(80);
       projection.size().assign(o._size);
       projection.update();
-      camera.position().set(0, 0, -10);
-      camera.lookAt(0, 0, 0);
-      camera.update();
    }
    o._activeStage = stage;
 }
@@ -40130,7 +40132,6 @@ MO.FChapter = function FChapter(o){
    return o;
 }
 MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
-   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
@@ -40141,7 +40142,6 @@ MO.FChapter_construct = function FChapter_construct(){
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
    var code = scene.code();
-   MO.Assert.debugNotEmpty(code);
    scene.setApplication(o._application);
    scene.setChapter(o);
    o._scenes.set(code, scene);
@@ -40169,7 +40169,6 @@ MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var scene = o._scenes.get(code);
    if(!scene){
       scene = o.createScene(code);
-      MO.Assert.debugNotNull(scene);
       o.registerScene(scene);
    }
    o.selectScene(scene);
@@ -40182,12 +40181,10 @@ MO.FChapter_active = function FChapter_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 MO.FChapter_processEvent = function FChapter_processEvent(event){
    var o = this;
@@ -40469,7 +40466,6 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    o._visible = event.visibility;
 }
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
-   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 MO.FScene_onProcess = function FScene_onProcess(){
    var o = this;
@@ -40491,13 +40487,11 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 MO.FScene_process = function FScene_process(){
    var o = this;
@@ -41450,7 +41444,6 @@ MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
 MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -43069,7 +43062,6 @@ MO.FGuiTable_construct = function FGuiTable_construct(){
 }
 MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
    var o = this;
-   MO.Assert.debugNotNull(row);
    o._rows.unshift(row);
    o._rowScroll -= o._rowHeight;
    o.dirty();
@@ -43623,7 +43615,6 @@ MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(
    var o = this;
    var vt = s._invalidText = o.validText(s.text());
    if(vt){
-      MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
    }else{
       s.commitValue();
    }
@@ -45892,7 +45883,6 @@ MO.FDuiEditorConsole_focus = function FDuiEditorConsole_focus(c, n, l){
       e.build(c._hPanel);
       o._editors.set(l, e);
    }
-   MO.Logger.debug(o, 'Focus editor {1} (editable={2}, name={3})', MO.Class.dump(e), MO.Class.dump(c), l);
    e.reset();
    if(MO.Class.isClass(e, MO.FDuiDropEditor)){
       e.linkControl(c);
@@ -45903,7 +45893,6 @@ MO.FDuiEditorConsole_focus = function FDuiEditorConsole_focus(c, n, l){
 MO.FDuiEditorConsole_blur = function FDuiEditorConsole_blur(editor){
    var o = this;
    if(o._focusEditor){
-      MO.Logger.debug(o, 'Blur editor {1}', MO.Class.dump(editor));
       editor = MO.Lang.Object.nvl(editor, o._focusEditor);
       if(editor){
          editor.onEditEnd();
@@ -46087,14 +46076,12 @@ MO.FDuiFocusConsole_focus = function FDuiFocusConsole_focus(c, e){
    var bc = o._blurControl;
    if(bc != f){
       if(o._blurAble && f && f.testBlur(c)){
-         MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, MO.Class.dump(f));
          o._blurControl = f;
          f.doBlur(e);
          o.lsnsBlur.process(f);
       }
    }
    if(o._focusAble){
-      MO.Logger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, MO.Class.dump(c));
       c.doFocus(e);
       o._focusControl = o._activeControl = c;
       o.lsnsFocus.process(c);
@@ -46108,12 +46095,10 @@ MO.FDuiFocusConsole_blur = function FDuiFocusConsole_blur(c, e){
       return;
    }
    if(bc != c && MO.Class.isClass(c, MO.MDuiFocus)){
-      MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, MO.Class.dump(c));
       o._blurControl = c;
       c.doBlur(e);
    }
    if(fc){
-      MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, MO.Class.dump(fc));
       fc.doBlur(e);
       o._focusControl = null;
    }
@@ -46137,14 +46122,12 @@ MO.FDuiFocusConsole_focusClass = function FDuiFocusConsole_focusClass(c, p){
    var n = MO.Class.name(c);
    if(o._focusClasses[n] != p){
       o._focusClasses[n] = p;
-      MO.Logger.debug(o, 'Focus class. (name={1}, class={2})', n, MO.Class.dump(p));
       o.lsnsFocusClass.process(p, c);
    }
 }
 MO.FDuiFocusConsole_focusHtml = function FDuiFocusConsole_focusHtml(p){
    var o = this;
    var c = MO.Window.Html.searchLinker(p, MO.FDuiControl);
-   MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', MO.Class.dump(c), p.tagName);
    if(c){
       if(o._focusControl != c){
          o.blur(c, p);
@@ -46364,7 +46347,6 @@ MO.FDuiFrameEventConsole_construct = function FDuiFrameEventConsole_construct(){
    t.setInterval(o._interval);
    t.addProcessListener(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(t);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(t));
 }
 MO.FDuiFrameEventConsole_register = function FDuiFrameEventConsole_register(po, pc){
    this._events.push(new MO.TEvent(po, null, pc));
@@ -47828,7 +47810,6 @@ MO.FDuiButton_doClick = function FDuiButton_doClick(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -48713,12 +48694,10 @@ MO.FDuiCheckPicker_onBuildEdit = function FDuiCheckPicker_onBuildEdit(b){
 }
 MO.FDuiCheckPicker_onEditEnd = function FDuiCheckPicker_onEditEnd(editor){
    var o = this;
-   MO.Logger.debug(o, 'Begin (editor={1}:{2} value={3})', editor, editor?editor.value():'', o.dataValue);
    if(editor){
       o.set(editor.values);
    }
    o.onDataEditEnd(o);
-   MO.Logger.debug(o, 'End (editor={1} value={2})', editor, o.dataValue);
 }
 MO.FDuiCheckPicker_loadConfig = function FDuiCheckPicker_loadConfig(c){
    var o = this;
@@ -50811,7 +50790,6 @@ MO.FDuiEditor_onEditBegin = function FDuiEditor_onEditBegin(){
 }
 MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
    var o = this;
-   MO.Logger.debug(o, 'Edit changed');
    var g = o.storage = MO.Lang.Object.nvlObj(o.storage);
    if(g.value == o.value()){
       if(o.changed){
@@ -50826,7 +50804,6 @@ MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
 MO.FDuiEditor_onEditEnd = function FDuiEditor_onEditEnd(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor end. (control={1})', MO.Class.dump(s));
    o.hide();
    if(o.lsnEditEnd){
       o.lsnEditEnd.process(o);
@@ -50875,7 +50852,6 @@ MO.FDuiEditor_linkControl = function FDuiEditor_linkControl(c){
 MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor begin. (control={1})', MO.Class.dump(s));
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
    }
@@ -50885,7 +50861,6 @@ MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
 MO.FDuiEditor_editCancel = function FDuiEditor_editCancel(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor cancel. (control={1})', MO.Class.dump(s));
    o.hide();
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
@@ -55496,7 +55471,6 @@ MO.FDuiColumn_onEditBegin = function FDuiColumn_onEditBegin(editor) {
    o.table.editRow = row;
    o.table.editColumn = o;
    o.table.select(row, true);
-   MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
 }
 MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
    var o = this;
@@ -55506,7 +55480,6 @@ MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
    o.setText(row, text);
    o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
    o.editor = null;
-   MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
 }
 MO.FDuiColumn_onEditChanged = function FDuiColumn_onEditChanged(cell) {
    cell.row.refresh();
@@ -56395,7 +56368,6 @@ MO.FDuiGridControl_pushRow = function FDuiGridControl_pushRow(row){
 }
 MO.FDuiGridControl_removeRow = function FDuiGridControl_removeRow(row){
    var o = this;
-   MO.Assert.debugNotNull(row);
    o.dropRow(row);
    o._rows.remove(row);
 }
@@ -58089,7 +58061,6 @@ MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -58482,7 +58453,6 @@ MO.FDuiSliderButton_click = function FDuiSliderButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -58850,7 +58820,6 @@ MO.FDuiToolButton_doClick = function FDuiToolButton_doClick(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -61020,15 +60989,12 @@ MO.FDuiTreeView_push = function FDuiTreeView_push(control){
    control._tree = o;
    if(MO.Class.isClass(control, MO.FDuiTreeColumn)){
       var columnName = control.name();
-      MO.Assert.debugNotEmpty(columnName);
       o._nodeColumns.set(columnName, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeLevel)){
       var levelId = control.id();
-      MO.Assert.debugNotEmpty(levelId);
       o._nodeLevels.set(levelId, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNodeType)){
       var typeCode = control.code();
-      MO.Assert.debugNotEmpty(typeCode);
       o._nodeTypes.set(typeCode, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNode)){
       o._nodes.push(control);
@@ -62332,7 +62298,6 @@ with(MO){
    }
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
-      MO.Assert.debugTrue(MO.Class.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');
@@ -62343,7 +62308,6 @@ with(MO){
       root.set('action', svc.action);
       RConsole.find(FEnvironmentConsole).build(root);
       p.dsSaveValue(root.create('Data'));
-      MO.Logger.debug(this, xdocument.dump());
       o._loading = true;
       o._dataContainer = p;
       var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);
@@ -64202,7 +64166,6 @@ with(MO){
       o.table.editRow = row;
       o.table.editColumn = o;
       o.table.select(row, true);
-      MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
    }
    MO.FUiDataColumn_onEditEnd = function FUiDataColumn_onEditEnd(e) {
       var o = this;
@@ -64212,7 +64175,6 @@ with(MO){
       o.setText(row, text);
       o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
       o.editor = null;
-      MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
    }
    MO.FUiDataColumn_onEditChanged = function FUiDataColumn_onEditChanged(cell) {
       cell.row.refresh();
@@ -64467,7 +64429,6 @@ with(MO){
    }
    MO.FUiDataToolButton_click = function FUiDataToolButton_click(){
       var o = this;
-      MO.Logger.debug(o, 'Mouse button click. (label={1})' + o._label);
          o.processClickListener(o);
    }
    MO.FUiDataToolButton_onShowHint = function FUiDataToolButton_onShowHint(a){
@@ -64562,7 +64523,6 @@ MO.FDuiDataTreeView_loadDefine = function FDuiDataTreeView_loadDefine(code){
 }
 MO.FDuiDataTreeView_loadService = function FDuiDataTreeView_loadService(serviceCode, attributes){
    var o = this;
-   MO.Assert.debugNotEmpty(serviceCode);
    o._serviceCode = serviceCode;
    o.clear();
    var service = MO.RDuiService.parse(serviceCode);
@@ -80151,7 +80111,6 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    var o = this;
    var button = event.sender;
    var frameName = button.attributeGet('frame_name');
-   MO.Assert.debugNotEmpty(frameName);
    var frame = o._frameSet.selectSpaceFrame(frameName);
    frame.psMode(MO.EUiMode.Update);
    frame.psRefresh();
@@ -80500,7 +80459,6 @@ MO.FManageDataTable_onInsertClick = function FManageDataTable_onInsertClick(even
    var frame = o._frameSet.activeFrame();
    if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       var unitFrameName = frame.unitFrameName();
-      MO.Assert.debugNotEmpty(unitFrameName);
       var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
       unitFrame.doPrepare();
    }
@@ -80616,7 +80574,6 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
 MO.FManageDataTable_doDetail = function FManageDataTable_doDetail(row){
    var o = this;
    var unitFrameName = o._unitFrameName;
-   MO.Assert.debugNotEmpty(unitFrameName);
    var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
    unitFrame.doDetail(row);
    var historyBar = o._frameSet._historyBar;
@@ -80947,7 +80904,6 @@ MO.FManageSpaceToolBar_onInsertClick = function FManageSpaceToolBar_onInsertClic
    var frame = o._frameSet.activeFrame();
    if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       var unitFrameName = frame.unitFrameName();
-      MO.Assert.debugNotEmpty(unitFrameName);
       var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
       unitFrame.doPrepare();
    }

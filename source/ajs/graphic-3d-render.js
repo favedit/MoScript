@@ -395,12 +395,19 @@ MO.FG3dFlatTexture = function FG3dFlatTexture(o){
    o.uploadData   = MO.Method.virtual(o, 'uploadData');
    o.upload       = MO.Method.virtual(o, 'upload');
    o.update       = MO.Method.empty;
+   o.dispose      = MO.FG3dFlatTexture_dispose;
    return o;
 }
 MO.FG3dFlatTexture_construct = function FG3dFlatTexture_construct(){
    var o = this;
-   o.__base.FG3dTexture.construct();
+   o.__base.FG3dTexture.construct.call(o);
    o._textureCd = MO.EG3dTexture.Flat2d;
+   o._size = new MO.SSize2();
+}
+MO.FG3dFlatTexture_dispose = function FG3dFlatTexture_dispose(){
+   var o = this;
+   o._size = MO.Lang.Object.dispose(o._size);
+   o.__base.FG3dTexture.dispose.call(o);
 }
 MO.FG3dFragmentShader = function FG3dFragmentShader(o){
    o = MO.Class.inherits(this, o, MO.FG3dShader);

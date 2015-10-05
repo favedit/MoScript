@@ -110,7 +110,6 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
-   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -300,7 +299,7 @@ MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture, cod
    if(!textures){
       textures = o._textures = new MO.TDictionary();
    }
-   if(code != null){
+   if(code){
       textures.set(code, texture);
    }else if(texture._name){
       textures.set(texture._name, texture);

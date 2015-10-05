@@ -352,12 +352,10 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_processEvent = function FDesktop_processEvent(event){
@@ -1192,12 +1190,10 @@ MO.FAudio_play = function FAudio_play(position){
       }
    }
    hAudio.play();
-   MO.Logger.debug(o, 'Audio play. (url={1}, position={2})', o._url, position);
 }
 MO.FAudio_pause = function FAudio_pause(){
    var o = this;
    o._hAudio.pause();
-   MO.Logger.debug(o, 'Audio pause. (url={1})', o._url);
 }
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
@@ -1844,7 +1840,6 @@ MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    o.unserialize(view);
    view.dispose();
    o._statusReady = true;
-   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
    return this._statusReady;
@@ -2183,7 +2178,6 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    hCanvas.height = height;
    o._size.set(width, height);
    o._graphicContext.size().set(width, height);
-   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);
@@ -2355,7 +2349,6 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
-   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -2545,7 +2538,7 @@ MO.FE3dRenderable_pushTexture = function FE3dRenderable_pushTexture(texture, cod
    if(!textures){
       textures = o._textures = new MO.TDictionary();
    }
-   if(code != null){
+   if(code){
       textures.set(code, texture);
    }else if(texture._name){
       textures.set(texture._name, texture);
@@ -7993,7 +7986,7 @@ MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
    texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
    texture.update();
    var target = o._renderTarget = context.createRenderTarget();
-   target.size().set(2048, 1024);
+   target.size().set(2048, 2048);
    target.textures().push(texture);
    target.build();
 }
@@ -8003,6 +7996,36 @@ MO.FE3dSphereColorPass_drawBegin = function FE3dSphereColorPass_drawBegin(region
    var backgroundColor = region.backgroundColor();
    context.setRenderTarget(o._renderTarget);
    context.clear(backgroundColor.red, backgroundColor.green, backgroundColor.blue, backgroundColor.alpha, 1);
+}
+MO.FE3dSphereViewResultEffect = function FE3dSphereViewResultEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'sphere.view.result';
+   o.drawRenderable = MO.FE3dSphereViewResultEffect_drawRenderable;
+   return o;
+}
+MO.FE3dSphereViewResultEffect_drawRenderable = function FE3dSphereViewResultEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   var matrix = renderable.matrix();
+   var size = context.size();
+   var rateX = 1;
+   var rateY = 1;
+   if(size.width > size.height){
+      rateX = size.height / size.width;
+   }else if(size.width < size.height){
+      rateY = size.width / size.height;
+   }
+   matrix.sx = rateX;
+   matrix.sy = rateY;
+   matrix.updateForce();
+   program.setParameter('vc_matrix', matrix);
+   program.setParameter4('vc_const', rateX, rateY, 0, 0);
+   var material = renderable.material();
+   o.bindMaterial(material);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffer());
 }
 MO.FE3dSphereTechnique = function FE3dSphereTechnique(o){
    o = MO.Class.inherits(this, o, MO.FE3dTechnique);
@@ -8035,29 +8058,41 @@ MO.FE3dSphereTechnique_setup = function FE3dSphereTechnique_setup(){
 MO.FE3dSphereViewAutomaticEffect = function FE3dSphereViewAutomaticEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
    o._code          = 'sphere.view.automatic';
-   o._rotationX     = 0;
-   o._rotationY     = 0;
+   o._modelMatrix   = null;
+   o._vpMatrix      = null;
+   o._pointOrigin   = null;
+   o._pointCenter   = null;
+   o.construct      = MO.FE3dSphereViewAutomaticEffect_construct;
    o.drawRenderable = MO.FE3dSphereViewAutomaticEffect_drawRenderable;
    return o;
+}
+MO.FE3dSphereViewAutomaticEffect_construct = function FE3dSphereViewAutomaticEffect_construct(){
+   var o = this;
+   o.__base.FG3dAutomaticEffect.construct.call(o);
+   o._modelMatrix = new MO.SMatrix3d();
+   o._vpMatrix = new MO.SMatrix3d();
+   o._pointOrigin = new MO.SPoint3(0, 0, 0);
+   o._pointCenter = new MO.SPoint3(0, 0, 0);
 }
 MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
    var context = o._graphicContext;
    var program = o._program;
-   var size = context.size();
-   var rateX = 1;
-   var rateY = 1;
-   if(size.width > size.height){
-      rateX = size.width / size.height;
-   }else if(size.width < size.height){
-      rateY = size.height / size.width;
-   }
-   var rotationX = o._rotationX + 0.00005;
-   var rotationY = o._rotationY + 0.00002;
-   program.setParameter4('vc_const', 1 / rateX, 1 / rateY, rotationX, rotationY);
-   program.setParameter4('fc_const', rateX, rateY, rotationX, rotationY);
-   o._rotationX = rotationX;
-   o._rotationY = rotationY;
+   var camera = region.camera();
+   var projection = camera.projection();
+   projection.size().set(2048, 2048);
+   projection.update();
+   var matrix = renderable.matrix();
+   var modelMatrix = o._modelMatrix;
+   modelMatrix.assign(matrix);
+   modelMatrix.addRotationX(-Math.PI* 0.5);
+   var vpMatrix = o._vpMatrix;
+   vpMatrix.assign(camera.matrix());
+   vpMatrix.append(projection.matrix());
+   program.setParameter('vc_model_matrix', modelMatrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   program.setParameter4('vc_const', 0, 0, 0, 2 / Math.PI);
+   program.setParameter4('vc_direction', 0, 0, -1, 0);
    var material = renderable.material();
    o.bindMaterial(material);
    o.bindAttributes(renderable);
@@ -8067,13 +8102,16 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
 MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
    o = MO.Class.inherits(this, o, MO.FG3dTechniquePass);
    o._code          = 'view';
-   o._radianSize    = null;
-   o._textureColor  = MO.Class.register(o, new MO.AGetSet('_textureColor'));
-   o._effect        = null;
-   o._textureRadian = null;
+   o._sphere        = MO.Class.register(o, new MO.AGetter('_sphere'));
    o._rectangle     = null;
+   o._textureSize   = null;
+   o._textureView   = MO.Class.register(o, new MO.AGetter('_textureViewr'));
+   o._textureColor  = MO.Class.register(o, new MO.AGetSet('_textureColor'));
+   o._effectView    = null;
+   o._effectResult  = null;
    o.construct      = MO.FE3dSphereViewPass_construct;
    o.setup          = MO.FE3dSphereViewPass_setup;
+   o.setSphere      = MO.FE3dSphereViewPass_setSphere;
    o.drawBegin      = MO.FE3dSphereViewPass_drawBegin
    o.drawRegion     = MO.FE3dSphereViewPass_drawRegion;
    return o;
@@ -8081,76 +8119,63 @@ MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
 MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
    var o = this;
    o.__base.FG3dTechniquePass.construct.call(o);
-   o._radianSize = new MO.SSize2(1024, 1024);
+   o._textureSize = new MO.SSize2(2048, 2048);
 }
 MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
    var context = o._graphicContext;
-   var pi2a = 0.5 / Math.PI;
-   var width = o._radianSize.width;
-   var height = o._radianSize.height;
-   var centerX = width / 2;
-   var centerY = height / 2;
-   var data = new Float32Array(width * height);
-   var position = 0;
-   var direction = new MO.SVector2();
-   for(var y = 0; y < height; y++){
-      var ay = (y - centerY) / (height / 2);
-      for(var x = 0; x < width; x++){
-         var ax = (x - centerX) / (width / 2);
-         var length = Math.sqrt(ax * ax + ay * ay);
-         var angle = 0.5;
-         if(length != 0){
-            var nx = ax / length;
-            var ny = ay / length;
-            direction.x = ax;
-            direction.y = ay;
-            direction.normalize();
-            if(y > centerY){
-               angle = 0.5 - Math.acos(nx) * pi2a;
-            }else if(y < centerY){
-               angle = 0.5 + Math.acos(nx) * pi2a;
-            }else if(x > centerX){
-               angle = 0.5;
-            }else if(x < centerX){
-               angle = 1.0;
-            }
-         }
-         data[position++] = angle;
-      }
-   }
-   var texture = o._textureRadian = context.createFlatTexture();
-   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Linear);
-   texture.setWrapCd(MO.EG3dSamplerFilter.MirroredRepeat, MO.EG3dSamplerFilter.MirroredRepeat);
-   texture.uploadData(data, width, height);
+   var texture = o._textureView = context.createFlatTexture();
+   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texture.size().assign(o._textureSize);
+   texture.update();
+   var target = o._renderTarget = context.createRenderTarget();
+   target.size().assign(o._textureSize);
+   target.textures().push(texture);
+   target.build();
    var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
    rectangle.linkGraphicContext(o);
    rectangle.setup();
+   rectangle.pushTexture(texture, 'diffuse');
+}
+MO.FE3dSphereViewPass_setSphere = function FE3dSphereViewPass_setSphere(sphere){
+   var o = this;
+   sphere.pushTexture(o._textureColor, 'diffuse');
+   o._sphere = sphere;
 }
 MO.FE3dSphereViewPass_drawBegin = function FE3dSphereViewPass_drawBegin(region){
    var o = this;
    var context = o._graphicContext;
    var rectangle = o._rectangle;
+   var effectView = o._effectView;
+   if(!effectView){
+      region._spaceName = 'general.view'
+      effectView = o._effectView = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
+   }
+   var effectResult = o._effectResult;
+   if(!effectResult){
+      region._spaceName = 'general.view.result'
+      effectResult = o._effectResult = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
+   }
    var backgroundColor = region.backgroundColor();
    context.setRenderTarget(null);
    context.clear(0, 0, 0, 0, 1);
-   var textures = rectangle.textures();
-   if(textures.isEmpty()){
-      textures.set('diffuse', o._textureColor);
-      textures.set('radian', o._textureRadian);
-   }
 }
 MO.FE3dSphereViewPass_drawRegion = function FE3dSphereViewPass_drawRegion(region){
    var o = this;
    var context = o._graphicContext;
    var rectangle = o._rectangle;
-   var effect = o._effect;
-   if(!effect){
-      effect = o._effect = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
-   }
-   context.setProgram(effect.program());
-   effect.drawRenderable(region, o._rectangle);
+   var effectView = o._effectView;
+   context.setRenderTarget(o._renderTarget);
+   context.clear(0, 0, 0, 0, 1);
+   context.setProgram(effectView.program());
+   effectView.drawRenderable(region, o._sphere);
+   var effectResult = o._effectResult;
+   context.setRenderTarget(null);
+   context.clear(0, 0, 0, 0, 1);
+   context.setProgram(effectResult.program());
+   effectResult.drawRenderable(region, o._rectangle);
 }
 MO.EE3dInstance = new function EE3dInstance(){
    var o = this;
@@ -8245,19 +8270,19 @@ MO.FE3dCamera_commitResource = function FE3dCamera_commitResource(){
 }
 MO.FE3dCamera_update = function FE3dCamera_update(){
    var o = this;
-   var r = o._rotation;
-   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, r.x);
-   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, r.y);
-   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, r.z);
-   var q = o._quaternion.identity();
-   q.mul(o._quaternionX);
-   q.mul(o._quaternionY);
-   q.mul(o._quaternionZ);
-   var m = o._rotationMatrix;
-   m.build(q);
-   var d = o._direction;
-   m.transformPoint3(o._directionTarget, d);
-   d.normalize();
+   var rotation = o._rotation;
+   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, rotation.x);
+   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, rotation.y);
+   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, rotation.z);
+   var quaternion = o._quaternion.identity();
+   quaternion.mul(o._quaternionX);
+   quaternion.mul(o._quaternionY);
+   quaternion.mul(o._quaternionZ);
+   var matrix = o._rotationMatrix;
+   matrix.build(quaternion);
+   var direction = o._direction;
+   matrix.transformPoint3(o._directionTarget, direction);
+   direction.normalize();
    o.__base.FG3dCamera.update.call(o);
 }
 MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
@@ -8896,12 +8921,6 @@ MO.FE3dPerspectiveCamera_construct = function FE3dPerspectiveCamera_construct(){
    var o = this;
    o.__base.FE3dCamera.construct.call(o);
    o._projection = MO.Class.create(MO.FG3dPerspectiveProjection);
-   o._rotation = new MO.SVector3();
-   o._rotationMatrix = new MO.SMatrix3x3();
-   o._quaternion = new MO.SQuaternion();
-   o._quaternionX = new MO.SQuaternion();
-   o._quaternionY = new MO.SQuaternion();
-   o._quaternionZ = new MO.SQuaternion();
 }
 MO.FE3dPerspectiveCamera_updateFrustum = function FE3dPerspectiveCamera_updateFrustum(){
    var o = this;
@@ -11552,15 +11571,11 @@ MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, u
 }
 MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadByUrl(context, url);
 }
 MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(url);
    var dataUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
    var data = o._bitmapDatas.get(url);
@@ -11575,8 +11590,6 @@ MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(co
 }
 MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadDataByUrl(context, url);
 }
@@ -12727,7 +12740,6 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
-   MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_calculateOutline = function FE3dDynamicMesh_calculateOutline(){
    var o = this;
@@ -13315,7 +13327,6 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -13330,10 +13341,12 @@ MO.FE3dShapeData_dispose = function FE3dShapeData_dispose(){
 MO.FE3dSphere = function FE3dSphere(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    o._outline              = null;
+   o._drawModeCd           = MO.Class.register(o, new MO.AGetSet('_drawModeCd'), MO.EG3dDrawMode.Triangles);
    o._splitCount           = MO.Class.register(o, new MO.AGetSet('_splitCount'), 8);
    o._vertexPositionBuffer = null;
-   o._vertexColorBuffer    = null;
+   o._vertexNormalBuffer   = null;
    o._vertexCoordBuffer    = null;
+   o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
    o.construct             = MO.FE3dSphere_construct;
    o.setup                 = MO.FE3dSphere_setup;
    return o;
@@ -13350,15 +13363,15 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var positions = new MO.TArray();
    var normals = new MO.TArray();
    var coords = new MO.TArray();
-   var cr = o._splitCount * 2;
-   var cz = o._splitCount;
-   var stepr = Math.PI * 2 / cr;
-   var stepz = Math.PI / cz;
+   var countAngle = o._splitCount * 2;
+   var countZ = o._splitCount;
+   var stepAngle = Math.PI * 2 / countAngle;
+   var stepZ = Math.PI / countZ;
    var count = 0;
-   for(var rz = 0; rz <= cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var radius = stepr * r - Math.PI;
-         var radiusZ = stepz * rz - MO.RConst.PI_2;
+   for(var rz = 0; rz <= countZ; rz++){
+      for(var r = 0; r < countAngle; r++){
+         var radius = stepAngle * r - Math.PI;
+         var radiusZ = stepZ * rz - MO.Const.PI_2;
          var x = Math.sin(radius) * Math.cos(radiusZ);
          var y = Math.sin(radiusZ);
          var z = -Math.cos(radius) * Math.cos(radiusZ);
@@ -13374,7 +13387,7 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
    o.pushVertexBuffer(buffer);
-   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   var buffer = o._vertexNormalBuffer = context.createVertexBuffer();
    buffer.setCode('normal');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
@@ -13384,23 +13397,42 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
    buffer.upload(new Float32Array(coords.memory()), 4 * 2, count);
    o.pushVertexBuffer(buffer);
+   var drawModeCd = o._drawModeCd;
    var indexes = new MO.TArray();
-   for(var rz = 0; rz < cz; rz++){
-      for(var r = 0; r < cr; r++){
-         var i = cr * rz;
+   for(var rz = 0; rz < countZ; rz++){
+      for(var r = 0; r < countAngle; r++){
+         var i = countAngle * rz;
          var ci = i + r;
-         var ni = i + r + cr;
-         if(r == cr - 1){
-            indexes.push(ci, ni, i);
-            indexes.push(ni, i + cr, i);
+         var ni = i + r + countAngle;
+         if(r == countAngle - 1){
+            if(drawModeCd == MO.EG3dDrawMode.Lines){
+               indexes.push(ci, ni, ni, i, i, ci);
+               indexes.push(ni, i + countAngle, i + countAngle, i, i, ni);
+            }else{
+               indexes.push(ci, ni, i);
+               indexes.push(ni, i + countAngle, i);
+            }
          }else{
-            indexes.push(ci, ni, ci + 1);
-            indexes.push(ni, ni + 1, ci + 1);
+            if(drawModeCd == MO.EG3dDrawMode.Lines){
+               indexes.push(ci, ni, ni, ci + 1, ci + 1, ci);
+               indexes.push(ni, ni + 1, ni + 1, ci + 1, ci + 1, ni);
+            }else{
+               indexes.push(ci, ni, ci + 1);
+               indexes.push(ni, ni + 1, ci + 1);
+            }
          }
       }
    }
-   var buffer = context.createIndexBuffer();
-   buffer.upload(new Uint16Array(indexes.memory()), indexes.length());
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.setDrawModeCd(drawModeCd);
+   var indexLength = indexes.length();
+   var indexMemory = indexes.memory();
+   if(indexLength > 65535){
+      buffer.setStrideCd(MO.EG3dIndexStride.Uint32);
+      buffer.upload(new Uint32Array(indexMemory), indexLength);
+   }else{
+      buffer.upload(new Uint16Array(indexMemory), indexLength);
+   }
    o.pushIndexBuffer(buffer);
    o.update();
    var info = o.material().info();
