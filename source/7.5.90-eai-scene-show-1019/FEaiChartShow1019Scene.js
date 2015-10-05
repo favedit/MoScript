@@ -61,6 +61,8 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._socket                  = null;
    o._focusParamManager       = null;
    o._remoteRotate            = null;
+   // @attribute
+   o._videoData               = null;
    //..........................................................
    // @event
    o.onSocketReceived         = MO.FEaiChartShow1019Scene_onSocketReceived;
@@ -259,6 +261,8 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       o.fixMatrix(mapEntity.countryFaceDisplay().matrix());
       o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
       mapEntity.process();
+
+      o._videoData.process();
    }
 }
 
@@ -599,6 +603,42 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
 
    var focusParamManager = o._focusParamManager = MO.Class.create(MO.FEaiShowFocusParameterManager);
    focusParamManager.setup();
+   // 视频
+   var context3d = o.application().desktop().canvas3d().graphicContext();
+
+   o._videoData = context3d.createObject(MO.FE3dVideoData);
+   o._videoData.loadUrl('../ars/video/Test.mp4');
+   var video = context3d.createObject(MO.FE3dVideo);
+   video.setData(o._videoData);
+   //video.material().info().optionSelected = false;
+   var matrix = video.matrix();
+   matrix.sx = 500;
+   matrix.sy = 500;
+   matrix.sz = 500;
+   matrix.tx = -50;
+   matrix.ty = -50;
+   matrix.ry = 0;
+   matrix.updateForce();
+
+   var stage = o.activeStage();
+   var layer = stage.spriteLayer();
+   layer.pushRenderable(video);
+
+   //// 图片
+   //var bitmap = context3d.createObject(MO.FE3dBitmap);
+   //bitmap.loadUrl('../ars/picture/star3.png');
+   ////bitmaps.push(bitmap);
+   //layer.pushRenderable(bitmap);
+
+   //var matrix = bitmap.matrix();
+   //matrix.sx = 100;
+   //matrix.sy = 100;
+   //matrix.sz = 1;
+   //matrix.tx = -500;
+   //matrix.ty = 300;
+   //matrix.tz = -200;
+   //matrix.ry = 0;
+   //matrix.updateForce();
 }
 
 //==========================================================
