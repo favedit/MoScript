@@ -219,7 +219,7 @@ MO.SMatrix3d_assign = function SMatrix3d_assign(p){
    o.sx = p.sx;
    o.sy = p.sy;
    o.sz = p.sz;
-   o.assignData(p._data);
+   return o.assignData(p._data);
 }
 
 //============================================================
@@ -540,11 +540,11 @@ var pdum3 = [0, 0, 0];
 
 MO.SMatrix3d_parse = function SMatrix3d_parse(translation, scale, skew, perspective, quaternion){
    var o = this;
-   if (!translation) translation = [0,0,0];
-   if (!scale) scale = [0,0,0];
-   if (!skew) skew = [0,0,0];
-   if (!perspective) perspective = [0,0,0,1];
-   if (!quaternion) quaternion = [0,0,0,1];
+   if(!translation) translation = [0,0,0];
+   if(!scale) scale = [0,0,0];
+   if(!skew) skew = [0,0,0];
+   if(!perspective) perspective = [0,0,0,1];
+   if(!quaternion) quaternion = [0,0,0,1];
 
    //normalize, if not possible then bail out early
    if(!my_normalize(tmp, o._data)){
@@ -553,7 +553,7 @@ MO.SMatrix3d_parse = function SMatrix3d_parse(translation, scale, skew, perspect
 
    // perspectiveMatrix is used to solve for perspective, but it also provides
    // an easy way to test for singularity of the upper 3x3 component.
-   my_clone(perspectiveMatrix, tmp)
+   my_clone(perspectiveMatrix, tmp);
    perspectiveMatrix[3] = 0
    perspectiveMatrix[7] = 0
    perspectiveMatrix[11] = 0
@@ -561,14 +561,13 @@ MO.SMatrix3d_parse = function SMatrix3d_parse(translation, scale, skew, perspect
 
    // If the perspectiveMatrix is not invertible, we are also unable to
    // decompose, so we'll bail early. Constant taken from SkMatrix44::invert.
-   if (Math.abs(my_determinant(perspectiveMatrix) < 1e-8)){
+   if(Math.abs(my_determinant(perspectiveMatrix) < 1e-8)){
       return false
    }
 
    var a03 = tmp[3], a13 = tmp[7], a23 = tmp[11], a30 = tmp[12], a31 = tmp[13], a32 = tmp[14], a33 = tmp[15];
-
    // First, isolate perspective.
-   if (a03 !== 0 || a13 !== 0 || a23 !== 0) {
+   if(a03 !== 0 || a13 !== 0 || a23 !== 0){
       tmpVec4[0] = a03
       tmpVec4[1] = a13
       tmpVec4[2] = a23
@@ -576,14 +575,14 @@ MO.SMatrix3d_parse = function SMatrix3d_parse(translation, scale, skew, perspect
       // Solve the equation by inverting perspectiveMatrix and multiplying
       // rightHandSide by the inverse.
       // resuing the perspectiveMatrix here since it's no longer needed
-      var ret = my_invert(perspectiveMatrix, perspectiveMatrix)
-      if (!ret){
+      var ret = my_invert(perspectiveMatrix, perspectiveMatrix);
+      if(!ret){
          return false
       }
-      my_transpose(perspectiveMatrix, perspectiveMatrix)
+      my_transpose(perspectiveMatrix, perspectiveMatrix);
 
       //multiply by transposed inverse perspective matrix, into perspective vec4
-      my_vec4multMat4(perspective, tmpVec4, perspectiveMatrix)
+      my_vec4multMat4(perspective, tmpVec4, perspectiveMatrix);
    } else { 
       //no perspective
       perspective[0] = perspective[1] = perspective[2] = 0
@@ -591,19 +590,19 @@ MO.SMatrix3d_parse = function SMatrix3d_parse(translation, scale, skew, perspect
    }
 
    // Next take care of translation
-   translation[0] = a30
-   translation[1] = a31
-   translation[2] = a32
+   translation[0] = a30;
+   translation[1] = a31;
+   translation[2] = a32;
 
    // Now get scale and shear. 'row' is a 3 element array of 3 component vectors
-   my_mat3from4(row, tmp)
+   my_mat3from4(row, tmp);
 
    // Compute X scale factor and normalize first row.
-   scale[0] = vec3.length(row[0])
-   vec3.normalize(row[0], row[0])
+   scale[0] = vec3.length(row[0]);
+   vec3.normalize(row[0], row[0]);
 
    // Compute XY shear factor and make 2nd row orthogonal to 1st.
-   skew[0] = vec3.dot(row[0], row[1])
+   skew[0] = vec3.dot(row[0], row[1]);
    my_combine(row[1], row[1], row[0], 1.0, -skew[0])
 
    // Now, compute Y scale and normalize 2nd row.
@@ -623,18 +622,17 @@ MO.SMatrix3d_parse = function SMatrix3d_parse(translation, scale, skew, perspect
    skew[1] /= scale[2]
    skew[2] /= scale[2]
 
-
    // At this point, the matrix (in rows) is orthonormal.
    // Check for a coordinate system flip.  If the determinant
    // is -1, then negate the matrix and the scaling factors.
    vec3.cross(pdum3, row[1], row[2]);
-   if (vec3.dot(row[0], pdum3) < 0) {
-   for (var i = 0; i < 3; i++) {
-      scale[i] *= -1;
-      row[i][0] *= -1
-      row[i][1] *= -1
-      row[i][2] *= -1
-   }
+   if(vec3.dot(row[0], pdum3) < 0){
+      for(var i = 0; i < 3; i++){
+         scale[i] *= -1;
+         row[i][0] *= -1;
+         row[i][1] *= -1;
+         row[i][2] *= -1;
+      }
    }
 
    // Now, get the rotations out

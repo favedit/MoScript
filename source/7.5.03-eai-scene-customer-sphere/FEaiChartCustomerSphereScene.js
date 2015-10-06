@@ -60,35 +60,43 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
 MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSphereScene_onSocketReceived(event) {
    var o = this;
    var message = event.message;
+   console.log(message);
    var typeCode = message.substring(0, 1);
+   var rotationMatrix = o._rotationMatrix.assign(o._earthSphere.matrix());
+   var downPosition = o._mouseDownPosition;
+   var movePosition = o._mouseMovePosition;
+   rotationMatrix.invert();
    if(typeCode == 'D'){
       var position = new MO.SPoint2();
-      position.parseFloat(message.substring(2));
+      var items = message.substring(2).split('|');
+      position.parseFloat(items[0]);
       var length = position.length2(0.5, 0.5);
-      o._mouseDownPosition.x = position.x - 0.5;
-      o._mouseDownPosition.y = position.y - 0.5;
-      o._mouseDownPosition.z = Math.acos(length);
-      o._mouseDownPosition.normalize();
+      downPosition.x = position.x - 0.5;
+      downPosition.y = position.y - 0.5;
+      downPosition.z = Math.acos(length);
+      downPosition.normalize();
+      rotationMatrix.transformPoint3(downPosition, downPosition);
+      downPosition.normalize();
       o._moving = true;
    }else if(typeCode == 'M' && o._moving){
       var position = new MO.SPoint2();
-      position.parseFloat(message.substring(2));
+      var items = message.substring(2).split('|');
+      position.parseFloat(items[0]);
       var length = position.length2(0.5, 0.5);
-      o._mouseMovePosition.x = position.x - 0.5;
-      o._mouseMovePosition.y = position.y - 0.5;
-      o._mouseMovePosition.z = Math.acos(length);
-      o._mouseMovePosition.normalize();
+      movePosition.x = position.x - 0.5;
+      movePosition.y = position.y - 0.5;
+      movePosition.z = Math.acos(length);
+      movePosition.normalize();
+      rotationMatrix.transformPoint3(movePosition, movePosition);
+      movePosition.normalize();
       var axis = new MO.SVector3();
-      axis.assign(o._mouseDownPosition);
-      axis.cross(o._mouseMovePosition);
-      var angle = Math.acos(o._mouseDownPosition.dotPoint3(o._mouseMovePosition));
+      axis.assign(downPosition);
+      axis.cross(movePosition);
+      axis.normalize();
+      var angle = Math.acos(downPosition.dotPoint3(movePosition));
       var matrix = o._earthSphere.matrix();
-      //var quaternion = new MO.SQuaternion();
-      //quaternion.fromAxisAngle(MO.Lang.Math.vectorAxisY, 0);
-      matrix.addRotationAxis(axis, angle);
+      matrix.addRotationAxis(axis, -angle);
       matrix.parse();
-      //var length = Math.sqrt(cx * cx + cy * cy);
-      //console.log(message + ' - ' + length);
    }else if(typeCode == 'U'){
       o._moving = false;
    }
@@ -304,6 +312,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var desktop = o._application.desktop();
    var canvas3d = desktop.canvas3d();
    var context = canvas3d.graphicContext();
+   o._rotationMatrix = new MO.SMatrix3d();
    //..........................................................
    // 创建地球
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
@@ -311,7 +320,8 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    earthSphere.setSplitCount(64);
    //sphere.setDrawModeCd(MO.EG3dDrawMode.Lines);
    earthSphere.setup();
-   earthSphere.matrix().setScaleAll(100);
+   //earthSphere.matrix().rx = Math.PI / 2;
+   earthSphere.matrix().setScaleAll(200);
    earthSphere.matrix().update();
    //earthSphere.material().info().optionDouble = true;
    // 设置技术
@@ -376,7 +386,8 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 注册socket监听
    var socket = o._socket;
    socket = MO.Class.create(MO.FSocket);
-   socket.connect('ws://127.0.0.1:9080/earth');
+   //socket.connect('ws://127.0.0.1:9080/earth');
+   socket.connect('ws://10.21.1.171:9080/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
 }
 

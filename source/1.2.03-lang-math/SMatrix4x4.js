@@ -108,13 +108,15 @@ MO.SMatrix4x4_equalsData = function SMatrix4x4_equalsData(p){
 // <T>接收一个数据内容。</T>
 //
 // @method
-// @param p:data:Array 数据
+// @param values:Array 数据
 //============================================================
-MO.SMatrix4x4_assignData = function SMatrix4x4_assignData(p){
-   var d = this._data;
+MO.SMatrix4x4_assignData = function SMatrix4x4_assignData(values){
+   var o = this;
+   var data = o._data;
    for(var n = 0; n < 16; n++){
-      d[n] = p[n];
+      data[n] = values[n];
    }
+   return o;
 }
 
 //============================================================
@@ -358,24 +360,22 @@ MO.SMatrix4x4_addRotation = function SMatrix4x4_addRotation(x, y, z){
 }
 
 //============================================================
-// <T>设置旋转内容。</T>
-//  1    0   0 0
-//  0  cos sin 0
-//  0 -sin cos 0
-//  0    0   0 1 
+// <T>增加轴旋转内容。</T>
 //
 // @method
-// @param x:Float X弧度
-// @param y:Float Y弧度
-// @param z:Float Z弧度
+// @param axis:SVector3 轴
+// @param angle:Float 角度
 //============================================================
 MO.SMatrix4x4_addRotationAxis = function SMatrix4x4_addRotationAxis(axis, angle){
    // 计算旋转
    var c = Math.cos(angle);
    var s = Math.sin(angle);
    var t = 1 - c;
-   var x = axis.x, y = axis.y, z = axis.z;
-   var tx = t * x, ty = t * y;
+   var x = axis.x;
+   var y = axis.y;
+   var z = axis.z;
+   var tx = t * x;
+   var ty = t * y;
    // 追加内容
    var v = MO.Lang.Array.array16;
    v[ 0] = tx * x + c;
