@@ -14,6 +14,7 @@ MO.SPoint2 = function SPoint2(x, y){
    o.unserialize = MO.SPoint2_unserialize;
    // @method
    o.parse       = MO.SPoint2_parse;
+   o.parseFloat  = MO.SPoint2_parseFloat;
    o.toString    = MO.SPoint2_toString;
    // @method
    o.dispose     = MO.SPoint2_dispose;
@@ -55,6 +56,22 @@ MO.SPoint2_parse = function SPoint2_parse(source){
    if(items.length == 2){
       o.x = parseInt(items[0]);
       o.y = parseInt(items[1]);
+   }else{
+      throw new TError(o, "Parse value failure. (value={1})", source);
+   }
+}
+
+//============================================================
+// <T>解析字符串。</T>
+//
+// @param source:String 字符串
+//============================================================
+MO.SPoint2_parseFloat = function SPoint2_parseFloat(source){
+   var o = this;
+   var items = source.split(',')
+   if(items.length == 2){
+      o.x = parseFloat(items[0]);
+      o.y = parseFloat(items[1]);
    }else{
       throw new TError(o, "Parse value failure. (value={1})", source);
    }

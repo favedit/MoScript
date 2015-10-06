@@ -31,7 +31,8 @@ MO.SValue2 = function SValue2(x, y){
    o.mergeMax     = MO.SValue2_mergeMax;
    o.mergeMax2    = MO.SValue2_mergeMax2;
    // @method
-   o.length       = MO.SValue2_absolute;
+   o.length       = MO.SValue2_length;
+   o.length2      = MO.SValue2_length2;
    o.absolute     = MO.SValue2_absolute;
    o.normalize    = MO.SValue2_normalize;
    o.negative     = MO.SValue2_negative;
@@ -188,6 +189,30 @@ MO.SValue2_mergeMax2 = function SValue2_mergeMax2(x, y){
    var o = this;
    o.x = Math.max(o.x, x);
    o.y = Math.max(o.y, y);
+}
+
+//==========================================================
+// <T>获得长度。</T>
+//
+// @method
+// @return Number 长度
+//==========================================================
+MO.SValue2_length = function SValue2_length(value){
+   var cx = this.x - value.x;
+   var cy = this.y - value.y;
+   return Math.sqrt(cx * cx + cy * cy);
+}
+
+//==========================================================
+// <T>获得长度。</T>
+//
+// @method
+// @return Number 长度
+//==========================================================
+MO.SValue2_length2 = function SValue2_length2(x, y){
+   var cx = this.x - x;
+   var cy = this.y - y;
+   return Math.sqrt(cx * cx + cy * cy);
 }
 
 //==========================================================

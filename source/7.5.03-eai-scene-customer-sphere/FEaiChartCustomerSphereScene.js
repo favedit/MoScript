@@ -28,8 +28,11 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
    o._earthSphere            = null;
+   o._mouseDownPosition      = new MO.SVector3();
+   o._mouseMovePosition      = new MO.SVector3();
    //..........................................................
    // @event
+   o.onSocketReceived        = MO.FEaiChartCustomerSphereScene_onSocketReceived;
    o.onInvestmentDataChanged = MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged;
    o.on24HDataChanged        = MO.FEaiChartCustomerSphereScene_on24HDataChanged;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
@@ -46,6 +49,49 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    // @method
    o.processResize           = MO.FEaiChartCustomerSphereScene_processResize;
    return o;
+}
+
+//==========================================================
+// <T>表格数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSphereScene_onSocketReceived(event) {
+   var o = this;
+   var message = event.message;
+   var typeCode = message.substring(0, 1);
+   if(typeCode == 'D'){
+      var position = new MO.SPoint2();
+      position.parseFloat(message.substring(2));
+      var length = position.length2(0.5, 0.5);
+      o._mouseDownPosition.x = position.x - 0.5;
+      o._mouseDownPosition.y = position.y - 0.5;
+      o._mouseDownPosition.z = Math.acos(length);
+      o._mouseDownPosition.normalize();
+      o._moving = true;
+   }else if(typeCode == 'M' && o._moving){
+      var position = new MO.SPoint2();
+      position.parseFloat(message.substring(2));
+      var length = position.length2(0.5, 0.5);
+      o._mouseMovePosition.x = position.x - 0.5;
+      o._mouseMovePosition.y = position.y - 0.5;
+      o._mouseMovePosition.z = Math.acos(length);
+      o._mouseMovePosition.normalize();
+      var axis = new MO.SVector3();
+      axis.assign(o._mouseDownPosition);
+      axis.cross(o._mouseMovePosition);
+      var angle = Math.acos(o._mouseDownPosition.dotPoint3(o._mouseMovePosition));
+      var matrix = o._earthSphere.matrix();
+      //var quaternion = new MO.SQuaternion();
+      //quaternion.fromAxisAngle(MO.Lang.Math.vectorAxisY, 0);
+      matrix.addRotationAxis(axis, angle);
+      matrix.parse();
+      //var length = Math.sqrt(cx * cx + cy * cy);
+      //console.log(message + ' - ' + length);
+   }else if(typeCode == 'U'){
+      o._moving = false;
+   }
 }
 
 //==========================================================
@@ -327,6 +373,11 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 加载世界数据
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
+   // 注册socket监听
+   var socket = o._socket;
+   socket = MO.Class.create(MO.FSocket);
+   socket.connect('ws://127.0.0.1:9080/earth');
+   socket.addReceiveListener(o, o.onSocketReceived);
 }
 
 //==========================================================

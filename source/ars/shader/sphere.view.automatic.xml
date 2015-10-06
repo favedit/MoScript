@@ -54,8 +54,8 @@
          // 计算投影方向
          vec2 direction = normalize(modelPosition.xy);
          vec2 coord = direction * angle;
-         gl_Position = vec4(coord.xy, position.z, 1.0);
-         //gl_Position = position;
+         //gl_Position = vec4(coord.xy, position.z, 1.0);
+         gl_Position = vec4(position.xyz * 2.0, 1.0);
          // 设置位置
          v_position = coord.xy;
          // 设置纹理

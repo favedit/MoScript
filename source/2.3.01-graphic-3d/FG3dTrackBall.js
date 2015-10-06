@@ -52,6 +52,9 @@ MO.FG3dTrackBall_construct = function FG3dTrackBall_construct(){
 //==========================================================
 MO.FG3dTrackBall_move = function FG3dTrackBall_move(x, y){
    var lastPos3D = new MO.SVector3(o._lastPosition.x, o._lastPosition.y, 0);
+   
+
+
     //QVector3D lastPos3D = QVector3D(m_lastPos.x(), m_lastPos.y(), 0.0f);
     //float sqrZ = 1 - QVector3D::dotProduct(lastPos3D, lastPos3D);
     //if (sqrZ > 0)

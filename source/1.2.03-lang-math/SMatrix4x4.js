@@ -27,8 +27,10 @@ MO.SMatrix4x4 = function SMatrix4x4(){
    o.addRotationY    = MO.SMatrix4x4_addRotationY;
    o.addRotationZ    = MO.SMatrix4x4_addRotationZ;
    o.addRotation     = MO.SMatrix4x4_addRotation;
+   o.addRotationAxis = MO.SMatrix4x4_addRotationAxis;
    o.addScale        = MO.SMatrix4x4_addScale;
    // @method
+   o.normalize       = MO.SMatrix4x4_normalize;
    o.invert          = MO.SMatrix4x4_invert;
    o.transform       = MO.SMatrix4x4_transform;
    o.transformPoint3 = MO.SMatrix4x4_transformPoint3;
@@ -356,6 +358,46 @@ MO.SMatrix4x4_addRotation = function SMatrix4x4_addRotation(x, y, z){
 }
 
 //============================================================
+// <T>设置旋转内容。</T>
+//  1    0   0 0
+//  0  cos sin 0
+//  0 -sin cos 0
+//  0    0   0 1 
+//
+// @method
+// @param x:Float X弧度
+// @param y:Float Y弧度
+// @param z:Float Z弧度
+//============================================================
+MO.SMatrix4x4_addRotationAxis = function SMatrix4x4_addRotationAxis(axis, angle){
+   // 计算旋转
+   var c = Math.cos(angle);
+   var s = Math.sin(angle);
+   var t = 1 - c;
+   var x = axis.x, y = axis.y, z = axis.z;
+   var tx = t * x, ty = t * y;
+   // 追加内容
+   var v = MO.Lang.Array.array16;
+   v[ 0] = tx * x + c;
+   v[ 1] = tx * y - s * z;
+   v[ 2] = tx * z + s * y;
+   v[ 3] = 0;
+   v[ 4] = tx * y + s * z;
+   v[ 5] = ty * y + c;
+   v[ 6] = ty * z - s * x;
+   v[ 7] = 0;
+   v[ 8] = tx * z - s * y;
+   v[ 9] = ty * z + s * x;
+   v[10] = t * z * z + c;
+   v[11] = 0;
+   v[12] = 0;
+   v[13] = 0;
+   v[14] = 0;
+   v[15] = 1;
+   this.appendData(v);
+}
+
+//============================================================
 // <T>设置缩放内容。</T>
 //
 // @method
@@ -382,6 +424,29 @@ MO.SMatrix4x4_addScale = function SMatrix4x4_addScale(x, y, z){
    v[14] = 0;
    v[15] = 1;
    this.appendData(v);
+}
+
+//============================================================
+// <T>单位化矩阵。</T>
+//
+// @method
+// @return Boolean 是否成功
+//============================================================
+MO.SMatrix4x4_normalize = function SMatrix4x4_normalize(){
+   var o = this;
+   var data = o._data;
+   var m44 = data[15];
+   if(m44 == 0){
+      return false;
+   }else if(m44 == 1){
+      return true;
+   }else{
+      var scale = 1 / m44
+      for(var i = 0; i < 16; i++){
+         data[i] = data[i] * scale;
+      }
+      return true
+   }
 }
 
 //============================================================
