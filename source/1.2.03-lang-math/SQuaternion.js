@@ -55,14 +55,14 @@ MO.SQuaternion_identity = function SQuaternion_identity(){
 // <T>接收一个四元数。</T>
 //
 // @method
-// @param p:value:SQuaternion 四元数
+// @param value:SQuaternion 四元数
 //============================================================
-MO.SQuaternion_assign = function SQuaternion_assign(p){
+MO.SQuaternion_assign = function SQuaternion_assign(value){
    var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-   o.w = p.w;
+   o.x = value.x;
+   o.y = value.y;
+   o.z = value.z;
+   o.w = value.w;
 }
 
 //============================================================
@@ -100,13 +100,13 @@ MO.SQuaternion_absolute = function SQuaternion_absolute(){
 //============================================================
 MO.SQuaternion_normalize = function SQuaternion_normalize(){
    var o = this;
-   var a = o.absolute();
-   if(a != 0){
-      var v = 1 / a;
-      o.x *= v;
-      o.y *= v;
-      o.z *= v;
-      o.w *= v;
+   var value = o.absolute();
+   if(value != 0){
+      var rate = 1 / value;
+      o.x *= rate;
+      o.y *= rate;
+      o.z *= rate;
+      o.w *= rate;
    }
 }
 
@@ -114,96 +114,96 @@ MO.SQuaternion_normalize = function SQuaternion_normalize(){
 // <T>获得反方向。</T>
 //
 // @method
-// @param p:value:SQuaternion 四元数
+// @param value:SQuaternion 四元数
 // @return SQuaternion 四元数
 //============================================================
-MO.SQuaternion_conjugate = function SQuaternion_conjugate(p){
+MO.SQuaternion_conjugate = function SQuaternion_conjugate(value){
    var o = this;
-   var r = null;
-   if(p){
-      r = p;
+   var result = null;
+   if(value){
+      result = value;
    }else{
-      r = new MO.SQuaternion();
+      result = new MO.SQuaternion();
    }
-   r.x = -o.x;
-   r.y = -o.y;
-   r.z = -o.z;
-   r.w = o.w;
-   return r;
+   result.x = -o.x;
+   result.y = -o.y;
+   result.z = -o.z;
+   result.w = o.w;
+   return result;
 }
 
 //============================================================
 // <T>乘法处理。</T>
 //
 // @method
-// @param p:value:SQuaternion 四元数
+// @param value:SQuaternion 四元数
 //============================================================
-MO.SQuaternion_mul = function SQuaternion_mul(p){
+MO.SQuaternion_mul = function SQuaternion_mul(value){
    var o = this;
    var x = o.x;
    var y = o.y;
    var z = o.z;
    var w = o.w;
-   o.x = (w * p.x) + (x * p.w) + (y * p.z) - (z * p.y);
-   o.y = (w * p.y) + (y * p.w) + (z * p.x) - (x * p.z);
-   o.z = (w * p.z) + (z * p.w) + (x * p.y) - (y * p.x);
-   o.w = (w * p.w) - (x * p.x) - (y * p.y) - (z * p.z);
+   o.x = (w * value.x) + (x * value.w) + (y * value.z) - (z * value.y);
+   o.y = (w * value.y) + (y * value.w) + (z * value.x) - (x * value.z);
+   o.z = (w * value.z) + (z * value.w) + (x * value.y) - (y * value.x);
+   o.w = (w * value.w) - (x * value.x) - (y * value.y) - (z * value.z);
 }
 
 //============================================================
 // <T>乘法处理。</T>
 //
 // @method
-// @param p1:value1:SQuaternion 四元数1
-// @param p2:value2:SQuaternion 四元数2
+// @param value1:SQuaternion 四元数1
+// @param value2:SQuaternion 四元数2
 //============================================================
-MO.SQuaternion_mul2 = function SQuaternion_mul2(p1, p2){
+MO.SQuaternion_mul2 = function SQuaternion_mul2(value1, value2){
    var o = this;
-   o.x = (p1.w * p2.x) + (p1.x * p2.w) + (p1.y * p2.z) - (p1.z * p2.y);
-   o.y = (p1.w * p2.y) + (p1.y * p2.w) + (p1.z * p2.x) - (p1.x * p2.z);
-   o.z = (p1.w * p2.z) + (p1.z * p2.w) + (p1.x * p2.y) - (p1.y * p2.x);
-   o.w = (p1.w * p2.w) - (p1.x * p2.x) - (p1.y * p2.y) - (p1.z * p2.z);
+   o.x = (value1.w * value2.x) + (value1.x * value2.w) + (value1.y * value2.z) - (value1.z * value2.y);
+   o.y = (value1.w * value2.y) + (value1.y * value2.w) + (value1.z * value2.x) - (value1.x * value2.z);
+   o.z = (value1.w * value2.z) + (value1.z * value2.w) + (value1.x * value2.y) - (value1.y * value2.x);
+   o.w = (value1.w * value2.w) - (value1.x * value2.x) - (value1.y * value2.y) - (value1.z * value2.z);
 }
 
 //============================================================
 // <T>变换三维矢量。</T>
 //
 // @method
-// @param pi:input:SVector3 输入方向
-// @param po:output:SVector3 输出方向
+// @param input:SVector3 输入方向
+// @param output:SVector3 输出方向
 //============================================================
-MO.SQuaternion_translate = function SQuaternion_translate(pi, po){
+MO.SQuaternion_translate = function SQuaternion_translate(input, output){
    var o = this;
    // 计算内容
    var q1 = new MO.SQuaternion();
-   q1.set(pi.x, pi.y, pi.z, 0);
+   q1.set(input.x, input.y, input.z, 0);
    q1.normalize();
    var q2 = o.conjugate();
    q1.mul(q2);
    var q = o.clone();
    q.mul(q1);
    // 返回结果
-   var r = null;
-   if(po){
-      r = po;
+   var result = null;
+   if(output){
+      result = output;
    }else{
-      r = new MO.SVector3();
+      result = new MO.SVector3();
    }
-   r.set(q.x, q.y, q.z);
-   return r;
+   result.set(q.x, q.y, q.z);
+   return result;
 }
 
 //============================================================
 // <T>计算插值。</T>
 //
 // @method
-// @param v1:value1:SQuaternion 开始四元数
-// @param v2:value2:SQuaternion 结束四元数
-// @param r:rate:Float 比率
+// @param value1:SQuaternion 开始四元数
+// @param value2:SQuaternion 结束四元数
+// @param rate:Float 比率
 //============================================================
-MO.SQuaternion_slerp = function SQuaternion_slerp(v1, v2, r){
+MO.SQuaternion_slerp = function SQuaternion_slerp(value1, value2, rate){
    var o = this;
-   var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+   var rv = (value1.x * value2.x) + (value1.y * value2.y) + (value1.z * value2.z) + (value1.w * value2.w);
    var rf = false;
    if (rv < 0){
       rf = true;
@@ -212,34 +212,34 @@ MO.SQuaternion_slerp = function SQuaternion_slerp(v1, v2, r){
    var r1 = 0;
    var r2 = 0;
    if(rv > 0.999999){
-      r1 = 1 - r;
-      r2 = rf ? -r : r;
+      r1 = 1 - rate;
+      r2 = rf ? -rate : rate;
    }else{
       var ra = Math.acos(rv);
       var rb = 1 / Math.sin(ra);
-      r1 = Math.sin((1 - r) * ra) * rb;
-      r2 = rf ? (-Math.sin(r * ra) * rb) : (Math.sin(r * ra) * rb);
+      r1 = Math.sin((1 - rate) * ra) * rb;
+      r2 = rf ? (-Math.sin(rate * ra) * rb) : (Math.sin(rate * ra) * rb);
    }
-   o.x = (r1 * v1.x) + (r2 * v2.x);
-   o.y = (r1 * v1.y) + (r2 * v2.y);
-   o.z = (r1 * v1.z) + (r2 * v2.z);
-   o.w = (r1 * v1.w) + (r2 * v2.w);
+   o.x = (r1 * value1.x) + (r2 * value2.x);
+   o.y = (r1 * value1.y) + (r2 * value2.y);
+   o.z = (r1 * value1.z) + (r2 * value2.z);
+   o.w = (r1 * value1.w) + (r2 * value2.w);
 }
 
 //==========================================================
 // <T>用轴向量和旋转角创建一个四元组。</T>
 //
 // @method
-// @param a:axis:SVector3 方向轴
-// @param g:angle:Number 弧度
+// @param axis:SVector3 方向轴
+// @param angle:Number 弧度
 //==========================================================
-MO.SQuaternion_fromAxisAngle = function SQuaternion_fromAxisAngle(a, g){
+MO.SQuaternion_fromAxisAngle = function SQuaternion_fromAxisAngle(axis, angle){
    var o = this;
-   var r = g * 0.5;
+   var r = angle * 0.5;
    var s = Math.sin(r);
-   o.x = a.x * s;
-   o.y = a.y * s;
-   o.z = a.z * s;
+   o.x = axis.x * s;
+   o.y = axis.y * s;
+   o.z = axis.z * s;
    o.w = Math.cos(r);
 }
 
@@ -295,28 +295,28 @@ MO.SQuaternion_parseEuler = function SQuaternion_parseEuler(p){
 // <T>序列化数据到输出流里。</T>
 //
 // @method
-// @param p:input:FByteStream 数据流
+// @param output:FByteStream 数据流
 //==========================================================
-MO.SQuaternion_serialize = function SQuaternion_serialize(p){
+MO.SQuaternion_serialize = function SQuaternion_serialize(output){
    var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
-   p.writeFloat(o.z);
-   p.writeFloat(o.w);
+   output.writeFloat(o.x);
+   output.writeFloat(o.y);
+   output.writeFloat(o.z);
+   output.writeFloat(o.w);
 }
 
 //==========================================================
 // <T>从输入流里反序列化数据。</T>
 //
 // @method
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 //==========================================================
-MO.SQuaternion_unserialize = function SQuaternion_unserialize(p){
+MO.SQuaternion_unserialize = function SQuaternion_unserialize(input){
    var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
-   o.z = p.readFloat();
-   o.w = p.readFloat();
+   o.x = input.readFloat();
+   o.y = input.readFloat();
+   o.z = input.readFloat();
+   o.w = input.readFloat();
 }
 
 //============================================================
@@ -327,12 +327,12 @@ MO.SQuaternion_unserialize = function SQuaternion_unserialize(p){
 //============================================================
 MO.SQuaternion_clone = function SQuaternion_clone(){
    var o = this;
-   var r = new MO.SQuaternion();
-   r.x = o.x;
-   r.y = o.y;
-   r.z = o.z;
-   r.w = o.w;
-   return r;
+   var result = new MO.SQuaternion();
+   result.x = o.x;
+   result.y = o.y;
+   result.z = o.z;
+   result.w = o.w;
+   return result;
 }
 
 //============================================================

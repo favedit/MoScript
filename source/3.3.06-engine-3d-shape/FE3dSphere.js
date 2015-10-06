@@ -47,45 +47,51 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var o = this;
    var context = o._graphicContext;
    // 计算坐标
-   var positions = new MO.TArray();
-   var normals = new MO.TArray();
-   var coords = new MO.TArray();
    var countAngle = o._splitCount * 2;
    var countZ = o._splitCount;
+   var vertexCount = o._vertexCount = (countZ + 1) * (countAngle + 1);
+   var positionIndex = 0;;
+   var positionData = new Float32Array(3 * vertexCount);
+   var normalIndex = 0;;
+   var normalData = new Float32Array(3 * vertexCount);
+   var coordIndex = 0;;
+   var coordData = new Float32Array(2 * vertexCount);
    var stepAngle = Math.PI * 2 / countAngle;
    var stepZ = Math.PI / countZ;
-   var count = 0;
    for(var rz = 0; rz <= countZ; rz++){
-      for(var r = 0; r < countAngle; r++){
+      for(var r = 0; r <= countAngle; r++){
          var radius = stepAngle * r - Math.PI;
          var radiusZ = stepZ * rz - MO.Const.PI_2;
          var x = Math.sin(radius) * Math.cos(radiusZ);
          var y = Math.sin(radiusZ);
          var z = -Math.cos(radius) * Math.cos(radiusZ);
-         positions.push(x, y, z);
-         normals.push(x, y, z);
-         coords.push(radius / Math.PI / 2 + 0.5, radiusZ / Math.PI - 0.5);
-         count++;
+         positionData[positionIndex++] = x;
+         positionData[positionIndex++] = y;
+         positionData[positionIndex++] = z;
+         normalData[normalIndex++] = x;
+         normalData[normalIndex++] = y;
+         normalData[normalIndex++] = z;
+         coordData[coordIndex++] = radius / Math.PI / 2 + 0.5;
+         coordData[coordIndex++] = radiusZ / Math.PI - 0.5;
       }
    }
-   o._vertexCount = count;
    // 创建顶点位置缓冲
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setCode('position');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
-   buffer.upload(new Float32Array(positions.memory()), 4 * 3, count);
+   buffer.upload(positionData, 4 * 3, vertexCount);
    o.pushVertexBuffer(buffer);
    // 创建顶点颜色缓冲
    var buffer = o._vertexNormalBuffer = context.createVertexBuffer();
    buffer.setCode('normal');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
-   buffer.upload(new Float32Array(normals.memory()), 4 * 3, count);
+   buffer.upload(normalData, 4 * 3, vertexCount);
    o.pushVertexBuffer(buffer);
    // 创建顶点纹理缓冲
    var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
    buffer.setCode('coord');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
-   buffer.upload(new Float32Array(coords.memory()), 4 * 2, count);
+   buffer.upload(coordData, 4 * 2, vertexCount);
    o.pushVertexBuffer(buffer);
    //..........................................................
    // 计算索引
@@ -93,25 +99,15 @@ MO.FE3dSphere_setup = function FE3dSphere_setup(){
    var indexes = new MO.TArray();
    for(var rz = 0; rz < countZ; rz++){
       for(var r = 0; r < countAngle; r++){
-         var i = countAngle * rz;
+         var i = (countAngle + 1) * rz;
          var ci = i + r;
-         var ni = i + r + countAngle;
-         if(r == countAngle - 1){
-            if(drawModeCd == MO.EG3dDrawMode.Lines){
-               indexes.push(ci, ni, ni, i, i, ci);
-               indexes.push(ni, i + countAngle, i + countAngle, i, i, ni);
-            }else{
-               indexes.push(ci, ni, i);
-               indexes.push(ni, i + countAngle, i);
-            }
+         var ni = i + r + (countAngle + 1);
+         if(drawModeCd == MO.EG3dDrawMode.Lines){
+            indexes.push(ci, ni, ni, ci + 1, ci + 1, ci);
+            indexes.push(ni, ni + 1, ni + 1, ci + 1, ci + 1, ni);
          }else{
-            if(drawModeCd == MO.EG3dDrawMode.Lines){
-               indexes.push(ci, ni, ni, ci + 1, ci + 1, ci);
-               indexes.push(ni, ni + 1, ni + 1, ci + 1, ci + 1, ni);
-            }else{
-               indexes.push(ci, ni, ci + 1);
-               indexes.push(ni, ni + 1, ci + 1);
-            }
+            indexes.push(ci, ni, ci + 1);
+            indexes.push(ni, ni + 1, ci + 1);
          }
       }
    }
