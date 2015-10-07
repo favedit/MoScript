@@ -110,9 +110,10 @@ MO.FEaiProvince3dEntity_build = function FEaiProvince3dEntity_build(context){
    outline.update();
    // 建立对象
    shape.build(o._graphicContext);
-   //shape.faceColor().setHex('#070613');
-   shape.faceRenderable().color().setHex('#FF0000');
-   shape.borderRenderable().color().setHex('#0000FF');
+   var faceRenderable = shape.faceRenderable();
+   faceRenderable.material().info().effectCode = 'eai.map.face';
+   faceRenderable.color().setHex('#021244');
+   shape.borderRenderable().color().setHex('#FFFFFF');
 }
 
 //==========================================================

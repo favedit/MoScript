@@ -230,7 +230,7 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
    faceShape.build();
    borderShape.build();
    //..........................................................
-   o.setupProvinces(provinceEntities);
+   //o.setupProvinces(provinceEntities);
    //MO.Console.find(MO.FEaiEntityConsole).cityModule().linkProvinces();
 }
 

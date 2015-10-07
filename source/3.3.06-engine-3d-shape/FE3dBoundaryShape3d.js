@@ -64,7 +64,6 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    var o = this;
    var context = o._graphicContext;
    var faceColor = o._faceColor;
-   //var color = o._color;
    var scaleTop = o._scaleTop;
    var scaleBottom = o._scaleBottom;
    var boundaries = o._polygons;
@@ -205,12 +204,9 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexSum, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexSum, true);
    renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexSum, true);
-   //renderable.vertexNormalBuffer().upload(colors, 1 * 4, vertexSum, true);
    var indexBuffer = renderable.indexBuffer();
    indexBuffer.setStrideCd(MO.EG3dIndexStride.Uint32);
    indexBuffer.upload(faceData, faceIndex, true);
-   //renderable._material = o._worldEntity.material();
-   //renderable._texture = o._worldEntity.material()._textures;
 }
 
 //==========================================================
