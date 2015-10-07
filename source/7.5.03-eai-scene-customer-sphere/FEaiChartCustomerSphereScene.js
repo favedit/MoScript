@@ -166,6 +166,10 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
    // 显示城市
+   var desktop = o._application.desktop();
+   var canvas2d = desktop.canvas2d();
+   var context2d = canvas2d.graphicContext();
+   var worldResource = o._worldResource;
    //o._mapEntity.showCity();
 }
 
@@ -411,9 +415,13 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 注册socket监听
    var socket = o._socket;
    socket = MO.Class.create(MO.FSocket);
-   socket.connect('ws://127.0.0.1:9080/earth');
    //socket.connect('ws://10.21.1.171:9080/earth');
-   socket.addReceiveListener(o, o.onSocketReceived);
+   //socket.addReceiveListener(o, o.onSocketReceived);
+   //socket.connect('ws://127.0.0.1:9080/earth');
+   //..........................................................
+   var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
+   var worldResource= o._worldResource = resourceConsole.mapModule().loadWorld();
+   o._readyLoader.push(worldResource);
 }
 
 //==========================================================
