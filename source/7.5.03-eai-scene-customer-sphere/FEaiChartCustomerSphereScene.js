@@ -191,6 +191,8 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    var canvas2d = desktop.canvas2d();
    var context2d = canvas2d.graphicContext();
    var worldResource = o._worldResource;
+   o._guiManager.setValid(false);
+   context2d.fillRectangle(100, 100, 200, 200, '#FFFFFF');
    //o._mapEntity.showCity();
 }
 

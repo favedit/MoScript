@@ -71,6 +71,7 @@ MO.FEaiProvince3dEntity_setup = function FEaiProvince3dEntity_setup() {
    var o = this;
    // 创建边框
    var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
+   shape._name = 'province';
    shape._entity = o;
    shape.setScaleTop(1.01);
    shape.setScaleBottom(0.8);
@@ -111,6 +112,7 @@ MO.FEaiProvince3dEntity_build = function FEaiProvince3dEntity_build(context){
    shape.build(o._graphicContext);
    //shape.faceColor().setHex('#070613');
    shape.faceRenderable().color().setHex('#FF0000');
+   shape.borderRenderable().color().setHex('#0000FF');
 }
 
 //==========================================================
@@ -135,11 +137,11 @@ MO.FEaiProvince3dEntity_doInvestment = function FEaiProvince3dEntity_doInvestmen
 //==========================================================
 MO.FEaiProvince3dEntity_update = function FEaiProvince3dEntity_update(data){
    var o = this;
-   var investmentTotal = data.investmentTotal();
-   var rate = Math.sqrt(investmentTotal) / 100;
-   if(rate > 255){
-      rate = 255;
-   }
+   //var investmentTotal = data.investmentTotal();
+   //var rate = Math.sqrt(investmentTotal) / 100;
+   //if(rate > 255){
+      //rate = 255;
+   //}
    //var colorIndex = 0;
    //var colors = o.colorsData;
    //for(var i = 0; i < o._vertexTotal; i++){

@@ -139,6 +139,9 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    o.__base.FGuiManager.process.call(o);
    var canvas = o._canvas;
    var graphic = canvas.graphicContext();
+   if(!o._valid){
+      return;
+   }
    // 计算画板缩放
    var desktop = o._desktop;
    var sizeRate = desktop.sizeRate();

@@ -64,7 +64,7 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    var o = this;
    var context = o._graphicContext;
    var faceColor = o._faceColor;
-   var color = o._color;
+   //var color = o._color;
    var scaleTop = o._scaleTop;
    var scaleBottom = o._scaleBottom;
    var boundaries = o._polygons;
@@ -132,9 +132,9 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
          vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * scaleTop;
          vertexData[vertexIndex++] = Math.sin(y) * scaleTop;
          vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleTop;
-         colors[colorIndex++] = 0x42;
-         colors[colorIndex++] = 0x9A;
-         colors[colorIndex++] = 0xF9;
+         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0xFF;
          colors[colorIndex++] = 0xFF;
          coordData[coordIndex++] = 0;
          coordData[coordIndex++] = 0;
@@ -156,8 +156,8 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
          vertexData[vertexIndex++] = Math.sin(y) * scaleBottom;
          vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleBottom;
          colors[colorIndex++] = 0x12;
-         colors[colorIndex++] = 0x8A;
-         colors[colorIndex++] = 0xF9;
+         colors[colorIndex++] = 0x6A;
+         colors[colorIndex++] = 0xE9;
          colors[colorIndex++] = 0xFF;
          coordData[coordIndex++] = 0;
          coordData[coordIndex++] = 0;
@@ -201,7 +201,7 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    //renderable.setOptionNormal(true);
    renderable.setVertexCount(vertexTotal * 3);
    renderable.setup();
-   renderable.color().setHex('#0A5294');
+   //renderable.color().setHex('#0A5294');
    renderable.vertexPositionBuffer().upload(vertexData, 4 * 3, vertexSum, true);
    renderable.vertexColorBuffer().upload(colors, 1 * 4, vertexSum, true);
    renderable.vertexCoordBuffer().upload(coordData, 4 * 2, vertexSum, true);
@@ -221,7 +221,7 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
 MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
    var o = this;
    var context = o._graphicContext;
-   var color = o._color;
+   //var color = o._color;
    var scaleTop = o._scaleTop * 1.001;
    var scaleBottom = o._scaleBottom;
    var boundaries = o._polygons;

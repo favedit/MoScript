@@ -108,6 +108,7 @@ MO.FEaiCountry3dEntity_setup = function FEaiCountry3dEntity_setup() {
    var o = this;
    // 创建边界形状
    var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
+   shape._name = 'country';
    shape._entity = o;
    shape.linkGraphicContext(o);
 }
@@ -181,7 +182,8 @@ MO.FEaiCountry3dEntity_loadData = function FEaiCountry3dEntity_loadData(data){
    outline.update();
    // 建立对象
    shape.build();
-   shape.faceRenderable().color().setHex('#0A5294');
+   //shape.faceRenderable().color().setHex('#0A5294');
+   //shape.borderRenderable().color().setHex('#0A5294');
 }
 
 //==========================================================

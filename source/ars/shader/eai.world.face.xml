@@ -51,8 +51,7 @@
          vec4 modelPosition = position * vc_model_matrix;
          gl_Position = modelPosition * vc_vp_matrix;
          // 设置颜色
-         //v_color = va_color * vc_data[index + 3];
-         v_color = va_color;
+         v_color = va_color * vc_data[index + 3];
          // 设置纹理
          v_coord = va_coord;
          // 设置法线
