@@ -59,7 +59,7 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    var matrix = renderable.matrix();
    var modelMatrix = o._modelMatrix;
    modelMatrix.assign(matrix);
-   modelMatrix.addRotationX(-Math.PI* 0.5);
+   //modelMatrix.addRotationX(-Math.PI* 0.5);
    // 计算矩阵
    var vpMatrix = o._vpMatrix;
    vpMatrix.assign(camera.matrix());
@@ -68,7 +68,7 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    program.setParameter('vc_model_matrix', modelMatrix);
    program.setParameter('vc_vp_matrix', vpMatrix);
    program.setParameter4('vc_const', 0, 0, 0, 2 / Math.PI);
-   program.setParameter4('vc_direction', 0, 0, -1, 0);
+   //program.setParameter4('vc_direction', 0, 0, -1, 0);
    // 绑定材质
    var material = renderable.material();
    o.bindMaterial(material);

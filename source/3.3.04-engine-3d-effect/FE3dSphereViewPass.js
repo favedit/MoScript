@@ -100,10 +100,6 @@ MO.FE3dSphereViewPass_drawBegin = function FE3dSphereViewPass_drawBegin(region){
       region._spaceName = 'general.view.result'
       effectResult = o._effectResult = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
    }
-   // 清空屏幕
-   var backgroundColor = region.backgroundColor();
-   context.setRenderTarget(null);
-   context.clear(0, 0, 0, 0, 1);
 }
 
 //==========================================================
@@ -120,14 +116,14 @@ MO.FE3dSphereViewPass_drawRegion = function FE3dSphereViewPass_drawRegion(region
    var effectView = o._effectView;
    //context.setRenderTarget(null);
    context.setRenderTarget(o._renderTarget);
-   context.clear(0, 0, 0, 0, 1);
    context.setProgram(effectView.program());
+   context.clear(0, 0, 0, 0, 1);
    effectView.drawRenderable(region, o._sphere);
    //return;
    // 绘制显示处理
    var effectResult = o._effectResult;
    context.setRenderTarget(null);
-   context.clear(0, 0, 0, 0, 1);
    context.setProgram(effectResult.program());
+   context.clear(0, 0, 0, 0, 1);
    effectResult.drawRenderable(region, o._rectangle);
 }

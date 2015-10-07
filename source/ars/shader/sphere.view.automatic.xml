@@ -44,20 +44,21 @@
       //..........................................................
       // 处理
       void main(){
+         vec3 axis = vec3(0.0, 0.0, -1.0);
          // 计算模型位置
          vec4 modelPosition = vec4(va_position.xyz, 1.0) * vc_model_matrix;
          vec4 position = modelPosition * vc_vp_matrix;
-         //position = position / position.w;
+         vec3 direction = normalize(modelPosition.xyz);
          // 平分球面角度
-         float angleCos = dot(vc_direction.xyz, normalize(modelPosition.xyz));
-         float angle = acos(angleCos) * vc_const.w;
+         float angleCos = clamp(dot(axis, direction), -1.0, 1.0);
+         float angle = clamp(acos(angleCos) * vc_const.w, 0.0, 1.0);
          // 计算投影方向
-         vec2 direction = normalize(modelPosition.xy);
-         vec2 coord = direction * angle;
-         gl_Position = vec4(coord.xy, position.z, 1.0);
-         //gl_Position = vec4(position.xyz * 2.0, 1.0);
+         vec2 flatDirection = normalize(modelPosition.xy);
+         vec2 flatCoord = flatDirection * angle;
+         gl_Position = vec4(flatCoord.xy, position.z * 0.1 + 0.5, 1.0);
+         //gl_Position = position;
          // 设置位置
-         v_position = coord.xy;
+         v_position = flatCoord.xy;
          // 设置纹理
          v_coord = va_coord;
          //v_color = vec4(normalize(modelPosition.xyz), 1.0);

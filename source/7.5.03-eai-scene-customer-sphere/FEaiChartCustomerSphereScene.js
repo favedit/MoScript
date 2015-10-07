@@ -60,41 +60,46 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
 MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSphereScene_onSocketReceived(event) {
    var o = this;
    var message = event.message;
-   console.log(message);
+   //console.log(message);
    var typeCode = message.substring(0, 1);
-   var rotationMatrix = o._rotationMatrix.assign(o._earthSphere.matrix());
+   var earthMatrix = o._earthMatrix;
+   //var rotationMatrix = o._rotationMatrix.assign(o._earthSphere.matrix());
    var downPosition = o._mouseDownPosition;
    var movePosition = o._mouseMovePosition;
-   rotationMatrix.invert();
+   //rotationMatrix.invert();
    if(typeCode == 'D'){
       var position = new MO.SPoint2();
       var items = message.substring(2).split('|');
       position.parseFloat(items[0]);
-      var length = position.length2(0.5, 0.5);
-      downPosition.x = position.x - 0.5;
-      downPosition.y = position.y - 0.5;
-      downPosition.z = Math.acos(length);
+      var cx = (position.x - 0.5) * 2;
+      var cy = -(position.y - 0.5) * 2;
+      var length = Math.sqrt(cx * cx + cy * cy);
+      downPosition.x = cx;
+      downPosition.y = cy;
+      downPosition.z = -Math.sin(Math.acos(Math.min(length, 1)));
       downPosition.normalize();
-      rotationMatrix.transformPoint3(downPosition, downPosition);
-      downPosition.normalize();
+      console.log('Down: ' + length + ' - ' + cx + ',' + cy + ' - ' + downPosition.toDisplay());
+      earthMatrix.assign(o._earthSphere.matrix());
       o._moving = true;
    }else if(typeCode == 'M' && o._moving){
       var position = new MO.SPoint2();
       var items = message.substring(2).split('|');
       position.parseFloat(items[0]);
-      var length = position.length2(0.5, 0.5);
-      movePosition.x = position.x - 0.5;
-      movePosition.y = position.y - 0.5;
-      movePosition.z = Math.acos(length);
-      movePosition.normalize();
-      rotationMatrix.transformPoint3(movePosition, movePosition);
+      var cx = (position.x - 0.5) * 2;
+      var cy = -(position.y - 0.5) * 2;
+      var length = Math.sqrt(cx * cx + cy * cy);
+      movePosition.x = cx;
+      movePosition.y = cy;
+      movePosition.z = -Math.sin(Math.acos(Math.min(length, 1)));
       movePosition.normalize();
       var axis = new MO.SVector3();
       axis.assign(downPosition);
       axis.cross(movePosition);
       axis.normalize();
       var angle = Math.acos(downPosition.dotPoint3(movePosition));
+      console.log('Move: ' + length + ' - ' + cx + ',' + cy + ' - ' + movePosition.toDisplay() + '(' + axis.toDisplay() + ')' + angle);
       var matrix = o._earthSphere.matrix();
+      matrix.assign(earthMatrix);
       matrix.addRotationAxis(axis, -angle);
       matrix.parse();
    }else if(typeCode == 'U'){
@@ -171,22 +176,41 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
 //==========================================================
 MO.FEaiChartCustomerSphereScene_onProcessInput = function FEaiChartCustomerSphereScene_onProcessInput(){
    var o = this;
-   var directionSpeed = 0.01;
+   var directionSpeed = 0.02;
    var earthSphere = o._earthSphere;
    var matrix = earthSphere.matrix();
    // 横向旋转
+   var matrix = o._earthSphere.matrix();
    if(MO.Window.Keyboard.isPress(MO.EKeyCode.A)){
-      matrix.ry += directionSpeed;
+      //matrix.ry += directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisY, -directionSpeed);
+      matrix.parse();
    }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.D)){
-      matrix.ry -= directionSpeed;
+      //matrix.ry -= directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisY, directionSpeed);
+      matrix.parse();
    }
    // 纵向旋转
    if(MO.Window.Keyboard.isPress(MO.EKeyCode.W)){
-      matrix.rz += directionSpeed;
+      //matrix.rz += directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisX, -directionSpeed);
+      matrix.parse();
    }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.S)){
-      matrix.rz -= directionSpeed;
+      //matrix.rz -= directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisX, directionSpeed);
+      matrix.parse();
    }
-   matrix.updateForce();
+   // 纵向旋转
+   if(MO.Window.Keyboard.isPress(MO.EKeyCode.Q)){
+      //matrix.rz += directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisZ, -directionSpeed);
+      matrix.parse();
+   }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.E)){
+      //matrix.rz -= directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisZ, directionSpeed);
+      matrix.parse();
+   }
+   //matrix.updateForce();
 }
 
 //==========================================================
@@ -313,6 +337,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var canvas3d = desktop.canvas3d();
    var context = canvas3d.graphicContext();
    o._rotationMatrix = new MO.SMatrix3d();
+   o._earthMatrix = new MO.SMatrix3d();
    //..........................................................
    // 创建地球
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
@@ -337,7 +362,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    camera.update();
    var projection = camera.projection();
    projection.size().assign(context.size());
-   projection.setZnear(1);
+   projection.setZnear(-1000);
    projection.setZfar(1000);
    projection.update();
    // 设置相机
@@ -386,8 +411,8 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 注册socket监听
    var socket = o._socket;
    socket = MO.Class.create(MO.FSocket);
-   //socket.connect('ws://127.0.0.1:9080/earth');
-   socket.connect('ws://10.21.1.171:9080/earth');
+   socket.connect('ws://127.0.0.1:9080/earth');
+   //socket.connect('ws://10.21.1.171:9080/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
 }
 
