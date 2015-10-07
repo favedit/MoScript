@@ -60,7 +60,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
 MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSphereScene_onSocketReceived(event) {
    var o = this;
    var message = event.message;
-   //console.log(message);
+   console.log(message);
    var typeCode = message.substring(0, 1);
    var earthMatrix = o._earthMatrix;
    //var rotationMatrix = o._rotationMatrix.assign(o._earthSphere.matrix());
@@ -73,7 +73,7 @@ MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSph
       position.parseFloat(items[0]);
       var cx = (position.x - 0.5) * 2;
       var cy = -(position.y - 0.5) * 2;
-      var length = Math.sqrt(cx * cx + cy * cy);
+      var length = o._lengthStart = Math.sqrt(cx * cx + cy * cy);
       downPosition.x = cx;
       downPosition.y = cy;
       downPosition.z = -Math.sin(Math.acos(Math.min(length, 1)));
@@ -96,11 +96,32 @@ MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSph
       axis.assign(downPosition);
       axis.cross(movePosition);
       axis.normalize();
-      var angle = Math.acos(downPosition.dotPoint3(movePosition));
-      console.log('Move: ' + length + ' - ' + cx + ',' + cy + ' - ' + movePosition.toDisplay() + '(' + axis.toDisplay() + ')' + angle);
+      var angle = Math.acos(downPosition.dotPoint3(movePosition)) * (0.5 / 0.29);
       var matrix = o._earthSphere.matrix();
       matrix.assign(earthMatrix);
-      matrix.addRotationAxis(axis, -angle);
+      if(o._lengthStart > 10){
+         axis.assign(MO.Lang.Math.vectorAxisZ);
+         axis.cross(movePosition);
+         axis.normalize();
+         var cl = length - o._lengthStart;
+         matrix.addRotationAxis(axis, cl);
+         
+         var p1 = new MO.SVector3(downPosition.x, downPosition.y, 0);
+         p1.normalize();
+         var p2 = new MO.SVector3(movePosition.x, movePosition.y, 0);
+         p2.normalize();
+         axis.assign(p1);
+         axis.cross(p2);
+         axis.normalize();
+         matrix.addRotationAxis(axis, -angle);
+         //axis = MO.Lang.Math.vectorAxisZ;
+         //if(axis.x < 0){
+         //   angle = -angle;
+         //}
+      }else{
+         matrix.addRotationAxis(axis, -angle);
+      }
+      console.log('Move: ' + length + ' - ' + cx + ',' + cy + ' - ' + movePosition.toDisplay() + '(' + axis.toDisplay() + ')' + angle);
       matrix.parse();
    }else if(typeCode == 'U'){
       o._moving = false;
@@ -415,9 +436,9 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 注册socket监听
    var socket = o._socket;
    socket = MO.Class.create(MO.FSocket);
-   //socket.connect('ws://10.21.1.171:9080/earth');
-   //socket.addReceiveListener(o, o.onSocketReceived);
+   socket.connect('ws://10.21.1.171:9080/earth');
    //socket.connect('ws://127.0.0.1:9080/earth');
+   socket.addReceiveListener(o, o.onSocketReceived);
    //..........................................................
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
    var worldResource= o._worldResource = resourceConsole.mapModule().loadWorld();

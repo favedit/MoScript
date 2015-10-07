@@ -13,7 +13,7 @@ MO.FThreadConsole = function FThreadConsole(o){
    // @attribute
    o._active      = true;
    o._requestFlag = false;
-   o._interval    = 8;
+   o._interval    = 5;
    o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    //..........................................................
    // @html

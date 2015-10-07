@@ -63,10 +63,6 @@ MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o._audioContext            = null;
    o._audioMapEnter           = null;
    //..........................................................
-   o.onOrganizationFetch      = MO.FEaiCountry3dEntity_onOrganizationFetch;
-   o.onMouseMove              = MO.FEaiCountry3dEntity_onMouseMove;
-   o.onMouseDown              = MO.FEaiCountry3dEntity_onMouseDown;
-   //..........................................................
    // @method
    o.construct                = MO.FEaiCountry3dEntity_construct;
    // @method
@@ -83,7 +79,6 @@ MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o.processLoad              = MO.FEaiCountry3dEntity_processLoad;
    o.introAnime               = MO.FEaiCountry3dEntity_introAnime;
    o.mouseOverFallAnime       = MO.FEaiCountry3dEntity_mouseOverFallAnime;
-   o.cameraMoveAnime          = MO.FEaiCountry3dEntity_cameraMoveAnime;
    o.isReady                  = MO.FEaiCountry3dEntity_isReady;
    // @method
    o.dispose                  = MO.FEaiCountry3dEntity_dispose;
@@ -146,19 +141,9 @@ MO.FEaiCountry3dEntity_build = function FEaiCountry3dEntity_build(){
 MO.FEaiCountry3dEntity_setupProvinces = function FEaiCountry3dEntity_setupProvinces() {
    var o = this;
    var provinceEntities = o._provinceEntities;
-   for (var i = 0; i < provinceEntities.count(); i++) {
-      var provinceEntity = provinceEntities.at(i);
-      var fr = provinceEntity.faceRenderable();
-      var br = provinceEntity.borderRenderable();
-      //var frm = fr.matrix();
-      //var brm = br.matrix();
-      //frm.tz = o.riseDistance();
-      //frm.updateForce();
-      //brm.tz = o.riseDistance();
-      //brm.updateForce();
-   }
-   var provinceArray = o._provinceArray = new Array(provinceEntities.count());
-   for (var i = 0; i < provinceEntities.count() ; i++) {
+   var count = provinceEntities.count();
+   var provinceArray = o._provinceArray = new Array(count);
+   for(var i = 0; i < count; i++){
       provinceArray[i] = provinceEntities.at(i);
    }
    provinceArray.sort(o.provinceShowOrderSort);
@@ -196,6 +181,7 @@ MO.FEaiCountry3dEntity_loadData = function FEaiCountry3dEntity_loadData(data){
    outline.update();
    // 建立对象
    shape.build();
+   shape.faceRenderable().color().setHex('#0A5294');
 }
 
 //==========================================================
@@ -216,11 +202,11 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
    //..........................................................
    // 创建省份实体
    var provinceModule = MO.Console.find(MO.FEaiResourceConsole).provinceModule();
-   var provinceEntityModule = MO.Console.find(MO.FEaiEntityConsole).provinceModule();
+   //var provinceEntityModule = MO.Console.find(MO.FEaiEntityConsole).provinceModule();
    var provincesData = data.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
-      provinceData = provincesData.at(i);
+      var provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
       MO.Assert.debugNotNull(provinceResource);
@@ -233,7 +219,7 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
       provinceEntity.setData(provinceData);
       provinceEntity.build(o);
       provinceEntities.set(provinceCode, provinceEntity);
-      provinceEntityModule.push(provinceEntity);
+      //provinceEntityModule.push(provinceEntity);
       // 增加到融合渲染对象
       var boundaryShape = provinceEntity.boundaryShape();
       faceShape.pushMergeRenderable(boundaryShape.faceRenderable());
@@ -243,7 +229,7 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
    borderShape.build();
    //..........................................................
    o.setupProvinces(provinceEntities);
-   MO.Console.find(MO.FEaiEntityConsole).cityModule().linkProvinces();
+   //MO.Console.find(MO.FEaiEntityConsole).cityModule().linkProvinces();
 }
 
 //==========================================================
@@ -327,253 +313,6 @@ MO.FEaiCountry3dEntity_processLoad = function FEaiCountry3dEntity_processLoad(){
       return true;
    }
    return false;
-}
-
-//==========================================================
-// <T>地图开场动画。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCountry3dEntity_introAnime = function FEaiCountry3dEntity_introAnime() {
-   var o = this;
-   var now = MO.Timer.current();
-   var timePassed = now - o._startTime;
-   if (timePassed < o.startDelay()) {
-      return;
-   }
-   else {
-      timePassed -= o.startDelay();
-      if (timePassed > o.riseDuration() + o.fallDuration() + o.blockInterval() * o._provinceEntities.count()) {
-         o.setIntroAnimeDone(true);
-         var listener = new MO.TListener();
-         listener._owner = this;
-         listener._callback = o.onMouseMove;
-         MO.Window.lsnsMouseMove.push(listener);
-         var listener = new MO.TListener();
-         listener._owner = this;
-         listener._callback = o.onMouseDown;
-         MO.Window.lsnsMouseDown.push(listener);
-         //获取省份数据
-         //RConsole.find(FEnvironmentConsole).registerValue(EEaiConstant.ServiceHost, '115.28.82.149');
-         //var logicConsole = MO.RConsole.find(FEaiLogicConsole);
-         //logicConsole.organization().doFetch(o, o.onOrganizationFetch);
-      }
-   }
-
-   if (!o._enterSEPlaying) {
-      o._audioMapEnter.play(0);
-      o._enterSEPlaying = true;
-   }
-   
-
-   var idxCap = timePassed / o.blockInterval();
-   for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
-      var fr = o._provinceArray[i].faceRenderable();
-      var br = o._provinceArray[i].borderRenderable();
-      var frm = fr.matrix();
-      var brm = br.matrix();
-      var risePercentage = (timePassed - o.blockInterval() * i) / (o.riseDuration() - i * i);
-      var fallPercentage = 0;
-      if (risePercentage > 1) {
-         risePercentage = 1;
-
-         //if (i == o._lastDownSEIndex + 1) {
-         //   o._mapDownSEArray[i].start();
-         //   o._lastDownSEIndex++;
-         //}
-
-         fallPercentage = (timePassed - o.blockInterval() * i - (o.riseDuration() - i * i)) / o.fallDuration();
-         if (fallPercentage > 1) {
-            fallPercentage = 1;
-         }
-      }
-      frm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
-      frm.updateForce();
-      brm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
-      brm.updateForce();
-   }
-
-   idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
-   //if (o._lastEnterSEIndex != idxCap) {
-   //   o._audioMapEnterArray[idxCap].start();
-   //   o._lastEnterSEIndex = idxCap;
-   //}
-   
-}
-
-//==========================================================
-// <T>鼠标经过处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCountry3dEntity_onMouseMove = function FEaiCountry3dEntity_onMouseMove(event){
-   var o = this;
-   ////检查时间间隔避免频繁调用开销较大的射线检测
-   //var now = new Date();
-   //if (now.getDate() - o.mouseMoveLastCheck() < o.mouseMoveCheckInterval) {
-   //   return;
-   //}
-   ////得到当前鼠标指向的对象
-   ////TODO:canvas改到某一Console中
-   //var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(canvas._graphicContext, FG3dSelectTechnique);
-   //var renderable = selectTechnique.test(o.template().region(), event.offsetX, event.offsetY);
-   ////判断是否是之前指向的对象
-   //if (o.mouseOverRiseRenderable() != renderable) {
-   //   //将之前指向的对象放入下降集合
-   //   if (o.mouseOverRiseRenderable()) {
-   //      o.mouseOverFallArray().push(o.mouseOverRiseRenderable());
-   //   }
-   //   //改变指向的对象
-   //   o.setMouseOverRiseRenderable(renderable);
-   //   //新指向的对象如在下降集合中则移除
-   //   if (o.mouseOverFallArray().contains(o.mouseOverRiseRenderable())) {
-   //   	o.mouseOverFallArray().remove(o.mouseOverRiseRenderable());
-   //   }
-   //}
-}
-
-//==========================================================
-// <T>鼠标经过动画。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCountry3dEntity_mouseOverFallAnime = function FEaiCountry3dEntity_mouseOverFallAnime() {
-   var o = this;
-   //for (var i = o.mouseOverFallArray().count() - 1; i >= 0; i--) {
-   //   var renderable = o.mouseOverFallArray().at(i);
-   //   var matrix = renderable.matrix();
-   //   if (matrix.ty > o.riseDistance() - o.fallDistance()) {
-   //   	matrix.ty -= 1;
-   //   }
-   //   else {
-   //   	matrix.ty = o.riseDistance() - o.fallDistance();
-   //   	o.mouseOverFallArray().erase(i);
-   //   }
-   //   matrix.updateForce();
-   //}
-   
-   //if (o.mouseOverRiseRenderable()) {
-   //   var riseMatrix = o.mouseOverRiseRenderable().matrix();
-   //   if (riseMatrix.ty < o.riseDistance() - o.fallDistance() + o.mouseOverRiseHeight()) {
-   //   	riseMatrix.ty = o.riseDistance() - o.fallDistance() + o.mouseOverRiseHeight();
-   //   	riseMatrix.updateForce();
-   //   }
-   //}	
-}
-
-//==========================================================
-// <T>集团分公司数据获取处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCountry3dEntity_onOrganizationFetch = function FEaiCountry3dEntity_onOrganizationFetch(event) {
-   var o = this;
-   //var content = event.content;
-   //var branchCount = new Object();
-   //for (var i = 0; i < content.collection.length; i++) {
-   //   if(!branchCount[content.collection[i].province_id]){
-   //      if(content.collection[i].province_id == null)
-   //      {
-   //         //debugger;
-   //      }
-   //      branchCount[content.collection[i].province_id] = 1;
-   //   }
-   //   else{
-   //      branchCount[content.collection[i].province_id]++;
-   //      if (content.collection[i].province_id == null) {
-   //         content.collection[i].label;
-   //         //debugger;
-   //      }
-   //   }
-   //}
-   
-   //var logicConsole = MO.RConsole.find(FEaiLogicConsole);
-   //var dict = logicConsole.organization().dict();
-   //var colors = logicConsole.organization().provinceColors();
-   //for(var i = 0; i < dict.count(); i++){
-   //   var bc = branchCount[dict.name(i)];
-   //   if (!bc) {
-   //      bc = 0;
-   //   }
-   //   var meshIdx = dict.valueAt(i);
-   //   if (meshIdx < 0) {
-   //      continue;
-   //   }
-   //   var renderable = o.template().sprite().renderables().at(meshIdx);
-   //   var ambientColor = renderable.material().info().ambientColor;
-   //   var diffuseColor = renderable.material().info().diffuseColor;
-   //   var colorLv = bc == 0 ? 0 : Math.floor(bc / 5 + 1) > 4 ? 4 : Math.floor(bc / 5 + 1);
-	// ambientColor.assign(colors.at(colorLv));
-   //   //diffuseColor.assign(colors.at(colorLv));
-   //   renderable.material().update();
-   //}
-   
-}
-
-//==========================================================
-// <T>鼠标按下处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCountry3dEntity_onMouseDown = function FEaiCountry3dEntity_onMouseDown(event){
-   var o = this;
-   //var region = o.template().region();
-   //var camera = region.camera();
-   ////得到当前鼠标指向的对象
-   ////TODO:canvas改到某一Console中
-   //var selectTechnique = RConsole.find(FG3dTechniqueConsole).find(canvas._graphicContext, FG3dSelectTechnique);
-   //var renderable = selectTechnique.test(o.template().region(), event.offsetX, event.offsetY);
-   //if (!renderable) {
-   //   camera.setPosition(3, 24, -0.5);
-   //   camera.update();
-   //   return;
-   //}
-   
-   //var outline = renderable.calculateOutline();
-   //var relativeOutline = new SOutline3d();
-   //relativeOutline.calculateFrom(outline, camera.matrix());
-   //var distance = relativeOutline.radius / Math.sin(camera.projection().angle() / 2) * Math.sin(90 - camera.projection().angle() / 2);
-   //var currentCenter = outline.center;
-   //var cameraTo = new SPoint3(currentCenter.x - distance * o.cameraDirection().x, currentCenter.y - distance * o.cameraDirection().y, currentCenter.z - distance * o.cameraDirection().z);
-   //var cameraPosition = camera.position();
-   
-   //o.setStartTime(new Date());
-   //o.cameraFrom().assign(cameraPosition);
-   //o.cameraTo().assign(cameraTo);
-   //o.setCameraMoving(true);
-}
-
-//==========================================================
-// <T>选取省份后镜头移动动画。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCountry3dEntity_cameraMoveAnime = function FEaiCountry3dEntity_cameraMoveAnime() {
-   var o = this;
-   //var now = new Date();
-   //var timePassed = now.getTime() - o._startTime;
-   //var p = timePassed / o.cameraMoveDuration();
-   //if (p >= 1) {
-   //   p = 1;
-   //   o.setCameraMoving(false);
-   //}
-   ////p = p*p;
-   ////p = p > 0.5 ? 1-2*(1-p)*(1-p) : 2*p*p;
-   //p = 1-(1-p)*(1-p);
-   //var movingPosition = new SPoint3();
-   //movingPosition.slerp(o.cameraFrom(), o.cameraTo(), p);
-   //var camera = o.template().region().camera();
-   //camera.position().assign(movingPosition);
-   //camera.update();
-   
-   //var sprite = o.template().sprite();
-   //for (var i = 0; i < sprite.renderables().count(); i++){
-   //   var renderable = sprite.renderables().at(i);
-   //   if (renderable != o.mouseOverRiseRenderable()) {
-   //      renderable.material().info().alphaRate = 1.5 - p;
-   //      renderable.material().update();
-   //   }
-   //}
 }
 
 //==========================================================

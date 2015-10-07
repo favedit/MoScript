@@ -108,8 +108,9 @@ MO.FEaiProvince3dEntity_build = function FEaiProvince3dEntity_build(context){
    }
    outline.update();
    // 建立对象
-   shape.faceColor().setHex('#070613');
-   shape.build();
+   shape.build(o._graphicContext);
+   //shape.faceColor().setHex('#070613');
+   shape.faceRenderable().color().setHex('#FF0000');
 }
 
 //==========================================================
@@ -166,14 +167,14 @@ MO.FEaiProvince3dEntity_update = function FEaiProvince3dEntity_update(data){
 //==========================================================
 MO.FEaiProvince3dEntity_updateColor = function FEaiProvince3dEntity_updateColor(rate){
    var o = this;
-   var color = o._focusColor;
-   var rate = o._focusCurrent / o._focusCount;
+   //var color = o._focusColor;
+   //var rate = o._focusCurrent / o._focusCount;
    // 计算颜色
-   var red = 0x08 + ((color[0] - 0x08)* rate);
-   var green = 0x0D + ((color[1] - 0x0D)* rate);
-   var blue = 0x19 + ((color[2] - 0x19)* rate);
-   var alpha = 0xFF;
-   o._faceRenderable.color().set(0, 0, 0, 0);
+   //var red = 0x08 + ((color[0] - 0x08)* rate);
+   //var green = 0x0D + ((color[1] - 0x0D)* rate);
+   //var blue = 0x19 + ((color[2] - 0x19)* rate);
+   //var alpha = 0xFF;
+   //o._faceRenderable.color().set(0, 0, 0, 0);
 }
 
 //==========================================================
@@ -187,21 +188,21 @@ MO.FEaiProvince3dEntity_process = function FEaiProvince3dEntity_process(){
    if(o._focusCurrent > 0){
       var tick = MO.Timer.current();
       if(tick - o._focusTick > o._focusInterval){
-         var z = o._currentZ = -o._focusCurrent / 60;
+         //var z = o._currentZ = -o._focusCurrent / 60;
          // 设置坐标
-         faceRenderable = o._faceRenderable;
-         matrix = faceRenderable.matrix();
-         matrix.tz = z;
-         matrix.updateForce();
-         borderRenderable = o._borderRenderable;
-         matrix = borderRenderable.matrix();
-         matrix.tz = z;
-         matrix.updateForce();
+         //faceRenderable = o._faceRenderable;
+         //matrix = faceRenderable.matrix();
+         //matrix.tz = z;
+         //matrix.updateForce();
+         //borderRenderable = o._borderRenderable;
+         //matrix = borderRenderable.matrix();
+         //matrix.tz = z;
+         //matrix.updateForce();
          // 更新颜色
-         o.updateColor(o._focusCurrent);
+         //o.updateColor(o._focusCurrent);
          // 更新数据
-         o._focusCurrent--;
-         o._focusTick = tick;
+         //o._focusCurrent--;
+         //o._focusTick = tick;
       }
    }
 }
