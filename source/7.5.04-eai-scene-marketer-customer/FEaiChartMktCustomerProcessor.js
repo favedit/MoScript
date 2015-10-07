@@ -218,7 +218,9 @@ MO.FEaiChartMktCustomerProcessor_focusEntity = function FEaiChartMktCustomerProc
       }
       // 更新城市数据
       cityEntity.addInvestmentTotal(level, investment);
-      o._mapEntity.upload();
+      if (o._mapEntity != null) {
+         o._mapEntity.upload();
+      }
       // 播放声音
       var autio = o._autios[level];
       if(autio){
@@ -300,7 +302,9 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
    }
    //..........................................................
    // 地图处理
-   o._mapEntity.process();
+   if (o._mapEntity != null) {
+      o._mapEntity.process();
+   }
    //..........................................................
    // 设置信息
    var dynamicInfo = MO.Desktop.application().dynamicInfo();

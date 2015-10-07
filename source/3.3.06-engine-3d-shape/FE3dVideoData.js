@@ -12,7 +12,7 @@ MO.FE3dVideoData = function FE3dVideoData(o){
    o._loaded      = false;
    //..........................................................
    // @html
-   o._hVideo      = null;
+   o._hVideo      = MO.Class.register(o, new MO.AGetSet('_hVideo'));
    //..........................................................
    // @event
    o.ohVideoLoad  = MO.FE3dVideoData_ohVideoLoad;
@@ -73,8 +73,8 @@ MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(url){
    // 加载图片
    var video = o._hVideo = document.createElement('VIDEO');
    video.__linker = o;
-   video.autoplay = true;
-   video.loop = true;
+   //video.autoplay = true;
+   //video.loop = true;
    video.src = url;
    video.addEventListener('canplay', o.ohVideoLoad);
    video.load();

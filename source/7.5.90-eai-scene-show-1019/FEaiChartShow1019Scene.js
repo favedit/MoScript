@@ -24,6 +24,7 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._operationRotationY      = 0;
    o._rotationX               = 0;
    o._rotationY               = 0;
+   o._rotationZ               = 0;
    o._startRotateY            = 0;
    o._targetRotateY           = 0;
    o._translateY              = 0;
@@ -62,17 +63,33 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._focusParamManager       = null;
    o._remoteRotate            = null;
    // @attribute
-   o._videoData               = null;
+   o._videoDataList           = null;
+   o._videoRenderable         = null;
+   o._videoIndex              = 0;
+   o._videoCount              = 2;
+   o._videoAnimeDuration      = 1000;
+   o._videoAnimeTick          = 0;
+   // @attribute
+   o._locations               = null;
+   // @attribute
+   o._processor               = null;
+   // @attribute
+   o._logoBar                 = null;
+   o._timeline                = null;
+   o._liveTable               = null;
    //..........................................................
    // @event
    o.onSocketReceived         = MO.FEaiChartShow1019Scene_onSocketReceived;
    o.onOrganizationFetch      = MO.FEaiChartShow1019Scene_onOrganizationFetch;
    // @event
+   o.onOperationKeyDown       = MO.FEaiChartShow1019Scene_onOperationKeyDown;
    o.onOperationDown          = MO.FEaiChartShow1019Scene_onOperationDown;
    o.onOperationMove          = MO.FEaiChartShow1019Scene_onOperationMove;
    o.onOperationUp            = MO.FEaiChartShow1019Scene_onOperationUp;
    o.onOperationWheel         = MO.FEaiChartShow1019Scene_onOperationWheel;
    // @event
+   o.onInvestmentDataChanged  = MO.FEaiChartShow1019Scene_onInvestmentDataChanged;
+   o.on24HDataChanged         = MO.FEaiChartShow1019Scene_on24HDataChanged;
    o.onOperationVisibility    = MO.FEaiChartShow1019Scene_onOperationVisibility;
    o.onProcessReady           = MO.FEaiChartShow1019Scene_onProcessReady;
    o.onProcess                = MO.FEaiChartShow1019Scene_onProcess;
@@ -87,6 +104,38 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    // @method
    o.processResize            = MO.FEaiChartShow1019Scene_processResize;
    return o;
+}
+
+//==========================================================
+// <T>24小时曲线数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartShow1019Scene_on24HDataChanged = function FEaiChartShow1019Scene_on24HDataChanged(event) {
+   var o = this;
+   // 设置表格数据
+   var timeline = o._timeline;
+   timeline.startTime().assign(event.beginDate);
+   timeline.endTime().assign(event.endDate);
+   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   timeline.dirty();
+}
+
+//==========================================================
+// <T>表格数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartShow1019Scene_onInvestmentDataChanged = function FEaiChartShow1019Scene_onInvestmentDataChanged(event) {
+   var o = this;
+   var unit = event.unit;
+   // 设置表格数据
+   var table = o._liveTable;
+   table.setRankUnits(event.rankUnits);
+   table.pushUnit(unit);
+   table.dirty();
 }
 
 //==========================================================
@@ -120,8 +169,30 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
       rotate.parse(message.substr(rotateIndex + 7));
       o._rotationX = rotate.x;
       o._rotationY = rotate.y;
+      o._rotationZ = rotate.z;
    }
    
+}
+
+//==========================================================
+// <T>切换过程处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartShow1019Scene_videoFullScreenAnime = function FEaiChartShow1019Scene_videoFullScreenAnime() {
+   var o = this;
+   var videoRenderable = o._videoRenderable;
+
+   var matrix = videoRenderable.matrix();
+   matrix.sx = 1920;
+   matrix.sy = 1080;
+   matrix.sz = 1;
+   matrix.tx = 0;
+   matrix.ty = 0;
+   matrix.tz = 0;
+   //matrix.ry = 0;
+   matrix.updateForce();
 }
 
 //==========================================================
@@ -262,7 +333,70 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
       mapEntity.process();
 
-      o._videoData.process();
+      // 更新视频画面
+      var videoData = o._videoDataList.at(o._videoIndex);
+      videoData.process();
+
+      // 实时投资数据
+      o._processor.process();
+      //..........................................................
+      // 设置数据
+      var logoBar = o._logoBar;
+      // 获取所有信息
+      var processor = o._processor;
+      if (processor.invementDayCurrent() > 0) {
+         // 投资总金额
+         var investmentTotal = logoBar.findComponent('investmentTotal');
+         investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
+         // 日投资金额
+         var investmentDay = logoBar.findComponent('investmentDay');
+         investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
+      }
+      //..........................................................
+      // 更新时间
+      if (o._nowTicker.process()) {
+         var bar = o._logoBar;
+         var date = o._nowDate;
+         date.setNow();
+         var dateControl = bar.findComponent('date');
+         dateControl.setLabel(date.format('YYYY/MM/DD'));
+         var timeControl = bar.findComponent('time');
+         timeControl.setLabel(date.format('HH24:MI'));
+      }
+   }
+}
+
+//==========================================================
+// <T>键盘消息处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartShow1019Scene_onOperationKeyDown = function FEaiChartShow1019Scene_onOperationKeyDown(event) {
+   var o = this;
+   o.__base.FEaiChartScene.onOperationKeyDown.call(o, event);
+   // 显示调试信息
+   if (event.keyCode == MO.EKeyCode.Space) {
+      var videoRenderable = o._videoRenderable;
+      if (videoRenderable.visible()) {
+         videoRenderable.setVisible(false);
+         o._videoIndex++;
+         if (o._videoIndex > o._videoCount - 1) {
+            o._videoIndex = o._videoCount - 1;
+         }
+      } else {
+         var videoData = o._videoDataList.at(o._videoIndex);
+         videoRenderable.setData(videoData);
+         //videoRenderable._renderable.update();
+         videoRenderable.material().info().effectCode = 'flat';
+         videoRenderable.setVisible(true);
+         videoData.hVideo().play();
+      }
+   }
+   else if (event.keyCode == MO.EKeyCode.F) {
+      var videoData = o._videoDataList.at(o._videoIndex);
+      videoData.hVideo().currentTime = 5;
+      videoData.hVideo().play();
    }
 }
 
@@ -396,63 +530,7 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
             o._startTick = MO.Timer.current();
             o._earthMoving = true;
             o._autoRotate = false;
-            
 
-            //var mapEntity = o._mapEntity;
-            //var faceMatrix = mapEntity.countryFaceDisplay().matrix();
-            //var borderMatrix = mapEntity.countryBorderDisplay().matrix();
-            //faceMatrix.ty = -o._worldScale * (outline2d.center.y / 90);
-            //faceMatrix.updateForce();
-            //borderMatrix.ty = 
-            //borderMatrix.updateForce();
-
-
-            //console.log('Select countty: ' + countryEntity.code() + ' - ' + outline + ' - ' + countryOutline);
-            //var outline = renderable._shape.calculateOutline();
-            //var countryOutline = countryEntity.calculateOutline();
-            //var ccDirection = o._ccDirection;
-            //ccDirection.assign(countryRenderable.center);
-            //ccDirection.normalize();
-
-
-            //var rotationAxis = new MO.SVector3(0,1,0);
-            //rotationAxis.cross(ccDirection);
-            //rotationAngle = Math.Acos(DotProduct(vectorBefore, ccDirection) / Normalize(vectorBefore) / Normalize(ccDirection));
-            //rotationMatrix = RotationMatrix(rotationAngle, rotationAxis);
-
-
-            //var cc = ccDirection.conjugate();
-            //faceMatrix.rx = cc.x;
-            //faceMatrix.ry = cc.y;
-            //faceMatrix.rz = cc.z;
-            //faceMatrix.updateForce();
-            //borderMatrix.rx = cc.x;
-            //borderMatrix.ry = cc.y;
-            //borderMatrix.rz = cc.z;
-            //borderMatrix.updateForce();
-            ////var mapEntity = o._mapEntity;
-            ////o._optionRotation = false;
-            ////o._rotationY = 0;
-            ////var faceMatrix = mapEntity.countryFaceDisplay().matrix()
-            ////var borderMatrix = mapEntity.countryBorderDisplay().matrix()
-            ////var facePosition = o._facePosition;
-            ////facePosition.set(faceMatrix.tx, faceMatrix.ty, faceMatrix.tz);
-            ////// 计算摄像机目标位置
-            ////var cameraTo = o._cameraTo;
-            //////var relativeOutline = new MO.SOutline3d();
-            //////relativeOutline.calculateFrom(countryOutline, camera.matrix());
-            //////var distance = relativeOutline.radius / Math.sin(camera.projection().angle() / 2) * Math.sin(90 - camera.projection().angle() / 2);
-            ////o._worldScale = 800;
-            ////var distance = 100;
-            ////cameraTo.x = facePosition.x + ccDirection.x * distance;
-            ////cameraTo.y = facePosition.y + ccDirection.y * distance;
-            ////cameraTo.z = facePosition.z + ccDirection.z * distance;
-            ////// 记录摄像机起始位置
-            ////o._cameraFrom.assign(camera.position());
-
-            ////camera.setPosition(cameraTo.x, cameraTo.y, cameraTo.z);
-            ////camera.lookAt(facePosition.x, facePosition.y, facePosition.z);
-            ////camera.update();
          }
       }
       else {
@@ -539,7 +617,9 @@ MO.FEaiChartShow1019Scene_construct = function FEaiChartShow1019Scene_construct(
    o._provinceUnits = new MO.TObjects();
    o._countryUnits = new MO.TObjects();
 
-   o._remoteRotate = new MO.SValue2();
+   o._remoteRotate = new MO.SValue3();
+
+   o._videoDataList = new MO.TObjects();
 }
 
 //==========================================================
@@ -558,7 +638,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    countryTable.linkGraphicContext(o);
    countryTable.setup();
    countryTable.build();
-   o._guiManager.register(countryTable);
+   //o._guiManager.register(countryTable);
    // 省内各分公司、理财师数表
    var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartMktManageProvinceTable);
    provinceTable.setName('provinceTable');
@@ -566,7 +646,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    provinceTable.setup();
    provinceTable.build();
    provinceTable.setVisible(false);
-   o._guiManager.register(provinceTable);
+   //o._guiManager.register(provinceTable);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
@@ -598,49 +678,102 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    // 注册socket监听
    var socket = o._socket;
    socket = MO.Class.create(MO.FSocket);
-   socket.connect('ws://127.0.0.1:9080/earth');
+   socket.connect('ws://10.21.1.182:9080/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
 
    var focusParamManager = o._focusParamManager = MO.Class.create(MO.FEaiShowFocusParameterManager);
    focusParamManager.setup();
    // 视频
    var context3d = o.application().desktop().canvas3d().graphicContext();
+   var stage = o.activeStage();
+   var layer = stage.spriteLayer();
 
-   o._videoData = context3d.createObject(MO.FE3dVideoData);
-   o._videoData.loadUrl('../ars/video/Test.mp4');
-   var video = context3d.createObject(MO.FE3dVideo);
-   video.setOptionSelect(false);
-   video.setData(o._videoData);
-   video.setOptionFull(true);
-   video.material().info().effectCode = 'flat';
-   var matrix = video.matrix();
-   matrix.sx = 500;
-   matrix.sy = 500;
-   matrix.sz = 500;
-   matrix.tx = -50;
-   matrix.ty = -50;
+   var videoDataList = o._videoDataList;
+   var videoCount = o._videoCount;
+   for (var i = 0; i < videoCount; i++) {
+      var videoData = context3d.createObject(MO.FE3dVideoData);
+      videoData.loadUrl('../ars/eai/show1019/video' + i + '.mp4');
+      videoDataList.push(videoData);
+   }
+   var videoRenderable = o._videoRenderable = context3d.createObject(MO.FE3dVideo);
+   videoRenderable.setOptionSelect(false);
+   //videoRenderable.setOptionFull(true);
+   //videoRenderable.setData(videoDataList.at(0));
+   //videoRenderable.material().info().effectCode = 'flat';
+   videoRenderable.setVisible(false);
+   
+   layer.pushRenderable(videoRenderable);
+
+   var matrix = videoRenderable.matrix();
+   matrix.sx = 1920;
+   matrix.sy = 1080;
+   matrix.sz = 1;
+   matrix.tx = 0;
+   matrix.ty = 0;
+   matrix.tz = 0;
+   //matrix.ry = 0;
+   matrix.updateForce();
+
+
+
+
+   // 图片
+   var bitmap = context3d.createObject(MO.FE3dBitmap);
+   bitmap.loadUrl('../ars/picture/star3.png');
+   //bitmap.material().info().effectCode = 'flat';
+   bitmap.setOptionSelect(false);
+   //bitmaps.push(bitmap);
+   layer.pushRenderable(bitmap);
+
+
+   var matrix = bitmap.matrix();
+   matrix.sx = 5000;
+   matrix.sy = 5000;
+   matrix.sz = 5000;
+   matrix.tx = 0;
+   matrix.ty = 0;
+   matrix.tz = -2000;
    matrix.ry = 0;
    matrix.updateForce();
 
+   entityConsole._mapEntity._countryFaceDisplay.push(bitmap);
+
+
+   var dataLayer = o._activeStage.dataLayer();
+   //..........................................................
+   // 显示标识页面
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
+   o._guiManager.register(frame);
+   //..........................................................
+   // 创建投资数据
+   var invement = o._processor = MO.Class.create(MO.FEaiChartMktCustomerProcessor);
+   invement.linkGraphicContext(o);
+   //invement.setMapEntity(o._mapEntity);
+   invement.setup();
+   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
+   invement.add24HDataChangedListener(o, o.on24HDataChanged);
+   var display = invement.display();
+   o.fixMatrix(display.matrix());
+   dataLayer.push(display);
+   //..........................................................
+   // 创建时间轴
    var stage = o.activeStage();
-   var layer = stage.spriteLayer();
-   layer.pushRenderable(video);
-
-   //// 图片
-   //var bitmap = context3d.createObject(MO.FE3dBitmap);
-   //bitmap.loadUrl('../ars/picture/star3.png');
-   ////bitmaps.push(bitmap);
-   //layer.pushRenderable(bitmap);
-
-   //var matrix = bitmap.matrix();
-   //matrix.sx = 100;
-   //matrix.sy = 100;
-   //matrix.sz = 1;
-   //matrix.tx = -500;
-   //matrix.ty = 300;
-   //matrix.tz = -200;
-   //matrix.ry = 0;
-   //matrix.updateForce();
+   var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktCustomerTimeline);
+   timeline.setName('Timeline');
+   timeline.linkGraphicContext(o);
+   timeline.build();
+   o._guiManager.register(timeline);
+   //..........................................................
+   // 创建表格
+   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktCustomerTable);
+   liveTable.setName('LiveTable');
+   liveTable.linkGraphicContext(o);
+   liveTable.setup();
+   liveTable.build();
+   o._guiManager.register(liveTable);
+   //..........................................................
+   // 隐藏全部界面
+   o._guiManager.hide();
 }
 
 //==========================================================
@@ -693,23 +826,24 @@ MO.FEaiChartShow1019Scene_fixMatrix = function FEaiChartShow1019Scene_fixMatrix(
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    } else {
-      matrix.tx = -320;
+      matrix.tx = 0;
       matrix.ty = o._translateY;
       matrix.tz = 0;
       matrix.rx = o._rotationX;
       matrix.ry = o._rotationY;
+      matrix.rz = o._rotationZ;
       matrix.setScale(o._worldScale, o._worldScale, o._worldScale);
       //matrix.setScale(2, 2, 2);
    }
    matrix.update();
    //..........................................................
-   if (o._autoRotate) {
-      o._rotationY += 0.001;
-      if (o._rotationY > Math.PI * 2) {
-         o._rotationY = 0;
+   //if (o._autoRotate) {
+   //   o._rotationY += 0.001;
+   //   if (o._rotationY > Math.PI * 2) {
+   //      o._rotationY = 0;
+   //   }
+   //}
       }
-   }
-}
 
 //==========================================================
 // <T>大小事件处理。</T>
@@ -722,39 +856,62 @@ MO.FEaiChartShow1019Scene_processResize = function FEaiChartShow1019Scene_proces
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
    //..........................................................
-   // 设置表格
-   var countryTable = o._countryTable;
-   if(isVertical){
-      countryTable.setDockCd(MO.EUiDock.Bottom);
-      countryTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      countryTable.setLeft(10);
-      countryTable.setRight(10);
-      countryTable.setBottom(10);
-      countryTable.setWidth(1060);
-      countryTable.setHeight(900);
-   }else{
-      countryTable.setDockCd(MO.EUiDock.Right);
-      countryTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-      countryTable.setTop(10);
-      countryTable.setRight(0);
-      countryTable.setBottom(10);
-      countryTable.setWidth(750);
-   }
-   var provinceTable = o._provinceTable;
+   // 设置大小
+   var logoBar = o._logoBar;
    if (isVertical) {
-      provinceTable.setDockCd(MO.EUiDock.Bottom);
-      provinceTable.setAnchorCd(MO.EUiAnchor.All);
-      provinceTable.setLeft(10);
-      provinceTable.setRight(10);
-      provinceTable.setBottom(10);
-      provinceTable.setWidth(1060);
-      provinceTable.setHeight(900);
+      logoBar.setLocation(8, 8);
+      logoBar.setScale(0.85, 0.85);
    } else {
-      provinceTable.setDockCd(MO.EUiDock.Right);
-      provinceTable.setAnchorCd(MO.EUiAnchor.All);
-      provinceTable.setTop(10);
-      provinceTable.setRight(0);
-      provinceTable.setBottom(10);
-      provinceTable.setWidth(750);
+      logoBar.setLocation(5, 5);
+      logoBar.setScale(0.9, 0.9);
    }
+   //..........................................................
+   // 设置南海
+   var control = o._southSea;
+   if (isVertical) {
+      control.setDockCd(MO.EUiDock.RightTop);
+      control.setTop(570);
+      control.setRight(80);
+   } else {
+      control.setDockCd(MO.EUiDock.RightBottom);
+      control.setRight(780);
+      control.setBottom(280);
+   }
+   //..........................................................
+   // 设置时间轴
+   var timeline = o._timeline;
+   if (isVertical) {
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(10);
+      timeline.setRight(10);
+      timeline.setBottom(920);
+      timeline.setHeight(250);
+   } else {
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setBottom(10);
+      timeline.setRight(780);
+      timeline.setHeight(300);
+   }
+   //..........................................................
+   // 设置表格
+   var liveTable = o._liveTable;
+   if (isVertical) {
+      liveTable.setDockCd(MO.EUiDock.Bottom);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      liveTable.setLeft(10);
+      liveTable.setRight(10);
+      liveTable.setBottom(10);
+      liveTable.setHeight(900);
+   } else {
+      liveTable.setDockCd(MO.EUiDock.Right);
+      liveTable.setAnchorCd(MO.EUiAnchor.All);
+      liveTable.setTop(10);
+      liveTable.setRight(0);
+      liveTable.setBottom(10);
+      liveTable.setWidth(760);
+   }
+
 }
