@@ -63,10 +63,11 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._focusParamManager       = null;
    o._remoteRotate            = null;
    // @attribute
+   o._displayPhase            = 0;
    o._videoDataList           = null;
-   o._videoRenderable         = null;
-   o._videoIndex              = 0;
-   o._videoCount              = 2;
+   o._videoRenderables        = null;
+   o._currentVideoData        = null;
+   o._videoCount              = 4;
    o._videoAnimeDuration      = 1000;
    o._videoAnimeTick          = 0;
    // @attribute
@@ -103,6 +104,8 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o.fixMatrix                = MO.FEaiChartShow1019Scene_fixMatrix;
    // @method
    o.processResize            = MO.FEaiChartShow1019Scene_processResize;
+   // @method
+   o.switchDisplayPhase       = MO.FEaiChartShow1019Scene_switchDisplayPhase;
    return o;
 }
 
@@ -334,8 +337,10 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       mapEntity.process();
 
       // 更新视频画面
-      var videoData = o._videoDataList.at(o._videoIndex);
-      videoData.process();
+      var currentVideoData = o._currentVideoData;
+      if (currentVideoData != null) {
+         currentVideoData.process();
+      }
 
       // 实时投资数据
       o._processor.process();
@@ -375,28 +380,66 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
 MO.FEaiChartShow1019Scene_onOperationKeyDown = function FEaiChartShow1019Scene_onOperationKeyDown(event) {
    var o = this;
    o.__base.FEaiChartScene.onOperationKeyDown.call(o, event);
-   // 显示调试信息
+
    if (event.keyCode == MO.EKeyCode.Space) {
-      var videoRenderable = o._videoRenderable;
-      if (videoRenderable.visible()) {
-         videoRenderable.setVisible(false);
-         o._videoIndex++;
-         if (o._videoIndex > o._videoCount - 1) {
-            o._videoIndex = o._videoCount - 1;
-         }
-      } else {
-         var videoData = o._videoDataList.at(o._videoIndex);
-         videoRenderable.setData(videoData);
-         //videoRenderable._renderable.update();
-         videoRenderable.material().info().effectCode = 'flat';
-         videoRenderable.setVisible(true);
-         videoData.hVideo().play();
-      }
+      o._displayPhase++;
+      o.switchDisplayPhase(o._displayPhase);
    }
    else if (event.keyCode == MO.EKeyCode.F) {
-      var videoData = o._videoDataList.at(o._videoIndex);
+      var videoData = o._currentVideoData;
       videoData.hVideo().currentTime = 5;
       videoData.hVideo().play();
+   }
+}
+
+//==========================================================
+// <T>键盘消息处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_switchDisplayPhase(phase) {
+   var o = this;
+   // 显示调试信息
+   o._videoRenderables.at(0).setVisible(false);
+   o._videoRenderables.at(1).setVisible(false);
+   o._videoRenderables.at(2).setVisible(false);
+   o._videoRenderables.at(3).setVisible(false);
+   if (o._currentVideoData) {
+      o._currentVideoData.hVideo().pause();
+      o._currentVideoData.hVideo().currentTime = 0;
+   }
+   o._guiManager.hide();
+   switch (phase) {
+      case 0: // 待机画面
+         break;
+      case 1: // 播放视频1
+         o._videoRenderables.at(0).setVisible(true);
+         o._currentVideoData = o._videoDataList.at(0);
+         o._currentVideoData.hVideo().play();
+         break;
+      case 2: // 手控转动地球
+         break;
+      case 3: // 显示实时投资
+         o._mapReady = false;
+         break;
+      case 4: // 播放视频2
+         o._videoRenderables.at(1).setVisible(true);
+         o._currentVideoData = o._videoDataList.at(1);
+         o._currentVideoData.hVideo().play();
+         break;
+      case 5: // 播放视频3
+         o._videoRenderables.at(2).setVisible(true);
+         o._currentVideoData = o._videoDataList.at(2);
+         o._currentVideoData.hVideo().play();
+         break;
+      case 6: // 播放视频4
+         o._videoRenderables.at(3).setVisible(true);
+         o._currentVideoData = o._videoDataList.at(3);
+         o._currentVideoData.hVideo().play();
+         break;
+      default:
+         break;
    }
 }
 
@@ -620,6 +663,7 @@ MO.FEaiChartShow1019Scene_construct = function FEaiChartShow1019Scene_construct(
    o._remoteRotate = new MO.SValue3();
 
    o._videoDataList = new MO.TObjects();
+   o._videoRenderables = new MO.TObjects();
 }
 
 //==========================================================
@@ -689,34 +733,31 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    var layer = stage.spriteLayer();
 
    var videoDataList = o._videoDataList;
+   var videoRenderables = o._videoRenderables;
    var videoCount = o._videoCount;
    for (var i = 0; i < videoCount; i++) {
       var videoData = context3d.createObject(MO.FE3dVideoData);
       videoData.loadUrl('../ars/eai/show1019/video' + i + '.mp4');
       videoDataList.push(videoData);
+
+      var videoRenderable = context3d.createObject(MO.FE3dVideo);
+      videoRenderable.setOptionSelect(false);
+      videoRenderable.setData(videoData);
+      videoRenderable.material().info().effectCode = 'flat';
+      videoRenderable.setVisible(false);
+      o._videoRenderables.push(videoRenderable);
+      layer.pushRenderable(videoRenderable);
+      var matrix = videoRenderable.matrix();
+      matrix.sx = 1920;
+      matrix.sy = 1080;
+      matrix.sz = 1;
+      matrix.tx = 0;
+      matrix.ty = 0;
+      matrix.tz = 0;
+      matrix.updateForce();
    }
-   var videoRenderable = o._videoRenderable = context3d.createObject(MO.FE3dVideo);
-   videoRenderable.setOptionSelect(false);
-   //videoRenderable.setOptionFull(true);
-   //videoRenderable.setData(videoDataList.at(0));
-   //videoRenderable.material().info().effectCode = 'flat';
-   videoRenderable.setVisible(false);
-   
-   layer.pushRenderable(videoRenderable);
 
-   var matrix = videoRenderable.matrix();
-   matrix.sx = 1920;
-   matrix.sy = 1080;
-   matrix.sz = 1;
-   matrix.tx = 0;
-   matrix.ty = 0;
-   matrix.tz = 0;
-   //matrix.ry = 0;
-   matrix.updateForce();
-
-
-
-
+   //..........................................................
    // 图片
    var bitmap = context3d.createObject(MO.FE3dBitmap);
    bitmap.loadUrl('../ars/picture/star3.png');
@@ -724,7 +765,6 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    bitmap.setOptionSelect(false);
    //bitmaps.push(bitmap);
    layer.pushRenderable(bitmap);
-
 
    var matrix = bitmap.matrix();
    matrix.sx = 5000;
@@ -737,7 +777,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    matrix.updateForce();
 
    entityConsole._mapEntity._countryFaceDisplay.push(bitmap);
-
+   //..........................................................
 
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
@@ -774,6 +814,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
+   o._mapReady = true;
 }
 
 //==========================================================
