@@ -37,7 +37,8 @@ MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
 MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
    var o = this;
    o.__base.FG3dTechniquePass.construct.call(o);
-   o._textureSize = new MO.SSize2(2048, 2048);
+   //o._textureSize = new MO.SSize2(2048, 2048);
+   o._textureSize = new MO.SSize2(512, 512);
 }
 
 //==========================================================

@@ -193,6 +193,7 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
    }
    // 创建三角面渲染对象
    var renderable = o._faceRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable._name = 'face';
    renderable._shape = o;
    renderable.linkGraphicContext(context);
    renderable.setOptionColor(true);
@@ -307,6 +308,7 @@ MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);
+   renderable._name = 'border';
    renderable._shape = o;
    renderable.linkGraphicContext(context);
    renderable.setup();
