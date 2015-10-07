@@ -43,6 +43,8 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o.onSwitchComplete        = MO.FEaiChartCustomerSphereScene_onSwitchComplete;
    //..........................................................
    // @method
+   o.construct               = MO.FEaiChartCustomerSphereScene_construct;
+   // @method
    o.setup                   = MO.FEaiChartCustomerSphereScene_setup;
    o.showFace                = MO.FEaiChartCustomerSphereScene_showFace;
    o.fixMatrix               = MO.FEaiChartCustomerSphereScene_fixMatrix;
@@ -60,19 +62,19 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
 MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSphereScene_onSocketReceived(event) {
    var o = this;
    var message = event.message;
-   console.log(message);
-   var typeCode = message.substring(0, 1);
-   var earthMatrix = o._earthMatrix;
-   //var rotationMatrix = o._rotationMatrix.assign(o._earthSphere.matrix());
+   var info = o._info;
+   info.unserializeBuffer(message, true);
    var downPosition = o._mouseDownPosition;
    var movePosition = o._mouseMovePosition;
+   var earthMatrix = o._earthMatrix;
+   //var rotationMatrix = o._rotationMatrix.assign(o._earthSphere.matrix());
    //rotationMatrix.invert();
+   // 判断类型
+   var typeCode = info.typeCode();
    if(typeCode == 'D'){
-      var position = new MO.SPoint2();
-      var items = message.substring(2).split('|');
-      position.parseFloat(items[0]);
-      var cx = (position.x - 0.5) * 2;
-      var cy = -(position.y - 0.5) * 2;
+      var position = info.points().first();
+      var cx = (position.x() - 0.5) * 2;
+      var cy = -(position.y() - 0.5) * 2;
       var length = o._lengthStart = Math.sqrt(cx * cx + cy * cy);
       downPosition.x = cx;
       downPosition.y = cy;
@@ -82,11 +84,9 @@ MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSph
       earthMatrix.assign(o._earthSphere.matrix());
       o._moving = true;
    }else if(typeCode == 'M' && o._moving){
-      var position = new MO.SPoint2();
-      var items = message.substring(2).split('|');
-      position.parseFloat(items[0]);
-      var cx = (position.x - 0.5) * 2;
-      var cy = -(position.y - 0.5) * 2;
+      var position = info.points().first();
+      var cx = (position.x() - 0.5) * 2;
+      var cy = -(position.y() - 0.5) * 2;
       var length = Math.sqrt(cx * cx + cy * cy);
       movePosition.x = cx;
       movePosition.y = cy;
@@ -186,6 +186,8 @@ MO.FEaiChartCustomerSphereScene_onOperationVisibility = function FEaiChartCustom
 MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady(){
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
+   // 显示地图
+   o._mapEntity.showWorld();
    // 显示城市
    var desktop = o._application.desktop();
    var canvas2d = desktop.canvas2d();
@@ -353,6 +355,20 @@ MO.FEaiChartCustomerSphereScene_onSwitchComplete = function FEaiChartCustomerSph
 }
 
 //==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartCustomerSphereScene_construct = function FEaiChartCustomerSphereScene_construct(){
+   var o = this;
+   o.__base.FEaiChartScene.construct.call(o);
+   // 设置属性
+   o._rotationMatrix = new MO.SMatrix3d();
+   o._earthMatrix = new MO.SMatrix3d();
+   o._info = MO.Class.create(MO.FEaiChartCustomerSphereInfo);
+}
+
+//==========================================================
 // <T>配置处理。</T>
 //
 // @method
@@ -363,8 +379,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var desktop = o._application.desktop();
    var canvas3d = desktop.canvas3d();
    var context = canvas3d.graphicContext();
-   o._rotationMatrix = new MO.SMatrix3d();
-   o._earthMatrix = new MO.SMatrix3d();
    //..........................................................
    // 创建地球
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
@@ -437,14 +451,19 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    o._readyLoader.push(countryEntity);
    // 注册socket监听
    var socket = o._socket;
-   socket = MO.Class.create(MO.FSocket);
-   socket.connect('ws://10.21.1.171:9080/earth');
-   //socket.connect('ws://127.0.0.1:9080/earth');
+   socket = MO.Class.create(MO.FBinarySocket);
+   //socket.connect('ws://10.21.1.171:9080/earth');
+   socket.connect('ws://127.0.0.1:9080/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
    //..........................................................
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
    var worldResource= o._worldResource = resourceConsole.mapModule().loadWorld();
    o._readyLoader.push(worldResource);
+   //..........................................................
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   // 加载世界数据
+   var worldEntity = o._worldEntity = entityConsole.mapModule().loadWorld(o);
+   o._readyLoader.push(worldEntity);
 }
 
 //==========================================================
@@ -481,10 +500,11 @@ MO.FEaiChartCustomerSphereScene_fixMatrix = function FEaiChartCustomerSphereScen
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    } else {
-      matrix.tx = -34.9;
-      matrix.ty = -10.9;
-      matrix.tz = 0;
-      matrix.setScale(0.28, 0.31, 0.28);
+      //matrix.tx = -34.9;
+      //matrix.ty = -10.9;
+      //matrix.tz = 0;
+      //matrix.setScale(0.28, 0.31, 0.28);
+      matrix.setScale(100, 100, 100);
    }
    matrix.update();
 }

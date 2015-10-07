@@ -53,8 +53,8 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    // 计算视角投影矩阵
    var camera = region.camera();
    var projection = camera.projection();
-   projection.size().set(2048, 2048);
-   projection.update();
+   //projection.size().set(2048, 2048);
+   //projection.update();
    // 计算显示矩阵
    var matrix = renderable.matrix();
    var modelMatrix = o._modelMatrix;
