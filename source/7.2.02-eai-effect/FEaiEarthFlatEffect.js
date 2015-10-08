@@ -9,6 +9,7 @@ MO.FEaiEarthFlatEffect = function FEaiEarthFlatEffect(o){
    //..........................................................
    // @attribute
    o._code          = 'eai.earth.flat';
+   o._cloudPosition = 0;
    o._translateX    = 0;
    //..........................................................
    // @method
@@ -27,15 +28,15 @@ MO.FEaiEarthFlatEffect_drawRenderable = function FEaiEarthFlatEffect_drawRendera
    var o = this;
    var context = o._graphicContext;
    var program = o._program;
-   o._translateX += 0.00006;
+   o._cloudPosition -= 0.00004;
+   o._translateX += 0.00003;
    // 绑定材质
    var material = renderable.material();
    var info = material.info();
    o.bindMaterial(material);
    // 设置矩阵
    var displayMatrix = renderable.display().currentMatrix();
-   program.setParameter4('vc_land', o._translateX, 0, 0, 0);
-   program.setParameter4('vc_ocean', o._translateX, 0, 0, 0);
+   program.setParameter4('fc_cloud', o._cloudPosition, 0, 0, 0);
    program.setParameter4('fc_land', o._translateX, 0, 0, 0);
    program.setParameter4('fc_ocean', o._translateX, 0, 0, 0);
    program.setParameter4('fc_water', o._translateX, 0, 0, 0);

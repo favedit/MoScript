@@ -16,17 +16,20 @@
    <Parameter name='vc_ocean'        format='Float4'/>
    <Parameter name='vc_model_matrix' format='Float4x4'/>
    <Parameter name='vc_vp_matrix'    format='Float4x4'/>
+   <Parameter name='fc_cloud'        format='Float4'/>
    <Parameter name='fc_land'         format='Float4'/>
    <Parameter name='fc_ocean'        format='Float4'/>
    <Parameter name='fc_water'        format='Float4'/>
    <!--=====================================================-->
-   <Attribute name='va_position' linker='position' format='Float4'/>
-   <Attribute name='va_color'    linker='color'    format='Byte4Normal'/>
-   <Attribute name='va_coord'    linker='coord'    format='Float2'/>
+   <Attribute name='va_position'   linker='position' format='Float4'/>
+   <Attribute name='va_color'      linker='color'    format='Byte4Normal'/>
+   <Attribute name='va_coord'      linker='coord'    format='Float2'/>
    <!--=====================================================-->
-   <Sampler name='fs_land'       linker='land'/>
-   <Sampler name='fs_ocean'      linker='ocean'/>
-   <Sampler name='fs_water'      linker='water'/>
+   <Sampler name='fs_cloud'        linker='cloud'/>
+   <Sampler name='fs_land'         linker='land'/>
+   <Sampler name='fs_ocean'        linker='ocean'/>
+   <Sampler name='fs_water'        linker='water'/>
+   <Sampler name='fs_water_normal' linker='water_normal'/>
    <!--=====================================================-->
    <Source name='vertex'><![CDATA[
       //..........................................................
@@ -64,6 +67,7 @@
       #endif
       //..........................................................
       // 声明常量
+      uniform vec4 fc_cloud;
       uniform vec4 fc_land;
       uniform vec4 fc_ocean;
       uniform vec4 fc_water;
@@ -73,31 +77,48 @@
       varying vec2 v_coord;
       //..........................................................
       // 声明取样器
+      uniform sampler2D fs_cloud;
       uniform sampler2D fs_land;
       uniform sampler2D fs_ocean;
       uniform sampler2D fs_water;
+      uniform sampler2D fs_water_normal;
       //..........................................................
       // 处理
       void main(void){
          vec3 constGrey = vec3(0.222, 0.707, 0.071);
+         // 获得云层颜色
+         vec2 coordCloud = vec2(v_coord.x + fc_cloud.x, v_coord.y);
+         vec4 colorCloud = texture2D(fs_cloud, coordCloud);
+         float rateCloud = dot(colorCloud.rgb, constGrey.rgb) * 0.6;
          // 获得陆地颜色
          vec4 colorLand = texture2D(fs_land, v_coord);
-         // 获得海洋颜色
-         vec4 colorOcean = texture2D(fs_ocean, v_coord);
          // 获得水纹颜色
-         vec2 coordWater = vec2(v_coord.x + fc_water.x, v_coord.y);
-         vec4 colorWater = texture2D(fs_water, coordWater * 20.0);
-         float rateWater = dot(colorWater.rgb, constGrey.rgb) * 0.4;
+         vec2 coordWater = vec2(v_coord.x + fc_water.x, v_coord.y) * 30.0;
+         vec4 colorWater = texture2D(fs_water, coordWater);
+         vec4 colorWaterNormal = texture2D(fs_water_normal, coordWater);
+         vec3 waterNormal = normalize(colorWaterNormal.xyz) * colorWaterNormal.w;
+         float rateWater = dot(colorWater.rgb, constGrey.rgb) * 0.3;
+         // 获得海洋颜色
+         vec4 colorOcean = texture2D(fs_ocean, v_coord + waterNormal.xy * 0.01);
+         //..........................................................
          // 合成颜色
          float rate = 1.0;
          vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
-         result.rgb += colorLand.rgb * colorLand.w;
-         rate -= colorLand.w;
-         result.rgb += colorOcean.rgb * rate * (1.0 - rateWater);
-         //rate -= rateWater;
+         // 合并云颜色
+         result.rgb += colorCloud.rgb * rateCloud;
+         rate = max(rate - rateCloud, 0.0);
+         // 合并陆地颜色
+         result.rgb += colorLand.rgb * rate * colorLand.w;
+         rate = max(rate - colorLand.w, 0.0);
+         // 合并水纹颜色
          result.rgb += colorWater.rgb * rate * rateWater;
+         rate = max(rate - rateWater, 0.0);
+         // 合并海洋颜色
+         result.rgb += colorOcean.rgb * rate;
          gl_FragColor = result;
+         //gl_FragColor = vec4(rateCloud, rateCloud, rateCloud, 1.0);
          //gl_FragColor = vec4(rateWater, rateWater, rateWater, 1.0);
+         //gl_FragColor = colorLand;
       }
    ]]></Source>
 </Configuration>

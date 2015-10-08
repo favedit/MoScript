@@ -463,7 +463,8 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
    //..........................................................
-   var host = 'ws://10.21.1.171:9080';
+   //var host = 'ws://10.21.1.171:9080';
+   var host = 'ws://127.0.0.1:9080';
    // 注册触摸监听
    var socket = o._socketTouch = MO.Class.create(MO.FBinarySocket);
    socket.connect(host + '/touch');
