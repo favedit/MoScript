@@ -125,7 +125,6 @@ MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
 //==========================================================
 MO.FSocket_onError = function FSocket_onError(event){
    var o = this;
-   debugger
    var event = o._eventError;
    o.processErrorListener(event);
 }

@@ -32,7 +32,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._mouseMovePosition      = new MO.SVector3();
    //..........................................................
    // @event
-   o.onSocketReceived        = MO.FEaiChartCustomerSphereScene_onSocketReceived;
+   o.onSocketTouchReceived        = MO.FEaiChartCustomerSphereScene_onSocketTouchReceived;
    o.onInvestmentDataChanged = MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged;
    o.on24HDataChanged        = MO.FEaiChartCustomerSphereScene_on24HDataChanged;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
@@ -59,7 +59,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSphereScene_onSocketReceived(event) {
+MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustomerSphereScene_onSocketTouchReceived(event) {
    var o = this;
    var message = event.message;
    var info = o._info;
@@ -123,6 +123,10 @@ MO.FEaiChartCustomerSphereScene_onSocketReceived = function FEaiChartCustomerSph
       }
       console.log('Move: ' + length + ' - ' + cx + ',' + cy + ' - ' + movePosition.toDisplay() + '(' + axis.toDisplay() + ')' + angle);
       matrix.parse();
+      // 发送消息
+      o._socketSphere.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
+      var socket = o._socketTouch;
+      socket.send('rotation', 1);
    }else if(typeCode == 'U'){
       o._moving = false;
    }
@@ -458,12 +462,16 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 加载世界数据
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
-   // 注册socket监听
-   var socket = o._socket;
-   socket = MO.Class.create(MO.FBinarySocket);
-   socket.connect('ws://10.21.1.171:9080/earth');
-   //socket.connect('ws://127.0.0.1:9080/earth');
-   socket.addReceiveListener(o, o.onSocketReceived);
+   //..........................................................
+   var host = 'ws://10.21.1.171:9080';
+   // 注册触摸监听
+   var socket = o._socketTouch = MO.Class.create(MO.FBinarySocket);
+   socket.connect(host + '/touch');
+   socket.addReceiveListener(o, o.onSocketTouchReceived);
+   // 注册发送监听
+   var socket = o._socketSphere = MO.Class.create(MO.FSocket);
+   socket.connect(host + '/sphere');
+   //socket.addReceiveListener(o, o.onSocketTouchReceived);
    //..........................................................
    // 加载资源
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
