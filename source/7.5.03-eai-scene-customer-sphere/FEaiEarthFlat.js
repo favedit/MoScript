@@ -107,7 +107,7 @@ MO.FEaiEarthFlat_setup = function FEaiEarthFlat_setup(){
    image.loadUrl('{eai.resource}/world/water.jpg');
    // 创建矩形
    var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
-   //rectangle.setCoordFlip(true);
+   rectangle.setCoordFlip(true);
    rectangle.linkGraphicContext(o);
    rectangle.setup();
    rectangle.material().info().effectCode = 'eai.earth.flat';

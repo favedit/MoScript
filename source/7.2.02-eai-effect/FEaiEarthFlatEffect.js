@@ -27,7 +27,7 @@ MO.FEaiEarthFlatEffect_drawRenderable = function FEaiEarthFlatEffect_drawRendera
    var o = this;
    var context = o._graphicContext;
    var program = o._program;
-   o._translateX += 0.00002;
+   o._translateX += 0.00008;
    // 绑定材质
    var material = renderable.material();
    var info = material.info();

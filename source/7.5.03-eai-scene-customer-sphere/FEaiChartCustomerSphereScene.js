@@ -461,8 +461,8 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 注册socket监听
    var socket = o._socket;
    socket = MO.Class.create(MO.FBinarySocket);
-   //socket.connect('ws://10.21.1.171:9080/earth');
-   socket.connect('ws://127.0.0.1:9080/earth');
+   socket.connect('ws://10.21.1.171:9080/earth');
+   //socket.connect('ws://127.0.0.1:9080/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
    //..........................................................
    // 加载资源

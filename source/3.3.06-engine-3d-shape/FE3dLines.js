@@ -5,7 +5,7 @@
 //  3 ─ 2
 //
 // @author maocy
-// @history 141231
+// @history 150108
 //==========================================================
 MO.FE3dLines = function FE3dLines(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
@@ -48,8 +48,8 @@ MO.FE3dLines_construct = function FE3dLines_construct(){
 MO.FE3dLines_setCount = function FE3dLines_setCount(count){
    var o = this;
    var count = o._count;
-   o._positionsData = new Float32Array(3 * count);
-   o._colorsData = new Uint8Array(4 * count);
+   o._positionsData = new Float32Array(3 * 2 * count);
+   o._colorsData = new Uint8Array(4 * 2 * count);
 }
 
 //==========================================================
@@ -58,6 +58,8 @@ MO.FE3dLines_setCount = function FE3dLines_setCount(count){
 MO.FE3dLines_setup = function FE3dLines_setup(){
    var o = this;
    var context = o._graphicContext;
+   var count = o._count;
+   var vertexCount = o._vertexCount = 2 * count;
    // 设置顶点数据
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setCode('position');
@@ -69,11 +71,14 @@ MO.FE3dLines_setup = function FE3dLines_setup(){
    buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
    o.pushVertexBuffer(buffer);
    // 设置索引数据
+   var indexData = new Uint16Array(vertexCount);
+   for(var i = 0; i < vertexCount; i++){
+      indexData[vertexCount] = vertexCount;
+   }
    var buffer = o._indexBuffer = context.createIndexBuffer();
    buffer.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   buffer.upload(indexData, vertexCount);
    o.pushIndexBuffer(buffer);
-   // 设置纹理集合
-   o._material.info().optionDouble = true;
 }
 
 //==========================================================
@@ -81,9 +86,9 @@ MO.FE3dLines_setup = function FE3dLines_setup(){
 //==========================================================
 MO.FE3dLines_upload = function FE3dLines_upload(){
    var o = this;
-   var count = o._count;
-   o._vertexPositionBuffer.upload(o._positionsData, 4 * 3, count);
-   o._indexBuffer.upload(o._colorsData, 4 * 1, count);
+   var vertexCount = o._vertexCount;
+   o._vertexPositionBuffer.upload(o._positionsData, 4 * 3, vertexCount);
+   o._vertexColorBuffer.upload(o._colorsData, 4 * 1, vertexCount);
 }
 
 //==========================================================
