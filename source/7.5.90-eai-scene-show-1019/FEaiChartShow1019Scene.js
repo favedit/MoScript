@@ -67,9 +67,10 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._videoDataList           = null;
    o._videoRenderables        = null;
    o._currentVideoData        = null;
+   o._currentVideoRenderable  = null;
    o._videoCount              = 4;
-   o._videoAnimeDuration      = 1000;
-   o._videoAnimeTick          = 0;
+   o._videoAnimeDuration      = 500;
+   o._videoAnimeStartTick     = 0;
    // @attribute
    o._locations               = null;
    // @attribute
@@ -106,6 +107,7 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o.processResize            = MO.FEaiChartShow1019Scene_processResize;
    // @method
    o.switchDisplayPhase       = MO.FEaiChartShow1019Scene_switchDisplayPhase;
+   o.videoFullScreenAnime     = MO.FEaiChartShow1019Scene_videoFullScreenAnime;
    return o;
 }
 
@@ -166,10 +168,10 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
       o._autoRotate = false;
    }
 
-   var rotateIndex = message.indexOf('rotate');
+   var rotateIndex = message.indexOf('rotation');
    if (rotateIndex != -1) {
       var rotate = o._remoteRotate;
-      rotate.parse(message.substr(rotateIndex + 7));
+      rotate.parse(message.substr(rotateIndex + 9));
       o._rotationX = rotate.x;
       o._rotationY = rotate.y;
       o._rotationZ = rotate.z;
@@ -185,16 +187,59 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
 //==========================================================
 MO.FEaiChartShow1019Scene_videoFullScreenAnime = function FEaiChartShow1019Scene_videoFullScreenAnime() {
    var o = this;
-   var videoRenderable = o._videoRenderable;
+   var revert = false;
+   switch (o._displayPhase) {
+      case 0: // 待机画面
+         break;
+      case 1: // 播放视频1
+         break;
+      case 2: // 收起视频1
+         revert = true;
+         break;
+      case 3: // 手控转动地球
+         break;
+      case 4: // 显示实时投资
+         break;
+      case 5: // 播放视频2
+         break;
+      case 6: // 收起视频2
+         revert = true;
+         break;
+      case 7: // 播放视频3
+         break;
+      case 8: // 收起视频3
+         revert = true;
+         break;
+      case 9: // 播放视频4
+         break;
+      case 10:// 收起视频4
+         revert = true;
+         break;
+      default:
+         break;
+   }
+   var currentTick = MO.Timer.current();
+   var passedTick = currentTick - o._videoAnimeStartTick;
+   var t = passedTick / o._videoAnimeDuration;
+   if (revert) {
+      t = 1 - t;
+   }
+   if (t < 0) {
+      o.switchDisplayPhase(++o._displayPhase);
+      return;
+   }
+   if (t > 1) {
+      t = 1;
+   }
 
+   var videoRenderable = o._currentVideoRenderable;
    var matrix = videoRenderable.matrix();
-   matrix.sx = 1920;
-   matrix.sy = 1080;
+   matrix.sx = 1920 * t;
+   matrix.sy = 1080 * t;
    matrix.sz = 1;
-   matrix.tx = 0;
-   matrix.ty = 0;
+   matrix.tx = (1920 - 1920 * t) * 0.5;
+   matrix.ty = (1080 - 1080 * t) * 0.5;;
    matrix.tz = 0;
-   //matrix.ry = 0;
    matrix.updateForce();
 }
 
@@ -339,6 +384,7 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       // 更新视频画面
       var currentVideoData = o._currentVideoData;
       if (currentVideoData != null) {
+         o.videoFullScreenAnime();
          currentVideoData.process();
       }
 
@@ -400,43 +446,61 @@ MO.FEaiChartShow1019Scene_onOperationKeyDown = function FEaiChartShow1019Scene_o
 //==========================================================
 MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_switchDisplayPhase(phase) {
    var o = this;
-   // 显示调试信息
    o._videoRenderables.at(0).setVisible(false);
    o._videoRenderables.at(1).setVisible(false);
    o._videoRenderables.at(2).setVisible(false);
    o._videoRenderables.at(3).setVisible(false);
-   if (o._currentVideoData) {
-      o._currentVideoData.hVideo().pause();
-      o._currentVideoData.hVideo().currentTime = 0;
-   }
+   //if (o._currentVideoData) {
+   //   o._currentVideoData.hVideo().pause();
+   //   o._currentVideoData.hVideo().currentTime = 0;
+   //   o._currentVideoData = null;
+   //   o._currentVideoRenderable = null;
+   //}
+   o._videoAnimeStartTick = MO.Timer.current();
    o._guiManager.hide();
    switch (phase) {
       case 0: // 待机画面
          break;
       case 1: // 播放视频1
-         o._videoRenderables.at(0).setVisible(true);
+         o._currentVideoRenderable = o._videoRenderables.at(0);
+         o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(0);
          o._currentVideoData.hVideo().play();
          break;
-      case 2: // 手控转动地球
+      case 2: // 收起视频1
+         o._videoRenderables.at(0).setVisible(true);
          break;
-      case 3: // 显示实时投资
+      case 3: // 手控转动地球
+         break;
+      case 4: // 显示实时投资
          o._mapReady = false;
          break;
-      case 4: // 播放视频2
-         o._videoRenderables.at(1).setVisible(true);
+      case 5: // 播放视频2
+         o._currentVideoRenderable = o._videoRenderables.at(1);
+         o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(1);
          o._currentVideoData.hVideo().play();
          break;
-      case 5: // 播放视频3
-         o._videoRenderables.at(2).setVisible(true);
+      case 6: // 收起视频2
+         o._videoRenderables.at(1).setVisible(true);
+         break;
+      case 7: // 播放视频3
+         o._currentVideoRenderable = o._videoRenderables.at(2);
+         o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(2);
          o._currentVideoData.hVideo().play();
          break;
-      case 6: // 播放视频4
-         o._videoRenderables.at(3).setVisible(true);
+      case 8: // 收起视频3
+         o._videoRenderables.at(2).setVisible(true);
+         break;
+      case 9: // 播放视频4
+         o._currentVideoRenderable = o._videoRenderables.at(3);
+         o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(3);
          o._currentVideoData.hVideo().play();
+         break;
+      case 10:// 收起视频4
+         o._videoRenderables.at(3).setVisible(true);
          break;
       default:
          break;
@@ -722,7 +786,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    // 注册socket监听
    var socket = o._socket;
    socket = MO.Class.create(MO.FSocket);
-   socket.connect('ws://10.21.1.182:9080/earth');
+   socket.connect('ws://10.21.1.171:9080/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
 
    var focusParamManager = o._focusParamManager = MO.Class.create(MO.FEaiShowFocusParameterManager);
