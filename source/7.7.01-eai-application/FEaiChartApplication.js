@@ -52,11 +52,16 @@ MO.FEaiChartApplication_onLoadGround = function FEaiChartApplication_onLoadGroun
 MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(event){
    var o = this;
    var canvas = o._desktop.canvas3d();
-   var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
-   bitmap._optionSelect = false;
-   bitmap.loadUrl(o._backgroundUrl);
-   bitmap.material().info().effectCode = 'fill';
-   bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
+   if(o._backgroundUrl){
+      // 加载背景
+      var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
+      bitmap._optionSelect = false;
+      bitmap.loadUrl(o._backgroundUrl);
+      bitmap.material().info().effectCode = 'fill';
+      bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
+   }else{
+      o.onLoadGround(event);
+   }
 }
 
 //==========================================================

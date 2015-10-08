@@ -34,7 +34,8 @@ MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
    texture.update();
    // 创建渲染目标
    var target = o._renderTarget = context.createRenderTarget();
-   target.size().set(512, 512);
+   //target.size().set(512, 512);
+   target.size().set(1024, 1024);
    //target.size().set(2048, 2048);
    target.textures().push(texture);
    target.build();

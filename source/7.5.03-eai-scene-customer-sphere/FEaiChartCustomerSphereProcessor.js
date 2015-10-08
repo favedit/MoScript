@@ -268,7 +268,6 @@ MO.FEaiChartCustomerSphereProcessor_process = function FEaiChartCustomerSpherePr
       statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
       beginDate.assign(endDate);
-
       // 取24小时统计数据
       // 设置开始时间
       var beginDate24H = o._24HBeginDate;

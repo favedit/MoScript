@@ -15,7 +15,7 @@
 
    function doLoading() {
       var htmlBody = document.body;
-      htmlBody.style.backgroundImage = 'url(../ars/eai/background.jpg)';
+      //htmlBody.style.backgroundImage = 'url(../ars/eai/background.jpg)';
       var hImages = document.getElementById("loading_img_div").getElementsByTagName("img");
       var index = [7, 6, 5, 4, 3, 2, 1, 0];
       g_loadingHandle = setInterval(function() {
@@ -73,7 +73,7 @@
       // 设置应用
       var application = MO.Desktop.initialize(MO.FEaiChartApplication);
       application.setSceneCode(MO.EEaiScene.ChartCustomerSphere);
-      application.setBackgroundUrl('{eai.resource}/world/color.jpg');
+      application.setBackgroundUrl(null);
       application.setup(document.body);
       // MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EConstant.DeviceType, 'mb');
    }

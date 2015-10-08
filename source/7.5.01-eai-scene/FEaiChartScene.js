@@ -201,6 +201,9 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //..........................................................
    // 创建背景
    var backgroundImage = o._application._groundBitmap;
+   if(backgroundImage){
+      stage.groundLayer().push(backgroundImage);
+   }
    //var texture = o._graphicContext.createFlatTexture();
    //texture.update(backgroundImage);
    //var bitmap = o._groundBitmap = context.createObject(MO.FE3dBitmap);
@@ -208,7 +211,6 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    //bitmap.loadUrl('{eai.resource}/background2.jpg');
    //bitmap.material().info().effectCode = 'fill';
    //bitmap._texture = texture;
-   stage.groundLayer().push(backgroundImage);
    //..........................................................
    // 加载标志
    //var templateConsole = MO.Console.find(MO.FE3dTemplateConsole);

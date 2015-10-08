@@ -8,6 +8,7 @@ MO.FG3dTexture = function FG3dTexture(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
    //..........................................................
    // @attribute
+   o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
    o._textureCd   = MO.Class.register(o, new MO.AGetter('_textureCd'), MO.EG3dTexture.Unknown);
    o._filterMinCd = MO.Class.register(o, new MO.AGetSet('_filterMinCd'), MO.EG3dSamplerFilter.Linear);
    o._filterMagCd = MO.Class.register(o, new MO.AGetSet('_filterMagCd'), MO.EG3dSamplerFilter.Linear);

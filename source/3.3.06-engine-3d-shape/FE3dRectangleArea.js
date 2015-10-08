@@ -10,6 +10,7 @@
 MO.FE3dRectangleArea = function FE3dRectangleArea(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    //..........................................................
+   o._coordFlip            = MO.Class.register(o, new MO.AGetSet('_coordFlip'), false);
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
@@ -55,7 +56,12 @@ MO.FE3dRectangleArea_setup = function FE3dRectangleArea_setup(){
    //buffer.upload(vertexColorData, 4, 4);
    //o.pushVertexBuffer(buffer);
    // 设置纹理数据
-   var vertexCoordData = [0, 1, 1, 1, 1, 0, 0, 0];
+   var vertexCoordData = null;
+   if(o._coordFlip){
+      vertexCoordData = [0, 1, 1, 1, 1, 0, 0, 0];
+   }else{
+      vertexCoordData = [0, -1, 1, -1, 1, 0, 0, 0];
+   }
    var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
    buffer.setCode('coord');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
@@ -67,6 +73,5 @@ MO.FE3dRectangleArea_setup = function FE3dRectangleArea_setup(){
    buffer.upload(indexData, 6);
    o.pushIndexBuffer(buffer);
    // 设置纹理集合
-   o._textures = new MO.TDictionary();
    o._material.info().optionDouble = true;
 }

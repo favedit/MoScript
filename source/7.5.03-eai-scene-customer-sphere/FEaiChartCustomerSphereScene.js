@@ -187,13 +187,13 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
    // 显示地图
-   o._mapEntity.showWorld();
+   //o._mapEntity.showWorld();
    // 显示城市
    var desktop = o._application.desktop();
    var canvas2d = desktop.canvas2d();
    var context2d = canvas2d.graphicContext();
    var worldResource = o._worldResource;
-   o._guiManager.setValid(false);
+   //o._guiManager.setValid(false);
    context2d.fillRectangle(100, 100, 200, 200, '#FFFFFF');
    //o._mapEntity.showCity();
 }
@@ -276,6 +276,7 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
          var countryEntity = o._countryEntity;
          countryEntity.start();
          //o._mapEntity.showCountry(countryEntity);
+         //o._guiManager.show();
          o.processLoaded();
          o._playing = true;
          o._statusStart = true;
@@ -293,12 +294,12 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       if (!o._mapReady) {
          //o._guiManager.show();
          // 淡出显示界面
-         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
-         alphaAction.setAlphaBegin(0);
-         alphaAction.setAlphaEnd(1);
-         alphaAction.setAlphaInterval(0.01);
-         alphaAction.push(o._guiManager);
-         o._guiManager.mainTimeline().pushAction(alphaAction);
+         //var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+         //alphaAction.setAlphaBegin(0);
+         //alphaAction.setAlphaEnd(1);
+         //alphaAction.setAlphaInterval(0.01);
+         //alphaAction.push(o._guiManager);
+         //o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
       //..........................................................
@@ -376,13 +377,22 @@ MO.FEaiChartCustomerSphereScene_construct = function FEaiChartCustomerSphereScen
 MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
-   var desktop = o._application.desktop();
+   var application = o._application;
+   var desktop = application.desktop();
    var canvas3d = desktop.canvas3d();
-   var context = canvas3d.graphicContext();
+   var context3d = canvas3d.graphicContext();
+   var stage = o._activeStage;
+   //..........................................................
+   // 创建地球平面
+   var earthFlat = o._earthFlat = MO.Class.create(MO.FEaiEarthFlat);
+   earthFlat.linkGraphicContext(context3d);
+   earthFlat.setup();
+   var groundLayer = stage.groundLayer();
+   groundLayer.push(earthFlat);
    //..........................................................
    // 创建地球
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
-   earthSphere.linkGraphicContext(context);
+   earthSphere.linkGraphicContext(context3d);
    earthSphere.setSplitCount(64);
    //sphere.setDrawModeCd(MO.EG3dDrawMode.Lines);
    earthSphere.setup();
@@ -391,7 +401,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    earthSphere.matrix().update();
    //earthSphere.material().info().optionDouble = true;
    // 设置技术
-   var stage = o._activeStage;
    var technique = stage.selectTechnique(o, MO.FE3dSphereTechnique);
    var passView = technique.passView();
    passView.setSphere(earthSphere);
@@ -402,7 +411,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
-   projection.size().assign(context.size());
+   projection.size().assign(context3d.size());
    projection.setZnear(-1000);
    projection.setZfar(1000);
    projection.update();
@@ -456,12 +465,13 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    socket.connect('ws://127.0.0.1:9080/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
    //..........................................................
+   // 加载资源
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
-   var worldResource= o._worldResource = resourceConsole.mapModule().loadWorld();
+   var worldResource = o._worldResource = resourceConsole.mapModule().loadWorld();
    o._readyLoader.push(worldResource);
    //..........................................................
+   // 加载实体
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   // 加载世界数据
    var worldEntity = o._worldEntity = entityConsole.mapModule().loadWorld(o);
    o._readyLoader.push(worldEntity);
 }

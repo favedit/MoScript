@@ -37,8 +37,9 @@ MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
 MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
    var o = this;
    o.__base.FG3dTechniquePass.construct.call(o);
+   //o._textureSize = new MO.SSize2(512, 512);
+   o._textureSize = new MO.SSize2(1024, 1024);
    //o._textureSize = new MO.SSize2(2048, 2048);
-   o._textureSize = new MO.SSize2(512, 512);
 }
 
 //==========================================================
@@ -115,12 +116,12 @@ MO.FE3dSphereViewPass_drawRegion = function FE3dSphereViewPass_drawRegion(region
    var rectangle = o._rectangle;
    // 绘制视图处理
    var effectView = o._effectView;
-   context.setRenderTarget(null);
-   //context.setRenderTarget(o._renderTarget);
+   //context.setRenderTarget(null);
+   context.setRenderTarget(o._renderTarget);
    context.setProgram(effectView.program());
    context.clear(0, 0, 0, 0, 1);
    effectView.drawRenderable(region, o._sphere);
-   return;
+   //return;
    // 绘制显示处理
    var effectResult = o._effectResult;
    context.setRenderTarget(null);
