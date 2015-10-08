@@ -35,10 +35,20 @@ MO.FEaiEarthFlat = function FEaiEarthFlat(o){
 MO.FEaiEarthFlat_onLandLoaded = function FEaiEarthFlat_onLandLoaded(event){
    var o = this;
    var image = o._imageLand;
+   var size = image.size();
    var context = o._graphicContext;
+   // 创建画板
+   var canvas = MO.Class.create(MO.FE2dCanvas);
+   canvas.size().assign(size);
+   canvas.build(MO.Window._hDocument);
+   var context2d = canvas.graphicContext();
+   context2d.drawImage(image, 0, 0, size.width, size.height);
+   // 创建纹理
    var texture = o._textureLand = context.createFlatTexture();
    texture.setCode('land');
-   texture.upload(image);
+   texture.upload(canvas);
+   // 释放数据
+   canvas.dispose();
    image.dispose();
    o._imageLand = null;
 }

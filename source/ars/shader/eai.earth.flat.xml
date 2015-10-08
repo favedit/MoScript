@@ -54,7 +54,7 @@
          // 设置颜色
          //v_color = va_color * vc_data[index + 3];
          // 设置纹理
-         v_coord = va_coord;
+         v_coord = vec2(va_coord.x, 1.0 - va_coord.y);
       }
    ]]></Source>
    <Source name='fragment'><![CDATA[

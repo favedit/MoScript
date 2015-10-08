@@ -58,6 +58,8 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.fillRectangle        = MO.FG2dCanvasContext_fillRectangle;
    // @method
    o.toBytes              = MO.FG2dCanvasContext_toBytes;
+   // @method
+   o.dispose              = MO.FG2dCanvasContext_dispose;
    return o;
 }
 
@@ -69,7 +71,6 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
 MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {
    var o = this;
    o.__base.FG2dContext.construct.call(o);
-
    o._gridSourceX = new Array(3);
    o._gridSourceY = new Array(3);
    o._gridSourceWidth = new Array(3);
@@ -599,4 +600,23 @@ MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
    var o = this;
    var size = o._size;
    return o._handle.getImageData(0, 0, size.width, size.height);
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.FG2dCanvasContext_dispose = function FG2dCanvasContext_dispose() {
+   var o = this;
+   o._handle = null;
+   o._gridSourceX = null;
+   o._gridSourceY = null;
+   o._gridSourceWidth = null;
+   o._gridSourceHeight = null;
+   o._gridDrawX = null;
+   o._gridDrawY = null;
+   o._gridDrawWidth = null;
+   o._gridDrawHeight = null;
+   o.__base.FG2dContext.dispose.call(o);
 }

@@ -60,7 +60,8 @@ MO.FE3dRectangleArea_setup = function FE3dRectangleArea_setup(){
    if(o._coordFlip){
       vertexCoordData = [0, 1, 1, 1, 1, 0, 0, 0];
    }else{
-      vertexCoordData = [0, -1, 1, -1, 1, 0, 0, 0];
+      vertexCoordData = [0, 1, 1, 1, 1, 0, 0, 0];
+      //vertexCoordData = [0, 0, 1, 0, 1, 1, 0, 1];
    }
    var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
    buffer.setCode('coord');
