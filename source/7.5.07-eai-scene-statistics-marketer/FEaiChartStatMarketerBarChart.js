@@ -49,7 +49,7 @@ MO.FEaiChartStatMarketerBarChart_construct = function FEaiChartStatMarketerBarCh
    o._trendInfo = MO.Class.create(MO.FEaiLogicInfoCustomerTrend);
    o._infoProvince = MO.Class.create(MO.FEaiChartStatMarketerInfo);
    o._provinceTextFont = new MO.SUiFont();
-   o._provinceTextFont.size = 24;
+   o._provinceTextFont.size = 20;
    o._provinceTextFont.bold = true;
    o._provinceTextFont.color = '#59FDE9'
 }
@@ -105,6 +105,8 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    var width = (rectangle.width + rectangle.left) / 71;
    var intervalWidth = (rectangle.width + rectangle.left) / 33;
    var maxInverstment = 0;
+   var rectColor = ['#ba0010', '#ba0010','#ba0010', '#ba0010', '#ba4a00', '#b97800', '#b9b300', '#6ab000', '#009845', '#028071', '#115e75', '#164c6f', '#193d6a', '#242e61', '#3c2460'];
+
    graphic._handle.beginPath();
    for (var i = 0 ; i < provincesarr.count() ; i++) {
       var province = provincesarr.get(i);
@@ -115,6 +117,11 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    graphic.drawLine(decoLeft, bottom - 70, decoRight, bottom - 70, '#F8CB3D', 3);
    var realityCount = 0;
    var provinceTextFont = o._provinceTextFont;
+   var volume;
+   var investmentNow;
+   var rectTangleHight = rectangle.height*1/15*13/22;
+   var rectangleSpan =rectangle.height*1/15*9/22
+   var rectTangleWidth = width;
    if (provincesarr) {
       for (var i = 0 ; i < provincesarr.count() ; i++) {
          var province = provincesarr.get(i);
@@ -122,25 +129,62 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
          var provincename = MO.Console.find(MO.FEaiResourceConsole).provinceModule().findByCode(code);
          var provinceLabel = '';
          var hight = 0;
-         var color = '#F8CB3D'
+         var color = '#F8CB3D';
          if (provincename && provincename.label()) {  
             provinceLabel = provincename.label();        
             realityCount++;
-            hight = 17/25*  rectangle.height* (province.investmentTotal()+maxInverstment/70) / maxInverstment
+            hight = 25/25*  rectangle.height* (province.investmentTotal()+maxInverstment/70) / maxInverstment
             graphic.setFont('9px Microsoft YaHei');
-            var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
-            var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
-            var bottomColor = '#' + hexColor.substring(2);
-            graphic.drawTextVertical(provinceLabel, decoLeft + realityCount * intervalWidth - 4, bottom - 45, provinceTextFont);
-            graphic._handle.rect(decoLeft + realityCount * intervalWidth, bottom - 80 - hight, width, hight);
-
+            // var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
+            // var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
+            // var bottomColor = '#' + hexColor.substring(2);
+            graphic.drawTextVertical(provinceLabel, decoLeft + realityCount * intervalWidth , bottom - 45, provinceTextFont);
+            // graphic._handle.rect(decoLeft + realityCount * intervalWidth, bottom - 80 - hight, width, hight);
+            investmentNow = province.investmentTotal();
+            if(investmentNow>=maxInverstment){
+               volume = 15;
+            }else if(investmentNow>=maxInverstment*0.93){
+               volume = 14;
+            }else if(investmentNow>=maxInverstment*0.86){
+               volume = 13;
+            }else if(investmentNow>=maxInverstment*0.8){
+               volume = 12;
+            }else if(investmentNow>=maxInverstment*0.73){
+               volume = 11;
+            }else if(investmentNow>=maxInverstment*0.66){
+               volume = 10;
+            }else if(investmentNow>=maxInverstment*0.6){
+               volume = 9;
+            }else if(investmentNow>=maxInverstment*0.53){
+               volume = 8;
+            }else if(investmentNow>=maxInverstment*0.46){
+               volume = 7;
+            }else if(investmentNow>=maxInverstment*0.4){
+               volume = 6;
+            }else if(investmentNow>=maxInverstment*0.33){
+               volume = 5;
+            }else if(investmentNow>=maxInverstment*0.26){
+               volume = 4;
+            }else if(investmentNow>=maxInverstment*0.2){
+               volume = 3;
+            }else if(investmentNow>=maxInverstment*0.13){
+               volume = 2;
+            }else if(investmentNow>=maxInverstment*0.06){
+               volume = 1;
+            }else{
+               volume = 1;
+            }
+           
+            for (var n=1;n<=volume;n++){
+               graphic.fillRectangle(decoLeft + realityCount * intervalWidth,bottom - 80 -n*rectangleSpan-n*rectTangleHight,rectTangleWidth,rectTangleHight,rectColor[15-n]);
+            }
          }
       }
-      var gradient = graphic.createLinearGradient(0,  rectangle.top+30, 0,bottom -80);
-      gradient.addColorStop('0', '#fb2609');
-      gradient.addColorStop('1', '#1c12a5');
-      graphic._handle.fillStyle = gradient;
-      graphic._handle.fill();
+      // var gradient = graphic.createLinearGradient(0, rectangle.top+30, 0, bottom -80-n*rectangleSpan-n*rectTangleHight,rectTangleWidth,rectTangleHight,rectColor[n]);
+      // gradient.addColorStop('0', '#fb2609');
+      // gradient.addColorStop('1', '#1c12a5');
+      // graphic._handle.fillStyle = gradient;
+      // graphic._handle.fill();
    }
 
 }
