@@ -48,8 +48,8 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._countryUnits            = null;
    // @attribute
    o._worldScale              = 300;
-   o._startWorldScale         = 500;
-   o._targetWorldScale        = 500;
+   o._startWorldScale         = 300;
+   o._targetWorldScale        = 300;
    o._cameraFrom              = null;
    o._cameraTo                = null;
    o._cameraDirection         = null;
@@ -72,6 +72,7 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._videoAnimeDuration      = 500;
    o._videoAnimeStartTick     = 0;
    // @attribute
+   o._lineManager             = null;
    o._locations               = null;
    // @attribute
    o._processor               = null;
@@ -177,6 +178,10 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
       o._rotationZ = rotate.z;
    }
    
+   var nextIndex = message.indexOf('next');
+   if (nextIndex != -1) {
+      o.switchDisplayPhase(++o._displayPhase);
+   }
 }
 
 //==========================================================
@@ -414,6 +419,8 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
          var timeControl = bar.findComponent('time');
          timeControl.setLabel(date.format('HH24:MI'));
       }
+
+      o._lineManager.upload();
    }
 }
 
@@ -474,12 +481,37 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          break;
       case 4: // 显示实时投资
          o._mapReady = false;
+         o._startTranslateY = o._translateY;
+         o._startRotateY = o._rotationY;
+         o._startWorldScale = o._worldScale;
+         var focusParam = o._focusParamManager.getFocusParameter('china');
+         o._targetWorldScale = 1200;
+         o._targetRotateY = focusParam.rotateY;
+         o._targetTranslateY = focusParam.translateY;
+         o._startTick = MO.Timer.current();
+         o._earthMoving = true;
+         o._autoRotate = false;
+         o._showChina = true;
          break;
       case 5: // 播放视频2
          o._currentVideoRenderable = o._videoRenderables.at(1);
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(1);
          o._currentVideoData.hVideo().play();
+         // 隐藏中国
+         o._startTranslateY = o._translateY;
+         o._startRotateY = o._rotationY;
+         o._startWorldScale = o._worldScale;
+         o._targetTranslateY = 0
+         o._targetRotateY = o._rotationY;
+         o._targetWorldScale = 300;
+
+         o._startTick = MO.Timer.current();
+         o._earthMoving = true;
+         o._autoRotate = true;
+
+         o._countryEntity._borderShape.setVisible(false);
+         o._countryEntity._faceShape.setVisible(false);
          break;
       case 6: // 收起视频2
          o._videoRenderables.at(1).setVisible(true);
@@ -646,7 +678,7 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
          o._startWorldScale = o._worldScale;
          o._targetTranslateY = 0
          o._targetRotateY = o._rotationY;
-         o._targetWorldScale = 500;
+         o._targetWorldScale = 300;
 
          o._startTick = MO.Timer.current();
          o._earthMoving = true;
@@ -820,6 +852,28 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
       matrix.tz = 0;
       matrix.updateForce();
    }
+
+   var lineManager = o._lineManager = MO.Class.create(MO.FE3dLines);
+   lineManager.linkGraphicContext(o);
+   lineManager.setup();
+   lineManager.setCount(1);
+   var float32Array = lineManager.positionsData();
+   float32Array[0] = 0;
+   float32Array[1] = 0;
+   float32Array[2] = 0;
+   float32Array[3] = 1000;
+   float32Array[4] = 1000;
+   float32Array[5] = 0;
+   lineManager.upload();
+   var uint8Array = lineManager.colorsData();
+   uint8Array[0] = 255;
+   uint8Array[1] = 0;
+   uint8Array[2] = 0;
+   uint8Array[3] = 255;
+   uint8Array[4] = 255;
+   uint8Array[5] = 0;
+   uint8Array[6] = 0;
+   uint8Array[7] = 255;
 
    //..........................................................
    // 图片
