@@ -10,6 +10,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    //..........................................................
    // @attribute
    o._code                   = MO.EEaiScene.ChartCustomerSphere;
+   o._optionMapCountry       = false;
    // @attribute
    o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
    o._processorCurrent       = 0;
@@ -90,6 +91,8 @@ MO.FEaiChartCustomerSphereScene_calculateDirection = function FEaiChartCustomerS
 MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustomerSphereScene_onSocketTouchReceived(event) {
    var o = this;
    // 获得信息
+   var context = o._graphicContext;
+   var size = context.size();
    var message = event.message;
    var info = o._info;
    info.unserializeBuffer(message, true);
@@ -109,7 +112,7 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       // 获得点击位置
       var location = info.points().first();
       o.calculateDirection(downPosition, downDirection, location);
-      o._lengthStart = downPosition.absolute();
+      var length = o._lengthStart = downPosition.absolute();
       earthMatrix.assign(matrix);
       // 计算原始位置
       var rotationMatrix = o._rotationMatrix.assign(matrix);
@@ -117,7 +120,9 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       rotationMatrix.transformPoint3(downDirection, downLocation);
       MO.Logger.debug(o, 'Touch down. (down={1}, direction={2}, flat={3})', downPosition.toDisplay(), downDirection.toDisplay(), downLocation.toDisplay());
       // 发送点击消息
-      o._socketSphere.send('click=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
+      if(length < 128 / size.height){
+         o._socketSphere.send('next');
+      }
       o._moving = true;
    }else if(typeCode == 'M' && o._moving){
       // 获得点击位置
@@ -232,8 +237,9 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    var canvas2d = desktop.canvas2d();
    var context2d = canvas2d.graphicContext();
    var worldResource = o._worldResource;
-   //o._guiManager.setValid(false);
    context2d.fillRectangle(100, 100, 200, 200, '#FFFFFF');
+   // 显示界面
+   o._guiManager.show();
    //o._mapEntity.showCity();
 }
 
@@ -250,31 +256,25 @@ MO.FEaiChartCustomerSphereScene_onProcessInput = function FEaiChartCustomerSpher
    // 横向旋转
    var matrix = o._earthSphere.matrix();
    if(MO.Window.Keyboard.isPress(MO.EKeyCode.A)){
-      //matrix.ry += directionSpeed;
       matrix.addRotationAxis(MO.Lang.Math.vectorAxisY, -directionSpeed);
       matrix.parse();
    }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.D)){
-      //matrix.ry -= directionSpeed;
       matrix.addRotationAxis(MO.Lang.Math.vectorAxisY, directionSpeed);
       matrix.parse();
    }
    // 纵向旋转
    if(MO.Window.Keyboard.isPress(MO.EKeyCode.W)){
-      //matrix.rz += directionSpeed;
       matrix.addRotationAxis(MO.Lang.Math.vectorAxisX, -directionSpeed);
       matrix.parse();
    }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.S)){
-      //matrix.rz -= directionSpeed;
       matrix.addRotationAxis(MO.Lang.Math.vectorAxisX, directionSpeed);
       matrix.parse();
    }
    // 纵向旋转
    if(MO.Window.Keyboard.isPress(MO.EKeyCode.Q)){
-      //matrix.rz += directionSpeed;
       matrix.addRotationAxis(MO.Lang.Math.vectorAxisZ, -directionSpeed);
       matrix.parse();
    }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.E)){
-      //matrix.rz -= directionSpeed;
       matrix.addRotationAxis(MO.Lang.Math.vectorAxisZ, directionSpeed);
       matrix.parse();
    }
@@ -344,33 +344,6 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       //..........................................................
       // 键盘处理
       o.onProcessInput();
-      //..........................................................
-      // 投资处理
-      // o._processor.process();
-      //..........................................................
-      // 设置数据
-      var logoBar = o._logoBar;
-      // 获取所有信息
-      var processor = o._processor;
-      if(processor.invementDayCurrent() > 0){
-         // 投资总金额
-         var investmentTotal = logoBar.findComponent('investmentTotal');
-         investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
-         // 日投资金额
-         var investmentDay = logoBar.findComponent('investmentDay');
-         investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
-      }
-      //..........................................................
-      // 更新时间
-      if (o._nowTicker.process()) {
-         var bar = o._logoBar;
-         var date = o._nowDate;
-         date.setNow();
-         var dateControl = bar.findComponent('date');
-         dateControl.setLabel(date.format('YYYY/MM/DD'));
-         var timeControl = bar.findComponent('time');
-         timeControl.setLabel(date.format('HH24:MI'));
-      }
    }
 }
 
@@ -427,7 +400,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var canvas3d = desktop.canvas3d();
    var context3d = canvas3d.graphicContext();
    var stage = o._activeStage;
-   context3d.enableDrawBuffers();
+   //context3d.enableDrawBuffers();
    //..........................................................
    // 创建地球平面
    var earthFlat = o._earthFlat = MO.Class.create(MO.FEaiEarthFlat);
@@ -439,7 +412,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 创建地球
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
    earthSphere.linkGraphicContext(context3d);
-   earthSphere.setSplitCount(8);
+   earthSphere.setSplitCount(128);
    //earthSphere.setDrawModeCd(MO.EG3dDrawMode.Lines);
    earthSphere.setup();
    earthSphere.matrix().setScaleAll(200);
@@ -463,9 +436,14 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 设置相机
    stage.region().selectCamera(camera);
    //..........................................................
-   // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
-   o._guiManager.register(frame);
+   // 创建时间轴
+   var stage = o.activeStage();
+   var operation = o._controlOperation = MO.Class.create(MO.FEaiChartCustomerSphereOperation);
+   operation.setName('Operation');
+   operation.linkGraphicContext(o);
+   operation.setup();
+   operation.build();
+   o._guiManager.register(operation);
    //..........................................................
    var dataLayer = stage.dataLayer();
    // 创建投资数据
@@ -478,24 +456,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
-   //..........................................................
-   // 创建时间轴
-   var timeline = o._timeline = MO.Class.create(MO.FEaiChartCustomerSphereTimeline);
-   timeline.setName('Timeline');
-   timeline.linkGraphicContext(o);
-   timeline.build();
-   o._guiManager.register(timeline);
-   //..........................................................
-   // 创建表格
-   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartCustomerSphereTable);
-   liveTable.setName('LiveTable');
-   liveTable.linkGraphicContext(o);
-   liveTable.setup();
-   liveTable.build();
-   o._guiManager.register(liveTable);
-   //..........................................................
-   // 隐藏全部界面
-   o._guiManager.hide();
    //..........................................................
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 建立城市实体
@@ -579,64 +539,12 @@ MO.FEaiChartCustomerSphereScene_processResize = function FEaiChartCustomerSphere
       // 重新设置矩阵
    o.fixMatrix(o._processor.display().matrix());
    //..........................................................
-   // 设置大小
-   var logoBar = o._logoBar;
-   if (isVertical) {
-      logoBar.setLocation(8, 8);
-      logoBar.setScale(0.85, 0.85);
-   } else {
-      logoBar.setLocation(5, 5);
-      logoBar.setScale(0.9, 0.9);
-   }
-   //..........................................................
-   // 设置南海
-   var control = o._southSea;
-   if (isVertical) {
-      control.setDockCd(MO.EUiDock.RightTop);
-      control.setTop(570);
-      control.setRight(100);
-   } else {
-      control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(780);
-      control.setBottom(280);
-   }
-   //..........................................................
+   var context = o._graphicContext;
+   var size = context.size();
    // 设置时间轴
-   var timeline = o._timeline;
-   if (isVertical) {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(10);
-      timeline.setRight(10);
-      timeline.setBottom(920);
-      timeline.setHeight(250);
-   } else {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(30);
-      timeline.setRight(780);
-      timeline.setHeight(250);
-   }
-   //..........................................................
-   // 设置表格
-   var liveTable = o._liveTable;
-   if (isVertical) {
-      liveTable.setDockCd(MO.EUiDock.Bottom);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      liveTable.setLeft(10);
-      liveTable.setRight(10);
-      liveTable.setBottom(10);
-      liveTable.setWidth(1060);
-      liveTable.setHeight(900);
-   } else {
-      liveTable.setDockCd(MO.EUiDock.Right);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-      liveTable.setTop(10);
-      liveTable.setRight(0);
-      liveTable.setBottom(10);
-      liveTable.setWidth(760);
-   }
+   var operation = o._controlOperation;
+   operation.setWidth(256);
+   operation.setHeight(256);
 }
 
 //==========================================================

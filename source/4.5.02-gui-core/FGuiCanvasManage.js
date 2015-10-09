@@ -122,6 +122,7 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    var event = o._paintEvent;
    event.optionScale = false;
    event.graphic = graphic;
+   event.virtualSize = virtualSize;
    event.parentRectangle.set(0, 0, virtualSize.width, virtualSize.height);
    event.rectangle.set(0, 0, virtualSize.width, virtualSize.height);
    event.calculateRate = calculateRate;

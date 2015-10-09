@@ -57,15 +57,15 @@ MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
    textureColor.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
    textureColor.update();
    // 创建渲染纹理
-   var texturePosition = o._texturePosition = context.createFlatTexture();
-   texturePosition.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
-   texturePosition.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
-   texturePosition.update();
+   //var texturePosition = o._texturePosition = context.createFlatTexture();
+   //texturePosition.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   //texturePosition.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   //texturePosition.update();
    // 创建渲染目标
    var target = o._renderTarget = context.createRenderTarget();
    target.setQualityCd(MO.Desktop.qualityCd())
    target.textures().push(textureColor);
-   target.textures().push(texturePosition);
+   //target.textures().push(texturePosition);
    target.build();
    // 创建渲渲染举行
    var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
