@@ -69,8 +69,10 @@
    <Source name='fragment'><![CDATA[
       // 声明环境
       #ifdef GL_ES
-      precision highp float;
+      precision mediump float;
+      //precision highp float;
       #endif
+      #extension GL_EXT_draw_buffers : require
       //..........................................................
       // 常量定义
       uniform vec4 fc_const;
@@ -92,6 +94,10 @@
          // 获得颜色
          vec4 color = texture2D(fs_diffuse, v_coord);
          gl_FragColor = color;
+         //gl_FragColor[0] = color.r;
+         //gl_FragColor[1] = color.g;
+         //gl_FragColor[2] = color.b;
+         //gl_FragColor[3] = color.a;
          //gl_FragColor = v_color;
       }
    ]]></Source>

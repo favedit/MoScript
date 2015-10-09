@@ -9,6 +9,8 @@ MO.RDesktop = function RDesktop(){
    var o = this;
    //..........................................................
    // @attribute
+   o._qualityCd   = MO.EGraphicQuality.Middle;
+   // @attribute
    o._application = null;
    // @attribute
    o._workspaces  = new MO.TDictionary();
@@ -16,6 +18,26 @@ MO.RDesktop = function RDesktop(){
    o._thread      = null;
    o._interval    = 10;
    return o;
+}
+
+//==========================================================
+// <T>获得质量类型。</T>
+//
+// @method
+// @return EGraphicQuality 质量类型
+//==========================================================
+MO.RDesktop.prototype.qualityCd = function RDesktop_qualityCd(){
+   return this._qualityCd;
+}
+
+//==========================================================
+// <T>设置质量类型。</T>
+//
+// @method
+// @param qualityCd:EGraphicQuality 质量类型
+//==========================================================
+MO.RDesktop.prototype.setQualityCd = function RDesktop_setQualityCd(qualityCd){
+   this._qualityCd = qualityCd;
 }
 
 //==========================================================

@@ -174,8 +174,12 @@ MO.FEaiEarthFlat_setup = function FEaiEarthFlat_setup(){
    o._readyLoader.push(loader);
    // 加载陆地
    var image = o._imageLand = MO.Class.create(MO.FImage);
-   //image.loadUrl('{eai.resource}/world/land2048.png');
-   image.loadUrl('{eai.resource}/world/land4096.png');
+   var qualityCd = MO.Desktop.qualityCd();
+   if(qualityCd == MO.EGraphicQuality.Highest){
+      image.loadUrl('{eai.resource}/world/land4096.png');
+   }else{
+      image.loadUrl('{eai.resource}/world/land2048.png');
+   }
    o._readyLoader.push(image);
    // 加载海洋
    var loader = o._textureOceanLoader = MO.Class.create(MO.FE3dTextureLoader);

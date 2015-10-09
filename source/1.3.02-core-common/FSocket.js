@@ -162,8 +162,11 @@ MO.FSocket_construct = function FSocket_construct(){
 // @method
 // @param url:String 网络地址
 //==========================================================
-MO.FSocket_connect = function FSocket_connect(url){
+MO.FSocket_connect = function FSocket_connect(uri){
    var o = this;
+   // 获得地址
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   // 链接服务器
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;

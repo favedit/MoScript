@@ -38,6 +38,7 @@ MO.SValue2 = function SValue2(x, y){
    o.negative     = MO.SValue2_negative;
    // @method
    o.parse        = MO.SValue2_parse;
+   o.toDisplay    = MO.SValue2_toDisplay;
    o.toString     = MO.SValue2_toString;
    return o;
 }
@@ -260,6 +261,18 @@ MO.SValue2_parse = function SValue2_parse(value){
    }else{
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
+}
+
+//==========================================================
+// <T>获得显示内容。</T>
+//
+// @return String 字符串
+//==========================================================
+MO.SValue2_toDisplay = function SValue2_toDisplay(){
+   var o = this;
+   var x = MO.Lang.Float.format(o.x);
+   var y = MO.Lang.Float.format(o.y);
+   return x + ',' + y;
 }
 
 //==========================================================

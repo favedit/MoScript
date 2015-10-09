@@ -30,6 +30,7 @@ MO.SValue4 = function SValue4(x, y, z, w){
    o.unserialize = MO.SValue4_unserialize;
    // @method
    o.parse       = MO.SValue4_parse;
+   o.toDisplay   = MO.SValue4_toDisplay;
    o.toString    = MO.SValue4_toString;
    return o;
 }
@@ -154,6 +155,20 @@ MO.SValue4_parse = function SValue4_parse(value){
    }else{
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
+}
+
+//==========================================================
+// <T>获得显示内容。</T>
+//
+// @return String 字符串
+//==========================================================
+MO.SValue4_toDisplay = function SValue4_toDisplay(){
+   var o = this;
+   var x = MO.Lang.Float.format(o.x);
+   var y = MO.Lang.Float.format(o.y);
+   var z = MO.Lang.Float.format(o.z);
+   var w = MO.Lang.Float.format(o.w);
+   return x + ',' + y + ',' + z + ',' + w;
 }
 
 //==========================================================

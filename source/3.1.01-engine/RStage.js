@@ -169,3 +169,4 @@ MO.RStage.prototype.start = function RStage_start(interval){
 //..........................................................
 // 实例化内容
 MO.RStage = new MO.RStage();
+MO.Stage = MO.RStage;

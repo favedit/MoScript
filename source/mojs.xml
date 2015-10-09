@@ -40,6 +40,7 @@
       <PathMerger source='/3.3.06-engine-3d-shape'                target='/ajs/engine-3d-shape.js'/>
       <PathMerger source='/3.3.07-engine-3d-particle'             target='/ajs/engine-3d-particle.js'/>
       <PathMerger source='/3.4.01-engine-3d-server'               target='/ajs/engine-3d-server.js'/>
+      <PathMerger source='/3.5.01-engine-framework'               target='/ajs/engine-framework.js'/>
 
       <PathMerger source='/4.1.01-ui-base'                        target='/ajs/ui-base.js'/>
       <PathMerger source='/4.1.02-ui-common'                      target='/ajs/ui-common.js'/>
@@ -201,6 +202,7 @@
          <File source='/ajs/engine-3d-instance.js'/>
          <File source='/ajs/engine-3d-shape.js'/>
          <File source='/ajs/engine-3d-particle.js'/>
+         <File source='/ajs/engine-framework.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-ui.js'>
          <File source='/ajs/ui-base.js'/>

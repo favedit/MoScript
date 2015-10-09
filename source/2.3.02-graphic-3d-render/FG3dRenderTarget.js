@@ -8,16 +8,17 @@ MO.FG3dRenderTarget = function FG3dRenderTarget(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
    //..........................................................
    // @attribute
-   o._size     = MO.Class.register(o, new MO.AGetter('_size'));
-   o._color    = MO.Class.register(o, new MO.AGetter('_color'));
-   o._textures = null;
+   o._size        = MO.Class.register(o, new MO.AGetter('_size'));
+   o._color       = MO.Class.register(o, new MO.AGetter('_color'));
+   o._textures    = null;
    //..........................................................
    // @method
-   o.construct = MO.FG3dRenderTarget_construct;
+   o.construct    = MO.FG3dRenderTarget_construct;
    // @method
-   o.textures  = MO.FG3dRenderTarget_textures;
+   o.setQualityCd = MO.FG3dRenderTarget_setQualityCd;
+   o.textures     = MO.FG3dRenderTarget_textures;
    // @method
-   o.dispose   = MO.FG3dRenderTarget_dispose;
+   o.dispose      = MO.FG3dRenderTarget_dispose;
    return o;
 }
 
@@ -32,6 +33,36 @@ MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
    o._size = new MO.SSize2();
    o._color = new MO.SColor4();
    o._color.set(0.0, 0.0, 0.0, 1.0);
+}
+
+//==========================================================
+// <T>设置质量类型。</T>
+//
+// @method
+// @return qualityCd 质量类型
+//==========================================================
+MO.FG3dRenderTarget_setQualityCd = function FG3dRenderTarget_setQualityCd(qualityCd){
+   var o = this;
+   var size = o._size;
+   switch(qualityCd){
+      case MO.EGraphicQuality.Highest:
+         size.set(4096, 4096);
+         break;
+      case MO.EGraphicQuality.High:
+         size.set(2048, 2048);
+         break;
+      case MO.EGraphicQuality.Middle:
+         size.set(1024, 1024);
+         break;
+      case MO.EGraphicQuality.Low:
+         size.set(512, 512);
+         break;
+      case MO.EGraphicQuality.Lowest:
+         size.set(256, 256);
+         break;
+      default:
+         size.set(64, 64);
+   }
 }
 
 //==========================================================

@@ -12,7 +12,8 @@ MO.FWglContext = function FWglContext(o){
    o._handle             = MO.Class.register(o, new MO.AGetter('_handle'));
    o._handleInstance     = null;
    o._handleLayout       = null;
-   o._handleSamplerS3tc  = null;
+   o._handleDrawBuffers  = MO.Class.register(o, new MO.AGetter('_handleDrawBuffers'));
+   o._handleSamplerS3tc  = MO.Class.register(o, new MO.AGetter('_handleSamplerS3tc'));
    o._handleDebugShader  = null;
    // @attribute
    o._activeRenderTarget = null;
@@ -25,8 +26,9 @@ MO.FWglContext = function FWglContext(o){
    o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
    o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
    // @attribute
-   o._statusFloatTexture = false;
-   o._statusScissor      = false;
+   o._statusFloatTexture = MO.Class.register(o, new MO.AGetter('_statusFloatTexture'), false);
+   o._statusDrawBuffers  = MO.Class.register(o, new MO.AGetter('_statusDrawBuffers'), false);
+   o._statusScissor      = MO.Class.register(o, new MO.AGetter('_statusScissor'), false);
    o._data9              = null;
    o._data16             = null;
    //..........................................................
@@ -42,6 +44,7 @@ MO.FWglContext = function FWglContext(o){
    o.extensions          = MO.FWglContext_extensions;
    // @method
    o.enableFloatTexture  = MO.FWglContext_enableFloatTexture;
+   o.enableDrawBuffers   = MO.FWglContext_enableDrawBuffers;
    // @method
    o.recordBegin         = MO.FWglContext_recordBegin;
    o.recordEnd           = MO.FWglContext_recordEnd;
@@ -185,6 +188,11 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
    var extension = handle.getExtension('OES_element_index_uint');
    if(extension){
       capability.optionIndex32 = true;
+   }
+   // 测试多渲染支持
+   var extension = o._handleDrawBuffers = handle.getExtension('WEBGL_draw_buffers');
+   if(extension){
+      capability.optionDrawBuffers = true;
    }
    // 测试纹理压缩支持
    var extension = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
@@ -396,13 +404,14 @@ MO.FWglContext_extensions = function FWglContext_extensions(){
 MO.FWglContext_enableFloatTexture = function FWglContext_enableFloatTexture(){
    var o = this;
    if(!o._statusFloatTexture){
+      var handle = o._handle;
       // 检查浮点纹理
-      var extension = o._handle.getExtension('OES_texture_float');
+      var extension = handle.getExtension('OES_texture_float');
       if(!extension){
          return false;
       }
       // 检查浮点纹理采样
-      var extension = o._handle.getExtension('OES_texture_float_linear');
+      var extension = handle.getExtension('OES_texture_float_linear');
       if(!extension){
          return false;
       }
@@ -410,6 +419,30 @@ MO.FWglContext_enableFloatTexture = function FWglContext_enableFloatTexture(){
       o._statusFloatTexture = true;
    }
    return o._statusFloatTexture;
+}
+
+//==========================================================
+// <T>允许多纹理。</T>
+//
+// @method
+// @return Boolean 是否允许
+//==========================================================
+MO.FWglContext_enableDrawBuffers = function FWglContext_enableDrawBuffers(){
+   var o = this;
+   if(!o._statusDrawBuffers){
+      var handle = o._handle;
+      // 检查句柄
+      var extension = o._handleDrawBuffers;
+      if(!extension){
+         return false;
+      }
+      // 检查浮点纹理采样
+      extension.drawBuffersWEBGL([
+         extension.COLOR_ATTACHMENT0_WEBGL
+      ]);
+      // 设置状态
+      o._statusDrawBuffers = true;
+   }
 }
 
 //==========================================================
@@ -750,7 +783,8 @@ MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarg
          return result;
       }
       // 修改视角
-      graphic.viewport(0, 0, o._size.width, o._size.height);
+      var size = o._size;
+      graphic.viewport(0, 0, size.width, size.height);
    }else{
       // 绑定渲染目标
       graphic.bindFramebuffer(graphic.FRAMEBUFFER, renderTarget._handle);
@@ -1262,6 +1296,7 @@ MO.FWglContext_dispose = function FWglContext_dispose(){
    o._parameters = null;
    o._extensions = null;
    o._activeTextureSlot = null;
+   o._handleDrawBuffers  = null;
    o._handleSamplerS3tc = null;
    o._handleDebugShader = null;
    // 父处理

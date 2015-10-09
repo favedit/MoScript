@@ -39,7 +39,7 @@ MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
    o.__base.FG3dTechniquePass.construct.call(o);
    //o._textureSize = new MO.SSize2(512, 512);
    //o._textureSize = new MO.SSize2(1024, 1024);
-   o._textureSize = new MO.SSize2(2048, 2048);
+   //o._textureSize = new MO.SSize2(2048, 2048);
 }
 
 //==========================================================
@@ -52,21 +52,26 @@ MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
    o.__base.FG3dTechniquePass.setup.call(o);
    var context = o._graphicContext;
    // 创建渲染纹理
-   var texture = o._textureView = context.createFlatTexture();
-   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
-   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
-   texture.size().assign(o._textureSize);
-   texture.update();
+   var textureColor = o._textureView = context.createFlatTexture();
+   textureColor.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   textureColor.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   textureColor.update();
+   // 创建渲染纹理
+   var texturePosition = o._texturePosition = context.createFlatTexture();
+   texturePosition.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   texturePosition.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   texturePosition.update();
    // 创建渲染目标
    var target = o._renderTarget = context.createRenderTarget();
-   target.size().assign(o._textureSize);
-   target.textures().push(texture);
+   target.setQualityCd(MO.Desktop.qualityCd())
+   target.textures().push(textureColor);
+   target.textures().push(texturePosition);
    target.build();
    // 创建渲渲染举行
    var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
    rectangle.linkGraphicContext(o);
    rectangle.setup();
-   rectangle.pushTexture(texture, 'diffuse');
+   rectangle.pushTexture(textureColor, 'diffuse');
 }
 
 //==========================================================

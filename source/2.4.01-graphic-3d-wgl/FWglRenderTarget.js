@@ -85,6 +85,11 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
    // 绑定纹理缓冲集合
    var textures = o._textures;
    var textureCount = textures.count();
+   var attachment0 = handle.COLOR_ATTACHMENT0;
+   if(context.statusDrawBuffers()){
+      var extension = context.handleDrawBuffers();
+      attachment0 = extension.COLOR_ATTACHMENT0_WEBGL;
+   }
    for(var i = 0; i < textureCount; i++){
       var texture = textures.get(i);
       // 设置信息
@@ -92,13 +97,14 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
       handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MAG_FILTER, handle.LINEAR);
       handle.texParameteri(handle.TEXTURE_2D, handle.TEXTURE_MIN_FILTER, handle.LINEAR);
       // 设置存储
+      //handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, size.width, size.height, 0, handle.RGBA, handle.UNSIGNED_BYTE, null);
       handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, size.width, size.height, 0, handle.RGBA, handle.UNSIGNED_BYTE, null);
       var result = context.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", texture._handle, size.width, size.height);
       if(!result){
          return result;
       }
       // 绑定数据
-      handle.framebufferTexture2D(handle.FRAMEBUFFER, handle.COLOR_ATTACHMENT0 + i, handle.TEXTURE_2D, texture._handle, 0);
+      handle.framebufferTexture2D(handle.FRAMEBUFFER, attachment0 + i, handle.TEXTURE_2D, texture._handle, 0);
       var result = context.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, texture._handle);
       if(!result){
          return result;
