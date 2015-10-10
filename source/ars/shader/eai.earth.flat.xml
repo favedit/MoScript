@@ -41,11 +41,9 @@
       //..........................................................
       // 属性流声明
       attribute vec3 va_position;
-      attribute vec4 va_color;
       attribute vec2 va_coord;
       //..........................................................
       // 属性流声明
-      varying vec4 v_color;
       varying vec2 v_coord;
       //..........................................................
       // 处理
@@ -54,8 +52,6 @@
          vec4 position = vec4(va_position, 1.0);
          // 计算最终坐标
          gl_Position = position;
-         // 设置颜色
-         //v_color = va_color * vc_data[index + 3];
          // 设置纹理
          v_coord = vec2(va_coord.x, 1.0 - va_coord.y);
       }
@@ -73,7 +69,6 @@
       uniform vec4 fc_water;
       //..........................................................
       // 声明插值器
-      varying vec4 v_color;
       varying vec2 v_coord;
       //..........................................................
       // 声明取样器
@@ -119,7 +114,7 @@
          vec3 water3Normal = normalize(colorWater3Normal.xyz) * colorWater3Normal.w;
          float rateWater3 = dot(colorWater3.rgb, constGrey.rgb) * 0.4;
          // 获得海洋颜色
-         vec4 colorOcean = texture2D(fs_ocean, v_coord + water1Normal.xy * 0.01) * 0.6;
+         vec4 colorOcean = texture2D(fs_ocean, v_coord + water1Normal.xy * 0.02) * 0.6;
          //..........................................................
          // 合成颜色
          float rate = 1.0;
@@ -128,11 +123,11 @@
          result.rgb += colorCloud1.rgb * rateCloud1;
          rate = clamp(rate - rateCloud1, 0.0, 1.0);
          // 合并云2颜色
-         result.rgb += colorCloud2.rgb * rateCloud2;
-         rate = clamp(rate - rateCloud2, 0.0, 1.0);
+         //result.rgb += colorCloud2.rgb * rateCloud2;
+         //rate = clamp(rate - rateCloud2, 0.0, 1.0);
          // 合并云3颜色
-         result.rgb += colorCloud3.rgb * rateCloud3;
-         rate = clamp(rate - rateCloud3, 0.0, 1.0);
+         //result.rgb += colorCloud3.rgb * rateCloud3;
+         //rate = clamp(rate - rateCloud3, 0.0, 1.0);
          // 合并陆地颜色
          result.rgb += colorLand.rgb * rate * colorLand.w;
          rate = clamp(rate - colorLand.w, 0.0, 1.0);

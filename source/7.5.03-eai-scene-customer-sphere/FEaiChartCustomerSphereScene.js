@@ -38,12 +38,14 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    //..........................................................
    // @event
    o.onSocketTouchReceived   = MO.FEaiChartCustomerSphereScene_onSocketTouchReceived;
-   o.onInvestmentDataChanged = MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged;
-   o.on24HDataChanged        = MO.FEaiChartCustomerSphereScene_on24HDataChanged;
+   // @event
+   o.onOperationDown         = MO.FEaiChartCustomerSphereScene_onOperationDown;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
+   // @event
    o.onProcessReady          = MO.FEaiChartCustomerSphereScene_onProcessReady;
    o.onProcessInput          = MO.FEaiChartCustomerSphereScene_onProcessInput;
    o.onProcess               = MO.FEaiChartCustomerSphereScene_onProcess;
+   // @event
    o.onSwitchProcess         = MO.FEaiChartCustomerSphereScene_onSwitchProcess;
    o.onSwitchComplete        = MO.FEaiChartCustomerSphereScene_onSwitchComplete;
    //..........................................................
@@ -52,34 +54,12 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    // @method
    o.setup                   = MO.FEaiChartCustomerSphereScene_setup;
    o.showFace                = MO.FEaiChartCustomerSphereScene_showFace;
-   o.calculateDirection      = MO.FEaiChartCustomerSphereScene_calculateDirection;
    o.fixMatrix               = MO.FEaiChartCustomerSphereScene_fixMatrix;
    // @method
    o.processResize           = MO.FEaiChartCustomerSphereScene_processResize;
    // @method
    o.dispose                 = MO.FEaiChartCustomerSphereScene_dispose;
    return o;
-}
-
-//==========================================================
-// <T>计算点击处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartCustomerSphereScene_calculateDirection = function FEaiChartCustomerSphereScene_calculateDirection(position, direction, location) {
-   // 计算数据
-   var cx = (location.x() - 0.5) * 2;
-   var cy = -(location.y() - 0.5) * 2;
-   var length = Math.min(Math.sqrt(cx * cx + cy * cy), 1);
-   // 设置位置
-   position.x = cx;
-   position.y = cy;
-   // 设置方向
-   direction.x = cx;
-   direction.y = cy;
-   direction.z = -Math.sin(Math.acos(Math.min(length, 1)));
-   direction.normalize();
 }
 
 //==========================================================
@@ -106,35 +86,37 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
    var earthSphere = o._earthSphere;
    var earthMatrix = o._earthMatrix;
    var matrix = earthSphere.matrix();
+   var sourceTouch = earthSphere.sourceTouch();
+   var targetTouch = earthSphere.targetTouch();
    // 判断类型
    var typeCode = info.typeCode();
    if(typeCode == 'D'){
-      // 获得点击位置
-      var location = info.points().first();
-      o.calculateDirection(downPosition, downDirection, location);
-      var length = o._lengthStart = downPosition.absolute();
-      earthMatrix.assign(matrix);
+      // 设置点击信息
+      earthSphere.setSource(info);
       // 计算原始位置
       var rotationMatrix = o._rotationMatrix.assign(matrix);
       rotationMatrix.invert();
-      rotationMatrix.transformPoint3(downDirection, downLocation);
-      MO.Logger.debug(o, 'Touch down. (down={1}, direction={2}, flat={3})', downPosition.toDisplay(), downDirection.toDisplay(), downLocation.toDisplay());
+      sourceTouch.calculate(rotationMatrix);
+      MO.Logger.debug(o, 'Touch down. ({1})', sourceTouch);
       // 发送点击消息
       if(length < 128 / size.height){
          o._socketSphere.send('next');
       }
+      var sourceTouchPoint = sourceTouch.points.first();
+      o._earthFlat.drawTouch(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
       o._moving = true;
    }else if(typeCode == 'M' && o._moving){
-      // 获得点击位置
-      var location = info.points().first();
-      o.calculateDirection(movePosition, moveDirection, location);
+      earthSphere.setTarget(info);
+      // 计算数据
+      var sourceTouchPoint = sourceTouch.points.first();
+      var targetTouchPoint = targetTouch.points.first();
       // 计算旋转轴
       var axis = new MO.SVector3();
-      axis.assign(downDirection);
-      axis.cross(moveDirection);
+      axis.assign(sourceTouchPoint.direction);
+      axis.cross(targetTouchPoint.direction);
       axis.normalize();
       // 计算旋转角
-      var angle = Math.acos(downDirection.dotPoint3(moveDirection)) * (0.5 / 0.29);
+      var angle = Math.acos(sourceTouchPoint.direction.dotPoint3(targetTouchPoint.direction)) * (0.5 / 0.29);
       matrix.assign(earthMatrix);
       if(o._lengthStart > 10){
          axis.assign(MO.Lang.Math.vectorAxisZ);
@@ -142,7 +124,6 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
          axis.normalize();
          var cl = length - o._lengthStart;
          matrix.addRotationAxis(axis, cl);
-
          var p1 = new MO.SVector3(downDirection.x, downDirection.y, 0);
          p1.normalize();
          var p2 = new MO.SVector3(moveDirection.x, moveDirection.y, 0);
@@ -162,8 +143,9 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       // 计算原始位置
       var rotationMatrix = o._rotationMatrix.assign(matrix);
       rotationMatrix.invert();
-      rotationMatrix.transformPoint3(moveDirection, moveLocation);
-      MO.Logger.debug(o, 'Touch move. (down={1}, direction={2}, flat={3})', movePosition.toDisplay(), moveDirection.toDisplay(), moveLocation.toDisplay());
+      targetTouch.calculate(rotationMatrix);
+      MO.Logger.debug(o, 'Touch move. ({1})', targetTouch);
+      //MO.Logger.debug(o, 'Touch move. (down={1}, direction={2}, flat={3})', movePosition.toDisplay(), moveDirection.toDisplay(), moveLocation.toDisplay());
       // 发送转动消息
       o._socketSphere.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
    }else if(typeCode == 'U'){
@@ -173,35 +155,35 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
 }
 
 //==========================================================
-// <T>24小时曲线数据变更处理。</T>
+// <T>操作点击处理。</T>
 //
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartCustomerSphereScene_on24HDataChanged = function FEaiChartCustomerSphereScene_on24HDataChanged(event) {
+MO.FEaiChartCustomerSphereScene_onOperationDown = function FEaiChartCustomerSphereScene_onOperationDown(event) {
    var o = this;
-   // 设置表格数据
-   var timeline = o._timeline;
-   timeline.startTime().assign(event.beginDate);
-   timeline.endTime().assign(event.endDate);
-   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-   timeline.dirty();
-}
-
-//==========================================================
-// <T>表格数据变更处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged = function FEaiChartCustomerSphereScene_onInvestmentDataChanged(event) {
-   var o = this;
-   var unit = event.unit;
-   // 设置表格数据
-   var table = o._liveTable;
-   table.setRankUnits(event.rankUnits);
-   table.pushUnit(unit);
-   table.dirty();
+   o.__base.FEaiChartScene.onOperationDown.call(o, event);
+   var size = o._graphicContext.size();
+   var cx = event.x - size.width / 2;
+   var cy = event.y - size.height / 2;
+   var range = Math.min(size.width, size.height) * 0.5;
+   var x = MO.Lang.Float.toRange(cx / range, -1, 1);
+   var y = -MO.Lang.Float.toRange(cy / range, -1, 1);
+   var length = MO.Lang.Float.toRange(Math.sqrt(x * x + y * y), 0, 1);
+   // 设置方向
+   var direction = new MO.SVector3();
+   direction.x = x;
+   direction.y = y;
+   direction.z = -Math.sin(Math.acos(length));
+   direction.normalize();
+   var rotationMatrix = o._rotationMatrix.assign(o._earthSphere.matrix());
+   rotationMatrix.invert();
+   var sphereLocation = rotationMatrix.transformPoint3(direction);
+   sphereLocation.normalize();
+   // 计算地区位置
+   var fx = Math.atan2(sphereLocation.x, -sphereLocation.z) / Math.PI / 2 + 0.5;
+   var fy = 0.5 - Math.asin(sphereLocation.y) / Math.PI;
+   o._earthFlat.drawTouch(fx, fy);
 }
 
 //==========================================================
@@ -451,8 +433,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
-   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
-   invement.add24HDataChangedListener(o, o.on24HDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);

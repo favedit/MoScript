@@ -16,10 +16,16 @@ MO.FEaiEarthSphere = function FEaiEarthSphere(o){
    o._currentPosition  = null;
    o._currentDirection = null;
    o._targetPosition   = null;
+   // @attribute
+   o._sourceTouch      = MO.Class.register(o, new MO.AGetter('_sourceTouch'));
+   o._targetTouch      = MO.Class.register(o, new MO.AGetter('_targetTouch'));
    //..........................................................
    // @method
    o.construct         = MO.FEaiEarthSphere_construct;
-   // @process
+   // @method
+   o.setSource         = MO.FEaiEarthSphere_setSource;
+   o.setTarget         = MO.FEaiEarthSphere_setTarget;
+   // @method
    o.process           = MO.FEaiEarthSphere_process;
    // @method
    o.dispose           = MO.FEaiEarthSphere_dispose;
@@ -39,7 +45,33 @@ MO.FEaiEarthSphere_construct = function FEaiEarthSphere_construct(){
    o._currentPosition = new MO.SPoint3();
    o._currentDirection = new MO.SVector3();
    o._targetPosition = new MO.SPoint3();
+   // 设置属性
+   o._sourceTouch = new MO.SEaiEarthTouch();
+   o._targetTouch = new MO.SEaiEarthTouch();
 }
+
+//==========================================================
+// <T>设置来源处理。</T>
+//
+// @method
+// @param info:FEaiChartCustomerSphereInfo 信息
+//==========================================================
+MO.FEaiEarthSphere_setSource = function FEaiEarthSphere_setSource(info){
+   var o = this;
+   o._sourceTouch.setInfo(info);
+}
+
+//==========================================================
+// <T>设置目标处理。</T>
+//
+// @method
+// @param info:FEaiChartCustomerSphereInfo 信息
+//==========================================================
+MO.FEaiEarthSphere_setTarget = function FEaiEarthSphere_setTarget(info){
+   var o = this;
+   o._targetTouch.setInfo(info);
+}
+
 //==========================================================
 // <T>释放处理。</T>
 //

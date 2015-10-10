@@ -21,11 +21,28 @@ MO.FEaiEarthFlat = function FEaiEarthFlat(o){
    o.construct      = MO.FEaiEarthFlat_construct;
    // @method
    o.setup          = MO.FEaiEarthFlat_setup;
+   o.drawTouch      = MO.FEaiEarthFlat_drawTouch;
    o.drawBoundary   = MO.FEaiEarthFlat_drawBoundary;
    o.process        = MO.FEaiEarthFlat_process;
    // @method
    o.dispose        = MO.FEaiEarthFlat_dispose;
    return o;
+}
+
+//==========================================================
+// <T>绘制触点。</T>
+//
+// @method
+//==========================================================
+MO.FEaiEarthFlat_drawTouch = function FEaiEarthFlat_drawTouch(x, y){
+   var o = this;
+   var canvas = o._canvas;
+   var context2d = canvas.graphicContext();
+   var size = o._graphicContext.size();
+   var cx = x * o._imageSize.width;
+   var cy = y * o._imageSize.height;
+   context2d.drawCircle(cx, cy, 10, 2, '#FFFFFF', '#FF0000') 
+   o._textureLand.upload(canvas);
 }
 
 //==========================================================
@@ -67,10 +84,11 @@ MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
    var image = o._imageLand;
    var context = o._graphicContext;
    var size = image.size();
+   o._imageSize = new MO.SSize2(size.width, size.height);
    var sizeWidth = size.width;
    var sizeHeight = size.height;
    // 创建画板
-   var canvas = MO.Class.create(MO.FE2dCanvas);
+   var canvas = o._canvas = MO.Class.create(MO.FE2dCanvas);
    canvas.size().assign(size);
    canvas.build(MO.Window._hDocument);
    var context2d = canvas.graphicContext();
@@ -107,14 +125,12 @@ MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
          }
       }
    }
-   //handle.fillStyle = "rgba(8, 13, 25, 0.63)";
-   //handle.fill();
    // 创建纹理
    var texture = o._textureLand = context.createFlatTexture();
    texture.setCode('land');
    texture.upload(canvas);
    // 释放数据
-   canvas.dispose();
+   //canvas.dispose();
    image.dispose();
    o._imageLand = null;
    //..........................................................
