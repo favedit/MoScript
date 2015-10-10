@@ -25,8 +25,12 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._rotationX               = 0;
    o._rotationY               = 0;
    o._rotationZ               = 0;
+   o._startRotateX            = 0;
    o._startRotateY            = 0;
+   o._startRotateZ            = 0;
+   o._targetRotateX           = 0;
    o._targetRotateY           = 0;
+   o._targetRotateZ           = 0;
    o._translateY              = 0;
    o._startTranslateY         = 0;
    o._targetTranslateY        = 0;
@@ -161,7 +165,7 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
       o._startRotateY = o._rotationY;
       o._startWorldScale = o._worldScale;
       var focusParam = o._focusParamManager.getFocusParameter(tag);
-      o._targetWorldScale = 1200;
+      o._targetWorldScale = 1400;
       o._targetRotateY = focusParam.rotateY;
       o._targetTranslateY = focusParam.translateY;
       o._startTick = MO.Timer.current();
@@ -482,11 +486,15 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
       case 4: // 显示实时投资
          o._mapReady = false;
          o._startTranslateY = o._translateY;
+         o._startRotateX = o._rotationX;
          o._startRotateY = o._rotationY;
+         o._startRotateZ = o._rotationZ;
          o._startWorldScale = o._worldScale;
          var focusParam = o._focusParamManager.getFocusParameter('china');
-         o._targetWorldScale = 1200;
+         o._targetWorldScale = 1400;
+         o._targetRotateX = 0;
          o._targetRotateY = focusParam.rotateY;
+         o._targetRotateZ = 0;
          o._targetTranslateY = focusParam.translateY;
          o._startTick = MO.Timer.current();
          o._earthMoving = true;
@@ -500,10 +508,14 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._currentVideoData.hVideo().play();
          // 隐藏中国
          o._startTranslateY = o._translateY;
+         o._startRotateX = o._rotationX;
          o._startRotateY = o._rotationY;
+         o._startRotateZ = o._rotationZ;
          o._startWorldScale = o._worldScale;
-         o._targetTranslateY = 0
+         o._targetTranslateY = 0;
+         o._targetRotateX = o._rotationX;
          o._targetRotateY = o._rotationY;
+         o._targetRotateZ = o._rotationZ;
          o._targetWorldScale = 300;
 
          o._startTick = MO.Timer.current();
@@ -535,6 +547,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._videoRenderables.at(3).setVisible(true);
          break;
       default:
+         o._displayPhase = 0;
          break;
    }
 }
@@ -614,7 +627,7 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
             var entity = countryRenderable._shape._entity;
             if(MO.Class.isClass(entity, MO.FEaiCountry3dEntity)){
                var countryEntity = entity;
-               o._targetWorldScale = 1200;
+               o._targetWorldScale = 1400;
                if (countryEntity.code() == 'China') {
                   o._showChina = true;
                }
@@ -976,7 +989,9 @@ MO.FEaiChartShow1019Scene_fixMatrix = function FEaiChartShow1019Scene_fixMatrix(
          }
       }
       o._translateY = o._startTranslateY + (o._targetTranslateY - o._startTranslateY) * rate;
+      o._rotationX = o._startRotateX + (o._targetRotateX - o._startRotateX) * rate;
       o._rotationY = o._startRotateY + (o._targetRotateY - o._startRotateY) * rate;
+      o._rotationZ = o._startRotateZ + (o._targetRotateZ - o._startRotateZ) * rate;
       o._worldScale = o._startWorldScale + (o._targetWorldScale - o._startWorldScale) * rate;
    }
    if (isVertical) {

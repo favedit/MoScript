@@ -42,7 +42,7 @@ MO.FEaiShowFocusParameterManager_setup = function FEaiShowFocusParameterManager_
    var o = this;
 
    var dict = o._dict;
-   dict.set('china', new MO.SShowFocusParameter(1.8182811571558428, -717.7387619018555));
+   dict.set('china', new MO.SShowFocusParameter(2.15, -750));
 
 }
 
