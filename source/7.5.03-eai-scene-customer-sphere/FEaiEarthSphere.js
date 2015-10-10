@@ -18,11 +18,11 @@ MO.FEaiEarthSphere = function FEaiEarthSphere(o){
    o._targetPosition   = null;
    //..........................................................
    // @method
-   o.construct         = MO.FEaiEarthFlat_construct;
+   o.construct         = MO.FEaiEarthSphere_construct;
    // @process
-   o.process           = MO.FEaiEarthFlat_process;
+   o.process           = MO.FEaiEarthSphere_process;
    // @method
-   o.dispose           = MO.FEaiEarthFlat_dispose;
+   o.dispose           = MO.FEaiEarthSphere_dispose;
    return o;
 }
 
@@ -31,7 +31,7 @@ MO.FEaiEarthSphere = function FEaiEarthSphere(o){
 //
 // @method
 //==========================================================
-MO.FEaiEarthFlat_construct = function FEaiEarthFlat_construct(){
+MO.FEaiEarthSphere_construct = function FEaiEarthSphere_construct(){
    var o = this;
    o.__base.FE3dSphere.construct.call(o);
    // 设置属性
@@ -45,7 +45,7 @@ MO.FEaiEarthFlat_construct = function FEaiEarthFlat_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiEarthFlat_process = function FEaiEarthFlat_process(){
+MO.FEaiEarthSphere_process = function FEaiEarthSphere_process(){
    var o = this;
    o.__base.FE3dSphere.process.call(o);
    // 移动处理
@@ -74,7 +74,7 @@ MO.FEaiEarthFlat_process = function FEaiEarthFlat_process(){
 //
 // @method
 //==========================================================
-MO.FEaiEarthFlat_dispose = function FEaiEarthFlat_dispose(){
+MO.FEaiEarthSphere_dispose = function FEaiEarthSphere_dispose(){
    var o = this;
    // 父处理
    o.__base.FE3dSphere.dispose.call(o);
