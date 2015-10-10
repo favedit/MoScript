@@ -8,6 +8,12 @@
 MO.RMath = function RMath(){
    var o = this;
    //..........................................................
+   // @const
+   o.PI_2           = Math.PI / 2;
+   o.PI             = Math.PI;
+   o.PI2            = Math.PI * 2;
+   // @attribute
+   o.PI_2_P         = 1 / (Math.PI / 2);
    // @attribute
    o.value1         = new Array(1);
    o.value2         = new Array(2);

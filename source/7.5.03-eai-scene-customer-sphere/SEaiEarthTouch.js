@@ -9,13 +9,14 @@ MO.SEaiEarthTouch = function SEaiEarthTouch(){
    var o = this;
    //..........................................................
    // @attribute
-   o.points    = new MO.TObjects();
+   o.points        = new MO.TObjects();
    //..........................................................
    // @method
-   o.setInfo   = MO.SEaiEarthTouch_setInfo;
-   o.calculate = MO.SEaiEarthTouch_calculate;
+   o.setInfo       = MO.SEaiEarthTouch_setInfo;
+   o.calculate     = MO.SEaiEarthTouch_calculate;
+   o.calculateFlat = MO.SEaiEarthTouch_calculateFlat;
    // @method
-   o.toString  = MO.SEaiEarthTouch_toString;
+   o.toString      = MO.SEaiEarthTouch_toString;
    return o;
 }
 
@@ -46,7 +47,6 @@ MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info){
    }
 }
 
-
 //============================================================
 // <T>计算处理。</T>
 //
@@ -60,6 +60,23 @@ MO.SEaiEarthTouch_calculate = function SEaiEarthTouch_calculate(matrix){
    for(var i = 0; i < count; i++){
       var point = points.at(i);
       point.calculate(matrix);
+   }
+}
+
+//============================================================
+// <T>计算处理。</T>
+//
+// @method
+// @return matrix 矩阵
+//============================================================
+MO.SEaiEarthTouch_calculateFlat = function SEaiEarthTouch_calculateFlat(matrix){
+   var o = this;
+   var points = o.points;
+   var count = points.count();
+   for(var i = 0; i < count; i++){
+      var point = points.at(i);
+      var position = point.position;
+      point.calculateFlat(matrix, position.x, position.y);
    }
 }
 

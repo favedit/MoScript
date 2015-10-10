@@ -17,8 +17,11 @@ MO.FEaiEarthSphere = function FEaiEarthSphere(o){
    o._currentDirection = null;
    o._targetPosition   = null;
    // @attribute
+   o._sourcePoint      = MO.Class.register(o, new MO.AGetter('_sourcePoint'));
    o._sourceTouch      = MO.Class.register(o, new MO.AGetter('_sourceTouch'));
    o._targetTouch      = MO.Class.register(o, new MO.AGetter('_targetTouch'));
+   o._sourceDirection  = MO.Class.register(o, new MO.AGetter('_sourceDirection'));
+   o._targetDirection  = MO.Class.register(o, new MO.AGetter('_targetDirection'));
    //..........................................................
    // @method
    o.construct         = MO.FEaiEarthSphere_construct;
@@ -41,13 +44,11 @@ MO.FEaiEarthSphere_construct = function FEaiEarthSphere_construct(){
    var o = this;
    o.__base.FE3dSphere.construct.call(o);
    // 设置属性
-   o._startPosition = new MO.SPoint3();
-   o._currentPosition = new MO.SPoint3();
-   o._currentDirection = new MO.SVector3();
-   o._targetPosition = new MO.SPoint3();
-   // 设置属性
+   o._sourcePoint = new MO.SEaiEarthTouchPoint();
    o._sourceTouch = new MO.SEaiEarthTouch();
    o._targetTouch = new MO.SEaiEarthTouch();
+   o._sourceDirection = new MO.SVector3();
+   o._targetDirection = new MO.SVector3();
 }
 
 //==========================================================

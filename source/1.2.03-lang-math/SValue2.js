@@ -26,6 +26,9 @@ MO.SValue2 = function SValue2(x, y){
    o.set          = MO.SValue2_set;
    o.setAll       = MO.SValue2_setAll;
    // @method
+   o.add          = MO.SValue2_add;
+   o.mul          = MO.SValue2_mul;
+   // @method
    o.mergeMin     = MO.SValue2_mergeMin;
    o.mergeMin2    = MO.SValue2_mergeMin2;
    o.mergeMax     = MO.SValue2_mergeMax;
@@ -125,6 +128,30 @@ MO.SValue2_set = function SValue2_set(x, y){
 MO.SValue2_setAll = function SValue2_set(value){
    this.x = value;
    this.y = value;
+}
+
+//==========================================================
+// <T>增加数据内容。</T>
+//
+// @method
+// @param x:Number X分量
+// @param y:Number Y分量
+//==========================================================
+MO.SValue2_add = function SValue2_add(x, y){
+   this.x += x;
+   this.y += y;
+}
+
+//==========================================================
+// <T>乘以数据内容。</T>
+//
+// @method
+// @param x:Number X分量
+// @param y:Number Y分量
+//==========================================================
+MO.SValue2_mul = function SValue2_mul(x, y){
+   this.x *= x;
+   this.y *= y;
 }
 
 //==========================================================
