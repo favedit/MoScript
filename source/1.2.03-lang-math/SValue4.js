@@ -22,6 +22,9 @@ MO.SValue4 = function SValue4(x, y, z, w){
    o.assign      = MO.SValue4_assign;
    o.set         = MO.SValue4_set;
    // @method
+   o.add         = MO.SValue4_add;
+   o.mul         = MO.SValue4_mul;
+   // @method
    o.absolute    = MO.SValue4_absolute;
    o.normalize   = MO.SValue4_normalize;
    o.negative    = MO.SValue4_negative;
@@ -62,6 +65,38 @@ MO.SValue4_set = function SValue4_set(x, y, z, w){
    this.y = y;
    this.z = z;
    this.w = w;
+}
+
+//==========================================================
+// <T>增加数据内容。</T>
+//
+// @method
+// @param x:Number X分量
+// @param y:Number Y分量
+// @param z:Number Z分量
+// @param w:Number W分量
+//==========================================================
+MO.SValue4_add = function SValue4_add(x, y, z, w){
+   this.x += x;
+   this.y += y;
+   this.z += z;
+   this.w += w;
+}
+
+//==========================================================
+// <T>乘以数据内容。</T>
+//
+// @method
+// @param x:Number X分量
+// @param y:Number Y分量
+// @param z:Number Z分量
+// @param w:Number W分量
+//==========================================================
+MO.SValue4_mul = function SValue4_mul(x, y, z, w){
+   this.x *= x;
+   this.y *= y;
+   this.z *= z;
+   this.w *= w;
 }
 
 //==========================================================

@@ -13,8 +13,27 @@ MO.FEaiEarthFlatEffect = function FEaiEarthFlatEffect(o){
    o._translateX    = 0;
    //..........................................................
    // @method
+   o.construct      = MO.FEaiEarthFlatEffect_construct;
+   // @method
    o.drawRenderable = MO.FEaiEarthFlatEffect_drawRenderable;
+   // @method
+   o.despose        = MO.FEaiEarthFlatEffect_despose;
    return o;
+}
+
+//==========================================================
+// <T>绘制渲染对象。</T>
+//
+// @method
+// @param region:FG3dRegion 渲染区域
+// @param renderable:FG3dRenderable 渲染对象
+//==========================================================
+MO.FEaiEarthFlatEffect_construct = function FEaiEarthFlatEffect_construct(){
+   var o = this;
+   o.__base.FG3dAutomaticEffect.construct.call(o);
+   // 配置处理
+   o._speedCloud = new MO.SVector4(0, 0, 0, 0);
+   o._speedWater = new MO.SVector4(0, 0, 0, 0);
 }
 
 //==========================================================
@@ -28,18 +47,18 @@ MO.FEaiEarthFlatEffect_drawRenderable = function FEaiEarthFlatEffect_drawRendera
    var o = this;
    var context = o._graphicContext;
    var program = o._program;
-   o._cloudPosition -= 0.00004;
-   o._translateX += 0.00003;
+   o._speedCloud.add(-0.00004, -0.00003, -0.00002, 1.0);
+   o._speedWater.add(0.000024, 0.000015, 0.00001, 1.0);
    // 绑定材质
    var material = renderable.material();
    var info = material.info();
    o.bindMaterial(material);
    // 设置矩阵
    var displayMatrix = renderable.display().currentMatrix();
-   program.setParameter4('fc_cloud', o._cloudPosition, 0, 0, 0);
-   program.setParameter4('fc_land', o._translateX, 0, 0, 0);
-   program.setParameter4('fc_ocean', o._translateX, 0, 0, 0);
-   program.setParameter4('fc_water', o._translateX, 0, 0, 0);
+   program.setParameter('fc_cloud', o._speedCloud);
+   program.setParameter4('fc_land', 0, 0, 0, 0);
+   program.setParameter4('fc_ocean', 0, 0, 0, 0);
+   program.setParameter('fc_water', o._speedWater);
    //program.setParameter('vc_model_matrix', displayMatrix);
    //program.setParameter('vc_vp_matrix', cameraVpMatrix);
    // 绑定所有属性流
@@ -48,3 +67,19 @@ MO.FEaiEarthFlatEffect_drawRenderable = function FEaiEarthFlatEffect_drawRendera
    // 绘制处理
    context.drawTriangles(renderable.indexBuffer());
 }
+//==========================================================
+// <T>绘制渲染对象。</T>
+//
+// @method
+// @param region:FG3dRegion 渲染区域
+// @param renderable:FG3dRenderable 渲染对象
+//==========================================================
+MO.FEaiEarthFlatEffect_despose = function FEaiEarthFlatEffect_despose(){
+   var o = this;
+   // 释放属性
+   o._speedCloud = MO.Lang.Object.despose(o._speedCloud);
+   o._speedWater = MO.Lang.Object.despose(o._speedWater);
+   // 父处理
+   o.__base.FG3dAutomaticEffect.despose.call(o);
+}
+

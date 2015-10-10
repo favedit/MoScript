@@ -8,17 +8,17 @@ MO.FG3dRenderTarget = function FG3dRenderTarget(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
    //..........................................................
    // @attribute
-   o._size        = MO.Class.register(o, new MO.AGetter('_size'));
-   o._color       = MO.Class.register(o, new MO.AGetter('_color'));
-   o._textures    = null;
+   o._size     = MO.Class.register(o, new MO.AGetter('_size'));
+   o._color    = MO.Class.register(o, new MO.AGetter('_color'));
+   o._textures = null;
    //..........................................................
    // @method
-   o.construct    = MO.FG3dRenderTarget_construct;
+   o.construct = MO.FG3dRenderTarget_construct;
    // @method
    o.setQualityCd = MO.FG3dRenderTarget_setQualityCd;
-   o.textures     = MO.FG3dRenderTarget_textures;
+   o.textures  = MO.FG3dRenderTarget_textures;
    // @method
-   o.dispose      = MO.FG3dRenderTarget_dispose;
+   o.dispose   = MO.FG3dRenderTarget_dispose;
    return o;
 }
 

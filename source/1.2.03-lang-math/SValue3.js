@@ -29,6 +29,7 @@ MO.SValue3 = function SValue3(x, y, z){
    o.setAll       = MO.SValue3_setAll;
    // @method
    o.length       = MO.SValue3_absolute;
+   o.lengthTo     = MO.SValue3_lengthTo;
    o.absolute     = MO.SValue3_absolute;
    o.normalize    = MO.SValue3_normalize;
    o.negative     = MO.SValue3_negative;
@@ -148,6 +149,20 @@ MO.SValue3_normalize = function SValue3_normalize(){
       this.z *= rate;
    }
    return this;
+}
+
+//==========================================================
+// <T>获得长度。</T>
+//
+// @method
+// @return Number 绝对值
+//==========================================================
+MO.SValue3_lengthTo = function SValue3_lengthTo(x, y, z){
+   var o = this;
+   var cx = o.x - x;
+   var cy = o.y - y;
+   var cz = o.z - z;
+   return Math.sqrt((cx * cx) + (cy * cy) + (cz * cz));
 }
 
 //==========================================================

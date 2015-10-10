@@ -18,6 +18,7 @@ MO.SPoint3 = function SPoint3(x, y, z){
    o.mergeMin3 = MO.SPoint3_mergeMin3;
    o.mergeMax  = MO.SPoint3_mergeMax;
    o.mergeMax3 = MO.SPoint3_mergeMax3;
+   o.moveTo    = MO.SPoint3_moveTo;
    o.resize    = MO.SPoint3_resize;
    o.slerp     = MO.SPoint3_slerp;
    return o;
@@ -120,6 +121,21 @@ MO.SPoint3_resize = function SPoint3_resize(x, y, z){
    if(z != null){
       o.z += z;
    }
+}
+
+//==========================================================
+// <T>根据方向移动坐标。</T>
+// 
+//
+// @method
+// @param direction:SVector3 方向
+// @param length:Float 长度
+//==========================================================
+MO.SPoint3_moveTo = function SPoint3_moveTo(direction, length){
+   var o = this;
+   o.x += direction.x * length;
+   o.y += direction.y * length;
+   o.z += direction.z * length;
 }
 
 //==========================================================
