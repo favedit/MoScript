@@ -85,13 +85,15 @@ MO.FEaiEarthFlat_drawGrid = function FEaiEarthFlat_drawGrid(context2d, split){
    var cy = size.height / sy;
    for(var i = 0; i < sy ; i++){
       var y = cy * i;
-      context2d.drawLine(0, y + 1, sizeWidth, y + , '#333333', 1);
-      context2d.drawLine(0, y, sizeWidth, y, '#A193F8', 1);
+      //context2d.drawLine(0, y + 1, sizeWidth, y + 1, '#333333', 1);
+      //context2d.drawLine(0, y, sizeWidth, y, '#A193F8', 1);
+      context2d.drawLine(0, y, sizeWidth, y, '#FF75F3', 1);
    }
    for(var i = 0; i < sx ; i++){
       var x = cx * i;
-      context2d.drawLine(x + 1, 0, x + 1, sizeHeight, '#333333', 1);
-      context2d.drawLine(x, 0, x, sizeHeight, '#0675F3', 1);
+      //context2d.drawLine(x + 1, 0, x + 1, sizeHeight, '#333333', 1);
+      //context2d.drawLine(x, 0, x, sizeHeight, '#0675F3', 1);
+      context2d.drawLine(x, 0, x, sizeHeight, '#FF75F3', 1);
    }
 }
 
