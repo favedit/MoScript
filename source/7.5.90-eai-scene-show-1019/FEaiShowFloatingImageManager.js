@@ -212,7 +212,7 @@ MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_
    for (var i = 0; i < count; i++) {
       var fi = floatingImages.at(i);
       fi.floatingAnime(radianY);
-      fi.location().x+=5;
+      fi.location().x++;
       if (fi.location().x > gap * 8) {
          fi.location().x = -gap;
       }
