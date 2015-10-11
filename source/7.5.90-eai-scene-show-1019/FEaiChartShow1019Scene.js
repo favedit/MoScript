@@ -190,6 +190,11 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
       o.switchDisplayPhase(++o._displayPhase);
    }
 
+   var restIndex = message.indexOf('reset');
+   if (restIndex != -1) {
+      o.switchDisplayPhase(0);
+   }
+
    var autoRotateIndex = message.indexOf('autoRotate');
    if (autoRotateIndex != -1) {
       o._autoRotate = new Boolean(parseInt(message.substr(autoRotateIndex + 11)));
@@ -198,7 +203,6 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
    var areaIndex = message.indexOf('area');
    if (areaIndex != -1) {
       var area = message.substr(areaIndex + 5);
-      console.log('=================AREA:' + area);
    }
 }
 
@@ -439,7 +443,7 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       }
 
       //o._lineManager.upload();
-      o._floatingImageManager.process(o._rotateRadian);
+      //o._floatingImageManager.process(o._rotateRadian);
    }
 }
 
@@ -529,6 +533,9 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._currentVideoData = o._videoDataList.at(1);
          o._currentVideoData.hVideo().play();
          // 隐藏中国
+         o._countryEntity._borderShape.setVisible(false);
+         o._countryEntity._faceShape.setVisible(false);
+
          o._startTranslateY = o._translateY;
          o._startRotateX = o._rotationX;
          o._startRotateY = o._rotationY;
@@ -855,7 +862,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    // 注册socket监听
    var socket = o._socket;
    socket = MO.Class.create(MO.FSocket);
-   socket.connect('ws://10.21.1.6:9080/earth');
+   socket.connect('{service.earth}/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
 
    var focusParamManager = o._focusParamManager = MO.Class.create(MO.FEaiShowFocusParameterManager);
@@ -1054,13 +1061,13 @@ MO.FEaiChartShow1019Scene_fixMatrix = function FEaiChartShow1019Scene_fixMatrix(
    }
    matrix.update();
    //..........................................................
-   if (o._autoRotate) {
-      o._rotationY -= 0.001;
-      if (o._rotationY <  0) {
-         o._rotationY = 2 * Math.PI;
-      }
-   }
-      }
+   //if (o._autoRotate) {
+   //   o._rotationY -= 0.001;
+   //   if (o._rotationY <  0) {
+   //      o._rotationY = 2 * Math.PI;
+   //   }
+   //}
+}
 
 //==========================================================
 // <T>大小事件处理。</T>

@@ -45,7 +45,7 @@ MO.FGuiFloatingFrame_setup = function FGuiFloatingFrame_setup(data) {
    o._displayImage.addLoadListener(o, o.onImageLoad);
    o._displayImage.loadUrl(data.displayImageUrl);
 
-   o._startRotateY = data.longitude * (Math.PI / 180);
+   o._startRotateY = data.latitude * (Math.PI / 180);
    
 }
 
@@ -93,24 +93,46 @@ MO.FGuiFloatingFrame_onPaintBegin = function FGuiFloatingFrame_onPaintBegin(even
 //==========================================================
 MO.FGuiFloatingFrame_floatingAnime = function FGuiFloatingFrame_floatingAnime(radianY) {
    o = this;
-
-   //if (o._startRotateY < 0 && radianY < 0 || ) {
+   //var t = 0;
+   //if (o._startRotateY < 0 && radianY < 0) {
    //   if (radianY < o._startRotateY) {
+   //      t = (radianY - o._startRotateY) / Math.PI;
    //      o.setVisible(true);
    //   }
+   //   else {
+   //      o.setVisible(false);
+   //   }
    //}
-   //else if()
-   
-
-   //if (o._startRotateY < radianY && radianY < o._startRotateY + Math.PI) {
-      
+   //else if (o._startRotateY >= 0 && radianY >= 0) {
+   //   if (radianY < o._startRotateY) {
+   //      t = (o._startRotateY - radianY) / Math.PI;
+   //      o.setVisible(true);
+   //   }
+   //   else {
+   //      o.setVisible(false);
+   //   }
+   //}
+   //else if (o._startRotateY >= 0 && radianY < 0) {
+   //   if (radianY > o._startRotateY - Math.PI) {
+   //      t = (o._startRotateY - radianY) / Math.PI;
+   //      o.setVisible(true);
+   //   }
+   //   else {
+   //      o.setVisible(false);
+   //   }
+   //}
+   //else if (o._startRotateY < 0 && radianY >= 0) {
+   //   if (radianY < o._startRotateY + Math.PI) {
+   //      t = (radianY - o._startRotateY) / Math.PI;
+   //      o.setVisible(true);
+   //   }
+   //   else {
+   //      o.setVisible(false);
+   //   }
    //}
    //else {
    //   o.setVisible(false);
    //}
-
-   //t = (radianY - o._startRotateY) / Math.PI;
-
 
    //var data = o._data;
    //var startX = data.startX;
@@ -118,34 +140,13 @@ MO.FGuiFloatingFrame_floatingAnime = function FGuiFloatingFrame_floatingAnime(ra
    //var endX = data.endX;
    //var endY = data.endY;
 
-   //var scale = 0.0;
+   ////var scale = 0.0;
 
-   //o.setScale(scale);
-
+   ////o.setScale(scale);
 
    //var x = (endX - startX) * t;
-   //var y = (endY - startY) * t;
-
-
+   //var y = endY;
    //o.setLocation(x, y);
-
-   //o.longitude = 0;
-   //o.latitude = 0;
-   //o.startX = 0;
-   //o.startY = 0;
-   //o.endX = 0;
-   //o.endY = 0;
-   //o.popDuration = 500;
-   //o.showDuration = 5000;
-   //o.closeDuration = 500;
-
-   //o.setVisible(true);
-   //o._startTick = MO.Timer.current();
-   //var inves = o.data().investmentTotal();
-   //if (inves == 1000000) {
-   //   o._100yiSE.play(0);
-   //}
-   //o._popupSE.play(0);
 }
 
 //==========================================================

@@ -42,23 +42,149 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    var o = this;
 
    var floatingImages = o._floatingImages;
-
+   // 蚌埠
    var fiData = new MO.SShowFloatingImageData();
    fiData.name = 'beijing';
    fiData.displayImageUrl = '{eai.resource}/show1019/img1.png';
-   fiData.longitude = 39.9;
-   fiData.latitude = 116.3;
-   fiData.startRotateY = 1.33;
-   fiData.startX = 1980;
-   fiData.startY = 0;
-   fiData.endX = 0;
-   fiData.endY = 0;
+   fiData.longitude = 32.54;
+   fiData.latitude = 117.23;
+   fiData.startX = 0;
+   fiData.startY = 100;
+   fiData.endX = 1980;
+   fiData.endY = 100;
 
    var frame = MO.Class.create(MO.FGuiFloatingFrame);
    frame.setWidth(423);
    frame.setHeight(352);
    frame.setup(fiData);
    frame.build();
+   frame.setVisible(false);
+   floatingImages.push(frame);
+   // 北京
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'beijing';
+   fiData.displayImageUrl = '{eai.resource}/show1019/img1.png';
+   fiData.longitude = 39.54;
+   fiData.latitude = 116.24;
+   fiData.startX = 0;
+   fiData.startY = 200;
+   fiData.endX = 1980;
+   fiData.endY = 200;
+
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(423);
+   frame.setHeight(352);
+   frame.setup(fiData);
+   frame.build();
+   frame.setVisible(false);
+   floatingImages.push(frame);
+   // 东南亚
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'beijing';
+   fiData.displayImageUrl = '{eai.resource}/show1019/img1.png';
+   fiData.longitude = 21.31;
+   fiData.latitude = 96.6;
+   fiData.startX = 0;
+   fiData.startY = 300;
+   fiData.endX = 1980;
+   fiData.endY = 300;
+
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(423);
+   frame.setHeight(352);
+   frame.setup(fiData);
+   frame.build();
+   frame.setVisible(false);
+   floatingImages.push(frame);
+   // 合肥
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'beijing';
+   fiData.displayImageUrl = '{eai.resource}/show1019/img1.png';
+   fiData.longitude = 31.49;
+   fiData.latitude = 117.13;
+   fiData.startX = 0;
+   fiData.startY = 400;
+   fiData.endX = 1980;
+   fiData.endY = 400;
+
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(423);
+   frame.setHeight(352);
+   frame.setup(fiData);
+   frame.build();
+   frame.setVisible(false);
+   floatingImages.push(frame);
+   // 兰州
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'beijing';
+   fiData.displayImageUrl = '{eai.resource}/show1019/img1.png';
+   fiData.longitude = 36.3;
+   fiData.latitude = 103.50;
+   fiData.startX = 0;
+   fiData.startY = 500;
+   fiData.endX = 1980;
+   fiData.endY = 500;
+
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(423);
+   frame.setHeight(352);
+   frame.setup(fiData);
+   frame.build();
+   frame.setVisible(false);
+   floatingImages.push(frame);
+   // 纽约
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'beijing';
+   fiData.displayImageUrl = '{eai.resource}/show1019/img1.png';
+   fiData.longitude = 40.42;
+   fiData.latitude = -74.0;
+   fiData.startX = 0;
+   fiData.startY = 600;
+   fiData.endX = 1980;
+   fiData.endY = 600;
+
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(423);
+   frame.setHeight(352);
+   frame.setup(fiData);
+   frame.build();
+   frame.setVisible(false);
+   floatingImages.push(frame);
+   // 上海
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'beijing';
+   fiData.displayImageUrl = '{eai.resource}/show1019/img1.png';
+   fiData.longitude = 31.13;
+   fiData.latitude = 121.28;
+   fiData.startX = 0;
+   fiData.startY = 700;
+   fiData.endX = 1980;
+   fiData.endY = 700;
+
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(423);
+   frame.setHeight(352);
+   frame.setup(fiData);
+   frame.build();
+   frame.setVisible(false);
+   floatingImages.push(frame);
+   // 香港
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'beijing';
+   fiData.displayImageUrl = '{eai.resource}/show1019/img1.png';
+   fiData.longitude = 22.23;
+   fiData.latitude = 114.6;
+   fiData.startX = 0;
+   fiData.startY = 800;
+   fiData.endX = 1980;
+   fiData.endY = 800;
+
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(423);
+   frame.setHeight(352);
+   frame.setup(fiData);
+   frame.build();
+   frame.setVisible(false);
    floatingImages.push(frame);
 
 }
