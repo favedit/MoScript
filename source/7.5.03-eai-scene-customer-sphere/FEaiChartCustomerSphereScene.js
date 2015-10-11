@@ -84,8 +84,12 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       // 发送点击消息
       var sourceTouchPoint = sourceTouch.points.first();
       var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
-      console.log('Check pixel ' + id);
-      if(sourceTouchPoint.originLength < (160 / size.height)){
+      if(id > 0){
+         socketSphere.send('area=' + id);
+         //console.log('Check pixel ' + id);
+         return;
+      }
+      if(sourceTouchPoint.originLength < (128 / size.height)){
          if(guiManager.visible()){
             if(sourceTouchPoint.originPosition.x < 0){
                earthSphere.reset();
@@ -106,7 +110,7 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       earthSphere.setTarget(info);
       //MO.Logger.debug(o, 'Touch movie. ({1})', targetTouch);
       // 发送转动消息
-      socketSphere.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
+      earthSphere.sendRotation();
    }else if(typeCode == 'U'){
       o._moving = false;
       MO.Logger.debug(o, 'Touch up.');
@@ -169,13 +173,13 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    // 显示地图
    //o._mapEntity.showWorld();
    // 显示城市
-   var desktop = o._application.desktop();
-   var canvas2d = desktop.canvas2d();
-   var context2d = canvas2d.graphicContext();
-   var worldResource = o._worldResource;
-   context2d.fillRectangle(100, 100, 200, 200, '#FFFFFF');
+   //var desktop = o._application.desktop();
+   //var canvas2d = desktop.canvas2d();
+   //var context2d = canvas2d.graphicContext();
+   //var worldResource = o._worldResource;
+   //context2d.fillRectangle(100, 100, 200, 200, '#FFFFFF');
    // 自动旋转
-   o._earthSphere.auto();
+   o._earthSphere.autoRotation(true);
    // 显示界面
    o._guiManager.hide();
    //o._mapEntity.showCity();
@@ -351,6 +355,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 注册发送监听
    var socket = o._socketSphere = MO.Class.create(MO.FSocket);
    socket.connect('{service.touch}/sphere');
+   earthSphere._socket = socket;
    //..........................................................
    // 加载资源
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);

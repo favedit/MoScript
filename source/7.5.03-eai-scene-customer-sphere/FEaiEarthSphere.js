@@ -6,7 +6,7 @@
 // @history 150207
 //==========================================================
 MO.FEaiEarthSphere = function FEaiEarthSphere(o){
-   o = MO.Class.inherits(this, o, MO.FE3dSphere);
+   o = MO.Class.inherits(this, o, MO.FE3dSphere, MO.MListener);
    //..........................................................
    // @attribute
    o._optionRotation   = false;
@@ -19,6 +19,7 @@ MO.FEaiEarthSphere = function FEaiEarthSphere(o){
    o._currentPosition  = null;
    o._currentDirection = null;
    o._targetPosition   = null;
+   o._rotationSpeed    = -0.001;
    o._rotationSpeed    = -0.001;
    // @attribute
    o._sourcePoint      = MO.Class.register(o, new MO.AGetter('_sourcePoint'));
@@ -34,7 +35,8 @@ MO.FEaiEarthSphere = function FEaiEarthSphere(o){
    o.setTarget         = MO.FEaiEarthSphere_setTarget;
    // @method
    o.reset             = MO.FEaiEarthSphere_reset;
-   o.auto              = MO.FEaiEarthSphere_auto;
+   o.autoRotation      = MO.FEaiEarthSphere_autoRotation;
+   o.sendRotation      = MO.FEaiEarthSphere_sendRotation;
    o.process           = MO.FEaiEarthSphere_process;
    // @method
    o.dispose           = MO.FEaiEarthSphere_dispose;
@@ -103,7 +105,7 @@ MO.FEaiEarthSphere_setTarget = function FEaiEarthSphere_setTarget(info){
    axis.cross(o._targetDirection);
    axis.normalize();
    o._rotationAngle = Math.acos(o._sourceDirection.dotPoint3(o._targetDirection));
-   o._optionRotation = false;
+   o.autoRotation(false);
    o._autoTick = 0;
 }
 
@@ -130,17 +132,18 @@ MO.FEaiEarthSphere_process = function FEaiEarthSphere_process(){
          matrix.assign(o._sourceMatrix);
          matrix.addRotationAxis(o._rotationAxis, -o._currentAngle);
          matrix.parse();
+         // 发送旋转
+         o.sendRotation();
       }else if(o._optionRotation){
+         // 自动旋转
          matrix.addRotationAxis(MO.Lang.Math.vectorAxisY, -o._rotationSpeed);
          matrix.parse();
-         //var d = matrix.transformPoint3(new MO.SVector3(0, 0, -1));
-         //d.normalize();
-         //var angle = Math.atan2(d.x, d.z);
-         //console.log(angle);
+         // 发送旋转
+         o.sendRotation();
       }else{
          if(o._autoTick == 0){
             o._autoTick = currentTick;
-         }else if(currentTick - o._autoTick > 30000){
+         }else if(currentTick - o._autoTick > 120000){
             o.reset();
          }
       }
@@ -166,7 +169,7 @@ MO.FEaiEarthSphere_reset = function FEaiEarthSphere_reset(){
    axis.normalize();
    o._rotationAngle = Math.acos(o._sourceDirection.dotPoint3(o._targetDirection));
    // 开启自动模式
-   o.auto();
+   o.autoRotation(true);
 }
 
 //==========================================================
@@ -174,10 +177,28 @@ MO.FEaiEarthSphere_reset = function FEaiEarthSphere_reset(){
 //
 // @method
 //==========================================================
-MO.FEaiEarthSphere_auto = function FEaiEarthSphere_auto(){
+MO.FEaiEarthSphere_autoRotation = function FEaiEarthSphere_autoRotation(value){
    var o = this;
-   o._optionRotation = true;
-   o._currentRotation = 0;
+   if(value && !o._optionRotation){
+      o._optionRotation = true;
+      o._currentRotation = 0;
+      o._socket.send('autoRotate=1');
+   }else if(!value && o._optionRotation){
+      o._optionRotation = false;
+      o._currentRotation = 0;
+      o._socket.send('autoRotate=0');
+   }
+}
+
+//==========================================================
+// <T>发送旋转信息。</T>
+//
+// @method
+//==========================================================
+MO.FEaiEarthSphere_sendRotation = function FEaiEarthSphere_sendRotation(){
+   var o = this;
+   var matrix = o._matrix;
+   o._socket.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
 }
 
 //==========================================================

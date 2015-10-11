@@ -43,7 +43,7 @@ MO.FEaiEarthFlat_drawTouch = function FEaiEarthFlat_drawTouch(x, y){
    var size = o._graphicContext.size();
    var cx = x * o._imageSize.width;
    var cy = y * o._imageSize.height;
-   context2d.drawCircle(cx, cy, 10, 2, '#FFFFFF', '#FF0000') 
+   context2d.drawCircle(cx, cy, 4, 1, '#FFFFFF', '#FF0000') 
    o._textureLand.upload(canvas);
 }
 
@@ -152,7 +152,7 @@ MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
       }
    }
    // 绘制经纬度
-   o.drawGrid(context2d, 4);
+   o.drawGrid(context2d, 8);
    // 绘制区域
    context2d.drawImage(o._imageArea, 0, 0, sizeWidth, size.height);
    // 创建纹理

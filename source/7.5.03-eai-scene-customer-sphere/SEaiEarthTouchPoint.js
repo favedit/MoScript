@@ -46,7 +46,7 @@ MO.SEaiEarthTouchPoint_setInfo = function SEaiEarthTouchPoint_setInfo(info){
    var y = -(info.y() - 0.5) * 2;
    o.originPosition.set(x, y);
    o.originLength = o.originPosition.absolute();
-   x *= Math.PI / 2;
+   x *= Math.PI / 2 * 1.02;
    var length2d = MO.Lang.Float.toRange(Math.sqrt(x * x + y * y), 0, 1);
    var radius2d = Math.sin(length2d * MO.Lang.Math.PI_2);
    // 设置位置
