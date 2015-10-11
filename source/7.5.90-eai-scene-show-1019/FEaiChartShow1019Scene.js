@@ -443,7 +443,7 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       }
 
       //o._lineManager.upload();
-      //o._floatingImageManager.process(o._rotateRadian);
+      o._floatingImageManager.process(o._rotateRadian);
    }
 }
 
