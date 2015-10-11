@@ -21,9 +21,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._lastTick               = 0;
    o._interval               = 10;
    // @attribute
-   o._logoBar                = null;
-   o._timeline               = null;
-   o._liveTable              = null;
+   o._controlOperation       = null;
    // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
@@ -39,9 +37,6 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o.onProcessReady          = MO.FEaiChartCustomerSphereScene_onProcessReady;
    o.onProcessInput          = MO.FEaiChartCustomerSphereScene_onProcessInput;
    o.onProcess               = MO.FEaiChartCustomerSphereScene_onProcess;
-   // @event
-   o.onSwitchProcess         = MO.FEaiChartCustomerSphereScene_onSwitchProcess;
-   o.onSwitchComplete        = MO.FEaiChartCustomerSphereScene_onSwitchComplete;
    //..........................................................
    // @method
    o.construct               = MO.FEaiChartCustomerSphereScene_construct;
@@ -65,6 +60,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
 MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustomerSphereScene_onSocketTouchReceived(event) {
    var o = this;
    // 获得信息
+   var guiManager = o._guiManager;
    var context = o._graphicContext;
    var size = context.size();
    var info = o._info;
@@ -72,7 +68,7 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
    // 计算处理
    var earthSphere = o._earthSphere;
    var matrix = earthSphere.matrix();
-   var earthMatrix = o._earthMatrix;
+   var socketSphere = o._socketSphere;
    var sourceTouch = earthSphere.sourceTouch();
    var targetTouch = earthSphere.targetTouch();
    // 判断类型
@@ -86,57 +82,31 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       sourceTouch.calculate(rotationMatrix);
       MO.Logger.debug(o, 'Touch down. ({1})', sourceTouch);
       // 发送点击消息
-      //if(length < 128 / size.height){
-      //   o._socketSphere.send('next');
-      //}
       var sourceTouchPoint = sourceTouch.points.first();
-      o._earthFlat.drawTouch(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
-      earthMatrix.assign(matrix);
-      o._moving = true;
+      var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
+      console.log('Check pixel ' + id);
+      if(sourceTouchPoint.originLength < (160 / size.height)){
+         if(guiManager.visible()){
+            if(sourceTouchPoint.originPosition.x < 0){
+               earthSphere.reset();
+               socketSphere.send('reset');
+               guiManager.setVisible(false);
+            }else{
+               socketSphere.send('next');
+            }
+         }else{
+            guiManager.setVisible(true);
+         }
+      }else{
+         guiManager.setVisible(false);
+         o._earthFlat.drawTouch(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
+         o._moving = true;
+      }
    }else if(typeCode == 'M' && o._moving){
       earthSphere.setTarget(info);
-      // 计算数据
-      var sourceTouchPoint = sourceTouch.points.first();
-      var targetTouchPoint = targetTouch.points.first();
-      // 计算旋转轴
-      var axis = new MO.SVector3();
-      axis.assign(sourceTouchPoint.direction);
-      axis.cross(targetTouchPoint.direction);
-      axis.normalize();
-      // 计算旋转角
-      //var angle = Math.acos(sourceTouchPoint.direction.dotPoint3(targetTouchPoint.direction)) * (0.5 / 0.29);
-      var angle = Math.acos(sourceTouchPoint.direction.dotPoint3(targetTouchPoint.direction));
-      matrix.assign(earthMatrix);
-      if(o._lengthStart > 10){
-         axis.assign(MO.Lang.Math.vectorAxisZ);
-         axis.cross(moveDirection);
-         axis.normalize();
-         var cl = length - o._lengthStart;
-         matrix.addRotationAxis(axis, cl);
-         var p1 = new MO.SVector3(downDirection.x, downDirection.y, 0);
-         p1.normalize();
-         var p2 = new MO.SVector3(moveDirection.x, moveDirection.y, 0);
-         p2.normalize();
-         axis.assign(p1);
-         axis.cross(p2);
-         axis.normalize();
-         matrix.addRotationAxis(axis, -angle);
-         //axis = MO.Lang.Math.vectorAxisZ;
-         //if(axis.x < 0){
-         //   angle = -angle;
-         //}
-      }else{
-         matrix.addRotationAxis(axis, -angle);
-      }
-      matrix.parse();
-      // 计算原始位置
-      var rotationMatrix = o._rotationMatrix.assign(matrix);
-      rotationMatrix.invert();
-      targetTouch.calculate(rotationMatrix);
-      MO.Logger.debug(o, 'Touch move. ({1})', targetTouch);
-      //MO.Logger.debug(o, 'Touch move. (down={1}, direction={2}, flat={3})', movePosition.toDisplay(), moveDirection.toDisplay(), moveLocation.toDisplay());
+      //MO.Logger.debug(o, 'Touch movie. ({1})', targetTouch);
       // 发送转动消息
-      o._socketSphere.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
+      socketSphere.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
    }else if(typeCode == 'U'){
       o._moving = false;
       MO.Logger.debug(o, 'Touch up.');
@@ -204,8 +174,10 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    var context2d = canvas2d.graphicContext();
    var worldResource = o._worldResource;
    context2d.fillRectangle(100, 100, 200, 200, '#FFFFFF');
+   // 自动旋转
+   o._earthSphere.auto();
    // 显示界面
-   o._guiManager.show();
+   o._guiManager.hide();
    //o._mapEntity.showCity();
 }
 
@@ -288,49 +260,12 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       }
    }
    // 重复播放
-   if (o._playing) {
-      // 播放地图
-      var countryEntity = o._countryEntity;
-      if (!countryEntity.introAnimeDone()) {
-         countryEntity.process();
-         //return;
-      }
-      // 显示界面
-      if (!o._mapReady) {
-         //o._guiManager.show();
-         // 淡出显示界面
-         //var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
-         //alphaAction.setAlphaBegin(0);
-         //alphaAction.setAlphaEnd(1);
-         //alphaAction.setAlphaInterval(0.01);
-         //alphaAction.push(o._guiManager);
-         //o._guiManager.mainTimeline().pushAction(alphaAction);
-         o._mapReady = true;
-      }
-      //..........................................................
+   if (o._playing){
+      // 球面处理
+      o._earthSphere.process();
       // 键盘处理
       o.onProcessInput();
    }
-}
-
-//==========================================================
-// <T>切换过程处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartCustomerSphereScene_onSwitchProcess = function FEaiChartCustomerSphereScene_onSwitchProcess(event) {
-   var o = this;
-}
-
-//==========================================================
-// <T>切换完成处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiChartCustomerSphereScene_onSwitchComplete = function FEaiChartCustomerSphereScene_onSwitchComplete(event) {
-   var o = this;
 }
 
 //==========================================================
@@ -360,7 +295,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var canvas3d = desktop.canvas3d();
    var context3d = canvas3d.graphicContext();
    var stage = o._activeStage;
-   //context3d.enableDrawBuffers();
    //..........................................................
    // 创建地球平面
    var earthFlat = o._earthFlat = MO.Class.create(MO.FEaiEarthFlat);
@@ -372,12 +306,10 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 创建地球
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
    earthSphere.linkGraphicContext(context3d);
-   earthSphere.setSplitCount(128);
-   //earthSphere.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   earthSphere.setSplitCount(64);
    earthSphere.setup();
    earthSphere.matrix().setScaleAll(200);
    earthSphere.matrix().update();
-   //earthSphere.material().info().optionDouble = true;
    // 设置技术
    var technique = stage.selectTechnique(o, MO.FE3dSphereTechnique);
    var passView = technique.passView();
@@ -404,16 +336,6 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    operation.setup();
    operation.build();
    o._guiManager.register(operation);
-   //..........................................................
-   var dataLayer = stage.dataLayer();
-   // 创建投资数据
-   var invement = o._processor = MO.Class.create(MO.FEaiChartMktCustomerProcessor);
-   invement.linkGraphicContext(o);
-   invement.setMapEntity(o._mapEntity);
-   invement.setup();
-   var display = invement.display();
-   o.fixMatrix(display.matrix());
-   dataLayer.push(display);
    //..........................................................
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 建立城市实体
@@ -493,9 +415,6 @@ MO.FEaiChartCustomerSphereScene_fixMatrix = function FEaiChartCustomerSphereScen
 MO.FEaiChartCustomerSphereScene_processResize = function FEaiChartCustomerSphereScene_processResize() {
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
-   var isVertical = MO.Window.Browser.isOrientationVertical()
-      // 重新设置矩阵
-   o.fixMatrix(o._processor.display().matrix());
    //..........................................................
    var context = o._graphicContext;
    var size = context.size();
@@ -514,12 +433,6 @@ MO.FEaiChartCustomerSphereScene_dispose = function FEaiChartCustomerSphereScene_
    var o = this;
    o._rotationMatrix = MO.Lang.Object.dispose(o._rotationMatrix);
    o._earthMatrix = MO.Lang.Object.dispose(o._earthMatrix);
-   o._mouseDownPosition = MO.Lang.Object.dispose(o._mouseDownPosition);
-   o._mouseDownDirection = MO.Lang.Object.dispose(o._mouseDownDirection);
-   o._mouseDownLocation = MO.Lang.Object.dispose(o._mouseDownLocation);
-   o._mouseMovePosition = MO.Lang.Object.dispose(o._mouseMovePosition);
-   o._mouseMoveDirection = MO.Lang.Object.dispose(o._mouseMoveDirection);
-   o._mouseMoveLocation = MO.Lang.Object.dispose(o._mouseMoveLocation);
    o._info = MO.Lang.Object.dispose(o._info);
    // 父处理
    o.__base.FEaiChartScene.dispose.call(o);

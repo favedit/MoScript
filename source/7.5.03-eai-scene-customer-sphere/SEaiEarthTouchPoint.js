@@ -9,7 +9,13 @@ MO.SEaiEarthTouchPoint = function SEaiEarthTouchPoint(){
    var o = this;
    //..........................................................
    // @attribute 点击位置
+   o.originPosition = new MO.SPoint2();
+   // @attribute 点击长度
+   o.originLength    = 0;
+   // @attribute 点击位置
    o.position        = new MO.SPoint2();
+   // @attribute 点击长度
+   o.positionLength  = 0;
    // @attribute 点击方向
    o.direction       = new MO.SVector3();
    // @attribute 地球位置
@@ -38,11 +44,14 @@ MO.SEaiEarthTouchPoint_setInfo = function SEaiEarthTouchPoint_setInfo(info){
    // 计算数据
    var x = (info.x() - 0.5) * 2;
    var y = -(info.y() - 0.5) * 2;
-   x *= 0.5 / 0.31;
+   o.originPosition.set(x, y);
+   o.originLength = o.originPosition.absolute();
+   x *= Math.PI / 2;
    var length2d = MO.Lang.Float.toRange(Math.sqrt(x * x + y * y), 0, 1);
    var radius2d = Math.sin(length2d * MO.Lang.Math.PI_2);
    // 设置位置
    o.position.set(x, y);
+   o.positionLength = o.position.absolute();
    // 计算球面位置
    var direction = o.direction;
    direction.x = x;

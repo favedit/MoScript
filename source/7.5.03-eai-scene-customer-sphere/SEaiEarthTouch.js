@@ -10,6 +10,7 @@ MO.SEaiEarthTouch = function SEaiEarthTouch(){
    //..........................................................
    // @attribute
    o.points        = new MO.TObjects();
+   o.direction     = new MO.SVector3();
    //..........................................................
    // @method
    o.setInfo       = MO.SEaiEarthTouch_setInfo;
@@ -45,6 +46,9 @@ MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info){
       point.setInfo(infoPoint);
       points.push(point);
    }
+   // 设置方向
+   var point = points.first();
+   o.direction.assign(point.direction);
 }
 
 //============================================================

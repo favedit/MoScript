@@ -23,6 +23,8 @@ MO.FEaiEarthFlat = function FEaiEarthFlat(o){
    o.setup          = MO.FEaiEarthFlat_setup;
    o.drawTouch      = MO.FEaiEarthFlat_drawTouch;
    o.drawBoundary   = MO.FEaiEarthFlat_drawBoundary;
+   o.drawGrid       = MO.FEaiEarthFlat_drawGrid;
+   o.pickIdentify   = MO.FEaiEarthFlat_pickIdentify;
    o.process        = MO.FEaiEarthFlat_process;
    // @method
    o.dispose        = MO.FEaiEarthFlat_dispose;
@@ -65,6 +67,30 @@ MO.FEaiEarthFlat_drawBoundary = function FEaiEarthFlat_drawBoundary(handle, boun
    handle.lineWidth = lineWidth;
    handle.strokeStyle = lineColor;
    handle.stroke();
+}
+
+//==========================================================
+// <T>绘制网格。</T>
+//1
+// @method
+//==========================================================
+MO.FEaiEarthFlat_drawGrid = function FEaiEarthFlat_drawGrid(context2d, split){
+   var o = this;
+   var size = o._imageLand.size();
+   var sizeWidth = size.width;
+   var sizeHeight = size.height;
+   var sx = split * 2;
+   var sy = split;
+   var cx = size.width / sx;
+   var cy = size.height / sy;
+   for(var i = 0; i < sy ; i++){
+      var y = cy * i;
+      context2d.drawLine(0, y, sizeWidth, y, '#0000FF', 4);
+   }
+   for(var i = 0; i < sx ; i++){
+      var x = cx * i;
+      context2d.drawLine(x, 0, x, sizeHeight, '#FF0000', 4);
+   }
 }
 
 //==========================================================
@@ -125,12 +151,31 @@ MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
          }
       }
    }
+   // 绘制经纬度
+   o.drawGrid(context2d, 4);
+   // 绘制区域
+   context2d.drawImage(o._imageArea, 0, 0, sizeWidth, size.height);
    // 创建纹理
    var texture = o._textureLand = context.createFlatTexture();
    texture.setCode('land');
    texture.upload(canvas);
    // 释放数据
    //canvas.dispose();
+   //image.dispose();
+   //o._imageLand = null;
+   //..........................................................
+   // 创建拾取数据
+   var image = o._imageIdentify;
+   var size = image.size();
+   var canvas = o._canvasIdentify = MO.Class.create(MO.FE2dCanvas);
+   canvas.size().assign(size);
+   canvas.build(MO.Window._hDocument);
+   var context2d = canvas.graphicContext();
+   var handle = context2d._handle;
+   context2d.drawImage(image, 0, 0, sizeWidth, size.height);
+   o._identityData = context2d._handle.getImageData(0, 0, sizeWidth, size.height); 
+   // 释放数据
+   canvas.dispose();
    image.dispose();
    o._imageLand = null;
    //..........................................................
@@ -197,6 +242,14 @@ MO.FEaiEarthFlat_setup = function FEaiEarthFlat_setup(){
       image.loadUrl('{eai.resource}/world/land2048.png');
    }
    o._readyLoader.push(image);
+   // 加载区域
+   var image = o._imageArea = MO.Class.create(MO.FImage);
+   image.loadUrl('{eai.resource}/world/area.png');
+   o._readyLoader.push(image);
+   // 加载定义
+   var image = o._imageIdentify = MO.Class.create(MO.FImage);
+   image.loadUrl('{eai.resource}/world/identify.jpg');
+   o._readyLoader.push(image);
    // 加载海洋
    var loader = o._textureOceanLoader = MO.Class.create(MO.FE3dTextureLoader);
    loader.linkGraphicContext(o);
@@ -222,6 +275,24 @@ MO.FEaiEarthFlat_setup = function FEaiEarthFlat_setup(){
    rectangle.linkGraphicContext(o);
    rectangle.setup();
    rectangle.material().info().effectCode = 'eai.earth.flat';
+}
+
+//==========================================================
+// <T>拾取鉴定点。</T>
+//
+// @method
+//==========================================================
+MO.FEaiEarthFlat_pickIdentify = function FEaiEarthFlat_pickIdentify(x, y){
+   var o = this;
+   var identityData = o._identityData;
+   var cx = parseInt(identityData.width * x);
+   var cy = parseInt(identityData.height * y);
+   var location = (identityData.width * cy + cx) << 2;
+   var r = identityData.data[location];
+   var g = identityData.data[location + 1];
+   var b = identityData.data[location + 2];
+   var a = identityData.data[location + 3];
+   return r;
 }
 
 //==========================================================

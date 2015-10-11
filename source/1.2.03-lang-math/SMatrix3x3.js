@@ -16,6 +16,7 @@ MO.SMatrix3x3 = function SMatrix3x3(){
    // @method
    o.equalsData      = MO.SMatrix3x3_equalsData;
    o.assignData      = MO.SMatrix3x3_assignData;
+   o.assign4x4       = MO.SMatrix3x3_assign4x4;
    o.appendData      = MO.SMatrix3x3_appendData;
    // @method
    o.rotationX       = MO.SMatrix3x3_rotationX;
@@ -66,13 +67,37 @@ MO.SMatrix3x3_equalsData = function SMatrix3x3_equalsData(p){
 // <T>接收一个数据内容。</T>
 //
 // @method
-// @param p:data:Array 数据
+// @param valueData:Array 数据
 //============================================================
-MO.SMatrix3x3_assignData = function SMatrix3x3_assignData(p){
-   var d = this._data;
+MO.SMatrix3x3_assignData = function SMatrix3x3_assignData(valueData){
+   var o = this;
+   var data = o._data;
    for(var n = 0; n < 9; n++){
-      d[n] = p[n];
+      data[n] = valueData[n];
    }
+   return o;
+}
+
+//============================================================
+// <T>接收一个数据内容。</T>
+//
+// @method
+// @param value:SMatrix4x4 四维矩阵
+//============================================================
+MO.SMatrix3x3_assign4x4 = function SMatrix3x3_assign4x4(value){
+   var o = this;
+   var data = o._data;
+   var valueData = value.data();
+   data[0] = valueData[0];
+   data[1] = valueData[1];
+   data[2] = valueData[2];
+   data[3] = valueData[4];
+   data[4] = valueData[5];
+   data[5] = valueData[6];
+   data[6] = valueData[8];
+   data[7] = valueData[9];
+   data[8] = valueData[10];
+   return o;
 }
 
 //============================================================
