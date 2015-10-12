@@ -11,11 +11,15 @@ MO.FEaiShowFloatingImageManager = function FEaiShowFloatingImageManager(o) {
    // @attribute
    o._floatingImages = MO.Class.register(o, new MO.AGetSet('_floatingImages'));
    o._deltaX = 0;
-   o._imgWidth = 240;
-   o._imgHeight = 160;
+   o._imgWidth = 510;
+   o._imgHeight = 371;
    o._startTick = 0;
-   o._slideDuration = 500;
-   o._showDuration = 2000;
+   o._slideDuration = 1000;
+   o._showDuration = 5000;
+   o._awayDuration = 6000;
+   o._showIndex = -1;
+   o._autoIndex = 0;
+   o._autoShow = MO.Class.register(o, new MO.AGetSet('_autoShow'), true);
    //..........................................................
    // @method
    o.showLocation = MO.FEaiShowFloatingImageManager_showLocation;
@@ -209,27 +213,78 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
 //
 // @method
 //==========================================================
-MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_process(radianY) {
+MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_process() {
    var o = this;
 
-   //var passedTick = MO.Timer.current() - o._startTick;
-   //if (passedTick < o._slideDuration) {
-
-   //}
-
-
-   var gap = o._imgWidth + 30;
    var floatingImages = o._floatingImages;
-   var count = floatingImages.count();
-   for (var i = 0; i < count; i++) {
-      var fi = floatingImages.at(i);
-      fi.floatingAnime(radianY);
-      fi.location().x++;
-      if (fi.location().x > gap * 8) {
-         fi.location().x = -gap;
+   var imgHeight = o._imgHeight;
+
+   var showIndex = o._showIndex;
+   if (showIndex > -1) {
+      var fi = floatingImages.at(showIndex);
+      fi.setVisible(true);
+      var passedTick = MO.Timer.current() - o._startTick;
+      if (passedTick < o._slideDuration) {
+         var t = passedTick / o._slideDuration;
+         fi.location().x = 50;
+         fi.location().y = -imgHeight + (1080 + imgHeight) * 0.5 * t;
+         fi.dirty();
       }
-      fi.dirty();
+      else if (passedTick < o._showDuration) {
+         fi.setLocation(50, (1080 - imgHeight) * 0.5);
+         fi.dirty();
+      }
+      else if (passedTick < o._awayDuration) {
+         fil.location().x = 50;
+         fil.location().y = (1080 - imgHeight) * 0.5 + (1080 + imgHeight) * 0.5 * t;
+      }
+      else {
+         o._showIndex = -1;
+         fi.setVisible(false);
+      }
    }
+   else {
+      var autoIndex = o._autoIndex;
+      var fil = floatingImages.at(autoIndex);
+      var fir = floatingImages.at(7 - autoIndex);
+      fil.setVisible(o._autoShow);
+      fir.setVisible(o._autoShow);
+      var passedTick = MO.Timer.current() - o._startTick;
+      if (passedTick < o._slideDuration) {
+         var t = passedTick / o._slideDuration;
+         fil.location().x = 50;
+         fil.location().y = -imgHeight + (1080 + imgHeight) * 0.5 * t;
+         fir.location().x = 1360;
+         fir.location().y = 1080 - (1080 + imgHeight) * 0.5 * t;
+         fil.dirty();
+         fir.dirty();
+      }
+      else if (passedTick < o._showDuration) {
+         fil.setLocation(50, (1080 - imgHeight) * 0.5);
+         fir.setLocation(1360, (1080 - imgHeight) * 0.5);
+         fil.dirty();
+         fir.dirty();
+      }
+      else if (passedTick < o._awayDuration) {
+         var t = (passedTick - o._showDuration) / (o._awayDuration - o._showDuration);
+         fil.location().x = 50;
+         fil.location().y = (1080 - imgHeight) * 0.5 + (1080 + imgHeight) * 0.5 * t;
+         fir.location().x = 1360;
+         fir.location().y = (1080 - imgHeight) * 0.5 - (1080 + imgHeight) * 0.5 * t;
+         fil.dirty();
+         fir.dirty();
+      }
+      else {
+         o._autoIndex++;
+         if (o._autoIndex > 7) {
+            o._autoIndex = 0;
+         }
+         o._startTick = MO.Timer.current();
+         fil.setVisible(false);
+         fir.setVisible(false);
+      }
+   }
+
 }
 
 //==========================================================
@@ -254,27 +309,8 @@ MO.FEaiShowFloatingImageManager_setVisibleAll = function FEaiShowFloatingImageMa
 //==========================================================
 MO.FEaiShowFloatingImageManager_showLocation = function FEaiShowFloatingImageManager_showLocation(locationId) {
    var o = this;
-
-
-
-   var passedTick = MO.Timer.current() - o._startTick;
-   if (passedTick < o._slideDuration) {
-
-   }
-
-
-   //var gap = o._imgWidth + 30;
-   //var floatingImages = o._floatingImages;
-   //var count = floatingImages.count();
-   //for (var i = 0; i < count; i++) {
-   //   var fi = floatingImages.at(i);
-   //   fi.floatingAnime(radianY);
-   //   fi.location().x++;
-   //   if (fi.location().x > gap * 8) {
-   //      fi.location().x = -gap;
-   //   }
-   //   fi.dirty();
-   //}
+   o._showIndex = locationId - 1;
+   o._startTick = MO.Timer.current();
 }
 
 //============================================================
