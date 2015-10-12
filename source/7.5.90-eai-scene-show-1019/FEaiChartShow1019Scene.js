@@ -203,6 +203,7 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
    var areaIndex = message.indexOf('area');
    if (areaIndex != -1) {
       var areaId = message.substr(areaIndex + 5);
+      o._floatingImageManager.setAutoShow(false);
       o._floatingImageManager.showLocation(areaId);
    }
 }
@@ -279,32 +280,32 @@ MO.FEaiChartShow1019Scene_videoFullScreenAnime = function FEaiChartShow1019Scene
 //==========================================================
 MO.FEaiChartShow1019Scene_onOrganizationFetch = function FEaiChartShow1019Scene_onOrganizationFetch(event) {
    var o = this;
-   var mapEntity = o._mapEntity;
-   // 读取数据
-   var info = o._organizationInfo;
-   info.unserializeSignBuffer(event.sign, event.content, true);
-   o._countryTable.setUnits(info._department2s);
-   // 设置前20数据
-   var countryUnits = o._countryUnits;
-   var department4s = info._department4s;
-   countryUnits.clear();
-   for (var i = 0; i < 20; i++) {
-      countryUnits.push(department4s.at(i));
-   }
-   // 设置城市数据
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   var cityModule = entityConsole.cityModule();
-   var citys = info.citys();
-   var cityCount = citys.count();
-   for(var i = 0; i < cityCount; i++){
-      var city = citys.at(i);
-      var card = city.card();
-      var cityEntity = cityModule.findByCard(card);
-      if(cityEntity){
-         cityEntity.update(city);
-      }
-   }
-   mapEntity.upload();
+   //var mapEntity = o._mapEntity;
+   //// 读取数据
+   //var info = o._organizationInfo;
+   //info.unserializeSignBuffer(event.sign, event.content, true);
+   //o._countryTable.setUnits(info._department2s);
+   //// 设置前20数据
+   //var countryUnits = o._countryUnits;
+   //var department4s = info._department4s;
+   //countryUnits.clear();
+   //for (var i = 0; i < 20; i++) {
+   //   countryUnits.push(department4s.at(i));
+   //}
+   //// 设置城市数据
+   //var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   //var cityModule = entityConsole.cityModule();
+   //var citys = info.citys();
+   //var cityCount = citys.count();
+   //for(var i = 0; i < cityCount; i++){
+   //   var city = citys.at(i);
+   //   var card = city.card();
+   //   var cityEntity = cityModule.findByCard(card);
+   //   if(cityEntity){
+   //      cityEntity.update(city);
+   //   }
+   //}
+   //mapEntity.upload();
 }
 
 //==========================================================
@@ -400,9 +401,9 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       o._countryEntity.process();
       //..........................................................
       // 刷新组织数据
-      if (o._organizationDataTicker.process()) {
-         MO.Console.find(MO.FEaiLogicConsole).statistics().department().doOrganization(o, o.onOrganizationFetch, 2);
-      }
+      //if (o._organizationDataTicker.process()) {
+      //   MO.Console.find(MO.FEaiLogicConsole).statistics().department().doOrganization(o, o.onOrganizationFetch, 2);
+      //}
       //..........................................................
       // 计算形状
       var mapEntity = o._mapEntity;
@@ -495,6 +496,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
    o._floatingImageManager.setAutoShow(false);
    switch (phase) {
       case 0: // 待机画面
+         o._floatingImageManager.setAutoShow(true);
          break;
       case 1: // 播放视频1
          o._currentVideoRenderable = o._videoRenderables.at(0);
@@ -598,9 +600,9 @@ MO.FEaiChartShow1019Scene_onOperationDown = function FEaiChartShow1019Scene_onOp
    o._opMouseDown = true;
 
    // hack
-   if (o._showingMktInfo) {
-      return;
-   }
+   //if (o._showingMktInfo) {
+   //   return;
+   //}
 
    o._operationRotationX = o._rotationX;
    o._operationRotationY = o._rotationY;
@@ -638,12 +640,12 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
    var o = this;
    o._opMouseDown = false;
    // hack
-   if (o._showingMktInfo) {
-      o._showingMktInfo = false;
-      var mktInfoDiv = document.getElementById('id_marketer_info');
-      mktInfoDiv.style.display = 'none';
-      return;
-   }
+   //if (o._showingMktInfo) {
+   //   o._showingMktInfo = false;
+   //   var mktInfoDiv = document.getElementById('id_marketer_info');
+   //   mktInfoDiv.style.display = 'none';
+   //   return;
+   //}
 
    if (!o._operationMoved) {
       var canvas3d = o.application().desktop().canvas3d();
@@ -670,45 +672,47 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
                   o._countryEntity._borderShape.setVisible(false);
                   o._countryEntity._faceShape.setVisible(false);
 
-                  var provinceTable = o._provinceTable;
-                  provinceTable.setTitle('大陆地区公司列表');
-                  provinceTable.setUnits(o._countryUnits);
-                  provinceTable.dirty();
-                  provinceTable.setVisible(false);
-                  o._countryTable.setVisible(true);
+                  //var provinceTable = o._provinceTable;
+                  //provinceTable.setTitle('大陆地区公司列表');
+                  //provinceTable.setUnits(o._countryUnits);
+                  //provinceTable.dirty();
+                  //provinceTable.setVisible(false);
+                  //o._countryTable.setVisible(true);
                }
-            }else if(MO.Class.isClass(entity, MO.FEaiProvince3dEntity)){
-               var provinceEntity = entity;
-               o._targetWorldScale = 3000;
-               var res = provinceEntity.resource();
-               var pCode = res.code();
-               // hack
-               if (pCode == o._selectedProvinceCode) {
-                  var mktInfoDiv = document.getElementById('id_marketer_info');
-                  mktInfoDiv.style.display = '';
-                  o._showingMktInfo = true;
-               }
-               else {
-                  o._selectedProvinceCode = pCode;
-               }
-               var provinceTable = o._provinceTable;
-               provinceTable.setTitle(res.label() + '地区分公司列表');
-               var department4s =  o._organizationInfo._department4s;
-               var count = department4s.count();
-               var provinceUnits = o._provinceUnits;
-               provinceUnits.clear();
-               for (var i = 0; i < count ; i++) {
-                  var unit = department4s.at(i);
-                  if (unit.provinceCode() == pCode) {
-                     provinceUnits.push(unit);
-                     if (provinceUnits.count() > 26) {
-                        break;
-                     }
-                  }
-               }
-               provinceTable.setUnits(provinceUnits);
-               provinceTable.dirty();
-            }else{
+            }
+            //else if (MO.Class.isClass(entity, MO.FEaiProvince3dEntity)) {
+            //   var provinceEntity = entity;
+            //   o._targetWorldScale = 3000;
+            //   var res = provinceEntity.resource();
+            //   var pCode = res.code();
+            //   // hack
+            //   if (pCode == o._selectedProvinceCode) {
+            //      var mktInfoDiv = document.getElementById('id_marketer_info');
+            //      mktInfoDiv.style.display = '';
+            //      o._showingMktInfo = true;
+            //   }
+            //   else {
+            //      o._selectedProvinceCode = pCode;
+            //   }
+            //   var provinceTable = o._provinceTable;
+            //   provinceTable.setTitle(res.label() + '地区分公司列表');
+            //   var department4s =  o._organizationInfo._department4s;
+            //   var count = department4s.count();
+            //   var provinceUnits = o._provinceUnits;
+            //   provinceUnits.clear();
+            //   for (var i = 0; i < count ; i++) {
+            //      var unit = department4s.at(i);
+            //      if (unit.provinceCode() == pCode) {
+            //         provinceUnits.push(unit);
+            //         if (provinceUnits.count() > 26) {
+            //            break;
+            //         }
+            //      }
+            //   }
+            //   provinceTable.setUnits(provinceUnits);
+            //   provinceTable.dirty();
+            //}
+            else {
             }
             var outline2d = entity.outline2();
             o._targetRotateY = Math.PI - outline2d.center.x / 180 * Math.PI;
@@ -735,12 +739,12 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
          o._countryEntity._borderShape.setVisible(false);
          o._countryEntity._faceShape.setVisible(false);
 
-         var provinceTable = o._provinceTable;
-         provinceTable.setTitle('大陆地区公司列表');
-         provinceTable.setUnits(o._countryUnits);
-         provinceTable.dirty();
-         provinceTable.setVisible(false);
-         o._countryTable.setVisible(true);
+         //var provinceTable = o._provinceTable;
+         //provinceTable.setTitle('大陆地区公司列表');
+         //provinceTable.setUnits(o._countryUnits);
+         //provinceTable.dirty();
+         //provinceTable.setVisible(false);
+         //o._countryTable.setVisible(true);
       }
    }
    o._operationMoved = false;
@@ -822,20 +826,20 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
-   // 全国各省分公司数、理财师数表
-   var countryTable = o._countryTable = MO.Class.create(MO.FEaiChartMktManageCountryTable);
-   countryTable.setName('countryTable');
-   countryTable.linkGraphicContext(o);
-   countryTable.setup();
-   countryTable.build();
+   //// 全国各省分公司数、理财师数表
+   //var countryTable = o._countryTable = MO.Class.create(MO.FEaiChartMktManageCountryTable);
+   //countryTable.setName('countryTable');
+   //countryTable.linkGraphicContext(o);
+   //countryTable.setup();
+   //countryTable.build();
    //o._guiManager.register(countryTable);
-   // 省内各分公司、理财师数表
-   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartMktManageProvinceTable);
-   provinceTable.setName('provinceTable');
-   provinceTable.linkGraphicContext(o);
-   provinceTable.setup();
-   provinceTable.build();
-   provinceTable.setVisible(false);
+   //// 省内各分公司、理财师数表
+   //var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartMktManageProvinceTable);
+   //provinceTable.setName('provinceTable');
+   //provinceTable.linkGraphicContext(o);
+   //provinceTable.setup();
+   //provinceTable.build();
+   //provinceTable.setVisible(false);
    //o._guiManager.register(provinceTable);
    //..........................................................
    // 隐藏全部界面
@@ -927,24 +931,24 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
 
    //..........................................................
    // 图片
-   var bitmap = context3d.createObject(MO.FE3dBitmap);
-   bitmap.loadUrl('../ars/picture/star3.png');
-   //bitmap.material().info().effectCode = 'flat';
-   bitmap.setOptionSelect(false);
-   //bitmaps.push(bitmap);
-   layer.pushRenderable(bitmap);
+   //var bitmap = context3d.createObject(MO.FE3dBitmap);
+   //bitmap.loadUrl('../ars/picture/star3.png');
+   ////bitmap.material().info().effectCode = 'flat';
+   //bitmap.setOptionSelect(false);
+   ////bitmaps.push(bitmap);
+   //layer.pushRenderable(bitmap);
 
-   var matrix = bitmap.matrix();
-   matrix.sx = 5000;
-   matrix.sy = 5000;
-   matrix.sz = 5000;
-   matrix.tx = 0;
-   matrix.ty = 0;
-   matrix.tz = -2000;
-   matrix.ry = 0;
-   matrix.updateForce();
+   //var matrix = bitmap.matrix();
+   //matrix.sx = 5000;
+   //matrix.sy = 5000;
+   //matrix.sz = 5000;
+   //matrix.tx = 0;
+   //matrix.ty = 0;
+   //matrix.tz = -2000;
+   //matrix.ry = 0;
+   //matrix.updateForce();
 
-   entityConsole._mapEntity._countryFaceDisplay.push(bitmap);
+   //entityConsole._mapEntity._countryFaceDisplay.push(bitmap);
    //..........................................................
 
    var dataLayer = o._activeStage.dataLayer();
@@ -1032,9 +1036,9 @@ MO.FEaiChartShow1019Scene_fixMatrix = function FEaiChartShow1019Scene_fixMatrix(
          if (o._showChina) {
             o._countryEntity._borderShape.setVisible(true);
             o._countryEntity._faceShape.setVisible(true);
-            o._provinceTable.setVisible(true);
-            o._countryTable.setVisible(false);
-            o._provinceTable.dirty();
+            //o._provinceTable.setVisible(true);
+            //o._countryTable.setVisible(false);
+            //o._provinceTable.dirty();
             o._showChina = false;
          }
       }
@@ -1045,10 +1049,6 @@ MO.FEaiChartShow1019Scene_fixMatrix = function FEaiChartShow1019Scene_fixMatrix(
       o._worldScale = o._startWorldScale + (o._targetWorldScale - o._startWorldScale) * rate;
    }
    if (isVertical) {
-      matrix.tx = -14.58;
-      matrix.ty = -1.9;
-      matrix.tz = 0;
-      matrix.setScale(0.14, 0.16, 0.14);
    } else {
       matrix.tx = 0;
       matrix.ty = o._translateY;

@@ -215,6 +215,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
 //==========================================================
 MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_process() {
    var o = this;
+   o.setVisibleAll(false);
 
    var floatingImages = o._floatingImages;
    var imgHeight = o._imgHeight;
@@ -235,8 +236,10 @@ MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_
          fi.dirty();
       }
       else if (passedTick < o._awayDuration) {
-         fil.location().x = 50;
-         fil.location().y = (1080 - imgHeight) * 0.5 + (1080 + imgHeight) * 0.5 * t;
+         var t = (passedTick - o._showDuration) / (o._awayDuration - o._showDuration);
+         fi.location().x = 50;
+         fi.location().y = (1080 - imgHeight) * 0.5 + (1080 + imgHeight) * 0.5 * t;
+         fi.dirty();
       }
       else {
          o._showIndex = -1;
