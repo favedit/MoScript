@@ -226,6 +226,7 @@ MO.FEaiEarthFlat_construct = function FEaiEarthFlat_construct(){
 //==========================================================
 MO.FEaiEarthFlat_setup = function FEaiEarthFlat_setup(){
    var o = this;
+   var qualityCd = MO.Desktop.qualityCd();
    // 加载国家信息
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
    var worldResource = o._worldResource = resourceConsole.mapModule().loadWorld();
@@ -239,11 +240,10 @@ MO.FEaiEarthFlat_setup = function FEaiEarthFlat_setup(){
    o._readyLoader.push(loader);
    // 加载陆地
    var image = o._imageLand = MO.Class.create(MO.FImage);
-   var qualityCd = MO.Desktop.qualityCd();
    if(qualityCd == MO.EGraphicQuality.Highest){
-      image.loadUrl('{eai.resource}/world/land4096.png');
+      image.loadUrl('{eai.resource}/world/land2048x2048.png');
    }else{
-      image.loadUrl('{eai.resource}/world/land2048.png');
+      image.loadUrl('{eai.resource}/world/land1024x1024.png');
    }
    o._readyLoader.push(image);
    // 加载区域
@@ -258,7 +258,11 @@ MO.FEaiEarthFlat_setup = function FEaiEarthFlat_setup(){
    var loader = o._textureOceanLoader = MO.Class.create(MO.FE3dTextureLoader);
    loader.linkGraphicContext(o);
    loader.setup(MO.EG3dTexture.Flat2d, 'ocean');
-   loader.loadUrl('{eai.resource}/world/ocean2048.jpg');
+   if(qualityCd == MO.EGraphicQuality.Highest){
+      loader.loadUrl('{eai.resource}/world/ocean2048x2048.jpg');
+   }else{
+      loader.loadUrl('{eai.resource}/world/ocean1024x1024.jpg');
+   }
    o._readyLoader.push(loader);
    // 加载水波纹
    var loader = o._textureWaterLoader = MO.Class.create(MO.FE3dTextureLoader);
