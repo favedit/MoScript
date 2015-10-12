@@ -215,11 +215,11 @@ MO.FEaiChartShowProcessor_focusEntity = function FEaiChartShowProcessor_focusEnt
       var provinceCode = cityEntity.data().provinceCode();
       var provinceEntity = countryEntity.findProvince(provinceCode);
       if(provinceEntity){
-         provinceEntity.doInvestment(level, investment);
+         provinceEntity.doFocus(level, investment);
       }
       // 更新城市数据
       cityEntity.addInvestmentTotal(level, investment);
-      if (o._mapEntity != null) {
+      if (o._mapEntity) {
          o._mapEntity.upload();
       }
       // 播放声音

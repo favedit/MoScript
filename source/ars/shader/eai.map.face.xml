@@ -39,15 +39,18 @@
       //..........................................................
       // 处理
       void main(){
-         // 计算模型坐标
+         // 获得参数
          int index = int(va_instance * 4.0);
          mat4 matrix = mat4(vc_data[index], vc_data[index + 1], vc_data[index + 2], vec4(0.0, 0.0, 0.0, 1.0));
-         vec4 position = vec4(va_position, 1.0) * matrix;
+         vec4 color = vc_data[index + 3];
+         float scale = color.w;
+         // 计算模型坐标
+         vec4 position = vec4(va_position * scale, 1.0) * matrix;
          // 计算最终坐标
          vec4 modelPosition = position * vc_model_matrix;
          gl_Position = modelPosition * vc_vp_matrix;
          // 设置颜色
-         v_color = va_color * vc_data[index + 3];
+         v_color = va_color * vec4(color.rgb, 1.0);
       }
    ]]></Source>
    <Source name='fragment'><![CDATA[

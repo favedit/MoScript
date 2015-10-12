@@ -9,27 +9,30 @@ MO.FE3dBoundaryShape3d = function FE3dBoundaryShape3d(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject);
    //..........................................................
    // @attribute
-   o._scaleTop         = MO.Class.register(o, new MO.AGetSet('_scaleTop'), 1);
-   o._scaleBottom      = MO.Class.register(o, new MO.AGetSet('_scaleBottom'), 0.9);
-   o._faceColor        = MO.Class.register(o, new MO.AGetter('_faceColor'));
-   o._color            = MO.Class.register(o, new MO.AGetter('_color'));
-   o._polygons         = MO.Class.register(o, new MO.AGetter('_polygons'));
+   o._scaleTop          = MO.Class.register(o, new MO.AGetSet('_scaleTop'), 1);
+   o._scaleBottom       = MO.Class.register(o, new MO.AGetSet('_scaleBottom'), 0.9);
+   o._color             = MO.Class.register(o, new MO.AGetter('_color'));
+   o._faceColor         = MO.Class.register(o, new MO.AGetter('_faceColor'));
+   o._faceBottomColor   = MO.Class.register(o, new MO.AGetter('_faceBottomColor'));
+   o._borderColor       = MO.Class.register(o, new MO.AGetter('_borderColor'));
+   o._borderBottomColor = MO.Class.register(o, new MO.AGetter('_borderBottomColor'));
+   o._polygons          = MO.Class.register(o, new MO.AGetter('_polygons'));
    // @attribute
-   o._faceEffectCode   = MO.Class.register(o, new MO.AGetSet('_faceEffectCode'));
-   o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
-   o._borderEffectCode = MO.Class.register(o, new MO.AGetSet('_borderEffectCode'));
-   o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
+   o._faceEffectCode    = MO.Class.register(o, new MO.AGetSet('_faceEffectCode'));
+   o._faceRenderable    = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
+   o._borderEffectCode  = MO.Class.register(o, new MO.AGetSet('_borderEffectCode'));
+   o._borderRenderable  = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
    //..........................................................
    // @method
-   o.construct         = MO.FE3dBoundaryShape3d_construct;
+   o.construct          = MO.FE3dBoundaryShape3d_construct;
    // @method
-   o.pushPolygon       = MO.FE3dBoundaryShape3d_pushPolygon;
+   o.pushPolygon        = MO.FE3dBoundaryShape3d_pushPolygon;
    // @method
-   o.buildFace         = MO.FE3dBoundaryShape3d_buildFace;
-   o.buildBorder       = MO.FE3dBoundaryShape3d_buildBorder;
-   o.build             = MO.FE3dBoundaryShape3d_build;
+   o.buildFace          = MO.FE3dBoundaryShape3d_buildFace;
+   o.buildBorder        = MO.FE3dBoundaryShape3d_buildBorder;
+   o.build              = MO.FE3dBoundaryShape3d_build;
    // @method
-   o.dispose           = MO.FE3dBoundaryShape3d_dispose;
+   o.dispose            = MO.FE3dBoundaryShape3d_dispose;
    return o;
 }
 
@@ -131,8 +134,8 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
          vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * scaleTop;
          vertexData[vertexIndex++] = Math.sin(y) * scaleTop;
          vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleTop;
-         colors[colorIndex++] = 0xFF;
-         colors[colorIndex++] = 0xFF;
+         colors[colorIndex++] = 0x22;
+         colors[colorIndex++] = 0x66;
          colors[colorIndex++] = 0xFF;
          colors[colorIndex++] = 0xFF;
          coordData[coordIndex++] = 0;
@@ -154,9 +157,9 @@ MO.FE3dBoundaryShape3d_buildFace = function FE3dBoundaryShape3d_buildFace(){
          vertexData[vertexIndex++] = Math.sin(x) * Math.cos(y) * scaleBottom;
          vertexData[vertexIndex++] = Math.sin(y) * scaleBottom;
          vertexData[vertexIndex++] = -Math.cos(x) * Math.cos(y) * scaleBottom;
-         colors[colorIndex++] = 0x12;
-         colors[colorIndex++] = 0x6A;
-         colors[colorIndex++] = 0xE9;
+         colors[colorIndex++] = 0x00;
+         colors[colorIndex++] = 0x00;
+         colors[colorIndex++] = 0x00;
          colors[colorIndex++] = 0xFF;
          coordData[coordIndex++] = 0;
          coordData[coordIndex++] = 0;
@@ -218,7 +221,7 @@ MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
    var o = this;
    var context = o._graphicContext;
    //var color = o._color;
-   var scaleTop = o._scaleTop * 1.001;
+   var scaleTop = o._scaleTop * 1.0008;
    var scaleBottom = o._scaleBottom;
    var boundaries = o._polygons;
    var count = boundaries.count();
@@ -298,9 +301,9 @@ MO.FE3dBoundaryShape3d_buildBorder = function FE3dBoundaryShape3d_buildBorder(){
       colors[colorIndex++] = 0xFF;
    }
    for(var i = 0; i < vertexTotal; i++){
-      colors[colorIndex++] = 0x12;
-      colors[colorIndex++] = 0x8A;
-      colors[colorIndex++] = 0xF9;
+      colors[colorIndex++] = 0x00;
+      colors[colorIndex++] = 0x00;
+      colors[colorIndex++] = 0x00;
       colors[colorIndex++] = 0xFF;
    }
    var renderable = o._borderRenderable = MO.Class.create(MO.FE3dDataBox);

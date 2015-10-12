@@ -9,35 +9,34 @@ MO.FEaiProvince3dEntity = function FEaiProvince3dEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    //..........................................................
    // @attribute
-   o._data             = MO.Class.register(o, new MO.AGetSet('_data'));
-   o._outline2         = MO.Class.register(o, new MO.AGetter('_outline2'));
-   o._resource         = MO.Class.register(o, new MO.AGetSet('_resource'));
-   o._boundaryShape    = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
-   o._normalScale      = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
-   o._normalScaleMax   = MO.Class.register(o, new MO.AGetSet('_normalScaleMax'), 1.02);
+   o._data           = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._outline2       = MO.Class.register(o, new MO.AGetter('_outline2'));
+   o._resource       = MO.Class.register(o, new MO.AGetSet('_resource'));
+   o._boundaryShape  = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
+   o._normalScale    = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
+   o._normalScaleMax = MO.Class.register(o, new MO.AGetSet('_normalScaleMax'), 1.02);
    // @attribute
-   o._layerDepth       = 3;
+   o._layerDepth     = 3;
    // @attribute
-   o._focusTick        = 0;
-   o._focusInterval    = 10;
-   o._focusCurrent     = 0;
-   o._focusColor       = null;
-   o._focusCount       = 200;
+   o._focusTick      = 0;
+   o._focusInterval  = 10;
+   o._focusCurrent   = 0;
+   o._focusColor     = null;
+   o._focusCount     = 200;
    //..........................................................
    // @method
-   o.construct         = MO.FEaiProvince3dEntity_construct;
+   o.construct       = MO.FEaiProvince3dEntity_construct;
    // @method
-   o.setup             = MO.FEaiProvince3dEntity_setup;
+   o.setup           = MO.FEaiProvince3dEntity_setup;
    // @method
-   o.build             = MO.FEaiProvince3dEntity_build;
+   o.build           = MO.FEaiProvince3dEntity_build;
    // @method
-   o.doInvestment      = MO.FEaiProvince3dEntity_doInvestment;
-   o.updateColor       = MO.FEaiProvince3dEntity_updateColor;
-   o.update            = MO.FEaiProvince3dEntity_update;
-   o.process           = MO.FEaiProvince3dEntity_process;
-   o.reset             = MO.FEaiProvince3dEntity_reset;
+   o.doFocus         = MO.FEaiProvince3dEntity_doFocus;
+   o.updateColor     = MO.FEaiProvince3dEntity_updateColor;
+   o.process         = MO.FEaiProvince3dEntity_process;
+   o.reset           = MO.FEaiProvince3dEntity_reset;
    // @method
-   o.dispose           = MO.FEaiProvince3dEntity_dispose;
+   o.dispose         = MO.FEaiProvince3dEntity_dispose;
    return o;
 }
 
@@ -110,8 +109,9 @@ MO.FEaiProvince3dEntity_build = function FEaiProvince3dEntity_build(context){
    shape.build(o._graphicContext);
    var faceRenderable = shape.faceRenderable();
    faceRenderable.material().info().effectCode = 'eai.map.face';
-   faceRenderable.color().setHex('#021244');
-   shape.borderRenderable().color().setHex('#FFFFFF');
+   faceRenderable.color().setHex('#080D19');
+   var borderRenderable = shape.borderRenderable();
+   borderRenderable.color().setHex('#6666FF');
 }
 
 //==========================================================
@@ -121,43 +121,11 @@ MO.FEaiProvince3dEntity_build = function FEaiProvince3dEntity_build(context){
 // @param level:Integer 投资级别
 // @param investment:Number 投资额
 //==========================================================
-MO.FEaiProvince3dEntity_doInvestment = function FEaiProvince3dEntity_doInvestment(level, investment){
+MO.FEaiProvince3dEntity_doFocus = function FEaiProvince3dEntity_doFocus(level, investment){
    var o = this;
    o._focusTick = 0;
    o._focusCurrent = o._focusCount;
    o._focusColor = o._focusColors[level];
-}
-
-//==========================================================
-// <T>从输入流反序列化数据。</T>
-//
-// @method
-// @param input:MStream 输入流
-//==========================================================
-MO.FEaiProvince3dEntity_update = function FEaiProvince3dEntity_update(data){
-   var o = this;
-   //var investmentTotal = data.investmentTotal();
-   //var rate = Math.sqrt(investmentTotal) / 100;
-   //if(rate > 255){
-      //rate = 255;
-   //}
-   //var colorIndex = 0;
-   //var colors = o.colorsData;
-   //for(var i = 0; i < o._vertexTotal; i++){
-   //   colors[colorIndex++] = rate;
-   //   colors[colorIndex++] = 0;
-   //   colors[colorIndex++] = 0;
-   //   colors[colorIndex++] = 255;
-   //}
-   //var renderable = o._faceRenderable;
-   //renderable.vertexColorBuffer().upload(colors, 1 * 4, o._vertexTotal);
-   //var material = renderable.material();
-   //material.info().ambientColor.set(rate, rate, rate, 1);
-   //material.update();
-   //var renderable = o._borderRenderable;
-   //var material = renderable.material();
-   //material.info().ambientColor.set(rate, rate, rate, 1);
-   //material.update();
 }
 
 //==========================================================
@@ -175,6 +143,7 @@ MO.FEaiProvince3dEntity_updateColor = function FEaiProvince3dEntity_updateColor(
    var green = 0x0D + ((color[1] - 0x0D) * rate);
    var blue = 0x19 + ((color[2] - 0x19) * rate);
    var alpha = 0xFF;
+   // 设置颜色
    var shape = o._boundaryShape;
    var faceRenderable = shape.faceRenderable();
    faceRenderable.color().set(red / 255, green / 255, blue / 255, 1);
