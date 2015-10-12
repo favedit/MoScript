@@ -1,52 +1,50 @@
 //==========================================================
-// <T>图表实时场景。</T>
+// <T>理财师分布场景。</T>
 //
 // @class
 // @author maocy
 // @history 150618
 //==========================================================
-MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
+MO.FEaiChartSesameFinancialScene = function FEaiChartSesameFinancialScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code                   = MO.EEaiScene.ChartCustomer;
+   o._code                     = MO.EEaiScene.ChartCustomer;
    // @attribute
-   o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
-   o._processorCurrent       = 0;
+   o._processor                = MO.Class.register(o, new MO.AGetter('_processor'));
+   o._processorCurrent         = 0;
    // @attribute
-   o._ready                  = false;
-   o._mapReady               = false;
-   o._playing                = false;
-   o._lastTick               = 0;
-   o._interval               = 10;
+   o._ready                    = false;
+   o._mapReady                 = false;
+   o._playing                  = false;
+   o._lastTick                 = 0;
+   o._interval                 = 10;
    // @attribute
-   o._logoBar                = null;
- //  o._timeline               = null;
-   o._liveTable              = null;
-   o._circleProduct          = null;
-   o._bubbleCanvas           = null;
+   o._logoBar                  = null;
+   o._timeline                 = null;
+   o._provinceTable            = null;
    // @attribute
-   o._statusStart            = false;
-   o._statusLayerCount       = 100;
-   o._statusLayerLevel       = 100;
+   o._statusStart              = false;
+   o._statusLayerCount         = 100;
+   o._statusLayerLevel         = 100;
    //..........................................................
    // @event
-   o.onOperationDown         = MO.FEaiChartMktProductScene_onOperationDown;
-   o.onInvestmentDataChanged = MO.FEaiChartMktProductScene_onInvestmentDataChanged;
-   o.onTrendDataChanged      = MO.FEaiChartMktProductScene_onTrendDataChanged;
-   o.onOperationVisibility   = MO.FEaiChartMktProductScene_onOperationVisibility;
-   o.onProcessReady          = MO.FEaiChartMktProductScene_onProcessReady;
-   o.onProcess               = MO.FEaiChartMktProductScene_onProcess;
-   o.onSwitchProcess         = MO.FEaiChartMktProductScene_onSwitchProcess;
-   o.onSwitchComplete        = MO.FEaiChartMktProductScene_onSwitchComplete;
+   o.onOperationDown           = MO.FEaiChartSesameFinancialScene_onOperationDown;
+   o.on24HDataChanged          = MO.FEaiChartSesameFinancialScene_on24HDataChanged;
+   o.onInfoProvinceDataChanged = MO.FEaiChartSesameFinancialScene_onInfoProvinceDataChanged;
+   o.onOperationVisibility     = MO.FEaiChartSesameFinancialScene_onOperationVisibility;
+   o.onProcessReady            = MO.FEaiChartSesameFinancialScene_onProcessReady;
+   o.onProcess                 = MO.FEaiChartSesameFinancialScene_onProcess;
+   o.onSwitchProcess           = MO.FEaiChartSesameFinancialScene_onSwitchProcess;
+   o.onSwitchComplete          = MO.FEaiChartSesameFinancialScene_onSwitchComplete;
    //..........................................................
    // @method
-   o.setup                   = MO.FEaiChartMktProductScene_setup;
-   o.showParticle            = MO.FEaiChartMktProductScene_showParticle;
-   o.showFace                = MO.FEaiChartMktProductScene_showFace;
-   o.fixMatrix               = MO.FEaiChartMktProductScene_fixMatrix;
+   o.setup                     = MO.FEaiChartSesameFinancialScene_setup;
+   o.showParticle              = MO.FEaiChartSesameFinancialScene_showParticle;
+   o.showFace                  = MO.FEaiChartSesameFinancialScene_showFace;
+   o.fixMatrix                 = MO.FEaiChartSesameFinancialScene_fixMatrix;
    // @method
-   o.processResize           = MO.FEaiChartMktProductScene_processResize;
+   o.processResize             = MO.FEaiChartSesameFinancialScene_processResize;
    return o;
 }
 
@@ -56,50 +54,56 @@ MO.FEaiChartMktProductScene = function FEaiChartMktProductScene(o) {
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartMktProductScene_onOperationDown = function FEaiChartMktProductScene_onOperationDown(event) {
+MO.FEaiChartSesameFinancialScene_onOperationDown = function FEaiChartSesameFinancialScene_onOperationDown(event) {
    var o = this;
    o._countryEntity._startTime = 0;
 }
 
 //==========================================================
-// <T>产品数据变更处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-// //==========================================================
-MO.FEaiChartMktProductScene_onTrendDataChanged = function FEaiChartMktProductScene_onTrendDataChanged(event) {
-   var o = this;
-   //o._circleProduct.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-   //o._circleProduct.dirty();
-   var bubbleCanvas = o._bubbleCanvas;
-   bubbleCanvas.setTenderUnits(event.tenderUnits);
-   bubbleCanvas.dirty();
- }
-
-//==========================================================
-// <T>表格数据变更处理。</T>
+// <T>24小时曲线数据变更处理。</T>
 //
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProductScene_onInvestmentDataChanged(event) {
+MO.FEaiChartSesameFinancialScene_on24HDataChanged = function FEaiChartSesameFinancialScene_on24HDataChanged(event) {
    var o = this;
-   var unit = event.unit;
    // 设置表格数据
-   var table = o._liveTable;
-//   table.setRankUnits(event.rankUnits);
-   table.pushUnit(unit);
-   table.dirty();
-   
-   var circle= o._circleProduct;
-   circle.dirty();
-
-   if (unit) {
-      if (unit._modelChanged == 1) {
-
+   var timeline = o._timeline;
+  // timeline.startTime().assign(event.startTime());
+  // timeline.endTime().assign(event.endTime());
+  // timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+  // timeline.trendInfo().assign=event.trendInfo();
+   timeline.dirty();
 }
-   }
+//==========================================================
+// <T>省份数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartSesameFinancialScene_onInfoProvinceDataChanged = function FEaiChartSesameFinancialScene_onInfoProvinceDataChanged(event) {
+   var o = this;
+   // 设置表格数据
+   var timeline = o._timeline;
+   // timeline.infoProvince().unserializeSignBuffer(event.sign, event.content, true);
 
+   // hack
+   var provinces = event.provinces();
+   var count = provinces.count();
+   var customerTotal = 0;
+   for (var i = 0; i < count; i++) {
+      var pInfo = provinces.at(i);
+      customerTotal += pInfo.customerCount();
+   }
+   var investmentDay = o._logoBar.findComponent('investmentDay');
+   investmentDay.setValue(customerTotal.toString());
+
+   timeline.setInfoProvince(event);
+   timeline.dirty();
+   var table = o._provinceTable;
+   table.setInfoProvince(event);
+   table.setRankUnits();
+   table.dirty();
 }
 
 //==========================================================
@@ -108,7 +112,7 @@ MO.FEaiChartMktProductScene_onInvestmentDataChanged = function FEaiChartMktProdu
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartMktProductScene_onOperationVisibility = function FEaiChartMktProductScene_onOperationVisibility(event) {
+MO.FEaiChartSesameFinancialScene_onOperationVisibility = function FEaiChartSesameFinancialScene_onOperationVisibility(event) {
    var o = this;
    o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
    if (event.visibility) {
@@ -125,7 +129,7 @@ MO.FEaiChartMktProductScene_onOperationVisibility = function FEaiChartMktProduct
 //
 // @method
 //==========================================================
-MO.FEaiChartMktProductScene_onProcessReady = function FEaiChartMktProductScene_onProcessReady() {
+MO.FEaiChartSesameFinancialScene_onProcessReady = function FEaiChartSesameFinancialScene_onProcessReady() {
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
    // 显示城市
@@ -137,7 +141,7 @@ MO.FEaiChartMktProductScene_onProcessReady = function FEaiChartMktProductScene_o
 //
 // @method
 //==========================================================
-MO.FEaiChartMktProductScene_onProcess = function FEaiChartMktProductScene_onProcess() {
+MO.FEaiChartSesameFinancialScene_onProcess = function FEaiChartSesameFinancialScene_onProcess() {
    var o = this;
    o.__base.FEaiChartScene.onProcess.call(o);
    // 检测首次播放
@@ -177,7 +181,7 @@ MO.FEaiChartMktProductScene_onProcess = function FEaiChartMktProductScene_onProc
       var countryEntity = o._countryEntity;
       if (!countryEntity.introAnimeDone()) {
          countryEntity.process();
-         //return;
+         return;
       }
       // 显示界面
       if (!o._mapReady) {
@@ -202,9 +206,6 @@ MO.FEaiChartMktProductScene_onProcess = function FEaiChartMktProductScene_onProc
          // 投资总金额
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
-         // 日投资金额
-         var investmentDay = logoBar.findComponent('investmentDay');
-         investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
       }
       //..........................................................
       // 更新时间
@@ -226,7 +227,7 @@ MO.FEaiChartMktProductScene_onProcess = function FEaiChartMktProductScene_onProc
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartMktProductScene_onSwitchProcess = function FEaiChartMktProductScene_onSwitchProcess(event) {
+MO.FEaiChartSesameFinancialScene_onSwitchProcess = function FEaiChartSesameFinancialScene_onSwitchProcess(event) {
    var o = this;
 }
 
@@ -236,7 +237,7 @@ MO.FEaiChartMktProductScene_onSwitchProcess = function FEaiChartMktProductScene_
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartMktProductScene_onSwitchComplete = function FEaiChartMktProductScene_onSwitchComplete(event) {
+MO.FEaiChartSesameFinancialScene_onSwitchComplete = function FEaiChartSesameFinancialScene_onSwitchComplete(event) {
    var o = this;
 }
 
@@ -245,61 +246,58 @@ MO.FEaiChartMktProductScene_onSwitchComplete = function FEaiChartMktProductScene
 //
 // @method
 //==========================================================
-MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
+MO.FEaiChartSesameFinancialScene_setup = function FEaiChartSesameFinancialScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
    // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.statistic.LogoBar');
+   var investmentTotal = frame.findComponent('investmentDay');
+   investmentTotal.setBasicUnitText('人');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
-   var invement = o._processor = MO.Class.create(MO.FEaiChartMktProductProcessor);
+   var invement = o._processor = MO.Class.create(MO.FEaiChartStatMarketerProcessor);
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
-   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
-   invement.addTrenderDataChangedListener(o, o.onTrendDataChanged);
+   invement.add24HDataChangedListener(o, o.on24HDataChanged);
+   invement.addInfoProvinceDataChangedListener(o, o.onInfoProvinceDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
    //..........................................................
    // 创建时间轴
-   // var stage = o.activeStage();
-   // var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktProductTimeline);
-   // timeline.setName('Timeline');
-   // timeline.linkGraphicContext(o);
-   // timeline.build();
-   // o._guiManager.register(timeline);
+   var stage = o.activeStage();
+   var timeline = o._timeline = MO.Class.create(MO.FEaiChartStatMarketerBarChart);
+   timeline.setName('Timeline');
+   timeline.linkGraphicContext(o);
+   timeline.build();
+   o._guiManager.register(timeline);
+   
    //..........................................................
    // 创建表格
-   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktProductTable);
-   liveTable.setName('LiveTable');
-   liveTable.linkGraphicContext(o);
-   liveTable.setup();
-   liveTable.build();
-   o._guiManager.register(liveTable);
-   // 创建产品泡泡画板
-   var bubbleCanvas = o._bubbleCanvas = MO.Class.create(MO.FGuiBubbleCanvas);
-   bubbleCanvas.setName('BubbleCanvas');
-   bubbleCanvas.linkGraphicContext(o);
-   bubbleCanvas.build();
-   o._guiManager.register(bubbleCanvas);
+   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartStatMarketerTable);
+   provinceTable.setName('LiveTable');
+   provinceTable.linkGraphicContext(o);
+   provinceTable.setup();
+   provinceTable.build();
+   o._guiManager.register(provinceTable);
    //..........................................................
-   
-   //创建产品空心圈
-   var circleProduct = o._circleProduct = MO.Class.create(MO.FEaiChartMktProductCircle);
-   circleProduct.setName('circleProduct');
-   circleProduct.linkGraphicContext(o);
-   circleProduct.build();
-   o._guiManager.register(circleProduct);
-
-
    //..........................................................
-
    // 隐藏全部界面
    o._guiManager.hide();
+   //..........................................................
+   // 创建粒子
+   //var context = o._graphicContext;
+   //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
+   //var particleData = context.createObject(MO.FE3dParticleData);
+   //particleData.loadUrl('{eai.resource}/particle/6.png');
+   //particle.setData(particleData);
+   //o.fixMatrix(particle.matri x());
+   //o._activeStage.spriteLayer().pushRenderable(particle);
+   //..........................................................
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 建立城市实体
    entityConsole.cityModule().build(o);
@@ -313,7 +311,7 @@ MO.FEaiChartMktProductScene_setup = function FEaiChartMktProductScene_setup() {
 //
 // @method
 //==========================================================
-MO.FEaiChartMktProductScene_showParticle = function FEaiChartMktProductScene_showParticle(provinceEntity, cityResource) {
+MO.FEaiChartSesameFinancialScene_showParticle = function FEaiChartSesameFinancialScene_showParticle(provinceEntity, cityResource) {
    var o = this;
    var particle = o._particle;
    var location = cityResource.location();
@@ -346,7 +344,7 @@ MO.FEaiChartMktProductScene_showParticle = function FEaiChartMktProductScene_sho
 //
 // @method
 //==========================================================
-MO.FEaiChartMktProductScene_showFace = function FEaiChartMktProductScene_showFace() {
+MO.FEaiChartSesameFinancialScene_showFace = function FEaiChartSesameFinancialScene_showFace() {
    var o = this;
    // 设置状态
    o._statusStart = true;
@@ -366,7 +364,7 @@ MO.FEaiChartMktProductScene_showFace = function FEaiChartMktProductScene_showFac
 //
 // @method
 //==========================================================
-MO.FEaiChartMktProductScene_fixMatrix = function FEaiChartMktProductScene_fixMatrix(matrix) {
+MO.FEaiChartSesameFinancialScene_fixMatrix = function FEaiChartSesameFinancialScene_fixMatrix(matrix) {
    var o = this;
    var isVertical = MO.Window.Browser.isOrientationVertical()
    if (isVertical) {
@@ -389,7 +387,7 @@ MO.FEaiChartMktProductScene_fixMatrix = function FEaiChartMktProductScene_fixMat
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartMktProductScene_processResize = function FEaiChartMktProductScene_processResize() {
+MO.FEaiChartSesameFinancialScene_processResize = function FEaiChartSesameFinancialScene_processResize() {
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
@@ -414,82 +412,42 @@ MO.FEaiChartMktProductScene_processResize = function FEaiChartMktProductScene_pr
       control.setRight(100);
    } else {
       control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(780);
+      control.setRight(660);
       control.setBottom(280);
    }
-
-   var circleProduct = o._circleProduct;
-      if (isVertical) {
-      circleProduct.setDockCd(MO.EUiDock.Bottom);
-      circleProduct.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      circleProduct.setLeft(10);
-      circleProduct.setRight(10);
-      circleProduct.setBottom(10);
-      circleProduct.setWidth(1060);
-      circleProduct.setHeight(900);
-   } else {
-      circleProduct.setDockCd(MO.EUiDock.Right);
-      circleProduct.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-      circleProduct.setTop(10);
-      circleProduct.setRight(0);
-      circleProduct.setBottom(10);
-      circleProduct.setWidth(750);
-   }
    //..........................................................
-   // // 设置时间轴
-   // var timeline = o._timeline;
-   // if (isVertical) {
-   //    timeline.setDockCd(MO.EUiDock.Bottom);
-   //    timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-   //    timeline.setLeft(10);
-   //    timeline.setRight(10);
-   //    timeline.setBottom(920);
-   //    timeline.setHeight(250);
-   // } else {
-   //    timeline.setDockCd(MO.EUiDock.Bottom);
-   //    timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-   //    timeline.setLeft(20);
-   //    timeline.setBottom(30);
-   //    timeline.setRight(780);
-   //    timeline.setHeight(250);
-   // }
-   //..........................................................
-   // 设置表格
-   var liveTable = o._liveTable;
+   // 设置时间轴
+   var timeline = o._timeline;
    if (isVertical) {
-      liveTable.setDockCd(MO.EUiDock.Bottom);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      liveTable.setLeft(10);
-      liveTable.setRight(10);
-      liveTable.setBottom(10);
-      liveTable.setWidth(1060);
-      liveTable.setHeight(900);
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(10);
+      timeline.setRight(10);
+      timeline.setBottom(920);
+      timeline.setHeight(250);
    } else {
-      liveTable.setDockCd(MO.EUiDock.Bottom);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      liveTable.setLeft(20);
-      liveTable.setBottom(20);
-      liveTable.setRight(780);
-      liveTable.setHeight(250);
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setBottom(30);
+      timeline.setRight(660);
+      timeline.setHeight(250);
    }
-   //..........................................................
-   // 设置泡泡画布
-   var canvas = o._bubbleCanvas;
+   var provinceTable = o._provinceTable;
    if (isVertical) {
-      canvas.setDockCd(MO.EUiDock.Right);
-      canvas.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom | MO.EUiAnchor.Right);
-      canvas.setTop(10);
-      canvas.setBottom(20);
-      canvas.setRight(10);
-      canvas.setWidth(800);
-      canvas.setHeight(1050);
+      provinceTable.setDockCd(MO.EUiDock.Bottom);
+      provinceTable.setAnchorCd(MO.EUiAnchor.All);
+      provinceTable.setLeft(10);
+      provinceTable.setRight(10);
+      provinceTable.setBottom(10);
+      provinceTable.setWidth(1060);
+      provinceTable.setHeight(900);
    } else {
-      canvas.setDockCd(MO.EUiDock.Right);
-      canvas.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom | MO.EUiAnchor.Right);
-      canvas.setTop(10);
-      canvas.setBottom(20);
-      canvas.setRight(10);
-      canvas.setWidth(800);
-      canvas.setHeight(1050);
+      provinceTable.setDockCd(MO.EUiDock.Right);
+      provinceTable.setAnchorCd(MO.EUiAnchor.All);
+      provinceTable.setTop(10);
+      provinceTable.setRight(0);
+      provinceTable.setBottom(10);
+      provinceTable.setWidth(640);
    }
 }

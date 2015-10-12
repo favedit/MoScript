@@ -153,6 +153,7 @@
       <PathMerger source='/7.5.07-eai-scene-statistics-marketer'  target='/ajs/eai-scene-statistics.js'/>
 
       <PathMerger source='/7.5.90-eai-scene-show-1019'            target='/ajs/eai-scene-show-1019.js'/>
+      <PathMerger source='/7.5.08-eai-zmjr-customer-investment'   target='/ajs/eai-zmjr-customer-investment.js'/>
 
       <PathMerger source='/7.6.01-eai-chapter'                    target='/ajs/eai-chapter.js'/>
       <PathMerger source='/7.7.01-eai-application'                target='/ajs/eai-application.js'/>
@@ -389,6 +390,7 @@
          <File source='/ajs/eai-scene-performence.js'/>
          <File source='/ajs/eai-scene-statistics.js'/>
          <File source='/ajs/eai-scene-show-1019.js'/>
+         <File source='/ajs/eai-zmjr-customer-investment.js'/>
          <File source='/ajs/eai-chapter.js'/>
          <File source='/ajs/eai-application.js'/>
          <File source='/ajs/eai-space.js'/>

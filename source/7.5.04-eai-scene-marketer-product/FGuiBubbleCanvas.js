@@ -67,8 +67,6 @@ MO.FGuiBubbleCanvas_setTenderUnits = function FGuiBubbleCanvas_setTenderUnits(un
 //==========================================================
 MO.FGuiBubbleCanvas_showTransferCurve = function FGuiBubbleCanvas_showTransferCurve(unit) {
    var o = this;
-
-
 }
 
 //==========================================================
