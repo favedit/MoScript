@@ -86,7 +86,7 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
       if(id > 0){
          socketSphere.send('area=' + id);
-         //console.log('Check pixel ' + id);
+         MO.Logger.debug(o, 'Select area. (id={1})', id);
          return;
       }
       if(sourceTouchPoint.originLength < (128 / size.height)){
@@ -170,14 +170,6 @@ MO.FEaiChartCustomerSphereScene_onOperationVisibility = function FEaiChartCustom
 MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady(){
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
-   // 显示地图
-   //o._mapEntity.showWorld();
-   // 显示城市
-   //var desktop = o._application.desktop();
-   //var canvas2d = desktop.canvas2d();
-   //var context2d = canvas2d.graphicContext();
-   //var worldResource = o._worldResource;
-   //context2d.fillRectangle(100, 100, 200, 200, '#FFFFFF');
    // 自动旋转
    o._earthSphere.autoRotation(true);
    // 显示界面
@@ -299,6 +291,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var canvas3d = desktop.canvas3d();
    var context3d = canvas3d.graphicContext();
    var stage = o._activeStage;
+   var qualityCd = MO.Desktop.qualityCd();
    //..........................................................
    // 创建地球平面
    var earthFlat = o._earthFlat = MO.Class.create(MO.FEaiEarthFlat);
@@ -310,7 +303,11 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 创建地球
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
    earthSphere.linkGraphicContext(context3d);
-   earthSphere.setSplitCount(64);
+   if(qualityCd == MO.EGraphicQuality.Highest){
+      earthSphere.setSplitCount(128);
+   }else{
+      earthSphere.setSplitCount(64);
+   }
    earthSphere.setup();
    earthSphere.matrix().setScaleAll(200);
    earthSphere.matrix().update();

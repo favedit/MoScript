@@ -98,23 +98,23 @@
          // 获得水纹1颜色
          vec2 coordWater1 = vec2(v_coord.x + fc_water.x, v_coord.y) * 30.0;
          vec4 colorWater1 = vec4(texture2D(fs_water, coordWater1).rgb * 0.9, 1.0);
-         vec4 colorWater1Normal = texture2D(fs_water_normal, coordWater1);
+         vec4 colorWater1Normal = texture2D(fs_water_normal, coordWater1) * 2.0 - 1.0;
          vec3 water1Normal = normalize(colorWater1Normal.xyz) * colorWater1Normal.w;
          float rateWater1 = dot(colorWater1.rgb, constGrey.rgb) * 0.3;
          // 获得水纹2颜色
          vec2 coordWater2 = vec2(v_coord.x + fc_water.y, v_coord.y) * 20.0;
          vec4 colorWater2 = vec4(texture2D(fs_water, coordWater2).rgb * 0.8, 1.0);
          vec4 colorWater2Normal = texture2D(fs_water_normal, coordWater2);
-         vec3 water2Normal = normalize(colorWater2Normal.xyz) * colorWater2Normal.w;
+         //vec3 water2Normal = normalize(colorWater2Normal.xyz) * colorWater2Normal.w;
          float rateWater2 = dot(colorWater2.rgb, constGrey.rgb) * 0.2;
          // 获得水纹3颜色
          vec2 coordWater3 = vec2(v_coord.x + fc_water.z, v_coord.y) * 10.0;
          vec4 colorWater3 = vec4(texture2D(fs_water, coordWater3).rgb * 0.7, 1.0);
          vec4 colorWater3Normal = texture2D(fs_water_normal, coordWater3);
-         vec3 water3Normal = normalize(colorWater3Normal.xyz) * colorWater3Normal.w;
+         //vec3 water3Normal = normalize(colorWater3Normal.xyz) * colorWater3Normal.w;
          float rateWater3 = dot(colorWater3.rgb, constGrey.rgb) * 0.1;
          // 获得海洋颜色
-         vec4 colorOcean = texture2D(fs_ocean, v_coord + water1Normal.xy * 0.02);
+         vec4 colorOcean = texture2D(fs_ocean, v_coord + water1Normal.xy * water1Normal.z * 0.01);
          //..........................................................
          // 合成颜色
          float rate = 1.0;

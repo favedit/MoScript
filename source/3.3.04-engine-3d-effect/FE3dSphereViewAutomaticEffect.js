@@ -37,6 +37,7 @@ MO.FE3dSphereViewAutomaticEffect_construct = function FE3dSphereViewAutomaticEff
    o._vpMatrix = new MO.SMatrix3d();
    o._pointOrigin = new MO.SPoint3(0, 0, 0);
    o._pointCenter = new MO.SPoint3(0, 0, 0);
+   o._scale = new MO.SVector4();
 }
 
 //==========================================================
@@ -50,6 +51,9 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    var o = this;
    var context = o._graphicContext;
    var program = o._program;
+   var size = context.size();
+   var rate = Math.min(size.width, size.height);
+   // o._scale.set(rate / size.width, rate / size.height);
    // 计算视角投影矩阵
    var camera = region.camera();
    var projection = camera.projection();
@@ -60,6 +64,7 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    var modelMatrix = o._modelMatrix;
    modelMatrix.assign(matrix);
    //modelMatrix.addRotationX(-Math.PI* 0.5);
+   //modelMatrix.addRotationAxis(MO.Lang.Math.vectorAxisX, Math.PI * 0.5);
    // 计算矩阵
    var vpMatrix = o._vpMatrix;
    vpMatrix.assign(camera.matrix());
@@ -67,8 +72,7 @@ MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomat
    // 设置变量
    program.setParameter('vc_model_matrix', modelMatrix);
    program.setParameter('vc_vp_matrix', vpMatrix);
-   program.setParameter4('vc_const', 0, 0, 0, 2 / Math.PI);
-   //program.setParameter4('vc_direction', 0, 0, -1, 0);
+   program.setParameter4('vc_const', rate / size.width, rate / size.height, 0, 2 / Math.PI);
    // 绑定材质
    var material = renderable.material();
    o.bindMaterial(material);

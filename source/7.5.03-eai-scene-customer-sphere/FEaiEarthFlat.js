@@ -38,6 +38,9 @@ MO.FEaiEarthFlat = function FEaiEarthFlat(o){
 //==========================================================
 MO.FEaiEarthFlat_drawTouch = function FEaiEarthFlat_drawTouch(x, y){
    var o = this;
+   if(!o._canvas){
+      return;
+   }
    var canvas = o._canvas;
    var context2d = canvas.graphicContext();
    var size = o._graphicContext.size();
