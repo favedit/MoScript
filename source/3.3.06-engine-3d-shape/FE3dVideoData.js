@@ -67,9 +67,12 @@ MO.FE3dVideoData_construct = function FE3dVideoData_construct(){
 // <T>加载处理。</T>
 //
 // @method
+// @param uri:String 地址
 //==========================================================
-MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(url){
+MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(uri){
    var o = this;
+   // 解析地址
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    // 加载图片
    var video = o._hVideo = document.createElement('VIDEO');
    video.__linker = o;

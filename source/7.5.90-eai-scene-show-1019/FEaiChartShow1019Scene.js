@@ -87,6 +87,7 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._logoBar                 = null;
    o._timeline                = null;
    o._liveTable               = null;
+   o._boardProcessor          = null;
    //..........................................................
    // @event
    o.onSocketReceived         = MO.FEaiChartShow1019Scene_onSocketReceived;
@@ -399,6 +400,9 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       //..........................................................
       // 更新国家
       o._countryEntity.process();
+      //..........................................................
+      // 面板处理
+      o._boardProcessor.process()
       //..........................................................
       // 刷新组织数据
       //if (o._organizationDataTicker.process()) {
@@ -841,6 +845,11 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    //provinceTable.build();
    //provinceTable.setVisible(false);
    //o._guiManager.register(provinceTable);
+   //..........................................................
+   // 创建面板处理
+   var processor = o._boardProcessor = MO.Class.create(MO.FEaiShowBoardProcessor);
+   processor.linkGraphicContext(o);
+   processor.setup();
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
