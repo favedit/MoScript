@@ -492,10 +492,9 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
    //}
    o._videoAnimeStartTick = MO.Timer.current();
    //o._guiManager.hide();
-   o._floatingImageManager.setVisibleAll(false);
+   o._floatingImageManager.setAutoShow(false);
    switch (phase) {
       case 0: // 待机画面
-         o._floatingImageManager.setVisibleAll(true);
          break;
       case 1: // 播放视频1
          o._currentVideoRenderable = o._videoRenderables.at(0);
@@ -583,7 +582,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          break;
       default:
          o._displayPhase = 0;
-         o._floatingImageManager.setVisibleAll(true);
+         o._floatingImageManager.setAutoShow(true);
          break;
    }
 }

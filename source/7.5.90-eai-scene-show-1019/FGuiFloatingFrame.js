@@ -81,10 +81,10 @@ MO.FGuiFloatingFrame_onPaintBegin = function FGuiFloatingFrame_onPaintBegin(even
    var displaySize = o._displayImage.size();
    var frameSize = o._frameImage.size();
 
-   graphic.drawImage(o._displayImage, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+   //graphic.drawImage(o._displayImage, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
 
-   //graphic.drawImage(o._displayImage, hCenter - displaySize.width / 2, rectangle.top + 60, displaySize.width, displaySize.height);
-   //graphic.drawImage(o._frameImage, hCenter - frameSize.width / 2, rectangle.top, frameSize.width, frameSize.height);
+   graphic.drawImage(o._displayImage, rectangle.left + 75, rectangle.top + 60, rectangle.width - 140, rectangle.height - 125);
+   graphic.drawImage(o._frameImage, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
 
 }
 
