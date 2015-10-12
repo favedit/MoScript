@@ -74,6 +74,10 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
    // 判断类型
    var typeCode = info.typeCode();
    if(typeCode == 'D'){
+      // 检查有效性
+      if(info.points().isEmpty()){
+         return;
+      }
       // 设置点击信息
       earthSphere.setSource(info);
       // 计算原始位置
@@ -107,6 +111,11 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
          o._moving = true;
       }
    }else if(typeCode == 'M' && o._moving){
+      // 检查有效性
+      if(info.points().isEmpty()){
+         return;
+      }
+      // 设置点击信息
       earthSphere.setTarget(info);
       //MO.Logger.debug(o, 'Touch movie. ({1})', targetTouch);
       // 发送转动消息
