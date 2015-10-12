@@ -9,6 +9,7 @@ MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
    //..........................................................
    // @property
+   o._normalScale             = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
    //o._startDelay            = MO.Class.register(o, new MO.APtyInteger('_startDelay'), 0);
    //o._riseDuration          = MO.Class.register(o, new MO.APtyNumber('_riseDuration'), 1200);
    //o._riseDistance          = MO.Class.register(o, new MO.APtyNumber('_riseDistance'), 2050);
@@ -71,6 +72,7 @@ MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o.provinceShowOrderSort    = MO.FEaiCountry3dEntity_provinceShowOrderSort;
    o.setupProvinces           = MO.FEaiCountry3dEntity_setupProvinces;
    // @method
+   o.findProvince             = MO.FEaiCountry3dEntity_findProvince;
    o.loadData                 = MO.FEaiCountry3dEntity_loadData;
    o.loadResource             = MO.FEaiCountry3dEntity_loadResource;
    // @method
@@ -148,6 +150,15 @@ MO.FEaiCountry3dEntity_setupProvinces = function FEaiCountry3dEntity_setupProvin
       provinceArray[i] = provinceEntities.at(i);
    }
    provinceArray.sort(o.provinceShowOrderSort);
+}
+
+//==========================================================
+// <T>根据代码获得省份。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCountry3dEntity_findProvince = function FEaiCountry3dEntity_findProvince(code){
+   return this._provinceEntities.get(code);
 }
 
 //==========================================================
@@ -285,11 +296,15 @@ MO.FEaiCountry3dEntity_start = function FEaiCountry3dEntity_start(){
 //==========================================================
 MO.FEaiCountry3dEntity_process = function FEaiCountry3dEntity_process() {
    var o = this;
-   //if (!o.introAnimeDone()) {
-   if (!o._provinceEntities) {
-      return;
+   var provinceEntities = o._provinceEntities;
+   if(provinceEntities){
+      var count = provinceEntities.count();
+      for(var i = 0; i < count; i++){
+         var provinceEntity = provinceEntities.at(i);
+         provinceEntity.process();
+      }
    }
-   o.introAnime();
+   //o.introAnime();
    //}
    //else if (o.cameraMoving()) {
    //   o.cameraMoveAnime();

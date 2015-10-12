@@ -395,6 +395,9 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
          o._mapReady = true;
       }
       //..........................................................
+      // 更新国家
+      o._countryEntity.process();
+      //..........................................................
       // 刷新组织数据
       if (o._organizationDataTicker.process()) {
          MO.Console.find(MO.FEaiLogicConsole).statistics().department().doOrganization(o, o.onOrganizationFetch, 2);
@@ -948,10 +951,11 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
-   var invement = o._processor = MO.Class.create(MO.FEaiChartMktCustomerProcessor);
+   var invement = o._processor = MO.Class.create(MO.FEaiChartShowProcessor);
    invement.linkGraphicContext(o);
    //invement.setMapEntity(o._mapEntity);
    invement.setup();
+   invement._countryEntity = countryEntity;
    invement.addDataChangedListener(o, o.onInvestmentDataChanged);
    invement.add24HDataChangedListener(o, o.on24HDataChanged);
    var display = invement.display();

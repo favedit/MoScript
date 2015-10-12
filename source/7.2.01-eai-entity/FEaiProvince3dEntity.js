@@ -13,12 +13,10 @@ MO.FEaiProvince3dEntity = function FEaiProvince3dEntity(o){
    o._outline2         = MO.Class.register(o, new MO.AGetter('_outline2'));
    o._resource         = MO.Class.register(o, new MO.AGetSet('_resource'));
    o._boundaryShape    = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
-   o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
-   o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
+   o._normalScale      = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
+   o._normalScaleMax   = MO.Class.register(o, new MO.AGetSet('_normalScaleMax'), 1.02);
    // @attribute
    o._layerDepth       = 3;
-   // @attribute
-   o._currentZ         = MO.Class.register(o, new MO.AGetter('_currentZ'), 0);
    // @attribute
    o._focusTick        = 0;
    o._focusInterval    = 10;
@@ -170,14 +168,16 @@ MO.FEaiProvince3dEntity_update = function FEaiProvince3dEntity_update(data){
 //==========================================================
 MO.FEaiProvince3dEntity_updateColor = function FEaiProvince3dEntity_updateColor(rate){
    var o = this;
-   //var color = o._focusColor;
-   //var rate = o._focusCurrent / o._focusCount;
+   var color = o._focusColor;
+   var rate = o._focusCurrent / o._focusCount;
    // 计算颜色
-   //var red = 0x08 + ((color[0] - 0x08)* rate);
-   //var green = 0x0D + ((color[1] - 0x0D)* rate);
-   //var blue = 0x19 + ((color[2] - 0x19)* rate);
-   //var alpha = 0xFF;
-   //o._faceRenderable.color().set(0, 0, 0, 0);
+   var red = 0x08 + ((color[0] - 0x08) * rate);
+   var green = 0x0D + ((color[1] - 0x0D) * rate);
+   var blue = 0x19 + ((color[2] - 0x19) * rate);
+   var alpha = 0xFF;
+   var shape = o._boundaryShape;
+   var faceRenderable = shape.faceRenderable();
+   faceRenderable.color().set(red / 255, green / 255, blue / 255, 1);
 }
 
 //==========================================================
@@ -191,21 +191,14 @@ MO.FEaiProvince3dEntity_process = function FEaiProvince3dEntity_process(){
    if(o._focusCurrent > 0){
       var tick = MO.Timer.current();
       if(tick - o._focusTick > o._focusInterval){
-         //var z = o._currentZ = -o._focusCurrent / 60;
-         // 设置坐标
-         //faceRenderable = o._faceRenderable;
-         //matrix = faceRenderable.matrix();
-         //matrix.tz = z;
-         //matrix.updateForce();
-         //borderRenderable = o._borderRenderable;
-         //matrix = borderRenderable.matrix();
-         //matrix.tz = z;
-         //matrix.updateForce();
+         var rate = o._focusCurrent / o._focusCount;
+         // 更新缩放
+         o._normalScale = 1 + rate * (o._normalScaleMax - 1);
          // 更新颜色
-         //o.updateColor(o._focusCurrent);
+         o.updateColor(o._focusCurrent);
          // 更新数据
-         //o._focusCurrent--;
-         //o._focusTick = tick;
+         o._focusCurrent--;
+         o._focusTick = tick;
       }
    }
 }
@@ -217,7 +210,7 @@ MO.FEaiProvince3dEntity_process = function FEaiProvince3dEntity_process(){
 //==========================================================
 MO.FEaiProvince3dEntity_reset = function FEaiProvince3dEntity_reset(){
    var o = this;
-   o._currentZ = 0;
+   o._normalScale = 0;
    o._focusTick = 0;
    o._focusCurrent = 0;
 }

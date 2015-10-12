@@ -34,17 +34,21 @@ MO.FEaiMapFaceEffect_drawRenderable = function FEaiMapFaceEffect_drawRenderable(
    // 设置数据集合(4x4浮点数组 + 4个浮点颜色)
    var mergeRenderables = renderable.mergeRenderables();
    var mergeCount = mergeRenderables.count();
-   var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, 16 * mergeCount);
+   var stride = 16;
+   var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, stride * mergeCount);
    for(var i = 0; i < mergeCount; i++){
-      var index = 16 * i;
+      var index = stride * i;
       var mergeRenderable = mergeRenderables.at(i);
+      var shape = mergeRenderable._shape;
+      var entity = shape._entity;
+      var normalScale = entity.normalScale();
       var matrix = mergeRenderable.matrix();
       var color = mergeRenderable.color();
       matrix.writeData(data, index);
       data[index + 12] = color.red;
       data[index + 13] = color.green;
       data[index + 14] = color.blue;
-      data[index + 15] = color.alpha;
+      data[index + 15] = normalScale;
    }
    program.setParameter('vc_data', data);
    // 设置矩阵

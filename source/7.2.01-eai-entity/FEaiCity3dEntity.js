@@ -16,6 +16,7 @@ MO.FEaiCity3dEntity = function FEaiCity3dEntity(o){
    o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
    o._range                  = MO.Class.register(o, new MO.AGetter('_range'), 1);
    o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
+   o._normalScale            = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
    // @attribute
    o._cityTotal              = 0;
    o._investmentCount        = 0;
