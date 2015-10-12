@@ -13,8 +13,13 @@ MO.FEaiShowFloatingImageManager = function FEaiShowFloatingImageManager(o) {
    o._deltaX = 0;
    o._imgWidth = 240;
    o._imgHeight = 160;
+   o._startTick = 0;
+   o._slideDuration = 500;
+   o._showDuration = 2000;
    //..........................................................
    // @method
+   o.showLocation = MO.FEaiShowFloatingImageManager_showLocation;
+   o.setVisibleAll = MO.FEaiShowFloatingImageManager_setVisibleAll;
    o.process = MO.FEaiShowFloatingImageManager_process;
    //..........................................................
    // @method
@@ -206,6 +211,13 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
 //==========================================================
 MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_process(radianY) {
    var o = this;
+
+   //var passedTick = MO.Timer.current() - o._startTick;
+   //if (passedTick < o._slideDuration) {
+
+   //}
+
+
    var gap = o._imgWidth + 30;
    var floatingImages = o._floatingImages;
    var count = floatingImages.count();
@@ -218,6 +230,51 @@ MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_
       }
       fi.dirty();
    }
+}
+
+//==========================================================
+// <T>每帧处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiShowFloatingImageManager_setVisibleAll = function FEaiShowFloatingImageManager_setVisibleAll(visible) {
+   var o = this;
+   var floatingImages = o._floatingImages;
+   var count = floatingImages.count();
+   for (var i = 0; i < count; i++) {
+      var fi = floatingImages.at(i);
+      fi.setVisible(visible);
+   }
+}
+
+//==========================================================
+// <T>每帧处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiShowFloatingImageManager_showLocation = function FEaiShowFloatingImageManager_showLocation(locationId) {
+   var o = this;
+
+
+
+   var passedTick = MO.Timer.current() - o._startTick;
+   if (passedTick < o._slideDuration) {
+
+   }
+
+
+   //var gap = o._imgWidth + 30;
+   //var floatingImages = o._floatingImages;
+   //var count = floatingImages.count();
+   //for (var i = 0; i < count; i++) {
+   //   var fi = floatingImages.at(i);
+   //   fi.floatingAnime(radianY);
+   //   fi.location().x++;
+   //   if (fi.location().x > gap * 8) {
+   //      fi.location().x = -gap;
+   //   }
+   //   fi.dirty();
+   //}
 }
 
 //============================================================

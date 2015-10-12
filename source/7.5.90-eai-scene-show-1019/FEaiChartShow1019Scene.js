@@ -202,7 +202,8 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
 
    var areaIndex = message.indexOf('area');
    if (areaIndex != -1) {
-      var area = message.substr(areaIndex + 5);
+      var areaId = message.substr(areaIndex + 5);
+      o._floatingImageManager.showLocation(areaId);
    }
 }
 
@@ -491,8 +492,10 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
    //}
    o._videoAnimeStartTick = MO.Timer.current();
    //o._guiManager.hide();
+   o._floatingImageManager.setVisibleAll(false);
    switch (phase) {
       case 0: // 待机画面
+         o._floatingImageManager.setVisibleAll(true);
          break;
       case 1: // 播放视频1
          o._currentVideoRenderable = o._videoRenderables.at(0);
@@ -580,6 +583,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          break;
       default:
          o._displayPhase = 0;
+         o._floatingImageManager.setVisibleAll(true);
          break;
    }
 }
