@@ -39,16 +39,24 @@ MO.FEaiMapFaceEffect_drawRenderable = function FEaiMapFaceEffect_drawRenderable(
    for(var i = 0; i < mergeCount; i++){
       var index = stride * i;
       var mergeRenderable = mergeRenderables.at(i);
-      var shape = mergeRenderable._shape;
-      var entity = shape._entity;
-      var normalScale = entity.normalScale();
+      // 写入矩阵
       var matrix = mergeRenderable.matrix();
-      var color = mergeRenderable.color();
       matrix.writeData(data, index);
+      // 写入颜色
+      var color = mergeRenderable.color();
       data[index + 12] = color.red;
       data[index + 13] = color.green;
       data[index + 14] = color.blue;
-      data[index + 15] = normalScale;
+      // 写入法线缩放
+      var shape = mergeRenderable._shape;
+      if(shape){
+         var entity = shape._entity;
+         var normalScale = entity.normalScale();
+         data[index + 15] = normalScale;
+      }else{
+         var matrix = mergeRenderable.matrix();
+         data[index + 15] = color.alpha;
+      }
    }
    program.setParameter('vc_data', data);
    // 设置矩阵
