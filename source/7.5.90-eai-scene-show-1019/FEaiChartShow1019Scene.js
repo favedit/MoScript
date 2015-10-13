@@ -88,6 +88,9 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._timeline                = null;
    o._liveTable               = null;
    o._boardProcessor          = null;
+   // @attribute
+   o._titlePic                = null;
+   o._copyrightPic            = null;
    //..........................................................
    // @event
    o.onSocketReceived         = MO.FEaiChartShow1019Scene_onSocketReceived;
@@ -1077,6 +1080,25 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
 
    // 不播放背景音乐
    o._groundAutio.muted = true;
+
+   // 标题图片和版权图片
+   var titlePic = o._titlePic = MO.Class.create(MO.FGuiPicture);
+   titlePic.setBackResource('url:{eai.resource}/show1019/title.png');
+   titlePic.setSize(459, 52);
+   titlePic.setLocation((1920 - 459) / 2, 10);
+   titlePic.linkGraphicContext(o);
+   titlePic.build();
+   titlePic.psInitialize();
+   o._guiManager.register(titlePic);
+
+   var crPic = o._copyrightPic = MO.Class.create(MO.FGuiPicture);
+   crPic.setBackResource('url:{eai.resource}/show1019/copyright.png');
+   crPic.setSize(247, 52);
+   crPic.setLocation(1920 - 247, 1080 - 52 - 10);
+   crPic.linkGraphicContext(o);
+   crPic.build();
+   crPic.psInitialize();
+   o._guiManager.register(crPic);
 }
 
 //==========================================================
