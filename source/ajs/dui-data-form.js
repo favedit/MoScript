@@ -17,6 +17,7 @@ with(MO){
    }
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
+      MO.Assert.debugTrue(MO.Class.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');
@@ -27,6 +28,7 @@ with(MO){
       root.set('action', svc.action);
       RConsole.find(FEnvironmentConsole).build(root);
       p.dsSaveValue(root.create('Data'));
+      MO.Logger.debug(this, xdocument.dump());
       o._loading = true;
       o._dataContainer = p;
       var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);
@@ -431,8 +433,8 @@ with(MO){
       o._labelPositionCd = null;
       o._labelAlignCd = null;
       o._dataTypeCd = null;
-      o._labelSize = RObject.dispose(o._labelSize);
-      o._editSize = RObject.dispose(o._editSize);
+      o._labelSize = MO.Lang.Object.dispose(o._labelSize);
+      o._editSize = MO.Lang.Object.dispose(o._editSize);
       o._hLabelPanel = MO.Window.Html.free(o._hLabelPanel);
       o._hLabelForm = MO.Window.Html.free(o._hLabelForm);
       o._hIconPanel = MO.Window.Html.free(o._hIconPanel);

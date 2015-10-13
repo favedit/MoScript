@@ -312,6 +312,7 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -963,7 +964,7 @@ MO.FThreadConsole = function FThreadConsole(o){
    o._scopeCd     = MO.EScope.Global;
    o._active      = true;
    o._requestFlag = false;
-   o._interval    = 8;
+   o._interval    = 5;
    o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    o._hIntervalId = null;
    o.ohInterval   = MO.FThreadConsole_ohInterval;

@@ -52,6 +52,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartPerformenceMarketer  = 'chart.performence.marketer';
    o.ChartMarketerProduct      = 'chart.marketer.product';
    o.ChartShow1019             = 'chart.show.1019';
+   o.ChartSesameFinancial      = 'chart.sesame.financial';
    return o;
 }
 MO.Eai = new function FEai(){

@@ -25,7 +25,7 @@ MO.FEaiFinancialData_unserialize = function FEaiFinancialData_unserialize(input)
 }
 MO.FEaiFinancialData_dispose = function FEaiFinancialData_dispose(){
    var o = this;
-   o._location = RObject.dispose(o._location);
+   o._location = MO.Lang.Object.dispose(o._location);
    o.__base.FObject.dispose.call(o);
 }
 MO.FEaiFinancialData = function FEaiFinancialData(o){
@@ -55,7 +55,7 @@ MO.FEaiFinancialData_unserialize = function FEaiFinancialData_unserialize(input)
 }
 MO.FEaiFinancialData_dispose = function FEaiFinancialData_dispose(){
    var o = this;
-   o._location = RObject.dispose(o._location);
+   o._location = MO.Lang.Object.dispose(o._location);
    o.__base.FObject.dispose.call(o);
 }
 MO.FEaiFinancialMarketerDynamic = function FEaiFinancialMarketerDynamic(o){
@@ -85,7 +85,7 @@ MO.FEaiFinancialMarketerDynamic_unserialize = function FEaiFinancialMarketerDyna
 }
 MO.FEaiFinancialMarketerDynamic_dispose = function FEaiFinancialMarketerDynamic_dispose(){
    var o = this;
-   o._location = RObject.dispose(o._location);
+   o._location = MO.Lang.Object.dispose(o._location);
    o.__base.FObject.dispose.call(o);
 }
 MO.FEaiLogic = function FEaiLogic(o){

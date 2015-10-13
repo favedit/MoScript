@@ -204,8 +204,8 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
    var areaIndex = message.indexOf('area');
    if (areaIndex != -1) {
       var areaId = message.substr(areaIndex + 5);
-      //o._floatingImageManager.setAutoShow(false);
-      //o._floatingImageManager.showLocation(areaId);
+      o._floatingImageManager.setAutoShow(false);
+      o._floatingImageManager.showLocation(areaId);
       o._boardProcessor.setAutoPlay(false);
       o._boardProcessor.showArea(areaId);
    }
@@ -454,7 +454,7 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       }
 
       //o._lineManager.upload();
-      //o._floatingImageManager.process(o._rotateRadian);
+      o._floatingImageManager.process(o._rotateRadian);
       //o._boardProcessor.process(o._rotateRadian);
    }
 }
@@ -500,11 +500,11 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
    //}
    o._videoAnimeStartTick = MO.Timer.current();
    //o._guiManager.hide();
-   //o._floatingImageManager.setAutoShow(false);
+   o._floatingImageManager.setAutoShow(false);
    o._boardProcessor.setAutoPlay(false);
    switch (phase) {
       case 0: // 待机画面
-         //o._floatingImageManager.setAutoShow(true);
+         o._floatingImageManager.setAutoShow(true);
          o._boardProcessor.setAutoPlay(true);
          break;
       case 1: // 播放视频1
@@ -593,7 +593,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          break;
       default:
          o._displayPhase = 0;
-         //o._floatingImageManager.setAutoShow(true);
+         o._floatingImageManager.setAutoShow(true);
          o._boardProcessor.setAutoPlay(true);
          break;
    }

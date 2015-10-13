@@ -648,6 +648,7 @@ MO.TMap_get = function TMap_get(name, defaultValue){
 }
 MO.TMap_set = function TMap_set(name, value){
    var o = this;
+   MO.Assert.debugNotNull(name);
    var nameString = name.toString();
    var code = nameString.toLowerCase();
    var index = o._table[code];
@@ -1334,11 +1335,13 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
+   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
+   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1351,7 +1354,9 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
+   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
+   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1409,6 +1414,7 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
+   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -2588,6 +2594,7 @@ MO.RClass.prototype.isName = function RClass_isName(value, name){
 }
 MO.RClass.prototype.isClass = function RClass_isClass(value, clazz){
    var o = this;
+   MO.Assert.debugNotNull(clazz);
    if(value){
       var name = o.name(clazz);
       if(value.__base){
@@ -2879,6 +2886,7 @@ MO.RClass.prototype.build = function RClass_build(clazz){
 }
 MO.RClass.prototype.free = function RClass_free(instance){
    var clazz = instance.__class;
+   MO.Assert.debugNotNull(clazz);
    clazz.free(instance);
 }
 MO.RClass.prototype.dump = function RClass_dump(v){
@@ -5077,6 +5085,7 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
+   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -5377,6 +5386,11 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
+   MO.Assert.debugNotNull(source);
+   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
+   MO.Assert.debugTrue(sourceCount <= source.length);
+   MO.Assert.debugNotNull(target);
+   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }
@@ -5598,6 +5612,7 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 }
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
+   MO.Assert.debugNotNull(value);
    var name = null;
    if(value.constructor == String){
       name = value;
@@ -5630,6 +5645,7 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
+   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){
@@ -6699,6 +6715,7 @@ MO.SMatrix3d = function SMatrix3d(){
    o.updateForce    = MO.SMatrix3d_updateForce;
    o.update         = MO.SMatrix3d_update;
    o.merge          = MO.SMatrix3d_merge;
+   o.parse          = MO.SMatrix3d_parse;
    o.serialize      = MO.SMatrix3d_serialize;
    o.unserialize    = MO.SMatrix3d_unserialize;
    o.saveConfig     = MO.SMatrix3d_saveConfig;
@@ -6791,7 +6808,7 @@ MO.SMatrix3d_assign = function SMatrix3d_assign(p){
    o.sx = p.sx;
    o.sy = p.sy;
    o.sz = p.sz;
-   o.assignData(p._data);
+   return o.assignData(p._data);
 }
 MO.SMatrix3d_attach = function SMatrix3d_attach(p){
    var o = this;
@@ -6855,6 +6872,288 @@ MO.SMatrix3d_merge = function SMatrix3d_merge(bm, am){
    o.sz = bm.sz * am.sz;
    o.updateForce();
 }
+function my_create() {
+    var out = new Float32Array(16);
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+};
+function my_normalize(out, mat) {
+    var m44 = mat[15]
+    if (m44 === 0)
+        return false
+    var scale = 1 / m44
+    for (var i=0; i<16; i++)
+        out[i] = mat[i] * scale
+    return true
+}
+function my_clone(a) {
+    var out = new Float32Array(16);
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    out[3] = a[3];
+    out[4] = a[4];
+    out[5] = a[5];
+    out[6] = a[6];
+    out[7] = a[7];
+    out[8] = a[8];
+    out[9] = a[9];
+    out[10] = a[10];
+    out[11] = a[11];
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+};
+function my_determinant(a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32;
+    return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+};
+function my_invert(out, a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32,
+        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+    if (!det) {
+        return null;
+    }
+    det = 1.0 / det;
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+    return out;
+};
+function my_transpose(out, a) {
+    if (out === a) {
+        var a01 = a[1], a02 = a[2], a03 = a[3],
+            a12 = a[6], a13 = a[7],
+            a23 = a[11];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a01;
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a02;
+        out[9] = a12;
+        out[11] = a[14];
+        out[12] = a03;
+        out[13] = a13;
+        out[14] = a23;
+    } else {
+        out[0] = a[0];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a[1];
+        out[5] = a[5];
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a[2];
+        out[9] = a[6];
+        out[10] = a[10];
+        out[11] = a[14];
+        out[12] = a[3];
+        out[13] = a[7];
+        out[14] = a[11];
+        out[15] = a[15];
+    }
+    return out;
+};
+function my_vec4multMat4(out, a, m) {
+    var x = a[0], y = a[1], z = a[2], w = a[3];
+    out[0] = m[0] * x + m[4] * y + m[8] * z + m[12] * w;
+    out[1] = m[1] * x + m[5] * y + m[9] * z + m[13] * w;
+    out[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
+    out[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
+    return out;
+}
+function my_mat3from4(out, mat4x4) {
+    out[0][0] = mat4x4[ 0];
+    out[0][1] = mat4x4[ 1];
+    out[0][2] = mat4x4[ 2];
+    out[1][0] = mat4x4[ 4];
+    out[1][1] = mat4x4[ 5];
+    out[1][2] = mat4x4[ 6];
+    out[2][0] = mat4x4[ 8];
+    out[2][1] = mat4x4[ 9];
+    out[2][2] = mat4x4[10];
+}
+function my_combine(out, a, b, scale1, scale2) {
+    out[0] = a[0] * scale1 + b[0] * scale2;
+    out[1] = a[1] * scale1 + b[1] * scale2;
+    out[2] = a[2] * scale1 + b[2] * scale2;
+}
+var vec3 = {
+   length: function length(a) {
+      var x = a[0], y = a[1], z = a[2];
+      return Math.sqrt(x * x + y * y + z * z)
+   },
+   normalize: function normalize(out, a) {
+         var x = a[0], y = a[1], z = a[2];
+         var len = x * x + y * y + z * z
+         if (len > 0) {
+            len = 1 / Math.sqrt(len)
+            out[0] = a[0] * len
+            out[1] = a[1] * len
+            out[2] = a[2] * len
+         }
+         return out
+      },
+   dot: function dot(a, b){
+      return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+   },
+   cross: function cross(out, a, b) {
+      var ax = a[0], ay = a[1], az = a[2], bx = b[0], by = b[1], bz = b[2];
+      out[0] = ay * bz - az * by;
+      out[1] = az * bx - ax * bz;
+      out[2] = ax * by - ay * bx;
+      return out
+   }
+}
+var tmp = my_create()
+var perspectiveMatrix = my_create();
+var tmpVec4 = [0, 0, 0, 0];
+var row = [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ];
+var pdum3 = [0, 0, 0];
+MO.SMatrix3d_parse = function SMatrix3d_parse(translation, scale, skew, perspective, quaternion){
+   var o = this;
+   if(!translation) translation = [0,0,0];
+   if(!scale) scale = [0,0,0];
+   if(!skew) skew = [0,0,0];
+   if(!perspective) perspective = [0,0,0,1];
+   if(!quaternion) quaternion = [0,0,0,1];
+   if(!my_normalize(tmp, o._data)){
+      return false
+   }
+   my_clone(perspectiveMatrix, tmp);
+   perspectiveMatrix[3] = 0
+   perspectiveMatrix[7] = 0
+   perspectiveMatrix[11] = 0
+   perspectiveMatrix[15] = 1
+   if(Math.abs(my_determinant(perspectiveMatrix) < 1e-8)){
+      return false
+   }
+   var a03 = tmp[3], a13 = tmp[7], a23 = tmp[11], a30 = tmp[12], a31 = tmp[13], a32 = tmp[14], a33 = tmp[15];
+   if(a03 !== 0 || a13 !== 0 || a23 !== 0){
+      tmpVec4[0] = a03
+      tmpVec4[1] = a13
+      tmpVec4[2] = a23
+      tmpVec4[3] = a33
+      var ret = my_invert(perspectiveMatrix, perspectiveMatrix);
+      if(!ret){
+         return false
+      }
+      my_transpose(perspectiveMatrix, perspectiveMatrix);
+      my_vec4multMat4(perspective, tmpVec4, perspectiveMatrix);
+   } else {
+      perspective[0] = perspective[1] = perspective[2] = 0
+      perspective[3] = 1
+   }
+   translation[0] = a30;
+   translation[1] = a31;
+   translation[2] = a32;
+   my_mat3from4(row, tmp);
+   scale[0] = vec3.length(row[0]);
+   vec3.normalize(row[0], row[0]);
+   skew[0] = vec3.dot(row[0], row[1]);
+   my_combine(row[1], row[1], row[0], 1.0, -skew[0])
+   scale[1] = vec3.length(row[1])
+   vec3.normalize(row[1], row[1])
+   skew[0] /= scale[1]
+   skew[1] = vec3.dot(row[0], row[2])
+   my_combine(row[2], row[2], row[0], 1.0, -skew[1])
+   skew[2] = vec3.dot(row[1], row[2])
+   my_combine(row[2], row[2], row[1], 1.0, -skew[2])
+   scale[2] = vec3.length(row[2])
+   vec3.normalize(row[2], row[2])
+   skew[1] /= scale[2]
+   skew[2] /= scale[2]
+   vec3.cross(pdum3, row[1], row[2]);
+   if(vec3.dot(row[0], pdum3) < 0){
+      for(var i = 0; i < 3; i++){
+         scale[i] *= -1;
+         row[i][0] *= -1;
+         row[i][1] *= -1;
+         row[i][2] *= -1;
+      }
+   }
+   quaternion[0] = 0.5 * Math.sqrt(Math.max(1 + row[0][0] - row[1][1] - row[2][2], 0))
+   quaternion[1] = 0.5 * Math.sqrt(Math.max(1 - row[0][0] + row[1][1] - row[2][2], 0))
+   quaternion[2] = 0.5 * Math.sqrt(Math.max(1 - row[0][0] - row[1][1] + row[2][2], 0))
+   quaternion[3] = 0.5 * Math.sqrt(Math.max(1 + row[0][0] + row[1][1] + row[2][2], 0))
+   if (row[2][1] > row[1][2])
+      quaternion[0] = -quaternion[0]
+   if (row[0][2] > row[2][0])
+      quaternion[1] = -quaternion[1]
+   if (row[1][0] > row[0][1])
+      quaternion[2] = -quaternion[2]
+   var qx = quaternion[0];
+   var qy = quaternion[1];
+   var qz = quaternion[2];
+   var qw = quaternion[3];
+   o.rx = Math.atan2((qw * qx + qy * qz) * 2, 1 - 2 * (qx * qx + qy * qy));
+   o.ry = Math.asin(2 * (qw * qy - qz * qx));
+   o.rz = Math.atan2((qw * qz + qx * qy) * 2, 1 - 2 * (qy * qy + qz * qz));
+   return true
+}
 MO.SMatrix3d_serialize = function SMatrix3d_serialize(p){
    var o = this;
    p.writeFloat(o.tx);
@@ -6898,6 +7197,7 @@ MO.SMatrix3x3 = function SMatrix3x3(){
    o.data            = MO.SMatrix3x3_data;
    o.equalsData      = MO.SMatrix3x3_equalsData;
    o.assignData      = MO.SMatrix3x3_assignData;
+   o.assign4x4       = MO.SMatrix3x3_assign4x4;
    o.appendData      = MO.SMatrix3x3_appendData;
    o.rotationX       = MO.SMatrix3x3_rotationX;
    o.rotationY       = MO.SMatrix3x3_rotationY;
@@ -6923,11 +7223,28 @@ MO.SMatrix3x3_equalsData = function SMatrix3x3_equalsData(p){
    }
    return true;
 }
-MO.SMatrix3x3_assignData = function SMatrix3x3_assignData(p){
-   var d = this._data;
+MO.SMatrix3x3_assignData = function SMatrix3x3_assignData(valueData){
+   var o = this;
+   var data = o._data;
    for(var n = 0; n < 9; n++){
-      d[n] = p[n];
+      data[n] = valueData[n];
    }
+   return o;
+}
+MO.SMatrix3x3_assign4x4 = function SMatrix3x3_assign4x4(value){
+   var o = this;
+   var data = o._data;
+   var valueData = value.data();
+   data[0] = valueData[0];
+   data[1] = valueData[1];
+   data[2] = valueData[2];
+   data[3] = valueData[4];
+   data[4] = valueData[5];
+   data[5] = valueData[6];
+   data[6] = valueData[8];
+   data[7] = valueData[9];
+   data[8] = valueData[10];
+   return o;
 }
 MO.SMatrix3x3_appendData = function SMatrix3x3_appendData(p){
    var d = this._data;
@@ -7127,7 +7444,9 @@ MO.SMatrix4x4 = function SMatrix4x4(){
    o.addRotationY    = MO.SMatrix4x4_addRotationY;
    o.addRotationZ    = MO.SMatrix4x4_addRotationZ;
    o.addRotation     = MO.SMatrix4x4_addRotation;
+   o.addRotationAxis = MO.SMatrix4x4_addRotationAxis;
    o.addScale        = MO.SMatrix4x4_addScale;
+   o.normalize       = MO.SMatrix4x4_normalize;
    o.invert          = MO.SMatrix4x4_invert;
    o.transform       = MO.SMatrix4x4_transform;
    o.transformPoint3 = MO.SMatrix4x4_transformPoint3;
@@ -7169,11 +7488,13 @@ MO.SMatrix4x4_equalsData = function SMatrix4x4_equalsData(p){
    }
    return true;
 }
-MO.SMatrix4x4_assignData = function SMatrix4x4_assignData(p){
-   var d = this._data;
+MO.SMatrix4x4_assignData = function SMatrix4x4_assignData(values){
+   var o = this;
+   var data = o._data;
    for(var n = 0; n < 16; n++){
-      d[n] = p[n];
+      data[n] = values[n];
    }
+   return o;
 }
 MO.SMatrix4x4_attachData = function SMatrix4x4_attachData(p){
    var r = false;
@@ -7336,6 +7657,34 @@ MO.SMatrix4x4_addRotation = function SMatrix4x4_addRotation(x, y, z){
    v[15] = 1;
    this.appendData(v);
 }
+MO.SMatrix4x4_addRotationAxis = function SMatrix4x4_addRotationAxis(axis, angle){
+   var c = Math.cos(angle);
+   var s = Math.sin(angle);
+   var t = 1 - c;
+   var x = axis.x;
+   var y = axis.y;
+   var z = axis.z;
+   var tx = t * x;
+   var ty = t * y;
+   var v = MO.Lang.Array.array16;
+   v[ 0] = tx * x + c;
+   v[ 1] = tx * y - s * z;
+   v[ 2] = tx * z + s * y;
+   v[ 3] = 0;
+   v[ 4] = tx * y + s * z;
+   v[ 5] = ty * y + c;
+   v[ 6] = ty * z - s * x;
+   v[ 7] = 0;
+   v[ 8] = tx * z - s * y;
+   v[ 9] = ty * z + s * x;
+   v[10] = t * z * z + c;
+   v[11] = 0;
+   v[12] = 0;
+   v[13] = 0;
+   v[14] = 0;
+   v[15] = 1;
+   this.appendData(v);
+}
 MO.SMatrix4x4_addScale = function SMatrix4x4_addScale(x, y, z){
    var v = MO.Lang.Array.array16;
    v[ 0] = x;
@@ -7355,6 +7704,22 @@ MO.SMatrix4x4_addScale = function SMatrix4x4_addScale(x, y, z){
    v[14] = 0;
    v[15] = 1;
    this.appendData(v);
+}
+MO.SMatrix4x4_normalize = function SMatrix4x4_normalize(){
+   var o = this;
+   var data = o._data;
+   var m44 = data[15];
+   if(m44 == 0){
+      return false;
+   }else if(m44 == 1){
+      return true;
+   }else{
+      var scale = 1 / m44
+      for(var i = 0; i < 16; i++){
+         data[i] = data[i] * scale;
+      }
+      return true
+   }
 }
 MO.SMatrix4x4_invert = function SMatrix4x4_invert(){
    var o = this;
@@ -7993,6 +8358,7 @@ MO.SPoint2 = function SPoint2(x, y){
    o.serialize   = MO.SPoint2_serialize;
    o.unserialize = MO.SPoint2_unserialize;
    o.parse       = MO.SPoint2_parse;
+   o.parseFloat  = MO.SPoint2_parseFloat;
    o.toString    = MO.SPoint2_toString;
    o.dispose     = MO.SPoint2_dispose;
    return o;
@@ -8017,6 +8383,16 @@ MO.SPoint2_parse = function SPoint2_parse(source){
       throw new TError(o, "Parse value failure. (value={1})", source);
    }
 }
+MO.SPoint2_parseFloat = function SPoint2_parseFloat(source){
+   var o = this;
+   var items = source.split(',')
+   if(items.length == 2){
+      o.x = parseFloat(items[0]);
+      o.y = parseFloat(items[1]);
+   }else{
+      throw new TError(o, "Parse value failure. (value={1})", source);
+   }
+}
 MO.SPoint2_toString = function SPoint2_toString(){
    var o = this;
    return o.x + ',' + o.y;
@@ -8034,6 +8410,7 @@ MO.SPoint3 = function SPoint3(x, y, z){
    o.mergeMin3 = MO.SPoint3_mergeMin3;
    o.mergeMax  = MO.SPoint3_mergeMax;
    o.mergeMax3 = MO.SPoint3_mergeMax3;
+   o.moveTo    = MO.SPoint3_moveTo;
    o.resize    = MO.SPoint3_resize;
    o.slerp     = MO.SPoint3_slerp;
    return o;
@@ -8086,6 +8463,12 @@ MO.SPoint3_resize = function SPoint3_resize(x, y, z){
    if(z != null){
       o.z += z;
    }
+}
+MO.SPoint3_moveTo = function SPoint3_moveTo(direction, length){
+   var o = this;
+   o.x += direction.x * length;
+   o.y += direction.y * length;
+   o.z += direction.z * length;
 }
 MO.SPoint3_slerp = function SPoint3_slerp(v1, v2, r){
    var o = this;
@@ -8143,12 +8526,12 @@ MO.SQuaternion_identity = function SQuaternion_identity(){
    o.w = 1;
    return o;
 }
-MO.SQuaternion_assign = function SQuaternion_assign(p){
+MO.SQuaternion_assign = function SQuaternion_assign(value){
    var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-   o.w = p.w;
+   o.x = value.x;
+   o.y = value.y;
+   o.z = value.z;
+   o.w = value.w;
 }
 MO.SQuaternion_set = function SQuaternion_set(x, y, z, w){
    var o = this;
@@ -8163,68 +8546,68 @@ MO.SQuaternion_absolute = function SQuaternion_absolute(){
 }
 MO.SQuaternion_normalize = function SQuaternion_normalize(){
    var o = this;
-   var a = o.absolute();
-   if(a != 0){
-      var v = 1 / a;
-      o.x *= v;
-      o.y *= v;
-      o.z *= v;
-      o.w *= v;
+   var value = o.absolute();
+   if(value != 0){
+      var rate = 1 / value;
+      o.x *= rate;
+      o.y *= rate;
+      o.z *= rate;
+      o.w *= rate;
    }
 }
-MO.SQuaternion_conjugate = function SQuaternion_conjugate(p){
+MO.SQuaternion_conjugate = function SQuaternion_conjugate(value){
    var o = this;
-   var r = null;
-   if(p){
-      r = p;
+   var result = null;
+   if(value){
+      result = value;
    }else{
-      r = new MO.SQuaternion();
+      result = new MO.SQuaternion();
    }
-   r.x = -o.x;
-   r.y = -o.y;
-   r.z = -o.z;
-   r.w = o.w;
-   return r;
+   result.x = -o.x;
+   result.y = -o.y;
+   result.z = -o.z;
+   result.w = o.w;
+   return result;
 }
-MO.SQuaternion_mul = function SQuaternion_mul(p){
+MO.SQuaternion_mul = function SQuaternion_mul(value){
    var o = this;
    var x = o.x;
    var y = o.y;
    var z = o.z;
    var w = o.w;
-   o.x = (w * p.x) + (x * p.w) + (y * p.z) - (z * p.y);
-   o.y = (w * p.y) + (y * p.w) + (z * p.x) - (x * p.z);
-   o.z = (w * p.z) + (z * p.w) + (x * p.y) - (y * p.x);
-   o.w = (w * p.w) - (x * p.x) - (y * p.y) - (z * p.z);
+   o.x = (w * value.x) + (x * value.w) + (y * value.z) - (z * value.y);
+   o.y = (w * value.y) + (y * value.w) + (z * value.x) - (x * value.z);
+   o.z = (w * value.z) + (z * value.w) + (x * value.y) - (y * value.x);
+   o.w = (w * value.w) - (x * value.x) - (y * value.y) - (z * value.z);
 }
-MO.SQuaternion_mul2 = function SQuaternion_mul2(p1, p2){
+MO.SQuaternion_mul2 = function SQuaternion_mul2(value1, value2){
    var o = this;
-   o.x = (p1.w * p2.x) + (p1.x * p2.w) + (p1.y * p2.z) - (p1.z * p2.y);
-   o.y = (p1.w * p2.y) + (p1.y * p2.w) + (p1.z * p2.x) - (p1.x * p2.z);
-   o.z = (p1.w * p2.z) + (p1.z * p2.w) + (p1.x * p2.y) - (p1.y * p2.x);
-   o.w = (p1.w * p2.w) - (p1.x * p2.x) - (p1.y * p2.y) - (p1.z * p2.z);
+   o.x = (value1.w * value2.x) + (value1.x * value2.w) + (value1.y * value2.z) - (value1.z * value2.y);
+   o.y = (value1.w * value2.y) + (value1.y * value2.w) + (value1.z * value2.x) - (value1.x * value2.z);
+   o.z = (value1.w * value2.z) + (value1.z * value2.w) + (value1.x * value2.y) - (value1.y * value2.x);
+   o.w = (value1.w * value2.w) - (value1.x * value2.x) - (value1.y * value2.y) - (value1.z * value2.z);
 }
-MO.SQuaternion_translate = function SQuaternion_translate(pi, po){
+MO.SQuaternion_translate = function SQuaternion_translate(input, output){
    var o = this;
    var q1 = new MO.SQuaternion();
-   q1.set(pi.x, pi.y, pi.z, 0);
+   q1.set(input.x, input.y, input.z, 0);
    q1.normalize();
    var q2 = o.conjugate();
    q1.mul(q2);
    var q = o.clone();
    q.mul(q1);
-   var r = null;
-   if(po){
-      r = po;
+   var result = null;
+   if(output){
+      result = output;
    }else{
-      r = new MO.SVector3();
+      result = new MO.SVector3();
    }
-   r.set(q.x, q.y, q.z);
-   return r;
+   result.set(q.x, q.y, q.z);
+   return result;
 }
-MO.SQuaternion_slerp = function SQuaternion_slerp(v1, v2, r){
+MO.SQuaternion_slerp = function SQuaternion_slerp(value1, value2, rate){
    var o = this;
-   var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+   var rv = (value1.x * value2.x) + (value1.y * value2.y) + (value1.z * value2.z) + (value1.w * value2.w);
    var rf = false;
    if (rv < 0){
       rf = true;
@@ -8233,26 +8616,26 @@ MO.SQuaternion_slerp = function SQuaternion_slerp(v1, v2, r){
    var r1 = 0;
    var r2 = 0;
    if(rv > 0.999999){
-      r1 = 1 - r;
-      r2 = rf ? -r : r;
+      r1 = 1 - rate;
+      r2 = rf ? -rate : rate;
    }else{
       var ra = Math.acos(rv);
       var rb = 1 / Math.sin(ra);
-      r1 = Math.sin((1 - r) * ra) * rb;
-      r2 = rf ? (-Math.sin(r * ra) * rb) : (Math.sin(r * ra) * rb);
+      r1 = Math.sin((1 - rate) * ra) * rb;
+      r2 = rf ? (-Math.sin(rate * ra) * rb) : (Math.sin(rate * ra) * rb);
    }
-   o.x = (r1 * v1.x) + (r2 * v2.x);
-   o.y = (r1 * v1.y) + (r2 * v2.y);
-   o.z = (r1 * v1.z) + (r2 * v2.z);
-   o.w = (r1 * v1.w) + (r2 * v2.w);
+   o.x = (r1 * value1.x) + (r2 * value2.x);
+   o.y = (r1 * value1.y) + (r2 * value2.y);
+   o.z = (r1 * value1.z) + (r2 * value2.z);
+   o.w = (r1 * value1.w) + (r2 * value2.w);
 }
-MO.SQuaternion_fromAxisAngle = function SQuaternion_fromAxisAngle(a, g){
+MO.SQuaternion_fromAxisAngle = function SQuaternion_fromAxisAngle(axis, angle){
    var o = this;
-   var r = g * 0.5;
+   var r = angle * 0.5;
    var s = Math.sin(r);
-   o.x = a.x * s;
-   o.y = a.y * s;
-   o.z = a.z * s;
+   o.x = axis.x * s;
+   o.y = axis.y * s;
+   o.z = axis.z * s;
    o.w = Math.cos(r);
 }
 MO.SQuaternion_fromEuler = function SQuaternion_fromEuler(p, y, r){
@@ -8284,28 +8667,28 @@ MO.SQuaternion_parseEuler = function SQuaternion_parseEuler(p){
    r.z = Math.atan2(2 * (o.w * o.z + o.x * o.y) , 1 - 2 * (z2 + x2));
    return r;
 }
-MO.SQuaternion_serialize = function SQuaternion_serialize(p){
+MO.SQuaternion_serialize = function SQuaternion_serialize(output){
    var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
-   p.writeFloat(o.z);
-   p.writeFloat(o.w);
+   output.writeFloat(o.x);
+   output.writeFloat(o.y);
+   output.writeFloat(o.z);
+   output.writeFloat(o.w);
 }
-MO.SQuaternion_unserialize = function SQuaternion_unserialize(p){
+MO.SQuaternion_unserialize = function SQuaternion_unserialize(input){
    var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
-   o.z = p.readFloat();
-   o.w = p.readFloat();
+   o.x = input.readFloat();
+   o.y = input.readFloat();
+   o.z = input.readFloat();
+   o.w = input.readFloat();
 }
 MO.SQuaternion_clone = function SQuaternion_clone(){
    var o = this;
-   var r = new MO.SQuaternion();
-   r.x = o.x;
-   r.y = o.y;
-   r.z = o.z;
-   r.w = o.w;
-   return r;
+   var result = new MO.SQuaternion();
+   result.x = o.x;
+   result.y = o.y;
+   result.z = o.z;
+   result.w = o.w;
+   return result;
 }
 MO.SQuaternion_toString = function SQuaternion_toString(){
    var o = this;
@@ -8736,15 +9119,19 @@ MO.SValue2 = function SValue2(x, y){
    o.setMax       = MO.SValue2_setMax;
    o.set          = MO.SValue2_set;
    o.setAll       = MO.SValue2_setAll;
+   o.add          = MO.SValue2_add;
+   o.mul          = MO.SValue2_mul;
    o.mergeMin     = MO.SValue2_mergeMin;
    o.mergeMin2    = MO.SValue2_mergeMin2;
    o.mergeMax     = MO.SValue2_mergeMax;
    o.mergeMax2    = MO.SValue2_mergeMax2;
-   o.length       = MO.SValue2_absolute;
+   o.length       = MO.SValue2_length;
+   o.length2      = MO.SValue2_length2;
    o.absolute     = MO.SValue2_absolute;
    o.normalize    = MO.SValue2_normalize;
    o.negative     = MO.SValue2_negative;
    o.parse        = MO.SValue2_parse;
+   o.toDisplay    = MO.SValue2_toDisplay;
    o.toString     = MO.SValue2_toString;
    return o;
 }
@@ -8777,6 +9164,14 @@ MO.SValue2_setAll = function SValue2_set(value){
    this.x = value;
    this.y = value;
 }
+MO.SValue2_add = function SValue2_add(x, y){
+   this.x += x;
+   this.y += y;
+}
+MO.SValue2_mul = function SValue2_mul(x, y){
+   this.x *= x;
+   this.y *= y;
+}
 MO.SValue2_normalize = function SValue2_normalize(){
    var value = this.absolute();
    if(value != 0){
@@ -8806,6 +9201,16 @@ MO.SValue2_mergeMax2 = function SValue2_mergeMax2(x, y){
    o.x = Math.max(o.x, x);
    o.y = Math.max(o.y, y);
 }
+MO.SValue2_length = function SValue2_length(value){
+   var cx = this.x - value.x;
+   var cy = this.y - value.y;
+   return Math.sqrt(cx * cx + cy * cy);
+}
+MO.SValue2_length2 = function SValue2_length2(x, y){
+   var cx = this.x - x;
+   var cy = this.y - y;
+   return Math.sqrt(cx * cx + cy * cy);
+}
 MO.SValue2_absolute = function SValue2_absolute(){
    return Math.sqrt((this.x * this.x) + (this.y * this.y));
 }
@@ -8829,6 +9234,12 @@ MO.SValue2_parse = function SValue2_parse(value){
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
 }
+MO.SValue2_toDisplay = function SValue2_toDisplay(){
+   var o = this;
+   var x = MO.Lang.Float.format(o.x);
+   var y = MO.Lang.Float.format(o.y);
+   return x + ',' + y;
+}
 MO.SValue2_toString = function SValue2_toString(){
    return this.x + ',' + this.y;
 }
@@ -8845,7 +9256,10 @@ MO.SValue3 = function SValue3(x, y, z){
    o.setMax       = MO.SValue3_setMax;
    o.set          = MO.SValue3_set;
    o.setAll       = MO.SValue3_setAll;
+   o.add          = MO.SValue3_add;
+   o.mul          = MO.SValue3_mul;
    o.length       = MO.SValue3_absolute;
+   o.lengthTo     = MO.SValue3_lengthTo;
    o.absolute     = MO.SValue3_absolute;
    o.normalize    = MO.SValue3_normalize;
    o.negative     = MO.SValue3_negative;
@@ -8854,6 +9268,7 @@ MO.SValue3 = function SValue3(x, y, z){
    o.unserialize2 = MO.SValue3_unserialize2;
    o.unserialize3 = MO.SValue3_unserialize3;
    o.parse        = MO.SValue3_parse;
+   o.toDisplay    = MO.SValue3_toDisplay;
    o.toString     = MO.SValue3_toString;
    return o;
 }
@@ -8891,6 +9306,16 @@ MO.SValue3_setAll = function SValue3_set(value){
    this.y = value;
    this.z = value;
 }
+MO.SValue3_add = function SValue3_add(x, y, z, w){
+   this.x += x;
+   this.y += y;
+   this.z += z;
+}
+MO.SValue3_mul = function SValue3_mul(x, y, z, w){
+   this.x *= x;
+   this.y *= y;
+   this.z *= z;
+}
 MO.SValue3_normalize = function SValue3_normalize(){
    var value = this.absolute();
    if(value != 0){
@@ -8900,6 +9325,13 @@ MO.SValue3_normalize = function SValue3_normalize(){
       this.z *= rate;
    }
    return this;
+}
+MO.SValue3_lengthTo = function SValue3_lengthTo(x, y, z){
+   var o = this;
+   var cx = o.x - x;
+   var cy = o.y - y;
+   var cz = o.z - z;
+   return Math.sqrt((cx * cx) + (cy * cy) + (cz * cz));
 }
 MO.SValue3_absolute = function SValue3_absolute(){
    return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z));
@@ -8940,6 +9372,13 @@ MO.SValue3_parse = function SValue3_parse(value){
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
 }
+MO.SValue3_toDisplay = function SValue3_toDisplay(){
+   var o = this;
+   var x = MO.Lang.Float.format(o.x);
+   var y = MO.Lang.Float.format(o.y);
+   var z = MO.Lang.Float.format(o.z);
+   return x + ',' + y + ',' + z;
+}
 MO.SValue3_toString = function SValue3_toString(){
    return this.x + ',' + this.y + ',' + this.z;
 }
@@ -8951,12 +9390,15 @@ MO.SValue4 = function SValue4(x, y, z, w){
    o.w           = MO.Runtime.nvl(w, 1);
    o.assign      = MO.SValue4_assign;
    o.set         = MO.SValue4_set;
+   o.add         = MO.SValue4_add;
+   o.mul         = MO.SValue4_mul;
    o.absolute    = MO.SValue4_absolute;
    o.normalize   = MO.SValue4_normalize;
    o.negative    = MO.SValue4_negative;
    o.serialize   = MO.SValue4_serialize;
    o.unserialize = MO.SValue4_unserialize;
    o.parse       = MO.SValue4_parse;
+   o.toDisplay   = MO.SValue4_toDisplay;
    o.toString    = MO.SValue4_toString;
    return o;
 }
@@ -8971,6 +9413,18 @@ MO.SValue4_set = function SValue4_set(x, y, z, w){
    this.y = y;
    this.z = z;
    this.w = w;
+}
+MO.SValue4_add = function SValue4_add(x, y, z, w){
+   this.x += x;
+   this.y += y;
+   this.z += z;
+   this.w += w;
+}
+MO.SValue4_mul = function SValue4_mul(x, y, z, w){
+   this.x *= x;
+   this.y *= y;
+   this.z *= z;
+   this.w *= w;
 }
 MO.SValue4_absolute = function SValue4_absolute(){
    return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z) + (this.w * this.w));
@@ -9020,6 +9474,14 @@ MO.SValue4_parse = function SValue4_parse(value){
    }else{
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
+}
+MO.SValue4_toDisplay = function SValue4_toDisplay(){
+   var o = this;
+   var x = MO.Lang.Float.format(o.x);
+   var y = MO.Lang.Float.format(o.y);
+   var z = MO.Lang.Float.format(o.z);
+   var w = MO.Lang.Float.format(o.w);
+   return x + ',' + y + ',' + z + ',' + w;
 }
 MO.SValue4_toString = function SValue4_toString(){
    return this.x + ',' + this.y + ',' + this.z + ',' + this.w;
@@ -9177,6 +9639,10 @@ MO.SVector4_unserialize3 = function SVector4_unserialize3(p){
 }
 MO.RMath = function RMath(){
    var o = this;
+   o.PI_2           = Math.PI / 2;
+   o.PI             = Math.PI;
+   o.PI2            = Math.PI * 2;
+   o.PI_2_P         = 1 / (Math.PI / 2);
    o.value1         = new Array(1);
    o.value2         = new Array(2);
    o.value3         = new Array(3);
@@ -9385,6 +9851,7 @@ MO.RRandom = new MO.RRandom();
 MO.Lang.Random = MO.RRandom;
 MO.AListener = function AListener(name, linker){
    var o = this;
+   MO.Assert.debugNotEmpty(name);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    if(linker == null){
@@ -11514,6 +11981,16 @@ MO.TXmlNode_xml = function TXmlNode_xml(){
 MO.TXmlNode_toString = function TXmlNode_toString(){
    return this.xml().toString();
 }
+MO.FBinarySocket = function FBinarySocket(o){
+   o = MO.Class.inherits(this, o, MO.FSocket);
+   o.connect = MO.FBinarySocket_connect;
+   return o;
+}
+MO.FBinarySocket_connect = function FBinarySocket_connect(url){
+   var o = this;
+   o.__base.FSocket.connect.call(o, url);
+   o._handle.binaryType = "arraybuffer" ;
+}
 MO.FBufferedSocket = function FBufferedSocket(o){
    o = MO.Class.inherits(this, o, MO.FSocket);
    o._bufferSends    = MO.Class.register(o, new MO.AGetter('_bufferSends'));
@@ -11882,7 +12359,6 @@ MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
 }
 MO.FSocket_onError = function FSocket_onError(event){
    var o = this;
-   debugger
    var event = o._eventError;
    o.processErrorListener(event);
 }
@@ -11898,8 +12374,9 @@ MO.FSocket_construct = function FSocket_construct(){
    o._eventClose = new MO.SEvent(o);
    o._eventError = new MO.SEvent(o);
 }
-MO.FSocket_connect = function FSocket_connect(url){
+MO.FSocket_connect = function FSocket_connect(uri){
    var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;
@@ -12723,8 +13200,8 @@ MO.FTagContext_resetSource = function FTagContext_resetSource(p){
 }
 MO.FTagContext_dispose = function FTagContext_dispose(){
    var o = this;
-   o._attributes = RObject.dispose(o._attributes);
-   o._source = RObject.dispose(o._source);
+   o._attributes = MO.Lang.Object.dispose(o._attributes);
+   o._source = MO.Lang.Object.dispose(o._source);
    o.__base.FObject.dispose.call(o);
 }
 MO.FTagDocument = function FTagDocument(o){
@@ -13356,6 +13833,7 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -14007,7 +14485,7 @@ MO.FThreadConsole = function FThreadConsole(o){
    o._scopeCd     = MO.EScope.Global;
    o._active      = true;
    o._requestFlag = false;
-   o._interval    = 8;
+   o._interval    = 5;
    o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    o._hIntervalId = null;
    o.ohInterval   = MO.FThreadConsole_ohInterval;
@@ -14260,6 +14738,7 @@ MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
+   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.Window;
@@ -14267,6 +14746,7 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
+   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    var o = MO.Window;
@@ -14430,6 +14910,7 @@ MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
    o._statusEnable = v;
 }
 MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
+   MO.Assert.debugNotNull(control);
    this._hContainer.appendChild(hPanel);
 }
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
@@ -14613,6 +15094,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(o._typeCd == MO.EBrowser.Chrome){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
+   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, platformCd), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -14633,6 +15115,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
          capability.pixelRatio = Math.min(pixelRatio, 3);
+         MO.Logger.debug(o, 'Parse browser agent. (pixel_ratio={1}, capability_ratio={2})', pixelRatio, capability.pixelRatio);
       }
    }
    if(window.Worker){
@@ -14663,6 +15146,7 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       events['visibilitychange'] = 'webkitvisibilitychange';
    }
    o.refreshOrientation();
+   MO.Logger.debug(o, 'Browser connect. (agent={1})', o._agent);
 }
 MO.RBrowser.prototype.agent = function RBrowser_agent(){
    return this._agent;
@@ -15779,6 +16263,7 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
+   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){
@@ -16270,6 +16755,16 @@ MO.EGraphicError = new function EGraphicError(){
    o.UnsupportWebGL = 'unsupport.webgL';
    return o;
 }
+MO.EGraphicQuality = new function EGraphicQuality(){
+   var o = this;
+   o.Lowest  = 'lowest';
+   o.Low     = 'low';
+   o.Middle  = 'middle';
+   o.High    = 'high';
+   o.Highest = 'highest';
+   o.Auto    = 'auto';
+   return o;
+}
 MO.MCanvasObject = function MCanvasObject(o){
    o = MO.Class.inherits(this, o);
    o.htmlCanvas = MO.Method.virtual(o, 'htmlCanvas');
@@ -16291,6 +16786,7 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
+   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -16510,6 +17006,8 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawBorder           = MO.FG2dCanvasContext_drawBorder;
    o.fillRectangle        = MO.FG2dCanvasContext_fillRectangle;
    o.toBytes              = MO.FG2dCanvasContext_toBytes;
+   o.saveFile             = MO.FG2dCanvasContext_saveFile;
+   o.dispose              = MO.FG2dCanvasContext_dispose;
    return o;
 }
 MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {
@@ -16797,6 +17295,31 @@ MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
    var size = o._size;
    return o._handle.getImageData(0, 0, size.width, size.height);
 }
+MO.FG2dCanvasContext_saveFile = function FG2dCanvasContext_saveFile(fileName, extention){
+   var o = this;
+   var handle = context2d._handle;
+   var hCanvas = handle.canvas;
+   var imageUrl = hCanvas.toDataURL("image/" + extention);
+   var link = document.createElement('A');
+   var event = document.createEvent("MouseEvents");
+   event.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+   link.download = fileName;
+   link.href = imageUrl;
+   link.dispatchEvent(event);
+}
+MO.FG2dCanvasContext_dispose = function FG2dCanvasContext_dispose() {
+   var o = this;
+   o._handle = null;
+   o._gridSourceX = null;
+   o._gridSourceY = null;
+   o._gridSourceWidth = null;
+   o._gridSourceHeight = null;
+   o._gridDrawX = null;
+   o._gridDrawY = null;
+   o._gridDrawWidth = null;
+   o._gridDrawHeight = null;
+   o.__base.FG2dContext.dispose.call(o);
+}
 MO.EG3dMaterialMap = new function EG3dMaterialMap(){
    var o = this;
    o.AmbientColor = 0;
@@ -16982,8 +17505,9 @@ MO.MG3dRegion_dispose = function MG3dRegion_dispose(){
 }
 MO.MG3dRenderable = function MG3dRenderable(o){
    o = MO.Class.inherits(this, o, MO.MGraphicRenderable);
-   o._optionMerge   = MO.Class.register(o, new MO.AGetter('_optionMerge'), false);
-   o._optionSelect  = MO.Class.register(o, new MO.AGetter('_optionSelect'), true);
+   o._optionMerge   = MO.Class.register(o, new MO.AGetSet('_optionMerge'), false);
+   o._optionFull    = MO.Class.register(o, new MO.AGetSet('_optionFull'), false);
+   o._optionSelect  = MO.Class.register(o, new MO.AGetSet('_optionSelect'), true);
    o._currentMatrix = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
    o._matrix        = MO.Class.register(o, new MO.AGetter('_matrix'));
    o._material      = MO.Class.register(o, new MO.AGetSet('_material'));
@@ -17902,9 +18426,12 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
    o._tagContext = MO.Class.create(MO.FTagContext);
 }
 MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
+   MO.Assert.debugNotEmpty(name);
+   MO.Assert.debugNotNull(effect);
    this._registerEffects.set(name, effect);
 }
 MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
+   MO.Assert.debugNotEmpty(name);
    this._registerEffects.set(name, null);
 }
 MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
@@ -18366,6 +18893,7 @@ MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
 }
 MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
    var o = this;
+   MO.Assert.debugNotNull(pass);
    pass.setTechnique(o);
    o._passes.push(pass);
 }
@@ -18600,6 +19128,72 @@ MO.FG3dTrack_calculate = function FG3dTrack_calculate(tick){
    info.currentFrame = pCurrentFrame;
    info.nextFrame = pNextFrame;
    return true;
+}
+MO.FG3dTrackBall = function FG3dTrackBall(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._matrix          = MO.Class.register(o, new MO.AGetter('_matrix'));
+   o._rotation        = MO.Class.register(o, new MO.AGetter('_rotation'));
+   o._axis            = MO.Class.register(o, new MO.AGetter('_axis'));
+   o._angularVelocity = MO.Class.register(o, new MO.AGetter('_direction'));
+   o._lastPosition    = null;
+   o.construct        = MO.FG3dTrackBall_construct;
+   o.push             = MO.FG3dTrackBall_push;
+   o.move             = MO.FG3dTrackBall_move;
+   o.release          = MO.FG3dTrackBall_release;
+   o.dispose          = MO.FG3dTrackBall_dispose;
+   return o;
+}
+MO.FG3dTrackBall_construct = function FG3dTrackBall_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new MO.SMatrix3d();
+   o._rotation = new MO.SQuaternion();
+   o._axis = new MO.SVector3();
+   o._lastPosition = new MO.SPoint3();
+}
+MO.FG3dTrackBall_move = function FG3dTrackBall_move(x, y){
+   var lastPos3D = new MO.SVector3(o._lastPosition.x, o._lastPosition.y, 0);
+}
+MO.FG3dTrackBall_update = function FG3dTrackBall_update(){
+   var o = this;
+   var axisX = o.__axisX;
+   var axisY = o.__axisY;
+   var axisZ = o.__axisZ;
+   axisZ.assign(o._direction);
+   axisZ.normalize();
+   o.__axisUp.cross2(axisX, axisZ);
+   axisX.normalize();
+   axisZ.cross2(axisY, axisX);
+   axisY.normalize();
+   var data = o._matrix.data();
+   data[ 0] = axisX.x;
+   data[ 1] = axisY.x;
+   data[ 2] = axisZ.x;
+   data[ 3] = 0.0;
+   data[ 4] = axisX.y;
+   data[ 5] = axisY.y;
+   data[ 6] = axisZ.y;
+   data[ 7] = 0.0;
+   data[ 8] = axisX.z;
+   data[ 9] = axisY.z;
+   data[10] = axisZ.z;
+   data[11] = 0.0;
+   data[12] = -axisX.dotPoint3(o._position);
+   data[13] = -axisY.dotPoint3(o._position);
+   data[14] = -axisZ.dotPoint3(o._position);
+   data[15] = 1.0;
+}
+MO.FG3dTrackBall_updateFrustum = function FG3dTrackBall_updateFrustum(){
+   var o = this;
+   var m = MO.Lang.Math.matrix;
+   m.assign(o._matrix);
+   m.append(o._projection.matrix());
+   o._planes.updateVision(m.data());
+}
+MO.FG3dTrackBall_dispose = function FG3dTrackBall_dispose(){
+   var o = this;
+   o._matrix = MO.Lang.Obejct.dispose(o._matrix);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FG3dViewport = function FG3dViewport(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -19440,6 +20034,7 @@ MO.FG3dRenderTarget = function FG3dRenderTarget(o){
    o._color    = MO.Class.register(o, new MO.AGetter('_color'));
    o._textures = null;
    o.construct = MO.FG3dRenderTarget_construct;
+   o.setQualityCd = MO.FG3dRenderTarget_setQualityCd;
    o.textures  = MO.FG3dRenderTarget_textures;
    o.dispose   = MO.FG3dRenderTarget_dispose;
    return o;
@@ -19450,6 +20045,29 @@ MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
    o._size = new MO.SSize2();
    o._color = new MO.SColor4();
    o._color.set(0.0, 0.0, 0.0, 1.0);
+}
+MO.FG3dRenderTarget_setQualityCd = function FG3dRenderTarget_setQualityCd(qualityCd){
+   var o = this;
+   var size = o._size;
+   switch(qualityCd){
+      case MO.EGraphicQuality.Highest:
+         size.set(4096, 4096);
+         break;
+      case MO.EGraphicQuality.High:
+         size.set(2048, 2048);
+         break;
+      case MO.EGraphicQuality.Middle:
+         size.set(1024, 1024);
+         break;
+      case MO.EGraphicQuality.Low:
+         size.set(512, 512);
+         break;
+      case MO.EGraphicQuality.Lowest:
+         size.set(256, 256);
+         break;
+      default:
+         size.set(64, 64);
+   }
 }
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;
@@ -19525,6 +20143,7 @@ MO.FG3dStatistics_resetFrame = function FG3dStatistics_resetFrame(){
 }
 MO.FG3dTexture = function FG3dTexture(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
+   o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
    o._textureCd   = MO.Class.register(o, new MO.AGetter('_textureCd'), MO.EG3dTexture.Unknown);
    o._filterMinCd = MO.Class.register(o, new MO.AGetSet('_filterMinCd'), MO.EG3dSamplerFilter.Linear);
    o._filterMagCd = MO.Class.register(o, new MO.AGetSet('_filterMagCd'), MO.EG3dSamplerFilter.Linear);
@@ -20187,7 +20806,8 @@ MO.FWglContext = function FWglContext(o){
    o._handle             = MO.Class.register(o, new MO.AGetter('_handle'));
    o._handleInstance     = null;
    o._handleLayout       = null;
-   o._handleSamplerS3tc  = null;
+   o._handleDrawBuffers  = MO.Class.register(o, new MO.AGetter('_handleDrawBuffers'));
+   o._handleSamplerS3tc  = MO.Class.register(o, new MO.AGetter('_handleSamplerS3tc'));
    o._handleDebugShader  = null;
    o._activeRenderTarget = null;
    o._activeTextureSlot  = null;
@@ -20196,8 +20816,9 @@ MO.FWglContext = function FWglContext(o){
    o._statusRecord       = false;
    o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
    o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
-   o._statusFloatTexture = false;
-   o._statusScissor      = false;
+   o._statusFloatTexture = MO.Class.register(o, new MO.AGetter('_statusFloatTexture'), false);
+   o._statusDrawBuffers  = MO.Class.register(o, new MO.AGetter('_statusDrawBuffers'), false);
+   o._statusScissor      = MO.Class.register(o, new MO.AGetter('_statusScissor'), false);
    o._data9              = null;
    o._data16             = null;
    o.construct           = MO.FWglContext_construct;
@@ -20208,6 +20829,7 @@ MO.FWglContext = function FWglContext(o){
    o.extension           = MO.FWglContext_extension;
    o.extensions          = MO.FWglContext_extensions;
    o.enableFloatTexture  = MO.FWglContext_enableFloatTexture;
+   o.enableDrawBuffers   = MO.FWglContext_enableDrawBuffers;
    o.recordBegin         = MO.FWglContext_recordBegin;
    o.recordEnd           = MO.FWglContext_recordEnd;
    o.createProgram       = MO.FWglContext_createProgram;
@@ -20269,6 +20891,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
+            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
@@ -20316,6 +20939,10 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
    var extension = handle.getExtension('OES_element_index_uint');
    if(extension){
       capability.optionIndex32 = true;
+   }
+   var extension = o._handleDrawBuffers = handle.getExtension('WEBGL_draw_buffers');
+   if(extension){
+      capability.optionDrawBuffers = true;
    }
    var extension = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
    if(extension){
@@ -20481,17 +21108,32 @@ MO.FWglContext_extensions = function FWglContext_extensions(){
 MO.FWglContext_enableFloatTexture = function FWglContext_enableFloatTexture(){
    var o = this;
    if(!o._statusFloatTexture){
-      var extension = o._handle.getExtension('OES_texture_float');
+      var handle = o._handle;
+      var extension = handle.getExtension('OES_texture_float');
       if(!extension){
          return false;
       }
-      var extension = o._handle.getExtension('OES_texture_float_linear');
+      var extension = handle.getExtension('OES_texture_float_linear');
       if(!extension){
          return false;
       }
       o._statusFloatTexture = true;
    }
    return o._statusFloatTexture;
+}
+MO.FWglContext_enableDrawBuffers = function FWglContext_enableDrawBuffers(){
+   var o = this;
+   if(!o._statusDrawBuffers){
+      var handle = o._handle;
+      var extension = o._handleDrawBuffers;
+      if(!extension){
+         return false;
+      }
+      extension.drawBuffersWEBGL([
+         extension.COLOR_ATTACHMENT0_WEBGL
+      ]);
+      o._statusDrawBuffers = true;
+   }
 }
 MO.FWglContext_recordBegin = function FWglContext_recordBegin(){
    var o = this;
@@ -20561,6 +21203,7 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    var o = this;
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
+   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;
@@ -20685,7 +21328,8 @@ MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarg
       if(!result){
          return result;
       }
-      graphic.viewport(0, 0, o._size.width, o._size.height);
+      var size = o._size;
+      graphic.viewport(0, 0, size.width, size.height);
    }else{
       graphic.bindFramebuffer(graphic.FRAMEBUFFER, renderTarget._handle);
       result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", renderTarget._handle);
@@ -21031,6 +21675,7 @@ MO.FWglContext_dispose = function FWglContext_dispose(){
    o._parameters = null;
    o._extensions = null;
    o._activeTextureSlot = null;
+   o._handleDrawBuffers  = null;
    o._handleSamplerS3tc = null;
    o._handleDebugShader = null;
    o.__base.FG3dContext.dispose.call(o);
@@ -21607,6 +22252,11 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
    }
    var textures = o._textures;
    var textureCount = textures.count();
+   var attachment0 = handle.COLOR_ATTACHMENT0;
+   if(context.statusDrawBuffers()){
+      var extension = context.handleDrawBuffers();
+      attachment0 = extension.COLOR_ATTACHMENT0_WEBGL;
+   }
    for(var i = 0; i < textureCount; i++){
       var texture = textures.get(i);
       handle.bindTexture(handle.TEXTURE_2D, texture._handle);
@@ -21617,7 +22267,7 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
       if(!result){
          return result;
       }
-      handle.framebufferTexture2D(handle.FRAMEBUFFER, handle.COLOR_ATTACHMENT0 + i, handle.TEXTURE_2D, texture._handle, 0);
+      handle.framebufferTexture2D(handle.FRAMEBUFFER, attachment0 + i, handle.TEXTURE_2D, texture._handle, 0);
       var result = context.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, texture._handle);
       if(!result){
          return result;

@@ -52,6 +52,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartPerformenceMarketer  = 'chart.performence.marketer';
    o.ChartMarketerProduct      = 'chart.marketer.product';
    o.ChartShow1019             = 'chart.show.1019';
+   o.ChartSesameFinancial      = 'chart.sesame.financial';
    return o;
 }
 MO.Eai = new function FEai(){
@@ -382,10 +383,10 @@ MO.FEaiHistoryResourceModule_load = function FEaiHistoryResourceModule_load(){
 }
 MO.FEaiHistoryResourceModule_dispose = function FEaiHistoryResourceModule_dispose(){
    var o = this;
-   o._provinces = RObject.dispose(o._provinces);
-   o._citys = RObject.dispose(o._citys);
-   o._milestones = RObject.dispose(o._milestones);
-   o._dates = RObject.dispose(o._dates);
+   o._provinces = MO.Lang.Object.dispose(o._provinces);
+   o._citys = MO.Lang.Object.dispose(o._citys);
+   o._milestones = MO.Lang.Object.dispose(o._milestones);
+   o._dates = MO.Lang.Object.dispose(o._dates);
    o.__base.FEaiResourceModule.dispose.call(o);
 }
 MO.FEaiMapBoundaryData = function FEaiMapBoundaryData(o){
@@ -888,7 +889,7 @@ MO.FEaiFinancialData_unserialize = function FEaiFinancialData_unserialize(input)
 }
 MO.FEaiFinancialData_dispose = function FEaiFinancialData_dispose(){
    var o = this;
-   o._location = RObject.dispose(o._location);
+   o._location = MO.Lang.Object.dispose(o._location);
    o.__base.FObject.dispose.call(o);
 }
 MO.FEaiFinancialData = function FEaiFinancialData(o){
@@ -918,7 +919,7 @@ MO.FEaiFinancialData_unserialize = function FEaiFinancialData_unserialize(input)
 }
 MO.FEaiFinancialData_dispose = function FEaiFinancialData_dispose(){
    var o = this;
-   o._location = RObject.dispose(o._location);
+   o._location = MO.Lang.Object.dispose(o._location);
    o.__base.FObject.dispose.call(o);
 }
 MO.FEaiFinancialMarketerDynamic = function FEaiFinancialMarketerDynamic(o){
@@ -948,7 +949,7 @@ MO.FEaiFinancialMarketerDynamic_unserialize = function FEaiFinancialMarketerDyna
 }
 MO.FEaiFinancialMarketerDynamic_dispose = function FEaiFinancialMarketerDynamic_dispose(){
    var o = this;
-   o._location = RObject.dispose(o._location);
+   o._location = MO.Lang.Object.dispose(o._location);
    o.__base.FObject.dispose.call(o);
 }
 MO.FEaiLogic = function FEaiLogic(o){
@@ -1590,6 +1591,7 @@ MO.FEaiCity3dEntity = function FEaiCity3dEntity(o){
    o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
    o._range                  = MO.Class.register(o, new MO.AGetter('_range'), 1);
    o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
+   o._normalScale            = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
    o._cityTotal              = 0;
    o._investmentCount        = 0;
    o._investmentTotal        = MO.Class.register(o, new MO.AGetSet('_investmentTotal'), 0);
@@ -1889,6 +1891,7 @@ MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(ca
 }
 MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
    var code = entity.data().code();
+   MO.Assert.debugNotEmpty(code);
    this._citys.set(code, entity);
 }
 MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context, clazz){
@@ -1926,6 +1929,7 @@ MO.FEaiCityEntityModule_dispose = function FEaiCityEntityModule_dispose(monitor)
 }
 MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
+   o._normalScale             = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
    o._enterSELoaded           = false;
    o._enterSEPlaying          = false;
    o._cameraDirection         = MO.Class.register(o, new MO.AGetSet('_cameraDirection'));
@@ -1961,14 +1965,12 @@ MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o._cameraTo                = MO.Class.register(o, new MO.AGetSet('_cameraTo'));
    o._audioContext            = null;
    o._audioMapEnter           = null;
-   o.onOrganizationFetch      = MO.FEaiCountry3dEntity_onOrganizationFetch;
-   o.onMouseMove              = MO.FEaiCountry3dEntity_onMouseMove;
-   o.onMouseDown              = MO.FEaiCountry3dEntity_onMouseDown;
    o.construct                = MO.FEaiCountry3dEntity_construct;
    o.setup                    = MO.FEaiCountry3dEntity_setup;
    o.build                    = MO.FEaiCountry3dEntity_build;
    o.provinceShowOrderSort    = MO.FEaiCountry3dEntity_provinceShowOrderSort;
    o.setupProvinces           = MO.FEaiCountry3dEntity_setupProvinces;
+   o.findProvince             = MO.FEaiCountry3dEntity_findProvince;
    o.loadData                 = MO.FEaiCountry3dEntity_loadData;
    o.loadResource             = MO.FEaiCountry3dEntity_loadResource;
    o.start                    = MO.FEaiCountry3dEntity_start;
@@ -1976,7 +1978,6 @@ MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o.processLoad              = MO.FEaiCountry3dEntity_processLoad;
    o.introAnime               = MO.FEaiCountry3dEntity_introAnime;
    o.mouseOverFallAnime       = MO.FEaiCountry3dEntity_mouseOverFallAnime;
-   o.cameraMoveAnime          = MO.FEaiCountry3dEntity_cameraMoveAnime;
    o.isReady                  = MO.FEaiCountry3dEntity_isReady;
    o.dispose                  = MO.FEaiCountry3dEntity_dispose;
    return o;
@@ -1991,6 +1992,7 @@ MO.FEaiCountry3dEntity_construct = function FEaiCountry3dEntity_construct(){
 MO.FEaiCountry3dEntity_setup = function FEaiCountry3dEntity_setup() {
    var o = this;
    var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
+   shape._name = 'country';
    shape._entity = o;
    shape.linkGraphicContext(o);
 }
@@ -2009,16 +2011,15 @@ MO.FEaiCountry3dEntity_build = function FEaiCountry3dEntity_build(){
 MO.FEaiCountry3dEntity_setupProvinces = function FEaiCountry3dEntity_setupProvinces() {
    var o = this;
    var provinceEntities = o._provinceEntities;
-   for (var i = 0; i < provinceEntities.count(); i++) {
-      var provinceEntity = provinceEntities.at(i);
-      var fr = provinceEntity.faceRenderable();
-      var br = provinceEntity.borderRenderable();
-   }
-   var provinceArray = o._provinceArray = new Array(provinceEntities.count());
-   for (var i = 0; i < provinceEntities.count() ; i++) {
+   var count = provinceEntities.count();
+   var provinceArray = o._provinceArray = new Array(count);
+   for(var i = 0; i < count; i++){
       provinceArray[i] = provinceEntities.at(i);
    }
    provinceArray.sort(o.provinceShowOrderSort);
+}
+MO.FEaiCountry3dEntity_findProvince = function FEaiCountry3dEntity_findProvince(code){
+   return this._provinceEntities.get(code);
 }
 MO.FEaiCountry3dEntity_loadData = function FEaiCountry3dEntity_loadData(data){
    var o = this;
@@ -2052,13 +2053,13 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
    var borderShape = o._borderShape;
    o.loadData(data);
    var provinceModule = MO.Console.find(MO.FEaiResourceConsole).provinceModule();
-   var provinceEntityModule = MO.Console.find(MO.FEaiEntityConsole).provinceModule();
    var provincesData = data.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
-      provinceData = provincesData.at(i);
+      var provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
+      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvince3dEntity);
       provinceEntity._countryEntity = o;
       provinceEntity.linkGraphicContext(o);
@@ -2067,15 +2068,12 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
       provinceEntity.setData(provinceData);
       provinceEntity.build(o);
       provinceEntities.set(provinceCode, provinceEntity);
-      provinceEntityModule.push(provinceEntity);
       var boundaryShape = provinceEntity.boundaryShape();
       faceShape.pushMergeRenderable(boundaryShape.faceRenderable());
       borderShape.pushMergeRenderable(boundaryShape.borderRenderable());
    }
    faceShape.build();
    borderShape.build();
-   o.setupProvinces(provinceEntities);
-   MO.Console.find(MO.FEaiEntityConsole).cityModule().linkProvinces();
 }
 MO.FEaiCountry3dEntity_isReady = function FEaiCountry3dEntity_isReady() {
    var o = this;
@@ -2099,10 +2097,14 @@ MO.FEaiCountry3dEntity_start = function FEaiCountry3dEntity_start(){
 }
 MO.FEaiCountry3dEntity_process = function FEaiCountry3dEntity_process() {
    var o = this;
-   if (!o._provinceEntities) {
-      return;
+   var provinceEntities = o._provinceEntities;
+   if(provinceEntities){
+      var count = provinceEntities.count();
+      for(var i = 0; i < count; i++){
+         var provinceEntity = provinceEntities.at(i);
+         provinceEntity.process();
+      }
    }
-   o.introAnime();
 }
 MO.FEaiCountry3dEntity_processLoad = function FEaiCountry3dEntity_processLoad(){
    var o = this;
@@ -2113,68 +2115,6 @@ MO.FEaiCountry3dEntity_processLoad = function FEaiCountry3dEntity_processLoad(){
       return true;
    }
    return false;
-}
-MO.FEaiCountry3dEntity_introAnime = function FEaiCountry3dEntity_introAnime() {
-   var o = this;
-   var now = MO.Timer.current();
-   var timePassed = now - o._startTime;
-   if (timePassed < o.startDelay()) {
-      return;
-   }
-   else {
-      timePassed -= o.startDelay();
-      if (timePassed > o.riseDuration() + o.fallDuration() + o.blockInterval() * o._provinceEntities.count()) {
-         o.setIntroAnimeDone(true);
-         var listener = new MO.TListener();
-         listener._owner = this;
-         listener._callback = o.onMouseMove;
-         MO.Window.lsnsMouseMove.push(listener);
-         var listener = new MO.TListener();
-         listener._owner = this;
-         listener._callback = o.onMouseDown;
-         MO.Window.lsnsMouseDown.push(listener);
-      }
-   }
-   if (!o._enterSEPlaying) {
-      o._audioMapEnter.play(0);
-      o._enterSEPlaying = true;
-   }
-   var idxCap = timePassed / o.blockInterval();
-   for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
-      var fr = o._provinceArray[i].faceRenderable();
-      var br = o._provinceArray[i].borderRenderable();
-      var frm = fr.matrix();
-      var brm = br.matrix();
-      var risePercentage = (timePassed - o.blockInterval() * i) / (o.riseDuration() - i * i);
-      var fallPercentage = 0;
-      if (risePercentage > 1) {
-         risePercentage = 1;
-         fallPercentage = (timePassed - o.blockInterval() * i - (o.riseDuration() - i * i)) / o.fallDuration();
-         if (fallPercentage > 1) {
-            fallPercentage = 1;
-         }
-      }
-      frm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
-      frm.updateForce();
-      brm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
-      brm.updateForce();
-   }
-   idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
-}
-MO.FEaiCountry3dEntity_onMouseMove = function FEaiCountry3dEntity_onMouseMove(event){
-   var o = this;
-}
-MO.FEaiCountry3dEntity_mouseOverFallAnime = function FEaiCountry3dEntity_mouseOverFallAnime() {
-   var o = this;
-}
-MO.FEaiCountry3dEntity_onOrganizationFetch = function FEaiCountry3dEntity_onOrganizationFetch(event) {
-   var o = this;
-}
-MO.FEaiCountry3dEntity_onMouseDown = function FEaiCountry3dEntity_onMouseDown(event){
-   var o = this;
-}
-MO.FEaiCountry3dEntity_cameraMoveAnime = function FEaiCountry3dEntity_cameraMoveAnime() {
-   var o = this;
 }
 MO.FEaiCountry3dEntity_dispose = function FEaiCountry3dEntity_dispose(){
    var o = this;
@@ -2323,6 +2263,7 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
+      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);
@@ -2809,28 +2750,26 @@ MO.FEaiMapEntityModule_dispose = function FEaiMapEntityModule_dispose(){
 }
 MO.FEaiProvince3dEntity = function FEaiProvince3dEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
-   o._data             = MO.Class.register(o, new MO.AGetSet('_data'));
-   o._outline2         = MO.Class.register(o, new MO.AGetter('_outline2'));
-   o._resource         = MO.Class.register(o, new MO.AGetSet('_resource'));
-   o._boundaryShape    = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
-   o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
-   o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
-   o._layerDepth       = 3;
-   o._currentZ         = MO.Class.register(o, new MO.AGetter('_currentZ'), 0);
-   o._focusTick        = 0;
-   o._focusInterval    = 10;
-   o._focusCurrent     = 0;
-   o._focusColor       = null;
-   o._focusCount       = 200;
-   o.construct         = MO.FEaiProvince3dEntity_construct;
-   o.setup             = MO.FEaiProvince3dEntity_setup;
-   o.build             = MO.FEaiProvince3dEntity_build;
-   o.doInvestment      = MO.FEaiProvince3dEntity_doInvestment;
-   o.updateColor       = MO.FEaiProvince3dEntity_updateColor;
-   o.update            = MO.FEaiProvince3dEntity_update;
-   o.process           = MO.FEaiProvince3dEntity_process;
-   o.reset             = MO.FEaiProvince3dEntity_reset;
-   o.dispose           = MO.FEaiProvince3dEntity_dispose;
+   o._data           = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._outline2       = MO.Class.register(o, new MO.AGetter('_outline2'));
+   o._resource       = MO.Class.register(o, new MO.AGetSet('_resource'));
+   o._boundaryShape  = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
+   o._normalScale    = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
+   o._normalScaleMax = MO.Class.register(o, new MO.AGetSet('_normalScaleMax'), 1.02);
+   o._layerDepth     = 3;
+   o._focusTick      = 0;
+   o._focusInterval  = 10;
+   o._focusCurrent   = 0;
+   o._focusColor     = null;
+   o._focusCount     = 200;
+   o.construct       = MO.FEaiProvince3dEntity_construct;
+   o.setup           = MO.FEaiProvince3dEntity_setup;
+   o.build           = MO.FEaiProvince3dEntity_build;
+   o.doFocus         = MO.FEaiProvince3dEntity_doFocus;
+   o.updateColor     = MO.FEaiProvince3dEntity_updateColor;
+   o.process         = MO.FEaiProvince3dEntity_process;
+   o.reset           = MO.FEaiProvince3dEntity_reset;
+   o.dispose         = MO.FEaiProvince3dEntity_dispose;
    return o;
 }
 MO.FEaiProvince3dEntity_construct = function FEaiProvince3dEntity_construct(){
@@ -2848,6 +2787,7 @@ MO.FEaiProvince3dEntity_construct = function FEaiProvince3dEntity_construct(){
 MO.FEaiProvince3dEntity_setup = function FEaiProvince3dEntity_setup() {
    var o = this;
    var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
+   shape._name = 'province';
    shape._entity = o;
    shape.setScaleTop(1.01);
    shape.setScaleBottom(0.8);
@@ -2874,47 +2814,38 @@ MO.FEaiProvince3dEntity_build = function FEaiProvince3dEntity_build(context){
       }
    }
    outline.update();
-   shape.faceColor().setHex('#070613');
-   shape.build();
+   shape.build(o._graphicContext);
+   var faceRenderable = shape.faceRenderable();
+   faceRenderable.material().info().effectCode = 'eai.map.face';
+   faceRenderable.color().setHex('#080D19');
+   var borderRenderable = shape.borderRenderable();
+   borderRenderable.color().setHex('#6666FF');
 }
-MO.FEaiProvince3dEntity_doInvestment = function FEaiProvince3dEntity_doInvestment(level, investment){
+MO.FEaiProvince3dEntity_doFocus = function FEaiProvince3dEntity_doFocus(level, investment){
    var o = this;
    o._focusTick = 0;
    o._focusCurrent = o._focusCount;
    o._focusColor = o._focusColors[level];
 }
-MO.FEaiProvince3dEntity_update = function FEaiProvince3dEntity_update(data){
-   var o = this;
-   var investmentTotal = data.investmentTotal();
-   var rate = Math.sqrt(investmentTotal) / 100;
-   if(rate > 255){
-      rate = 255;
-   }
-}
 MO.FEaiProvince3dEntity_updateColor = function FEaiProvince3dEntity_updateColor(rate){
    var o = this;
    var color = o._focusColor;
    var rate = o._focusCurrent / o._focusCount;
-   var red = 0x08 + ((color[0] - 0x08)* rate);
-   var green = 0x0D + ((color[1] - 0x0D)* rate);
-   var blue = 0x19 + ((color[2] - 0x19)* rate);
+   var red = 0x08 + ((color[0] - 0x08) * rate);
+   var green = 0x0D + ((color[1] - 0x0D) * rate);
+   var blue = 0x19 + ((color[2] - 0x19) * rate);
    var alpha = 0xFF;
-   o._faceRenderable.color().set(0, 0, 0, 0);
+   var shape = o._boundaryShape;
+   var faceRenderable = shape.faceRenderable();
+   faceRenderable.color().set(red / 255, green / 255, blue / 255, 1);
 }
 MO.FEaiProvince3dEntity_process = function FEaiProvince3dEntity_process(){
    var o = this;
    if(o._focusCurrent > 0){
       var tick = MO.Timer.current();
       if(tick - o._focusTick > o._focusInterval){
-         var z = o._currentZ = -o._focusCurrent / 60;
-         faceRenderable = o._faceRenderable;
-         matrix = faceRenderable.matrix();
-         matrix.tz = z;
-         matrix.updateForce();
-         borderRenderable = o._borderRenderable;
-         matrix = borderRenderable.matrix();
-         matrix.tz = z;
-         matrix.updateForce();
+         var rate = o._focusCurrent / o._focusCount;
+         o._normalScale = 1 + rate * (o._normalScaleMax - 1);
          o.updateColor(o._focusCurrent);
          o._focusCurrent--;
          o._focusTick = tick;
@@ -2923,7 +2854,7 @@ MO.FEaiProvince3dEntity_process = function FEaiProvince3dEntity_process(){
 }
 MO.FEaiProvince3dEntity_reset = function FEaiProvince3dEntity_reset(){
    var o = this;
-   o._currentZ = 0;
+   o._normalScale = 0;
    o._focusTick = 0;
    o._focusCurrent = 0;
 }
@@ -3258,7 +3189,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.975);
+   sphere.matrix().setScaleAll(0.97);
    sphere.matrix().update();
    sphere.pushTexture(textureOcean, 'diffuse');
    var info = sphere.material().info();
@@ -3272,7 +3203,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.985);
+   sphere.matrix().setScaleAll(0.98);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = true;
@@ -4154,6 +4085,46 @@ MO.FEaiCitysRenderable_dispose = function FEaiCitysRenderable_dispose(){
    o._indexBuffer = MO.Lang.Object.dispose(o._indexBuffer);
    o.__base.FE3dRenderable.dispose.call(o);
 }
+MO.FEaiEarthFlatEffect = function FEaiEarthFlatEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'eai.earth.flat';
+   o._cloudPosition = 0;
+   o._translateX    = 0;
+   o.construct      = MO.FEaiEarthFlatEffect_construct;
+   o.drawRenderable = MO.FEaiEarthFlatEffect_drawRenderable;
+   o.despose        = MO.FEaiEarthFlatEffect_despose;
+   return o;
+}
+MO.FEaiEarthFlatEffect_construct = function FEaiEarthFlatEffect_construct(){
+   var o = this;
+   o.__base.FG3dAutomaticEffect.construct.call(o);
+   o._speedCloud = new MO.SVector4(0, 0, 0, 0);
+   o._speedWater = new MO.SVector4(0, 0, 0, 0);
+}
+MO.FEaiEarthFlatEffect_drawRenderable = function FEaiEarthFlatEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   o._speedCloud.add(-0.00004, -0.00003, -0.00002, 1.0);
+   o._speedWater.add(0.000024, 0.000015, 0.00001, 1.0);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
+   var displayMatrix = renderable.display().currentMatrix();
+   program.setParameter('fc_cloud', o._speedCloud);
+   program.setParameter4('fc_land', 0, 0, 0, 0);
+   program.setParameter4('fc_ocean', 0, 0, 0, 0);
+   program.setParameter('fc_water', o._speedWater);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffer());
+}
+MO.FEaiEarthFlatEffect_despose = function FEaiEarthFlatEffect_despose(){
+   var o = this;
+   o._speedCloud = MO.Lang.Object.despose(o._speedCloud);
+   o._speedWater = MO.Lang.Object.despose(o._speedWater);
+   o.__base.FG3dAutomaticEffect.despose.call(o);
+}
 MO.FEaiMapFaceEffect = function FEaiMapFaceEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
    o._code          = 'eai.map.face';
@@ -4170,17 +4141,26 @@ MO.FEaiMapFaceEffect_drawRenderable = function FEaiMapFaceEffect_drawRenderable(
    o.bindMaterial(material);
    var mergeRenderables = renderable.mergeRenderables();
    var mergeCount = mergeRenderables.count();
-   var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, 16 * mergeCount);
+   var stride = 16;
+   var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, stride * mergeCount);
    for(var i = 0; i < mergeCount; i++){
-      var index = 16 * i;
+      var index = stride * i;
       var mergeRenderable = mergeRenderables.at(i);
       var matrix = mergeRenderable.matrix();
-      var color = mergeRenderable.color();
       matrix.writeData(data, index);
+      var color = mergeRenderable.color();
       data[index + 12] = color.red;
       data[index + 13] = color.green;
       data[index + 14] = color.blue;
-      data[index + 15] = color.alpha;
+      var shape = mergeRenderable._shape;
+      if(shape){
+         var entity = shape._entity;
+         var normalScale = entity.normalScale();
+         data[index + 15] = normalScale;
+      }else{
+         var matrix = mergeRenderable.matrix();
+         data[index + 15] = color.alpha;
+      }
    }
    program.setParameter('vc_data', data);
    var displayMatrix = renderable.display().currentMatrix();
@@ -7034,7 +7014,9 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       o._guiManager.register(control);
    }
    var backgroundImage = o._application._groundBitmap;
-   stage.groundLayer().push(backgroundImage);
+   if(backgroundImage){
+      stage.groundLayer().push(backgroundImage);
+   }
 }
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;
@@ -7059,8 +7041,8 @@ MO.FEaiChartScene_deactive = function FEaiChartScene_deactive(){
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
-   o._nowDate = RObject.dispose(o._nowDate);
-   o._nowTicker = RObject.dispose(o._nowTicker);
+   o._nowDate = MO.Lang.Object.dispose(o._nowDate);
+   o._nowTicker = MO.Lang.Object.dispose(o._nowTicker);
    o._mapEntity = null;
    o.__base.FEaiScene.dispose.call(o);
 }
@@ -9001,207 +8983,212 @@ MO.FEaiChartCustomerTrendUnit = function FEaiChartCustomerTrendUnit(o){
    o._customerCount = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Uint32)]);
    return o;
 }
-MO.FEaiChartCustomerSphereProcessor = function FEaiChartCustomerSphereProcessor(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
-   o._dateSetup               = false;
-   o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
-   o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
-   o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
-   o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
-   o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
-   o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
-   o._netinvestmentDayCurrent = MO.Class.register(o, new MO.AGetter('_netinvestmentDayCurrent'), 0);
-   o._interestDayCurrent      = MO.Class.register(o, new MO.AGetter('_interestDayCurrent'), 0);
-   o._performanceDayCurrent   = MO.Class.register(o, new MO.AGetter('_performanceDayCurrent'), 0);
-   o._customerDayCurrent      = MO.Class.register(o, new MO.AGetter('_customerDayCurrent'), 0);
-   o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
-   o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
-   o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
-   o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
-   o._intervalMinute          = 1;
-   o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
-   o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
-   o._rankUnits               = MO.Class.register(o, new MO.AGetter('_rankUnits'));
-   o._units                   = MO.Class.register(o, new MO.AGetter('_units'));
-   o._tableCount              = 40;
-   o._tableInterval           = 1000;
-   o._tableTick               = 1;
-   o._dataTicker              = null;
-   o._unitPool                = null;
-   o._autios                  = null;
-   o._eventDataChanged        = null;
-   o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o._event24HDataChanged     = null;
-   o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
-   o.onDynamicData            = MO.FEaiChartCustomerSphereProcessor_onDynamicData;
-   o.on24HDataFetch           = MO.FEaiChartCustomerSphereProcessor_on24HDataFetch;
-   o.construct                = MO.FEaiChartCustomerSphereProcessor_construct;
-   o.allocUnit                = MO.FEaiChartCustomerSphereProcessor_allocUnit;
-   o.allocShape               = MO.FEaiChartCustomerSphereProcessor_allocShape;
-   o.setup                    = MO.FEaiChartCustomerSphereProcessor_setup;
-   o.calculateCurrent         = MO.FEaiChartCustomerSphereProcessor_calculateCurrent;
-   o.focusEntity              = MO.FEaiChartCustomerSphereProcessor_focusEntity;
-   o.process                  = MO.FEaiChartCustomerSphereProcessor_process;
-   o.dispose                  = MO.FEaiChartCustomerSphereProcessor_dispose;
+MO.SEaiEarthTouch = function SEaiEarthTouch(){
+   var o = this;
+   o.points        = new MO.TObjects();
+   o.direction     = new MO.SVector3();
+   o.setInfo       = MO.SEaiEarthTouch_setInfo;
+   o.calculate     = MO.SEaiEarthTouch_calculate;
+   o.calculateFlat = MO.SEaiEarthTouch_calculateFlat;
+   o.toString      = MO.SEaiEarthTouch_toString;
    return o;
 }
-MO.FEaiChartCustomerSphereProcessor_on24HDataFetch = function FEaiChartCustomerSphereProcessor_on24HDataFetch(event) {
+MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info){
    var o = this;
-   event.beginDate = o._24HBeginDate;
-   event.endDate = o._24HEndDate;
-   o.process24HDataChangedListener(event);
-}
-MO.FEaiChartCustomerSphereProcessor_onDynamicData = function FEaiChartCustomerSphereProcessor_onDynamicData(event){
-   var o = this;
-   var content = event.content;
-   var dynamicInfo = o._dynamicInfo;
-   dynamicInfo.unserializeSignBuffer(event.sign, event.content, true);
-   var rankUnits = o._rankUnits;
-   rankUnits.assign(dynamicInfo.rankUnits());
-   var units = o._units;
-   units.append(dynamicInfo.units());
-   var unitCount = units.count();
-   if(unitCount){
-      o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
-   }else{
-      o._tableInterval = 1000 * 60 * o._intervalMinute;
-   }
-   o._tableTick = 0;
-   var changeEvent = o._eventDataChanged;
-   changeEvent.rankUnits = rankUnits;
-   changeEvent.unit = null;
-   o.processDataChangedListener(changeEvent);
-}
-MO.FEaiChartCustomerSphereProcessor_construct = function FEaiChartCustomerSphereProcessor_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._beginDate = new MO.TDate();
-   o._endDate = new MO.TDate();
-   o._24HBeginDate = new MO.TDate();
-   o._24HEndDate = new MO.TDate();
-   o._units = new MO.TObjects();
-   o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
-   o._autios = new Object();
-   o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
-   o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
-   o._rankUnits = new MO.TObjects();
-   o._unitPool = MO.Class.create(MO.FObjectPool);
-   o._eventDataChanged = new MO.SEvent(o);
-   o._event24HDataChanged = new MO.SEvent(o);
-}
-MO.FEaiChartCustomerSphereProcessor_allocUnit = function FEaiChartCustomerSphereProcessor_allocUnit(){
-   var o = this;
-   var unit = o._unitPool.alloc();
-   if(!unit){
-      unit = MO.Class.create(MO.FEaiChartMktCustomerDynamicUnit);
-   }
-   return unit;
-}
-MO.FEaiChartCustomerSphereProcessor_setup = function FEaiChartCustomerSphereProcessor_setup(){
-   var o = this;
-   var audioConsole = MO.Console.find(MO.FAudioConsole);
-   for(var i = 1; i <= 5; i++){
-      o._autios[i] = audioConsole.load('{eai.resource}/currency/' + i + '.mp3');
-   }
-   var display = o._display = MO.Class.create(MO.FE3dDisplay);
-   display.linkGraphicContext(o);
-}
-MO.FEaiChartCustomerSphereProcessor_calculateCurrent = function FEaiChartCustomerSphereProcessor_calculateCurrent(){
-   var o = this;
-   var info = o._dynamicInfo;
-   var investmentCurrent = info.investmentCount();
-   var investmentTotalCurrent = info.investmentTotal();
-   var units = o._units;
-   var count = units.count();
+   var infoPoints = info.points();
+   var points = o.points;
+   var count = points.count();
    for(var i = 0; i < count; i++){
-      var unit = units.at(i);
-      investmentCurrent -= unit.investment();
-      investmentTotalCurrent -= unit.investment();
+      var point = points.at(i);
+      MO.Memory.free(point);
    }
-   o._invementTotalCurrent = investmentTotalCurrent;
-   o._invementDayCurrent = investmentCurrent;
-}
-MO.FEaiChartCustomerSphereProcessor_focusEntity = function FEaiChartCustomerSphereProcessor_focusEntity(unit){
-   var o = this;
-   var mapEntity = o._mapEntity;
-   var card = unit.card();
-   var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
-   if(cityEntity){
-      var investment = unit.investment();
-      var level = MO.Console.find(MO.FEaiLogicConsole).statistics().calculateAmountLevel(investment);
-      var provinceCode = cityEntity.data().provinceCode();
-      var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
-      if(provinceEntity){
-         provinceEntity.doInvestment(level, investment);
-      }
-      cityEntity.addInvestmentTotal(level, investment);
-      o._mapEntity.upload();
-      var autio = o._autios[level];
-      if(autio){
-         autio.play(0);
-      }
+   points.clear();
+   var count = infoPoints.count();
+   for(var i = 0; i < count; i++){
+      var infoPoint = infoPoints.at(i);
+      var point = MO.Memory.alloc(MO.SEaiEarthTouchPoint);
+      point.setInfo(infoPoint);
+      points.push(point);
    }
-   var changedEvent = o._eventDataChanged;
-   changedEvent.rankUnits = o._rankUnits;
-   changedEvent.unit = unit;
-   o.processDataChangedListener(changedEvent);
+   var point = points.first();
+   o.direction.assign(point.direction);
 }
-MO.FEaiChartCustomerSphereProcessor_process = function FEaiChartCustomerSphereProcessor_process(){
+MO.SEaiEarthTouch_calculate = function SEaiEarthTouch_calculate(matrix){
    var o = this;
-   var system = MO.Console.find(MO.FEaiLogicConsole).system();
-   if(!system.testReady()){
+   var points = o.points;
+   var count = points.count();
+   for(var i = 0; i < count; i++){
+      var point = points.at(i);
+      point.calculate(matrix);
+   }
+}
+MO.SEaiEarthTouch_calculateFlat = function SEaiEarthTouch_calculateFlat(matrix){
+   var o = this;
+   var points = o.points;
+   var count = points.count();
+   for(var i = 0; i < count; i++){
+      var point = points.at(i);
+      var position = point.position;
+      point.calculateFlat(matrix, position.x, position.y);
+   }
+}
+MO.SEaiEarthTouch_toString = function SEaiEarthTouch_toString(){
+   var o = this;
+   var result = new MO.TString();
+   var points = o.points;
+   var count = points.count();
+   for(var i = 0; i < count; i++){
+      var point = points.at(i);
+      result.append(point.toString());
+   }
+   return result.toString();
+}
+MO.SEaiEarthTouchPoint = function SEaiEarthTouchPoint(){
+   var o = this;
+   o.originPosition = new MO.SPoint2();
+   o.originLength    = 0;
+   o.position        = new MO.SPoint2();
+   o.positionLength  = 0;
+   o.direction       = new MO.SVector3();
+   o.sphereLocation  = new MO.SVector3();
+   o.mapLocation     = new MO.SPoint2();
+   o.setInfo         = MO.SEaiEarthTouchPoint_setInfo;
+   o.calculate       = MO.SEaiEarthTouchPoint_calculate;
+   o.calculateFlat   = MO.SEaiEarthTouchPoint_calculateFlat;
+   o.calculateSphere = MO.SEaiEarthTouchPoint_calculateSphere;
+   o.toString        = MO.SEaiEarthTouchPoint_toString;
+   return o;
+}
+MO.SEaiEarthTouchPoint_setInfo = function SEaiEarthTouchPoint_setInfo(info){
+   var o = this;
+   var x = (info.x() - 0.5) * 2;
+   var y = -(info.y() - 0.5) * 2;
+   o.originPosition.set(x, y);
+   o.originLength = o.originPosition.absolute();
+   x *= Math.PI / 2 * 1.02;
+   var length2d = MO.Lang.Float.toRange(Math.sqrt(x * x + y * y), 0, 1);
+   var radius2d = Math.sin(length2d * MO.Lang.Math.PI_2);
+   o.position.set(x, y);
+   o.positionLength = o.position.absolute();
+   var direction = o.direction;
+   direction.x = x;
+   direction.y = y;
+   direction.z = 0;
+   direction.normalize();
+   direction.mul(radius2d, radius2d, radius2d);
+   var length = MO.Lang.Float.toRange(Math.sqrt(direction.x * direction.x + direction.y * direction.y), 0, 1);
+   direction.z = -Math.sin(Math.acos(length));
+   direction.normalize();
+}
+MO.SEaiEarthTouchPoint_calculate = function SEaiEarthTouchPoint_calculate(matrix){
+   var o = this;
+   var sphereLocation = o.sphereLocation;
+   matrix.transformPoint3(o.direction, sphereLocation);
+   sphereLocation.normalize();
+   var mapLocation = o.mapLocation;
+   mapLocation.x = Math.atan2(sphereLocation.x, -sphereLocation.z) / Math.PI / 2 + 0.5;
+   mapLocation.y = 0.5 - Math.asin(sphereLocation.y) / Math.PI;
+}
+MO.SEaiEarthTouchPoint_calculateFlat = function SEaiEarthTouchPoint_calculateFlat(matrix, x, y){
+   var o = this;
+   var length2d = MO.Lang.Float.toRange(Math.sqrt(x * x + y * y), 0, 1);
+   var radius2d = Math.sin(length2d * MO.Lang.Math.PI_2);
+   var direction = o.direction;
+   direction.x = x;
+   direction.y = y;
+   direction.z = 0;
+   direction.normalize();
+   direction.mul(radius2d, radius2d, radius2d);
+   var sphereLocation = o.sphereLocation;
+   var length = MO.Lang.Float.toRange(Math.sqrt(direction.x * direction.x + direction.y * direction.y), 0, 1);
+   direction.z = -Math.sin(Math.acos(length));
+   direction.normalize();
+   matrix.transformPoint3(direction, sphereLocation);
+   sphereLocation.normalize();
+   var mapLocation = o.mapLocation;
+   mapLocation.x = Math.atan2(sphereLocation.x, -sphereLocation.z) / Math.PI / 2 + 0.5;
+   mapLocation.y = 0.5 - Math.asin(sphereLocation.y) / Math.PI;
+   mapLocation.mul(0.5 / 0.29, 0.5 / 0.29);
+}
+MO.SEaiEarthTouchPoint_calculateSphere = function SEaiEarthTouchPoint_calculateSphere(x, y){
+   var size = o._graphicContext.size();
+   var cx = event.x - size.width / 2;
+   var cy = event.y - size.height / 2;
+   var range = Math.min(size.width, size.height) * 0.5;
+   var x = MO.Lang.Float.toRange(cx / range, -1, 1);
+   var y = -MO.Lang.Float.toRange(cy / range, -1, 1);
+   var length = MO.Lang.Float.toRange(Math.sqrt(x * x + y * y), 0, 1);
+   var direction = new MO.SVector3();
+   direction.x = x;
+   direction.y = y;
+   direction.z = -Math.sin(Math.acos(length));
+   direction.normalize();
+   var rotationMatrix = o._rotationMatrix.assign(o._earthSphere.matrix());
+   rotationMatrix.invert();
+   var sphereLocation = rotationMatrix.transformPoint3(direction);
+   sphereLocation.normalize();
+   var fx = Math.atan2(sphereLocation.x, -sphereLocation.z) / Math.PI / 2 + 0.5;
+   var fy = 0.5 - Math.asin(sphereLocation.y) / Math.PI;
+   o._earthFlat.drawTouch(fx, fy);
+}
+MO.SEaiEarthTouchPoint_toString = function SEaiEarthTouchPoint_toString(){
+   var o = this;
+   return 'P(' + o.position.toDisplay() + ') D(' + o.direction.toDisplay() + ') L(' + o.sphereLocation.toDisplay() + ') M(' + o.mapLocation.toDisplay() + ')';
+}
+MO.FEaiChartCustomerSphereInfo = function FEaiChartCustomerSphereInfo(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._typeCode = MO.Class.register(o, [new MO.AGetter('_typeCode'), new MO.APersistence('_typeCode', MO.EDataType.String)]);
+   o._points   = MO.Class.register(o, [new MO.AGetter('_points'), new MO.APersistence('_points', MO.EDataType.Objects, MO.FEaiChartCustomerSphereInfoPoint)]);
+   return o;
+}
+MO.FEaiChartCustomerSphereInfoPoint = function FEaiChartCustomerSphereInfoPoint(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._x = MO.Class.register(o, [new MO.AGetter('_x'), new MO.APersistence('_x', MO.EDataType.Float)]);
+   o._y = MO.Class.register(o, [new MO.AGetter('_y'), new MO.APersistence('_y', MO.EDataType.Float)]);
+   return o;
+}
+MO.FEaiChartCustomerSphereOperation = function FEaiChartCustomerSphereOperation(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._imageButton = null;
+   o.onImageLoad  = MO.FEaiChartCustomerSphereOperation_onImageLoad;
+   o.onPaintBegin = MO.FEaiChartCustomerSphereOperation_onPaintBegin;
+   o.construct    = MO.FEaiChartCustomerSphereOperation_construct;
+   o.setup        = MO.FEaiChartCustomerSphereOperation_setup;
+   return o;
+}
+MO.FEaiChartCustomerSphereOperation_onImageLoad = function FEaiChartCustomerSphereOperation_onImageLoad() {
+   this._ready = true;
+   this.dirty();
+}
+MO.FEaiChartCustomerSphereOperation_onPaintBegin = function FEaiChartCustomerSphereOperation_onPaintBegin(event) {
+   var o = this;
+   if (!o._ready) {
       return;
    }
-   var systemDate = system.currentDate();
-   systemDate.truncMinute();
-   if(!o._dateSetup){
-      o._endDate.assign(systemDate);
-      o._endDate.addMinute(-o._intervalMinute);
-      o._dateSetup = true;
-   }
-   if(o._dataTicker.process()){
-      var statistics = MO.Console.find(MO.FEaiLogicConsole).statistics();
-      var beginDate = o._beginDate;
-      var endDate = o._endDate;
-      beginDate.assign(endDate);
-      endDate.assign(systemDate);
-      statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
-      beginDate.assign(endDate);
-      var beginDate24H = o._24HBeginDate;
-      beginDate24H.assign(systemDate);
-      beginDate24H.truncMinute(15);
-      beginDate24H.addDay(-1);
-      var endDate24H = o._24HEndDate;
-      endDate24H.assign(systemDate);
-      endDate24H.truncMinute(15);
-      statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
-   }
-   var currentTick = MO.Timer.current();
-   if(currentTick - o._tableTick > o._tableInterval){
-      var units = o._units;
-      if(!units.isEmpty()){
-         var unit = units.shift();
-         o.focusEntity(unit);
-      }
-      o.calculateCurrent();
-      o._tableTick = currentTick;
-   }
-   o._mapEntity.process();
-   var dynamicInfo = MO.Desktop.application().dynamicInfo();
-   dynamicInfo._investmentEntityCount = o._units.count();
-   dynamicInfo._investmentPoolItemCount = o._unitPool.items().count();
-   dynamicInfo._investmentPoolFreeCount = o._unitPool.frees().count();
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var virtualSize = event.virtualSize;
+   var imageButton = o._imageButton;
+   var imageSize = imageButton.size();
+   var left = (virtualSize.width - imageSize.width) * 0.5;
+   var top = (virtualSize.height - imageSize.height) * 0.5;
+   graphic.drawImage(o._imageButton, left, top, imageSize.width, imageSize.height);
 }
-MO.FEaiChartCustomerSphereProcessor_dispose = function FEaiChartCustomerSphereProcessor_dispose(){
+MO.FEaiChartCustomerSphereOperation_construct = function FEaiChartCustomerSphereOperation_construct() {
    var o = this;
-   o._units = MO.Lang.Object.dispose(o._units);
-   o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);
-   o._eventDataChanged = MO.Lang.Object.dispose(o._eventDataChanged);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FGuiControl.construct.call(o);
+}
+MO.FEaiChartCustomerSphereOperation_setup = function FEaiChartCustomerSphereOperation_setup() {
+   var o = this;
+   var imageConsole = MO.Console.find(MO.FImageConsole);
+   var image = o._imageButton = imageConsole.load('{eai.resource}/world/button.png');
+   image.addLoadListener(o, o.onImageLoad);
 }
 MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    o._code                   = MO.EEaiScene.ChartCustomerSphere;
+   o._optionMapCountry       = false;
    o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
    o._processorCurrent       = 0;
    o._ready                  = false;
@@ -9209,42 +9196,98 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._playing                = false;
    o._lastTick               = 0;
    o._interval               = 10;
-   o._logoBar                = null;
-   o._timeline               = null;
-   o._liveTable              = null;
+   o._controlOperation       = null;
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
    o._earthSphere            = null;
-   o.onInvestmentDataChanged = MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged;
-   o.on24HDataChanged        = MO.FEaiChartCustomerSphereScene_on24HDataChanged;
+   o.onSocketTouchReceived   = MO.FEaiChartCustomerSphereScene_onSocketTouchReceived;
+   o.onOperationDown         = MO.FEaiChartCustomerSphereScene_onOperationDown;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartCustomerSphereScene_onProcessReady;
    o.onProcessInput          = MO.FEaiChartCustomerSphereScene_onProcessInput;
    o.onProcess               = MO.FEaiChartCustomerSphereScene_onProcess;
-   o.onSwitchProcess         = MO.FEaiChartCustomerSphereScene_onSwitchProcess;
-   o.onSwitchComplete        = MO.FEaiChartCustomerSphereScene_onSwitchComplete;
+   o.construct               = MO.FEaiChartCustomerSphereScene_construct;
    o.setup                   = MO.FEaiChartCustomerSphereScene_setup;
    o.showFace                = MO.FEaiChartCustomerSphereScene_showFace;
    o.fixMatrix               = MO.FEaiChartCustomerSphereScene_fixMatrix;
    o.processResize           = MO.FEaiChartCustomerSphereScene_processResize;
+   o.dispose                 = MO.FEaiChartCustomerSphereScene_dispose;
    return o;
 }
-MO.FEaiChartCustomerSphereScene_on24HDataChanged = function FEaiChartCustomerSphereScene_on24HDataChanged(event) {
+MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustomerSphereScene_onSocketTouchReceived(event) {
    var o = this;
-   var timeline = o._timeline;
-   timeline.startTime().assign(event.beginDate);
-   timeline.endTime().assign(event.endDate);
-   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-   timeline.dirty();
+   var guiManager = o._guiManager;
+   var context = o._graphicContext;
+   var size = context.size();
+   var info = o._info;
+   info.unserializeBuffer(event.message, true);
+   var earthSphere = o._earthSphere;
+   var matrix = earthSphere.matrix();
+   var socketSphere = o._socketSphere;
+   var sourceTouch = earthSphere.sourceTouch();
+   var targetTouch = earthSphere.targetTouch();
+   var typeCode = info.typeCode();
+   if(typeCode == 'D'){
+      if(info.points().isEmpty()){
+         return;
+      }
+      earthSphere.setSource(info);
+      var rotationMatrix = o._rotationMatrix.assign(matrix);
+      rotationMatrix.invert();
+      sourceTouch.calculate(rotationMatrix);
+      MO.Logger.debug(o, 'Touch down. ({1})', sourceTouch);
+      var sourceTouchPoint = sourceTouch.points.first();
+      var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
+      if(id > 0){
+         socketSphere.send('area=' + id);
+         MO.Logger.debug(o, 'Select area. (id={1})', id);
+         return;
+      }
+      if(sourceTouchPoint.originLength < (128 / size.height)){
+         if(guiManager.visible()){
+            if(sourceTouchPoint.originPosition.x < 0){
+               earthSphere.reset();
+               socketSphere.send('reset');
+               guiManager.setVisible(false);
+            }else{
+               socketSphere.send('next');
+            }
+         }else{
+            guiManager.setVisible(true);
+         }
+      }else{
+         guiManager.setVisible(false);
+         o._earthFlat.drawTouch(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
+         o._moving = true;
+      }
+   }else if(typeCode == 'M' && o._moving){
+      if(info.points().isEmpty()){
+         return;
+      }
+      earthSphere.setTarget(info);
+      earthSphere.sendRotation();
+   }else if(typeCode == 'U'){
+      o._moving = false;
+      MO.Logger.debug(o, 'Touch up.');
+   }
 }
-MO.FEaiChartCustomerSphereScene_onInvestmentDataChanged = function FEaiChartCustomerSphereScene_onInvestmentDataChanged(event) {
+MO.FEaiChartCustomerSphereScene_onOperationDown = function FEaiChartCustomerSphereScene_onOperationDown(event) {
    var o = this;
-   var unit = event.unit;
-   var table = o._liveTable;
-   table.setRankUnits(event.rankUnits);
-   table.pushUnit(unit);
-   table.dirty();
+   o.__base.FEaiChartScene.onOperationDown.call(o, event);
+   var earthSphere = o._earthSphere;
+   var size = o._graphicContext.size();
+   var cx = event.x - size.width / 2;
+   var cy = event.y - size.height / 2;
+   var range = Math.min(size.width, size.height) * 0.5;
+   var x = MO.Lang.Float.toRange(cx / range, -1, 1);
+   var y = -MO.Lang.Float.toRange(cy / range, -1, 1);
+   var rotationMatrix = o._rotationMatrix.assign(earthSphere.matrix());
+   rotationMatrix.invert();
+   var sourcePoint = earthSphere.sourcePoint();
+   sourcePoint.calculateFlat(rotationMatrix, x, y);
+   var mapLocation = sourcePoint.mapLocation;
+   o._earthFlat.drawTouch(mapLocation.x, mapLocation.y);
 }
 MO.FEaiChartCustomerSphereScene_onOperationVisibility = function FEaiChartCustomerSphereScene_onOperationVisibility(event) {
    var o = this;
@@ -9260,23 +9303,36 @@ MO.FEaiChartCustomerSphereScene_onOperationVisibility = function FEaiChartCustom
 MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSphereScene_onProcessReady(){
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
+   o._earthSphere.autoRotation(true);
+   o._guiManager.hide();
 }
 MO.FEaiChartCustomerSphereScene_onProcessInput = function FEaiChartCustomerSphereScene_onProcessInput(){
    var o = this;
-   var directionSpeed = 0.01;
+   var directionSpeed = 0.02;
    var earthSphere = o._earthSphere;
    var matrix = earthSphere.matrix();
+   var matrix = o._earthSphere.matrix();
    if(MO.Window.Keyboard.isPress(MO.EKeyCode.A)){
-      matrix.ry += directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisY, -directionSpeed);
+      matrix.parse();
    }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.D)){
-      matrix.ry -= directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisY, directionSpeed);
+      matrix.parse();
    }
    if(MO.Window.Keyboard.isPress(MO.EKeyCode.W)){
-      matrix.rz += directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisX, -directionSpeed);
+      matrix.parse();
    }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.S)){
-      matrix.rz -= directionSpeed;
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisX, directionSpeed);
+      matrix.parse();
    }
-   matrix.updateForce();
+   if(MO.Window.Keyboard.isPress(MO.EKeyCode.Q)){
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisZ, -directionSpeed);
+      matrix.parse();
+   }else if(MO.Window.Keyboard.isPress(MO.EKeyCode.E)){
+      matrix.addRotationAxis(MO.Lang.Math.vectorAxisZ, directionSpeed);
+      matrix.parse();
+   }
 }
 MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScene_onProcess(){
    var o = this;
@@ -9310,59 +9366,42 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
          o._statusStart = true;
       }
    }
-   if (o._playing) {
-      var countryEntity = o._countryEntity;
-      if (!countryEntity.introAnimeDone()) {
-         countryEntity.process();
-      }
-      if (!o._mapReady) {
-         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
-         alphaAction.setAlphaBegin(0);
-         alphaAction.setAlphaEnd(1);
-         alphaAction.setAlphaInterval(0.01);
-         alphaAction.push(o._guiManager);
-         o._guiManager.mainTimeline().pushAction(alphaAction);
-         o._mapReady = true;
-      }
+   if (o._playing){
+      o._earthSphere.process();
       o.onProcessInput();
-      var logoBar = o._logoBar;
-      var processor = o._processor;
-      if(processor.invementDayCurrent() > 0){
-         var investmentTotal = logoBar.findComponent('investmentTotal');
-         investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
-         var investmentDay = logoBar.findComponent('investmentDay');
-         investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
-      }
-      if (o._nowTicker.process()) {
-         var bar = o._logoBar;
-         var date = o._nowDate;
-         date.setNow();
-         var dateControl = bar.findComponent('date');
-         dateControl.setLabel(date.format('YYYY/MM/DD'));
-         var timeControl = bar.findComponent('time');
-         timeControl.setLabel(date.format('HH24:MI'));
-      }
    }
 }
-MO.FEaiChartCustomerSphereScene_onSwitchProcess = function FEaiChartCustomerSphereScene_onSwitchProcess(event) {
+MO.FEaiChartCustomerSphereScene_construct = function FEaiChartCustomerSphereScene_construct(){
    var o = this;
-}
-MO.FEaiChartCustomerSphereScene_onSwitchComplete = function FEaiChartCustomerSphereScene_onSwitchComplete(event) {
-   var o = this;
+   o.__base.FEaiChartScene.construct.call(o);
+   o._rotationMatrix = new MO.SMatrix3d();
+   o._earthMatrix = new MO.SMatrix3d();
+   o._info = MO.Class.create(MO.FEaiChartCustomerSphereInfo);
 }
 MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
-   var desktop = o._application.desktop();
+   var application = o._application;
+   var desktop = application.desktop();
    var canvas3d = desktop.canvas3d();
-   var context = canvas3d.graphicContext();
-   var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
-   earthSphere.linkGraphicContext(context);
-   earthSphere.setSplitCount(64);
-   earthSphere.setup();
-   earthSphere.matrix().setScaleAll(100);
-   earthSphere.matrix().update();
+   var context3d = canvas3d.graphicContext();
    var stage = o._activeStage;
+   var qualityCd = MO.Desktop.qualityCd();
+   var earthFlat = o._earthFlat = MO.Class.create(MO.FEaiEarthFlat);
+   earthFlat.linkGraphicContext(context3d);
+   earthFlat.setup();
+   var groundLayer = stage.groundLayer();
+   groundLayer.push(earthFlat);
+   var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
+   earthSphere.linkGraphicContext(context3d);
+   if(qualityCd == MO.EGraphicQuality.Highest){
+      earthSphere.setSplitCount(128);
+   }else{
+      earthSphere.setSplitCount(64);
+   }
+   earthSphere.setup();
+   earthSphere.matrix().setScaleAll(200);
+   earthSphere.matrix().update();
    var technique = stage.selectTechnique(o, MO.FE3dSphereTechnique);
    var passView = technique.passView();
    passView.setSphere(earthSphere);
@@ -9371,39 +9410,34 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
-   projection.size().assign(context.size());
-   projection.setZnear(1);
+   projection.size().assign(context3d.size());
+   projection.setZnear(-1000);
    projection.setZfar(1000);
    projection.update();
    stage.region().selectCamera(camera);
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
-   o._guiManager.register(frame);
-   var dataLayer = stage.dataLayer();
-   var invement = o._processor = MO.Class.create(MO.FEaiChartMktCustomerProcessor);
-   invement.linkGraphicContext(o);
-   invement.setMapEntity(o._mapEntity);
-   invement.setup();
-   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
-   invement.add24HDataChangedListener(o, o.on24HDataChanged);
-   var display = invement.display();
-   o.fixMatrix(display.matrix());
-   dataLayer.push(display);
-   var timeline = o._timeline = MO.Class.create(MO.FEaiChartCustomerSphereTimeline);
-   timeline.setName('Timeline');
-   timeline.linkGraphicContext(o);
-   timeline.build();
-   o._guiManager.register(timeline);
-   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartCustomerSphereTable);
-   liveTable.setName('LiveTable');
-   liveTable.linkGraphicContext(o);
-   liveTable.setup();
-   liveTable.build();
-   o._guiManager.register(liveTable);
-   o._guiManager.hide();
+   var stage = o.activeStage();
+   var operation = o._controlOperation = MO.Class.create(MO.FEaiChartCustomerSphereOperation);
+   operation.setName('Operation');
+   operation.linkGraphicContext(o);
+   operation.setup();
+   operation.build();
+   o._guiManager.register(operation);
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    entityConsole.cityModule().build(o);
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
+   var socket = o._socketTouch = MO.Class.create(MO.FBinarySocket);
+   socket.connect('{service.touch}/touch');
+   socket.addReceiveListener(o, o.onSocketTouchReceived);
+   var socket = o._socketSphere = MO.Class.create(MO.FSocket);
+   socket.connect('{service.touch}/sphere');
+   earthSphere._socket = socket;
+   var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
+   var worldResource = o._worldResource = resourceConsole.mapModule().loadWorld();
+   o._readyLoader.push(worldResource);
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   var worldEntity = o._worldEntity = entityConsole.mapModule().loadWorld(o);
+   o._readyLoader.push(worldEntity);
 }
 MO.FEaiChartCustomerSphereScene_showFace = function FEaiChartCustomerSphereScene_showFace() {
    var o = this;
@@ -9424,628 +9458,385 @@ MO.FEaiChartCustomerSphereScene_fixMatrix = function FEaiChartCustomerSphereScen
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    } else {
-      matrix.tx = -34.9;
-      matrix.ty = -10.9;
-      matrix.tz = 0;
-      matrix.setScale(0.28, 0.31, 0.28);
+      matrix.setScale(100, 100, 100);
    }
    matrix.update();
 }
 MO.FEaiChartCustomerSphereScene_processResize = function FEaiChartCustomerSphereScene_processResize() {
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
-   var isVertical = MO.Window.Browser.isOrientationVertical()
-   o.fixMatrix(o._processor.display().matrix());
-   var logoBar = o._logoBar;
-   if (isVertical) {
-      logoBar.setLocation(8, 8);
-      logoBar.setScale(0.85, 0.85);
-   } else {
-      logoBar.setLocation(5, 5);
-      logoBar.setScale(0.9, 0.9);
-   }
-   var control = o._southSea;
-   if (isVertical) {
-      control.setDockCd(MO.EUiDock.RightTop);
-      control.setTop(570);
-      control.setRight(100);
-   } else {
-      control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(780);
-      control.setBottom(280);
-   }
-   var timeline = o._timeline;
-   if (isVertical) {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(10);
-      timeline.setRight(10);
-      timeline.setBottom(920);
-      timeline.setHeight(250);
-   } else {
-      timeline.setDockCd(MO.EUiDock.Bottom);
-      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(30);
-      timeline.setRight(780);
-      timeline.setHeight(250);
-   }
-   var liveTable = o._liveTable;
-   if (isVertical) {
-      liveTable.setDockCd(MO.EUiDock.Bottom);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      liveTable.setLeft(10);
-      liveTable.setRight(10);
-      liveTable.setBottom(10);
-      liveTable.setWidth(1060);
-      liveTable.setHeight(900);
-   } else {
-      liveTable.setDockCd(MO.EUiDock.Right);
-      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-      liveTable.setTop(10);
-      liveTable.setRight(0);
-      liveTable.setBottom(10);
-      liveTable.setWidth(760);
-   }
+   var context = o._graphicContext;
+   var size = context.size();
+   var operation = o._controlOperation;
+   operation.setWidth(256);
+   operation.setHeight(256);
 }
-MO.FEaiChartCustomerSphereTable = function FEaiChartCustomerSphereTable(o) {
-   o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o._currentDate = null;
-   o._rank = MO.Class.register(o, new MO.AGetter('_rank'));
-   o._rankLogoImage = null;
-   o._rankTitleImage = null;
-   o._rankLineImage = null;
-   o._rankLinePadding = null;
-   o._rank1Image = null;
-   o._rank2Image = null;
-   o._rank3Image = null;
-   o._backgroundImage = null;
-   o._backgroundPadding = null;
-   o._tableCount = 0;
-   o._units = null;
-   o._lineScroll = 0;
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   o.onImageLoad = MO.FEaiChartCustomerSphereTable_onImageLoad;
-   o.onPaintBegin = MO.FEaiChartCustomerSphereTable_onPaintBegin;
-   o.construct = MO.FEaiChartCustomerSphereTable_construct;
-   o.setup = MO.FEaiChartCustomerSphereTable_setup;
-   o.setRankUnits = MO.FEaiChartCustomerSphereTable_setRankUnits;
-   o.pushUnit = MO.FEaiChartCustomerSphereTable_pushUnit;
-   o.drawRow = MO.FEaiChartCustomerSphereTable_drawRow;
-   o.dispose = MO.FEaiChartCustomerSphereTable_dispose;
+MO.FEaiChartCustomerSphereScene_dispose = function FEaiChartCustomerSphereScene_dispose(){
+   var o = this;
+   o._rotationMatrix = MO.Lang.Object.dispose(o._rotationMatrix);
+   o._earthMatrix = MO.Lang.Object.dispose(o._earthMatrix);
+   o._info = MO.Lang.Object.dispose(o._info);
+   o.__base.FEaiChartScene.dispose.call(o);
+}
+MO.FEaiEarthFlat = function FEaiEarthFlat(o){
+   o = MO.Class.inherits(this, o, MO.FE3dDisplay, MO.MProcessReady);
+   o._textureCloud  = MO.Class.register(o, new MO.AGetter('_textureCloud'));
+   o._textureLand   = MO.Class.register(o, new MO.AGetter('_textureLand'));
+   o._textureOcean  = MO.Class.register(o, new MO.AGetter('_textureOcean'));
+   o._textureWater  = MO.Class.register(o, new MO.AGetter('_textureWater'));
+   o.onProcessReady = MO.FEaiEarthFlat_onProcessReady;
+   o.construct      = MO.FEaiEarthFlat_construct;
+   o.setup          = MO.FEaiEarthFlat_setup;
+   o.drawTouch      = MO.FEaiEarthFlat_drawTouch;
+   o.drawBoundary   = MO.FEaiEarthFlat_drawBoundary;
+   o.drawGrid       = MO.FEaiEarthFlat_drawGrid;
+   o.pickIdentify   = MO.FEaiEarthFlat_pickIdentify;
+   o.process        = MO.FEaiEarthFlat_process;
+   o.dispose        = MO.FEaiEarthFlat_dispose;
    return o;
 }
-MO.FEaiChartCustomerSphereTable_onImageLoad = function FEaiChartCustomerSphereTable_onImageLoad() {
-   this.dirty();
-}
-MO.FEaiChartCustomerSphereTable_onPaintBegin = function FEaiChartCustomerSphereTable_onPaintBegin(event) {
+MO.FEaiEarthFlat_drawTouch = function FEaiEarthFlat_drawTouch(x, y){
    var o = this;
-   o.__base.FGuiControl.onPaintBegin.call(o, event);
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   var right = left + width;
-   var bottom = top + height;
-   var drawPosition = top;
-   var heightRate = height / o._size.height;
-   var drawLeft = left + 12;
-   var drawRight = right - 12;
-   var drawWidth = right - left;
-   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
-   var titleText = '全球实时投资数据展示中心(中国)';
-   graphic.setFont(o._headFontStyle);
-   var titleWidth = graphic.textWidth(titleText);
-   var textLeft = left + (width - titleWidth) * 0.5;
-   graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');
-   drawPosition += 60
-   graphic.setFont(o._rowFontStyle);
-   var tableTop = top + o._rankStart;
-   graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
-   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 198, 40);
-   var rankUnits = o._rank;
-   if (rankUnits) {
-      var tableText = '';
-      var tableTextWidth = 0;
-      var count = rankUnit.count();
-      tableTop += 90;
-      for (var i = 0; i < count; i++) {
-         var unit = rankUnit.at(i);
-         o.drawRow(graphic, unit, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
-      }
-   }
-}
-MO.FEaiChartCustomerSphereTable_construct = function FEaiChartCustomerSphereTable_construct() {
-   var o = this;
-   o.__base.FGuiControl.construct.call(o);
-   o._units = new MO.TObjects();
-   o._currentDate = new MO.TDate();
-   o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
-   o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
-}
-MO.FEaiChartCustomerSphereTable_setup = function FEaiChartCustomerSphereTable_setup() {
-   var o = this;
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._logoImage = imageConsole.load('{eai.resource}/live/company.png');
-   image.addLoadListener(o, o.onImageLoad);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
-   image.addLoadListener(o, o.onImageLoad);
-   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/live/tank-title.png');
-   image.addLoadListener(o, o.onImageLoad);
-   var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank.png');
-   image.addLoadListener(o, o.onImageLoad);
-   var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
-   grid.setOptionClip(false);
-   grid.setDisplayHead(false);
-   grid.setLocation(50, 170);
-   grid.setSize(800, 700);
-   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-   grid.setLeft(9);
-   grid.setRight(19);
-   grid.setHeadHeight(40);
-   grid.setHeadBackColor('#122A46');
-   grid.headFont().font = 'Microsoft YaHei';
-   grid.headFont().size = 22;
-   grid.headFont().color = '#00B2F2';
-   grid.setRowHeight(40);
-   grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 22;
-   grid.rowFont().color = '#59FDE9';
-   var column = MO.Class.create(MO.FGuiGridColumnPicture);
-   column.setName('rank');
-   column.setLabel();
-   column.setDataName('image');
-   column.setWidth(110);
-   column.setPadding(1, 1, 1, 1);
-   column.setAlign(MO.EUiAlign.Center);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customer_city');
-   column.setLabel('');
-   column.setDataName('customer_city');
-   column.setWidth(100);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('label_phone');
-   column.setLabel('');
-   column.setDataName('label_phone');
-   column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('investment');
-   column.setLabel('');
-   column.setDataName('investment');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.cellPadding().right = 10;
-   column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   o.push(grid);
-   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
-   grid.setOptionClip(true);
-   grid.setLocation(50, 332);
-   grid.setSize(800, 700);
-   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
-   grid.setLeft(9);
-   grid.setRight(19);
-   grid.setBottom(20);
-   grid.setHeadHeight(35);
-   grid.setHeadBackColor('#122A46');
-   grid.headFont().font = 'Microsoft YaHei';
-   grid.headFont().size = 22;
-   grid.headFont().color = '#00B2F2';
-   grid.setRowHeight(32);
-   grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 21;
-   grid.rowFont().color = '#59FDE9';
-   var column = MO.Class.create(MO.FGuiGridColumnDate);
-   column.setName('recordDate');
-   column.setLabel('时间');
-   column.setDataName('record_date');
-   column.setDateFormat('HH24:MI:SS');
-   column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customerCity');
-   column.setLabel('城市');
-   column.setDataName('customer_city');
-   column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('customerInfo');
-   column.setLabel('用户-手机');
-   column.setDataName('customer_info');
-   column.setWidth(140);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('investmentAmount');
-   column.setLabel('投资额');
-   column.setDataName('investment_amount');
-   column.cellPadding().right = 10;
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('modelLabel');
-   column.setLabel('投资产品');
-   column.setDataName('model_label');
-   column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('investmentGain');
-   column.setLabel('年化收益');
-   column.setDataName('investment_gain');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('bankGain');
-   column.setLabel('银行收益');
-   column.setDataName('bank_gain');
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.setWidth(120);
-   column.cellPadding().right = 10;
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   o.push(grid);
-   o._headFontStyle = 'bold 32px Microsoft YaHei';
-   var isVertical = MO.Window.Browser.isOrientationVertical()
-   if (isVertical) {
-      o._tableCount = 11;
-      o._rankStart = 100;
-      o._rankTitleStart = -5;
-      o._rankHeight = 249;
-      o._rankRowHeight = 50;
-      o._rankIconStart = 22;
-      o._rankTextStart = 8;
-      o._rankRowUp = 36;
-      o._rankRowDown = 68;
-      o._headStart = 352;
-      o._headTextTop = 37;
-      o._headHeight = 54;
-      o._rowStart = 418;
-      o._rowTextTop = 0;
-      o._rowFontStyle = '36px Microsoft YaHei';
-   } else {
-      o._tableCount = 19;
-      o._rankStart = 110;
-      o._rankTitleStart = 0;
-      o._rankHeight = 219;
-      o._rankRowHeight = 40;
-      o._rankIconStart = 25;
-      o._rankTextStart = 0;
-      o._rankRowUp = 32;
-      o._rankRowDown = 51;
-      o._headStart = 336;
-      o._headTextTop = 27;
-      o._headHeight = 40;
-      o._rowFontStyle = '22px Microsoft YaHei';
-      o._rowStart = 384;
-   }
-}
-MO.FEaiChartCustomerSphereTable_setRankUnits = function FEaiChartCustomerSphereTable_setRankUnits(units) {
-   var o = this;
-   var grid = o._gridRank;
-   grid.clearRows();
-   var count = units.count();
-   for (var i = 0; i < count; i++) {
-      var unit = units.at(i);
-      var row = grid.allocRow();
-      var card = unit.card();
-      var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
-      var cityLabel = '';
-      if (city) {
-         cityLabel = city.label();
-      }
-      row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
-      row.set('customer_city', cityLabel);
-      row.set('label_phone', unit.label() + " - " + unit.phone());
-      row.set('investment', unit.investment());
-      grid.pushRow(row);
-   }
-}
-MO.FEaiChartCustomerSphereTable_pushUnit = function FEaiChartCustomerSphereTable_pushUnit(unit) {
-   var o = this;
-   if (!unit) {
-      return null;
-   }
-   var card = unit.card();
-   var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
-   var cityLabel = '';
-   if (city) {
-      cityLabel = city.label();
-   }
-   var grid = o._gridControl;
-   var row = grid.allocRow();
-   row.set('record_date', unit.recordDate());
-   row.set('customer_city', cityLabel);
-   row.set('customer_info', unit.label() + ' - ' + unit.phone());
-   row.set('model_label', unit.modelLabel());
-   row.set('investment_amount', unit.investment());
-   row.set('investment_gain', unit.gain());
-   row.set('bank_gain', unit.bankGain());
-   grid.insertRow(row);
-   var entities = o._units;
-   entities.unshift(unit);
-   o._lineScroll -= o._rowHeight;
-   if (entities.count() > o._tableCount) {
-      entities.pop();
-   }
-}
-MO.FEaiChartCustomerSphereTable_dispose = function FEaiChartCustomerSphereTable_dispose() {
-   var o = this;
-   o._units = MO.Lang.Object.dispose(o._units);
-   o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
-   o.__base.FGuiControl.dispose.call(o);
-}
-MO.FEaiChartCustomerSphereTimeline = function FEaiChartCustomerSphereTimeline(o) {
-   o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o._startTime = MO.Class.register(o, new MO.AGetSet('_startTime'));
-   o._endTime = MO.Class.register(o, new MO.AGetSet('_endTime'));
-   o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
-   o._ready = false;
-   o._investmentTotal = 0;
-   o._baseHeight = 5;
-   o._degreeLineHeight = MO.Class.register(o, new MO.AGetSet('_degreeLineHeight'), 10);
-   o._triangleWidth = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
-   o._triangleHeight = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
-   o._decoLineGap = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
-   o._decoLineWidth = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
-   o.oeUpdate = MO.FEaiChartCustomerSphereTimeline_oeUpdate;
-   o.construct = MO.FEaiChartCustomerSphereTimeline_construct;
-   o.sync = MO.FEaiChartCustomerSphereTimeline_sync;
-   o.drawTrend = MO.FEaiChartCustomerSphereTimeline_drawTrend;
-   o.onPaintBegin = MO.FEaiChartCustomerSphereTimeline_onPaintBegin;
-   o.on24HDataFetch = MO.FEaiChartCustomerSphereTimeline_on24HDataFetch;
-   return o;
-}
-MO.FEaiChartCustomerSphereTimeline_construct = function FEaiChartCustomerSphereTimeline_construct() {
-   var o = this;
-   o.__base.FGuiControl.construct.call(o);
-   o._startTime = new MO.TDate();
-   o._endTime = new MO.TDate();
-   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoCustomerTrend);
-}
-MO.FEaiChartCustomerSphereTimeline_oeUpdate = function FEaiChartCustomerSphereTimeline_oeUpdate(event) {
-   var o = this;
-   o.__base.FGuiControl.oeUpdate.call(o, event);
-   if (o._ready) {
+   if(!o._canvas){
       return;
    }
-   var systemLogic = MO.Console.find(MO.FEaiLogicConsole).system();
-   if (systemLogic.testReady()) {
-      o._ready = true;
-   }
-   return MO.EEventStatus.Stop;
+   var canvas = o._canvas;
+   var context2d = canvas.graphicContext();
+   var size = o._graphicContext.size();
+   var cx = x * o._imageSize.width;
+   var cy = y * o._imageSize.height;
+   context2d.drawCircle(cx, cy, 4, 1, '#FFFFFF', '#FF0000')
+   o._textureLand.upload(canvas);
 }
-MO.FEaiChartCustomerSphereTimeline_drawTrend = function FEaiChartCustomerSphereTimeline_drawTrend(graphic, propertyName, dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, bottomColor, topColor) {
+MO.FEaiEarthFlat_drawBoundary = function FEaiEarthFlat_drawBoundary(handle, boundaryData, scaleX, scaleY, centerX, centerY, lineWidth, lineColor){
    var o = this;
-   var startTime = o._startTime;
-   var units = o._trendInfo.units();
-   var count = units.count();
-   var unitFirst = units.first();
-   var handle = graphic._handle;
-   handle.lineCap = 'round';
-   var pixPer10k = dataHeight * 10000 / maxAmount;
-   var amount = unitFirst[propertyName];
-   var lastX = dataLeft;
-   var lastY = dataBottom - amount / 10000 * pixPer10k;
+   var positionCount = boundaryData.positionCount();
+   var positions = boundaryData.positions();
    handle.beginPath();
-   handle.moveTo(lastX, lastY);
-   var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
-   for (var i = 1; i < count; i++) {
-      var unit = units.get(i);
-      var value = unit[propertyName];
-      startTime.parseAuto(unit.recordDate());
-      startTime.refresh();
-      var degreeSpan = startTime.date.getTime() - bakTime;
-      var x = dataLeft + (dataRight - dataLeft) * (degreeSpan / timeSpan);
-      var y = dataBottom - value / 10000 * pixPer10k;
-      y -= o._baseHeight;
-      handle.lineTo(x, y);
+   handle.moveTo(positions[0] * scaleX + centerX ,-positions[1] * scaleY + centerY);
+   for(var n = 0; n < positionCount; n++){
+      var x = positions[2 * n] * scaleX + centerX;
+      var y = -positions[2 * n + 1] * scaleY + centerY;
+      handle.lineTo(x,y);
    }
-   var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
-   var bottomColor = '#' + hexColor.substring(2);
-   var opBottomColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
-   var hexColor = MO.Lang.Hex.format(rateResource.findRate(1));
-   var topColor = '#' + hexColor.substring(2);
-   var opTopColor = 'rgba(' + MO.Lang.Hex.parse(hexColor.substring(2, 4)) + ',' + MO.Lang.Hex.parse(hexColor.substring(4, 6)) + ',' + MO.Lang.Hex.parse(hexColor.substring(6, 8)) + ',' + '0.5)';
-   var gradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
-   gradient.addColorStop('0', bottomColor);
-   gradient.addColorStop('1', topColor);
-   var opGradient = graphic.createLinearGradient(0, dataBottom, 0, dataTop);
-   opGradient.addColorStop('0', opBottomColor);
-   opGradient.addColorStop('1', opTopColor);
-   handle.strokeStyle = gradient;
-   handle.lineWidth = 4;
+   handle.closePath();
+   handle.lineWidth = lineWidth;
+   handle.strokeStyle = lineColor;
    handle.stroke();
-   handle.fillStyle = opGradient;
-   handle.lineTo(x, dataBottom);
-   handle.lineTo(dataLeft, dataBottom);
-   handle.lineTo(dataLeft, lastY);
-   handle.fill();
 }
-MO.FEaiChartCustomerSphereTimeline_onPaintBegin = function FEaiChartCustomerSphereTimeline_onPaintBegin(event) {
+MO.FEaiEarthFlat_drawGrid = function FEaiEarthFlat_drawGrid(context2d, split){
    var o = this;
-   if (!o._ready) {
-      return;
+   var size = o._imageLand.size();
+   var sizeWidth = size.width;
+   var sizeHeight = size.height;
+   var sx = split * 2;
+   var sy = split;
+   var cx = size.width / sx;
+   var cy = size.height / sy;
+   for(var i = 0; i < sy ; i++){
+      var y = cy * i;
+      context2d.drawLine(0, y, sizeWidth, y, '#FF75F3', 1);
    }
-   o.__base.FGuiControl.onPaintBegin.call(o, event);
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var top = rectangle.top;
-   var bottom = rectangle.top + rectangle.height;
-   var middle = bottom - 30;
-   var decoLeft = rectangle.left + 5;
-   var decoRight = rectangle.left + rectangle.width - 5;
-   var decoLineMargin = o.triangleWidth() + o.decoLineGap();
-   graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
-   graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
-   graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#F8CB3D', 3);
-   graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
-   var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
-   var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
-   var dataTop = top + 60;
-   var dataBottom = bottom - 30;
-   var dataHeight = dataBottom - dataTop;
-   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
-   var startTime = o.startTime();
-   var endTime = o.endTime();
-   var timeSpan = endTime.date.getTime() - startTime.date.getTime();
-   var bakTime = startTime.date.getTime();
-   var text;
-   var drawText = false;
-   var textWidth = 0;
-   graphic.setFont('bold 20px Microsoft YaHei');
-   while (!startTime.isAfter(endTime)) {
-      var span = startTime.date.getTime() - bakTime;
-      var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
-      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
-      text = startTime.format('HH24:MI');
-      startTime.addHour(1);
-      startTime.truncHour();
-      drawText = !drawText;
-      if (drawText) {
-         textWidth = graphic.textWidth(text);
-         graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
+   for(var i = 0; i < sx ; i++){
+      var x = cx * i;
+      context2d.drawLine(x, 0, x, sizeHeight, '#FF75F3', 1);
+   }
+}
+MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
+   var o = this;
+   var loader = o._textureCloudLoader;
+   o._textureCloud = loader.pickTexture();
+   o._textureCloudLoader = MO.Lang.Object.dispose(loader);
+   var image = o._imageLand;
+   var context = o._graphicContext;
+   var size = image.size();
+   o._imageSize = new MO.SSize2(size.width, size.height);
+   var sizeWidth = size.width;
+   var sizeHeight = size.height;
+   var canvas = o._canvas = MO.Class.create(MO.FE2dCanvas);
+   canvas.size().assign(size);
+   canvas.build(MO.Window._hDocument);
+   var context2d = canvas.graphicContext();
+   var handle = context2d._handle;
+   context2d.drawImage(image, 0, 0, sizeWidth, size.height);
+   handle.lineCap = 'round';
+   var scaleX = sizeWidth / 360;
+   var scaleY = sizeHeight / 180;
+   var centerX = sizeWidth * 0.5;
+   var centerY = sizeHeight * 0.5;
+   var countries = o._worldResource.data().countries();
+   var count = countries.count();
+   for(var k = 0; k < count; k++){
+      var country = countries.at(k);
+      var lineWidth = 1;
+      var lineColor = "#0085E6";
+      if(country.code() == 'China'){
+         lineWidth = 4;
+         lineColor = "#004596";
       }
-   }
-   graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
-   text = endTime.format('HH24:MI');
-   textWidth = graphic.textWidth(text);
-   graphic.drawText(text, dataRight - textWidth / 2, middle + 40, '#59FDE9');
-   startTime.date.setTime(bakTime);
-   startTime.refresh();
-   var trendInfo = o._trendInfo;
-   var units = trendInfo.units();
-   if (!units) {
-      return;
-   }
-   if (units.isEmpty()) {
-      return;
-   }
-   var unitFirst = units.first();
-   var maxAmount = 0;
-   var count = units.count();
-   for (var i = 0; i < count; i++) {
-      var unit = units.get(i);
-      var investment = unit.investment();
-      if (investment > maxAmount) {
-         maxAmount = investment;
-      }
-   }
-   o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
-   var lastHour = -1;
-   var hourInves = 0;
-   var maxHourInves = 0;
-   startTime.parseAuto(unitFirst.recordDate());
-   startTime.refresh();
-   lastHour = startTime.date.getHours();
-   for (var i = 0; i < count; i++) {
-      var unit = units.get(i);
-      startTime.parseAuto(unit.recordDate());
-      startTime.refresh();
-      var hour = startTime.date.getHours();
-      if (lastHour == hour) {
-         hourInves += unit.investment();
-      } else {
-         if (hourInves > maxHourInves) {
-            maxHourInves = hourInves;
-            hourInves = 0;
+      var boundaries = country.boundaries();
+      var boundaryCount = boundaries.count();
+      for(var j = 0; j < boundaryCount; j++){
+         var boundary = boundaries.at(j);
+         if(MO.Class.isClass(boundary, MO.FEaiMapBoundaryData)){
+            o.drawBoundary(handle, boundary, scaleX, scaleY, centerX, centerY, lineWidth, lineColor);
+         }else{
+            var boundaryDatas = boundary.items();
+            var boundaryDataCount = boundaryDatas.count();
+            for(var i = 0; i < boundaryDataCount; i++){
+               var boundaryData = boundaryDatas.at(i);
+               o.drawBoundary(handle, boundaryData, scaleX, scaleY, centerX, centerY, lineWidth, lineColor);
+            }
          }
-         lastHour = hour;
       }
    }
-   graphic.setFont('24px Microsoft YaHei');
-   graphic.drawText("24H数据曲线", decoLeft, top, '#54F0FF');
-   graphic.setFont('22px Microsoft YaHei');
-   var rowStart = top + 30;
-   var rowHeight = 22;
-   var textWidth = graphic.textWidth('投资总计：');
-   var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
-   var investmentTotalWidth = graphic.textWidth(investmentTotalText);
-   var investmentMaxText = MO.Lang.Float.unitFormat(maxHourInves, 0, 0, 2, 0, 10000, '万');
-   var investmentMaxWidth = graphic.textWidth(investmentMaxText);
-   var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
-   var investmentAvgWidth = graphic.textWidth(investmentAvgText);
-   var maxWidth = investmentTotalWidth;
-   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
-   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5F6');
-   graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5F6');
-   graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#00CFFF');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5F6');
-   startTime.date.setTime(bakTime);
-   startTime.refresh();
+   o.drawGrid(context2d, 8);
+   context2d.drawImage(o._imageArea, 0, 0, sizeWidth, size.height);
+   var texture = o._textureLand = context.createFlatTexture();
+   texture.setCode('land');
+   texture.upload(canvas);
+   var image = o._imageIdentify;
+   var size = image.size();
+   var canvas = o._canvasIdentify = MO.Class.create(MO.FE2dCanvas);
+   canvas.size().assign(size);
+   canvas.build(MO.Window._hDocument);
+   var context2d = canvas.graphicContext();
+   var handle = context2d._handle;
+   context2d.drawImage(image, 0, 0, sizeWidth, size.height);
+   o._identityData = context2d._handle.getImageData(0, 0, sizeWidth, size.height);
+   canvas.dispose();
+   image.dispose();
+   o._imageLand = null;
+   var loader = o._textureOceanLoader;
+   o._textureOcean = loader.pickTexture();
+   o._textureOceanLoader = MO.Lang.Object.dispose(loader);
+   var loader = o._textureWaterLoader;
+   o._textureWater = loader.pickTexture();
+   o._textureWaterLoader = MO.Lang.Object.dispose(loader);
+   var loader = o._textureWaterNormalLoader;
+   o._textureWaterNormal = loader.pickTexture();
+   o._textureWaterNormalLoader = MO.Lang.Object.dispose(loader);
+   var rectangle = o._rectangle;
+   rectangle.pushTexture(o._textureCloud);
+   rectangle.pushTexture(o._textureLand);
+   rectangle.pushTexture(o._textureOcean);
+   rectangle.pushTexture(o._textureWater);
+   rectangle.pushTexture(o._textureWaterNormal);
+   o.pushRenderable(rectangle);
+}
+MO.FEaiEarthFlat_construct = function FEaiEarthFlat_construct(){
+   var o = this;
+   o.__base.FE3dDisplay.construct.call(o);
+   o.__base.MProcessReady.construct.call(o);
+}
+MO.FEaiEarthFlat_setup = function FEaiEarthFlat_setup(){
+   var o = this;
+   var qualityCd = MO.Desktop.qualityCd();
+   var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
+   var worldResource = o._worldResource = resourceConsole.mapModule().loadWorld();
+   o._readyLoader.push(worldResource);
+   var loader = o._textureCloudLoader = MO.Class.create(MO.FE3dTextureLoader);
+   loader.linkGraphicContext(o);
+   loader.setup(MO.EG3dTexture.Flat2d, 'cloud');
+   loader.loadUrl('{eai.resource}/world/cloud1024.jpg');
+   o._readyLoader.push(loader);
+   var image = o._imageLand = MO.Class.create(MO.FImage);
+   if(qualityCd == MO.EGraphicQuality.Highest){
+      image.loadUrl('{eai.resource}/world/land2048x2048.png');
+   }else{
+      image.loadUrl('{eai.resource}/world/land1024x1024.png');
+   }
+   o._readyLoader.push(image);
+   var image = o._imageArea = MO.Class.create(MO.FImage);
+   image.loadUrl('{eai.resource}/world/area.png');
+   o._readyLoader.push(image);
+   var image = o._imageIdentify = MO.Class.create(MO.FImage);
+   image.loadUrl('{eai.resource}/world/identify.jpg');
+   o._readyLoader.push(image);
+   var loader = o._textureOceanLoader = MO.Class.create(MO.FE3dTextureLoader);
+   loader.linkGraphicContext(o);
+   loader.setup(MO.EG3dTexture.Flat2d, 'ocean');
+   if(qualityCd == MO.EGraphicQuality.Highest){
+      loader.loadUrl('{eai.resource}/world/ocean2048x2048.jpg');
+   }else{
+      loader.loadUrl('{eai.resource}/world/ocean1024x1024.jpg');
+   }
+   o._readyLoader.push(loader);
+   var loader = o._textureWaterLoader = MO.Class.create(MO.FE3dTextureLoader);
+   loader.linkGraphicContext(o);
+   loader.setup(MO.EG3dTexture.Flat2d, 'water');
+   loader.loadUrl('{eai.resource}/world/water.jpg');
+   o._readyLoader.push(loader);
+   var loader = o._textureWaterNormalLoader = MO.Class.create(MO.FE3dTextureLoader);
+   loader.linkGraphicContext(o);
+   loader.setup(MO.EG3dTexture.Flat2d, 'water_normal');
+   loader.loadUrl('{eai.resource}/world/water-normal.png');
+   o._readyLoader.push(loader);
+   var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
+   rectangle.linkGraphicContext(o);
+   rectangle.setup();
+   rectangle.material().info().effectCode = 'eai.earth.flat';
+}
+MO.FEaiEarthFlat_pickIdentify = function FEaiEarthFlat_pickIdentify(x, y){
+   var o = this;
+   var identityData = o._identityData;
+   var cx = parseInt(identityData.width * x);
+   var cy = parseInt(identityData.height * y);
+   var location = (identityData.width * cy + cx) << 2;
+   var r = identityData.data[location];
+   var g = identityData.data[location + 1];
+   var b = identityData.data[location + 2];
+   var a = identityData.data[location + 3];
+   return r;
+}
+MO.FEaiEarthFlat_process = function FEaiEarthFlat_process(){
+   var o = this;
+   o.__base.FE3dDisplay.process.call(o);
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
+   }
+}
+MO.MFrameProcessor_dispose = function MFrameProcessor_dispose(){
+   var o = this;
+   o.__base.MProcessReady.dispose.call(o);
+   o.__base.FE3dDisplay.dispose.call(o);
 }
 MO.FEaiEarthSphere = function FEaiEarthSphere(o){
-   o = MO.Class.inherits(this, o, MO.FE3dSphere);
-   o._axisUp        = MO.Class.register(o, new MO.AGetter('_axisUp'));
-   o._axisDirection = MO.Class.register(o, new MO.AGetter('_axisDirection'));
-   o._axisRotation  = MO.Class.register(o, new MO.AGetter('_axisRotation'));
-   o.construct      = MO.FEaiEarthSphere_construct;
-   o.setup          = MO.FEaiEarthSphere_setup;
-   o.updateMatrix   = MO.FEaiEarthSphere_updateMatrix;
+   o = MO.Class.inherits(this, o, MO.FE3dSphere, MO.MListener);
+   o._optionRotation   = false;
+   o._speed            = 1;
+   o._speedOperate     = 1;
+   o._currentTick      = 0;
+   o._autoTick         = 0;
+   o._startPosition    = null;
+   o._currentPosition  = null;
+   o._currentDirection = null;
+   o._targetPosition   = null;
+   o._rotationSpeed    = -0.001;
+   o._rotationSpeed    = -0.001;
+   o._sourcePoint      = MO.Class.register(o, new MO.AGetter('_sourcePoint'));
+   o._sourceTouch      = MO.Class.register(o, new MO.AGetter('_sourceTouch'));
+   o._targetTouch      = MO.Class.register(o, new MO.AGetter('_targetTouch'));
+   o._sourceDirection  = MO.Class.register(o, new MO.AGetter('_sourceDirection'));
+   o._targetDirection  = MO.Class.register(o, new MO.AGetter('_targetDirection'));
+   o.construct         = MO.FEaiEarthSphere_construct;
+   o.setSource         = MO.FEaiEarthSphere_setSource;
+   o.setTarget         = MO.FEaiEarthSphere_setTarget;
+   o.reset             = MO.FEaiEarthSphere_reset;
+   o.autoRotation      = MO.FEaiEarthSphere_autoRotation;
+   o.sendRotation      = MO.FEaiEarthSphere_sendRotation;
+   o.process           = MO.FEaiEarthSphere_process;
+   o.dispose           = MO.FEaiEarthSphere_dispose;
    return o;
 }
 MO.FEaiEarthSphere_construct = function FEaiEarthSphere_construct(){
    var o = this;
    o.__base.FE3dSphere.construct.call(o);
-   o._rotationMatrix = new MO.SMatrix3x3();
-   o._quaternion = new MO.SQuaternion();
-   o._quaternionX = new MO.SQuaternion();
-   o._quaternionY = new MO.SQuaternion();
-   o._quaternionZ = new MO.SQuaternion();
-   o._axisUp = new MO.SVector3(0, 1, 0);
-   o._axisDirection = new MO.SVector3(0, 0, 0);
-   o._axisRotation = new MO.SVector3(0, 0, 0);
+   o._sourcePoint = new MO.SEaiEarthTouchPoint();
+   o._sourceTouch = new MO.SEaiEarthTouch();
+   o._targetTouch = new MO.SEaiEarthTouch();
+   o._sourceDirection = new MO.SVector3();
+   o._currentDirection = new MO.SVector3();
+   o._targetDirection = new MO.SVector3();
+   o._sourceMatrix = new MO.SMatrix3d();
+   o._currentMatrix = new MO.SMatrix3d();
+   o._rotationAxis = new MO.SVector3();
+   o._rotationMatrix = new MO.SMatrix3d();
+   o._rotationMatrix3x3 = new MO.SMatrix3x3();
 }
-MO.FEaiEarthSphere_setup = function FEaiEarthSphere_setup(){
+MO.FEaiEarthSphere_setSource = function FEaiEarthSphere_setSource(info){
    var o = this;
-   o.__base.FE3dSphere.setup.call(o);
+   var touch = o._sourceTouch;
+   touch.setInfo(info);
+   o._sourceDirection.assign(touch.direction);
+   o._currentDirection.assign(touch.direction);
+   o._sourceMatrix.assign(o._matrix);
+   o._currentMatrix.assign(o._matrix);
+   o._currentAngle = 0;
+   o._rotationAngle = 0;
+   o._autoTick = 0;
 }
-MO.FEaiEarthSphere_updateMatrix = function FEaiEarthSphere_updateMatrix(){
+MO.FEaiEarthSphere_setTarget = function FEaiEarthSphere_setTarget(info){
    var o = this;
-   var rotation = o._axisRotation;
-   o._quaternionX.fromAxisAngle(MO.Lang.Math.vectorAxisX, rotation.x);
-   o._quaternionY.fromAxisAngle(MO.Lang.Math.vectorAxisY, rotation.y);
-   o._quaternionZ.fromAxisAngle(MO.Lang.Math.vectorAxisZ, rotation.z);
-   var quaternion = o._quaternion.identity();
-   quaternion.mul(o._quaternionX);
-   quaternion.mul(o._quaternionY);
-   quaternion.mul(o._quaternionZ);
-   var rotationMatrix = o._rotationMatrix;
-   rotationMatrix.build(quaternion);
-   var axisDirection = o._axisDirection;
-   rotationMatrix.transformPoint3(o._axisUp, axisDirection);
-   axisDirection.normalize();
+   var touch = o._targetTouch;
+   touch.setInfo(info);
+   o._targetDirection.assign(touch.direction);
+   var sourceTouchPoint = o._sourceTouch.points.first();
+   var targetTouchPoint = o._targetTouch.points.first();
+   var axis = o._rotationAxis;
+   axis.assign(o._sourceDirection);
+   axis.cross(o._targetDirection);
+   axis.normalize();
+   o._rotationAngle = Math.acos(o._sourceDirection.dotPoint3(o._targetDirection));
+   o.autoRotation(false);
+   o._autoTick = 0;
+}
+MO.FEaiEarthSphere_process = function FEaiEarthSphere_process(){
+   var o = this;
+   o.__base.FE3dSphere.process.call(o);
    var matrix = o._matrix;
-   matrix.rx = axisDirection.x;
-   matrix.ry = axisDirection.y;
-   matrix.rz = axisDirection.z;
-   matrix.updateForce();
+   var currentTick = MO.Timer.current();
+   if(o._currentTick != 0){
+      if(o._currentAngle != o._rotationAngle){
+         var rate = o._speed * (currentTick - o._currentTick) * 0.001;
+         o._currentAngle += rate;
+         if(o._currentAngle > o._rotationAngle){
+            o._currentAngle = o._rotationAngle;
+         }
+         matrix.assign(o._sourceMatrix);
+         matrix.addRotationAxis(o._rotationAxis, -o._currentAngle);
+         matrix.parse();
+         o.sendRotation();
+      }else if(o._optionRotation){
+         matrix.addRotationAxis(MO.Lang.Math.vectorAxisY, -o._rotationSpeed);
+         matrix.parse();
+         o.sendRotation();
+      }else{
+         if(o._autoTick == 0){
+            o._autoTick = currentTick;
+         }else if(currentTick - o._autoTick > 120000){
+            o.reset();
+         }
+      }
+   }
+   o._currentTick = currentTick;
+}
+MO.FEaiEarthSphere_reset = function FEaiEarthSphere_reset(){
+   var o = this;
+   o._targetDirection.set(0, 1, 0);
+   o._matrix.transformPoint3(o._targetDirection, o._sourceDirection);
+   o._sourceDirection.normalize();
+   var axis = o._rotationAxis;
+   axis.assign(o._sourceDirection);
+   axis.cross(o._targetDirection);
+   axis.normalize();
+   o._rotationAngle = Math.acos(o._sourceDirection.dotPoint3(o._targetDirection));
+   o.autoRotation(true);
+}
+MO.FEaiEarthSphere_autoRotation = function FEaiEarthSphere_autoRotation(value){
+   var o = this;
+   if(value && !o._optionRotation){
+      o._optionRotation = true;
+      o._currentRotation = 0;
+      o._socket.send('autoRotate=1');
+   }else if(!value && o._optionRotation){
+      o._optionRotation = false;
+      o._currentRotation = 0;
+      o._socket.send('autoRotate=0');
+   }
+}
+MO.FEaiEarthSphere_sendRotation = function FEaiEarthSphere_sendRotation(){
+   var o = this;
+   var matrix = o._matrix;
+   o._socket.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
+}
+MO.FEaiEarthSphere_dispose = function FEaiEarthSphere_dispose(){
+   var o = this;
+   o._sourceDirection = MO.Lang.Object.dispose(o._sourceDirection);
+   o._currentDirection = MO.Lang.Object.dispose(o._currentDirection);
+   o._targetDirection = MO.Lang.Object.dispose(o._targetDirection);
+   o.__base.FE3dSphere.dispose.call(o);
 }
 MO.FEaiCstInvestment3dCountryTable = function FEaiCstInvestment3dCountryTable(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
@@ -11604,7 +11395,9 @@ MO.FEaiChartMktCustomerProcessor_focusEntity = function FEaiChartMktCustomerProc
          provinceEntity.doInvestment(level, investment);
       }
       cityEntity.addInvestmentTotal(level, investment);
-      o._mapEntity.upload();
+      if (o._mapEntity != null) {
+         o._mapEntity.upload();
+      }
       var autio = o._autios[level];
       if(autio){
          autio.play(0);
@@ -11655,7 +11448,9 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
       o.calculateCurrent();
       o._tableTick = currentTick;
    }
-   o._mapEntity.process();
+   if (o._mapEntity != null) {
+      o._mapEntity.process();
+   }
    var dynamicInfo = MO.Desktop.application().dynamicInfo();
    dynamicInfo._investmentEntityCount = o._units.count();
    dynamicInfo._investmentPoolItemCount = o._unitPool.items().count();
@@ -18759,7 +18554,7 @@ MO.FEaiChartStatMarketerBarChart_construct = function FEaiChartStatMarketerBarCh
    o._trendInfo = MO.Class.create(MO.FEaiLogicInfoCustomerTrend);
    o._infoProvince = MO.Class.create(MO.FEaiChartStatMarketerInfo);
    o._provinceTextFont = new MO.SUiFont();
-   o._provinceTextFont.size = 24;
+   o._provinceTextFont.size = 20;
    o._provinceTextFont.bold = true;
    o._provinceTextFont.color = '#59FDE9'
 }
@@ -18798,6 +18593,7 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    var width = (rectangle.width + rectangle.left) / 71;
    var intervalWidth = (rectangle.width + rectangle.left) / 33;
    var maxInverstment = 0;
+   var rectColor = ['#ba0010', '#ba0010','#ba0010', '#ba0010', '#ba4a00', '#b97800', '#b9b300', '#6ab000', '#009845', '#028071', '#115e75', '#164c6f', '#193d6a', '#242e61', '#3c2460'];
    graphic._handle.beginPath();
    for (var i = 0 ; i < provincesarr.count() ; i++) {
       var province = provincesarr.get(i);
@@ -18808,6 +18604,11 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
    graphic.drawLine(decoLeft, bottom - 70, decoRight, bottom - 70, '#F8CB3D', 3);
    var realityCount = 0;
    var provinceTextFont = o._provinceTextFont;
+   var volume;
+   var investmentNow;
+   var rectTangleHight = rectangle.height*1/15*13/22;
+   var rectangleSpan =rectangle.height*1/15*9/22
+   var rectTangleWidth = width;
    if (provincesarr) {
       for (var i = 0 ; i < provincesarr.count() ; i++) {
          var province = provincesarr.get(i);
@@ -18815,24 +18616,52 @@ MO.FEaiChartStatMarketerBarChart_onPaintBegin = function FEaiChartStatMarketerBa
          var provincename = MO.Console.find(MO.FEaiResourceConsole).provinceModule().findByCode(code);
          var provinceLabel = '';
          var hight = 0;
-         var color = '#F8CB3D'
+         var color = '#F8CB3D';
          if (provincename && provincename.label()) {
             provinceLabel = provincename.label();
             realityCount++;
-            hight = 17/25*  rectangle.height* (province.investmentTotal()+maxInverstment/70) / maxInverstment
+            hight = 25/25*  rectangle.height* (province.investmentTotal()+maxInverstment/70) / maxInverstment
             graphic.setFont('9px Microsoft YaHei');
-            var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.Investment);
-            var hexColor = MO.Lang.Hex.format(rateResource.findRate(0));
-            var bottomColor = '#' + hexColor.substring(2);
-            graphic.drawTextVertical(provinceLabel, decoLeft + realityCount * intervalWidth - 4, bottom - 45, provinceTextFont);
-            graphic._handle.rect(decoLeft + realityCount * intervalWidth, bottom - 80 - hight, width, hight);
+            graphic.drawTextVertical(provinceLabel, decoLeft + realityCount * intervalWidth , bottom - 45, provinceTextFont);
+            investmentNow = province.investmentTotal();
+            if(investmentNow>=maxInverstment){
+               volume = 15;
+            }else if(investmentNow>=maxInverstment*0.93){
+               volume = 14;
+            }else if(investmentNow>=maxInverstment*0.86){
+               volume = 13;
+            }else if(investmentNow>=maxInverstment*0.8){
+               volume = 12;
+            }else if(investmentNow>=maxInverstment*0.73){
+               volume = 11;
+            }else if(investmentNow>=maxInverstment*0.66){
+               volume = 10;
+            }else if(investmentNow>=maxInverstment*0.6){
+               volume = 9;
+            }else if(investmentNow>=maxInverstment*0.53){
+               volume = 8;
+            }else if(investmentNow>=maxInverstment*0.46){
+               volume = 7;
+            }else if(investmentNow>=maxInverstment*0.4){
+               volume = 6;
+            }else if(investmentNow>=maxInverstment*0.33){
+               volume = 5;
+            }else if(investmentNow>=maxInverstment*0.26){
+               volume = 4;
+            }else if(investmentNow>=maxInverstment*0.2){
+               volume = 3;
+            }else if(investmentNow>=maxInverstment*0.13){
+               volume = 2;
+            }else if(investmentNow>=maxInverstment*0.06){
+               volume = 1;
+            }else{
+               volume = 1;
+            }
+            for (var n=1;n<=volume;n++){
+               graphic.fillRectangle(decoLeft + realityCount * intervalWidth,bottom - 80 -n*rectangleSpan-n*rectTangleHight,rectTangleWidth,rectTangleHight,rectColor[15-n]);
+            }
          }
       }
-      var gradient = graphic.createLinearGradient(0,  rectangle.top+30, 0,bottom -80);
-      gradient.addColorStop('0', '#fb2609');
-      gradient.addColorStop('1', '#1c12a5');
-      graphic._handle.fillStyle = gradient;
-      graphic._handle.fill();
    }
 }
 MO.FEaiChartStatMarketerInfo = function FEaiChartStatMarketerInfo(o){
@@ -19546,6 +19375,21 @@ MO.FEaiChartStatMarketerTable_dispose = function FEaiChartStatMarketerTable_disp
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    o.__base.FGuiControl.dispose.call(o);
 }
+MO.SShowFloatingImageData = function SShowFloatingImageData(){
+   var o                   = this;
+   o.name               = '';
+   o.displayImageUrl    = '';
+   o.longitude          = 0;
+   o.latitude           = 0;
+   o.startX             = 0;
+   o.startY             = 0;
+   o.endX               = 0;
+   o.endY               = 0;
+   o.popDuration        = 500;
+   o.showDuration       = 5000;
+   o.closeDuration      = 500;
+   return o;
+}
 MO.SShowFocusParameter = function SShowFocusParameter(r ,t){
    var o                   = this;
    o.name               = '';
@@ -19574,8 +19418,13 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._operationRotationY      = 0;
    o._rotationX               = 0;
    o._rotationY               = 0;
+   o._rotationZ               = 0;
+   o._startRotateX            = 0;
    o._startRotateY            = 0;
+   o._startRotateZ            = 0;
+   o._targetRotateX           = 0;
    o._targetRotateY           = 0;
+   o._targetRotateZ           = 0;
    o._translateY              = 0;
    o._startTranslateY         = 0;
    o._targetTranslateY        = 0;
@@ -19594,8 +19443,8 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._provinceUnits           = null;
    o._countryUnits            = null;
    o._worldScale              = 300;
-   o._startWorldScale         = 500;
-   o._targetWorldScale        = 500;
+   o._startWorldScale         = 300;
+   o._targetWorldScale        = 300;
    o._cameraFrom              = null;
    o._cameraTo                = null;
    o._cameraDirection         = null;
@@ -19606,12 +19455,33 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o._socket                  = null;
    o._focusParamManager       = null;
    o._remoteRotate            = null;
+   o._displayPhase            = 0;
+   o._videoDataList           = null;
+   o._videoRenderables        = null;
+   o._currentVideoData        = null;
+   o._currentVideoRenderable  = null;
+   o._videoCount              = 4;
+   o._videoAnimeDuration      = 500;
+   o._videoAnimeStartTick     = 0;
+   o._lineManager             = null;
+   o._locations               = null;
+   o._floatingImageManager    = null;
+   o._rotateVector            = null;
+   o._rotateRadian            = 0;
+   o._processor               = null;
+   o._logoBar                 = null;
+   o._timeline                = null;
+   o._liveTable               = null;
+   o._boardProcessor          = null;
    o.onSocketReceived         = MO.FEaiChartShow1019Scene_onSocketReceived;
    o.onOrganizationFetch      = MO.FEaiChartShow1019Scene_onOrganizationFetch;
+   o.onOperationKeyDown       = MO.FEaiChartShow1019Scene_onOperationKeyDown;
    o.onOperationDown          = MO.FEaiChartShow1019Scene_onOperationDown;
    o.onOperationMove          = MO.FEaiChartShow1019Scene_onOperationMove;
    o.onOperationUp            = MO.FEaiChartShow1019Scene_onOperationUp;
    o.onOperationWheel         = MO.FEaiChartShow1019Scene_onOperationWheel;
+   o.onInvestmentDataChanged  = MO.FEaiChartShow1019Scene_onInvestmentDataChanged;
+   o.on24HDataChanged         = MO.FEaiChartShow1019Scene_on24HDataChanged;
    o.onOperationVisibility    = MO.FEaiChartShow1019Scene_onOperationVisibility;
    o.onProcessReady           = MO.FEaiChartShow1019Scene_onProcessReady;
    o.onProcess                = MO.FEaiChartShow1019Scene_onProcess;
@@ -19622,7 +19492,25 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o.showFace                 = MO.FEaiChartShow1019Scene_showFace;
    o.fixMatrix                = MO.FEaiChartShow1019Scene_fixMatrix;
    o.processResize            = MO.FEaiChartShow1019Scene_processResize;
+   o.switchDisplayPhase       = MO.FEaiChartShow1019Scene_switchDisplayPhase;
+   o.videoFullScreenAnime     = MO.FEaiChartShow1019Scene_videoFullScreenAnime;
    return o;
+}
+MO.FEaiChartShow1019Scene_on24HDataChanged = function FEaiChartShow1019Scene_on24HDataChanged(event) {
+   var o = this;
+   var timeline = o._timeline;
+   timeline.startTime().assign(event.beginDate);
+   timeline.endTime().assign(event.endDate);
+   timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   timeline.dirty();
+}
+MO.FEaiChartShow1019Scene_onInvestmentDataChanged = function FEaiChartShow1019Scene_onInvestmentDataChanged(event) {
+   var o = this;
+   var unit = event.unit;
+   var table = o._liveTable;
+   table.setRankUnits(event.rankUnits);
+   table.pushUnit(unit);
+   table.dirty();
 }
 MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onSocketReceived(event) {
    var o = this;
@@ -19634,46 +19522,100 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
       o._startRotateY = o._rotationY;
       o._startWorldScale = o._worldScale;
       var focusParam = o._focusParamManager.getFocusParameter(tag);
-      o._targetWorldScale = 1200;
+      o._targetWorldScale = 1400;
       o._targetRotateY = focusParam.rotateY;
       o._targetTranslateY = focusParam.translateY;
       o._startTick = MO.Timer.current();
       o._earthMoving = true;
       o._autoRotate = false;
    }
-   var rotateIndex = message.indexOf('rotate');
+   var rotateIndex = message.indexOf('rotation');
    if (rotateIndex != -1) {
       var rotate = o._remoteRotate;
-      rotate.parse(message.substr(rotateIndex + 7));
+      rotate.parse(message.substr(rotateIndex + 9));
       o._rotationX = rotate.x;
       o._rotationY = rotate.y;
+      o._rotationZ = rotate.z;
    }
+   var nextIndex = message.indexOf('next');
+   if (nextIndex != -1) {
+      o.switchDisplayPhase(++o._displayPhase);
+   }
+   var restIndex = message.indexOf('reset');
+   if (restIndex != -1) {
+      o.switchDisplayPhase(0);
+   }
+   var autoRotateIndex = message.indexOf('autoRotate');
+   if (autoRotateIndex != -1) {
+      o._autoRotate = new Boolean(parseInt(message.substr(autoRotateIndex + 11)));
+   }
+   var areaIndex = message.indexOf('area');
+   if (areaIndex != -1) {
+      var areaId = message.substr(areaIndex + 5);
+      o._floatingImageManager.setAutoShow(false);
+      o._floatingImageManager.showLocation(areaId);
+      o._boardProcessor.setAutoPlay(false);
+      o._boardProcessor.showArea(areaId);
+   }
+}
+MO.FEaiChartShow1019Scene_videoFullScreenAnime = function FEaiChartShow1019Scene_videoFullScreenAnime() {
+   var o = this;
+   var revert = false;
+   switch (o._displayPhase) {
+      case 0: // 待机画面
+         break;
+      case 1: // 播放视频1
+         break;
+      case 2: // 收起视频1
+         revert = true;
+         break;
+      case 3: // 手控转动地球
+         break;
+      case 4: // 显示实时投资
+         break;
+      case 5: // 播放视频2
+         break;
+      case 6: // 收起视频2
+         revert = true;
+         break;
+      case 7: // 播放视频3
+         break;
+      case 8: // 收起视频3
+         revert = true;
+         break;
+      case 9: // 播放视频4
+         break;
+      case 10:// 收起视频4
+         revert = true;
+         break;
+      default:
+         break;
+   }
+   var currentTick = MO.Timer.current();
+   var passedTick = currentTick - o._videoAnimeStartTick;
+   var t = passedTick / o._videoAnimeDuration;
+   if (revert) {
+      t = 1 - t;
+   }
+   if (t < 0) {
+      o.switchDisplayPhase(++o._displayPhase);
+      return;
+   }
+   if (t > 1) {
+      t = 1;
+   }
+   var videoRenderable = o._currentVideoRenderable;
+   var matrix = videoRenderable.matrix();
+   matrix.sx = 1920 * t;
+   matrix.sy = 1080 * t;
+   matrix.sz = 1;
+   matrix.tx = (1920 - 1920 * t) * 0.5;
+   matrix.ty = (1080 - 1080 * t) * 0.5;;
+   matrix.tz = 0;
+   matrix.updateForce();
 }
 MO.FEaiChartShow1019Scene_onOrganizationFetch = function FEaiChartShow1019Scene_onOrganizationFetch(event) {
    var o = this;
-   var mapEntity = o._mapEntity;
-   var info = o._organizationInfo;
-   info.unserializeSignBuffer(event.sign, event.content, true);
-   o._countryTable.setUnits(info._department2s);
-   var countryUnits = o._countryUnits;
-   var department4s = info._department4s;
-   countryUnits.clear();
-   for (var i = 0; i < 20; i++) {
-      countryUnits.push(department4s.at(i));
-   }
-   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
-   var cityModule = entityConsole.cityModule();
-   var citys = info.citys();
-   var cityCount = citys.count();
-   for(var i = 0; i < cityCount; i++){
-      var city = citys.at(i);
-      var card = city.card();
-      var cityEntity = cityModule.findByCard(card);
-      if(cityEntity){
-         cityEntity.update(city);
-      }
-   }
-   mapEntity.upload();
 }
 MO.FEaiChartShow1019Scene_onOperationVisibility = function FEaiChartShow1019Scene_onOperationVisibility(event) {
    var o = this;
@@ -19737,23 +19679,157 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
-      if (o._organizationDataTicker.process()) {
-         MO.Console.find(MO.FEaiLogicConsole).statistics().department().doOrganization(o, o.onOrganizationFetch, 2);
-      }
+      o._countryEntity.process();
+      o._boardProcessor.process()
       var mapEntity = o._mapEntity;
       o.fixMatrix(mapEntity.cityRangeRenderable().matrix());
       o.fixMatrix(mapEntity.cityCenterRenderable().matrix());
       o.fixMatrix(mapEntity.countryFaceDisplay().matrix());
       o.fixMatrix(mapEntity.countryBorderDisplay().matrix());
       mapEntity.process();
+      var currentVideoData = o._currentVideoData;
+      if (currentVideoData != null) {
+         o.videoFullScreenAnime();
+         currentVideoData.process();
+      }
+      o._processor.process();
+      var logoBar = o._logoBar;
+      var processor = o._processor;
+      if (processor.invementDayCurrent() > 0) {
+         var investmentTotal = logoBar.findComponent('investmentTotal');
+         investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
+         var investmentDay = logoBar.findComponent('investmentDay');
+         investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
+      }
+      if (o._nowTicker.process()) {
+         var bar = o._logoBar;
+         var date = o._nowDate;
+         date.setNow();
+         var dateControl = bar.findComponent('date');
+         dateControl.setLabel(date.format('YYYY/MM/DD'));
+         var timeControl = bar.findComponent('time');
+         timeControl.setLabel(date.format('HH24:MI'));
+      }
+      o._floatingImageManager.process(o._rotateRadian);
+   }
+}
+MO.FEaiChartShow1019Scene_onOperationKeyDown = function FEaiChartShow1019Scene_onOperationKeyDown(event) {
+   var o = this;
+   o.__base.FEaiChartScene.onOperationKeyDown.call(o, event);
+   if (event.keyCode == MO.EKeyCode.Space) {
+      o._displayPhase++;
+      o.switchDisplayPhase(o._displayPhase);
+   }
+   else if (event.keyCode == MO.EKeyCode.F) {
+      var videoData = o._currentVideoData;
+      videoData.hVideo().currentTime = 5;
+      videoData.hVideo().play();
+   }
+}
+MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_switchDisplayPhase(phase) {
+   var o = this;
+   o._videoRenderables.at(0).setVisible(false);
+   o._videoRenderables.at(1).setVisible(false);
+   o._videoRenderables.at(2).setVisible(false);
+   o._videoRenderables.at(3).setVisible(false);
+   o._videoAnimeStartTick = MO.Timer.current();
+   o._floatingImageManager.setAutoShow(false);
+   o._boardProcessor.setAutoPlay(false);
+   switch (phase) {
+      case 0: // 待机画面
+         o._floatingImageManager.setAutoShow(true);
+         o._boardProcessor.setAutoPlay(true);
+         break;
+      case 1: // 播放视频1
+         o._currentVideoRenderable = o._videoRenderables.at(0);
+         o._currentVideoRenderable.setVisible(true);
+         o._currentVideoData = o._videoDataList.at(0);
+         o._currentVideoData.hVideo().play();
+         break;
+      case 2: // 收起视频1
+         o._videoRenderables.at(0).setVisible(true);
+         break;
+      case 3: // 手控转动地球
+         break;
+      case 4: // 显示实时投资
+         o._logoBar.setVisible(true);
+         o._timeline.setVisible(true);
+         o._liveTable.setVisible(true);
+         o._guiManager.hide();
+         o._mapReady = false;
+         o._startTranslateY = o._translateY;
+         o._startRotateX = o._rotationX;
+         o._startRotateY = o._rotationY;
+         o._startRotateZ = o._rotationZ;
+         o._startWorldScale = o._worldScale;
+         var focusParam = o._focusParamManager.getFocusParameter('china');
+         o._targetWorldScale = 1400;
+         o._targetRotateX = 0;
+         o._targetRotateY = focusParam.rotateY;
+         o._targetRotateZ = 0;
+         o._targetTranslateY = focusParam.translateY;
+         o._startTick = MO.Timer.current();
+         o._earthMoving = true;
+         o._autoRotate = false;
+         o._showChina = true;
+         break;
+      case 5: // 播放视频2
+         o._logoBar.setVisible(false);
+         o._timeline.setVisible(false);
+         o._liveTable.setVisible(false);
+         o._currentVideoRenderable = o._videoRenderables.at(1);
+         o._currentVideoRenderable.setVisible(true);
+         o._currentVideoData = o._videoDataList.at(1);
+         o._currentVideoData.hVideo().play();
+         o._countryEntity._borderShape.setVisible(false);
+         o._countryEntity._faceShape.setVisible(false);
+         o._startTranslateY = o._translateY;
+         o._startRotateX = o._rotationX;
+         o._startRotateY = o._rotationY;
+         o._startRotateZ = o._rotationZ;
+         o._startWorldScale = o._worldScale;
+         o._targetTranslateY = 0;
+         o._targetRotateX = o._rotationX;
+         o._targetRotateY = o._rotationY;
+         o._targetRotateZ = o._rotationZ;
+         o._targetWorldScale = 300;
+         o._startTick = MO.Timer.current();
+         o._earthMoving = true;
+         o._autoRotate = true;
+         o._countryEntity._borderShape.setVisible(false);
+         o._countryEntity._faceShape.setVisible(false);
+         break;
+      case 6: // 收起视频2
+         o._videoRenderables.at(1).setVisible(true);
+         break;
+      case 7: // 播放视频3
+         o._currentVideoRenderable = o._videoRenderables.at(2);
+         o._currentVideoRenderable.setVisible(true);
+         o._currentVideoData = o._videoDataList.at(2);
+         o._currentVideoData.hVideo().play();
+         break;
+      case 8: // 收起视频3
+         o._videoRenderables.at(2).setVisible(true);
+         break;
+      case 9: // 播放视频4
+         o._currentVideoRenderable = o._videoRenderables.at(3);
+         o._currentVideoRenderable.setVisible(true);
+         o._currentVideoData = o._videoDataList.at(3);
+         o._currentVideoData.hVideo().play();
+         break;
+      case 10:// 收起视频4
+         o._videoRenderables.at(3).setVisible(true);
+         break;
+      default:
+         o._displayPhase = 0;
+         o._floatingImageManager.setAutoShow(true);
+         o._boardProcessor.setAutoPlay(true);
+         break;
    }
 }
 MO.FEaiChartShow1019Scene_onOperationDown = function FEaiChartShow1019Scene_onOperationDown(event) {
    var o = this;
    o._opMouseDown = true;
-   if (o._showingMktInfo) {
-      return;
-   }
    o._operationRotationX = o._rotationX;
    o._operationRotationY = o._rotationY;
    o._operationPoint.set(event.x, event.y);
@@ -19773,12 +19849,6 @@ MO.FEaiChartShow1019Scene_onOperationMove = function FEaiChartShow1019Scene_onOp
 MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOperationUp(event) {
    var o = this;
    o._opMouseDown = false;
-   if (o._showingMktInfo) {
-      o._showingMktInfo = false;
-      var mktInfoDiv = document.getElementById('id_marketer_info');
-      mktInfoDiv.style.display = 'none';
-      return;
-   }
    if (!o._operationMoved) {
       var canvas3d = o.application().desktop().canvas3d();
       var region = o.activeStage().region();
@@ -19795,51 +19865,16 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
             var entity = countryRenderable._shape._entity;
             if(MO.Class.isClass(entity, MO.FEaiCountry3dEntity)){
                var countryEntity = entity;
-               o._targetWorldScale = 1200;
+               o._targetWorldScale = 1400;
                if (countryEntity.code() == 'China') {
                   o._showChina = true;
                }
                else {
                   o._countryEntity._borderShape.setVisible(false);
                   o._countryEntity._faceShape.setVisible(false);
-                  var provinceTable = o._provinceTable;
-                  provinceTable.setTitle('大陆地区公司列表');
-                  provinceTable.setUnits(o._countryUnits);
-                  provinceTable.dirty();
-                  provinceTable.setVisible(false);
-                  o._countryTable.setVisible(true);
                }
-            }else if(MO.Class.isClass(entity, MO.FEaiProvince3dEntity)){
-               var provinceEntity = entity;
-               o._targetWorldScale = 3000;
-               var res = provinceEntity.resource();
-               var pCode = res.code();
-               if (pCode == o._selectedProvinceCode) {
-                  var mktInfoDiv = document.getElementById('id_marketer_info');
-                  mktInfoDiv.style.display = '';
-                  o._showingMktInfo = true;
-               }
-               else {
-                  o._selectedProvinceCode = pCode;
-               }
-               var provinceTable = o._provinceTable;
-               provinceTable.setTitle(res.label() + '地区分公司列表');
-               var department4s =  o._organizationInfo._department4s;
-               var count = department4s.count();
-               var provinceUnits = o._provinceUnits;
-               provinceUnits.clear();
-               for (var i = 0; i < count ; i++) {
-                  var unit = department4s.at(i);
-                  if (unit.provinceCode() == pCode) {
-                     provinceUnits.push(unit);
-                     if (provinceUnits.count() > 26) {
-                        break;
-                     }
-                  }
-               }
-               provinceTable.setUnits(provinceUnits);
-               provinceTable.dirty();
-            }else{
+            }
+            else {
             }
             var outline2d = entity.outline2();
             o._targetRotateY = Math.PI - outline2d.center.x / 180 * Math.PI;
@@ -19855,18 +19890,12 @@ MO.FEaiChartShow1019Scene_onOperationUp = function FEaiChartShow1019Scene_onOper
          o._startWorldScale = o._worldScale;
          o._targetTranslateY = 0
          o._targetRotateY = o._rotationY;
-         o._targetWorldScale = 500;
+         o._targetWorldScale = 300;
          o._startTick = MO.Timer.current();
          o._earthMoving = true;
          o._autoRotate = true;
          o._countryEntity._borderShape.setVisible(false);
          o._countryEntity._faceShape.setVisible(false);
-         var provinceTable = o._provinceTable;
-         provinceTable.setTitle('大陆地区公司列表');
-         provinceTable.setUnits(o._countryUnits);
-         provinceTable.dirty();
-         provinceTable.setVisible(false);
-         o._countryTable.setVisible(true);
       }
    }
    o._operationMoved = false;
@@ -19898,25 +19927,19 @@ MO.FEaiChartShow1019Scene_construct = function FEaiChartShow1019Scene_construct(
    o._facePosition = new MO.SPoint3();
    o._provinceUnits = new MO.TObjects();
    o._countryUnits = new MO.TObjects();
-   o._remoteRotate = new MO.SValue2();
+   o._remoteRotate = new MO.SValue3();
+   o._videoDataList = new MO.TObjects();
+   o._videoRenderables = new MO.TObjects();
+   o._rotateVector = new MO.SPoint3();
 }
 MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
-   var countryTable = o._countryTable = MO.Class.create(MO.FEaiChartMktManageCountryTable);
-   countryTable.setName('countryTable');
-   countryTable.linkGraphicContext(o);
-   countryTable.setup();
-   countryTable.build();
-   o._guiManager.register(countryTable);
-   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartMktManageProvinceTable);
-   provinceTable.setName('provinceTable');
-   provinceTable.linkGraphicContext(o);
-   provinceTable.setup();
-   provinceTable.build();
-   provinceTable.setVisible(false);
-   o._guiManager.register(provinceTable);
+   var processor = o._boardProcessor = MO.Class.create(MO.FEaiShowBoardProcessor);
+   processor.linkGraphicContext(o);
+   processor.setup();
+   o._activeStage.mapLayer().push(processor);
    o._guiManager.hide();
    var camera = MO.Class.create(MO.FE3dOrthoCamera);
    camera.position().set(0, 0, -5000);
@@ -19938,10 +19961,92 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    o._readyLoader.push(countryEntity);
    var socket = o._socket;
    socket = MO.Class.create(MO.FSocket);
-   socket.connect('ws://127.0.0.1:9080/earth');
+   socket.connect('{service.earth}/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
    var focusParamManager = o._focusParamManager = MO.Class.create(MO.FEaiShowFocusParameterManager);
    focusParamManager.setup();
+   var context3d = o.application().desktop().canvas3d().graphicContext();
+   var stage = o.activeStage();
+   var layer = stage.spriteLayer();
+   var videoDataList = o._videoDataList;
+   var videoRenderables = o._videoRenderables;
+   var videoCount = o._videoCount;
+   for (var i = 0; i < videoCount; i++) {
+      var videoData = context3d.createObject(MO.FE3dVideoData);
+      videoData.loadUrl('../ars/eai/show1019/video' + i + '.mp4');
+      videoDataList.push(videoData);
+      var videoRenderable = context3d.createObject(MO.FE3dVideo);
+      videoRenderable.setOptionSelect(false);
+      videoRenderable.setData(videoData);
+      videoRenderable.material().info().effectCode = 'flat';
+      videoRenderable.setVisible(false);
+      o._videoRenderables.push(videoRenderable);
+      layer.pushRenderable(videoRenderable);
+      var matrix = videoRenderable.matrix();
+      matrix.sx = 1920;
+      matrix.sy = 1080;
+      matrix.sz = 1;
+      matrix.tx = 0;
+      matrix.ty = 0;
+      matrix.tz = 0;
+      matrix.updateForce();
+   }
+   var lineManager = o._lineManager = MO.Class.create(MO.FE3dLines);
+   lineManager.linkGraphicContext(o);
+   lineManager.setup();
+   lineManager.setCount(1);
+   var float32Array = lineManager.positionsData();
+   float32Array[0] = 0;
+   float32Array[1] = 0;
+   float32Array[2] = 0;
+   float32Array[3] = 1000;
+   float32Array[4] = 1000;
+   float32Array[5] = 0;
+   lineManager.upload();
+   var uint8Array = lineManager.colorsData();
+   uint8Array[0] = 255;
+   uint8Array[1] = 0;
+   uint8Array[2] = 0;
+   uint8Array[3] = 255;
+   uint8Array[4] = 255;
+   uint8Array[5] = 0;
+   uint8Array[6] = 0;
+   uint8Array[7] = 255;
+   var dataLayer = o._activeStage.dataLayer();
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
+   o._guiManager.register(frame);
+   var invement = o._processor = MO.Class.create(MO.FEaiChartShowProcessor);
+   invement.linkGraphicContext(o);
+   invement.setup();
+   invement._countryEntity = countryEntity;
+   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
+   invement.add24HDataChangedListener(o, o.on24HDataChanged);
+   var display = invement.display();
+   o.fixMatrix(display.matrix());
+   dataLayer.push(display);
+   frame.setVisible(false);
+   var stage = o.activeStage();
+   var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktCustomerTimeline);
+   timeline.setName('Timeline');
+   timeline.linkGraphicContext(o);
+   timeline.build();
+   o._guiManager.register(timeline);
+   timeline.setVisible(false);
+   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktCustomerTable);
+   liveTable.setName('LiveTable');
+   liveTable.linkGraphicContext(o);
+   liveTable.setup();
+   liveTable.build();
+   o._guiManager.register(liveTable);
+   liveTable.setVisible(false);
+   var floatingImageManager = o._floatingImageManager = MO.Class.create(MO.FEaiShowFloatingImageManager);
+   floatingImageManager.setup();
+   var fiImages = floatingImageManager.floatingImages();
+   var count = fiImages.count();
+   for (var i = 0; i < count; i++) {
+      o._guiManager.register(fiImages.at(i));
+   }
+   o._guiManager.hide();
 }
 MO.FEaiChartShow1019Scene_showFace = function FEaiChartShow1019Scene_showFace() {
    var o = this;
@@ -19963,75 +20068,688 @@ MO.FEaiChartShow1019Scene_fixMatrix = function FEaiChartShow1019Scene_fixMatrix(
          if (o._showChina) {
             o._countryEntity._borderShape.setVisible(true);
             o._countryEntity._faceShape.setVisible(true);
-            o._provinceTable.setVisible(true);
-            o._countryTable.setVisible(false);
-            o._provinceTable.dirty();
             o._showChina = false;
          }
       }
       o._translateY = o._startTranslateY + (o._targetTranslateY - o._startTranslateY) * rate;
+      o._rotationX = o._startRotateX + (o._targetRotateX - o._startRotateX) * rate;
       o._rotationY = o._startRotateY + (o._targetRotateY - o._startRotateY) * rate;
+      o._rotationZ = o._startRotateZ + (o._targetRotateZ - o._startRotateZ) * rate;
       o._worldScale = o._startWorldScale + (o._targetWorldScale - o._startWorldScale) * rate;
    }
    if (isVertical) {
-      matrix.tx = -14.58;
-      matrix.ty = -1.9;
-      matrix.tz = 0;
-      matrix.setScale(0.14, 0.16, 0.14);
    } else {
-      matrix.tx = -320;
+      matrix.tx = 0;
       matrix.ty = o._translateY;
       matrix.tz = 0;
       matrix.rx = o._rotationX;
       matrix.ry = o._rotationY;
+      matrix.rz = o._rotationZ;
       matrix.setScale(o._worldScale, o._worldScale, o._worldScale);
+      var rotateVector = o._rotateVector;
+      matrix.transformPoint3(MO.RMath.vectorBackward, rotateVector);
+      rotateVector.normalize();
+      o._rotateRadian = Math.atan2(rotateVector.x, rotateVector.z);
    }
    matrix.update();
-   if (o._autoRotate) {
-      o._rotationY += 0.001;
-      if (o._rotationY > Math.PI * 2) {
-         o._rotationY = 0;
-      }
-   }
 }
 MO.FEaiChartShow1019Scene_processResize = function FEaiChartShow1019Scene_processResize() {
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
-   var countryTable = o._countryTable;
-   if(isVertical){
-      countryTable.setDockCd(MO.EUiDock.Bottom);
-      countryTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      countryTable.setLeft(10);
-      countryTable.setRight(10);
-      countryTable.setBottom(10);
-      countryTable.setWidth(1060);
-      countryTable.setHeight(900);
-   }else{
-      countryTable.setDockCd(MO.EUiDock.Right);
-      countryTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-      countryTable.setTop(10);
-      countryTable.setRight(0);
-      countryTable.setBottom(10);
-      countryTable.setWidth(750);
-   }
-   var provinceTable = o._provinceTable;
+   var logoBar = o._logoBar;
    if (isVertical) {
-      provinceTable.setDockCd(MO.EUiDock.Bottom);
-      provinceTable.setAnchorCd(MO.EUiAnchor.All);
-      provinceTable.setLeft(10);
-      provinceTable.setRight(10);
-      provinceTable.setBottom(10);
-      provinceTable.setWidth(1060);
-      provinceTable.setHeight(900);
+      logoBar.setLocation(8, 8);
+      logoBar.setScale(0.85, 0.85);
    } else {
-      provinceTable.setDockCd(MO.EUiDock.Right);
-      provinceTable.setAnchorCd(MO.EUiAnchor.All);
-      provinceTable.setTop(10);
-      provinceTable.setRight(0);
-      provinceTable.setBottom(10);
-      provinceTable.setWidth(750);
+      logoBar.setLocation(5, 5);
+      logoBar.setScale(0.9, 0.9);
    }
+   var control = o._southSea;
+   if (isVertical) {
+      control.setDockCd(MO.EUiDock.RightTop);
+      control.setTop(570);
+      control.setRight(80);
+   } else {
+      control.setDockCd(MO.EUiDock.RightBottom);
+      control.setRight(780);
+      control.setBottom(280);
+   }
+   var timeline = o._timeline;
+   if (isVertical) {
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(10);
+      timeline.setRight(10);
+      timeline.setBottom(920);
+      timeline.setHeight(250);
+   } else {
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setBottom(10);
+      timeline.setRight(780);
+      timeline.setHeight(300);
+   }
+   var liveTable = o._liveTable;
+   if (isVertical) {
+      liveTable.setDockCd(MO.EUiDock.Bottom);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      liveTable.setLeft(10);
+      liveTable.setRight(10);
+      liveTable.setBottom(10);
+      liveTable.setHeight(900);
+   } else {
+      liveTable.setDockCd(MO.EUiDock.Right);
+      liveTable.setAnchorCd(MO.EUiAnchor.All);
+      liveTable.setTop(10);
+      liveTable.setRight(0);
+      liveTable.setBottom(10);
+      liveTable.setWidth(760);
+   }
+}
+MO.FEaiChartShowProcessor = function FEaiChartShowProcessor(o){
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
+   o._dateSetup               = false;
+   o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
+   o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
+   o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
+   o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
+   o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
+   o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
+   o._netinvestmentDayCurrent = MO.Class.register(o, new MO.AGetter('_netinvestmentDayCurrent'), 0);
+   o._interestDayCurrent      = MO.Class.register(o, new MO.AGetter('_interestDayCurrent'), 0);
+   o._performanceDayCurrent   = MO.Class.register(o, new MO.AGetter('_performanceDayCurrent'), 0);
+   o._customerDayCurrent      = MO.Class.register(o, new MO.AGetter('_customerDayCurrent'), 0);
+   o._invementDay             = MO.Class.register(o, new MO.AGetter('_invementDay'), 0);
+   o._invementTotalCurrent    = MO.Class.register(o, new MO.AGetter('_invementTotalCurrent'), 0);
+   o._invementTotal           = MO.Class.register(o, new MO.AGetter('_invementTotal'), 0);
+   o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+   o._intervalMinute          = 1;
+   o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
+   o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
+   o._rankUnits               = MO.Class.register(o, new MO.AGetter('_rankUnits'));
+   o._units                   = MO.Class.register(o, new MO.AGetter('_units'));
+   o._tableCount              = 40;
+   o._tableInterval           = 1000;
+   o._tableTick               = 1;
+   o._dataTicker              = null;
+   o._unitPool                = null;
+   o._autios                  = null;
+   o._eventDataChanged        = null;
+   o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._event24HDataChanged     = null;
+   o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
+   o.onDynamicData            = MO.FEaiChartShowProcessor_onDynamicData;
+   o.on24HDataFetch           = MO.FEaiChartShowProcessor_on24HDataFetch;
+   o.construct                = MO.FEaiChartShowProcessor_construct;
+   o.allocUnit                = MO.FEaiChartShowProcessor_allocUnit;
+   o.allocShape               = MO.FEaiChartShowProcessor_allocShape;
+   o.setup                    = MO.FEaiChartShowProcessor_setup;
+   o.calculateCurrent         = MO.FEaiChartShowProcessor_calculateCurrent;
+   o.focusEntity              = MO.FEaiChartShowProcessor_focusEntity;
+   o.process                  = MO.FEaiChartShowProcessor_process;
+   o.dispose                  = MO.FEaiChartShowProcessor_dispose;
+   return o;
+}
+MO.FEaiChartShowProcessor_on24HDataFetch = function FEaiChartShowProcessor_on24HDataFetch(event) {
+   var o = this;
+   event.beginDate = o._24HBeginDate;
+   event.endDate = o._24HEndDate;
+   o.process24HDataChangedListener(event);
+}
+MO.FEaiChartShowProcessor_onDynamicData = function FEaiChartShowProcessor_onDynamicData(event){
+   var o = this;
+   var content = event.content;
+   var dynamicInfo = o._dynamicInfo;
+   dynamicInfo.unserializeSignBuffer(event.sign, event.content, true);
+   var rankUnits = o._rankUnits;
+   rankUnits.assign(dynamicInfo.rankUnits());
+   var units = o._units;
+   units.append(dynamicInfo.units());
+   var unitCount = units.count();
+   if(unitCount){
+      o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
+   }else{
+      o._tableInterval = 1000 * 60 * o._intervalMinute;
+   }
+   o._tableTick = 0;
+   var changeEvent = o._eventDataChanged;
+   changeEvent.rankUnits = rankUnits;
+   changeEvent.unit = null;
+   o.processDataChangedListener(changeEvent);
+}
+MO.FEaiChartShowProcessor_construct = function FEaiChartShowProcessor_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._beginDate = new MO.TDate();
+   o._endDate = new MO.TDate();
+   o._24HBeginDate = new MO.TDate();
+   o._24HEndDate = new MO.TDate();
+   o._units = new MO.TObjects();
+   o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
+   o._autios = new Object();
+   o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
+   o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
+   o._rankUnits = new MO.TObjects();
+   o._unitPool = MO.Class.create(MO.FObjectPool);
+   o._eventDataChanged = new MO.SEvent(o);
+   o._event24HDataChanged = new MO.SEvent(o);
+}
+MO.FEaiChartShowProcessor_allocUnit = function FEaiChartShowProcessor_allocUnit(){
+   var o = this;
+   var unit = o._unitPool.alloc();
+   if(!unit){
+      unit = MO.Class.create(MO.FEaiChartMktCustomerDynamicUnit);
+   }
+   return unit;
+}
+MO.FEaiChartShowProcessor_setup = function FEaiChartShowProcessor_setup(){
+   var o = this;
+   var audioConsole = MO.Console.find(MO.FAudioConsole);
+   for(var i = 1; i <= 5; i++){
+      o._autios[i] = audioConsole.load('{eai.resource}/currency/' + i + '.mp3');
+   }
+   var display = o._display = MO.Class.create(MO.FE3dDisplay);
+   display.linkGraphicContext(o);
+}
+MO.FEaiChartShowProcessor_calculateCurrent = function FEaiChartShowProcessor_calculateCurrent(){
+   var o = this;
+   var info = o._dynamicInfo;
+   var investmentCurrent = info.investmentCount();
+   var investmentTotalCurrent = info.investmentTotal();
+   var units = o._units;
+   var count = units.count();
+   for(var i = 0; i < count; i++){
+      var unit = units.at(i);
+      investmentCurrent -= unit.investment();
+      investmentTotalCurrent -= unit.investment();
+   }
+   o._invementTotalCurrent = investmentTotalCurrent;
+   o._invementDayCurrent = investmentCurrent;
+}
+MO.FEaiChartShowProcessor_focusEntity = function FEaiChartShowProcessor_focusEntity(unit){
+   var o = this;
+   var mapEntity = o._mapEntity;
+   var countryEntity = o._countryEntity;
+   var card = unit.card();
+   var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
+   if(cityEntity){
+      var investment = unit.investment();
+      var level = MO.Console.find(MO.FEaiLogicConsole).statistics().calculateAmountLevel(investment);
+      var provinceCode = cityEntity.data().provinceCode();
+      var provinceEntity = countryEntity.findProvince(provinceCode);
+      if(provinceEntity){
+         provinceEntity.doFocus(level, investment);
+      }
+      cityEntity.addInvestmentTotal(level, investment);
+      if (o._mapEntity) {
+         o._mapEntity.upload();
+      }
+      var autio = o._autios[level];
+      if(autio){
+         autio.play(0);
+      }
+   }
+   var changedEvent = o._eventDataChanged;
+   changedEvent.rankUnits = o._rankUnits;
+   changedEvent.unit = unit;
+   o.processDataChangedListener(changedEvent);
+}
+MO.FEaiChartShowProcessor_process = function FEaiChartShowProcessor_process(){
+   var o = this;
+   var system = MO.Console.find(MO.FEaiLogicConsole).system();
+   if(!system.testReady()){
+      return;
+   }
+   var systemDate = system.currentDate();
+   systemDate.truncMinute();
+   if(!o._dateSetup){
+      o._endDate.assign(systemDate);
+      o._endDate.addMinute(-o._intervalMinute);
+      o._dateSetup = true;
+   }
+   if(o._dataTicker.process()){
+      var statistics = MO.Console.find(MO.FEaiLogicConsole).statistics();
+      var beginDate = o._beginDate;
+      var endDate = o._endDate;
+      beginDate.assign(endDate);
+      endDate.assign(systemDate);
+      statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
+      beginDate.assign(endDate);
+      var beginDate24H = o._24HBeginDate;
+      beginDate24H.assign(systemDate);
+      beginDate24H.truncMinute(15);
+      beginDate24H.addDay(-1);
+      var endDate24H = o._24HEndDate;
+      endDate24H.assign(systemDate);
+      endDate24H.truncMinute(15);
+      statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
+   }
+   var currentTick = MO.Timer.current();
+   if(currentTick - o._tableTick > o._tableInterval){
+      var units = o._units;
+      if(!units.isEmpty()){
+         var unit = units.shift();
+         o.focusEntity(unit);
+      }
+      o.calculateCurrent();
+      o._tableTick = currentTick;
+   }
+   if (o._mapEntity != null) {
+      o._mapEntity.process();
+   }
+   var dynamicInfo = MO.Desktop.application().dynamicInfo();
+   dynamicInfo._investmentEntityCount = o._units.count();
+   dynamicInfo._investmentPoolItemCount = o._unitPool.items().count();
+   dynamicInfo._investmentPoolFreeCount = o._unitPool.frees().count();
+}
+MO.FEaiChartShowProcessor_dispose = function FEaiChartShowProcessor_dispose(){
+   var o = this;
+   o._units = MO.Lang.Object.dispose(o._units);
+   o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);
+   o._eventDataChanged = MO.Lang.Object.dispose(o._eventDataChanged);
+   o.__base.FObject.dispose.call(o);
+}
+MO.FEaiShowBoard = function FEaiShowBoard(o) {
+   o = MO.Class.inherits(this, o, MO.FE3dDisplay);
+   o._radius    = MO.Class.register(o, new MO.AGetSet('_radius'));
+   o._url       = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._line      = null;
+   o._video     = null;
+   o._videoData = null;
+   o._rotation  = null;
+   o._startTick = 0;
+   o.construct  = MO.FEaiShowBoard_construct;
+   o.setup      = MO.FEaiShowBoard_setup;
+   o.play       = MO.FEaiShowBoard_play;
+   o.process    = MO.FEaiShowBoard_process;
+   o.dispose    = MO.FEaiShowBoard_dispose;
+   return o;
+}
+MO.FEaiShowBoard_construct = function FEaiShowBoard_construct() {
+   var o = this;
+   o.__base.FE3dDisplay.construct.call(o);
+}
+MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
+   var o = this;
+   var context = o._graphicContext;
+   var videoData = o._videoData = MO.Class.create(MO.FE3dVideoData);
+   videoData.linkGraphicContext(o);
+   videoData.setOptionCenter(true);
+   videoData.setup();
+   videoData.loadUrl(o._url);
+   videoData.setLoop(true);
+   videoData.play(true);
+   var video = o._video = context.createObject(MO.FE3dVideo);
+   video.setOptionSelect(false);
+   video.setData(videoData);
+   var matrix = video.matrix();
+   matrix.sx = 200;
+   matrix.sy = 100;
+   matrix.updateForce();
+   o.pushRenderable(video);
+   o._startTick = MO.Timer.current();
+}
+MO.FEaiShowBoard_play = function FEaiShowBoard_play(flag){
+   this._videoData.play(flag);
+}
+MO.FEaiShowBoard_process = function FEaiShowBoard_process() {
+   var o = this;
+   o.__base.FE3dDisplay.process.call(o);
+   var span = MO.Timer.current() - o._startTick;
+   o._videoData.currentTime = span / 1000;
+   o._videoData.process();
+}
+MO.FEaiShowBoard_dispose = function FEaiShowBoard_dispose() {
+   var o = this;
+   o.__base.FE3dDisplay.dispose.call(o);
+}
+MO.FEaiShowBoardProcessor = function FEaiShowBoardProcessor(o) {
+   o = MO.Class.inherits(this, o, MO.FE3dDisplayContainer);
+   o._optionArea    = false;
+   o._boardArea     = null;
+   o._boardCount    = 8;
+   o._boardRotation = 0;
+   o._boardRadius   = 700;
+   o._autoPlay      = MO.Class.register(o, new MO.AGetter('_autoPlay'));
+   o._boards        = MO.Class.register(o, new MO.AGetSet('_boards'));
+   o.construct      = MO.FEaiShowBoardProcessor_construct;
+   o.setup          = MO.FEaiShowBoardProcessor_setup;
+   o.setAutoPlay    = MO.FEaiShowBoardProcessor_setAutoPlay;
+   o.showArea       = MO.FEaiShowBoardProcessor_showArea;
+   o.process        = MO.FEaiShowBoardProcessor_process;
+   o.dispose        = MO.FEaiShowBoardProcessor_dispose;
+   return o;
+}
+MO.FEaiShowBoardProcessor_construct = function FEaiShowBoardProcessor_construct() {
+   var o = this;
+   o.__base.FE3dDisplayContainer.construct.call(o);
+   o._boards = new MO.TObjects();
+}
+MO.FEaiShowBoardProcessor_setup = function FEaiShowBoardProcessor_setup() {
+   var o = this;
+   var boards = o._boards;
+   for(var i = 1; i <= 8; i++){
+      var board = MO.Class.create(MO.FEaiShowBoard);
+      board.linkGraphicContext(o);
+      board.setUrl('{eai.resource}/show1019/center/' + i + '.mp4');
+      board.setup();
+      boards.push(board);
+      o.pushDisplay(board);
+   }
+   var count = boards.count();
+   var angle = Math.PI * 2 / count;
+   var radius = o._boardRadius;
+   var rotation = o._boardRotation;
+   for(var i = 0; i < count; i++){
+      var board = boards.at(i);
+      var boardAngle = angle * i;
+      board.setRadius(boardAngle);
+      var matrix = board.matrix();
+      matrix.tx = Math.cos(boardAngle) * radius;
+      matrix.tz = -Math.sin(boardAngle) * radius;
+      matrix.updateForce();
+   }
+}
+MO.FEaiShowBoardProcessor_setAutoPlay = function FEaiShowBoardProcessor_setAutoPlay(flag){
+   var o = this;
+   var boards = o._boards;
+   var count = boards.count();
+   for(var i = 0; i < count; i++){
+      var board = boards.at(i);
+      board.play(flag);
+   }
+   o.setVisible(flag);
+}
+MO.FEaiShowBoardProcessor_showArea = function FEaiShowBoardProcessor_showArea(areaId){
+   var o = this;
+   o._optionArea = true;
+   var board = o._boards.get(parseInt(areaId) - 1);
+   MO.Assert.debugNotNull(board);
+   o._boardArea = board;
+}
+MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
+   var o = this;
+   o.__base.FE3dDisplayContainer.process.call(o);
+   var rotation = o._boardRotation;
+   if(o._optionArea){
+      rotation = o._boardArea.radius();
+   }else{
+      rotation += 0.0005;
+   }
+   rotation = rotation % (Math.PI * 2);
+   var matrix = o._matrix;
+   matrix.ry = rotation;
+   matrix.updateForce();
+   o._boardRotation = rotation;
+   var boards = o._boards;
+   var count = boards.count();
+   for(var i = 0; i < count; i++){
+      var board = boards.at(i);
+      var boardAngle = rotation + board.radius();
+      var scale = Math.max(Math.sin(boardAngle) + 1, 0) * 0.5 + 0.1;
+      var matrix = board.matrix();
+      matrix.ry = -rotation;
+      matrix.ty = -300 * scale + 100;
+      matrix.sx = scale * scale;
+      matrix.sy = scale * scale;
+      matrix.updateForce();
+      board.process();
+   }
+}
+MO.FEaiShowBoardProcessor_dispose = function FEaiShowBoardProcessor_dispose() {
+   var o = this;
+   o._boards = MO.Lang.Object.dispose(o._boards);
+   o.__base.FE3dDisplayContainer.construct.call(o);
+}
+MO.FEaiShowFloatingImageManager = function FEaiShowFloatingImageManager(o) {
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._floatingImages = MO.Class.register(o, new MO.AGetSet('_floatingImages'));
+   o._deltaX = 0;
+   o._imgWidth = 510;
+   o._imgHeight = 371;
+   o._startTick = 0;
+   o._slideDuration = 1000;
+   o._showDuration = 5000;
+   o._awayDuration = 6000;
+   o._showIndex = -1;
+   o._autoIndex = 0;
+   o._autoShow = MO.Class.register(o, new MO.AGetSet('_autoShow'), true);
+   o.showLocation = MO.FEaiShowFloatingImageManager_showLocation;
+   o.setVisibleAll = MO.FEaiShowFloatingImageManager_setVisibleAll;
+   o.process = MO.FEaiShowFloatingImageManager_process;
+   o.construct = MO.FEaiShowFloatingImageManager_construct;
+   o.setup = MO.FEaiShowFloatingImageManager_setup;
+   o.dispose = MO.FEaiShowFloatingImageManager_dispose;
+   return o;
+}
+MO.FEaiShowFloatingImageManager_construct = function FEaiShowFloatingImageManager_construct() {
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._floatingImages = new MO.TObjects();
+}
+MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_setup() {
+   var o = this;
+   var floatingImages = o._floatingImages;
+   var fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'bengbu';
+   fiData.displayImageUrl = '{eai.resource}/show1019/locations/bengbu.jpg';
+   fiData.longitude = 32.54;
+   fiData.latitude = 117.23;
+   fiData.startX = 0;
+   fiData.startY = 100;
+   fiData.endX = 1980;
+   fiData.endY = 100;
+   var frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(o._imgWidth);
+   frame.setHeight(o._imgHeight);
+   frame.setup(fiData);
+   frame.build();
+   floatingImages.push(frame);
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'beijing';
+   fiData.displayImageUrl = '{eai.resource}/show1019/locations/beijing.jpg';
+   fiData.longitude = 39.54;
+   fiData.latitude = 116.24;
+   fiData.startX = 0;
+   fiData.startY = 200;
+   fiData.endX = 1980;
+   fiData.endY = 200;
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(o._imgWidth);
+   frame.setHeight(o._imgHeight);
+   frame.setup(fiData);
+   frame.build();
+   floatingImages.push(frame);
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'seasian';
+   fiData.displayImageUrl = '{eai.resource}/show1019/locations/seasian.jpg';
+   fiData.longitude = 21.31;
+   fiData.latitude = 96.6;
+   fiData.startX = 0;
+   fiData.startY = 300;
+   fiData.endX = 1980;
+   fiData.endY = 300;
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(o._imgWidth);
+   frame.setHeight(o._imgHeight);
+   frame.setup(fiData);
+   frame.build();
+   floatingImages.push(frame);
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'hefei';
+   fiData.displayImageUrl = '{eai.resource}/show1019/locations/hefei.jpg';
+   fiData.longitude = 31.49;
+   fiData.latitude = 117.13;
+   fiData.startX = 0;
+   fiData.startY = 400;
+   fiData.endX = 1980;
+   fiData.endY = 400;
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(o._imgWidth);
+   frame.setHeight(o._imgHeight);
+   frame.setup(fiData);
+   frame.build();
+   floatingImages.push(frame);
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'lanzhou';
+   fiData.displayImageUrl = '{eai.resource}/show1019/locations/lanzhou.jpg';
+   fiData.longitude = 36.3;
+   fiData.latitude = 103.50;
+   fiData.startX = 0;
+   fiData.startY = 500;
+   fiData.endX = 1980;
+   fiData.endY = 500;
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(o._imgWidth);
+   frame.setHeight(o._imgHeight);
+   frame.setup(fiData);
+   frame.build();
+   floatingImages.push(frame);
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'newyork';
+   fiData.displayImageUrl = '{eai.resource}/show1019/locations/newyork.jpg';
+   fiData.longitude = 40.42;
+   fiData.latitude = -74.0;
+   fiData.startX = 0;
+   fiData.startY = 600;
+   fiData.endX = 1980;
+   fiData.endY = 600;
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(o._imgWidth);
+   frame.setHeight(o._imgHeight);
+   frame.setup(fiData);
+   frame.build();
+   floatingImages.push(frame);
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'shanghai';
+   fiData.displayImageUrl = '{eai.resource}/show1019/locations/shanghai.jpg';
+   fiData.longitude = 31.13;
+   fiData.latitude = 121.28;
+   fiData.startX = 0;
+   fiData.startY = 700;
+   fiData.endX = 1980;
+   fiData.endY = 700;
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(o._imgWidth);
+   frame.setHeight(o._imgHeight);
+   frame.setup(fiData);
+   frame.build();
+   floatingImages.push(frame);
+   fiData = new MO.SShowFloatingImageData();
+   fiData.name = 'hongkong';
+   fiData.displayImageUrl = '{eai.resource}/show1019/locations/hongkong.jpg';
+   fiData.longitude = 22.23;
+   fiData.latitude = 114.6;
+   fiData.startX = 0;
+   fiData.startY = 800;
+   fiData.endX = 1980;
+   fiData.endY = 800;
+   frame = MO.Class.create(MO.FGuiFloatingFrame);
+   frame.setWidth(o._imgWidth);
+   frame.setHeight(o._imgHeight);
+   frame.setup(fiData);
+   frame.build();
+   floatingImages.push(frame);
+   var gap = o._imgWidth + 30;
+   var count = floatingImages.count();
+   for (var i = 0; i < count; i++) {
+      var fi = floatingImages.at(i);
+      var x = -gap * 8 + gap * i;
+      fi.setLocation(x, 910);
+   }
+}
+MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_process() {
+   var o = this;
+   o.setVisibleAll(false);
+   var floatingImages = o._floatingImages;
+   var imgHeight = o._imgHeight;
+   var showIndex = o._showIndex;
+   if (showIndex > -1) {
+      var fi = floatingImages.at(showIndex);
+      fi.setVisible(true);
+      var passedTick = MO.Timer.current() - o._startTick;
+      if (passedTick < o._slideDuration) {
+         var t = passedTick / o._slideDuration;
+         fi.location().x = 50;
+         fi.location().y = -imgHeight + (1080 + imgHeight) * 0.5 * t;
+         fi.dirty();
+      }
+      else if (passedTick < o._showDuration) {
+         fi.setLocation(50, (1080 - imgHeight) * 0.5);
+         fi.dirty();
+      }
+      else if (passedTick < o._awayDuration) {
+         var t = (passedTick - o._showDuration) / (o._awayDuration - o._showDuration);
+         fi.location().x = 50;
+         fi.location().y = (1080 - imgHeight) * 0.5 + (1080 + imgHeight) * 0.5 * t;
+         fi.dirty();
+      }
+      else {
+         o._showIndex = -1;
+         fi.setVisible(false);
+      }
+   }
+   else {
+      var autoIndex = o._autoIndex;
+      var fil = floatingImages.at(autoIndex);
+      var fir = floatingImages.at(7 - autoIndex);
+      fil.setVisible(o._autoShow);
+      fir.setVisible(o._autoShow);
+      var passedTick = MO.Timer.current() - o._startTick;
+      if (passedTick < o._slideDuration) {
+         var t = passedTick / o._slideDuration;
+         fil.location().x = 50;
+         fil.location().y = -imgHeight + (1080 + imgHeight) * 0.5 * t;
+         fir.location().x = 1360;
+         fir.location().y = 1080 - (1080 + imgHeight) * 0.5 * t;
+         fil.dirty();
+         fir.dirty();
+      }
+      else if (passedTick < o._showDuration) {
+         fil.setLocation(50, (1080 - imgHeight) * 0.5);
+         fir.setLocation(1360, (1080 - imgHeight) * 0.5);
+         fil.dirty();
+         fir.dirty();
+      }
+      else if (passedTick < o._awayDuration) {
+         var t = (passedTick - o._showDuration) / (o._awayDuration - o._showDuration);
+         fil.location().x = 50;
+         fil.location().y = (1080 - imgHeight) * 0.5 + (1080 + imgHeight) * 0.5 * t;
+         fir.location().x = 1360;
+         fir.location().y = (1080 - imgHeight) * 0.5 - (1080 + imgHeight) * 0.5 * t;
+         fil.dirty();
+         fir.dirty();
+      }
+      else {
+         o._autoIndex++;
+         if (o._autoIndex > 7) {
+            o._autoIndex = 0;
+         }
+         o._startTick = MO.Timer.current();
+         fil.setVisible(false);
+         fir.setVisible(false);
+      }
+   }
+}
+MO.FEaiShowFloatingImageManager_setVisibleAll = function FEaiShowFloatingImageManager_setVisibleAll(visible) {
+   var o = this;
+   var floatingImages = o._floatingImages;
+   var count = floatingImages.count();
+   for (var i = 0; i < count; i++) {
+      var fi = floatingImages.at(i);
+      fi.setVisible(false);
+   }
+}
+MO.FEaiShowFloatingImageManager_showLocation = function FEaiShowFloatingImageManager_showLocation(locationId) {
+   var o = this;
+   o._showIndex = locationId - 1;
+   o._startTick = MO.Timer.current();
+}
+MO.FEaiShowFloatingImageManager_dispose = function FEaiShowFloatingImageManager_dispose() {
+   var o = this;
+   o._floatingImages = MO.Lang.Object.dispose(o._floatingImages);
 }
 MO.FEaiShowFocusParameterManager = function FEaiShowFocusParameterManager(o) {
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -20050,7 +20768,7 @@ MO.FEaiShowFocusParameterManager_construct = function FEaiShowFocusParameterMana
 MO.FEaiShowFocusParameterManager_setup = function FEaiShowFocusParameterManager_setup() {
    var o = this;
    var dict = o._dict;
-   dict.set('china', new MO.SShowFocusParameter(1.8182811571558428, -717.7387619018555));
+   dict.set('china', new MO.SShowFocusParameter(2.15, -750));
 }
 MO.FEaiShowFocusParameterManager_getFocusParameter = function FEaiShowFocusParameterManager_getFocusParameter(key) {
    var o = this;
@@ -20059,6 +20777,345 @@ MO.FEaiShowFocusParameterManager_getFocusParameter = function FEaiShowFocusParam
 MO.FEaiShowFocusParameterManager_dispose = function FEaiShowFocusParameterManager_dispose() {
    var o = this;
    o._dict = MO.Lang.Object.dispose(o._dict);
+}
+MO.FGuiFloatingFrame = function FGuiFloatingFrame(o) {
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
+   o._frameImage = null;
+   o._displayImage = null;
+   o._ready = false;
+   o._imageCount = 2;
+   o._startRotateY = 0;
+   o._endRotateY = 0;
+   o._data = MO.Class.register(o, new MO.AGetSet('_data'));
+   o.setup = MO.FGuiFloatingFrame_setup;
+   o.onPaintBegin = MO.FGuiFloatingFrame_onPaintBegin;
+   o.onImageLoad = MO.FGuiFloatingFrame_onImageLoad;
+   o.floatingAnime = MO.FGuiFloatingFrame_floatingAnime;
+   o.dispose = MO.FGuiFloatingFrame_dispose;
+   return o;
+}
+MO.FGuiFloatingFrame_setup = function FGuiFloatingFrame_setup(data) {
+   var o = this;
+   o._data = data;
+   o._frameImage = MO.Class.create(MO.FImage);
+   o._frameImage.addLoadListener(o, o.onImageLoad);
+   o._frameImage.loadUrl('{eai.resource}/show1019/frame.png');
+   o._displayImage = MO.Class.create(MO.FImage);
+   o._displayImage.addLoadListener(o, o.onImageLoad);
+   o._displayImage.loadUrl(data.displayImageUrl);
+   o._startRotateY = data.latitude * (Math.PI / 180);
+}
+MO.FGuiFloatingFrame_onImageLoad = function FGuiFloatingFrame_onImageLoad() {
+   var o = this;
+   if (--o._imageCount == 0) {
+      o._ready = true;
+   }
+}
+MO.FGuiFloatingFrame_onPaintBegin = function FGuiFloatingFrame_onPaintBegin(event) {
+   var o = this;
+   if (!o._ready) {
+      return;
+   }
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
+   var graphic = event.graphic;
+   var rectangle = o._clientRectangle;
+   var hCenter = rectangle.left + rectangle.width / 2;
+   var displaySize = o._displayImage.size();
+   var frameSize = o._frameImage.size();
+   graphic.drawImage(o._displayImage, rectangle.left + 75, rectangle.top + 60, rectangle.width - 140, rectangle.height - 125);
+   graphic.drawImage(o._frameImage, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+}
+MO.FGuiFloatingFrame_floatingAnime = function FGuiFloatingFrame_floatingAnime(radianY) {
+   o = this;
+}
+MO.FGuiFloatingFrame_dispose = function FGuiFloatingFrame_dispose() {
+   var o = this;
+   o.__base.FGuiControl.dispose.call(o);
+}
+MO.FEaiChartSesameFinancialScene = function FEaiChartSesameFinancialScene(o) {
+   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
+   o._code                     = MO.EEaiScene.ChartCustomer;
+   o._processor                = MO.Class.register(o, new MO.AGetter('_processor'));
+   o._processorCurrent         = 0;
+   o._ready                    = false;
+   o._mapReady                 = false;
+   o._playing                  = false;
+   o._lastTick                 = 0;
+   o._interval                 = 10;
+   o._logoBar                  = null;
+   o._timeline                 = null;
+   o._provinceTable            = null;
+   o._statusStart              = false;
+   o._statusLayerCount         = 100;
+   o._statusLayerLevel         = 100;
+   o.onOperationDown           = MO.FEaiChartSesameFinancialScene_onOperationDown;
+   o.on24HDataChanged          = MO.FEaiChartSesameFinancialScene_on24HDataChanged;
+   o.onInfoProvinceDataChanged = MO.FEaiChartSesameFinancialScene_onInfoProvinceDataChanged;
+   o.onOperationVisibility     = MO.FEaiChartSesameFinancialScene_onOperationVisibility;
+   o.onProcessReady            = MO.FEaiChartSesameFinancialScene_onProcessReady;
+   o.onProcess                 = MO.FEaiChartSesameFinancialScene_onProcess;
+   o.onSwitchProcess           = MO.FEaiChartSesameFinancialScene_onSwitchProcess;
+   o.onSwitchComplete          = MO.FEaiChartSesameFinancialScene_onSwitchComplete;
+   o.setup                     = MO.FEaiChartSesameFinancialScene_setup;
+   o.showParticle              = MO.FEaiChartSesameFinancialScene_showParticle;
+   o.showFace                  = MO.FEaiChartSesameFinancialScene_showFace;
+   o.fixMatrix                 = MO.FEaiChartSesameFinancialScene_fixMatrix;
+   o.processResize             = MO.FEaiChartSesameFinancialScene_processResize;
+   return o;
+}
+MO.FEaiChartSesameFinancialScene_onOperationDown = function FEaiChartSesameFinancialScene_onOperationDown(event) {
+   var o = this;
+   o._countryEntity._startTime = 0;
+}
+MO.FEaiChartSesameFinancialScene_on24HDataChanged = function FEaiChartSesameFinancialScene_on24HDataChanged(event) {
+   var o = this;
+   var timeline = o._timeline;
+   timeline.dirty();
+}
+MO.FEaiChartSesameFinancialScene_onInfoProvinceDataChanged = function FEaiChartSesameFinancialScene_onInfoProvinceDataChanged(event) {
+   var o = this;
+   var timeline = o._timeline;
+   var provinces = event.provinces();
+   var count = provinces.count();
+   var customerTotal = 0;
+   for (var i = 0; i < count; i++) {
+      var pInfo = provinces.at(i);
+      customerTotal += pInfo.customerCount();
+   }
+   var investmentDay = o._logoBar.findComponent('investmentDay');
+   investmentDay.setValue(customerTotal.toString());
+   timeline.setInfoProvince(event);
+   timeline.dirty();
+   var table = o._provinceTable;
+   table.setInfoProvince(event);
+   table.setRankUnits();
+   table.dirty();
+}
+MO.FEaiChartSesameFinancialScene_onOperationVisibility = function FEaiChartSesameFinancialScene_onOperationVisibility(event) {
+   var o = this;
+   o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
+   if (event.visibility) {
+      o._groundAutio.play();
+      o._countryEntity._audioMapEnter._hAudio.muted = false;
+   } else {
+      o._groundAutio.pause();
+      o._countryEntity._audioMapEnter._hAudio.muted = true;
+   }
+}
+MO.FEaiChartSesameFinancialScene_onProcessReady = function FEaiChartSesameFinancialScene_onProcessReady() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcessReady.call(o);
+   o._mapEntity.showCity();
+}
+MO.FEaiChartSesameFinancialScene_onProcess = function FEaiChartSesameFinancialScene_onProcess() {
+   var o = this;
+   o.__base.FEaiChartScene.onProcess.call(o);
+   if (!o._statusStart) {
+      if (MO.Window.Browser.capability().soundConfirm) {
+         var iosPlay = document.getElementById('id_ios_play');
+         if (iosPlay) {
+            MO.Window.Html.visibleSet(iosPlay, true);
+         }
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            document.body.removeChild(hLoading);
+         }
+      } else {
+         var hLoading = document.getElementById('id_loading');
+         if (hLoading) {
+            hLoading.style.opacity = o._statusLayerLevel / o._statusLayerCount;
+            o._statusLayerLevel--;
+         }
+         o._statusLayerLevel--;
+      }
+      if (o._statusLayerLevel <= 0) {
+         if (hLoading) {
+            document.body.removeChild(hLoading);
+         }
+         var countryEntity = o._countryEntity;
+         countryEntity.start();
+         o._mapEntity.showCountry(countryEntity);
+         o.processLoaded();
+         o._playing = true;
+         o._statusStart = true;
+      }
+   }
+   if (o._playing) {
+      var countryEntity = o._countryEntity;
+      if (!countryEntity.introAnimeDone()) {
+         countryEntity.process();
+         return;
+      }
+      if (!o._mapReady) {
+         o._guiManager.show();
+         var alphaAction = MO.Class.create(MO.FGuiActionAlpha);
+         alphaAction.setAlphaBegin(0);
+         alphaAction.setAlphaEnd(1);
+         alphaAction.setAlphaInterval(0.01);
+         alphaAction.push(o._guiManager);
+         o._guiManager.mainTimeline().pushAction(alphaAction);
+         o._mapReady = true;
+      }
+      o._processor.process();
+      var logoBar = o._logoBar;
+      var processor = o._processor;
+      if(processor.invementDayCurrent() > 0){
+         var investmentTotal = logoBar.findComponent('investmentTotal');
+         investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
+      }
+      if (o._nowTicker.process()) {
+         var bar = o._logoBar;
+         var date = o._nowDate;
+         date.setNow();
+         var dateControl = bar.findComponent('date');
+         dateControl.setLabel(date.format('YYYY/MM/DD'));
+         var timeControl = bar.findComponent('time');
+         timeControl.setLabel(date.format('HH24:MI'));
+      }
+   }
+}
+MO.FEaiChartSesameFinancialScene_onSwitchProcess = function FEaiChartSesameFinancialScene_onSwitchProcess(event) {
+   var o = this;
+}
+MO.FEaiChartSesameFinancialScene_onSwitchComplete = function FEaiChartSesameFinancialScene_onSwitchComplete(event) {
+   var o = this;
+}
+MO.FEaiChartSesameFinancialScene_setup = function FEaiChartSesameFinancialScene_setup() {
+   var o = this;
+   o.__base.FEaiChartScene.setup.call(o);
+   var dataLayer = o._activeStage.dataLayer();
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.statistic.LogoBar');
+   var investmentTotal = frame.findComponent('investmentDay');
+   investmentTotal.setBasicUnitText('人');
+   o._guiManager.register(frame);
+   var invement = o._processor = MO.Class.create(MO.FEaiChartStatMarketerProcessor);
+   invement.linkGraphicContext(o);
+   invement.setMapEntity(o._mapEntity);
+   invement.setup();
+   invement.add24HDataChangedListener(o, o.on24HDataChanged);
+   invement.addInfoProvinceDataChangedListener(o, o.onInfoProvinceDataChanged);
+   var display = invement.display();
+   o.fixMatrix(display.matrix());
+   dataLayer.push(display);
+   var stage = o.activeStage();
+   var timeline = o._timeline = MO.Class.create(MO.FEaiChartStatMarketerBarChart);
+   timeline.setName('Timeline');
+   timeline.linkGraphicContext(o);
+   timeline.build();
+   o._guiManager.register(timeline);
+   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartStatMarketerTable);
+   provinceTable.setName('LiveTable');
+   provinceTable.linkGraphicContext(o);
+   provinceTable.setup();
+   provinceTable.build();
+   o._guiManager.register(provinceTable);
+   o._guiManager.hide();
+   var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
+   entityConsole.cityModule().build(o);
+   var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
+   o._readyLoader.push(countryEntity);
+}
+MO.FEaiChartSesameFinancialScene_showParticle = function FEaiChartSesameFinancialScene_showParticle(provinceEntity, cityResource) {
+   var o = this;
+   var particle = o._particle;
+   var location = cityResource.location();
+   var count = 4;
+   particle.color().set(1, 1, 0, 1);
+   for (var i = 0; i < count; i++) {
+      var itemCount = parseInt(Math.random() * 100);
+      var attenuation = Math.random();
+      particle.setItemCount(itemCount);
+      particle.position().assign(location);
+      particle.position().z = provinceEntity.currentZ();
+      particle.setDelay(10 * i);
+      particle.setSpeed(4 + 0.4 * i);
+      particle.setAcceleration(0);
+      particle.setAttenuation(0.8);
+      particle.start();
+   }
+}
+MO.FEaiChartSesameFinancialScene_showFace = function FEaiChartSesameFinancialScene_showFace() {
+   var o = this;
+   o._statusStart = true;
+   o._playing = true;
+   o._mapReady = false;
+   o._mapEntity.reset();
+   var desktop = o._application.desktop();
+   desktop.show();
+   o.processResize();
+}
+MO.FEaiChartSesameFinancialScene_fixMatrix = function FEaiChartSesameFinancialScene_fixMatrix(matrix) {
+   var o = this;
+   var isVertical = MO.Window.Browser.isOrientationVertical()
+   if (isVertical) {
+      matrix.tx = -14.58;
+      matrix.ty = -1.9;
+      matrix.tz = 0;
+      matrix.setScale(0.14, 0.16, 0.14);
+   } else {
+      matrix.tx = -34.9;
+      matrix.ty = -10.9;
+      matrix.tz = 0;
+      matrix.setScale(0.28, 0.31, 0.28);
+   }
+   matrix.update();
+}
+MO.FEaiChartSesameFinancialScene_processResize = function FEaiChartSesameFinancialScene_processResize() {
+   var o = this;
+   o.__base.FEaiChartScene.processResize.call(o);
+   var isVertical = MO.Window.Browser.isOrientationVertical()
+   o.fixMatrix(o._processor.display().matrix());
+   var logoBar = o._logoBar;
+   if (isVertical) {
+      logoBar.setLocation(8, 8);
+      logoBar.setScale(0.85, 0.85);
+   } else {
+      logoBar.setLocation(5, 5);
+      logoBar.setScale(0.9, 0.9);
+   }
+   var control = o._southSea;
+   if (isVertical) {
+      control.setDockCd(MO.EUiDock.RightTop);
+      control.setTop(570);
+      control.setRight(100);
+   } else {
+      control.setDockCd(MO.EUiDock.RightBottom);
+      control.setRight(660);
+      control.setBottom(280);
+   }
+   var timeline = o._timeline;
+   if (isVertical) {
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(10);
+      timeline.setRight(10);
+      timeline.setBottom(920);
+      timeline.setHeight(250);
+   } else {
+      timeline.setDockCd(MO.EUiDock.Bottom);
+      timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+      timeline.setLeft(20);
+      timeline.setBottom(30);
+      timeline.setRight(660);
+      timeline.setHeight(250);
+   }
+   var provinceTable = o._provinceTable;
+   if (isVertical) {
+      provinceTable.setDockCd(MO.EUiDock.Bottom);
+      provinceTable.setAnchorCd(MO.EUiAnchor.All);
+      provinceTable.setLeft(10);
+      provinceTable.setRight(10);
+      provinceTable.setBottom(10);
+      provinceTable.setWidth(1060);
+      provinceTable.setHeight(900);
+   } else {
+      provinceTable.setDockCd(MO.EUiDock.Right);
+      provinceTable.setAnchorCd(MO.EUiAnchor.All);
+      provinceTable.setTop(10);
+      provinceTable.setRight(0);
+      provinceTable.setBottom(10);
+      provinceTable.setWidth(640);
+   }
 }
 MO.FEaiChapter = function FEaiChapter(o){
    o = MO.Class.inherits(this, o, MO.FChapter);
@@ -20084,6 +21141,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneWorld              = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
    o._sceneSales              = MO.Class.register(o, new MO.AGetter('_sceneSales'));
    o._sceneShow1019           = MO.Class.register(o, new MO.AGetter('_sceneShow1019'));
+   o._sceneSesameFinancial         = MO.Class.register(o, new MO.AGetter('_sceneSesameFinancial'));
    o.construct                = MO.FEaiChartChapter_construct;
    o.createScene              = MO.FEaiChartChapter_createScene;
    o.process                  = MO.FEaiChartChapter_process;
@@ -20123,13 +21181,16 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
          scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
          break;
       case MO.EEaiScene.ChartStatisticsMarketer:
-         scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartStatMarketerScene);
+         scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartSesameFinancialScene);
          break;
       case MO.EEaiScene.ChartPerformenceMarketer:
          scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartPerfMarketerScene);
          break;
       case MO.EEaiScene.ChartShow1019:
          scene = o._sceneShow1019 = MO.Class.create(MO.FEaiChartShow1019Scene);
+         break;
+      case MO.EEaiScene.ChartSesameFinancial:
+         scene = o._sceneSesameFinancial = MO.Class.create(MO.FEaiChartSesameFinancialScene);
          break;
    }
    scene.linkGraphicContext(o);
@@ -20220,6 +21281,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
+   effectConsole.register('general.color.eai.earth.flat', MO.FEaiEarthFlatEffect);
    effectConsole.register('general.view.automatic', MO.FE3dSphereViewAutomaticEffect);
    effectConsole.register('general.view.result.automatic', MO.FE3dSphereViewResultEffect);
    return true;
@@ -20263,11 +21325,15 @@ MO.FEaiChartApplication_onLoadGround = function FEaiChartApplication_onLoadGroun
 MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(event){
    var o = this;
    var canvas = o._desktop.canvas3d();
-   var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
-   bitmap._optionSelect = false;
-   bitmap.loadUrl(o._backgroundUrl);
-   bitmap.material().info().effectCode = 'fill';
-   bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
+   if(o._backgroundUrl){
+      var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
+      bitmap._optionSelect = false;
+      bitmap.loadUrl(o._backgroundUrl);
+      bitmap.material().info().effectCode = 'fill';
+      bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
+   }else{
+      o.onLoadGround(event);
+   }
 }
 MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
    var o = this;
@@ -20390,7 +21456,7 @@ MO.FEaiFlatCanvas_setPanel = function FEaiFlatCanvas_setPanel(hPanel){
 }
 MO.FEaiFlatCanvas_dispose = function FEaiFlatCanvas_dispose(){
    var o = this;
-   o._cameraPosition = RObject.dispose(o._cameraPosition);
+   o._cameraPosition = MO.Lang.Object.dispose(o._cameraPosition);
    o.__base.FEaiCanvas.dispose.call(o);
 }
 MO.FEaiPlatformApplication = function FEaiPlatformApplication(o){

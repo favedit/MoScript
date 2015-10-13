@@ -1,5 +1,6 @@
 MO.AListener = function AListener(name, linker){
    var o = this;
+   MO.Assert.debugNotEmpty(name);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    if(linker == null){
@@ -2129,6 +2130,16 @@ MO.TXmlNode_xml = function TXmlNode_xml(){
 MO.TXmlNode_toString = function TXmlNode_toString(){
    return this.xml().toString();
 }
+MO.FBinarySocket = function FBinarySocket(o){
+   o = MO.Class.inherits(this, o, MO.FSocket);
+   o.connect = MO.FBinarySocket_connect;
+   return o;
+}
+MO.FBinarySocket_connect = function FBinarySocket_connect(url){
+   var o = this;
+   o.__base.FSocket.connect.call(o, url);
+   o._handle.binaryType = "arraybuffer" ;
+}
 MO.FBufferedSocket = function FBufferedSocket(o){
    o = MO.Class.inherits(this, o, MO.FSocket);
    o._bufferSends    = MO.Class.register(o, new MO.AGetter('_bufferSends'));
@@ -2497,7 +2508,6 @@ MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
 }
 MO.FSocket_onError = function FSocket_onError(event){
    var o = this;
-   debugger
    var event = o._eventError;
    o.processErrorListener(event);
 }
@@ -2513,8 +2523,9 @@ MO.FSocket_construct = function FSocket_construct(){
    o._eventClose = new MO.SEvent(o);
    o._eventError = new MO.SEvent(o);
 }
-MO.FSocket_connect = function FSocket_connect(url){
+MO.FSocket_connect = function FSocket_connect(uri){
    var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;
@@ -3338,8 +3349,8 @@ MO.FTagContext_resetSource = function FTagContext_resetSource(p){
 }
 MO.FTagContext_dispose = function FTagContext_dispose(){
    var o = this;
-   o._attributes = RObject.dispose(o._attributes);
-   o._source = RObject.dispose(o._source);
+   o._attributes = MO.Lang.Object.dispose(o._attributes);
+   o._source = MO.Lang.Object.dispose(o._source);
    o.__base.FObject.dispose.call(o);
 }
 MO.FTagDocument = function FTagDocument(o){
@@ -3971,6 +3982,7 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
+   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -4622,7 +4634,7 @@ MO.FThreadConsole = function FThreadConsole(o){
    o._scopeCd     = MO.EScope.Global;
    o._active      = true;
    o._requestFlag = false;
-   o._interval    = 8;
+   o._interval    = 5;
    o._threads     = MO.Class.register(o, new MO.AGetter('_threads'));
    o._hIntervalId = null;
    o.ohInterval   = MO.FThreadConsole_ohInterval;

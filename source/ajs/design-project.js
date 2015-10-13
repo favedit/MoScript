@@ -446,9 +446,9 @@ with(MO){
    }
    MO.FDsProjectCatalogContent_dispose = function FDsProjectCatalogContent_dispose(){
       var o = this;
-      o._displays = RObject.dispose(o._displays);
-      o._renderables = RObject.dispose(o._renderables);
-      o._materials = RObject.dispose(o._materials);
+      o._displays = MO.Lang.Object.dispose(o._displays);
+      o._renderables = MO.Lang.Object.dispose(o._renderables);
+      o._materials = MO.Lang.Object.dispose(o._materials);
       o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }
@@ -1129,7 +1129,7 @@ with(MO){
    }
    MO.FDsProjectPropertyContent_dispose = function FDsProjectPropertyContent_dispose(){
       var o = this;
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsCanvas.dispose.call(o);
    }
 }
@@ -1400,9 +1400,9 @@ with(MO){
    }
    MO.FDsProjectSceneCatalogContent_dispose = function FDsProjectSceneCatalogContent_dispose(){
       var o = this;
-      o._displays = RObject.dispose(o._displays);
-      o._renderables = RObject.dispose(o._renderables);
-      o._materials = RObject.dispose(o._materials);
+      o._displays = MO.Lang.Object.dispose(o._displays);
+      o._renderables = MO.Lang.Object.dispose(o._renderables);
+      o._materials = MO.Lang.Object.dispose(o._materials);
       o.__base.FDuiDataTreeView.dispose.call(o);
    }
 }

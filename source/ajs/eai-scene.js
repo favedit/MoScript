@@ -799,7 +799,9 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       o._guiManager.register(control);
    }
    var backgroundImage = o._application._groundBitmap;
-   stage.groundLayer().push(backgroundImage);
+   if(backgroundImage){
+      stage.groundLayer().push(backgroundImage);
+   }
 }
 MO.FEaiChartScene_active = function FEaiChartScene_active(){
    var o = this;
@@ -824,8 +826,8 @@ MO.FEaiChartScene_deactive = function FEaiChartScene_deactive(){
 }
 MO.FEaiChartScene_dispose = function FEaiChartScene_dispose(){
    var o = this;
-   o._nowDate = RObject.dispose(o._nowDate);
-   o._nowTicker = RObject.dispose(o._nowTicker);
+   o._nowDate = MO.Lang.Object.dispose(o._nowDate);
+   o._nowTicker = MO.Lang.Object.dispose(o._nowTicker);
    o._mapEntity = null;
    o.__base.FEaiScene.dispose.call(o);
 }

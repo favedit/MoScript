@@ -36,6 +36,8 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawBorder           = MO.FG2dCanvasContext_drawBorder;
    o.fillRectangle        = MO.FG2dCanvasContext_fillRectangle;
    o.toBytes              = MO.FG2dCanvasContext_toBytes;
+   o.saveFile             = MO.FG2dCanvasContext_saveFile;
+   o.dispose              = MO.FG2dCanvasContext_dispose;
    return o;
 }
 MO.FG2dCanvasContext_construct = function FG2dCanvasContext_construct() {
@@ -322,4 +324,29 @@ MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
    var o = this;
    var size = o._size;
    return o._handle.getImageData(0, 0, size.width, size.height);
+}
+MO.FG2dCanvasContext_saveFile = function FG2dCanvasContext_saveFile(fileName, extention){
+   var o = this;
+   var handle = context2d._handle;
+   var hCanvas = handle.canvas;
+   var imageUrl = hCanvas.toDataURL("image/" + extention);
+   var link = document.createElement('A');
+   var event = document.createEvent("MouseEvents");
+   event.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+   link.download = fileName;
+   link.href = imageUrl;
+   link.dispatchEvent(event);
+}
+MO.FG2dCanvasContext_dispose = function FG2dCanvasContext_dispose() {
+   var o = this;
+   o._handle = null;
+   o._gridSourceX = null;
+   o._gridSourceY = null;
+   o._gridSourceWidth = null;
+   o._gridSourceHeight = null;
+   o._gridDrawX = null;
+   o._gridDrawY = null;
+   o._gridDrawWidth = null;
+   o._gridDrawHeight = null;
+   o.__base.FG2dContext.dispose.call(o);
 }

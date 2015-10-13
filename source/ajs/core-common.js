@@ -1564,6 +1564,16 @@ MO.TXmlNode_xml = function TXmlNode_xml(){
 MO.TXmlNode_toString = function TXmlNode_toString(){
    return this.xml().toString();
 }
+MO.FBinarySocket = function FBinarySocket(o){
+   o = MO.Class.inherits(this, o, MO.FSocket);
+   o.connect = MO.FBinarySocket_connect;
+   return o;
+}
+MO.FBinarySocket_connect = function FBinarySocket_connect(url){
+   var o = this;
+   o.__base.FSocket.connect.call(o, url);
+   o._handle.binaryType = "arraybuffer" ;
+}
 MO.FBufferedSocket = function FBufferedSocket(o){
    o = MO.Class.inherits(this, o, MO.FSocket);
    o._bufferSends    = MO.Class.register(o, new MO.AGetter('_bufferSends'));
@@ -1932,7 +1942,6 @@ MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
 }
 MO.FSocket_onError = function FSocket_onError(event){
    var o = this;
-   debugger
    var event = o._eventError;
    o.processErrorListener(event);
 }
@@ -1948,8 +1957,9 @@ MO.FSocket_construct = function FSocket_construct(){
    o._eventClose = new MO.SEvent(o);
    o._eventError = new MO.SEvent(o);
 }
-MO.FSocket_connect = function FSocket_connect(url){
+MO.FSocket_connect = function FSocket_connect(uri){
    var o = this;
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;

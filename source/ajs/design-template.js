@@ -154,7 +154,7 @@ with(MO){
    }
    MO.FDsTemplateCanvasContent_dispose = function FDsTemplateCanvasContent_dispose(){
       var o = this;
-     o._rotation = RObject.dispose(o._rotation);
+     o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsSpaceCanvas.dispose.call(o);
    }
 }

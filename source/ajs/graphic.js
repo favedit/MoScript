@@ -4,6 +4,16 @@ MO.EGraphicError = new function EGraphicError(){
    o.UnsupportWebGL = 'unsupport.webgL';
    return o;
 }
+MO.EGraphicQuality = new function EGraphicQuality(){
+   var o = this;
+   o.Lowest  = 'lowest';
+   o.Low     = 'low';
+   o.Middle  = 'middle';
+   o.High    = 'high';
+   o.Highest = 'highest';
+   o.Auto    = 'auto';
+   return o;
+}
 MO.MCanvasObject = function MCanvasObject(o){
    o = MO.Class.inherits(this, o);
    o.htmlCanvas = MO.Method.virtual(o, 'htmlCanvas');
@@ -25,6 +35,7 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
+   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;

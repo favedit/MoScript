@@ -22,6 +22,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneWorld              = MO.Class.register(o, new MO.AGetter('_sceneWorld'));
    o._sceneSales              = MO.Class.register(o, new MO.AGetter('_sceneSales'));
    o._sceneShow1019           = MO.Class.register(o, new MO.AGetter('_sceneShow1019'));
+   o._sceneSesameFinancial         = MO.Class.register(o, new MO.AGetter('_sceneSesameFinancial'));
    o.construct                = MO.FEaiChartChapter_construct;
    o.createScene              = MO.FEaiChartChapter_createScene;
    o.process                  = MO.FEaiChartChapter_process;
@@ -61,13 +62,16 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
          scene = o._scenePerformence = MO.Class.create(MO.FEaiChartPerformenceScene);
          break;
       case MO.EEaiScene.ChartStatisticsMarketer:
-         scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartStatMarketerScene);
+         scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartSesameFinancialScene);
          break;
       case MO.EEaiScene.ChartPerformenceMarketer:
          scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartPerfMarketerScene);
          break;
       case MO.EEaiScene.ChartShow1019:
          scene = o._sceneShow1019 = MO.Class.create(MO.FEaiChartShow1019Scene);
+         break;
+      case MO.EEaiScene.ChartSesameFinancial:
+         scene = o._sceneSesameFinancial = MO.Class.create(MO.FEaiChartSesameFinancialScene);
          break;
    }
    scene.linkGraphicContext(o);

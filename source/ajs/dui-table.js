@@ -967,6 +967,7 @@ MO.FDuiColumn_onEditBegin = function FDuiColumn_onEditBegin(editor) {
    o.table.editRow = row;
    o.table.editColumn = o;
    o.table.select(row, true);
+   MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
 }
 MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
    var o = this;
@@ -976,6 +977,7 @@ MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
    o.setText(row, text);
    o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
    o.editor = null;
+   MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
 }
 MO.FDuiColumn_onEditChanged = function FDuiColumn_onEditChanged(cell) {
    cell.row.refresh();
@@ -1864,6 +1866,7 @@ MO.FDuiGridControl_pushRow = function FDuiGridControl_pushRow(row){
 }
 MO.FDuiGridControl_removeRow = function FDuiGridControl_removeRow(row){
    var o = this;
+   MO.Assert.debugNotNull(row);
    o.dropRow(row);
    o._rows.remove(row);
 }

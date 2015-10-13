@@ -481,7 +481,7 @@ with(MO){
       url = RBrowser.urlEncode(url);
       var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
-      o._fileReader = RObject.dispose(reader);
+      o._fileReader = MO.Lang.Object.dispose(reader);
    }
    MO.FDsMaterialImportDialog_onConfirmLoad = function FDsMaterialImportDialog_onConfirmLoad(event){
       var o = this;
@@ -815,7 +815,7 @@ with(MO){
       url = RBrowser.urlEncode(url);
       var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
-      o._fileReader = RObject.dispose(reader);
+      o._fileReader = MO.Lang.Object.dispose(reader);
    }
    MO.FDsMaterialSelectDialog_onConfirmLoad = function FDsMaterialSelectDialog_onConfirmLoad(event){
       var o = this;

@@ -45,6 +45,6 @@ MO.FEntityConsole_loadEntity = function FEntityConsole_loadEntity(entity){
 }
 MO.FEntityConsole_dispose = function FEntityConsole_dispose(){
    var o = this;
-   o._looperLoad = RObject.dispose(o._looperLoad);
+   o._looperLoad = MO.Lang.Object.dispose(o._looperLoad);
    o.__base.FConsole.dispose.call(o);
 }

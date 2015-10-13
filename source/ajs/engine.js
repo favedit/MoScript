@@ -81,6 +81,23 @@ MO.MEventDispatcher_dispatcherEvent = function MEventDispatcher_dispatcherEvent(
          throw new MO.TError('Unknown event type.');
    }
 }
+MO.MProcessReady = function MProcessReady(o){
+   o = MO.Class.inherits(this, o);
+   o._readyLoader   = MO.Class.register(o, new MO.AGetter('_readyLoader'));
+   o.onProcessReady = MO.Method.empty;
+   o.construct      = MO.MFrameProcessor_construct;
+   o.dispose        = MO.MFrameProcessor_dispose;
+   return o;
+}
+MO.MFrameProcessor_construct = function MFrameProcessor_construct(){
+   var o = this;
+   var loader = o._readyLoader = MO.Class.create(MO.FReadyLoader);
+   loader.addChangeListener(o, o.onProcessReady);
+}
+MO.MFrameProcessor_dispose = function MFrameProcessor_dispose(){
+   var o = this;
+   o._readyLoader = MO.Lang.Object.dispose(o._readyLoader);
+}
 MO.MReady = function MReady(o){
    o = MO.Class.inherits(this, o);
    o.testReady = MO.Method.virtual(o, 'testReady');
@@ -352,10 +369,12 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
+   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
+   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_processEvent = function FDesktop_processEvent(event){
@@ -1069,3 +1088,4 @@ MO.RStage.prototype.start = function RStage_start(interval){
    o._started = true;
 }
 MO.RStage = new MO.RStage();
+MO.Stage = MO.RStage;

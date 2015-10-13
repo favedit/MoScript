@@ -7,6 +7,7 @@ MO.FEaiCity3dEntity = function FEaiCity3dEntity(o){
    o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
    o._range                  = MO.Class.register(o, new MO.AGetter('_range'), 1);
    o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
+   o._normalScale            = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
    o._cityTotal              = 0;
    o._investmentCount        = 0;
    o._investmentTotal        = MO.Class.register(o, new MO.AGetSet('_investmentTotal'), 0);
@@ -306,6 +307,7 @@ MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(ca
 }
 MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
    var code = entity.data().code();
+   MO.Assert.debugNotEmpty(code);
    this._citys.set(code, entity);
 }
 MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context, clazz){
@@ -343,6 +345,7 @@ MO.FEaiCityEntityModule_dispose = function FEaiCityEntityModule_dispose(monitor)
 }
 MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
+   o._normalScale             = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
    o._enterSELoaded           = false;
    o._enterSEPlaying          = false;
    o._cameraDirection         = MO.Class.register(o, new MO.AGetSet('_cameraDirection'));
@@ -378,14 +381,12 @@ MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o._cameraTo                = MO.Class.register(o, new MO.AGetSet('_cameraTo'));
    o._audioContext            = null;
    o._audioMapEnter           = null;
-   o.onOrganizationFetch      = MO.FEaiCountry3dEntity_onOrganizationFetch;
-   o.onMouseMove              = MO.FEaiCountry3dEntity_onMouseMove;
-   o.onMouseDown              = MO.FEaiCountry3dEntity_onMouseDown;
    o.construct                = MO.FEaiCountry3dEntity_construct;
    o.setup                    = MO.FEaiCountry3dEntity_setup;
    o.build                    = MO.FEaiCountry3dEntity_build;
    o.provinceShowOrderSort    = MO.FEaiCountry3dEntity_provinceShowOrderSort;
    o.setupProvinces           = MO.FEaiCountry3dEntity_setupProvinces;
+   o.findProvince             = MO.FEaiCountry3dEntity_findProvince;
    o.loadData                 = MO.FEaiCountry3dEntity_loadData;
    o.loadResource             = MO.FEaiCountry3dEntity_loadResource;
    o.start                    = MO.FEaiCountry3dEntity_start;
@@ -393,7 +394,6 @@ MO.FEaiCountry3dEntity = function FEaiCountry3dEntity(o){
    o.processLoad              = MO.FEaiCountry3dEntity_processLoad;
    o.introAnime               = MO.FEaiCountry3dEntity_introAnime;
    o.mouseOverFallAnime       = MO.FEaiCountry3dEntity_mouseOverFallAnime;
-   o.cameraMoveAnime          = MO.FEaiCountry3dEntity_cameraMoveAnime;
    o.isReady                  = MO.FEaiCountry3dEntity_isReady;
    o.dispose                  = MO.FEaiCountry3dEntity_dispose;
    return o;
@@ -408,6 +408,7 @@ MO.FEaiCountry3dEntity_construct = function FEaiCountry3dEntity_construct(){
 MO.FEaiCountry3dEntity_setup = function FEaiCountry3dEntity_setup() {
    var o = this;
    var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
+   shape._name = 'country';
    shape._entity = o;
    shape.linkGraphicContext(o);
 }
@@ -426,16 +427,15 @@ MO.FEaiCountry3dEntity_build = function FEaiCountry3dEntity_build(){
 MO.FEaiCountry3dEntity_setupProvinces = function FEaiCountry3dEntity_setupProvinces() {
    var o = this;
    var provinceEntities = o._provinceEntities;
-   for (var i = 0; i < provinceEntities.count(); i++) {
-      var provinceEntity = provinceEntities.at(i);
-      var fr = provinceEntity.faceRenderable();
-      var br = provinceEntity.borderRenderable();
-   }
-   var provinceArray = o._provinceArray = new Array(provinceEntities.count());
-   for (var i = 0; i < provinceEntities.count() ; i++) {
+   var count = provinceEntities.count();
+   var provinceArray = o._provinceArray = new Array(count);
+   for(var i = 0; i < count; i++){
       provinceArray[i] = provinceEntities.at(i);
    }
    provinceArray.sort(o.provinceShowOrderSort);
+}
+MO.FEaiCountry3dEntity_findProvince = function FEaiCountry3dEntity_findProvince(code){
+   return this._provinceEntities.get(code);
 }
 MO.FEaiCountry3dEntity_loadData = function FEaiCountry3dEntity_loadData(data){
    var o = this;
@@ -469,13 +469,13 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
    var borderShape = o._borderShape;
    o.loadData(data);
    var provinceModule = MO.Console.find(MO.FEaiResourceConsole).provinceModule();
-   var provinceEntityModule = MO.Console.find(MO.FEaiEntityConsole).provinceModule();
    var provincesData = data.provinces();
    var count = provincesData.count();
    for(var i = 0; i < count; i++){
-      provinceData = provincesData.at(i);
+      var provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
+      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvince3dEntity);
       provinceEntity._countryEntity = o;
       provinceEntity.linkGraphicContext(o);
@@ -484,15 +484,12 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
       provinceEntity.setData(provinceData);
       provinceEntity.build(o);
       provinceEntities.set(provinceCode, provinceEntity);
-      provinceEntityModule.push(provinceEntity);
       var boundaryShape = provinceEntity.boundaryShape();
       faceShape.pushMergeRenderable(boundaryShape.faceRenderable());
       borderShape.pushMergeRenderable(boundaryShape.borderRenderable());
    }
    faceShape.build();
    borderShape.build();
-   o.setupProvinces(provinceEntities);
-   MO.Console.find(MO.FEaiEntityConsole).cityModule().linkProvinces();
 }
 MO.FEaiCountry3dEntity_isReady = function FEaiCountry3dEntity_isReady() {
    var o = this;
@@ -516,10 +513,14 @@ MO.FEaiCountry3dEntity_start = function FEaiCountry3dEntity_start(){
 }
 MO.FEaiCountry3dEntity_process = function FEaiCountry3dEntity_process() {
    var o = this;
-   if (!o._provinceEntities) {
-      return;
+   var provinceEntities = o._provinceEntities;
+   if(provinceEntities){
+      var count = provinceEntities.count();
+      for(var i = 0; i < count; i++){
+         var provinceEntity = provinceEntities.at(i);
+         provinceEntity.process();
+      }
    }
-   o.introAnime();
 }
 MO.FEaiCountry3dEntity_processLoad = function FEaiCountry3dEntity_processLoad(){
    var o = this;
@@ -530,68 +531,6 @@ MO.FEaiCountry3dEntity_processLoad = function FEaiCountry3dEntity_processLoad(){
       return true;
    }
    return false;
-}
-MO.FEaiCountry3dEntity_introAnime = function FEaiCountry3dEntity_introAnime() {
-   var o = this;
-   var now = MO.Timer.current();
-   var timePassed = now - o._startTime;
-   if (timePassed < o.startDelay()) {
-      return;
-   }
-   else {
-      timePassed -= o.startDelay();
-      if (timePassed > o.riseDuration() + o.fallDuration() + o.blockInterval() * o._provinceEntities.count()) {
-         o.setIntroAnimeDone(true);
-         var listener = new MO.TListener();
-         listener._owner = this;
-         listener._callback = o.onMouseMove;
-         MO.Window.lsnsMouseMove.push(listener);
-         var listener = new MO.TListener();
-         listener._owner = this;
-         listener._callback = o.onMouseDown;
-         MO.Window.lsnsMouseDown.push(listener);
-      }
-   }
-   if (!o._enterSEPlaying) {
-      o._audioMapEnter.play(0);
-      o._enterSEPlaying = true;
-   }
-   var idxCap = timePassed / o.blockInterval();
-   for (var i = 0; i < o._provinceArray.length && i < idxCap; i++) {
-      var fr = o._provinceArray[i].faceRenderable();
-      var br = o._provinceArray[i].borderRenderable();
-      var frm = fr.matrix();
-      var brm = br.matrix();
-      var risePercentage = (timePassed - o.blockInterval() * i) / (o.riseDuration() - i * i);
-      var fallPercentage = 0;
-      if (risePercentage > 1) {
-         risePercentage = 1;
-         fallPercentage = (timePassed - o.blockInterval() * i - (o.riseDuration() - i * i)) / o.fallDuration();
-         if (fallPercentage > 1) {
-            fallPercentage = 1;
-         }
-      }
-      frm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
-      frm.updateForce();
-      brm.tz = o.riseDistance() * (1 - risePercentage) - o.fallDistance() * (1 - fallPercentage);
-      brm.updateForce();
-   }
-   idxCap = idxCap > o._provinceArray.length - 1 ? o._provinceArray.length - 1 : parseInt(idxCap);
-}
-MO.FEaiCountry3dEntity_onMouseMove = function FEaiCountry3dEntity_onMouseMove(event){
-   var o = this;
-}
-MO.FEaiCountry3dEntity_mouseOverFallAnime = function FEaiCountry3dEntity_mouseOverFallAnime() {
-   var o = this;
-}
-MO.FEaiCountry3dEntity_onOrganizationFetch = function FEaiCountry3dEntity_onOrganizationFetch(event) {
-   var o = this;
-}
-MO.FEaiCountry3dEntity_onMouseDown = function FEaiCountry3dEntity_onMouseDown(event){
-   var o = this;
-}
-MO.FEaiCountry3dEntity_cameraMoveAnime = function FEaiCountry3dEntity_cameraMoveAnime() {
-   var o = this;
 }
 MO.FEaiCountry3dEntity_dispose = function FEaiCountry3dEntity_dispose(){
    var o = this;
@@ -740,6 +679,7 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
+      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);
@@ -1226,28 +1166,26 @@ MO.FEaiMapEntityModule_dispose = function FEaiMapEntityModule_dispose(){
 }
 MO.FEaiProvince3dEntity = function FEaiProvince3dEntity(o){
    o = MO.Class.inherits(this, o, MO.FEaiEntity);
-   o._data             = MO.Class.register(o, new MO.AGetSet('_data'));
-   o._outline2         = MO.Class.register(o, new MO.AGetter('_outline2'));
-   o._resource         = MO.Class.register(o, new MO.AGetSet('_resource'));
-   o._boundaryShape    = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
-   o._faceRenderable   = MO.Class.register(o, new MO.AGetter('_faceRenderable'));
-   o._borderRenderable = MO.Class.register(o, new MO.AGetter('_borderRenderable'));
-   o._layerDepth       = 3;
-   o._currentZ         = MO.Class.register(o, new MO.AGetter('_currentZ'), 0);
-   o._focusTick        = 0;
-   o._focusInterval    = 10;
-   o._focusCurrent     = 0;
-   o._focusColor       = null;
-   o._focusCount       = 200;
-   o.construct         = MO.FEaiProvince3dEntity_construct;
-   o.setup             = MO.FEaiProvince3dEntity_setup;
-   o.build             = MO.FEaiProvince3dEntity_build;
-   o.doInvestment      = MO.FEaiProvince3dEntity_doInvestment;
-   o.updateColor       = MO.FEaiProvince3dEntity_updateColor;
-   o.update            = MO.FEaiProvince3dEntity_update;
-   o.process           = MO.FEaiProvince3dEntity_process;
-   o.reset             = MO.FEaiProvince3dEntity_reset;
-   o.dispose           = MO.FEaiProvince3dEntity_dispose;
+   o._data           = MO.Class.register(o, new MO.AGetSet('_data'));
+   o._outline2       = MO.Class.register(o, new MO.AGetter('_outline2'));
+   o._resource       = MO.Class.register(o, new MO.AGetSet('_resource'));
+   o._boundaryShape  = MO.Class.register(o, new MO.AGetter('_boundaryShape'));
+   o._normalScale    = MO.Class.register(o, new MO.AGetSet('_normalScale'), 1);
+   o._normalScaleMax = MO.Class.register(o, new MO.AGetSet('_normalScaleMax'), 1.02);
+   o._layerDepth     = 3;
+   o._focusTick      = 0;
+   o._focusInterval  = 10;
+   o._focusCurrent   = 0;
+   o._focusColor     = null;
+   o._focusCount     = 200;
+   o.construct       = MO.FEaiProvince3dEntity_construct;
+   o.setup           = MO.FEaiProvince3dEntity_setup;
+   o.build           = MO.FEaiProvince3dEntity_build;
+   o.doFocus         = MO.FEaiProvince3dEntity_doFocus;
+   o.updateColor     = MO.FEaiProvince3dEntity_updateColor;
+   o.process         = MO.FEaiProvince3dEntity_process;
+   o.reset           = MO.FEaiProvince3dEntity_reset;
+   o.dispose         = MO.FEaiProvince3dEntity_dispose;
    return o;
 }
 MO.FEaiProvince3dEntity_construct = function FEaiProvince3dEntity_construct(){
@@ -1265,6 +1203,7 @@ MO.FEaiProvince3dEntity_construct = function FEaiProvince3dEntity_construct(){
 MO.FEaiProvince3dEntity_setup = function FEaiProvince3dEntity_setup() {
    var o = this;
    var shape = o._boundaryShape = MO.Class.create(MO.FE3dBoundaryShape3d);
+   shape._name = 'province';
    shape._entity = o;
    shape.setScaleTop(1.01);
    shape.setScaleBottom(0.8);
@@ -1291,47 +1230,38 @@ MO.FEaiProvince3dEntity_build = function FEaiProvince3dEntity_build(context){
       }
    }
    outline.update();
-   shape.faceColor().setHex('#070613');
-   shape.build();
+   shape.build(o._graphicContext);
+   var faceRenderable = shape.faceRenderable();
+   faceRenderable.material().info().effectCode = 'eai.map.face';
+   faceRenderable.color().setHex('#080D19');
+   var borderRenderable = shape.borderRenderable();
+   borderRenderable.color().setHex('#6666FF');
 }
-MO.FEaiProvince3dEntity_doInvestment = function FEaiProvince3dEntity_doInvestment(level, investment){
+MO.FEaiProvince3dEntity_doFocus = function FEaiProvince3dEntity_doFocus(level, investment){
    var o = this;
    o._focusTick = 0;
    o._focusCurrent = o._focusCount;
    o._focusColor = o._focusColors[level];
 }
-MO.FEaiProvince3dEntity_update = function FEaiProvince3dEntity_update(data){
-   var o = this;
-   var investmentTotal = data.investmentTotal();
-   var rate = Math.sqrt(investmentTotal) / 100;
-   if(rate > 255){
-      rate = 255;
-   }
-}
 MO.FEaiProvince3dEntity_updateColor = function FEaiProvince3dEntity_updateColor(rate){
    var o = this;
    var color = o._focusColor;
    var rate = o._focusCurrent / o._focusCount;
-   var red = 0x08 + ((color[0] - 0x08)* rate);
-   var green = 0x0D + ((color[1] - 0x0D)* rate);
-   var blue = 0x19 + ((color[2] - 0x19)* rate);
+   var red = 0x08 + ((color[0] - 0x08) * rate);
+   var green = 0x0D + ((color[1] - 0x0D) * rate);
+   var blue = 0x19 + ((color[2] - 0x19) * rate);
    var alpha = 0xFF;
-   o._faceRenderable.color().set(0, 0, 0, 0);
+   var shape = o._boundaryShape;
+   var faceRenderable = shape.faceRenderable();
+   faceRenderable.color().set(red / 255, green / 255, blue / 255, 1);
 }
 MO.FEaiProvince3dEntity_process = function FEaiProvince3dEntity_process(){
    var o = this;
    if(o._focusCurrent > 0){
       var tick = MO.Timer.current();
       if(tick - o._focusTick > o._focusInterval){
-         var z = o._currentZ = -o._focusCurrent / 60;
-         faceRenderable = o._faceRenderable;
-         matrix = faceRenderable.matrix();
-         matrix.tz = z;
-         matrix.updateForce();
-         borderRenderable = o._borderRenderable;
-         matrix = borderRenderable.matrix();
-         matrix.tz = z;
-         matrix.updateForce();
+         var rate = o._focusCurrent / o._focusCount;
+         o._normalScale = 1 + rate * (o._normalScaleMax - 1);
          o.updateColor(o._focusCurrent);
          o._focusCurrent--;
          o._focusTick = tick;
@@ -1340,7 +1270,7 @@ MO.FEaiProvince3dEntity_process = function FEaiProvince3dEntity_process(){
 }
 MO.FEaiProvince3dEntity_reset = function FEaiProvince3dEntity_reset(){
    var o = this;
-   o._currentZ = 0;
+   o._normalScale = 0;
    o._focusTick = 0;
    o._focusCurrent = 0;
 }
@@ -1675,7 +1605,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.975);
+   sphere.matrix().setScaleAll(0.97);
    sphere.matrix().update();
    sphere.pushTexture(textureOcean, 'diffuse');
    var info = sphere.material().info();
@@ -1689,7 +1619,7 @@ MO.FEaiWorldEntity_setup = function FEaiWorldEntity_setup(){
    sphere.linkGraphicContext(context);
    sphere.setSplitCount(24);
    sphere.setup();
-   sphere.matrix().setScaleAll(0.985);
+   sphere.matrix().setScaleAll(0.98);
    sphere.matrix().update();
    var info = sphere.material().info();
    info.optionAlpha = true;

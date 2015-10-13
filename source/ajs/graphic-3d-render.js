@@ -772,6 +772,7 @@ MO.FG3dRenderTarget = function FG3dRenderTarget(o){
    o._color    = MO.Class.register(o, new MO.AGetter('_color'));
    o._textures = null;
    o.construct = MO.FG3dRenderTarget_construct;
+   o.setQualityCd = MO.FG3dRenderTarget_setQualityCd;
    o.textures  = MO.FG3dRenderTarget_textures;
    o.dispose   = MO.FG3dRenderTarget_dispose;
    return o;
@@ -782,6 +783,29 @@ MO.FG3dRenderTarget_construct = function FG3dRenderTarget_construct(){
    o._size = new MO.SSize2();
    o._color = new MO.SColor4();
    o._color.set(0.0, 0.0, 0.0, 1.0);
+}
+MO.FG3dRenderTarget_setQualityCd = function FG3dRenderTarget_setQualityCd(qualityCd){
+   var o = this;
+   var size = o._size;
+   switch(qualityCd){
+      case MO.EGraphicQuality.Highest:
+         size.set(4096, 4096);
+         break;
+      case MO.EGraphicQuality.High:
+         size.set(2048, 2048);
+         break;
+      case MO.EGraphicQuality.Middle:
+         size.set(1024, 1024);
+         break;
+      case MO.EGraphicQuality.Low:
+         size.set(512, 512);
+         break;
+      case MO.EGraphicQuality.Lowest:
+         size.set(256, 256);
+         break;
+      default:
+         size.set(64, 64);
+   }
 }
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;
@@ -857,6 +881,7 @@ MO.FG3dStatistics_resetFrame = function FG3dStatistics_resetFrame(){
 }
 MO.FG3dTexture = function FG3dTexture(o){
    o = MO.Class.inherits(this, o, MO.FG3dObject);
+   o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
    o._textureCd   = MO.Class.register(o, new MO.AGetter('_textureCd'), MO.EG3dTexture.Unknown);
    o._filterMinCd = MO.Class.register(o, new MO.AGetSet('_filterMinCd'), MO.EG3dSamplerFilter.Linear);
    o._filterMagCd = MO.Class.register(o, new MO.AGetSet('_filterMagCd'), MO.EG3dSamplerFilter.Linear);

@@ -361,7 +361,7 @@ with(MO){
    }
    MO.FDsSystemWorkspace_dispose = function FDsSystemWorkspace_dispose(){
       var o = this;
-      o._frameSets = RObject.dispose(o._frameSets, true);
+      o._frameSets = MO.Lang.Object.dispose(o._frameSets, true);
       o.__base.FDuiWorkspace.dispose.call(o);
    }
 }

@@ -110,6 +110,7 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
+   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -198,7 +199,7 @@ MO.FE3dDisplayContainer_calculateOutline = function FE3dDisplayContainer_calcula
 }
 MO.FE3dDisplayContainer_dispose = function FE3dDisplayContainer_dispose(){
    var o = this;
-   o._materials = RObject.dispose(o._materials);
+   o._materials = MO.Lang.Object.dispose(o._materials);
    o.__base.FDisplayContainer.dispose.call(o);
 }
 MO.FE3dRenderable = function FE3dRenderable(o){
@@ -576,6 +577,7 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('general.color.automatic', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.skin', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.parallax', MO.FE3dGeneralColorAutomaticEffect);
+   effectConsole.register('general.color.video', MO.FE3dGeneralColorVideoEffect);
    effectConsole.register('general.color.skeleton', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton', MO.FE3dGeneralColorSkeletonEffect);

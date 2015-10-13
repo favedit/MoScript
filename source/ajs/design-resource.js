@@ -506,7 +506,7 @@ with(MO){
       url = RBrowser.urlEncode(url);
       var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
-      o._fileReader = RObject.dispose(reader);
+      o._fileReader = MO.Lang.Object.dispose(reader);
    }
    MO.FDsResourceImportDialog_onConfirmLoad = function FDsResourceImportDialog_onConfirmLoad(event){
       var o = this;
@@ -1521,7 +1521,7 @@ with(MO){
    }
    MO.FDsResourcePropertyContent_dispose = function FDsResourcePropertyContent_dispose(){
       var o = this;
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       o.__base.FDsCanvas.dispose.call(o);
    }
 }

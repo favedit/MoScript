@@ -567,6 +567,7 @@ MO.SMatrix3d = function SMatrix3d(){
    o.updateForce    = MO.SMatrix3d_updateForce;
    o.update         = MO.SMatrix3d_update;
    o.merge          = MO.SMatrix3d_merge;
+   o.parse          = MO.SMatrix3d_parse;
    o.serialize      = MO.SMatrix3d_serialize;
    o.unserialize    = MO.SMatrix3d_unserialize;
    o.saveConfig     = MO.SMatrix3d_saveConfig;
@@ -659,7 +660,7 @@ MO.SMatrix3d_assign = function SMatrix3d_assign(p){
    o.sx = p.sx;
    o.sy = p.sy;
    o.sz = p.sz;
-   o.assignData(p._data);
+   return o.assignData(p._data);
 }
 MO.SMatrix3d_attach = function SMatrix3d_attach(p){
    var o = this;
@@ -723,6 +724,288 @@ MO.SMatrix3d_merge = function SMatrix3d_merge(bm, am){
    o.sz = bm.sz * am.sz;
    o.updateForce();
 }
+function my_create() {
+    var out = new Float32Array(16);
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+};
+function my_normalize(out, mat) {
+    var m44 = mat[15]
+    if (m44 === 0)
+        return false
+    var scale = 1 / m44
+    for (var i=0; i<16; i++)
+        out[i] = mat[i] * scale
+    return true
+}
+function my_clone(a) {
+    var out = new Float32Array(16);
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    out[3] = a[3];
+    out[4] = a[4];
+    out[5] = a[5];
+    out[6] = a[6];
+    out[7] = a[7];
+    out[8] = a[8];
+    out[9] = a[9];
+    out[10] = a[10];
+    out[11] = a[11];
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+};
+function my_determinant(a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32;
+    return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+};
+function my_invert(out, a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32,
+        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+    if (!det) {
+        return null;
+    }
+    det = 1.0 / det;
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+    return out;
+};
+function my_transpose(out, a) {
+    if (out === a) {
+        var a01 = a[1], a02 = a[2], a03 = a[3],
+            a12 = a[6], a13 = a[7],
+            a23 = a[11];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a01;
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a02;
+        out[9] = a12;
+        out[11] = a[14];
+        out[12] = a03;
+        out[13] = a13;
+        out[14] = a23;
+    } else {
+        out[0] = a[0];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a[1];
+        out[5] = a[5];
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a[2];
+        out[9] = a[6];
+        out[10] = a[10];
+        out[11] = a[14];
+        out[12] = a[3];
+        out[13] = a[7];
+        out[14] = a[11];
+        out[15] = a[15];
+    }
+    return out;
+};
+function my_vec4multMat4(out, a, m) {
+    var x = a[0], y = a[1], z = a[2], w = a[3];
+    out[0] = m[0] * x + m[4] * y + m[8] * z + m[12] * w;
+    out[1] = m[1] * x + m[5] * y + m[9] * z + m[13] * w;
+    out[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
+    out[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
+    return out;
+}
+function my_mat3from4(out, mat4x4) {
+    out[0][0] = mat4x4[ 0];
+    out[0][1] = mat4x4[ 1];
+    out[0][2] = mat4x4[ 2];
+    out[1][0] = mat4x4[ 4];
+    out[1][1] = mat4x4[ 5];
+    out[1][2] = mat4x4[ 6];
+    out[2][0] = mat4x4[ 8];
+    out[2][1] = mat4x4[ 9];
+    out[2][2] = mat4x4[10];
+}
+function my_combine(out, a, b, scale1, scale2) {
+    out[0] = a[0] * scale1 + b[0] * scale2;
+    out[1] = a[1] * scale1 + b[1] * scale2;
+    out[2] = a[2] * scale1 + b[2] * scale2;
+}
+var vec3 = {
+   length: function length(a) {
+      var x = a[0], y = a[1], z = a[2];
+      return Math.sqrt(x * x + y * y + z * z)
+   },
+   normalize: function normalize(out, a) {
+         var x = a[0], y = a[1], z = a[2];
+         var len = x * x + y * y + z * z
+         if (len > 0) {
+            len = 1 / Math.sqrt(len)
+            out[0] = a[0] * len
+            out[1] = a[1] * len
+            out[2] = a[2] * len
+         }
+         return out
+      },
+   dot: function dot(a, b){
+      return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+   },
+   cross: function cross(out, a, b) {
+      var ax = a[0], ay = a[1], az = a[2], bx = b[0], by = b[1], bz = b[2];
+      out[0] = ay * bz - az * by;
+      out[1] = az * bx - ax * bz;
+      out[2] = ax * by - ay * bx;
+      return out
+   }
+}
+var tmp = my_create()
+var perspectiveMatrix = my_create();
+var tmpVec4 = [0, 0, 0, 0];
+var row = [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ];
+var pdum3 = [0, 0, 0];
+MO.SMatrix3d_parse = function SMatrix3d_parse(translation, scale, skew, perspective, quaternion){
+   var o = this;
+   if(!translation) translation = [0,0,0];
+   if(!scale) scale = [0,0,0];
+   if(!skew) skew = [0,0,0];
+   if(!perspective) perspective = [0,0,0,1];
+   if(!quaternion) quaternion = [0,0,0,1];
+   if(!my_normalize(tmp, o._data)){
+      return false
+   }
+   my_clone(perspectiveMatrix, tmp);
+   perspectiveMatrix[3] = 0
+   perspectiveMatrix[7] = 0
+   perspectiveMatrix[11] = 0
+   perspectiveMatrix[15] = 1
+   if(Math.abs(my_determinant(perspectiveMatrix) < 1e-8)){
+      return false
+   }
+   var a03 = tmp[3], a13 = tmp[7], a23 = tmp[11], a30 = tmp[12], a31 = tmp[13], a32 = tmp[14], a33 = tmp[15];
+   if(a03 !== 0 || a13 !== 0 || a23 !== 0){
+      tmpVec4[0] = a03
+      tmpVec4[1] = a13
+      tmpVec4[2] = a23
+      tmpVec4[3] = a33
+      var ret = my_invert(perspectiveMatrix, perspectiveMatrix);
+      if(!ret){
+         return false
+      }
+      my_transpose(perspectiveMatrix, perspectiveMatrix);
+      my_vec4multMat4(perspective, tmpVec4, perspectiveMatrix);
+   } else {
+      perspective[0] = perspective[1] = perspective[2] = 0
+      perspective[3] = 1
+   }
+   translation[0] = a30;
+   translation[1] = a31;
+   translation[2] = a32;
+   my_mat3from4(row, tmp);
+   scale[0] = vec3.length(row[0]);
+   vec3.normalize(row[0], row[0]);
+   skew[0] = vec3.dot(row[0], row[1]);
+   my_combine(row[1], row[1], row[0], 1.0, -skew[0])
+   scale[1] = vec3.length(row[1])
+   vec3.normalize(row[1], row[1])
+   skew[0] /= scale[1]
+   skew[1] = vec3.dot(row[0], row[2])
+   my_combine(row[2], row[2], row[0], 1.0, -skew[1])
+   skew[2] = vec3.dot(row[1], row[2])
+   my_combine(row[2], row[2], row[1], 1.0, -skew[2])
+   scale[2] = vec3.length(row[2])
+   vec3.normalize(row[2], row[2])
+   skew[1] /= scale[2]
+   skew[2] /= scale[2]
+   vec3.cross(pdum3, row[1], row[2]);
+   if(vec3.dot(row[0], pdum3) < 0){
+      for(var i = 0; i < 3; i++){
+         scale[i] *= -1;
+         row[i][0] *= -1;
+         row[i][1] *= -1;
+         row[i][2] *= -1;
+      }
+   }
+   quaternion[0] = 0.5 * Math.sqrt(Math.max(1 + row[0][0] - row[1][1] - row[2][2], 0))
+   quaternion[1] = 0.5 * Math.sqrt(Math.max(1 - row[0][0] + row[1][1] - row[2][2], 0))
+   quaternion[2] = 0.5 * Math.sqrt(Math.max(1 - row[0][0] - row[1][1] + row[2][2], 0))
+   quaternion[3] = 0.5 * Math.sqrt(Math.max(1 + row[0][0] + row[1][1] + row[2][2], 0))
+   if (row[2][1] > row[1][2])
+      quaternion[0] = -quaternion[0]
+   if (row[0][2] > row[2][0])
+      quaternion[1] = -quaternion[1]
+   if (row[1][0] > row[0][1])
+      quaternion[2] = -quaternion[2]
+   var qx = quaternion[0];
+   var qy = quaternion[1];
+   var qz = quaternion[2];
+   var qw = quaternion[3];
+   o.rx = Math.atan2((qw * qx + qy * qz) * 2, 1 - 2 * (qx * qx + qy * qy));
+   o.ry = Math.asin(2 * (qw * qy - qz * qx));
+   o.rz = Math.atan2((qw * qz + qx * qy) * 2, 1 - 2 * (qy * qy + qz * qz));
+   return true
+}
 MO.SMatrix3d_serialize = function SMatrix3d_serialize(p){
    var o = this;
    p.writeFloat(o.tx);
@@ -766,6 +1049,7 @@ MO.SMatrix3x3 = function SMatrix3x3(){
    o.data            = MO.SMatrix3x3_data;
    o.equalsData      = MO.SMatrix3x3_equalsData;
    o.assignData      = MO.SMatrix3x3_assignData;
+   o.assign4x4       = MO.SMatrix3x3_assign4x4;
    o.appendData      = MO.SMatrix3x3_appendData;
    o.rotationX       = MO.SMatrix3x3_rotationX;
    o.rotationY       = MO.SMatrix3x3_rotationY;
@@ -791,11 +1075,28 @@ MO.SMatrix3x3_equalsData = function SMatrix3x3_equalsData(p){
    }
    return true;
 }
-MO.SMatrix3x3_assignData = function SMatrix3x3_assignData(p){
-   var d = this._data;
+MO.SMatrix3x3_assignData = function SMatrix3x3_assignData(valueData){
+   var o = this;
+   var data = o._data;
    for(var n = 0; n < 9; n++){
-      d[n] = p[n];
+      data[n] = valueData[n];
    }
+   return o;
+}
+MO.SMatrix3x3_assign4x4 = function SMatrix3x3_assign4x4(value){
+   var o = this;
+   var data = o._data;
+   var valueData = value.data();
+   data[0] = valueData[0];
+   data[1] = valueData[1];
+   data[2] = valueData[2];
+   data[3] = valueData[4];
+   data[4] = valueData[5];
+   data[5] = valueData[6];
+   data[6] = valueData[8];
+   data[7] = valueData[9];
+   data[8] = valueData[10];
+   return o;
 }
 MO.SMatrix3x3_appendData = function SMatrix3x3_appendData(p){
    var d = this._data;
@@ -995,7 +1296,9 @@ MO.SMatrix4x4 = function SMatrix4x4(){
    o.addRotationY    = MO.SMatrix4x4_addRotationY;
    o.addRotationZ    = MO.SMatrix4x4_addRotationZ;
    o.addRotation     = MO.SMatrix4x4_addRotation;
+   o.addRotationAxis = MO.SMatrix4x4_addRotationAxis;
    o.addScale        = MO.SMatrix4x4_addScale;
+   o.normalize       = MO.SMatrix4x4_normalize;
    o.invert          = MO.SMatrix4x4_invert;
    o.transform       = MO.SMatrix4x4_transform;
    o.transformPoint3 = MO.SMatrix4x4_transformPoint3;
@@ -1037,11 +1340,13 @@ MO.SMatrix4x4_equalsData = function SMatrix4x4_equalsData(p){
    }
    return true;
 }
-MO.SMatrix4x4_assignData = function SMatrix4x4_assignData(p){
-   var d = this._data;
+MO.SMatrix4x4_assignData = function SMatrix4x4_assignData(values){
+   var o = this;
+   var data = o._data;
    for(var n = 0; n < 16; n++){
-      d[n] = p[n];
+      data[n] = values[n];
    }
+   return o;
 }
 MO.SMatrix4x4_attachData = function SMatrix4x4_attachData(p){
    var r = false;
@@ -1204,6 +1509,34 @@ MO.SMatrix4x4_addRotation = function SMatrix4x4_addRotation(x, y, z){
    v[15] = 1;
    this.appendData(v);
 }
+MO.SMatrix4x4_addRotationAxis = function SMatrix4x4_addRotationAxis(axis, angle){
+   var c = Math.cos(angle);
+   var s = Math.sin(angle);
+   var t = 1 - c;
+   var x = axis.x;
+   var y = axis.y;
+   var z = axis.z;
+   var tx = t * x;
+   var ty = t * y;
+   var v = MO.Lang.Array.array16;
+   v[ 0] = tx * x + c;
+   v[ 1] = tx * y - s * z;
+   v[ 2] = tx * z + s * y;
+   v[ 3] = 0;
+   v[ 4] = tx * y + s * z;
+   v[ 5] = ty * y + c;
+   v[ 6] = ty * z - s * x;
+   v[ 7] = 0;
+   v[ 8] = tx * z - s * y;
+   v[ 9] = ty * z + s * x;
+   v[10] = t * z * z + c;
+   v[11] = 0;
+   v[12] = 0;
+   v[13] = 0;
+   v[14] = 0;
+   v[15] = 1;
+   this.appendData(v);
+}
 MO.SMatrix4x4_addScale = function SMatrix4x4_addScale(x, y, z){
    var v = MO.Lang.Array.array16;
    v[ 0] = x;
@@ -1223,6 +1556,22 @@ MO.SMatrix4x4_addScale = function SMatrix4x4_addScale(x, y, z){
    v[14] = 0;
    v[15] = 1;
    this.appendData(v);
+}
+MO.SMatrix4x4_normalize = function SMatrix4x4_normalize(){
+   var o = this;
+   var data = o._data;
+   var m44 = data[15];
+   if(m44 == 0){
+      return false;
+   }else if(m44 == 1){
+      return true;
+   }else{
+      var scale = 1 / m44
+      for(var i = 0; i < 16; i++){
+         data[i] = data[i] * scale;
+      }
+      return true
+   }
 }
 MO.SMatrix4x4_invert = function SMatrix4x4_invert(){
    var o = this;
@@ -1861,6 +2210,7 @@ MO.SPoint2 = function SPoint2(x, y){
    o.serialize   = MO.SPoint2_serialize;
    o.unserialize = MO.SPoint2_unserialize;
    o.parse       = MO.SPoint2_parse;
+   o.parseFloat  = MO.SPoint2_parseFloat;
    o.toString    = MO.SPoint2_toString;
    o.dispose     = MO.SPoint2_dispose;
    return o;
@@ -1885,6 +2235,16 @@ MO.SPoint2_parse = function SPoint2_parse(source){
       throw new TError(o, "Parse value failure. (value={1})", source);
    }
 }
+MO.SPoint2_parseFloat = function SPoint2_parseFloat(source){
+   var o = this;
+   var items = source.split(',')
+   if(items.length == 2){
+      o.x = parseFloat(items[0]);
+      o.y = parseFloat(items[1]);
+   }else{
+      throw new TError(o, "Parse value failure. (value={1})", source);
+   }
+}
 MO.SPoint2_toString = function SPoint2_toString(){
    var o = this;
    return o.x + ',' + o.y;
@@ -1902,6 +2262,7 @@ MO.SPoint3 = function SPoint3(x, y, z){
    o.mergeMin3 = MO.SPoint3_mergeMin3;
    o.mergeMax  = MO.SPoint3_mergeMax;
    o.mergeMax3 = MO.SPoint3_mergeMax3;
+   o.moveTo    = MO.SPoint3_moveTo;
    o.resize    = MO.SPoint3_resize;
    o.slerp     = MO.SPoint3_slerp;
    return o;
@@ -1954,6 +2315,12 @@ MO.SPoint3_resize = function SPoint3_resize(x, y, z){
    if(z != null){
       o.z += z;
    }
+}
+MO.SPoint3_moveTo = function SPoint3_moveTo(direction, length){
+   var o = this;
+   o.x += direction.x * length;
+   o.y += direction.y * length;
+   o.z += direction.z * length;
 }
 MO.SPoint3_slerp = function SPoint3_slerp(v1, v2, r){
    var o = this;
@@ -2011,12 +2378,12 @@ MO.SQuaternion_identity = function SQuaternion_identity(){
    o.w = 1;
    return o;
 }
-MO.SQuaternion_assign = function SQuaternion_assign(p){
+MO.SQuaternion_assign = function SQuaternion_assign(value){
    var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-   o.w = p.w;
+   o.x = value.x;
+   o.y = value.y;
+   o.z = value.z;
+   o.w = value.w;
 }
 MO.SQuaternion_set = function SQuaternion_set(x, y, z, w){
    var o = this;
@@ -2031,68 +2398,68 @@ MO.SQuaternion_absolute = function SQuaternion_absolute(){
 }
 MO.SQuaternion_normalize = function SQuaternion_normalize(){
    var o = this;
-   var a = o.absolute();
-   if(a != 0){
-      var v = 1 / a;
-      o.x *= v;
-      o.y *= v;
-      o.z *= v;
-      o.w *= v;
+   var value = o.absolute();
+   if(value != 0){
+      var rate = 1 / value;
+      o.x *= rate;
+      o.y *= rate;
+      o.z *= rate;
+      o.w *= rate;
    }
 }
-MO.SQuaternion_conjugate = function SQuaternion_conjugate(p){
+MO.SQuaternion_conjugate = function SQuaternion_conjugate(value){
    var o = this;
-   var r = null;
-   if(p){
-      r = p;
+   var result = null;
+   if(value){
+      result = value;
    }else{
-      r = new MO.SQuaternion();
+      result = new MO.SQuaternion();
    }
-   r.x = -o.x;
-   r.y = -o.y;
-   r.z = -o.z;
-   r.w = o.w;
-   return r;
+   result.x = -o.x;
+   result.y = -o.y;
+   result.z = -o.z;
+   result.w = o.w;
+   return result;
 }
-MO.SQuaternion_mul = function SQuaternion_mul(p){
+MO.SQuaternion_mul = function SQuaternion_mul(value){
    var o = this;
    var x = o.x;
    var y = o.y;
    var z = o.z;
    var w = o.w;
-   o.x = (w * p.x) + (x * p.w) + (y * p.z) - (z * p.y);
-   o.y = (w * p.y) + (y * p.w) + (z * p.x) - (x * p.z);
-   o.z = (w * p.z) + (z * p.w) + (x * p.y) - (y * p.x);
-   o.w = (w * p.w) - (x * p.x) - (y * p.y) - (z * p.z);
+   o.x = (w * value.x) + (x * value.w) + (y * value.z) - (z * value.y);
+   o.y = (w * value.y) + (y * value.w) + (z * value.x) - (x * value.z);
+   o.z = (w * value.z) + (z * value.w) + (x * value.y) - (y * value.x);
+   o.w = (w * value.w) - (x * value.x) - (y * value.y) - (z * value.z);
 }
-MO.SQuaternion_mul2 = function SQuaternion_mul2(p1, p2){
+MO.SQuaternion_mul2 = function SQuaternion_mul2(value1, value2){
    var o = this;
-   o.x = (p1.w * p2.x) + (p1.x * p2.w) + (p1.y * p2.z) - (p1.z * p2.y);
-   o.y = (p1.w * p2.y) + (p1.y * p2.w) + (p1.z * p2.x) - (p1.x * p2.z);
-   o.z = (p1.w * p2.z) + (p1.z * p2.w) + (p1.x * p2.y) - (p1.y * p2.x);
-   o.w = (p1.w * p2.w) - (p1.x * p2.x) - (p1.y * p2.y) - (p1.z * p2.z);
+   o.x = (value1.w * value2.x) + (value1.x * value2.w) + (value1.y * value2.z) - (value1.z * value2.y);
+   o.y = (value1.w * value2.y) + (value1.y * value2.w) + (value1.z * value2.x) - (value1.x * value2.z);
+   o.z = (value1.w * value2.z) + (value1.z * value2.w) + (value1.x * value2.y) - (value1.y * value2.x);
+   o.w = (value1.w * value2.w) - (value1.x * value2.x) - (value1.y * value2.y) - (value1.z * value2.z);
 }
-MO.SQuaternion_translate = function SQuaternion_translate(pi, po){
+MO.SQuaternion_translate = function SQuaternion_translate(input, output){
    var o = this;
    var q1 = new MO.SQuaternion();
-   q1.set(pi.x, pi.y, pi.z, 0);
+   q1.set(input.x, input.y, input.z, 0);
    q1.normalize();
    var q2 = o.conjugate();
    q1.mul(q2);
    var q = o.clone();
    q.mul(q1);
-   var r = null;
-   if(po){
-      r = po;
+   var result = null;
+   if(output){
+      result = output;
    }else{
-      r = new MO.SVector3();
+      result = new MO.SVector3();
    }
-   r.set(q.x, q.y, q.z);
-   return r;
+   result.set(q.x, q.y, q.z);
+   return result;
 }
-MO.SQuaternion_slerp = function SQuaternion_slerp(v1, v2, r){
+MO.SQuaternion_slerp = function SQuaternion_slerp(value1, value2, rate){
    var o = this;
-   var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+   var rv = (value1.x * value2.x) + (value1.y * value2.y) + (value1.z * value2.z) + (value1.w * value2.w);
    var rf = false;
    if (rv < 0){
       rf = true;
@@ -2101,26 +2468,26 @@ MO.SQuaternion_slerp = function SQuaternion_slerp(v1, v2, r){
    var r1 = 0;
    var r2 = 0;
    if(rv > 0.999999){
-      r1 = 1 - r;
-      r2 = rf ? -r : r;
+      r1 = 1 - rate;
+      r2 = rf ? -rate : rate;
    }else{
       var ra = Math.acos(rv);
       var rb = 1 / Math.sin(ra);
-      r1 = Math.sin((1 - r) * ra) * rb;
-      r2 = rf ? (-Math.sin(r * ra) * rb) : (Math.sin(r * ra) * rb);
+      r1 = Math.sin((1 - rate) * ra) * rb;
+      r2 = rf ? (-Math.sin(rate * ra) * rb) : (Math.sin(rate * ra) * rb);
    }
-   o.x = (r1 * v1.x) + (r2 * v2.x);
-   o.y = (r1 * v1.y) + (r2 * v2.y);
-   o.z = (r1 * v1.z) + (r2 * v2.z);
-   o.w = (r1 * v1.w) + (r2 * v2.w);
+   o.x = (r1 * value1.x) + (r2 * value2.x);
+   o.y = (r1 * value1.y) + (r2 * value2.y);
+   o.z = (r1 * value1.z) + (r2 * value2.z);
+   o.w = (r1 * value1.w) + (r2 * value2.w);
 }
-MO.SQuaternion_fromAxisAngle = function SQuaternion_fromAxisAngle(a, g){
+MO.SQuaternion_fromAxisAngle = function SQuaternion_fromAxisAngle(axis, angle){
    var o = this;
-   var r = g * 0.5;
+   var r = angle * 0.5;
    var s = Math.sin(r);
-   o.x = a.x * s;
-   o.y = a.y * s;
-   o.z = a.z * s;
+   o.x = axis.x * s;
+   o.y = axis.y * s;
+   o.z = axis.z * s;
    o.w = Math.cos(r);
 }
 MO.SQuaternion_fromEuler = function SQuaternion_fromEuler(p, y, r){
@@ -2152,28 +2519,28 @@ MO.SQuaternion_parseEuler = function SQuaternion_parseEuler(p){
    r.z = Math.atan2(2 * (o.w * o.z + o.x * o.y) , 1 - 2 * (z2 + x2));
    return r;
 }
-MO.SQuaternion_serialize = function SQuaternion_serialize(p){
+MO.SQuaternion_serialize = function SQuaternion_serialize(output){
    var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
-   p.writeFloat(o.z);
-   p.writeFloat(o.w);
+   output.writeFloat(o.x);
+   output.writeFloat(o.y);
+   output.writeFloat(o.z);
+   output.writeFloat(o.w);
 }
-MO.SQuaternion_unserialize = function SQuaternion_unserialize(p){
+MO.SQuaternion_unserialize = function SQuaternion_unserialize(input){
    var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
-   o.z = p.readFloat();
-   o.w = p.readFloat();
+   o.x = input.readFloat();
+   o.y = input.readFloat();
+   o.z = input.readFloat();
+   o.w = input.readFloat();
 }
 MO.SQuaternion_clone = function SQuaternion_clone(){
    var o = this;
-   var r = new MO.SQuaternion();
-   r.x = o.x;
-   r.y = o.y;
-   r.z = o.z;
-   r.w = o.w;
-   return r;
+   var result = new MO.SQuaternion();
+   result.x = o.x;
+   result.y = o.y;
+   result.z = o.z;
+   result.w = o.w;
+   return result;
 }
 MO.SQuaternion_toString = function SQuaternion_toString(){
    var o = this;
@@ -2604,15 +2971,19 @@ MO.SValue2 = function SValue2(x, y){
    o.setMax       = MO.SValue2_setMax;
    o.set          = MO.SValue2_set;
    o.setAll       = MO.SValue2_setAll;
+   o.add          = MO.SValue2_add;
+   o.mul          = MO.SValue2_mul;
    o.mergeMin     = MO.SValue2_mergeMin;
    o.mergeMin2    = MO.SValue2_mergeMin2;
    o.mergeMax     = MO.SValue2_mergeMax;
    o.mergeMax2    = MO.SValue2_mergeMax2;
-   o.length       = MO.SValue2_absolute;
+   o.length       = MO.SValue2_length;
+   o.length2      = MO.SValue2_length2;
    o.absolute     = MO.SValue2_absolute;
    o.normalize    = MO.SValue2_normalize;
    o.negative     = MO.SValue2_negative;
    o.parse        = MO.SValue2_parse;
+   o.toDisplay    = MO.SValue2_toDisplay;
    o.toString     = MO.SValue2_toString;
    return o;
 }
@@ -2645,6 +3016,14 @@ MO.SValue2_setAll = function SValue2_set(value){
    this.x = value;
    this.y = value;
 }
+MO.SValue2_add = function SValue2_add(x, y){
+   this.x += x;
+   this.y += y;
+}
+MO.SValue2_mul = function SValue2_mul(x, y){
+   this.x *= x;
+   this.y *= y;
+}
 MO.SValue2_normalize = function SValue2_normalize(){
    var value = this.absolute();
    if(value != 0){
@@ -2674,6 +3053,16 @@ MO.SValue2_mergeMax2 = function SValue2_mergeMax2(x, y){
    o.x = Math.max(o.x, x);
    o.y = Math.max(o.y, y);
 }
+MO.SValue2_length = function SValue2_length(value){
+   var cx = this.x - value.x;
+   var cy = this.y - value.y;
+   return Math.sqrt(cx * cx + cy * cy);
+}
+MO.SValue2_length2 = function SValue2_length2(x, y){
+   var cx = this.x - x;
+   var cy = this.y - y;
+   return Math.sqrt(cx * cx + cy * cy);
+}
 MO.SValue2_absolute = function SValue2_absolute(){
    return Math.sqrt((this.x * this.x) + (this.y * this.y));
 }
@@ -2697,6 +3086,12 @@ MO.SValue2_parse = function SValue2_parse(value){
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
 }
+MO.SValue2_toDisplay = function SValue2_toDisplay(){
+   var o = this;
+   var x = MO.Lang.Float.format(o.x);
+   var y = MO.Lang.Float.format(o.y);
+   return x + ',' + y;
+}
 MO.SValue2_toString = function SValue2_toString(){
    return this.x + ',' + this.y;
 }
@@ -2713,7 +3108,10 @@ MO.SValue3 = function SValue3(x, y, z){
    o.setMax       = MO.SValue3_setMax;
    o.set          = MO.SValue3_set;
    o.setAll       = MO.SValue3_setAll;
+   o.add          = MO.SValue3_add;
+   o.mul          = MO.SValue3_mul;
    o.length       = MO.SValue3_absolute;
+   o.lengthTo     = MO.SValue3_lengthTo;
    o.absolute     = MO.SValue3_absolute;
    o.normalize    = MO.SValue3_normalize;
    o.negative     = MO.SValue3_negative;
@@ -2722,6 +3120,7 @@ MO.SValue3 = function SValue3(x, y, z){
    o.unserialize2 = MO.SValue3_unserialize2;
    o.unserialize3 = MO.SValue3_unserialize3;
    o.parse        = MO.SValue3_parse;
+   o.toDisplay    = MO.SValue3_toDisplay;
    o.toString     = MO.SValue3_toString;
    return o;
 }
@@ -2759,6 +3158,16 @@ MO.SValue3_setAll = function SValue3_set(value){
    this.y = value;
    this.z = value;
 }
+MO.SValue3_add = function SValue3_add(x, y, z, w){
+   this.x += x;
+   this.y += y;
+   this.z += z;
+}
+MO.SValue3_mul = function SValue3_mul(x, y, z, w){
+   this.x *= x;
+   this.y *= y;
+   this.z *= z;
+}
 MO.SValue3_normalize = function SValue3_normalize(){
    var value = this.absolute();
    if(value != 0){
@@ -2768,6 +3177,13 @@ MO.SValue3_normalize = function SValue3_normalize(){
       this.z *= rate;
    }
    return this;
+}
+MO.SValue3_lengthTo = function SValue3_lengthTo(x, y, z){
+   var o = this;
+   var cx = o.x - x;
+   var cy = o.y - y;
+   var cz = o.z - z;
+   return Math.sqrt((cx * cx) + (cy * cy) + (cz * cz));
 }
 MO.SValue3_absolute = function SValue3_absolute(){
    return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z));
@@ -2808,6 +3224,13 @@ MO.SValue3_parse = function SValue3_parse(value){
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
 }
+MO.SValue3_toDisplay = function SValue3_toDisplay(){
+   var o = this;
+   var x = MO.Lang.Float.format(o.x);
+   var y = MO.Lang.Float.format(o.y);
+   var z = MO.Lang.Float.format(o.z);
+   return x + ',' + y + ',' + z;
+}
 MO.SValue3_toString = function SValue3_toString(){
    return this.x + ',' + this.y + ',' + this.z;
 }
@@ -2819,12 +3242,15 @@ MO.SValue4 = function SValue4(x, y, z, w){
    o.w           = MO.Runtime.nvl(w, 1);
    o.assign      = MO.SValue4_assign;
    o.set         = MO.SValue4_set;
+   o.add         = MO.SValue4_add;
+   o.mul         = MO.SValue4_mul;
    o.absolute    = MO.SValue4_absolute;
    o.normalize   = MO.SValue4_normalize;
    o.negative    = MO.SValue4_negative;
    o.serialize   = MO.SValue4_serialize;
    o.unserialize = MO.SValue4_unserialize;
    o.parse       = MO.SValue4_parse;
+   o.toDisplay   = MO.SValue4_toDisplay;
    o.toString    = MO.SValue4_toString;
    return o;
 }
@@ -2839,6 +3265,18 @@ MO.SValue4_set = function SValue4_set(x, y, z, w){
    this.y = y;
    this.z = z;
    this.w = w;
+}
+MO.SValue4_add = function SValue4_add(x, y, z, w){
+   this.x += x;
+   this.y += y;
+   this.z += z;
+   this.w += w;
+}
+MO.SValue4_mul = function SValue4_mul(x, y, z, w){
+   this.x *= x;
+   this.y *= y;
+   this.z *= z;
+   this.w *= w;
 }
 MO.SValue4_absolute = function SValue4_absolute(){
    return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z) + (this.w * this.w));
@@ -2888,6 +3326,14 @@ MO.SValue4_parse = function SValue4_parse(value){
    }else{
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
+}
+MO.SValue4_toDisplay = function SValue4_toDisplay(){
+   var o = this;
+   var x = MO.Lang.Float.format(o.x);
+   var y = MO.Lang.Float.format(o.y);
+   var z = MO.Lang.Float.format(o.z);
+   var w = MO.Lang.Float.format(o.w);
+   return x + ',' + y + ',' + z + ',' + w;
 }
 MO.SValue4_toString = function SValue4_toString(){
    return this.x + ',' + this.y + ',' + this.z + ',' + this.w;
@@ -3045,6 +3491,10 @@ MO.SVector4_unserialize3 = function SVector4_unserialize3(p){
 }
 MO.RMath = function RMath(){
    var o = this;
+   o.PI_2           = Math.PI / 2;
+   o.PI             = Math.PI;
+   o.PI2            = Math.PI * 2;
+   o.PI_2_P         = 1 / (Math.PI / 2);
    o.value1         = new Array(1);
    o.value2         = new Array(2);
    o.value3         = new Array(3);

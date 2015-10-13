@@ -3,7 +3,8 @@ MO.FWglContext = function FWglContext(o){
    o._handle             = MO.Class.register(o, new MO.AGetter('_handle'));
    o._handleInstance     = null;
    o._handleLayout       = null;
-   o._handleSamplerS3tc  = null;
+   o._handleDrawBuffers  = MO.Class.register(o, new MO.AGetter('_handleDrawBuffers'));
+   o._handleSamplerS3tc  = MO.Class.register(o, new MO.AGetter('_handleSamplerS3tc'));
    o._handleDebugShader  = null;
    o._activeRenderTarget = null;
    o._activeTextureSlot  = null;
@@ -12,8 +13,9 @@ MO.FWglContext = function FWglContext(o){
    o._statusRecord       = false;
    o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
    o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
-   o._statusFloatTexture = false;
-   o._statusScissor      = false;
+   o._statusFloatTexture = MO.Class.register(o, new MO.AGetter('_statusFloatTexture'), false);
+   o._statusDrawBuffers  = MO.Class.register(o, new MO.AGetter('_statusDrawBuffers'), false);
+   o._statusScissor      = MO.Class.register(o, new MO.AGetter('_statusScissor'), false);
    o._data9              = null;
    o._data16             = null;
    o.construct           = MO.FWglContext_construct;
@@ -24,6 +26,7 @@ MO.FWglContext = function FWglContext(o){
    o.extension           = MO.FWglContext_extension;
    o.extensions          = MO.FWglContext_extensions;
    o.enableFloatTexture  = MO.FWglContext_enableFloatTexture;
+   o.enableDrawBuffers   = MO.FWglContext_enableDrawBuffers;
    o.recordBegin         = MO.FWglContext_recordBegin;
    o.recordEnd           = MO.FWglContext_recordEnd;
    o.createProgram       = MO.FWglContext_createProgram;
@@ -85,6 +88,7 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
+            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
@@ -132,6 +136,10 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
    var extension = handle.getExtension('OES_element_index_uint');
    if(extension){
       capability.optionIndex32 = true;
+   }
+   var extension = o._handleDrawBuffers = handle.getExtension('WEBGL_draw_buffers');
+   if(extension){
+      capability.optionDrawBuffers = true;
    }
    var extension = o._handleSamplerS3tc = handle.getExtension('WEBGL_compressed_texture_s3tc');
    if(extension){
@@ -297,17 +305,32 @@ MO.FWglContext_extensions = function FWglContext_extensions(){
 MO.FWglContext_enableFloatTexture = function FWglContext_enableFloatTexture(){
    var o = this;
    if(!o._statusFloatTexture){
-      var extension = o._handle.getExtension('OES_texture_float');
+      var handle = o._handle;
+      var extension = handle.getExtension('OES_texture_float');
       if(!extension){
          return false;
       }
-      var extension = o._handle.getExtension('OES_texture_float_linear');
+      var extension = handle.getExtension('OES_texture_float_linear');
       if(!extension){
          return false;
       }
       o._statusFloatTexture = true;
    }
    return o._statusFloatTexture;
+}
+MO.FWglContext_enableDrawBuffers = function FWglContext_enableDrawBuffers(){
+   var o = this;
+   if(!o._statusDrawBuffers){
+      var handle = o._handle;
+      var extension = o._handleDrawBuffers;
+      if(!extension){
+         return false;
+      }
+      extension.drawBuffersWEBGL([
+         extension.COLOR_ATTACHMENT0_WEBGL
+      ]);
+      o._statusDrawBuffers = true;
+   }
 }
 MO.FWglContext_recordBegin = function FWglContext_recordBegin(){
    var o = this;
@@ -377,6 +400,7 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    var o = this;
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
+   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;
@@ -501,7 +525,8 @@ MO.FWglContext_setRenderTarget = function FWglContext_setRenderTarget(renderTarg
       if(!result){
          return result;
       }
-      graphic.viewport(0, 0, o._size.width, o._size.height);
+      var size = o._size;
+      graphic.viewport(0, 0, size.width, size.height);
    }else{
       graphic.bindFramebuffer(graphic.FRAMEBUFFER, renderTarget._handle);
       result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", renderTarget._handle);
@@ -847,6 +872,7 @@ MO.FWglContext_dispose = function FWglContext_dispose(){
    o._parameters = null;
    o._extensions = null;
    o._activeTextureSlot = null;
+   o._handleDrawBuffers  = null;
    o._handleSamplerS3tc = null;
    o._handleDebugShader = null;
    o.__base.FG3dContext.dispose.call(o);
@@ -1423,6 +1449,11 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
    }
    var textures = o._textures;
    var textureCount = textures.count();
+   var attachment0 = handle.COLOR_ATTACHMENT0;
+   if(context.statusDrawBuffers()){
+      var extension = context.handleDrawBuffers();
+      attachment0 = extension.COLOR_ATTACHMENT0_WEBGL;
+   }
    for(var i = 0; i < textureCount; i++){
       var texture = textures.get(i);
       handle.bindTexture(handle.TEXTURE_2D, texture._handle);
@@ -1433,7 +1464,7 @@ MO.FWglRenderTarget_build = function FWglRenderTarget_build(){
       if(!result){
          return result;
       }
-      handle.framebufferTexture2D(handle.FRAMEBUFFER, handle.COLOR_ATTACHMENT0 + i, handle.TEXTURE_2D, texture._handle, 0);
+      handle.framebufferTexture2D(handle.FRAMEBUFFER, attachment0 + i, handle.TEXTURE_2D, texture._handle, 0);
       var result = context.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._handle, texture._handle);
       if(!result){
          return result;

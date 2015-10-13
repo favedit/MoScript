@@ -219,16 +219,13 @@ MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffe
    var o = this;
    var context = o._graphicContext;
    var contextSize = context.size();
-   var contextRatio = context.ratio();
-   var contextSizeRatio = context.sizeRatio();
-   var radioWidth = contextSize.width * contextRatio;
-   var radioHeight = contextSize.height * contextRatio;
-   var sizeWidth = contextSize.width * contextSizeRatio.width;
-   var sizeHeight = contextSize.height * contextSizeRatio.height;
-   var program = o._program;
+   var sizeWidth = contextSize.width;
+   var sizeHeight = contextSize.height;
    var material = renderable.material();
    o.bindMaterial(material);
-   if(renderable._optionMerge){
+   var program = o._program;
+   var optionMerge = renderable.optionMerge();
+   if(optionMerge){
       var meshs = renderable.mergeRenderables();
       var meshCount = meshs.count();
       var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, 4 * meshCount);
@@ -246,15 +243,12 @@ MO.FE3dGeneralColorFlatEffect_drawRenderable = function FE3dGeneralColorFlatEffe
       o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
    }else{
       var matrix = renderable.matrix();
-      if(renderable._optionFull){
+      var optionFull = renderable.optionFull();
+      if(optionFull){
+         program.setParameter4('vc_position', 2, 2, -1, 1);
+      }else{
          var cx = matrix.sx / sizeWidth * 2;
          var cy = matrix.sy / sizeHeight * 2;
-         var tx = matrix.tx / sizeWidth * 2 - 1;
-         var ty = 1 - matrix.ty / sizeHeight * 2;
-         program.setParameter4('vc_position', cx, cy, tx, ty);
-      }else{
-         var cx = matrix.sx / radioWidth * 2;
-         var cy = matrix.sy / radioHeight * 2;
          var tx = matrix.tx / sizeWidth * 2 - 1;
          var ty = 1 - matrix.ty / sizeHeight * 2;
          program.setParameter4('vc_position', cx, cy, tx, ty);
@@ -310,6 +304,28 @@ MO.FE3dGeneralColorSkeletonEffect_drawRenderable = function FE3dGeneralColorSkel
       }
       program.setParameter('vc_bone_matrix', data);
    }
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+MO.FE3dGeneralColorVideoEffect = function FE3dGeneralColorVideoEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.video';
+   o.buildMaterial  = MO.FE3dGeneralColorVideoEffect_buildMaterial;
+   o.drawRenderable = MO.FE3dGeneralColorVideoEffect_drawRenderable;
+   return o;
+}
+MO.FE3dGeneralColorVideoEffect_drawRenderable = function FE3dGeneralColorVideoEffect_drawRenderable(region, renderable){
+   var o = this;
+   var program = o._program;
+   var cameraPosition = region.calculate(MO.EG3dRegionParameter.CameraPosition);
+   var lightDirection = region.calculate(MO.EG3dRegionParameter.LightDirection);
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix)
+   var material = renderable.material();
+   o.bindMaterial(material);
+   var matrix = renderable.currentMatrix();
+   program.setParameter('vc_model_matrix', matrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
 MO.FE3dGeneralTechnique = function FE3dGeneralTechnique(o){
@@ -634,7 +650,7 @@ MO.FE3dSphereColorPass_setup = function FE3dSphereColorPass_setup(){
    texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
    texture.update();
    var target = o._renderTarget = context.createRenderTarget();
-   target.size().set(2048, 2048);
+   target.setQualityCd(MO.Desktop.qualityCd())
    target.textures().push(texture);
    target.build();
 }
@@ -721,26 +737,25 @@ MO.FE3dSphereViewAutomaticEffect_construct = function FE3dSphereViewAutomaticEff
    o._vpMatrix = new MO.SMatrix3d();
    o._pointOrigin = new MO.SPoint3(0, 0, 0);
    o._pointCenter = new MO.SPoint3(0, 0, 0);
+   o._scale = new MO.SVector4();
 }
 MO.FE3dSphereViewAutomaticEffect_drawRenderable = function FE3dSphereViewAutomaticEffect_drawRenderable(region, renderable){
    var o = this;
    var context = o._graphicContext;
    var program = o._program;
+   var size = context.size();
+   var rate = Math.min(size.width, size.height);
    var camera = region.camera();
    var projection = camera.projection();
-   projection.size().set(2048, 2048);
-   projection.update();
    var matrix = renderable.matrix();
    var modelMatrix = o._modelMatrix;
    modelMatrix.assign(matrix);
-   modelMatrix.addRotationX(-Math.PI* 0.5);
    var vpMatrix = o._vpMatrix;
    vpMatrix.assign(camera.matrix());
    vpMatrix.append(projection.matrix());
    program.setParameter('vc_model_matrix', modelMatrix);
    program.setParameter('vc_vp_matrix', vpMatrix);
-   program.setParameter4('vc_const', 0, 0, 0, 2 / Math.PI);
-   program.setParameter4('vc_direction', 0, 0, -1, 0);
+   program.setParameter4('vc_const', rate / size.width, rate / size.height, 0, 2 / Math.PI);
    var material = renderable.material();
    o.bindMaterial(material);
    o.bindAttributes(renderable);
@@ -767,25 +782,23 @@ MO.FE3dSphereViewPass = function FE3dSphereViewPass(o){
 MO.FE3dSphereViewPass_construct = function FE3dSphereViewPass_construct(){
    var o = this;
    o.__base.FG3dTechniquePass.construct.call(o);
-   o._textureSize = new MO.SSize2(2048, 2048);
 }
 MO.FE3dSphereViewPass_setup = function FE3dSphereViewPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
    var context = o._graphicContext;
-   var texture = o._textureView = context.createFlatTexture();
-   texture.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
-   texture.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
-   texture.size().assign(o._textureSize);
-   texture.update();
+   var textureColor = o._textureView = context.createFlatTexture();
+   textureColor.setFilterCd(MO.EG3dSamplerFilter.Nearest, MO.EG3dSamplerFilter.Nearest);
+   textureColor.setWrapCd(MO.EG3dSamplerFilter.ClampToBorder, MO.EG3dSamplerFilter.ClampToBorder);
+   textureColor.update();
    var target = o._renderTarget = context.createRenderTarget();
-   target.size().assign(o._textureSize);
-   target.textures().push(texture);
+   target.setQualityCd(MO.Desktop.qualityCd())
+   target.textures().push(textureColor);
    target.build();
    var rectangle = o._rectangle = MO.Class.create(MO.FE3dRectangleArea);
    rectangle.linkGraphicContext(o);
    rectangle.setup();
-   rectangle.pushTexture(texture, 'diffuse');
+   rectangle.pushTexture(textureColor, 'diffuse');
 }
 MO.FE3dSphereViewPass_setSphere = function FE3dSphereViewPass_setSphere(sphere){
    var o = this;
@@ -806,22 +819,14 @@ MO.FE3dSphereViewPass_drawBegin = function FE3dSphereViewPass_drawBegin(region){
       region._spaceName = 'general.view.result'
       effectResult = o._effectResult = MO.Console.find(MO.FG3dEffectConsole).find(o, region, rectangle);
    }
-   var backgroundColor = region.backgroundColor();
-   context.setRenderTarget(null);
-   context.clear(0, 0, 0, 0, 1);
 }
 MO.FE3dSphereViewPass_drawRegion = function FE3dSphereViewPass_drawRegion(region){
    var o = this;
    var context = o._graphicContext;
    var rectangle = o._rectangle;
    var effectView = o._effectView;
-   context.setRenderTarget(o._renderTarget);
-   context.clear(0, 0, 0, 0, 1);
-   context.setProgram(effectView.program());
-   effectView.drawRenderable(region, o._sphere);
-   var effectResult = o._effectResult;
    context.setRenderTarget(null);
+   context.setProgram(effectView.program());
    context.clear(0, 0, 0, 0, 1);
-   context.setProgram(effectResult.program());
-   effectResult.drawRenderable(region, o._rectangle);
+   effectView.drawRenderable(region, o._sphere);
 }

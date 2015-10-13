@@ -108,6 +108,7 @@ MO.FGuiCanvasManager_processControl = function FGuiCanvasManager_processControl(
    var event = o._paintEvent;
    event.optionScale = false;
    event.graphic = graphic;
+   event.virtualSize = virtualSize;
    event.parentRectangle.set(0, 0, virtualSize.width, virtualSize.height);
    event.rectangle.set(0, 0, virtualSize.width, virtualSize.height);
    event.calculateRate = calculateRate;
@@ -118,6 +119,9 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
    o.__base.FGuiManager.process.call(o);
    var canvas = o._canvas;
    var graphic = canvas.graphicContext();
+   if(!o._valid){
+      return;
+   }
    var desktop = o._desktop;
    var sizeRate = desktop.sizeRate();
    graphic.setGlobalScale(sizeRate, sizeRate);
@@ -416,6 +420,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
 }
 MO.FGuiManager = function FGuiManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MEventDispatcher);
+   o._valid            = MO.Class.register(o, new MO.AGetSet('_valid'), true);
    o._visible          = MO.Class.register(o, new MO.AGetter('_visible'), true);
    o._controls         = MO.Class.register(o, new MO.AGetter('_controls'));
    o._mainTimeline     = MO.Class.register(o, new MO.AGetter('_mainTimeline'));

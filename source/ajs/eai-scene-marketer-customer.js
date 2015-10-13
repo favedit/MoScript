@@ -132,7 +132,9 @@ MO.FEaiChartMktCustomerProcessor_focusEntity = function FEaiChartMktCustomerProc
          provinceEntity.doInvestment(level, investment);
       }
       cityEntity.addInvestmentTotal(level, investment);
-      o._mapEntity.upload();
+      if (o._mapEntity != null) {
+         o._mapEntity.upload();
+      }
       var autio = o._autios[level];
       if(autio){
          autio.play(0);
@@ -183,7 +185,9 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
       o.calculateCurrent();
       o._tableTick = currentTick;
    }
-   o._mapEntity.process();
+   if (o._mapEntity != null) {
+      o._mapEntity.process();
+   }
    var dynamicInfo = MO.Desktop.application().dynamicInfo();
    dynamicInfo._investmentEntityCount = o._units.count();
    dynamicInfo._investmentPoolItemCount = o._unitPool.items().count();

@@ -756,6 +756,46 @@ MO.FEaiCitysRenderable_dispose = function FEaiCitysRenderable_dispose(){
    o._indexBuffer = MO.Lang.Object.dispose(o._indexBuffer);
    o.__base.FE3dRenderable.dispose.call(o);
 }
+MO.FEaiEarthFlatEffect = function FEaiEarthFlatEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'eai.earth.flat';
+   o._cloudPosition = 0;
+   o._translateX    = 0;
+   o.construct      = MO.FEaiEarthFlatEffect_construct;
+   o.drawRenderable = MO.FEaiEarthFlatEffect_drawRenderable;
+   o.despose        = MO.FEaiEarthFlatEffect_despose;
+   return o;
+}
+MO.FEaiEarthFlatEffect_construct = function FEaiEarthFlatEffect_construct(){
+   var o = this;
+   o.__base.FG3dAutomaticEffect.construct.call(o);
+   o._speedCloud = new MO.SVector4(0, 0, 0, 0);
+   o._speedWater = new MO.SVector4(0, 0, 0, 0);
+}
+MO.FEaiEarthFlatEffect_drawRenderable = function FEaiEarthFlatEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   o._speedCloud.add(-0.00004, -0.00003, -0.00002, 1.0);
+   o._speedWater.add(0.000024, 0.000015, 0.00001, 1.0);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
+   var displayMatrix = renderable.display().currentMatrix();
+   program.setParameter('fc_cloud', o._speedCloud);
+   program.setParameter4('fc_land', 0, 0, 0, 0);
+   program.setParameter4('fc_ocean', 0, 0, 0, 0);
+   program.setParameter('fc_water', o._speedWater);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffer());
+}
+MO.FEaiEarthFlatEffect_despose = function FEaiEarthFlatEffect_despose(){
+   var o = this;
+   o._speedCloud = MO.Lang.Object.despose(o._speedCloud);
+   o._speedWater = MO.Lang.Object.despose(o._speedWater);
+   o.__base.FG3dAutomaticEffect.despose.call(o);
+}
 MO.FEaiMapFaceEffect = function FEaiMapFaceEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
    o._code          = 'eai.map.face';
@@ -772,17 +812,26 @@ MO.FEaiMapFaceEffect_drawRenderable = function FEaiMapFaceEffect_drawRenderable(
    o.bindMaterial(material);
    var mergeRenderables = renderable.mergeRenderables();
    var mergeCount = mergeRenderables.count();
-   var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, 16 * mergeCount);
+   var stride = 16;
+   var data = MO.Lang.TypeArray.findTemp(MO.EDataType.Float32, stride * mergeCount);
    for(var i = 0; i < mergeCount; i++){
-      var index = 16 * i;
+      var index = stride * i;
       var mergeRenderable = mergeRenderables.at(i);
       var matrix = mergeRenderable.matrix();
-      var color = mergeRenderable.color();
       matrix.writeData(data, index);
+      var color = mergeRenderable.color();
       data[index + 12] = color.red;
       data[index + 13] = color.green;
       data[index + 14] = color.blue;
-      data[index + 15] = color.alpha;
+      var shape = mergeRenderable._shape;
+      if(shape){
+         var entity = shape._entity;
+         var normalScale = entity.normalScale();
+         data[index + 15] = normalScale;
+      }else{
+         var matrix = mergeRenderable.matrix();
+         data[index + 15] = color.alpha;
+      }
    }
    program.setParameter('vc_data', data);
    var displayMatrix = renderable.display().currentMatrix();

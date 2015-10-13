@@ -115,9 +115,9 @@ MO.MGuiSize_setBounds = function MGuiSize_setBounds(left, top, width, height){
 }
 MO.MGuiSize_dispose = function MGuiSize_dispose(){
    var o = this;
-   o._location = RObject.dispose(o._location);
-   o._size = RObject.dispose(o._size);
-   o._scale = RObject.dispose(o._scale);
+   o._location = MO.Lang.Object.dispose(o._location);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._scale = MO.Lang.Object.dispose(o._scale);
 }
 MO.SGuiImage = function SGuiImage(){
    var o = this;
@@ -786,6 +786,7 @@ MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
 MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
    var o = this;
    var graphic = o._graphic;
+   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);

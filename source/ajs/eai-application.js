@@ -25,6 +25,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    effectConsole.register('general.color.eai.map.face', MO.FEaiMapFaceEffect);
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
+   effectConsole.register('general.color.eai.earth.flat', MO.FEaiEarthFlatEffect);
    effectConsole.register('general.view.automatic', MO.FE3dSphereViewAutomaticEffect);
    effectConsole.register('general.view.result.automatic', MO.FE3dSphereViewResultEffect);
    return true;
@@ -68,11 +69,15 @@ MO.FEaiChartApplication_onLoadGround = function FEaiChartApplication_onLoadGroun
 MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(event){
    var o = this;
    var canvas = o._desktop.canvas3d();
-   var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
-   bitmap._optionSelect = false;
-   bitmap.loadUrl(o._backgroundUrl);
-   bitmap.material().info().effectCode = 'fill';
-   bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
+   if(o._backgroundUrl){
+      var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
+      bitmap._optionSelect = false;
+      bitmap.loadUrl(o._backgroundUrl);
+      bitmap.material().info().effectCode = 'fill';
+      bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
+   }else{
+      o.onLoadGround(event);
+   }
 }
 MO.FEaiChartApplication_construct = function FEaiChartApplication_construct(){
    var o = this;
@@ -195,7 +200,7 @@ MO.FEaiFlatCanvas_setPanel = function FEaiFlatCanvas_setPanel(hPanel){
 }
 MO.FEaiFlatCanvas_dispose = function FEaiFlatCanvas_dispose(){
    var o = this;
-   o._cameraPosition = RObject.dispose(o._cameraPosition);
+   o._cameraPosition = MO.Lang.Object.dispose(o._cameraPosition);
    o.__base.FEaiCanvas.dispose.call(o);
 }
 MO.FEaiPlatformApplication = function FEaiPlatformApplication(o){

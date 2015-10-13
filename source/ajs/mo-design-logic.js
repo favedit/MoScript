@@ -1793,6 +1793,7 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    var o = this;
    var button = event.sender;
    var frameName = button.attributeGet('frame_name');
+   MO.Assert.debugNotEmpty(frameName);
    var frame = o._frameSet.selectSpaceFrame(frameName);
    frame.psMode(MO.EUiMode.Update);
    frame.psRefresh();
@@ -2141,6 +2142,7 @@ MO.FManageDataTable_onInsertClick = function FManageDataTable_onInsertClick(even
    var frame = o._frameSet.activeFrame();
    if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       var unitFrameName = frame.unitFrameName();
+      MO.Assert.debugNotEmpty(unitFrameName);
       var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
       unitFrame.doPrepare();
    }
@@ -2256,6 +2258,7 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
 MO.FManageDataTable_doDetail = function FManageDataTable_doDetail(row){
    var o = this;
    var unitFrameName = o._unitFrameName;
+   MO.Assert.debugNotEmpty(unitFrameName);
    var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
    unitFrame.doDetail(row);
    var historyBar = o._frameSet._historyBar;
@@ -2586,6 +2589,7 @@ MO.FManageSpaceToolBar_onInsertClick = function FManageSpaceToolBar_onInsertClic
    var frame = o._frameSet.activeFrame();
    if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       var unitFrameName = frame.unitFrameName();
+      MO.Assert.debugNotEmpty(unitFrameName);
       var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
       unitFrame.doPrepare();
    }
@@ -3125,7 +3129,7 @@ with(MO){
    }
    MO.FDsPrivateWorkspace_dispose = function FDsPrivateWorkspace_dispose(){
       var o = this;
-      o._frameSets = RObject.dispose(o._frameSets);
+      o._frameSets = MO.Lang.Object.dispose(o._frameSets);
       o.__base.FDuiWorkspace.dispose.call(o);
    }
 }
@@ -3828,7 +3832,7 @@ with(MO){
    }
    MO.FDsShareWorkspace_dispose = function FDsShareWorkspace_dispose(){
       var o = this;
-      o._frameSets = RObject.dispose(o._frameSets);
+      o._frameSets = MO.Lang.Object.dispose(o._frameSets);
       o.__base.FDuiWorkspace.dispose.call(o);
    }
 }

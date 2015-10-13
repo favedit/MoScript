@@ -82,6 +82,7 @@ MO.FDuiDataTreeView_loadDefine = function FDuiDataTreeView_loadDefine(code){
 }
 MO.FDuiDataTreeView_loadService = function FDuiDataTreeView_loadService(serviceCode, attributes){
    var o = this;
+   MO.Assert.debugNotEmpty(serviceCode);
    o._serviceCode = serviceCode;
    o.clear();
    var service = MO.RDuiService.parse(serviceCode);

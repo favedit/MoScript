@@ -183,8 +183,9 @@ MO.MG3dRegion_dispose = function MG3dRegion_dispose(){
 }
 MO.MG3dRenderable = function MG3dRenderable(o){
    o = MO.Class.inherits(this, o, MO.MGraphicRenderable);
-   o._optionMerge   = MO.Class.register(o, new MO.AGetter('_optionMerge'), false);
-   o._optionSelect  = MO.Class.register(o, new MO.AGetter('_optionSelect'), true);
+   o._optionMerge   = MO.Class.register(o, new MO.AGetSet('_optionMerge'), false);
+   o._optionFull    = MO.Class.register(o, new MO.AGetSet('_optionFull'), false);
+   o._optionSelect  = MO.Class.register(o, new MO.AGetSet('_optionSelect'), true);
    o._currentMatrix = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
    o._matrix        = MO.Class.register(o, new MO.AGetter('_matrix'));
    o._material      = MO.Class.register(o, new MO.AGetSet('_material'));
@@ -1103,9 +1104,12 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
    o._tagContext = MO.Class.create(MO.FTagContext);
 }
 MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
+   MO.Assert.debugNotEmpty(name);
+   MO.Assert.debugNotNull(effect);
    this._registerEffects.set(name, effect);
 }
 MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
+   MO.Assert.debugNotEmpty(name);
    this._registerEffects.set(name, null);
 }
 MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
@@ -1567,6 +1571,7 @@ MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
 }
 MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
    var o = this;
+   MO.Assert.debugNotNull(pass);
    pass.setTechnique(o);
    o._passes.push(pass);
 }
@@ -1801,6 +1806,72 @@ MO.FG3dTrack_calculate = function FG3dTrack_calculate(tick){
    info.currentFrame = pCurrentFrame;
    info.nextFrame = pNextFrame;
    return true;
+}
+MO.FG3dTrackBall = function FG3dTrackBall(o){
+   o = MO.Class.inherits(this, o, MO.FObject);
+   o._matrix          = MO.Class.register(o, new MO.AGetter('_matrix'));
+   o._rotation        = MO.Class.register(o, new MO.AGetter('_rotation'));
+   o._axis            = MO.Class.register(o, new MO.AGetter('_axis'));
+   o._angularVelocity = MO.Class.register(o, new MO.AGetter('_direction'));
+   o._lastPosition    = null;
+   o.construct        = MO.FG3dTrackBall_construct;
+   o.push             = MO.FG3dTrackBall_push;
+   o.move             = MO.FG3dTrackBall_move;
+   o.release          = MO.FG3dTrackBall_release;
+   o.dispose          = MO.FG3dTrackBall_dispose;
+   return o;
+}
+MO.FG3dTrackBall_construct = function FG3dTrackBall_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new MO.SMatrix3d();
+   o._rotation = new MO.SQuaternion();
+   o._axis = new MO.SVector3();
+   o._lastPosition = new MO.SPoint3();
+}
+MO.FG3dTrackBall_move = function FG3dTrackBall_move(x, y){
+   var lastPos3D = new MO.SVector3(o._lastPosition.x, o._lastPosition.y, 0);
+}
+MO.FG3dTrackBall_update = function FG3dTrackBall_update(){
+   var o = this;
+   var axisX = o.__axisX;
+   var axisY = o.__axisY;
+   var axisZ = o.__axisZ;
+   axisZ.assign(o._direction);
+   axisZ.normalize();
+   o.__axisUp.cross2(axisX, axisZ);
+   axisX.normalize();
+   axisZ.cross2(axisY, axisX);
+   axisY.normalize();
+   var data = o._matrix.data();
+   data[ 0] = axisX.x;
+   data[ 1] = axisY.x;
+   data[ 2] = axisZ.x;
+   data[ 3] = 0.0;
+   data[ 4] = axisX.y;
+   data[ 5] = axisY.y;
+   data[ 6] = axisZ.y;
+   data[ 7] = 0.0;
+   data[ 8] = axisX.z;
+   data[ 9] = axisY.z;
+   data[10] = axisZ.z;
+   data[11] = 0.0;
+   data[12] = -axisX.dotPoint3(o._position);
+   data[13] = -axisY.dotPoint3(o._position);
+   data[14] = -axisZ.dotPoint3(o._position);
+   data[15] = 1.0;
+}
+MO.FG3dTrackBall_updateFrustum = function FG3dTrackBall_updateFrustum(){
+   var o = this;
+   var m = MO.Lang.Math.matrix;
+   m.assign(o._matrix);
+   m.append(o._projection.matrix());
+   o._planes.updateVision(m.data());
+}
+MO.FG3dTrackBall_dispose = function FG3dTrackBall_dispose(){
+   var o = this;
+   o._matrix = MO.Lang.Obejct.dispose(o._matrix);
+   o.__base.FObject.dispose.call(o);
 }
 MO.FG3dViewport = function FG3dViewport(o){
    o = MO.Class.inherits(this, o, MO.FObject);

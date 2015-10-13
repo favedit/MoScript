@@ -400,6 +400,7 @@ MO.FDataSource_loadConfig = function FDataSource_loadConfig(xconfig){
          var xnode = xnodes.at(i);
          if(xnode.isName('Dataset')){
             var datasetName = xnode.get('name');
+            MO.Assert.debugNotEmpty(datasetName);
             var dataset = o.selectDataset(datasetName);
             dataset.loadConfig(xnode);
          }

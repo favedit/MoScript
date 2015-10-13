@@ -178,7 +178,7 @@ with(MO){
    }
    MO.FDsShareWorkspace_dispose = function FDsShareWorkspace_dispose(){
       var o = this;
-      o._frameSets = RObject.dispose(o._frameSets);
+      o._frameSets = MO.Lang.Object.dispose(o._frameSets);
       o.__base.FDuiWorkspace.dispose.call(o);
    }
 }
