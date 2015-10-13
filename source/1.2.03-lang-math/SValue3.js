@@ -29,7 +29,9 @@ MO.SValue3 = function SValue3(x, y, z){
    o.setAll       = MO.SValue3_setAll;
    // @method
    o.add          = MO.SValue3_add;
+   o.addValue3    = MO.SValue3_addValue3;
    o.mul          = MO.SValue3_mul;
+   o.mulAll       = MO.SValue3_mulAll;
    // @method
    o.length       = MO.SValue3_absolute;
    o.lengthTo     = MO.SValue3_lengthTo;
@@ -146,10 +148,22 @@ MO.SValue3_setAll = function SValue3_set(value){
 // @param y:Number Y分量
 // @param z:Number Z分量
 //==========================================================
-MO.SValue3_add = function SValue3_add(x, y, z, w){
+MO.SValue3_add = function SValue3_add(x, y, z){
    this.x += x;
    this.y += y;
    this.z += z;
+}
+
+//==========================================================
+// <T>增加数据内容。</T>
+//
+// @method
+// @param value:SVector3 方向
+//==========================================================
+MO.SValue3_addValue3 = function SValue3_addValue3(value){
+   this.x += value.x;
+   this.y += value.y;
+   this.z += value.z;
 }
 
 //==========================================================
@@ -160,10 +174,24 @@ MO.SValue3_add = function SValue3_add(x, y, z, w){
 // @param y:Number Y分量
 // @param z:Number Z分量
 //==========================================================
-MO.SValue3_mul = function SValue3_mul(x, y, z, w){
+MO.SValue3_mul = function SValue3_mul(x, y, z){
    this.x *= x;
    this.y *= y;
    this.z *= z;
+}
+
+//==========================================================
+// <T>乘以数据内容。</T>
+//
+// @method
+// @param x:Number X分量
+// @param y:Number Y分量
+// @param z:Number Z分量
+//==========================================================
+MO.SValue3_mulAll = function SValue3_mulAll(value){
+   this.x *= value;
+   this.y *= value;
+   this.z *= value;
 }
 
 //==========================================================

@@ -70,7 +70,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    frame.setHeight(o._imgHeight);
    frame.setup(fiData);
    frame.build();
-   //frame.setVisible(false);
+   frame.setVisible(false);
    floatingImages.push(frame);
    // 北京
    fiData = new MO.SShowFloatingImageData();
@@ -88,7 +88,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    frame.setHeight(o._imgHeight);
    frame.setup(fiData);
    frame.build();
-   //frame.setVisible(false);
+   frame.setVisible(false);
    floatingImages.push(frame);
    // 东南亚
    fiData = new MO.SShowFloatingImageData();
@@ -106,7 +106,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    frame.setHeight(o._imgHeight);
    frame.setup(fiData);
    frame.build();
-   //frame.setVisible(false);
+   frame.setVisible(false);
    floatingImages.push(frame);
    // 合肥
    fiData = new MO.SShowFloatingImageData();
@@ -124,7 +124,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    frame.setHeight(o._imgHeight);
    frame.setup(fiData);
    frame.build();
-   //frame.setVisible(false);
+   frame.setVisible(false);
    floatingImages.push(frame);
    // 兰州
    fiData = new MO.SShowFloatingImageData();
@@ -142,7 +142,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    frame.setHeight(o._imgHeight);
    frame.setup(fiData);
    frame.build();
-   //frame.setVisible(false);
+   frame.setVisible(false);
    floatingImages.push(frame);
    // 纽约
    fiData = new MO.SShowFloatingImageData();
@@ -160,7 +160,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    frame.setHeight(o._imgHeight);
    frame.setup(fiData);
    frame.build();
-   //frame.setVisible(false);
+   frame.setVisible(false);
    floatingImages.push(frame);
    // 上海
    fiData = new MO.SShowFloatingImageData();
@@ -178,7 +178,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    frame.setHeight(o._imgHeight);
    frame.setup(fiData);
    frame.build();
-   //frame.setVisible(false);
+   frame.setVisible(false);
    floatingImages.push(frame);
    // 香港
    fiData = new MO.SShowFloatingImageData();
@@ -196,7 +196,7 @@ MO.FEaiShowFloatingImageManager_setup = function FEaiShowFloatingImageManager_se
    frame.setHeight(o._imgHeight);
    frame.setup(fiData);
    frame.build();
-   //frame.setVisible(false);
+   frame.setVisible(false);
    floatingImages.push(frame);
 
    var gap = o._imgWidth + 30;
@@ -223,7 +223,7 @@ MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_
    var showIndex = o._showIndex;
    if (showIndex > -1) {
       var fi = floatingImages.at(showIndex);
-      fi.setVisible(true);
+      //fi.setVisible(true);
       var passedTick = MO.Timer.current() - o._startTick;
       if (passedTick < o._slideDuration) {
          var t = passedTick / o._slideDuration;
@@ -250,8 +250,8 @@ MO.FEaiShowFloatingImageManager_process = function FEaiShowFloatingImageManager_
       var autoIndex = o._autoIndex;
       var fil = floatingImages.at(autoIndex);
       var fir = floatingImages.at(7 - autoIndex);
-      fil.setVisible(o._autoShow);
-      fir.setVisible(o._autoShow);
+      //fil.setVisible(o._autoShow);
+      //fir.setVisible(o._autoShow);
       var passedTick = MO.Timer.current() - o._startTick;
       if (passedTick < o._slideDuration) {
          var t = passedTick / o._slideDuration;

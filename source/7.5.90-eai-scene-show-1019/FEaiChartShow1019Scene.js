@@ -172,7 +172,7 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
          o._startRotateY = o._rotationY;
          o._startWorldScale = o._worldScale;
          var focusParam = o._focusParamManager.getFocusParameter(tag);
-         o._targetWorldScale = 1400;
+         o._targetWorldScale = focusParam.scale;
          o._targetRotateY = focusParam.rotateY;
          o._targetTranslateY = focusParam.translateY;
          o._startTick = MO.Timer.current();
@@ -194,7 +194,7 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
          var areaId = message.substr(areaIndex + 5);
          //o._floatingImageManager.setAutoShow(false);
          //o._floatingImageManager.showLocation(areaId);
-         o._boardProcessor.setAutoPlay(false);
+         //o._boardProcessor.setAutoPlay(false);
          o._boardProcessor.showArea(areaId);
       }
 
