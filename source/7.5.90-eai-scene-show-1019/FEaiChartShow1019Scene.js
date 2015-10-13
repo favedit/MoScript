@@ -988,7 +988,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FEaiChartMktCustomerTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FEaiChartShow1019CustomerTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
    timeline.build();
@@ -996,7 +996,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    timeline.setVisible(false);
    //..........................................................
    // 创建表格
-   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartMktCustomerTable);
+   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartShow1019CustomerTable);
    liveTable.setName('LiveTable');
    liveTable.linkGraphicContext(o);
    liveTable.setup();
