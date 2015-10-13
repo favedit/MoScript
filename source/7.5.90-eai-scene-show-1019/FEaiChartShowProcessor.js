@@ -225,7 +225,7 @@ MO.FEaiChartShowProcessor_focusEntity = function FEaiChartShowProcessor_focusEnt
       // 播放声音
       var autio = o._autios[level];
       if(autio){
-         autio.play(0);
+         //autio.play(0);
       }
    }
    //..........................................................

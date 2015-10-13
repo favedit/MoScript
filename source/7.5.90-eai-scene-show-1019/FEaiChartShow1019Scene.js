@@ -329,8 +329,8 @@ MO.FEaiChartShow1019Scene_onOperationVisibility = function FEaiChartShow1019Scen
    var o = this;
    o.__base.FEaiChartScene.onOperationVisibility.call(o, event);
    if (event.visibility) {
-      o._groundAutio.play();
-      o._countryEntity._audioMapEnter._hAudio.muted = false;
+      //o._groundAutio.play();
+      //o._countryEntity._audioMapEnter._hAudio.muted = false;
    } else {
       o._groundAutio.pause();
       o._countryEntity._audioMapEnter._hAudio.muted = true;
@@ -1074,6 +1074,9 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    // 隐藏全部界面
    o._guiManager.hide();
    //o._mapReady = true;
+
+   // 不播放背景音乐
+   o._groundAutio.muted = true;
 }
 
 //==========================================================
