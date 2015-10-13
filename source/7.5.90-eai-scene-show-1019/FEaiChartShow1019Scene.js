@@ -92,6 +92,8 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    // @attribute
    o._titlePic                = null;
    o._copyrightPic            = null;
+   // @attribute
+   o._showVideoSE             = null;
    //..........................................................
    // @event
    o.onSocketReceived         = MO.FEaiChartShow1019Scene_onSocketReceived;
@@ -548,6 +550,15 @@ MO.FEaiChartShow1019Scene_resetDisplayPhase = function FEaiChartShow1019Scene_re
 //==========================================================
 MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_switchDisplayPhase(phase) {
    var o = this;
+   if (phase == 0 || phase == 3) {
+      o._titlePic.setVisible(true);
+      o._copyrightPic.setVisible(true);
+   }
+   else {
+      o._titlePic.setVisible(false);
+      o._copyrightPic.setVisible(false);
+   }
+   
    // 隐藏全部视频
    o._videoRenderables.at(0).setVisible(false);
    o._videoRenderables.at(1).setVisible(false);
@@ -567,6 +578,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(0);
          o._currentVideoData.hVideo().play();
+         o._showVideoSE.play();
          break;
       case 2: // 收起视频1
          o._videoRenderables.at(0).setVisible(true);
@@ -599,6 +611,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._showChina = true;
          break;
       case 5: // 播放视频2
+         o._showVideoSE.play();
          // 收起实时投资
          o._logoBar.setVisible(false);
          o._timeline.setVisible(false);
@@ -629,6 +642,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._videoRenderables.at(1).setVisible(true);
          break;
       case 7: // 播放视频3
+         o._showVideoSE.play();
          // 重置视频2参数
          o._videoDataList.at(1).hVideo().pause();
          o._videoDataList.at(1).hVideo().currentTime = 0;
@@ -642,6 +656,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._videoRenderables.at(2).setVisible(true);
          break;
       case 9: // 播放视频4
+         o._showVideoSE.play();
          // 重置视频3参数
          o._videoDataList.at(2).hVideo().pause();
          o._videoDataList.at(2).hVideo().currentTime = 0;
@@ -1110,6 +1125,10 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    crPic.build();
    crPic.psInitialize();
    o._guiManager.register(crPic);
+
+   // 音效
+   var audioConsole = MO.Console.find(MO.FAudioConsole);
+   o._showVideoSE = audioConsole.load('{eai.resource}/show1019/show_video.wav');
 }
 
 //==========================================================
