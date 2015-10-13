@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+   <!--=====================================================-->
+   <State name='fill_mode'   value='Face'/>
+   <State name='cull_mode'   value='Front'/>
+   <State name='depth_mode'  value='LessEqual'/>
+   <State name='depth_write' value='Y'/>
+   <State name='blend_mode'  value='Y' source='SrcAlpha' target='One'/>
+   <State name='alpha_test'  value='N'/>
+   <!--=====================================================-->
+   <Option name='shadow'   value='N'/>
+   <Option name='lightmap' value='N'/>
+   <Option name='fog'      value='N'/>
+   <!--=====================================================-->
+   <Parameter name='vc_data'         format='Float4'/>
+   <Parameter name='vc_model_matrix' format='Float4x4'/>
+   <Parameter name='vc_vp_matrix'    format='Float4x4'/>
+   <!--=====================================================-->
+   <Attribute name='va_instance' linker='instance' format='Float1'/>
+   <Attribute name='va_position' linker='position' format='Float4'/>
+   <Attribute name='va_color'    linker='color'    format='Byte4Normal'/>
+   <!--=====================================================-->
+   <Sampler name='fs_diffuse'     linker='diffuse'/>
+   <!--=====================================================-->
+   <Source name='vertex'><![CDATA[
+      //..........................................................
+      // 变换矩阵声明
+      uniform vec4 vc_data[<shader:write source='instance.length'/>];
+      uniform mat4 vc_model_matrix;
+      uniform mat4 vc_vp_matrix;
+      //..........................................................
+      // 属性流声明
+      attribute float va_instance;
+      attribute vec3  va_position;
+      attribute vec4  va_color;
+      //..........................................................
+      // 属性流声明
+      varying vec4 v_color;
+      //..........................................................
+      // 处理
+      void main(){
+         // 获得参数
+         int index = int(va_instance * 4.0);
+         mat4 matrix = mat4(vc_data[index], vc_data[index + 1], vc_data[index + 2], vec4(0.0, 0.0, 0.0, 1.0));
+         vec4 color = vc_data[index + 3];
+         float scale = color.w;
+         // 计算模型坐标
+         vec4 position = vec4(va_position * scale, 1.0) * matrix;
+         // 计算最终坐标
+         vec4 modelPosition = position * vc_model_matrix;
+         gl_Position = modelPosition * vc_vp_matrix;
+         // 设置颜色
+         v_color = va_color * vec4(color.rgb, 1.0);
+      }
+   ]]></Source>
+   <Source name='fragment'><![CDATA[
+      // 声明环境
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+      //..........................................................
+      // 声明插值器
+      varying vec4 v_color;
+      //..........................................................
+      // 处理
+      void main(void){
+         gl_FragColor = v_color;
+      }
+   ]]></Source>
+</Configuration>

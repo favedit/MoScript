@@ -45,6 +45,8 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    effectConsole.register('general.color.eai.citys', MO.FEaiCityEffect);
    effectConsole.register('general.color.eai.citys.range', MO.FEaiCityRangeEffect);
    effectConsole.register('general.color.eai.earth.flat', MO.FEaiEarthFlatEffect);
+   effectConsole.register('general.color.eai.earth.range', MO.FEaiEarthRangeEffect);
+   effectConsole.register('general.color.eai.earth.sky', MO.FEaiEarthSkyEffect);
    effectConsole.register('general.view.automatic', MO.FE3dSphereViewAutomaticEffect);
    effectConsole.register('general.view.result.automatic', MO.FE3dSphereViewResultEffect);
    return true;

@@ -9114,7 +9114,9 @@ MO.SValue3 = function SValue3(x, y, z){
    o.set          = MO.SValue3_set;
    o.setAll       = MO.SValue3_setAll;
    o.add          = MO.SValue3_add;
+   o.addValue3    = MO.SValue3_addValue3;
    o.mul          = MO.SValue3_mul;
+   o.mulAll       = MO.SValue3_mulAll;
    o.length       = MO.SValue3_absolute;
    o.lengthTo     = MO.SValue3_lengthTo;
    o.absolute     = MO.SValue3_absolute;
@@ -9163,15 +9165,25 @@ MO.SValue3_setAll = function SValue3_set(value){
    this.y = value;
    this.z = value;
 }
-MO.SValue3_add = function SValue3_add(x, y, z, w){
+MO.SValue3_add = function SValue3_add(x, y, z){
    this.x += x;
    this.y += y;
    this.z += z;
 }
-MO.SValue3_mul = function SValue3_mul(x, y, z, w){
+MO.SValue3_addValue3 = function SValue3_addValue3(value){
+   this.x += value.x;
+   this.y += value.y;
+   this.z += value.z;
+}
+MO.SValue3_mul = function SValue3_mul(x, y, z){
    this.x *= x;
    this.y *= y;
    this.z *= z;
+}
+MO.SValue3_mulAll = function SValue3_mulAll(value){
+   this.x *= value;
+   this.y *= value;
+   this.z *= value;
 }
 MO.SValue3_normalize = function SValue3_normalize(){
    var value = this.absolute();

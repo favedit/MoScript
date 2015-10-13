@@ -796,6 +796,81 @@ MO.FEaiEarthFlatEffect_despose = function FEaiEarthFlatEffect_despose(){
    o._speedWater = MO.Lang.Object.despose(o._speedWater);
    o.__base.FG3dAutomaticEffect.despose.call(o);
 }
+MO.FEaiEarthRangeEffect = function FEaiEarthRangeEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'eai.earth.flat';
+   o._cloudPosition = 0;
+   o._translateX    = 0;
+   o.construct      = MO.FEaiEarthRangeEffect_construct;
+   o.drawRenderable = MO.FEaiEarthRangeEffect_drawRenderable;
+   o.despose        = MO.FEaiEarthRangeEffect_despose;
+   return o;
+}
+MO.FEaiEarthRangeEffect_construct = function FEaiEarthRangeEffect_construct(){
+   var o = this;
+   o.__base.FG3dAutomaticEffect.construct.call(o);
+   o._speedCloud = new MO.SVector4(0, 0, 0, 0);
+   o._speedWater = new MO.SVector4(0, 0, 0, 0);
+}
+MO.FEaiEarthRangeEffect_drawRenderable = function FEaiEarthRangeEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   o._speedCloud.add(-0.00004, -0.00003, -0.00002, 1.0);
+   o._speedWater.add(0.000024, 0.000015, 0.00001, 1.0);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
+   var displayMatrix = renderable.display().currentMatrix();
+   program.setParameter('fc_cloud', o._speedCloud);
+   program.setParameter4('fc_land', 0, 0, 0, 0);
+   program.setParameter4('fc_ocean', 0, 0, 0, 0);
+   program.setParameter('fc_water', o._speedWater);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffer());
+}
+MO.FEaiEarthRangeEffect_despose = function FEaiEarthRangeEffect_despose(){
+   var o = this;
+   o._speedCloud = MO.Lang.Object.despose(o._speedCloud);
+   o._speedWater = MO.Lang.Object.despose(o._speedWater);
+   o.__base.FG3dAutomaticEffect.despose.call(o);
+}
+MO.FEaiEarthSkyEffect = function FEaiEarthSkyEffect(o){
+   o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
+   o._code          = 'eai.earth.sky';
+   o._cloudPosition = 0;
+   o._translateX    = 0;
+   o.construct      = MO.FEaiEarthSkyEffect_construct;
+   o.drawRenderable = MO.FEaiEarthSkyEffect_drawRenderable;
+   o.despose        = MO.FEaiEarthSkyEffect_despose;
+   return o;
+}
+MO.FEaiEarthSkyEffect_construct = function FEaiEarthSkyEffect_construct(){
+   var o = this;
+   o.__base.FG3dAutomaticEffect.construct.call(o);
+   o._const = new MO.SVector4(0, 0, 0, 0);
+}
+MO.FEaiEarthSkyEffect_drawRenderable = function FEaiEarthSkyEffect_drawRenderable(region, renderable){
+   var o = this;
+   var context = o._graphicContext;
+   var program = o._program;
+   o._const.add(0.0001, 0.0001, 0.0001, 2 / Math.PI);
+   var material = renderable.material();
+   var info = material.info();
+   o.bindMaterial(material);
+   var displayMatrix = renderable.display().currentMatrix();
+   program.setParameter('vc_const', o._const);
+   program.setParameter('fc_const', o._const);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   context.drawTriangles(renderable.indexBuffers().first());
+}
+MO.FEaiEarthSkyEffect_despose = function FEaiEarthSkyEffect_despose(){
+   var o = this;
+   o._const = MO.Lang.Object.despose(o._const);
+   o.__base.FG3dAutomaticEffect.despose.call(o);
+}
 MO.FEaiMapFaceEffect = function FEaiMapFaceEffect(o){
    o = MO.Class.inherits(this, o, MO.FG3dAutomaticEffect);
    o._code          = 'eai.map.face';

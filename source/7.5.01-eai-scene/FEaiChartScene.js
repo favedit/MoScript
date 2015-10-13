@@ -11,6 +11,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    // @attribute
    o._optionMapCountry     = true;
    o._optionMapCity3d      = false;
+   o._optionBackground     = true;
    o._readyProvince        = false;
    o._countryReady         = false;
    // @attribute
@@ -200,9 +201,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
    }
    //..........................................................
    // 创建背景
-   var backgroundImage = o._application._groundBitmap;
-   if(backgroundImage){
-      stage.groundLayer().push(backgroundImage);
+   if(o._optionBackground){
+      var backgroundImage = o._application._groundBitmap;
+      if(backgroundImage){
+         stage.groundLayer().push(backgroundImage);
+      }
    }
    //var texture = o._graphicContext.createFlatTexture();
    //texture.update(backgroundImage);

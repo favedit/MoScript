@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+   <!--=====================================================-->
+   <State name='fill_mode'   value='Face'/>
+   <State name='cull_mode'   value='Front'/>
+   <State name='depth_mode'  value='LessEqual'/>
+   <State name='depth_write' value='Y'/>
+   <State name='blend_mode'  value='N' source='SrcAlpha' target='One'/>
+   <State name='alpha_test'  value='N'/>
+   <!--=====================================================-->
+   <Option name='shadow'   value='N'/>
+   <Option name='lightmap' value='N'/>
+   <Option name='fog'      value='N'/>
+   <!--=====================================================-->
+   <Parameter name='vc_const'    format='Float4'/>
+   <Parameter name='fc_const'    format='Float4'/>
+   <!--=====================================================-->
+   <Attribute name='va_position' linker='position' format='Float4'/>
+   <Attribute name='va_coord'    linker='coord'    format='Float2'/>
+   <!--=====================================================-->
+   <Sampler name='fs_diffuse'    linker='diffuse'/>
+   <!--=====================================================-->
+   <Source name='vertex'><![CDATA[
+      //..........................................................
+      // 常量声明
+      uniform vec4 vc_const;
+      //..........................................................
+      // 属性流声明
+      attribute vec3 va_position;
+      attribute vec2 va_coord;
+      //..........................................................
+      // 声明插值器
+      varying vec2 v_position;
+      varying vec2 v_coord;
+      //..........................................................
+      // 处理
+      void main(){
+         // 平分球面角度
+         //vec2 direction = normalize(va_position.xy);
+         //float angle = clamp(acos(direction.x) * vc_const.w, 0.0, 1.0);
+         //float angleLength = sqrt(va_position.x * va_position.x + va_position.y * va_position.y);
+         //float angleLength = length(vec3(va_position.xy, 0.0));
+         //v_position = vec2(angle, angleLength);
+         // 计算最终坐标
+         gl_Position = vec4(va_position.xyz, 1.0);
+         // 设置颜色
+         v_coord = va_coord;
+      }
+   ]]></Source>
+   <Source name='fragment'><![CDATA[
+      // 声明环境
+      #ifdef GL_ES
+      precision mediump float;
+      #endif
+      //..........................................................
+      // 常量声明
+      uniform vec4 fc_const;
+      //..........................................................
+      // 声明插值器
+      varying vec2 v_position;
+      varying vec2 v_coord;
+      //..........................................................
+      // 声明取样器
+      uniform sampler2D fs_diffuse;
+      //..........................................................
+      // 处理
+      void main(void){
+         vec4 color = texture2D(fs_diffuse, v_coord);
+         //vec4 color = texture2D(fs_diffuse, v_position + fc_const.xy);
+         gl_FragColor = color;
+         //gl_FragColor = vec4(v_position.yyy, 1.0);
+      }
+   ]]></Source>
+</Configuration>

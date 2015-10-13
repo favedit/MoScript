@@ -692,6 +692,7 @@ MO.FEaiChartScene = function FEaiChartScene(o){
    o = MO.Class.inherits(this, o, MO.FEaiScene);
    o._optionMapCountry     = true;
    o._optionMapCity3d      = false;
+   o._optionBackground     = true;
    o._readyProvince        = false;
    o._countryReady         = false;
    o._nowDate              = null;
@@ -798,9 +799,11 @@ MO.FEaiChartScene_setup = function FEaiChartScene_setup(){
       control.build();
       o._guiManager.register(control);
    }
-   var backgroundImage = o._application._groundBitmap;
-   if(backgroundImage){
-      stage.groundLayer().push(backgroundImage);
+   if(o._optionBackground){
+      var backgroundImage = o._application._groundBitmap;
+      if(backgroundImage){
+         stage.groundLayer().push(backgroundImage);
+      }
    }
 }
 MO.FEaiChartScene_active = function FEaiChartScene_active(){

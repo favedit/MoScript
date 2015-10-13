@@ -9,6 +9,7 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o = MO.Class.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
+   o._optionBackground        = false;
    o._code                    = MO.EEaiScene.ChartWorld;
    o._optionMapCity3d         = true;
    // @attribute
@@ -895,7 +896,17 @@ MO.FEaiChartShow1019Scene_construct = function FEaiChartShow1019Scene_construct(
 MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
-   var dataLayer = o._activeStage.dataLayer();
+   var stage = o._activeStage;
+   var dataLayer = stage.dataLayer();
+   //..........................................................
+   // 设置底图效果
+   var backgroundImage = o._application._groundBitmap;
+   var rectangle = MO.Class.create(MO.FE3dRectangleArea);
+   rectangle.linkGraphicContext(o);
+   rectangle.setup();
+   rectangle.material().info().effectCode = 'eai.earth.sky';
+   rectangle._textures = backgroundImage._renderable._textures;
+   stage.groundLayer().push(rectangle);
    //..........................................................
    //// 全国各省分公司数、理财师数表
    //var countryTable = o._countryTable = MO.Class.create(MO.FEaiChartMktManageCountryTable);
