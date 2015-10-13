@@ -918,6 +918,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    var backgroundImage = o._application._groundBitmap;
    var rectangle = MO.Class.create(MO.FE3dRectangleArea);
    rectangle.linkGraphicContext(o);
+   rectangle.setOptionSelect(false);
    rectangle.setup();
    rectangle.material().info().effectCode = 'eai.earth.sky';
    rectangle._textures = backgroundImage._renderable._textures;
