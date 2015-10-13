@@ -301,7 +301,8 @@ MO.FEaiShowFloatingImageManager_setVisibleAll = function FEaiShowFloatingImageMa
    var count = floatingImages.count();
    for (var i = 0; i < count; i++) {
       var fi = floatingImages.at(i);
-      fi.setVisible(visible);
+      //fi.setVisible(visible);
+      fi.setVisible(false);
    }
 }
 

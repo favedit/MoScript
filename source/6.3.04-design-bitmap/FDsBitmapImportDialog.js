@@ -67,7 +67,7 @@ with(MO){
       var connection = MO.Console.find(FHttpConsole).send(url, reader.data());
       connection.addLoadListener(o, o.onConfirmLoad);
       // 释放文件
-      o._fileReader = RObject.dispose(reader);
+      o._fileReader = MO.Lang.Object.dispose(reader);
    }
 
    //==========================================================

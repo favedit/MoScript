@@ -139,7 +139,7 @@ MO.FEaiFlatCanvas_setPanel = function FEaiFlatCanvas_setPanel(hPanel){
 //==========================================================
 MO.FEaiFlatCanvas_dispose = function FEaiFlatCanvas_dispose(){
    var o = this;
-   o._cameraPosition = RObject.dispose(o._cameraPosition);
+   o._cameraPosition = MO.Lang.Object.dispose(o._cameraPosition);
    // 父处理
    o.__base.FEaiCanvas.dispose.call(o);
 }

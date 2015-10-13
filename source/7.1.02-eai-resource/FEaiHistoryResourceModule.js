@@ -147,10 +147,10 @@ MO.FEaiHistoryResourceModule_load = function FEaiHistoryResourceModule_load(){
 //==========================================================
 MO.FEaiHistoryResourceModule_dispose = function FEaiHistoryResourceModule_dispose(){
    var o = this;
-   o._provinces = RObject.dispose(o._provinces);
-   o._citys = RObject.dispose(o._citys);
-   o._milestones = RObject.dispose(o._milestones);
-   o._dates = RObject.dispose(o._dates);
+   o._provinces = MO.Lang.Object.dispose(o._provinces);
+   o._citys = MO.Lang.Object.dispose(o._citys);
+   o._milestones = MO.Lang.Object.dispose(o._milestones);
+   o._dates = MO.Lang.Object.dispose(o._dates);
    // 父处理
    o.__base.FEaiResourceModule.dispose.call(o);
 }

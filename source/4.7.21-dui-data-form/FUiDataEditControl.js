@@ -479,8 +479,8 @@ with(MO){
       o._labelAlignCd = null;
       o._dataTypeCd = null;
       // 释放结构
-      o._labelSize = RObject.dispose(o._labelSize);
-      o._editSize = RObject.dispose(o._editSize);
+      o._labelSize = MO.Lang.Object.dispose(o._labelSize);
+      o._editSize = MO.Lang.Object.dispose(o._editSize);
       // 释放页面元素
       o._hLabelPanel = MO.Window.Html.free(o._hLabelPanel);
       o._hLabelForm = MO.Window.Html.free(o._hLabelForm);

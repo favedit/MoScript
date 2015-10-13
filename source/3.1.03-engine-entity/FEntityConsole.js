@@ -80,7 +80,7 @@ MO.FEntityConsole_loadEntity = function FEntityConsole_loadEntity(entity){
 MO.FEntityConsole_dispose = function FEntityConsole_dispose(){
    var o = this;
    // 释放属性
-   o._looperLoad = RObject.dispose(o._looperLoad);
+   o._looperLoad = MO.Lang.Object.dispose(o._looperLoad);
    // 父处理
    o.__base.FConsole.dispose.call(o);
 }

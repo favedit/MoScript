@@ -58,6 +58,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.fillRectangle        = MO.FG2dCanvasContext_fillRectangle;
    // @method
    o.toBytes              = MO.FG2dCanvasContext_toBytes;
+   o.saveFile             = MO.FG2dCanvasContext_saveFile;
    // @method
    o.dispose              = MO.FG2dCanvasContext_dispose;
    return o;
@@ -600,6 +601,27 @@ MO.FG2dCanvasContext_toBytes = function FG2dCanvasContext_toBytes() {
    var o = this;
    var size = o._size;
    return o._handle.getImageData(0, 0, size.width, size.height);
+}
+
+//==========================================================
+// <T>存储画板到图片文件。</T>
+//
+// @method
+// @return Uint8Array 数据
+//==========================================================
+MO.FG2dCanvasContext_saveFile = function FG2dCanvasContext_saveFile(fileName, extention){
+   var o = this;
+   // 存储数据
+   var handle = context2d._handle;
+   var hCanvas = handle.canvas;
+   var imageUrl = hCanvas.toDataURL("image/" + extention);
+   // 创建位图
+   var link = document.createElement('A');
+   var event = document.createEvent("MouseEvents");
+   event.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+   link.download = fileName;
+   link.href = imageUrl;
+   link.dispatchEvent(event);
 }
 
 //==========================================================

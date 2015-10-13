@@ -537,7 +537,7 @@ with(MO){
    MO.FDsSolutionPropertyContent_dispose = function FDsSolutionPropertyContent_dispose(){
       var o = this;
       // 释放旋转
-      o._rotation = RObject.dispose(o._rotation);
+      o._rotation = MO.Lang.Object.dispose(o._rotation);
       // 父处理
       o.__base.FDsCanvas.dispose.call(o);
    }

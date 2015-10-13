@@ -283,9 +283,9 @@ with(MO){
    //==========================================================
    MO.FDsModelCatalogContent_dispose = function FDsModelCatalogContent_dispose(){
       var o = this;
-      o._displays = RObject.dispose(o._displays);
-      o._renderables = RObject.dispose(o._renderables);
-      o._materials = RObject.dispose(o._materials);
+      o._displays = MO.Lang.Object.dispose(o._displays);
+      o._renderables = MO.Lang.Object.dispose(o._renderables);
+      o._materials = MO.Lang.Object.dispose(o._materials);
       // 父处理
       o.__base.FDsCatalog.dispose.call(o);
    }

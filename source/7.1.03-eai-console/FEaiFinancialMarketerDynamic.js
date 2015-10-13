@@ -59,7 +59,7 @@ MO.FEaiFinancialMarketerDynamic_unserialize = function FEaiFinancialMarketerDyna
 MO.FEaiFinancialMarketerDynamic_dispose = function FEaiFinancialMarketerDynamic_dispose(){
    var o = this;
    // 清空属性
-   o._location = RObject.dispose(o._location);
+   o._location = MO.Lang.Object.dispose(o._location);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

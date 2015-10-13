@@ -64,7 +64,7 @@ MO.FE3dDisplayContainer_calculateOutline = function FE3dDisplayContainer_calcula
 //==========================================================
 MO.FE3dDisplayContainer_dispose = function FE3dDisplayContainer_dispose(){
    var o = this;
-   o._materials = RObject.dispose(o._materials);
+   o._materials = MO.Lang.Object.dispose(o._materials);
    // 父处理
    o.__base.FDisplayContainer.dispose.call(o);
 }

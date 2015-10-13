@@ -120,7 +120,7 @@ MO.FTagContext_resetSource = function FTagContext_resetSource(p){
 //==========================================================
 MO.FTagContext_dispose = function FTagContext_dispose(){
    var o = this;
-   o._attributes = RObject.dispose(o._attributes);
-   o._source = RObject.dispose(o._source);
+   o._attributes = MO.Lang.Object.dispose(o._attributes);
+   o._source = MO.Lang.Object.dispose(o._source);
    o.__base.FObject.dispose.call(o);
 }

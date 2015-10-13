@@ -47,7 +47,7 @@ MO.FE3rBitmapCubePack_onLoad = function FE3rBitmapCubePack_onLoad(p){
    //   for(var i = 0; i < 6; i++){
    //      var m = is[i];
    //      window.URL.revokeObjectURL(m.url());
-   //      is[i] = RObject.dispose(m);
+   //      is[i] = MO.Lang.Object.dispose(m);
    //   }
    //}
    for(var i = 0; i < 6; i++){

@@ -59,7 +59,7 @@ MO.FEaiFinancialData_unserialize = function FEaiFinancialData_unserialize(input)
 MO.FEaiFinancialData_dispose = function FEaiFinancialData_dispose(){
    var o = this;
    // 清空属性
-   o._location = RObject.dispose(o._location);
+   o._location = MO.Lang.Object.dispose(o._location);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

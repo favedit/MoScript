@@ -221,7 +221,7 @@ with(MO){
    MO.FDsShareWorkspace_dispose = function FDsShareWorkspace_dispose(){
       var o = this;
       // 设置属性
-      o._frameSets = RObject.dispose(o._frameSets);
+      o._frameSets = MO.Lang.Object.dispose(o._frameSets);
       // 父处理
       o.__base.FDuiWorkspace.dispose.call(o);
    }

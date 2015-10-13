@@ -22,6 +22,8 @@ MO.FE3dVideoData = function FE3dVideoData(o){
    o.construct    = MO.FE3dVideoData_construct;
    // @method
    o.loadUrl      = MO.FE3dVideoData_loadUrl;
+   o.setLoop      = MO.FE3dVideoData_setLoop;
+   o.play         = MO.FE3dVideoData_play;
    o.process      = MO.FE3dVideoData_process;
    // @method
    o.dispose      = MO.FE3dVideoData_dispose;
@@ -61,6 +63,8 @@ MO.FE3dVideoData_ohVideoEnded = function FE3dVideoData_ohVideoEnded(){
 MO.FE3dVideoData_construct = function FE3dVideoData_construct(){
    var o = this;
    o.__base.FE3dFaceData.construct.call(o);
+   // 设置渲染器
+   o._material.info().effectCode = 'video';
 }
 
 //==========================================================
@@ -69,20 +73,45 @@ MO.FE3dVideoData_construct = function FE3dVideoData_construct(){
 // @method
 // @param uri:String 地址
 //==========================================================
-MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(uri){
+MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(uri, auto){
    var o = this;
    // 解析地址
    var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    // 加载图片
    var video = o._hVideo = document.createElement('VIDEO');
    video.__linker = o;
-   //video.autoplay = true;
-   //video.loop = true;
+   video.autoplay = auto;
    video.src = url;
    video.addEventListener('canplay', o.ohVideoLoad);
    video.load();
    // 设置属性
    o._ready = false;
+}
+
+//==========================================================
+// <T>设置是否循环。</T>
+//
+// @method
+// @param flag:Boolean 是否循环
+//==========================================================
+MO.FE3dVideoData_setLoop = function FE3dVideoData_setLoop(flag){
+   this._hVideo.loop = flag;
+}
+
+//==========================================================
+// <T>播放处理。</T>
+//
+// @method
+// @param flag:Boolean 是否循环
+//==========================================================
+MO.FE3dVideoData_play = function FE3dVideoData_play(flag){
+   var o = this;
+   var video = o._hVideo;
+   if(flag){
+      video.play();
+   }else{
+      video.pause();
+   }
 }
 
 //==========================================================

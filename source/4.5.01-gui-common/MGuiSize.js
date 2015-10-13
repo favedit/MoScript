@@ -185,7 +185,7 @@ MO.MGuiSize_setBounds = function MGuiSize_setBounds(left, top, width, height){
 //==========================================================
 MO.MGuiSize_dispose = function MGuiSize_dispose(){
    var o = this;
-   o._location = RObject.dispose(o._location);
-   o._size = RObject.dispose(o._size);
-   o._scale = RObject.dispose(o._scale);
+   o._location = MO.Lang.Object.dispose(o._location);
+   o._size = MO.Lang.Object.dispose(o._size);
+   o._scale = MO.Lang.Object.dispose(o._scale);
 }
