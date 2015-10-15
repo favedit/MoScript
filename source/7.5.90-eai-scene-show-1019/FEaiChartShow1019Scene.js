@@ -572,8 +572,10 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
       case 0: // 待机画面
          //o._floatingImageManager.setAutoShow(true);
          o._boardProcessor.setAutoPlay(true);
+         o._socket.send('phase=0');
          break;
       case 1: // 播放视频1
+         o._socket.send('phase=1');
          o._currentVideoRenderable = o._videoRenderables.at(0);
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(0);
