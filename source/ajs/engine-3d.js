@@ -578,6 +578,7 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('general.color.skin', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.parallax', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.video', MO.FE3dGeneralColorVideoEffect);
+   effectConsole.register('general.color.video.mask', MO.FE3dGeneralColorVideoMaskEffect);
    effectConsole.register('general.color.skeleton', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton', MO.FE3dGeneralColorSkeletonEffect);

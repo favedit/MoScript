@@ -257,7 +257,7 @@ MO.FScene = function FScene(o){
    o.onOperationVisibility = MO.FScene_onOperationVisibility;
    o.onProcessReady        = MO.FScene_onProcessReady;
    o.onProcessBefore       = MO.Method.empty;
-   o.onProcess             = MO.FScene_onProcess;
+   o.onProcess             = MO.Method.empty;
    o.onProcessAfter        = MO.Method.empty;
    o.construct             = MO.FScene_construct;
    o.setup                 = MO.Method.empty;
@@ -275,14 +275,6 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
 }
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
    MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
-}
-MO.FScene_onProcess = function FScene_onProcess(){
-   var o = this;
-   o.processEnterFrameListener(o._eventEnterFrame);
-   if(o._activeStage){
-      o._activeStage.process();
-   }
-   o.processLeaveFrameListener(o._eventLeaveFrame);
 }
 MO.FScene_construct = function FScene_construct(){
    var o = this;
@@ -337,7 +329,7 @@ MO.RDesktop = function RDesktop(){
    o._application = null;
    o._workspaces  = new MO.TDictionary();
    o._thread      = null;
-   o._interval    = 10;
+   o._interval    = 15;
    return o;
 }
 MO.RDesktop.prototype.qualityCd = function RDesktop_qualityCd(){

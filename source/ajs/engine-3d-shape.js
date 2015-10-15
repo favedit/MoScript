@@ -2179,22 +2179,30 @@ MO.FE3dVideoConsole_loadUrl = function FE3dVideoConsole_loadUrl(context, url){
 }
 MO.FE3dVideoData = function FE3dVideoData(o){
    o = MO.Class.inherits(this, o, MO.FE3dFaceData);
-   o._loaded      = false;
-   o._hVideo      = MO.Class.register(o, new MO.AGetSet('_hVideo'));
-   o.ohVideoLoad  = MO.FE3dVideoData_ohVideoLoad;
-   o.ohVideoEnded = MO.FE3dVideoData_ohVideoEnded;
-   o.construct    = MO.FE3dVideoData_construct;
-   o.loadUrl      = MO.FE3dVideoData_loadUrl;
-   o.setLoop      = MO.FE3dVideoData_setLoop;
-   o.play         = MO.FE3dVideoData_play;
-   o.process      = MO.FE3dVideoData_process;
-   o.dispose      = MO.FE3dVideoData_dispose;
+   o._loaded       = false;
+   o._ready        = false;
+   o._hVideo       = MO.Class.register(o, new MO.AGetSet('_hVideo'));
+   o.ohVideoLoad   = MO.FE3dVideoData_ohVideoLoad;
+   o.ohVideoLoaded = MO.FE3dVideoData_ohVideoLoaded;
+   o.ohVideoEnded  = MO.FE3dVideoData_ohVideoEnded;
+   o.construct     = MO.FE3dVideoData_construct;
+   o.loadUrl       = MO.FE3dVideoData_loadUrl;
+   o.setLoop       = MO.FE3dVideoData_setLoop;
+   o.testReady     = MO.FE3dVideoData_testReady;
+   o.play          = MO.FE3dVideoData_play;
+   o.process       = MO.FE3dVideoData_process;
+   o.dispose       = MO.FE3dVideoData_dispose;
    return o;
 }
 MO.FE3dVideoData_ohVideoLoad = function FE3dVideoData_ohVideoLoad(event){
    var o = this.__linker;
    var hVideo = o._hVideo;
    o._loaded  = true;
+}
+MO.FE3dVideoData_ohVideoLoaded = function FE3dVideoData_ohVideoLoaded(event){
+   var o = this.__linker;
+   var hVideo = o._hVideo;
+   o._ready = true;
 }
 MO.FE3dVideoData_ohVideoEnded = function FE3dVideoData_ohVideoEnded(){
    var o = this.__linker;
@@ -2213,6 +2221,7 @@ MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(uri, auto){
    video.autoplay = auto;
    video.src = url;
    video.addEventListener('canplay', o.ohVideoLoad);
+   video.addEventListener('canplaythrough', o.ohVideoLoaded);
    video.load();
    o._ready = false;
 }
@@ -2231,7 +2240,7 @@ MO.FE3dVideoData_play = function FE3dVideoData_play(flag){
 MO.FE3dVideoData_process = function FE3dVideoData_process(){
    var o = this;
    if(o._loaded){
-      o._texture.upload(o._hVideo);
+      o._texture.uploadElement(o._hVideo);
       o._ready = true;
    }
 }

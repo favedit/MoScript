@@ -12170,6 +12170,8 @@ MO.FJsonConnection_content = function FJsonConnection_content(){
 }
 MO.FSocket = function FSocket(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
+   o._url              = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._stoped           = MO.Class.register(o, new MO.AGetter('_stoped'), true);
    o._connected        = MO.Class.register(o, new MO.AGetter('_connected'), false);
    o._handle           = MO.Class.register(o, new MO.AGetter('_handle'));
    o._eventOpen        = null;
@@ -12192,6 +12194,7 @@ MO.FSocket = function FSocket(o){
    o.construct         = MO.FSocket_construct;
    o.connect           = MO.FSocket_connect;
    o.send              = MO.FSocket_send;
+   o.process           = MO.FSocket_process;
    o.disconnect        = MO.FSocket_disconnect;
    o.dispose           = MO.FSocket_dispose;
    return o;
@@ -12220,6 +12223,7 @@ MO.FSocket_onClose = function FSocket_onClose(event){
    var o = this;
    o._connected = false;
    o.processCloseListener(o._eventClose);
+   o._handle = null;
 }
 MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
    var o = this._linker;
@@ -12230,6 +12234,7 @@ MO.FSocket_onError = function FSocket_onError(event){
    var o = this;
    var event = o._eventError;
    o.processErrorListener(event);
+   o._handle = null;
 }
 MO.FSocket_ohError = function FSocket_ohError(hEvent){
    this._linker.onError(event);
@@ -12245,13 +12250,14 @@ MO.FSocket_construct = function FSocket_construct(){
 }
 MO.FSocket_connect = function FSocket_connect(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;
    handle.onmessage = o.ohReceive;
    handle.onclose = o.ohClose;
    handle.onerror = o.ohError
+   o._stoped = false;
 }
 MO.FSocket_send = function FSocket_send(message){
    var o = this;
@@ -12260,9 +12266,22 @@ MO.FSocket_send = function FSocket_send(message){
    o.processSendListener(event);
    o._handle.send(message);
 }
+MO.FSocket_process = function FSocket_process(){
+   var o = this;
+   if(!o._stoped){
+      if(!o._handle){
+         o.connect(o._url);
+      }
+   }
+}
 MO.FSocket_disconnect = function FSocket_disconnect(){
    var o = this;
-   o._handle.close();
+   var handle = o._handle;
+   if(handle){
+      handle.close();
+      o._handle = null;
+   }
+   o._stoped = true;
 }
 MO.FSocket_dispose = function FSocket_dispose(){
    var o = this;
@@ -21586,15 +21605,17 @@ MO.FWglCubeTexture_dispose = function FWglCubeTexture_dispose(){
 }
 MO.FWglFlatTexture = function FWglFlatTexture(o){
    o = MO.Class.inherits(this, o, MO.FG3dFlatTexture);
-   o._handle    = null;
-   o.setup      = MO.FWglFlatTexture_setup;
-   o.isValid    = MO.FWglFlatTexture_isValid;
-   o.texture    = MO.FWglFlatTexture_texture;
-   o.makeMipmap = MO.FWglFlatTexture_makeMipmap;
-   o.uploadData = MO.FWglFlatTexture_uploadData;
-   o.upload     = MO.FWglFlatTexture_upload;
-   o.update     = MO.FWglFlatTexture_update;
-   o.dispose    = MO.FWglFlatTexture_dispose;
+   o._handle       = null;
+   o._statusUpdate = false;
+   o.setup         = MO.FWglFlatTexture_setup;
+   o.isValid       = MO.FWglFlatTexture_isValid;
+   o.texture       = MO.FWglFlatTexture_texture;
+   o.makeMipmap    = MO.FWglFlatTexture_makeMipmap;
+   o.uploadData    = MO.FWglFlatTexture_uploadData;
+   o.upload        = MO.FWglFlatTexture_upload;
+   o.uploadElement = MO.FWglFlatTexture_uploadElement;
+   o.update        = MO.FWglFlatTexture_update;
+   o.dispose       = MO.FWglFlatTexture_dispose;
    return o;
 }
 MO.FWglFlatTexture_setup = function FWglFlatTexture_setup(){
@@ -21673,6 +21694,16 @@ MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content){
    handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, data);
    o.update();
    o._statusLoad = context.checkError("texImage2D", "Upload image failure.");
+}
+MO.FWglFlatTexture_uploadElement = function FWglFlatTexture_uploadElement(element){
+   var o = this;
+   var handle = o._graphicContext._handle;
+   handle.bindTexture(handle.TEXTURE_2D, o._handle);
+   handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, element);
+   if(!o._statusUpdate){
+      o.update();
+      o._statusUpdate = true;
+   }
 }
 MO.FWglFlatTexture_update = function FWglFlatTexture_update(){
    var o = this;
@@ -25215,6 +25246,7 @@ MO.RE3dEngine.prototype.onSetup = function RE3dEngine_onSetup(){
    effectConsole.register('general.color.skin', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.parallax', MO.FE3dGeneralColorAutomaticEffect);
    effectConsole.register('general.color.video', MO.FE3dGeneralColorVideoEffect);
+   effectConsole.register('general.color.video.mask', MO.FE3dGeneralColorVideoMaskEffect);
    effectConsole.register('general.color.skeleton', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.skeleton.4', MO.FE3dGeneralColorSkeletonEffect);
    effectConsole.register('general.color.fur.skeleton', MO.FE3dGeneralColorSkeletonEffect);
@@ -30067,6 +30099,32 @@ MO.FE3dGeneralColorVideoEffect = function FE3dGeneralColorVideoEffect(o){
 }
 MO.FE3dGeneralColorVideoEffect_drawRenderable = function FE3dGeneralColorVideoEffect_drawRenderable(region, renderable){
    var o = this;
+   var program = o._program;
+   var cameraPosition = region.calculate(MO.EG3dRegionParameter.CameraPosition);
+   var lightDirection = region.calculate(MO.EG3dRegionParameter.LightDirection);
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix)
+   var material = renderable.material();
+   o.bindMaterial(material);
+   var matrix = renderable.currentMatrix();
+   program.setParameter('vc_model_matrix', matrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+MO.FE3dGeneralColorVideoMaskEffect = function FE3dGeneralColorVideoMaskEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.video.mask';
+   o.buildMaterial  = MO.FE3dGeneralColorVideoMaskEffect_buildMaterial;
+   o.drawRenderable = MO.FE3dGeneralColorVideoMaskEffect_drawRenderable;
+   return o;
+}
+MO.FE3dGeneralColorVideoMaskEffect_drawRenderable = function FE3dGeneralColorVideoMaskEffect_drawRenderable(region, renderable){
+   var o = this;
+   var textureMask = renderable._textureMask;
+   if(!textureMask){
+      return true;
+   }
    var program = o._program;
    var cameraPosition = region.calculate(MO.EG3dRegionParameter.CameraPosition);
    var lightDirection = region.calculate(MO.EG3dRegionParameter.LightDirection);
@@ -36079,22 +36137,30 @@ MO.FE3dVideoConsole_loadUrl = function FE3dVideoConsole_loadUrl(context, url){
 }
 MO.FE3dVideoData = function FE3dVideoData(o){
    o = MO.Class.inherits(this, o, MO.FE3dFaceData);
-   o._loaded      = false;
-   o._hVideo      = MO.Class.register(o, new MO.AGetSet('_hVideo'));
-   o.ohVideoLoad  = MO.FE3dVideoData_ohVideoLoad;
-   o.ohVideoEnded = MO.FE3dVideoData_ohVideoEnded;
-   o.construct    = MO.FE3dVideoData_construct;
-   o.loadUrl      = MO.FE3dVideoData_loadUrl;
-   o.setLoop      = MO.FE3dVideoData_setLoop;
-   o.play         = MO.FE3dVideoData_play;
-   o.process      = MO.FE3dVideoData_process;
-   o.dispose      = MO.FE3dVideoData_dispose;
+   o._loaded       = false;
+   o._ready        = false;
+   o._hVideo       = MO.Class.register(o, new MO.AGetSet('_hVideo'));
+   o.ohVideoLoad   = MO.FE3dVideoData_ohVideoLoad;
+   o.ohVideoLoaded = MO.FE3dVideoData_ohVideoLoaded;
+   o.ohVideoEnded  = MO.FE3dVideoData_ohVideoEnded;
+   o.construct     = MO.FE3dVideoData_construct;
+   o.loadUrl       = MO.FE3dVideoData_loadUrl;
+   o.setLoop       = MO.FE3dVideoData_setLoop;
+   o.testReady     = MO.FE3dVideoData_testReady;
+   o.play          = MO.FE3dVideoData_play;
+   o.process       = MO.FE3dVideoData_process;
+   o.dispose       = MO.FE3dVideoData_dispose;
    return o;
 }
 MO.FE3dVideoData_ohVideoLoad = function FE3dVideoData_ohVideoLoad(event){
    var o = this.__linker;
    var hVideo = o._hVideo;
    o._loaded  = true;
+}
+MO.FE3dVideoData_ohVideoLoaded = function FE3dVideoData_ohVideoLoaded(event){
+   var o = this.__linker;
+   var hVideo = o._hVideo;
+   o._ready = true;
 }
 MO.FE3dVideoData_ohVideoEnded = function FE3dVideoData_ohVideoEnded(){
    var o = this.__linker;
@@ -36113,6 +36179,7 @@ MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(uri, auto){
    video.autoplay = auto;
    video.src = url;
    video.addEventListener('canplay', o.ohVideoLoad);
+   video.addEventListener('canplaythrough', o.ohVideoLoaded);
    video.load();
    o._ready = false;
 }
@@ -36131,7 +36198,7 @@ MO.FE3dVideoData_play = function FE3dVideoData_play(flag){
 MO.FE3dVideoData_process = function FE3dVideoData_process(){
    var o = this;
    if(o._loaded){
-      o._texture.upload(o._hVideo);
+      o._texture.uploadElement(o._hVideo);
       o._ready = true;
    }
 }
@@ -37065,7 +37132,7 @@ MO.FScene = function FScene(o){
    o.onOperationVisibility = MO.FScene_onOperationVisibility;
    o.onProcessReady        = MO.FScene_onProcessReady;
    o.onProcessBefore       = MO.Method.empty;
-   o.onProcess             = MO.FScene_onProcess;
+   o.onProcess             = MO.Method.empty;
    o.onProcessAfter        = MO.Method.empty;
    o.construct             = MO.FScene_construct;
    o.setup                 = MO.Method.empty;
@@ -37083,14 +37150,6 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
 }
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
    MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
-}
-MO.FScene_onProcess = function FScene_onProcess(){
-   var o = this;
-   o.processEnterFrameListener(o._eventEnterFrame);
-   if(o._activeStage){
-      o._activeStage.process();
-   }
-   o.processLeaveFrameListener(o._eventLeaveFrame);
 }
 MO.FScene_construct = function FScene_construct(){
    var o = this;
@@ -37145,7 +37204,7 @@ MO.RDesktop = function RDesktop(){
    o._application = null;
    o._workspaces  = new MO.TDictionary();
    o._thread      = null;
-   o._interval    = 10;
+   o._interval    = 15;
    return o;
 }
 MO.RDesktop.prototype.qualityCd = function RDesktop_qualityCd(){
@@ -93448,6 +93507,8 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       }
    }
    if (o._playing){
+      o._socketTouch.process();
+      o._socketSphere.process();
       o._earthSphere.process();
       o.onProcessInput();
    }
@@ -104281,8 +104342,8 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
+      o._socket.process();
       o._countryEntity.process();
-      o._boardProcessor.process()
       var mapEntity = o._mapEntity;
       o.fixMatrix(mapEntity.cityRangeRenderable().matrix());
       o.fixMatrix(mapEntity.cityCenterRenderable().matrix());
@@ -104383,8 +104444,10 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
    switch (phase) {
       case 0: // 待机画面
          o._boardProcessor.setAutoPlay(true);
+         o._socket.send('phase=0');
          break;
       case 1: // 播放视频1
+         o._socket.send('phase=1');
          o._currentVideoRenderable = o._videoRenderables.at(0);
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(0);
@@ -104620,8 +104683,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    countryEntity._borderShape.setVisible(false);
    countryEntity._faceShape.setVisible(false);
    o._readyLoader.push(countryEntity);
-   var socket = o._socket;
-   socket = MO.Class.create(MO.FSocket);
+   var socket = o._socket = MO.Class.create(MO.FSocket);
    socket.connect('{service.earth}/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
    var focusParamManager = o._focusParamManager = MO.Class.create(MO.FEaiShowFocusParameterManager);
@@ -105003,9 +105065,10 @@ MO.FEaiChartShowProcessor_dispose = function FEaiChartShowProcessor_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FEaiShowBoard = function FEaiShowBoard(o) {
-   o = MO.Class.inherits(this, o, MO.FE3dDisplay);
+   o = MO.Class.inherits(this, o, MO.FE3dDisplay, MO.MProcessReady);
    o._radius          = MO.Class.register(o, new MO.AGetSet('_radius'));
    o._url             = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._maskUrl         = MO.Class.register(o, new MO.AGetSet('_maskUrl'));
    o._line            = null;
    o._video           = null;
    o._videoData       = null;
@@ -105016,6 +105079,8 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
    o._moveStartTick   = 0;
    o._moveSpeed       = 1000;
    o._startTick       = 0;
+   o._playeing        = false;
+   o.onProcessReady   = MO.FEaiShowBoard_onProcessReady;
    o.construct        = MO.FEaiShowBoard_construct;
    o.setup            = MO.FEaiShowBoard_setup;
    o.play             = MO.FEaiShowBoard_play;
@@ -105025,9 +105090,18 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
    o.dispose          = MO.FEaiShowBoard_dispose;
    return o;
 }
+MO.FEaiShowBoard_onProcessReady = function FEaiShowBoard_onProcessReady(){
+   var o = this;
+   var loader = o._textureMaskLoader;
+   o._textureMask = loader.pickTexture();
+   o._textureMaskLoader = MO.Lang.Object.dispose(loader);
+   o._video._textureMask = o._textureMask;
+   o._videoData.pushTexture(o._textureMask, 'mask');
+}
 MO.FEaiShowBoard_construct = function FEaiShowBoard_construct() {
    var o = this;
    o.__base.FE3dDisplay.construct.call(o);
+   o.__base.MProcessReady.construct.call(o);
    o._currentPosition = new MO.SPoint3();
    o._targetDirection = new MO.SVector3();
    o._targetPosition = new MO.SPoint3();
@@ -105042,18 +105116,30 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
    videoData.loadUrl(o._url);
    videoData.setLoop(true);
    videoData.play(true);
+   videoData.material().info().effectCode = 'video.mask';
+   videoData.material().info().optionAlpha = true;
+   o._readyLoader.push(videoData);
    var video = o._video = context.createObject(MO.FE3dVideo);
    video.setOptionSelect(false);
    video.setData(videoData);
    var matrix = video.matrix();
-   matrix.sx = 240;
+   matrix.sx = 256;
    matrix.sy = 160;
    matrix.updateForce();
    o.pushRenderable(video);
+   var loader = o._textureMaskLoader = MO.Class.create(MO.FE3dTextureLoader);
+   loader.linkGraphicContext(o);
+   loader.setup(MO.EG3dTexture.Flat2d, 'mask');
+   loader.loadUrl(o._maskUrl);
+   o._readyLoader.push(loader);
    o._startTick = MO.Timer.current();
 }
 MO.FEaiShowBoard_play = function FEaiShowBoard_play(flag){
-   this._videoData.play(flag);
+   var o = this;
+   if(o._playeing != flag){
+      o._videoData.play(flag);
+   }
+   o._playeing = flag;
 }
 MO.FEaiShowBoard_setCurrent = function FEaiShowBoard_setCurrent(x, y, z){
    var o = this;
@@ -105067,11 +105153,16 @@ MO.FEaiShowBoard_setTarget = function FEaiShowBoard_setTarget(x, y, z){
 MO.FEaiShowBoard_process = function FEaiShowBoard_process() {
    var o = this;
    o.__base.FE3dDisplay.process.call(o);
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
+   }
    var matrix = o._matrix;
    var currentTick = MO.Timer.current();
    var span = MO.Timer.current() - o._startTick;
-   o._videoData.currentTime = span * 0.0001;
-   o._videoData.process();
+   if(o._playeing){
+      o._videoData.process();
+   }
    var currentPosition = o._currentPosition;
    var targetPosition = o._targetPosition;
    if(!currentPosition.equals(targetPosition)){
@@ -105079,7 +105170,7 @@ MO.FEaiShowBoard_process = function FEaiShowBoard_process() {
          var moveLength = (currentTick - o._moveStartTick) * 0.001 * o._moveSpeed;
          var direction = o._targetDirection.direction(currentPosition, targetPosition);
          var length = direction.absolute();
-            currentPosition.assign(targetPosition);
+         currentPosition.assign(targetPosition);
          var angle = Math.atan2(-currentPosition.z, currentPosition.x);
          var scale = Math.min(Math.max(Math.sin(angle) + 1, 0) * 0.5 + 0.1, 1.0);
          var scaleScale = scale * scale;
@@ -105125,10 +105216,11 @@ MO.FEaiShowBoardProcessor_construct = function FEaiShowBoardProcessor_construct(
 MO.FEaiShowBoardProcessor_setup = function FEaiShowBoardProcessor_setup() {
    var o = this;
    var boards = o._boards;
-   for(var i = 1; i <= 8; i++){
+   for(var i = 1; i <= o._boardCount; i++){
       var board = MO.Class.create(MO.FEaiShowBoard);
       board.linkGraphicContext(o);
       board.setUrl('{eai.resource}/show1019/center/' + i + '.mp4');
+      board.setMaskUrl('{eai.resource}/show1019/center/' + i + '.jpg');
       board.setup();
       boards.push(board);
       o.pushDisplay(board);
@@ -105174,7 +105266,6 @@ MO.FEaiShowBoardProcessor_showArea = function FEaiShowBoardProcessor_showArea(ar
 }
 MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
    var o = this;
-   o.__base.FE3dDisplayContainer.process.call(o);
    var rotation = o._boardRotation;
    if(o._optionArea){
       var radius = o._stopRadius;
@@ -105195,14 +105286,22 @@ MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
    var matrix = o._matrix;
    o._boardRotation = rotation;
    var radius = o._boardRadius;
+   var startAngle = 0;
+   var endAngle = Math.PI;
    var boards = o._boards;
    var count = boards.count();
    for(var i = 0; i < count; i++){
       var board = boards.at(i);
       var boardAngle = rotation + board.radius();
+      boardAngle %= MO.Lang.Math.PI2;
+      if((boardAngle >= startAngle) && (boardAngle < endAngle)){
+         board.play(true);
+      }else{
+         board.play(false);
+      }
       board.setTarget(Math.cos(boardAngle) * radius, 0, -Math.sin(boardAngle) * radius);
-      board.process();
    }
+   o.__base.FE3dDisplayContainer.process.call(o);
 }
 MO.FEaiShowBoardProcessor_dispose = function FEaiShowBoardProcessor_dispose() {
    var o = this;

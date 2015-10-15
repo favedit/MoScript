@@ -4997,15 +4997,17 @@ MO.FWglCubeTexture_dispose = function FWglCubeTexture_dispose(){
 }
 MO.FWglFlatTexture = function FWglFlatTexture(o){
    o = MO.Class.inherits(this, o, MO.FG3dFlatTexture);
-   o._handle    = null;
-   o.setup      = MO.FWglFlatTexture_setup;
-   o.isValid    = MO.FWglFlatTexture_isValid;
-   o.texture    = MO.FWglFlatTexture_texture;
-   o.makeMipmap = MO.FWglFlatTexture_makeMipmap;
-   o.uploadData = MO.FWglFlatTexture_uploadData;
-   o.upload     = MO.FWglFlatTexture_upload;
-   o.update     = MO.FWglFlatTexture_update;
-   o.dispose    = MO.FWglFlatTexture_dispose;
+   o._handle       = null;
+   o._statusUpdate = false;
+   o.setup         = MO.FWglFlatTexture_setup;
+   o.isValid       = MO.FWglFlatTexture_isValid;
+   o.texture       = MO.FWglFlatTexture_texture;
+   o.makeMipmap    = MO.FWglFlatTexture_makeMipmap;
+   o.uploadData    = MO.FWglFlatTexture_uploadData;
+   o.upload        = MO.FWglFlatTexture_upload;
+   o.uploadElement = MO.FWglFlatTexture_uploadElement;
+   o.update        = MO.FWglFlatTexture_update;
+   o.dispose       = MO.FWglFlatTexture_dispose;
    return o;
 }
 MO.FWglFlatTexture_setup = function FWglFlatTexture_setup(){
@@ -5084,6 +5086,16 @@ MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content){
    handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, data);
    o.update();
    o._statusLoad = context.checkError("texImage2D", "Upload image failure.");
+}
+MO.FWglFlatTexture_uploadElement = function FWglFlatTexture_uploadElement(element){
+   var o = this;
+   var handle = o._graphicContext._handle;
+   handle.bindTexture(handle.TEXTURE_2D, o._handle);
+   handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, element);
+   if(!o._statusUpdate){
+      o.update();
+      o._statusUpdate = true;
+   }
 }
 MO.FWglFlatTexture_update = function FWglFlatTexture_update(){
    var o = this;

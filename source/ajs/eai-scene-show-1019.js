@@ -823,8 +823,8 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
+      o._socket.process();
       o._countryEntity.process();
-      o._boardProcessor.process()
       var mapEntity = o._mapEntity;
       o.fixMatrix(mapEntity.cityRangeRenderable().matrix());
       o.fixMatrix(mapEntity.cityCenterRenderable().matrix());
@@ -925,8 +925,10 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
    switch (phase) {
       case 0: // 待机画面
          o._boardProcessor.setAutoPlay(true);
+         o._socket.send('phase=0');
          break;
       case 1: // 播放视频1
+         o._socket.send('phase=1');
          o._currentVideoRenderable = o._videoRenderables.at(0);
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(0);
@@ -1162,8 +1164,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    countryEntity._borderShape.setVisible(false);
    countryEntity._faceShape.setVisible(false);
    o._readyLoader.push(countryEntity);
-   var socket = o._socket;
-   socket = MO.Class.create(MO.FSocket);
+   var socket = o._socket = MO.Class.create(MO.FSocket);
    socket.connect('{service.earth}/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
    var focusParamManager = o._focusParamManager = MO.Class.create(MO.FEaiShowFocusParameterManager);
@@ -1545,9 +1546,10 @@ MO.FEaiChartShowProcessor_dispose = function FEaiChartShowProcessor_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 MO.FEaiShowBoard = function FEaiShowBoard(o) {
-   o = MO.Class.inherits(this, o, MO.FE3dDisplay);
+   o = MO.Class.inherits(this, o, MO.FE3dDisplay, MO.MProcessReady);
    o._radius          = MO.Class.register(o, new MO.AGetSet('_radius'));
    o._url             = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._maskUrl         = MO.Class.register(o, new MO.AGetSet('_maskUrl'));
    o._line            = null;
    o._video           = null;
    o._videoData       = null;
@@ -1558,6 +1560,8 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
    o._moveStartTick   = 0;
    o._moveSpeed       = 1000;
    o._startTick       = 0;
+   o._playeing        = false;
+   o.onProcessReady   = MO.FEaiShowBoard_onProcessReady;
    o.construct        = MO.FEaiShowBoard_construct;
    o.setup            = MO.FEaiShowBoard_setup;
    o.play             = MO.FEaiShowBoard_play;
@@ -1567,9 +1571,18 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
    o.dispose          = MO.FEaiShowBoard_dispose;
    return o;
 }
+MO.FEaiShowBoard_onProcessReady = function FEaiShowBoard_onProcessReady(){
+   var o = this;
+   var loader = o._textureMaskLoader;
+   o._textureMask = loader.pickTexture();
+   o._textureMaskLoader = MO.Lang.Object.dispose(loader);
+   o._video._textureMask = o._textureMask;
+   o._videoData.pushTexture(o._textureMask, 'mask');
+}
 MO.FEaiShowBoard_construct = function FEaiShowBoard_construct() {
    var o = this;
    o.__base.FE3dDisplay.construct.call(o);
+   o.__base.MProcessReady.construct.call(o);
    o._currentPosition = new MO.SPoint3();
    o._targetDirection = new MO.SVector3();
    o._targetPosition = new MO.SPoint3();
@@ -1584,18 +1597,30 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
    videoData.loadUrl(o._url);
    videoData.setLoop(true);
    videoData.play(true);
+   videoData.material().info().effectCode = 'video.mask';
+   videoData.material().info().optionAlpha = true;
+   o._readyLoader.push(videoData);
    var video = o._video = context.createObject(MO.FE3dVideo);
    video.setOptionSelect(false);
    video.setData(videoData);
    var matrix = video.matrix();
-   matrix.sx = 240;
+   matrix.sx = 256;
    matrix.sy = 160;
    matrix.updateForce();
    o.pushRenderable(video);
+   var loader = o._textureMaskLoader = MO.Class.create(MO.FE3dTextureLoader);
+   loader.linkGraphicContext(o);
+   loader.setup(MO.EG3dTexture.Flat2d, 'mask');
+   loader.loadUrl(o._maskUrl);
+   o._readyLoader.push(loader);
    o._startTick = MO.Timer.current();
 }
 MO.FEaiShowBoard_play = function FEaiShowBoard_play(flag){
-   this._videoData.play(flag);
+   var o = this;
+   if(o._playeing != flag){
+      o._videoData.play(flag);
+   }
+   o._playeing = flag;
 }
 MO.FEaiShowBoard_setCurrent = function FEaiShowBoard_setCurrent(x, y, z){
    var o = this;
@@ -1609,11 +1634,16 @@ MO.FEaiShowBoard_setTarget = function FEaiShowBoard_setTarget(x, y, z){
 MO.FEaiShowBoard_process = function FEaiShowBoard_process() {
    var o = this;
    o.__base.FE3dDisplay.process.call(o);
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
+   }
    var matrix = o._matrix;
    var currentTick = MO.Timer.current();
    var span = MO.Timer.current() - o._startTick;
-   o._videoData.currentTime = span * 0.0001;
-   o._videoData.process();
+   if(o._playeing){
+      o._videoData.process();
+   }
    var currentPosition = o._currentPosition;
    var targetPosition = o._targetPosition;
    if(!currentPosition.equals(targetPosition)){
@@ -1621,7 +1651,7 @@ MO.FEaiShowBoard_process = function FEaiShowBoard_process() {
          var moveLength = (currentTick - o._moveStartTick) * 0.001 * o._moveSpeed;
          var direction = o._targetDirection.direction(currentPosition, targetPosition);
          var length = direction.absolute();
-            currentPosition.assign(targetPosition);
+         currentPosition.assign(targetPosition);
          var angle = Math.atan2(-currentPosition.z, currentPosition.x);
          var scale = Math.min(Math.max(Math.sin(angle) + 1, 0) * 0.5 + 0.1, 1.0);
          var scaleScale = scale * scale;
@@ -1667,10 +1697,11 @@ MO.FEaiShowBoardProcessor_construct = function FEaiShowBoardProcessor_construct(
 MO.FEaiShowBoardProcessor_setup = function FEaiShowBoardProcessor_setup() {
    var o = this;
    var boards = o._boards;
-   for(var i = 1; i <= 8; i++){
+   for(var i = 1; i <= o._boardCount; i++){
       var board = MO.Class.create(MO.FEaiShowBoard);
       board.linkGraphicContext(o);
       board.setUrl('{eai.resource}/show1019/center/' + i + '.mp4');
+      board.setMaskUrl('{eai.resource}/show1019/center/' + i + '.jpg');
       board.setup();
       boards.push(board);
       o.pushDisplay(board);
@@ -1716,7 +1747,6 @@ MO.FEaiShowBoardProcessor_showArea = function FEaiShowBoardProcessor_showArea(ar
 }
 MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
    var o = this;
-   o.__base.FE3dDisplayContainer.process.call(o);
    var rotation = o._boardRotation;
    if(o._optionArea){
       var radius = o._stopRadius;
@@ -1737,14 +1767,22 @@ MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
    var matrix = o._matrix;
    o._boardRotation = rotation;
    var radius = o._boardRadius;
+   var startAngle = 0;
+   var endAngle = Math.PI;
    var boards = o._boards;
    var count = boards.count();
    for(var i = 0; i < count; i++){
       var board = boards.at(i);
       var boardAngle = rotation + board.radius();
+      boardAngle %= MO.Lang.Math.PI2;
+      if((boardAngle >= startAngle) && (boardAngle < endAngle)){
+         board.play(true);
+      }else{
+         board.play(false);
+      }
       board.setTarget(Math.cos(boardAngle) * radius, 0, -Math.sin(boardAngle) * radius);
-      board.process();
    }
+   o.__base.FE3dDisplayContainer.process.call(o);
 }
 MO.FEaiShowBoardProcessor_dispose = function FEaiShowBoardProcessor_dispose() {
    var o = this;

@@ -99,7 +99,7 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
    // 增加渲染对象
    var matrix = video.matrix();
    matrix.sx = 256;
-   matrix.sy = 128;
+   matrix.sy = 160;
    matrix.updateForce();
    o.pushRenderable(video);
    // 加载遮盖纹理

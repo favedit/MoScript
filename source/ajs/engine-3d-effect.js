@@ -328,6 +328,32 @@ MO.FE3dGeneralColorVideoEffect_drawRenderable = function FE3dGeneralColorVideoEf
    o.bindSamplers(renderable);
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }
+MO.FE3dGeneralColorVideoMaskEffect = function FE3dGeneralColorVideoMaskEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.video.mask';
+   o.buildMaterial  = MO.FE3dGeneralColorVideoMaskEffect_buildMaterial;
+   o.drawRenderable = MO.FE3dGeneralColorVideoMaskEffect_drawRenderable;
+   return o;
+}
+MO.FE3dGeneralColorVideoMaskEffect_drawRenderable = function FE3dGeneralColorVideoMaskEffect_drawRenderable(region, renderable){
+   var o = this;
+   var textureMask = renderable._textureMask;
+   if(!textureMask){
+      return true;
+   }
+   var program = o._program;
+   var cameraPosition = region.calculate(MO.EG3dRegionParameter.CameraPosition);
+   var lightDirection = region.calculate(MO.EG3dRegionParameter.LightDirection);
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix)
+   var material = renderable.material();
+   o.bindMaterial(material);
+   var matrix = renderable.currentMatrix();
+   program.setParameter('vc_model_matrix', matrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   o.bindAttributes(renderable);
+   o.bindSamplers(renderable);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
 MO.FE3dGeneralTechnique = function FE3dGeneralTechnique(o){
    o = MO.Class.inherits(this, o, MO.FE3dTechnique);
    o._code      = 'general';

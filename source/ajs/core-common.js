@@ -1884,6 +1884,8 @@ MO.FJsonConnection_content = function FJsonConnection_content(){
 }
 MO.FSocket = function FSocket(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
+   o._url              = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._stoped           = MO.Class.register(o, new MO.AGetter('_stoped'), true);
    o._connected        = MO.Class.register(o, new MO.AGetter('_connected'), false);
    o._handle           = MO.Class.register(o, new MO.AGetter('_handle'));
    o._eventOpen        = null;
@@ -1906,6 +1908,7 @@ MO.FSocket = function FSocket(o){
    o.construct         = MO.FSocket_construct;
    o.connect           = MO.FSocket_connect;
    o.send              = MO.FSocket_send;
+   o.process           = MO.FSocket_process;
    o.disconnect        = MO.FSocket_disconnect;
    o.dispose           = MO.FSocket_dispose;
    return o;
@@ -1934,6 +1937,7 @@ MO.FSocket_onClose = function FSocket_onClose(event){
    var o = this;
    o._connected = false;
    o.processCloseListener(o._eventClose);
+   o._handle = null;
 }
 MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
    var o = this._linker;
@@ -1944,6 +1948,7 @@ MO.FSocket_onError = function FSocket_onError(event){
    var o = this;
    var event = o._eventError;
    o.processErrorListener(event);
+   o._handle = null;
 }
 MO.FSocket_ohError = function FSocket_ohError(hEvent){
    this._linker.onError(event);
@@ -1959,13 +1964,14 @@ MO.FSocket_construct = function FSocket_construct(){
 }
 MO.FSocket_connect = function FSocket_connect(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
    handle.onopen = o.ohOpen;
    handle.onmessage = o.ohReceive;
    handle.onclose = o.ohClose;
    handle.onerror = o.ohError
+   o._stoped = false;
 }
 MO.FSocket_send = function FSocket_send(message){
    var o = this;
@@ -1974,9 +1980,22 @@ MO.FSocket_send = function FSocket_send(message){
    o.processSendListener(event);
    o._handle.send(message);
 }
+MO.FSocket_process = function FSocket_process(){
+   var o = this;
+   if(!o._stoped){
+      if(!o._handle){
+         o.connect(o._url);
+      }
+   }
+}
 MO.FSocket_disconnect = function FSocket_disconnect(){
    var o = this;
-   o._handle.close();
+   var handle = o._handle;
+   if(handle){
+      handle.close();
+      o._handle = null;
+   }
+   o._stoped = true;
 }
 MO.FSocket_dispose = function FSocket_dispose(){
    var o = this;

@@ -382,6 +382,8 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
       }
    }
    if (o._playing){
+      o._socketTouch.process();
+      o._socketSphere.process();
       o._earthSphere.process();
       o.onProcessInput();
    }
