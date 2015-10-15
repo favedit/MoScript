@@ -41,12 +41,6 @@ MO.FE3dVideo_testReady = function FE3dVideo_testReady(){
          // 检查是否准备好
          o._ready = renderable.testReady();
          if(o._ready){
-            //var size = renderable.size();
-            //var adjustSize = renderable.adjustSize();
-            //var matrix = o.matrix();
-            //matrix.sx = adjustSize.width / size.width;
-            //matrix.sz = adjustSize.height / size.height;
-            //matrix.updateForce();
             var event = new MO.SEvent(o);
             o.processLoadListener(event);
             event.dispose();

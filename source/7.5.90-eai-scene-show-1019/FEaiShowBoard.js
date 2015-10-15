@@ -91,14 +91,15 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
    videoData.play(true);
    videoData.material().info().effectCode = 'video.mask';
    videoData.material().info().optionAlpha = true;
+   o._readyLoader.push(videoData);
    // 创建视频
    var video = o._video = context.createObject(MO.FE3dVideo);
    video.setOptionSelect(false);
    video.setData(videoData);
    // 增加渲染对象
    var matrix = video.matrix();
-   matrix.sx = 240;
-   matrix.sy = 160;
+   matrix.sx = 256;
+   matrix.sy = 128;
    matrix.updateForce();
    o.pushRenderable(video);
    // 加载遮盖纹理
@@ -164,6 +165,7 @@ MO.FEaiShowBoard_process = function FEaiShowBoard_process() {
    var span = MO.Timer.current() - o._startTick;
    //o._videoData.currentTime = span * 0.0001;
    if(o._playeing){
+      //console.log('Update video');
       o._videoData.process();
    }
    // 移动处理

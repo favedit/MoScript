@@ -9,34 +9,36 @@ MO.FE3dVideoData = function FE3dVideoData(o){
    o = MO.Class.inherits(this, o, MO.FE3dFaceData);
    //..........................................................
    // @attribute
-   o._loaded      = false;
+   o._loaded       = false;
+   o._ready        = false;
    //..........................................................
    // @html
-   o._hVideo      = MO.Class.register(o, new MO.AGetSet('_hVideo'));
+   o._hVideo       = MO.Class.register(o, new MO.AGetSet('_hVideo'));
    //..........................................................
    // @event
-   o.ohVideoLoad  = MO.FE3dVideoData_ohVideoLoad;
-   o.ohVideoEnded = MO.FE3dVideoData_ohVideoEnded;
+   o.ohVideoLoad   = MO.FE3dVideoData_ohVideoLoad;
+   o.ohVideoLoaded = MO.FE3dVideoData_ohVideoLoaded;
+   o.ohVideoEnded  = MO.FE3dVideoData_ohVideoEnded;
    //..........................................................
    // @method
-   o.construct    = MO.FE3dVideoData_construct;
+   o.construct     = MO.FE3dVideoData_construct;
    // @method
-   o.loadUrl      = MO.FE3dVideoData_loadUrl;
-   o.setLoop      = MO.FE3dVideoData_setLoop;
-   o.play         = MO.FE3dVideoData_play;
-   o.process      = MO.FE3dVideoData_process;
+   o.loadUrl       = MO.FE3dVideoData_loadUrl;
+   o.setLoop       = MO.FE3dVideoData_setLoop;
+   o.testReady     = MO.FE3dVideoData_testReady;
+   o.play          = MO.FE3dVideoData_play;
+   o.process       = MO.FE3dVideoData_process;
    // @method
-   o.dispose      = MO.FE3dVideoData_dispose;
+   o.dispose       = MO.FE3dVideoData_dispose;
    return o;
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>加载准备处理。</T>
 //
 // @method
 //==========================================================
 MO.FE3dVideoData_ohVideoLoad = function FE3dVideoData_ohVideoLoad(event){
-   //debugger
    var o = this.__linker;
    var hVideo = o._hVideo;
    //hVideo.width = 1024;
@@ -46,7 +48,19 @@ MO.FE3dVideoData_ohVideoLoad = function FE3dVideoData_ohVideoLoad(event){
 }
 
 //==========================================================
-// <T>播放完成处理。</T>
+// <T>加载完成处理。</T>
+//
+// @method
+//==========================================================
+MO.FE3dVideoData_ohVideoLoaded = function FE3dVideoData_ohVideoLoaded(event){
+   var o = this.__linker;
+   var hVideo = o._hVideo;
+   // 设置属性
+   o._ready = true;
+}
+
+//==========================================================
+// <T>加载播放完成处理。</T>
 //
 // @method
 //==========================================================
@@ -83,6 +97,7 @@ MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(uri, auto){
    video.autoplay = auto;
    video.src = url;
    video.addEventListener('canplay', o.ohVideoLoad);
+   video.addEventListener('canplaythrough', o.ohVideoLoaded);
    video.load();
    // 设置属性
    o._ready = false;
@@ -97,6 +112,16 @@ MO.FE3dVideoData_loadUrl = function FE3dVideoData_loadUrl(uri, auto){
 MO.FE3dVideoData_setLoop = function FE3dVideoData_setLoop(flag){
    this._hVideo.loop = flag;
 }
+
+//==========================================================
+// <T>测试是否准备好。</T>
+//
+// @method
+// @param flag:Boolean 是否循环
+//==========================================================
+//MO.FE3dVideoData_testReady = function FE3dVideoData_testReady(){
+//   return this._ready;
+//}
 
 //==========================================================
 // <T>播放处理。</T>
@@ -122,7 +147,7 @@ MO.FE3dVideoData_play = function FE3dVideoData_play(flag){
 MO.FE3dVideoData_process = function FE3dVideoData_process(){
    var o = this;
    if(o._loaded){
-      o._texture.upload(o._hVideo);
+      o._texture.uploadElement(o._hVideo);
       o._ready = true;
    }
 }

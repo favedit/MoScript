@@ -144,7 +144,6 @@ MO.FEaiShowBoardProcessor_showArea = function FEaiShowBoardProcessor_showArea(ar
 //==========================================================
 MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
    var o = this;
-   o.__base.FE3dDisplayContainer.process.call(o);
    // 旋转处理
    var rotation = o._boardRotation;
    if(o._optionArea){
@@ -163,38 +162,31 @@ MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
    }else if(o._optionRotation){
       rotation += 0.001;
    }
-   //rotation = rotation % (Math.PI * 2);
    // 设置旋转
    var matrix = o._matrix;
-   //matrix.ry = rotation;
-   //matrix.updateForce();
    o._boardRotation = rotation;
    var radius = o._boardRadius;
    // 逻辑处理
+   //var startAngle = Math.PI / 6;
+   //var endAngle = Math.PI - (Math.PI / 6);
+   var startAngle = 0;
+   var endAngle = Math.PI;
    var boards = o._boards;
    var count = boards.count();
    for(var i = 0; i < count; i++){
       var board = boards.at(i);
       var boardAngle = rotation + board.radius();
       boardAngle %= MO.Lang.Math.PI2;
-      if((boardAngle > 0) && (boardAngle < Math.PI)){
+      if((boardAngle >= startAngle) && (boardAngle < endAngle)){
          board.play(true);
-         //board.setVisible(true);
       }else{
-         //board.setVisible(false);
          board.play(false);
       }
-      //var scale = Math.min(Math.max(Math.sin(boardAngle) + 1, 0) * 0.5 + 0.1, 1.0);
-      //var matrix = board.matrix();
-      //matrix.ty = -600 * scale + 300;
-      //scale *= scale;
-      //matrix.sx = scale;
-      //matrix.sy = scale;
-      //matrix.updateForce();
       // 逻辑处理
       board.setTarget(Math.cos(boardAngle) * radius, 0, -Math.sin(boardAngle) * radius);
-      board.process();
    }
+   // 逻辑处理
+   o.__base.FE3dDisplayContainer.process.call(o);
 }
 
 //==========================================================

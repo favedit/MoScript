@@ -420,9 +420,6 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
       // 更新国家
       o._countryEntity.process();
       //..........................................................
-      // 面板处理
-      o._boardProcessor.process()
-      //..........................................................
       // 刷新组织数据
       //if (o._organizationDataTicker.process()) {
       //   MO.Console.find(MO.FEaiLogicConsole).statistics().department().doOrganization(o, o.onOrganizationFetch, 2);

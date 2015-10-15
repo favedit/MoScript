@@ -8,19 +8,21 @@ MO.FWglFlatTexture = function FWglFlatTexture(o){
    o = MO.Class.inherits(this, o, MO.FG3dFlatTexture);
    //..........................................................
    // @attribute
-   o._handle    = null;
+   o._handle       = null;
+   o._statusUpdate = false;
    //..........................................................
    // @method
-   o.setup      = MO.FWglFlatTexture_setup;
+   o.setup         = MO.FWglFlatTexture_setup;
    // @method
-   o.isValid    = MO.FWglFlatTexture_isValid;
-   o.texture    = MO.FWglFlatTexture_texture;
-   o.makeMipmap = MO.FWglFlatTexture_makeMipmap;
-   o.uploadData = MO.FWglFlatTexture_uploadData;
-   o.upload     = MO.FWglFlatTexture_upload;
-   o.update     = MO.FWglFlatTexture_update;
+   o.isValid       = MO.FWglFlatTexture_isValid;
+   o.texture       = MO.FWglFlatTexture_texture;
+   o.makeMipmap    = MO.FWglFlatTexture_makeMipmap;
+   o.uploadData    = MO.FWglFlatTexture_uploadData;
+   o.upload        = MO.FWglFlatTexture_upload;
+   o.uploadElement = MO.FWglFlatTexture_uploadElement;
+   o.update        = MO.FWglFlatTexture_update;
    // @method
-   o.dispose    = MO.FWglFlatTexture_dispose;
+   o.dispose       = MO.FWglFlatTexture_dispose;
    return o;
 }
 
@@ -163,6 +165,26 @@ MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content){
    // 更新处理
    o.update();
    o._statusLoad = context.checkError("texImage2D", "Upload image failure.");
+}
+
+//==========================================================
+// <T>上传元素内容。</T>
+//
+// @method
+// @param element:Object 内容
+//==========================================================
+MO.FWglFlatTexture_uploadElement = function FWglFlatTexture_uploadElement(element){
+   var o = this;
+   var handle = o._graphicContext._handle;
+   // 绑定数据
+   handle.bindTexture(handle.TEXTURE_2D, o._handle);
+   // 上传内容
+   handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, element);
+   // 更新处理
+   if(!o._statusUpdate){
+      o.update();
+      o._statusUpdate = true;
+   }
 }
 
 //==========================================================

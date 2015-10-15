@@ -22,7 +22,7 @@ MO.FScene = function FScene(o){
    o.onOperationVisibility = MO.FScene_onOperationVisibility;
    o.onProcessReady        = MO.FScene_onProcessReady;
    o.onProcessBefore       = MO.Method.empty;
-   o.onProcess             = MO.FScene_onProcess;
+   o.onProcess             = MO.Method.empty;
    o.onProcessAfter        = MO.Method.empty;
    //..........................................................
    // @method
@@ -60,23 +60,6 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
 //==========================================================
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
    MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-MO.FScene_onProcess = function FScene_onProcess(){
-   var o = this;
-   // 前处理
-   o.processEnterFrameListener(o._eventEnterFrame);
-   // 场景处理
-   if(o._activeStage){
-      o._activeStage.process();
-   }
-   // 后处理
-   o.processLeaveFrameListener(o._eventLeaveFrame);
 }
 
 //==========================================================

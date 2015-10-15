@@ -41,6 +41,7 @@ MO.FThreadConsole = function FThreadConsole(o){
 //==========================================================
 MO.FThreadConsole_ohInterval = function FThreadConsole_ohInterval(){
    var threadConsole = MO.Console.find(MO.FThreadConsole);
+   // MO.Logger.debug(threadConsole, 'Frame start ----------------------------');
    threadConsole.processAll();
 }
 
