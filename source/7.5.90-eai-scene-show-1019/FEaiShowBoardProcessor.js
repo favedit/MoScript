@@ -57,6 +57,7 @@ MO.FEaiShowBoardProcessor_setup = function FEaiShowBoardProcessor_setup() {
       var board = MO.Class.create(MO.FEaiShowBoard);
       board.linkGraphicContext(o);
       board.setUrl('{eai.resource}/show1019/center/' + i + '.mp4');
+      board.setMaskUrl('{eai.resource}/show1019/center/' + i + '.jpg');
       board.setup();
       boards.push(board);
       o.pushDisplay(board);
@@ -71,10 +72,6 @@ MO.FEaiShowBoardProcessor_setup = function FEaiShowBoardProcessor_setup() {
       var boardAngle = angle * i;
       board.setRadius(boardAngle);
       board.setCurrent(Math.cos(boardAngle) * radius, 0, -Math.sin(boardAngle) * radius);
-      //var matrix = board.matrix();
-      //matrix.tx = Math.cos(boardAngle) * radius;
-      //matrix.tz = -Math.sin(boardAngle) * radius;
-      //matrix.updateForce();
    }
 }
 
@@ -179,6 +176,14 @@ MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
    for(var i = 0; i < count; i++){
       var board = boards.at(i);
       var boardAngle = rotation + board.radius();
+      boardAngle %= MO.Lang.Math.PI2;
+      if((boardAngle > 0) && (boardAngle < Math.PI)){
+         board.play(true);
+         //board.setVisible(true);
+      }else{
+         //board.setVisible(false);
+         board.play(false);
+      }
       //var scale = Math.min(Math.max(Math.sin(boardAngle) + 1, 0) * 0.5 + 0.1, 1.0);
       //var matrix = board.matrix();
       //matrix.ty = -600 * scale + 300;

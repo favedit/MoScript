@@ -6,11 +6,12 @@
 // @history 151012
 //==========================================================
 MO.FEaiShowBoard = function FEaiShowBoard(o) {
-   o = MO.Class.inherits(this, o, MO.FE3dDisplay);
+   o = MO.Class.inherits(this, o, MO.FE3dDisplay, MO.MProcessReady);
    //..........................................................
    // @attribute
    o._radius          = MO.Class.register(o, new MO.AGetSet('_radius'));
    o._url             = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._maskUrl         = MO.Class.register(o, new MO.AGetSet('_maskUrl'));
    // @attribute
    o._line            = null;
    o._video           = null;
@@ -23,6 +24,10 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
    o._moveStartTick   = 0;
    o._moveSpeed       = 1000;
    o._startTick       = 0;
+   o._playeing        = false;
+   //..........................................................
+   // @method
+   o.onProcessReady = MO.FEaiEarthFlat_onProcessReady;
    //..........................................................
    // @method
    o.construct        = MO.FEaiShowBoard_construct;
@@ -38,6 +43,22 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
 }
 
 //==========================================================
+// <T>准备处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
+   var o = this;
+   //..........................................................
+   // 加载遮盖纹理
+   var loader = o._textureMaskLoader;
+   o._textureMask = loader.pickTexture();
+   o._textureMaskLoader = MO.Lang.Object.dispose(loader);
+   o._video._textureMask = o._textureMask;
+   o._videoData.pushTexture(o._textureMask, 'mask');
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -45,6 +66,7 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
 MO.FEaiShowBoard_construct = function FEaiShowBoard_construct() {
    var o = this;
    o.__base.FE3dDisplay.construct.call(o);
+   o.__base.MProcessReady.construct.call(o);
    // 配置属性
    o._currentPosition = new MO.SPoint3();
    o._targetDirection = new MO.SVector3();
@@ -67,6 +89,8 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
    videoData.loadUrl(o._url);
    videoData.setLoop(true);
    videoData.play(true);
+   videoData.material().info().effectCode = 'video.mask';
+   videoData.material().info().optionAlpha = true;
    // 创建视频
    var video = o._video = context.createObject(MO.FE3dVideo);
    video.setOptionSelect(false);
@@ -77,6 +101,11 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
    matrix.sy = 160;
    matrix.updateForce();
    o.pushRenderable(video);
+   // 加载遮盖纹理
+   var loader = o._textureMaskLoader = MO.Class.create(MO.FE3dTextureLoader);
+   loader.linkGraphicContext(o);
+   loader.setup(MO.EG3dTexture.Flat2d, 'mask');
+   loader.loadUrl(o._maskUrl);
    // 设置开始时间
    o._startTick = MO.Timer.current();
 }
@@ -87,7 +116,11 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
 // @method
 //==========================================================
 MO.FEaiShowBoard_play = function FEaiShowBoard_play(flag){
-   this._videoData.play(flag);
+   var o = this;
+   if(o._playeing != flag){
+      o._videoData.play(flag);
+   }
+   o._playeing = flag;
 }
 
 //==========================================================
@@ -119,12 +152,19 @@ MO.FEaiShowBoard_setTarget = function FEaiShowBoard_setTarget(x, y, z){
 MO.FEaiShowBoard_process = function FEaiShowBoard_process() {
    var o = this;
    o.__base.FE3dDisplay.process.call(o);
+   // 测试状态
+   var loader = o._readyLoader;
+   if(!loader.testReady()){
+      return;
+   }
    var matrix = o._matrix;
    var currentTick = MO.Timer.current();
    // 视频处理
    var span = MO.Timer.current() - o._startTick;
-   o._videoData.currentTime = span * 0.0001;
-   o._videoData.process();
+   //o._videoData.currentTime = span * 0.0001;
+   if(o._playeing){
+      o._videoData.process();
+   }
    // 移动处理
    var currentPosition = o._currentPosition;
    var targetPosition = o._targetPosition;
@@ -134,7 +174,7 @@ MO.FEaiShowBoard_process = function FEaiShowBoard_process() {
          var direction = o._targetDirection.direction(currentPosition, targetPosition);
          var length = direction.absolute();
          //if(moveLength > length){
-            currentPosition.assign(targetPosition);
+         currentPosition.assign(targetPosition);
          //}else{
          //   direction.normalize();
          //   direction.mulAll(moveLength);
