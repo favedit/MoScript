@@ -9,6 +9,8 @@ MO.FSocket = function FSocket(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MListener);
    //..........................................................
    // @attribute
+   o._url              = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._stoped           = MO.Class.register(o, new MO.AGetter('_stoped'), true);
    o._connected        = MO.Class.register(o, new MO.AGetter('_connected'), false);
    o._handle           = MO.Class.register(o, new MO.AGetter('_handle'));
    // @attribute
@@ -39,6 +41,7 @@ MO.FSocket = function FSocket(o){
    // @method
    o.connect           = MO.FSocket_connect;
    o.send              = MO.FSocket_send;
+   o.process           = MO.FSocket_process;
    o.disconnect        = MO.FSocket_disconnect;
    // @method
    o.dispose           = MO.FSocket_dispose;
@@ -101,8 +104,11 @@ MO.FSocket_ohReceive = function FSocket_ohReceive(hEvent){
 //==========================================================
 MO.FSocket_onClose = function FSocket_onClose(event){
    var o = this;
+   // 分发消息
    o._connected = false;
    o.processCloseListener(o._eventClose);
+   // 释放链接
+   o._handle = null;
 }
 
 //==========================================================
@@ -125,8 +131,11 @@ MO.FSocket_ohClose = function FSocket_ohClose(hEvent){
 //==========================================================
 MO.FSocket_onError = function FSocket_onError(event){
    var o = this;
+   // 分发消息
    var event = o._eventError;
    o.processErrorListener(event);
+   // 释放链接
+   o._handle = null;
 }
 
 //==========================================================
@@ -165,7 +174,7 @@ MO.FSocket_construct = function FSocket_construct(){
 MO.FSocket_connect = function FSocket_connect(uri){
    var o = this;
    // 获得地址
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
    // 链接服务器
    var handle = o._handle = new WebSocket(url);
    handle._linker = o;
@@ -173,6 +182,8 @@ MO.FSocket_connect = function FSocket_connect(uri){
    handle.onmessage = o.ohReceive;
    handle.onclose = o.ohClose;
    handle.onerror = o.ohError
+   // 设置属性
+   o._stoped = false;
 }
 
 //==========================================================
@@ -192,13 +203,33 @@ MO.FSocket_send = function FSocket_send(message){
 }
 
 //==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FSocket_process = function FSocket_process(){
+   var o = this;
+   if(!o._stoped){
+      if(!o._handle){
+         o.connect(o._url);
+      }
+   }
+}
+
+//==========================================================
 // <T>断开处理。</T>
 //
 // @method
 //==========================================================
 MO.FSocket_disconnect = function FSocket_disconnect(){
    var o = this;
-   o._handle.close();
+   var handle = o._handle;
+   if(handle){
+      handle.close();
+      o._handle = null;
+   }
+   // 设置属性
+   o._stoped = true;
 }
 
 //==========================================================

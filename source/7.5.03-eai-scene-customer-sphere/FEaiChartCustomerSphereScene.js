@@ -266,6 +266,9 @@ MO.FEaiChartCustomerSphereScene_onProcess = function FEaiChartCustomerSphereScen
    }
    // 重复播放
    if (o._playing){
+      // 网络处理
+      o._socketTouch.process();
+      o._socketSphere.process();
       // 球面处理
       o._earthSphere.process();
       // 键盘处理

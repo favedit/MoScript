@@ -414,6 +414,9 @@ MO.FEaiChartShow1019Scene_onProcess = function FEaiChartShow1019Scene_onProcess(
          o._mapReady = true;
       }
       //..........................................................
+      // 网络处理
+      o._socket.process();
+      //..........................................................
       // 更新国家
       o._countryEntity.process();
       //..........................................................
@@ -974,8 +977,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    countryEntity._faceShape.setVisible(false);
    o._readyLoader.push(countryEntity);
    // 注册socket监听
-   var socket = o._socket;
-   socket = MO.Class.create(MO.FSocket);
+   var socket = o._socket = MO.Class.create(MO.FSocket);
    socket.connect('{service.earth}/earth');
    socket.addReceiveListener(o, o.onSocketReceived);
 
