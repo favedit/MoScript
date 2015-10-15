@@ -27,7 +27,7 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
    o._playeing        = false;
    //..........................................................
    // @method
-   o.onProcessReady = MO.FEaiEarthFlat_onProcessReady;
+   o.onProcessReady   = MO.FEaiShowBoard_onProcessReady;
    //..........................................................
    // @method
    o.construct        = MO.FEaiShowBoard_construct;
@@ -47,7 +47,7 @@ MO.FEaiShowBoard = function FEaiShowBoard(o) {
 //
 // @method
 //==========================================================
-MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
+MO.FEaiShowBoard_onProcessReady = function FEaiShowBoard_onProcessReady(){
    var o = this;
    //..........................................................
    // 加载遮盖纹理
@@ -106,6 +106,7 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
    loader.linkGraphicContext(o);
    loader.setup(MO.EG3dTexture.Flat2d, 'mask');
    loader.loadUrl(o._maskUrl);
+   o._readyLoader.push(loader);
    // 设置开始时间
    o._startTick = MO.Timer.current();
 }

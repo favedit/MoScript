@@ -53,7 +53,7 @@ MO.FEaiShowBoardProcessor_setup = function FEaiShowBoardProcessor_setup() {
    var o = this;
    var boards = o._boards;
    // 创建面板
-   for(var i = 1; i <= 8; i++){
+   for(var i = 1; i <= o._boardCount; i++){
       var board = MO.Class.create(MO.FEaiShowBoard);
       board.linkGraphicContext(o);
       board.setUrl('{eai.resource}/show1019/center/' + i + '.mp4');
