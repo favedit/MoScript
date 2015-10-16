@@ -71,10 +71,13 @@ MO.FEaiEarthSphere_construct = function FEaiEarthSphere_construct(){
 // @method
 // @param info:FEaiChartCustomerSphereInfo 信息
 //==========================================================
-MO.FEaiEarthSphere_setSource = function FEaiEarthSphere_setSource(info){
+MO.FEaiEarthSphere_setSource = function FEaiEarthSphere_setSource(info, rectangles){
    var o = this;
    var touch = o._sourceTouch;
-   touch.setInfo(info);
+   touch.setInfo(info, rectangles);
+   if(touch.points.isEmpty()){
+      return false;
+   }
    // 设置方向
    o._sourceDirection.assign(touch.direction);
    o._currentDirection.assign(touch.direction);
@@ -83,6 +86,7 @@ MO.FEaiEarthSphere_setSource = function FEaiEarthSphere_setSource(info){
    o._currentAngle = 0;
    o._rotationAngle = 0;
    o._autoTick = 0;
+   return true;
 }
 
 //==========================================================

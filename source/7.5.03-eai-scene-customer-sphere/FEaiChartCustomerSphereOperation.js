@@ -9,7 +9,8 @@ MO.FEaiChartCustomerSphereOperation = function FEaiChartCustomerSphereOperation(
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._imageButton = null;
+   o._imageButton   = null;
+   o._buttonVisible = MO.Class.register(o, new MO.AGetter('_buttonVisible'), false);
    //..........................................................
    // @event
    o.onImageLoad  = MO.FEaiChartCustomerSphereOperation_onImageLoad;
@@ -17,6 +18,8 @@ MO.FEaiChartCustomerSphereOperation = function FEaiChartCustomerSphereOperation(
    //..........................................................
    // @method
    o.construct    = MO.FEaiChartCustomerSphereOperation_construct;
+   // @method
+   o.showButton   = MO.FEaiChartCustomerSphereOperation_showButton;
    // @method
    o.setup        = MO.FEaiChartCustomerSphereOperation_setup;
    return o;
@@ -39,7 +42,10 @@ MO.FEaiChartCustomerSphereOperation_onImageLoad = function FEaiChartCustomerSphe
 //==========================================================
 MO.FEaiChartCustomerSphereOperation_onPaintBegin = function FEaiChartCustomerSphereOperation_onPaintBegin(event) {
    var o = this;
-   if (!o._ready) {
+   if (!o._imageButton.testReady()){
+      return;
+   }
+   if (!o._imageRange.testReady()){
       return;
    }
    o.__base.FGuiControl.onPaintBegin.call(o, event);
@@ -49,9 +55,15 @@ MO.FEaiChartCustomerSphereOperation_onPaintBegin = function FEaiChartCustomerSph
    var virtualSize = event.virtualSize;
    var imageButton = o._imageButton;
    var imageSize = imageButton.size();
-   var left = (virtualSize.width - imageSize.width) * 0.5;
-   var top = (virtualSize.height - imageSize.height) * 0.5;
-   graphic.drawImage(o._imageButton, left, top, imageSize.width, imageSize.height);
+   var width = imageSize.width / 1.8;
+   var height = imageSize.height / 1.8;
+   var left = (virtualSize.width - width) * 0.5;
+   var top = (virtualSize.height - height) * 0.5;
+   if(o._buttonVisible){
+      graphic.drawImage(o._imageButton, left, top, width, height);
+   }else{
+      graphic.drawImage(o._imageRange, left, top, width, height);
+   }
 }
 
 //==========================================================
@@ -65,6 +77,17 @@ MO.FEaiChartCustomerSphereOperation_construct = function FEaiChartCustomerSphere
 }
 
 //==========================================================
+// <T>显示按键。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartCustomerSphereOperation_showButton = function FEaiChartCustomerSphereOperation_showButton(visible){
+   var o = this;
+   o._buttonVisible = visible;
+   o.dirty();
+}
+
+//==========================================================
 // <T>初始化处理。</T>
 //
 // @method
@@ -74,5 +97,8 @@ MO.FEaiChartCustomerSphereOperation_setup = function FEaiChartCustomerSphereOper
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建按键图片
    var image = o._imageButton = imageConsole.load('{eai.resource}/world/button.png');
+   image.addLoadListener(o, o.onImageLoad);
+   // 创建按键图片
+   var image = o._imageRange = imageConsole.load('{eai.resource}/world/button.range.png');
    image.addLoadListener(o, o.onImageLoad);
 }

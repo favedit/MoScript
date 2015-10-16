@@ -13,6 +13,8 @@ MO.SEaiEarthTouch = function SEaiEarthTouch(){
    o.direction     = new MO.SVector3();
    //..........................................................
    // @method
+   o.testDisableRectangles = MO.SEaiEarthTouch_testDisableRectangles;
+   // @method
    o.setInfo       = MO.SEaiEarthTouch_setInfo;
    o.calculate     = MO.SEaiEarthTouch_calculate;
    o.calculateFlat = MO.SEaiEarthTouch_calculateFlat;
@@ -21,13 +23,31 @@ MO.SEaiEarthTouch = function SEaiEarthTouch(){
    return o;
 }
 
+
+//==========================================================
+// <T>测试触点是否为禁止区域。</T>
+//
+// @method
+//==========================================================
+MO.SEaiEarthTouch_testDisableRectangles = function SEaiEarthTouch_testDisableRectangles(rectangles, x, y){
+   var o = this;
+   var count = rectangles.count();
+   for(var i = 0; i < count; i++){
+      var rectangle = rectangles.at(i);
+      if(rectangle.testRange(x , y)){
+         return true;
+      }
+   }
+   return false;
+}
+
 //============================================================
 // <T>设置信息。</T>
 //
 // @method
 // @return info 信息
 //============================================================
-MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info){
+MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info, rectangles){
    var o = this;
    var infoPoints = info.points();
    // 清空集合
@@ -42,13 +62,18 @@ MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info){
    var count = infoPoints.count();
    for(var i = 0; i < count; i++){
       var infoPoint = infoPoints.at(i);
+      if(rectangles && o.testDisableRectangles(rectangles, infoPoint.x(), infoPoint.y())){
+         continue;
+      }
       var point = MO.Memory.alloc(MO.SEaiEarthTouchPoint);
       point.setInfo(infoPoint);
       points.push(point);
    }
    // 设置方向
-   var point = points.first();
-   o.direction.assign(point.direction);
+   if(!points.isEmpty()){
+      var point = points.first();
+      o.direction.assign(point.direction);
+   }
 }
 
 //============================================================

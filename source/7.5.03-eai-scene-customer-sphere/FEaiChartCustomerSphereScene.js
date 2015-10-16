@@ -27,9 +27,11 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
    o._earthSphere            = null;
+   o._disableRectangles      = null;
    //..........................................................
    // @event
    o.onSocketTouchReceived   = MO.FEaiChartCustomerSphereScene_onSocketTouchReceived;
+   o.onSocketSphereReceived  = MO.FEaiChartCustomerSphereScene_onSocketSphereReceived;
    // @event
    o.onOperationDown         = MO.FEaiChartCustomerSphereScene_onOperationDown;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
@@ -42,6 +44,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o.construct               = MO.FEaiChartCustomerSphereScene_construct;
    // @method
    o.setup                   = MO.FEaiChartCustomerSphereScene_setup;
+   o.testDisableRectangles   = MO.FEaiChartCustomerSphereScene_testDisableRectangles;
    o.showFace                = MO.FEaiChartCustomerSphereScene_showFace;
    o.fixMatrix               = MO.FEaiChartCustomerSphereScene_fixMatrix;
    // @method
@@ -61,6 +64,7 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
    var o = this;
    // 获得信息
    var guiManager = o._guiManager;
+   var controlOperation = o._controlOperation;
    var context = o._graphicContext;
    var size = context.size();
    var info = o._info;
@@ -79,7 +83,9 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
          return;
       }
       // 设置点击信息
-      earthSphere.setSource(info);
+      if(!earthSphere.setSource(info, o._disableRectangles)){
+         return;
+      }
       // 计算原始位置
       var rotationMatrix = o._rotationMatrix.assign(matrix);
       rotationMatrix.invert();
@@ -87,43 +93,63 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       MO.Logger.debug(o, 'Touch down. ({1})', sourceTouch);
       // 发送点击消息
       var sourceTouchPoint = sourceTouch.points.first();
-      var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
-      if(id > 0){
-         socketSphere.send('area=' + id);
-         MO.Logger.debug(o, 'Select area. (id={1})', id);
-         return;
-      }
-      if(sourceTouchPoint.originLength < (128 / size.height)){
-         if(guiManager.visible()){
+      //var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
+      //if(id > 0){
+      //   socketSphere.send('area=' + id);
+      //   MO.Logger.debug(o, 'Select area. (id={1})', id);
+      //   return;
+      //}
+      if(sourceTouchPoint.originLength < (190 / size.height)){
+         if(controlOperation.buttonVisible()){
             if(sourceTouchPoint.originPosition.x < 0){
                earthSphere.reset();
                socketSphere.send('reset');
-               guiManager.setVisible(false);
+               controlOperation.showButton(false);
             }else{
                socketSphere.send('next');
             }
          }else{
-            guiManager.setVisible(true);
+            controlOperation.showButton(true);
          }
       }else{
-         guiManager.setVisible(false);
+         controlOperation.showButton(false);
          o._earthFlat.drawTouch(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
          o._moving = true;
       }
+      guiManager.dirty();
    }else if(typeCode == 'M' && o._moving){
       // 检查有效性
       if(info.points().isEmpty()){
          return;
       }
       // 设置点击信息
-      earthSphere.setTarget(info);
-      //MO.Logger.debug(o, 'Touch movie. ({1})', targetTouch);
+      earthSphere.setTarget(info, o._disableRectangles);
+      // MO.Logger.debug(o, 'Touch movie. ({1})', targetTouch);
       // 发送转动消息
       earthSphere.sendRotation();
    }else if(typeCode == 'U'){
       o._moving = false;
       MO.Logger.debug(o, 'Touch up.');
    }
+}
+
+//==========================================================
+// <T>表格数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartCustomerSphereScene_onSocketSphereReceived = function FEaiChartCustomerSphereScene_onSocketSphereReceived(event) {
+   var o = this;
+   var guiManager = o._guiManager;
+   var message = event.message;
+   var controlOperation = o._controlOperation;
+   if(message == 'phase=0'){
+      controlOperation.showButton(false);
+   }else if(message == 'phase=1'){
+      controlOperation.showButton(true);
+   }
+   guiManager.dirty();
 }
 
 //==========================================================
@@ -182,7 +208,7 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    // 自动旋转
    o._earthSphere.autoRotation(true);
    // 显示界面
-   o._guiManager.hide();
+   //o._guiManager.hide();
    //o._mapEntity.showCity();
 }
 
@@ -305,6 +331,11 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var stage = o._activeStage;
    var qualityCd = MO.Desktop.qualityCd();
    //..........................................................
+   // 创建禁止区域
+   // 0.758078396320343, 0.355410635471344
+   var rectangles = o._disableRectangles = new MO.TObjects();
+   rectangles.push(new MO.SRectangle(0.7, 0.3, 0.1, 0.1));
+   //..........................................................
    // 创建地球平面
    var earthFlat = o._earthFlat = MO.Class.create(MO.FEaiEarthFlat);
    earthFlat.linkGraphicContext(context3d);
@@ -364,6 +395,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    // 注册发送监听
    var socket = o._socketSphere = MO.Class.create(MO.FSocket);
    socket.connect('{service.touch}/sphere');
+   socket.addReceiveListener(o, o.onSocketSphereReceived);
    earthSphere._socket = socket;
    //..........................................................
    // 加载资源

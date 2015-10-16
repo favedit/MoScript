@@ -38,6 +38,7 @@ MO.FEaiEarthFlat = function FEaiEarthFlat(o){
 //==========================================================
 MO.FEaiEarthFlat_drawTouch = function FEaiEarthFlat_drawTouch(x, y){
    var o = this;
+   return;
    if(!o._canvas){
       return;
    }
@@ -155,7 +156,13 @@ MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
       }
    }
    // 绘制经纬度
-   o.drawGrid(context2d, 8);
+   //context2d.fillRectangle(0, sizeHeight / 2 - 10, sizeWidth, 20, '#0000FF');
+   //context2d.fillRectangle(sizeWidth / 4 * 1 - 10, 0, 20, sizeHeight, '#0000FF');
+   //context2d.fillRectangle(sizeWidth / 4 * 2 - 10, 0, 20, sizeHeight, '#0000FF');
+   //context2d.fillRectangle(sizeWidth / 4 * 3 - 10, 0, 20, sizeHeight, '#0000FF');
+   //context2d.fillRectangle(0, 0, sizeWidth, 50, '#0000FF');
+   //context2d.fillRectangle(0, sizeHeight - 50, sizeWidth, sizeHeight, '#0000FF');
+   //o.drawGrid(context2d, 32);
    // 绘制区域
    context2d.drawImage(o._imageArea, 0, 0, sizeWidth, size.height);
    // 创建纹理
