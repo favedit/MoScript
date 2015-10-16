@@ -84,9 +84,16 @@ MO.FEaiChartShow1019CustomerTable_onPaintBegin = function FEaiChartShow1019Custo
    graphic.setFont(o._headFontStyle);
    var titleWidth = graphic.textWidth(titleText);
    var textLeft = left + (width - titleWidth) * 0.5;
-   graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');
+   graphic.drawText(titleText, textLeft, top + 60, '#59FDE9');
+   // 绘制英文标题
+   //var titleText = 'Global Investment Real-time Display Center(China)';
+   var titleText = 'Online Investment Platform';
+   graphic.setFont('bold 24px Microsoft YaHei');
+   var titleWidth = graphic.textWidth(titleText);
+   var textLeft = left + (width - titleWidth) * 0.5;
+   graphic.drawText(titleText, textLeft, top + 95, '#59FDE9');
    drawPosition += 60
-      //..........................................................
+   //..........................................................
    graphic.setFont(o._rowFontStyle);
    // 绘制前3名
    var tableTop = top + o._rankStart;

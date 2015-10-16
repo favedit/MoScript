@@ -124,7 +124,20 @@ MO.FEaiChartShow1019Scene = function FEaiChartShow1019Scene(o){
    o.switchDisplayPhase       = MO.FEaiChartShow1019Scene_switchDisplayPhase;
    o.resetDisplayPhase        = MO.FEaiChartShow1019Scene_resetDisplayPhase;
    o.videoFullScreenAnime     = MO.FEaiChartShow1019Scene_videoFullScreenAnime;
+   o.onVideoEnded             = MO.FEaiChartShow1019Scene_onVideoEnded;
    return o;
+}
+
+//==========================================================
+// <T>视频播放结束返回前一段循环播放。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartShow1019Scene_onVideoEnded = function FEaiChartShow1019Scene_onVideoEnded() {
+   var video = this;
+   video.currentTime = 20;
+   video.play();
 }
 
 //==========================================================
@@ -993,6 +1006,12 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    for (var i = 0; i < videoCount; i++) {
       var videoData = context3d.createObject(MO.FE3dVideoData);
       videoData.loadUrl('../ars/eai/show1019/video' + i + '.mp4');
+      if (i != 3) {
+         videoData.hVideo().addEventListener("ended", o.onVideoEnded);
+      }
+      else {
+         videoData.hVideo().loop = true;
+      }
       videoDataList.push(videoData);
 
       var videoRenderable = context3d.createObject(MO.FE3dVideo);
@@ -1059,7 +1078,7 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
    // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.show1019.LogoBar');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
@@ -1112,8 +1131,8 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
    // 标题图片和版权图片
    var titlePic = o._titlePic = MO.Class.create(MO.FGuiPicture);
    titlePic.setBackResource('url:{eai.resource}/show1019/title.png');
-   titlePic.setSize(459, 52);
-   titlePic.setLocation((1920 - 459) / 2, 10);
+   titlePic.setSize(663, 95);
+   titlePic.setLocation((1920 - 663) / 2, 10);
    titlePic.linkGraphicContext(o);
    titlePic.build();
    titlePic.psInitialize();
@@ -1121,8 +1140,8 @@ MO.FEaiChartShow1019Scene_setup = function FEaiChartShow1019Scene_setup() {
 
    var crPic = o._copyrightPic = MO.Class.create(MO.FGuiPicture);
    crPic.setBackResource('url:{eai.resource}/show1019/copyright.png');
-   crPic.setSize(247, 52);
-   crPic.setLocation(1920 - 247, 1080 - 52 - 10);
+   crPic.setSize(245, 37);
+   crPic.setLocation(1920 - 245, 1080 - 37 - 10);
    crPic.linkGraphicContext(o);
    crPic.build();
    crPic.psInitialize();
