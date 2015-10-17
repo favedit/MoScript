@@ -56,6 +56,7 @@ MO.FEaiShowBoard_onProcessReady = function FEaiShowBoard_onProcessReady(){
    o._textureMaskLoader = MO.Lang.Object.dispose(loader);
    o._video._textureMask = o._textureMask;
    o._videoData.pushTexture(o._textureMask, 'mask');
+   o._videoData.process();
 }
 
 //==========================================================
