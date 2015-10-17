@@ -580,10 +580,18 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
 
    o._videoAnimeStartTick = MO.Timer.current();
    //o._floatingImageManager.setAutoShow(false);
+   if (window.stop !== undefined) {
+      window.stop();
+   }
+   else if (document.execCommand !== undefined) {
+      document.execCommand("Stop", false);
+   }
    o._boardProcessor.setAutoPlay(false);
+  
    switch (phase) {
       case 0: // 待机画面
          //o._floatingImageManager.setAutoShow(true);
+         o._boardProcessor.reload();
          o._boardProcessor.setAutoPlay(true);
          o._socket.send('phase=0');
          break;
@@ -592,6 +600,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._currentVideoRenderable = o._videoRenderables.at(0);
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(0);
+         o._currentVideoData.hVideo().load();
          o._currentVideoData.hVideo().play();
          o._showVideoSE.play();
          break;
@@ -651,6 +660,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._currentVideoRenderable = o._videoRenderables.at(1);
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(1);
+         o._currentVideoData.hVideo().load();
          o._currentVideoData.hVideo().play();
          break;
       case 6: // 收起视频2
@@ -665,6 +675,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._currentVideoRenderable = o._videoRenderables.at(2);
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(2);
+         o._currentVideoData.hVideo().load();
          o._currentVideoData.hVideo().play();
          break;
       case 8: // 收起视频3
@@ -679,6 +690,7 @@ MO.FEaiChartShow1019Scene_switchDisplayPhase = function FEaiChartShow1019Scene_s
          o._currentVideoRenderable = o._videoRenderables.at(3);
          o._currentVideoRenderable.setVisible(true);
          o._currentVideoData = o._videoDataList.at(3);
+         o._currentVideoData.hVideo().load();
          o._currentVideoData.hVideo().play();
          break;
       case 10:// 收起视频4

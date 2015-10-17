@@ -22,6 +22,7 @@ MO.FEaiShowBoardProcessor = function FEaiShowBoardProcessor(o) {
    // @method
    o.construct       = MO.FEaiShowBoardProcessor_construct;
    // @method
+   o.reload          = MO.FEaiShowBoardProcessor_reload;
    o.setup           = MO.FEaiShowBoardProcessor_setup;
    o.setAutoPlay     = MO.FEaiShowBoardProcessor_setAutoPlay;
    o.setAutoRotation = MO.FEaiShowBoardProcessor_setAutoRotation;
@@ -30,6 +31,21 @@ MO.FEaiShowBoardProcessor = function FEaiShowBoardProcessor(o) {
    // @method
    o.dispose         = MO.FEaiShowBoardProcessor_dispose;
    return o;
+}
+
+//==========================================================
+// <T>重新加载</T>
+//
+// @method
+//==========================================================
+MO.FEaiShowBoardProcessor_reload = function FEaiShowBoardProcessor_reload() {
+   var o = this;
+   var boards = o._boards;
+   var count = boards.count();
+   for (var i = 0; i < count; i++) {
+      var board = boards.at(i);
+      board._videoData.hVideo().load();
+   }
 }
 
 //==========================================================
