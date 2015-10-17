@@ -93,12 +93,6 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       MO.Logger.debug(o, 'Touch down. ({1})', sourceTouch);
       // 发送点击消息
       var sourceTouchPoint = sourceTouch.points.first();
-      //var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
-      //if(id > 0){
-      //   socketSphere.send('area=' + id);
-      //   MO.Logger.debug(o, 'Select area. (id={1})', id);
-      //   return;
-      //}
       if(sourceTouchPoint.originLength < (190 / size.height)){
          if(controlOperation.buttonVisible()){
             if(sourceTouchPoint.originPosition.x < 0){
@@ -112,6 +106,14 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
             controlOperation.showButton(true);
          }
       }else{
+         // 选择区域
+         var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
+         if(id > 0){
+            socketSphere.send('area=' + id);
+            MO.Logger.debug(o, 'Select area. (id={1})', id);
+            return;
+         }
+         // 隐藏按键
          controlOperation.showButton(false);
          o._earthFlat.drawTouch(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
          o._moving = true;
@@ -345,6 +347,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    //..........................................................
    // 创建地球
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
+   earthSphere._scene = o;
    earthSphere.linkGraphicContext(context3d);
    if(qualityCd == MO.EGraphicQuality.Highest){
       earthSphere.setSplitCount(128);

@@ -91,6 +91,7 @@ MO.FEaiShowBoard_setup = function FEaiShowBoard_setup(data) {
    videoData.play(true);
    videoData.material().info().effectCode = 'video.mask';
    videoData.material().info().optionAlpha = true;
+   o._playeing = true;
    o._readyLoader.push(videoData);
    // 创建视频
    var video = o._video = context.createObject(MO.FE3dVideo);

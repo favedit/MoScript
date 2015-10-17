@@ -148,6 +148,8 @@ MO.FEaiEarthSphere_process = function FEaiEarthSphere_process(){
          if(o._autoTick == 0){
             o._autoTick = currentTick;
          }else if(currentTick - o._autoTick > 120000){
+            o._scene._controlOperation.showButton(false);
+            o._scene._guiManager.dirty();
             o.reset();
          }
       }

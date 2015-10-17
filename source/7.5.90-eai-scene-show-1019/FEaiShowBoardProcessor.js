@@ -177,11 +177,11 @@ MO.FEaiShowBoardProcessor_process = function FEaiShowBoardProcessor_process() {
       var board = boards.at(i);
       var boardAngle = rotation + board.radius();
       boardAngle %= MO.Lang.Math.PI2;
-      if((boardAngle >= startAngle) && (boardAngle < endAngle)){
-         board.play(true);
-      }else{
-         board.play(false);
-      }
+      //if((boardAngle >= startAngle) && (boardAngle < endAngle)){
+      //   board.play(true);
+      //}else{
+      //   board.play(false);
+      //}
       // 逻辑处理
       board.setTarget(Math.cos(boardAngle) * radius, 0, -Math.sin(boardAngle) * radius);
    }
