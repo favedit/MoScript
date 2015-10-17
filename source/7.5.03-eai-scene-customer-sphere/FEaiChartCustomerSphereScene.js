@@ -109,8 +109,35 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
          // 选择区域
          var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
          if(id > 0){
-            socketSphere.send('area=' + id);
-            MO.Logger.debug(o, 'Select area. (id={1})', id);
+            var selectId = 0;
+            switch(id){
+               case 1:
+                  selectId = 1;
+                  break;
+               case 2:
+                  selectId = 8;
+                  break;
+               case 3:
+                  selectId = 7;
+                  break;
+               case 4:
+                  selectId = 6;
+                  break;
+               case 5:
+                  selectId = 5;
+                  break;
+               case 6:
+                  selectId = 4;
+                  break;
+               case 7:
+                  selectId = 3;
+                  break;
+               case 8:
+                  selectId = 2;
+                  break;
+            }
+            socketSphere.send('area=' + selectId);
+            MO.Logger.debug(o, 'Select area. (id={1})', selectId);
             return;
          }
          // 隐藏按键
