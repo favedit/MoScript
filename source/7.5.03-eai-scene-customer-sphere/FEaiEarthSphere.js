@@ -204,7 +204,7 @@ MO.FEaiEarthSphere_autoRotation = function FEaiEarthSphere_autoRotation(value){
 MO.FEaiEarthSphere_sendRotation = function FEaiEarthSphere_sendRotation(){
    var o = this;
    var matrix = o._matrix;
-   o._socket.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
+   o._scene._socketSphere.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
 }
 
 //==========================================================
