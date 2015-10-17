@@ -220,6 +220,7 @@ MO.FEaiChartShow1019Scene_onSocketReceived = function FEaiChartShow1019Scene_onS
       var autoRotateIndex = message.indexOf('autoRotate');
       if (autoRotateIndex != -1) {
          o._autoRotate = new Boolean(parseInt(message.substr(autoRotateIndex + 11)));
+         o._boardProcessor.setAutoRotation(o._autoRotate);
       }
 
    }

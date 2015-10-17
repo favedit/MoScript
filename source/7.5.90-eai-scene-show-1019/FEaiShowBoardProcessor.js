@@ -123,16 +123,10 @@ MO.FEaiShowBoardProcessor_setAutoPlay = function FEaiShowBoardProcessor_setAutoP
 //==========================================================
 MO.FEaiShowBoardProcessor_setAutoRotation = function FEaiShowBoardProcessor_setAutoRotation(flag){
    var o = this;
-   //o._optionRotation = flag;
-   // 设置面板
-   //var boards = o._boards;
-   //var count = boards.count();
-   //for(var i = 0; i < count; i++){
-   //   var board = boards.at(i);
-   //   board.play(flag);
-   //}
-   // 设置可见性
-   //o.setVisible(flag);
+   if(flag){
+      o._optionArea = false;
+      o._optionRotation = true;
+   }
 }
 
 //==========================================================
