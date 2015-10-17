@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -14,81 +14,76 @@
 <script language='javascript' src='../ajs/eai.js'></script>
 <script language='javascript' src='../ajs/context_cn.js'></script>
 <script>
-   var g_loadingHandle;
+var g_loadingHandle;
 
-   function doLoading() {
-      var htmlBody = document.body;
-      //htmlBody.style.backgroundImage = 'url(../ars/eai/background.jpg)';
-      var hImages = document.getElementById("loading_img_div").getElementsByTagName("img");
-      var index = [7, 6, 5, 4, 3, 2, 1, 0];
-      g_loadingHandle = setInterval(function() {
-         for (var i = 0; i < index.length; i++) {
-            hImages[index[i]].style.opacity = 0.1 + (0.1 * i);
-            if (i == index.length - 1) {
-               index.push(index[0]);
-               index.splice(0, 1);
-            }
+function doLoading() {
+   var htmlBody = document.body;
+   //htmlBody.style.backgroundImage = 'url(../ars/eai/background.jpg)';
+   var hImages = document.getElementById("loading_img_div").getElementsByTagName("img");
+   var index = [7, 6, 5, 4, 3, 2, 1, 0];
+   g_loadingHandle = setInterval(function() {
+      for (var i = 0; i < index.length; i++) {
+         hImages[index[i]].style.opacity = 0.1 + (0.1 * i);
+         if (i == index.length - 1) {
+            index.push(index[0]);
+            index.splice(0, 1);
          }
-      }, 80);
-   }
+      }
+   }, 80);
+}
 
-   function onDeviceError(event) {
-      var hLoading = document.getElementById("id_loading")
-      document.body.removeChild(hLoading);
-      var hError = document.getElementById("id_error");
-      hError.style.backgroundImage = 'url(../ars/eai/loading/background.jpg)';
-      document.getElementById("error_img").src = "../ars/eai/loading/error.png";
-      MO.Window.Html.visibleSet(hError, true);
-   }
+function onDeviceError(event) {
+   var hLoading = document.getElementById("id_loading")
+   document.body.removeChild(hLoading);
+   var hError = document.getElementById("id_error");
+   hError.style.backgroundImage = 'url(../ars/eai/loading/background.jpg)';
+   document.getElementById("error_img").src = "../ars/eai/loading/error.png";
+   MO.Window.Html.visibleSet(hError, true);
+}
 
-   function onLoaded(event) {
-      clearInterval(g_loadingHandle);
-   }
+function onLoaded(event) {
+   clearInterval(g_loadingHandle);
+}
 
-   function oniOSStart(event) {
-       var hLoading = document.getElementById("id_ios_play")
-       document.body.removeChild(hLoading);
-       MO.Console.find(MO.FAudioConsole).select();
-       var liveScene = MO.Desktop.application().activeChapter().activeScene();
-       liveScene._statusLayerLevel = -1;
-       liveScene._groundAutio.play(0);
-       liveScene._countryEntity._audioMapEnter.play(0);
-   }
+function oniOSStart(event) {
+    var hLoading = document.getElementById("id_ios_play")
+    document.body.removeChild(hLoading);
+    MO.Console.find(MO.FAudioConsole).select();
+    var liveScene = MO.Desktop.application().activeChapter().activeScene();
+    liveScene._statusLayerLevel = -1;
+    liveScene._groundAutio.play(0);
+    liveScene._countryEntity._audioMapEnter.play(0);
+}
 
-   function onLoad() {
-      // 设置变量
-      MO.initialize();
-      MO.Runtime.setProcessCd(MO.EProcess.Debug);
-      MO.Window.Browser.setContentPath('..');
-      MO.Window.Browser.fullscreen(window, true);
-      MO.Window.lsnsLoaded.register(null, onLoaded);
-      MO.Window.lsnsDeviceError.register(null, onDeviceError);
-      // MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
-      // MO.Window.Browser.setOrientationCd(MO.EOrientation.Vertical);
-      // 设置环境
-      MO.Console.find(MO.FE3sVendorConsole).setup('net');
-      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://eai.ezubo.com:8089');
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://localhost:8099');
-      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://service.eai.ezubo.com');
-      MO.Console.find(MO.FEnvironmentConsole).registerValue('service.touch', 'ws://127.0.0.1:9080');
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue('service.touch', 'ws://10.21.1.171:9080');
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue('service.touch', 'ws://10.21.0.216:9080');
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue('service.touch', 'ws://10.21.1.6:9080');
-      // 设置日志
-      // MO.Console.find(MO.FLoggerConsole).connect('ws://10.21.0.128:8080/logger');
-      // 设置桌面
-      //MO.Desktop.setQualityCd(MO.EGraphicQuality.Lowest);
-      MO.Desktop.setQualityCd(MO.EGraphicQuality.Middle);
-      //MO.Desktop.setQualityCd(MO.EGraphicQuality.High);
-      //MO.Desktop.setQualityCd(MO.EGraphicQuality.Highest);
-      // 设置应用
-      var application = MO.Desktop.initialize(MO.FEaiChartApplication);
-      application.setSceneCode(MO.EEaiScene.ChartCustomerSphere);
-      application.setBackgroundUrl(null);
-      application.setup(document.body);
-      // MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EConstant.DeviceType, 'mb');
-   }
+function onLoad() {
+   // 设置变量
+   MO.initialize();
+   MO.Runtime.setProcessCd(MO.EProcess.Debug);
+   MO.Window.Browser.setContentPath('..');
+   MO.Window.Browser.fullscreen(window, true);
+   MO.Window.lsnsLoaded.register(null, onLoaded);
+   MO.Window.lsnsDeviceError.register(null, onDeviceError);
+   // MO.Runtime.setPlatformCd(MO.EPlatform.Mobile);
+   // MO.Window.Browser.setOrientationCd(MO.EOrientation.Vertical);
+   // 设置环境
+   MO.Console.find(MO.FE3sVendorConsole).setup('net');
+   MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
+   MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://service.eai.ezubo.com');
+   MO.Console.find(MO.FEnvironmentConsole).registerValue('service.touch', 'ws://192.168.0.101:9080');
+   // 设置日志
+   // MO.Console.find(MO.FLoggerConsole).connect('ws://10.21.0.128:8080/logger');
+   // 设置桌面
+   //MO.Desktop.setQualityCd(MO.EGraphicQuality.Lowest);
+   //MO.Desktop.setQualityCd(MO.EGraphicQuality.Middle);
+   //MO.Desktop.setQualityCd(MO.EGraphicQuality.High);
+   MO.Desktop.setQualityCd(MO.EGraphicQuality.Highest);
+   // 设置应用
+   var application = MO.Desktop.initialize(MO.FEaiChartApplication);
+   application.setSceneCode(MO.EEaiScene.ChartCustomerSphere);
+   application.setBackgroundUrl(null);
+   application.setup(document.body);
+   // MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EConstant.DeviceType, 'mb');
+}
 </script>
 </head>
 
