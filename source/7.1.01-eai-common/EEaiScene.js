@@ -40,6 +40,7 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartMarketerProduct      = 'chart.marketer.product';
    // 展会
    o.ChartShow1019             = 'chart.show.1019';
+   o.ChartShow1022             = 'chart.show.1022';
    o.ChartSesameFinancial      = 'chart.sesame.financial';
    return o;
 }

@@ -105,6 +105,10 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
       case MO.EEaiScene.ChartShow1019:
          scene = o._sceneShow1019 = MO.Class.create(MO.FEaiChartShow1019Scene);
          break;
+      // 1022展会
+      case MO.EEaiScene.ChartShow1022:
+         scene = o._sceneShow1022 = MO.Class.create(MO.FEaiChartShow1022Scene);
+         break;
       case MO.EEaiScene.ChartSesameFinancial:
          scene = o._sceneSesameFinancial = MO.Class.create(MO.FEaiChartSesameFinancialScene);
          break;
