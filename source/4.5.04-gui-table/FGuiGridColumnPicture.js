@@ -9,6 +9,7 @@ MO.FGuiGridColumnPicture = function FGuiGridColumnPicture(o) {
    o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
 
    o._align   = MO.Class.register(o, new MO.AGetSet('_align'));
+   o._drawScale = MO.Class.register(o, new MO.AGetSet('_drawScale'), 1.0);
 
    //..........................................................
    // @method

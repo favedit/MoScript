@@ -294,11 +294,11 @@ MO.FEaiChartShow1022Scene_videoFullScreenAnime = function FEaiChartShow1022Scene
 
    var videoRenderable = o._currentVideoRenderable;
    var matrix = videoRenderable.matrix();
-   matrix.sx = 1920 * t;
-   matrix.sy = 1080 * t;
+   matrix.sx = 1024 * t;
+   matrix.sy = 768 * t;
    matrix.sz = 1;
-   matrix.tx = (1920 - 1920 * t) * 0.5;
-   matrix.ty = (1080 - 1080 * t) * 0.5;;
+   matrix.tx = (1024 - 1024 * t) * 0.5;
+   matrix.ty = (768 - 768 * t) * 0.5;;
    matrix.tz = 0;
    matrix.updateForce();
 }
@@ -612,6 +612,8 @@ MO.FEaiChartShow1022Scene_switchDisplayPhase = function FEaiChartShow1022Scene_s
          // 重置视频1参数
          o._videoDataList.at(0).hVideo().pause();
          o._videoDataList.at(0).hVideo().currentTime = 0;
+         // 直接跳到phase 4
+         o.switchDisplayPhase(++o._displayPhase);
          break;
       case 4: // 显示实时投资
          o._logoBar.setVisible(true);
@@ -624,8 +626,8 @@ MO.FEaiChartShow1022Scene_switchDisplayPhase = function FEaiChartShow1022Scene_s
          o._startRotateY = o._rotationY;
          o._startRotateZ = o._rotationZ;
          o._startWorldScale = o._worldScale;
-         var focusParam = o._focusParamManager.getFocusParameter('china');
-         o._targetWorldScale = 1400;
+         var focusParam = o._focusParamManager.getFocusParameter('china1024');
+         o._targetWorldScale = focusParam.scale;
          o._targetRotateX = 0;
          o._targetRotateY = focusParam.rotateY;
          o._targetRotateZ = 0;
@@ -969,7 +971,7 @@ MO.FEaiChartShow1022Scene_setup = function FEaiChartShow1022Scene_setup() {
    //o._guiManager.register(provinceTable);
    //..........................................................
    // 创建面板处理
-   var processor = o._boardProcessor = MO.Class.create(MO.FEaiShowBoardProcessor);
+   var processor = o._boardProcessor = MO.Class.create(MO.FEaiShow1022BoardProcessor);
    processor.linkGraphicContext(o);
    processor.setup();
    o._activeStage.mapLayer().push(processor);
@@ -1035,8 +1037,8 @@ MO.FEaiChartShow1022Scene_setup = function FEaiChartShow1022Scene_setup() {
       o._videoRenderables.push(videoRenderable);
       layer.pushRenderable(videoRenderable);
       var matrix = videoRenderable.matrix();
-      matrix.sx = 1920;
-      matrix.sy = 1080;
+      matrix.sx = 1024;
+      matrix.sy = 768;
       matrix.sz = 1;
       matrix.tx = 0;
       matrix.ty = 0;
@@ -1111,6 +1113,7 @@ MO.FEaiChartShow1022Scene_setup = function FEaiChartShow1022Scene_setup() {
    var stage = o.activeStage();
    var timeline = o._timeline = MO.Class.create(MO.FEaiChartShow1022CustomerTimeline);
    timeline.setName('Timeline');
+   timeline.setTextColor('#173870');
    timeline.linkGraphicContext(o);
    timeline.build();
    o._guiManager.register(timeline);
@@ -1154,7 +1157,7 @@ MO.FEaiChartShow1022Scene_setup = function FEaiChartShow1022Scene_setup() {
    var crPic = o._copyrightPic = MO.Class.create(MO.FGuiPicture);
    crPic.setBackResource('url:{eai.resource}/show1022/copyright.png');
    crPic.setSize(245, 37);
-   crPic.setLocation(1920 - 245, 1080 - 37 - 10);
+   crPic.setLocation(1920 - 255, 1400);
    crPic.linkGraphicContext(o);
    crPic.build();
    crPic.psInitialize();

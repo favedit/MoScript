@@ -85,8 +85,9 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    } else if (align == MO.EUiAlign.Right) {
       imageX = (rectangle.width / 2) + (imageWidth / 2) + rectangle.left;
    }
+   var drawScale = o._column._drawScale;
    // 绘制图片
-   graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+   graphic.drawImage(image, imageX, imageY, imageWidth * drawScale, imageHeight * drawScale);
 }
 
 //==========================================================

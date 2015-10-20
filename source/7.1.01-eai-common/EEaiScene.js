@@ -41,6 +41,7 @@ MO.EEaiScene = new function EEaiScene(){
    // 展会
    o.ChartShow1019             = 'chart.show.1019';
    o.ChartShow1022             = 'chart.show.1022';
+   o.ChartShow1022MktCtm       = 'chart.show.1022MktCtm';
    o.ChartSesameFinancial      = 'chart.sesame.financial';
    return o;
 }

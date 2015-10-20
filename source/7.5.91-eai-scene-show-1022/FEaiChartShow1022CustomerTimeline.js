@@ -14,6 +14,7 @@ MO.FEaiChartShow1022CustomerTimeline = function FEaiChartShow1022CustomerTimelin
    o._trendInfo = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
    o._ready = false;
    o._investmentTotal = 0;
+   o._textColor = MO.Class.register(o, new MO.AGetSet('_textColor'), '#54F0FF');
    // @attribute
    o._baseHeight = 5;
    o._degreeLineHeight = MO.Class.register(o, new MO.AGetSet('_degreeLineHeight'), 10);
@@ -138,6 +139,8 @@ MO.FEaiChartShow1022CustomerTimeline_onPaintBegin = function FEaiChartShow1022Cu
 
    //graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, 'red', 2);
 
+   var textColor = o._textColor;
+
    var top = rectangle.top;
    var bottom = rectangle.top + rectangle.height;
    var middle = bottom - 50;
@@ -147,15 +150,15 @@ MO.FEaiChartShow1022CustomerTimeline_onPaintBegin = function FEaiChartShow1022Cu
    // 绘制左右三角及轴延长部分
    graphic.drawTriangle(decoLeft, middle, decoLeft + o.triangleWidth(), middle + o.triangleHeight() / 2, decoLeft + o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
    graphic.drawTriangle(decoRight, middle, decoRight - o.triangleWidth(), middle + o.triangleHeight() / 2, decoRight - o.triangleWidth(), middle - o.triangleHeight() / 2, 1, '#F8CB3D', '#F8CB3D');
-   graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#F8CB3D', 3);
-   graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 3);
+   graphic.drawLine(decoLeft + decoLineMargin, middle, decoLeft + decoLineMargin + o.decoLineWidth(), middle, '#F8CB3D', 6);
+   graphic.drawLine(decoRight - decoLineMargin, middle, decoRight - decoLineMargin - o.decoLineWidth(), middle, '#F8CB3D', 6);
    var dataLeft = decoLeft + decoLineMargin + o.decoLineWidth();
    var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
    var dataTop = top + 90;
    var dataBottom = bottom - 50;
    var dataHeight = dataBottom - dataTop;
    // 主轴
-   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
+   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 6);
    // 刻度
    var startTime = o.startTime();
    var endTime = o.endTime();
@@ -168,21 +171,21 @@ MO.FEaiChartShow1022CustomerTimeline_onPaintBegin = function FEaiChartShow1022Cu
    while (!startTime.isAfter(endTime)) {
       var span = startTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
-      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 3);
       text = startTime.format('HH24:MI');
       startTime.addHour(1);
       startTime.truncHour();
       drawText = !drawText;
       if (drawText) {
          textWidth = graphic.textWidth(text);
-         graphic.drawText(text, x - textWidth / 2, middle + 20, '#173870');
+         graphic.drawText(text, x - textWidth / 2, middle + 20, textColor);
       }
    }
    graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
    var endText = endTime.format('HH24:MI');
    if (endText != text) {
       textWidth = graphic.textWidth(endText);
-      graphic.drawText(endText, dataRight - textWidth / 2, middle + 40, '#173870');
+      graphic.drawText(endText, dataRight - textWidth / 2, middle + 40, textColor);
    }
   
 
@@ -233,13 +236,14 @@ MO.FEaiChartShow1022CustomerTimeline_onPaintBegin = function FEaiChartShow1022Cu
          lastHour = hour;
       }
    }
+   
    // 输出数据文本
-   graphic.setFont('24px Microsoft YaHei');
-   graphic.drawText("24H数据曲线", decoLeft, top + 30, '#173870');
+   graphic.setFont('bold 30px Microsoft YaHei');
+   graphic.drawText("24H数据曲线", decoLeft, top + 30, textColor);
    // 输出数据文本
-   graphic.setFont('22px Microsoft YaHei');
-   var rowStart = top + 60;
-   var rowHeight = 22;
+   graphic.setFont('bold 28px Microsoft YaHei');
+   var rowStart = top + 65;
+   var rowHeight = 30;
    // 计算宽度
    var textWidth = graphic.textWidth('投资总计：');
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
@@ -252,14 +256,14 @@ MO.FEaiChartShow1022CustomerTimeline_onPaintBegin = function FEaiChartShow1022Cu
    var investmentAvgWidth = graphic.textWidth(investmentAvgText);
    var maxWidth = investmentTotalWidth;
    // 绘制文字
-   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#173870');
-   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#173870');
+   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, textColor);
+   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, textColor);
 
-   graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#173870');
-   graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#173870');
+   graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, textColor);
+   graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, textColor);
 
-   graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, '#173870');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#173870');
+   graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 10, textColor);
+   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, textColor);
    // 设置时间
    startTime.date.setTime(bakTime);
    startTime.refresh();
