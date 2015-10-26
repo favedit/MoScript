@@ -29,7 +29,7 @@ MO.FEaiChartChapter = function FEaiChartChapter(o){
    o._sceneSales              = MO.Class.register(o, new MO.AGetter('_sceneSales'));
 
    o._sceneShow1019           = MO.Class.register(o, new MO.AGetter('_sceneShow1019'));
-   o._sceneSesameFinancial         = MO.Class.register(o, new MO.AGetter('_sceneSesameFinancial'));
+   o._sceneSesameFinancial     = MO.Class.register(o, new MO.AGetter('_sceneSesameFinancial'));
    //..........................................................
    // @method
    o.construct                = MO.FEaiChartChapter_construct;
@@ -95,7 +95,7 @@ MO.FEaiChartChapter_createScene = function FEaiChartChapter_createScene(code){
          break;
       // 创建理财师分布数据图表
       case MO.EEaiScene.ChartStatisticsMarketer:
-         scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartSesameFinancialScene);
+         scene = o._sceneStatisticsMarketer = MO.Class.create(MO.FEaiChartStatMarketerScene);
          break;
       // 创建理财师业绩数据图表
       case MO.EEaiScene.ChartPerformenceMarketer:

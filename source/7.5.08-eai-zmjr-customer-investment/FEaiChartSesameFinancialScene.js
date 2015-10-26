@@ -1,50 +1,50 @@
+
 //==========================================================
-// <T>理财师分布场景。</T>
+// <T>图表实时场景。</T>
 //
 // @class
-// @author maocy
-// @history 150618
+// @author suiming
+// @history 151013
 //==========================================================
 MO.FEaiChartSesameFinancialScene = function FEaiChartSesameFinancialScene(o) {
    o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
-   o._code                     = MO.EEaiScene.ChartCustomer;
+   o._code                   = MO.EEaiScene.ChartCustomer;
    // @attribute
-   o._processor                = MO.Class.register(o, new MO.AGetter('_processor'));
-   o._processorCurrent         = 0;
+   o._processor              = MO.Class.register(o, new MO.AGetter('_processor'));
+   o._processorCurrent       = 0;
    // @attribute
-   o._ready                    = false;
-   o._mapReady                 = false;
-   o._playing                  = false;
-   o._lastTick                 = 0;
-   o._interval                 = 10;
+   o._ready                  = false;
+   o._mapReady               = false;
+   o._playing                = false;
+   o._lastTick               = 0;
+   o._interval               = 10;
    // @attribute
-   o._logoBar                  = null;
-   o._timeline                 = null;
-   o._provinceTable            = null;
+   o._logoBar                = null;
+   o._timeline               = null;
+   o._liveTable              = null;
    // @attribute
-   o._statusStart              = false;
-   o._statusLayerCount         = 100;
-   o._statusLayerLevel         = 100;
+   o._statusStart            = false;
+   o._statusLayerCount       = 100;
+   o._statusLayerLevel       = 100;
    //..........................................................
    // @event
-   o.onOperationDown           = MO.FEaiChartSesameFinancialScene_onOperationDown;
-   o.on24HDataChanged          = MO.FEaiChartSesameFinancialScene_on24HDataChanged;
-   o.onInfoProvinceDataChanged = MO.FEaiChartSesameFinancialScene_onInfoProvinceDataChanged;
-   o.onOperationVisibility     = MO.FEaiChartSesameFinancialScene_onOperationVisibility;
-   o.onProcessReady            = MO.FEaiChartSesameFinancialScene_onProcessReady;
-   o.onProcess                 = MO.FEaiChartSesameFinancialScene_onProcess;
-   o.onSwitchProcess           = MO.FEaiChartSesameFinancialScene_onSwitchProcess;
-   o.onSwitchComplete          = MO.FEaiChartSesameFinancialScene_onSwitchComplete;
+   o.onOperationDown         = MO.FEaiChartSesameFinancialScene_onOperationDown;
+   o.onInvestmentDataChanged = MO.FEaiChartSesameFinancialScene_onInvestmentDataChanged;
+   o.on24HDataChanged        = MO.FEaiChartSesameFinancialScene_on24HDataChanged;
+   o.onOperationVisibility   = MO.FEaiChartSesameFinancialScene_onOperationVisibility;
+   o.onProcessReady          = MO.FEaiChartSesameFinancialScene_onProcessReady;
+   o.onProcess               = MO.FEaiChartSesameFinancialScene_onProcess;
+   o.onSwitchProcess         = MO.FEaiChartSesameFinancialScene_onSwitchProcess;
+   o.onSwitchComplete        = MO.FEaiChartSesameFinancialScene_onSwitchComplete;
    //..........................................................
    // @method
-   o.setup                     = MO.FEaiChartSesameFinancialScene_setup;
-   o.showParticle              = MO.FEaiChartSesameFinancialScene_showParticle;
-   o.showFace                  = MO.FEaiChartSesameFinancialScene_showFace;
-   o.fixMatrix                 = MO.FEaiChartSesameFinancialScene_fixMatrix;
+   o.setup                   = MO.FEaiChartSesameFinancialScene_setup;
+   o.showFace                = MO.FEaiChartSesameFinancialScene_showFace;
+   o.fixMatrix               = MO.FEaiChartSesameFinancialScene_fixMatrix;
    // @method
-   o.processResize             = MO.FEaiChartSesameFinancialScene_processResize;
+   o.processResize           = MO.FEaiChartSesameFinancialScene_processResize;
    return o;
 }
 
@@ -69,40 +69,27 @@ MO.FEaiChartSesameFinancialScene_on24HDataChanged = function FEaiChartSesameFina
    var o = this;
    // 设置表格数据
    var timeline = o._timeline;
-  // timeline.startTime().assign(event.startTime());
-  // timeline.endTime().assign(event.endTime());
-  // timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-  // timeline.trendInfo().assign=event.trendInfo();
+   timeline.startTime().assign(event.beginDate);
+   timeline.endTime().assign(event.endDate);
+   //timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   var units = timeline.trendInfo()._units = event.content.collection;
+
    timeline.dirty();
 }
+
 //==========================================================
-// <T>省份数据变更处理。</T>
+// <T>表格数据变更处理。</T>
 //
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartSesameFinancialScene_onInfoProvinceDataChanged = function FEaiChartSesameFinancialScene_onInfoProvinceDataChanged(event) {
+MO.FEaiChartSesameFinancialScene_onInvestmentDataChanged = function FEaiChartSesameFinancialScene_onInvestmentDataChanged(event) {
    var o = this;
+   var unit = event.unit;
    // 设置表格数据
-   var timeline = o._timeline;
-   // timeline.infoProvince().unserializeSignBuffer(event.sign, event.content, true);
-
-   // hack
-   var provinces = event.provinces();
-   var count = provinces.count();
-   var customerTotal = 0;
-   for (var i = 0; i < count; i++) {
-      var pInfo = provinces.at(i);
-      customerTotal += pInfo.customerCount();
-   }
-   var investmentDay = o._logoBar.findComponent('investmentDay');
-   investmentDay.setValue(customerTotal.toString());
-
-   timeline.setInfoProvince(event);
-   timeline.dirty();
-   var table = o._provinceTable;
-   table.setInfoProvince(event);
-   table.setRankUnits();
+   var table = o._liveTable;
+   table.setRankUnits(event.rankUnits);
+   table.pushUnit(unit);
    table.dirty();
 }
 
@@ -206,6 +193,9 @@ MO.FEaiChartSesameFinancialScene_onProcess = function FEaiChartSesameFinancialSc
          // 投资总金额
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
+         // 日投资金额
+         var investmentDay = logoBar.findComponent('investmentDay');
+         investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
       }
       //..........................................................
       // 更新时间
@@ -252,51 +242,38 @@ MO.FEaiChartSesameFinancialScene_setup = function FEaiChartSesameFinancialScene_
    var dataLayer = o._activeStage.dataLayer();
    //..........................................................
    // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.statistic.LogoBar');
-   var investmentTotal = frame.findComponent('investmentDay');
-   investmentTotal.setBasicUnitText('人');
+   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
    o._guiManager.register(frame);
    //..........................................................
    // 创建投资数据
-   var invement = o._processor = MO.Class.create(MO.FEaiChartStatMarketerProcessor);
+   var invement = o._processor = MO.Class.create(MO.FEaiChartSesameFinancialProcessor);
    invement.linkGraphicContext(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
+   invement.addDataChangedListener(o, o.onInvestmentDataChanged);
    invement.add24HDataChangedListener(o, o.on24HDataChanged);
-   invement.addInfoProvinceDataChangedListener(o, o.onInfoProvinceDataChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
    //..........................................................
    // 创建时间轴
    var stage = o.activeStage();
-   var timeline = o._timeline = MO.Class.create(MO.FEaiChartStatMarketerBarChart);
+   var timeline = o._timeline = MO.Class.create(MO.FEaiChartSesameFinancialTimeline);
    timeline.setName('Timeline');
    timeline.linkGraphicContext(o);
    timeline.build();
    o._guiManager.register(timeline);
-   
    //..........................................................
    // 创建表格
-   var provinceTable = o._provinceTable = MO.Class.create(MO.FEaiChartStatMarketerTable);
-   provinceTable.setName('LiveTable');
-   provinceTable.linkGraphicContext(o);
-   provinceTable.setup();
-   provinceTable.build();
-   o._guiManager.register(provinceTable);
-   //..........................................................
+   var liveTable = o._liveTable = MO.Class.create(MO.FEaiChartSesameFinancialTable);
+   liveTable.setName('LiveTable');
+   liveTable.linkGraphicContext(o);
+   liveTable.setup();
+   liveTable.build();
+   o._guiManager.register(liveTable);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
-   //..........................................................
-   // 创建粒子
-   //var context = o._graphicContext;
-   //var particle = o._particle = context.createObject(MO.FE3dFireworksParticle);
-   //var particleData = context.createObject(MO.FE3dParticleData);
-   //particleData.loadUrl('{eai.resource}/particle/6.png');
-   //particle.setData(particleData);
-   //o.fixMatrix(particle.matri x());
-   //o._activeStage.spriteLayer().pushRenderable(particle);
    //..........................................................
    var entityConsole = MO.Console.find(MO.FEaiEntityConsole);
    // 建立城市实体
@@ -304,39 +281,6 @@ MO.FEaiChartSesameFinancialScene_setup = function FEaiChartSesameFinancialScene_
    // 加载世界数据
    var countryEntity = o._countryEntity = entityConsole.mapModule().loadCountry(o, MO.EEaiConstant.DefaultCountry);
    o._readyLoader.push(countryEntity);
-}
-
-//==========================================================
-// <T>显示粒子处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartSesameFinancialScene_showParticle = function FEaiChartSesameFinancialScene_showParticle(provinceEntity, cityResource) {
-   var o = this;
-   var particle = o._particle;
-   var location = cityResource.location();
-   var count = 4;
-   //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-   particle.color().set(1, 1, 0, 1);
-   for (var i = 0; i < count; i++) {
-      var itemCount = parseInt(Math.random() * 100);
-      var attenuation = Math.random();
-      //particle.color().set(Math.random(), Math.random(), Math.random(), 1);
-      //particle.position().set((x - 5) * 2, 0, 0);
-      particle.setItemCount(itemCount);
-      particle.position().assign(location);
-      particle.position().z = provinceEntity.currentZ();
-      particle.setDelay(10 * i);
-      //particle.setSpeed(Math.random() * 6 + 0.2 * i);
-      particle.setSpeed(4 + 0.4 * i);
-      //particle.setSpeed(speed);
-      //particle.setAngle(Math.PI * 2 / 90 * i);
-      //particle.setAcceleration(-Math.random() );
-      particle.setAcceleration(0);
-      //particle.setAttenuation(attenuation);
-      particle.setAttenuation(0.8);
-      particle.start();
-   }
 }
 
 //==========================================================
@@ -391,8 +335,6 @@ MO.FEaiChartSesameFinancialScene_processResize = function FEaiChartSesameFinanci
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
    var isVertical = MO.Window.Browser.isOrientationVertical()
-      // 重新设置矩阵
-   o.fixMatrix(o._processor.display().matrix());
    //..........................................................
    // 设置大小
    var logoBar = o._logoBar;
@@ -409,10 +351,10 @@ MO.FEaiChartSesameFinancialScene_processResize = function FEaiChartSesameFinanci
    if (isVertical) {
       control.setDockCd(MO.EUiDock.RightTop);
       control.setTop(570);
-      control.setRight(100);
+      control.setRight(80);
    } else {
       control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(660);
+      control.setRight(780);
       control.setBottom(280);
    }
    //..........................................................
@@ -429,25 +371,29 @@ MO.FEaiChartSesameFinancialScene_processResize = function FEaiChartSesameFinanci
       timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(20);
-      timeline.setBottom(30);
-      timeline.setRight(660);
-      timeline.setHeight(250);
+      timeline.setBottom(10);
+      timeline.setRight(780);
+      timeline.setHeight(300);
    }
-   var provinceTable = o._provinceTable;
+   //..........................................................
+   // 设置表格
+   var liveTable = o._liveTable;
    if (isVertical) {
-      provinceTable.setDockCd(MO.EUiDock.Bottom);
-      provinceTable.setAnchorCd(MO.EUiAnchor.All);
-      provinceTable.setLeft(10);
-      provinceTable.setRight(10);
-      provinceTable.setBottom(10);
-      provinceTable.setWidth(1060);
-      provinceTable.setHeight(900);
+      liveTable.setDockCd(MO.EUiDock.Bottom);
+      liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      liveTable.setLeft(10);
+      liveTable.setRight(10);
+      liveTable.setBottom(10);
+      liveTable.setHeight(900);
    } else {
-      provinceTable.setDockCd(MO.EUiDock.Right);
-      provinceTable.setAnchorCd(MO.EUiAnchor.All);
-      provinceTable.setTop(10);
-      provinceTable.setRight(0);
-      provinceTable.setBottom(10);
-      provinceTable.setWidth(640);
+      liveTable.setDockCd(MO.EUiDock.Right);
+      liveTable.setAnchorCd(MO.EUiAnchor.All);
+      liveTable.setTop(10);
+      liveTable.setRight(0);
+      liveTable.setBottom(10);
+      liveTable.setWidth(760);
    }
+   //..........................................................
+   // 重新设置矩阵
+   o.fixMatrix(o._processor.display().matrix());
 }
