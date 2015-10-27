@@ -251,8 +251,6 @@ MO.FEaiChartSesameFinancialProcessor_focusEntity = function FEaiChartSesameFinan
       // 计算级别
       var investment = unit.investment;
       var level = MO.Console.find(MO.FEaiLogicConsole).statistics().calculateAmountLevel(investment);
-      investment = 10000000;
-      level = 4;
       // 更新省份数据
       var provinceCode = cityEntity.data().provinceCode();
       var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
