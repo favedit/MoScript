@@ -65,16 +65,14 @@
       // 设置环境
       MO.Console.find(MO.FE3sVendorConsole).setup('net');
       MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
-      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://eai.ezubo.com:8089');
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://localhost:8099');
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://service.eai.ezubo.com');
-      // 设置日志
-      // MO.Console.find(MO.FLoggerConsole).connect('ws://10.21.0.128:8080/logger');
+      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiVerificationMode.Token, false);
+      MO.Console.find(MO.FEnvironmentConsole).registerValue('zmjr.get.time', 'http://182.92.6.158:8089/zm_external/wisdom/get/currentDate');
+      MO.Console.find(MO.FEnvironmentConsole).registerValue('zmjr.get.live', 'http://182.92.6.158:8089/zm_external/wisdom/get/currentInvest?');
+      MO.Console.find(MO.FEnvironmentConsole).registerValue('zmjr.get.24h', 'http://182.92.6.158:8089/zm_external/wisdom/get/24hoursInvest?');
       // 设置应用
       var application = MO.Desktop.initialize(MO.FEaiChartApplication);
       application.setSceneCode(MO.EEaiScene.ChartSesameFinancial);
       application.setup(document.body);
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EConstant.DeviceType, 'mb');
    }
 </script>
 </head>

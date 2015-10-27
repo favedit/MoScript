@@ -86,10 +86,17 @@ MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
+MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback) {
    var o = this;
-   var parameters = o.prepareParemeters();
-   this.sendService('{eai.logic.service}/eai.system.wv?do=info', parameters, owner, callback);
+   var useToken = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiVerificationMode.Token);
+   var none = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiVerificationMode.None);
+   if (none == true || useToken == false) {
+      o._ready = true;
+   }
+   else {
+      var parameters = o.prepareParemeters();
+      this.sendService('{eai.logic.service}/eai.system.wv?do=info', parameters, owner, callback);
+   }
 }
 
 //==========================================================

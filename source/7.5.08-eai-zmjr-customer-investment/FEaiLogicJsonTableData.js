@@ -66,7 +66,8 @@ MO.FEaiLogicJsonTableData_doServerTime = function FEaiLogicJsonTableData_doServe
    var first = o._customerDynamicFirst;
    var parameters = o.prepareParemeters();
 
-   o.sendJsonSever('http://182.92.6.158:8089/zm_external/wisdom/get/currentDate', parameters, owner, callback);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.time}');
+   o.sendJsonSever(url, parameters, owner, callback);
    o._customerDynamicFirst = false;
 }
 //==========================================================
@@ -143,7 +144,7 @@ MO.FEaiLogicJsonTableData_sendJsonService = function FEaiLogic_sendJsonService(u
 // @return FListener 监听
 //==========================================================
 MO.FEaiLogicJsonTableData_do24TimeData = function FEaiLogicJsonTableData_do24TimeData(owner, callback,startTime,endTime){
-      var url = 'http://182.92.6.158:8089/zm_external/wisdom/get/24hoursInvest?';
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.24h}');
       var start= startTime;
       var end = endTime;
       url +='begin='+ start + '&end='+end;
@@ -158,7 +159,7 @@ MO.FEaiLogicJsonTableData_do24TimeData = function FEaiLogicJsonTableData_do24Tim
 // @param callback:Function 回调函数
 // @return FListener 监听
 MO.FEaiLogicJsonTableData_doInvestment = function FEaiLogicJsonTableData_doInvestment(owner, callback,startTime,endTime){
-      var url = 'http://182.92.6.158:8089/zm_external/wisdom/get/currentInvest?';
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.live}');
       var start= startTime;
       var end = endTime;
       var o = this;

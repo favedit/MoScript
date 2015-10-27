@@ -91,7 +91,7 @@ MO.FEaiLogicJsonSystem_construct = function FEaiLogicJsonSystem_construct(){
 // @return FListener 监听
 //==========================================================
 MO.FEaiLogicJsonSystem_doInfo = function FEaiLogicJsonSystem_doInfo(owner, callback){
-   var url = 'http://182.92.6.158:8089/zm_external/wisdom/get/currentDate';
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.time}');
    var connection = MO.Console.find(MO.FJsonConsole).send(url);
    connection.addLoadListener(owner, callback);
 }
