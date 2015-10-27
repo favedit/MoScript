@@ -38,7 +38,6 @@ MO.FEaiLogicConsole = function FEaiLogicConsole(o){
 MO.FEaiLogicConsole_onProcess = function FEaiLogicConsole_onProcess(event){
    var o = this;
    o._system.refresh();
-   o._jsonSystem.refresh();
 }
 
 //==========================================================

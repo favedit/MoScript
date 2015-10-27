@@ -214,14 +214,15 @@ MO.FEaiChartSesameFinancialTable_setup = function FEaiChartSesameFinancialTable_
    grid.rowFont().font = 'Microsoft YaHei';
    grid.rowFont().size = 21;
    grid.rowFont().color = '#59FDE9';
-   // var column = MO.Class.create(MO.FGuiGridColumnDate);
-   // column.setName('recordDate');
-   // column.setLabel('时间');
-   // column.setDataName('record_date');
-   // column.setDateFormat('HH24:MI:SS');
-   // column.setWidth(120);
-   // column.setPadding(1, 1, 1, 1);
-   // grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnDate);
+   column.setName('recordDate');
+   column.setLabel('时间');
+   column.setDataName('record_date');
+   column.setDateFormat('HH24:MI:SS');
+   column.setWidth(120);
+   column.setPadding(1, 1, 1, 1);
+   grid.pushColumn(column);
+
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerCity');
    column.setLabel('城市');
@@ -231,7 +232,7 @@ MO.FEaiChartSesameFinancialTable_setup = function FEaiChartSesameFinancialTable_
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('customerInfo');
-   column.setLabel('用户');
+   column.setLabel('用户-手机');
    column.setDataName('customer_info');
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
@@ -248,39 +249,6 @@ MO.FEaiChartSesameFinancialTable_setup = function FEaiChartSesameFinancialTable_
    column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('modelLabel');
-   column.setLabel('手机');
-   column.setDataName('model_label');
-   column.setWidth(120);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   
-   // var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   // column.setName('investmentGain');
-   // column.setLabel('年化收益');
-   // column.setDataName('investment_gain');
-   // column.setNormalColor('#59FDE9');
-   // column.setHighColor('#FDEF01');
-   // column.setLowerColor('#EB6C03');
-   // column.setNegativeColor('#FF0000');
-   // column.setWidth(120);
-   // column.setPadding(1, 1, 1, 1);
-   // grid.pushColumn(column);
-
-   // var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   // column.setName('bankGain');
-   // column.setLabel('银行收益');
-   // column.setDataName('bank_gain');
-   // column.setNormalColor('#59FDE9');
-   // column.setHighColor('#FDEF01');
-   // column.setLowerColor('#EB6C03');
-   // column.setNegativeColor('#FF0000');
-   // column.setWidth(120);
-   // column.cellPadding().right = 10;
-   // column.setPadding(1, 1, 1, 1);
-   // grid.pushColumn(column);
-
    o.push(grid);
    //..........................................................
    // 设置数据
@@ -344,13 +312,9 @@ MO.FEaiChartSesameFinancialTable_setRankUnits = function FEaiChartSesameFinancia
          cityLabel = city.label();
       }
       // 排行榜数据填充
-      // row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
-      // row.set('customer_city', cityLabel);
-      // row.set('label_phone', unit.label + " - " + unit.phone);
-      // row.set('investment', unit.investment);
       row.set('image', '{eai.resource}/live/' + (i + 1) + '.png');
       row.set('customer_city', cityLabel);
-      row.set('label_phone',  " - " + unit.phone);
+      row.set('label_phone', unit.customer+ " - " + unit.phone);
       row.set('investment', unit.investment);
       grid.pushRow(row);
    }
@@ -381,18 +345,13 @@ MO.FEaiChartSesameFinancialTable_pushUnit = function FEaiChartSesameFinancialTab
    var row = grid.allocRow();
    //var phone =parseFloat(unit.phone);
    var phone =unit.phone;
-   var customer = unit.customer;
+   var customer = unit.customer+'-'+phone;
    var investment = unit.investment;
-   // row.set('record_date', unit.recordDate);
+   row.set('record_date', unit.date);
    row.set('customer_city', cityLabel);
-    //row.set('customer_info', unit.label + ' - ' + unit.phone);
-    row.set('customer_info', customer);
-    row.set('investment_Amount', investment);
-    row.set('model_label', phone);
-   // row.set('model_label', phone);
-   // row.set('record_date', unit.recordDate);
-
-
+   row.set('customer_info', customer);
+   row.set('investment_Amount', investment);
+    //row.set('model_label', phone);
    grid.insertRow(row);
    // 放入队列
    var entities = o._units;

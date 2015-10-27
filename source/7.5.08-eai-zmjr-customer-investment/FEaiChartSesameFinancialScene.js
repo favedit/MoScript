@@ -71,7 +71,6 @@ MO.FEaiChartSesameFinancialScene_on24HDataChanged = function FEaiChartSesameFina
    var timeline = o._timeline;
    timeline.startTime().assign(event.beginDate);
    timeline.endTime().assign(event.endDate);
-   //timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
    var units = timeline.trendInfo()._units = event.content.collection;
 
    timeline.dirty();

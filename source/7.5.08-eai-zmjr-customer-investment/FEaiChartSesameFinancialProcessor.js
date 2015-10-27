@@ -75,6 +75,10 @@ MO.FEaiChartSesameFinancialProcessor = function FEaiChartSesameFinancialProcesso
    o.process                  = MO.FEaiChartSesameFinancialProcessor_process;
    // @method
    o.dispose                  = MO.FEaiChartSesameFinancialProcessor_dispose;
+   o._jsonSystem              = MO.Class.register(o, new MO.AGetter('_jsonSystem'));
+   o._jsonTimerData           = MO.Class.register(o, new MO.AGetter('_jsonTimerData'));
+   o._jsonTableData           = MO.Class.register(o, new MO.AGetter('_jsonTableData'));
+
    return o;
 }
 
@@ -90,7 +94,6 @@ MO.FEaiChartSesameFinancialProcessor_onJsonData = function FEaiChartSesameFinanc
 }
 MO.FEaiChartSesameFinancialProcessor_onhehe = function FEaiChartSesameFinancialProcessor_onhehe(event){
     var data = event.data;
-   // var content = event.content;
 }
 MO.FEaiChartSesameFinancialProcessor_onCurrentInvest = function FEaiChartSesameFinancialProcessor_onCurrentInvest(event){
    var data = event.data;
@@ -117,7 +120,6 @@ MO.FEaiChartSesameFinancialProcessor_onDynamicData = function FEaiChartSesameFin
    var content = event.content;
    // 读取数据
    var dynamicInfo = o._dynamicInfo;
-   //dynamicInfo.unserializeSignBuffer(event.sign, event.content, true);
    dynamicInfo._rankUnits = content.rank;         //table实时数据  suiming
    dynamicInfo._units     = content.collection;  //前三名排行信息 
    var investment_day   = dynamicInfo._investmentCount  = content.investment_day ;   //投资人数   
@@ -130,15 +132,14 @@ MO.FEaiChartSesameFinancialProcessor_onDynamicData = function FEaiChartSesameFin
    for (var i= 0;i<rankUnitsLength;i++){
    items[i] = content.rank[i];
    }
-   // rankUnits.assign(dynamicInfo.rankUnits());
+
    var units = o._units;
    var unitsitems =  units._items;
    var UnitsLength = content.collection.length;
    for (var i= 0;i<UnitsLength;i++){
    unitsitems[i] = content.collection[i];
    }
-   // units.append(dynamicInfo.units());
-   var unitCount = units._items.length-1;
+   var unitCount = units._items.length;
    if(unitCount){
       o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
    }else{
@@ -176,6 +177,9 @@ MO.FEaiChartSesameFinancialProcessor_construct = function FEaiChartSesameFinanci
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
+   o._jsonSystem = MO.Class.create(MO.FEaiLogicJsonSystem);
+   o._jsonTableData = MO.Class.create(MO.FEaiLogicJsonTableData);
+   o._jsonTimerData = MO.Class.create(MO.FEaiLogicJsonTimerLineData);
 }
 
 //==========================================================
@@ -221,7 +225,7 @@ MO.FEaiChartSesameFinancialProcessor_calculateCurrent = function FEaiChartSesame
    var investmentCurrent = info.investmentCount();
    var investmentTotalCurrent = info.investmentTotal();
    var units = o._units.items();
-   var count = units.length-1;
+   var count = units.length;
    for(var i = 0; i < count; i++){
       var unit = units[i];
       investmentCurrent -= unit.investment;
@@ -240,7 +244,7 @@ MO.FEaiChartSesameFinancialProcessor_focusEntity = function FEaiChartSesameFinan
    var o = this;
    var mapEntity = o._mapEntity;
    // 显示实体
-   //var card = unit.card;
+   var card = unit.card;
    var card = '3310'
    var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
    if(cityEntity){
@@ -282,17 +286,10 @@ MO.FEaiChartSesameFinancialProcessor_focusEntity = function FEaiChartSesameFinan
 //==========================================================
 MO.FEaiChartSesameFinancialProcessor_process = function FEaiChartSesameFinancialProcessor_process(){
    var o = this;
-   //..........................................................
-   // // 获得系统时间
-   // var system = MO.Console.find(MO.FEaiLogicConsole).system();
-   // if(!system.testReady()){
-   //    return;
-   // }
-
-      // 走json接口获得系统时间
-   var system = MO.Console.find(MO.FEaiLogicConsole).jsonSystem();
+   // 走json接口获得系统时间
+   var system = o._jsonSystem;
    if(!system.testReady()){
-      //return;
+     // return;
    }
 
    var systemDate = system.currentDate();
@@ -307,37 +304,16 @@ MO.FEaiChartSesameFinancialProcessor_process = function FEaiChartSesameFinancial
    //..........................................................
    // 设置处理时间
    if(o._dataTicker.process()){
-      // var jsonData  = MO.Console.find(MO.FEaiLogicConsole).jsonData();
-      // jsonData.doServerTime(o,o.onJsonData);
-      // var connection = MO.Console.find(MO.FHttpConsole).fetchAsync('http://182.92.6.158:8089/zm_external/wisdom/get/currentDate');
-      // connection.addLoadListener(o, o.onhehe);
-      // var url = 'http://182.92.6.158:8089/zm_external/wisdom/get/currentDate';
-      // var connection = MO.Console.find(MO.FJsonConsole).send(url);
-      // connection.addLoadListener(o, o.onhehe);
 
-      // var url1 = 'http://182.92.6.158:8089/zm_external/wisdom/get/24hoursInvest?begin=201510201850&end=201510201851';
-      // var connection1 = MO.Console.find(MO.FJsonConsole).send(url1);
-      // connection1.addLoadListener(o, o.onCurrentInvest);
+      var JsonData = o._jsonTableData;
+
       var JsonData = MO.Console.find(MO.FEaiLogicConsole).jsonTableData();
             // 设置结束时间
       var beginDate = o._beginDate;
       var endDate = o._endDate;
       beginDate.assign(endDate);
       endDate.assign(systemDate);
-      //var timerr = beginDate.format();
       JsonData.doInvestment(o,o.onDynamicData,beginDate.format(),endDate.format());
-      beginDate.assign(endDate);
-      // var statistics = MO.Console.find(MO.FEaiLogicConsole).statistics();
-      // // 设置结束时间
-      // var beginDate = o._beginDate;
-      // var endDate = o._endDate;
-      // beginDate.assign(endDate);
-      // endDate.assign(systemDate);
-      // var timerr = beginDate.format();
-      // statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
-      // // 设置开始时间
-      // beginDate.assign(endDate);
-
       // 取24小时统计数据
       // 设置开始时间
       var beginDate24H = o._24HBeginDate;
@@ -349,16 +325,8 @@ MO.FEaiChartSesameFinancialProcessor_process = function FEaiChartSesameFinancial
       endDate24H.assign(systemDate);
       endDate24H.truncMinute(15);
 
-      // var url1 = 'http://182.92.6.158:8089/zm_external/wisdom/get/24hoursInvest?';
-      // start= beginDate24H.format();
-      // end = endDate24H.format();
-      // url1 += 'first=true'+'&begin='+ start + '&end='+end;
-      // var connection1 = MO.Console.find(MO.FJsonConsole).send(url1);
-      // connection1.addLoadListener(o, o.onCurrentInvest);
-      // 取数据
-      var JsonTimerData = MO.Console.find(MO.FEaiLogicConsole).jsonTimerLineData();
+      var JsonTimerData = o._jsonTimerData;
       JsonTimerData.do24TimeData(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
-  //    statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
    }
    //..........................................................
    //设置表格刷新

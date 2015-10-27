@@ -76,7 +76,7 @@ MO.FEaiChartSesameFinancialTimeline_drawTrend = function FEaiChartSesameFinancia
    var o = this;
    var startTime = o._startTime;
    var units = o._trendInfo.units();
-   var count = units.length-1;
+   var count = units.length;
    var unitFirst = units[0];
    var handle = graphic._handle;
    handle.lineCap = 'round';
@@ -135,9 +135,6 @@ MO.FEaiChartSesameFinancialTimeline_onPaintBegin = function FEaiChartSesameFinan
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-
-   //graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, 'red', 2);
-
    var top = rectangle.top;
    var bottom = rectangle.top + rectangle.height;
    var middle = bottom - 50;
@@ -200,7 +197,7 @@ MO.FEaiChartSesameFinancialTimeline_onPaintBegin = function FEaiChartSesameFinan
    var unitFirst = units[0];
    // 找到最大数值
    var maxAmount = 0;
-   var count = units.length-1;
+   var count = units.length;
    for (var i = 0; i < count; i++) {
       var unit = units[i];
       var investment = unit.investment;
