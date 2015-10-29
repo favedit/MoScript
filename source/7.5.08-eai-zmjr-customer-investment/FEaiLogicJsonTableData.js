@@ -29,8 +29,8 @@ MO.FEaiLogicJsonTableData = function FEaiLogicJsonTableData(o){
    o.do24TimeData         = MO.FEaiLogicJsonTableData_do24TimeData;
    // @method
    o.dispose              = MO.FEaiLogicJsonTableData_dispose;
-   o.sendJsonSever       = MO.FEaiLogicJsonTableData_sendJsonService;
-   o._doFirst = true;
+   o.sendJsonSever        = MO.FEaiLogicJsonTableData_sendJsonService;
+   o._doFirst             = true;
    return o;
 }
 
@@ -143,13 +143,13 @@ MO.FEaiLogicJsonTableData_sendJsonService = function FEaiLogic_sendJsonService(u
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicJsonTableData_do24TimeData = function FEaiLogicJsonTableData_do24TimeData(owner, callback,startTime,endTime){
-      var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.24h}');
-      var start= startTime;
-      var end = endTime;
-      url +='begin='+ start + '&end='+end;
-      var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
-      connection1.addLoadListener(owner,callback);
+MO.FEaiLogicJsonTableData_do24TimeData = function FEaiLogicJsonTableData_do24TimeData(owner, callback, startTime, endTime) {
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.24h}');
+   var start = startTime;
+   var end = endTime;
+   url += 'begin=' + start + '&end=' + end;
+   var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
+   connection1.addLoadListener(owner, callback);
 }
 //==========================================================
 // <T>获取实时数据</T>
@@ -158,20 +158,15 @@ MO.FEaiLogicJsonTableData_do24TimeData = function FEaiLogicJsonTableData_do24Tim
 // @param owner:Obejct 拥有者
 // @param callback:Function 回调函数
 // @return FListener 监听
-MO.FEaiLogicJsonTableData_doInvestment = function FEaiLogicJsonTableData_doInvestment(owner, callback,startTime,endTime){
-      var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.live}');
-      var start= startTime;
-      var end = endTime;
-      var o = this;
-      var firstbool = o._doFirst;
-      if(firstbool){
-      url += 'first='+firstbool+'&begin='+ start + '&end='+end;
-      firstbool=false;
-      }else{
-      url += 'first='+firstbool+'&begin='+ start + '&end='+end; 
-      }
-      var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
-      connection1.addLoadListener(owner,callback);
+MO.FEaiLogicJsonTableData_doInvestment = function FEaiLogicJsonTableData_doInvestment(owner, callback, startTime, endTime) {
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.live}');
+   var start = startTime;
+   var end = endTime;
+   var o = this;
+   url += 'first=' + o._doFirst + '&begin=' + start + '&end=' + end;
+   var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
+   connection1.addLoadListener(owner, callback);
+   o._doFirst = false;
 }
 //==========================================================
 // <T>释放处理。</T>
