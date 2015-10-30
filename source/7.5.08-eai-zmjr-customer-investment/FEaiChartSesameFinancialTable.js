@@ -334,8 +334,7 @@ MO.FEaiChartSesameFinancialTable_pushUnit = function FEaiChartSesameFinancialTab
       return null;
    }
    // 获得客户城市
-   //var card = unit.card;
-   var card = '1424';
+   var card = unit.card;
    var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
    var cityLabel = '';
    if (city) {
