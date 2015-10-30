@@ -80,7 +80,8 @@ MO.FEaiChartSesameFinancialTable_onPaintBegin = function FEaiChartSesameFinancia
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
    //..........................................................
    // 绘制标题
-   var titleText = '全球实时投资数据展示中心(中国)';
+   //var titleText = '全球实时投资数据展示中心(中国)';
+   var titleText = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.layout.table.title}');
    graphic.setFont(o._headFontStyle);
    var titleWidth = graphic.textWidth(titleText);
    var textLeft = left + (width - titleWidth) * 0.5;

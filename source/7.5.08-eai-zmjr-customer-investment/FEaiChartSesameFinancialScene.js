@@ -189,10 +189,12 @@ MO.FEaiChartSesameFinancialScene_onProcess = function FEaiChartSesameFinancialSc
       var logoBar = o._logoBar;
       // 获取所有信息
       var processor = o._processor;
-      if(processor.invementDayCurrent() > 0){
+      if (processor.invementTotalCurrent() > 0) {
          // 投资总金额
          var investmentTotal = logoBar.findComponent('investmentTotal');
          investmentTotal.setValue(parseInt(processor.invementTotalCurrent()).toString());
+      }
+      if (processor.invementDayCurrent() > 0) {
          // 日投资金额
          var investmentDay = logoBar.findComponent('investmentDay');
          investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
