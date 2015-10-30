@@ -245,7 +245,6 @@ MO.FEaiChartSesameFinancialProcessor_focusEntity = function FEaiChartSesameFinan
    var mapEntity = o._mapEntity;
    // 显示实体
    var card = unit.card;
-   var card = '3310'
    var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
    if(cityEntity){
       // 计算级别

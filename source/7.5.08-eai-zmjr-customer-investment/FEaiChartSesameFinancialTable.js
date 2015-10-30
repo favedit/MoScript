@@ -306,7 +306,6 @@ MO.FEaiChartSesameFinancialTable_setRankUnits = function FEaiChartSesameFinancia
       var row = grid.allocRow();
       // 获得客户城市
       var card = unit.card;
-      card = '1101';
       var city = MO.Console.find(MO.FEaiResourceConsole).cityModule().findByCard(card);
       var cityLabel = '';
       if (city) {
