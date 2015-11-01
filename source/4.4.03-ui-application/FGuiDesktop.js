@@ -75,7 +75,7 @@ MO.FGuiDesktop_build = function FGuiDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
    // 创建2D画板
-   var canvas = o._canvas = MO.RClass.create(MO.FE2dCanvas);
+   var canvas = o._canvas = MO.Class.create(MO.FE2dCanvas);
    canvas.setDesktop(o);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);

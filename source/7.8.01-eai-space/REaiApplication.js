@@ -10,7 +10,7 @@ MO.Eai.setup = function Eai_setup(clazz, hPanel){
    //var o = this;
    //o._hPanel = hPanel;
    // 创建应用
-   //var application = o.Application = MO.RClass.create(clazz);
+   //var application = o.Application = MO.Class.create(clazz);
    // 创建画板
    //var canvas = o.Canvas = application.createCanvas();
    //canvas.build(hPanel);

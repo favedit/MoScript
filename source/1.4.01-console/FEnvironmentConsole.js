@@ -21,6 +21,7 @@ MO.FEnvironmentConsole = function FEnvironmentConsole(o){
    o.find          = MO.FEnvironmentConsole_find;
    o.findValue     = MO.FEnvironmentConsole_findValue;
    o.parse         = MO.FEnvironmentConsole_parse;
+   o.parseUrl      = MO.FEnvironmentConsole_parseUrl;
    // @method
    o.dispose       = MO.FEnvironmentConsole_dispose;
    return o;
@@ -47,6 +48,7 @@ MO.FEnvironmentConsole_construct = function FEnvironmentConsole_construct(){
 MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environment){
    var o = this;
    var name = environment.name();
+   MO.Assert.debugNotEmpty(name);
    o._environments.set(name, environment);
 }
 
@@ -60,7 +62,8 @@ MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environm
 //==========================================================
 MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
    var o = this;
-   var environment = MO.RClass.create(MO.FEnvironment);
+   MO.Assert.debugNotEmpty(name);
+   var environment = MO.Class.create(MO.FEnvironment);
    environment.set(name, value);
    o._environments.set(name, environment);
    return environment;
@@ -103,12 +106,33 @@ MO.FEnvironmentConsole_findValue = function FEnvironmentConsole_findValue(name){
 //==========================================================
 MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
    var o = this;
+   MO.Assert.debugNotEmpty(value);
    var result = value;
    var environments = o._environments;
    var count = environments.count();
    for(var i = 0; i < count; i++){
       var environment = environments.at(i);
       result = MO.Lang.String.replace(result, '{' + environment.name() + '}', environment.value());
+   }
+   return result;
+}
+
+//==========================================================
+// <T>解析网络内容。</T>
+//
+// @method
+// @param value:String 内容
+// @return String 解析内容
+//==========================================================
+MO.FEnvironmentConsole_parseUrl = function FEnvironmentConsole_parseUrl(value){
+   var o = this;
+   var result = null;
+   var version = MO.Runtime.version();
+   var url = o.parse(value);
+   if(url.indexOf('?') != -1){
+      result = url + '&' + version;
+   }else{
+      result = url + '?' + version;
    }
    return result;
 }
@@ -121,7 +145,7 @@ MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
 MO.FEnvironmentConsole_dispose = function FEnvironmentConsole_dispose(){
    var o = this;
    // 释放处理
-   o._environments = new TDictionary();
+   o._environments = MO.Lang.Object.dispose(o._environments);
    // 父处理
    o.__base.FConsole.dispose.call(o);
 }

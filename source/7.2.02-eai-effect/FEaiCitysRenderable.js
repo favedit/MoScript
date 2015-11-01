@@ -194,8 +194,8 @@ MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
          var range = city.range() * 255;
          var location = city.location();
          var level = city.data().level();
-         if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
-            throw new TError('Invalid level.');
+         if((level != 1) && (level != 2) && (level != 3)){
+            level = 4;
          }
          var provinceEntity = city.provinceEntity();
          var z = 0;
@@ -203,9 +203,7 @@ MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
             z = provinceEntity.currentZ();
          }
          var coordLeft = o._levelCoordLeft[level];
-         //coordLeft = 0;
          var coordRight = o._levelCoordRight[level];
-         //coordRight = 1;
          var scale = o._levelScale[level];
          //scale = 1;
          // 设置顶点位置

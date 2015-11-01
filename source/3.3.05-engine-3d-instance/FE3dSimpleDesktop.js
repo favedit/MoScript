@@ -56,13 +56,13 @@ MO.FE3dSimpleDesktop_build = function FE3dSimpleDesktop_build(hPanel){
    // 增加监听
    MO.RWindow.lsnsResize.register(o, o.onResize);
    // 创建3D画板
-   var canvas = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   var canvas = o._canvas3d = MO.Class.create(MO.FE3dSimpleCanvas);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
    var size = canvas.size();
    var hCanvas3d = canvas._hCanvas;
    // 创建2D画板
-   var canvas = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   var canvas = o._canvas2d = MO.Class.create(MO.FE2dCanvas);
    canvas.size().assign(size);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);

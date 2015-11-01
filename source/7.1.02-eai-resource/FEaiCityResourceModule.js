@@ -56,10 +56,19 @@ MO.FEaiCityResourceModule_find = function FEaiCityResourceModule_find(code){
 MO.FEaiCityResourceModule_findByCard = function FEaiCityResourceModule_findByCard(card) {
    var o = this;
    var city = null;
-   var cardModule = o._resourceConsole.cardModule();
-   var cityCode = cardModule.findCityCode(card);
-   if(cityCode){
-      city = o._citys.get(cityCode);
+   var cityCode = null;
+   if(card){
+      var cardModule = o._resourceConsole.cardModule();
+      var cityCode = cardModule.findCityCode(card);
+      if(!cityCode){
+         cityCode = cardModule.findCityCode4(card);
+      }
+      if(!cityCode){
+         cityCode = cardModule.findCityCode2(card);
+      }
+      if(cityCode){
+         city = o._citys.get(cityCode);
+      }
    }
    return city;
 }

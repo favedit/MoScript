@@ -9,9 +9,30 @@ MO.RRuntime = function RRuntime(){
    var o = MO.RSingleton.call(this);
    //..........................................................
    // @attribute
+   o._version    = 'mo';
    o._processCd  = MO.EProcess.Release;
    o._platformCd = MO.EPlatform.Pc;
    return o;
+}
+
+//==========================================================
+// <T>获得版本。</T>
+//
+// @method
+// @return String 版本
+//==========================================================
+MO.RRuntime.prototype.version = function RRuntime_version(){
+   return this._version;
+}
+
+//==========================================================
+// <T>设置版本。</T>
+//
+// @method
+// @param version:String 版本
+//==========================================================
+MO.RRuntime.prototype.setVersion = function RRuntime_setVersion(version){
+   this._version = version;
 }
 
 //==========================================================

@@ -56,16 +56,14 @@ MO.FEaiMapResourceModule_findCountryByCode = function FEaiMapResourceModule_find
 MO.FEaiMapResourceModule_loadCountry = function FEaiMapResourceModule_loadCountry(code){
    var o = this;
    var countries = o._countries;
-   var country = countries.get(name);
-   if(!country){
-      // 创建国家资源
-      country = MO.Class.create(MO.FEaiMapCountryResource);
-      country.setCode(code);
-      country.setUri('{eai.resource}-{device.type}/map/country/' + code + '.dat');
-      country.load();
-      // 存储列表
-      countries.set(code, country);
-   }
+   MO.Assert.debugNull(countries.get(name));
+   // 创建国家资源
+   var country = MO.Class.create(MO.FEaiMapCountryResource);
+   country.setCode(code);
+   country.setUri('{eai.resource}-{device.type}/map/country/' + code + '.dat');
+   country.load();
+   // 存储列表
+   countries.set(code, country);
    return country;
 }
 
@@ -77,12 +75,10 @@ MO.FEaiMapResourceModule_loadCountry = function FEaiMapResourceModule_loadCountr
 //==========================================================
 MO.FEaiMapResourceModule_loadWorld = function FEaiMapResourceModule_loadWorld(){
    var o = this;
-   var world = o._world;
-   if(!world){
-      // 创建世界资源
-      world = o._world = MO.Class.create(MO.FEaiMapWorldResource);
-      world.load();
-   }
+   MO.Assert.debugNull(o._world);
+   // 创建世界资源
+   var world = o._world = MO.Class.create(MO.FEaiMapWorldResource);
+   world.load();
    return world;
 }
 

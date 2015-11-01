@@ -6,11 +6,11 @@
 // @version 150727
 //==========================================================
 MO.FResourcePackage = function FResourcePackage(o){
-   o = MO.Class.inherits(this, o, MO.FResource);
+   o = MO.Class.inherits(this, o, MO.FResource, MO.MPersistenceAble);
    //..........................................................
    // @attribute
    o._uri         = MO.Class.register(o, new MO.AGetSet('_uri'));
-   o._url         = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._url         = MO.Class.register(o, new MO.AGetter('_url'));
    // @attribute
    o._statusReady = false;
    //..........................................................
@@ -32,11 +32,7 @@ MO.FResourcePackage = function FResourcePackage(o){
 MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    var o = this;
    // 反序列化数据
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(event.content);
-   o.unserialize(view);
-   view.dispose();
+   o.unserializeBuffer(event.content, true);
    // 设置标志
    o._statusReady = true;
    MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
@@ -59,11 +55,9 @@ MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
 //==========================================================
 MO.FResourcePackage_load = function FResourcePackage_load(){
    var o = this;
+   MO.Assert.debugFalse(o._statusReady);
    // 获得地址
-   var url = o._url;
-   if(!url){
-      url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(o._uri);
-   }
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(o._uri);
    // 加载数据
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(o, o.onLoad);

@@ -32,16 +32,16 @@ MO.FE3dSimpleStage_construct = function FE3dSimpleStage_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
    // 创建天空层
-   var layer = o._skyLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._skyLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SkyLayer', layer);
    // 创建地图层
-   var layer = o._mapLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._mapLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('MapLayer', layer);
    // 创建精灵层
-   var layer = o._spriteLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._spriteLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SpriteLayer', layer);
    // 创建界面层
-   var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._faceLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('FaceLayer', layer);
 }
 

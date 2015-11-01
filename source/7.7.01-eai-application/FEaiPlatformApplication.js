@@ -72,19 +72,19 @@ MO.FEaiPlatformApplication_createCanvas = function FEaiPlatformApplication_creat
 MO.FEaiPlatformApplication_setup = function FEaiPlatformApplication_setup(){
    var o = this;
    // 创建加载中舞台
-   var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
+   var chapter = o._chapterLoading = MO.Class.create(MO.FEaiLoadingChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
    // 创建登录舞台
-   var chapter = o._chapterLogin = MO.RClass.create(MO.FEaiLoginChapter);
+   var chapter = o._chapterLogin = MO.Class.create(MO.FEaiLoginChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
    // 创建场景舞台
-   var chapter = o._chapterScene = MO.RClass.create(MO.FEaiSceneChapter);
+   var chapter = o._chapterScene = MO.Class.create(MO.FEaiSceneChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
    // 创建表格舞台
-   var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+   var chapter = o._chapterChart = MO.Class.create(MO.FEaiChartChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
    //..........................................................

@@ -55,6 +55,7 @@
    function onLoad() {
       // 设置变量
       MO.initialize();
+      MO.Runtime.setVersion('151101');
       MO.Runtime.setProcessCd(MO.EProcess.Debug);
       MO.Window.Browser.setContentPath('..');
       MO.Window.Browser.fullscreen(window, true);
@@ -65,10 +66,12 @@
       // 设置环境
       MO.Console.find(MO.FE3sVendorConsole).setup('net');
       MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.Resource, '/script/ars/eai');
-      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://service.eai.ezubo.com');
+      MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://service.test.eai.ezubo.com');
+      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://121.42.136.88:89');
+      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://service.test.eai.ezubo.com');
+      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://localhost:8020');
       //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://115.28.136.134:89');
       //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://eai.ezubo.com:8089');
-      //MO.Console.find(MO.FEnvironmentConsole).registerValue(MO.EEaiConstant.LogicService, 'http://localhost:8099');
       // 设置日志
       // MO.Console.find(MO.FLoggerConsole).connect('ws://10.21.0.128:8080/logger');
       // 设置应用

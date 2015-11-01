@@ -100,7 +100,7 @@ MO.FImage_testReady = function FImage_testReady(){
 //==========================================================
 MO.FImage_loadUrl = function FImage_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    // 创建图片
    var hImage = o._hImage;
    if(!hImage){
@@ -123,7 +123,7 @@ MO.FImage_dispose = function FImage_dispose(){
    var o = this;
    // 清空属性
    o._size = MO.Lang.Object.dispose(o._size);
-   o._hImage = MO.RHtml.free(o._hImage);
+   o._hImage = MO.Window.Html.free(o._hImage);
    // 父处理
    o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);

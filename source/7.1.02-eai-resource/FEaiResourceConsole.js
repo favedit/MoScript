@@ -6,10 +6,10 @@
 // @history 150618
 //==========================================================
 MO.FEaiResourceConsole = function FEaiResourceConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener);
+   o = MO.Class.inherits(this, o, MO.FConsole, MO.MPersistenceAble, MO.MListener);
    //..........................................................
    // @attribute
-   o._scopeCd          = MO.EScope.Local;
+   o._scopeCd          = MO.EScope.Global;
    // @attribute
    o._rateModule       = MO.Class.register(o, new MO.AGetter('_rateModule'));
    o._provinceModule   = MO.Class.register(o, new MO.AGetter('_provinceModule'));
@@ -66,19 +66,12 @@ MO.FEaiResourceConsole_onProcess = function FEaiResourceConsole_onProcess(){
 //==========================================================
 MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
    var o = this;
-   var data = event.content;
-   // 创建读取流
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(data);
    // 反序列化数据
-   o.unserialize(view);
-   // 释放资源
-   view.dispose();
+   o.unserializeBuffer(event.content, true);
    // 分发事件
-   var event = new MO.SEvent();
+   var event = MO.Memory.alloc(MO.SEvent);
    o.processLoadListener(event);
-   event.dispose();
+   MO.Memory.free(event);
 }
 
 //==========================================================
@@ -133,7 +126,9 @@ MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(in
 //==========================================================
 MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   // 获得地址
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
+   // 加载数据
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }
@@ -152,6 +147,7 @@ MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    o._provinceModule = MO.Lang.Object.dispose(o._provinceModule);
    o._cityModule = MO.Lang.Object.dispose(o._cityModule);
    o._cardModule = MO.Lang.Object.dispose(o._cardModule);
+   o._departmentModule = MO.Lang.Object.dispose(o._departmentModule);
    o._historyModule = MO.Lang.Object.dispose(o._historyModule);
    o._mapModule = MO.Lang.Object.dispose(o._mapModule);
    // 父处理

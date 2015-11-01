@@ -160,7 +160,7 @@ MO.FAudio_pause = function FAudio_pause(){
 //==========================================================
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    // 创建图片
    var hAudio = o._hAudio;
    if(!hAudio){

@@ -9,16 +9,18 @@ MO.FEaiCardResourceModule = function FEaiCardResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule);
    //..........................................................
    // @attribute
-   o._cards       = MO.Class.register(o, new MO.AGetter('_cards'));
+   o._cards        = MO.Class.register(o, new MO.AGetter('_cards'));
    //..........................................................
    // @method
-   o.construct    = MO.FEaiCardResourceModule_construct;
+   o.construct     = MO.FEaiCardResourceModule_construct;
    // @method
-   o.find         = MO.FEaiCardResourceModule_find;
-   o.findCityCode = MO.FEaiCardResourceModule_findCityCode;
-   o.unserialize  = MO.FEaiCardResourceModule_unserialize;
+   o.find          = MO.FEaiCardResourceModule_find;
+   o.findCityCode  = MO.FEaiCardResourceModule_findCityCode;
+   o.findCityCode2 = MO.FEaiCardResourceModule_findCityCode2;
+   o.findCityCode4 = MO.FEaiCardResourceModule_findCityCode4;
+   o.unserialize   = MO.FEaiCardResourceModule_unserialize;
    // @method
-   o.dispose      = MO.FEaiCardResourceModule_dispose;
+   o.dispose       = MO.FEaiCardResourceModule_dispose;
    return o;
 }
 
@@ -59,6 +61,56 @@ MO.FEaiCardResourceModule_findCityCode = function FEaiCardResourceModule_findCit
       cityCode = card.cityCode();
    }
    return cityCode;
+}
+
+//==========================================================
+// <T>根据卡片代码查找城市代码。</T>
+//
+// @method
+// @param code:String 代码
+// @return 城市代码
+//==========================================================
+MO.FEaiCardResourceModule_findCityCode2 = function FEaiCardResourceModule_findCityCode2(code){
+   var o = this;
+   var find = code.substring(0, 2);
+   if(find.length != 2){
+      return;
+   }
+   var cards = o._cards;
+   var count = cards.count();
+   for(var i = 0; i < count; i++){
+      var card = cards.value(i);
+      var cardCode = card.code();
+      if(cardCode.indexOf(find) == 0){
+         return card.cityCode();
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>根据卡片代码查找城市代码。</T>
+//
+// @method
+// @param code:String 代码
+// @return 城市代码
+//==========================================================
+MO.FEaiCardResourceModule_findCityCode4 = function FEaiCardResourceModule_findCityCode4(code){
+   var o = this;
+   var find = code.substring(0, 4);
+   if(find.length != 4){
+      return;
+   }
+   var cards = o._cards;
+   var count = cards.count();
+   for(var i = 0; i < count; i++){
+      var card = cards.value(i);
+      var cardCode = card.code();
+      if(cardCode.indexOf(find) == 0){
+         return card.cityCode();
+      }
+   }
+   return null;
 }
 
 //==========================================================

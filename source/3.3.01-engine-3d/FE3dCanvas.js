@@ -251,8 +251,8 @@ MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
    o._size = MO.Lang.Object.dispose(o._size);
    o._screenSize = MO.Lang.Object.dispose(o._screenSize);
    o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._hPanel = MO.RHtml.free(o._hPanel);
-   o._hCanvas = MO.RHtml.free(o._hCanvas);
+   o._hPanel = MO.Window.Html.free(o._hPanel);
+   o._hCanvas = MO.Window.Html.free(o._hCanvas);
    // 父处理
    o.__base.FCanvas.dispose.call(o);
 }

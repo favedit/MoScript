@@ -276,24 +276,21 @@ MO.FG3dEffectConsole_find = function FG3dEffectConsole_find(context, region, ren
 // <T>加载配置文件。</T>
 //
 // @method
-// @param p:url:String 路径
+// @param name:String 路径
 // @return TXmlNode 节点
 //==========================================================
-MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(p){
+MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(name){
    var o = this;
    // 查找配置
-   var x = o._configs.get(p);
-   if(x){
-      return x;
+   var xconfig = o._configs.get(uri);
+   if(!xconfig){
+      // 生成地址
+      var uri = MO.Window.Browser.contentPath(o._path + name + ".xml");
+      var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
+      // 获得网络数据
+      xconfig = MO.Class.create(MO.FXmlConnection).send(url);
+      // 加载配置信息
+      o._configs.set(name, xconfig);
    }
-   // 生成地址
-   var u = MO.RBrowser.contentPath(o._path + p + ".xml");
-   if(MO.Runtime.isDebug()){
-      u += '?' + MO.Lang.Date.format();
-   }
-   // 获得网络数据
-   x = MO.Class.create(MO.FXmlConnection).send(u);
-   // 加载配置信息
-   o._configs.set(p, x);
-   return x;
+   return xconfig;
 }
