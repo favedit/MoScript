@@ -257,7 +257,8 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    } else if (align == MO.EUiAlign.Right) {
       imageX = (rectangle.width / 2) + (imageWidth / 2) + rectangle.left;
    }
-   graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+   var drawScale = o._column._drawScale;
+   graphic.drawImage(image, imageX, imageY, imageWidth * drawScale, imageHeight * drawScale);
 }
 MO.FGuiGridCellPicture_setValue = function FGuiGridCellPicture_setValue(value) {
    var o = this;
@@ -404,6 +405,7 @@ MO.FGuiGridColumnDate_dispose = function FGuiGridColumnDate_dispose(){
 MO.FGuiGridColumnPicture = function FGuiGridColumnPicture(o) {
    o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
    o._align   = MO.Class.register(o, new MO.AGetSet('_align'));
+   o._drawScale = MO.Class.register(o, new MO.AGetSet('_drawScale'), 1.0);
    o.construct = MO.FGuiGridColumnPicture_construct;
    o.dispose   = MO.FGuiGridColumnPicture_dispose;
    return o;
@@ -599,7 +601,6 @@ MO.FGuiTable_construct = function FGuiTable_construct(){
 }
 MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
    var o = this;
-   MO.Assert.debugNotNull(row);
    o._rows.unshift(row);
    o._rowScroll -= o._rowHeight;
    o.dirty();

@@ -698,8 +698,8 @@ MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
          var range = city.range() * 255;
          var location = city.location();
          var level = city.data().level();
-         if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
-            throw new TError('Invalid level.');
+         if((level != 1) && (level != 2) && (level != 3)){
+            level = 4;
          }
          var provinceEntity = city.provinceEntity();
          var z = 0;

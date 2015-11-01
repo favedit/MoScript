@@ -354,7 +354,7 @@ MO.FEaiChartInvestmentScene_setup = function FEaiChartInvestmentScene_setup() {
    }
    var stage = o.activeStage();
    var layer = stage.faceLayer();
-   var timeline = o._timeline = MO.RClass.create(MO.FGuiHistoryTimeline);
+   var timeline = o._timeline = MO.Class.create(MO.FGuiHistoryTimeline);
    timeline.setName('Timeline');
    timeline.setLeft(50);
    timeline.setTop(MO.Eai.Canvas._size.height - 400);

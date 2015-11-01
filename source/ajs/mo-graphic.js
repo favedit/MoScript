@@ -35,7 +35,6 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
-   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -1675,12 +1674,9 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
    o._tagContext = MO.Class.create(MO.FTagContext);
 }
 MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
-   MO.Assert.debugNotEmpty(name);
-   MO.Assert.debugNotNull(effect);
    this._registerEffects.set(name, effect);
 }
 MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
-   MO.Assert.debugNotEmpty(name);
    this._registerEffects.set(name, null);
 }
 MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
@@ -1804,19 +1800,16 @@ MO.FG3dEffectConsole_find = function FG3dEffectConsole_find(context, region, ren
    }
    return effect;
 }
-MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(p){
+MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(name){
    var o = this;
-   var x = o._configs.get(p);
-   if(x){
-      return x;
+   var xconfig = o._configs.get(uri);
+   if(!xconfig){
+      var uri = MO.Window.Browser.contentPath(o._path + name + ".xml");
+      var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
+      xconfig = MO.Class.create(MO.FXmlConnection).send(url);
+      o._configs.set(name, xconfig);
    }
-   var u = MO.RBrowser.contentPath(o._path + p + ".xml");
-   if(MO.Runtime.isDebug()){
-      u += '?' + MO.Lang.Date.format();
-   }
-   x = MO.Class.create(MO.FXmlConnection).send(u);
-   o._configs.set(p, x);
-   return x;
+   return xconfig;
 }
 MO.FG3dLight = function FG3dLight(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -2142,7 +2135,6 @@ MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
 }
 MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
    var o = this;
-   MO.Assert.debugNotNull(pass);
    pass.setTechnique(o);
    o._passes.push(pass);
 }
@@ -4140,7 +4132,6 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
-            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
@@ -4452,7 +4443,6 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    var o = this;
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
-   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;

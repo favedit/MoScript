@@ -361,6 +361,23 @@ MO.FGuiGeneralColorEffect = function FGuiGeneralColorEffect(o){
 }
 MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawRenderable(region, renderable){
    var o = this;
+   var program = o._program;
+   var modelMatrix = renderable.currentMatrix();
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix)
+   var material = renderable.material();
+   o.bindMaterial(material);
+   program.setParameter('vc_model_matrix', modelMatrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+MO.FGuiGeneralControlEffect = function FGuiGeneralControlEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.gui';
+   o.drawRenderable = MO.FGuiGeneralControlEffect_drawRenderable;
+   return o;
+}
+MO.FGuiGeneralControlEffect_drawRenderable = function FGuiGeneralControlEffect_drawRenderable(region, renderable){
+   var o = this;
    if(!MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
       throw new MO.TError('Invalid renderable.');
    }
@@ -370,9 +387,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
    var controlSize = control.size();
    var dockCd = control.dockCd();
    var context = o._graphicContext;
-   var logicSize = context.logicSize();
    var contextSize = context.size();
-   var contextRatio = context.ratio();
    var contextSizeRatio = context.sizeRatio();
    var radioWidth = contextSize.width * contextRatio;
    var radioHeight = contextSize.height * contextRatio;
@@ -391,7 +406,6 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
       if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Left) || (dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Fill)){
          x = controlLocation.x / sizeWidth * 2 - 1;
       }else if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
-         x = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
       }else{
          throw new MO.TError(o, 'Invalid dock.');
       }
@@ -400,16 +414,10 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
       if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Top) || (dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Fill)){
          y = 1 - controlLocation.y / sizeHeight * 2;
       }else if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
-         y = 1 - (logicSize.height - controlLocation.y - controlSize.height / contextRatioY) / sizeHeight * 2;
       }else{
          throw new MO.TError(o, 'Invalid dock.');
       }
       if((dockCd == MO.EGuiDock.Fill)){
-         var right = logicSize.width - controlLocation.x - controlSize.width;
-         var x1 = controlLocation.x / sizeWidth * 2 - 1;
-         var x2 = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
-         width = x2 - x1;
-         height = adjustSize.height / radioHeight * 2;
       }else{
          width = adjustSize.width / radioWidth * 2;
          height = adjustSize.height / radioHeight * 2;

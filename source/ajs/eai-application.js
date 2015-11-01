@@ -1,5 +1,7 @@
 MO.FEaiApplication = function FEaiApplication(o){
    o = MO.Class.inherits(this, o, MO.FApplication);
+   o._chapterCode  = MO.Class.register(o, new MO.AGetSet('_chapterCode'));
+   o._sceneCode    = MO.Class.register(o, new MO.AGetSet('_sceneCode'));
    o._desktop      = MO.Class.register(o, new MO.AGetter('_desktop'));
    o.setup         = MO.FEaiApplication_setup;
    o.processResize = MO.FEaiApplication_processResize;
@@ -50,7 +52,7 @@ MO.FEaiApplication_processEvent = function FEaiApplication_processEvent(event){
 }
 MO.FEaiChartApplication = function FEaiChartApplication(o){
    o = MO.Class.inherits(this, o, MO.FEaiApplication);
-   o._sceneCode      = MO.Class.register(o, new MO.AGetSet('_sceneCode'), MO.EEaiScene.ChartCustomer);
+   o._chapterCode    = MO.EEaiChapter.Chart;
    o._backgroundUrl  = MO.Class.register(o, new MO.AGetSet('_backgroundUrl'), '{eai.resource}/background2.jpg');
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
    o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
@@ -64,7 +66,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
 }
 MO.FEaiChartApplication_onLoadGround = function FEaiChartApplication_onLoadGround(event){
    var o = this;
-   var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
+   var chapter = o.selectChapterByCode(o._chapterCode);
    chapter.selectSceneByCode(o._sceneCode);
    o.processResize();
 }
@@ -122,6 +124,84 @@ MO.FEaiChartApplication_setup = function FEaiChartApplication_setup(hPanel){
    return true;
 }
 MO.FEaiChartApplication_dispose = function FEaiChartApplication_dispose(){
+   var o = this;
+   o._dynamicInfo = MO.Lang.Object.dispose(o._dynamicInfo);
+   o.__base.FEaiApplication.dispose.call(o);
+}
+MO.FEaiCockpitApplication = function FEaiCockpitApplication(o){
+   o = MO.Class.inherits(this, o, MO.FEaiApplication);
+   o._chapterCode    = MO.EEaiChapter.Cockpit;
+   o._backgroundUrl  = MO.Class.register(o, new MO.AGetSet('_backgroundUrl'), '{eai.resource}/background2.jpg');
+   o._chapterCockpit = MO.Class.register(o, new MO.AGetter('_chapterCockpit'));
+   o._dynamicInfo    = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
+   o.onLoadGround    = MO.FEaiCockpitApplication_onLoadGround;
+   o.onLoadResource  = MO.FEaiCockpitApplication_onLoadResource;
+   o.construct       = MO.FEaiCockpitApplication_construct;
+   o.createChapter   = MO.FEaiCockpitApplication_createChapter;
+   o.setup           = MO.FEaiCockpitApplication_setup;
+   o.dispose         = MO.FEaiCockpitApplication_dispose;
+   return o;
+}
+MO.FEaiCockpitApplication_onLoadGround = function FEaiCockpitApplication_onLoadGround(event){
+   var o = this;
+   var chapter = o.selectChapterByCode(o._chapterCode);
+   chapter.selectSceneByCode(o._sceneCode);
+   o.processResize();
+}
+MO.FEaiCockpitApplication_onLoadResource = function FEaiCockpitApplication_onLoadResource(event){
+   var o = this;
+   var canvas = o._desktop.canvas3d();
+   if(o._backgroundUrl){
+      var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
+      bitmap._optionSelect = false;
+      bitmap.loadUrl(o._backgroundUrl);
+      bitmap.material().info().effectCode = 'fill';
+      bitmap._renderable.addImageLoadListener(o, o.onLoadGround);
+   }else{
+      o.onLoadGround(event);
+   }
+}
+MO.FEaiCockpitApplication_construct = function FEaiCockpitApplication_construct(){
+   var o = this;
+   o.__base.FEaiApplication.construct.call(o);
+}
+MO.FEaiCockpitApplication_createChapter = function FEaiCockpitApplication_createChapter(code){
+   var o = this;
+   var chapter = null;
+   switch(code){
+      case MO.EEaiChapter.Cockpit:
+         chapter = o._chapterCockpit = MO.Class.create(MO.FEaiCockpitChapter);
+         break;
+   }
+   chapter.linkGraphicContext(o);
+   return chapter;
+}
+MO.FEaiCockpitApplication_setup = function FEaiCockpitApplication_setup(hPanel){
+   var o = this;
+   var result = o.__base.FEaiApplication.setup.call(o, hPanel);
+   if(!result){
+      return result;
+   }
+   o._hPanel = hPanel;
+   var desktop = o._desktop = MO.Class.create(MO.FCanvasDesktop);
+   desktop.build(hPanel);
+   var canvas = MO.Eai.Canvas = desktop.canvas3d();
+   var context = canvas.graphicContext();
+   if(!context.isValid()){
+      return;
+   }
+   o.linkGraphicContext(canvas);
+   var control = o._dynamicInfo = MO.Class.create(MO.FEaiDynamicInfo);
+   control.linkGraphicContext(canvas);
+   control.setContext(canvas.graphicContext());
+   control.location().set(10, 300);
+   control.build();
+   var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
+   resourceConsole.addLoadListener(o, o.onLoadResource);
+   resourceConsole.load('{eai.resource}/resource.dat');
+   return true;
+}
+MO.FEaiCockpitApplication_dispose = function FEaiCockpitApplication_dispose(){
    var o = this;
    o._dynamicInfo = MO.Lang.Object.dispose(o._dynamicInfo);
    o.__base.FEaiApplication.dispose.call(o);
@@ -234,16 +314,16 @@ MO.FEaiPlatformApplication_createCanvas = function FEaiPlatformApplication_creat
 }
 MO.FEaiPlatformApplication_setup = function FEaiPlatformApplication_setup(){
    var o = this;
-   var chapter = o._chapterLoading = MO.RClass.create(MO.FEaiLoadingChapter);
+   var chapter = o._chapterLoading = MO.Class.create(MO.FEaiLoadingChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
-   var chapter = o._chapterLogin = MO.RClass.create(MO.FEaiLoginChapter);
+   var chapter = o._chapterLogin = MO.Class.create(MO.FEaiLoginChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
-   var chapter = o._chapterScene = MO.RClass.create(MO.FEaiSceneChapter);
+   var chapter = o._chapterScene = MO.Class.create(MO.FEaiSceneChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
-   var chapter = o._chapterChart = MO.RClass.create(MO.FEaiChartChapter);
+   var chapter = o._chapterChart = MO.Class.create(MO.FEaiChartChapter);
    chapter.linkGraphicContext(o);
    o.registerChapter(chapter);
    var resourceConsole = MO.RConsole.find(MO.FEaiResourceConsole);

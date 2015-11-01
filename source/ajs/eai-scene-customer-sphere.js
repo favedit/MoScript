@@ -2,13 +2,25 @@ MO.SEaiEarthTouch = function SEaiEarthTouch(){
    var o = this;
    o.points        = new MO.TObjects();
    o.direction     = new MO.SVector3();
+   o.testDisableRectangles = MO.SEaiEarthTouch_testDisableRectangles;
    o.setInfo       = MO.SEaiEarthTouch_setInfo;
    o.calculate     = MO.SEaiEarthTouch_calculate;
    o.calculateFlat = MO.SEaiEarthTouch_calculateFlat;
    o.toString      = MO.SEaiEarthTouch_toString;
    return o;
 }
-MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info){
+MO.SEaiEarthTouch_testDisableRectangles = function SEaiEarthTouch_testDisableRectangles(rectangles, x, y){
+   var o = this;
+   var count = rectangles.count();
+   for(var i = 0; i < count; i++){
+      var rectangle = rectangles.at(i);
+      if(rectangle.testRange(x , y)){
+         return true;
+      }
+   }
+   return false;
+}
+MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info, rectangles){
    var o = this;
    var infoPoints = info.points();
    var points = o.points;
@@ -21,12 +33,17 @@ MO.SEaiEarthTouch_setInfo = function SEaiEarthTouch_setInfo(info){
    var count = infoPoints.count();
    for(var i = 0; i < count; i++){
       var infoPoint = infoPoints.at(i);
+      if(rectangles && o.testDisableRectangles(rectangles, infoPoint.x(), infoPoint.y())){
+         continue;
+      }
       var point = MO.Memory.alloc(MO.SEaiEarthTouchPoint);
       point.setInfo(infoPoint);
       points.push(point);
    }
-   var point = points.first();
-   o.direction.assign(point.direction);
+   if(!points.isEmpty()){
+      var point = points.first();
+      o.direction.assign(point.direction);
+   }
 }
 MO.SEaiEarthTouch_calculate = function SEaiEarthTouch_calculate(matrix){
    var o = this;
@@ -164,10 +181,12 @@ MO.FEaiChartCustomerSphereInfoPoint = function FEaiChartCustomerSphereInfoPoint(
 }
 MO.FEaiChartCustomerSphereOperation = function FEaiChartCustomerSphereOperation(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
-   o._imageButton = null;
+   o._imageButton   = null;
+   o._buttonVisible = MO.Class.register(o, new MO.AGetter('_buttonVisible'), false);
    o.onImageLoad  = MO.FEaiChartCustomerSphereOperation_onImageLoad;
    o.onPaintBegin = MO.FEaiChartCustomerSphereOperation_onPaintBegin;
    o.construct    = MO.FEaiChartCustomerSphereOperation_construct;
+   o.showButton   = MO.FEaiChartCustomerSphereOperation_showButton;
    o.setup        = MO.FEaiChartCustomerSphereOperation_setup;
    return o;
 }
@@ -177,7 +196,10 @@ MO.FEaiChartCustomerSphereOperation_onImageLoad = function FEaiChartCustomerSphe
 }
 MO.FEaiChartCustomerSphereOperation_onPaintBegin = function FEaiChartCustomerSphereOperation_onPaintBegin(event) {
    var o = this;
-   if (!o._ready) {
+   if (!o._imageButton.testReady()){
+      return;
+   }
+   if (!o._imageRange.testReady()){
       return;
    }
    o.__base.FGuiControl.onPaintBegin.call(o, event);
@@ -186,18 +208,31 @@ MO.FEaiChartCustomerSphereOperation_onPaintBegin = function FEaiChartCustomerSph
    var virtualSize = event.virtualSize;
    var imageButton = o._imageButton;
    var imageSize = imageButton.size();
-   var left = (virtualSize.width - imageSize.width) * 0.5;
-   var top = (virtualSize.height - imageSize.height) * 0.5;
-   graphic.drawImage(o._imageButton, left, top, imageSize.width, imageSize.height);
+   var width = imageSize.width / 1.8;
+   var height = imageSize.height / 1.8;
+   var left = (virtualSize.width - width) * 0.5;
+   var top = (virtualSize.height - height) * 0.5;
+   if(o._buttonVisible){
+      graphic.drawImage(o._imageButton, left, top, width, height);
+   }else{
+      graphic.drawImage(o._imageRange, left, top, width, height);
+   }
 }
 MO.FEaiChartCustomerSphereOperation_construct = function FEaiChartCustomerSphereOperation_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
 }
+MO.FEaiChartCustomerSphereOperation_showButton = function FEaiChartCustomerSphereOperation_showButton(visible){
+   var o = this;
+   o._buttonVisible = visible;
+   o.dirty();
+}
 MO.FEaiChartCustomerSphereOperation_setup = function FEaiChartCustomerSphereOperation_setup() {
    var o = this;
    var imageConsole = MO.Console.find(MO.FImageConsole);
    var image = o._imageButton = imageConsole.load('{eai.resource}/world/button.png');
+   image.addLoadListener(o, o.onImageLoad);
+   var image = o._imageRange = imageConsole.load('{eai.resource}/world/button.range.png');
    image.addLoadListener(o, o.onImageLoad);
 }
 MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
@@ -216,7 +251,9 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
    o._earthSphere            = null;
+   o._disableRectangles      = null;
    o.onSocketTouchReceived   = MO.FEaiChartCustomerSphereScene_onSocketTouchReceived;
+   o.onSocketSphereReceived  = MO.FEaiChartCustomerSphereScene_onSocketSphereReceived;
    o.onOperationDown         = MO.FEaiChartCustomerSphereScene_onOperationDown;
    o.onOperationVisibility   = MO.FEaiChartCustomerSphereScene_onOperationVisibility;
    o.onProcessReady          = MO.FEaiChartCustomerSphereScene_onProcessReady;
@@ -224,6 +261,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
    o.onProcess               = MO.FEaiChartCustomerSphereScene_onProcess;
    o.construct               = MO.FEaiChartCustomerSphereScene_construct;
    o.setup                   = MO.FEaiChartCustomerSphereScene_setup;
+   o.testDisableRectangles   = MO.FEaiChartCustomerSphereScene_testDisableRectangles;
    o.showFace                = MO.FEaiChartCustomerSphereScene_showFace;
    o.fixMatrix               = MO.FEaiChartCustomerSphereScene_fixMatrix;
    o.processResize           = MO.FEaiChartCustomerSphereScene_processResize;
@@ -233,6 +271,7 @@ MO.FEaiChartCustomerSphereScene = function FEaiChartCustomerSphereScene(o) {
 MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustomerSphereScene_onSocketTouchReceived(event) {
    var o = this;
    var guiManager = o._guiManager;
+   var controlOperation = o._controlOperation;
    var context = o._graphicContext;
    var size = context.size();
    var info = o._info;
@@ -247,45 +286,84 @@ MO.FEaiChartCustomerSphereScene_onSocketTouchReceived = function FEaiChartCustom
       if(info.points().isEmpty()){
          return;
       }
-      earthSphere.setSource(info);
+      if(!earthSphere.setSource(info, o._disableRectangles)){
+         return;
+      }
       var rotationMatrix = o._rotationMatrix.assign(matrix);
       rotationMatrix.invert();
       sourceTouch.calculate(rotationMatrix);
-      MO.Logger.debug(o, 'Touch down. ({1})', sourceTouch);
       var sourceTouchPoint = sourceTouch.points.first();
-      var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
-      if(id > 0){
-         socketSphere.send('area=' + id);
-         MO.Logger.debug(o, 'Select area. (id={1})', id);
-         return;
-      }
-      if(sourceTouchPoint.originLength < (128 / size.height)){
-         if(guiManager.visible()){
+      if(sourceTouchPoint.originLength < (190 / size.height)){
+         if(controlOperation.buttonVisible()){
             if(sourceTouchPoint.originPosition.x < 0){
                earthSphere.reset();
                socketSphere.send('reset');
-               guiManager.setVisible(false);
+               controlOperation.showButton(false);
             }else{
                socketSphere.send('next');
             }
          }else{
-            guiManager.setVisible(true);
+            controlOperation.showButton(true);
          }
       }else{
-         guiManager.setVisible(false);
+         var id = o._earthFlat.pickIdentify(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
+         if(id > 0){
+            var selectId = 0;
+            switch(id){
+               case 1:
+                  selectId = 1;
+                  break;
+               case 2:
+                  selectId = 8;
+                  break;
+               case 3:
+                  selectId = 7;
+                  break;
+               case 4:
+                  selectId = 6;
+                  break;
+               case 5:
+                  selectId = 5;
+                  break;
+               case 6:
+                  selectId = 4;
+                  break;
+               case 7:
+                  selectId = 3;
+                  break;
+               case 8:
+                  selectId = 2;
+                  break;
+            }
+            socketSphere.send('area=' + selectId);
+            return;
+         }
+         controlOperation.showButton(false);
          o._earthFlat.drawTouch(sourceTouchPoint.mapLocation.x, sourceTouchPoint.mapLocation.y);
          o._moving = true;
       }
+      guiManager.dirty();
    }else if(typeCode == 'M' && o._moving){
       if(info.points().isEmpty()){
          return;
       }
-      earthSphere.setTarget(info);
+      earthSphere.setTarget(info, o._disableRectangles);
       earthSphere.sendRotation();
    }else if(typeCode == 'U'){
       o._moving = false;
-      MO.Logger.debug(o, 'Touch up.');
    }
+}
+MO.FEaiChartCustomerSphereScene_onSocketSphereReceived = function FEaiChartCustomerSphereScene_onSocketSphereReceived(event) {
+   var o = this;
+   var guiManager = o._guiManager;
+   var message = event.message;
+   var controlOperation = o._controlOperation;
+   if(message == 'phase=0'){
+      controlOperation.showButton(false);
+   }else if(message == 'phase=1'){
+      controlOperation.showButton(true);
+   }
+   guiManager.dirty();
 }
 MO.FEaiChartCustomerSphereScene_onOperationDown = function FEaiChartCustomerSphereScene_onOperationDown(event) {
    var o = this;
@@ -319,7 +397,6 @@ MO.FEaiChartCustomerSphereScene_onProcessReady = function FEaiChartCustomerSpher
    var o = this;
    o.__base.FEaiChartScene.onProcessReady.call(o);
    o._earthSphere.autoRotation(true);
-   o._guiManager.hide();
 }
 MO.FEaiChartCustomerSphereScene_onProcessInput = function FEaiChartCustomerSphereScene_onProcessInput(){
    var o = this;
@@ -404,12 +481,15 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    var context3d = canvas3d.graphicContext();
    var stage = o._activeStage;
    var qualityCd = MO.Desktop.qualityCd();
+   var rectangles = o._disableRectangles = new MO.TObjects();
+   rectangles.push(new MO.SRectangle(0.7, 0.3, 0.1, 0.1));
    var earthFlat = o._earthFlat = MO.Class.create(MO.FEaiEarthFlat);
    earthFlat.linkGraphicContext(context3d);
    earthFlat.setup();
    var groundLayer = stage.groundLayer();
    groundLayer.push(earthFlat);
    var earthSphere = o._earthSphere = MO.Class.create(MO.FEaiEarthSphere);
+   earthSphere._scene = o;
    earthSphere.linkGraphicContext(context3d);
    if(qualityCd == MO.EGraphicQuality.Highest){
       earthSphere.setSplitCount(128);
@@ -448,6 +528,7 @@ MO.FEaiChartCustomerSphereScene_setup = function FEaiChartCustomerSphereScene_se
    socket.addReceiveListener(o, o.onSocketTouchReceived);
    var socket = o._socketSphere = MO.Class.create(MO.FSocket);
    socket.connect('{service.touch}/sphere');
+   socket.addReceiveListener(o, o.onSocketSphereReceived);
    earthSphere._socket = socket;
    var resourceConsole = MO.Console.find(MO.FEaiResourceConsole);
    var worldResource = o._worldResource = resourceConsole.mapModule().loadWorld();
@@ -514,6 +595,7 @@ MO.FEaiEarthFlat = function FEaiEarthFlat(o){
 }
 MO.FEaiEarthFlat_drawTouch = function FEaiEarthFlat_drawTouch(x, y){
    var o = this;
+   return;
    if(!o._canvas){
       return;
    }
@@ -607,7 +689,6 @@ MO.FEaiEarthFlat_onProcessReady = function FEaiEarthFlat_onProcessReady(){
          }
       }
    }
-   o.drawGrid(context2d, 8);
    context2d.drawImage(o._imageArea, 0, 0, sizeWidth, size.height);
    var texture = o._textureLand = context.createFlatTexture();
    texture.setCode('land');
@@ -762,10 +843,13 @@ MO.FEaiEarthSphere_construct = function FEaiEarthSphere_construct(){
    o._rotationMatrix = new MO.SMatrix3d();
    o._rotationMatrix3x3 = new MO.SMatrix3x3();
 }
-MO.FEaiEarthSphere_setSource = function FEaiEarthSphere_setSource(info){
+MO.FEaiEarthSphere_setSource = function FEaiEarthSphere_setSource(info, rectangles){
    var o = this;
    var touch = o._sourceTouch;
-   touch.setInfo(info);
+   touch.setInfo(info, rectangles);
+   if(touch.points.isEmpty()){
+      return false;
+   }
    o._sourceDirection.assign(touch.direction);
    o._currentDirection.assign(touch.direction);
    o._sourceMatrix.assign(o._matrix);
@@ -773,6 +857,7 @@ MO.FEaiEarthSphere_setSource = function FEaiEarthSphere_setSource(info){
    o._currentAngle = 0;
    o._rotationAngle = 0;
    o._autoTick = 0;
+   return true;
 }
 MO.FEaiEarthSphere_setTarget = function FEaiEarthSphere_setTarget(info){
    var o = this;
@@ -813,6 +898,8 @@ MO.FEaiEarthSphere_process = function FEaiEarthSphere_process(){
          if(o._autoTick == 0){
             o._autoTick = currentTick;
          }else if(currentTick - o._autoTick > 120000){
+            o._scene._controlOperation.showButton(false);
+            o._scene._guiManager.dirty();
             o.reset();
          }
       }
@@ -846,7 +933,7 @@ MO.FEaiEarthSphere_autoRotation = function FEaiEarthSphere_autoRotation(value){
 MO.FEaiEarthSphere_sendRotation = function FEaiEarthSphere_sendRotation(){
    var o = this;
    var matrix = o._matrix;
-   o._socket.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
+   o._scene._socketSphere.send('rotation=' + matrix.rx + ',' + matrix.ry + ',' + matrix.rz);
 }
 MO.FEaiEarthSphere_dispose = function FEaiEarthSphere_dispose(){
    var o = this;

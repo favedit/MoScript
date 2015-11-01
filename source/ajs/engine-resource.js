@@ -119,16 +119,14 @@ MO.FAudio_play = function FAudio_play(position){
       }
    }
    hAudio.play();
-   MO.Logger.debug(o, 'Audio play. (url={1}, position={2})', o._url, position);
 }
 MO.FAudio_pause = function FAudio_pause(){
    var o = this;
    o._hAudio.pause();
-   MO.Logger.debug(o, 'Audio pause. (url={1})', o._url);
 }
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
@@ -753,9 +751,9 @@ MO.FResourceObject = function FResourceObject(o){
    return o;
 }
 MO.FResourcePackage = function FResourcePackage(o){
-   o = MO.Class.inherits(this, o, MO.FResource);
+   o = MO.Class.inherits(this, o, MO.FResource, MO.MPersistenceAble);
    o._uri         = MO.Class.register(o, new MO.AGetSet('_uri'));
-   o._url         = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._url         = MO.Class.register(o, new MO.AGetter('_url'));
    o._statusReady = false;
    o.onLoad       = MO.FResourcePackage_onLoad;
    o.testReady    = MO.FResourcePackage_testReady;
@@ -765,23 +763,15 @@ MO.FResourcePackage = function FResourcePackage(o){
 }
 MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    var o = this;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(event.content);
-   o.unserialize(view);
-   view.dispose();
+   o.unserializeBuffer(event.content, true);
    o._statusReady = true;
-   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
    return this._statusReady;
 }
 MO.FResourcePackage_load = function FResourcePackage_load(){
    var o = this;
-   var url = o._url;
-   if(!url){
-      url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(o._uri);
-   }
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(o._uri);
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(o, o.onLoad);
    return connection;

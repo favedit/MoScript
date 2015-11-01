@@ -1,3 +1,9 @@
+MO.EEaiVerificationMode = new function EEaiVerificationMode() {
+   var o = this;
+   o.None = "vmode.none";
+   o.Token = "vmode.token";
+   return o;
+}
 MO.FEaiFinancialData = function FEaiFinancialData(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    o._provinceCode  = MO.Class.register(o, new MO.AGetter('_provinceCode'));
@@ -198,6 +204,9 @@ MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o._achievement        = MO.Class.register(o, new MO.AGetter('_achievement'));
    o._schedule           = MO.Class.register(o, new MO.AGetter('_schedule'));
    o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
+   o._jsonTableData      = MO.Class.register(o, new MO.AGetter('_jsonTableData'));
+   o._jsonTimerLineData  = MO.Class.register(o, new MO.AGetter('_jsonTimerLineData'));
+   o._jsonSystem         = MO.Class.register(o, new MO.AGetter('_jsonSystem'));
    o._thread             = null;
    o._interval           = 1000 * 60 * 10;
    o.onProcess           = MO.FEaiLogicConsole_onProcess;
@@ -217,6 +226,9 @@ MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(){
    o._achievement = MO.Class.create(MO.FEaiLogicAchievement);
    o._schedule = MO.Class.create(MO.FEaiLogicSchedule);
    o._statistics = MO.Class.create(MO.FEaiLogicStatistics);
+   o._jsonTableData = MO.Class.create(MO.FEaiLogicJsonTableData);
+   o._jsonSystem = MO.Class.create(MO.FEaiLogicJsonSystem);
+   o._jsonTimerLineData = MO.Class.create(MO.FEaiLogicJsonTimerLineData);
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);
    thread.addProcessListener(o, o.onProcess);
@@ -229,6 +241,8 @@ MO.FEaiLogicConsole_dispose = function FEaiLogicConsole_dispose(){
    o._achievement = MO.Lang.Object.dispose(o._achievement);
    o._schedule = MO.Lang.Object.dispose(o._schedule);
    o._statistics = MO.Lang.Object.dispose(o._statistics);
+   o._jsonTableData = MO.Lang.Object.dispose(o._jsonTableData);
+   o._jsonSystem = MO.Lang.Object.dispose(o._jsonSystem);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEaiLogicInfoCustomerDynamic = function FEaiLogicInfoCustomerDynamic(o){
@@ -650,10 +664,17 @@ MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
    o._localDate = new MO.TDate();
    o._systemDate = new MO.TDate();
 }
-MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
+MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback) {
    var o = this;
-   var parameters = o.prepareParemeters();
-   this.sendService('{eai.logic.service}/eai.system.wv?do=info', parameters, owner, callback);
+   var useToken = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiVerificationMode.Token);
+   var none = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiVerificationMode.None);
+   if (none == true || useToken == false) {
+      o._ready = true;
+   }
+   else {
+      var parameters = o.prepareParemeters();
+      this.sendService('{eai.logic.service}/eai.system.wv?do=info', parameters, owner, callback);
+   }
 }
 MO.FEailogicSystem_doDeviceAccess = function FEailogicSystem_doDeviceAccess(){
    var xroot = new MO.TXmlNode('Configuration');

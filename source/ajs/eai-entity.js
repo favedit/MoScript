@@ -307,7 +307,6 @@ MO.FEaiCityEntityModule_findByCard = function FEaiCityEntityModule_findByCard(ca
 }
 MO.FEaiCityEntityModule_push = function FEaiCityEntityModule_push(entity){
    var code = entity.data().code();
-   MO.Assert.debugNotEmpty(code);
    this._citys.set(code, entity);
 }
 MO.FEaiCityEntityModule_build = function FEaiCityEntityModule_build(context, clazz){
@@ -475,7 +474,6 @@ MO.FEaiCountry3dEntity_loadResource = function FEaiCountry3dEntity_loadResource(
       var provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
-      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvince3dEntity);
       provinceEntity._countryEntity = o;
       provinceEntity.linkGraphicContext(o);
@@ -679,7 +677,6 @@ MO.FEaiCountryEntity_loadResource = function FEaiCountryEntity_loadResource(reso
       provinceData = provincesData.at(i);
       var provinceCode = provinceData.code();
       var provinceResource = provinceModule.findByCode(provinceCode);
-      MO.Assert.debugNotNull(provinceResource);
       var provinceEntity = MO.Class.create(MO.FEaiProvinceEntity);
       provinceEntity.setResource(provinceResource);
       provinceEntity.setData(provinceData);

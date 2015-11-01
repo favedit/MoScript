@@ -2626,10 +2626,10 @@ MO.SRange_dump = function SRange_dump(d){
 }
 MO.SRectangle = function SRectangle(left, top, width, height){
    var o = this;
-   o.left            = MO.Lang.Integer.nvl(left);
-   o.top             = MO.Lang.Integer.nvl(top);
-   o.width           = MO.Lang.Integer.nvl(width);
-   o.height          = MO.Lang.Integer.nvl(height);
+   o.left            = MO.Lang.Float.nvl(left);
+   o.top             = MO.Lang.Float.nvl(top);
+   o.width           = MO.Lang.Float.nvl(width);
+   o.height          = MO.Lang.Float.nvl(height);
    o.right           = MO.SRectangle_right;
    o.bottom          = MO.SRectangle_bottom;
    o.isEmpty         = MO.SRectangle_isEmpty;

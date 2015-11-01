@@ -111,7 +111,7 @@ MO.FImage_testReady = function FImage_testReady(){
 }
 MO.FImage_loadUrl = function FImage_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    var hImage = o._hImage;
    if(!hImage){
       hImage = o._hImage = new Image();
@@ -125,7 +125,7 @@ MO.FImage_loadUrl = function FImage_loadUrl(uri){
 MO.FImage_dispose = function FImage_dispose(){
    var o = this;
    o._size = MO.Lang.Object.dispose(o._size);
-   o._hImage = MO.RHtml.free(o._hImage);
+   o._hImage = MO.Window.Html.free(o._hImage);
    o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
@@ -729,7 +729,6 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
-   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){

@@ -41,7 +41,7 @@ MO.FE2dCanvasConsole_construct = function FE2dCanvasConsole_construct(){
 // @param height:Integer 高度
 // @return FE2dCanvas 画板
 //==========================================================
-MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height){
+MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height, clazz){
    var o = this;
    var pools = o._pools;
    // 查找画板
@@ -49,7 +49,7 @@ MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width,
    var canvas = pools.alloc(code);
    if(!canvas){
       // 创建画板
-      canvas = MO.Class.create(MO.FE2dCanvas);
+      canvas = MO.Class.create(MO.Runtime.nvl(clazz, MO.FE2dCanvas));
       canvas.size().set(width, height);
       canvas.build(MO.Window._hDocument);
    }

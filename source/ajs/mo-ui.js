@@ -400,7 +400,6 @@ MO.FDataSource_loadConfig = function FDataSource_loadConfig(xconfig){
          var xnode = xnodes.at(i);
          if(xnode.isName('Dataset')){
             var datasetName = xnode.get('name');
-            MO.Assert.debugNotEmpty(datasetName);
             var dataset = o.selectDataset(datasetName);
             dataset.loadConfig(xnode);
          }
@@ -3750,7 +3749,6 @@ MO.FCanvasDesktop_resize = function FCanvasDesktop_resize(targetWidth, targetHei
    }else{
       calculateRate.set(1, 1);
    }
-   MO.Logger.debug(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    var canvas3d = o._canvas3d;
    var context3d = canvas3d.graphicContext();
    context3d.size().set(width, height);
@@ -4089,7 +4087,7 @@ MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
 MO.FGuiDesktop_build = function FGuiDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
-   var canvas = o._canvas = MO.RClass.create(MO.FE2dCanvas);
+   var canvas = o._canvas = MO.Class.create(MO.FE2dCanvas);
    canvas.setDesktop(o);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);

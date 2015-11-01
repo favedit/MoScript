@@ -40,6 +40,8 @@ MO.FGuiControl = function FGuiControl(o){
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
    o._operationUpListeners   = MO.Class.register(o, new MO.AListener('_operationUpListeners', MO.EEvent.OperationUp));
+   // @attribute
+   o._paintEvent             = null;
    //..........................................................
    // @event
    o.onUpdate                = MO.FGuiControl_onUpdate;
@@ -70,7 +72,9 @@ MO.FGuiControl = function FGuiControl(o){
    o.testInRange             = MO.FGuiControl_testInRange;
    o.paint                   = MO.FGuiControl_paint;
    o.update                  = MO.FGuiControl_update;
-   o.build                   = MO.FGuiControl_build;
+   o.build                   = MO.Method.empty;
+   o.makeRenderable          = MO.FGuiControl_makeRenderable;
+   o.updateRenderable        = MO.FGuiControl_updateRenderable;
    o.processReady            = MO.FGuiControl_processReady;
    o.processEvent            = MO.FGuiControl_processEvent;
    o.dirty                   = MO.FGuiControl_dirty;
@@ -294,6 +298,8 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    //o._borderInner.top.color = '#00FF00';
    //o._borderInner.right.color = '#0000FF';
    //o._borderInner.bottom.color = '#FF00FF';
+   // 创建属性
+   o._paintEvent = new MO.SGuiPaintEvent();
 }
 
 //==========================================================
@@ -558,26 +564,49 @@ MO.FGuiControl_dirty = function FGuiControl_dirty(){
 }
 
 //==========================================================
-// <T>建立处理。</T>
+// <T>建立渲染对象处理。</T>
 //
 // @method
 //==========================================================
-MO.FGuiControl_build = function FGuiControl_build(){
+MO.FGuiControl_makeRenderable = function FGuiControl_makeRenderable(){
    var o = this;
    //var location = o._location;
    //var size = o._size;
    //..........................................................
    // 获得渲染对象
-   //var renderable = o._renderable;
-   //if(!renderable){
-   //   renderable = o._renderable = o._graphicContext.createObject(FGuiControlRenderable);
-   //   renderable.setControl(o);
-   //}
+   var renderable = o._renderable;
+   if(!renderable){
+      renderable = o._renderable = o._graphicContext.createObject(MO.FGuiControlRenderable);
+      renderable.setControl(o);
+   }
    //renderable.setLocation(location.x, location.y);
    //renderable.setSize(size.width, size.height);
    //..........................................................
    // 更新处理
    //o.update();
+   return renderable;
+}
+
+//==========================================================
+// <T>建立渲染对象处理。</T>
+//
+// @method
+//==========================================================
+MO.FGuiControl_updateRenderable = function FGuiControl_updateRenderable(){
+   var o = this;
+   var renderable = o._renderable;
+   var graphic = renderable.beginDraw();
+   var size = o._size;
+   // 绘制处理
+   var event = o._paintEvent;
+   event.optionScale = false;
+   event.graphic = graphic;
+   event.virtualSize = size;
+   event.parentRectangle.set(0, 0, size.width, size.height);
+   event.rectangle.set(0, 0, size.width, size.height);
+   event.calculateRate = 1;
+   o.paint(event);
+   renderable.endDraw();
 }
 
 //==========================================================
@@ -630,7 +659,7 @@ MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
 MO.FGuiControl_psPaint = function FGuiControl_psPaint(event){
    var o = this;
    // 创建事件
-   var event = new MO.SUiDispatchEvent(o, 'oeParint', MO.FGuiControl);
+   var event = new MO.SUiDispatchEvent(o, 'oePaint', MO.FGuiControl);
    // 处理消息
    o.process(event);
    event.dispose();
@@ -661,6 +690,7 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.Lang.Object.dispose(o._backImage);
    o._backHoverImage = MO.Lang.Object.dispose(o._backHoverImage);
    o._clientRectangle = MO.Lang.Object.dispose(o._clientRectangle);
+   o._paintEvent = MO.Lang.Object.dispose(o._paintEvent);
    // 父处理
    o.__base.MGuiSize.dispose.call(o);
    o.__base.MUiBorder.dispose.call(o);

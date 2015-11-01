@@ -91,9 +91,16 @@ MO.EProcess = new function EProcess(){
 }
 MO.RRuntime = function RRuntime(){
    var o = MO.RSingleton.call(this);
+   o._version    = 'mo';
    o._processCd  = MO.EProcess.Release;
    o._platformCd = MO.EPlatform.Pc;
    return o;
+}
+MO.RRuntime.prototype.version = function RRuntime_version(){
+   return this._version;
+}
+MO.RRuntime.prototype.setVersion = function RRuntime_setVersion(version){
+   this._version = version;
 }
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
    return this._processCd == MO.EProcess.Debug;
@@ -505,7 +512,6 @@ MO.TMap_get = function TMap_get(name, defaultValue){
 }
 MO.TMap_set = function TMap_set(name, value){
    var o = this;
-   MO.Assert.debugNotNull(name);
    var nameString = name.toString();
    var code = nameString.toLowerCase();
    var index = o._table[code];
@@ -1192,13 +1198,11 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
-   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1211,9 +1215,7 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
-   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
-   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1271,7 +1273,6 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -2451,7 +2452,6 @@ MO.RClass.prototype.isName = function RClass_isName(value, name){
 }
 MO.RClass.prototype.isClass = function RClass_isClass(value, clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    if(value){
       var name = o.name(clazz);
       if(value.__base){
@@ -2743,7 +2743,6 @@ MO.RClass.prototype.build = function RClass_build(clazz){
 }
 MO.RClass.prototype.free = function RClass_free(instance){
    var clazz = instance.__class;
-   MO.Assert.debugNotNull(clazz);
    clazz.free(instance);
 }
 MO.RClass.prototype.dump = function RClass_dump(v){
@@ -4942,7 +4941,6 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
-   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -5243,11 +5241,6 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
-   MO.Assert.debugNotNull(source);
-   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
-   MO.Assert.debugTrue(sourceCount <= source.length);
-   MO.Assert.debugNotNull(target);
-   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }
@@ -5469,7 +5462,6 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 }
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var name = null;
    if(value.constructor == String){
       name = value;
@@ -5502,7 +5494,6 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){
@@ -8631,10 +8622,10 @@ MO.SRange_dump = function SRange_dump(d){
 }
 MO.SRectangle = function SRectangle(left, top, width, height){
    var o = this;
-   o.left            = MO.Lang.Integer.nvl(left);
-   o.top             = MO.Lang.Integer.nvl(top);
-   o.width           = MO.Lang.Integer.nvl(width);
-   o.height          = MO.Lang.Integer.nvl(height);
+   o.left            = MO.Lang.Float.nvl(left);
+   o.top             = MO.Lang.Float.nvl(top);
+   o.width           = MO.Lang.Float.nvl(width);
+   o.height          = MO.Lang.Float.nvl(height);
    o.right           = MO.SRectangle_right;
    o.bottom          = MO.SRectangle_bottom;
    o.isEmpty         = MO.SRectangle_isEmpty;
@@ -9720,7 +9711,6 @@ MO.RRandom = new MO.RRandom();
 MO.Lang.Random = MO.RRandom;
 MO.AListener = function AListener(name, linker){
    var o = this;
-   MO.Assert.debugNotEmpty(name);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    if(linker == null){
@@ -11515,15 +11505,9 @@ MO.MParent_dispose = function MParent_dispose(){
    o._parent = null;
 }
 MO.MPersistence = function MPersistence(o){
-   o = MO.Class.inherits(this, o);
-   o.unserialize                = MO.MPersistence_unserialize;
-   o.unserializeBuffer          = MO.MPersistence_unserializeBuffer;
-   o.unserializeSignBuffer      = MO.MPersistence_unserializeSignBuffer;
-   o.unserializeEncryptedBuffer = MO.MPersistence_unserializeEncryptedBuffer;
-   o.serialize                  = MO.MPersistence_serialize;
-   o.serializeBuffer            = MO.MPersistence_serializeBuffer;
-   o.serializeSignBuffer        = MO.MPersistence_serializeSignBuffer;
-   o.serializeEncryptedBuffer   = MO.MPersistence_serializeEncryptedBuffer;
+   o = MO.Class.inherits(this, o, MO.MPersistenceAble);
+   o.unserialize = MO.MPersistence_unserialize;
+   o.serialize   = MO.MPersistence_serialize;
    return o;
 }
 MO.MPersistence_unserialize = function MPersistence_unserialize(input){
@@ -11576,33 +11560,6 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       }
    }
 }
-MO.MPersistence_unserializeBuffer = function MPersistence_unserializeBuffer(buffer, endianCd){
-   var o = this;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
-MO.MPersistence_unserializeSignBuffer = function MPersistence_unserializeSignBuffer(sign, buffer, endianCd){
-   var o = this;
-   var bytes = new Uint8Array(buffer);
-   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
-MO.MPersistence_unserializeEncryptedBuffer = function MPersistence_unserializeEncryptedBuffer(sign, buffer, endianCd){
-   var o = this;
-   var view = MO.Class.create(MO.FEncryptedView);
-   view.setSign(sign);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
 MO.MPersistence_serialize = function MPersistence_serialize(output){
    var o = this;
    var clazz = MO.Class.find(o.constructor);
@@ -11635,7 +11592,46 @@ MO.MPersistence_serialize = function MPersistence_serialize(output){
       }
    }
 }
-MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, endianCd){
+MO.MPersistenceAble = function MPersistenceAble(o){
+   o = MO.Class.inherits(this, o);
+   o.unserialize                = MO.Method.empty;
+   o.unserializeBuffer          = MO.MPersistenceAble_unserializeBuffer;
+   o.unserializeSignBuffer      = MO.MPersistenceAble_unserializeSignBuffer;
+   o.unserializeEncryptedBuffer = MO.MPersistenceAble_unserializeEncryptedBuffer;
+   o.serialize                  = MO.Method.empty;
+   o.serializeBuffer            = MO.MPersistenceAble_serializeBuffer;
+   o.serializeSignBuffer        = MO.MPersistenceAble_serializeSignBuffer;
+   o.serializeEncryptedBuffer   = MO.MPersistenceAble_serializeEncryptedBuffer;
+   return o;
+}
+MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuffer(buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializeSignBuffer(sign, buffer, endianCd){
+   var o = this;
+   var bytes = new Uint8Array(buffer);
+   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_unserializeEncryptedBuffer = function MPersistenceAble_unserializeEncryptedBuffer(sign, buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FEncryptedView);
+   view.setSign(sign);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_serializeBuffer = function MPersistenceAble_serializeBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -11643,7 +11639,7 @@ MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, 
    o.serialize(view);
    view.dispose();
 }
-MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(buffer, endianCd){
+MO.MPersistenceAble_serializeSignBuffer = function MPersistenceAble_serializeSignBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -11651,7 +11647,7 @@ MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(
    o.serialize(view);
    view.dispose();
 }
-MO.MPersistence_serializeEncryptedBuffer = function MPersistence_serializeEncryptedBuffer(sign, buffer, endianCd){
+MO.MPersistenceAble_serializeEncryptedBuffer = function MPersistenceAble_serializeEncryptedBuffer(sign, buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FEncryptedView);
    view.setSign(sign);
@@ -13614,6 +13610,7 @@ MO.FEnvironmentConsole = function FEnvironmentConsole(o){
    o.find          = MO.FEnvironmentConsole_find;
    o.findValue     = MO.FEnvironmentConsole_findValue;
    o.parse         = MO.FEnvironmentConsole_parse;
+   o.parseUrl      = MO.FEnvironmentConsole_parseUrl;
    o.dispose       = MO.FEnvironmentConsole_dispose;
    return o;
 }
@@ -13629,7 +13626,7 @@ MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environm
 }
 MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
    var o = this;
-   var environment = MO.RClass.create(MO.FEnvironment);
+   var environment = MO.Class.create(MO.FEnvironment);
    environment.set(name, value);
    o._environments.set(name, environment);
    return environment;
@@ -13657,9 +13654,21 @@ MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
    }
    return result;
 }
+MO.FEnvironmentConsole_parseUrl = function FEnvironmentConsole_parseUrl(value){
+   var o = this;
+   var result = null;
+   var version = MO.Runtime.version();
+   var url = o.parse(value);
+   if(url.indexOf('?') != -1){
+      result = url + '&' + version;
+   }else{
+      result = url + '?' + version;
+   }
+   return result;
+}
 MO.FEnvironmentConsole_dispose = function FEnvironmentConsole_dispose(){
    var o = this;
-   o._environments = new TDictionary();
+   o._environments = MO.Lang.Object.dispose(o._environments);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEvent = function FEvent(o){
@@ -13721,7 +13730,6 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -14626,7 +14634,6 @@ MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
-   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.Window;
@@ -14634,7 +14641,6 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
-   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    var o = MO.Window;
@@ -14798,7 +14804,6 @@ MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
    o._statusEnable = v;
 }
 MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
-   MO.Assert.debugNotNull(control);
    this._hContainer.appendChild(hPanel);
 }
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
@@ -14982,7 +14987,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(o._typeCd == MO.EBrowser.Chrome){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
-   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, platformCd), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -15003,7 +15007,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
          capability.pixelRatio = Math.min(pixelRatio, 3);
-         MO.Logger.debug(o, 'Parse browser agent. (pixel_ratio={1}, capability_ratio={2})', pixelRatio, capability.pixelRatio);
       }
    }
    if(window.Worker){
@@ -15034,7 +15037,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       events['visibilitychange'] = 'webkitvisibilitychange';
    }
    o.refreshOrientation();
-   MO.Logger.debug(o, 'Browser connect. (agent={1})', o._agent);
 }
 MO.RBrowser.prototype.agent = function RBrowser_agent(){
    return this._agent;
@@ -15533,7 +15535,7 @@ MO.FImage_testReady = function FImage_testReady(){
 }
 MO.FImage_loadUrl = function FImage_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    var hImage = o._hImage;
    if(!hImage){
       hImage = o._hImage = new Image();
@@ -15547,7 +15549,7 @@ MO.FImage_loadUrl = function FImage_loadUrl(uri){
 MO.FImage_dispose = function FImage_dispose(){
    var o = this;
    o._size = MO.Lang.Object.dispose(o._size);
-   o._hImage = MO.RHtml.free(o._hImage);
+   o._hImage = MO.Window.Html.free(o._hImage);
    o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
@@ -16151,7 +16153,6 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
-   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){
@@ -16643,7 +16644,6 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
-   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -18283,12 +18283,9 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
    o._tagContext = MO.Class.create(MO.FTagContext);
 }
 MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
-   MO.Assert.debugNotEmpty(name);
-   MO.Assert.debugNotNull(effect);
    this._registerEffects.set(name, effect);
 }
 MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
-   MO.Assert.debugNotEmpty(name);
    this._registerEffects.set(name, null);
 }
 MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
@@ -18412,19 +18409,16 @@ MO.FG3dEffectConsole_find = function FG3dEffectConsole_find(context, region, ren
    }
    return effect;
 }
-MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(p){
+MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(name){
    var o = this;
-   var x = o._configs.get(p);
-   if(x){
-      return x;
+   var xconfig = o._configs.get(uri);
+   if(!xconfig){
+      var uri = MO.Window.Browser.contentPath(o._path + name + ".xml");
+      var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
+      xconfig = MO.Class.create(MO.FXmlConnection).send(url);
+      o._configs.set(name, xconfig);
    }
-   var u = MO.RBrowser.contentPath(o._path + p + ".xml");
-   if(MO.Runtime.isDebug()){
-      u += '?' + MO.Lang.Date.format();
-   }
-   x = MO.Class.create(MO.FXmlConnection).send(u);
-   o._configs.set(p, x);
-   return x;
+   return xconfig;
 }
 MO.FG3dLight = function FG3dLight(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -18750,7 +18744,6 @@ MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
 }
 MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
    var o = this;
-   MO.Assert.debugNotNull(pass);
    pass.setTechnique(o);
    o._passes.push(pass);
 }
@@ -20748,7 +20741,6 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
-            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
@@ -21060,7 +21052,6 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    var o = this;
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
-   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;
@@ -22774,12 +22765,10 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_processEvent = function FDesktop_processEvent(event){
@@ -23615,16 +23604,14 @@ MO.FAudio_play = function FAudio_play(position){
       }
    }
    hAudio.play();
-   MO.Logger.debug(o, 'Audio play. (url={1}, position={2})', o._url, position);
 }
 MO.FAudio_pause = function FAudio_pause(){
    var o = this;
    o._hAudio.pause();
-   MO.Logger.debug(o, 'Audio pause. (url={1})', o._url);
 }
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
@@ -24249,9 +24236,9 @@ MO.FResourceObject = function FResourceObject(o){
    return o;
 }
 MO.FResourcePackage = function FResourcePackage(o){
-   o = MO.Class.inherits(this, o, MO.FResource);
+   o = MO.Class.inherits(this, o, MO.FResource, MO.MPersistenceAble);
    o._uri         = MO.Class.register(o, new MO.AGetSet('_uri'));
-   o._url         = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._url         = MO.Class.register(o, new MO.AGetter('_url'));
    o._statusReady = false;
    o.onLoad       = MO.FResourcePackage_onLoad;
    o.testReady    = MO.FResourcePackage_testReady;
@@ -24261,23 +24248,15 @@ MO.FResourcePackage = function FResourcePackage(o){
 }
 MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    var o = this;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(event.content);
-   o.unserialize(view);
-   view.dispose();
+   o.unserializeBuffer(event.content, true);
    o._statusReady = true;
-   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
    return this._statusReady;
 }
 MO.FResourcePackage_load = function FResourcePackage_load(){
    var o = this;
-   var url = o._url;
-   if(!url){
-      url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(o._uri);
-   }
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(o._uri);
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(o, o.onLoad);
    return connection;
@@ -24606,7 +24585,6 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    hCanvas.height = height;
    o._size.set(width, height);
    o._graphicContext.size().set(width, height);
-   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);
@@ -24642,13 +24620,13 @@ MO.FE2dCanvasConsole_construct = function FE2dCanvasConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._pools = MO.Class.create(MO.FObjectPools);
 }
-MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height){
+MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height, clazz){
    var o = this;
    var pools = o._pools;
    var code = width + 'x' + height;
    var canvas = pools.alloc(code);
    if(!canvas){
-      canvas = MO.Class.create(MO.FE2dCanvas);
+      canvas = MO.Class.create(MO.Runtime.nvl(clazz, MO.FE2dCanvas));
       canvas.size().set(width, height);
       canvas.build(MO.Window._hDocument);
    }
@@ -24778,7 +24756,6 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
-   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -24808,8 +24785,8 @@ MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
    o._size = MO.Lang.Object.dispose(o._size);
    o._screenSize = MO.Lang.Object.dispose(o._screenSize);
    o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._hPanel = MO.RHtml.free(o._hPanel);
-   o._hCanvas = MO.RHtml.free(o._hCanvas);
+   o._hPanel = MO.Window.Html.free(o._hPanel);
+   o._hCanvas = MO.Window.Html.free(o._hCanvas);
    o.__base.FCanvas.dispose.call(o);
 }
 MO.FE3dDisplay = function FE3dDisplay(o){
@@ -32653,12 +32630,12 @@ MO.FE3dSimpleDesktop_build = function FE3dSimpleDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
    MO.RWindow.lsnsResize.register(o, o.onResize);
-   var canvas = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   var canvas = o._canvas3d = MO.Class.create(MO.FE3dSimpleCanvas);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
    var size = canvas.size();
    var hCanvas3d = canvas._hCanvas;
-   var canvas = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   var canvas = o._canvas2d = MO.Class.create(MO.FE2dCanvas);
    canvas.size().assign(size);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
@@ -32686,13 +32663,13 @@ MO.FE3dSimpleStage = function FE3dSimpleStage(o){
 MO.FE3dSimpleStage_construct = function FE3dSimpleStage_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
-   var layer = o._skyLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._skyLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SkyLayer', layer);
-   var layer = o._mapLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._mapLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('MapLayer', layer);
-   var layer = o._spriteLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._spriteLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SpriteLayer', layer);
-   var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._faceLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('FaceLayer', layer);
 }
 MO.FE3dSimpleStage_active = function FE3dSimpleStage_active(){
@@ -34102,15 +34079,11 @@ MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, u
 }
 MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadByUrl(context, url);
 }
 MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(url);
    var dataUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
    var data = o._bitmapDatas.get(url);
@@ -34125,8 +34098,6 @@ MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(co
 }
 MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadDataByUrl(context, url);
 }
@@ -35279,7 +35250,6 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
-   MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_calculateOutline = function FE3dDynamicMesh_calculateOutline(){
    var o = this;
@@ -35933,7 +35903,6 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -36920,7 +36889,6 @@ MO.FApplication = function FApplication(o){
    return o;
 }
 MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
-   MO.Logger.debug(this, 'Application process ready.');
 }
 MO.FApplication_onProcess = function FApplication_onProcess(event){
    var o = this;
@@ -36970,7 +36938,6 @@ MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(
    var chapter = o._chapters.get(code);
    if(!chapter){
       chapter = o.createChapter(code);
-      MO.Assert.debugNotNull(chapter);
       o.registerChapter(chapter);
    }
    o.selectChapter(chapter);
@@ -37029,7 +36996,6 @@ MO.FChapter = function FChapter(o){
    return o;
 }
 MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
-   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
@@ -37040,7 +37006,6 @@ MO.FChapter_construct = function FChapter_construct(){
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
    var code = scene.code();
-   MO.Assert.debugNotEmpty(code);
    scene.setApplication(o._application);
    scene.setChapter(o);
    o._scenes.set(code, scene);
@@ -37068,7 +37033,6 @@ MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var scene = o._scenes.get(code);
    if(!scene){
       scene = o.createScene(code);
-      MO.Assert.debugNotNull(scene);
       o.registerScene(scene);
    }
    o.selectScene(scene);
@@ -37081,12 +37045,10 @@ MO.FChapter_active = function FChapter_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 MO.FChapter_processEvent = function FChapter_processEvent(event){
    var o = this;
@@ -37149,7 +37111,6 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    o._visible = event.visibility;
 }
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
-   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 MO.FScene_construct = function FScene_construct(){
    var o = this;
@@ -37163,13 +37124,11 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 MO.FScene_process = function FScene_process(){
    var o = this;
@@ -37679,7 +37638,6 @@ MO.FDataSource_loadConfig = function FDataSource_loadConfig(xconfig){
          var xnode = xnodes.at(i);
          if(xnode.isName('Dataset')){
             var datasetName = xnode.get('name');
-            MO.Assert.debugNotEmpty(datasetName);
             var dataset = o.selectDataset(datasetName);
             dataset.loadConfig(xnode);
          }
@@ -41029,7 +40987,6 @@ MO.FCanvasDesktop_resize = function FCanvasDesktop_resize(targetWidth, targetHei
    }else{
       calculateRate.set(1, 1);
    }
-   MO.Logger.debug(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    var canvas3d = o._canvas3d;
    var context3d = canvas3d.graphicContext();
    context3d.size().set(width, height);
@@ -41368,7 +41325,7 @@ MO.FGuiDesktop_construct = function FGuiDesktop_construct(){
 MO.FGuiDesktop_build = function FGuiDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
-   var canvas = o._canvas = MO.RClass.create(MO.FE2dCanvas);
+   var canvas = o._canvas = MO.Class.create(MO.FE2dCanvas);
    canvas.setDesktop(o);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
@@ -41626,9 +41583,9 @@ MO.SGuiImage_load = function SGuiImage_load(){
    var o = this;
    o.ready = false;
    var url = null;
-   if(MO.Lang.String.startsWith(o.resource, 'url:')){
-      var uri = o.resource.substring(4);
-      url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var resource = o.resource;
+   if(MO.Lang.String.startsWith(resource, 'url:')){
+      url = resource.substring(4);
    }else{
       throw new MO.TError('Invalid url.');
    }
@@ -41845,6 +41802,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
    o._operationUpListeners   = MO.Class.register(o, new MO.AListener('_operationUpListeners', MO.EEvent.OperationUp));
+   o._paintEvent             = null;
    o.onUpdate                = MO.FGuiControl_onUpdate;
    o.onPaintBegin            = MO.FGuiControl_onPaintBegin;
    o.onPaintEnd              = MO.FGuiControl_onPaintEnd;
@@ -41865,7 +41823,9 @@ MO.FGuiControl = function FGuiControl(o){
    o.testInRange             = MO.FGuiControl_testInRange;
    o.paint                   = MO.FGuiControl_paint;
    o.update                  = MO.FGuiControl_update;
-   o.build                   = MO.FGuiControl_build;
+   o.build                   = MO.Method.empty;
+   o.makeRenderable          = MO.FGuiControl_makeRenderable;
+   o.updateRenderable        = MO.FGuiControl_updateRenderable;
    o.processReady            = MO.FGuiControl_processReady;
    o.processEvent            = MO.FGuiControl_processEvent;
    o.dirty                   = MO.FGuiControl_dirty;
@@ -41995,6 +41955,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o._eventRectangle = new MO.SRectangle();
    o._foreFont = new MO.SUiFont();
    o._backFont = new MO.SUiFont();
+   o._paintEvent = new MO.SGuiPaintEvent();
 }
 MO.FGuiControl_isReady = function FGuiControl_isReady(){
    return this._statusReady;
@@ -42165,8 +42126,29 @@ MO.FGuiControl_update = function FGuiControl_update(){
 MO.FGuiControl_dirty = function FGuiControl_dirty(){
    this._statusDirty = true;
 }
-MO.FGuiControl_build = function FGuiControl_build(){
+MO.FGuiControl_makeRenderable = function FGuiControl_makeRenderable(){
    var o = this;
+   var renderable = o._renderable;
+   if(!renderable){
+      renderable = o._renderable = o._graphicContext.createObject(MO.FGuiControlRenderable);
+      renderable.setControl(o);
+   }
+   return renderable;
+}
+MO.FGuiControl_updateRenderable = function FGuiControl_updateRenderable(){
+   var o = this;
+   var renderable = o._renderable;
+   var graphic = renderable.beginDraw();
+   var size = o._size;
+   var event = o._paintEvent;
+   event.optionScale = false;
+   event.graphic = graphic;
+   event.virtualSize = size;
+   event.parentRectangle.set(0, 0, size.width, size.height);
+   event.rectangle.set(0, 0, size.width, size.height);
+   event.calculateRate = 1;
+   o.paint(event);
+   renderable.endDraw();
 }
 MO.FGuiControl_processReady = function FGuiControl_processReady(){
    var o = this;
@@ -42198,7 +42180,7 @@ MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
 }
 MO.FGuiControl_psPaint = function FGuiControl_psPaint(event){
    var o = this;
-   var event = new MO.SUiDispatchEvent(o, 'oeParint', MO.FGuiControl);
+   var event = new MO.SUiDispatchEvent(o, 'oePaint', MO.FGuiControl);
    o.process(event);
    event.dispose();
 }
@@ -42213,6 +42195,7 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.Lang.Object.dispose(o._backImage);
    o._backHoverImage = MO.Lang.Object.dispose(o._backHoverImage);
    o._clientRectangle = MO.Lang.Object.dispose(o._clientRectangle);
+   o._paintEvent = MO.Lang.Object.dispose(o._paintEvent);
    o.__base.MGuiSize.dispose.call(o);
    o.__base.MUiBorder.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
@@ -42245,8 +42228,6 @@ MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
    o.__base.FE3dFaceData.setup.call(o);
    var materialInfo = o._material.info();
    materialInfo.effectCode = 'gui';
-   materialInfo.optionAlpha = true;
-   materialInfo.optionDepth = false;
    materialInfo.optionDouble = true;
 }
 MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
@@ -42259,20 +42240,19 @@ MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width,
 }
 MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
    var o = this;
-   var size = o._size;
+   var size = o._control.size();
    var adjustWidth = MO.Lang.Integer.pow2(size.width);
    var adjustHeight = MO.Lang.Integer.pow2(size.height);
    o._adjustSize.set(adjustWidth, adjustHeight);
    o._matrix.setScale(adjustWidth, adjustHeight, 1);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
-   var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var graphic = o._graphic = canvas.context();
+   var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight, MO.FGuiCanvas);
+   var graphic = o._graphic = canvas.graphicContext();
    return graphic;
 }
 MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -42831,6 +42811,23 @@ MO.FGuiGeneralColorEffect = function FGuiGeneralColorEffect(o){
 }
 MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawRenderable(region, renderable){
    var o = this;
+   var program = o._program;
+   var modelMatrix = renderable.currentMatrix();
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix)
+   var material = renderable.material();
+   o.bindMaterial(material);
+   program.setParameter('vc_model_matrix', modelMatrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+MO.FGuiGeneralControlEffect = function FGuiGeneralControlEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.gui';
+   o.drawRenderable = MO.FGuiGeneralControlEffect_drawRenderable;
+   return o;
+}
+MO.FGuiGeneralControlEffect_drawRenderable = function FGuiGeneralControlEffect_drawRenderable(region, renderable){
+   var o = this;
    if(!MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
       throw new MO.TError('Invalid renderable.');
    }
@@ -42840,9 +42837,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
    var controlSize = control.size();
    var dockCd = control.dockCd();
    var context = o._graphicContext;
-   var logicSize = context.logicSize();
    var contextSize = context.size();
-   var contextRatio = context.ratio();
    var contextSizeRatio = context.sizeRatio();
    var radioWidth = contextSize.width * contextRatio;
    var radioHeight = contextSize.height * contextRatio;
@@ -42861,7 +42856,6 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
       if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Left) || (dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Fill)){
          x = controlLocation.x / sizeWidth * 2 - 1;
       }else if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
-         x = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
       }else{
          throw new MO.TError(o, 'Invalid dock.');
       }
@@ -42870,16 +42864,10 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
       if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Top) || (dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Fill)){
          y = 1 - controlLocation.y / sizeHeight * 2;
       }else if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
-         y = 1 - (logicSize.height - controlLocation.y - controlSize.height / contextRatioY) / sizeHeight * 2;
       }else{
          throw new MO.TError(o, 'Invalid dock.');
       }
       if((dockCd == MO.EGuiDock.Fill)){
-         var right = logicSize.width - controlLocation.x - controlSize.width;
-         var x1 = controlLocation.x / sizeWidth * 2 - 1;
-         var x2 = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
-         width = x2 - x1;
-         height = adjustSize.height / radioHeight * 2;
       }else{
          width = adjustSize.width / radioWidth * 2;
          height = adjustSize.height / radioHeight * 2;
@@ -43554,7 +43542,8 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    } else if (align == MO.EUiAlign.Right) {
       imageX = (rectangle.width / 2) + (imageWidth / 2) + rectangle.left;
    }
-   graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+   var drawScale = o._column._drawScale;
+   graphic.drawImage(image, imageX, imageY, imageWidth * drawScale, imageHeight * drawScale);
 }
 MO.FGuiGridCellPicture_setValue = function FGuiGridCellPicture_setValue(value) {
    var o = this;
@@ -43701,6 +43690,7 @@ MO.FGuiGridColumnDate_dispose = function FGuiGridColumnDate_dispose(){
 MO.FGuiGridColumnPicture = function FGuiGridColumnPicture(o) {
    o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
    o._align   = MO.Class.register(o, new MO.AGetSet('_align'));
+   o._drawScale = MO.Class.register(o, new MO.AGetSet('_drawScale'), 1.0);
    o.construct = MO.FGuiGridColumnPicture_construct;
    o.dispose   = MO.FGuiGridColumnPicture_dispose;
    return o;
@@ -43896,7 +43886,6 @@ MO.FGuiTable_construct = function FGuiTable_construct(){
 }
 MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
    var o = this;
-   MO.Assert.debugNotNull(row);
    o._rows.unshift(row);
    o._rowScroll -= o._rowHeight;
    o.dirty();
@@ -44450,7 +44439,6 @@ MO.MDuiEditDescriptor_onDataEditEnd = function MDuiEditDescriptor_onDataEditEnd(
    var o = this;
    var vt = s._invalidText = o.validText(s.text());
    if(vt){
-      MO.Logger.debug(this, 'Edit valid failed ({0})', vt);
    }else{
       s.commitValue();
    }
@@ -46719,7 +46707,6 @@ MO.FDuiEditorConsole_focus = function FDuiEditorConsole_focus(c, n, l){
       e.build(c._hPanel);
       o._editors.set(l, e);
    }
-   MO.Logger.debug(o, 'Focus editor {1} (editable={2}, name={3})', MO.Class.dump(e), MO.Class.dump(c), l);
    e.reset();
    if(MO.Class.isClass(e, MO.FDuiDropEditor)){
       e.linkControl(c);
@@ -46730,7 +46717,6 @@ MO.FDuiEditorConsole_focus = function FDuiEditorConsole_focus(c, n, l){
 MO.FDuiEditorConsole_blur = function FDuiEditorConsole_blur(editor){
    var o = this;
    if(o._focusEditor){
-      MO.Logger.debug(o, 'Blur editor {1}', MO.Class.dump(editor));
       editor = MO.Lang.Object.nvl(editor, o._focusEditor);
       if(editor){
          editor.onEditEnd();
@@ -46914,14 +46900,12 @@ MO.FDuiFocusConsole_focus = function FDuiFocusConsole_focus(c, e){
    var bc = o._blurControl;
    if(bc != f){
       if(o._blurAble && f && f.testBlur(c)){
-         MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, MO.Class.dump(f));
          o._blurControl = f;
          f.doBlur(e);
          o.lsnsBlur.process(f);
       }
    }
    if(o._focusAble){
-      MO.Logger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, MO.Class.dump(c));
       c.doFocus(e);
       o._focusControl = o._activeControl = c;
       o.lsnsFocus.process(c);
@@ -46935,12 +46919,10 @@ MO.FDuiFocusConsole_blur = function FDuiFocusConsole_blur(c, e){
       return;
    }
    if(bc != c && MO.Class.isClass(c, MO.MDuiFocus)){
-      MO.Logger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, MO.Class.dump(c));
       o._blurControl = c;
       c.doBlur(e);
    }
    if(fc){
-      MO.Logger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, MO.Class.dump(fc));
       fc.doBlur(e);
       o._focusControl = null;
    }
@@ -46964,14 +46946,12 @@ MO.FDuiFocusConsole_focusClass = function FDuiFocusConsole_focusClass(c, p){
    var n = MO.Class.name(c);
    if(o._focusClasses[n] != p){
       o._focusClasses[n] = p;
-      MO.Logger.debug(o, 'Focus class. (name={1}, class={2})', n, MO.Class.dump(p));
       o.lsnsFocusClass.process(p, c);
    }
 }
 MO.FDuiFocusConsole_focusHtml = function FDuiFocusConsole_focusHtml(p){
    var o = this;
    var c = MO.Window.Html.searchLinker(p, MO.FDuiControl);
-   MO.Logger.debug(o, 'Focus html control. (control={1}, element={2})', MO.Class.dump(c), p.tagName);
    if(c){
       if(o._focusControl != c){
          o.blur(c, p);
@@ -47191,7 +47171,6 @@ MO.FDuiFrameEventConsole_construct = function FDuiFrameEventConsole_construct(){
    t.setInterval(o._interval);
    t.addProcessListener(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(t);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(t));
 }
 MO.FDuiFrameEventConsole_register = function FDuiFrameEventConsole_register(po, pc){
    this._events.push(new MO.TEvent(po, null, pc));
@@ -48655,7 +48634,6 @@ MO.FDuiButton_doClick = function FDuiButton_doClick(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -49540,12 +49518,10 @@ MO.FDuiCheckPicker_onBuildEdit = function FDuiCheckPicker_onBuildEdit(b){
 }
 MO.FDuiCheckPicker_onEditEnd = function FDuiCheckPicker_onEditEnd(editor){
    var o = this;
-   MO.Logger.debug(o, 'Begin (editor={1}:{2} value={3})', editor, editor?editor.value():'', o.dataValue);
    if(editor){
       o.set(editor.values);
    }
    o.onDataEditEnd(o);
-   MO.Logger.debug(o, 'End (editor={1} value={2})', editor, o.dataValue);
 }
 MO.FDuiCheckPicker_loadConfig = function FDuiCheckPicker_loadConfig(c){
    var o = this;
@@ -51638,7 +51614,6 @@ MO.FDuiEditor_onEditBegin = function FDuiEditor_onEditBegin(){
 }
 MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
    var o = this;
-   MO.Logger.debug(o, 'Edit changed');
    var g = o.storage = MO.Lang.Object.nvlObj(o.storage);
    if(g.value == o.value()){
       if(o.changed){
@@ -51653,7 +51628,6 @@ MO.FDuiEditor_onEditChanged = function FDuiEditor_onEditChanged(){
 MO.FDuiEditor_onEditEnd = function FDuiEditor_onEditEnd(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor end. (control={1})', MO.Class.dump(s));
    o.hide();
    if(o.lsnEditEnd){
       o.lsnEditEnd.process(o);
@@ -51702,7 +51676,6 @@ MO.FDuiEditor_linkControl = function FDuiEditor_linkControl(c){
 MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor begin. (control={1})', MO.Class.dump(s));
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
    }
@@ -51712,7 +51685,6 @@ MO.FDuiEditor_editBegin = function FDuiEditor_editBegin(){
 MO.FDuiEditor_editCancel = function FDuiEditor_editCancel(){
    var o = this;
    var s = o._source;
-   MO.Logger.debug(o, 'Editor cancel. (control={1})', MO.Class.dump(s));
    o.hide();
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
@@ -56323,7 +56295,6 @@ MO.FDuiColumn_onEditBegin = function FDuiColumn_onEditBegin(editor) {
    o.table.editRow = row;
    o.table.editColumn = o;
    o.table.select(row, true);
-   MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
 }
 MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
    var o = this;
@@ -56333,7 +56304,6 @@ MO.FDuiColumn_onEditEnd = function FDuiColumn_onEditEnd(e) {
    o.setText(row, text);
    o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
    o.editor = null;
-   MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
 }
 MO.FDuiColumn_onEditChanged = function FDuiColumn_onEditChanged(cell) {
    cell.row.refresh();
@@ -57222,7 +57192,6 @@ MO.FDuiGridControl_pushRow = function FDuiGridControl_pushRow(row){
 }
 MO.FDuiGridControl_removeRow = function FDuiGridControl_removeRow(row){
    var o = this;
-   MO.Assert.debugNotNull(row);
    o.dropRow(row);
    o._rows.remove(row);
 }
@@ -58916,7 +58885,6 @@ MO.FDuiMenuButton_click = function FDuiMenuButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -59309,7 +59277,6 @@ MO.FDuiSliderButton_click = function FDuiSliderButton_click(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -59677,7 +59644,6 @@ MO.FDuiToolButton_doClick = function FDuiToolButton_doClick(){
    var o = this;
    if(!o._disabled){
       MO.Console.find(MO.FDuiFocusConsole).blur();
-      MO.Logger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new MO.SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -61847,15 +61813,12 @@ MO.FDuiTreeView_push = function FDuiTreeView_push(control){
    control._tree = o;
    if(MO.Class.isClass(control, MO.FDuiTreeColumn)){
       var columnName = control.name();
-      MO.Assert.debugNotEmpty(columnName);
       o._nodeColumns.set(columnName, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeLevel)){
       var levelId = control.id();
-      MO.Assert.debugNotEmpty(levelId);
       o._nodeLevels.set(levelId, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNodeType)){
       var typeCode = control.code();
-      MO.Assert.debugNotEmpty(typeCode);
       o._nodeTypes.set(typeCode, control);
    }else if(MO.Class.isClass(control, MO.FDuiTreeNode)){
       o._nodes.push(control);
@@ -63159,7 +63122,6 @@ with(MO){
    }
    MO.FUiDataAction_invoke = function FUiDataAction_invoke(p){
       var o = this;
-      MO.Assert.debugTrue(MO.Class.isClass(p, MUiDataContainer));
       var svc = RService.parse(o._service);
       if(!svc){
          throw new TError(o, 'Unknown service.');
@@ -63170,7 +63132,6 @@ with(MO){
       root.set('action', svc.action);
       RConsole.find(FEnvironmentConsole).build(root);
       p.dsSaveValue(root.create('Data'));
-      MO.Logger.debug(this, xdocument.dump());
       o._loading = true;
       o._dataContainer = p;
       var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);
@@ -65029,7 +64990,6 @@ with(MO){
       o.table.editRow = row;
       o.table.editColumn = o;
       o.table.select(row, true);
-      MO.Logger.debug(o, 'Edit begin (column={1} row={2} editor={3})', o.name, RClass.dump(row), RClass.dump(editor));
    }
    MO.FUiDataColumn_onEditEnd = function FUiDataColumn_onEditEnd(e) {
       var o = this;
@@ -65039,7 +64999,6 @@ with(MO){
       o.setText(row, text);
       o.table.setDataStatus(row, row.isChanged() ? EDataStatus.Update : EDataStatus.Unknown)
       o.editor = null;
-      MO.Logger.debug(o, '{1}={2}\n{3}\n{4}', RClass.dump(editor), o.formatValue(text), o.dump(), row.dump());
    }
    MO.FUiDataColumn_onEditChanged = function FUiDataColumn_onEditChanged(cell) {
       cell.row.refresh();
@@ -65294,7 +65253,6 @@ with(MO){
    }
    MO.FUiDataToolButton_click = function FUiDataToolButton_click(){
       var o = this;
-      MO.Logger.debug(o, 'Mouse button click. (label={1})' + o._label);
          o.processClickListener(o);
    }
    MO.FUiDataToolButton_onShowHint = function FUiDataToolButton_onShowHint(a){
@@ -65389,7 +65347,6 @@ MO.FDuiDataTreeView_loadDefine = function FDuiDataTreeView_loadDefine(code){
 }
 MO.FDuiDataTreeView_loadService = function FDuiDataTreeView_loadService(serviceCode, attributes){
    var o = this;
-   MO.Assert.debugNotEmpty(serviceCode);
    o._serviceCode = serviceCode;
    o.clear();
    var service = MO.RDuiService.parse(serviceCode);
@@ -79296,7 +79253,7 @@ MO.FEditorDesktop_construct = function FEditorDesktop_construct(){
 MO.FEditorDesktop_build = function FEditorDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
-   var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   var canvas2d = o._canvas2d = MO.Class.create(MO.FE2dCanvas);
    canvas2d.setDesktop(o);
    canvas2d.build(hPanel);
    canvas2d.setPanel(hPanel);
@@ -80978,7 +80935,6 @@ MO.FManageCatalogContent_onButtonClick = function FManageCatalogContent_onButton
    var o = this;
    var button = event.sender;
    var frameName = button.attributeGet('frame_name');
-   MO.Assert.debugNotEmpty(frameName);
    var frame = o._frameSet.selectSpaceFrame(frameName);
    frame.psMode(MO.EUiMode.Update);
    frame.psRefresh();
@@ -81327,7 +81283,6 @@ MO.FManageDataTable_onInsertClick = function FManageDataTable_onInsertClick(even
    var frame = o._frameSet.activeFrame();
    if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       var unitFrameName = frame.unitFrameName();
-      MO.Assert.debugNotEmpty(unitFrameName);
       var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
       unitFrame.doPrepare();
    }
@@ -81443,7 +81398,6 @@ MO.FManageDataTable_doFetch = function FManageDataTable_doFetch(){
 MO.FManageDataTable_doDetail = function FManageDataTable_doDetail(row){
    var o = this;
    var unitFrameName = o._unitFrameName;
-   MO.Assert.debugNotEmpty(unitFrameName);
    var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
    unitFrame.doDetail(row);
    var historyBar = o._frameSet._historyBar;
@@ -81774,7 +81728,6 @@ MO.FManageSpaceToolBar_onInsertClick = function FManageSpaceToolBar_onInsertClic
    var frame = o._frameSet.activeFrame();
    if(MO.Class.isClass(frame, MO.FDuiTableFrame)){
       var unitFrameName = frame.unitFrameName();
-      MO.Assert.debugNotEmpty(unitFrameName);
       var unitFrame = o._frameSet.selectSpaceFrame(unitFrameName);
       unitFrame.doPrepare();
    }

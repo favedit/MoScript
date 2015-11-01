@@ -1,17 +1,19 @@
 MO.FEaiCardResource = function FEaiCardResource(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._code     = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.Uint16)]);
-   o._cityCode = MO.Class.register(o, [new MO.AGetter('_cityCode'), new MO.APersistence('_cityCode', MO.EDataType.Uint16)]);
+   o._code     = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.String)]);
+   o._cityCode = MO.Class.register(o, [new MO.AGetter('_cityCode'), new MO.APersistence('_cityCode', MO.EDataType.String)]);
    return o;
 }
 MO.FEaiCardResourceModule = function FEaiCardResourceModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiResourceModule);
-   o._cards       = MO.Class.register(o, new MO.AGetter('_cards'));
-   o.construct    = MO.FEaiCardResourceModule_construct;
-   o.find         = MO.FEaiCardResourceModule_find;
-   o.findCityCode = MO.FEaiCardResourceModule_findCityCode;
-   o.unserialize  = MO.FEaiCardResourceModule_unserialize;
-   o.dispose      = MO.FEaiCardResourceModule_dispose;
+   o._cards        = MO.Class.register(o, new MO.AGetter('_cards'));
+   o.construct     = MO.FEaiCardResourceModule_construct;
+   o.find          = MO.FEaiCardResourceModule_find;
+   o.findCityCode  = MO.FEaiCardResourceModule_findCityCode;
+   o.findCityCode2 = MO.FEaiCardResourceModule_findCityCode2;
+   o.findCityCode4 = MO.FEaiCardResourceModule_findCityCode4;
+   o.unserialize   = MO.FEaiCardResourceModule_unserialize;
+   o.dispose       = MO.FEaiCardResourceModule_dispose;
    return o;
 }
 MO.FEaiCardResourceModule_construct = function FEaiCardResourceModule_construct(){
@@ -30,6 +32,40 @@ MO.FEaiCardResourceModule_findCityCode = function FEaiCardResourceModule_findCit
    }
    return cityCode;
 }
+MO.FEaiCardResourceModule_findCityCode2 = function FEaiCardResourceModule_findCityCode2(code){
+   var o = this;
+   var find = code.substring(0, 2);
+   if(find.length != 2){
+      return;
+   }
+   var cards = o._cards;
+   var count = cards.count();
+   for(var i = 0; i < count; i++){
+      var card = cards.value(i);
+      var cardCode = card.code();
+      if(cardCode.indexOf(find) == 0){
+         return card.cityCode();
+      }
+   }
+   return null;
+}
+MO.FEaiCardResourceModule_findCityCode4 = function FEaiCardResourceModule_findCityCode4(code){
+   var o = this;
+   var find = code.substring(0, 4);
+   if(find.length != 4){
+      return;
+   }
+   var cards = o._cards;
+   var count = cards.count();
+   for(var i = 0; i < count; i++){
+      var card = cards.value(i);
+      var cardCode = card.code();
+      if(cardCode.indexOf(find) == 0){
+         return card.cityCode();
+      }
+   }
+   return null;
+}
 MO.FEaiCardResourceModule_unserialize = function FEaiCardResourceModule_unserialize(input){
    var o = this;
    var cards = o._cards;
@@ -47,8 +83,8 @@ MO.FEaiCardResourceModule_dispose = function FEaiCardResourceModule_dispose(){
 }
 MO.FEaiCityResource = function FEaiCityResource(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
-   o._provinceCode = MO.Class.register(o, [new MO.AGetter('_provinceCode'), new MO.APersistence('_provinceCode', MO.EDataType.Uint16)]);
-   o._code         = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.Uint16)]);
+   o._provinceCode = MO.Class.register(o, [new MO.AGetter('_provinceCode'), new MO.APersistence('_provinceCode', MO.EDataType.String)]);
+   o._code         = MO.Class.register(o, [new MO.AGetter('_code'), new MO.APersistence('_code', MO.EDataType.String)]);
    o._label        = MO.Class.register(o, [new MO.AGetter('_label'), new MO.APersistence('_label', MO.EDataType.String)]);
    o._level        = MO.Class.register(o, [new MO.AGetter('_level'), new MO.APersistence('_level', MO.EDataType.Uint16)]);
    o._location     = MO.Class.register(o, [new MO.AGetter('_location'), new MO.APersistence('_location', MO.EDataType.Struct, MO.SPoint2)]);
@@ -76,10 +112,19 @@ MO.FEaiCityResourceModule_find = function FEaiCityResourceModule_find(code){
 MO.FEaiCityResourceModule_findByCard = function FEaiCityResourceModule_findByCard(card) {
    var o = this;
    var city = null;
-   var cardModule = o._resourceConsole.cardModule();
-   var cityCode = cardModule.findCityCode(card);
-   if(cityCode){
-      city = o._citys.get(cityCode);
+   var cityCode = null;
+   if(card){
+      var cardModule = o._resourceConsole.cardModule();
+      var cityCode = cardModule.findCityCode(card);
+      if(!cityCode){
+         cityCode = cardModule.findCityCode4(card);
+      }
+      if(!cityCode){
+         cityCode = cardModule.findCityCode2(card);
+      }
+      if(cityCode){
+         city = o._citys.get(cityCode);
+      }
    }
    return city;
 }
@@ -479,23 +524,17 @@ MO.FEaiMapResourceModule_findCountryByCode = function FEaiMapResourceModule_find
 MO.FEaiMapResourceModule_loadCountry = function FEaiMapResourceModule_loadCountry(code){
    var o = this;
    var countries = o._countries;
-   var country = countries.get(name);
-   if(!country){
-      country = MO.Class.create(MO.FEaiMapCountryResource);
-      country.setCode(code);
-      country.setUri('{eai.resource}-{device.type}/map/country/' + code + '.dat');
-      country.load();
-      countries.set(code, country);
-   }
+   var country = MO.Class.create(MO.FEaiMapCountryResource);
+   country.setCode(code);
+   country.setUri('{eai.resource}-{device.type}/map/country/' + code + '.dat');
+   country.load();
+   countries.set(code, country);
    return country;
 }
 MO.FEaiMapResourceModule_loadWorld = function FEaiMapResourceModule_loadWorld(){
    var o = this;
-   var world = o._world;
-   if(!world){
-      world = o._world = MO.Class.create(MO.FEaiMapWorldResource);
-      world.load();
-   }
+   var world = o._world = MO.Class.create(MO.FEaiMapWorldResource);
+   world.load();
    return world;
 }
 MO.FEaiMapResourceModule_dispose = function FEaiMapResourceModule_dispose(){
@@ -699,8 +738,8 @@ MO.FEaiResource_processLoad = function FEaiResource_processLoad(){
    o._cityCode = input.readUint16();
 }
 MO.FEaiResourceConsole = function FEaiResourceConsole(o){
-   o = MO.Class.inherits(this, o, MO.FConsole, MO.MListener);
-   o._scopeCd          = MO.EScope.Local;
+   o = MO.Class.inherits(this, o, MO.FConsole, MO.MPersistenceAble, MO.MListener);
+   o._scopeCd          = MO.EScope.Global;
    o._rateModule       = MO.Class.register(o, new MO.AGetter('_rateModule'));
    o._provinceModule   = MO.Class.register(o, new MO.AGetter('_provinceModule'));
    o._cityModule       = MO.Class.register(o, new MO.AGetter('_cityModule'));
@@ -733,15 +772,10 @@ MO.FEaiResourceConsole_onProcess = function FEaiResourceConsole_onProcess(){
 }
 MO.FEaiResourceConsole_onLoad = function FEaiResourceConsole_onLoad(event){
    var o = this;
-   var data = event.content;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(data);
-   o.unserialize(view);
-   view.dispose();
-   var event = new MO.SEvent();
+   o.unserializeBuffer(event.content, true);
+   var event = MO.Memory.alloc(MO.SEvent);
    o.processLoadListener(event);
-   event.dispose();
+   MO.Memory.free(event);
 }
 MO.FEaiResourceConsole_construct = function FEaiResourceConsole_construct(){
    var o = this;
@@ -770,7 +804,7 @@ MO.FEaiResourceConsole_unserialize = function FEaiResourceConsole_unserialize(in
 }
 MO.FEaiResourceConsole_load = function FEaiResourceConsole_load(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    var connection = MO.Console.find(MO.FHttpConsole).send(url);
    connection.addLoadListener(o, o.onLoad);
 }
@@ -780,6 +814,7 @@ MO.FEaiResourceConsole_dispose = function FEaiResourceConsole_dispose(monitor){
    o._provinceModule = MO.Lang.Object.dispose(o._provinceModule);
    o._cityModule = MO.Lang.Object.dispose(o._cityModule);
    o._cardModule = MO.Lang.Object.dispose(o._cardModule);
+   o._departmentModule = MO.Lang.Object.dispose(o._departmentModule);
    o._historyModule = MO.Lang.Object.dispose(o._historyModule);
    o._mapModule = MO.Lang.Object.dispose(o._mapModule);
    o.__base.FConsole.dispose.call(o);

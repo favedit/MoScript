@@ -45,7 +45,6 @@ MO.FApplication = function FApplication(o){
    return o;
 }
 MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
-   MO.Logger.debug(this, 'Application process ready.');
 }
 MO.FApplication_onProcess = function FApplication_onProcess(event){
    var o = this;
@@ -95,7 +94,6 @@ MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(
    var chapter = o._chapters.get(code);
    if(!chapter){
       chapter = o.createChapter(code);
-      MO.Assert.debugNotNull(chapter);
       o.registerChapter(chapter);
    }
    o.selectChapter(chapter);
@@ -154,7 +152,6 @@ MO.FChapter = function FChapter(o){
    return o;
 }
 MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
-   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
@@ -165,7 +162,6 @@ MO.FChapter_construct = function FChapter_construct(){
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
    var code = scene.code();
-   MO.Assert.debugNotEmpty(code);
    scene.setApplication(o._application);
    scene.setChapter(o);
    o._scenes.set(code, scene);
@@ -193,7 +189,6 @@ MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var scene = o._scenes.get(code);
    if(!scene){
       scene = o.createScene(code);
-      MO.Assert.debugNotNull(scene);
       o.registerScene(scene);
    }
    o.selectScene(scene);
@@ -206,12 +201,10 @@ MO.FChapter_active = function FChapter_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 MO.FChapter_processEvent = function FChapter_processEvent(event){
    var o = this;
@@ -274,7 +267,6 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    o._visible = event.visibility;
 }
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
-   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 MO.FScene_construct = function FScene_construct(){
    var o = this;
@@ -288,13 +280,11 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 MO.FScene_process = function FScene_process(){
    var o = this;

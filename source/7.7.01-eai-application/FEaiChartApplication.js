@@ -9,7 +9,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    o = MO.Class.inherits(this, o, MO.FEaiApplication);
    //..........................................................
    // @attribute
-   o._sceneCode      = MO.Class.register(o, new MO.AGetSet('_sceneCode'), MO.EEaiScene.ChartCustomer);
+   o._chapterCode    = MO.EEaiChapter.Chart;
    o._backgroundUrl  = MO.Class.register(o, new MO.AGetSet('_backgroundUrl'), '{eai.resource}/background2.jpg');
    // @attribute
    o._chapterChart   = MO.Class.register(o, new MO.AGetter('_chapterChart'));
@@ -38,7 +38,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
 MO.FEaiChartApplication_onLoadGround = function FEaiChartApplication_onLoadGround(event){
    var o = this;
    // 选择舞台和章节
-   var chapter = o.selectChapterByCode(MO.EEaiChapter.Chart);
+   var chapter = o.selectChapterByCode(o._chapterCode);
    chapter.selectSceneByCode(o._sceneCode);
    // 修正画面大小
    o.processResize();

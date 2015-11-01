@@ -91,9 +91,16 @@ MO.EProcess = new function EProcess(){
 }
 MO.RRuntime = function RRuntime(){
    var o = MO.RSingleton.call(this);
+   o._version    = 'mo';
    o._processCd  = MO.EProcess.Release;
    o._platformCd = MO.EPlatform.Pc;
    return o;
+}
+MO.RRuntime.prototype.version = function RRuntime_version(){
+   return this._version;
+}
+MO.RRuntime.prototype.setVersion = function RRuntime_setVersion(version){
+   this._version = version;
 }
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
    return this._processCd == MO.EProcess.Debug;
@@ -505,7 +512,6 @@ MO.TMap_get = function TMap_get(name, defaultValue){
 }
 MO.TMap_set = function TMap_set(name, value){
    var o = this;
-   MO.Assert.debugNotNull(name);
    var nameString = name.toString();
    var code = nameString.toLowerCase();
    var index = o._table[code];

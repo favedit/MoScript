@@ -234,9 +234,16 @@ MO.EProcess = new function EProcess(){
 }
 MO.RRuntime = function RRuntime(){
    var o = MO.RSingleton.call(this);
+   o._version    = 'mo';
    o._processCd  = MO.EProcess.Release;
    o._platformCd = MO.EPlatform.Pc;
    return o;
+}
+MO.RRuntime.prototype.version = function RRuntime_version(){
+   return this._version;
+}
+MO.RRuntime.prototype.setVersion = function RRuntime_setVersion(version){
+   this._version = version;
 }
 MO.RRuntime.prototype.isDebug = function RRuntime_isDebug(){
    return this._processCd == MO.EProcess.Debug;
@@ -648,7 +655,6 @@ MO.TMap_get = function TMap_get(name, defaultValue){
 }
 MO.TMap_set = function TMap_set(name, value){
    var o = this;
-   MO.Assert.debugNotNull(name);
    var nameString = name.toString();
    var code = nameString.toLowerCase();
    var index = o._table[code];
@@ -1335,13 +1341,11 @@ MO.RMemory.prototype.entryAlloc = function RMemory_entryAlloc(){
 }
 MO.RMemory.prototype.entryFree = function RMemory_entryFree(entry){
    var o = this;
-   MO.Assert.debugNotNull(entry);
    entry.next = o._entryUnused;
    o._entryUnused = entry;
 }
 MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    var className = MO.Runtime.className(clazz);
    var pools = o._pools;
    var pool = pools[className];
@@ -1354,9 +1358,7 @@ MO.RMemory.prototype.alloc = function RMemory_alloc(clazz){
    return value;
 }
 MO.RMemory.prototype.free = function RMemory_free(value){
-   MO.Assert.debugNotNull(value);
    var pool = value.__pool;
-   MO.Assert.debugNotNull(pool);
    pool.free(value);
    if(value.free){
       value.free();
@@ -1414,7 +1416,6 @@ MO.TMemoryPool_alloc = function TMemoryPool_alloc(){
 }
 MO.TMemoryPool_free = function TMemoryPool_free(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var entry = MO.Memory.entryAlloc();
    entry.value = value;
    entry.next = o._unused;
@@ -2594,7 +2595,6 @@ MO.RClass.prototype.isName = function RClass_isName(value, name){
 }
 MO.RClass.prototype.isClass = function RClass_isClass(value, clazz){
    var o = this;
-   MO.Assert.debugNotNull(clazz);
    if(value){
       var name = o.name(clazz);
       if(value.__base){
@@ -2886,7 +2886,6 @@ MO.RClass.prototype.build = function RClass_build(clazz){
 }
 MO.RClass.prototype.free = function RClass_free(instance){
    var clazz = instance.__class;
-   MO.Assert.debugNotNull(clazz);
    clazz.free(instance);
 }
 MO.RClass.prototype.dump = function RClass_dump(v){
@@ -5085,7 +5084,6 @@ MO.TSpeed_end = function TSpeed_end(){
 MO.TSpeed_record = function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
-   MO.Logger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;
@@ -5386,11 +5384,6 @@ MO.RArray.prototype.reverse = function RArray_reverse(a, s, e){
    }
 }
 MO.RArray.prototype.copy = function RArray_copy(source, sourceOffset, sourceCount, target, targetOffset){
-   MO.Assert.debugNotNull(source);
-   MO.Assert.debugTrue((sourceOffset >= 0) && (sourceOffset + sourceCount <= source.length));
-   MO.Assert.debugTrue(sourceCount <= source.length);
-   MO.Assert.debugNotNull(target);
-   MO.Assert.debugTrue((targetOffset >= 0) && (targetOffset + sourceCount <= target.length));
    for(var i = 0; i < sourceCount; i++){
       target[i + targetOffset] = source[i + sourceOffset];
    }
@@ -5612,7 +5605,6 @@ MO.RConsole.prototype.get = function RConsole_get(v){
 }
 MO.RConsole.prototype.find = function RConsole_find(value){
    var o = this;
-   MO.Assert.debugNotNull(value);
    var name = null;
    if(value.constructor == String){
       name = value;
@@ -5645,7 +5637,6 @@ MO.RConsole.prototype.find = function RConsole_find(value){
       default:
          return MO.Logger.fatal(o, 'Unknown scope code. (name={1})', name);
    }
-   MO.Logger.debug(o, 'Create console. (name={1}, scope={2})', name, MO.EScope.toDisplay(scopeCd));
    return console;
 }
 MO.RConsole.prototype.release = function RConsole_release(){
@@ -8774,10 +8765,10 @@ MO.SRange_dump = function SRange_dump(d){
 }
 MO.SRectangle = function SRectangle(left, top, width, height){
    var o = this;
-   o.left            = MO.Lang.Integer.nvl(left);
-   o.top             = MO.Lang.Integer.nvl(top);
-   o.width           = MO.Lang.Integer.nvl(width);
-   o.height          = MO.Lang.Integer.nvl(height);
+   o.left            = MO.Lang.Float.nvl(left);
+   o.top             = MO.Lang.Float.nvl(top);
+   o.width           = MO.Lang.Float.nvl(width);
+   o.height          = MO.Lang.Float.nvl(height);
    o.right           = MO.SRectangle_right;
    o.bottom          = MO.SRectangle_bottom;
    o.isEmpty         = MO.SRectangle_isEmpty;
@@ -9863,7 +9854,6 @@ MO.RRandom = new MO.RRandom();
 MO.Lang.Random = MO.RRandom;
 MO.AListener = function AListener(name, linker){
    var o = this;
-   MO.Assert.debugNotEmpty(name);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    if(linker == null){
@@ -11658,15 +11648,9 @@ MO.MParent_dispose = function MParent_dispose(){
    o._parent = null;
 }
 MO.MPersistence = function MPersistence(o){
-   o = MO.Class.inherits(this, o);
-   o.unserialize                = MO.MPersistence_unserialize;
-   o.unserializeBuffer          = MO.MPersistence_unserializeBuffer;
-   o.unserializeSignBuffer      = MO.MPersistence_unserializeSignBuffer;
-   o.unserializeEncryptedBuffer = MO.MPersistence_unserializeEncryptedBuffer;
-   o.serialize                  = MO.MPersistence_serialize;
-   o.serializeBuffer            = MO.MPersistence_serializeBuffer;
-   o.serializeSignBuffer        = MO.MPersistence_serializeSignBuffer;
-   o.serializeEncryptedBuffer   = MO.MPersistence_serializeEncryptedBuffer;
+   o = MO.Class.inherits(this, o, MO.MPersistenceAble);
+   o.unserialize = MO.MPersistence_unserialize;
+   o.serialize   = MO.MPersistence_serialize;
    return o;
 }
 MO.MPersistence_unserialize = function MPersistence_unserialize(input){
@@ -11719,33 +11703,6 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       }
    }
 }
-MO.MPersistence_unserializeBuffer = function MPersistence_unserializeBuffer(buffer, endianCd){
-   var o = this;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
-MO.MPersistence_unserializeSignBuffer = function MPersistence_unserializeSignBuffer(sign, buffer, endianCd){
-   var o = this;
-   var bytes = new Uint8Array(buffer);
-   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
-MO.MPersistence_unserializeEncryptedBuffer = function MPersistence_unserializeEncryptedBuffer(sign, buffer, endianCd){
-   var o = this;
-   var view = MO.Class.create(MO.FEncryptedView);
-   view.setSign(sign);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
 MO.MPersistence_serialize = function MPersistence_serialize(output){
    var o = this;
    var clazz = MO.Class.find(o.constructor);
@@ -11778,7 +11735,46 @@ MO.MPersistence_serialize = function MPersistence_serialize(output){
       }
    }
 }
-MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, endianCd){
+MO.MPersistenceAble = function MPersistenceAble(o){
+   o = MO.Class.inherits(this, o);
+   o.unserialize                = MO.Method.empty;
+   o.unserializeBuffer          = MO.MPersistenceAble_unserializeBuffer;
+   o.unserializeSignBuffer      = MO.MPersistenceAble_unserializeSignBuffer;
+   o.unserializeEncryptedBuffer = MO.MPersistenceAble_unserializeEncryptedBuffer;
+   o.serialize                  = MO.Method.empty;
+   o.serializeBuffer            = MO.MPersistenceAble_serializeBuffer;
+   o.serializeSignBuffer        = MO.MPersistenceAble_serializeSignBuffer;
+   o.serializeEncryptedBuffer   = MO.MPersistenceAble_serializeEncryptedBuffer;
+   return o;
+}
+MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuffer(buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializeSignBuffer(sign, buffer, endianCd){
+   var o = this;
+   var bytes = new Uint8Array(buffer);
+   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_unserializeEncryptedBuffer = function MPersistenceAble_unserializeEncryptedBuffer(sign, buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FEncryptedView);
+   view.setSign(sign);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_serializeBuffer = function MPersistenceAble_serializeBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -11786,7 +11782,7 @@ MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, 
    o.serialize(view);
    view.dispose();
 }
-MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(buffer, endianCd){
+MO.MPersistenceAble_serializeSignBuffer = function MPersistenceAble_serializeSignBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -11794,7 +11790,7 @@ MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(
    o.serialize(view);
    view.dispose();
 }
-MO.MPersistence_serializeEncryptedBuffer = function MPersistence_serializeEncryptedBuffer(sign, buffer, endianCd){
+MO.MPersistenceAble_serializeEncryptedBuffer = function MPersistenceAble_serializeEncryptedBuffer(sign, buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FEncryptedView);
    view.setSign(sign);
@@ -13757,6 +13753,7 @@ MO.FEnvironmentConsole = function FEnvironmentConsole(o){
    o.find          = MO.FEnvironmentConsole_find;
    o.findValue     = MO.FEnvironmentConsole_findValue;
    o.parse         = MO.FEnvironmentConsole_parse;
+   o.parseUrl      = MO.FEnvironmentConsole_parseUrl;
    o.dispose       = MO.FEnvironmentConsole_dispose;
    return o;
 }
@@ -13772,7 +13769,7 @@ MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environm
 }
 MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
    var o = this;
-   var environment = MO.RClass.create(MO.FEnvironment);
+   var environment = MO.Class.create(MO.FEnvironment);
    environment.set(name, value);
    o._environments.set(name, environment);
    return environment;
@@ -13800,9 +13797,21 @@ MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
    }
    return result;
 }
+MO.FEnvironmentConsole_parseUrl = function FEnvironmentConsole_parseUrl(value){
+   var o = this;
+   var result = null;
+   var version = MO.Runtime.version();
+   var url = o.parse(value);
+   if(url.indexOf('?') != -1){
+      result = url + '&' + version;
+   }else{
+      result = url + '?' + version;
+   }
+   return result;
+}
 MO.FEnvironmentConsole_dispose = function FEnvironmentConsole_dispose(){
    var o = this;
-   o._environments = new TDictionary();
+   o._environments = MO.Lang.Object.dispose(o._environments);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEvent = function FEvent(o){
@@ -13864,7 +13873,6 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -14769,7 +14777,6 @@ MO.RWindow.prototype.ohVisibility = function RWindow_ohVisibility(hEvent){
    var event = o._eventVisibility;
    event.visibility = visibility;
    o.lsnsVisibility.process(event);
-   MO.Logger.debug(o, 'Window visibility changed. (visibility={1})', visibility);
 }
 MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var o = MO.Window;
@@ -14777,7 +14784,6 @@ MO.RWindow.prototype.ohOrientation = function RWindow_ohOrientation(hEvent){
    var event = o._eventOrientation;
    event.orientationCd = orientationCd;
    o.lsnsOrientation.process(event);
-   MO.Logger.debug(o, 'Window orientation changed. (orientation_cd={1})', orientationCd);
 }
 MO.RWindow.prototype.ohUnload = function RWindow_ohUnload(event){
    var o = MO.Window;
@@ -14941,7 +14947,6 @@ MO.RWindow.prototype.setEnable = function RWindow_setEnable(v, f){
    o._statusEnable = v;
 }
 MO.RWindow.prototype.appendElement = function RWindow_appendElement(hPanel){
-   MO.Assert.debugNotNull(control);
    this._hContainer.appendChild(hPanel);
 }
 MO.RWindow.prototype.requestAnimationFrame = function RWindow_requestAnimationFrame(callback){
@@ -15125,7 +15130,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(o._typeCd == MO.EBrowser.Chrome){
       MO.Logger.lsnsOutput.register(o, o.onLog);
    }
-   MO.Logger.debug(o, 'Parse browser agent. (platform_cd={1}, type_cd={2})', MO.Lang.Enum.decode(MO.EPlatform, platformCd), MO.Lang.Enum.decode(MO.EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -15146,7 +15150,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
    if(pixelRatio){
       if(MO.Runtime.isPlatformMobile()){
          capability.pixelRatio = Math.min(pixelRatio, 3);
-         MO.Logger.debug(o, 'Parse browser agent. (pixel_ratio={1}, capability_ratio={2})', pixelRatio, capability.pixelRatio);
       }
    }
    if(window.Worker){
@@ -15177,7 +15180,6 @@ MO.RBrowser.prototype.construct = function RBrowser_construct(){
       events['visibilitychange'] = 'webkitvisibilitychange';
    }
    o.refreshOrientation();
-   MO.Logger.debug(o, 'Browser connect. (agent={1})', o._agent);
 }
 MO.RBrowser.prototype.agent = function RBrowser_agent(){
    return this._agent;
@@ -15676,7 +15678,7 @@ MO.FImage_testReady = function FImage_testReady(){
 }
 MO.FImage_loadUrl = function FImage_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    var hImage = o._hImage;
    if(!hImage){
       hImage = o._hImage = new Image();
@@ -15690,7 +15692,7 @@ MO.FImage_loadUrl = function FImage_loadUrl(uri){
 MO.FImage_dispose = function FImage_dispose(){
    var o = this;
    o._size = MO.Lang.Object.dispose(o._size);
-   o._hImage = MO.RHtml.free(o._hImage);
+   o._hImage = MO.Window.Html.free(o._hImage);
    o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
@@ -16294,7 +16296,6 @@ MO.RDump.prototype.stack = function RDump_stack(){
          s.appendLine();
       }
    }
-   MO.Logger.debug(this, s);
 }
 MO.RDump = new MO.RDump();
 MO.RHtml = function RHtml(){
@@ -16817,7 +16818,6 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
-   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -18457,12 +18457,9 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
    o._tagContext = MO.Class.create(MO.FTagContext);
 }
 MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
-   MO.Assert.debugNotEmpty(name);
-   MO.Assert.debugNotNull(effect);
    this._registerEffects.set(name, effect);
 }
 MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
-   MO.Assert.debugNotEmpty(name);
    this._registerEffects.set(name, null);
 }
 MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
@@ -18586,19 +18583,16 @@ MO.FG3dEffectConsole_find = function FG3dEffectConsole_find(context, region, ren
    }
    return effect;
 }
-MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(p){
+MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(name){
    var o = this;
-   var x = o._configs.get(p);
-   if(x){
-      return x;
+   var xconfig = o._configs.get(uri);
+   if(!xconfig){
+      var uri = MO.Window.Browser.contentPath(o._path + name + ".xml");
+      var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
+      xconfig = MO.Class.create(MO.FXmlConnection).send(url);
+      o._configs.set(name, xconfig);
    }
-   var u = MO.RBrowser.contentPath(o._path + p + ".xml");
-   if(MO.Runtime.isDebug()){
-      u += '?' + MO.Lang.Date.format();
-   }
-   x = MO.Class.create(MO.FXmlConnection).send(u);
-   o._configs.set(p, x);
-   return x;
+   return xconfig;
 }
 MO.FG3dLight = function FG3dLight(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -18924,7 +18918,6 @@ MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
 }
 MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
    var o = this;
-   MO.Assert.debugNotNull(pass);
    pass.setTechnique(o);
    o._passes.push(pass);
 }
@@ -20922,7 +20915,6 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
-            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
@@ -21234,7 +21226,6 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    var o = this;
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
-   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;

@@ -2011,12 +2011,12 @@ MO.FE3dSimpleDesktop_build = function FE3dSimpleDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
    MO.RWindow.lsnsResize.register(o, o.onResize);
-   var canvas = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   var canvas = o._canvas3d = MO.Class.create(MO.FE3dSimpleCanvas);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
    var size = canvas.size();
    var hCanvas3d = canvas._hCanvas;
-   var canvas = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   var canvas = o._canvas2d = MO.Class.create(MO.FE2dCanvas);
    canvas.size().assign(size);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
@@ -2044,13 +2044,13 @@ MO.FE3dSimpleStage = function FE3dSimpleStage(o){
 MO.FE3dSimpleStage_construct = function FE3dSimpleStage_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
-   var layer = o._skyLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._skyLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SkyLayer', layer);
-   var layer = o._mapLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._mapLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('MapLayer', layer);
-   var layer = o._spriteLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._spriteLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SpriteLayer', layer);
-   var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._faceLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('FaceLayer', layer);
 }
 MO.FE3dSimpleStage_active = function FE3dSimpleStage_active(){

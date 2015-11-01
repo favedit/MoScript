@@ -59,7 +59,6 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    hCanvas.height = height;
    o._size.set(width, height);
    o._graphicContext.size().set(width, height);
-   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);
@@ -95,13 +94,13 @@ MO.FE2dCanvasConsole_construct = function FE2dCanvasConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._pools = MO.Class.create(MO.FObjectPools);
 }
-MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height){
+MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height, clazz){
    var o = this;
    var pools = o._pools;
    var code = width + 'x' + height;
    var canvas = pools.alloc(code);
    if(!canvas){
-      canvas = MO.Class.create(MO.FE2dCanvas);
+      canvas = MO.Class.create(MO.Runtime.nvl(clazz, MO.FE2dCanvas));
       canvas.size().set(width, height);
       canvas.build(MO.Window._hDocument);
    }

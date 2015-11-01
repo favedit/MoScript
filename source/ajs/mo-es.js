@@ -1,6 +1,5 @@
 MO.AListener = function AListener(name, linker){
    var o = this;
-   MO.Assert.debugNotEmpty(name);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    if(linker == null){
@@ -1795,15 +1794,9 @@ MO.MParent_dispose = function MParent_dispose(){
    o._parent = null;
 }
 MO.MPersistence = function MPersistence(o){
-   o = MO.Class.inherits(this, o);
-   o.unserialize                = MO.MPersistence_unserialize;
-   o.unserializeBuffer          = MO.MPersistence_unserializeBuffer;
-   o.unserializeSignBuffer      = MO.MPersistence_unserializeSignBuffer;
-   o.unserializeEncryptedBuffer = MO.MPersistence_unserializeEncryptedBuffer;
-   o.serialize                  = MO.MPersistence_serialize;
-   o.serializeBuffer            = MO.MPersistence_serializeBuffer;
-   o.serializeSignBuffer        = MO.MPersistence_serializeSignBuffer;
-   o.serializeEncryptedBuffer   = MO.MPersistence_serializeEncryptedBuffer;
+   o = MO.Class.inherits(this, o, MO.MPersistenceAble);
+   o.unserialize = MO.MPersistence_unserialize;
+   o.serialize   = MO.MPersistence_serialize;
    return o;
 }
 MO.MPersistence_unserialize = function MPersistence_unserialize(input){
@@ -1856,33 +1849,6 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       }
    }
 }
-MO.MPersistence_unserializeBuffer = function MPersistence_unserializeBuffer(buffer, endianCd){
-   var o = this;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
-MO.MPersistence_unserializeSignBuffer = function MPersistence_unserializeSignBuffer(sign, buffer, endianCd){
-   var o = this;
-   var bytes = new Uint8Array(buffer);
-   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
-MO.MPersistence_unserializeEncryptedBuffer = function MPersistence_unserializeEncryptedBuffer(sign, buffer, endianCd){
-   var o = this;
-   var view = MO.Class.create(MO.FEncryptedView);
-   view.setSign(sign);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
 MO.MPersistence_serialize = function MPersistence_serialize(output){
    var o = this;
    var clazz = MO.Class.find(o.constructor);
@@ -1915,7 +1881,46 @@ MO.MPersistence_serialize = function MPersistence_serialize(output){
       }
    }
 }
-MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, endianCd){
+MO.MPersistenceAble = function MPersistenceAble(o){
+   o = MO.Class.inherits(this, o);
+   o.unserialize                = MO.Method.empty;
+   o.unserializeBuffer          = MO.MPersistenceAble_unserializeBuffer;
+   o.unserializeSignBuffer      = MO.MPersistenceAble_unserializeSignBuffer;
+   o.unserializeEncryptedBuffer = MO.MPersistenceAble_unserializeEncryptedBuffer;
+   o.serialize                  = MO.Method.empty;
+   o.serializeBuffer            = MO.MPersistenceAble_serializeBuffer;
+   o.serializeSignBuffer        = MO.MPersistenceAble_serializeSignBuffer;
+   o.serializeEncryptedBuffer   = MO.MPersistenceAble_serializeEncryptedBuffer;
+   return o;
+}
+MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuffer(buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializeSignBuffer(sign, buffer, endianCd){
+   var o = this;
+   var bytes = new Uint8Array(buffer);
+   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_unserializeEncryptedBuffer = function MPersistenceAble_unserializeEncryptedBuffer(sign, buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FEncryptedView);
+   view.setSign(sign);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_serializeBuffer = function MPersistenceAble_serializeBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -1923,7 +1928,7 @@ MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, 
    o.serialize(view);
    view.dispose();
 }
-MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(buffer, endianCd){
+MO.MPersistenceAble_serializeSignBuffer = function MPersistenceAble_serializeSignBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -1931,7 +1936,7 @@ MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(
    o.serialize(view);
    view.dispose();
 }
-MO.MPersistence_serializeEncryptedBuffer = function MPersistence_serializeEncryptedBuffer(sign, buffer, endianCd){
+MO.MPersistenceAble_serializeEncryptedBuffer = function MPersistenceAble_serializeEncryptedBuffer(sign, buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FEncryptedView);
    view.setSign(sign);
@@ -3894,6 +3899,7 @@ MO.FEnvironmentConsole = function FEnvironmentConsole(o){
    o.find          = MO.FEnvironmentConsole_find;
    o.findValue     = MO.FEnvironmentConsole_findValue;
    o.parse         = MO.FEnvironmentConsole_parse;
+   o.parseUrl      = MO.FEnvironmentConsole_parseUrl;
    o.dispose       = MO.FEnvironmentConsole_dispose;
    return o;
 }
@@ -3909,7 +3915,7 @@ MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environm
 }
 MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
    var o = this;
-   var environment = MO.RClass.create(MO.FEnvironment);
+   var environment = MO.Class.create(MO.FEnvironment);
    environment.set(name, value);
    o._environments.set(name, environment);
    return environment;
@@ -3937,9 +3943,21 @@ MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
    }
    return result;
 }
+MO.FEnvironmentConsole_parseUrl = function FEnvironmentConsole_parseUrl(value){
+   var o = this;
+   var result = null;
+   var version = MO.Runtime.version();
+   var url = o.parse(value);
+   if(url.indexOf('?') != -1){
+      result = url + '&' + version;
+   }else{
+      result = url + '?' + version;
+   }
+   return result;
+}
 MO.FEnvironmentConsole_dispose = function FEnvironmentConsole_dispose(){
    var o = this;
-   o._environments = new TDictionary();
+   o._environments = MO.Lang.Object.dispose(o._environments);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEvent = function FEvent(o){
@@ -4001,7 +4019,6 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;
@@ -4792,7 +4809,6 @@ MO.MGraphicObject_linkGraphicContext = function MGraphicObject_linkGraphicContex
    }else{
       throw new MO.TError(o, 'Link graphic context failure. (context={1})', context);
    }
-   MO.Assert.debugNotNull(o._graphicContext);
 }
 MO.MGraphicObject_dispose = function MGraphicObject_dispose(){
    var o = this;
@@ -6432,12 +6448,9 @@ MO.FG3dEffectConsole_construct = function FG3dEffectConsole_construct(){
    o._tagContext = MO.Class.create(MO.FTagContext);
 }
 MO.FG3dEffectConsole_register = function FG3dEffectConsole_register(name, effect){
-   MO.Assert.debugNotEmpty(name);
-   MO.Assert.debugNotNull(effect);
    this._registerEffects.set(name, effect);
 }
 MO.FG3dEffectConsole_unregister = function FG3dEffectConsole_unregister(name){
-   MO.Assert.debugNotEmpty(name);
    this._registerEffects.set(name, null);
 }
 MO.FG3dEffectConsole_create = function FG3dEffectConsole_create(context, name){
@@ -6561,19 +6574,16 @@ MO.FG3dEffectConsole_find = function FG3dEffectConsole_find(context, region, ren
    }
    return effect;
 }
-MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(p){
+MO.FG3dEffectConsole_loadConfig = function FG3dEffectConsole_loadConfig(name){
    var o = this;
-   var x = o._configs.get(p);
-   if(x){
-      return x;
+   var xconfig = o._configs.get(uri);
+   if(!xconfig){
+      var uri = MO.Window.Browser.contentPath(o._path + name + ".xml");
+      var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
+      xconfig = MO.Class.create(MO.FXmlConnection).send(url);
+      o._configs.set(name, xconfig);
    }
-   var u = MO.RBrowser.contentPath(o._path + p + ".xml");
-   if(MO.Runtime.isDebug()){
-      u += '?' + MO.Lang.Date.format();
-   }
-   x = MO.Class.create(MO.FXmlConnection).send(u);
-   o._configs.set(p, x);
-   return x;
+   return xconfig;
 }
 MO.FG3dLight = function FG3dLight(o){
    o = MO.Class.inherits(this, o, MO.FObject);
@@ -6899,7 +6909,6 @@ MO.FG3dTechnique_selectMode = function FG3dTechnique_selectMode(p){
 }
 MO.FG3dTechnique_pushPass = function FG3dTechnique_pushPass(pass){
    var o = this;
-   MO.Assert.debugNotNull(pass);
    pass.setTechnique(o);
    o._passes.push(pass);
 }
@@ -8897,7 +8906,6 @@ MO.FWglContext_linkCanvas = function FWglContext_linkCanvas(hCanvas){
          var code = codes[i];
          handle = hCanvas.getContext(code, parameters);
          if(handle){
-            MO.Logger.debug(o, 'Create context3d. (code={1}, handle={2})', code, handle);
             break;
          }
       }
@@ -9209,7 +9217,6 @@ MO.FWglContext_setViewport = function FWglContext_setViewport(left, top, width, 
    var o = this;
    o._viewportRectangle.set(left, top, width, height);
    o._handle.viewport(left, top, width, height);
-   MO.Logger.debug(o, 'Context3d viewport. (location={1},{2}, size={3}x{4})', left, top, width, height);
 }
 MO.FWglContext_setFillMode = function FWglContext_setFillMode(fillModeCd){
    var o = this;
@@ -10923,12 +10930,10 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_processEvent = function FDesktop_processEvent(event){
@@ -11764,16 +11769,14 @@ MO.FAudio_play = function FAudio_play(position){
       }
    }
    hAudio.play();
-   MO.Logger.debug(o, 'Audio play. (url={1}, position={2})', o._url, position);
 }
 MO.FAudio_pause = function FAudio_pause(){
    var o = this;
    o._hAudio.pause();
-   MO.Logger.debug(o, 'Audio pause. (url={1})', o._url);
 }
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
@@ -12398,9 +12401,9 @@ MO.FResourceObject = function FResourceObject(o){
    return o;
 }
 MO.FResourcePackage = function FResourcePackage(o){
-   o = MO.Class.inherits(this, o, MO.FResource);
+   o = MO.Class.inherits(this, o, MO.FResource, MO.MPersistenceAble);
    o._uri         = MO.Class.register(o, new MO.AGetSet('_uri'));
-   o._url         = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._url         = MO.Class.register(o, new MO.AGetter('_url'));
    o._statusReady = false;
    o.onLoad       = MO.FResourcePackage_onLoad;
    o.testReady    = MO.FResourcePackage_testReady;
@@ -12410,23 +12413,15 @@ MO.FResourcePackage = function FResourcePackage(o){
 }
 MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    var o = this;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(event.content);
-   o.unserialize(view);
-   view.dispose();
+   o.unserializeBuffer(event.content, true);
    o._statusReady = true;
-   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
    return this._statusReady;
 }
 MO.FResourcePackage_load = function FResourcePackage_load(){
    var o = this;
-   var url = o._url;
-   if(!url){
-      url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(o._uri);
-   }
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(o._uri);
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(o, o.onLoad);
    return connection;
@@ -12755,7 +12750,6 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    hCanvas.height = height;
    o._size.set(width, height);
    o._graphicContext.size().set(width, height);
-   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);
@@ -12791,13 +12785,13 @@ MO.FE2dCanvasConsole_construct = function FE2dCanvasConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._pools = MO.Class.create(MO.FObjectPools);
 }
-MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height){
+MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height, clazz){
    var o = this;
    var pools = o._pools;
    var code = width + 'x' + height;
    var canvas = pools.alloc(code);
    if(!canvas){
-      canvas = MO.Class.create(MO.FE2dCanvas);
+      canvas = MO.Class.create(MO.Runtime.nvl(clazz, MO.FE2dCanvas));
       canvas.size().set(width, height);
       canvas.build(MO.Window._hDocument);
    }
@@ -12927,7 +12921,6 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
-   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -12957,8 +12950,8 @@ MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
    o._size = MO.Lang.Object.dispose(o._size);
    o._screenSize = MO.Lang.Object.dispose(o._screenSize);
    o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._hPanel = MO.RHtml.free(o._hPanel);
-   o._hCanvas = MO.RHtml.free(o._hCanvas);
+   o._hPanel = MO.Window.Html.free(o._hPanel);
+   o._hCanvas = MO.Window.Html.free(o._hCanvas);
    o.__base.FCanvas.dispose.call(o);
 }
 MO.FE3dDisplay = function FE3dDisplay(o){
@@ -20802,12 +20795,12 @@ MO.FE3dSimpleDesktop_build = function FE3dSimpleDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
    MO.RWindow.lsnsResize.register(o, o.onResize);
-   var canvas = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   var canvas = o._canvas3d = MO.Class.create(MO.FE3dSimpleCanvas);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
    var size = canvas.size();
    var hCanvas3d = canvas._hCanvas;
-   var canvas = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   var canvas = o._canvas2d = MO.Class.create(MO.FE2dCanvas);
    canvas.size().assign(size);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
@@ -20835,13 +20828,13 @@ MO.FE3dSimpleStage = function FE3dSimpleStage(o){
 MO.FE3dSimpleStage_construct = function FE3dSimpleStage_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
-   var layer = o._skyLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._skyLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SkyLayer', layer);
-   var layer = o._mapLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._mapLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('MapLayer', layer);
-   var layer = o._spriteLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._spriteLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SpriteLayer', layer);
-   var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._faceLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('FaceLayer', layer);
 }
 MO.FE3dSimpleStage_active = function FE3dSimpleStage_active(){
@@ -22251,15 +22244,11 @@ MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, u
 }
 MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadByUrl(context, url);
 }
 MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(url);
    var dataUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
    var data = o._bitmapDatas.get(url);
@@ -22274,8 +22263,6 @@ MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(co
 }
 MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadDataByUrl(context, url);
 }
@@ -23428,7 +23415,6 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
-   MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_calculateOutline = function FE3dDynamicMesh_calculateOutline(){
    var o = this;
@@ -24082,7 +24068,6 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -25069,7 +25054,6 @@ MO.FApplication = function FApplication(o){
    return o;
 }
 MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
-   MO.Logger.debug(this, 'Application process ready.');
 }
 MO.FApplication_onProcess = function FApplication_onProcess(event){
    var o = this;
@@ -25119,7 +25103,6 @@ MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(
    var chapter = o._chapters.get(code);
    if(!chapter){
       chapter = o.createChapter(code);
-      MO.Assert.debugNotNull(chapter);
       o.registerChapter(chapter);
    }
    o.selectChapter(chapter);
@@ -25178,7 +25161,6 @@ MO.FChapter = function FChapter(o){
    return o;
 }
 MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
-   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
@@ -25189,7 +25171,6 @@ MO.FChapter_construct = function FChapter_construct(){
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
    var code = scene.code();
-   MO.Assert.debugNotEmpty(code);
    scene.setApplication(o._application);
    scene.setChapter(o);
    o._scenes.set(code, scene);
@@ -25217,7 +25198,6 @@ MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var scene = o._scenes.get(code);
    if(!scene){
       scene = o.createScene(code);
-      MO.Assert.debugNotNull(scene);
       o.registerScene(scene);
    }
    o.selectScene(scene);
@@ -25230,12 +25210,10 @@ MO.FChapter_active = function FChapter_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 MO.FChapter_processEvent = function FChapter_processEvent(event){
    var o = this;
@@ -25298,7 +25276,6 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    o._visible = event.visibility;
 }
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
-   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 MO.FScene_construct = function FScene_construct(){
    var o = this;
@@ -25312,13 +25289,11 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 MO.FScene_process = function FScene_process(){
    var o = this;

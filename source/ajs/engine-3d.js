@@ -110,7 +110,6 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
-   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -140,8 +139,8 @@ MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
    o._size = MO.Lang.Object.dispose(o._size);
    o._screenSize = MO.Lang.Object.dispose(o._screenSize);
    o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._hPanel = MO.RHtml.free(o._hPanel);
-   o._hCanvas = MO.RHtml.free(o._hCanvas);
+   o._hPanel = MO.Window.Html.free(o._hPanel);
+   o._hCanvas = MO.Window.Html.free(o._hCanvas);
    o.__base.FCanvas.dispose.call(o);
 }
 MO.FE3dDisplay = function FE3dDisplay(o){

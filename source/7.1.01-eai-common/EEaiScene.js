@@ -8,23 +8,23 @@
 MO.EEaiScene = new function EEaiScene(){
    var o = this;
    // 图表
-   o.Group           = 'group';
-   o.GroupReport     = 'group.report';
-   o.Company         = 'company';
-   o.Country         = 'country';
+   o.Group                    = 'group';
+   o.GroupReport              = 'group.report';
+   o.Company                  = 'company';
+   o.Country                  = 'country';
    // 图表
-   o.ChartTotal      = 'chart.total';
-   o.ChartHistory    = 'chart.history';
-   o.ChartCustomer   = 'chart.customer';
-   o.ChartMarketer   = 'chart.marketer';
-   o.ChartDepartment = 'chart.department';
-   o.ChartLive       = 'chart.live';
-   o.ChartWorld      = 'chart.world';
-   o.ChartSales      = 'chart.sales';
+   o.ChartTotal               = 'chart.total';
+   o.ChartHistory             = 'chart.history';
+   o.ChartCustomer            = 'chart.customer';
+   o.ChartMarketer            = 'chart.marketer';
+   o.ChartDepartment          = 'chart.department';
+   o.ChartLive                = 'chart.live';
+   o.ChartWorld               = 'chart.world';
+   o.ChartSales               = 'chart.sales';
    // 图表
-   o.ChartIndustry    = 'chart.industry';
-   o.ChartInvestment  = 'chart.investment';
-   o.ChartPerformence = 'chart.performence';
+   o.ChartIndustry             = 'chart.industry';
+   o.ChartInvestment           = 'chart.investment';
+   o.ChartPerformence          = 'chart.performence';
    // 图表
    o.ChartCustomer             = 'chart.customer';
    o.ChartCustomerInvestment3d = 'chart.customer.investment.3d';
@@ -38,6 +38,8 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartStatisticsMarketer   = 'chart.statistics.marketer';
    o.ChartPerformenceMarketer  = 'chart.performence.marketer';
    o.ChartMarketerProduct      = 'chart.marketer.product';
+   // 管理驾驶舱
+   o.Cockpit                   = 'cockpit';
    // 展会
    o.ChartShow1019             = 'chart.show.1019';
    o.ChartShow1022             = 'chart.show.1022';

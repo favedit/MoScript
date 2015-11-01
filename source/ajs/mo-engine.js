@@ -369,12 +369,10 @@ MO.FDesktop_construct = function FDesktop_construct(){
 }
 MO.FDesktop_canvasRegister = function FDesktop_canvasRegister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugFalse(canvases.contains(canvas));
    canvases.push(canvas);
 }
 MO.FDesktop_canvasUnregister = function FDesktop_canvasUnregister(canvas){
    var canvases = this._canvases;
-   MO.Assert.debugTrue(canvases.contains(canvas));
    canvases.remove(canvas);
 }
 MO.FDesktop_processEvent = function FDesktop_processEvent(event){
@@ -1210,16 +1208,14 @@ MO.FAudio_play = function FAudio_play(position){
       }
    }
    hAudio.play();
-   MO.Logger.debug(o, 'Audio play. (url={1}, position={2})', o._url, position);
 }
 MO.FAudio_pause = function FAudio_pause(){
    var o = this;
    o._hAudio.pause();
-   MO.Logger.debug(o, 'Audio pause. (url={1})', o._url);
 }
 MO.FAudio_loadUrl = function FAudio_loadUrl(uri){
    var o = this;
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(uri);
    var hAudio = o._hAudio;
    if(!hAudio){
       hAudio = o._hAudio = new Audio();
@@ -1844,9 +1840,9 @@ MO.FResourceObject = function FResourceObject(o){
    return o;
 }
 MO.FResourcePackage = function FResourcePackage(o){
-   o = MO.Class.inherits(this, o, MO.FResource);
+   o = MO.Class.inherits(this, o, MO.FResource, MO.MPersistenceAble);
    o._uri         = MO.Class.register(o, new MO.AGetSet('_uri'));
-   o._url         = MO.Class.register(o, new MO.AGetSet('_url'));
+   o._url         = MO.Class.register(o, new MO.AGetter('_url'));
    o._statusReady = false;
    o.onLoad       = MO.FResourcePackage_onLoad;
    o.testReady    = MO.FResourcePackage_testReady;
@@ -1856,23 +1852,15 @@ MO.FResourcePackage = function FResourcePackage(o){
 }
 MO.FResourcePackage_onLoad = function FResourcePackage_onLoad(event){
    var o = this;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(true);
-   view.link(event.content);
-   o.unserialize(view);
-   view.dispose();
+   o.unserializeBuffer(event.content, true);
    o._statusReady = true;
-   MO.Logger.debug(o, 'Load resource package success. (url={1})', o._url);
 }
 MO.FResourcePackage_testReady = function FResourcePackage_testReady(){
    return this._statusReady;
 }
 MO.FResourcePackage_load = function FResourcePackage_load(){
    var o = this;
-   var url = o._url;
-   if(!url){
-      url = o._url = MO.Console.find(MO.FEnvironmentConsole).parse(o._uri);
-   }
+   var url = o._url = MO.Console.find(MO.FEnvironmentConsole).parseUrl(o._uri);
    var connection = MO.Console.find(MO.FHttpConsole).sendAsync(url);
    connection.addLoadListener(o, o.onLoad);
    return connection;
@@ -2201,7 +2189,6 @@ MO.FE2dCanvas_resize = function FE2dCanvas_resize(width, height){
    hCanvas.height = height;
    o._size.set(width, height);
    o._graphicContext.size().set(width, height);
-   MO.Logger.debug(o, 'Canvas2d resize. (size={1}x{2}, html={3})', width, height, hCanvas.outerHTML);
 }
 MO.FE2dCanvas_show = function FE2dCanvas_show(){
    this.setVisible(true);
@@ -2237,13 +2224,13 @@ MO.FE2dCanvasConsole_construct = function FE2dCanvasConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._pools = MO.Class.create(MO.FObjectPools);
 }
-MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height){
+MO.FE2dCanvasConsole_allocBySize = function FE2dCanvasConsole_allocBySize(width, height, clazz){
    var o = this;
    var pools = o._pools;
    var code = width + 'x' + height;
    var canvas = pools.alloc(code);
    if(!canvas){
-      canvas = MO.Class.create(MO.FE2dCanvas);
+      canvas = MO.Class.create(MO.Runtime.nvl(clazz, MO.FE2dCanvas));
       canvas.size().set(width, height);
       canvas.build(MO.Window._hDocument);
    }
@@ -2373,7 +2360,6 @@ MO.FE3dCanvas_resize = function FE3dCanvas_resize(sourceWidth, sourceHeight){
    o._size.set(width, height);
    var context = o._graphicContext;
    context.setViewport(0, 0, width, height);
-   MO.Logger.debug(o, 'Canvas3d resize. (size={1}x{2}, buffer={3}x{4}, html={5})', width, height, context._handle.drawingBufferWidth, context._handle.drawingBufferHeight, hCanvas.outerHTML);
 }
 MO.FE3dCanvas_show = function FE3dCanvas_show(){
    this.setVisible(true);
@@ -2403,8 +2389,8 @@ MO.FE3dCanvas_dispose = function FE3dCanvas_dispose(){
    o._size = MO.Lang.Object.dispose(o._size);
    o._screenSize = MO.Lang.Object.dispose(o._screenSize);
    o._logicSize = MO.Lang.Object.dispose(o._logicSize);
-   o._hPanel = MO.RHtml.free(o._hPanel);
-   o._hCanvas = MO.RHtml.free(o._hCanvas);
+   o._hPanel = MO.Window.Html.free(o._hPanel);
+   o._hCanvas = MO.Window.Html.free(o._hCanvas);
    o.__base.FCanvas.dispose.call(o);
 }
 MO.FE3dDisplay = function FE3dDisplay(o){
@@ -10248,12 +10234,12 @@ MO.FE3dSimpleDesktop_build = function FE3dSimpleDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
    MO.RWindow.lsnsResize.register(o, o.onResize);
-   var canvas = o._canvas3d = MO.RClass.create(MO.FE3dSimpleCanvas);
+   var canvas = o._canvas3d = MO.Class.create(MO.FE3dSimpleCanvas);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
    var size = canvas.size();
    var hCanvas3d = canvas._hCanvas;
-   var canvas = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   var canvas = o._canvas2d = MO.Class.create(MO.FE2dCanvas);
    canvas.size().assign(size);
    canvas.build(hPanel);
    canvas.setPanel(hPanel);
@@ -10281,13 +10267,13 @@ MO.FE3dSimpleStage = function FE3dSimpleStage(o){
 MO.FE3dSimpleStage_construct = function FE3dSimpleStage_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
-   var layer = o._skyLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._skyLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SkyLayer', layer);
-   var layer = o._mapLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._mapLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('MapLayer', layer);
-   var layer = o._spriteLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._spriteLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('SpriteLayer', layer);
-   var layer = o._faceLayer = MO.RClass.create(MO.FDisplayLayer);
+   var layer = o._faceLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('FaceLayer', layer);
 }
 MO.FE3dSimpleStage_active = function FE3dSimpleStage_active(){
@@ -11697,15 +11683,11 @@ MO.FE3dBitmapConsole_loadByUrl = function FE3dBitmapConsole_loadByUrl(context, u
 }
 MO.FE3dBitmapConsole_loadByGuid = function FE3dBitmapConsole_loadByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadByUrl(context, url);
 }
 MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(context, url){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(url);
    var dataUrl = MO.Window.Browser.contentPath(url);
    MO.Logger.info(o, 'Load bitmap data from url. (url={1})', dataUrl);
    var data = o._bitmapDatas.get(url);
@@ -11720,8 +11702,6 @@ MO.FE3dBitmapConsole_loadDataByUrl = function FE3dBitmapConsole_loadDataByUrl(co
 }
 MO.FE3dBitmapConsole_loadDataByGuid = function FE3dBitmapConsole_loadDataByGuid(context, guid){
    var o = this;
-   MO.Assert.debugNotNull(context);
-   MO.Assert.debugNotNull(guid);
    var url = MO.Window.Browser.hostPath(o._dataUrl + '?do=view&guid=' + guid);
    return o.loadDataByUrl(context, url);
 }
@@ -12874,7 +12854,6 @@ MO.FE3dDynamicMesh_build = function FE3dDynamicMesh_build(){
    var indexData = indexBuffer.data();
    indexBuffer.upload(indexData, indexTotal);
    indexBuffer.setData(null);
-   MO.Logger.debug(o, 'Merge mesh. (renderable_count={1}, vertex={2}, index={3})', renderableCount, vertexTotal, indexTotal);
 }
 MO.FE3dDynamicMesh_calculateOutline = function FE3dDynamicMesh_calculateOutline(){
    var o = this;
@@ -13528,7 +13507,6 @@ MO.FE3dShapeData_beginDraw = function FE3dShapeData_beginDraw(){
 MO.FE3dShapeData_endDraw = function FE3dShapeData_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -14515,7 +14493,6 @@ MO.FApplication = function FApplication(o){
    return o;
 }
 MO.FApplication_onProcessReady = function FApplication_onProcessReady(event){
-   MO.Logger.debug(this, 'Application process ready.');
 }
 MO.FApplication_onProcess = function FApplication_onProcess(event){
    var o = this;
@@ -14565,7 +14542,6 @@ MO.FApplication_selectChapterByCode = function FApplication_selectChapterByCode(
    var chapter = o._chapters.get(code);
    if(!chapter){
       chapter = o.createChapter(code);
-      MO.Assert.debugNotNull(chapter);
       o.registerChapter(chapter);
    }
    o.selectChapter(chapter);
@@ -14624,7 +14600,6 @@ MO.FChapter = function FChapter(o){
    return o;
 }
 MO.FChapter_onProcessReady = function FChapter_onProcessReady(event){
-   MO.Logger.debug(this, 'Chapter process ready. (code={1})', this._code);
 }
 MO.FChapter_construct = function FChapter_construct(){
    var o = this;
@@ -14635,7 +14610,6 @@ MO.FChapter_construct = function FChapter_construct(){
 MO.FChapter_registerScene = function FChapter_registerScene(scene){
    var o = this;
    var code = scene.code();
-   MO.Assert.debugNotEmpty(code);
    scene.setApplication(o._application);
    scene.setChapter(o);
    o._scenes.set(code, scene);
@@ -14663,7 +14637,6 @@ MO.FChapter_selectSceneByCode = function FChapter_selectSceneByCode(code){
    var scene = o._scenes.get(code);
    if(!scene){
       scene = o.createScene(code);
-      MO.Assert.debugNotNull(scene);
       o.registerScene(scene);
    }
    o.selectScene(scene);
@@ -14676,12 +14649,10 @@ MO.FChapter_active = function FChapter_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Chapter active. (code={1})', o._code);
 }
 MO.FChapter_deactive = function FChapter_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Chapter deactive. (code={1})', o._code);
 }
 MO.FChapter_processEvent = function FChapter_processEvent(event){
    var o = this;
@@ -14744,7 +14715,6 @@ MO.FScene_onOperationVisibility = function FScene_onOperationVisibility(event){
    o._visible = event.visibility;
 }
 MO.FScene_onProcessReady = function FScene_onProcessReady(event){
-   MO.Logger.debug(this, 'Scene process ready. (code={1})', this._code);
 }
 MO.FScene_construct = function FScene_construct(){
    var o = this;
@@ -14758,13 +14728,11 @@ MO.FScene_active = function FScene_active(){
       o._statusSetup = true;
    }
    o._statusActive = true;
-   MO.Logger.debug(o, 'Scene active. (code={1})', o._code);
    o.processResize();
 }
 MO.FScene_deactive = function FScene_deactive(){
    var o = this;
    o._statusActive = false;
-   MO.Logger.debug(o, 'Scene deactive. (code={1})', o._code);
 }
 MO.FScene_process = function FScene_process(){
    var o = this;

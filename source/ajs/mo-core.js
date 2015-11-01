@@ -1,6 +1,5 @@
 MO.AListener = function AListener(name, linker){
    var o = this;
-   MO.Assert.debugNotEmpty(name);
    MO.ASource.call(o, name, MO.ESource.Listener, linker);
    o.build = MO.AListener_build;
    if(linker == null){
@@ -1795,15 +1794,9 @@ MO.MParent_dispose = function MParent_dispose(){
    o._parent = null;
 }
 MO.MPersistence = function MPersistence(o){
-   o = MO.Class.inherits(this, o);
-   o.unserialize                = MO.MPersistence_unserialize;
-   o.unserializeBuffer          = MO.MPersistence_unserializeBuffer;
-   o.unserializeSignBuffer      = MO.MPersistence_unserializeSignBuffer;
-   o.unserializeEncryptedBuffer = MO.MPersistence_unserializeEncryptedBuffer;
-   o.serialize                  = MO.MPersistence_serialize;
-   o.serializeBuffer            = MO.MPersistence_serializeBuffer;
-   o.serializeSignBuffer        = MO.MPersistence_serializeSignBuffer;
-   o.serializeEncryptedBuffer   = MO.MPersistence_serializeEncryptedBuffer;
+   o = MO.Class.inherits(this, o, MO.MPersistenceAble);
+   o.unserialize = MO.MPersistence_unserialize;
+   o.serialize   = MO.MPersistence_serialize;
    return o;
 }
 MO.MPersistence_unserialize = function MPersistence_unserialize(input){
@@ -1856,33 +1849,6 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       }
    }
 }
-MO.MPersistence_unserializeBuffer = function MPersistence_unserializeBuffer(buffer, endianCd){
-   var o = this;
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
-MO.MPersistence_unserializeSignBuffer = function MPersistence_unserializeSignBuffer(sign, buffer, endianCd){
-   var o = this;
-   var bytes = new Uint8Array(buffer);
-   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
-   var view = MO.Class.create(MO.FDataView);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
-MO.MPersistence_unserializeEncryptedBuffer = function MPersistence_unserializeEncryptedBuffer(sign, buffer, endianCd){
-   var o = this;
-   var view = MO.Class.create(MO.FEncryptedView);
-   view.setSign(sign);
-   view.setEndianCd(endianCd);
-   view.link(buffer);
-   o.unserialize(view);
-   view.dispose();
-}
 MO.MPersistence_serialize = function MPersistence_serialize(output){
    var o = this;
    var clazz = MO.Class.find(o.constructor);
@@ -1915,7 +1881,46 @@ MO.MPersistence_serialize = function MPersistence_serialize(output){
       }
    }
 }
-MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, endianCd){
+MO.MPersistenceAble = function MPersistenceAble(o){
+   o = MO.Class.inherits(this, o);
+   o.unserialize                = MO.Method.empty;
+   o.unserializeBuffer          = MO.MPersistenceAble_unserializeBuffer;
+   o.unserializeSignBuffer      = MO.MPersistenceAble_unserializeSignBuffer;
+   o.unserializeEncryptedBuffer = MO.MPersistenceAble_unserializeEncryptedBuffer;
+   o.serialize                  = MO.Method.empty;
+   o.serializeBuffer            = MO.MPersistenceAble_serializeBuffer;
+   o.serializeSignBuffer        = MO.MPersistenceAble_serializeSignBuffer;
+   o.serializeEncryptedBuffer   = MO.MPersistenceAble_serializeEncryptedBuffer;
+   return o;
+}
+MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuffer(buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializeSignBuffer(sign, buffer, endianCd){
+   var o = this;
+   var bytes = new Uint8Array(buffer);
+   MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
+   var view = MO.Class.create(MO.FDataView);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_unserializeEncryptedBuffer = function MPersistenceAble_unserializeEncryptedBuffer(sign, buffer, endianCd){
+   var o = this;
+   var view = MO.Class.create(MO.FEncryptedView);
+   view.setSign(sign);
+   view.setEndianCd(endianCd);
+   view.link(buffer);
+   o.unserialize(view);
+   view.dispose();
+}
+MO.MPersistenceAble_serializeBuffer = function MPersistenceAble_serializeBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -1923,7 +1928,7 @@ MO.MPersistence_serializeBuffer = function MPersistence_serializeBuffer(buffer, 
    o.serialize(view);
    view.dispose();
 }
-MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(buffer, endianCd){
+MO.MPersistenceAble_serializeSignBuffer = function MPersistenceAble_serializeSignBuffer(buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -1931,7 +1936,7 @@ MO.MPersistence_serializeSignBuffer = function MPersistence_serializeSignBuffer(
    o.serialize(view);
    view.dispose();
 }
-MO.MPersistence_serializeEncryptedBuffer = function MPersistence_serializeEncryptedBuffer(sign, buffer, endianCd){
+MO.MPersistenceAble_serializeEncryptedBuffer = function MPersistenceAble_serializeEncryptedBuffer(sign, buffer, endianCd){
    var o = this;
    var view = MO.Class.create(MO.FEncryptedView);
    view.setSign(sign);
@@ -3894,6 +3899,7 @@ MO.FEnvironmentConsole = function FEnvironmentConsole(o){
    o.find          = MO.FEnvironmentConsole_find;
    o.findValue     = MO.FEnvironmentConsole_findValue;
    o.parse         = MO.FEnvironmentConsole_parse;
+   o.parseUrl      = MO.FEnvironmentConsole_parseUrl;
    o.dispose       = MO.FEnvironmentConsole_dispose;
    return o;
 }
@@ -3909,7 +3915,7 @@ MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environm
 }
 MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
    var o = this;
-   var environment = MO.RClass.create(MO.FEnvironment);
+   var environment = MO.Class.create(MO.FEnvironment);
    environment.set(name, value);
    o._environments.set(name, environment);
    return environment;
@@ -3937,9 +3943,21 @@ MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
    }
    return result;
 }
+MO.FEnvironmentConsole_parseUrl = function FEnvironmentConsole_parseUrl(value){
+   var o = this;
+   var result = null;
+   var version = MO.Runtime.version();
+   var url = o.parse(value);
+   if(url.indexOf('?') != -1){
+      result = url + '&' + version;
+   }else{
+      result = url + '?' + version;
+   }
+   return result;
+}
 MO.FEnvironmentConsole_dispose = function FEnvironmentConsole_dispose(){
    var o = this;
-   o._environments = new TDictionary();
+   o._environments = MO.Lang.Object.dispose(o._environments);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEvent = function FEvent(o){
@@ -4001,7 +4019,6 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;

@@ -60,6 +60,9 @@ MO.FEaiCityResourceModule_findByCard = function FEaiCityResourceModule_findByCar
    if(card){
       var cardModule = o._resourceConsole.cardModule();
       var cityCode = cardModule.findCityCode(card);
+      //if(!cityCode){
+      //   console.log('[' + card + '] -> [' + cityCode + ']');
+      //}
       if(!cityCode){
          cityCode = cardModule.findCityCode4(card);
       }

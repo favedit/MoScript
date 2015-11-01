@@ -140,9 +140,9 @@ MO.SGuiImage_load = function SGuiImage_load(){
    var o = this;
    o.ready = false;
    var url = null;
-   if(MO.Lang.String.startsWith(o.resource, 'url:')){
-      var uri = o.resource.substring(4);
-      url = MO.Console.find(MO.FEnvironmentConsole).parse(uri);
+   var resource = o.resource;
+   if(MO.Lang.String.startsWith(resource, 'url:')){
+      url = resource.substring(4);
    }else{
       throw new MO.TError('Invalid url.');
    }
@@ -359,6 +359,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._operationDownListeners = MO.Class.register(o, new MO.AListener('_operationDownListeners', MO.EEvent.OperationDown));
    o._operationMoveListeners = MO.Class.register(o, new MO.AListener('_operationMoveListeners', MO.EEvent.OperationMove));
    o._operationUpListeners   = MO.Class.register(o, new MO.AListener('_operationUpListeners', MO.EEvent.OperationUp));
+   o._paintEvent             = null;
    o.onUpdate                = MO.FGuiControl_onUpdate;
    o.onPaintBegin            = MO.FGuiControl_onPaintBegin;
    o.onPaintEnd              = MO.FGuiControl_onPaintEnd;
@@ -379,7 +380,9 @@ MO.FGuiControl = function FGuiControl(o){
    o.testInRange             = MO.FGuiControl_testInRange;
    o.paint                   = MO.FGuiControl_paint;
    o.update                  = MO.FGuiControl_update;
-   o.build                   = MO.FGuiControl_build;
+   o.build                   = MO.Method.empty;
+   o.makeRenderable          = MO.FGuiControl_makeRenderable;
+   o.updateRenderable        = MO.FGuiControl_updateRenderable;
    o.processReady            = MO.FGuiControl_processReady;
    o.processEvent            = MO.FGuiControl_processEvent;
    o.dirty                   = MO.FGuiControl_dirty;
@@ -509,6 +512,7 @@ MO.FGuiControl_construct = function FGuiControl_construct(){
    o._eventRectangle = new MO.SRectangle();
    o._foreFont = new MO.SUiFont();
    o._backFont = new MO.SUiFont();
+   o._paintEvent = new MO.SGuiPaintEvent();
 }
 MO.FGuiControl_isReady = function FGuiControl_isReady(){
    return this._statusReady;
@@ -679,8 +683,29 @@ MO.FGuiControl_update = function FGuiControl_update(){
 MO.FGuiControl_dirty = function FGuiControl_dirty(){
    this._statusDirty = true;
 }
-MO.FGuiControl_build = function FGuiControl_build(){
+MO.FGuiControl_makeRenderable = function FGuiControl_makeRenderable(){
    var o = this;
+   var renderable = o._renderable;
+   if(!renderable){
+      renderable = o._renderable = o._graphicContext.createObject(MO.FGuiControlRenderable);
+      renderable.setControl(o);
+   }
+   return renderable;
+}
+MO.FGuiControl_updateRenderable = function FGuiControl_updateRenderable(){
+   var o = this;
+   var renderable = o._renderable;
+   var graphic = renderable.beginDraw();
+   var size = o._size;
+   var event = o._paintEvent;
+   event.optionScale = false;
+   event.graphic = graphic;
+   event.virtualSize = size;
+   event.parentRectangle.set(0, 0, size.width, size.height);
+   event.rectangle.set(0, 0, size.width, size.height);
+   event.calculateRate = 1;
+   o.paint(event);
+   renderable.endDraw();
 }
 MO.FGuiControl_processReady = function FGuiControl_processReady(){
    var o = this;
@@ -712,7 +737,7 @@ MO.FGuiControl_processEvent = function FGuiControl_processEvent(event){
 }
 MO.FGuiControl_psPaint = function FGuiControl_psPaint(event){
    var o = this;
-   var event = new MO.SUiDispatchEvent(o, 'oeParint', MO.FGuiControl);
+   var event = new MO.SUiDispatchEvent(o, 'oePaint', MO.FGuiControl);
    o.process(event);
    event.dispose();
 }
@@ -727,6 +752,7 @@ MO.FGuiControl_dispose = function FGuiControl_dispose(){
    o._backImage = MO.Lang.Object.dispose(o._backImage);
    o._backHoverImage = MO.Lang.Object.dispose(o._backHoverImage);
    o._clientRectangle = MO.Lang.Object.dispose(o._clientRectangle);
+   o._paintEvent = MO.Lang.Object.dispose(o._paintEvent);
    o.__base.MGuiSize.dispose.call(o);
    o.__base.MUiBorder.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
@@ -759,8 +785,6 @@ MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
    o.__base.FE3dFaceData.setup.call(o);
    var materialInfo = o._material.info();
    materialInfo.effectCode = 'gui';
-   materialInfo.optionAlpha = true;
-   materialInfo.optionDepth = false;
    materialInfo.optionDouble = true;
 }
 MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
@@ -773,20 +797,19 @@ MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width,
 }
 MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
    var o = this;
-   var size = o._size;
+   var size = o._control.size();
    var adjustWidth = MO.Lang.Integer.pow2(size.width);
    var adjustHeight = MO.Lang.Integer.pow2(size.height);
    o._adjustSize.set(adjustWidth, adjustHeight);
    o._matrix.setScale(adjustWidth, adjustHeight, 1);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
-   var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var graphic = o._graphic = canvas.context();
+   var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight, MO.FGuiCanvas);
+   var graphic = o._graphic = canvas.graphicContext();
    return graphic;
 }
 MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
    var o = this;
    var graphic = o._graphic;
-   MO.Assert.debugNotNull(graphic);
    o._texture.upload(o._canvas);
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    canvasConsole.free(o._canvas);
@@ -1345,6 +1368,23 @@ MO.FGuiGeneralColorEffect = function FGuiGeneralColorEffect(o){
 }
 MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawRenderable(region, renderable){
    var o = this;
+   var program = o._program;
+   var modelMatrix = renderable.currentMatrix();
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix)
+   var material = renderable.material();
+   o.bindMaterial(material);
+   program.setParameter('vc_model_matrix', modelMatrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
+   o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
+}
+MO.FGuiGeneralControlEffect = function FGuiGeneralControlEffect(o){
+   o = MO.Class.inherits(this, o, MO.FE3dAutomaticEffect);
+   o._code          = 'general.color.gui';
+   o.drawRenderable = MO.FGuiGeneralControlEffect_drawRenderable;
+   return o;
+}
+MO.FGuiGeneralControlEffect_drawRenderable = function FGuiGeneralControlEffect_drawRenderable(region, renderable){
+   var o = this;
    if(!MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
       throw new MO.TError('Invalid renderable.');
    }
@@ -1354,9 +1394,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
    var controlSize = control.size();
    var dockCd = control.dockCd();
    var context = o._graphicContext;
-   var logicSize = context.logicSize();
    var contextSize = context.size();
-   var contextRatio = context.ratio();
    var contextSizeRatio = context.sizeRatio();
    var radioWidth = contextSize.width * contextRatio;
    var radioHeight = contextSize.height * contextRatio;
@@ -1375,7 +1413,6 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
       if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Left) || (dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Fill)){
          x = controlLocation.x / sizeWidth * 2 - 1;
       }else if((dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Right) || (dockCd == MO.EGuiDock.RightBottom)){
-         x = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
       }else{
          throw new MO.TError(o, 'Invalid dock.');
       }
@@ -1384,16 +1421,10 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
       if((dockCd == MO.EGuiDock.LeftTop) || (dockCd == MO.EGuiDock.Top) || (dockCd == MO.EGuiDock.RightTop) || (dockCd == MO.EGuiDock.Fill)){
          y = 1 - controlLocation.y / sizeHeight * 2;
       }else if((dockCd == MO.EGuiDock.LeftBottom) || (dockCd == MO.EGuiDock.Bottom) || (dockCd == MO.EGuiDock.RightBottom)){
-         y = 1 - (logicSize.height - controlLocation.y - controlSize.height / contextRatioY) / sizeHeight * 2;
       }else{
          throw new MO.TError(o, 'Invalid dock.');
       }
       if((dockCd == MO.EGuiDock.Fill)){
-         var right = logicSize.width - controlLocation.x - controlSize.width;
-         var x1 = controlLocation.x / sizeWidth * 2 - 1;
-         var x2 = (logicSize.width - controlLocation.x - controlSize.width / contextRatioX) / sizeWidth * 2 - 1;
-         width = x2 - x1;
-         height = adjustSize.height / radioHeight * 2;
       }else{
          width = adjustSize.width / radioWidth * 2;
          height = adjustSize.height / radioHeight * 2;
@@ -2068,7 +2099,8 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
    } else if (align == MO.EUiAlign.Right) {
       imageX = (rectangle.width / 2) + (imageWidth / 2) + rectangle.left;
    }
-   graphic.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+   var drawScale = o._column._drawScale;
+   graphic.drawImage(image, imageX, imageY, imageWidth * drawScale, imageHeight * drawScale);
 }
 MO.FGuiGridCellPicture_setValue = function FGuiGridCellPicture_setValue(value) {
    var o = this;
@@ -2215,6 +2247,7 @@ MO.FGuiGridColumnDate_dispose = function FGuiGridColumnDate_dispose(){
 MO.FGuiGridColumnPicture = function FGuiGridColumnPicture(o) {
    o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
    o._align   = MO.Class.register(o, new MO.AGetSet('_align'));
+   o._drawScale = MO.Class.register(o, new MO.AGetSet('_drawScale'), 1.0);
    o.construct = MO.FGuiGridColumnPicture_construct;
    o.dispose   = MO.FGuiGridColumnPicture_dispose;
    return o;
@@ -2410,7 +2443,6 @@ MO.FGuiTable_construct = function FGuiTable_construct(){
 }
 MO.FGuiTable_insertRow = function FGuiTable_insertRow(row){
    var o = this;
-   MO.Assert.debugNotNull(row);
    o._rows.unshift(row);
    o._rowScroll -= o._rowHeight;
    o.dirty();

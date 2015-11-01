@@ -205,6 +205,7 @@ MO.FEnvironmentConsole = function FEnvironmentConsole(o){
    o.find          = MO.FEnvironmentConsole_find;
    o.findValue     = MO.FEnvironmentConsole_findValue;
    o.parse         = MO.FEnvironmentConsole_parse;
+   o.parseUrl      = MO.FEnvironmentConsole_parseUrl;
    o.dispose       = MO.FEnvironmentConsole_dispose;
    return o;
 }
@@ -220,7 +221,7 @@ MO.FEnvironmentConsole_register = function FEnvironmentConsole_register(environm
 }
 MO.FEnvironmentConsole_registerValue = function FEnvironmentConsole_registerValue(name, value){
    var o = this;
-   var environment = MO.RClass.create(MO.FEnvironment);
+   var environment = MO.Class.create(MO.FEnvironment);
    environment.set(name, value);
    o._environments.set(name, environment);
    return environment;
@@ -248,9 +249,21 @@ MO.FEnvironmentConsole_parse = function FEnvironmentConsole_parse(value){
    }
    return result;
 }
+MO.FEnvironmentConsole_parseUrl = function FEnvironmentConsole_parseUrl(value){
+   var o = this;
+   var result = null;
+   var version = MO.Runtime.version();
+   var url = o.parse(value);
+   if(url.indexOf('?') != -1){
+      result = url + '&' + version;
+   }else{
+      result = url + '?' + version;
+   }
+   return result;
+}
 MO.FEnvironmentConsole_dispose = function FEnvironmentConsole_dispose(){
    var o = this;
-   o._environments = new TDictionary();
+   o._environments = MO.Lang.Object.dispose(o._environments);
    o.__base.FConsole.dispose.call(o);
 }
 MO.FEvent = function FEvent(o){
@@ -312,7 +325,6 @@ MO.FEventConsole_construct = function FEventConsole_construct(){
    thread.setInterval(o._interval);
    thread.lsnsProcess.register(o, o.onProcess);
    MO.Console.find(MO.FThreadConsole).start(thread);
-   MO.Logger.debug(o, 'Add event thread. (thread={1})', MO.Class.dump(thread));
 }
 MO.FEventConsole_register = function FEventConsole_register(po, pc){
    var o = this;

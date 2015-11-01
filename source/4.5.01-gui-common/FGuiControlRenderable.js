@@ -48,8 +48,8 @@ MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
    // 设置材质
    var materialInfo = o._material.info();
    materialInfo.effectCode = 'gui';
-   materialInfo.optionAlpha = true;
-   materialInfo.optionDepth = false;
+   //materialInfo.optionAlpha = true;
+   //materialInfo.optionDepth = false;
    materialInfo.optionDouble = true;
 }
 
@@ -81,15 +81,15 @@ MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width,
 MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
    var o = this;
    // 设置大小
-   var size = o._size;
+   var size = o._control.size();
    var adjustWidth = MO.Lang.Integer.pow2(size.width);
    var adjustHeight = MO.Lang.Integer.pow2(size.height);
    o._adjustSize.set(adjustWidth, adjustHeight);
    o._matrix.setScale(adjustWidth, adjustHeight, 1);
    // 绘制画板
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
-   var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
-   var graphic = o._graphic = canvas.context();
+   var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight, MO.FGuiCanvas);
+   var graphic = o._graphic = canvas.graphicContext();
    return graphic;
 }
 

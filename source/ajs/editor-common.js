@@ -111,7 +111,7 @@ MO.FEditorDesktop_construct = function FEditorDesktop_construct(){
 MO.FEditorDesktop_build = function FEditorDesktop_build(hPanel){
    var o = this;
    o.__base.FDesktop.build.call(o, hPanel);
-   var canvas2d = o._canvas2d = MO.RClass.create(MO.FE2dCanvas);
+   var canvas2d = o._canvas2d = MO.Class.create(MO.FE2dCanvas);
    canvas2d.setDesktop(o);
    canvas2d.build(hPanel);
    canvas2d.setPanel(hPanel);

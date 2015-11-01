@@ -55,7 +55,7 @@ MO.FEaiChartHistoryScene_onLoadData = function FEaiChartHistoryScene_onLoadData(
    var count = milestones.count();
    for (var i = count - 1; i >= 0; i--) {
       var milestone = milestones.at(count - i - 1);
-      var bar = MO.RClass.create(MO.FGuiHistoryMilestoneBar);
+      var bar = MO.Class.create(MO.FGuiHistoryMilestoneBar);
       bar.linkGraphicContext(o);
       bar.setName('MilestoneBar_' + i);
       bar.setVisible(false);
@@ -257,7 +257,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    timeline.addDataChangedListener(o, o.onDateSelect);
    timeline.build();
    o._guiManager.register(timeline);
-   var milestoneFrame = o._milestoneFrame = MO.RClass.create(MO.FGuiHistoryMilestoneFrame);
+   var milestoneFrame = o._milestoneFrame = MO.Class.create(MO.FGuiHistoryMilestoneFrame);
    milestoneFrame.linkGraphicContext(o);
    milestoneFrame.setName('MilestoneFrame');
    milestoneFrame.addDataChangedListener(o, o.onMilestoneDone);
@@ -265,7 +265,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneFrame.build();
    o._guiManager.register(milestoneFrame);
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var milestoneBG = MO.RClass.create(MO.FGuiPicture);
+   var milestoneBG = MO.Class.create(MO.FGuiPicture);
    milestoneBG.linkGraphicContext(o);
    milestoneBG.setName('MilestoneBG_Top');
    milestoneBG.setDockCd(MO.EUiDock.RightTop);
@@ -276,7 +276,7 @@ MO.FEaiChartHistoryScene_setup = function FEaiChartHistoryScene_setup() {
    milestoneBG.psInitialize();
    milestoneBG.build();
    o._guiManager.register(milestoneBG);
-   milestoneBG = MO.RClass.create(MO.FGuiPicture);
+   milestoneBG = MO.Class.create(MO.FGuiPicture);
    milestoneBG.linkGraphicContext(o);
    milestoneBG.setName('MilestoneBG_Bottom');
    milestoneBG.setDockCd(MO.EUiDock.RightBottom);
