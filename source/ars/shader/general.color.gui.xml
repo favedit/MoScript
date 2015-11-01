@@ -14,6 +14,7 @@
    <!--=====================================================-->
    <Parameter name='vc_model_matrix' format='Float4x4'/>
    <Parameter name='vc_vp_matrix'    format='Float4x4'/>
+   <Parameter name='fc_coord'        format='Float4'/>
    <!--=====================================================-->
    <Attribute name='va_position'    linker='position'    format='Float4'/>
    <Attribute name='va_coord'       linker='coord'       format='Float2'/>
@@ -49,6 +50,9 @@
       precision highp float;
       #endif
       //..........................................................
+      // 变换矩阵声明
+      uniform vec4 fc_coord;
+      //..........................................................
       // 声明插值器
       varying vec2 v_coord;
       //..........................................................
@@ -57,8 +61,10 @@
       //..........................................................
       // 处理
       void main(void){
-         vec4 color = texture2D(fs_diffuse, v_coord);
-         gl_FragColor = vec4(color.rgb, 1.0);
+         vec4 color = texture2D(fs_diffuse, v_coord * fc_coord.xy);
+         //gl_FragColor = texture2D(fs_diffuse, v_coord);
+         //gl_FragColor = vec4(color.aaa, 1.0);
+         gl_FragColor = color;
       }
    ]]></Source>
 </Configuration>

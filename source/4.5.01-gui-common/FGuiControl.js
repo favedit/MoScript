@@ -349,10 +349,10 @@ MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
    var o = this;
    o.__base.MGuiSize.setSize.call(o, width, height);
    // 设置渲染对象坐标
-   var renderable = o._renderable;
-   if(renderable){
-      renderable.setSize(width, height);
-   }
+   //var renderable = o._renderable;
+   //if(renderable){
+   //   renderable.setSize(width, height);
+   //}
 }
 
 //==========================================================
@@ -436,7 +436,7 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    var graphic = event.graphic;
    var parentRectangle = event.parentRectangle;
    var rectangle = event.rectangle;
-   var sizeRate = event.sizeRate;
+   //var sizeRate = event.sizeRate;
    var calculateRate = event.calculateRate;
    var calculateWidth = calculateRate.width;
    var calculateHeight = calculateRate.height;
@@ -604,7 +604,7 @@ MO.FGuiControl_updateRenderable = function FGuiControl_updateRenderable(){
    event.virtualSize = size;
    event.parentRectangle.set(0, 0, size.width, size.height);
    event.rectangle.set(0, 0, size.width, size.height);
-   event.calculateRate = 1;
+   event.calculateRate = new MO.SSize2(1, 1);
    o.paint(event);
    renderable.endDraw();
 }

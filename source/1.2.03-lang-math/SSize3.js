@@ -2,18 +2,18 @@
 // <T>三维尺寸结构。</T>
 //
 // @struct
-// @param w:width:Number 宽度
-// @param h:height:Number 高度
-// @param d:deep:Number 深度
+// @param width:Number 宽度
+// @param height:Number 高度
+// @param deep:Number 深度
 // @author maocy
 // @version 150101
 //==========================================================
-MO.SSize3 = function SSize3(w, h, d){
+MO.SSize3 = function SSize3(width, height, deep){
    var o = this;
    // @attribute
-   o.width    = MO.Lang.Integer.nvl(w);
-   o.height   = MO.Lang.Integer.nvl(h);
-   o.deep     = MO.Lang.Integer.nvl(d);
+   o.width    = MO.Lang.Integer.nvl(width);
+   o.height   = MO.Lang.Integer.nvl(height);
+   o.deep     = MO.Lang.Integer.nvl(deep);
    // @method
    o.assign   = MO.SSize3_assign;
    o.set      = MO.SSize3_set;

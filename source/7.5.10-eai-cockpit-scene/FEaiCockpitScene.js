@@ -134,6 +134,9 @@ MO.FEaiCockpitScene_onProcess = function FEaiCockpitScene_onProcess() {
          countryEntity.process();
          //return;
       }
+      var matrix = o._cubes.matrix();;
+      matrix.ry += 0.001;
+      matrix.updateForce();
       // 显示界面
       if (!o._mapReady) {
          o._guiManager.show();
@@ -189,10 +192,25 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    var renderable = panel.makeRenderable();
    panel.updateRenderable();
    var matrix = renderable.matrix();
-   //matrix.sx = 1000;
-   //matrix.sy = 1000;
-   //matrix.updateForce();
+   matrix.tx = 8;
+   matrix.ty = 8;
+   matrix.sx = 12;
+   matrix.sy = 16;
+   matrix.updateForce();
    dataLayer.pushRenderable(renderable);
+
+   var cubes = o._cubes = MO.Class.create(MO.FE3dCubes);
+   cubes.linkGraphicContext(o);
+   cubes.setDrawModeCd(MO.EG3dDrawMode.Lines);
+   cubes.splits().set(16, 10, 16);
+   cubes.setup();
+   var matrix = cubes.matrix();
+   //matrix.tx = -5;
+   //matrix.ty = -5;
+   matrix.setScaleAll(10);
+   matrix.update();
+   dataLayer.pushRenderable(cubes);
+
    //o._guiManager.register(module._panel);
    //..........................................................
    // 显示标识页面

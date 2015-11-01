@@ -17,11 +17,10 @@ MO.FGuiControlRenderable = function FGuiControlRenderable(o){
    o.construct   = MO.FGuiControlRenderable_construct;
    // @method
    o.setup       = MO.FGuiControlRenderable_setup;
-   o.setLocation = MO.FGuiControlRenderable_setLocation;
-   o.setSize     = MO.FGuiControlRenderable_setSize;
    // @method
    o.beginDraw   = MO.FGuiControlRenderable_beginDraw;
    o.endDraw     = MO.FGuiControlRenderable_endDraw;
+   o.process     = MO.FGuiControlRenderable_process;
    // @method
    o.dispose     = MO.FGuiControlRenderable_dispose;
    return o;
@@ -48,29 +47,9 @@ MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
    // 设置材质
    var materialInfo = o._material.info();
    materialInfo.effectCode = 'gui';
-   //materialInfo.optionAlpha = true;
+   materialInfo.optionAlpha = true;
    //materialInfo.optionDepth = false;
-   materialInfo.optionDouble = true;
-}
-
-//==========================================================
-// <T>设置大小。</T>
-//
-// @method
-//==========================================================
-MO.FGuiControlRenderable_setLocation = function FGuiControlRenderable_setLocation(x, y){
-   var o = this;
-   o._matrix.setTranslate(x, y, 0);
-}
-
-//==========================================================
-// <T>设置大小。</T>
-//
-// @method
-//==========================================================
-MO.FGuiControlRenderable_setSize = function FGuiControlRenderable_setSize(width, height){
-   var o = this;
-   o._size.set(width, height);
+   //materialInfo.optionDouble = true;
 }
 
 //==========================================================
@@ -111,6 +90,20 @@ MO.FGuiControlRenderable_endDraw = function FGuiControlRenderable_endDraw(){
    o._canvas = null;
    o._graphic = null;
    o._ready = true;
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FGuiControlRenderable_process = function FGuiControlRenderable_process(){
+   var o = this;
+   o.__base.FE3dFaceData.process.call(o);
+   var control = o._control;
+   if(control.isDirty()){
+      control.updateRenderable();
+   }
 }
 
 //==========================================================
