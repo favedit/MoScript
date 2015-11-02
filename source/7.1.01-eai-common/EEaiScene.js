@@ -45,5 +45,6 @@ MO.EEaiScene = new function EEaiScene(){
    o.ChartShow1022             = 'chart.show.1022';
    o.ChartShow1022MktCtm       = 'chart.show.1022MktCtm';
    o.ChartSesameFinancial      = 'chart.sesame.financial';
+   o.ChartMarketerCustomerV2  = 'chart.marketer.customer.v2';
    return o;
 }
