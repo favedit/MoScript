@@ -5,7 +5,7 @@
 // @author sunpeng
 // @history 151101
 //==========================================================
-MO.FEaiCockpitDepartmentPanel = function FEaiCockpitDepartmentPanel(o) {
+MO.FEaiCockpitAchievementSnapshot = function FEaiCockpitAchievementSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
@@ -29,18 +29,18 @@ MO.FEaiCockpitDepartmentPanel = function FEaiCockpitDepartmentPanel(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitDepartmentPanel_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitDepartmentPanel_onPaintBegin;
+   o.onImageLoad           = MO.FEaiCockpitAchievementSnapshot_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitAchievementSnapshot_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitDepartmentPanel_construct;
+   o.construct             = MO.FEaiCockpitAchievementSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitDepartmentPanel_setup;
-   o.setRankUnits          = MO.FEaiCockpitDepartmentPanel_setRankUnits;
-   o.pushUnit              = MO.FEaiCockpitDepartmentPanel_pushUnit;
-   o.drawRow               = MO.FEaiCockpitDepartmentPanel_drawRow;
+   o.setup                 = MO.FEaiCockpitAchievementSnapshot_setup;
+   o.setRankUnits          = MO.FEaiCockpitAchievementSnapshot_setRankUnits;
+   o.pushUnit              = MO.FEaiCockpitAchievementSnapshot_pushUnit;
+   o.drawRow               = MO.FEaiCockpitAchievementSnapshot_drawRow;
    // @method
-   o.dispose               = MO.FEaiCockpitDepartmentPanel_dispose;
+   o.dispose               = MO.FEaiCockpitAchievementSnapshot_dispose;
    return o;
 }
 
@@ -49,7 +49,7 @@ MO.FEaiCockpitDepartmentPanel = function FEaiCockpitDepartmentPanel(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitDepartmentPanel_onImageLoad = function FEaiCockpitDepartmentPanel_onImageLoad() {
+MO.FEaiCockpitAchievementSnapshot_onImageLoad = function FEaiCockpitAchievementSnapshot_onImageLoad() {
    this.dirty();
 }
 
@@ -58,7 +58,7 @@ MO.FEaiCockpitDepartmentPanel_onImageLoad = function FEaiCockpitDepartmentPanel_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitDepartmentPanel_onPaintBegin = function FEaiCockpitDepartmentPanel_onPaintBegin(event) {
+MO.FEaiCockpitAchievementSnapshot_onPaintBegin = function FEaiCockpitAchievementSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -80,7 +80,7 @@ MO.FEaiCockpitDepartmentPanel_onPaintBegin = function FEaiCockpitDepartmentPanel
    graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
    //..........................................................
    // 绘制标题
-   var titleText = '全球实时投资数据展示中心(中国)';
+   var titleText = 'e租宝财富端本月业绩';
    graphic.setFont(o._headFontStyle);
    var titleWidth = graphic.textWidth(titleText);
    var textLeft = left + (width - titleWidth) * 0.5;
@@ -88,21 +88,6 @@ MO.FEaiCockpitDepartmentPanel_onPaintBegin = function FEaiCockpitDepartmentPanel
    drawPosition += 60
       //..........................................................
    graphic.setFont(o._rowFontStyle);
-   // 绘制前3名
-   var tableTop = top + o._rankStart;
-   graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart, width - 22, o._rankHeight, o._rankLinePadding);
-   graphic.drawImage(o._rankTitleImage, left + (width - 167) * 0.5, tableTop + 3, 198, 40);
-   var rankUnits = o._rank;
-   if (rankUnits) {
-      var tableText = '';
-      var tableTextWidth = 0;
-      var count = rankUnit.count();
-      tableTop += 90;
-      for (var i = 0; i < count; i++) {
-         var unit = rankUnit.at(i);
-         o.drawRow(graphic, unit, true, i, drawLeft, tableTop + o._rankRowHeight * i, drawWidth);
-      }
-   }
 }
 
 //==========================================================
@@ -110,7 +95,7 @@ MO.FEaiCockpitDepartmentPanel_onPaintBegin = function FEaiCockpitDepartmentPanel
 //
 // @method
 //==========================================================
-MO.FEaiCockpitDepartmentPanel_construct = function FEaiCockpitDepartmentPanel_construct() {
+MO.FEaiCockpitAchievementSnapshot_construct = function FEaiCockpitAchievementSnapshot_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
    // 创建属性
@@ -125,7 +110,7 @@ MO.FEaiCockpitDepartmentPanel_construct = function FEaiCockpitDepartmentPanel_co
 //
 // @method
 //==========================================================
-MO.FEaiCockpitDepartmentPanel_setup = function FEaiCockpitDepartmentPanel_setup() {
+MO.FEaiCockpitAchievementSnapshot_setup = function FEaiCockpitAchievementSnapshot_setup() {
    var o = this;
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建图片
@@ -326,7 +311,7 @@ MO.FEaiCockpitDepartmentPanel_setup = function FEaiCockpitDepartmentPanel_setup(
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiCockpitDepartmentPanel_setRankUnits = function FEaiCockpitDepartmentPanel_setRankUnits(units) {
+MO.FEaiCockpitAchievementSnapshot_setRankUnits = function FEaiCockpitAchievementSnapshot_setRankUnits(units) {
    var o = this;
    var grid = o._gridRank;
    grid.clearRows();
@@ -356,7 +341,7 @@ MO.FEaiCockpitDepartmentPanel_setRankUnits = function FEaiCockpitDepartmentPanel
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiCockpitDepartmentPanel_pushUnit = function FEaiCockpitDepartmentPanel_pushUnit(unit) {
+MO.FEaiCockpitAchievementSnapshot_pushUnit = function FEaiCockpitAchievementSnapshot_pushUnit(unit) {
    var o = this;
    // 检查参数
    if (!unit) {
@@ -395,7 +380,7 @@ MO.FEaiCockpitDepartmentPanel_pushUnit = function FEaiCockpitDepartmentPanel_pus
 //
 // @method
 //==========================================================
-MO.FEaiCockpitDepartmentPanel_dispose = function FEaiCockpitDepartmentPanel_dispose() {
+MO.FEaiCockpitAchievementSnapshot_dispose = function FEaiCockpitAchievementSnapshot_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);

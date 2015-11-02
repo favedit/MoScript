@@ -17,6 +17,7 @@ MO.FE3dCubes = function FE3dCubes(o){
    // @attribute
    o._outline              = null;
    o._drawModeCd           = MO.Class.register(o, new MO.AGetSet('_drawModeCd'), MO.EG3dDrawMode.Triangles);
+   o._size                 = MO.Class.register(o, new MO.AGetter('_size'));
    o._splits               = MO.Class.register(o, new MO.AGetter('_splits'));
    // @attribute
    o._vertexPositionBuffer = null;
@@ -40,6 +41,7 @@ MO.FE3dCubes_construct = function FE3dCubes_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    // 设置属性
+   o._size = new MO.SSize3(1, 1, 1);
    o._splits = new MO.SSize3(4, 4, 4);
    o._material = MO.Class.create(MO.FE3dMaterial);
    o._outline = new MO.SOutline3();
@@ -58,6 +60,13 @@ MO.FE3dCubes_setup = function FE3dCubes_setup(){
    var cx = splits.width;
    var cy = splits.height;
    var cz = splits.deep;
+   var size = o._size;
+   var sx = size.width / cx;
+   var sy = size.height / cy;
+   var sz = size.deep / cz;
+   var centerX = size.width * 0.5;
+   var centerY = size.height * 0.5;
+   var centerZ = size.deep * 0.5;
    var vertexCount = o._vertexCount = (cx + 1) * (cy + 1) * (cz + 1);
    var positionIndex = 0;;
    var positionData = new Float32Array(3 * vertexCount);
@@ -66,9 +75,9 @@ MO.FE3dCubes_setup = function FE3dCubes_setup(){
    for(var z = 0; z <= cz; z++){
       for(var y = 0; y <= cy; y++){
          for(var x = 0; x <= cx; x++){
-            positionData[positionIndex++] = (1 / cx) * x - 0.5;
-            positionData[positionIndex++] = (1 / cy) * y - 0.5;
-            positionData[positionIndex++] = (1 / cz) * z - 0.5;
+            positionData[positionIndex++] = sx * x - centerX;
+            positionData[positionIndex++] = sy * y - centerY;
+            positionData[positionIndex++] = sz * z - centerZ;
             colorData[colorIndex++] = 0xFF;
             colorData[colorIndex++] = 0xFF;
             colorData[colorIndex++] = 0xFF;

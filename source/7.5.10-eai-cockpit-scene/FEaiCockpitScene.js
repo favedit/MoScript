@@ -21,10 +21,6 @@ MO.FEaiCockpitScene = function FEaiCockpitScene(o) {
    o._lastTick               = 0;
    o._interval               = 10;
    // @attribute
-   o._logoBar                = null;
-   o._timeline               = null;
-   o._liveTable              = null;
-   // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
@@ -134,7 +130,12 @@ MO.FEaiCockpitScene_onProcess = function FEaiCockpitScene_onProcess() {
          countryEntity.process();
          //return;
       }
-      var matrix = o._cubes.matrix();;
+      var matrix = o._cubes.matrix();
+      matrix.ry += 0.001;
+      matrix.ry += 0.001;
+      matrix.updateForce();
+      
+      var matrix = o._display3d.matrix();
       matrix.ry += 0.001;
       matrix.updateForce();
       // 显示界面
@@ -187,18 +188,22 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    var moduleManager = o._moduleManager = MO.Class.create(MO.FEaiCockpitModuleManager);
    moduleManager.linkGraphicContext(o);
    moduleManager.setup();
-   // 
-   var panel = moduleManager._departmentModule._panel;
-   var renderable = panel.makeRenderable();
-   panel.updateRenderable();
+   // 创建面板
+   var snapshot = moduleManager.achievementModule().controlSnapshot();
+   var renderable = snapshot.makeRenderable();
+   snapshot.updateRenderable();
    var matrix = renderable.matrix();
-   matrix.tx = 8;
-   matrix.ty = 8;
-   matrix.sx = 12;
-   matrix.sy = 16;
+   matrix.tx = 0;
+   matrix.ty = 0;
+   matrix.sx = 1;
+   matrix.sy = 1;
    matrix.updateForce();
-   dataLayer.pushRenderable(renderable);
+   //dataLayer.pushRenderable(renderable);
 
+   var display = o._display3d = MO.Class.create(MO.FE3dDisplay);
+   display.pushRenderable(renderable)
+   dataLayer.pushDisplay(display);
+   // 创建网格
    var cubes = o._cubes = MO.Class.create(MO.FE3dCubes);
    cubes.linkGraphicContext(o);
    cubes.setDrawModeCd(MO.EG3dDrawMode.Lines);
@@ -210,12 +215,7 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    matrix.setScaleAll(10);
    matrix.update();
    dataLayer.pushRenderable(cubes);
-
    //o._guiManager.register(module._panel);
-   //..........................................................
-   // 显示标识页面
-   var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
-   o._guiManager.register(frame);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
@@ -279,18 +279,7 @@ MO.FEaiCockpitScene_fixMatrix = function FEaiCockpitScene_fixMatrix(matrix) {
 MO.FEaiCockpitScene_processResize = function FEaiCockpitScene_processResize(){
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
-   var isVertical = MO.Window.Browser.isOrientationVertical()
    //..........................................................
-   // 设置大小
-   var logoBar = o._logoBar;
-   if (isVertical) {
-      logoBar.setLocation(8, 8);
-      logoBar.setScale(0.85, 0.85);
-   } else {
-      logoBar.setLocation(5, 5);
-      logoBar.setScale(0.9, 0.9);
-   }
-   //..........................................................
-   // 重新设置矩阵
+   // 更改大小
    o._moduleManager.processResize();
 }

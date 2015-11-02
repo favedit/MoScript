@@ -5,22 +5,23 @@
 // @author maocy
 // @history 151101
 //==========================================================
-MO.FEaiCockpitDepartmentModule = function FEaiCockpitDepartmentModule(o){
+MO.FEaiCockpitAchievementModule = function FEaiCockpitAchievementModule(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._dataTicker = null;
-   o._panel      = null;
+   o._name         = 'achievement';
+   o._dataTicker   = null;
+   o._panel        = null;
    //..........................................................
    // @method
-   o.construct   = MO.FEaiCockpitDepartmentModule_construct;
+   o.construct     = MO.FEaiCockpitAchievementModule_construct;
    // @method
-   o.setup       = MO.FEaiCockpitDepartmentModule_setup;
+   o.setup         = MO.FEaiCockpitAchievementModule_setup;
    // @method
-   o.process     = MO.FEaiCockpitDepartmentModule_process;
-   o.processResize = MO.FEaiCockpitDepartmentModule_processResize;
+   o.processResize = MO.FEaiCockpitAchievementModule_processResize;
+   o.process       = MO.FEaiCockpitAchievementModule_process;
    // @method
-   o.dispose     = MO.FEaiCockpitDepartmentModule_dispose;
+   o.dispose       = MO.FEaiCockpitAchievementModule_dispose;
    return o;
 }
 
@@ -29,7 +30,7 @@ MO.FEaiCockpitDepartmentModule = function FEaiCockpitDepartmentModule(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitDepartmentModule_construct = function FEaiCockpitDepartmentModule_construct(){
+MO.FEaiCockpitAchievementModule_construct = function FEaiCockpitAchievementModule_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
    // 定时获取数据
@@ -41,16 +42,30 @@ MO.FEaiCockpitDepartmentModule_construct = function FEaiCockpitDepartmentModule_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitDepartmentModule_setup = function FEaiCockpitDepartmentModule_setup(){
+MO.FEaiCockpitAchievementModule_setup = function FEaiCockpitAchievementModule_setup(){
    var o = this;
-   // 设置变量
-   var panel = o._panel = MO.Class.create(MO.FEaiCockpitDepartmentPanel);
-   panel.linkGraphicContext(o);
-   panel.setup();
-   //var display = o._display = MO.Class.create(MO.FE3dDisplay);
-   //display.linkGraphicContext(o);
-   // 设置尺寸
-   o.processResize();
+   // 创建预览
+   // o._controlPreview;
+   // 创建缩略
+   var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitAchievementSnapshot);
+   snapshot.linkGraphicContext(o);
+   snapshot.size().set(512, 1024);
+   snapshot.setup();
+   // 创建视图
+   var view = o._controlView = MO.Class.create(MO.FEaiCockpitAchievementView);
+   view.linkGraphicContext(o);
+   view.size().set(1920, 1080);
+   view.setup();
+}
+
+//==========================================================
+// <T>大小事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiCockpitAchievementModule_processResize = function FEaiCockpitAchievementModule_processResize(){
+   var o = this;
 }
 
 //==========================================================
@@ -59,8 +74,10 @@ MO.FEaiCockpitDepartmentModule_setup = function FEaiCockpitDepartmentModule_setu
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitDepartmentModule_process = function FEaiCockpitDepartmentModule_process(){
+MO.FEaiCockpitAchievementModule_process = function FEaiCockpitAchievementModule_process(){
    var o = this;
+   // 创建缩略
+   o.__base.FEaiCockpitModule.process.call(o);
    //..........................................................
    // 设置处理时间
    if(o._dataTicker.process()){
@@ -89,41 +106,11 @@ MO.FEaiCockpitDepartmentModule_process = function FEaiCockpitDepartmentModule_pr
 }
 
 //==========================================================
-// <T>大小事件处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiCockpitDepartmentModule_processResize = function FEaiCockpitDepartmentModule_processResize(){
-   var o = this;
-   var isVertical = MO.Window.Browser.isOrientationVertical()
-   //..........................................................
-   // 设置表格
-   var liveTable = o._panel;
-   if (isVertical) {
-      //liveTable.setDockCd(MO.EUiDock.Bottom);
-      //liveTable.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      //liveTable.setLeft(10);
-      //liveTable.setRight(10);
-      //liveTable.setBottom(10);
-      //liveTable.setHeight(900);
-   } else {
-      //liveTable.setDockCd(MO.EUiDock.Right);
-      //liveTable.setAnchorCd(MO.EUiAnchor.All);
-      //liveTable.setTop(10);
-      //liveTable.setRight(0);
-      //liveTable.setBottom(10);
-      liveTable.setWidth(768);
-      liveTable.setHeight(1024);
-   }
-}
-
-//==========================================================
 // <T>释放处理。</T>
 //
 // @method
 //==========================================================
-MO.FEaiCockpitDepartmentModule_dispose = function FEaiCockpitDepartmentModule_dispose(){
+MO.FEaiCockpitAchievementModule_dispose = function FEaiCockpitAchievementModule_dispose(){
    var o = this;
    // 释放属性
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);

@@ -9,17 +9,21 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._modules      = MO.Class.register(o, new MO.AGetter('_modules'));
+   o._achievementModule = MO.Class.register(o, new MO.AGetter('_achievementModule'));
+   o._modules           = MO.Class.register(o, new MO.AGetter('_modules'));
+   o._statusCd          = 0;
    //..........................................................
    // @method
-   o.construct     = MO.FEaiCockpitModuleManager_construct;
+   o.construct          = MO.FEaiCockpitModuleManager_construct;
    // @method
-   o.setup         = MO.FEaiCockpitModuleManager_setup;
+   o.setup              = MO.FEaiCockpitModuleManager_setup;
+   o.register           = MO.FEaiCockpitModuleManager_register;
+   o.unregister         = MO.FEaiCockpitModuleManager_unregister;
    // @method
-   o.processResize = MO.FEaiCockpitModuleManager_processResize;
-   o.process       = MO.FEaiCockpitModuleManager_process;
+   o.processResize      = MO.FEaiCockpitModuleManager_processResize;
+   o.process            = MO.FEaiCockpitModuleManager_process;
    // @method
-   o.dispose       = MO.FEaiCockpitModuleManager_dispose;
+   o.dispose            = MO.FEaiCockpitModuleManager_dispose;
    return o;
 }
 
@@ -42,20 +46,35 @@ MO.FEaiCockpitModuleManager_construct = function FEaiCockpitModuleManager_constr
 //==========================================================
 MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    var o = this;
-   var module = o._departmentModule = MO.Class.create(MO.FEaiCockpitDepartmentModule);
+   var module = o._achievementModule = MO.Class.create(MO.FEaiCockpitAchievementModule);
    module.linkGraphicContext(o);
    module.setup();
-   o._modules.set('department', module);
+   o.register(module);
 }
 
 //==========================================================
-// <T>从输入流反序列化数据。</T>
+// <T>注册一个模块。</T>
 //
 // @method
-// @param input:MStream 输入流
+// @param module:FEaiCockpitModule 模块
 //==========================================================
-MO.FEaiCockpitModuleManager_process = function FEaiCockpitModuleManager_process(){
+MO.FEaiCockpitModuleManager_register = function FEaiCockpitModuleManager_register(module){
    var o = this;
+   var name = module.name();
+   MO.Assert.debugNotEmpty(name);
+   o._modules.set(name, module);
+}
+
+//==========================================================
+// <T>注销一个模块。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitModuleManager_unregister = function FEaiCockpitModuleManager_unregister(module){
+   var o = this;
+   var name = module.name();
+   MO.Assert.debugNotEmpty(name);
+   o._modules.remove(name);
 }
 
 //==========================================================
@@ -71,6 +90,23 @@ MO.FEaiCockpitModuleManager_processResize = function FEaiCockpitModuleManager_pr
    for(var i = 0; i < count; i++){
       var module = modules.at(i);
       module.processResize();
+   }
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+// @param input:MStream 输入流
+//==========================================================
+MO.FEaiCockpitModuleManager_process = function FEaiCockpitModuleManager_process(){
+   var o = this;
+   var modules = o._modules;
+   var count = modules.count();
+   for(var i = 0; i < count; i++){
+      var module = modules.at(i);
+      // 计算模块位置
+      module.process();
    }
 }
 
