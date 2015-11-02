@@ -67,6 +67,11 @@ MO.FEaiLogicJsonTimerLineData_doServerTime = function FEaiLogicJsonTimerLineData
    var parameters = o.prepareParemeters();
 
    var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.time}');
+   var tick = MO.Timer.current();
+   var key = "7733b6978b3f19ed";
+   var paramStr = start + end + tick + key;
+   var token = hex_md5(paramStr);
+   url += 'tick=' + tick + '&token=' + token;
    o.sendJsonSever(url, parameters, owner, callback);
    o._customerDynamicFirst = false;
 }
@@ -143,14 +148,17 @@ MO.FEaiLogicJsonTimerLineData_sendJsonService = function FEaiLogic_sendJsonServi
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicJsonTimerLineData_do24TimeData = function FEaiLogicJsonTimerLineData_do24TimeData(owner, callback,startTime,endTime){
-      var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.24h}');
-      var start= startTime;
-      var end = endTime;
-      url +='begin='+ start + '&end='+end;
-      var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
-      connection1.setAsynchronous(true);
-      connection1.addLoadListener(owner,callback);
+MO.FEaiLogicJsonTimerLineData_do24TimeData = function FEaiLogicJsonTimerLineData_do24TimeData(owner, callback, startTime, endTime) {
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.24h}');
+   var start = startTime;
+   var end = endTime;
+   var tick = MO.Timer.current();
+   var key = "7733b6978b3f19ed";
+   var paramStr = start + end + tick + key;
+   var token = hex_md5(paramStr);
+   url += 'begin=' + start + '&end=' + end + '&tick=' + tick + '&token=' + token;
+   var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
+   connection1.addLoadListener(owner, callback);
 }
 //==========================================================
 // <T>获取实时数据</T>
@@ -159,21 +167,8 @@ MO.FEaiLogicJsonTimerLineData_do24TimeData = function FEaiLogicJsonTimerLineData
 // @param owner:Obejct 拥有者
 // @param callback:Function 回调函数
 // @return FListener 监听
-MO.FEaiLogicJsonTimerLineData_doInvestment = function FEaiLogicJsonTimerLineData_doInvestment(owner, callback,startTime,endTime){
-      var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.live}');
-      var start= startTime;
-      var end = endTime;
-      var o = this;
-      var firstbool = o._doFirst;
-      if(firstbool){
-      url += 'first='+firstbool+'&begin='+ start + '&end='+end;
-      firstbool=false;
-      }else{
-      url += 'first='+firstbool+'&begin='+ start + '&end='+end; 
-      }
-      var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
-      connection1.setAsynchronous(true);
-      connection1.addLoadListener(owner,callback);
+MO.FEaiLogicJsonTimerLineData_doInvestment = function FEaiLogicJsonTimerLineData_doInvestment(owner, callback, startTime, endTime) {
+
 }
 //==========================================================
 // <T>释放处理。</T>

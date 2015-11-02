@@ -67,6 +67,11 @@ MO.FEaiLogicJsonTableData_doServerTime = function FEaiLogicJsonTableData_doServe
    var parameters = o.prepareParemeters();
 
    var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.time}');
+   var tick = MO.Timer.current();
+   var key = "7733b6978b3f19ed";
+   var paramStr = start + end + tick + key;
+   var token = hex_md5(paramStr);
+   url += 'tick=' + tick + '&token=' + token;
    o.sendJsonSever(url, parameters, owner, callback);
    o._customerDynamicFirst = false;
 }
@@ -144,12 +149,7 @@ MO.FEaiLogicJsonTableData_sendJsonService = function FEaiLogic_sendJsonService(u
 // @return FListener 监听
 //==========================================================
 MO.FEaiLogicJsonTableData_do24TimeData = function FEaiLogicJsonTableData_do24TimeData(owner, callback, startTime, endTime) {
-   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.24h}');
-   var start = startTime;
-   var end = endTime;
-   url += 'begin=' + start + '&end=' + end;
-   var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
-   connection1.addLoadListener(owner, callback);
+   
 }
 //==========================================================
 // <T>获取实时数据</T>
@@ -159,11 +159,15 @@ MO.FEaiLogicJsonTableData_do24TimeData = function FEaiLogicJsonTableData_do24Tim
 // @param callback:Function 回调函数
 // @return FListener 监听
 MO.FEaiLogicJsonTableData_doInvestment = function FEaiLogicJsonTableData_doInvestment(owner, callback, startTime, endTime) {
+   var o = this;
    var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.live}');
    var start = startTime;
    var end = endTime;
-   var o = this;
-   url += 'first=' + o._doFirst + '&begin=' + start + '&end=' + end;
+   var tick = MO.Timer.current();
+   var key = "7733b6978b3f19ed";
+   var paramStr = start + end + tick + key;
+   var token = hex_md5(paramStr);
+   url += 'first=' + o._doFirst + '&begin=' + start + '&end=' + end + '&tick=' + tick + '&token=' + token;
    var connection1 = MO.Console.find(MO.FJsonConsole).send(url);
    connection1.addLoadListener(owner, callback);
    o._doFirst = false;
