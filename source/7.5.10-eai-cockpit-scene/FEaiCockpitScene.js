@@ -131,12 +131,10 @@ MO.FEaiCockpitScene_onProcess = function FEaiCockpitScene_onProcess() {
          //return;
       }
       var matrix = o._cubes.matrix();
-      matrix.ry += 0.001;
-      matrix.ry += 0.001;
+      matrix.ry += 0.004;
       matrix.updateForce();
-      
       var matrix = o._display3d.matrix();
-      matrix.ry += 0.001;
+      matrix.ry += 0.004;
       matrix.updateForce();
       // 显示界面
       if (!o._mapReady) {
@@ -201,18 +199,21 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    //dataLayer.pushRenderable(renderable);
 
    var display = o._display3d = MO.Class.create(MO.FE3dDisplay);
+   var matrix = display.matrix();
+   matrix.tz -= 8;
    display.pushRenderable(renderable)
    dataLayer.pushDisplay(display);
    // 创建网格
    var cubes = o._cubes = MO.Class.create(MO.FE3dCubes);
    cubes.linkGraphicContext(o);
    cubes.setDrawModeCd(MO.EG3dDrawMode.Lines);
-   cubes.splits().set(16, 10, 16);
+   cubes.size().set(8, 8, 8);
+   cubes.splits().set(8, 8, 8);
    cubes.setup();
    var matrix = cubes.matrix();
    //matrix.tx = -5;
    //matrix.ty = -5;
-   matrix.setScaleAll(10);
+   //matrix.setScaleAll(10);
    matrix.update();
    dataLayer.pushRenderable(cubes);
    //o._guiManager.register(module._panel);
