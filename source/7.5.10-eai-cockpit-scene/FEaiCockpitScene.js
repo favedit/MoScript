@@ -130,12 +130,12 @@ MO.FEaiCockpitScene_onProcess = function FEaiCockpitScene_onProcess() {
          countryEntity.process();
          //return;
       }
-      var matrix = o._cubes.matrix();
-      matrix.ry += 0.004;
-      matrix.updateForce();
-      var matrix = o._display3d.matrix();
-      matrix.ry += 0.004;
-      matrix.updateForce();
+      //var matrix = o._cubes.matrix();
+      //matrix.ry += 0.004;
+      //matrix.updateForce();
+      //var matrix = o._display3d.matrix();
+      //matrix.ry += 0.004;
+      //matrix.updateForce();
       // 显示界面
       if (!o._mapReady) {
          o._guiManager.show();
@@ -180,43 +180,30 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    //..........................................................
-   var dataLayer = o._activeStage.dataLayer();
+   var stage = o._activeStage;
+   var camera = stage.camera();
+   //camera.setPosition(0, 0, -20.37);
+   camera.setPosition(0, 0, -16);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection.setAngle(40);
+   projection.update();
+   var mapLayer = stage.mapLayer();
+   var dataLayer = stage.dataLayer();
    //..........................................................
    // 创建部门模块
    var moduleManager = o._moduleManager = MO.Class.create(MO.FEaiCockpitModuleManager);
    moduleManager.linkGraphicContext(o);
    moduleManager.setup();
-   // 创建面板
-   var snapshot = moduleManager.achievementModule().controlSnapshot();
-   var renderable = snapshot.makeRenderable();
-   snapshot.updateRenderable();
-   var matrix = renderable.matrix();
-   matrix.tx = 0;
-   matrix.ty = 0;
-   matrix.sx = 1;
-   matrix.sy = 1;
-   matrix.updateForce();
-   //dataLayer.pushRenderable(renderable);
+   moduleManager.showSnapshot(dataLayer);
+   mapLayer.pushRenderable(moduleManager._cubes);
 
-   var display = o._display3d = MO.Class.create(MO.FE3dDisplay);
-   var matrix = display.matrix();
-   matrix.tz -= 8;
-   display.pushRenderable(renderable)
-   dataLayer.pushDisplay(display);
-   // 创建网格
-   var cubes = o._cubes = MO.Class.create(MO.FE3dCubes);
-   cubes.linkGraphicContext(o);
-   cubes.setDrawModeCd(MO.EG3dDrawMode.Lines);
-   cubes.size().set(8, 8, 8);
-   cubes.splits().set(8, 8, 8);
-   cubes.setup();
-   var matrix = cubes.matrix();
-   //matrix.tx = -5;
-   //matrix.ty = -5;
-   //matrix.setScaleAll(10);
-   matrix.update();
-   dataLayer.pushRenderable(cubes);
-   //o._guiManager.register(module._panel);
+   //var display = o._display3d = MO.Class.create(MO.FE3dDisplay);
+   //var matrix = display.matrix();
+   //matrix.tz -= 8;
+   //display.pushRenderable(renderable)
+   //dataLayer.pushDisplay(display);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();

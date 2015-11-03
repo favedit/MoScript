@@ -78,9 +78,9 @@ MO.FE3dCubes_setup = function FE3dCubes_setup(){
             positionData[positionIndex++] = sx * x - centerX;
             positionData[positionIndex++] = sy * y - centerY;
             positionData[positionIndex++] = sz * z - centerZ;
-            colorData[colorIndex++] = 0xFF;
-            colorData[colorIndex++] = 0xFF;
-            colorData[colorIndex++] = 0xFF;
+            colorData[colorIndex++] = 0x00;
+            colorData[colorIndex++] = 0x00;
+            colorData[colorIndex++] = 0x00;
             colorData[colorIndex++] = 0xFF;
          }
       }
@@ -144,7 +144,7 @@ MO.FE3dCubes_setup = function FE3dCubes_setup(){
    // 设置材质
    var info = o.material().info();
    info.optionAlpha = true;
-   info.alphaRate = 0.3;
+   info.alphaRate = 0.4;
    //info.effectCode = 'control';
    //info.optionDouble = true;
    //info.ambientColor.set(0.2, 0.2, 0.2, 1);

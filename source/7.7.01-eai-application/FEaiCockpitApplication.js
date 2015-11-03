@@ -10,7 +10,7 @@ MO.FEaiCockpitApplication = function FEaiCockpitApplication(o){
    //..........................................................
    // @attribute
    o._chapterCode    = MO.EEaiChapter.Cockpit;
-   o._backgroundUrl  = MO.Class.register(o, new MO.AGetSet('_backgroundUrl'), '{eai.resource}/background2.jpg');
+   o._backgroundUrl  = MO.Class.register(o, new MO.AGetSet('_backgroundUrl'), '{eai.resource}/cockpit/background.jpg');
    // @attribute
    o._chapterCockpit = MO.Class.register(o, new MO.AGetter('_chapterCockpit'));
    // @attribute

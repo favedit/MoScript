@@ -12,6 +12,7 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    o._name            = MO.Class.register(o, new MO.AGetSet('_name'));
    o._cellLocation    = MO.Class.register(o, new MO.AGetter('_cellLocation'));
    o._cellSize        = MO.Class.register(o, new MO.AGetter('_cellSize'));
+   o._moduleManager   = MO.Class.register(o, new MO.AGetSet('_moduleManager'));
    o._controls        = MO.Class.register(o, new MO.AGetter('_controls'));
    // @attribute
    o._controlPreview  = MO.Class.register(o, new MO.AGetter('_controlPreview'));

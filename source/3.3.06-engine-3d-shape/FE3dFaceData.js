@@ -16,10 +16,10 @@ MO.FE3dFaceData = function FE3dFaceData(o){
    o._size                 = MO.Class.register(o, new MO.AGetter('_size'));
    o._adjustSize           = MO.Class.register(o, new MO.AGetter('_adjustSize'));
    // @attribute
-   o._vertexPositionBuffer = null;
-   o._vertexCoordBuffer    = null;
-   o._indexBuffer          = null;
-   o._texture              = null;
+   o._vertexPositionBuffer = MO.Class.register(o, new MO.AGetter('_vertexPositionBuffer'));
+   o._vertexCoordBuffer    = MO.Class.register(o, new MO.AGetter('_vertexCoordBuffer'));
+   o._indexBuffer          = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
+   o._texture              = MO.Class.register(o, new MO.AGetter('_texture'));
    //..........................................................
    // @method
    o.construct             = MO.FE3dFaceData_construct;
