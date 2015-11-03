@@ -17,6 +17,7 @@ MO.FEaiCockpitCubeControl = function FEaiCockpitCubeControl(o) {
    o.construct      = MO.FEaiCockpitCubeControl_construct;
    // @method
    o.placeInCell    = MO.FEaiCockpitCubeControl_placeInCell;
+   o.processLogic   = MO.FEaiCockpitCubeControl_processLogic;
    // @method
    o.dispose        = MO.FEaiCockpitCubeControl_dispose;
    return o;
@@ -43,6 +44,15 @@ MO.FEaiCockpitCubeControl_construct = function FEaiCockpitCubeControl_construct(
 MO.FEaiCockpitCubeControl_placeInCell = function FEaiCockpitCubeControl_placeInCell(){
    var o = this;
    o._moduleManager.placeCellControl(o);
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitCubeControl_processLogic = function FEaiCockpitCubeControl_processLogic(){
+   var o = this;
 }
 
 //==========================================================

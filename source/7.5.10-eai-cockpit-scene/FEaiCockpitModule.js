@@ -19,7 +19,7 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    o._controlSnapshot = MO.Class.register(o, new MO.AGetter('_controlSnapshot'));
    o._controlView     = MO.Class.register(o, new MO.AGetter('_controlView'));
    // @attribute
-   o._statusCd        = MO.Class.register(o, new MO.AGetter('_statusCd'), MO.EEaiCockpitModuleStatus.Preview);
+   o._statusCd        = MO.Class.register(o, new MO.AGetter('_statusCd'), MO.EEaiCockpitModuleStatus.Snapshot);
    //..........................................................
    // @method
    o.construct        = MO.FEaiCockpitModule_construct;
@@ -65,10 +65,13 @@ MO.FEaiCockpitModule_process = function FEaiCockpitModule_process(){
    var o = this;
    switch(o._statusCd){
       case MO.EEaiCockpitModuleStatus.Preview:
+         //o._controlPreview.processLogic();
          break;
       case MO.EEaiCockpitModuleStatus.Snapshot:
+         o._controlSnapshot.processLogic();
          break;
       case MO.EEaiCockpitModuleStatus.View:
+         o._controlView.processLogic();
          break;
    }
 }

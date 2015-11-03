@@ -130,12 +130,14 @@ MO.FEaiCockpitScene_onProcess = function FEaiCockpitScene_onProcess() {
          countryEntity.process();
          //return;
       }
-      //var matrix = o._cubes.matrix();
-      //matrix.ry += 0.004;
-      //matrix.updateForce();
-      //var matrix = o._display3d.matrix();
-      //matrix.ry += 0.004;
-      //matrix.updateForce();
+      o._moduleManager.process();
+      var matrix = o._moduleManager._cubes.matrix();
+      matrix.ry += 0.004;
+      matrix.updateForce();
+      var snapshotDisplay = o._moduleManager._snapshotDisplay;
+      var matrix = snapshotDisplay.matrix();
+      matrix.ry += 0.004;
+      matrix.updateForce();
       // 显示界面
       if (!o._mapReady) {
          o._guiManager.show();
@@ -183,7 +185,7 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    var stage = o._activeStage;
    var camera = stage.camera();
    //camera.setPosition(0, 0, -20.37);
-   camera.setPosition(0, 0, -16);
+   camera.setPosition(0, 0, -14);
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();

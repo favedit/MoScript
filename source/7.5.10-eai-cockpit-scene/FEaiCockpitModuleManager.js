@@ -51,6 +51,9 @@ MO.FEaiCockpitModuleManager_construct = function FEaiCockpitModuleManager_constr
 //==========================================================
 MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    var o = this;
+   // 创建显示对象
+   var snapshotDisplay = o._snapshotDisplay = MO.Class.create(MO.FE3dDisplay);
+   snapshotDisplay.linkGraphicContext(o);
    // 创建控件网格
    var cubes = o._cubes = MO.Class.create(MO.FE3dCubes);
    cubes.linkGraphicContext(o);
@@ -135,6 +138,7 @@ MO.FEaiCockpitModuleManager_unregister = function FEaiCockpitModuleManager_unreg
 //==========================================================
 MO.FEaiCockpitModuleManager_showSnapshot = function FEaiCockpitModuleManager_showSnapshot(display){
    var o = this;
+   var snapshotDisplay = o._snapshotDisplay;
    var modules = o._modules;
    var count = modules.count();
    for(var i = 0; i < count; i++){
@@ -149,8 +153,9 @@ MO.FEaiCockpitModuleManager_showSnapshot = function FEaiCockpitModuleManager_sho
       matrix.sx = 1;
       matrix.sy = 1;
       matrix.updateForce();
-      display.pushRenderable(renderable);
+      snapshotDisplay.pushRenderable(renderable);
    }
+   display.pushDisplay(snapshotDisplay);
 }
 
 //==========================================================

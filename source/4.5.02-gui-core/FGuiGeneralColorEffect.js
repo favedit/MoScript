@@ -29,6 +29,8 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
    var control = renderable.control();
    var adjustSize = renderable.adjustSize();
    var controlSize = control.size();
+   var rateX = controlSize.width / adjustSize.width;
+   var rateY = controlSize.height / adjustSize.height;
    var modelMatrix = renderable.currentMatrix();
    var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix)
    // 绑定材质
@@ -36,8 +38,7 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
    o.bindMaterial(material);
    program.setParameter('vc_model_matrix', modelMatrix);
    program.setParameter('vc_vp_matrix', vpMatrix);
-   program.setParameter4('fc_coord', controlSize.width / adjustSize.width, controlSize.height / adjustSize.height, 0, 0);
-   //program.setParameter4('fc_coord', adjustSize.width / controlSize.width, adjustSize.height / controlSize.height, 0, 0);
+   program.setParameter4('fc_coord', rateX, rateY, 0, 1 - rateY);
    // 绘制处理
    o.__base.FE3dAutomaticEffect.drawRenderable.call(o, region, renderable);
 }

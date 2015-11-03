@@ -61,9 +61,7 @@
       //..........................................................
       // 处理
       void main(void){
-         vec4 color = texture2D(fs_diffuse, v_coord * fc_coord.xy);
-         //gl_FragColor = texture2D(fs_diffuse, v_coord);
-         //gl_FragColor = vec4(color.aaa, 1.0);
+         vec4 color = texture2D(fs_diffuse, v_coord * fc_coord.xy + fc_coord.zw);
          gl_FragColor = color;
       }
    ]]></Source>

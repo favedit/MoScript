@@ -47,7 +47,7 @@ MO.FEaiCockpitModuleAchievement_setup = function FEaiCockpitModuleAchievement_se
    var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitModuleAchievementSnapshot);
    snapshot.linkGraphicContext(o);
    snapshot.setModuleManager(o._moduleManager);
-   snapshot.size().set(512, 1024);
+   snapshot.size().set(600, 840);
    snapshot.setup();
    snapshot.placeInCell();
    // 创建视图
