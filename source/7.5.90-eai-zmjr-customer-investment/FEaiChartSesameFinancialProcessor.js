@@ -15,6 +15,8 @@ MO.FEaiChartSesameFinancialProcessor = function FEaiChartSesameFinancialProcesso
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
    o._24HBeginDate            = MO.Class.register(o, new MO.AGetter('_24HBeginDate'));
    o._24HEndDate              = MO.Class.register(o, new MO.AGetter('_24HEndDate'));
+   o._dateTimeLag             = MO.Class.register(o, new MO.ASetter('_dateTimeLag'));
+   o._firstFetch              = true;
    // @attribute
    o._invementDayCurrent      = MO.Class.register(o, new MO.AGetter('_invementDayCurrent'), 0);
    o._redemptionDayCurrent    = MO.Class.register(o, new MO.AGetter('_redemptionDayCurrent'), 0);
@@ -47,7 +49,6 @@ MO.FEaiChartSesameFinancialProcessor = function FEaiChartSesameFinancialProcesso
    o._unitPool                = null;
    // @attribute
    o._autios                  = null;
-   
    // @event
    o._eventDataChanged        = null;
    o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
@@ -75,9 +76,6 @@ MO.FEaiChartSesameFinancialProcessor = function FEaiChartSesameFinancialProcesso
    o.process                  = MO.FEaiChartSesameFinancialProcessor_process;
    // @method
    o.dispose                  = MO.FEaiChartSesameFinancialProcessor_dispose;
-   o._jsonSystem              = MO.Class.register(o, new MO.AGetter('_jsonSystem'));
-   o._jsonTimerData           = MO.Class.register(o, new MO.AGetter('_jsonTimerData'));
-   o._jsonTableData           = MO.Class.register(o, new MO.AGetter('_jsonTableData'));
 
    return o;
 }
@@ -177,9 +175,6 @@ MO.FEaiChartSesameFinancialProcessor_construct = function FEaiChartSesameFinanci
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
-   o._jsonSystem = MO.Class.create(MO.FEaiLogicJsonSystem);
-   o._jsonTableData = MO.Class.create(MO.FEaiLogicJsonTableData);
-   o._jsonTimerData = MO.Class.create(MO.FEaiLogicJsonTimerLineData);
 }
 
 //==========================================================
@@ -281,57 +276,60 @@ MO.FEaiChartSesameFinancialProcessor_focusEntity = function FEaiChartSesameFinan
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiChartSesameFinancialProcessor_process = function FEaiChartSesameFinancialProcessor_process(){
+MO.FEaiChartSesameFinancialProcessor_process = function FEaiChartSesameFinancialProcessor_process() {
    var o = this;
-   // 走json接口获得系统时间
-   var system = o._jsonSystem;
-   if(!system.testReady()){
-     // return;
-   }
 
-   var systemDate = system.currentDate();
-   systemDate.truncMinute();
-   //..........................................................
-   // 设置首次时间
-   if(!o._dateSetup){
-      o._endDate.assign(systemDate);
-      o._endDate.addMinute(-o._intervalMinute);
-      o._dateSetup = true;
-   }
-   //..........................................................
-   // 设置处理时间
-   if(o._dataTicker.process()){
+   if (o._dataTicker.process()) {
+      var datetimeLag = o._dateTimeLag;
 
-      var JsonData = o._jsonTableData;
-
-      var JsonData = MO.Console.find(MO.FEaiLogicConsole).jsonTableData();
-            // 设置结束时间
       var beginDate = o._beginDate;
       var endDate = o._endDate;
-      beginDate.assign(endDate);
-      endDate.assign(systemDate);
-      JsonData.doInvestment(o,o.onDynamicData,beginDate.format(),endDate.format());
+      beginDate.set(MO.Timer.current() + datetimeLag);
+      beginDate.truncMinute();
+      endDate.assign(beginDate);
+      beginDate.addMinute(-o._intervalMinute);
+
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.live}');
+      var start = beginDate.format();
+      var end = endDate.format();
+      var tick = MO.Timer.current();
+      var key = "7733b6978b3f19ed";
+      var paramStr = start + end + tick + key;
+      var token = hex_md5(paramStr);
+      url += 'first=' + o._firstFetch + '&begin=' + start + '&end=' + end + '&tick=' + tick + '&token=' + token;
+      var connection = MO.Console.find(MO.FJsonConsole).send(url);
+      connection.addLoadListener(o, o.onDynamicData);
+      o._firstFetch = false;
+
       // 取24小时统计数据
       // 设置开始时间
       var beginDate24H = o._24HBeginDate;
-      beginDate24H.assign(systemDate);
+      beginDate24H.set(MO.Timer.current() + datetimeLag);
       beginDate24H.truncMinute(15);
       beginDate24H.addDay(-1);
       // 设置结束时间
       var endDate24H = o._24HEndDate;
-      endDate24H.assign(systemDate);
+      endDate24H.set(MO.Timer.current() + datetimeLag);
       endDate24H.truncMinute(15);
 
-      var JsonTimerData = o._jsonTimerData;
-      JsonTimerData.do24TimeData(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
+      var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.24h}');
+      var start = beginDate24H.format();
+      var end = endDate24H.format();
+      var tick = MO.Timer.current();
+      var key = "7733b6978b3f19ed";
+      var paramStr = start + end + tick + key;
+      var token = hex_md5(paramStr);
+      url += 'begin=' + start + '&end=' + end + '&tick=' + tick + '&token=' + token;
+      var connection = MO.Console.find(MO.FJsonConsole).send(url);
+      connection.addLoadListener(o, o.on24HDataFetch);
    }
    //..........................................................
    //设置表格刷新
    var currentTick = MO.Timer.current();
-   if(currentTick - o._tableTick > o._tableInterval){
+   if (currentTick - o._tableTick > o._tableInterval) {
       // 从开始位置压入
       var units = o._units._items;
-      if(!units.length==0){
+      if (!units.length == 0) {
          var unit = units.shift();
          // 设置实体焦点
          o.focusEntity(unit);

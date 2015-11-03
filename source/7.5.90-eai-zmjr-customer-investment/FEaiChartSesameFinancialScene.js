@@ -28,9 +28,14 @@ MO.FEaiChartSesameFinancialScene = function FEaiChartSesameFinancialScene(o) {
    o._statusStart            = false;
    o._statusLayerCount       = 100;
    o._statusLayerLevel       = 100;
+   // @attribute
+   o._serverDate             = null;
+   o._localDate              = null;
+   o._dateTimeLag            = 0;
    //..........................................................
    // @event
    o.onOperationDown         = MO.FEaiChartSesameFinancialScene_onOperationDown;
+   o.onServerDateTimeFetched = MO.FEaiChartSesameFinancialScene_onServerDateTimeFetched;
    o.onInvestmentDataChanged = MO.FEaiChartSesameFinancialScene_onInvestmentDataChanged;
    o.on24HDataChanged        = MO.FEaiChartSesameFinancialScene_on24HDataChanged;
    o.onOperationVisibility   = MO.FEaiChartSesameFinancialScene_onOperationVisibility;
@@ -91,6 +96,20 @@ MO.FEaiChartSesameFinancialScene_onInvestmentDataChanged = function FEaiChartSes
    table.setRankUnits(event.rankUnits);
    table.pushUnit(unit);
    table.dirty();
+}
+
+//==========================================================
+// <T>服务器时间同步处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartSesameFinancialScene_onServerDateTimeFetched = function FEaiChartSesameFinancialScene_onServerDateTimeFetched(event) {
+   var o = this;
+   o._serverDate.parseAuto(event.date);
+   o._localDate.setNow();
+   o._dateTimeLag = o._serverDate.get() - o._localDate.get();
+   o._processor.setDateTimeLag(o._dateTimeLag);
 }
 
 //==========================================================
@@ -204,7 +223,7 @@ MO.FEaiChartSesameFinancialScene_onProcess = function FEaiChartSesameFinancialSc
       if (o._nowTicker.process()) {
          var bar = o._logoBar;
          var date = o._nowDate;
-         date.setNow();
+         date.set(MO.Timer.current() + o._dateTimeLag);
          var dateControl = bar.findComponent('date');
          dateControl.setLabel(date.format('YYYY/MM/DD'));
          var timeControl = bar.findComponent('time');
@@ -242,6 +261,14 @@ MO.FEaiChartSesameFinancialScene_setup = function FEaiChartSesameFinancialScene_
    var o = this;
    o.__base.FEaiChartScene.setup.call(o);
    var dataLayer = o._activeStage.dataLayer();
+   //..........................................................
+   // 同步服务器时间
+   o._serverDate = new MO.TDate();
+   o._localDate = new MO.TDate();
+   
+   var url = MO.Console.find(MO.FEnvironmentConsole).parse('{zmjr.get.time}');
+   var connection = MO.Console.find(MO.FJsonConsole).send(url);
+   connection.addLoadListener(o, o.onServerDateTimeFetched);
    //..........................................................
    // 显示标识页面
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.customer.LogoBar');
