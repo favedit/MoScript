@@ -106,7 +106,7 @@ MO.FEaiChartSesameFinancialScene_onInvestmentDataChanged = function FEaiChartSes
 //==========================================================
 MO.FEaiChartSesameFinancialScene_onServerDateTimeFetched = function FEaiChartSesameFinancialScene_onServerDateTimeFetched(event) {
    var o = this;
-   o._serverDate.parseAuto(event.date);
+   o._serverDate.parseAuto(event.content.date);
    o._localDate.setNow();
    o._dateTimeLag = o._serverDate.get() - o._localDate.get();
    o._processor.setDateTimeLag(o._dateTimeLag);

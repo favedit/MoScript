@@ -59,10 +59,6 @@ MO.FEaiChartSesameFinancialProcessor = function FEaiChartSesameFinancialProcesso
    // @method
    o.onDynamicData            = MO.FEaiChartSesameFinancialProcessor_onDynamicData;
    o.on24HDataFetch           = MO.FEaiChartSesameFinancialProcessor_on24HDataFetch;
-   o.onJsonData               = MO.FEaiChartSesameFinancialProcessor_onJsonData;
-   o.onhehe                   = MO.FEaiChartSesameFinancialProcessor_onhehe;
-   o.onCurrentInvest          = MO.FEaiChartSesameFinancialProcessor_onCurrentInvest;
-
    //..........................................................
    // @method
    o.construct                = MO.FEaiChartSesameFinancialProcessor_construct;
@@ -80,22 +76,6 @@ MO.FEaiChartSesameFinancialProcessor = function FEaiChartSesameFinancialProcesso
    return o;
 }
 
-//==========================================================
-// <T>Json数据获取处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiChartSesameFinancialProcessor_onJsonData = function FEaiChartSesameFinancialProcessor_onJsonData(event) {
-   var o = this;
-   var data = event;
-   var content = event.content;
-}
-MO.FEaiChartSesameFinancialProcessor_onhehe = function FEaiChartSesameFinancialProcessor_onhehe(event){
-    var data = event.data;
-}
-MO.FEaiChartSesameFinancialProcessor_onCurrentInvest = function FEaiChartSesameFinancialProcessor_onCurrentInvest(event){
-   var data = event.data;
-}
 //==========================================================
 // <T>24小时数据获取处理。</T>
 //
