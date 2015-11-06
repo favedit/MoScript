@@ -6,7 +6,7 @@
 // @history 151101
 //==========================================================
 MO.FEaiCockpitModule = function FEaiCockpitModule(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MProcessReady, MO.MListener);
    //..........................................................
    // @attribute
    o._name            = MO.Class.register(o, new MO.AGetSet('_name'));
@@ -15,7 +15,6 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    o._moduleManager   = MO.Class.register(o, new MO.AGetSet('_moduleManager'));
    o._controls        = MO.Class.register(o, new MO.AGetter('_controls'));
    // @attribute
-   o._controlPreview  = MO.Class.register(o, new MO.AGetter('_controlPreview'));
    o._controlSnapshot = MO.Class.register(o, new MO.AGetter('_controlSnapshot'));
    o._controlView     = MO.Class.register(o, new MO.AGetter('_controlView'));
    // @attribute
@@ -43,7 +42,6 @@ MO.FEaiCockpitModule_construct = function FEaiCockpitModule_construct(){
    // 设置属性
    o._cellLocation = new MO.SPoint2();
    o._cellSize = new MO.SSize2();
-   o._controls = new MO.TObjects();
 }
 
 //==========================================================
@@ -53,6 +51,12 @@ MO.FEaiCockpitModule_construct = function FEaiCockpitModule_construct(){
 //==========================================================
 MO.FEaiCockpitModule_setup = function FEaiCockpitModule_setup(){
    var o = this;
+   // 加载水波纹
+   //var loader = o._textureSnapshotLoader = MO.Class.create(MO.FE3dTextureLoader);
+   //loader.linkGraphicContext(o);
+   //loader.setup(MO.EG3dTexture.Flat2d, 'diffuse');
+   //loader.loadUrl('{eai.resource}/cockpit/ground.jpg');
+   //o._readyLoader.push(loader);
 }
 
 //==========================================================
@@ -63,17 +67,16 @@ MO.FEaiCockpitModule_setup = function FEaiCockpitModule_setup(){
 //==========================================================
 MO.FEaiCockpitModule_process = function FEaiCockpitModule_process(){
    var o = this;
-   switch(o._statusCd){
-      case MO.EEaiCockpitModuleStatus.Preview:
-         //o._controlPreview.processLogic();
-         break;
-      case MO.EEaiCockpitModuleStatus.Snapshot:
-         o._controlSnapshot.processLogic();
-         break;
-      case MO.EEaiCockpitModuleStatus.View:
-         o._controlView.processLogic();
-         break;
-   }
+   //switch(o._statusCd){
+   //   case MO.EEaiCockpitModuleStatus.Snapshot:
+   //      o._controlSnapshot.processLogic();
+   //      break;
+   //   case MO.EEaiCockpitModuleStatus.View:
+   //      o._controlView.processLogic();
+   //      break;
+   //}
+   o._controlSnapshot.processLogic();
+   o._controlView.processLogic();
 }
 
 //==========================================================
@@ -85,7 +88,6 @@ MO.FEaiCockpitModule_dispose = function FEaiCockpitModule_dispose(){
    var o = this;
    o._cellLocation = MO.Lang.Object.dispose(o._cellLocation);
    o._cellSize = MO.Lang.Object.dispose(o._cellSize);
-   o._controls = MO.Lang.Object.dispose(o._controls);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

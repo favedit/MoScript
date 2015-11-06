@@ -173,20 +173,21 @@ MO.FDisplay_filterDisplays = function FDisplay_filterDisplays(p){
 // <T>过滤渲染集合。</T>
 //
 // @method
-// @param p:region:FRegion 渲染区域
+// @param region:FRegion 渲染区域
 //==========================================================
-MO.FDisplay_filterRenderables = function FDisplay_filterRenderables(p){
+MO.FDisplay_filterRenderables = function FDisplay_filterRenderables(region){
    var o = this;
    // 检查可见性
    if(!o._visible){
       return false;
    }
    // 处理渲染集合
-   var s = o._renderables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).filterDrawables(p);
+   var renderables = o._renderables;
+   if(renderables){
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.filterDrawables(region);
       }
    }
    return true;

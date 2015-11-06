@@ -3,9 +3,9 @@
 //
 // @class
 // @author maocy
-// @history 151103
+// @history 151106
 //==========================================================
-MO.FEaiCockpitLogicAchievement = function FEaiCockpitLogicAchievement(o){
+MO.FEaiCockpitMessageAchievement = function FEaiCockpitMessageAchievement(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
@@ -13,6 +13,6 @@ MO.FEaiCockpitLogicAchievement = function FEaiCockpitLogicAchievement(o){
    o._redemptionTotal     = MO.Class.register(o, [new MO.AGetter('_redemptionTotal'), new MO.APersistence('_redemptionTotal', MO.EDataType.Double)]);
    o._netinvestmentAmount = MO.Class.register(o, [new MO.AGetter('_netinvestmentAmount'), new MO.APersistence('_netinvestmentAmount', MO.EDataType.Double)]);
    // @attribute
-   o._departments         = MO.Class.register(o, [new MO.AGetter('_departments'), new MO.APersistence('_departments', MO.EDataType.Objects, MO.FEaiCockpitLogicAchievementDepartment)]);
+   o._departments         = MO.Class.register(o, [new MO.AGetter('_departments'), new MO.APersistence('_departments', MO.EDataType.Objects, MO.FEaiCockpitMessageAchievementDepartment)]);
    return o;
 }

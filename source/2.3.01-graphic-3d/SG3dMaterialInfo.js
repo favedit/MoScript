@@ -28,9 +28,9 @@ MO.SG3dMaterialInfo = function SG3dMaterialInfo(){
    // @attribute 设置合并
    //o.optionMerge          = null;
    // @attribute 设置排序
-   //o.optionSort           = null;
+   o.optionSort           = null;
    // @attribute 排序级别
-   //o.sortLevel            = null;
+   o.sortLevel            = null;
    // @attribute 设置比较
    //o.optionCompare        = null;
    // @attribute 设置动态
@@ -130,6 +130,8 @@ MO.SG3dMaterialInfo_assign = function SG3dMaterialInfo_assign(info){
    o.optionNormalInvert = info.optionNormalInvert;
    o.optionShadow = info.optionShadow;
    o.optionShadowSelf = info.optionShadowSelf;
+   o.optionSort = info.optionSort;
+   o.sortLevel = info.sortLevel;
    // 设置透明
    o.optionAlpha = info.optionAlpha;
    o.alphaBase = info.alphaBase;
@@ -213,6 +215,8 @@ MO.SG3dMaterialInfo_calculate = function SG3dMaterialInfo_calculate(info){
    o.optionNormalInvert = info.optionNormalInvert;
    o.optionShadow = info.optionShadow;
    o.optionShadowSelf = info.optionShadowSelf;
+   o.optionSort = info.optionSort;
+   o.sortLevel = info.sortLevel;
    // 设置透明
    o.optionAlpha = info.optionAlpha;
    o.alphaBase = info.alphaBase;
@@ -292,6 +296,8 @@ MO.SG3dMaterialInfo_reset = function SG3dMaterialInfo_reset(){
    o.optionNormalInvert = false;
    o.optionShadow = true;
    o.optionShadowSelf = true;
+   o.optionSort = true;
+   o.sortLevel = 0;
    // 设置属性
    //o.coordRateWidth = 1;
    //o.coordRateHeight = 1;

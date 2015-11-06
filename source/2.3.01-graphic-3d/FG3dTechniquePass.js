@@ -52,6 +52,9 @@ MO.FG3dTechniquePass_sortRenderables = function FG3dTechniquePass_sortRenderable
    var targetMaterial = target.material().info();
    // 按照效果排序
    if(sourceMaterial.optionAlpha && targetMaterial.optionAlpha){
+      if(sourceMaterial.sortLevel != targetMaterial.sortLevel){
+         return sourceMaterial.sortLevel - targetMaterial.sortLevel;
+      }
       var sourceEffect = source.activeEffect();
       var targetEffect = target.activeEffect();
       if(sourceEffect == targetEffect){
@@ -68,6 +71,9 @@ MO.FG3dTechniquePass_sortRenderables = function FG3dTechniquePass_sortRenderable
    }else if(!sourceMaterial.optionAlpha && targetMaterial.optionAlpha){
       return -1;
    }else{
+      if(sourceMaterial.sortLevel != targetMaterial.sortLevel){
+         return sourceMaterial.sortLevel - targetMaterial.sortLevel;
+      }
       var sourceEffect = source.activeEffect();
       var targetEffect = target.activeEffect();
       if(sourceEffect == targetEffect){

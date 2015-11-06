@@ -55,7 +55,7 @@ MO.FEaiCockpitApplication_onLoadResource = function FEaiCockpitApplication_onLoa
    if(o._backgroundUrl){
       // 加载背景
       var bitmap = o._groundBitmap = canvas.graphicContext().createObject(MO.FE3dBitmap);
-      bitmap._optionSelect = false;
+      bitmap.setOptionSelect(false);
       bitmap.loadUrl(o._backgroundUrl);
       bitmap.material().info().effectCode = 'fill';
       bitmap._renderable.addImageLoadListener(o, o.onLoadGround);

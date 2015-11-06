@@ -3,9 +3,9 @@
 //
 // @class
 // @author maocy
-// @history 151103
+// @history 151106
 //==========================================================
-MO.FEaiCockpitLogicAchievementDepartment = function FEaiCockpitLogicAchievementDepartment(o){
+MO.FEaiCockpitMessageAchievementDepartment = function FEaiCockpitMessageAchievementDepartment(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute

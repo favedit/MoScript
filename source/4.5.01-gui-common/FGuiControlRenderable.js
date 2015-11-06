@@ -64,7 +64,7 @@ MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
    var adjustWidth = MO.Lang.Integer.pow2(size.width);
    var adjustHeight = MO.Lang.Integer.pow2(size.height);
    o._adjustSize.set(adjustWidth, adjustHeight);
-   o._matrix.setScale(adjustWidth, adjustHeight, 1);
+   //o._matrix.setScale(adjustWidth, adjustHeight, 1);
    // 绘制画板
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight, MO.FGuiCanvas);

@@ -9,6 +9,7 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
    o = MO.Class.inherits(this, o, MO.FEaiCockpitCubeControl);
    //..........................................................
    // @attribute
+   o._data                 = null;
    o._dataTicker           = null;
    // @attribute
    o._backgroundImage      = null;
@@ -25,7 +26,7 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
    o.construct             = MO.FEaiCockpitModuleAchievementSnapshot_construct;
    // @method
    o.setup                 = MO.FEaiCockpitModuleAchievementSnapshot_setup;
-   o.setGridData           = MO.FEaiCockpitModuleAchievementSnapshot_setGridData;
+   o.setData               = MO.FEaiCockpitModuleAchievementSnapshot_setData;
    o.processLogic          = MO.FEaiCockpitModuleAchievementSnapshot_processLogic;
    // @method
    o.dispose               = MO.FEaiCockpitModuleAchievementSnapshot_dispose;
@@ -89,7 +90,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_onAchievementFetch = function FEaiCockpi
    // 读取数据
    var data = o._data;
    data.unserializeSignBuffer(event.sign, event.content, true);
-   o.setGridData(data);
+   o.setData(data);
 }
 
 //==========================================================
@@ -101,10 +102,11 @@ MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAc
    var o = this;
    o.__base.FEaiCockpitCubeControl.construct.call(o);
    // 创建属性
+   o._size.set(600, 840);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
    o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
-   o._data = MO.Class.create(MO.FEaiCockpitLogicAchievement);
+   o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
 }
 
 //==========================================================
@@ -177,7 +179,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_setGridData = function FEaiCockpitModuleAchievementSnapshot_setGridData(data) {
+MO.FEaiCockpitModuleAchievementSnapshot_setData = function FEaiCockpitModuleAchievementSnapshot_setData(data) {
    var o = this;
    var departments = data.departments();
    var grid = o._gridControl;

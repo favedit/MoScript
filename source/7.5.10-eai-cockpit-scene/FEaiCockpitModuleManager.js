@@ -14,6 +14,8 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o._cellCount         = MO.Class.register(o, new MO.AGetter('_cellCount'));
    o._modules           = MO.Class.register(o, new MO.AGetter('_modules'));
    o._statusCd          = 0;
+   // @attribute
+   o._display           = MO.Class.register(o, new MO.AGetter('_display'));
    //..........................................................
    // @method
    o.construct          = MO.FEaiCockpitModuleManager_construct;
@@ -52,15 +54,26 @@ MO.FEaiCockpitModuleManager_construct = function FEaiCockpitModuleManager_constr
 MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    var o = this;
    // 创建显示对象
+   var display = o._display = MO.Class.create(MO.FE3dDisplayContainer);
+   display.linkGraphicContext(o);
+   // 创建显示对象
    var snapshotDisplay = o._snapshotDisplay = MO.Class.create(MO.FE3dDisplay);
    snapshotDisplay.linkGraphicContext(o);
+   display.pushDisplay(snapshotDisplay);
+   // 创建显示对象
+   var viewDisplay = o._viewDisplay = MO.Class.create(MO.FE3dDisplay);
+   viewDisplay.linkGraphicContext(o);
+   display.pushDisplay(viewDisplay);
    // 创建控件网格
    var cubes = o._cubes = MO.Class.create(MO.FE3dCubes);
    cubes.linkGraphicContext(o);
+   cubes.setOptionSelect(false);
    cubes.setDrawModeCd(MO.EG3dDrawMode.Lines);
    cubes.size().assign(o._cellCount);
    cubes.splits().assign(o._cellCount);
+   cubes.material().info().sortLevel = 1;
    cubes.setup();
+   display.push(cubes);
    // 创建标题模块
    var module = o._titleModule = MO.Class.create(MO.FEaiCockpitModuleTitle);
    module.setModuleManager(o);
@@ -136,9 +149,10 @@ MO.FEaiCockpitModuleManager_unregister = function FEaiCockpitModuleManager_unreg
 // @method
 // @param display:FE3dDisplay 显示对象
 //==========================================================
-MO.FEaiCockpitModuleManager_showSnapshot = function FEaiCockpitModuleManager_showSnapshot(display){
+MO.FEaiCockpitModuleManager_showSnapshot = function FEaiCockpitModuleManager_showSnapshot(){
    var o = this;
    var snapshotDisplay = o._snapshotDisplay;
+   var viewDisplay = o._viewDisplay;
    var modules = o._modules;
    var count = modules.count();
    for(var i = 0; i < count; i++){
@@ -146,16 +160,18 @@ MO.FEaiCockpitModuleManager_showSnapshot = function FEaiCockpitModuleManager_sho
       // 显示缩略图
       var snapshot = module.controlSnapshot();
       var renderable = snapshot.makeRenderable();
+      renderable.material().info().sortLevel = 3;
       snapshot.updateRenderable();
-      var matrix = renderable.matrix();
-      matrix.tx = 0;
-      matrix.ty = 0;
-      matrix.sx = 1;
-      matrix.sy = 1;
-      matrix.updateForce();
+      snapshot.placeInCell();
       snapshotDisplay.pushRenderable(renderable);
+      // 显示缩略图
+      var view = module.controlView();
+      var renderable = view.makeRenderable();
+      renderable.material().info().sortLevel = 2;
+      view.updateRenderable();
+      view.placeInCell();
+      viewDisplay.pushRenderable(renderable);
    }
-   display.pushDisplay(snapshotDisplay);
 }
 
 //==========================================================

@@ -37,6 +37,7 @@ MO.FEaiApplication_setup = function FEaiApplication_setup(hPanel){
    }
    // 设置效果器
    var effectConsole = MO.Console.find(MO.FG3dEffectConsole);
+   effectConsole.register('select.select.gui', MO.FGuiSelectAutomaticEffect);
    effectConsole.register('select.select.eai.world.face', MO.FG3dSelectAutomaticEffect);
    effectConsole.register('select.select.eai.map.face', MO.FG3dSelectAutomaticEffect);
    effectConsole.register('eai.select.automatic', MO.FEaiSelectAutomaticEffect);

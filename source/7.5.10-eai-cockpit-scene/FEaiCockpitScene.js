@@ -50,6 +50,14 @@ MO.FEaiCockpitScene = function FEaiCockpitScene(o) {
 //==========================================================
 MO.FEaiCockpitScene_onOperationDown = function FEaiCockpitScene_onOperationDown(event) {
    var o = this;
+   var region = o._activeStage.region();
+   // 得到当前鼠标指向的对象
+   var selectTechnique = MO.Console.find(MO.FG3dTechniqueConsole).find(o, MO.FG3dSelectTechnique);
+   var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
+   if(MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
+      var control = renderable.control();
+      alert(MO.Class.name(control));
+   }
    o._countryEntity._startTime = 0;
 }
 
@@ -131,13 +139,13 @@ MO.FEaiCockpitScene_onProcess = function FEaiCockpitScene_onProcess() {
          //return;
       }
       o._moduleManager.process();
-      var matrix = o._moduleManager._cubes.matrix();
-      matrix.ry += 0.004;
-      matrix.updateForce();
-      var snapshotDisplay = o._moduleManager._snapshotDisplay;
-      var matrix = snapshotDisplay.matrix();
-      matrix.ry += 0.004;
-      matrix.updateForce();
+      //var matrix = o._moduleManager._cubes.matrix();
+      //matrix.ry += 0.004;
+      //matrix.updateForce();
+      //var snapshotDisplay = o._moduleManager._snapshotDisplay;
+      //var matrix = snapshotDisplay.matrix();
+      //matrix.ry += 0.004;
+      //matrix.updateForce();
       // 显示界面
       if (!o._mapReady) {
          o._guiManager.show();
@@ -191,7 +199,7 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    var projection = camera.projection();
    projection.setAngle(40);
    projection.update();
-   var mapLayer = stage.mapLayer();
+   //var mapLayer = stage.mapLayer();
    var dataLayer = stage.dataLayer();
    //..........................................................
    // 创建部门模块
@@ -199,7 +207,7 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    moduleManager.linkGraphicContext(o);
    moduleManager.setup();
    moduleManager.showSnapshot(dataLayer);
-   mapLayer.pushRenderable(moduleManager._cubes);
+   dataLayer.pushDisplay(moduleManager.display());
 
    //var display = o._display3d = MO.Class.create(MO.FE3dDisplay);
    //var matrix = display.matrix();
