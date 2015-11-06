@@ -23,6 +23,7 @@ MO.FEaiChartMktCustomerV2Scene = function FEaiChartMktCustomerV2Scene(o) {
    o._logoBar                = null;
    o._timeline               = null;
    o._liveTable              = null;
+   o.doughnut                = null;
    // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
@@ -44,6 +45,9 @@ MO.FEaiChartMktCustomerV2Scene = function FEaiChartMktCustomerV2Scene(o) {
    o.fixMatrix               = MO.FEaiChartMktCustomerV2Scene_fixMatrix;
    // @method
    o.processResize           = MO.FEaiChartMktCustomerV2Scene_processResize;
+   o.onCurvesChanged         = MO.FEaiChartMktCustomerV2Scene_onCurvesChanged;
+   o._curvesCanvas           = null;
+   o._flag = 0;
    return o;
 }
 
@@ -72,6 +76,23 @@ MO.FEaiChartMktCustomerV2Scene_on24HDataChanged = function FEaiChartMktCustomerV
    timeline.endTime().assign(event.endDate);
    timeline.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
    timeline.dirty();
+
+}
+
+//==========================================================
+// <T>甜甜圈线数据变更处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiChartMktCustomerV2Scene_onCurvesChanged = function FEaiChartMktCustomerV2Scene_onCurvesChanged(event) {
+   var o = this;
+   // 设置数据
+   var doughnut = o._doughnut;
+   doughnut.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
+   // var trend = doughnut._trendInfo ;
+   // trend = doughnut.trendInfos().units();
+   doughnut.dirty();
 }
 
 //==========================================================
@@ -86,8 +107,49 @@ MO.FEaiChartMktCustomerV2Scene_onInvestmentDataChanged = function FEaiChartMktCu
    // 设置表格数据
    var table = o._liveTable;
    table.setRankUnits(event.rankUnits);
+   table._rankdata = event;
    table.pushUnit(unit);
    table.dirty();
+   var curves  = MO.Class.create(MO.FEaiChartMktCustomerV2TransferCurve);
+   o._flag++;
+   switch (o._flag%5){
+      case 0:
+      curves._sx = 260;
+      curves._sy = 360;
+      curves._ex = 500;
+      curves._ey = 600;
+      break;
+      case 1:
+      curves._sx = 300;
+      curves._sy = 400;
+      curves._ex = 500;
+      curves._ey = 600;
+      break;
+      case 2:
+      curves._sx = 100;
+      curves._sy = 200;
+      curves._ex = 500;
+      curves._ey = 600;
+      break;
+      case 3:
+      curves._sx = 260;
+      curves._sy = 360;
+      curves._ex = 360;
+      curves._ey = 470;
+      break;
+      case 4:
+      curves._sx = 300;
+      curves._sy = 400;
+      curves._ex = 500;
+      curves._ey = 600;
+      break;
+
+   }
+   if (o._flag ==0) {o._curvesCanvas._curves.push(curves);}else{
+   o._curvesCanvas._curves.pop();
+   o._curvesCanvas._curves.push(curves);
+}
+   o._curvesCanvas.dirty();
 }
 
 //==========================================================
@@ -249,6 +311,7 @@ MO.FEaiChartMktCustomerV2Scene_setup = function FEaiChartMktCustomerV2Scene_setu
    invement.setup();
    invement.addDataChangedListener(o, o.onInvestmentDataChanged);
    invement.add24HDataChangedListener(o, o.on24HDataChanged);
+   invement.addCurvesChangedListener(o,o.onCurvesChanged);
    var display = invement.display();
    o.fixMatrix(display.matrix());
    dataLayer.push(display);
@@ -268,9 +331,23 @@ MO.FEaiChartMktCustomerV2Scene_setup = function FEaiChartMktCustomerV2Scene_setu
    liveTable.setup();
    liveTable.build();
    o._guiManager.register(liveTable);
+  //创建产品数据
+   var doughnut = o._doughnut= MO.Class.create(MO.FEaiChartMktCustomerV2Doughnut);
+   doughnut.setName('doughnut');
+   doughnut.linkGraphicContext(o);
+   liveTable.build();
+   o._guiManager.register(doughnut);
+
+   //创建曲线
+   var curves =  o._curvesCanvas = MO.Class.create(MO.FEaiChartMktCustomerV2CurvesCanvas);
+   curves.setName('curves');
+   curves.linkGraphicContext(o);
+   curves.build();
+   o._guiManager.register(curves);
+
+
+
    //..........................................................
-   //创建产品数据
-   var doughnutChat = o._doughnutChat = MO.Class.create(MO.FEaiChartMktCustomerV2Doughnut);
    // 隐藏全部界面
    o._guiManager.hide();
    //..........................................................
@@ -333,7 +410,7 @@ MO.FEaiChartMktCustomerV2Scene_fixMatrix = function FEaiChartMktCustomerV2Scene_
 MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Scene_processResize() {
    var o = this;
    o.__base.FEaiChartScene.processResize.call(o);
-   var isVertical = MO.Window.Browser.isOrientationVertical()
+   var isVertical = MO.Window.Browser.isOrientationVertical();
    //..........................................................
    // 设置大小
    var logoBar = o._logoBar;
@@ -391,6 +468,42 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       liveTable.setRight(0);
       liveTable.setBottom(10);
       liveTable.setWidth(760);
+   }
+   var doughnut = o._doughnut;
+   if (isVertical) {
+      doughnut.setDockCd(MO.EUiDock.Bottom);
+      doughnut.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      doughnut.setLeft(10);
+      doughnut.setRight(10);
+      doughnut.setBottom(10);
+      doughnut.setHeight(900);
+   } else {
+     // doughnut.setDockCd(MO.EUiDock.Left);
+     // doughnut.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      //doughnut.setAnchorCd(MO.EUiAnchor.All);
+      doughnut.setTop(220);
+      doughnut.setLeft(0);
+      doughnut.setBottom(10);
+      doughnut.setWidth(240);
+      doughnut.setHeight(580);
+   }
+   var curvesCanvas = o._curvesCanvas;
+      if (isVertical) {
+      curvesCanvas.setDockCd(MO.EUiDock.Bottom);
+      curvesCanvas.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      curvesCanvas.setLeft(10);
+      curvesCanvas.setRight(10);
+      curvesCanvas.setBottom(10);
+      curvesCanvas.setHeight(900);
+   } else {
+     // doughnut.setDockCd(MO.EUiDock.Left);
+     // doughnut.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
+      //doughnut.setAnchorCd(MO.EUiAnchor.All);
+      curvesCanvas.setTop(200);
+      curvesCanvas.setLeft(0);
+      curvesCanvas.setBottom(10);
+      curvesCanvas.setWidth(1060);
+      curvesCanvas.setHeight(960);
    }
    //..........................................................
    // 重新设置矩阵

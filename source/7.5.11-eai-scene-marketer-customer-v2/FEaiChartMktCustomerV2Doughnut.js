@@ -5,45 +5,49 @@
 // @author sunpeng
 // @version 150630
 //==========================================================
-MO.FEaiChartMktProductCircle = function FEaiChartMktProductCircle(o) {
+MO.FEaiChartMktCustomerV2Doughnut = function FEaiChartMktCustomerV2Doughnut(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
    o._ready            = false;
    o._circleRadius     = MO.Class.register(o, new MO.AGetSet('_circleRadius'), 10);
    o._trendInfo        = MO.Class.register(o, new MO.AGetSet('_trendInfo'));
+   o._trendInfos       = MO.Class.register(o, new MO.AGetSet('_trendInfos'));
    o._TenderBef        = MO.Class.register(o, new MO.AGetSet('_TenderBef'));
    o._FirstLoad        = MO.Class.register(o, new MO.AGetSet('_FirstLoad'));
    o._circleStyle      = MO.Class.register(o, new MO.AGetSet('_circleStyle'));
    o._circleAirRadius  = MO.Class.register(o, new MO.AGetSet('_airRadius'), 7);
    o._circlelColor     = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
-   //o._tatolColor       = MO.Class.register(o, new MO.AGetSet('_circlelColor'),'#ffffff');
    //..........................................................
    // @event
-   o.oeUpdate          = MO.FEaiChartMktProductCircle_oeUpdate;
+   o.oeUpdate          = MO.FEaiChartMktCustomerV2Doughnut_oeUpdate;
    //..........................................................
    // @method
-   o.construct         = MO.FEaiChartMktProductCircle_construct;
-  // o.sync              = MO.FEaiChartMktProductCircle_sync;
-   // o.drawTrend         = MO.FEaiChartMktProductCircle_drawTrend;
-   o.onPaintBegin      = MO.FEaiChartMktProductCircle_onPaintBegin;
-   o.on24HDataFetch    = MO.FEaiChartMktProductCircle_on24HDataFetch;  
-   o.setCircleStyle    = MO.FEaiChartMktProductCircle_setCircleStyle;
-   o.dispose           = MO.FEaiChartMktProductCircle_dispose;
-   o.draw              = MO.FEaiChartMktProductCircle_draw;
+   o.construct         = MO.FEaiChartMktCustomerV2Doughnut_construct;
+  // o.sync              = MO.FEaiChartMktCustomerV2Doughnut_sync;
+   // o.drawTrend         = MO.FEaiChartMktCustomerV2Doughnut_drawTrend;
+   o.onPaintBegin      = MO.FEaiChartMktCustomerV2Doughnut_onPaintBegin;
+   o.on24HDataFetch    = MO.FEaiChartMktCustomerV2Doughnut_on24HDataFetch;  
+   o.setCircleStyle    = MO.FEaiChartMktCustomerV2Doughnut_setCircleStyle;
+   o.dispose           = MO.FEaiChartMktCustomerV2Doughnut_dispose;
+   o.draw              = MO.FEaiChartMktCustomerV2Doughnut_draw;
+   o._backgroundImage  = null;
+   o._backgroundPadding = MO.Class.register(o, new MO.AGetSet('_backgroundPadding'));
    return o;
 }
-MO.FEaiChartMktProductCircle_setCircleStyle  =  function FEaiChartMktProductCircle_setCircleStyle(Radius,color,unit){
+MO.FEaiChartMktCustomerV2Doughnut_setCircleStyle  =  function FEaiChartMktCustomerV2Doughnut_setCircleStyle(Radius,color,unit){
   var o = this;
   o.setCircleRadius(o._circleStyle.radius);
-  o.setCircleAirRadius(o.__circleStyle.radius*11/15);
-  o.setCircleColor(o.__circleStyle.circlelColor);
-  o.setTatolColor(o.__circleStyle.tatolColor);
+  o.setCircleAirRadius(o._circleStyle.radius*11/15);
+  o.setCircleColor(o._circleStyle.circlelColor);
+  o.setTatolColor(o._circleStyle.tatolColor);
   
 }
-MO.FEaiChartMktProductCircle_dispose = function FEaiChartMktProductCircle_dispose(){
+MO.FEaiChartMktCustomerV2Doughnut_dispose = function FEaiChartMktCustomerV2Doughnut_dispose(){
    var o = this;
    o._trendInfo = MO.Lang.Object.dispose(o._trendInfo);
+   o._trendInfos = MO.Lang.Object.dispose(o._trendInfos);
+
    o._circleStyle = MO.Lang.Object.dispose(o._circleStyle);
    // 父处理
    o.__base.FGuiControl.dispose.call(o);
@@ -55,10 +59,20 @@ MO.FEaiChartMktProductCircle_dispose = function FEaiChartMktProductCircle_dispos
 //
 // @method
 //==========================================================
-MO.FEaiChartMktProductCircle_construct = function FEaiChartMktProductCircle_construct() {
+MO.FEaiChartMktCustomerV2Doughnut_construct = function FEaiChartMktCustomerV2Doughnut_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
-   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoTrendUnit);
+   o._trendInfo = MO.Class.create(MO.FEaiLogicInfoTender);
+   o._TenderBef ={};
+   o._FirstLoad ={};
+    for (var i =0;i<6;i++ ){
+      o._TenderBef[i]=i;
+      o.FirstLoad[i]=true;
+    }
+   var imageConsole = MO.Console.find(MO.FImageConsole);
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/doughnutbg.png');
+   o._backgroundPadding = new MO.SPadding(20, 20, 20, 20);
+   this.dirty();
 }
 
 
@@ -68,10 +82,10 @@ MO.FEaiChartMktProductCircle_construct = function FEaiChartMktProductCircle_cons
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiChartMktProductCircle_oeUpdate = function FEaiChartMktProductCircle_oeUpdate(event) {
+MO.FEaiChartMktCustomerV2Doughnut_oeUpdate = function FEaiChartMktCustomerV2Doughnut_oeUpdate(event) {
    var o = this;
    o.__base.FGuiControl.oeUpdate.call(o, event);
-   // 更新内容
+   // 更新内容s
    if (o._ready) {
       return;
    } 
@@ -84,9 +98,9 @@ MO.FEaiChartMktProductCircle_oeUpdate = function FEaiChartMktProductCircle_oeUpd
 }
 
 
-MO.FEaiChartMktProductCircle_draw = function FEaiChartMktProductCircle_draw(context) {
+MO.FEaiChartMktCustomerV2Doughnut_draw = function FEaiChartMktCustomerV2Doughnut_draw(context) {
     var o = this;
-    if(!o._ready){
+    if(!o._ready||!units){
       return;
    }
    if(!o._trendInfo){
@@ -101,6 +115,24 @@ MO.FEaiChartMktProductCircle_draw = function FEaiChartMktProductCircle_draw(cont
     var bottom = rectangle.top + rectangle.height;
     var circle_y = rectangle.top +rectangle.productRadius;
     var textColor = '';
+    var left = rectangle.left;
+    var top = rectangle.top;
+    var width = rectangle.width;
+    var height = rectangle.height;
+    var right = left + width;
+    var bottom = top + height;
+    var drawPosition = top;
+    var heightRate = height / o._size.height;
+    var drawLeft = left + 12;
+    var drawRight = right - 12;
+    var drawWidth = right - left;
+
+   //graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, 'red', 2);
+
+   var hCenter = rectangle.left + rectangle.width / 2;
+   var vCenter = rectangle.top + rectangle.height / 2;
+
+
     textColor = o.circlelColor();
     graphic._handle.beginPath();
     graphic._handle.arc(circle_x,circle_y, productRadius,0*Math.PI,2*Math.PI);
@@ -149,9 +181,11 @@ MO.FEaiChartMktProductCircle_draw = function FEaiChartMktProductCircle_draw(cont
 //
 // @method
 //==========================================================
-MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_onPaintBegin(event) {
+MO.FEaiChartMktCustomerV2Doughnut_onPaintBegin = function FEaiChartMktCustomerV2Doughnut_onPaintBegin(event) {
    var o = this;
-   if (!o._ready || !units) {
+    var unit = o._trendInfo
+    var units =  o._trendInfo.units();
+   if (!o._ready||!units ) {
       return;
    }
    o.__base.FGuiControl.onPaintBegin.call(o, event);
@@ -159,13 +193,10 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
    var rectangle = event.rectangle;
    var top = rectangle.top;
    var bottom = rectangle.top + rectangle.height;
-
    var decoLeft = rectangle.left + 5;
    var decoRight = rectangle.left + rectangle.width - 5;
-
-    var unit = o._trendInfo
-    var units =  o._trendInfo.units();
-
+   var width = rectangle.width;
+   var height = rectangle.height;
     var productRadius = rectangle.height/units.count()*5/12;
     var airRadius     = rectangle.height/units.count()* 11/36;
     var productInterval = rectangle.height/units.count()*1/9;
@@ -181,14 +212,16 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
     var dayLable ='';
     var tatolLable = '';
     var FirstLoad = o._FirstLoad;
-    var circle_x = decoLeft+rectangle.width/2;
-    var text_x   = decoLeft+rectangle.width*2/3;
+    var circle_x = decoLeft+rectangle.width*17/24;
+    var text_x   = decoLeft+rectangle.width*1/10;
     var text_interval = rectangle.height/36;
     var productText_w = 0;
     var productText_h = 0;
     var textSize = 0 ;
     var textPx = '';
     var textColor = '';
+    graphic.drawGridImage(o._backgroundImage, decoLeft, top-10, width, height+10, o._backgroundPadding);
+
     if(units){
     for(var i=0;i<unitsCount;i++){
         var unit = units.get(i);
@@ -221,19 +254,19 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
           textColor = "#00c6ed";
           break;
           case 1:
-          textColor = "#10d19c";
+          textColor = "#00c6ed";
           break;
           case 2:
-          textColor = "#7b47d7";
+          textColor = "#00c6ed";
           break;
           case 3:
-          textColor = "#ea3256";
+          textColor = "#00c6ed";
           break;
           case 4:
-          textColor = "#ff6817";
+          textColor = "#00c6ed";
           break;
           case 5:
-          textColor = '#ffeb4a';
+          textColor = '#00c6ed';
           break;
 
          }
@@ -256,25 +289,25 @@ MO.FEaiChartMktProductCircle_onPaintBegin = function FEaiChartMktProductCircle_o
          graphic._handle.fillStyle = textColor;
          graphic._handle.fill();
          textPx = 'px Microsoft YaHei';
-         textSize = 28;
+         textSize = 20;
          textPx = textSize + textPx
          graphic.setFont(textPx);
          //产品投资比例
          lable = persentRate+'%';
          productText_w = graphic.textWidth(lable)/2;
          //productText_h = graphic.textHight(lable)/2;
-         graphic.drawText(lable, circle_x-productText_w, top+productRadius+productInterval+i*(2*productRadius+productInterval)+textSize/2,'#FFFFFF');
+         graphic.drawText(lable, circle_x-productText_w, top+productRadius+productInterval+i*(2*productRadius+productInterval)+textSize/2,'#ffeb4a');
          yearRate = (unit.rate()).toFixed(2);;
          productText = unit.label();
          //graphic.setFont('blod 480px Microsoft YaHei');
-         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2, textColor);
+         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2, '#ffeb4a');
          yearRate =  '年化利率 :' + yearRate +'%';
-         graphic.setFont('20px Microsoft YaHei');
+         graphic.setFont('12px Microsoft YaHei');
          graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval), '#FFFFFF');
          tatolLable = (unit.invesmentTotal()/100000000).toFixed(2);
          lable = '总计:'+"   "+tatolLable+'亿';
          graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval, '#FFFFFF');
-         dayLable  = unit.invesmentDay()/100000000;
+         dayLable  = (unit.invesmentDay()/100000000).toFixed(2);
          lable = '当日:'+"    "+dayLable+'亿';
          graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval*2, '#FFFFFF');
 

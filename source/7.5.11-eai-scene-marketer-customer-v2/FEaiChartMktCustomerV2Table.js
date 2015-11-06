@@ -41,6 +41,7 @@ MO.FEaiChartMktCustomerV2Table = function FEaiChartMktCustomerV2Table(o) {
    o.drawRow               = MO.FEaiChartMktCustomerV2Table_drawRow;
    // @method
    o.dispose               = MO.FEaiChartMktCustomerV2Table_dispose;
+   o._rankdata             = null;
    return o;
 }
 
@@ -78,34 +79,28 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    //..........................................................
    // 绘制背景
    graphic.drawGridImage(o._backgroundImage, left, top+50, width, height-50, o._backgroundPadding);
-   //..........................................................
-   // 绘制标题
-   // var titleText = '全球实时投资数据展示中心(中国)';
-   // graphic.setFont(o._headFontStyle);
-   // var titleWidth = graphic.textWidth(titleText);
-   // var textLeft = left + (width - titleWidth) * 0.5;
-   // graphic.drawText(titleText, textLeft, top + 76, '#59FDE9');(tableTop + o._rankTitleStart-40)+(o._rankHeight+30)*1/7
-   // drawPosition += 60
-      //..........................................................
    graphic.setFont(o._rowFontStyle);
-   // 绘制前3名
-   var tableTop = top + o._rankStart;
-   graphic.drawGridImage(o._rankLineImage, left + 6, tableTop + o._rankTitleStart-45, width - 28, o._rankHeight+40, o._rankLinePadding);
-   graphic.drawImage(o._rankTitleImage, left + (width - 170) * 0.5, tableTop - 100, 198, 40);
-   var rankUnits = o._rank;
-   if (rankUnits) {
-      var tableText = '';
-      var tableTextWidth = 0;
-      var count = rankUnit.count();
-      tableTop += 90;
-      for (var i = 0; i < count; i++) {
-         var unit = rankUnit.at(i);
-         o.drawRow(graphic, unit, true, i, drawLeft, tableTop + o._rankRowHeight * i-50, drawWidth);
-      }
-   }
-   var FontStyle = 'bold 18px Microsoft YaHei';
-   graphic.setFont(FontStyle);
+   // // 绘制前3名
+    var tableTop = top + o._rankStart;
+   graphic.drawGridImage(o._rankLineImage , left + 6, tableTop + o._rankTitleStart-45, width - 28, o._rankHeight+40, o._rankLinePadding);
+   graphic.drawGridImage(o._rankTitleImage, left +220, tableTop - 100, 314, 40 , o._rankLinePadding);
 
+   var valuse = o._rankdata;
+   if(!valuse.investment1w||!valuse.investment10w||!valuse.investment50w||!valuse.investment100w||!valuse.investment500w||!valuse.investment1000w){
+   var value1 = 0;
+   var value10 = 0;
+   var value50 = 0;
+   var value100 =0;
+   var value500 = 0;
+   var value1000 = 0;
+   }else{
+   var value1 = valuse.investment1w;
+   var value10 = valuse.investment10w;
+   var value50 = valuse.investment50w;
+   var value100 = valuse.investment100w;
+   var value500 = valuse.investment500w;
+   var value1000 = valuse.investment1000w;
+   }
    var maxTitleText = '1000';
    var titleText = '1';
    var span = 2;
@@ -121,6 +116,16 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    pointX += beforeWidth;
    graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
 
+
+   beforeWidth = graphic.textWidth(titleFontText);
+   titleFontText = value1 ;
+   pointX += beforeWidth+20;
+   graphic.drawText(titleFontText,pointX,pointY,'#ff8f39');
+   beforeWidth = graphic.textWidth(titleFontText);
+   titleFontText = '人';
+   pointX  +=beforeWidth;
+   graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
+
    var titleText = '100';
    pointY +=30 ; 
    var spanWidth = graphic.textWidth(titleText);
@@ -129,6 +134,17 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    graphic.drawText(titleText,pointX,pointY,'#FDEF01');
    var beforeWidth =  graphic.textWidth(titleText);
    pointX += beforeWidth;
+   titleFontText = '万元:';
+   graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
+
+   afterWidth =graphic.textWidth(value1);
+   beforeWidth = graphic.textWidth(titleFontText);
+   var span = afterWidth-graphic.textWidth(value100);
+   pointX += beforeWidth+span+20;
+   graphic.drawText(value100,pointX,pointY,'#ff8f39');
+   beforeWidth = graphic.textWidth(value100);
+   titleFontText = '人';
+   pointX  +=beforeWidth;
    graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
 
    var titleText = '10';
@@ -145,6 +161,14 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    pointX += beforeWidth;
    graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
 
+   beforeWidth = graphic.textWidth(titleFontText);
+   titleFontText = value10 ;
+   pointX += beforeWidth+20;
+   graphic.drawText(titleFontText,pointX,pointY,'#ff8f39');
+   beforeWidth = graphic.textWidth(titleFontText);
+   titleFontText = '人';
+   pointX  +=beforeWidth;
+   graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
 
    var titleText = '500';
    pointY +=30 ; 
@@ -154,6 +178,17 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    graphic.drawText(titleText,pointX,pointY,'#FDEF01');
    var beforeWidth =  graphic.textWidth(titleText);
    pointX += beforeWidth;
+   titleFontText = '万元:';
+   graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
+
+   afterWidth =graphic.textWidth(value10);
+   beforeWidth = graphic.textWidth(titleFontText);
+   var span = afterWidth-graphic.textWidth(value500);
+   pointX += beforeWidth+span+20;
+   graphic.drawText(value500,pointX,pointY,'#ff8f39');
+   beforeWidth = graphic.textWidth(value500);
+   titleFontText = '人';
+   pointX  +=beforeWidth;
    graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
 
    var titleText = '50';
@@ -170,6 +205,14 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    pointX += beforeWidth;
    graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
 
+   beforeWidth = graphic.textWidth(titleFontText);
+   titleFontText = value50 ;
+   pointX += beforeWidth+20;
+   graphic.drawText(titleFontText,pointX,pointY,'#ff8f39');
+   beforeWidth = graphic.textWidth(titleFontText);
+   titleFontText = '人';
+   pointX  +=beforeWidth;
+   graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
 
    var titleText = '1000';
    pointY +=30 ; 
@@ -179,10 +222,17 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    graphic.drawText(titleText,pointX,pointY,'#FDEF01');
    var beforeWidth =  graphic.textWidth(titleText);
    pointX += beforeWidth;
+   titleFontText = '万元:';
    graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
-
-
-
+   afterWidth =graphic.textWidth(value50);
+   beforeWidth = graphic.textWidth(titleFontText);
+   var span = afterWidth-graphic.textWidth(value1000);
+   pointX += beforeWidth+span+20;
+   graphic.drawText(value1000,pointX,pointY,'#ff8f39');
+   beforeWidth = graphic.textWidth(value1000);
+   titleFontText = '人';
+   pointX  +=beforeWidth;
+   graphic.drawText(titleFontText,pointX,pointY,'#59FDE9');
 
 }
 
@@ -199,6 +249,7 @@ MO.FEaiChartMktCustomerV2Table_construct = function FEaiChartMktCustomerV2Table_
    o._currentDate = new MO.TDate();
    o._rankLinePadding = new MO.SPadding(40,0, 40,0);
    o._backgroundPadding = new MO.SPadding(20, 100, 90, 200);
+   o._rankdata = new MO.SEvent(o);
 }
 
 //==========================================================
@@ -216,7 +267,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/gridv2.png');
    image.addLoadListener(o, o.onImageLoad);
    // 创建图片
-   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/live/tank-title.png');
+   var image = o._rankTitleImage = imageConsole.load('{eai.resource}/live/tank-titlev2.png');
    image.addLoadListener(o, o.onImageLoad);
    // 创建图片
    var image = o._rankLineImage = imageConsole.load('{eai.resource}/live/rank2.png');

@@ -54,6 +54,8 @@ MO.FEaiChartMktCustomerV2Processor = function FEaiChartMktCustomerV2Processor(o)
 
    o._event24HDataChanged     = null;
    o._listeners24HDataChanged = MO.Class.register(o, new MO.AListener('_listeners24HDataChanged', '24H' + MO.EEvent.DataChanged));
+
+   o._listenersCurvesChanged  = MO.Class.register(o, new MO.AListener('_listenersCurvesChanged', 'CurvesChanged'));
    //..........................................................
    // @method
    o.onDynamicData            = MO.FEaiChartMktCustomerV2Processor_onDynamicData;
@@ -72,6 +74,8 @@ MO.FEaiChartMktCustomerV2Processor = function FEaiChartMktCustomerV2Processor(o)
    // @method
    o.dispose                  = MO.FEaiChartMktCustomerV2Processor_dispose;
    o.onDoughnutData           = MO.FEaiChartMktCustomerV2Processor_onDoughnutData;
+   o.onTrenderData            = MO.FEaiChartMktCustomerV2Processor_onTrenderData;
+   //o._tenderUnits             = MO.Class.register(o, new MO.AGetter('_tenderUnits'));
    return o;
 }
 //==========================================================
@@ -79,10 +83,14 @@ MO.FEaiChartMktCustomerV2Processor = function FEaiChartMktCustomerV2Processor(o)
 //
 // @method
 //==========================================================
-MO.FEaiChartMktCustomerV2Processor_onDoughnutData = function FEaiChartMktCustomerV2Processor_onDoughnutData(event){
+
+MO.FEaiChartMktCustomerV2Processor_onTrenderData = function FEaiChartMktCustomerV2Processor_onTrenderData(event){
    var o = this;
    var eventData = event;
+   o.processCurvesChangedListener(event);
+
 }
+
 //==========================================================
 // <T>24小时数据获取处理。</T>
 //
@@ -112,6 +120,7 @@ MO.FEaiChartMktCustomerV2Processor_onDynamicData = function FEaiChartMktCustomer
    var units = o._units;
    units.append(dynamicInfo.units());
    var unitCount = units.count();
+   
    if(unitCount){
       o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
    }else{
@@ -122,7 +131,14 @@ MO.FEaiChartMktCustomerV2Processor_onDynamicData = function FEaiChartMktCustomer
    var changeEvent = o._eventDataChanged;
    changeEvent.rankUnits = rankUnits;
    changeEvent.unit = null;
+   changeEvent.investment1w = dynamicInfo.investment1w();
+   changeEvent.investment10w = dynamicInfo.investment10w();
+   changeEvent.investment50w = dynamicInfo.investment50w();
+   changeEvent.investment100w = dynamicInfo.investment100w();
+   changeEvent.investment500w = dynamicInfo.investment500w();
+   changeEvent.investment1000w = dynamicInfo.investment1000w();      
    o.processDataChangedListener(changeEvent);
+
 }
 
 //==========================================================
@@ -149,6 +165,7 @@ MO.FEaiChartMktCustomerV2Processor_construct = function FEaiChartMktCustomerV2Pr
    o._unitPool = MO.Class.create(MO.FObjectPool);
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
+   //o._tenderUnits = MO.Class.create(MO.FEaiLogicInfoTender);
 }
 
 //==========================================================
@@ -224,6 +241,8 @@ MO.FEaiChartMktCustomerV2Processor_focusEntity = function FEaiChartMktCustomerV2
       var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
       if(provinceEntity){
          provinceEntity.doInvestment(level, investment);
+         //var postion = provinceEntity.calculateScreenPosition();
+         //var prositon = provinceEntity.calculateScreenPosition();
       }
       // 更新城市数据
       cityEntity.addInvestmentTotal(level, investment);
@@ -242,6 +261,8 @@ MO.FEaiChartMktCustomerV2Processor_focusEntity = function FEaiChartMktCustomerV2
    changedEvent.rankUnits = o._rankUnits;
    changedEvent.unit = unit;
    o.processDataChangedListener(changedEvent);
+
+  // o.processCurvesChangedListener(unit._modelLabel);
 }
 
 //==========================================================
@@ -271,8 +292,6 @@ MO.FEaiChartMktCustomerV2Processor_process = function FEaiChartMktCustomerV2Proc
    // 设置处理时间
    if(o._dataTicker.process()){
       var statistics = MO.Console.find(MO.FEaiLogicConsole).statistics();
-
-      statistics.tender().doInfo(o, o.onDoughnutData);
       // 设置结束时间
       var beginDate = o._beginDate;
       var endDate = o._endDate;
@@ -294,6 +313,8 @@ MO.FEaiChartMktCustomerV2Processor_process = function FEaiChartMktCustomerV2Proc
       endDate24H.truncMinute(15);
       // 取数据
       statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
+      statistics.tender().doInfo(o, o.onTrenderData);
+
    }
    //..........................................................
    // 设置表格刷新

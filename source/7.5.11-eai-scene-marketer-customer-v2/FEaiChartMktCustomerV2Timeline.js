@@ -143,7 +143,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    var trendInfo = o._trendInfo;
-   graphic.setFont('24px Microsoft YaHei');
+   graphic.setFont('22px Microsoft YaHei');
    var textWidth = graphic.textWidth('投资总计：');
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
    var investmentTotalWidth = graphic.textWidth(investmentTotalText);
@@ -151,7 +151,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var top = rectangle.top;
    var bottom = rectangle.top + rectangle.height;
    var middle = bottom - 50;
-   var decoLeft = rectangle.left + 5 +imageWidth;
+   var decoLeft = rectangle.left +imageWidth;
    var decoRight = rectangle.left + rectangle.width - 5;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
    
@@ -247,16 +247,16 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    decoLeft = decoLeft - imageWidth +5 ;
    // 输出数据文本
    top = top + rectangle.height -220 ;
-   graphic.setFont('24px Microsoft YaHei');
+   graphic.setFont('22px Microsoft YaHei');
    graphic.drawText("24H数据曲线", decoLeft, top+15, '#54F0FF');
    // 输出数据文本
-   graphic.setFont('20px Microsoft YaHei');
+   graphic.setFont('16px Microsoft YaHei');
    var image = o._backgroundImage;
    var padding = o._backgroundPadding;
    var rowStart = top + 60;
    var rowHeight = 25;
    // 计算宽度
-   graphic.drawGridImage(image,decoLeft-20,top-15,imageWidth+10, rectangle.height-80,padding);
+   graphic.drawGridImage(image,decoLeft-20,top-15,imageWidth, rectangle.height-80,padding);
    var textWidth = graphic.textWidth('投资总计：');
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
    var investmentTotalWidth = graphic.textWidth(investmentTotalText);
