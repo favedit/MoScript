@@ -1,27 +1,27 @@
 //==========================================================
-// <T>驾驶舱部门模块。</T>
+// <T>标志模块。</T>
 //
 // @class
 // @author maocy
-// @history 151101
+// @history 151107
 //==========================================================
-MO.FEaiCockpitModuleNotice = function FEaiCockpitModuleNotice(o){
+MO.FEaiCockpitModuleLogo = function FEaiCockpitModuleLogo(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name         = 'notice';
-   o._typeCd       = MO.EEaiCockpitModule.Logic;
+   o._name         = 'logo';
+   o._typeCd       = MO.EEaiCockpitModule.Logo;
    o._dataTicker   = null;
    //..........................................................
    // @method
-   o.construct     = MO.FEaiCockpitModuleNotice_construct;
+   o.construct     = MO.FEaiCockpitModuleLogo_construct;
    // @method
-   o.setup         = MO.FEaiCockpitModuleNotice_setup;
+   o.setup         = MO.FEaiCockpitModuleLogo_setup;
    // @method
-   o.processResize = MO.FEaiCockpitModuleNotice_processResize;
-   o.process       = MO.FEaiCockpitModuleNotice_process;
+   o.processResize = MO.FEaiCockpitModuleLogo_processResize;
+   o.process       = MO.FEaiCockpitModuleLogo_process;
    // @method
-   o.dispose       = MO.FEaiCockpitModuleNotice_dispose;
+   o.dispose       = MO.FEaiCockpitModuleLogo_dispose;
    return o;
 }
 
@@ -30,7 +30,7 @@ MO.FEaiCockpitModuleNotice = function FEaiCockpitModuleNotice(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNotice_construct = function FEaiCockpitModuleNotice_construct(){
+MO.FEaiCockpitModuleLogo_construct = function FEaiCockpitModuleLogo_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
    // 定时获取数据
@@ -42,17 +42,17 @@ MO.FEaiCockpitModuleNotice_construct = function FEaiCockpitModuleNotice_construc
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNotice_setup = function FEaiCockpitModuleNotice_setup(){
+MO.FEaiCockpitModuleLogo_setup = function FEaiCockpitModuleLogo_setup(){
    var o = this;
    // 创建缩略
-   var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitModuleNoticeSnapshot);
+   var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitModuleLogoSnapshot);
    snapshot.linkGraphicContext(o);
    snapshot.setModuleManager(o._moduleManager);
    snapshot.setModule(o);
    snapshot.size().set(512, 1024);
    snapshot.setup();
    // 创建视图
-   var view = o._controlView = MO.Class.create(MO.FEaiCockpitModuleNoticeView);
+   var view = o._controlView = MO.Class.create(MO.FEaiCockpitModuleLogoView);
    view.linkGraphicContext(o);
    view.setModuleManager(o._moduleManager);
    view.setModule(o);
@@ -66,7 +66,7 @@ MO.FEaiCockpitModuleNotice_setup = function FEaiCockpitModuleNotice_setup(){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiCockpitModuleNotice_processResize = function FEaiCockpitModuleNotice_processResize(){
+MO.FEaiCockpitModuleLogo_processResize = function FEaiCockpitModuleLogo_processResize(){
    var o = this;
 }
 
@@ -76,7 +76,7 @@ MO.FEaiCockpitModuleNotice_processResize = function FEaiCockpitModuleNotice_proc
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitModuleNotice_process = function FEaiCockpitModuleNotice_process(){
+MO.FEaiCockpitModuleLogo_process = function FEaiCockpitModuleLogo_process(){
    var o = this;
    // 创建缩略
    o.__base.FEaiCockpitModule.process.call(o);
@@ -87,7 +87,7 @@ MO.FEaiCockpitModuleNotice_process = function FEaiCockpitModuleNotice_process(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNotice_dispose = function FEaiCockpitModuleNotice_dispose(){
+MO.FEaiCockpitModuleLogo_dispose = function FEaiCockpitModuleLogo_dispose(){
    var o = this;
    // 释放属性
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);

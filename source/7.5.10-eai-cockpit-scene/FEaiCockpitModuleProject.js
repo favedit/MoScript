@@ -10,6 +10,7 @@ MO.FEaiCockpitModuleProject = function FEaiCockpitModuleProject(o){
    //..........................................................
    // @attribute
    o._name         = 'project';
+   o._typeCd       = MO.EEaiCockpitModule.Logic;
    o._dataTicker   = null;
    //..........................................................
    // @method
@@ -47,15 +48,13 @@ MO.FEaiCockpitModuleProject_setup = function FEaiCockpitModuleProject_setup(){
    var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitModuleProjectSnapshot);
    snapshot.linkGraphicContext(o);
    snapshot.setModuleManager(o._moduleManager);
-   snapshot.placeInCell();
-   snapshot.size().set(512, 1024);
+   snapshot.setModule(o);
    snapshot.setup();
    // 创建视图
    var view = o._controlView = MO.Class.create(MO.FEaiCockpitModuleProjectView);
    view.linkGraphicContext(o);
    view.setModuleManager(o._moduleManager);
    view.setModule(o);
-   view.size().set(1920, 1080);
    view.setup();
 }
 

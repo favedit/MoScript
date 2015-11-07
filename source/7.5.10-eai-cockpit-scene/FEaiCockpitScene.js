@@ -50,18 +50,29 @@ MO.FEaiCockpitScene = function FEaiCockpitScene(o) {
 //==========================================================
 MO.FEaiCockpitScene_onOperationDown = function FEaiCockpitScene_onOperationDown(event) {
    var o = this;
+   var moduleManager = o._moduleManager;
    var region = o._activeStage.region();
+   // 选中主页面
+   if(moduleManager.modeCd() == MO.EEaiCockpitMode.Logo){
+      moduleManager.selectModeCd(MO.EEaiCockpitMode.Main);
+      return;
+   }
    // 得到当前鼠标指向的对象
    var selectTechnique = MO.Console.find(MO.FG3dTechniqueConsole).find(o, MO.FG3dSelectTechnique);
    var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
    var module = null;
    if(MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
       var control = renderable.control();
-      if(MO.Class.isClass(control, MO.FEaiCockpitCubeControl)){
+      if(MO.Class.isClass(control, MO.FEaiCockpitControl)){
          module = control.module();
+         if(module){
+            moduleManager.selectModeCd(MO.EEaiCockpitMode.Module, module)
+            return;
+         }
       }
    }
-   o._moduleManager.selectModule(module);
+   // 返回主页面
+   moduleManager.selectModeCd(MO.EEaiCockpitMode.Main)
 }
 
 //==========================================================
@@ -209,7 +220,7 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    moduleManager.linkGraphicContext(o);
    moduleManager.setScene(o);
    moduleManager.setup();
-   moduleManager.showSnapshot(dataLayer);
+   moduleManager.selectModeCd(MO.EEaiCockpitMode.Logo)
    dataLayer.pushDisplay(moduleManager.display());
    //..........................................................
    // 隐藏全部界面

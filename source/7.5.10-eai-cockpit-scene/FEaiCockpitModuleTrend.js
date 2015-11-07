@@ -10,6 +10,7 @@ MO.FEaiCockpitModuleTrend = function FEaiCockpitModuleTrend(o){
    //..........................................................
    // @attribute
    o._name         = 'trend';
+   o._typeCd       = MO.EEaiCockpitModule.Logic;
    o._dataTicker   = null;
    //..........................................................
    // @method

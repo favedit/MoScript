@@ -10,6 +10,7 @@ MO.FEaiCockpitModuleForecast = function FEaiCockpitModuleForecast(o){
    //..........................................................
    // @attribute
    o._name         = 'forecast';
+   o._typeCd       = MO.EEaiCockpitModule.Logic;
    o._dataTicker   = null;
    //..........................................................
    // @method
@@ -47,7 +48,7 @@ MO.FEaiCockpitModuleForecast_setup = function FEaiCockpitModuleForecast_setup(){
    var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitModuleForecastSnapshot);
    snapshot.linkGraphicContext(o);
    snapshot.setModuleManager(o._moduleManager);
-   snapshot.placeInCell();
+   snapshot.setModule(o);
    snapshot.size().set(512, 1024);
    snapshot.setup();
    // 创建视图

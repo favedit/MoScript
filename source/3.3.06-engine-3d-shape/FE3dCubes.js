@@ -15,6 +15,9 @@ MO.FE3dCubes = function FE3dCubes(o){
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    //..........................................................
    // @attribute
+   o._optionCenterX        = MO.Class.register(o, new MO.AGetSet('_optionCenterX'), true);
+   o._optionCenterY        = MO.Class.register(o, new MO.AGetSet('_optionCenterY'), true);
+   o._optionCenterZ        = MO.Class.register(o, new MO.AGetSet('_optionCenterZ'), true);
    o._outline              = null;
    o._drawModeCd           = MO.Class.register(o, new MO.AGetSet('_drawModeCd'), MO.EG3dDrawMode.Triangles);
    o._size                 = MO.Class.register(o, new MO.AGetter('_size'));
@@ -65,8 +68,17 @@ MO.FE3dCubes_setup = function FE3dCubes_setup(){
    var sy = size.height / cy;
    var sz = size.deep / cz;
    var centerX = size.width * 0.5;
+   if(!o._optionCenterX){
+      centerX = 0;
+   }
    var centerY = size.height * 0.5;
+   if(!o._optionCenterY){
+      centerY = 0;
+   }
    var centerZ = size.deep * 0.5;
+   if(!o._optionCenterZ){
+      centerZ = 0;
+   }
    var vertexCount = o._vertexCount = (cx + 1) * (cy + 1) * (cz + 1);
    var positionIndex = 0;;
    var positionData = new Float32Array(3 * vertexCount);

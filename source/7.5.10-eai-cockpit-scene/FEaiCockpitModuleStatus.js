@@ -10,6 +10,7 @@ MO.FEaiCockpitModuleStatus = function FEaiCockpitModuleStatus(o){
    //..........................................................
    // @attribute
    o._name         = 'status';
+   o._typeCd       = MO.EEaiCockpitModule.Logic;
    o._dataTicker   = null;
    //..........................................................
    // @method

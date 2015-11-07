@@ -10,6 +10,7 @@ MO.FEaiCockpitModuleAchievement = function FEaiCockpitModuleAchievement(o){
    //..........................................................
    // @attribute
    o._name         = 'achievement';
+   o._typeCd       = MO.EEaiCockpitModule.Logic;
    o._dataTicker   = null;
    //..........................................................
    // @method

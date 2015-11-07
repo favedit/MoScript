@@ -35,8 +35,10 @@ MO.FGuiSelectAutomaticEffect_drawRenderable = function FGuiSelectAutomaticEffect
    var materialInfo = material.info();
    o.bindMaterial(material);
    // 绑定所有属性流
-   program.setParameter('vc_model_matrix', renderable.currentMatrix());
-   program.setParameter('vc_vp_matrix', region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix));
+   var matrix = renderable.currentMatrix();
+   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
+   program.setParameter('vc_model_matrix', matrix);
+   program.setParameter('vc_vp_matrix', vpMatrix);
    program.setParameter4('vc_offset', size.width, size.height, 1 - (selectX / size.width) * 2, (selectY / size.height) * 2 - 1);
    // 设置材质
    var i = index + 1;

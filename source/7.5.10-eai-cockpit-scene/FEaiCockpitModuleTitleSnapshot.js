@@ -99,6 +99,9 @@ MO.FEaiCockpitModuleTitleSnapshot_construct = function FEaiCockpitModuleTitleSna
    var o = this;
    o.__base.FEaiCockpitCubeControl.construct.call(o);
    // 创建属性
+   o._cellLocation.set(0, 0, 0);
+   o._cellSize.set(11, 1);
+   o._size.set(512, 1024);
    o._units = new MO.TObjects();
    o._currentDate = new MO.TDate();
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
@@ -112,9 +115,6 @@ MO.FEaiCockpitModuleTitleSnapshot_construct = function FEaiCockpitModuleTitleSna
 //==========================================================
 MO.FEaiCockpitModuleTitleSnapshot_setup = function FEaiCockpitModuleTitleSnapshot_setup() {
    var o = this;
-   // 设置位置
-   o._cellLocation.set(0, 0, 0);
-   o._cellSize.set(11, 2);
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建图片
    var image = o._logoImage = imageConsole.load('{eai.resource}/live/company.png');

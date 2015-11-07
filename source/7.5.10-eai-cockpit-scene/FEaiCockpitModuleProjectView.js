@@ -51,6 +51,7 @@ MO.FEaiCockpitModuleProjectView_construct = function FEaiCockpitModuleProjectVie
    var o = this;
    o.__base.FEaiCockpitCubeControl.construct.call(o);
    // 创建属性
+   o._size.set(1920, 1080);
 }
 
 //==========================================================
