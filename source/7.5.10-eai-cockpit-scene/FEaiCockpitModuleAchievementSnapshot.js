@@ -102,6 +102,8 @@ MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAc
    var o = this;
    o.__base.FEaiCockpitCubeControl.construct.call(o);
    // 创建属性
+   o._cellLocation.set(11, 4, 0);
+   o._cellSize.set(5, 5);
    o._size.set(600, 840);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
@@ -116,9 +118,6 @@ MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAc
 //==========================================================
 MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchievementSnapshot_setup(){
    var o = this;
-   // 设置位置
-   o._cellLocation.set(11, 2, 0);
-   o._cellSize.set(5, 7);
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');

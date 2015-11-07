@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 MO.FE3dSimpleStage = function FE3dSimpleStage(o){
-   o = MO.RClass.inherits(this, o, MO.FE3dStage);
+   o = MO.Class.inherits(this, o, MO.FE3dStage);
    //..........................................................
    // @attribute
    o._optionKeyboard = true;

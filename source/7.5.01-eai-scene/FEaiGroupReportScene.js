@@ -6,7 +6,7 @@
 // @history 150604
 //==========================================================
 MO.FEaiGroupReportScene = function FEaiGroupReportScene(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiScene);
+   o = MO.Class.inherits(this, o, MO.FEaiScene);
    //..........................................................
    // @attribute
    o._code = MO.EEaiScene.GroupReport;

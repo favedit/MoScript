@@ -10,6 +10,7 @@ MO.FEaiCockpitCubeControl = function FEaiCockpitCubeControl(o) {
    //..........................................................
    // @attribute
    o._moduleManager = MO.Class.register(o, new MO.AGetSet('_moduleManager'));
+   o._module        = MO.Class.register(o, new MO.AGetSet('_module'));
    o._cellLocation  = MO.Class.register(o, new MO.AGetter('_cellLocation'));
    o._cellSize      = MO.Class.register(o, new MO.AGetter('_cellSize'));
    //..........................................................

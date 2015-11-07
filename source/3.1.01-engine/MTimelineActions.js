@@ -50,7 +50,8 @@ MO.MTimelineActions_setup = function MTimelineActions_setup(){
 // @param action:MTimelineAction 命令
 //==========================================================
 MO.MTimelineActions_pushAction = function MTimelineActions_pushAction(action){
-   this._actions.push(action);
+   var o = this;
+   o._actions.push(action);
 }
 
 //==========================================================
@@ -62,21 +63,21 @@ MO.MTimelineActions_pushAction = function MTimelineActions_pushAction(action){
 MO.MTimelineActions_process = function MTimelineActions_process(context){
    var o = this;
    // 保存时刻
-   var tick = context.tick;
+   //var tick = context.tick;
    // 处理命令集合
    var actions = o._actions;
    var count = actions.count();
    for(var i = count - 1; i >= 0; i--){
       var action = actions.at(i);
       // 检查时刻
-      var actionTick = tick - action.tick;
-      if(actionTick < 0){
-         continue;
-      }
+      //var actionTick = tick - action.tick;
+      //if(actionTick < 0){
+      //   continue;
+      //}
       // 逻辑处理
       if(!action.statusStart()){
          // 开始处理
-         action.start();
+         action.start(context);
       }else if(action.statusStop()){
          // 停止处理
          actions.erase(i);
@@ -86,17 +87,17 @@ MO.MTimelineActions_process = function MTimelineActions_process(context){
          var duration = action.duration();
          if(duration != 0){
             if(actionTick > duration){
-               action.stop();
+               action.stop(context);
                continue;
             }
          }
          // 逻辑处理
-         context.tick = actionTick;
+         // context.tick = actionTick;
          action.process(context);
       }
    }
    // 恢复时刻
-   context.tick = tick;
+   // context.tick = tick;
 }
 
 //==========================================================

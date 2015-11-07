@@ -6,7 +6,7 @@
 // @history 150618
 //==========================================================
 MO.FEaiChartMktCustomerV2Scene = function FEaiChartMktCustomerV2Scene(o) {
-   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
+   o = MO.Class.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
    o._code                   = MO.EEaiScene.ChartCustomer;

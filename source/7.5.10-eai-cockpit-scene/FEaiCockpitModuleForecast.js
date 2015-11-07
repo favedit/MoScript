@@ -47,13 +47,14 @@ MO.FEaiCockpitModuleForecast_setup = function FEaiCockpitModuleForecast_setup(){
    var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitModuleForecastSnapshot);
    snapshot.linkGraphicContext(o);
    snapshot.setModuleManager(o._moduleManager);
+   snapshot.placeInCell();
    snapshot.size().set(512, 1024);
    snapshot.setup();
-   snapshot.placeInCell();
    // 创建视图
    var view = o._controlView = MO.Class.create(MO.FEaiCockpitModuleForecastView);
    view.linkGraphicContext(o);
    view.setModuleManager(o._moduleManager);
+   view.setModule(o);
    view.size().set(1920, 1080);
    view.setup();
 }

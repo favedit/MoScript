@@ -12,41 +12,42 @@ MO.SValue3 = function SValue3(x, y, z){
    var o = this;
    //..........................................................
    // @attribute
-   o.x            = MO.Runtime.nvl(x, 0);
-   o.y            = MO.Runtime.nvl(y, 0);
-   o.z            = MO.Runtime.nvl(z, 0);
+   o.x              = MO.Runtime.nvl(x, 0);
+   o.y              = MO.Runtime.nvl(y, 0);
+   o.z              = MO.Runtime.nvl(z, 0);
    //..........................................................
    // @method
-   o.isEmpty      = MO.SValue3_isEmpty;
+   o.isEmpty        = MO.SValue3_isEmpty;
    // @method
-   o.equals       = MO.SValue3_equals;
-   o.equalsData   = MO.SValue3_equalsData;
+   o.equals         = MO.SValue3_equals;
+   o.equalsData     = MO.SValue3_equalsData;
    // @method
-   o.assign       = MO.SValue3_assign;
-   o.setMin       = MO.SValue3_setMin;
-   o.setMax       = MO.SValue3_setMax;
-   o.set          = MO.SValue3_set;
-   o.setAll       = MO.SValue3_setAll;
+   o.assign         = MO.SValue3_assign;
+   o.setMin         = MO.SValue3_setMin;
+   o.setMax         = MO.SValue3_setMax;
+   o.set            = MO.SValue3_set;
+   o.setAll         = MO.SValue3_setAll;
    // @method
-   o.add          = MO.SValue3_add;
-   o.addValue3    = MO.SValue3_addValue3;
-   o.mul          = MO.SValue3_mul;
-   o.mulAll       = MO.SValue3_mulAll;
+   o.add            = MO.SValue3_add;
+   o.addValue3      = MO.SValue3_addValue3;
+   o.mul            = MO.SValue3_mul;
+   o.mulAll         = MO.SValue3_mulAll;
    // @method
-   o.length       = MO.SValue3_absolute;
-   o.lengthTo     = MO.SValue3_lengthTo;
-   o.absolute     = MO.SValue3_absolute;
-   o.normalize    = MO.SValue3_normalize;
-   o.negative     = MO.SValue3_negative;
+   o.length         = MO.SValue3_absolute;
+   o.lengthTo       = MO.SValue3_lengthTo;
+   o.lengthToValue3 = MO.SValue3_lengthToValue3;
+   o.absolute       = MO.SValue3_absolute;
+   o.normalize      = MO.SValue3_normalize;
+   o.negative       = MO.SValue3_negative;
    // @method
-   o.serialize    = MO.SValue3_serialize;
-   o.unserialize  = MO.SValue3_unserialize3;
-   o.unserialize2 = MO.SValue3_unserialize2;
-   o.unserialize3 = MO.SValue3_unserialize3;
+   o.serialize      = MO.SValue3_serialize;
+   o.unserialize    = MO.SValue3_unserialize3;
+   o.unserialize2   = MO.SValue3_unserialize2;
+   o.unserialize3   = MO.SValue3_unserialize3;
    // @method
-   o.parse        = MO.SValue3_parse;
-   o.toDisplay    = MO.SValue3_toDisplay;
-   o.toString     = MO.SValue3_toString;
+   o.parse          = MO.SValue3_parse;
+   o.toDisplay      = MO.SValue3_toDisplay;
+   o.toString       = MO.SValue3_toString;
    return o;
 }
 
@@ -221,6 +222,20 @@ MO.SValue3_lengthTo = function SValue3_lengthTo(x, y, z){
    var cx = o.x - x;
    var cy = o.y - y;
    var cz = o.z - z;
+   return Math.sqrt((cx * cx) + (cy * cy) + (cz * cz));
+}
+
+//==========================================================
+// <T>获得长度。</T>
+//
+// @method
+// @return Number 绝对值
+//==========================================================
+MO.SValue3_lengthToValue3 = function SValue3_lengthTo(value){
+   var o = this;
+   var cx = o.x - value.x;
+   var cy = o.y - value.y;
+   var cz = o.z - value.z;
    return Math.sqrt((cx * cx) + (cy * cy) + (cz * cz));
 }
 

@@ -6,7 +6,7 @@
 // @version 150611
 //==========================================================
 MO.MUiMargin = function MUiMargin(o){
-   o = MO.RClass.inherits(this, o);
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @property 填充结构
    o._margin   = MO.RClass.register(o, [new MO.APtyPadding('_margin'), new MO.AGetter('_margin')]);

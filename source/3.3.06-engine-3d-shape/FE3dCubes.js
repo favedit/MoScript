@@ -144,7 +144,7 @@ MO.FE3dCubes_setup = function FE3dCubes_setup(){
    // 设置材质
    var info = o.material().info();
    info.optionAlpha = true;
-   info.alphaRate = 0.4;
+   //info.alphaRate = 0.4;
    //info.effectCode = 'control';
    //info.optionDouble = true;
    //info.ambientColor.set(0.2, 0.2, 0.2, 1);

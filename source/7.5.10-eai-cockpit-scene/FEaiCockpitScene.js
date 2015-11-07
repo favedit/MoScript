@@ -6,7 +6,7 @@
 // @history 151101
 //==========================================================
 MO.FEaiCockpitScene = function FEaiCockpitScene(o) {
-   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
+   o = MO.Class.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
    o._code                   = MO.EEaiScene.Cockpit;
@@ -54,11 +54,14 @@ MO.FEaiCockpitScene_onOperationDown = function FEaiCockpitScene_onOperationDown(
    // 得到当前鼠标指向的对象
    var selectTechnique = MO.Console.find(MO.FG3dTechniqueConsole).find(o, MO.FG3dSelectTechnique);
    var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
+   var module = null;
    if(MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
       var control = renderable.control();
-      alert(MO.Class.name(control));
+      if(MO.Class.isClass(control, MO.FEaiCockpitCubeControl)){
+         module = control.module();
+      }
    }
-   o._countryEntity._startTime = 0;
+   o._moduleManager.selectModule(module);
 }
 
 //==========================================================
@@ -192,28 +195,22 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    //..........................................................
    var stage = o._activeStage;
    var camera = stage.camera();
-   //camera.setPosition(0, 0, -20.37);
-   camera.setPosition(0, 0, -14);
+   camera.setPosition(0, 0, -15);
+   //camera.setPosition(0, 0, -14);
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();
    projection.setAngle(40);
    projection.update();
-   //var mapLayer = stage.mapLayer();
    var dataLayer = stage.dataLayer();
    //..........................................................
-   // 创建部门模块
+   // 创建模块管理器
    var moduleManager = o._moduleManager = MO.Class.create(MO.FEaiCockpitModuleManager);
    moduleManager.linkGraphicContext(o);
+   moduleManager.setScene(o);
    moduleManager.setup();
    moduleManager.showSnapshot(dataLayer);
    dataLayer.pushDisplay(moduleManager.display());
-
-   //var display = o._display3d = MO.Class.create(MO.FE3dDisplay);
-   //var matrix = display.matrix();
-   //matrix.tz -= 8;
-   //display.pushRenderable(renderable)
-   //dataLayer.pushDisplay(display);
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();

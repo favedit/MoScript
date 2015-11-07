@@ -2,10 +2,10 @@
 // <T>实时投资表。</T>
 //
 // @class
-// @author maocy
-// @history 151105
+// @author sunpeng
+// @history 151101
 //==========================================================
-MO.FEaiCockpitModuleAchievementView = function FEaiCockpitModuleAchievementView(o){
+MO.FEaiCockpitModuleTrendSnapshot = function FEaiCockpitModuleTrendSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitCubeControl);
    //..........................................................
    // @attribute
@@ -18,18 +18,18 @@ MO.FEaiCockpitModuleAchievementView = function FEaiCockpitModuleAchievementView(
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleAchievementView_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleAchievementView_onPaintBegin;
-   o.onAchievementFetch    = MO.FEaiCockpitModuleAchievementView_onAchievementFetch;
+   o.onImageLoad           = MO.FEaiCockpitModuleTrendSnapshot_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin;
+   o.onAchievementFetch    = MO.FEaiCockpitModuleTrendSnapshot_onAchievementFetch;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleAchievementView_construct;
+   o.construct             = MO.FEaiCockpitModuleTrendSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleAchievementView_setup;
-   o.setData               = MO.FEaiCockpitModuleAchievementView_setData;
-   o.processLogic          = MO.FEaiCockpitModuleAchievementView_processLogic;
+   o.setup                 = MO.FEaiCockpitModuleTrendSnapshot_setup;
+   o.setData               = MO.FEaiCockpitModuleTrendSnapshot_setData;
+   o.processLogic          = MO.FEaiCockpitModuleTrendSnapshot_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleAchievementView_dispose;
+   o.dispose               = MO.FEaiCockpitModuleTrendSnapshot_dispose;
    return o;
 }
 
@@ -38,7 +38,7 @@ MO.FEaiCockpitModuleAchievementView = function FEaiCockpitModuleAchievementView(
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_onImageLoad = function FEaiCockpitModuleAchievementView_onImageLoad(){
+MO.FEaiCockpitModuleTrendSnapshot_onImageLoad = function FEaiCockpitModuleTrendSnapshot_onImageLoad() {
    this.dirty();
 }
 
@@ -47,7 +47,7 @@ MO.FEaiCockpitModuleAchievementView_onImageLoad = function FEaiCockpitModuleAchi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_onPaintBegin = function FEaiCockpitModuleAchievementView_onPaintBegin(event){
+MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrendSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitCubeControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -75,7 +75,7 @@ MO.FEaiCockpitModuleAchievementView_onPaintBegin = function FEaiCockpitModuleAch
    var textLeft = left + (width - titleWidth) * 0.5;
    graphic.drawText(titleText, textLeft, top + 60, '#333333');
    drawPosition += 60
-   //..........................................................
+      //..........................................................
    graphic.setFont(o._rowFontStyle);
 }
 
@@ -84,7 +84,7 @@ MO.FEaiCockpitModuleAchievementView_onPaintBegin = function FEaiCockpitModuleAch
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_onAchievementFetch = function FEaiCockpitModuleAchievementView_onAchievementFetch(event){
+MO.FEaiCockpitModuleTrendSnapshot_onAchievementFetch = function FEaiCockpitModuleTrendSnapshot_onAchievementFetch(event){
    var o = this;
    var content = event.content;
    // 读取数据
@@ -98,13 +98,13 @@ MO.FEaiCockpitModuleAchievementView_onAchievementFetch = function FEaiCockpitMod
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_construct = function FEaiCockpitModuleAchievementView_construct(){
+MO.FEaiCockpitModuleTrendSnapshot_construct = function FEaiCockpitModuleTrendSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitCubeControl.construct.call(o);
    // 创建属性
-   o._size.set(1920, 1080);
-   o._cellLocation.set(0, 0, 8);
-   o._cellSize.set(16, 9);
+   o._cellLocation.set(11, 2, 0);
+   o._cellSize.set(5, 2);
+   o._size.set(600, 240);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
    o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
@@ -116,7 +116,7 @@ MO.FEaiCockpitModuleAchievementView_construct = function FEaiCockpitModuleAchiev
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_setup = function FEaiCockpitModuleAchievementView_setup(){
+MO.FEaiCockpitModuleTrendSnapshot_setup = function FEaiCockpitModuleTrendSnapshot_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
@@ -178,7 +178,7 @@ MO.FEaiCockpitModuleAchievementView_setup = function FEaiCockpitModuleAchievemen
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_setData = function FEaiCockpitModuleAchievementView_setData(data){
+MO.FEaiCockpitModuleTrendSnapshot_setData = function FEaiCockpitModuleTrendSnapshot_setData(data) {
    var o = this;
    var departments = data.departments();
    var grid = o._gridControl;
@@ -202,7 +202,7 @@ MO.FEaiCockpitModuleAchievementView_setData = function FEaiCockpitModuleAchievem
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_processLogic = function FEaiCockpitModuleAchievementView_processLogic(){
+MO.FEaiCockpitModuleTrendSnapshot_processLogic = function FEaiCockpitModuleTrendSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
       var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
@@ -215,7 +215,7 @@ MO.FEaiCockpitModuleAchievementView_processLogic = function FEaiCockpitModuleAch
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_dispose = function FEaiCockpitModuleAchievementView_dispose(){
+MO.FEaiCockpitModuleTrendSnapshot_dispose = function FEaiCockpitModuleTrendSnapshot_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);

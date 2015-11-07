@@ -6,7 +6,7 @@
 // @history 150619
 //==========================================================
 MO.FEaiChartStage = function FEaiChartStage(o){
-   o = MO.RClass.inherits(this, o, MO.FE3dStage);
+   o = MO.Class.inherits(this, o, MO.FE3dStage);
    //..........................................................
    // @attribute
    o._groundLayer    = MO.Class.register(o, new MO.AGetter('_groundLayer'));

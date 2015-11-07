@@ -12,6 +12,8 @@ MO.MTimelineWorker = function MTimelineWorker(o){
    o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
    // @attribute
    o._tick        = MO.Class.register(o, new MO.AGetSet('_tick'), 0);
+   o._startTick   = MO.Class.register(o, new MO.AGetter('_startTick'), 0);
+   o._lastTick    = MO.Class.register(o, new MO.AGetter('_lastTick'), 0);
    o._duration    = MO.Class.register(o, new MO.AGetSet('_duration'), 0);
    // @attribute
    o._statusStart = MO.Class.register(o, new MO.AGetter('_statusStart'), false);
@@ -19,6 +21,7 @@ MO.MTimelineWorker = function MTimelineWorker(o){
    //..........................................................
    // @method
    o.onStart      = MO.MTimelineWorker_onStart;
+   o.onProcess    = MO.MTimelineWorker_onProcess;
    o.onStop       = MO.MTimelineWorker_onStop;
    //..........................................................
    // @method
@@ -37,8 +40,21 @@ MO.MTimelineWorker = function MTimelineWorker(o){
 // <T>开始事件处理。</T>
 //
 // @method
+// @param context:STimelineContext 时间线环境
 //==========================================================
-MO.MTimelineWorker_onStart = function MTimelineWorker_onStart(){
+MO.MTimelineWorker_onStart = function MTimelineWorker_onStart(context){
+   var o = this;
+   o._startTick = context.tick;
+   o._lastTick = context.tick;
+}
+
+//==========================================================
+// <T>逻辑事件处理。</T>
+//
+// @method
+// @param context:STimelineContext 时间线环境
+//==========================================================
+MO.MTimelineWorker_onProcess = function MTimelineWorker_onProcess(context){
    var o = this;
 }
 
@@ -46,8 +62,9 @@ MO.MTimelineWorker_onStart = function MTimelineWorker_onStart(){
 // <T>结束事件处理。</T>
 //
 // @method
+// @param context:STimelineContext 时间线环境
 //==========================================================
-MO.MTimelineWorker_onStop = function MTimelineWorker_onStop(){
+MO.MTimelineWorker_onStop = function MTimelineWorker_onStop(context){
    var o = this;
 }
 
@@ -75,10 +92,10 @@ MO.MTimelineWorker_setup = function MTimelineWorker_setup(){
 //
 // @method
 //==========================================================
-MO.MTimelineWorker_start = function MTimelineWorker_start(){
+MO.MTimelineWorker_start = function MTimelineWorker_start(context){
    var o = this;
    if(!o._statusStart){
-      o.onStart();
+      o.onStart(context);
       o._statusStart = true;
    }
    o._statusStop = false;
@@ -89,8 +106,12 @@ MO.MTimelineWorker_start = function MTimelineWorker_start(){
 //
 // @method
 //==========================================================
-MO.MTimelineWorker_process = function MTimelineWorker_process(){
+MO.MTimelineWorker_process = function MTimelineWorker_process(context){
    var o = this;
+   context.span = context.tick - o._lastTick;
+   context.spanSecond = (context.tick - o._lastTick) * 0.001;
+   o.onProcess(context);
+   o._lastTick = context.tick;
 }
 
 //==========================================================
@@ -98,10 +119,10 @@ MO.MTimelineWorker_process = function MTimelineWorker_process(){
 //
 // @method
 //==========================================================
-MO.MTimelineWorker_stop = function MTimelineWorker_stop(){
+MO.MTimelineWorker_stop = function MTimelineWorker_stop(context){
    var o = this;
    if(!o._statusStop){
-      o.onStop();
+      o.onStop(context);
       o._statusStop = true;
    }
 }

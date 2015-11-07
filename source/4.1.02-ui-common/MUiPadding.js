@@ -6,7 +6,7 @@
 // @version 150611
 //==========================================================
 MO.MUiPadding = function MUiPadding(o){
-   o = MO.RClass.inherits(this, o);
+   o = MO.Class.inherits(this, o);
    //..........................................................
    // @property 填充结构
    o._padding   = MO.RClass.register(o, [new MO.APtyPadding('_padding'), new MO.AGetter('_padding')]);

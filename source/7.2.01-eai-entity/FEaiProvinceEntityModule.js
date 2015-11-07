@@ -6,7 +6,7 @@
 // @history 150728
 //==========================================================
 MO.FEaiProvinceEntityModule = function FEaiProvinceEntityModule(o){
-   o = MO.RClass.inherits(this, o, MO.FEaiEntityModule);
+   o = MO.Class.inherits(this, o, MO.FEaiEntityModule);
    //..........................................................
    // @attribute
    o._provinces     = MO.Class.register(o, new MO.AGetter('_provinces'));

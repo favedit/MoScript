@@ -74,10 +74,13 @@ MO.FMainTimeline_process = function FMainTimeline_process(){
    // 计算开始间隔
    if(o._startTick == 0){
       o._startTick = tick;
+      return true;
    }
+   var span = tick - o._startTick;
    // 设置环境
    var context = o._context;
-   context.tick = o._startTick - tick;
+   context.tick = span;
+   context.second = span / 1000;
    // 命令处理
    o.__base.MTimelineActions.process.call(o, context);
    // 时间线处理

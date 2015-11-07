@@ -7,7 +7,7 @@
 // @history 151013
 //==========================================================
 MO.FEaiChartSesameFinancialScene = function FEaiChartSesameFinancialScene(o) {
-   o = MO.RClass.inherits(this, o, MO.FEaiChartScene);
+   o = MO.Class.inherits(this, o, MO.FEaiChartScene);
    //..........................................................
    // @attribute
    o._code                   = MO.EEaiScene.ChartCustomer;

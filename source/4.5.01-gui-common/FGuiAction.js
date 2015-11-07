@@ -68,7 +68,7 @@ MO.FGuiAction_startControl = function FGuiAction_startControl(context, control){
 //==========================================================
 MO.FGuiAction_start = function FGuiAction_start(context){
    var o = this;
-   o.__base.MTimelineAction.start.call(o);
+   o.__base.MTimelineAction.start.call(o, context);
    // 处理所有控件
    var controls = o._controls;
    var count = controls.count();
@@ -97,7 +97,7 @@ MO.FGuiAction_processControl = function FGuiAction_processControl(context, contr
 //==========================================================
 MO.FGuiAction_process = function FGuiAction_process(context){
    var o = this;
-   o.__base.MTimelineAction.process.call(o);
+   o.__base.MTimelineAction.process.call(o, context);
    // 处理所有控件
    var controls = o._controls;
    var count = controls.count();
