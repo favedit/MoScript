@@ -247,7 +247,7 @@ MO.FEaiCockpitModuleManager_placeCellControl = function FEaiCockpitModuleManager
 //==========================================================
 MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_selectModeCd(modeCd, module){
    var o = this;
-   var moveSpeed = 20;
+   var moveSpeed = 16;
    var logoDisplay = o._logoDisplay;
    var snapshotDisplay = o._snapshotDisplay;
    var viewDisplay = o._viewDisplay;
@@ -260,10 +260,12 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          snapshotDisplay.setVisible(false);
          viewDisplay.setVisible(false);
          // 移动相机
-         var camera = stage.camera();
-         camera.setPosition(0, 0, -13);
-         camera.lookAt(0, 0, 0);
-         camera.update();
+         // 移动相机
+         var action = MO.Class.create(MO.FE3dCameraTimelineAction);
+         action.setSpeed(moveSpeed);
+         action.link(camera);
+         action.targetPosition().set(0, 0, -13);
+         o._mainTimeline.pushAction(action);
          break;
       case MO.EEaiCockpitMode.Main:
          // 显示控件

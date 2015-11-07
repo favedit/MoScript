@@ -120,13 +120,13 @@ MO.FEaiCockpitModuleTrendSnapshot_setup = function FEaiCockpitModuleTrendSnapsho
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/trend/ground.png');
    image.addLoadListener(o, o.onImageLoad);
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
    grid.setLocation(6, 80);
-   grid.setSize(578, 760);
+   grid.setSize(578, 260);
    grid.setHeadHeight(35);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';

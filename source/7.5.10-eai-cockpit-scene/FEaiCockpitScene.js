@@ -57,6 +57,11 @@ MO.FEaiCockpitScene_onOperationDown = function FEaiCockpitScene_onOperationDown(
       moduleManager.selectModeCd(MO.EEaiCockpitMode.Main);
       return;
    }
+   // 选中主页面
+   if(moduleManager.modeCd() == MO.EEaiCockpitMode.Module){
+      moduleManager.selectModeCd(MO.EEaiCockpitMode.Main);
+      return;
+   }
    // 得到当前鼠标指向的对象
    var selectTechnique = MO.Console.find(MO.FG3dTechniqueConsole).find(o, MO.FG3dSelectTechnique);
    var renderable = selectTechnique.test(region, event.offsetX, event.offsetY);
@@ -72,7 +77,11 @@ MO.FEaiCockpitScene_onOperationDown = function FEaiCockpitScene_onOperationDown(
       }
    }
    // 返回主页面
-   moduleManager.selectModeCd(MO.EEaiCockpitMode.Main)
+   if(moduleManager.modeCd() == MO.EEaiCockpitMode.Main){
+      moduleManager.selectModeCd(MO.EEaiCockpitMode.Logo)
+   }else{
+      moduleManager.selectModeCd(MO.EEaiCockpitMode.Main)
+   }
 }
 
 //==========================================================
@@ -206,8 +215,7 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    //..........................................................
    var stage = o._activeStage;
    var camera = stage.camera();
-   camera.setPosition(0, 0, -15);
-   //camera.setPosition(0, 0, -14);
+   camera.setPosition(0, 0, -13);
    camera.lookAt(0, 0, 0);
    camera.update();
    var projection = camera.projection();

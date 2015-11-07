@@ -107,7 +107,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAc
    o._size.set(600, 840);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
-   o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
+   o._backgroundPadding = new MO.SPadding(20, 0, 20, 0);
    o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
 }
 
@@ -120,7 +120,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/achievement/ground.png');
    image.addLoadListener(o, o.onImageLoad);
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);

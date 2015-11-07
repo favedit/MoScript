@@ -20,13 +20,11 @@ MO.FEaiCockpitModuleLogoSnapshot = function FEaiCockpitModuleLogoSnapshot(o) {
    // @event
    o.onImageLoad           = MO.FEaiCockpitModuleLogoSnapshot_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitModuleLogoSnapshot_onPaintBegin;
-   o.onAchievementFetch    = MO.FEaiCockpitModuleLogoSnapshot_onAchievementFetch;
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitModuleLogoSnapshot_construct;
    // @method
    o.setup                 = MO.FEaiCockpitModuleLogoSnapshot_setup;
-   o.setData               = MO.FEaiCockpitModuleLogoSnapshot_setData;
    o.processLogic          = MO.FEaiCockpitModuleLogoSnapshot_processLogic;
    // @method
    o.dispose               = MO.FEaiCockpitModuleLogoSnapshot_dispose;
@@ -57,40 +55,9 @@ MO.FEaiCockpitModuleLogoSnapshot_onPaintBegin = function FEaiCockpitModuleLogoSn
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   var right = left + width;
-   var bottom = top + height;
-   var drawPosition = top;
-   var heightRate = height / o._size.height;
-   var drawLeft = left + 12;
-   var drawRight = right - 12;
-   var drawWidth = right - left;
    //..........................................................
    // 绘制背景
-   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
-   //..........................................................
-   // 绘制标题
-   var titleText = 'e租宝财富端本月业绩';
-   graphic.setFont('bold 32px Microsoft YaHei');
-   var titleWidth = graphic.textWidth(titleText);
-   var textLeft = left + (width - titleWidth) * 0.5;
-   graphic.drawText(titleText, textLeft, top + 60, '#333333');
-   drawPosition += 60
-      //..........................................................
-   graphic.setFont(o._rowFontStyle);
-}
-
-//==========================================================
-// <T>获取业绩数据。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitModuleLogoSnapshot_onAchievementFetch = function FEaiCockpitModuleLogoSnapshot_onAchievementFetch(event){
-   var o = this;
-   var content = event.content;
-   // 读取数据
-   var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   o.setData(data);
+   graphic.drawImage(o._backgroundImage, left, top, width, height);
 }
 
 //==========================================================
@@ -107,7 +74,6 @@ MO.FEaiCockpitModuleLogoSnapshot_construct = function FEaiCockpitModuleLogoSnaps
    o._size.set(1920, 1080);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
-   o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
    o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
 }
 
@@ -120,81 +86,8 @@ MO.FEaiCockpitModuleLogoSnapshot_setup = function FEaiCockpitModuleLogoSnapshot_
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/live/grid.png');
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/logo/ground.png');
    image.addLoadListener(o, o.onImageLoad);
-   //..........................................................
-   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
-   grid.setOptionClip(true);
-   grid.setLocation(6, 80);
-   grid.setSize(578, 760);
-   grid.setHeadHeight(35);
-   grid.setHeadBackColor('#122A46');
-   grid.headFont().font = 'Microsoft YaHei';
-   grid.headFont().size = 22;
-   grid.headFont().color = '#00B2F2';
-   grid.setRowHeight(28);
-   grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 18;
-   grid.rowFont().color = '#59FDE9';
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('label');
-   column.setLabel('公司名称');
-   column.setDataName('label');
-   column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('investmentAmount');
-   column.setLabel('投资额');
-   column.setDataName('investment_amount');
-   column.cellPadding().right = 10;
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.setWidth(140);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('level');
-   column.setLabel('排名');
-   column.setDataName('level');
-   column.setWidth(60);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('trend');
-   column.setLabel('趋势');
-   column.setDataName('trend');
-   column.setWidth(60);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   o.push(grid);
-}
-
-//==========================================================
-// <T>增加一个数据实体。</T>
-//
-// @method
-// @param unit:
-//==========================================================
-MO.FEaiCockpitModuleLogoSnapshot_setData = function FEaiCockpitModuleLogoSnapshot_setData(data) {
-   var o = this;
-   var departments = data.departments();
-   var grid = o._gridControl;
-   grid.clearRows();
-   var count = departments.count();
-   for (var i = 0; i < count; i++) {
-      var department = departments.at(i);
-      var row = grid.allocRow();
-      // 排行榜数据填充
-      row.set('label', department.label());
-      row.set('investment_amount', department.investmentAmount());
-      row.set('level', 0);
-      row.set('trend', 0);
-      grid.pushRow(row);
-   }
-   o.dirty();
 }
 
 //==========================================================
@@ -204,10 +97,6 @@ MO.FEaiCockpitModuleLogoSnapshot_setData = function FEaiCockpitModuleLogoSnapsho
 //==========================================================
 MO.FEaiCockpitModuleLogoSnapshot_processLogic = function FEaiCockpitModuleLogoSnapshot_processLogic(){
    var o = this;
-   if(o._dataTicker.process()){
-      var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
-      achievement.doFetch(o, o.onAchievementFetch);
-   }
 }
 
 //==========================================================

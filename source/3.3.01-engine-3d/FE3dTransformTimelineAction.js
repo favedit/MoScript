@@ -5,27 +5,29 @@
 // @author maocy
 // @history 150610
 //==========================================================
-MO.FE3dMoveTimelineAction = function FE3dMoveTimelineAction(o){
+MO.FE3dTransformTimelineAction = function FE3dTransformTimelineAction(o){
    o = MO.Class.inherits(this, o, MO.MTimelineAction);
    //..........................................................
    // @attribute
-   o._code            = 'move';
+   o._code            = 'transform';
+   // @attribute
+   o._sources         = null;
    // @attribute
    o._currentMatrix   = MO.Class.register(o, new MO.AGetter('_currentMatrix'));
    o._sourceMatrix    = MO.Class.register(o, new MO.AGetter('_sourceMatrix'));
    o._targetMatrix    = MO.Class.register(o, new MO.AGetter('_targetMatrix'));
    //..........................................................
    // @method
-   o.onStart          = MO.FE3dMoveTimelineAction_onStart;
-   o.onProcess        = MO.FE3dMoveTimelineAction_onProcess;
-   o.onStop           = MO.FE3dMoveTimelineAction_onStop;
+   o.onStart          = MO.FE3dTransformTimelineAction_onStart;
+   o.onProcess        = MO.FE3dTransformTimelineAction_onProcess;
+   o.onStop           = MO.FE3dTransformTimelineAction_onStop;
    //..........................................................
    // @method
-   o.construct        = MO.FE3dMoveTimelineAction_construct;
+   o.construct        = MO.FE3dTransformTimelineAction_construct;
    // @method
-   o.linkSource       = MO.FE3dMoveTimelineAction_linkSource;
+   o.linkSource       = MO.FE3dTransformTimelineAction_linkSource;
    // @method
-   o.dispose          = MO.FE3dMoveTimelineAction_dispose;
+   o.dispose          = MO.FE3dTransformTimelineAction_dispose;
    return o;
 }
 
@@ -34,7 +36,7 @@ MO.FE3dMoveTimelineAction = function FE3dMoveTimelineAction(o){
 //
 // @method
 //==========================================================
-MO.FE3dMoveTimelineAction_onStart = function FE3dMoveTimelineAction_onStart(){
+MO.FE3dTransformTimelineAction_onStart = function FE3dTransformTimelineAction_onStart(){
    var o = this;
    o.__base.MTimelineAction.onStart.call(o);
 }
@@ -44,7 +46,7 @@ MO.FE3dMoveTimelineAction_onStart = function FE3dMoveTimelineAction_onStart(){
 //
 // @method
 //==========================================================
-MO.FE3dMoveTimelineAction_onProcess = function FE3dMoveTimelineAction_onProcess(){
+MO.FE3dTransformTimelineAction_onProcess = function FE3dTransformTimelineAction_onProcess(){
    var o = this;
    o.__base.MTimelineAction.onProcess.call(o);
 }
@@ -54,7 +56,7 @@ MO.FE3dMoveTimelineAction_onProcess = function FE3dMoveTimelineAction_onProcess(
 //
 // @method
 //==========================================================
-MO.FE3dMoveTimelineAction_onStop = function FE3dMoveTimelineAction_onStop(){
+MO.FE3dTransformTimelineAction_onStop = function FE3dTransformTimelineAction_onStop(){
    var o = this;
    o.__base.MTimelineAction.onStop.call(o);
 }
@@ -64,7 +66,7 @@ MO.FE3dMoveTimelineAction_onStop = function FE3dMoveTimelineAction_onStop(){
 //
 // @method
 //==========================================================
-MO.FE3dMoveTimelineAction_construct = function FE3dMoveTimelineAction_construct(){
+MO.FE3dTransformTimelineAction_construct = function FE3dTransformTimelineAction_construct(){
    var o = this;
    o.__base.MTimelineAction.construct.call(o);
    o._currentMatrix = new MO.SMatrix3d();
@@ -77,7 +79,7 @@ MO.FE3dMoveTimelineAction_construct = function FE3dMoveTimelineAction_construct(
 //
 // @method
 //==========================================================
-MO.FE3dMoveTimelineAction_linkSource = function FE3dMoveTimelineAction_linkSource(source){
+MO.FE3dTransformTimelineAction_linkSource = function FE3dTransformTimelineAction_linkSource(source){
    var o = this;
    var matrix = source.matrix();
    o._currentMatrix.assign(matrix);
@@ -90,7 +92,7 @@ MO.FE3dMoveTimelineAction_linkSource = function FE3dMoveTimelineAction_linkSourc
 //
 // @method
 //==========================================================
-MO.FE3dMoveTimelineAction_setTargetControl = function FE3dMoveTimelineAction_setTargetControl(){
+MO.FE3dTransformTimelineAction_setTargetControl = function FE3dTransformTimelineAction_setTargetControl(){
    var o = this;
 }
 
@@ -99,7 +101,7 @@ MO.FE3dMoveTimelineAction_setTargetControl = function FE3dMoveTimelineAction_set
 //
 // @method
 //==========================================================
-MO.FE3dMoveTimelineAction_dispose = function FE3dMoveTimelineAction_dispose(){
+MO.FE3dTransformTimelineAction_dispose = function FE3dTransformTimelineAction_dispose(){
    var o = this;
    // 父处理
    o.__base.MTimelineAction.dispose.call(o);
