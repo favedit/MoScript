@@ -110,7 +110,7 @@ MO.FEaiCockpitModuleTitleSnapshot_setup = function FEaiCockpitModuleTitleSnapsho
    var o = this;
    //创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/title/title_bg.png');
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/title/ground.png');
    image.addLoadListener(o, o.onImageLoad);
 
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.cockpit.LogoBar');

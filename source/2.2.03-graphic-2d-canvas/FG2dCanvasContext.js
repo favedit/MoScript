@@ -49,6 +49,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawText             = MO.FG2dCanvasContext_drawText;
    o.drawTextVertical     = MO.FG2dCanvasContext_drawTextVertical;
    o.drawImage            = MO.FG2dCanvasContext_drawImage;
+   o.drawRectangleImage   = MO.FG2dCanvasContext_drawRectangleImage;
    o.drawGridImage        = MO.FG2dCanvasContext_drawGridImage;
    o.drawQuadrilateral    = MO.FG2dCanvasContext_drawQuadrilateral;
    // @method
@@ -368,6 +369,17 @@ MO.FG2dCanvasContext_drawImage = function FG2dCanvasContext_drawImage(content, x
    }
    // 绘制位图
    handle.drawImage(data, x, y, width, height);
+}
+
+//==========================================================
+// <T>绘制图像。</T>
+//
+// @method
+// @param content:Object 图像内容
+// @param rectangle:SRectangle 矩形
+//==========================================================
+MO.FG2dCanvasContext_drawRectangleImage = function FG2dCanvasContext_drawRectangleImage(content, rectangle){
+   this.drawImage(content, rectangle.left, rectangle.top, rectangle.width, rectangle.height);
 }
 
 //==========================================================

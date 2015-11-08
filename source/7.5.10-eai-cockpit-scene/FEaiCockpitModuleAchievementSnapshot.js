@@ -13,7 +13,6 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
    o._dataTicker           = null;
    // @attribute
    o._backgroundImage      = null;
-   o._backgroundPadding    = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -57,26 +56,19 @@ MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin = function FEaiCockpitModul
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   var right = left + width;
-   var bottom = top + height;
-   var drawPosition = top;
-   var heightRate = height / o._size.height;
-   var drawLeft = left + 12;
-   var drawRight = right - 12;
-   var drawWidth = right - left;
    //..........................................................
    // 绘制背景
-   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
+   graphic.drawImage(o._backgroundImage, left, top, width, height);
    //..........................................................
    // 绘制标题
-   var titleText = 'e租宝财富端本月业绩';
-   graphic.setFont('bold 32px Microsoft YaHei');
-   var titleWidth = graphic.textWidth(titleText);
-   var textLeft = left + (width - titleWidth) * 0.5;
-   graphic.drawText(titleText, textLeft, top + 60, '#333333');
-   drawPosition += 60
-      //..........................................................
-   graphic.setFont(o._rowFontStyle);
+   //var titleText = 'e租宝财富端本月业绩';
+   //graphic.setFont('bold 32px Microsoft YaHei');
+   //var titleWidth = graphic.textWidth(titleText);
+   //var textLeft = left + (width - titleWidth) * 0.5;
+   //graphic.drawText(titleText, textLeft, top + 60, '#333333');
+   //drawPosition += 60
+   //..........................................................
+   //graphic.setFont(o._rowFontStyle);
 }
 
 //==========================================================
@@ -104,10 +96,8 @@ MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAc
    // 创建属性
    o._cellLocation.set(11, 4, 0);
    o._cellSize.set(5, 5);
-   o._size.set(600, 840);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
-   o._backgroundPadding = new MO.SPadding(20, 0, 20, 0);
    o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
 }
 
@@ -125,8 +115,8 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
-   grid.setLocation(6, 80);
-   grid.setSize(578, 760);
+   grid.setLocation(6, 100);
+   grid.setSize(578, 500);
    grid.setHeadHeight(35);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';

@@ -156,8 +156,11 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    module.setup();
    o.register(module);
    //..........................................................
-   var cellWidth = 1920 / 16;
-   var cellHeight = 1920 / 9;
+   var application = o._scene.application();
+   var desktop = application.desktop();
+   var logicSize = desktop.logicSize();
+   var cellWidth = logicSize.width / 16;
+   var cellHeight = logicSize.height / 9;
    // 显示模块
    var modules = o._modules;
    var count = modules.count();
@@ -170,7 +173,7 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
       snapshot.size().set(cellWidth * snapshotCellSize.width, cellHeight * snapshotCellSize.height);
       // 设置视图大小
       var view = module.controlView();
-      view.size().set(1920, 1080);
+      view.size().assign(logicSize);
       // 设置控件
       if(typeCd == MO.EEaiCockpitModule.Logo){
          // 显示缩略图

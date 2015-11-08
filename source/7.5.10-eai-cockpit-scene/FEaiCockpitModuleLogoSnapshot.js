@@ -51,13 +51,9 @@ MO.FEaiCockpitModuleLogoSnapshot_onPaintBegin = function FEaiCockpitModuleLogoSn
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
    //..........................................................
    // 绘制背景
-   graphic.drawImage(o._backgroundImage, left, top, width, height);
+   graphic.drawRectangleImage(o._backgroundImage, rectangle);
 }
 
 //==========================================================

@@ -49,14 +49,12 @@ MO.FEaiCockpitModuleSplash_setup = function FEaiCockpitModuleSplash_setup(){
    snapshot.linkGraphicContext(o);
    snapshot.setModuleManager(o._moduleManager);
    snapshot.setModule(o);
-   snapshot.size().set(512, 1024);
    snapshot.setup();
    // 创建视图
    var view = o._controlView = MO.Class.create(MO.FEaiCockpitModuleSplashView);
    view.linkGraphicContext(o);
    view.setModuleManager(o._moduleManager);
    view.setModule(o);
-   view.size().set(1920, 1080);
    view.setup();
 }
 
