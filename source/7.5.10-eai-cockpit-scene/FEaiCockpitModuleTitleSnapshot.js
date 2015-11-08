@@ -9,28 +9,29 @@ MO.FEaiCockpitModuleTitleSnapshot = function FEaiCockpitModuleTitleSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
-   o._dataTicker           = null;
-   o._logoBar              = null;
-   o._currentDate          = null;
+   o._dataTicker              = null;
+   o._logoBar                 = null;
+   o._currentDate             = null;
    // @attribute
-   o._backgroundImage      = null;
-   o._backgroundPadding    = null;
+   o._backgroundImage         = null;
+   o._backgroundPadding       = null;
    // @attribute
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleTitleSnapshot_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleTitleSnapshot_onPaintBegin;
-   o.onTitleFetch          = MO.FEaiCockpitModuleTitleSnapshot_onTitleFetch;
+   o.onImageLoad              = MO.FEaiCockpitModuleTitleSnapshot_onImageLoad;
+   o.onPaintBegin             = MO.FEaiCockpitModuleTitleSnapshot_onPaintBegin;
+   o.onTitleFetch             = MO.FEaiCockpitModuleTitleSnapshot_onTitleFetch;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleTitleSnapshot_construct;
+   o.construct                = MO.FEaiCockpitModuleTitleSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleTitleSnapshot_setup;
-   o.processLogic          = MO.FEaiCockpitModuleTitleSnapshot_processLogic;
-   o.freshData             = MO.FEaiCockpitModuleTitleSnapshot_freshData;
+   o.setup                    = MO.FEaiCockpitModuleTitleSnapshot_setup;
+   o.processLogic             = MO.FEaiCockpitModuleTitleSnapshot_processLogic;
+   o.freshData                = MO.FEaiCockpitModuleTitleSnapshot_freshData;
+   o.drawText                 = MO.FEaiCockpitModuleTitleSnapshot_drawText;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleTitleSnapshot_dispose;
+   o.dispose                  = MO.FEaiCockpitModuleTitleSnapshot_dispose;
    return o;
 }
 
@@ -80,8 +81,44 @@ MO.FEaiCockpitModuleTitleSnapshot_onPaintBegin = function FEaiCockpitModuleTitle
    dateControl.setLabel(date.format('YYYY/MM/DD'));
    var timeControl = frame.findComponent('time');
    timeControl.setLabel(date.format('HH24:MI'));
+
+   if(o._data != null && o._data.employeeCount() != null)
+   {
+      graphic.setFont('18px Microsoft YaHei');
+      o.drawText(graphic, rectangle, ['#ffffff', '集团现有', 
+                                    '#ffe721', o._data.employeeCount().toString(), 
+                                    '#ffffff', '名员工，', 
+                                    '#ffe721', o._data.marketerCount().toString(), 
+                                    '#ffffff', '名理财师，', 
+                                    '#ffe721', o._data.subsidiaryCount().toString(), 
+                                    '#ffffff', '个分公司，', 
+                                    '#ffe721', o._data.wealthCount().toString(), 
+                                    '#ffffff', '个财富端分公司，分布在', 
+                                    '#ffe721', o._data.workplaceCount().toString(), 
+                                    '#ffffff', '个职场']);
+   }
+   
    //..........................................................
    graphic.setFont(o._rowFontStyle);
+}
+
+MO.FEaiCockpitModuleTitleSnapshot_drawText = function FEaiCockpitModuleTitleSnapshot_drawText(graphic, rect, data) {
+   var left = rect.left;
+   var top = rect.left;
+   var width = rect.width;
+   var height = rect.height;
+   var leftPosition = left + 20;
+   var topPositon = top + 68;
+
+   var i;
+   var len = data.length;
+   for(i=0; i < len; i+=2) {
+      var color = data[i];
+      var text = data[i+1];
+      var textWidth = graphic.textWidth(text);
+      graphic.drawText(text, leftPosition, topPositon, color);
+      leftPosition += textWidth;
+   }
 }
 
 //==========================================================
@@ -94,7 +131,7 @@ MO.FEaiCockpitModuleTitleSnapshot_construct = function FEaiCockpitModuleTitleSna
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
    o._cellLocation.set(3, 0, 0);
-   o._cellSize.set(8, 1);   o._currentDate = new MO.TDate();
+   o._cellSize.set(8, 1); o._currentDate = new MO.TDate();
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._data = MO.Class.create(MO.FEaiCockpitLogicTitle);
    o._backgroundPadding = new MO.SPadding(0, 0, 0, 0);
@@ -140,6 +177,12 @@ MO.FEaiCockpitModuleTitleSnapshot_freshData = function FEaiCockpitModuleTitleSna
 
       var currentInvestment = frame.findComponent('currentInvestment');
       currentInvestment.setValue(o._data.currentInvestment().toString());
+
+      var thingCount = frame.findComponent('thing');
+      thingCount.setLabel("(" + o._data.thingCount().toString() + ")");
+
+      var unreadCount = frame.findComponent('unread');
+      unreadCount.setLabel("(" + o._data.unreadCount().toString() + ")");
    }
 }
 
