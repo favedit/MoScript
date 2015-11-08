@@ -9,8 +9,8 @@ MO.FEaiCockpitLogicTitle = function FEaiCockpitLogicTitle(o) {
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
-   o._investmentTotle = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Int32)]);
-   o._currentInvestment = MO.Class.register(o, [new MO.AGetter('_currentInvestment'), new MO.APersistence('_currentInvestment', MO.EDataType.Int32)]);
+   o._investmentTotle = MO.Class.register(o, [new MO.AGetter('_investmentTotal'), new MO.APersistence('_investmentTotal', MO.EDataType.Double)]);
+   o._currentInvestment = MO.Class.register(o, [new MO.AGetter('_currentInvestment'), new MO.APersistence('_currentInvestment', MO.EDataType.Double)]);
    o._employeeCount = MO.Class.register(o, [new MO.AGetter('_employeeCount'), new MO.APersistence('_employeeCount', MO.EDataType.Int32)]);
    o._marketerCount = MO.Class.register(o, [new MO.AGetter('_marketerCount'), new MO.APersistence('_marketerCount', MO.EDataType.Int32)]);
    o._subsidiaryCount = MO.Class.register(o, [new MO.AGetter('_subsidiaryCount'), new MO.APersistence('_subsidiaryCount', MO.EDataType.Int32)]);
