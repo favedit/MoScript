@@ -23,5 +23,5 @@ MO.FEaiLogicCockpitTitle = function FEaiLogicCockpitTitle(o) {
 MO.FEaiLogicCockpitTitle_doFetch = function FEaiLogicCockpitTitle_doFetch(owner, callback) {
    var o = this;
    var parameters = o.prepareParemeters();
-   o.sendService('{eai.logic.service}/eai.cockpit.truetimedata.wv?do=fetch', parameters, owner, callback);
+   o.sendService('{eai.logic.service}/eai.cockpit.title.wv?do=fetch', parameters, owner, callback);
 }
