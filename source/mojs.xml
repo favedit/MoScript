@@ -153,6 +153,7 @@
       <PathMerger source='/7.5.07-eai-scene-statistics-marketer'  target='/ajs/eai-scene-statistics.js'/>
 
       <PathMerger source='/7.5.10-eai-cockpit-scene'              target='/ajs/eai-cockpit-scene.js'/>
+      <PathMerger source='/7.5.11-eai-scene-marketer-customer-v2'    target='/ajs/eai-scene-marketer-customer-v2.js'/>
 
       <PathMerger source='/7.5.90-eai-zmjr-customer-investment'   target='/ajs/eai-zmjr-customer-investment.js'/>
 
@@ -384,6 +385,7 @@
          <File source='/ajs/eai-scene-customer-sphere.js'/>
          <File source='/ajs/eai-scene-customer-investment3d.js'/>
          <File source='/ajs/eai-scene-marketer-customer.js'/>
+         <File source='/ajs/eai-scene-marketer-customer-v2.js'/>
          <File source='/ajs/eai-scene-marketer-marketer.js'/>
          <File source='/ajs/eai-scene-marketer-product.js'/>
          <File source='/ajs/eai-scene-marketer-manage.js'/>
