@@ -95,6 +95,12 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    cubes.setVisible(false);
    display.push(cubes);
    //..........................................................
+   // 创建启动模块
+   var module = o._splashModule = MO.Class.create(MO.FEaiCockpitModuleSplash);
+   module.setModuleManager(o);
+   module.linkGraphicContext(o);
+   module.setup();
+   o.register(module);
    // 创建标志模块
    var module = o._logoModule = MO.Class.create(MO.FEaiCockpitModuleLogo);
    module.setModuleManager(o);
@@ -150,15 +156,24 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    module.setup();
    o.register(module);
    //..........................................................
+   var cellWidth = 1920 / 16;
+   var cellHeight = 1920 / 9;
    // 显示模块
    var modules = o._modules;
    var count = modules.count();
    for(var i = 0; i < count; i++){
       var module = modules.at(i);
       var typeCd = module.typeCd();
+      // 设置缩略图大小
+      var snapshot = module.controlSnapshot();
+      var snapshotCellSize = snapshot.cellSize();
+      snapshot.size().set(cellWidth * snapshotCellSize.width, cellHeight * snapshotCellSize.height);
+      // 设置视图大小
+      var view = module.controlView();
+      view.size().set(1920, 1080);
+      // 设置控件
       if(typeCd == MO.EEaiCockpitModule.Logo){
          // 显示缩略图
-         var snapshot = module.controlSnapshot();
          snapshot.cellLocation().z = 0;
          var renderable = snapshot.makeRenderable();
          renderable.material().info().sortLevel = 4;
@@ -167,7 +182,6 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
          logoDisplay.pushRenderable(renderable);
       }else if(typeCd == MO.EEaiCockpitModule.Logic){
          // 显示缩略图
-         var snapshot = module.controlSnapshot();
          snapshot.cellLocation().z = 5;
          var renderable = snapshot.makeRenderable();
          renderable.material().info().sortLevel = 3;
@@ -175,7 +189,6 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
          snapshot.placeInCell();
          snapshotDisplay.pushRenderable(renderable);
          // 显示缩略图
-         var view = module.controlView();
          view.cellLocation().z = 10;
          var renderable = view.makeRenderable();
          renderable.material().info().sortLevel = 2;

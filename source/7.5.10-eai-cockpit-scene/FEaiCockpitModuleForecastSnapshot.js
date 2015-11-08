@@ -6,7 +6,7 @@
 // @history 151101
 //==========================================================
 MO.FEaiCockpitModuleForecastSnapshot = function FEaiCockpitModuleForecastSnapshot(o) {
-   o = MO.Class.inherits(this, o, MO.FEaiCockpitCubeControl);
+   o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
    o._currentDate          = null;
@@ -60,7 +60,7 @@ MO.FEaiCockpitModuleForecastSnapshot_onImageLoad = function FEaiCockpitModuleFor
 //==========================================================
 MO.FEaiCockpitModuleForecastSnapshot_onPaintBegin = function FEaiCockpitModuleForecastSnapshot_onPaintBegin(event) {
    var o = this;
-   o.__base.FEaiCockpitCubeControl.onPaintBegin.call(o, event);
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
@@ -97,8 +97,10 @@ MO.FEaiCockpitModuleForecastSnapshot_onPaintBegin = function FEaiCockpitModuleFo
 //==========================================================
 MO.FEaiCockpitModuleForecastSnapshot_construct = function FEaiCockpitModuleForecastSnapshot_construct() {
    var o = this;
-   o.__base.FEaiCockpitCubeControl.construct.call(o);
+   o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
+   o._cellLocation.set(3, 5, 0);
+   o._cellSize.set(8, 2);
    o._units = new MO.TObjects();
    o._currentDate = new MO.TDate();
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
@@ -113,8 +115,6 @@ MO.FEaiCockpitModuleForecastSnapshot_construct = function FEaiCockpitModuleForec
 MO.FEaiCockpitModuleForecastSnapshot_setup = function FEaiCockpitModuleForecastSnapshot_setup() {
    var o = this;
    // 设置位置
-   o._cellLocation.set(4, 5, 0);
-   o._cellSize.set(7, 2);
    var imageConsole = MO.Console.find(MO.FImageConsole);
    // 创建图片
    var image = o._logoImage = imageConsole.load('{eai.resource}/live/company.png');
@@ -388,5 +388,5 @@ MO.FEaiCockpitModuleForecastSnapshot_dispose = function FEaiCockpitModuleForecas
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    // 父处理
-   o.__base.FEaiCockpitCubeControl.dispose.call(o);
+   o.__base.FEaiCockpitControl.dispose.call(o);
 }

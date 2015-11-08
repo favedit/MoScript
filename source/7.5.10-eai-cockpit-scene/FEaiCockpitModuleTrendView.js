@@ -6,7 +6,7 @@
 // @history 151105
 //==========================================================
 MO.FEaiCockpitModuleTrendView = function FEaiCockpitModuleTrendView(o){
-   o = MO.Class.inherits(this, o, MO.FEaiCockpitCubeControl);
+   o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
    o._data                 = null;
@@ -49,7 +49,7 @@ MO.FEaiCockpitModuleTrendView_onImageLoad = function FEaiCockpitModuleTrendView_
 //==========================================================
 MO.FEaiCockpitModuleTrendView_onPaintBegin = function FEaiCockpitModuleTrendView_onPaintBegin(event){
    var o = this;
-   o.__base.FEaiCockpitCubeControl.onPaintBegin.call(o, event);
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
 }
 
 //==========================================================
@@ -68,9 +68,8 @@ MO.FEaiCockpitModuleTrendView_onAchievementFetch = function FEaiCockpitModuleTre
 //==========================================================
 MO.FEaiCockpitModuleTrendView_construct = function FEaiCockpitModuleTrendView_construct(){
    var o = this;
-   o.__base.FEaiCockpitCubeControl.construct.call(o);
+   o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
-   o._size.set(1920, 1080);
    o._cellLocation.set(0, 0, 0);
    o._cellSize.set(16, 9);
 }
@@ -111,5 +110,5 @@ MO.FEaiCockpitModuleTrendView_processLogic = function FEaiCockpitModuleTrendView
 MO.FEaiCockpitModuleTrendView_dispose = function FEaiCockpitModuleTrendView_dispose(){
    var o = this;
    // 父处理
-   o.__base.FEaiCockpitCubeControl.dispose.call(o);
+   o.__base.FEaiCockpitControl.dispose.call(o);
 }

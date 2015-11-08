@@ -99,8 +99,8 @@ MO.FEaiCockpitModuleTitleSnapshot_construct = function FEaiCockpitModuleTitleSna
    var o = this;
    o.__base.FEaiCockpitCubeControl.construct.call(o);
    // 创建属性
-   o._cellLocation.set(0, 0, 0);
-   o._cellSize.set(11, 1);
+   o._cellLocation.set(3, 0, 0);
+   o._cellSize.set(8, 1);
    o._size.set(512, 1024);
    o._units = new MO.TObjects();
    o._currentDate = new MO.TDate();

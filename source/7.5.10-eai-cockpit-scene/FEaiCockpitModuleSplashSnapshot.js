@@ -1,11 +1,11 @@
 //==========================================================
-// <T>标志预览。</T>
+// <T>启动模块预览。</T>
 //
 // @class
 // @author maocy
-// @history 151107
+// @history 151108
 //==========================================================
-MO.FEaiCockpitModuleLogoSnapshot = function FEaiCockpitModuleLogoSnapshot(o) {
+MO.FEaiCockpitModuleSplashSnapshot = function FEaiCockpitModuleSplashSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitCubeControl);
    //..........................................................
    // @attribute
@@ -18,16 +18,16 @@ MO.FEaiCockpitModuleLogoSnapshot = function FEaiCockpitModuleLogoSnapshot(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleLogoSnapshot_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleLogoSnapshot_onPaintBegin;
+   o.onImageLoad           = MO.FEaiCockpitModuleSplashSnapshot_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitModuleSplashSnapshot_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleLogoSnapshot_construct;
+   o.construct             = MO.FEaiCockpitModuleSplashSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleLogoSnapshot_setup;
-   o.processLogic          = MO.FEaiCockpitModuleLogoSnapshot_processLogic;
+   o.setup                 = MO.FEaiCockpitModuleSplashSnapshot_setup;
+   o.processLogic          = MO.FEaiCockpitModuleSplashSnapshot_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleLogoSnapshot_dispose;
+   o.dispose               = MO.FEaiCockpitModuleSplashSnapshot_dispose;
    return o;
 }
 
@@ -36,7 +36,7 @@ MO.FEaiCockpitModuleLogoSnapshot = function FEaiCockpitModuleLogoSnapshot(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleLogoSnapshot_onImageLoad = function FEaiCockpitModuleLogoSnapshot_onImageLoad() {
+MO.FEaiCockpitModuleSplashSnapshot_onImageLoad = function FEaiCockpitModuleSplashSnapshot_onImageLoad() {
    this.dirty();
 }
 
@@ -45,7 +45,7 @@ MO.FEaiCockpitModuleLogoSnapshot_onImageLoad = function FEaiCockpitModuleLogoSna
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleLogoSnapshot_onPaintBegin = function FEaiCockpitModuleLogoSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitModuleSplashSnapshot_onPaintBegin = function FEaiCockpitModuleSplashSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitCubeControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -65,12 +65,13 @@ MO.FEaiCockpitModuleLogoSnapshot_onPaintBegin = function FEaiCockpitModuleLogoSn
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleLogoSnapshot_construct = function FEaiCockpitModuleLogoSnapshot_construct() {
+MO.FEaiCockpitModuleSplashSnapshot_construct = function FEaiCockpitModuleSplashSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitCubeControl.construct.call(o);
    // 创建属性
    o._cellLocation.set(0, 0, 0);
-   o._cellSize.set(3, 1);
+   o._cellSize.set(16, 9);
+   o._size.set(1920, 1080);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
    o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
@@ -81,11 +82,11 @@ MO.FEaiCockpitModuleLogoSnapshot_construct = function FEaiCockpitModuleLogoSnaps
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleLogoSnapshot_setup = function FEaiCockpitModuleLogoSnapshot_setup(){
+MO.FEaiCockpitModuleSplashSnapshot_setup = function FEaiCockpitModuleSplashSnapshot_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/logo/ground.png');
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/splash/ground.png');
    image.addLoadListener(o, o.onImageLoad);
 }
 
@@ -94,7 +95,7 @@ MO.FEaiCockpitModuleLogoSnapshot_setup = function FEaiCockpitModuleLogoSnapshot_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleLogoSnapshot_processLogic = function FEaiCockpitModuleLogoSnapshot_processLogic(){
+MO.FEaiCockpitModuleSplashSnapshot_processLogic = function FEaiCockpitModuleSplashSnapshot_processLogic(){
    var o = this;
 }
 
@@ -103,7 +104,7 @@ MO.FEaiCockpitModuleLogoSnapshot_processLogic = function FEaiCockpitModuleLogoSn
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleLogoSnapshot_dispose = function FEaiCockpitModuleLogoSnapshot_dispose() {
+MO.FEaiCockpitModuleSplashSnapshot_dispose = function FEaiCockpitModuleSplashSnapshot_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);

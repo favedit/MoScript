@@ -6,7 +6,7 @@
 // @history 151101
 //==========================================================
 MO.FEaiCockpitModuleProjectSnapshot = function FEaiCockpitModuleProjectSnapshot(o) {
-   o = MO.Class.inherits(this, o, MO.FEaiCockpitCubeControl);
+   o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
    o._currentDate          = null;
@@ -60,7 +60,7 @@ MO.FEaiCockpitModuleProjectSnapshot_onImageLoad = function FEaiCockpitModuleProj
 //==========================================================
 MO.FEaiCockpitModuleProjectSnapshot_onPaintBegin = function FEaiCockpitModuleProjectSnapshot_onPaintBegin(event) {
    var o = this;
-   o.__base.FEaiCockpitCubeControl.onPaintBegin.call(o, event);
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
@@ -97,11 +97,10 @@ MO.FEaiCockpitModuleProjectSnapshot_onPaintBegin = function FEaiCockpitModulePro
 //==========================================================
 MO.FEaiCockpitModuleProjectSnapshot_construct = function FEaiCockpitModuleProjectSnapshot_construct() {
    var o = this;
-   o.__base.FEaiCockpitCubeControl.construct.call(o);
+   o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
-   o._cellLocation.set(0, 2, 0);
-   o._cellSize.set(4, 5);
-   o._size.set(512, 1024);
+   o._cellLocation.set(0, 1, 0);
+   o._cellSize.set(3, 6);
    o._units = new MO.TObjects();
    o._currentDate = new MO.TDate();
    o._rankLinePadding = new MO.SPadding(40, 0, 40, 0);
@@ -389,5 +388,5 @@ MO.FEaiCockpitModuleProjectSnapshot_dispose = function FEaiCockpitModuleProjectS
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    // 父处理
-   o.__base.FEaiCockpitCubeControl.dispose.call(o);
+   o.__base.FEaiCockpitControl.dispose.call(o);
 }
