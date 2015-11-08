@@ -114,7 +114,9 @@ MO.RDate.prototype.monthDays = function RDate_monthDays(year, month){
    }
    year = parseInt(year);
    month = parseInt(month);
-   this.MonthDays[2] = (((year % 4 == 0) || (year % 400 == 0)) && (year % 100 != 0)) ? 29 : 28 ;
+   if(month == 2){
+      return (((year % 4 == 0) || (year % 400 == 0)) && (year % 100 != 0)) ? 29 : 28 ;
+   }
    return this.MonthDays[month];
 }
 

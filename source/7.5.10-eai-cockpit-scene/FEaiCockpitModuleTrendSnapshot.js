@@ -13,20 +13,20 @@ MO.FEaiCockpitModuleTrendSnapshot = function FEaiCockpitModuleTrendSnapshot(o) {
    o._dataTicker           = null;
    // @attribute
    o._backgroundImage      = null;
-   o._backgroundPadding    = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
    o.onImageLoad           = MO.FEaiCockpitModuleTrendSnapshot_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin;
-   o.onAchievementFetch    = MO.FEaiCockpitModuleTrendSnapshot_onAchievementFetch;
+   o.onFetch               = MO.FEaiCockpitModuleTrendSnapshot_onFetch;
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitModuleTrendSnapshot_construct;
    // @method
    o.setup                 = MO.FEaiCockpitModuleTrendSnapshot_setup;
    o.setData               = MO.FEaiCockpitModuleTrendSnapshot_setData;
+   o.drawLine              = MO.FEaiCockpitModuleTrendSnapshot_drawLine;
    o.processLogic          = MO.FEaiCockpitModuleTrendSnapshot_processLogic;
    // @method
    o.dispose               = MO.FEaiCockpitModuleTrendSnapshot_dispose;
@@ -47,36 +47,41 @@ MO.FEaiCockpitModuleTrendSnapshot_onImageLoad = function FEaiCockpitModuleTrendS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrendSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrendSnapshot_onPaintBegin(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   var right = left + width;
-   var bottom = top + height;
-   var drawPosition = top;
-   var heightRate = height / o._size.height;
-   var drawLeft = left + 12;
-   var drawRight = right - 12;
-   var drawWidth = right - left;
    //..........................................................
    // 绘制背景
-   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
-   //..........................................................
-   // 绘制标题
-   var titleText = 'e租宝财富端本月业绩';
-   graphic.setFont('bold 32px Microsoft YaHei');
-   var titleWidth = graphic.textWidth(titleText);
-   var textLeft = left + (width - titleWidth) * 0.5;
-   graphic.drawText(titleText, textLeft, top + 60, '#333333');
-   drawPosition += 60
-      //..........................................................
-   graphic.setFont(o._rowFontStyle);
+   graphic.drawRectangleImage(o._backgroundImage, rectangle);
+   // 绘制数据线
+   var data = o._data;
+   if(data){
+      var days = data.days();
+      if(days){
+         // 计算最大值
+         var count = days.count();
+         var minValue = 0;
+         var maxValue = 0;
+         for(var n = 0; n < count; n++){
+            var day = days.at(n);
+            maxValue = Math.max(day.priorInvestmentAmount(), maxValue);
+            maxValue = Math.max(day.priorRedemptionAmount(), maxValue);
+            minValue = Math.min(day.priorNetinvestmentAmount(), minValue);
+            maxValue = Math.max(day.investmentAmount(), maxValue);
+            maxValue = Math.max(day.redemptionAmount(), maxValue);
+            minValue = Math.max(day.netinvestmentAmount(), minValue);
+         }
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorInvestmentAmount', '#800000', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorRedemptionAmount', '#000080', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorNetinvestmentAmount', '#008000', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_investmentAmount', '#FF0000', 4);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_redemptionAmount', '#0000FF', 4);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_netinvestmentAmount', '#00FF00', 4);
+      }
+   }
 }
 
 //==========================================================
@@ -84,7 +89,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_onAchievementFetch = function FEaiCockpitModuleTrendSnapshot_onAchievementFetch(event){
+MO.FEaiCockpitModuleTrendSnapshot_onFetch = function FEaiCockpitModuleTrendSnapshot_onFetch(event){
    var o = this;
    var content = event.content;
    // 读取数据
@@ -101,13 +106,12 @@ MO.FEaiCockpitModuleTrendSnapshot_onAchievementFetch = function FEaiCockpitModul
 MO.FEaiCockpitModuleTrendSnapshot_construct = function FEaiCockpitModuleTrendSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
-   // 创建属性
+   // 配置属性
    o._cellLocation.set(11, 2, 0);
    o._cellSize.set(5, 2);
+   // 配置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
-   o._currentDate = new MO.TDate();
-   o._backgroundPadding = new MO.SPadding(20, 20, 90, 20);
-   o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
+   o._data = MO.Class.create(MO.FEaiCockpitMessageTrend);
 }
 
 //==========================================================
@@ -121,54 +125,6 @@ MO.FEaiCockpitModuleTrendSnapshot_setup = function FEaiCockpitModuleTrendSnapsho
    var imageConsole = MO.Console.find(MO.FImageConsole);
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/trend/ground.png');
    image.addLoadListener(o, o.onImageLoad);
-   //..........................................................
-   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
-   grid.setOptionClip(true);
-   grid.setLocation(6, 80);
-   grid.setSize(578, 260);
-   grid.setHeadHeight(35);
-   grid.setHeadBackColor('#122A46');
-   grid.headFont().font = 'Microsoft YaHei';
-   grid.headFont().size = 22;
-   grid.headFont().color = '#00B2F2';
-   grid.setRowHeight(28);
-   grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 18;
-   grid.rowFont().color = '#59FDE9';
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('label');
-   column.setLabel('公司名称');
-   column.setDataName('label');
-   column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
-   column.setName('investmentAmount');
-   column.setLabel('投资额');
-   column.setDataName('investment_amount');
-   column.cellPadding().right = 10;
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
-   column.setNegativeColor('#FF0000');
-   column.setWidth(140);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('level');
-   column.setLabel('排名');
-   column.setDataName('level');
-   column.setWidth(60);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('trend');
-   column.setLabel('趋势');
-   column.setDataName('trend');
-   column.setWidth(60);
-   column.setPadding(1, 1, 1, 1);
-   grid.pushColumn(column);
-   o.push(grid);
 }
 
 //==========================================================
@@ -179,21 +135,40 @@ MO.FEaiCockpitModuleTrendSnapshot_setup = function FEaiCockpitModuleTrendSnapsho
 //==========================================================
 MO.FEaiCockpitModuleTrendSnapshot_setData = function FEaiCockpitModuleTrendSnapshot_setData(data) {
    var o = this;
-   var departments = data.departments();
-   var grid = o._gridControl;
-   grid.clearRows();
-   var count = departments.count();
-   for (var i = 0; i < count; i++) {
-      var department = departments.at(i);
-      var row = grid.allocRow();
-      // 排行榜数据填充
-      row.set('label', department.label());
-      row.set('investment_amount', department.investmentAmount());
-      row.set('level', 0);
-      row.set('trend', 0);
-      grid.pushRow(row);
-   }
    o.dirty();
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitModuleTrendSnapshot_drawLine = function FEaiCockpitModuleTrendSnapshot_drawLine(graphic, rectangle, minValue, maxValue, code, color, lineWidth){
+   var o = this;
+   var handle = graphic._handle;
+   handle.beginPath();
+   var days = o._data.days();
+   var count = days.count();
+   // 计算步宽
+   var left = rectangle.left + 80;
+   var top = rectangle.top + 50;
+   var width = rectangle.width - 100;
+   var height = rectangle.height - 100;
+   var stepWidth = width / count;
+   var stepHeight = height / maxValue;
+   for(var n = 0; n < count; n++){
+      var day = days.at(n);
+      var x = left + stepWidth * n;
+      var y = top + height - stepHeight * day[code];
+      if(n == 0){
+         handle.moveTo(x, y);
+      }else{
+         handle.lineTo(x, y);
+      }
+   }
+   handle.lineWidth = lineWidth;
+   handle.strokeStyle = color;
+   handle.stroke();
 }
 
 //==========================================================
@@ -204,8 +179,8 @@ MO.FEaiCockpitModuleTrendSnapshot_setData = function FEaiCockpitModuleTrendSnaps
 MO.FEaiCockpitModuleTrendSnapshot_processLogic = function FEaiCockpitModuleTrendSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
-      var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
-      achievement.doFetch(o, o.onAchievementFetch);
+      var trend = MO.Console.find(MO.FEaiLogicConsole).cockpit().trend();
+      trend.doFetch(o, o.onFetch);
    }
 }
 
@@ -216,8 +191,6 @@ MO.FEaiCockpitModuleTrendSnapshot_processLogic = function FEaiCockpitModuleTrend
 //==========================================================
 MO.FEaiCockpitModuleTrendSnapshot_dispose = function FEaiCockpitModuleTrendSnapshot_dispose() {
    var o = this;
-   o._units = MO.Lang.Object.dispose(o._units);
-   o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
 }
