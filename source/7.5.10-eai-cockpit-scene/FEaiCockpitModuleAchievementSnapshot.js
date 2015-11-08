@@ -1,9 +1,9 @@
 //==========================================================
-// <T>实时投资表。</T>
+// <T>业绩视图缩略图。</T>
 //
 // @class
 // @author sunpeng
-// @history 151101
+// @history 151108
 //==========================================================
 MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
@@ -52,23 +52,9 @@ MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin = function FEaiCockpitModul
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
    //..........................................................
    // 绘制背景
-   graphic.drawImage(o._backgroundImage, left, top, width, height);
-   //..........................................................
-   // 绘制标题
-   //var titleText = 'e租宝财富端本月业绩';
-   //graphic.setFont('bold 32px Microsoft YaHei');
-   //var titleWidth = graphic.textWidth(titleText);
-   //var textLeft = left + (width - titleWidth) * 0.5;
-   //graphic.drawText(titleText, textLeft, top + 60, '#333333');
-   //drawPosition += 60
-   //..........................................................
-   //graphic.setFont(o._rowFontStyle);
+   graphic.drawRectangleImage(o._backgroundImage, rectangle);
 }
 
 //==========================================================

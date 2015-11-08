@@ -18,6 +18,7 @@ MO.FEaiChartApplication = function FEaiChartApplication(o){
    //..........................................................
    // @method
    o.onLoadGround    = MO.FEaiChartApplication_onLoadGround;
+   o.onLoadSign      = MO.FEaiChartApplication_onLoadSign;
    o.onLoadResource  = MO.FEaiChartApplication_onLoadResource;
    //..........................................................
    // @method
@@ -49,8 +50,12 @@ MO.FEaiChartApplication_onLoadGround = function FEaiChartApplication_onLoadGroun
 //
 // @method
 //==========================================================
-MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(event){
+MO.FEaiChartApplication_onLoadSign = function FEaiChartApplication_onLoadSign(event){
    var o = this;
+   // 加载标志
+   var logicSystem = MO.Console.find(MO.FEaiLogicConsole).system();
+   logicSystem.onInfo(event);
+   // 加载画面
    var canvas = o._desktop.canvas3d();
    if(o._backgroundUrl){
       // 加载背景
@@ -62,6 +67,16 @@ MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadRes
    }else{
       o.onLoadGround(event);
    }
+}
+
+//==========================================================
+// <T>加载资源处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartApplication_onLoadResource = function FEaiChartApplication_onLoadResource(event){
+   var o = this;
+   MO.Console.find(MO.FEaiLogicConsole).system().doInfo(o, o.onLoadSign);
 }
 
 //==========================================================

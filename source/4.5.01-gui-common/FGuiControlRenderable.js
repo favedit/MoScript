@@ -17,6 +17,7 @@ MO.FGuiControlRenderable = function FGuiControlRenderable(o){
    o.construct   = MO.FGuiControlRenderable_construct;
    // @method
    o.setup       = MO.FGuiControlRenderable_setup;
+   o.testVisible = MO.FGuiControlRenderable_testVisible;
    // @method
    o.beginDraw   = MO.FGuiControlRenderable_beginDraw;
    o.endDraw     = MO.FGuiControlRenderable_endDraw;
@@ -50,6 +51,16 @@ MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
    materialInfo.optionAlpha = true;
    //materialInfo.optionDepth = false;
    //materialInfo.optionDouble = true;
+}
+
+//==========================================================
+// <T>测试可见性。</T>
+//
+// @method
+// @return Boolean 可见性
+//==========================================================
+MO.FGuiControlRenderable_testVisible = function FGuiControlRenderable_testVisible(){
+   return this._control.visible();
 }
 
 //==========================================================

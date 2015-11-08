@@ -86,7 +86,7 @@ MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback) {
+MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
    var o = this;
    var useToken = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiVerificationMode.Token);
    var none = MO.Console.find(MO.FEnvironmentConsole).findValue(MO.EEaiVerificationMode.None);

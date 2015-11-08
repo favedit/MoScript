@@ -1,11 +1,11 @@
 //==========================================================
-// <T>实时投资表。</T>
+// <T>趋势视图页面。</T>
 //
 // @class
 // @author maocy
-// @history 151105
+// @history 151108
 //==========================================================
-MO.FEaiCockpitModuleTrendView = function FEaiCockpitModuleTrendView(o){
+MO.FEaiCockpitModuleTrendView = function FEaiCockpitModuleTrendView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
@@ -13,20 +13,17 @@ MO.FEaiCockpitModuleTrendView = function FEaiCockpitModuleTrendView(o){
    o._dataTicker           = null;
    // @attribute
    o._backgroundImage      = null;
-   o._backgroundPadding    = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
    o.onImageLoad           = MO.FEaiCockpitModuleTrendView_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitModuleTrendView_onPaintBegin;
-   o.onAchievementFetch    = MO.FEaiCockpitModuleTrendView_onAchievementFetch;
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitModuleTrendView_construct;
    // @method
    o.setup                 = MO.FEaiCockpitModuleTrendView_setup;
-   o.setData               = MO.FEaiCockpitModuleTrendView_setData;
    o.processLogic          = MO.FEaiCockpitModuleTrendView_processLogic;
    // @method
    o.dispose               = MO.FEaiCockpitModuleTrendView_dispose;
@@ -38,7 +35,7 @@ MO.FEaiCockpitModuleTrendView = function FEaiCockpitModuleTrendView(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_onImageLoad = function FEaiCockpitModuleTrendView_onImageLoad(){
+MO.FEaiCockpitModuleTrendView_onImageLoad = function FEaiCockpitModuleTrendView_onImageLoad() {
    this.dirty();
 }
 
@@ -47,18 +44,15 @@ MO.FEaiCockpitModuleTrendView_onImageLoad = function FEaiCockpitModuleTrendView_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_onPaintBegin = function FEaiCockpitModuleTrendView_onPaintBegin(event){
+MO.FEaiCockpitModuleTrendView_onPaintBegin = function FEaiCockpitModuleTrendView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
-}
-
-//==========================================================
-// <T>获取业绩数据。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitModuleTrendView_onAchievementFetch = function FEaiCockpitModuleTrendView_onAchievementFetch(event){
-   var o = this;
+   // 获得变量
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   //..........................................................
+   // 绘制背景
+   graphic.drawRectangleImage(o._backgroundImage, rectangle);
 }
 
 //==========================================================
@@ -66,7 +60,7 @@ MO.FEaiCockpitModuleTrendView_onAchievementFetch = function FEaiCockpitModuleTre
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_construct = function FEaiCockpitModuleTrendView_construct(){
+MO.FEaiCockpitModuleTrendView_construct = function FEaiCockpitModuleTrendView_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -81,16 +75,10 @@ MO.FEaiCockpitModuleTrendView_construct = function FEaiCockpitModuleTrendView_co
 //==========================================================
 MO.FEaiCockpitModuleTrendView_setup = function FEaiCockpitModuleTrendView_setup(){
    var o = this;
-}
-
-//==========================================================
-// <T>增加一个数据实体。</T>
-//
-// @method
-// @param unit:
-//==========================================================
-MO.FEaiCockpitModuleTrendView_setData = function FEaiCockpitModuleTrendView_setData(data){
-   var o = this;
+   // 创建图片
+   var imageConsole = MO.Console.find(MO.FImageConsole);
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/trend/view.png');
+   image.addLoadListener(o, o.onImageLoad);
 }
 
 //==========================================================
@@ -107,7 +95,7 @@ MO.FEaiCockpitModuleTrendView_processLogic = function FEaiCockpitModuleTrendView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_dispose = function FEaiCockpitModuleTrendView_dispose(){
+MO.FEaiCockpitModuleTrendView_dispose = function FEaiCockpitModuleTrendView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

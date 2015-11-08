@@ -330,7 +330,13 @@ MO.FGuiControl_isDirty = function FGuiControl_isDirty(){
 //==========================================================
 MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
    var o = this;
+   // 设置标志
    o._visible = flag;
+   // 设置渲染对象
+   //var renderable = o._renderable;
+   //if(renderable){
+   //   renderable.setVisible(flag);
+   //}
    // 全部脏
    var manager = o._manager;
    if(manager){
