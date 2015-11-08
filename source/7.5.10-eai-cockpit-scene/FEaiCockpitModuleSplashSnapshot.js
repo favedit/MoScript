@@ -51,13 +51,9 @@ MO.FEaiCockpitModuleSplashSnapshot_onPaintBegin = function FEaiCockpitModuleSpla
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
    //..........................................................
    // 绘制背景
-   graphic.drawImage(o._backgroundImage, left, top, width, height);
+   graphic.drawRectangleImage(o._backgroundImage, rectangle);
 }
 
 //==========================================================
@@ -71,10 +67,6 @@ MO.FEaiCockpitModuleSplashSnapshot_construct = function FEaiCockpitModuleSplashS
    // 创建属性
    o._cellLocation.set(0, 0, 0);
    o._cellSize.set(16, 9);
-   o._size.set(1920, 1080);
-   o._dataTicker = new MO.TTicker(1000 * 60);
-   o._currentDate = new MO.TDate();
-   o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
 }
 
 //==========================================================
@@ -106,8 +98,6 @@ MO.FEaiCockpitModuleSplashSnapshot_processLogic = function FEaiCockpitModuleSpla
 //==========================================================
 MO.FEaiCockpitModuleSplashSnapshot_dispose = function FEaiCockpitModuleSplashSnapshot_dispose() {
    var o = this;
-   o._units = MO.Lang.Object.dispose(o._units);
-   o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
 }

@@ -312,6 +312,7 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          break;
    }
    o._modeCd = modeCd;
+   o._focusModule = module;
 }
 
 //==========================================================
@@ -326,7 +327,7 @@ MO.FEaiCockpitModuleManager_selectModuleView = function FEaiCockpitModuleManager
    var count = modules.count();
    for(var i = 0; i < count; i++){
       var findModule = modules.at(i);
-      var view = module.controlView();
+      var view = findModule.controlView();
       if(findModule == module){
          view.setVisible(true);
          o._focusView = view;
