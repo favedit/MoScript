@@ -6,7 +6,7 @@
 // @history 151107
 //==========================================================
 MO.FEaiCockpitModuleSplashView = function FEaiCockpitModuleSplashView(o){
-   o = MO.Class.inherits(this, o, MO.FEaiCockpitCubeControl);
+   o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
    o._data                 = null;
@@ -49,7 +49,7 @@ MO.FEaiCockpitModuleSplashView_onImageLoad = function FEaiCockpitModuleSplashVie
 //==========================================================
 MO.FEaiCockpitModuleSplashView_onPaintBegin = function FEaiCockpitModuleSplashView_onPaintBegin(event){
    var o = this;
-   o.__base.FEaiCockpitCubeControl.onPaintBegin.call(o, event);
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
@@ -100,7 +100,7 @@ MO.FEaiCockpitModuleSplashView_onAchievementFetch = function FEaiCockpitModuleSp
 //==========================================================
 MO.FEaiCockpitModuleSplashView_construct = function FEaiCockpitModuleSplashView_construct(){
    var o = this;
-   o.__base.FEaiCockpitCubeControl.construct.call(o);
+   o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
    o._size.set(1920, 1080);
    o._cellLocation.set(0, 0, 8);
@@ -220,5 +220,5 @@ MO.FEaiCockpitModuleSplashView_dispose = function FEaiCockpitModuleSplashView_di
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    // 父处理
-   o.__base.FEaiCockpitCubeControl.dispose.call(o);
+   o.__base.FEaiCockpitControl.dispose.call(o);
 }

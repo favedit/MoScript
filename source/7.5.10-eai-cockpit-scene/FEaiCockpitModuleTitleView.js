@@ -6,7 +6,7 @@
 // @history 151103
 //==========================================================
 MO.FEaiCockpitModuleTitleView = function FEaiCockpitModuleTitleView(o) {
-   o = MO.Class.inherits(this, o, MO.FEaiCockpitCubeControl);
+   o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
@@ -39,7 +39,7 @@ MO.FEaiCockpitModuleTitleView_onImageLoad = function FEaiCockpitModuleTitleView_
 //==========================================================
 MO.FEaiCockpitModuleTitleView_onPaintBegin = function FEaiCockpitModuleTitleView_onPaintBegin(event) {
    var o = this;
-   o.__base.FEaiCockpitCubeControl.onPaintBegin.call(o, event);
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
 }
 
 //==========================================================
@@ -49,7 +49,7 @@ MO.FEaiCockpitModuleTitleView_onPaintBegin = function FEaiCockpitModuleTitleView
 //==========================================================
 MO.FEaiCockpitModuleTitleView_construct = function FEaiCockpitModuleTitleView_construct() {
    var o = this;
-   o.__base.FEaiCockpitCubeControl.construct.call(o);
+   o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
    o._size.set(1920, 1080);
 }
@@ -71,5 +71,5 @@ MO.FEaiCockpitModuleTitleView_setup = function FEaiCockpitModuleTitleView_setup(
 MO.FEaiCockpitModuleTitleView_dispose = function FEaiCockpitModuleTitleView_dispose() {
    var o = this;
    // 父处理
-   o.__base.FEaiCockpitCubeControl.dispose.call(o);
+   o.__base.FEaiCockpitControl.dispose.call(o);
 }
