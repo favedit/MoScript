@@ -13,6 +13,7 @@ MO.FEaiLogicCockpit = function FEaiLogicCockpit(o){
    // @attribute
    o._title       = MO.Class.register(o, new MO.AGetter('_title'));
    o._achievement = MO.Class.register(o, new MO.AGetter('_achievement'));
+   o._notice      = MO.Class.register(o, new MO.AGetter('_notice'));
    //..........................................................
    // @method
    o.construct    = MO.FEaiLogicCockpit_construct;
@@ -34,6 +35,7 @@ MO.FEaiLogicCockpit_construct = function FEaiLogicCockpit_construct(){
    // 创建逻辑控制器
    o._title = MO.Class.create(MO.FEaiLogicCockpitTitle);
    o._achievement = MO.Class.create(MO.FEaiLogicCockpitAchievement);
+   o._notice      = MO.Class.create(MO.FEaiLogicCockpitNotice);
 }
 
 //==========================================================
@@ -46,6 +48,7 @@ MO.FEaiLogicCockpit_dispose = function FEaiLogicCockpit_dispose(){
    // 释放属性
    o._title = MO.Lang.Object.dispose(o._title);
    o._achievement = MO.Lang.Object.dispose(o._achievement);
+   o._notice = MO.Lang.Object.dispose(o._notice);
    // 父处理
    o.__base.FEaiLogic.dispose.call(o);
 }
