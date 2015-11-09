@@ -81,7 +81,7 @@ MO.FEaiCockpitModuleNoticeSnapshot_construct = function FEaiCockpitModuleNoticeS
 MO.FEaiCockpitModuleNoticeSnapshot_setup = function FEaiCockpitModuleNoticeSnapshot_setup(){
    var o = this;
    // 加载背景图
-   var bgImage = o._bgImage = MO.Console.find(MO.FImageConsole).load('{eai.resource}/cockpit/notice/bg.png');
+   var bgImage = o._bgImage = MO.Console.find(MO.FImageConsole).load('{eai.resource}/cockpit/notice/ground.png');
    bgImage.addLoadListener(o, o.onImageLoad);
    // 创建控件
    var listBox = o._noticeListBox = MO.Class.create(MO.FGuiListBox);
