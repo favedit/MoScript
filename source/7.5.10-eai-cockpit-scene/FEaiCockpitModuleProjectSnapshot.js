@@ -11,11 +11,11 @@ MO.FEaiCockpitModuleProjectSnapshot = function FEaiCockpitModuleProjectSnapshot(
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
+   o._listBox              = null;
    // @attribute
    o._backgroundImage      = null;
    o._backgroundPadding    = null;
    // @attribute
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
    o.onImageLoad           = MO.FEaiCockpitModuleProjectSnapshot_onImageLoad;
@@ -26,6 +26,7 @@ MO.FEaiCockpitModuleProjectSnapshot = function FEaiCockpitModuleProjectSnapshot(
    // @method
    o.setup                 = MO.FEaiCockpitModuleProjectSnapshot_setup;
    o.processLogic          = MO.FEaiCockpitModuleProjectSnapshot_processLogic;
+   o.onDataFetch           = MO.FEaiCockpitModuleNoticeSnapshot_onDataFetch;
    // @method
    o.dispose               = MO.FEaiCockpitModuleProjectSnapshot_dispose;
    return o;
@@ -58,6 +59,8 @@ MO.FEaiCockpitModuleProjectSnapshot_onPaintBegin = function FEaiCockpitModulePro
    //..........................................................
    // 绘制背景
    graphic.drawImage(o._backgroundImage, left, top, width, height);
+
+   //graphic.drawRectangle(left, top, width, height, 'red', 1);
 }
 
 //==========================================================
@@ -72,8 +75,7 @@ MO.FEaiCockpitModuleProjectSnapshot_construct = function FEaiCockpitModuleProjec
    o._cellLocation.set(0, 1, 0);
    o._cellSize.set(3, 6);
    o._dataTicker = new MO.TTicker(1000 * 60);
-   o._currentDate = new MO.TDate();
-   o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
+   o._data = MO.Class.create(MO.FEaiCockpitDataProject);
 }
 
 //==========================================================
@@ -87,6 +89,13 @@ MO.FEaiCockpitModuleProjectSnapshot_setup = function FEaiCockpitModuleProjectSna
    var imageConsole = MO.Console.find(MO.FImageConsole);
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/project/ground.png');
    image.addLoadListener(o, o.onImageLoad);
+   // 创建控件
+   var listBox = o._listBox = MO.Class.create(MO.FGuiListBox);
+   //listBox.setPadding(15, 10, 15, 10);
+   listBox.setLocation(20, 55);
+   listBox.setSize(330, 660);
+   listBox.setGap(10);
+   o.push(listBox);
 }
 
 //==========================================================
@@ -96,6 +105,34 @@ MO.FEaiCockpitModuleProjectSnapshot_setup = function FEaiCockpitModuleProjectSna
 //==========================================================
 MO.FEaiCockpitModuleProjectSnapshot_processLogic = function FEaiCockpitModuleProjectSnapshot_processLogic(){
    var o = this;
+   if (o._dataTicker.process()) {
+      var project = MO.Console.find(MO.FEaiLogicConsole).cockpit().project();
+      project.doFetch(o, o.onDataFetch);
+   }
+}
+
+//==========================================================
+// <T>获取项目进度数据。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitModuleNoticeSnapshot_onDataFetch = function FEaiCockpitModuleNoticeSnapshot_onDataFetch(event) {
+   var o = this;
+   var content = event.content;
+   // 读取数据
+   var listBox = o._listBox;
+   var data = o._data;
+   data.unserializeSignBuffer(event.sign, event.content, true);
+   var projects = data.projects();
+   var count = projects.count();
+   listBox.items().clear();
+   for (var i = 0; i < count ; i++) {
+      var item = MO.Class.create(MO.FEaiCockpitProjectListBoxItem);
+      item.setup(projects.at(i));
+      item.setSize(320, 120);
+      listBox.items().push(item);
+   }
+   o.dirty();
 }
 
 //==========================================================
@@ -105,8 +142,6 @@ MO.FEaiCockpitModuleProjectSnapshot_processLogic = function FEaiCockpitModulePro
 //==========================================================
 MO.FEaiCockpitModuleProjectSnapshot_dispose = function FEaiCockpitModuleProjectSnapshot_dispose() {
    var o = this;
-   o._units = MO.Lang.Object.dispose(o._units);
-   o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
 }

@@ -15,6 +15,7 @@ MO.FEaiLogicCockpit = function FEaiLogicCockpit(o){
    o._achievement = MO.Class.register(o, new MO.AGetter('_achievement'));
    o._trend       = MO.Class.register(o, new MO.AGetter('_trend'));
    o._notice      = MO.Class.register(o, new MO.AGetter('_notice'));
+   o._project     = MO.Class.register(o, new MO.AGetter('_project'));
    o._forecast    = MO.Class.register(o, new MO.AGetter('_forecast'));
    o._warning     = MO.Class.register(o, new MO.AGetter('_warning'));
    o._status      = MO.Class.register(o, new MO.AGetter('_status'));
@@ -41,6 +42,7 @@ MO.FEaiLogicCockpit_construct = function FEaiLogicCockpit_construct(){
    o._achievement = MO.Class.create(MO.FEaiLogicCockpitAchievement);
    o._trend = MO.Class.create(MO.FEaiLogicCockpitTrend);
    o._notice = MO.Class.create(MO.FEaiLogicCockpitNotice);
+   o._project = MO.Class.create(MO.FEaiLogicCockpitProject);
    o._warning = MO.Class.create(MO.FEaiLogicCockpitWarning);
    o._status = MO.Class.create(MO.FEaiLogicCockpitStatus);
    o._forecast =  MO.Class.create(MO.FEaiLogicCockpitForecast);
@@ -48,7 +50,7 @@ MO.FEaiLogicCockpit_construct = function FEaiLogicCockpit_construct(){
 //==========================================================
 // <T>释放处理。</T>
 //
-// @method                       
+// @method
 //==========================================================
 MO.FEaiLogicCockpit_dispose = function FEaiLogicCockpit_dispose(){
    var o = this;
@@ -57,6 +59,7 @@ MO.FEaiLogicCockpit_dispose = function FEaiLogicCockpit_dispose(){
    o._achievement = MO.Lang.Object.dispose(o._achievement);
    o._trend = MO.Lang.Object.dispose(o._trend);
    o._notice = MO.Lang.Object.dispose(o._notice);
+   o._project = MO.Lang.Object.dispose(o._project);
    o._forecast = MO.Lang.Object.dispose(o._forecast);
    o._warning = MO.Lang.Object.dispose(o._warning);
    o._status = MO.Lang.Object.dispose(o._status)

@@ -9,7 +9,7 @@ MO.FGuiListBox = function FGuiListBox(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._gap            = MO.Class.register(o, new MO.AGetSet('_gap'), 2);
+   o._gap            = MO.Class.register(o, new MO.AGetSet('_gap'), 0);
    o._items          = MO.Class.register(o, new MO.AGetSet('_items'));
    // @attribute
    o._itemRectangle  = null;
@@ -48,13 +48,14 @@ MO.FGuiListBox_onPaintBegin = function FGuiListBox_onPaintBegin(event) {
 
    var items = o._items;
    var itemCount = items.count();
+   var gap = o._gap;
    for (var i = 0; i < itemCount; i++) {
       var item = items.at(i);
       itemWidth = item.width() > rectangle.width ? rectangle.width : item.width();
       itemHeight = item.height();
       itemRect.set(itemDrawX, itemDrawY, itemWidth, itemHeight);
       item.draw(graphic, itemRect);
-      itemDrawY += itemHeight;
+      itemDrawY += itemHeight + gap;
    }
 }
 
