@@ -67,6 +67,7 @@ MO.FEaiCockpitModuleWarningSnapshot_setData = function FEaiCockpitModuleWarningS
    var grid = o._gridControl;
    grid.clearRows();
    var count = items.count();
+   count = count > 5 ? 5 : count;
    for (var i = 0; i < count; ++i) {
       var item = items.at(i);
       var row = grid.allocRow();
@@ -139,7 +140,7 @@ MO.FEaiCockpitModuleWarningSnapshot_setup = function FEaiCockpitModuleWarningSna
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
    grid.setLocation(138, 16);
-   grid.setSize(500, 240);
+   grid.setSize(500, 500);
    grid.setDisplayHead(false);
    grid.setRowHeight(40);
    grid.rowFont().size = 20;
