@@ -16,6 +16,8 @@ MO.FEaiLogicCockpit = function FEaiLogicCockpit(o){
    o._trend       = MO.Class.register(o, new MO.AGetter('_trend'));
    o._notice      = MO.Class.register(o, new MO.AGetter('_notice'));
    o._forecast    = MO.Class.register(o, new MO.AGetter('_forecast'));
+   o._warning     = MO.Class.register(o, new MO.AGetter('_warning'));
+   o._status      = MO.Class.register(o, new MO.AGetter('_status'));
    //..........................................................
    // @method
    o.construct    = MO.FEaiLogicCockpit_construct;
@@ -39,6 +41,8 @@ MO.FEaiLogicCockpit_construct = function FEaiLogicCockpit_construct(){
    o._achievement = MO.Class.create(MO.FEaiLogicCockpitAchievement);
    o._trend = MO.Class.create(MO.FEaiLogicCockpitTrend);
    o._notice = MO.Class.create(MO.FEaiLogicCockpitNotice);
+   o._warning = MO.Class.create(MO.FEaiLogicCockpitWarning);
+   o._status = MO.Class.create(MO.FEaiLogicCockpitStatus);
    o._forecast =  MO.Class.create(MO.FEaiLogicCockpitForecast);
 }
 //==========================================================
@@ -54,6 +58,8 @@ MO.FEaiLogicCockpit_dispose = function FEaiLogicCockpit_dispose(){
    o._trend = MO.Lang.Object.dispose(o._trend);
    o._notice = MO.Lang.Object.dispose(o._notice);
    o._forecast = MO.Lang.Object.dispose(o._forecast);
+   o._warning = MO.Lang.Object.dispose(o._warning);
+   o._status = MO.Lang.Object.dispose(o._status)
    // 父处理
    o.__base.FEaiLogic.dispose.call(o);
 }

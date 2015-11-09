@@ -5,7 +5,7 @@
 // @author adu
 // @history 151103
 //==========================================================
-MO.FEaiCockpitLogicTitle = function FEaiCockpitLogicTitle(o) {
+MO.FEaiCockpitMessageTitle = function FEaiCockpitMessageTitle(o) {
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
