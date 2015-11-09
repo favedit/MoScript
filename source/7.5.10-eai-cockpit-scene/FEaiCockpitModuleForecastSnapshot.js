@@ -72,7 +72,7 @@ MO.FEaiCockpitModuleForecastSnapshot_onPaintBegin = function FEaiCockpitModuleFo
    //..........................................................
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
-   graphic.drawImage(o._gridImage, 300, 20, 592, 199);
+   graphic.drawImage(o._gridImage, 340, 20, 592, 199);
 }
 
 //==========================================================
@@ -98,7 +98,7 @@ MO.FEaiCockpitModuleForecastSnapshot_construct = function FEaiCockpitModuleForec
 //==========================================================
 MO.FEaiCockpitModuleForecastSnapshot_setup = function FEaiCockpitModuleForecastSnapshot_setup(){
    var o = this;
-   // 创建图片
+   // 加载图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/forecast/ground.png');
    image.addLoadListener(o, o.onImageLoad);
