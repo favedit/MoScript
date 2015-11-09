@@ -101,17 +101,17 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
-   grid.setLocation(6, 100);
-   grid.setSize(578, 500);
+   grid.setLocation(22, 65);
+   grid.setSize(555, 500);
    grid.setHeadHeight(35);
-   grid.setHeadBackColor('#122A46');
+   grid.setHeadBackColor('#4f597d');
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 22;
-   grid.headFont().color = '#00B2F2';
+   grid.headFont().color = '#2adae9';
    grid.setRowHeight(28);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 18;
-   grid.rowFont().color = '#59FDE9';
+   grid.rowFont().size = 22;
+   grid.rowFont().color = '#ffffff';
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('label');
    column.setLabel('公司名称');
@@ -124,9 +124,9 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    column.setLabel('投资额');
    column.setDataName('investment_amount');
    column.cellPadding().right = 10;
-   column.setNormalColor('#59FDE9');
-   column.setHighColor('#FDEF01');
-   column.setLowerColor('#EB6C03');
+   column.setNormalColor('#ffffff');
+   column.setHighColor('#ffffff');
+   column.setLowerColor('#ffffff');
    column.setNegativeColor('#FF0000');
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
@@ -166,7 +166,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setData = function FEaiCockpitModuleAchi
       // 排行榜数据填充
       row.set('label', department.label());
       row.set('investment_amount', department.investmentAmount());
-      row.set('level', 0);
+      row.set('level', i);
       row.set('trend', 0);
       grid.pushRow(row);
    }

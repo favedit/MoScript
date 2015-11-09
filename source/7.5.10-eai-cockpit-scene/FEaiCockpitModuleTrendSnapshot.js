@@ -30,6 +30,7 @@ MO.FEaiCockpitModuleTrendSnapshot = function FEaiCockpitModuleTrendSnapshot(o) {
    o.processLogic          = MO.FEaiCockpitModuleTrendSnapshot_processLogic;
    // @method
    o.dispose               = MO.FEaiCockpitModuleTrendSnapshot_dispose;
+   o._dateTextFont         = MO.Class.register(o, new MO.AGetSet('_dateTextFont'));
    return o;
 }
 
@@ -56,6 +57,29 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
    //..........................................................
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
+
+   var left = rectangle.left + 150;
+   var top = rectangle.top + 50;
+   var width = rectangle.width - 180;
+   var height = rectangle.height - 150;
+   var handle = graphic._handle;
+   var label =45000;
+   var textwidth = 0;
+   graphic.setFont('12px Microsoft YaHei');
+   for(var i=0;i<9;i++){
+      handle.beginPath();
+      var x = left;
+      var y = top +i*15-5;
+      handle.moveTo(x, y);
+      x = left+width;
+      handle.lineTo(x, y);
+      handle.lineWidth = 2;
+      handle.strokeStyle = '#697293';
+      handle.stroke();
+      textwidth = graphic.textWidth('label');
+      graphic.drawText(label, left-textwidth-20, y, '#ffffff');      
+      label -=5000;
+   }
    // 绘制数据线
    var data = o._data;
    if(data){
@@ -65,6 +89,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
          var count = days.count();
          var minValue = 0;
          var maxValue = 0;
+         var label = '';
          for(var n = 0; n < count; n++){
             var day = days.at(n);
             maxValue = Math.max(day.priorInvestmentAmount(), maxValue);
@@ -74,14 +99,33 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
             maxValue = Math.max(day.redemptionAmount(), maxValue);
             minValue = Math.max(day.netinvestmentAmount(), minValue);
          }
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorInvestmentAmount', '#800000', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorRedemptionAmount', '#000080', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorNetinvestmentAmount', '#008000', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_investmentAmount', '#FF0000', 4);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_redemptionAmount', '#0000FF', 4);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_netinvestmentAmount', '#00FF00', 4);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorInvestmentAmount', '#245d88', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorRedemptionAmount', '#22b364', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorNetinvestmentAmount', '#965261', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_investmentAmount', '#245d88,', 3);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_redemptionAmount', '#22b364', 3);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_netinvestmentAmount', '#965261', 3);
+         //标题日期
+         var day = days.at(0);
+         var date = days.at(0).priorRecordDate();
+         graphic.setFont('13px Microsoft YaHei');
+         var label = date.substr(0,4)+'年'+date.substr(4,2)+'月';
+         graphic.drawText(label, left+width*2/5, rectangle.top+40, '#edfc2d');
+         //下面日期
+         graphic.setFont('6px Microsoft YaHei');
+         var handle = graphic._handle;
+         for (var i = 0 ;i<count;i=i+3){
+            var day = days.at(i);
+            date = day.priorRecordDate();
+            label = date.substr(0,4)+'/'+date.substr(6,1)+'/'+date.substr(7,1);
+            handle.save()
+            handle.translate(rectangle.left/2,rectangle.top/2);
+            handle.rotate(-90*Math.PI/180);top+120*Math.cos(-45)
+            graphic.drawText(label,top+120*Math.cos(-90)-215,left+i*15*Math.sin(-90)+410,'#ffffff');
+            handle.restore();
+         }
       }
-   }
+    }
 }
 
 //==========================================================
@@ -112,6 +156,10 @@ MO.FEaiCockpitModuleTrendSnapshot_construct = function FEaiCockpitModuleTrendSna
    // 配置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._data = MO.Class.create(MO.FEaiCockpitMessageTrend);
+   o._dateTextFont = new MO.SUiFont();
+   o._dateTextFont.size = 4;
+   o._dateTextFont.bold = false;
+   o._dateTextFont.color = '#ffffff'
 }
 
 //==========================================================
@@ -150,10 +198,10 @@ MO.FEaiCockpitModuleTrendSnapshot_drawLine = function FEaiCockpitModuleTrendSnap
    var days = o._data.days();
    var count = days.count();
    // 计算步宽
-   var left = rectangle.left + 80;
+   var left = rectangle.left + 150;
    var top = rectangle.top + 50;
-   var width = rectangle.width - 100;
-   var height = rectangle.height - 100;
+   var width = rectangle.width - 180;
+   var height = rectangle.height - 150;
    var stepWidth = width / count;
    var stepHeight = height / maxValue;
    for(var n = 0; n < count; n++){
