@@ -112,7 +112,7 @@ MO.FGuiControlRenderable_process = function FGuiControlRenderable_process(){
    var o = this;
    o.__base.FE3dFaceData.process.call(o);
    var control = o._control;
-   if(control.isDirty()){
+   if(control.testDirty()){
       control.updateRenderable();
    }
 }
