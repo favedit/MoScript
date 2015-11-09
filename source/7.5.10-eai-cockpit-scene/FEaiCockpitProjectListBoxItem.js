@@ -185,7 +185,14 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic._handle.clip();
    graphic.drawImage(o._pbarTimeFillImage, drawX, drawY, 216, 21);
    graphic._handle.restore();
+
    drawY += 15;
+   drawText = unit.timeProgress() + '%';
+   graphic.setFont(fontProgress.toString());
+   textWidth = graphic.textWidth(drawText);
+   drawX = drawX + (216 - textWidth) * 0.5;
+   graphic.drawText(drawText, drawX, drawY, fontProgress.color);
+
    // 绘制第四行
    drawX = left + 10;
    drawY += 28;
@@ -205,6 +212,13 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic._handle.clip();
    graphic.drawImage(o._pbarProjectFillImage, drawX, drawY, 216, 21);
    graphic._handle.restore();
+
+   drawY += 15;
+   drawText = unit.proProgress() + '%';
+   graphic.setFont(fontProgress.toString());
+   textWidth = graphic.textWidth(drawText);
+   drawX = drawX + (216 - textWidth) * 0.5;
+   graphic.drawText(drawText, drawX, drawY, fontProgress.color);
 }
 
 //==========================================================
