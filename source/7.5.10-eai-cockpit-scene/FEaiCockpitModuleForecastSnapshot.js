@@ -28,9 +28,22 @@ MO.FEaiCockpitModuleForecastSnapshot = function FEaiCockpitModuleForecastSnapsho
    o.processLogic          = MO.FEaiCockpitModuleForecastSnapshot_processLogic;
    // @method
    o.dispose               = MO.FEaiCockpitModuleForecastSnapshot_dispose;
+   o.onForecastFetch       = MO.FEaiCockpitModuleForecastSnapshot_onForecastFetch;
    return o;
 }
-
+//==========================================================
+// <T>去预言数据</T>
+//
+// @method
+//==========================================================
+ MO.FEaiCockpitModuleForecastSnapshot_onForecastFetch = function FEaiCockpitModuleForecastSnapshot_onForecastFetch(){
+   var o = this;
+   var content = event.content;
+   // 读取数据
+   var data = o._data;
+   data.unserializeSignBuffer(event.sign, event.content, true);
+   o.setData(data);
+ }
 //==========================================================
 // <T>图片加载完成处理。</T>
 //
@@ -73,7 +86,7 @@ MO.FEaiCockpitModuleForecastSnapshot_construct = function FEaiCockpitModuleForec
    o._cellSize.set(8, 2);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
-   o._data = MO.Class.create(MO.FEaiCockpitMessageAchievement);
+   o._data = MO.Class.create(MO.FEaiCockpitMessageForecast);
 }
 
 //==========================================================
@@ -96,6 +109,10 @@ MO.FEaiCockpitModuleForecastSnapshot_setup = function FEaiCockpitModuleForecastS
 //==========================================================
 MO.FEaiCockpitModuleForecastSnapshot_processLogic = function FEaiCockpitModuleForecastSnapshot_processLogic(){
    var o = this;
+   if(o._dataTicker.process()){
+      var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
+      achievement.doFetch(o, o.onForecastFetch);
+   }
 }
 
 //==========================================================
