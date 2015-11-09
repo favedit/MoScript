@@ -133,9 +133,9 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic.drawText(drawText, drawX, drawY, font2ndRow.color);
    textWidth = graphic.textWidth(drawText);
    drawX += textWidth;
-   var bakDrawX = drawX;
-
+   
    drawX += 10;
+   var bakDrawX = drawX;
    drawY -= 15;
    graphic.drawImage(o._indicatorLightOff_0, drawX, drawY, 20, 20);
    drawX += 20;
@@ -144,7 +144,7 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic.drawImage(o._indicatorLightOff_2, drawX, drawY, 20, 20);
 
    bakDrawX += unit.priority() * 20;
-   graphic.drawImage(o['_indicatorLightOn_' + unit.priority()], drawX, drawY, 20, 20);
+   graphic.drawImage(o['_indicatorLightOn_' + unit.priority()], bakDrawX, drawY, 20, 20);
 
    drawX = 190;
    drawY += 15;
@@ -153,9 +153,9 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic.drawText(drawText, drawX, drawY, font2ndRow.color);
    textWidth = graphic.textWidth(drawText);
    drawX += textWidth;
-   var bakDrawX = drawX;
-
+   
    drawX += 10;
+   var bakDrawX = drawX;
    drawY -= 15;
    graphic.drawImage(o._indicatorLightOff_0, drawX, drawY, 20, 20);
    drawX += 20;
@@ -163,8 +163,8 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    drawX += 20;
    graphic.drawImage(o._indicatorLightOff_2, drawX, drawY, 20, 20);
 
-   bakDrawX += unit.priority() * 20;
-   graphic.drawImage(o['_indicatorLightOn_' + unit.priority()], drawX, drawY, 20, 20);
+   bakDrawX += unit.status() * 20;
+   graphic.drawImage(o['_indicatorLightOn_' + unit.status()], bakDrawX, drawY, 20, 20);
 
    // 绘制第三行
    drawX = left + 10;
@@ -198,7 +198,7 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    drawY -= 15;
    graphic.drawImage(o._pbarProjectBgImage, drawX, drawY, 216, 21);
 
-   var clipWidth = 216 * unit.timeProgress() * 0.01;
+   var clipWidth = 216 * unit.proProgress() * 0.01;
    var clipHeight = 21;
    graphic._handle.save();
    graphic._handle.rect(drawX, drawY, clipWidth, 21)
