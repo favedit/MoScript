@@ -22,7 +22,7 @@ MO.MUiGridControl = function MUiGridControl(o){
    o._rowClass      = MO.FUiGridRow;
    o._rowFont       = MO.Class.register(o, new MO.AGetter('_rowFont'));
    o._rowHeight     = MO.Class.register(o, new MO.AGetSet('_rowHeight'), 28);
-   o._rowLimitCount = MO.Class.register(o, new MO.AGetter('_rowLimitCount'), 0);
+   o._rowLimitCount = MO.Class.register(o, new MO.AGetSet('_rowLimitCount'), 0);
    o._rows          = MO.Class.register(o, new MO.AGetter('_rows'));
    o._rowPool       = null;
    // @attribute

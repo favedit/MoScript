@@ -12,6 +12,12 @@ MO.FEaiCockpitModuleStatusSnapshot = function FEaiCockpitModuleStatusSnapshot(o)
    o._data                 = null;
    o._dataTicker           = null;
    o._rotateProcess        = 1.0;
+   o._rotateSpeed          = 0.01;
+
+   o._turnoverDashboard    = null;
+   o._perDashboard         = null;
+   o._inOutDashboard       = null;
+   o._performanceDashboard = null;
    // @attribute
    o._backgroundImage      = null;
    o._backgroundPadding    = null;
@@ -61,75 +67,6 @@ MO.FEaiCockpitModuleStatusSnapshot_onPaintBegin = function FEaiCockpitModuleStat
    //..........................................................
    // 绘制背景
    graphic.drawImage(o._backgroundImage, left, top, width, height);
-
-   var turnover = o._data.turnoverPercent() == null ? 0 : parseInt(o._data.turnoverPercent());
-   var per = o._data.perPercent() == null ? 0 : parseInt(o._data.perPercent());
-   var inOut = o._data.inOutPercent() == null ? 0 : parseInt(o._data.inOutPercent());
-   var performance = o._data.performancePercent() == null ? 0 : parseInt(o._data.performancePercent());
-   //绘制仪表指针
-   var lineLen = 96;
-   var centerY = 170;
-   var lineWidth = 4;
-   var maxRadian = Math.PI * 1.04;
-   var radianOffset = (maxRadian - Math.PI) / 2;
-   var circleOffX = 20;
-   var circleOffY = 20;
-   var circleSize = 40;
-   var rotateTimes = 60;
-   o._rotateProcess += 1.0 / rotateTimes;
-
-   var centerX = 200;
-   var radian = turnover * o._rotateProcess / 120 * maxRadian - radianOffset;
-   var toX = -lineLen * Math.cos(radian) + centerX;
-   var toY = -lineLen * Math.sin(radian) + centerY;
-   graphic.drawLine(centerX, centerY, toX, toY, "#ffffff", lineWidth);
-   graphic.drawImage(o._circle, centerX - circleOffX, centerY - circleOffY, circleSize, circleSize);
-
-   var centerX = 512;
-   var radian = per * o._rotateProcess / 120 * maxRadian - radianOffset;
-   var toX = -lineLen * Math.cos(radian) + centerX;
-   var toY = -lineLen * Math.sin(radian) + centerY;
-   graphic.drawLine(centerX, centerY, toX, toY, "#ffffff", lineWidth);
-   graphic.drawImage(o._circle, centerX - circleOffX, centerY - circleOffY, circleSize, circleSize);
-
-   var centerX = 822;
-   var radian = inOut * o._rotateProcess / 120 * maxRadian - radianOffset;
-   var toX = -lineLen * Math.cos(radian) + centerX;
-   var toY = -lineLen * Math.sin(radian) + centerY;
-   graphic.drawLine(centerX, centerY, toX, toY, "#ffffff", lineWidth);
-   graphic.drawImage(o._circle, centerX - circleOffX, centerY - circleOffY, circleSize, circleSize);
-
-   var centerX = 1130;
-   var radian = performance * o._rotateProcess / 120 * maxRadian - radianOffset;
-   var toX = -lineLen * Math.cos(radian) + centerX;
-   var toY = -lineLen * Math.sin(radian) + centerY;
-   graphic.drawLine(centerX, centerY, toX, toY, "#ffffff", lineWidth);
-   graphic.drawImage(o._circle, centerX - circleOffX, centerY - circleOffY, circleSize, circleSize);
-   
-   //绘制文字
-   var color = '#ffe721';
-   var textTop = 212;
-   graphic.setFont('bold 24px Microsoft YaHei');
-
-   var text = "集团当月离职情况(" + turnover.toString() + "%)";
-   var textWidth = graphic.textWidth(text);
-   var textLeft = 200 - textWidth/2;
-   graphic.drawText(text, textLeft, textTop, color);
-
-   var text = "理财师人均业绩(" + per.toString() + "%)";
-   var textWidth = graphic.textWidth(text);
-   var textLeft = 510 - textWidth/2;
-   graphic.drawText(text, textLeft, textTop, color);
-
-   var text = "集团收支情况(" + inOut.toString() + "%)";
-   var textWidth = graphic.textWidth(text);
-   var textLeft = 820 - textWidth/2;
-   graphic.drawText(text, textLeft, textTop, color);
-
-   var text = "业绩完成度(" + performance.toString() + "%)";
-   var textWidth = graphic.textWidth(text);
-   var textLeft = 1130 - textWidth/2;
-   graphic.drawText(text, textLeft, textTop, color);
 }
 
 MO.FEaiCockpitModuleStatusSnapshot_onStatusFetch = function FEaiCockpitModuleStatusSnapshot_onStatusFetch(event) {
@@ -139,7 +76,6 @@ MO.FEaiCockpitModuleStatusSnapshot_onStatusFetch = function FEaiCockpitModuleSta
    var data = o._data;
    data.unserializeSignBuffer(event.sign, event.content, true);
    o._rotateProcess = 0;
-   o.dirty();
 }
 
 //==========================================================
@@ -170,8 +106,26 @@ MO.FEaiCockpitModuleStatusSnapshot_setup = function FEaiCockpitModuleStatusSnaps
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/status/ground.png');
    image.addLoadListener(o, o.onImageLoad);
 
-   var circle = o._circle = imageConsole.load('{eai.resource}/cockpit/status/circle.png');
-   circle.addLoadListener(o, o.onImageLoad);
+   var dashboardY = 30;
+   var dashboard = o._turnoverDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
+   dashboard.setLocation(60, dashboardY);
+   dashboard.setTextPre("集团当月离职情况");
+   o.push(dashboard);
+
+   var dashboard = o._perDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
+   dashboard.setLocation(364, dashboardY);
+   dashboard.setTextPre("理财师人均业绩");
+   o.push(dashboard);
+
+   var dashboard = o._inOutDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
+   dashboard.setLocation(668, dashboardY);
+   dashboard.setTextPre("集团收支情况");
+   o.push(dashboard);
+
+   var dashboard = o._performanceDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
+   dashboard.setLocation(972, dashboardY);
+   dashboard.setTextPre("业绩完成度");
+   o.push(dashboard);
 }
 
 //==========================================================
@@ -186,7 +140,16 @@ MO.FEaiCockpitModuleStatusSnapshot_processLogic = function FEaiCockpitModuleStat
       status.doFetch(o, o.onStatusFetch);
    }
    if(o._rotateProcess < 1) {
-      o.dirty();
+      var turnover = o._data.turnoverPercent() == null ? 0 : parseInt(o._data.turnoverPercent());
+      var per = o._data.perPercent() == null ? 0 : parseInt(o._data.perPercent());
+      var inOut = o._data.inOutPercent() == null ? 0 : parseInt(o._data.inOutPercent());
+      var performance = o._data.performancePercent() == null ? 0 : parseInt(o._data.performancePercent());
+
+      o._rotateProcess += o._rotateSpeed;
+      o._turnoverDashboard.setData(turnover * o._rotateProcess);
+      o._perDashboard.setData(per * o._rotateProcess);
+      o._inOutDashboard.setData(inOut * o._rotateProcess);
+      o._performanceDashboard.setData(performance * o._rotateProcess);
    }
 }
 
