@@ -63,9 +63,11 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
    var width = rectangle.width - 180;
    var height = rectangle.height - 150;
    var handle = graphic._handle;
-   var label =45000;
+   var label = 65000;
    var textwidth = 0;
    graphic.setFont('12px Microsoft YaHei');
+   graphic.drawText('(单位：万)', left-55, top-20, '#ffffff'); 
+
    for(var i=0;i<9;i++){
       handle.beginPath();
       var x = left;
@@ -110,18 +112,18 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
          var date = days.at(0).priorRecordDate();
          graphic.setFont('13px Microsoft YaHei');
          var label = date.substr(0,4)+'年'+date.substr(4,2)+'月';
-         graphic.drawText(label, left+width*2/5, rectangle.top+40, '#edfc2d');
+         graphic.drawText(label, left+width*2/5, rectangle.top+35, '#edfc2d');
          //下面日期
          graphic.setFont('6px Microsoft YaHei');
          var handle = graphic._handle;
-         for (var i = 0 ;i<count;i=i+3){
-            var day = days.at(i);
+         for (var i = count ; i>0; i=i-6){
+            var day = days.at(i-1);
             date = day.priorRecordDate();
-            label = date.substr(0,4)+'/'+date.substr(6,1)+'/'+date.substr(7,1);
+            label = date.substr(2,2)+'/'+date.substr(4,2)+'/'+date.substr(6,2);
             handle.save()
             handle.translate(rectangle.left/2,rectangle.top/2);
             handle.rotate(-90*Math.PI/180);top+120*Math.cos(-45)
-            graphic.drawText(label,top+120*Math.cos(-90)-215,left+i*15*Math.sin(-90)+410,'#ffffff');
+            graphic.drawText(label,top+120*Math.cos(-90)-215,left+(count-i)*15*Math.sin(-90)+410,'#ffffff');
             handle.restore();
          }
       }
