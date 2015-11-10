@@ -82,12 +82,12 @@ MO.FEaiCockpitProjectListBoxItem_setup = function FEaiCockpitProjectListBoxItem_
    o._pbarTimeFillImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_time_fill.png');
    o._pbarProjectBgImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_project_bg.png');
    o._pbarProjectFillImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_project_fill.png');
-   o._indicatorLightOff_0 = imageConsole.load('{eai.resource}/cockpit/notice/progress_bad.png');
-   o._indicatorLightOff_1 = imageConsole.load('{eai.resource}/cockpit/notice/progress_bad.png');
-   o._indicatorLightOff_2 = imageConsole.load('{eai.resource}/cockpit/notice/progress_bad.png');
-   o._indicatorLightOn_0 = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
-   o._indicatorLightOn_1 = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
-   o._indicatorLightOn_2 = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
+   o._indicatorLightOff_0 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_off_0.png');
+   o._indicatorLightOff_1 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_off_1.png');
+   o._indicatorLightOff_2 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_off_2.png');
+   o._indicatorLightOn_0 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_on_0.png');
+   o._indicatorLightOn_1 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_on_1.png');
+   o._indicatorLightOn_2 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_on_2.png');
 
    o._bgImage.addLoadListener(o, o.onImageLoad);
    o._pbarTimeBgImage.addLoadListener(o, o.onImageLoad);
