@@ -108,7 +108,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 22;
    grid.headFont().color = '#2adae9';
-   grid.setRowHeight(28);
+   grid.setRowHeight(35);
    grid.rowFont().font = 'Microsoft YaHei';
    grid.rowFont().size = 22;
    grid.rowFont().color = '#ffffff';
@@ -117,7 +117,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    column.setLabel('公司名称');
    column.setDataName('label');
    column.setWidth(160);
-   column.setPadding(1, 1, 1, 1);
+   column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
    column.setName('investmentAmount');
@@ -129,21 +129,21 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    column.setLowerColor('#ffffff');
    column.setNegativeColor('#FF0000');
    column.setWidth(140);
-   column.setPadding(1, 1, 1, 1);
+   column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('level');
    column.setLabel('排名');
    column.setDataName('level');
    column.setWidth(60);
-   column.setPadding(1, 1, 1, 1);
+   column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('trend');
    column.setLabel('趋势');
    column.setDataName('trend');
    column.setWidth(60);
-   column.setPadding(1, 1, 1, 1);
+   column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    o.push(grid);
 }
@@ -166,7 +166,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setData = function FEaiCockpitModuleAchi
       // 排行榜数据填充
       row.set('label', department.label());
       row.set('investment_amount', department.investmentAmount());
-      row.set('level', i);
+      row.set('level', i+1);
       row.set('trend', 0);
       grid.pushRow(row);
    }

@@ -58,7 +58,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
 
-   var left = rectangle.left + 150;
+   var left = rectangle.left + 130;
    var top = rectangle.top + 50;
    var width = rectangle.width - 180;
    var height = rectangle.height - 150;
@@ -99,12 +99,12 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
             maxValue = Math.max(day.redemptionAmount(), maxValue);
             minValue = Math.max(day.netinvestmentAmount(), minValue);
          }
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorInvestmentAmount', '#245d88', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorRedemptionAmount', '#22b364', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorNetinvestmentAmount', '#965261', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_investmentAmount', '#245d88,', 3);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_redemptionAmount', '#22b364', 3);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_netinvestmentAmount', '#965261', 3);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorInvestmentAmount', '#31e270', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorRedemptionAmount', '#9a133c', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorNetinvestmentAmount', '#234b7e', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_investmentAmount', '#00fb3c,', 3);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_redemptionAmount', '#ff0600', 3);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_netinvestmentAmount', '#4a92e7', 3);
          //标题日期
          var day = days.at(0);
          var date = days.at(0).priorRecordDate();
@@ -198,7 +198,7 @@ MO.FEaiCockpitModuleTrendSnapshot_drawLine = function FEaiCockpitModuleTrendSnap
    var days = o._data.days();
    var count = days.count();
    // 计算步宽
-   var left = rectangle.left + 150;
+   var left = rectangle.left + 130;
    var top = rectangle.top + 50;
    var width = rectangle.width - 180;
    var height = rectangle.height - 150;
