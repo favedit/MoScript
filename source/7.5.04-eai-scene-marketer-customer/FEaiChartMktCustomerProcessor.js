@@ -109,6 +109,7 @@ MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerPr
       o._tableInterval = 1000 * 60 * o._intervalMinute;
    }
    o._tableTick = 0;
+   MO.Logger.info(o, 'Load dynamic data. (unit_count={1})', unitCount);
    // 触发数据事件
    var changeEvent = o._eventDataChanged;
    changeEvent.rankUnits = rankUnits;
