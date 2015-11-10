@@ -91,6 +91,7 @@ MO.FEaiCockpitModuleProjectSnapshot_setup = function FEaiCockpitModuleProjectSna
    image.addLoadListener(o, o.onImageLoad);
    // 创建控件
    var listBox = o._listBox = MO.Class.create(MO.FGuiListBox);
+   listBox.setDisplayCount(5);
    //listBox.setPadding(15, 10, 15, 10);
    listBox.setLocation(20, 55);
    listBox.setSize(330, 660);

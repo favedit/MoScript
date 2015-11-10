@@ -75,7 +75,7 @@ MO.FEaiCockpitNoticeListBoxItem_setup = function FEaiCockpitNoticeListBoxItem_se
    o._font2ndRowY.parse('bold #FFEC3B 22px Microsoft YaHei');
 
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var bgImageNormal = o._bgImageNormal = imageConsole.load('{eai.resource}/cockpit/notice/item_bg_normal.png');
+   var bgImageNormal = o._bgImageNormal = imageConsole.load('{eai.resource}/cockpit/notice/item_bg.png');
    var bgImageSelected = o._bgImageSelected = imageConsole.load('{eai.resource}/cockpit/notice/item_bg_selected.png');
    var pbarBgImage = o._pbarBgImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_bg.png');
    var pbarFillImage = o._pbarFillImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_fill.png');
@@ -109,10 +109,10 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
 
    // 绘制背景
    if (o._isSelected) {
-      graphic.drawImage(o._bgImageSelected, left, top, 889, 88);
+      graphic.drawImage(o._bgImageSelected, left, top, 880, 80);
    }
    else {
-      graphic.drawImage(o._bgImageNormal, left, top, 889, 88);
+      graphic.drawImage(o._bgImageNormal, left, top, 880, 80);
    }
 
    var font1stRowW = o._font1stRowW;

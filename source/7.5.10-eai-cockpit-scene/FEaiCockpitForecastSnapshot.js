@@ -97,6 +97,7 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
    o._gridImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid.png');
    // 创建控件
    var listBox = o._listBox = MO.Class.create(MO.FGuiListBox);
+   listBox.setDisplayCount(8);
    listBox.setPadding(10, 10, 10, 10);
    listBox.setLocation(30, 10);
    listBox.setSize(300, 240);

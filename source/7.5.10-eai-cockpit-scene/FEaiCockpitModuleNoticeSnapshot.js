@@ -85,7 +85,9 @@ MO.FEaiCockpitModuleNoticeSnapshot_setup = function FEaiCockpitModuleNoticeSnaps
    bgImage.addLoadListener(o, o.onImageLoad);
    // 创建控件
    var listBox = o._noticeListBox = MO.Class.create(MO.FGuiListBox);
-   listBox.setPadding(4, 20, 10, 10);
+   listBox.setDisplayCount(4);
+   listBox.setGap(5);
+   listBox.setPadding(12, 12, 12, 12);
    listBox.setLocation(50, 0);
    listBox.setSize(900, 120 * 4);
    o.push(listBox);
@@ -119,10 +121,10 @@ MO.FEaiCockpitModuleNoticeSnapshot_onNoticeFetch = function FEaiCockpitModuleNot
    var notices = o._noticeData.notices();
    var count = notices.count();
    listBox.clear();
-   for (var i = 0; i < count ; i++) {
+   for (var i = 0; i < count; i++) {
       var noticeItem = MO.Class.create(MO.FEaiCockpitNoticeListBoxItem);
       noticeItem.setup(notices.at(i));
-      noticeItem.setSize(889, 88);
+      noticeItem.setSize(880, 80);
       listBox.push(noticeItem);
    }
    o.dirty();

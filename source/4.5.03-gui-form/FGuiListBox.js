@@ -11,6 +11,7 @@ MO.FGuiListBox = function FGuiListBox(o) {
    // @attribute
    o._gap           = MO.Class.register(o, new MO.AGetSet('_gap'), 0);
    o._items         = MO.Class.register(o, new MO.AGetSet('_items'));
+   o._displayCount  = MO.Class.register(o, new MO.AGetSet('_displayCount'), 5);
    // @attribute
    o._itemRectangle = null;
    //..........................................................
@@ -51,8 +52,9 @@ MO.FGuiListBox_onPaintBegin = function FGuiListBox_onPaintBegin(event) {
 
    var items = o._items;
    var itemCount = items.count();
+   var displayCount = o._displayCount;
    var gap = o._gap;
-   for (var i = 0; i < itemCount; i++) {
+   for (var i = 0; i < itemCount && i < displayCount; i++) {
       var item = items.at(i);
       itemWidth = item.width() > rectangle.width ? rectangle.width : item.width();
       itemHeight = item.height();
