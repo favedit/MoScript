@@ -101,20 +101,22 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
-   grid.setLocation(22, 65);
-   grid.setSize(555, 500);
+   grid.setLocation(10, 58);
+   grid.setSize(578, 500);
    grid.setHeadHeight(35);
    grid.setHeadBackColor('#4f597d');
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 22;
    grid.headFont().color = '#2adae9';
-   grid.setRowHeight(35);
+   grid.setRowHeight(22);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 22;
+   grid.rowFont().size = 18;
    grid.rowFont().color = '#ffffff';
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('label');
    column.setLabel('公司名称');
+   column.setTextAlign(MO.EUiAlign.LeftPadding);
+   column.setWidth(120);
    column.setDataName('label');
    column.setWidth(160);
    column.setPadding(0, 0, 0, 0);
@@ -125,9 +127,9 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    column.setDataName('investment_amount');
    column.cellPadding().right = 10;
    column.setNormalColor('#ffffff');
-   column.setHighColor('#ffffff');
-   column.setLowerColor('#ffffff');
-   column.setNegativeColor('#FF0000');
+   column.setHighColor('#edfc2d');
+   column.setLowerColor('#edfc2d');
+   column.setNegativeColor('#edfc2d');
    column.setWidth(140);
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
@@ -163,11 +165,31 @@ MO.FEaiCockpitModuleAchievementSnapshot_setData = function FEaiCockpitModuleAchi
    for (var i = 0; i < count; i++) {
       var department = departments.at(i);
       var row = grid.allocRow();
+      var label = department.label();
       // 排行榜数据填充
-      row.set('label', department.label());
-      row.set('investment_amount', department.investmentAmount());
+      if(label == "上海仁立网络科技有限公司"){
+         label = "上海仁立有限公司";
+      }else if(label == "安信普华财富投资管理（北京）有限公司"){
+         label = "安信普华（北京）";
+      }else if(label == "金易融(上海)网络科技有限公司"){
+         label = "金易融(上海)";
+      }else if(label == "深圳前海智赢商务信息咨询有限公司"){
+         label = "深圳前海智赢";
+      }
+      row.set('label', label);
+      row.set('investment_amount', department.investmentAmount().toFixed(0));
       row.set('level', i+1);
-      row.set('trend', 0);
+      switch(i%3){
+      case 0:
+      row.set('trend', '↑');
+      break;
+      case 1:
+      row.set('trend', '↓');
+      break;
+      case 2:
+      row.set('trend', '→');
+      break;
+      }
       grid.pushRow(row);
    }
    o.dirty();

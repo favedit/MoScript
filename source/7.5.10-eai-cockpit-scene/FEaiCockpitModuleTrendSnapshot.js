@@ -101,30 +101,34 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
             maxValue = Math.max(day.redemptionAmount(), maxValue);
             minValue = Math.max(day.netinvestmentAmount(), minValue);
          }
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorInvestmentAmount', '#31e270', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorRedemptionAmount', '#9a133c', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorNetinvestmentAmount', '#234b7e', 2);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_investmentAmount', '#00fb3c,', 3);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_redemptionAmount', '#ff0600', 3);
-         o.drawLine(graphic, rectangle, minValue, maxValue, '_netinvestmentAmount', '#4a92e7', 3);
-         //标题日期
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorInvestmentAmount', '#2e74f4', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorRedemptionAmount', '#36c644', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_priorNetinvestmentAmount', '#d81f0c', 2);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_investmentAmount', '#11228a,', 3);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_redemptionAmount', '#02602a', 3);
+         o.drawLine(graphic, rectangle, minValue, maxValue, '_netinvestmentAmount', '#682018', 3);
+          //标题日期
          var day = days.at(0);
          var date = days.at(0).priorRecordDate();
-         graphic.setFont('13px Microsoft YaHei');
+         graphic.setFont('15px Microsoft YaHei');
          var label = date.substr(0,4)+'年'+date.substr(4,2)+'月';
-         graphic.drawText(label, left+width*2/5, rectangle.top+35, '#edfc2d');
+         graphic.drawText(label, left+width*2/5, rectangle.top+30, '#edfc2d');
          //下面日期
          graphic.setFont('6px Microsoft YaHei');
          var handle = graphic._handle;
-         for (var i = count ; i>0; i=i-6){
-            var day = days.at(i-1);
+         label = '(日期：天)';
+         graphic.drawText(label,left-60,top+129,'#ffffff');
+         for (var i = 0 ; i<count; i=i+5){
+            var day = days.at(i);
             date = day.priorRecordDate();
-            label = date.substr(2,2)+'/'+date.substr(4,2)+'/'+date.substr(6,2);
-            handle.save()
-            handle.translate(rectangle.left/2,rectangle.top/2);
-            handle.rotate(-90*Math.PI/180);top+120*Math.cos(-45)
-            graphic.drawText(label,top+120*Math.cos(-90)-215,left+(count-i)*15*Math.sin(-90)+410,'#ffffff');
-            handle.restore();
+            label =  date.substr(6,2)
+            graphic.drawText(label,left+i*13,top+128,'#ffffff');
+            // label = date.substr(2,2)+'/'+date.substr(4,2)+'/'+date.substr(6,2);
+            // handle.save()
+            // handle.translate(rectangle.left/2,rectangle.top/2);
+            // handle.rotate(-90*Math.PI/180);top+120*Math.cos(-45)
+            // graphic.drawText(label,top+120*Math.cos(-90)-215,left+(count-i)*15*Math.sin(-90)+410,'#ffffff');
+            // handle.restore();
          }
       }
     }
@@ -213,6 +217,7 @@ MO.FEaiCockpitModuleTrendSnapshot_drawLine = function FEaiCockpitModuleTrendSnap
       if(n == 0){
          handle.moveTo(x, y);
       }else{
+         if(day[code]!=0)
          handle.lineTo(x, y);
       }
    }

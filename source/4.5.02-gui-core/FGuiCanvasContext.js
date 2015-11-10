@@ -60,6 +60,8 @@ MO.FGuiCanvasContext_drawFontText = function FGuiCanvasContext_drawFontText(text
       handle.fillText(text, x + (width - textWidth), cy);
    }else if(alignCd == MO.EUiAlign.Center){
       handle.fillText(text, cx, cy);
+   }else if(alignCd == MO.EUiAlign.LeftPadding){
+      handle.fillText(text, x+30, cy);
    }else{
       throw new MO.TError('Invalid align type.');
    }

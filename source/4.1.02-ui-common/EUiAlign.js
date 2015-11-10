@@ -9,6 +9,7 @@ MO.EUiAlign = new function EUiAlign(){
    var o = this;
    // @attribute
    o.Left        = 'left';
+   o.LeftPadding = 'LeftPadding';
    o.Center      = 'center';
    o.Right       = 'right';
    o.Top         = 'up';
