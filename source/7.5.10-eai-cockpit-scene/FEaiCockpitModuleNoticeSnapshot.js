@@ -104,7 +104,7 @@ MO.FEaiCockpitModuleNoticeSnapshot_processLogic = function FEaiCockpitModuleNoti
       var notice = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
       notice.doFetch(o, o.onNoticeFetch);
    }
-   if (o._listBox.animationPlaying()) {
+   if (o._noticeListBox.animationPlaying()) {
       o.dirty();
    }
 }
