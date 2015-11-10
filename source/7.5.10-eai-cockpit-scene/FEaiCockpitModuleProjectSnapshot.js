@@ -125,12 +125,12 @@ MO.FEaiCockpitModuleNoticeSnapshot_onDataFetch = function FEaiCockpitModuleNotic
    data.unserializeSignBuffer(event.sign, event.content, true);
    var projects = data.projects();
    var count = projects.count();
-   listBox.items().clear();
+   listBox.clear();
    for (var i = 0; i < count ; i++) {
       var item = MO.Class.create(MO.FEaiCockpitProjectListBoxItem);
       item.setup(projects.at(i));
       item.setSize(320, 120);
-      listBox.items().push(item);
+      listBox.push(item);
    }
    o.dirty();
 }

@@ -6,7 +6,7 @@
 // @history 151107
 //==========================================================
 MO.FGuiListBoxItem = function FGuiListBoxItem(o) {
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MGuiSize);
+   o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @method
    o.construct       = MO.FGuiListBoxItem_construct;
@@ -24,8 +24,7 @@ MO.FGuiListBoxItem = function FGuiListBoxItem(o) {
 //==========================================================
 MO.FGuiListBoxItem_construct = function FGuiListBoxItem_construct() {
    var o = this;
-   o.__base.FObject.construct.call(o);
-   o.__base.MGuiSize.construct.call(o);
+   o.__base.FGuiControl.construct.call(o);
 }
 
 //==========================================================
@@ -45,6 +44,5 @@ MO.FGuiListBoxItem_draw = function FGuiListBoxItem_draw(graphic, rectangle) {
 MO.FGuiListBoxItem_dispose = function FGuiListBoxItem_dispose(){
    var o = this;
    // 父处理
-   o.__base.FObject.dispose.call(o);
-   o.__base.MGuiSize.dispose.call(o);
+   o.__base.FGuiControl.dispose.call(o);
 }

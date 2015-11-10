@@ -32,9 +32,19 @@ MO.FEaiCockpitProjectListBoxItem = function FEaiCockpitProjectListBoxItem(o) {
    // @method
    o.setup           = MO.FEaiCockpitProjectListBoxItem_setup;
    o.draw            = MO.FEaiCockpitProjectListBoxItem_draw;
+   o.onImageLoad     = MO.FEaiCockpitProjectListBoxItem_onImageLoad;
    // @method
    o.dispose         = MO.FEaiCockpitProjectListBoxItem_dispose;
    return o;
+}
+
+//==========================================================
+// <T>图片加载完成处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitProjectListBoxItem_onImageLoad = function FEaiCockpitProjectListBoxItem_onImageLoad() {
+   this.dirty();
 }
 
 //==========================================================
@@ -78,6 +88,18 @@ MO.FEaiCockpitProjectListBoxItem_setup = function FEaiCockpitProjectListBoxItem_
    o._indicatorLightOn_0 = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
    o._indicatorLightOn_1 = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
    o._indicatorLightOn_2 = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
+
+   o._bgImage.addLoadListener(o, o.onImageLoad);
+   o._pbarTimeBgImage.addLoadListener(o, o.onImageLoad);
+   o._pbarTimeFillImage.addLoadListener(o, o.onImageLoad);
+   o._pbarProjectBgImage.addLoadListener(o, o.onImageLoad);
+   o._pbarProjectFillImage.addLoadListener(o, o.onImageLoad);
+   o._indicatorLightOff_0.addLoadListener(o, o.onImageLoad);
+   o._indicatorLightOff_1.addLoadListener(o, o.onImageLoad);
+   o._indicatorLightOff_2.addLoadListener(o, o.onImageLoad);
+   o._indicatorLightOn_0.addLoadListener(o, o.onImageLoad);
+   o._indicatorLightOn_1.addLoadListener(o, o.onImageLoad);
+   o._indicatorLightOn_2.addLoadListener(o, o.onImageLoad);
 }
 
 //==========================================================
@@ -85,7 +107,7 @@ MO.FEaiCockpitProjectListBoxItem_setup = function FEaiCockpitProjectListBoxItem_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_draw(graphic, rectangle) {
+MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_draw(graphic, rectangle, rate) {
    var o = this;
    var left = rectangle.left;
    var top = rectangle.top;
@@ -96,6 +118,10 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
 
    var drawX = left + 10;
    var drawY = top + 26;
+
+   if (!rate) {
+      rate = 1;
+   }
 
    // 绘制背景
 

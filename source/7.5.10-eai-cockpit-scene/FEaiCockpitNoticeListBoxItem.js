@@ -30,9 +30,19 @@ MO.FEaiCockpitNoticeListBoxItem = function FEaiCockpitNoticeListBoxItem(o) {
    // @method
    o.setup           = MO.FEaiCockpitNoticeListBoxItem_setup;
    o.draw            = MO.FEaiCockpitNoticeListBoxItem_draw;
+   o.onImageLoad     = MO.FEaiCockpitNoticeListBoxItem_onImageLoad;
    // @method
    o.dispose         = MO.FEaiCockpitNoticeListBoxItem_dispose;
    return o;
+}
+
+//==========================================================
+// <T>图片加载完成处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitNoticeListBoxItem_onImageLoad = function FEaiCockpitNoticeListBoxItem_onImageLoad() {
+   this.dirty();
 }
 
 //==========================================================
@@ -65,12 +75,19 @@ MO.FEaiCockpitNoticeListBoxItem_setup = function FEaiCockpitNoticeListBoxItem_se
    o._font2ndRowY.parse('bold #FFEC3B 22px Microsoft YaHei');
 
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   o._bgImageNormal = imageConsole.load('{eai.resource}/cockpit/notice/item_bg_normal.png');
-   o._bgImageSelected = imageConsole.load('{eai.resource}/cockpit/notice/item_bg_selected.png');
-   o._pbarBgImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_bg.png');
-   o._pbarFillImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_fill.png');
-   o._pbarGoodImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
-   o._pbarBadImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bad.png');
+   var bgImageNormal = o._bgImageNormal = imageConsole.load('{eai.resource}/cockpit/notice/item_bg_normal.png');
+   var bgImageSelected = o._bgImageSelected = imageConsole.load('{eai.resource}/cockpit/notice/item_bg_selected.png');
+   var pbarBgImage = o._pbarBgImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_bg.png');
+   var pbarFillImage = o._pbarFillImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_fill.png');
+   var pbarGoodImage = o._pbarGoodImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
+   var pbarBadImage = o._pbarBadImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bad.png');
+
+   bgImageNormal.addLoadListener(o, o.onImageLoad);
+   bgImageSelected.addLoadListener(o, o.onImageLoad);
+   pbarBgImage.addLoadListener(o, o.onImageLoad);
+   pbarFillImage.addLoadListener(o, o.onImageLoad);
+   pbarGoodImage.addLoadListener(o, o.onImageLoad);
+   pbarBadImage.addLoadListener(o, o.onImageLoad);
 }
 
 //==========================================================

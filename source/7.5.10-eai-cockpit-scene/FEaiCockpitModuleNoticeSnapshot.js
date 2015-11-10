@@ -118,12 +118,12 @@ MO.FEaiCockpitModuleNoticeSnapshot_onNoticeFetch = function FEaiCockpitModuleNot
    data.unserializeSignBuffer(event.sign, event.content, true);
    var notices = o._noticeData.notices();
    var count = notices.count();
-   listBox.items().clear();
+   listBox.clear();
    for (var i = 0; i < count ; i++) {
       var noticeItem = MO.Class.create(MO.FEaiCockpitNoticeListBoxItem);
       noticeItem.setup(notices.at(i));
       noticeItem.setSize(889, 88);
-      listBox.items().push(noticeItem);
+      listBox.push(noticeItem);
    }
    o.dirty();
 }
