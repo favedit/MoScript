@@ -66,6 +66,7 @@ MO.FGuiControl = function FGuiControl(o){
    o.isDirty                 = MO.FGuiControl_isDirty;
    o.setVisible              = MO.FGuiControl_setVisible;
    o.setSize                 = MO.FGuiControl_setSize;
+   o.findManager             = MO.FGuiControl_findManager;
    // @method
    o.testReady               = MO.FGuiControl_testReady;
    o.testDirty               = MO.FGuiControl_testDirty;
@@ -354,6 +355,29 @@ MO.FGuiControl_setVisible = function FGuiControl_setVisible(flag){
 MO.FGuiControl_setSize = function FGuiControl_setSize(width, height){
    var o = this;
    o.__base.MGuiSize.setSize.call(o, width, height);
+   // 设置渲染对象坐标
+   //var renderable = o._renderable;
+   //if(renderable){
+   //   renderable.setSize(width, height);
+   //}
+}
+
+//==========================================================
+// <T>设置大小。</T>
+//
+// @method
+// @param width:Number 宽度
+// @param height:Number 高度
+//==========================================================
+MO.FGuiControl_findManager = function FGuiControl_findManager(){
+   var o = this;
+   var manager = o._manager;
+   if(!manager){
+      var findControl = o._parent;
+      while(findControl){
+      }
+   }
+   
    // 设置渲染对象坐标
    //var renderable = o._renderable;
    //if(renderable){

@@ -69,7 +69,22 @@ MO.TClass_register = function TClass_register(annotation){
    }
    // 检查重复
    if(!annotation._duplicate){
-      if(annotations[code]){
+      var duplicate = false;
+      if(ordered){
+         var acount = annotations.count();
+         for(var i = 0; i < acount; i++){
+            var afind = annotations.at(i);
+            if(afind.code() == code){
+               duplicate = true;
+               break;
+            }
+         }
+      }else{
+         if(annotations[code]){
+            duplicate = true;
+         }
+      }
+      if(duplicate){
          throw new MO.TError(o, "Duplicate annotation. (class={1}, annotation={2}, name={3}, code={4}, value={5})", MO.Class.dump(o), annotation, name, code, annotation.toString());
       }
    }

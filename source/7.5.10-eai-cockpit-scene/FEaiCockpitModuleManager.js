@@ -138,7 +138,7 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    module.setup();
    o.register(module);
    // 创建预测模块
-   var module = o._forecastModule = MO.Class.create(MO.FEaiCockpitModuleForecast);
+   var module = o._forecastModule = MO.Class.create(MO.FEaiCockpitForecastModule);
    module.setModuleManager(o);
    module.linkGraphicContext(o);
    module.setup();

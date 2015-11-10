@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitModuleForecastView = function FEaiCockpitModuleForecastView(o) {
+MO.FEaiCockpitForecastView = function FEaiCockpitForecastView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
@@ -17,16 +17,16 @@ MO.FEaiCockpitModuleForecastView = function FEaiCockpitModuleForecastView(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleForecastView_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleForecastView_onPaintBegin;
+   o.onImageLoad           = MO.FEaiCockpitForecastView_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitForecastView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleForecastView_construct;
+   o.construct             = MO.FEaiCockpitForecastView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleForecastView_setup;
-   o.processLogic          = MO.FEaiCockpitModuleForecastView_processLogic;
+   o.setup                 = MO.FEaiCockpitForecastView_setup;
+   o.processLogic          = MO.FEaiCockpitForecastView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleForecastView_dispose;
+   o.dispose               = MO.FEaiCockpitForecastView_dispose;
    return o;
 }
 
@@ -35,7 +35,7 @@ MO.FEaiCockpitModuleForecastView = function FEaiCockpitModuleForecastView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecastView_onImageLoad = function FEaiCockpitModuleForecastView_onImageLoad() {
+MO.FEaiCockpitForecastView_onImageLoad = function FEaiCockpitForecastView_onImageLoad() {
    this.dirty();
 }
 
@@ -44,7 +44,7 @@ MO.FEaiCockpitModuleForecastView_onImageLoad = function FEaiCockpitModuleForecas
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecastView_onPaintBegin = function FEaiCockpitModuleForecastView_onPaintBegin(event) {
+MO.FEaiCockpitForecastView_onPaintBegin = function FEaiCockpitForecastView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -60,7 +60,7 @@ MO.FEaiCockpitModuleForecastView_onPaintBegin = function FEaiCockpitModuleForeca
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecastView_construct = function FEaiCockpitModuleForecastView_construct() {
+MO.FEaiCockpitForecastView_construct = function FEaiCockpitForecastView_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -73,7 +73,7 @@ MO.FEaiCockpitModuleForecastView_construct = function FEaiCockpitModuleForecastV
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecastView_setup = function FEaiCockpitModuleForecastView_setup(){
+MO.FEaiCockpitForecastView_setup = function FEaiCockpitForecastView_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
@@ -86,7 +86,7 @@ MO.FEaiCockpitModuleForecastView_setup = function FEaiCockpitModuleForecastView_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecastView_processLogic = function FEaiCockpitModuleForecastView_processLogic(){
+MO.FEaiCockpitForecastView_processLogic = function FEaiCockpitForecastView_processLogic(){
    var o = this;
 }
 
@@ -95,7 +95,7 @@ MO.FEaiCockpitModuleForecastView_processLogic = function FEaiCockpitModuleForeca
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecastView_dispose = function FEaiCockpitModuleForecastView_dispose() {
+MO.FEaiCockpitForecastView_dispose = function FEaiCockpitForecastView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

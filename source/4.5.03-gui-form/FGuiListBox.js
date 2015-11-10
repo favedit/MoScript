@@ -9,18 +9,21 @@ MO.FGuiListBox = function FGuiListBox(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._gap            = MO.Class.register(o, new MO.AGetSet('_gap'), 0);
-   o._items          = MO.Class.register(o, new MO.AGetSet('_items'));
+   o._gap           = MO.Class.register(o, new MO.AGetSet('_gap'), 0);
+   o._items         = MO.Class.register(o, new MO.AGetSet('_items'));
    // @attribute
-   o._itemRectangle  = null;
+   o._itemRectangle = null;
    //..........................................................
    // @event
-   o.onPaintBegin    = MO.FGuiListBox_onPaintBegin;
+   o.onPaintBegin   = MO.FGuiListBox_onPaintBegin;
    //..........................................................
    // @method
-   o.construct       = MO.FGuiListBox_construct;
+   o.construct      = MO.FGuiListBox_construct;
    // @method
-   o.dispose         = MO.FGuiListBox_dispose;
+   o.push           = MO.FGuiListBox_push;
+   o.clear          = MO.FGuiListBox_clear;
+   // @method
+   o.dispose        = MO.FGuiListBox_dispose;
    return o;
 }
 
@@ -70,6 +73,31 @@ MO.FGuiListBox_construct = function FGuiListBox_construct() {
    // 设置变量
    o._items = new MO.TObjects();
    o._itemRectangle = new MO.SRectangle();
+}
+
+//==========================================================
+// <T>增加一个子对象。</T>
+//
+// @method
+//==========================================================
+MO.FGuiListBox_push = function FGuiListBox_push(control){
+   var o = this;
+   o.__base.FGuiControl.push.call(o, control);
+   // 设置变量
+   if(MO.Class.isClass(control, MO.FGuiListBoxItem)){
+      o._items.push(control);
+   }
+}
+
+//==========================================================
+// <T>增加一个子对象。</T>
+//
+// @method
+//==========================================================
+MO.FGuiListBox_clear = function FGuiListBox_clear(){
+   var o = this;
+   o.__base.FGuiControl.clear.call(o);
+   o._items.clear();
 }
 
 //==========================================================

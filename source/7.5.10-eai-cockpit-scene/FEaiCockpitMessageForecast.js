@@ -9,6 +9,6 @@ MO.FEaiCockpitMessageForecast = function FEaiCockpitMessageForecast(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
-   o._units     = MO.Class.register(o, [new MO.AGetter('_units'), new MO.APersistence('_units', MO.EDataType.Objects, MO.FEaiCockpitMessageForecastUnit)]);
+   o._items = MO.Class.register(o, [new MO.AGetter('_items'), new MO.APersistence('_items', MO.EDataType.Objects, MO.FEaiCockpitMessageForecastItem)]);
    return o;
 }

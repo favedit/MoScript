@@ -52,10 +52,8 @@ MO.TListeners_find = function TListeners_find(owner, callback){
       var count = listeners.count();
       for(var i = 0; i < count; i++){
          var listener = listeners.at(i);
-         if(listener._owner == owner){
-            if(listener._callback == callback){
-               return listener;
-            }
+         if((listener._owner === owner) && (listener._callback === callback)){
+            return listener;
          }
       }
    }

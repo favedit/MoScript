@@ -68,8 +68,8 @@ MO.FEaiCockpitModuleNoticeSnapshot_construct = function FEaiCockpitModuleNoticeS
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
-   o._cellLocation.set(3, 1, 0);
-   o._cellSize.set(8, 4);
+   o._cellLocation.set(3, 4, 0);
+   o._cellSize.set(8, 3);
    o._noticeData = MO.Class.create(MO.FEaiCockpitDataNotice);
    o._dataTicker = new MO.TTicker(1000 * 60);}
 
