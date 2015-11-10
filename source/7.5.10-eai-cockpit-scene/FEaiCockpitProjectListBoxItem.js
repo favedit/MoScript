@@ -71,10 +71,10 @@ MO.FEaiCockpitProjectListBoxItem_setup = function FEaiCockpitProjectListBoxItem_
    var o = this;
    o._unit = unit;
 
-   o._fontTitle.parse('bold #FFFFFF 22px Microsoft YaHei');
-   o._fontSponsor.parse('bold #FFFFFF 18px Microsoft YaHei');
-   o._font2ndRow.parse('bold #FFFFFF 15px Microsoft YaHei');
-   o._fontProgress.parse('bold #FFFFFF 19px Microsoft YaHei');
+   o._fontTitle.parse('bold #FFEC3B 22px Microsoft YaHei');
+   o._fontSponsor.parse('#FFFFFF 18px Microsoft YaHei');
+   o._font2ndRow.parse('#FFFFFF 15px Microsoft YaHei');
+   o._fontProgress.parse('#FFFFFF 19px Microsoft YaHei');
 
    var imageConsole = MO.Console.find(MO.FImageConsole);
    o._bgImage = imageConsole.load('{eai.resource}/cockpit/project/item_bg.png');
