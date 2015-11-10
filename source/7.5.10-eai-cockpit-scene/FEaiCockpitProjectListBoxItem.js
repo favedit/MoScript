@@ -119,7 +119,7 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    var drawX = left + 10;
    var drawY = top + 26;
 
-   if (!rate) {
+   if (rate == null || rate == undefined) {
       rate = 1;
    }
 
@@ -204,7 +204,7 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    drawY -= 15;
    graphic.drawImage(o._pbarTimeBgImage, drawX, drawY, 216, 21);
 
-   var clipWidth = 216 * unit.timeProgress() * 0.01;
+   var clipWidth = 216 * unit.timeProgress() * 0.01 * rate;
    var clipHeight = 21;
    graphic._handle.save();
    graphic._handle.rect(drawX, drawY, clipWidth, 21)
@@ -213,7 +213,7 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic._handle.restore();
 
    drawY += 15;
-   drawText = unit.timeProgress() + '%';
+   drawText = parseInt(unit.timeProgress() * rate) + '%';
    graphic.setFont(fontProgress.toString());
    textWidth = graphic.textWidth(drawText);
    drawX = drawX + (216 - textWidth) * 0.5;
@@ -231,7 +231,7 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    drawY -= 15;
    graphic.drawImage(o._pbarProjectBgImage, drawX, drawY, 216, 21);
 
-   var clipWidth = 216 * unit.proProgress() * 0.01;
+   var clipWidth = 216 * unit.proProgress() * 0.01 * rate;
    var clipHeight = 21;
    graphic._handle.save();
    graphic._handle.rect(drawX, drawY, clipWidth, 21)
@@ -240,7 +240,7 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic._handle.restore();
 
    drawY += 15;
-   drawText = unit.proProgress() + '%';
+   drawText = parseInt(unit.proProgress() * rate) + '%';
    graphic.setFont(fontProgress.toString());
    textWidth = graphic.textWidth(drawText);
    drawX = drawX + (216 - textWidth) * 0.5;

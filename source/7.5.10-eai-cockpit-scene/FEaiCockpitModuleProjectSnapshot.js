@@ -110,6 +110,9 @@ MO.FEaiCockpitModuleProjectSnapshot_processLogic = function FEaiCockpitModulePro
       var project = MO.Console.find(MO.FEaiLogicConsole).cockpit().project();
       project.doFetch(o, o.onDataFetch);
    }
+   if (o._listBox.animationPlaying()) {
+      o.dirty();
+   }
 }
 
 //==========================================================
@@ -133,6 +136,8 @@ MO.FEaiCockpitModuleNoticeSnapshot_onDataFetch = function FEaiCockpitModuleNotic
       item.setSize(320, 120);
       listBox.push(item);
    }
+   listBox.setStartTick(MO.Timer.current());
+   listBox.setAnimationPlaying(true);
    o.dirty();
 }
 

@@ -104,6 +104,9 @@ MO.FEaiCockpitModuleNoticeSnapshot_processLogic = function FEaiCockpitModuleNoti
       var notice = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
       notice.doFetch(o, o.onNoticeFetch);
    }
+   if (o._listBox.animationPlaying()) {
+      o.dirty();
+   }
 }
 
 //==========================================================
@@ -127,6 +130,8 @@ MO.FEaiCockpitModuleNoticeSnapshot_onNoticeFetch = function FEaiCockpitModuleNot
       noticeItem.setSize(880, 80);
       listBox.push(noticeItem);
    }
+   listBox.setStartTick(MO.Timer.current());
+   listBox.setAnimationPlaying(true);
    o.dirty();
 }
 

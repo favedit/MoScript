@@ -13,6 +13,10 @@ MO.FGuiListBox = function FGuiListBox(o) {
    o._items         = MO.Class.register(o, new MO.AGetSet('_items'));
    o._displayCount  = MO.Class.register(o, new MO.AGetSet('_displayCount'), 5);
    // @attribute
+   o._startTick     = MO.Class.register(o, new MO.AGetSet('_startTick'), 0);
+   o._dataAnimationDuration = 5000;
+   o._animationPlaying = MO.Class.register(o, new MO.AGetSet('_animationPlaying'), false);
+   // @attribute
    o._itemRectangle = null;
    //..........................................................
    // @event
@@ -54,12 +58,17 @@ MO.FGuiListBox_onPaintBegin = function FGuiListBox_onPaintBegin(event) {
    var itemCount = items.count();
    var displayCount = o._displayCount;
    var gap = o._gap;
+   var rate = (MO.Timer.current() - o._startTick) / o._dataAnimationDuration;
+   if (rate > 1) {
+      rate = 1;
+      o._animationPlaying = false;
+   }
    for (var i = 0; i < itemCount && i < displayCount; i++) {
       var item = items.at(i);
       itemWidth = item.width() > rectangle.width ? rectangle.width : item.width();
       itemHeight = item.height();
       itemRect.set(itemDrawX, itemDrawY, itemWidth, itemHeight);
-      item.draw(graphic, itemRect);
+      item.draw(graphic, itemRect, rate);
       itemDrawY += itemHeight + gap;
    }
 }

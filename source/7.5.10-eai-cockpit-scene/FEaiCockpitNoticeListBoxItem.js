@@ -95,7 +95,7 @@ MO.FEaiCockpitNoticeListBoxItem_setup = function FEaiCockpitNoticeListBoxItem_se
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_draw(graphic, rectangle) {
+MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_draw(graphic, rectangle, rate) {
    var o = this;
    var left = rectangle.left;
    var top = rectangle.top;
@@ -106,6 +106,10 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
 
    var drawX = left + 40;
    var drawY = top + 34;
+
+   if (rate == null || rate == undefined) {
+      rate = 1;
+   }
 
    // 绘制背景
    if (o._isSelected) {
@@ -140,7 +144,7 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
    textWidth = graphic.textWidth(drawText);
    drawX += textWidth;
 
-   drawText = noticeUnit.percent() + '%';
+   drawText = parseInt(noticeUnit.percent() * rate) + '%';
    graphic.setFont(font1stRowY.toString());
    graphic.drawText(drawText, drawX, drawY, font1stRowY.color);
    // 绘制第二行
@@ -162,7 +166,7 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
    drawY -= 16;
    graphic.drawImage(o._pbarBgImage, drawX, drawY, 244, 21);
 
-   var clipWidth = 244 * noticeUnit.percent() * 0.01;
+   var clipWidth = 244 * noticeUnit.percent() * rate * 0.01;
    var clipHeight = 21;
    graphic._handle.save();
    graphic._handle.rect(drawX, drawY, clipWidth, 21)
