@@ -19,7 +19,6 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitForecastSnapshot_onImageLoad;
    o.onDataFetch           = MO.FEaiCockpitForecastSnapshot_onDataFetch;
    o.onPaintBegin          = MO.FEaiCockpitForecastSnapshot_onPaintBegin;
    //..........................................................
@@ -50,15 +49,6 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
 }
 
 //==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitForecastSnapshot_onImageLoad = function FEaiCockpitForecastSnapshot_onImageLoad() {
-   this.dirty();
-}
-
-//==========================================================
 // <T>前绘制处理。</T>
 //
 // @method
@@ -76,7 +66,7 @@ MO.FEaiCockpitForecastSnapshot_onPaintBegin = function FEaiCockpitForecastSnapsh
    //..........................................................
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
-   graphic.drawImage(o._gridImage, 340, 20, 592, 199);
+   graphic.drawImage(o._gridImage, 340, 27, 600, 311);
 }
 
 //==========================================================
@@ -103,16 +93,13 @@ MO.FEaiCockpitForecastSnapshot_construct = function FEaiCockpitForecastSnapshot_
 MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setup(){
    var o = this;
    // 加载图片
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/forecast/ground.png');
-   image.addLoadListener(o, o.onImageLoad);
-   var image = o._gridImage = imageConsole.load('{eai.resource}/cockpit/forecast/grid.png');
-   image.addLoadListener(o, o.onImageLoad);
+   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/ground.png');
+   o._gridImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid.png');
    // 创建控件
    var listBox = o._listBox = MO.Class.create(MO.FGuiListBox);
-   listBox.setPadding(4, 20, 10, 10);
-   listBox.setLocation(50, 0);
-   listBox.setSize(900, 120 * 4);
+   listBox.setPadding(10, 10, 10, 10);
+   listBox.setLocation(30, 10);
+   listBox.setSize(300, 240);
    o.push(listBox);
 }
 
@@ -132,7 +119,7 @@ MO.FEaiCockpitForecastSnapshot_setData = function FEaiCockpitForecastSnapshot_se
       var item = items.at(i);
       var listItem = MO.Class.create(MO.FEaiCockpitForecastListBoxItem);
       listItem.setup(item);
-      listItem.setSize(889, 88);
+      listItem.setSize(400, 40);
       listBox.push(listItem);
    }
    o.dirty();

@@ -44,6 +44,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._paintEvent             = null;
    //..........................................................
    // @event
+   o.onResourceLoad          = MO.FGuiControl_onResourceLoad;
    o.onUpdate                = MO.FGuiControl_onUpdate;
    // @event
    o.onPaintBegin            = MO.FGuiControl_onPaintBegin;
@@ -71,6 +72,7 @@ MO.FGuiControl = function FGuiControl(o){
    o.testReady               = MO.FGuiControl_testReady;
    o.testDirty               = MO.FGuiControl_testDirty;
    o.testInRange             = MO.FGuiControl_testInRange;
+   o.loadResourceImage       = MO.FGuiControl_loadResourceImage;
    o.paint                   = MO.FGuiControl_paint;
    o.update                  = MO.FGuiControl_update;
    o.build                   = MO.Method.empty;
@@ -88,9 +90,20 @@ MO.FGuiControl = function FGuiControl(o){
 }
 
 //==========================================================
-// <T>更新处理。</T>
+// <T>资源加载处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FGuiControl_onResourceLoad = function FGuiControl_onResourceLoad(event){
+   this.dirty();
+}
+
+//==========================================================
+// <T>更新内容处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FGuiControl_onUpdate = function FGuiControl_onUpdate(event){
    var o = this;
@@ -115,6 +128,7 @@ MO.FGuiControl_onUpdate = function FGuiControl_onUpdate(event){
 // <T>前绘制处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(event){
    var o = this;
@@ -155,15 +169,17 @@ MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(event){
 // <T>后绘制处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FGuiControl_onPaintEnd = function FGuiControl_onPaintEnd(event){
    var o = this;
 }
 
 //==========================================================
-// <T>绘制处理。</T>
+// <T>操作落下处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FGuiControl_onOperationDown = function FGuiControl_onOperationDown(event){
    var o = this;
@@ -173,9 +189,10 @@ MO.FGuiControl_onOperationDown = function FGuiControl_onOperationDown(event){
 }
 
 //==========================================================
-// <T>绘制处理。</T>
+// <T>操作移动处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
    var o = this;
@@ -190,9 +207,10 @@ MO.FGuiControl_onOperationMove = function FGuiControl_onOperationMove(event){
 }
 
 //==========================================================
-// <T>绘制处理。</T>
+// <T>操作抬起处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
 //==========================================================
 MO.FGuiControl_onOperationUp = function FGuiControl_onOperationUp(event){
    var o = this;
@@ -202,9 +220,11 @@ MO.FGuiControl_onOperationUp = function FGuiControl_onOperationUp(event){
 }
 
 //==========================================================
-// <T>绘制处理。</T>
+// <T>时间响应处理。</T>
 //
 // @method
+// @param event:SEvent 事件信息
+// @param flag:Boolean 标志
 //==========================================================
 MO.FGuiControl_onEvent = function FGuiControl_onEvent(event, flag){
    var o = this;
@@ -449,6 +469,21 @@ MO.FGuiControl_testInRange = function FGuiControl_testInRange(x, y){
    var o = this;
    //var range = o._clientRectangle.testRange(x, y);
    //return range;
+}
+
+//==========================================================
+// <T>加载资源图片。</T>
+//
+// @method
+// @param uri:String 网络地址
+// @return FImage 资源
+//==========================================================
+MO.FGuiControl_loadResourceImage = function FGuiControl_loadResourceImage(uri){
+   var o = this;
+   var imageConsole = MO.Console.find(MO.FImageConsole);
+   var image = imageConsole.load(uri);
+   image.addLoadListener(o, o.onResourceLoad);
+   return image;
 }
 
 //==========================================================
