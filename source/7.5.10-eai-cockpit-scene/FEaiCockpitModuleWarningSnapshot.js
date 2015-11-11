@@ -104,7 +104,7 @@ MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin = function FEaiCockpitModuleWar
    graphic.drawImage(o._backgroundImage, left, top, width, height);
 
    //绘制圆点
-   if(o._data.warningItems() != null) {
+   /*if(o._data.warningItems() != null) {
       var count = o._data.warningItems().count();
       count = count > 5 ? 5 : count;
       var topPosition = 40;
@@ -113,7 +113,7 @@ MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin = function FEaiCockpitModuleWar
          graphic.drawCircle(leftPosition, topPosition, 5, 1, "#ffffff", "#ffffff");
          topPosition += 40;
       }
-   }
+   }*/
 }
 
 //==========================================================
@@ -128,7 +128,7 @@ MO.FEaiCockpitModuleWarningSnapshot_construct = function FEaiCockpitModuleWarnin
    o._cellLocation.set(11, 0, 0);
    o._cellSize.set(5, 2);
    o._dataTicker = new MO.TTicker(1000 * 60);
-   o._scrollTicker = new MO.TTicker(1000 * 30);
+   o._scrollTicker = new MO.TTicker(1000 * 25);
    o._currentDate = new MO.TDate();
    o._data = MO.Class.create(MO.FEaiCockpitMessageWarning);
 }
@@ -147,7 +147,7 @@ MO.FEaiCockpitModuleWarningSnapshot_setup = function FEaiCockpitModuleWarningSna
 
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
-   grid.setLocation(138, 16);
+   grid.setLocation(100, 16);
    grid.setSize(500, 194);
    grid.setDisplayHead(false);
    grid.setRowHeight(40);
@@ -155,6 +155,15 @@ MO.FEaiCockpitModuleWarningSnapshot_setup = function FEaiCockpitModuleWarningSna
    grid.rowFont().size = 20;
    grid.rowFont().font = 'Microsoft YaHei';
    grid.rowFont().color = '#ffffff';
+
+   var column = MO.Class.create(MO.FGuiGridColumnPicture);
+   column.setName('circle');
+   column.setLabel();
+   column.setDataName('circle');
+   column.setWidth(20);
+   column.setPadding(1,1,1,1);
+   column.setAlign(MO.EUiAlign.Center);
+   grid.pushColumn(column);
 
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setTextAlign(MO.EUiAlign.Left);
@@ -189,6 +198,7 @@ MO.FEaiCockpitModuleWarningSnapshot_processLogic = function FEaiCockpitModuleWar
          var grid = o._gridControl;
          var item = items.at(o._scrollPosition);
          var row = grid.allocRow();
+         row.set('circle', "{eai.resource}/cockpit/warning/point.png");
          row.set('item', item.message());
          grid.insertRow(row);
          o.nextPosition();
