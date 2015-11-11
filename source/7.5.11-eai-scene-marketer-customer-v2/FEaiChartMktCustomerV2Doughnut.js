@@ -300,10 +300,10 @@ MO.FEaiChartMktCustomerV2Doughnut_onPaintBegin = function FEaiChartMktCustomerV2
          yearRate = (unit.rate()).toFixed(2);;
          productText = unit.label();
          //graphic.setFont('blod 480px Microsoft YaHei');
-         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2+10, '#ffeb4a');
+         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2+30, '#ffeb4a');
          yearRate =  '年化:' + yearRate +'%';
          graphic.setFont('12px Microsoft YaHei');
-         graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+15, '#FFFFFF');
+         graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+23, '#FFFFFF');
          // tatolLable = (unit.invesmentTotal()/100000000).toFixed(2);
          // lable = '总计:'+"   "+tatolLable+'亿';
          // graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval, '#FFFFFF');
