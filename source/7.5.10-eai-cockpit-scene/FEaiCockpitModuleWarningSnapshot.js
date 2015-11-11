@@ -77,6 +77,7 @@ MO.FEaiCockpitModuleWarningSnapshot_setData = function FEaiCockpitModuleWarningS
       var item = items.at(i);
       var row = grid.allocRow();
       //预警数据
+      row.set('circle', "{eai.resource}/cockpit/warning/point.png");
       row.set('item', item.message());
       grid.pushRow(row);
       o.nextPosition();
