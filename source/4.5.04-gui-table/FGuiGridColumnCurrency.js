@@ -8,12 +8,15 @@
 MO.FGuiGridColumnCurrency = function FGuiGridColumnCurrency(o){
    o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnCurrency);
    //..........................................................
+   // @attribute
+   o._optionDecimal = MO.Class.register(o, new MO.AGetSet('_optionDecimal'), true);
+   //..........................................................
    // @method
-   o.construct    = MO.FGuiGridColumnCurrency_construct;
+   o.construct      = MO.FGuiGridColumnCurrency_construct;
    // @method
-   o.formatText   = MO.FGuiGridColumnCurrency_formatText;
+   o.formatText     = MO.FGuiGridColumnCurrency_formatText;
    // @method
-   o.dispose      = MO.FGuiGridColumnCurrency_dispose;
+   o.dispose        = MO.FGuiGridColumnCurrency_dispose;
    return o;
 }
 

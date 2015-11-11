@@ -61,6 +61,7 @@ MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(context){
    var width = rectangle.width;
    var height = rectangle.height;
    var column = o._column;
+   var optionDecimal = column.optionDecimal();
    var cellPadding = column.cellPadding();
    // 获得字体
    var value = o.value();
@@ -70,43 +71,86 @@ MO.FGuiGridCellCurrency_draw = function FGuiGridCellCurrency_draw(context){
    numberFont.assign(font);
    var contentWidth = width - cellPadding.right;
    // 绘制文字
-   if(value >= 0){
-      if(textLength > 11){
-         var fontColor = null;
-         var highest = text.substring(0, text.length - 11);
-         var high = text.substring(textLength - 11, textLength - 7);
-         var low = text.substring(textLength - 7, textLength);
-         var highestWidth = graphic.textWidth(highest);
-         var highWidth = graphic.textWidth(high);
-         var lowWidth = graphic.textWidth(low);
-         numberFont.color = column.highestColor();
-         graphic.drawFontText(highest, numberFont, x, y, contentWidth - highWidth - lowWidth, height, MO.EUiAlign.Right);
-         numberFont.color = column.highColor();
-         graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
-         numberFont.color = column.normalColor();
-         graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
-      }else if(textLength > 7){
-         var fontColor = null;
-         if(textLength > 9){
-            fontColor = column.highColor();
+   if(optionDecimal){
+      if(value >= 0){
+         if(textLength > 11){
+            var fontColor = null;
+            var highest = text.substring(0, text.length - 11);
+            var high = text.substring(textLength - 11, textLength - 7);
+            var low = text.substring(textLength - 7, textLength);
+            var highestWidth = graphic.textWidth(highest);
+            var highWidth = graphic.textWidth(high);
+            var lowWidth = graphic.textWidth(low);
+            numberFont.color = column.highestColor();
+            graphic.drawFontText(highest, numberFont, x, y, contentWidth - highWidth - lowWidth, height, MO.EUiAlign.Right);
+            numberFont.color = column.highColor();
+            graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+            numberFont.color = column.normalColor();
+            graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+         }else if(textLength > 7){
+            var fontColor = null;
+            if(textLength > 9){
+               fontColor = column.highColor();
+            }else{
+               fontColor = column.lowerColor();
+            }
+            var high = text.substring(0, textLength - 7);
+            var low = text.substring(textLength - 7, textLength);
+            var highWidth = graphic.textWidth(high);
+            var lowWidth = graphic.textWidth(low);
+            numberFont.color = fontColor;
+            graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+            numberFont.color = column.normalColor();
+            graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
          }else{
-            fontColor = column.lowerColor();
+            numberFont.color = column.normalColor();
+            graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
          }
-         var high = text.substring(0, textLength - 7);
-         var low = text.substring(textLength - 7, textLength);
-         var highWidth = graphic.textWidth(high);
-         var lowWidth = graphic.textWidth(low);
-         numberFont.color = fontColor;
-         graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
-         numberFont.color = column.normalColor();
-         graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
-      }else{
-         numberFont.color = column.normalColor();
+      }else if(value < 0){
+         numberFont.color = column.negativeColor();
          graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
       }
-   }else if(value < 0){
-      numberFont.color = column.negativeColor();
-      graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+   }else{
+      var text = value + '';
+      var textLength = text.length;
+      if(value >= 0){
+         if(textLength > 8){
+            var fontColor = null;
+            var highest = text.substring(0, text.length - 8);
+            var high = text.substring(textLength - 8, textLength - 4);
+            var low = text.substring(textLength - 4, textLength);
+            var highestWidth = graphic.textWidth(highest);
+            var highWidth = graphic.textWidth(high);
+            var lowWidth = graphic.textWidth(low);
+            numberFont.color = column.highestColor();
+            graphic.drawFontText(highest, numberFont, x, y, contentWidth - highWidth - lowWidth, height, MO.EUiAlign.Right);
+            numberFont.color = column.highColor();
+            graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+            numberFont.color = column.normalColor();
+            graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+         }else if(textLength > 4){
+            var fontColor = null;
+            if(textLength > 6){
+               fontColor = column.highColor();
+            }else{
+               fontColor = column.lowerColor();
+            }
+            var high = text.substring(0, textLength - 4);
+            var low = text.substring(textLength - 4, textLength);
+            var highWidth = graphic.textWidth(high);
+            var lowWidth = graphic.textWidth(low);
+            numberFont.color = fontColor;
+            graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+            numberFont.color = column.normalColor();
+            graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+         }else{
+            numberFont.color = column.normalColor();
+            graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+         }
+      }else if(value < 0){
+         numberFont.color = column.negativeColor();
+         graphic.drawFontText(text, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+      }
    }
 }
 
