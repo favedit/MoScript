@@ -393,10 +393,10 @@ MO.FEaiChartMktCustomerV2Scene_fixMatrix = function FEaiChartMktCustomerV2Scene_
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    } else {
-      matrix.tx = -34.9;
-      matrix.ty = -10.9;
+      matrix.tx = -30.9;
+      matrix.ty = -9.5;
       matrix.tz = 0;
-      matrix.setScale(0.28, 0.31, 0.28);
+      matrix.setScale(0.26, 0.28, 0.26);
    }
    matrix.update();
 }
@@ -430,7 +430,7 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       control.setRight(80);
    } else {
       control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(780);
+      control.setRight(680);
       control.setBottom(280);
    }
    //..........................................................
@@ -448,7 +448,8 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       timeline.setLeft(20);
       timeline.setBottom(10);
-      timeline.setRight(780);
+      //timeline.setRight(780);
+      timeline.setRight(680);
       timeline.setHeight(300);
    }
    //..........................................................
@@ -467,7 +468,8 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       liveTable.setTop(10);
       liveTable.setRight(0);
       liveTable.setBottom(10);
-      liveTable.setWidth(760);
+      //liveTable.setWidth(760);
+      liveTable.setWidth(660);
    }
    var doughnut = o._doughnut;
    if (isVertical) {
@@ -488,7 +490,7 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       doughnut.setHeight(580);
    }
    var curvesCanvas = o._curvesCanvas;
-      if (isVertical) {
+   if (isVertical) {
       curvesCanvas.setDockCd(MO.EUiDock.Bottom);
       curvesCanvas.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
       curvesCanvas.setLeft(10);
