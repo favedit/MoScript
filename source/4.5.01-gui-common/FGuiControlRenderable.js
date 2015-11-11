@@ -9,21 +9,22 @@ MO.FGuiControlRenderable = function FGuiControlRenderable(o){
    o = MO.Class.inherits(this, o, MO.FE3dFaceData);
    //..........................................................
    // @attribute
-   o._optionFull = MO.Class.register(o, new MO.AGetSet('_optionFull'));
-   o._control    = MO.Class.register(o, new MO.AGetSet('_control'));
-   o._graphic    = null;
+   o._optionCenter = true;
+   o._optionFull   = MO.Class.register(o, new MO.AGetSet('_optionFull'));
+   o._control      = MO.Class.register(o, new MO.AGetSet('_control'));
+   o._graphic      = null;
    //..........................................................
    // @method
-   o.construct   = MO.FGuiControlRenderable_construct;
+   o.construct     = MO.FGuiControlRenderable_construct;
    // @method
-   o.setup       = MO.FGuiControlRenderable_setup;
-   o.testVisible = MO.FGuiControlRenderable_testVisible;
+   o.setup         = MO.FGuiControlRenderable_setup;
+   o.testVisible   = MO.FGuiControlRenderable_testVisible;
    // @method
-   o.beginDraw   = MO.FGuiControlRenderable_beginDraw;
-   o.endDraw     = MO.FGuiControlRenderable_endDraw;
-   o.process     = MO.FGuiControlRenderable_process;
+   o.beginDraw     = MO.FGuiControlRenderable_beginDraw;
+   o.endDraw       = MO.FGuiControlRenderable_endDraw;
+   o.process       = MO.FGuiControlRenderable_process;
    // @method
-   o.dispose     = MO.FGuiControlRenderable_dispose;
+   o.dispose       = MO.FGuiControlRenderable_dispose;
    return o;
 }
 
@@ -51,6 +52,9 @@ MO.FGuiControlRenderable_setup = function FGuiControlRenderable_setup(){
    materialInfo.optionAlpha = true;
    //materialInfo.optionDepth = false;
    //materialInfo.optionDouble = true;
+   // 设置纹理
+   var texture = o._texture;
+   texture.setFilterCd(MO.EG3dSamplerFilter.Linear, MO.EG3dSamplerFilter.Nearest);
 }
 
 //==========================================================

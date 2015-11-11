@@ -248,10 +248,19 @@ MO.FEaiCockpitModuleManager_placeCellControl = function FEaiCockpitModuleManager
    var y2 = y1 - size.height;
    var z = location.z;
    // 设置位置
+   var sx = (x2 - x1) * 0.5;
+   var sy = (y1 - y2) * 0.5;
    var renderable = control.makeRenderable();
-   var buffer = renderable.vertexPositionBuffer();
-   var data = [x1, y1, z, x2, y1, z, x2, y2, z, x1, y2, z];
-   buffer.upload(data, 12, 4, true);
+   var matrix = renderable.matrix();
+   matrix.tx = x1 + sx;
+   matrix.ty = y1 - sy;
+   matrix.tz = z;
+   matrix.sx = sx;
+   matrix.sy = sy;
+   matrix.updateForce();
+   //var buffer = renderable.vertexPositionBuffer();
+   //var data = [x1, y1, z, x2, y1, z, x2, y2, z, x1, y2, z];
+   //buffer.upload(data, 12, 4, true);
 }
 
 //==========================================================
