@@ -14,11 +14,6 @@ MO.FEaiLogicInfoCustomerDynamic = function FEaiLogicInfoCustomerDynamic(o){
    o._customerCount   = MO.Class.register(o, [new MO.AGetter('_customerCount'), new MO.APersistence('_customerCount', MO.EDataType.Int32)]);
    o._customerTotal   = MO.Class.register(o, [new MO.AGetter('_customerTotal'), new MO.APersistence('_customerTotal', MO.EDataType.Int32)]);
    // @attribute
-   o._yesterdayInvestmentCount = MO.Class.register(o, [new MO.AGetter('_yesterdayInvestmentCount'), new MO.APersistence('_yesterdayInvestmentCount', MO.EDataType.Double)]);
-   o._yesterdayInvestmentTotal = MO.Class.register(o, [new MO.AGetter('_yesterdayInvestmentTotal'), new MO.APersistence('_yesterdayInvestmentTotal', MO.EDataType.Double)]);
-   o._yesterdayCustomerCount   = MO.Class.register(o, [new MO.AGetter('_yesterdayCustomerCount'), new MO.APersistence('_yesterdayCustomerCount', MO.EDataType.Int32)]);
-   o._yesterdayCustomerTotal   = MO.Class.register(o, [new MO.AGetter('_yesterdayCustomerTotal'), new MO.APersistence('_yesterdayCustomerTotal', MO.EDataType.Int32)]);
-   // @attribute
    o._rankUnits       = MO.Class.register(o, [new MO.AGetter('_rankUnits'), new MO.APersistence('_rankUnits', MO.EDataType.Objects, MO.FEaiLogicInfoCustomerDynamicRankUnit)]);
    // @attribute
    o._investment1w    = MO.Class.register(o, [new MO.AGetter('_investment1w'), new MO.APersistence('_investment1w', MO.EDataType.Int32)]);

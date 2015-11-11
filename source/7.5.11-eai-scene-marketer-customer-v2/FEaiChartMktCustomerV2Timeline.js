@@ -277,9 +277,10 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 5, '#00CFFF');
    graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 5, '#00B5FF');
 
+   var yesterdayInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.yesterdayInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
+   var yesterdayInvestmentWidth = graphic.textWidth(yesterdayInvestmentTotal);
    graphic.drawText('昨日总值：', decoLeft, rowStart + rowHeight * 3 + 5, '#00CFFF');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
-
+   graphic.drawText(yesterdayInvestmentTotal, decoLeft + textWidth + maxWidth - yesterdayInvestmentWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
 
    // 设置时间
    startTime.date.setTime(bakTime);

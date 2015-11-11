@@ -354,7 +354,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setLabel('时间');
    column.setDataName('record_date');
    column.setDateFormat('HH24:MI:SS');
-   column.setWidth(120);
+   column.setWidth(130);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);

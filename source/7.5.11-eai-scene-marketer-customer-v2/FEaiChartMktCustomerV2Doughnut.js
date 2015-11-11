@@ -300,10 +300,13 @@ MO.FEaiChartMktCustomerV2Doughnut_onPaintBegin = function FEaiChartMktCustomerV2
          yearRate = (unit.rate()).toFixed(2);;
          productText = unit.label();
          //graphic.setFont('blod 480px Microsoft YaHei');
-         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2+30, '#ffeb4a');
-         yearRate =  '年化:' + yearRate +'%';
-         graphic.setFont('12px Microsoft YaHei');
-         graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+23, '#FFFFFF');
+         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2+20, '#ffeb4a');
+         var projectLabel = '项目: ' + unit.project();
+         graphic.setFont('13px Microsoft YaHei');
+         graphic.drawText(projectLabel, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+12, '#FFFFFF');
+         yearRate =  '年化: ' + yearRate +'%';
+         graphic.setFont('13px Microsoft YaHei');
+         graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+33, '#FFFFFF');
          // tatolLable = (unit.invesmentTotal()/100000000).toFixed(2);
          // lable = '总计:'+"   "+tatolLable+'亿';
          // graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval, '#FFFFFF');
