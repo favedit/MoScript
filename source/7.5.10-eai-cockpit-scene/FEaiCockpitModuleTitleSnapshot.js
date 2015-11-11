@@ -173,10 +173,10 @@ MO.FEaiCockpitModuleTitleSnapshot_freshData = function FEaiCockpitModuleTitleSna
    var frame = o._logoBar;
    if (o._data.investmentTotal() != null) {
       var investmentTotal = frame.findComponent('investmentTotal');
-      investmentTotal.setValue(o._data.investmentTotal().toString());
+      investmentTotal.setValue(o._data.investmentTotal().toFixed(0).toString());
 
       var currentInvestment = frame.findComponent('currentInvestment');
-      currentInvestment.setValue(o._data.currentInvestment().toString());
+      currentInvestment.setValue(o._data.currentInvestment().toFixed(0).toString());
 
       var thingCount = frame.findComponent('thing');
       thingCount.setLabel("(" + o._data.thingCount().toString() + ")");
