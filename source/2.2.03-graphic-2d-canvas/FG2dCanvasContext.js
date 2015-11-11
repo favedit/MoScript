@@ -29,6 +29,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.setScale             = MO.FG2dCanvasContext_setScale;
    o.setAlpha             = MO.FG2dCanvasContext_setAlpha;
    o.setFont              = MO.FG2dCanvasContext_setFont;
+   o.setShadow            = MO.FG2dCanvasContext_setShadow;
    // @method
    o.store                = MO.FG2dCanvasContext_store;
    o.restore              = MO.FG2dCanvasContext_restore;
@@ -36,6 +37,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.prepare              = MO.FG2dCanvasContext_prepare;
    o.clear                = MO.FG2dCanvasContext_clear;
    o.clearRectangle       = MO.FG2dCanvasContext_clearRectangle;
+   o.clearShadow          = MO.FG2dCanvasContext_clearShadow;
    o.clip                 = MO.FG2dCanvasContext_clip;
    // @method
    o.textWidth            = MO.FG2dCanvasContext_textWidth;
@@ -149,6 +151,32 @@ MO.FG2dCanvasContext_setAlpha = function FG2dCanvasContext_setAlpha(alpha){
 //==========================================================
 MO.FG2dCanvasContext_setFont = function FG2dCanvasContext_setFont(font) {
    this._handle.font = font;
+}
+
+//==========================================================
+// <T>设置投影。</T>
+//
+// @method
+// @param font:String 字体
+//==========================================================
+MO.FG2dCanvasContext_setShadow = function FG2dCanvasContext_setShadow(offsetX, offsetY, blur, color) {
+   this._handle.shadowOffsetX = offsetX;
+   this._handle.shadowOffsetY = offsetY;
+   this._handle.shadowBlur = blur;
+   this._handle.shadowColor = color;
+}
+
+//==========================================================
+// <T>取消投影。</T>
+//
+// @method
+// @param font:String 字体
+//==========================================================
+MO.FG2dCanvasContext_clearShadow = function FG2dCanvasContext_clearShadow() {
+   this._handle.shadowOffsetX = "0";
+   this._handle.shadowOffsetY = "0";
+   this._handle.shadowBlur = "0";
+   this._handle.shadowColor = "0";
 }
 
 //==========================================================

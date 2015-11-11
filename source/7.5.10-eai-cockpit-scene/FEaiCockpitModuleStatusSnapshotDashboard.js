@@ -117,6 +117,7 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitM
    //绘制label
    var color = '#ffe721';
    graphic.setFont('bold 24px Microsoft YaHei');
+   graphic.setShadow("1", "1", "5", "#000000");
 
    var text = o._textPre + "(" + data.toFixed(1).toString() + "%)";
    var textWidth = graphic.textWidth(text);

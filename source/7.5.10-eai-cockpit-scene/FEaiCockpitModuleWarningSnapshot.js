@@ -102,18 +102,6 @@ MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin = function FEaiCockpitModuleWar
    //..........................................................
    // 绘制背景
    graphic.drawImage(o._backgroundImage, left, top, width, height);
-
-   //绘制圆点
-   /*if(o._data.warningItems() != null) {
-      var count = o._data.warningItems().count();
-      count = count > 5 ? 5 : count;
-      var topPosition = 40;
-      var leftPosition = 116;
-      for (var i = 0; i < count; ++i){
-         graphic.drawCircle(leftPosition, topPosition, 5, 1, "#ffffff", "#ffffff");
-         topPosition += 40;
-      }
-   }*/
 }
 
 //==========================================================
