@@ -111,7 +111,9 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitM
    var radian = data / 120 * maxRadian - radianOffset;
    var toX = -lineLen * Math.cos(radian) + centerX;
    var toY = -lineLen * Math.sin(radian) + centerY;
+   graphic.setShadow("2", "2", "5", "#000000");
    graphic.drawLine(centerX, centerY, toX, toY, "#ffffff", lineWidth);
+   graphic.clearShadow();
    //绘制circle
    graphic.drawImage(o._circleImage, centerX - circleImageWidth/2, centerY - circleImageHeight/2, circleImageWidth, circleImageHeight);
    //绘制label
@@ -123,6 +125,7 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitM
    var textWidth = graphic.textWidth(text);
    var textLeft = centerX - textWidth/2;
    graphic.drawText(text, textLeft, textY, color);
+   graphic.clearShadow();
 }
 
 //==========================================================
