@@ -48,7 +48,23 @@ MO.FE3dTransformTimelineAction_onStart = function FE3dTransformTimelineAction_on
 //==========================================================
 MO.FE3dTransformTimelineAction_onProcess = function FE3dTransformTimelineAction_onProcess(){
    var o = this;
-   o.__base.MTimelineAction.onProcess.call(o);
+   o.__base.MTimelineAction.onProcess.call(o, context);
+   // 计算方向
+   var direction = o._currentDirection;
+   direction.direction(o._sourcePosition, o._targetPosition);
+   direction.normalize();
+   // 计算移动
+   var moveLength = o._speed * context.spanSecond;
+   var length = o._currentPosition.lengthToValue3(o._targetPosition);
+   if(moveLength > length){
+      o._currentPosition.assign(o._targetPosition);
+      o._statusStop = true;
+   }else{
+      o._currentPosition.add(direction.x * moveLength, direction.y * moveLength, direction.z * moveLength);
+   }
+   // 更新相机
+   o._camera.position().assign(o._currentPosition);
+   o._camera.update();
 }
 
 //==========================================================

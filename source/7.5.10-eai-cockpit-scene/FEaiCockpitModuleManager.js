@@ -278,6 +278,8 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
    var viewDisplay = o._viewDisplay;
    var stage = o._scene.activeStage();
    var camera = stage.camera();
+   var modules = o._modules;
+   var moduleCount = modules.count();
    switch(modeCd){
       case MO.EEaiCockpitMode.Logo:
          // 显示控件
@@ -303,6 +305,15 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          action.link(camera);
          action.targetPosition().set(0, 0, -8);
          o._mainTimeline.pushAction(action);
+         // 移动控件位置
+         //for(var n = 0; n < moduleCount; n++){
+         //   var module = modules.at(n);
+         //   var snapshot = module.controlSnapshot();
+         //   var action = MO.Class.create(MO.FE3dCameraTimelineAction);
+         //   action.link(snapshot);
+         //   action.targetMatrix().set(0, Math.PI, 0);
+         //   o._mainTimeline.pushAction(action);
+         //}
          break;
       case MO.EEaiCockpitMode.Icon:
          break;
