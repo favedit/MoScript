@@ -247,10 +247,10 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    decoLeft = decoLeft - imageWidth +5 ;
    // 输出数据文本
    top = top + rectangle.height -220 ;
-   graphic.setFont('22px Microsoft YaHei');
-   graphic.drawText("24H数据曲线", decoLeft, top+15, '#54F0FF');
+   graphic.setFont('24px Microsoft YaHei');
+   graphic.drawText("24H数据曲线", decoLeft, top+25, '#54F0FF');
    // 输出数据文本
-   graphic.setFont('16px Microsoft YaHei');
+   graphic.setFont('18px Microsoft YaHei');
    var image = o._backgroundImage;
    var padding = o._backgroundPadding;
    var rowStart = top + 60;
@@ -268,17 +268,17 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var investmentAvgWidth = graphic.textWidth(investmentAvgText);
    var maxWidth = investmentTotalWidth;
    // 绘制文字
-   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0, '#00CFFF');
-   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0, '#00B5FF');
+   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0+ 5, '#00CFFF');
+   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0+5, '#00B5FF');
 
    graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
    graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5FF');
 
    graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 5, '#00CFFF');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 10, '#00B5FF');
+   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 5, '#00B5FF');
 
    graphic.drawText('昨日总值：', decoLeft, rowStart + rowHeight * 3 + 5, '#00CFFF');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 3 + 10, '#00B5FF');
+   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
 
 
    // 设置时间

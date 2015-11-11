@@ -300,7 +300,7 @@ MO.FEaiChartMktCustomerV2Doughnut_onPaintBegin = function FEaiChartMktCustomerV2
          yearRate = (unit.rate()).toFixed(2);;
          productText = unit.label();
          //graphic.setFont('blod 480px Microsoft YaHei');
-         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2, '#ffeb4a');
+         graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2+10, '#ffeb4a');
          yearRate =  '年化利率 :' + yearRate +'%';
          graphic.setFont('12px Microsoft YaHei');
          graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval), '#FFFFFF');
