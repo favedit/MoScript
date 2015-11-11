@@ -152,7 +152,7 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    var span = 2;
    var titleWidth = graphic.textWidth(maxTitleText);
    var spanWidth = graphic.textWidth(titleText);
-   var pointX = titleWidth-spanWidth+left+span+width*11/32 - fixX;
+   var pointX = titleWidth-spanWidth+left+span+width*11/32 - fixX+10;
    var high =(tableTop + o._rankTitleStart)+(o._rankHeight+105)*1/2;
    var pointY = high;
    graphic.drawText(titleText,pointX,pointY,'#FDEF01');
@@ -174,7 +174,7 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    var titleText = '500';
    pointY +=30 ; 
    var spanWidth = graphic.textWidth(titleText);
-   var pointX = titleWidth-spanWidth+left+span+width*11/32 - fixX;
+   var pointX = titleWidth-spanWidth+left+span+width*11/32 - fixX+10;
    var pointY = high+30;
    graphic.drawText(titleText,pointX,pointY,'#FDEF01');
    var beforeWidth =  graphic.textWidth(titleText);
@@ -361,7 +361,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setName('customerCity');
    column.setLabel('城市');
    column.setDataName('customer_city');
-   column.setWidth(120);
+   column.setWidth(170);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
@@ -371,7 +371,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
+   var column = MO.Class.create(MO.FGuiGridColumnCurrencyInt);
    column.setName('investmentAmount');
    column.setLabel('投资额');
    column.setDataName('investment_amount');
@@ -380,7 +380,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setHighColor('#FDEF01');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
-   column.setWidth(160);
+   column.setWidth(170);
    column.setPadding(1, 1, 1, 1);
    column.setCurrencyPercent(0);
    grid.pushColumn(column);
@@ -392,7 +392,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
+   var column = MO.Class.create(MO.FGuiGridColumnCurrencyInt);
    column.setName('investmentGain');
    //column.setLabel('年化收益');
    column.setLabel('年化');
@@ -401,12 +401,12 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setHighColor('#FDEF01');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
-   column.setWidth(120);
+   column.setWidth(80);
    column.setPadding(1, 1, 1, 1);
    column.setCurrencyPercent(-1);
    grid.pushColumn(column);
 
-   var column = MO.Class.create(MO.FGuiGridColumnCurrency);
+   var column = MO.Class.create(MO.FGuiGridColumnCurrencyInt);
    column.setName('bankGain');
    //column.setLabel('银行收益');
    column.setLabel('银行');
@@ -415,7 +415,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setHighColor('#FDEF01');
    column.setLowerColor('#EB6C03');
    column.setNegativeColor('#FF0000');
-   column.setWidth(120);
+   column.setWidth(100);
    column.cellPadding().right = 10;
    column.setPadding(1, 1, 1, 1);
    column.setCurrencyPercent(0);

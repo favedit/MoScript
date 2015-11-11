@@ -164,7 +164,7 @@ MO.FEaiChartMktCustomerV2Doughnut_draw = function FEaiChartMktCustomerV2Doughnut
     productText = unit.label();
     //graphic.setFont('blod 480px Microsoft YaHei');
     graphic.drawText(productText, text_x, circle_y, textColor);
-    yearRate =  '年化利率 :' + yearRate +'%';
+    yearRate =  '年化:' + yearRate +'%';
     graphic.setFont('20px Microsoft YaHei');
     graphic.drawText(yearRate, text_x, circle_y, '#FFFFFF');
     tatolLable = (unit.invesmentTotal()/100000000).toFixed(2);
@@ -301,15 +301,15 @@ MO.FEaiChartMktCustomerV2Doughnut_onPaintBegin = function FEaiChartMktCustomerV2
          productText = unit.label();
          //graphic.setFont('blod 480px Microsoft YaHei');
          graphic.drawText(productText, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)-text_interval*2+10, '#ffeb4a');
-         yearRate =  '年化利率 :' + yearRate +'%';
+         yearRate =  '年化:' + yearRate +'%';
          graphic.setFont('12px Microsoft YaHei');
-         graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval), '#FFFFFF');
-         tatolLable = (unit.invesmentTotal()/100000000).toFixed(2);
-         lable = '总计:'+"   "+tatolLable+'亿';
-         graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval, '#FFFFFF');
-         dayLable  = (unit.invesmentDay()/100000000).toFixed(2);
-         lable = '当日:'+"    "+dayLable+'亿';
-         graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval*2, '#FFFFFF');
+         graphic.drawText(yearRate, text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+15, '#FFFFFF');
+         // tatolLable = (unit.invesmentTotal()/100000000).toFixed(2);
+         // lable = '总计:'+"   "+tatolLable+'亿';
+         // graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval, '#FFFFFF');
+         // dayLable  = (unit.invesmentDay()/100000000).toFixed(2);
+         // lable = '当日:'+"    "+dayLable+'亿';
+         // graphic.drawText(lable,text_x, top+productRadius+productInterval+i*(2*productRadius+productInterval)+text_interval*2, '#FFFFFF');
 
      }
    }
