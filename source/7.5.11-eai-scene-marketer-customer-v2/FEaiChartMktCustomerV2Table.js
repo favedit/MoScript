@@ -382,6 +382,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setNegativeColor('#FF0000');
    column.setWidth(160);
    column.setPadding(1, 1, 1, 1);
+   column.setCurrencyPercent(0);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('modelLabel');
@@ -402,6 +403,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setNegativeColor('#FF0000');
    column.setWidth(120);
    column.setPadding(1, 1, 1, 1);
+   column.setCurrencyPercent(-1);
    grid.pushColumn(column);
 
    var column = MO.Class.create(MO.FGuiGridColumnCurrency);
@@ -416,6 +418,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setWidth(120);
    column.cellPadding().right = 10;
    column.setPadding(1, 1, 1, 1);
+   column.setCurrencyPercent(0);
    grid.pushColumn(column);
 
    o.push(grid);
@@ -514,9 +517,9 @@ MO.FEaiChartMktCustomerV2Table_pushUnit = function FEaiChartMktCustomerV2Table_p
    row.set('customer_city', cityLabel);
    row.set('customer_info', unit.label() + ' - ' + unit.phone());
    row.set('model_label', unit.modelLabel());
-   row.set('investment_amount', unit.investment());
-   row.set('investment_gain', unit.gain());
-   row.set('bank_gain', unit.bankGain());
+   row.set('investment_amount', unit.investment().toFixed(0));
+   row.set('investment_gain', unit.gain().toFixed(0));
+   row.set('bank_gain', unit.bankGain().toFixed(0));
    grid.insertRow(row);
    // 放入队列
    var entities = o._units;

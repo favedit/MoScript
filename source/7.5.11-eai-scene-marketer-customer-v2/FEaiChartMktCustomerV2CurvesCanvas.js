@@ -136,8 +136,8 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_onPaintBegin = function FEaiChartMktCustom
       sy = curve._sy;
       ex = curve._ex;
       ey = curve._ey;
-      curve.setup(sx,sy,ex,ey);
-      curve.draw(event);
+     // curve.setup(sx,sy,ex,ey);
+    //  curve.draw(event);
 
    }
 
