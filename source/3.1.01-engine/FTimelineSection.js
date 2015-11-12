@@ -109,7 +109,9 @@ MO.FTimelineSection_process = function FTimelineSection_process(context){
          if(duration != 0){
             var actionSpan = tick - action.startTick();
             if(actionSpan > duration){
+               processors.erase(i);
                action.stop(context);
+               action.dispose();
                continue;
             }
          }
