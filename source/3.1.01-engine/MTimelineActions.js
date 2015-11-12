@@ -86,7 +86,7 @@ MO.MTimelineActions_process = function MTimelineActions_process(context){
          // 检查是否超时
          var duration = action.duration();
          if(duration != 0){
-            if(actionTick > duration){
+            if (context.tick > duration) {
                action.stop(context);
                continue;
             }

@@ -329,6 +329,25 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          action.link(camera);
          action.targetPosition().set(0, 0, -3);
          o._mainTimeline.pushAction(action);
+         // 启动轮播
+         var modules = o._modules;
+         var currentIndex = modules.indexOfValue(module);
+         var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 0 : currentIndex + 1;
+         var nextModule = modules.at(nextIndex);
+         var currentViewRenderable = module.controlView().renderable();
+         var nextViewRenderable = nextModule.controlView().renderable();
+         var currentMatrix = currentViewRenderable.matrix();
+         var nextMatrix = nextViewRenderable.matrix();
+
+         var action = MO.Class.create(MO.FE3dTranslateTimelineAction);
+         action.targetTranslate().set(0, 0, 10);
+         action.setDuration(1000);
+         action.link(currentMatrix);
+         o._mainTimeline.pushAction(action);
+         
+         //currentMatrix.setRotation(0, -0.5, 0);
+         //currentMatrix.setTranslate(0, 0, 20);
+         //currentMatrix.update();
          break;
    }
    o._modeCd = modeCd;
