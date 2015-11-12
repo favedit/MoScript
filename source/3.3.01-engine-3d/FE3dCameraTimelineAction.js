@@ -6,7 +6,7 @@
 // @history 151106
 //==========================================================
 MO.FE3dCameraTimelineAction = function FE3dCameraTimelineAction(o){
-   o = MO.Class.inherits(this, o, MO.MTimelineAction);
+   o = MO.Class.inherits(this, o, MO.FTimelineAction);
    //..........................................................
    // @attribute
    o._code            = 'move';
@@ -40,7 +40,7 @@ MO.FE3dCameraTimelineAction = function FE3dCameraTimelineAction(o){
 //==========================================================
 MO.FE3dCameraTimelineAction_onStart = function FE3dCameraTimelineAction_onStart(context){
    var o = this;
-   o.__base.MTimelineAction.onStart.call(o, context);
+   o.__base.FTimelineAction.onStart.call(o, context);
 }
 
 //==========================================================
@@ -51,7 +51,7 @@ MO.FE3dCameraTimelineAction_onStart = function FE3dCameraTimelineAction_onStart(
 //==========================================================
 MO.FE3dCameraTimelineAction_onProcess = function FE3dCameraTimelineAction_onProcess(context){
    var o = this;
-   o.__base.MTimelineAction.onProcess.call(o, context);
+   o.__base.FTimelineAction.onProcess.call(o, context);
    // 计算方向
    var direction = o._currentDirection;
    direction.direction(o._sourcePosition, o._targetPosition);
@@ -78,7 +78,7 @@ MO.FE3dCameraTimelineAction_onProcess = function FE3dCameraTimelineAction_onProc
 //==========================================================
 MO.FE3dCameraTimelineAction_onStop = function FE3dCameraTimelineAction_onStop(){
    var o = this;
-   o.__base.MTimelineAction.onStop.call(o, context);
+   o.__base.FTimelineAction.onStop.call(o, context);
 }
 
 //==========================================================
@@ -88,7 +88,7 @@ MO.FE3dCameraTimelineAction_onStop = function FE3dCameraTimelineAction_onStop(){
 //==========================================================
 MO.FE3dCameraTimelineAction_construct = function FE3dCameraTimelineAction_construct(){
    var o = this;
-   o.__base.MTimelineAction.construct.call(o);
+   o.__base.FTimelineAction.construct.call(o);
    o._currentPosition = new MO.SPoint3();
    o._currentDirection = new MO.SVector3();
    o._sourcePosition = new MO.SPoint3();
@@ -123,6 +123,11 @@ MO.FE3dCameraTimelineAction_setTargetControl = function FE3dCameraTimelineAction
 //==========================================================
 MO.FE3dCameraTimelineAction_dispose = function FE3dCameraTimelineAction_dispose(){
    var o = this;
+   o._currentPosition = MO.Lang.Object.dispose(o._currentPosition);
+   o._currentDirection = MO.Lang.Object.dispose(o._currentDirection);
+   o._sourcePosition = MO.Lang.Object.dispose(o._sourcePosition);
+   o._targetPosition = MO.Lang.Object.dispose(o._targetPosition);
+   o._camera = null;
    // 父处理
-   o.__base.MTimelineAction.dispose.call(o);
+   o.__base.FTimelineAction.dispose.call(o);
 }

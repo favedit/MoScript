@@ -48,6 +48,7 @@ MO.SValue3 = function SValue3(x, y, z){
    o.parse          = MO.SValue3_parse;
    o.toDisplay      = MO.SValue3_toDisplay;
    o.toString       = MO.SValue3_toString;
+   o.dispose        = MO.SValue3_dispose;
    return o;
 }
 
@@ -343,4 +344,16 @@ MO.SValue3_toDisplay = function SValue3_toDisplay(){
 //==========================================================
 MO.SValue3_toString = function SValue3_toString(){
    return this.x + ',' + this.y + ',' + this.z;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+MO.SValue3_dispose = function SValue3_dispose(){
+   var o = this;
+   o.x = null;
+   o.y = null;
+   o.z = null;
 }
