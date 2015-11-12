@@ -66,7 +66,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
    var label = 0;
    var textwidth = 0;
    var lineCount = 0;
-
+   var valueinterval = 50000000;
    // 绘制数据线
    var data = o._data;
    if(data){
@@ -80,7 +80,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
          var minValue = 0 ;
          var label = '';
          lineCount = parseInt(count/3);
-         var dataheigt = lineCount*15
+         var dataheigt = 90;
          for(var n = 0; n < count; n++){
             var day = days.at(n);
             maxValueInvest = Math.max(day.priorInvestmentAmount(), maxValueInvest);
@@ -90,10 +90,10 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
             maxValueInvest = Math.max(day.redemptionAmount(), maxValueInvest);
             minValueInvest = Math.min(day.netinvestmentAmount(), minValueInvest);
          }
-         maxValue = maxValueInvest - minValueInvest;
+         maxValue = maxValueInvest;
          minValue = minValueInvest;
          o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorInvestmentAmount', '#4b5e6f', 2);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorRedemptionAmount', '#6f6f6d', 2);
+         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorRedemptionAmount', '#80a861', 2);
          o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorNetinvestmentAmount', '#947b91', 2);
          o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_investmentAmount', '#51c0db', 3);
          o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_redemptionAmount', '#68f34e', 3);
@@ -103,51 +103,49 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
          var date = days.at(0).recordDate();
          graphic.setFont('15px Microsoft YaHei');
          var label = date.substr(0,4)+'年'+date.substr(4,2)+'月';
-         graphic.drawText(label, left+width*2/5, rectangle.top+33, '#edfc2d');
+         graphic.drawText(label, left+width*2/5, rectangle.top+25, '#edfc2d');
          //下面日期
          graphic.setFont('6px Microsoft YaHei');
          var handle = graphic._handle;
          label = '(日期：天)';
          
          //graphic.drawText(label,left-60,top+169,'#ffffff');
-         graphic.drawText(label,left-60,top+dataheigt+15,'#ffffff');
+         graphic.drawText(label,left-60,top+190-23,'#ffffff');
          graphic.setFont('12px Microsoft YaHei');
-         graphic.drawText('(单位：万)', left-55, top-15, '#ffffff'); 
+         graphic.drawText('(单位：万)', left-55, top-27, '#ffffff'); 
          //graphic.drawText(label,left-60,top+lineCount*15,'#ffffff');
          var linelabel = Math.ceil((maxValueInvest/100000000));
-         var valueinterval = Math.ceil((maxValue/100000000));
-         var span =parseInt(maxValueInvest/maxValue*(count/3)-2);
+         linelabel = 9;
+         var valueinterval = Math.floor((maxValue/100000000));
+         var span =parseInt(maxValueInvest/maxValue*(count/3));
          linelabel *=10000; 
+         var waterlevel = linelabel;
          valueinterval = valueinterval/lineCount;
-         valueinterval *=10000;
+         valueinterval *= 10000;
+         valueinterval = 15000;
          var translinelabel = 0;
-         for(var i=0;i<lineCount+1;i++){
+         for(var i=0;i<12;i++){
             handle.beginPath();
             var x = left;
-            var y = top + i*15;
+            var y = top + i*15-15;
             handle.moveTo(x, y);
             x = left+width;
             handle.lineTo(x, y);
             handle.lineWidth = 2;
             handle.strokeStyle = '#697293';
+            if(waterlevel - valueinterval*i==0)handle.strokeStyle = '#edfc2d';
             handle.stroke();
-            textwidth = graphic.textWidth('label');
+            textwidth = graphic.textWidth(linelabel);
             translinelabel = Math.ceil(linelabel);
-            graphic.drawText(linelabel, left-textwidth-20, y, '#ffffff');      
+            graphic.drawText(linelabel, left-textwidth-10, y+5, '#ffffff');      
             linelabel -= valueinterval;
          }
          for (var i = 0 ; i<count; i=i+5){
             var day = days.at(i);
             date = day.priorRecordDate();
             label =  date.substr(6,2)
-            graphic.drawText(label,left+i*13+10,top+dataheigt+15,'#ffffff');
+            graphic.drawText(label,left+i*13+10,top+190-23,'#ffffff');
          }
-         handle.beginPath();
-         handle.moveTo(left, top+dataheigt-span*15+5);
-         handle.lineTo(left+width, top+dataheigt-span*15+5);
-         handle.lineWidth = 1;
-         handle.strokeStyle = '#edfc2d';
-         handle.stroke();
       }
     }
 }
@@ -223,15 +221,15 @@ MO.FEaiCockpitModuleTrendSnapshot_drawLine = function FEaiCockpitModuleTrendSnap
    var count = days.count();
    // 计算步宽
    var left = rectangle.left + 140;
-   var top = rectangle.top ;
+   var top = rectangle.top;
    var width = rectangle.width - 180;
    var height = dataheigt ;
    var stepWidth = width / count;
-   var stepHeight = height / maxValue;
+   var stepHeight = dataheigt / maxValue;
    for(var n = 0; n < count; n++){
       var day = days.at(n);
       var x = left + stepWidth * n;
-      var y = top + height - stepHeight * day[code];
+      var y = top + height - stepHeight * day[code]+35;
       if(n == 0){
          handle.moveTo(x, y);
       }else{

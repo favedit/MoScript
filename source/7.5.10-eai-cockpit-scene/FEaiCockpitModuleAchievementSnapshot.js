@@ -13,6 +13,7 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
    o._dataTicker           = null;
    // @attribute
    o._backgroundImage      = null;
+   o._rankGroundImage      = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -52,9 +53,13 @@ MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin = function FEaiCockpitModul
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
+   var top =rectangle.top;
+   var left = rectangle.left;
+   var width = rectangle.width;
    //..........................................................
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
+   graphic.drawImage(o._rankGroundImage,left+10,top+96,width-20,23*3+5);
 }
 
 //==========================================================
@@ -97,7 +102,9 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/achievement/ground.png');
+   var imageRank = o._rankGroundImage = imageConsole.load('{eai.resource}/cockpit/trend/rank.png');
    image.addLoadListener(o, o.onImageLoad);
+   imageRank.addLoadListener(o, o.onImageLoad);
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
@@ -115,7 +122,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('label');
    column.setLabel('公司名称');
-   column.setTextAlign(MO.EUiAlign.Center);
+   column.setTextAlign(MO.EUiAlign.LeftPadding);
    column.setWidth(100);
    column.setDataName('label');
    column.setWidth(160);
@@ -218,6 +225,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_dispose = function FEaiCockpitModuleAchi
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
+   o._rankGroundImage = MO.Lang.Object.dispose(o._rankGroundImage);
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
 }
