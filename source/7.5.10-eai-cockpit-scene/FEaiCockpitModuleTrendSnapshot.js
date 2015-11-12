@@ -143,7 +143,12 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
          for (var i = 0 ; i<count; i=i+5){
             var day = days.at(i);
             date = day.priorRecordDate();
-            label =  date.substr(6,2)
+            label = date.substr(6,1);
+            if(label==0){
+               label =  date.substr(7,1);
+            }else{
+               label =  date.substr(6,2);
+            }
             graphic.drawText(label,left+i*13+10,top+190-23,'#ffffff');
          }
       }

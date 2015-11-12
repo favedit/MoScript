@@ -117,7 +117,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    grid.headFont().color = '#2adae9';
    grid.setRowHeight(23);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 21;
+   grid.rowFont().size = 18;
    grid.rowFont().color = '#ffffff';
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('label');
