@@ -25,7 +25,7 @@ MO.FEaiLogicStatisticsMarketer = function FEaiLogicStatisticsMarketer(o){
 // <T>获取客户动态数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -48,7 +48,7 @@ MO.FEaiLogicStatisticsMarketer_doCustomerDynamic = function FEaiLogicStatisticsM
 // <T>获取客户趋势数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -66,7 +66,7 @@ MO.FEaiLogicStatisticsMarketer_doCustomerTrend = function FEaiLogicStatisticsMar
 // <T>获取理财师动态数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -89,7 +89,7 @@ MO.FEaiLogicStatisticsMarketer_doMarketerDynamic = function FEaiLogicStatisticsM
 // <T>获取理财师趋势数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间

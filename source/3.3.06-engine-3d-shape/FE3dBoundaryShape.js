@@ -357,7 +357,7 @@ MO.EE3dBoundaryShape_buildSphere = function EE3dBoundaryShape_buildSphere(contex
 MO.EE3dBoundaryShape_dispose = function EE3dBoundaryShape_dispose(){
    var o = this;
    // 释放属性
-   o._polygons = MO.Lang.Obejct.dispose(o._polygons);
+   o._polygons = MO.Lang.Object.dispose(o._polygons);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

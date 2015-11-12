@@ -17,7 +17,7 @@ MO.FEaiLogicStatisticsAchievement = function FEaiLogicStatisticsAchievement(o){
 // <T>获取客户动态数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间

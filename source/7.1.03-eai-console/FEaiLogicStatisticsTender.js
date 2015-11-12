@@ -18,7 +18,7 @@ MO.FEaiLogicStatisticsTender = function FEaiLogicStatisticsTender(o){
 // <T>获取项目信息数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -34,7 +34,7 @@ MO.FEaiLogicStatisticsTender_doInfo = function FEaiLogicStatisticsTender_doInfo(
 // <T>获取客户动态数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间

@@ -50,7 +50,10 @@ MO.MTimelines_setup = function MTimelines_setup(){
 // @param timeline:MTimelineAction 命令
 //==========================================================
 MO.MTimelines_pushTimeline = function MTimelines_pushTimeline(timeline){
-   this._timelines.push(timeline);
+   var o = this;
+   MO.Assert.debugNotNull(timeline);
+   timeline.setRecordTick(0);
+   o._timelines.push(timeline);
 }
 
 //==========================================================
@@ -61,42 +64,49 @@ MO.MTimelines_pushTimeline = function MTimelines_pushTimeline(timeline){
 //==========================================================
 MO.MTimelines_process = function MTimelines_process(context){
    var o = this;
-   // 保存时刻
+   // 获得时刻
    var tick = context.tick;
-   // 处理命令集合
+   // 处理集合
    var timelines = o._timelines;
    var count = timelines.count();
    for(var i = count - 1; i >= 0; i--){
       var timeline = timelines.at(i);
-      // 检查时刻
-      var timelineTick = tick - timeline.tick;
-      if(timelineTick < 0){
+      // 检查延迟
+      var recordTick = timeline.recordTick();
+      if(recordTick == 0){
+         timeline.setRecordTick(tick);
          continue;
+      }
+      var recordSpan = tick - recordTick;
+      var delay = timeline.delay();
+      if(delay != 0){
+         if(recordSpan < delay){
+            continue;
+         }
       }
       // 逻辑处理
       if(!timeline.statusStart()){
          // 开始处理
-         timeline.start();
+         timeline.start(context);
       }else if(timeline.statusStop()){
          // 停止处理
          timelines.erase(i);
+         timeline.stop(context);
          timeline.dispose();
       }else{
-         // 检查是否超时
+         // 检查超时
          var duration = timeline.duration();
          if(duration != 0){
-            if(timelineTick > duration){
-               timeline.stop();
+            var timelineSpan = tick - timeline.startTick();
+            if(timelineSpan > duration){
+               timeline.stop(context);
                continue;
             }
          }
          // 逻辑处理
-         context.tick = timelineTick;
          timeline.process(context);
       }
    }
-   // 恢复时刻
-   context.tick = tick;
 }
 
 //==========================================================
@@ -107,7 +117,7 @@ MO.MTimelines_process = function MTimelines_process(context){
 MO.MTimelines_dispose = function MTimelines_dispose(){
    var o = this;
    // 释放属性
-   o._timelines = MO.Lang.Obejct.dispose(o._timelines);
+   o._timelines = MO.Lang.Object.dispose(o._timelines);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

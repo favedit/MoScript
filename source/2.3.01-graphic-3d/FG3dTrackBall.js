@@ -134,7 +134,7 @@ MO.FG3dTrackBall_updateFrustum = function FG3dTrackBall_updateFrustum(){
 MO.FG3dTrackBall_dispose = function FG3dTrackBall_dispose(){
    var o = this;
    // 释放属性
-   o._matrix = MO.Lang.Obejct.dispose(o._matrix);
+   o._matrix = MO.Lang.Object.dispose(o._matrix);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

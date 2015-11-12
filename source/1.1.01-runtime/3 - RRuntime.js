@@ -201,7 +201,7 @@ MO.RRuntime.prototype.className = function RRuntime_className(value){
 // @method
 // @param source:Object 来源对象
 // @param target:Object 目标对象
-// @param parameters:Obejct 参数对象
+// @param parameters:Object 参数对象
 //==========================================================
 MO.RRuntime.prototype.sortComparerAsc = function RArray_sortComparerAsc(source, target, parameters){
    if(source > target){
@@ -219,7 +219,7 @@ MO.RRuntime.prototype.sortComparerAsc = function RArray_sortComparerAsc(source, 
 // @method
 // @param source:Object 来源对象
 // @param target:Object 目标对象
-// @param parameters:Obejct 参数对象
+// @param parameters:Object 参数对象
 //==========================================================
 MO.RRuntime.prototype.sortComparerDesc = function RArray_sortComparerDesc(source, target, parameters){
    if(source > target){

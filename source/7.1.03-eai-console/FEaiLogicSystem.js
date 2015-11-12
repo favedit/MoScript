@@ -39,7 +39,7 @@ MO.FEaiLogicSystem = function FEaiLogicSystem(o) {
 // <T>系统信息处理。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
@@ -64,7 +64,7 @@ MO.FEaiLogicSystem_onInfo = function FEaiLogicSystem_onInfo(event){
 // <T>获取系统信息。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
@@ -82,7 +82,7 @@ MO.FEaiLogicSystem_construct = function FEaiLogicSystem_construct(){
 // <T>获取系统信息。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================
@@ -103,7 +103,7 @@ MO.FEaiLogicSystem_doInfo = function FEaiLogicSystem_doInfo(owner, callback){
 // <T>获取系统信息。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @return FListener 监听
 //==========================================================

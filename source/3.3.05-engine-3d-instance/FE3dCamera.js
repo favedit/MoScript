@@ -195,7 +195,7 @@ MO.FE3dCamera_update = function FE3dCamera_update(){
 MO.FG3dCamera_dispose = function FG3dCamera_dispose(){
    var o = this;
    // 释放属性
-   o._projection = MO.Lang.Obejct.dispose(o._projection);
+   o._projection = MO.Lang.Object.dispose(o._projection);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

@@ -356,7 +356,7 @@ MO.FE3dBoundaryShape3d_build = function FE3dBoundaryShape3d_build(context){
 MO.FE3dBoundaryShape3d_dispose = function FE3dBoundaryShape3d_dispose(){
    var o = this;
    // 释放属性
-   o._polygons = MO.Lang.Obejct.dispose(o._polygons);
+   o._polygons = MO.Lang.Object.dispose(o._polygons);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

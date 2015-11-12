@@ -17,7 +17,7 @@ MO.FEaiLogicCockpitWarning = function FEaiLogicCockpitWarning(o) {
 // <T>获得阀值预警数据信息。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 //==========================================================
 MO.FEaiLogicCockpitWarning_doFetch = function FEaiLogicCockpitWarning_doFetch(owner, callback) {

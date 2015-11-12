@@ -69,7 +69,7 @@ MO.FG3dRenderTarget_setQualityCd = function FG3dRenderTarget_setQualityCd(qualit
 // <T>获得纹理集合。</T>
 //
 // @method
-// @return TObejcts 纹理集合
+// @return TObjects 纹理集合
 //==========================================================
 MO.FG3dRenderTarget_textures = function FG3dRenderTarget_textures(){
    var o = this;

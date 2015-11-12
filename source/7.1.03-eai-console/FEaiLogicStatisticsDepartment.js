@@ -31,7 +31,7 @@ MO.FEaiLogicStatisticsDepartment = function FEaiLogicStatisticsDepartment(o){
 // <T>获取组织数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param level:Integer 级别
 // @return FListener 监听
@@ -48,7 +48,7 @@ MO.FEaiLogicStatisticsDepartment_doOrganization = function FEaiLogicStatisticsDe
 // <T>获取客户动态数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -71,7 +71,7 @@ MO.FEaiLogicStatisticsDepartment_doCustomerDynamic = function FEaiLogicStatistic
 // <T>获取客户趋势数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -89,7 +89,7 @@ MO.FEaiLogicStatisticsDepartment_doCustomerTrend = function FEaiLogicStatisticsD
 // <T>获取理财师动态数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -112,7 +112,7 @@ MO.FEaiLogicStatisticsDepartment_doMarketerDynamic = function FEaiLogicStatistic
 // <T>获取理财师趋势数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -130,7 +130,7 @@ MO.FEaiLogicStatisticsDepartment_doMarketerTrend = function FEaiLogicStatisticsD
 // <T>获取部门动态数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间
@@ -148,7 +148,7 @@ MO.FEaiLogicStatisticsDepartment_doDepartmentDynamic = function FEaiLogicStatist
 // <T>获取部门趋势数据。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间

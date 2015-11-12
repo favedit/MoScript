@@ -36,7 +36,8 @@ MO.FMainTimeline_construct = function FMainTimeline_construct(){
    o.__base.FObject.construct.call(o);
    o.__base.MTimelineActions.construct.call(o);
    // 设置属性
-   o._context = new MO.STimelineContext();
+   var context = o._context = new MO.STimelineContext();
+   context.mainTimeline = o;
    o._timelines = new MO.TObjects();
 }
 
@@ -65,26 +66,25 @@ MO.FMainTimeline_start = function FMainTimeline_start(){
 //==========================================================
 MO.FMainTimeline_process = function FMainTimeline_process(){
    var o = this;
-   var tick = MO.Timer.current();
+   var currentTick = MO.Timer.current();
    // 计算间隔
-   if(tick - o._lastTick < o._interval){
+   if(currentTick - o._lastTick < o._interval){
       return false;
    }
-   o._lastTick = tick;
    // 计算开始间隔
    if(o._startTick == 0){
-      o._startTick = tick;
+      o._startTick = currentTick;
       return true;
    }
-   var span = tick - o._startTick;
    // 设置环境
    var context = o._context;
-   context.tick = span;
-   context.second = span / 1000;
+   context.tick = currentTick - o._startTick;
    // 命令处理
    o.__base.MTimelineActions.process.call(o, context);
    // 时间线处理
    o.__base.MTimelines.process.call(o, context);
+   // 设置最后时刻
+   o._lastTick = currentTick;
 }
 
 //==========================================================

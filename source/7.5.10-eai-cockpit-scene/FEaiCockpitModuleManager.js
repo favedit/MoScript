@@ -287,7 +287,6 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          snapshotDisplay.setVisible(false);
          viewDisplay.setVisible(false);
          // 移动相机
-         // 移动相机
          var action = MO.Class.create(MO.FE3dCameraTimelineAction);
          action.setSpeed(moveSpeed);
          action.link(camera);

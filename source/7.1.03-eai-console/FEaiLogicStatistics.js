@@ -71,7 +71,7 @@ MO.FEaiLogicStatistics_calculateAmountLevel = function FEaiLogicStatistics_calcu
 // <T>获取业绩。</T>
 //
 // @method
-// @param owner:Obejct 拥有者
+// @param owner:Object 拥有者
 // @param callback:Function 回调函数
 // @param startDate:String 开始时间
 // @param endDate:String 结束时间

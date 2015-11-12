@@ -9,16 +9,18 @@ MO.MTimelineActions = function MTimelineActions(o){
    o = MO.Class.inherits(this, o);
    //..........................................................
    // @attribute
-   o._actions   = MO.Class.register(o, new MO.AGetter('_actions'));
+   o._currentSection = MO.Class.register(o, new MO.AGetter('_currentSection'));
+   o._sections       = MO.Class.register(o, new MO.AGetter('_sections'));
    //..........................................................
    // @method
-   o.construct  = MO.MTimelineActions_construct;
+   o.construct       = MO.MTimelineActions_construct;
    // @method
-   o.setup      = MO.MTimelineActions_setup;
-   o.pushAction = MO.MTimelineActions_pushAction;
-   o.process    = MO.MTimelineActions_process;
+   o.setup           = MO.MTimelineActions_setup;
+   o.pushSection     = MO.MTimelineActions_pushSection;
+   o.pushAction      = MO.MTimelineActions_pushAction;
+   o.process         = MO.MTimelineActions_process;
    // @method
-   o.dispose    = MO.MTimelineActions_dispose;
+   o.dispose         = MO.MTimelineActions_dispose;
    return o;
 }
 
@@ -31,7 +33,7 @@ MO.MTimelineActions_construct = function MTimelineActions_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置属性
-   o._actions = new MO.TObjects();
+   o._sections = new MO.TObjects();
 }
 
 //==========================================================
@@ -44,14 +46,29 @@ MO.MTimelineActions_setup = function MTimelineActions_setup(){
 }
 
 //==========================================================
+// <T>增加一个段落。</T>
+//
+// @method
+// @param section:FTimelineSection 段落
+//==========================================================
+MO.MTimelineActions_pushSection = function MTimelineActions_pushSection(section){
+   var o = this;
+   MO.Assert.debugNotNull(section);
+   o._sections.push(section);
+}
+
+//==========================================================
 // <T>增加一个命令。</T>
 //
 // @method
 // @param action:MTimelineAction 命令
 //==========================================================
-MO.MTimelineActions_pushAction = function MTimelineActions_pushAction(action){
+MO.MTimelineActions_pushAction = function MTimelineActions_pushAction(action, loopCd, loopCount){
    var o = this;
-   o._actions.push(action);
+   MO.Assert.debugNotNull(action);
+   var section = MO.Class.create(MO.FTimelineSection);
+   section.pushAction(action, loopCd, loopCount);
+   o._sections.push(section);
 }
 
 //==========================================================
@@ -62,42 +79,24 @@ MO.MTimelineActions_pushAction = function MTimelineActions_pushAction(action){
 //==========================================================
 MO.MTimelineActions_process = function MTimelineActions_process(context){
    var o = this;
-   // 保存时刻
-   //var tick = context.tick;
-   // 处理命令集合
-   var actions = o._actions;
-   var count = actions.count();
-   for(var i = count - 1; i >= 0; i--){
-      var action = actions.at(i);
-      // 检查时刻
-      //var actionTick = tick - action.tick;
-      //if(actionTick < 0){
-      //   continue;
-      //}
-      // 逻辑处理
-      if(!action.statusStart()){
-         // 开始处理
-         action.start(context);
-      }else if(action.statusStop()){
-         // 停止处理
-         actions.erase(i);
-         action.dispose();
-      }else{
-         // 检查是否超时
-         var duration = action.duration();
-         if(duration != 0){
-            if (context.tick > duration) {
-               action.stop(context);
-               continue;
-            }
-         }
-         // 逻辑处理
-         // context.tick = actionTick;
-         action.process(context);
+   var sections = o._sections;
+   // 获得活动的段落
+   var section = o._currentSection;
+   if(!section){
+      if(!sections.isEmpty()){
+         section = o._currentSection = sections.shift();
       }
    }
-   // 恢复时刻
-   // context.tick = tick;
+   // 段落处理
+   if(section){
+      section.process(context);
+      // 测试完成
+      if(section.testStop()){
+         section.stop(context);
+         section.dispose();
+         o._currentSection = null;
+      }
+   }
 }
 
 //==========================================================
@@ -108,7 +107,7 @@ MO.MTimelineActions_process = function MTimelineActions_process(context){
 MO.MTimelineActions_dispose = function MTimelineActions_dispose(){
    var o = this;
    // 释放属性
-   o._actions = MO.Lang.Obejct.dispose(o._actions);
+   o._sections = MO.Lang.Object.dispose(o._sections);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

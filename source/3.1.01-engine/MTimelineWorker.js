@@ -11,10 +11,13 @@ MO.MTimelineWorker = function MTimelineWorker(o){
    // @attribute
    o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
    // @attribute
-   o._tick        = MO.Class.register(o, new MO.AGetSet('_tick'), 0);
+   o._delay       = MO.Class.register(o, new MO.AGetSet('_delay'), 0);
+   o._duration    = MO.Class.register(o, new MO.AGetSet('_duration'), 0);
+   // @attribute
+   o._tick        = MO.Class.register(o, new MO.AGetter('_tick'), 0);
+   o._recordTick  = MO.Class.register(o, new MO.AGetSet('_recordTick'), 0);
    o._startTick   = MO.Class.register(o, new MO.AGetter('_startTick'), 0);
    o._lastTick    = MO.Class.register(o, new MO.AGetter('_lastTick'), 0);
-   o._duration    = MO.Class.register(o, new MO.AGetSet('_duration'), 0);
    // @attribute
    o._statusStart = MO.Class.register(o, new MO.AGetter('_statusStart'), false);
    o._statusStop  = MO.Class.register(o, new MO.AGetter('_statusStop'), false);
@@ -108,10 +111,15 @@ MO.MTimelineWorker_start = function MTimelineWorker_start(context){
 //==========================================================
 MO.MTimelineWorker_process = function MTimelineWorker_process(context){
    var o = this;
-   context.span = context.tick - o._lastTick;
-   context.spanSecond = (context.tick - o._lastTick) * 0.001;
+   var tick = context.tick;
+   var span = tick - o._lastTick;
+   // 计算环境
+   context.currentTick = o._tick = tick - o._startTick;
+   context.span = span;
+   context.spanSecond = span * 0.001;
+   // 逻辑处理
    o.onProcess(context);
-   o._lastTick = context.tick;
+   o._lastTick = tick;
 }
 
 //==========================================================
@@ -125,6 +133,7 @@ MO.MTimelineWorker_stop = function MTimelineWorker_stop(context){
       o.onStop(context);
       o._statusStop = true;
    }
+   o._statusStart = false;
 }
 
 //==========================================================

@@ -406,7 +406,7 @@ MO.FEditorDsFrameSpaceContent_loadFrame = function FEditorDsFrameSpaceContent_lo
 MO.FEditorDsFrameSpaceContent_dispose = function FEditorDsFrameSpaceContent_dispose(){
    var o = this;
    // 释放旋转
-   o._rotation = MO.Lang.Obejct.dispose(o._rotation)
+   o._rotation = MO.Lang.Object.dispose(o._rotation)
    // 父处理
    o.__base.FDuiControl.dispose.call(o);
 }

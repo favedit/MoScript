@@ -127,7 +127,7 @@ MO.FDisplay_clearRenderables = function FDisplay_clearRenderables(){
 // <T>增加一个对象。</T>
 //
 // @method
-// @param item:Obejct 项目
+// @param item:Object 项目
 //==========================================================
 MO.FDisplay_push = function FDisplay_push(item){
    var o = this;

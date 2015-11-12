@@ -51,14 +51,15 @@ MO.FEaiCockpitScene = function FEaiCockpitScene(o) {
 MO.FEaiCockpitScene_onOperationDown = function FEaiCockpitScene_onOperationDown(event) {
    var o = this;
    var moduleManager = o._moduleManager;
+   var modeCd = moduleManager.modeCd();
    var region = o._activeStage.region();
    // 选中主页面
-   if(moduleManager.modeCd() == MO.EEaiCockpitMode.Logo){
+   if(modeCd == MO.EEaiCockpitMode.Logo){
       moduleManager.selectModeCd(MO.EEaiCockpitMode.Main);
       return;
    }
    // 选中主页面
-   if(moduleManager.modeCd() == MO.EEaiCockpitMode.Module){
+   if(modeCd == MO.EEaiCockpitMode.Module){
       moduleManager.selectModeCd(MO.EEaiCockpitMode.Main);
       return;
    }
@@ -77,7 +78,7 @@ MO.FEaiCockpitScene_onOperationDown = function FEaiCockpitScene_onOperationDown(
       }
    }
    // 返回主页面
-   if(moduleManager.modeCd() == MO.EEaiCockpitMode.Main){
+   if(modeCd == MO.EEaiCockpitMode.Main){
       moduleManager.selectModeCd(MO.EEaiCockpitMode.Logo)
    }else{
       moduleManager.selectModeCd(MO.EEaiCockpitMode.Main)

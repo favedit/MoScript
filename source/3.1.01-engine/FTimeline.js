@@ -31,7 +31,7 @@ MO.FTimeline_construct = function FTimeline_construct(){
    o.__base.FObject.construct.call(o);
    o.__base.MTimelineActions.construct.call(o);
    // 设置属性
-   o._actions = new MO.TObejcts();
+   o._actions = new MO.TObjects();
 }
 
 //==========================================================
@@ -65,7 +65,7 @@ MO.FTimeline_process = function FTimeline_process(context){
 MO.FTimeline_dispose = function FTimeline_dispose(){
    var o = this;
    // 释放属性
-   o._actions = MO.Lang.Obejct.dispose(o._actions);
+   o._actions = MO.Lang.Object.dispose(o._actions);
    // 父处理
    o.__base.MTimelineActions.dispose.call(o);
    o.__base.FObject.dispose.call(o);
