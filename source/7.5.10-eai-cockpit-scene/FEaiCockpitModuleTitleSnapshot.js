@@ -131,11 +131,11 @@ MO.FEaiCockpitModuleTitleSnapshot_construct = function FEaiCockpitModuleTitleSna
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
    o._cellLocation.set(3, 0, 0);
-   o._cellSize.set(8, 1); o._currentDate = new MO.TDate();
+   o._cellSize.set(8, 1); 
+   o._currentDate = new MO.TDate();
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._data = MO.Class.create(MO.FEaiCockpitMessageTitle);
    o._backgroundPadding = new MO.SPadding(0, 0, 0, 0);
-   o.processLogic();
 }
 
 //==========================================================

@@ -92,9 +92,15 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitM
    var circleImageWidth = 34 * imageScale;
    var circleImageHeight = 34 * imageScale;
    var data = o._data;
-   var red = parseInt(255 * data / 120).toString(16);
+
+   var reddata = parseInt(255 * data / 120 * 2);
+   reddata = reddata > 255 ? 255 : reddata;
+   var red = reddata.toString(16);
    if(red.length == 1) red = "0" + red;
-   var green = parseInt(255 - 255 * data / 120).toString(16);
+
+   var greendata = data / 120 > 0.5 ? parseInt(255 - 255 * (data / 120 - 0.5) * 2) : 255;
+   greendata = greendata < 0 ? 0 : greendata;
+   var green = greendata.toString(16);
    if(green.length == 1) green = "0" + green;
    var colorCircleColor = "#" + red + green + "00";
 
