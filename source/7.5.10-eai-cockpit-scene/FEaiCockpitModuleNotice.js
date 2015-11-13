@@ -11,6 +11,7 @@ MO.FEaiCockpitModuleNotice = function FEaiCockpitModuleNotice(o){
    // @attribute
    o._name         = 'notice';
    o._typeCd       = MO.EEaiCockpitModule.Logic;
+   o._slideshow    = true;
    o._dataTicker   = null;
    //..........................................................
    // @method

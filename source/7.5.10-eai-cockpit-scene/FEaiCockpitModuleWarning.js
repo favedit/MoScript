@@ -11,6 +11,7 @@ MO.FEaiCockpitModuleWarning = function FEaiCockpitModuleWarning(o){
    // @attribute
    o._name         = 'warning';
    o._typeCd       = MO.EEaiCockpitModule.Logic;
+   o._slideshow    = false;
    o._dataTicker   = null;
    //..........................................................
    // @method

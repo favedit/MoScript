@@ -336,8 +336,10 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          action.targetPosition().set(0, 0, -3);
          o._mainTimeline.pushAction(action);
          // 启动轮播
-         o._autoPlay = true;
-         o.startAutoPlay(module);
+         if (module.slideshow()) {
+            o._autoPlay = true;
+            o.startAutoPlay(module);
+         }
          break;
    }
    o._modeCd = modeCd;
@@ -356,8 +358,16 @@ MO.FEaiCockpitModuleManager_startAutoPlay = function FEaiCockpitModuleManager_st
 
    var modules = o._modules;
    var currentIndex = modules.indexOfValue(module);
-   var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 1 : currentIndex + 1;
-   var nextModule = modules.at(nextIndex);
+   for (var i = 1; i < modules.count() ; i++) {
+      var nextIndex = currentIndex + i;
+      if (nextIndex > modules.count() - 1) {
+         nextIndex -= modules.count();
+      }
+      var nextModule = modules.at(nextIndex);
+      if (nextModule.slideshow()) {
+         break;
+      }
+   }
    var currentViewRenderable = module.controlView().renderable();
    var nextViewRenderable = nextModule.controlView().renderable();
    var currentMatrix = currentViewRenderable.matrix();
@@ -423,8 +433,16 @@ MO.FEaiCockpitModuleManager_onAutoPlayActionStop = function FEaiCockpitModuleMan
    var modules = o._modules;
    var currentModule = focusView.module();
    var currentIndex = modules.indexOfValue(currentModule);
-   var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 2 : currentIndex + 1;
-   var nextModule = modules.at(nextIndex);
+   for (var i = 1; i < modules.count() ; i++) {
+      var nextIndex = currentIndex + i;
+      if (nextIndex > modules.count() - 1) {
+         nextIndex -= modules.count();
+      }
+      var nextModule = modules.at(nextIndex);
+      if (nextModule.slideshow()) {
+         break;
+      }
+   }
    o._focusView = nextModule.controlView();
    if (o._autoPlay) {
       o.startAutoPlay(nextModule);

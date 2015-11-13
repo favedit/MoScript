@@ -11,6 +11,7 @@ MO.FEaiCockpitModuleTitle = function FEaiCockpitModuleTitle(o){
    // @attribute
    o._name         = 'title';
    o._typeCd       = MO.EEaiCockpitModule.Logic;
+   o._slideshow    = false;
    o._dataTicker   = null;
    //..........................................................
    // @method
