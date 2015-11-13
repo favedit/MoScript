@@ -22,6 +22,7 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    // @attribute
    o._focusModule       = MO.Class.register(o, new MO.AGetter('_focusModule'));
    o._focusControl      = MO.Class.register(o, new MO.AGetter('_focusControl'));
+   o._autoPlay          = false;
    //..........................................................
    // @method
    o.construct          = MO.FEaiCockpitModuleManager_construct;
@@ -307,6 +308,9 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          action.link(camera);
          action.targetPosition().set(0, 0, -8);
          o._mainTimeline.pushAction(action);
+         // 停止轮播清空动画
+         o._autoPlay = false;
+         o._mainTimeline.clear();
          // 移动控件位置
          //for(var n = 0; n < moduleCount; n++){
          //   var module = modules.at(n);
@@ -332,6 +336,7 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          action.targetPosition().set(0, 0, -3);
          o._mainTimeline.pushAction(action);
          // 启动轮播
+         o._autoPlay = true;
          o.startAutoPlay(module);
          break;
    }
@@ -389,7 +394,7 @@ MO.FEaiCockpitModuleManager_startAutoPlay = function FEaiCockpitModuleManager_st
    // 下一模块飞来
    section = MO.Class.create(MO.FTimelineSection);
    action = MO.Class.create(MO.FE3dTranslateTimelineAction);
-   action.targetTranslate().set(0, 0, 15);
+   action.targetTranslate().set(0, 0, 10);
    action.setDuration(1000);
    action.link(nextMatrix);
    action.addActionStopListener(o, o.onAutoPlayActionStop);
@@ -418,10 +423,12 @@ MO.FEaiCockpitModuleManager_onAutoPlayActionStop = function FEaiCockpitModuleMan
    var modules = o._modules;
    var currentModule = focusView.module();
    var currentIndex = modules.indexOfValue(currentModule);
-   var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 1 : currentIndex + 1;
+   var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 2 : currentIndex + 1;
    var nextModule = modules.at(nextIndex);
-   focusView = nextModule.controlView();
-   o.startAutoPlay(focusView);
+   o._focusView = nextModule.controlView();
+   if (o._autoPlay) {
+      o.startAutoPlay(nextModule);
+   }
 }
 
 //==========================================================
