@@ -32,6 +32,7 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    // @method
    o.onAutoPlayActionStop = MO.FEaiCockpitModuleManager_onAutoPlayActionStop;
    // @method
+   o.startAutoPlay      = MO.FEaiCockpitModuleManager_startAutoPlay;
    o.placeCellControl   = MO.FEaiCockpitModuleManager_placeCellControl;
    o.selectModeCd       = MO.FEaiCockpitModuleManager_selectModeCd;
    o.selectModuleView   = MO.FEaiCockpitModuleManager_selectModuleView;
@@ -331,60 +332,69 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          action.targetPosition().set(0, 0, -3);
          o._mainTimeline.pushAction(action);
          // 启动轮播
-         var modules = o._modules;
-         var currentIndex = modules.indexOfValue(module);
-         var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 1 : currentIndex + 1;
-         var nextModule = modules.at(nextIndex);
-         var currentViewRenderable = module.controlView().renderable();
-         var nextViewRenderable = nextModule.controlView().renderable();
-         var currentMatrix = currentViewRenderable.matrix();
-         var nextMatrix = nextViewRenderable.matrix();
-         // 初始化动画参数
-         nextModule.controlView().setVisible(true);
-         nextMatrix.setTranslate(-20, 0, -35);
-         nextMatrix.update();
-         // 创建动画序列
-         var section = MO.Class.create(MO.FTimelineSection);
-         // 当前模块缩回
-         var action = MO.Class.create(MO.FE3dTranslateTimelineAction);
-         action.targetTranslate().set(0, 0, 15);
-         action.setDelay(5000);
-         action.setDuration(1000);
-         action.link(currentMatrix);
-         section.pushAction(action);
-         // 同时旋转
-         action = MO.Class.create(MO.FE3dRotateTimelineAction);
-         action.targetRotate().set(0, Math.PI * -0.25, 0);
-         action.setDelay(5000);
-         action.setDuration(1000);
-         action.link(currentMatrix);
-         section.pushAction(action);
-         o._mainTimeline.pushSection(section);
-         // 当前模块飞走
-         section = MO.Class.create(MO.FTimelineSection);
-         action = MO.Class.create(MO.FE3dTranslateTimelineAction);
-         action.targetTranslate().set(200, 0, 350);
-         action.setDuration(1000);
-         action.link(currentMatrix);
-         section.pushAction(action);
-         o._mainTimeline.pushSection(section);
-         // 下一模块飞来
-         section = MO.Class.create(MO.FTimelineSection);
-         action = MO.Class.create(MO.FE3dTranslateTimelineAction);
-         action.targetTranslate().set(0, 0, 15);
-         action.setDuration(1000);
-         action.link(nextMatrix);
-         action.addActionStopListener(o, o.onAutoPlayActionStop);
-         section.pushAction(action);
-         o._mainTimeline.pushSection(section);
-
-         //currentMatrix.setRotation(0, -0.5, 0);
-         //currentMatrix.setTranslate(0, 0, 20);
-         //currentMatrix.update();
+         o.startAutoPlay(module);
          break;
    }
    o._modeCd = modeCd;
    o._focusModule = module;
+}
+
+//==========================================================
+// <T>轮播开始处理。</T>
+//
+// @method
+// @param context:STimelineContext 时间轴环境
+//==========================================================
+MO.FEaiCockpitModuleManager_startAutoPlay = function FEaiCockpitModuleManager_startAutoPlay(module) {
+   var o = this;
+   var focusView = o._focusView;
+
+   var modules = o._modules;
+   var currentIndex = modules.indexOfValue(module);
+   var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 1 : currentIndex + 1;
+   var nextModule = modules.at(nextIndex);
+   var currentViewRenderable = module.controlView().renderable();
+   var nextViewRenderable = nextModule.controlView().renderable();
+   var currentMatrix = currentViewRenderable.matrix();
+   var nextMatrix = nextViewRenderable.matrix();
+   // 初始化动画参数
+   nextModule.controlView().setVisible(true);
+   nextMatrix.setTranslate(-20, 0, -35);
+   nextMatrix.update();
+   // 创建动画序列
+   var section = MO.Class.create(MO.FTimelineSection);
+   // 当前模块缩回
+   var action = MO.Class.create(MO.FE3dTranslateTimelineAction);
+   action.targetTranslate().set(0, 0, 15);
+   action.setDelay(5000);
+   action.setDuration(1000);
+   action.link(currentMatrix);
+   section.pushAction(action);
+   // 同时旋转
+   action = MO.Class.create(MO.FE3dRotateTimelineAction);
+   action.targetRotate().set(0, Math.PI * -0.25, 0);
+   action.setDelay(5000);
+   action.setDuration(1000);
+   action.link(currentMatrix);
+   section.pushAction(action);
+   o._mainTimeline.pushSection(section);
+   // 当前模块飞走
+   section = MO.Class.create(MO.FTimelineSection);
+   action = MO.Class.create(MO.FE3dTranslateTimelineAction);
+   action.targetTranslate().set(200, 0, 350);
+   action.setDuration(1000);
+   action.link(currentMatrix);
+   section.pushAction(action);
+   o._mainTimeline.pushSection(section);
+   // 下一模块飞来
+   section = MO.Class.create(MO.FTimelineSection);
+   action = MO.Class.create(MO.FE3dTranslateTimelineAction);
+   action.targetTranslate().set(0, 0, 15);
+   action.setDuration(1000);
+   action.link(nextMatrix);
+   action.addActionStopListener(o, o.onAutoPlayActionStop);
+   section.pushAction(action);
+   o._mainTimeline.pushSection(section);
 }
 
 //==========================================================
@@ -395,19 +405,23 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
 //==========================================================
 MO.FEaiCockpitModuleManager_onAutoPlayActionStop = function FEaiCockpitModuleManager_onAutoPlayActionStop(context) {
    var o = this;
-
+   var focusView = o._focusView;
+   var currentViewRenderable = focusView.renderable();
+   var currentMatrix = currentViewRenderable.matrix();
+   // 重置位置、旋转
+   currentMatrix.setTranslate(0, 0, 10);
+   currentMatrix.setRotation(0, 0, 0);
+   currentMatrix.update();
+   // 重置可视状态
+   focusView.setVisible(false);
+   // 切换focusView至下一View
    var modules = o._modules;
-   var count = modules.count();
-   for (var i = 0; i < count; i++) {
-      var findModule = modules.at(i);
-      var view = findModule.controlView();
-      if (findModule == module) {
-         view.setVisible(true);
-         o._focusView = view;
-      } else {
-         view.setVisible(false);
-      }
-   }
+   var currentModule = focusView.module();
+   var currentIndex = modules.indexOfValue(currentModule);
+   var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 1 : currentIndex + 1;
+   var nextModule = modules.at(nextIndex);
+   focusView = nextModule.controlView();
+   o.startAutoPlay(focusView);
 }
 
 //==========================================================

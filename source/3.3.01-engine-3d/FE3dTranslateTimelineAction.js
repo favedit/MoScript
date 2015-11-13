@@ -38,6 +38,9 @@ MO.FE3dTranslateTimelineAction = function FE3dTranslateTimelineAction(o){
 //==========================================================
 MO.FE3dTranslateTimelineAction_onStart = function FE3dTranslateTimelineAction_onStart(context){
    var o = this;
+   var startEvent = o._eventActionStop;
+   startEvent.context = context;
+   startEvent.action = o;
    o.__base.MTimelineAction.onStart.call(o, context);
 }
 
@@ -70,6 +73,9 @@ MO.FE3dTranslateTimelineAction_onProcess = function FE3dTranslateTimelineAction_
 //==========================================================
 MO.FE3dTranslateTimelineAction_onStop = function FE3dTranslateTimelineAction_onStop(context){
    var o = this;
+   var stopEvent = o._eventActionStop;
+   stopEvent.context = context;
+   stopEvent.action = o;
    o.__base.MTimelineAction.onStop.call(o, context);
 }
 

@@ -38,6 +38,9 @@ MO.FE3dRotateTimelineAction = function FE3dRotateTimelineAction(o){
 //==========================================================
 MO.FE3dRotateTimelineAction_onStart = function FE3dRotateTimelineAction_onStart(context){
    var o = this;
+   var startEvent = o._eventActionStop;
+   startEvent.context = context;
+   startEvent.action = o;
    o.__base.MTimelineAction.onStart.call(o, context);
 }
 
@@ -70,6 +73,9 @@ MO.FE3dRotateTimelineAction_onProcess = function FE3dRotateTimelineAction_onProc
 //==========================================================
 MO.FE3dRotateTimelineAction_onStop = function FE3dRotateTimelineAction_onStop(context) {
    var o = this;
+   var stopEvent = o._eventActionStop;
+   stopEvent.context = context;
+   stopEvent.action = o;
    o.__base.MTimelineAction.onStop.call(o, context);
 }
 

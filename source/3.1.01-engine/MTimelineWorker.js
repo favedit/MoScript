@@ -50,7 +50,7 @@ MO.MTimelineWorker = function MTimelineWorker(o){
 // <T>开始事件处理。</T>
 //
 // @method
-// @param context:MTimelineAction Action对象
+// @param context:STimelineContext 时间轴环境
 //==========================================================
 MO.MTimelineWorker_onStart = function MTimelineWorker_onStart(context) {
    var o = this;
@@ -73,9 +73,9 @@ MO.MTimelineWorker_onProcess = function MTimelineWorker_onProcess(context){
 // <T>结束事件处理。</T>
 //
 // @method
-// @param context:STimelineContext 时间线环境
+// @param context:STimelineContext 时间轴环境
 //==========================================================
-MO.MTimelineWorker_onStop = function MTimelineWorker_onStop(context){
+MO.MTimelineWorker_onStop = function MTimelineWorker_onStop(context) {
    var o = this;
    o.processActionStopListener(context);
 }
@@ -87,6 +87,8 @@ MO.MTimelineWorker_onStop = function MTimelineWorker_onStop(context){
 //==========================================================
 MO.MTimelineWorker_construct = function MTimelineWorker_construct(){
    var o = this;
+   o._eventActionStart = new MO.SEvent(o);
+   o._eventActionStop = new MO.SEvent(o);
 }
 
 //==========================================================
