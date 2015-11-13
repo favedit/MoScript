@@ -313,7 +313,7 @@ MO.FEaiChartMktCustomerV2Processor_process = function FEaiChartMktCustomerV2Proc
       endDate24H.truncMinute(15);
       // 取数据
       statistics.marketer().doCustomerTrend(o, o.on24HDataFetch, beginDate24H.format(), endDate24H.format());
-      statistics.tender().doInfo(o, o.onTrenderData);
+      statistics.marketer().doCustomerTender(o, o.onTrenderData);
 
    }
    //..........................................................

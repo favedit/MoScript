@@ -23,11 +23,10 @@ MO.MTimelineWorker = function MTimelineWorker(o){
    o._statusStop  = MO.Class.register(o, new MO.AGetter('_statusStop'), false);
    //..........................................................
    // @event
-   o._eventActionStart = null;
+   o._eventActionStart     = null;
    o._listenersActionStart = MO.Class.register(o, new MO.AListener('_listenersActionStart', MO.EEvent.ActionStart));
-
-   o._eventActionStop = null;
-   o._listenersActionStop = MO.Class.register(o, new MO.AListener('_listenersActionStop', MO.EEvent.ActionStop));
+   o._eventActionStop      = null;
+   o._listenersActionStop  = MO.Class.register(o, new MO.AListener('_listenersActionStop', MO.EEvent.ActionStop));
    //..........................................................
    // @method
    o.onStart      = MO.MTimelineWorker_onStart;
@@ -154,4 +153,7 @@ MO.MTimelineWorker_stop = function MTimelineWorker_stop(context){
 //==========================================================
 MO.MTimelineWorker_dispose = function MTimelineWorker_dispose(){
    var o = this;
+   o._eventActionStart = MO.Lang.Object.dispose(o._eventActionStart);
+   o._eventActionStop = MO.Lang.Object.dispose(o._eventActionStop);
+   o.__base.MListener.dispose.call(o);
 }

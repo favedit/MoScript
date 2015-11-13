@@ -14,9 +14,11 @@ MO.MTimelines = function MTimelines(o){
    // @method
    o.construct    = MO.MTimelines_construct;
    // @method
-   o.setup        = MO.MTimelines_setup;
    o.pushTimeline = MO.MTimelines_pushTimeline;
+   // @method
    o.process      = MO.MTimelines_process;
+   o.stop         = MO.MTimelines_stop;
+   o.clear        = MO.MTimelines_clear;
    // @method
    o.dispose      = MO.MTimelines_dispose;
    return o;
@@ -32,15 +34,6 @@ MO.MTimelines_construct = function MTimelines_construct(){
    o.__base.FObject.construct.call(o);
    // 设置属性
    o._timelines = new MO.TObjects();
-}
-
-//==========================================================
-// <T>配置处理。</T>
-//
-// @method
-//==========================================================
-MO.MTimelines_setup = function MTimelines_setup(){
-   var o = this;
 }
 
 //==========================================================
@@ -99,7 +92,9 @@ MO.MTimelines_process = function MTimelines_process(context){
          if(duration != 0){
             var timelineSpan = tick - timeline.startTick();
             if(timelineSpan > duration){
+               timelines.erase(i);
                timeline.stop(context);
+               timeline.dispose();
                continue;
             }
          }
@@ -107,6 +102,37 @@ MO.MTimelines_process = function MTimelines_process(context){
          timeline.process(context);
       }
    }
+}
+
+//==========================================================
+// <T>停止处理。</T>
+//
+// @method
+//==========================================================
+MO.MTimelines_stop = function MTimelines_stop(){
+   var o = this;
+   var timelines = o._timelines;
+   var count = timelines.count();
+   for(var i = 0; i < count; i++){
+      var timeline = timelines.at(i);
+      timeline.stop();
+   }
+}
+
+//==========================================================
+// <T>清空处理。</T>
+//
+// @method
+//==========================================================
+MO.MTimelines_clear = function MTimelines_clear(){
+   var o = this;
+   var timelines = o._timelines;
+   var count = timelines.count();
+   for(var i = 0; i < count; i++){
+      var timeline = timelines.at(i);
+      timeline.clear();
+   }
+   timelines.clear();
 }
 
 //==========================================================

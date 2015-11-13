@@ -6,7 +6,7 @@
 // @history 150710
 //==========================================================
 MO.FTimeline = function FTimeline(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions, MO.MTimeline, MO.MTimelines);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions, MO.MTimelineSections, MO.MTimelines);
    //..........................................................
    // @attribute
    o._mainTimeline = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
@@ -14,8 +14,9 @@ MO.FTimeline = function FTimeline(o){
    // @method
    o.construct     = MO.FTimeline_construct;
    // @method
-   o.setup         = MO.FTimeline_setup;
    o.process       = MO.FTimeline_process;
+   o.stop          = MO.FTimeline_stop;
+   o.clear         = MO.FTimeline_clear;
    // @method
    o.dispose       = MO.FTimeline_dispose;
    return o;
@@ -30,17 +31,8 @@ MO.FTimeline_construct = function FTimeline_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.__base.MTimelineActions.construct.call(o);
-   // 设置属性
-   o._actions = new MO.TObjects();
-}
-
-//==========================================================
-// <T>配置处理。</T>
-//
-// @method
-//==========================================================
-MO.FTimeline_setup = function FTimeline_setup(){
-   var o = this;
+   o.__base.MTimelineSections.construct.call(o);
+   o.__base.MTimelines.construct.call(o);
 }
 
 //==========================================================
@@ -53,8 +45,34 @@ MO.FTimeline_process = function FTimeline_process(context){
    var o = this;
    // 命令处理
    o.__base.MTimelineActions.process.call(o, context);
+   // 段落处理
+   o.__base.MTimelineSections.process.call(o, context);
    // 时间线处理
    o.__base.MTimelines.process.call(o, context);
+}
+
+//==========================================================
+// <T>停止处理。</T>
+//
+// @method
+//==========================================================
+MO.FTimelineSection_stop = function FTimelineSection_stop(){
+   var o = this;
+   o.__base.MTimelineActions.stop.call(o);
+   o.__base.MTimelineSections.stop.call(o);
+   o.__base.MTimelines.stop.call(o);
+}
+
+//==========================================================
+// <T>清空处理。</T>
+//
+// @method
+//==========================================================
+MO.FTimelineSection_clear = function FTimelineSection_clear(){
+   var o = this;
+   o.__base.MTimelineActions.clear.call(o);
+   o.__base.MTimelineSections.clear.call(o);
+   o.__base.MTimelines.clear.call(o);
 }
 
 //==========================================================
@@ -64,9 +82,9 @@ MO.FTimeline_process = function FTimeline_process(context){
 //==========================================================
 MO.FTimeline_dispose = function FTimeline_dispose(){
    var o = this;
-   // 释放属性
-   o._actions = MO.Lang.Object.dispose(o._actions);
    // 父处理
+   o.__base.MTimelines.dispose.call(o);
+   o.__base.MTimelineSections.dispose.call(o);
    o.__base.MTimelineActions.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
