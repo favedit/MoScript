@@ -5,28 +5,28 @@
 // @author sunpeng
 // @history 151111
 //==========================================================
-MO.FE3dTranslateTimelineAction = function FE3dTranslateTimelineAction(o){
+MO.FE3dRotateTimelineAction = function FE3dRotateTimelineAction(o){
    o = MO.Class.inherits(this, o, MO.MTimelineAction);
    //..........................................................
    // @attribute
-   o._code               = 'translate';
+   o._code               = 'rotate';
    // @attribute
    o._matrix             = MO.Class.register(o, new MO.AGetter('_matrix'));
-   o._originTranslate    = MO.Class.register(o, new MO.AGetter('_originTranslate'));
-   o._currentTranslate   = MO.Class.register(o, new MO.AGetter('_currentTranslate'));
-   o._targetTranslate    = MO.Class.register(o, new MO.AGetter('_targetTranslate'));
+   o._originRotate       = MO.Class.register(o, new MO.AGetter('_originRotate'));
+   o._currentRotate      = MO.Class.register(o, new MO.AGetter('_currentRotate'));
+   o._targetRotate       = MO.Class.register(o, new MO.AGetter('_targetRotate'));
    //..........................................................
    // @method
-   o.onStart          = MO.FE3dTranslateTimelineAction_onStart;
-   o.onProcess        = MO.FE3dTranslateTimelineAction_onProcess;
-   o.onStop           = MO.FE3dTranslateTimelineAction_onStop;
+   o.onStart          = MO.FE3dRotateTimelineAction_onStart;
+   o.onProcess        = MO.FE3dRotateTimelineAction_onProcess;
+   o.onStop           = MO.FE3dRotateTimelineAction_onStop;
    //..........................................................
    // @method
-   o.construct        = MO.FE3dTranslateTimelineAction_construct;
+   o.construct        = MO.FE3dRotateTimelineAction_construct;
    // @method
-   o.link             = MO.FE3dTranslateTimelineAction_link;
+   o.link             = MO.FE3dRotateTimelineAction_link;
    // @method
-   o.dispose          = MO.FE3dTranslateTimelineAction_dispose;
+   o.dispose          = MO.FE3dRotateTimelineAction_dispose;
    return o;
 }
 
@@ -36,7 +36,7 @@ MO.FE3dTranslateTimelineAction = function FE3dTranslateTimelineAction(o){
 // @method
 // @param context:STimelineContext 时间线环境
 //==========================================================
-MO.FE3dTranslateTimelineAction_onStart = function FE3dTranslateTimelineAction_onStart(context){
+MO.FE3dRotateTimelineAction_onStart = function FE3dRotateTimelineAction_onStart(context){
    var o = this;
    o.__base.MTimelineAction.onStart.call(o, context);
 }
@@ -47,18 +47,18 @@ MO.FE3dTranslateTimelineAction_onStart = function FE3dTranslateTimelineAction_on
 // @method
 // @param context:STimelineContext 时间线环境
 //==========================================================
-MO.FE3dTranslateTimelineAction_onProcess = function FE3dTranslateTimelineAction_onProcess(context){
+MO.FE3dRotateTimelineAction_onProcess = function FE3dRotateTimelineAction_onProcess(context){
    var o = this;
    o.__base.MTimelineAction.onProcess.call(o, context);
    var rate = context.currentTick / o.duration();
    var matrix = o._matrix;
-   var current = o._currentTranslate;
-   var origin = o._originTranslate;
-   var target = o._targetTranslate;
+   var current = o._currentRotate;
+   var origin = o._originRotate;
+   var target = o._targetRotate;
    current.x = origin.x + (target.x - origin.x) * rate;
    current.y = origin.y + (target.y - origin.y) * rate;
    current.z = origin.z + (target.z - origin.z) * rate;
-   matrix.setTranslate(current.x, current.y, current.z);
+   matrix.setRotation(current.x, current.y, current.z);
    matrix.update();
 }
 
@@ -68,7 +68,7 @@ MO.FE3dTranslateTimelineAction_onProcess = function FE3dTranslateTimelineAction_
 // @method
 // @param context:STimelineContext 时间线环境
 //==========================================================
-MO.FE3dTranslateTimelineAction_onStop = function FE3dTranslateTimelineAction_onStop(context){
+MO.FE3dRotateTimelineAction_onStop = function FE3dRotateTimelineAction_onStop(context) {
    var o = this;
    o.__base.MTimelineAction.onStop.call(o, context);
 }
@@ -78,12 +78,12 @@ MO.FE3dTranslateTimelineAction_onStop = function FE3dTranslateTimelineAction_onS
 //
 // @method
 //==========================================================
-MO.FE3dTranslateTimelineAction_construct = function FE3dTranslateTimelineAction_construct(){
+MO.FE3dRotateTimelineAction_construct = function FE3dRotateTimelineAction_construct(){
    var o = this;
    o.__base.MTimelineAction.construct.call(o);
-   o._currentTranslate = new MO.SValue3();
-   o._originTranslate = new MO.SValue3();
-   o._targetTranslate = new MO.SValue3();
+   o._originRotate = new MO.SValue3();
+   o._currentRotate = new MO.SValue3();
+   o._targetRotate = new MO.SValue3();
 }
 
 //==========================================================
@@ -91,11 +91,11 @@ MO.FE3dTranslateTimelineAction_construct = function FE3dTranslateTimelineAction_
 //
 // @method
 //==========================================================
-MO.FE3dTranslateTimelineAction_link = function FE3dTranslateTimelineAction_link(matrix){
+MO.FE3dRotateTimelineAction_link = function FE3dRotateTimelineAction_link(matrix){
    var o = this;
    o._matrix = matrix;
-   o._originTranslate.set(matrix.tx, matrix.ty, matrix.tz);
-   o._currentTranslate.set(matrix.tx, matrix.ty, matrix.tz);
+   o._originRotate.set(matrix.rx, matrix.ry, matrix.rz);
+   o._currentRotate.set(matrix.rx, matrix.ry, matrix.rz);
 }
 
 //==========================================================
@@ -103,7 +103,7 @@ MO.FE3dTranslateTimelineAction_link = function FE3dTranslateTimelineAction_link(
 //
 // @method
 //==========================================================
-MO.FE3dTranslateTimelineAction_setTargetControl = function FE3dTranslateTimelineAction_setTargetControl(){
+MO.FE3dRotateTimelineAction_setTargetControl = function FE3dRotateTimelineAction_setTargetControl(){
    var o = this;
 }
 
@@ -112,7 +112,7 @@ MO.FE3dTranslateTimelineAction_setTargetControl = function FE3dTranslateTimeline
 //
 // @method
 //==========================================================
-MO.FE3dTranslateTimelineAction_dispose = function FE3dTranslateTimelineAction_dispose(){
+MO.FE3dRotateTimelineAction_dispose = function FE3dRotateTimelineAction_dispose(){
    var o = this;
    // 父处理
    o.__base.MTimelineAction.dispose.call(o);

@@ -331,19 +331,46 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          // 启动轮播
          var modules = o._modules;
          var currentIndex = modules.indexOfValue(module);
-         var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 0 : currentIndex + 1;
+         var nextIndex = (currentIndex + 1 > modules.count() - 1) ? 1 : currentIndex + 1;
          var nextModule = modules.at(nextIndex);
          var currentViewRenderable = module.controlView().renderable();
          var nextViewRenderable = nextModule.controlView().renderable();
          var currentMatrix = currentViewRenderable.matrix();
          var nextMatrix = nextViewRenderable.matrix();
-
+         // 初始化动画参数
+         nextModule.controlView().setVisible(true);
+         nextMatrix.setTranslate(-20, 0, -35);
+         nextMatrix.update();
+         // 创建动画序列
+         var section = MO.Class.create(MO.FTimelineSection);
+         // 当前模块缩回
          var action = MO.Class.create(MO.FE3dTranslateTimelineAction);
-         action.targetTranslate().set(0, 0, 10);
+         action.targetTranslate().set(0, 0, 15);
+         action.setDelay(5000);
+         action.setDuration(1000);
+         action.link(currentMatrix);
+         section.pushAction(action);
+         // 同时旋转
+         action = MO.Class.create(MO.FE3dRotateTimelineAction);
+         action.targetRotate().set(0, Math.PI * -0.25, 0);
+         action.setDelay(5000);
          action.setDuration(1000);
          action.link(currentMatrix);
          o._mainTimeline.pushAction(action);
-         
+         // 当前模块飞走
+         action = MO.Class.create(MO.FE3dTranslateTimelineAction);
+         action.targetTranslate().set(200, 0, 350);
+         action.setDuration(1000);
+         action.link(currentMatrix);
+         section.pushAction(action);
+         // 下一模块飞来
+         action = MO.Class.create(MO.FE3dTranslateTimelineAction);
+         action.targetTranslate().set(0, 0, 15);
+         action.setDuration(1000);
+         action.link(nextMatrix);
+         section.pushAction(action);
+
+         o._mainTimeline.pushSection(section);
          //currentMatrix.setRotation(0, -0.5, 0);
          //currentMatrix.setTranslate(0, 0, 20);
          //currentMatrix.update();
