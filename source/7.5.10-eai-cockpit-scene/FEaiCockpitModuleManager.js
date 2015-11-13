@@ -30,6 +30,8 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o.register           = MO.FEaiCockpitModuleManager_register;
    o.unregister         = MO.FEaiCockpitModuleManager_unregister;
    // @method
+   o.onAutoPlayActionStop = MO.FEaiCockpitModuleManager_onAutoPlayActionStop;
+   // @method
    o.placeCellControl   = MO.FEaiCockpitModuleManager_placeCellControl;
    o.selectModeCd       = MO.FEaiCockpitModuleManager_selectModeCd;
    o.selectModuleView   = MO.FEaiCockpitModuleManager_selectModuleView;
@@ -356,21 +358,26 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          action.setDelay(5000);
          action.setDuration(1000);
          action.link(currentMatrix);
-         o._mainTimeline.pushAction(action);
+         section.pushAction(action);
+         o._mainTimeline.pushSection(section);
          // 当前模块飞走
+         section = MO.Class.create(MO.FTimelineSection);
          action = MO.Class.create(MO.FE3dTranslateTimelineAction);
          action.targetTranslate().set(200, 0, 350);
          action.setDuration(1000);
          action.link(currentMatrix);
          section.pushAction(action);
+         o._mainTimeline.pushSection(section);
          // 下一模块飞来
+         section = MO.Class.create(MO.FTimelineSection);
          action = MO.Class.create(MO.FE3dTranslateTimelineAction);
          action.targetTranslate().set(0, 0, 15);
          action.setDuration(1000);
          action.link(nextMatrix);
+         action.addActionStopListener(o, o.onAutoPlayActionStop);
          section.pushAction(action);
-
          o._mainTimeline.pushSection(section);
+
          //currentMatrix.setRotation(0, -0.5, 0);
          //currentMatrix.setTranslate(0, 0, 20);
          //currentMatrix.update();
@@ -378,6 +385,29 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
    }
    o._modeCd = modeCd;
    o._focusModule = module;
+}
+
+//==========================================================
+// <T>一次轮播结束处理。</T>
+//
+// @method
+// @param context:STimelineContext 时间轴环境
+//==========================================================
+MO.FEaiCockpitModuleManager_onAutoPlayActionStop = function FEaiCockpitModuleManager_onAutoPlayActionStop(context) {
+   var o = this;
+
+   var modules = o._modules;
+   var count = modules.count();
+   for (var i = 0; i < count; i++) {
+      var findModule = modules.at(i);
+      var view = findModule.controlView();
+      if (findModule == module) {
+         view.setVisible(true);
+         o._focusView = view;
+      } else {
+         view.setVisible(false);
+      }
+   }
 }
 
 //==========================================================

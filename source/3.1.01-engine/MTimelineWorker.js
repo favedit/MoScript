@@ -6,7 +6,7 @@
 // @history 150710
 //==========================================================
 MO.MTimelineWorker = function MTimelineWorker(o){
-   o = MO.Class.inherits(this, o);
+   o = MO.Class.inherits(this, o, MO.MListener);
    //..........................................................
    // @attribute
    o._code        = MO.Class.register(o, new MO.AGetSet('_code'));
@@ -21,6 +21,13 @@ MO.MTimelineWorker = function MTimelineWorker(o){
    // @attribute
    o._statusStart = MO.Class.register(o, new MO.AGetter('_statusStart'), false);
    o._statusStop  = MO.Class.register(o, new MO.AGetter('_statusStop'), false);
+   //..........................................................
+   // @event
+   o._eventActionStart = null;
+   o._listenersActionStart = MO.Class.register(o, new MO.AListener('_listenersActionStart', MO.EEvent.ActionStart));
+
+   o._eventActionStop = null;
+   o._listenersActionStop = MO.Class.register(o, new MO.AListener('_listenersActionStop', MO.EEvent.ActionStop));
    //..........................................................
    // @method
    o.onStart      = MO.MTimelineWorker_onStart;
@@ -43,12 +50,13 @@ MO.MTimelineWorker = function MTimelineWorker(o){
 // <T>开始事件处理。</T>
 //
 // @method
-// @param context:STimelineContext 时间线环境
+// @param context:MTimelineAction Action对象
 //==========================================================
-MO.MTimelineWorker_onStart = function MTimelineWorker_onStart(context){
+MO.MTimelineWorker_onStart = function MTimelineWorker_onStart(context) {
    var o = this;
    o._startTick = context.tick;
    o._lastTick = context.tick;
+   o.processActionStartListener(context);
 }
 
 //==========================================================
@@ -69,6 +77,7 @@ MO.MTimelineWorker_onProcess = function MTimelineWorker_onProcess(context){
 //==========================================================
 MO.MTimelineWorker_onStop = function MTimelineWorker_onStop(context){
    var o = this;
+   o.processActionStopListener(context);
 }
 
 //==========================================================

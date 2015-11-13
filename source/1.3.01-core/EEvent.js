@@ -73,5 +73,9 @@ MO.EEvent = new function EEvent(){
    o.OperationMove    = 'OperationMove';
    // @attribute 操作抬起
    o.OperationUp      = 'OperationUp';
+   // @attribute 动画开始
+   o.ActionStart      = 'ActionStart';
+   // @attribute 动画停止
+   o.ActionStop       = 'ActionStop';
    return o;
 }
