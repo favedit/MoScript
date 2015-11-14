@@ -55,7 +55,7 @@ MO.FGuiLineChart_onPaintBegin = function FGuiLineChart_onPaintBegin(event) {
    var width = rectangle.width;
    var height = rectangle.height;
 
-   graphic.drawRectangle(left, top, width, height, "#ff0000", 4);
+   //graphic.drawRectangle(left, top, width, height, "#ff0000", 4);
 }
 
 MO.FGuiLineChart_setData = function FGuiLineChart_setData(data) {
