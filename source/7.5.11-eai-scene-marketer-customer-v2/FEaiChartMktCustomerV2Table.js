@@ -83,7 +83,7 @@ MO.FEaiChartMktCustomerV2Table_onPaintBegin = function FEaiChartMktCustomerV2Tab
    // // 绘制前3名
     var tableTop = top + o._rankStart;
    graphic.drawGridImage(o._rankLineImage , left + 6, tableTop + o._rankTitleStart-45, width - 28, o._rankHeight+40, o._rankLinePadding);
-   graphic.drawGridImage(o._rankTitleImage, left +220, tableTop - 100, 314, 40 , o._rankLinePadding);
+   graphic.drawGridImage(o._rankTitleImage, left +width/2-157, tableTop - 100, 314, 40 , o._rankLinePadding);
 
    var valuse = o._rankdata;
    if(!valuse.investment1w||!valuse.investment10w||!valuse.investment50w||!valuse.investment100w||!valuse.investment500w||!valuse.investment1000w){
@@ -343,11 +343,11 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    grid.setHeadHeight(35);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
-   grid.headFont().size = 22;
+   grid.headFont().size = 20;
    grid.headFont().color = '#00B2F2';
    grid.setRowHeight(32);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 21;
+   grid.rowFont().size = 19;
    grid.rowFont().color = '#59FDE9';
    var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
@@ -457,7 +457,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
       o._headTextTop = 27;
       o._headHeight = 40;
       //o._rowFontStyle = '22px Microsoft YaHei';
-      o._rowFontStyle = '20px Microsoft YaHei';
+      o._rowFontStyle = '16px Microsoft YaHei';
       o._rowStart = 384;
    }
 }

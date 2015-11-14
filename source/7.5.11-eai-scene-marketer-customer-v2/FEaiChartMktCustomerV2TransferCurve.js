@@ -154,7 +154,7 @@ MO.FEaiChartMktCustomerV2TransferCurve_draw = function FEaiChartMktCustomerV2Tra
    pointFillStyle.addColorStop("0", 'rgba(255, 0, 0, 1.0');
    pointFillStyle.addColorStop("1", 'rgba(255, 0, 0, 0');
 
-   //graphic.drawCircle(drawPoint.x, drawPoint.y, 10, 0, '', pointFillStyle);
+   graphic.drawCircle(drawPoint.x, drawPoint.y, 10, 0, '', pointFillStyle);
 
    var stPoint = o._sTangentPoint;
    var etPoint = o._eTangentPoint;

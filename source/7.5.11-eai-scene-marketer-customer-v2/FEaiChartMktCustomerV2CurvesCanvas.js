@@ -128,7 +128,7 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_onPaintBegin = function FEaiChartMktCustom
     var ex = 0;
     var ey = 0;
 
-  // o._curve.setup(sx,sy,ex,ey);
+   //o._curve.setup(sx,sy,ex,ey);
    var curveCount = curves.count();
    for (var i = 0; i < curveCount; i++) {
       var curve = curves.at(i);
@@ -136,8 +136,8 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_onPaintBegin = function FEaiChartMktCustom
       sy = curve._sy;
       ex = curve._ex;
       ey = curve._ey;
-     // curve.setup(sx,sy,ex,ey);
-    //  curve.draw(event);
+      curve.setup(sx,sy,ex,ey);
+      curve.draw(event);
 
    }
 

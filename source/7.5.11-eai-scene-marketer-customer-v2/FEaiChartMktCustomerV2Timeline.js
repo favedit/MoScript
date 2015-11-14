@@ -22,7 +22,7 @@ MO.FEaiChartMktCustomerV2Timeline = function FEaiChartMktCustomerV2Timeline(o) {
    o._triangleWidth = MO.Class.register(o, new MO.AGetSet('_triangleWidth'), 10);
    o._triangleHeight = MO.Class.register(o, new MO.AGetSet('_triangleHeight'), 12);
    o._decoLineGap = MO.Class.register(o, new MO.AGetSet('_decoLineGap'), 10);
-   o._decoLineWidth = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 30);
+   o._decoLineWidth = MO.Class.register(o, new MO.AGetSet('_decoLineWidth'), 10);
    //..........................................................
    // @event
    o.oeUpdate = MO.FEaiChartMktCustomerV2Timeline_oeUpdate;
@@ -165,41 +165,15 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var dataTop = top + 90;
    var dataBottom = bottom - 50;
    var dataHeight = dataBottom - dataTop;
-   // 主轴
-   graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
-   // 刻度
-   var startTime = o.startTime();
-   var endTime = o.endTime();
-   var timeSpan = endTime.date.getTime() - startTime.date.getTime();
-   var bakTime = startTime.date.getTime();
-   var text;
-   var drawText = false;
-   var textWidth = 0;
-   graphic.setFont('bold 18px Microsoft YaHei');
-   while (!startTime.isAfter(endTime)) {
-      var span = startTime.date.getTime() - bakTime;
-      var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
-      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
-      text = startTime.format('HH24:MI');
-      startTime.addHour(1);
-      startTime.truncHour();
-      drawText = !drawText;
-      if (drawText) {
-         textWidth = graphic.textWidth(text);
-         graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
-      }
-   }
-   graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
-   var endText = endTime.format('HH24:MI');
-   if (endText != text) {
-      textWidth = graphic.textWidth(endText);
-      graphic.drawText(endText, dataRight - textWidth / 2, middle + 40, '#59FDE9');
-   }
-  
+   // // 主轴
+    graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
+   // // 刻度
+    var startTime = o.startTime();
+    var endTime = o.endTime();
+    var timeSpan = endTime.date.getTime() - startTime.date.getTime();
+    var bakTime = startTime.date.getTime();
 
-   startTime.date.setTime(bakTime);
-   startTime.refresh();
-   // 曲线
+   // // 曲线
    var trendInfo = o._trendInfo;
    var units = trendInfo.units();
    if (!units) {
@@ -219,8 +193,8 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
          maxAmount = investment;
       }
    }
-   //曲线及填充
-   o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
+   // //曲线及填充
+   // o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
    // ........................................................
    // 统计   
    var lastHour = -1;
@@ -282,7 +256,36 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    graphic.drawText('昨日总值：', decoLeft, rowStart + rowHeight * 3 + 5, '#00CFFF');
    graphic.drawText(yesterdayInvestmentTotal, decoLeft + textWidth + maxWidth - yesterdayInvestmentWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
 
+
    // 设置时间
+   startTime.date.setTime(bakTime);
+   startTime.refresh();
+
+   var text;
+   var drawText = false;
+   var textWidth = 0;
+   graphic.setFont('bold 18px Microsoft YaHei');
+   while (!startTime.isAfter(endTime)) {
+      var span = startTime.date.getTime() - bakTime;
+      var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);
+      graphic.drawLine(x, middle - o.degreeLineHeight(), x, middle, '#FFFFFF', 1);
+      text = startTime.format('HH24:MI');
+      startTime.addHour(1);
+      startTime.truncHour();
+      drawText = !drawText;
+      if (drawText) {
+         textWidth = graphic.textWidth(text);
+         graphic.drawText(text, x - textWidth / 2, middle + 20, '#59FDE9');
+      }
+   }
+   graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
+   var endText = endTime.format('HH24:MI');
+   if (endText != text) {
+      textWidth = graphic.textWidth(endText);
+      graphic.drawText(endText, dataRight - textWidth / 2, middle + 40, '#59FDE9');
+   }
+   o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
+
    startTime.date.setTime(bakTime);
    startTime.refresh();
 }

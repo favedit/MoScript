@@ -344,9 +344,6 @@ MO.FEaiChartMktCustomerV2Scene_setup = function FEaiChartMktCustomerV2Scene_setu
    curves.linkGraphicContext(o);
    curves.build();
    o._guiManager.register(curves);
-
-
-
    //..........................................................
    // 隐藏全部界面
    o._guiManager.hide();
@@ -449,7 +446,7 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       timeline.setLeft(20);
       timeline.setBottom(10);
       //timeline.setRight(780);
-      timeline.setRight(680);
+      timeline.setRight(600);
       timeline.setHeight(300);
    }
    //..........................................................
@@ -466,10 +463,10 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       liveTable.setDockCd(MO.EUiDock.Right);
       liveTable.setAnchorCd(MO.EUiAnchor.All);
       liveTable.setTop(10);
-      liveTable.setRight(0);
+      liveTable.setRight(10);
       liveTable.setBottom(10);
       //liveTable.setWidth(760);
-      liveTable.setWidth(660);
+      liveTable.setWidth(580);
    }
    var doughnut = o._doughnut;
    if (isVertical) {
@@ -480,14 +477,14 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       doughnut.setBottom(10);
       doughnut.setHeight(900);
    } else {
-     // doughnut.setDockCd(MO.EUiDock.Left);
-     // doughnut.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      //doughnut.setAnchorCd(MO.EUiAnchor.All);
+      doughnut.setDockCd(MO.EUiDock.Left);
+      doughnut.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+     //doughnut.setAnchorCd(MO.EUiAnchor.Left);
       doughnut.setTop(220);
       doughnut.setLeft(0);
-      doughnut.setBottom(10);
+      doughnut.setBottom(260);
       doughnut.setWidth(240);
-      doughnut.setHeight(580);
+      //doughnut.setHeight(580);
    }
    var curvesCanvas = o._curvesCanvas;
    if (isVertical) {

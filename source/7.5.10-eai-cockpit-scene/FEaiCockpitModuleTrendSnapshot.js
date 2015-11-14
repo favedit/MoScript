@@ -92,12 +92,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
          }
          maxValue = maxValueInvest;
          minValue = minValueInvest;
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorInvestmentAmount', '#4b5e6f', 2);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorRedemptionAmount', '#80a861', 2);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorNetinvestmentAmount', '#947b91', 2);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_investmentAmount', '#51c0db', 3);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_redemptionAmount', '#68f34e', 3);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_netinvestmentAmount', '#9b1933', 3);
+
           //标题日期
          
          var date = days.at(0).recordDate();
@@ -150,6 +145,13 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
                label =  date.substr(6,2);
             }
             graphic.drawText(label,left+i*13+10,top+190-23,'#ffffff');
+         //画线
+         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorInvestmentAmount', '#4b5e6f', 2);
+         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorRedemptionAmount', '#80a861', 2);
+         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorNetinvestmentAmount', '#947b91', 2);
+         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_investmentAmount', '#51c0db', 3);
+         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_redemptionAmount', '#68f34e', 3);
+         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_netinvestmentAmount', '#9b1933', 3);
          }
       }
     }
