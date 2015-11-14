@@ -59,7 +59,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin = function FEaiCockpitModul
    //..........................................................
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
-   graphic.drawImage(o._rankGroundImage,left+10,top+96,width-20,23*3+5);
+   //graphic.drawImage(o._rankGroundImage,left+10,top+96,width-20,23*3+5);
 }
 
 //==========================================================
@@ -102,9 +102,9 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
    var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/achievement/ground.png');
-   var imageRank = o._rankGroundImage = imageConsole.load('{eai.resource}/cockpit/trend/rank.png');
+   //var imageRank = o._rankGroundImage = imageConsole.load('{eai.resource}/cockpit/trend/rank.png');
    image.addLoadListener(o, o.onImageLoad);
-   imageRank.addLoadListener(o, o.onImageLoad);
+   //imageRank.addLoadListener(o, o.onImageLoad);
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
