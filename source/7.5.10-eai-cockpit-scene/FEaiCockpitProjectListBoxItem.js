@@ -71,7 +71,7 @@ MO.FEaiCockpitProjectListBoxItem_setup = function FEaiCockpitProjectListBoxItem_
    var o = this;
    o._unit = unit;
 
-   o._fontTitle.parse('bold #FFEC3B 22px Microsoft YaHei');
+   o._fontTitle.parse('bold #FFEC3B 21px Microsoft YaHei');
    o._fontSponsor.parse('#FFFFFF 18px Microsoft YaHei');
    o._font2ndRow.parse('#FFFFFF 15px Microsoft YaHei');
    o._fontProgress.parse('#FFFFFF 19px Microsoft YaHei');
@@ -135,19 +135,20 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    var unit = o._unit;
    var textWidth = 0;
    // 绘制第一行
-   drawText = unit.name();
+   var drawText = unit.name();
    graphic.setFont(fontTitle.toString());
    graphic.drawText(drawText, drawX, drawY, fontTitle.color);
 
-   drawX = 205;
-   drawY -= 2;
-   var drawText = '责任人：';
-   graphic.setFont(fontSponsor.toString());
-   graphic.drawText(drawText, drawX, drawY, fontSponsor.color);
-   textWidth = graphic.textWidth(drawText);
-   drawX += textWidth;
+   //drawText = '责任人：';
+   //graphic.setFont(fontSponsor.toString());
+   //graphic.drawText(drawText, drawX, drawY, fontSponsor.color);
+   //textWidth = graphic.textWidth(drawText);
+   //drawX += textWidth;
 
    drawText = unit.uname();
+   textWidth = graphic.textWidth(drawText);
+   drawX = left + width - textWidth
+   drawY -= 2;
    graphic.setFont(fontSponsor.toString());
    graphic.drawText(drawText, drawX, drawY, fontSponsor.color);
    // 绘制第二行
