@@ -118,28 +118,28 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_onPaintBegin = function FEaiChartMktCustom
    // for (var i = 0; i < bubbleCount; i++) {
    //    var bubble = bubbles.at(i);
    //    bubble.draw(event);
-   // }
+   // // }
 
-   var curves = o._curves;
-   // o._curve.setup(o._sx,o._sy,o._ex,o._ey);
+   // var curves = o._curves;
+   // // o._curve.setup(o._sx,o._sy,o._ex,o._ey);
 
-    var sx = 0;
-    var sy = 0;
-    var ex = 0;
-    var ey = 0;
+   //  var sx = 0;
+   //  var sy = 0;
+   //  var ex = 0;
+   //  var ey = 0;
 
-   //o._curve.setup(sx,sy,ex,ey);
-   var curveCount = curves.count();
-   for (var i = 0; i < curveCount; i++) {
-      var curve = curves.at(i);
-      sx = curve._sx;
-      sy = curve._sy;
-      ex = curve._ex;
-      ey = curve._ey;
-      curve.setup(sx,sy,ex,ey);
-      curve.draw(event);
+   // //o._curve.setup(sx,sy,ex,ey);
+   // var curveCount = curves.count();
+   // for (var i = 0; i < curveCount; i++) {
+   //    var curve = curves.at(i);
+   //    sx = curve._sx;
+   //    sy = curve._sy;
+   //    ex = curve._ex;
+   //    ey = curve._ey;
+      // curve.setup(sx,sy,ex,ey);
+      // curve.draw(event);
 
-   }
+   //}
 
 }
 
