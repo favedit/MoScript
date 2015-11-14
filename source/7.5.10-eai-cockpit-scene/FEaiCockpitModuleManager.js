@@ -343,23 +343,27 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
       case MO.EEaiCockpitMode.Icon:
          break;
       case MO.EEaiCockpitMode.Module:
-         // 显示控件
-         logoDisplay.setVisible(false);
-         snapshotDisplay.setVisible(false);
-         viewDisplay.setVisible(true);
-         o.selectModuleView(module);
-         // 移动相机
-         var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-         action.setSpeed(moveSpeed);
-         action.link(camera);
-         action.targetPosition().set(0, 0, -3);
-         o._mainTimeline.pushAction(action);
-         // 启动轮播
          if (module.slideshow()) {
+            // 显示控件
+            logoDisplay.setVisible(false);
+            snapshotDisplay.setVisible(false);
+            viewDisplay.setVisible(true);
+            o.selectModuleView(module);
+            // 移动相机
+            var action = MO.Class.create(MO.FE3dCameraTimelineAction);
+            action.setSpeed(moveSpeed);
+            action.link(camera);
+            action.targetPosition().set(0, 0, -3);
+            o._mainTimeline.pushAction(action);
+            // 启动轮播
             o._autoPlay = true;
             o.startAutoPlay(module);
+            break;
          }
-         break;
+         else {
+            return;
+         }
+         
    }
    o._modeCd = modeCd;
    o._focusModule = module;
