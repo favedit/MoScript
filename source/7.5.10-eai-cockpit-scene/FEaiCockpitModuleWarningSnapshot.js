@@ -24,6 +24,7 @@ MO.FEaiCockpitModuleWarningSnapshot = function FEaiCockpitModuleWarningSnapshot(
    // @event
    o.onImageLoad           = MO.FEaiCockpitModuleWarningSnapshot_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin;
+   o.onPaintEnd            = MO.FEaiCockpitModuleWarningSnapshot_onPaintEnd;
    o.onWarningFetch        = MO.FEaiCockpitModuleWarningSnapshot_onWarningFetch;
    //..........................................................
    // @method
@@ -106,6 +107,23 @@ MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin = function FEaiCockpitModuleWar
    //..........................................................
    // 绘制背景
    graphic.drawImage(o._backgroundImage, left, top, width, height);
+}
+
+//==========================================================
+// <T>后绘制处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitModuleWarningSnapshot_onPaintEnd = function FEaiCockpitModuleWarningSnapshot_onPaintEnd(event) {
+   var o = this;
+   o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
+   // 获得变量
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   var width = rectangle.width;
+   var height = rectangle.height;
    //..........................................................
    graphic.drawImage(o._comingSoonImage, 5 * 120 - 247 + 36, 2 * 120 - 217 + 56, 247, 217);
    //..........................................................

@@ -31,6 +31,7 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    // @event
    o.onDataFetch           = MO.FEaiCockpitForecastSnapshot_onDataFetch;
    o.onPaintBegin          = MO.FEaiCockpitForecastSnapshot_onPaintBegin;
+   o.onPaintEnd            = MO.FEaiCockpitForecastSnapshot_onPaintEnd;
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitForecastSnapshot_construct;
@@ -84,6 +85,23 @@ MO.FEaiCockpitForecastSnapshot_onPaintBegin = function FEaiCockpitForecastSnapsh
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
    graphic.drawImage(o._gridImage, 340, 27, 600, 311);
+}
+
+//==========================================================
+// <T>后绘制处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitForecastSnapshot_onPaintEnd = function FEaiCockpitForecastSnapshot_onPaintEnd(event) {
+   var o = this;
+   o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
+   // 获得变量
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   var width = rectangle.width;
+   var height = rectangle.height;
    //..........................................................
    graphic.drawImage(o._comingSoonImage, 8 * 120 - 247 + 36, 3 * 120 - 217 + 56, 247, 217);
    //..........................................................
