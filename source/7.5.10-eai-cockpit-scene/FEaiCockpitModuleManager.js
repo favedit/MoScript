@@ -298,6 +298,9 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          o._mainTimeline.pushAction(action);
          break;
       case MO.EEaiCockpitMode.Main:
+         // 停止轮播清空动画
+         o._autoPlay = false;
+         o._mainTimeline.clear();
          // 显示控件
          logoDisplay.setVisible(false);
          snapshotDisplay.setVisible(true);
@@ -307,10 +310,7 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          action.setSpeed(moveSpeed);
          action.link(camera);
          action.targetPosition().set(0, 0, -8);
-         o._mainTimeline.pushAction(action);
-         // 停止轮播清空动画
-         o._autoPlay = false;
-         o._mainTimeline.clear();
+         o._mainTimeline.pushAction(action);         
          // 移动控件位置
          //for(var n = 0; n < moduleCount; n++){
          //   var module = modules.at(n);
@@ -423,13 +423,6 @@ MO.FEaiCockpitModuleManager_onAutoPlayActionStop = function FEaiCockpitModuleMan
    var focusView = o._focusView;
    var currentViewRenderable = focusView.renderable();
    var currentMatrix = currentViewRenderable.matrix();
-   // 重置位置、旋转
-   currentMatrix.setTranslate(0, 0, 10);
-   currentMatrix.setRotation(0, 0, 0);
-   currentMatrix.update();
-   // 重置可视状态
-   focusView.setVisible(false);
-   // 切换focusView至下一View
    var modules = o._modules;
    var currentModule = focusView.module();
    var currentIndex = modules.indexOfValue(currentModule);
@@ -440,11 +433,26 @@ MO.FEaiCockpitModuleManager_onAutoPlayActionStop = function FEaiCockpitModuleMan
       }
       var nextModule = modules.at(nextIndex);
       if (nextModule.slideshow()) {
+         // 重置可视状态
+         var nextView = nextModule.controlView()
+         // 重置位置、旋转
+         var nextMatrix = nextView.renderable().matrix();
+         nextMatrix.setTranslate(0, 0, 10);
+         nextMatrix.setRotation(0, 0, 0);
+         nextMatrix.update();
          break;
       }
    }
-   o._focusView = nextModule.controlView();
+   // 重置位置、旋转
+   currentMatrix.setTranslate(0, 0, 10);
+   currentMatrix.setRotation(0, 0, 0);
+   currentMatrix.update();
+   // 重置可视状态
+   focusView.setVisible(false);
+
+   // 如果在轮播状态则切换focusView至下一View，并开始下一次轮播
    if (o._autoPlay) {
+      o._focusView = nextModule.controlView();
       o.startAutoPlay(nextModule);
    }
 }
