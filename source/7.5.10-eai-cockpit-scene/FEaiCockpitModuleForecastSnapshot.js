@@ -84,7 +84,7 @@ MO.FEaiCockpitForecastSnapshot_onPaintBegin = function FEaiCockpitForecastSnapsh
    //..........................................................
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
-   graphic.drawImage(o._gridImage, 340, 27, 600, 311);
+   graphic.drawImage(o._gridImage, 540, 27, 400, 311);
 }
 
 //==========================================================

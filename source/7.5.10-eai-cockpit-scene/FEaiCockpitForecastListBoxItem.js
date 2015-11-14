@@ -51,10 +51,10 @@ MO.FEaiCockpitForecastListBoxItem_construct = function FEaiCockpitForecastListBo
 MO.FEaiCockpitForecastListBoxItem_setup = function FEaiCockpitForecastListBoxItem_setup(data){
    var o = this;
    o._data = data;
-   o._font1stRowW.parse('bold #FFFFFF 20px Microsoft YaHei');
-   o._font1stRowY.parse('bold #FFEC3B 20px Microsoft YaHei');
-   o._font2ndRowW.parse('bold #51fff1 19px Microsoft YaHei');
-   o._font2ndRowY.parse('bold #51fff1 19px Microsoft YaHei');
+   o._font1stRowW.parse('bold #FFFFFF 19px Microsoft YaHei');
+   o._font1stRowY.parse('bold #FFEC3B 19px Microsoft YaHei');
+   o._font2ndRowW.parse('bold #51fff1 18px Microsoft YaHei');
+   o._font2ndRowY.parse('bold #51fff1 18px Microsoft YaHei');
 }
 
 //==========================================================

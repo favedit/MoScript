@@ -141,20 +141,28 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('customerCount');
+   column.setLabel('投资客户数');
+   column.setDataName('customer_count');
+   column.setTextAlign(MO.EUiAlign.Right);
+   column.setWidth(100);
+   column.setPadding(0, 0, 0, 0);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('level');
    column.setLabel('排名');
    column.setDataName('level');
    column.setTextAlign(MO.EUiAlign.Right);
-   column.setWidth(40);
+   column.setWidth(80);
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
-   var column = MO.Class.create(MO.FGuiGridColumnText);
-   column.setName('trend');
-   column.setLabel('趋势');
-   column.setDataName('trend');
-   column.setWidth(60);
-   column.setPadding(0, 0, 0, 0);
-   grid.pushColumn(column);
+   //var column = MO.Class.create(MO.FGuiGridColumnText);
+   //column.setName('trend');
+   //column.setLabel('趋势');
+   //column.setDataName('trend');
+   //column.setWidth(60);
+   //column.setPadding(0, 0, 0, 0);
+   //grid.pushColumn(column);
    o.push(grid);
 }
 
@@ -186,16 +194,17 @@ MO.FEaiCockpitModuleAchievementSnapshot_setData = function FEaiCockpitModuleAchi
       }
       row.set('label', label);
       row.set('investment_amount', department.investmentAmount().toFixed(0));
+      row.set('customer_count', department.customerCount());
       row.set('level', i+1);
       switch(i%3){
       case 0:
-      row.set('trend', '↑');
+      //row.set('trend', '↑');
       break;
       case 1:
-      row.set('trend', '↓');
+      //row.set('trend', '↓');
       break;
       case 2:
-      row.set('trend', '→');
+      //row.set('trend', '→');
       break;
       }
       grid.pushRow(row);

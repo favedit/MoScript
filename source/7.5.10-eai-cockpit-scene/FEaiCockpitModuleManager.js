@@ -328,7 +328,7 @@ MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_sel
          var action = MO.Class.create(MO.FE3dCameraTimelineAction);
          action.setSpeed(moveSpeed);
          action.link(camera);
-         action.targetPosition().set(0, 0, -8);
+         action.targetPosition().set(0, 0, -7.6);
          o._mainTimeline.pushAction(action);         
          // 移动控件位置
          //for(var n = 0; n < moduleCount; n++){

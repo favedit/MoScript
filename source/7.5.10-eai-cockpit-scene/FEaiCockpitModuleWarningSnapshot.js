@@ -160,7 +160,7 @@ MO.FEaiCockpitModuleWarningSnapshot_setup = function FEaiCockpitModuleWarningSna
 
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
-   grid.setLocation(100, 16);
+   grid.setLocation(70, 16);
    grid.setSize(500, 194);
    grid.setDisplayHead(false);
    grid.setRowHeight(40);

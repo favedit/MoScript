@@ -85,17 +85,26 @@ MO.FEaiCockpitModuleTitleSnapshot_onPaintBegin = function FEaiCockpitModuleTitle
    if(o._data != null && o._data.employeeCount() != null)
    {
       graphic.setFont('18px Microsoft YaHei');
+      //o.drawText(graphic, rectangle, ['#ffffff', '集团现有', 
+      //                              '#ffe721', o._data.employeeCount().toString(), 
+      //                              '#ffffff', '名员工，', 
+      //                              '#ffe721', o._data.marketerCount().toString(), 
+      //                              '#ffffff', '名理财师，', 
+      //                              '#ffe721', o._data.subsidiaryCount().toString(), 
+      //                              '#ffffff', '个财富端子公司，', 
+      //                              '#ffe721', o._data.wealthCount().toString(), 
+      //                              '#ffffff', '个财富端分公司，分布在', 
+      //                              '#ffe721', o._data.workplaceCount().toString(), 
+      //                              '#ffffff', '个职场']);
       o.drawText(graphic, rectangle, ['#ffffff', '集团现有', 
-                                    '#ffe721', o._data.employeeCount().toString(), 
-                                    '#ffffff', '名员工，', 
-                                    '#ffe721', o._data.marketerCount().toString(), 
-                                    '#ffffff', '名理财师，', 
-                                    '#ffe721', o._data.subsidiaryCount().toString(), 
-                                    '#ffffff', '个分公司，', 
-                                    '#ffe721', o._data.wealthCount().toString(), 
-                                    '#ffffff', '个财富端分公司，分布在', 
-                                    '#ffe721', o._data.workplaceCount().toString(), 
-                                    '#ffffff', '个职场']);
+                                      '#ffe721', o._data.employeeCount().toString(), 
+                                      '#ffffff', '名员工，', 
+                                      '#ffe721', o._data.marketerCount().toString(), 
+                                      '#ffffff', '名理财师，', 
+                                      '#ffe721', o._data.subsidiaryCount().toString(), 
+                                      '#ffffff', '个财富端子公司，', 
+                                      '#ffe721', o._data.wealthCount().toString(), 
+                                      '#ffffff', '个财富端分公司']);
    }
    
    //..........................................................
