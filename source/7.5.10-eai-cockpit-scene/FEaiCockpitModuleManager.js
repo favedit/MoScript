@@ -31,6 +31,7 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o.register           = MO.FEaiCockpitModuleManager_register;
    o.unregister         = MO.FEaiCockpitModuleManager_unregister;
    // @method
+   o.onSplashEnded      = MO.FEaiCockpitModuleManager_onSplashEnded;
    o.onAutoPlayActionStop = MO.FEaiCockpitModuleManager_onAutoPlayActionStop;
    // @method
    o.startAutoPlay      = MO.FEaiCockpitModuleManager_startAutoPlay;
@@ -204,6 +205,24 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
          viewDisplay.pushRenderable(renderable);
       }
    }
+   // 前导图显示5秒后自动进入主页面
+   var section = MO.Class.create(MO.FTimelineSection);
+   var action = MO.Class.create(MO.MTimelineAction);
+   action.setDuration(5000);
+   action.addActionStopListener(o, o.onSplashEnded);
+   section.pushAction(action);
+   o._mainTimeline.pushSection(section);
+}
+
+//==========================================================
+// <T>前导图显示5秒后自动进入主页面。</T>
+//
+// @method
+// @param module:STimelineContext 时间轴环境
+//==========================================================
+MO.FEaiCockpitModuleManager_onSplashEnded = function FEaiCockpitModuleManager_onSplashEnded(context) {
+   var o = this;
+   o.selectModeCd('main');
 }
 
 //==========================================================
