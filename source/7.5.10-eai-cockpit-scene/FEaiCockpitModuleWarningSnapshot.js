@@ -35,6 +35,9 @@ MO.FEaiCockpitModuleWarningSnapshot = function FEaiCockpitModuleWarningSnapshot(
    o.nextPosition          = MO.FEaiCockpitModuleWarningSnapshot_nextPosition;
    // @method
    o.dispose               = MO.FEaiCockpitModuleWarningSnapshot_dispose;
+   //..........................................................
+   o._comingSoonImage = null;
+   //..........................................................
    return o;
 }
 
@@ -103,6 +106,9 @@ MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin = function FEaiCockpitModuleWar
    //..........................................................
    // 绘制背景
    graphic.drawImage(o._backgroundImage, left, top, width, height);
+   //..........................................................
+   graphic.drawImage(o._comingSoonImage, 5 * 120 - 247 + 36, 2 * 120 - 217 + 56, 247, 217);
+   //..........................................................
 }
 
 //==========================================================
@@ -163,6 +169,10 @@ MO.FEaiCockpitModuleWarningSnapshot_setup = function FEaiCockpitModuleWarningSna
    grid.pushColumn(column);
 
    o.push(grid);
+
+   //..........................................................
+   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
+   //..........................................................
 }
 
 //==========================================================

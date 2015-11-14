@@ -44,6 +44,9 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o.showChart             = MO.FEaiCockpitForecastSnapshot_showChart;
    // @method
    o.dispose               = MO.FEaiCockpitForecastSnapshot_dispose;
+   //..........................................................
+   o._comingSoonImage      = null;
+   //..........................................................
    return o;
 }
 
@@ -81,6 +84,9 @@ MO.FEaiCockpitForecastSnapshot_onPaintBegin = function FEaiCockpitForecastSnapsh
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
    graphic.drawImage(o._gridImage, 340, 27, 600, 311);
+   //..........................................................
+   graphic.drawImage(o._comingSoonImage, 8 * 120 - 247 + 36, 3 * 120 - 217 + 56, 247, 217);
+   //..........................................................
 }
 
 //==========================================================
@@ -134,6 +140,10 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
                      [-30, 60, 70, 88, 10], 
                      [586, 486, 889, 1024, 1895], 
                      [1324, 46542, 253362, 452148, 48657]];
+
+   //..........................................................
+   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
+   //..........................................................
 }
 
 //==========================================================
