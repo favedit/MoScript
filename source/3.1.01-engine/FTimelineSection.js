@@ -46,6 +46,7 @@ MO.FTimelineSection_stop = function FTimelineSection_stop(){
 //==========================================================
 MO.FTimelineSection_clear = function FTimelineSection_clear(){
    var o = this;
+   o.stop();
    o.__base.MTimelineActions.clear.call(o);
 }
 

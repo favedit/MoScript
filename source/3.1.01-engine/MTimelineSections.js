@@ -120,6 +120,7 @@ MO.MTimelineSections_clear = function MTimelineSections_clear(){
       section.clear();
    }
    sections.clear();
+   o._currentSection = null;
 }
 
 //==========================================================
