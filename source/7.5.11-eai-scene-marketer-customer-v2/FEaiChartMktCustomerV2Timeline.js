@@ -232,6 +232,8 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    // 计算宽度
    graphic.drawGridImage(image,decoLeft-20,top-15,imageWidth, rectangle.height-80,padding);
    var textWidth = graphic.textWidth('投资总计：');
+   var monthInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.monthInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
+   var monthInvestmentWidth = graphic.textWidth(monthInvestmentTotal);
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
    var investmentTotalWidth = graphic.textWidth(investmentTotalText);
    //24小时内，小时投资峰值
@@ -240,7 +242,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    //24小时内，小时平均值
    var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
    var investmentAvgWidth = graphic.textWidth(investmentAvgText);
-   var maxWidth = investmentTotalWidth;
+   var maxWidth = monthInvestmentWidth;
    // 绘制文字
    graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0+ 5, '#00CFFF');
    graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0+5, '#00B5FF');
@@ -251,10 +253,17 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 5, '#00CFFF');
    graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 5, '#00B5FF');
 
-   var yesterdayInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.yesterdayInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
-   var yesterdayInvestmentWidth = graphic.textWidth(yesterdayInvestmentTotal);
-   graphic.drawText('昨日总值：', decoLeft, rowStart + rowHeight * 3 + 5, '#00CFFF');
-   graphic.drawText(yesterdayInvestmentTotal, decoLeft + textWidth + maxWidth - yesterdayInvestmentWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
+   var weekInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.weekInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
+   var weekInvestmentWidth = graphic.textWidth(weekInvestmentTotal);
+   graphic.drawText('本周总值：', decoLeft, rowStart + rowHeight * 3 + 5, '#00CFFF');
+   graphic.drawText(weekInvestmentTotal, decoLeft + textWidth + maxWidth - weekInvestmentWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
+
+   var monthInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.monthInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
+   var monthInvestmentWidth = graphic.textWidth(monthInvestmentTotal);
+
+   graphic.drawText('本月总额：', decoLeft, rowStart + rowHeight * 4 + 5, '#00CFFF');
+   graphic.drawText(monthInvestmentTotal, decoLeft + textWidth + maxWidth - monthInvestmentWidth, rowStart + rowHeight * 4 + 5, '#00B5FF');
+
 
 
    // 设置时间
