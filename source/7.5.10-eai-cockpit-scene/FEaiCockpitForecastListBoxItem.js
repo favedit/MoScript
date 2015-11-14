@@ -53,11 +53,8 @@ MO.FEaiCockpitForecastListBoxItem_setup = function FEaiCockpitForecastListBoxIte
    o._data = data;
    o._font1stRowW.parse('bold #FFFFFF 20px Microsoft YaHei');
    o._font1stRowY.parse('bold #FFEC3B 20px Microsoft YaHei');
-   o._font2ndRowW.parse('bold #FFFFFF 18px Microsoft YaHei');
-   o._font2ndRowY.parse('bold #FFEC3B 18px Microsoft YaHei');
-   //var imageConsole = MO.Console.find(MO.FImageConsole);
-   //var bgImageNormal = o._bgImageNormal = imageConsole.load('{eai.resource}/cockpit/notice/item_bg_normal.png');
-   //bgImageNormal.addLoadListener(o, o.onImageLoad);
+   o._font2ndRowW.parse('bold #51fff1 19px Microsoft YaHei');
+   o._font2ndRowY.parse('bold #51fff1 19px Microsoft YaHei');
 }
 
 //==========================================================
@@ -74,20 +71,11 @@ MO.FEaiCockpitForecastListBoxItem_draw = function FEaiCockpitForecastListBoxItem
    var width = rectangle.width;
    var height = rectangle.height;
 
-   // graphic.drawRectangle(left, top, width, height, 'red', 1);
    var drawX = left + 26;
    var drawY = top + 34;
-   // 绘制背景
-   //if (o._isSelected) {
-      //graphic.drawImage(o._bgImageSelected, left, top, 889, 88);
-   //}else{
-      //graphic.drawImage(o._bgImageNormal, left, top, 889, 88);
-   //}
-   var font1stRowW = o._font1stRowW;
-   var font1stRowY = o._font1stRowY;
-   //var font2ndRowW = o._font2ndRowW;
-   //var font2ndRowY = o._font2ndRowY;
-   //var noticeUnit = o._data;
+  
+   var font1stRowW = o.isSelected() ? o._font2ndRowW : o._font1stRowW;
+   var font1stRowY = o.isSelected() ? o._font2ndRowY : o._font1stRowY;
    // 绘制第一行
    var drawText = '● ';
    var textWidth = 0;

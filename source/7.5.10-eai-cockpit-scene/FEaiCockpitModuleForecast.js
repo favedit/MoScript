@@ -11,7 +11,6 @@ MO.FEaiCockpitForecastModule = function FEaiCockpitForecastModule(o){
    // @attribute
    o._name         = 'forecast';
    o._typeCd       = MO.EEaiCockpitModule.Logic;
-   o._slideshow    = false;
    o._dataTicker   = null;
    //..........................................................
    // @method
