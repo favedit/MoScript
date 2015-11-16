@@ -129,6 +129,7 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_onPaintBegin = function FEaiChartMktCustom
    //  var ey = 0;
 
    // //o._curve.setup(sx,sy,ex,ey);
+   // var curves = o._curves;
    // var curveCount = curves.count();
    // for (var i = 0; i < curveCount; i++) {
    //    var curve = curves.at(i);
@@ -136,10 +137,10 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_onPaintBegin = function FEaiChartMktCustom
    //    sy = curve._sy;
    //    ex = curve._ex;
    //    ey = curve._ey;
-      // curve.setup(sx,sy,ex,ey);
-      // curve.draw(event);
+   //    curve.setup(sx,sy,ex,ey);
+   //    curve.draw(event);
 
-   //}
+   // }
 
 }
 

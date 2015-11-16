@@ -63,6 +63,16 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    // 读取数据
    var data = o._data;
    data.unserializeSignBuffer(event.sign, event.content, true);
+   var items = data.items();
+   var count = items._count;
+   for (var i=0;i<count;i++){
+      var item = items.at(i);
+      var units = item.units();
+      var len = units._count;
+      for(var j=0;j<len;j++){
+         var unit = units[j];
+      }
+   }
    o.setData();
 }
 
@@ -139,7 +149,7 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
    listBox.setDisplayCount(8);
    listBox.setPadding(10, 10, 10, 10);
    listBox.setLocation(30, 10);
-   listBox.setSize(300, 240);
+   listBox.setSize(300, 240); 
    o.push(listBox);
 
    var lineChart = o._lineChart = MO.Class.create(MO.FGuiLineChart);
@@ -151,7 +161,7 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
    chartData.setLabels(["", "", "", "", ""]);
 
    var dataset = o._chartDataSet = MO.Class.create(MO.FGuiLineChartDataSet);
-   chartData.setDatas([dataset]);
+   chartData.setDatas(dataset);
    dataset.setStrokeColor("#51fff1");
 
    o._testDataPool = [[50, 356, 521, 586, 689], 
@@ -240,6 +250,7 @@ MO.FEaiCockpitForecastSnapshot_nextPage = function FEaiCockpitForecastSnapshot_n
 // @method
 //==========================================================
 MO.FEaiCockpitForecastSnapshot_selectedIndex = function FEaiCockpitForecastSnapshot_selectedIndex() {
+   var o = this;
    return (o._page - 1) * o._pageItemsMax + o._index - 1;
 }
 
@@ -267,15 +278,18 @@ MO.FEaiCockpitForecastSnapshot_processLogic = function FEaiCockpitForecastSnapsh
 MO.FEaiCockpitForecastSnapshot_showChart = function FEaiCockpitForecastSnapshot_showChart() {
    var o = this;
    //var itemData = o._data.items().at(o.selectedIndex);
+   var index = o.selectedIndex();
    var dataset = o._chartDataSet;
-   dataset.setData(o._testDataPool[o.selectedIndex % 4]);
+   //dataset.setData(o._testDataPool[index%4]);
+   var data = o._data;
+   var items = data.items();
+   var count = items._count;
+   var item = items.at(index);
 
-   o._lineChart.setData(o._chartData);
+   o._lineChart.setData(item);
 }
 
 //==========================================================
-// <T>释放处理。</T>
-//
 // @method
 //==========================================================
 MO.FEaiCockpitForecastSnapshot_dispose = function FEaiCockpitForecastSnapshot_dispose() {

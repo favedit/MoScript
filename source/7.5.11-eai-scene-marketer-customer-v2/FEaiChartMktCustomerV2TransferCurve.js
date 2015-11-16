@@ -136,12 +136,12 @@ MO.FEaiChartMktCustomerV2TransferCurve_draw = function FEaiChartMktCustomerV2Tra
    var ecp = curveData.ecp;
    // 绘制底曲线
    //graphic.clear();
-   graphic._handle.beginPath();
-   graphic._handle.moveTo(startPoint.x, startPoint.y);
-   graphic._handle.bezierCurveTo(scp.x, scp.y, ecp.x, ecp.y, endPoint.x, endPoint.y);
-   graphic._handle.lineWidth = style.lineWidth;
-   graphic._handle.strokeStyle = style.flarePointStyle;
-   graphic._handle.stroke();
+   // graphic._handle.beginPath();
+   // graphic._handle.moveTo(startPoint.x, startPoint.y);
+   // graphic._handle.bezierCurveTo(scp.x, scp.y, ecp.x, ecp.y, endPoint.x, endPoint.y);
+   // graphic._handle.lineWidth = style.lineWidth;
+   // graphic._handle.strokeStyle = style.flarePointStyle;
+   // graphic._handle.stroke();
    // 绘制光点
    // 绘制光点
    var currentTick = MO.Timer.current() - o._startTick;
