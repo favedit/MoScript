@@ -143,7 +143,7 @@ MO.FEaiCockpitModuleStatusSnapshot_setup = function FEaiCockpitModuleStatusSnaps
 
    var dashboard = o._inOutDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
    dashboard.setLocation(668, dashboardY);
-   dashboard.setTextPre("集团收支情况");
+   dashboard.setTextPre("职场良性度");
    o.push(dashboard);
 
    var dashboard = o._performanceDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);

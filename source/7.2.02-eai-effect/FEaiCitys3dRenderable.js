@@ -197,7 +197,8 @@ MO.FEaiCitys3dRenderable_upload = function FEaiCitys3dRenderable_upload(){
          var location = city.location();
          var level = city.data().level();
          if((level != 1) && (level != 2) && (level != 3) && (level != 4)){
-            throw new TError('Invalid level.');
+            continue;
+            // throw new TError('Invalid level.');
          }
          var provinceEntity = city.provinceEntity();
          var z = 0;
