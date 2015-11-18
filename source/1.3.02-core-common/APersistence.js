@@ -25,7 +25,7 @@ MO.APersistence = function APersistence(name, dataCd, dataClass, innerDataCd){
    // @method
    o.dataCd         = MO.APersistence_dataCd;
    o.dataClass      = MO.APersistence_dataClass;
-   o.innerDataClass = MO.APersistence_innerDataClass;
+   o.innerDataCd    = MO.APersistence_innerDataCd;
    // @method
    o.newStruct      = MO.APersistence_newStruct;
    o.newInstance    = MO.APersistence_newInstance;
@@ -52,6 +52,16 @@ MO.APersistence_dataCd = function APersistence_dataCd(){
 //============================================================
 MO.APersistence_dataClass = function APersistence_dataClass(){
    return this._dataClass;
+}
+
+//============================================================
+// <T>获得内部数据类型。</T>
+//
+// @method
+// @return Function 数据类对象
+//============================================================
+MO.APersistence_innerDataCd = function APersistence_innerDataCd() {
+   return this._innerDataCd;
 }
 
 //============================================================
