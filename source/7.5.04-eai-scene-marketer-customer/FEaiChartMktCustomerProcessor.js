@@ -10,6 +10,8 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    //..........................................................
    // @attribute
    o._dateSetup               = false;
+
+   o._lastDate                = MO.Class.register(o, new MO.AGetter('_lastDate'));
    // @attribute
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
@@ -105,6 +107,7 @@ MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerPr
    var unitCount = units.count();
    if(unitCount){
       o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
+      o._lastDate.parseAuto(units.last().recordDate());
    }else{
       o._tableInterval = 1000 * 60 * o._intervalMinute;
    }
@@ -127,6 +130,7 @@ MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProces
    o.__base.FObject.construct.call(o);
    // 设置变量
    o._beginDate = new MO.TDate();
+   o._lastDate = new MO.TDate();
    o._endDate = new MO.TDate();
    o._24HBeginDate = new MO.TDate();
    o._24HEndDate = new MO.TDate();
@@ -257,6 +261,7 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
    if(!o._dateSetup){
       o._endDate.assign(systemDate);
       o._endDate.addMinute(-o._intervalMinute);
+      o._lastDate.assign(o._endDate);
       o._dateSetup = true;
    }
    //..........................................................
@@ -266,7 +271,8 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
       // 设置结束时间
       var beginDate = o._beginDate;
       var endDate = o._endDate;
-      beginDate.assign(endDate);
+      var lastDate = o._lastDate;
+      beginDate.assign(lastDate);
       endDate.assign(systemDate);
       statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
