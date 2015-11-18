@@ -29,13 +29,14 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
       var annotation = annotations.at(n);
       var dateCd = annotation.dataCd();
       var name = annotation.name();
+      var innerDateCd = annotation.innerDataCd();
       if(dateCd == MO.EDataType.Struct){
          // 读取结构
          var item = o[name];
          if(!item){
             item = o[name] = annotation.newStruct();
          }
-         item.unserialize(input);
+         item.unserialize(input, innerDateCd);
       }else if(dateCd == MO.EDataType.Structs){
          // 读取结构集合
          var items = o[name];
@@ -46,7 +47,7 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
          var itemCount = input.readInt32();
          for(var i = 0; i < itemCount; i++){
             var item = annotation.newStruct();
-            item.unserialize(input);
+            item.unserialize(input, innerDateCd);
             items.push(item);
          }
       }else if(dateCd == MO.EDataType.Object){

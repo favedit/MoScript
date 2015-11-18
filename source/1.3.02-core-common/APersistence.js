@@ -8,27 +8,29 @@
 // @author maocy
 // @version 150805
 //============================================================
-MO.APersistence = function APersistence(name, dataCd, dataClass){
+MO.APersistence = function APersistence(name, dataCd, dataClass, innerDataCd){
    var o = this;
    MO.AAnnotation.call(o, name);
    //..........................................................
    // @declare
-   o._annotationCd = MO.EAnnotation.Persistence;
-   o._inherit      = true;
-   o._ordered      = true;
+   o._annotationCd  = MO.EAnnotation.Persistence;
+   o._inherit       = true;
+   o._ordered       = true;
    //..........................................................
    // @attribute
-   o._dataCd       = dataCd;
-   o._dataClass    = dataClass;
+   o._dataCd        = dataCd;
+   o._dataClass     = dataClass;
+   o._innerDataCd   = innerDataCd;
    //..........................................................
    // @method
-   o.dataCd        = MO.APersistence_dataCd;
-   o.dataClass     = MO.APersistence_dataClass;
+   o.dataCd         = MO.APersistence_dataCd;
+   o.dataClass      = MO.APersistence_dataClass;
+   o.innerDataClass = MO.APersistence_innerDataClass;
    // @method
-   o.newStruct     = MO.APersistence_newStruct;
-   o.newInstance   = MO.APersistence_newInstance;
+   o.newStruct      = MO.APersistence_newStruct;
+   o.newInstance    = MO.APersistence_newInstance;
    // @method
-   o.toString      = MO.APersistence_toString;
+   o.toString       = MO.APersistence_toString;
    return o;
 }
 
