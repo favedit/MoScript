@@ -36,6 +36,19 @@ MO.MPersistence_unserialize = function MPersistence_unserialize(input){
             item = o[name] = annotation.newStruct();
          }
          item.unserialize(input);
+      }else if(dateCd == MO.EDataType.Structs){
+         // 读取结构集合
+         var items = o[name];
+         if(!items){
+            items = o[name] = new MO.TObjects();
+         }
+         items.clear();
+         var itemCount = input.readInt32();
+         for(var i = 0; i < itemCount; i++){
+            var item = annotation.newStruct();
+            item.unserialize(input);
+            items.push(item);
+         }
       }else if(dateCd == MO.EDataType.Object){
          // 读取对象
          var item = o[name];
