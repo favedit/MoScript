@@ -204,10 +204,10 @@ MO.FEaiCockpitModuleSplashView_setData = function FEaiCockpitModuleSplashView_se
 //==========================================================
 MO.FEaiCockpitModuleSplashView_processLogic = function FEaiCockpitModuleSplashView_processLogic(){
    var o = this;
-   if(o._dataTicker.process()){
-      var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
-      achievement.doFetch(o, o.onAchievementFetch);
-   }
+   //if(o._dataTicker.process()){
+   //   var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
+   //   achievement.doFetch(o, o.onAchievementFetch);
+   //}
 }
 
 //==========================================================

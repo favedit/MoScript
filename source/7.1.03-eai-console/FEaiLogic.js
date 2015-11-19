@@ -131,9 +131,9 @@ MO.FEaiLogic_sendService = function FEaiLogic_sendService(uri, parameters, owner
    url += '&sign=' + sign;
    // 获得会话编号
    var application = MO.Desktop.application();
-   var sessionId = application.findSessionId();
-   if(!MO.Lang.String.isEmpty(sessionId)){
-      url += '&sid=' + sessionId;
+   var sessionCode = application.sessionCode();
+   if(!MO.Lang.String.isEmpty(sessionCode)){
+      url += '&sid=' + sessionCode;
    }
    // 发送请求
    var connection = MO.Console.find(MO.FHttpConsole).alloc();
