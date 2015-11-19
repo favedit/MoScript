@@ -103,9 +103,18 @@ MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerPr
    var rankUnits = o._rankUnits;
    rankUnits.assign(dynamicInfo.rankUnits());
    var units = o._units;
-   units.append(dynamicInfo.units());
-   var unitCount = units.count();
-   if(unitCount){
+   var dynamicUnits = dynamicInfo.units();
+   var unitCount = dynamicUnits.count();
+   var dynamicUnitCount = 0;
+   var lastValue = o._lastDate.format();
+   for (var i = 0; i < unitCount; i++) {
+      var unit = dynamicUnits.get(i);
+      if (unit.recordDate() > lastValue){
+         units.push(unit);
+         dynamicUnitCount ++;
+      };
+   };
+   if(dynamicUnitCount){
       o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
       o._lastDate.parseAuto(units.last().recordDate());
    }else{
@@ -262,7 +271,9 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
       o._endDate.assign(systemDate);
       o._endDate.addMinute(-o._intervalMinute);
       o._lastDate.assign(o._endDate);
+      o._lastDate.truncDay(1);
       o._dateSetup = true;
+
    }
    //..........................................................
    // 设置处理时间
@@ -273,6 +284,7 @@ MO.FEaiChartMktCustomerProcessor_process = function FEaiChartMktCustomerProcesso
       var endDate = o._endDate;
       var lastDate = o._lastDate;
       beginDate.assign(lastDate);
+      beginDate.truncMinute(1);
       endDate.assign(systemDate);
       statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
       // 设置开始时间
