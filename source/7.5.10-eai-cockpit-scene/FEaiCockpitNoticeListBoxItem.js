@@ -125,6 +125,7 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
    var font2ndRowY = o._font2ndRowY;
 
    var noticeUnit = o._noticeUnit;
+   var percent = noticeUnit.viewCount() / noticeUnit.userCount();
    // 绘制第一行
    var drawText = '负责人：';
    var textWidth = 0;
@@ -144,7 +145,7 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
    textWidth = graphic.textWidth(drawText);
    drawX += textWidth;
 
-   drawText = parseInt(noticeUnit.percent() * rate) + '%';
+   drawText = parseInt(percent * rate) + '%';
    graphic.setFont(font1stRowY.toString());
    graphic.drawText(drawText, drawX, drawY, font1stRowY.color);
    // 绘制第二行
@@ -166,7 +167,7 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
    drawY -= 16;
    graphic.drawImage(o._pbarBgImage, drawX, drawY, 244, 21);
 
-   var clipWidth = 244 * noticeUnit.percent() * rate * 0.01;
+   var clipWidth = 244 * percent * rate * 0.01;
    var clipHeight = 21;
    graphic._handle.save();
    graphic._handle.rect(drawX, drawY, clipWidth, 21)
@@ -177,7 +178,7 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
    drawX = 845;
    drawY -= 34;
    // 绘制笑脸
-   if (noticeUnit.percent() > 50) {
+   if (percent > 0.5) {
       graphic.drawImage(o._pbarGoodImage, drawX, drawY, 49, 49);
    }
    else {
