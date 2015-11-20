@@ -179,8 +179,17 @@ MO.MDataStream_readUint32 = function MDataStream_readUint32(){
 //==========================================================
 MO.MDataStream_readUint64 = function MDataStream_readUint64(){
    var o = this;
-   var value = o._viewer.getUint64(o._position, o._endianCd);
-   o._position += 8;
+   var endianCd = o._endianCd;
+   var value1 = o._viewer.getUint32(o._position, endianCd);
+   o._position += 4;
+   var value2 = o._viewer.getUint32(o._position, endianCd);
+   o._position += 4;
+   var value = 0;
+   if(endianCd){
+      value = (value2 << 32) + value1;
+   }else{
+      value = (value1 << 32) + value2;
+   }
    return value;
 }
 

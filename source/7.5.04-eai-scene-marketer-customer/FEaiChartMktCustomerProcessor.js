@@ -10,8 +10,8 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    //..........................................................
    // @attribute
    o._dateSetup               = false;
-
    o._lastDate                = MO.Class.register(o, new MO.AGetter('_lastDate'));
+   o._lastRecordId            = 0;
    // @attribute
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
@@ -96,6 +96,7 @@ MO.FEaiChartMktCustomerProcessor_on24HDataFetch = function FEaiChartMktCustomerP
 MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerProcessor_onDynamicData(event){
    var o = this;
    var content = event.content;
+   var lastDate = o._lastDate;
    // 读取数据
    var dynamicInfo = o._dynamicInfo;
    dynamicInfo.unserializeSignBuffer(event.sign, event.content, true);
@@ -106,22 +107,25 @@ MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerPr
    var dynamicUnits = dynamicInfo.units();
    var unitCount = dynamicUnits.count();
    var dynamicUnitCount = 0;
-   var lastValue = o._lastDate.format();
+   var lastDateValue = lastDate.format();
    for (var i = 0; i < unitCount; i++) {
       var unit = dynamicUnits.get(i);
-      if (unit.recordDate() > lastValue){
+      var recordId = unit.recordId()
+      if(recordId > o._lastRecordId){
          units.push(unit);
-         dynamicUnitCount ++;
+         dynamicUnitCount++;
       };
    };
    if(dynamicUnitCount){
       o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
-      o._lastDate.parseAuto(units.last().recordDate());
+      var lastUnit = units.last();
+      lastDate.parseAuto(lastUnit.recordDate());
+      o._lastRecordId = lastUnit.recordId();
    }else{
       o._tableInterval = 1000 * 60 * o._intervalMinute;
    }
    o._tableTick = 0;
-   MO.Logger.info(o, 'Load dynamic data. (unit_count={1})', unitCount);
+   MO.Logger.info(o, 'Load dynamic data. (unit_count={1}, dynamic_unit_count={2})', unitCount, dynamicUnitCount);
    // 触发数据事件
    var changeEvent = o._eventDataChanged;
    changeEvent.rankUnits = rankUnits;
@@ -147,7 +151,7 @@ MO.FEaiChartMktCustomerProcessor_construct = function FEaiChartMktCustomerProces
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
    // 定时获取数据
-   o._dataTicker = new MO.TTicker(1000 * 60 * o._intervalMinute);
+   o._dataTicker = new MO.TTicker(1000 * 40 * o._intervalMinute);
    // 创建缓冲
    o._dynamicInfo = MO.Class.create(MO.FEaiLogicInfoCustomerDynamic);
    o._rankUnits = new MO.TObjects();
