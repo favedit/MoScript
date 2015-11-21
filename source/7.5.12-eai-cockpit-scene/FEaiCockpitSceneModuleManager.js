@@ -9,22 +9,24 @@ MO.FEaiCockpitSceneModuleManager = function FEaiCockpitSceneModuleManager(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModuleManager);
    //..........................................................
    // @attribute
-   o._scene               = MO.Class.register(o, new MO.AGetSet('_scene'));
-   o._modeCd              = MO.Class.register(o, new MO.AGetSet('_modeCd'));
+   o._scene             = MO.Class.register(o, new MO.AGetSet('_scene'));
+   o._modeCd            = MO.Class.register(o, new MO.AGetSet('_modeCd'));
+   o._layoutData        = MO.Class.register(o, new MO.AGetter('_layoutData'));
    // @attribute
-   o._titleModule         = MO.Class.register(o, new MO.AGetter('_titleModule'));
-   o._achievementModule   = MO.Class.register(o, new MO.AGetter('_achievementModule'));
+   o._titleModule       = MO.Class.register(o, new MO.AGetter('_titleModule'));
+   o._achievementModule = MO.Class.register(o, new MO.AGetter('_achievementModule'));
    // @attribute
-   o._statusCd            = 0;
-   o._autoPlay            = false;
+   o._statusCd          = 0;
+   o._autoPlay          = false;
    //..........................................................
    // @method
    o.construct            = MO.FEaiCockpitSceneModuleManager_construct;
    // @method
    o.setup                = MO.FEaiCockpitSceneModuleManager_setup;
    // @method
-   o.onSplashEnded        = MO.FEaiCockpitSceneModuleManager_onSplashEnded;
-   o.onAutoPlayActionStop = MO.FEaiCockpitSceneModuleManager_onAutoPlayActionStop;
+   o.onLayoutFetch      = MO.FEaiCockpitModuleManager_onLayoutFetch;
+   o.onSplashEnded      = MO.FEaiCockpitModuleManager_onSplashEnded;
+   o.onAutoPlayActionStop = MO.FEaiCockpitModuleManager_onAutoPlayActionStop;
    // @method
    o.startAutoPlay        = MO.FEaiCockpitSceneModuleManager_startAutoPlay;
    o.selectModeCd         = MO.FEaiCockpitSceneModuleManager_selectModeCd;
@@ -46,6 +48,7 @@ MO.FEaiCockpitSceneModuleManager_construct = function FEaiCockpitSceneModuleMana
    o._cellCount = new MO.SSize3(16, 9, 1);
    o._mainTimeline = MO.Class.create(MO.FMainTimeline);
    o._modules = new MO.TDictionary();
+   o._layoutData = MO.Class.create(MO.FEaiCockpitDataLayout);
 }
 
 //==========================================================
@@ -88,67 +91,104 @@ MO.FEaiCockpitSceneModuleManager_setup = function FEaiCockpitSceneModuleManager_
    cubes.setVisible(false);
    display.push(cubes);
    //..........................................................
-   // 创建启动模块
-   var module = o._splashModule = MO.Class.create(MO.FEaiCockpitModuleSplash);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建标志模块
-   var module = o._logoModule = MO.Class.create(MO.FEaiCockpitModuleLogo);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建标题模块
-   var module = o._titleModule = MO.Class.create(MO.FEaiCockpitModuleTitle);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建业绩趋势模块
-   var module = o._trendModule = MO.Class.create(MO.FEaiCockpitModuleTrend);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建业绩模块
-   var module = o._achievementModule = MO.Class.create(MO.FEaiCockpitModuleAchievement);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建号令模块
-   var module = o._noticeModule = MO.Class.create(MO.FEaiCockpitModuleNotice);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建预警模块
-   var module = o._warningModule = MO.Class.create(MO.FEaiCockpitModuleWarning);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建预测模块
-   var module = o._forecastModule = MO.Class.create(MO.FEaiCockpitForecastModule);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建项目模块
-   var module = o._projectModule = MO.Class.create(MO.FEaiCockpitModuleProject);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建状态模块
-   var module = o._statusModule = MO.Class.create(MO.FEaiCockpitModuleStatus);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   //..........................................................
+   var cockpit = MO.Console.find(MO.FEaiLogicConsole).cockpit();
+   cockpit.doFetchLayout(o, o.onLayoutFetch);
+}
+
+//==========================================================
+// <T>获取用户布局。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitModuleManager_onLayoutFetch = function FEaiCockpitModuleManager_onLayoutFetch(event) {
+   var o = this;
+   var content = event.content;
+   // 读取数据
+   var data = o._layoutData;
+   data.unserializeSignBuffer(event.sign, event.content, true);
+
+   var layouts = data.layouts();
+   var count = layouts.count();
+   for (var i = 0; i < count ; i++) {
+      var layout = layouts.at(i);
+      var module = MO.Class.createByName(layout.moduleName());
+      module.cellLocation().set(layout.location().x, layout.location().y, layout.location().z);
+      module.cellSize().set(layout.size().x, layout.size().y);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+   }
+
+   if (count < 1) {
+      // 创建启动模块
+      var module = o._splashModule = MO.Class.create(MO.FEaiCockpitModuleSplash);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建标志模块
+      var module = o._logoModule = MO.Class.create(MO.FEaiCockpitModuleLogo);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建标题模块
+      var module = o._titleModule = MO.Class.create(MO.FEaiCockpitModuleTitle);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建业绩趋势模块
+      var module = o._trendModule = MO.Class.create(MO.FEaiCockpitModuleTrend);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建业绩模块
+      var module = o._achievementModule = MO.Class.create(MO.FEaiCockpitModuleAchievement);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建号令模块
+      var module = o._noticeModule = MO.Class.create(MO.FEaiCockpitModuleNotice);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建预警模块
+      var module = o._warningModule = MO.Class.create(MO.FEaiCockpitModuleWarning);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建预测模块
+      var module = o._forecastModule = MO.Class.create(MO.FEaiCockpitForecastModule);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建项目模块
+      var module = o._projectModule = MO.Class.create(MO.FEaiCockpitModuleProject);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+      // 创建状态模块
+      var module = o._statusModule = MO.Class.create(MO.FEaiCockpitModuleStatus);
+      module.setModuleManager(o);
+      module.linkGraphicContext(o);
+      module.setup();
+      o.register(module);
+   }
+
+   var display = o._display;
+   var logoDisplay = o._logoDisplay;
+   var iconDisplay = o._iconDisplay;
+   var snapshotDisplay = o._snapshotDisplay;
+   var viewDisplay = o._viewDisplay;
+   
    var application = o._scene.application();
    var desktop = application.desktop();
    var logicSize = desktop.logicSize();
@@ -157,7 +197,7 @@ MO.FEaiCockpitSceneModuleManager_setup = function FEaiCockpitSceneModuleManager_
    // 显示模块
    var modules = o._modules;
    var count = modules.count();
-   for(var i = 0; i < count; i++){
+   for (var i = 0; i < count; i++) {
       var module = modules.at(i);
       var typeCd = module.typeCd();
       // 设置缩略图大小
@@ -168,7 +208,7 @@ MO.FEaiCockpitSceneModuleManager_setup = function FEaiCockpitSceneModuleManager_
       var view = module.controlView();
       view.size().assign(logicSize);
       // 设置控件
-      if(typeCd == MO.EEaiCockpitModule.Logo){
+      if (typeCd == MO.EEaiCockpitModule.Logo) {
          // 显示缩略图
          snapshot.cellLocation().z = 0;
          var renderable = snapshot.makeRenderable();
@@ -176,7 +216,7 @@ MO.FEaiCockpitSceneModuleManager_setup = function FEaiCockpitSceneModuleManager_
          snapshot.updateRenderable();
          snapshot.placeInCell();
          logoDisplay.pushRenderable(renderable);
-      }else if(typeCd == MO.EEaiCockpitModule.Logic){
+      } else if (typeCd == MO.EEaiCockpitModule.Logic) {
          // 显示缩略图
          snapshot.cellLocation().z = 5;
          var renderable = snapshot.makeRenderable();
@@ -441,7 +481,7 @@ MO.FEaiCockpitSceneModuleManager_onAutoPlayActionStop = function FEaiCockpitScen
 MO.FEaiCockpitSceneModuleManager_process = function FEaiCockpitSceneModuleManager_process(){
    var o = this;
    o.__base.FEaiCockpitModuleManager.process.call(o);
-}
+   }
 
 //==========================================================
 // <T>释放处理。</T>

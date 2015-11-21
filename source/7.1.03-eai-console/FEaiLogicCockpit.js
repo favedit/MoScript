@@ -21,10 +21,28 @@ MO.FEaiLogicCockpit = function FEaiLogicCockpit(o){
    o._status      = MO.Class.register(o, new MO.AGetter('_status'));
    //..........................................................
    // @method
+   o.doFetchLayout = MO.FEaiLogicCockpit_doFetchLayout;
+   // @method
    o.construct    = MO.FEaiLogicCockpit_construct;
    // @method
    o.dispose      = MO.FEaiLogicCockpit_dispose;
    return o;
+}
+
+//==========================================================
+// <T>获得用户布局。</T>
+//
+// @method
+// @param owner:Object 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicCockpit_doFetchLayout = function FEaiLogicCockpit_doFetchLayout(owner, callback) {
+   var o = this;
+   var parameters = o.prepareParemeters();
+   o.sendService('{eai.logic.service}/eai.cockpit.wv?do=find', parameters, owner, callback);
 }
 
 //==========================================================

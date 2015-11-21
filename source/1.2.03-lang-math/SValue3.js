@@ -290,9 +290,23 @@ MO.SValue3_serialize = function SValue3_serialize(output){
 // @method
 // @param input:FByteStream 数据流
 //==========================================================
-MO.SValue3_unserialize2 = function SValue3_unserialize2(input){
-   this.x = input.readFloat();
-   this.y = input.readFloat();
+MO.SValue3_unserialize2 = function SValue3_unserialize2(input, dataCd) {
+   switch (dataCd) {
+      case MO.EDataType.Int32:
+         this.x = input.readInt32();
+         this.y = input.readInt32();
+         break;
+      case MO.EDataType.Float:
+         this.x = input.readFloat();
+         this.y = input.readFloat();
+         break;
+      case MO.EDataType.Double:
+         this.x = input.readDouble();
+         this.y = input.readDouble();
+         break;
+      default:
+         break;
+   }
 }
 
 //==========================================================
@@ -301,10 +315,26 @@ MO.SValue3_unserialize2 = function SValue3_unserialize2(input){
 // @method
 // @param input:FByteStream 数据流
 //==========================================================
-MO.SValue3_unserialize3 = function SValue3_unserialize3(input){
-   this.x = input.readFloat();
-   this.y = input.readFloat();
-   this.z = input.readFloat();
+MO.SValue3_unserialize3 = function SValue3_unserialize3(input, dataCd) {
+   switch (dataCd) {
+      case MO.EDataType.Int32:
+         this.x = input.readInt32();
+         this.y = input.readInt32();
+         this.z = input.readInt32();
+         break;
+      case MO.EDataType.Float:
+         this.x = input.readFloat();
+         this.y = input.readFloat();
+         this.z = input.readFloat();
+         break;
+      case MO.EDataType.Double:
+         this.x = input.readDouble();
+         this.y = input.readDouble();
+         this.z = input.readDouble();
+         break;
+      default:
+         break;
+   }
 }
 
 //============================================================

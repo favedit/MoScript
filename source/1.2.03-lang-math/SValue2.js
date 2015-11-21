@@ -40,6 +40,8 @@ MO.SValue2 = function SValue2(x, y){
    o.normalize    = MO.SValue2_normalize;
    o.negative     = MO.SValue2_negative;
    // @method
+   o.unserialize  = MO.SValue2_unserialize;
+   // @method
    o.parse        = MO.SValue2_parse;
    o.toDisplay    = MO.SValue2_toDisplay;
    o.toString     = MO.SValue2_toString;
@@ -321,4 +323,29 @@ MO.SValue2_dispose = function SValue2_dispose(){
    var o = this;
    o.x = null;
    o.y = null;
+}
+
+//==========================================================
+// <T>从输入流里反序列化数据。</T>
+//
+// @method
+// @param input:FByteStream 数据流
+//==========================================================
+MO.SValue2_unserialize = function SValue2_unserialize(input, dataCd) {
+   switch (dataCd) {
+      case MO.EDataType.Int32:
+         this.x = input.readInt32();
+         this.y = input.readInt32();
+         break;
+      case MO.EDataType.Float:
+         this.x = input.readFloat();
+         this.y = input.readFloat();
+         break;
+      case MO.EDataType.Double:
+         this.x = input.readDouble();
+         this.y = input.readDouble();
+         break;
+      default:
+         break;
+   }
 }
