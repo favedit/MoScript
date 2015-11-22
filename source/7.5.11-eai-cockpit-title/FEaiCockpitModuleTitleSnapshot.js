@@ -173,8 +173,9 @@ MO.FEaiCockpitModuleTitleSnapshot_onTitleFetch = function FEaiCockpitModuleTitle
    var content = event.content;
    //读取数据
    var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   o.freshData();
+   if(data.unserializeSignBuffer(event.sign, event.content, true)){
+      o.freshData();
+   }
 }
 
 MO.FEaiCockpitModuleTitleSnapshot_freshData = function FEaiCockpitModuleTitleSnapshot_freshData() {

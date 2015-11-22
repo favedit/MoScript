@@ -30,11 +30,12 @@ MO.MPersistenceAble = function MPersistenceAble(o){
 //==========================================================
 MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuffer(buffer, endianCd){
    var o = this;
+   MO.Assert.debugTrue(buffer.constructor == ArrayBuffer);
    // 检查参数
    if(buffer == null){
       return false;
    }
-   if(buffer.length == null){
+   if(buffer.byteLength == 0){
       return false;
    }
    // 反序列化数据
@@ -58,11 +59,13 @@ MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuf
 //==========================================================
 MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializeSignBuffer(sign, buffer, endianCd){
    var o = this;
+   MO.Assert.debugTrue(MO.Runtime.nvl(sign, 0) > 0);
+   MO.Assert.debugTrue(buffer.constructor == ArrayBuffer);
    // 检查参数
    if(buffer == null){
       return false;
    }
-   if(buffer.length == null){
+   if(buffer.byteLength == 0){
       return false;
    }
    // 签名处理
@@ -89,11 +92,13 @@ MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializ
 //==========================================================
 MO.MPersistenceAble_unserializeEncryptedBuffer = function MPersistenceAble_unserializeEncryptedBuffer(sign, buffer, endianCd){
    var o = this;
+   MO.Assert.debugTrue(MO.Runtime.nvl(sign, 0) > 0);
+   MO.Assert.debugTrue(buffer.constructor == ArrayBuffer);
    // 检查参数
    if(buffer == null){
       return false;
    }
-   if(buffer.length == null){
+   if(buffer.byteLength == 0){
       return false;
    }
    // 反序列化数据
