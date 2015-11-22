@@ -26,7 +26,7 @@ MO.FEaiCockpitModuleProjectSnapshot = function FEaiCockpitModuleProjectSnapshot(
    // @method
    o.setup                 = MO.FEaiCockpitModuleProjectSnapshot_setup;
    o.processLogic          = MO.FEaiCockpitModuleProjectSnapshot_processLogic;
-   o.onDataFetch           = MO.FEaiCockpitModuleNoticeSnapshot_onDataFetch;
+   o.onDataFetch           = MO.FEaiCockpitModuleProjectSnapshot_onDataFetch;
    // @method
    o.dispose               = MO.FEaiCockpitModuleProjectSnapshot_dispose;
    return o;
@@ -120,25 +120,26 @@ MO.FEaiCockpitModuleProjectSnapshot_processLogic = function FEaiCockpitModulePro
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot_onDataFetch = function FEaiCockpitModuleNoticeSnapshot_onDataFetch(event) {
+MO.FEaiCockpitModuleProjectSnapshot_onDataFetch = function FEaiCockpitModuleProjectSnapshot_onDataFetch(event) {
    var o = this;
    var content = event.content;
    // 读取数据
    var listBox = o._listBox;
    var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   var projects = data.projects();
-   var count = projects.count();
-   listBox.clear();
-   for (var i = 0; i < count ; i++) {
-      var item = MO.Class.create(MO.FEaiCockpitProjectListBoxItem);
-      item.setup(projects.at(i));
-      item.setSize(320, 120);
-      listBox.push(item);
+   if(data.unserializeSignBuffer(event.sign, event.content, true)){
+      var projects = data.projects();
+      var count = projects.count();
+      listBox.clear();
+      for (var i = 0; i < count ; i++) {
+         var item = MO.Class.create(MO.FEaiCockpitProjectListBoxItem);
+         item.setup(projects.at(i));
+         item.setSize(320, 120);
+         listBox.push(item);
+      }
+      listBox.setStartTick(MO.Timer.current());
+      listBox.setAnimationPlaying(true);
+      o.dirty();
    }
-   listBox.setStartTick(MO.Timer.current());
-   listBox.setAnimationPlaying(true);
-   o.dirty();
 }
 
 //==========================================================

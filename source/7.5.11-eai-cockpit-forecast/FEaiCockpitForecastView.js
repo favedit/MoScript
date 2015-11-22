@@ -6,7 +6,7 @@
 // @history 151108
 //==========================================================
 MO.FEaiCockpitForecastView = function FEaiCockpitForecastView(o) {
-   o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
+   o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @attribute
    o._data                 = null;
@@ -46,7 +46,7 @@ MO.FEaiCockpitForecastView_onImageLoad = function FEaiCockpitForecastView_onImag
 //==========================================================
 MO.FEaiCockpitForecastView_onPaintBegin = function FEaiCockpitForecastView_onPaintBegin(event) {
    var o = this;
-   o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
+   o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
@@ -62,7 +62,7 @@ MO.FEaiCockpitForecastView_onPaintBegin = function FEaiCockpitForecastView_onPai
 //==========================================================
 MO.FEaiCockpitForecastView_construct = function FEaiCockpitForecastView_construct() {
    var o = this;
-   o.__base.FEaiCockpitControl.construct.call(o);
+   o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
    o._cellLocation.set(0, 0, 0);
    o._cellSize.set(16, 9);
@@ -98,5 +98,5 @@ MO.FEaiCockpitForecastView_processLogic = function FEaiCockpitForecastView_proce
 MO.FEaiCockpitForecastView_dispose = function FEaiCockpitForecastView_dispose() {
    var o = this;
    // 父处理
-   o.__base.FEaiCockpitControl.dispose.call(o);
+   o.__base.FEaiCockpitControlView.dispose.call(o);
 }

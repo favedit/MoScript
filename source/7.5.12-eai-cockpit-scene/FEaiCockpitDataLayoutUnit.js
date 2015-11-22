@@ -10,7 +10,7 @@ MO.FEaiCockpitDataLayoutUnit = function FEaiCockpitDataLayoutUnit(o) {
    //..........................................................
    // @attribute
    o._moduleName = MO.Class.register(o, [new MO.AGetter('_moduleName'), new MO.APersistence('_moduleName', MO.EDataType.String)]);
-   o._location = MO.Class.register(o, [new MO.AGetter('_location'), new MO.APersistence('_location', MO.EDataType.Struct, MO.SValue3, MO.EDataType.Int32)]);
-   o._size = MO.Class.register(o, [new MO.AGetter('_size'), new MO.APersistence('_size', MO.EDataType.Struct, MO.SValue2, MO.EDataType.Int32)]);
+   o._location   = MO.Class.register(o, [new MO.AGetter('_location'), new MO.APersistence('_location', MO.EDataType.Struct, MO.SValue3, MO.EDataType.Int32)]);
+   o._size       = MO.Class.register(o, [new MO.AGetter('_size'), new MO.APersistence('_size', MO.EDataType.Struct, MO.SValue2, MO.EDataType.Int32)]);
    return o;
 }

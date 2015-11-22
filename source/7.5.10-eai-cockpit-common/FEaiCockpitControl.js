@@ -9,18 +9,18 @@ MO.FEaiCockpitControl = function FEaiCockpitControl(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._moduleManager = MO.Class.register(o, new MO.AGetSet('_moduleManager'));
-   o._module        = MO.Class.register(o, new MO.AGetSet('_module'));
-   o._cellLocation  = MO.Class.register(o, new MO.AGetter('_cellLocation'));
-   o._cellSize      = MO.Class.register(o, new MO.AGetter('_cellSize'));
+   o._parentModule        = MO.Class.register(o, new MO.AGetSet('_parentModule'));
+   // @attribute
+   o._cellLocation        = MO.Class.register(o, new MO.AGetter('_cellLocation'));
+   o._cellSize            = MO.Class.register(o, new MO.AGetter('_cellSize'));
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitControl_construct;
+   o.construct            = MO.FEaiCockpitControl_construct;
    // @method
-   o.placeInCell    = MO.FEaiCockpitControl_placeInCell;
-   o.processLogic   = MO.FEaiCockpitControl_processLogic;
+   o.placeInCell          = MO.FEaiCockpitControl_placeInCell;
+   o.processLogic         = MO.FEaiCockpitControl_processLogic;
    // @method
-   o.dispose        = MO.FEaiCockpitControl_dispose;
+   o.dispose              = MO.FEaiCockpitControl_dispose;
    return o;
 }
 
@@ -44,7 +44,7 @@ MO.FEaiCockpitControl_construct = function FEaiCockpitControl_construct() {
 //==========================================================
 MO.FEaiCockpitControl_placeInCell = function FEaiCockpitControl_placeInCell(){
    var o = this;
-   o._moduleManager.placeCellControl(o);
+   o._parentModule.moduleManager().placeCellControl(o);
 }
 
 //==========================================================

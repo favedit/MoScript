@@ -18,7 +18,6 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleAchievementSnapshot_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin;
    o.onAchievementFetch    = MO.FEaiCockpitModuleAchievementSnapshot_onAchievementFetch;
    //..........................................................
@@ -31,15 +30,6 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
    // @method
    o.dispose               = MO.FEaiCockpitModuleAchievementSnapshot_dispose;
    return o;
-}
-
-//==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_onImageLoad = function FEaiCockpitModuleAchievementSnapshot_onImageLoad() {
-   this.dirty();
 }
 
 //==========================================================
@@ -72,8 +62,9 @@ MO.FEaiCockpitModuleAchievementSnapshot_onAchievementFetch = function FEaiCockpi
    var content = event.content;
    // 读取数据
    var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   o.setData(data);
+   if(data.unserializeSignBuffer(event.sign, event.content, true)){
+      o.setData(data);
+   }
 }
 
 //==========================================================
@@ -100,11 +91,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAc
 MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchievementSnapshot_setup(){
    var o = this;
    // 创建图片
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/achievement/ground.png');
-   //var imageRank = o._rankGroundImage = imageConsole.load('{eai.resource}/cockpit/trend/rank.png');
-   image.addLoadListener(o, o.onImageLoad);
-   //imageRank.addLoadListener(o, o.onImageLoad);
+   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/ground.png');
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);

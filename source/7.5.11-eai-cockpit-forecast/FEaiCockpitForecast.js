@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151101
 //==========================================================
-MO.FEaiCockpitModuleForecast = function FEaiCockpitModuleForecast(o){
+MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
@@ -14,14 +14,14 @@ MO.FEaiCockpitModuleForecast = function FEaiCockpitModuleForecast(o){
    o._dataTicker   = null;
    //..........................................................
    // @method
-   o.construct     = MO.FEaiCockpitModuleForecast_construct;
+   o.construct     = MO.FEaiCockpitForecast_construct;
    // @method
-   o.setup         = MO.FEaiCockpitModuleForecast_setup;
+   o.setup         = MO.FEaiCockpitForecast_setup;
    // @method
-   o.processResize = MO.FEaiCockpitModuleForecast_processResize;
-   o.process       = MO.FEaiCockpitModuleForecast_process;
+   o.processResize = MO.FEaiCockpitForecast_processResize;
+   o.process       = MO.FEaiCockpitForecast_process;
    // @method
-   o.dispose       = MO.FEaiCockpitModuleForecast_dispose;
+   o.dispose       = MO.FEaiCockpitForecast_dispose;
    return o;
 }
 
@@ -30,7 +30,7 @@ MO.FEaiCockpitModuleForecast = function FEaiCockpitModuleForecast(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecast_construct = function FEaiCockpitModuleForecast_construct(){
+MO.FEaiCockpitForecast_construct = function FEaiCockpitForecast_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
    // 定时获取数据
@@ -42,19 +42,17 @@ MO.FEaiCockpitModuleForecast_construct = function FEaiCockpitModuleForecast_cons
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecast_setup = function FEaiCockpitModuleForecast_setup(){
+MO.FEaiCockpitForecast_setup = function FEaiCockpitForecast_setup(){
    var o = this;
    // 创建缩略
    var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitForecastSnapshot);
    snapshot.linkGraphicContext(o);
-   snapshot.setModuleManager(o._moduleManager);
-   snapshot.setModule(o);
+   snapshot.setParentModule(o);
    snapshot.setup();
    // 创建视图
    var view = o._controlView = MO.Class.create(MO.FEaiCockpitForecastView);
    view.linkGraphicContext(o);
-   view.setModuleManager(o._moduleManager);
-   view.setModule(o);
+   view.setParentModule(o);
    view.setup();
 }
 
@@ -64,7 +62,7 @@ MO.FEaiCockpitModuleForecast_setup = function FEaiCockpitModuleForecast_setup(){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiCockpitModuleForecast_processResize = function FEaiCockpitModuleForecast_processResize(){
+MO.FEaiCockpitForecast_processResize = function FEaiCockpitForecast_processResize(){
    var o = this;
 }
 
@@ -74,7 +72,7 @@ MO.FEaiCockpitModuleForecast_processResize = function FEaiCockpitModuleForecast_
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitModuleForecast_process = function FEaiCockpitModuleForecast_process(){
+MO.FEaiCockpitForecast_process = function FEaiCockpitForecast_process(){
    var o = this;
    // 创建缩略
    o.__base.FEaiCockpitModule.process.call(o);
@@ -85,7 +83,7 @@ MO.FEaiCockpitModuleForecast_process = function FEaiCockpitModuleForecast_proces
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleForecast_dispose = function FEaiCockpitModuleForecast_dispose(){
+MO.FEaiCockpitForecast_dispose = function FEaiCockpitForecast_dispose(){
    var o = this;
    // 释放属性
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);

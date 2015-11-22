@@ -22,7 +22,6 @@ MO.FEaiCockpitModuleWarningSnapshot = function FEaiCockpitModuleWarningSnapshot(
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleWarningSnapshot_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin;
    o.onPaintEnd            = MO.FEaiCockpitModuleWarningSnapshot_onPaintEnd;
    o.onWarningFetch        = MO.FEaiCockpitModuleWarningSnapshot_onWarningFetch;
@@ -43,15 +42,6 @@ MO.FEaiCockpitModuleWarningSnapshot = function FEaiCockpitModuleWarningSnapshot(
 }
 
 //==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_onImageLoad = function FEaiCockpitModuleWarningSnapshot_onImageLoad() {
-   this.dirty();
-}
-
-//==========================================================
 // <T>获取阀值预警数据。</T>
 //
 // @method
@@ -61,8 +51,9 @@ MO.FEaiCockpitModuleWarningSnapshot_onWarningFetch = function FEaiCockpitModuleW
    var content = event.content;
    //读取数据
    var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   if(o._gridControl.rows().count() == 0) o.setData(data);
+   if(data.unserializeSignBuffer(event.sign, event.content, true)){
+      o.setData(data);
+   }
 }
 
 //==========================================================
@@ -154,10 +145,7 @@ MO.FEaiCockpitModuleWarningSnapshot_construct = function FEaiCockpitModuleWarnin
 MO.FEaiCockpitModuleWarningSnapshot_setup = function FEaiCockpitModuleWarningSnapshot_setup(){
    var o = this;
    // 创建图片
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/warning/ground.png');
-   image.addLoadListener(o, o.onImageLoad);
-
+   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/warning/ground.png');
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
    grid.setLocation(70, 16);

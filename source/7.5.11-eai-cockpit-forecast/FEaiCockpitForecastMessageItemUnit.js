@@ -5,10 +5,10 @@
 // @author maocy
 // @history 151106
 //==========================================================
-MO.FEaiCockpitMessageForecast = function FEaiCockpitMessageForecast(o){
+MO.FEaiCockpitForecastMessageItemUnit = function FEaiCockpitForecastMessageItemUnit(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
-   o._items = MO.Class.register(o, [new MO.AGetter('_items'), new MO.APersistence('_items', MO.EDataType.Objects, MO.FEaiCockpitMessageForecastItem)]);
+   o._value = MO.Class.register(o, [new MO.AGetter('_value'),  new MO.APersistence('_value', MO.EDataType.Double)]);
    return o;
 }

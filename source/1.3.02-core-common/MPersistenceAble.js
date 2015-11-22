@@ -30,6 +30,13 @@ MO.MPersistenceAble = function MPersistenceAble(o){
 //==========================================================
 MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuffer(buffer, endianCd){
    var o = this;
+   // 检查参数
+   if(buffer == null){
+      return false;
+   }
+   if(buffer.length == null){
+      return false;
+   }
    // 反序列化数据
    var view = MO.Class.create(MO.FDataView);
    view.setEndianCd(endianCd);
@@ -38,6 +45,7 @@ MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuf
    o.unserialize(view);
    // 释放数据
    view.dispose();
+   return true;
 }
 
 //==========================================================
@@ -50,6 +58,13 @@ MO.MPersistenceAble_unserializeBuffer = function MPersistenceAble_unserializeBuf
 //==========================================================
 MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializeSignBuffer(sign, buffer, endianCd){
    var o = this;
+   // 检查参数
+   if(buffer == null){
+      return false;
+   }
+   if(buffer.length == null){
+      return false;
+   }
    // 签名处理
    var bytes = new Uint8Array(buffer);
    MO.Lang.Byte.encodeBytes(bytes, 0, bytes.length, sign);
@@ -61,6 +76,7 @@ MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializ
    o.unserialize(view);
    // 释放数据
    view.dispose();
+   return true;
 }
 
 //==========================================================
@@ -73,6 +89,13 @@ MO.MPersistenceAble_unserializeSignBuffer = function MPersistenceAble_unserializ
 //==========================================================
 MO.MPersistenceAble_unserializeEncryptedBuffer = function MPersistenceAble_unserializeEncryptedBuffer(sign, buffer, endianCd){
    var o = this;
+   // 检查参数
+   if(buffer == null){
+      return false;
+   }
+   if(buffer.length == null){
+      return false;
+   }
    // 反序列化数据
    var view = MO.Class.create(MO.FEncryptedView);
    view.setSign(sign);
@@ -82,6 +105,7 @@ MO.MPersistenceAble_unserializeEncryptedBuffer = function MPersistenceAble_unser
    o.unserialize(view);
    // 释放数据
    view.dispose();
+   return true;
 }
 
 //==========================================================

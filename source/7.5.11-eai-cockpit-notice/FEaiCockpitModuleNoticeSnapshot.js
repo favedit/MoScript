@@ -15,7 +15,6 @@ MO.FEaiCockpitModuleNoticeSnapshot = function FEaiCockpitModuleNoticeSnapshot(o)
    o._bgImage              = null;
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleNoticeSnapshot_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitModuleNoticeSnapshot_onPaintBegin;
    //..........................................................
    // @method
@@ -27,15 +26,6 @@ MO.FEaiCockpitModuleNoticeSnapshot = function FEaiCockpitModuleNoticeSnapshot(o)
    // @method
    o.dispose               = MO.FEaiCockpitModuleNoticeSnapshot_dispose;
    return o;
-}
-
-//==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot_onImageLoad = function FEaiCockpitModuleNoticeSnapshot_onImageLoad() {
-   this.dirty();
 }
 
 //==========================================================
@@ -71,7 +61,8 @@ MO.FEaiCockpitModuleNoticeSnapshot_construct = function FEaiCockpitModuleNoticeS
    o._cellLocation.set(3, 4, 0);
    o._cellSize.set(8, 3);
    o._noticeData = MO.Class.create(MO.FEaiCockpitDataNotice);
-   o._dataTicker = new MO.TTicker(1000 * 60);}
+   o._dataTicker = new MO.TTicker(1000 * 60);
+}
 
 //==========================================================
 // <T>初始化处理。</T>
@@ -81,8 +72,7 @@ MO.FEaiCockpitModuleNoticeSnapshot_construct = function FEaiCockpitModuleNoticeS
 MO.FEaiCockpitModuleNoticeSnapshot_setup = function FEaiCockpitModuleNoticeSnapshot_setup(){
    var o = this;
    // 加载背景图
-   var bgImage = o._bgImage = MO.Console.find(MO.FImageConsole).load('{eai.resource}/cockpit/notice/ground.png');
-   bgImage.addLoadListener(o, o.onImageLoad);
+   o._bgImage = o.loadResourceImage('{eai.resource}/cockpit/notice/ground.png');
    // 创建控件
    var listBox = o._noticeListBox = MO.Class.create(MO.FGuiListBox);
    listBox.setDisplayCount(4);
@@ -120,19 +110,20 @@ MO.FEaiCockpitModuleNoticeSnapshot_onNoticeFetch = function FEaiCockpitModuleNot
    // 读取数据
    var listBox = o._noticeListBox;
    var data = o._noticeData;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   var notices = o._noticeData.notices();
-   var count = notices.count();
-   listBox.clear();
-   for (var i = 0; i < count; i++) {
-      var noticeItem = MO.Class.create(MO.FEaiCockpitNoticeListBoxItem);
-      noticeItem.setup(notices.at(i));
-      noticeItem.setSize(880, 80);
-      listBox.push(noticeItem);
+   if(data.unserializeSignBuffer(event.sign, event.content, true)){
+      var notices = o._noticeData.notices();
+      var count = notices.count();
+      listBox.clear();
+      for (var i = 0; i < count; i++) {
+         var noticeItem = MO.Class.create(MO.FEaiCockpitNoticeListBoxItem);
+         noticeItem.setup(notices.at(i));
+         noticeItem.setSize(880, 80);
+         listBox.push(noticeItem);
+      }
+      listBox.setStartTick(MO.Timer.current());
+      listBox.setAnimationPlaying(true);
+      o.dirty();
    }
-   listBox.setStartTick(MO.Timer.current());
-   listBox.setAnimationPlaying(true);
-   o.dirty();
 }
 
 //==========================================================

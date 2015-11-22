@@ -48,14 +48,12 @@ MO.FEaiCockpitModuleStatus_setup = function FEaiCockpitModuleStatus_setup(){
    // 创建缩略
    var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshot);
    snapshot.linkGraphicContext(o);
-   snapshot.setModuleManager(o._moduleManager);
-   snapshot.setModule(o);
+   snapshot.setParentModule(o);
    snapshot.setup();
    // 创建视图
    var view = o._controlView = MO.Class.create(MO.FEaiCockpitModuleStatusView);
    view.linkGraphicContext(o);
-   view.setModuleManager(o._moduleManager);
-   view.setModule(o);
+   view.setParentModule(o);
    view.setup();
 }
 

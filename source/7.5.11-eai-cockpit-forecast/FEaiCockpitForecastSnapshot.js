@@ -62,18 +62,19 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    var content = event.content;
    // 读取数据
    var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   var items = data.items();
-   var count = items._count;
-   for (var i=0;i<count;i++){
-      var item = items.at(i);
-      var units = item.units();
-      var len = units._count;
-      for(var j=0;j<len;j++){
-         var unit = units[j];
+   if(data.unserializeSignBuffer(event.sign, event.content, true)){
+      var items = data.items();
+      var count = items._count;
+      for (var i=0;i<count;i++){
+         var item = items.at(i);
+         var units = item.units();
+         var len = units._count;
+         for(var j=0;j<len;j++){
+            var unit = units[j];
+         }
       }
+      o.setData();
    }
-   o.setData();
 }
 
 //==========================================================
@@ -131,7 +132,7 @@ MO.FEaiCockpitForecastSnapshot_construct = function FEaiCockpitForecastSnapshot_
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._rollTicker = new MO.TTicker(o._rollDuration);
-   o._data = MO.Class.create(MO.FEaiCockpitMessageForecast);
+   o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
 }
 
 //==========================================================
