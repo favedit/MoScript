@@ -153,15 +153,26 @@
       <PathMerger source='/7.5.06-eai-scene-performence-marketer' target='/ajs/eai-scene-performence.js'/>
       <PathMerger source='/7.5.07-eai-scene-statistics-marketer'  target='/ajs/eai-scene-statistics.js'/>
 
-      <PathMerger source='/7.5.10-eai-cockpit-scene'              target='/ajs/eai-cockpit-scene.js'/>
+      <PathMerger source='/7.5.10-eai-cockpit-common'             target='/ajs/eai-cockpit-common.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-achievement'        target='/ajs/eai-cockpit-achievement.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-forecast'           target='/ajs/eai-cockpit-forecast.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-logo'               target='/ajs/eai-cockpit-logo.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-notice'             target='/ajs/eai-cockpit-notice.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-project'            target='/ajs/eai-cockpit-project.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-splash'             target='/ajs/eai-cockpit-splash.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-status'             target='/ajs/eai-cockpit-status.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-title'              target='/ajs/eai-cockpit-title.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-trend'              target='/ajs/eai-cockpit-trend.js'/>
+      <PathMerger source='/7.5.11-eai-cockpit-warning'            target='/ajs/eai-cockpit-warning.js'/>
+      <PathMerger source='/7.5.12-eai-cockpit-scene'              target='/ajs/eai-cockpit-scene.js'/>
 
       <PathMerger source='/7.5.90-eai-zmjr-customer-investment'   target='/ajs/eai-zmjr-customer-investment.js'/>
 
-      <PathMerger source='/7.6.01-eai-chapter'                    target='/ajs/eai-chapter.js'/>
-      <PathMerger source='/7.7.01-eai-application'                target='/ajs/eai-application.js'/>
-      <PathMerger source='/7.8.01-eai-space'                      target='/ajs/eai-space.js'/>
+      <PathMerger source='/8.1.01-eai-chapter'                    target='/ajs/eai-chapter.js'/>
+      <PathMerger source='/8.2.01-eai-application'                target='/ajs/eai-application.js'/>
+      <PathMerger source='/8.3.01-eai-space'                      target='/ajs/eai-space.js'/>
 
-      <PathMerger source='/8.1.01-demo'                           target='/ajs/demo.js'/>
+      <PathMerger source='/A.1.01-demo'                           target='/ajs/demo.js'/>
    </PathMergerCollection>
    <!-- 文件合并 -->
    <FileMergerCollection>
@@ -392,6 +403,17 @@
          <File source='/ajs/eai-scene-department-marketer.js'/>
          <File source='/ajs/eai-scene-performence.js'/>
          <File source='/ajs/eai-scene-statistics.js'/>
+         <File source='/ajs/eai-cockpit-common.js'/>
+         <File source='/ajs/eai-cockpit-achievement.js'/>
+         <File source='/ajs/eai-cockpit-forecast.js'/>
+         <File source='/ajs/eai-cockpit-logo.js'/>
+         <File source='/ajs/eai-cockpit-notice.js'/>
+         <File source='/ajs/eai-cockpit-project.js'/>
+         <File source='/ajs/eai-cockpit-splash.js'/>
+         <File source='/ajs/eai-cockpit-status.js'/>
+         <File source='/ajs/eai-cockpit-title.js'/>
+         <File source='/ajs/eai-cockpit-trend.js'/>
+         <File source='/ajs/eai-cockpit-warning.js'/>
          <File source='/ajs/eai-cockpit-scene.js'/>
          <File source='/ajs/eai-zmjr-customer-investment.js'/>
          <File source='/ajs/eai-chapter.js'/>
