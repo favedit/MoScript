@@ -106,7 +106,7 @@ MO.FEaiCockpitSceneModuleManager_onLayoutFetch = function FEaiCockpitSceneModule
    var content = event.content;
    // 读取数据
    var data = o._layoutData;
-   if(data.unserializeSignBuffer(event.sign, event.content, true)){
+   if(data.unserializeSignBuffer(event.sign, event.content, true) && false){
       // 加载布局层
       var layouts = data.layouts();
       var count = layouts.count();

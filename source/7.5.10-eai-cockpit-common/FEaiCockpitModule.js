@@ -9,6 +9,9 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MProcessReady, MO.MListener);
    //..........................................................
    // @attribute
+   o._scene           = MO.Class.register(o, new MO.AGetSet('_scene'));
+   o._parentModule    = MO.Class.register(o, new MO.AGetSet('_parentModule'));
+   // @attribute
    o._name            = MO.Class.register(o, new MO.AGetSet('_name'));
    o._typeCd          = MO.Class.register(o, new MO.AGetSet('_typeCd'));
    o._slideshow       = MO.Class.register(o, new MO.AGetSet('_slideshow'), false);

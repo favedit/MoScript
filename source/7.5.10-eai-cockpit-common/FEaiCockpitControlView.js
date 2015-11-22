@@ -14,8 +14,6 @@ MO.FEaiCockpitControlView = function FEaiCockpitControlView(o){
    // @attribute
    o._backgroundUri   = MO.Class.register(o, new MO.AGetter('_backgroundUri'));
    o._backgroundImage = null;
-   // @attribute
-   //o._moduleManager   = MO.Class.register(o, new MO.AGetter('_moduleManager'));
    //..........................................................
    // @event
    o.onPaintBegin     = MO.FEaiCockpitControlView_onPaintBegin;
@@ -69,6 +67,8 @@ MO.FEaiCockpitControlView_construct = function FEaiCockpitControlView_construct(
 //==========================================================
 MO.FEaiCockpitControlView_setup = function FEaiCockpitControlView_setup(){
    var o = this;
+   // 设置场景
+   o._scene = o._parentModule.moduleManager().scene();
    // 创建图片
    var backgroundUri = o._backgroundUri;
    if(backgroundUri){

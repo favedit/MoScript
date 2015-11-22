@@ -89,61 +89,13 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    display.push(cubes);
    //..........................................................
    // 创建启动模块
-   var module = o._splashModule = MO.Class.create(MO.FEaiCockpitModuleSplash);
+   var module = o._splashModule = MO.Class.create(MO.FEaiCockpitForecastViewCatalog);
    module.setModuleManager(o);
    module.linkGraphicContext(o);
    module.setup();
    o.register(module);
    // 创建标志模块
-   var module = o._logoModule = MO.Class.create(MO.FEaiCockpitModuleLogo);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建标题模块
-   var module = o._titleModule = MO.Class.create(MO.FEaiCockpitModuleTitle);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建业绩趋势模块
-   var module = o._trendModule = MO.Class.create(MO.FEaiCockpitModuleTrend);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建业绩模块
-   var module = o._achievementModule = MO.Class.create(MO.FEaiCockpitModuleAchievement);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建号令模块
-   var module = o._noticeModule = MO.Class.create(MO.FEaiCockpitModuleNotice);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建预警模块
-   var module = o._warningModule = MO.Class.create(MO.FEaiCockpitModuleWarning);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建预测模块
-   var module = o._forecastModule = MO.Class.create(MO.FEaiCockpitForecastModule);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建项目模块
-   var module = o._projectModule = MO.Class.create(MO.FEaiCockpitModuleProject);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建状态模块
-   var module = o._statusModule = MO.Class.create(MO.FEaiCockpitModuleStatus);
+   var module = o._logoModule = MO.Class.create(MO.FEaiCockpitForecastViewScore);
    module.setModuleManager(o);
    module.linkGraphicContext(o);
    module.setup();
@@ -167,39 +119,21 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
       // 设置视图大小
       var view = module.controlView();
       view.size().assign(logicSize);
-      // 设置控件
-      if(typeCd == MO.EEaiCockpitModule.Logo){
-         // 显示缩略图
-         snapshot.cellLocation().z = 0;
-         var renderable = snapshot.makeRenderable();
-         renderable.material().info().sortLevel = 4;
-         snapshot.updateRenderable();
-         snapshot.placeInCell();
-         logoDisplay.pushRenderable(renderable);
-      }else if(typeCd == MO.EEaiCockpitModule.Logic){
-         // 显示缩略图
-         snapshot.cellLocation().z = 5;
-         var renderable = snapshot.makeRenderable();
-         renderable.material().info().sortLevel = 3;
-         snapshot.updateRenderable();
-         snapshot.placeInCell();
-         snapshotDisplay.pushRenderable(renderable);
-         // 显示缩略图
-         view.cellLocation().z = 10;
-         var renderable = view.makeRenderable();
-         renderable.material().info().sortLevel = 2;
-         view.updateRenderable();
-         view.placeInCell();
-         viewDisplay.pushRenderable(renderable);
-      }
+      // 显示缩略图
+      snapshot.cellLocation().z = 10;
+      var renderable = snapshot.makeRenderable();
+      renderable.material().info().sortLevel = 3;
+      snapshot.updateRenderable();
+      snapshot.placeInCell();
+      snapshotDisplay.pushRenderable(renderable);
+      // 显示缩略图
+      view.cellLocation().z = 15;
+      var renderable = view.makeRenderable();
+      renderable.material().info().sortLevel = 2;
+      view.updateRenderable();
+      view.placeInCell();
+      viewDisplay.pushRenderable(renderable);
    }
-   // 前导图显示5秒后自动进入主页面
-   var section = MO.Class.create(MO.FTimelineSection);
-   var action = MO.Class.create(MO.MTimelineAction);
-   action.setDuration(5000);
-   action.addActionStopListener(o, o.onSplashEnded);
-   section.pushAction(action);
-   o._mainTimeline.pushSection(section);
 }
 
 //==========================================================
