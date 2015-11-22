@@ -70,7 +70,7 @@ MO.FEaiCockpitScene_onOperationDown = function FEaiCockpitScene_onOperationDown(
    if(MO.Class.isClass(renderable, MO.FGuiControlRenderable)){
       var control = renderable.control();
       if(MO.Class.isClass(control, MO.FEaiCockpitControl)){
-         module = control.module();
+         module = control.parentModule();
          if(module){
             moduleManager.selectModeCd(MO.EEaiCockpitMode.Module, module)
             return;
