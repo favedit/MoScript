@@ -225,7 +225,7 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    var dataLayer = stage.dataLayer();
    //..........................................................
    // 创建模块管理器
-   var moduleManager = o._moduleManager = MO.Class.create(MO.FEaiCockpitModuleManager);
+   var moduleManager = o._moduleManager = MO.Class.create(MO.FEaiCockpitSceneModuleManager);
    moduleManager.linkGraphicContext(o);
    moduleManager.setScene(o);
    moduleManager.setup();
