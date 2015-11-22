@@ -390,7 +390,8 @@ MO.FEaiChartMktCustomerV2Scene_fixMatrix = function FEaiChartMktCustomerV2Scene_
       matrix.tz = 0;
       matrix.setScale(0.14, 0.16, 0.14);
    } else {
-      matrix.tx = -30.9;
+      //matrix.tx = -30.9;
+      matrix.tx = -30.2;
       matrix.ty = -9.5;
       matrix.tz = 0;
       matrix.setScale(0.26, 0.28, 0.26);
@@ -427,8 +428,8 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       control.setRight(80);
    } else {
       control.setDockCd(MO.EUiDock.RightBottom);
-      control.setRight(680);
-      control.setBottom(280);
+      control.setRight(650);
+      control.setBottom(300);
    }
    //..........................................................
    // 设置时间轴
@@ -446,7 +447,7 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       timeline.setLeft(20);
       timeline.setBottom(10);
       //timeline.setRight(780);
-      timeline.setRight(600);
+      timeline.setRight(630);
       timeline.setHeight(300);
    }
    //..........................................................
@@ -463,10 +464,10 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       liveTable.setDockCd(MO.EUiDock.Right);
       liveTable.setAnchorCd(MO.EUiAnchor.All);
       liveTable.setTop(10);
-      liveTable.setRight(10);
+      liveTable.setRight(15);
       liveTable.setBottom(10);
       //liveTable.setWidth(760);
-      liveTable.setWidth(580);
+      liveTable.setWidth(610);
    }
    var doughnut = o._doughnut;
    if (isVertical) {

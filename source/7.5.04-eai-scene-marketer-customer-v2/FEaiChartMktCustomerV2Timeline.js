@@ -152,7 +152,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var bottom = rectangle.top + rectangle.height;
    var middle = bottom - 50;
    var decoLeft = rectangle.left +imageWidth;
-   var decoRight = rectangle.left + rectangle.width - 5;
+   var decoRight = rectangle.left + rectangle.width - 12;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
    
    // 绘制左右三角及轴延长部分
@@ -224,7 +224,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    graphic.setFont('24px Microsoft YaHei');
    graphic.drawText("24H数据曲线", decoLeft, top+25, '#54F0FF');
    // 输出数据文本
-   graphic.setFont('18px Microsoft YaHei');
+   graphic.setFont('17px Microsoft YaHei');
    var image = o._backgroundImage;
    var padding = o._backgroundPadding;
    var rowStart = top + 60;
@@ -243,27 +243,91 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
    var investmentAvgWidth = graphic.textWidth(investmentAvgText);
    var maxWidth = monthInvestmentWidth;
+   decoLeft = decoLeft-5;
    // 绘制文字
-   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0+ 5, '#00CFFF');
-   graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0+5, '#00B5FF');
 
+            // var high = text.substring(textLength - 11, textLength - 7);
+            // var low = text.substring(textLength - 7, textLength);
+            // var highWidth = graphic.textWidth(high);
+            // var lowWidth = graphic.textWidth(low);
+            // numberFont.color = column.highestColor();
+            // graphic.drawFontText(highest, numberFont, x, y, contentWidth - highWidth - lowWidth, height, MO.EUiAlign.Right);
+            // numberFont.color = column.highColor();
+            // graphic.drawFontText(high, numberFont, x, y, contentWidth - lowWidth, height, MO.EUiAlign.Right);
+            // numberFont.color = column.normalColor();
+            // graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
+   graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0+ 5, '#00CFFF');
+   if(investmentTotalText.length>9){
+      var high = investmentTotalText.substring(0, investmentTotalText.length - 9);
+      var low = investmentTotalText.substring(investmentTotalText.length - 9, investmentTotalText.length);
+      var highWidth = graphic.textWidth(high);
+      var lowWidth = graphic.textWidth(low);
+      graphic.drawText(high, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0+5, '#FDEF01');
+      graphic.drawText(low, decoLeft + textWidth + maxWidth - investmentTotalWidth+highWidth, rowStart + rowHeight * 0+5, '#00B5FF');
+
+   }else{    
+      graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0+5, '#00B5FF');
+   }
    graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5FF');
+   if(investmentMaxText.length>9){
+      var high = investmentMaxText.substring(0, investmentMaxText.length - 9);
+      var low = investmentMaxText.substring(investmentMaxText.length - 9, investmentMaxText.length);
+      var highWidth = graphic.textWidth(high);
+      var lowWidth = graphic.textWidth(low);
+      graphic.drawText(high,  decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#FDEF01');
+      graphic.drawText(low, decoLeft + textWidth + maxWidth - investmentMaxWidth+highWidth, rowStart + rowHeight * 1 + 5, '#00B5FF');
+
+   }else{  
+      graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5FF');
+   }
 
    graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 5, '#00CFFF');
-   graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 5, '#00B5FF');
+
+   if(investmentAvgText.length>9){
+
+      var high = investmentAvgText.substring(0, investmentAvgText.length - 9);
+      var low = investmentAvgText.substring(investmentAvgText.length - 9, investmentAvgText.length);
+      var highWidth = graphic.textWidth(high);
+      var lowWidth = graphic.textWidth(low);
+      graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2+ 5, '#00CFFF');
+      graphic.drawText(high,   decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 5, '#FDEF01');
+      graphic.drawText(low,  decoLeft + textWidth + maxWidth - investmentAvgWidth+highWidth, rowStart + rowHeight * 2 + 5, '#00B5FF');
+
+   }else{  
+      graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 5, '#00CFFF');
+      graphic.drawText(investmentAvgText, decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 5, '#00B5FF');
+   }
 
    var weekInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.weekInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
    var weekInvestmentWidth = graphic.textWidth(weekInvestmentTotal);
    graphic.drawText('本周总值：', decoLeft, rowStart + rowHeight * 3 + 5, '#00CFFF');
-   graphic.drawText(weekInvestmentTotal, decoLeft + textWidth + maxWidth - weekInvestmentWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
 
+   if(weekInvestmentTotal.length>9){
+      var high = weekInvestmentTotal.substring(0, weekInvestmentTotal.length - 9);
+      var low = weekInvestmentTotal.substring(weekInvestmentTotal.length - 9, weekInvestmentTotal.length);
+      var highWidth = graphic.textWidth(high);
+      var lowWidth = graphic.textWidth(low);
+      graphic.drawText(high,   decoLeft + textWidth + maxWidth - weekInvestmentWidth, rowStart + rowHeight * 3 + 5, '#FDEF01');
+      graphic.drawText(low,  decoLeft + textWidth + maxWidth - weekInvestmentWidth+highWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
+
+   }else{  
+
+      graphic.drawText(weekInvestmentTotal, decoLeft + textWidth + maxWidth - weekInvestmentWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
+   }
    var monthInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.monthInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
    var monthInvestmentWidth = graphic.textWidth(monthInvestmentTotal);
+   graphic.drawText('本月总额：', decoLeft, rowStart + rowHeight * 4+ 5, '#00CFFF');
+   if(monthInvestmentTotal.length>9){
+      var high = monthInvestmentTotal.substring(0, monthInvestmentTotal.length - 9);
+      var low = monthInvestmentTotal.substring(monthInvestmentTotal.length - 9, monthInvestmentTotal.length);
+      var highWidth = graphic.textWidth(high);
+      var lowWidth = graphic.textWidth(low);
+      graphic.drawText(high,   decoLeft + textWidth + maxWidth - monthInvestmentWidth, rowStart + rowHeight * 4 + 5, '#FDEF01');
+      graphic.drawText(low,  decoLeft + textWidth + maxWidth - monthInvestmentWidth+highWidth, rowStart + rowHeight * 4 + 5, '#00B5FF');
 
-   graphic.drawText('本月总额：', decoLeft, rowStart + rowHeight * 4 + 5, '#00CFFF');
-   graphic.drawText(monthInvestmentTotal, decoLeft + textWidth + maxWidth - monthInvestmentWidth, rowStart + rowHeight * 4 + 5, '#00B5FF');
-
+   }else{  
+      graphic.drawText(monthInvestmentTotal, decoLeft + textWidth + maxWidth - monthInvestmentWidth, rowStart + rowHeight * 4 + 5, '#00B5FF');
+   }
 
 
    // 设置时间
@@ -289,10 +353,10 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    }
    graphic.drawLine(dataRight, middle - o.degreeLineHeight(), dataRight, middle, '#FFFFFF', 1);
    var endText = endTime.format('HH24:MI');
-   if (endText != text) {
-      textWidth = graphic.textWidth(endText);
-      graphic.drawText(endText, dataRight - textWidth / 2, middle + 40, '#59FDE9');
-   }
+   // if (endText != text) {
+   //    textWidth = graphic.textWidth(endText);
+   //    graphic.drawText(endText, dataRight - textWidth / 2, middle + 40, '#59FDE9');
+   // },
    o.drawTrend(graphic, '_investment', dataLeft, dataTop, dataRight, dataBottom, dataHeight, bakTime, timeSpan, maxAmount, '#FF8800', '#FF0000');
 
    startTime.date.setTime(bakTime);

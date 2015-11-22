@@ -338,23 +338,23 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
    grid.setLeft(9);
    grid.setTop(332);
-   grid.setRight(19);
+   grid.setRight(25);
    grid.setBottom(20);
    grid.setHeadHeight(35);
    grid.setHeadBackColor('#122A46');
    grid.headFont().font = 'Microsoft YaHei';
-   grid.headFont().size = 20;
+   grid.headFont().size = 17;
    grid.headFont().color = '#00B2F2';
    grid.setRowHeight(32);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 19;
+   grid.rowFont().size = 18;
    grid.rowFont().color = '#59FDE9';
    var column = MO.Class.create(MO.FGuiGridColumnDate);
    column.setName('recordDate');
    column.setLabel('时间');
    column.setDataName('record_date');
    column.setDateFormat('HH24:MI:SS');
-   column.setWidth(130);
+   column.setWidth(140);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
@@ -418,7 +418,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setNegativeColor('#FF0000');
    column.setWidth(100);
    column.cellPadding().right = 10;
-   column.setPadding(1, 1, 1, 1);
+   column.setPadding(1, 5, 1, 1);
    //column.setCurrencyPercent(0);
    grid.pushColumn(column);
 
