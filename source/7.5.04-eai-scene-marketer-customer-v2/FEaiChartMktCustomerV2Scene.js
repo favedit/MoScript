@@ -23,7 +23,8 @@ MO.FEaiChartMktCustomerV2Scene = function FEaiChartMktCustomerV2Scene(o) {
    o._logoBar                = null;
    o._timeline               = null;
    o._liveTable              = null;
-   o.doughnut                = null;
+   o._doughnut               = null;
+   o._curvesCanvas           = null;
    // @attribute
    o._statusStart            = false;
    o._statusLayerCount       = 100;
@@ -46,8 +47,6 @@ MO.FEaiChartMktCustomerV2Scene = function FEaiChartMktCustomerV2Scene(o) {
    // @method
    o.processResize           = MO.FEaiChartMktCustomerV2Scene_processResize;
    o.onCurvesChanged         = MO.FEaiChartMktCustomerV2Scene_onCurvesChanged;
-   o._curvesCanvas           = null;
-   o._flag = 0;
    return o;
 }
 
@@ -93,6 +92,7 @@ MO.FEaiChartMktCustomerV2Scene_onCurvesChanged = function FEaiChartMktCustomerV2
    // var trend = doughnut._trendInfo ;
    // trend = doughnut.trendInfos().units();
    doughnut.dirty();
+   o._curvesCanvas.setTenderUnits(doughnut.trendInfo().units());
 }
 
 //==========================================================
@@ -110,46 +110,8 @@ MO.FEaiChartMktCustomerV2Scene_onInvestmentDataChanged = function FEaiChartMktCu
    table._rankdata = event;
    table.pushUnit(unit);
    table.dirty();
-   var curves  = MO.Class.create(MO.FEaiChartMktCustomerV2TransferCurve);
-   o._flag++;
-   switch (o._flag%5){
-      case 0:
-      curves._sx = 260;
-      curves._sy = 360;
-      curves._ex = 500;
-      curves._ey = 600;
-      break;
-      case 1:
-      curves._sx = 300;
-      curves._sy = 400;
-      curves._ex = 500;
-      curves._ey = 600;
-      break;
-      case 2:
-      curves._sx = 100;
-      curves._sy = 200;
-      curves._ex = 500;
-      curves._ey = 600;
-      break;
-      case 3:
-      curves._sx = 260;
-      curves._sy = 360;
-      curves._ex = 360;
-      curves._ey = 470;
-      break;
-      case 4:
-      curves._sx = 300;
-      curves._sy = 400;
-      curves._ex = 500;
-      curves._ey = 600;
-      break;
 
-   }
-   if (o._flag ==0) {o._curvesCanvas._curves.push(curves);}else{
-   o._curvesCanvas._curves.pop();
-   o._curvesCanvas._curves.push(curves);
-}
-   o._curvesCanvas.dirty();
+   o._curvesCanvas.pushUnit(unit);
 }
 
 //==========================================================
@@ -256,6 +218,7 @@ MO.FEaiChartMktCustomerV2Scene_onProcess = function FEaiChartMktCustomerV2Scene_
          var investmentDay = logoBar.findComponent('investmentDay');
          investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
       }
+      o._curvesCanvas.dirty();
       //..........................................................
       // 更新时间
       if (o._nowTicker.process()) {
@@ -480,7 +443,6 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
    } else {
       doughnut.setDockCd(MO.EUiDock.Left);
       doughnut.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-     //doughnut.setAnchorCd(MO.EUiAnchor.Left);
       doughnut.setTop(220);
       doughnut.setLeft(0);
       doughnut.setBottom(260);
@@ -496,14 +458,12 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       curvesCanvas.setBottom(10);
       curvesCanvas.setHeight(900);
    } else {
-     // doughnut.setDockCd(MO.EUiDock.Left);
-     // doughnut.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      //doughnut.setAnchorCd(MO.EUiAnchor.All);
-      curvesCanvas.setTop(200);
-      curvesCanvas.setLeft(0);
-      curvesCanvas.setBottom(10);
-      curvesCanvas.setWidth(1060);
-      curvesCanvas.setHeight(960);
+      curvesCanvas.setDockCd(MO.EUiDock.Left);
+      curvesCanvas.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      curvesCanvas.setLeft(220);
+      curvesCanvas.setTop(220);
+      curvesCanvas.setBottom(260);
+      curvesCanvas.setWidth(500);
    }
    //..........................................................
    // 重新设置矩阵
