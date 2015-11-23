@@ -127,8 +127,8 @@ MO.FEaiCockpitForecastViewCatalogSnapshot_construct = function FEaiCockpitForeca
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
-   o._cellLocation.set(1, 5, 0);
-   o._cellSize.set(8, 3);
+   o._cellLocation.set(0, 1, 0);
+   o._cellSize.set(3, 8);
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._rollTicker = new MO.TTicker(o._rollDuration);
