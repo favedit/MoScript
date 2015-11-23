@@ -104,19 +104,20 @@ MO.MTimelineActions_process = function MTimelineActions_process(context){
          action.stop(context);
          action.dispose();
       }else{
+         // 逻辑处理
+         action.process(context);
          // 检查超时
          var duration = action.duration();
          if(duration != 0){
             var actionSpan = tick - action.startTick();
             if(actionSpan > duration){
                processors.erase(i);
+               context.currentTick = duration;
                action.stop(context);
                action.dispose();
                continue;
             }
          }
-         // 逻辑处理
-         action.process(context);
       }
    }
 }
