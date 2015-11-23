@@ -9,7 +9,7 @@ MO.FEaiCockpitForecastViewCatalog = function FEaiCockpitForecastViewCatalog(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name         = 'forecast';
+   o._name         = 'forecast.catalog';
    o._typeCd       = MO.EEaiCockpitModule.Logic;
    o._dataTicker   = null;
    o._slideshow    = true;

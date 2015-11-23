@@ -20,6 +20,9 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    o._moduleManager   = MO.Class.register(o, new MO.AGetSet('_moduleManager'));
    o._controls        = MO.Class.register(o, new MO.AGetter('_controls'));
    // @attribute
+   o._snapshotDisplay = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
+   o._viewDisplay     = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
+   // @attribute
    o._controlSnapshot = MO.Class.register(o, new MO.AGetter('_controlSnapshot'));
    o._controlView     = MO.Class.register(o, new MO.AGetter('_controlView'));
    // @attribute
@@ -30,6 +33,7 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    // @method
    o.setup            = MO.FEaiCockpitModule_setup;
    // @method
+   o.processResize    = MO.FEaiCockpitModule_processResize;
    o.process          = MO.FEaiCockpitModule_process;
    // @method
    o.dispose          = MO.FEaiCockpitModule_dispose;
@@ -56,12 +60,27 @@ MO.FEaiCockpitModule_construct = function FEaiCockpitModule_construct(){
 //==========================================================
 MO.FEaiCockpitModule_setup = function FEaiCockpitModule_setup(){
    var o = this;
-   // 加载水波纹
+   // 创建缩略对象
+   var snapshotDisplay = o._snapshotDisplay = MO.Class.create(MO.FE3dDisplayContainer);
+   snapshotDisplay.linkGraphicContext(o);
+   // 创建视图对象
+   var viewDisplay = o._viewDisplay = MO.Class.create(MO.FE3dDisplayContainer);
+   viewDisplay.linkGraphicContext(o);
    //var loader = o._textureSnapshotLoader = MO.Class.create(MO.FE3dTextureLoader);
    //loader.linkGraphicContext(o);
    //loader.setup(MO.EG3dTexture.Flat2d, 'diffuse');
    //loader.loadUrl('{eai.resource}/cockpit/ground.jpg');
    //o._readyLoader.push(loader);
+}
+
+//==========================================================
+// <T>从输入流反序列化数据。</T>
+//
+// @method
+// @param input:MStream 输入流
+//==========================================================
+MO.FEaiCockpitModule_processResize = function FEaiCockpitModule_processResize(){
+   var o = this;
 }
 
 //==========================================================

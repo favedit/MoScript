@@ -73,7 +73,7 @@ MO.FEaiCockpitSceneModuleManager_setup = function FEaiCockpitSceneModuleManager_
    snapshotDisplay.linkGraphicContext(o);
    display.pushDisplay(snapshotDisplay);
    // 创建视图对象
-   var viewDisplay = o._viewDisplay = MO.Class.create(MO.FE3dDisplay);
+   var viewDisplay = o._viewDisplay = MO.Class.create(MO.FE3dDisplayContainer);
    viewDisplay.linkGraphicContext(o);
    display.pushDisplay(viewDisplay);
    // 创建控件网格
@@ -211,25 +211,29 @@ MO.FEaiCockpitSceneModuleManager_onLayoutFetch = function FEaiCockpitSceneModule
          // 显示缩略图
          snapshot.cellLocation().z = 0;
          var renderable = snapshot.makeRenderable();
-         renderable.material().info().sortLevel = 4;
+         renderable.material().info().sortLevel = 10;
          snapshot.updateRenderable();
          snapshot.placeInCell();
          logoDisplay.pushRenderable(renderable);
       } else if (typeCd == MO.EEaiCockpitModule.Logic) {
+         var moduleViewDisplay = module.viewDisplay();
          // 显示缩略图
          snapshot.cellLocation().z = 5;
          var renderable = snapshot.makeRenderable();
-         renderable.material().info().sortLevel = 3;
+         renderable.material().info().sortLevel = 9;
          snapshot.updateRenderable();
          snapshot.placeInCell();
          snapshotDisplay.pushRenderable(renderable);
          // 显示缩略图
          view.cellLocation().z = 10;
          var renderable = view.makeRenderable();
-         renderable.material().info().sortLevel = 2;
+         renderable.material().info().sortLevel = 8;
          view.updateRenderable();
          view.placeInCell();
          viewDisplay.pushRenderable(renderable);
+         if(moduleViewDisplay){
+            viewDisplay.pushDisplay(moduleViewDisplay);
+         }
       }
    }
    // 前导图显示5秒后自动进入主页面
@@ -250,31 +254,6 @@ MO.FEaiCockpitSceneModuleManager_onLayoutFetch = function FEaiCockpitSceneModule
 MO.FEaiCockpitSceneModuleManager_onSplashEnded = function FEaiCockpitSceneModuleManager_onSplashEnded(context) {
    var o = this;
    o.selectModeCd('main');
-}
-
-//==========================================================
-// <T>注册一个模块。</T>
-//
-// @method
-// @param module:FEaiCockpitModule 模块
-//==========================================================
-MO.FEaiCockpitSceneModuleManager_register = function FEaiCockpitSceneModuleManager_register(module){
-   var o = this;
-   var name = module.name();
-   MO.Assert.debugNotEmpty(name);
-   o._modules.set(name, module);
-}
-
-//==========================================================
-// <T>注销一个模块。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitSceneModuleManager_unregister = function FEaiCockpitSceneModuleManager_unregister(module){
-   var o = this;
-   var name = module.name();
-   MO.Assert.debugNotEmpty(name);
-   o._modules.remove(name);
 }
 
 //==========================================================
@@ -368,6 +347,7 @@ MO.FEaiCockpitSceneModuleManager_selectModeCd = function FEaiCockpitSceneModuleM
 //==========================================================
 MO.FEaiCockpitSceneModuleManager_startAutoPlay = function FEaiCockpitSceneModuleManager_startAutoPlay(module) {
    var o = this;
+   return;
    var focusView = o._focusView;
 
    var modules = o._modules;

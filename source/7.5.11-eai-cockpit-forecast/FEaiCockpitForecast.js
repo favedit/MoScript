@@ -9,20 +9,19 @@ MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name         = 'forecast';
-   o._typeCd       = MO.EEaiCockpitModule.Logic;
-   o._dataTicker   = null;
-   o._slideshow    = true;
+   o._name       = 'forecast';
+   o._typeCd     = MO.EEaiCockpitModule.Logic;
+   o._dataTicker = null;
+   o._slideshow  = true;
    //..........................................................
    // @method
-   o.construct     = MO.FEaiCockpitForecast_construct;
+   o.construct   = MO.FEaiCockpitForecast_construct;
    // @method
-   o.setup         = MO.FEaiCockpitForecast_setup;
+   o.setup       = MO.FEaiCockpitForecast_setup;
    // @method
-   o.processResize = MO.FEaiCockpitForecast_processResize;
-   o.process       = MO.FEaiCockpitForecast_process;
+   o.process     = MO.FEaiCockpitForecast_process;
    // @method
-   o.dispose       = MO.FEaiCockpitForecast_dispose;
+   o.dispose     = MO.FEaiCockpitForecast_dispose;
    return o;
 }
 
@@ -45,6 +44,7 @@ MO.FEaiCockpitForecast_construct = function FEaiCockpitForecast_construct(){
 //==========================================================
 MO.FEaiCockpitForecast_setup = function FEaiCockpitForecast_setup(){
    var o = this;
+   o.__base.FEaiCockpitModule.setup.call(o);
    // 创建缩略
    var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitForecastSnapshot);
    snapshot.linkGraphicContext(o);
@@ -55,16 +55,8 @@ MO.FEaiCockpitForecast_setup = function FEaiCockpitForecast_setup(){
    view.linkGraphicContext(o);
    view.setParentModule(o);
    view.setup();
-}
-
-//==========================================================
-// <T>大小事件处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiCockpitForecast_processResize = function FEaiCockpitForecast_processResize(){
-   var o = this;
+   // 增加显示图
+   o._viewDisplay.push(view._moduleManager.display());
 }
 
 //==========================================================
@@ -75,8 +67,10 @@ MO.FEaiCockpitForecast_processResize = function FEaiCockpitForecast_processResiz
 //==========================================================
 MO.FEaiCockpitForecast_process = function FEaiCockpitForecast_process(){
    var o = this;
-   // 创建缩略
    o.__base.FEaiCockpitModule.process.call(o);
+   // 创建缩略
+   var view = o._controlView;
+   view._moduleManager.process();
 }
 
 //==========================================================

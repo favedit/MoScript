@@ -27,7 +27,6 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o.unregister       = MO.FEaiCockpitModuleManager_unregister;
    // @method
    o.placeCellControl = MO.FEaiCockpitModuleManager_placeCellControl;
-   o.selectModeCd     = MO.FEaiCockpitModuleManager_selectModeCd;
    o.selectModuleView = MO.FEaiCockpitModuleManager_selectModuleView;
    o.processResize    = MO.FEaiCockpitModuleManager_processResize;
    o.process          = MO.FEaiCockpitModuleManager_process;
@@ -121,89 +120,6 @@ MO.FEaiCockpitModuleManager_placeCellControl = function FEaiCockpitModuleManager
 }
 
 //==========================================================
-// <T>设置焦点控件。</T>
-//
-// @method
-// @param modeCd:EEaiCockpitMode 模式
-// @param module:FEaiCockpitModule 模块
-//==========================================================
-MO.FEaiCockpitModuleManager_selectModeCd = function FEaiCockpitModuleManager_selectModeCd(modeCd, module){
-   var o = this;
-   var moveSpeed = 16;
-   var logoDisplay = o._logoDisplay;
-   var snapshotDisplay = o._snapshotDisplay;
-   var viewDisplay = o._viewDisplay;
-   var stage = o._scene.activeStage();
-   var camera = stage.camera();
-   var modules = o._modules;
-   var moduleCount = modules.count();
-   switch(modeCd){
-      case MO.EEaiCockpitMode.Logo:
-         // 显示控件
-         logoDisplay.setVisible(true);
-         snapshotDisplay.setVisible(false);
-         viewDisplay.setVisible(false);
-         // 移动相机
-         var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-         action.setSpeed(moveSpeed);
-         action.link(camera);
-         action.targetPosition().set(0, 0, -13);
-         o._mainTimeline.pushAction(action);
-         break;
-      case MO.EEaiCockpitMode.Main:
-         // 停止轮播清空动画
-         o._autoPlay = false;
-         o._mainTimeline.clear();
-         // 显示控件
-         logoDisplay.setVisible(false);
-         snapshotDisplay.setVisible(true);
-         viewDisplay.setVisible(false);
-         // 移动相机
-         var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-         action.setSpeed(moveSpeed);
-         action.link(camera);
-         action.targetPosition().set(0, 0, -7.6);
-         o._mainTimeline.pushAction(action);         
-         // 移动控件位置
-         //for(var n = 0; n < moduleCount; n++){
-         //   var module = modules.at(n);
-         //   var snapshot = module.controlSnapshot();
-         //   var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-         //   action.link(snapshot);
-         //   action.targetMatrix().set(0, Math.PI, 0);
-         //   o._mainTimeline.pushAction(action);
-         //}
-         break;
-      case MO.EEaiCockpitMode.Icon:
-         break;
-      case MO.EEaiCockpitMode.Module:
-         if (module.slideshow()) {
-            // 显示控件
-            logoDisplay.setVisible(false);
-            snapshotDisplay.setVisible(false);
-            viewDisplay.setVisible(true);
-            o.selectModuleView(module);
-            // 移动相机
-            var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-            action.setSpeed(moveSpeed);
-            action.link(camera);
-            action.targetPosition().set(0, 0, -3);
-            o._mainTimeline.pushAction(action);
-            // 启动轮播
-            o._autoPlay = true;
-            o.startAutoPlay(module);
-            break;
-         }
-         else {
-            return;
-         }
-         
-   }
-   o._modeCd = modeCd;
-   o._focusModule = module;
-}
-
-//==========================================================
 // <T>选中模块视图。</T>
 //
 // @method
@@ -215,12 +131,19 @@ MO.FEaiCockpitModuleManager_selectModuleView = function FEaiCockpitModuleManager
    var count = modules.count();
    for(var i = 0; i < count; i++){
       var findModule = modules.at(i);
+      var viewDisplay = findModule.viewDisplay();
       var view = findModule.controlView();
       if(findModule == module){
          view.setVisible(true);
+         if(viewDisplay){
+            viewDisplay.setVisible(true);
+         }
          o._focusView = view;
       }else{
          view.setVisible(false);
+         if(viewDisplay){
+            viewDisplay.setVisible(true);
+         }
       }
    }
 }
