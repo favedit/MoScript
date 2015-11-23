@@ -13,7 +13,10 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
    o._dataTicker           = null;
    // @attribute
    o._backgroundImage      = null;
-   o._rankGroundImage      = null;
+   o._rankGroundImage = null;
+   o._firstMarkImage = null;
+   o._secondMarkImage = null;
+   o._thirdMarkImage = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -47,8 +50,13 @@ MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin = function FEaiCockpitModul
    var left = rectangle.left;
    var width = rectangle.width;
    //..........................................................
+   
+   graphic.drawImage(o._firstMarkImage, 10, 97, 578, 23);
+   graphic.drawImage(o._secondMarkImage, 10, 98 + 23, 578, 23);
+   graphic.drawImage(o._thirdMarkImage, 10, 99 + 23 + 23, 578, 23);
    // 绘制背景
    graphic.drawRectangleImage(o._backgroundImage, rectangle);
+   
    //graphic.drawImage(o._rankGroundImage,left+10,top+96,width-20,23*3+5);
 }
 
@@ -91,7 +99,16 @@ MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAc
 MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchievementSnapshot_setup(){
    var o = this;
    // 创建图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/ground.png');
+   var imageConsole = MO.Console.find(MO.FImageConsole);
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/achievement/ground.png');
+ //  image.addLoadListener(o, o.onImageLoad);
+   var image = o._firstMarkImage = imageConsole.load('{eai.resource}/cockpit/achievement/first_mark.png');
+  // image.addLoadListener(o, o.onImageLoad);
+   var image = o._secondMarkImage = imageConsole.load('{eai.resource}/cockpit/achievement/second_mark.png');
+ //  image.addLoadListener(o, o.onImageLoad);
+   var image = o._thirdMarkImage = imageConsole.load('{eai.resource}/cockpit/achievement/third_mark.png');
+  // image.addLoadListener(o, o.onImageLoad);
+
    //..........................................................
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
@@ -151,6 +168,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
    //column.setPadding(0, 0, 0, 0);
    //grid.pushColumn(column);
    o.push(grid);
+
 }
 
 //==========================================================
@@ -222,6 +240,9 @@ MO.FEaiCockpitModuleAchievementSnapshot_dispose = function FEaiCockpitModuleAchi
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    o._rankGroundImage = MO.Lang.Object.dispose(o._rankGroundImage);
+   o._firstMarkImage = MO.Lang.Object.dispose(o._firstMarkImage);;
+   o._secondMarkImage = MO.Lang.Object.dispose(o._secondMarkImage);;
+   o._thirdMarkImage = MO.Lang.Object.dispose(o._thirdMarkImage);;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
 }

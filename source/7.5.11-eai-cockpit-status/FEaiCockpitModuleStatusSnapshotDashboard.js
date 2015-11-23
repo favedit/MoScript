@@ -13,7 +13,7 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard = function FEaiCockpitModuleStatusSn
    o._textPre             = MO.Class.register(o, [new MO.APtyString('_textPre'), new MO.AGetSet('_textPre')], "");
    o._dashboardImage    = null;
    o._circleImage       = null;
-   o._circleRect        = null;
+   o._circleRect = null;
    //..........................................................
    // @process
 
@@ -80,24 +80,24 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitM
 
    var imageScale = 1.0;
    var lineWidth = 4;
-   var dashboardWidth = 281 * imageScale;
-   var dashboardHeight = 153 * imageScale;
-   var lineLen = 96 * imageScale;
+   var dashboardWidth = 272 * imageScale;
+   var dashboardHeight = 147 * imageScale;
+   var lineLen = 118 * imageScale;
    var colorCircleRadius = 90 * imageScale;
    var centerX = left + dashboardWidth/2 * imageScale;
    var centerY = top + (dashboardHeight - 10) * imageScale;
    var textY = top + (dashboardHeight + 28) * imageScale;
    var maxRadian = Math.PI * 1.04;
    var radianOffset = (maxRadian - Math.PI) / 2;
-   var circleImageWidth = 34 * imageScale;
-   var circleImageHeight = 34 * imageScale;
+   var circleImageWidth = 25 * imageScale;
+   var circleImageHeight = 25 * imageScale;
    var data = o._data;
 
    var reddata = parseInt(255 * data / 120 * 2);
    reddata = reddata > 255 ? 255 : reddata;
    var red = reddata.toString(16);
    if(red.length == 1) red = "0" + red;
-
+/*
    var greendata = data / 120 > 0.5 ? parseInt(255 - 255 * (data / 120 - 0.5) * 2) : 255;
    greendata = greendata < 0 ? 0 : greendata;
    var green = greendata.toString(16);
@@ -110,7 +110,7 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitM
    rect.top = centerY - colorCircleRadius;
    rect.width = colorCircleRadius*2;
    rect.height = top + dashboardHeight - centerY + colorCircleRadius - 1;
-   graphic.fillRectangle(rect.left, rect.top, rect.width, rect.height, colorCircleColor);
+   graphic.fillRectangle(rect.left, rect.top, rect.width, rect.height, colorCircleColor);*/
    //绘制仪表盘
    graphic.drawImage(o._dashboardImage, left, top, dashboardWidth, dashboardHeight);
    //绘制指针
@@ -118,10 +118,11 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitM
    var toX = -lineLen * Math.cos(radian) + centerX;
    var toY = -lineLen * Math.sin(radian) + centerY;
    graphic.setShadow("2", "2", "5", "#000000");
-   graphic.drawLine(centerX, centerY, toX, toY, "#ffffff", lineWidth);
+   graphic.drawLine(centerX - 4, centerY, toX, toY, "#FF2E1B", lineWidth);
+   graphic.drawLine(centerX + 4, centerY, toX, toY, "#FF2E1B", lineWidth);
    graphic.clearShadow();
    //绘制circle
-   graphic.drawImage(o._circleImage, centerX - circleImageWidth/2, centerY - circleImageHeight/2, circleImageWidth, circleImageHeight);
+   graphic.drawImage(o._circleImage, centerX - circleImageWidth / 2, centerY - circleImageHeight / 2, circleImageWidth, circleImageHeight);
    //绘制label
    var color = '#ffe721';
    graphic.setFont('bold 24px Microsoft YaHei');

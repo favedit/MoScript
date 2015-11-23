@@ -128,7 +128,7 @@ MO.FEaiCockpitForecastSnapshot_construct = function FEaiCockpitForecastSnapshot_
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
    o._cellLocation.set(3, 1, 0);
-   o._cellSize.set(8, 3);
+   o._cellSize.set(8, 4);
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._rollTicker = new MO.TTicker(o._rollDuration);
@@ -147,10 +147,10 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
    o._gridImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid.png');
    // 创建控件
    var listBox = o._listBox = MO.Class.create(MO.FGuiListBox);
-   listBox.setDisplayCount(8);
+   listBox.setDisplayCount(11);
    listBox.setPadding(10, 10, 10, 10);
    listBox.setLocation(30, 10);
-   listBox.setSize(300, 240); 
+   listBox.setSize(300, 360); 
    o.push(listBox);
 
    var lineChart = o._lineChart = MO.Class.create(MO.FGuiLineChart);
@@ -158,12 +158,12 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
    lineChart.setSize(588, 300);
    o.push(lineChart);
 
-   var chartData = o._chartData = MO.Class.create(MO.FGuiLineChartData);
-   chartData.setLabels(["", "", "", "", ""]);
+  // var chartData = o._chartData = MO.Class.create(MO.FGuiLineChartData);
+  // chartData.setLabels(["", "", "", "", ""]);
 
-   var dataset = o._chartDataSet = MO.Class.create(MO.FGuiLineChartDataSet);
-   chartData.setDatas(dataset);
-   dataset.setStrokeColor("#51fff1");
+ //  var dataset = o._chartDataSet = MO.Class.create(MO.FGuiLineChartDataSet);
+ //  chartData.setDatas(dataset);
+  // dataset.setStrokeColor("#51fff1");
 
    o._testDataPool = [[50, 356, 521, 586, 689], 
                      [-30, 60, 70, 88, 10], 
@@ -280,7 +280,7 @@ MO.FEaiCockpitForecastSnapshot_showChart = function FEaiCockpitForecastSnapshot_
    var o = this;
    //var itemData = o._data.items().at(o.selectedIndex);
    var index = o.selectedIndex();
-   var dataset = o._chartDataSet;
+   //var dataset = o._chartDataSet;
    //dataset.setData(o._testDataPool[index%4]);
    var data = o._data;
    var items = data.items();

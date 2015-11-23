@@ -57,7 +57,7 @@ MO.FEaiCockpitSceneModuleManager_construct = function FEaiCockpitSceneModuleMana
 // @method
 //==========================================================
 MO.FEaiCockpitSceneModuleManager_setup = function FEaiCockpitSceneModuleManager_setup(){
-   var o = this;
+    var o = this;
    o.__base.FEaiCockpitModuleManager.setup.call(o);
    var display = o._display;
    // 创建登录对象

@@ -12,9 +12,11 @@ MO.FEaiCockpitProjectListBoxItem = function FEaiCockpitProjectListBoxItem(o) {
    o._unit                 = null;
    // @attribute
    o._bgImage              = null;
-   o._pbarTimeBgImage      = null;
-   o._pbarTimeFillImage    = null;
-   o._pbarProjectBgImage   = null;
+   o._pbarTimeBgImage = null;
+   o._pbarTimeIconImage = null;
+//   o._pbarTimeFillImage    = null;
+   o._pbarProjectBgImage = null;
+   o._pbarProjectIconImage = null;
    o._indicatorLightOff_0  = null;
    o._indicatorLightOff_1  = null;
    o._indicatorLightOff_2  = null;
@@ -79,9 +81,11 @@ MO.FEaiCockpitProjectListBoxItem_setup = function FEaiCockpitProjectListBoxItem_
    var imageConsole = MO.Console.find(MO.FImageConsole);
    o._bgImage = imageConsole.load('{eai.resource}/cockpit/project/item_bg.png');
    o._pbarTimeBgImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_time_bg.png');
-   o._pbarTimeFillImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_time_fill.png');
+   o._pbarTimeIconImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_time_icon.png');
+    //  o._pbarTimeFillImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_time_fill.png');
    o._pbarProjectBgImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_project_bg.png');
-   o._pbarProjectFillImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_project_fill.png');
+   o._pbarProjectIconImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_project_icon.png');
+//   o._pbarProjectFillImage = imageConsole.load('{eai.resource}/cockpit/project/pgbar_project_fill.png');
    o._indicatorLightOff_0 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_off_0.png');
    o._indicatorLightOff_1 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_off_1.png');
    o._indicatorLightOff_2 = imageConsole.load('{eai.resource}/cockpit/project/pg_light_off_2.png');
@@ -91,9 +95,11 @@ MO.FEaiCockpitProjectListBoxItem_setup = function FEaiCockpitProjectListBoxItem_
 
    o._bgImage.addLoadListener(o, o.onImageLoad);
    o._pbarTimeBgImage.addLoadListener(o, o.onImageLoad);
-   o._pbarTimeFillImage.addLoadListener(o, o.onImageLoad);
+ //  o._pbarTimeFillImage.addLoadListener(o, o.onImageLoad);
+   o._pbarTimeIconImage.addLoadListener(o, o.onImageLoad);
    o._pbarProjectBgImage.addLoadListener(o, o.onImageLoad);
-   o._pbarProjectFillImage.addLoadListener(o, o.onImageLoad);
+ //  o._pbarProjectFillImage.addLoadListener(o, o.onImageLoad);
+   o._pbarProjectIconImage.addLoadListener(o, o.onImageLoad);
    o._indicatorLightOff_0.addLoadListener(o, o.onImageLoad);
    o._indicatorLightOff_1.addLoadListener(o, o.onImageLoad);
    o._indicatorLightOff_2.addLoadListener(o, o.onImageLoad);
@@ -163,18 +169,18 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    
    drawX += 10;
    var bakDrawX = drawX;
-   drawY -= 15;
-   graphic.drawImage(o._indicatorLightOff_0, drawX, drawY, 20, 20);
+   drawY -= 10;
+   graphic.drawImage(o._indicatorLightOff_0, drawX, drawY, 12, 12);
    drawX += 20;
-   graphic.drawImage(o._indicatorLightOff_1, drawX, drawY, 20, 20);
+   graphic.drawImage(o._indicatorLightOff_1, drawX, drawY, 12, 12);
    drawX += 20;
-   graphic.drawImage(o._indicatorLightOff_2, drawX, drawY, 20, 20);
+   graphic.drawImage(o._indicatorLightOff_2, drawX, drawY, 12, 12);
 
    bakDrawX += unit.priority() * 20;
-   graphic.drawImage(o['_indicatorLightOn_' + unit.priority()], bakDrawX, drawY, 20, 20);
+   graphic.drawImage(o['_indicatorLightOn_' + unit.priority()], bakDrawX, drawY, 12, 12);
 
    drawX = 190;
-   drawY += 15;
+   drawY += 10;
    drawText = '状态指示灯';
    graphic.setFont(font2ndRow.toString());
    graphic.drawText(drawText, drawX, drawY, font2ndRow.color);
@@ -183,15 +189,15 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    
    drawX += 10;
    var bakDrawX = drawX;
-   drawY -= 15;
-   graphic.drawImage(o._indicatorLightOff_0, drawX, drawY, 20, 20);
+   drawY -= 10;
+   graphic.drawImage(o._indicatorLightOff_0, drawX, drawY, 12, 12);
    drawX += 20;
-   graphic.drawImage(o._indicatorLightOff_1, drawX, drawY, 20, 20);
+   graphic.drawImage(o._indicatorLightOff_1, drawX, drawY, 12, 12);
    drawX += 20;
-   graphic.drawImage(o._indicatorLightOff_2, drawX, drawY, 20, 20);
+   graphic.drawImage(o._indicatorLightOff_2, drawX, drawY, 12, 12);
 
    bakDrawX += unit.status() * 20;
-   graphic.drawImage(o['_indicatorLightOn_' + unit.status()], bakDrawX, drawY, 20, 20);
+   graphic.drawImage(o['_indicatorLightOn_' + unit.status()], bakDrawX, drawY, 12, 12);
 
    // 绘制第三行
    drawX = left + 10;
@@ -202,23 +208,25 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic.drawText(drawText, drawX, drawY, fontProgress.color);
    textWidth = graphic.textWidth(drawText);
    drawX += textWidth + 10;
-   drawY -= 15;
-   graphic.drawImage(o._pbarTimeBgImage, drawX, drawY, 216, 21);
+   drawY -= 10;
+   graphic.drawImage(o._pbarTimeBgImage, drawX, drawY, 205, 6);
 
-   var clipWidth = 216 * unit.timeProgress() * 0.01 * rate;
+   var clipWidth = 205 * unit.timeProgress() * 0.01 * rate;
    var clipHeight = 21;
-   graphic._handle.save();
-   graphic._handle.rect(drawX, drawY, clipWidth, 21)
-   graphic._handle.clip();
-   graphic.drawImage(o._pbarTimeFillImage, drawX, drawY, 216, 21);
+  // graphic._handle.save();
+  // graphic._handle.rect(drawX, drawY, clipWidth, 21)
+  // graphic._handle.clip();
+  // graphic.drawImage(o._pbarTimeFillImage, drawX, drawY, 216, 21);
+   graphic.drawImage(o._pbarTimeIconImage, drawX - 43/2 + clipWidth, drawY - 7, 43, 19);
+
    graphic._handle.restore();
 
-   drawY += 15;
+  // drawY += 10;
    drawText = parseInt(unit.timeProgress() * rate) + '%';
    graphic.setFont(fontProgress.toString());
    textWidth = graphic.textWidth(drawText);
-   drawX = drawX + (216 - textWidth) * 0.5;
-   graphic.drawText(drawText, drawX, drawY, fontProgress.color);
+  // drawX = drawX + (216 - textWidth) * 0.5;
+   graphic.drawText(drawText, drawX - 43 / 2 + clipWidth + 3, drawY + 10, fontProgress.color);
 
    // 绘制第四行
    drawX = left + 10;
@@ -226,26 +234,27 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
 
    drawText = '项目进度';
    graphic.setFont(fontProgress.toString());
-   graphic.drawText(drawText, drawX, drawY, fontProgress.color);
+   graphic.drawText(drawText, drawX, drawY + 10, fontProgress.color);
    textWidth = graphic.textWidth(drawText);
    drawX += textWidth + 10;
-   drawY -= 15;
-   graphic.drawImage(o._pbarProjectBgImage, drawX, drawY, 216, 21);
+  // drawY -= 10;
+   graphic.drawImage(o._pbarProjectBgImage, drawX, drawY , 205, 6);
 
-   var clipWidth = 216 * unit.proProgress() * 0.01 * rate;
+   var clipWidth = 205 * unit.proProgress() * 0.01 * rate;
    var clipHeight = 21;
-   graphic._handle.save();
-   graphic._handle.rect(drawX, drawY, clipWidth, 21)
-   graphic._handle.clip();
-   graphic.drawImage(o._pbarProjectFillImage, drawX, drawY, 216, 21);
+  //graphic._handle.save();
+  // graphic._handle.rect(drawX, drawY, clipWidth, 21)
+  // graphic._handle.clip();
+  // graphic.drawImage(o._pbarProjectFillImage, drawX, drawY, 216, 21);
+   graphic.drawImage(o._pbarProjectIconImage, drawX - 43 / 2 + clipWidth, drawY - 7, 43, 19);
    graphic._handle.restore();
 
-   drawY += 15;
+  // drawY += 10;
    drawText = parseInt(unit.proProgress() * rate) + '%';
    graphic.setFont(fontProgress.toString());
    textWidth = graphic.textWidth(drawText);
-   drawX = drawX + (216 - textWidth) * 0.5;
-   graphic.drawText(drawText, drawX, drawY, fontProgress.color);
+  // drawX = drawX + (216 - textWidth) * 0.5;
+   graphic.drawText(drawText, drawX - 43 / 2 + clipWidth + 3, drawY + 10, fontProgress.color);
 }
 
 //==========================================================
@@ -258,9 +267,11 @@ MO.FEaiCockpitProjectListBoxItem_dispose = function FEaiCockpitProjectListBoxIte
    o._unit = MO.Lang.Object.dispose(o._unit);
    o._bgImage = MO.Lang.Object.dispose(o._bgImage);
    o._pbarTimeBgImage = MO.Lang.Object.dispose(o._pbarTimeBgImage);
-   o._pbarTimeFillImage = MO.Lang.Object.dispose(o._pbarTimeFillImage);
+    //  o._pbarTimeFillImage = MO.Lang.Object.dispose(o._pbarTimeFillImage);
+   o._pbarTimeIconImage = MO.Lang.Object.dispose(o._pbarTimeIconImage);
    o._pbarProjectBgImage = MO.Lang.Object.dispose(o._pbarProjectBgImage);
-   o._pbarProjectFillImage = MO.Lang.Object.dispose(o._pbarProjectFillImage);
+   o._pbarProjectIconImage = MO.Lang.Object.dispose(o._pbarProjectIconImage);
+//   o._pbarProjectFillImage = MO.Lang.Object.dispose(o._pbarProjectFillImage);
    o._indicatorLightOff_0 = MO.Lang.Object.dispose(o._indicatorLightOff_0);
    o._indicatorLightOff_1 = MO.Lang.Object.dispose(o._indicatorLightOff_1);
    o._indicatorLightOff_2 = MO.Lang.Object.dispose(o._indicatorLightOff_2);
