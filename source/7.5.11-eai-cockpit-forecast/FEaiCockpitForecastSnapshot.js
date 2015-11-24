@@ -9,6 +9,8 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._backgroundUri        = '{eai.resource}/cockpit/forecast/ground.png';
+   // @attribute
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
@@ -94,7 +96,6 @@ MO.FEaiCockpitForecastSnapshot_onPaintBegin = function FEaiCockpitForecastSnapsh
    var height = rectangle.height;
    //..........................................................
    // 绘制背景
-   graphic.drawRectangleImage(o._backgroundImage, rectangle);
    graphic.drawImage(o._gridImage, 540, 27, 400, 311);
 }
 
@@ -142,8 +143,8 @@ MO.FEaiCockpitForecastSnapshot_construct = function FEaiCockpitForecastSnapshot_
 //==========================================================
 MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setup(){
    var o = this;
+   o.__base.FEaiCockpitControl.setup.call(o);
    // 加载图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/ground.png');
    o._gridImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid.png');
    // 创建控件
    var listBox = o._listBox = MO.Class.create(MO.FGuiListBox);
@@ -262,6 +263,7 @@ MO.FEaiCockpitForecastSnapshot_selectedIndex = function FEaiCockpitForecastSnaps
 //==========================================================
 MO.FEaiCockpitForecastSnapshot_processLogic = function FEaiCockpitForecastSnapshot_processLogic(){
    var o = this;
+   o.__base.FEaiCockpitControl.processLogic.call(o);
    if(o._dataTicker.process()){
       var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
       forecast.doFetch(o, o.onDataFetch);
