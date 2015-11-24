@@ -38,7 +38,7 @@ MO.RWglUtility.prototype.convertFillMode = function RWglUtility_convertFillMode(
 //==========================================================
 MO.RWglUtility.prototype.convertDrawMode = function RWglUtility_convertDrawMode(graphic, drawCd){
    switch(drawCd){
-      case MO.EG3dDrawMode.Point:
+      case MO.EG3dDrawMode.Points:
          return graphic.POINTS;
       case MO.EG3dDrawMode.Lines:
          return graphic.LINES;

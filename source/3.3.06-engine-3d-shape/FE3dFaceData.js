@@ -113,6 +113,7 @@ MO.FE3dFaceData_setup = function FE3dFaceData_setup(){
    // 设置材质
    o._material.info().optionDouble = true;
    o._material._textures = o._textures;
+
 }
 
 //==========================================================

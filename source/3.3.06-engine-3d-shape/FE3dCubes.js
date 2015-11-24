@@ -80,9 +80,9 @@ MO.FE3dCubes_setup = function FE3dCubes_setup(){
       centerZ = 0;
    }
    var vertexCount = o._vertexCount = (cx + 1) * (cy + 1) * (cz + 1);
-   var positionIndex = 0;;
+   var positionIndex = 0;
    var positionData = new Float32Array(3 * vertexCount);
-   var colorIndex = 0;;
+   var colorIndex = 0;
    var colorData = new Uint8Array(4 * vertexCount);
    for(var z = 0; z <= cz; z++){
       for(var y = 0; y <= cy; y++){
