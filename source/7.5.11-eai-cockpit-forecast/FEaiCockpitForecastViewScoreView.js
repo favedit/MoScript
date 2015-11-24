@@ -12,7 +12,7 @@ MO.FEaiCockpitForecastViewScoreView = function FEaiCockpitForecastViewScoreView(
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
-   o._backgroundUri        = '{eai.resource}/cockpit/forecast/view.png';
+   //o._backgroundUri        = '{eai.resource}/cockpit/forecast/view.png';
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................

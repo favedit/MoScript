@@ -26,8 +26,6 @@ MO.FEaiCockpitForecastModuleManager = function FEaiCockpitForecastModuleManager(
    // @method
    o.setup            = MO.FEaiCockpitForecastModuleManager_setup;
    // @method
-   o.process          = MO.FEaiCockpitForecastModuleManager_process;
-   // @method
    o.dispose          = MO.FEaiCockpitForecastModuleManager_dispose;
    return o;
 }
@@ -41,9 +39,6 @@ MO.FEaiCockpitForecastModuleManager_construct = function FEaiCockpitForecastModu
    var o = this;
    o.__base.FEaiCockpitModuleManager.construct.call(o);
    // 设置属性
-   o._cellCount = new MO.SSize3(16, 9, 1);
-   o._mainTimeline = MO.Class.create(MO.FMainTimeline);
-   o._modules = new MO.TDictionary();
 }
 
 //==========================================================
@@ -64,54 +59,15 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    viewDisplay.linkGraphicContext(o);
    display.pushDisplay(viewDisplay);
    //..........................................................
-   // 创建启动模块
-   var module = o._catalogModule = MO.Class.create(MO.FEaiCockpitForecastViewCatalog);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建逻辑001模块
-   var module = o._logic001Module = MO.Class.create(MO.FEaiCockpitForecastLogic001);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建逻辑002模块
-   var module = o._logic001Module = MO.Class.create(MO.FEaiCockpitForecastLogic002);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建逻辑003模块
-   var module = o._logic001Module = MO.Class.create(MO.FEaiCockpitForecastLogic003);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建逻辑004模块
-   var module = o._logic001Module = MO.Class.create(MO.FEaiCockpitForecastLogic004);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建逻辑005模块
-   var module = o._logic001Module = MO.Class.create(MO.FEaiCockpitForecastLogic005);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建逻辑006模块
-   var module = o._logic001Module = MO.Class.create(MO.FEaiCockpitForecastLogic006);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
-   // 创建标志模块
-   var module = o._scoreModule = MO.Class.create(MO.FEaiCockpitForecastViewScore);
-   module.setModuleManager(o);
-   module.linkGraphicContext(o);
-   module.setup();
-   o.register(module);
+   // 创建模块
+   o._catalogModule = o.createModule(MO.FEaiCockpitForecastViewCatalog);
+   o._logic001Module = o.createModule(MO.FEaiCockpitForecastLogic001);
+   o._logic002Module = o.createModule(MO.FEaiCockpitForecastLogic002);
+   o._logic003Module = o.createModule(MO.FEaiCockpitForecastLogic003);
+   o._logic004Module = o.createModule(MO.FEaiCockpitForecastLogic004);
+   o._logic005Module = o.createModule(MO.FEaiCockpitForecastLogic005);
+   o._logic006Module = o.createModule(MO.FEaiCockpitForecastLogic006);
+   o._scoreModule = o.createModule(MO.FEaiCockpitForecastViewScore);
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();
@@ -230,17 +186,6 @@ MO.FEaiCockpitForecastModuleManager_selectModeCd = function FEaiCockpitForecastM
    }
    o._modeCd = modeCd;
    o._focusModule = module;
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-// @param input:MStream 输入流
-//==========================================================
-MO.FEaiCockpitForecastModuleManager_process = function FEaiCockpitForecastModuleManager_process(){
-   var o = this;
-   o.__base.FEaiCockpitModuleManager.process.call(o);
 }
 
 //==========================================================

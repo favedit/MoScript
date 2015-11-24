@@ -17,7 +17,6 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o._display         = MO.Class.register(o, new MO.AGetter('_display'));
    // @attribute
    o._focusModule     = MO.Class.register(o, new MO.AGetter('_focusModule'));
-   o._focusControl    = MO.Class.register(o, new MO.AGetter('_focusControl'));
    //..........................................................
    // @method
    o.construct        = MO.FEaiCockpitModuleManager_construct;
@@ -25,6 +24,7 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o.setup            = MO.FEaiCockpitModuleManager_setup;
    o.register         = MO.FEaiCockpitModuleManager_register;
    o.unregister       = MO.FEaiCockpitModuleManager_unregister;
+   o.createModule     = MO.FEaiCockpitModuleManager_createModule;
    // @method
    o.placeCellControl = MO.FEaiCockpitModuleManager_placeCellControl;
    o.selectModuleView = MO.FEaiCockpitModuleManager_selectModuleView;
@@ -44,13 +44,13 @@ MO.FEaiCockpitModuleManager_construct = function FEaiCockpitModuleManager_constr
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置属性
-   o._cellCount = new MO.SSize3(16, 9, 1);
    o._mainTimeline = MO.Class.create(MO.FMainTimeline);
+   o._cellCount = new MO.SSize3(16, 9, 1);
    o._modules = new MO.TDictionary();
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>配置处理。</T>
 //
 // @method
 //==========================================================
@@ -78,12 +78,30 @@ MO.FEaiCockpitModuleManager_register = function FEaiCockpitModuleManager_registe
 // <T>注销一个模块。</T>
 //
 // @method
+// @param module:FEaiCockpitModule 模块
 //==========================================================
 MO.FEaiCockpitModuleManager_unregister = function FEaiCockpitModuleManager_unregister(module){
    var o = this;
    var name = module.name();
    MO.Assert.debugNotEmpty(name);
    o._modules.remove(name);
+}
+
+//==========================================================
+// <T>创建一个模块。</T>
+//
+// @method
+// @param clazz:Function 类对象
+//==========================================================
+MO.FEaiCockpitModuleManager_createModule = function FEaiCockpitModuleManager_createModule(clazz){
+   var o = this;
+   // 创建对象
+   var module = MO.Class.create(clazz);
+   module.setModuleManager(o);
+   module.linkGraphicContext(o);
+   module.setup();
+   // 注册对象
+   o.register(module);
 }
 
 //==========================================================
@@ -127,6 +145,8 @@ MO.FEaiCockpitModuleManager_placeCellControl = function FEaiCockpitModuleManager
 //==========================================================
 MO.FEaiCockpitModuleManager_selectModuleView = function FEaiCockpitModuleManager_selectModuleView(module){
    var o = this;
+   o._focusModule = module;
+   // 只显示模块视图
    var modules = o._modules;
    var count = modules.count();
    for(var i = 0; i < count; i++){
@@ -192,8 +212,10 @@ MO.FEaiCockpitModuleManager_process = function FEaiCockpitModuleManager_process(
 MO.FEaiCockpitModuleManager_dispose = function FEaiCockpitModuleManager_dispose(){
    var o = this;
    // 释放属性
+   o._display = MO.Lang.Object.dispose(o._display);
    o._modules = MO.Lang.Object.dispose(o._modules, true);
-   o._mainTimeline = MO.Lang.Object.dispose(o._modules, true);
+   o._cellCount = MO.Lang.Object.dispose(o._cellCount);
+   o._mainTimeline = MO.Lang.Object.dispose(o._mainTimeline);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }
