@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitModuleAchievementView = function FEaiCockpitModuleAchievementView(o) {
+MO.FEaiCockpitAchievementModuleView = function FEaiCockpitAchievementModuleView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @attribute
@@ -17,15 +17,15 @@ MO.FEaiCockpitModuleAchievementView = function FEaiCockpitModuleAchievementView(
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitModuleAchievementView_onPaintBegin;
+   o.onPaintBegin          = MO.FEaiCockpitAchievementModuleView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleAchievementView_construct;
+   o.construct             = MO.FEaiCockpitAchievementModuleView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleAchievementView_setup;
-   o.processLogic          = MO.FEaiCockpitModuleAchievementView_processLogic;
+   o.setup                 = MO.FEaiCockpitAchievementModuleView_setup;
+   o.processLogic          = MO.FEaiCockpitAchievementModuleView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleAchievementView_dispose;
+   o.dispose               = MO.FEaiCockpitAchievementModuleView_dispose;
    return o;
 }
 
@@ -34,7 +34,7 @@ MO.FEaiCockpitModuleAchievementView = function FEaiCockpitModuleAchievementView(
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_onPaintBegin = function FEaiCockpitModuleAchievementView_onPaintBegin(event) {
+MO.FEaiCockpitAchievementModuleView_onPaintBegin = function FEaiCockpitAchievementModuleView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
    // 获得变量
@@ -47,7 +47,7 @@ MO.FEaiCockpitModuleAchievementView_onPaintBegin = function FEaiCockpitModuleAch
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_construct = function FEaiCockpitModuleAchievementView_construct() {
+MO.FEaiCockpitAchievementModuleView_construct = function FEaiCockpitAchievementModuleView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -61,7 +61,7 @@ MO.FEaiCockpitModuleAchievementView_construct = function FEaiCockpitModuleAchiev
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_setup = function FEaiCockpitModuleAchievementView_setup(){
+MO.FEaiCockpitAchievementModuleView_setup = function FEaiCockpitAchievementModuleView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
    // 创建模块管理器
@@ -76,7 +76,7 @@ MO.FEaiCockpitModuleAchievementView_setup = function FEaiCockpitModuleAchievemen
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_processLogic = function FEaiCockpitModuleAchievementView_processLogic(){
+MO.FEaiCockpitAchievementModuleView_processLogic = function FEaiCockpitAchievementModuleView_processLogic(){
    var o = this;
 }
 
@@ -85,7 +85,7 @@ MO.FEaiCockpitModuleAchievementView_processLogic = function FEaiCockpitModuleAch
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementView_dispose = function FEaiCockpitModuleAchievementView_dispose() {
+MO.FEaiCockpitAchievementModuleView_dispose = function FEaiCockpitAchievementModuleView_dispose() {
    var o = this;
    o._moduleManager = MO.Lang.Obejct.dispose(o._moduleManager);
    // 父处理
