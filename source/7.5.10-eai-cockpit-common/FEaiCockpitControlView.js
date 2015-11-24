@@ -8,43 +8,13 @@
 MO.FEaiCockpitControlView = function FEaiCockpitControlView(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
-   // @attribute
-   o._data            = null;
-   o._dataTicker      = null;
-   // @attribute
-   o._backgroundUri   = MO.Class.register(o, new MO.AGetter('_backgroundUri'));
-   o._backgroundImage = null;
-   //..........................................................
-   // @event
-   o.onPaintBegin     = MO.FEaiCockpitControlView_onPaintBegin;
-   //..........................................................
    // @method
-   o.construct        = MO.FEaiCockpitControlView_construct;
+   o.construct = MO.FEaiCockpitControlView_construct;
    // @method
-   o.setup            = MO.FEaiCockpitControlView_setup;
-   o.processLogic     = MO.FEaiCockpitControlView_processLogic;
+   o.setup     = MO.FEaiCockpitControlView_setup;
    // @method
-   o.dispose          = MO.FEaiCockpitControlView_dispose;
+   o.dispose   = MO.FEaiCockpitControlView_dispose;
    return o;
-}
-
-//==========================================================
-// <T>前绘制处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitControlView_onPaintBegin = function FEaiCockpitControlView_onPaintBegin(event) {
-   var o = this;
-   o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   //..........................................................
-   // 绘制背景
-   var backgroundImage = o._backgroundImage;
-   if(backgroundImage){
-      graphic.drawRectangleImage(o._backgroundImage, rectangle);
-   }
 }
 
 //==========================================================
@@ -67,22 +37,9 @@ MO.FEaiCockpitControlView_construct = function FEaiCockpitControlView_construct(
 //==========================================================
 MO.FEaiCockpitControlView_setup = function FEaiCockpitControlView_setup(){
    var o = this;
+   o.__base.FEaiCockpitControl.setup.call(o);
    // 设置场景
    o._scene = o._parentModule.parentModuleManager().scene();
-   // 创建图片
-   var backgroundUri = o._backgroundUri;
-   if(backgroundUri){
-      o._backgroundImage = o.loadResourceImage(backgroundUri);
-   }
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitControlView_processLogic = function FEaiCockpitControlView_processLogic(){
-   var o = this;
 }
 
 //==========================================================
