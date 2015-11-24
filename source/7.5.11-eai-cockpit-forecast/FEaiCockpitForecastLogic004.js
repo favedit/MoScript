@@ -19,7 +19,6 @@ MO.FEaiCockpitForecastLogic004 = function FEaiCockpitForecastLogic004(o){
    // @method
    o.setup         = MO.FEaiCockpitForecastLogic004_setup;
    // @method
-   o.processResize = MO.FEaiCockpitForecastLogic004_processResize;
    o.process       = MO.FEaiCockpitForecastLogic004_process;
    // @method
    o.dispose       = MO.FEaiCockpitForecastLogic004_dispose;
@@ -55,16 +54,6 @@ MO.FEaiCockpitForecastLogic004_setup = function FEaiCockpitForecastLogic004_setu
    view.linkGraphicContext(o);
    view.setParentModule(o);
    view.setup();
-}
-
-//==========================================================
-// <T>大小事件处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiCockpitForecastLogic004_processResize = function FEaiCockpitForecastLogic004_processResize(){
-   var o = this;
 }
 
 //==========================================================

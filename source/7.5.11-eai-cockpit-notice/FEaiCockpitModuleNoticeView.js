@@ -141,7 +141,7 @@ MO.FEaiCockpitModuleNoticeView_construct = function FEaiCockpitModuleNoticeView_
    // 创建属性
    o._cellLocation.set(0, 0, 0);
    o._cellSize.set(16, 9);
-   o._noticeDynamicInfo = MO.Class.create(MO.FEaiLogicInfoNoticeValue);
+   //o._noticeDynamicInfo = MO.Class.create(MO.FEaiLogicInfoNoticeValue);
    o._moduleManager = MO.Class.create(MO.FEaiCockpitNoticeModuleManager);
    o._fontTop= new MO.SUiFont();
 }

@@ -9,12 +9,6 @@ MO.FEaiCockpitNoticeModuleManager = function FEaiCockpitNoticeModuleManager(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModuleManager);
    //..........................................................
    // @attribute
-   o._scene           = MO.Class.register(o, new MO.AGetSet('_scene'));
-   o._modeCd          = MO.Class.register(o, new MO.AGetSet('_modeCd'));
-   // @attribute
-   o._snapshotDisplay = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
-   o._viewDisplay     = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
-   // @attribute
    o._catalogModule   = MO.Class.register(o, new MO.AGetter('_catalogModule'));
    o._scoreModule     = MO.Class.register(o, new MO.AGetter('_scoreModule'));
    // @attribute
@@ -50,14 +44,8 @@ MO.FEaiCockpitNoticeModuleManager_setup = function FEaiCockpitNoticeModuleManage
    var o = this;
    o.__base.FEaiCockpitModuleManager.setup.call(o);
    var display = o._display;
-   // 创建缩略对象
-   var snapshotDisplay = o._snapshotDisplay = MO.Class.create(MO.FE3dDisplay);
-   snapshotDisplay.linkGraphicContext(o);
-   display.pushDisplay(snapshotDisplay);
-   // 创建视图对象
-   var viewDisplay = o._viewDisplay = MO.Class.create(MO.FE3dDisplay);
-   viewDisplay.linkGraphicContext(o);
-   display.pushDisplay(viewDisplay);
+   var snapshotDisplay = o._snapshotDisplay;
+   var viewDisplay = o._viewDisplay;
    //..........................................................
    // 创建模块
    // o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);

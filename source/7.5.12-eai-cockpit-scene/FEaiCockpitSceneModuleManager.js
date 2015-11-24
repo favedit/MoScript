@@ -9,10 +9,6 @@ MO.FEaiCockpitSceneModuleManager = function FEaiCockpitSceneModuleManager(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModuleManager);
    //..........................................................
    // @attribute
-   o._scene               = MO.Class.register(o, new MO.AGetSet('_scene'));
-   o._modeCd              = MO.Class.register(o, new MO.AGetSet('_modeCd'));
-   o._layoutData          = MO.Class.register(o, new MO.AGetter('_layoutData'));
-   // @attribute
    o._splashModule        = MO.Class.register(o, new MO.AGetter('_splashModule'));
    o._logoModule          = MO.Class.register(o, new MO.AGetter('_logoModule'));
    o._catalogModule       = MO.Class.register(o, new MO.AGetter('_catalogModule'));
@@ -24,7 +20,7 @@ MO.FEaiCockpitSceneModuleManager = function FEaiCockpitSceneModuleManager(o){
    o._projectModule       = MO.Class.register(o, new MO.AGetter('_projectModule'));
    o._statusModule        = MO.Class.register(o, new MO.AGetter('_statusModule'));
    // @attribute
-   o._statusCd            = 0;
+   o._layoutData          = MO.Class.register(o, new MO.AGetter('_layoutData'));
    o._autoPlay            = false;
    //..........................................................
    // @method
@@ -73,14 +69,6 @@ MO.FEaiCockpitSceneModuleManager_setup = function FEaiCockpitSceneModuleManager_
    var iconDisplay = o._iconDisplay = MO.Class.create(MO.FE3dDisplay);
    iconDisplay.linkGraphicContext(o);
    display.pushDisplay(iconDisplay);
-   // 创建缩略对象
-   var snapshotDisplay = o._snapshotDisplay = MO.Class.create(MO.FE3dDisplay);
-   snapshotDisplay.linkGraphicContext(o);
-   display.pushDisplay(snapshotDisplay);
-   // 创建视图对象
-   var viewDisplay = o._viewDisplay = MO.Class.create(MO.FE3dDisplayContainer);
-   viewDisplay.linkGraphicContext(o);
-   display.pushDisplay(viewDisplay);
    // 创建控件网格
    //var cubes = o._cubes = MO.Class.create(MO.FE3dCubes);
    //cubes.linkGraphicContext(o);
@@ -95,18 +83,6 @@ MO.FEaiCockpitSceneModuleManager_setup = function FEaiCockpitSceneModuleManager_
    //cubes.setVisible(true);
    //cubes.setVisible(false);
    //display.push(cubes);
-   //..........................................................
-   // 创建双面过场动画模型
-   //var planesize = new MO.SSize2(16, 9);
-   //var planesplits = new MO.SSize2(32, 18);
-   //var planes = o._planes = MO.Class.create(MO.FE3dDoubleSidedPlanes);
-   //planes.linkGraphicContext(o);
-   //planes.size().assign(planesize);
-   //planes.splits().assign(planesplits);
-   //planes.setFrontUrl('{eai.resource}/cockpit/color.jpg');
-   //planes.setBackUrl('{eai.resource}/cockpit/land2048.png');
-   //planes.setup();
-   //display.pushDisplay(planes);
    //..........................................................
    // 加载布局
    var cockpit = MO.Console.find(MO.FEaiLogicConsole).cockpit();
@@ -207,7 +183,7 @@ MO.FEaiCockpitSceneModuleManager_onLayoutFetch = function FEaiCockpitSceneModule
    // 前导图显示5秒后自动进入主页面
    var section = MO.Class.create(MO.FTimelineSection);
    var action = MO.Class.create(MO.MTimelineAction);
-   action.setDuration(500000);
+   action.setDuration(5000);
    action.addActionStopListener(o, o.onSplashEnded);
    section.pushAction(action);
    o._mainTimeline.pushSection(section);
@@ -253,9 +229,6 @@ MO.FEaiCockpitSceneModuleManager_selectModeCd = function FEaiCockpitSceneModuleM
          action.link(camera);
          action.targetPosition().set(0, 0, -13);
          o._mainTimeline.pushAction(action);
-         //..........................................................
-         // 播放双面过场动画
-         //o._mainTimeline.pushSection(o._planes.turningAnimation());
          break;
       case MO.EEaiCockpitMode.Main:
          // 停止轮播清空动画
@@ -430,9 +403,6 @@ MO.FEaiCockpitSceneModuleManager_onAutoPlayActionStop = function FEaiCockpitScen
 MO.FEaiCockpitSceneModuleManager_process = function FEaiCockpitSceneModuleManager_process(){
    var o = this;
    o.__base.FEaiCockpitModuleManager.process.call(o);
-   //..........................................................
-   // 刷新双面过场动画模型
-   //o._planes.update();
 }
 
 //==========================================================

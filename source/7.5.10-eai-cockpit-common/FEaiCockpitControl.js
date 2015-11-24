@@ -16,6 +16,7 @@ MO.FEaiCockpitControl = function FEaiCockpitControl(o) {
    //..........................................................
    // @method
    o.construct            = MO.FEaiCockpitControl_construct;
+   o.setup                = MO.FEaiCockpitControl_setup;
    // @method
    o.placeInCell          = MO.FEaiCockpitControl_placeInCell;
    o.processLogic         = MO.FEaiCockpitControl_processLogic;
@@ -35,6 +36,15 @@ MO.FEaiCockpitControl_construct = function FEaiCockpitControl_construct() {
    // 配置属性
    o._cellLocation = new MO.SPoint3();
    o._cellSize = new MO.SSize2();
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitControl_setup = function FEaiCockpitControl_setup(){
+   var o = this;
 }
 
 //==========================================================

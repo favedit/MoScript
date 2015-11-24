@@ -45,6 +45,7 @@ MO.FEaiCockpitModuleNotice_construct = function FEaiCockpitModuleNotice_construc
 //==========================================================
 MO.FEaiCockpitModuleNotice_setup = function FEaiCockpitModuleNotice_setup(){
    var o = this;
+   o.__base.FEaiCockpitModule.setup.call(o);
    // 创建缩略
    var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitModuleNoticeSnapshot);
    snapshot.linkGraphicContext(o);
@@ -55,6 +56,8 @@ MO.FEaiCockpitModuleNotice_setup = function FEaiCockpitModuleNotice_setup(){
    view.linkGraphicContext(o);
    view.setParentModule(o);
    view.setup();
+   // 增加显示图
+   o._viewDisplay.push(view._moduleManager.display());
 }
 
 //==========================================================

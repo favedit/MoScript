@@ -9,12 +9,16 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
+   o._modeCd          = MO.Class.register(o, new MO.AGetSet('_modeCd'));
+   o._scene           = MO.Class.register(o, new MO.AGetSet('_scene'));
    o._mainTimeline    = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    // @attribute
    o._cellCount       = MO.Class.register(o, new MO.AGetter('_cellCount'));
    o._modules         = MO.Class.register(o, new MO.AGetter('_modules'));
-   o._statusCd        = 0;
+   // @attribute
    o._display         = MO.Class.register(o, new MO.AGetter('_display'));
+   o._snapshotDisplay = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
+   o._viewDisplay     = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
    // @attribute
    o._focusModule     = MO.Class.register(o, new MO.AGetter('_focusModule'));
    //..........................................................
@@ -59,6 +63,14 @@ MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    // 创建显示对象
    var display = o._display = MO.Class.create(MO.FE3dDisplayContainer);
    display.linkGraphicContext(o);
+   // 创建缩略对象
+   var snapshotDisplay = o._snapshotDisplay = MO.Class.create(MO.FE3dDisplay);
+   snapshotDisplay.linkGraphicContext(o);
+   display.pushDisplay(snapshotDisplay);
+   // 创建视图对象
+   var viewDisplay = o._viewDisplay = MO.Class.create(MO.FE3dDisplayContainer);
+   viewDisplay.linkGraphicContext(o);
+   display.pushDisplay(viewDisplay);
 }
 
 //==========================================================
