@@ -154,6 +154,7 @@
       <PathMerger source='/7.5.07-eai-scene-statistics-marketer'  target='/ajs/eai-scene-statistics.js'/>
 
       <PathMerger source='/7.5.10-eai-cockpit-common'             target='/ajs/eai-cockpit-common.js'/>
+      <PathMerger source='/7.5.10-eai-cockpit-navigator'          target='/ajs/eai-cockpit-navigator.js'/>
       <PathMerger source='/7.5.11-eai-cockpit-achievement'        target='/ajs/eai-cockpit-achievement.js'/>
       <PathMerger source='/7.5.11-eai-cockpit-forecast'           target='/ajs/eai-cockpit-forecast.js'/>
       <PathMerger source='/7.5.11-eai-cockpit-logo'               target='/ajs/eai-cockpit-logo.js'/>
@@ -404,6 +405,7 @@
          <File source='/ajs/eai-scene-performence.js'/>
          <File source='/ajs/eai-scene-statistics.js'/>
          <File source='/ajs/eai-cockpit-common.js'/>
+         <File source='/ajs/eai-cockpit-navigator.js'/>
          <File source='/ajs/eai-cockpit-achievement.js'/>
          <File source='/ajs/eai-cockpit-forecast.js'/>
          <File source='/ajs/eai-cockpit-logo.js'/>
