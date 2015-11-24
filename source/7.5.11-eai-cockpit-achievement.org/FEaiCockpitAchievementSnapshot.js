@@ -5,7 +5,7 @@
 // @author sunpeng
 // @history 151108
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementSnapshot(o) {
+MO.FEaiCockpitAchievementSnapshot = function FEaiCockpitAchievementSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
@@ -21,17 +21,17 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin;
-   o.onAchievementFetch    = MO.FEaiCockpitModuleAchievementSnapshot_onAchievementFetch;
+   o.onPaintBegin          = MO.FEaiCockpitAchievementSnapshot_onPaintBegin;
+   o.onAchievementFetch    = MO.FEaiCockpitAchievementSnapshot_onAchievementFetch;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleAchievementSnapshot_construct;
+   o.construct             = MO.FEaiCockpitAchievementSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleAchievementSnapshot_setup;
-   o.setData               = MO.FEaiCockpitModuleAchievementSnapshot_setData;
-   o.processLogic          = MO.FEaiCockpitModuleAchievementSnapshot_processLogic;
+   o.setup                 = MO.FEaiCockpitAchievementSnapshot_setup;
+   o.setData               = MO.FEaiCockpitAchievementSnapshot_setData;
+   o.processLogic          = MO.FEaiCockpitAchievementSnapshot_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleAchievementSnapshot_dispose;
+   o.dispose               = MO.FEaiCockpitAchievementSnapshot_dispose;
    return o;
 }
 
@@ -40,7 +40,7 @@ MO.FEaiCockpitModuleAchievementSnapshot = function FEaiCockpitModuleAchievementS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin = function FEaiCockpitModuleAchievementSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitAchievementSnapshot_onPaintBegin = function FEaiCockpitAchievementSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -65,7 +65,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_onPaintBegin = function FEaiCockpitModul
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_onAchievementFetch = function FEaiCockpitModuleAchievementSnapshot_onAchievementFetch(event){
+MO.FEaiCockpitAchievementSnapshot_onAchievementFetch = function FEaiCockpitAchievementSnapshot_onAchievementFetch(event){
    var o = this;
    var content = event.content;
    // 读取数据
@@ -80,7 +80,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_onAchievementFetch = function FEaiCockpi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAchievementSnapshot_construct() {
+MO.FEaiCockpitAchievementSnapshot_construct = function FEaiCockpitAchievementSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -96,7 +96,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_construct = function FEaiCockpitModuleAc
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchievementSnapshot_setup(){
+MO.FEaiCockpitAchievementSnapshot_setup = function FEaiCockpitAchievementSnapshot_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
@@ -177,7 +177,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setup = function FEaiCockpitModuleAchiev
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_setData = function FEaiCockpitModuleAchievementSnapshot_setData(data) {
+MO.FEaiCockpitAchievementSnapshot_setData = function FEaiCockpitAchievementSnapshot_setData(data) {
    var o = this;
    var departments = data.departments();
    var grid = o._gridControl;
@@ -222,7 +222,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_setData = function FEaiCockpitModuleAchi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_processLogic = function FEaiCockpitModuleAchievementSnapshot_processLogic(){
+MO.FEaiCockpitAchievementSnapshot_processLogic = function FEaiCockpitAchievementSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
       var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
@@ -235,7 +235,7 @@ MO.FEaiCockpitModuleAchievementSnapshot_processLogic = function FEaiCockpitModul
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleAchievementSnapshot_dispose = function FEaiCockpitModuleAchievementSnapshot_dispose() {
+MO.FEaiCockpitAchievementSnapshot_dispose = function FEaiCockpitAchievementSnapshot_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);

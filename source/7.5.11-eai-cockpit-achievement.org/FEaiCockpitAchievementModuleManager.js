@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151101
 //==========================================================
-MO.FEaiCockpitAchievementModuleManager = function FEaiCockpitAchievementModuleManager(o){
+MO.FEaiCockpitAchievementModulManager = function FEaiCockpitAchievementModulManager(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModuleManager);
    //..........................................................
    // @attribute
@@ -15,11 +15,11 @@ MO.FEaiCockpitAchievementModuleManager = function FEaiCockpitAchievementModuleMa
    o._autoPlay        = false;
    //..........................................................
    // @method
-   o.construct        = MO.FEaiCockpitAchievementModuleManager_construct;
+   o.construct        = MO.FEaiCockpitAchievementModulManager_construct;
    // @method
-   o.setup            = MO.FEaiCockpitAchievementModuleManager_setup;
+   o.setup            = MO.FEaiCockpitAchievementModulManager_setup;
    // @method
-   o.dispose          = MO.FEaiCockpitAchievementModuleManager_dispose;
+   o.dispose          = MO.FEaiCockpitAchievementModulManager_dispose;
    return o;
 }
 
@@ -28,7 +28,7 @@ MO.FEaiCockpitAchievementModuleManager = function FEaiCockpitAchievementModuleMa
 //
 // @method
 //==========================================================
-MO.FEaiCockpitAchievementModuleManager_construct = function FEaiCockpitAchievementModuleManager_construct(){
+MO.FEaiCockpitAchievementModulManager_construct = function FEaiCockpitAchievementModulManager_construct(){
    var o = this;
    o.__base.FEaiCockpitModuleManager.construct.call(o);
 }
@@ -38,7 +38,7 @@ MO.FEaiCockpitAchievementModuleManager_construct = function FEaiCockpitAchieveme
 //
 // @method
 //==========================================================
-MO.FEaiCockpitAchievementModuleManager_setup = function FEaiCockpitAchievementModuleManager_setup(){
+MO.FEaiCockpitAchievementModulManager_setup = function FEaiCockpitAchievementModulManager_setup(){
    var o = this;
    o.__base.FEaiCockpitModuleManager.setup.call(o);
    var display = o._display;
@@ -47,7 +47,7 @@ MO.FEaiCockpitAchievementModuleManager_setup = function FEaiCockpitAchievementMo
    //..........................................................
    // 创建模块
    o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
-   o._dayModule = o.createModule(MO.FEaiCockpitAchievementDay);
+   //o._dayModule = o.createModule(MO.FEaiCockpitAchievementDay);
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();
@@ -89,7 +89,7 @@ MO.FEaiCockpitAchievementModuleManager_setup = function FEaiCockpitAchievementMo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitAchievementModuleManager_dispose = function FEaiCockpitAchievementModuleManager_dispose(){
+MO.FEaiCockpitAchievementModulManager_dispose = function FEaiCockpitAchievementModulManager_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitModuleManager.dispose.call(o);

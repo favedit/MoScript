@@ -12,7 +12,7 @@ MO.FEaiCockpitAchievementView = function FEaiCockpitAchievementView(o) {
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
-   //o._backgroundUri        = '{eai.resource}/cockpit/forecast/view.png';
+   o._backgroundUri        = '{eai.resource}/cockpit/forecast/view.png';
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -53,6 +53,7 @@ MO.FEaiCockpitAchievementView_construct = function FEaiCockpitAchievementView_co
    // 创建属性
    o._cellLocation.set(0, 0, 0);
    o._cellSize.set(16, 9);
+   o._moduleManager = MO.Class.create(MO.FEaiCockpitModuleAchievement);
 }
 
 //==========================================================
@@ -63,6 +64,11 @@ MO.FEaiCockpitAchievementView_construct = function FEaiCockpitAchievementView_co
 MO.FEaiCockpitAchievementView_setup = function FEaiCockpitAchievementView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
+   // 创建模块管理器
+   var moduleManager = o._moduleManager;
+   moduleManager.linkGraphicContext(o);
+   moduleManager.setScene(o._scene);
+   moduleManager.setup();
 }
 
 //==========================================================
@@ -72,7 +78,7 @@ MO.FEaiCockpitAchievementView_setup = function FEaiCockpitAchievementView_setup(
 //==========================================================
 MO.FEaiCockpitAchievementView_processLogic = function FEaiCockpitAchievementView_processLogic(){
    var o = this;
-   o.__base.FEaiCockpitControlView.processLogic.call(o);
+   o._moduleManager.process();
 }
 
 //==========================================================
@@ -82,6 +88,7 @@ MO.FEaiCockpitAchievementView_processLogic = function FEaiCockpitAchievementView
 //==========================================================
 MO.FEaiCockpitAchievementView_dispose = function FEaiCockpitAchievementView_dispose() {
    var o = this;
+   o._moduleManager = MO.Lang.Obejct.dispose(o._moduleManager);
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);
 }

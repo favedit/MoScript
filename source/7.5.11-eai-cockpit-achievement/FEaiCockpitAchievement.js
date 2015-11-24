@@ -5,22 +5,22 @@
 // @author maocy
 // @history 151101
 //==========================================================
-MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
+MO.FEaiCockpitAchievement = function FEaiCockpitAchievement(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitLogicModule);
    //..........................................................
    // @attribute
-   o._name          = 'forecast';
-   o._typeCd        = MO.EEaiCockpitModule.Logic;
-   o._slideshow     = true;
+   o._name      = 'achievement';
+   o._typeCd    = MO.EEaiCockpitModule.Logic;
+   o._slideshow = true;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitForecast_construct;
+   o.construct  = MO.FEaiCockpitAchievement_construct;
    // @method
-   o.setup          = MO.FEaiCockpitForecast_setup;
+   o.setup      = MO.FEaiCockpitAchievement_setup;
    // @method
-   o.process        = MO.FEaiCockpitForecast_process;
+   o.process    = MO.FEaiCockpitAchievement_process;
    // @method
-   o.dispose        = MO.FEaiCockpitForecast_dispose;
+   o.dispose    = MO.FEaiCockpitAchievement_dispose;
    return o;
 }
 
@@ -29,7 +29,7 @@ MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_construct = function FEaiCockpitForecast_construct(){
+MO.FEaiCockpitAchievement_construct = function FEaiCockpitAchievement_construct(){
    var o = this;
    o.__base.FEaiCockpitLogicModule.construct.call(o);
 }
@@ -39,14 +39,14 @@ MO.FEaiCockpitForecast_construct = function FEaiCockpitForecast_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_setup = function FEaiCockpitForecast_setup(){
+MO.FEaiCockpitAchievement_setup = function FEaiCockpitAchievement_setup(){
    var o = this;
    o.__base.FEaiCockpitLogicModule.setup.call(o);
    // 创建控件
-   o._controlSnapshot = o.createControl(MO.FEaiCockpitForecastSnapshot);
-   o._controlView = o.createControl(MO.FEaiCockpitForecastView);
+   o._controlSnapshot = o.createControl(MO.FEaiCockpitAchievementSnapshot);
+   o._controlView = o.createControl(MO.FEaiCockpitAchievementView);
    // 配置模块管理器
-   o.setupModuleManager(MO.FEaiCockpitForecastModuleManager);
+   o.setupModuleManager(MO.FEaiCockpitAchievementModuleManager);
 }
 
 //==========================================================
@@ -54,7 +54,7 @@ MO.FEaiCockpitForecast_setup = function FEaiCockpitForecast_setup(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_process = function FEaiCockpitForecast_process(){
+MO.FEaiCockpitAchievement_process = function FEaiCockpitAchievement_process(){
    var o = this;
    o.__base.FEaiCockpitLogicModule.process.call(o);
 }
@@ -64,7 +64,7 @@ MO.FEaiCockpitForecast_process = function FEaiCockpitForecast_process(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_dispose = function FEaiCockpitForecast_dispose(){
+MO.FEaiCockpitAchievement_dispose = function FEaiCockpitAchievement_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitLogicModule.dispose.call(o);
