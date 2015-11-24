@@ -9,12 +9,6 @@ MO.FEaiCockpitAchievementModulManager = function FEaiCockpitAchievementModulMana
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModuleManager);
    //..........................................................
    // @attribute
-   o._scene           = MO.Class.register(o, new MO.AGetSet('_scene'));
-   o._modeCd          = MO.Class.register(o, new MO.AGetSet('_modeCd'));
-   // @attribute
-   o._snapshotDisplay = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
-   o._viewDisplay     = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
-   // @attribute
    o._catalogModule   = MO.Class.register(o, new MO.AGetter('_catalogModule'));
    o._scoreModule     = MO.Class.register(o, new MO.AGetter('_scoreModule'));
    // @attribute

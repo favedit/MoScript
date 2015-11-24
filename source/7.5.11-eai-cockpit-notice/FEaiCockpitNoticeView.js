@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitModuleNoticeView = function FEaiCockpitModuleNoticeView(o) {
+MO.FEaiCockpitNoticeView = function FEaiCockpitNoticeView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @attribute
@@ -28,23 +28,23 @@ MO.FEaiCockpitModuleNoticeView = function FEaiCockpitModuleNoticeView(o) {
    
    //..........................................................
    // @event
-   o.textFun               = MO.FEaiCockpitModuleNoticeView_textFun;
-   o.onImageLoad           = MO.FEaiCockpitModuleNoticeView_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleNoticeView_onPaintBegin;
+   o.textFun               = MO.FEaiCockpitNoticeView_textFun;
+   o.onImageLoad           = MO.FEaiCockpitNoticeView_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitNoticeView_onPaintBegin;
    
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleNoticeView_construct;
+   o.construct             = MO.FEaiCockpitNoticeView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleNoticeView_setup;
-   o.draw                  = MO.FEaiCockpitModuleNoticeView_draw;
-   o.processLogic          = MO.FEaiCockpitModuleNoticeView_processLogic;
+   o.setup                 = MO.FEaiCockpitNoticeView_setup;
+   o.draw                  = MO.FEaiCockpitNoticeView_draw;
+   o.processLogic          = MO.FEaiCockpitNoticeView_processLogic;
    // @method
 
-   o.dispose               = MO.FEaiCockpitModuleNoticeView_dispose;
+   o.dispose               = MO.FEaiCockpitNoticeView_dispose;
    return o;
 }
-MO.FEaiCockpitModuleNoticeView_textFun = function FEaiCockpitModuleNoticeView_textFun(event) {
+MO.FEaiCockpitNoticeView_textFun = function FEaiCockpitNoticeView_textFun(event) {
    var o = this;
    // var content = event.content;
    // var dynamicInfo = o._noticeDynamicInfo;
@@ -67,7 +67,7 @@ MO.FEaiCockpitModuleNoticeView_textFun = function FEaiCockpitModuleNoticeView_te
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeView_onImageLoad = function FEaiCockpitModuleNoticeView_onImageLoad() {
+MO.FEaiCockpitNoticeView_onImageLoad = function FEaiCockpitNoticeView_onImageLoad() {
    this.dirty();
 }
 
@@ -76,7 +76,7 @@ MO.FEaiCockpitModuleNoticeView_onImageLoad = function FEaiCockpitModuleNoticeVie
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeView_onPaintBegin = function FEaiCockpitModuleNoticeView_onPaintBegin(event) {
+MO.FEaiCockpitNoticeView_onPaintBegin = function FEaiCockpitNoticeView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
    // 获得变量
@@ -91,6 +91,7 @@ MO.FEaiCockpitModuleNoticeView_onPaintBegin = function FEaiCockpitModuleNoticeVi
    //..........................................................
    // 绘制背景
    // graphic.drawRectangleImage(o._backgroundImage, rectangle);
+   return;
    //图片比例
    var scale = 69 / 243 ; 
    //图片Y坐标
@@ -135,14 +136,13 @@ MO.FEaiCockpitModuleNoticeView_onPaintBegin = function FEaiCockpitModuleNoticeVi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeView_construct = function FEaiCockpitModuleNoticeView_construct() {
+MO.FEaiCockpitNoticeView_construct = function FEaiCockpitNoticeView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
    o._cellLocation.set(0, 0, 0);
    o._cellSize.set(16, 9);
    //o._noticeDynamicInfo = MO.Class.create(MO.FEaiLogicInfoNoticeValue);
-   o._moduleManager = MO.Class.create(MO.FEaiCockpitNoticeModuleManager);
    o._fontTop= new MO.SUiFont();
 }
 
@@ -151,7 +151,7 @@ MO.FEaiCockpitModuleNoticeView_construct = function FEaiCockpitModuleNoticeView_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeView_setup = function FEaiCockpitModuleNoticeView_setup(){
+MO.FEaiCockpitNoticeView_setup = function FEaiCockpitNoticeView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
       // 创建图片
@@ -164,15 +164,6 @@ MO.FEaiCockpitModuleNoticeView_setup = function FEaiCockpitModuleNoticeView_setu
    var image = o._topBar = imageConsole.load('{eai,resource}/cockpit/notice/top_bar.png');
    image.addLoadListener(o, o.onImageLoad);
    o._fontTop.parse('#FFFFFF 25px Microsoft YaHei');
-
-
-   //..........................................................
-   // 创建模块管理器
-   var moduleManager = o._moduleManager;
-   moduleManager.linkGraphicContext(o);
-   moduleManager.setScene(o._scene);
-   moduleManager.setup();
-
 
    // var image = o._userInfoImage = imageConsole.load('{eai,resource}/cockpit/notice/user_bg.png');
    // image.addLoadListener(o, o.onImageLoad);
@@ -257,14 +248,15 @@ MO.FEaiCockpitModuleNoticeView_setup = function FEaiCockpitModuleNoticeView_setu
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeView_draw = function FEaiCockpitModuleNoticeView_draw(graphic, rectangle, rate) {
+MO.FEaiCockpitNoticeView_draw = function FEaiCockpitNoticeView_draw(graphic, rectangle, rate) {
 }
+
 //==========================================================
 // <T>逻辑处理。</T>
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeView_processLogic = function FEaiCockpitModuleNoticeView_processLogic(){
+MO.FEaiCockpitNoticeView_processLogic = function FEaiCockpitNoticeView_processLogic(){
    var o = this;
 }
 
@@ -273,7 +265,7 @@ MO.FEaiCockpitModuleNoticeView_processLogic = function FEaiCockpitModuleNoticeVi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeView_dispose = function FEaiCockpitModuleNoticeView_dispose() {
+MO.FEaiCockpitNoticeView_dispose = function FEaiCockpitNoticeView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

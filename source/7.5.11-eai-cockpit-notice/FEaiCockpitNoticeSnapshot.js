@@ -5,7 +5,7 @@
 // @author sunpeng
 // @history 151104
 //==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot = function FEaiCockpitModuleNoticeSnapshot(o) {
+MO.FEaiCockpitNoticeSnapshot = function FEaiCockpitNoticeSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
@@ -15,16 +15,16 @@ MO.FEaiCockpitModuleNoticeSnapshot = function FEaiCockpitModuleNoticeSnapshot(o)
    o._bgImage              = null;
    //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitModuleNoticeSnapshot_onPaintBegin;
+   o.onPaintBegin          = MO.FEaiCockpitNoticeSnapshot_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleNoticeSnapshot_construct;
+   o.construct             = MO.FEaiCockpitNoticeSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleNoticeSnapshot_setup;
-   o.processLogic          = MO.FEaiCockpitModuleNoticeSnapshot_processLogic;
-   o.onNoticeFetch         = MO.FEaiCockpitModuleNoticeSnapshot_onNoticeFetch;
+   o.setup                 = MO.FEaiCockpitNoticeSnapshot_setup;
+   o.processLogic          = MO.FEaiCockpitNoticeSnapshot_processLogic;
+   o.onNoticeFetch         = MO.FEaiCockpitNoticeSnapshot_onNoticeFetch;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleNoticeSnapshot_dispose;
+   o.dispose               = MO.FEaiCockpitNoticeSnapshot_dispose;
    return o;
 }
 
@@ -33,7 +33,7 @@ MO.FEaiCockpitModuleNoticeSnapshot = function FEaiCockpitModuleNoticeSnapshot(o)
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot_onPaintBegin = function FEaiCockpitModuleNoticeSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitNoticeSnapshot_onPaintBegin = function FEaiCockpitNoticeSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -54,7 +54,7 @@ MO.FEaiCockpitModuleNoticeSnapshot_onPaintBegin = function FEaiCockpitModuleNoti
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot_construct = function FEaiCockpitModuleNoticeSnapshot_construct() {
+MO.FEaiCockpitNoticeSnapshot_construct = function FEaiCockpitNoticeSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -69,7 +69,7 @@ MO.FEaiCockpitModuleNoticeSnapshot_construct = function FEaiCockpitModuleNoticeS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot_setup = function FEaiCockpitModuleNoticeSnapshot_setup(){
+MO.FEaiCockpitNoticeSnapshot_setup = function FEaiCockpitNoticeSnapshot_setup(){
    var o = this;
    // 加载背景图
    o._bgImage = o.loadResourceImage('{eai.resource}/cockpit/notice/ground.png');
@@ -88,7 +88,7 @@ MO.FEaiCockpitModuleNoticeSnapshot_setup = function FEaiCockpitModuleNoticeSnaps
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot_processLogic = function FEaiCockpitModuleNoticeSnapshot_processLogic() {
+MO.FEaiCockpitNoticeSnapshot_processLogic = function FEaiCockpitNoticeSnapshot_processLogic() {
    var o = this;
    if (o._dataTicker.process()) {
       var notice = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
@@ -104,7 +104,7 @@ MO.FEaiCockpitModuleNoticeSnapshot_processLogic = function FEaiCockpitModuleNoti
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot_onNoticeFetch = function FEaiCockpitModuleNoticeSnapshot_onNoticeFetch(event) {
+MO.FEaiCockpitNoticeSnapshot_onNoticeFetch = function FEaiCockpitNoticeSnapshot_onNoticeFetch(event) {
    var o = this;
    var content = event.content;
    // 读取数据
@@ -131,7 +131,7 @@ MO.FEaiCockpitModuleNoticeSnapshot_onNoticeFetch = function FEaiCockpitModuleNot
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleNoticeSnapshot_dispose = function FEaiCockpitModuleNoticeSnapshot_dispose() {
+MO.FEaiCockpitNoticeSnapshot_dispose = function FEaiCockpitNoticeSnapshot_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

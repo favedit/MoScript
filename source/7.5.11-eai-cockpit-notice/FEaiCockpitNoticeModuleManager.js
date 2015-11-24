@@ -48,15 +48,8 @@ MO.FEaiCockpitNoticeModuleManager_setup = function FEaiCockpitNoticeModuleManage
    var viewDisplay = o._viewDisplay;
    //..........................................................
    // 创建模块
-   // o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
-   // o._catalogModule = o.createModule(MO.FEaiCockpitForecastViewCatalog);
-   // o._logic001Module = o.createModule(MO.FEaiCockpitForecastLogic001);
-   // o._logic002Module = o.createModule(MO.FEaiCockpitForecastLogic002);
-   // o._logic003Module = o.createModule(MO.FEaiCockpitForecastLogic003);
-   // o._logic004Module = o.createModule(MO.FEaiCockpitForecastLogic004);
-   // o._logic005Module = o.createModule(MO.FEaiCockpitForecastLogic005);
-   // o._logic006Module = o.createModule(MO.FEaiCockpitForecastLogic006);
-   o._scoreModule = o.createModule(MO.FEaiCockpitForecastViewScore);
+   o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
+   o._mapModule = o.createModule(MO.FEaiCockpitNoticeMap);
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();

@@ -5,23 +5,22 @@
 // @author maocy
 // @history 151101
 //==========================================================
-MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
+MO.FEaiCockpitNotice = function FEaiCockpitNotice(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitLogicModule);
    //..........................................................
    // @attribute
-   o._name          = 'forecast';
-   o._typeCd        = MO.EEaiCockpitModule.Logic;
-   o._dataTicker    = null;
-   o._slideshow     = true;
+   o._name      = 'notice';
+   o._typeCd    = MO.EEaiCockpitModule.Logic;
+   o._slideshow = true;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitForecast_construct;
+   o.construct  = MO.FEaiCockpitNotice_construct;
    // @method
-   o.setup          = MO.FEaiCockpitForecast_setup;
+   o.setup      = MO.FEaiCockpitNotice_setup;
    // @method
-   o.process        = MO.FEaiCockpitForecast_process;
+   o.process    = MO.FEaiCockpitNotice_process;
    // @method
-   o.dispose        = MO.FEaiCockpitForecast_dispose;
+   o.dispose    = MO.FEaiCockpitNotice_dispose;
    return o;
 }
 
@@ -30,7 +29,7 @@ MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_construct = function FEaiCockpitForecast_construct(){
+MO.FEaiCockpitNotice_construct = function FEaiCockpitNotice_construct(){
    var o = this;
    o.__base.FEaiCockpitLogicModule.construct.call(o);
 }
@@ -40,22 +39,23 @@ MO.FEaiCockpitForecast_construct = function FEaiCockpitForecast_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_setup = function FEaiCockpitForecast_setup(){
+MO.FEaiCockpitNotice_setup = function FEaiCockpitNotice_setup(){
    var o = this;
    o.__base.FEaiCockpitLogicModule.setup.call(o);
    // 创建控件
-   o._controlSnapshot = o.createControl(MO.FEaiCockpitForecastSnapshot);
-   o._controlView = o.createControl(MO.FEaiCockpitForecastView);
+   o._controlSnapshot = o.createControl(MO.FEaiCockpitNoticeSnapshot);
+   o._controlView = o.createControl(MO.FEaiCockpitNoticeView);
    // 配置模块管理器
-   o.setupModuleManager(MO.FEaiCockpitForecastModuleManager);
+   o.setupModuleManager(MO.FEaiCockpitNoticeModuleManager);
 }
 
 //==========================================================
-// <T>逻辑处理。</T>
+// <T>从输入流反序列化数据。</T>
 //
 // @method
+// @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitForecast_process = function FEaiCockpitForecast_process(){
+MO.FEaiCockpitNotice_process = function FEaiCockpitNotice_process(){
    var o = this;
    o.__base.FEaiCockpitLogicModule.process.call(o);
 }
@@ -65,7 +65,7 @@ MO.FEaiCockpitForecast_process = function FEaiCockpitForecast_process(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_dispose = function FEaiCockpitForecast_dispose(){
+MO.FEaiCockpitNotice_dispose = function FEaiCockpitNotice_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitLogicModule.dispose.call(o);

@@ -31,6 +31,7 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    o.construct            = MO.FEaiCockpitModule_construct;
    // @method
    o.setup                = MO.FEaiCockpitModule_setup;
+   o.createControl        = MO.FEaiCockpitModule_createControl;
    o.showView             = MO.FEaiCockpitModule_showView;
    // @method
    o.processResize        = MO.FEaiCockpitModule_processResize;
@@ -74,6 +75,22 @@ MO.FEaiCockpitModule_setup = function FEaiCockpitModule_setup(){
 }
 
 //==========================================================
+// <T>创建一个控件。</T>
+//
+// @method
+// @param clazz:Function 类对象
+// @return 控件
+//==========================================================
+MO.FEaiCockpitModule_createControl = function FEaiCockpitModule_createControl(clazz){
+   var o = this;
+   var control = MO.Class.create(clazz);
+   control.linkGraphicContext(o);
+   control.setParentModule(o);
+   control.setup();
+   return control;
+}
+
+//==========================================================
 // <T>显示视图。</T>
 //
 // @method
@@ -82,9 +99,17 @@ MO.FEaiCockpitModule_showView = function FEaiCockpitModule_showView(visible){
    var o = this;
    var view = o.controlView();
    view.setVisible(visible);
-   var viewDisplay = o.viewDisplay();
-   if(viewDisplay){
-      viewDisplay.setVisible(visible);
+   var moduleManager = o._moduleManager;
+   if(moduleManager){
+      var snapshotDisplay = moduleManager.snapshotDisplay();
+      var viewDisplay = moduleManager.viewDisplay();
+      if(visible){
+         snapshotDisplay.setVisible(true);
+         viewDisplay.setVisible(false);
+      }else{
+         snapshotDisplay.setVisible(false);
+         viewDisplay.setVisible(false);
+      }
    }
 }
 

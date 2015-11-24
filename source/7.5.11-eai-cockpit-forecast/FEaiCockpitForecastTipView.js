@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitForecastViewScoreView = function FEaiCockpitForecastViewScoreView(o) {
+MO.FEaiCockpitForecastTipView = function FEaiCockpitForecastTipView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @attribute
@@ -17,15 +17,15 @@ MO.FEaiCockpitForecastViewScoreView = function FEaiCockpitForecastViewScoreView(
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitForecastViewScoreView_onPaintBegin;
+   o.onPaintBegin          = MO.FEaiCockpitForecastTipView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitForecastViewScoreView_construct;
+   o.construct             = MO.FEaiCockpitForecastTipView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitForecastViewScoreView_setup;
-   o.processLogic          = MO.FEaiCockpitForecastViewScoreView_processLogic;
+   o.setup                 = MO.FEaiCockpitForecastTipView_setup;
+   o.processLogic          = MO.FEaiCockpitForecastTipView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitForecastViewScoreView_dispose;
+   o.dispose               = MO.FEaiCockpitForecastTipView_dispose;
    return o;
 }
 
@@ -34,7 +34,7 @@ MO.FEaiCockpitForecastViewScoreView = function FEaiCockpitForecastViewScoreView(
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreView_onPaintBegin = function FEaiCockpitForecastViewScoreView_onPaintBegin(event) {
+MO.FEaiCockpitForecastTipView_onPaintBegin = function FEaiCockpitForecastTipView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
    // 获得变量
@@ -47,7 +47,7 @@ MO.FEaiCockpitForecastViewScoreView_onPaintBegin = function FEaiCockpitForecastV
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreView_construct = function FEaiCockpitForecastViewScoreView_construct() {
+MO.FEaiCockpitForecastTipView_construct = function FEaiCockpitForecastTipView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -60,7 +60,7 @@ MO.FEaiCockpitForecastViewScoreView_construct = function FEaiCockpitForecastView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreView_setup = function FEaiCockpitForecastViewScoreView_setup(){
+MO.FEaiCockpitForecastTipView_setup = function FEaiCockpitForecastTipView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -70,7 +70,7 @@ MO.FEaiCockpitForecastViewScoreView_setup = function FEaiCockpitForecastViewScor
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreView_processLogic = function FEaiCockpitForecastViewScoreView_processLogic(){
+MO.FEaiCockpitForecastTipView_processLogic = function FEaiCockpitForecastTipView_processLogic(){
    var o = this;
 }
 
@@ -79,7 +79,7 @@ MO.FEaiCockpitForecastViewScoreView_processLogic = function FEaiCockpitForecastV
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreView_dispose = function FEaiCockpitForecastViewScoreView_dispose() {
+MO.FEaiCockpitForecastTipView_dispose = function FEaiCockpitForecastTipView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

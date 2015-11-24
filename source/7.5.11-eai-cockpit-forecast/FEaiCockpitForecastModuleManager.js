@@ -9,17 +9,24 @@ MO.FEaiCockpitForecastModuleManager = function FEaiCockpitForecastModuleManager(
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModuleManager);
    //..........................................................
    // @attribute
-   o._catalogModule = MO.Class.register(o, new MO.AGetter('_catalogModule'));
-   o._scoreModule   = MO.Class.register(o, new MO.AGetter('_scoreModule'));
+   o._navigatorModule = MO.Class.register(o, new MO.AGetter('_navigatorModule'));
+   o._catalogModule   = MO.Class.register(o, new MO.AGetter('_catalogModule'));
+   o._logic001Module  = MO.Class.register(o, new MO.AGetter('_logic001Module'));
+   o._logic002Module  = MO.Class.register(o, new MO.AGetter('_logic002Module'));
+   o._logic003Module  = MO.Class.register(o, new MO.AGetter('_logic003Module'));
+   o._logic004Module  = MO.Class.register(o, new MO.AGetter('_logic004Module'));
+   o._logic005Module  = MO.Class.register(o, new MO.AGetter('_logic005Module'));
+   o._logic006Module  = MO.Class.register(o, new MO.AGetter('_logic006Module'));
+   o._tipModule       = MO.Class.register(o, new MO.AGetter('_tipModule'));
    // @attribute
-   o._autoPlay      = false;
+   o._autoPlay        = false;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitForecastModuleManager_construct;
+   o.construct        = MO.FEaiCockpitForecastModuleManager_construct;
    // @method
-   o.setup          = MO.FEaiCockpitForecastModuleManager_setup;
+   o.setup            = MO.FEaiCockpitForecastModuleManager_setup;
    // @method
-   o.dispose        = MO.FEaiCockpitForecastModuleManager_dispose;
+   o.dispose          = MO.FEaiCockpitForecastModuleManager_dispose;
    return o;
 }
 
@@ -34,7 +41,7 @@ MO.FEaiCockpitForecastModuleManager_construct = function FEaiCockpitForecastModu
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>配置处理。</T>
 //
 // @method
 //==========================================================
@@ -47,14 +54,14 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    //..........................................................
    // 创建模块
    o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
-   o._catalogModule = o.createModule(MO.FEaiCockpitForecastViewCatalog);
+   o._catalogModule = o.createModule(MO.FEaiCockpitForecastCatalog);
    o._logic001Module = o.createModule(MO.FEaiCockpitForecastLogic001);
    o._logic002Module = o.createModule(MO.FEaiCockpitForecastLogic002);
    o._logic003Module = o.createModule(MO.FEaiCockpitForecastLogic003);
    o._logic004Module = o.createModule(MO.FEaiCockpitForecastLogic004);
    o._logic005Module = o.createModule(MO.FEaiCockpitForecastLogic005);
    o._logic006Module = o.createModule(MO.FEaiCockpitForecastLogic006);
-   o._scoreModule = o.createModule(MO.FEaiCockpitForecastViewScore);
+   o._tipModule = o.createModule(MO.FEaiCockpitForecastTip);
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();
@@ -89,90 +96,6 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
       view.placeInCell();
       viewDisplay.pushRenderable(renderable);
    }
-}
-
-//==========================================================
-// <T>设置焦点控件。</T>
-//
-// @method
-// @param modeCd:EEaiCockpitMode 模式
-// @param module:FEaiCockpitModule 模块
-//==========================================================
-MO.FEaiCockpitForecastModuleManager_selectModeCd = function FEaiCockpitForecastModuleManager_selectModeCd(modeCd, module){
-   var o = this;
-   debugger
-   var moveSpeed = 16;
-   var logoDisplay = o._logoDisplay;
-   var snapshotDisplay = o._snapshotDisplay;
-   var viewDisplay = o._viewDisplay;
-   var stage = o._scene.activeStage();
-   var camera = stage.camera();
-   var modules = o._modules;
-   var moduleCount = modules.count();
-   switch(modeCd){
-      case MO.EEaiCockpitMode.Logo:
-         // 显示控件
-         logoDisplay.setVisible(true);
-         snapshotDisplay.setVisible(false);
-         viewDisplay.setVisible(false);
-         // 移动相机
-         var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-         action.setSpeed(moveSpeed);
-         action.link(camera);
-         action.targetPosition().set(0, 0, -13);
-         o._mainTimeline.pushAction(action);
-         break;
-      case MO.EEaiCockpitMode.Main:
-         // 停止轮播清空动画
-         o._autoPlay = false;
-         o._mainTimeline.clear();
-         // 显示控件
-         logoDisplay.setVisible(false);
-         snapshotDisplay.setVisible(true);
-         viewDisplay.setVisible(false);
-         // 移动相机
-         var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-         action.setSpeed(moveSpeed);
-         action.link(camera);
-         action.targetPosition().set(0, 0, -7.6);
-         o._mainTimeline.pushAction(action);         
-         // 移动控件位置
-         //for(var n = 0; n < moduleCount; n++){
-         //   var module = modules.at(n);
-         //   var snapshot = module.controlSnapshot();
-         //   var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-         //   action.link(snapshot);
-         //   action.targetMatrix().set(0, Math.PI, 0);
-         //   o._mainTimeline.pushAction(action);
-         //}
-         break;
-      case MO.EEaiCockpitMode.Icon:
-         break;
-      case MO.EEaiCockpitMode.Module:
-         if (module.slideshow()) {
-            // 显示控件
-            logoDisplay.setVisible(false);
-            snapshotDisplay.setVisible(false);
-            viewDisplay.setVisible(true);
-            o.selectModuleView(module);
-            // 移动相机
-            var action = MO.Class.create(MO.FE3dCameraTimelineAction);
-            action.setSpeed(moveSpeed);
-            action.link(camera);
-            action.targetPosition().set(0, 0, -3);
-            o._mainTimeline.pushAction(action);
-            // 启动轮播
-            o._autoPlay = true;
-            o.startAutoPlay(module);
-            break;
-         }
-         else {
-            return;
-         }
-         
-   }
-   o._modeCd = modeCd;
-   o._focusModule = module;
 }
 
 //==========================================================

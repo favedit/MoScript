@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151107
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot = function FEaiCockpitForecastViewScoreSnapshot(o) {
+MO.FEaiCockpitForecastTipSnapshot = function FEaiCockpitForecastTipSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
@@ -29,22 +29,22 @@ MO.FEaiCockpitForecastViewScoreSnapshot = function FEaiCockpitForecastViewScoreS
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onDataFetch           = MO.FEaiCockpitForecastViewScoreSnapshot_onDataFetch;
-   o.onPaintBegin          = MO.FEaiCockpitForecastViewScoreSnapshot_onPaintBegin;
-   o.onPaintEnd            = MO.FEaiCockpitForecastViewScoreSnapshot_onPaintEnd;
+   o.onDataFetch           = MO.FEaiCockpitForecastTipSnapshot_onDataFetch;
+   o.onPaintBegin          = MO.FEaiCockpitForecastTipSnapshot_onPaintBegin;
+   o.onPaintEnd            = MO.FEaiCockpitForecastTipSnapshot_onPaintEnd;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitForecastViewScoreSnapshot_construct;
+   o.construct             = MO.FEaiCockpitForecastTipSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitForecastViewScoreSnapshot_setup;
-   o.setData               = MO.FEaiCockpitForecastViewScoreSnapshot_setData;
-   o.roll                  = MO.FEaiCockpitForecastViewScoreSnapshot_roll;
-   o.nextPage              = MO.FEaiCockpitForecastViewScoreSnapshot_nextPage;
-   o.processLogic          = MO.FEaiCockpitForecastViewScoreSnapshot_processLogic;
-   o.selectedIndex         = MO.FEaiCockpitForecastViewScoreSnapshot_selectedIndex;
-   o.showChart             = MO.FEaiCockpitForecastViewScoreSnapshot_showChart;
+   o.setup                 = MO.FEaiCockpitForecastTipSnapshot_setup;
+   o.setData               = MO.FEaiCockpitForecastTipSnapshot_setData;
+   o.roll                  = MO.FEaiCockpitForecastTipSnapshot_roll;
+   o.nextPage              = MO.FEaiCockpitForecastTipSnapshot_nextPage;
+   o.processLogic          = MO.FEaiCockpitForecastTipSnapshot_processLogic;
+   o.selectedIndex         = MO.FEaiCockpitForecastTipSnapshot_selectedIndex;
+   o.showChart             = MO.FEaiCockpitForecastTipSnapshot_showChart;
    // @method
-   o.dispose               = MO.FEaiCockpitForecastViewScoreSnapshot_dispose;
+   o.dispose               = MO.FEaiCockpitForecastTipSnapshot_dispose;
    //..........................................................
    o._comingSoonImage      = null;
    //..........................................................
@@ -57,7 +57,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot = function FEaiCockpitForecastViewScoreS
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
- MO.FEaiCockpitForecastViewScoreSnapshot_onDataFetch = function FEaiCockpitForecastViewScoreSnapshot_onDataFetch(event){
+ MO.FEaiCockpitForecastTipSnapshot_onDataFetch = function FEaiCockpitForecastTipSnapshot_onDataFetch(event){
    var o = this;
    var content = event.content;
    // 读取数据
@@ -82,7 +82,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot = function FEaiCockpitForecastViewScoreS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_onPaintBegin = function FEaiCockpitForecastViewScoreSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitForecastTipSnapshot_onPaintBegin = function FEaiCockpitForecastTipSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -103,7 +103,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_onPaintBegin = function FEaiCockpitForec
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_onPaintEnd = function FEaiCockpitForecastViewScoreSnapshot_onPaintEnd(event) {
+MO.FEaiCockpitForecastTipSnapshot_onPaintEnd = function FEaiCockpitForecastTipSnapshot_onPaintEnd(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
    // 获得变量
@@ -123,7 +123,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_onPaintEnd = function FEaiCockpitForecas
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_construct = function FEaiCockpitForecastViewScoreSnapshot_construct() {
+MO.FEaiCockpitForecastTipSnapshot_construct = function FEaiCockpitForecastTipSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
@@ -140,7 +140,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_construct = function FEaiCockpitForecast
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_setup = function FEaiCockpitForecastViewScoreSnapshot_setup(){
+MO.FEaiCockpitForecastTipSnapshot_setup = function FEaiCockpitForecastTipSnapshot_setup(){
    var o = this;
    // 加载图片
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/ground.png');
@@ -180,7 +180,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_setup = function FEaiCockpitForecastView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_setData = function FEaiCockpitForecastViewScoreSnapshot_setData(){
+MO.FEaiCockpitForecastTipSnapshot_setData = function FEaiCockpitForecastTipSnapshot_setData(){
    var o = this;
    var data = o._data;
    var count = data.items().count();
@@ -195,7 +195,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_setData = function FEaiCockpitForecastVi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_roll = function FEaiCockpitForecastViewScoreSnapshot_roll() {
+MO.FEaiCockpitForecastTipSnapshot_roll = function FEaiCockpitForecastTipSnapshot_roll() {
    var o = this;
    if(o._data.items() == null) return;
 
@@ -219,7 +219,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_roll = function FEaiCockpitForecastViewS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_nextPage = function FEaiCockpitForecastViewScoreSnapshot_nextPage() {
+MO.FEaiCockpitForecastTipSnapshot_nextPage = function FEaiCockpitForecastTipSnapshot_nextPage() {
    var o = this;
    o._page ++;
    if(o._page > o._pageMax) {
@@ -250,7 +250,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_nextPage = function FEaiCockpitForecastV
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_selectedIndex = function FEaiCockpitForecastViewScoreSnapshot_selectedIndex() {
+MO.FEaiCockpitForecastTipSnapshot_selectedIndex = function FEaiCockpitForecastTipSnapshot_selectedIndex() {
    var o = this;
    return (o._page - 1) * o._pageItemsMax + o._index - 1;
 }
@@ -260,7 +260,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_selectedIndex = function FEaiCockpitFore
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_processLogic = function FEaiCockpitForecastViewScoreSnapshot_processLogic(){
+MO.FEaiCockpitForecastTipSnapshot_processLogic = function FEaiCockpitForecastTipSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
       var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
@@ -276,7 +276,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_processLogic = function FEaiCockpitForec
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_showChart = function FEaiCockpitForecastViewScoreSnapshot_showChart() {
+MO.FEaiCockpitForecastTipSnapshot_showChart = function FEaiCockpitForecastTipSnapshot_showChart() {
    var o = this;
    //var itemData = o._data.items().at(o.selectedIndex);
    var index = o.selectedIndex();
@@ -293,7 +293,7 @@ MO.FEaiCockpitForecastViewScoreSnapshot_showChart = function FEaiCockpitForecast
 //==========================================================
 // @method
 //==========================================================
-MO.FEaiCockpitForecastViewScoreSnapshot_dispose = function FEaiCockpitForecastViewScoreSnapshot_dispose() {
+MO.FEaiCockpitForecastTipSnapshot_dispose = function FEaiCockpitForecastTipSnapshot_dispose() {
    var o = this;
    // 释放属性
    o._data = MO.Lang.Object.dispose(o._data);

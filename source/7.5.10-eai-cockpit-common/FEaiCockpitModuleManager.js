@@ -9,33 +9,34 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._modeCd          = MO.Class.register(o, new MO.AGetSet('_modeCd'));
-   o._scene           = MO.Class.register(o, new MO.AGetSet('_scene'));
-   o._mainTimeline    = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
+   o._parentModuleManager = MO.Class.register(o, new MO.AGetSet('_parentModuleManager'));
+   o._scene               = MO.Class.register(o, new MO.AGetSet('_scene'));
+   o._modeCd              = MO.Class.register(o, new MO.AGetSet('_modeCd'));
+   o._mainTimeline        = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    // @attribute
-   o._cellCount       = MO.Class.register(o, new MO.AGetter('_cellCount'));
-   o._modules         = MO.Class.register(o, new MO.AGetter('_modules'));
+   o._cellCount           = MO.Class.register(o, new MO.AGetter('_cellCount'));
+   o._modules             = MO.Class.register(o, new MO.AGetter('_modules'));
    // @attribute
-   o._display         = MO.Class.register(o, new MO.AGetter('_display'));
-   o._snapshotDisplay = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
-   o._viewDisplay     = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
+   o._display             = MO.Class.register(o, new MO.AGetter('_display'));
+   o._snapshotDisplay     = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
+   o._viewDisplay         = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
    // @attribute
-   o._focusModule     = MO.Class.register(o, new MO.AGetter('_focusModule'));
+   o._focusModule         = MO.Class.register(o, new MO.AGetter('_focusModule'));
    //..........................................................
    // @method
-   o.construct        = MO.FEaiCockpitModuleManager_construct;
+   o.construct            = MO.FEaiCockpitModuleManager_construct;
    // @method
-   o.setup            = MO.FEaiCockpitModuleManager_setup;
-   o.register         = MO.FEaiCockpitModuleManager_register;
-   o.unregister       = MO.FEaiCockpitModuleManager_unregister;
-   o.createModule     = MO.FEaiCockpitModuleManager_createModule;
+   o.setup                = MO.FEaiCockpitModuleManager_setup;
+   o.register             = MO.FEaiCockpitModuleManager_register;
+   o.unregister           = MO.FEaiCockpitModuleManager_unregister;
+   o.createModule         = MO.FEaiCockpitModuleManager_createModule;
    // @method
-   o.placeCellControl = MO.FEaiCockpitModuleManager_placeCellControl;
-   o.selectModuleView = MO.FEaiCockpitModuleManager_selectModuleView;
-   o.processResize    = MO.FEaiCockpitModuleManager_processResize;
-   o.process          = MO.FEaiCockpitModuleManager_process;
+   o.placeCellControl     = MO.FEaiCockpitModuleManager_placeCellControl;
+   o.selectModuleView     = MO.FEaiCockpitModuleManager_selectModuleView;
+   o.processResize        = MO.FEaiCockpitModuleManager_processResize;
+   o.process              = MO.FEaiCockpitModuleManager_process;
    // @method
-   o.dispose          = MO.FEaiCockpitModuleManager_dispose;
+   o.dispose              = MO.FEaiCockpitModuleManager_dispose;
    return o;
 }
 
@@ -60,6 +61,10 @@ MO.FEaiCockpitModuleManager_construct = function FEaiCockpitModuleManager_constr
 //==========================================================
 MO.FEaiCockpitModuleManager_setup = function FEaiCockpitModuleManager_setup(){
    var o = this;
+   // 设置场景
+   if(!o._scene && o._parentModuleManager){
+      o._scene = o._parentModuleManager.scene();
+   }
    // 创建显示对象
    var display = o._display = MO.Class.create(MO.FE3dDisplayContainer);
    display.linkGraphicContext(o);
@@ -104,6 +109,7 @@ MO.FEaiCockpitModuleManager_unregister = function FEaiCockpitModuleManager_unreg
 //
 // @method
 // @param clazz:Function 类对象
+// @return 模块
 //==========================================================
 MO.FEaiCockpitModuleManager_createModule = function FEaiCockpitModuleManager_createModule(clazz){
    var o = this;
@@ -215,6 +221,8 @@ MO.FEaiCockpitModuleManager_process = function FEaiCockpitModuleManager_process(
 MO.FEaiCockpitModuleManager_dispose = function FEaiCockpitModuleManager_dispose(){
    var o = this;
    // 释放属性
+   o._snapshotDisplay = MO.Lang.Object.dispose(o._snapshotDisplay);
+   o._viewDisplay = MO.Lang.Object.dispose(o._viewDisplay);
    o._display = MO.Lang.Object.dispose(o._display);
    o._modules = MO.Lang.Object.dispose(o._modules, true);
    o._cellCount = MO.Lang.Object.dispose(o._cellCount);

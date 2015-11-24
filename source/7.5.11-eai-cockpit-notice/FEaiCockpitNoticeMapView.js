@@ -1,32 +1,55 @@
 //==========================================================
-// <T>预测视图页面。</T>
+// <T>号令视图页面。</T>
 //
 // @class
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitForecastView = function FEaiCockpitForecastView(o) {
+MO.FEaiCockpitNoticeMapView = function FEaiCockpitNoticeMapView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
-   // o._backgroundUri        = '{eai.resource}/cockpit/forecast/view.png';
+   // o._backgroundImage      = null;
+   // o._logoImage            = null;
+   // o._topBar               = null;
+   // o._userInfoView         = MO.Class.register(o, new MO.AGetter('_userInfo'));
+   // o._newOrderImage        = null;
+   // o._orderListImage       = null;
+   // o._pbarBgImage          = null;
+   // o._pbarFillImage        = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._mainLineWidth        = MO.Class.register(o, new MO.AGetSet('_mainLineWidth'), 5);
+   
    //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitForecastView_onPaintBegin;
+   o.textFun               = MO.FEaiCockpitNoticeMapView_textFun;
+   o.onImageLoad           = MO.FEaiCockpitNoticeMapView_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitNoticeMapView_onPaintBegin;
+   
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitForecastView_construct;
+   o.construct             = MO.FEaiCockpitNoticeMapView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitForecastView_setup;
-   o.processLogic          = MO.FEaiCockpitForecastView_processLogic;
+   o.setup                 = MO.FEaiCockpitNoticeMapView_setup;
+   o.draw                  = MO.FEaiCockpitNoticeMapView_draw;
+   o.processLogic          = MO.FEaiCockpitNoticeMapView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitForecastView_dispose;
+
+   o.dispose               = MO.FEaiCockpitNoticeMapView_dispose;
    return o;
+}
+
+//==========================================================
+// <T>图片加载完成处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitNoticeMapView_onImageLoad = function FEaiCockpitNoticeMapView_onImageLoad() {
+   this.dirty();
 }
 
 //==========================================================
@@ -34,12 +57,9 @@ MO.FEaiCockpitForecastView = function FEaiCockpitForecastView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastView_onPaintBegin = function FEaiCockpitForecastView_onPaintBegin(event) {
+MO.FEaiCockpitNoticeMapView_onPaintBegin = function FEaiCockpitNoticeMapView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
 }
 
 //==========================================================
@@ -47,7 +67,7 @@ MO.FEaiCockpitForecastView_onPaintBegin = function FEaiCockpitForecastView_onPai
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastView_construct = function FEaiCockpitForecastView_construct() {
+MO.FEaiCockpitNoticeMapView_construct = function FEaiCockpitNoticeMapView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -60,7 +80,7 @@ MO.FEaiCockpitForecastView_construct = function FEaiCockpitForecastView_construc
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastView_setup = function FEaiCockpitForecastView_setup(){
+MO.FEaiCockpitNoticeMapView_setup = function FEaiCockpitNoticeMapView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -70,9 +90,8 @@ MO.FEaiCockpitForecastView_setup = function FEaiCockpitForecastView_setup(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastView_processLogic = function FEaiCockpitForecastView_processLogic(){
+MO.FEaiCockpitNoticeMapView_processLogic = function FEaiCockpitNoticeMapView_processLogic(){
    var o = this;
-   o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
 
 //==========================================================
@@ -80,7 +99,7 @@ MO.FEaiCockpitForecastView_processLogic = function FEaiCockpitForecastView_proce
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastView_dispose = function FEaiCockpitForecastView_dispose() {
+MO.FEaiCockpitNoticeMapView_dispose = function FEaiCockpitNoticeMapView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);
