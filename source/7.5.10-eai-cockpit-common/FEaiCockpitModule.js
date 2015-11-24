@@ -32,6 +32,7 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    o.construct        = MO.FEaiCockpitModule_construct;
    // @method
    o.setup            = MO.FEaiCockpitModule_setup;
+   o.showView         = MO.FEaiCockpitModule_showView;
    // @method
    o.processResize    = MO.FEaiCockpitModule_processResize;
    o.process          = MO.FEaiCockpitModule_process;
@@ -71,6 +72,21 @@ MO.FEaiCockpitModule_setup = function FEaiCockpitModule_setup(){
    //loader.setup(MO.EG3dTexture.Flat2d, 'diffuse');
    //loader.loadUrl('{eai.resource}/cockpit/ground.jpg');
    //o._readyLoader.push(loader);
+}
+
+//==========================================================
+// <T>显示视图。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitModule_showView = function FEaiCockpitModule_showView(visible){
+   var o = this;
+   var view = o.controlView();
+   view.setVisible(visible);
+   var viewDisplay = o.viewDisplay();
+   if(viewDisplay){
+      viewDisplay.setVisible(visible);
+   }
 }
 
 //==========================================================

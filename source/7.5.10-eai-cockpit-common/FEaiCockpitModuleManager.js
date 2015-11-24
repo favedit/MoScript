@@ -151,19 +151,10 @@ MO.FEaiCockpitModuleManager_selectModuleView = function FEaiCockpitModuleManager
    var count = modules.count();
    for(var i = 0; i < count; i++){
       var findModule = modules.at(i);
-      var viewDisplay = findModule.viewDisplay();
-      var view = findModule.controlView();
       if(findModule == module){
-         view.setVisible(true);
-         if(viewDisplay){
-            viewDisplay.setVisible(true);
-         }
-         o._focusView = view;
+         findModule.showView(true);
       }else{
-         view.setVisible(false);
-         if(viewDisplay){
-            viewDisplay.setVisible(true);
-         }
+         findModule.showView(false);
       }
    }
 }
