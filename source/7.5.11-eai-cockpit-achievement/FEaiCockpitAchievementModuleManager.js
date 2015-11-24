@@ -47,7 +47,16 @@ MO.FEaiCockpitAchievementModuleManager_setup = function FEaiCockpitAchievementMo
    //..........................................................
    // 创建模块
    o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
-   o._dayModule = o.createModule(MO.FEaiCockpitAchievementDay);
+   //o._dayModule = o.createModule(MO.FEaiCockpitAchievementDay);
+   o._TitleAchievement = o.createModule(MO.FEaiCockpitAchievementTitleAchieve);
+   o._DayCurve = o.createModule(MO.FEaiCockpitAchievementDayCurve);
+   o._TitleRank = o.createModule(MO.FEaiCockpitAchievementTitleRank);
+   o._MonthCurve = o.createModule(MO.FEaiCockpitAchievementMonthCurve);
+   o._Radar = o.createModule(MO.FEaiCockpitAchievementRadar);
+   o._InvestmentRate = o.createModule(MO.FEaiCockpitAchievementInvestmentRate);
+   o._BusinessCard = o.createModule(MO.FEaiCockpitAchievementBusinessCard);
+   o._Histogram = o.createModule(MO.FEaiCockpitAchievementHistogram);
+   //o._image    = o.createModule(MO.FEaiCockpitAchievementHistogram);
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();

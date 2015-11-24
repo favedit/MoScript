@@ -5,28 +5,27 @@
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitAchievementView = function FEaiCockpitAchievementView(o) {
+MO.FEaiCockpitAchievementDayCurveView = function FEaiCockpitAchievementDayCurveView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
-   o._backgroundImage      = null;
    // @attribute
    //o._backgroundUri        = '{eai.resource}/cockpit/forecast/view.png';
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitAchievementView_onPaintBegin;
+   o.onPaintBegin          = MO.FEaiCockpitAchievementDayCurveView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitAchievementView_construct;
+   o.construct             = MO.FEaiCockpitAchievementDayCurveView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitAchievementView_setup;
-   o.processLogic          = MO.FEaiCockpitAchievementView_processLogic;
+   o.setup                 = MO.FEaiCockpitAchievementDayCurveView_setup;
+   o.processLogic          = MO.FEaiCockpitAchievementDayCurveView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitAchievementView_dispose;
+   o.dispose               = MO.FEaiCockpitAchievementDayCurveView_dispose;
    return o;
 }
 
@@ -35,14 +34,12 @@ MO.FEaiCockpitAchievementView = function FEaiCockpitAchievementView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitAchievementView_onPaintBegin = function FEaiCockpitAchievementView_onPaintBegin(event) {
+MO.FEaiCockpitAchievementDayCurveView_onPaintBegin = function FEaiCockpitAchievementDayCurveView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-  // graphic.drawRectangle(rectangle.left,rectangle.top+10,rectangle.width,rectangle.height,'#ffffff',3);
-   //graphic.drawImage(o._backgroundImage,rectangle.left,rectangle.top/3,100,68);
 }
 
 //==========================================================
@@ -50,7 +47,7 @@ MO.FEaiCockpitAchievementView_onPaintBegin = function FEaiCockpitAchievementView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitAchievementView_construct = function FEaiCockpitAchievementView_construct() {
+MO.FEaiCockpitAchievementDayCurveView_construct = function FEaiCockpitAchievementDayCurveView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -63,11 +60,9 @@ MO.FEaiCockpitAchievementView_construct = function FEaiCockpitAchievementView_co
 //
 // @method
 //==========================================================
-MO.FEaiCockpitAchievementView_setup = function FEaiCockpitAchievementView_setup(){
+MO.FEaiCockpitAchievementDayCurveView_setup = function FEaiCockpitAchievementDayCurveView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
-   //o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/investment.png');
-
 }
 
 //==========================================================
@@ -75,7 +70,7 @@ MO.FEaiCockpitAchievementView_setup = function FEaiCockpitAchievementView_setup(
 //
 // @method
 //==========================================================
-MO.FEaiCockpitAchievementView_processLogic = function FEaiCockpitAchievementView_processLogic(){
+MO.FEaiCockpitAchievementDayCurveView_processLogic = function FEaiCockpitAchievementDayCurveView_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
@@ -85,7 +80,7 @@ MO.FEaiCockpitAchievementView_processLogic = function FEaiCockpitAchievementView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitAchievementView_dispose = function FEaiCockpitAchievementView_dispose() {
+MO.FEaiCockpitAchievementDayCurveView_dispose = function FEaiCockpitAchievementDayCurveView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);
