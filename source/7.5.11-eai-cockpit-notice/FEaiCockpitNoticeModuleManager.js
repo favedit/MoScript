@@ -49,7 +49,16 @@ MO.FEaiCockpitNoticeModuleManager_setup = function FEaiCockpitNoticeModuleManage
    //..........................................................
    // 创建模块
    o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
+   //地图
    o._mapModule = o.createModule(MO.FEaiCockpitNoticeMap);
+   //用户信息
+   o._userModule = o.createModule(MO.FEaiCockpitNoticeUser);
+   //最新号令
+   o._newsetModule = o.createModule(MO.FEaiCockpitNoticeNewest);
+   //号令列表
+   o._tableModule = o.createModule(MO.FEaiCockpitNoticeTable);
+   //号令动态
+   o._dynamicModule = o.createModule(MO.FEaiCockpitNoticeDynamic);
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();

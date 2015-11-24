@@ -1,11 +1,11 @@
 //==========================================================
-// <T>号令地图页面。</T>
+// <T>号令视图页面。</T>
 //
 // @class
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitNoticeMapView = function FEaiCockpitNoticeMapView(o) {
+MO.FEaiCockpitNoticeDynamicView = function FEaiCockpitNoticeDynamicView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @attribute
@@ -26,20 +26,20 @@ MO.FEaiCockpitNoticeMapView = function FEaiCockpitNoticeMapView(o) {
    
    //..........................................................
    // @event
-   o.textFun               = MO.FEaiCockpitNoticeMapView_textFun;
-   o.onImageLoad           = MO.FEaiCockpitNoticeMapView_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitNoticeMapView_onPaintBegin;
+   o.textFun               = MO.FEaiCockpitNoticeDynamicView_textFun;
+   o.onImageLoad           = MO.FEaiCockpitNoticeDynamicView_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitNoticeDynamicView_onPaintBegin;
    
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitNoticeMapView_construct;
+   o.construct             = MO.FEaiCockpitNoticeDynamicView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitNoticeMapView_setup;
-   o.draw                  = MO.FEaiCockpitNoticeMapView_draw;
-   o.processLogic          = MO.FEaiCockpitNoticeMapView_processLogic;
+   o.setup                 = MO.FEaiCockpitNoticeDynamicView_setup;
+   o.draw                  = MO.FEaiCockpitNoticeDynamicView_draw;
+   o.processLogic          = MO.FEaiCockpitNoticeDynamicView_processLogic;
    // @method
 
-   o.dispose               = MO.FEaiCockpitNoticeMapView_dispose;
+   o.dispose               = MO.FEaiCockpitNoticeDynamicView_dispose;
    return o;
 }
 
@@ -48,7 +48,7 @@ MO.FEaiCockpitNoticeMapView = function FEaiCockpitNoticeMapView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapView_onImageLoad = function FEaiCockpitNoticeMapView_onImageLoad() {
+MO.FEaiCockpitNoticeDynamicView_onImageLoad = function FEaiCockpitNoticeDynamicView_onImageLoad() {
    this.dirty();
 }
 
@@ -57,7 +57,7 @@ MO.FEaiCockpitNoticeMapView_onImageLoad = function FEaiCockpitNoticeMapView_onIm
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapView_onPaintBegin = function FEaiCockpitNoticeMapView_onPaintBegin(event) {
+MO.FEaiCockpitNoticeDynamicView_onPaintBegin = function FEaiCockpitNoticeDynamicView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
 }
@@ -67,7 +67,7 @@ MO.FEaiCockpitNoticeMapView_onPaintBegin = function FEaiCockpitNoticeMapView_onP
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapView_construct = function FEaiCockpitNoticeMapView_construct() {
+MO.FEaiCockpitNoticeDynamicView_construct = function FEaiCockpitNoticeDynamicView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -80,7 +80,7 @@ MO.FEaiCockpitNoticeMapView_construct = function FEaiCockpitNoticeMapView_constr
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapView_setup = function FEaiCockpitNoticeMapView_setup(){
+MO.FEaiCockpitNoticeDynamicView_setup = function FEaiCockpitNoticeDynamicView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -90,7 +90,7 @@ MO.FEaiCockpitNoticeMapView_setup = function FEaiCockpitNoticeMapView_setup(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapView_processLogic = function FEaiCockpitNoticeMapView_processLogic(){
+MO.FEaiCockpitNoticeDynamicView_processLogic = function FEaiCockpitNoticeDynamicView_processLogic(){
    var o = this;
 }
 
@@ -99,7 +99,7 @@ MO.FEaiCockpitNoticeMapView_processLogic = function FEaiCockpitNoticeMapView_pro
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapView_dispose = function FEaiCockpitNoticeMapView_dispose() {
+MO.FEaiCockpitNoticeDynamicView_dispose = function FEaiCockpitNoticeDynamicView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

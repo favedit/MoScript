@@ -1,26 +1,26 @@
 //==========================================================
-// <T>驾驶舱号令地图。</T>
+// <T>号令动态。</T>
 //
 // @class
 // @author maocy
 // @history 151101
 //==========================================================
-MO.FEaiCockpitNoticeMap = function FEaiCockpitNoticeMap(o){
+MO.FEaiCockpitNoticeDynamic = function FEaiCockpitNoticeDynamic(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name      = 'notice.map';
+   o._name      = 'notice.dynamic';
    o._typeCd    = MO.EEaiCockpitModule.Logic;
    o._slideshow = true;
    //..........................................................
    // @method
-   o.construct  = MO.FEaiCockpitNoticeMap_construct;
+   o.construct  = MO.FEaiCockpitNoticeDynamic_construct;
    // @method
-   o.setup      = MO.FEaiCockpitNoticeMap_setup;
+   o.setup      = MO.FEaiCockpitNoticeDynamic_setup;
    // @method
-   o.process    = MO.FEaiCockpitNoticeMap_process;
+   o.process    = MO.FEaiCockpitNoticeDynamic_process;
    // @method
-   o.dispose    = MO.FEaiCockpitNoticeMap_dispose;
+   o.dispose    = MO.FEaiCockpitNoticeDynamic_dispose;
    return o;
 }
 
@@ -29,7 +29,7 @@ MO.FEaiCockpitNoticeMap = function FEaiCockpitNoticeMap(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMap_construct = function FEaiCockpitNoticeMap_construct(){
+MO.FEaiCockpitNoticeDynamic_construct = function FEaiCockpitNoticeDynamic_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
 }
@@ -39,11 +39,11 @@ MO.FEaiCockpitNoticeMap_construct = function FEaiCockpitNoticeMap_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMap_setup = function FEaiCockpitNoticeMap_setup(){
+MO.FEaiCockpitNoticeDynamic_setup = function FEaiCockpitNoticeDynamic_setup(){
    var o = this;
    // 创建控件
-   o._controlSnapshot = o.createControl(MO.FEaiCockpitNoticeMapSnapshot);
-   o._controlView = o.createControl(MO.FEaiCockpitNoticeMapView);
+   o._controlSnapshot = o.createControl(MO.FEaiCockpitNoticeDynamicSnapshot);
+   o._controlView = o.createControl(MO.FEaiCockpitNoticeDynamicView);
 }
 
 //==========================================================
@@ -52,7 +52,7 @@ MO.FEaiCockpitNoticeMap_setup = function FEaiCockpitNoticeMap_setup(){
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitNoticeMap_process = function FEaiCockpitNoticeMap_process(){
+MO.FEaiCockpitNoticeDynamic_process = function FEaiCockpitNoticeDynamic_process(){
    var o = this;
    // 创建缩略
    o.__base.FEaiCockpitModule.process.call(o);
@@ -63,7 +63,7 @@ MO.FEaiCockpitNoticeMap_process = function FEaiCockpitNoticeMap_process(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMap_dispose = function FEaiCockpitNoticeMap_dispose(){
+MO.FEaiCockpitNoticeDynamic_dispose = function FEaiCockpitNoticeDynamic_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitModule.dispose.call(o);

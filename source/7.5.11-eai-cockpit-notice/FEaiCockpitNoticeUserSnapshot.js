@@ -1,35 +1,34 @@
 //==========================================================
-// <T>号令地图。</T>
+// <T>号令用户。</T>
 //
 // @class
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitNoticeMapSnapshot = function FEaiCockpitNoticeMapSnapshot(o) {
+MO.FEaiCockpitNoticeUserSnapshot = function FEaiCockpitNoticeUserSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
-   o._groundImage          = null;
-   o._mapImage             = null;
+   o._userInfoImage        = null;
    o._fontTop              = null;
    // @attribute  
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitNoticeMapSnapshot_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitNoticeMapSnapshot_onPaintBegin;
+   o.onImageLoad           = MO.FEaiCockpitNoticeUserSnapshot_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin;
    
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitNoticeMapSnapshot_construct;
+   o.construct             = MO.FEaiCockpitNoticeUserSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitNoticeMapSnapshot_setup;
-   o.processLogic          = MO.FEaiCockpitNoticeMapSnapshot_processLogic;
+   o.setup                 = MO.FEaiCockpitNoticeUserSnapshot_setup;
+   o.processLogic          = MO.FEaiCockpitNoticeUserSnapshot_processLogic;
    // @method
 
-   o.dispose               = MO.FEaiCockpitNoticeMapSnapshot_dispose;
+   o.dispose               = MO.FEaiCockpitNoticeUserSnapshot_dispose;
    return o;
 }
 //==========================================================
@@ -37,7 +36,7 @@ MO.FEaiCockpitNoticeMapSnapshot = function FEaiCockpitNoticeMapSnapshot(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapSnapshot_onImageLoad = function FEaiCockpitNoticeMapSnapshot_onImageLoad() {
+MO.FEaiCockpitNoticeUserSnapshot_onImageLoad = function FEaiCockpitNoticeUserSnapshot_onImageLoad() {
    this.dirty();
 }
 
@@ -46,7 +45,7 @@ MO.FEaiCockpitNoticeMapSnapshot_onImageLoad = function FEaiCockpitNoticeMapSnaps
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapSnapshot_onPaintBegin = function FEaiCockpitNoticeMapSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin = function FEaiCockpitNoticeUserSnapshot_onPaintBegin(event) {
    var o = this;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
@@ -54,10 +53,8 @@ MO.FEaiCockpitNoticeMapSnapshot_onPaintBegin = function FEaiCockpitNoticeMapSnap
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   var scale = 720/1080;
-   graphic.drawImage(o._groundImage, left+width*0.435,13,width*0.55,width*0.55*scale);
-   var scale = 516/671;
-   graphic.drawImage(o._mapImage, left+width*0.51,height*0.15,width*0.35,width*0.35*scale);
+   var scale = 120/840;
+   graphic.drawImage(o._userInfoImage, left,13,width*0.435,width*0.435*scale);
 }
 
 //==========================================================
@@ -65,12 +62,12 @@ MO.FEaiCockpitNoticeMapSnapshot_onPaintBegin = function FEaiCockpitNoticeMapSnap
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapSnapshot_construct = function FEaiCockpitNoticeMapSnapshot_construct() {
+MO.FEaiCockpitNoticeUserSnapshot_construct = function FEaiCockpitNoticeUserSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
    o._cellLocation.set(0, 1, 0);
-   o._cellSize.set(16, 6);
+   o._cellSize.set(16, 9);
 }
 
 //==========================================================
@@ -78,10 +75,9 @@ MO.FEaiCockpitNoticeMapSnapshot_construct = function FEaiCockpitNoticeMapSnapsho
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapSnapshot_setup = function FEaiCockpitNoticeMapSnapshot_setup(){
+MO.FEaiCockpitNoticeUserSnapshot_setup = function FEaiCockpitNoticeUserSnapshot_setup(){
    var o = this;
-   o._groundImage = o.loadResourceImage('{eai.resource}/cockpit/notice/map/ground.png');
-   o._mapImage = o.loadResourceImage('{eai.resource}/cockpit/notice/map/map.png');
+   o._userInfoImage = o.loadResourceImage('{eai.resource}/cockpit/notice/user_bg.png');
 }
 
 //==========================================================
@@ -89,7 +85,7 @@ MO.FEaiCockpitNoticeMapSnapshot_setup = function FEaiCockpitNoticeMapSnapshot_se
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapSnapshot_processLogic = function FEaiCockpitNoticeMapSnapshot_processLogic(){
+MO.FEaiCockpitNoticeUserSnapshot_processLogic = function FEaiCockpitNoticeUserSnapshot_processLogic(){
    var o = this;
 }
 
@@ -98,7 +94,7 @@ MO.FEaiCockpitNoticeMapSnapshot_processLogic = function FEaiCockpitNoticeMapSnap
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeMapSnapshot_dispose = function FEaiCockpitNoticeMapSnapshot_dispose() {
+MO.FEaiCockpitNoticeUserSnapshot_dispose = function FEaiCockpitNoticeUserSnapshot_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
