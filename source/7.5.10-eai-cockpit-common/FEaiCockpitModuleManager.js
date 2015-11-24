@@ -97,8 +97,8 @@ MO.FEaiCockpitModuleManager_createModule = function FEaiCockpitModuleManager_cre
    var o = this;
    // 创建对象
    var module = MO.Class.create(clazz);
-   module.setModuleManager(o);
    module.linkGraphicContext(o);
+   module.setParentModuleManager(o);
    module.setup();
    // 注册对象
    o.register(module);

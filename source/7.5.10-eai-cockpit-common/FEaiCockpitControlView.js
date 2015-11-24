@@ -68,7 +68,7 @@ MO.FEaiCockpitControlView_construct = function FEaiCockpitControlView_construct(
 MO.FEaiCockpitControlView_setup = function FEaiCockpitControlView_setup(){
    var o = this;
    // 设置场景
-   o._scene = o._parentModule.moduleManager().scene();
+   o._scene = o._parentModule.parentModuleManager().scene();
    // 创建图片
    var backgroundUri = o._backgroundUri;
    if(backgroundUri){

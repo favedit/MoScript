@@ -9,35 +9,34 @@ MO.FEaiCockpitModule = function FEaiCockpitModule(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MProcessReady, MO.MListener);
    //..........................................................
    // @attribute
-   o._scene           = MO.Class.register(o, new MO.AGetSet('_scene'));
-   o._parentModule    = MO.Class.register(o, new MO.AGetSet('_parentModule'));
+   o._scene               = MO.Class.register(o, new MO.AGetSet('_scene'));
+   o._parentModule        = MO.Class.register(o, new MO.AGetSet('_parentModule'));
+   o._parentModuleManager = MO.Class.register(o, new MO.AGetSet('_parentModuleManager'));
    // @attribute
-   o._name            = MO.Class.register(o, new MO.AGetSet('_name'));
-   o._typeCd          = MO.Class.register(o, new MO.AGetSet('_typeCd'));
-   o._slideshow       = MO.Class.register(o, new MO.AGetSet('_slideshow'), false);
-   o._cellLocation    = MO.Class.register(o, new MO.AGetter('_cellLocation'));
-   o._cellSize        = MO.Class.register(o, new MO.AGetter('_cellSize'));
-   o._moduleManager   = MO.Class.register(o, new MO.AGetSet('_moduleManager'));
-   o._controls        = MO.Class.register(o, new MO.AGetter('_controls'));
+   o._name                = MO.Class.register(o, new MO.AGetSet('_name'));
+   o._typeCd              = MO.Class.register(o, new MO.AGetSet('_typeCd'));
+   o._slideshow           = MO.Class.register(o, new MO.AGetSet('_slideshow'), false);
+   o._cellLocation        = MO.Class.register(o, new MO.AGetter('_cellLocation'));
+   o._cellSize            = MO.Class.register(o, new MO.AGetter('_cellSize'));
+   o._controls            = MO.Class.register(o, new MO.AGetter('_controls'));
    // @attribute
-   o._snapshotDisplay = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
-   o._viewDisplay     = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
+   o._snapshotDisplay     = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
+   o._controlSnapshot     = MO.Class.register(o, new MO.AGetter('_controlSnapshot'));
+   o._viewDisplay         = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
+   o._controlView         = MO.Class.register(o, new MO.AGetter('_controlView'));
    // @attribute
-   o._controlSnapshot = MO.Class.register(o, new MO.AGetter('_controlSnapshot'));
-   o._controlView     = MO.Class.register(o, new MO.AGetter('_controlView'));
-   // @attribute
-   o._statusCd        = MO.Class.register(o, new MO.AGetter('_statusCd'), MO.EEaiCockpitModuleStatus.Snapshot);
+   o._statusCd            = MO.Class.register(o, new MO.AGetter('_statusCd'), MO.EEaiCockpitModuleStatus.Snapshot);
    //..........................................................
    // @method
-   o.construct        = MO.FEaiCockpitModule_construct;
+   o.construct            = MO.FEaiCockpitModule_construct;
    // @method
-   o.setup            = MO.FEaiCockpitModule_setup;
-   o.showView         = MO.FEaiCockpitModule_showView;
+   o.setup                = MO.FEaiCockpitModule_setup;
+   o.showView             = MO.FEaiCockpitModule_showView;
    // @method
-   o.processResize    = MO.FEaiCockpitModule_processResize;
-   o.process          = MO.FEaiCockpitModule_process;
+   o.processResize        = MO.FEaiCockpitModule_processResize;
+   o.process              = MO.FEaiCockpitModule_process;
    // @method
-   o.dispose          = MO.FEaiCockpitModule_dispose;
+   o.dispose              = MO.FEaiCockpitModule_dispose;
    return o;
 }
 

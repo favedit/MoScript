@@ -5,23 +5,24 @@
 // @author maocy
 // @history 151101
 //==========================================================
-MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
+MO.FEaiCockpitNavigator = function FEaiCockpitNavigator(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name       = 'forecast';
-   o._typeCd     = MO.EEaiCockpitModule.Logic;
-   o._dataTicker = null;
-   o._slideshow  = true;
+   o._name         = 'forecast.logic.navigator';
+   o._typeCd       = MO.EEaiCockpitModule.Logic;
+   o._dataTicker   = null;
+   o._slideshow    = true;
    //..........................................................
    // @method
-   o.construct   = MO.FEaiCockpitForecast_construct;
+   o.construct     = MO.FEaiCockpitNavigator_construct;
    // @method
-   o.setup       = MO.FEaiCockpitForecast_setup;
+   o.setup         = MO.FEaiCockpitNavigator_setup;
    // @method
-   o.process     = MO.FEaiCockpitForecast_process;
+   o.processResize = MO.FEaiCockpitNavigator_processResize;
+   o.process       = MO.FEaiCockpitNavigator_process;
    // @method
-   o.dispose     = MO.FEaiCockpitForecast_dispose;
+   o.dispose       = MO.FEaiCockpitNavigator_dispose;
    return o;
 }
 
@@ -30,7 +31,7 @@ MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_construct = function FEaiCockpitForecast_construct(){
+MO.FEaiCockpitNavigator_construct = function FEaiCockpitNavigator_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
    // 定时获取数据
@@ -42,22 +43,28 @@ MO.FEaiCockpitForecast_construct = function FEaiCockpitForecast_construct(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_setup = function FEaiCockpitForecast_setup(){
+MO.FEaiCockpitNavigator_setup = function FEaiCockpitNavigator_setup(){
    var o = this;
-   o.__base.FEaiCockpitModule.setup.call(o);
    // 创建缩略
-   var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitForecastSnapshot);
+   var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitNavigatorSnapshot);
    snapshot.linkGraphicContext(o);
    snapshot.setParentModule(o);
    snapshot.setup();
    // 创建视图
-   var view = o._controlView = MO.Class.create(MO.FEaiCockpitForecastView);
+   var view = o._controlView = MO.Class.create(MO.FEaiCockpitNavigatorView);
    view.linkGraphicContext(o);
    view.setParentModule(o);
    view.setup();
-   // 增加显示图
-   o._viewDisplay.push(view._moduleManager.display());
-   //o._moduleManager = MO.Class.create(MO.FEaiCockpitForecastModuleManager);
+}
+
+//==========================================================
+// <T>大小事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiCockpitNavigator_processResize = function FEaiCockpitNavigator_processResize(){
+   var o = this;
 }
 
 //==========================================================
@@ -66,12 +73,10 @@ MO.FEaiCockpitForecast_setup = function FEaiCockpitForecast_setup(){
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitForecast_process = function FEaiCockpitForecast_process(){
+MO.FEaiCockpitNavigator_process = function FEaiCockpitNavigator_process(){
    var o = this;
-   o.__base.FEaiCockpitModule.process.call(o);
    // 创建缩略
-   var view = o._controlView;
-   view._moduleManager.process();
+   o.__base.FEaiCockpitModule.process.call(o);
 }
 
 //==========================================================
@@ -79,7 +84,7 @@ MO.FEaiCockpitForecast_process = function FEaiCockpitForecast_process(){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecast_dispose = function FEaiCockpitForecast_dispose(){
+MO.FEaiCockpitNavigator_dispose = function FEaiCockpitNavigator_dispose(){
    var o = this;
    // 释放属性
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);

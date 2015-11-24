@@ -60,6 +60,7 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    display.pushDisplay(viewDisplay);
    //..........................................................
    // 创建模块
+   o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
    o._catalogModule = o.createModule(MO.FEaiCockpitForecastViewCatalog);
    o._logic001Module = o.createModule(MO.FEaiCockpitForecastLogic001);
    o._logic002Module = o.createModule(MO.FEaiCockpitForecastLogic002);

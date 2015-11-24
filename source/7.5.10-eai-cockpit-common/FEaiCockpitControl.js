@@ -44,7 +44,7 @@ MO.FEaiCockpitControl_construct = function FEaiCockpitControl_construct() {
 //==========================================================
 MO.FEaiCockpitControl_placeInCell = function FEaiCockpitControl_placeInCell(){
    var o = this;
-   o._parentModule.moduleManager().placeCellControl(o);
+   o._parentModule.parentModuleManager().placeCellControl(o);
 }
 
 //==========================================================
