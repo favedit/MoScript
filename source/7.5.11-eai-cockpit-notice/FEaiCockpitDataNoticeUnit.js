@@ -14,5 +14,6 @@ MO.FEaiCockpitDataNoticeUnit = function FEaiCockpitDataNoticeUnit(o) {
    o._publishDate = MO.Class.register(o, [new MO.AGetter('_publishDate'), new MO.APersistence('_publishDate', MO.EDataType.String)]);
    o._viewCount   = MO.Class.register(o, [new MO.AGetter('_viewCount'), new MO.APersistence('_viewCount', MO.EDataType.Int32)]);
    o._userCount   = MO.Class.register(o, [new MO.AGetter('_userCount'), new MO.APersistence('_userCount', MO.EDataType.Int32)]);
+   o._urgencyLevel = MO.Class.register(o, [new MO.AGetter('_urgencyLevel'), new MO.APersistence('_urgencyLevel', MO.EDataType.Int32)]);
    return o;
 }

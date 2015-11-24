@@ -13,9 +13,14 @@ MO.FEaiCockpitNoticeSnapshot = function FEaiCockpitNoticeSnapshot(o) {
    o._dataTicker           = null;
    o._noticeListBox        = null;
    o._bgImage              = null;
+   o._titleImage           = null;
+   o._action               = null;
+
    //..........................................................
    // @event
    o.onPaintBegin          = MO.FEaiCockpitNoticeSnapshot_onPaintBegin;
+
+   o.oeUpdate              = MO.FEaiCockpitNoticeSnapshot_oeUpdate;
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitNoticeSnapshot_construct;
@@ -25,6 +30,7 @@ MO.FEaiCockpitNoticeSnapshot = function FEaiCockpitNoticeSnapshot(o) {
    o.onNoticeFetch         = MO.FEaiCockpitNoticeSnapshot_onNoticeFetch;
    // @method
    o.dispose               = MO.FEaiCockpitNoticeSnapshot_dispose;
+   
    return o;
 }
 
@@ -47,6 +53,22 @@ MO.FEaiCockpitNoticeSnapshot_onPaintBegin = function FEaiCockpitNoticeSnapshot_o
    // 绘制背景
    graphic.drawImage(o._bgImage, left, top, width, height);
    //..........................................................
+   // 绘制表格标题
+   var titleImage = o._titleImage;
+   var rate = o._action.rate();
+   graphic.drawImage(titleImage, 30, 8 - rate*57, 901, 49);
+
+   var listBox = o._noticeListBox;
+   listBox.setLocation(30, 50 - rate * 57);
+}
+MO.FEaiCockpitNoticeSnapshot_oeUpdate = function FEaiCockpitNoticeSnapshot_oeUpdate(event) {
+   var o = this;
+   o.__base.FEaiCockpitControl.oeUpdate.call(o, event);
+   if (event.isAfter()) {
+       return MO.EEventStatus.Continue;
+   }
+   o._mainTimeline.process();
+   return MO.EEventStatus.Continue;
 }
 
 //==========================================================
@@ -62,6 +84,7 @@ MO.FEaiCockpitNoticeSnapshot_construct = function FEaiCockpitNoticeSnapshot_cons
    o._cellSize.set(8, 2);
    o._noticeData = MO.Class.create(MO.FEaiCockpitDataNotice);
    o._dataTicker = new MO.TTicker(1000 * 60);
+   o._mainTimeline = MO.Class.create(MO.FMainTimeline);
 }
 
 //==========================================================
@@ -71,16 +94,27 @@ MO.FEaiCockpitNoticeSnapshot_construct = function FEaiCockpitNoticeSnapshot_cons
 //==========================================================
 MO.FEaiCockpitNoticeSnapshot_setup = function FEaiCockpitNoticeSnapshot_setup(){
    var o = this;
+   o.__base.FEaiCockpitControl.setup.call(o);
    // 加载背景图
    o._bgImage = o.loadResourceImage('{eai.resource}/cockpit/notice/ground.png');
+   //加载表格标题
+   o._titleImage = o.loadResourceImage('{eai.resource}/cockpit/notice/title.png');
    // 创建控件
    var listBox = o._noticeListBox = MO.Class.create(MO.FGuiListBox);
    listBox.setDisplayCount(4);
    listBox.setGap(5);
    listBox.setPadding(12, 12, 12, 12);
-   listBox.setLocation(50, 0);
+   listBox.setLocation(30, 50);
    listBox.setSize(900, 120 * 4);
    o.push(listBox);
+   //创建动作
+   var section = MO.Class.create(MO.FTimelineSection);
+   var action = o._action = MO.Class.create(MO.FEaiCockpitNoticeTimelineAction);
+   action.setMainControl(o);
+   action.setDelay(15000);
+   action.setDuration(2000);
+   section.pushAction(action);
+   o._mainTimeline.pushSection(section);
 }
 
 //==========================================================
@@ -90,6 +124,7 @@ MO.FEaiCockpitNoticeSnapshot_setup = function FEaiCockpitNoticeSnapshot_setup(){
 //==========================================================
 MO.FEaiCockpitNoticeSnapshot_processLogic = function FEaiCockpitNoticeSnapshot_processLogic() {
    var o = this;
+   o.__base.FEaiCockpitControl.processLogic.call(o);
    if (o._dataTicker.process()) {
       var notice = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
       notice.doFetch(o, o.onNoticeFetch);
@@ -117,7 +152,7 @@ MO.FEaiCockpitNoticeSnapshot_onNoticeFetch = function FEaiCockpitNoticeSnapshot_
       for (var i = 0; i < count; i++) {
          var noticeItem = MO.Class.create(MO.FEaiCockpitNoticeListBoxItem);
          noticeItem.setup(notices.at(i));
-         noticeItem.setSize(880, 80);
+         noticeItem.setSize(880, 50);
          listBox.push(noticeItem);
       }
       listBox.setStartTick(MO.Timer.current());
@@ -132,7 +167,8 @@ MO.FEaiCockpitNoticeSnapshot_onNoticeFetch = function FEaiCockpitNoticeSnapshot_
 // @method
 //==========================================================
 MO.FEaiCockpitNoticeSnapshot_dispose = function FEaiCockpitNoticeSnapshot_dispose() {
-   var o = this;
+    var o = this;
+   o._titleImage = MO.Lang.Object.dispose(o._titleImage);
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
 }
