@@ -53,8 +53,7 @@ MO.FEaiCockpitNoticeNewestSnapshot_onPaintBegin = function FEaiCockpitNoticeNewe
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   var scale = 360/840;
-   graphic.drawImage(o._newestImage, left,13,width*0.435,width*0.435*scale);
+   graphic.drawImage(o._newestImage, left,0,width,height);
 }
 
 //==========================================================
@@ -67,7 +66,7 @@ MO.FEaiCockpitNoticeNewestSnapshot_construct = function FEaiCockpitNoticeNewestS
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
    o._cellLocation.set(0, 2, 0);
-   o._cellSize.set(16, 9);
+   o._cellSize.set(7, 3);
 }
 
 //==========================================================

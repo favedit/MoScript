@@ -53,8 +53,7 @@ MO.FEaiCockpitNoticeDynamicSnapshot_onPaintBegin = function FEaiCockpitNoticeDyn
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   var scale = 240/1080;
-   graphic.drawImage(o._dynamicImage, left+width*0.435,10,width*0.55,width*0.55*scale);
+   graphic.drawImage(o._dynamicImage, left,0,width,height);
 }
 
 //==========================================================
@@ -66,8 +65,8 @@ MO.FEaiCockpitNoticeDynamicSnapshot_construct = function FEaiCockpitNoticeDynami
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
-   o._cellLocation.set(0, 7, 0);
-   o._cellSize.set(16, 2);
+   o._cellLocation.set(7, 7, 0);
+   o._cellSize.set(9, 2);
 }
 
 //==========================================================

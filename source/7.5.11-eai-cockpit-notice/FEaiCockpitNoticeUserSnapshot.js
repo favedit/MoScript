@@ -54,7 +54,7 @@ MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin = function FEaiCockpitNoticeUserSn
    var width = rectangle.width;
    var height = rectangle.height;
    var scale = 120/840;
-   graphic.drawImage(o._userInfoImage, left,13,width*0.435,width*0.435*scale);
+   graphic.drawImage(o._userInfoImage, left,0,width,height);
 }
 
 //==========================================================
@@ -67,7 +67,7 @@ MO.FEaiCockpitNoticeUserSnapshot_construct = function FEaiCockpitNoticeUserSnaps
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
    o._cellLocation.set(0, 1, 0);
-   o._cellSize.set(16, 9);
+   o._cellSize.set(7, 1);
 }
 
 //==========================================================
