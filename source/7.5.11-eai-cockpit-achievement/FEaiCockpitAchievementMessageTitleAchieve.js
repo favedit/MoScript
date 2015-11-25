@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151107
 //==========================================================
-MO.FEaiCockpitMessageAchievementNextTitle = function FEaiCockpitMessageAchievementNextTitle(o){
+MO.FEaiCockpitAchievementMessageTitleAchieve = function FEaiCockpitAchievementMessageTitleAchieve(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute

@@ -30,7 +30,7 @@ MO.FEaiCockpitAchievementDayCurveSnapshot = function FEaiCockpitAchievementDayCu
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onDataFetch           = MO.FEaiCockpitAchievementDayCurveSnapshot_onDataFetch;
+   o.onFetchData           = MO.FEaiCockpitAchievementDayCurveSnapshot_onFetchData;
    o.onPaintBegin          = MO.FEaiCockpitAchievementDayCurveSnapshot_onPaintBegin;
    o.onPaintEnd            = MO.FEaiCockpitAchievementDayCurveSnapshot_onPaintEnd;
    //..........................................................
@@ -54,11 +54,13 @@ MO.FEaiCockpitAchievementDayCurveSnapshot = function FEaiCockpitAchievementDayCu
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
- MO.FEaiCockpitAchievementDayCurveSnapshot_onDataFetch = function FEaiCockpitAchievementDayCurveSnapshot_onDataFetch(event){
+ MO.FEaiCockpitAchievementDayCurveSnapshot_onFetchData = function FEaiCockpitAchievementDayCurveSnapshot_onFetchData(event){
    var o = this;
    var content = event.content;
    // 读取数据
-
+   var daydata = o._DayData
+   daydata.unserializeSignBuffer(event.sign, event.content, true);
+   var ss = daydata;
 }
 
 //==========================================================
@@ -116,9 +118,11 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_construct = function FEaiCockpitAchiev
    o._cellLocation.set(0, 3, 0);
    o._cellSize.set(7, 2);
    // 设置属性
-   o._dataTicker = new MO.TTicker(1000 * 60);
+   o._dataTicker = new MO.TTicker(1000 * 10);
    o._rollTicker = new MO.TTicker(o._rollDuration);
    o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
+   o._DayData = MO.Class.create(MO.FEaiCockpitAchievementMessageNextDays);
+
 }
 
 //==========================================================
@@ -143,8 +147,8 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_setup = function FEaiCockpitAchievemen
 MO.FEaiCockpitAchievementDayCurveSnapshot_processLogic = function FEaiCockpitAchievementDayCurveSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
-      var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
-      forecast.doFetch(o, o.onDataFetch);
+         var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
+         achievement.doFetchDay(o, o.onFetchData);
    }
 }
 

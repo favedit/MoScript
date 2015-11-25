@@ -5,10 +5,10 @@
 // @author maocy
 // @history 151107
 //==========================================================
-MO.FEaiCockpitMessageAchievementNextDays = function FEaiCockpitMessageAchievementNextDays(o){
+MO.FEaiCockpitAchievementMessageNextDays = function FEaiCockpitAchievementMessageNextDays(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
-   o._day = MO.Class.register(o, [new MO.AGetter('_days'), new MO.APersistence('_days', MO.EDataType.Objects, MO.FEaiCockpitMessageAchievementNextDay)]);
+   o._day = MO.Class.register(o, [new MO.AGetter('_days'), new MO.APersistence('_days', MO.EDataType.Objects, MO.FEaiCockpitAchievementMessageNextDay)]);
    return o;
 }

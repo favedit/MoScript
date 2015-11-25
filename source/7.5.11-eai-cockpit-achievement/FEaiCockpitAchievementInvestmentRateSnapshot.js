@@ -24,7 +24,7 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot = function FEaiCockpitAchievemen
    o._pageItemsMax         = 8;
    o._rollDuration         = 5000;
    o._rollTicker           = null;
-   o._lineChart            = null;
+   o._rateChart            = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -35,6 +35,7 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot = function FEaiCockpitAchievemen
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitAchievementInvestmentRateSnapshot_construct;
+   o.onFetchData           = MO.FEaiCockpitAchievementInvestmentRateSnapshot_onFetchData;
    // @method
    o.setup                 = MO.FEaiCockpitAchievementInvestmentRateSnapshot_setup;
    o.roll                  = MO.FEaiCockpitAchievementInvestmentRateSnapshot_roll;
@@ -53,11 +54,15 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot = function FEaiCockpitAchievemen
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
- MO.FEaiCockpitAchievementInvestmentRateSnapshot_onDataFetch = function FEaiCockpitAchievementInvestmentRateSnapshot_onDataFetch(event){
+ MO.FEaiCockpitAchievementInvestmentRateSnapshot_onFetchData = function FEaiCockpitAchievementInvestmentRateSnapshot_onFetchData(event){
    var o = this;
-   var content = event.content;
    // 读取数据
-
+   var data = o._data;
+   data.unserializeSignBuffer(event.sign, event.content, true);
+   var ds = data;
+   if(data.investmentAmount()){
+      o._rateChart.setData(data);
+   }
 }
 
 //==========================================================
@@ -99,6 +104,9 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot_onPaintEnd = function FEaiCockpi
    var height = rectangle.height;
    //..........................................................
 
+
+
+
    //..........................................................
 }
 
@@ -116,7 +124,7 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot_construct = function FEaiCockpit
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._rollTicker = new MO.TTicker(o._rollDuration);
-   o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
+   o._data = MO.Class.create(MO.FEaiCockpitAchievementMessageNextRates);
 }
 
 //==========================================================
@@ -129,6 +137,11 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot_setup = function FEaiCockpitAchi
    // 加载图片
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/investmentRate.png');
 
+   var rateChart = o._rateChart = MO.Class.create(MO.FEaiCockpitMessageAchievementRateChart);
+    rateChart.setLocation(120, 0);
+    rateChart.setSize(480, 240);
+   o.push(rateChart);
+
    //..........................................................
 }
 
@@ -140,9 +153,10 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot_setup = function FEaiCockpitAchi
 MO.FEaiCockpitAchievementInvestmentRateSnapshot_processLogic = function FEaiCockpitAchievementInvestmentRateSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
-      var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
-      forecast.doFetch(o, o.onDataFetch);
+      var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
+      achievement.doFetchRate(o, o.onFetchData);
    }
+   o._rateChart.dirty();
 }
 
 //==========================================================

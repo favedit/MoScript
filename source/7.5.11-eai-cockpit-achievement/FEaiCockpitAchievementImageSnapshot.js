@@ -78,7 +78,7 @@ MO.FEaiCockpitAchievementImageSnapshot_onPaintBegin = function FEaiCockpitAchiev
    //..........................................................
    // 绘制背景
   // graphic.drawRectangle(left,top,width,height,'#ffffff',3);\
-   graphic.drawImage(o._backgroundImage,left,top,1908,68);
+   graphic.drawImage(o._backgroundImages,left,top+30,1908,68);
 
 }
 
@@ -110,7 +110,7 @@ MO.FEaiCockpitAchievementImageSnapshot_construct = function FEaiCockpitAchieveme
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
-   o._cellLocation.set(0, 3, 0);
+   o._cellLocation.set(0, 2, 0);
    o._cellSize.set(16, 1);
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
@@ -126,7 +126,7 @@ MO.FEaiCockpitAchievementImageSnapshot_construct = function FEaiCockpitAchieveme
 MO.FEaiCockpitAchievementImageSnapshot_setup = function FEaiCockpitAchievementImageSnapshot_setup(){
    var o = this;
    // 加载图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/investment.png');
+   o._backgroundImages = o.loadResourceImage('{eai.resource}/cockpit/achievement/investment.png');
 
    //..........................................................
 }

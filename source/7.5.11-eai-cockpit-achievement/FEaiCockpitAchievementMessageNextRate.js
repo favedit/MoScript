@@ -5,10 +5,10 @@
 // @author maocy
 // @history 151107
 //==========================================================
-MO.FEaiCockpitMessageAchievementNextRate = function FEaiCockpitMessageAchievementNextRate(o){
+MO.FEaiCockpitAchievementMessageNextRate = function FEaiCockpitAchievementMessageNextRate(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
-   o._number         = MO.Class.register(o, [new MO.AGetter('_number'), new MO.APersistence('_number', MO.EDataType.Int32)]);
+   //o._number         = MO.Class.register(o, [new MO.AGetter('_number'), new MO.APersistence('_number', MO.EDataType.Int32)]);
 
    // @attribute
    o._productName          = MO.Class.register(o, [new MO.AGetter('_productName'), new MO.APersistence('_productName', MO.EDataType.String)]);

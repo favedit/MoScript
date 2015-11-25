@@ -47,17 +47,26 @@ MO.FEaiCockpitAchievementModuleManager_setup = function FEaiCockpitAchievementMo
    //..........................................................
    // 创建模块
    o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
-   //o._dayModule = o.createModule(MO.FEaiCockpitAchievementDay);
+   //o._dayModule = o.createModule(MO.FEaiCockpitAchievementDay); 
+   //头部业绩  1
    o._TitleAchievement = o.createModule(MO.FEaiCockpitAchievementTitleAchieve);
-   o._DayCurve = o.createModule(MO.FEaiCockpitAchievementDayCurve);
+   //头部排名 2
    o._TitleRank = o.createModule(MO.FEaiCockpitAchievementTitleRank);
+   //中间图片 3
+   o._image    = o.createModule(MO.FEaiCockpitAchievementImage);
+   //日曲线 3
+   o._DayCurve = o.createModule(MO.FEaiCockpitAchievementDayCurve);
+   //月曲线 4
    o._MonthCurve = o.createModule(MO.FEaiCockpitAchievementMonthCurve);
+   //五力图 5
    o._Radar = o.createModule(MO.FEaiCockpitAchievementRadar);
+   //投资比例 6
    o._InvestmentRate = o.createModule(MO.FEaiCockpitAchievementInvestmentRate);
+   //公司名片  7 
    o._BusinessCard = o.createModule(MO.FEaiCockpitAchievementBusinessCard);
+   //柱力图  8
    o._Histogram = o.createModule(MO.FEaiCockpitAchievementHistogram);
-   //o._image    = o.createModule(MO.FEaiCockpitAchievementHistogram);
-   //..........................................................
+
    var application = o._scene.application();
    var desktop = application.desktop();
    var logicSize = desktop.logicSize();

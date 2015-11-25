@@ -25,7 +25,9 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot = function FEaiCockpitAchievementT
    o._rollDuration         = 5000;
    o._rollTicker           = null;
    o._lineChart            = null;
-   o._DayData              =MO.Class.register(o,new MO.AGetSet('_DayData'));
+   //数据
+   o._data                 =MO.Class.register(o,new MO.AGetSet('_Data'));
+   //数据
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -56,31 +58,30 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot = function FEaiCockpitAchievementT
 //==========================================================
 MO.FEaiCockpitAchievementTitleAchieveSnapshot_onFetchDayData = function FEaiCockpitAchievementTitleAchieveSnapshot_onFetchDayData(event){
    var o = this;
-   var dayData  = o._DayData ;
-   dayData.unserializeSignBuffer(event.sign, event.content, true);
-   o._dayLine.setData(dayData);
-      var logoBar = o._logoBar;
-      if(o._titleData.investmentAmount()){
-         //投资总额
-         var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
-         investmentTotalCount.setValue(parseInt(o._titleData.investmentAmount()).toString());
-         // 赎回总金额
-         var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
-         redemptionTotalCount.setValue(parseInt(o._titleData.redemptionAmount()).toString());
-         // 净投总金额 
-         var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
-         netinvestmentTotalCount.setValue(parseInt(o._titleData.netinvestmentAmount()).toString());
-        
-         // 当月投资总金额
-         var investmentTotal = logoBar.findComponent('investmentTotal');
-         investmentTotal.setValue(parseInt(o._titleData.investmentMonth()).toString());
-         // 当月赎回总金额
-         var redemptionTotal = logoBar.findComponent('redemptionTotal');
-         redemptionTotal.setValue(parseInt(o._titleData.redemptionMonth()).toString());
-         // 当月净投总金额     
-         var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
-         netinvestmentTotal.setValue(parseInt(o._titleData.netinvestmentMonth()).toString());
-   }
+   var data  = o._data ;
+   data.unserializeSignBuffer(event.sign, event.content, true);
+   var logoBar = o._logoBar;
+   if(data.investmentAmount()){
+      //投资总额
+      var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
+      investmentTotalCount.setValue(parseInt(data.investmentAmount()).toString());
+      // 赎回总金额
+      var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
+      redemptionTotalCount.setValue(parseInt(data.redemptionAmount()).toString());
+      // 净投总金额 
+      var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
+      netinvestmentTotalCount.setValue(parseInt(data.netinvestmentAmount()).toString());
+     
+      // 当月投资总金额
+      var investmentTotal = logoBar.findComponent('investmentTotal');
+      investmentTotal.setValue(parseInt(data.investmentMonth()).toString());
+      // 当月赎回总金额
+      var redemptionTotal = logoBar.findComponent('redemptionTotal');
+      redemptionTotal.setValue(parseInt(data.redemptionMonth()).toString());
+      // 当月净投总金额     
+      var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
+      netinvestmentTotal.setValue(parseInt(data.netinvestmentMonth()).toString());
+}
 
 }
 //==========================================================
@@ -115,6 +116,11 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot_onPaintBegin = function FEaiCockpi
    // 绘制背景
   // graphic.drawRectangle(left,top,width,height,'#ffffff',3);
    graphic.drawImage(o._backgroundImage,left,top,width,height);
+
+
+
+
+
 }
 
 //==========================================================
@@ -151,7 +157,7 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot_construct = function FEaiCockpitAc
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 10);
    o._rollTicker = new MO.TTicker(o._rollDuration);
-   o._DayData = MO.Class.create(MO.FEaiCockpitMessageAchievementNextDays);
+   o._data = MO.Class.create(MO.FEaiCockpitAchievementMessageTitleAchieve);
 
 }
 
@@ -180,7 +186,7 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot_processLogic = function FEaiCockpi
    var o = this;
    if(o._dataTicker.process()){
       var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
-      achievement.doFetchDay(o, o.onFetchDayData);
+      achievement.doFetchTitle(o, o.onFetchDayData);
    }
 }
 
