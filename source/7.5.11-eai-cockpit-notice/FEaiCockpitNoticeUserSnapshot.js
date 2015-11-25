@@ -28,7 +28,6 @@ MO.FEaiCockpitNoticeUserSnapshot = function FEaiCockpitNoticeUserSnapshot(o) {
    // @method
    o.setup                 = MO.FEaiCockpitNoticeUserSnapshot_setup;
    o.processLogic          = MO.FEaiCockpitNoticeUserSnapshot_processLogic;
-   //o.freshData             = MO.FEaiCockpitNoticeUserSnapshot_freshData;
    // @method
 
    o.dispose               = MO.FEaiCockpitNoticeUserSnapshot_dispose;
@@ -59,7 +58,6 @@ MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin = function FEaiCockpitNoticeUserSn
    var scale = 120 / 840;
    graphic.drawImage(o._userInfoImage, left, 0, width, height);
    if (o._data != null && o._data.publishDate() != null) {
-      o._userInfoDate = new MO.TDate();
       o._userInfoDate.parse(o._data.publishDate());
       graphic.setFont('21px Microsoft YaHei');
       graphic.drawText("姓名：", 89, 33, "#ffffff");
@@ -84,10 +82,8 @@ MO.FEaiCockpitNoticeUserSnapshot_construct = function FEaiCockpitNoticeUserSnaps
    // 创建属性
    o._cellLocation.set(0, 1, 0);
    o._cellSize.set(7, 1);
-   o._currentDate = new MO.TDate();
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._data = MO.Class.create(MO.FEaiCockpitMessageNoticeUser);
-   o._backgroundPadding = new MO.SPadding(0, 0, 0, 0);
 }
 
 //==========================================================
@@ -98,6 +94,7 @@ MO.FEaiCockpitNoticeUserSnapshot_construct = function FEaiCockpitNoticeUserSnaps
 MO.FEaiCockpitNoticeUserSnapshot_setup = function FEaiCockpitNoticeUserSnapshot_setup(){
    var o = this;
    o._userInfoImage = o.loadResourceImage('{eai.resource}/cockpit/notice/user_bg.png');
+   o._userInfoDate = new MO.TDate();
 }
 
 //==========================================================
@@ -110,9 +107,7 @@ MO.FEaiCockpitNoticeUserSnapshot_onUserFetch = function FEaiCockpitNoticeUserSna
    var content = event.content;
    //读取数据
    var data = o._data;
-   if (data.unserializeSignBuffer(event.sign, event.content, true)) {
-      //o.freshData();
-   }
+   data.unserializeSignBuffer(event.sign, event.content, true);
 }
 
 //==========================================================
@@ -123,8 +118,8 @@ MO.FEaiCockpitNoticeUserSnapshot_onUserFetch = function FEaiCockpitNoticeUserSna
 MO.FEaiCockpitNoticeUserSnapshot_processLogic = function FEaiCockpitNoticeUserSnapshot_processLogic(){
    var o = this;
    if (o._dataTicker.process()) {
-      var title = MO.Console.find(MO.FEaiLogicConsole).cockpit().noticeuser();
-      title.doFetch(o, o.onUserFetch);
+      var title = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
+      title.doFetchUserInfo(o, o.onUserFetch);
    }
    o.dirty();
 }
