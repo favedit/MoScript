@@ -9,7 +9,7 @@ MO.FGuiChartPainter = function FGuiChartPainter(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._chart    = MO.Class.register(o, new MO.AGetter('_chart'));
+   o._chart    = MO.Class.register(o, new MO.AGetSet('_chart'));
    //..........................................................
    // @method
    o.construct = MO.FGuiChartPainter_construct;

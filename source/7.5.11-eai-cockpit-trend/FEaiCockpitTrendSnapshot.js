@@ -203,6 +203,8 @@ MO.FEaiCockpitTrendSnapshot_setup = function FEaiCockpitTrendSnapshot_setup(){
    // 创建图表
    var chart = o._chart = MO.Class.create(MO.FGuiChart);
    chart.selectPainter(MO.FGuiChartLinePainter);
+   chart.setLocation(60, 11);
+   chart.setSize(520, 218);
    o.push(chart);
 }
 

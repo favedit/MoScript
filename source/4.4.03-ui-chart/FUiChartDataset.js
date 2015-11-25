@@ -9,12 +9,12 @@ MO.FUiChartDataset = function FUiChartDataset(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._dataSerieses  = MO.Class.register(o, new MO.AGetter('_dataSerieses'));
+   o._serieses = MO.Class.register(o, new MO.AGetter('_serieses'));
    //..........................................................
    // @method
-   o.construct      = MO.FUiChartDataset_construct;
+   o.construct = MO.FUiChartDataset_construct;
    // @method
-   o.dispose        = MO.FUiChartDataset_dispose;
+   o.dispose   = MO.FUiChartDataset_dispose;
    return o;
 }
 
@@ -27,7 +27,7 @@ MO.FUiChartDataset_construct = function FUiChartDataset_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 配置属性
-   o._dataSerieses = new MO.TObjects();
+   o._serieses = new MO.TObjects();
 }
 
 //==========================================================
@@ -38,7 +38,7 @@ MO.FUiChartDataset_construct = function FUiChartDataset_construct(){
 MO.FUiChartDataset_dispose = function FUiChartDataset_dispose(){
    var o = this;
    // 释放属性
-   o._dataSerieses = MO.Lang.Object.dispose(o._dataSerieses);
+   o._serieses = MO.Lang.Object.dispose(o._serieses);
    // 父处理
    o.__base.FObject.dispose.call(o);
 }

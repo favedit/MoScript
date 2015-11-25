@@ -44,6 +44,12 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    // @method
    o.createLinearGradient = MO.FG2dCanvasContext_createLinearGradient;
    // @method
+   o.beginPath            = MO.FG2dCanvasContext_beginPath;
+   o.endPath              = MO.FG2dCanvasContext_endPath;
+   // @method
+   o.moveTo               = MO.FG2dCanvasContext_moveTo;
+   o.lineTo               = MO.FG2dCanvasContext_lineTo;
+   // @method
    o.drawLine             = MO.FG2dCanvasContext_drawLine;
    o.drawRectangle        = MO.FG2dCanvasContext_drawRectangle;
    o.drawTriangle         = MO.FG2dCanvasContext_drawTriangle;
@@ -54,11 +60,13 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawRectangleImage   = MO.FG2dCanvasContext_drawRectangleImage;
    o.drawGridImage        = MO.FG2dCanvasContext_drawGridImage;
    o.drawQuadrilateral    = MO.FG2dCanvasContext_drawQuadrilateral;
+   o.drawShape            = MO.FG2dCanvasContext_drawShape;
    // @method
    o.drawBorderLine       = MO.FG2dCanvasContext_drawBorderLine;
    o.drawBorder           = MO.FG2dCanvasContext_drawBorder;
    // @method
    o.fillRectangle        = MO.FG2dCanvasContext_fillRectangle;
+   o.fillShape            = MO.FG2dCanvasContext_fillShape;
    // @method
    o.toBytes              = MO.FG2dCanvasContext_toBytes;
    o.saveFile             = MO.FG2dCanvasContext_saveFile;
@@ -283,6 +291,46 @@ MO.FG2dCanvasContext_createLinearGradient = function FG2dCanvasContext_createLin
    var o = this;
    var handle = o._handle;
    return handle.createLinearGradient(x1, y1, x2, y2);
+}
+
+//==========================================================
+// <T>开始路径。</T>
+//
+// @method
+//==========================================================
+MO.FG2dCanvasContext_beginPath = function FG2dCanvasContext_beginPath(){
+   this._handle.beginPath();
+}
+
+//==========================================================
+// <T>结束路径。</T>
+//
+// @method
+//==========================================================
+MO.FG2dCanvasContext_endPath = function FG2dCanvasContext_endPath(){
+   this._handle.closePath();
+}
+
+//==========================================================
+// <T>移动到指定位置。</T>
+//
+// @method
+// @param x:Number 横坐标
+// @param y:Number 纵坐标
+//==========================================================
+MO.FG2dCanvasContext_moveTo = function FG2dCanvasContext_moveTo(x, y){
+   this._handle.moveTo(x, y);
+}
+
+//==========================================================
+// <T>绘线到指定位置。</T>
+//
+// @method
+// @param x:Number 横坐标
+// @param y:Number 纵坐标
+//==========================================================
+MO.FG2dCanvasContext_moveTo = function FG2dCanvasContext_lineTo(x, y){
+   this._handle.lineTo(x, y);
 }
 
 //==========================================================
@@ -531,26 +579,6 @@ MO.FG2dCanvasContext_drawBorder = function FG2dCanvasContext_drawBorder(rectangl
 }
 
 //==========================================================
-// <T>绘制矩形。</T>
-//
-// @method
-// @param x:Integer 横坐标
-// @param y:Integer 纵坐标
-// @param width:Integer 宽度
-// @param height:Integer 高度
-// @param color:String 颜色
-// @param lineWidth:Integer 线宽
-//==========================================================
-MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color) {
-   var o = this;
-   var handle = o._handle;
-   handle.fillStyle = color;
-   handle.beginPath();
-   handle.fillRect(x, y, width, height);
-   handle.closePath();
-}
-
-//==========================================================
 // <T>绘制四边形。</T>
 //
 // @method
@@ -581,6 +609,21 @@ MO.FG2dCanvasContext_drawQuadrilateral = function FG2dCanvasContext_drawQuadrila
 }
 
 //==========================================================
+// <T>绘制形状。</T>
+//
+// @method
+// @param lineWidth:Integer 宽度
+// @param color:String 颜色
+//==========================================================
+MO.FG2dCanvasContext_drawShape = function FG2dCanvasContext_drawShape(lineWidth, color){
+   var o = this;
+   var handle = o._handle;
+   handle.lineWidth = lineWidth;
+   handle.strokeStyle = color;
+   handle.stroke();
+}
+
+//==========================================================
 // <T>绘制三角形。</T>
 //
 // @method
@@ -602,6 +645,41 @@ MO.FG2dCanvasContext_drawTriangle = function FG2dCanvasContext_drawTriangle(x1, 
    handle.closePath();
    handle.fill();
    handle.stroke();
+}
+
+//==========================================================
+// <T>填充矩形。</T>
+//
+// @method
+// @param x:Integer 横坐标
+// @param y:Integer 纵坐标
+// @param width:Integer 宽度
+// @param height:Integer 高度
+// @param color:String 颜色
+// @param lineWidth:Integer 线宽
+//==========================================================
+MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x, y, width, height, color) {
+   var o = this;
+   var handle = o._handle;
+   handle.fillStyle = color;
+   handle.beginPath();
+   handle.fillRect(x, y, width, height);
+   handle.closePath();
+}
+
+//==========================================================
+// <T>填充形状。</T>
+//
+// @method
+// @param lineWidth:Integer 宽度
+// @param color:String 颜色
+//==========================================================
+MO.FG2dCanvasContext_fillShape = function FG2dCanvasContext_fillShape(lineWidth, color){
+   var o = this;
+   var handle = o._handle;
+   handle.lineWidth = lineWidth;
+   handle.fillStyle = color;
+   handle.fill();
 }
 
 //==========================================================
