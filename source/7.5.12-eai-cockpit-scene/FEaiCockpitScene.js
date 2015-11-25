@@ -227,7 +227,7 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    //..........................................................
    // 创建背景效果模型
    var effectLayer = stage.groundLayerEffect();
-   var backgroundEffect = o._backgroundEffect = MO.Class.create(MO.FE3dBackgroundEffect);
+   var backgroundEffect = o._backgroundEffect = MO.Class.create(MO.FEaiCockpitGroundShape);
    backgroundEffect.linkGraphicContext(o);
    backgroundEffect.setup();
    effectLayer.push(backgroundEffect);

@@ -502,6 +502,8 @@ MO.FG3dAutomaticEffect_bindMaterial = function FG3dAutomaticEffect_bindMaterial(
    }else{
       context.setDepthMode(false);
    }
+   // 设置深度输出
+   context.setDepthMask(info.optionDepthWrite);
    // 设置透明
    if(info.optionAlpha){
       context.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);

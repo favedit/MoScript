@@ -26,6 +26,7 @@ MO.FWglContext = function FWglContext(o){
    o._recordBuffers      = MO.Class.register(o, new MO.AGetter('_recordBuffers'));
    o._recordSamplers     = MO.Class.register(o, new MO.AGetter('_recordSamplers'));
    // @attribute
+   o._statusDepthMask    = MO.Class.register(o, new MO.AGetter('_statusDepthMask'), false);
    o._statusFloatTexture = MO.Class.register(o, new MO.AGetter('_statusFloatTexture'), false);
    o._statusDrawBuffers  = MO.Class.register(o, new MO.AGetter('_statusDrawBuffers'), false);
    o._statusScissor      = MO.Class.register(o, new MO.AGetter('_statusScissor'), false);
@@ -60,6 +61,7 @@ MO.FWglContext = function FWglContext(o){
    o.setViewport         = MO.FWglContext_setViewport;
    o.setFillMode         = MO.FWglContext_setFillMode;
    o.setDepthMode        = MO.FWglContext_setDepthMode;
+   o.setDepthMask        = MO.FWglContext_setDepthMask;
    o.setCullingMode      = MO.FWglContext_setCullingMode;
    o.setBlendFactors     = MO.FWglContext_setBlendFactors;
    o.setScissorRectangle = MO.FWglContext_setScissorRectangle;
@@ -655,6 +657,23 @@ MO.FWglContext_setDepthMode = function FWglContext_setDepthMode(depthFlag, depth
       o._depthModeCd = depthCd;
    }
    return true;
+}
+
+//==========================================================
+// <T>设置深度输出模式。</T>
+//
+// @param depthMask:Boolean 深度输出
+// @return 处理结果
+//==========================================================
+MO.FWglContext_setDepthMask = function FWglContext_setDepthMask(depthMask){
+   var o = this;
+   if(o._statusDepthMask != depthMask){
+      o._statistics._frameDepthMaskCount++;
+      o._handle.depthMask(depthMask);
+      o._statusDepthMask = depthMask;
+      return true;
+   }
+   return false;
 }
 
 //==========================================================

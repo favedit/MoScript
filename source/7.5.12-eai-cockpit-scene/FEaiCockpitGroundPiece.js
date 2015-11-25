@@ -6,7 +6,7 @@
 // @author adu
 // @history 150207
 //==========================================================
-MO.FE3dPathData = function FE3dPathData(o) {
+MO.FEaiCockpitGroundPiece = function FEaiCockpitGroundPiece(o) {
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
@@ -19,11 +19,11 @@ MO.FE3dPathData = function FE3dPathData(o) {
    o._rate                    = 0;
    //..........................................................
    // @method
-   o.construct                = MO.FE3dPathData_construct;
-   o.setup                    = MO.FE3dPathData_setup;
-   o.gotoRelative             = MO.FE3dPathData_gotoRelative;
-   o.nextStep                 = MO.FE3dPathData_nextStep;
-   o.dispose                  = MO.FE3dPathData_dispose;
+   o.construct                = MO.FEaiCockpitGroundPiece_construct;
+   o.setup                    = MO.FEaiCockpitGroundPiece_setup;
+   o.gotoRelative             = MO.FEaiCockpitGroundPiece_gotoRelative;
+   o.nextStep                 = MO.FEaiCockpitGroundPiece_nextStep;
+   o.dispose                  = MO.FEaiCockpitGroundPiece_dispose;
 }
 
 //==========================================================
@@ -31,7 +31,7 @@ MO.FE3dPathData = function FE3dPathData(o) {
 //
 // @method
 //==========================================================
-MO.FE3dPathData_construct = function FE3dPathData_construct() {
+MO.FEaiCockpitGroundPiece_construct = function FEaiCockpitGroundPiece_construct() {
    var o = this;
    o.__base.FObject.construct.call(o);
    o._origin = new MO.SPoint2(0, 0);
@@ -43,7 +43,7 @@ MO.FE3dPathData_construct = function FE3dPathData_construct() {
 //
 // @method
 //==========================================================
-MO.FE3dPathData_setup = function FE3dPathData_setup() {
+MO.FEaiCockpitGroundPiece_setup = function FEaiCockpitGroundPiece_setup() {
    var o = this;
    o._destination.set(o._origin.x, o._origin.y);
 }
@@ -53,7 +53,7 @@ MO.FE3dPathData_setup = function FE3dPathData_setup() {
 //
 // @method
 //==========================================================
-MO.FE3dPathData_gotoRelative = function FE3dPathData_gotoRelative(rx, ry, duration) {
+MO.FEaiCockpitGroundPiece_gotoRelative = function FEaiCockpitGroundPiece_gotoRelative(rx, ry, duration) {
    var o = this;
    o._duration = duration;
    o._origin.set(o._destination.x, o._destination.y);
@@ -68,7 +68,7 @@ MO.FE3dPathData_gotoRelative = function FE3dPathData_gotoRelative(rx, ry, durati
 //
 // @method
 //==========================================================
-MO.FE3dPathData_nextStep = function FE3dPathData_nextStep() {
+MO.FEaiCockpitGroundPiece_nextStep = function FEaiCockpitGroundPiece_nextStep() {
    var o = this;
    var result = new MO.SPoint2(0, 0);
    if(o._playing) {
@@ -83,7 +83,6 @@ MO.FE3dPathData_nextStep = function FE3dPathData_nextStep() {
    }else {
       result.set(o._destination.x, o._destination.y);
    }
-   
    return result;
 }
 
@@ -92,7 +91,7 @@ MO.FE3dPathData_nextStep = function FE3dPathData_nextStep() {
 //
 // @method
 //==========================================================
-MO.FE3dPathData_dispose = function FE3dPathData_dispose() { 
+MO.FEaiCockpitGroundPiece_dispose = function FEaiCockpitGroundPiece_dispose() { 
    var o = this;
    o.__base.FObject.dispose.call(o);
 }

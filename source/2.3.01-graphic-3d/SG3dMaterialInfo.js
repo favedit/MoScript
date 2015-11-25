@@ -14,6 +14,8 @@ MO.SG3dMaterialInfo = function SG3dMaterialInfo(){
    //..........................................................
    // @attribute 设置深度
    o.optionDepth          = null;
+   // @attribute 设置写入深度
+   o.optionDepthWrite     = null;
    // @attribute 设置双面
    o.optionDouble         = null;
    // @attribute 设置法线反向
@@ -126,6 +128,7 @@ MO.SG3dMaterialInfo_assign = function SG3dMaterialInfo_assign(info){
    o.transformName = info.transformName;
    // 设置配置
    o.optionDepth = info.optionDepth;
+   o.optionDepthWrite = info.optionDepthWrite;
    o.optionDouble = info.optionDouble;
    o.optionNormalInvert = info.optionNormalInvert;
    o.optionShadow = info.optionShadow;
@@ -191,7 +194,7 @@ MO.SG3dMaterialInfo_assign = function SG3dMaterialInfo_assign(info){
    o.opacityColor.assign(info.opacityColor);
    o.opacityRate = info.opacityRate;
    o.opacityAlpha = info.optionAlpha;
-   o.opacityDepth = info.optionDepth;
+   o.opacityDepth = info.opacityDepth;
    o.opacityTransmittance = info.optionTransmittance;
    // 设置发光
    o.optionEmissive = info.optionEmissive;
@@ -211,6 +214,7 @@ MO.SG3dMaterialInfo_calculate = function SG3dMaterialInfo_calculate(info){
    o.transformName = info.transformName;
    // 设置配置
    o.optionDepth = info.optionDepth;
+   o.optionDepthWrite = info.optionDepthWrite;
    o.optionDouble = info.optionDouble;
    o.optionNormalInvert = info.optionNormalInvert;
    o.optionShadow = info.optionShadow;
@@ -276,7 +280,7 @@ MO.SG3dMaterialInfo_calculate = function SG3dMaterialInfo_calculate(info){
    o.opacityColor.assignPower(info.opacityColor);
    o.opacityRate = info.opacityRate;
    o.opacityAlpha = info.optionAlpha;
-   o.opacityDepth = info.optionDepth;
+   o.opacityDepth = info.opacityDepth;
    o.opacityTransmittance = info.optionTransmittance;
    // 设置发光
    o.optionEmissive = info.optionEmissive;
@@ -292,6 +296,7 @@ MO.SG3dMaterialInfo_reset = function SG3dMaterialInfo_reset(){
    var o = this;
    // 设置属性
    o.optionDepth = true;
+   o.optionDepthWrite = true;
    o.optionDouble = false;
    o.optionNormalInvert = false;
    o.optionShadow = true;

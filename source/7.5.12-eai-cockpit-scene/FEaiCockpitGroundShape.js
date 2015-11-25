@@ -10,7 +10,7 @@
 // @author adu
 // @history 150207
 //==========================================================
-MO.FE3dBackgroundEffect = function FE3dBackgroundEffect(o) {
+MO.FEaiCockpitGroundShape = function FEaiCockpitGroundShape(o) {
    o = MO.Class.inherits(this, o, MO.FE3dRenderable);
    //..........................................................
    // @attribute
@@ -28,15 +28,31 @@ MO.FE3dBackgroundEffect = function FE3dBackgroundEffect(o) {
    o._vertexCount             = 0;
    o._count                   = 5;
    //..........................................................
+   // @event
+   o.onLoad                   = MO.FEaiCockpitGroundShape_onLoad;
+   //..........................................................
    // @method
-   o.onLoad                   = MO.FE3dBackgroundEffect_onLoad;
-   o.construct                = MO.FE3dBackgroundEffect_construct;
-   o.setup                    = MO.FE3dBackgroundEffect_setup;
-   o.updateAll                = MO.FE3dBackgroundEffect_updateAll;
-   o.process                  = MO.FE3dBackgroundEffect_process;
-   o.getRandomRoundPoint      = MO.FE3dBackgroundEffect_getRandomRoundPoint;
-   o.dispose                  = MO.FE3dBackgroundEffect_dispose;
+   o.construct                = MO.FEaiCockpitGroundShape_construct;
+   o.setup                    = MO.FEaiCockpitGroundShape_setup;
+   o.updateAll                = MO.FEaiCockpitGroundShape_updateAll;
+   o.process                  = MO.FEaiCockpitGroundShape_process;
+   o.getRandomRoundPoint      = MO.FEaiCockpitGroundShape_getRandomRoundPoint;
+   o.dispose                  = MO.FEaiCockpitGroundShape_dispose;
    return o;
+}
+
+//==========================================================
+// <T>加载后处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitGroundShape_onLoad = function FEaiCockpitGroundShape_onLoad(event) {
+   var o = this;
+   var texture = o._texture;
+   texture.upload(o._image);
+   texture.makeMipmap();
+   o._image = MO.Lang.Object.dispose(o._image);
+   o.updateAll();
 }
 
 //==========================================================
@@ -44,7 +60,7 @@ MO.FE3dBackgroundEffect = function FE3dBackgroundEffect(o) {
 //
 // @method
 //==========================================================
-MO.FE3dBackgroundEffect_construct = function FE3dBackgroundEffect_construct() {
+MO.FEaiCockpitGroundShape_construct = function FEaiCockpitGroundShape_construct() {
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    o._size = new MO.SSize2(2048 / 120, 1024 / 120);
@@ -61,7 +77,7 @@ MO.FE3dBackgroundEffect_construct = function FE3dBackgroundEffect_construct() {
 //
 // @method
 //==========================================================
-MO.FE3dBackgroundEffect_setup = function FE3dBackgroundEffect_setup() {
+MO.FEaiCockpitGroundShape_setup = function FEaiCockpitGroundShape_setup() {
    var o = this;
    var context = o._graphicContext;
    //计算顶点信息
@@ -83,6 +99,8 @@ MO.FE3dBackgroundEffect_setup = function FE3dBackgroundEffect_setup() {
    var positionData = o._positionData = new Float32Array(3 * vertexCount);
    var coordIndex = 0;
    var coordData = new Float32Array(2 * vertexCount);
+   var colorIndex = 0;
+   var colorData = new Uint8Array(4 * vertexCount);
    for(var i = 0; i < count; ++i) {
       var plane = MO.Class.create(MO.FE3dPlaneData);
       var cx = i * sx / count + halfWidth - centerX;
@@ -96,24 +114,36 @@ MO.FE3dBackgroundEffect_setup = function FE3dBackgroundEffect_setup() {
       coordData[coordIndex ++] = 1;
       coordData[coordIndex ++] = i / count;
       coordData[coordIndex ++] = 1;
-      var path = MO.Class.create(MO.FE3dPathData);
+      for(var n = 0; n < 4; n++){
+         colorData[colorIndex++] = 0xFF;
+         colorData[colorIndex++] = 0xFF;
+         colorData[colorIndex++] = 0xFF;
+         colorData[colorIndex++] = 0xFF;
+      }
+      var path = MO.Class.create(MO.FEaiCockpitGroundPiece);
       path.origin().set(cx, cy);
       path.setup();
       o._pathes.push(path);
       planes.push(plane);
       positionData.set(plane.vertexs(), i * 12);
    }
-   //创建顶点位置缓冲
+   // 创建顶点位置缓冲
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setCode('position');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);
    buffer.upload(positionData, 4 * 3, vertexCount);
    o.pushVertexBuffer(buffer);
-   //创建顶点颜色缓冲
+   // 创建顶点纹理缓冲
    var buffer = o._vertexCoordBuffer = context.createVertexBuffer();
    buffer.setCode('coord');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float2);
    buffer.upload(coordData, 4 * 2, vertexCount);
+   o.pushVertexBuffer(buffer);
+   // 创建顶点颜色缓冲
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
+   buffer.setCode('color');
+   buffer.setFormatCd(MO.EG3dAttributeFormat.Byte4Normal);
+   buffer.upload(colorData, 4, vertexCount);
    o.pushVertexBuffer(buffer);
    //..........................................................
    // 计算索引
@@ -147,12 +177,13 @@ MO.FE3dBackgroundEffect_setup = function FE3dBackgroundEffect_setup() {
    // 设置材质
    var info = o.material().info();
    info.optionAlpha = true;
-   info.specularLevel = 64;
+   info.optionDepthWrite = false;
+   info.effectCode = 'control';
    info.alphaBase = 0;
    o.material()._textures = o._textures;
    //..........................................................
    // 加载纹理
-   if(o._url) {
+   if(o._url){
       var image = o._image = MO.Class.create(MO.FImage);
       image.addLoadListener(o, o.onLoad);
       image.loadUrl(o._url);
@@ -160,26 +191,11 @@ MO.FE3dBackgroundEffect_setup = function FE3dBackgroundEffect_setup() {
 }
 
 //==========================================================
-// <T>加载后处理。</T>
-//
-// @method
-//==========================================================
-MO.FE3dBackgroundEffect_onLoad = function FE3dBackgroundEffect_onLoad(event) {
-   var o = this;
-   var texture = o._texture;
-   texture.upload(o._image);
-   texture.makeMipmap();
-   o._image = MO.Lang.Object.dispose(o._image);
-
-   o.updateAll();
-}
-
-//==========================================================
 // <T>刷新顶点信息。</T>
 //
 // @method
 //==========================================================
-MO.FE3dBackgroundEffect_updateAll = function FE3dBackgroundEffect_updateAll() {
+MO.FEaiCockpitGroundShape_updateAll = function FEaiCockpitGroundShape_updateAll() {
    var o = this;
    var planes = o._planes;
    var count = o._count;
@@ -200,7 +216,7 @@ MO.FE3dBackgroundEffect_updateAll = function FE3dBackgroundEffect_updateAll() {
 //
 // @method
 //==========================================================
-MO.FE3dBackgroundEffect_process = function FE3dBackgroundEffect_process() {
+MO.FEaiCockpitGroundShape_process = function FEaiCockpitGroundShape_process() {
    var o = this;
    var count = o._count;
    for( var i = 0; i < count; i ++) {
@@ -221,7 +237,7 @@ MO.FE3dBackgroundEffect_process = function FE3dBackgroundEffect_process() {
 //
 // @method
 //==========================================================
-MO.FE3dBackgroundEffect_getRandomRoundPoint = function FE3dBackgroundEffect_getRandomRoundPoint(edgeX, edgeY) {
+MO.FEaiCockpitGroundShape_getRandomRoundPoint = function FEaiCockpitGroundShape_getRandomRoundPoint(edgeX, edgeY) {
    var o = this;
    var result = new MO.SPoint2();
    var shotest = 1;
@@ -245,7 +261,7 @@ MO.FE3dBackgroundEffect_getRandomRoundPoint = function FE3dBackgroundEffect_getR
 //
 // @method
 //==========================================================
-MO.FE3dBackgroundEffect_dispose = function FE3dBackgroundEffect_dispose() {
+MO.FEaiCockpitGroundShape_dispose = function FEaiCockpitGroundShape_dispose() {
    var o = this;
    o.__base.FE3dRenderable.dispose.call(o);
 }
