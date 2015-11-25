@@ -9,16 +9,17 @@ MO.FEaiChartStage = function FEaiChartStage(o){
    o = MO.Class.inherits(this, o, MO.FE3dStage);
    //..........................................................
    // @attribute
-   o._groundLayer    = MO.Class.register(o, new MO.AGetter('_groundLayer'));
-   o._mapLayer       = MO.Class.register(o, new MO.AGetter('_mapLayer'));
-   o._borderLayer    = MO.Class.register(o, new MO.AGetter('_borderLayer'));
-   o._cityRangeLayer = MO.Class.register(o, new MO.AGetter('_cityRangeLayer'));
-   o._cityLayer      = MO.Class.register(o, new MO.AGetter('_cityLayer'));
-   o._dataLayer      = MO.Class.register(o, new MO.AGetter('_dataLayer'));
-   o._spriteLayer    = MO.Class.register(o, new MO.AGetter('_spriteLayer'));
+   o._groundLayer          = MO.Class.register(o, new MO.AGetter('_groundLayer'));
+   o._groundLayerEffect    = MO.Class.register(o, new MO.AGetter('_groundLayerEffect'));
+   o._mapLayer             = MO.Class.register(o, new MO.AGetter('_mapLayer'));
+   o._borderLayer          = MO.Class.register(o, new MO.AGetter('_borderLayer'));
+   o._cityRangeLayer       = MO.Class.register(o, new MO.AGetter('_cityRangeLayer'));
+   o._cityLayer            = MO.Class.register(o, new MO.AGetter('_cityLayer'));
+   o._dataLayer            = MO.Class.register(o, new MO.AGetter('_dataLayer'));
+   o._spriteLayer          = MO.Class.register(o, new MO.AGetter('_spriteLayer'));
    //..........................................................
    // @method
-   o.construct       = MO.FEaiChartStage_construct;
+   o.construct             = MO.FEaiChartStage_construct;
    return o;
 }
 
@@ -33,6 +34,10 @@ MO.FEaiChartStage_construct = function FEaiChartStage_construct(){
    // 创建背景层
    var layer = o._groundLayer = MO.Class.create(MO.FDisplayLayer);
    o.registerLayer('GroundLayer', layer);
+   // 创建背景特效层
+   var layer = o._groundLayerEffect = MO.Class.create(MO.FDisplayLayer);
+   layer.setOptionClearDepth(true);
+   o.registerLayer('GroundLayerEffect', layer);
    // 创建地图层
    var layer = o._mapLayer = MO.Class.create(MO.FDisplayLayer);
    layer.setOptionClearDepth(true);

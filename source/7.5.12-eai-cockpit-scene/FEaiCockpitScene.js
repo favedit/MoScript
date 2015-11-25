@@ -182,6 +182,8 @@ MO.FEaiCockpitScene_onProcess = function FEaiCockpitScene_onProcess() {
          o._guiManager.mainTimeline().pushAction(alphaAction);
          o._mapReady = true;
       }
+      // 背景动画处理
+      o._backgroundEffect.process();
    }
 }
 
@@ -222,9 +224,16 @@ MO.FEaiCockpitScene_setup = function FEaiCockpitScene_setup() {
    var projection = camera.projection();
    projection.setAngle(40);
    projection.update();
-   var dataLayer = stage.dataLayer();
+   //..........................................................
+   // 创建背景效果模型
+   var effectLayer = stage.groundLayerEffect();
+   var backgroundEffect = o._backgroundEffect = MO.Class.create(MO.FE3dBackgroundEffect);
+   backgroundEffect.linkGraphicContext(o);
+   backgroundEffect.setup();
+   effectLayer.push(backgroundEffect);
    //..........................................................
    // 创建模块管理器
+   var dataLayer = stage.dataLayer();
    var moduleManager = o._moduleManager = MO.Class.create(MO.FEaiCockpitSceneModuleManager);
    moduleManager.linkGraphicContext(o);
    moduleManager.setScene(o);

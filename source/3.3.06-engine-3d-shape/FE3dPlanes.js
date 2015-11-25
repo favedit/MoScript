@@ -27,9 +27,7 @@ MO.FE3dPlanes = function FE3dPlanes(o) {
 
    o._planes                  = null;
    o._vertexPositionBuffer    = null;
-   o._vertexNormalBuffer      = null;
-   o._vertexCoordBuffer       = null;
-   o._indexBuffer             = MO.Class.register(o, new MO.AGetter('_indexBuffer'));
+   o._indexBuffer             = null;
    o._image                   = null;
    //..........................................................
    // @method
@@ -107,7 +105,7 @@ MO.FE3dPlanes_setup = function FE3dPlanes_setup() {
          o._planes.push(plane);
       }
    }
-
+   //创建顶点位置缓冲
    var planes = o._planes;
    var length = planes.length();
    var vertexCount = length * 4;
@@ -117,7 +115,6 @@ MO.FE3dPlanes_setup = function FE3dPlanes_setup() {
       var plane = planes.get(i);
       positionData.set(plane.vertexs(), i * 12);
    }
-   //创建顶点位置缓冲
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.setCode('position');
    buffer.setFormatCd(MO.EG3dAttributeFormat.Float3);

@@ -17,8 +17,9 @@ MO.FE3dPlaneData = function FE3dPlaneData(o) {
    o._vertexs           = MO.Class.register(o, new MO.AGetter('_vertexs'));;
    o._initVertexs       = null;
    o._matrix            = MO.Class.register(o, new MO.AGetter('_matrix'));
-   o._centerX           = 0;
-   o._centerY           = 0;
+   o._centerX           = MO.Class.register(o, new MO.AGetter('_centerX'), 0);
+   o._centerY           = MO.Class.register(o, new MO.AGetter('_centerY'), 0);
+   o._z                 = MO.Class.register(o, new MO.AGetSet('_z'));
    o._dataLength        = 4 * 3;
    //..........................................................
    // @method
@@ -44,6 +45,7 @@ MO.FE3dPlaneData_construct = function FE3dPlaneData_construct() {
    o._vertexs = new Float32Array(o._dataLength);
    o._initVertexs = new Float32Array(o._dataLength);
    o._matrix = new MO.SMatrix3d();
+   o._z = 0;
 }
 
 //==========================================================
@@ -89,8 +91,9 @@ MO.FE3dPlaneData_setVertexs = function FE3dPlaneData_setVertexs(centerX, centerY
 //==========================================================
 MO.FE3dPlaneData_move = function FE3dPlaneData_move(x, y, z) {
    var o = this;
-   var matrix = o._matrix;
-   matrix.addTranslate(x, y, z);
+   o._centerX = x;
+   o._centerY = y;
+   o._z = z;
 }
 
 //==========================================================
@@ -126,6 +129,7 @@ MO.FE3dPlaneData_format = function FE3dPlaneData_format() {
    for(var i = 0; i < o._dataLength; i += 3) {
       vertexs[i] += o._centerX;
       vertexs[i + 1] += o._centerY;
+      vertexs[i + 2] += o._z;
    }
 }
 
