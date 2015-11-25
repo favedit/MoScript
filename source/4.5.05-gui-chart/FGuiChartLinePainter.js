@@ -8,18 +8,15 @@
 MO.FGuiChartLinePainter = function FGuiChartLinePainter(o) {
    o = MO.Class.inherits(this, o, MO.FGuiChartPainter);
    //..........................................................
-   // @attribute
-   o._paintContext = null;
-   //..........................................................
    // @event
-   o.onPaintBegin  = MO.FGuiChartLinePainter_onPaintBegin;
+   o.onPaintBegin = MO.FGuiChartLinePainter_onPaintBegin;
    //..........................................................
    // @method
-   o.construct     = MO.FGuiChartLinePainter_construct;
+   o.construct    = MO.FGuiChartLinePainter_construct;
    // @method
-   o.draw          = MO.FGuiChartLinePainter_draw;
+   o.draw         = MO.FGuiChartLinePainter_draw;
    // @method
-   o.dispose       = MO.FGuiChartLinePainter_dispose;
+   o.dispose      = MO.FGuiChartLinePainter_dispose;
    return o;
 }
 
@@ -31,8 +28,6 @@ MO.FGuiChartLinePainter = function FGuiChartLinePainter(o) {
 MO.FGuiChartLinePainter_construct = function FGuiChartLinePainter_construct() {
    var o = this;
    o.__base.FGuiChartPainter.construct.call(o);
-   // 设置变量
-   o._paintContext = new MO.SGuiGridPaintContext();
 }
 
 //==========================================================
@@ -44,6 +39,11 @@ MO.FGuiChartLinePainter_construct = function FGuiChartLinePainter_construct() {
 MO.FGuiChartLinePainter_draw = function FGuiChartLinePainter_draw(context){
    var o = this;
    o.__base.FGuiChartPainter.draw.call(o);
+   // 绘制处理
+   var graphic = context.graphic;
+   var rectangle = context.rectangle;
+   graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+   
 }
 
 //==========================================================
@@ -53,8 +53,6 @@ MO.FGuiChartLinePainter_draw = function FGuiChartLinePainter_draw(context){
 //==========================================================
 MO.FGuiChartLinePainter_dispose = function FGuiChartLinePainter_dispose() {
    var o = this;
-   // 释放变量
-   o._paintContext = MO.Lang.Object.dispose(o._paintContext);
    // 父处理
    o.__base.FGuiChartPainter.dispose.call(o);
 }

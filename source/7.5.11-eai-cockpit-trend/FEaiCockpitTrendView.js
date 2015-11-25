@@ -5,9 +5,11 @@
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitModuleTrendView = function FEaiCockpitModuleTrendView(o) {
+MO.FEaiCockpitTrendView = function FEaiCockpitTrendView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   // @attribute
+   o._backgroundUri        = '{eai.resource}/cockpit/trend/view.png';
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
@@ -17,16 +19,16 @@ MO.FEaiCockpitModuleTrendView = function FEaiCockpitModuleTrendView(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleTrendView_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleTrendView_onPaintBegin;
+   o.onImageLoad           = MO.FEaiCockpitTrendView_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitTrendView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleTrendView_construct;
+   o.construct             = MO.FEaiCockpitTrendView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleTrendView_setup;
-   o.processLogic          = MO.FEaiCockpitModuleTrendView_processLogic;
+   o.setup                 = MO.FEaiCockpitTrendView_setup;
+   o.processLogic          = MO.FEaiCockpitTrendView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleTrendView_dispose;
+   o.dispose               = MO.FEaiCockpitTrendView_dispose;
    return o;
 }
 
@@ -35,7 +37,7 @@ MO.FEaiCockpitModuleTrendView = function FEaiCockpitModuleTrendView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_onImageLoad = function FEaiCockpitModuleTrendView_onImageLoad() {
+MO.FEaiCockpitTrendView_onImageLoad = function FEaiCockpitTrendView_onImageLoad() {
    this.dirty();
 }
 
@@ -44,7 +46,7 @@ MO.FEaiCockpitModuleTrendView_onImageLoad = function FEaiCockpitModuleTrendView_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_onPaintBegin = function FEaiCockpitModuleTrendView_onPaintBegin(event) {
+MO.FEaiCockpitTrendView_onPaintBegin = function FEaiCockpitTrendView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -52,7 +54,7 @@ MO.FEaiCockpitModuleTrendView_onPaintBegin = function FEaiCockpitModuleTrendView
    var rectangle = event.rectangle;
    //..........................................................
    // 绘制背景
-   graphic.drawRectangleImage(o._backgroundImage, rectangle);
+   //graphic.drawRectangleImage(o._backgroundImage, rectangle);
 }
 
 //==========================================================
@@ -60,7 +62,7 @@ MO.FEaiCockpitModuleTrendView_onPaintBegin = function FEaiCockpitModuleTrendView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_construct = function FEaiCockpitModuleTrendView_construct() {
+MO.FEaiCockpitTrendView_construct = function FEaiCockpitTrendView_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -73,12 +75,9 @@ MO.FEaiCockpitModuleTrendView_construct = function FEaiCockpitModuleTrendView_co
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_setup = function FEaiCockpitModuleTrendView_setup(){
+MO.FEaiCockpitTrendView_setup = function FEaiCockpitTrendView_setup(){
    var o = this;
-   // 创建图片
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/trend/view.png');
-   image.addLoadListener(o, o.onImageLoad);
+   o.__base.FEaiCockpitControl.setup.call(o);
 }
 
 //==========================================================
@@ -86,7 +85,7 @@ MO.FEaiCockpitModuleTrendView_setup = function FEaiCockpitModuleTrendView_setup(
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_processLogic = function FEaiCockpitModuleTrendView_processLogic(){
+MO.FEaiCockpitTrendView_processLogic = function FEaiCockpitTrendView_processLogic(){
    var o = this;
 }
 
@@ -95,7 +94,7 @@ MO.FEaiCockpitModuleTrendView_processLogic = function FEaiCockpitModuleTrendView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendView_dispose = function FEaiCockpitModuleTrendView_dispose() {
+MO.FEaiCockpitTrendView_dispose = function FEaiCockpitTrendView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

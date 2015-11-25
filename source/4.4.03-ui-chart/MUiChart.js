@@ -25,7 +25,6 @@ MO.MUiChart = function MUiChart(o){
 //==========================================================
 MO.MUiChart_construct = function MUiChart_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
 }
 
 //==========================================================
@@ -35,6 +34,4 @@ MO.MUiChart_construct = function MUiChart_construct(){
 //==========================================================
 MO.MUiChart_dispose = function MUiChart_dispose(){
    var o = this;
-   // 父处理
-   o.__base.FObject.dispose.call(o);
 }

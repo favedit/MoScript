@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151107
 //==========================================================
-MO.FEaiCockpitMessageTrendDay = function FEaiCockpitMessageTrendDay(o){
+MO.FEaiCockpitTrendMessageDay = function FEaiCockpitTrendMessageDay(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute

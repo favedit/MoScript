@@ -32,7 +32,7 @@ MO.FGuiChart = function FGuiChart(o) {
 //==========================================================
 MO.FGuiChart_onPaintBegin = function FGuiChart_onPaintBegin(event) {
    var o = this;
-   o._painter.draw(context);
+   o._painter.draw(event);
 }
 
 //==========================================================
@@ -55,6 +55,7 @@ MO.FGuiChart_construct = function FGuiChart_construct() {
 //==========================================================
 MO.FGuiChart_selectPainter = function FGuiChart_selectPainter(clazz){
    var o = this;
+   o._painter = MO.Class.create(clazz);
 }
 
 //==========================================================

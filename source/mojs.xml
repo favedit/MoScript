@@ -48,14 +48,16 @@
       <PathMerger source='/4.3.01-ui-console'                     target='/ajs/ui-console.js'/>
       <PathMerger source='/4.4.01-ui-form'                        target='/ajs/ui-form.js'/>
       <PathMerger source='/4.4.02-ui-table'                       target='/ajs/ui-table.js'/>
-      <PathMerger source='/4.4.03-ui-application'                 target='/ajs/ui-application.js'/>
+      <PathMerger source='/4.4.03-ui-chart'                       target='/ajs/ui-chart.js'/>
+      <PathMerger source='/4.4.09-ui-application'                 target='/ajs/ui-application.js'/>
 
       <PathMerger source='/4.5.01-gui-common'                     target='/ajs/gui-common.js'/>
       <PathMerger source='/4.5.02-gui-core'                       target='/ajs/gui-core.js'/>
       <PathMerger source='/4.5.03-gui-form'                       target='/ajs/gui-form.js'/>
       <PathMerger source='/4.5.04-gui-table'                      target='/ajs/gui-table.js'/>
-      <PathMerger source='/4.5.05-gui-frame'                      target='/ajs/gui-frame.js'/>
-      <PathMerger source='/4.5.06-gui-extension'                  target='/ajs/gui-extension.js'/>
+      <PathMerger source='/4.5.05-gui-chart'                      target='/ajs/gui-chart.js'/>
+      <PathMerger source='/4.5.06-gui-frame'                      target='/ajs/gui-frame.js'/>
+      <PathMerger source='/4.5.07-gui-extension'                  target='/ajs/gui-extension.js'/>
 
       <PathMerger source='/4.6.01-dui-common'                     target='/ajs/dui-common.js'/>
       <PathMerger source='/4.6.11-dui-core'                       target='/ajs/dui-core.js'/>
@@ -226,6 +228,7 @@
          <File source='/ajs/ui-console.js'/>
          <File source='/ajs/ui-form.js'/>
          <File source='/ajs/ui-table.js'/>
+         <File source='/ajs/ui-chart.js'/>
          <File source='/ajs/ui-application.js'/>
       </FileMerger>
       <FileMerger target='/ajs/mo-gui.js'>
@@ -233,6 +236,7 @@
          <File source='/ajs/gui-core.js'/>
          <File source='/ajs/gui-form.js'/>
          <File source='/ajs/gui-table.js'/>
+         <File source='/ajs/gui-chart.js'/>
          <File source='/ajs/gui-frame.js'/>
          <File source='/ajs/gui-extension.js'/>
       </FileMerger>

@@ -5,9 +5,11 @@
 // @author sunpeng
 // @history 151101
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot = function FEaiCockpitModuleTrendSnapshot(o) {
+MO.FEaiCockpitTrendSnapshot = function FEaiCockpitTrendSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   // @attribute
+   o._backgroundUri        = '{eai.resource}/cockpit/trend/ground.png';
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
@@ -17,19 +19,19 @@ MO.FEaiCockpitModuleTrendSnapshot = function FEaiCockpitModuleTrendSnapshot(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleTrendSnapshot_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin;
-   o.onFetch               = MO.FEaiCockpitModuleTrendSnapshot_onFetch;
+   o.onImageLoad           = MO.FEaiCockpitTrendSnapshot_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitTrendSnapshot_onPaintBegin;
+   o.onFetch               = MO.FEaiCockpitTrendSnapshot_onFetch;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleTrendSnapshot_construct;
+   o.construct             = MO.FEaiCockpitTrendSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleTrendSnapshot_setup;
-   o.setData               = MO.FEaiCockpitModuleTrendSnapshot_setData;
-   o.drawLine              = MO.FEaiCockpitModuleTrendSnapshot_drawLine;
-   o.processLogic          = MO.FEaiCockpitModuleTrendSnapshot_processLogic;
+   o.setup                 = MO.FEaiCockpitTrendSnapshot_setup;
+   o.setData               = MO.FEaiCockpitTrendSnapshot_setData;
+   o.drawLine              = MO.FEaiCockpitTrendSnapshot_drawLine;
+   o.processLogic          = MO.FEaiCockpitTrendSnapshot_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleTrendSnapshot_dispose;
+   o.dispose               = MO.FEaiCockpitTrendSnapshot_dispose;
    o._dateTextFont         = MO.Class.register(o, new MO.AGetSet('_dateTextFont'));
    return o;
 }
@@ -39,7 +41,7 @@ MO.FEaiCockpitModuleTrendSnapshot = function FEaiCockpitModuleTrendSnapshot(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_onImageLoad = function FEaiCockpitModuleTrendSnapshot_onImageLoad() {
+MO.FEaiCockpitTrendSnapshot_onImageLoad = function FEaiCockpitTrendSnapshot_onImageLoad() {
    this.dirty();
 }
 
@@ -48,7 +50,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onImageLoad = function FEaiCockpitModuleTrendS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrendSnapshot_onPaintBegin(event){
+MO.FEaiCockpitTrendSnapshot_onPaintBegin = function FEaiCockpitTrendSnapshot_onPaintBegin(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -56,8 +58,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
    var rectangle = event.rectangle;
    //..........................................................
    // 绘制背景
-   graphic.drawRectangleImage(o._backgroundImage, rectangle);
-
+   //graphic.drawRectangleImage(o._backgroundImage, rectangle);
    var left = rectangle.left + 130;
    var top = rectangle.top + 50;
    var width = rectangle.width - 180;
@@ -162,7 +163,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onPaintBegin = function FEaiCockpitModuleTrend
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_onFetch = function FEaiCockpitModuleTrendSnapshot_onFetch(event){
+MO.FEaiCockpitTrendSnapshot_onFetch = function FEaiCockpitTrendSnapshot_onFetch(event){
    var o = this;
    var content = event.content;
    // 读取数据
@@ -176,7 +177,7 @@ MO.FEaiCockpitModuleTrendSnapshot_onFetch = function FEaiCockpitModuleTrendSnaps
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_construct = function FEaiCockpitModuleTrendSnapshot_construct() {
+MO.FEaiCockpitTrendSnapshot_construct = function FEaiCockpitTrendSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 配置属性
@@ -184,7 +185,7 @@ MO.FEaiCockpitModuleTrendSnapshot_construct = function FEaiCockpitModuleTrendSna
    o._cellSize.set(5, 2);
    // 配置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
-   o._data = MO.Class.create(MO.FEaiCockpitMessageTrend);
+   o._data = MO.Class.create(MO.FEaiCockpitTrendMessage);
    o._dateTextFont = new MO.SUiFont();
    o._dateTextFont.size = 4;
    o._dateTextFont.bold = false;
@@ -196,12 +197,13 @@ MO.FEaiCockpitModuleTrendSnapshot_construct = function FEaiCockpitModuleTrendSna
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_setup = function FEaiCockpitModuleTrendSnapshot_setup(){
+MO.FEaiCockpitTrendSnapshot_setup = function FEaiCockpitTrendSnapshot_setup(){
    var o = this;
-   // 创建图片
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/trend/ground.png');
-   image.addLoadListener(o, o.onImageLoad);
+   o.__base.FEaiCockpitControl.setup.call(o);
+   // 创建图表
+   var chart = o._chart = MO.Class.create(MO.FGuiChart);
+   chart.selectPainter(MO.FGuiChartLinePainter);
+   o.push(chart);
 }
 
 //==========================================================
@@ -210,7 +212,7 @@ MO.FEaiCockpitModuleTrendSnapshot_setup = function FEaiCockpitModuleTrendSnapsho
 // @method
 // @param unit:
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_setData = function FEaiCockpitModuleTrendSnapshot_setData(data) {
+MO.FEaiCockpitTrendSnapshot_setData = function FEaiCockpitTrendSnapshot_setData(data) {
    var o = this;
    o.dirty();
 }
@@ -220,7 +222,7 @@ MO.FEaiCockpitModuleTrendSnapshot_setData = function FEaiCockpitModuleTrendSnaps
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_drawLine = function FEaiCockpitModuleTrendSnapshot_drawLine(graphic, rectangle, dataheigt,minValue, maxValue, code, color, lineWidth){
+MO.FEaiCockpitTrendSnapshot_drawLine = function FEaiCockpitTrendSnapshot_drawLine(graphic, rectangle, dataheigt,minValue, maxValue, code, color, lineWidth){
    var o = this;
    var handle = graphic._handle;
    handle.beginPath();
@@ -254,7 +256,7 @@ MO.FEaiCockpitModuleTrendSnapshot_drawLine = function FEaiCockpitModuleTrendSnap
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_processLogic = function FEaiCockpitModuleTrendSnapshot_processLogic(){
+MO.FEaiCockpitTrendSnapshot_processLogic = function FEaiCockpitTrendSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
       var trend = MO.Console.find(MO.FEaiLogicConsole).cockpit().trend();
@@ -267,7 +269,7 @@ MO.FEaiCockpitModuleTrendSnapshot_processLogic = function FEaiCockpitModuleTrend
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTrendSnapshot_dispose = function FEaiCockpitModuleTrendSnapshot_dispose() {
+MO.FEaiCockpitTrendSnapshot_dispose = function FEaiCockpitTrendSnapshot_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

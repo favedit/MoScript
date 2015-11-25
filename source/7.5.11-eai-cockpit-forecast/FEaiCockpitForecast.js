@@ -1,5 +1,5 @@
 //==========================================================
-// <T>驾驶舱部门模块。</T>
+// <T>业绩趋势模块。</T>
 //
 // @class
 // @author maocy
@@ -9,18 +9,18 @@ MO.FEaiCockpitForecast = function FEaiCockpitForecast(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitLogicModule);
    //..........................................................
    // @attribute
-   o._name          = 'forecast';
-   o._typeCd        = MO.EEaiCockpitModule.Logic;
-   o._slideshow     = true;
+   o._name      = 'forecast';
+   o._typeCd    = MO.EEaiCockpitModule.Logic;
+   o._slideshow = true;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitForecast_construct;
+   o.construct  = MO.FEaiCockpitForecast_construct;
    // @method
-   o.setup          = MO.FEaiCockpitForecast_setup;
+   o.setup      = MO.FEaiCockpitForecast_setup;
    // @method
-   o.process        = MO.FEaiCockpitForecast_process;
+   o.process    = MO.FEaiCockpitForecast_process;
    // @method
-   o.dispose        = MO.FEaiCockpitForecast_dispose;
+   o.dispose    = MO.FEaiCockpitForecast_dispose;
    return o;
 }
 
