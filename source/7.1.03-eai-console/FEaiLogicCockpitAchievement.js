@@ -14,6 +14,8 @@ MO.FEaiLogicCockpitAchievement = function FEaiLogicCockpitAchievement(o){
    o.doFetchTitle = MO.FEaiLogicCockpitAchievement_doFetchTitle;
    o.doFetchRank  = MO.FEaiLogicCockpitAchievement_doFetchRank;
    o.doFetchRate  = MO.FEaiLogicCockpitAchievement_doFetchRate;
+   o.doFetchRadar = MO.FEaiLogicCockpitAchievement_doFetchRadar;
+   o.doFetchBusinessCard = MO.FEaiLogicCockpitAchievement_doFetchBusinessCard;
    return o;
 }
 
@@ -94,4 +96,34 @@ MO.FEaiLogicCockpitAchievement_doFetchRate = function FEaiLogicCockpitAchievemen
    var o = this;
    var parameters = o.prepareParemeters();
    o.sendService('{eai.logic.service}/eai.cockpit.achievement.subpage.wv?do=investmentRate',parameters,owner,callback);
+}
+//==========================================================
+// <T>获得五力图信息。</T>
+//
+// @method
+// @param owner:Object 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicCockpitAchievement_doFetchRadar = function FEaiLogicCockpitAchievement_doFetchRadar(owner, callback) {
+   var o = this;
+   var parameters = o.prepareParemeters();
+   o.sendService('{eai.logic.service}/eai.cockpit.achievement.subpage.wv?do=radar', parameters, owner, callback);
+}
+//==========================================================
+// <T>获得公司名片信息。</T>
+//
+// @method
+// @param owner:Object 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicCockpitAchievement_doFetchBusinessCard = function FEaiLogicCockpitAchievement_doFetchBusinessCard(owner, callback) {
+   var o = this;
+   var parameters = o.prepareParemeters();
+   o.sendService('{eai.logic.service}/eai.cockpit.achievement.subpage.wv?do=businessCard', parameters, owner, callback);
 }

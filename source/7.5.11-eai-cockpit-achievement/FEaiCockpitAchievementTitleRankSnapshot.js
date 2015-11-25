@@ -25,6 +25,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
    o._rollDuration         = 5000;
    o._rollTicker           = null;
    o._lineChart            = null;
+   o._gridControl          = null; //表格控件
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -35,6 +36,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitAchievementTitleRankSnapshot_construct;
+   o.setData               = MO.FEaiCockpitAchievementTitleRankSnapshot_setData;
    // @method
    o.setup                 = MO.FEaiCockpitAchievementTitleRankSnapshot_setup;
    o.roll                  = MO.FEaiCockpitAchievementTitleRankSnapshot_roll;
@@ -57,9 +59,58 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
    var o = this;
    var content = event.content;
    // 读取数据
-
+   var data = o._data;
+   if (data.unserializeSignBuffer(event.sign, event.content, true)) {
+       o.setData(data);
+   }
 }
+ //==========================================================
+ // <T>设置数据重新显示</T>
+ //
+ // @method
+ // @param unit:
+ //==========================================================
+ MO.FEaiCockpitAchievementTitleRankSnapshot_setData = function FEaiCockpitAchievementTitleRankSnapshot_setData(data) {
+    var o = this;
+    var achievementRank = data.achievementRank();
 
+    var humanRank = data.humanRank();
+    var averageRank = data.averageRank();
+    if (achievementRank.count() < 3 || humanRank.count() < 3 || averageRank.count() < 3) {
+       return;
+    }
+    var grid = o._gridControl;
+    grid.clearRows();
+    var row = grid.allocRow();  
+    row.set('corporateName', "");
+    row.set('firstName', "1");
+    row.set('secondName',"2");
+    row.set('thirdName', "3");
+    grid.pushRow(row);
+
+    row = grid.allocRow();
+    row.set('corporateName', "业绩:");
+    row.set('firstName', achievementRank.at(0).rank().toString());
+    row.set('secondName', achievementRank.at(1).rank().toString());
+    row.set('thirdName', achievementRank.at(2).rank().toString());
+    grid.pushRow(row);
+
+    row = grid.allocRow();
+    row.set('corporateName', "人力:");
+    row.set('firstName', humanRank.at(0).rank().toString());
+    row.set('secondName', humanRank.at(1).rank().toString());
+    row.set('thirdName', humanRank.at(2).rank().toString());
+    grid.pushRow(row);
+
+    row = grid.allocRow();
+    row.set('corporateName', "人均:");
+    row.set('firstName', averageRank.at(0).rank().toString());
+    row.set('secondName', averageRank.at(1).rank().toString());
+    row.set('thirdName', averageRank.at(2).rank().toString());
+    grid.pushRow(row);
+   
+    o.dirty();
+}
 //==========================================================
 // <T>前绘制处理。</T>
 //
@@ -115,7 +166,8 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_construct = function FEaiCockpitAchie
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._rollTicker = new MO.TTicker(o._rollDuration);
-   o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
+   
+  o._data = MO.Class.create(MO.FEaiCockpitMessageAchievementNextRanks);
 }
 
 //==========================================================
@@ -128,7 +180,53 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
    // 加载图片
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/rankright.png');
 
+   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
+   grid.setOptionClip(true);
+   grid.setLocation(60, 10);
+   grid.setSize(900, 120);
+   grid.setHeadHeight(0);
+   grid.setHeadBackColor('#3a424f');
+   grid.headFont().font = 'Microsoft YaHei';
+   grid.headFont().size = 18;
+   grid.headFont().color = '#ffffff';
+   grid.setRowHeight(23);
+   grid.rowFont().font = 'Microsoft YaHei';
+   grid.rowFont().size = 18;
+   grid.rowFont().color = '#ffffff';
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('corporateName');
+   column.setLabel('');
+   column.setTextAlign(MO.EUiAlign.Center);
+   column.setDataName('corporateName');
+   column.setWidth(200);
+   column.setPadding(0, 0, 0, 0);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('firstName');
+   column.setLabel('');
+   column.setTextAlign(MO.EUiAlign.Center);
+   column.setWidth(230);
+   column.setDataName('firstName');
+   column.setPadding(0, 0, 0, 0);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('secondName');
+   column.setLabel('');
+   column.setDataName('secondName');
+   column.setTextAlign(MO.EUiAlign.Center);
+   column.setWidth(230);
+   column.setPadding(0, 0, 0, 0);
+   grid.pushColumn(column);
+   var column = MO.Class.create(MO.FGuiGridColumnText);
+   column.setName('thirdName');
+   column.setLabel('');
+   column.setDataName('thirdName');
+   column.setTextAlign(MO.EUiAlign.Center);
+   column.setWidth(230);
+   column.setPadding(0, 0, 0, 0);
+   grid.pushColumn(column);
    //..........................................................
+   o.push(grid);
 }
 
 //==========================================================
@@ -139,8 +237,10 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
 MO.FEaiCockpitAchievementTitleRankSnapshot_processLogic = function FEaiCockpitAchievementTitleRankSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
-      var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
-      forecast.doFetch(o, o.onDataFetch);
+    //  var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
+     // forecast.doFetch(o, o.onDataFetch);
+      var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
+      achievement.doFetchRank(o, o.onDataFetch);
    }
 
 }
