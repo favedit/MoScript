@@ -24,6 +24,7 @@ MO.FEaiCockpitGroundShape = function FEaiCockpitGroundShape(o) {
    o._size                    = null;
    o._pieceSize               = null;
    o._positionData            = null;
+   o._colorData               = null;
    o._pathes                  = null;
    o._vertexCount             = 0;
    o._count                   = 5;
@@ -100,7 +101,7 @@ MO.FEaiCockpitGroundShape_setup = function FEaiCockpitGroundShape_setup() {
    var coordIndex = 0;
    var coordData = new Float32Array(2 * vertexCount);
    var colorIndex = 0;
-   var colorData = new Uint8Array(4 * vertexCount);
+   var colorData = o._colorData = new Uint8Array(4 * vertexCount);
    for(var i = 0; i < count; ++i) {
       var plane = MO.Class.create(MO.FE3dPlaneData);
       var cx = i * sx / count + halfWidth - centerX;
@@ -200,15 +201,32 @@ MO.FEaiCockpitGroundShape_updateAll = function FEaiCockpitGroundShape_updateAll(
    var planes = o._planes;
    var count = o._count;
    var vertexCount = count * 4;
-   var positionIndex = 0;
    var positionData = o._positionData;
+   var colorData = o._colorData;
+   var colorIndex = 0;
+   var pathes = o._pathes;
    for(var i = 0; i < count; ++i) {
       var plane = planes.get(i);
+      var path = pathes.get(i);
+      var next = path.nextStep();
+      plane.move(next.x, next.y, 0);
+      if(!path.playing()) {
+         var dest = o.getRandomRoundPoint(plane.centerX(), plane.centerY());
+         path.gotoRelative(dest.x, dest.y, 10000 + 2000 * Math.random());
+      }
       plane.update();
       positionData.set(plane.vertexs(), i * 12);
+      for (var n = 0; n < 4; n++) {
+         colorData[colorIndex ++] = 0xFF;
+         colorData[colorIndex ++] = 0xFF;
+         colorData[colorIndex ++] = 0xFF;
+         colorData[colorIndex ++] = path.alpha();
+      }
    }
    var buffer = o._vertexPositionBuffer;
    buffer.upload(positionData, 4 * 3, vertexCount);
+   var buffer = o._vertexColorBuffer;
+   buffer.upload(colorData, 4, vertexCount);
 }
 
 //==========================================================
@@ -218,17 +236,6 @@ MO.FEaiCockpitGroundShape_updateAll = function FEaiCockpitGroundShape_updateAll(
 //==========================================================
 MO.FEaiCockpitGroundShape_process = function FEaiCockpitGroundShape_process() {
    var o = this;
-   var count = o._count;
-   for( var i = 0; i < count; i ++) {
-      var plane = o._planes.get(i);
-      var path = o._pathes.get(i);
-      var next = path.nextStep();
-      plane.move(next.x, next.y, 0);
-      if(!path.playing()) {
-         var dest = o.getRandomRoundPoint(plane.centerX(), plane.centerY());
-         path.gotoRelative(dest.x, dest.y, 10000);
-      }
-   }
    o.updateAll();
 }
 
