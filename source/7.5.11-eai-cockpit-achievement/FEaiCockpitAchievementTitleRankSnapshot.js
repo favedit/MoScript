@@ -81,12 +81,6 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
     }
     var grid = o._gridControl;
     grid.clearRows();
-    var row = grid.allocRow();  
-    row.set('corporateName', "");
-    row.set('firstName', "1");
-    row.set('secondName',"2");
-    row.set('thirdName', "3");
-    grid.pushRow(row);
 
     row = grid.allocRow();
     row.set('corporateName', "业绩:");
@@ -184,8 +178,8 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
    grid.setOptionClip(true);
    grid.setLocation(60, 10);
    grid.setSize(900, 120);
-   grid.setHeadHeight(0);
-   grid.setHeadBackColor('#3a424f');
+   grid.setHeadHeight(18);
+   grid.setHeadBackColor('rgba(255,0,0,0)');
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 18;
    grid.headFont().color = '#ffffff';
@@ -203,7 +197,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('firstName');
-   column.setLabel('');
+   column.setLabel('第一名');
    column.setTextAlign(MO.EUiAlign.Center);
    column.setWidth(230);
    column.setDataName('firstName');
@@ -211,7 +205,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('secondName');
-   column.setLabel('');
+   column.setLabel('第二名');
    column.setDataName('secondName');
    column.setTextAlign(MO.EUiAlign.Center);
    column.setWidth(230);
@@ -219,12 +213,25 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('thirdName');
-   column.setLabel('');
+   column.setLabel('第三名');
    column.setDataName('thirdName');
    column.setTextAlign(MO.EUiAlign.Center);
    column.setWidth(230);
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
+
+   grid.clearRows();
+   row = grid.allocRow();
+   row.set('corporateName', "业绩:");
+   grid.pushRow(row);
+
+   row = grid.allocRow();
+   row.set('corporateName', "人力:");
+   grid.pushRow(row);
+
+   row = grid.allocRow();
+   row.set('corporateName', "人均:");
+   grid.pushRow(row);
    //..........................................................
    o.push(grid);
 }
@@ -237,8 +244,6 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
 MO.FEaiCockpitAchievementTitleRankSnapshot_processLogic = function FEaiCockpitAchievementTitleRankSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
-    //  var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
-     // forecast.doFetch(o, o.onDataFetch);
       var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
       achievement.doFetchRank(o, o.onDataFetch);
    }
