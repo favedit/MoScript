@@ -15,6 +15,7 @@ MO.FEaiLogicCockpitAchievement = function FEaiLogicCockpitAchievement(o){
    o.doFetchRank  = MO.FEaiLogicCockpitAchievement_doFetchRank;
    o.doFetchRate  = MO.FEaiLogicCockpitAchievement_doFetchRate;
    o.doFetchRadar = MO.FEaiLogicCockpitAchievement_doFetchRadar;
+   o.doFetchHistogram = MO.FEaiLogicCockpitAchievement_doFetchHistogram;
    o.doFetchBusinessCard = MO.FEaiLogicCockpitAchievement_doFetchBusinessCard;
    return o;
 }
@@ -127,3 +128,19 @@ MO.FEaiLogicCockpitAchievement_doFetchBusinessCard = function FEaiLogicCockpitAc
    var parameters = o.prepareParemeters();
    o.sendService('{eai.logic.service}/eai.cockpit.achievement.subpage.wv?do=businessCard', parameters, owner, callback);
 }
+//==========================================================
+// <T>公司业绩柱状图</T>
+//
+// @method
+// @param owner:Object 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicCockpitAchievement_doFetchHistogram = function FEaiLogicCockpitAchievement_doFetchHistogram(owner, callback) {
+   var o = this;
+   var parameters = o.prepareParemeters();
+   o.sendService('{eai.logic.service}/eai.cockpit.achievement.subpage.wv?do=achievementHistogram', parameters, owner, callback);
+}
+

@@ -41,10 +41,21 @@ MO.FEaiCockpitAchievementHistogramSnapshot = function FEaiCockpitAchievementHist
    o.processLogic          = MO.FEaiCockpitAchievementHistogramSnapshot_processLogic;
    // @method
    o.dispose               = MO.FEaiCockpitAchievementHistogramSnapshot_dispose;
+   o.setData               = MO.FEaiCockpitAchievementHistogramSnapshot_setData
    //..........................................................
    o._comingSoonImage      = null;
    //..........................................................
    return o;
+}
+//==========================================================
+// <T>设置数据内容。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+MO.FEaiCockpitAchievementHistogramSnapshot_setData = function FEaiCockpitAchievementHistogramSnapshot_setData(event) {
+   var o = this;
+   var content = event.content;
 }
 
 //==========================================================
@@ -57,7 +68,17 @@ MO.FEaiCockpitAchievementHistogramSnapshot = function FEaiCockpitAchievementHist
    var o = this;
    var content = event.content;
    // 读取数据
+   var data = o._data;
+   if (data.unserializeSignBuffer(event.sign, event.content, true)) {
+      var items = data.items();
+      var count = items._count;
+      for (var i = 0; i < count; i++) {
+         var item = items.at(i);
+       //  var units = item.units();
 
+      }
+      o.setData();
+   }
 }
 
 //==========================================================
@@ -117,7 +138,7 @@ MO.FEaiCockpitAchievementHistogramSnapshot_construct = function FEaiCockpitAchie
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._rollTicker = new MO.TTicker(o._rollDuration);
-   o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
+   o._data = MO.Class.create(MO.FEaiCockpitAchievementMessageHistograms);
 }
 
 //==========================================================
@@ -141,8 +162,8 @@ MO.FEaiCockpitAchievementHistogramSnapshot_setup = function FEaiCockpitAchieveme
 MO.FEaiCockpitAchievementHistogramSnapshot_processLogic = function FEaiCockpitAchievementHistogramSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()){
-      var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
-      forecast.doFetch(o, o.onDataFetch);
+      var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
+      achievement.doFetchHistogram(o, o.onDataFetch);
    }
 }
 
