@@ -185,7 +185,7 @@ MO.FGuiCanvasManager_process = function FGuiCanvasManager_process(){
          var control = readyControls.at(i);
          if(control.testDirty()){
             var controlRectangle = control.clientRectangle();
-            dirtyControls.push(control);
+            dirtyControls.pushUnique(control);
             // 处理所有位置有交叉的控件
             control._flagDirty = true;
             o.filterByRectangle(dirtyControls, controlRectangle)

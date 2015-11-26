@@ -5,16 +5,16 @@
 // @author sunpeng
 // @version 151125
 //==========================================================
-MO.FGuiGridCellPicture = function FGuiGridCellPicture(o) {
+MO.FGuiGridCellProgressBar = function FGuiGridCellProgressBar(o) {
    o = MO.Class.inherits(this, o, MO.FGuiGridCell, MO.MUiGridCellPicture);
    //..........................................................
    // @method
-   o.construct = MO.FGuiGridCellPicture_construct;
+   o.construct = MO.FGuiGridCellProgressBar_construct;
    // @method
-   o.testReady = MO.FGuiGridCellPicture_testReady;
-   o.draw = MO.FGuiGridCellPicture_draw;
+   o.testReady = MO.FGuiGridCellProgressBar_testReady;
+   o.draw      = MO.FGuiGridCellProgressBar_draw;
    // @method
-   o.dispose = MO.FGuiGridCellPicture_dispose;
+   o.dispose   = MO.FGuiGridCellProgressBar_dispose;
    return o;
 }
 
@@ -23,7 +23,7 @@ MO.FGuiGridCellPicture = function FGuiGridCellPicture(o) {
 //
 // @method
 //==========================================================
-MO.FGuiGridCellPicture_construct = function FGuiGridCellPicture_construct() {
+MO.FGuiGridCellProgressBar_construct = function FGuiGridCellProgressBar_construct() {
    var o = this;
    o.__base.FGuiGridCell.construct.call(o);
    o.__base.MUiGridCellPicture.construct.call(o);
@@ -35,7 +35,7 @@ MO.FGuiGridCellPicture_construct = function FGuiGridCellPicture_construct() {
 // @method
 // @return Boolean 是否测试好
 //==========================================================
-MO.FGuiGridCellPicture_testReady = function FGuiGridCellPicture_testReady() {
+MO.FGuiGridCellProgressBar_testReady = function FGuiGridCellProgressBar_testReady() {
    var o = this;
    var bgImage = o._column._bgImage;
    var fillImage = o._column._fillImage;
@@ -51,7 +51,7 @@ MO.FGuiGridCellPicture_testReady = function FGuiGridCellPicture_testReady() {
 // @method
 // @param context:SGuiGridPaintContext 绘制环境
 //==========================================================
-MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
+MO.FGuiGridCellProgressBar_draw = function FGuiGridCellProgressBar_draw(context) {
    var o = this;
    var graphic = context.graphic;
    var rectangle = context.rectangle;
@@ -98,7 +98,7 @@ MO.FGuiGridCellPicture_draw = function FGuiGridCellPicture_draw(context) {
 //
 // @method
 //==========================================================
-MO.FGuiGridCellPicture_dispose = function FGuiGridCellPicture_dispose() {
+MO.FGuiGridCellProgressBar_dispose = function FGuiGridCellProgressBar_dispose() {
    var o = this;
    // 释放属性
    // 父处理

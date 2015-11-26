@@ -7,25 +7,26 @@
 //==========================================================
 MO.FGuiGridColumnProgressBar = function FGuiGridColumnProgressBar(o) {
    o = MO.Class.inherits(this, o, MO.FGuiGridColumn, MO.MUiGridColumnText);
-
-   o._align = MO.Class.register(o, new MO.AGetSet('_align'));
+   //..........................................................
+   // @attribute
+   o._align     = MO.Class.register(o, new MO.AGetSet('_align'));
    o._drawScale = MO.Class.register(o, new MO.AGetSet('_drawScale'), 1.0);
-
-   o._bgImage = MO.Class.register(o, new MO.AGetSet('_bgImage'));
+   // @attribute
+   o._bgImage   = MO.Class.register(o, new MO.AGetSet('_bgImage'));
    o._fillImage = MO.Class.register(o, new MO.AGetSet('_fillImage'));
-
-   o._maxValue = MO.Class.register(o, new MO.AGetSet('_maxValue'), 100);
+   // @attribute
+   o._maxValue  = MO.Class.register(o, new MO.AGetSet('_maxValue'), 100);
    //..........................................................
    // @method
-   o.construct = MO.FGuiGridColumnProgressBar_construct;
-   o.setup = MO.FGuiGridColumnProgressBar_setup;
+   o.construct  = MO.FGuiGridColumnProgressBar_construct;
+   o.setup      = MO.FGuiGridColumnProgressBar_setup;
    // @method
-   o.dispose   = MO.FGuiGridColumnProgressBar_dispose;
+   o.dispose    = MO.FGuiGridColumnProgressBar_dispose;
    return o;
 }
 
 //==========================================================
-// <T>释放处理。</T>
+// <T>构造处理。</T>
 //
 // @method
 //==========================================================
@@ -38,7 +39,7 @@ MO.FGuiGridColumnProgressBar_construct = function FGuiGridColumnProgressBar_cons
 }
 
 //==========================================================
-// <T>释放处理。</T>
+// <T>配置处理。</T>
 //
 // @method
 //==========================================================
