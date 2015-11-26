@@ -5,7 +5,7 @@
 // @author adu
 // @version 150804
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshotDashboard = function FEaiCockpitModuleStatusSnapshotDashboard(o) {
+MO.FEaiCockpitStatusSnapshotDashboard = function FEaiCockpitStatusSnapshotDashboard(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
@@ -19,17 +19,17 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard = function FEaiCockpitModuleStatusSn
 
    //..........................................................
    // @method
-   o.construct          = MO.FEaiCockpitModuleStatusSnapshotDashboard_construct;
-   o.onImageLoad        = MO.FEaiCockpitModuleStatusSnapshotDashboard_onImageLoad;
-   o.setData            = MO.FEaiCockpitModuleStatusSnapshotDashboard_setData;
-   o.onPaintBegin       = MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin;
+   o.construct          = MO.FEaiCockpitStatusSnapshotDashboard_construct;
+   o.onImageLoad        = MO.FEaiCockpitStatusSnapshotDashboard_onImageLoad;
+   o.setData            = MO.FEaiCockpitStatusSnapshotDashboard_setData;
+   o.onPaintBegin       = MO.FEaiCockpitStatusSnapshotDashboard_onPaintBegin;
 
-   o.dispose            = MO.FEaiCockpitModuleStatusSnapshotDashboard_dispose;
+   o.dispose            = MO.FEaiCockpitStatusSnapshotDashboard_dispose;
    //..........................................................
    return o;
 }
 
-MO.FEaiCockpitModuleStatusSnapshotDashboard_construct = function FEaiCockpitModuleStatusSnapshotDashboard_construct() {
+MO.FEaiCockpitStatusSnapshotDashboard_construct = function FEaiCockpitStatusSnapshotDashboard_construct() {
    var o = this;
    o.__base.FGuiControl.construct.call(o);
 
@@ -46,7 +46,7 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_construct = function FEaiCockpitModu
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshotDashboard_onImageLoad = function FEaiCockpitModuleStatusSnapshotDashboard_onImageLoad() {
+MO.FEaiCockpitStatusSnapshotDashboard_onImageLoad = function FEaiCockpitStatusSnapshotDashboard_onImageLoad() {
    this.dirty();
 }
 
@@ -55,7 +55,7 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onImageLoad = function FEaiCockpitMo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshotDashboard_setData = function FEaiCockpitModuleStatusSnapshotDashboard_setData(data) {
+MO.FEaiCockpitStatusSnapshotDashboard_setData = function FEaiCockpitStatusSnapshotDashboard_setData(data) {
    var o = this;
 
    o._data = data;
@@ -67,7 +67,7 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_setData = function FEaiCockpitModule
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin(event) {
+MO.FEaiCockpitStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitStatusSnapshotDashboard_onPaintBegin(event) {
    var o = this;
    o.__base.FGuiControl.onPaintBegin.call(o, event);
    //获得变量
@@ -140,10 +140,9 @@ MO.FEaiCockpitModuleStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitM
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshotDashboard_dispose = function FEaiCockpitModuleStatusSnapshotDashboard_dispose() {
+MO.FEaiCockpitStatusSnapshotDashboard_dispose = function FEaiCockpitStatusSnapshotDashboard_dispose() {
    var o = this;
    //父处理
    o.__base.FGuiControl.dispose.call(o);
-
    o._circleRect.dispose();
 }

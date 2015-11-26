@@ -115,16 +115,16 @@ MO.FEaiCockpitSceneModuleManager_onLayoutFetch = function FEaiCockpitSceneModule
       }
    }else{
       // 创建模块集合
-      o._splashModule = o.createModule(MO.FEaiCockpitModuleSplash);
-      o._logoModule = o.createModule(MO.FEaiCockpitModuleLogo);
-      o._catalogModule = o.createModule(MO.FEaiCockpitModuleTitle);
+      o._splashModule = o.createModule(MO.FEaiCockpitSplash);
+      o._logoModule = o.createModule(MO.FEaiCockpitLogo);
+      o._catalogModule = o.createModule(MO.FEaiCockpitTitle);
       o._titleModule = o.createModule(MO.FEaiCockpitTrend);
       o._achievementModule = o.createModule(MO.FEaiCockpitAchievement);
       o._noticeModule = o.createModule(MO.FEaiCockpitNotice);
       o._warningModule = o.createModule(MO.FEaiCockpitWarning);
       o._forecastModule = o.createModule(MO.FEaiCockpitForecast);
-      o._projectModule = o.createModule(MO.FEaiCockpitModuleProject);
-      o._statusModule = o.createModule(MO.FEaiCockpitModuleStatus);
+      o._projectModule = o.createModule(MO.FEaiCockpitProject);
+      o._statusModule = o.createModule(MO.FEaiCockpitStatus);
    }
    var display = o._display;
    var logoDisplay = o._logoDisplay;

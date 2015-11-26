@@ -5,10 +5,10 @@
 // @author sunpeng
 // @history 151108
 //==========================================================
-MO.FEaiCockpitDataProject = function FEaiCockpitDataProject(o) {
+MO.FEaiCockpitProjectMessage = function FEaiCockpitProjectMessage(o) {
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
-   o._projects = MO.Class.register(o, [new MO.AGetter('_projects'), new MO.APersistence('_projects', MO.EDataType.Objects, MO.FEaiCockpitDataProjectUnit)]);
+   o._projects = MO.Class.register(o, [new MO.AGetter('_projects'), new MO.APersistence('_projects', MO.EDataType.Objects, MO.FEaiCockpitProjectMessageUnit)]);
    return o;
 }

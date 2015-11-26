@@ -9,6 +9,7 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._name                 = 'cockpit.forecast.snapshot';
    o._backgroundUri        = '{eai.resource}/cockpit/forecast/ground.png';
    // @attribute
    o._data                 = null;
@@ -146,6 +147,7 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
    o.__base.FEaiCockpitControl.setup.call(o);
    // 加载图片
    o._gridImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid.png');
+   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
    // 创建控件
    var listBox = o._listBox = MO.Class.create(MO.FGuiListBox);
    listBox.setDisplayCount(11);
@@ -170,10 +172,6 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
                      [-30, 60, 70, 88, 10], 
                      [586, 486, 889, 1024, 1895], 
                      [1324, 46542, 253362, 452148, 48657]];
-
-   //..........................................................
-   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
-   //..........................................................
 }
 
 //==========================================================

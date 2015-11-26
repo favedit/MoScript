@@ -1,13 +1,16 @@
 //==========================================================
-// <T>项目视图页面。</T>
+// <T>状态视图页面。</T>
 //
 // @class
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitModuleProjectView = function FEaiCockpitModuleProjectView(o) {
+MO.FEaiCockpitStatusView = function FEaiCockpitStatusView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   // @attribute
+   o._name                 = 'cockpit.forecast.snapshot';
+   o._backgroundUri        = '{eai.resource}/cockpit/forecast/ground.png';
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
@@ -17,16 +20,16 @@ MO.FEaiCockpitModuleProjectView = function FEaiCockpitModuleProjectView(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleProjectView_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleProjectView_onPaintBegin;
+   o.onImageLoad           = MO.FEaiCockpitStatusView_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitStatusView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleProjectView_construct;
+   o.construct             = MO.FEaiCockpitStatusView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleProjectView_setup;
-   o.processLogic          = MO.FEaiCockpitModuleProjectView_processLogic;
+   o.setup                 = MO.FEaiCockpitStatusView_setup;
+   o.processLogic          = MO.FEaiCockpitStatusView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleProjectView_dispose;
+   o.dispose               = MO.FEaiCockpitStatusView_dispose;
    return o;
 }
 
@@ -35,7 +38,7 @@ MO.FEaiCockpitModuleProjectView = function FEaiCockpitModuleProjectView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleProjectView_onImageLoad = function FEaiCockpitModuleProjectView_onImageLoad() {
+MO.FEaiCockpitStatusView_onImageLoad = function FEaiCockpitStatusView_onImageLoad() {
    this.dirty();
 }
 
@@ -44,7 +47,7 @@ MO.FEaiCockpitModuleProjectView_onImageLoad = function FEaiCockpitModuleProjectV
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleProjectView_onPaintBegin = function FEaiCockpitModuleProjectView_onPaintBegin(event) {
+MO.FEaiCockpitStatusView_onPaintBegin = function FEaiCockpitStatusView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -60,7 +63,7 @@ MO.FEaiCockpitModuleProjectView_onPaintBegin = function FEaiCockpitModuleProject
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleProjectView_construct = function FEaiCockpitModuleProjectView_construct() {
+MO.FEaiCockpitStatusView_construct = function FEaiCockpitStatusView_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -73,11 +76,11 @@ MO.FEaiCockpitModuleProjectView_construct = function FEaiCockpitModuleProjectVie
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleProjectView_setup = function FEaiCockpitModuleProjectView_setup(){
+MO.FEaiCockpitStatusView_setup = function FEaiCockpitStatusView_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/project/view.png');
+   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/status/view.png');
    image.addLoadListener(o, o.onImageLoad);
 }
 
@@ -86,7 +89,7 @@ MO.FEaiCockpitModuleProjectView_setup = function FEaiCockpitModuleProjectView_se
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleProjectView_processLogic = function FEaiCockpitModuleProjectView_processLogic(){
+MO.FEaiCockpitStatusView_processLogic = function FEaiCockpitStatusView_processLogic(){
    var o = this;
 }
 
@@ -95,7 +98,7 @@ MO.FEaiCockpitModuleProjectView_processLogic = function FEaiCockpitModuleProject
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleProjectView_dispose = function FEaiCockpitModuleProjectView_dispose() {
+MO.FEaiCockpitStatusView_dispose = function FEaiCockpitStatusView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

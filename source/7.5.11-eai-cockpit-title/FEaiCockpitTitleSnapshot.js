@@ -5,43 +5,33 @@
 // @author sunpeng
 // @history 151101
 //==========================================================
-MO.FEaiCockpitModuleTitleSnapshot = function FEaiCockpitModuleTitleSnapshot(o) {
+MO.FEaiCockpitTitleSnapshot = function FEaiCockpitTitleSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
-   o._dataTicker              = null;
-   o._logoBar                 = null;
-   o._currentDate             = null;
+   o._name                 = 'cockpit.forecast.snapshot';
+   o._backgroundUri        = '{eai.resource}/cockpit/title/ground.png';
    // @attribute
-   o._backgroundImage         = null;
-   o._backgroundPadding       = null;
+   o._dataTicker           = null;
+   o._logoBar              = null;
+   o._currentDate          = null;
    // @attribute
-   o._listenersDataChanged    = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad              = MO.FEaiCockpitModuleTitleSnapshot_onImageLoad;
-   o.onPaintBegin             = MO.FEaiCockpitModuleTitleSnapshot_onPaintBegin;
-   o.onTitleFetch             = MO.FEaiCockpitModuleTitleSnapshot_onTitleFetch;
+   o.onTitleFetch          = MO.FEaiCockpitTitleSnapshot_onTitleFetch;
+   o.onPaintBegin          = MO.FEaiCockpitTitleSnapshot_onPaintBegin;
    //..........................................................
    // @method
-   o.construct                = MO.FEaiCockpitModuleTitleSnapshot_construct;
+   o.construct             = MO.FEaiCockpitTitleSnapshot_construct;
    // @method
-   o.setup                    = MO.FEaiCockpitModuleTitleSnapshot_setup;
-   o.processLogic             = MO.FEaiCockpitModuleTitleSnapshot_processLogic;
-   o.freshData                = MO.FEaiCockpitModuleTitleSnapshot_freshData;
-   o.drawText                 = MO.FEaiCockpitModuleTitleSnapshot_drawText;
+   o.setup                 = MO.FEaiCockpitTitleSnapshot_setup;
+   o.processLogic          = MO.FEaiCockpitTitleSnapshot_processLogic;
+   o.freshData             = MO.FEaiCockpitTitleSnapshot_freshData;
+   o.drawText              = MO.FEaiCockpitTitleSnapshot_drawText;
    // @method
-   o.dispose                  = MO.FEaiCockpitModuleTitleSnapshot_dispose;
+   o.dispose               = MO.FEaiCockpitTitleSnapshot_dispose;
    return o;
-}
-
-//==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitModuleTitleSnapshot_onImageLoad = function FEaiCockpitModuleTitleSnapshot_onImageLoad() {
-   this.dirty();
 }
 
 //==========================================================
@@ -49,7 +39,7 @@ MO.FEaiCockpitModuleTitleSnapshot_onImageLoad = function FEaiCockpitModuleTitleS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleSnapshot_onPaintBegin = function FEaiCockpitModuleTitleSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitTitleSnapshot_onPaintBegin = function FEaiCockpitTitleSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -68,9 +58,6 @@ MO.FEaiCockpitModuleTitleSnapshot_onPaintBegin = function FEaiCockpitModuleTitle
 
    var topPosition = top + 70;
    var leftPosition = left + 100;
-   //..........................................................
-   // 绘制背景
-   graphic.drawGridImage(o._backgroundImage, left, top, width, height, o._backgroundPadding);
    //..........................................................
    //刷新数据
    var frame = o._logoBar;
@@ -111,7 +98,7 @@ MO.FEaiCockpitModuleTitleSnapshot_onPaintBegin = function FEaiCockpitModuleTitle
    graphic.setFont(o._rowFontStyle);
 }
 
-MO.FEaiCockpitModuleTitleSnapshot_drawText = function FEaiCockpitModuleTitleSnapshot_drawText(graphic, rect, data) {
+MO.FEaiCockpitTitleSnapshot_drawText = function FEaiCockpitTitleSnapshot_drawText(graphic, rect, data) {
    var left = rect.left;
    var top = rect.left;
    var width = rect.width;
@@ -135,7 +122,7 @@ MO.FEaiCockpitModuleTitleSnapshot_drawText = function FEaiCockpitModuleTitleSnap
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleSnapshot_construct = function FEaiCockpitModuleTitleSnapshot_construct() {
+MO.FEaiCockpitTitleSnapshot_construct = function FEaiCockpitTitleSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -143,8 +130,7 @@ MO.FEaiCockpitModuleTitleSnapshot_construct = function FEaiCockpitModuleTitleSna
    o._cellSize.set(8, 1); 
    o._currentDate = new MO.TDate();
    o._dataTicker = new MO.TTicker(1000 * 60);
-   o._data = MO.Class.create(MO.FEaiCockpitMessageTitle);
-   o._backgroundPadding = new MO.SPadding(0, 0, 0, 0);
+   o._data = MO.Class.create(MO.FEaiCockpitTitleMessage);
 }
 
 //==========================================================
@@ -152,13 +138,10 @@ MO.FEaiCockpitModuleTitleSnapshot_construct = function FEaiCockpitModuleTitleSna
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleSnapshot_setup = function FEaiCockpitModuleTitleSnapshot_setup() {
+MO.FEaiCockpitTitleSnapshot_setup = function FEaiCockpitTitleSnapshot_setup() {
    var o = this;
-   //创建图片
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/title/ground.png');
-   image.addLoadListener(o, o.onImageLoad);
-
+   o.__base.FEaiCockpitControl.setup.call(o);
+   // 创建图片
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.cockpit.LogoBar');
    o.push(frame);
 }
@@ -168,7 +151,7 @@ MO.FEaiCockpitModuleTitleSnapshot_setup = function FEaiCockpitModuleTitleSnapsho
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleSnapshot_onTitleFetch = function FEaiCockpitModuleTitleSnapshot_onTitleFetch(event) {
+MO.FEaiCockpitTitleSnapshot_onTitleFetch = function FEaiCockpitTitleSnapshot_onTitleFetch(event) {
    var o = this;
    var content = event.content;
    //读取数据
@@ -178,7 +161,7 @@ MO.FEaiCockpitModuleTitleSnapshot_onTitleFetch = function FEaiCockpitModuleTitle
    }
 }
 
-MO.FEaiCockpitModuleTitleSnapshot_freshData = function FEaiCockpitModuleTitleSnapshot_freshData() {
+MO.FEaiCockpitTitleSnapshot_freshData = function FEaiCockpitTitleSnapshot_freshData() {
    var o = this;
    var frame = o._logoBar;
    if (o._data.investmentTotal() != null) {
@@ -201,9 +184,10 @@ MO.FEaiCockpitModuleTitleSnapshot_freshData = function FEaiCockpitModuleTitleSna
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleSnapshot_processLogic = function FEaiCockpitModuleTitleSnapshot_processLogic() {
+MO.FEaiCockpitTitleSnapshot_processLogic = function FEaiCockpitTitleSnapshot_processLogic() {
    var o = this;
-   if (o._dataTicker.process()) {
+    o.__base.FEaiCockpitControl.processLogic.call(o);
+  if (o._dataTicker.process()) {
       var title = MO.Console.find(MO.FEaiLogicConsole).cockpit().title();
       title.doFetch(o, o.onTitleFetch);
    }
@@ -215,9 +199,8 @@ MO.FEaiCockpitModuleTitleSnapshot_processLogic = function FEaiCockpitModuleTitle
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleSnapshot_dispose = function FEaiCockpitModuleTitleSnapshot_dispose() {
+MO.FEaiCockpitTitleSnapshot_dispose = function FEaiCockpitTitleSnapshot_dispose() {
    var o = this;
-   o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
 }

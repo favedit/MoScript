@@ -5,52 +5,42 @@
 // @author maocy
 // @history 151107
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshot = function FEaiCockpitModuleStatusSnapshot(o) {
+MO.FEaiCockpitStatusSnapshot = function FEaiCockpitStatusSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
-   o._data                 = null;
-   o._dataTicker           = null;
-   o._rotateProcess        = 1.0;
-   o._rotateSpeed          = 0.01;
-
-   o._turnoverDashboard    = null;
-   o._perDashboard         = null;
-   o._inOutDashboard       = null;
-   o._performanceDashboard = null;
-   // @attribute
-   o._backgroundImage      = null;
-   o._backgroundPadding    = null;
-   o._circle               = null;
-   // @attribute
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
+   o._name            = 'cockpit.status.snapshot';
+   o._backgroundUri   = '{eai.resource}/cockpit/status/ground.png';
+   o._comingSoonImage = null;
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleStatusSnapshot_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleStatusSnapshot_onPaintBegin;
-   o.onPaintEnd            = MO.FEaiCockpitModuleStatusSnapshot_onPaintEnd;
-   o.onStatusFetch         = MO.FEaiCockpitModuleStatusSnapshot_onStatusFetch;
+   o.onStatusFetch    = MO.FEaiCockpitStatusSnapshot_onStatusFetch;
+   o.onPaintBegin     = MO.FEaiCockpitStatusSnapshot_onPaintBegin;
+   o.onPaintEnd       = MO.FEaiCockpitStatusSnapshot_onPaintEnd;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleStatusSnapshot_construct;
+   o.construct        = MO.FEaiCockpitStatusSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleStatusSnapshot_setup;
-   o.processLogic          = MO.FEaiCockpitModuleStatusSnapshot_processLogic;
+   o.setup            = MO.FEaiCockpitStatusSnapshot_setup;
+   o.processLogic     = MO.FEaiCockpitStatusSnapshot_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleStatusSnapshot_dispose;
-   //..........................................................
-   o._comingSoonImage = null;
+   o.dispose          = MO.FEaiCockpitStatusSnapshot_dispose;
    //..........................................................
    return o;
 }
 
 //==========================================================
-// <T>图片加载完成处理。</T>
+// <T>状态数据获得处理。</T>
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshot_onImageLoad = function FEaiCockpitModuleStatusSnapshot_onImageLoad() {
-   this.dirty();
+MO.FEaiCockpitStatusSnapshot_onStatusFetch = function FEaiCockpitStatusSnapshot_onStatusFetch(event) {
+   var o = this;
+   var content = event.content;
+   //读取数据
+   var data = o._data;
+   data.unserializeSignBuffer(event.sign, event.content, true);
+   o._rotateProcess = 0;
 }
 
 //==========================================================
@@ -58,19 +48,9 @@ MO.FEaiCockpitModuleStatusSnapshot_onImageLoad = function FEaiCockpitModuleStatu
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshot_onPaintBegin = function FEaiCockpitModuleStatusSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitStatusSnapshot_onPaintBegin = function FEaiCockpitStatusSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   //..........................................................
-   // 绘制背景
-   graphic.drawImage(o._backgroundImage, left, top, width, height);
 }
 
 //==========================================================
@@ -78,7 +58,7 @@ MO.FEaiCockpitModuleStatusSnapshot_onPaintBegin = function FEaiCockpitModuleStat
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshot_onPaintEnd = function FEaiCockpitModuleStatusSnapshot_onPaintEnd(event) {
+MO.FEaiCockpitStatusSnapshot_onPaintEnd = function FEaiCockpitStatusSnapshot_onPaintEnd(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
    // 获得变量
@@ -90,16 +70,6 @@ MO.FEaiCockpitModuleStatusSnapshot_onPaintEnd = function FEaiCockpitModuleStatus
    var height = rectangle.height;
    //..........................................................
    graphic.drawImage(o._comingSoonImage, 11 * 120 - 247 + 36, 2 * 120 - 217 + 56, 247, 217);
-   //..........................................................
-}
-
-MO.FEaiCockpitModuleStatusSnapshot_onStatusFetch = function FEaiCockpitModuleStatusSnapshot_onStatusFetch(event) {
-   var o = this;
-   var content = event.content;
-   //读取数据
-   var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   o._rotateProcess = 0;
 }
 
 //==========================================================
@@ -107,7 +77,7 @@ MO.FEaiCockpitModuleStatusSnapshot_onStatusFetch = function FEaiCockpitModuleSta
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshot_construct = function FEaiCockpitModuleStatusSnapshot_construct() {
+MO.FEaiCockpitStatusSnapshot_construct = function FEaiCockpitStatusSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -115,45 +85,40 @@ MO.FEaiCockpitModuleStatusSnapshot_construct = function FEaiCockpitModuleStatusS
    o._cellSize.set(11, 2);
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._currentDate = new MO.TDate();
-   o._data = MO.Class.create(MO.FEaiCockpitMessageStatus);
+   o._data = MO.Class.create(MO.FEaiCockpitStatusMessage);
 }
 
 //==========================================================
-// <T>初始化处理。</T>
+// <T>配置处理。</T>
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshot_setup = function FEaiCockpitModuleStatusSnapshot_setup(){
+MO.FEaiCockpitStatusSnapshot_setup = function FEaiCockpitStatusSnapshot_setup(){
    var o = this;
-   // 创建图片
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/status/ground.png');
-   image.addLoadListener(o, o.onImageLoad);
-
+   o.__base.FEaiCockpitControl.setup.call(o);
+   // 加载图片
+   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
+   // 创建仪表盘
    var dashboardY = 30;
-   var dashboard = o._turnoverDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
+   var dashboard = o._turnoverDashboard = MO.Class.create(MO.FEaiCockpitStatusSnapshotDashboard);
    dashboard.setLocation(60, dashboardY);
    dashboard.setTextPre("集团当月离职情况");
    o.push(dashboard);
-
-   var dashboard = o._perDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
+   // 创建仪表盘
+   var dashboard = o._perDashboard = MO.Class.create(MO.FEaiCockpitStatusSnapshotDashboard);
    dashboard.setLocation(364, dashboardY);
    dashboard.setTextPre("理财师人均业绩");
    o.push(dashboard);
-
-   var dashboard = o._inOutDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
+   // 创建仪表盘
+   var dashboard = o._inOutDashboard = MO.Class.create(MO.FEaiCockpitStatusSnapshotDashboard);
    dashboard.setLocation(668, dashboardY);
    dashboard.setTextPre("职场良性度");
    o.push(dashboard);
-
-   var dashboard = o._performanceDashboard = MO.Class.create(MO.FEaiCockpitModuleStatusSnapshotDashboard);
+   // 创建仪表盘
+   var dashboard = o._performanceDashboard = MO.Class.create(MO.FEaiCockpitStatusSnapshotDashboard);
    dashboard.setLocation(972, dashboardY);
    dashboard.setTextPre("业绩完成度");
    o.push(dashboard);
-
-   //..........................................................
-   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
-   //..........................................................
 }
 
 //==========================================================
@@ -161,8 +126,9 @@ MO.FEaiCockpitModuleStatusSnapshot_setup = function FEaiCockpitModuleStatusSnaps
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshot_processLogic = function FEaiCockpitModuleStatusSnapshot_processLogic(){
+MO.FEaiCockpitStatusSnapshot_processLogic = function FEaiCockpitStatusSnapshot_processLogic(){
    var o = this;
+   o.__base.FEaiCockpitControl.processLogic.call(o);
    if(o._dataTicker.process()) {
       var status = MO.Console.find(MO.FEaiLogicConsole).cockpit().status();
       status.doFetch(o, o.onStatusFetch);
@@ -186,10 +152,8 @@ MO.FEaiCockpitModuleStatusSnapshot_processLogic = function FEaiCockpitModuleStat
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleStatusSnapshot_dispose = function FEaiCockpitModuleStatusSnapshot_dispose() {
+MO.FEaiCockpitStatusSnapshot_dispose = function FEaiCockpitStatusSnapshot_dispose() {
    var o = this;
-   o._units = MO.Lang.Object.dispose(o._units);
-   o._backgroundPadding = MO.Lang.Object.dispose(o._backgroundPadding);
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
 }

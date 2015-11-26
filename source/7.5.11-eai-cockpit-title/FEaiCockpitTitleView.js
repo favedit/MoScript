@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitModuleTitleView = function FEaiCockpitModuleTitleView(o) {
+MO.FEaiCockpitTitleView = function FEaiCockpitTitleView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
@@ -17,16 +17,16 @@ MO.FEaiCockpitModuleTitleView = function FEaiCockpitModuleTitleView(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleTitleView_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleTitleView_onPaintBegin;
+   o.onImageLoad           = MO.FEaiCockpitTitleView_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitTitleView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleTitleView_construct;
+   o.construct             = MO.FEaiCockpitTitleView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleTitleView_setup;
-   o.processLogic          = MO.FEaiCockpitModuleTitleView_processLogic;
+   o.setup                 = MO.FEaiCockpitTitleView_setup;
+   o.processLogic          = MO.FEaiCockpitTitleView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleTitleView_dispose;
+   o.dispose               = MO.FEaiCockpitTitleView_dispose;
    return o;
 }
 
@@ -35,7 +35,7 @@ MO.FEaiCockpitModuleTitleView = function FEaiCockpitModuleTitleView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleView_onImageLoad = function FEaiCockpitModuleTitleView_onImageLoad() {
+MO.FEaiCockpitTitleView_onImageLoad = function FEaiCockpitTitleView_onImageLoad() {
    this.dirty();
 }
 
@@ -44,7 +44,7 @@ MO.FEaiCockpitModuleTitleView_onImageLoad = function FEaiCockpitModuleTitleView_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleView_onPaintBegin = function FEaiCockpitModuleTitleView_onPaintBegin(event) {
+MO.FEaiCockpitTitleView_onPaintBegin = function FEaiCockpitTitleView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -60,7 +60,7 @@ MO.FEaiCockpitModuleTitleView_onPaintBegin = function FEaiCockpitModuleTitleView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleView_construct = function FEaiCockpitModuleTitleView_construct() {
+MO.FEaiCockpitTitleView_construct = function FEaiCockpitTitleView_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -73,7 +73,7 @@ MO.FEaiCockpitModuleTitleView_construct = function FEaiCockpitModuleTitleView_co
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleView_setup = function FEaiCockpitModuleTitleView_setup(){
+MO.FEaiCockpitTitleView_setup = function FEaiCockpitTitleView_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
@@ -86,7 +86,7 @@ MO.FEaiCockpitModuleTitleView_setup = function FEaiCockpitModuleTitleView_setup(
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleView_processLogic = function FEaiCockpitModuleTitleView_processLogic(){
+MO.FEaiCockpitTitleView_processLogic = function FEaiCockpitTitleView_processLogic(){
    var o = this;
 }
 
@@ -95,7 +95,7 @@ MO.FEaiCockpitModuleTitleView_processLogic = function FEaiCockpitModuleTitleView
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleTitleView_dispose = function FEaiCockpitModuleTitleView_dispose() {
+MO.FEaiCockpitTitleView_dispose = function FEaiCockpitTitleView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

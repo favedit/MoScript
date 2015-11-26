@@ -9,6 +9,8 @@ MO.FEaiCockpitWarningSnapshot = function FEaiCockpitWarningSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._name                 = 'cockpit.warning.snapshot';
+   o._backgroundUri        = '{eai.resource}/cockpit/warning/ground.png';
    o._data                 = null;
    o._dataTicker           = null;
    o._gridControl          = null;
@@ -89,16 +91,6 @@ MO.FEaiCockpitWarningSnapshot_setData = function FEaiCockpitWarningSnapshot_setD
 MO.FEaiCockpitWarningSnapshot_onPaintBegin = function FEaiCockpitWarningSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   //..........................................................
-   // 绘制背景
-   graphic.drawImage(o._backgroundImage, left, top, width, height);
 }
 
 //==========================================================
@@ -145,8 +137,8 @@ MO.FEaiCockpitWarningSnapshot_construct = function FEaiCockpitWarningSnapshot_co
 //==========================================================
 MO.FEaiCockpitWarningSnapshot_setup = function FEaiCockpitWarningSnapshot_setup(){
    var o = this;
-   // 创建图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/warning/ground.png');
+   o.__base.FEaiCockpitControl.setup.call(o);
+   // 创建表格
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
    grid.setLocation(70, 16);
@@ -176,7 +168,6 @@ MO.FEaiCockpitWarningSnapshot_setup = function FEaiCockpitWarningSnapshot_setup(
    grid.pushColumn(column);
 
    o.push(grid);
-
    //..........................................................
    o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
    //..........................................................
