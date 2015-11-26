@@ -9,12 +9,33 @@ MO.FUiChartDataset = function FUiChartDataset(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._serieses = MO.Class.register(o, new MO.AGetter('_serieses'));
+   o._serieses                = MO.Class.register(o, new MO.AGetter('_serieses'));
+   // @attribute
+   o._xDivide                 = MO.Class.register(o, new MO.AGetSet('_xDivide'), 0);
+   o._xLabels                 = MO.Class.register(o, new MO.AGetSet('_xLabels'));
+   // @attribute
+   o._optionDrawAxisX         = MO.Class.register(o, new MO.AGetSet('_optionDrawAxisX'), true);
+   o._optionDrawAxisLabelX    = MO.Class.register(o, new MO.AGetSet('_optionDrawAxisLabelX'), true);
+   o._optionDrawAxisY         = MO.Class.register(o, new MO.AGetSet('_optionDrawAxisY'), true);
+   o._optionDrawAxisLabelY    = MO.Class.register(o, new MO.AGetSet('_optionDrawAxisLabelY'), true);
+   // @attribute
+   o._corCount                = MO.Class.register(o, new MO.AGetSet('_corCount'), 8);
+   o._standardMax             = MO.Class.register(o, new MO.AGetter('_standardMax'));
+   o._standardMin             = MO.Class.register(o, new MO.AGetter('_standardMin'));
+   o._standardCorCount        = MO.Class.register(o, new MO.AGetter('_standardCorCount'));
+   o._standarded              = MO.Class.register(o, new MO.AGetter('_standarded'), false);
    //..........................................................
    // @method
-   o.construct = MO.FUiChartDataset_construct;
+   o.construct                = MO.FUiChartDataset_construct;
    // @method
-   o.dispose   = MO.FUiChartDataset_dispose;
+   o.push                     = MO.FUiChartDataset_push;
+   // @method
+   o.maxValue                 = MO.FUiChartDataset_maxValue;
+   o.minValue                 = MO.FUiChartDataset_minValue;
+   o.standardCor              = MO.FUiChartDataset_standardCor;
+   o.update                   = MO.FUiChartDataset_update;
+   // @method
+   o.dispose                  = MO.FUiChartDataset_dispose;
    return o;
 }
 
@@ -28,6 +49,142 @@ MO.FUiChartDataset_construct = function FUiChartDataset_construct(){
    o.__base.FObject.construct.call(o);
    // 配置属性
    o._serieses = new MO.TObjects();
+}
+
+//==========================================================
+// <T>插入数据。</T>
+//
+// @method
+//==========================================================
+MO.FUiChartDataset_push = function FUiChartDataset_push(data) {
+   var o = this;
+   data.setDataset(o);
+   o._serieses.push(data);
+}
+
+//==========================================================
+// <T>获取数据最大值。</T>
+//
+// @method
+//==========================================================
+MO.FUiChartDataset_maxValue = function FUiChartDataset_maxValue() { 
+   var o = this;
+   var serieses = o._serieses;
+   var count = serieses.count();
+   var result = Number.NEGATIVE_INFINITY;
+   for(var i = 0; i < count; ++i) {
+      var series = serieses.get(i);
+      var values = series.values();
+      var valueCount = values.count();
+      for (var v = 0; v < valueCount; ++v) { 
+         var value = values.get(v);
+         result = result < value ? value : result;
+      }
+   }
+   return result;
+}
+
+//==========================================================
+// <T>获取数据最小值。</T>
+//
+// @method
+//==========================================================
+MO.FUiChartDataset_minValue = function FUiChartDataset_minValue() { 
+   var o = this;
+   var serieses = o._serieses;
+   var count = serieses.count();
+   var result = Number.POSITIVE_INFINITY;
+   for(var i = 0; i < count; ++i) {
+      var series = serieses.get(i);
+      var values = series.values();
+      var valueCount = values.count();
+      for (var v = 0; v < valueCount; ++v) { 
+         var value = values.get(v);
+         result = result > value ? value : result;
+      }
+   }
+   return result;
+}
+
+//==========================================================
+// <T>标准化刻度。</T>
+//
+// @method
+//==========================================================
+MO.FUiChartDataset_standardCor = function FUiChartDataset_standardCor() {
+   var o = this;
+   var result = new MO.TArray();
+   var corMax = o.maxValue();
+   var corMin = o.minValue();
+   var corNumber = o._corCount;
+   var corStep = (corMax - corMin) / corNumber;
+   var temp, tmpStep, tmpNumber, extraNumber;
+   if(Math.pow(10, parseInt(Math.log(corStep) / Math.log(10))) == corStep) {
+      temp = Math.pow(10, parseInt(Math.log(corStep) / Math.log(10)));
+   }else {
+      temp = Math.pow(10, (parseInt(Math.log(corStep) / Math.log(10)) + 1));
+   }
+   tmpStep = (corStep / temp).toFixed(6);
+   //选取规范步长
+   if(tmpStep >= 0 && tmpStep <= 0.1) {
+      tmpStep = 0.1;
+   }else if ( tmpStep >= 0.100001 && tmpStep <= 0.2) {
+      tmpStep = 0.2;
+   }else if ( tmpStep >= 0.200001 && tmpStep <= 0.25) {
+      tmpStep = 0.25;
+   }else if ( tmpStep >= 0.250001 && tmpStep <= 0.5) {
+      tmpStep = 0.5;
+   }else {
+      tmpStep = 1;
+   }
+   tmpStep = tmpStep * temp;
+   if(parseInt(corMin / tmpStep) != (corMin / tmpStep)) {
+      if(corMin < 0) {
+         corMin = (-1) * Math.ceil(Math.abs(corMin / tmpStep)) * tmpStep;
+      }else {
+         corMin = parseInt(Math.abs(cormin / tmpStep)) * tmpStep;
+      }
+   }
+   if(parseInt(corMax / tmpStep) != (corMax / tmpStep)) {
+      corMax = parseInt(corMax / tmpStep + 1) * tmpStep;
+   }
+   tmpNumber = (corMax - corMin) / tmpStep;
+   if(tmpNumber < corNumber) {
+      extraNumber = corNumber - tmpNumber;
+      tmpNumber = corNumber;
+      if(extraNumber % 2 == 0) {
+         corMax = corMax + tmpStep * parseInt(extraNumber / 2);
+      }else {
+         corMax = corMax + tmpStep * parseInt(extraNumber / 2 + 1);
+      }
+      corMin = corMin - tmpStep * parseInt(extraNumber / 2);
+   }
+   corNumber = tmpNumber;
+   o._standardMax = corMax;
+   o._standardMin = corMin;
+   o._standardCorCount = corNumber;
+   if(o._standarded == false) o._standarded = true;
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @method
+//==========================================================
+MO.FUiChartDataset_update = function FUiChartDataset_update() { 
+   var o = this;
+   o.standardCor();
+
+   // 设置X等分
+   var serieses = o._serieses;
+   var count = serieses.count();
+   var maxCount = Number.NEGATIVE_INFINITY;
+   for( var i = 0; i < count; ++i) {
+      var series = serieses.get(i);
+      var scount = series.values().count();
+      maxCount = maxCount < scount ? scount : maxCount;
+   }
+   o._xDivide = o._xDivide > maxCount ? o._xDivide : maxCount;
 }
 
 //==========================================================

@@ -13,6 +13,7 @@ MO.FEaiCockpitTrendSnapshot = function FEaiCockpitTrendSnapshot(o) {
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
+   o._dataset              = null;
    // @attribute
    o._backgroundImage      = null;
    // @attribute
@@ -28,7 +29,6 @@ MO.FEaiCockpitTrendSnapshot = function FEaiCockpitTrendSnapshot(o) {
    // @method
    o.setup                 = MO.FEaiCockpitTrendSnapshot_setup;
    o.setData               = MO.FEaiCockpitTrendSnapshot_setData;
-   o.drawLine              = MO.FEaiCockpitTrendSnapshot_drawLine;
    o.processLogic          = MO.FEaiCockpitTrendSnapshot_processLogic;
    // @method
    o.dispose               = MO.FEaiCockpitTrendSnapshot_dispose;
@@ -53,6 +53,7 @@ MO.FEaiCockpitTrendSnapshot_onImageLoad = function FEaiCockpitTrendSnapshot_onIm
 MO.FEaiCockpitTrendSnapshot_onPaintBegin = function FEaiCockpitTrendSnapshot_onPaintBegin(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
+   return;
    // 获得变量
    var graphic = event.graphic;
    var rectangle = event.rectangle;
@@ -146,13 +147,6 @@ MO.FEaiCockpitTrendSnapshot_onPaintBegin = function FEaiCockpitTrendSnapshot_onP
                label =  date.substr(6,2);
             }
             graphic.drawText(label,left+i*13+10,top+190-23,'#ffffff');
-         //画线
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorInvestmentAmount', '#4b5e6f', 2);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorRedemptionAmount', '#80a861', 2);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_priorNetinvestmentAmount', '#947b91', 2);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_investmentAmount', '#51c0db', 3);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_redemptionAmount', '#68f34e', 3);
-         o.drawLine(graphic, rectangle, dataheigt, minValue, maxValue, '_netinvestmentAmount', '#9b1933', 3);
          }
       }
     }
@@ -205,7 +199,20 @@ MO.FEaiCockpitTrendSnapshot_setup = function FEaiCockpitTrendSnapshot_setup(){
    chart.selectPainter(MO.FGuiChartLinePainter);
    chart.setLocation(60, 11);
    chart.setSize(520, 218);
+   chart.paintRectangle().set(68, 24, 424, 166);
    o.push(chart);
+
+   var lineColors = ['#4b5e6f', '#80a861', '#947b91', '#51c0db', '#68f34e', '#9b1933'];
+   var dataset = o._dataset = MO.Class.create(MO.FUiChartDataset);
+   dataset.setXDivide(31);
+   dataset.setXLabels(["1", "6", "11", "16", "21", "26", "31"]);
+   for ( var i = 0; i < 6; ++i) {
+      var series = MO.Class.create(MO.FUiChartDataSeries);
+      series.setLineWidth(3);
+      series.setLineColor(lineColors[i]);
+      dataset.push(series);
+   }
+   chart.setDataset(dataset);
 }
 
 //==========================================================
@@ -216,41 +223,27 @@ MO.FEaiCockpitTrendSnapshot_setup = function FEaiCockpitTrendSnapshot_setup(){
 //==========================================================
 MO.FEaiCockpitTrendSnapshot_setData = function FEaiCockpitTrendSnapshot_setData(data) {
    var o = this;
-   o.dirty();
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitTrendSnapshot_drawLine = function FEaiCockpitTrendSnapshot_drawLine(graphic, rectangle, dataheigt,minValue, maxValue, code, color, lineWidth){
-   var o = this;
-   var handle = graphic._handle;
-   handle.beginPath();
-   var days = o._data.days();
-   var count = days.count();
-   // 计算步宽
-   var left = rectangle.left + 140;
-   var top = rectangle.top;
-   var width = rectangle.width - 180;
-   var height = dataheigt ;
-   var stepWidth = width / count;
-   var stepHeight = dataheigt / maxValue;
-   for(var n = 0; n < count; n++){
-      var day = days.at(n);
-      var x = left + stepWidth * n;
-      var y = top + height - stepHeight * day[code]+35;
-      if(n == 0){
-         handle.moveTo(x, y);
-      }else{
-         if(day[code]!=0)
-         handle.lineTo(x, y);
-      }
+   var data = o._data;
+   var days = data.days();
+   var dataset = o._dataset;
+   var serieses = dataset.serieses();
+   var dayCount = days.count();
+   // 清空老数据
+   for(var i = 0; i < 6; ++i) {
+      var series = serieses.get(i);
+      series.values().clear();
    }
-   handle.lineWidth = lineWidth;
-   handle.strokeStyle = color;
-   handle.stroke();
+   for(var i = 0; i < dayCount; ++i) {
+      var day = days.get(i);
+      if(day.priorInvestmentAmount() != 0) serieses.get(0).values().push(day.priorInvestmentAmount());
+      if(day.priorRedemptionAmount() != 0) serieses.get(1).values().push(day.priorRedemptionAmount());
+      if(day.priorNetinvestmentAmount() != 0) serieses.get(2).values().push(day.priorNetinvestmentAmount());
+      if(day.investmentAmount() != 0) serieses.get(3).values().push(day.investmentAmount());
+      if(day.redemptionAmount() != 0) serieses.get(4).values().push(day.redemptionAmount());
+      if(day.netinvestmentAmount() != 0) serieses.get(5).values().push(day.netinvestmentAmount());
+   }
+   dataset.update();
+   o.dirty();
 }
 
 //==========================================================

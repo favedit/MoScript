@@ -333,7 +333,7 @@ MO.FG2dCanvasContext_moveTo = function FG2dCanvasContext_moveTo(x, y){
 // @param x:Number 横坐标
 // @param y:Number 纵坐标
 //==========================================================
-MO.FG2dCanvasContext_moveTo = function FG2dCanvasContext_lineTo(x, y){
+MO.FG2dCanvasContext_lineTo = function FG2dCanvasContext_lineTo(x, y){
    this._handle.lineTo(x, y);
 }
 

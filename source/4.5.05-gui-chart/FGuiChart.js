@@ -9,19 +9,20 @@ MO.FGuiChart = function FGuiChart(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl, MO.MUiChart);
    //..........................................................
    // @attribute
-   o._painter      = MO.Class.register(o, new MO.AGetter('_painter'));
+   o._painter        = MO.Class.register(o, new MO.AGetter('_painter'));
+   o._paintRectangle = MO.Class.register(o, new MO.AGetter('_paintRectangle'));
    // @attribute
-   o._paintContext = null;
+   o._paintContext   = null;
    //..........................................................
    // @event
-   o.onPaintBegin  = MO.FGuiChart_onPaintBegin;
+   o.onPaintBegin    = MO.FGuiChart_onPaintBegin;
    //..........................................................
    // @method
-   o.construct     = MO.FGuiChart_construct;
+   o.construct       = MO.FGuiChart_construct;
    // @method
-   o.selectPainter = MO.FGuiChart_selectPainter;
+   o.selectPainter   = MO.FGuiChart_selectPainter;
    // @method
-   o.dispose       = MO.FGuiChart_dispose;
+   o.dispose         = MO.FGuiChart_dispose;
    return o;
 }
 
@@ -33,6 +34,7 @@ MO.FGuiChart = function FGuiChart(o) {
 MO.FGuiChart_onPaintBegin = function FGuiChart_onPaintBegin(event) {
    var o = this;
    event.dataset = o._dataset;
+   event.paintRectangle = o._paintRectangle;
    o._painter.draw(event);
 }
 
@@ -47,6 +49,7 @@ MO.FGuiChart_construct = function FGuiChart_construct() {
    o.__base.MUiChart.construct.call(o);
    // 设置变量
    o._paintContext = new MO.SGuiGridPaintContext();
+   o._paintRectangle = new MO.SRectangle();
 }
 
 //==========================================================

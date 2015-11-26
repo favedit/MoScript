@@ -9,14 +9,17 @@ MO.FUiChartDataSeries = function FUiChartDataSeries(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._dataset  = MO.Class.register(o, new MO.AGetSet('_dataset'));
+   o._dataset     = MO.Class.register(o, new MO.AGetSet('_dataset'));
    // @attribute
-   o._values   = MO.Class.register(o, new MO.AGetSet('_values'));
+   o._values      = MO.Class.register(o, new MO.AGetSet('_values'));
+   // @attribute
+   o._lineColor   = MO.Class.register(o, new MO.AGetSet('_lineColor'), '#FFFFFF');
+   o._lineWidth   = MO.Class.register(o, new MO.AGetSet('_lineWidth'), 1);
    //..........................................................
    // @method
-   o.construct = MO.FUiChartDataSeries_construct;
+   o.construct    = MO.FUiChartDataSeries_construct;
    // @method
-   o.dispose   = MO.FUiChartDataSeries_dispose;
+   o.dispose      = MO.FUiChartDataSeries_dispose;
    return o;
 }
 
