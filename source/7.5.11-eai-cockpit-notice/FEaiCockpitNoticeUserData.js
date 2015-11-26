@@ -5,7 +5,7 @@
 // @author zhaoyihan
 // @history 151124
 //==========================================================
-MO.FEaiCockpitMessageNoticeUser = function FEaiCockpitMessageNoticeUser(o) {
+MO.FEaiCockpitNoticeUserData = function FEaiCockpitNoticeUserData(o) {
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute

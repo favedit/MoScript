@@ -60,13 +60,13 @@ MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin = function FEaiCockpitNoticeUserSn
    if (o._data != null && o._data.publishDate() != null) {
       o._userInfoDate.parse(o._data.publishDate());
       graphic.setFont('21px Microsoft YaHei');
-      graphic.drawText("姓名：", 89, 33, "#ffffff");
-      graphic.drawText(o._data.label(), 153, 33, "#ffe721");
-      graphic.drawText("发布号令：" + o._data.total() + "条", 498, 33, "#ffffff");
-      graphic.drawText("职位：" + o._data.positionLabel(), 89, 66, "#ffffff");
-      graphic.drawText("最新发布：" + o._userInfoDate.format("YYYY-MM-DD"), 498, 66, "#ffffff");
-      graphic.drawText("下属人数：" + o._data.userCount() + "人", 89, 99, "#ffffff");
-      graphic.drawText("阅读进度：" + o._data.readprocess() + "%", 498, 99, "#ffffff");
+      graphic.drawText("姓名：", left + 89, top + 33, "#ffffff");
+      graphic.drawText(o._data.label(), left + 153, top + 33, "#ffe721");
+      graphic.drawText("发布号令：" + o._data.total() + "条", left + 498, top + 33, "#ffffff");
+      graphic.drawText("职位：" + o._data.positionLabel(), left + 89, top + 66, "#ffffff");
+      graphic.drawText("最新发布：" + o._userInfoDate.format("YYYY-MM-DD"), left + 498, top + 66, "#ffffff");
+      graphic.drawText("下属人数：" + o._data.userCount() + "人", left + 89, top + 99, "#ffffff");
+      graphic.drawText("阅读进度：" + o._data.readprocess() + "%", left + 498, top + 99, "#ffffff");
    }
    
 }
@@ -83,7 +83,7 @@ MO.FEaiCockpitNoticeUserSnapshot_construct = function FEaiCockpitNoticeUserSnaps
    o._cellLocation.set(0, 1, 0);
    o._cellSize.set(7, 1);
    o._dataTicker = new MO.TTicker(1000 * 60);
-   o._data = MO.Class.create(MO.FEaiCockpitMessageNoticeUser);
+   o._data = MO.Class.create(MO.FEaiCockpitNoticeUserData);
 }
 
 //==========================================================
