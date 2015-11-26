@@ -14,12 +14,14 @@ MO.FEaiCockpitNoticeTableSnapshot = function FEaiCockpitNoticeTableSnapshot(o) {
    // @attribute
    o._tableImage           = null;
    o._fontTop              = null;
+   o._noticeData           = null;
    // @attribute  
    //..........................................................
+   o._noticeList           = MO.Class.register(o, new MO.AGetter('_noticeList'));
    // @event
    o.onImageLoad           = MO.FEaiCockpitNoticeTableSnapshot_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitNoticeTableSnapshot_onPaintBegin;
-   
+   o.refreshTableData      = MO.FEaiCockpitNoticeTableSnapshot_refreshTableData;
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitNoticeTableSnapshot_construct;
@@ -54,6 +56,7 @@ MO.FEaiCockpitNoticeTableSnapshot_onPaintBegin = function FEaiCockpitNoticeTable
    var width = rectangle.width;
    var height = rectangle.height;
    graphic.drawImage(o._tableImage, left,0,width,height);
+
 }
 
 //==========================================================
@@ -68,6 +71,7 @@ MO.FEaiCockpitNoticeTableSnapshot_construct = function FEaiCockpitNoticeTableSna
    o._cellLocation.set(0, 5, 0);
    o._cellSize.set(7, 4);
    o._dataTicker = new MO.TTicker(1000 * 60 );
+   o._noticeList  = MO.Class.create(MO.FEaiCockpitNoticeTableData);
 }
 
 //==========================================================
@@ -80,11 +84,10 @@ MO.FEaiCockpitNoticeTableSnapshot_setup = function FEaiCockpitNoticeTableSnapsho
    o._tableImage = o.loadResourceImage('{eai.resource}/cockpit/notice/table/notice_list_bg.png');
    var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
    grid.setOptionClip(false);
-   // grid.setDisplayHead(false);
    grid.setLocation(20, 20);
    grid.setSize(800, 700);
    grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-   grid.setLeft(40);
+   grid.setLeft(20);
    grid.setRight(20);
    grid.setHeadHeight(40);
    grid.setHeadBackColor('rgba(0,0,0,0)');
@@ -114,7 +117,7 @@ MO.FEaiCockpitNoticeTableSnapshot_setup = function FEaiCockpitNoticeTableSnapsho
    column.setName('recordDate');
    column.setLabel('发布时间');
    column.setDataName('record_date');
-   column.setDateFormat('yyyy:mm:dd');
+   column.setDateFormat('YYYY:MM:DD');
    column.setWidth(50);
    column.setPadding(1, 1, 1, 1);
    grid.pushColumn(column);
@@ -135,6 +138,41 @@ MO.FEaiCockpitNoticeTableSnapshot_setup = function FEaiCockpitNoticeTableSnapsho
    column.setAlign(MO.EUiAlign.Center);
    grid.pushColumn(column);
    o.push(grid);
+   var statistics = MO.Console.find(MO.FEaiLogicConsole).notice();
+   // if (o._dataTicker.process()){
+      // 取动态数据
+      statistics.doFetchList(o, o.refreshTableData);
+      // 取阅读情况数据
+   // }
+
+}
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitNoticeTableSnapshot_refreshTableData = function FEaiCockpitNoticeTableSnapshot_refreshTableData(event){
+   var o = this;
+   var content = event.content;
+   var listDynamic = o._noticeList;
+   listDynamic.unserializeSignBuffer(event.sign, event.content, true);
+   var noticeUnits = listDynamic.noticeList();
+   var grid = o._gridRank;
+   grid.clearRows();
+   var count = noticeUnits.count();
+   var subordinateCount= listDynamic.subordinate()
+   for (var i = 0; i < noticeUnits.count(); i++) {
+      var unit = noticeUnits.at(i);
+      var row = grid.allocRow();
+      // 排行榜数据填充
+      row.set('type_images', '{eai.resource}/cockpit/notice/table/notice_type_'+unit.noticeType()+'.png');
+      row.set('title_data', unit.title());
+      row.set('record_date', unit.date());
+      var progress = parseInt(unit.readCount()/subordinateCount*100);
+      row.set('prograss_data', progress);
+      row.set('degree_images','{eai.resource}/cockpit/notice/table/notice_im_'+unit.important()+'.png');
+      grid.pushRow(row);
+   }
 }
 
 //==========================================================

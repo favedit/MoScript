@@ -66,8 +66,7 @@ MO.FEaiLogicCockpitNotice_doFetchUserInfo = function FEaiLogicCockpitNotice_doFe
 MO.FEaiLogicNoticeInfo_doFetchNewest = function FEaiLogicNoticeInfo_doFetchNewest(owner, callback){
    var o = this;
    var parameters = o.prepareParemeters();
-   // o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=findNewestNotice', parameters, owner, callback);
-   o.sendService('http://10.13.0.80:8020/eai.cockpit.notice.wv?do=findNewestNotice', parameters, owner, callback);
+   o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=findNewestNotice', parameters, owner, callback);
 }
 //==========================================================
 // <T>获取项目信息数据。</T>
@@ -80,8 +79,7 @@ MO.FEaiLogicNoticeInfo_doFetchNewest = function FEaiLogicNoticeInfo_doFetchNewes
 MO.FEaiLogicNoticeInfo_doFetchList = function FEaiLogicNoticeInfo_doFetchList(owner, callback){
    var o = this;
    var parameters = o.prepareParemeters();
-   // o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=listNotices', parameters, owner, callback);
-   o.sendService('http://10.13.0.80:8020/eai.cockpit.notice.wv?do=listNotices', parameters, owner, callback);
+   o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=listNotices', parameters, owner, callback);
 }
 //==========================================================
 // <T>获取项目信息数据。</T>
@@ -94,8 +92,7 @@ MO.FEaiLogicNoticeInfo_doFetchList = function FEaiLogicNoticeInfo_doFetchList(ow
 MO.FEaiLogicNoticeInfo_doFetchDynamic = function FEaiLogicNoticeInfo_doFetchDynamic(owner, callback){
    var o = this;
    var parameters = o.prepareParemeters();
-   // o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=dynamicNotices', parameters, owner, callback);
-   o.sendService('http://10.13.0.80:8020/eai.cockpit.notice.wv?do=dynamicNotices', parameters, owner, callback);
+   o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=dynamicNotices', parameters, owner, callback);
 }
 //==========================================================
 // <T>获取项目信息数据。</T>
@@ -108,6 +105,5 @@ MO.FEaiLogicNoticeInfo_doFetchDynamic = function FEaiLogicNoticeInfo_doFetchDyna
 MO.FEaiLogicNoticeInfo_doFetchRead = function FEaiLogicNoticeInfo_doFetchRead(owner, callback){
    var o = this;
    var parameters = o.prepareParemeters();
-   // o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=worstNotices', parameters, owner, callback);
-   o.sendService('http://10.13.0.80:8020/eai.cockpit.notice.wv?do=worstNotices', parameters, owner, callback);
+   o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=worstNotices', parameters, owner, callback);
 }
