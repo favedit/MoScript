@@ -12,8 +12,16 @@ MO.FEaiCockpitNoticeDynamicSnapshot = function FEaiCockpitNoticeDynamicSnapshot(
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
-   o._dynamicImage        = null;
+   o._dynamicImage         = null;
    o._fontTop              = null;
+   o._fontContent          = null;
+   // @attribute
+   o._dynamics             = null;
+   o._dynamicData          = MO.Class.register(o, new MO.AGetter('_dynamicData'));
+   // @attribute
+   o._readDynamics         = null;
+   o._dynamicSerialization = MO.Class.register(o, new MO.AGetter('_dynamicSerialization'));
+   o._readSerialization    = MO.Class.register(o, new MO.AGetter('_readSerialization'));
    // @attribute  
    //..........................................................
    // @event
@@ -23,8 +31,12 @@ MO.FEaiCockpitNoticeDynamicSnapshot = function FEaiCockpitNoticeDynamicSnapshot(
    //..........................................................
    // @method
    o.construct             = MO.FEaiCockpitNoticeDynamicSnapshot_construct;
-   // @method
    o.setup                 = MO.FEaiCockpitNoticeDynamicSnapshot_setup;
+   o.refreshDynamic        = MO.FEaiCockpitNoticeDynamicSnapshot_refreshDynamic;
+   o.refreshRead           = MO.FEaiCockpitNoticeDynamicSnapshot_refreshRead;
+
+   // @method
+
    o.processLogic          = MO.FEaiCockpitNoticeDynamicSnapshot_processLogic;
    // @method
 
@@ -54,8 +66,58 @@ MO.FEaiCockpitNoticeDynamicSnapshot_onPaintBegin = function FEaiCockpitNoticeDyn
    var width = rectangle.width;
    var height = rectangle.height;
    graphic.drawImage(o._dynamicImage, left,0,width,height);
+   var fontTop = o._fontTop;
+   graphic.setFont(fontTop.toString());
+   graphic.drawText("号令动态", left+55, top+50, fontTop.color);
+   graphic.drawText("最新号令阅读情况", left+600, top+50, fontTop.color);
+   var fontContent = o._fontContent;
+   graphic.setFont(fontContent.toString());
+   var dynamicCount = o._dynamics.count();
+   var dynamicData = o._dynamicData;
+   if (dynamicCount > 0){
+   for (var i = 0; i < dynamicCount; i++) {
+         var dynamic = o._dynamics.at(i)
+         dynamicData.parse(dynamic.readDate());
+         console.log();
+         graphic.drawText(dynamic.department()+dynamic.readName()+"查看了号令"+"    "+dynamicData.format('hh24:mi'), left+55, top+80+35*i, fontContent.color);
+      }
+   }
+   
+   var readCount = o._readDynamics.count();
+   if (readCount >0){
+      for (var i = 0; i < readCount; i++) {
+            var readDynamic = o._readDynamics.at(i);
+            var progress = readDynamic.readprogress();
+            graphic.drawText(readDynamic.department()+"阅读量"+progress*100+"%", left+600, top+80+35*i, fontContent.color);
+            graphic.drawText("短信提醒", left+1100, top+75+35*i, '#1366A3');
+         }
+   }
+   
 }
-
+//==========================================================
+// <T>刷新处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitNoticeDynamicSnapshot_refreshDynamic = function FEaiCockpitNoticeDynamicSnapshot_refreshDynamic(event) {
+   var o = this;
+   var content = event.content;
+   var noticeDynamic = o._dynamicSerialization;
+   noticeDynamic.unserializeSignBuffer(event.sign, event.content, true);
+   o._dynamics = noticeDynamic.noticeDynamic();
+}
+//==========================================================
+// <T>刷新处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitNoticeDynamicSnapshot_refreshRead = function FEaiCockpitNoticeDynamicSnapshot_refreshRead(event) {
+   var o = this;
+   var content = event.content;
+   var readDynamic = o._readSerialization;
+   readDynamic.unserializeSignBuffer(event.sign, event.content, true);
+   o._readDynamics = readDynamic.noticePrograss();
+}
 //==========================================================
 // <T>构造处理。</T>
 //
@@ -67,6 +129,14 @@ MO.FEaiCockpitNoticeDynamicSnapshot_construct = function FEaiCockpitNoticeDynami
    // 创建属性
    o._cellLocation.set(7, 7, 0);
    o._cellSize.set(9, 2);
+   o._dynamicSerialization = MO.Class.create(MO.FEaiCockpitNoticeDynamicData);
+   o._readSerialization = MO.Class.create(MO.FEaiCockpitNoticeDynamicNewestData);
+   o._dynamicData = new MO.TDate();
+   o._fontTop = new MO.SUiFont();
+   o._dynamics = new MO.TObjects();
+   o._readDynamics = new MO.TObjects();
+   o._fontContent = new MO.SUiFont();
+   o._dataTicker = new MO.TTicker(1000 * 60 );
 }
 
 //==========================================================
@@ -77,6 +147,17 @@ MO.FEaiCockpitNoticeDynamicSnapshot_construct = function FEaiCockpitNoticeDynami
 MO.FEaiCockpitNoticeDynamicSnapshot_setup = function FEaiCockpitNoticeDynamicSnapshot_setup(){
    var o = this;
    o._dynamicImage = o.loadResourceImage('{eai.resource}/cockpit/notice/notice_dynamic_bg.png');
+   o._fontTop.parse('#FFCC00 25px Microsoft YaHei');
+   o._fontContent.parse('#FFFFFF 21px Microsoft YaHei');
+   var statistics = MO.Console.find(MO.FEaiLogicConsole).notice();
+   if (o._dataTicker.process()){
+      // 取动态数据
+      statistics.doFetchDynamic(o, o.refreshDynamic);
+      // 取阅读情况数据
+      statistics.doFetchRead(o, o.refreshRead);
+   }
+   
+
 }
 
 //==========================================================
@@ -97,4 +178,5 @@ MO.FEaiCockpitNoticeDynamicSnapshot_dispose = function FEaiCockpitNoticeDynamicS
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
+   o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);
 }
