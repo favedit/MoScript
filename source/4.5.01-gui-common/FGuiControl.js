@@ -33,6 +33,7 @@ MO.FGuiControl = function FGuiControl(o){
    o._backImage              = null;
    o._backHoverResource      = null;
    // @attribute
+   o._renderableScale        = MO.Class.register(o, new MO.AGetSet('_renderableScale'), 1);
    o._clientRectangle        = MO.Class.register(o, new MO.AGetter('_clientRectangle'));
    o._parentRectangle        = MO.Class.register(o, new MO.AGetter('_parentRectangle'));
    o._eventRectangle         = null;
@@ -635,8 +636,8 @@ MO.FGuiControl_dirty = function FGuiControl_dirty(){
 //==========================================================
 MO.FGuiControl_makeRenderable = function FGuiControl_makeRenderable(){
    var o = this;
-   //var location = o._location;
-   //var size = o._size;
+   // 设置缩放
+   o._renderableScale = MO.Desktop.application().desktop().guiBufferScale();
    //..........................................................
    // 获得渲染对象
    var renderable = o._renderable;
@@ -644,11 +645,8 @@ MO.FGuiControl_makeRenderable = function FGuiControl_makeRenderable(){
       renderable = o._renderable = o._graphicContext.createObject(MO.FGuiControlRenderable);
       renderable.setControl(o);
    }
-   //renderable.setLocation(location.x, location.y);
-   //renderable.setSize(size.width, size.height);
    //..........................................................
    // 更新处理
-   //o.update();
    return renderable;
 }
 
@@ -662,11 +660,14 @@ MO.FGuiControl_updateRenderable = function FGuiControl_updateRenderable(){
    var renderable = o._renderable;
    var graphic = renderable.beginDraw();
    var size = o._size;
+   var scale = o._renderableScale;
+   graphic.setGlobalScale(o._renderableScale, o._renderableScale);
+   graphic.prepare();
    // 绘制处理
    var event = o._paintEvent;
    event.optionScale = false;
    event.graphic = graphic;
-   event.virtualSize = size;
+   // event.virtualSize = size;
    event.parentRectangle.set(0, 0, size.width, size.height);
    event.rectangle.set(0, 0, size.width, size.height);
    event.calculateRate = new MO.SSize2(1, 1);

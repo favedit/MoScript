@@ -27,10 +27,11 @@ MO.FGuiGeneralColorEffect_drawRenderable = function FGuiGeneralColorEffect_drawR
    var program = o._program;
    // 获得参数
    var control = renderable.control();
-   var adjustSize = renderable.adjustSize();
    var controlSize = control.size();
-   var rateX = controlSize.width / adjustSize.width;
-   var rateY = controlSize.height / adjustSize.height;
+   var scale = control.renderableScale();
+   var adjustSize = renderable.adjustSize();
+   var rateX = controlSize.width * scale / adjustSize.width;
+   var rateY = controlSize.height * scale/ adjustSize.height;
    var modelMatrix = renderable.currentMatrix();
    var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix)
    // 绑定材质

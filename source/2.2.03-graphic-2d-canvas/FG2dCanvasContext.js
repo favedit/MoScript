@@ -134,6 +134,9 @@ MO.FG2dCanvasContext_setGlobalScale = function FG2dCanvasContext_setGlobalScale(
 //==========================================================
 MO.FG2dCanvasContext_setScale = function FG2dCanvasContext_setScale(width, height){
    var o = this;
+   if((width == 1) && (height == 1)){
+      return;
+   }
    if(!o._scale.equalsData(width, height)){
       o._handle.scale(width, height);
       o._scale.set(width, height);

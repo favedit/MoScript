@@ -5,13 +5,14 @@
 // @author maocy
 // @history 151107
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot = function FEaiCockpitModuleWarningSnapshot(o) {
+MO.FEaiCockpitWarningSnapshot = function FEaiCockpitWarningSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
    o._gridControl          = null;
+   // o._renderableScale      = 2;
    // @attribute
    o._scrollTicker         = null;
    o._scrollTimes          = 0;
@@ -22,19 +23,19 @@ MO.FEaiCockpitModuleWarningSnapshot = function FEaiCockpitModuleWarningSnapshot(
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin;
-   o.onPaintEnd            = MO.FEaiCockpitModuleWarningSnapshot_onPaintEnd;
-   o.onWarningFetch        = MO.FEaiCockpitModuleWarningSnapshot_onWarningFetch;
+   o.onPaintBegin          = MO.FEaiCockpitWarningSnapshot_onPaintBegin;
+   o.onPaintEnd            = MO.FEaiCockpitWarningSnapshot_onPaintEnd;
+   o.onWarningFetch        = MO.FEaiCockpitWarningSnapshot_onWarningFetch;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleWarningSnapshot_construct;
+   o.construct             = MO.FEaiCockpitWarningSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleWarningSnapshot_setup;
-   o.setData               = MO.FEaiCockpitModuleWarningSnapshot_setData;
-   o.processLogic          = MO.FEaiCockpitModuleWarningSnapshot_processLogic;
-   o.nextPosition          = MO.FEaiCockpitModuleWarningSnapshot_nextPosition;
+   o.setup                 = MO.FEaiCockpitWarningSnapshot_setup;
+   o.setData               = MO.FEaiCockpitWarningSnapshot_setData;
+   o.processLogic          = MO.FEaiCockpitWarningSnapshot_processLogic;
+   o.nextPosition          = MO.FEaiCockpitWarningSnapshot_nextPosition;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleWarningSnapshot_dispose;
+   o.dispose               = MO.FEaiCockpitWarningSnapshot_dispose;
    //..........................................................
    o._comingSoonImage = null;
    //..........................................................
@@ -46,7 +47,7 @@ MO.FEaiCockpitModuleWarningSnapshot = function FEaiCockpitModuleWarningSnapshot(
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_onWarningFetch = function FEaiCockpitModuleWarningSnapshot_onWarningFetch(event) {
+MO.FEaiCockpitWarningSnapshot_onWarningFetch = function FEaiCockpitWarningSnapshot_onWarningFetch(event) {
    var o = this;
    var content = event.content;
    //读取数据
@@ -61,7 +62,7 @@ MO.FEaiCockpitModuleWarningSnapshot_onWarningFetch = function FEaiCockpitModuleW
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_setData = function FEaiCockpitModuleWarningSnapshot_setData(data) {
+MO.FEaiCockpitWarningSnapshot_setData = function FEaiCockpitWarningSnapshot_setData(data) {
    var o = this;
    var items = data.warningItems();
    var grid = o._gridControl;
@@ -85,7 +86,7 @@ MO.FEaiCockpitModuleWarningSnapshot_setData = function FEaiCockpitModuleWarningS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin = function FEaiCockpitModuleWarningSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitWarningSnapshot_onPaintBegin = function FEaiCockpitWarningSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -105,7 +106,7 @@ MO.FEaiCockpitModuleWarningSnapshot_onPaintBegin = function FEaiCockpitModuleWar
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_onPaintEnd = function FEaiCockpitModuleWarningSnapshot_onPaintEnd(event) {
+MO.FEaiCockpitWarningSnapshot_onPaintEnd = function FEaiCockpitWarningSnapshot_onPaintEnd(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
    // 获得变量
@@ -116,7 +117,7 @@ MO.FEaiCockpitModuleWarningSnapshot_onPaintEnd = function FEaiCockpitModuleWarni
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
-   graphic.drawImage(o._comingSoonImage, 5 * 120 - 247 + 36, 2 * 120 - 217 + 56, 247, 217);
+   //graphic.drawImage(o._comingSoonImage, 5 * 120 - 247 + 36, 2 * 120 - 217 + 56, 247, 217);
    //..........................................................
 }
 
@@ -125,7 +126,7 @@ MO.FEaiCockpitModuleWarningSnapshot_onPaintEnd = function FEaiCockpitModuleWarni
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_construct = function FEaiCockpitModuleWarningSnapshot_construct() {
+MO.FEaiCockpitWarningSnapshot_construct = function FEaiCockpitWarningSnapshot_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -134,7 +135,7 @@ MO.FEaiCockpitModuleWarningSnapshot_construct = function FEaiCockpitModuleWarnin
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._scrollTicker = new MO.TTicker(1000 * 25);
    o._currentDate = new MO.TDate();
-   o._data = MO.Class.create(MO.FEaiCockpitMessageWarning);
+   o._data = MO.Class.create(MO.FEaiCockpitWarningMessage);
 }
 
 //==========================================================
@@ -142,7 +143,7 @@ MO.FEaiCockpitModuleWarningSnapshot_construct = function FEaiCockpitModuleWarnin
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_setup = function FEaiCockpitModuleWarningSnapshot_setup(){
+MO.FEaiCockpitWarningSnapshot_setup = function FEaiCockpitWarningSnapshot_setup(){
    var o = this;
    // 创建图片
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/warning/ground.png');
@@ -186,7 +187,7 @@ MO.FEaiCockpitModuleWarningSnapshot_setup = function FEaiCockpitModuleWarningSna
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_processLogic = function FEaiCockpitModuleWarningSnapshot_processLogic(){
+MO.FEaiCockpitWarningSnapshot_processLogic = function FEaiCockpitWarningSnapshot_processLogic(){
    var o = this;
    if(o._dataTicker.process()) {
       var warning = MO.Console.find(MO.FEaiLogicConsole).cockpit().warning();
@@ -218,7 +219,7 @@ MO.FEaiCockpitModuleWarningSnapshot_processLogic = function FEaiCockpitModuleWar
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_nextPosition = function FEaiCockpitModuleWarningSnapshot_nextPosition() {
+MO.FEaiCockpitWarningSnapshot_nextPosition = function FEaiCockpitWarningSnapshot_nextPosition() {
    var o = this;
    var count = o._data.warningItems().count();
    o._scrollPosition = o._scrollPosition + 1 >= count ? 0 : o._scrollPosition + 1;
@@ -229,7 +230,7 @@ MO.FEaiCockpitModuleWarningSnapshot_nextPosition = function FEaiCockpitModuleWar
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningSnapshot_dispose = function FEaiCockpitModuleWarningSnapshot_dispose() {
+MO.FEaiCockpitWarningSnapshot_dispose = function FEaiCockpitWarningSnapshot_dispose() {
    var o = this;
    o._units = MO.Lang.Object.dispose(o._units);
    // 父处理

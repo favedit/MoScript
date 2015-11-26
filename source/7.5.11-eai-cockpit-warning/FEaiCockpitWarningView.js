@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151108
 //==========================================================
-MO.FEaiCockpitModuleWarningView = function FEaiCockpitModuleWarningView(o) {
+MO.FEaiCockpitWarningView = function FEaiCockpitWarningView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
@@ -17,16 +17,16 @@ MO.FEaiCockpitModuleWarningView = function FEaiCockpitModuleWarningView(o) {
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitModuleWarningView_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitModuleWarningView_onPaintBegin;
+   o.onImageLoad           = MO.FEaiCockpitWarningView_onImageLoad;
+   o.onPaintBegin          = MO.FEaiCockpitWarningView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitModuleWarningView_construct;
+   o.construct             = MO.FEaiCockpitWarningView_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitModuleWarningView_setup;
-   o.processLogic          = MO.FEaiCockpitModuleWarningView_processLogic;
+   o.setup                 = MO.FEaiCockpitWarningView_setup;
+   o.processLogic          = MO.FEaiCockpitWarningView_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitModuleWarningView_dispose;
+   o.dispose               = MO.FEaiCockpitWarningView_dispose;
    return o;
 }
 
@@ -35,7 +35,7 @@ MO.FEaiCockpitModuleWarningView = function FEaiCockpitModuleWarningView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningView_onImageLoad = function FEaiCockpitModuleWarningView_onImageLoad() {
+MO.FEaiCockpitWarningView_onImageLoad = function FEaiCockpitWarningView_onImageLoad() {
    this.dirty();
 }
 
@@ -44,7 +44,7 @@ MO.FEaiCockpitModuleWarningView_onImageLoad = function FEaiCockpitModuleWarningV
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningView_onPaintBegin = function FEaiCockpitModuleWarningView_onPaintBegin(event) {
+MO.FEaiCockpitWarningView_onPaintBegin = function FEaiCockpitWarningView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    // 获得变量
@@ -60,7 +60,7 @@ MO.FEaiCockpitModuleWarningView_onPaintBegin = function FEaiCockpitModuleWarning
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningView_construct = function FEaiCockpitModuleWarningView_construct() {
+MO.FEaiCockpitWarningView_construct = function FEaiCockpitWarningView_construct() {
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 创建属性
@@ -73,7 +73,7 @@ MO.FEaiCockpitModuleWarningView_construct = function FEaiCockpitModuleWarningVie
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningView_setup = function FEaiCockpitModuleWarningView_setup(){
+MO.FEaiCockpitWarningView_setup = function FEaiCockpitWarningView_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
@@ -86,7 +86,7 @@ MO.FEaiCockpitModuleWarningView_setup = function FEaiCockpitModuleWarningView_se
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningView_processLogic = function FEaiCockpitModuleWarningView_processLogic(){
+MO.FEaiCockpitWarningView_processLogic = function FEaiCockpitWarningView_processLogic(){
    var o = this;
 }
 
@@ -95,7 +95,7 @@ MO.FEaiCockpitModuleWarningView_processLogic = function FEaiCockpitModuleWarning
 //
 // @method
 //==========================================================
-MO.FEaiCockpitModuleWarningView_dispose = function FEaiCockpitModuleWarningView_dispose() {
+MO.FEaiCockpitWarningView_dispose = function FEaiCockpitWarningView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

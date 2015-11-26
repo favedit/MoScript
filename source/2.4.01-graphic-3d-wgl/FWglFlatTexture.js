@@ -8,21 +8,21 @@ MO.FWglFlatTexture = function FWglFlatTexture(o){
    o = MO.Class.inherits(this, o, MO.FG3dFlatTexture);
    //..........................................................
    // @attribute
-   o._handle       = null;
-   o._statusUpdate = false;
+   o._handle         = null;
+   o._statusUpdate   = false;
    //..........................................................
    // @method
-   o.setup         = MO.FWglFlatTexture_setup;
+   o.setup           = MO.FWglFlatTexture_setup;
    // @method
-   o.isValid       = MO.FWglFlatTexture_isValid;
-   o.texture       = MO.FWglFlatTexture_texture;
-   o.makeMipmap    = MO.FWglFlatTexture_makeMipmap;
-   o.uploadData    = MO.FWglFlatTexture_uploadData;
-   o.upload        = MO.FWglFlatTexture_upload;
-   o.uploadElement = MO.FWglFlatTexture_uploadElement;
-   o.update        = MO.FWglFlatTexture_update;
+   o.isValid         = MO.FWglFlatTexture_isValid;
+   o.texture         = MO.FWglFlatTexture_texture;
+   o.makeMipmap      = MO.FWglFlatTexture_makeMipmap;
+   o.uploadData      = MO.FWglFlatTexture_uploadData;
+   o.upload          = MO.FWglFlatTexture_upload;
+   o.uploadElement   = MO.FWglFlatTexture_uploadElement;
+   o.update          = MO.FWglFlatTexture_update;
    // @method
-   o.dispose       = MO.FWglFlatTexture_dispose;
+   o.dispose         = MO.FWglFlatTexture_dispose;
    return o;
 }
 
@@ -125,8 +125,12 @@ MO.FWglFlatTexture_uploadData = function FWglFlatTexture_uploadData(content, wid
 //
 // @method
 // @param content:Object 内容
+// @param left:Number 左位置
+// @param top:Number 上位置
+// @param width:Number 宽度
+// @param height:Number 高度
 //==========================================================
-MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content){
+MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content, left, top, width, height){
    var o = this;
    var context = o._graphicContext;
    var capability = context.capability();
@@ -137,6 +141,10 @@ MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content){
    var tagName = content.tagName;
    if((tagName == 'IMG') || (tagName == 'VIDEO') || (tagName == 'CANVAS')){
       data = content;
+   }else if(content.constructor == Uint8Array){
+      data = content;
+   }else if(content.constructor == Uint8ClampedArray){
+      data = new Uint8Array(content);
    }else if(MO.Class.isClass(content, MO.FImage)){
       data = content.image();
       //if(image.optionAlpha()){
@@ -161,7 +169,11 @@ MO.FWglFlatTexture_upload = function FWglFlatTexture_upload(content){
    //}else{
       //handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, m);
    //}
-   handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, data);
+   if((left != null) && (top != null) && (width != null) && (height != null)){
+      handle.texSubImage2D(handle.TEXTURE_2D, 0, left, top, width, height, handle.RGBA, handle.UNSIGNED_BYTE, data);
+   }else{
+      handle.texImage2D(handle.TEXTURE_2D, 0, handle.RGBA, handle.RGBA, handle.UNSIGNED_BYTE, data);
+   }
    // 更新处理
    o.update();
    o._statusLoad = context.checkError("texImage2D", "Upload image failure.");

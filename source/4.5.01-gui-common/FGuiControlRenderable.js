@@ -75,11 +75,14 @@ MO.FGuiControlRenderable_testVisible = function FGuiControlRenderable_testVisibl
 MO.FGuiControlRenderable_beginDraw = function FGuiControlRenderable_beginDraw(){
    var o = this;
    // 设置大小
-   var size = o._control.size();
-   var adjustWidth = MO.Lang.Integer.pow2(size.width);
-   var adjustHeight = MO.Lang.Integer.pow2(size.height);
+   var control = o._control;
+   var size = control.size();
+   var scale = control.renderableScale();
+   var width = size.width * scale;
+   var height = size.height * scale;
+   var adjustWidth = MO.Lang.Integer.pow2(width);
+   var adjustHeight = MO.Lang.Integer.pow2(height);
    o._adjustSize.set(adjustWidth, adjustHeight);
-   //o._matrix.setScale(adjustWidth, adjustHeight, 1);
    // 绘制画板
    var canvasConsole = MO.Console.find(MO.FE2dCanvasConsole);
    var canvas = o._canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight, MO.FGuiCanvas);

@@ -49,9 +49,7 @@ MO.FEaiCockpitGroundShape = function FEaiCockpitGroundShape(o) {
 //==========================================================
 MO.FEaiCockpitGroundShape_onLoad = function FEaiCockpitGroundShape_onLoad(event) {
    var o = this;
-   var texture = o._texture;
-   texture.upload(o._image);
-   texture.makeMipmap();
+   o._texture.upload(o._image);
    o._image = MO.Lang.Object.dispose(o._image);
    o.updateAll();
 }

@@ -17,6 +17,7 @@ MO.FDesktop = function FDesktop(o){
    o._logicRate       = MO.Class.register(o, new MO.AGetter('_logicRate'));
    o._screenSize      = MO.Class.register(o, new MO.AGetter('_screenSize'));
    o._virtualSize     = MO.Class.register(o, new MO.AGetter('_virtualSize'));
+   o._guiBufferScale  = MO.Class.register(o, new MO.AGetSet('_guiBufferScale'), 1);
    // @attribute
    o._canvases        = MO.Class.register(o, new MO.AGetter('_canvases'));
    //..........................................................

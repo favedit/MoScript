@@ -5,10 +5,10 @@
 // @author adu
 // @history 151103
 //==========================================================
-MO.FEaiCockpitMessageWarning = function FEaiCockpitMessageWarning(o) {
+MO.FEaiCockpitWarningMessage = function FEaiCockpitWarningMessage(o) {
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute
-   o._warningItems = MO.Class.register(o, [new MO.AGetter('_warningItems'), new MO.APersistence('_warningItems', MO.EDataType.Objects, MO.FEaiCockpitMessageWarningItem)]);
+   o._warningItems = MO.Class.register(o, [new MO.AGetter('_warningItems'), new MO.APersistence('_warningItems', MO.EDataType.Objects, MO.FEaiCockpitWarningMessageItem)]);
    return o;
 }
