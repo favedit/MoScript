@@ -126,6 +126,7 @@ MO.FEaiCockpitNoticeTableSnapshot_setup = function FEaiCockpitNoticeTableSnapsho
    column.setLabel('查看进度');
    column.setDataName('prograss_data');
    column.setup('{eai.resource}/cockpit/notice/table/progress_bar_bg.png', '{eai.resource}/cockpit/notice/table/progress_bar_fill.png');
+   column.setAlign(MO.EUiAlign.Center);
    column.setMaxValue(100);
    column.setDrawScale(1);
    grid.pushColumn(column);

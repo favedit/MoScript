@@ -60,8 +60,8 @@ MO.FGuiGridCellProgressBar_draw = function FGuiGridCellProgressBar_draw(context)
    var fillImage = o._column._fillImage;
 
    var imageSize = bgImage.size();
-   var imageWidth = bgImage.width;
-   var imageHeight = bgImage.height;
+   var imageWidth = imageSize.width;
+   var imageHeight = imageSize.height;
    var rectangleHeight = rectangle.height;
    var align = o._column._align;
    var imageX = 0;
