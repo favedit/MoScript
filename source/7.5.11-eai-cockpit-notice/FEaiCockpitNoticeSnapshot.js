@@ -53,13 +53,20 @@ MO.FEaiCockpitNoticeSnapshot_onPaintBegin = function FEaiCockpitNoticeSnapshot_o
    // 绘制背景
    graphic.drawImage(o._bgImage, left, top, width, height);
    //..........................................................
-   // 绘制表格标题
+   // 绘制表格标题   
+   graphic._handle.save();
+   graphic._handle.rect(30, 10, 900, 480);
+   graphic._handle.clip();
+
+
    var titleImage = o._titleImage;
    var rate = o._action.rate();
    graphic.drawImage(titleImage, 30, 8 - rate*57, 901, 49);
 
    var listBox = o._noticeListBox;
    listBox.setLocation(30, 50 - rate * 57);
+
+   graphic._handle.restore();
 }
 MO.FEaiCockpitNoticeSnapshot_oeUpdate = function FEaiCockpitNoticeSnapshot_oeUpdate(event) {
    var o = this;
