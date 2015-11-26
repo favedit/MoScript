@@ -218,7 +218,6 @@ MO.FEaiChartMktCustomerV2Scene_onProcess = function FEaiChartMktCustomerV2Scene_
          var investmentDay = logoBar.findComponent('investmentDay');
          investmentDay.setValue(parseInt(processor.invementDayCurrent()).toString());
       }
-      o._curvesCanvas.dirty();
       //..........................................................
       // 更新时间
       if (o._nowTicker.process()) {
@@ -459,11 +458,11 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       curvesCanvas.setHeight(900);
    } else {
       curvesCanvas.setDockCd(MO.EUiDock.Left);
-      curvesCanvas.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
+      curvesCanvas.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom | MO.EUiAnchor.Left | MO.EUiAnchor.Right);
       curvesCanvas.setLeft(220);
+      curvesCanvas.setRight(620);
       curvesCanvas.setTop(220);
       curvesCanvas.setBottom(260);
-      curvesCanvas.setWidth(500);
    }
    //..........................................................
    // 重新设置矩阵

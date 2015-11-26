@@ -16,6 +16,7 @@ MO.FEaiChartMktCustomerV2TransferCurve = function FEaiChartMktCustomerV2Transfer
    o._arcLevel = 1;
 
    o._startTick = MO.Class.register(o, new MO.AGetSet('_startTick'));
+   o._isActive = MO.Class.register(o, new MO.AGetSet('_isActive'), false);
    o._drawPoint = null;
    o._sTangentPoint = null;
    o._eTangentPoint = null;

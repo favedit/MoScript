@@ -12,6 +12,7 @@ MO.FEaiChartMktCustomerV2CurvesCanvas = function FEaiChartMktCustomerV2CurvesCan
    o._ready          = MO.Class.register(o, new MO.AGetter('_ready'), false);
    o._tenderUnits    = MO.Class.register(o, new MO.AGetter('_tenderUnits'));
    o._curveDict      = null;
+   o._segmentLooper   = null;
    o._pCodeDrawYMap  = null;
    o._curveStyle     = null;
    o._curveDisplayDuration = 10000;
@@ -20,6 +21,8 @@ MO.FEaiChartMktCustomerV2CurvesCanvas = function FEaiChartMktCustomerV2CurvesCan
    o.construct       = MO.FEaiChartMktCustomerV2CurvesCanvas_construct;
    // @method
    o.onPaintBegin    = MO.FEaiChartMktCustomerV2CurvesCanvas_onPaintBegin;
+   o.oeUpdate        = MO.FEaiChartMktCustomerV2CurvesCanvas_oeUpdate;
+   o.testAnimating   = MO.FEaiChartMktCustomerV2CurvesCanvas_testAnimating;
    // @method
    o.setTenderUnits  = MO.FEaiChartMktCustomerV2CurvesCanvas_setTenderUnits;
    o.pushUnit        = MO.FEaiChartMktCustomerV2CurvesCanvas_pushUnit;
@@ -38,8 +41,49 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_construct = function FEaiChartMktCustomerV
    o.__base.FGuiControl.construct.call(o);
    // 设置变量
    o._curveDict = new MO.TDictionary();
+   o._segmentLooper = new MO.TLooper();
    o._pCodeDrawYMap = new MO.TMap();
    o._curveStyle = new MO.SEaiChartMktCustomerV2TransferCurveStyle();
+}
+
+//==========================================================
+// <T>检查是否有动画在进行中。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartMktCustomerV2CurvesCanvas_testAnimating = function FEaiChartMktCustomerV2CurvesCanvas_testAnimating() {
+   var o = this;
+   var segmentLooper = o._segmentLooper;
+   segmentLooper.record();
+   while (segmentLooper.next()) {
+      if (segmentLooper.current().finished()) {
+         segmentLooper.removeCurrent();
+      }
+   }
+   if (segmentLooper.count() > 0) {
+      o.dirty();
+      return;
+   }
+
+   var curveDict = o._curveDict;
+   var count = curveDict.count();
+   for (var i = 0; i < count; i++) {
+      var curve = curveDict.valueAt(i);
+      if (curve.isActive()) {
+         o.dirty();
+         return;
+      }
+   }
+}
+
+//==========================================================
+// <T>检查是否有动画在进行中。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartMktCustomerV2CurvesCanvas_oeUpdate = function FEaiChartMktCustomerV2CurvesCanvas_oeUpdate() {
+   var o = this;
+   o.testAnimating();
 }
 
 //==========================================================
@@ -73,18 +117,24 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_pushUnit = function FEaiChartMktCustomerV2
    }
    var currentPCode = unit.modelCode();
    var previousPCode = unit.modelPriorCode();
+   var drawYMap = o._pCodeDrawYMap;
+   var startY = drawYMap.get(previousPCode, 0);
+   var endY = drawYMap.get(currentPCode, 500);
+
+   var clientRectangle = o.clientRectangle();
+   // 创建投向线
+   var segment = MO.Class.create(MO.FEaiChartMktCustomerV2TenderSegment);
+   segment.setup(clientRectangle.width, 170, 0, endY);
+   o._segmentLooper.push(segment);
+   // 创建迁移曲线
    if (currentPCode == previousPCode || currentPCode == null || previousPCode == null || currentPCode == undefined || previousPCode == undefined) {
       return;
    }
-
    if (currentPCode.length > 0 && previousPCode.length > 0) {
       var curveDict = o._curveDict;
       var key = currentPCode + currentPCode;
       var curve = curveDict.get(key, null);
       if (curve == null) {
-         var drawYMap = o._pCodeDrawYMap;
-         var startY = drawYMap.get(previousPCode, 0);
-         var endY = drawYMap.get(currentPCode, 500);
          curve = MO.Class.create(MO.FEaiChartMktCustomerV2TransferCurve);
          curve.setCurveStyle(o._curveStyle);
          curve.setup(0, startY, 0, endY);
@@ -93,6 +143,7 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_pushUnit = function FEaiChartMktCustomerV2
       else {
          curve.startTick = MO.Timer.current();
       }
+      curve.setIsActive(true);
    }
 }
 
@@ -130,9 +181,16 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_onPaintBegin = function FEaiChartMktCustom
    var curveDisplayDuration = o._curveDisplayDuration;
    for (var i = 0; i < count; i++) {
       var curve = curveDict.valueAt(i);
-      if (currentTick - curve._startTick > curveDisplayDuration) {
+      if (currentTick - curve._startTick <= curveDisplayDuration) {
          curve.draw(event);
       }
+   }
+
+   var segmentLooper = o._segmentLooper;
+   segmentLooper.record();
+   while (segmentLooper.next() != null) {
+      var segment = segmentLooper.current();
+      segment.draw(event);
    }
 }
 
