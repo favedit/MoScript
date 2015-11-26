@@ -1,28 +1,27 @@
 //==========================================================
-// <T>驾驶舱部门模块。</T>
+// <T>预测指数模块。</T>
 //
 // @class
 // @author maocy
-// @history 151101
+// @history 151126
 //==========================================================
 MO.FEaiCockpitForecastLogic002 = function FEaiCockpitForecastLogic002(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name         = 'forecast.logic.002';
-   o._typeCd       = MO.EEaiCockpitModule.Logic;
-   o._dataTicker   = null;
-   o._slideshow    = true;
+   o._name       = 'forecast.logic.002';
+   o._typeCd     = MO.EEaiCockpitModule.Logic;
+   o._dataTicker = null;
+   o._slideshow  = true;
    //..........................................................
    // @method
-   o.construct     = MO.FEaiCockpitForecastLogic002_construct;
+   o.construct   = MO.FEaiCockpitForecastLogic002_construct;
    // @method
-   o.setup         = MO.FEaiCockpitForecastLogic002_setup;
+   o.setup       = MO.FEaiCockpitForecastLogic002_setup;
    // @method
-   o.processResize = MO.FEaiCockpitForecastLogic002_processResize;
-   o.process       = MO.FEaiCockpitForecastLogic002_process;
+   o.process     = MO.FEaiCockpitForecastLogic002_process;
    // @method
-   o.dispose       = MO.FEaiCockpitForecastLogic002_dispose;
+   o.dispose     = MO.FEaiCockpitForecastLogic002_dispose;
    return o;
 }
 
@@ -34,8 +33,6 @@ MO.FEaiCockpitForecastLogic002 = function FEaiCockpitForecastLogic002(o){
 MO.FEaiCockpitForecastLogic002_construct = function FEaiCockpitForecastLogic002_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
-   // 定时获取数据
-   o._dataTicker = new MO.TTicker(1000 * 60);
 }
 
 //==========================================================
@@ -45,26 +42,9 @@ MO.FEaiCockpitForecastLogic002_construct = function FEaiCockpitForecastLogic002_
 //==========================================================
 MO.FEaiCockpitForecastLogic002_setup = function FEaiCockpitForecastLogic002_setup(){
    var o = this;
-   // 创建缩略
-   var snapshot = o._controlSnapshot = MO.Class.create(MO.FEaiCockpitForecastLogic002Snapshot);
-   snapshot.linkGraphicContext(o);
-   snapshot.setParentModule(o);
-   snapshot.setup();
-   // 创建视图
-   var view = o._controlView = MO.Class.create(MO.FEaiCockpitForecastLogic002View);
-   view.linkGraphicContext(o);
-   view.setParentModule(o);
-   view.setup();
-}
-
-//==========================================================
-// <T>大小事件处理。</T>
-//
-// @method
-// @param event:SEvent 事件信息
-//==========================================================
-MO.FEaiCockpitForecastLogic002_processResize = function FEaiCockpitForecastLogic002_processResize(){
-   var o = this;
+   // 创建控件
+   o._controlSnapshot = o.createControl(MO.FEaiCockpitForecastLogic002Snapshot);
+   o._controlView = o.createControl(MO.FEaiCockpitForecastLogic002View);
 }
 
 //==========================================================

@@ -1,23 +1,23 @@
 //==========================================================
-// <T>预测目录视图页面。</T>
+// <T>预测指数视图页面。</T>
 //
 // @class
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitForecastCatalogView = function FEaiCockpitForecastCatalogView(o) {
+MO.FEaiCockpitForecastIndexView = function FEaiCockpitForecastIndexView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FEaiCockpitForecastCatalogView_onPaintBegin;
+   o.onPaintBegin = MO.FEaiCockpitForecastIndexView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct    = MO.FEaiCockpitForecastCatalogView_construct;
+   o.construct    = MO.FEaiCockpitForecastIndexView_construct;
    // @method
-   o.setup        = MO.FEaiCockpitForecastCatalogView_setup;
-   o.processLogic = MO.FEaiCockpitForecastCatalogView_processLogic;
+   o.setup        = MO.FEaiCockpitForecastIndexView_setup;
+   o.processLogic = MO.FEaiCockpitForecastIndexView_processLogic;
    // @method
-   o.dispose      = MO.FEaiCockpitForecastCatalogView_dispose;
+   o.dispose      = MO.FEaiCockpitForecastIndexView_dispose;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FEaiCockpitForecastCatalogView = function FEaiCockpitForecastCatalogView(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastCatalogView_onPaintBegin = function FEaiCockpitForecastCatalogView_onPaintBegin(event) {
+MO.FEaiCockpitForecastIndexView_onPaintBegin = function FEaiCockpitForecastIndexView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
 }
@@ -36,7 +36,7 @@ MO.FEaiCockpitForecastCatalogView_onPaintBegin = function FEaiCockpitForecastCat
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastCatalogView_construct = function FEaiCockpitForecastCatalogView_construct() {
+MO.FEaiCockpitForecastIndexView_construct = function FEaiCockpitForecastIndexView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -49,7 +49,7 @@ MO.FEaiCockpitForecastCatalogView_construct = function FEaiCockpitForecastCatalo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastCatalogView_setup = function FEaiCockpitForecastCatalogView_setup(){
+MO.FEaiCockpitForecastIndexView_setup = function FEaiCockpitForecastIndexView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -59,7 +59,7 @@ MO.FEaiCockpitForecastCatalogView_setup = function FEaiCockpitForecastCatalogVie
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastCatalogView_processLogic = function FEaiCockpitForecastCatalogView_processLogic(){
+MO.FEaiCockpitForecastIndexView_processLogic = function FEaiCockpitForecastIndexView_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
@@ -69,7 +69,7 @@ MO.FEaiCockpitForecastCatalogView_processLogic = function FEaiCockpitForecastCat
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastCatalogView_dispose = function FEaiCockpitForecastCatalogView_dispose() {
+MO.FEaiCockpitForecastIndexView_dispose = function FEaiCockpitForecastIndexView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

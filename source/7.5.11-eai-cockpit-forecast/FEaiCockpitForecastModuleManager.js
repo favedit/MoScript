@@ -17,7 +17,12 @@ MO.FEaiCockpitForecastModuleManager = function FEaiCockpitForecastModuleManager(
    o._logic004Module  = MO.Class.register(o, new MO.AGetter('_logic004Module'));
    o._logic005Module  = MO.Class.register(o, new MO.AGetter('_logic005Module'));
    o._logic006Module  = MO.Class.register(o, new MO.AGetter('_logic006Module'));
+   o._logic007Module  = MO.Class.register(o, new MO.AGetter('_logic007Module'));
+   o._logic008Module  = MO.Class.register(o, new MO.AGetter('_logic008Module'));
+   o._logic009Module  = MO.Class.register(o, new MO.AGetter('_logic009Module'));
+   o._logic010Module  = MO.Class.register(o, new MO.AGetter('_logic010Module'));
    o._tipModule       = MO.Class.register(o, new MO.AGetter('_tipModule'));
+   o._indexModule     = MO.Class.register(o, new MO.AGetter('_indexModule'));
    // @attribute
    o._autoPlay        = false;
    //..........................................................
@@ -61,7 +66,12 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    o._logic004Module = o.createModule(MO.FEaiCockpitForecastLogic004);
    o._logic005Module = o.createModule(MO.FEaiCockpitForecastLogic005);
    o._logic006Module = o.createModule(MO.FEaiCockpitForecastLogic006);
+   o._logic007Module = o.createModule(MO.FEaiCockpitForecastLogic007);
+   o._logic008Module = o.createModule(MO.FEaiCockpitForecastLogic008);
+   o._logic009Module = o.createModule(MO.FEaiCockpitForecastLogic009);
+   o._logic010Module = o.createModule(MO.FEaiCockpitForecastLogic010);
    o._tipModule = o.createModule(MO.FEaiCockpitForecastTip);
+   o._indexModule = o.createModule(MO.FEaiCockpitForecastIndex);
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();

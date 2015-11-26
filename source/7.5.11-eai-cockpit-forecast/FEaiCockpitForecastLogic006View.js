@@ -1,31 +1,23 @@
 //==========================================================
-// <T>预测视图页面。</T>
+// <T>预测指数视图页面。</T>
 //
 // @class
 // @author maocy
-// @history 151108
+// @history 151126
 //==========================================================
 MO.FEaiCockpitForecastLogic006View = function FEaiCockpitForecastLogic006View(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
-   // @attribute
-   o._data                 = null;
-   o._dataTicker           = null;
-   // @attribute
-   o._backgroundUri        = '{eai.resource}/cockpit/forecast/view.png';
-   // @attribute
-   o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
-   //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitForecastLogic006View_onPaintBegin;
+   o.onPaintBegin = MO.FEaiCockpitForecastLogic006View_onPaintBegin;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitForecastLogic006View_construct;
+   o.construct    = MO.FEaiCockpitForecastLogic006View_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitForecastLogic006View_setup;
-   o.processLogic          = MO.FEaiCockpitForecastLogic006View_processLogic;
+   o.setup        = MO.FEaiCockpitForecastLogic006View_setup;
+   o.processLogic = MO.FEaiCockpitForecastLogic006View_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitForecastLogic006View_dispose;
+   o.dispose      = MO.FEaiCockpitForecastLogic006View_dispose;
    return o;
 }
 
@@ -37,9 +29,6 @@ MO.FEaiCockpitForecastLogic006View = function FEaiCockpitForecastLogic006View(o)
 MO.FEaiCockpitForecastLogic006View_onPaintBegin = function FEaiCockpitForecastLogic006View_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
 }
 
 //==========================================================
@@ -72,6 +61,7 @@ MO.FEaiCockpitForecastLogic006View_setup = function FEaiCockpitForecastLogic006V
 //==========================================================
 MO.FEaiCockpitForecastLogic006View_processLogic = function FEaiCockpitForecastLogic006View_processLogic(){
    var o = this;
+   o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
 
 //==========================================================

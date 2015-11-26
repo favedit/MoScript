@@ -9,25 +9,26 @@ MO.FEaiCockpitControl = function FEaiCockpitControl(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._parentModule    = MO.Class.register(o, new MO.AGetSet('_parentModule'));
+   o._parentModule      = MO.Class.register(o, new MO.AGetSet('_parentModule'));
    // @attribute
-   o._cellLocation    = MO.Class.register(o, new MO.AGetter('_cellLocation'));
-   o._cellSize        = MO.Class.register(o, new MO.AGetter('_cellSize'));
+   o._cellLocation      = MO.Class.register(o, new MO.AGetter('_cellLocation'));
+   o._cellSize          = MO.Class.register(o, new MO.AGetter('_cellSize'));
    // @attribute
-   o._backgroundUri   = MO.Class.register(o, new MO.AGetter('_backgroundUri'));
-   o._backgroundImage = null;
+   o._backgroundUri     = MO.Class.register(o, new MO.AGetter('_backgroundUri'));
+   o._backgroundPadding = null;
+   o._backgroundImage   = null;
    //..........................................................
    // @event
-   o.onPaintBegin     = MO.FEaiCockpitControl_onPaintBegin;
+   o.onPaintBegin       = MO.FEaiCockpitControl_onPaintBegin;
    //..........................................................
    // @method
-   o.construct        = MO.FEaiCockpitControl_construct;
-   o.setup            = MO.FEaiCockpitControl_setup;
+   o.construct          = MO.FEaiCockpitControl_construct;
+   o.setup              = MO.FEaiCockpitControl_setup;
    // @method
-   o.placeInCell      = MO.FEaiCockpitControl_placeInCell;
-   o.processLogic     = MO.FEaiCockpitControl_processLogic;
+   o.placeInCell        = MO.FEaiCockpitControl_placeInCell;
+   o.processLogic       = MO.FEaiCockpitControl_processLogic;
    // @method
-   o.dispose          = MO.FEaiCockpitControl_dispose;
+   o.dispose            = MO.FEaiCockpitControl_dispose;
    return o;
 }
 
@@ -46,7 +47,12 @@ MO.FEaiCockpitControl_onPaintBegin = function FEaiCockpitControl_onPaintBegin(ev
    // 绘制背景
    var backgroundImage = o._backgroundImage;
    if(backgroundImage){
-      graphic.drawRectangleImage(o._backgroundImage, rectangle);
+      var backgroundPadding = o._backgroundPadding;
+      if(backgroundPadding){
+         graphic.drawGridImage(backgroundImage, rectangle.left, rectangle.top, rectangle.width, rectangle.height, backgroundPadding);
+      }else{
+         graphic.drawRectangleImage(backgroundImage, rectangle);
+      }
    }
 }
 
