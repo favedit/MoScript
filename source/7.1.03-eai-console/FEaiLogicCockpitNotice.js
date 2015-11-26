@@ -10,7 +10,7 @@ MO.FEaiLogicCockpitNotice = function FEaiLogicCockpitNotice(o){
    //..........................................................
    // @method
    o.doFetch = MO.FEaiLogicCockpitNotice_doFetch;
-   o.doFetchUserInfo = MO.FEaiLogicCockpitNoticeUser_doFetch;
+   o.doFetchUserInfo = MO.FEaiLogicCockpitNotice_doFetchUserInfo;
    return o;
 }
 
@@ -40,7 +40,7 @@ MO.FEaiLogicCockpitNotice_doFetch = function FEaiLogicCockpitNotice_doFetch(owne
 // @param endDate:String 结束时间
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicCockpitNoticeUser_doFetch = function FEaiLogicCockpitNoticeUser_doFetch(owner, callback) {
+MO.FEaiLogicCockpitNotice_doFetchUserInfo = function FEaiLogicCockpitNotice_doFetchUserInfo(owner, callback) {
    var o = this;
    var parameters = o.prepareParemeters();
    o.sendService('{eai.logic.service}/eai.cockpit.notice.wv?do=userInfo', parameters, owner, callback);
