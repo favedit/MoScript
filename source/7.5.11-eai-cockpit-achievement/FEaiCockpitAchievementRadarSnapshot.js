@@ -182,7 +182,7 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
    var drawText = "趋势:     ";
    var trendCd = o._trendCd;
    if(trendCd == 0){
-      drawText += "@"
+      drawText += "→"
    }else if(trendCd == 1){
       drawText += "↓"
    }else if(trendCd == 2){
@@ -193,11 +193,13 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
    drawY += 50;
    graphic.setFont(font2ndRow.toString());
    graphic.drawText(drawText, drawX, drawY, font2ndRow.color);
-
+   
    var drawText = "改进建议:" + o._advice;
    drawY += 50;
+  // var drawText = "据外\n交\r\n\r\n\r\n\n部\r\n网\r\n站消息，国家\r\n主席习近平将于11月29日至11月30日赴法国出席气候变化巴黎大会开幕活动。针对全球气候变化议题，习近平主席在多个场合曾阐述中方观点和承诺，并积极推动全球应对气候变化的多边进程。为此，学习路上为读者整理习近平对气候变化议题的重要论述。"
+  // drawY = 10;
    graphic.setFont(font3rdRow.toString());
-   graphic.drawText(drawText, drawX, drawY, font3rdRow.color);
+   graphic.drawTextRectangle(drawText, drawX, drawY, 550, 200, 20,font3rdRow.color);
 
 }
 

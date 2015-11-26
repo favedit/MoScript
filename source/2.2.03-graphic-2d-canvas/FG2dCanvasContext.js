@@ -56,6 +56,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.drawCircle           = MO.FG2dCanvasContext_drawCircle;
    o.drawText             = MO.FG2dCanvasContext_drawText;
    o.drawTextVertical     = MO.FG2dCanvasContext_drawTextVertical;
+   o.drawTextRectangle    = MO.FG2dCanvasContext_drawTextRectangle
    o.drawImage            = MO.FG2dCanvasContext_drawImage;
    o.drawRectangleImage   = MO.FG2dCanvasContext_drawRectangleImage;
    o.drawGridImage        = MO.FG2dCanvasContext_drawGridImage;
@@ -385,6 +386,7 @@ MO.FG2dCanvasContext_drawRectangle = function FG2dCanvasContext_drawRectangle(x,
 // @param text:String 文本
 // @param x:Integer 横坐标
 // @param y:Integer 纵坐标
+// @param color:String 颜色
 //==========================================================
 MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, color) {
    var o = this;
@@ -392,7 +394,119 @@ MO.FG2dCanvasContext_drawText = function FG2dCanvasContext_drawText(text, x, y, 
    handle.fillStyle = color;
    handle.fillText(text, x, y);
 }
+//==========================================================
+// <T>将文字绘制在矩形区域。</T>
+//
+// @method
+// @param text:String 文本
+// @param x:Integer 横坐标
+// @param y:Integer 纵坐标
+// @param width:Integer 宽度
+// @param height:Integer 高度
+// @param lineWidth:Integer 行间距
+// @param color:String 颜色
+//==========================================================
+MO.FG2dCanvasContext_drawTextRectangle = function FG2dCanvasContext_drawTextRectangle(text, x, y, width, height, lineWidth, color) {
+   var o = this;
+   var handle = o._handle;
+   handle.fillStyle = color;
+  // handle.fillText(text, x, y);
+   var drawX = x;
+   var drawY = y;
+   var nCharWidth = handle.measureText("A").width;  //窄字符的宽度
+   var wCharWidth = handle.measureText("王").width; //宽字符的宽度
+   var beginDrawTextNumber = 0;
+   var drawTextNumber = 0;
+   var lineLengh = 0; //预测的字符长度
+   if (width == 0 || height == 0 || lineWidth == 0) {
+      return;
+   }
+   for (var i = 0; i < text.length; i++) {
+      var tmp = text.charAt(i);
+      drawTextNumber = i + 1 - beginDrawTextNumber;
+      if(text.charCodeAt(i) > 255 ) {
+         lineLengh += wCharWidth;
+      }else{
+         lineLengh += nCharWidth;
+      }
+      //换行符处理
+      var currentChar = text.charAt(i);
+      var nextChar = text.charAt(i + 1);
+      if (currentChar == '\n' ) {            //linux换行处理
+         var currentWidth = handle.measureText(text.substr(beginDrawTextNumber, drawTextNumber)).width;
+         if (currentWidth < width) {
+            handle.fillText(text.substr(beginDrawTextNumber, drawTextNumber), drawX, drawY);
+            drawY += lineWidth;
+            beginDrawTextNumber = i + 1;
+            lineLengh = 0;
+         }
+      }
+      if ( (currentChar == '\r') && (nextChar == '\n') ){ //windows换行处理
+         var currentWidth = handle.measureText(text.substr(beginDrawTextNumber, drawTextNumber)).width;
+         if (currentWidth < width) {
+            handle.fillText(text.substr(beginDrawTextNumber, drawTextNumber), drawX, drawY);
+            drawY += lineWidth;
+            beginDrawTextNumber = i + 2;
+            i++
+            lineLengh = 0;
+         }
+      }
+      if(lineLengh > width ){   
+         while(true){
+            var flag = false;
+            var currentWidth = handle.measureText(text.substr(beginDrawTextNumber, drawTextNumber)).width;
+            if(currentWidth == width){
+               flag = true;
+            }
+            if(currentWidth > width){  //预判的宽度大于实际宽度的情况 需要减少字符数量
+               if (drawTextNumber == 1) {//一个字符宽度大于给定矩形宽度的情况
+                  flag = true;
+               }else{
+                  drawTextNumber -= 1;
+                  currentWidth = handle.measureText(text.substr(beginDrawTextNumber, drawTextNumber)).width;
+                  if (currentWidth <= width) {
+                     flag = true;
+                  }
+               }
+            }
+            if ( (flag == false) && (currentWidth < width) ) {//预判的宽度大于实际宽度的情况 需要增加字符数量
+               drawTextNumber += 1;
+               currentWidth = handle.measureText(text.substr(beginDrawTextNumber, drawTextNumber)).width;
+               if (currentWidth >= width) {
+                  flag = true;
+               }
+            }
+            if (flag == true) {//绘制字符
+               handle.fillText(text.substr(beginDrawTextNumber, drawTextNumber), drawX, drawY);
+               drawY += lineWidth;
+               i = beginDrawTextNumber + drawTextNumber - 1;
+               
+               lineLengh = 0;
+               //下个字符是换行需要跳过
+               var nextChar = text.charAt(i + 1);
+               var nextNextChar = text.charAt(i + 2);
+               if (nextChar == '\n') {
+                  i += 1;
+               }
+               if ((nextChar == '\r') && (nextNextChar == '\n')) {
+                  i += 2;
+               } 
+               beginDrawTextNumber = i + 1;
+               break;
+            }
+         }
+         
+      }
+      //绘制高度超出给定矩形高度,则停止绘制
+      if ((drawY - y + lineWidth) > height) {
+         return;
+      }
+   }
+   //绘制最后一行
+   handle.fillText(text.substr(beginDrawTextNumber, drawTextNumber), drawX, drawY);
 
+   
+}
 //==========================================================
 // <T>绘制文字。</T>
 //
