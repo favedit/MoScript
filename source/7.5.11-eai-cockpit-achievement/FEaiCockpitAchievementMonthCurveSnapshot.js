@@ -98,6 +98,8 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_onPaintEnd = function FEaiCockpitAch
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
+   graphic.drawImage(o._redemptionImage,left+width-100,top+20,54,60);
+   graphic.draw
 
    //..........................................................
 }
@@ -128,6 +130,7 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_setup = function FEaiCockpitAchievem
    var o = this;
    // 加载图片
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/dayCurve.png');
+   o._redemptionImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/redemption.png');
 
    //..........................................................
 }

@@ -81,7 +81,8 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot_onFetchDayData = function FEaiCock
       // 当月净投总金额     
       var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
       netinvestmentTotal.setValue(parseInt(data.netinvestmentMonth()).toString());
-}
+    
+   }
 
 }
 //==========================================================
@@ -115,11 +116,7 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot_onPaintBegin = function FEaiCockpi
    //..........................................................
    // 绘制背景
   // graphic.drawRectangle(left,top,width,height,'#ffffff',3);
-   graphic.drawImage(o._backgroundImage,left,top,width,height);
-
-
-
-
+   graphic.drawImage(o._backgroundImage,o._page,top,width,height);
 
 }
 
@@ -187,7 +184,31 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot_processLogic = function FEaiCockpi
    if(o._dataTicker.process()){
       var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
       achievement.doFetchTitle(o, o.onFetchDayData);
+      var data = o._data;
+      var logoBar = o._logoBar;
+      if(data.investmentAmount()){
+      //投资总额
+      var investmentTotalCount = logoBar.findComponent('investmentTotalCount');
+      investmentTotalCount.setValue(parseInt(data.investmentAmount()).toString());
+      // 赎回总金额
+      var redemptionTotalCount = logoBar.findComponent('redemptionTotalCount');
+      redemptionTotalCount.setValue(parseInt(data.redemptionAmount()).toString());
+      // 净投总金额 
+      var netinvestmentTotalCount = logoBar.findComponent('netinvestmentTotalCount');
+      netinvestmentTotalCount.setValue(parseInt(data.netinvestmentAmount()).toString());
+     
+      // 当月投资总金额
+      var investmentTotal = logoBar.findComponent('investmentTotal');
+      investmentTotal.setValue(parseInt(data.investmentMonth()).toString());
+      // 当月赎回总金额
+      var redemptionTotal = logoBar.findComponent('redemptionTotal');
+      redemptionTotal.setValue(parseInt(data.redemptionMonth()).toString());
+      // 当月净投总金额     
+      var netinvestmentTotal = logoBar.findComponent('netinvestmentTotal');
+      netinvestmentTotal.setValue(parseInt(data.netinvestmentMonth()).toString());
+      }
    }
+   o.dirty();
 }
 
 //==========================================================

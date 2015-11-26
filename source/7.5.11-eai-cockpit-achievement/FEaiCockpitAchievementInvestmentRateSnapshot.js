@@ -84,6 +84,7 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot_onPaintBegin = function FEaiCock
    // 绘制背景
   // graphic.drawRectangle(left,top,width,height,'#ffffff',3);
    graphic.drawImage(o._backgroundImage,left,top,width,height);
+   graphic.drawImage(o._productImage,left+width-150,top+20,107,178);
 
 }
 
@@ -136,10 +137,11 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot_setup = function FEaiCockpitAchi
    var o = this;
    // 加载图片
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/investmentRate.png');
+   o._productImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/productname.png');
 
    var rateChart = o._rateChart = MO.Class.create(MO.FEaiCockpitMessageAchievementRateChart);
-    rateChart.setLocation(120, 0);
-    rateChart.setSize(480, 240);
+   rateChart.setLocation(120, 0);
+   rateChart.setSize(480, 240);
    o.push(rateChart);
 
    //..........................................................

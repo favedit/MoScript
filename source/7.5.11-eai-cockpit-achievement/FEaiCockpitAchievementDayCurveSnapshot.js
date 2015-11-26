@@ -26,6 +26,7 @@ MO.FEaiCockpitAchievementDayCurveSnapshot = function FEaiCockpitAchievementDayCu
    o._rollDuration         = 5000;
    o._rollTicker           = null;
    o._lineChart            = null;
+   o._redemptionImage      = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -58,7 +59,7 @@ MO.FEaiCockpitAchievementDayCurveSnapshot = function FEaiCockpitAchievementDayCu
    var o = this;
    var content = event.content;
    // 读取数据
-   var daydata = o._DayData
+   var daydata = o._DayData;
    daydata.unserializeSignBuffer(event.sign, event.content, true);
    var ss = daydata;
 }
@@ -80,7 +81,7 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_onPaintBegin = function FEaiCockpitAch
    var height = rectangle.height;
    //..........................................................
    // 绘制背景
- //  graphic.drawRectangle(left,top,width,height,'#ffffff',3);
+   //graphic.drawRectangle(left,top,width,height,'#ffffff',3);
    //graphic.drawImage(o._backgroundTopImage,left,top-100,1920,68); 
    graphic.drawImage(o._backgroundImage,left,top,width,height);
 
@@ -102,7 +103,7 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_onPaintEnd = function FEaiCockpitAchie
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
-
+ graphic.drawImage(o._redemptionImage,left+width-100,top+20,54,60);
    //..........................................................
 }
 
@@ -123,6 +124,7 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_construct = function FEaiCockpitAchiev
    o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
    o._DayData = MO.Class.create(MO.FEaiCockpitAchievementMessageNextDays);
 
+
 }
 
 //==========================================================
@@ -135,6 +137,7 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_setup = function FEaiCockpitAchievemen
    // 加载图片
    //o._backgroundTopImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/investment.png');
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/dayCurve.png');
+   o._redemptionImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/redemption.png');
 
    //..........................................................
 }

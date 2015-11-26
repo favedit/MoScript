@@ -78,7 +78,7 @@ MO.FEaiCockpitAchievementImageSnapshot_onPaintBegin = function FEaiCockpitAchiev
    //..........................................................
    // 绘制背景
   // graphic.drawRectangle(left,top,width,height,'#ffffff',3);\
-   graphic.drawImage(o._backgroundImages,left,top+30,1908,68);
+   graphic.drawImage(o._backgroundImages,left,top+35,1908,68);
 
 }
 

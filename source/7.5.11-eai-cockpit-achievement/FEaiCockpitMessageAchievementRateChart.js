@@ -43,7 +43,7 @@ MO.FEaiCockpitMessageAchievementRateChart_drawLine = function FEaiCockpitMessage
       if(n == 0){
          handle.moveTo(x, y);
       }else{
-         // if(unit[code]!=0)
+          if(unit[code]!=0)
          handle.lineTo(x, y);
       }
    }
@@ -85,51 +85,96 @@ MO.FEaiCockpitMessageAchievementRateChart_onPaintBegin = function FEaiCockpitMes
    var height = rectangle.height;
    var data = o._data ;
    var dataheigt = height/2;
-   graphic.drawRectangle(left, top, width, height, '#ffffff', 3);
+   //graphic.drawRectangle(left, top, width, height, '#ffffff', 3);
    var data = o._data;
    var pointX = left + width/2;
    var pointY = top + height/2;
    if(!data){
       return;
    }
+   var radius = height* 15/48;
+   var handle = graphic._handle;
    var rates = data.Rates();
    var count = rates._count;
    var startDegree = 0;
    var endDegree = 0;
+   var textX =0;
+   var textY =0;
+   var textradius = radius+40;
+   var textDegree = 0;
+   var title = '当月产品总规模以及占比';
+   var titleWidth = graphic.textWidth(title);
+   graphic.setFont('bold 16px Microsoft YaHei');
+   graphic.drawText(title,left+width/2,top+25,'#fee71f');
+
    for (var i = 0; i < count; i++) {
       var item = rates.at(i);
+      var investmentAmount = item.investmentAmount();
+      var amount = data.investmentAmount();
       startDegree = endDegree;
-      endDegree = startDegree+2 * Math.PI * item.investmentAmount()/data.investmentAmount();
-      var radius = height* 15/48;
-      var handle = graphic._handle;
+      endDegree = startDegree+2 * Math.PI * investmentAmount/amount;
+      textDegree = Math.PI * investmentAmount/amount + startDegree;
+      // if (textDegree>Math.PI) {
+      // textX = pointX-textradius*Math.cos(textDegree)+15;
+      // }
+      // else{
+      // textX = pointX+textradius*Math.cos(textDegree)-35;
+      // }
+
+
+      // if(textDegree>Math.PI){
+      // textY = pointY-Math.abs(textradius*Math.sin(textDegree)+25);
+      // }else{
+      // textY = pointY+textradius*Math.sin(textDegree)-5;
+      // }
+      var ssss = textradius*Math.sin(textDegree);
+      if(textDegree<Math.PI/2){
+         textX = pointX+textradius*Math.cos(textDegree);
+         textY = pointY+textradius*Math.sin(textDegree);
+      }else if(textDegree<=Math.PI){
+         textX = pointX-Math.abs(textradius*Math.cos(textDegree));
+         textY = pointY+Math.abs(textradius*Math.sin(textDegree));
+      }else if(textDegree<=Math.PI*1.5){
+         textX = pointX-Math.abs(textradius*Math.cos(textDegree)-20);
+         textY = pointY-Math.abs(textradius*Math.sin(textDegree))+20;
+      }else if(textDegree<Math.PI*2){
+         textX = pointX+Math.abs(textradius*Math.cos(textDegree)-10);
+         textY = pointY-Math.abs(textradius*Math.sin(textDegree)+20);
+      }
+
+      graphic.setFont('bold 12px Microsoft YaHei');
+      var text = Math.round(investmentAmount/amount*100) +'%';
+      graphic.drawText(text,textX,textY,'#ffffff');
       handle.beginPath();
       switch(item.productName()){
          case 'e租年享':
-         handle.fillStyle = '#efaf41';
+         handle.fillStyle = '#eeb041';
          break;
          case 'e租年丰':
-         handle.fillStyle = '#4999ee';
+         handle.fillStyle = '#499aec';
          break;
          case 'e租财富':
-         handle.fillStyle = '#c186e4';
+         handle.fillStyle = '#d796fe';
          break;
          case 'e租富享':
-         handle.fillStyle = '#8feddb';
+         handle.fillStyle = '#91ecdb';
          break;
          case 'e租富盈':
-         handle.fillStyle = '#e97576';
+         handle.fillStyle = '#eb7374';
          break;
          case 'e租稳赢':
-         handle.fillStyle = '#8652e3';
+         handle.fillStyle = '#8551e2';
          break;
          default :
          handle.fillStyle = '#ffffff';
          break;
       }
+      graphic.drawText(text,textX,textY,handle.fillStyle);
       handle.moveTo(pointX,pointY);
       handle.arc(pointX,pointY,radius,startDegree,endDegree);
       handle.fill();
    }
+
   // var count = 
    // if(!data){
    //    return;
