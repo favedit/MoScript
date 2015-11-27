@@ -151,7 +151,9 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_setup = function FEaiCockpitAchievemen
    chart.axisX().createDegrees(0, 24);
    chart.axisY().setLineWidth(1);
    chart.axisY().setLineColor('#758191');
-
+   chart.axisX().setOptionShowAxis(false);
+   chart.axisX().setOptionShowFirstLine(true);
+   chart.axisX().findDegreeByValue(0).setLineColor('#889395');
    chart.axisX().findDegreeByValue(0).setLabel("00:00");
    chart.axisX().findDegreeByValue(4).setLabel("04:00");
    chart.axisX().findDegreeByValue(8).setLabel("08:00");
@@ -159,7 +161,11 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_setup = function FEaiCockpitAchievemen
    chart.axisX().findDegreeByValue(16).setLabel("16:00");
    chart.axisX().findDegreeByValue(20).setLabel("20:00");
    chart.axisX().findDegreeByValue(24).setLabel("24:00");
+   chart.axisX().setLabel("(h)");
+   chart.axisY().setLabel("(万)");
    chart.axisY().setDivisor(10000);
+   chart.axisY().setDegreeLabelGap(6);
+   chart.axisX().setDegreeLabelGap(6);
    o.push(chart);
 
    //..........................................................

@@ -152,7 +152,10 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_setup = function FEaiCockpitAchievem
    chart.axisX().createDegrees(1, 31);
    chart.axisY().setLineWidth(1);
    chart.axisY().setLineColor('#758191');
+   chart.axisX().setOptionShowAxis(false);
+   chart.axisX().setOptionShowFirstLine(true);
    chart.axisX().findDegreeByValue(1).setLabel("1");
+   chart.axisX().findDegreeByValue(1).setLineColor("#758191");
    chart.axisX().findDegreeByValue(6).setLabel("6");
    chart.axisX().findDegreeByValue(11).setLabel("11");
    chart.axisX().findDegreeByValue(16).setLabel("16");
@@ -160,6 +163,11 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_setup = function FEaiCockpitAchievem
    chart.axisX().findDegreeByValue(26).setLabel("26");
    chart.axisX().findDegreeByValue(31).setLabel("31");
    chart.axisY().setDivisor(10000);
+   chart.axisX().setLabel("(天)");
+   chart.axisY().setLabel("(万)");
+   chart.axisY().setDegreeLabelGap(6);
+   chart.axisX().setDegreeLabelGap(6);
+
    o.push(chart);
 
    //..........................................................
