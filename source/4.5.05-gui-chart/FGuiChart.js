@@ -11,6 +11,8 @@ MO.FGuiChart = function FGuiChart(o) {
    // @attribute
    o._painter        = MO.Class.register(o, new MO.AGetter('_painter'));
    o._paintRectangle = MO.Class.register(o, new MO.AGetter('_paintRectangle'));
+   o._axisX          = MO.Class.register(o, new MO.AGetter('_axisX'));
+   o._axisY          = MO.Class.register(o, new MO.AGetter('_axisY'));
    // @attribute
    o._paintContext   = null;
    //..........................................................
@@ -34,6 +36,8 @@ MO.FGuiChart = function FGuiChart(o) {
 MO.FGuiChart_onPaintBegin = function FGuiChart_onPaintBegin(event) {
    var o = this;
    event.dataset = o._dataset;
+   event.axisX = o._axisX;
+   event.axisY = o._axisY;
    event.paintRectangle = o._paintRectangle;
    o._painter.draw(event);
 }
@@ -50,6 +54,8 @@ MO.FGuiChart_construct = function FGuiChart_construct() {
    // 设置变量
    o._paintContext = new MO.SGuiGridPaintContext();
    o._paintRectangle = new MO.SRectangle();
+   o._axisX = MO.Class.create(MO.FUiChartAxis);
+   o._axisY = MO.Class.create(MO.FUiChartAxis);
 }
 
 //==========================================================

@@ -12,6 +12,14 @@ MO.FUiChartAxisDegree = function FUiChartAxisDegree(o){
    o._axis     = MO.Class.register(o, new MO.AGetSet('_axis'));
    // @attribute
    o._value    = MO.Class.register(o, new MO.AGetSet('_value'));
+   o._label    = MO.Class.register(o, new MO.AGetSet('_label'), "");
+   // @attribute
+   o._optionShowAxis          = MO.Class.register(o, new MO.AGetSet('_optionShowAxis'), true);
+   o._optionShowLabel         = MO.Class.register(o, new MO.AGetSet('_optionShowLabel'), true);
+   // @attribute
+   o._font                    = MO.Class.register(o, new MO.AGetter('_font'));
+   o._lineWidth               = MO.Class.register(o, new MO.AGetSet('_lineWidth'));
+   o._lineColor               = MO.Class.register(o, new MO.AGetSet('_lineColor'));
    //..........................................................
    // @method
    o.construct = MO.FUiChartAxisDegree_construct;

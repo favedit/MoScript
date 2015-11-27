@@ -53,43 +53,56 @@ MO.FGuiChartLinePainter_drawAxis = function FGuiChartLinePainter_drawAxis(contex
    var pTop = top + paintRectangle.top;
    var pWidth = paintRectangle.width;
    var pHeight = paintRectangle.height;
-   var maxValue = dataset.standardMax();
-   var minValue = dataset.standardMin();
-   var corNumber = dataset.standardCorCount();
-   var xDivide = dataset.xDivide();
-   var xLabels = dataset.xLabels();
-   var xLableCount = xLabels.length;
-   graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+   //graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
    //绘制坐标轴
-   var stepHeight = pHeight / corNumber;
-   var stepYValue = ((maxValue - minValue) / corNumber).toFixed();
-   var stepWidth = pWidth / (xLableCount - 1);
-   //绘制Y轴刻度线
-   if(dataset.optionDrawAxisY()) {
-      for( var i = 0; i <= corNumber; ++i) {
-         var y = pTop + stepHeight * i;
-         var value = maxValue - stepYValue * i;
+   var xAxis = context.axisX;
+   var yAxis = context.axisY;
+   var xDegrees = xAxis.degrees();
+   var yDegrees = yAxis.degrees();
+   var yCorCount = yAxis.degrees().count();
+   var xCorCount = xAxis.degrees().count();
+   if(yCorCount == 0 || xCorCount == 0) return;
+   var stepHeight = pHeight / (yCorCount - 1);
+   var stepWidth = pWidth / (xCorCount - 1);
+   var yLableGap = 10;
+   var yFont = yAxis.font();
+   var xFont = xAxis.font();
+   //绘制Y轴
+   for( var i = 0; i < yCorCount; ++i) {
+      var y = pTop + pHeight - stepHeight * i;
+      var degree = yDegrees.get(i);
+      var label = degree.label();
+      var lineWidth = degree.lineWidth() == null ? yAxis.lineWidth() : degree.lineWidth();
+      var lineColor = degree.lineColor() == null ? yAxis.lineColor() : degree.lineColor();
+      //绘制刻度线
+      if(yAxis.optionShowAxis()) {
          graphic.beginPath();
          graphic.moveTo(pLeft, y);
          graphic.lineTo(pLeft + pWidth, y);
-         if (value == 0) {
-            graphic.drawShape(2, '#edfc2d');
-         }else {
-            graphic.drawShape(1, '#697293');
-         }
+         graphic.drawShape(lineWidth, lineColor);
+      }
+      //绘制刻度
+      if(yAxis.optionShowLabel()) {
+         graphic.setFont(yFont.toString());
+         var textWidth = graphic.textWidth(label);
+         graphic.drawText(label, pLeft - yLableGap - textWidth, y, yFont.color);
       }
    }
-   //绘制Y轴刻度
-   if(dataset.optionDrawAxisLabelY()) {
-   
-   }
-   //绘制X轴刻度线
-   if(dataset.optionDrawAxisY) {
+   // 绘制X轴
+   for( var i = 0; i < xCorCount; ++i) {
+      var x = pLeft + stepWidth * i;
+      var degree = xDegrees.get(i);
+      var label = degree.label();
+      //绘制刻度线
+      if(xAxis.optionShowAxis()) {
       
-   }
-   //绘制X轴刻度
-   if(dataset.optionDrawAxisLabelX()) {
-   
+      }
+      //绘制刻度
+      if(xAxis.optionShowLabel()) {
+         var x = pLeft + stepWidth * i;
+         var textWidth = graphic.textWidth(label);
+         graphic.drawText(label, x - textWidth / 2, pTop + pHeight + xFont.size, xFont.color);
+      }
    }
 }
 
@@ -113,10 +126,15 @@ MO.FGuiChartLinePainter_drawLine = function FGuiChartLinePainter_drawLine(contex
    var pTop = top + paintRectangle.top;
    var pWidth = paintRectangle.width;
    var pHeight = paintRectangle.height;
-   var maxValue = dataset.standardMax();
-   var minValue = dataset.standardMin();
-   var corNumber = dataset.standardCorCount();
-   var xDivide = dataset.xDivide();
+   var yAxis = context.axisY;
+   var xAxis = context.axisX;
+   var yDegrees = yAxis.degrees();
+   var xDegrees = xAxis.degrees();
+   var yCount = yDegrees.count();
+   var xCount = xDegrees.count();
+   if(xCount == 0 || yCount == 0) return;
+   var maxValue = yDegrees.get(yCount - 1).value();
+   var minValue = yDegrees.get(0).value();
 
    var lineColor = series.lineColor();
    var lineWidth = series.lineWidth();
@@ -125,7 +143,7 @@ MO.FGuiChartLinePainter_drawLine = function FGuiChartLinePainter_drawLine(contex
    // 计算步宽
    var values = series.values();
    var count = values.count();
-   var stepWidth = pWidth / (xDivide - 1);
+   var stepWidth = pWidth / (xCount - 1);
    var stepHeight = pHeight / (maxValue - minValue);
    for(var n = 0; n < count; n++){
       var value = values.at(n);
@@ -151,7 +169,6 @@ MO.FGuiChartLinePainter_draw = function FGuiChartLinePainter_draw(context){
    var o = this;
    o.__base.FGuiChartPainter.draw.call(o);
    var dataset = context.dataset;
-   if(dataset.standarded == false) return;
    // 绘制坐标轴
    o.drawAxis(context);
    // 绘制数据线

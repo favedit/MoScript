@@ -10,20 +10,6 @@ MO.FUiChartDataset = function FUiChartDataset(o){
    //..........................................................
    // @attribute
    o._serieses                = MO.Class.register(o, new MO.AGetter('_serieses'));
-   // @attribute
-   o._xDivide                 = MO.Class.register(o, new MO.AGetSet('_xDivide'), 0);
-   o._xLabels                 = MO.Class.register(o, new MO.AGetSet('_xLabels'));
-   // @attribute
-   o._optionDrawAxisX         = MO.Class.register(o, new MO.AGetSet('_optionDrawAxisX'), true);
-   o._optionDrawAxisLabelX    = MO.Class.register(o, new MO.AGetSet('_optionDrawAxisLabelX'), true);
-   o._optionDrawAxisY         = MO.Class.register(o, new MO.AGetSet('_optionDrawAxisY'), true);
-   o._optionDrawAxisLabelY    = MO.Class.register(o, new MO.AGetSet('_optionDrawAxisLabelY'), true);
-   // @attribute
-   o._corCount                = MO.Class.register(o, new MO.AGetSet('_corCount'), 8);
-   o._standardMax             = MO.Class.register(o, new MO.AGetter('_standardMax'));
-   o._standardMin             = MO.Class.register(o, new MO.AGetter('_standardMin'));
-   o._standardCorCount        = MO.Class.register(o, new MO.AGetter('_standardCorCount'));
-   o._standarded              = MO.Class.register(o, new MO.AGetter('_standarded'), false);
    //..........................................................
    // @method
    o.construct                = MO.FUiChartDataset_construct;
@@ -33,7 +19,6 @@ MO.FUiChartDataset = function FUiChartDataset(o){
    o.maxValue                 = MO.FUiChartDataset_maxValue;
    o.minValue                 = MO.FUiChartDataset_minValue;
    o.standardCor              = MO.FUiChartDataset_standardCor;
-   o.update                   = MO.FUiChartDataset_update;
    // @method
    o.dispose                  = MO.FUiChartDataset_dispose;
    return o;
@@ -111,12 +96,12 @@ MO.FUiChartDataset_minValue = function FUiChartDataset_minValue() {
 //
 // @method
 //==========================================================
-MO.FUiChartDataset_standardCor = function FUiChartDataset_standardCor() {
+MO.FUiChartDataset_standardCor = function FUiChartDataset_standardCor(corCount) {
    var o = this;
    var result = new MO.TArray();
    var corMax = o.maxValue();
    var corMin = o.minValue();
-   var corNumber = o._corCount;
+   var corNumber = corCount;
    var corStep = (corMax - corMin) / corNumber;
    var temp, tmpStep, tmpNumber, extraNumber;
    if(Math.pow(10, parseInt(Math.log(corStep) / Math.log(10))) == corStep) {
@@ -160,31 +145,7 @@ MO.FUiChartDataset_standardCor = function FUiChartDataset_standardCor() {
       corMin = corMin - tmpStep * parseInt(extraNumber / 2);
    }
    corNumber = tmpNumber;
-   o._standardMax = corMax;
-   o._standardMin = corMin;
-   o._standardCorCount = corNumber;
-   if(o._standarded == false) o._standarded = true;
-}
-
-//==========================================================
-// <T>更新处理。</T>
-//
-// @method
-//==========================================================
-MO.FUiChartDataset_update = function FUiChartDataset_update() { 
-   var o = this;
-   o.standardCor();
-
-   // 设置X等分
-   var serieses = o._serieses;
-   var count = serieses.count();
-   var maxCount = Number.NEGATIVE_INFINITY;
-   for( var i = 0; i < count; ++i) {
-      var series = serieses.get(i);
-      var scount = series.values().count();
-      maxCount = maxCount < scount ? scount : maxCount;
-   }
-   o._xDivide = o._xDivide > maxCount ? o._xDivide : maxCount;
+   return [corMax, corMin, corNumber];
 }
 
 //==========================================================
