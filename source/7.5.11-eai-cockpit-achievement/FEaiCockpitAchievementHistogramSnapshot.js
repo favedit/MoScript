@@ -55,7 +55,6 @@ MO.FEaiCockpitAchievementHistogramSnapshot = function FEaiCockpitAchievementHist
 //==========================================================
 MO.FEaiCockpitAchievementHistogramSnapshot_setData = function FEaiCockpitAchievementHistogramSnapshot_setData(event) {
    var o = this;
-   var content = event.content;
 }
 
 //==========================================================
@@ -77,7 +76,6 @@ MO.FEaiCockpitAchievementHistogramSnapshot_setData = function FEaiCockpitAchieve
        //  var units = item.units();
 
       }
-      o.setData();
    }
 }
 

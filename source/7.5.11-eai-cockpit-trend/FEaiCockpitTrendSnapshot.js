@@ -91,7 +91,7 @@ MO.FEaiCockpitTrendSnapshot_construct = function FEaiCockpitTrendSnapshot_constr
    o._dateTextFont = new MO.SUiFont();
    o._dateTextFont.size = 4;
    o._dateTextFont.bold = false;
-   o._dateTextFont.color = '#ffffff'
+   o._dateTextFont.color = '#ffffff';
 }
 
 //==========================================================
@@ -119,7 +119,7 @@ MO.FEaiCockpitTrendSnapshot_setup = function FEaiCockpitTrendSnapshot_setup(){
    chart.axisY().setDivisor(10000);
    o.push(chart);
 
-   var lineColors = ['#4b5e6f', '#80a861', '#947b91', '#51c0db', '#68f34e', '#9b1933'];
+   var lineColors = ['#4b5e6f', '#80a861', '#2069a0', '#51c0db', '#68f34e', '#9b1933'];
    var dataset = o._dataset = MO.Class.create(MO.FUiChartDataset);
    for ( var i = 0; i < 6; ++i) {
       var series = MO.Class.create(MO.FUiChartDataSeries);

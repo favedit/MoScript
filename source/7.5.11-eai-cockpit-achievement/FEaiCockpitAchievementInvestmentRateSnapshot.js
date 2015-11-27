@@ -104,11 +104,6 @@ MO.FEaiCockpitAchievementInvestmentRateSnapshot_onPaintEnd = function FEaiCockpi
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
-
-
-
-
-   //..........................................................
 }
 
 //==========================================================

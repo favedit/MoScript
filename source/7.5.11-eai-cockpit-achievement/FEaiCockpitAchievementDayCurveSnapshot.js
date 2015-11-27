@@ -27,6 +27,10 @@ MO.FEaiCockpitAchievementDayCurveSnapshot = function FEaiCockpitAchievementDayCu
    o._rollTicker           = null;
    o._lineChart            = null;
    o._redemptionImage      = null;
+   //控件
+   o._chart                = null;
+   o._dataset              = null;
+   o.setData               = MO.FEaiCockpitAchievementDayCurveSnapshot_setData;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -59,9 +63,9 @@ MO.FEaiCockpitAchievementDayCurveSnapshot = function FEaiCockpitAchievementDayCu
    var o = this;
    var content = event.content;
    // 读取数据
-   var daydata = o._DayData;
+   var daydata = o._dayData;
    daydata.unserializeSignBuffer(event.sign, event.content, true);
-   var ss = daydata;
+   o.setData(daydata);
 }
 
 //==========================================================
@@ -81,9 +85,8 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_onPaintBegin = function FEaiCockpitAch
    var height = rectangle.height;
    //..........................................................
    // 绘制背景
-   //graphic.drawRectangle(left,top,width,height,'#ffffff',3);
-   //graphic.drawImage(o._backgroundTopImage,left,top-100,1920,68); 
    graphic.drawImage(o._backgroundImage,left,top,width,height);
+
 
 }
 
@@ -103,8 +106,11 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_onPaintEnd = function FEaiCockpitAchie
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
- graphic.drawImage(o._redemptionImage,left+width-100,top+20,54,60);
-   //..........................................................
+   graphic.drawImage(o._redemptionImage,left+width-100,top+20,54,60);
+   var title = '当日业绩趋势（H）';
+   var titleWidth = graphic.textWidth(title);
+   graphic.setFont('bold 16px Microsoft YaHei');
+   graphic.drawText(title,left+width/2-titleWidth/2,top+25,'#fee71f');
 }
 
 //==========================================================
@@ -121,9 +127,7 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_construct = function FEaiCockpitAchiev
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 10);
    o._rollTicker = new MO.TTicker(o._rollDuration);
-   o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
-   o._DayData = MO.Class.create(MO.FEaiCockpitAchievementMessageNextDays);
-
+   o._dayData = MO.Class.create(MO.FEaiCockpitAchievementMessageNextDays);
 
 }
 
@@ -135,11 +139,75 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_construct = function FEaiCockpitAchiev
 MO.FEaiCockpitAchievementDayCurveSnapshot_setup = function FEaiCockpitAchievementDayCurveSnapshot_setup(){
    var o = this;
    // 加载图片
-   //o._backgroundTopImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/investment.png');
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/dayCurve.png');
    o._redemptionImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/redemption.png');
 
+   //画日曲线
+   var chart = o._chart = MO.Class.create(MO.FGuiChart);
+   chart.selectPainter(MO.FGuiChartLinePainter);
+   chart.setLocation(60,11);
+   chart.setSize(720,150);
+   chart.paintRectangle().set(50,30,580,150);
+   chart.axisX().createDegrees(0, 24);
+   chart.axisY().setLineWidth(1);
+   chart.axisY().setLineColor('#758191');
+
+   chart.axisX().findDegreeByValue(0).setLabel("00:00");
+   chart.axisX().findDegreeByValue(4).setLabel("04:00");
+   chart.axisX().findDegreeByValue(8).setLabel("08:00");
+   chart.axisX().findDegreeByValue(12).setLabel("12:00");
+   chart.axisX().findDegreeByValue(16).setLabel("16:00");
+   chart.axisX().findDegreeByValue(20).setLabel("20:00");
+   chart.axisX().findDegreeByValue(24).setLabel("24:00");
+   chart.axisY().setDivisor(10000);
+   o.push(chart);
+
    //..........................................................
+   var lineColors = ['#4b5e6f', '#80a861', '#2069a0', '#51c0db', '#68f34e', '#9b1933'];
+   var dataset = o._dataset = MO.Class.create(MO.FUiChartDataset);
+   for (var i=0;i<6;i++){
+      var series = MO.Class.create(MO.FUiChartDataSeries);
+      series.setLineWidth(3);
+      series.setLineColor(lineColors[i]);
+      dataset.push(series);
+   }
+    chart.setDataset(dataset);
+}
+//==========================================================
+// <T>增加一个数据实体。</T>
+//
+// @method
+// @param unit:
+//==========================================================
+MO.FEaiCockpitAchievementDayCurveSnapshot_setData = function FEaiCockpitAchievementDayCurveSnapshot_setData(data) {
+   var o = this;
+   var data = o._dayData;
+   var days = data.days();
+   var dataset = o._dataset;
+   var serieses = dataset.serieses();
+   var dayCount = days.count();
+   // 清空老数据
+   for(var i = 0; i < 6; ++i) {
+      var series = serieses.get(i);
+      series.values().clear();
+   }
+   for(var i = 0; i < dayCount; ++i) {
+      var day = days.get(i);
+      if(day.priorInvestmentAmount() != 0) serieses.get(0).values().push(day.priorInvestmentAmount());
+      if(day.priorRedemptionAmount() != 0) serieses.get(1).values().push(day.priorRedemptionAmount());
+      if(day.priorNetinvestmentAmount() != 0) serieses.get(2).values().push(day.priorNetinvestmentAmount());
+      if(day.investmentAmount() != 0) serieses.get(3).values().push(day.investmentAmount());
+      if(day.redemptionAmount() != 0) serieses.get(4).values().push(day.redemptionAmount());
+      if(day.netinvestmentAmount() != 0) serieses.get(5).values().push(day.netinvestmentAmount());
+   }
+   var yAxis = o._chart.axisY();
+   var arrDegree =  yAxis.degrees();
+   yAxis.createDegreesStandard(dataset.standardCor(8));
+   yAxis.formatLabels();
+   var zero = yAxis.findDegreeByValue(0);
+   zero.setLineWidth(3);
+   zero.setLineColor("#ffe721")
+   o.dirty();
 }
 
 //==========================================================
