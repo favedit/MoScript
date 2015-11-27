@@ -8,10 +8,11 @@
 MO.FEaiCockpitStatusSnapshot = function FEaiCockpitStatusSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   o._comingSoon      = true;
+   //..........................................................
    // @attribute
    o._name            = 'cockpit.status.snapshot';
    o._backgroundUri   = '{eai.resource}/cockpit/status/ground.png';
-   o._comingSoonImage = null;
    //..........................................................
    // @event
    o.onStatusFetch    = MO.FEaiCockpitStatusSnapshot_onStatusFetch;
@@ -54,25 +55,6 @@ MO.FEaiCockpitStatusSnapshot_onPaintBegin = function FEaiCockpitStatusSnapshot_o
 }
 
 //==========================================================
-// <T>后绘制处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitStatusSnapshot_onPaintEnd = function FEaiCockpitStatusSnapshot_onPaintEnd(event) {
-   var o = this;
-   o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   //..........................................................
-   graphic.drawImage(o._comingSoonImage, 11 * 120 - 247 + 36, 2 * 120 - 217 + 56, 247, 217);
-}
-
-//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -96,8 +78,6 @@ MO.FEaiCockpitStatusSnapshot_construct = function FEaiCockpitStatusSnapshot_cons
 MO.FEaiCockpitStatusSnapshot_setup = function FEaiCockpitStatusSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
-   // 加载图片
-   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
    // 创建仪表盘
    var dashboardY = 30;
    var dashboard = o._turnoverDashboard = MO.Class.create(MO.FEaiCockpitStatusSnapshotDashboard);

@@ -8,6 +8,8 @@
 MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   o._comingSoon           = true;
+   //..........................................................
    // @attribute
    o._name                 = 'cockpit.forecast.snapshot';
    o._backgroundUri        = '{eai.resource}/cockpit/forecast/ground.png';
@@ -48,9 +50,6 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o.showChart             = MO.FEaiCockpitForecastSnapshot_showChart;
    // @method
    o.dispose               = MO.FEaiCockpitForecastSnapshot_dispose;
-   //..........................................................
-   o._comingSoonImage      = null;
-   //..........................................................
    return o;
 }
 
@@ -101,26 +100,6 @@ MO.FEaiCockpitForecastSnapshot_onPaintBegin = function FEaiCockpitForecastSnapsh
 }
 
 //==========================================================
-// <T>后绘制处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitForecastSnapshot_onPaintEnd = function FEaiCockpitForecastSnapshot_onPaintEnd(event) {
-   var o = this;
-   o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   //..........................................................
-   graphic.drawImage(o._comingSoonImage, 8 * 120 - 247 + 36, 3 * 120 - 217 + 56, 247, 217);
-   //..........................................................
-}
-
-//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -147,7 +126,6 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
    o.__base.FEaiCockpitControl.setup.call(o);
    // 加载图片
    o._gridImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid.png');
-   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
    // 创建控件
    var listBox = o._listBox = MO.Class.create(MO.FGuiListBox);
    listBox.setDisplayCount(11);

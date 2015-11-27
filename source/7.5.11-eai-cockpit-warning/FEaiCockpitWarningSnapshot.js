@@ -8,6 +8,8 @@
 MO.FEaiCockpitWarningSnapshot = function FEaiCockpitWarningSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   o._comingSoon           = true;
+   //..........................................................
    // @attribute
    o._name                 = 'cockpit.warning.snapshot';
    o._backgroundUri        = '{eai.resource}/cockpit/warning/ground.png';
@@ -38,9 +40,6 @@ MO.FEaiCockpitWarningSnapshot = function FEaiCockpitWarningSnapshot(o) {
    o.nextPosition          = MO.FEaiCockpitWarningSnapshot_nextPosition;
    // @method
    o.dispose               = MO.FEaiCockpitWarningSnapshot_dispose;
-   //..........................................................
-   o._comingSoonImage = null;
-   //..........................................................
    return o;
 }
 
@@ -91,26 +90,6 @@ MO.FEaiCockpitWarningSnapshot_setData = function FEaiCockpitWarningSnapshot_setD
 MO.FEaiCockpitWarningSnapshot_onPaintBegin = function FEaiCockpitWarningSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
-}
-
-//==========================================================
-// <T>后绘制处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitWarningSnapshot_onPaintEnd = function FEaiCockpitWarningSnapshot_onPaintEnd(event) {
-   var o = this;
-   o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   //..........................................................
-   //graphic.drawImage(o._comingSoonImage, 5 * 120 - 247 + 36, 2 * 120 - 217 + 56, 247, 217);
-   //..........................................................
 }
 
 //==========================================================
@@ -168,9 +147,6 @@ MO.FEaiCockpitWarningSnapshot_setup = function FEaiCockpitWarningSnapshot_setup(
    grid.pushColumn(column);
 
    o.push(grid);
-   //..........................................................
-   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
-   //..........................................................
 }
 
 //==========================================================

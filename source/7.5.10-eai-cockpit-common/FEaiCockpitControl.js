@@ -17,9 +17,12 @@ MO.FEaiCockpitControl = function FEaiCockpitControl(o) {
    o._backgroundUri     = MO.Class.register(o, new MO.AGetter('_backgroundUri'));
    o._backgroundPadding = null;
    o._backgroundImage   = null;
+   o._comingSoonImage   = null;
+   o._comingSoon        = false;
    //..........................................................
    // @event
-   o.onPaintBegin       = MO.FEaiCockpitControl_onPaintBegin;
+   o.onPaintBegin       = MO.FEaiCockpitControl_onPaintBegin
+   o.onPaintEnd         = MO.FEaiCockpitControl_onPaintEnd;
    //..........................................................
    // @method
    o.construct          = MO.FEaiCockpitControl_construct;
@@ -57,6 +60,25 @@ MO.FEaiCockpitControl_onPaintBegin = function FEaiCockpitControl_onPaintBegin(ev
 }
 
 //==========================================================
+// <T>后绘制处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitControl_onPaintEnd = function FEaiCockpitControl_onPaintEnd(event) {
+   var o = this;
+   o.__base.FGuiControl.onPaintEnd.call(o, event);
+   // 获得变量
+   var graphic = event.graphic;
+   var rectangle = event.rectangle;
+   if (o._comingSoon) {
+      var comingSoonImage = o._comingSoonImage;
+      if (comingSoonImage) {
+         graphic.drawImage(o._comingSoonImage, rectangle.width - 247 + 36, rectangle.height - 217 + 56, 247, 217);
+      }
+   }
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -81,6 +103,7 @@ MO.FEaiCockpitControl_setup = function FEaiCockpitControl_setup(){
    if(backgroundUri){
       o._backgroundImage = o.loadResourceImage(backgroundUri);
    }
+   o._comingSoonImage = o.loadResourceImage('{eai.resource}/cockpit/coming_soon.png');
 }
 
 //==========================================================
@@ -111,6 +134,7 @@ MO.FEaiCockpitControl_processLogic = function FEaiCockpitControl_processLogic(){
 MO.FEaiCockpitControl_dispose = function FEaiCockpitControl_dispose() {
    var o = this;
    o._backgroundImage = MO.Lang.Object.dispose(o._backgroundImage);
+   o._comingSoonImage = MO.Lang.Object.dispose(o._comingSoonImage);
    o._cellLocation = MO.Lang.Object.dispose(o._cellLocation);
    o._cellSize = MO.Lang.Object.dispose(o._cellSize);
    // 父处理
