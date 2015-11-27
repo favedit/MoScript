@@ -140,12 +140,16 @@ MO.FGuiChartLinePainter_drawLine = function FGuiChartLinePainter_drawLine(contex
    var lineWidth = series.lineWidth();
    //graphic.drawRectangle(pLeft, pTop, pWidth, pHeight);
    graphic.beginPath();
+   graphic.setLineJoin("round");
    // 计算步宽
    var values = series.values();
+   var optionShowDot = series.optionShowDot();
+   var dotSize = series.dotSize();
+   var dotColor = series.dotColor();
    var count = values.count();
    var stepWidth = pWidth / (xCount - 1);
    var stepHeight = pHeight / (maxValue - minValue);
-   for(var n = 0; n < count; n++){
+   for(var n = 0; n < count; ++n){
       var value = values.at(n);
       var x = pLeft + stepWidth * n;
       var y = pTop + (maxValue - value) * stepHeight;
@@ -156,7 +160,15 @@ MO.FGuiChartLinePainter_drawLine = function FGuiChartLinePainter_drawLine(contex
       }
    }
    graphic.drawShape(lineWidth, lineColor);
-   graphic.endPath();
+   //画点
+   if(optionShowDot) {
+      for( var n = 0; n < count; ++n) {
+         var value = values.at(n);
+         var x = pLeft + stepWidth * n;
+         var y = pTop + (maxValue - value) * stepHeight;
+         graphic.drawCircle(x, y, dotSize, dotColor, dotColor);
+      }
+   }
 }
 
 //==========================================================

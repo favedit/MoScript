@@ -9,17 +9,21 @@ MO.FUiChartDataSeries = function FUiChartDataSeries(o){
    o = MO.Class.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
-   o._dataset     = MO.Class.register(o, new MO.AGetSet('_dataset'));
+   o._dataset        = MO.Class.register(o, new MO.AGetSet('_dataset'));
    // @attribute
-   o._values      = MO.Class.register(o, new MO.AGetSet('_values'));
+   o._values         = MO.Class.register(o, new MO.AGetSet('_values'));
    // @attribute
-   o._lineColor   = MO.Class.register(o, new MO.AGetSet('_lineColor'), '#FFFFFF');
-   o._lineWidth   = MO.Class.register(o, new MO.AGetSet('_lineWidth'), 1);
+   o._lineColor      = MO.Class.register(o, new MO.AGetSet('_lineColor'), '#FFFFFF');
+   o._lineWidth      = MO.Class.register(o, new MO.AGetSet('_lineWidth'), 1);
+   // @attribute
+   o._dotSize        = MO.Class.register(o, new MO.AGetSet('_dotSize'), 1);
+   o._dotColor       = MO.Class.register(o, new MO.AGetSet('_dotColor'), '#FFFFFF');
+   o._optionShowDot  = MO.Class.register(o, new MO.AGetSet('_optionShowDot'), false);
    //..........................................................
    // @method
-   o.construct    = MO.FUiChartDataSeries_construct;
+   o.construct       = MO.FUiChartDataSeries_construct;
    // @method
-   o.dispose      = MO.FUiChartDataSeries_dispose;
+   o.dispose         = MO.FUiChartDataSeries_dispose;
    return o;
 }
 

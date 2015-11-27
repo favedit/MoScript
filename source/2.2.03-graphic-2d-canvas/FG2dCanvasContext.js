@@ -30,6 +30,7 @@ MO.FG2dCanvasContext = function FG2dCanvasContext(o) {
    o.setAlpha             = MO.FG2dCanvasContext_setAlpha;
    o.setFont              = MO.FG2dCanvasContext_setFont;
    o.setShadow            = MO.FG2dCanvasContext_setShadow;
+   o.setLineJoin          = MO.FG2dCanvasContext_setLineJoin;
    // @method
    o.store                = MO.FG2dCanvasContext_store;
    o.restore              = MO.FG2dCanvasContext_restore;
@@ -782,6 +783,18 @@ MO.FG2dCanvasContext_fillRectangle = function FG2dCanvasContext_fillRectangle(x,
    handle.beginPath();
    handle.fillRect(x, y, width, height);
    handle.closePath();
+}
+
+//==========================================================
+// <T>设置折线连接点。</T>
+//
+// @method
+// @param style:连接类型（"bevel", "round", "miter"）；
+//==========================================================
+MO.FG2dCanvasContext_setLineJoin = function FG2dCanvasContext_setLineJoin(style) {
+   var o = this;
+   var handle = o._handle;
+   handle.lineJoin = style;
 }
 
 //==========================================================

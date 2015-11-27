@@ -108,7 +108,7 @@ MO.FEaiCockpitTrendSnapshot_setup = function FEaiCockpitTrendSnapshot_setup(){
    chart.setLocation(60, 11);
    chart.setSize(520, 218);
    chart.paintRectangle().set(68, 24, 424, 166);
-   chart.axisX().createDegrees(31);
+   chart.axisX().createDegrees(1, 31);
    chart.axisX().findDegreeByValue(1).setLabel("1");
    chart.axisX().findDegreeByValue(6).setLabel("6");
    chart.axisX().findDegreeByValue(11).setLabel("11");

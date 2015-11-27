@@ -60,11 +60,11 @@ MO.FUiChartAxis_pushDegree = function FUiChartAxis_pushDegree(degree) {
 //
 // @method
 //==========================================================
-MO.FUiChartAxis_createDegrees = function FUiChartAxis_createDegrees(count) { 
+MO.FUiChartAxis_createDegrees = function FUiChartAxis_createDegrees(start, end) { 
    var o = this;
-   for(var i = 0; i < count; ++i) {
+   for(var i = start; i <= end; ++i) {
       var degree = MO.Class.create(MO.FUiChartAxisDegree);
-      degree.setValue(i + 1);
+      degree.setValue(i);
       o._degrees.push(degree);
    }
 }
