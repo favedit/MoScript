@@ -13,10 +13,15 @@ MO.FUiChartAxis = function FUiChartAxis(o){
    // @attribute
    o._optionShowAxis          = MO.Class.register(o, new MO.AGetSet('_optionShowAxis'), true);
    o._optionShowLabel         = MO.Class.register(o, new MO.AGetSet('_optionShowLabel'), true);
+   o._optionShowFirstLine     = MO.Class.register(o, new MO.AGetSet('_optionShowFirstLine'), false);
    o._font                    = MO.Class.register(o, new MO.AGetter('_font'));
    o._lineWidth               = MO.Class.register(o, new MO.AGetSet('_lineWidth'), 1);;
    o._lineColor               = MO.Class.register(o, new MO.AGetSet('_lineColor'), '#FFFFFF');
    o._divisor                 = MO.Class.register(o, new MO.AGetSet('_divisor'), 1);
+   o._degreeLabelGap          = MO.Class.register(o, new MO.AGetSet('_degreeLabelGap'), 2);
+   o._label                   = MO.Class.register(o, new MO.AGetSet('_label'), "");
+   o._labelFont               = MO.Class.register(o, new MO.AGetSet('_labelFont'));
+   o._optionLabelVertical     = MO.Class.register(o, new MO.AGetSet('_optionLabelVertical'), false);
    //..........................................................
    // @method
    o.construct                = MO.FUiChartAxis_construct;
@@ -42,6 +47,7 @@ MO.FUiChartAxis_construct = function FUiChartAxis_construct(){
    // 配置属性
    o._degrees = new MO.TObjects();
    o._font = new MO.SUiFont();
+   o._labelFont = new MO.SUiFont();
 }
 
 //==========================================================

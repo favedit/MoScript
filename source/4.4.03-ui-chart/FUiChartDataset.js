@@ -127,7 +127,7 @@ MO.FUiChartDataset_standardCor = function FUiChartDataset_standardCor(corCount) 
       if(corMin < 0) {
          corMin = (-1) * Math.ceil(Math.abs(corMin / tmpStep)) * tmpStep;
       }else {
-         corMin = parseInt(Math.abs(cormin / tmpStep)) * tmpStep;
+         corMin = parseInt(Math.abs(corMin / tmpStep)) * tmpStep;
       }
    }
    if(parseInt(corMax / tmpStep) != (corMax / tmpStep)) {

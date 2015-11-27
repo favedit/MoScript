@@ -108,6 +108,8 @@ MO.FEaiCockpitTrendSnapshot_setup = function FEaiCockpitTrendSnapshot_setup(){
    chart.setLocation(60, 11);
    chart.setSize(520, 218);
    chart.paintRectangle().set(68, 24, 424, 166);
+   chart.axisX().setOptionShowAxis(false);
+   chart.axisX().setOptionShowFirstLine(true);
    chart.axisX().createDegrees(1, 31);
    chart.axisX().findDegreeByValue(1).setLabel("1");
    chart.axisX().findDegreeByValue(6).setLabel("6");
@@ -116,7 +118,10 @@ MO.FEaiCockpitTrendSnapshot_setup = function FEaiCockpitTrendSnapshot_setup(){
    chart.axisX().findDegreeByValue(21).setLabel("21");
    chart.axisX().findDegreeByValue(26).setLabel("26");
    chart.axisX().findDegreeByValue(31).setLabel("31");
+   chart.axisX().setLabel("(天)");
+   chart.axisY().setLabel("(万)");
    chart.axisY().setDivisor(10000);
+   chart.axisY().setDegreeLabelGap(6);
    o.push(chart);
 
    var lineColors = ['#4b5e6f', '#80a861', '#2069a0', '#51c0db', '#68f34e', '#9b1933'];

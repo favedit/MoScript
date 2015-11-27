@@ -64,9 +64,12 @@ MO.FGuiChartLinePainter_drawAxis = function FGuiChartLinePainter_drawAxis(contex
    if(yCorCount == 0 || xCorCount == 0) return;
    var stepHeight = pHeight / (yCorCount - 1);
    var stepWidth = pWidth / (xCorCount - 1);
-   var yLableGap = 10;
+   var yGap = yAxis.degreeLabelGap();
+   var xGap = xAxis.degreeLabelGap();
    var yFont = yAxis.font();
    var xFont = xAxis.font();
+   var xShowFirstLine = xAxis.optionShowFirstLine();
+   var yShowFirstLine = yAxis.optionShowFirstLine();
    //绘制Y轴
    for( var i = 0; i < yCorCount; ++i) {
       var y = pTop + pHeight - stepHeight * i;
@@ -75,7 +78,7 @@ MO.FGuiChartLinePainter_drawAxis = function FGuiChartLinePainter_drawAxis(contex
       var lineWidth = degree.lineWidth() == null ? yAxis.lineWidth() : degree.lineWidth();
       var lineColor = degree.lineColor() == null ? yAxis.lineColor() : degree.lineColor();
       //绘制刻度线
-      if(yAxis.optionShowAxis()) {
+      if(yAxis.optionShowAxis() || (yShowFirstLine && i == 0)) {
          graphic.beginPath();
          graphic.moveTo(pLeft, y);
          graphic.lineTo(pLeft + pWidth, y);
@@ -85,24 +88,41 @@ MO.FGuiChartLinePainter_drawAxis = function FGuiChartLinePainter_drawAxis(contex
       if(yAxis.optionShowLabel()) {
          graphic.setFont(yFont.toString());
          var textWidth = graphic.textWidth(label);
-         graphic.drawText(label, pLeft - yLableGap - textWidth, y, yFont.color);
+         graphic.drawText(label, pLeft - yGap - textWidth, y, yFont.color);
       }
+   }
+   //绘制Y轴单位
+   var yLabel = yAxis.label();
+   var yLabelFont = yAxis.labelFont();
+   if(yLabel && yLabel != "") { 
+      graphic.drawText(yLabel, pLeft, pTop - yLabelFont.size / 2, yLabelFont.color);
    }
    // 绘制X轴
    for( var i = 0; i < xCorCount; ++i) {
       var x = pLeft + stepWidth * i;
       var degree = xDegrees.get(i);
       var label = degree.label();
+      var lineWidth = degree.lineWidth() == null ? xAxis.lineWidth() : degree.lineWidth();
+      var lineColor = degree.lineColor() == null ? xAxis.lineColor() : degree.lineColor();
       //绘制刻度线
-      if(xAxis.optionShowAxis()) {
-      
+      if(xAxis.optionShowAxis() || (xShowFirstLine && i == 0)) {
+         graphic.beginPath();
+         graphic.moveTo(x, pTop);
+         graphic.lineTo(x, pTop + pHeight);
+         graphic.drawShape(lineWidth, lineColor);
       }
       //绘制刻度
       if(xAxis.optionShowLabel()) {
          var x = pLeft + stepWidth * i;
          var textWidth = graphic.textWidth(label);
-         graphic.drawText(label, x - textWidth / 2, pTop + pHeight + xFont.size, xFont.color);
+         graphic.drawText(label, x - textWidth / 2, pTop + pHeight + xGap + xFont.size, xFont.color);
       }
+   }
+   //绘制X轴单位
+   var xLabel = xAxis.label();
+   var xLabelFont = xAxis.labelFont();
+   if(xLabel && xLabel != "") { 
+      graphic.drawText(xLabel, pLeft + pWidth, pTop + pHeight, xLabelFont.color);
    }
 }
 
@@ -166,7 +186,7 @@ MO.FGuiChartLinePainter_drawLine = function FGuiChartLinePainter_drawLine(contex
          var value = values.at(n);
          var x = pLeft + stepWidth * n;
          var y = pTop + (maxValue - value) * stepHeight;
-         graphic.drawCircle(x, y, dotSize, dotColor, dotColor);
+         graphic.drawCircle(x, y, dotSize, 1, dotColor, dotColor);
       }
    }
 }
