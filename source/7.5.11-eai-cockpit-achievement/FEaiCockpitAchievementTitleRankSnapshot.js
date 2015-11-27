@@ -83,21 +83,21 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
     grid.clearRows();
 
     row = grid.allocRow();
-    row.set('corporateName', "业绩:");
+    row.set('corporateName', "第一名");
     row.set('firstName', achievementRank.at(0).rank().toString());
     row.set('secondName', achievementRank.at(1).rank().toString());
     row.set('thirdName', achievementRank.at(2).rank().toString());
     grid.pushRow(row);
 
     row = grid.allocRow();
-    row.set('corporateName', "人力:");
+    row.set('corporateName', "第二名");
     row.set('firstName', humanRank.at(0).rank().toString());
     row.set('secondName', humanRank.at(1).rank().toString());
     row.set('thirdName', humanRank.at(2).rank().toString());
     grid.pushRow(row);
 
     row = grid.allocRow();
-    row.set('corporateName', "人均:");
+    row.set('corporateName', "第三名");
     row.set('firstName', averageRank.at(0).rank().toString());
     row.set('secondName', averageRank.at(1).rank().toString());
     row.set('thirdName', averageRank.at(2).rank().toString());
@@ -197,7 +197,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('firstName');
-   column.setLabel('第一名');
+   column.setLabel('业绩');
    column.setTextAlign(MO.EUiAlign.Center);
    column.setWidth(230);
    column.setDataName('firstName');
@@ -205,7 +205,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('secondName');
-   column.setLabel('第二名');
+   column.setLabel('人力');
    column.setDataName('secondName');
    column.setTextAlign(MO.EUiAlign.Center);
    column.setWidth(230);
@@ -213,7 +213,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('thirdName');
-   column.setLabel('第三名');
+   column.setLabel('人均');
    column.setDataName('thirdName');
    column.setTextAlign(MO.EUiAlign.Center);
    column.setWidth(230);

@@ -25,6 +25,9 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot = function FEaiCockpitAchievementMon
    o._rollDuration         = 5000;
    o._rollTicker           = null;
    o._lineChart            = null;
+   o._comingSoonImage      = null;
+   o._dataset              = null;
+   o._lineColors           = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -43,8 +46,7 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot = function FEaiCockpitAchievementMon
    // @method
    o.dispose               = MO.FEaiCockpitAchievementMonthCurveSnapshot_dispose;
    //..........................................................
-   o._comingSoonImage      = null;
-   o._dataset              = null;
+
 
    //..........................................................
    return o;
@@ -171,7 +173,7 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_setup = function FEaiCockpitAchievem
    o.push(chart);
 
    //..........................................................
-   var lineColors = ['#4b5e6f', '#80a861', '#2069a0', '#51c0db', '#68f34e', '#9b1933'];
+   var lineColors = o._lineColors = ['#4b5e6f', '#80a861', '#2069a0', '#51c0db', '#68f34e', '#9b1933'];
    var dataset = o._dataset = MO.Class.create(MO.FUiChartDataset);
    for (var i=0;i<6;i++){
       var series = MO.Class.create(MO.FUiChartDataSeries);
@@ -197,6 +199,7 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_setData = function FEaiCockpitAchiev
    var serieses = dataset.serieses();
    var monthCount = month.count();
    var lastMonthCount = lastMonth.count();
+   var colors = o._lineColors;
    // 清空老数据
    for(var i = 0; i < 6; ++i) {
       var series = serieses.get(i);
@@ -212,7 +215,12 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_setData = function FEaiCockpitAchiev
       var day = lastMonth.get(i);
       if(day.investmentAmount() != 0) serieses.get(3).values().push(day.investmentAmount());
       if(day.redemptionAmount() != 0) serieses.get(4).values().push(day.redemptionAmount());
-      if(day.netinvestmentAmount() != 0) serieses.get(5).values().push(day.netinvestmentAmount());
+      if(day.netinvestmentAmount() != 0){
+         serieses.get(5).setOptionShowDot(true);
+         serieses.get(5).setDotColor(colors[i]);
+         serieses.get(5).setDotSize(3);
+         serieses.get(5).values().push(day.netinvestmentAmount());
+      }
    };
    var yAxis = o._chart.axisY();
    yAxis.createDegreesStandard(dataset.standardCor(8));
