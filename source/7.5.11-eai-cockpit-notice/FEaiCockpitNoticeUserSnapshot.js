@@ -8,17 +8,16 @@
 MO.FEaiCockpitNoticeUserSnapshot = function FEaiCockpitNoticeUserSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   o._backgroundUri        = '{eai.resource}/cockpit/notice/user_bg.png';
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
-   o._userInfoImage        = null;
    o._fontTop              = null;
    o._userInfoDate         = null;
    // @attribute  
    //..........................................................
    // @event
-   o.onImageLoad           = MO.FEaiCockpitNoticeUserSnapshot_onImageLoad;
    o.onPaintBegin          = MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin;
    o.onUserFetch           = MO.FEaiCockpitNoticeUserSnapshot_onUserFetch;
    
@@ -33,14 +32,6 @@ MO.FEaiCockpitNoticeUserSnapshot = function FEaiCockpitNoticeUserSnapshot(o) {
    o.dispose               = MO.FEaiCockpitNoticeUserSnapshot_dispose;
    return o;
 }
-//==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitNoticeUserSnapshot_onImageLoad = function FEaiCockpitNoticeUserSnapshot_onImageLoad() {
-   this.dirty();
-}
 
 //==========================================================
 // <T>前绘制处理。</T>
@@ -49,6 +40,7 @@ MO.FEaiCockpitNoticeUserSnapshot_onImageLoad = function FEaiCockpitNoticeUserSna
 //==========================================================
 MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin = function FEaiCockpitNoticeUserSnapshot_onPaintBegin(event) {
    var o = this;
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    var left = rectangle.left;
@@ -56,7 +48,6 @@ MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin = function FEaiCockpitNoticeUserSn
    var width = rectangle.width;
    var height = rectangle.height;
    var scale = 120 / 840;
-   graphic.drawImage(o._userInfoImage, left, 0, width, height);
    if (o._data != null && o._data.publishDate() != null) {
       o._userInfoDate.parse(o._data.publishDate());
       graphic.setFont('21px Microsoft YaHei');
@@ -93,7 +84,7 @@ MO.FEaiCockpitNoticeUserSnapshot_construct = function FEaiCockpitNoticeUserSnaps
 //==========================================================
 MO.FEaiCockpitNoticeUserSnapshot_setup = function FEaiCockpitNoticeUserSnapshot_setup(){
    var o = this;
-   o._userInfoImage = o.loadResourceImage('{eai.resource}/cockpit/notice/user_bg.png');
+   o.__base.FEaiCockpitControl.setup.call(o);
    o._userInfoDate = new MO.TDate();
 }
 
