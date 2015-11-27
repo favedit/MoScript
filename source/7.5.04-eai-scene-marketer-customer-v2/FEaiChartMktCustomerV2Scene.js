@@ -269,6 +269,7 @@ MO.FEaiChartMktCustomerV2Scene_setup = function FEaiChartMktCustomerV2Scene_setu
    // 创建投资数据
    var invement = o._processor = MO.Class.create(MO.FEaiChartMktCustomerV2Processor);
    invement.linkGraphicContext(o);
+   invement.setScene(o);
    invement.setMapEntity(o._mapEntity);
    invement.setup();
    invement.addDataChangedListener(o, o.onInvestmentDataChanged);

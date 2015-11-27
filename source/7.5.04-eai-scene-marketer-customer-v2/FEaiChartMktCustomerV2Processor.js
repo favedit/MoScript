@@ -10,6 +10,7 @@ MO.FEaiChartMktCustomerV2Processor = function FEaiChartMktCustomerV2Processor(o)
    //..........................................................
    // @attribute
    o._dateSetup               = false;
+   o._scene                   = MO.Class.register(o, new MO.AGetSet('_scene'));
    // @attribute
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
@@ -228,7 +229,14 @@ MO.FEaiChartMktCustomerV2Processor_calculateCurrent = function FEaiChartMktCusto
 //==========================================================
 MO.FEaiChartMktCustomerV2Processor_focusEntity = function FEaiChartMktCustomerV2Processor_focusEntity(unit){
    var o = this;
+   var display = o._display;
    var mapEntity = o._mapEntity;
+   var desktop = o._scene.application().desktop();
+   var stage = o._scene.activeStage();
+   var camera = stage.camera();
+   var desktopSize = desktop.size();
+   var calculateX = 0;
+   var calculateY = 0;
    // 显示实体
    var card = unit.card();
    var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
@@ -241,11 +249,19 @@ MO.FEaiChartMktCustomerV2Processor_focusEntity = function FEaiChartMktCustomerV2
       var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
       if(provinceEntity){
          provinceEntity.doInvestment(level, investment);
-         //var postion = provinceEntity.calculateScreenPosition();
-         //var prositon = provinceEntity.calculateScreenPosition();
+         // var postion = provinceEntity.calculateScreenPosition();
       }
       // 更新城市数据
       cityEntity.addInvestmentTotal(level, investment);
+      var cityX = cityEntity.location().x;
+      var cityY = cityEntity.location().y;
+      var matrix = new MO.SMatrix3d();
+      matrix.assign(display.matrix());
+      matrix.append(camera.matrix());
+      matrix.append(camera.projection().matrix());
+      var point3 = matrix.transformValue3(cityX, cityY, 0);
+      calculateX = desktopSize.width * (point3.x + 1) * 0.5;
+      calculateY = desktopSize.height * (1 - point3.y) * 0.5;
       if (o._mapEntity != null) {
          o._mapEntity.upload();
       }
@@ -260,8 +276,9 @@ MO.FEaiChartMktCustomerV2Processor_focusEntity = function FEaiChartMktCustomerV2
    var changedEvent = o._eventDataChanged;
    changedEvent.rankUnits = o._rankUnits;
    changedEvent.unit = unit;
+   unit.calculateX = calculateX;
+   unit.calculateY = calculateY;
    o.processDataChangedListener(changedEvent);
-
   // o.processCurvesChangedListener(unit._modelLabel);
 }
 

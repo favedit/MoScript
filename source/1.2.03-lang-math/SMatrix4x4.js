@@ -33,6 +33,7 @@ MO.SMatrix4x4 = function SMatrix4x4(){
    o.normalize       = MO.SMatrix4x4_normalize;
    o.invert          = MO.SMatrix4x4_invert;
    o.transform       = MO.SMatrix4x4_transform;
+   o.transformValue3 = MO.SMatrix4x4_transformValue3;
    o.transformPoint3 = MO.SMatrix4x4_transformPoint3;
    // @method
    o.buildQuaternion = MO.SMatrix4x4_buildQuaternion;
@@ -524,6 +525,32 @@ MO.SMatrix4x4_transformPoint3 = function SMatrix4x4_transformPoint3(input, outpu
    var x = (input.x * data[ 0]) + (input.y * data[ 4]) +(input.z * data[ 8]) + data[12];
    var y = (input.x * data[ 1]) + (input.y * data[ 5]) +(input.z * data[ 9]) + data[13];
    var z = (input.x * data[ 2]) + (input.y * data[ 6]) +(input.z * data[10]) + data[14];
+   // 设置结果
+   var result = null;
+   if(output){
+      result = output;
+   }else{
+      result = new MO.SPoint3();
+   }
+   result.set(x, y, z);
+   return result;
+}
+
+//==========================================================
+// <T>变换顶点数据。</T>
+//
+// @method
+// @param x:Number X坐标
+// @param y:Number Y坐标
+// @param z:Number Z坐标
+// @param output:SPoint3 输出顶点
+//==========================================================
+MO.SMatrix4x4_transformValue3 = function SMatrix4x4_transformValue3(x, y, z, output){
+   // 计算数据
+   var data = this._data;
+   var x = (x * data[ 0]) + (y * data[ 4]) +(z * data[ 8]) + data[12];
+   var y = (x * data[ 1]) + (y * data[ 5]) +(z * data[ 9]) + data[13];
+   var z = (x * data[ 2]) + (y * data[ 6]) +(z * data[10]) + data[14];
    // 设置结果
    var result = null;
    if(output){

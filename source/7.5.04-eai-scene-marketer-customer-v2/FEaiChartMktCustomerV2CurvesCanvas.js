@@ -124,7 +124,8 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_pushUnit = function FEaiChartMktCustomerV2
    var clientRectangle = o.clientRectangle();
    // 创建投向线
    var segment = MO.Class.create(MO.FEaiChartMktCustomerV2TenderSegment);
-   segment.setup(clientRectangle.width, 170, 0, endY);
+   segment.setup(unit.calculateX - clientRectangle.left, unit.calculateY - clientRectangle.top, 0, endY);
+   //segment.setup(clientRectangle.width, 170, 0, endY);
    o._segmentLooper.push(segment);
    // 创建迁移曲线
    if (currentPCode == previousPCode || currentPCode == null || previousPCode == null || currentPCode == undefined || previousPCode == undefined) {
