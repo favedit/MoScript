@@ -10,7 +10,8 @@ MO.FEaiCockpitForecastLogic008Snapshot = function FEaiCockpitForecastLogic008Sna
    //..........................................................
    o._comingSoon    = true;
    // @attribute
-   o._backgroundUri = '{eai.resource}/cockpit/forecast/logic8.png';
+   o._backgroundUri = '{eai.resource}/cockpit/forecast/logic.png';
+   o._contImage     = null;
    //..........................................................
    // @event
    o.onPaintBegin   = MO.FEaiCockpitForecastLogic008Snapshot_onPaintBegin;
@@ -35,6 +36,11 @@ MO.FEaiCockpitForecastLogic008Snapshot = function FEaiCockpitForecastLogic008Sna
 MO.FEaiCockpitForecastLogic008Snapshot_onPaintBegin = function FEaiCockpitForecastLogic008Snapshot_onPaintBegin(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
+   graphic = event.graphic;
+   var rectangle = event.rectangle;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   graphic.drawImage(o._contImage, left, top);
 }
 
 //==========================================================
@@ -68,6 +74,7 @@ MO.FEaiCockpitForecastLogic008Snapshot_construct = function FEaiCockpitForecastL
 MO.FEaiCockpitForecastLogic008Snapshot_setup = function FEaiCockpitForecastLogic008Snapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
+   o._contImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/logic8.png');
 }
 
 //==========================================================
