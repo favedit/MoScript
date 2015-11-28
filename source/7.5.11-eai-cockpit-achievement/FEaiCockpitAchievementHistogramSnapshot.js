@@ -10,8 +10,8 @@ MO.FEaiCockpitAchievementHistogramSnapshot = function FEaiCockpitAchievementHist
    //..........................................................
    // @attribute
    o._data                 = null;
-   o._chartData            = null;
-   o._chartDataSet         = null;
+   o._chart                = null;
+   o._chartDataset         = null;
    o._dataTicker           = null;
    // @attribute
    o._backgroundImage      = null;
@@ -53,8 +53,30 @@ MO.FEaiCockpitAchievementHistogramSnapshot = function FEaiCockpitAchievementHist
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-MO.FEaiCockpitAchievementHistogramSnapshot_setData = function FEaiCockpitAchievementHistogramSnapshot_setData(event) {
+MO.FEaiCockpitAchievementHistogramSnapshot_setData = function FEaiCockpitAchievementHistogramSnapshot_setData(data) {
    var o = this;
+   var dataset = o._chartDataset;
+   var serieses = dataset.serieses();
+   var series = serieses.get(0);
+   series.values().clear();
+   var chart = o._chart;
+   chart.axisX().degrees().clear();
+   var items = data.items();
+   var count = items.count();
+   for (var i = 0; i < count; i++) {
+      var item = items.at(i);
+      var label = item.label();
+      var value = item.amount();
+      series.values().push(value);
+      var degree = MO.Class.create(MO.FUiChartAxisDegree);
+      degree.setLabel(label);
+      chart.axisX().pushDegree(degree);
+   }
+   var axisY = chart.axisY();
+   axisY.createDegreesStandard(dataset.standardCor(5));
+   axisY.formatLabels();
+
+   o.dirty();
 }
 
 //==========================================================
@@ -69,13 +91,7 @@ MO.FEaiCockpitAchievementHistogramSnapshot_setData = function FEaiCockpitAchieve
    // 读取数据
    var data = o._data;
    if (data.unserializeSignBuffer(event.sign, event.content, true)) {
-      var items = data.items();
-      var count = items._count;
-      for (var i = 0; i < count; i++) {
-         var item = items.at(i);
-       //  var units = item.units();
-
-      }
+      o.setData(data);
    }
 }
 
@@ -150,6 +166,30 @@ MO.FEaiCockpitAchievementHistogramSnapshot_setup = function FEaiCockpitAchieveme
    o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/histogram.png');
 
    //..........................................................
+   //初始化柱状图
+   var chart = o._chart = MO.Class.create(MO.FGuiChart);
+   chart.selectPainter(MO.FGuiChartBarPainter);
+   chart.setLocation(30, 30);
+   chart.setSize(1030, 320);
+   chart.paintRectangle().set(68, 44, 900, 180);
+   chart.axisX().setOptionShowAxis(false);
+   chart.axisX().setOptionShowFirstLine(true);
+   chart.axisY().setOptionShowAxis(false);
+   chart.axisY().setOptionShowFirstLine(true);
+   chart.axisX().setOptionLabelVertical(true);
+   chart.axisX().setLabel("(子公司)");
+   chart.axisX().font().parse("#fee823 12px Microsoft YaHei");
+   chart.axisY().setLabel("(千万)");
+   chart.axisY().setDivisor(10000000);
+   o.push(chart);
+
+   var dataset = o._chartDataset = MO.Class.create(MO.FUiChartDataset);
+   var series = MO.Class.create(MO.FUiChartDataSeries);
+   series.setOptionShowBorder(false);
+   series.setFillColor('#245b82');
+   series.setRectWidth(20);
+   dataset.push(series);
+   chart.setDataset(dataset);
 }
 
 //==========================================================

@@ -70,6 +70,7 @@ MO.FGuiChartLinePainter_drawAxis = function FGuiChartLinePainter_drawAxis(contex
    var xFont = xAxis.font();
    var xShowFirstLine = xAxis.optionShowFirstLine();
    var yShowFirstLine = yAxis.optionShowFirstLine();
+   var xLabelVertical = xAxis.optionLabelVertical();
    //绘制Y轴
    for( var i = 0; i < yCorCount; ++i) {
       var y = pTop + pHeight - stepHeight * i;
@@ -115,7 +116,11 @@ MO.FGuiChartLinePainter_drawAxis = function FGuiChartLinePainter_drawAxis(contex
       if(xAxis.optionShowLabel()) {
          var x = pLeft + stepWidth * i;
          var textWidth = graphic.textWidth(label);
-         graphic.drawText(label, x - textWidth / 2, pTop + pHeight + xGap + xFont.size, xFont.color);
+         if(xLabelVertical) {
+            graphic.drawTextVertical(label, x - xFont.size / 2, pTop + pHeight + xGap + xFont.size, xFont);
+         }else {
+            graphic.drawText(label, x - textWidth / 2, pTop + pHeight + xGap + xFont.size, xFont.color);
+         }
       }
    }
    //绘制X轴单位
