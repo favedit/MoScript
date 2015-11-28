@@ -257,7 +257,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    var dataset = o._chartDataset = MO.Class.create(MO.FUiChartDataset);
    var series = MO.Class.create(MO.FUiChartDataSeries);
    series.setOptionShowBorder(false);
-   series.setFillColor('#245b82');
+   series.setFillGradient([['0', '#20d3de'], ['0.5', '#237394'], ['1.0', '#252f62']]);
    series.setRectWidth(25);
    dataset.push(series);
    chart.setDataset(dataset);
