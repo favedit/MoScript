@@ -124,12 +124,12 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_onPaintBegin = function FEaiCoc
    //..........................................................
    // 绘制背景
    //graphic.drawRectangle(left,top,width,height,'#ffffff',3);
-   graphic.setFont('24px Microsoft YaHei');
-   var lable = '入职两个月以上无业绩';
-   //graphic.drawText(lable，left,top,'#ffffff');
-   graphic.drawText(lable, 60, 35, '#ffffff');
-   graphic.drawImage(o._titleImage,left+12,top+5,687,46);
-   graphic.drawImage(o._tableImage,left+12,top+280,687,46);
+   // graphic.setFont('24px Microsoft YaHei');
+   // var lable = '入职两个月以上无业绩';
+   // //graphic.drawText(lable，left,top,'#ffffff');
+   // graphic.drawText(lable, 60, 35, '#ffffff');
+    graphic.drawImage(o._titleImage,left+12,top+5,687,46);
+    graphic.drawImage(o._tableImage,left+12,top+280);
 }
 
 //==========================================================
@@ -165,7 +165,7 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_construct = function FEaiCockpi
 MO.FEaiCockpitForecastAchievementProblemSnapshot_setup = function FEaiCockpitForecastAchievementProblemSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
-   o._titleImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/title.png');
+   o._titleImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/noInvestment_title.png');
    o._tableImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid_title.png');
 
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);

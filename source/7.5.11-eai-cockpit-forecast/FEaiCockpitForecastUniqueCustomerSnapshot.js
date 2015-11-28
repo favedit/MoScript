@@ -125,10 +125,10 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_onPaintBegin = function FEaiCockpit
    //..........................................................
    // 绘制背景
    //graphic.drawRectangle(left,top,width,height,'#ffffff',3);
-   graphic.setFont('24px Microsoft YaHei');
-   var lable = '只有一个理财师的客户';
-   //graphic.drawText(lable，left,top,'#ffffff');
-   graphic.drawText(lable, 60, 35, '#ffffff');
+   // graphic.setFont('24px Microsoft YaHei');
+   // var lable = '只有一个理财师的客户';
+   // //graphic.drawText(lable，left,top,'#ffffff');
+   // graphic.drawText(lable, 60, 35, '#ffffff');
    graphic.drawImage(o._titleImage,left+12,top+5,687,46);
    graphic.drawImage(o._tableImage,left+12,top+280,687,46);
 
@@ -168,7 +168,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_construct = function FEaiCockpitFor
 MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecastUniqueCustomerSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
-   o._titleImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/title.png');
+   o._titleImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/uniquecustomer.png');
    o._tableImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid_title.png');
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
@@ -237,7 +237,6 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    grid.pushColumn(column);
    //..........................................................
    o.push(grid);
-
    //新建柱状图
    var chart = o._chart = MO.Class.create(MO.FGuiChart);
    chart.selectPainter(MO.FGuiChartBarPainter);
@@ -253,7 +252,6 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    chart.axisX().font().parse("#fee823 16px Microsoft YaHei");
    chart.axisY().setDivisor(10000000);
    o.push(chart);
-
    var dataset = o._chartDataset = MO.Class.create(MO.FUiChartDataset);
    var series = MO.Class.create(MO.FUiChartDataSeries);
    series.setOptionShowBorder(false);
