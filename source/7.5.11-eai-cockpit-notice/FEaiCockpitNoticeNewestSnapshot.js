@@ -67,7 +67,7 @@ MO.FEaiCockpitNoticeNewestSnapshot_onPaintBegin = function FEaiCockpitNoticeNewe
       var fontMiddle = o._fontMiddle;
       graphic.setFont(fontMiddle.toString());
       graphic.drawText(title, left + 300, top + 47, fontTitle.color);
-      graphic.drawImage(o._newNoticeImage, left + 300 + 30 + title.length*25,top + 20,48,50);
+      graphic.drawImage(o._newNoticeImage, left + 700,top + 20,48,50);
       graphic.drawText("发布人:" + o._publisher, left+55, top+100, fontMiddle.color);
       graphic.drawText("发布时间:" + o._publishDate.format('YYYY-MM-DD'), left + 250, top + 100, fontMiddle.color);
       graphic.drawText("阅读进度:", left + 500, top + 100, fontMiddle.color);

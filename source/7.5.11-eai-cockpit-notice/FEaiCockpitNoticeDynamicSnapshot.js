@@ -64,7 +64,8 @@ MO.FEaiCockpitNoticeDynamicSnapshot_onPaintBegin = function FEaiCockpitNoticeDyn
          var dynamic = o._dynamics.at(i)
          dynamicData.parse(dynamic.readDate());
          console.log();
-         graphic.drawText(dynamic.department() + dynamic.readName() + "查看了号令" + "    " + dynamicData.format('hh24:mi'), left + 55, top + 80 + 35*i, fontContent.color);
+         graphic.drawText(dynamic.department() + dynamic.readName() + "查看了号令", left + 55, top + 80 + 35*i, fontContent.color);
+         graphic.drawText(dynamicData.format('hh24:mi'), left+500, top+75+35*i, fontContent.color);
       }
    }
    
