@@ -7,14 +7,15 @@
 //==========================================================
 MO.FEaiCockpitAchievementRadarSnapshot = function FEaiCockpitAchievementRadarSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
+   o._backgroundUri = '{eai.resource}/cockpit/achievement/radar.png';
    //..........................................................
    // @attribute
+  // o._comingSoon           = true;
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
    o._dataTicker           = null;
    // @attribute
-   o._backgroundImage      = null;
    o._gridImage            = null;
    o._listBox              = null;
    o._index                = 0;
@@ -121,8 +122,7 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
    //..........................................................
    // 绘制背景
    // graphic.drawRectangle(left,top,width,height,'#ffffff',3);\
-   graphic.drawImage(o._backgroundImage, left, top, width, height);
-   graphic.drawImage(o._fiveForceImage, 450, 40, 233, 191);
+   graphic.drawImage(o._fiveForceImage, left + 450, top + 40,   233, 191);
    
    //..........................................................
    // 绘制文字
@@ -251,8 +251,8 @@ MO.FEaiCockpitAchievementRadarSnapshot_construct = function FEaiCockpitAchieveme
 //==========================================================
 MO.FEaiCockpitAchievementRadarSnapshot_setup = function FEaiCockpitAchievementRadarSnapshot_setup(){
    var o = this;
+   o.__base.FEaiCockpitControl.setup.call(o);
    // 加载图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/radar.png');
    o._fiveForceImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/fiveForce.png');
    o._font1stRowR.parse('bold #FFFFFF 30px Microsoft YaHei');
    o._font1stRowL.parse('#FF0B11 50px Microsoft YaHei');
@@ -286,7 +286,6 @@ MO.FEaiCockpitAchievementRadarSnapshot_dispose = function FEaiCockpitAchievement
    o._font2ndRow = MO.Lang.Object.dispose(o._font2ndRow);
    o._font3rdRow = MO.Lang.Object.dispose(o._font3rdRow);
 
-   o._backgroundImage = MO.Lang.Object.dispose(o._backgroundImage);
    o._fiveForceImage = MO.Lang.Object.dispose(o._fiveForceImage);
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

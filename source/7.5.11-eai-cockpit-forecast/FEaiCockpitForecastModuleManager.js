@@ -88,14 +88,16 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    o._indexModule = o.createModule(MO.FEaiCockpitForecastIndex);
 
    var switchVector = o._switchVector = new MO.TObjects();
+   switchVector.push(o._logic001Module.controlSnapshot());
    switchVector.push(o._logic002Module.controlSnapshot());
+   switchVector.push(o._logic003Module.controlSnapshot());
+   switchVector.push(o._logic004Module.controlSnapshot());
+   switchVector.push(o._logic005Module.controlSnapshot());
+   switchVector.push(o._logic006Module.controlSnapshot());
+   switchVector.push(o._logic007Module.controlSnapshot());
+   switchVector.push(o._logic008Module.controlSnapshot());
    switchVector.push(o._logic009Module.controlSnapshot());
    switchVector.push(o._logic010Module.controlSnapshot());
-   //switchVector.push(o._logic006Module.controlSnapshot());
-   //switchVector.push(o._logic007Module.controlSnapshot());
-   //switchVector.push(o._logic008Module.controlSnapshot());
-   //switchVector.push(o._logic009Module.controlSnapshot());
-   //switchVector.push(o._logic010Module.controlSnapshot());
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();

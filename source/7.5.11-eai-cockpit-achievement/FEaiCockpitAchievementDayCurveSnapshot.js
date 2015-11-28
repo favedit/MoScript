@@ -9,12 +9,12 @@ MO.FEaiCockpitAchievementDayCurveSnapshot = function FEaiCockpitAchievementDayCu
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._backgroundUri = '{eai.resource}/cockpit/achievement/dayCurve.png';
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
    o._dataTicker           = null;
    // @attribute
-   o._backgroundImage      = null;
    o._backgroundTopImage   = null;
    o._gridImage            = null;
    o._listBox              = null;
@@ -48,7 +48,6 @@ MO.FEaiCockpitAchievementDayCurveSnapshot = function FEaiCockpitAchievementDayCu
    // @method
    o.dispose               = MO.FEaiCockpitAchievementDayCurveSnapshot_dispose;
    //..........................................................
-   o._comingSoonImage      = null;
    //..........................................................
    return o;
 }
@@ -83,9 +82,6 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_onPaintBegin = function FEaiCockpitAch
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   //..........................................................
-   // 绘制背景
-   graphic.drawImage(o._backgroundImage,left,top,width,height);
 
 
 }
@@ -138,8 +134,8 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_construct = function FEaiCockpitAchiev
 //==========================================================
 MO.FEaiCockpitAchievementDayCurveSnapshot_setup = function FEaiCockpitAchievementDayCurveSnapshot_setup(){
    var o = this;
+   o.__base.FEaiCockpitControl.setup.call(o);
    // 加载图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/dayCurve.png');
    o._redemptionImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/redemption.png');
 
    //画日曲线

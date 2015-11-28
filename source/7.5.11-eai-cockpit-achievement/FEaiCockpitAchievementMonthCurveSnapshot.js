@@ -9,12 +9,12 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot = function FEaiCockpitAchievementMon
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._backgroundUri = '{eai.resource}/cockpit/achievement/dayCurve.png';
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
    o._dataTicker           = null;
    // @attribute
-   o._backgroundImage      = null;
    o._gridImage            = null;
    o._listBox              = null;
    o._index                = 0;
@@ -84,10 +84,7 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_onPaintBegin = function FEaiCockpitA
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   //..........................................................
-   // 绘制背景
-  // graphic.drawRectangle(left,top,width,height,'#ffffff',3);
-   graphic.drawImage(o._backgroundImage,left,top,width,height);
+
 
 }
 
@@ -142,8 +139,8 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_construct = function FEaiCockpitAchi
 //==========================================================
 MO.FEaiCockpitAchievementMonthCurveSnapshot_setup = function FEaiCockpitAchievementMonthCurveSnapshot_setup(){
    var o = this;
+   o.__base.FEaiCockpitControl.setup.call(o);
    // 加载图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/dayCurve.png');
    o._redemptionImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/redemption.png');
       //画日曲线
    var chart = o._chart = MO.Class.create(MO.FGuiChart);

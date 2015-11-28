@@ -19,7 +19,7 @@ MO.FEaiCockpitControl = function FEaiCockpitControl(o) {
    o._backgroundPadding = null;
    o._backgroundImage   = null;
    o._comingSoonImage   = null;
-   o._comingSoon        = false;
+   o._comingSoon        = MO.Class.register(o, new MO.AGetter('_comingSoon'));;
    //..........................................................
    // @event
    o.onPaintBegin       = MO.FEaiCockpitControl_onPaintBegin

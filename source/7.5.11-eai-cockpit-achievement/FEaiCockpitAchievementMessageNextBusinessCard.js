@@ -7,6 +7,7 @@
 //==========================================================
 MO.FEaiCockpitMessageAchievementNextBusinessCard = function FEaiCockpitMessageAchievementNextBusinessCard(o) {
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
+   o._comingSoon = true;
    //..........................................................
    // @attribute
    //公司名称

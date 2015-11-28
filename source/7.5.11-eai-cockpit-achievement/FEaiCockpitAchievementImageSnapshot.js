@@ -9,12 +9,12 @@ MO.FEaiCockpitAchievementImageSnapshot = function FEaiCockpitAchievementImageSna
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._backgroundUri        = '{eai.resource}/cockpit/achievement/investment.png';
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
    o._dataTicker           = null;
    // @attribute
-   o._backgroundImage      = null;
    o._gridImage            = null;
    o._listBox              = null;
    o._index                = 0;
@@ -76,9 +76,6 @@ MO.FEaiCockpitAchievementImageSnapshot_onPaintBegin = function FEaiCockpitAchiev
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
-   // 绘制背景
-  // graphic.drawRectangle(left,top,width,height,'#ffffff',3);\
-   graphic.drawImage(o._backgroundImages,left,top+35,1908,68);
 
 }
 
@@ -125,8 +122,7 @@ MO.FEaiCockpitAchievementImageSnapshot_construct = function FEaiCockpitAchieveme
 //==========================================================
 MO.FEaiCockpitAchievementImageSnapshot_setup = function FEaiCockpitAchievementImageSnapshot_setup(){
    var o = this;
-   // 加载图片
-   o._backgroundImages = o.loadResourceImage('{eai.resource}/cockpit/achievement/investment.png');
+   o.__base.FEaiCockpitControl.setup.call(o);
 
    //..........................................................
 }

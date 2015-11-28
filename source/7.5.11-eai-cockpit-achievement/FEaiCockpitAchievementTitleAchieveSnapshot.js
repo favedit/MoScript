@@ -9,12 +9,12 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot = function FEaiCockpitAchievementT
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._backgroundUri        = '{eai.resource}/cockpit/achievement/rankleft.png';
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
    o._dataTicker           = null;
    // @attribute
-   o._backgroundImage      = null;
    o._gridImage            = null;
    o._listBox              = null;
    o._index                = 0;
@@ -114,9 +114,7 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot_onPaintBegin = function FEaiCockpi
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
-   // 绘制背景
-  // graphic.drawRectangle(left,top,width,height,'#ffffff',3);
-   graphic.drawImage(o._backgroundImage,o._page,top,width,height);
+
 
 }
 
@@ -165,8 +163,7 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot_construct = function FEaiCockpitAc
 //==========================================================
 MO.FEaiCockpitAchievementTitleAchieveSnapshot_setup = function FEaiCockpitAchievementTitleAchieveSnapshot_setup(){
    var o = this;
-   // 加载背景图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/rankleft.png');
+   o.__base.FEaiCockpitControl.setup.call(o);
    //
    var frame = o._logoBar = MO.Console.find(MO.FGuiFrameConsole).get(o, 'eai.chart.cockpit.LogoBarAchievement');
    o.push(frame);

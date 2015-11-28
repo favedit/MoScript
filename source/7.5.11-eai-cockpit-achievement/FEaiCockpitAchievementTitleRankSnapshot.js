@@ -9,12 +9,12 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._backgroundUri = '{eai.resource}/cockpit/achievement/rankright.png';
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
    o._dataTicker           = null;
    // @attribute
-   o._backgroundImage      = null;
    o._gridImage            = null;
    o._listBox              = null;
    o._index                = 0;
@@ -122,8 +122,6 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_onPaintBegin = function FEaiCockpitAc
    var height = rectangle.height;
    //..........................................................
    // 绘制背景
-   //graphic.drawRectangle(left,top,width,height,'#ffffff',3)
-   graphic.drawImage(o._backgroundImage,left,top,width,height);
 
 }
 
@@ -171,8 +169,8 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_construct = function FEaiCockpitAchie
 //==========================================================
 MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchievementTitleRankSnapshot_setup(){
    var o = this;
+   o.__base.FEaiCockpitControl.setup.call(o);
    // 加载图片
-   o._backgroundImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/rankright.png');
 
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
