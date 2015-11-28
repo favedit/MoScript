@@ -105,13 +105,9 @@ MO.FEaiCockpitForecastSnapshot_onPaintBegin = function FEaiCockpitForecastSnapsh
    var switchVector = moduleManager.switchVector();
    var showSnapshot = switchVector.at(o._switchCounter % switchVector.count());
    if (showSnapshot) {
-      if (showSnapshot.comingSoon()) {
-         showSnapshot.paintGraphic(graphic, 120, 5, 720,480);
-      } else {
          showSnapshot.setOptionBackground(false);
          showSnapshot.paintGraphic(graphic, 120, 5, 720,480);
          showSnapshot.setOptionBackground(true);
-      }
    }
    
 }
