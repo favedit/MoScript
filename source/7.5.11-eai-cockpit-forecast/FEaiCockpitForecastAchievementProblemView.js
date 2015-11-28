@@ -5,19 +5,19 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitForecastLogic010View = function FEaiCockpitForecastLogic010View(o) {
+MO.FEaiCockpitForecastAchievementProblemView = function FEaiCockpitForecastAchievementProblemView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FEaiCockpitForecastLogic010View_onPaintBegin;
+   o.onPaintBegin = MO.FEaiCockpitForecastAchievementProblemView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct    = MO.FEaiCockpitForecastLogic010View_construct;
+   o.construct    = MO.FEaiCockpitForecastAchievementProblemView_construct;
    // @method
-   o.setup        = MO.FEaiCockpitForecastLogic010View_setup;
-   o.processLogic = MO.FEaiCockpitForecastLogic010View_processLogic;
+   o.setup        = MO.FEaiCockpitForecastAchievementProblemView_setup;
+   o.processLogic = MO.FEaiCockpitForecastAchievementProblemView_processLogic;
    // @method
-   o.dispose      = MO.FEaiCockpitForecastLogic010View_dispose;
+   o.dispose      = MO.FEaiCockpitForecastAchievementProblemView_dispose;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FEaiCockpitForecastLogic010View = function FEaiCockpitForecastLogic010View(o)
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic010View_onPaintBegin = function FEaiCockpitForecastLogic010View_onPaintBegin(event) {
+MO.FEaiCockpitForecastAchievementProblemView_onPaintBegin = function FEaiCockpitForecastAchievementProblemView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
 }
@@ -36,7 +36,7 @@ MO.FEaiCockpitForecastLogic010View_onPaintBegin = function FEaiCockpitForecastLo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic010View_construct = function FEaiCockpitForecastLogic010View_construct() {
+MO.FEaiCockpitForecastAchievementProblemView_construct = function FEaiCockpitForecastAchievementProblemView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -49,7 +49,7 @@ MO.FEaiCockpitForecastLogic010View_construct = function FEaiCockpitForecastLogic
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic010View_setup = function FEaiCockpitForecastLogic010View_setup(){
+MO.FEaiCockpitForecastAchievementProblemView_setup = function FEaiCockpitForecastAchievementProblemView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -59,7 +59,7 @@ MO.FEaiCockpitForecastLogic010View_setup = function FEaiCockpitForecastLogic010V
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic010View_processLogic = function FEaiCockpitForecastLogic010View_processLogic(){
+MO.FEaiCockpitForecastAchievementProblemView_processLogic = function FEaiCockpitForecastAchievementProblemView_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
@@ -69,7 +69,7 @@ MO.FEaiCockpitForecastLogic010View_processLogic = function FEaiCockpitForecastLo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic010View_dispose = function FEaiCockpitForecastLogic010View_dispose() {
+MO.FEaiCockpitForecastAchievementProblemView_dispose = function FEaiCockpitForecastAchievementProblemView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

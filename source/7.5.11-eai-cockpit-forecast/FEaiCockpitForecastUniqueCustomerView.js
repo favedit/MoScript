@@ -5,19 +5,19 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelfView = function FEaiCockpitForecastInvestmentSelfView(o) {
+MO.FEaiCockpitForecastUniqueCustomerView = function FEaiCockpitForecastUniqueCustomerView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FEaiCockpitForecastInvestmentSelfView_onPaintBegin;
+   o.onPaintBegin = MO.FEaiCockpitForecastUniqueCustomerView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct    = MO.FEaiCockpitForecastInvestmentSelfView_construct;
+   o.construct    = MO.FEaiCockpitForecastUniqueCustomerView_construct;
    // @method
-   o.setup        = MO.FEaiCockpitForecastInvestmentSelfView_setup;
-   o.processLogic = MO.FEaiCockpitForecastInvestmentSelfView_processLogic;
+   o.setup        = MO.FEaiCockpitForecastUniqueCustomerView_setup;
+   o.processLogic = MO.FEaiCockpitForecastUniqueCustomerView_processLogic;
    // @method
-   o.dispose      = MO.FEaiCockpitForecastInvestmentSelfView_dispose;
+   o.dispose      = MO.FEaiCockpitForecastUniqueCustomerView_dispose;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FEaiCockpitForecastInvestmentSelfView = function FEaiCockpitForecastInvestmen
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelfView_onPaintBegin = function FEaiCockpitForecastInvestmentSelfView_onPaintBegin(event) {
+MO.FEaiCockpitForecastUniqueCustomerView_onPaintBegin = function FEaiCockpitForecastUniqueCustomerView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
 }
@@ -36,7 +36,7 @@ MO.FEaiCockpitForecastInvestmentSelfView_onPaintBegin = function FEaiCockpitFore
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelfView_construct = function FEaiCockpitForecastInvestmentSelfView_construct() {
+MO.FEaiCockpitForecastUniqueCustomerView_construct = function FEaiCockpitForecastUniqueCustomerView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -49,7 +49,7 @@ MO.FEaiCockpitForecastInvestmentSelfView_construct = function FEaiCockpitForecas
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelfView_setup = function FEaiCockpitForecastInvestmentSelfView_setup(){
+MO.FEaiCockpitForecastUniqueCustomerView_setup = function FEaiCockpitForecastUniqueCustomerView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -59,7 +59,7 @@ MO.FEaiCockpitForecastInvestmentSelfView_setup = function FEaiCockpitForecastInv
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelfView_processLogic = function FEaiCockpitForecastInvestmentSelfView_processLogic(){
+MO.FEaiCockpitForecastUniqueCustomerView_processLogic = function FEaiCockpitForecastUniqueCustomerView_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
@@ -69,7 +69,7 @@ MO.FEaiCockpitForecastInvestmentSelfView_processLogic = function FEaiCockpitFore
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelfView_dispose = function FEaiCockpitForecastInvestmentSelfView_dispose() {
+MO.FEaiCockpitForecastUniqueCustomerView_dispose = function FEaiCockpitForecastUniqueCustomerView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

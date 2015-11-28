@@ -26,7 +26,7 @@ MO.FEaiCockpitAchievementTitleAchieveSnapshot = function FEaiCockpitAchievementT
    o._rollTicker           = null;
    o._lineChart            = null;
    //数据
-   o._data                 =MO.Class.register(o,new MO.AGetSet('_Data'));
+   o._data                 = MO.Class.register(o,new MO.AGetSet('_data'));
    //数据
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));

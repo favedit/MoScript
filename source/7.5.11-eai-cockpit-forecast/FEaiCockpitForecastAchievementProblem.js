@@ -5,23 +5,23 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelf = function FEaiCockpitForecastInvestmentSelf(o){
+MO.FEaiCockpitForecastAchievementProblem = function FEaiCockpitForecastAchievementProblem(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name       = 'forecast.logic.001';
+   o._name       = 'forecast.problem.010';
    o._typeCd     = MO.EEaiCockpitModule.Logic;
    o._dataTicker = null;
    o._slideshow  = true;
    //..........................................................
    // @method
-   o.construct   = MO.FEaiCockpitForecastInvestmentSelf_construct;
+   o.construct   = MO.FEaiCockpitForecastAchievementProblem_construct;
    // @method
-   o.setup       = MO.FEaiCockpitForecastInvestmentSelf_setup;
+   o.setup       = MO.FEaiCockpitForecastAchievementProblem_setup;
    // @method
-   o.process     = MO.FEaiCockpitForecastInvestmentSelf_process;
+   o.process     = MO.FEaiCockpitForecastAchievementProblem_process;
    // @method
-   o.dispose     = MO.FEaiCockpitForecastInvestmentSelf_dispose;
+   o.dispose     = MO.FEaiCockpitForecastAchievementProblem_dispose;
    return o;
 }
 
@@ -30,7 +30,7 @@ MO.FEaiCockpitForecastInvestmentSelf = function FEaiCockpitForecastInvestmentSel
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelf_construct = function FEaiCockpitForecastInvestmentSelf_construct(){
+MO.FEaiCockpitForecastAchievementProblem_construct = function FEaiCockpitForecastAchievementProblem_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
 }
@@ -40,11 +40,11 @@ MO.FEaiCockpitForecastInvestmentSelf_construct = function FEaiCockpitForecastInv
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelf_setup = function FEaiCockpitForecastInvestmentSelf_setup(){
+MO.FEaiCockpitForecastAchievementProblem_setup = function FEaiCockpitForecastAchievementProblem_setup(){
    var o = this;
    // 创建控件
-   o._controlSnapshot = o.createControl(MO.FEaiCockpitForecastInvestmentSelfSnapshot);
-   o._controlView = o.createControl(MO.FEaiCockpitForecastInvestmentSelfView);
+   o._controlSnapshot = o.createControl(MO.FEaiCockpitForecastAchievementProblemSnapshot);
+   o._controlView = o.createControl(MO.FEaiCockpitForecastAchievementProblemView);
 }
 
 //==========================================================
@@ -53,7 +53,7 @@ MO.FEaiCockpitForecastInvestmentSelf_setup = function FEaiCockpitForecastInvestm
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelf_process = function FEaiCockpitForecastInvestmentSelf_process(){
+MO.FEaiCockpitForecastAchievementProblem_process = function FEaiCockpitForecastAchievementProblem_process(){
    var o = this;
    // 创建缩略
    o.__base.FEaiCockpitModule.process.call(o);
@@ -64,7 +64,7 @@ MO.FEaiCockpitForecastInvestmentSelf_process = function FEaiCockpitForecastInves
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelf_dispose = function FEaiCockpitForecastInvestmentSelf_dispose(){
+MO.FEaiCockpitForecastAchievementProblem_dispose = function FEaiCockpitForecastAchievementProblem_dispose(){
    var o = this;
    // 释放属性
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);

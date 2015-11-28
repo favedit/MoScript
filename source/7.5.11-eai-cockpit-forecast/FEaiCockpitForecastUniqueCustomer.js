@@ -5,23 +5,23 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitForecastLogic010 = function FEaiCockpitForecastLogic010(o){
+MO.FEaiCockpitForecastUniqueCustomer = function FEaiCockpitForecastUniqueCustomer(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name       = 'forecast.logic.010';
+   o._name       = 'forecast.uniqueCustomer.01';
    o._typeCd     = MO.EEaiCockpitModule.Logic;
    o._dataTicker = null;
    o._slideshow  = true;
    //..........................................................
    // @method
-   o.construct   = MO.FEaiCockpitForecastLogic010_construct;
+   o.construct   = MO.FEaiCockpitForecastUniqueCustomer_construct;
    // @method
-   o.setup       = MO.FEaiCockpitForecastLogic010_setup;
+   o.setup       = MO.FEaiCockpitForecastUniqueCustomer_setup;
    // @method
-   o.process     = MO.FEaiCockpitForecastLogic010_process;
+   o.process     = MO.FEaiCockpitForecastUniqueCustomer_process;
    // @method
-   o.dispose     = MO.FEaiCockpitForecastLogic010_dispose;
+   o.dispose     = MO.FEaiCockpitForecastUniqueCustomer_dispose;
    return o;
 }
 
@@ -30,7 +30,7 @@ MO.FEaiCockpitForecastLogic010 = function FEaiCockpitForecastLogic010(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic010_construct = function FEaiCockpitForecastLogic010_construct(){
+MO.FEaiCockpitForecastUniqueCustomer_construct = function FEaiCockpitForecastUniqueCustomer_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
 }
@@ -40,11 +40,11 @@ MO.FEaiCockpitForecastLogic010_construct = function FEaiCockpitForecastLogic010_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic010_setup = function FEaiCockpitForecastLogic010_setup(){
+MO.FEaiCockpitForecastUniqueCustomer_setup = function FEaiCockpitForecastUniqueCustomer_setup(){
    var o = this;
    // 创建控件
-   o._controlSnapshot = o.createControl(MO.FEaiCockpitForecastLogic010Snapshot);
-   o._controlView = o.createControl(MO.FEaiCockpitForecastLogic010View);
+   o._controlSnapshot = o.createControl(MO.FEaiCockpitForecastUniqueCustomerSnapshot);
+   o._controlView = o.createControl(MO.FEaiCockpitForecastUniqueCustomerView);
 }
 
 //==========================================================
@@ -53,7 +53,7 @@ MO.FEaiCockpitForecastLogic010_setup = function FEaiCockpitForecastLogic010_setu
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitForecastLogic010_process = function FEaiCockpitForecastLogic010_process(){
+MO.FEaiCockpitForecastUniqueCustomer_process = function FEaiCockpitForecastUniqueCustomer_process(){
    var o = this;
    // 创建缩略
    o.__base.FEaiCockpitModule.process.call(o);
@@ -64,7 +64,7 @@ MO.FEaiCockpitForecastLogic010_process = function FEaiCockpitForecastLogic010_pr
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic010_dispose = function FEaiCockpitForecastLogic010_dispose(){
+MO.FEaiCockpitForecastUniqueCustomer_dispose = function FEaiCockpitForecastUniqueCustomer_dispose(){
    var o = this;
    // 释放属性
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);

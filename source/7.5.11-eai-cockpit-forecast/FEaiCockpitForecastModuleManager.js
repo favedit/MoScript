@@ -68,8 +68,8 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    o._logic006Module = o.createModule(MO.FEaiCockpitForecastLogic006);
    o._logic007Module = o.createModule(MO.FEaiCockpitForecastLogic007);
    o._logic008Module = o.createModule(MO.FEaiCockpitForecastLogic008);
-   o._logic009Module = o.createModule(MO.FEaiCockpitForecastLogic009);
-   o._logic010Module = o.createModule(MO.FEaiCockpitForecastLogic010);
+   o._logic009Module = o.createModule(MO.FEaiCockpitForecastUniqueCustomer);
+   o._logic010Module = o.createModule(MO.FEaiCockpitForecastAchievementProblem);
    o._tipModule = o.createModule(MO.FEaiCockpitForecastTip);
    o._indexModule = o.createModule(MO.FEaiCockpitForecastIndex);
    //..........................................................
