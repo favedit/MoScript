@@ -29,7 +29,7 @@ MO.FEaiCockpitNoticeListBoxItem = function FEaiCockpitNoticeListBoxItem(o) {
    // @method
    o.construct       = MO.FEaiCockpitNoticeListBoxItem_construct;
    // @method
-   o.setup           = MO.FEaiCockpitNoticeListBoxItem_setup;
+   o.loadData        = MO.FEaiCockpitNoticeListBoxItem_loadData;
    o.draw            = MO.FEaiCockpitNoticeListBoxItem_draw;
    o.onImageLoad     = MO.FEaiCockpitNoticeListBoxItem_onImageLoad;
    // @method
@@ -60,8 +60,6 @@ MO.FEaiCockpitNoticeListBoxItem_construct = function FEaiCockpitNoticeListBoxIte
    o._font2ndRowW = new MO.SUiFont();
    o._font2ndRowY = new MO.SUiFont();
    o._formatDate = new MO.TDate();
-   
-
 }
 
 //==========================================================
@@ -69,35 +67,30 @@ MO.FEaiCockpitNoticeListBoxItem_construct = function FEaiCockpitNoticeListBoxIte
 //
 // @method
 //==========================================================
-MO.FEaiCockpitNoticeListBoxItem_setup = function FEaiCockpitNoticeListBoxItem_setup(noticeUnit) {
+MO.FEaiCockpitNoticeListBoxItem_loadData = function FEaiCockpitNoticeListBoxItem_loadData(noticeUnit) {
    var o = this;
    o._noticeUnit = noticeUnit;
-
    o._font1stRowW.parse('bold #FFFFFF 24px Microsoft YaHei');
    o._font1stRowY.parse('bold #FFEC3B 24px Microsoft YaHei');
    o._font2ndRowW.parse('bold #FFFFFF 22px Microsoft YaHei');
    o._font2ndRowY.parse('bold #FFEC3B 22px Microsoft YaHei');
+   o._pbarBgImage = o._listBox.loadResourceImage('{eai.resource}/cockpit/notice/progress_bar_bg.png');
+   o._pbarFillImage = o._listBox.loadResourceImage('{eai.resource}/cockpit/notice/progress_bar_fill.png');
+   o._degreeImportantImage = o._listBox.loadResourceImage('{eai.resource}/cockpit/notice/degree_important.png');
+   o._degreeUrgentImage = o._listBox.loadResourceImage('{eai.resource}/cockpit/notice/degree_urgent.png');
+   o._degreeNormalImage = o._listBox.loadResourceImage('{eai.resource}/cockpit/notice/degree_normal.png');
 
-   var imageConsole = MO.Console.find(MO.FImageConsole);
-  // var bgImageNormal = o._bgImageNormal = imageConsole.load('{eai.resource}/cockpit/notice/item_bg.png');
- //  var bgImageSelected = o._bgImageSelected = imageConsole.load('{eai.resource}/cockpit/notice/item_bg_selected.png');
-   var pbarBgImage = o._pbarBgImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_bg.png');
-   var pbarFillImage = o._pbarFillImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_fill.png');
-  // var pbarGoodImage = o._pbarGoodImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_good.png');
-  // var pbarBadImage = o._pbarBadImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bad.png');
-   
-   var degreeImportantImage = o._degreeImportantImage = imageConsole.load('{eai.resource}/cockpit/notice/degree_important.png');
-   var degreeUrgentImage = o._degreeUrgentImage = imageConsole.load('{eai.resource}/cockpit/notice/degree_urgent.png');
-   var degreeNormalImage = o._degreeNormalImage = imageConsole.load('{eai.resource}/cockpit/notice/degree_normal.png');
- //  bgImageNormal.addLoadListener(o, o.onImageLoad);
-//   bgImageSelected.addLoadListener(o, o.onImageLoad);
-   pbarBgImage.addLoadListener(o, o.onImageLoad);
-   pbarFillImage.addLoadListener(o, o.onImageLoad);
- //  pbarGoodImage.addLoadListener(o, o.onImageLoad);
- //  pbarBadImage.addLoadListener(o, o.onImageLoad);
-   degreeImportantImage.addLoadListener(o, o.onImageLoad);
-   degreeUrgentImage.addLoadListener(o, o.onImageLoad);
-   degreeNormalImage.addLoadListener(o, o.onImageLoad);
+   //var imageConsole = MO.Console.find(MO.FImageConsole);
+   //var pbarBgImage = o._pbarBgImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_bg.png');
+   //var pbarFillImage = o._pbarFillImage = imageConsole.load('{eai.resource}/cockpit/notice/progress_bar_fill.png');
+   //var degreeImportantImage = o._degreeImportantImage = imageConsole.load('{eai.resource}/cockpit/notice/degree_important.png');
+   //var degreeUrgentImage = o._degreeUrgentImage = imageConsole.load('{eai.resource}/cockpit/notice/degree_urgent.png');
+   //var degreeNormalImage = o._degreeNormalImage = imageConsole.load('{eai.resource}/cockpit/notice/degree_normal.png');
+   //pbarBgImage.addLoadListener(o, o.onImageLoad);
+   //pbarFillImage.addLoadListener(o, o.onImageLoad);
+   //degreeImportantImage.addLoadListener(o, o.onImageLoad);
+   //degreeUrgentImage.addLoadListener(o, o.onImageLoad);
+   //degreeNormalImage.addLoadListener(o, o.onImageLoad);
 }
 
 //==========================================================

@@ -9,12 +9,14 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
-   o._backgroundUri = '{eai.resource}/cockpit/achievement/rankright.png';
+   o._backgroundUri        = '{eai.resource}/cockpit/achievement/rankright.png';
+   // @attribute
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
    o._dataTicker           = null;
    // @attribute
+   o._backgroundImage      = null;
    o._gridImage            = null;
    o._listBox              = null;
    o._index                = 0;
@@ -55,55 +57,55 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
- MO.FEaiCockpitAchievementTitleRankSnapshot_onDataFetch = function FEaiCockpitAchievementTitleRankSnapshot_onDataFetch(event){
+MO.FEaiCockpitAchievementTitleRankSnapshot_onDataFetch = function FEaiCockpitAchievementTitleRankSnapshot_onDataFetch(event){
    var o = this;
    var content = event.content;
    // 读取数据
    var data = o._data;
    if (data.unserializeSignBuffer(event.sign, event.content, true)) {
-       o.setData(data);
+      o.setData(data);
    }
 }
- //==========================================================
- // <T>设置数据重新显示</T>
- //
- // @method
- // @param unit:
- //==========================================================
- MO.FEaiCockpitAchievementTitleRankSnapshot_setData = function FEaiCockpitAchievementTitleRankSnapshot_setData(data) {
-    var o = this;
-    var achievementRank = data.achievementRank();
 
-    var humanRank = data.humanRank();
-    var averageRank = data.averageRank();
-    if (achievementRank.count() < 3 || humanRank.count() < 3 || averageRank.count() < 3) {
-       return;
-    }
-    var grid = o._gridControl;
-    grid.clearRows();
-
-    row = grid.allocRow();
-    row.set('corporateName', "第一名");
-    row.set('firstName', achievementRank.at(0).rank().toString());
-    row.set('secondName', achievementRank.at(1).rank().toString());
-    row.set('thirdName', achievementRank.at(2).rank().toString());
-    grid.pushRow(row);
-
-    row = grid.allocRow();
-    row.set('corporateName', "第二名");
-    row.set('firstName', humanRank.at(0).rank().toString());
-    row.set('secondName', humanRank.at(1).rank().toString());
-    row.set('thirdName', humanRank.at(2).rank().toString());
-    grid.pushRow(row);
-
-    row = grid.allocRow();
-    row.set('corporateName', "第三名");
-    row.set('firstName', averageRank.at(0).rank().toString());
-    row.set('secondName', averageRank.at(1).rank().toString());
-    row.set('thirdName', averageRank.at(2).rank().toString());
-    grid.pushRow(row);
-   
-    o.dirty();
+//==========================================================
+// <T>设置数据重新显示</T>
+//
+// @method
+// @param unit:
+//==========================================================
+MO.FEaiCockpitAchievementTitleRankSnapshot_setData = function FEaiCockpitAchievementTitleRankSnapshot_setData(data) {
+   var o = this;
+   var achievementRank = data.achievementRank();
+   var humanRank = data.humanRank();
+   var averageRank = data.averageRank();
+   if (achievementRank.count() < 3 || humanRank.count() < 3 || averageRank.count() < 3){
+      return;
+   }
+   var grid = o._gridControl;
+   grid.clearRows();
+   // 第一行
+   row = grid.allocRow();
+   row.set('corporateName', "第一名");
+   row.set('firstName', achievementRank.at(0).rank());
+   row.set('secondName', humanRank.at(0).rank());
+   row.set('thirdName', averageRank.at(0).rank());
+   grid.pushRow(row);
+   // 第二行
+   row = grid.allocRow();
+   row.set('corporateName', "第二名");
+   row.set('firstName', achievementRank.at(1).rank());
+   row.set('secondName', humanRank.at(1).rank());
+   row.set('thirdName', averageRank.at(1).rank());
+   grid.pushRow(row);
+   // 第三行
+   row = grid.allocRow();
+   row.set('corporateName', "第三名");
+   row.set('firstName', achievementRank.at(2).rank());
+   row.set('secondName', humanRank.at(2).rank());
+   row.set('thirdName', averageRank.at(2).rank());
+   grid.pushRow(row);
+   // 重新绘制
+   o.dirty();
 }
 //==========================================================
 // <T>前绘制处理。</T>
@@ -113,16 +115,6 @@ MO.FEaiCockpitAchievementTitleRankSnapshot = function FEaiCockpitAchievementTitl
 MO.FEaiCockpitAchievementTitleRankSnapshot_onPaintBegin = function FEaiCockpitAchievementTitleRankSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   //..........................................................
-   // 绘制背景
-
 }
 
 //==========================================================
@@ -133,15 +125,6 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_onPaintBegin = function FEaiCockpitAc
 MO.FEaiCockpitAchievementTitleRankSnapshot_onPaintEnd = function FEaiCockpitAchievementTitleRankSnapshot_onPaintEnd(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
-   // 获得变量
-   var graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   var width = rectangle.width;
-   var height = rectangle.height;
-   //..........................................................
-   //..........................................................
 }
 
 //==========================================================
@@ -158,8 +141,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_construct = function FEaiCockpitAchie
    // 设置属性
    o._dataTicker = new MO.TTicker(1000 * 60);
    o._rollTicker = new MO.TTicker(o._rollDuration);
-   
-  o._data = MO.Class.create(MO.FEaiCockpitMessageAchievementNextRanks);
+   o._data = MO.Class.create(MO.FEaiCockpitMessageAchievementNextRanks);
 }
 
 //==========================================================
@@ -170,11 +152,10 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_construct = function FEaiCockpitAchie
 MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchievementTitleRankSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
-   // 加载图片
-
+   // 创建网格
    var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
    grid.setOptionClip(true);
-   grid.setLocation(60, 10);
+   grid.setLocation(60, 14);
    grid.setSize(900, 120);
    grid.setHeadHeight(18);
    grid.setHeadBackColor('rgba(255,0,0,0)');
@@ -241,6 +222,7 @@ MO.FEaiCockpitAchievementTitleRankSnapshot_setup = function FEaiCockpitAchieveme
 //==========================================================
 MO.FEaiCockpitAchievementTitleRankSnapshot_processLogic = function FEaiCockpitAchievementTitleRankSnapshot_processLogic(){
    var o = this;
+   o.__base.FEaiCockpitControl.processLogic.call(o);
    if(o._dataTicker.process()){
       var achievement = MO.Console.find(MO.FEaiLogicConsole).cockpit().achievement();
       achievement.doFetchRank(o, o.onDataFetch);

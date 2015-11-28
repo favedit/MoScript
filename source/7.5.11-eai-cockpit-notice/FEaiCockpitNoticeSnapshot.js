@@ -9,29 +9,58 @@ MO.FEaiCockpitNoticeSnapshot = function FEaiCockpitNoticeSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
-   o._noticeData           = null;
-   o._dataTicker           = null;
-   o._noticeListBox        = null;
-   o._bgImage              = null;
-   o._titleImage           = null;
-   o._action               = null;
+   o._noticeData    = null;
+   o._dataTicker    = null;
+   o._noticeListBox = null;
+   o._bgImage       = null;
+   o._titleImage    = null;
+   o._action        = null;
 
    //..........................................................
    // @event
-   o.onPaintBegin          = MO.FEaiCockpitNoticeSnapshot_onPaintBegin;
-
-   o.oeUpdate              = MO.FEaiCockpitNoticeSnapshot_oeUpdate;
+   o.onFetchData  = MO.FEaiCockpitNoticeSnapshot_onFetchData;
+   o.onPaintBegin   = MO.FEaiCockpitNoticeSnapshot_onPaintBegin;
+   o.oeUpdate       = MO.FEaiCockpitNoticeSnapshot_oeUpdate;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitNoticeSnapshot_construct;
+   o.construct      = MO.FEaiCockpitNoticeSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitNoticeSnapshot_setup;
-   o.processLogic          = MO.FEaiCockpitNoticeSnapshot_processLogic;
-   o.onNoticeFetch         = MO.FEaiCockpitNoticeSnapshot_onNoticeFetch;
+   o.setup          = MO.FEaiCockpitNoticeSnapshot_setup;
+   o.processLogic   = MO.FEaiCockpitNoticeSnapshot_processLogic;
    // @method
-   o.dispose               = MO.FEaiCockpitNoticeSnapshot_dispose;
+   o.dispose        = MO.FEaiCockpitNoticeSnapshot_dispose;
    
    return o;
+}
+
+//==========================================================
+// <T>获取业绩数据。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitNoticeSnapshot_onFetchData = function FEaiCockpitNoticeSnapshot_onFetchData(event) {
+   var o = this;
+   var content = event.content;
+   // 读取数据
+   var listBox = o._noticeListBox;
+   var data = o._noticeData;
+   if(data.unserializeSignBuffer(event.sign, event.content, true)){
+      var notices = o._noticeData.notices();
+      var count = notices.count();
+      listBox.clear();
+      for (var i = 0; i < count; i++) {
+         var noticeItem = listBox.createItem(MO.FEaiCockpitNoticeListBoxItem);
+         noticeItem.setSize(880, 50);
+         noticeItem.loadData(notices.at(i));
+         //var noticeItem = MO.Class.create(MO.FEaiCockpitNoticeListBoxItem);
+         //noticeItem.setup(notices.at(i));
+         //noticeItem.setSize(880, 50);
+         //listBox.push(noticeItem);
+      }
+      listBox.setStartTick(MO.Timer.current());
+      listBox.setAnimationPlaying(true);
+      o.dirty();
+   }
 }
 
 //==========================================================
@@ -134,36 +163,9 @@ MO.FEaiCockpitNoticeSnapshot_processLogic = function FEaiCockpitNoticeSnapshot_p
    o.__base.FEaiCockpitControl.processLogic.call(o);
    if (o._dataTicker.process()) {
       var notice = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
-      notice.doFetch(o, o.onNoticeFetch);
+      notice.doFetch(o, o.onFetchData);
    }
    if (o._noticeListBox.animationPlaying()) {
-      o.dirty();
-   }
-}
-
-//==========================================================
-// <T>获取业绩数据。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitNoticeSnapshot_onNoticeFetch = function FEaiCockpitNoticeSnapshot_onNoticeFetch(event) {
-   var o = this;
-   var content = event.content;
-   // 读取数据
-   var listBox = o._noticeListBox;
-   var data = o._noticeData;
-   if(data.unserializeSignBuffer(event.sign, event.content, true)){
-      var notices = o._noticeData.notices();
-      var count = notices.count();
-      listBox.clear();
-      for (var i = 0; i < count; i++) {
-         var noticeItem = MO.Class.create(MO.FEaiCockpitNoticeListBoxItem);
-         noticeItem.setup(notices.at(i));
-         noticeItem.setSize(880, 50);
-         listBox.push(noticeItem);
-      }
-      listBox.setStartTick(MO.Timer.current());
-      listBox.setAnimationPlaying(true);
       o.dirty();
    }
 }

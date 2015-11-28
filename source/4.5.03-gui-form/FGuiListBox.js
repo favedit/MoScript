@@ -9,26 +9,27 @@ MO.FGuiListBox = function FGuiListBox(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @attribute
-   o._gap           = MO.Class.register(o, new MO.AGetSet('_gap'), 0);
-   o._items         = MO.Class.register(o, new MO.AGetSet('_items'));
-   o._displayCount  = MO.Class.register(o, new MO.AGetSet('_displayCount'), 5);
+   o._gap                   = MO.Class.register(o, new MO.AGetSet('_gap'), 0);
+   o._items                 = MO.Class.register(o, new MO.AGetSet('_items'));
+   o._displayCount          = MO.Class.register(o, new MO.AGetSet('_displayCount'), 5);
    // @attribute
-   o._startTick     = MO.Class.register(o, new MO.AGetSet('_startTick'), 0);
+   o._startTick             = MO.Class.register(o, new MO.AGetSet('_startTick'), 0);
    o._dataAnimationDuration = 5000;
-   o._animationPlaying = MO.Class.register(o, new MO.AGetSet('_animationPlaying'), false);
+   o._animationPlaying      = MO.Class.register(o, new MO.AGetSet('_animationPlaying'), false);
    // @attribute
-   o._itemRectangle = null;
+   o._itemRectangle         = null;
    //..........................................................
    // @event
-   o.onPaintBegin   = MO.FGuiListBox_onPaintBegin;
+   o.onPaintBegin           = MO.FGuiListBox_onPaintBegin;
    //..........................................................
    // @method
-   o.construct      = MO.FGuiListBox_construct;
+   o.construct              = MO.FGuiListBox_construct;
    // @method
-   o.push           = MO.FGuiListBox_push;
-   o.clear          = MO.FGuiListBox_clear;
+   o.createItem             = MO.FGuiListBox_createItem;
+   o.push                   = MO.FGuiListBox_push;
+   o.clear                  = MO.FGuiListBox_clear;
    // @method
-   o.dispose        = MO.FGuiListBox_dispose;
+   o.dispose                = MO.FGuiListBox_dispose;
    return o;
 }
 
@@ -84,6 +85,20 @@ MO.FGuiListBox_construct = function FGuiListBox_construct() {
    // 设置变量
    o._items = new MO.TObjects();
    o._itemRectangle = new MO.SRectangle();
+}
+
+//==========================================================
+// <T>创建一个子对象。</T>
+//
+// @method
+// @param clazz:Function 类对象
+//==========================================================
+MO.FGuiListBox_createItem = function FGuiListBox_createItem(clazz){
+   var o = this;
+   var item = MO.Class.create(clazz);
+   item.setListBox(o);
+   o.push(item);
+   return item;
 }
 
 //==========================================================

@@ -10,6 +10,5 @@ MO.FEaiCockpitMessageAchievementNextRank = function FEaiCockpitMessageAchievemen
    //..........................................................
    // @attribute
    o._rank = MO.Class.register(o, [new MO.AGetter('_rank'), new MO.APersistence('_rank', MO.EDataType.String)]);
-   
    return o;
 }

@@ -41,17 +41,17 @@ MO.AListener_build = function AListener_build(clazz, instance){
    var o = this;
    // 增加一个监听器
    var addListener = 'add' + o._linker + 'Listener';
-   instance[addListener] = MO.RListener.makeAddListener(addListener, o._linker);
+   instance[addListener] = MO.Core.Listener.makeAddListener(addListener, o._linker);
    // 设置一个监听器
    var setListener = 'set' + o._linker + 'Listener';
-   instance[setListener] = MO.RListener.makeSetListener(setListener, o._linker);
+   instance[setListener] = MO.Core.Listener.makeSetListener(setListener, o._linker);
    // 注销一个监听器
    var removeListener = 'remove' + o._linker + 'Listener';
-   instance[removeListener] = MO.RListener.makeRemoveListener(removeListener, o._linker);
+   instance[removeListener] = MO.Core.Listener.makeRemoveListener(removeListener, o._linker);
    // 清空全部监听器
    var clearListeners = 'clear' + o._linker + 'Listeners';
-   instance[clearListeners] = MO.RListener.makeClearListener(clearListeners, o._linker);
+   instance[clearListeners] = MO.Core.Listener.makeClearListener(clearListeners, o._linker);
    // 处理监听器
    var processListener = 'process' + o._linker + 'Listener';
-   instance[processListener] = MO.RListener.makeProcessListener(processListener, o._linker);
+   instance[processListener] = MO.Core.Listener.makeProcessListener(processListener, o._linker);
 }

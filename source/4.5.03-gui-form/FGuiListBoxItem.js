@@ -9,6 +9,9 @@ MO.FGuiListBoxItem = function FGuiListBoxItem(o) {
    o = MO.Class.inherits(this, o, MO.FGuiControl);
    //..........................................................
    // @method
+   o._listBox  = MO.Class.register(o, new MO.AGetSet('_listBox'));
+   //..........................................................
+   // @method
    o.construct = MO.FGuiListBoxItem_construct;
    // @method
    o.draw      = MO.FGuiListBoxItem_draw;

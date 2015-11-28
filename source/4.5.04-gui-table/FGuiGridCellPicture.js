@@ -15,8 +15,8 @@ MO.FGuiGridCellPicture = function FGuiGridCellPicture(o) {
    o.construct = MO.FGuiGridCellPicture_construct;
    // @method
    o.testReady = MO.FGuiGridCellPicture_testReady;
-   o.setValue = MO.FGuiGridCellPicture_setValue;
-   o.draw = MO.FGuiGridCellPicture_draw;
+   o.setValue  = MO.FGuiGridCellPicture_setValue;
+   o.draw      = MO.FGuiGridCellPicture_draw;
    // @method
    o.dispose = MO.FGuiGridCellPicture_dispose;
    return o;
@@ -100,11 +100,11 @@ MO.FGuiGridCellPicture_setValue = function FGuiGridCellPicture_setValue(value) {
    o.__base.FGuiGridCell.setValue.call(o, value);
    // 获得文本
    var url = o.text();
-   if (MO.Lang.String.isEmpty(url)) {
+   if(MO.Lang.String.isEmpty(url)){
       o._image = null;
-   } else {
-      // 设置图片
-      o._image = MO.Console.find(MO.FImageConsole).load(url);
+   }else{
+      o._image = o._grid.loadResourceImage(url);
+      //o._image = MO.Console.find(MO.FImageConsole).load(url);
    }
 }
 

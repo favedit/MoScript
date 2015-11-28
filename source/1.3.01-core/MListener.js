@@ -46,7 +46,12 @@ MO.MListener_addListener = function MListener_addListener(name, owner, method){
       listeners = new MO.TListeners();
       listenerss.set(name, listeners);
    }
-   return listeners.register(owner, method);
+   // 检查重复
+   var listener = listeners.find(owner, method);
+   if(!listener){
+      listener = listeners.register(owner, method);
+   }
+   return listener;
 }
 
 //==========================================================
