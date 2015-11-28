@@ -8,8 +8,9 @@
 MO.FEaiCockpitForecastLogic004Snapshot = function FEaiCockpitForecastLogic004Snapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   o._comingSoon    = true;
    // @attribute
-   o._backgroundUri = '{eai.resource}/cockpit/forecast/logic.png';
+   o._backgroundUri = '{eai.resource}/cockpit/forecast/logic4.png';
    //..........................................................
    // @event
    o.onPaintBegin   = MO.FEaiCockpitForecastLogic004Snapshot_onPaintBegin;
@@ -55,7 +56,7 @@ MO.FEaiCockpitForecastLogic004Snapshot_construct = function FEaiCockpitForecastL
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
-   o._cellLocation.set(8, 5, 0);
+   o._cellLocation.set(8, 17, 0);
    o._cellSize.set(6, 4);
 }
 
