@@ -12,7 +12,7 @@ MO.FEaiCockpitNoticeTableSnapshot = function FEaiCockpitNoticeTableSnapshot(o) {
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
-   o._tableImage           = null;
+   o._backgroundUri        = '{eai.resource}/cockpit/notice/table/notice_list_bg.png';
    o._fontTop              = null;
    o._noticeData           = null;
    // @attribute  
@@ -33,14 +33,6 @@ MO.FEaiCockpitNoticeTableSnapshot = function FEaiCockpitNoticeTableSnapshot(o) {
    o.dispose               = MO.FEaiCockpitNoticeTableSnapshot_dispose;
    return o;
 }
-//==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitNoticeTableSnapshot_onImageLoad = function FEaiCockpitNoticeTableSnapshot_onImageLoad() {
-   this.dirty();
-}
 
 //==========================================================
 // <T>前绘制处理。</T>
@@ -49,14 +41,13 @@ MO.FEaiCockpitNoticeTableSnapshot_onImageLoad = function FEaiCockpitNoticeTableS
 //==========================================================
 MO.FEaiCockpitNoticeTableSnapshot_onPaintBegin = function FEaiCockpitNoticeTableSnapshot_onPaintBegin(event) {
    var o = this;
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o,event)
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    var left = rectangle.left;
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   graphic.drawImage(o._tableImage, left,0,width,height);
-
 }
 
 //==========================================================
@@ -81,7 +72,7 @@ MO.FEaiCockpitNoticeTableSnapshot_construct = function FEaiCockpitNoticeTableSna
 //==========================================================
 MO.FEaiCockpitNoticeTableSnapshot_setup = function FEaiCockpitNoticeTableSnapshot_setup(){
    var o = this;
-   o._tableImage = o.loadResourceImage('{eai.resource}/cockpit/notice/table/notice_list_bg.png');
+   o.__base.FEaiCockpitControl.setup.call(o);
    var grid = o._gridRank = MO.Class.create(MO.FGuiGridControl);
    grid.setOptionClip(false);
    grid.setLocation(20, 20);
@@ -140,13 +131,12 @@ MO.FEaiCockpitNoticeTableSnapshot_setup = function FEaiCockpitNoticeTableSnapsho
    grid.pushColumn(column);
    o.push(grid);
    var statistics = MO.Console.find(MO.FEaiLogicConsole).notice();
-   // if (o._dataTicker.process()){
-      // 取动态数据
+   if (o._dataTicker.process()){
       statistics.doFetchList(o, o.refreshTableData);
-      // 取阅读情况数据
-   // }
+   }
 
 }
+
 //==========================================================
 // <T>逻辑处理。</T>
 //
@@ -166,12 +156,12 @@ MO.FEaiCockpitNoticeTableSnapshot_refreshTableData = function FEaiCockpitNoticeT
       var unit = noticeUnits.at(i);
       var row = grid.allocRow();
       // 排行榜数据填充
-      row.set('type_images', '{eai.resource}/cockpit/notice/table/notice_type_'+unit.noticeType()+'.png');
+      row.set('type_images', '{eai.resource}/cockpit/notice/table/notice_type_' + unit.noticeType() + '.png');
       row.set('title_data', unit.title());
       row.set('record_date', unit.date());
       var progress = parseInt(unit.readCount()/subordinateCount*100);
       row.set('prograss_data', progress);
-      row.set('degree_images','{eai.resource}/cockpit/notice/table/notice_im_'+unit.important()+'.png');
+      row.set('degree_images','{eai.resource}/cockpit/notice/table/notice_im_' + unit.important() + '.png');
       grid.pushRow(row);
    }
 }

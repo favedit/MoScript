@@ -11,7 +11,7 @@ MO.FEaiCockpitNoticeDynamicNewestDataUnit = function FEaiCockpitNoticeDynamicNew
    // @attribute
    o._valueCount      = MO.Class.register(o, [new MO.AGetter('_valueCount'), new MO.APersistence('_valueCount', MO.EDataType.Int32)]);
    o._department      = MO.Class.register(o, [new MO.AGetter('_department'), new MO.APersistence('_department', MO.EDataType.String)]);
-   o._readprogress = MO.Class.register(o, [new MO.AGetter('_readprogress'), new MO.APersistence('_readprogress', MO.EDataType.Double)]);
+   o._readprogress    = MO.Class.register(o, [new MO.AGetter('_readprogress'), new MO.APersistence('_readprogress', MO.EDataType.Double)]);
 
    return o;
 }

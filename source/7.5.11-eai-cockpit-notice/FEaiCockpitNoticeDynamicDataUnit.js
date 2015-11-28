@@ -10,8 +10,8 @@ MO.FEaiCockpitNoticeDynamicDataUnit = function FEaiCockpitNoticeDynamicDataUnit(
    //..........................................................
    // @attribute
    o._valueCount      = MO.Class.register(o, [new MO.AGetter('_valueCount'), new MO.APersistence('_valueCount', MO.EDataType.Int32)]);
-   o._department     = MO.Class.register(o, [new MO.AGetter('_department'), new MO.APersistence('_department', MO.EDataType.String)]);
-   o._readName       = MO.Class.register(o, [new MO.AGetter('_readName'), new MO.APersistence('_readName', MO.EDataType.String)]);
-   o._readDate      = MO.Class.register(o, [new MO.AGetter('_readDate'), new MO.APersistence('_readDate', MO.EDataType.String)]);
+   o._department      = MO.Class.register(o, [new MO.AGetter('_department'), new MO.APersistence('_department', MO.EDataType.String)]);
+   o._readName        = MO.Class.register(o, [new MO.AGetter('_readName'), new MO.APersistence('_readName', MO.EDataType.String)]);
+   o._readDate        = MO.Class.register(o, [new MO.AGetter('_readDate'), new MO.APersistence('_readDate', MO.EDataType.String)]);
    return o;
 }

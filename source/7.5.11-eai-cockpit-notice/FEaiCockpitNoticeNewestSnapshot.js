@@ -9,10 +9,10 @@ MO.FEaiCockpitNoticeNewestSnapshot = function FEaiCockpitNoticeNewestSnapshot(o)
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._backgroundUri        = '{eai.resource}/cockpit/notice/newest/new_notice_bg.png';
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
-   o._newestImage          = null;
    o._fontTitle            = null;
    o._fontMiddle           = null;
    o._title                = "";
@@ -41,14 +41,6 @@ MO.FEaiCockpitNoticeNewestSnapshot = function FEaiCockpitNoticeNewestSnapshot(o)
    o.dispose               = MO.FEaiCockpitNoticeNewestSnapshot_dispose;
    return o;
 }
-//==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitNoticeNewestSnapshot_onImageLoad = function FEaiCockpitNoticeNewestSnapshot_onImageLoad() {
-   this.dirty();
-}
 
 //==========================================================
 // <T>前绘制处理。</T>
@@ -57,43 +49,41 @@ MO.FEaiCockpitNoticeNewestSnapshot_onImageLoad = function FEaiCockpitNoticeNewes
 //==========================================================
 MO.FEaiCockpitNoticeNewestSnapshot_onPaintBegin = function FEaiCockpitNoticeNewestSnapshot_onPaintBegin(event) {
    var o = this;
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o,event);
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    var left = rectangle.left;
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   graphic.drawImage(o._newestImage, left,top,width,height);
-   graphic.drawImage(o._publisherImage, left+55,top+20,180,40);
+   graphic.drawImage(o._publisherImage, left + 55,top + 20,180,40);
    var fontTitle = o._fontTitle;
-   
    graphic.setFont(fontTitle.toString());
    var title = o._title;
    if (typeof (title) == "string" && title.length > 0){
       if (title.length > 13){
-         title = title.substring(0,10)+'...';
+         title = title.substring(0,10) + '...';
       }
       var fontMiddle = o._fontMiddle;
       graphic.setFont(fontMiddle.toString());
-      graphic.drawText(title, left+300, top+47, fontTitle.color);
-      graphic.drawImage(o._newNoticeImage, left+300+30+title.length*25,top+20,48,50);
+      graphic.drawText(title, left + 300, top + 47, fontTitle.color);
+      graphic.drawImage(o._newNoticeImage, left + 300 + 30 + title.length*25,top + 20,48,50);
       graphic.drawText("发布人:" + o._publisher, left+55, top+100, fontMiddle.color);
-      graphic.drawText("发布时间:" + o._publishDate.format('YYYY-MM-DD'), left+250, top+100, fontMiddle.color);
-      graphic.drawText("阅读进度:", left+500, top+100, fontMiddle.color);
-      graphic.drawImage(o._pbarBgImage, left+600, top+85, 199, 13);
+      graphic.drawText("发布时间:" + o._publishDate.format('YYYY-MM-DD'), left + 250, top + 100, fontMiddle.color);
+      graphic.drawText("阅读进度:", left + 500, top + 100, fontMiddle.color);
+      graphic.drawImage(o._pbarBgImage, left + 600, top + 85, 199, 13);
       var clipWidth = 199 *o._readprogress;
       var clipHeight = 13;
       graphic._handle.save();
       graphic._handle.rect(left+600, top+85, clipWidth, 13)
       graphic._handle.clip();
-      graphic.drawImage(o._pbarFillImage, left+600, top+85, 199, 13);
+      graphic.drawImage(o._pbarFillImage, left + 600, top + 85, 199, 13);
       graphic._handle.restore();
       graphic.setFont(fontTitle.toString());
-      graphic.drawTextRectangle(o._noticeContent, left+55, top+160, 750, 200,27,fontTitle.color);
-   }
-
-   
+      graphic.drawTextRectangle(o._noticeContent, left + 55, top + 160, 750, 200,27,fontTitle.color);
+   } 
 }
+
 //==========================================================
 // <T>刷新处理。</T>
 //
@@ -111,6 +101,7 @@ MO.FEaiCockpitNoticeNewestSnapshot_renovateView = function FEaiCockpitNoticeNewe
    o._readprogress = newestNotice.readprogress();
    o._noticeContent = newestNotice.noticeContent();
 }
+
 //==========================================================
 // <T>构造处理。</T>
 //
@@ -136,15 +127,13 @@ MO.FEaiCockpitNoticeNewestSnapshot_construct = function FEaiCockpitNoticeNewestS
 //==========================================================
 MO.FEaiCockpitNoticeNewestSnapshot_setup = function FEaiCockpitNoticeNewestSnapshot_setup(){
    var o = this;
-   o._newestImage = o.loadResourceImage('{eai.resource}/cockpit/notice/newest/new_notice_bg.png');
+   o.__base.FEaiCockpitControl.setup.call(o);
    o._publisherImage = o.loadResourceImage('{eai.resource}/cockpit/notice/newest/release_notice.png');
    o._newNoticeImage = o.loadResourceImage('{eai.resource}/cockpit/notice/newest/new.png');
    o._fontTitle.parse('#FFFFFF 25px Microsoft YaHei');
    o._fontMiddle.parse('#FFFFFF 20px Microsoft YaHei');
    var pbarBgImage = o._pbarBgImage = o.loadResourceImage('{eai.resource}/cockpit/notice/table/progress_bar_bg.png');
-   pbarBgImage.addLoadListener(o, o.onImageLoad);
    var pbarFillImage = o._pbarFillImage = o.loadResourceImage('{eai.resource}/cockpit/notice/table/progress_bar_fill.png');
-   pbarFillImage.addLoadListener(o, o.onImageLoad);
    var statistics = MO.Console.find(MO.FEaiLogicConsole).notice();
    //取数据
    if(o._dataTicker.process()){
