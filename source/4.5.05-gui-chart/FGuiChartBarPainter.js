@@ -85,7 +85,7 @@ MO.FGuiChartBarPainter_drawAxis = function FGuiChartBarPainter_drawAxis(context)
    var yCount = yDegrees.count();
    if(xCount == 0 || yCount == 0) return;
    var stepHeight = pHeight / (yCount - 1);
-   var stepWidth = pWidth / (xCount);
+   var stepWidth = pWidth / (xCount + 1);
    var yGap = axisY.degreeLabelGap();
    var xGap = axisX.degreeLabelGap();
    var xFont = axisX.font();
@@ -121,9 +121,9 @@ MO.FGuiChartBarPainter_drawAxis = function FGuiChartBarPainter_drawAxis(context)
       graphic.drawText(yLabel, pLeft, pTop - yLabelFont.size / 2, yLabelFont.color);
    }
    // 绘制X轴
-   for( var i = 0; i <= xCount; ++i) {
+   for( var i = 0; i <= xCount + 1; ++i) {
       var x = pLeft + stepWidth * i;
-      if(i == 0) {
+      if(i == 0 || i > xCount) {
          var lineWidth = axisX.lineWidth();
          var lineColor = axisX.lineColor();
       }else {
@@ -140,7 +140,7 @@ MO.FGuiChartBarPainter_drawAxis = function FGuiChartBarPainter_drawAxis(context)
          graphic.drawShape(lineWidth, lineColor);
       }
       //绘制刻度
-      if(i > 0 && axisX.optionShowLabel()) {
+      if(i > 0 && i <= xCount && axisX.optionShowLabel()) {
          var label = degree.label();
          var x = pLeft + stepWidth * i;
          var textWidth = graphic.textWidth(label);
@@ -190,22 +190,34 @@ MO.FGuiChartBarPainter_drawLine = function FGuiChartBarPainter_drawLine(context,
    var maxValue = yDegrees.get(yCount - 1).value();
    var minValue = yDegrees.get(0).value();
    var stepHeight = pHeight / (maxValue - minValue);
-   var stepWidth = pWidth / (xCount);
+   var stepWidth = pWidth / (xCount + 1);
    //绘制
    var lineWidth = series.lineWidth();
    var lineColor = series.lineColor();
    var rectWidth = series.rectWidth();
    var fillColor = series.fillColor();
+   var fillType = fillColor;
+   var fillGradient = series.fillGradient();
    var optionShowBorder = series.optionShowBorder();
    var values = series.values();
    var valueCount = values.count();
+   //生成渐变
+   if(fillGradient != null) {
+      var len = fillGradient.length;
+      var gradient = graphic.createLinearGradient(0, pTop, 0, pHeight);
+      for( var i = 0; i < len; ++i) {
+         var array = fillGradient[i];
+         gradient.addColorStop(array[0], array[1]);
+      }
+      fillType = gradient;
+   }
    for(var i = 0; i < valueCount; ++i) {
       var value = values.at(i);
       var x = pLeft + stepWidth * (i+1) - rectWidth / 2;
       var y = pTop + (maxValue - value) * stepHeight;
       var h = value * stepHeight - 1;
       //绘制填充
-      graphic.fillRectangle(x, y, rectWidth, h, fillColor);
+      graphic.fillRectangle(x, y, rectWidth, h, fillType);
       //绘制边界
       if(optionShowBorder) {
          graphic.beginPath();

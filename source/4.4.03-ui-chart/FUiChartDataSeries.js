@@ -17,6 +17,7 @@ MO.FUiChartDataSeries = function FUiChartDataSeries(o){
    o._lineWidth         = MO.Class.register(o, new MO.AGetSet('_lineWidth'), 1);
    o._rectWidth         = MO.Class.register(o, new MO.AGetSet('_rectWidth'), 10);
    o._fillColor         = MO.Class.register(o, new MO.AGetSet('_fillColor'), '#FFFFFF');
+   o._fillGradient      = MO.Class.register(o, new MO.AGetSet('_fillGradient'));
    o._optionShowBorder  = MO.Class.register(o, new MO.AGetSet('_optionShowBorder'), true);
    // @attribute
    o._dotSize           = MO.Class.register(o, new MO.AGetSet('_dotSize'), 1);
