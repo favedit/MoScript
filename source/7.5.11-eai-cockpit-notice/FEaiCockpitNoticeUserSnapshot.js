@@ -48,7 +48,7 @@ MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin = function FEaiCockpitNoticeUserSn
    var width = rectangle.width;
    var height = rectangle.height;
    var scale = 120 / 840;
-   if (o._data != null && o._data.publishDate() != null) {
+   if (o._data != null && o._data.publishDate() != null && o._data.label() != "") {
       o._userInfoDate.parse(o._data.publishDate());
       graphic.setFont('21px Microsoft YaHei');
       graphic.drawText("姓名：", left + 89, top + 33, "#ffffff");
@@ -58,6 +58,16 @@ MO.FEaiCockpitNoticeUserSnapshot_onPaintBegin = function FEaiCockpitNoticeUserSn
       graphic.drawText("最新发布：" + o._userInfoDate.format("YYYY-MM-DD"), left + 498, top + 66, "#ffffff");
       graphic.drawText("下属人数：" + o._data.userCount() + "人", left + 89, top + 99, "#ffffff");
       graphic.drawText("阅读进度：" + o._data.readprocess() + "%", left + 498, top + 99, "#ffffff");
+   }
+   else {
+      graphic.setFont('21px Microsoft YaHei');
+      graphic.drawText("姓名：王之焕", left + 89, top + 33, "#ffffff");
+      graphic.drawText("王之焕", left + 153, top + 33, "#ffe721");
+      graphic.drawText("发布号令：23条", left + 498, top + 33, "#ffffff");
+      graphic.drawText("职位：集团首席运营官", left + 89, top + 66, "#ffffff");
+      graphic.drawText("最新发布：2015-11-05", left + 498, top + 66, "#ffffff");
+      graphic.drawText("下属人数：3580人", left + 89, top + 99, "#ffffff");
+      graphic.drawText("阅读进度：80%", left + 498, top + 99, "#ffffff");
    }
    
 }
