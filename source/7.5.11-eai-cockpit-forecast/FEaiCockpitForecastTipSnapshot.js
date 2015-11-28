@@ -8,6 +8,7 @@
 MO.FEaiCockpitForecastTipSnapshot = function FEaiCockpitForecastTipSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   o._comingSoon    = true;
    // @attribute
    o._backgroundUri = '{eai.resource}/cockpit/forecast/tip.png';
    //..........................................................
