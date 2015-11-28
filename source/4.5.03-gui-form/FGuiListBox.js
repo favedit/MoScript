@@ -58,7 +58,7 @@ MO.FGuiListBox_onPaintBegin = function FGuiListBox_onPaintBegin(event) {
    var itemCount = items.count();
    var displayCount = o._displayCount;
    var gap = o._gap;
-   var rate = (MO.Timer.current() - o._startTick) / o._dataAnimationDuration;
+   var rate = o._animationPlaying ? (MO.Timer.current() - o._startTick) / o._dataAnimationDuration : 1;
    if (rate > 1) {
       rate = 1;
       o._animationPlaying = false;

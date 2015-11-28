@@ -17,6 +17,7 @@ MO.FEaiCockpitProjectSnapshot = function FEaiCockpitProjectSnapshot(o) {
    // @attribute
    o._backgroundImage      = null;
    o._backgroundPadding    = null;
+   o._startFlag            = true;
    // @attribute
    //..........................................................
    // @event
@@ -55,7 +56,13 @@ MO.FEaiCockpitProjectSnapshot_onDataFetch = function FEaiCockpitProjectSnapshot_
          listBox.push(item);
       }
       listBox.setStartTick(MO.Timer.current());
-      listBox.setAnimationPlaying(true);
+      if(o._startFlag) {
+         listBox.setAnimationPlaying(true);
+         o._startFlag = false;
+      }else {
+         listBox.setAnimationPlaying(false);
+      }
+      
       o.dirty();
    }
 }

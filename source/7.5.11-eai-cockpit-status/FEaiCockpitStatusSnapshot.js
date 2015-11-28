@@ -9,6 +9,8 @@ MO.FEaiCockpitStatusSnapshot = function FEaiCockpitStatusSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    o._comingSoon      = true;
+   o._rotateProcess   = 0;
+   o._startFlag       = true;
    //..........................................................
    // @attribute
    o._name            = 'cockpit.status.snapshot';
@@ -42,7 +44,12 @@ MO.FEaiCockpitStatusSnapshot_onStatusFetch = function FEaiCockpitStatusSnapshot_
    //读取数据
    var data = o._data;
    data.unserializeSignBuffer(event.sign, event.content, true);
-   o._rotateProcess = 0;
+   if(o._startFlag) {
+      o._rotateProcess = 0;
+      o._startFlag = false;
+   }else {
+      o._rotateProcess = 0.99;
+   }
 }
 
 //==========================================================
