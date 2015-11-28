@@ -616,17 +616,21 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
 // @param width:Number 宽度
 // @param height:Number 高度
 //==========================================================
-MO.FGuiControl_paintGraphic = function FGuiControl_paintGraphic(graphic, left, top, width, height){
+MO.FGuiControl_paintGraphic = function FGuiControl_paintGraphic(graphic, left, top, width, height, parameters){
    var o = this;
-   var size = o._size;
-   // 绘制处理
+   var statusDirty = o._statusDirty;
+   // 绘制图形
    var event = o._paintEvent;
    event.optionScale = false;
    event.graphic = graphic;
    event.parentRectangle.set(left, top, width, height);
    event.rectangle.set(left, top, width, height);
    event.calculateRate.set(1, 1);
+   event.parameters = parameters;
    o.paint(event);
+   event.parameters = null;
+   // 还原状态
+   o._statusDirty = statusDirty;
 }
 
 //==========================================================
