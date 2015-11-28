@@ -210,7 +210,7 @@ MO.FEaiCockpitGroundShape_updateAll = function FEaiCockpitGroundShape_updateAll(
       plane.move(next.x, next.y, 0);
       if(!path.playing()) {
          var dest = o.getRandomRoundPoint(plane.centerX(), plane.centerY());
-         path.gotoRelative(dest.x, dest.y, 10000 + 2000 * Math.random());
+         path.gotoRelative(dest.x, dest.y, 8000 + 2000 * Math.random());
       }
       plane.update();
       positionData.set(plane.vertexs(), i * 12);
