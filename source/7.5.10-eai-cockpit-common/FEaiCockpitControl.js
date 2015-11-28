@@ -19,7 +19,8 @@ MO.FEaiCockpitControl = function FEaiCockpitControl(o) {
    o._backgroundPadding = null;
    o._backgroundImage   = null;
    o._comingSoonImage   = null;
-   o._comingSoon        = MO.Class.register(o, new MO.AGetter('_comingSoon'));;
+   o._comingSoon        = MO.Class.register(o, new MO.AGetSet('_comingSoon'));
+   o._comingSoonBottom  = MO.Class.register(o, new MO.AGetSet('_comingSoonBottom'), 0);
    //..........................................................
    // @event
    o.onPaintBegin       = MO.FEaiCockpitControl_onPaintBegin
@@ -74,7 +75,7 @@ MO.FEaiCockpitControl_onPaintEnd = function FEaiCockpitControl_onPaintEnd(event)
    if (o._comingSoon) {
       var comingSoonImage = o._comingSoonImage;
       if (comingSoonImage) {
-         graphic.drawImage(o._comingSoonImage, rectangle.left + rectangle.width - 247 + 36, rectangle.top + rectangle.height - 217 + 56, 247, 217);
+         graphic.drawImage(o._comingSoonImage, rectangle.left + rectangle.width - 247 + 36, rectangle.top + rectangle.height - o._comingSoonBottom - 217 + 56, 247, 217);
       }
    }
 }
