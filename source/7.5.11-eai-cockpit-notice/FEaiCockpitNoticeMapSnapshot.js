@@ -9,12 +9,15 @@ MO.FEaiCockpitNoticeMapSnapshot = function FEaiCockpitNoticeMapSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
+   o._comingSoon           = true;
+   o._backgroundUri        = '{eai.resource}/cockpit/notice/map/ground.png';
    o._data                 = null;
    o._dataTicker           = null;
    // @attribute
    o._groundImage          = null;
    o._mapImage             = null;
    o._fontTop              = null;
+
    // @attribute  
    //..........................................................
    // @event
@@ -32,14 +35,6 @@ MO.FEaiCockpitNoticeMapSnapshot = function FEaiCockpitNoticeMapSnapshot(o) {
    o.dispose               = MO.FEaiCockpitNoticeMapSnapshot_dispose;
    return o;
 }
-//==========================================================
-// <T>图片加载完成处理。</T>
-//
-// @method
-//==========================================================
-MO.FEaiCockpitNoticeMapSnapshot_onImageLoad = function FEaiCockpitNoticeMapSnapshot_onImageLoad() {
-   this.dirty();
-}
 
 //==========================================================
 // <T>前绘制处理。</T>
@@ -48,13 +43,13 @@ MO.FEaiCockpitNoticeMapSnapshot_onImageLoad = function FEaiCockpitNoticeMapSnaps
 //==========================================================
 MO.FEaiCockpitNoticeMapSnapshot_onPaintBegin = function FEaiCockpitNoticeMapSnapshot_onPaintBegin(event) {
    var o = this;
+   o.__base.FEaiCockpitControl.onPaintBegin.call(o,event);
    var graphic = event.graphic;
    var rectangle = event.rectangle;
    var left = rectangle.left;
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-   graphic.drawImage(o._groundImage, left,0,width,height);
    var scale = 516/671;
    graphic.drawImage(o._mapImage, left+width*1.5/9,top+height/6*0.5,width*2/3,width*2/3*scale);
 }
@@ -79,7 +74,7 @@ MO.FEaiCockpitNoticeMapSnapshot_construct = function FEaiCockpitNoticeMapSnapsho
 //==========================================================
 MO.FEaiCockpitNoticeMapSnapshot_setup = function FEaiCockpitNoticeMapSnapshot_setup(){
    var o = this;
-   o._groundImage = o.loadResourceImage('{eai.resource}/cockpit/notice/map/ground.png');
+   o.__base.FEaiCockpitControl.setup.call(o);
    o._mapImage = o.loadResourceImage('{eai.resource}/cockpit/notice/map/map.png');
 }
 
