@@ -75,6 +75,7 @@ MO.FGuiControl = function FGuiControl(o){
    o.testInRange             = MO.FGuiControl_testInRange;
    o.loadResourceImage       = MO.FGuiControl_loadResourceImage;
    o.paint                   = MO.FGuiControl_paint;
+   o.paintGraphic            = MO.FGuiControl_paintGraphic;
    o.update                  = MO.FGuiControl_update;
    o.build                   = MO.Method.empty;
    o.makeRenderable          = MO.FGuiControl_makeRenderable;
@@ -603,6 +604,29 @@ MO.FGuiControl_paint = function FGuiControl_paint(event){
    rectangle.assign(o._eventRectangle);
    parentRectangle.assign(o._parentRectangle);
    o._statusDirty = false;
+}
+
+//==========================================================
+// <T>绘制到指定渲染对象上。</T>
+//
+// @method
+// @param graphic:FGraphicContext 绘制环境
+// @param left:Number 左边
+// @param top:Number 上边
+// @param width:Number 宽度
+// @param height:Number 高度
+//==========================================================
+MO.FGuiControl_paintGraphic = function FGuiControl_paintGraphic(graphic, left, top, width, height){
+   var o = this;
+   var size = o._size;
+   // 绘制处理
+   var event = o._paintEvent;
+   event.optionScale = false;
+   event.graphic = graphic;
+   event.parentRectangle.set(left, top, width, height);
+   event.rectangle.set(left, top, width, height);
+   event.calculateRate.set(1, 1);
+   o.paint(event);
 }
 
 //==========================================================

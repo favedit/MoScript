@@ -13,6 +13,7 @@ MO.SGuiPaintEvent = function SGuiPaintEvent(){
    // @method
    o.parentRectangle = new MO.SRectangle();
    o.rectangle       = new MO.SRectangle();
+   o.calculateRate   = new MO.SSize2(1, 1);
    //..........................................................
    // @method
    o.free            = MO.SGuiPaintEvent_free;
@@ -40,5 +41,6 @@ MO.SGuiPaintEvent_dispose = function SGuiPaintEvent_dispose(){
    var o = this;
    o.parentRectangle = MO.Lang.Object.dispose(o.parentRectangle);
    o.rectangle = MO.Lang.Object.dispose(o.rectangle);
+   o.calculateRate = MO.Lang.Object.dispose(o.calculateRate);
    return o;
 }
