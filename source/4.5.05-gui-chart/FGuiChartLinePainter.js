@@ -16,6 +16,7 @@ MO.FGuiChartLinePainter = function FGuiChartLinePainter(o) {
    // @method
    o.drawAxis     = MO.FGuiChartLinePainter_drawAxis;
    o.drawLine     = MO.FGuiChartLinePainter_drawLine;
+   o.drawTitle    = MO.FGuiChartLinePainter_drawTitle;
    o.draw         = MO.FGuiChartLinePainter_draw;
    // @method
    o.dispose      = MO.FGuiChartLinePainter_dispose;
@@ -30,6 +31,37 @@ MO.FGuiChartLinePainter = function FGuiChartLinePainter(o) {
 MO.FGuiChartLinePainter_construct = function FGuiChartLinePainter_construct() {
    var o = this;
    o.__base.FGuiChartPainter.construct.call(o);
+}
+
+//==========================================================
+// <T>绘制title。</T>
+//
+// @method
+// @param context 内容
+//==========================================================
+MO.FGuiChartLinePainter_drawTitle = function FGuiChartLinePainter_drawTitle(context) {
+   var o = this;
+   var graphic = context.graphic;
+   var rectangle = context.rectangle;
+   var dataset = context.dataset;
+   var paintRectangle = context.paintRectangle;
+   var axisX = context.axisX;
+   var axisY = context.axisY;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   var width = rectangle.width;
+   var height = rectangle.height;
+   var pLeft = left + paintRectangle.left;
+   var pTop = top + paintRectangle.top;
+   var pWidth = paintRectangle.width;
+   var pHeight = paintRectangle.height;
+   var title = context.title;
+   if(title == null || title == "") return;
+   var titleFont = context.titleFont;
+   var titleGap = context.titleGap;
+   var titleWidth = graphic.textWidth(title);
+   graphic.setFont(titleFont);
+   graphic.drawText(title, pLeft + pWidth / 2 - titleWidth / 2, pTop - titleFont.size - titleGap, titleFont.color);
 }
 
 //==========================================================
@@ -206,6 +238,8 @@ MO.FGuiChartLinePainter_draw = function FGuiChartLinePainter_draw(context){
    var o = this;
    o.__base.FGuiChartPainter.draw.call(o);
    var dataset = context.dataset;
+   //绘制title
+   o.drawTitle(context);
    // 绘制坐标轴
    o.drawAxis(context);
    // 绘制数据线

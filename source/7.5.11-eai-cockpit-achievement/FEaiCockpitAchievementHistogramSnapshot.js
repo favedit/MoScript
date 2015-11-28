@@ -172,6 +172,8 @@ MO.FEaiCockpitAchievementHistogramSnapshot_setup = function FEaiCockpitAchieveme
    chart.setLocation(30, 30);
    chart.setSize(1030, 320);
    chart.paintRectangle().set(68, 44, 900, 180);
+   chart.setTitle("财富端各子公司当月业绩情况");
+   chart.titleFont().parse("#fde720 20px Microsoft YaHei");
    chart.axisX().setOptionShowAxis(false);
    chart.axisX().setOptionShowFirstLine(true);
    chart.axisY().setOptionShowAxis(false);

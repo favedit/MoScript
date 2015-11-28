@@ -16,6 +16,7 @@ MO.FUiChartDataSeries = function FUiChartDataSeries(o){
    o._lineColor         = MO.Class.register(o, new MO.AGetSet('_lineColor'), '#FFFFFF');
    o._lineWidth         = MO.Class.register(o, new MO.AGetSet('_lineWidth'), 1);
    o._rectWidth         = MO.Class.register(o, new MO.AGetSet('_rectWidth'), 10);
+   o._rectMargin        = MO.Class.register(o, new MO.AGetSet('_rectMargin'), 4);
    o._fillColor         = MO.Class.register(o, new MO.AGetSet('_fillColor'), '#FFFFFF');
    o._fillGradient      = MO.Class.register(o, new MO.AGetSet('_fillGradient'));
    o._optionShowBorder  = MO.Class.register(o, new MO.AGetSet('_optionShowBorder'), true);

@@ -13,6 +13,9 @@ MO.FGuiChart = function FGuiChart(o) {
    o._paintRectangle = MO.Class.register(o, new MO.AGetter('_paintRectangle'));
    o._axisX          = MO.Class.register(o, new MO.AGetter('_axisX'));
    o._axisY          = MO.Class.register(o, new MO.AGetter('_axisY'));
+   o._title          = MO.Class.register(o, new MO.AGetSet('_title'));
+   o._titleFont      = MO.Class.register(o, new MO.AGetter('_titleFont'));
+   o._titleGap       = MO.Class.register(o, new MO.AGetSet('_titleGap'), 2);
    // @attribute
    o._paintContext   = null;
    //..........................................................
@@ -39,6 +42,9 @@ MO.FGuiChart_onPaintBegin = function FGuiChart_onPaintBegin(event) {
    event.axisX = o._axisX;
    event.axisY = o._axisY;
    event.paintRectangle = o._paintRectangle;
+   event.title = o._title;
+   event.titleFont = o._titleFont;
+   event.titleGap = o._titleGap;
    o._painter.draw(event);
 }
 
@@ -56,6 +62,7 @@ MO.FGuiChart_construct = function FGuiChart_construct() {
    o._paintRectangle = new MO.SRectangle();
    o._axisX = MO.Class.create(MO.FUiChartAxis);
    o._axisY = MO.Class.create(MO.FUiChartAxis);
+   o._titleFont = new MO.SUiFont();
 }
 
 //==========================================================

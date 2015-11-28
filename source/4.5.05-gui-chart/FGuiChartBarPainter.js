@@ -17,6 +17,7 @@ MO.FGuiChartBarPainter = function FGuiChartBarPainter(o) {
    o.draw          = MO.FGuiChartBarPainter_draw;
    o.drawAxis      = MO.FGuiChartBarPainter_drawAxis;
    o.drawLine      = MO.FGuiChartBarPainter_drawLine;
+   o.drawTitle     = MO.FGuiChartBarPainter_drawTitle;
    // @method
    o.dispose       = MO.FGuiChartBarPainter_dispose;
    return o;
@@ -42,6 +43,8 @@ MO.FGuiChartBarPainter_draw = function FGuiChartBarPainter_draw(context){
    var o = this;
    o.__base.FGuiChartPainter.draw.call(o);
    var dataset = context.dataset;
+   //绘制标题
+   o.drawTitle(context);
    //绘制坐标轴
    o.drawAxis(context);
    //绘制数据
@@ -53,6 +56,37 @@ MO.FGuiChartBarPainter_draw = function FGuiChartBarPainter_draw(context){
          o.drawLine(context, series);
       }
    }
+}
+
+//==========================================================
+// <T>绘制title。</T>
+//
+// @method
+// @param context 内容
+//==========================================================
+MO.FGuiChartBarPainter_drawTitle = function FGuiChartBarPainter_drawTitle(context) {
+   var o = this;
+   var graphic = context.graphic;
+   var rectangle = context.rectangle;
+   var dataset = context.dataset;
+   var paintRectangle = context.paintRectangle;
+   var axisX = context.axisX;
+   var axisY = context.axisY;
+   var left = rectangle.left;
+   var top = rectangle.top;
+   var width = rectangle.width;
+   var height = rectangle.height;
+   var pLeft = left + paintRectangle.left;
+   var pTop = top + paintRectangle.top;
+   var pWidth = paintRectangle.width;
+   var pHeight = paintRectangle.height;
+   var title = context.title;
+   if(title == null || title == "") return;
+   var titleFont = context.titleFont;
+   var titleGap = context.titleGap;
+   var titleWidth = graphic.textWidth(title);
+   graphic.setFont(titleFont);
+   graphic.drawText(title, pLeft + pWidth / 2 - titleWidth / 2, pTop - titleFont.size - titleGap, titleFont.color);
 }
 
 //==========================================================
@@ -155,7 +189,8 @@ MO.FGuiChartBarPainter_drawAxis = function FGuiChartBarPainter_drawAxis(context)
    var xLabel = axisX.label();
    var xLabelFont = axisX.labelFont();
    if(xLabel && xLabel != "") { 
-      graphic.drawText(xLabel, pLeft + pWidth + xLabelFont.size, pTop + pHeight, xLabelFont.color);
+      graphic.setFont(xLabelFont);
+      graphic.drawText(xLabel, pLeft + pWidth, pTop + pHeight, xLabelFont.color);
    }
 }
 
