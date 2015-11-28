@@ -8,7 +8,7 @@
 MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
-   o._comingSoon           = true;
+   o._comingSoon           = false;
    //..........................................................
    // @attribute
    o._name                 = 'cockpit.forecast.snapshot';
@@ -28,8 +28,11 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o._pageMax              = 0;
    o._pageItemsMax         = 8;
    o._rollDuration         = 5000;
-   o._rollTicker           = null;
+   o._rollTicker = null;
+   o._switchDuration       = 5000;
+   o._switchTicker         = null;
    o._lineChart            = null;
+   o._switchCounter           = 0;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
    //..........................................................
@@ -48,8 +51,10 @@ MO.FEaiCockpitForecastSnapshot = function FEaiCockpitForecastSnapshot(o) {
    o.processLogic          = MO.FEaiCockpitForecastSnapshot_processLogic;
    o.selectedIndex         = MO.FEaiCockpitForecastSnapshot_selectedIndex;
    o.showChart             = MO.FEaiCockpitForecastSnapshot_showChart;
+   o.switch                = MO.FEaiCockpitForecastSnapshot_switch;
    // @method
    o.dispose               = MO.FEaiCockpitForecastSnapshot_dispose;
+   
    return o;
 }
 
@@ -95,8 +100,27 @@ MO.FEaiCockpitForecastSnapshot_onPaintBegin = function FEaiCockpitForecastSnapsh
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
-   // 绘制背景
-   graphic.drawImage(o._gridImage, 540, 27, 400, 311);
+   var parentModule = o.parentModule();
+   var moduleManager = parentModule.moduleManager();
+   var switchVector = moduleManager.switchVector();
+   var showSnapshot = switchVector.at(o._switchCounter % switchVector.count());
+   if (showSnapshot) {
+      showSnapshot.setOptionBackground(false);
+      showSnapshot.paintGraphic(graphic, 120, 5, 720.480);
+      showSnapshot.setOptionBackground(true);
+   }
+   
+}
+
+//==========================================================
+// <T>切换显示处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitForecastSnapshot_switch = function FEaiCockpitForecastSnapshot_switch() {
+   var o = this;
+   o._switchCounter += 1;
+   o.dirty();
 }
 
 //==========================================================
@@ -111,9 +135,8 @@ MO.FEaiCockpitForecastSnapshot_construct = function FEaiCockpitForecastSnapshot_
    o._cellLocation.set(3, 1, 0);
    o._cellSize.set(8, 4);
    // 设置属性
-   o._dataTicker = new MO.TTicker(1000 * 60);
-   o._rollTicker = new MO.TTicker(o._rollDuration);
-   o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
+   o._switchTicker = new MO.TTicker(o._switchDuration);
+ //  o._data = MO.Class.create(MO.FEaiCockpitForecastMessage);
 }
 
 //==========================================================
@@ -124,6 +147,7 @@ MO.FEaiCockpitForecastSnapshot_construct = function FEaiCockpitForecastSnapshot_
 MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
+   /*
    // 加载图片
    o._gridImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid.png');
    // 创建控件
@@ -150,6 +174,7 @@ MO.FEaiCockpitForecastSnapshot_setup = function FEaiCockpitForecastSnapshot_setu
                      [-30, 60, 70, 88, 10], 
                      [586, 486, 889, 1024, 1895], 
                      [1324, 46542, 253362, 452148, 48657]];
+   */
 }
 
 //==========================================================
@@ -173,6 +198,7 @@ MO.FEaiCockpitForecastSnapshot_setData = function FEaiCockpitForecastSnapshot_se
 // @method
 //==========================================================
 MO.FEaiCockpitForecastSnapshot_roll = function FEaiCockpitForecastSnapshot_roll() {
+   /*
    var o = this;
    if(o._data.items() == null) return;
 
@@ -189,6 +215,7 @@ MO.FEaiCockpitForecastSnapshot_roll = function FEaiCockpitForecastSnapshot_roll(
 
    o.showChart();
    o.dirty();
+   */
 }
 
 //==========================================================
@@ -197,6 +224,7 @@ MO.FEaiCockpitForecastSnapshot_roll = function FEaiCockpitForecastSnapshot_roll(
 // @method
 //==========================================================
 MO.FEaiCockpitForecastSnapshot_nextPage = function FEaiCockpitForecastSnapshot_nextPage() {
+   /*
    var o = this;
    o._page ++;
    if(o._page > o._pageMax) {
@@ -220,6 +248,7 @@ MO.FEaiCockpitForecastSnapshot_nextPage = function FEaiCockpitForecastSnapshot_n
    }
 
    o._index = 0;
+   */
 }
 
 //==========================================================
@@ -240,12 +269,16 @@ MO.FEaiCockpitForecastSnapshot_selectedIndex = function FEaiCockpitForecastSnaps
 MO.FEaiCockpitForecastSnapshot_processLogic = function FEaiCockpitForecastSnapshot_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControl.processLogic.call(o);
+    /*
    if(o._dataTicker.process()){
-      var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
-      forecast.doFetch(o, o.onDataFetch);
+     // var forecast = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
+     // forecast.doFetch(o, o.onDataFetch);
    }
    if(o._rollTicker.process()) {
       o.roll();
+   }*/
+   if (o._switchTicker.process()) {
+       o.switch();
    }
 }
 

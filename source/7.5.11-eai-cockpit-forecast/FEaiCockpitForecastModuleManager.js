@@ -9,6 +9,8 @@ MO.FEaiCockpitForecastModuleManager = function FEaiCockpitForecastModuleManager(
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModuleManager);
    //..........................................................
    // @attribute
+   o._switchVector = MO.Class.register(o, new MO.AGetter('_switchVector'));;
+
    o._navigatorModule = MO.Class.register(o, new MO.AGetter('_navigatorModule'));
    o._catalogModule   = MO.Class.register(o, new MO.AGetter('_catalogModule'));
    o._logic001Module  = MO.Class.register(o, new MO.AGetter('_logic001Module'));
@@ -72,6 +74,16 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    o._logic010Module = o.createModule(MO.FEaiCockpitForecastAchievementProblem);
    o._tipModule = o.createModule(MO.FEaiCockpitForecastTip);
    o._indexModule = o.createModule(MO.FEaiCockpitForecastIndex);
+
+   var switchVector = o._switchVector = new MO.TObjects();
+   switchVector.push(o._logic002Module.controlSnapshot());
+   switchVector.push(o._logic009Module.controlSnapshot());
+   switchVector.push(o._logic010Module.controlSnapshot());
+   //switchVector.push(o._logic006Module.controlSnapshot());
+   //switchVector.push(o._logic007Module.controlSnapshot());
+   //switchVector.push(o._logic008Module.controlSnapshot());
+   //switchVector.push(o._logic009Module.controlSnapshot());
+   //switchVector.push(o._logic010Module.controlSnapshot());
    //..........................................................
    var application = o._scene.application();
    var desktop = application.desktop();

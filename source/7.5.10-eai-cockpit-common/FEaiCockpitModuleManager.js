@@ -120,6 +120,7 @@ MO.FEaiCockpitModuleManager_createModule = function FEaiCockpitModuleManager_cre
    module.setup();
    // 注册对象
    o.register(module);
+   return module;
 }
 
 //==========================================================
