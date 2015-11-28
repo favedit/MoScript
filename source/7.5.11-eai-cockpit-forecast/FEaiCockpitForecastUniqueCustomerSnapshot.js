@@ -240,7 +240,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    column.setLabel('公司');
    column.setTextAlign(MO.EUiAlign.Center);
    column.setDataName('departmentLable');
-   column.setWidth(50);
+   column.setWidth(70);
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    //理财师人数

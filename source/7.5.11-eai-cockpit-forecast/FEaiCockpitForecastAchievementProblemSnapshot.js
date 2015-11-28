@@ -237,7 +237,7 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_setup = function FEaiCockpitFor
    column.setLabel('公司');
    column.setTextAlign(MO.EUiAlign.Center);
    column.setDataName('departmentLable');
-   column.setWidth(50);
+   column.setWidth(90);
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    //理财师人数
@@ -245,17 +245,17 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_setup = function FEaiCockpitFor
    column.setName('marketerTotal');
    column.setLabel('理财师人数');
    column.setTextAlign(MO.EUiAlign.Center);
-   column.setWidth(60);
+   column.setWidth(40);
    column.setDataName('marketerTotal');
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
 
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('noAchieveMarketer');
-   column.setLabel('无业绩理财师人数');
+   column.setLabel('无业绩人数');
    column.setDataName('noAchieveMarketer');
    column.setTextAlign(MO.EUiAlign.Center);
-   column.setWidth(80);
+   column.setWidth(50);
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
@@ -268,10 +268,10 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_setup = function FEaiCockpitFor
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('noAchieveYear');
-   column.setLabel('一年以上无业绩人数');
+   column.setLabel('一年无业绩人数');
    column.setDataName('noAchieveYear');
    column.setTextAlign(MO.EUiAlign.Center);
-   column.setWidth(60);
+   column.setWidth(70);
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    //..........................................................
