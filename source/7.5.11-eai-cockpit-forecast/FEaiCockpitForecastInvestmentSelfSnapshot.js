@@ -32,8 +32,8 @@ MO.FEaiCockpitForecastInvestmentSelfSnapshot = function FEaiCockpitForecastInves
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastInvestmentSelfSnapshot_onFetchData = function MO.FEaiCockpitForecastInvestmentSelfSnapshot_onFetchData;{
-   var o = this ;
+MO.FEaiCockpitForecastInvestmentSelfSnapshot_onFetchData = function FEaiCockpitForecastInvestmentSelfSnapshot_onFetchData(event){
+   var o = this;
 }
 //==========================================================
 // <T>前绘制处理。</T>
