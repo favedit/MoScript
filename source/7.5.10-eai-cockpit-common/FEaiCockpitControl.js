@@ -74,7 +74,7 @@ MO.FEaiCockpitControl_onPaintEnd = function FEaiCockpitControl_onPaintEnd(event)
    if (o._comingSoon) {
       var comingSoonImage = o._comingSoonImage;
       if (comingSoonImage) {
-         graphic.drawImage(o._comingSoonImage, rectangle.width - 247 + 36, rectangle.height - 217 + 56, 247, 217);
+         graphic.drawImage(o._comingSoonImage, rectangle.left + rectangle.width - 247 + 36, rectangle.top + rectangle.height - 217 + 56, 247, 217);
       }
    }
 }
