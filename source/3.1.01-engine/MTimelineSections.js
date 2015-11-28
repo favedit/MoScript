@@ -132,4 +132,5 @@ MO.MTimelineSections_dispose = function MTimelineSections_dispose(){
    var o = this;
    // 释放属性
    o._sections = MO.Lang.Object.dispose(o._sections);
+   o._currentSection;
 }
