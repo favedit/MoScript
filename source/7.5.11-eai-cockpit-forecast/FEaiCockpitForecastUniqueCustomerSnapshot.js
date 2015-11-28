@@ -95,7 +95,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_refreshChartData = function FEaiCoc
          case "深圳钰诚财富":
          label = '深圳钰诚';
          break;  
-         case "融泰公司(安徽)":
+         case "融泰公司（安徽）":
          label = '深圳钰诚';
          break;  
          case "汇仕达金融渠道部":
