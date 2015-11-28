@@ -48,7 +48,7 @@ MO.FEaiCockpitForecastLogic002Snapshot_onPaintBegin = function FEaiCockpitForeca
    var width = rectangle.width;
    var height = rectangle.height;
    graphic.drawImage(o._titleImage, left + 15,top + 6);
-   graphic.drawImage(o._gridTitle, left + 15,top + 315);
+   graphic.drawImage(o._gridTitle, left + 17,top + 315);
 }
 
 //==========================================================
