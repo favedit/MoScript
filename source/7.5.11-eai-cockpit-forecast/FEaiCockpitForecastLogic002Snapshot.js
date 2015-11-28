@@ -213,7 +213,7 @@ MO.FEaiCockpitForecastLogic002Snapshot_updateView = function FEaiCockpitForecast
             grid.pushRow(row);
          }
          var label = largeInvest.department();
-         switch(label){
+  switch(label){
          case '合作—德聚公司':
          label = '合作—德';
          break;
@@ -235,11 +235,11 @@ MO.FEaiCockpitForecastLogic002Snapshot_updateView = function FEaiCockpitForecast
          case "深圳钰诚财富":
          label = '深圳钰诚';
          break;  
-         case "金易融（上海）网络科技有限公司":
+         case "金易融(上海)网络科技有限公司":
          label = '金易融';
          break;  
-         case "塞杰思公司":
-         label = '塞杰思';
+         case "赛杰思公司":
+         label = '赛杰思';
          break;  
          case "安信普华财富投资管理（北京）有限公司":
          label = '安信普华';
@@ -254,11 +254,14 @@ MO.FEaiCockpitForecastLogic002Snapshot_updateView = function FEaiCockpitForecast
          label = '深圳钰诚';
          break;  
          case "融泰公司（安徽）":
-         label = '深圳钰诚';
+         label = '融泰公司';
          break;  
          case "汇仕达金融渠道部":
          label = '汇仕达';
          break;  
+         case "深圳前海智赢商务信息咨询有限公司":
+         label = '深圳前海';
+         break;
          default:
          break;                                                  
       }

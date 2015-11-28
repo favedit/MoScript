@@ -67,6 +67,58 @@ MO.FEaiCockpitAchievementHistogramSnapshot_setData = function FEaiCockpitAchieve
       var item = items.at(i);
       var label = item.label();
       var value = item.amount();
+         switch(label){
+         case '合作—德聚公司':
+         label = '合作—德';
+         break;
+         case "上海聚汇通":
+         label = '上海聚汇';
+         break;
+         case "上海仁立网络科技有限公司":
+         label = '上海仁立';
+         break;
+         case "卓信至诚公司":
+         label = '卓信至诚';
+         break;
+         case "深圳钰诚财富":
+         label = '深圳钰诚';
+         break;  
+         case "多元营销事业部":
+         label = '多元营销';
+         break;  
+         case "深圳钰诚财富":
+         label = '深圳钰诚';
+         break;  
+         case "金易融(上海)网络科技有限公司":
+         label = '金易融';
+         break;  
+         case "赛杰思公司":
+         label = '赛杰思';
+         break;  
+         case "安信普华财富投资管理（北京）有限公司":
+         label = '安信普华';
+         break;  
+         case "在线营销事业部":
+         label = '在线营销';
+         break;  
+         case "深圳前海志赢商务信息咨询有限公司":
+         label = '深圳前海';
+         break;  
+         case "深圳钰诚财富":
+         label = '深圳钰诚';
+         break;  
+         case "融泰公司（安徽）":
+         label = '融泰公司';
+         break;  
+         case "汇仕达金融渠道部":
+         label = '汇仕达';
+         break;  
+         case "深圳前海智赢商务信息咨询有限公司":
+         label = '深圳前海';
+         break;
+         default:
+         break;                                                  
+      }
       series.values().push(value);
       var degree = MO.Class.create(MO.FUiChartAxisDegree);
       degree.setLabel(label);

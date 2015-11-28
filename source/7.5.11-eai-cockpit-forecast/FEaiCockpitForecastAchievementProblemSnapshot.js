@@ -54,7 +54,7 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_refreshChartData = function FEa
    for (var i = 0; i < count; i++) {
       var item = items.at(i);
       var label = item.departmentLable();
-            switch(label){
+         switch(label){
          case '合作—德聚公司':
          label = '合作—德';
          break;
@@ -76,7 +76,7 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_refreshChartData = function FEa
          case "深圳钰诚财富":
          label = '深圳钰诚';
          break;  
-         case "金易融（上海）网络科技有限公司":
+         case "金易融(上海)网络科技有限公司":
          label = '金易融';
          break;  
          case "赛杰思公司":
@@ -100,6 +100,9 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_refreshChartData = function FEa
          case "汇仕达金融渠道部":
          label = '汇仕达';
          break;  
+         case "深圳前海智赢商务信息咨询有限公司":
+         label = '深圳前海';
+         break;
          default:
          break;                                                  
       }
