@@ -10,7 +10,6 @@ MO.FEaiCockpitAchievementBusinessCardSnapshot = function FEaiCockpitAchievementB
    //..........................................................
    // @attribute
    o._backgroundUri        = '{eai.resource}/cockpit/achievement/businessCard.png';
-   o._comingSoon           = true;
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
@@ -100,6 +99,7 @@ MO.FEaiCockpitAchievementBusinessCardSnapshot = function FEaiCockpitAchievementB
    }
 }
  MO.FEaiCockpitAchievementBusinessCardSnapshot_getRMBString = function FEaiCockpitAchievementBusinessCardSnapshot_getRMBString(rmbCount) {
+    rmbCount = Math.round(rmbCount);
     var drawText = "";
     if (rmbCount > 100000000) {
        drawText += Math.floor(rmbCount / 100000000) + "亿";

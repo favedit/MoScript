@@ -10,7 +10,7 @@ MO.FEaiCockpitAchievementRadarSnapshot = function FEaiCockpitAchievementRadarSna
    o._backgroundUri = '{eai.resource}/cockpit/achievement/radar.png';
    //..........................................................
    // @attribute
-  // o._comingSoon           = true;
+   o._comingSoon           = true;
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
