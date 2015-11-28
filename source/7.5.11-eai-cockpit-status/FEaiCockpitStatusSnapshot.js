@@ -13,6 +13,7 @@ MO.FEaiCockpitStatusSnapshot = function FEaiCockpitStatusSnapshot(o) {
    // @attribute
    o._name            = 'cockpit.status.snapshot';
    o._backgroundUri   = '{eai.resource}/cockpit/status/ground.png';
+   o._rotateSpeed     = 0.01;
    //..........................................................
    // @event
    o.onStatusFetch    = MO.FEaiCockpitStatusSnapshot_onStatusFetch;
