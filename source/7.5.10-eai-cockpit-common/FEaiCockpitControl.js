@@ -14,6 +14,7 @@ MO.FEaiCockpitControl = function FEaiCockpitControl(o) {
    o._cellLocation      = MO.Class.register(o, new MO.AGetter('_cellLocation'));
    o._cellSize          = MO.Class.register(o, new MO.AGetter('_cellSize'));
    // @attribute
+   o._optionBackground  = MO.Class.register(o, new MO.AGetSet('_optionBackground'), true);
    o._backgroundUri     = MO.Class.register(o, new MO.AGetter('_backgroundUri'));
    o._backgroundPadding = null;
    o._backgroundImage   = null;
@@ -49,7 +50,7 @@ MO.FEaiCockpitControl_onPaintBegin = function FEaiCockpitControl_onPaintBegin(ev
    //..........................................................
    // 绘制背景
    var backgroundImage = o._backgroundImage;
-   if(backgroundImage){
+   if(o._optionBackground && backgroundImage){
       var backgroundPadding = o._backgroundPadding;
       if(backgroundPadding){
          graphic.drawGridImage(backgroundImage, rectangle.left, rectangle.top, rectangle.width, rectangle.height, backgroundPadding);
