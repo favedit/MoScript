@@ -55,6 +55,25 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_refreshChartData = function FEaiCoc
       var item = items.at(i);
       var label = item.departmentLable();
       var value = item.averageAchievement();
+      switch(label){
+         case '合作—德聚公司':
+         label = '合作—德';
+         break;
+         case "上海聚汇通":
+         label = '上海聚汇';
+         break;
+         case '"上海聚汇通"':
+         label = '上海聚汇';
+         break;
+         case "卓信至诚公司":
+         label = '卓信至诚';
+         break;
+         case "深圳钰诚财富":
+         label = '深圳钰诚';
+         break;   
+         default:
+         break;                                                  
+      }
       series.values().push(value);
       var degree = MO.Class.create(MO.FUiChartAxisDegree);
       degree.setLabel(label);
@@ -130,7 +149,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_onPaintBegin = function FEaiCockpit
    // //graphic.drawText(lable，left,top,'#ffffff');
    // graphic.drawText(lable, 60, 35, '#ffffff');
    graphic.drawImage(o._titleImage,left+12,top+5,687,46);
-   graphic.drawImage(o._tableImage,left+12,top+280,687,46);
+   graphic.drawImage(o._tableImage,left+12,top+315,687,46);
 
 }
 
@@ -170,20 +189,21 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    o.__base.FEaiCockpitControl.setup.call(o);
    o._titleImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/uniquecustomer.png');
    o._tableImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid_title.png');
-   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
-   grid.setOptionClip(true);
-   grid.setLocation(20, 280);
-   grid.setSize(680, 180);
-   grid.setHeadHeight(50);
-   grid.setHeadBackColor('rgba(255,0,0,0)');
-
-   grid.headFont().font = 'blod Microsoft YaHei';
-   grid.headFont().size =  26;
-   grid.headFont().color = '#21c1d1';
-   grid.setRowHeight(40);
+   var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
+   grid.setOptionClip(false);
+   grid.setLocation(20, 320);
+   grid.setSize(100, 320);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setLeft(10);
+   grid.setRight(7);
+   grid.setHeadHeight(35);
+   grid.setHeadBackColor('rgba(255,255,255,0)');
+   grid.headFont().font = 'Microsoft YaHei';
+   grid.headFont().size = 20;
+   grid.headFont().color = '#00B2F2';
+   grid.setRowHeight(35);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 24;
-   grid.rowFont().color = '#ffffff';
+   grid.rowFont().size = 18;
    //公司名
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('departmentLable');
@@ -216,7 +236,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    column.setLabel('占比');
    column.setDataName('rate');
    column.setTextAlign(MO.EUiAlign.Center);
-   column.setWidth(30);
+   column.setWidth(20);
    column.setPadding(0, 0, 0, 0);
    grid.pushColumn(column);
    var column = MO.Class.create(MO.FGuiGridColumnText);
@@ -240,7 +260,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    //新建柱状图
    var chart = o._chart = MO.Class.create(MO.FGuiChart);
    chart.selectPainter(MO.FGuiChartBarPainter);
-   chart.setLocation(30, 30);
+   chart.setLocation(30, 60);
    chart.setSize(720, 200);
    chart.paintRectangle().set(20, 0, 600, 180);
    chart.axisX().setOptionShowAxis(false);

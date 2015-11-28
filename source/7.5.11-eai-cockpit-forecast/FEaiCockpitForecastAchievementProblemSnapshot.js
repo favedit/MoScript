@@ -129,7 +129,7 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_onPaintBegin = function FEaiCoc
    // //graphic.drawText(lable，left,top,'#ffffff');
    // graphic.drawText(lable, 60, 35, '#ffffff');
     graphic.drawImage(o._titleImage,left+12,top+5,687,46);
-    graphic.drawImage(o._tableImage,left+12,top+280);
+    graphic.drawImage(o._tableImage,left+12,top+315);
 }
 
 //==========================================================
@@ -167,21 +167,21 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_setup = function FEaiCockpitFor
    o.__base.FEaiCockpitControl.setup.call(o);
    o._titleImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/noInvestment_title.png');
    o._tableImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid_title.png');
-
-   var grid = o._gridControl = MO.Class.create(MO.FGuiTable);
-   grid.setOptionClip(true);
-   grid.setLocation(20, 280);
-   grid.setSize(680, 180);
-   grid.setHeadHeight(50);
-   grid.setHeadBackColor('rgba(255,0,0,0)');
-
-   grid.headFont().font = 'blod Microsoft YaHei';
-   grid.headFont().size =  26;
-   grid.headFont().color = '#21c1d1';
-   grid.setRowHeight(40);
+   var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
+   grid.setOptionClip(false);
+   grid.setLocation(20, 320);
+   grid.setSize(100, 320);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
+   grid.setLeft(10);
+   grid.setRight(7);
+   grid.setHeadHeight(35);
+   grid.setHeadBackColor('rgba(255,255,255,0)');
+   grid.headFont().font = 'Microsoft YaHei';
+   grid.headFont().size = 20;
+   grid.headFont().color = '#00B2F2';
+   grid.setRowHeight(35);
    grid.rowFont().font = 'Microsoft YaHei';
-   grid.rowFont().size = 24;
-   grid.rowFont().color = '#ffffff';
+   grid.rowFont().size = 18;
    //公司名
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('departmentLable');
@@ -230,7 +230,7 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_setup = function FEaiCockpitFor
    //新建柱状图
    var chart = o._chart = MO.Class.create(MO.FGuiChart);
    chart.selectPainter(MO.FGuiChartBarPainter);
-   chart.setLocation(30, 30);
+   chart.setLocation(30, 60);
    chart.setSize(720, 200);
    chart.paintRectangle().set(20, 0, 600, 180);
    chart.axisX().setOptionShowAxis(false);
