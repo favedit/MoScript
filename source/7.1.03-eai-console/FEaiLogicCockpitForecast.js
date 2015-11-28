@@ -9,8 +9,9 @@ MO.FEaiLogicCockpitForecast = function FEaiLogicCockpitForecast(o){
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
    //..........................................................
    // @method
-   o.doFetch = MO.FEaiLogicCockpitForecast_doFetch;
+   o.doFetch                 = MO.FEaiLogicCockpitForecast_doFetch;
    o.doFetchExponentForecast = MO.FEaiLogicCockpitForecast_doFetchExponentForecast;
+   o.doFetch002              = MO.FEaiLogicCockpitForecast_doFetch002;   
    return o;
 }
 
@@ -44,4 +45,21 @@ MO.FEaiLogicCockpitForecast_doFetchExponentForecast = function FEaiLogicCockpitF
    var o = this;
    var parameters = o.prepareParemeters();
    o.sendService('{eai.logic.service}/eai.cockpit.forecast.subpage.wv?do=fetchExponentForecast', parameters, owner, callback);
+}
+
+//==========================================================
+// <T>获得大额自投信息。</T>
+//
+// @method
+// @param owner:Object 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicCockpitForecast_doFetch002 = function FEaiLogicCockpitForecast_doFetch002(owner, callback){
+   var o = this;
+   var parameters = o.prepareParemeters();
+   o.sendService('{eai.logic.service}/eai.cockpit.forecast.subpage.wv?do=fetchInvestmentSelf', parameters, owner, callback);
+   
 }

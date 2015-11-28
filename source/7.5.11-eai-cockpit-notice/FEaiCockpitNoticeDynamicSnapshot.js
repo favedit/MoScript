@@ -138,7 +138,7 @@ MO.FEaiCockpitNoticeDynamicSnapshot_setup = function FEaiCockpitNoticeDynamicSna
    // o._dynamicImage = o.loadResourceImage('{eai.resource}/cockpit/notice/notice_dynamic_bg.png');
    o._fontTop.parse('#FFCC00 25px Microsoft YaHei');
    o._fontContent.parse('#FFFFFF 21px Microsoft YaHei');
-   var statistics = MO.Console.find(MO.FEaiLogicConsole).notice();
+   var statistics = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
    if (o._dataTicker.process()){
       // 取动态数据
       statistics.doFetchDynamic(o, o.refreshDynamic);

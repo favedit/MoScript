@@ -134,7 +134,7 @@ MO.FEaiCockpitNoticeNewestSnapshot_setup = function FEaiCockpitNoticeNewestSnaps
    o._fontMiddle.parse('#FFFFFF 20px Microsoft YaHei');
    var pbarBgImage = o._pbarBgImage = o.loadResourceImage('{eai.resource}/cockpit/notice/table/progress_bar_bg.png');
    var pbarFillImage = o._pbarFillImage = o.loadResourceImage('{eai.resource}/cockpit/notice/table/progress_bar_fill.png');
-   var statistics = MO.Console.find(MO.FEaiLogicConsole).notice();
+   var statistics = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
    //取数据
    if(o._dataTicker.process()){
       statistics.doFetchNewest(o, o.renovateView);

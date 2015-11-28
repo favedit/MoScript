@@ -9,28 +9,28 @@ MO.FEaiCockpitNoticeTableSnapshot = function FEaiCockpitNoticeTableSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
-   o._data                 = null;
-   o._dataTicker           = null;
+   o._data            = null;
+   o._dataTicker      = null;
    // @attribute
-   o._backgroundUri        = '{eai.resource}/cockpit/notice/table/notice_list_bg.png';
-   o._fontTop              = null;
-   o._noticeData           = null;
+   o._backgroundUri   = '{eai.resource}/cockpit/notice/table/notice_list_bg.png';
+   o._fontTop         = null;
+   o._noticeData      = null;
    // @attribute  
    //..........................................................
-   o._noticeList           = MO.Class.register(o, new MO.AGetter('_noticeList'));
+   o._noticeList      = MO.Class.register(o, new MO.AGetter('_noticeList'));
    // @event
-   o.onImageLoad           = MO.FEaiCockpitNoticeTableSnapshot_onImageLoad;
-   o.onPaintBegin          = MO.FEaiCockpitNoticeTableSnapshot_onPaintBegin;
-   o.refreshTableData      = MO.FEaiCockpitNoticeTableSnapshot_refreshTableData;
+   o.onImageLoad      = MO.FEaiCockpitNoticeTableSnapshot_onImageLoad;
+   o.onPaintBegin     = MO.FEaiCockpitNoticeTableSnapshot_onPaintBegin;
+   o.refreshTableData = MO.FEaiCockpitNoticeTableSnapshot_refreshTableData;
    //..........................................................
    // @method
-   o.construct             = MO.FEaiCockpitNoticeTableSnapshot_construct;
+   o.construct        = MO.FEaiCockpitNoticeTableSnapshot_construct;
    // @method
-   o.setup                 = MO.FEaiCockpitNoticeTableSnapshot_setup;
-   o.processLogic          = MO.FEaiCockpitNoticeTableSnapshot_processLogic;
+   o.setup            = MO.FEaiCockpitNoticeTableSnapshot_setup;
+   o.processLogic     = MO.FEaiCockpitNoticeTableSnapshot_processLogic;
    // @method
 
-   o.dispose               = MO.FEaiCockpitNoticeTableSnapshot_dispose;
+   o.dispose          = MO.FEaiCockpitNoticeTableSnapshot_dispose;
    return o;
 }
 
@@ -130,7 +130,7 @@ MO.FEaiCockpitNoticeTableSnapshot_setup = function FEaiCockpitNoticeTableSnapsho
    column.setAlign(MO.EUiAlign.Center);
    grid.pushColumn(column);
    o.push(grid);
-   var statistics = MO.Console.find(MO.FEaiLogicConsole).notice();
+   var statistics = MO.Console.find(MO.FEaiLogicConsole).cockpit().notice();
    if (o._dataTicker.process()){
       statistics.doFetchList(o, o.refreshTableData);
    }

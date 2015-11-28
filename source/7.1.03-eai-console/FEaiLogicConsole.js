@@ -15,7 +15,6 @@ MO.FEaiLogicConsole = function FEaiLogicConsole(o){
    o._schedule           = MO.Class.register(o, new MO.AGetter('_schedule'));
    o._statistics         = MO.Class.register(o, new MO.AGetter('_statistics'));
    o._cockpit            = MO.Class.register(o, new MO.AGetter('_cockpit'));
-   o._notice             = MO.Class.register(o, new MO.AGetter('_notice'));
    // @attribute
    o._thread             = null;
    o._interval           = 1000 * 60 * 10;
@@ -56,7 +55,6 @@ MO.FEaiLogicConsole_construct = function FEaiLogicConsole_construct(){
    o._schedule = MO.Class.create(MO.FEaiLogicSchedule);
    o._statistics = MO.Class.create(MO.FEaiLogicStatistics);
    o._cockpit = MO.Class.create(MO.FEaiLogicCockpit);
-   o._notice = MO.Class.create(MO.FEaiLogicCockpitNotice);
    // 创建线程
    var thread = o._thread = MO.Class.create(MO.FThread);
    thread.setInterval(o._interval);
@@ -77,7 +75,6 @@ MO.FEaiLogicConsole_dispose = function FEaiLogicConsole_dispose(){
    o._schedule = MO.Lang.Object.dispose(o._schedule);
    o._statistics = MO.Lang.Object.dispose(o._statistics);
    o._cockpit = MO.Lang.Object.dispose(o._cockpit);
-   o._notice = MO.Lang.Object.dispose(o._notice);
    // 父处理
    o.__base.FConsole.dispose.call(o);
 }
