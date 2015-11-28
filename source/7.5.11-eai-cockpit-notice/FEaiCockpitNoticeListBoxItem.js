@@ -195,7 +195,7 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
    graphic._handle.restore();
 
    var urgencyLevel = noticeUnit.urgencyLevel();
-   var urgencyImage = 1;
+   var urgencyImage = null;
    if (urgencyLevel == 1) {
        urgencyImage = o._degreeNormalImage;
    } else if (urgencyLevel == 2) {
