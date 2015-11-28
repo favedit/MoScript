@@ -77,5 +77,7 @@ MO.EEvent = new function EEvent(){
    o.ActionStart      = 'ActionStart';
    // @attribute 动画停止
    o.ActionStop       = 'ActionStop';
+   // @attribute 动画停止
+   o.SectionStop      = 'SectionStop';
    return o;
 }

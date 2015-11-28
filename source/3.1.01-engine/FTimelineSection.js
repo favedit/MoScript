@@ -6,7 +6,11 @@
 // @history 151112
 //==========================================================
 MO.FTimelineSection = function FTimelineSection(o){
-   o = MO.Class.inherits(this, o, MO.FObject, MO.MTimelineActions);
+   o = MO.Class.inherits(this, o, MO.FObject, MO.MListener, MO.MTimelineActions);
+   //..........................................................
+   // @event
+   o._eventSectionStop = null;
+   o._listenersSectionStop = MO.Class.register(o, new MO.AListener('_listenersSectionStop', MO.EEvent.SectionStop));
    //..........................................................
    // @method
    o.construct = MO.FTimelineSection_construct;
@@ -27,6 +31,7 @@ MO.FTimelineSection_construct = function FTimelineSection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.__base.MTimelineActions.construct.call(o);
+   o._eventSectionStop = new MO.SEvent(o);
 }
 
 //==========================================================
@@ -37,6 +42,7 @@ MO.FTimelineSection_construct = function FTimelineSection_construct(){
 MO.FTimelineSection_stop = function FTimelineSection_stop(){
    var o = this;
    o.__base.MTimelineActions.stop.call(o);
+   o.processSectionStopListener(o._eventSectionStop);
 }
 
 //==========================================================
@@ -58,6 +64,8 @@ MO.FTimelineSection_clear = function FTimelineSection_clear(){
 MO.FTimelineSection_dispose = function FTimelineSection_dispose(){
    var o = this;
    // 父处理
+   o._eventSectionStop = MO.Lang.Object.dispose(o._eventSectionStop);
+   o.__base.MListener.dispose.call(o);
    o.__base.MTimelineActions.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

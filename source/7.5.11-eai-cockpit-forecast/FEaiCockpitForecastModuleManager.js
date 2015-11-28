@@ -27,11 +27,19 @@ MO.FEaiCockpitForecastModuleManager = function FEaiCockpitForecastModuleManager(
    o._indexModule     = MO.Class.register(o, new MO.AGetter('_indexModule'));
    // @attribute
    o._autoPlay        = false;
+   o._leftArray               = null;
+   o._rightArray              = null;
+   o._targetMatrix            = null;
+   o._slideShowTicker         = null;
    //..........................................................
    // @method
    o.construct        = MO.FEaiCockpitForecastModuleManager_construct;
+   o.process                  = MO.FEaiCockpitForecastModuleManager_process;
    // @method
    o.setup            = MO.FEaiCockpitForecastModuleManager_setup;
+   o.slideShow                = MO.FEaiCockpitForecastModuleManager_slideShow;
+   o.createSlideShowAnimation = MO.FEaiCockpitForecastModuleManager_createSlideShowAnimation;
+   o.onOneSlideDone           = MO.FEaiCockpitSceneModuleManager_onOneSlideDone;
    // @method
    o.dispose          = MO.FEaiCockpitForecastModuleManager_dispose;
    return o;
@@ -45,6 +53,10 @@ MO.FEaiCockpitForecastModuleManager = function FEaiCockpitForecastModuleManager(
 MO.FEaiCockpitForecastModuleManager_construct = function FEaiCockpitForecastModuleManager_construct(){
    var o = this;
    o.__base.FEaiCockpitModuleManager.construct.call(o);
+   o._leftArray = new MO.TObjects();
+   o._rightArray = new MO.TObjects();
+   o._targetMatrix = new MO.SMatrix3d();
+   o._slideShowTicker = new MO.TTicker(10000);
 }
 
 //==========================================================
@@ -118,6 +130,134 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
       view.placeInCell();
       viewDisplay.pushRenderable(renderable);
    }
+   // snapshot放入Array中
+   var leftArray = o._leftArray;
+   leftArray.push(o._logic001Module.controlSnapshot());
+   leftArray.push(o._logic003Module.controlSnapshot());
+   leftArray.push(o._logic005Module.controlSnapshot());
+   leftArray.push(o._logic007Module.controlSnapshot());
+   leftArray.push(o._logic009Module.controlSnapshot());
+   var rightArray = o._rightArray;
+   rightArray.push(o._logic002Module.controlSnapshot());
+   rightArray.push(o._logic004Module.controlSnapshot());
+   rightArray.push(o._logic006Module.controlSnapshot());
+   rightArray.push(o._logic008Module.controlSnapshot());
+   rightArray.push(o._logic010Module.controlSnapshot());
+   // 排位置
+   var cellLocationY = 1;
+   var count = leftArray.count();
+   for (var i = 0; i < count; i++) {
+      var snapshot = leftArray.at(i);
+      snapshot.cellLocation().y = cellLocationY;
+      snapshot.placeInCell();
+      cellLocationY += snapshot.cellSize().height;
+}
+   var cellLocationY = 1;
+   var count = rightArray.count();
+   for (var i = 0; i < count; i++) {
+      var snapshot = rightArray.at(i);
+      snapshot.cellLocation().y = cellLocationY;
+      snapshot.placeInCell();
+      cellLocationY += snapshot.cellSize().height;
+   }
+}
+
+//==========================================================
+// <T>每帧处理。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitForecastModuleManager_process = function FEaiCockpitForecastModuleManager_process() {
+   var o = this;
+   o.__base.FEaiCockpitModuleManager.process.call(o);
+   if (o._slideShowTicker.process()) {
+      o.slideShow();
+   }
+}
+
+//==========================================================
+// <T>模块滚动动画。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitForecastModuleManager_slideShow = function FEaiCockpitForecastModuleManager_slideShow() {
+   var o = this;
+   var section = MO.Class.create(MO.FTimelineSection);
+   section.addSectionStopListener(o, o.onOneSlideDone);
+   o.createSlideShowAnimation(o._leftArray, section);
+   o.createSlideShowAnimation(o._rightArray, section);
+   o._mainTimeline.pushSection(section);
+}
+
+//==========================================================
+// <T>模块滚动动画。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitForecastModuleManager_createSlideShowAnimation = function FEaiCockpitForecastModuleManager_createSlideShowAnimation(snapshotArray, section) {
+   var o = this;
+   // 创建动画序列
+   var targetMatrix = o._targetMatrix;
+   var count = snapshotArray.count();
+   var previousSnapshot = snapshotArray.at(0);
+   var previousCellLocationY = previousSnapshot.cellLocation().y;
+   var previousMatrix = previousSnapshot.renderable().matrix();
+   var action = MO.Class.create(MO.FE3dRotateTimelineAction);
+   action.targetRotate().set(Math.PI * 0.42, 0, 0);
+   action.setDuration(2000);
+   action.link(previousMatrix);
+   section.pushAction(action);
+   var action = MO.Class.create(MO.FE3dTranslateTimelineAction);
+   action.targetTranslate().set(previousMatrix.tx, previousMatrix.ty + 2, previousMatrix.tz);
+   action.setDuration(2000);
+   action.link(previousMatrix);
+   section.pushAction(action);
+   for (var i = 1; i < count; i++) {
+      var snapshot = snapshotArray.at(i);
+      var cly = snapshot.cellLocation().y;
+      snapshot.cellLocation().y = previousCellLocationY;
+      previousCellLocationY = cly;
+      o.calculateCellControlMatrix(snapshot, targetMatrix);
+      var currentMatrix = snapshot.renderable().matrix();
+      var action = MO.Class.create(MO.FE3dTranslateTimelineAction);
+      action.targetTranslate().set(targetMatrix.tx, targetMatrix.ty, targetMatrix.tz);
+      action.setDuration(2000);
+      action.link(currentMatrix);
+      section.pushAction(action);
+   }
+   previousSnapshot.cellLocation().y = previousCellLocationY;
+}
+
+//==========================================================
+// <T>播完一轮处理。</T>
+//
+// @method
+// @param module:STimelineContext 时间轴环境
+//==========================================================
+MO.FEaiCockpitSceneModuleManager_onOneSlideDone = function FEaiCockpitSceneModuleManager_onOneSlideDone(event) {
+   var o = this;
+   var leftArray = o._leftArray;
+   var rightArray = o._rightArray;
+
+   var snapshot = leftArray.shift();
+   leftArray.push(snapshot);
+   snapshot.renderable().matrix().rx = 0;
+   snapshot.renderable().matrix().updateForce();
+   var count = leftArray.count();
+   for (var i = 0; i < count; i++) {
+      var snapshot = leftArray.at(i);
+      snapshot.placeInCell();
+   }
+
+   var snapshot = rightArray.shift();
+   rightArray.push(snapshot);
+   snapshot.renderable().matrix().rx = 0;
+   snapshot.renderable().matrix().updateForce();
+   var count = rightArray.count();
+   for (var i = 0; i < count; i++) {
+      var snapshot = rightArray.at(i);
+      snapshot.placeInCell();
+   }
 }
 
 //==========================================================
@@ -129,4 +269,7 @@ MO.FEaiCockpitForecastModuleManager_dispose = function FEaiCockpitForecastModule
    var o = this;
    // 父处理
    o.__base.FEaiCockpitModuleManager.dispose.call(o);
+   o._leftArray = MO.Lang.Object.dispose(o._leftArray);
+   o._rightArray = MO.Lang.Object.dispose(o._rightArray);
+   o._targetMatrix = MO.Lang.Object.dispose(o._targetMatrix);
 }

@@ -9,34 +9,35 @@ MO.FEaiCockpitModuleManager = function FEaiCockpitModuleManager(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MGraphicObject, MO.MListener);
    //..........................................................
    // @attribute
-   o._parentModuleManager = MO.Class.register(o, new MO.AGetSet('_parentModuleManager'));
-   o._scene               = MO.Class.register(o, new MO.AGetSet('_scene'));
-   o._modeCd              = MO.Class.register(o, new MO.AGetSet('_modeCd'));
-   o._mainTimeline        = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
+   o._parentModuleManager       = MO.Class.register(o, new MO.AGetSet('_parentModuleManager'));
+   o._scene                     = MO.Class.register(o, new MO.AGetSet('_scene'));
+   o._modeCd                    = MO.Class.register(o, new MO.AGetSet('_modeCd'));
+   o._mainTimeline              = MO.Class.register(o, new MO.AGetter('_mainTimeline'));
    // @attribute
-   o._cellCount           = MO.Class.register(o, new MO.AGetter('_cellCount'));
-   o._modules             = MO.Class.register(o, new MO.AGetter('_modules'));
+   o._cellCount                 = MO.Class.register(o, new MO.AGetter('_cellCount'));
+   o._modules                   = MO.Class.register(o, new MO.AGetter('_modules'));
    // @attribute
-   o._display             = MO.Class.register(o, new MO.AGetter('_display'));
-   o._snapshotDisplay     = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
-   o._viewDisplay         = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
+   o._display                   = MO.Class.register(o, new MO.AGetter('_display'));
+   o._snapshotDisplay           = MO.Class.register(o, new MO.AGetter('_snapshotDisplay'));
+   o._viewDisplay               = MO.Class.register(o, new MO.AGetter('_viewDisplay'));
    // @attribute
-   o._focusModule         = MO.Class.register(o, new MO.AGetter('_focusModule'));
+   o._focusModule               = MO.Class.register(o, new MO.AGetter('_focusModule'));
    //..........................................................
    // @method
-   o.construct            = MO.FEaiCockpitModuleManager_construct;
+   o.construct                  = MO.FEaiCockpitModuleManager_construct;
    // @method
-   o.setup                = MO.FEaiCockpitModuleManager_setup;
-   o.register             = MO.FEaiCockpitModuleManager_register;
-   o.unregister           = MO.FEaiCockpitModuleManager_unregister;
-   o.createModule         = MO.FEaiCockpitModuleManager_createModule;
+   o.setup                      = MO.FEaiCockpitModuleManager_setup;
+   o.register                   = MO.FEaiCockpitModuleManager_register;
+   o.unregister                 = MO.FEaiCockpitModuleManager_unregister;
+   o.createModule               = MO.FEaiCockpitModuleManager_createModule;
    // @method
-   o.placeCellControl     = MO.FEaiCockpitModuleManager_placeCellControl;
-   o.selectModuleView     = MO.FEaiCockpitModuleManager_selectModuleView;
-   o.processResize        = MO.FEaiCockpitModuleManager_processResize;
-   o.process              = MO.FEaiCockpitModuleManager_process;
+   o.calculateCellControlMatrix = MO.FEaiCockpitModuleManager_calculateCellControlMatrix;
+   o.placeCellControl           = MO.FEaiCockpitModuleManager_placeCellControl;
+   o.selectModuleView           = MO.FEaiCockpitModuleManager_selectModuleView;
+   o.processResize              = MO.FEaiCockpitModuleManager_processResize;
+   o.process                    = MO.FEaiCockpitModuleManager_process;
    // @method
-   o.dispose              = MO.FEaiCockpitModuleManager_dispose;
+   o.dispose                    = MO.FEaiCockpitModuleManager_dispose;
    return o;
 }
 
@@ -124,12 +125,12 @@ MO.FEaiCockpitModuleManager_createModule = function FEaiCockpitModuleManager_cre
 }
 
 //==========================================================
-// <T>放置模块位置。</T>
+// <T>计算模块位置。</T>
 //
 // @method
 // @param module:FEaiCockpitModule 模块
 //==========================================================
-MO.FEaiCockpitModuleManager_placeCellControl = function FEaiCockpitModuleManager_placeCellControl(control){
+MO.FEaiCockpitModuleManager_calculateCellControlMatrix = function FEaiCockpitModuleManager_calculateCellControlMatrix(control, matrix) {
    var o = this;
    // 计算坐标
    var cellCount = o._cellCount;
@@ -146,14 +147,27 @@ MO.FEaiCockpitModuleManager_placeCellControl = function FEaiCockpitModuleManager
    // 设置位置
    var sx = (x2 - x1) * 0.5;
    var sy = (y1 - y2) * 0.5;
-   var renderable = control.makeRenderable();
-   var matrix = renderable.matrix();
+
    matrix.tx = x1 + sx;
    matrix.ty = y1 - sy;
    matrix.tz = z;
    matrix.sx = sx;
    matrix.sy = sy;
    matrix.updateForce();
+}
+
+//==========================================================
+// <T>放置模块位置。</T>
+//
+// @method
+// @param module:FEaiCockpitModule 模块
+//==========================================================
+MO.FEaiCockpitModuleManager_placeCellControl = function FEaiCockpitModuleManager_placeCellControl(control){
+   var o = this;
+   // 设置位置
+   var renderable = control.makeRenderable();
+   var matrix = renderable.matrix();
+   o.calculateCellControlMatrix(control, matrix);
 }
 
 //==========================================================
