@@ -56,7 +56,7 @@ MO.FEaiCockpitForecastTipSnapshot_construct = function FEaiCockpitForecastTipSna
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
-   o._cellLocation.set(14, 1, 0);
+   o._cellLocation.set(14, 6, 0);
    o._cellSize.set(2, 3);
 }
 
