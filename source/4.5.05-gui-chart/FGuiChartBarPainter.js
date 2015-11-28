@@ -250,7 +250,7 @@ MO.FGuiChartBarPainter_drawLine = function FGuiChartBarPainter_drawLine(context,
       var value = values.at(i);
       var x = pLeft + stepWidth * (i+1) - rectWidth / 2;
       var y = pTop + (maxValue - value) * stepHeight;
-      var h = value * stepHeight - 1;
+      var h = (value - minValue) * stepHeight - 1;
       //绘制填充
       graphic.fillRectangle(x, y, rectWidth, h, fillType);
       //绘制边界
