@@ -52,7 +52,7 @@ MO.FEaiCockpitWarningView_onPaintBegin = function FEaiCockpitWarningView_onPaint
    var rectangle = event.rectangle;
    //..........................................................
    // 绘制背景
-   graphic.drawRectangleImage(o._backgroundImage, rectangle);
+ //  graphic.drawRectangleImage(o._backgroundImage, rectangle);
 }
 
 //==========================================================
@@ -77,8 +77,8 @@ MO.FEaiCockpitWarningView_setup = function FEaiCockpitWarningView_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/warning/view.png');
-   image.addLoadListener(o, o.onImageLoad);
+ //  var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/warning/view.png');
+  // image.addLoadListener(o, o.onImageLoad);
 }
 
 //==========================================================

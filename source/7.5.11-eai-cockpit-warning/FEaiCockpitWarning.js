@@ -6,12 +6,12 @@
 // @history 151101
 //==========================================================
 MO.FEaiCockpitWarning = function FEaiCockpitWarning(o){
-   o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
+   o = MO.Class.inherits(this, o, MO.FEaiCockpitLogicModule);
    //..........................................................
    // @attribute
    o._name      = 'warning';
    o._typeCd    = MO.EEaiCockpitModule.Logic;
-   o._slideshow = false;
+   o._slideshow = true;
    //..........................................................
    // @method
    o.construct  = MO.FEaiCockpitWarning_construct;
@@ -31,7 +31,7 @@ MO.FEaiCockpitWarning = function FEaiCockpitWarning(o){
 //==========================================================
 MO.FEaiCockpitWarning_construct = function FEaiCockpitWarning_construct(){
    var o = this;
-   o.__base.FEaiCockpitModule.construct.call(o);
+   o.__base.FEaiCockpitLogicModule.construct.call(o);
 }
 
 //==========================================================
@@ -41,10 +41,12 @@ MO.FEaiCockpitWarning_construct = function FEaiCockpitWarning_construct(){
 //==========================================================
 MO.FEaiCockpitWarning_setup = function FEaiCockpitWarning_setup(){
    var o = this;
-   o.__base.FEaiCockpitModule.setup.call(o);
+   o.__base.FEaiCockpitLogicModule.setup.call(o);
    // 创建控件
    o._controlSnapshot = o.createControl(MO.FEaiCockpitWarningSnapshot);
    o._controlView = o.createControl(MO.FEaiCockpitWarningView);
+      // 配置模块管理器
+   o.setupModuleManager(MO.FEaiCockpitWarningModuleManager);
 }
 
 //==========================================================
@@ -56,7 +58,7 @@ MO.FEaiCockpitWarning_setup = function FEaiCockpitWarning_setup(){
 MO.FEaiCockpitWarning_process = function FEaiCockpitWarning_process(){
    var o = this;
    // 创建缩略
-   o.__base.FEaiCockpitModule.process.call(o);
+   o.__base.FEaiCockpitLogicModule.process.call(o);
 }
 
 //==========================================================
@@ -67,5 +69,5 @@ MO.FEaiCockpitWarning_process = function FEaiCockpitWarning_process(){
 MO.FEaiCockpitWarning_dispose = function FEaiCockpitWarning_dispose(){
    var o = this;
    // 父处理
-   o.__base.FEaiCockpitModule.dispose.call(o);
+   o.__base.FEaiCockpitLogicModule.dispose.call(o);
 }
