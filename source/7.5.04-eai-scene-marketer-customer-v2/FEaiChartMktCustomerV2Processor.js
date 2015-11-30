@@ -10,7 +10,9 @@ MO.FEaiChartMktCustomerV2Processor = function FEaiChartMktCustomerV2Processor(o)
    //..........................................................
    // @attribute
    o._dateSetup               = false;
-   o._scene                   = MO.Class.register(o, new MO.AGetSet('_scene'));
+   o._lastDate                = MO.Class.register(o, new MO.AGetter('_lastDate'));
+   o._lastRecordId            = 0;
+   o._scene                   = MO.Class.register(o, new MO.AGetSet('_scene')); 
    // @attribute
    o._beginDate               = MO.Class.register(o, new MO.AGetter('_beginDate'));
    o._endDate                 = MO.Class.register(o, new MO.AGetter('_endDate'));
@@ -112,6 +114,7 @@ MO.FEaiChartMktCustomerV2Processor_on24HDataFetch = function FEaiChartMktCustome
 MO.FEaiChartMktCustomerV2Processor_onDynamicData = function FEaiChartMktCustomerV2Processor_onDynamicData(event){
    var o = this;
    var content = event.content;
+   var lastDate = o._lastDate;
    // 读取数据
    var dynamicInfo = o._dynamicInfo;
    dynamicInfo.unserializeSignBuffer(event.sign, event.content, true);
@@ -119,15 +122,28 @@ MO.FEaiChartMktCustomerV2Processor_onDynamicData = function FEaiChartMktCustomer
    var rankUnits = o._rankUnits;
    rankUnits.assign(dynamicInfo.rankUnits());
    var units = o._units;
-   units.append(dynamicInfo.units());
-   var unitCount = units.count();
-   
-   if(unitCount){
+   var dynamicUnits = dynamicInfo.units();
+   var unitCount = dynamicUnits.count();
+   var dynamicUnitCount = 0;
+   var lastDateValue = lastDate.format();
+   for (var i = 0; i < unitCount; i++) {
+      var unit = dynamicUnits.get(i);
+      var recordId = unit.recordId()
+      if(recordId > o._lastRecordId){
+         units.push(unit);
+         dynamicUnitCount++;
+      };
+   };
+   if(dynamicUnitCount){
       o._tableInterval = 1000 * 60 * o._intervalMinute / unitCount;
+      var lastUnit = units.last();
+      lastDate.parseAuto(lastUnit.recordDate());
+      o._lastRecordId = lastUnit.recordId();
    }else{
       o._tableInterval = 1000 * 60 * o._intervalMinute;
    }
    o._tableTick = 0;
+   MO.Logger.info(o, 'Load dynamic data. (unit_count={1}, dynamic_unit_count={2})', unitCount, dynamicUnitCount);
    // 触发数据事件
    var changeEvent = o._eventDataChanged;
    changeEvent.rankUnits = rankUnits;
@@ -156,6 +172,7 @@ MO.FEaiChartMktCustomerV2Processor_construct = function FEaiChartMktCustomerV2Pr
    o._24HBeginDate = new MO.TDate();
    o._24HEndDate = new MO.TDate();
    o._units = new MO.TObjects();
+   o._lastDate = new MO.TDate();
    o._tableTicker = new MO.TTicker(1000 * o._tableInterval);
    o._autios = new Object();
    // 定时获取数据
@@ -303,6 +320,8 @@ MO.FEaiChartMktCustomerV2Processor_process = function FEaiChartMktCustomerV2Proc
    if(!o._dateSetup){
       o._endDate.assign(systemDate);
       o._endDate.addMinute(-o._intervalMinute);
+      o._lastDate.assign(o._endDate);
+      o._lastDate.truncDay(1);
       o._dateSetup = true;
    }
    //..........................................................
@@ -312,6 +331,8 @@ MO.FEaiChartMktCustomerV2Processor_process = function FEaiChartMktCustomerV2Proc
       // 设置结束时间
       var beginDate = o._beginDate;
       var endDate = o._endDate;
+      var lastDate = o._lastDate;
+      beginDate.assign(lastDate);
       beginDate.assign(endDate);
       endDate.assign(systemDate);
       statistics.marketer().doCustomerDynamic(o, o.onDynamicData, beginDate.format(), endDate.format());
