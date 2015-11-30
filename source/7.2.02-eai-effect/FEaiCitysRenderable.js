@@ -106,6 +106,9 @@ MO.FEaiCitysRenderable_setup = function FEaiCitysRenderable_setup(){
    var citys = o._citys;
    var count = citys.count();
    var vertexCount = o._vertexCount = 4 * count;
+   o._vertexData = new Float32Array(3 * vertexCount);
+   o._coordData = new Float32Array(2 * vertexCount);
+   o._colorData = new Uint8Array(4 * vertexCount);
    //..........................................................
    // 设置顶点坐标
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
@@ -170,10 +173,13 @@ MO.FEaiCitysRenderable_setup = function FEaiCitysRenderable_setup(){
 MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
    var o = this;
    var context = o._graphicContext;
+   var vertexData = o._vertexData;
+   var coordData = o._coordData;
+   var colorData = o._colorData;
    var citys = o._citys;
-   var total = citys.count();
    // 计算可见数量
    var count = 0;
+   var total = citys.count();
    for(var i = 0; i < total; i++){
       var city = citys.at(i);
       if(city.visible()){
@@ -183,11 +189,8 @@ MO.FEaiCitysRenderable_upload = function FEaiCitysRenderable_upload(){
    var vertexCount = o._vertexCount = 4 * count;
    // 设置顶点数据
    var vertexPosition = 0;
-   var vertexData = new Float32Array(3 * vertexCount);
    var coordPosition = 0;
-   var coordData = new Float32Array(2 * vertexCount);
    var colorPosition = 0;
-   var colorData = new Uint8Array(4 * vertexCount);
    for(var i = 0; i < total; i++){
       var city = citys.at(i);
       if(city.visible()){
