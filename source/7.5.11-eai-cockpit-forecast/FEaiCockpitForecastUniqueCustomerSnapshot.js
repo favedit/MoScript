@@ -182,7 +182,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_onPaintBegin = function FEaiCockpit
    // //graphic.drawText(lable，left,top,'#ffffff');
    // graphic.drawText(lable, 60, 35, '#ffffff');
    graphic.drawImage(o._titleImage,left+12,top+5,687,46);
-   graphic.drawImage(o._tableImage,left+12,top+315,687,46);
+   //graphic.drawImage(o._tableImage,left+12,top+315,687,46);
 
 }
 
@@ -224,19 +224,28 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    o._tableImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/grid_title.png');
    var grid = o._gridControl = MO.Class.create(MO.FGuiGridControl);
    grid.setOptionClip(false);
-   grid.setLocation(20, 320);
-   grid.setSize(100, 320);
-   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-   grid.setLeft(10);
-   grid.setRight(7);
+   grid.setLocation(0, 320);
+   grid.setSize(100, 100);
+   grid.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right | MO.EUiAnchor.Bottom);
+   grid.setLeft(20);
+   grid.setRight(20);
+   grid.setBottom(20);
    grid.setHeadHeight(35);
+   grid.setHeadBackgroundUri('{eai.resource}/cockpit/forecast/grid_title.png');
    grid.setHeadBackColor('rgba(255,255,255,0)');
+   grid.setOuterLineColor('#567a74');
+   grid.setOuterLineThickness(1);
+   grid.setInnerLineColor('#567a74');
+   grid.setInnerLineThickness(1);
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 20;
-   grid.headFont().color = '#00B2F2';
+   grid.headFont().color = '#3FE5F7';
+   grid.headFont().bold = true;
    grid.setRowHeight(35);
    grid.rowFont().font = 'Microsoft YaHei';
    grid.rowFont().size = 18;
+   grid.setBackColor('rgba(0,0,0,0.3)');
+   grid.setup();
    //公司名
    var column = MO.Class.create(MO.FGuiGridColumnText);
    column.setName('departmentLable');
