@@ -10,7 +10,7 @@ MO.FEaiCockpitStatusView = function FEaiCockpitStatusView(o) {
    //..........................................................
    // @attribute
    o._name                 = 'cockpit.forecast.snapshot';
-   o._backgroundUri        = '{eai.resource}/cockpit/forecast/ground.png';
+   // o._backgroundUri        = '{eai.resource}/cockpit/forecast/ground.png';
    // @attribute
    o._data                 = null;
    o._dataTicker           = null;
@@ -55,7 +55,7 @@ MO.FEaiCockpitStatusView_onPaintBegin = function FEaiCockpitStatusView_onPaintBe
    var rectangle = event.rectangle;
    //..........................................................
    // 绘制背景
-   graphic.drawRectangleImage(o._backgroundImage, rectangle);
+   // graphic.drawRectangleImage(o._backgroundImage, rectangle);
 }
 
 //==========================================================
@@ -80,8 +80,8 @@ MO.FEaiCockpitStatusView_setup = function FEaiCockpitStatusView_setup(){
    var o = this;
    // 创建图片
    var imageConsole = MO.Console.find(MO.FImageConsole);
-   var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/status/view.png');
-   image.addLoadListener(o, o.onImageLoad);
+   // var image = o._backgroundImage = imageConsole.load('{eai.resource}/cockpit/status/view.png');
+   // image.addLoadListener(o, o.onImageLoad);
 }
 
 //==========================================================
