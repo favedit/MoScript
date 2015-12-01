@@ -11,37 +11,37 @@ MO.FEaiCockpitForecastModuleManager = function FEaiCockpitForecastModuleManager(
    // @attribute
    o._switchVector = MO.Class.register(o, new MO.AGetter('_switchVector'));;
 
-   o._navigatorModule = MO.Class.register(o, new MO.AGetter('_navigatorModule'));
-   o._catalogModule   = MO.Class.register(o, new MO.AGetter('_catalogModule'));
-   o._logic001Module  = MO.Class.register(o, new MO.AGetter('_logic001Module'));
-   o._logic002Module  = MO.Class.register(o, new MO.AGetter('_logic002Module'));
-   o._logic003Module  = MO.Class.register(o, new MO.AGetter('_logic003Module'));
-   o._logic004Module  = MO.Class.register(o, new MO.AGetter('_logic004Module'));
-   o._logic005Module  = MO.Class.register(o, new MO.AGetter('_logic005Module'));
-   o._logic006Module  = MO.Class.register(o, new MO.AGetter('_logic006Module'));
-   o._logic007Module  = MO.Class.register(o, new MO.AGetter('_logic007Module'));
-   o._logic008Module  = MO.Class.register(o, new MO.AGetter('_logic008Module'));
-   o._logic009Module  = MO.Class.register(o, new MO.AGetter('_logic009Module'));
-   o._logic010Module  = MO.Class.register(o, new MO.AGetter('_logic010Module'));
-   o._tipModule       = MO.Class.register(o, new MO.AGetter('_tipModule'));
-   o._indexModule     = MO.Class.register(o, new MO.AGetter('_indexModule'));
+   o._navigatorModule         = MO.Class.register(o, new MO.AGetter('_navigatorModule'));
+   o._catalogModule           = MO.Class.register(o, new MO.AGetter('_catalogModule'));
+   o._logic001Module          = MO.Class.register(o, new MO.AGetter('_logic001Module'));
+   o._logicOwnVoteModule      = MO.Class.register(o, new MO.AGetter('_logicOwnVoteModule'));
+   o._logic003Module          = MO.Class.register(o, new MO.AGetter('_logic003Module'));
+   o._logic004Module          = MO.Class.register(o, new MO.AGetter('_logic004Module'));
+   o._logic005Module          = MO.Class.register(o, new MO.AGetter('_logic005Module'));
+   o._logic006Module          = MO.Class.register(o, new MO.AGetter('_logic006Module'));
+   o._logic007Module          = MO.Class.register(o, new MO.AGetter('_logic007Module'));
+   o._logic008Module          = MO.Class.register(o, new MO.AGetter('_logic008Module'));
+   o._logic009Module          = MO.Class.register(o, new MO.AGetter('_logic009Module'));
+   o._logic010Module          = MO.Class.register(o, new MO.AGetter('_logic010Module'));
+   o._tipModule               = MO.Class.register(o, new MO.AGetter('_tipModule'));
+   o._indexModule             = MO.Class.register(o, new MO.AGetter('_indexModule'));
    // @attribute
-   o._autoPlay        = false;
+   o._autoPlay                = false;
    o._leftArray               = null;
    o._rightArray              = null;
    o._targetMatrix            = null;
    o._slideShowTicker         = null;
    //..........................................................
    // @method
-   o.construct        = MO.FEaiCockpitForecastModuleManager_construct;
+   o.construct                = MO.FEaiCockpitForecastModuleManager_construct;
    o.process                  = MO.FEaiCockpitForecastModuleManager_process;
    // @method
-   o.setup            = MO.FEaiCockpitForecastModuleManager_setup;
+   o.setup                    = MO.FEaiCockpitForecastModuleManager_setup;
    o.slideShow                = MO.FEaiCockpitForecastModuleManager_slideShow;
    o.createSlideShowAnimation = MO.FEaiCockpitForecastModuleManager_createSlideShowAnimation;
    o.onOneSlideDone           = MO.FEaiCockpitSceneModuleManager_onOneSlideDone;
    // @method
-   o.dispose          = MO.FEaiCockpitForecastModuleManager_dispose;
+   o.dispose                  = MO.FEaiCockpitForecastModuleManager_dispose;
    return o;
 }
 
@@ -75,7 +75,7 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
    o._catalogModule = o.createModule(MO.FEaiCockpitForecastCatalog);
    o._logic001Module = o.createModule(MO.FEaiCockpitForecastLogic001);
-   o._logic002Module = o.createModule(MO.FEaiCockpitForecastLogic002);
+   o._logicOwnVoteModule = o.createModule(MO.FEaiCockpitForecastLogicOwnVote);
    o._logic003Module = o.createModule(MO.FEaiCockpitForecastLogic003);
    o._logic004Module = o.createModule(MO.FEaiCockpitForecastLogic004);
    o._logic005Module = o.createModule(MO.FEaiCockpitForecastLogic005);
@@ -89,7 +89,7 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
 
    var switchVector = o._switchVector = new MO.TObjects();
    switchVector.push(o._logic001Module.controlSnapshot());
-   switchVector.push(o._logic002Module.controlSnapshot());
+   switchVector.push(o._logicOwnVoteModule.controlSnapshot());
    switchVector.push(o._logic003Module.controlSnapshot());
    switchVector.push(o._logic004Module.controlSnapshot());
    switchVector.push(o._logic005Module.controlSnapshot());
@@ -140,7 +140,7 @@ MO.FEaiCockpitForecastModuleManager_setup = function FEaiCockpitForecastModuleMa
    leftArray.push(o._logic007Module.controlSnapshot());
    leftArray.push(o._logic009Module.controlSnapshot());
    var rightArray = o._rightArray;
-   rightArray.push(o._logic002Module.controlSnapshot());
+   rightArray.push(o._logicOwnVoteModule.controlSnapshot());
    rightArray.push(o._logic004Module.controlSnapshot());
    rightArray.push(o._logic006Module.controlSnapshot());
    rightArray.push(o._logic008Module.controlSnapshot());

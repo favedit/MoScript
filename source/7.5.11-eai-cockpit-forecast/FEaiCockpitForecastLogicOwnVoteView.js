@@ -5,19 +5,19 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitForecastLogic002View = function FEaiCockpitForecastLogic002View(o) {
+MO.FEaiCockpitForecastLogicOwnVoteView = function FEaiCockpitForecastLogicOwnVoteView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FEaiCockpitForecastLogic002View_onPaintBegin;
+   o.onPaintBegin = MO.FEaiCockpitForecastLogicOwnVoteView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct    = MO.FEaiCockpitForecastLogic002View_construct;
+   o.construct    = MO.FEaiCockpitForecastLogicOwnVoteView_construct;
    // @method
-   o.setup        = MO.FEaiCockpitForecastLogic002View_setup;
-   o.processLogic = MO.FEaiCockpitForecastLogic002View_processLogic;
+   o.setup        = MO.FEaiCockpitForecastLogicOwnVoteView_setup;
+   o.processLogic = MO.FEaiCockpitForecastLogicOwnVoteView_processLogic;
    // @method
-   o.dispose      = MO.FEaiCockpitForecastLogic002View_dispose;
+   o.dispose      = MO.FEaiCockpitForecastLogicOwnVoteView_dispose;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FEaiCockpitForecastLogic002View = function FEaiCockpitForecastLogic002View(o)
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002View_onPaintBegin = function FEaiCockpitForecastLogic002View_onPaintBegin(event) {
+MO.FEaiCockpitForecastLogicOwnVoteView_onPaintBegin = function FEaiCockpitForecastLogicOwnVoteView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
 }
@@ -36,7 +36,7 @@ MO.FEaiCockpitForecastLogic002View_onPaintBegin = function FEaiCockpitForecastLo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002View_construct = function FEaiCockpitForecastLogic002View_construct() {
+MO.FEaiCockpitForecastLogicOwnVoteView_construct = function FEaiCockpitForecastLogicOwnVoteView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -49,7 +49,7 @@ MO.FEaiCockpitForecastLogic002View_construct = function FEaiCockpitForecastLogic
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002View_setup = function FEaiCockpitForecastLogic002View_setup(){
+MO.FEaiCockpitForecastLogicOwnVoteView_setup = function FEaiCockpitForecastLogicOwnVoteView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -59,7 +59,7 @@ MO.FEaiCockpitForecastLogic002View_setup = function FEaiCockpitForecastLogic002V
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002View_processLogic = function FEaiCockpitForecastLogic002View_processLogic(){
+MO.FEaiCockpitForecastLogicOwnVoteView_processLogic = function FEaiCockpitForecastLogicOwnVoteView_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
@@ -69,7 +69,7 @@ MO.FEaiCockpitForecastLogic002View_processLogic = function FEaiCockpitForecastLo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002View_dispose = function FEaiCockpitForecastLogic002View_dispose() {
+MO.FEaiCockpitForecastLogicOwnVoteView_dispose = function FEaiCockpitForecastLogicOwnVoteView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

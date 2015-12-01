@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151120
 //==========================================================
-MO.FEaiCockpitForecastLogic002DataUnit = function FEaiCockpitForecastLogic002DataUnit(o){
+MO.FEaiCockpitForecastLogicOwnVoteDataUnit = function FEaiCockpitForecastLogicOwnVoteDataUnit(o){
    o = MO.Class.inherits(this, o, MO.FObject, MO.MPersistence);
    //..........................................................
    // @attribute

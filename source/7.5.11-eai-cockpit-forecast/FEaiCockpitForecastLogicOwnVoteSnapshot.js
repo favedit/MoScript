@@ -5,30 +5,33 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitForecastLogic002Snapshot = function FEaiCockpitForecastLogic002Snapshot(o) {
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot = function FEaiCockpitForecastLogicOwnVoteSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    // @attribute
    o._backgroundUri  = '{eai.resource}/cockpit/forecast/logic.png';
    o._titleImage     = null;
    o._gridTitle      = null;
+   o._dataTicker     = null;
    o._largeInvests   = null;
    o._chart          = null;
    o._chartDataset   = null;
    o._investmentDate = MO.Class.register(o, new MO.AGetter('_investmentDate'));
+   o._histogram      = MO.Class.register(o, new MO.AGetter('_histogram'));
    //..........................................................
    // @event
-   o.onPaintBegin    = MO.FEaiCockpitForecastLogic002Snapshot_onPaintBegin;
-   o.onPaintEnd      = MO.FEaiCockpitForecastLogic002Snapshot_onPaintEnd;
+   o.onPaintBegin    = MO.FEaiCockpitForecastLogicOwnVoteSnapshot_onPaintBegin;
+   o.onPaintEnd      = MO.FEaiCockpitForecastLogicOwnVoteSnapshot_onPaintEnd;
    //..........................................................
    // @method
-   o.construct       = MO.FEaiCockpitForecastLogic002Snapshot_construct;
+   o.construct       = MO.FEaiCockpitForecastLogicOwnVoteSnapshot_construct;
    // @method
-   o.setup           = MO.FEaiCockpitForecastLogic002Snapshot_setup;
-   o.updateView      = MO.FEaiCockpitForecastLogic002Snapshot_updateView;
-   o.processLogic    = MO.FEaiCockpitForecastLogic002Snapshot_processLogic;
+   o.setup           = MO.FEaiCockpitForecastLogicOwnVoteSnapshot_setup;
+   o.updateView      = MO.FEaiCockpitForecastLogicOwnVoteSnapshot_updateView;
+   o.updateHistogram = MO.FEaiCockpitForecastLogicOwnVoteSnapshot_updateHistogram;
+   o.processLogic    = MO.FEaiCockpitForecastLogicOwnVoteSnapshot_processLogic;
    // @method
-   o.dispose         = MO.FEaiCockpitForecastLogic002Snapshot_dispose;
+   o.dispose         = MO.FEaiCockpitForecastLogicOwnVoteSnapshot_dispose;
    //..........................................................
    return o;
 }
@@ -38,7 +41,7 @@ MO.FEaiCockpitForecastLogic002Snapshot = function FEaiCockpitForecastLogic002Sna
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002Snapshot_onPaintBegin = function FEaiCockpitForecastLogic002Snapshot_onPaintBegin(event){
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot_onPaintBegin = function FEaiCockpitForecastLogicOwnVoteSnapshot_onPaintBegin(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    var graphic = event.graphic;
@@ -56,7 +59,7 @@ MO.FEaiCockpitForecastLogic002Snapshot_onPaintBegin = function FEaiCockpitForeca
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002Snapshot_onPaintEnd = function FEaiCockpitForecastLogic002Snapshot_onPaintEnd(event){
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot_onPaintEnd = function FEaiCockpitForecastLogicOwnVoteSnapshot_onPaintEnd(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
 }
@@ -66,13 +69,15 @@ MO.FEaiCockpitForecastLogic002Snapshot_onPaintEnd = function FEaiCockpitForecast
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002Snapshot_construct = function FEaiCockpitForecastLogic002Snapshot_construct(){
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot_construct = function FEaiCockpitForecastLogicOwnVoteSnapshot_construct(){
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
    o._cellLocation.set(8, 1, 0);
    o._cellSize.set(6, 4);
-   o._investmentDate = MO.Class.create(MO.FEaiCockpitForecastLogic002Data);
+   o._investmentDate = MO.Class.create(MO.FEaiCockpitForecastLogicOwnVoteData);
+   o._histogram = MO.Class.create(MO.FEaiCockpitForecastLogicOwnVoteHistogramData);
+   o._dataTicker = new MO.TTicker(1000 * 60 );
 }
 
 //==========================================================
@@ -80,7 +85,7 @@ MO.FEaiCockpitForecastLogic002Snapshot_construct = function FEaiCockpitForecastL
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002Snapshot_setup = function FEaiCockpitForecastLogic002Snapshot_setup(){
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot_setup = function FEaiCockpitForecastLogicOwnVoteSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
    o._titleImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/investment_title.png');
@@ -170,7 +175,11 @@ MO.FEaiCockpitForecastLogic002Snapshot_setup = function FEaiCockpitForecastLogic
    o.push(grid);
    // 获取数据
    var statistics = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
-   statistics.doFetch002(o, o.updateView);
+   if (o._dataTicker.process()){
+      statistics.doFetchOwnVote(o, o.updateView);
+      statistics.doFetchUniqueCustomer(o, o.updateHistogram);
+   }
+
 }
 
 //==========================================================
@@ -178,7 +187,7 @@ MO.FEaiCockpitForecastLogic002Snapshot_setup = function FEaiCockpitForecastLogic
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002Snapshot_updateView = function FEaiCockpitForecastLogic002Snapshot_updateView(event){
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot_updateView = function FEaiCockpitForecastLogicOwnVoteSnapshot_updateView(event){
    var o = this;
    var content = event.content;
    var investmentDate = o._investmentDate;
@@ -187,13 +196,6 @@ MO.FEaiCockpitForecastLogic002Snapshot_updateView = function FEaiCockpitForecast
    var largeInvests = o._largeInvests;
    var grid = o._gridRank;
    grid.clearRows();
-
-   var dataset = o._chartDataset;
-   var serieses = dataset.serieses();
-   var series = serieses.get(0);
-   var chart = o._chart;
-   series.values().clear();
-   series.setFillGradient([['0', '#20d3de'], ['0.5', '#237394'], ['1.0', '#252f62']]);
    var count = largeInvests.count();
    if( count != null){
       for (var i = 0; i < largeInvests.count(); i++) {
@@ -212,78 +214,99 @@ MO.FEaiCockpitForecastLogic002Snapshot_updateView = function FEaiCockpitForecast
             row.set('netinvestment_total',(netinvestmentTotal / 10000 ).toFixed(1));
             grid.pushRow(row);
          }
-         var label = largeInvest.department();
-  switch(label){
-         case '合作—德聚公司':
-         label = '合作—德';
-         break;
-         case "上海聚汇通":
-         label = '上海聚汇';
-         break;
-         case "上海仁立网络科技有限公司":
-         label = '上海仁立';
-         break;
-         case "卓信至诚公司":
-         label = '卓信至诚';
-         break;
-         case "深圳钰诚财富":
-         label = '深圳钰诚';
-         break;  
-         case "多元营销事业部":
-         label = '多元营销';
-         break;  
-         case "深圳钰诚财富":
-         label = '深圳钰诚';
-         break;  
-         case "金易融(上海)网络科技有限公司":
-         label = '金易融';
-         break;  
-         case "赛杰思公司":
-         label = '赛杰思';
-         break;  
-         case "安信普华财富投资管理（北京）有限公司":
-         label = '安信普华';
-         break;  
-         case "在线营销事业部":
-         label = '在线营销';
-         break;  
-         case "深圳前海志赢商务信息咨询有限公司":
-         label = '深圳前海';
-         break;  
-         case "深圳钰诚财富":
-         label = '深圳钰诚';
-         break;  
-         case "融泰公司（安徽）":
-         label = '融泰公司';
-         break;  
-         case "汇仕达金融渠道部":
-         label = '汇仕达';
-         break;  
-         case "深圳前海智赢商务信息咨询有限公司":
-         label = '深圳前海';
-         break;
-         default:
-         break;                                                  
       }
-         var value = largeInvest.investmentCount();
+   }
+}
+
+//==========================================================
+// <T>刷新柱状图。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot_updateHistogram = function FEaiCockpitForecastLogicOwnVoteSnapshot_updateHistogram(event){
+   var o = this;
+   var content = event.content;
+   var histogramDate = o._histogram;
+   histogramDate.unserializeSignBuffer(event.sign, event.content, true);
+   var histograms = histogramDate.histogram();
+   var count = histograms.count();
+   var dataset = o._chartDataset;
+   var serieses = dataset.serieses();
+   var series = serieses.get(0);
+   var chart = o._chart;
+   series.values().clear();
+   series.setFillGradient([['0', '#20d3de'], ['0.5', '#237394'], ['1.0', '#252f62']]);
+   for (var i = 0; i < count; i++) {
+         var histogram = histograms.at(i);
+         var value = histogram.marketerCount();
          series.values().push(value);
+         var label = histogram.department();
+         switch(label){
+            case '合作—德聚公司':
+               label = '合作—德';
+               break;
+            case "上海聚汇通":
+               label = '上海聚汇';
+               break;
+            case "上海仁立网络科技有限公司":
+               label = '上海仁立';
+               break;
+            case "卓信至诚公司":
+               label = '卓信至诚';
+               break;
+            case "深圳钰诚财富":
+               label = '深圳钰诚';
+               break;  
+            case "多元营销事业部":
+               label = '多元营销';
+               break;  
+            case "深圳钰诚财富":
+               label = '深圳钰诚';
+               break;  
+            case "金易融(上海)网络科技有限公司":
+               label = '金易融';
+               break;  
+            case "赛杰思公司":
+               label = '赛杰思';
+               break;  
+            case "安信普华财富投资管理（北京）有限公司":
+               label = '安信普华';
+               break;  
+            case "在线营销事业部":
+               label = '在线营销';
+               break;  
+            case "深圳前海志赢商务信息咨询有限公司":
+               label = '深圳前海';
+               break;  
+            case "深圳钰诚财富":
+               label = '深圳钰诚';
+               break;  
+            case "融泰公司（安徽）":
+               label = '融泰公司';
+               break;  
+            case "汇仕达金融渠道部":
+               label = '汇仕达';
+               break;  
+            case "深圳前海智赢商务信息咨询有限公司":
+               label = '深圳前海';
+               break;
+            default:
+               break;                                                  
+         }
          var degree = MO.Class.create(MO.FUiChartAxisDegree);
          degree.setLabel(label);
          chart.axisX().pushDegree(degree);
-
-      }
-   }
-   var axisY = chart.axisY();
-   axisY.createDegreesStandard(dataset.standardCor(5));
-   axisY.formatLabels();
+         var axisY = chart.axisY();
+         axisY.createDegreesStandard(dataset.standardCor(5));
+         axisY.formatLabels();
+   };
 }
-
 //==========================================================
 // <T>逻辑处理。</T>
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002Snapshot_processLogic = function FEaiCockpitForecastLogic002Snapshot_processLogic(){
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot_processLogic = function FEaiCockpitForecastLogicOwnVoteSnapshot_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControl.processLogic.call(o);
 }
@@ -293,8 +316,9 @@ MO.FEaiCockpitForecastLogic002Snapshot_processLogic = function FEaiCockpitForeca
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastLogic002Snapshot_dispose = function FEaiCockpitForecastLogic002Snapshot_dispose(){
+MO.FEaiCockpitForecastLogicOwnVoteSnapshot_dispose = function FEaiCockpitForecastLogicOwnVoteSnapshot_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
+   o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);
 }

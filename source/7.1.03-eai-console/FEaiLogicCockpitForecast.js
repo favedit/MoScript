@@ -9,11 +9,11 @@ MO.FEaiLogicCockpitForecast = function FEaiLogicCockpitForecast(o){
    o = MO.Class.inherits(this, o, MO.FEaiLogic);
    //..........................................................
    // @method
-   o.doFetch                 = MO.FEaiLogicCockpitForecast_doFetch;
-   o.doFetchExponentForecast = MO.FEaiLogicCockpitForecast_doFetchExponentForecast;
-   o.doFetch002              = MO.FEaiLogicCockpitForecast_doFetch002;   
+   o.doFetch                   = MO.FEaiLogicCockpitForecast_doFetch;
+   o.doFetchExponentForecast   = MO.FEaiLogicCockpitForecast_doFetchExponentForecast;
+   o.doFetchOwnVote            = MO.FEaiLogicCockpitForecast_doFetch002;   
    o.doFetchAchievementProblem = MO.FEaiLogicCockpitForecast_doFetchAchievementProblem;
-   o.doFetchUniqueCustomer = MO.FEaiLogicCockpitForecast_doFetchUniqueCustomer;
+   o.doFetchUniqueCustomer     = MO.FEaiLogicCockpitForecast_doFetchUniqueCustomer;
    return o;
 }
 
@@ -59,7 +59,7 @@ MO.FEaiLogicCockpitForecast_doFetchExponentForecast = function FEaiLogicCockpitF
 // @param endDate:String 结束时间
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicCockpitForecast_doFetch002 = function FEaiLogicCockpitForecast_doFetch002(owner, callback){
+MO.FEaiLogicCockpitForecast_doFetch002 = function FEaiLogicCockpitForecast_doFetchOwnVote(owner, callback){
    var o = this;
    var parameters = o.prepareParemeters();
    o.sendService('{eai.logic.service}/eai.cockpit.forecast.subpage.wv?do=fetchInvestmentSelf', parameters, owner, callback);
@@ -95,4 +95,20 @@ MO.FEaiLogicCockpitForecast_doFetchUniqueCustomer = function FEaiLogicCockpitFor
     var o = this;
     var parameters = o.prepareParemeters();
     o.sendService('{eai.logic.service}/eai.cockpit.forecast.subpage.wv?do=FetchUniqueCustomer', parameters, owner, callback);
+}
+
+//==========================================================
+// <T>获得只有一个客户理财师信息。</T>
+//
+// @method
+// @param owner:Object 拥有者
+// @param callback:Function 回调函数
+// @param startDate:String 开始时间
+// @param endDate:String 结束时间
+// @return FListener 监听
+//==========================================================
+MO.FEaiLogicCockpitForecast_doFetchUniqueCustomer = function FEaiLogicCockpitForecast_doFetchOwnVoteHistogram(owner,callback){
+    var o = this;
+    var parameters = o.prepareParemeters();
+    o.sendService('{eai.logic.service}/eai.cockpit.forecast.subpage.wv?do=fetchInvestmentSelfChart', parameters, owner, callback);    
 }
