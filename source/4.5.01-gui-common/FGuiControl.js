@@ -136,7 +136,9 @@ MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(event){
    var o = this;
    var graphic = event.graphic;
    var rectangle = event.rectangle;
-   // graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, 'red', 1);
+   if(MO.Gui.Control.optionDebugBorder){
+      graphic.drawRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, '#FF0000', 1);
+   }
    // 绘制底色
    if(o._backColor){
       graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);

@@ -23,7 +23,7 @@ MO.FGuiContainer = function FGuiContainer(o){
 MO.FGuiContainer_createChild = function FGuiContainer_createChild(xconfig){
    var o = this;
    // 创建实例
-   var child = MO.RGuiControl.newInstance(xconfig);
+   var child = MO.Gui.Control.newInstance(xconfig);
    child._parent = o;
    return child;
 }

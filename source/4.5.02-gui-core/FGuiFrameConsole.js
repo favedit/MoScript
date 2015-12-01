@@ -53,7 +53,7 @@ MO.FGuiFrameConsole_createFrame = function FGuiFrameConsole_createFrame(context,
    var describeConsole = MO.Console.find(MO.FGuiFrameDescribeConsole);
    var xframe = describeConsole.load(name);
    // 构建处理
-   var frame = MO.RGuiControl.build(null, xframe, null, null);
+   var frame = MO.Gui.Control.build(null, xframe, null, null);
    frame.linkGraphicContext(context);
    frame.psInitialize();
    frame.build();

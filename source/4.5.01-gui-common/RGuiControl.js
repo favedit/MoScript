@@ -9,7 +9,10 @@ MO.RGuiControl = function RGuiControl(){
    var o = this;
    //..........................................................
    // @property
-   o.PREFIX    = 'FGui';
+   o.PREFIX            = 'FGui';
+   //..........................................................
+   // @attribute
+   o.optionDebugBorder = false;
    return o;
 }
 
@@ -216,4 +219,4 @@ MO.RGuiControl.prototype.saveConfig = function RGuiControl_saveConfig(control, x
 }
 //..........................................................
 // 实例化内容
-MO.RGuiControl = new MO.RGuiControl();
+MO.Gui.Control = new MO.RGuiControl();
