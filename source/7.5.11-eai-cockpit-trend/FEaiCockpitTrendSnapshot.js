@@ -70,8 +70,9 @@ MO.FEaiCockpitTrendSnapshot_onFetch = function FEaiCockpitTrendSnapshot_onFetch(
    var content = event.content;
    // 读取数据
    var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   o.setData(data);
+   if (data.unserializeSignBuffer(event.sign, event.content, true)) {
+      o.setData(data);
+   }
 }
 
 //==========================================================
@@ -166,8 +167,10 @@ MO.FEaiCockpitTrendSnapshot_setData = function FEaiCockpitTrendSnapshot_setData(
    yAxis.createDegreesStandard(dataset.standardCor(8));
    yAxis.formatLabels();
    var zero = yAxis.findDegreeByValue(0);
-   zero.setLineWidth(2);
-   zero.setLineColor("#fec334")
+   if (zero) {
+      zero.setLineWidth(2);
+      zero.setLineColor("#fec334")
+   }
    o.dirty();
 }
 

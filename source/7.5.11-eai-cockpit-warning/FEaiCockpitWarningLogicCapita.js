@@ -5,23 +5,23 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitWarningLogic003 = function FEaiCockpitWarningLogic003(o){
+MO.FEaiCockpitWarningLogicCapita = function FEaiCockpitWarningLogicCapita(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name       = 'Warning.logic.003';
+   o._name       = 'Warning.logic.Capita';
    o._typeCd     = MO.EEaiCockpitModule.Logic;
    o._dataTicker = null;
    o._slideshow  = true;
    //..........................................................
    // @method
-   o.construct   = MO.FEaiCockpitWarningLogic003_construct;
+   o.construct   = MO.FEaiCockpitWarningLogicCapita_construct;
    // @method
-   o.setup       = MO.FEaiCockpitWarningLogic003_setup;
+   o.setup       = MO.FEaiCockpitWarningLogicCapita_setup;
    // @method
-   o.process     = MO.FEaiCockpitWarningLogic003_process;
+   o.process     = MO.FEaiCockpitWarningLogicCapita_process;
    // @method
-   o.dispose     = MO.FEaiCockpitWarningLogic003_dispose;
+   o.dispose     = MO.FEaiCockpitWarningLogicCapita_dispose;
    return o;
 }
 
@@ -30,7 +30,7 @@ MO.FEaiCockpitWarningLogic003 = function FEaiCockpitWarningLogic003(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic003_construct = function FEaiCockpitWarningLogic003_construct(){
+MO.FEaiCockpitWarningLogicCapita_construct = function FEaiCockpitWarningLogicCapita_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
 }
@@ -40,11 +40,11 @@ MO.FEaiCockpitWarningLogic003_construct = function FEaiCockpitWarningLogic003_co
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic003_setup = function FEaiCockpitWarningLogic003_setup(){
+MO.FEaiCockpitWarningLogicCapita_setup = function FEaiCockpitWarningLogicCapita_setup(){
    var o = this;
    // 创建控件
-   o._controlSnapshot = o.createControl(MO.FEaiCockpitWarningLogic003Snapshot);
-   o._controlView = o.createControl(MO.FEaiCockpitWarningLogic003View);
+   o._controlSnapshot = o.createControl(MO.FEaiCockpitWarningLogicCapitaSnapshot);
+   o._controlView = o.createControl(MO.FEaiCockpitWarningLogicCapitaView);
 }
 
 //==========================================================
@@ -53,7 +53,7 @@ MO.FEaiCockpitWarningLogic003_setup = function FEaiCockpitWarningLogic003_setup(
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitWarningLogic003_process = function FEaiCockpitWarningLogic003_process(){
+MO.FEaiCockpitWarningLogicCapita_process = function FEaiCockpitWarningLogicCapita_process(){
    var o = this;
    // 创建缩略
    o.__base.FEaiCockpitModule.process.call(o);
@@ -64,7 +64,7 @@ MO.FEaiCockpitWarningLogic003_process = function FEaiCockpitWarningLogic003_proc
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic003_dispose = function FEaiCockpitWarningLogic003_dispose(){
+MO.FEaiCockpitWarningLogicCapita_dispose = function FEaiCockpitWarningLogicCapita_dispose(){
    var o = this;
    // 释放属性
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);

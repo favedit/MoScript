@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitWarningLogic001Snapshot = function FEaiCockpitWarningLogic001Snapshot(o) {
+MO.FEaiCockpitWarningLogicCapitaSnapshot = function FEaiCockpitWarningLogicCapitaSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    o._comingSoon    = true;
@@ -14,16 +14,16 @@ MO.FEaiCockpitWarningLogic001Snapshot = function FEaiCockpitWarningLogic001Snaps
    o._contImage     = null;
    //..........................................................
    // @event
-   o.onPaintBegin   = MO.FEaiCockpitWarningLogic001Snapshot_onPaintBegin;
-   o.onPaintEnd     = MO.FEaiCockpitWarningLogic001Snapshot_onPaintEnd;
+   o.onPaintBegin   = MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintBegin;
+   o.onPaintEnd     = MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintEnd;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitWarningLogic001Snapshot_construct;
+   o.construct      = MO.FEaiCockpitWarningLogicCapitaSnapshot_construct;
    // @method
-   o.setup          = MO.FEaiCockpitWarningLogic001Snapshot_setup;
-   o.processLogic   = MO.FEaiCockpitWarningLogic001Snapshot_processLogic;
+   o.setup          = MO.FEaiCockpitWarningLogicCapitaSnapshot_setup;
+   o.processLogic   = MO.FEaiCockpitWarningLogicCapitaSnapshot_processLogic;
    // @method
-   o.dispose        = MO.FEaiCockpitWarningLogic001Snapshot_dispose;
+   o.dispose        = MO.FEaiCockpitWarningLogicCapitaSnapshot_dispose;
    //..........................................................
    return o;
 }
@@ -33,7 +33,7 @@ MO.FEaiCockpitWarningLogic001Snapshot = function FEaiCockpitWarningLogic001Snaps
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001Snapshot_onPaintBegin = function FEaiCockpitWarningLogic001Snapshot_onPaintBegin(event) {
+MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintBegin = function FEaiCockpitWarningLogicCapitaSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    graphic = event.graphic;
@@ -48,7 +48,7 @@ MO.FEaiCockpitWarningLogic001Snapshot_onPaintBegin = function FEaiCockpitWarning
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001Snapshot_onPaintEnd = function FEaiCockpitWarningLogic001Snapshot_onPaintEnd(event){
+MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintEnd = function FEaiCockpitWarningLogicCapitaSnapshot_onPaintEnd(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
 }
@@ -58,7 +58,7 @@ MO.FEaiCockpitWarningLogic001Snapshot_onPaintEnd = function FEaiCockpitWarningLo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001Snapshot_construct = function FEaiCockpitWarningLogic001Snapshot_construct(){
+MO.FEaiCockpitWarningLogicCapitaSnapshot_construct = function FEaiCockpitWarningLogicCapitaSnapshot_construct(){
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
@@ -71,7 +71,7 @@ MO.FEaiCockpitWarningLogic001Snapshot_construct = function FEaiCockpitWarningLog
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001Snapshot_setup = function FEaiCockpitWarningLogic001Snapshot_setup(){
+MO.FEaiCockpitWarningLogicCapitaSnapshot_setup = function FEaiCockpitWarningLogicCapitaSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
    o._contImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/logic1.png');
@@ -82,7 +82,7 @@ MO.FEaiCockpitWarningLogic001Snapshot_setup = function FEaiCockpitWarningLogic00
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001Snapshot_processLogic = function FEaiCockpitWarningLogic001Snapshot_processLogic(){
+MO.FEaiCockpitWarningLogicCapitaSnapshot_processLogic = function FEaiCockpitWarningLogicCapitaSnapshot_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControl.processLogic.call(o);
 }
@@ -92,7 +92,7 @@ MO.FEaiCockpitWarningLogic001Snapshot_processLogic = function FEaiCockpitWarning
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001Snapshot_dispose = function FEaiCockpitWarningLogic001Snapshot_dispose(){
+MO.FEaiCockpitWarningLogicCapitaSnapshot_dispose = function FEaiCockpitWarningLogicCapitaSnapshot_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

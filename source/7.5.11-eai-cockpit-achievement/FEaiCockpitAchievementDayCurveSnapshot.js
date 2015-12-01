@@ -207,8 +207,10 @@ MO.FEaiCockpitAchievementDayCurveSnapshot_setData = function FEaiCockpitAchievem
    yAxis.createDegreesStandard(dataset.standardCor(8));
    yAxis.formatLabels();
    var zero = yAxis.findDegreeByValue(0);
-   zero.setLineWidth(3);
-   zero.setLineColor("#ffe721")
+   if (zero) {
+      zero.setLineWidth(3);
+      zero.setLineColor("#ffe721")
+   }
    o.dirty();
 }
 

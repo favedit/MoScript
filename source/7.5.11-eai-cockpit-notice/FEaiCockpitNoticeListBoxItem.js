@@ -196,18 +196,9 @@ MO.FEaiCockpitNoticeListBoxItem_draw = function FEaiCockpitNoticeListBoxItem_dra
    } else if (urgencyLevel == 3) {
        urgencyImage = o._degreeUrgentImage;
    }
-   graphic.drawImage(urgencyImage, drawX + 260, drawY - 10, 63, 37);
-   drawX = 845;
-   drawY -= 34;
-    /*
-   // 绘制笑脸
-   if (percent > 0.5) {
-      graphic.drawImage(o._pbarGoodImage, drawX, drawY, 49, 49);
+   if (urgencyImage) {
+      graphic.drawImage(urgencyImage, drawX + 260, drawY - 10, 63, 37);
    }
-   else {
-      graphic.drawImage(o._pbarBadImage, drawX, drawY, 49, 49);
-   }
-   */
 }
 
 //==========================================================

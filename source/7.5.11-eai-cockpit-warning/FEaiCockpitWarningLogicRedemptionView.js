@@ -5,19 +5,19 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitWarningLogic004View = function FEaiCockpitWarningLogic004View(o) {
+MO.FEaiCockpitWarningLogicRedemptionView = function FEaiCockpitWarningLogicRedemptionView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FEaiCockpitWarningLogic004View_onPaintBegin;
+   o.onPaintBegin = MO.FEaiCockpitWarningLogicRedemptionView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct    = MO.FEaiCockpitWarningLogic004View_construct;
+   o.construct    = MO.FEaiCockpitWarningLogicRedemptionView_construct;
    // @method
-   o.setup        = MO.FEaiCockpitWarningLogic004View_setup;
-   o.processLogic = MO.FEaiCockpitWarningLogic004View_processLogic;
+   o.setup        = MO.FEaiCockpitWarningLogicRedemptionView_setup;
+   o.processLogic = MO.FEaiCockpitWarningLogicRedemptionView_processLogic;
    // @method
-   o.dispose      = MO.FEaiCockpitWarningLogic004View_dispose;
+   o.dispose      = MO.FEaiCockpitWarningLogicRedemptionView_dispose;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FEaiCockpitWarningLogic004View = function FEaiCockpitWarningLogic004View(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic004View_onPaintBegin = function FEaiCockpitWarningLogic004View_onPaintBegin(event) {
+MO.FEaiCockpitWarningLogicRedemptionView_onPaintBegin = function FEaiCockpitWarningLogicRedemptionView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
 }
@@ -36,7 +36,7 @@ MO.FEaiCockpitWarningLogic004View_onPaintBegin = function FEaiCockpitWarningLogi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic004View_construct = function FEaiCockpitWarningLogic004View_construct() {
+MO.FEaiCockpitWarningLogicRedemptionView_construct = function FEaiCockpitWarningLogicRedemptionView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -49,7 +49,7 @@ MO.FEaiCockpitWarningLogic004View_construct = function FEaiCockpitWarningLogic00
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic004View_setup = function FEaiCockpitWarningLogic004View_setup(){
+MO.FEaiCockpitWarningLogicRedemptionView_setup = function FEaiCockpitWarningLogicRedemptionView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -59,7 +59,7 @@ MO.FEaiCockpitWarningLogic004View_setup = function FEaiCockpitWarningLogic004Vie
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic004View_processLogic = function FEaiCockpitWarningLogic004View_processLogic(){
+MO.FEaiCockpitWarningLogicRedemptionView_processLogic = function FEaiCockpitWarningLogicRedemptionView_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
@@ -69,7 +69,7 @@ MO.FEaiCockpitWarningLogic004View_processLogic = function FEaiCockpitWarningLogi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic004View_dispose = function FEaiCockpitWarningLogic004View_dispose() {
+MO.FEaiCockpitWarningLogicRedemptionView_dispose = function FEaiCockpitWarningLogicRedemptionView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

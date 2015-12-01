@@ -5,19 +5,19 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitWarningLogic001View = function FEaiCockpitWarningLogic001View(o) {
+MO.FEaiCockpitWarningLogicCapitaView = function FEaiCockpitWarningLogicCapitaView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FEaiCockpitWarningLogic001View_onPaintBegin;
+   o.onPaintBegin = MO.FEaiCockpitWarningLogicCapitaView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct    = MO.FEaiCockpitWarningLogic001View_construct;
+   o.construct    = MO.FEaiCockpitWarningLogicCapitaView_construct;
    // @method
-   o.setup        = MO.FEaiCockpitWarningLogic001View_setup;
-   o.processLogic = MO.FEaiCockpitWarningLogic001View_processLogic;
+   o.setup        = MO.FEaiCockpitWarningLogicCapitaView_setup;
+   o.processLogic = MO.FEaiCockpitWarningLogicCapitaView_processLogic;
    // @method
-   o.dispose      = MO.FEaiCockpitWarningLogic001View_dispose;
+   o.dispose      = MO.FEaiCockpitWarningLogicCapitaView_dispose;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FEaiCockpitWarningLogic001View = function FEaiCockpitWarningLogic001View(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001View_onPaintBegin = function FEaiCockpitWarningLogic001View_onPaintBegin(event) {
+MO.FEaiCockpitWarningLogicCapitaView_onPaintBegin = function FEaiCockpitWarningLogicCapitaView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
 }
@@ -36,7 +36,7 @@ MO.FEaiCockpitWarningLogic001View_onPaintBegin = function FEaiCockpitWarningLogi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001View_construct = function FEaiCockpitWarningLogic001View_construct() {
+MO.FEaiCockpitWarningLogicCapitaView_construct = function FEaiCockpitWarningLogicCapitaView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -49,7 +49,7 @@ MO.FEaiCockpitWarningLogic001View_construct = function FEaiCockpitWarningLogic00
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001View_setup = function FEaiCockpitWarningLogic001View_setup(){
+MO.FEaiCockpitWarningLogicCapitaView_setup = function FEaiCockpitWarningLogicCapitaView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -59,7 +59,7 @@ MO.FEaiCockpitWarningLogic001View_setup = function FEaiCockpitWarningLogic001Vie
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001View_processLogic = function FEaiCockpitWarningLogic001View_processLogic(){
+MO.FEaiCockpitWarningLogicCapitaView_processLogic = function FEaiCockpitWarningLogicCapitaView_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
@@ -69,7 +69,7 @@ MO.FEaiCockpitWarningLogic001View_processLogic = function FEaiCockpitWarningLogi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogic001View_dispose = function FEaiCockpitWarningLogic001View_dispose() {
+MO.FEaiCockpitWarningLogicCapitaView_dispose = function FEaiCockpitWarningLogicCapitaView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);
