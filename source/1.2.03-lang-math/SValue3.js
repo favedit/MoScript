@@ -59,7 +59,8 @@ MO.SValue3 = function SValue3(x, y, z){
 // @return Boolean 是否为空
 //============================================================
 MO.SValue3_isEmpty = function SValue3_isEmpty(p){
-   return (this.x == 0) && (this.y == 0) && (this.z == 0);
+   var o = this;
+   return (o.x == 0) && (o.y == 0) && (o.z == 0);
 }
 
 //============================================================
@@ -69,7 +70,8 @@ MO.SValue3_isEmpty = function SValue3_isEmpty(p){
 // @return Boolean 是否相等
 //============================================================
 MO.SValue3_equals = function SValue3_equals(value){
-   return (this.x == value.x) && (this.y == value.y) && (this.z == value.z);
+   var o = this;
+   return (o.x == value.x) && (o.y == value.y) && (o.z == value.z);
 }
 
 //============================================================
@@ -79,7 +81,8 @@ MO.SValue3_equals = function SValue3_equals(value){
 // @return Boolean 是否相等
 //============================================================
 MO.SValue3_equalsData = function SValue3_equalsData(x, y, z){
-   return (this.x == x) && (this.y == y) && (this.z == z);
+   var o = this;
+   return (o.x == x) && (o.y == y) && (o.z == z);
 }
 
 //==========================================================
@@ -89,9 +92,10 @@ MO.SValue3_equalsData = function SValue3_equalsData(x, y, z){
 // @param value:SValue3 三维数据
 //==========================================================
 MO.SValue3_assign = function SValue3_assign(value){
-   this.x = value.x;
-   this.y = value.y;
-   this.z = value.z;
+   var o = this;
+   o.x = value.x;
+   o.y = value.y;
+   o.z = value.z;
 }
 
 //==========================================================
@@ -100,9 +104,8 @@ MO.SValue3_assign = function SValue3_assign(value){
 // @method
 //==========================================================
 MO.SValue3_setMin = function SValue3_setMin(){
-   this.x = Number.MIN_VALUE;
-   this.y = Number.MIN_VALUE;
-   this.z = Number.MIN_VALUE;
+   var o = this;
+   o.x = o.y = o.z = Number.MIN_VALUE;
 }
 
 //==========================================================
@@ -111,9 +114,8 @@ MO.SValue3_setMin = function SValue3_setMin(){
 // @method
 //==========================================================
 MO.SValue3_setMax = function SValue3_setMax(){
-   this.x = Number.MAX_VALUE;
-   this.y = Number.MAX_VALUE;
-   this.z = Number.MAX_VALUE;
+   var o = this;
+   o.x = o.y = o.z = Number.MAX_VALUE;
 }
 
 //==========================================================
@@ -125,9 +127,16 @@ MO.SValue3_setMax = function SValue3_setMax(){
 // @param z:Number Z分量
 //==========================================================
 MO.SValue3_set = function SValue3_set(x, y, z){
-   this.x = x;
-   this.y = y;
-   this.z = z;
+   var o = this;
+   if(x != null){
+      o.x = x;
+   }
+   if(y != null){
+      o.y = y;
+   }
+   if(z != null){
+      o.z = z;
+   }
 }
 
 //==========================================================
@@ -137,9 +146,12 @@ MO.SValue3_set = function SValue3_set(x, y, z){
 // @param value:Number 内容
 //==========================================================
 MO.SValue3_setAll = function SValue3_set(value){
-   this.x = value;
-   this.y = value;
-   this.z = value;
+   var o = this;
+   if(value != null){
+      o.x = value;
+      o.y = value;
+      o.z = value;
+   }
 }
 
 //==========================================================
@@ -151,9 +163,10 @@ MO.SValue3_setAll = function SValue3_set(value){
 // @param z:Number Z分量
 //==========================================================
 MO.SValue3_add = function SValue3_add(x, y, z){
-   this.x += x;
-   this.y += y;
-   this.z += z;
+   var o = this;
+   o.x += x;
+   o.y += y;
+   o.z += z;
 }
 
 //==========================================================
@@ -163,9 +176,10 @@ MO.SValue3_add = function SValue3_add(x, y, z){
 // @param value:SVector3 方向
 //==========================================================
 MO.SValue3_addValue3 = function SValue3_addValue3(value){
-   this.x += value.x;
-   this.y += value.y;
-   this.z += value.z;
+   var o = this;
+   o.x += value.x;
+   o.y += value.y;
+   o.z += value.z;
 }
 
 //==========================================================
@@ -177,9 +191,10 @@ MO.SValue3_addValue3 = function SValue3_addValue3(value){
 // @param z:Number Z分量
 //==========================================================
 MO.SValue3_mul = function SValue3_mul(x, y, z){
-   this.x *= x;
-   this.y *= y;
-   this.z *= z;
+   var o = this;
+   o.x *= x;
+   o.y *= y;
+   o.z *= z;
 }
 
 //==========================================================
@@ -191,9 +206,10 @@ MO.SValue3_mul = function SValue3_mul(x, y, z){
 // @param z:Number Z分量
 //==========================================================
 MO.SValue3_mulAll = function SValue3_mulAll(value){
-   this.x *= value;
-   this.y *= value;
-   this.z *= value;
+   var o = this;
+   o.x *= value;
+   o.y *= value;
+   o.z *= value;
 }
 
 //==========================================================
@@ -202,14 +218,15 @@ MO.SValue3_mulAll = function SValue3_mulAll(value){
 // @method
 //==========================================================
 MO.SValue3_normalize = function SValue3_normalize(){
-   var value = this.absolute();
+   var o = this;
+   var value = o.absolute();
    if(value != 0){
       var rate = 1 / value;
-      this.x *= rate;
-      this.y *= rate;
-      this.z *= rate;
+      o.x *= rate;
+      o.y *= rate;
+      o.z *= rate;
    }
-   return this;
+   return o;
 }
 
 //==========================================================
@@ -247,7 +264,8 @@ MO.SValue3_lengthToValue3 = function SValue3_lengthTo(value){
 // @return Number 绝对值
 //==========================================================
 MO.SValue3_absolute = function SValue3_absolute(){
-   return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z));
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z));
 }
 
 //============================================================
@@ -258,17 +276,18 @@ MO.SValue3_absolute = function SValue3_absolute(){
 // @return SValue3 数据内容
 //============================================================
 MO.SValue3_negative = function SValue3_negative(value){
+   var o = this;
    // 生成内容
    var result = null;
    if(p){
       result = value;
    }else{
-      result = new this.constructor();
+      result = new o.constructor();
    }
    // 设置内容
-   result.x = -this.x;
-   result.y = -this.y;
-   result.z = -this.z;
+   result.x = -o.x;
+   result.y = -o.y;
+   result.z = -o.z;
    return result;
 }
 
@@ -279,9 +298,10 @@ MO.SValue3_negative = function SValue3_negative(value){
 // @param output:FByteStream 数据流
 //==========================================================
 MO.SValue3_serialize = function SValue3_serialize(output){
-   output.writeFloat(this.x);
-   output.writeFloat(this.y);
-   output.writeFloat(this.z);
+   var o = this;
+   output.writeFloat(o.x);
+   output.writeFloat(o.y);
+   output.writeFloat(o.z);
 }
 
 //==========================================================
@@ -290,19 +310,20 @@ MO.SValue3_serialize = function SValue3_serialize(output){
 // @method
 // @param input:FByteStream 数据流
 //==========================================================
-MO.SValue3_unserialize2 = function SValue3_unserialize2(input, dataCd) {
-   switch (dataCd) {
+MO.SValue3_unserialize2 = function SValue3_unserialize2(input, dataCd){
+   var o = this;
+   switch(dataCd){
       case MO.EDataType.Int32:
-         this.x = input.readInt32();
-         this.y = input.readInt32();
+         o.x = input.readInt32();
+         o.y = input.readInt32();
          break;
       case MO.EDataType.Float:
-         this.x = input.readFloat();
-         this.y = input.readFloat();
+         o.x = input.readFloat();
+         o.y = input.readFloat();
          break;
       case MO.EDataType.Double:
-         this.x = input.readDouble();
-         this.y = input.readDouble();
+         o.x = input.readDouble();
+         o.y = input.readDouble();
          break;
       default:
          break;
@@ -316,21 +337,22 @@ MO.SValue3_unserialize2 = function SValue3_unserialize2(input, dataCd) {
 // @param input:FByteStream 数据流
 //==========================================================
 MO.SValue3_unserialize3 = function SValue3_unserialize3(input, dataCd) {
-   switch (dataCd) {
+   var o = this;
+   switch(dataCd){
       case MO.EDataType.Int32:
-         this.x = input.readInt32();
-         this.y = input.readInt32();
-         this.z = input.readInt32();
+         o.x = input.readInt32();
+         o.y = input.readInt32();
+         o.z = input.readInt32();
          break;
       case MO.EDataType.Float:
-         this.x = input.readFloat();
-         this.y = input.readFloat();
-         this.z = input.readFloat();
+         o.x = input.readFloat();
+         o.y = input.readFloat();
+         o.z = input.readFloat();
          break;
       case MO.EDataType.Double:
-         this.x = input.readDouble();
-         this.y = input.readDouble();
-         this.z = input.readDouble();
+         o.x = input.readDouble();
+         o.y = input.readDouble();
+         o.z = input.readDouble();
          break;
       default:
          break;
@@ -344,11 +366,12 @@ MO.SValue3_unserialize3 = function SValue3_unserialize3(input, dataCd) {
 // @param value:String 字符串
 //============================================================
 MO.SValue3_parse = function SValue3_parse(value){
+   var o = this;
    var items = value.split(',')
    if(items.length == 3){
-      this.x = parseFloat(items[0]);
-      this.y = parseFloat(items[1]);
-      this.z = parseFloat(items[2]);
+      o.x = parseFloat(items[0]);
+      o.y = parseFloat(items[1]);
+      o.z = parseFloat(items[2]);
    }else{
       throw new MO.TError(o, "Parse value failure. (value={1})", value);
    }
@@ -373,7 +396,8 @@ MO.SValue3_toDisplay = function SValue3_toDisplay(){
 // @return String 字符串
 //==========================================================
 MO.SValue3_toString = function SValue3_toString(){
-   return this.x + ',' + this.y + ',' + this.z;
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z;
 }
 
 //==========================================================

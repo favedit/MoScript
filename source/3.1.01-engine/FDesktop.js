@@ -11,6 +11,7 @@ MO.FDesktop = function FDesktop(o){
    // @attribute
    o._size            = MO.Class.register(o, new MO.AGetter('_size'));
    o._sizeRate        = MO.Class.register(o, new MO.AGetter('_sizeRate'), 1);
+   o._sizeScale       = MO.Class.register(o, new MO.AGetter('_sizeScale'), 1);
    o._calculateSize   = MO.Class.register(o, new MO.AGetter('_calculateSize'));
    o._calculateRate   = MO.Class.register(o, new MO.AGetter('_calculateRate'));
    o._logicSize       = MO.Class.register(o, new MO.AGetter('_logicSize'));

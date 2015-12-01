@@ -407,11 +407,14 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
    } else {
       timeline.setDockCd(MO.EUiDock.Bottom);
       timeline.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      timeline.setLeft(20);
-      timeline.setBottom(10);
+      //timeline.setLeft(20);
+      timeline.setLeft(0);
+      //timeline.setBottom(10);
+      timeline.setBottom(0);
       //timeline.setRight(780);
       timeline.setRight(630);
-      timeline.setHeight(300);
+      //timeline.setHeight(300);
+      timeline.setHeight(250);
    }
    //..........................................................
    // 设置表格

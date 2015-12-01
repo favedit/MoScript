@@ -81,17 +81,16 @@ MO.FEaiChartMktCustomerV2Processor = function FEaiChartMktCustomerV2Processor(o)
    //o._tenderUnits             = MO.Class.register(o, new MO.AGetter('_tenderUnits'));
    return o;
 }
+
 //==========================================================
 // <T>甜甜圈数据获取处理。</T>
 //
 // @method
 //==========================================================
-
 MO.FEaiChartMktCustomerV2Processor_onTrenderData = function FEaiChartMktCustomerV2Processor_onTrenderData(event){
    var o = this;
    var eventData = event;
    o.processCurvesChangedListener(event);
-
 }
 
 //==========================================================
@@ -184,6 +183,8 @@ MO.FEaiChartMktCustomerV2Processor_construct = function FEaiChartMktCustomerV2Pr
    o._eventDataChanged = new MO.SEvent(o);
    o._event24HDataChanged = new MO.SEvent(o);
    //o._tenderUnits = MO.Class.create(MO.FEaiLogicInfoTender);
+   o._cityLocationPosition = new MO.SPoint3();
+   o._cityScreenPosition = new MO.SPoint2();
 }
 
 //==========================================================
@@ -246,14 +247,19 @@ MO.FEaiChartMktCustomerV2Processor_calculateCurrent = function FEaiChartMktCusto
 //==========================================================
 MO.FEaiChartMktCustomerV2Processor_focusEntity = function FEaiChartMktCustomerV2Processor_focusEntity(unit){
    var o = this;
+   var scene = o._scene;
    var display = o._display;
    var mapEntity = o._mapEntity;
-   var desktop = o._scene.application().desktop();
-   var stage = o._scene.activeStage();
+   var desktop = scene.application().desktop();
+   var stage = scene.activeStage();
    var camera = stage.camera();
    var desktopSize = desktop.size();
+   var sizeScale = desktop.sizeScale();
    var calculateX = 0;
    var calculateY = 0;
+   var calculateColor = 0;
+   var inputPosition = o._cityLocationPosition;
+   var outputPosition = o._cityScreenPosition;
    // 显示实体
    var card = unit.card();
    var cityEntity = MO.Console.find(MO.FEaiEntityConsole).cityModule().findByCard(card);
@@ -266,20 +272,16 @@ MO.FEaiChartMktCustomerV2Processor_focusEntity = function FEaiChartMktCustomerV2
       var provinceEntity = MO.Console.find(MO.FEaiEntityConsole).provinceModule().findByCode(provinceCode);
       if(provinceEntity){
          provinceEntity.doInvestment(level, investment);
-         // var postion = provinceEntity.calculateScreenPosition();
       }
       // 更新城市数据
       cityEntity.addInvestmentTotal(level, investment);
-      var cityX = cityEntity.location().x;
-      var cityY = cityEntity.location().y;
-      var matrix = new MO.SMatrix3d();
-      matrix.assign(display.matrix());
-      matrix.append(camera.matrix());
-      matrix.append(camera.projection().matrix());
-      var point3 = matrix.transformValue3(cityX, cityY, 0);
-      calculateX = desktopSize.width * (point3.x + 1) * 0.5;
-      calculateY = desktopSize.height * (1 - point3.y) * 0.5;
-      if (o._mapEntity != null) {
+      calculateColor = cityEntity.targetColor();
+      // 计算城市屏幕位置
+      stage.calculateScreenPosition(outputPosition, cityEntity.location(), display.matrix());
+      calculateX = outputPosition.x * sizeScale;
+      calculateY = outputPosition.y * sizeScale;
+      // 上传地图信息
+      if(mapEntity){
          o._mapEntity.upload();
       }
       // 播放声音
@@ -295,6 +297,7 @@ MO.FEaiChartMktCustomerV2Processor_focusEntity = function FEaiChartMktCustomerV2
    changedEvent.unit = unit;
    unit.calculateX = calculateX;
    unit.calculateY = calculateY;
+   unit.calculateColor = calculateColor;
    o.processDataChangedListener(changedEvent);
   // o.processCurvesChangedListener(unit._modelLabel);
 }

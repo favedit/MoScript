@@ -146,6 +146,7 @@ MO.FCanvasDesktop_resize = function FCanvasDesktop_resize(targetWidth, targetHei
    }else{
       calculateRate.set(1, 1);
    }
+   o._sizeScale = 1 / sizeRate;
    MO.Logger.debug(o, 'Change screen size. (orientation={1}, ratio={2}, screen_size={3}, size={4}, rate={5}, calculate_rate={6})', browser.orientationCd(), pixelRatio, o._screenSize.toDisplay(), o._size.toDisplay(), sizeRate, o._calculateRate.toDisplay());
    //..........................................................
    // 设置3D画板

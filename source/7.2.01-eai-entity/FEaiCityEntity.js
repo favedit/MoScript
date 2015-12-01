@@ -14,6 +14,7 @@ MO.FEaiCityEntity = function FEaiCityEntity(o){
    o._location               = MO.Class.register(o, new MO.AGetter('_location'));
    o._size                   = MO.Class.register(o, new MO.AGetter('_size'));
    o._color                  = MO.Class.register(o, new MO.AGetter('_color'));
+   o._targetColor            = MO.Class.register(o, new MO.AGetter('_targetColor'));
    o._range                  = MO.Class.register(o, new MO.AGetter('_range'), 1);
    o._rangeColor             = MO.Class.register(o, new MO.AGetter('_rangeColor'));
    // @attribute
@@ -38,7 +39,6 @@ MO.FEaiCityEntity = function FEaiCityEntity(o){
    // @method
    o.construct               = MO.FEaiCityEntity_construct;
    // @method
-   o.calculateScreenPosition = MO.FEaiCityEntity_calculateScreenPosition;
    o.build                   = MO.FEaiCityEntity_build;
    o.addInvestmentTotal      = MO.FEaiCityEntity_addInvestmentTotal;
    o.reset                   = MO.FEaiCityEntity_reset;
@@ -58,32 +58,13 @@ MO.FEaiCityEntity_construct = function FEaiCityEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
    // 设置属性
-   o._location = new MO.SPoint2();
+   o._location = new MO.SPoint3();
    o._size = new MO.SSize2();
    o._color = new MO.SColor4(0, 0, 0, 0);
+   o._targetColor = new MO.SColor4(0, 0, 0, 0);
    o._rangeColor = new MO.SColor4(0, 0, 0, 0);
    o._inputPoint = new MO.SPoint3();
    o._outputPoint = new MO.SPoint3();
-}
-
-//==========================================================
-// <T>从输入流反序列化数据。</T>
-//
-// @method
-// @param position:MStream 输入流
-//==========================================================
-MO.FEaiCityEntity_calculateScreenPosition = function FEaiCityEntity_calculateScreenPosition(){
-   var o = this;
-   var region = o._stage.region();
-   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
-   var mMatrix = o._renderable.matrix();
-   var matrix = MO.Lang.Math.matrix;
-   matrix.identity();
-   matrix.append(mMatrix);
-   matrix.append(vpMatrix);
-   o._inputPoint.set(o._location.x, o._location.y, 0);
-   matrix.transformPoint3(o._inputPoint, o._outputPoint);
-   return o._outputPoint;
 }
 
 //==========================================================
@@ -94,7 +75,8 @@ MO.FEaiCityEntity_calculateScreenPosition = function FEaiCityEntity_calculateScr
 //==========================================================
 MO.FEaiCityEntity_build = function FEaiCityEntity_build(context){
    var o = this;
-   o._location.assign(o._data.location());
+   var location = o._data.location();
+   o._location.set(location.x, location.y, 0);
    o._size.set(2, 2);
 }
 
@@ -118,6 +100,7 @@ MO.FEaiCityEntity_addInvestmentTotal = function FEaiCityEntity_addInvestmentTota
    var rateResource = MO.Console.find(MO.FEaiResourceConsole).rateModule().find(MO.EEaiRate.InvestmentRange);
    var range = 200000;
    var color = rateResource.findRate(investment / range);
+   o._targetColor.setInteger(color);
    // 设置内容
    o._color.set(1, 1, 1, 1);
    o._rangeColor.setInteger(color);

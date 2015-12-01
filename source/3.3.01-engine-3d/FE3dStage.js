@@ -8,28 +8,30 @@ MO.FE3dStage = function FE3dStage(o){
    o = MO.Class.inherits(this, o, MO.FStage, MO.MGraphicObject);
    //..........................................................
    // @attribute
-   o._statistics        = MO.Class.register(o, new MO.AGetter('_statistics'));
+   o._statistics             = MO.Class.register(o, new MO.AGetter('_statistics'));
    // @attribute
-   o._technique         = MO.Class.register(o, new MO.AGetter('_technique'));
-   o._region            = MO.Class.register(o, new MO.AGetter('_region'));
-   o._allDisplays       = null;
+   o._technique              = MO.Class.register(o, new MO.AGetter('_technique'));
+   o._region                 = MO.Class.register(o, new MO.AGetter('_region'));
+   o._allDisplays            = null;
    //..........................................................
    // @event
-   o.onProcess          = MO.FE3dStage_onProcess;
+   o.onProcess               = MO.FE3dStage_onProcess;
    //..........................................................
    // @method
-   o.construct          = MO.FE3dStage_construct;
-   o.createRegion       = MO.FE3dStage_createRegion;
-   o.linkGraphicContext = MO.FE3dStage_linkGraphicContext;
-   o.setup              = MO.FE3dStage_setup;
+   o.construct               = MO.FE3dStage_construct;
+   o.createRegion            = MO.FE3dStage_createRegion;
+   o.linkGraphicContext      = MO.FE3dStage_linkGraphicContext;
+   o.setup                   = MO.FE3dStage_setup;
    // @method
-   o.camera             = MO.FE3dStage_camera;
-   o.projection         = MO.FE3dStage_projection;
-   o.directionalLight   = MO.FE3dStage_directionalLight;
-   o.selectTechnique    = MO.FE3dStage_selectTechnique;
+   o.camera                  = MO.FE3dStage_camera;
+   o.projection              = MO.FE3dStage_projection;
+   o.directionalLight        = MO.FE3dStage_directionalLight;
    // @method
-   o.filterDisplays     = MO.FE3dStage_filterDisplays;
-   o.allDisplays        = MO.FE3dStage_allDisplays;
+   o.calculateScreenPosition = MO.FE3dStage_calculateScreenPosition;
+   o.selectTechnique         = MO.FE3dStage_selectTechnique;
+   // @method
+   o.filterDisplays          = MO.FE3dStage_filterDisplays;
+   o.allDisplays             = MO.FE3dStage_allDisplays;
    return o;
 }
 
@@ -172,6 +174,29 @@ MO.FE3dStage_projection = function FE3dStage_projection(){
 //==========================================================
 MO.FE3dStage_directionalLight = function FE3dStage_directionalLight(){
    return this._region.directionalLight();
+}
+
+//==========================================================
+// <T>计算屏幕位置。</T>
+//
+// @method
+// @return FG3dDirectionalLight 方向光
+//==========================================================
+MO.FE3dStage_calculateScreenPosition = function FE3dStage_calculateScreenPosition(outputPosition, inputPosition, modelMatrix){
+   var o = this;
+   var graphicContext = o._graphicContext;
+   var size = graphicContext.size();
+   var camera = o.camera();
+   var matrix = MO.Lang.Math.matrix;
+   matrix.identity();
+   matrix.append(modelMatrix);
+   matrix.append(camera.matrix());
+   matrix.append(camera.projection().matrix());
+   var point3 = matrix.transformPoint3(inputPosition);
+   var cz = 1 / point3.z;
+   outputPosition.x = size.width * (point3.x * cz + 1) * 0.5;
+   outputPosition.y = size.height * (1 - point3.y * cz) * 0.5;
+   return outputPosition;
 }
 
 //==========================================================

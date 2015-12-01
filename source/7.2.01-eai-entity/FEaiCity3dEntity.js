@@ -39,7 +39,6 @@ MO.FEaiCity3dEntity = function FEaiCity3dEntity(o){
    // @method
    o.construct               = MO.FEaiCity3dEntity_construct;
    // @method
-   o.calculateScreenPosition = MO.FEaiCity3dEntity_calculateScreenPosition;
    o.build                   = MO.FEaiCity3dEntity_build;
    o.addInvestmentTotal      = MO.FEaiCity3dEntity_addInvestmentTotal;
    o.reset                   = MO.FEaiCity3dEntity_reset;
@@ -59,7 +58,7 @@ MO.FEaiCity3dEntity_construct = function FEaiCity3dEntity_construct(){
    var o = this;
    o.__base.FEaiEntity.construct.call(o);
    // 设置属性
-   o._location = new MO.SPoint2();
+   o._location = new MO.SPoint3();
    o._size = new MO.SSize2();
    o._color = new MO.SColor4(1, 1, 1, 1);
    o._rangeColor = new MO.SColor4(0, 0, 0, 0);
@@ -71,31 +70,12 @@ MO.FEaiCity3dEntity_construct = function FEaiCity3dEntity_construct(){
 // <T>从输入流反序列化数据。</T>
 //
 // @method
-// @param position:MStream 输入流
-//==========================================================
-MO.FEaiCity3dEntity_calculateScreenPosition = function FEaiCity3dEntity_calculateScreenPosition(){
-   var o = this;
-   var region = o._stage.region();
-   var vpMatrix = region.calculate(MO.EG3dRegionParameter.CameraViewProjectionMatrix);
-   var mMatrix = o._renderable.matrix();
-   var matrix = MO.Lang.Math.matrix;
-   matrix.identity();
-   matrix.append(mMatrix);
-   matrix.append(vpMatrix);
-   o._inputPoint.set(o._location.x, o._location.y, 0);
-   matrix.transformPoint3(o._inputPoint, o._outputPoint);
-   return o._outputPoint;
-}
-
-//==========================================================
-// <T>从输入流反序列化数据。</T>
-//
-// @method
 // @param input:MStream 输入流
 //==========================================================
 MO.FEaiCity3dEntity_build = function FEaiCity3dEntity_build(context){
    var o = this;
-   o._location.assign(o._data.location());
+   var location = o._data.location();
+   o._location.set(location.x, location.y, 0);
    o._size.set(2, 2);
 }
 
