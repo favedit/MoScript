@@ -148,10 +148,10 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
    var investmentTotalWidth = graphic.textWidth(investmentTotalText);
    var imageWidth = investmentTotalWidth + textWidth;
-   var top = rectangle.top;
+   var top = rectangle.top+20;
    var bottom = rectangle.top + rectangle.height;
    var middle = bottom - 50;
-   var decoLeft = rectangle.left +imageWidth;
+   var decoLeft = rectangle.left +imageWidth+20;
    var decoRight = rectangle.left + rectangle.width - 12;
    var decoLineMargin = o.triangleWidth() + o.decoLineGap();
    
@@ -218,20 +218,20 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
          lastHour = hour;
       }
    }
-   decoLeft = decoLeft - imageWidth +5 ;
+   decoLeft = decoLeft - imageWidth  ;
    // 输出数据文本
    top = top + rectangle.height -220 ;
    graphic.setFont('24px Microsoft YaHei');
-   graphic.drawText("24H数据曲线", decoLeft, top+25, '#54F0FF');
+   graphic.drawText("24H数据曲线", decoLeft+20, top+5, '#54F0FF');
    // 输出数据文本
    graphic.setFont('17px Microsoft YaHei');
    var image = o._backgroundImage;
    var padding = o._backgroundPadding;
-   var rowStart = top + 60;
+   var rowStart = top +30;
    var rowHeight = 25;
    // 计算宽度
-   graphic.drawGridImage(image,decoLeft-20,top-15,imageWidth, rectangle.height-80,padding);
-   var textWidth = graphic.textWidth('投资总计：');
+   graphic.drawImage(image,decoLeft,top-25,220,197);
+   var textWidth = graphic.textWidth('投资总计的：');
    var monthInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.monthInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
    var monthInvestmentWidth = graphic.textWidth(monthInvestmentTotal);
    var investmentTotalText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal(), 0, 0, 2, 0, 10000, '万');
@@ -243,7 +243,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var investmentAvgText = MO.Lang.Float.unitFormat(trendInfo.investmentTotal() / 24, 0, 0, 2, 0, 10000, '万');
    var investmentAvgWidth = graphic.textWidth(investmentAvgText);
    var maxWidth = monthInvestmentWidth;
-   decoLeft = decoLeft-5;
+   decoLeft = decoLeft+10;
    // 绘制文字
 
             // var high = text.substring(textLength - 11, textLength - 7);
@@ -259,11 +259,14 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0+ 5, '#00CFFF');
    if(investmentTotalText.length>9){
       var high = investmentTotalText.substring(0, investmentTotalText.length - 9);
-      var low = investmentTotalText.substring(investmentTotalText.length - 9, investmentTotalText.length);
+      var middle = investmentTotalText.substring(investmentTotalText.length - 9, investmentTotalText.length - 4);
+      var low = investmentTotalText.substring(investmentTotalText.length - 4, investmentTotalText.length);
       var highWidth = graphic.textWidth(high);
+      var middleWidth = graphic.textWidth(middle);
       var lowWidth = graphic.textWidth(low);
       graphic.drawText(high, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0+5, '#FDEF01');
-      graphic.drawText(low, decoLeft + textWidth + maxWidth - investmentTotalWidth+highWidth, rowStart + rowHeight * 0+5, '#00B5FF');
+      graphic.drawText(middle, decoLeft + textWidth + maxWidth - investmentTotalWidth+highWidth, rowStart + rowHeight * 0+5, '#ff8f39');
+      graphic.drawText(low, decoLeft + textWidth + maxWidth - investmentTotalWidth+highWidth+middleWidth, rowStart + rowHeight * 0+5, '#00B5FF');
 
    }else{    
       graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0+5, '#00B5FF');
@@ -271,11 +274,14 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
    if(investmentMaxText.length>9){
       var high = investmentMaxText.substring(0, investmentMaxText.length - 9);
-      var low = investmentMaxText.substring(investmentMaxText.length - 9, investmentMaxText.length);
+      var middle = investmentMaxText.substring(investmentMaxText.length - 9, investmentMaxText.length - 4);
+      var low = investmentMaxText.substring(investmentMaxText.length - 4, investmentMaxText.length);
       var highWidth = graphic.textWidth(high);
+      var middleWidth = graphic.textWidth(middle);      
       var lowWidth = graphic.textWidth(low);
       graphic.drawText(high,  decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#FDEF01');
-      graphic.drawText(low, decoLeft + textWidth + maxWidth - investmentMaxWidth+highWidth, rowStart + rowHeight * 1 + 5, '#00B5FF');
+      graphic.drawText(middle, decoLeft + textWidth + maxWidth - investmentMaxWidth+highWidth, rowStart + rowHeight * 1+5, '#ff8f39');
+      graphic.drawText(low, decoLeft + textWidth + maxWidth - investmentMaxWidth+highWidth+middleWidth, rowStart + rowHeight * 1 + 5, '#00B5FF');
 
    }else{  
       graphic.drawText(investmentMaxText, decoLeft + textWidth + maxWidth - investmentMaxWidth, rowStart + rowHeight * 1 + 5, '#00B5FF');
@@ -286,12 +292,14 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    if(investmentAvgText.length>9){
 
       var high = investmentAvgText.substring(0, investmentAvgText.length - 9);
-      var low = investmentAvgText.substring(investmentAvgText.length - 9, investmentAvgText.length);
+      var middle = investmentAvgText.substring(investmentAvgText.length - 9, investmentAvgText.length - 4);
+      var low = investmentAvgText.substring(investmentAvgText.length - 4, investmentAvgText.length);
       var highWidth = graphic.textWidth(high);
+      var middleWidth = graphic.textWidth(middle);            
       var lowWidth = graphic.textWidth(low);
-      graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2+ 5, '#00CFFF');
       graphic.drawText(high,   decoLeft + textWidth + maxWidth - investmentAvgWidth, rowStart + rowHeight * 2 + 5, '#FDEF01');
-      graphic.drawText(low,  decoLeft + textWidth + maxWidth - investmentAvgWidth+highWidth, rowStart + rowHeight * 2 + 5, '#00B5FF');
+      graphic.drawText(middle, decoLeft + textWidth + maxWidth - investmentAvgWidth+highWidth, rowStart + rowHeight * 2+5, '#ff8f39');      
+      graphic.drawText(low,  decoLeft + textWidth + maxWidth - investmentAvgWidth+highWidth+middleWidth, rowStart + rowHeight * 2 + 5, '#00B5FF');
 
    }else{  
       graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 5, '#00CFFF');
@@ -301,17 +309,18 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var weekInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.weekInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
    var weekInvestmentWidth = graphic.textWidth(weekInvestmentTotal);
    graphic.drawText('本周总值：', decoLeft, rowStart + rowHeight * 3 + 5, '#00CFFF');
-
    if(weekInvestmentTotal.length>9){
       var high = weekInvestmentTotal.substring(0, weekInvestmentTotal.length - 9);
-      var low = weekInvestmentTotal.substring(weekInvestmentTotal.length - 9, weekInvestmentTotal.length);
+      var middle = weekInvestmentTotal.substring(weekInvestmentTotal.length - 9, weekInvestmentTotal.length - 4);   
+      var low = weekInvestmentTotal.substring(weekInvestmentTotal.length - 4, weekInvestmentTotal.length);
       var highWidth = graphic.textWidth(high);
+      var middleWidth = graphic.textWidth(middle);            
       var lowWidth = graphic.textWidth(low);
       graphic.drawText(high,   decoLeft + textWidth + maxWidth - weekInvestmentWidth, rowStart + rowHeight * 3 + 5, '#FDEF01');
-      graphic.drawText(low,  decoLeft + textWidth + maxWidth - weekInvestmentWidth+highWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
+      graphic.drawText(middle, decoLeft + textWidth + maxWidth - weekInvestmentWidth+highWidth, rowStart + rowHeight * 3+5, '#ff8f39');      
+      graphic.drawText(low,  decoLeft + textWidth + maxWidth - weekInvestmentWidth+highWidth+middleWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
 
    }else{  
-
       graphic.drawText(weekInvestmentTotal, decoLeft + textWidth + maxWidth - weekInvestmentWidth, rowStart + rowHeight * 3 + 5, '#00B5FF');
    }
    var monthInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.monthInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
@@ -319,13 +328,16 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    graphic.drawText('本月总额：', decoLeft, rowStart + rowHeight * 4+ 5, '#00CFFF');
    if(monthInvestmentTotal.length>9){
       var high = monthInvestmentTotal.substring(0, monthInvestmentTotal.length - 9);
-      var low = monthInvestmentTotal.substring(monthInvestmentTotal.length - 9, monthInvestmentTotal.length);
+      var low = monthInvestmentTotal.substring(monthInvestmentTotal.length - 4, monthInvestmentTotal.length);
+      var middle = monthInvestmentTotal.substring(investmentTotalText.length - 9, investmentTotalText.length - 4);   
       var highWidth = graphic.textWidth(high);
+      var middleWidth = graphic.textWidth(middle);            
       var lowWidth = graphic.textWidth(low);
       graphic.drawText(high,   decoLeft + textWidth + maxWidth - monthInvestmentWidth, rowStart + rowHeight * 4 + 5, '#FDEF01');
-      graphic.drawText(low,  decoLeft + textWidth + maxWidth - monthInvestmentWidth+highWidth, rowStart + rowHeight * 4 + 5, '#00B5FF');
+      graphic.drawText(middle, decoLeft + textWidth + maxWidth - monthInvestmentWidth+highWidth, rowStart + rowHeight * 4+5, '#ff8f39');            
+      graphic.drawText(low,  decoLeft + textWidth + maxWidth - monthInvestmentWidth+highWidth+middleWidth, rowStart + rowHeight * 4 + 5, '#00B5FF');
 
-   }else{  
+   }else{                                                                                     
       graphic.drawText(monthInvestmentTotal, decoLeft + textWidth + maxWidth - monthInvestmentWidth, rowStart + rowHeight * 4 + 5, '#00B5FF');
    }
 
@@ -338,6 +350,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var drawText = false;
    var textWidth = 0;
    graphic.setFont('bold 18px Microsoft YaHei');
+   var middle = bottom - 50;
    while (!startTime.isAfter(endTime)) {
       var span = startTime.date.getTime() - bakTime;
       var x = dataLeft + (dataRight - dataLeft) * (span / timeSpan);

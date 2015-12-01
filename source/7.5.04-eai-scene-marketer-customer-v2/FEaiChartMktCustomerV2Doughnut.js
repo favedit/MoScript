@@ -141,7 +141,7 @@ MO.FEaiChartMktCustomerV2Doughnut_onPaintBegin = function FEaiChartMktCustomerV2
     var textSize = 0 ;
     var textPx = '';
     var textColor = '';
-    graphic.drawGridImage(o._backgroundImage, decoLeft, top-10, width, height+10, o._backgroundPadding);
+    graphic.drawGridImage(o._backgroundImage, decoLeft, top, width, height-15, o._backgroundPadding);
 
     if(units){
     for(var i=0;i<unitsCount;i++){
