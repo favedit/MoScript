@@ -6,7 +6,7 @@
 // @history 151101
 //==========================================================
 MO.FEaiCockpitProject = function FEaiCockpitProject(o){
-   o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
+   o = MO.Class.inherits(this, o, MO.FEaiCockpitLogicModule);
    //..........................................................
    // @attribute
    o._name      = 'project';
@@ -31,7 +31,7 @@ MO.FEaiCockpitProject = function FEaiCockpitProject(o){
 //==========================================================
 MO.FEaiCockpitProject_construct = function FEaiCockpitProject_construct(){
    var o = this;
-   o.__base.FEaiCockpitModule.construct.call(o);
+   o.__base.FEaiCockpitLogicModule.construct.call(o);
 }
 
 //==========================================================
@@ -41,10 +41,13 @@ MO.FEaiCockpitProject_construct = function FEaiCockpitProject_construct(){
 //==========================================================
 MO.FEaiCockpitProject_setup = function FEaiCockpitProject_setup(){
    var o = this;
-   o.__base.FEaiCockpitModule.setup.call(o);
+   o.__base.FEaiCockpitLogicModule.setup.call(o);
    // 创建控件
    o._controlSnapshot = o.createControl(MO.FEaiCockpitProjectSnapshot);
    o._controlView = o.createControl(MO.FEaiCockpitProjectView);
+   
+   // 配置模块管理器
+   o.setupModuleManager(MO.FEaiCockpitProjectModuleManager);
 }
 
 //==========================================================
@@ -54,7 +57,7 @@ MO.FEaiCockpitProject_setup = function FEaiCockpitProject_setup(){
 //==========================================================
 MO.FEaiCockpitProject_process = function FEaiCockpitProject_process(){
    var o = this;
-   o.__base.FEaiCockpitModule.process.call(o);
+   o.__base.FEaiCockpitLogicModule.process.call(o);
 }
 
 //==========================================================
@@ -65,5 +68,5 @@ MO.FEaiCockpitProject_process = function FEaiCockpitProject_process(){
 MO.FEaiCockpitProject_dispose = function FEaiCockpitProject_dispose(){
    var o = this;
    // 父处理
-   o.__base.FEaiCockpitModule.dispose.call(o);
+   o.__base.FEaiCockpitLogicModule.dispose.call(o);
 }
