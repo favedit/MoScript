@@ -141,7 +141,7 @@ MO.FGuiControl_onPaintBegin = function FGuiControl_onPaintBegin(event){
    }
    // 绘制底色
    if(o._backColor){
-      graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._styleBackcolor, 1);
+      graphic.fillRectangle(rectangle.left, rectangle.top, rectangle.width, rectangle.height, o._backColor);
    }
    // 绘制背景图
    var image = null;

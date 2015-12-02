@@ -41,6 +41,7 @@ MO.FGuiGridControl = function FGuiGridControl(o) {
 //==========================================================
 MO.FGuiGridControl_onPaintBegin = function FGuiGridControl_onPaintBegin(event) {
    var o = this;
+   o.__base.FGuiControl.onPaintBegin.call(o, event);
    var dirty = false;
    var padding = o._padding;
    var context = o._paintContext;
