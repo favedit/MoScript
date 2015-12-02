@@ -11,9 +11,10 @@ MO.FEaiLogicCockpitForecast = function FEaiLogicCockpitForecast(o){
    // @method
    o.doFetch                   = MO.FEaiLogicCockpitForecast_doFetch;
    o.doFetchExponentForecast   = MO.FEaiLogicCockpitForecast_doFetchExponentForecast;
-   o.doFetchOwnVote            = MO.FEaiLogicCockpitForecast_doFetch002;   
+   o.doFetchOwnVote            = MO.FEaiLogicCockpitForecast_doFetchOwnVote;   
    o.doFetchAchievementProblem = MO.FEaiLogicCockpitForecast_doFetchAchievementProblem;
    o.doFetchUniqueCustomer     = MO.FEaiLogicCockpitForecast_doFetchUniqueCustomer;
+   o.doFetchOwnVoteHistogram   = MO.FEaiLogicCockpitForecast_doFetchOwnVoteHistogram;
    return o;
 }
 
@@ -59,7 +60,7 @@ MO.FEaiLogicCockpitForecast_doFetchExponentForecast = function FEaiLogicCockpitF
 // @param endDate:String 结束时间
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicCockpitForecast_doFetch002 = function FEaiLogicCockpitForecast_doFetchOwnVote(owner, callback){
+MO.FEaiLogicCockpitForecast_doFetchOwnVote = function FEaiLogicCockpitForecast_doFetchOwnVote(owner, callback){
    var o = this;
    var parameters = o.prepareParemeters();
    o.sendService('{eai.logic.service}/eai.cockpit.forecast.subpage.wv?do=fetchInvestmentSelf', parameters, owner, callback);
@@ -107,7 +108,7 @@ MO.FEaiLogicCockpitForecast_doFetchUniqueCustomer = function FEaiLogicCockpitFor
 // @param endDate:String 结束时间
 // @return FListener 监听
 //==========================================================
-MO.FEaiLogicCockpitForecast_doFetchUniqueCustomer = function FEaiLogicCockpitForecast_doFetchOwnVoteHistogram(owner,callback){
+MO.FEaiLogicCockpitForecast_doFetchOwnVoteHistogram = function FEaiLogicCockpitForecast_doFetchOwnVoteHistogram(owner,callback){
     var o = this;
     var parameters = o.prepareParemeters();
     o.sendService('{eai.logic.service}/eai.cockpit.forecast.subpage.wv?do=fetchInvestmentSelfChart', parameters, owner, callback);    

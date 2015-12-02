@@ -186,7 +186,7 @@ MO.FEaiCockpitForecastLogicOwnVoteSnapshot_setup = function FEaiCockpitForecastL
    var statistics = MO.Console.find(MO.FEaiLogicConsole).cockpit().forecast();
    if (o._dataTicker.process()){
       statistics.doFetchOwnVote(o, o.updateView);
-      statistics.doFetchUniqueCustomer(o, o.updateHistogram);
+      statistics.doFetchOwnVoteHistogram(o, o.updateHistogram);
    }
 
 }
