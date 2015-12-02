@@ -112,7 +112,7 @@ MO.FEaiCockpitModuleManager_unregister = function FEaiCockpitModuleManager_unreg
 // @param clazz:Function 类对象
 // @return 模块
 //==========================================================
-MO.FEaiCockpitModuleManager_createModule = function FEaiCockpitModuleManager_createModule(clazz){
+MO.FEaiCockpitModuleManager_createModule = function FEaiCockpitModuleManager_createModule(clazz, name) {
    var o = this;
    // 创建对象
    var module = MO.Class.create(clazz);
@@ -120,6 +120,9 @@ MO.FEaiCockpitModuleManager_createModule = function FEaiCockpitModuleManager_cre
    module.setParentModuleManager(o);
    module.setup();
    // 注册对象
+   if (name != null && name != undefined) {
+      module.setName(name);
+   }
    o.register(module);
    return module;
 }
