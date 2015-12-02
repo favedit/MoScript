@@ -236,7 +236,7 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_setup = function FEaiCockpitFor
    grid.setInnerLineThickness(1);
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 20;
-   grid.headFont().color = '#3FE5F7';
+   grid.headFont().color = '#20f2ff';
    grid.headFont().bold = true;
    grid.setRowHeight(35);
    grid.rowFont().font = 'Microsoft YaHei';

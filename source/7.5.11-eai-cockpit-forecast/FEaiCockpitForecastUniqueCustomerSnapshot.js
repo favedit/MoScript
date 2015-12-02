@@ -122,7 +122,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_refreshChartData = function FEaiCoc
 //
 // @method
 //==========================================================
-MO.FEaiCockpitForecastUniqueCustomerSnapshot_onDataFetch = function FEaiCockpitForecastUniqueCustomerSnapshot_onDataFetch(event){
+MO.FEaiCockpitForecastUniqueCustomerSnapshot_onDataFetch = function FEaiCockpitForecastUniqueCustomerSnapshot_onDataFetch(event) {
    var o = this;
    var data = o._data;
    data.unserializeSignBuffer(event.sign, event.content, true);
@@ -239,7 +239,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_setup = function FEaiCockpitForecas
    grid.setInnerLineThickness(1);
    grid.headFont().font = 'Microsoft YaHei';
    grid.headFont().size = 20;
-   grid.headFont().color = '#3FE5F7';
+   grid.headFont().color = '#20f2ff';
    grid.headFont().bold = true;
    grid.setRowHeight(35);
    grid.rowFont().font = 'Microsoft YaHei';
