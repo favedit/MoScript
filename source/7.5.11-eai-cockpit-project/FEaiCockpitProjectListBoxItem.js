@@ -211,14 +211,14 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    drawY -= 8;
    graphic.drawImage(o._pbarTimeBgImage, drawX, drawY, 205, 6);
 
-   var clipWidth = 180 * unit.timeProgress() * 0.01 * rate;
+   var clipWidth = 172 * unit.timeProgress() * 0.01 * rate;
    var clipHeight = 21;
   // graphic._handle.save();
   // graphic._handle.rect(drawX, drawY, clipWidth, 21)
   // graphic._handle.clip();
    // graphic.drawImage(o._pbarTimeFillImage, drawX, drawY, 216, 21);
    
-   graphic.drawImage(o._pbarTimeIconImage, drawX - 20 + clipWidth, drawY - 7, 43, 19);
+   graphic.drawImage(o._pbarTimeIconImage, drawX - 10 + clipWidth, drawY - 7, 43, 19);
 
    graphic._handle.restore();
 
@@ -227,9 +227,9 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic.setFont(font2ndRow.toString());
    textWidth = graphic.textWidth(drawText);
    if (drawText == "100%") {
-      graphic.drawText(drawText, drawX - 20 + clipWidth + 3, drawY + 8, font2ndRow.color);
+      graphic.drawText(drawText, drawX - 10 + clipWidth + 3, drawY + 8, font2ndRow.color);
    } else {
-      graphic.drawText(drawText, drawX - 20 + clipWidth + 5, drawY + 8, font2ndRow.color);
+      graphic.drawText(drawText, drawX - 10 + clipWidth + 5, drawY + 8, font2ndRow.color);
    }
    // 绘制第四行
    drawX = left + 10;
@@ -243,13 +243,13 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
   //drawY -= 10;
    graphic.drawImage(o._pbarProjectBgImage, drawX, drawY + 3, 205, 6);
 
-   var clipWidth = 180 * unit.proProgress() * 0.01 * rate;
+   var clipWidth = 172 * unit.proProgress() * 0.01 * rate;
    var clipHeight = 21;
   // graphic._handle.save();
   // graphic._handle.rect(drawX, drawY, clipWidth, 21)
   // graphic._handle.clip();
   // graphic.drawImage(o._pbarProjectFillImage, drawX, drawY, 216, 21);
-   graphic.drawImage(o._pbarProjectIconImage, drawX - 20 + clipWidth, drawY - 7, 43, 19);
+   graphic.drawImage(o._pbarProjectIconImage, drawX - 10 + clipWidth, drawY - 4, 43, 19);
    graphic._handle.restore();
 
   // drawY += 10;
@@ -257,9 +257,9 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
    graphic.setFont(font2ndRow.toString());
    textWidth = graphic.textWidth(drawText);
    if (drawText == "100%") {
-      graphic.drawText(drawText, drawX - 20 + clipWidth + 3, drawY + 8, font2ndRow.color);
+      graphic.drawText(drawText, drawX - 10 + clipWidth + 3, drawY + 12, font2ndRow.color);
    } else {
-      graphic.drawText(drawText, drawX - 20 + clipWidth + 5, drawY + 8, font2ndRow.color);
+      graphic.drawText(drawText, drawX - 10 + clipWidth + 5, drawY + 12, font2ndRow.color);
    }
    
 }
