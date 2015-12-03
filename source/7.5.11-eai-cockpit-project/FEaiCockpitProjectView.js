@@ -10,7 +10,6 @@ MO.FEaiCockpitProjectView = function FEaiCockpitProjectView(o) {
    //..........................................................
    // @attribute
    o._name          = 'cockpit.project.view';
-   o._backgroundUri = '{eai.resource}/cockpit/project/view.png';
    //..........................................................
    // @event
    o.onPaintBegin   = MO.FEaiCockpitProjectView_onPaintBegin;

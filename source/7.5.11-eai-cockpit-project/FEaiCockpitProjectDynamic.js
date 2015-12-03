@@ -5,23 +5,23 @@
 // @author zhaoyihan
 // @history 151201
 //==========================================================
-MO.FEaiCockpitProjectLogic004 = function FEaiCockpitProjectLogic004(o){
+MO.FEaiCockpitProjectDynamic = function FEaiCockpitProjectDynamic(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name       = 'Project.logic.004';
+   o._name       = 'Project.Dynamic';
    o._typeCd     = MO.EEaiCockpitModule.Logic;
    o._dataTicker = null;
    o._slideshow  = true;
    //..........................................................
    // @method
-   o.construct   = MO.FEaiCockpitProjectLogic004_construct;
+   o.construct   = MO.FEaiCockpitProjectDynamic_construct;
    // @method
-   o.setup       = MO.FEaiCockpitProjectLogic004_setup;
+   o.setup       = MO.FEaiCockpitProjectDynamic_setup;
    // @method
-   o.process     = MO.FEaiCockpitProjectLogic004_process;
+   o.process     = MO.FEaiCockpitProjectDynamic_process;
    // @method
-   o.dispose     = MO.FEaiCockpitProjectLogic004_dispose;
+   o.dispose     = MO.FEaiCockpitProjectDynamic_dispose;
    return o;
 }
 
@@ -30,7 +30,7 @@ MO.FEaiCockpitProjectLogic004 = function FEaiCockpitProjectLogic004(o){
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004_construct = function FEaiCockpitProjectLogic004_construct(){
+MO.FEaiCockpitProjectDynamic_construct = function FEaiCockpitProjectDynamic_construct(){
    var o = this;
    o.__base.FEaiCockpitModule.construct.call(o);
 }
@@ -40,11 +40,11 @@ MO.FEaiCockpitProjectLogic004_construct = function FEaiCockpitProjectLogic004_co
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004_setup = function FEaiCockpitProjectLogic004_setup(){
+MO.FEaiCockpitProjectDynamic_setup = function FEaiCockpitProjectDynamic_setup(){
    var o = this;
    // 创建控件
-   o._controlSnapshot = o.createControl(MO.FEaiCockpitProjectLogic004Snapshot);
-   o._controlView = o.createControl(MO.FEaiCockpitProjectLogic004View);
+   o._controlSnapshot = o.createControl(MO.FEaiCockpitProjectDynamicSnapshot);
+   o._controlView = o.createControl(MO.FEaiCockpitProjectDynamicView);
 }
 
 //==========================================================
@@ -53,7 +53,7 @@ MO.FEaiCockpitProjectLogic004_setup = function FEaiCockpitProjectLogic004_setup(
 // @method
 // @param input:MStream 输入流
 //==========================================================
-MO.FEaiCockpitProjectLogic004_process = function FEaiCockpitProjectLogic004_process(){
+MO.FEaiCockpitProjectDynamic_process = function FEaiCockpitProjectDynamic_process(){
    var o = this;
    // 创建缩略
    o.__base.FEaiCockpitModule.process.call(o);
@@ -64,7 +64,7 @@ MO.FEaiCockpitProjectLogic004_process = function FEaiCockpitProjectLogic004_proc
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004_dispose = function FEaiCockpitProjectLogic004_dispose(){
+MO.FEaiCockpitProjectDynamic_dispose = function FEaiCockpitProjectDynamic_dispose(){
    var o = this;
    // 释放属性
    o._dataTicker = MO.Lang.Object.dispose(o._dataTicker);

@@ -5,21 +5,23 @@
 // @author zhaoyihan
 // @history 151201
 //==========================================================
-MO.FEaiCockpitProjectLogic004Snapshot = function FEaiCockpitProjectLogic004Snapshot(o) {
+MO.FEaiCockpitProjectDynamicSnapshot = function FEaiCockpitProjectDynamicSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
+   o._comingSoon    = true;
+   o._backgroundUri = '{eai.resource}/cockpit/project/dynamic.png';
    //..........................................................
    // @event
-   o.onPaintBegin   = MO.FEaiCockpitProjectLogic004Snapshot_onPaintBegin;
-   o.onPaintEnd     = MO.FEaiCockpitProjectLogic004Snapshot_onPaintEnd;
+   o.onPaintBegin   = MO.FEaiCockpitProjectDynamicSnapshot_onPaintBegin;
+   o.onPaintEnd     = MO.FEaiCockpitProjectDynamicSnapshot_onPaintEnd;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitProjectLogic004Snapshot_construct;
+   o.construct      = MO.FEaiCockpitProjectDynamicSnapshot_construct;
    // @method
-   o.setup          = MO.FEaiCockpitProjectLogic004Snapshot_setup;
-   o.processLogic   = MO.FEaiCockpitProjectLogic004Snapshot_processLogic;
+   o.setup          = MO.FEaiCockpitProjectDynamicSnapshot_setup;
+   o.processLogic   = MO.FEaiCockpitProjectDynamicSnapshot_processLogic;
    // @method
-   o.dispose        = MO.FEaiCockpitProjectLogic004Snapshot_dispose;
+   o.dispose        = MO.FEaiCockpitProjectDynamicSnapshot_dispose;
    //..........................................................
    return o;
 }
@@ -29,7 +31,7 @@ MO.FEaiCockpitProjectLogic004Snapshot = function FEaiCockpitProjectLogic004Snaps
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004Snapshot_onPaintBegin = function FEaiCockpitProjectLogic004Snapshot_onPaintBegin(event) {
+MO.FEaiCockpitProjectDynamicSnapshot_onPaintBegin = function FEaiCockpitProjectDynamicSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
 }
@@ -39,7 +41,7 @@ MO.FEaiCockpitProjectLogic004Snapshot_onPaintBegin = function FEaiCockpitProject
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004Snapshot_onPaintEnd = function FEaiCockpitProjectLogic004Snapshot_onPaintEnd(event){
+MO.FEaiCockpitProjectDynamicSnapshot_onPaintEnd = function FEaiCockpitProjectDynamicSnapshot_onPaintEnd(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
 }
@@ -49,12 +51,12 @@ MO.FEaiCockpitProjectLogic004Snapshot_onPaintEnd = function FEaiCockpitProjectLo
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004Snapshot_construct = function FEaiCockpitProjectLogic004Snapshot_construct(){
+MO.FEaiCockpitProjectDynamicSnapshot_construct = function FEaiCockpitProjectDynamicSnapshot_construct(){
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
-   o._cellLocation.set(5, 4, 0);
-   o._cellSize.set(6, 4);
+   o._cellLocation.set(12, 1, 0);
+   o._cellSize.set(4, 8);
 }
 
 //==========================================================
@@ -62,7 +64,7 @@ MO.FEaiCockpitProjectLogic004Snapshot_construct = function FEaiCockpitProjectLog
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004Snapshot_setup = function FEaiCockpitProjectLogic004Snapshot_setup(){
+MO.FEaiCockpitProjectDynamicSnapshot_setup = function FEaiCockpitProjectDynamicSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
 }
@@ -72,7 +74,7 @@ MO.FEaiCockpitProjectLogic004Snapshot_setup = function FEaiCockpitProjectLogic00
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004Snapshot_processLogic = function FEaiCockpitProjectLogic004Snapshot_processLogic(){
+MO.FEaiCockpitProjectDynamicSnapshot_processLogic = function FEaiCockpitProjectDynamicSnapshot_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControl.processLogic.call(o);
 }
@@ -82,7 +84,7 @@ MO.FEaiCockpitProjectLogic004Snapshot_processLogic = function FEaiCockpitProject
 //
 // @method
 //==========================================================
-MO.FEaiCockpitProjectLogic004Snapshot_dispose = function FEaiCockpitProjectLogic004Snapshot_dispose(){
+MO.FEaiCockpitProjectDynamicSnapshot_dispose = function FEaiCockpitProjectDynamicSnapshot_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
