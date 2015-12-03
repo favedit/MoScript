@@ -5,19 +5,19 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitStatusLogic007View = function FEaiCockpitStatusLogic007View(o) {
+MO.FEaiCockpitStatusLogicDashboardView = function FEaiCockpitStatusLogicDashboardView(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControlView);
    //..........................................................
    // @event
-   o.onPaintBegin = MO.FEaiCockpitStatusLogic007View_onPaintBegin;
+   o.onPaintBegin = MO.FEaiCockpitStatusLogicDashboardView_onPaintBegin;
    //..........................................................
    // @method
-   o.construct    = MO.FEaiCockpitStatusLogic007View_construct;
+   o.construct    = MO.FEaiCockpitStatusLogicDashboardView_construct;
    // @method
-   o.setup        = MO.FEaiCockpitStatusLogic007View_setup;
-   o.processLogic = MO.FEaiCockpitStatusLogic007View_processLogic;
+   o.setup        = MO.FEaiCockpitStatusLogicDashboardView_setup;
+   o.processLogic = MO.FEaiCockpitStatusLogicDashboardView_processLogic;
    // @method
-   o.dispose      = MO.FEaiCockpitStatusLogic007View_dispose;
+   o.dispose      = MO.FEaiCockpitStatusLogicDashboardView_dispose;
    return o;
 }
 
@@ -26,7 +26,7 @@ MO.FEaiCockpitStatusLogic007View = function FEaiCockpitStatusLogic007View(o) {
 //
 // @method
 //==========================================================
-MO.FEaiCockpitStatusLogic007View_onPaintBegin = function FEaiCockpitStatusLogic007View_onPaintBegin(event) {
+MO.FEaiCockpitStatusLogicDashboardView_onPaintBegin = function FEaiCockpitStatusLogicDashboardView_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControlView.onPaintBegin.call(o, event);
 }
@@ -36,7 +36,7 @@ MO.FEaiCockpitStatusLogic007View_onPaintBegin = function FEaiCockpitStatusLogic0
 //
 // @method
 //==========================================================
-MO.FEaiCockpitStatusLogic007View_construct = function FEaiCockpitStatusLogic007View_construct() {
+MO.FEaiCockpitStatusLogicDashboardView_construct = function FEaiCockpitStatusLogicDashboardView_construct() {
    var o = this;
    o.__base.FEaiCockpitControlView.construct.call(o);
    // 创建属性
@@ -49,7 +49,7 @@ MO.FEaiCockpitStatusLogic007View_construct = function FEaiCockpitStatusLogic007V
 //
 // @method
 //==========================================================
-MO.FEaiCockpitStatusLogic007View_setup = function FEaiCockpitStatusLogic007View_setup(){
+MO.FEaiCockpitStatusLogicDashboardView_setup = function FEaiCockpitStatusLogicDashboardView_setup(){
    var o = this;
    o.__base.FEaiCockpitControlView.setup.call(o);
 }
@@ -59,7 +59,7 @@ MO.FEaiCockpitStatusLogic007View_setup = function FEaiCockpitStatusLogic007View_
 //
 // @method
 //==========================================================
-MO.FEaiCockpitStatusLogic007View_processLogic = function FEaiCockpitStatusLogic007View_processLogic(){
+MO.FEaiCockpitStatusLogicDashboardView_processLogic = function FEaiCockpitStatusLogicDashboardView_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControlView.processLogic.call(o);
 }
@@ -69,7 +69,7 @@ MO.FEaiCockpitStatusLogic007View_processLogic = function FEaiCockpitStatusLogic0
 //
 // @method
 //==========================================================
-MO.FEaiCockpitStatusLogic007View_dispose = function FEaiCockpitStatusLogic007View_dispose() {
+MO.FEaiCockpitStatusLogicDashboardView_dispose = function FEaiCockpitStatusLogicDashboardView_dispose() {
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControlView.dispose.call(o);

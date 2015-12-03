@@ -10,10 +10,13 @@ MO.FEaiCockpitStatusSnapshotDashboard = function FEaiCockpitStatusSnapshotDashbo
    //..........................................................
    // @attribute
    o._data              = 0;
-   o._textPre             = MO.Class.register(o, [new MO.APtyString('_textPre'), new MO.AGetSet('_textPre')], "");
+   o._textPre           = MO.Class.register(o, [new MO.APtyString('_textPre'), new MO.AGetSet('_textPre')], "");
    o._dashboardImage    = null;
+   o._dashboardUri      = '{eai.resource}/cockpit/status/dashboard.png'
    o._circleImage       = null;
-   o._circleRect = null;
+   o._circleRect        = null;
+   o._textVisible       = null;
+
    //..........................................................
    // @process
 
@@ -22,8 +25,9 @@ MO.FEaiCockpitStatusSnapshotDashboard = function FEaiCockpitStatusSnapshotDashbo
    o.construct          = MO.FEaiCockpitStatusSnapshotDashboard_construct;
    o.onImageLoad        = MO.FEaiCockpitStatusSnapshotDashboard_onImageLoad;
    o.setData            = MO.FEaiCockpitStatusSnapshotDashboard_setData;
+   o.setTextVisible     = MO.FEaiCockpitStatusSnapshotDashboard_setTextVisible;
+   o.setDashboardImage  = MO.FEaiCockpitStatusSnapshotDashboard_setDashboardImage;
    o.onPaintBegin       = MO.FEaiCockpitStatusSnapshotDashboard_onPaintBegin;
-
    o.dispose            = MO.FEaiCockpitStatusSnapshotDashboard_dispose;
    //..........................................................
    return o;
@@ -35,7 +39,7 @@ MO.FEaiCockpitStatusSnapshotDashboard_construct = function FEaiCockpitStatusSnap
 
    o.setSize(512, 512);
    o._circleRect = new MO.SRectangle();
-   o._dashboardImage = o.loadResourceImage('{eai.resource}/cockpit/status/dashboard.png');
+   o._dashboardImage = o.loadResourceImage(o._dashboardUri);
    o._dashboardImage.addLoadListener(o, o.onImageLoad);
    o._circleImage = o.loadResourceImage('{eai.resource}/cockpit/status/circle.png');
    o._circleImage.addLoadListener(o, o.onImageLoad);
@@ -60,6 +64,27 @@ MO.FEaiCockpitStatusSnapshotDashboard_setData = function FEaiCockpitStatusSnapsh
 
    o._data = data;
    o.dirty();
+}
+
+//==========================================================
+// <T>设置label不显示。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitStatusSnapshotDashboard_setTextVisible = function FEaiCockpitStatusSnapshotDashboard_setTextVisible(data) {
+   var o = this;
+   o._textVisible = data;
+}
+
+//==========================================================
+// <T>设置label不显示。</T>
+//
+// @method
+//==========================================================
+MO.FEaiCockpitStatusSnapshotDashboard_setDashboardImage = function FEaiCockpitStatusSnapshotDashboard_setDashboardImage(data) {
+   var o = this;
+   o._dashboardUri = data;
+   o._dashboardImage = o.loadResourceImage(o._dashboardUri);
 }
 
 //==========================================================
@@ -128,10 +153,13 @@ MO.FEaiCockpitStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitStatusS
    graphic.setFont('bold 24px Microsoft YaHei');
    graphic.setShadow("1", "1", "5", "#000000");
 
-   var text = o._textPre + "(" + data.toFixed(1).toString() + "%)";
-   var textWidth = graphic.textWidth(text);
-   var textLeft = centerX - textWidth/2;
-   graphic.drawText(text, textLeft, textY, color);
+   var visible = o._textVisible;
+   if (visible != true){
+      var text = o._textPre + "(" + data.toFixed(1).toString() + "%)";
+      var textWidth = graphic.textWidth(text);
+      var textLeft = centerX - textWidth/2;
+      graphic.drawText(text, textLeft, textY, color);
+   }
    graphic.clearShadow();
 }
 
