@@ -164,7 +164,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var dataRight = decoRight - decoLineMargin - o.decoLineWidth();
    var dataTop = top + 90;
    var dataBottom = bottom - 50;
-   var dataHeight = dataBottom - dataTop;
+   var dataHeight = dataBottom - dataTop+80;
    // // 主轴
     graphic.drawLine(dataLeft, middle, dataRight, middle, '#F8CB3D', 3);
    // // 刻度
@@ -230,7 +230,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var rowStart = top +30;
    var rowHeight = 25;
    // 计算宽度
-   graphic.drawImage(image,decoLeft,top-25,220,197);
+   graphic.drawImage(image,decoLeft,top-30,226,207);
    var textWidth = graphic.textWidth('投资总计的：');
    var monthInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.monthInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
    var monthInvestmentWidth = graphic.textWidth(monthInvestmentTotal);
@@ -257,7 +257,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
             // numberFont.color = column.normalColor();
             // graphic.drawFontText(low, numberFont, x, y, contentWidth, height, MO.EUiAlign.Right);
    graphic.drawText('24H总额：', decoLeft, rowStart + rowHeight * 0+ 5, '#00CFFF');
-   if(investmentTotalText.length>9){
+   if(investmentTotalText.length>4){
       var high = investmentTotalText.substring(0, investmentTotalText.length - 9);
       var middle = investmentTotalText.substring(investmentTotalText.length - 9, investmentTotalText.length - 4);
       var low = investmentTotalText.substring(investmentTotalText.length - 4, investmentTotalText.length);
@@ -272,7 +272,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
       graphic.drawText(investmentTotalText, decoLeft + textWidth + maxWidth - investmentTotalWidth, rowStart + rowHeight * 0+5, '#00B5FF');
    }
    graphic.drawText('小时峰值：', decoLeft, rowStart + rowHeight * 1 + 5, '#00CFFF');
-   if(investmentMaxText.length>9){
+   if(investmentMaxText.length>4){
       var high = investmentMaxText.substring(0, investmentMaxText.length - 9);
       var middle = investmentMaxText.substring(investmentMaxText.length - 9, investmentMaxText.length - 4);
       var low = investmentMaxText.substring(investmentMaxText.length - 4, investmentMaxText.length);
@@ -289,7 +289,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
 
    graphic.drawText('小时均值：', decoLeft, rowStart + rowHeight * 2 + 5, '#00CFFF');
 
-   if(investmentAvgText.length>9){
+   if(investmentAvgText.length>4){
 
       var high = investmentAvgText.substring(0, investmentAvgText.length - 9);
       var middle = investmentAvgText.substring(investmentAvgText.length - 9, investmentAvgText.length - 4);
@@ -309,7 +309,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var weekInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.weekInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
    var weekInvestmentWidth = graphic.textWidth(weekInvestmentTotal);
    graphic.drawText('本周总值：', decoLeft, rowStart + rowHeight * 3 + 5, '#00CFFF');
-   if(weekInvestmentTotal.length>9){
+   if(weekInvestmentTotal.length>4){
       var high = weekInvestmentTotal.substring(0, weekInvestmentTotal.length - 9);
       var middle = weekInvestmentTotal.substring(weekInvestmentTotal.length - 9, weekInvestmentTotal.length - 4);   
       var low = weekInvestmentTotal.substring(weekInvestmentTotal.length - 4, weekInvestmentTotal.length);
@@ -326,7 +326,7 @@ MO.FEaiChartMktCustomerV2Timeline_onPaintBegin = function FEaiChartMktCustomerV2
    var monthInvestmentTotal = MO.Lang.Float.unitFormat(trendInfo.monthInvestmentTotal(), 0, 0, 2, 0, 10000, '万');
    var monthInvestmentWidth = graphic.textWidth(monthInvestmentTotal);
    graphic.drawText('本月总额：', decoLeft, rowStart + rowHeight * 4+ 5, '#00CFFF');
-   if(monthInvestmentTotal.length>9){
+   if(monthInvestmentTotal.length>4){
       var high = monthInvestmentTotal.substring(0, monthInvestmentTotal.length - 9);
       var low = monthInvestmentTotal.substring(monthInvestmentTotal.length - 4, monthInvestmentTotal.length);
       var middle = monthInvestmentTotal.substring(investmentTotalText.length - 9, investmentTotalText.length - 4);   
