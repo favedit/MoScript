@@ -10,7 +10,7 @@ MO.FEaiCockpitAchievementRadarSnapshot = function FEaiCockpitAchievementRadarSna
    o._backgroundUri = '{eai.resource}/cockpit/achievement/radar.png';
    //..........................................................
    // @attribute
-   o._comingSoon           = true;
+   o._comingSoon           = false;
    o._data                 = null;
    o._chartData            = null;
    o._chartDataSet         = null;
@@ -46,7 +46,17 @@ MO.FEaiCockpitAchievementRadarSnapshot = function FEaiCockpitAchievementRadarSna
    // 趋势
    o._trendCd              = 0;
    //改进建议
-   o._advice               = "";
+   o._advice = "";
+   //业绩评分
+   o._performanceScore     = 0;
+   //人力评分
+   o._manpowerScore        = 0;
+   //人均评分
+   o._percapitaScore       = 0;
+   //任务评分
+   o._taskScore            = 0;
+   //趋势评分
+   o._trendScore           = 0;
    o._fiveForceImage       = null;
    // @attribute
    o._listenersDataChanged = MO.Class.register(o, new MO.AListener('_listenersDataChanged', MO.EEvent.DataChanged));
@@ -97,6 +107,16 @@ MO.FEaiCockpitAchievementRadarSnapshot = function FEaiCockpitAchievementRadarSna
       o._trendCd = data.trendCd();
       //改进建议
       o._advice = data.advice();
+      //业绩评分
+      o._performanceScore = data.performanceScore();
+      //人力评分
+      o._manpowerScore = data.manpowerScore();
+      //人均评分
+      o._percapitaScore = data.percapitaScore();
+      //任务评分
+      o._taskScore = data.taskScore();
+      //趋势评分
+      o._trendScore = data.trendScore();
 
    }
    // 读取数据
@@ -120,9 +140,49 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
    var width = rectangle.width;
    var height = rectangle.height;
    //..........................................................
-   // 绘制背景
-   // graphic.drawRectangle(left,top,width,height,'#ffffff',3);\
-   graphic.drawImage(o._fiveForceImage, left + 450, top + 40,   233, 191);
+   // 五力图
+   var fiveBaseX =  left + 380;
+   var fiveBaseY =  top + 20;
+   graphic.drawImage(o._fiveForceImage, fiveBaseX, fiveBaseY);
+   //中心点坐标
+   var fiveMiddleX = 153;
+   var ficeMiddleY = 140;
+   //计算五力图的X坐标
+   var calcX = function(x,point){
+      return  fiveBaseX + fiveMiddleX - (fiveMiddleX - x) * point / 100;
+   }
+   //计算五力图的Y坐标
+   var calcY = function(y,point){
+      return fiveBaseY + ficeMiddleY - (ficeMiddleY - y) * point / 100;
+   }
+   //业绩坐标
+   var performanceX = calcX( 153 , o._performanceScore );
+   var performanceY = calcY( 19 , o._performanceScore );
+   //人均坐标
+   var percapitaX = calcX( 37 , o._percapitaScore );
+   var percapitaY = calcY( 106 , o._percapitaScore );
+   //趋势坐标
+   var tendX = calcX( 82 , o._trendScore );
+   var tendY = calcY( 246 , o._trendScore );
+   //任务坐标  
+   var taskX = calcX( 228 , o._taskScore );
+   var taskY = calcY( 240 , o._taskScore );
+   //人力坐标  
+   var manX = calcX( 274 , o._manpowerScore );
+   var manY = calcY( 106 , o._manpowerScore );
+   //画线
+   graphic.drawLine(performanceX, performanceY, percapitaX, percapitaY, '#fd86fa', 4);
+   graphic.drawLine(percapitaX, percapitaY, tendX, tendY, '#fd86fa', 4);
+   graphic.drawLine(tendX, tendY, taskX, taskY, '#fd86fa', 4);
+   graphic.drawLine(taskX, taskY, manX, manY, '#fd86fa', 4);
+   graphic.drawLine(manX, manY, performanceX, performanceY, '#fd86fa', 4);
+   //画点
+   var circleRadius = 5
+   graphic.drawCircle(performanceX, performanceY, circleRadius, circleRadius, '#fd86fa', '#fd86fa');
+   graphic.drawCircle(percapitaX, percapitaY, circleRadius, circleRadius, '#fd86fa', '#fd86fa');
+   graphic.drawCircle(tendX, tendY, circleRadius, circleRadius, '#fd86fa', '#fd86fa');
+   graphic.drawCircle(taskX, taskY, circleRadius, circleRadius, '#fd86fa', '#fd86fa');
+   graphic.drawCircle(manX, manY, circleRadius, circleRadius, '#fd86fa', '#fd86fa');
    
    //..........................................................
    // 绘制文字
@@ -143,7 +203,7 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
    graphic.setFont(font1stRowL.toString());
    graphic.drawText(drawText, drawX + 180, drawY, font1stRowL.color);
    // 绘制第二行 业绩
-   var drawText = "业绩:      ";
+   var drawText = "业绩:     ";
    var performance = o._performance;
    if(performance > 100000000){
       drawText += Math.floor(performance / 100000000) + "亿";
@@ -151,7 +211,7 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
    if(performance > 10000){
       drawText += Math.floor(performance / 10000 % 10000) + "万";
    }
-   drawText += performance % 10000 + "元";
+   drawText += Math.floor(performance % 10000) + "元";
    drawY += 40;
    graphic.setFont(font2ndRow.toString());
    graphic.drawText(drawText, drawX, drawY, font2ndRow.color);
@@ -161,7 +221,7 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
    graphic.setFont(font2ndRow.toString());
    graphic.drawText(drawText, drawX, drawY, font2ndRow.color);
 
-   var drawText = "人均:     " + o._perCapita + "元";
+   var drawText = "人均:     " + Math.floor(o._perCapita) + "元";
    drawY += 40;
    graphic.setFont(font2ndRow.toString());
    graphic.drawText(drawText, drawX, drawY, font2ndRow.color);
@@ -174,7 +234,7 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
    if (performance < 100000000) {
       drawText += Math.floor(task / 10000) + "万";
    }
-   drawText +=  "/" + o._completionRate + "%";
+   drawText +=  "/" + Math.floor(o._completionRate * 10000) / 100 + "%";
    drawY += 40;
    graphic.setFont(font2ndRow.toString());
    graphic.drawText(drawText, drawX, drawY, font2ndRow.color);
@@ -199,7 +259,7 @@ MO.FEaiCockpitAchievementRadarSnapshot_onPaintBegin = function FEaiCockpitAchiev
   // var drawText = "据外\n交\r\n\r\n\r\n\n部\r\n网\r\n站消息，国家\r\n主席习近平将于11月29日至11月30日赴法国出席气候变化巴黎大会开幕活动。针对全球气候变化议题，习近平主席在多个场合曾阐述中方观点和承诺，并积极推动全球应对气候变化的多边进程。为此，学习路上为读者整理习近平对气候变化议题的重要论述。"
   // drawY = 10;
    graphic.setFont(font3rdRow.toString());
-   graphic.drawTextRectangle(drawText, drawX, drawY, 550, 200, 20,font3rdRow.color);
+   graphic.drawTextRectangle(drawText, drawX, drawY, 550, 200, 20, font3rdRow.color);
 
 }
 
@@ -254,10 +314,10 @@ MO.FEaiCockpitAchievementRadarSnapshot_setup = function FEaiCockpitAchievementRa
    o.__base.FEaiCockpitControl.setup.call(o);
    // 加载图片
    o._fiveForceImage = o.loadResourceImage('{eai.resource}/cockpit/achievement/fiveForce.png');
-   o._font1stRowR.parse('bold #FFFFFF 30px Microsoft YaHei');
-   o._font1stRowL.parse('#FF0B11 50px Microsoft YaHei');
-   o._font2ndRow.parse('#FFFFFF 25px Microsoft YaHei');
-   o._font3rdRow.parse('#FFFFFF 18px Microsoft YaHei');
+   o._font1stRowR.parse('bold #FFFFFF 28px Microsoft YaHei');
+   o._font1stRowL.parse('#FF0B11 46px Microsoft YaHei');
+   o._font2ndRow.parse('#FFFFFF 23px Microsoft YaHei');
+   o._font3rdRow.parse('#FFFFFF 17px Microsoft YaHei');
    //..........................................................
 }
 

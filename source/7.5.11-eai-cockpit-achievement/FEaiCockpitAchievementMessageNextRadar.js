@@ -25,5 +25,15 @@ MO.FEaiCockpitMessageAchievementNextRadar = function FEaiCockpitMessageAchieveme
    o._trendCd = MO.Class.register(o, [new MO.AGetter('_trendCd'), new MO.APersistence('_trendCd', MO.EDataType.Int32)]);
    //改进建议
    o._advice = MO.Class.register(o, [new MO.AGetter('_advice'), new MO.APersistence('_advice', MO.EDataType.String)]);
+   //业绩评分
+   o._performanceScore = MO.Class.register(o, [new MO.AGetter('_performanceScore'), new MO.APersistence('_performanceScore', MO.EDataType.Double)]);
+   //人力评分
+   o._manpowerScore = MO.Class.register(o, [new MO.AGetter('_manpowerScore'), new MO.APersistence('_manpowerScore', MO.EDataType.Double)]);
+   //人均评分
+   o._percapitaScore = MO.Class.register(o, [new MO.AGetter('_percapitaScore'), new MO.APersistence('_percapitaScore', MO.EDataType.Double)]);
+   //任务评分
+   o._taskScore = MO.Class.register(o, [new MO.AGetter('_taskScore'), new MO.APersistence('_taskScore', MO.EDataType.Double)]);
+   //趋势评分
+   o._trendScore = MO.Class.register(o, [new MO.AGetter('_trendScore'), new MO.APersistence('_trendScore', MO.EDataType.Double)]);
    return o;
 }
