@@ -418,7 +418,7 @@ MO.FEaiChartMktCustomerV2Table_setup = function FEaiChartMktCustomerV2Table_setu
    column.setNegativeColor('#FF0000');
    column.setWidth(100);
    column.cellPadding().right = 10;
-   column.setPadding(1, 5, 1, 1);
+   column.setPadding(1, 1, 1, 1);
    //column.setCurrencyPercent(0);
    grid.pushColumn(column);
 
