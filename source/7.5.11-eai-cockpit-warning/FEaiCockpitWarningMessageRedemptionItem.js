@@ -10,7 +10,7 @@ MO.FEaiCockpitWarningMessageRedemptionItem = function FEaiCockpitWarningMessageR
    //..........................................................
    // @attribute
    o._date   = MO.Class.register(o, [new MO.AGetter('_date'), new MO.APersistence('_date', MO.EDataType.String)]);
-   o._invest  = MO.Class.register(o, [new MO.AGetter('_invest'), new MO.APersistence('_invest', MO.EDataType.Int32)]);
-   o._redemp  = MO.Class.register(o, [new MO.AGetter('_redemp'), new MO.APersistence('_redemp', MO.EDataType.Int32)]);
+   o._invest  = MO.Class.register(o, [new MO.AGetter('_invest'), new MO.APersistence('_invest', MO.EDataType.Double)]);
+   o._redemp  = MO.Class.register(o, [new MO.AGetter('_redemp'), new MO.APersistence('_redemp', MO.EDataType.Double)]);
    return o;
 }

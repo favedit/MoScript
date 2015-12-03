@@ -61,9 +61,12 @@ MO.FEaiCockpitWarningLogicRedemptionSnapshot_setData = function FEaiCockpitWarni
       if(item.invest() != 0) serieses.get(0).values().push(item.invest());
       if(item.redemp() != 0) serieses.get(1).values().push(item.redemp());
    }
-
+   var xAxis = o._chart.axisX();
+   xAxis.createDegreesStandard(dataset.standardCor(itemsCount));
+   // xAxis.formatLabels();
+   // xAxis.setOptionShowAxis(false);
    var yAxis = o._chart.axisY();
-   yAxis.createDegreesStandard(dataset.standardCor(8));
+   yAxis.createDegreesStandard(dataset.standardCor(10));
    yAxis.formatLabels();
    var zero = yAxis.findDegreeByValue(0);
    if (zero) {
@@ -83,6 +86,7 @@ MO.FEaiCockpitWarningLogicRedemptionSnapshot_onDataFetch = function FEaiCockpitW
    var data = o._data;
    if (data.unserializeSignBuffer(event.sign, event.content, true)) {
    // o._current = o._index%o._data.capitas()._count;
+   if(!data.redemptions)return;
    o.setData();
    o.dirty();
    }
@@ -108,6 +112,7 @@ MO.FEaiCockpitWarningLogicRedemptionSnapshot_onPaintBegin = function FEaiCockpit
    var capitas = data.redemptions();
    var index = o._current;
    var showData = capitas.at(index);
+   if(!showData)return;
    graphic.setFont('bold 24px Microsoft YaHei');
    graphic.drawText(showData._date,left+30,top+50,'#ffffff');
    graphic.setFont('bold 14px Microsoft YaHei');
@@ -168,7 +173,7 @@ MO.FEaiCockpitWarningLogicRedemptionSnapshot_setup = function FEaiCockpitWarning
    chart.setLocation(30,120);
    chart.setSize(720,150);
    chart.paintRectangle().set(30,30,580,220);
-   chart.axisX().createDegrees(1, 31);
+   chart.axisX().createDegrees(0,10);
    chart.axisY().setLineWidth(1);
    chart.axisY().setLineColor('#758191');
    chart.axisX().setOptionShowAxis(false);
@@ -181,10 +186,10 @@ MO.FEaiCockpitWarningLogicRedemptionSnapshot_setup = function FEaiCockpitWarning
    // chart.axisX().findDegreeByValue(21).setLabel("21");
    // chart.axisX().findDegreeByValue(26).setLabel("26");
    // chart.axisX().findDegreeByValue(31).setLabel("31");
-   // chart.axisY().setDivisor(10000);
+   chart.axisY().setDivisor(10000);
    chart.axisY().setLabel("(万)");
    chart.axisY().setDegreeLabelGap(6);
-   chart.axisX().setDegreeLabelGap(6);
+  // chart.axisX().setDegreeLabelGap(6);
    o.push(chart);
    //..........................................................
    var lineColors = o._lineColors = ['#27ee6f', '#51a9ff'];

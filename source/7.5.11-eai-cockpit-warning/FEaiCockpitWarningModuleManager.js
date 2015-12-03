@@ -145,7 +145,7 @@ MO.FEaiCockpitWarningModuleManager_setData = function FEaiCockpitWarningModuleMa
       }else if (moduleName == "eai.service.cockpit.warning.capita" ){
          module = modules.get("Warning.logic.Capita")
          if(module == null){
-            module = o.createModule(MO.FEaiCockpitWarningLogicCapita);
+            module = o.createModule(MO.FEaiCockpitWarningLogicInvestment);
             newCreate = true;
          }
       //离职率预警

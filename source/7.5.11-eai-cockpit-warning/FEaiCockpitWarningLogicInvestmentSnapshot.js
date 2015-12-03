@@ -5,7 +5,7 @@
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitWarningLogicCapitaSnapshot = function FEaiCockpitWarningLogicCapitaSnapshot(o) {
+MO.FEaiCockpitWarningLogicInvestmentSnapshot = function FEaiCockpitWarningLogicInvestmentSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    //o._comingSoon    = true;
@@ -14,29 +14,29 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot = function FEaiCockpitWarningLogicCapit
    o._contImage     = null;
    //..........................................................
    // @event
-   o.onPaintBegin   = MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintBegin;
-   o.onPaintEnd     = MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintEnd;
+   o.onPaintBegin   = MO.FEaiCockpitWarningLogicInvestmentSnapshot_onPaintBegin;
+   o.onPaintEnd     = MO.FEaiCockpitWarningLogicInvestmentSnapshot_onPaintEnd;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitWarningLogicCapitaSnapshot_construct;
+   o.construct      = MO.FEaiCockpitWarningLogicInvestmentSnapshot_construct;
    // @method
-   o.setup          = MO.FEaiCockpitWarningLogicCapitaSnapshot_setup;
-   o.processLogic   = MO.FEaiCockpitWarningLogicCapitaSnapshot_processLogic;
+   o.setup          = MO.FEaiCockpitWarningLogicInvestmentSnapshot_setup;
+   o.processLogic   = MO.FEaiCockpitWarningLogicInvestmentSnapshot_processLogic;
    // @method
-   o.dispose        = MO.FEaiCockpitWarningLogicCapitaSnapshot_dispose;
+   o.dispose        = MO.FEaiCockpitWarningLogicInvestmentSnapshot_dispose;
    o._dataTicker    = null;
-   o.onDataFetch    = MO.FEaiCockpitWarningLogicCapitaSnapshot_onDataFetch;
+   o.onDataFetch    = MO.FEaiCockpitWarningLogicInvestmentSnapshot_onDataFetch;
    o._data          = null;
    //播放数据 
    o._index         = 0;
    o._current       = 0;
-   o.setChartData   = MO.FEaiCockpitWarningLogicCapitaSnapshot_setChartData;
+   o.setChartData   = MO.FEaiCockpitWarningLogicInvestmentSnapshot_setChartData;
 
    //..........................................................
    return o;
 }
 //设置柱状图数据
-MO.FEaiCockpitWarningLogicCapitaSnapshot_setChartData = function FEaiCockpitWarningLogicCapitaSnapshot_setChartData(index){
+MO.FEaiCockpitWarningLogicInvestmentSnapshot_setChartData = function FEaiCockpitWarningLogicInvestmentSnapshot_setChartData(index){
    var o = this ; 
    var data = o._data;
    var dataset = o._chartDataset;
@@ -63,7 +63,7 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_setChartData = function FEaiCockpitWarn
    o.dirty();
 }
 //读取数据
-MO.FEaiCockpitWarningLogicCapitaSnapshot_onDataFetch = function FEaiCockpitWarningLogicCapitaSnapshot_onDataFetch(event){
+MO.FEaiCockpitWarningLogicInvestmentSnapshot_onDataFetch = function FEaiCockpitWarningLogicInvestmentSnapshot_onDataFetch(event){
    var o = this ;
    // 读取数据
    var data = o._data;
@@ -77,7 +77,7 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_onDataFetch = function FEaiCockpitWarni
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintBegin = function FEaiCockpitWarningLogicCapitaSnapshot_onPaintBegin(event) {
+MO.FEaiCockpitWarningLogicInvestmentSnapshot_onPaintBegin = function FEaiCockpitWarningLogicInvestmentSnapshot_onPaintBegin(event) {
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
    if(!o._data._capitas){
@@ -95,6 +95,7 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintBegin = function FEaiCockpitWarn
    var capitas = data.capitas();
    var index = o._current;
    var showData = capitas.at(index);
+   if(!showData)return;
    graphic.setFont('bold 24px Microsoft YaHei');
    graphic.drawText(showData._date,left+30,top+50,'#ffffff');
    graphic.setFont('bold 14px Microsoft YaHei');
@@ -110,7 +111,7 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintBegin = function FEaiCockpitWarn
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintEnd = function FEaiCockpitWarningLogicCapitaSnapshot_onPaintEnd(event){
+MO.FEaiCockpitWarningLogicInvestmentSnapshot_onPaintEnd = function FEaiCockpitWarningLogicInvestmentSnapshot_onPaintEnd(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
 }
@@ -120,13 +121,13 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_onPaintEnd = function FEaiCockpitWarnin
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicCapitaSnapshot_construct = function FEaiCockpitWarningLogicCapitaSnapshot_construct(){
+MO.FEaiCockpitWarningLogicInvestmentSnapshot_construct = function FEaiCockpitWarningLogicInvestmentSnapshot_construct(){
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
    o._cellLocation.set(2, 1, 0);
    o._cellSize.set(6, 4);
-   o._data = MO.Class.create(MO.FEaiCockpitWarningMessageCapitas);
+   o._data = MO.Class.create(MO.FEaiCockpitWarningMessageInvestments);
    o._dataTicker = new MO.TTicker(1000 * 15);
    o._showTicker = new MO.TTicker(1000 * 2);
 }
@@ -136,7 +137,7 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_construct = function FEaiCockpitWarning
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicCapitaSnapshot_setup = function FEaiCockpitWarningLogicCapitaSnapshot_setup(){
+MO.FEaiCockpitWarningLogicInvestmentSnapshot_setup = function FEaiCockpitWarningLogicInvestmentSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
    //o._contImage = o.loadResourceImage('{eai.resource}/cockpit/forecast/logic1.png');
@@ -152,7 +153,7 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_setup = function FEaiCockpitWarningLogi
    chart.axisY().setOptionShowAxis(false);
    chart.axisY().setOptionShowFirstLine(true);
    chart.axisX().setOptionLabelVertical(true);
-   chart.axisY().setLabel("(人数)");
+   chart.axisY().setLabel("(平均业绩)");
    chart.axisX().font().parse("#ffffff 14px Microsoft YaHei");
    //chart.axisY().setDivisor(10000000);
    o.push(chart);
@@ -170,7 +171,7 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_setup = function FEaiCockpitWarningLogi
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicCapitaSnapshot_processLogic = function FEaiCockpitWarningLogicCapitaSnapshot_processLogic(){
+MO.FEaiCockpitWarningLogicInvestmentSnapshot_processLogic = function FEaiCockpitWarningLogicInvestmentSnapshot_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControl.processLogic.call(o);
    o.dirty();
@@ -192,7 +193,7 @@ MO.FEaiCockpitWarningLogicCapitaSnapshot_processLogic = function FEaiCockpitWarn
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicCapitaSnapshot_dispose = function FEaiCockpitWarningLogicCapitaSnapshot_dispose(){
+MO.FEaiCockpitWarningLogicInvestmentSnapshot_dispose = function FEaiCockpitWarningLogicInvestmentSnapshot_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);
