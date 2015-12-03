@@ -41,7 +41,7 @@ MO.FEaiCockpitWarningModuleManager = function FEaiCockpitWarningModuleManager(o)
 MO.FEaiCockpitWarningModuleManager_construct = function FEaiCockpitWarningModuleManager_construct(){
    var o = this;
    o.__base.FEaiCockpitModuleManager.construct.call(o);
-   o._dataTicker = new MO.TTicker(1000 * 60);
+   o._dataTicker = new MO.TTicker(1000 * 6);
    o._data = MO.Class.create(MO.FEaiCockpitWarningMessageFetchPageTypes);
 }
 
@@ -134,18 +134,21 @@ MO.FEaiCockpitWarningModuleManager_setData = function FEaiCockpitWarningModuleMa
       var moduleName = data.pageType().at(i).typeString();
       var newCreate = false;
       var snapshot = null;
+      //赎回率预警
       if(moduleName == "eai.service.cockpit.warning.redemption"){
          module = modules.get("Warning.logic.Redemption")
          if(module == null){
             module = o.createModule(MO.FEaiCockpitWarningLogicRedemption);
             newCreate = true;
          }
+      //人均业绩预警
       }else if (moduleName == "eai.service.cockpit.warning.capita" ){
          module = modules.get("Warning.logic.Capita")
          if(module == null){
             module = o.createModule(MO.FEaiCockpitWarningLogicCapita);
             newCreate = true;
          }
+      //离职率预警
       }else if( moduleName == "eai.service.cockpit.warning.separation"){
          module = modules.get("Warning.logic.Separation")
          if(module == null){

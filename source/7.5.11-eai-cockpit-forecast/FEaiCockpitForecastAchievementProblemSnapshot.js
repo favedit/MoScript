@@ -50,6 +50,9 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_refreshChartData = function FEa
    var chart = o._chart;
    chart.axisX().degrees().clear();
    var items = data.datas();
+   if(!items){
+      return;
+   }
    var count = items.count();
    for (var i = 0; i < count; i++) {
       var item = items.at(i);

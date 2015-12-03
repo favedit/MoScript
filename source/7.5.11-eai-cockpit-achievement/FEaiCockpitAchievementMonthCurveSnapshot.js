@@ -84,8 +84,6 @@ MO.FEaiCockpitAchievementMonthCurveSnapshot_onPaintBegin = function FEaiCockpitA
    var top = rectangle.top;
    var width = rectangle.width;
    var height = rectangle.height;
-
-
 }
 
 //==========================================================

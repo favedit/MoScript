@@ -125,8 +125,7 @@ MO.FEaiCockpitForecastUniqueCustomerSnapshot_refreshChartData = function FEaiCoc
 MO.FEaiCockpitForecastUniqueCustomerSnapshot_onDataFetch = function FEaiCockpitForecastUniqueCustomerSnapshot_onDataFetch(event) {
    var o = this;
    var data = o._data;
-   data.unserializeSignBuffer(event.sign, event.content, true);
-   if(data){
+   if(data.unserializeSignBuffer(event.sign, event.content, true)){
     o.refreshData(data);
     o.refreshChartData(data);
    }
