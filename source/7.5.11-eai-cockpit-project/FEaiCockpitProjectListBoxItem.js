@@ -76,7 +76,7 @@ MO.FEaiCockpitProjectListBoxItem_setup = function FEaiCockpitProjectListBoxItem_
    o._fontTitle.parse('bold #FFEC3B 21px Microsoft YaHei');
    o._fontSponsor.parse('#FFFFFF 18px Microsoft YaHei');
    o._font2ndRow.parse('#FFFFFF 15px Microsoft YaHei');
-   o._fontProgress.parse('#FFFFFF 19px Microsoft YaHei');
+   o._fontProgress.parse('#FFFFFF 17px Microsoft YaHei');
 
    var imageConsole = MO.Console.find(MO.FImageConsole);
    o._bgImage = imageConsole.load('{eai.resource}/cockpit/project/item_bg.png');
@@ -131,7 +131,7 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
 
    // 绘制背景
 
-   graphic.drawImage(o._bgImage, left, top, 320, 120);
+   //graphic.drawImage(o._bgImage, left, top, 320, 120);
 
    var fontTitle = o._fontTitle;
    var fontSponsor = o._fontSponsor;
@@ -201,60 +201,67 @@ MO.FEaiCockpitProjectListBoxItem_draw = function FEaiCockpitProjectListBoxItem_d
 
    // 绘制第三行
    drawX = left + 10;
-   drawY += 44;
+   drawY += 41;
 
    drawText = '时间进度';
    graphic.setFont(fontProgress.toString());
    graphic.drawText(drawText, drawX, drawY, fontProgress.color);
    textWidth = graphic.textWidth(drawText);
    drawX += textWidth + 10;
-   drawY -= 10;
+   drawY -= 8;
    graphic.drawImage(o._pbarTimeBgImage, drawX, drawY, 205, 6);
 
-   var clipWidth = 205 * unit.timeProgress() * 0.01 * rate;
+   var clipWidth = 180 * unit.timeProgress() * 0.01 * rate;
    var clipHeight = 21;
   // graphic._handle.save();
   // graphic._handle.rect(drawX, drawY, clipWidth, 21)
   // graphic._handle.clip();
-  // graphic.drawImage(o._pbarTimeFillImage, drawX, drawY, 216, 21);
-   graphic.drawImage(o._pbarTimeIconImage, drawX - 43/2 + clipWidth, drawY - 7, 43, 19);
+   // graphic.drawImage(o._pbarTimeFillImage, drawX, drawY, 216, 21);
+   
+   graphic.drawImage(o._pbarTimeIconImage, drawX - 20 + clipWidth, drawY - 7, 43, 19);
 
    graphic._handle.restore();
 
   // drawY += 10;
    drawText = parseInt(unit.timeProgress() * rate) + '%';
-   graphic.setFont(fontProgress.toString());
+   graphic.setFont(font2ndRow.toString());
    textWidth = graphic.textWidth(drawText);
-  // drawX = drawX + (216 - textWidth) * 0.5;
-   graphic.drawText(drawText, drawX - 43 / 2 + clipWidth + 3, drawY + 10, fontProgress.color);
-
+   if (drawText == "100%") {
+      graphic.drawText(drawText, drawX - 20 + clipWidth + 3, drawY + 8, font2ndRow.color);
+   } else {
+      graphic.drawText(drawText, drawX - 20 + clipWidth + 5, drawY + 8, font2ndRow.color);
+   }
    // 绘制第四行
    drawX = left + 10;
-   drawY += 28;
+   drawY += 30;
 
    drawText = '项目进度';
    graphic.setFont(fontProgress.toString());
    graphic.drawText(drawText, drawX, drawY + 10, fontProgress.color);
    textWidth = graphic.textWidth(drawText);
    drawX += textWidth + 10;
-  // drawY -= 10;
-   graphic.drawImage(o._pbarProjectBgImage, drawX, drawY , 205, 6);
+  //drawY -= 10;
+   graphic.drawImage(o._pbarProjectBgImage, drawX, drawY + 3, 205, 6);
 
-   var clipWidth = 205 * unit.proProgress() * 0.01 * rate;
+   var clipWidth = 180 * unit.proProgress() * 0.01 * rate;
    var clipHeight = 21;
-  //graphic._handle.save();
+  // graphic._handle.save();
   // graphic._handle.rect(drawX, drawY, clipWidth, 21)
   // graphic._handle.clip();
   // graphic.drawImage(o._pbarProjectFillImage, drawX, drawY, 216, 21);
-   graphic.drawImage(o._pbarProjectIconImage, drawX - 43 / 2 + clipWidth, drawY - 7, 43, 19);
+   graphic.drawImage(o._pbarProjectIconImage, drawX - 20 + clipWidth, drawY - 7, 43, 19);
    graphic._handle.restore();
 
   // drawY += 10;
    drawText = parseInt(unit.proProgress() * rate) + '%';
-   graphic.setFont(fontProgress.toString());
+   graphic.setFont(font2ndRow.toString());
    textWidth = graphic.textWidth(drawText);
-  // drawX = drawX + (216 - textWidth) * 0.5;
-   graphic.drawText(drawText, drawX - 43 / 2 + clipWidth + 3, drawY + 10, fontProgress.color);
+   if (drawText == "100%") {
+      graphic.drawText(drawText, drawX - 20 + clipWidth + 3, drawY + 8, font2ndRow.color);
+   } else {
+      graphic.drawText(drawText, drawX - 20 + clipWidth + 5, drawY + 8, font2ndRow.color);
+   }
+   
 }
 
 //==========================================================
