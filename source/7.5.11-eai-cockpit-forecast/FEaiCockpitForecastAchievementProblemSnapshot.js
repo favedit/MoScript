@@ -180,7 +180,7 @@ MO.FEaiCockpitForecastAchievementProblemSnapshot_onPaintBegin = function FEaiCoc
    // var lable = '入职两个月以上无业绩';
    // //graphic.drawText(lable，left,top,'#ffffff');
    // graphic.drawText(lable, 60, 35, '#ffffff');
-    graphic.drawImage(o._titleImage,left+12,top+5,687,46);
+    graphic.drawImage(o._titleImage, left + 15 , top + 6);
     //graphic.drawImage(o._tableImage,left+12,top+315);
 }
 
