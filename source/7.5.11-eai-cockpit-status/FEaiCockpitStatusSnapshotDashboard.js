@@ -112,7 +112,7 @@ MO.FEaiCockpitStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitStatusS
    var centerX = left + dashboardWidth/2 * imageScale;
    var centerY = top + (dashboardHeight - 10) * imageScale;
    var textY = top + (dashboardHeight + 28) * imageScale;
-   var maxRadian = Math.PI * 1.04;
+   var maxRadian = Math.PI * 1.00;
    var radianOffset = (maxRadian - Math.PI) / 2;
    var circleImageWidth = 25 * imageScale;
    var circleImageHeight = 25 * imageScale;
@@ -139,7 +139,7 @@ MO.FEaiCockpitStatusSnapshotDashboard_onPaintBegin = function FEaiCockpitStatusS
    //绘制仪表盘
    graphic.drawImage(o._dashboardImage, left, top, dashboardWidth, dashboardHeight);
    //绘制指针
-   var radian = data / 120 * maxRadian - radianOffset;
+   var radian = data / 100 * maxRadian - radianOffset;
    var toX = -lineLen * Math.cos(radian) + centerX;
    var toY = -lineLen * Math.sin(radian) + centerY;
    graphic.setShadow("2", "2", "5", "#000000");

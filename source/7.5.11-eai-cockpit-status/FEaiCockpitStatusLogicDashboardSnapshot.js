@@ -13,6 +13,7 @@ MO.FEaiCockpitStatusLogicDashboardSnapshot = function FEaiCockpitStatusLogicDash
    o._dashboard       = null;
    o._gridRank        = null;
    o._colorTypeImage  = null;
+   o._tableImage      = null;
    o._fontTopText     = null;
    o._fontMiddleText  = null;
    o._dataTicker      = null;
@@ -52,6 +53,7 @@ MO.FEaiCockpitStatusLogicDashboardSnapshot_onPaintBegin = function FEaiCockpitSt
    var width = rectangle.width;
    var height = rectangle.height;
    graphic.drawImage(o._colorTypeImage, left + 275,top + 20);
+   graphic.drawImage(o._tableImage, left + 15,top + 275);
    graphic.setFont("23px Microsoft YaHei");
    graphic.drawText(o._fontTopText, left + 20, top + 50, "rgb(255,255,255)");
    graphic.setFont("17px Microsoft YaHei");
@@ -59,7 +61,7 @@ MO.FEaiCockpitStatusLogicDashboardSnapshot_onPaintBegin = function FEaiCockpitSt
    var data = o._data;
    var dashboard = o._dashboard;
    if (data){
-     dashboard.setData(data.finishRate()); 
+      dashboard.setData(data.finishRate()); 
       graphic.setFont("Microsoft YaHei");
       var text = data.monthData().last().monthLabel();
       graphic.drawText(text, left + 40, top + 445, "rgb(255,255,255)");
@@ -163,8 +165,9 @@ MO.FEaiCockpitStatusLogicDashboardSnapshot_setup = function FEaiCockpitStatusLog
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
    o._colorTypeImage = o.loadResourceImage('{eai.resource}/cockpit/status/color_type.png');
+   o._tableImage = o.loadResourceImage('{eai.resource}/cockpit/status/table_title.png');
    var dashboard = o._dashboard = MO.Class.create(MO.FEaiCockpitStatusSnapshotDashboard);
-   dashboard.setDashboardImage('{eai.resource}/cockpit/status/dashboard_color.png');
+   // dashboard.setDashboardImage('{eai.resource}/cockpit/status/dashboard_color.png');
    dashboard.setLocation(100, 80);
    dashboard.setTextVisible(true);
    o.push(dashboard);
