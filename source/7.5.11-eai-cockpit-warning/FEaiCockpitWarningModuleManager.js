@@ -17,7 +17,8 @@ MO.FEaiCockpitWarningModuleManager = function FEaiCockpitWarningModuleManager(o)
    o._logic004Module  = MO.Class.register(o, new MO.AGetter('_logic004Module'));
    o._logic005Module  = MO.Class.register(o, new MO.AGetter('_logic005Module'));
    o._logic006Module  = MO.Class.register(o, new MO.AGetter('_logic006Module'));
-   
+   //头部导航栏
+   o._navigatorModule = null;
    // @attribute
    o._autoPlay        = false;
    //..........................................................
@@ -53,6 +54,47 @@ MO.FEaiCockpitWarningModuleManager_construct = function FEaiCockpitWarningModule
 MO.FEaiCockpitWarningModuleManager_setup = function FEaiCockpitWarningModuleManager_setup(){
    var o = this;
    o.__base.FEaiCockpitModuleManager.setup.call(o);
+   var display = o._display;
+   var snapshotDisplay = o._snapshotDisplay;
+   var viewDisplay = o._viewDisplay;
+   var application = o._scene.application();
+   var desktop = application.desktop();
+   var logicSize = desktop.logicSize();
+   var cellWidth = logicSize.width / 16;
+   var cellHeight = logicSize.height / 9;
+      //头部导航栏
+   var navigator = o._navigatorModule = o.createModule(MO.FEaiCockpitNavigator);
+   //左侧设置
+   var options   = o._options = o.createModule(MO.FEaiCockpitWarningLogicOptions);
+   var newest    = o._newest  = o.createModule(MO.FEaiCockpitWarningLogicNewest);
+   // 显示模块
+   var modules = o._modules;
+   var count = modules.count();
+   for(var i = 0; i < count; i++){
+      var module = modules.at(i);
+      var typeCd = module.typeCd();
+      // 设置缩略图大小
+      var snapshot = module.controlSnapshot();
+      var snapshotCellSize = snapshot.cellSize();
+      snapshot.size().set(cellWidth * snapshotCellSize.width, cellHeight * snapshotCellSize.height);
+      // 设置视图大小
+      var view = module.controlView();
+      view.size().assign(logicSize);
+      // 显示缩略图
+      snapshot.cellLocation().z = 10;
+      var renderable = snapshot.makeRenderable();
+      renderable.material().info().sortLevel = 7;
+      snapshot.updateRenderable();
+      snapshot.placeInCell();
+      snapshotDisplay.pushRenderable(renderable);
+      // 显示缩略图
+      view.cellLocation().z = 15;
+      var renderable = view.makeRenderable();
+      renderable.material().info().sortLevel = 6;
+      view.updateRenderable();
+      view.placeInCell();
+      viewDisplay.pushRenderable(renderable);
+   }
 
 }
 
@@ -158,7 +200,7 @@ MO.FEaiCockpitWarningModuleManager_setData = function FEaiCockpitWarningModuleMa
       }
       var snapshot = module.controlSnapshot();;
       var view = module.controlView();
-      snapshot.cellLocation().set(2 + 6 * (i % 2), 1 + 4 * Math.floor(i / 2), 0);
+      snapshot.cellLocation().set(2 + 6 * (i % 2), 1 + 3 * Math.floor(i / 2), 0);
       if (newCreate) {
          var typeCd = module.typeCd();
          // 设置缩略图大小
@@ -184,4 +226,35 @@ MO.FEaiCockpitWarningModuleManager_setData = function FEaiCockpitWarningModuleMa
       snapshot.setVisible(true);
       view.setVisible(true);     
    }
+   var navigatormodule = modules.get("cockpit.logic.navigator");
+   newCreate = true;
+   if (navigatormodule) {
+   var snapshot = navigatormodule.controlSnapshot();
+   var view = navigatormodule.controlView();
+   snapshot.setVisible(true);
+   view.setVisible(true);     
+   }
+   var options = modules.get("Warning.logic.options");
+   newCreate = true;
+   if (options) {
+   var snapshot = options.controlSnapshot();
+   var view = options.controlView();
+   snapshot.setVisible(true);
+   view.setVisible(true);     
+   }
+   var options = modules.get("Warning.logic.newest");
+   newCreate = true;
+   if (options) {
+   var snapshot = options.controlSnapshot();
+   var view = options.controlView();
+   snapshot.setVisible(true);
+   view.setVisible(true);     
+   }
+   //左侧阈值设置
+
+   //右侧最新预警
+
+
+
+
 }

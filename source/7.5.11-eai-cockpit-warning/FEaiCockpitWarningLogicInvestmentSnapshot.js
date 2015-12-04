@@ -46,6 +46,7 @@ MO.FEaiCockpitWarningLogicInvestmentSnapshot_setChartData = function FEaiCockpit
    var chart = o._chart;
    chart.axisX().degrees().clear();
    var capita = data.capitas().at(index);
+   if(!capita)return;
    var items = capita.items();
    var count = items.count();
    for (var i = 0; i < count; i++) {
@@ -100,7 +101,7 @@ MO.FEaiCockpitWarningLogicInvestmentSnapshot_onPaintBegin = function FEaiCockpit
    graphic.drawText(showData._date,left+30,top+50,'#ffffff');
    graphic.setFont('bold 14px Microsoft YaHei');
    var textSpan = graphic.textWidth('高');
-   graphic.drawTextRectangle(showData._text,left+30,top+90,width-60,height,textSpan+3,'#fee71f');
+   graphic.drawTextRectangle(showData._text,left+30,top+80,width-60,height,textSpan+3,'#fee71f');
    graphic.setFont('blod 24px Microsoft YaHei');
    var titleWidth = graphic.textWidth(showData._title);
    graphic.drawText(showData._title,left+width/2-titleWidth/2,top+height-40,'#fee71f');
@@ -126,7 +127,7 @@ MO.FEaiCockpitWarningLogicInvestmentSnapshot_construct = function FEaiCockpitWar
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
    o._cellLocation.set(2, 1, 0);
-   o._cellSize.set(6, 4);
+   o._cellSize.set(6, 3);
    o._data = MO.Class.create(MO.FEaiCockpitWarningMessageInvestments);
    o._dataTicker = new MO.TTicker(1000 * 15);
    o._showTicker = new MO.TTicker(1000 * 2);
@@ -145,16 +146,16 @@ MO.FEaiCockpitWarningLogicInvestmentSnapshot_setup = function FEaiCockpitWarning
    //新建柱状图
    var chart = o._chart = MO.Class.create(MO.FGuiChart);
    chart.selectPainter(MO.FGuiChartBarPainter);
-   chart.setLocation(50, 140);
-   chart.setSize(720, 200);
-   chart.paintRectangle().set(20, 0, 630, 180);
+   chart.setLocation(50, 110);
+   chart.setSize(720, 140);
+   chart.paintRectangle().set(20, 0, 630, 120);
    chart.axisX().setOptionShowAxis(false);
    chart.axisX().setOptionShowFirstLine(true);
    chart.axisY().setOptionShowAxis(false);
    chart.axisY().setOptionShowFirstLine(true);
    chart.axisX().setOptionLabelVertical(true);
    chart.axisY().setLabel("(平均业绩)");
-   chart.axisX().font().parse("#ffffff 14px Microsoft YaHei");
+   chart.axisX().font().parse("#ffffff 12px Microsoft YaHei");
    //chart.axisY().setDivisor(10000000);
    o.push(chart);
    var dataset = o._chartDataset = MO.Class.create(MO.FUiChartDataset);

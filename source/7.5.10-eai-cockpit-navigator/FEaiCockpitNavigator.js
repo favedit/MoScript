@@ -9,7 +9,7 @@ MO.FEaiCockpitNavigator = function FEaiCockpitNavigator(o){
    o = MO.Class.inherits(this, o, MO.FEaiCockpitModule);
    //..........................................................
    // @attribute
-   o._name         = 'forecast.logic.navigator';
+   o._name         = 'cockpit.logic.navigator';
    o._typeCd       = MO.EEaiCockpitModule.Logic;
    o._dataTicker   = null;
    o._slideshow    = true;

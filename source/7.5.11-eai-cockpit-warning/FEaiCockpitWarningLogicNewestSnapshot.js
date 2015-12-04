@@ -1,29 +1,28 @@
 //==========================================================
-// <T>预测指数预览页面。</T>
+// <T>预测目录预览页面。</T>
 //
 // @class
 // @author maocy
 // @history 151126
 //==========================================================
-MO.FEaiCockpitWarningLogicSeparationSnapshot = function FEaiCockpitWarningLogicSeparationSnapshot(o) {
+MO.FEaiCockpitWarningLogicNewestSnapshot = function FEaiCockpitWarningLogicNewestSnapshot(o) {
    o = MO.Class.inherits(this, o, MO.FEaiCockpitControl);
    //..........................................................
    o._comingSoon    = true;
    // @attribute
-   //o._backgroundUri = '{eai.resource}/cockpit/warning/dimission.png';
-   o._contImage     = null;
+   o._backgroundUri = '{eai.resource}/cockpit/warning/newest.png';
    //..........................................................
    // @event
-   o.onPaintBegin   = MO.FEaiCockpitWarningLogicSeparationSnapshot_onPaintBegin;
-   o.onPaintEnd     = MO.FEaiCockpitWarningLogicSeparationSnapshot_onPaintEnd;
+   o.onPaintBegin   = MO.FEaiCockpitWarningLogicNewestSnapshot_onPaintBegin;
+   o.onPaintEnd     = MO.FEaiCockpitWarningLogicNewestSnapshot_onPaintEnd;
    //..........................................................
    // @method
-   o.construct      = MO.FEaiCockpitWarningLogicSeparationSnapshot_construct;
+   o.construct      = MO.FEaiCockpitWarningLogicNewestSnapshot_construct;
    // @method
-   o.setup          = MO.FEaiCockpitWarningLogicSeparationSnapshot_setup;
-   o.processLogic   = MO.FEaiCockpitWarningLogicSeparationSnapshot_processLogic;
+   o.setup          = MO.FEaiCockpitWarningLogicNewestSnapshot_setup;
+   o.processLogic   = MO.FEaiCockpitWarningLogicNewestSnapshot_processLogic;
    // @method
-   o.dispose        = MO.FEaiCockpitWarningLogicSeparationSnapshot_dispose;
+   o.dispose        = MO.FEaiCockpitWarningLogicNewestSnapshot_dispose;
    //..........................................................
    return o;
 }
@@ -33,14 +32,9 @@ MO.FEaiCockpitWarningLogicSeparationSnapshot = function FEaiCockpitWarningLogicS
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicSeparationSnapshot_onPaintBegin = function FEaiCockpitWarningLogicSeparationSnapshot_onPaintBegin(event){
+MO.FEaiCockpitWarningLogicNewestSnapshot_onPaintBegin = function FEaiCockpitWarningLogicNewestSnapshot_onPaintBegin(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintBegin.call(o, event);
-   graphic = event.graphic;
-   var rectangle = event.rectangle;
-   var left = rectangle.left;
-   var top = rectangle.top;
-   graphic.drawImage(o._contImage, left, top);
 }
 
 //==========================================================
@@ -48,7 +42,7 @@ MO.FEaiCockpitWarningLogicSeparationSnapshot_onPaintBegin = function FEaiCockpit
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicSeparationSnapshot_onPaintEnd = function FEaiCockpitWarningLogicSeparationSnapshot_onPaintEnd(event){
+MO.FEaiCockpitWarningLogicNewestSnapshot_onPaintEnd = function FEaiCockpitWarningLogicNewestSnapshot_onPaintEnd(event){
    var o = this;
    o.__base.FEaiCockpitControl.onPaintEnd.call(o, event);
 }
@@ -58,12 +52,12 @@ MO.FEaiCockpitWarningLogicSeparationSnapshot_onPaintEnd = function FEaiCockpitWa
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicSeparationSnapshot_construct = function FEaiCockpitWarningLogicSeparationSnapshot_construct(){
+MO.FEaiCockpitWarningLogicNewestSnapshot_construct = function FEaiCockpitWarningLogicNewestSnapshot_construct(){
    var o = this;
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
-   o._cellLocation.set(2, 10, 0);
-   o._cellSize.set(6, 3);
+   o._cellLocation.set(14, 1, 0);
+   o._cellSize.set(2, 8);
 }
 
 //==========================================================
@@ -71,10 +65,9 @@ MO.FEaiCockpitWarningLogicSeparationSnapshot_construct = function FEaiCockpitWar
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicSeparationSnapshot_setup = function FEaiCockpitWarningLogicSeparationSnapshot_setup(){
+MO.FEaiCockpitWarningLogicNewestSnapshot_setup = function FEaiCockpitWarningLogicNewestSnapshot_setup(){
    var o = this;
    o.__base.FEaiCockpitControl.setup.call(o);
-   o._contImage = o.loadResourceImage('{eai.resource}/cockpit/warning/dimission.png');
 }
 
 //==========================================================
@@ -82,7 +75,7 @@ MO.FEaiCockpitWarningLogicSeparationSnapshot_setup = function FEaiCockpitWarning
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicSeparationSnapshot_processLogic = function FEaiCockpitWarningLogicSeparationSnapshot_processLogic(){
+MO.FEaiCockpitWarningLogicNewestSnapshot_processLogic = function FEaiCockpitWarningLogicNewestSnapshot_processLogic(){
    var o = this;
    o.__base.FEaiCockpitControl.processLogic.call(o);
 }
@@ -92,7 +85,7 @@ MO.FEaiCockpitWarningLogicSeparationSnapshot_processLogic = function FEaiCockpit
 //
 // @method
 //==========================================================
-MO.FEaiCockpitWarningLogicSeparationSnapshot_dispose = function FEaiCockpitWarningLogicSeparationSnapshot_dispose(){
+MO.FEaiCockpitWarningLogicNewestSnapshot_dispose = function FEaiCockpitWarningLogicNewestSnapshot_dispose(){
    var o = this;
    // 父处理
    o.__base.FEaiCockpitControl.dispose.call(o);

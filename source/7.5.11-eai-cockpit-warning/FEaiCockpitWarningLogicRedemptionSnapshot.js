@@ -117,7 +117,7 @@ MO.FEaiCockpitWarningLogicRedemptionSnapshot_onPaintBegin = function FEaiCockpit
    graphic.drawText(showData._date,left+30,top+50,'#ffffff');
    graphic.setFont('bold 14px Microsoft YaHei');
    var textSpan = graphic.textWidth('高');
-   graphic.drawTextRectangle(showData._text,left+30,top+90,width-60,height,textSpan+3,'#fee71f');
+   graphic.drawTextRectangle(showData._text,left+30,top+80,width-60,height,textSpan+3,'#fee71f');
    graphic.setFont('blod 24px Microsoft YaHei');
    var titleWidth = graphic.textWidth(showData._title);
    graphic.drawText(showData._title,left+width/2-titleWidth,top+height-40,'#fee71f');
@@ -154,7 +154,7 @@ MO.FEaiCockpitWarningLogicRedemptionSnapshot_construct = function FEaiCockpitWar
    o.__base.FEaiCockpitControl.construct.call(o);
    // 设置属性
    o._cellLocation.set(2, 6, 0);
-   o._cellSize.set(6, 4);
+   o._cellSize.set(6, 3);
    o._dataTicker = new MO.TTicker(1000 * 10);
    o._refreshTicker = new MO.TTicker(1000 * 2);
    o._data = MO.Class.create(MO.FEaiCockpitWarningMessageRedemptions);
@@ -170,9 +170,9 @@ MO.FEaiCockpitWarningLogicRedemptionSnapshot_setup = function FEaiCockpitWarning
    o.__base.FEaiCockpitControl.setup.call(o);
    var chart = o._chart = MO.Class.create(MO.FGuiChart);
    chart.selectPainter(MO.FGuiChartLinePainter);
-   chart.setLocation(30,120);
-   chart.setSize(720,150);
-   chart.paintRectangle().set(30,30,580,220);
+   chart.setLocation(60,90);
+   chart.setSize(720,180);
+   chart.paintRectangle().set(30,30,580,160);
    chart.axisX().createDegrees(0,10);
    chart.axisY().setLineWidth(1);
    chart.axisY().setLineColor('#758191');
