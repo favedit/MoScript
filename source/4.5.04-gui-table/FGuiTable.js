@@ -31,26 +31,27 @@ MO.FGuiTable = function FGuiTable(o){
 MO.FGuiTable_oeUpdate = function FGuiTable_oeUpdate(event){
    var o = this;
    o.__base.FGuiGridControl.oeUpdate.call(o, event);
+   var rows = o._rows;
    // 计算卷动
    if(event.isBefore()){
       // 是否要刷新
       if(o._rowScroll < 0){
-         var rows = o._rows;
          // 计算速度
          var scrollSpeed = Math.max(parseInt(-o._rowScroll / o._rowHeight), o._rowScrollSpeed);
          o._rowScroll += scrollSpeed;
          // 删除多余的数据
          if(o._rowScroll >= 0){
-            var limitCount = o._rowLimitCount;
-            if(limitCount != 0){
-               if(rows.count() > limitCount){
-                  var row = rows.pop();
-                  o.freeRow(row);
-               }
-            }
             o._rowScroll = 0;
          }
          o.dirty();
+      }
+      //如果表格内的行数大于最大行数,则删除表格内多余的行
+      var limitCount = o._rowLimitCount;
+      if (limitCount != 0) {
+         if (rows.count() > limitCount) {
+            var row = rows.pop();
+            o.freeRow(row);
+         }
       }
    }
 }
