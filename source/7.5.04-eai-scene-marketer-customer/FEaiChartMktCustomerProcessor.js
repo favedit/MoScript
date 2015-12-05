@@ -34,6 +34,7 @@ MO.FEaiChartMktCustomerProcessor = function FEaiChartMktCustomerProcessor(o){
    o._dynamicInfo             = MO.Class.register(o, new MO.AGetter('_dynamicInfo'));
    
    o._intervalMinute          = 1;
+   o._abnormalMillisecond     = 600000;
    // @attribute
    o._mapEntity               = MO.Class.register(o, new MO.AGetSet('_mapEntity'));
    o._display                 = MO.Class.register(o, new MO.AGetter('_display'));
@@ -107,7 +108,6 @@ MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerPr
    var dynamicUnits = dynamicInfo.units();
    var unitCount = dynamicUnits.count();
    var dynamicUnitCount = 0;
-   var lastDateValue = lastDate.format();
    for (var i = 0; i < unitCount; i++) {
       var unit = dynamicUnits.get(i);
       var recordId = unit.recordId()
@@ -124,6 +124,13 @@ MO.FEaiChartMktCustomerProcessor_onDynamicData = function FEaiChartMktCustomerPr
    }else{
       o._tableInterval = 1000 * 60 * o._intervalMinute;
    }
+   // 最后，开始 差10分钟 处理
+   var lastDateValue = lastDate.get();
+   var endDateValue = o._endDate.get();
+   if (lastDateValue - endDateValue > o._abnormalMillisecond){
+      lastDate.assign(o._endDate);
+      lastDate.add(-o._abnormalMillisecond);
+   };
    o._tableTick = 0;
    MO.Logger.info(o, 'Load dynamic data. (unit_count={1}, dynamic_unit_count={2})', unitCount, dynamicUnitCount);
    // 触发数据事件
