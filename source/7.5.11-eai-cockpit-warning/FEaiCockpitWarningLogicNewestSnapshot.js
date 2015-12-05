@@ -1,8 +1,8 @@
 //==========================================================
-// <T>预测目录预览页面。</T>
+// <T>最新消息预览页面。</T>
 //
 // @class
-// @author maocy
+// @author suiming
 // @history 151126
 //==========================================================
 MO.FEaiCockpitWarningLogicNewestSnapshot = function FEaiCockpitWarningLogicNewestSnapshot(o) {

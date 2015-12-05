@@ -157,6 +157,9 @@ MO.FEaiCockpitWarningModuleManager_setData = function FEaiCockpitWarningModuleMa
    var count = modules.count();
    for (var i = 0; i < count; i++) {
       var module = modules.at(i);
+      if(module._name=='cockpit.logic.navigator')continue;
+      if(module._name=='Warning.logic.options')continue;
+      if(module._name=='Warning.logic.newest')continue;
       // 设置缩略图大小
       var snapshot = module.controlSnapshot();
       var view = module.controlView();
@@ -226,30 +229,7 @@ MO.FEaiCockpitWarningModuleManager_setData = function FEaiCockpitWarningModuleMa
       snapshot.setVisible(true);
       view.setVisible(true);     
    }
-   var navigatormodule = modules.get("cockpit.logic.navigator");
-   newCreate = true;
-   if (navigatormodule) {
-   var snapshot = navigatormodule.controlSnapshot();
-   var view = navigatormodule.controlView();
-   snapshot.setVisible(true);
-   view.setVisible(true);     
-   }
-   var options = modules.get("Warning.logic.options");
-   newCreate = true;
-   if (options) {
-   var snapshot = options.controlSnapshot();
-   var view = options.controlView();
-   snapshot.setVisible(true);
-   view.setVisible(true);     
-   }
-   var options = modules.get("Warning.logic.newest");
-   newCreate = true;
-   if (options) {
-   var snapshot = options.controlSnapshot();
-   var view = options.controlView();
-   snapshot.setVisible(true);
-   view.setVisible(true);     
-   }
+
    //左侧阈值设置
 
    //右侧最新预警
