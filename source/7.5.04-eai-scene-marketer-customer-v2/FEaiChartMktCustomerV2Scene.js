@@ -23,7 +23,6 @@ MO.FEaiChartMktCustomerV2Scene = function FEaiChartMktCustomerV2Scene(o) {
    o._logoBar                = null;
    o._timeline               = null;
    o._liveTable              = null;
-   o._doughnut               = null;
    o._curvesCanvas           = null;
    // @attribute
    o._statusStart            = false;
@@ -86,13 +85,8 @@ MO.FEaiChartMktCustomerV2Scene_on24HDataChanged = function FEaiChartMktCustomerV
 //==========================================================
 MO.FEaiChartMktCustomerV2Scene_onCurvesChanged = function FEaiChartMktCustomerV2Scene_onCurvesChanged(event) {
    var o = this;
-   // 设置数据
-   var doughnut = o._doughnut;
-   doughnut.trendInfo().unserializeSignBuffer(event.sign, event.content, true);
-   // var trend = doughnut._trendInfo ;
-   // trend = doughnut.trendInfos().units();
-   doughnut.dirty();
-   o._curvesCanvas.setTenderUnits(doughnut.trendInfo().units());
+   o._curvesCanvas.tenderInfo().unserializeSignBuffer(event.sign, event.content, true);
+   o._curvesCanvas.updateTenderUnits()
 }
 
 //==========================================================
@@ -294,14 +288,7 @@ MO.FEaiChartMktCustomerV2Scene_setup = function FEaiChartMktCustomerV2Scene_setu
    liveTable.setup();
    liveTable.build();
    o._guiManager.register(liveTable);
-  //创建产品数据
-   var doughnut = o._doughnut= MO.Class.create(MO.FEaiChartMktCustomerV2Doughnut);
-   doughnut.setName('doughnut');
-   doughnut.linkGraphicContext(o);
-   liveTable.build();
-   o._guiManager.register(doughnut);
-
-   //创建曲线
+   //创建产品圆环、投向线、迁移曲线画布
    var curves =  o._curvesCanvas = MO.Class.create(MO.FEaiChartMktCustomerV2CurvesCanvas);
    curves.setName('curves');
    curves.linkGraphicContext(o);
@@ -435,23 +422,6 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
       //liveTable.setWidth(760);
       liveTable.setWidth(610);
    }
-   var doughnut = o._doughnut;
-   if (isVertical) {
-      doughnut.setDockCd(MO.EUiDock.Bottom);
-      doughnut.setAnchorCd(MO.EUiAnchor.Left | MO.EUiAnchor.Top | MO.EUiAnchor.Right);
-      doughnut.setLeft(10);
-      doughnut.setRight(10);
-      doughnut.setBottom(10);
-      doughnut.setHeight(900);
-   } else {
-      doughnut.setDockCd(MO.EUiDock.Left);
-      doughnut.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom);
-      doughnut.setTop(220);
-      doughnut.setLeft(0);
-      doughnut.setBottom(260);
-      doughnut.setWidth(240);
-      //doughnut.setHeight(580);
-   }
    var curvesCanvas = o._curvesCanvas;
    if (isVertical) {
       curvesCanvas.setDockCd(MO.EUiDock.Bottom);
@@ -463,7 +433,7 @@ MO.FEaiChartMktCustomerV2Scene_processResize = function FEaiChartMktCustomerV2Sc
    } else {
       curvesCanvas.setDockCd(MO.EUiDock.Left);
       curvesCanvas.setAnchorCd(MO.EUiAnchor.Top | MO.EUiAnchor.Bottom | MO.EUiAnchor.Left | MO.EUiAnchor.Right);
-      curvesCanvas.setLeft(220);
+      curvesCanvas.setLeft(0);
       curvesCanvas.setRight(620);
       curvesCanvas.setTop(220);
       curvesCanvas.setBottom(260);

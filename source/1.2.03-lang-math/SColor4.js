@@ -27,6 +27,7 @@ MO.SColor4 = function SColor4(red, green, blue, alpha){
    o.saveConfig   = MO.SColor4_saveConfig;
    o.savePower    = MO.SColor4_savePower;
    o.copyArray    = MO.SColor4_copyArray;
+   o.toRGBAString = MO.SColor4_toRGBAString;
    o.toString     = MO.SColor4_toString;
    // @method
    o.dispose      = MO.SColor4_dispose;
@@ -212,6 +213,16 @@ MO.SColor4_copyArray = function SColor4_copyArray(d, i){
    d[i++] = o.blue;
    d[i++] = o.alpha;
    return 4;
+}
+
+//============================================================
+// <T>获得字符串。</T>
+//
+// @return String 字符串
+//============================================================
+MO.SColor4_toRGBAString = function SColor4_toRGBAString() {
+   var o = this;
+   return 'rgba(' + parseInt(o.red * 255) + ',' + parseInt(o.green * 255) + ',' + parseInt(o.blue * 255) + ',' + MO.Lang.Float.format(o.alpha) + ')';
 }
 
 //============================================================
