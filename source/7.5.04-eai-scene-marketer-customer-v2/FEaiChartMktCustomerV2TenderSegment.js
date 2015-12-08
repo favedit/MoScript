@@ -52,12 +52,21 @@ MO.FEaiChartMktCustomerV2TenderSegment_construct = function FEaiChartMktCustomer
 //==========================================================
 MO.FEaiChartMktCustomerV2TenderSegment_setup = function FEaiChartMktCustomerV2TenderSegment_setup(startX, startY, endX, endY, color) {
    var o = this;
-   o._startPoint = new MO.SPoint2(startX, startY);
-   o._endPoint = new MO.SPoint2(endX, endY);
+   var startPoint = o._startPoint;
+   var endPoint = o._endPoint;
+   if (!startPoint || !endPoint) {
+      startPoint = o._startPoint = new MO.SPoint2(startX, startY);
+      endPoint = o._endPoint = new MO.SPoint2(endX, endY);
+   }
+   else {
+      startPoint.set(startX, startY);
+      endPoint.set(endX, endY);
+   }
    o._segmentColorRed = parseInt(255 * color.red);
    o._segmentColorGreen = parseInt(255 * color.green);
    o._segmentColorBlue = parseInt(255 * color.blue);
    o._startTick = MO.Timer.current();
+   o._finished = false;
 }
 
 //==========================================================

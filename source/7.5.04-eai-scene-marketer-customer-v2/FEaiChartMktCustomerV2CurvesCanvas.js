@@ -14,6 +14,7 @@ MO.FEaiChartMktCustomerV2CurvesCanvas = function FEaiChartMktCustomerV2CurvesCan
    o._ringDict             = null;
    o._curveDict            = null;
    o._segmentLooper        = null;
+   o._segmentPool          = null;
    o._pCodeDrawYMap        = null;
    o._curveStyle           = null;
    o._curveDisplayDuration = 10000;
@@ -45,6 +46,7 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_construct = function FEaiChartMktCustomerV
    o._ringDict = new MO.TDictionary();
    o._curveDict = new MO.TDictionary();
    o._segmentLooper = new MO.TLooper();
+   o._segmentPool = MO.Class.create(MO.FObjectPool);
    o._pCodeDrawYMap = new MO.TMap();
    o._curveStyle = new MO.SEaiChartMktCustomerV2TransferCurveStyle();
 }
@@ -73,8 +75,9 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_testAnimating = function FEaiChartMktCusto
          }
          ring.setStartTick(MO.Timer.current());
          segmentLooper.removeCurrent();
-         currenSegment.dispose();
-         currenSegment = null;
+         o._segmentPool.free(currenSegment);
+         //currenSegment.dispose();
+         //currenSegment = null;
       }
    }
    if (segmentLooper.count() > 0) {
@@ -158,7 +161,13 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_pushUnit = function FEaiChartMktCustomerV2
 
    var clientRectangle = o.clientRectangle();
    // 创建投向线
-   var segment = MO.Class.create(MO.FEaiChartMktCustomerV2TenderSegment);
+   var segment = null;
+   var segmentPool = o._segmentPool;
+   if (segmentPool.hasFree()) {
+      segment = segmentPool.alloc();
+   } else {
+      segment = MO.Class.create(MO.FEaiChartMktCustomerV2TenderSegment);
+   }
    segment.setup(unit.calculateX - clientRectangle.left, unit.calculateY - clientRectangle.top, 200, endY, unit.calculateColor);
    segment.setUnit(unit);
    o._segmentLooper.push(segment);
