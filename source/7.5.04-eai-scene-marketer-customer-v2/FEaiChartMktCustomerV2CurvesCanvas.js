@@ -65,6 +65,8 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_testAnimating = function FEaiChartMktCusto
          var currenUnit = currenSegment.unit();
          var ring = o._ringDict.get(currenUnit.modelCode());
          var tenderUnit = ring.tenderUnit();
+         tenderUnit._invesmentDay += currenUnit.investment();
+         tenderUnit._invesmentTotal += currenUnit.investment();
          tenderUnit._tenderInvesment += currenUnit.investment();
          if (tenderUnit.tenderInvesment() > tenderUnit.tenderTotal()) {
             tenderUnit._tenderInvesment = tenderUnit.tenderTotal();
@@ -125,8 +127,13 @@ MO.FEaiChartMktCustomerV2CurvesCanvas_updateTenderUnits = function FEaiChartMktC
       }
       o._ready = true;
    }
-
-
+   else {
+      for (var i = 0; i < count; i++) {
+         var unit = units.at(i);
+         var ring = ringDict.valueAt(i);
+         ring.updateTenderUnit(unit);
+      }
+   }
 }
 
 //==========================================================

@@ -25,6 +25,8 @@ MO.FEaiChartMktCustomerV2Ring = function FEaiChartMktCustomerV2Ring(o) {
    o.construct        = MO.FEaiChartMktCustomerV2Ring_construct;
    o.onPaintBegin     = MO.FEaiChartMktCustomerV2Ring_onPaintBegin;
    o.dispose          = MO.FEaiChartMktCustomerV2Ring_dispose;
+   // @method
+   o.updateTenderUnit = MO.FEaiChartMktCustomerV2Ring_updateTenderUnit;
    return o;
 }
 
@@ -141,6 +143,22 @@ MO.FEaiChartMktCustomerV2Ring_onPaintBegin = function FEaiChartMktCustomerV2Ring
    graphic._handle.closePath();
    graphic._handle.fillStyle = ringDrawColor.toRGBAString();
    graphic._handle.fill();
+}
+
+//==========================================================
+// <T>更新数据。</T>
+//
+// @method
+//==========================================================
+MO.FEaiChartMktCustomerV2Ring_updateTenderUnit = function FEaiChartMktCustomerV2Ring_updateTenderUnit(unit) {
+   var o = this;
+   var currentUnit = o._tenderUnit;
+   if (currentUnit.project() != unit.project()) {
+      currentUnit._project = unit.project();
+      currentUnit._rate = unit.rate();
+      currentUnit._tenderInvesment = unit.tenderInvesment();
+      currentUnit._tenderTotal = unit.tenderTotal();
+   }
 }
 
 //==========================================================
